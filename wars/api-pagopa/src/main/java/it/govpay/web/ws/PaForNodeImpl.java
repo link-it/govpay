@@ -21,15 +21,9 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import gov.telematici.pagamenti.ws.ccp.CtSpezzoneStrutturatoCausaleVersamento;
-import gov.telematici.pagamenti.ws.ccp.CtSpezzoniCausaleVersamento;
-import gov.telematici.pagamenti.ws.ccp.EsitoAttivaRPT;
-import gov.telematici.pagamenti.ws.ccp.EsitoVerificaRPT;
-import gov.telematici.pagamenti.ws.ccp.FaultBean;
-import gov.telematici.pagamenti.ws.ccp.PaaAttivaRPTRisposta;
-import gov.telematici.pagamenti.ws.ccp.PaaTipoDatiPagamentoPA;
-import gov.telematici.pagamenti.ws.ccp.PaaVerificaRPTRisposta;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtFaultBean;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentOptionDescriptionPA;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentOptionsDescriptionListPA;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtQrCode;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentReq;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
@@ -37,7 +31,9 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTRes;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaVerifyPaymentNoticeReq;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaVerifyPaymentNoticeRes;
+import it.gov.pagopa.pagopa_api.pa.pafornode.StAmountOption;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StOutcome;
+import it.gov.pagopa.pagopa_api.pa.pafornode.StTransferType;
 import it.gov.pagopa.pagopa_api.pa.pafornode_wsdl.PaForNodePortType;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -57,26 +53,22 @@ import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.business.Applicazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
+import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.exceptions.NdpException.FaultPa;
+import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
-import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.client.BasicClient.ClientException;
-import it.govpay.model.IbanAccredito;
-import it.govpay.model.Intermediario;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
+import it.govpay.model.Intermediario;
 import it.govpay.model.Versamento.CausaleSemplice;
-import it.govpay.model.Versamento.CausaleSpezzoni;
-import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
@@ -107,7 +99,7 @@ public class PaForNodeImpl implements PaForNodePortType{
 	public PaVerifyPaymentNoticeRes paVerifyPaymentNotice(PaVerifyPaymentNoticeReq requestBody) {
 		String codIntermediario = requestBody.getIdBrokerPA();
 		String codStazione = requestBody.getIdStation();
-		String idDominio = requestBody.getIdStation();
+		String idDominio = requestBody.getIdPA();
 		
 		CtQrCode qrCode = requestBody.getQrCode();
 		String numeroAvviso = qrCode.getNoticeNumber();
@@ -151,7 +143,6 @@ public class PaForNodeImpl implements PaForNodePortType{
 			}
 		
 			log.info("Ricevuta richiesta paVerifyPaymentNotice [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "][" + ccp + "]");
-//			BasicBD bd = null;
 
 			DatiPagoPA datiPagoPA = new DatiPagoPA();
 			datiPagoPA.setCodStazione(codStazione);
@@ -341,48 +332,55 @@ public class PaForNodeImpl implements PaForNodePortType{
 			if(versamento.getSingoliVersamenti().size() != 1) {
 				throw new NdpException(FaultPa.PAA_SEMANTICA, "Il versamento contiene piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.", codDominio);
 			}
-
-			EsitoVerificaRPT esito = new EsitoVerificaRPT();
-			esito.setEsito("OK");
-			PaaTipoDatiPagamentoPA datiPagamento =  new PaaTipoDatiPagamentoPA();
-			datiPagamento.setImportoSingoloVersamento(versamento.getImportoTotale());
-
+			
+			response.setOutcome(StOutcome.OK);
+			response.setFiscalCodePA(versamento.getDominio(configWrapper).getCodDominio());
+			response.setCompanyName(versamento.getDominio(configWrapper).getRagioneSociale());
+			
+			if(versamento.getUo(configWrapper) != null && 
+					!versamento.getUo(configWrapper).getCodUo().equals(it.govpay.model.Dominio.EC) && versamento.getUo(configWrapper).getAnagrafica() != null) {
+				response.setOfficeName(versamento.getUo(configWrapper).getAnagrafica().getRagioneSociale());
+			}
 			if(versamento.getCausaleVersamento() != null) {
 				if(versamento.getCausaleVersamento() instanceof CausaleSemplice) {
-					datiPagamento.setCausaleVersamento(((CausaleSemplice) versamento.getCausaleVersamento()).getCausale());
+					response.setPaymentDescription(((CausaleSemplice) versamento.getCausaleVersamento()).getCausale());
 				}
 
-				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoni) {
-					datiPagamento.setSpezzoniCausaleVersamento(new CtSpezzoniCausaleVersamento());
-					datiPagamento.getSpezzoniCausaleVersamento().getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento().addAll(((CausaleSpezzoni) versamento.getCausaleVersamento()).getSpezzoni());
-				}
-
-				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoniStrutturati) {
-					datiPagamento.setSpezzoniCausaleVersamento(new CtSpezzoniCausaleVersamento());
-					CausaleSpezzoniStrutturati causale = (CausaleSpezzoniStrutturati) versamento.getCausaleVersamento();
-					for(int i=0; i < causale.getSpezzoni().size(); i++) {
-						CtSpezzoneStrutturatoCausaleVersamento spezzone = new CtSpezzoneStrutturatoCausaleVersamento();
-						spezzone.setCausaleSpezzone(causale.getSpezzoni().get(i));
-						spezzone.setImportoSpezzone(causale.getImporti().get(i));
-						datiPagamento.getSpezzoniCausaleVersamento().getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento().add(spezzone);
-					}
-				}
+//				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoni) {
+//					datiPagamento.setSpezzoniCausaleVersamento(new CtSpezzoniCausaleVersamento());
+//					datiPagamento.getSpezzoniCausaleVersamento().getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento().addAll(((CausaleSpezzoni) versamento.getCausaleVersamento()).getSpezzoni());
+//				}
+//
+//				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoniStrutturati) {
+//					datiPagamento.setSpezzoniCausaleVersamento(new CtSpezzoniCausaleVersamento());
+//					CausaleSpezzoniStrutturati causale = (CausaleSpezzoniStrutturati) versamento.getCausaleVersamento();
+//					for(int i=0; i < causale.getSpezzoni().size(); i++) {
+//						CtSpezzoneStrutturatoCausaleVersamento spezzone = new CtSpezzoneStrutturatoCausaleVersamento();
+//						spezzone.setCausaleSpezzone(causale.getSpezzoni().get(i));
+//						spezzone.setImportoSpezzone(causale.getImporti().get(i));
+//						datiPagamento.getSpezzoniCausaleVersamento().getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento().add(spezzone);
+//					}
+//				}
 			} else {
-				datiPagamento.setCausaleVersamento(" ");
+				response.setPaymentDescription(" ");
 			}
-
-			datiPagamento.setEnteBeneficiario(RptUtils.buildEnteBeneficiario(dominio, versamento.getUo(configWrapper)));
+			
 			SingoloVersamento singoloVersamento = versamento.getSingoliVersamenti().get(0);
 			
-			IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(configWrapper);
+			CtPaymentOptionsDescriptionListPA paymentList = new CtPaymentOptionsDescriptionListPA();
+			response.setPaymentList(paymentList );
 			
-			if(ibanAccredito != null) {
-				datiPagamento.setBicAccredito(ibanAccredito.getCodBic());
-				datiPagamento.setIbanAccredito(ibanAccredito.getCodIban());
-			}
-			esito.setDatiPagamentoPA(datiPagamento);
+			CtPaymentOptionDescriptionPA ctPaymentOptionDescriptionPA = new CtPaymentOptionDescriptionPA();
+			StAmountOption stAmountOption = StAmountOption.EQ;
+			ctPaymentOptionDescriptionPA.setOptions(stAmountOption );
+			ctPaymentOptionDescriptionPA.setAmount(singoloVersamento.getImportoSingoloVersamento());
+			ctPaymentOptionDescriptionPA.setDetailDescription(singoloVersamento.getDescrizioneCausaleRPT());
+			ctPaymentOptionDescriptionPA.setDueDate(versamento.getDataValidita());
+			ctPaymentOptionDescriptionPA.setTransferType(StTransferType.POSTAL); // ???
+			paymentList.getPaymentOptionDescription().add(ctPaymentOptionDescriptionPA );
+
 			// response.setPaaVerificaRPTRisposta(esito); TODO
-			ctx.getApplicationLogger().log("ccp.ricezioneVerificaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
+			ctx.getApplicationLogger().log("ccp.ricezioneVerificaOk", versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
 			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (NdpException e) {
 //			if(bd != null) bd.rollback();
