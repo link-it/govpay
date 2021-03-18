@@ -20,6 +20,7 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -122,16 +123,45 @@ public class FrBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			
+			FR vo = null;
 			IExpression expr = this.getFrService().newExpression();
 			expr.equals(FR.model().COD_FLUSSO, codFlusso);
 			if(obsoleto != null) {
 				expr.equals(FR.model().OBSOLETO, obsoleto);
 			}
 			if(dataOraFlusso != null) {
-				expr.equals(FR.model().DATA_ORA_FLUSSO, dataOraFlusso);
+				// controllo millisecondi
+				Calendar cDataDa = Calendar.getInstance();
+				cDataDa.setTime(dataOraFlusso);
+				int currentMillis = cDataDa.get(Calendar.MILLISECOND);
+				
+				// in questo caso posso avere una data dove non sono stati impostati i millisecondi oppure millisecondi == 0, faccio una ricerca su un intervallo di un secondo
+				if(currentMillis == 0) {
+					Calendar cDataA = Calendar.getInstance();
+					cDataA.setTime(dataOraFlusso);
+					cDataA.set(Calendar.MILLISECOND, 999);
+					Date dataA = cDataA.getTime();
+					
+					expr.greaterEquals(FR.model().DATA_ORA_FLUSSO, dataOraFlusso).and().lessEquals(FR.model().DATA_ORA_FLUSSO, dataA);
+					IPaginatedExpression pagExpr = this.getFrService().toPaginatedExpression(expr);
+					pagExpr.offset(0).limit(1);
+					pagExpr.addOrder(FR.model().DATA_ORA_FLUSSO, SortOrder.DESC); // prendo il piu' recente
+					
+					List<FR> findAll = this.getFrService().findAll(pagExpr);
+					
+					if(findAll != null && findAll.size() >0) {
+						vo = findAll.get(0);
+					} else {
+						throw new NotFoundException("Nessuna entry corrisponde ai criteri indicati.");
+					}
+					
+				} else {
+					expr.equals(FR.model().DATA_ORA_FLUSSO, dataOraFlusso);
+					vo = this.getFrService().find(expr);
+				}
+			} else {
+				vo = this.getFrService().find(expr);
 			}
-			FR vo = this.getFrService().find(expr );
 			
 			return FrConverter.toDTO(vo);
 		} catch (NotImplementedException e) {
