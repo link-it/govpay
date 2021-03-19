@@ -29,6 +29,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "abilitato",
 "autStampaPosteItaliane",
 "area",
+"servizioMyPivot",
+"servizioSecim",
+"servizioGovPay",
 "idDominio",
 "unitaOperative",
 "contiAccredito",
@@ -102,6 +105,15 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("area")
   private String area = null;
+  
+  @JsonProperty("servizioMyPivot")
+  private ConnettoreNotificaPagamentiMyPivot servizioMyPivot = null;
+  
+  @JsonProperty("servizioSecim")
+  private ConnettoreNotificaPagamentiSecim servizioSecim = null;
+  
+  @JsonProperty("servizioGovPay")
+  private ConnettoreNotificaPagamentiGovPay servizioGovPay = null;
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -471,6 +483,51 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   **/
+  public Dominio servizioMyPivot(ConnettoreNotificaPagamentiMyPivot servizioMyPivot) {
+    this.servizioMyPivot = servizioMyPivot;
+    return this;
+  }
+
+  @JsonProperty("servizioMyPivot")
+  public ConnettoreNotificaPagamentiMyPivot getServizioMyPivot() {
+    return servizioMyPivot;
+  }
+  public void setServizioMyPivot(ConnettoreNotificaPagamentiMyPivot servizioMyPivot) {
+    this.servizioMyPivot = servizioMyPivot;
+  }
+
+  /**
+   **/
+  public Dominio servizioSecim(ConnettoreNotificaPagamentiSecim servizioSecim) {
+    this.servizioSecim = servizioSecim;
+    return this;
+  }
+
+  @JsonProperty("servizioSecim")
+  public ConnettoreNotificaPagamentiSecim getServizioSecim() {
+    return servizioSecim;
+  }
+  public void setServizioSecim(ConnettoreNotificaPagamentiSecim servizioSecim) {
+    this.servizioSecim = servizioSecim;
+  }
+
+  /**
+   **/
+  public Dominio servizioGovPay(ConnettoreNotificaPagamentiGovPay servizioGovPay) {
+    this.servizioGovPay = servizioGovPay;
+    return this;
+  }
+
+  @JsonProperty("servizioGovPay")
+  public ConnettoreNotificaPagamentiGovPay getServizioGovPay() {
+    return servizioGovPay;
+  }
+  public void setServizioGovPay(ConnettoreNotificaPagamentiGovPay servizioGovPay) {
+    this.servizioGovPay = servizioGovPay;
+  }
+
+  /**
    * Codice fiscale del beneficiario
    **/
   public Dominio idDominio(String idDominio) {
@@ -487,7 +544,6 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
-   * Url alle unità operative censite per il dominio
    **/
   public Dominio unitaOperative(List<UnitaOperativa> unitaOperative) {
     this.unitaOperative = unitaOperative;
@@ -503,7 +559,6 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
-   * Iban di accredito censiti per il dominio beneficiario
    **/
   public Dominio contiAccredito(List<ContiAccredito> contiAccredito) {
     this.contiAccredito = contiAccredito;
@@ -579,16 +634,19 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(this.abilitato, dominio.abilitato) &&
         Objects.equals(this.autStampaPosteItaliane, dominio.autStampaPosteItaliane) &&
         Objects.equals(area, dominio.area) &&
-        Objects.equals(this.idDominio, dominio.idDominio) &&
-        Objects.equals(this.unitaOperative, dominio.unitaOperative) &&
-        Objects.equals(this.contiAccredito, dominio.contiAccredito) &&
-        Objects.equals(this.entrate, dominio.entrate) &&
+        Objects.equals(servizioMyPivot, dominio.servizioMyPivot) &&
+        Objects.equals(servizioSecim, dominio.servizioSecim) &&
+        Objects.equals(servizioGovPay, dominio.servizioGovPay) &&
+        Objects.equals(idDominio, dominio.idDominio) &&
+        Objects.equals(unitaOperative, dominio.unitaOperative) &&
+        Objects.equals(contiAccredito, dominio.contiAccredito) &&
+        Objects.equals(entrate, dominio.entrate) &&
         Objects.equals(tipiPendenza, dominio.tipiPendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.ragioneSociale, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.pec, this.tel, this.fax, this.web, this.gln, this.cbill, this.iuvPrefix, this.stazione, this.auxDigit, this.segregationCode, this.logo, this.abilitato, this.autStampaPosteItaliane, this.area, this.idDominio, this.unitaOperative, this.contiAccredito, this.entrate, tipiPendenza);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, idDominio, unitaOperative, contiAccredito, entrate, tipiPendenza);
   }
 
   public static Dominio parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -627,10 +685,13 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
     sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("    autStampaPosteItaliane: ").append(this.toIndentedString(this.autStampaPosteItaliane)).append("\n");
     sb.append("    area: ").append(toIndentedString(area)).append("\n");
-    sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
-    sb.append("    unitaOperative: ").append(this.toIndentedString(this.unitaOperative)).append("\n");
-    sb.append("    contiAccredito: ").append(this.toIndentedString(this.contiAccredito)).append("\n");
-    sb.append("    entrate: ").append(this.toIndentedString(this.entrate)).append("\n");
+    sb.append("    servizioMyPivot: ").append(toIndentedString(servizioMyPivot)).append("\n");
+    sb.append("    servizioSecim: ").append(toIndentedString(servizioSecim)).append("\n");
+    sb.append("    servizioGovPay: ").append(toIndentedString(servizioGovPay)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    unitaOperative: ").append(toIndentedString(unitaOperative)).append("\n");
+    sb.append("    contiAccredito: ").append(toIndentedString(contiAccredito)).append("\n");
+    sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -163,6 +163,7 @@ public class RiscossioniController extends BaseController {
 			
 			findRiscossioniDTO.setEseguiCount(metadatiPaginazione);
 			findRiscossioniDTO.setEseguiCountConLimit(maxRisultati);
+			findRiscossioniDTO.setDeep(true);
 						
 			RiscossioniDAO riscossioniDAO = new RiscossioniDAO();
 			

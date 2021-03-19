@@ -3,6 +3,7 @@ package it.govpay.pendenze.v2.controller;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -10,6 +11,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -22,10 +25,12 @@ import it.govpay.core.dao.anagrafica.dto.GetDocumentoAvvisiDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.pendenze.v2.beans.LinguaSecondaria;
 
 
 
@@ -37,7 +42,7 @@ public class DocumentiController extends BaseController {
 
 
 
-    public Response getAvvisiDocumento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroDocumento) {
+    public Response getAvvisiDocumento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroDocumento, String linguaSecondaria, List<String> numeriAvviso) {
     	String methodName = "getAvvisiDocumento";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 
@@ -61,6 +66,37 @@ public class DocumentiController extends BaseController {
 //			if(!AuthorizationManager.isDominioAuthorized(getAvvisoDTO.getUser(), getAvvisoDTO.getCodDominio())) {
 //				throw AuthorizationManager.toNotAuthorizedException(getAvvisoDTO.getUser(), getAvvisoDTO.getCodDominio(),null);
 //			}
+			
+			if(linguaSecondaria != null) {
+				LinguaSecondaria linguaSecondariaEnum = LinguaSecondaria.fromValue(linguaSecondaria);
+				if(linguaSecondariaEnum != null) {
+					switch(linguaSecondariaEnum) {
+					case DE:
+						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.DE);
+						break;
+					case EN:
+						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.EN);
+						break;
+					case FALSE:
+						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.FALSE); 
+						break;
+					case FR:
+						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.FR);
+						break;
+					case SL:
+						getAvvisoDTO.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.SL);
+						break;
+					}				
+				} else {
+					throw new ValidationException("Codifica inesistente per linguaSecondaria. Valore fornito [" + linguaSecondaria + "] valori possibili " + ArrayUtils.toString(LinguaSecondaria.values()));
+				}
+			}
+			
+			if(numeriAvviso != null && !numeriAvviso.isEmpty()) {
+				for (String numeroAvviso : numeriAvviso) {
+					IuvUtils.toIuv(numeroAvviso); // validazione numero avviso
+				}
+			}
 			
 			AvvisiDAO avvisiDAO = new AvvisiDAO();
 			

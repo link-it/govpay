@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.20.0"
+  version: "1.21.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -2155,6 +2155,10 @@ paths:
         - $ref: '#/components/parameters/maxRisultati'
         - $ref: '#/components/parameters/severitaDa'
         - $ref: '#/components/parameters/severitaA'
+        - $ref: '#/components/parameters/idDominio'
+        - $ref: '#/components/parameters/iuv'
+        - $ref: '#/components/parameters/idA2A'
+        - $ref: '#/components/parameters/idPendenza'
       responses:
         '200':
           description: Elenco dei pagamenti da portale
@@ -2931,6 +2935,7 @@ paths:
           schema:
             type: string
             pattern: '(^[0-9]{18}$)'
+        - $ref: '#/components/parameters/linguaSecondaria'
       responses:
         '200':
           description: Avviso di pagamento
@@ -2973,6 +2978,8 @@ paths:
           schema:
             type: string
             pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
+        - $ref: '#/components/parameters/linguaSecondaria'
+        - $ref: '#/components/parameters/listaNumeriAvviso'
       responses:
         '200':
           description: Avviso di pagamento
@@ -4355,6 +4362,25 @@ components:
       schema:
         type: string
       example: 'RSSMRA30A01H501I'
+    linguaSecondaria:
+      name: linguaSecondaria
+      in: query
+      description: >- 
+            Indica se creare l'avviso in modalita' multilingua e quale seconda lingua affiancare all'italiano all'interno dell'avviso 
+      required: false
+      schema:
+        $ref: '#/components/schemas/LinguaSecondaria'
+    listaNumeriAvviso:
+      in: query
+      name: numeriAvviso
+      description: Indica i numeri avviso da includere nelle stampe dei documenti
+      required: false
+      schema:
+        type: array
+        items: 
+          type: string
+          pattern: '(^[0-9]{18}$)'
+      example: ['123456789012345678']
   responses:
     '400':
       description: Richiesta non correttamente formata
@@ -5029,6 +5055,12 @@ components:
           type: string
           description: Nome dell'area di competenza del dominio
           example: Affari generali e istituzionali
+        servizioMyPivot:
+          $ref: '#/components/schemas/connettoreNotificaPagamentiMyPivot'
+        servizioSecim:
+          $ref: '#/components/schemas/connettoreNotificaPagamentiSecim'
+        servizioGovPay:
+          $ref: '#/components/schemas/connettoreNotificaPagamentiGovPay'
     dominioIndex:
       type: object
       allOf:
@@ -5663,6 +5695,18 @@ components:
           description: Definisce come visualizzare la pendenza 
         tracciatoCsv:
           $ref: '#/components/schemas/tracciatoCsv'
+    tipoPendenzaProfiloIndex:
+      type: object
+      required:
+        - idTipoPendenza
+        - descrizione
+      properties:
+        idTipoPendenza:
+          type: string
+          example: IMU
+        descrizione:
+          type: string
+          example: Imposta municipale urbana
     tipoPendenza:
       type: object
       allOf:
@@ -6277,6 +6321,8 @@ components:
           format: date
           description: Data in cui inviare il promemoria di scadenza della pendenza.
           example: '2020-12-31'
+        proprieta:
+          $ref: '#/components/schemas/ProprietaPendenza'
     pendenzaPut:
       type: object
       allOf:
@@ -7249,6 +7295,190 @@ components:
           example: https://nododeipagamentispc.agid.gov.it/openspcoop/PA
         auth:
           $ref: '#/components/schemas/tipoAutenticazione'
+    connettoreNotificaPagamenti:
+      type: object
+      required:
+        - abilitato
+        - tipoConnettore
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se il connettore e' abilitato
+          example: true
+        codiceIPA:
+          type: string
+          description: Codice IPA
+        tipoConnettore:
+          type: string
+          enum:
+            - 'WEBSERVICE'
+            - 'EMAIL'
+            - 'FILESYSTEM'
+        versioneCsv:
+          type: string
+          enum:
+            - '1.0'
+          description: Versione del CSV prodotto.
+        webServiceUrl:
+          type: string
+          description: Dati di integrazione al servizio web tracciati
+        webServiceAuth:
+          $ref: '#/components/schemas/tipoAutenticazione'
+        emailIndirizzi:
+          type: array
+          items:
+            type: string
+          description: Indirizzi Email al quale verra' spedito il tracciato
+        emailSubject:
+          type: string
+          description: Subject da inserire nella mail
+        fileSystemPath:
+          type: string
+          description: Path nel quale verra' salvato il tracciato
+        tipiPendenza:
+          type: array
+          description: tipi pendenza da includere nel tracciato
+          items:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+              - type: string
+                description: identificativo tipo pendenza
+                example:
+                  SEGRETERIA
+    connettoreNotificaPagamentiMyPivot:
+      type: object
+      required:
+        - abilitato
+        - tipoConnettore
+        - versioneCsv
+        - codiceIPA
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se il connettore e' abilitato
+          example: true
+        codiceIPA:
+          type: string
+          description: Codice IPA
+        tipoConnettore:
+          type: string
+          enum:
+            - 'EMAIL'
+            - 'FILESYSTEM'
+        versioneCsv:
+          type: string
+          example: '1.0'
+          description: Versione del CSV prodotto.
+        emailIndirizzi:
+          type: array
+          items:
+            type: string
+          description: Indirizzi Email al quale verra' spedito il tracciato
+        emailSubject:
+          type: string
+          description: Subject da inserire nella mail
+        fileSystemPath:
+          type: string
+          description: Path nel quale verra' salvato il tracciato
+        tipiPendenza:
+          type: array
+          description: tipi pendenza da includere nel tracciato
+          items:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+              - type: string
+                description: identificativo tipo pendenza
+                example:
+                  SEGRETERIA
+    connettoreNotificaPagamentiSecim:
+      type: object
+      required:
+        - abilitato
+        - tipoConnettore
+        - codiceCliente
+        - versioneCsv
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se il connettore e' abilitato
+          example: true
+        codiceCliente:
+          type: string
+          description: Codice Cliente
+        codiceIstituto:
+          type: string
+          description: Codice Istituto
+        tipoConnettore:
+          type: string
+          enum:
+            - 'EMAIL'
+            - 'FILESYSTEM'
+        versioneCsv:
+          type: string
+          example: '7.0'
+          description: Versione del CSV prodotto.
+        emailIndirizzi:
+          type: array
+          items:
+            type: string
+          description: Indirizzi Email al quale verra' spedito il tracciato
+        emailSubject:
+          type: string
+          description: Subject da inserire nella mail
+        fileSystemPath:
+          type: string
+          description: Path nel quale verra' salvato il tracciato
+        tipiPendenza:
+          type: array
+          description: tipi pendenza da includere nel tracciato
+          items:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+              - type: string
+                description: identificativo tipo pendenza
+                example:
+                  SEGRETERIA
+    connettoreNotificaPagamentiGovPay:
+      type: object
+      required:
+        - abilitato
+        - tipoConnettore
+        - versioneCsv
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se il connettore e' abilitato
+          example: true
+        tipoConnettore:
+          type: string
+          enum:
+            - 'EMAIL'
+        versioneCsv:
+          type: string
+          example: '7.0'
+          description: Versione del CSV prodotto.
+        emailIndirizzi:
+          type: array
+          items:
+            type: string
+          description: Indirizzi Email al quale verra' spedito il tracciato
+        emailSubject:
+          type: string
+          description: Subject da inserire nella mail
+        tipiPendenza:
+          type: array
+          description: tipi pendenza da includere nel tracciato
+          items:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+              - type: string
+                description: identificativo tipo pendenza
+                example:
+                  SEGRETERIA
     soggetto:
       description: dati anagrafici di un versante o pagatore.
       type: object
@@ -7662,6 +7892,8 @@ components:
         - API_PENDENZE
         - API_RAGIONERIA
         - API_BACKEND_IO
+        - API_SECIM
+        - API_MYPIVOT
       example: 'API_PAGOPA'
     categoriaEvento:
       type: string
@@ -8431,14 +8663,49 @@ components:
           type: string
           description: Identificativo della divisione interna all'ente creditore
           example: Divisione001
+    LinguaSecondaria:
+      example: 'false'
+      type: string
+      enum:
+        - 'false'
+        - 'de'
+        - 'en'
+        - 'fr'
+        - 'sl'
     Pagina:
       type: integer
       default: 1
       minimum: 1
+    ProprietaPendenza:
+      type: object
+      description: Dati supporto per la gestione del ciclo di vita della pendenza.
+      properties:
+        linguaSecondaria:
+          $ref: '#/components/schemas/LinguaSecondaria'
+        descrizioneImporto:
+          type: array
+          items: 
+            $ref: '#/components/schemas/VoceDescrizioneImporto'
+        lineaTestoRicevuta1:
+          type: string
+          description: stringa personalizzata da inserire nella ricevuta
+        lineaTestoRicevuta2:
+          type: string
+          description: stringa personalizzata da inserire nella ricevuta
     RisultatiPerPagina:
       type: integer
       default: 25
       minimum: 0
       maximum: 200
-          
+    VoceDescrizioneImporto:
+      type: object
+      properties:
+        voce: 
+          type: string
+          description: voce importo
+          example: canone annuo
+        importo: 
+          type: number
+          description: importo
+          example: 10.01
           

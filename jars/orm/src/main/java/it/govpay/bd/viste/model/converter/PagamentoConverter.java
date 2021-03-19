@@ -36,12 +36,12 @@ public class PagamentoConverter {
 		if(vo.getTipoAllegato() != null)
 			pagamento.setTipoAllegato(TipoAllegato.valueOf(vo.getTipoAllegato()));
 		pagamento.setAllegato(vo.getAllegato());
-//		if(vo.getIdRPT() != null) 
-//			dto.setIdRpt(vo.getIdRPT().getId());
-//		if(vo.getIdSingoloVersamento() != null)
-//			dto.setIdSingoloVersamento(vo.getIdSingoloVersamento().getId());
-//		if(vo.getIdRr() != null)
-//			dto.setIdRr(vo.getIdRr().getId());
+		if(vo.getIdRPT() != null) 
+			pagamento.setIdRpt(vo.getIdRPT().getId());
+		if(vo.getIdSingoloVersamento() != null)
+			pagamento.setIdSingoloVersamento(vo.getIdSingoloVersamento().getId());
+		if(vo.getIdRr() != null)
+			pagamento.setIdRr(vo.getIdRr().getId());
 
 		pagamento.setDataAcquisizioneRevoca(vo.getDataAcquisizioneRevoca());
 		pagamento.setCausaleRevoca(vo.getCausaleRevoca());
@@ -53,8 +53,8 @@ public class PagamentoConverter {
 		if(vo.getStato() != null)
 			pagamento.setStato(Stato.valueOf(vo.getStato()));
 
-//		if(vo.getIdIncasso() != null)
-//			pagamento.setIdIncasso(vo.getIdIncasso().getId());
+		if(vo.getIdIncasso() != null)
+			pagamento.setIdIncasso(vo.getIdIncasso().getId());
 		
 		pagamento.setTipo(TipoPagamento.valueOf(vo.getTipo()));
 		
@@ -194,8 +194,8 @@ public class PagamentoConverter {
 //			versamento.setStatoPagamento(StatoPagamento.valueOf(vo.getVrsStatoPagamento())); 
 //		versamento.setIuvPagamento(vo.getVrsIuvPagamento());
 		
-//		if(vo.getVrsIdDocumento() != null)
-//			versamento.setIdDocumento(vo.getVrsIdDocumento().getId());
+		if(vo.getVrsIdDocumento() != null)
+			versamento.setIdDocumento(vo.getVrsIdDocumento().getId());
 //		if(vo.getVrsCodRata() != null) {
 //			if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.ENTRO.toString())) {
 //				versamento.setTipoSoglia(TipoSogliaVersamento.ENTRO);

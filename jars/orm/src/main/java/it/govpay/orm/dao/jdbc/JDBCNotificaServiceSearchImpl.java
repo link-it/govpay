@@ -187,48 +187,21 @@ public class JDBCNotificaServiceSearchImpl implements IJDBCServiceSearchWithId<N
 				
 				Notifica notifica = (Notifica)this.getNotificaFetch().fetch(jdbcProperties.getDatabase(), Notifica.model(), map);
 				
-				if(idMappingResolutionBehaviour==null ||
-						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-					){
-						it.govpay.orm.IdApplicazione id_notifica_applicazione = null;
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_notifica_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(id_applicazione, false);
-						}else{
-							id_notifica_applicazione = new it.govpay.orm.IdApplicazione();
-						}
-						id_notifica_applicazione.setId(id_applicazione);
-						notifica.setIdApplicazione(id_notifica_applicazione);
-					}
+				it.govpay.orm.IdApplicazione id_notifica_applicazione = new it.govpay.orm.IdApplicazione();
+				id_notifica_applicazione.setId(id_applicazione);
+				notifica.setIdApplicazione(id_notifica_applicazione);
 
 				if(id_rpt != null) {
-					if(idMappingResolutionBehaviour==null ||
-							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-						){
-							// Object _notifica_rpt (recupero id)
-							it.govpay.orm.IdRpt id_notifica_rpt = null;
-							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-								id_notifica_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findId(id_rpt, false);
-							}else{
-								id_notifica_rpt = new it.govpay.orm.IdRpt();
-							}
-							id_notifica_rpt.setId(id_rpt);
-							notifica.setIdRpt(id_notifica_rpt);
-						}
+					// Object _notifica_rpt (recupero id)
+					it.govpay.orm.IdRpt id_notifica_rpt = new it.govpay.orm.IdRpt();
+					id_notifica_rpt.setId(id_rpt);
+					notifica.setIdRpt(id_notifica_rpt);
 				}
 
 				if(id_rr != null) {
-					if(idMappingResolutionBehaviour==null ||
-							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-						){
-							it.govpay.orm.IdRr id_notifica_rr = null;
-							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-								id_notifica_rr = ((JDBCRRServiceSearch)(this.getServiceManager().getRRServiceSearch())).findId(id_rr, false);
-							}else{
-								id_notifica_rr = new it.govpay.orm.IdRr();
-							}
-							id_notifica_rr.setId(id_rr);
-							notifica.setIdRr(id_notifica_rr);
-						}
+					it.govpay.orm.IdRr id_notifica_rr = new it.govpay.orm.IdRr();
+					id_notifica_rr.setId(id_rr);
+					notifica.setIdRr(id_notifica_rr);
 				}
 
 				list.add(notifica);

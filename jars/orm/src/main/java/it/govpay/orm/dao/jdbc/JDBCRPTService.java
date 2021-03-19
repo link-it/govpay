@@ -19,28 +19,25 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
-import it.govpay.orm.IdRpt;
+import java.sql.Connection;
 
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCProperties;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
 
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
+import it.govpay.orm.IdRpt;
 import it.govpay.orm.RPT;
 import it.govpay.orm.dao.IDBRPTService;
 import it.govpay.orm.utils.ProjectInfo;
-
-import java.sql.Connection;
-
-import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
  * Service can be used to search for and manage the backend objects of type {@link it.govpay.orm.RPT} 
@@ -1259,6 +1256,36 @@ public class JDBCRPTService extends JDBCRPTServiceSearch  implements IDBRPTServi
 						connection.setAutoCommit(oldValueAutoCommit);
 				}catch(Exception eIgnore){}
 			}
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+	
+	}
+	
+	@Override
+	public int nativeUpdate(String sql,Object ... param) throws ServiceException,NotFoundException,NotImplementedException{
+	
+		Connection connection = null;
+		try{
+			
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			return ((JDBCRPTServiceImpl)this.serviceCRUD).nativeUpdate(this.jdbcProperties,this.log,connection,sqlQueryObject,sql,param);		
+	
+		}catch(ServiceException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(NotFoundException e){
+			this.log.debug(e.getMessage(),e); throw e;
+		}catch(NotImplementedException e){
+			this.log.error(e.getMessage(),e); throw e;
+		}catch(Exception e){
+			this.log.error(e.getMessage(),e); throw new ServiceException("nativeQuery not completed: "+e.getMessage(),e);
+		}finally{
 			if(connection!=null){
 				this.jdbcServiceManager.closeConnection(connection);
 			}

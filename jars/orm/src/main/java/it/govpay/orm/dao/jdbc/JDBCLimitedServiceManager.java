@@ -88,6 +88,8 @@ import it.govpay.orm.dao.ITipoVersamentoDominioService;
 import it.govpay.orm.dao.ITipoVersamentoDominioServiceSearch;
 import it.govpay.orm.dao.ITipoVersamentoService;
 import it.govpay.orm.dao.ITipoVersamentoServiceSearch;
+import it.govpay.orm.dao.ITracciatoNotificaPagamentiService;
+import it.govpay.orm.dao.ITracciatoNotificaPagamentiServiceSearch;
 import it.govpay.orm.dao.ITracciatoService;
 import it.govpay.orm.dao.ITracciatoServiceSearch;
 import it.govpay.orm.dao.ITributoService;
@@ -114,6 +116,7 @@ import it.govpay.orm.dao.IVistaPagamentoServiceSearch;
 import it.govpay.orm.dao.IVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
 import it.govpay.orm.dao.IVistaRptVersamentoServiceSearch;
+import it.govpay.orm.dao.IVistaVersamentoServiceSearch;
 
 /**     
  * Manager that allows you to obtain the services of research and management of objects
@@ -441,12 +444,12 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	public ITributoService getTributoService() throws ServiceException,NotImplementedException{
 		return new JDBCTributoService(this.unlimitedJdbcServiceManager);
 	}
-		
+	
 	
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:TipoTributo type:TipoTributo
+	 Services relating to the object with name:tipoTributo type:TipoTributo
 	 =====================================================================================================================
 	*/
 	
@@ -761,7 +764,7 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	public ITipoVersamentoDominioService getTipoVersamentoDominioService() throws ServiceException,NotImplementedException{
 		return new JDBCTipoVersamentoDominioService(this.unlimitedJdbcServiceManager);
 	}
-
+	
 	
 	
 	/*
@@ -1384,6 +1387,38 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	
 	/*
 	 =====================================================================================================================
+	 Services relating to the object with name:TracciatoNotificaPagamenti type:TracciatoNotificaPagamenti
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public ITracciatoNotificaPagamentiServiceSearch getTracciatoNotificaPagamentiServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCTracciatoNotificaPagamentiServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public ITracciatoNotificaPagamentiService getTracciatoNotificaPagamentiService() throws ServiceException,NotImplementedException{
+		return new JDBCTracciatoNotificaPagamentiService(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
 	 Services relating to the object with name:Stampa type:Stampa
 	 =====================================================================================================================
 	*/
@@ -1589,6 +1624,27 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	@Override
 	public IVistaPagamentoServiceSearch getVistaPagamentoServiceSearch() throws ServiceException,NotImplementedException{
 		return new JDBCVistaPagamentoServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaVersamento type:VistaVersamento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaVersamento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaVersamento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaVersamentoServiceSearch getVistaVersamentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaVersamentoServiceSearch(this.unlimitedJdbcServiceManager);
 	}
 	
 	

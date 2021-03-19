@@ -87,6 +87,7 @@ public class AnagraficaManager {
 	private static final String CACHE_KEY_GET_UNITA_OPERATIVA = "getUnitaOperativa";
 	private static final String CACHE_KEY_GET_UNITA_OPERATIVA_BY_UNIQUE = "getUnitaOperativaByCodUnivocoUo";
 	private static final String CACHE_KEY_GET_DOMINIO = "getDominio";
+	private static final String CACHE_KEY_GET_COD_DOMINI = "getCodDomini";
 	private static final String CACHE_KEY_GET_APPLICAZIONE_BY_SUBJECT = "getApplicazioneBySubject";
 	private static final String CACHE_KEY_GET_APPLICAZIONE_BY_PRINCIPAL = "getApplicazioneByPrincipal";
 	private static final String CACHE_KEY_GET_APPLICAZIONE = "getApplicazione";
@@ -375,6 +376,20 @@ public class AnagraficaManager {
 			}
 			throw new ServiceException(t);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<String> getListaCodDomini(BDConfigWrapper configWrapper) throws ServiceException {
+		try {
+			String method = CACHE_KEY_GET_COD_DOMINI;
+			Object codiciDomini = getDominiBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, CACHE_KEY_GET_COD_DOMINI, method);
+			return (List<String>) codiciDomini;
+		} catch (Throwable t) {
+			if(t instanceof ServiceException) {
+				throw (ServiceException) t;
+			}
+			throw new ServiceException(t);
+		}  
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -184,19 +184,9 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 			for(Map<String, Object> map: returnMap) {
 				Long idRpt = (Long) map.remove("id_rpt");
 				RR rr = (RR)this.getRRFetch().fetch(jdbcProperties.getDatabase(), RR.model(), map);
-				if(idMappingResolutionBehaviour==null ||
-						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-					){
-						
-						it.govpay.orm.IdRpt id_rr_rpt = null;
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_rr_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findId(idRpt, false);
-						}else{
-							id_rr_rpt = new it.govpay.orm.IdRpt();
-						}
-						id_rr_rpt.setId(idRpt);
-						rr.setIdRpt(id_rr_rpt);
-					}
+				it.govpay.orm.IdRpt id_rr_rpt = new it.govpay.orm.IdRpt();
+				id_rr_rpt.setId(idRpt);
+				rr.setIdRpt(id_rr_rpt);
 				
 				list.add(rr);
 	        }

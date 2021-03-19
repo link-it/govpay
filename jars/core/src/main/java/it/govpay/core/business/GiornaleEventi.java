@@ -32,6 +32,8 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.configurazione.model.GdeEvento;
 import it.govpay.bd.configurazione.model.GdeInterfaccia;
 import it.govpay.bd.configurazione.model.Giornale;
+import it.govpay.bd.configurazione.model.GdeEvento.DumpEnum;
+import it.govpay.bd.configurazione.model.GdeEvento.LogEnum;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.core.utils.EventoContext;
@@ -74,12 +76,32 @@ public class GiornaleEventi {
 		case API_BACKEND_IO:
 			return giornale.getApiBackendIO();
 		case API_USER:
-		case API_WC: return null;
+		case API_WC: 
+			return null;
+		case API_MYPIVOT:
+		case API_SECIM:
+		case API_GOVPAY:
+			return getConfigurazioneTracciatiNotificaPagamenti();
 		}
 		
 		return null;
 	}
 	
+	private static GdeInterfaccia getConfigurazioneTracciatiNotificaPagamenti() {
+		
+		GdeInterfaccia apiTracciatiNotificaPagamenti = new GdeInterfaccia();
+		GdeEvento apiBackendAppIOLetture = new GdeEvento();
+		apiBackendAppIOLetture.setDump(DumpEnum.SEMPRE);
+		apiBackendAppIOLetture.setLog(LogEnum.SEMPRE);
+		apiTracciatiNotificaPagamenti.setLetture(apiBackendAppIOLetture);
+		GdeEvento apiBackendAppIOScritture = new GdeEvento();
+		apiBackendAppIOScritture.setDump(DumpEnum.SEMPRE);
+		apiBackendAppIOScritture.setLog(LogEnum.SEMPRE);
+		apiTracciatiNotificaPagamenti.setScritture(apiBackendAppIOScritture);
+		
+		return apiTracciatiNotificaPagamenti;
+	}
+
 	public static boolean dumpEvento(GdeEvento evento, Integer responseCode) {
 		switch (evento.getDump()) {
 		case MAI:
@@ -148,12 +170,23 @@ public class GiornaleEventi {
 				return false;
 		}
 		
+		if(componente.equals(Componente.API_SECIM) || componente.equals(Componente.API_MYPIVOT)) {
+			if(operazione != null)
+				return !isOperazioneScritturaTracciatiNotificaPagamenti(operazione);
+			else 
+				return false;
+		}
+		
 		return isRequestLettura(httpMethod);
 	}
 	
 	public static boolean isRequestScrittura(HttpMethodEnum httpMethod, Componente componente, String operazione) {
 		if(componente.equals(Componente.API_PAGOPA)) {
 			return isOperazioneScrittura(operazione);
+		}
+		
+		if(componente.equals(Componente.API_SECIM) || componente.equals(Componente.API_MYPIVOT)) {
+			return isOperazioneScritturaTracciatiNotificaPagamenti(operazione);
 		}
 
 		return isRequestScrittura(httpMethod);
@@ -229,8 +262,19 @@ public class GiornaleEventi {
 				) {
 			return true;
 		}
-		
-		
+		return false;
+	}
+	
+	private static boolean isOperazioneScritturaTracciatiNotificaPagamenti(String operazione) {
+		if(EventoContext.APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOEMAIL.equals(operazione)
+				|| EventoContext.APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOFILESYSTEM.equals(operazione)
+				|| EventoContext.APIMYPIVOT_TIPOEVENTO_PIVOTSILINVIAFLUSSO.equals(operazione)
+				|| EventoContext.APISECIM_TIPOEVENTO_SECIMINVIATRACCIATOEMAIL.equals(operazione)
+				|| EventoContext.APISECIM_TIPOEVENTO_SECIMINVIATRACCIATOFILESYSTEM.equals(operazione)
+				|| EventoContext.APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOEMAIL.equals(operazione)
+				) {
+			return true;
+		}
 		return false;
 	}
 	

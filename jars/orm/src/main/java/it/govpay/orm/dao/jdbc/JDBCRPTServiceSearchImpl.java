@@ -217,22 +217,12 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 				Long idPagamentoPortale = this.getNullableValueFromMap("id_pagamento_portale", map);
 
 				RPT rpt = (RPT)this.getRPTFetch().fetch(jdbcProperties.getDatabase(), RPT.model(), map);
-				it.govpay.orm.IdVersamento id_rpt_versamento = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_rpt_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idVersamento, false);
-				}else{
-					id_rpt_versamento = new it.govpay.orm.IdVersamento();
-				}
+				it.govpay.orm.IdVersamento id_rpt_versamento =  new it.govpay.orm.IdVersamento();
 				id_rpt_versamento.setId(idVersamento);
 				rpt.setIdVersamento(id_rpt_versamento);
 
 				if(idPagamentoPortale != null && idPagamentoPortale > 0){
-					it.govpay.orm.IdPagamentoPortale id_rpt_idPagamentoPortale = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_rpt_idPagamentoPortale = ((JDBCPagamentoPortaleServiceSearch)(this.getServiceManager().getPagamentoPortaleServiceSearch())).findId(idPagamentoPortale, false);
-					}else{
-						id_rpt_idPagamentoPortale = new it.govpay.orm.IdPagamentoPortale();
-					}
+					it.govpay.orm.IdPagamentoPortale id_rpt_idPagamentoPortale = new it.govpay.orm.IdPagamentoPortale();
 					id_rpt_idPagamentoPortale.setId(idPagamentoPortale);
 					rpt.setIdPagamentoPortale(id_rpt_idPagamentoPortale);
 				}

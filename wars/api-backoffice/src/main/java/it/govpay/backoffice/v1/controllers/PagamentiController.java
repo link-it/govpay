@@ -112,7 +112,7 @@ public class PagamentiController extends BaseController {
 
     public Response findPagamenti(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, 
     		String campi, String stato, String versante, String idSessionePortale, Boolean verificato, String dataDa, String dataA, String idDebitore, String id, 
-    		Boolean metadatiPaginazione, Boolean maxRisultati, String severitaDa, String severitaA) {
+    		Boolean metadatiPaginazione, Boolean maxRisultati, String severitaDa, String severitaA, String idDominio, String iuv, String idA2A, String idPendenza) {
     	String methodName = "findPagamenti";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -174,6 +174,18 @@ public class PagamentiController extends BaseController {
 			
 			if(idDebitore != null)
 				listaPagamentiPortaleDTO.setIdDebitore(idDebitore);
+			
+			if(idDominio != null)
+				listaPagamentiPortaleDTO.setIdDominio(idDominio);
+			
+			if(idA2A != null)
+				listaPagamentiPortaleDTO.setIdA2A(idA2A);
+			
+			if(idPendenza != null)
+				listaPagamentiPortaleDTO.setIdPendenza(idPendenza);
+			
+			if(iuv != null)
+				listaPagamentiPortaleDTO.setIuv(iuv);
 			
 			if(severitaA != null) {
 				try {

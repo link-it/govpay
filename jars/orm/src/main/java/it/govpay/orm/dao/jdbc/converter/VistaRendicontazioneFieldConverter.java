@@ -732,6 +732,13 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return "vrs_tipo";
 			}
 		}
+		if(field.equals(VistaRendicontazione.model().VRS_PROPRIETA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".vrs_proprieta";
+			}else{
+				return "vrs_proprieta";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -1028,6 +1035,9 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 			return this.toTable(VistaRendicontazione.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().VRS_TIPO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().VRS_PROPRIETA)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 
