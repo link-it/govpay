@@ -17,6 +17,8 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
+import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.orm.IdTracciato;
 
 public class CreaStampeTracciatoThread implements Runnable {
@@ -33,12 +35,14 @@ public class CreaStampeTracciatoThread implements Runnable {
 	private String nomeThread = "";
 	private int stampeOk = 0;
 	private int stampeKo = 0;
+	private TracciatiPendenzeManager manager = null;
 		
-	public CreaStampeTracciatoThread(List<Versamento> versamenti, IdTracciato idTracciato, String id, IContext ctx) {
+	public CreaStampeTracciatoThread(List<Versamento> versamenti, IdTracciato idTracciato, String id, TracciatiPendenzeManager manager, IContext ctx) {
 		this.versamenti = versamenti;
 		this.idTracciato = idTracciato;
 		this.ctx = ctx;
 		this.nomeThread = id;
+		this.manager = manager;
 	}
 
 	@Override
@@ -63,6 +67,7 @@ public class CreaStampeTracciatoThread implements Runnable {
 							printDocumentoDTO.setDocumento(documento);
 							printDocumentoDTO.setUpdate(true);
 							printDocumentoDTO.setSalvaSuDB(false);
+							printDocumentoDTO.setNumeriAvviso(this.manager.getListaNumeriAvviso());
 							printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printDocumentoDTO);
 							printAvvisoDTOResponse.setCodDocumento(documento.getCodDocumento());
 						} else {
@@ -85,6 +90,9 @@ public class CreaStampeTracciatoThread implements Runnable {
 					stampeOk ++;
 				}catch(ServiceException e) {
 					log.error("Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
+					stampeKo ++;
+				} catch(UnprocessableEntityException e) {
+					log.error("Errore durante la creazione dell'avviso: " + e.getMessage());
 					stampeKo ++;
 				}
 			}

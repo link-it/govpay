@@ -502,6 +502,7 @@ export class UtilService {
   public static EXPORT_RISCOSSIONI: string = 'esporta_riscossioni';
   public static EXPORT_PROSPETTO_RISCOSSIONI: string = 'esporta_prospetto_riscossioni';
   public static EXPORT_INCASSI: string = 'esporta_incassi';
+  public static EXPORT_INCASSO: string = 'esporta_incasso';
   public static EXPORT_RENDICONTAZIONI: string = 'esporta_rendicontazioni';
   public static EXPORT_FLUSSO_XML: string = 'esporta_flusso_xml';
   public static EXPORT_TRACCIATO_RICHIESTA: string = 'esporta_tracciato_richiesta';
@@ -926,15 +927,29 @@ export class UtilService {
 
   jsonToCsv(name: string, jsonData: any): string {
     let _csv: string = '';
+    let _keys: string[] = [];
+    let _jsonArray: any[] = [];
     switch(name) {
       case 'Eventi.csv':
-        let _jsonArray: any[] = jsonData.risultati;
-        let _keys = [];
+        _jsonArray = jsonData.risultati;
         _keys = this._elaborateKeys(_jsonArray);
         _jsonArray.forEach((_json, index) => {
           _csv += this.jsonToCsvRows((index===0), _keys, _json);
         });
         break;
+      case 'Riconciliazione.csv':
+        _keys = this._elaborateKeys([ jsonData ]);
+        [ jsonData ].forEach((_json, index) => {
+          _csv += this.jsonToCsvRows((index===0), _keys, _json);
+        });
+        break;
+      case 'PagamentiRiconciliati.csv':
+        _keys = this._elaborateKeys(jsonData);
+        jsonData.forEach((_json, index) => {
+          _csv += this.jsonToCsvRows((index===0), _keys, _json);
+        });
+        break;
+      default:
     }
 
     return _csv;
@@ -1138,6 +1153,14 @@ export class UtilService {
     let zip = new JSZip();
     zip.file(filename, body);
     this.saveZip(zip, (zipname || _zipname));
+  }
+
+  initZip(): any {
+    return new JSZip();
+  }
+
+  addDataToZip(data: any, filename: string, zip: any): any {
+    zip.file(filename, data);
   }
 
   generateStructuredZip(data: any, structure: any, name: string) {

@@ -144,57 +144,31 @@ public class JDBCOperazioneServiceSearchImpl implements IJDBCServiceSearchWithou
                 
                 Operazione operazione = (Operazione)this.getOperazioneFetch().fetch(jdbcProperties.getDatabase(), Operazione.model(), map);
 
-        		if(idMappingResolutionBehaviour==null ||
-        				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-        			){
+    			it.govpay.orm.IdTracciato id_operazione_tracciato = new it.govpay.orm.IdTracciato();
+    			id_operazione_tracciato.setId(idFK_operazione_tracciato);
+    			operazione.setIdTracciato(id_operazione_tracciato);
 
-	        			it.govpay.orm.IdTracciato id_operazione_tracciato = null;
-	        			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-	        				id_operazione_tracciato = ((JDBCTracciatoServiceSearch)(this.getServiceManager().getTracciatoServiceSearch())).findId(idFK_operazione_tracciato, false);
-	        			}else{
-	        				id_operazione_tracciato = new it.govpay.orm.IdTracciato();
-	        			}
-	        			id_operazione_tracciato.setId(idFK_operazione_tracciato);
-	        			operazione.setIdTracciato(id_operazione_tracciato);
-	
-	    				if(idApplicazioneObject instanceof Long) {
-	    					Long idFK_operazione_applicazione = (Long) idApplicazioneObject;
-	    					
-	    					it.govpay.orm.IdApplicazione id_operazione_applicazione = null;
-	    					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-	    						id_operazione_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_operazione_applicazione, false);
-	    					}else{
-	    						id_operazione_applicazione = new it.govpay.orm.IdApplicazione();
-	    					}
-	    					id_operazione_applicazione.setId(idFK_operazione_applicazione);
-	    					operazione.setIdApplicazione(id_operazione_applicazione);
-	    				}
-	    				if(idStampaObject != null) {
-		    				if(idStampaObject instanceof Long) {
-		    					Long idFK_operazione_stampa = (Long) idStampaObject;
-		    					
-		    					it.govpay.orm.IdStampa id_operazione_stampa = null;
-		    					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-		    						id_operazione_stampa = ((JDBCStampaServiceSearch)(this.getServiceManager().getStampaServiceSearch())).findId(idFK_operazione_stampa, false);
-		    					}else{
-		    						id_operazione_stampa = new it.govpay.orm.IdStampa();
-		    					}
-		    					id_operazione_stampa.setId(idFK_operazione_stampa);
-		    					operazione.setIdStampa(id_operazione_stampa);
-		    				}
-	    				}
-	    				
-	    				if(idVersamento != null && idVersamento > 0) {
-	    					it.govpay.orm.IdVersamento id_operazione_versamento = null;
-	    					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-	    						id_operazione_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idVersamento, false);
-	    					}else{
-	    						id_operazione_versamento = new it.govpay.orm.IdVersamento();
-	    					}
-	    					id_operazione_versamento.setId(idVersamento);
-	    					operazione.setIdVersamento(id_operazione_versamento);
-	    				}
-        			}
+				if(idApplicazioneObject instanceof Long) {
+					Long idFK_operazione_applicazione = (Long) idApplicazioneObject;
+					it.govpay.orm.IdApplicazione id_operazione_applicazione = new it.govpay.orm.IdApplicazione();
+					id_operazione_applicazione.setId(idFK_operazione_applicazione);
+					operazione.setIdApplicazione(id_operazione_applicazione);
+				}
+				
+				if(idStampaObject != null) {
+    				if(idStampaObject instanceof Long) {
+    					Long idFK_operazione_stampa = (Long) idStampaObject;
+    					it.govpay.orm.IdStampa id_operazione_stampa = new it.govpay.orm.IdStampa();
+    					id_operazione_stampa.setId(idFK_operazione_stampa);
+    					operazione.setIdStampa(id_operazione_stampa);
+    				}
+				}
+				
+				if(idVersamento != null && idVersamento > 0) {
+					it.govpay.orm.IdVersamento id_operazione_versamento = new it.govpay.orm.IdVersamento();
+					id_operazione_versamento.setId(idVersamento);
+					operazione.setIdVersamento(id_operazione_versamento);
+				}
 
                 list.add(operazione);
 

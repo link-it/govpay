@@ -195,6 +195,9 @@ public class DominiConverter {
 		
 		if(dominioPost.getServizioSecim() != null)
 			dominio.setConnettoreSecim(ConnettoreNotificaPagamentiSecimConverter.getConnettoreDTO(dominioPost.getServizioSecim(), user, Tipo.SECIM));
+		
+		if(dominioPost.getServizioGovPay() != null)
+			dominio.setConnettoreGovPay(ConnettoreNotificaPagamentiGovPayConverter.getConnettoreDTO(dominioPost.getServizioGovPay(), user, Tipo.GOVPAY));
 
 		dominioDTO.setDominio(dominio);
 		dominioDTO.setIdDominio(idDominio);
@@ -360,6 +363,9 @@ public class DominiConverter {
 		
 		if(dominio.getConnettoreSecim()!=null)
 			rsModel.setServizioSecim(ConnettoreNotificaPagamentiSecimConverter.toRsModel(dominio.getConnettoreSecim()));
+		
+		if(dominio.getConnettoreGovPay()!=null)
+			rsModel.setServizioGovPay(ConnettoreNotificaPagamentiGovPayConverter.toRsModel(dominio.getConnettoreGovPay()));
 
 		return rsModel;
 	}

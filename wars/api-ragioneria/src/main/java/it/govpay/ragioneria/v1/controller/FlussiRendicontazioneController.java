@@ -64,7 +64,12 @@ public class FlussiRendicontazioneController extends BaseController {
 			// Parametri - > DTO Input
 			
 			LeggiFrDTO leggiRendicontazioneDTO = new LeggiFrDTO(user, idFlusso);
-			leggiRendicontazioneDTO.setObsoleto(false);
+			if(dataOraFlusso != null) {
+				Date dataOraFlussoDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataOraFlusso, "dataOraFlusso");
+				leggiRendicontazioneDTO.setDataOraFlusso(dataOraFlussoDate);
+			} else {
+				leggiRendicontazioneDTO.setObsoleto(false);	
+			}
 			// INIT DAO
 			
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
@@ -82,12 +87,6 @@ public class FlussiRendicontazioneController extends BaseController {
 			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
 			leggiRendicontazioneDTO = new LeggiFrDTO(user, idFlusso);
 			leggiRendicontazioneDTO.setUnitaOperative(uo);
-			if(dataOraFlusso != null) {
-				Date dataOraFlussoDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataOraFlusso, "dataOraFlusso");
-				leggiRendicontazioneDTO.setDataOraFlusso(dataOraFlussoDate);
-			} else {
-				leggiRendicontazioneDTO.setObsoleto(false);	
-			}
 			LeggiFrDTOResponse checkAutorizzazioneRendicontazioneDTOResponse = rendicontazioniDAO.checkAutorizzazioneFlussoRendicontazione(leggiRendicontazioneDTO);
 			
 			// controllo che il dominio sia autorizzato

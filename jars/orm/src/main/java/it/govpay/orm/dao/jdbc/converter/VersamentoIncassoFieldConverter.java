@@ -508,6 +508,20 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 				return "tipo";
 			}
 		}
+		if(field.equals(VersamentoIncasso.model().DOC_DESCRIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".doc_descrizione";
+			}else{
+				return "doc_descrizione";
+			}
+		}
+		if(field.equals(VersamentoIncasso.model().PROPRIETA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".proprieta";
+			}else{
+				return "proprieta";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -708,6 +722,12 @@ public class VersamentoIncassoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
 		if(field.equals(VersamentoIncasso.model().TIPO)){
+			return this.toTable(VersamentoIncasso.model(), returnAlias);
+		}
+		if(field.equals(VersamentoIncasso.model().DOC_DESCRIZIONE)){
+			return this.toTable(VersamentoIncasso.model(), returnAlias);
+		}
+		if(field.equals(VersamentoIncasso.model().PROPRIETA)){
 			return this.toTable(VersamentoIncasso.model(), returnAlias);
 		}
 

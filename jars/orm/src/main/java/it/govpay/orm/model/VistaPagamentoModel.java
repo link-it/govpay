@@ -59,6 +59,10 @@ public class VistaPagamentoModel extends AbstractModel<VistaPagamento> {
 		this.DATI_ESITO_REVOCA = new Field("datiEsitoRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.STATO = new Field("stato",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.TIPO = new Field("tipo",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
+		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new Field("idRPT",it.govpay.orm.IdRpt.class,"VistaPagamento",VistaPagamento.class));
+		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new Field("idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"VistaPagamento",VistaPagamento.class));
+		this.ID_RR = new it.govpay.orm.model.IdRrModel(new Field("idRr",it.govpay.orm.IdRr.class,"VistaPagamento",VistaPagamento.class));
+		this.ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new Field("idIncasso",it.govpay.orm.IdIncasso.class,"VistaPagamento",VistaPagamento.class));
 		this.VRS_ID = new Field("vrsId",long.class,"VistaPagamento",VistaPagamento.class);
 		this.VRS_COD_VERSAMENTO_ENTE = new Field("vrsCodVersamentoEnte",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.VRS_ID_TIPO_VERSAMENTO_DOMINIO = new it.govpay.orm.model.IdTipoVersamentoDominioModel(new Field("vrsIdTipoVersamentoDominio",it.govpay.orm.IdTipoVersamentoDominio.class,"VistaPagamento",VistaPagamento.class));
@@ -66,6 +70,7 @@ public class VistaPagamentoModel extends AbstractModel<VistaPagamento> {
 		this.VRS_ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("vrsIdDominio",it.govpay.orm.IdDominio.class,"VistaPagamento",VistaPagamento.class));
 		this.VRS_ID_UO = new it.govpay.orm.model.IdUoModel(new Field("vrsIdUo",it.govpay.orm.IdUo.class,"VistaPagamento",VistaPagamento.class));
 		this.VRS_ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("vrsIdApplicazione",it.govpay.orm.IdApplicazione.class,"VistaPagamento",VistaPagamento.class));
+		this.VRS_ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new Field("vrsIdDocumento",it.govpay.orm.IdDocumento.class,"VistaPagamento",VistaPagamento.class));
 		this.VRS_TASSONOMIA = new Field("vrsTassonomia",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.VRS_DIVISIONE = new Field("vrsDivisione",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.VRS_DIREZIONE = new Field("vrsDirezione",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
@@ -98,6 +103,10 @@ public class VistaPagamentoModel extends AbstractModel<VistaPagamento> {
 		this.DATI_ESITO_REVOCA = new ComplexField(father,"datiEsitoRevoca",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.TIPO = new ComplexField(father,"tipo",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
+		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new ComplexField(father,"idRPT",it.govpay.orm.IdRpt.class,"VistaPagamento",VistaPagamento.class));
+		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new ComplexField(father,"idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"VistaPagamento",VistaPagamento.class));
+		this.ID_RR = new it.govpay.orm.model.IdRrModel(new ComplexField(father,"idRr",it.govpay.orm.IdRr.class,"VistaPagamento",VistaPagamento.class));
+		this.ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new ComplexField(father,"idIncasso",it.govpay.orm.IdIncasso.class,"VistaPagamento",VistaPagamento.class));
 		this.VRS_ID = new ComplexField(father,"vrsId",long.class,"VistaPagamento",VistaPagamento.class);
 		this.VRS_COD_VERSAMENTO_ENTE = new ComplexField(father,"vrsCodVersamentoEnte",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.VRS_ID_TIPO_VERSAMENTO_DOMINIO = new it.govpay.orm.model.IdTipoVersamentoDominioModel(new ComplexField(father,"vrsIdTipoVersamentoDominio",it.govpay.orm.IdTipoVersamentoDominio.class,"VistaPagamento",VistaPagamento.class));
@@ -105,6 +114,7 @@ public class VistaPagamentoModel extends AbstractModel<VistaPagamento> {
 		this.VRS_ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"vrsIdDominio",it.govpay.orm.IdDominio.class,"VistaPagamento",VistaPagamento.class));
 		this.VRS_ID_UO = new it.govpay.orm.model.IdUoModel(new ComplexField(father,"vrsIdUo",it.govpay.orm.IdUo.class,"VistaPagamento",VistaPagamento.class));
 		this.VRS_ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"vrsIdApplicazione",it.govpay.orm.IdApplicazione.class,"VistaPagamento",VistaPagamento.class));
+		this.VRS_ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new ComplexField(father,"vrsIdDocumento",it.govpay.orm.IdDocumento.class,"VistaPagamento",VistaPagamento.class));
 		this.VRS_TASSONOMIA = new ComplexField(father,"vrsTassonomia",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.VRS_DIVISIONE = new ComplexField(father,"vrsDivisione",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
 		this.VRS_DIREZIONE = new ComplexField(father,"vrsDirezione",java.lang.String.class,"VistaPagamento",VistaPagamento.class);
@@ -153,6 +163,14 @@ public class VistaPagamentoModel extends AbstractModel<VistaPagamento> {
 	 
 	public IField TIPO = null;
 	 
+	public it.govpay.orm.model.IdRptModel ID_RPT = null;
+	 
+	public it.govpay.orm.model.IdSingoloVersamentoModel ID_SINGOLO_VERSAMENTO = null;
+	 
+	public it.govpay.orm.model.IdRrModel ID_RR = null;
+	 
+	public it.govpay.orm.model.IdIncassoModel ID_INCASSO = null;
+	 
 	public IField VRS_ID = null;
 	 
 	public IField VRS_COD_VERSAMENTO_ENTE = null;
@@ -166,6 +184,8 @@ public class VistaPagamentoModel extends AbstractModel<VistaPagamento> {
 	public it.govpay.orm.model.IdUoModel VRS_ID_UO = null;
 	 
 	public it.govpay.orm.model.IdApplicazioneModel VRS_ID_APPLICAZIONE = null;
+	 
+	public it.govpay.orm.model.IdDocumentoModel VRS_ID_DOCUMENTO = null;
 	 
 	public IField VRS_TASSONOMIA = null;
 	 

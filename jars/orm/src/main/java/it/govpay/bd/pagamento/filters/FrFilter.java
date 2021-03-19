@@ -202,7 +202,7 @@ public class FrFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.greaterEquals(FR.model().DATA_ORA_FLUSSO, this.datainizio);
+				newExpression.greaterEquals(FR.model().DATA_ACQUISIZIONE, this.datainizio);
 				addAnd = true;
 			}
 			
@@ -210,7 +210,7 @@ public class FrFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.lessEquals(FR.model().DATA_ORA_FLUSSO, this.dataFine);
+				newExpression.lessEquals(FR.model().DATA_ACQUISIZIONE, this.dataFine);
 				addAnd = true;
 			}
 			
@@ -351,11 +351,11 @@ public class FrFilter extends AbstractFilter {
 			}
 			
 			if(this.datainizio != null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_FLUSSO, true) + " >= ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ACQUISIZIONE, true) + " >= ? ");
 			}
 			
 			if(this.dataFine != null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_FLUSSO, true) + " <= ? ");
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ACQUISIZIONE, true) + " <= ? ");
 			}
 			
 			if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {

@@ -96,6 +96,7 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.thread.CaricamentoTracciatoThread;
 import it.govpay.core.utils.thread.CreaStampeTracciatoThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.core.utils.tracciati.TracciatiUtils;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
@@ -212,6 +213,8 @@ public class Tracciati {
 
 		if(tracciatiBD.isAutoCommit())
 			tracciatiBD.setAutoCommit(false);
+		
+		TracciatiPendenzeManager manager = new TracciatiPendenzeManager();
 
 		log.debug("Elaboro le operazioni di caricamento del tracciato saltando le prime " + numLinea + " linee");
 		for(long linea = numLinea; linea < beanDati.getNumAddTotali() ; linea ++) {
@@ -231,7 +234,7 @@ public class Tracciati {
 			request.setOperatore(tracciato.getOperatore(configWrapper));
 			request.setIdTracciato(tracciato.getId());
 
-			CaricamentoResponse caricamentoResponse = factory.caricaVersamento(request, tracciatiBD);
+			CaricamentoResponse caricamentoResponse = factory.caricaVersamento(request, manager, tracciatiBD);
 
 			tracciatiBD.setAutoCommit(false);
 
@@ -449,14 +452,14 @@ public class Tracciati {
 							List<CreaStampeTracciatoThread> threadsStampe = new ArrayList<CreaStampeTracciatoThread>();
 	
 							if(stampePerThread > versamentiDaStampare.size()) {
-								CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
+								CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), manager, ctx); 
 								ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
 								threadsStampe.add(sender);
 							} else {
 								for (int i = 0; i < versamentiDaStampare.size(); i += stampePerThread) {
 									int end = Math.min(versamentiDaStampare.size(), i + stampePerThread);
 	
-									CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare.subList(i, end), idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
+									CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare.subList(i, end), idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), manager, ctx); 
 									ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
 									threadsStampe.add(sender);
 								}
@@ -631,6 +634,8 @@ public class Tracciati {
 		idTracciato.setIdTracciato(tracciato.getId());
 
 		List<CaricamentoRequest> richiesteThread = new ArrayList<>();
+		
+		TracciatiPendenzeManager manager = new TracciatiPendenzeManager();
 
 		for(int i = 0; i < lst.size() ; i ++) {
 			byte[] linea = lst.get(i);
@@ -649,7 +654,7 @@ public class Tracciati {
 			richiesteThread.add(request);
 
 			if(richiesteThread.size() == maxRichiestePerThread) {
-				CaricamentoTracciatoThread sender = new CaricamentoTracciatoThread(richiesteThread, idTracciato,ctx);
+				CaricamentoTracciatoThread sender = new CaricamentoTracciatoThread(richiesteThread, idTracciato, manager, ctx);
 				ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciati().execute(sender);
 				threads.add(sender);
 				richiesteThread = new ArrayList<CaricamentoRequest>();
@@ -660,7 +665,7 @@ public class Tracciati {
 
 		// richieste residue
 		if(richiesteThread.size() > 0) {
-			CaricamentoTracciatoThread sender = new CaricamentoTracciatoThread(richiesteThread, idTracciato,ctx);
+			CaricamentoTracciatoThread sender = new CaricamentoTracciatoThread(richiesteThread, idTracciato, manager, ctx);
 			ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciati().execute(sender);
 			threads.add(sender);
 		}
@@ -719,34 +724,6 @@ public class Tracciati {
 			}
 
 			if(completed) { 
-//				for(CaricamentoTracciatoThread sender : threads) {
-//					lineeElaborate.addAll(sender.getLineeElaborate());
-//					sommaAddOk += sender.getNumeroAddElaborateOk();
-//					sommaAddKo += sender.getNumeroAddElaborateKo();
-//					sommaDelOk += sender.getNumeroDelElaborateOk();
-//					sommaDelKo += sender.getNumeroDelElaborateKo();
-//
-//					if(sender.getDescrizioneEsito() != null)
-//						descrizioneEsito = sender.getDescrizioneEsito();
-//				}
-//
-//				// ordino al contrario cosi l'ultima elaborata e' in cima
-//				Collections.sort(lineeElaborate, Collections.reverseOrder());
-//				if(lineeElaborate.size() > 0) {
-//					beanDati.setLineaElaborazioneAdd(lineeElaborate.get(0));
-//				} else {
-//					beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);
-//				}
-//				beanDati.setNumAddOk(sommaAddOk);
-//				beanDati.setNumAddKo(sommaAddKo);
-//				beanDati.setNumDelOk(sommaDelOk);
-//				beanDati.setNumDelKo(sommaDelKo);
-//				beanDati.setDescrizioneStepElaborazione(descrizioneEsito);
-//
-//				tracciatiBD.setAutoCommit(false);
-//				tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
-//				tracciatiBD.commit();
-
 				log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, ADDOK ["+sommaAddOk+"], ADDKO ["+sommaAddKo+"] DELOK ["+sommaDelOk+"], DELKO ["+sommaDelKo+"]");
 				break; // esco
 			}
@@ -868,7 +845,7 @@ public class Tracciati {
 			try (ZipOutputStream zos = new ZipOutputStream(oututStreamDestinazione);) {
 
 				int offset = 0;
-				int limit = 500; 
+				int limit = 500;  
 
 				int stampePerThread = GovpayConfig.getInstance().getBatchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread();
 
@@ -891,14 +868,14 @@ public class Tracciati {
 							List<CreaStampeTracciatoThread> threadsStampe = new ArrayList<CreaStampeTracciatoThread>();
 
 							if(stampePerThread > versamentiDaStampare.size()) {
-								CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
+								CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), manager, ctx); 
 								ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
 								threadsStampe.add(sender);
 							} else {
 								for (int i = 0; i < versamentiDaStampare.size(); i += stampePerThread) {
 									int end = Math.min(versamentiDaStampare.size(), i + stampePerThread);
 
-									CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare.subList(i, end), idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), ctx); 
+									CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare.subList(i, end), idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), manager, ctx); 
 									ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
 									threadsStampe.add(sender);
 								}
@@ -994,7 +971,6 @@ public class Tracciati {
 			tracciatiBD.updateFineElaborazione(tracciato);
 			if(!tracciatiBD.isAutoCommit()) tracciatiBD.commit();
 		}
-		
 		log.info("Elaborazione tracciato "+formato+" ["+tracciato.getId()+"] terminata: " + tracciato.getStato() + ", Creazione stampe avvisi completata.");
 	}
 

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.0.0"
+  version: "1.1.0"
   title: GovPay - API User
   contact:
     name: GitHub Project Page
@@ -27,6 +27,25 @@ paths:
       responses:
         '303':
           $ref: '#/components/responses/303SeeOther'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '503':
+          $ref: '#/components/responses/500ServiceUnavailable'
+  '/logout':
+    get:
+      summary: Logout
+      operationId: logout
+      tags:
+        - Utenti
+      responses:
+        '200':
+          $ref: '#/components/responses/200Ok'
         '400':
           $ref: '#/components/responses/400BadRequest'
         '401':
@@ -73,6 +92,8 @@ components:
         type: integer
         format: int32
   responses:
+    '200Ok':
+      description: Richiesta completata con successo
     '303SeeOther':
       description: Richiesta completata con redirect
     '400BadRequest':

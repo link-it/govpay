@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -187,12 +188,19 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 			
 			HttpSession session = request.getSession(false);
 			if(session!= null) {
+				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], trovata sessione con id ["+session.getId()+"]");
 				 @SuppressWarnings("unchecked")
-				 List<String> listaIdentificativi = (List<String>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
+				 List<String> listaIdentificativi = (List<String>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+				 logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], lista identificativi pendenze: ["+(listaIdentificativi!= null ? (StringUtils.join(listaIdentificativi, ",")): "non presente")+"]");
 				 
 				 if(listaIdentificativi != null && listaIdentificativi.contains((idA2A+idPendenza)) ) {
+					 logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], identificativo [idA2A:"+idA2A+", idPendenza: "+idPendenza+"] presente tra quelli autorizzati: accesso consentito");
 					 authorized = true;
+				 } else {
+					 logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], identificativo [idA2A:"+idA2A+", idPendenza: "+idPendenza+"] non presente in lista: accesso negato");
 				 }
+			 } else {
+				 logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], la sessione corrente e' null");
 			 }
 			
 			logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"] completato con esito ["+(authorized ? "accesso consentito" : "accesso negato")+"].");

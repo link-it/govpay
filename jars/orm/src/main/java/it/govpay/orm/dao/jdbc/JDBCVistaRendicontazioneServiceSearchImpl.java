@@ -243,6 +243,7 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 			fields.add(VistaRendicontazione.model().VRS_IUV_PAGAMENTO);
 			fields.add(VistaRendicontazione.model().VRS_COD_RATA);
 			fields.add(VistaRendicontazione.model().VRS_TIPO);
+			fields.add(VistaRendicontazione.model().VRS_PROPRIETA);
 			
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
@@ -292,108 +293,54 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 				
 				
 				if(idIncasso != null) {
-					if(idMappingResolutionBehaviour==null ||
-							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-							){
-						it.govpay.orm.IdIncasso id_pagamento_incasso = null;
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_pagamento_incasso = ((JDBCIncassoServiceSearch)(this.getServiceManager().getIncassoServiceSearch())).findId(idIncasso, false);
-						}else{
-							id_pagamento_incasso = new it.govpay.orm.IdIncasso();
-						}
-						id_pagamento_incasso.setId(idIncasso);
-						rendicontazione.setFrIdIncasso(id_pagamento_incasso);
-					}
+					it.govpay.orm.IdIncasso id_pagamento_incasso = new it.govpay.orm.IdIncasso();
+					id_pagamento_incasso.setId(idIncasso);
+					rendicontazione.setFrIdIncasso(id_pagamento_incasso);
 				}
 				
 				if(id_pagamento != null) {
-					if(idMappingResolutionBehaviour==null ||
-							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-						){
-							it.govpay.orm.IdPagamento id_rendicontazione_pagamento = null;
-							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-								id_rendicontazione_pagamento = ((JDBCPagamentoServiceSearch)(this.getServiceManager().getPagamentoServiceSearch())).findId(id_pagamento, false);
-							}else{
-								id_rendicontazione_pagamento = new it.govpay.orm.IdPagamento();
-							}
-							id_rendicontazione_pagamento.setId(id_pagamento);
-							rendicontazione.setRndIdPagamento(id_rendicontazione_pagamento);
-						}
+					it.govpay.orm.IdPagamento id_rendicontazione_pagamento = new it.govpay.orm.IdPagamento();
+					id_rendicontazione_pagamento.setId(id_pagamento);
+					rendicontazione.setRndIdPagamento(id_rendicontazione_pagamento);
 				}
 				
 				if(idTributo != null) {
-					it.govpay.orm.IdTributo id_singoloVersamento_tributo = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_singoloVersamento_tributo = ((JDBCTributoServiceSearch)(this.getServiceManager().getTributoServiceSearch())).findId(idTributo, false);
-					}else{
-						id_singoloVersamento_tributo = new it.govpay.orm.IdTributo();
-					}
+					it.govpay.orm.IdTributo id_singoloVersamento_tributo = new it.govpay.orm.IdTributo();
 					id_singoloVersamento_tributo.setId(idTributo);
 					rendicontazione.setSngIdTributo(id_singoloVersamento_tributo);
 				}
 				
-				it.govpay.orm.IdApplicazione id_versamento_applicazione = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_versamento_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idApplicazione, false);
-				}else{
-					id_versamento_applicazione = new it.govpay.orm.IdApplicazione();
-				}
+				it.govpay.orm.IdApplicazione id_versamento_applicazione = new it.govpay.orm.IdApplicazione();
 				id_versamento_applicazione.setId(idApplicazione);
 				rendicontazione.setVrsIdApplicazione(id_versamento_applicazione);
 
-				it.govpay.orm.IdDominio id_versamento_dominio = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_versamento_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idDominio, false);
-				}else{
-					id_versamento_dominio = new it.govpay.orm.IdDominio();
-				}
+				it.govpay.orm.IdDominio id_versamento_dominio = new it.govpay.orm.IdDominio();
 				id_versamento_dominio.setId(idDominio);
 				rendicontazione.setVrsIdDominio(id_versamento_dominio);
 
 				if(idUO != null) {
-					it.govpay.orm.IdUo id_versamento_ente = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_versamento_ente = ((JDBCUoServiceSearch)(this.getServiceManager().getUoServiceSearch())).findId(idUO, false);
-					}else{
-						id_versamento_ente = new it.govpay.orm.IdUo();
-					}
+					it.govpay.orm.IdUo id_versamento_ente = new it.govpay.orm.IdUo();
 					id_versamento_ente.setId(idUO);
 					rendicontazione.setVrsIdUo(id_versamento_ente);
 				}
 
 				if(idTipoVersamento != null) {
-					it.govpay.orm.IdTipoVersamento id_versamento_tipoVersamento = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_versamento_tipoVersamento = ((JDBCTipoVersamentoServiceSearch)(this.getServiceManager().getTipoVersamentoServiceSearch())).findId(idTipoVersamento, false);
-					}else{
-						id_versamento_tipoVersamento = new it.govpay.orm.IdTipoVersamento();
-					}
+					it.govpay.orm.IdTipoVersamento id_versamento_tipoVersamento = new it.govpay.orm.IdTipoVersamento();
 					id_versamento_tipoVersamento.setId(idTipoVersamento);
 					rendicontazione.setVrsIdTipoVersamento(id_versamento_tipoVersamento);
 				}
 				
 				if(idTipoVersamentoDominio != null) {
-					it.govpay.orm.IdTipoVersamentoDominio id_versamento_tipoVersamentoDominio = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_versamento_tipoVersamentoDominio = ((JDBCTipoVersamentoDominioServiceSearch)(this.getServiceManager().getTipoVersamentoDominioServiceSearch())).findId(idTipoVersamentoDominio, false);
-					}else{
-						id_versamento_tipoVersamentoDominio = new it.govpay.orm.IdTipoVersamentoDominio();
-					}
+					it.govpay.orm.IdTipoVersamentoDominio id_versamento_tipoVersamentoDominio = new it.govpay.orm.IdTipoVersamentoDominio();
 					id_versamento_tipoVersamentoDominio.setId(idTipoVersamentoDominio);
 					rendicontazione.setVrsIdTipoVersamentoDominio(id_versamento_tipoVersamentoDominio);
 				}
 				
 				if(idDocumento != null && idDocumento > 0) {
-					it.govpay.orm.IdDocumento id_versamento_documento = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_versamento_documento = ((JDBCDocumentoServiceSearch)(this.getServiceManager().getDocumentoServiceSearch())).findId(idDocumento, false);
-					}else{
-						id_versamento_documento = new it.govpay.orm.IdDocumento();
-					}
+					it.govpay.orm.IdDocumento id_versamento_documento = new it.govpay.orm.IdDocumento();
 					id_versamento_documento.setId(idDocumento);
 					rendicontazione.setVrsIdDocumento(id_versamento_documento);
 				}
-				
 				
 				list.add(rendicontazione);
 			}
