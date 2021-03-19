@@ -4214,5 +4214,4 @@
 			<xsd:element name="srcDebitoreIdentificativo" type="String35"/>
 		</xsd:sequence>
 	</xsd:complexType>
-		
 </xsd:schema>

@@ -187,34 +187,19 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 				
 				Incasso incasso = (Incasso)this.getFetch().fetch(jdbcProperties.getDatabase(), Incasso.model(), map);
 
-				if(idMappingResolutionBehaviour==null ||
-						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-					){
-					if(idApplicazioneObj instanceof Long) {
-						
-						it.govpay.orm.IdApplicazione id_incasso_applicazione = null;
-						long idFK_incasso_applicazione = (Long) idApplicazioneObj;
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_incasso_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_incasso_applicazione, false);
-						}else{
-							id_incasso_applicazione = new it.govpay.orm.IdApplicazione();
-						}
-						id_incasso_applicazione.setId(idFK_incasso_applicazione);
-						incasso.setIdApplicazione(id_incasso_applicazione);
-					}
-					if(idOperatoreObj instanceof Long) {
-						
-						it.govpay.orm.IdOperatore id_incasso_operatore = null;
-						long idFK_incasso_operatore = (Long) idOperatoreObj;
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_incasso_operatore = ((JDBCOperatoreServiceSearch)(this.getServiceManager().getOperatoreServiceSearch())).findId(idFK_incasso_operatore, false);
-						}else{
-							id_incasso_operatore = new it.govpay.orm.IdOperatore();
-						}
-						id_incasso_operatore.setId(idFK_incasso_operatore);
-						incasso.setIdOperatore(id_incasso_operatore);
-					}
-					}
+				if(idApplicazioneObj instanceof Long) {
+					long idFK_incasso_applicazione = (Long) idApplicazioneObj;
+					it.govpay.orm.IdApplicazione id_incasso_applicazione = new it.govpay.orm.IdApplicazione();
+					id_incasso_applicazione.setId(idFK_incasso_applicazione);
+					incasso.setIdApplicazione(id_incasso_applicazione);
+				}
+				
+				if(idOperatoreObj instanceof Long) {
+					long idFK_incasso_operatore = (Long) idOperatoreObj;
+					it.govpay.orm.IdOperatore id_incasso_operatore = new it.govpay.orm.IdOperatore();
+					id_incasso_operatore.setId(idFK_incasso_operatore);
+					incasso.setIdOperatore(id_incasso_operatore);
+				}
 
 				list.add(incasso);
 			}

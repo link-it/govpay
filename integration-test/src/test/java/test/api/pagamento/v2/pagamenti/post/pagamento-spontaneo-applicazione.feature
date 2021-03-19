@@ -92,3 +92,61 @@ And request pagamentoPost
 When method post
 Then status 201
 And match response == { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
+
+@TEST1
+Scenario: Pagamento spontaneo di una pendenza cambiando id Applicazione
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
+* def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+
+Given url pendenzeBaseurl
+And path 'pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+And request pendenza
+When method put
+Then status 201
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+
+* def numeroAvviso = response.numeroAvviso
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo.json')
+* set pagamentoPost.soggettoVersante = 
+"""
+{
+  "tipo": "F",
+  "identificativo": "RSSMRA30A01H501I",
+  "anagrafica": "Mario Rossi",
+  "indirizzo": "Piazza della Vittoria",
+  "civico": "10/A",
+  "cap": 0,
+  "localita": "Roma",
+  "provincia": "Roma",
+  "nazione": "IT",
+  "email": "mario.rossi@host.eu",
+  "cellulare": "+39 000-1234567"
+}
+"""
+* set pagamentoPost.pendenze = []
+* set pendenza.idA2A = idA2A2
+* set pendenza.idPendenza = idPendenza
+* set pendenza.numeroAvviso = numeroAvviso
+* set pagamentoPost.pendenze[0] = pendenza
+
+Given url pagamentiBaseurl
+And path '/pagamenti'
+And headers basicAutenticationHeader
+And request pagamentoPost
+When method post
+Then status 422
+And match response == { categoria: 'RICHIESTA', codice: 'VER_025', descrizione: 'Richiesta non valida', dettaglio: '#notnull', id: '#notnull', location: '#notnull'  }
+And match response.dettaglio == '#("La pendenza (IdA2A:"+ idA2A2 +", Id:"+ idPendenza +") ha un numero avviso ("+numeroAvviso+") gia\' utilizzato (IdA2A:"+ idA2A +", Id:"+ idPendenza +").")'
+
+
+

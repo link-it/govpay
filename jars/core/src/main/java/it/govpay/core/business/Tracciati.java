@@ -97,6 +97,7 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.thread.CaricamentoTracciatoThread;
 import it.govpay.core.utils.thread.CreaStampeTracciatoThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.core.utils.tracciati.TracciatiUtils;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
@@ -167,6 +168,7 @@ public class Tracciati {
 				beanDati.setNumAddTotali(0);
 				beanDati.setNumDelTotali(0);
 				beanDati.setDescrizioneStepElaborazione(descrizioneStato);
+				beanDati.setDataUltimoAggiornamento(new Date());
 				try {
 					tracciato.setBeanDati(serializer.getObject(beanDati));
 				} catch (IOException e1) {}
@@ -202,7 +204,7 @@ public class Tracciati {
 			ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale = tracciatoPendenzeRequest.getModalitaAvvisaturaDigitale();
 			String modo = (modalitaAvvisaturaDigitale != null && modalitaAvvisaturaDigitale.equals(ModalitaAvvisaturaDigitale.SINCRONA)) ? "S" : "A";
 			beanDati.setAvvisaturaModalita(modo);
-
+			beanDati.setDataUltimoAggiornamento(new Date());
 			tracciato.setBeanDati(serializer.getObject(beanDati));
 			tracciatiBD.updateBeanDati(tracciato);
 			tracciatiBD.commit();
@@ -512,7 +514,7 @@ public class Tracciati {
 		}finally {
 
 		}
-
+		beanDati.setDataUltimoAggiornamento(new Date());
 		tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
 		tracciato.setDataCompletamento(new Date());
 		tracciato.setBeanDati(serializer.getObject(beanDati));
@@ -540,6 +542,7 @@ public class Tracciati {
 			log.debug("Numero linee totali compresa intestazione ["+numLines+"]");
 			beanDati.setNumAddTotali(numLines > 0 ? (numLines -1) : 0);
 			beanDati.setNumDelTotali(0);
+			beanDati.setDataUltimoAggiornamento(new Date());
 			tracciato.setBeanDati(serializer.getObject(beanDati));
 			
 			tracciatiBD.updateBeanDati(tracciato);
@@ -599,6 +602,8 @@ public class Tracciati {
 		idTracciato.setIdTracciato(tracciato.getId());
 
 		List<CaricamentoRequest> richiesteThread = new ArrayList<>();
+		
+		TracciatiPendenzeManager manager = new TracciatiPendenzeManager();
 
 		for(int i = 0; i < lst.size() ; i ++) {
 			byte[] linea = lst.get(i);
@@ -620,7 +625,7 @@ public class Tracciati {
 			richiesteThread.add(request);
 
 			if(richiesteThread.size() == maxRichiestePerThread) {
-				CaricamentoTracciatoThread sender = new CaricamentoTracciatoThread(richiesteThread, idTracciato,ctx);
+				CaricamentoTracciatoThread sender = new CaricamentoTracciatoThread(richiesteThread, idTracciato, manager, ctx);
 				ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciati().execute(sender);
 				threads.add(sender);
 				richiesteThread = new ArrayList<CaricamentoRequest>();
@@ -631,7 +636,7 @@ public class Tracciati {
 
 		// richieste residue
 		if(richiesteThread.size() > 0) {
-			CaricamentoTracciatoThread sender = new CaricamentoTracciatoThread(richiesteThread, idTracciato,ctx);
+			CaricamentoTracciatoThread sender = new CaricamentoTracciatoThread(richiesteThread, idTracciato, manager, ctx);
 			ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciati().execute(sender);
 			threads.add(sender);
 		}
@@ -886,7 +891,7 @@ public class Tracciati {
 		}finally {
 
 		}
-
+		beanDati.setDataUltimoAggiornamento(new Date());
 		tracciato.setStato(STATO_ELABORAZIONE.COMPLETATO);
 		tracciato.setDataCompletamento(new Date());
 		tracciato.setBeanDati(serializer.getObject(beanDati));

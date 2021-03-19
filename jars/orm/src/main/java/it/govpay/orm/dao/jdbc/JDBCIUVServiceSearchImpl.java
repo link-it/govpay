@@ -176,26 +176,18 @@ public class JDBCIUVServiceSearchImpl implements IJDBCServiceSearchWithId<IUV, I
 			for(Map<String, Object> map: returnMap) {
 				Long id_applicazione = (Long) map.remove("id_applicazione");
 				Long id_dominio = (Long) map.remove("id_dominio");
+				
 				IUV iuv = (IUV)this.getIUVFetch().fetch(jdbcProperties.getDatabase(), IUV.model(), map);
-				it.govpay.orm.IdApplicazione id_iuv_applicazione = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_iuv_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(id_applicazione, false);
-				}else{
-					id_iuv_applicazione = new it.govpay.orm.IdApplicazione();
-				}
+				
+				it.govpay.orm.IdApplicazione id_iuv_applicazione = new it.govpay.orm.IdApplicazione();
 				id_iuv_applicazione.setId(id_applicazione);
 				iuv.setIdApplicazione(id_iuv_applicazione);
 				
-				it.govpay.orm.IdDominio id_iuv_dominio = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_iuv_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(id_dominio, false);
-				}else{
-					id_iuv_dominio = new it.govpay.orm.IdDominio();
-				}
+				it.govpay.orm.IdDominio id_iuv_dominio = new it.govpay.orm.IdDominio();
 				id_iuv_dominio.setId(id_dominio);
 				iuv.setIdDominio(id_iuv_dominio);
+				
 				list.add(iuv);
-
 			}
 		} catch(NotFoundException e) {}
 

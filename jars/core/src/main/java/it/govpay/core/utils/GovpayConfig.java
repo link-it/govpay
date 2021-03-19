@@ -541,7 +541,7 @@ public class GovpayConfig {
 			
 			String numeroVersamentiPerThreadString = getProperty("it.govpay.batch.caricamentoTracciati.numeroVersamentiPerThread", this.props, false, log);
 			try{
-				this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = Integer.parseInt(numeroVersamentiPerThreadString) * 1000;
+				this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = Integer.parseInt(numeroVersamentiPerThreadString);
 			} catch(Throwable t) {
 				log.info("Proprieta \"it.govpay.batch.caricamentoTracciati.numeroVersamentiPerThread\" impostata com valore di default 100");
 				this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = 100;
@@ -549,7 +549,7 @@ public class GovpayConfig {
 			
 			String numeroStampePerThreadString = getProperty("it.govpay.batch.caricamentoTracciati.numeroAvvisiDaStamparePerThread", this.props, false, log);
 			try{
-				this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = Integer.parseInt(numeroStampePerThreadString) * 1000;
+				this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = Integer.parseInt(numeroStampePerThreadString);
 			} catch(Throwable t) {
 				log.info("Proprieta \"it.govpay.batch.caricamentoTracciati.numeroAvvisiDaStamparePerThread\" impostata com valore di default 100");
 				this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = 100;
@@ -575,21 +575,27 @@ public class GovpayConfig {
 	
 	private static Map<String,String> getProperties(String baseName, Properties[] props, boolean required, Logger log) throws Exception {
 		Map<String, String> valori = new HashMap<>();
-		String value = null;
+		
+		List<String> nomiProperties = new ArrayList<String>();
+		// 1. collezionare tutti i nomi di properties da leggere (possono essere definiti in piu' file)
 		for(int i=0; i<props.length; i++) {
 			if(props[i] != null) {
 				for (Object nameObj : props[i].keySet()) {
 					String name = (String) nameObj;
-					if(name.startsWith(baseName)) {
-						String key = name.substring(baseName.length());
-						try { value = getProperty(name, props[i], required, i==1, log); } catch (Exception e) { }
-						if(value != null && !value.trim().isEmpty()) {
-							if(!valori.containsKey(key)) {
-								valori.put(key, value);
-							}
-						}
+					if(name.startsWith(baseName) && !nomiProperties.contains(name)) {
+						nomiProperties.add(name);
 					}
 				}
+			}
+		}
+		
+		// 2. leggere la property singola
+		for (String nomeProprieta : nomiProperties) {
+			String valoreProprieta = getProperty(nomeProprieta, props, required, log);
+			
+			if (valoreProprieta != null) {
+				String key = nomeProprieta.substring(baseName.length());
+				valori.put(key, valoreProprieta);
 			}
 		}
 		
