@@ -65,7 +65,7 @@ public class OperazioneFactory {
 	
 	private static Logger log = LoggerWrapperFactory.getLogger(Tracciati.class);
 
-	public CaricamentoResponse caricaVersamento(CaricamentoRequest request, BasicBD basicBD) throws ServiceException {
+	public CaricamentoResponse caricaVersamento(CaricamentoRequest request, TracciatiPendenzeManager manager, BasicBD basicBD) throws ServiceException {
 
 		CaricamentoResponse caricamentoResponse = new CaricamentoResponse();
 		caricamentoResponse.setIdA2A(request.getCodApplicazione());
@@ -101,6 +101,8 @@ public class OperazioneFactory {
 					throw new ServiceException(e);
 				}
 			}
+			
+			manager.addNumeroAvviso(versamentoModel.getNumeroAvviso());
 			
 			avviso.setDataScadenza(versamentoModel.getDataScadenza());
 			avviso.setDataValidita(versamentoModel.getDataValidita());
@@ -160,7 +162,7 @@ public class OperazioneFactory {
 		return caricamentoResponse;
 	}
 	
-	public CaricamentoResponse caricaVersamentoCSV(CaricamentoRequest request, BasicBD basicBD) {
+	public CaricamentoResponse caricaVersamentoCSV(CaricamentoRequest request, TracciatiPendenzeManager manager, BasicBD basicBD) {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		CaricamentoResponse caricamentoResponse = new CaricamentoResponse();
 		caricamentoResponse.setNumero(request.getLinea());
@@ -205,6 +207,8 @@ public class OperazioneFactory {
 			caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_OK);
 			caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_OK);
 			caricamentoResponse.setIdVersamento(versamentoModel.getId());
+			
+			manager.addNumeroAvviso(versamentoModel.getNumeroAvviso());
 			
 			Avviso avviso = new Avviso();
 			
@@ -473,6 +477,7 @@ public class OperazioneFactory {
 				caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_OK);
 				caricamentoResponse.setIdVersamento(versamentoModel.getId());
 				
+				manager.addNumeroAvviso(versamentoModel.getNumeroAvviso());				
 				
 				if(pendenzaPost.getDocumento() != null) { // sblocco thread che attendono il documento
 					manager.releaseDocumento(pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 

@@ -1,5 +1,6 @@
 package it.govpay.core.business;
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -73,7 +74,7 @@ import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
 public class TracciatiNotificaPagamenti {
 
 	private static final String [] MYPIVOT_HEADER_FILE_CSV = { "IUD","codIuv","tipoIdentificativoUnivoco","codiceIdentificativoUnivoco","anagraficaPagatore","indirizzoPagatore","civicoPagatore","capPagatore","localitaPagatore","provinciaPagatore","nazionePagatore","mailPagatore","dataEsecuzionePagamento","importoDovutoPagato","commissioneCaricoPa","tipoDovuto","tipoVersamento","causaleVersamento","datiSpecificiRiscossione","bilancio" };
-	private static final String [] GOVPAY_HEADER_FILE_CSV = { "idA2A","idPendenza","idDocumento","codiceRata","dataScadenza","idVocePendenza","idTipoPendenza","anno","identificativoDebitore","anagraficaDebitore","identificativoDominio","identificativoUnivocoVersamento","codiceContestoPagamento","indiceDati","identificativoUnivocoRiscossione","singoloImportoPagato","dataEsitoSingoloPagamento","causaleVersamento","datiSpecificiRiscossione","datiAllegati","datiAllegatiVoce","denominazioneAttestante","identificativoAttestante" };
+	private static final String [] GOVPAY_HEADER_FILE_CSV = { "idA2A","idPendenza","idDocumento","descrizioneDocumento","codiceRata","dataScadenza","idVocePendenza","descrizioneVocePendenza","idTipoPendenza","anno","identificativoDebitore","anagraficaDebitore","identificativoDominio","identificativoUnivocoVersamento","codiceContestoPagamento","indiceDati","identificativoUnivocoRiscossione","singoloImportoPagato","dataEsitoSingoloPagamento","causaleVersamento","datiSpecificiRiscossione","datiAllegati","datiAllegatiVoce","denominazioneAttestante","identificativoAttestante" };
 	private static final String [] GOVPAY_FLUSSI_HEADER_FILE_CSV = {"identificativoFlusso","dataOraFlusso","identificativoDominio","identificativoUnivocoRegolamento","dataRegolamento","codiceBicBancaDiRiversamento","numeroTotalePagamenti","importoTotalePagamenti","identificativoUnivocoVersamento","identificativoUnivocoRiscossione","indiceDatiSingoloPagamento","singoloImportoPagato","codiceEsitoSingoloPagamento","dataEsitoSingoloPagamento","denominazioneMittente","identificativoMittente","denominazioneRicevente","identificativoRicevente"	};
 	
 	private static Logger log = LoggerWrapperFactory.getLogger(TracciatiNotificaPagamenti.class);
@@ -398,27 +399,45 @@ public class TracciatiNotificaPagamenti {
 		List<Rpt> rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
 		log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire nel tracciato");
 		int totaleRt = rtList.size();
-		do {
-			if(rtList.size() > 0) {
-				for (Rpt rpt : rtList) {
-					lineaElaborazione ++;
-					beanDati.setLineaElaborazione(lineaElaborazione);
-					zos.write(this.creaLineaCsvSecim(rpt, configWrapper, lineaElaborazione, connettore).getBytes());
-				}
-				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+rtList.size()+"] RT nel tracciato completato");
-			}
-
-			offset += limit;
-			rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
-			log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire nel tracciato");
-			totaleRt += rtList.size();
-		}while(rtList.size() > 0);
 		
-		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserite ["+totaleRt+"] RT nel tracciato");
-
-		// chiusa entry
-		zos.flush();
-		zos.closeEntry(); 
+		try(ByteArrayOutputStream baos = new ByteArrayOutputStream();){
+			do {
+				if(rtList.size() > 0) {
+					for (Rpt rpt : rtList) {
+						lineaElaborazione ++;
+						beanDati.setLineaElaborazione(lineaElaborazione);
+						this.creaLineaCsvSecim(rpt, configWrapper, lineaElaborazione, connettore, zos, baos);
+					}
+					log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+rtList.size()+"] RT nel tracciato completato");
+				}
+	
+				offset += limit;
+				rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rtList.size()+"] RT da inserire nel tracciato");
+				totaleRt += rtList.size();
+			}while(rtList.size() > 0);
+			
+			log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserite ["+totaleRt+"] RT nel tracciato");
+	
+			// chiusa entry
+			zos.flush();
+			zos.closeEntry(); 
+			
+			if(baos.size() > 0) {
+				
+				ZipEntry tracciatoNoSecimOutputEntry = new ZipEntry("GOVPAY_" + codDominio + "_"+progressivo+"_NOSECIM.txt");
+				zos.putNextEntry(tracciatoNoSecimOutputEntry);
+				
+				zos.write(baos.toByteArray());
+				
+				// chiusa entry
+				zos.flush();
+				zos.closeEntry(); 
+			}
+		
+		} finally {
+			
+		}
 		
 		beanDati.setNumRtTotali(totaleRt);
 	}
@@ -740,6 +759,9 @@ public class TracciatiNotificaPagamenti {
 //			idDocumento: da pendenza
 			String codDocumento = documento != null ? documento.getCodDocumento() : "";
 			linea.add(codDocumento);
+			// descrizioneDocumento: da pendenza
+			String descrizioneDocumento = documento != null ? documento.getDescrizione() : "";
+			linea.add(descrizioneDocumento);
 //			codiceRata: da pendenza
 			linea.add(versamento.getNumeroRata() != null ? versamento.getNumeroRata() + "" : "");
 //			dataScadenza: da pendenza
@@ -747,6 +769,8 @@ public class TracciatiNotificaPagamenti {
 			linea.add(dataScadenzaS);
 //			idVocePendenza: da pendenza
 			linea.add(singoloVersamento.getCodSingoloVersamentoEnte());
+			// descrizioneVocePendenza
+			linea.add(singoloVersamento.getDescrizione());
 //			idTipoPendenza: da pendenza
 			linea.add(tipoVersamento.getCodTipoVersamento());
 //			anno: da pendenza
@@ -885,7 +909,7 @@ public class TracciatiNotificaPagamenti {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String creaLineaCsvSecim(Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore) throws ServiceException, JAXBException, SAXException, ValidationException { 
+	private void creaLineaCsvSecim(Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore, OutputStream secimOS, OutputStream noSecimOS) throws ServiceException, JAXBException, SAXException, ValidationException, java.io.IOException { 
 		StringBuilder sb = new StringBuilder();
 		
 		
@@ -904,6 +928,7 @@ public class TracciatiNotificaPagamenti {
 		String datiAllegati = versamento.getDatiAllegati();
 		String riferimentoCreditore = null;
 		String tipoflusso = null;
+		String tipoRiferimentoCreditore = null;
 		if(datiAllegati != null && datiAllegati.length() > 0) {
 			Map<String, Object> parse = JSONSerializable.parse(datiAllegati, Map.class);
 			// leggo oggetto secim
@@ -915,6 +940,9 @@ public class TracciatiNotificaPagamenti {
 				}
 				if(secim.containsKey("tipoflusso")) {
 					tipoflusso = (String) secim.get("tipoflusso");
+				}
+				if(secim.containsKey("tipoRiferimentoCreditore")) {
+					tipoRiferimentoCreditore = (String) secim.get("tipoRiferimentoCreditore");
 				}
 			}
 		}
@@ -1009,8 +1037,9 @@ public class TracciatiNotificaPagamenti {
 //		RATA	240	274	35	Carattere				versamento.cod_rata
 		String prefixRata = versamento.getNumeroRata() != null ? "S" : "T";
 		Integer numeroRata = versamento.getNumeroRata() != null ? versamento.getNumeroRata() : 1;
-		String rata = prefixRata + numeroRata;
-		rata = this.completaValoreCampoConFiller(rata, 35, false, false);
+		String rata = this.completaValoreCampoConFiller(numeroRata+"", 8, true, true); // Aggiungo zeri a sx fino ad arrivare a 8 caratteri
+		rata = prefixRata + rata; // aggiungo prefisso
+		rata = this.completaValoreCampoConFiller(rata, 35, false, false); // completo con spazi bianchi a dx fino a 35 caratteri
 		this.validaCampo("RATA", rata, 35);
 		sb.append(rata);
 		
@@ -1022,7 +1051,7 @@ public class TracciatiNotificaPagamenti {
 //		RIFERIMENTO CREDITORE	345	379	35	Carattere		SECIM +	$pendenza.{datiAllegati}.secim.riferimentoCreditore o, in sua assenza, il campo $pendenza.voce[0].idVoce
 		if(riferimentoCreditore == null)
 			riferimentoCreditore = singoliVersamenti.get(0).getCodSingoloVersamentoEnte();
-		riferimentoCreditore = "SECIM" + riferimentoCreditore;
+		riferimentoCreditore = (tipoRiferimentoCreditore == null) ? ("SECIM" + riferimentoCreditore) : (tipoRiferimentoCreditore + riferimentoCreditore); 
 		riferimentoCreditore = this.completaValoreCampoConFiller(riferimentoCreditore, 35, false, false);
 		this.validaCampo("RIFERIMENTO CREDITORE", riferimentoCreditore, 35);
 		sb.append(riferimentoCreditore);
@@ -1148,20 +1177,20 @@ public class TracciatiNotificaPagamenti {
 		sb.append(numeroProvvisorio);
 		
 //		CODICE RETE INCASSO	1083	1085	3	Carattere				NDP nei casi normali, PST se non si ha la RT ma il pagamento e’ stato solamente rendicontato da un flusso con codice esito = 9
-		String codiceReteIncasso = "";
-		codiceReteIncasso = this.completaValoreCampoConFiller("", 3, false, true);
+		String codiceReteIncasso = "NDP";
+		codiceReteIncasso = this.completaValoreCampoConFiller(codiceReteIncasso, 3, false, true);
 		this.validaCampo("CODICE RETE INCASSO", codiceReteIncasso, 3);
 		sb.append(codiceReteIncasso);
 		
 //		CODICE CANALE INCASSO	1086	1088	3	Carattere				Dal PSP che ha e’ stato utilizzato
 		String codiceCanaleIncasso = "";
-		codiceCanaleIncasso = this.completaValoreCampoConFiller("", 3, false, true);
+		codiceCanaleIncasso = this.completaValoreCampoConFiller(codiceCanaleIncasso, 3, false, true);
 		this.validaCampo("CODICE CANALE INCASSO", codiceCanaleIncasso, 3);
 		sb.append(codiceCanaleIncasso);
 		
 //		CODICE STRUMENTO INCASSO	1089	1091	3	Carattere				NDP se il campo precedente e’ di tipo PSP, altrimenti bisogna chiedere il codice bollettino
-		String codiceStrumentoIncasso = "";
-		codiceStrumentoIncasso = this.completaValoreCampoConFiller("", 3, false, true);
+		String codiceStrumentoIncasso = "NDP";
+		codiceStrumentoIncasso = this.completaValoreCampoConFiller(codiceStrumentoIncasso, 3, false, true);
 		this.validaCampo("CODICE STRUMENTO INCASSO", codiceStrumentoIncasso, 3);
 		sb.append(codiceStrumentoIncasso);
 
@@ -1211,7 +1240,11 @@ public class TracciatiNotificaPagamenti {
 		this.validaCampo("FILLER 13", filler, 399);
 		sb.append(filler);
 		
-		return sb.toString();
+		if(tipoRiferimentoCreditore == null) {
+			secimOS.write(sb.toString().getBytes());
+		} else {
+			noSecimOS.write(sb.toString().getBytes());
+		}
 	}
 	
 	

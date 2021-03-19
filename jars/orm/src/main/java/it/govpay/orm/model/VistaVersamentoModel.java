@@ -107,6 +107,7 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.ID_OPERAZIONE = new it.govpay.orm.model.IdOperazioneModel(new Field("idOperazione",it.govpay.orm.IdOperazione.class,"VistaVersamento",VistaVersamento.class));
 		this.COD_DOCUMENTO = new Field("codDocumento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DOC_DESCRIZIONE = new Field("docDescrizione",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
+		this.PROPRIETA = new Field("proprieta",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 	
 	}
 	
@@ -180,6 +181,7 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 		this.ID_OPERAZIONE = new it.govpay.orm.model.IdOperazioneModel(new ComplexField(father,"idOperazione",it.govpay.orm.IdOperazione.class,"VistaVersamento",VistaVersamento.class));
 		this.COD_DOCUMENTO = new ComplexField(father,"codDocumento",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 		this.DOC_DESCRIZIONE = new ComplexField(father,"docDescrizione",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
+		this.PROPRIETA = new ComplexField(father,"proprieta",java.lang.String.class,"VistaVersamento",VistaVersamento.class);
 	
 	}
 	
@@ -316,6 +318,8 @@ public class VistaVersamentoModel extends AbstractModel<VistaVersamento> {
 	public IField COD_DOCUMENTO = null;
 	 
 	public IField DOC_DESCRIZIONE = null;
+	 
+	public IField PROPRIETA = null;
 	 
 
 	@Override

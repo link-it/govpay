@@ -123,6 +123,7 @@ import java.io.Serializable;
  * 			&lt;element name="vrsCodRata" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsIdDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsTipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="vrsProprieta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -224,7 +225,8 @@ import java.io.Serializable;
   	"vrsIuvPagamento",
   	"vrsCodRata",
   	"vrsIdDocumento",
-  	"vrsTipo"
+  	"vrsTipo",
+  	"vrsProprieta"
   }
 )
 
@@ -964,6 +966,14 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
     this.vrsTipo = vrsTipo;
   }
 
+  public java.lang.String getVrsProprieta() {
+    return this.vrsProprieta;
+  }
+
+  public void setVrsProprieta(java.lang.String vrsProprieta) {
+    this.vrsProprieta = vrsProprieta;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -1334,5 +1344,9 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="vrsTipo",required=true,nillable=false)
   protected java.lang.String vrsTipo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="vrsProprieta",required=false,nillable=false)
+  protected java.lang.String vrsProprieta;
 
 }

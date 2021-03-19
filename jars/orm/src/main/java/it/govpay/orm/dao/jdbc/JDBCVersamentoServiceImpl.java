@@ -230,6 +230,7 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().PROPRIETA,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_versamento_dominio","?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
@@ -295,6 +296,7 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getAvvMailPromScadNotificato(),Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getAvvAppIoDataPromScadenza(),Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getAvvAppIoPromScadNotificato(),Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getProprieta(),Versamento.model().PROPRIETA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamentoDominio,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamento,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class),
@@ -565,6 +567,8 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		lstObjects_versamento.add(new JDBCObject(versamento.getAvvAppIoDataPromScadenza(), Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO,false), "?");
 		lstObjects_versamento.add(new JDBCObject(versamento.getAvvAppIoPromScadNotificato(), Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().PROPRIETA,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getProprieta(), Versamento.model().PROPRIETA.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_tipo_versamento_dominio","?");
 		}

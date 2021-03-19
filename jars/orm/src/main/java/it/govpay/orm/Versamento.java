@@ -99,6 +99,7 @@ import java.io.Serializable;
  * 			&lt;element name="avvAppIoDataPromScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="avvAppIoPromScadNotificato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idOperazione" type="{http://www.govpay.it/orm}id-operazione" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="proprieta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -176,7 +177,8 @@ import java.io.Serializable;
   	"avvMailPromScadNotificato",
   	"avvAppIoDataPromScadenza",
   	"avvAppIoPromScadNotificato",
-  	"idOperazione"
+  	"idOperazione",
+  	"proprieta"
   }
 )
 
@@ -724,6 +726,14 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.idOperazione = idOperazione;
   }
 
+  public java.lang.String getProprieta() {
+    return this.proprieta;
+  }
+
+  public void setProprieta(java.lang.String proprieta) {
+    this.proprieta = proprieta;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -997,5 +1007,9 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
 
   @XmlElement(name="idOperazione",required=true,nillable=false)
   protected IdOperazione idOperazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="proprieta",required=false,nillable=false)
+  protected java.lang.String proprieta;
 
 }

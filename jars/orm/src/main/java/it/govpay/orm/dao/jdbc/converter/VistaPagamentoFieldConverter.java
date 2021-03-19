@@ -193,6 +193,209 @@ public class VistaPagamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "tipo";
 			}
 		}
+		if(field.equals(VistaPagamento.model().ID_RPT.COD_MSG_RICHIESTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_msg_richiesta";
+			}else{
+				return "cod_msg_richiesta";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_RPT.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_RPT.IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv";
+			}else{
+				return "iuv";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_versamento_ente";
+			}else{
+				return "cod_versamento_ente";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.SRC_DEBITORE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".src_debitore_identificativo";
+			}else{
+				return "src_debitore_identificativo";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_anagrafica";
+			}else{
+				return "debitore_anagrafica";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_LOTTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_versamento_lotto";
+			}else{
+				return "cod_versamento_lotto";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_anno_tributario";
+			}else{
+				return "cod_anno_tributario";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.IMPORTO_TOTALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_totale";
+			}else{
+				return "importo_totale";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".causale_versamento";
+			}else{
+				return "causale_versamento";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato_versamento";
+			}else{
+				return "stato_versamento";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.COD_UO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_uo";
+			}else{
+				return "cod_uo";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_tipo_versamento";
+			}else{
+				return "cod_tipo_versamento";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".divisione";
+			}else{
+				return "divisione";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".direzione";
+			}else{
+				return "direzione";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tassonomia";
+			}else{
+				return "tassonomia";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo";
+			}else{
+				return "tipo";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_singolo_versamento_ente";
+			}else{
+				return "cod_singolo_versamento_ente";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.INDICE_DATI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".indice_dati";
+			}else{
+				return "indice_dati";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO.COD_TRIBUTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_tributo";
+			}else{
+				return "cod_tributo";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.NOTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".note";
+			}else{
+				return "note";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.STATO_SINGOLO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato_singolo_versamento";
+			}else{
+				return "stato_singolo_versamento";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_singolo_versamento";
+			}else{
+				return "importo_singolo_versamento";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_RR.COD_MSG_REVOCA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_msg_revoca";
+			}else{
+				return "cod_msg_revoca";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_INCASSO.TRN)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trn";
+			}else{
+				return "trn";
+			}
+		}
+		if(field.equals(VistaPagamento.model().ID_INCASSO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
 		if(field.equals(VistaPagamento.model().VRS_ID)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".vrs_id";
@@ -250,6 +453,20 @@ public class VistaPagamentoFieldConverter extends AbstractSQLFieldConverter {
 			}
 		}
 		if(field.equals(VistaPagamento.model().VRS_ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
+		if(field.equals(VistaPagamento.model().VRS_ID_DOCUMENTO.COD_DOCUMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_documento";
+			}else{
+				return "cod_documento";
+			}
+		}
+		if(field.equals(VistaPagamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_applicazione";
 			}else{
@@ -372,6 +589,93 @@ public class VistaPagamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(VistaPagamento.model().TIPO)){
 			return this.toTable(VistaPagamento.model(), returnAlias);
 		}
+		if(field.equals(VistaPagamento.model().ID_RPT.COD_MSG_RICHIESTA)){
+			return this.toTable(VistaPagamento.model().ID_RPT, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_RPT.COD_DOMINIO)){
+			return this.toTable(VistaPagamento.model().ID_RPT, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_RPT.IUV)){
+			return this.toTable(VistaPagamento.model().ID_RPT, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.SRC_DEBITORE_IDENTIFICATIVO)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_LOTTO)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.IMPORTO_TOTALE)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.COD_UO)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIVISIONE)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DIREZIONE)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TASSONOMIA)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.TIPO)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.INDICE_DATI)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO.COD_TRIBUTO)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.NOTE)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.STATO_SINGOLO_VERSAMENTO)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO)){
+			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_RR.COD_MSG_REVOCA)){
+			return this.toTable(VistaPagamento.model().ID_RR, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_INCASSO.TRN)){
+			return this.toTable(VistaPagamento.model().ID_INCASSO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().ID_INCASSO.COD_DOMINIO)){
+			return this.toTable(VistaPagamento.model().ID_INCASSO, returnAlias);
+		}
 		if(field.equals(VistaPagamento.model().VRS_ID)){
 			return this.toTable(VistaPagamento.model(), returnAlias);
 		}
@@ -398,6 +702,12 @@ public class VistaPagamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(VistaPagamento.model().VRS_ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(VistaPagamento.model().VRS_ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().VRS_ID_DOCUMENTO.COD_DOCUMENTO)){
+			return this.toTable(VistaPagamento.model().VRS_ID_DOCUMENTO, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(VistaPagamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
 		}
 		if(field.equals(VistaPagamento.model().VRS_TASSONOMIA)){
 			return this.toTable(VistaPagamento.model(), returnAlias);
@@ -436,6 +746,42 @@ public class VistaPagamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(model.equals(VistaPagamento.model())){
 			return "v_pagamenti";
 		}
+		if(model.equals(VistaPagamento.model().ID_RPT)){
+			return "rpt";
+		}
+		if(model.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO)){
+			return "singoli_versamenti";
+		}
+		if(model.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO)){
+			return "versamenti";
+		}
+		if(model.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE)){
+			return "applicazioni";
+		}
+		if(model.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO)){
+			return "uo";
+		}
+		if(model.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_UO.ID_DOMINIO)){
+			return "domini";
+		}
+		if(model.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO)){
+			return "tipi_versamento";
+		}
+		if(model.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO)){
+			return "tributi";
+		}
+		if(model.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO)){
+			return "domini";
+		}
+		if(model.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO)){
+			return "tipi_tributo";
+		}
+		if(model.equals(VistaPagamento.model().ID_RR)){
+			return "rr";
+		}
+		if(model.equals(VistaPagamento.model().ID_INCASSO)){
+			return "incassi";
+		}
 		if(model.equals(VistaPagamento.model().VRS_ID_TIPO_VERSAMENTO_DOMINIO)){
 			return "tipi_vers_domini";
 		}
@@ -458,6 +804,12 @@ public class VistaPagamentoFieldConverter extends AbstractSQLFieldConverter {
 			return "domini";
 		}
 		if(model.equals(VistaPagamento.model().VRS_ID_APPLICAZIONE)){
+			return "applicazioni";
+		}
+		if(model.equals(VistaPagamento.model().VRS_ID_DOCUMENTO)){
+			return "documenti";
+		}
+		if(model.equals(VistaPagamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE)){
 			return "applicazioni";
 		}
 
