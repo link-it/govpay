@@ -35,6 +35,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "datiAllegati",
 "direzione",
 "divisione",
+"proprieta",
 "voci",
 "idDebitore",
 "dati",
@@ -67,7 +68,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
-
+  
   @JsonProperty("tassonomia")
   private String tassonomia = null;
   
@@ -96,6 +97,9 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   
   @JsonProperty("divisione")
   private String divisione = null;
+  
+  @JsonProperty("proprieta")
+  private ProprietaPendenza proprieta = null;
   
   @JsonProperty("voci")
   private List<NuovaVocePendenza> voci = new ArrayList<>();
@@ -410,6 +414,21 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 
   /**
    **/
+  public NuovaPendenza proprieta(ProprietaPendenza proprieta) {
+    this.proprieta = proprieta;
+    return this;
+  }
+
+  @JsonProperty("proprieta")
+  public ProprietaPendenza getProprieta() {
+    return proprieta;
+  }
+  public void setProprieta(ProprietaPendenza proprieta) {
+    this.proprieta = proprieta;
+  }
+
+  /**
+   **/
   public NuovaPendenza voci(List<NuovaVocePendenza> voci) {
     this.voci = voci;
     return this;
@@ -482,6 +501,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
         Objects.equals(datiAllegati, nuovaPendenza.datiAllegati) &&
         Objects.equals(direzione, nuovaPendenza.direzione) &&
         Objects.equals(divisione, nuovaPendenza.divisione) &&
+        Objects.equals(proprieta, nuovaPendenza.proprieta) &&
         Objects.equals(voci, nuovaPendenza.voci) &&
         Objects.equals(idDebitore, nuovaPendenza.idDebitore) &&
 	Objects.equals(this.dati, nuovaPendenza.dati);
@@ -489,7 +509,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, idDominio, idUnitaOperativa, idTipoPendenza, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, direzione, divisione, voci, idDebitore, dati);
+    return Objects.hash(idA2A, idPendenza, idDominio, idUnitaOperativa, idTipoPendenza, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, direzione, divisione, proprieta, voci, idDebitore, dati);
   }
 
   public static NuovaPendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
@@ -524,6 +544,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
     sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
+    sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("    idDebitore: ").append(toIndentedString(idDebitore)).append("\n");
     sb.append("    dati: ").append(this.toIndentedString(this.dati)).append("\n");
@@ -569,6 +590,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 				vf.getValidator("divisione", this.divisione).isNull();
 				vf.getValidator("tassonomia", this.tassonomia).isNull();
 				vf.getValidator("tassonomiaAvviso", this.tassonomiaAvviso).isNull();
+				vf.getValidator("proprieta", this.proprieta).isNull();
 				if(this.dati != null)
 					throw new ValidationException("Il campo dati deve essere vuoto.");
 			} catch (ValidationException ve) {
@@ -602,6 +624,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 					vf.getValidator("divisione", this.divisione).isNull();
 					vf.getValidator("tassonomia", this.tassonomia).isNull();
 					vf.getValidator("tassonomiaAvviso", this.tassonomiaAvviso).isNull();
+					vf.getValidator("proprieta", this.proprieta).isNull();
 					if(this.dati != null)
 						throw new ValidationException("Il campo dati deve essere vuoto.");
 				} catch (ValidationException ve) {
@@ -630,6 +653,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 					vf.getValidator("divisione", this.divisione).isNull();
 					vf.getValidator("tassonomia", this.tassonomia).isNull();
 					vf.getValidator("tassonomiaAvviso", this.tassonomiaAvviso).isNull();
+					vf.getValidator("proprieta", this.proprieta).isNull();
 				} catch (ValidationException ve) {
 					throw new ValidationException("Pendenza modello 4. " + ve.getMessage());
 				}
@@ -657,6 +681,8 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 			
 			validatoreId.validaIdDirezione("direzione",this.direzione, false);
 			validatoreId.validaIdDivisione("divisione",this.divisione, false);
+			
+			vf.getValidator("proprieta", this.proprieta).validateFields();
 		}
 	}
 }

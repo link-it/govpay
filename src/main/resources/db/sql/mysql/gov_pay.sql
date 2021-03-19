@@ -594,6 +594,7 @@ CREATE TABLE versamenti
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	avv_app_io_data_prom_scadenza TIMESTAMP(3),
 	avv_app_io_prom_scad_notificat BOOLEAN,
+	proprieta LONGTEXT,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_tipo_versamento_dominio BIGINT NOT NULL COMMENT 'Riferimento al tipo pendenza dominio afferente',
@@ -1370,6 +1371,7 @@ CREATE VIEW versamenti_incassi AS SELECT
     versamenti.cod_rata,
     documenti.cod_documento,
     versamenti.tipo,
+    versamenti.proprieta,
     documenti.descrizione AS doc_descrizione,
     (CASE WHEN versamenti.stato_versamento = 'NON_ESEGUITO' AND versamenti.data_validita > now() THEN 0 ELSE 1 END) AS smart_order_rank,
     (ABS((UNIX_TIMESTAMP(now()) *1000) - (UNIX_TIMESTAMP(COALESCE(versamenti.data_pagamento, versamenti.data_validita, versamenti.data_creazione)) * 1000))) AS smart_order_date
@@ -1787,7 +1789,8 @@ CREATE VIEW v_rendicontazioni_ext AS
     versamenti.iuv_pagamento AS vrs_iuv_pagamento,
     versamenti.cod_rata as vrs_cod_rata,
     versamenti.id_documento as vrs_id_documento,
-    versamenti.tipo as vrs_tipo
+    versamenti.tipo as vrs_tipo,
+    versamenti.proprieta as vrs_proprieta
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
@@ -1886,7 +1889,8 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.src_debitore_identificativo as vrs_src_debitore_identificativ,
     versamenti.cod_rata as vrs_cod_rata,
     versamenti.id_documento as vrs_id_documento,
-    versamenti.tipo as vrs_tipo
+    versamenti.tipo as vrs_tipo,
+    versamenti.proprieta as vrs_proprieta
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
 
 -- Vista Pagamenti/Riscossioni
@@ -1999,6 +2003,7 @@ SELECT versamenti.id,
     versamenti.id_tipo_versamento,
     versamenti.id_tipo_versamento_dominio,
     versamenti.id_documento,
+    versamenti.proprieta,
     documenti.cod_documento,
     documenti.descrizione AS doc_descrizione
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;

@@ -86,14 +86,14 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "gpadmin",
 		"utente": "Amministratore",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#('/govpay/backend/api/backoffice/rs/basic/v1/pendenze/' + idA2A + '/' + idPendenza)",
 		"method": "PUT",
 		"headers": "#array",
 		"payload": "#notnull"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 201,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -166,14 +166,14 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "RSSMRA30A01H501I",
 		"utente": "Mario Rossi",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#('/govpay/backend/api/backoffice/rs/spid/v1/pendenze/' + idA2A + '/' + idPendenza)",
 		"method": "PUT",
 		"headers": "#array",
 		"payload": "#notnull"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 201,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -245,14 +245,14 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "#(idA2A)",
 		"utente": "#(idA2A)",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#('/govpay/backend/api/backoffice/rs/basic/v1/pendenze/' + idA2A + '/' + idPendenza)",
 		"method": "PUT",
 		"headers": "#array",
 		"payload": "#notnull"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 201,
 		"headers": "#array",
 		"payload": "#notnull"

@@ -168,6 +168,8 @@ public class VistaVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_documento", VistaVersamento.model().COD_DOCUMENTO.getFieldType()));
 				setParameter(object, "setDocDescrizione", VistaVersamento.model().DOC_DESCRIZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "doc_descrizione", VistaVersamento.model().DOC_DESCRIZIONE.getFieldType()));
+				setParameter(object, "setProprieta", VistaVersamento.model().PROPRIETA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "proprieta", VistaVersamento.model().PROPRIETA.getFieldType()));
 				return object;
 			}
 			
@@ -304,6 +306,8 @@ public class VistaVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codDocumento"));
 				setParameter(object, "setDocDescrizione", VistaVersamento.model().DOC_DESCRIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"docDescrizione"));
+				setParameter(object, "setProprieta", VistaVersamento.model().PROPRIETA.getFieldType(),
+					this.getObjectFromMap(map,"proprieta"));
 				return object;
 			}
 			

@@ -18,7 +18,7 @@ public class DettaglioRichiesta implements Serializable {
 	private String principal;
 	private String utente;
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS", locale = "it_IT", timezone = "Europe/Rome")
 	private Date dataOraRichiesta;
 	private String url;
 //	private Map<String, String> headers;

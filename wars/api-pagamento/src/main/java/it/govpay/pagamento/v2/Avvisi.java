@@ -34,10 +34,10 @@ public class Avvisi extends BaseRsServiceV2{
     @Path("/{idDominio}/{numeroAvviso}")
     
     @Produces({ "application/json", "application/pdf" })
-    public Response getAvviso(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("numeroAvviso") String numeroAvviso, @QueryParam("idDebitore") String idDebitore, @QueryParam("UUID") String UUID, @QueryParam("gRecaptchaResponse") String gRecaptchaResponse){
+    public Response getAvviso(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("numeroAvviso") String numeroAvviso, @QueryParam("idDebitore") String idDebitore, @QueryParam("UUID") String UUID, @QueryParam("gRecaptchaResponse") String gRecaptchaResponse, @QueryParam("linguaSecondaria") String linguaSecondaria){
         this.controller.setRequestResponse(this.request, this.response);
         this.buildContext();
-        return this.controller.avvisiIdDominioIuvGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  numeroAvviso, idDebitore, UUID, gRecaptchaResponse);
+        return this.controller.avvisiIdDominioIuvGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  numeroAvviso, idDebitore, UUID, gRecaptchaResponse, linguaSecondaria);
     }
 
 }

@@ -1,6 +1,8 @@
 package it.govpay.core.utils.tracciati;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -10,12 +12,14 @@ public class TracciatiPendenzeManager {
 
 	private Set<String> listaPendenze = null;
 	private Set<String> listaDocumenti = null;
+	private List<String> listaNumeriAvviso = null;
 	
 	private static Logger log = LoggerWrapperFactory.getLogger(TracciatiPendenzeManager.class);
 	
 	public TracciatiPendenzeManager() {
 		this.listaPendenze = new HashSet<>();
 		this.listaDocumenti = new HashSet<>();
+		this.listaNumeriAvviso = new ArrayList<>();
 	}
 	
 	public synchronized void addPendenza(String idA2A, String idPendenza) {
@@ -49,5 +53,13 @@ public class TracciatiPendenzeManager {
 //		log.debug("AAAAAA " + Thread.currentThread().getName() + " RELEASE Documento ["+codDocumento+"]");
 		this.listaDocumenti.remove((idA2A + "@" + codDocumento));
 		notify();
+	}
+	
+	public synchronized void addNumeroAvviso(String numeroAvviso) {
+		this.listaNumeriAvviso.add(numeroAvviso);
+	}
+	
+	public List<String> getListaNumeriAvviso() {
+		return listaNumeriAvviso;
 	}
 }
