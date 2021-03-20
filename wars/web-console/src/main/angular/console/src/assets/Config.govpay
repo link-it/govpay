@@ -63,7 +63,8 @@
         IN_CORSO_VERIFICATI: '',
         FALLITI: '&severitaDa=4',
         FALLITI_VERIFICATI: '&severitaDa=4'
-      }
+      },
+      FILTRO_SEVERITA: '4'
     },
     GENERATORI: generatori(),
     MGK: _mkg(),

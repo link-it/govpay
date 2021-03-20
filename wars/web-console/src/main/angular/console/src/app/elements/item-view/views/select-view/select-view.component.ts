@@ -62,9 +62,12 @@ export class SelectViewComponent implements IFormComponent, AfterViewInit {
 
   markRequiredFormControl(value: boolean) {
     if(!value) {
-      if(this.json.required && this.json.dependency) {
-        if(this.fGroup.controls.hasOwnProperty(this.json.id+'_ctrl')) {
-          this.fGroup.removeControl(this.json.id+'_ctrl');
+      if(this.json.dependency) {
+        this.fGroup.controls[this.json.id+'_ctrl'].reset();
+        if(this.json.required) {
+          if(this.fGroup.controls.hasOwnProperty(this.json.id+'_ctrl')) {
+            this.fGroup.removeControl(this.json.id+'_ctrl');
+          }
         }
       }
     } else {
