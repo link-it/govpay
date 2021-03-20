@@ -148,12 +148,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 				}
 				
 				if(idUtenza != null) {
-					it.govpay.orm.IdUtenza id_acl_utenza = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_acl_utenza = ((JDBCUtenzaServiceSearch)(this.getServiceManager().getUtenzaServiceSearch())).findId(idUtenza, false);
-					}else{
-						id_acl_utenza = new it.govpay.orm.IdUtenza();
-					}
+					it.govpay.orm.IdUtenza id_acl_utenza = new it.govpay.orm.IdUtenza();
 					id_acl_utenza.setId(idUtenza);
 					acl.setIdUtenza(id_acl_utenza);
 				}

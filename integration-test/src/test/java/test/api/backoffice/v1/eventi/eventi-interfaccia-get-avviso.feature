@@ -62,14 +62,14 @@ And match response.risultati[0] ==
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#('http://localhost:8888/paServiceImpl/v1/avvisi/' + idDominio + '/' + iuv)",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -134,14 +134,14 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
 		"principal": "##null",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#('http://localhost:8888/paServiceImpl/v1/avvisi/' + idDominio + '/' + iuv)",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -201,14 +201,14 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
 		"principal": "##null",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#('http://localhost:8888/paServiceImpl/v1/avvisi/' + idDominio + '/' + iuv)",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -271,14 +271,14 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
 		"principal": "##null",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#('http://localhost:8888/paServiceImpl/v1/avvisi/' + idDominio + '/' + iuv)",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -350,14 +350,14 @@ And match response.risultati[0] ==
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#(applicazione.servizioIntegrazione.url + '/avvisi/' + idDominio + '/' + iuv)",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 999,
 		"headers": "#array",
 		"payload": "#ignore"
@@ -430,14 +430,14 @@ And match response.risultati[0] ==
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#(applicazione.servizioIntegrazione.url + '/avvisi/' + idDominio + '/' + iuv)",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 500,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -528,14 +528,14 @@ And match response.risultati[0] ==
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#(applicazione.servizioIntegrazione.url + '/avvisi/' + idDominio + '/' + iuv)",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#notnull"

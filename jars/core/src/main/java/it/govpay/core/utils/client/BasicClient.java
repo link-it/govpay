@@ -65,6 +65,7 @@ import org.slf4j.Logger;
 import it.govpay.bd.configurazione.model.GdeInterfaccia;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.core.business.GiornaleEventi;
@@ -78,6 +79,7 @@ import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.Connettore.EnumSslType;
+import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Intermediario;
 
 public abstract class BasicClient {
@@ -163,11 +165,11 @@ public abstract class BasicClient {
 	}
 
 	public enum TipoConnettore {
-		VERIFICA, NOTIFICA, APP_IO;
+		VERIFICA, NOTIFICA, APP_IO, MYPIVOT;
 	}
 	
 	public enum TipoDestinatario {
-		APPLICAZIONE, INTERMEDIARIO, APP_IO;
+		APPLICAZIONE, INTERMEDIARIO, APP_IO, MYPIVOT;
 	}
 
 	protected BasicClient(Intermediario intermediario, TipoOperazioneNodo tipoOperazione) throws ClientException {
@@ -204,6 +206,18 @@ public abstract class BasicClient {
 		integrationCtx.setIntermediario(null);
 		integrationCtx.setTipoConnettore(null);
 		integrationCtx.setTipoDestinatario(tipoDestinatario);
+	}
+	
+	protected BasicClient(Dominio dominio, TipoConnettore tipoConnettore, ConnettoreNotificaPagamenti connettore) throws ClientException {
+		this("D_" + tipoConnettore + "_" + dominio.getCodDominio(), connettore);
+		errMsg = tipoConnettore.toString() + " del dominio (" + dominio.getCodDominio() + ")";
+		mittente = "GovPay";
+		destinatario = "ServizioMyPivot";
+		integrationCtx = new IntegrationContext();
+		integrationCtx.setApplicazione(null);
+		integrationCtx.setIntermediario(null);
+		integrationCtx.setTipoConnettore(tipoConnettore);
+		integrationCtx.setTipoDestinatario(TipoDestinatario.MYPIVOT);
 	}
 
 	private BasicClient(String bundleKey, Connettore connettore) throws ClientException {

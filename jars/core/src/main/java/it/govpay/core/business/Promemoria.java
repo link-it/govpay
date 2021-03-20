@@ -22,6 +22,7 @@ import org.openspcoop2.utils.mail.SenderFactory;
 import org.openspcoop2.utils.mail.SenderType;
 import org.openspcoop2.utils.resources.Charset;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.openspcoop2.utils.transport.http.SSLConfig;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
@@ -94,7 +95,6 @@ public class Promemoria {
 				this.senderCommonsMail.setReadTimeout(mailserver.getReadTimeout());
 			if(mailserver.getConnectionTimeout() != null)
 				this.senderCommonsMail.setConnectionTimeout(mailserver.getConnectionTimeout());
-			
 		} catch (ServiceException e) {
 			log.error("Errore durante l'inizializzazione del Promemoria: " + e.getMessage(),e);
 		}
@@ -301,7 +301,12 @@ public class Promemoria {
 				mail.setUsername(this.username);
 				mail.setPassword(this.password);
 			}
-			mail.setStartTls(false);
+			mail.setStartTls(it.govpay.core.utils.GovpayConfig.getInstance().isMailStartTLS());
+			if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSL()) {
+				SSLConfig sslConfig = new SSLConfig();
+				sslConfig.setSslType(it.govpay.core.utils.GovpayConfig.getInstance().getMailSSLType());
+				mail.setSslConfig(sslConfig );
+			}
 			mail.setFrom(this.from);
 			mail.setTo(promemoria.getDestinatarioTo());
 			if(promemoria.getDestinatarioCc() !=null)
@@ -350,6 +355,7 @@ public class Promemoria {
 				printAvviso.setVersamento(versamento);
 				printAvviso.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 				printAvviso.setIuv(versamento.getIuvVersamento());
+				printAvviso.setSalvaSuDB(false);
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoPagamento.printAvvisoVersamento(printAvviso);
 
 				String attachmentName = versamento.getDominio(configWrapper).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";
@@ -448,8 +454,12 @@ public class Promemoria {
 				mail.setPassword(this.password);
 			}
 
-			mail.setStartTls(false);
-
+			mail.setStartTls(it.govpay.core.utils.GovpayConfig.getInstance().isMailStartTLS());
+			if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSL()) {
+				SSLConfig sslConfig = new SSLConfig();
+				sslConfig.setSslType(it.govpay.core.utils.GovpayConfig.getInstance().getMailSSLType());
+				mail.setSslConfig(sslConfig );
+			}
 			mail.setFrom(this.from);
 			mail.setTo(promemoria.getDestinatarioTo());
 			if(promemoria.getDestinatarioCc() !=null)
@@ -592,7 +602,12 @@ public class Promemoria {
 				mail.setUsername(this.username);
 				mail.setPassword(this.password);
 			}
-			mail.setStartTls(false);
+			mail.setStartTls(it.govpay.core.utils.GovpayConfig.getInstance().isMailStartTLS());
+			if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSL()) {
+				SSLConfig sslConfig = new SSLConfig();
+				sslConfig.setSslType(it.govpay.core.utils.GovpayConfig.getInstance().getMailSSLType());
+				mail.setSslConfig(sslConfig );
+			}
 			mail.setFrom(this.from);
 			mail.setTo(promemoria.getDestinatarioTo());
 			if(promemoria.getDestinatarioCc() !=null)
@@ -641,6 +656,7 @@ public class Promemoria {
 				printAvviso.setVersamento(versamento);
 				printAvviso.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 				printAvviso.setIuv(versamento.getIuvVersamento());
+				printAvviso.setSalvaSuDB(false);
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoPagamento.printAvvisoVersamento(printAvviso);
 
 				String attachmentName = versamento.getDominio(configWrapper).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";

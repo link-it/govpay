@@ -1,7 +1,7 @@
 {
    "id":"#notnull",
    "nome":"#notnull",
-   "dataRichiestaPagamento":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+   "dataRichiestaPagamento":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
    "idSessionePsp":"#notnull",
    "importo":"#? isImportoConDueDecimali(_)",
    "stato":"NON_ESEGUITO",

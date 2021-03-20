@@ -139,6 +139,22 @@
         
         <!-- Postgres driver -->
         <postgresql.driver.version>42.2.5</postgresql.driver.version>
+        
+        <!-- Stampe -->
+        <!-- xalan -->
+        <xalan.version>2.7.1</xalan.version>
+        <!-- Jaxen -->
+        <jaxen.version>1.2.0</jaxen.version>
+        <!-- barbecue -->
+        <barbecue.version>1.5-beta1</barbecue.version>
+        <!-- Groovy -->
+        <groovy.version>2.4.5</groovy.version>
+        <!-- xmlgraphics-commons -->
+        <xmlgraphics.commons.version>2.1</xmlgraphics.commons.version>
+        <!-- com.google.zxing.javase -->
+        <com.google.zxing.javase.version>2.2</com.google.zxing.javase.version>
+        <!-- dynamicreports-core -->
+        <dynamicreports-core.version>4.1.1</dynamicreports-core.version>
 	</properties>
 
 	<dependencyManagement>
@@ -967,6 +983,43 @@
 			    <artifactId>postgresql</artifactId>
 			    <version>${postgresql.driver.version}</version>
 			    <scope>provided</scope>
+			</dependency>
+			
+			<!-- stampe -->
+			<dependency>
+				<groupId>com.google.zxing</groupId>
+				<artifactId>javase</artifactId>
+				<version>${com.google.zxing.javase.version}</version>
+			</dependency>
+	
+			<dependency>
+				<groupId>org.apache.xmlgraphics</groupId>
+				<artifactId>xmlgraphics-commons</artifactId>
+				<version>${xmlgraphics.commons.version}</version>
+			</dependency>
+	
+			<dependency>
+				<groupId>org.codehaus.groovy</groupId>
+				<artifactId>groovy-all</artifactId>
+				<version>${groovy.version}</version>
+			</dependency>
+	
+			<dependency>
+				<groupId>net.sourceforge.barbecue</groupId>
+				<artifactId>barbecue</artifactId>
+				<version>${barbecue.version}</version>
+			</dependency>
+	
+			<dependency>
+				<groupId>xalan</groupId>
+				<artifactId>xalan</artifactId>
+				<version>${xalan.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>jaxen</groupId>
+			    <artifactId>jaxen</artifactId>
+			    <version>${jaxen.version}</version>
 			</dependency>
 			
 		</dependencies>

@@ -45,6 +45,7 @@ import it.govpay.core.dao.pagamenti.exception.DocumentoNonTrovatoException;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -107,6 +108,8 @@ public class AvvisiDAO extends BaseDAO{
 				printAvvisoDTO.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 				printAvvisoDTO.setIuv(versamento.getIuvVersamento());
 				printAvvisoDTO.setVersamento(versamento); 
+				printAvvisoDTO.setSalvaSuDB(false);
+				printAvvisoDTO.setLinguaSecondaria(getAvvisoDTO.getLinguaSecondaria());
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 				response.setApplicazione(versamento.getApplicazione(configWrapper));
 				response.setVersamento(versamento);
@@ -133,7 +136,7 @@ public class AvvisiDAO extends BaseDAO{
 		}  
 	}
 	
-	public GetDocumentoAvvisiDTOResponse getDocumento(GetDocumentoAvvisiDTO getAvvisoDTO) throws ServiceException, DocumentoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException {
+	public GetDocumentoAvvisiDTOResponse getDocumento(GetDocumentoAvvisiDTO getAvvisoDTO) throws ServiceException, DocumentoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException, UnprocessableEntityException {
 		DocumentiBD documentiBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -154,6 +157,9 @@ public class AvvisiDAO extends BaseDAO{
 				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
 				PrintAvvisoDocumentoDTO printAvvisoDTO = new PrintAvvisoDocumentoDTO();
 				printAvvisoDTO.setDocumento(documento);
+				printAvvisoDTO.setSalvaSuDB(false);
+				printAvvisoDTO.setLinguaSecondaria(getAvvisoDTO.getLinguaSecondaria()); 
+				printAvvisoDTO.setNumeriAvviso(getAvvisoDTO.getNumeriAvviso());
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printAvvisoDTO);
 				response.setDocumento(documento);
 				response.setDominio(dominio);

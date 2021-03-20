@@ -20,13 +20,17 @@ import org.slf4j.Logger;
 import it.govpay.model.RicevutaPagamento;
 import it.govpay.stampe.model.RicevutaTelematicaInput;
 import it.govpay.stampe.pdf.rt.utils.RicevutaTelematicaProperties;
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRXmlDataSource;
+import net.sf.jasperreports.engine.fill.JRGzipVirtualizer;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 public class RicevutaTelematicaPdf{
@@ -87,15 +91,44 @@ public class RicevutaTelematicaPdf{
 
 		if(!jasperTemplateFilename.startsWith("/"))
 			jasperTemplateFilename = "/" + jasperTemplateFilename; 
-
-		InputStream is = RicevutaTelematicaPdf.class.getResourceAsStream(jasperTemplateFilename);
+		
 		Map<String, Object> parameters = new HashMap<>();
-		JRDataSource dataSource = this.creaXmlDataSource(log,input);
-		JasperPrint jasperPrint = this.creaJasperPrintRicevutaTelematica(log, input, propertiesRicevutaPerDominio, is, dataSource,parameters);
-
-		byte[] reportToPdf = JasperExportManager.exportReportToPdf(jasperPrint);
-		ricevuta.setPdf(reportToPdf);
-		return ricevuta;
+		
+		JRGzipVirtualizer virtualizer = new JRGzipVirtualizer(50);
+		parameters.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
+		
+		try (InputStream is = RicevutaTelematicaPdf.class.getResourceAsStream(jasperTemplateFilename);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();){
+			
+			DefaultJasperReportsContext defaultJasperReportsContext = DefaultJasperReportsContext.getInstance();
+			
+			JRPropertiesUtil.getInstance(defaultJasperReportsContext).setProperty("net.sf.jasperreports.xpath.executer.factory",
+                    "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
+			
+			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+			jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+			
+			JAXBElement<RicevutaTelematicaInput> jaxbElement = new JAXBElement<RicevutaTelematicaInput>(new QName("", "root"), RicevutaTelematicaInput.class, null, input);
+			jaxbMarshaller.marshal(jaxbElement, baos);
+			byte[] byteArray = baos.toByteArray();
+			
+			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);){
+				
+				JRDataSource dataSource = new JRXmlDataSource(defaultJasperReportsContext, byteArrayInputStream, RicevutaTelematicaCostanti.RICEVUTA_TELEMATICA_ROOT_ELEMENT_NAME);
+	
+				JasperReport jasperReport = (JasperReport) JRLoader.loadObject(defaultJasperReportsContext,is);
+				JasperPrint jasperPrint = JasperFillManager.getInstance(defaultJasperReportsContext).fill(jasperReport, parameters, dataSource);
+				
+				byte[] reportToPdf = JasperExportManager.getInstance(defaultJasperReportsContext).exportToPdf(jasperPrint);
+				
+				ricevuta.setPdf(reportToPdf);
+				return ricevuta;
+			}finally {
+				
+			}
+		}finally {
+			
+		}
 	}
 	
 	public JRDataSource creaXmlDataSource(Logger log,RicevutaTelematicaInput input) throws UtilsException, JRException, JAXBException {

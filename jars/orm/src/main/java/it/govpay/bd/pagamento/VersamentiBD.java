@@ -264,7 +264,7 @@ public class VersamentiBD extends BasicBD {
 	/**
 	 * Crea un nuovo versamento.
 	 */
-	public void insertVersamento(Versamento versamento) throws ServiceException{
+	public void insertVersamento(Versamento versamento) throws ServiceException {
 		_insertVersamento(versamento, null, null);
 	}
 	

@@ -87,6 +87,9 @@ public class PromemoriaController extends BaseController {
 				case RICEVUTA_TELEMATICA:
 					listaPromemoriaDTO.setTipo(it.govpay.model.Promemoria.TipoPromemoria.RICEVUTA);
 					break;
+				case SCADENZA_AVVISO_PAGAMENTO:
+					listaPromemoriaDTO.setTipo(it.govpay.model.Promemoria.TipoPromemoria.SCADENZA);
+					break;
 				}
 			}
 

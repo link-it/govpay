@@ -28,7 +28,6 @@ import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCParameterUtilities;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
-import org.openspcoop2.utils.jdbc.JDBCDefaultForXSDType;
 
 import it.govpay.orm.Versamento;
 
@@ -164,6 +163,8 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "avv_app_io_data_prom_scadenza", Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA.getFieldType()));
 				setParameter(object, "setAvvAppIoPromScadNotificato", Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "avv_app_io_prom_scad_notificat", Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO.getFieldType()));
+				setParameter(object, "setProprieta", Versamento.model().PROPRIETA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "proprieta", Versamento.model().PROPRIETA.getFieldType()));
 				return object;
 			}
 			
@@ -296,6 +297,8 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"avvAppIoDataPromScadenza"));
 				setParameter(object, "setAvvAppIoPromScadNotificato", Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO.getFieldType(),
 					this.getObjectFromMap(map,"avvAppIoPromScadNotificato"));
+				setParameter(object, "setProprieta", Versamento.model().PROPRIETA.getFieldType(),
+					this.getObjectFromMap(map,"proprieta"));
 				return object;
 			}
 			

@@ -181,6 +181,7 @@ public class PagamentiPortaleConverter {
 //		}
 		versamento.setDirezione(pendenza.getDirezione());
 		versamento.setDivisione(pendenza.getDivisione()); 
+		versamento.setProprieta(PendenzeConverter.toProprietaPendenzaDTO(pendenza.getProprieta()));
 
 		return versamento;
 	}
@@ -233,6 +234,8 @@ public class PagamentiPortaleConverter {
 			
 		// tipo versamento e' deciso dall'api che lo carica.
 		versamento.setTipo(TipologiaTipoVersamento.SPONTANEO);
+		
+		versamento.setProprieta(PendenzeConverter.toProprietaPendenzaDTO(pendenza.getProprieta()));
 			
 		return versamento;
 	}

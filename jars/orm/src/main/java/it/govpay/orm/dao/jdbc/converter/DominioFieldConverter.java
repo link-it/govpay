@@ -151,6 +151,27 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "aut_stampa_poste";
 			}
 		}
+		if(field.equals(Dominio.model().COD_CONNETTORE_MY_PIVOT)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_connettore_my_pivot";
+			}else{
+				return "cod_connettore_my_pivot";
+			}
+		}
+		if(field.equals(Dominio.model().COD_CONNETTORE_SECIM)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_connettore_secim";
+			}else{
+				return "cod_connettore_secim";
+			}
+		}
+		if(field.equals(Dominio.model().COD_CONNETTORE_GOV_PAY)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_connettore_gov_pay";
+			}else{
+				return "cod_connettore_gov_pay";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -198,6 +219,15 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().AUT_STAMPA_POSTE)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().COD_CONNETTORE_MY_PIVOT)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().COD_CONNETTORE_SECIM)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().COD_CONNETTORE_GOV_PAY)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 
