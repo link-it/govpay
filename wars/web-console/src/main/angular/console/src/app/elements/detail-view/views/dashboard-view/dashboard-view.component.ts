@@ -145,7 +145,10 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
         UtilService.SaveCookie(UtilService.COOKIE_RIFIUTATI);
         UtilService.DASHBOARD_LINKS_PARAMS.params.push({ controller: 'stato', value: 'FALLITO' });
         UtilService.DASHBOARD_LINKS_PARAMS.params.push({ controller: 'verificato', value: false });
-        UtilService.DASHBOARD_LINKS_PARAMS.params.push({ controller: 'severitaDa', value: UtilService.BADGE.FILTRO_SEVERITA });
+        const livelloErrore: string = this.us.getQueryParamValue(UtilService.BADGE.QUERY_PARAMETERS.FALLITI, 'severitaDa');
+        if (livelloErrore) {
+          UtilService.DASHBOARD_LINKS_PARAMS.params.push({ controller: 'severitaDa', value: livelloErrore });
+        }
         break;
       case 1:
         //Sospesi

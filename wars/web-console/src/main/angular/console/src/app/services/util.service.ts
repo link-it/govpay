@@ -911,6 +911,24 @@ export class UtilService {
   }
 
   /**
+   * Get query param value
+   * @param query string
+   * @param param string
+   * @returns {string}
+   */
+  getQueryParamValue(query: string, param: string): string {
+    let value = '';
+    query.split('&').some(function(p: string) {
+      const name: string[] = p.split('=');
+      if (param === name[0]) {
+        value = (name[1] || '');
+        return true;
+      }
+    });
+    return value;
+  }
+
+  /**
    * Get property value by path
    * @param path {string}
    * @param stack {string}
