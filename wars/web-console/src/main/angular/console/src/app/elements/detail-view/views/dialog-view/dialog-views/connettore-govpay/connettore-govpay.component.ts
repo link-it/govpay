@@ -22,7 +22,7 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
 
   pattern: string = '^(|([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5}){1,25})+((,\\s)(([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5}){1,25})+)*$';
   govpayAbilitato: FormControl = new FormControl(false, { updateOn: 'change', validators: Validators.required });
-  tipoConnettore: FormControl = new FormControl({ value: UtilService.CONNETTORE_MODALITA_EMAIL, disabled: true });
+  tipoConnettore: FormControl = new FormControl('');
   govpayModalita: string = '';
   _option: any = { hasOption: false, hasAllOption: false };
   _all: any = { descrizione: UtilService.TUTTI_TIPI_PENDENZA.label, idTipoPendenza: UtilService.TUTTI_TIPI_PENDENZA.value };
@@ -37,6 +37,7 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
     this.fGroup.addControl('tipiPendenza_ctrl', new FormControl(''));
     this.fGroup.addControl('emailIndirizzi_ctrl', new FormControl(''));
     this.fGroup.addControl('emailSubject_ctrl', new FormControl(''));
+    this.fGroup.addControl('fileSystemPath_ctrl', new FormControl(''));
   }
 
   ngAfterContentChecked() {
@@ -49,11 +50,13 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
       if(this.json) {
         this.fGroup.controls['govpayAbilitato_ctrl'].setValue(this.json.abilitato || false);
         this.fGroup.controls['versioneCsv_ctrl'].setValue(this.json.versioneCsv || '');
+        this.fGroup.controls['tipoConnettore_ctrl'].setValue(this.json.tipoConnettore || '');
         this.fGroup.controls['tipiPendenza_ctrl'].setValue(this.json.tipiPendenza || '');
         if (this.json.emailIndirizzi) {
           this.fGroup.controls['emailIndirizzi_ctrl'].setValue(this.json.emailIndirizzi.join(SEPARATORE) || '');
         }
         this.fGroup.controls['emailSubject_ctrl'].setValue(this.json.emailSubject || '');
+        this.fGroup.controls['fileSystemPath_ctrl'].setValue(this.json.fileSystemPath || '');
         this.__bools(this.json.tipiPendenza);
       }
     });
@@ -80,13 +83,22 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
   _onChangeGovpay(event: any, type: string) {
     if (type === 'govpayAbilitato_ctrl') {
       (event.checked)?this.fGroup.controls['versioneCsv_ctrl'].setValidators(Validators.required):this.fGroup.controls['versioneCsv_ctrl'].clearValidators();
+      (event.checked)?this.fGroup.controls['tipoConnettore_ctrl'].setValidators(Validators.required):this.fGroup.controls['tipoConnettore_ctrl'].clearValidators();
       (event.checked)?this.fGroup.controls['tipiPendenza_ctrl'].setValidators(Validators.required):this.fGroup.controls['tipiPendenza_ctrl'].clearValidators();
-      (event.checked)?this.fGroup.controls['emailIndirizzi_ctrl'].setValidators([Validators.required, Validators.pattern(this.pattern)]):this.fGroup.controls['emailIndirizzi_ctrl'].clearValidators();
-      this.fGroup.controls['emailIndirizzi_ctrl'].setValidators([Validators.required, Validators.pattern(this.pattern)]);
       this.fGroup.controls['versioneCsv_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+      this.fGroup.controls['tipoConnettore_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
       this.fGroup.controls['tipiPendenza_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
-      this.fGroup.controls['emailIndirizzi_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+      if (!event.checked) {
+        this.fGroup.controls['emailIndirizzi_ctrl'].clearValidators();
+        this.fGroup.controls['fileSystemPath_ctrl'].clearValidators();
+      }
     }
+    if (type === 'tipoConnettore_ctrl') {
+      (this.govpayAbilitato.value && event.value === UtilService.CONNETTORE_MODALITA_EMAIL)?this.fGroup.controls['emailIndirizzi_ctrl'].setValidators([Validators.required, Validators.pattern(this.pattern)]):this.fGroup.controls['emailIndirizzi_ctrl'].clearValidators();
+      (this.govpayAbilitato.value && event.value === UtilService.CONNETTORE_MODALITA_FILESYSTEM)?this.fGroup.controls['fileSystemPath_ctrl'].setValidators(Validators.required):this.fGroup.controls['fileSystemPath_ctrl'].clearValidators();
+    }
+    this.fGroup.controls['emailIndirizzi_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+    this.fGroup.controls['fileSystemPath_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
   }
 
   _pendenzaCmpFn(p1: any, p2: any): boolean {
@@ -106,9 +118,13 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
         };
       }):null;
       _json.versioneCsv = _info['versioneCsv_ctrl'] || null;
-      _json.tipoConnettore = UtilService.CONNETTORE_MODALITA_EMAIL;
-      _json.emailIndirizzi = _info['emailIndirizzi_ctrl']?_info['emailIndirizzi_ctrl'].split(SEPARATORE):null;
-      _json.emailSubject = _info['emailSubject_ctrl'] || null;
+      _json.tipoConnettore = _info['tipoConnettore_ctrl'] || null;
+      if (_json.tipoConnettore === UtilService.CONNETTORE_MODALITA_EMAIL) {
+        _json.emailIndirizzi = _info['emailIndirizzi_ctrl']?_info['emailIndirizzi_ctrl'].split(SEPARATORE):null;
+        _json.emailSubject = _info['emailSubject_ctrl'] || null;
+      } else {
+        _json.fileSystemPath = _info['fileSystemPath_ctrl'] || null;
+      }
     }
 
     Object.keys(_json).forEach(key => {

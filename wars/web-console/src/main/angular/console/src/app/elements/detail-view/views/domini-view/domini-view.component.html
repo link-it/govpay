@@ -40,7 +40,7 @@
                     [previous-page]="_paginatorOptions.pendenze.previous" [page]="_paginatorOptions.pendenze.page" [target]="_TIPI_PENDENZA_DOMINIO"
                     [pages]="_paginatorOptions.pendenze.pages" (page-event)="paginatorLoader($event, _TIPI_PENDENZA_DOMINIO)"
                     [search]="_paginatorOptions.pendenze.search" [refresh]="_paginatorOptions.pendenze.refresh"></link-filter-card>
-  <link-simple-list-card (over-icon-click)="_listCardIconClick($event)" (menu-action-click)="_listCardAction($event)"
+  <link-simple-list-card (over-icon-click)="_listCardIconClick($event)" (menu-action-click)="_listCardAction($event)" [trigger-icon]="'add'"
                          title="Connettori" [data-list]="connettori" [show-actions]="_PLUS_CREDIT" [action-list]="['edit', 'delete']"
                          [show-menu-actions]="_PLUS_CREDIT && _availableConnectors.length !== 0" [menu-actions]="_availableConnectors"></link-simple-list-card>
 </div>

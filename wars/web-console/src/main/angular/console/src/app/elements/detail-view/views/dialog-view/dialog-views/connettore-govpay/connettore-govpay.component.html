@@ -11,7 +11,7 @@
       <div class="row">
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
           <mat-select [placeholder]="_Voce.VERSIONE_CSV" formControlName="versioneCsv_ctrl" [required]="!!govpayAbilitato?.value">
-            <mat-option value="7.0">7.0</mat-option>
+            <mat-option value="1.0">1.0</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
@@ -40,6 +40,12 @@
       <div class="row" *ngIf="tipoConnettore.value === Util.CONNETTORE_MODALITA_EMAIL">
         <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
           <input matInput [placeholder]="_Voce.OGGETTO" formControlName="emailSubject_ctrl" autocomplete="off">
+        </mat-form-field>
+      </div>
+      <div class="row" *ngIf="tipoConnettore.value === Util.CONNETTORE_MODALITA_FILESYSTEM">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <input matInput [placeholder]="_Voce.PATH" formControlName="fileSystemPath_ctrl" autocomplete="off"
+                 [required]="govpayAbilitato?.value && govpayModalita === Util.CONNETTORE_MODALITA_FILESYSTEM">
         </mat-form-field>
       </div>
     </mat-card>

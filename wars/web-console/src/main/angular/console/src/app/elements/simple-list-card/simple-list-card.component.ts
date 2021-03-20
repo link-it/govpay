@@ -14,6 +14,7 @@ export class SimpleListCardComponent implements OnInit {
   @Input('show-actions') _showActions: boolean = false;
   @Input('action-list') _iconsList: string[] = ['edit'];
 
+  @Input('trigger-icon') _triggerIcon: string = 'more_vert';
   @Input('show-menu-actions') _showMenuActions: boolean = false;
   @Input('menu-actions') _menuActions: SimpleListItem[] = [];
 

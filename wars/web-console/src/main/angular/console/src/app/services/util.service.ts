@@ -535,7 +535,8 @@ export class UtilService {
   ];
 
   public static MODALITA_GOVPAY: SimpleListItem[] = [
-    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL }
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
+    { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
   ];
 
   // CSV Export
