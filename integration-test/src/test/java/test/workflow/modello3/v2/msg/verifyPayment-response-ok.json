@@ -1,0 +1,21 @@
+{
+	"esitoVerifica" : {
+	    "paymentList" : {
+	    	"paymentOptionDescription" :
+			    [
+			    	{
+		    		    "amount" : "#? _ == pendenzaPut.importo || _ == pendenzaPut.importo.toString()",
+					    "options" : "EQ",
+					    "dueDate" : "#ignore",
+					    "detailDescription" : "#string",
+					    "transferType" : "#ignore"
+			    	}
+			    ]
+	     },
+	    "paymentDescription" : "",
+	    "fiscalCodePA" : "#(idDominio)",
+	    "companyName" : "#(dominio.ragioneSociale)",
+	    "officeName" : "#ignore"
+	}, 
+	"faultBean": "##null"
+}
