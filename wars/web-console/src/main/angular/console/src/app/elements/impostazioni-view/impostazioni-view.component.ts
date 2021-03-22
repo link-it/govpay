@@ -33,7 +33,8 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
 
   protected _serverAbilitato: FormControl = new FormControl(false);
   protected _sslConfigAbilitato: FormControl = new FormControl(false);
-  protected _hostnameVerifierAbilitato: FormControl = new FormControl(false);
+  protected _trustoreLocation: FormControl = new FormControl();
+  protected _keystoreLocation: FormControl = new FormControl();
   protected _appIOBatchAbilitato: FormControl = new FormControl(false);
   protected _protezioneAbilitato: FormControl = new FormControl(false);
 
@@ -83,13 +84,13 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
       sslConfig_ctrl: this._sslConfigAbilitato,
       startTls_ctrl: new FormControl(false),
       cryptoType_ctrl: new FormControl(''),
-      hostnameVerifier_ctrl: this._hostnameVerifierAbilitato,
+      hostnameVerifier_ctrl: new FormControl(false),
       tsType_ctrl: new FormControl(''),
-      truststoreLocation_ctrl: new FormControl(''),
+      truststoreLocation_ctrl: this._trustoreLocation,
       truststorePassword_ctrl: new FormControl(''),
       truststoreAlgorithm_ctrl: new FormControl(''),
       ksType_ctrl: new FormControl(''),
-      keystoreLocation_ctrl: new FormControl(''),
+      keystoreLocation_ctrl: this._keystoreLocation,
       keystorePassword_ctrl: new FormControl(''),
       keystoreAlgorithm_ctrl: new FormControl('')
     });
@@ -253,16 +254,14 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
           (this._serverAbilitato.value)?this.serverForm.controls['sslConfig_ctrl'].enable():this.serverForm.controls['sslConfig_ctrl'].disable();
           this.serverForm.controls['cryptoType_ctrl'].setValue(_sslConfig.type || '');
           this.serverForm.controls['hostnameVerifier_ctrl'].setValue(_sslConfig.hostnameVerifier || false);
-          if (_sslConfig.hostnameVerifier) {
-            this.serverForm.controls['tsType_ctrl'].setValue(_sslConfig.trustore.type || '');
-            this.serverForm.controls['truststoreLocation_ctrl'].setValue(_sslConfig.trustore.location || '');
-            this.serverForm.controls['truststorePassword_ctrl'].setValue(_sslConfig.trustore.password || '');
-            this.serverForm.controls['truststoreAlgorithm_ctrl'].setValue(_sslConfig.trustore.managementAlgorithm || '');
-            this.serverForm.controls['ksType_ctrl'].setValue(_sslConfig.keystore.type || '');
-            this.serverForm.controls['keystoreLocation_ctrl'].setValue(_sslConfig.keystore.location || '');
-            this.serverForm.controls['keystorePassword_ctrl'].setValue(_sslConfig.keystore.password || '');
-            this.serverForm.controls['keystoreAlgorithm_ctrl'].setValue(_sslConfig.keystore.managementAlgorithm || '');
-          }
+          this.serverForm.controls['tsType_ctrl'].setValue(_sslConfig.trustore.type || '');
+          this.serverForm.controls['truststoreLocation_ctrl'].setValue(_sslConfig.trustore.location || '');
+          this.serverForm.controls['truststorePassword_ctrl'].setValue(_sslConfig.trustore.password || '');
+          this.serverForm.controls['truststoreAlgorithm_ctrl'].setValue(_sslConfig.trustore.managementAlgorithm || '');
+          this.serverForm.controls['ksType_ctrl'].setValue(_sslConfig.keystore.type || '');
+          this.serverForm.controls['keystoreLocation_ctrl'].setValue(_sslConfig.keystore.location || '');
+          this.serverForm.controls['keystorePassword_ctrl'].setValue(_sslConfig.keystore.password || '');
+          this.serverForm.controls['keystoreAlgorithm_ctrl'].setValue(_sslConfig.keystore.managementAlgorithm || '');
         }
       }
     }
@@ -371,6 +370,16 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
     });
   }
 
+  protected _ksTsValidators(value: string, fgName: string, options: any = { all: false, ctrls: [], disable: false }) {
+    (options.ctrls || []).forEach((ctrl: string) => {
+      const c: FormControl = this[fgName].controls[ctrl];
+      c.setErrors(null);
+      (value)?c.setValidators(Validators.required):c.clearValidators();
+      (!value && options.disable)?c.disable():c.enable();
+      c.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+    });
+  }
+
   onSubmit(form: string, values: any) {
     let _bodyPatch: any = {};
     switch(form) {
@@ -393,17 +402,19 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
             }
           }
         };
+        _obj.value.mailserver.sslConfig = {};
+        _obj.value.mailserver.sslConfig.abilitato = values.sslConfig_ctrl;
         if (values.sslConfig_ctrl) {
-          _obj.value.mailserver.sslConfig = {};
-          _obj.value.mailserver.sslConfig.abilitato = values.sslConfig_ctrl;
           _obj.value.mailserver.sslConfig.type = values.cryptoType_ctrl;
           _obj.value.mailserver.sslConfig.hostnameVerifier = values.hostnameVerifier_ctrl;
-          if (values.hostnameVerifier_ctrl) {
+          if (values.truststoreLocation_ctrl) {
             _obj.value.mailserver.sslConfig.trustore = {};
             _obj.value.mailserver.sslConfig.trustore.type = values.tsType_ctrl;
             _obj.value.mailserver.sslConfig.trustore.location = values.truststoreLocation_ctrl;
             _obj.value.mailserver.sslConfig.trustore.password = values.truststorePassword_ctrl;
             _obj.value.mailserver.sslConfig.trustore.managementAlgorithm = values.truststoreAlgorithm_ctrl;
+          }
+          if (values.keystoreLocation_ctrl) {
             _obj.value.mailserver.sslConfig.keystore = {};
             _obj.value.mailserver.sslConfig.keystore.type = values.ksType_ctrl;
             _obj.value.mailserver.sslConfig.keystore.location = values.keystoreLocation_ctrl;
@@ -411,6 +422,7 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
             _obj.value.mailserver.sslConfig.keystore.managementAlgorithm = values.keystoreAlgorithm_ctrl;
           }
         }
+        _bodyPatch = [_obj];
         break;
       case 'avvisaturaAppIOForm':
         _bodyPatch = [{
