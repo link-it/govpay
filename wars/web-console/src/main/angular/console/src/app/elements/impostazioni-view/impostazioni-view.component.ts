@@ -33,7 +33,7 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
 
   protected _serverAbilitato: FormControl = new FormControl(false);
   protected _sslConfigAbilitato: FormControl = new FormControl(false);
-  protected _trustoreLocation: FormControl = new FormControl();
+  protected _truststoreLocation: FormControl = new FormControl();
   protected _keystoreLocation: FormControl = new FormControl();
   protected _appIOBatchAbilitato: FormControl = new FormControl(false);
   protected _protezioneAbilitato: FormControl = new FormControl(false);
@@ -86,7 +86,7 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
       cryptoType_ctrl: new FormControl(''),
       hostnameVerifier_ctrl: new FormControl(false),
       tsType_ctrl: new FormControl(''),
-      truststoreLocation_ctrl: this._trustoreLocation,
+      truststoreLocation_ctrl: this._truststoreLocation,
       truststorePassword_ctrl: new FormControl(''),
       truststoreAlgorithm_ctrl: new FormControl(''),
       ksType_ctrl: new FormControl(''),
@@ -254,10 +254,10 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
           (this._serverAbilitato.value)?this.serverForm.controls['sslConfig_ctrl'].enable():this.serverForm.controls['sslConfig_ctrl'].disable();
           this.serverForm.controls['cryptoType_ctrl'].setValue(_sslConfig.type || '');
           this.serverForm.controls['hostnameVerifier_ctrl'].setValue(_sslConfig.hostnameVerifier || false);
-          this.serverForm.controls['tsType_ctrl'].setValue(_sslConfig.trustore.type || '');
-          this.serverForm.controls['truststoreLocation_ctrl'].setValue(_sslConfig.trustore.location || '');
-          this.serverForm.controls['truststorePassword_ctrl'].setValue(_sslConfig.trustore.password || '');
-          this.serverForm.controls['truststoreAlgorithm_ctrl'].setValue(_sslConfig.trustore.managementAlgorithm || '');
+          this.serverForm.controls['tsType_ctrl'].setValue(_sslConfig.truststore.type || '');
+          this.serverForm.controls['truststoreLocation_ctrl'].setValue(_sslConfig.truststore.location || '');
+          this.serverForm.controls['truststorePassword_ctrl'].setValue(_sslConfig.truststore.password || '');
+          this.serverForm.controls['truststoreAlgorithm_ctrl'].setValue(_sslConfig.truststore.managementAlgorithm || '');
           this.serverForm.controls['ksType_ctrl'].setValue(_sslConfig.keystore.type || '');
           this.serverForm.controls['keystoreLocation_ctrl'].setValue(_sslConfig.keystore.location || '');
           this.serverForm.controls['keystorePassword_ctrl'].setValue(_sslConfig.keystore.password || '');
@@ -408,11 +408,11 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
           _obj.value.mailserver.sslConfig.type = values.cryptoType_ctrl;
           _obj.value.mailserver.sslConfig.hostnameVerifier = values.hostnameVerifier_ctrl;
           if (values.truststoreLocation_ctrl) {
-            _obj.value.mailserver.sslConfig.trustore = {};
-            _obj.value.mailserver.sslConfig.trustore.type = values.tsType_ctrl;
-            _obj.value.mailserver.sslConfig.trustore.location = values.truststoreLocation_ctrl;
-            _obj.value.mailserver.sslConfig.trustore.password = values.truststorePassword_ctrl;
-            _obj.value.mailserver.sslConfig.trustore.managementAlgorithm = values.truststoreAlgorithm_ctrl;
+            _obj.value.mailserver.sslConfig.truststore = {};
+            _obj.value.mailserver.sslConfig.truststore.type = values.tsType_ctrl;
+            _obj.value.mailserver.sslConfig.truststore.location = values.truststoreLocation_ctrl;
+            _obj.value.mailserver.sslConfig.truststore.password = values.truststorePassword_ctrl;
+            _obj.value.mailserver.sslConfig.truststore.managementAlgorithm = values.truststoreAlgorithm_ctrl;
           }
           if (values.keystoreLocation_ctrl) {
             _obj.value.mailserver.sslConfig.keystore = {};
