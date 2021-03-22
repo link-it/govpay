@@ -317,7 +317,7 @@
                         </mat-form-field>
                         <p class="color-gray">{{ Voce.TRUSTSTORE }}</p>
                         <mat-form-field class="w-100" color="accent">
-                          <mat-select [placeholder]="Voce.TIPO" formControlName="tsType_ctrl" [compareWith]="_ksTsTypeCmpFn" [required]="!!_trustoreLocation.value">
+                          <mat-select [placeholder]="Voce.TIPO" formControlName="tsType_ctrl" [compareWith]="_ksTsTypeCmpFn" [required]="!!_truststoreLocation.value">
                             <mat-option *ngFor="let item of Util.TIPI_KEYSTORE_TRUSTSTORE" [value]="item.value">{{item.label}}</mat-option>
                           </mat-select>
                         </mat-form-field>
@@ -326,10 +326,10 @@
                                           { ctrls: ['truststorePassword_ctrl', 'truststoreAlgorithm_ctrl', 'tsType_ctrl'] })">
                         </mat-form-field>
                         <mat-form-field class="w-100" color="accent">
-                          <input matInput [placeholder]="Voce.TRUST_STORE_PWD" formControlName="truststorePassword_ctrl" [required]="!!_trustoreLocation.value">
+                          <input matInput [placeholder]="Voce.TRUST_STORE_PWD" formControlName="truststorePassword_ctrl" [required]="!!_truststoreLocation.value">
                         </mat-form-field>
                         <mat-form-field class="w-100" color="accent">
-                          <input matInput [placeholder]="Voce.ALGORITHM" formControlName="truststoreAlgorithm_ctrl" [required]="!!_trustoreLocation.value">
+                          <input matInput [placeholder]="Voce.ALGORITHM" formControlName="truststoreAlgorithm_ctrl" [required]="!!_truststoreLocation.value">
                         </mat-form-field>
                         <p class="color-gray">{{ Voce.KEYSTORE }}</p>
                         <mat-form-field class="w-100" color="accent">
