@@ -272,6 +272,7 @@ public class GiornaleEventi {
 				|| EventoContext.APISECIM_TIPOEVENTO_SECIMINVIATRACCIATOEMAIL.equals(operazione)
 				|| EventoContext.APISECIM_TIPOEVENTO_SECIMINVIATRACCIATOFILESYSTEM.equals(operazione)
 				|| EventoContext.APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOEMAIL.equals(operazione)
+				|| EventoContext.APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOFILESYSTEM.equals(operazione)
 				) {
 			return true;
 		}

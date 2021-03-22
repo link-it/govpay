@@ -47,6 +47,38 @@ Examples:
 | tipiPendenza | [ '#(codEntrataSegreteria)' ] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
 | tipiPendenza | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
 
+
+Scenario Outline: Modifica di un connettore govpay di un dominio con connettore di tipo file system (<field>)
+
+* set dominio.servizioGovPay.tipoConnettore = 'FILESYSTEM'
+* set dominio.servizioGovPay.fileSystemPath = '/tmp/'
+* set dominio.servizioGovPay.<field> = <value>
+* def checkValue = <retValue> != null ? <retValue> : '#notpresent'
+
+Given url backofficeBaseurl
+And path 'domini', idDominio
+And headers basicAutenticationHeader
+And request dominio
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'domini', idDominio
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.servizioGovPay.<field> == checkValue
+
+Examples:
+| field | value | retValue | 
+| abilitato | false | false |
+| versioneCsv | '1.0' | '1.0' |
+| fileSystemPath | '/var/' | '/var/' |
+| tipiPendenza | [ '#(codEntrataSegreteria)' ] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
+| tipiPendenza | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
+
+
+
 Scenario Outline: Modifica di un servizio govpay di un dominio con connettore di tipo email <field> non valida
 
 * set dominio.servizioGovPay.<fieldRequest> = <fieldValue>
@@ -66,6 +98,29 @@ Examples:
 | versioneCsv | fieldRequest | null | 'versioneCsv' |
 | emailIndirizzi | emailIndirizzi | null | 'emailIndirizzi' |
 | emailIndirizzi | emailIndirizzi | ['mail@errata@it'] | 'emailIndirizzi' |
+| tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
+| tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
+
+Scenario Outline: Modifica di un servizio govpay di un dominio con connettore di tipo file system <field> non valida
+
+* set dominio.servizioGovPay.tipoConnettore = 'FILESYSTEM'
+* set dominio.servizioGovPay.fileSystemPath = '/tmp/'
+* set dominio.servizioGovPay.<fieldRequest> = <fieldValue>
+
+Given url backofficeBaseurl
+And path 'domini', idDominio
+And headers basicAutenticationHeader
+And request dominio
+When method put
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| versioneCsv | fieldRequest | null | 'versioneCsv' |
+| fileSystemPath | fileSystemPath | null | 'fileSystemPath' |
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
 | tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
 

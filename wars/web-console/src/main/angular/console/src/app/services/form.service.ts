@@ -29,6 +29,7 @@ export class FormService {
   public static FORM_DATA_INIZIO: string = 'Data da';
   public static FORM_DATA_FINE: string = 'Data a';
   public static FORM_VERIFICATO: string = 'Stato verifica';
+  public static FORM_LIVELLO_SEVERITA: string = 'Livello di errore';
 
   //PSP
   // public static FORM_BOLLO: string = 'Bollo';

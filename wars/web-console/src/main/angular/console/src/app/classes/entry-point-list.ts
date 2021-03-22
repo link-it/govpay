@@ -56,6 +56,9 @@ import { ReportProspettoRiscossioniViewComponent } from '../elements/detail-view
 import { AutorizzazioneEnteUoViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/autorizzazione-ente-uo-view/autorizzazione-ente-uo-view.component';
 import { TentativoRTViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/tentativo-rt-view/tentativo-rt-view.component';
 import { ProfiloUtenteViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/profilo-utente-view/profilo-utente-view.component';
+import { ConnettoreMypivotComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-mypivot/connettore-mypivot.component';
+import { ConnettoreSecimComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-secim/connettore-secim.component';
+import { ConnettoreGovpayComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-govpay/connettore-govpay.component';
 
 export class EntryPointList {
 
@@ -111,7 +114,10 @@ export class EntryPointList {
     SelectViewComponent,
     BooleanViewComponent,
     LabelViewComponent,
-    ProfiloUtenteViewComponent
+    ProfiloUtenteViewComponent,
+    ConnettoreMypivotComponent,
+    ConnettoreSecimComponent,
+    ConnettoreGovpayComponent
   ];
 
   public static getComponentByName(name: string):Type<any> {
@@ -255,6 +261,15 @@ export class EntryPointList {
         break;
       case UtilService.PROFILO_UTENTE:
         _type = ProfiloUtenteViewComponent;
+        break;
+      case UtilService.CONNETTORE_MY_PIVOT:
+        _type = ConnettoreMypivotComponent;
+        break;
+      case UtilService.CONNETTORE_SECIM:
+        _type = ConnettoreSecimComponent;
+        break;
+      case UtilService.CONNETTORE_GOVPAY:
+        _type = ConnettoreGovpayComponent;
         break;
       //Material Lib
       case UtilService.INPUT:
@@ -421,6 +436,18 @@ export class EntryPointList {
       case 'TentativoRTViewComponent':
         _name = UtilService.TENTATIVO_RT;
         break;
+      case 'ProfiloUtenteViewComponent':
+        _name = UtilService.PROFILO_UTENTE;
+        break;
+      case 'ConnettoreMypivotComponent':
+        _name = UtilService.CONNETTORE_MY_PIVOT;
+        break;
+      case 'ConnettoreSecimComponent':
+        _name = UtilService.CONNETTORE_SECIM;
+        break;
+      case 'ConnettoreGovpayComponent':
+        _name = UtilService.CONNETTORE_GOVPAY;
+        break;
       //Material Lib
       case 'InputViewComponent':
         _name = UtilService.INPUT;
@@ -439,9 +466,6 @@ export class EntryPointList {
         break;
       case 'BooleanViewComponent':
         _name = UtilService.SLIDE_TOGGLE;
-        break;
-      case 'ProfiloUtenteViewComponent':
-        _name = UtilService.PROFILO_UTENTE;
         break;
       //Default Item view ref
       default:

@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs/Subscription';
 import * as moment from 'moment';
 import { HttpClient } from '@angular/common/http';
 import { Voce } from './voce.service';
+import { SimpleListItem } from '../elements/simple-list-card/simple-list-card.component';
 
 declare let GovPayConfig: any;
 
@@ -161,6 +162,12 @@ export class UtilService {
     ESEGUITO: 'Eseguito',
     ESEGUITO_CON_ERRORI: 'Eseguito con errori',
     SCARTATO: 'Scartato'
+  };
+
+  //LIVELLI SEVERITA
+  public static LIVELLI_SEVERITA: any = {
+    2: 'Warning',
+    4: 'Fatal'
   };
 
   //TIPOLOGIE OPERAZIONI TRACCIATO
@@ -458,6 +465,11 @@ export class UtilService {
   public static TIPI_PENDENZA: string = 'tipi_pendenza';
   public static TIPO_PENDENZA: string = 'tipo_pendenza';
   public static TIPI_PENDENZA_DOMINIO: string = 'tipi_pendenza_dominio';
+  public static CONNETTORE_MY_PIVOT: string = 'connettore_my_pivot';
+  public static CONNETTORE_SECIM: string = 'connettore_secim';
+  public static CONNETTORE_GOVPAY: string = 'connettore_govpay';
+  public static CONNETTORE_MODALITA_EMAIL: string = 'EMAIL';
+  public static CONNETTORE_MODALITA_FILESYSTEM: string = 'FILESYSTEM';
   public static TENTATIVO_RT: string = 'tentativo_rt';
   public static ENTRATA_DOMINIO: string = 'entrata_dominio';
   public static UNITA_OPERATIVA: string = 'unita_operativa';
@@ -510,6 +522,28 @@ export class UtilService {
   public static EXPORT_TRACCIATO_AVVISI: string = 'esporta_tracciato_avvisi';
   public static ESCLUDI_NOTIFICA: string = 'escludi_notifica';
   public static VISTA_COMPLETA_EVENTO_JSON: string = 'vista_completa_evento_json';
+
+  // CONNETTORI
+  public static CONNETTORI: SimpleListItem[] = [
+    { label: 'MyPivot', value: UtilService.CONNETTORE_MY_PIVOT },
+    { label: 'SECIM', value: UtilService.CONNETTORE_SECIM },
+    { label: 'GovPay', value: UtilService.CONNETTORE_GOVPAY }
+  ];
+
+  public static MODALITA_MYPIVOT: SimpleListItem[] = [
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
+    { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
+  ];
+
+  public static MODALITA_SECIM: SimpleListItem[] = [
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
+    { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
+  ];
+
+  public static MODALITA_GOVPAY: SimpleListItem[] = [
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
+    { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
+  ];
 
   // CSV Export
   protected _csv: any;
@@ -903,6 +937,24 @@ export class UtilService {
     });
 
     return (item && item[0].label) || '';
+  }
+
+  /**
+   * Get query param value
+   * @param query string
+   * @param param string
+   * @returns {string}
+   */
+  getQueryParamValue(query: string, param: string): string {
+    let value = '';
+    query.split('&').some(function(p: string) {
+      const name: string[] = p.split('=');
+      if (param === name[0]) {
+        value = (name[1] || '');
+        return true;
+      }
+    });
+    return value;
   }
 
   /**
@@ -1406,13 +1458,17 @@ export class UtilService {
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
-          new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, placeholder: FormService.FORM_PH_A2A, type: UtilService.INPUT }),
+          new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
+              eventType: 'idA2A-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPagamento() }),
+          new FormInput({ id: 'severitaDa', label: FormService.FORM_LIVELLO_SEVERITA, noOptionLabel: 'Info', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, showTooltip: false,
+            values: this.livelliSeverita(), dependency: 'stato', target: this.getKeyByValue(UtilService.STATI_PAGAMENTO, UtilService.STATI_PAGAMENTO.FALLITO) }),
           new FormInput({ id: 'id', label: FormService.FORM_SESSIONE, placeholder: FormService.FORM_PH_SESSIONE, type: UtilService.INPUT }),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_INIZIO, type: UtilService.DATE_PICKER, }),
           new FormInput({ id: 'dataA', label: FormService.FORM_DATA_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' }),
-          new FormInput({ id: 'verificato', label: FormService.FORM_VERIFICATO, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiVerifica() })
+          new FormInput({ id: 'verificato', label: FormService.FORM_VERIFICATO, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiVerifica() }),
         ];
         break;
       case UtilService.APPLICAZIONI:
@@ -1661,6 +1717,12 @@ export class UtilService {
   statiVerifica(): any[] {
     return Object.keys(UtilService.VERIFICHE).map((key) => {
       return { label: UtilService.VERIFICHE[key], value: key == 'true' };
+    });
+  }
+
+  livelliSeverita(): any[] {
+    return Object.keys(UtilService.LIVELLI_SEVERITA).map((key) => {
+      return { label: UtilService.LIVELLI_SEVERITA[key], value: key };
     });
   }
 

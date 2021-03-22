@@ -96,6 +96,7 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
         event.target.value = fluxIUV.label;
         event.target.blur();
       }
+      this.fGroup.controls['sct_ctrl'].setValue('');
       if (fluxIUV.flusso && fluxIUV.trn) {
         this.fGroup.controls['sct_ctrl'].setValue(fluxIUV.trn);
       }
