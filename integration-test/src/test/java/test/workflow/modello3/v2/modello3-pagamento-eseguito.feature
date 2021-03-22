@@ -14,7 +14,7 @@ Background:
 * def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
 * def dominioNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/dominio.json')
 
-* def esitoVerifyPayment = read('classpath:test/workflow/modello3/v1/msg/verifyPayment-response-ok.json')
+* def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
 
 Scenario: Pagamento eseguito dovuto precaricato con verifica
 
@@ -26,12 +26,14 @@ Scenario: Pagamento eseguito dovuto precaricato con verifica
 
 # Configurazione del simulatore
 
+* set dominioNdpSymPut.versione = 1
+
 * call read('classpath:utils/nodo-config-dominio-put.feature')
 
 # Verifico il pagamento
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
-* match response.esitoVerifica == esitoVerifyPayment
+# * call read('classpath:utils/psp-verifica-rpt.feature')
+# * match response.esitoVerifica == esitoVerifyPayment
 
 
 
