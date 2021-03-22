@@ -250,18 +250,27 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
         this.serverForm.controls['startTls_ctrl'].setValue(this.json.mailBatch.mailserver.startTls || false);
         if (this.json.mailBatch.mailserver.sslConfig && this.json.mailBatch.mailserver.sslConfig.abilitato) {
           const _sslConfig: any = this.json.mailBatch.mailserver.sslConfig;
-          this.serverForm.controls['sslConfig_ctrl'].setValue(_sslConfig.abilitato || false);
-          (this._serverAbilitato.value)?this.serverForm.controls['sslConfig_ctrl'].enable():this.serverForm.controls['sslConfig_ctrl'].disable();
-          this.serverForm.controls['cryptoType_ctrl'].setValue(_sslConfig.type || '');
-          this.serverForm.controls['hostnameVerifier_ctrl'].setValue(_sslConfig.hostnameVerifier || false);
-          this.serverForm.controls['tsType_ctrl'].setValue(_sslConfig.truststore.type || '');
-          this.serverForm.controls['truststoreLocation_ctrl'].setValue(_sslConfig.truststore.location || '');
-          this.serverForm.controls['truststorePassword_ctrl'].setValue(_sslConfig.truststore.password || '');
-          this.serverForm.controls['truststoreAlgorithm_ctrl'].setValue(_sslConfig.truststore.managementAlgorithm || '');
-          this.serverForm.controls['ksType_ctrl'].setValue(_sslConfig.keystore.type || '');
-          this.serverForm.controls['keystoreLocation_ctrl'].setValue(_sslConfig.keystore.location || '');
-          this.serverForm.controls['keystorePassword_ctrl'].setValue(_sslConfig.keystore.password || '');
-          this.serverForm.controls['keystoreAlgorithm_ctrl'].setValue(_sslConfig.keystore.managementAlgorithm || '');
+          this.serverForm.controls['sslConfig_ctrl'].disable();
+          if (_sslConfig) {
+            this.serverForm.controls['sslConfig_ctrl'].setValue(_sslConfig.abilitato || false);
+            if (this._serverAbilitato.value) {
+              this.serverForm.controls['sslConfig_ctrl'].enable();
+            }
+            this.serverForm.controls['cryptoType_ctrl'].setValue(_sslConfig.type || '');
+            this.serverForm.controls['hostnameVerifier_ctrl'].setValue(_sslConfig.hostnameVerifier || false);
+            if (_sslConfig.truststore) {
+              this.serverForm.controls['tsType_ctrl'].setValue(_sslConfig.truststore.type || '');
+              this.serverForm.controls['truststoreLocation_ctrl'].setValue(_sslConfig.truststore.location || '');
+              this.serverForm.controls['truststorePassword_ctrl'].setValue(_sslConfig.truststore.password || '');
+              this.serverForm.controls['truststoreAlgorithm_ctrl'].setValue(_sslConfig.truststore.managementAlgorithm || '');
+            }
+            if (_sslConfig.keystore) {
+              this.serverForm.controls['ksType_ctrl'].setValue(_sslConfig.keystore.type || '');
+              this.serverForm.controls['keystoreLocation_ctrl'].setValue(_sslConfig.keystore.location || '');
+              this.serverForm.controls['keystorePassword_ctrl'].setValue(_sslConfig.keystore.password || '');
+              this.serverForm.controls['keystoreAlgorithm_ctrl'].setValue(_sslConfig.keystore.managementAlgorithm || '');
+            }
+          }
         }
       }
     }
