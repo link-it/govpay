@@ -231,7 +231,7 @@ public class DominiBD extends BasicBD {
 				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
 					this.getConnettoreService().create(connettore);
 				}
-			}
+			} 
 			
 			if(dominio.getConnettoreSecim() != null) {
 				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreSecim());
@@ -300,7 +300,7 @@ public class DominiBD extends BasicBD {
 				// 	autocommit false		
 				this.setAutoCommit(false);
 			}
-						
+			
 			it.govpay.orm.Dominio vo = DominioConverter.toVO(dominio);
 			IdDominio id = this.getDominioService().convertToId(vo);
 
@@ -320,6 +320,10 @@ public class DominiBD extends BasicBD {
 				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
 					this.getConnettoreService().create(connettore);
 				}
+			} else {
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, getIDConnettoreMyPivot(dominio.getCodDominio()));
+				this.getConnettoreService().deleteAll(expDelete);
 			}
 			
 			if(dominio.getConnettoreSecim() != null) {
@@ -332,6 +336,10 @@ public class DominiBD extends BasicBD {
 				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
 					this.getConnettoreService().create(connettore);
 				}
+			} else {
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, getIDConnettoreSecim(dominio.getCodDominio()));
+				this.getConnettoreService().deleteAll(expDelete);
 			}
 			
 			if(dominio.getConnettoreGovPay() != null) {
@@ -344,6 +352,10 @@ public class DominiBD extends BasicBD {
 				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
 					this.getConnettoreService().create(connettore);
 				}
+			} else {
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, getIDConnettoreGovPay(dominio.getCodDominio()));
+				this.getConnettoreService().deleteAll(expDelete);
 			}
 			
 			this.emitAudit(dominio);

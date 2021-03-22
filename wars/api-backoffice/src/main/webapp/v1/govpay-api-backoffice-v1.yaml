@@ -7456,6 +7456,7 @@ components:
           type: string
           enum:
             - 'EMAIL'
+            - 'FILESYSTEM'
         versioneCsv:
           type: string
           example: '7.0'
@@ -7468,6 +7469,9 @@ components:
         emailSubject:
           type: string
           description: Subject da inserire nella mail
+        fileSystemPath:
+          type: string
+          description: Path nel quale verra' salvato il tracciato
         tipiPendenza:
           type: array
           description: tipi pendenza da includere nel tracciato
