@@ -111,6 +111,10 @@ public class ConnettoreNotificaPagamentiGovPayConverter {
 				connettore.setEmailIndirizzi(connector.getEmailIndirizzi());
 				connettore.setEmailSubject(connector.getEmailSubject());
 				break;
+			case FILESYSTEM:
+				connettore.setTipoConnettore(TipoConnettore.FILE_SYSTEM);
+				connettore.setFileSystemPath(connector.getFileSystemPath());
+				break;
 			}
 		}
 		
@@ -132,6 +136,9 @@ public class ConnettoreNotificaPagamentiGovPayConverter {
 				rsModel.setEmailSubject(connettore.getEmailSubject());
 				break;
 			case FILE_SYSTEM:
+				rsModel.setTipoConnettore(TipoConnettoreEnum.FILESYSTEM);
+				rsModel.setFileSystemPath(connettore.getFileSystemPath());
+				break;
 			case WEB_SERVICE:
 				break;
 			}
