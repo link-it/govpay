@@ -578,6 +578,13 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "doc_descrizione";
 			}
 		}
+		if(field.equals(VistaVersamento.model().PROPRIETA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".proprieta";
+			}else{
+				return "proprieta";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -808,6 +815,9 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(VistaVersamento.model(), returnAlias);
 		}
 		if(field.equals(VistaVersamento.model().DOC_DESCRIZIONE)){
+			return this.toTable(VistaVersamento.model(), returnAlias);
+		}
+		if(field.equals(VistaVersamento.model().PROPRIETA)){
 			return this.toTable(VistaVersamento.model(), returnAlias);
 		}
 

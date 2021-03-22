@@ -1,6 +1,10 @@
 package it.govpay.core.dao.anagrafica.dto;
 
+import java.util.List;
+
 import org.springframework.security.core.Authentication;
+
+import it.govpay.core.beans.tracciati.LinguaSecondaria;
 
 public class GetDocumentoAvvisiDTO extends BasicRequestDTO {
 	
@@ -9,6 +13,8 @@ public class GetDocumentoAvvisiDTO extends BasicRequestDTO {
 	private String codDominio;
 	private String numeroDocumento;
 	private FormatoDocumento formato;
+	private LinguaSecondaria linguaSecondaria = null;
+	private List<String> numeriAvviso = null;
 	
 	public GetDocumentoAvvisiDTO(Authentication user, String codDominio){
 		this(user, codDominio, null);
@@ -41,6 +47,16 @@ public class GetDocumentoAvvisiDTO extends BasicRequestDTO {
 	public void setNumeroDocumento(String numeroDocumento) {
 		this.numeroDocumento = numeroDocumento;
 	}
-
-	
+	public LinguaSecondaria getLinguaSecondaria() {
+		return linguaSecondaria;
+	}
+	public void setLinguaSecondaria(LinguaSecondaria linguaSecondaria) {
+		this.linguaSecondaria = linguaSecondaria;
+	}
+	public List<String> getNumeriAvviso() {
+		return numeriAvviso;
+	}
+	public void setNumeriAvviso(List<String> numeriAvviso) {
+		this.numeriAvviso = numeriAvviso;
+	}
 }

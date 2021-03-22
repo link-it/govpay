@@ -1,0 +1,17 @@
+<mat-card class="shadow no-border-radius mb-4 pb-0">
+  <div class="d-flex flex-row">
+    <p class="w-100 mr-3 matcard-title color-gray regular-24 lh-100 mb-3">{{_title}}</p>
+    <button mat-icon-button [matMenuTriggerFor]="actionMenu" *ngIf="_showMenuActions"><mat-icon>{{_triggerIcon}}</mat-icon></button>
+  </div>
+  <mat-menu #actionMenu="matMenu">
+    <button mat-menu-item *ngFor="let ma of _menuActions" (click)="_actionTriggerClick(ma.value)">{{ma.label}}</button>
+  </mat-menu>
+  <mat-card-content>
+    <p class="d-block matcard-title py-3 regular-16 normal-color" *ngIf="_dataList.length == 0">{{_noDataLabel}}</p>
+    <div class="d-block" *ngIf="_dataList.length != 0">
+      <link-item-view #elLiv class="d-block link-item-view-fill-mat-card" *ngFor="let item of _dataList"
+                      [component-data]="item" [use-item-view-directive]="_directiveEnable" (icon-click)="_iconOverClick(elLiv, $event)"
+                      [over-icons]="_iconsList" [show-over-icons]="_showActions"></link-item-view>
+    </div>
+  </mat-card-content>
+</mat-card>

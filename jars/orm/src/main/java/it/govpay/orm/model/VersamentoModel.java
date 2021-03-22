@@ -105,6 +105,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.AVV_APP_IO_DATA_PROM_SCADENZA = new Field("avvAppIoDataPromScadenza",java.util.Date.class,"Versamento",Versamento.class);
 		this.AVV_APP_IO_PROM_SCAD_NOTIFICATO = new Field("avvAppIoPromScadNotificato",Boolean.class,"Versamento",Versamento.class);
 		this.ID_OPERAZIONE = new it.govpay.orm.model.IdOperazioneModel(new Field("idOperazione",it.govpay.orm.IdOperazione.class,"Versamento",Versamento.class));
+		this.PROPRIETA = new Field("proprieta",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -176,6 +177,7 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.AVV_APP_IO_DATA_PROM_SCADENZA = new ComplexField(father,"avvAppIoDataPromScadenza",java.util.Date.class,"Versamento",Versamento.class);
 		this.AVV_APP_IO_PROM_SCAD_NOTIFICATO = new ComplexField(father,"avvAppIoPromScadNotificato",Boolean.class,"Versamento",Versamento.class);
 		this.ID_OPERAZIONE = new it.govpay.orm.model.IdOperazioneModel(new ComplexField(father,"idOperazione",it.govpay.orm.IdOperazione.class,"Versamento",Versamento.class));
+		this.PROPRIETA = new ComplexField(father,"proprieta",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -308,6 +310,8 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField AVV_APP_IO_PROM_SCAD_NOTIFICATO = null;
 	 
 	public it.govpay.orm.model.IdOperazioneModel ID_OPERAZIONE = null;
+	 
+	public IField PROPRIETA = null;
 	 
 
 	@Override

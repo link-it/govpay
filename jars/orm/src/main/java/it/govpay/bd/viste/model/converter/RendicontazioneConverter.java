@@ -198,6 +198,8 @@ public class RendicontazioneConverter {
 		
 		if(vo.getVrsTipo() != null)
 			versamento.setTipo(TipologiaTipoVersamento.toEnum(vo.getVrsTipo()));
+		
+		versamento.setProprieta(vo.getVrsProprieta());
 
 		dto.setVersamento(versamento );
 

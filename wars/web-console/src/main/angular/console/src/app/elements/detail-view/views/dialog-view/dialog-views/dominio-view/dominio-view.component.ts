@@ -150,7 +150,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
   protected _reloadFile(_url: string, bypass: boolean = false) {
     let _result = _url;
 
-    if(!bypass && _url.indexOf('svg') != -1 && _url.indexOf('base64,') != -1) {
+    if(!bypass && _url.indexOf('data:image/svg+xml;') != -1 && _url.indexOf('base64,') != -1) {
       let _hasColor: boolean = false;
       let _bsvg = _url.split('base64,')[1];
       let _xsvg = atob(_bsvg);

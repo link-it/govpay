@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.20.0"
+  version: "1.21.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -2935,6 +2935,7 @@ paths:
           schema:
             type: string
             pattern: '(^[0-9]{18}$)'
+        - $ref: '#/components/parameters/linguaSecondaria'
       responses:
         '200':
           description: Avviso di pagamento
@@ -2977,6 +2978,8 @@ paths:
           schema:
             type: string
             pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
+        - $ref: '#/components/parameters/linguaSecondaria'
+        - $ref: '#/components/parameters/listaNumeriAvviso'
       responses:
         '200':
           description: Avviso di pagamento
@@ -4359,6 +4362,25 @@ components:
       schema:
         type: string
       example: 'RSSMRA30A01H501I'
+    linguaSecondaria:
+      name: linguaSecondaria
+      in: query
+      description: >- 
+            Indica se creare l'avviso in modalita' multilingua e quale seconda lingua affiancare all'italiano all'interno dell'avviso 
+      required: false
+      schema:
+        $ref: '#/components/schemas/LinguaSecondaria'
+    listaNumeriAvviso:
+      in: query
+      name: numeriAvviso
+      description: Indica i numeri avviso da includere nelle stampe dei documenti
+      required: false
+      schema:
+        type: array
+        items: 
+          type: string
+          pattern: '(^[0-9]{18}$)'
+      example: ['123456789012345678']
   responses:
     '400':
       description: Richiesta non correttamente formata
@@ -6352,6 +6374,8 @@ components:
           format: date
           description: Data in cui inviare il promemoria di scadenza della pendenza.
           example: '2020-12-31'
+        proprieta:
+          $ref: '#/components/schemas/ProprietaPendenza'
     pendenzaPut:
       type: object
       allOf:
@@ -7485,6 +7509,7 @@ components:
           type: string
           enum:
             - 'EMAIL'
+            - 'FILESYSTEM'
         versioneCsv:
           type: string
           example: '7.0'
@@ -7497,6 +7522,9 @@ components:
         emailSubject:
           type: string
           description: Subject da inserire nella mail
+        fileSystemPath:
+          type: string
+          description: Path nel quale verra' salvato il tracciato
         tipiPendenza:
           type: array
           description: tipi pendenza da includere nel tracciato
@@ -8692,14 +8720,49 @@ components:
           type: string
           description: Identificativo della divisione interna all'ente creditore
           example: Divisione001
+    LinguaSecondaria:
+      example: 'false'
+      type: string
+      enum:
+        - 'false'
+        - 'de'
+        - 'en'
+        - 'fr'
+        - 'sl'
     Pagina:
       type: integer
       default: 1
       minimum: 1
+    ProprietaPendenza:
+      type: object
+      description: Dati supporto per la gestione del ciclo di vita della pendenza.
+      properties:
+        linguaSecondaria:
+          $ref: '#/components/schemas/LinguaSecondaria'
+        descrizioneImporto:
+          type: array
+          items: 
+            $ref: '#/components/schemas/VoceDescrizioneImporto'
+        lineaTestoRicevuta1:
+          type: string
+          description: stringa personalizzata da inserire nella ricevuta
+        lineaTestoRicevuta2:
+          type: string
+          description: stringa personalizzata da inserire nella ricevuta
     RisultatiPerPagina:
       type: integer
       default: 25
       minimum: 0
       maximum: 200
-          
+    VoceDescrizioneImporto:
+      type: object
+      properties:
+        voce: 
+          type: string
+          description: voce importo
+          example: canone annuo
+        importo: 
+          type: number
+          description: importo
+          example: 10.01
           

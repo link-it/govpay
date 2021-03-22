@@ -725,6 +725,7 @@
     <value name="avvAppIoDataPromScadenza" field="avvAppIoDataPromScadenza" usage="optional"/>
     <value name="avvAppIoPromScadNotificato" field="avvAppIoPromScadNotificato" usage="optional"/>
     <structure name="idOperazione" field="idOperazione" usage="required" map-as="_IdOperazione_Type"/>
+    <value name="proprieta" field="proprieta" usage="optional"/>
   </mapping>
   <mapping name="Documento" class="it.govpay.orm.Documento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1086,6 +1087,7 @@
     <value name="vrsCodRata" field="vrsCodRata" usage="optional"/>
     <structure name="vrsIdDocumento" field="vrsIdDocumento" usage="optional" map-as="_IdDocumento_Type"/>
     <value name="vrsTipo" field="vrsTipo" usage="required"/>
+    <value name="vrsProprieta" field="vrsProprieta" usage="optional"/>
   </mapping>
   <mapping name="VistaRptVersamento" class="it.govpay.orm.VistaRptVersamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1179,6 +1181,7 @@
     <value name="vrsCodRata" field="vrsCodRata" usage="optional"/>
     <structure name="vrsIdDocumento" field="vrsIdDocumento" usage="optional" map-as="_IdDocumento_Type"/>
     <value name="vrsTipo" field="vrsTipo" usage="required"/>
+    <value name="vrsProprieta" field="vrsProprieta" usage="optional"/>
   </mapping>
   <mapping name="Batch" class="it.govpay.orm.Batch">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1314,6 +1317,7 @@
     <value name="codDocumento" field="codDocumento" usage="optional"/>
     <value name="tipo" field="tipo" usage="required"/>
     <value name="docDescrizione" field="docDescrizione" usage="optional"/>
+    <value name="proprieta" field="proprieta" usage="optional"/>
   </mapping>
   <mapping name="id-vista-riscossione" class="it.govpay.orm.IdVistaRiscossione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1484,5 +1488,6 @@
     <structure name="idOperazione" field="idOperazione" usage="required" map-as="_IdOperazione_Type"/>
     <value name="codDocumento" field="codDocumento" usage="optional"/>
     <value name="docDescrizione" field="docDescrizione" usage="optional"/>
+    <value name="proprieta" field="proprieta" usage="optional"/>
   </mapping>
 </binding>
