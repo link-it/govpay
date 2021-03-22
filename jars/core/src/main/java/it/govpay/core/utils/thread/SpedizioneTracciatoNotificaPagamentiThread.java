@@ -87,7 +87,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		
 		secimInviaTracciatoEmail, pivotInviaTracciatoEmail,
 		secimInviaTracciatoFileSystem, pivotInviaTracciatoFileSystem, 
-		govpayInviaTracciatoEmail
+		govpayInviaTracciatoFileSystem, govpayInviaTracciatoEmail
 	} 
 	
 	public static final String CONNETTORE_NOTIFICA_DISABILITATO = "Connettore Notifica non configurato";
@@ -484,7 +484,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 				this.eventoCtx.setTipoEvento(Operazione.secimInviaTracciatoFileSystem.name());
 				break;
 			case GOVPAY:
-				throw new ServiceException("Connettore Govpay non abilitato al salvataggio del tracciato su file system.");
+				this.eventoCtx.setTipoEvento(Operazione.govpayInviaTracciatoFileSystem.name());
 			}
 			
 			dumpRequest.setContentType("application/zip");

@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs/Subscription';
 import * as moment from 'moment';
 import { HttpClient } from '@angular/common/http';
 import { Voce } from './voce.service';
+import { SimpleListItem } from '../elements/simple-list-card/simple-list-card.component';
 
 declare let GovPayConfig: any;
 
@@ -471,6 +472,11 @@ export class UtilService {
   public static TIPI_PENDENZA: string = 'tipi_pendenza';
   public static TIPO_PENDENZA: string = 'tipo_pendenza';
   public static TIPI_PENDENZA_DOMINIO: string = 'tipi_pendenza_dominio';
+  public static CONNETTORE_MY_PIVOT: string = 'connettore_my_pivot';
+  public static CONNETTORE_SECIM: string = 'connettore_secim';
+  public static CONNETTORE_GOVPAY: string = 'connettore_govpay';
+  public static CONNETTORE_MODALITA_EMAIL: string = 'EMAIL';
+  public static CONNETTORE_MODALITA_FILESYSTEM: string = 'FILESYSTEM';
   public static TENTATIVO_RT: string = 'tentativo_rt';
   public static ENTRATA_DOMINIO: string = 'entrata_dominio';
   public static UNITA_OPERATIVA: string = 'unita_operativa';
@@ -523,6 +529,28 @@ export class UtilService {
   public static EXPORT_TRACCIATO_AVVISI: string = 'esporta_tracciato_avvisi';
   public static ESCLUDI_NOTIFICA: string = 'escludi_notifica';
   public static VISTA_COMPLETA_EVENTO_JSON: string = 'vista_completa_evento_json';
+
+  // CONNETTORI
+  public static CONNETTORI: SimpleListItem[] = [
+    { label: 'MyPivot', value: UtilService.CONNETTORE_MY_PIVOT },
+    { label: 'SECIM', value: UtilService.CONNETTORE_SECIM },
+    { label: 'GovPay', value: UtilService.CONNETTORE_GOVPAY }
+  ];
+
+  public static MODALITA_MYPIVOT: SimpleListItem[] = [
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
+    { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
+  ];
+
+  public static MODALITA_SECIM: SimpleListItem[] = [
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
+    { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
+  ];
+
+  public static MODALITA_GOVPAY: SimpleListItem[] = [
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
+    { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
+  ];
 
   // CSV Export
   protected _csv: any;
@@ -1419,7 +1447,9 @@ export class UtilService {
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
-          new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, placeholder: FormService.FORM_PH_A2A, type: UtilService.INPUT }),
+          new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
+              eventType: 'idA2A-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPagamento() }),
           new FormInput({ id: 'id', label: FormService.FORM_SESSIONE, placeholder: FormService.FORM_PH_SESSIONE, type: UtilService.INPUT }),

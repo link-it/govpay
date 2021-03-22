@@ -23,6 +23,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "versioneCsv",
 "emailIndirizzi",
 "emailSubject",
+"fileSystemPath",
 "tipiPendenza",
 })
 public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implements IValidable{
@@ -39,7 +40,10 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
     
         
             
-    EMAIL("EMAIL");
+    EMAIL("EMAIL"),
+    
+            
+    FILESYSTEM("FILESYSTEM");
             
         
     
@@ -79,6 +83,9 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
   
   @JsonProperty("emailSubject")
   private String emailSubject = null;
+  
+  @JsonProperty("fileSystemPath")
+  private String fileSystemPath = null;
   
   @JsonProperty("tipiPendenza")
   private List<Object> tipiPendenza = null;
@@ -163,6 +170,22 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
   }
 
   /**
+   * Path nel quale verra' salvato il tracciato
+   **/
+  public ConnettoreNotificaPagamentiGovPay fileSystemPath(String fileSystemPath) {
+    this.fileSystemPath = fileSystemPath;
+    return this;
+  }
+
+  @JsonProperty("fileSystemPath")
+  public String getFileSystemPath() {
+    return fileSystemPath;
+  }
+  public void setFileSystemPath(String fileSystemPath) {
+    this.fileSystemPath = fileSystemPath;
+  }
+
+  /**
    * tipi pendenza da includere nel tracciato
    **/
   public ConnettoreNotificaPagamentiGovPay tipiPendenza(List<Object> tipiPendenza) {
@@ -192,12 +215,13 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
         Objects.equals(versioneCsv, connettoreNotificaPagamentiGovPay.versioneCsv) &&
         Objects.equals(emailIndirizzi, connettoreNotificaPagamentiGovPay.emailIndirizzi) &&
         Objects.equals(emailSubject, connettoreNotificaPagamentiGovPay.emailSubject) &&
+        Objects.equals(fileSystemPath, connettoreNotificaPagamentiGovPay.fileSystemPath) &&
         Objects.equals(tipiPendenza, connettoreNotificaPagamentiGovPay.tipiPendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(abilitato, tipoConnettore, versioneCsv, emailIndirizzi, emailSubject, tipiPendenza);
+    return Objects.hash(abilitato, tipoConnettore, versioneCsv, emailIndirizzi, emailSubject, fileSystemPath, tipiPendenza);
   }
 
   public static ConnettoreNotificaPagamentiGovPay parse(String json) throws ServiceException, ValidationException {
@@ -219,6 +243,7 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
     sb.append("    versioneCsv: ").append(toIndentedString(versioneCsv)).append("\n");
     sb.append("    emailIndirizzi: ").append(toIndentedString(emailIndirizzi)).append("\n");
     sb.append("    emailSubject: ").append(toIndentedString(emailSubject)).append("\n");
+    sb.append("    fileSystemPath: ").append(toIndentedString(fileSystemPath)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -256,6 +281,9 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
 					throw new ValidationException("Il campo emailIndirizzi non deve essere vuoto.");
 				}
 				vf.getValidator("emailSubject", this.emailSubject).minLength(1).maxLength(4000);
+				break;
+			case FILESYSTEM:
+				vf.getValidator("fileSystemPath", this.fileSystemPath).notNull().minLength(1).maxLength(4000);
 				break;
 			}
 			

@@ -45,6 +45,9 @@ export class Voce {
   public static CODICE_CONTABILITA: string = 'Codice contabilità';
   public static CODICE_FISCALE: string = 'Codice fiscale';
   public static CODICE_INTERBANCARIO: string = 'Codice interbancario';
+  public static CODICE_IPA: string = 'Codice IPA';
+  public static CODICE_CLIENTE: string = 'Codice cliente';
+  public static CODICE_ISTITUTO: string = 'Codice istituto';
   public static COMMISSIONI: string = 'Commissioni';
   public static CONFIGURAZIONE_SSL: string = 'Configurazione SSL';
   public static CONTABILITA: string = 'Contabilità';
@@ -154,6 +157,7 @@ export class Voce {
   public static LAYOUT_FORM_DATI: string = 'Layout form dati';
 
   public static MODULO: string = 'Modulo interno che ha emesso l\'evento';
+  public static MODALITA_CONNETTORE: string = 'Modalità consegna';
   public static MODELLO_PAGAMENTO: string = 'Modello pagamento';
   public static MODIFICA_DOMINIO: string = 'Modifica dominio';
   public static MODIFICA_ENTE_CREDITORE: string = 'Modifica Ente creditore';
@@ -173,6 +177,7 @@ export class Voce {
   public static NUOVO_DOMINIO: string = 'Nuovo dominio';
   public static NUOVO_ENTE_CREDITORE: string = 'Nuovo Ente creditore';
 
+  public static OGGETTO: string = 'Oggetto';
   public static OPERATORE_MITTENTE: string = 'Operatore mittente';
   public static OPERAZIONI: string = 'Operazioni';
   public static OPERAZIONI_FALLITE: string = 'Totale pendenze scartate';
@@ -186,6 +191,7 @@ export class Voce {
   public static PARSER_TRACCIATI: string = 'Parser tracciati csv';
   public static PASSWORD: string = 'Password';
   public static PASSWORD_INVALID_MESSAGE: string = 'La password deve contenere almeno una minuscola, una maiuscola, un numero, un carattere speciale e deve essere almeno di 8 caratteri';
+  public static PATH: string = 'Path';
   public static PEC: string = 'Pec';
   public static PENDENZA: string = 'Pendenza';
   public static PENDENZE: string = 'Pendenze';
@@ -269,6 +275,7 @@ export class Voce {
   public static VALORE_PREDEFINITO: string = 'valore predefinito';
   public static VERSIONE_API: string = 'Versione API';
   public static VERIFICATORE_HOSTNAME: string = 'Verificatore hostname';
+  public static VERSIONE_CSV: string = 'Versione CSV';
   public static VISUALIZZAZIONE: string = 'Visualizzazione';
   public static VISTA_COMPLETA: string = 'Vista completa';
 
