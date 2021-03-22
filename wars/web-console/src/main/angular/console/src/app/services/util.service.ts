@@ -164,6 +164,12 @@ export class UtilService {
     SCARTATO: 'Scartato'
   };
 
+  //LIVELLI SEVERITA
+  public static LIVELLI_SEVERITA: any = {
+    2: 'Warning',
+    4: 'Fatal'
+  };
+
   //TIPOLOGIE OPERAZIONI TRACCIATO
   public static TIPO_OPERAZIONI_TRACCIATO: any = {
     ADD: { LABEL: 'Inserimento', KEY: 'ADD' },
@@ -947,6 +953,24 @@ export class UtilService {
   }
 
   /**
+   * Get query param value
+   * @param query string
+   * @param param string
+   * @returns {string}
+   */
+  getQueryParamValue(query: string, param: string): string {
+    let value = '';
+    query.split('&').some(function(p: string) {
+      const name: string[] = p.split('=');
+      if (param === name[0]) {
+        value = (name[1] || '');
+        return true;
+      }
+    });
+    return value;
+  }
+
+  /**
    * Get property value by path
    * @param path {string}
    * @param stack {string}
@@ -1452,10 +1476,12 @@ export class UtilService {
               eventType: 'idA2A-async-load', preventSelection: true } }, this.http),
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPagamento() }),
+          new FormInput({ id: 'severitaDa', label: FormService.FORM_LIVELLO_SEVERITA, noOptionLabel: 'Info', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, showTooltip: false,
+            values: this.livelliSeverita(), dependency: 'stato', target: this.getKeyByValue(UtilService.STATI_PAGAMENTO, UtilService.STATI_PAGAMENTO.FALLITO) }),
           new FormInput({ id: 'id', label: FormService.FORM_SESSIONE, placeholder: FormService.FORM_PH_SESSIONE, type: UtilService.INPUT }),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_INIZIO, type: UtilService.DATE_PICKER, }),
           new FormInput({ id: 'dataA', label: FormService.FORM_DATA_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' }),
-          new FormInput({ id: 'verificato', label: FormService.FORM_VERIFICATO, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiVerifica() })
+          new FormInput({ id: 'verificato', label: FormService.FORM_VERIFICATO, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiVerifica() }),
         ];
         break;
       case UtilService.APPLICAZIONI:
@@ -1704,6 +1730,12 @@ export class UtilService {
   statiVerifica(): any[] {
     return Object.keys(UtilService.VERIFICHE).map((key) => {
       return { label: UtilService.VERIFICHE[key], value: key == 'true' };
+    });
+  }
+
+  livelliSeverita(): any[] {
+    return Object.keys(UtilService.LIVELLI_SEVERITA).map((key) => {
+      return { label: UtilService.LIVELLI_SEVERITA[key], value: key };
     });
   }
 
