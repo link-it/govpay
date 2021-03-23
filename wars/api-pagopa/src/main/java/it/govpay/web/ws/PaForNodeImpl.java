@@ -1020,7 +1020,7 @@ public class PaForNodeImpl implements PaForNodePortType{
 	private <T> T buildRisposta(NdpException e, T risposta) {
 		if(risposta instanceof PaVerifyPaymentNoticeRes) {
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
-				log.warn("Errore in PaVerifyPaymentNotice: " + e);
+				log.warn("Errore in PaVerifyPaymentNotice: " + e.getMessage(), e);
 			} else {
 				log.warn("Rifiutata PaVerifyPaymentNotice con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
@@ -1036,7 +1036,7 @@ public class PaForNodeImpl implements PaForNodePortType{
 
 		if(risposta instanceof PaGetPaymentRes) {
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
-				log.warn("Errore in PaGetPayment: " + e);
+				log.warn("Errore in PaGetPayment: " + e.getMessage(), e);
 			} else {
 				log.warn("Rifiutata PaGetPayment con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
@@ -1052,7 +1052,7 @@ public class PaForNodeImpl implements PaForNodePortType{
 		
 		if(risposta instanceof PaSendRTRes) {
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
-				log.warn("Errore in PaSendRT: " + e);
+				log.warn("Errore in PaSendRT: " + e.getMessage(), e);
 			} else {
 				log.warn("Rifiutata PaSendRT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}

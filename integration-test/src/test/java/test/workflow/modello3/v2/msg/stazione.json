@@ -1,7 +1,7 @@
 {
   "password": "GovPayTest",
   "urlRT": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciRTservice",
-  "URLCCP": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice",
+  "urlCCP": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice",
   "subject": "ndpsym",
   "httpUsername": "ndpsym",
   "httpPassword": "password",

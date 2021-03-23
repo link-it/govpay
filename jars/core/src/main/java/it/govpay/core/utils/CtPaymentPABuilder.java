@@ -34,18 +34,13 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import gov.telematici.pagamenti.ws.ccp.PaaTipoDatiPagamentoPSP;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiMarcaBolloDigitale;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloVersamentoRPT;
-import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRPT;
-import it.gov.digitpa.schemas._2011.pagamenti.CtDominio;
 import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
 import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaFG;
 import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaG;
-import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
-import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoPagatore;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
 import it.gov.digitpa.schemas._2011.pagamenti.StAutenticazioneSoggetto;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersFG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
-import it.gov.digitpa.schemas._2011.pagamenti.StTipoVersamento;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtEntityUniqueIdentifier;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentPA;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtSubject;
@@ -55,7 +50,6 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StEntityUniqueIdentifierType;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StOutcome;
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
@@ -67,7 +61,6 @@ import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Rpt.EsitoPagamento;
-import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Versamento.CausaleSemplice;
@@ -82,6 +75,12 @@ public class CtPaymentPABuilder {
 			String ccp, 
 			PaaTipoDatiPagamentoPSP datiPsp) throws ServiceException {
 		
+		
+		
+		
+		CtSoggettoVersante soggettoVersante = datiPsp != null ? datiPsp.getSoggettoVersante() : null;
+		String ibanAddebito = datiPsp.getIbanAddebito() != null ?  datiPsp.getIbanAddebito() : null;
+		String bicAddebito = datiPsp.getBicAddebito() != null ? datiPsp.getBicAddebito() : null;
 		return this.buildRpt(
 				null,
 				versamento,
@@ -92,10 +91,10 @@ public class CtPaymentPABuilder {
 				codCanale,
 				TipoVersamento.ATTIVATO_PRESSO_PSP,
 				ModelloPagamento.ATTIVATO_PRESSO_PSP,
-				this.toOrm(datiPsp.getSoggettoVersante()),
+				this.toOrm(soggettoVersante),
 				StAutenticazioneSoggetto.N_A.value(),
-				datiPsp.getIbanAddebito(),
-				datiPsp.getBicAddebito(),
+				ibanAddebito,
+				bicAddebito,
 				null
 				);
 	}

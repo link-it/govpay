@@ -4,7 +4,7 @@
 	    	"paymentOptionDescription" :
 			    [
 			    	{
-		    		    "amount" : "#? _ == pendenzaPut.importo || _ == pendenzaPut.importo.toString()",
+		    		    "amount" : '#? _ == pendenzaPut.importo || _ == pendenzaPut.importo.toString()',
 					    "options" : "EQ",
 					    "dueDate" : "#ignore",
 					    "detailDescription" : "#string",
@@ -12,10 +12,13 @@
 			    	}
 			    ]
 	     },
-	    "paymentDescription" : "",
+	    "paymentDescription" : "#string",
 	    "fiscalCodePA" : "#(idDominio)",
 	    "companyName" : "#(dominio.ragioneSociale)",
-	    "officeName" : "#ignore"
+	    "officeName" : "#ignore",
+	    "outcome" : "OK", 
+	    "fault" : "##null"
 	}, 
-	"faultBean": "##null"
+	"faultBean": "##null",
+    "ccp" : "#ignore"
 }
