@@ -20,6 +20,8 @@ export class Voce {
   public static APPLICAZIONE: string = 'Applicazione';
   public static AREA: string = 'Area';
   public static AUT_PT: string = 'Autorizzazione stampa PT';
+  public static AUTENTICAZIONE_SERVER: string = 'Autenticazione Server';
+  public static AUTENTICAZIONE_CLIENT: string = 'Autenticazione Client';
   public static AUTORIZZAZIONI: string = 'Autorizzazioni';
   public static AUTORIZZAZIONI_API: string = 'Autorizzazioni API';
   public static AUTORIZZAZIONI_BACKOFFICE: string = 'Autorizzazioni Backoffice';
@@ -151,7 +153,6 @@ export class Voce {
 
   public static KEY_STORE_LOC: string = 'Keystore Location';
   public static KEY_STORE_PWD: string = 'Keystore Password';
-  public static KEYSTORE: string = 'Keystore';
 
   public static LUOGO: string = 'Località';
   public static LAYOUT_FORM_DATI: string = 'Layout form dati';
@@ -257,7 +258,6 @@ export class Voce {
   public static TRN: string = 'Id operazione di riversamento (TRN)';
   public static TRUST_STORE_LOC: string = 'Truststore Location';
   public static TRUST_STORE_PWD: string = 'Truststore Password';
-  public static TRUSTSTORE: string = 'Truststore';
   public static TTL: string = 'Time to live';
   public static TUTTE: string = 'Tutte';
   public static TUTTI: string = 'Tutti';

@@ -376,14 +376,18 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
     }
   }
 
-  protected _ksTsValidators(target: string, ctrls: string[]) {
+  protected _ksTsValidators(target: string, ctrls: string[] = []) {
     this[target] = false;
-    (ctrls || []).forEach((ctrl: string) => {
-      const controls: any = this['serverForm'].controls;
+    const controls: any = this['serverForm'].controls;
+    ctrls.some((ctrl: string) => {
       const c: FormControl = controls[ctrl];
-      if (c.value && this._sslConfigAbilitato.value) {
+      if ((c.value) && this._sslConfigAbilitato.value) {
         this[target] = true;
+        return this[target];
       }
+    });
+    ctrls.forEach((ctrl: string) => {
+      const c: FormControl = controls[ctrl];
       c.setErrors(null);
       c.clearValidators();
       if (this[target]) {

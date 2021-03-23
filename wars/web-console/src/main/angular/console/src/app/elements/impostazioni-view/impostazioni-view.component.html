@@ -307,52 +307,52 @@
                         </mat-slide-toggle>
                       </div>
                       <p class="py-2">{{ Voce.CONFIGURAZIONE_SSL }}</p>
-                      <mat-slide-toggle class="mb-3" color="accent" formControlName="hostnameVerifier_ctrl">{{ Voce.ABILITA_VERIFICATORE_HOSTNAME }}</mat-slide-toggle>
                       <mat-form-field class="w-100" color="accent">
                         <mat-select [placeholder]="Voce.TIPO" formControlName="cryptoType_ctrl"
                                     (selectionChange)="_cryptoTypeChangeSelection($event)" [required]="_sslConfigAbilitato.value">
                           <mat-option *ngFor="let item of Util.CODIFICHE_SSL" [value]="item.value">{{item.label}}</mat-option>
                         </mat-select>
                       </mat-form-field>
-                      <p class="color-gray">{{ Voce.TRUSTSTORE }}</p>
+                      <mat-slide-toggle class="mb-3" color="accent" formControlName="hostnameVerifier_ctrl">{{ Voce.ABILITA_VERIFICATORE_HOSTNAME }}</mat-slide-toggle>
+                      <p class="color-gray">{{ Voce.AUTENTICAZIONE_SERVER }}</p>
                       <mat-form-field class="w-100" color="accent">
                         <mat-select [placeholder]="Voce.TIPO" formControlName="tsType_ctrl" [required]="hasTsValue"
                                     (selectionChange)="_ksTsValidators('hasTsValue', _tsControllers)">
-                          <mat-option *ngIf="!hasTsValue" value="">Seleziona...</mat-option>
+                          <mat-option value="">Seleziona...</mat-option>
                           <mat-option *ngFor="let item of Util.TIPI_KEYSTORE_TRUSTSTORE" [value]="item.value">{{item.label}}</mat-option>
                         </mat-select>
                       </mat-form-field>
                       <mat-form-field class="w-100" color="accent">
-                        <input matInput [placeholder]="Voce.TRUST_STORE_LOC" formControlName="truststoreLocation_ctrl"
-                               (input)="_ksTsValidators('hasTsValue', _tsControllers )" [required]="hasTsValue">
+                        <input matInput [placeholder]="Voce.PATH" formControlName="truststoreLocation_ctrl"
+                               (input)="_ksTsValidators('hasTsValue', _tsControllers)" [required]="hasTsValue">
                       </mat-form-field>
                       <mat-form-field class="w-100" color="accent">
-                        <input matInput [placeholder]="Voce.TRUST_STORE_PWD" formControlName="truststorePassword_ctrl"
-                               (input)="_ksTsValidators('hasTsValue', _tsControllers )" [required]="hasTsValue">
+                        <input matInput [placeholder]="Voce.PASSWORD" formControlName="truststorePassword_ctrl"
+                               (input)="_ksTsValidators('hasTsValue', _tsControllers)" [required]="hasTsValue">
                       </mat-form-field>
                       <mat-form-field class="w-100" color="accent">
                         <input matInput [placeholder]="Voce.ALGORITHM" formControlName="truststoreAlgorithm_ctrl"
-                               (input)="_ksTsValidators('hasTsValue', _tsControllers )" [required]="hasTsValue">
+                               (input)="_ksTsValidators('hasTsValue', _tsControllers)" [required]="hasTsValue">
                       </mat-form-field>
-                      <p class="color-gray">{{ Voce.KEYSTORE }}</p>
+                      <p class="color-gray">{{ Voce.AUTENTICAZIONE_CLIENT }}</p>
                       <mat-form-field class="w-100" color="accent">
                         <mat-select [placeholder]="Voce.TIPO" formControlName="ksType_ctrl" [required]="hasKsValue"
-                                    (selectionChange)="_ksTsValidators('hasKsValue', _ksControllers )">
-                          <mat-option *ngIf="!hasKsValue" value="">Seleziona...</mat-option>
+                                    (selectionChange)="_ksTsValidators('hasKsValue', _ksControllers)">
+                          <mat-option value="">Seleziona...</mat-option>
                           <mat-option *ngFor="let item of Util.TIPI_KEYSTORE_TRUSTSTORE" [value]="item.value">{{item.label}}</mat-option>
                         </mat-select>
                       </mat-form-field>
                       <mat-form-field class="w-100" color="accent">
-                        <input matInput [placeholder]="Voce.KEY_STORE_LOC" formControlName="keystoreLocation_ctrl"
-                               (input)="_ksTsValidators('hasKsValue', _ksControllers )" [required]="hasKsValue">
+                        <input matInput [placeholder]="Voce.PATH" formControlName="keystoreLocation_ctrl"
+                               (input)="_ksTsValidators('hasKsValue', _ksControllers)" [required]="hasKsValue">
                       </mat-form-field>
                       <mat-form-field class="w-100" color="accent">
-                        <input matInput [placeholder]="Voce.KEY_STORE_PWD" formControlName="keystorePassword_ctrl"
-                               (input)="_ksTsValidators('hasKsValue', _ksControllers )" [required]="hasKsValue">
+                        <input matInput [placeholder]="Voce.PASSWORD" formControlName="keystorePassword_ctrl"
+                               (input)="_ksTsValidators('hasKsValue', _ksControllers)" [required]="hasKsValue">
                       </mat-form-field>
                       <mat-form-field class="w-100" color="accent">
                         <input matInput [placeholder]="Voce.ALGORITHM" formControlName="keystoreAlgorithm_ctrl"
-                               (input)="_ksTsValidators('hasKsValue', _ksControllers )" [required]="hasKsValue">
+                               (input)="_ksTsValidators('hasKsValue', _ksControllers)" [required]="hasKsValue">
                       </mat-form-field>
                     </form>
                   </div>
