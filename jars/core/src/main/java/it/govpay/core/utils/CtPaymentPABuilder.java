@@ -79,8 +79,8 @@ public class CtPaymentPABuilder {
 		
 		
 		CtSoggettoVersante soggettoVersante = datiPsp != null ? datiPsp.getSoggettoVersante() : null;
-		String ibanAddebito = datiPsp.getIbanAddebito() != null ?  datiPsp.getIbanAddebito() : null;
-		String bicAddebito = datiPsp.getBicAddebito() != null ? datiPsp.getBicAddebito() : null;
+		String ibanAddebito = datiPsp != null ?  datiPsp.getIbanAddebito() : null;
+		String bicAddebito = datiPsp != null ? datiPsp.getBicAddebito() : null;
 		return this.buildRpt(
 				null,
 				versamento,

@@ -1,0 +1,38 @@
+{
+	"creditorReferenceId" : "string",
+    "paymentAmount" : '#? _ == pendenzaPut.importo || _ == pendenzaPut.importo.toString()',
+    "dueDate" : "#ignore",
+    "retentionDate" : "#ignore",
+    "lastPayment" : true,
+    "description" : "#string",
+    "companyName" : "#(dominio.ragioneSociale)",
+    "officeName" : "#ignore",
+    "debtor" : {
+    		"uniqueIdentifier" : {
+    				"entityUniqueIdentifierType" : "#string",
+    				"entityUniqueIdentifierValue" : "#string"
+    			},
+		    "fullName" : "#string",
+		    "streetName" : "#string",
+		    "civicNumber" : "#string",
+		    "postalCode" : "#string",
+		    "city" : "#string",
+		    "stateProvinceRegion" : "#string",
+		    "country" : "#string",
+		    "eMail" : "#string"
+    	},
+    "transferList" : {
+	    	"transfer" :
+			    [
+			    	{
+			    		"idTransfer" : 1,
+					    "transferAmount" : '#? _ == pendenzaPut.importo || _ == pendenzaPut.importo.toString()',
+					    "fiscalCodePA" : "#(idDominio)",
+					    "iban" : "#string",
+					    "remittanceInformation" : "string",
+					    "transferCategory" : "string"
+			    	}
+			    ]
+	     },
+    "metadata" : "#ignore"
+}
