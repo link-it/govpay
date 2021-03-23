@@ -27,6 +27,8 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StOutcome;
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Promemoria;
@@ -39,6 +41,7 @@ import it.govpay.bd.pagamento.PromemoriaBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
+import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
@@ -53,28 +56,29 @@ import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
+import net.sf.jasperreports.governors.GovernorException;
 
 public class CtReceiptUtils  extends NdpValidationUtils {
-	
+
 	private static Logger log = LoggerWrapperFactory.getLogger(RtUtils.class);
 
 	public static EsitoValidazione validaSemantica(PaGetPaymentRes ctRpt, PaSendRTReq ctRt) {
 		CtPaymentPA ctPaymentPA = ctRpt.getData();
 		CtReceipt ctReceipt = ctRt.getReceipt();
-		
+
 		EsitoValidazione esito = new RtUtils().new EsitoValidazione();
 		valida(ctPaymentPA.getCreditorReferenceId(), ctReceipt.getCreditorReferenceId(), esito, "CreditorReferenceId non corrisponde", true); // Identificativo di correlazione dei due messaggi lo IUV???
-		
+
 		// validaSemantica(ctRpt.getDominio(), ctRt.getDominio(), esito); sostituito con le due istruzioni seguenti ma non ci sono i dati di dominio e stazione nell'oggetto rpt
-		
-//		valida(ctPaymentPA.getIdentificativoDominio(),ctRt.getIdPA(), esito, "IdentificativoDominio non corrisponde", true);
-//		valida(ctPaymentPA.getIdentificativoStazioneRichiedente(),ctRt.getIdStation(), esito, "IdentificativoStazioneRichiedente non corrisponde", false);
-		
-//		validaSemantica(ctRpt.getEnteBeneficiario(), ctRt.getEnteBeneficiario(), esito);
+
+		//		valida(ctPaymentPA.getIdentificativoDominio(),ctRt.getIdPA(), esito, "IdentificativoDominio non corrisponde", true);
+		//		valida(ctPaymentPA.getIdentificativoStazioneRichiedente(),ctRt.getIdStation(), esito, "IdentificativoStazioneRichiedente non corrisponde", false);
+
+		//		validaSemantica(ctRpt.getEnteBeneficiario(), ctRt.getEnteBeneficiario(), esito);
 		validaSemantica(ctPaymentPA.getDebtor(), ctReceipt.getDebtor(), esito);
-//		validaSemantica(ctRpt.getSoggettoVersante(), ctRt.getSoggettoVersante(), esito);
-		
-		
+		//		validaSemantica(ctRpt.getSoggettoVersante(), ctRt.getSoggettoVersante(), esito);
+
+
 		StOutcome ctRecepitOutcome = ctReceipt.getOutcome(); // esito pagamento ha solo due valori OK/KO
 		switch (ctRecepitOutcome) {
 		case OK:
@@ -90,7 +94,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			}
 			break;
 		}
-		
+
 		BigDecimal importoTotaleCalcolato = BigDecimal.ZERO;
 
 		for (int i = 0; i < ctPaymentPA.getTransferList().getTransfer().size(); i++) {
@@ -103,32 +107,32 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				importoTotaleCalcolato = importoTotaleCalcolato.add(singoloPagamento.getTransferAmount());
 			}
 		}
-		
+
 		if (importoTotaleCalcolato.compareTo(ctReceipt.getPaymentAmount()) != 0)
 			esito.addErrore("ImportoTotalePagato [" + ctReceipt.getPaymentAmount().doubleValue() + "] non corrisponde alla somma dei SingoliImportiPagati [" + importoTotaleCalcolato.doubleValue() + "]", true);
 		if (ctRecepitOutcome.equals(StOutcome.KO) && ctReceipt.getPaymentAmount().compareTo(BigDecimal.ZERO) != 0)
 			esito.addErrore("ImportoTotalePagato [" + ctReceipt.getPaymentAmount().doubleValue() + "] diverso da 0 per un pagamento con esito 'KO'.", true);
 		if (ctRecepitOutcome.equals(StOutcome.OK) && ctReceipt.getPaymentAmount().compareTo(ctPaymentPA.getPaymentAmount()) != 0)
 			esito.addErrore("Importo totale del pagamento [" + ctReceipt.getPaymentAmount().doubleValue() + "] diverso da quanto richiesto [" + ctPaymentPA.getPaymentAmount().doubleValue() + "]", false);
-		
+
 		return esito;
 	}
 
 	private static void validaSemanticaSingoloVersamento(CtTransferPA singoloVersamento, CtTransferPA singoloPagamento, int pos, EsitoValidazione esito) {
-		
+
 		if(singoloPagamento.getIdTransfer() != singoloVersamento.getIdTransfer()) {
 			esito.addErrore("IdTransfer non corrispondente per il pagamento in posizione ["+pos+"]", false);
 		}
-//		validaCausaleVersamento(singoloVersamento.getCausaleVersamento(), singoloPagamento.getCausaleVersamento(), esito, "CausaleVersamento non corrisponde", true); ??? causale
+		//		validaCausaleVersamento(singoloVersamento.getCausaleVersamento(), singoloPagamento.getCausaleVersamento(), esito, "CausaleVersamento non corrisponde", true); ??? causale
 		valida(singoloVersamento.getTransferCategory(), singoloPagamento.getTransferCategory(), esito, "TransferCategory non corrisponde", false);
 
 		if(singoloPagamento.getTransferAmount().compareTo(BigDecimal.ZERO) == 0) {
-//			if(singoloPagamento.getEsitoSingoloPagamento() == null || singoloPagamento.getEsitoSingoloPagamento().isEmpty()) {
-//				esito.addErrore("EsitoSingoloPagamento obbligatorio per pagamenti non eseguiti", false);
-//			}
-//			if(!singoloPagamento.getIdentificativoUnivocoRiscossione().equals("n/a")) {
-//				esito.addErrore("IdentificativoUnivocoRiscossione deve essere n/a per pagamenti non eseguiti.", false);
-//			}
+			//			if(singoloPagamento.getEsitoSingoloPagamento() == null || singoloPagamento.getEsitoSingoloPagamento().isEmpty()) {
+			//				esito.addErrore("EsitoSingoloPagamento obbligatorio per pagamenti non eseguiti", false);
+			//			}
+			//			if(!singoloPagamento.getIdentificativoUnivocoRiscossione().equals("n/a")) {
+			//				esito.addErrore("IdentificativoUnivocoRiscossione deve essere n/a per pagamenti non eseguiti.", false);
+			//			}
 		} else if(singoloPagamento.getTransferAmount().compareTo(singoloVersamento.getTransferAmount()) != 0) {
 			esito.addErrore("Importo del pagamento in posizione "+pos+" [" + singoloPagamento.getTransferAmount().doubleValue() + "] diverso da quanto richiesto [" + singoloVersamento.getTransferAmount().doubleValue() + "]", false);
 		}
@@ -151,12 +155,12 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				break;
 			} 
 		} catch (Throwable e) {
-			
+
 		}
 		esito.addErrore("CodiceEsitoPagamento [" + codiceEsitoPagamento + "] sconosciuto", true);
 		return null;
 	}
-	
+
 	public static void validaSemantica(CtSubject rpt, CtSubject rt, EsitoValidazione esito) {
 		valida(rpt.getFullName(),rt.getFullName(), esito, "FullNameDebtor non corrisponde", false);
 		valida(rpt.getPostalCode(),rt.getPostalCode(), esito, "PostalCodeDebtor non corrisponde", false);
@@ -168,42 +172,57 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		valida(rpt.getCountry(),rt.getCountry(), esito, "CountryDebtor non corrisponde", false);
 		valida(rpt.getStateProvinceRegion(),rt.getStateProvinceRegion(), esito, "StateProvinceDebtor non corrisponde", false);
 	}
-	
+
 	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, PaSendRTReq ctRt, boolean recupero) throws ServiceException, NdpException, UtilsException, GovPayException {
 		return acquisisciRT(codDominio, iuv, ccp, ctRt, recupero, false);
 	}
 
 	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, PaSendRTReq ctRt, boolean recupero, boolean acquisizioneDaCruscotto) throws ServiceException, NdpException, UtilsException, GovPayException {
-		
+
 		RptBD rptBD = null; 
 		try {
 			IContext ctx = ContextThreadLocal.get();
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 			GpContext appContext = (GpContext) ctx.getApplicationContext();
-			
+
 			rptBD = new RptBD(configWrapper);
-			
+
 			rptBD.setupConnection(configWrapper.getTransactionID());
-			
+
 			rptBD.setAtomica(false);
-			
+
 			rptBD.setAutoCommit(false);
-			
+
+
+			VersamentiBD versamentiBD = new VersamentiBD(rptBD);
+
+			versamentiBD.setAtomica(false);
+			try {
+				// TODO cercare di capire come trovare il ccp per pescare l'RPT giusta
+				Dominio dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
+				Versamento versamentoByDominioIuv = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv);
+				ccp = versamentoByDominioIuv.getNumeroAvviso();
+			}catch (Exception e) {
+				throw new GovPayException("L'avviso di pagamento [Dominio:" + codDominio + " Iuv:" + iuv + "] non risulta registrato.", EsitoOperazione.VER_008);
+			}
+
+
+
 			Rpt rpt = null;
 			try {
 				rpt = rptBD.getRpt(codDominio, iuv, ccp, true);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
 			}
-			
+
 			// Faccio adesso la select for update, altrimenti in caso di 
 			// ricezione di due RT afferenti allo stesso carrello di pagamento
 			// vado in deadlock tra la getRpt precedente e la findAll seguente
-			
+
 			rptBD.enableSelectForUpdate();
-			
+
 			Long idPagamentoPortale = rpt.getIdPagamentoPortale();
-			
+
 			@SuppressWarnings("unused")
 			List<Rpt> rptsCarrello = null; 
 			if(idPagamentoPortale != null) {
@@ -211,22 +230,22 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				filter.setIdPagamentoPortale(idPagamentoPortale);
 				rptsCarrello = rptBD.findAll(filter);
 			}
-			
+
 			// Rifaccio la getRpt adesso che ho il lock per avere lo stato aggiornato
 			// infatti in caso di RT concorrente, non viene gestito bene l'errore.
-			
+
 			try {
 				rpt = rptBD.getRpt(codDominio, iuv, ccp, true);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
 			}
-			
+
 			if(!acquisizioneDaCruscotto) {
 				if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
 					throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "RT già acquisita in data " + rpt.getDataMsgRicevuta(), rpt.getCodDominio());
 				}
 			}
-			
+
 			PaGetPaymentRes ctRpt = null; 
 			/*
 			 // Questo blocco non ha senso perche' dal servizio ora mi arriva l'oggetto e non piu' l'xml raw
@@ -259,8 +278,8 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				}
 				throw e;
 			}
-			*/
-			
+			 */
+
 			// Validazione Semantica
 			RtUtils.EsitoValidazione esito = null;
 			try {
@@ -271,14 +290,14 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			} catch (SAXException e) {
 				throw e;
 			}
-			
+
 			if(acquisizioneDaCruscotto) {
 				// controllo esito validazione semantica
-				
-				
+
+
 				// controllo stato pagamento attuale se e' gia' stato eseguito allora non devo acquisire l'rt
 				//EsitoPagamento nuovoEsitoPagamento = Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento());
-				
+
 				switch (rpt.getEsitoPagamento()) {
 				case IN_CORSO:
 				case PAGAMENTO_NON_ESEGUITO:
@@ -291,24 +310,24 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "Aggiornamento di RT in pagamenti con esito "+rpt.getEsitoPagamento()+" non supportata.", rpt.getCodDominio());
 				}
 			}
-			
+
 			if(esito.validato && esito.errori.size() > 0) {
 				if(recupero)
 					ctx.getApplicationLogger().log("pagamento.recuperoRtValidazioneRtWarn", esito.getDiagnostico());
 				else 
 					ctx.getApplicationLogger().log("pagamento.validazioneRtWarn", esito.getDiagnostico());
 			} 
-			
+
 			if (!esito.validato) {
 				if(recupero)
 					ctx.getApplicationLogger().log("pagamento.recuperoRtValidazioneRtFail", esito.getDiagnostico());
 				else 
 					ctx.getApplicationLogger().log("pagamento.validazioneRtFail", esito.getDiagnostico());
-				
+
 				rpt.setStato(StatoRpt.RT_RIFIUTATA_PA);
 				rpt.setDescrizioneStato(esito.getFatal());
 				rpt.setXmlRt(JaxbUtils.toByte(ctRt));
-				
+
 				try {
 					rptBD.updateRpt(rpt.getId(), rpt);
 					rptBD.commit();
@@ -319,15 +338,15 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				}
 				throw new NdpException(FaultPa.PAA_SEMANTICA, esito.getFatal(), codDominio);
 			}
-			
+
 			CtReceipt ctReceipt = ctRt.getReceipt();
-			
-			
+
+
 			log.info("Acquisizione RT per un importo di " + ctReceipt.getPaymentAmount());
-			
+
 			StOutcome ctReceiptOutcome = ctReceipt.getOutcome();
 			Rpt.EsitoPagamento rptEsito = ctReceiptOutcome.equals(StOutcome.OK) ? Rpt.EsitoPagamento.PAGAMENTO_ESEGUITO : Rpt.EsitoPagamento.PAGAMENTO_NON_ESEGUITO; 
-		
+
 			if(recupero) {
 				appContext.getTransaction().getLastServer().addGenericProperty(new Property("codMessaggioRicevuta", ctReceipt.getReceiptId()));
 				appContext.getTransaction().getLastServer().addGenericProperty(new Property("importo", ctReceipt.getPaymentAmount().toString()));
@@ -339,7 +358,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				appContext.getRequest().addGenericProperty(new Property("codEsitoPagamento", rptEsito.toString()));
 				ctx.getApplicationLogger().log("rt.acquisizione");
 			}
-			
+
 			rpt.setCodMsgRicevuta(ctReceipt.getReceiptId());
 			rpt.setDataMsgRicevuta(new Date());
 			rpt.setEsitoPagamento(rptEsito);
@@ -348,62 +367,63 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			rpt.setDescrizioneStato(null);
 			rpt.setXmlRt(JaxbUtils.toByte(ctRt));
 			rpt.setIdTransazioneRt(ContextThreadLocal.get().getTransactionId());
-			
-			
+
+
 			rpt.setTipoIdentificativoAttestante(TipoIdentificativoAttestante.G);
 			rpt.setIdentificativoAttestante(ctReceipt.getPspFiscalCode()); // oppure ctReceipt.getIDPsp(); ??
 			rpt.setDenominazioneAttestante(ctReceipt.getPSPCompanyName());
-		
+
 			// Aggiorno l'RPT con i dati dell'RT
 			rptBD.updateRpt(rpt.getId(), rpt);
-			
+
 			Versamento versamento = rpt.getVersamento();
-			
-			VersamentiBD versamentiBD = new VersamentiBD(rptBD);
-			versamentiBD.setAtomica(false); // condivisione della connessione
-			
+
+			//			VersamentiBD versamentiBD = new VersamentiBD(rptBD);
+			//			versamentiBD.setAtomica(false); // condivisione della connessione
+
 			List<CtTransferPA> datiSingoliPagamenti = ctReceipt.getTransferList().getTransfer();
 			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti();
-			
+
 			PagamentiBD pagamentiBD = new PagamentiBD(rptBD);
 			pagamentiBD.setAtomica(false); // condivisione della connessione
-			
+
 			boolean irregolare = false;
 			String irregolarita = null; 
 			//String pagamentiNote = "";
-			
+
 			String iuvPagamento = rpt.getIuv();
 			BigDecimal totalePagato = BigDecimal.ZERO;
 			Date dataPagamento = new Date();
-			
+
 			List<Pagamento> pagamenti = new ArrayList<Pagamento>();
-			
+
 			for(int indice = 0; indice < datiSingoliPagamenti.size(); indice++) {
 				CtTransferPA ctDatiSingoloPagamentoRT = datiSingoliPagamenti.get(indice);
-	
+
 				// Se non e' stato completato un pagamento, non faccio niente.
 				if(ctDatiSingoloPagamentoRT.getTransferAmount().compareTo(BigDecimal.ZERO) == 0)
 					continue;
-				
+
 				//pagamentiNote += "[" +(indice+1) + "/" + ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione() + "/" + ctDatiSingoloPagamentoRT.getSingoloImportoPagato() + "]";
-				
+
 				SingoloVersamento singoloVersamento = singoliVersamenti.get(indice);
 
 				Pagamento pagamento = null;
 				boolean insert = true;
 				try {
 					pagamento = pagamentiBD.getPagamento(codDominio, iuv, ctReceipt.getReceiptId(), ctDatiSingoloPagamentoRT.getIdTransfer());
-				
+
 					// Pagamento rendicontato precedentemente senza RPT
 					// Probabilmente sono stati scambiati i tracciati per sanare la situazione
 					// Aggiorno il pagamento associando la RT appena arrivata
-					
+
 					if(pagamento.getIdRpt() != null) {
 						//!! Pagamento gia' notificato da un'altra RPT !!
 						throw new ServiceException("ERRORE: RT con pagamento gia' presente in sistema ["+codDominio+"/"+iuv+"/"+ctReceipt.getReceiptId()+"]");
 					}
-					
-					pagamento.setDataPagamento(ctReceipt.getTransferDate());
+
+			 		Date dataSingoloPagamento = ctReceipt.getPaymentDateTime() != null ? ctReceipt.getPaymentDateTime() : new Date();
+					pagamento.setDataPagamento(dataSingoloPagamento); // <!--data esecuzione pagamento da parte dell'utente-->
 					pagamento.setRpt(rpt);
 					// Se non e' gia' stato incassato, aggiorno lo stato in pagato
 					if(!pagamento.getStato().equals(Stato.INCASSATO)) {
@@ -422,7 +442,8 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					} else {
 						pagamento.setTipo(TipoPagamento.ENTRATA);
 					}
-					pagamento.setDataPagamento(ctReceipt.getTransferDate());
+					Date dataSingoloPagamento = ctReceipt.getPaymentDateTime() != null ? ctReceipt.getPaymentDateTime() : new Date();
+					pagamento.setDataPagamento(dataSingoloPagamento); // <!--data esecuzione pagamento da parte dell'utente-->
 					pagamento.setRpt(rpt);
 					pagamento.setSingoloVersamento(singoloVersamento);
 					pagamento.setImportoPagato(ctDatiSingoloPagamentoRT.getTransferAmount());
@@ -434,30 +455,30 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				} catch (MultipleResultException e) {
 					throw new ServiceException("Identificativo pagamento non univoco: [Dominio:"+codDominio+" Iuv:"+iuv+" Iur:"+ctReceipt.getReceiptId()+" Indice:"+ctDatiSingoloPagamentoRT.getIdTransfer()+"]");
 				}
-	
-//				if(ctDatiSingoloPagamentoRT.getAllegatoRicevuta() != null) {
-//					pagamento.setTipoAllegato(Pagamento.TipoAllegato.valueOf(ctDatiSingoloPagamentoRT.getAllegatoRicevuta().getTipoAllegatoRicevuta().toString()));
-//					pagamento.setAllegato(ctDatiSingoloPagamentoRT.getAllegatoRicevuta().getTestoAllegato());
-//				}
-				
+
+				//				if(ctDatiSingoloPagamentoRT.getAllegatoRicevuta() != null) {
+				//					pagamento.setTipoAllegato(Pagamento.TipoAllegato.valueOf(ctDatiSingoloPagamentoRT.getAllegatoRicevuta().getTipoAllegatoRicevuta().toString()));
+				//					pagamento.setAllegato(ctDatiSingoloPagamentoRT.getAllegatoRicevuta().getTestoAllegato());
+				//				}
+
 				// Se ho solo aggiornato un pagamento che gia' c'era, non devo fare altro.
 				// Se gli importi corrispondono e lo stato era da pagare, il singoloVersamento e' eseguito. Altrimenti irregolare.
-				
+
 				dataPagamento = pagamento.getDataPagamento();
 				totalePagato = totalePagato.add(pagamento.getImportoPagato());
-				
+
 				if(insert) {
 					if(singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.NON_ESEGUITO) && singoloVersamento.getImportoSingoloVersamento().compareTo(pagamento.getImportoPagato()) == 0)
-					    singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.ESEGUITO);
+						singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.ESEGUITO);
 					else {
 						List<String> anomalie = new ArrayList<>();
-						
+
 						if(singoloVersamento.getStatoSingoloVersamento().equals(StatoSingoloVersamento.ESEGUITO)) {
 							irregolarita = "Acquisito pagamento duplicato";
 							anomalie.add(irregolarita);
 							log.warn(irregolarita);
 						}
-						
+
 						if(singoloVersamento.getImportoSingoloVersamento().compareTo(pagamento.getImportoPagato()) != 0) {
 							irregolarita = "L'importo pagato non corrisponde all'importo dovuto.";
 							anomalie.add(irregolarita);
@@ -467,9 +488,9 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 							ctx.getApplicationLogger().log("pagamento.recuperoRtAcquisizionePagamentoAnomalo", ctReceipt.getReceiptId(), StringUtils.join(anomalie,"\n"));
 						else 
 							ctx.getApplicationLogger().log("pagamento.acquisizionePagamentoAnomalo", ctReceipt.getReceiptId(), StringUtils.join(anomalie,"\n"));
-						
+
 						irregolare = true;
-						
+
 					}
 					ctx.getApplicationLogger().log("rt.acquisizionePagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte(), singoloVersamento.getStatoSingoloVersamento().toString());
 					versamentiBD.updateStatoSingoloVersamento(singoloVersamento.getId(), singoloVersamento.getStatoSingoloVersamento());
@@ -479,64 +500,64 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					ctx.getApplicationLogger().log("rt.aggiornamentoPagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte());
 					pagamentiBD.updatePagamento(pagamento);
 				}
-				
+
 				pagamenti.add(pagamento);
 			}
-			
+
 			rpt.setPagamenti(pagamenti);
-			
+
 			switch (rpt.getEsitoPagamento()) {
 			case PAGAMENTO_ESEGUITO:
 				switch (versamento.getStatoVersamento()) {
-					case ANNULLATO:
-					case NON_ESEGUITO:
-						versamento.setStatoVersamento(StatoVersamento.ESEGUITO);
-						if(irregolare) {
-							versamento.setAnomalo(true);
-							versamento.setDescrizioneStato(irregolarita);
-						}
-						break;
-					default:
-						versamento.setStatoVersamento(StatoVersamento.ESEGUITO);
-						if(irregolare) {
-							versamento.setDescrizioneStato(irregolarita);
-						}
+				case ANNULLATO:
+				case NON_ESEGUITO:
+					versamento.setStatoVersamento(StatoVersamento.ESEGUITO);
+					if(irregolare) {
 						versamento.setAnomalo(true);
+						versamento.setDescrizioneStato(irregolarita);
+					}
+					break;
+				default:
+					versamento.setStatoVersamento(StatoVersamento.ESEGUITO);
+					if(irregolare) {
+						versamento.setDescrizioneStato(irregolarita);
+					}
+					versamento.setAnomalo(true);
 				}
-				
+
 				try { 
 					versamentiBD.updateVersamento(versamento);
 				} catch (NotFoundException nfe) {
 					// Impossibile, l'ho trovato prima
 				}
 				break;
-				
+
 			case PAGAMENTO_PARZIALMENTE_ESEGUITO:
 			case DECORRENZA_TERMINI_PARZIALE:
 				switch (versamento.getStatoVersamento()) {
-					case ANNULLATO:
-					case NON_ESEGUITO:
-						versamento.setStatoVersamento(StatoVersamento.PARZIALMENTE_ESEGUITO);
-						if(irregolare) {
-							versamento.setAnomalo(true);
-							versamento.setDescrizioneStato(irregolarita);
-						}
-						break;
-					default:
-						versamento.setStatoVersamento(StatoVersamento.PARZIALMENTE_ESEGUITO);
-						if(irregolare) {
-							versamento.setDescrizioneStato(irregolarita);
-						}
+				case ANNULLATO:
+				case NON_ESEGUITO:
+					versamento.setStatoVersamento(StatoVersamento.PARZIALMENTE_ESEGUITO);
+					if(irregolare) {
 						versamento.setAnomalo(true);
+						versamento.setDescrizioneStato(irregolarita);
+					}
+					break;
+				default:
+					versamento.setStatoVersamento(StatoVersamento.PARZIALMENTE_ESEGUITO);
+					if(irregolare) {
+						versamento.setDescrizioneStato(irregolarita);
+					}
+					versamento.setAnomalo(true);
 				}
-				
+
 				try { 
 					versamentiBD.updateVersamento(versamento);
 				} catch (NotFoundException nfe) {
 					// Impossibile, l'ho trovato prima
 				}
 				break;
-				
+
 			case DECORRENZA_TERMINI:
 			case PAGAMENTO_NON_ESEGUITO:
 				break;
@@ -547,7 +568,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			default:
 				break;
 			}	
-			
+
 			switch (versamento.getStatoVersamento()) {
 			case PARZIALMENTE_ESEGUITO:
 			case ESEGUITO:
@@ -555,7 +576,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				versamentiBD.updateStatoPromemoriaAvvisoVersamento(versamento.getId(), true, null);
 				versamentiBD.updateStatoPromemoriaScadenzaAppIOVersamento(versamento.getId(), true, null);
 				versamentiBD.updateStatoPromemoriaScadenzaMailVersamento(versamento.getId(), true, null);
-				
+
 				// aggiornamento informazioni pagamento
 				versamentiBD.updateVersamentoInformazioniPagamento(versamento.getId(), dataPagamento, totalePagato, BigDecimal.ZERO, iuvPagamento, StatoPagamento.PAGATO);
 				break;
@@ -563,7 +584,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				// do nothing
 				break;
 			}
-			
+
 			// schedulo l'invio del promemoria ricevuta
 			TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
 			Promemoria promemoria = null;
@@ -585,27 +606,27 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					log.error("Errore durante la lettura dei dati della RT: ", e.getMessage(),e);
 				}
 			}
-			
+
 			// Aggiornamento dello stato del pagamento portale associato all'RPT
-		//	Long idPagamentoPortale = rpt.getIdPagamentoPortale();
+			//	Long idPagamentoPortale = rpt.getIdPagamentoPortale();
 			if(idPagamentoPortale != null) {
 				PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rptBD); 
 			}
-			
+
 			Notifica notifica = new Notifica(rpt, TipoNotifica.RICEVUTA, configWrapper);
 			it.govpay.core.business.Notifica notificaBD = new it.govpay.core.business.Notifica();
 			boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica,rptBD);
-			
+
 			rptBD.commit();
 			rptBD.disableSelectForUpdate();
-			
+
 			if(schedulaThreadInvio) {
 				ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, ctx));
 			}
-			
+
 			ctx.getApplicationLogger().log("rt.acquisizioneOk", versamento.getCodVersamentoEnte(), versamento.getStatoVersamento().toString());
 			log.info("RT acquisita con successo.");
-			
+
 			return rpt;
 		}  catch (JAXBException e) {
 			throw new ServiceException(e);
@@ -613,37 +634,37 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			throw new ServiceException(e);
 		} catch (ServiceException e) {
 			log.error("Errore acquisizione RT: " + e.getMessage(),e);
-			
+
 			if(rptBD != null)
 				rptBD.rollback();
-			
+
 			throw e;
 		} finally {
 			if(rptBD != null)
 				rptBD.closeConnection();
 		}
 	}
-	
+
 	public static void validaCausaleVersamento(String causaleAttesa, String causaleRicevuta, EsitoValidazione esito, String errore, boolean fatal) {
 		if(causaleAttesa==null && causaleRicevuta==null) 
 			return;
-		
+
 		if(causaleAttesa==null || causaleRicevuta==null) {
 			esito.addErrore(errore + " [Atteso:\"" + (causaleAttesa != null ? causaleAttesa : "<null>") + "\" Ricevuto:\"" + (causaleRicevuta != null ? causaleRicevuta : "<null>") + "\"]", fatal);
 			return;
 		}
-		
+
 		// cerco il separatore /TXT/
 		int s1IndexOf = causaleAttesa.indexOf("/TXT/");
 		if(s1IndexOf != -1) {
 			causaleAttesa = causaleAttesa.substring(0,s1IndexOf);
 		}
-		
+
 		int s2IndexOf = causaleRicevuta.indexOf("/TXT/");
 		if(s2IndexOf != -1) {
 			causaleRicevuta = causaleRicevuta.substring(0,s2IndexOf);
 		}
-		
+
 		if(!causaleAttesa.equals(causaleRicevuta)) esito.addErrore(errore + " [Atteso:\"" + (causaleAttesa != null ? causaleAttesa : "<null>") + "\" Ricevuto:\"" + (causaleRicevuta != null ? causaleRicevuta : "<null>") + "\"]", fatal);
 	}
 

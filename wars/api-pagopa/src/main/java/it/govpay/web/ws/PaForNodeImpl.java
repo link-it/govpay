@@ -24,14 +24,7 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import gov.telematici.pagamenti.ws.ccp.CtSpezzoneStrutturatoCausaleVersamento;
-import gov.telematici.pagamenti.ws.ccp.CtSpezzoniCausaleVersamento;
-import gov.telematici.pagamenti.ws.ccp.EsitoAttivaRPT;
-import gov.telematici.pagamenti.ws.ccp.PaaAttivaRPTRisposta;
-import gov.telematici.pagamenti.ws.ccp.PaaTipoDatiPagamentoPA;
 import gov.telematici.pagamenti.ws.ccp.PaaTipoDatiPagamentoPSP;
-import gov.telematici.pagamenti.ws.rt.EsitoPaaInviaRT;
-import gov.telematici.pagamenti.ws.rt.PaaInviaRTRisposta;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtFaultBean;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentOptionDescriptionPA;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentOptionsDescriptionListPA;
@@ -50,14 +43,15 @@ import it.gov.pagopa.pagopa_api.pa.pafornode_wsdl.PaForNodePortType;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
+import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
-import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
@@ -83,19 +77,17 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.JaxbUtils;
-import it.govpay.core.utils.RptBuilder;
-import it.govpay.core.utils.RptUtils;
-import it.govpay.core.utils.RtUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.thread.InviaNotificaThread;
+import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
-import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
+import it.govpay.model.Notifica.TipoNotifica;
+import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.CausaleSemplice;
-import it.govpay.model.Versamento.CausaleSpezzoni;
-import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.orm.IdVersamento;
@@ -125,7 +117,7 @@ public class PaForNodeImpl implements PaForNodePortType{
 		
 		CtReceipt receipt = requestBody.getReceipt();
 		
-		String ccp = receipt.getReceiptId();
+		String ccp =  null; // receipt.getReceiptId(); // TODO 
 		String codDominio = receipt.getFiscalCode();
 		String iuv = receipt.getCreditorReferenceId();
 
@@ -315,7 +307,7 @@ public class PaForNodeImpl implements PaForNodePortType{
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 			String iuv = IuvUtils.toIuv(numeroAvviso);
-			String ccp = null; // TODO
+			String ccp = qrCode.getNoticeNumber(); // TODO numero avviso da: https://github.com/pagopa/pagopa-api/issues/126
 			String psp =  null; // TODO
 			
 			appContext.setCorrelationId(codDominio + iuv + ccp);
@@ -642,7 +634,7 @@ public class PaForNodeImpl implements PaForNodePortType{
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 			String iuv = IuvUtils.toIuv(numeroAvviso);
-			String ccp = null; // TODO
+			String ccp = qrCode.getNoticeNumber(); // TODO numero avviso da: https://github.com/pagopa/pagopa-api/issues/126
 			String psp =  null; // TODO
 			String canale =  null; // TODO
 		
@@ -956,7 +948,20 @@ public class PaForNodeImpl implements PaForNodePortType{
 						throw e;
 					}
 					
-					RptUtils.inviaRPTAsync(rpt, ctx);
+					// RptUtils.inviaRPTAsync(rpt, ctx); la risposta a questa chiamata e' gia' l'invio
+					
+					// RPT accettata dal Nodo
+					// Invio la notifica e aggiorno lo stato
+					Notifica notifica = new Notifica(rpt, TipoNotifica.ATTIVAZIONE, configWrapper);
+					it.govpay.core.business.Notifica notificaBD = new it.govpay.core.business.Notifica();
+					
+					rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_ACCETTATA_NODO, null, null, null,null);
+					boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica, rptBD);
+					
+					if(schedulaThreadInvio)
+						ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, ctx));
+					log.info("RPT inviata correttamente al nodo");
+					ctx.getApplicationLogger().log("pagamento.invioRptAttivataOk");
 				} 
 	
 				rptBD.commit();

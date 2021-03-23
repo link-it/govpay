@@ -183,7 +183,7 @@ public class CtPaymentPABuilder {
 		ctRpt.setCreditorReferenceId(iuv);
 		CtSubject debtor = this.buildSoggettoPagatore(versamento.getAnagraficaDebitore());
 		ctRpt.setDebtor(debtor);
-		ctRpt.setDueDate(versamento.getDataValidita()); // TODO
+		ctRpt.setDueDate(versamento.getDataValidita()); // TODO  <!-- REQUIRED : entro quando è valido il pagamento - expiration data -->
 		ctRpt.setLastPayment(true); // true se si tratta di rata unica o ultima rata
 		ctRpt.setMetadata(null);
 		if(uo != null && !uo.getCodUo().equals(it.govpay.model.Dominio.EC) && uo.getAnagrafica() != null) {

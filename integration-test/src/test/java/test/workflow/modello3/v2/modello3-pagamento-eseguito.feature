@@ -18,14 +18,11 @@ Background:
 * def esitoGetPayment = read('classpath:test/workflow/modello3/v2/msg/getPayment-response-ok.json')
 
 
-* configure afterFeature = function(){ karate.call('classpath:utils/nodo-config-dominio-put.feature'); }
-
 Scenario: Pagamento eseguito dovuto precaricato con verifica
 
 * call read('classpath:utils/pa-carica-avviso.feature')
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo
 
 # Configurazione del simulatore
@@ -43,6 +40,7 @@ Scenario: Pagamento eseguito dovuto precaricato con verifica
 
 * call read('classpath:utils/psp-verifica-rpt.feature')
 * match response == esitoVerifyPayment
+* def ccp = response.ccp
 
 # Attivo il pagamento 
 

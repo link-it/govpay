@@ -10,7 +10,7 @@
 	
 	<wsdl:types>
 		<xsd:schema version="1.0.0" targetNamespace="http://pagopa-api.pagopa.gov.it/pa/paForNode.xsd" xmlns:tns="http://pagopa-api.pagopa.gov.it/pa/paForNode.xsd" xmlns:xmime="http://www.w3.org/2005/05/xmlmime">
-			<!--Simple type-->
+			  <!--Simple type-->
 			  <xsd:simpleType name="stText16">
 			    <xsd:restriction base="xsd:string">
 			      <xsd:minLength value="1" />
