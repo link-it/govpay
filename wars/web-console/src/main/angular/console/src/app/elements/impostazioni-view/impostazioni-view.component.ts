@@ -22,6 +22,11 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
 
   protected _tgFormIsValid: boolean = false;
   protected _tgIOFormIsValid: boolean = false;
+  protected hasTsValue: boolean = false;
+  protected hasKsValue: boolean = false;
+  protected _tsControllers: string[] = ['tsType_ctrl', 'truststoreLocation_ctrl', 'truststorePassword_ctrl', 'truststoreAlgorithm_ctrl'];
+  protected _ksControllers: string[] = ['ksType_ctrl', 'keystoreLocation_ctrl', 'keystorePassword_ctrl', 'keystoreAlgorithm_ctrl'];
+  protected _sslControllers: string[] = ['cryptoType_ctrl'];
 
   protected gdeForm: FormGroup;
   protected serverForm: FormGroup;
@@ -248,29 +253,25 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
         this.serverForm.controls['serverCTimeout_ctrl'].setValue(this.json.mailBatch.mailserver.readTimeout || '');
         this.serverForm.controls['serverRTimeout_ctrl'].setValue(this.json.mailBatch.mailserver.connectionTimeout || '');
         this.serverForm.controls['startTls_ctrl'].setValue(this.json.mailBatch.mailserver.startTls || false);
-        if (this.json.mailBatch.mailserver.sslConfig && this.json.mailBatch.mailserver.sslConfig.abilitato) {
+        if (this.json.mailBatch.mailserver.sslConfig) {
           const _sslConfig: any = this.json.mailBatch.mailserver.sslConfig;
-          this.serverForm.controls['sslConfig_ctrl'].disable();
-          if (_sslConfig) {
-            this.serverForm.controls['sslConfig_ctrl'].setValue(_sslConfig.abilitato || false);
-            if (this._serverAbilitato.value) {
-              this.serverForm.controls['sslConfig_ctrl'].enable();
-            }
-            this.serverForm.controls['cryptoType_ctrl'].setValue(_sslConfig.type || '');
-            this.serverForm.controls['hostnameVerifier_ctrl'].setValue(_sslConfig.hostnameVerifier || false);
-            if (_sslConfig.truststore) {
-              this.serverForm.controls['tsType_ctrl'].setValue(_sslConfig.truststore.type || '');
-              this.serverForm.controls['truststoreLocation_ctrl'].setValue(_sslConfig.truststore.location || '');
-              this.serverForm.controls['truststorePassword_ctrl'].setValue(_sslConfig.truststore.password || '');
-              this.serverForm.controls['truststoreAlgorithm_ctrl'].setValue(_sslConfig.truststore.managementAlgorithm || '');
-            }
-            if (_sslConfig.keystore) {
-              this.serverForm.controls['ksType_ctrl'].setValue(_sslConfig.keystore.type || '');
-              this.serverForm.controls['keystoreLocation_ctrl'].setValue(_sslConfig.keystore.location || '');
-              this.serverForm.controls['keystorePassword_ctrl'].setValue(_sslConfig.keystore.password || '');
-              this.serverForm.controls['keystoreAlgorithm_ctrl'].setValue(_sslConfig.keystore.managementAlgorithm || '');
-            }
+          this.serverForm.controls['sslConfig_ctrl'].setValue(_sslConfig.abilitato || false);
+          this.serverForm.controls['cryptoType_ctrl'].setValue(_sslConfig.type || '');
+          this.serverForm.controls['hostnameVerifier_ctrl'].setValue(_sslConfig.hostnameVerifier || false);
+          if (_sslConfig.truststore) {
+            this.serverForm.controls['tsType_ctrl'].setValue(_sslConfig.truststore.type || '');
+            this.serverForm.controls['truststoreLocation_ctrl'].setValue(_sslConfig.truststore.location || '');
+            this.serverForm.controls['truststorePassword_ctrl'].setValue(_sslConfig.truststore.password || '');
+            this.serverForm.controls['truststoreAlgorithm_ctrl'].setValue(_sslConfig.truststore.managementAlgorithm || '');
           }
+          if (_sslConfig.keystore) {
+            this.serverForm.controls['ksType_ctrl'].setValue(_sslConfig.keystore.type || '');
+            this.serverForm.controls['keystoreLocation_ctrl'].setValue(_sslConfig.keystore.location || '');
+            this.serverForm.controls['keystorePassword_ctrl'].setValue(_sslConfig.keystore.password || '');
+            this.serverForm.controls['keystoreAlgorithm_ctrl'].setValue(_sslConfig.keystore.managementAlgorithm || '');
+          }
+          this._ksTsValidators('hasTsValue', this._tsControllers);
+          this._ksTsValidators('hasKsValue', this._ksControllers);
         }
       }
     }
@@ -351,14 +352,6 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
 
   }
 
-  protected _cryptoTypeCmpFn(c1: any, c2: any): boolean {
-    return (c1 && c2)?(c1 === c2.value):(c1 === c2);
-  }
-
-  protected _ksTsTypeCmpFn(ksts1: any, ksts2: any): boolean {
-    return (ksts1 && ksts2)?(ksts1 === ksts2.value):(ksts1 === ksts2);
-  }
-
   /**
    *
    * @param {any} event
@@ -377,14 +370,25 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
       (!event.checked && options.disable)?c.disable():c.enable();
       c.updateValueAndValidity({ onlySelf: false, emitEvent: true });
     });
+    if (fgName === 'serverForm') {
+      this._ksTsValidators('hasTsValue', this._tsControllers);
+      this._ksTsValidators('hasKsValue', this._ksControllers);
+    }
   }
 
-  protected _ksTsValidators(value: string, fgName: string, options: any = { all: false, ctrls: [], disable: false }) {
-    (options.ctrls || []).forEach((ctrl: string) => {
-      const c: FormControl = this[fgName].controls[ctrl];
+  protected _ksTsValidators(target: string, ctrls: string[]) {
+    this[target] = false;
+    (ctrls || []).forEach((ctrl: string) => {
+      const controls: any = this['serverForm'].controls;
+      const c: FormControl = controls[ctrl];
+      if (c.value && this._sslConfigAbilitato.value) {
+        this[target] = true;
+      }
       c.setErrors(null);
-      (value)?c.setValidators(Validators.required):c.clearValidators();
-      (!value && options.disable)?c.disable():c.enable();
+      c.clearValidators();
+      if (this[target]) {
+        c.setValidators(Validators.required)
+      }
       c.updateValueAndValidity({ onlySelf: false, emitEvent: true });
     });
   }
@@ -400,37 +404,31 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
           value: {
             abilitato: values.serverAbilitato_ctrl,
             mailserver:  {
-              host: values.serverHost_ctrl,
-              port: values.serverPorta_ctrl,
-              username: values.serverUsername_ctrl,
-              password: values.serverPassword_ctrl,
-              from: values.serverMittente_ctrl,
-              readTimeout: values.serverCTimeout_ctrl,
-              connectionTimeout: values.serverRTimeout_ctrl,
+              host: values.serverHost_ctrl || '',
+              port: values.serverPorta_ctrl || '',
+              username: values.serverUsername_ctrl || '',
+              password: values.serverPassword_ctrl || '',
+              from: values.serverMittente_ctrl || '',
+              readTimeout: values.serverCTimeout_ctrl || '',
+              connectionTimeout: values.serverRTimeout_ctrl || '',
               startTls: values.startTls_ctrl
             }
           }
         };
         _obj.value.mailserver.sslConfig = {};
         _obj.value.mailserver.sslConfig.abilitato = values.sslConfig_ctrl;
-        if (values.sslConfig_ctrl) {
-          _obj.value.mailserver.sslConfig.type = values.cryptoType_ctrl;
-          _obj.value.mailserver.sslConfig.hostnameVerifier = values.hostnameVerifier_ctrl;
-          if (values.truststoreLocation_ctrl) {
-            _obj.value.mailserver.sslConfig.truststore = {};
-            _obj.value.mailserver.sslConfig.truststore.type = values.tsType_ctrl;
-            _obj.value.mailserver.sslConfig.truststore.location = values.truststoreLocation_ctrl;
-            _obj.value.mailserver.sslConfig.truststore.password = values.truststorePassword_ctrl;
-            _obj.value.mailserver.sslConfig.truststore.managementAlgorithm = values.truststoreAlgorithm_ctrl;
-          }
-          if (values.keystoreLocation_ctrl) {
-            _obj.value.mailserver.sslConfig.keystore = {};
-            _obj.value.mailserver.sslConfig.keystore.type = values.ksType_ctrl;
-            _obj.value.mailserver.sslConfig.keystore.location = values.keystoreLocation_ctrl;
-            _obj.value.mailserver.sslConfig.keystore.password = values.keystorePassword_ctrl;
-            _obj.value.mailserver.sslConfig.keystore.managementAlgorithm = values.keystoreAlgorithm_ctrl;
-          }
-        }
+        _obj.value.mailserver.sslConfig.type = values.cryptoType_ctrl || '';
+        _obj.value.mailserver.sslConfig.hostnameVerifier = values.hostnameVerifier_ctrl;
+        _obj.value.mailserver.sslConfig.truststore = {};
+        _obj.value.mailserver.sslConfig.truststore.type = values.tsType_ctrl || '';
+        _obj.value.mailserver.sslConfig.truststore.location = values.truststoreLocation_ctrl || '';
+        _obj.value.mailserver.sslConfig.truststore.password = values.truststorePassword_ctrl || '';
+        _obj.value.mailserver.sslConfig.truststore.managementAlgorithm = values.truststoreAlgorithm_ctrl || '';
+        _obj.value.mailserver.sslConfig.keystore = {};
+        _obj.value.mailserver.sslConfig.keystore.type = values.ksType_ctrl || '';
+        _obj.value.mailserver.sslConfig.keystore.location = values.keystoreLocation_ctrl || '';
+        _obj.value.mailserver.sslConfig.keystore.password = values.keystorePassword_ctrl || '';
+        _obj.value.mailserver.sslConfig.keystore.managementAlgorithm = values.keystoreAlgorithm_ctrl || '';
         _bodyPatch = [_obj];
         break;
       case 'avvisaturaAppIOForm':
