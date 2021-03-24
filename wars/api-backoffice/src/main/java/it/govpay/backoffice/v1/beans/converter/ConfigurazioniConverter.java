@@ -474,13 +474,11 @@ public class ConfigurazioniConverter {
 		
 		dto.setAbilitato(sslConfig.Abilitato());
 		dto.setHostnameVerifier(false);
-		if(sslConfig.Abilitato()) {
-			if(sslConfig.HostnameVerifier() != null)
-				dto.setHostnameVerifier(sslConfig.HostnameVerifier());
-			dto.setType(sslConfig.getType());
-			dto.setKeyStore(getConfigurazioneKeyStoreDTO(sslConfig.getKeystore()));
-			dto.setTrustStore(getConfigurazioneKeyStoreDTO(sslConfig.getTruststore()));
-		}
+		if(sslConfig.HostnameVerifier() != null)
+			dto.setHostnameVerifier(sslConfig.HostnameVerifier());
+		dto.setType(sslConfig.getType());
+		dto.setKeyStore(getConfigurazioneKeyStoreDTO(sslConfig.getKeystore()));
+		dto.setTrustStore(getConfigurazioneKeyStoreDTO(sslConfig.getTruststore()));
 				
 		return dto;	
 	}
@@ -531,12 +529,10 @@ public class ConfigurazioniConverter {
 		SslConfig rsModel = new SslConfig();
 		
 		rsModel.setAbilitato(sslConfig.isAbilitato());
-		if(sslConfig.isAbilitato()) {
-			rsModel.setHostnameVerifier(sslConfig.isHostnameVerifier());
-			rsModel.setType(sslConfig.getType());
-			rsModel.setKeystore(toConfigurazioneMailKeystoreRsModel(sslConfig.getKeyStore()));
-			rsModel.setTruststore(toConfigurazioneMailKeystoreRsModel(sslConfig.getTrustStore()));
-		}
+		rsModel.setHostnameVerifier(sslConfig.isHostnameVerifier());
+		rsModel.setType(sslConfig.getType());
+		rsModel.setKeystore(toConfigurazioneMailKeystoreRsModel(sslConfig.getKeyStore()));
+		rsModel.setTruststore(toConfigurazioneMailKeystoreRsModel(sslConfig.getTrustStore()));
 		
 		return rsModel;
 	}
