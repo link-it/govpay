@@ -310,6 +310,7 @@
                       <mat-form-field class="w-100" color="accent">
                         <mat-select [placeholder]="Voce.TIPO" formControlName="cryptoType_ctrl"
                                     (selectionChange)="_cryptoTypeChangeSelection($event)" [required]="_sslConfigAbilitato.value">
+                          <mat-option value="">Seleziona...</mat-option>
                           <mat-option *ngFor="let item of Util.CODIFICHE_SSL" [value]="item.value">{{item.label}}</mat-option>
                         </mat-select>
                       </mat-form-field>

@@ -428,11 +428,13 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
         _obj.value.mailserver.sslConfig.truststore.location = values.truststoreLocation_ctrl || '';
         _obj.value.mailserver.sslConfig.truststore.password = values.truststorePassword_ctrl || '';
         _obj.value.mailserver.sslConfig.truststore.managementAlgorithm = values.truststoreAlgorithm_ctrl || '';
-        _obj.value.mailserver.sslConfig.keystore = {};
-        _obj.value.mailserver.sslConfig.keystore.type = values.ksType_ctrl || '';
-        _obj.value.mailserver.sslConfig.keystore.location = values.keystoreLocation_ctrl || '';
-        _obj.value.mailserver.sslConfig.keystore.password = values.keystorePassword_ctrl || '';
-        _obj.value.mailserver.sslConfig.keystore.managementAlgorithm = values.keystoreAlgorithm_ctrl || '';
+        if (this.hasKsValue) {
+          _obj.value.mailserver.sslConfig.keystore = {};
+          _obj.value.mailserver.sslConfig.keystore.type = values.ksType_ctrl || '';
+          _obj.value.mailserver.sslConfig.keystore.location = values.keystoreLocation_ctrl || '';
+          _obj.value.mailserver.sslConfig.keystore.password = values.keystorePassword_ctrl || '';
+          _obj.value.mailserver.sslConfig.keystore.managementAlgorithm = values.keystoreAlgorithm_ctrl || '';
+        }
         _bodyPatch = [_obj];
         break;
       case 'avvisaturaAppIOForm':
