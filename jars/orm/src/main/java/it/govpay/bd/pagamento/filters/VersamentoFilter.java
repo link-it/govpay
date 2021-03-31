@@ -266,6 +266,7 @@ public class VersamentoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
+				IExpression orExprExt = this.newExpression();
 				List<IExpression> listaUoExpr = new ArrayList<IExpression>();
 				for (IdUnitaOperativa uo : this.idUo) {
 					IExpression orExpr = this.newExpression();
@@ -282,7 +283,9 @@ public class VersamentoFilter extends AbstractFilter {
 					listaUoExpr.add(orExpr);
 				}
 				
-				newExpression.or(listaUoExpr.toArray(new IExpression[listaUoExpr.size()]));
+				orExprExt.or(listaUoExpr.toArray(new IExpression[listaUoExpr.size()]));
+				
+				newExpression.and(orExprExt);
 				addAnd = true;
 			}
 
@@ -561,6 +564,7 @@ public class VersamentoFilter extends AbstractFilter {
 			
 			if(this.idUo != null && !this.idUo.isEmpty()){
 				this.idUo.removeAll(Collections.singleton(null));
+				
 				
 				List<String> listaUoExpr = new ArrayList<String>();
 				for (IdUnitaOperativa uo : this.idUo) {
