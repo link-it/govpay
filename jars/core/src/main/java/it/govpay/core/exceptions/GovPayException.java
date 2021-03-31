@@ -168,7 +168,7 @@ public class GovPayException extends Exception {
 		case VER_001: return "La pendenza (IdA2A:" + this.params[0] + ", Id:" + this.params[1] + ") presenta il codSingoloVersamentoEnte (" + this.params[2] + ") piu' di una volta";
 		case VER_002: return "La pendenza (IdA2A:" + this.params[0] + ", Id:" + this.params[1] + ") ha un importo totale (" + this.params[3] + ") diverso dalla somma dei singoli importi (" + this.params[2] + ")";
 		case VER_003: return "La pendenza (IdA2A:" + this.params[0] + ", Id:" + this.params[1] + ") e' in uno stato che non consente l'aggiornamento (" + this.params[2] + ")";
-		case VER_004: return "La pendenza (IdA2A:" + this.params[0] + ", Id:" + this.params[1] + ") inviato ha un'unita' operativa beneficiaria (" + this.params[2] + ") diversa da quello originale (" + this.params[3] + ")";
+		case VER_004: return "La pendenza (IdA2A:" + this.params[0] + ", Id:" + this.params[1] + ") presenta un beneficiario (" + this.params[2] + " / "+ this.params[3] + ") diverso da quello originale (" + this.params[4] + " / "+ this.params[5] +")";
 		case VER_005: return "La pendenza (IdA2A:" + this.params[0] + ", Id:" + this.params[1] + ") inviato ha un numero di singoli versamenti (" + this.params[2] + ") diverso da quello originale (" + this.params[3] + ")";
 		case VER_006: return "La pendenza (IdA2A:" + this.params[0] + ", Id:" + this.params[1] + ") inviato ha un singolo versamento con codSingoloVersamentoEnte (" + this.params[2] + ") non presente nell'originale";
 		case VER_007: return "La pendenza (IdA2A:" + this.params[0] + ", Id:" + this.params[1] + ") ha il singolo versamento con codSingoloVersamentoEnte (" + this.params[2] + ") inviato ha un tipo tributo (" + this.params[3] + ") diverso dall'originale (" + this.params[4] + ")";
