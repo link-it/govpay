@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.21.0"
+  version: "1.22.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -2955,7 +2955,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  '/documenti/{idDominio}/{numeroDocumento}/avvisi':
+  '/documenti/{idA2A}/{idDominio}/{numeroDocumento}/avvisi':
     get:
       summary: Documento di pagamento
       operationId: getAvvisiDocumento
@@ -2964,6 +2964,13 @@ paths:
       tags:
         - Pendenze
       parameters:
+        - in: path
+          name: idA2A
+          description: Identificativo del gestionale
+          required: true
+          schema:
+            type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
         - in: path
           name: idDominio
           description: Identificativo del dominio dell'ente

@@ -25,6 +25,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
@@ -143,11 +144,11 @@ public class AvvisiDAO extends BaseDAO{
 			documentiBD = new DocumentiBD(configWrapper);
 			
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(getAvvisoDTO.getCodDominio());
-			//((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(getAvvisoDTO.getIuv());
 
 			Dominio dominio = AnagraficaManager.getDominio(configWrapper, getAvvisoDTO.getCodDominio());
+			Applicazione applicazione = AnagraficaManager.getApplicazione(configWrapper, getAvvisoDTO.getCodApplicazione());
 			
-			Documento documento =  documentiBD.getDocumentoByDominioIdentificativo(dominio.getId(), getAvvisoDTO.getNumeroDocumento());
+			Documento documento =  documentiBD.getDocumentoByApplicazioneDominioIdentificativo(applicazione.getId(), dominio.getId(), getAvvisoDTO.getNumeroDocumento());
 
 			GetDocumentoAvvisiDTOResponse response = new GetDocumentoAvvisiDTOResponse();
 			String pdfFileName = dominio.getCodDominio() + "_" + documento.getCodDocumento() + ".pdf";
@@ -163,7 +164,7 @@ public class AvvisiDAO extends BaseDAO{
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printAvvisoDTO);
 				response.setDocumento(documento);
 				response.setDominio(dominio);
-				response.setApplicazione(documento.getApplicazione(configWrapper));
+				response.setApplicazione(applicazione);
 				response.setDocumentoPdf(printAvvisoDTOResponse.getAvviso().getPdf());
 				break;
 			case JSON:

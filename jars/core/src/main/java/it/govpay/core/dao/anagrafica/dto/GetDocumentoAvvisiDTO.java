@@ -12,6 +12,7 @@ public class GetDocumentoAvvisiDTO extends BasicRequestDTO {
 	
 	private String codDominio;
 	private String numeroDocumento;
+	private String codApplicazione;
 	private FormatoDocumento formato;
 	private LinguaSecondaria linguaSecondaria = null;
 	private List<String> numeriAvviso = null;
@@ -58,5 +59,11 @@ public class GetDocumentoAvvisiDTO extends BasicRequestDTO {
 	}
 	public void setNumeriAvviso(List<String> numeriAvviso) {
 		this.numeriAvviso = numeriAvviso;
+	}
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
 	}
 }

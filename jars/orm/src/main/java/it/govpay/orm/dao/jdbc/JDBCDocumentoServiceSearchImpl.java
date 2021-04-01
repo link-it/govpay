@@ -50,6 +50,7 @@ import org.slf4j.Logger;
 import it.govpay.orm.Documento;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdDocumento;
+import it.govpay.orm.IdDominio;
 import it.govpay.orm.dao.jdbc.converter.DocumentoFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.DocumentoFetch;
 
@@ -104,6 +105,7 @@ public class JDBCDocumentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		IdDocumento idDocumento = new IdDocumento();
 		idDocumento.setIdApplicazione(documento.getIdApplicazione());
 		idDocumento.setCodDocumento(documento.getCodDocumento());
+		idDocumento.setIdDominio(documento.getIdDominio());
 		return idDocumento;
 	}
 	
@@ -137,6 +139,7 @@ public class JDBCDocumentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			List<IField> fields = new ArrayList<>();
 			fields.add(Documento.model().ID_APPLICAZIONE.COD_APPLICAZIONE);
 			fields.add(Documento.model().COD_DOCUMENTO);
+			fields.add(Documento.model().ID_DOMINIO.COD_DOMINIO);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
@@ -671,11 +674,14 @@ public class JDBCDocumentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		// Object _documento
 		sqlQueryObjectGet.addFromTable(this.getDocumentoFieldConverter().toTable(Documento.model()));
 		sqlQueryObjectGet.addFromTable(this.getDocumentoFieldConverter().toTable(Documento.model().ID_APPLICAZIONE));
+		sqlQueryObjectGet.addFromTable(this.getDocumentoFieldConverter().toTable(Documento.model().ID_DOMINIO));
 		sqlQueryObjectGet.addSelectField(this.getDocumentoFieldConverter().toColumn(Documento.model().ID_APPLICAZIONE.COD_APPLICAZIONE,true));
 		sqlQueryObjectGet.addSelectField(this.getDocumentoFieldConverter().toColumn(Documento.model().COD_DOCUMENTO,true));
+		sqlQueryObjectGet.addSelectField(this.getDocumentoFieldConverter().toColumn(Documento.model().ID_DOMINIO.COD_DOMINIO,true));
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition(this.getDocumentoFieldConverter().toTable(Documento.model())+".id=?");
 		sqlQueryObjectGet.addWhereCondition(this.getDocumentoFieldConverter().toTable(Documento.model())+".id_applicazione="+this.getDocumentoFieldConverter().toTable(Documento.model().ID_APPLICAZIONE) + ".id");
+		sqlQueryObjectGet.addWhereCondition(this.getDocumentoFieldConverter().toTable(Documento.model())+".id_dominio="+this.getDocumentoFieldConverter().toTable(Documento.model().ID_DOMINIO) + ".id");
 
 
 		// Recupero _documento
@@ -685,6 +691,7 @@ public class JDBCDocumentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		List<Class<?>> listaFieldIdReturnType_documento = new ArrayList<Class<?>>();
 		listaFieldIdReturnType_documento.add(Documento.model().ID_APPLICAZIONE.COD_APPLICAZIONE.getFieldType());
 		listaFieldIdReturnType_documento.add(Documento.model().COD_DOCUMENTO.getFieldType());
+		listaFieldIdReturnType_documento.add(Documento.model().ID_DOMINIO.COD_DOMINIO.getFieldType());
 		it.govpay.orm.IdDocumento id_documento = null;
 		List<Object> listaFieldId_documento = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
 				listaFieldIdReturnType_documento, searchParams_documento);
@@ -700,6 +707,9 @@ public class JDBCDocumentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			idApplicazione.setCodApplicazione((String)listaFieldId_documento.get(0));
 			id_documento.setIdApplicazione(idApplicazione);
 			id_documento.setCodDocumento((String)listaFieldId_documento.get(1));
+			IdDominio idDominio = new IdDominio();
+			idDominio.setCodDominio((String)listaFieldId_documento.get(2));
+			id_documento.setIdDominio(idDominio );
 		}
 		
 		return id_documento;
@@ -735,18 +745,20 @@ public class JDBCDocumentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		if((id!=null && id.getId()!=null && id.getId()>0))
 			return id.getId();
 		
-		if(id.getIdApplicazione().getId() != null && id.getIdApplicazione().getId() > 0) {
+		if(id.getIdApplicazione().getId() != null && id.getIdApplicazione().getId() > 0 && id.getIdDominio().getId() != null && id.getIdDominio().getId() > 0) {
 			// Object _versamento
 			sqlQueryObjectGet.addFromTable(this.getDocumentoFieldConverter().toTable(Documento.model()));
 			sqlQueryObjectGet.addSelectField("id");
 			sqlQueryObjectGet.setANDLogicOperator(true);
 //			sqlQueryObjectGet.setSelectDistinct(true);
 			sqlQueryObjectGet.addWhereCondition("id_applicazione=?");
+			sqlQueryObjectGet.addWhereCondition("id_dominio=?");
 			sqlQueryObjectGet.addWhereCondition(this.getDocumentoFieldConverter().toColumn(Documento.model().COD_DOCUMENTO, true)+"=?");
 
 			// Recupero _versamento
 			searchParams_documento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdApplicazione().getId(),Long.class),
+					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdDominio().getId(),Long.class),
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodDocumento(),Documento.model().COD_DOCUMENTO.getFieldType())
 			};
 
@@ -756,16 +768,20 @@ public class JDBCDocumentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			// Object _versamento
 			sqlQueryObjectGet.addFromTable(this.getDocumentoFieldConverter().toTable(Documento.model()));
 			sqlQueryObjectGet.addFromTable(this.getDocumentoFieldConverter().toTable(Documento.model().ID_APPLICAZIONE));
+			sqlQueryObjectGet.addFromTable(this.getDocumentoFieldConverter().toTable(Documento.model().ID_DOMINIO));
 			sqlQueryObjectGet.addSelectField(this.getDocumentoFieldConverter().toTable(Documento.model())+".id");
 			sqlQueryObjectGet.setANDLogicOperator(true);
 //			sqlQueryObjectGet.setSelectDistinct(true);
 			sqlQueryObjectGet.addWhereCondition(this.getDocumentoFieldConverter().toColumn(Documento.model().ID_APPLICAZIONE.COD_APPLICAZIONE, true)+"=?");
+			sqlQueryObjectGet.addWhereCondition(this.getDocumentoFieldConverter().toColumn(Documento.model().ID_DOMINIO.COD_DOMINIO, true)+"=?");
 			sqlQueryObjectGet.addWhereCondition(this.getDocumentoFieldConverter().toColumn(Documento.model().COD_DOCUMENTO, true)+"=?");
 			sqlQueryObjectGet.addWhereCondition(this.getDocumentoFieldConverter().toTable(Documento.model())+".id_applicazione="+this.getDocumentoFieldConverter().toTable(Documento.model().ID_APPLICAZIONE) + ".id");
+			sqlQueryObjectGet.addWhereCondition(this.getDocumentoFieldConverter().toTable(Documento.model())+".id_dominio="+this.getDocumentoFieldConverter().toTable(Documento.model().ID_DOMINIO) + ".id");
 
 			// Recupero _versamento
 			searchParams_documento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdApplicazione().getCodApplicazione(),Documento.model().ID_APPLICAZIONE.COD_APPLICAZIONE.getFieldType()),
+					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdDominio().getCodDominio(),Documento.model().ID_DOMINIO.COD_DOMINIO.getFieldType()),
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodDocumento(),Documento.model().COD_DOCUMENTO.getFieldType())
 			};
 
