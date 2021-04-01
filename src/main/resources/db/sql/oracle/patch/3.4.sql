@@ -936,4 +936,10 @@ SELECT versamenti.id,
     documenti.descrizione AS doc_descrizione
     FROM versamenti LEFT JOIN documenti ON versamenti.id_documento = documenti.id;
 
+
+-- 31/03/2021 Vincolo di univocita' documento
+ALTER TABLE documenti DROP CONSTRAINT unique_documenti_1;
+ALTER TABLE documenti ADD CONSTRAINT unique_documenti_1 UNIQUE (cod_documento,id_applicazione,id_dominio);
+
+
     

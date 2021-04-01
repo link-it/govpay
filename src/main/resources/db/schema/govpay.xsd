@@ -287,6 +287,7 @@
 		<xsd:sequence>
 			<xsd:element name="codDocumento" type="xsd:string"/>
 			<xsd:element name="idApplicazione" type="id-applicazione"/>
+			<xsd:element name="idDominio" type="id-dominio"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -2149,6 +2150,7 @@
 						<linkit:sql-table-unique>
 							<linkit:sql-table-unique-field name="codDocumento"/>
 							<linkit:sql-table-unique-column name="id_applicazione"/>
+							<linkit:sql-table-unique-column name="id_dominio"/>
 						</linkit:sql-table-unique>
 					</linkit:sql-table-mapping>
 				</linkit:generator>

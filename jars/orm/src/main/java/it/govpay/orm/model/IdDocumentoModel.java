@@ -43,6 +43,7 @@ public class IdDocumentoModel extends AbstractModel<IdDocumento> {
 	
 		this.COD_DOCUMENTO = new Field("codDocumento",java.lang.String.class,"id-documento",IdDocumento.class);
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"id-documento",IdDocumento.class));
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"id-documento",IdDocumento.class));
 	
 	}
 	
@@ -52,6 +53,7 @@ public class IdDocumentoModel extends AbstractModel<IdDocumento> {
 	
 		this.COD_DOCUMENTO = new ComplexField(father,"codDocumento",java.lang.String.class,"id-documento",IdDocumento.class);
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"id-documento",IdDocumento.class));
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"id-documento",IdDocumento.class));
 	
 	}
 	
@@ -60,6 +62,8 @@ public class IdDocumentoModel extends AbstractModel<IdDocumento> {
 	public IField COD_DOCUMENTO = null;
 	 
 	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
+	 
+	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 
 
 	@Override

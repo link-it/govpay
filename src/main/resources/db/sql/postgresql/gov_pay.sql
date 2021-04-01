@@ -511,7 +511,7 @@ CREATE TABLE documenti
 	id_dominio BIGINT NOT NULL,
 	id_applicazione BIGINT NOT NULL,
 	-- unique constraints
-	CONSTRAINT unique_documenti_1 UNIQUE (cod_documento,id_applicazione),
+	CONSTRAINT unique_documenti_1 UNIQUE (cod_documento,id_applicazione,id_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_doc_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_doc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
