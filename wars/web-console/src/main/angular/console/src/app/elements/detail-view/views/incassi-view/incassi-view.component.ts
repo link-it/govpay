@@ -74,6 +74,9 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
     if (this.json.idIncasso) {
       this.info.extraInfo.push({ label: Voce.RICONCILIAZIONE+': ', value: this.json.idIncasso });
     }
+    if (this.json.causale) {
+      this.info.extraInfo.push({ label: Voce.CAUSALE+': ', value: this.json.causale });
+    }
 
     //Riscossioni
     this.riscossioni = this.json.riscossioni.map(function(item) {
