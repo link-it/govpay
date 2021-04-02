@@ -25,9 +25,11 @@ export class UtilService {
   // Config.govpay: Autenticazione
   public static ACCESS_BASIC: string = 'Basic';
   public static ACCESS_SPID: string = 'Spid';
+  public static ACCESS_IAM: string = 'Iam';
   public static BASIC: any = GovPayConfig.BASIC;
   public static SPID: any = GovPayConfig.SPID;
-  public static TOA: any = { Spid: false, Basic: false };
+  public static IAM: any = GovPayConfig.IAM;
+  public static TOA: any = { Spid: false, Basic: false, Iam: false };
 
   // Config.govpay
   public static INFORMATION: any = GovPayConfig.INFO;
@@ -608,7 +610,7 @@ export class UtilService {
 
   /**
    * Set TOA
-   * @param {string} toa: Basic | Spid
+   * @param {string} toa: Basic | Spid | Iam
    * @param {boolean} value
    */
   public static SetTOA(toa: string, value: boolean = false) {
@@ -616,13 +618,16 @@ export class UtilService {
   }
 
   public static ResetTOA() {
-    UtilService.TOA = { Spid: false, Basic: false };
+    UtilService.TOA = { Spid: false, Basic: false, Iam: false };
   }
 
   public static RootByTOA(): string {
     let _root = UtilService.BASIC.HTTP_ROOT_SERVICE;
     if(!UtilService.TOA.Basic && UtilService.TOA.Spid) {
       _root = UtilService.SPID.HTTPS_ROOT_SERVICE;
+    }
+    if(!UtilService.TOA.Basic && !UtilService.TOA.Spid && UtilService.TOA.Iam) {
+      _root = UtilService.IAM.ROOT_SERVICE;
     }
     return _root;
   }
@@ -631,6 +636,9 @@ export class UtilService {
     let _root = UtilService.BASIC.HTTP_LOGOUT_SERVICE;
     if(!UtilService.TOA.Basic && UtilService.TOA.Spid) {
       _root = UtilService.SPID.HTTPS_LOGOUT_SERVICE;
+    }
+    if(!UtilService.TOA.Basic && !UtilService.TOA.Spid && UtilService.TOA.Iam) {
+      _root = UtilService.IAM.LOGOUT_SERVICE;
     }
     return _root;
   }
