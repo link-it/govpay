@@ -518,14 +518,16 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     switch(mb.info.templateName) {
       case UtilService.DOMINIO:
         _json = mb.info.viewModel;
-        if (this.json.servizioMyPivot) {
-          _json.servizioMyPivot = this.json.servizioMyPivot;
-        }
-        if (this.json.servizioSecim) {
-          _json.servizioSecim = this.json.servizioSecim;
-        }
-        if (this.json.servizioGovPay) {
-          _json.servizioGovPay = this.json.servizioGovPay;
+        if (mb.editMode) {
+          if (this.json.servizioMyPivot) {
+            _json.servizioMyPivot = this.json.servizioMyPivot;
+          }
+          if (this.json.servizioSecim) {
+            _json.servizioSecim = this.json.servizioSecim;
+          }
+          if (this.json.servizioGovPay) {
+            _json.servizioGovPay = this.json.servizioGovPay;
+          }
         }
         delete _json.idDominio;
       break;
