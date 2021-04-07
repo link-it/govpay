@@ -78,17 +78,34 @@
       HTTPS_ROOT_SERVICE: '${it.govpay.backoffice.gui.spid.apibaseurl}',
       HTTPS_LOGOUT_SERVICE: '${it.govpay.backoffice.gui.spid.logout}',
       SERVICE_TARGET: '${it.govpay.backoffice.gui.spid.return}',
-      TEST_PROVIDER: '${it.govpay.backoffice.gui.spid.testprovider}',
-      ACTION_FORM_URL: '${it.govpay.backoffice.gui.spid.formaction}'
+      ACTION_FORM_URL: '${it.govpay.backoffice.gui.spid.formaction}',
+      PROVIDERS: {
+        SPID_TEST: '${it.govpay.backoffice.gui.spid.testprovider}',
+        ARUBA: 'https://sp.agenziaentrate.gov.it/rp/aruba/s3',
+        INFOCERT: 'https://sp.agenziaentrate.gov.it/rp/infocert/s3',
+        INTESA: 'https://sp.agenziaentrate.gov.it/rp/intesa/s3',
+        LEPIDA: 'https://sp.agenziaentrate.gov.it/rp/lepida/s3',
+        NAMIRIAL: 'https://sp.agenziaentrate.gov.it/rp/namirial/s3',
+        POSTE: 'https://sp.agenziaentrate.gov.it/rp/poste/s3',
+        REGISTER: 'https://sp.agenziaentrate.gov.it/rp/register/s3',
+        SIELTE: 'https://sp.agenziaentrate.gov.it/rp/sielte/s3',
+        TIM: 'https://sp.agenziaentrate.gov.it/rp/titt/s3'
+      }
+    },
+    IAM: {
+      ENABLED: ${it.govpay.backoffice.gui.iam.enabled},
+      LOGIN_URL: '${it.govpay.backoffice.gui.iam.login}',
+      ROOT_SERVICE: '${it.govpay.backoffice.gui.iam.apibaseurl}',
+      LOGOUT_SERVICE: '${it.govpay.backoffice.gui.iam.logout}'
     },
     GESTIONE_PASSWORD: {
       ENABLED: ${it.govpay.backoffice.gui.gestionepassword.enabled}
     },
     PREFERENCES: {
-      TIMEOUT: false,            // Http timeout NN(millisec)|false
-      MAX_EXPORT_LIMIT: 200,     // Max page elements
-      MAX_THREAD_EXPORT_LIMIT: 5, // Max sincro calls
-      POLLING_TRACCIATI: 5000    // Timeout per tracciati NN(millisec)|false
+      TIMEOUT: ${it.govpay.backoffice.gui.export.timeout},            // Http timeout NN(millisec)|false
+      MAX_EXPORT_LIMIT: ${it.govpay.backoffice.gui.export.limit},     // Max page elements
+      MAX_THREAD_EXPORT_LIMIT: ${it.govpay.backoffice.gui.export.thread}, // Max sincro calls
+      POLLING_TRACCIATI: ${it.govpay.backoffice.gui.export.polling}   // Timeout per tracciati NN(millisec)|false
     }
   };
 
