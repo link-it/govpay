@@ -9,7 +9,7 @@ public class IncassoUtils {
 	private static Pattern patternSingoloRFB = Pattern.compile("^.*RFB[ \\/]([^ \\/]+)[ \\/]?.*$");
 	private static Pattern patternCumulativo = Pattern.compile("PUR.LGPE-RIVERSAMENTO.URI.([0-9A-Za-z\\-_]+)");
 	private static Pattern patternCausale = Pattern.compile("^.*TXT[ \\/]([ \\/]?.*)$");
-	private static Pattern patternIDF = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d[0-9,A-Z]*-\\S*");
+	private static Pattern patternIDF = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d[0-9A-Za-z_]*-\\S*");
 
 	public static String getRiferimentoIncassoSingolo(String causale) {
 		Matcher matcher = patternSingoloRFS.matcher(causale);
@@ -29,6 +29,7 @@ public class IncassoUtils {
 		while (matcher.find()) {
 			for(int i=1; i<=matcher.groupCount(); i++) {
 				String match = matcher.group(i);
+				System.out.println(match);
 				if(patternIDF.matcher(match).find()) {
 					return match;
 				}
