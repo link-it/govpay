@@ -11,7 +11,7 @@
 				<xsd:complexType>
 					<xsd:sequence>
 						<xsd:element name="italiano" type="Etichette" />
-						<xsd:element name="traduzione" type="Etichette" />
+						<xsd:element name="traduzione" type="Etichette" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
@@ -25,9 +25,11 @@
 			<xsd:element name="settore_ente" type="xsd:string"/>
 			<xsd:element name="indirizzo_destinatario_1" type="xsd:string"/>
 			<xsd:element name="indirizzo_destinatario_2" type="xsd:string"/>
+			<xsd:element name="info_ente" type="xsd:string"/>
 			<xsd:element name="cbill" type="xsd:string"/>
 			<xsd:element name="intestatario_conto_corrente_postale" type="xsd:string"/>
 			<xsd:element name="autorizzazione" type="xsd:string"/>
+			<xsd:element name="poste" type="xsd:boolean" minOccurs="0"/>
 			<xsd:element name="pagine" type="PagineAvviso" />
 		</xsd:sequence>
 	</xsd:complexType>
@@ -48,10 +50,6 @@
 			<xsd:element name="nota_prima_rata" type="xsd:string"/>
 			<xsd:element name="nota_rata_unica" type="xsd:string"/>
 			<xsd:element name="prima_rata" type="xsd:string"/>
-			<xsd:element name="elenco_rate" type="xsd:string" />
-			<xsd:element name="elenco_rate" type="xsd:string" />
-			<xsd:element name="prima_rata" type="xsd:string"/>
-			<xsd:element name="elenco_rate" type="xsd:string"/>
 			<xsd:element name="importo" type="xsd:string"/>
 			<xsd:element name="entro" type="xsd:string"/>
 			<xsd:element name="canali" type="xsd:string"/>
@@ -94,8 +92,6 @@
 	
 	<xsd:complexType name="RataAvviso">
 		<xsd:sequence>
-			<xsd:element name="numero_rata" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="numero_rata_tradotto" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="importo" type="xsd:double"/>
 			<xsd:element name="data" type="xsd:string"/>
 			<xsd:element name="qr_code" type="xsd:string"/>
@@ -103,6 +99,12 @@
 			<xsd:element name="codice_avviso_postale" type="xsd:string"/>
 			<xsd:element name="numero_cc_postale" type="xsd:string"/>
 			<xsd:element name="data_matrix" type="xsd:string"/>
+			<xsd:element name="numero_rata" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="numero_rata_tra" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="scadenza" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="scadenza_tra" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="elenco_rate" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="elenco_rate_tra" type="xsd:string" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>    
 	    
