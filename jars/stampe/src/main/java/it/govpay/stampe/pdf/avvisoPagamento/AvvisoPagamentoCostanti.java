@@ -24,6 +24,16 @@ public class AvvisoPagamentoCostanti {
 	public static final String BOLLETTINORATA_TEMPLATE_JASPER = "/BollettinoRata.jasper";
 	public static final String TRIPLOFORMATO_TEMPLATE_JASPER = "/TriploFormato.jasper";
 	public static final String BOLLETTINOTRIRATA_TEMPLATE_JASPER = "/BollettinoTriRata.jasper";
+	
+	public static final String AVVISO_PAGAMENTO_TEMPLATE_JASPER_V2 = "/AvvisoPagamentoV2.jasper";
+	public static final String MONOBAND_TEMPLATE_JASPER_V2 = "/MonoBandV2.jasper";
+	public static final String TRIBAND_TEMPLATE_JASPER_V2 = "/TriBandV2.jasper";
+	public static final String RATAUNICA_TEMPLATE_JASPER_V2 = "/RataUnicaV2.jasper";
+	public static final String RATADOPPIA_TEMPLATE_JASPER_V2 = "/DoppiaRataV2.jasper";
+	public static final String DOPPIOFORMATO_TEMPLATE_JASPER_V2 = "/DoppioFormatoV2.jasper";
+	public static final String BOLLETTINORATA_TEMPLATE_JASPER_V2 = "/BollettinoRataV2.jasper";
+	
+	public static final String AVVISO_PAGAMENTO_V2_DIR = "/avvisoPagamentoV2";
 
 	public static final String DEL_TUO_ENTE_CREDITORE = "del tuo Ente Creditore";
 	public static final String DI_POSTE = "di Poste Italiane";

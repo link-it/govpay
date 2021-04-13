@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
@@ -57,7 +56,8 @@ public class StartupUtils {
 	
 	public static synchronized IContext startup(Logger log, String warName, String govpayVersion, String buildVersion, 
 			InputStream govpayPropertiesIS, URL log4j2XmlFile, InputStream msgDiagnosticiIS, InputStream mappingTipiEventoPropertiesIS, String tipoServizioGovpay,
-			InputStream mappingSeveritaErroriPropertiesIS) throws RuntimeException {
+			InputStream mappingSeveritaErroriPropertiesIS,
+			InputStream avvisiLabelPropertiesIS) throws RuntimeException {
 		
 		IContext ctx = null;
 		if(!initialized) {
@@ -141,6 +141,15 @@ public class StartupUtils {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				IOUtils.copy(mappingSeveritaErroriPropertiesIS, baos);
 				SeveritaProperties.newInstance(new ByteArrayInputStream(baos.toByteArray()));
+			} catch (Exception e) {
+				throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita: " + e, e);
+			}
+			
+			// Label Avvisi Pagamento
+			try {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				IOUtils.copy(avvisiLabelPropertiesIS, baos);
+				LabelAvvisiProperties.newInstance(new ByteArrayInputStream(baos.toByteArray()));
 			} catch (Exception e) {
 				throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita: " + e, e);
 			}
