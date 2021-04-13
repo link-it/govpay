@@ -36,7 +36,6 @@ import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TY
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
 import it.govpay.bd.pagamento.DocumentiBD;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.RptBD;

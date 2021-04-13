@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+ 
+	<xsd:element name="AvvisoPagamentoInput" type="AvvisoPagamentoInput" />
+
+    <xsd:complexType name="AvvisoPagamentoInput">
+		<xsd:sequence>
+			<xsd:element name="etichette">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="italiano" type="Etichette" />
+						<xsd:element name="traduzione" type="Etichette" minOccurs="0"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="logo_ente" type="xsd:string"/>
+			<xsd:element name="logo_ente_secondario" type="xsd:string"/>
+			<xsd:element name="oggetto_del_pagamento" type="xsd:string"/>
+			<xsd:element name="cf_ente" type="xsd:string"/>
+			<xsd:element name="cf_destinatario" type="xsd:string"/>
+			<xsd:element name="nome_cognome_destinatario" type="xsd:string"/>
+			<xsd:element name="ente_creditore" type="xsd:string"/>
+			<xsd:element name="settore_ente" type="xsd:string"/>
+			<xsd:element name="indirizzo_destinatario_1" type="xsd:string"/>
+			<xsd:element name="indirizzo_destinatario_2" type="xsd:string"/>
+			<xsd:element name="info_ente" type="xsd:string"/>
+			<xsd:element name="cbill" type="xsd:string"/>
+			<xsd:element name="intestatario_conto_corrente_postale" type="xsd:string"/>
+			<xsd:element name="autorizzazione" type="xsd:string"/>
+			<xsd:element name="poste" type="xsd:boolean" minOccurs="0"/>
+			<xsd:element name="pagine" type="PagineAvviso" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="Etichette">
+		<xsd:sequence>
+			<xsd:element name="avviso_pagamento" type="xsd:string"/>
+			<xsd:element name="ente_creditore" type="xsd:string"/>
+			<xsd:element name="destinatario_avviso" type="xsd:string"/>
+			<xsd:element name="quanto_quando" type="xsd:string"/>
+			<xsd:element name="come" type="xsd:string"/>
+			<xsd:element name="paga_app" type="xsd:string"/>
+			<xsd:element name="paga_app2" type="xsd:string"/>
+			<xsd:element name="paga_territorio" type="xsd:string"/>
+			<xsd:element name="paga_territorio2" type="xsd:string"/>
+			<xsd:element name="nota" type="xsd:string"/>
+			<xsd:element name="nota_importo" type="xsd:string"/>
+			<xsd:element name="nota_prima_rata" type="xsd:string"/>
+			<xsd:element name="nota_rata_unica" type="xsd:string"/>
+			<xsd:element name="prima_rata" type="xsd:string"/>
+			<xsd:element name="importo" type="xsd:string"/>
+			<xsd:element name="entro" type="xsd:string"/>
+			<xsd:element name="canali" type="xsd:string"/>
+			<xsd:element name="destinatario" type="xsd:string"/>
+			<xsd:element name="intestatario" type="xsd:string"/>
+			<xsd:element name="oggetto" type="xsd:string" />
+			<xsd:element name="descrizione" type="xsd:string" />	
+			<xsd:element name="tipo" type="xsd:string"/>
+			<xsd:element name="codice_cbill" type="xsd:string"/>
+			<xsd:element name="codice_avviso" type="xsd:string"/>
+			<xsd:element name="codice_fiscale_ente" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="PagineAvviso">
+		<xsd:choice minOccurs="1" maxOccurs="unbounded">
+			<xsd:element name="singola" type="PaginaAvvisoSingola" />
+			<xsd:element name="doppia" type="PaginaAvvisoDoppia"/>
+		</xsd:choice>
+	</xsd:complexType>
+
+	<xsd:complexType name="PaginaAvvisoDoppia">
+		<xsd:sequence minOccurs="2" maxOccurs="2">
+			<xsd:element name="rata" type="RataAvviso"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="PaginaAvvisoSingola">
+		<xsd:sequence>
+			<xsd:element name="rata" type="RataAvviso"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="RataAvviso">
+		<xsd:sequence>
+			<xsd:element name="importo" type="xsd:double"/>
+			<xsd:element name="data" type="xsd:string"/>
+			<xsd:element name="qr_code" type="xsd:string"/>
+			<xsd:element name="codice_avviso" type="xsd:string"/>
+			<xsd:element name="codice_avviso_postale" type="xsd:string"/>
+			<xsd:element name="numero_cc_postale" type="xsd:string"/>
+			<xsd:element name="data_matrix" type="xsd:string"/>
+			<xsd:element name="numero_rata" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="numero_rata_tra" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="scadenza" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="scadenza_tra" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="elenco_rate" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="elenco_rate_tra" type="xsd:string" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>    
+</xsd:schema>
