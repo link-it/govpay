@@ -115,13 +115,13 @@ public class AvvisoPagamentoPdf {
 		}
 		
 		try {
-			templateAvvisoV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_V2_DIR + AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_TEMPLATE_JASPER_V2));
-			templateMonoBandV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_V2_DIR + AvvisoPagamentoCostanti.MONOBAND_TEMPLATE_JASPER_V2));
-			templateTriBandV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_V2_DIR + AvvisoPagamentoCostanti.TRIBAND_TEMPLATE_JASPER_V2));
-			templateRataUnicaV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_V2_DIR + AvvisoPagamentoCostanti.RATAUNICA_TEMPLATE_JASPER_V2));
-			templateDoppiaRataV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_V2_DIR + AvvisoPagamentoCostanti.RATADOPPIA_TEMPLATE_JASPER_V2));
-			templateDoppioFormatoV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_V2_DIR + AvvisoPagamentoCostanti.DOPPIOFORMATO_TEMPLATE_JASPER_V2));
-			templateBollettinoRataV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_V2_DIR + AvvisoPagamentoCostanti.BOLLETTINORATA_TEMPLATE_JASPER_V2));
+			templateAvvisoV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_TEMPLATE_JASPER_V2));
+			templateMonoBandV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.MONOBAND_TEMPLATE_JASPER_V2));
+			templateTriBandV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.TRIBAND_TEMPLATE_JASPER_V2));
+			templateRataUnicaV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RATAUNICA_TEMPLATE_JASPER_V2));
+			templateDoppiaRataV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RATADOPPIA_TEMPLATE_JASPER_V2));
+			templateDoppioFormatoV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.DOPPIOFORMATO_TEMPLATE_JASPER_V2));
+			templateBollettinoRataV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.BOLLETTINORATA_TEMPLATE_JASPER_V2));
 		} catch (IOException e) {
 			LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class).error("Errore durante la lettura del template jasper dell'Avviso di Pagamento", e); 
 		}
@@ -215,12 +215,12 @@ public class AvvisoPagamentoPdf {
 
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		
-		parameters.put("MonoBand", new ByteArrayInputStream(templateMonoBandV2));
-		parameters.put("TriBand", new ByteArrayInputStream(templateTriBandV2));
-		parameters.put("RataUnica", new ByteArrayInputStream(templateRataUnicaV2));
-		parameters.put("DoppiaRata", new ByteArrayInputStream(templateDoppiaRataV2));
-		parameters.put("DoppioFormato", new ByteArrayInputStream(templateDoppioFormatoV2));
-		parameters.put("BollettinoRata", new ByteArrayInputStream(templateBollettinoRataV2));
+		parameters.put("MonoBandV2", new ByteArrayInputStream(templateMonoBandV2));
+		parameters.put("TriBandV2", new ByteArrayInputStream(templateTriBandV2));
+		parameters.put("RataUnicaV2", new ByteArrayInputStream(templateRataUnicaV2));
+		parameters.put("DoppiaRataV2", new ByteArrayInputStream(templateDoppiaRataV2));
+		parameters.put("DoppioFormatoV2", new ByteArrayInputStream(templateDoppioFormatoV2));
+		parameters.put("BollettinoRataV2", new ByteArrayInputStream(templateBollettinoRataV2));
 		
 		JRGzipVirtualizer virtualizer = new JRGzipVirtualizer(50);
 		parameters.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);

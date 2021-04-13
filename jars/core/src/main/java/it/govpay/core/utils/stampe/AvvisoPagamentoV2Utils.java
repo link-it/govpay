@@ -1,6 +1,7 @@
 package it.govpay.core.utils.stampe;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Properties;
@@ -131,6 +132,14 @@ public class AvvisoPagamentoV2Utils {
 				RataAvviso rata = new RataAvviso();
 				String dataValidita = AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataValidita());
 				rata.setData(dataValidita);
+				
+				// calcolo dell'importo totale
+				BigDecimal importoTotale = BigDecimal.ZERO;
+				for (Versamento vTmp : versamenti) {
+					importoTotale = importoTotale.add(vTmp.getImportoTotale());
+				}
+				rata.setImporto(importoTotale.doubleValue());
+				
 				pagina.setRata(rata);
 				
 				input.getPagine().getSingolaOrDoppia().add(pagina);
@@ -139,7 +148,20 @@ public class AvvisoPagamentoV2Utils {
 				AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 				AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 				PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
-				pagina.setRata(getRata(versamento, input, secondaLinguaScelta));
+				
+				RataAvviso rata = getRata(versamento, input, secondaLinguaScelta);
+				
+				rata.setScadenza(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_PRIMA_RATA));
+				if(secondaLinguaScelta != null)
+					rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_PRIMA_RATA));
+				
+				input.getEtichette().getItaliano().setEntro(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_ENTRO_IL));
+				
+				if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null ) {
+					input.getEtichette().getTraduzione().setEntro(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_ENTRO_IL));
+				}
+				
+				pagina.setRata(rata);
 				input.getPagine().getSingolaOrDoppia().add(pagina);
 			}
 		}
@@ -179,7 +201,10 @@ public class AvvisoPagamentoV2Utils {
 					break;
 				}
 				
+				rata.setImporto(versamento.getImportoTotale().doubleValue());
+				
 				pagina.setRata(rata);
+				input.getPagine().getSingolaOrDoppia().add(pagina);
 			} else {  // versamenti dispari la prima pagina e la prima soglia coincidono
 				Versamento versamento = versamenti.remove(0);
 				AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
