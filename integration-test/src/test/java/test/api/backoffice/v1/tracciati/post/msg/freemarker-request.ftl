@@ -54,6 +54,11 @@
 		"descrizione": ${csvUtils.toJsonValue(csvRecord, 84)}
 	},
 	</#if>
+	<#if !csvUtils.isEmpty(csvRecord, 86)>
+	"proprieta": {
+		"linguaSecondaria" : ${csvUtils.toJsonValue(csvRecord, 86)}
+	},
+	</#if>
 	"soggettoPagatore": {
 		"tipo": ${csvUtils.toJsonValue(csvRecord, 16)},
 		"identificativo": ${csvUtils.toJsonValue(csvRecord, 17)},
