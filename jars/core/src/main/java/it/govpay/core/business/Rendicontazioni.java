@@ -20,6 +20,8 @@
 package it.govpay.core.business;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -31,6 +33,7 @@ import java.util.Set;
 
 import javax.activation.DataHandler;
 
+import org.apache.commons.io.FileUtils;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -73,6 +76,7 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.VersamentoUtils;
@@ -179,6 +183,26 @@ public class Rendicontazioni extends BasicBD {
 					log.debug("Acquisizione dei flussi di rendicontazione per la stazione [" + stazione.getCodStazione() + "] in corso.");
 					flussiDaAcquisire.addAll(this.chiediListaFr(stazione, null, giornale));
 				}
+				
+				// Aggiungo alla lista quelli su FileSystem
+				File dir = new File(GovpayConfig.getInstance().getResourceDir() + File.separatorChar + "fr");
+				File [] files = dir.listFiles(new FilenameFilter() {
+				    @Override
+				    public boolean accept(File dir, String name) {
+				        return name.endsWith(".xml");
+				    }
+				});
+
+				for (File xmlfile : files) {
+					String fileName = xmlfile.getName();
+					log.info("Trovato Flusso di Rendicontazione da acquisisre su FileSystem: " + fileName);
+					int dotIndex = fileName.lastIndexOf('.');
+					fileName = (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
+					TipoIdRendicontazione idRendicontazione = new TipoIdRendicontazione();
+					idRendicontazione.setDataOraFlusso(null);
+					idRendicontazione.setIdentificativoFlusso(fileName);
+					flussiDaAcquisire.add(idRendicontazione);
+				}
 
 				this.setupConnection(ctx.getTransactionId());
 				// Scarto i flussi gia acquisiti ed eventuali doppioni scaricati
@@ -214,54 +238,67 @@ public class Rendicontazioni extends BasicBD {
 
 						NodoChiediFlussoRendicontazioneRisposta risposta;
 						
-						try {
-							chiediFlussoRendicontazioneClient = new NodoClient(intermediario, null, giornale);
-							popolaDatiPagoPAEvento(chiediFlussoRendicontazioneClient, intermediario, stazione, null, idRendicontazione.getIdentificativoFlusso());
-							risposta = chiediFlussoRendicontazioneClient.nodoChiediFlussoRendicontazione(richiestaFlusso, stazione.getIntermediario(this).getDenominazione());
-							chiediFlussoRendicontazioneClient.getEventoCtx().setEsito(Esito.OK);
-						} catch (Exception e) {
-							if(chiediFlussoRendicontazioneClient != null) {
-								if(e instanceof GovPayException) {
-									chiediFlussoRendicontazioneClient.getEventoCtx().setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
-								} else if(e instanceof ClientException) {
-									chiediFlussoRendicontazioneClient.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
-								} else {
-									chiediFlussoRendicontazioneClient.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-								}
-								chiediFlussoRendicontazioneClient.getEventoCtx().setEsito(Esito.FAIL);
-								chiediFlussoRendicontazioneClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
-							}
-							// Errore nella richiesta. Loggo e continuo con il prossimo flusso
-							rnd.getErrori().add("Richiesta al nodo fallita: " + e + ".");
-							log.error("Richiesta flusso rendicontazione [" + idRendicontazione.getIdentificativoFlusso() + "] fallita: " + e);
-							ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoFail", e.getMessage());
-							continue;
-						} 
-
-						if(risposta.getFault() != null) {
-							// Errore nella richiesta. Loggo e continuo con il prossimo flusso
-							rnd.getErrori().add("Richiesta al nodo fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString() + ".");
-							log.error("Richiesta flusso rendicontazione [" + idRendicontazione.getIdentificativoFlusso() + "] fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
-							ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoKo", risposta.getFault().getFaultCode(), risposta.getFault().getFaultString(), risposta.getFault().getDescription());
-							if(chiediFlussoRendicontazioneClient != null) {
-								chiediFlussoRendicontazioneClient.getEventoCtx().setSottotipoEsito(risposta.getFault().getFaultCode());
-								chiediFlussoRendicontazioneClient.getEventoCtx().setEsito(Esito.KO);
-								chiediFlussoRendicontazioneClient.getEventoCtx().setDescrizioneEsito(risposta.getFault().getFaultString());
-							}
+						byte[] tracciato = null;
+						// Prima di chiederlo al Nodo, provo a cercare il flusso in locale
+						File xmlfile = new File(GovpayConfig.getInstance().getResourceDir() + File.separatorChar + "fr" + File.separatorChar + idRendicontazione.getIdentificativoFlusso() + ".xml");
+						if(xmlfile.exists()) {
+							log.debug("Leggo Flusso di Rendicontazione da FileSystem: " + xmlfile.getName());
+							tracciato = FileUtils.readFileToByteArray(xmlfile);
+							log.info("Rimuovo Flusso di Rendicontazione da FileSystem: " + xmlfile.getName());
+							xmlfile.delete();
 						} else {
-							byte[] tracciato = null;
+							// Chiedo il tracciato al nodo
 							try {
-								ByteArrayOutputStream output = new ByteArrayOutputStream();
-								DataHandler dh = risposta.getXmlRendicontazione();
-								dh.writeTo(output);
-								tracciato = output.toByteArray();
-							} catch (IOException e) {
-								rnd.getErrori().add("Lettura del flusso fallita: " + e + ".");
-								log.error("Errore durante la lettura del flusso di rendicontazione", e);
-								ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoFail", "Lettura del flusso fallita: " + e);
+								chiediFlussoRendicontazioneClient = new NodoClient(intermediario, null, giornale);
+								popolaDatiPagoPAEvento(chiediFlussoRendicontazioneClient, intermediario, stazione, null, idRendicontazione.getIdentificativoFlusso());
+								risposta = chiediFlussoRendicontazioneClient.nodoChiediFlussoRendicontazione(richiestaFlusso, stazione.getIntermediario(this).getDenominazione());
+								chiediFlussoRendicontazioneClient.getEventoCtx().setEsito(Esito.OK);
+							} catch (Exception e) {
+								if(chiediFlussoRendicontazioneClient != null) {
+									if(e instanceof GovPayException) {
+										chiediFlussoRendicontazioneClient.getEventoCtx().setSottotipoEsito(((GovPayException)e).getCodEsito().toString());
+									} else if(e instanceof ClientException) {
+										chiediFlussoRendicontazioneClient.getEventoCtx().setSottotipoEsito(((ClientException)e).getResponseCode() + "");
+									} else {
+										chiediFlussoRendicontazioneClient.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+									}
+									chiediFlussoRendicontazioneClient.getEventoCtx().setEsito(Esito.FAIL);
+									chiediFlussoRendicontazioneClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+								}
+								// Errore nella richiesta. Loggo e continuo con il prossimo flusso
+								rnd.getErrori().add("Richiesta al nodo fallita: " + e + ".");
+								log.error("Richiesta flusso rendicontazione [" + idRendicontazione.getIdentificativoFlusso() + "] fallita: " + e);
+								ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoFail", e.getMessage());
 								continue;
-							}
+							} 
 
+							if(risposta.getFault() != null) {
+								// Errore nella richiesta. Loggo e continuo con il prossimo flusso
+								rnd.getErrori().add("Richiesta al nodo fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString() + ".");
+								log.error("Richiesta flusso rendicontazione [" + idRendicontazione.getIdentificativoFlusso() + "] fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
+								ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoKo", risposta.getFault().getFaultCode(), risposta.getFault().getFaultString(), risposta.getFault().getDescription());
+								if(chiediFlussoRendicontazioneClient != null) {
+									chiediFlussoRendicontazioneClient.getEventoCtx().setSottotipoEsito(risposta.getFault().getFaultCode());
+									chiediFlussoRendicontazioneClient.getEventoCtx().setEsito(Esito.KO);
+									chiediFlussoRendicontazioneClient.getEventoCtx().setDescrizioneEsito(risposta.getFault().getFaultString());
+								}
+							} else {
+								try {
+									ByteArrayOutputStream output = new ByteArrayOutputStream();
+									DataHandler dh = risposta.getXmlRendicontazione();
+									dh.writeTo(output);
+									tracciato = output.toByteArray();
+								} catch (IOException e) {
+									rnd.getErrori().add("Lettura del flusso fallita: " + e + ".");
+									log.error("Errore durante la lettura del flusso di rendicontazione", e);
+									ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussoFail", "Lettura del flusso fallita: " + e);
+									continue;
+								}
+							}
+						}
+						
+						// O ho il tracciato, oppure ho avuto Fault dal Nodo, loggato nel finally	
+						if(tracciato != null) {
 							FlussoRiversamento flussoRendicontazione = null;
 							try {
 								flussoRendicontazione = JaxbUtils.toFR(tracciato);
