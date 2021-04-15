@@ -186,22 +186,24 @@ public class Rendicontazioni extends BasicBD {
 				
 				// Aggiungo alla lista quelli su FileSystem
 				File dir = new File(GovpayConfig.getInstance().getResourceDir() + File.separatorChar + "fr");
-				File [] files = dir.listFiles(new FilenameFilter() {
-				    @Override
-				    public boolean accept(File dir, String name) {
-				        return name.endsWith(".xml");
-				    }
-				});
-
-				for (File xmlfile : files) {
-					String fileName = xmlfile.getName();
-					log.info("Trovato Flusso di Rendicontazione da acquisisre su FileSystem: " + fileName);
-					int dotIndex = fileName.lastIndexOf('.');
-					fileName = (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
-					TipoIdRendicontazione idRendicontazione = new TipoIdRendicontazione();
-					idRendicontazione.setDataOraFlusso(null);
-					idRendicontazione.setIdentificativoFlusso(fileName);
-					flussiDaAcquisire.add(idRendicontazione);
+				if(dir.exists() && dir.isDirectory()) {
+					File [] files = dir.listFiles(new FilenameFilter() {
+					    @Override
+					    public boolean accept(File dir, String name) {
+					        return name.endsWith(".xml");
+					    }
+					});
+	
+					for (File xmlfile : files) {
+						String fileName = xmlfile.getName();
+						log.info("Trovato Flusso di Rendicontazione da acquisisre su FileSystem: " + fileName);
+						int dotIndex = fileName.lastIndexOf('.');
+						fileName = (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
+						TipoIdRendicontazione idRendicontazione = new TipoIdRendicontazione();
+						idRendicontazione.setDataOraFlusso(null);
+						idRendicontazione.setIdentificativoFlusso(fileName);
+						flussiDaAcquisire.add(idRendicontazione);
+					}
 				}
 
 				this.setupConnection(ctx.getTransactionId());
