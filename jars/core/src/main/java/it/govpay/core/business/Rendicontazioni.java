@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
 import javax.activation.DataHandler;
@@ -210,10 +211,13 @@ public class Rendicontazioni extends BasicBD {
 				// Scarto i flussi gia acquisiti ed eventuali doppioni scaricati
 				FrBD frBD = new FrBD(this);
 				Set<String> idfs = new HashSet<>();
-				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
-					if(frBD.exists(idRendicontazione.getIdentificativoFlusso()) || idfs.contains(idRendicontazione.getIdentificativoFlusso()))
-						flussiDaAcquisire.remove(idRendicontazione);
-					idfs.add(idRendicontazione.getIdentificativoFlusso());
+				ListIterator<TipoIdRendicontazione> iter = flussiDaAcquisire.listIterator();
+				while(iter.hasNext()){
+					TipoIdRendicontazione next = iter.next();
+				    if(frBD.exists(next.getIdentificativoFlusso()) || idfs.contains(next.getIdentificativoFlusso())){
+				        iter.remove();
+				    }
+				    idfs.add(next.getIdentificativoFlusso());
 				}
 				this.closeConnection();
 
