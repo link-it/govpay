@@ -216,6 +216,11 @@ public class Rendicontazioni extends BasicBD {
 					TipoIdRendicontazione next = iter.next();
 				    if(frBD.exists(next.getIdentificativoFlusso()) || idfs.contains(next.getIdentificativoFlusso())){
 				        iter.remove();
+				        File xmlfile = new File(GovpayConfig.getInstance().getResourceDir() + File.separatorChar + "fr" + File.separatorChar + next.getIdentificativoFlusso() + ".xml");
+						if(xmlfile.exists()) {
+							log.info("Rimuovo Flusso di Rendicontazione da FileSystem gia' presente in archivio: " + xmlfile.getName());
+							xmlfile.delete();
+						}
 				    }
 				    idfs.add(next.getIdentificativoFlusso());
 				}
