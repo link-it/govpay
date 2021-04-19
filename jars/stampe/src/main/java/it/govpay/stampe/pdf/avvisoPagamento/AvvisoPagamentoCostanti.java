@@ -32,6 +32,7 @@ public class AvvisoPagamentoCostanti {
 	public static final String RATADOPPIA_TEMPLATE_JASPER_V2 = "/DoppiaRataV2.jasper";
 	public static final String DOPPIOFORMATO_TEMPLATE_JASPER_V2 = "/DoppioFormatoV2.jasper";
 	public static final String BOLLETTINORATA_TEMPLATE_JASPER_V2 = "/BollettinoRataV2.jasper";
+	public static final String DUALBAND_TEMPLATE_JASPER_V2 = "/DualBandV2.jasper";
 	
 	public static final String AVVISO_PAGAMENTO_V2_DIR = "/avvisoPagamentoV2";
 

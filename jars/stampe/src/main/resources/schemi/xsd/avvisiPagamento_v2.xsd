@@ -44,9 +44,9 @@
 			<xsd:element name="paga_territorio" type="xsd:string"/>
 			<xsd:element name="paga_territorio2" type="xsd:string"/>
 			<xsd:element name="nota" type="xsd:string"/>
-			<xsd:element name="nota_importo" type="xsd:string"/>
-			<xsd:element name="nota_prima_rata" type="xsd:string"/>
-			<xsd:element name="nota_rata_unica" type="xsd:string"/>
+			<xsd:element name="nota_1" type="xsd:string"/>
+			<xsd:element name="nota_2" type="xsd:string"/>
+			<xsd:element name="nota_3" type="xsd:string"/>
 			<xsd:element name="prima_rata" type="xsd:string"/>
 			<xsd:element name="importo" type="xsd:string"/>
 			<xsd:element name="entro" type="xsd:string"/>
