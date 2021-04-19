@@ -63,6 +63,12 @@ public class AvvisoPagamentoV2Utils {
 			input.setPagine(new PagineAvviso());
 
 		input.getPagine().getSingolaOrDoppia().add(pagina);
+		
+		input.getEtichette().getItaliano().setNota1(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
+		
+		if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null ) {
+			input.getEtichette().getTraduzione().setNota1(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
+		}
 
 		return input;
 	} 
@@ -80,6 +86,8 @@ public class AvvisoPagamentoV2Utils {
 
 		if(input.getPagine() == null)
 			input.setPagine(new PagineAvviso());
+		
+		boolean addNota1 = true;
 		
 		// calcolo il numero delle rate
 		int numeroRate = 0;
@@ -123,11 +131,13 @@ public class AvvisoPagamentoV2Utils {
 				AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 				AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 				
-				input.getEtichette().getItaliano().setNotaPrimaRata(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_PRIMA_RATA));
+				input.getEtichette().getItaliano().setNota1(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_PRIMA_RATA));
 				
 				if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null ) {
-					input.getEtichette().getTraduzione().setNotaPrimaRata(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_PRIMA_RATA));
+					input.getEtichette().getTraduzione().setNota1(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_PRIMA_RATA));
 				}
+				
+				addNota1 = false;
 				
 				RataAvviso rata = new RataAvviso();
 				String dataValidita = AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataValidita());
@@ -167,11 +177,12 @@ public class AvvisoPagamentoV2Utils {
 		}
 		
 		if(numeroRate > 0) {
-			input.getEtichette().getItaliano().setNotaPrimaRata(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_NOTA_PRIMA_RATA, numeroRate));
+			input.getEtichette().getItaliano().setNota1(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_NOTA_PRIMA_RATA, numeroRate));
 			
 			if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null ) {
-				input.getEtichette().getTraduzione().setNotaPrimaRata(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_NOTA_PRIMA_RATA, numeroRate));
+				input.getEtichette().getTraduzione().setNota1(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_NOTA_PRIMA_RATA, numeroRate));
 			}
+			addNota1 = false;
 		}
 		
 		// ho tutti pagamenti con soglia
@@ -285,6 +296,21 @@ public class AvvisoPagamentoV2Utils {
 			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 			pagina.setRata(getRata(versamento, input, secondaLinguaScelta));
 			input.getPagine().getSingolaOrDoppia().add(pagina);
+		}
+		
+		
+		if(addNota1) {
+			input.getEtichette().getItaliano().setNota1(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
+			
+			if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null ) {
+				input.getEtichette().getTraduzione().setNota1(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
+			}
+		} else {
+			input.getEtichette().getItaliano().setNota2(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
+			
+			if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null ) {
+				input.getEtichette().getTraduzione().setNota2(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
+			}
 		}
 
 		return input;
@@ -528,7 +554,7 @@ public class AvvisoPagamentoV2Utils {
 		etichette.setImporto(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_IMPORTO));
 		etichette.setIntestatario(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_INTESTATARIO));
 		etichette.setNota(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA));
-		etichette.setNotaImporto(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
+//		etichette.setNota2(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
 		//etichette.setNotaPrimaRata(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_PRIMA_RATA));
 //		etichette.setNotaRataUnica(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_RATA_UNICA));
 		etichette.setOggetto(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_OGGETTO));
@@ -564,7 +590,7 @@ public class AvvisoPagamentoV2Utils {
 		etichette.setImporto(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_IMPORTO));
 		etichette.setIntestatario(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_INTESTATARIO));
 		etichette.setNota(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA));
-		etichette.setNotaImporto(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
+//		etichette.setNota2(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
 		//etichette.setNotaPrimaRata(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_PRIMA_RATA));
 //		etichette.setNotaRataUnica(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_RATA_UNICA));
 		etichette.setOggetto(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_OGGETTO));
