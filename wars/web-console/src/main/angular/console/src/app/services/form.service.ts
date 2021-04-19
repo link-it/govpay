@@ -62,6 +62,7 @@ export class FormService {
   public static FORM_TIPO_RISCOSSIONE: string = 'Tipo';
 
   //Rendicontazioni
+  public static FORM_IDENTIFICATIVO_FLUSSO: string = 'Identificativo flusso';
   public static FORM_DATA_RISC_INIZIO: string = 'Data riscossione';
   public static FORM_DATA_RISC_FINE: string = 'Data riscossione';
   public static FORM_PH_DATA_RISC_INIZIO: string = '(Inzio)';

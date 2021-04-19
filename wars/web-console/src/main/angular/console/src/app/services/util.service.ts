@@ -1533,6 +1533,7 @@ export class UtilService {
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load' } }, this.http),
+          new FormInput({ id: 'idFlusso', label: FormService.FORM_IDENTIFICATIVO_FLUSSO, type: UtilService.INPUT }),
           new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_RISC_INIZIO+' '+FormService.FORM_PH_DATA_RISC_INIZIO, type: UtilService.DATE_PICKER, }),
           new FormInput({ id: 'dataA', label: FormService.FORM_DATA_RISC_FINE+' '+FormService.FORM_PH_DATA_RISC_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
