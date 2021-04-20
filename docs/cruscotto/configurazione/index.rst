@@ -186,10 +186,10 @@ Utilizzando il pulsante di creazione, presente in basso a destra nella pagina di
 I **placeholder contenuti nel prefisso IUV** vengono sostituiti a runtime con i valori forniti dagli applicativi richiedenti o con i valori di sistema configurati. La lunghezza del prefisso riduce lo spazio di IUV generabili, quindi è necessario che sia il più breve possibile.
 I seguenti sono i placeholder di sistema, sovrascrivibili dall'applicazione chiamante:
 
-* a: codice IUV assegnato all'applicazione che gestisce il debito
-* t: codice IUV assegnato al tributo
-* y: anno di emissione dello IUV, due cifre
-* Y: anno di emissione dello IUV, quattro cifre
+* %(a): codice IUV assegnato all'applicazione che gestisce il debito
+* %(t): codice IUV assegnato al tributo
+* %(y): anno di emissione dello IUV, due cifre
+* %(Y): anno di emissione dello IUV, quattro cifre
 
 Dettaglio Ente Creditore
 ~~~~~~~~~~~~~~~~~~~~~~~~
