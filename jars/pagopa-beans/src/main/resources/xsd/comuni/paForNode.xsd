@@ -44,32 +44,6 @@
     </xsd:restriction>
   </xsd:simpleType>
 
-  <xsd:simpleType name="stIdempotencyKey">
-    <xsd:annotation>
-      <xsd:documentation>
-                `IdempotencyKey`, it has been genearated from PSP.
-                It's obtained as concatenation of the PSP' fiscal code followed by a `_` and a unique random string within PSP, that generated it
-            </xsd:documentation>
-    </xsd:annotation>
-    <xsd:restriction base="xsd:string">
-      <xsd:pattern value="[0-9]{11}_[a-zA-Z0-9]{10}" />
-    </xsd:restriction>
-  </xsd:simpleType>
-
-  <xsd:simpleType name="stPaymentToken">
-    <!-- <xsd:annotation>
-      <xsd:documentation>
-                `PaymentToken`, it has been genearated from PA.
-                It's obtained as concatenation of the PA' fiscal code followed by a `_` and a UUID (unique for PA), that generated it
-            </xsd:documentation>
-    </xsd:annotation> -->
-    <xsd:restriction base="xsd:string">
-      <!-- <xsd:pattern value="[0-9]{11}_[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}" /> -->
-      <xsd:minLength value="1" />
-      <xsd:maxLength value="35" />
-    </xsd:restriction>
-  </xsd:simpleType>
-
   <xsd:simpleType name="stEMail">
     <xsd:restriction base="xsd:string">
       <xsd:pattern value="[a-zA-Z0-9_\.\+\-]+@[a-zA-Z0-9\-]+(\.[a-zA-Z0-9\-]+)*" />
@@ -78,11 +52,30 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="stAmount">
+    <xsd:annotation>
+      <xsd:documentation>
+Amount of payment in euro
+      </xsd:documentation>
+    </xsd:annotation>
     <xsd:restriction base="xsd:decimal">
       <xsd:pattern value="\d+\.\d{2}" />
       <xsd:maxInclusive value="999999999.99" />
     </xsd:restriction>
   </xsd:simpleType>
+
+  <xsd:simpleType name="stAmountNotZero">
+    <xsd:annotation>
+      <xsd:documentation>
+Amount of payment in euro (_it doesn't admit values ​​equal to 0_)
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:decimal">
+      <xsd:pattern value="\d+\.\d{2}" />
+      <xsd:minInclusive value="0.01" /> <!-- force to set value different from 0.-->
+      <xsd:maxInclusive value="999999999.99" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
 
   <xsd:simpleType name="stUUID">
     <xsd:restriction base="xsd:string">
@@ -110,6 +103,12 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="stFiscalCodePA">
+    <xsd:annotation>
+      <xsd:documentation>
+Tax code of the public administration to which the payment notification is made out
+        </xsd:documentation>
+    </xsd:annotation>
+
     <xsd:restriction base="xsd:string">
       <xsd:length value="11" />
       <xsd:pattern value="[0-9]{11}" />
@@ -130,6 +129,14 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="stOutcome">
+    <xsd:annotation>
+      <xsd:documentation>
+The outcome of the operation may contain the following result string code: 
+
+- **OK** : operation performed successfully
+- **KO** : operation terminated with error
+      </xsd:documentation>
+    </xsd:annotation>
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="OK" />
       <xsd:enumeration value="KO" />
@@ -147,6 +154,14 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="stEntityUniqueIdentifierValue">
+    <xsd:annotation>
+      <xsd:documentation>
+Alphanumeric field that can contain the tax code or, alternatively, the VAT number of the payer.
+
+In applicable cases, when it is not possible to identify for tax purposes the subject, the `ANONIMO` value can be used
+      </xsd:documentation>
+    </xsd:annotation>
+
     <xsd:restriction base="xsd:string">
       <xsd:minLength value="2" />
       <xsd:maxLength value="16" />
@@ -154,6 +169,15 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="stEntityUniqueIdentifierType">
+    <xsd:annotation>
+      <xsd:documentation>
+Alphanumeric field indicating the nature of the subject; it can assume the following values:
+
+- **F** : Natural person
+- **G** : Legal Person
+      </xsd:documentation>
+    </xsd:annotation>
+
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="F" /> <!-- Persona Fisica -->
       <xsd:enumeration value="G" /> <!-- Persona Giuridica -->
@@ -176,6 +200,13 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="stNoticeNumber">
+    <xsd:annotation>
+      <xsd:documentation>
+`noticeNumber` is composed by :
+
+`[auxDigit][segregationCode][IUVBase][IUVCheckDigit]`
+      </xsd:documentation>
+    </xsd:annotation>
     <xsd:restriction base="xsd:string">
       <xsd:pattern value="[0-9]{18}" />
     </xsd:restriction>
@@ -183,6 +214,19 @@
 
   <!-- usato dal PSP nell'activate -->
   <xsd:simpleType name="stAmountOption">
+    <xsd:annotation>
+      <xsd:documentation>
+Indicates the payment criteria accepted by public administration respect to the amount, i.e. if it accepts an `amount` for this payment option
+
+- equals `EQ`
+- less `LT`
+- greater `GT`
+- any `ANY`
+
+than indicated.
+     </xsd:documentation>
+    </xsd:annotation>
+
     <xsd:restriction base="xsd:string">
       <xsd:enumeration value="EQ"></xsd:enumeration> <!-- is equal to -->
       <xsd:enumeration value="LS"></xsd:enumeration> <!-- is greater than -->
@@ -212,9 +256,97 @@
     </xsd:sequence>
   </xsd:complexType>
 
+  <xsd:simpleType name="stFaultCode">
+    <xsd:annotation>
+      <xsd:documentation>
+### Generic Errors
+
+**PPT_SINTASSI_EXTRAXSD** : _Generic error related to any WSDL/XSD syntax error. It can be returned from any message_
+
+**PPT_STAZIONE_INT_PA_ERRORE_RESPONSE** : _Generic error related to any PA error. It can be returned from verifyPaymentNotice and ActivatePaymentNotice messages_
+
+**PPT_STAZIONE_INT_PA_DISABILITATA** : _PA configuration error. It can be returned from VerifyPaymentNotice and ActivatePaymentNotice messages_
+
+**PPT_STAZIONE_INT_PA_IRRAGGIUNGIBILE** : _PA configuration error. It can be returned from VerifyPaymentNotice and ActivatePaymentNotice messages_
+
+**PPT_INTERMEDIARIO_PA_DISABILITATO** : _PA configuration error. It can be returned from VerifyPaymentNotice and ActivatePaymentNotice messages_
+
+**PPT_STAZIONE_INT_PA_TIMEOUT** : _PA information is not available, the operation can not be authorized. It can be returned from VerifyPaymentNotice and ActivatePaymentNotice messages_
+ 
+### Authentication Errors
+
+**PPT_PSP_SCONOSCIUTO** : _Authentication Error. It can be returned from any messages_
+
+**PPT_PSP_DISABILITATO** : _Authentication Error. It can be returned from any messages_
+
+**PPT_INTERMEDIARIO_PSP_SCONOSCIUTO** : _Authentication Error. It can be returned from any messages_
+
+**PPT_INTERMEDIARIO_PSP_DISABILITATO** : _Authentication Error. It can be returned from any messages_
+
+**PPT_CANALE_SCONOSCIUTO** : _Authentication Error. It can be returned from any messages_
+
+**PPT_CANALE_DISABILITATO** : _Authentication Error. It can be returned from any messages_
+
+**PPT_AUTORIZZAZIONE** : _Authentication Error. It can be returned from any messages_
+
+### Request Errors
+
+**PPT_DOMINIO_SCONOSCIUTO** : _Request Error. Unknown PA fiscal code. It can be returned from VerifyPaymentNotice and ActivatePaymentNotice messages_
+
+**PPT_DOMINIO_DISABILITATO** : _Request Error. Unknown PA fiscal code. It can be returned from VerifyPaymentNotice and ActivatePaymentNotice messages_
+
+**PPT_INT_PA_SCONOSCIUTA** :  _Notice Number Error. It can be returned from VerifyPaymentNotice messages_
+
+### Business Errors
+
+**PPT_ERRORE_EMESSO_DA_PAA** : _Operation not authorized. It can be returned from VerifyPaymentNotice and ActivatePaymentNotice messages_
+
+**PPT_SEMANTICA** : _Idempotency key expired. It can be returned from  ActivatePaymentNotice messages; The same fault code can be related to an integration error._
+
+**PPT_PAGAMENTO_IN_CORSO** : _Payment in process, the operation can not be authorized. It can be returned from  ActivatePaymentNotice messages:
+
+**PPT_TOKEN_SCONOSCIUTO** : _Unknown Payment Token, the operation can not be authorized. It can be returned from  SendPaymentOutcome messages_
+
+**PPT_ESITO_GIA_ACQUISITO** : _Idempotency Error, the same request has been already processed with different params. It can be returned from  SendPaymentOutcome messages_
+
+**PPT_TOKEN_SCADUTO** : _Expired payment token, the position debt is still payable. The operation can not be authorized. It can be returned from  SendPaymentOutcome messages_
+
+**PPT_PAGAMENTO_DUPLICATO** : _Expired payment token, the position debt has benn already payed. The operation can not be authorized. It can be returned from  SendPaymentOutcome messages_
+
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string"></xsd:restriction>
+  </xsd:simpleType>
+
   <xsd:complexType name="ctFaultBean">
+    <xsd:annotation>
+      <xsd:documentation>
+
+- `id` : Subject issuing the error.
+Allowed values ​​are : 
+  - `NodoDeiPagamentiSPC` : constant which identifies the NodoSPC
+  - `[domain identifier]` : domain id of the creditor entity issuing the fault
+  - `[PSP identifier]` : PSP identifier issuing the fault
+
+- `faultCode` : error code (see `stFaultCode` to details)
+
+- `faultString` : Specification of the error code, specific to the subject issuing it. Contains a more talking description relating to the `faultCode`.
+
+- `description` : Additional description of the error set by the NodoSPC, by the creditor or PSP.
+
+- `serial` : Position of the element in the referenced list. Useful when providing a parameter in the form of a vector (for example, in the primitive `SendCarrelloRPT` node).
+If the error is generated by the EC or by the PSP, the data reported is the value of the `faultBean.serial` data set by the EC or by the PSP.
+
+- `originalFaultCode` : Error code generated by the counterpart. (_Set only it isn't generated by NodoSPC._)
+
+- `originalFaultString` : Specification of the error code generated by the counterpart. (_Set only it isn't generated by NodoSPC._)
+
+- `originalDescription` : Additional description of the error generated by the counterparty. (_Set only it isn't generated by NodoSPC._)
+      </xsd:documentation>
+    </xsd:annotation>
+
     <xsd:sequence>
-      <xsd:element name="faultCode" type="xsd:string" />
+      <xsd:element name="faultCode" type="tns:stFaultCode" />
       <xsd:element name="faultString" type="xsd:string" />
       <xsd:element name="id" type="xsd:string" />
       <xsd:element name="description" type="xsd:string" minOccurs="0" />
@@ -238,6 +370,23 @@
   </xsd:complexType>
 
   <xsd:complexType name="ctPaymentOptionsDescriptionListPA">
+    <xsd:annotation>
+      <xsd:documentation>
+Structure containing the details of possible payments relating to the debt position to be paid.
+
+Currently set at 5 eligible payments per single position.
+
+Where each `paymentOptionDescription` items contains :
+
+- `amount` : payment amount
+- `options` : indicates the payment criteria accepted by the institution with respect to the amount, or if it accepts for this payment option other than `amount`.
+- `dueDate` : indicates the expiration payment date according to the ISO 8601 format `[YYYY]-[MM]-[DD]`.
+- `detailDescription` : Free text available to describe the payment reasons
+- `transferType` : _specific only for POSTE Italiane_
+
+      </xsd:documentation>
+    </xsd:annotation>
+
     <xsd:sequence>
       <xsd:element name="paymentOptionDescription" type="tns:ctPaymentOptionDescriptionPA" maxOccurs="5" />
     </xsd:sequence>
@@ -248,7 +397,7 @@
   <xsd:complexType name="ctTransferPA">
     <xsd:sequence>
       <xsd:element name="idTransfer" type="tns:stIdTransfer" />
-      <xsd:element name="transferAmount" type="tns:stAmount" />
+      <xsd:element name="transferAmount" type="tns:stAmountNotZero" />
       <xsd:element name="fiscalCodePA" type="tns:stFiscalCodePA" />
       <xsd:element name="IBAN" type="tns:stIBAN" />
       <xsd:element name="remittanceInformation" type="tns:stText140" />
@@ -258,6 +407,24 @@
 
 
   <xsd:complexType name="ctTransferListPA">
+    <xsd:annotation>
+      <xsd:documentation>
+Structure containing the details of possible tranfer payments.
+
+Currently set at 5 eligible payments per single position.
+
+Where each `transfer` items contains :
+
+- `idTransfer` : index of the list (from `1` to `5`) 
+- `transferAmount` : amount 
+- `fiscalCodePA` : Tax code of the public administration
+- `IBAN` : contains the IBAN of the account to be credited
+- `remittanceInformation` : reason for payment (_alias_ `causaleVersamento`)
+- `transferCategory` : contains the union of **CODICE TIPOLOGIA SERVIZIO** following by ***TIPO SERVIZIO* as define in [Tassonomia dei servizi](https://drive.google.com/file/d/13xOd__Qd4pwKHr3wjE-73NAB2O7UKmIt/view)
+
+      </xsd:documentation>
+    </xsd:annotation>
+
     <xsd:sequence>
       <xsd:element name="transfer" type="tns:ctTransferPA" maxOccurs="5" />
     </xsd:sequence>
@@ -265,6 +432,29 @@
 
 
   <xsd:complexType name="ctQrCode">
+    <xsd:annotation>
+      <xsd:documentation>
+Payment Notice **QR-CODE** data.
+QR-CODE is ISO/IEC 18004:2015 compliant generated with:
+
+Parameters for generating the QR-CODE
+
+- Symbol Version : 4
+- Modules : 33x33
+- Modules width : 3 pixels
+- ECC Level: M ( max correction error 15%)
+- Character set : UTF-8
+
+QR-CODE contains a string formatted as :
+`PAGOPA|002|noticeNumber|fiscalCode|amount`
+
+Where `noticeNumber` is composed by :
+
+`[auxDigit][segregationCode][IUVBase][IUVCheckDigit]`
+
+While `fiscalCode` is the creditor tax code.
+      </xsd:documentation>
+    </xsd:annotation>
     <xsd:sequence>
       <xsd:element name="fiscalCode" type="tns:stFiscalCodePA" />
       <xsd:element name="noticeNumber" type="tns:stNoticeNumber" />
@@ -273,6 +463,22 @@
 
 
   <xsd:complexType name="ctSubject">
+    <xsd:annotation>
+      <xsd:documentation>
+Contains all data for the subject of payment :
+
+- `uniqueIdentifier` : (_see below to details_)
+- `fullName` : name of the subject
+- `streetName` : street name
+- `civicNumber` : building number
+- `postalCode` : postal code
+- `city` : town name
+- `stateProvinceRegion` : country subdivision
+- `country` : country name
+- `e-mail` : remittance location electronic address
+
+     </xsd:documentation>
+    </xsd:annotation>
     <xsd:sequence>
       <xsd:element name="uniqueIdentifier" type="tns:ctEntityUniqueIdentifier" />
       <xsd:element name="fullName" type="tns:stText70" />
@@ -287,9 +493,28 @@
   </xsd:complexType>
 
   <xsd:complexType name="ctPaymentPA">
+    <xsd:annotation>
+      <xsd:documentation>
+Its contains all payment information :
+
+- `creditorReferenceId` : its equal to **IUV** _Identificativo Univoco Versamento_ 
+- `paymentAmount` : amount, it must be equal to the sums of `transferAmount` present in the `transferList`
+- `dueDate` : indicates the expiration payment date according to the ISO 8601 format `[YYYY]-[MM]-[DD]`.
+- `retentionDate` : indicates the retention payment date according to the ISO 8601 format `[YYYY]-[MM]-[DD]`.
+- `lastPayment` : boolean flag used for in installment payments 
+- `description` : free text available to describe the payment reasons
+- `companyName` : Public Administration full name
+- `officeName` : Public Admninistration Department Name
+- `debtor` : identifies the debtor to whom the debt position refers
+- `transferList` : the list of all available transfer information (_see below to details_)
+- `metadata` : (_see below to details_)
+
+    </xsd:documentation>
+    </xsd:annotation>
+
     <xsd:sequence>
       <xsd:element name="creditorReferenceId" type="tns:stText35" /> <!--IUV -->
-      <xsd:element name="paymentAmount" type="tns:stAmount" />
+      <xsd:element name="paymentAmount" type="tns:stAmountNotZero" />
       <xsd:element name="dueDate" type="tns:stISODate" /> <!-- REQUIRED : entro quando è valido il pagamento - expiration data -->
       <xsd:element name="retentionDate" type="xsd:dateTime" minOccurs="0" /> <!-- fino a questa data non ci rigereremo verso la PA -->
       <xsd:element name="lastPayment" type="xsd:boolean" minOccurs="0" /> <!-- last payment : se in rateizzazione -->
@@ -303,13 +528,50 @@
         Al momento sempre valorizzata dal nodo : anche se in futuro per le KO potrebbe non esserlo.
         Questo perchè per valorizzare tale campo richiede diversi accessi al DB
       -->
-      <xsd:element name="transferList" type="tns:ctTransferListPA" minOccurs="0" />
+      <xsd:element name="transferList" type="tns:ctTransferListPA" />
       <xsd:element name="metadata" type="tns:ctMetadata" minOccurs="0" />
     </xsd:sequence>
   </xsd:complexType>
 
 
   <xsd:complexType name="ctReceipt">
+    <xsd:annotation>
+      <xsd:documentation>
+        Its contains all receipt information :
+
+**identifier section**
+- `outcome` : result of receipt **OK** / **KO**
+- `receiptId` : unique identifier of receipt (assigned by pagoPa) it contains `paymentToken` present in to `activatePaymentNotice` response 
+- `noticeNumber` : notice number
+- `fiscalCode` : Tax code of the public administration
+
+**PA data**
+- `creditorReferenceId` : **IUV** _Identificativo Univoco Versamento_
+- `paymentAmount` : amount
+- `description` : 
+- `companyName` : Public Administration full name
+- `officeName` Public Administration Department Name
+- `debtor` : debtor subject identifier
+- `transferList` : the list of transfers
+- `metadata` : info received in to `paGetPaymentRes`
+
+**PSP data**
+- `idPSP` : PSP Identifier, it has been assigned from pagoPA.
+- `pspFiscalCode` : PSP' fiscal code
+- `pspPartitaIVA` : PSP' _Partita IVA_
+- `PSPCompanyName` : PSP full name
+- `idChannel` : Channel Identifier, it identifies a payment service category and through which the transaction is carried out.
+- `channelDescription` : Channel Identifier description
+- `payer` : who made the payment
+- `paymentMethod` : Method of the payment , i.e. `cash`, `creditCard`, `bancomat` or `other`
+- `fee` : PSP's fee applied
+- `paymentDateTime` : payment execution date by the user
+- `applicationDate` : application date, payment date on the PSP side
+- `transferDate` : transfer date
+
+      </xsd:documentation>
+    </xsd:annotation>
+
     <xsd:sequence>
       <!--unique id -->
       <xsd:element name="receiptId" type="xsd:string" />
@@ -353,6 +615,16 @@
 
   <!--Element req/res-->
   <xsd:complexType name="paVerifyPaymentNoticeReq">
+    <xsd:annotation>
+      <xsd:documentation>
+The `paVerifyPaymentNotice` request contains :
+- `idPA` : alphanumeric field containing the tax code of the structure sending the payment request.
+- `idBrokerPA` : identification of subject that operates as an intermediary for the PA.
+- `idStation` : identification of the station of the PA into pagoPa system.
+- `qrCode` : is the union of `fiscalCode` and `noticeNumber`
+
+      </xsd:documentation>
+    </xsd:annotation>
     <xsd:sequence>
       <xsd:element name="idPA" type="tns:stText35" />
       <xsd:element name="idBrokerPA" type="tns:stText35" />
@@ -362,20 +634,29 @@
   </xsd:complexType>
 
   <xsd:complexType name="paVerifyPaymentNoticeRes">
+    <xsd:annotation>
+      <xsd:documentation>
+Its a response to `paVerifyPaymentNoticeReq` and contains :
+
+- `outcome` and _optional_ `fault` (_see below to details_)
+- `paymentList` : the list of all available payment options (_see below to details_)
+- `paymentDescription` : 
+
+If the Public Administration is configured as _OLD_ (i.e. still uses the old primitives) this field must be set with the data `nodeTipoDatiPagamentoPA` of the` nodeVerificaRPTRanspond` specifically:
+- `causaleVersamento`: represents the extended description of the reason for the payment, or
+- `spezzoniCausaleVersamento`: structure available to Public Administration to specify the payment reasons.
+
+The size of the current field is such as to allow the concatenation of the old information previously described.
+
+- `fiscalCodePA` : Tax code of the public administration
+- `companyName` : Public Administration full name
+- `officeName` : Public Administration Department Name
+    </xsd:documentation>
+    </xsd:annotation>
+
     <xsd:complexContent>
       <xsd:extension base="tns:ctResponse">
         <xsd:sequence>
-          <!-- 
-            Il nodo verifca questa campi "Mondatory" anche se l'XSD lo consente, se Rx OK dalla PA ma 
-            non ci sono tutti questi campi il Nodo mando KO al PSP nella response alla verify
-            Mondatory:
-              - paymentList
-              - paymentDescription
-              - fiscalCodePA
-              - companyName
-            Optional :
-              - officeName        
-           -->
           <xsd:element name="paymentList" type="tns:ctPaymentOptionsDescriptionListPA" minOccurs="0" />
           <xsd:element name="paymentDescription" type="tns:stText140" minOccurs="0" />
           <xsd:element name="fiscalCodePA" type="tns:stFiscalCodePA" minOccurs="0" />
@@ -395,6 +676,12 @@
   </xsd:complexType>
 
   <xsd:complexType name="ctMetadata">
+    <xsd:annotation>
+      <xsd:documentation>
+Its a _key/value_ store fields for the exclusive use of the PA. 
+The data will return in the receipt (`paSendRT`)
+      </xsd:documentation>
+    </xsd:annotation>
     <xsd:sequence>
       <xsd:element name="mapEntry" type="tns:ctMapEntry" minOccurs="1" maxOccurs="10"></xsd:element>
     </xsd:sequence>
@@ -402,6 +689,20 @@
 
 
   <xsd:complexType name="paGetPaymentReq">
+    <xsd:annotation>
+      <xsd:documentation>
+The `paVerifyPaymentNotice` request contains :
+- `idPA` : alphanumeric field containing the tax code of the structure sending the payment request.
+- `idBrokerPA` : identification of subject that operates as an intermediary for the PA.
+- `idStation` : identification of the station of the PA into pagoPa system.
+- `qrCode` : is the union of `fiscalCode` and `noticeNumber`
+- `amount` : amount of the payment
+- `paymentNote` : details description of the payment
+- `transferType` : _specific only for POSTE Italiane_
+- `dueDate` : indicates the expiration payment date according to the ISO 8601 format `[YYYY]-[MM]-[DD]`.
+      </xsd:documentation>
+    </xsd:annotation>
+
     <xsd:sequence>
       <xsd:element name="idPA" type="tns:stText35" />
       <xsd:element name="idBrokerPA" type="tns:stText35" />
@@ -415,6 +716,16 @@
   </xsd:complexType>
 
   <xsd:complexType name="paGetPaymentRes">
+    <xsd:annotation>
+      <xsd:documentation>
+Its a response to `paGetPaymentReq` and contains :
+
+- `outcome` and _optional_ `fault` (_see below to details_)
+- all `data` related to payment (_see below to details_)
+
+      </xsd:documentation>
+    </xsd:annotation>
+
     <xsd:complexContent>
       <xsd:extension base="tns:ctResponse">
         <xsd:sequence>
@@ -425,6 +736,16 @@
   </xsd:complexType>
 
   <xsd:complexType name="paSendRTReq">
+    <xsd:annotation>
+      <xsd:documentation>
+The `paSendRT` request contains :
+- `idPA` : alphanumeric field containing the tax code of the structure sending the payment request.
+- `idBrokerPA` : identification of subject that operates as an intermediary for the PA.
+- `idStation` : identification of the station of the PA into pagoPa system.
+- `receipt` : the payment receipt (_see below to details_)
+
+      </xsd:documentation>
+    </xsd:annotation>
     <xsd:sequence>
       <xsd:element name="idPA" type="tns:stText35" />
       <xsd:element name="idBrokerPA" type="tns:stText35" />
@@ -434,6 +755,15 @@
   </xsd:complexType>
 
   <xsd:complexType name="paSendRTRes">
+    <xsd:annotation>
+      <xsd:documentation>
+Its a response to `paSendRTReq` and contains :
+
+- `outcome` and _optional_ `fault` (_see below to details_)
+
+      </xsd:documentation>
+    </xsd:annotation>
+
     <xsd:complexContent>
       <xsd:extension base="tns:ctResponse"></xsd:extension>
     </xsd:complexContent>
