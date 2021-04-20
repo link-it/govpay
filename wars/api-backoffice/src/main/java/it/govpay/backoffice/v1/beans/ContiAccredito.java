@@ -14,6 +14,7 @@ import it.govpay.core.beans.JSONSerializable;
 "abilitato",
 "descrizione",
 "intestatario",
+"autStampaPosteItaliane",
 "iban",
 })
 public class ContiAccredito extends JSONSerializable {
@@ -35,6 +36,9 @@ public class ContiAccredito extends JSONSerializable {
   
   @JsonProperty("intestatario")
   private String intestatario = null;
+  
+  @JsonProperty("autStampaPosteItaliane")
+  private String autStampaPosteItaliane = null;
   
   @JsonProperty("iban")
   private String iban = null;
@@ -135,6 +139,22 @@ public class ContiAccredito extends JSONSerializable {
   }
 
   /**
+   * numero di autorizzazione per la stampa in proprio rilasciato da poste italiane
+   **/
+  public ContiAccredito autStampaPosteItaliane(String autStampaPosteItaliane) {
+    this.autStampaPosteItaliane = autStampaPosteItaliane;
+    return this;
+  }
+
+  @JsonProperty("autStampaPosteItaliane")
+  public String getAutStampaPosteItaliane() {
+    return autStampaPosteItaliane;
+  }
+  public void setAutStampaPosteItaliane(String autStampaPosteItaliane) {
+    this.autStampaPosteItaliane = autStampaPosteItaliane;
+  }
+
+  /**
    **/
   public ContiAccredito iban(String iban) {
     this.iban = iban;
@@ -164,12 +184,13 @@ public class ContiAccredito extends JSONSerializable {
         Objects.equals(abilitato, contiAccredito.abilitato) &&
         Objects.equals(descrizione, contiAccredito.descrizione) &&
         Objects.equals(intestatario, contiAccredito.intestatario) &&
+        Objects.equals(autStampaPosteItaliane, contiAccredito.autStampaPosteItaliane) &&
         Objects.equals(iban, contiAccredito.iban);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(bic, postale, mybank, abilitato, descrizione, intestatario, iban);
+    return Objects.hash(bic, postale, mybank, abilitato, descrizione, intestatario, autStampaPosteItaliane, iban);
   }
 
   public static ContiAccredito parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -192,6 +213,7 @@ public class ContiAccredito extends JSONSerializable {
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    intestatario: ").append(toIndentedString(intestatario)).append("\n");
+    sb.append("    autStampaPosteItaliane: ").append(toIndentedString(autStampaPosteItaliane)).append("\n");
     sb.append("    iban: ").append(toIndentedString(iban)).append("\n");
     sb.append("}");
     return sb.toString();

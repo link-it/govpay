@@ -42,6 +42,7 @@ import java.io.Serializable;
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="intestatario" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="autStampaPoste" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -62,7 +63,8 @@ import java.io.Serializable;
   	"abilitato",
   	"idDominio",
   	"descrizione",
-  	"intestatario"
+  	"intestatario",
+  	"autStampaPoste"
   }
 )
 
@@ -150,6 +152,14 @@ public class IbanAccredito extends org.openspcoop2.utils.beans.BaseBean implemen
     this.intestatario = intestatario;
   }
 
+  public java.lang.String getAutStampaPoste() {
+    return this.autStampaPoste;
+  }
+
+  public void setAutStampaPoste(java.lang.String autStampaPoste) {
+    this.autStampaPoste = autStampaPoste;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -195,5 +205,9 @@ public class IbanAccredito extends org.openspcoop2.utils.beans.BaseBean implemen
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="intestatario",required=false,nillable=false)
   protected java.lang.String intestatario;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="autStampaPoste",required=false,nillable=false)
+  protected java.lang.String autStampaPoste;
 
 }

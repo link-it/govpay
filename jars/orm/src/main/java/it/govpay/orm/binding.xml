@@ -473,6 +473,7 @@
     <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
     <value name="descrizione" field="descrizione" usage="optional"/>
     <value name="intestatario" field="intestatario" usage="optional"/>
+    <value name="autStampaPoste" field="autStampaPoste" usage="optional"/>
   </mapping>
   <mapping name="Tributo" class="it.govpay.orm.Tributo">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

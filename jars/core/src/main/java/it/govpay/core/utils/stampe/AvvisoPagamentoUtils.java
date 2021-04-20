@@ -424,4 +424,20 @@ public class AvvisoPagamentoUtils {
 
 		return fillDx(causale, " ", AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_CAUSALE).toUpperCase();
 	}
+	
+	
+	/***
+	 * Restituisce la stringa con l'autorizzazione da includere nel bollettino postale
+	 * 
+	 * @param autDominio
+	 * @param autIban
+	 * @return
+	 */
+	public static String getAutorizzazionePoste(String autDominio, String autIban) {
+		if(StringUtils.isNotBlank(autIban))
+			return autIban;
+		
+		return autDominio;
+		
+	}
 }

@@ -147,6 +147,7 @@ CREATE TABLE iban_accredito
 	abilitato BOOLEAN NOT NULL,
 	descrizione VARCHAR(255),
 	intestatario VARCHAR(255),
+	aut_stampa_poste VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_iban_accredito') NOT NULL,
 	id_dominio BIGINT NOT NULL,

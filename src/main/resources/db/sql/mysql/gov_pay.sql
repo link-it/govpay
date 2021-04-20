@@ -150,6 +150,7 @@ CREATE TABLE iban_accredito
 	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
 	descrizione VARCHAR(255) COMMENT 'Descrizione estesa Iban',
 	intestatario VARCHAR(255) COMMENT 'Intestatario del conto di accredito',
+	aut_stampa_poste VARCHAR(255) COMMENT 'Autorizzazione alla stampa in poprio di poste italiane',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_dominio BIGINT NOT NULL COMMENT 'Riferimento al Ente proprietario del conto',

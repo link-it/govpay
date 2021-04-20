@@ -33,6 +33,7 @@ Examples:
 | descrizione | '' | 'descrizione' |
 | intestatario | loremIpsum | 'intestatario' |
 | intestatario | '' | 'intestatario' |
+| autStampaPosteItaliane | loremIpsum | 'autStampaPosteItaliane' |
 
 Scenario: Iban non valido
 
