@@ -57,6 +57,7 @@ public class AvvisoPagamentoPdf {
 	private static byte[] templateDoppiaRataV2 = null;
 	private static byte[] templateDoppioFormatoV2 = null;
 	private static byte[] templateBollettinoRataV2 = null;
+	private static byte[] templateDualBandV2 = null;
 	
 	public static AvvisoPagamentoPdf getInstance() {
 		if(_instance == null)
@@ -122,6 +123,7 @@ public class AvvisoPagamentoPdf {
 			templateDoppiaRataV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RATADOPPIA_TEMPLATE_JASPER_V2));
 			templateDoppioFormatoV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.DOPPIOFORMATO_TEMPLATE_JASPER_V2));
 			templateBollettinoRataV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.BOLLETTINORATA_TEMPLATE_JASPER_V2));
+			templateDualBandV2 = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.DUALBAND_TEMPLATE_JASPER_V2));
 		} catch (IOException e) {
 			LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class).error("Errore durante la lettura del template jasper dell'Avviso di Pagamento", e); 
 		}
@@ -221,6 +223,7 @@ public class AvvisoPagamentoPdf {
 		parameters.put("DoppiaRataV2", new ByteArrayInputStream(templateDoppiaRataV2));
 		parameters.put("DoppioFormatoV2", new ByteArrayInputStream(templateDoppioFormatoV2));
 		parameters.put("BollettinoRataV2", new ByteArrayInputStream(templateBollettinoRataV2));
+		parameters.put("DualBandV2", new ByteArrayInputStream(templateDualBandV2));
 		
 		JRGzipVirtualizer virtualizer = new JRGzipVirtualizer(50);
 		parameters.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);

@@ -594,7 +594,7 @@ components:
         - $ref: '#/components/schemas/Lista' 
         - type: object
           properties:
-            items:
+            risultati:
               type: array
               items: 
                 $ref: '#/components/schemas/FlussoRendicontazioneIndex'                 
@@ -939,7 +939,7 @@ components:
         - $ref: '#/components/schemas/Lista' 
         - type: object
           properties:
-            items:
+            risultati:
               type: array
               items: 
                 $ref: '#/components/schemas/RiconciliazioneIndex'          
@@ -1078,7 +1078,7 @@ components:
         - $ref: '#/components/schemas/Lista' 
         - type: object
           properties:
-            items:
+            risultati:
               type: array
               items: 
                 $ref: '#/components/schemas/RiscossioneIndex'                                       
