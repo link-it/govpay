@@ -423,14 +423,16 @@ public class OperazioneFactory {
 		operazioneResponse.setJsonRichiesta(request.getDati() == null || request.getDati().length == 0 ? "" : new String(request.getDati()));
 		
 		try {
-			log.debug("AAAAAA " +Thread.currentThread().getName() + ": Numero Linea ["+request.getLinea() +"], Dati ["+operazioneResponse.getJsonRichiesta()+"]");
+			log.debug(Thread.currentThread().getName() + ": Numero Linea ["+request.getLinea() +"], Dati ["+operazioneResponse.getJsonRichiesta()+"]");
 			if(request.getDati() == null || request.getDati().length == 0) throw new ValidationException("Record vuoto");
 			
 			TrasformazioneDTOResponse trasformazioneResponse = TracciatiUtils.trasformazioneInputCSV(log, request.getCodDominio(), request.getCodTipoVersamento(), new String(request.getDati()), request.getTipoTemplateTrasformazioneRichiesta() , request.getTemplateTrasformazioneRichiesta() );
 
+			log.debug("Response della trasformazione: " + trasformazioneResponse.getOutput());
+			
 			operazioneResponse.setJsonRichiesta(trasformazioneResponse.getOutput());
 			
-			log.debug("AAAAAA " +Thread.currentThread().getName() + ": Operazione da eseguire ["+trasformazioneResponse.getTipoOperazione()+"]");
+			log.debug(Thread.currentThread().getName() + ": Operazione da eseguire ["+trasformazioneResponse.getTipoOperazione()+"]");
 			
 			Versamento versamento = new Versamento();
 			if(trasformazioneResponse.getTipoOperazione() == null || trasformazioneResponse.getTipoOperazione().equals(TipoOperazioneType.ADD)) {
