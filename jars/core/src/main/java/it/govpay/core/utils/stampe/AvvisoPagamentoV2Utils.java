@@ -395,6 +395,9 @@ public class AvvisoPagamentoV2Utils {
 			else 
 				input.setIntestatarioContoCorrentePostale(postale.getIntestatario());
 			rata.setCodiceAvvisoPostale(rata.getCodiceAvviso()); 
+
+			rata.setAutorizzazione(versamento.getDominio(configWrapper).getAutStampaPoste());
+			
 			input.setPoste(true);
 		} else {
 			// ho gia' caricato tutte le label, spengo il pagamento poste
@@ -484,7 +487,6 @@ public class AvvisoPagamentoV2Utils {
 			sb.append("email: ").append(anagraficaDominio.getEmail());
 		}
 
-		input.setAutorizzazione(dominio.getAutStampaPoste());
 		input.setInfoEnte(sb.toString());
 		// se e' presente un logo lo inserisco altrimemti verra' caricato il logo di default.
 		if(dominio.getLogo() != null && dominio.getLogo().length > 0)
