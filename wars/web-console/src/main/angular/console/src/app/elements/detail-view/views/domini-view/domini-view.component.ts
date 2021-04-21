@@ -179,7 +179,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       _dettaglio.info.push(new Dato({ label: Voce.AREA, value: json.area }));
     }
     if (json.idDominio) {
-      _dettaglio.info.push(new Dato({ label: Voce.CODICE_FISCALE, value: json.idDominio }));
+      _dettaglio.info.push(new Dato({ label: Voce.ID_DOMINIO, value: json.idDominio }));
     }
     if (json.indirizzo) {
       _dettaglio.info.push(new Dato({ label: Voce.INDIRIZZO, value: json.indirizzo }));
