@@ -213,6 +213,7 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 			fields.add(VistaRptVersamento.model().DESCRIZIONE_STATO_CONS);
 			fields.add(VistaRptVersamento.model().DATA_CONSERVAZIONE);
 			fields.add(VistaRptVersamento.model().BLOCCANTE);
+			fields.add(VistaRptVersamento.model().VERSIONE);
 			
 			fields.add(VistaRptVersamento.model().VRS_ID);
 			fields.add(VistaRptVersamento.model().VRS_COD_VERSAMENTO_ENTE);

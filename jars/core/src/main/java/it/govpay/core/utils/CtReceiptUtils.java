@@ -56,7 +56,6 @@ import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
-import net.sf.jasperreports.governors.GovernorException;
 
 public class CtReceiptUtils  extends NdpValidationUtils {
 
@@ -373,6 +372,10 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			rpt.setIdentificativoAttestante(ctReceipt.getPspFiscalCode()); // oppure ctReceipt.getIDPsp(); ??
 			rpt.setDenominazioneAttestante(ctReceipt.getPSPCompanyName());
 
+			rpt.setCodPsp(ctReceipt.getIdPSP());
+//			rpt.setCodIntermediarioPsp(codIntermediarioPsp);
+			rpt.setCodCanale(ctReceipt.getIdChannel());
+			
 			// Aggiorno l'RPT con i dati dell'RT
 			rptBD.updateRpt(rpt.getId(), rpt);
 

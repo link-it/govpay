@@ -2545,6 +2545,7 @@
 			<xsd:element name="descrizioneStatoCons" type="String512" minOccurs="0"/>
 			<xsd:element name="dataConservazione" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="bloccante" type="xsd:boolean" default="true"/>
+			<xsd:element name="versione" type="String35" />
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -3540,6 +3541,7 @@
 			<xsd:element name="descrizioneStatoCons" type="String512" minOccurs="0"/>
 			<xsd:element name="dataConservazione" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="bloccante" type="xsd:boolean" default="true"/>
+			<xsd:element name="versione" type="String35" />
 			
 			<xsd:element name="vrsId" type="xsd:long" minOccurs="0"/>
 			<xsd:element name="vrsCodVersamentoEnte" type="String35"/>

@@ -31,16 +31,8 @@ import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
-import gov.telematici.pagamenti.ws.ccp.PaaTipoDatiPagamentoPSP;
-import it.gov.digitpa.schemas._2011.pagamenti.CtDatiMarcaBolloDigitale;
-import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloVersamentoRPT;
-import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
-import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaFG;
-import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaG;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
 import it.gov.digitpa.schemas._2011.pagamenti.StAutenticazioneSoggetto;
-import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersFG;
-import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtEntityUniqueIdentifier;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentPA;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtSubject;
@@ -62,7 +54,7 @@ import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.model.SingoloVersamento.TipoBollo;
+import it.govpay.model.Rpt.Versione;
 import it.govpay.model.Versamento.CausaleSemplice;
 
 public class CtPaymentPABuilder {
@@ -72,15 +64,8 @@ public class CtPaymentPABuilder {
 			String codCanale, 
 			Versamento versamento, 
 			String iuv, 
-			String ccp, 
-			PaaTipoDatiPagamentoPSP datiPsp) throws ServiceException {
+			String ccp) throws ServiceException {
 		
-		
-		
-		
-		CtSoggettoVersante soggettoVersante = datiPsp != null ? datiPsp.getSoggettoVersante() : null;
-		String ibanAddebito = datiPsp != null ?  datiPsp.getIbanAddebito() : null;
-		String bicAddebito = datiPsp != null ? datiPsp.getBicAddebito() : null;
 		return this.buildRpt(
 				null,
 				versamento,
@@ -91,44 +76,11 @@ public class CtPaymentPABuilder {
 				codCanale,
 				TipoVersamento.ATTIVATO_PRESSO_PSP,
 				ModelloPagamento.ATTIVATO_PRESSO_PSP,
-				this.toOrm(soggettoVersante),
 				StAutenticazioneSoggetto.N_A.value(),
-				ibanAddebito,
-				bicAddebito,
 				null
 				);
 	}
 	
-//	public Rpt buildRpt(
-//			String codCarrello, 
-//			Versamento versamento, 
-//			Canale canale,
-//			String iuv, 
-//			String ccp, 
-//			Anagrafica versante, 
-//			String autenticazione, 
-//			String ibanAddebito, 
-//			String redirect) throws ServiceException {
-//		
-//		return this.buildRpt(
-//				codCarrello,
-//				versamento,
-//				iuv,
-//				ccp,
-//				it.govpay.model.Rpt.codIntermediarioPspWISP20,
-//				it.govpay.model.Rpt.codPspWISP20,
-//				it.govpay.model.Rpt.codCanaleWISP20,
-//				it.govpay.model.Rpt.tipoVersamentoWISP20,
-//				it.govpay.model.Rpt.modelloPagamentoWISP20,
-//				versante,
-//				autenticazione,
-//				ibanAddebito,
-//				null,
-//				redirect
-//				);
-//		
-//	}
-
 	private Rpt buildRpt(
 			String codCarrello, 
 			Versamento versamento, 
@@ -139,10 +91,7 @@ public class CtPaymentPABuilder {
 			String codCanale, 
 			TipoVersamento tipoVersamento,
 			ModelloPagamento modelloPagamento,
-			Anagrafica versante, 
 			String autenticazione, 
-			String ibanAddebito, 
-			String bicAddebito,
 			String redirect) throws ServiceException {
 		
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -151,6 +100,7 @@ public class CtPaymentPABuilder {
 		UnitaOperativa uo = versamento.getUo(configWrapper);
 		
 		Rpt rpt = new Rpt();
+		rpt.setVersione(Versione.SANP_240);
 		rpt.setCallbackURL(redirect);
 		rpt.setCcp(ccp);
 		rpt.setCodCarrello(codCarrello);
@@ -179,6 +129,21 @@ public class CtPaymentPABuilder {
 		PaGetPaymentRes paGetPaymentRes = new PaGetPaymentRes();
 		CtPaymentPA ctRpt = new CtPaymentPA();
 		
+		/*
+			Its contains all payment information :
+		
+			- `creditorReferenceId` : its equal to **IUV** _Identificativo Univoco Versamento_ 
+			- `paymentAmount` : amount, it must be equal to the sums of `transferAmount` present in the `transferList`
+			- `dueDate` : indicates the expiration payment date according to the ISO 8601 format `[YYYY]-[MM]-[DD]`.
+			- `retentionDate` : indicates the retention payment date according to the ISO 8601 format `[YYYY]-[MM]-[DD]`.
+			- `lastPayment` : boolean flag used for in installment payments 
+			- `description` : free text available to describe the payment reasons
+			- `companyName` : Public Administration full name
+			- `officeName` : Public Admninistration Department Name
+			- `debtor` : identifies the debtor to whom the debt position refers
+			- `transferList` : the list of all available transfer information (_see below to details_)
+			- `metadata` : (_see below to details_)
+		*/
 		ctRpt.setCompanyName(dominio.getRagioneSociale());
 		ctRpt.setCreditorReferenceId(iuv);
 		CtSubject debtor = this.buildSoggettoPagatore(versamento.getAnagraficaDebitore());
@@ -222,6 +187,23 @@ public class CtPaymentPABuilder {
 		int i=1;
 		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 			CtTransferPA transferEl = new CtTransferPA();
+			
+			/*
+			Structure containing the details of possible tranfer payments.
+		
+			Currently set at 5 eligible payments per single position.
+			
+			Where each `transfer` items contains :
+			
+			- `idTransfer` : index of the list (from `1` to `5`) 
+			- `transferAmount` : amount 
+			- `fiscalCodePA` : Tax code of the public administration
+			- `IBAN` : contains the IBAN of the account to be credited
+			- `remittanceInformation` : reason for payment (_alias_ `causaleVersamento`)
+			- `transferCategory` : contains the union of **CODICE TIPOLOGIA SERVIZIO** following by ***TIPO SERVIZIO* as define in [Tassonomia dei servizi](https://drive.google.com/file/d/13xOd__Qd4pwKHr3wjE-73NAB2O7UKmIt/view)
+			
+			 */
+			
 			transferEl.setFiscalCodePA(dominio.getCodDominio());
 			
 			if(singoloVersamento.getIbanAccredito(configWrapper) != null) {
@@ -254,25 +236,6 @@ public class CtPaymentPABuilder {
 		return UUID.randomUUID().toString().replace("-", "");
 	}
 
-	private CtSoggettoVersante buildSoggettoVersante(Anagrafica versante) {
-		if(versante == null) return null;
-		CtSoggettoVersante soggettoVersante = new CtSoggettoVersante();
-		CtIdentificativoUnivocoPersonaFG idUnivocoVersante = new CtIdentificativoUnivocoPersonaFG();
-		String cFiscale = versante.getCodUnivoco();
-		idUnivocoVersante.setCodiceIdentificativoUnivoco(cFiscale);
-		idUnivocoVersante.setTipoIdentificativoUnivoco((cFiscale.length() == 16) ? StTipoIdentificativoUnivocoPersFG.F : StTipoIdentificativoUnivocoPersFG.G);
-		soggettoVersante.setAnagraficaVersante(this.getNotEmpty(versante.getRagioneSociale()));
-		soggettoVersante.setCapVersante(this.getNotEmpty(versante.getCap()));
-		soggettoVersante.setCivicoVersante(this.getNotEmpty(versante.getCivico()));
-		soggettoVersante.setEMailVersante(this.getNotEmpty(versante.getEmail()));
-		soggettoVersante.setIdentificativoUnivocoVersante(idUnivocoVersante);
-		soggettoVersante.setIndirizzoVersante(this.getNotEmpty(versante.getIndirizzo()));
-		soggettoVersante.setLocalitaVersante(this.getNotEmpty(versante.getLocalita()));
-		soggettoVersante.setNazioneVersante(this.getNotEmpty(versante.getNazione()));
-		soggettoVersante.setProvinciaVersante(this.getNotEmpty(versante.getProvincia()));
-		return soggettoVersante;
-	}
-
 	private CtSubject buildSoggettoPagatore(Anagrafica debitore) {
 		CtSubject soggettoDebitore = new CtSubject();
 		CtEntityUniqueIdentifier idUnivocoDebitore = new CtEntityUniqueIdentifier();
@@ -291,79 +254,11 @@ public class CtPaymentPABuilder {
 		return soggettoDebitore;
 	}
 
-	private CtEnteBeneficiario buildEnteBeneficiario(Dominio dominio, UnitaOperativa uo) throws ServiceException {
-
-		CtEnteBeneficiario enteBeneficiario = new CtEnteBeneficiario();
-		CtIdentificativoUnivocoPersonaG idUnivocoBeneficiario = new CtIdentificativoUnivocoPersonaG();
-		idUnivocoBeneficiario.setCodiceIdentificativoUnivoco(dominio.getCodDominio());
-		idUnivocoBeneficiario.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivocoPersG.G);
-		enteBeneficiario.setIdentificativoUnivocoBeneficiario(idUnivocoBeneficiario);
-		enteBeneficiario.setDenominazioneBeneficiario(dominio.getRagioneSociale());
-
-		Anagrafica anagrafica = dominio.getAnagrafica();
-		enteBeneficiario.setCapBeneficiario(this.getNotEmpty(anagrafica.getCap()));
-		enteBeneficiario.setCivicoBeneficiario(this.getNotEmpty(anagrafica.getCivico()));
-		enteBeneficiario.setIndirizzoBeneficiario(this.getNotEmpty(anagrafica.getIndirizzo()));
-		enteBeneficiario.setLocalitaBeneficiario(this.getNotEmpty(anagrafica.getLocalita()));
-		enteBeneficiario.setNazioneBeneficiario(this.getNotEmpty(anagrafica.getNazione()));
-		enteBeneficiario.setProvinciaBeneficiario(this.getNotEmpty(anagrafica.getProvincia()));
-
-		if(!uo.getCodUo().equals(it.govpay.model.Dominio.EC) && uo.getAnagrafica() != null) {
-			if(uo.getAnagrafica().getCodUnivoco() != null && uo.getAnagrafica().getCodUnivoco().trim().length()>0)
-				enteBeneficiario.setCodiceUnitOperBeneficiario(uo.getAnagrafica().getCodUnivoco());
-			if(uo.getAnagrafica().getRagioneSociale() != null && uo.getAnagrafica().getRagioneSociale().trim().length()>0)
-				enteBeneficiario.setDenomUnitOperBeneficiario(uo.getAnagrafica().getRagioneSociale());
-			if(uo.getAnagrafica().getIndirizzo() != null && uo.getAnagrafica().getIndirizzo().trim().length()>0)
-				enteBeneficiario.setIndirizzoBeneficiario(uo.getAnagrafica().getIndirizzo());
-			if(uo.getAnagrafica().getCivico() != null && uo.getAnagrafica().getCivico().trim().length()>0)
-				enteBeneficiario.setCivicoBeneficiario(uo.getAnagrafica().getCivico());
-			if(uo.getAnagrafica().getCap() != null && uo.getAnagrafica().getCap().trim().length()>0)
-				enteBeneficiario.setCapBeneficiario(uo.getAnagrafica().getCap());
-			if(uo.getAnagrafica().getLocalita() != null && uo.getAnagrafica().getLocalita().trim().length()>0)
-				enteBeneficiario.setLocalitaBeneficiario(uo.getAnagrafica().getLocalita());
-			if(uo.getAnagrafica().getProvincia() != null && uo.getAnagrafica().getProvincia().trim().length()>0)
-				enteBeneficiario.setProvinciaBeneficiario(uo.getAnagrafica().getProvincia());
-			if(uo.getAnagrafica().getNazione() != null && uo.getAnagrafica().getNazione().trim().length()>0)
-				enteBeneficiario.setNazioneBeneficiario(uo.getAnagrafica().getNazione());
-		}
-		return enteBeneficiario;
-	}
-
 	private String getNotEmpty(String text) {
 		if(text == null || text.trim().isEmpty())
 			return null;
 		else
 			return text;
-	}
-
-	private CtDatiSingoloVersamentoRPT buildDatiSingoloVersamento(Rpt rpt, SingoloVersamento singoloVersamento, BDConfigWrapper configWrapper) throws ServiceException  {
-		CtDatiSingoloVersamentoRPT datiSingoloVersamento = new CtDatiSingoloVersamentoRPT();
-		datiSingoloVersamento.setImportoSingoloVersamento(singoloVersamento.getImportoSingoloVersamento());
-		
-		if(singoloVersamento.getIbanAccredito(configWrapper) != null) {
-			IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(configWrapper);
-			datiSingoloVersamento.setBicAccredito(this.getNotEmpty(ibanAccredito.getCodBic()));
-			datiSingoloVersamento.setIbanAccredito(this.getNotEmpty(ibanAccredito.getCodIban()));
-			
-			if(singoloVersamento.getIbanAppoggio(configWrapper) != null) {
-				IbanAccredito ibanAppoggio = singoloVersamento.getIbanAppoggio(configWrapper);
-				datiSingoloVersamento.setBicAppoggio(this.getNotEmpty(ibanAppoggio.getCodBic()));
-				datiSingoloVersamento.setIbanAppoggio(this.getNotEmpty(ibanAppoggio.getCodIban()));
-			}
-		} else {
-			CtDatiMarcaBolloDigitale marcaBollo = new CtDatiMarcaBolloDigitale();
-			marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento());
-			marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
-			if(singoloVersamento.getTipoBollo() != null)
-				marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
-			else
-				marcaBollo.setTipoBollo(TipoBollo.IMPOSTA_BOLLO.getCodifica());
-			datiSingoloVersamento.setDatiMarcaBolloDigitale(marcaBollo);
-			datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
-		}
-		datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
-		datiSingoloVersamento.setCausaleVersamento(this.buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT()));
-		return datiSingoloVersamento;
 	}
 
 	private static final DecimalFormat nFormatter = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.ENGLISH));

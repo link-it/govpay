@@ -817,6 +817,7 @@
     <value name="descrizioneStatoCons" field="descrizioneStatoCons" usage="optional"/>
     <value name="dataConservazione" field="dataConservazione" usage="optional"/>
     <value name="bloccante" field="bloccante" default="true" usage="required"/>
+    <value name="versione" field="versione" usage="required"/>
   </mapping>
   <mapping name="RR" class="it.govpay.orm.RR">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1126,6 +1127,7 @@
     <value name="descrizioneStatoCons" field="descrizioneStatoCons" usage="optional"/>
     <value name="dataConservazione" field="dataConservazione" usage="optional"/>
     <value name="bloccante" field="bloccante" default="true" usage="required"/>
+    <value name="versione" field="versione" usage="required"/>
     <value name="vrsId" field="vrsId" usage="optional"/>
     <value name="vrsCodVersamentoEnte" field="vrsCodVersamentoEnte" usage="required"/>
     <value name="vrsNome" field="vrsNome" usage="optional"/>

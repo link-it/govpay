@@ -802,6 +802,7 @@ CREATE TABLE rpt
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_conservazione TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di gestione del processo di conservazione a norma della RT',
 	bloccante BOOLEAN NOT NULL DEFAULT true COMMENT 'Indicazione se la RPT risulta bloccante per ulteriori transazioni di pagamento',
+	versione VARCHAR(35) NOT NULL COMMENT 'Versione dell'api PagoPA utilizzata per la transazione.',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza oggetto della richeista di pagmaento',
@@ -1833,6 +1834,7 @@ rpt.stato_conservazione as stato_conservazione,
 rpt.descrizione_stato_cons as descrizione_stato_cons,         
 rpt.data_conservazione as data_conservazione,             
 rpt.bloccante as bloccante,                      
+rpt.versione as versione,
 rpt.id as id,                             
 rpt.id_pagamento_portale as id_pagamento_portale, 
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,

@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import gov.telematici.pagamenti.ws.ccp.PaaTipoDatiPagamentoPSP;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtFaultBean;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentOptionDescriptionPA;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentOptionsDescriptionListPA;
@@ -855,9 +854,9 @@ public class PaForNodeImpl implements PaForNodePortType{
 			}
 
 			String intermediarioPsp = null;
-			PaaTipoDatiPagamentoPSP datiPagamentoPSP = null;
+//			PaaTipoDatiPagamentoPSP datiPagamentoPSP = null;
 			// Creazione dell'RPT
-			Rpt rpt = new CtPaymentPABuilder().buildRptAttivata(intermediarioPsp, psp, canale, versamento, iuv, ccp, datiPagamentoPSP );
+			Rpt rpt = new CtPaymentPABuilder().buildRptAttivata(intermediarioPsp, psp, canale, versamento, iuv, ccp);
 
 			ctx.getApplicationLogger().log("ccp.attivazione", rpt.getCodMsgRichiesta());
 
@@ -918,9 +917,6 @@ public class PaForNodeImpl implements PaForNodePortType{
 					pagamentoPortale.setStato(STATO.IN_CORSO);
 					pagamentoPortale.setTipo(3);
 					
-					if(datiPagamentoPSP != null && datiPagamentoPSP.getSoggettoVersante() != null)
-						pagamentoPortale.setVersanteIdentificativo(datiPagamentoPSP.getSoggettoVersante().getIdentificativoUnivocoVersante().getCodiceIdentificativoUnivoco());
-	
 					PagamentiPortaleBD ppbd = new PagamentiPortaleBD(rptBD);
 					ppbd.setAtomica(false);
 										

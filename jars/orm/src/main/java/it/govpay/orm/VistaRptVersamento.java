@@ -70,6 +70,7 @@ import java.io.Serializable;
  * 			&lt;element name="descrizioneStatoCons" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataConservazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="bloccante" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="true"/>
+ * 			&lt;element name="versione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsCodVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsNome" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -175,6 +176,7 @@ import java.io.Serializable;
   	"descrizioneStatoCons",
   	"dataConservazione",
   	"bloccante",
+  	"versione",
   	"vrsId",
   	"vrsCodVersamentoEnte",
   	"vrsNome",
@@ -542,6 +544,14 @@ public class VistaRptVersamento extends org.openspcoop2.utils.beans.BaseBean imp
 
   public void setBloccante(boolean bloccante) {
     this.bloccante = bloccante;
+  }
+
+  public java.lang.String getVersione() {
+    return this.versione;
+  }
+
+  public void setVersione(java.lang.String versione) {
+    this.versione = versione;
   }
 
   public long getVrsId() {
@@ -1169,6 +1179,10 @@ public class VistaRptVersamento extends org.openspcoop2.utils.beans.BaseBean imp
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="bloccante",required=true,nillable=false,defaultValue="true")
   protected boolean bloccante = true;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="versione",required=true,nillable=false)
+  protected java.lang.String versione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="vrsId",required=false,nillable=false)

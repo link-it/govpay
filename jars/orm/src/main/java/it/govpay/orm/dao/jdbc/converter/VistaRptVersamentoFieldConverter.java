@@ -326,6 +326,13 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 				return "bloccante";
 			}
 		}
+		if(field.equals(VistaRptVersamento.model().VERSIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".versione";
+			}else{
+				return "versione";
+			}
+		}
 		if(field.equals(VistaRptVersamento.model().VRS_ID)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".vrs_id";
@@ -861,6 +868,9 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 			return this.toTable(VistaRptVersamento.model(), returnAlias);
 		}
 		if(field.equals(VistaRptVersamento.model().BLOCCANTE)){
+			return this.toTable(VistaRptVersamento.model(), returnAlias);
+		}
+		if(field.equals(VistaRptVersamento.model().VERSIONE)){
 			return this.toTable(VistaRptVersamento.model(), returnAlias);
 		}
 		if(field.equals(VistaRptVersamento.model().VRS_ID)){

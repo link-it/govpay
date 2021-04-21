@@ -77,6 +77,7 @@ public class RPTModel extends AbstractModel<RPT> {
 		this.DESCRIZIONE_STATO_CONS = new Field("descrizioneStatoCons",java.lang.String.class,"RPT",RPT.class);
 		this.DATA_CONSERVAZIONE = new Field("dataConservazione",java.util.Date.class,"RPT",RPT.class);
 		this.BLOCCANTE = new Field("bloccante",boolean.class,"RPT",RPT.class);
+		this.VERSIONE = new Field("versione",java.lang.String.class,"RPT",RPT.class);
 	
 	}
 	
@@ -120,6 +121,7 @@ public class RPTModel extends AbstractModel<RPT> {
 		this.DESCRIZIONE_STATO_CONS = new ComplexField(father,"descrizioneStatoCons",java.lang.String.class,"RPT",RPT.class);
 		this.DATA_CONSERVAZIONE = new ComplexField(father,"dataConservazione",java.util.Date.class,"RPT",RPT.class);
 		this.BLOCCANTE = new ComplexField(father,"bloccante",boolean.class,"RPT",RPT.class);
+		this.VERSIONE = new ComplexField(father,"versione",java.lang.String.class,"RPT",RPT.class);
 	
 	}
 	
@@ -196,6 +198,8 @@ public class RPTModel extends AbstractModel<RPT> {
 	public IField DATA_CONSERVAZIONE = null;
 	 
 	public IField BLOCCANTE = null;
+	 
+	public IField VERSIONE = null;
 	 
 
 	@Override

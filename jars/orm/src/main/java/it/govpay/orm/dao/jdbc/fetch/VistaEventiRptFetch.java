@@ -92,6 +92,8 @@ public class VistaEventiRptFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Evento.model().COD_DOMINIO.getFieldType()));
 				setParameter(object, "setIdSessione", Evento.model().ID_SESSIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "id_sessione", Evento.model().ID_SESSIONE.getFieldType()));
+				setParameter(object, "setSeverita", Evento.model().SEVERITA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "severita", Evento.model().SEVERITA.getFieldType()));
 				return object;
 			}
 			
@@ -152,6 +154,8 @@ public class VistaEventiRptFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codDominio"));
 				setParameter(object, "setIdSessione", Evento.model().ID_SESSIONE.getFieldType(),
 					this.getObjectFromMap(map,"idSessione"));
+				setParameter(object, "setSeverita", Evento.model().SEVERITA.getFieldType(),
+					this.getObjectFromMap(map,"severita"));
 				return object;
 			}
 			

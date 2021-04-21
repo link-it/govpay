@@ -122,6 +122,8 @@ public class VistaRptVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "data_conservazione", VistaRptVersamento.model().DATA_CONSERVAZIONE.getFieldType()));
 				setParameter(object, "setBloccante", VistaRptVersamento.model().BLOCCANTE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "bloccante", VistaRptVersamento.model().BLOCCANTE.getFieldType()));
+				setParameter(object, "setVersione", VistaRptVersamento.model().VERSIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "versione", VistaRptVersamento.model().VERSIONE.getFieldType()));
 				setParameter(object, "setVrsId", VistaRptVersamento.model().VRS_ID.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "vrs_id", VistaRptVersamento.model().VRS_ID.getFieldType()));
 				setParameter(object, "setVrsCodVersamentoEnte", VistaRptVersamento.model().VRS_COD_VERSAMENTO_ENTE.getFieldType(),
@@ -312,6 +314,8 @@ public class VistaRptVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"dataConservazione"));
 				setParameter(object, "setBloccante", VistaRptVersamento.model().BLOCCANTE.getFieldType(),
 					this.getObjectFromMap(map,"bloccante"));
+				setParameter(object, "setVersione", VistaRptVersamento.model().VERSIONE.getFieldType(),
+					this.getObjectFromMap(map,"versione"));
 				setParameter(object, "setVrsId", VistaRptVersamento.model().VRS_ID.getFieldType(),
 					this.getObjectFromMap(map,"vrsId"));
 				setParameter(object, "setVrsCodVersamentoEnte", VistaRptVersamento.model().VRS_COD_VERSAMENTO_ENTE.getFieldType(),
