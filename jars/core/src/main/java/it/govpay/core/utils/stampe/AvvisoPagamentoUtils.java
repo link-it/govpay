@@ -167,6 +167,7 @@ public class AvvisoPagamentoUtils {
 			else 
 				input.setIntestatarioContoCorrentePostale(postale.getIntestatario());
 			rata.setCodiceAvvisoPostale(rata.getCodiceAvviso()); 
+			rata.setAutorizzazione(versamento.getDominio(configWrapper).getAutStampaPoste());
 		} else {
 			input.setDelTuoEnte(AvvisoPagamentoCostanti.DEL_TUO_ENTE_CREDITORE);
 		}
@@ -247,7 +248,6 @@ public class AvvisoPagamentoUtils {
 			sb.append("email: ").append(anagraficaDominio.getEmail());
 		}
 
-		input.setAutorizzazione(dominio.getAutStampaPoste());
 		input.setInfoEnte(sb.toString());
 		// se e' presente un logo lo inserisco altrimemti verra' caricato il logo di default.
 		if(dominio.getLogo() != null && dominio.getLogo().length > 0)
