@@ -167,7 +167,7 @@ public class AvvisoPagamentoUtils {
 			else 
 				input.setIntestatarioContoCorrentePostale(postale.getIntestatario());
 			rata.setCodiceAvvisoPostale(rata.getCodiceAvviso()); 
-			rata.setAutorizzazione(versamento.getDominio(configWrapper).getAutStampaPoste());
+			rata.setAutorizzazione(AvvisoPagamentoUtils.getAutorizzazionePoste(versamento.getDominio(configWrapper).getAutStampaPoste(), postale.getAutStampaPoste()));
 		} else {
 			input.setDelTuoEnte(AvvisoPagamentoCostanti.DEL_TUO_ENTE_CREDITORE);
 		}
