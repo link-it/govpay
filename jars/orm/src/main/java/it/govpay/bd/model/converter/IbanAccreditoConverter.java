@@ -47,6 +47,7 @@ public class IbanAccreditoConverter {
 		dto.setAbilitato(vo.getAbilitato());
 		dto.setIdDominio(vo.getIdDominio().getId());
 		dto.setIntestatario(vo.getIntestatario());
+		dto.setAutStampaPoste(vo.getAutStampaPoste());
 		
 		return dto;
 	}
@@ -63,6 +64,7 @@ public class IbanAccreditoConverter {
 		idDominio.setId(dto.getIdDominio());
 		vo.setIdDominio(idDominio);
 		vo.setIntestatario(dto.getIntestatario());
+		vo.setAutStampaPoste(dto.getAutStampaPoste());
 
 		return vo;
 	}

@@ -26,7 +26,6 @@
 			<xsd:element name="info_ente" type="xsd:string"/>
 			<xsd:element name="cbill" type="xsd:string"/>
 			<xsd:element name="intestatario_conto_corrente_postale" type="xsd:string"/>
-			<xsd:element name="autorizzazione" type="xsd:string"/>
 			<xsd:element name="poste" type="xsd:boolean" minOccurs="0"/>
 			<xsd:element name="pagine" type="PagineAvviso" />
 		</xsd:sequence>
@@ -96,6 +95,7 @@
 			<xsd:element name="scadenza_tra" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="elenco_rate" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="elenco_rate_tra" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="autorizzazione" type="xsd:string" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>    
 </xsd:schema>

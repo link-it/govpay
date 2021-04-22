@@ -149,6 +149,7 @@ CREATE TABLE iban_accredito
 	abilitato BIT NOT NULL,
 	descrizione VARCHAR(255),
 	intestatario VARCHAR(255),
+	aut_stampa_poste VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_dominio BIGINT NOT NULL,

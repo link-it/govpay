@@ -167,6 +167,7 @@ public class AvvisoPagamentoUtils {
 			else 
 				input.setIntestatarioContoCorrentePostale(postale.getIntestatario());
 			rata.setCodiceAvvisoPostale(rata.getCodiceAvviso()); 
+			rata.setAutorizzazione(AvvisoPagamentoUtils.getAutorizzazionePoste(versamento.getDominio(configWrapper).getAutStampaPoste(), postale.getAutStampaPoste()));
 		} else {
 			input.setDelTuoEnte(AvvisoPagamentoCostanti.DEL_TUO_ENTE_CREDITORE);
 		}
@@ -247,7 +248,6 @@ public class AvvisoPagamentoUtils {
 			sb.append("email: ").append(anagraficaDominio.getEmail());
 		}
 
-		input.setAutorizzazione(dominio.getAutStampaPoste());
 		input.setInfoEnte(sb.toString());
 		// se e' presente un logo lo inserisco altrimemti verra' caricato il logo di default.
 		if(dominio.getLogo() != null && dominio.getLogo().length > 0)
@@ -423,5 +423,21 @@ public class AvvisoPagamentoUtils {
 
 
 		return fillDx(causale, " ", AvvisoPagamentoCostanti.DATAMATRIX_LUNGHEZZA_CAMPO_CAUSALE).toUpperCase();
+	}
+	
+	
+	/***
+	 * Restituisce la stringa con l'autorizzazione da includere nel bollettino postale
+	 * 
+	 * @param autDominio
+	 * @param autIban
+	 * @return
+	 */
+	public static String getAutorizzazionePoste(String autDominio, String autIban) {
+		if(StringUtils.isNotBlank(autIban))
+			return autIban;
+		
+		return autDominio;
+		
 	}
 }

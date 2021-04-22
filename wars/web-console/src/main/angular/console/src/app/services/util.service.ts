@@ -1507,6 +1507,10 @@ export class UtilService {
         break;
       case UtilService.DOMINI:
         _list = [
+          new FormInput({ id: 'ragioneSociale', label: FormService.FORM_RAGIONE_SOCIALE, type: UtilService.INPUT }),
+          new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, type: UtilService.FILTERABLE,
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+              eventType: 'idDominio-async-load' } }, this.http),
           new FormInput({ id: 'idStazione', label: FormService.FORM_STAZIONE, placeholder: FormService.FORM_PH_STAZIONE, type: UtilService.INPUT }),
           new FormInput({ id: 'abilitato', label: FormService.FORM_PH_SELECT, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiAbilitazione() })
         ];
@@ -1593,6 +1597,7 @@ export class UtilService {
       break;
       case UtilService.INCASSI:
         _list = [
+          new FormInput({ id: 'sct', label: FormService.FORM_SCT, type: UtilService.INPUT }),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load' } }, this.http),
