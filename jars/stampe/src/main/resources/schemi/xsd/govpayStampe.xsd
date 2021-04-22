@@ -21,7 +21,6 @@
 			<xsd:element name="di_poste" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="cbill" type="xsd:string"/>
 			<xsd:element name="intestatario_conto_corrente_postale" type="xsd:string"/>
-			<xsd:element name="autorizzazione" type="xsd:string"/>
 			<xsd:element name="pagine" type="PagineAvviso" />
 		</xsd:sequence>
 	</xsd:complexType>
@@ -65,6 +64,7 @@
 			<xsd:element name="codice_avviso_postale" type="xsd:string"/>
 			<xsd:element name="numero_cc_postale" type="xsd:string"/>
 			<xsd:element name="data_matrix" type="xsd:string"/>
+			<xsd:element name="autorizzazione" type="xsd:string" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>    
 	    

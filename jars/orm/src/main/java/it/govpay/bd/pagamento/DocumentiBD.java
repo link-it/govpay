@@ -62,7 +62,7 @@ public class DocumentiBD extends BasicBD {
 		}
 	}
 	
-	public Documento getDocumentoByDominioIdentificativo(Long idDominio, String codDocumento) throws NotFoundException, ServiceException {
+	public Documento getDocumentoByApplicazioneDominioIdentificativo(Long idApplicazione, Long idDominio, String codDocumento) throws NotFoundException, ServiceException {
 		
 		try {
 			if(this.isAtomica()) {
@@ -73,6 +73,7 @@ public class DocumentiBD extends BasicBD {
 			
 			DocumentoFieldConverter fieldConverter = new DocumentoFieldConverter(this.getJdbcProperties().getDatabaseType());
 			exp.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Documento.model())), idDominio);
+			exp.equals(new CustomField("id_applicazione", Long.class, "id_applicazione", fieldConverter.toTable(it.govpay.orm.Documento.model())), idApplicazione);
 			exp.equals(it.govpay.orm.Documento.model().COD_DOCUMENTO, codDocumento);
 			it.govpay.orm.Documento docuemnto = this.getDocumentoService().find(exp);
 			return DocumentoConverter.toDTO(docuemnto);

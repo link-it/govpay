@@ -97,12 +97,14 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codDocumento" field="codDocumento" usage="required"/>
     <structure name="idApplicazione" field="idApplicazione" usage="required" map-as="_IdApplicazione_Type"/>
+    <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
   </mapping>
 
   <mapping type-name="_IdDocumento_Type" class="it.govpay.orm.IdDocumento" abstract="true">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codDocumento" field="codDocumento" usage="required"/>
     <structure name="idApplicazione" field="idApplicazione" usage="required" map-as="_IdApplicazione_Type"/>
+    <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
   </mapping>
   <mapping name="id-anagrafica" class="it.govpay.orm.IdAnagrafica">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -471,6 +473,7 @@
     <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
     <value name="descrizione" field="descrizione" usage="optional"/>
     <value name="intestatario" field="intestatario" usage="optional"/>
+    <value name="autStampaPoste" field="autStampaPoste" usage="optional"/>
   </mapping>
   <mapping name="Tributo" class="it.govpay.orm.Tributo">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

@@ -65,6 +65,7 @@ public class FrFilter extends AbstractFilter {
 	private List<IdUnitaOperativa> dominiUOAutorizzati;
 	private boolean searchModeEquals = false; 
 	private Boolean obsoleto;
+	private boolean ricercaIdFlussoCaseInsensitive = false;
 
 	public FrFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -218,10 +219,25 @@ public class FrFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				if(!this.searchModeEquals)
-					newExpression.ilike(FR.model().COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
-				else 
-					newExpression.equals(FR.model().COD_FLUSSO, this.codFlusso);
+				if(!this.searchModeEquals) {
+					if(this.ricercaIdFlussoCaseInsensitive) {
+						newExpression.ilike(FR.model().COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
+					} else {
+						newExpression.like(FR.model().COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
+					}
+				}else {
+					if(this.ricercaIdFlussoCaseInsensitive) {
+						IExpression newExpressionIngnoreCase = this.newExpression();
+						
+						newExpressionIngnoreCase.equals(FR.model().COD_FLUSSO, this.codFlusso).or()
+						.equals(FR.model().COD_FLUSSO, this.codFlusso.toUpperCase()).or()
+						.equals(FR.model().COD_FLUSSO, this.codFlusso.toLowerCase());
+						
+						newExpression.and(newExpressionIngnoreCase);
+					} else {
+						newExpression.equals(FR.model().COD_FLUSSO, this.codFlusso);
+					}
+				}
 				addAnd = true;
 			}
 			if(this.idFr != null && !this.idFr.isEmpty()) {
@@ -359,10 +375,19 @@ public class FrFilter extends AbstractFilter {
 			}
 			
 			if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
-				if(!this.searchModeEquals)
-					sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.COD_FLUSSO, true), this.codFlusso, true, true);
-				else 
-					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_FLUSSO, true) + " = ? ");
+				if(!this.searchModeEquals) {
+					if(this.ricercaIdFlussoCaseInsensitive) {
+						sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.COD_FLUSSO, true), this.codFlusso, true, true);
+					} else {
+						sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.COD_FLUSSO, true), this.codFlusso, true, false);
+					}
+				}else {
+					if(this.ricercaIdFlussoCaseInsensitive) {
+						sqlQueryObject.addWhereCondition(false,converter.toColumn(model.COD_FLUSSO, true) + " = ? ",converter.toColumn(model.COD_FLUSSO, true) + " = ? ",converter.toColumn(model.COD_FLUSSO, true) + " = ? ");
+					} else {
+						sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_FLUSSO, true) + " = ? ");
+					}
+				}
 			}
 			
 			if(this.idFr != null && !this.idFr.isEmpty()) {
@@ -476,8 +501,15 @@ public class FrFilter extends AbstractFilter {
 		}
 		
 		if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
-			if(this.searchModeEquals)
-				lst.add(this.codFlusso);
+			if(this.searchModeEquals) {
+				if(this.ricercaIdFlussoCaseInsensitive) {
+					lst.add(this.codFlusso);
+					lst.add(this.codFlusso.toUpperCase());
+					lst.add(this.codFlusso.toLowerCase());
+				}else {
+					lst.add(this.codFlusso);
+				}
+			}
 		}
 		
 		if(this.idFr != null && !this.idFr.isEmpty()) {
@@ -632,5 +664,13 @@ public class FrFilter extends AbstractFilter {
 
 	public void setObsoleto(Boolean obsoleto) {
 		this.obsoleto = obsoleto;
+	}
+
+	public boolean isRicercaIdFlussoCaseInsensitive() {
+		return ricercaIdFlussoCaseInsensitive;
+	}
+
+	public void setRicercaIdFlussoCaseInsensitive(boolean ricercaIdFlussoCaseInsensitive) {
+		this.ricercaIdFlussoCaseInsensitive = ricercaIdFlussoCaseInsensitive;
 	}
 }

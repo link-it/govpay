@@ -159,7 +159,7 @@ public class RiconciliazioniController extends BaseController {
 		}
     }
 
-    public Response addRiconciliazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
+    public Response addRiconciliazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is, Boolean idFlussoCaseInsensitive) {
     	String methodName = "addRiconciliazione"; 
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -177,6 +177,10 @@ public class RiconciliazioniController extends BaseController {
 			incasso.validate();
 			
 			RichiestaIncassoDTO richiestaIncassoDTO = RiconciliazioniConverter.toRichiestaIncassoDTO(incasso, idDominio, user);
+			
+			if(idFlussoCaseInsensitive != null) {
+				richiestaIncassoDTO.setRicercaIdFlussoCaseInsensitive(idFlussoCaseInsensitive);
+			}
 			
 			IncassiDAO incassiDAO = new IncassiDAO();
 			

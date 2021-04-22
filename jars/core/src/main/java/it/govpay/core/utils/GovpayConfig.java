@@ -136,8 +136,7 @@ public class GovpayConfig {
 	
 	private boolean batchCaricamentoTracciatiNotificaPagamenti;
 	
-	private boolean mailSSL, mailStartTLS;
-	private String mailSSLType;
+	private boolean ricercaRiconciliazioniIdFlussoCaseInsensitive;
 	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -200,9 +199,7 @@ public class GovpayConfig {
 		this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
 		
 		this.batchCaricamentoTracciatiNotificaPagamenti = false;
-		this.mailSSL = false;
-		this.mailStartTLS = false;
-		this.mailSSLType = "";
+		this.ricercaRiconciliazioniIdFlussoCaseInsensitive = false;
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -596,16 +593,9 @@ public class GovpayConfig {
 			if(batchCaricamentoTracciatiNotificaPagamentiString != null && Boolean.valueOf(batchCaricamentoTracciatiNotificaPagamentiString))
 				this.batchCaricamentoTracciatiNotificaPagamenti = true;
 			
-			String mailSSLString = getProperty("it.govpay.batch.mail.ssl.enabled", this.props, false, log);
-			if(mailSSLString != null && Boolean.valueOf(mailSSLString))
-				this.mailSSL = true;
-			
-			this.mailSSLType = getProperty("it.govpay.batch.mail.ssl.sslType", this.props, false, log);
-			
-			String mailStartTLSString = getProperty("it.govpay.batch.mail.startTLS.enabled", this.props, false, log);
-			if(mailStartTLSString != null && Boolean.valueOf(mailStartTLSString))
-				this.mailStartTLS = true;
-			
+			String ricercaRiconciliazioniIdFlussoCaseInsensitiveString = getProperty("it.govpay.riconciliazione.idFlussoCaseInsensitive.enabled", this.props, false, log);
+			if(ricercaRiconciliazioniIdFlussoCaseInsensitiveString != null && Boolean.valueOf(ricercaRiconciliazioniIdFlussoCaseInsensitiveString))
+				this.ricercaRiconciliazioniIdFlussoCaseInsensitive = true;
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
@@ -926,15 +916,7 @@ public class GovpayConfig {
 		return batchCaricamentoTracciatiNotificaPagamenti;
 	}
 	
-	public boolean isMailServerSSL() {
-		return mailSSL;
-	}
-	
-	public boolean isMailStartTLS() {
-		return mailStartTLS;
-	}
-
-	public String getMailSSLType() {
-		return mailSSLType;
+	public boolean isRicercaRiconciliazioniIdFlussoCaseInsensitive() {
+		return ricercaRiconciliazioniIdFlussoCaseInsensitive;
 	}
 }

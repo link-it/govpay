@@ -40,7 +40,7 @@ public class DocumentiController extends BaseController {
 
 
 
-    public Response getAvvisiDocumento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroDocumento, String linguaSecondaria, List<String> numeriAvviso) {
+    public Response getAvvisiDocumento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, String idDominio, String numeroDocumento, String linguaSecondaria, List<String> numeriAvviso) {
     	String methodName = "getAvvisiDocumento";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 
@@ -51,10 +51,12 @@ public class DocumentiController extends BaseController {
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdApplicazione("idA2A", idA2A);
 			validatoreId.validaIdDominio("idDominio", idDominio);
 			validatoreId.validaIdDocumento("numeroDocumento", numeroDocumento);
 
 			GetDocumentoAvvisiDTO getAvvisoDTO = new GetDocumentoAvvisiDTO(user, idDominio, numeroDocumento);
+			getAvvisoDTO.setCodApplicazione(idA2A);
 			
 			if(linguaSecondaria != null) {
 				LinguaSecondaria linguaSecondariaEnum = LinguaSecondaria.fromValue(linguaSecondaria);
