@@ -35,6 +35,7 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
@@ -111,7 +112,11 @@ public class FrBD extends BasicBD {
 	 * @throws ServiceException
 	 */
 	public Fr getFr(String codFlusso) throws NotFoundException, ServiceException {
-		return this.getFr(codFlusso, false, null);
+		return this.getFr(codFlusso, false);
+	}
+	
+	public Fr getFr(String codFlusso, boolean ricercaCaseInsensitive) throws NotFoundException, ServiceException {
+		return this.getFr(codFlusso, false, null, ricercaCaseInsensitive);
 	}
 	
 	public Fr getFr(String codFlusso, Date dataOraFlusso) throws NotFoundException, ServiceException {
@@ -119,13 +124,31 @@ public class FrBD extends BasicBD {
 	}
 	
 	public Fr getFr(String codFlusso, Boolean obsoleto, Date dataOraFlusso) throws NotFoundException, ServiceException {
+		return getFr(codFlusso, obsoleto, dataOraFlusso, false);
+	}
+	
+	public Fr getFr(String codFlusso, Boolean obsoleto, Date dataOraFlusso, boolean ricercaCaseInsensitive) throws NotFoundException, ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
 			FR vo = null;
 			IExpression expr = this.getFrService().newExpression();
-			expr.equals(FR.model().COD_FLUSSO, codFlusso);
+			
+			
+			if(ricercaCaseInsensitive) {
+//				IExpression newExpressionIngnoreCase = this.getFrService().newExpression();
+//				
+//				newExpressionIngnoreCase.equals(FR.model().COD_FLUSSO, codFlusso).or()
+//				.equals(FR.model().COD_FLUSSO, codFlusso.toUpperCase()).or()
+//				.equals(FR.model().COD_FLUSSO, codFlusso.toLowerCase());
+//
+//				expr.and(newExpressionIngnoreCase);
+				expr.ilike(FR.model().COD_FLUSSO, codFlusso, LikeMode.EXACT);
+			} else {
+				expr.equals(FR.model().COD_FLUSSO, codFlusso);
+			}
+			
 			if(obsoleto != null) {
 				expr.equals(FR.model().OBSOLETO, obsoleto);
 			}

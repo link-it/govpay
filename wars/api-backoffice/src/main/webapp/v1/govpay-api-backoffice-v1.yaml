@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.22.0"
+  version: "1.23.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -3352,6 +3352,7 @@ paths:
           schema:
             type: string
             pattern: '(^([0-9]){11}$)'
+        - $ref: '#/components/parameters/idFlussoCaseInsensitive'
       requestBody:
         content:
           application/json:
@@ -4039,6 +4040,13 @@ components:
       required: false
       schema:
         type: string
+    idFlussoCaseInsensitive:
+      in: query
+      name: idFlussoCaseInsensitive
+      description: Indica se effettuare la ricerca per Identificativo flusso in modalita' case insensitive
+      required: false
+      schema:
+        type: boolean
     idPagamento:
       name: id
       in: query
