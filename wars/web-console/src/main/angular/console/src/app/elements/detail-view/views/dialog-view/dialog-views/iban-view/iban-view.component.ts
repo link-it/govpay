@@ -23,6 +23,7 @@ export class IbanViewComponent implements IFormComponent, OnInit, AfterViewInit 
     this.fGroup.addControl('bicAccredito_ctrl', new FormControl(''));
     this.fGroup.addControl('descrizione_ctrl', new FormControl(''));
     this.fGroup.addControl('intestatario_ctrl', new FormControl(''));
+    this.fGroup.addControl('autStampaPosteItaliane_ctrl', new FormControl(''));
     this.fGroup.addControl('postale_ctrl', new FormControl(false));
     this.fGroup.addControl('abilita_ctrl', new FormControl(false));
   }
@@ -35,6 +36,9 @@ export class IbanViewComponent implements IFormComponent, OnInit, AfterViewInit 
         this.fGroup.controls['bicAccredito_ctrl'].setValue((this.json.bic)?this.json.bic:'');
         this.fGroup.controls['descrizione_ctrl'].setValue((this.json.descrizione)?this.json.descrizione:'');
         this.fGroup.controls['intestatario_ctrl'].setValue((this.json.intestatario)?this.json.intestatario:'');
+        if (this.json.postale) {
+          this.fGroup.controls['autStampaPosteItaliane_ctrl'].setValue((this.json.autStampaPosteItaliane)?this.json.autStampaPosteItaliane:'');
+        }
         this.fGroup.controls['postale_ctrl'].setValue((this.json.postale)?this.json.postale:'');
         this.fGroup.controls['abilita_ctrl'].setValue((this.json.abilitato)?this.json.abilitato:false);
       }
@@ -50,6 +54,7 @@ export class IbanViewComponent implements IFormComponent, OnInit, AfterViewInit 
     _json.descrizione = (_info['descrizione_ctrl'])?_info['descrizione_ctrl']:null;
     if (_info['postale_ctrl']) {
       _json.intestatario = (_info['intestatario_ctrl'])?_info['intestatario_ctrl']:null;
+      _json.autStampaPosteItaliane = (_info['autStampaPosteItaliane_ctrl'])?_info['autStampaPosteItaliane_ctrl']:null;
     }
     _json.postale = _info['postale_ctrl'] || false;
     _json.abilitato = _info['abilita_ctrl'] || false;

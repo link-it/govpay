@@ -3,7 +3,12 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class Voce {
 
+  public static ABILITA: string = 'Abilita';
+  public static ABILITA_CONFIGURAZIONE_SSL: string = 'Abilita configurazione SSL';
+  public static ABILITA_PROTOCOLLO_TLS: string = 'Abilita protocollo TLS';
+  public static ABILITA_VERIFICATORE_HOSTNAME: string = 'Abilita verificatore hostname';
   public static ABILITATO: string = 'Abilitato';
+  public static ALGORITHM: string = 'Algoritmo';
   public static ALLEGA_PDF_AVVISO: string = 'Allega PDF avviso';
   public static ALLEGA_PDF_RICEVUTA: string = 'Allega PDF ricevuta';
   public static ALTRE_FUNZIONI: string = 'Altre funzioni';
@@ -15,6 +20,8 @@ export class Voce {
   public static APPLICAZIONE: string = 'Applicazione';
   public static AREA: string = 'Area';
   public static AUT_PT: string = 'Autorizzazione stampa PT';
+  public static AUTENTICAZIONE_SERVER: string = 'Autenticazione Server';
+  public static AUTENTICAZIONE_CLIENT: string = 'Autenticazione Client';
   public static AUTORIZZAZIONI: string = 'Autorizzazioni';
   public static AUTORIZZAZIONI_API: string = 'Autorizzazioni API';
   public static AUTORIZZAZIONI_BACKOFFICE: string = 'Autorizzazioni Backoffice';
@@ -44,6 +51,7 @@ export class Voce {
   public static CODICE_CLIENTE: string = 'Codice cliente';
   public static CODICE_ISTITUTO: string = 'Codice istituto';
   public static COMMISSIONI: string = 'Commissioni';
+  public static CONFIGURAZIONE_SSL: string = 'Configurazione SSL';
   public static CONTABILITA: string = 'Contabilità';
   public static COMUNICAZIONI_EMAIL: string = 'Comunicazioni via email';
   public static COMUNICAZIONI_APP_IO: string = 'Comunicazioni via App IO';
@@ -143,8 +151,8 @@ export class Voce {
 
   public static JSON_SCHEMA: string = 'JSON Schema';
 
-  public static KEY_STORE_LOC: string = 'KeyStore Location';
-  public static KEY_STORE_PWD: string = 'KeyStore Password';
+  public static KEY_STORE_LOC: string = 'Keystore Location';
+  public static KEY_STORE_PWD: string = 'Keystore Password';
 
   public static LUOGO: string = 'Località';
   public static LAYOUT_FORM_DATI: string = 'Layout form dati';
@@ -248,8 +256,8 @@ export class Voce {
   public static TRASFORMAZIONE: string = 'Trasformazione';
   public static TRASFORMAZIONE_DATI: string = 'Trasformazione dati';
   public static TRN: string = 'Id operazione di riversamento (TRN)';
-  public static TRUST_STORE_LOC: string = 'TrustStore Location';
-  public static TRUST_STORE_PWD: string = 'TrustStore Password';
+  public static TRUST_STORE_LOC: string = 'Truststore Location';
+  public static TRUST_STORE_PWD: string = 'Truststore Password';
   public static TTL: string = 'Time to live';
   public static TUTTE: string = 'Tutte';
   public static TUTTI: string = 'Tutti';
@@ -266,6 +274,7 @@ export class Voce {
   public static VALIDITA: string = 'Validità';
   public static VALORE_PREDEFINITO: string = 'valore predefinito';
   public static VERSIONE_API: string = 'Versione API';
+  public static VERIFICATORE_HOSTNAME: string = 'Verificatore hostname';
   public static VERSIONE_CSV: string = 'Versione CSV';
   public static VISUALIZZAZIONE: string = 'Visualizzazione';
   public static VISTA_COMPLETA: string = 'Vista completa';

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.21.0"
+  version: "1.23.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -1010,6 +1010,8 @@ paths:
         - $ref: '#/components/parameters/idStazione'
         - $ref: '#/components/parameters/associati'
         - $ref: '#/components/parameters/form'
+        - $ref: '#/components/parameters/idDominio'
+        - $ref: '#/components/parameters/ragioneSociale'
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -2955,7 +2957,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  '/documenti/{idDominio}/{numeroDocumento}/avvisi':
+  '/documenti/{idA2A}/{idDominio}/{numeroDocumento}/avvisi':
     get:
       summary: Documento di pagamento
       operationId: getAvvisiDocumento
@@ -2964,6 +2966,13 @@ paths:
       tags:
         - Pendenze
       parameters:
+        - in: path
+          name: idA2A
+          description: Identificativo del gestionale
+          required: true
+          schema:
+            type: string
+            pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
         - in: path
           name: idDominio
           description: Identificativo del dominio dell'ente
@@ -3306,6 +3315,7 @@ paths:
         - $ref: '#/components/parameters/idDominio'
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
+        - $ref: '#/components/parameters/sct'
       responses:
         '201':
           description: Dettaglio dell'incasso
@@ -3342,6 +3352,7 @@ paths:
           schema:
             type: string
             pattern: '(^([0-9]){11}$)'
+        - $ref: '#/components/parameters/idFlussoCaseInsensitive'
       requestBody:
         content:
           application/json:
@@ -4029,6 +4040,13 @@ components:
       required: false
       schema:
         type: string
+    idFlussoCaseInsensitive:
+      in: query
+      name: idFlussoCaseInsensitive
+      description: Indica se effettuare la ricerca per Identificativo flusso in modalita' case insensitive
+      required: false
+      schema:
+        type: boolean
     idPagamento:
       name: id
       in: query
@@ -4105,6 +4123,25 @@ components:
       required: false
       schema:
         type: string
+    linguaSecondaria:
+      name: linguaSecondaria
+      in: query
+      description: >- 
+            Indica se creare l'avviso in modalita' multilingua e quale seconda lingua affiancare all'italiano all'interno dell'avviso 
+      required: false
+      schema:
+        $ref: '#/components/schemas/LinguaSecondaria'
+    listaNumeriAvviso:
+      in: query
+      name: numeriAvviso
+      description: Indica i numeri avviso da includere nelle stampe dei documenti
+      required: false
+      schema:
+        type: array
+        items: 
+          type: string
+          pattern: '(^[0-9]{18}$)'
+      example: ['123456789012345678']
     maxRisultati:
       name: maxRisultati
       in: query
@@ -4213,6 +4250,14 @@ components:
       required: false
       schema:
         $ref: '#/components/schemas/ruoloEvento'
+    sct:
+      name: sct
+      in: query
+      description: filtro per codice SCT (anche parziale)
+      required: false
+      schema:
+        type: string
+      example: 'abc123...'
     severitaDa:
       name: severitaDa
       in: query
@@ -4362,25 +4407,6 @@ components:
       schema:
         type: string
       example: 'RSSMRA30A01H501I'
-    linguaSecondaria:
-      name: linguaSecondaria
-      in: query
-      description: >- 
-            Indica se creare l'avviso in modalita' multilingua e quale seconda lingua affiancare all'italiano all'interno dell'avviso 
-      required: false
-      schema:
-        $ref: '#/components/schemas/LinguaSecondaria'
-    listaNumeriAvviso:
-      in: query
-      name: numeriAvviso
-      description: Indica i numeri avviso da includere nelle stampe dei documenti
-      required: false
-      schema:
-        type: array
-        items: 
-          type: string
-          pattern: '(^[0-9]{18}$)'
-      example: ['123456789012345678']
   responses:
     '400':
       description: Richiesta non correttamente formata
@@ -4605,6 +4631,7 @@ components:
         - from
         - readTimeout
         - connectionTimeout
+        - startTls
       properties:
         host:
           type: string
@@ -4638,6 +4665,58 @@ components:
           type: number
           description: Connection Timeout (in millisecondi)
           example: 10000
+        sslConfig:
+          $ref: '#/components/schemas/sslConfig'
+        startTls:
+          type: boolean
+          description: abilita la crittografia delle informazioni trasmesse mediante il protocollo TLS
+          default: false
+    sslConfig:
+      type: object
+      required:
+        - abilitato
+      properties:
+        abilitato:
+          type: boolean
+          default: false
+        type:
+          $ref: '#/components/schemas/sslConfigType'
+        hostnameVerifier:
+          type: boolean
+          default: false
+        truststore:
+          $ref: '#/components/schemas/keystore'
+        keystore:
+          $ref: '#/components/schemas/keystore'
+    sslConfigType:
+      type: string
+      example: TLS
+      enum: 
+        - SSL
+        - SSLv3
+        - TLS
+        - TLSv1
+        - TLSv1.1
+        - TLSv1.2
+    keystore:
+      type: object
+      required:
+        - type
+        - location
+      properties:
+        type: 
+          $ref: '#/components/schemas/keystoreType'
+        location:
+          type: string
+        password:
+          type: string
+        managementAlgorithm:
+          type: string
+    keystoreType:
+      type: string
+      example: JKS
+      enum: 
+        - JKS
     hardening:
       type: object
       required:
@@ -5563,6 +5642,10 @@ components:
           description: Intestatario del conto corrente
           example: Comune di Monopoli
           pattern: "^.{1,255}$"
+        autStampaPosteItaliane:
+          type: string
+          description: numero di autorizzazione per la stampa in proprio rilasciato da poste italiane
+          example: AUT. DB/xxxx/xxx xxxxx DEL xx/xx/xxxx
     contiAccredito:
       type: object
       allOf:

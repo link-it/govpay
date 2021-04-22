@@ -141,3 +141,23 @@ Scenario:
 	  return s.substring(s.length() - chars, s.length());
 	}
   """
+  
+  * def toUpperCase = 
+	"""
+	function(string){ 
+		var String = Java.type('java.lang.String');
+		var s = new String(string);
+		return s.toUpperCase();
+	}
+	"""
+	
+	* def estraiIdFlussoDallaCausale = 
+	"""
+	function(string){ 
+		var IncassoUtils = Java.type('utils.java.IncassoUtils');
+		var String = Java.type('java.lang.String');
+		var s = new String(string);
+		return IncassoUtils.getRiferimentoIncassoCumulativo(s);
+	}
+	"""
+	

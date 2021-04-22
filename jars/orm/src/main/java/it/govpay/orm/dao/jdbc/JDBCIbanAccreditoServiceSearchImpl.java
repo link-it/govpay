@@ -180,6 +180,7 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 			fields.add(IbanAccredito.model().DESCRIZIONE);
 			fields.add(IbanAccredito.model().ABILITATO);
 			fields.add(IbanAccredito.model().INTESTATARIO);
+			fields.add(IbanAccredito.model().AUT_STAMPA_POSTE);
 
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFieldConverter().toTable(IbanAccredito.model())));
 

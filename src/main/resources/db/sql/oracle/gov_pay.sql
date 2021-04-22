@@ -228,6 +228,7 @@ CREATE TABLE iban_accredito
 	abilitato NUMBER NOT NULL,
 	descrizione VARCHAR2(255 CHAR),
 	intestatario VARCHAR2(255 CHAR),
+	aut_stampa_poste VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
@@ -735,7 +736,7 @@ CREATE TABLE documenti
 	id_dominio NUMBER NOT NULL,
 	id_applicazione NUMBER NOT NULL,
 	-- unique constraints
-	CONSTRAINT unique_documenti_1 UNIQUE (cod_documento,id_applicazione),
+	CONSTRAINT unique_documenti_1 UNIQUE (cod_documento,id_applicazione,id_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_doc_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT fk_doc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
@@ -2380,5 +2381,4 @@ SELECT
 	incassi.trn AS rnc_trn
 	FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id
 	     JOIN versamenti ON singoli_versamenti.id_versamento = versamenti.id JOIN rpt ON pagamenti.id_rpt = rpt.id LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id;
-
 

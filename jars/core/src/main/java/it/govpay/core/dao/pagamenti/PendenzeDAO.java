@@ -968,6 +968,8 @@ public class PendenzeDAO extends BaseDAO{
 				json = VersamentoUtils.trasformazioneInputVersamentoModello4(log, dominio, codTipoVersamento, trasformazioneTipo, uo, json, queryParameters, pathParameters, headers, trasformazioneDefinizione);
 			}
 			Versamento chiediVersamento = null;
+			
+			log.debug("Json di input dopo validazione e trasformazione: ["+json+"]");
 
 			if(codApplicazione != null) {
 				chiediVersamento =  VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUo, codApplicazione, json);

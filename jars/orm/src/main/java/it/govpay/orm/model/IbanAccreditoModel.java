@@ -48,6 +48,7 @@ public class IbanAccreditoModel extends AbstractModel<IbanAccredito> {
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"IbanAccredito",IbanAccredito.class));
 		this.DESCRIZIONE = new Field("descrizione",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 		this.INTESTATARIO = new Field("intestatario",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
+		this.AUT_STAMPA_POSTE = new Field("autStampaPoste",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 	
 	}
 	
@@ -62,6 +63,7 @@ public class IbanAccreditoModel extends AbstractModel<IbanAccredito> {
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"IbanAccredito",IbanAccredito.class));
 		this.DESCRIZIONE = new ComplexField(father,"descrizione",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 		this.INTESTATARIO = new ComplexField(father,"intestatario",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
+		this.AUT_STAMPA_POSTE = new ComplexField(father,"autStampaPoste",java.lang.String.class,"IbanAccredito",IbanAccredito.class);
 	
 	}
 	
@@ -80,6 +82,8 @@ public class IbanAccreditoModel extends AbstractModel<IbanAccredito> {
 	public IField DESCRIZIONE = null;
 	 
 	public IField INTESTATARIO = null;
+	 
+	public IField AUT_STAMPA_POSTE = null;
 	 
 
 	@Override

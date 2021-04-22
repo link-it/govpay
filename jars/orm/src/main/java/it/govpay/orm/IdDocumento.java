@@ -37,6 +37,7 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="codDocumento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -52,7 +53,8 @@ import java.io.Serializable;
 @XmlType(name = "id-documento", 
   propOrder = {
   	"codDocumento",
-  	"idApplicazione"
+  	"idApplicazione",
+  	"idDominio"
   }
 )
 
@@ -92,6 +94,14 @@ public class IdDocumento extends org.openspcoop2.utils.beans.BaseBean implements
     this.idApplicazione = idApplicazione;
   }
 
+  public IdDominio getIdDominio() {
+    return this.idDominio;
+  }
+
+  public void setIdDominio(IdDominio idDominio) {
+    this.idDominio = idDominio;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -105,5 +115,8 @@ public class IdDocumento extends org.openspcoop2.utils.beans.BaseBean implements
 
   @XmlElement(name="idApplicazione",required=true,nillable=false)
   protected IdApplicazione idApplicazione;
+
+  @XmlElement(name="idDominio",required=true,nillable=false)
+  protected IdDominio idDominio;
 
 }

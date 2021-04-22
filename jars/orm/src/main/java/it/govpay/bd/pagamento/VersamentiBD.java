@@ -65,6 +65,7 @@ import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.Documento;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdDocumento;
+import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.constants.StatoOperazioneType;
@@ -290,32 +291,52 @@ public class VersamentiBD extends BasicBD {
 				BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
 				idApplicazione.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
 				idDocumento.setIdApplicazione(idApplicazione);
+				IdDominio idDominio = new IdDominio();
+				idDominio.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
+				idDocumento.setIdDominio(idDominio);
 					
+				
 				try {
-					documento = this.getDocumentoService().get(idDocumento);
-					idDocumentoLong = documento.getId();
-				} catch (NotFoundException e) {
-					
-					// Provo ad inserirlo, ma un thread concorrente potrebbe anticiparmi
-					
+					boolean existsDocumento = this.getDocumentoService().exists(idDocumento);
 					Documento documentoVo = DocumentoConverter.toVO(versamento.getDocumento(this));
-					try {
-						this.getDocumentoService().create(documentoVo);
-						idDocumentoLong = documentoVo.getId();
-					} catch (ServiceException se) {
+					
+					if(existsDocumento) { // update
 						try {
-							// Verfiico che un concorrente non abbia inserito il documento
+							this.enableSelectForUpdate();
 							documento = this.getDocumentoService().get(idDocumento);
-						} catch (NotFoundException nfe) {
-							throw new ServiceException(se);
-						} catch (Exception ie){
-							throw new ServiceException(ie);
+							idDocumentoLong = documento.getId();
+							
+							this.getDocumentoService().update(idDocumento, documentoVo);
+						} catch (NotFoundException e) {
+							throw new ServiceException(e); // non dovrei entrare mai in questo punto perche' ho fatto la exists prima 
+						} finally {
+							this.disableSelectForUpdate();
 						}
-						
-						idDocumentoLong = documento.getId();
+					} else { // create
+						// Provo ad inserirlo, ma un thread concorrente potrebbe anticiparmi
+						try {
+							this.getDocumentoService().create(documentoVo);
+							idDocumentoLong = documentoVo.getId();
+						} catch (ServiceException se) {
+							try {
+								// Verifico che un concorrente non abbia inserito il documento
+								this.enableSelectForUpdate();
+								documento = this.getDocumentoService().get(idDocumento);
+								this.getDocumentoService().update(idDocumento, documentoVo);
+							} catch (NotFoundException nfe) {
+								throw new ServiceException(se);
+							} catch (Exception ie){
+								throw new ServiceException(ie);
+							} finally {
+								this.disableSelectForUpdate();
+							}
+							
+							idDocumentoLong = documento.getId();
+						}
 					}
+					
 				} catch (MultipleResultException e) {
-					throw new ServiceException(e);
+					throw new ServiceException(e); // in realta' nell'implementazione non viene lanciata... 
 				}
 				
 				versamento.setIdDocumento(idDocumentoLong);
@@ -411,24 +432,51 @@ public class VersamentiBD extends BasicBD {
 					BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
 					idApplicazione.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					idDocumento.setIdApplicazione(idApplicazione);
-					try {
-						this.enableSelectForUpdate();
-
-						try {
-							documento = this.getDocumentoService().get(idDocumento);
-							idDocumentoLong = documento.getId();
-						} catch (NotFoundException | MultipleResultException e) {
-						}
-					}finally {
-						this.disableSelectForUpdate();
-					}
+					IdDominio idDominio = new IdDominio();
+					idDominio.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
+					idDocumento.setIdDominio(idDominio );
 					
-					Documento documentoVo = DocumentoConverter.toVO(versamento.getDocumento(this));
-					if(documento == null) {
-						this.getDocumentoService().create(documentoVo);
-						idDocumentoLong = documentoVo.getId();
-					} else {
-						this.getDocumentoService().update(idDocumento, documentoVo);
+					try {
+						boolean existsDocumento = this.getDocumentoService().exists(idDocumento);
+						Documento documentoVo = DocumentoConverter.toVO(versamento.getDocumento(this));
+						
+						if(existsDocumento) { // update
+							try {
+								this.enableSelectForUpdate();
+								documento = this.getDocumentoService().get(idDocumento);
+								idDocumentoLong = documento.getId();
+								
+								this.getDocumentoService().update(idDocumento, documentoVo);
+							} catch (NotFoundException e) {
+								throw new ServiceException(e); // non dovrei entrare mai in questo punto perche' ho fatto la exists prima 
+							} finally {
+								this.disableSelectForUpdate();
+							}
+						} else { // create
+							// Provo ad inserirlo, ma un thread concorrente potrebbe anticiparmi
+							try {
+								this.getDocumentoService().create(documentoVo);
+								idDocumentoLong = documentoVo.getId();
+							} catch (ServiceException se) {
+								try {
+									// Verifico che un concorrente non abbia inserito il documento
+									this.enableSelectForUpdate();
+									documento = this.getDocumentoService().get(idDocumento);
+									this.getDocumentoService().update(idDocumento, documentoVo);
+								} catch (NotFoundException nfe) {
+									throw new ServiceException(se);
+								} catch (Exception ie){
+									throw new ServiceException(ie);
+								} finally {
+									this.disableSelectForUpdate();
+								}
+								
+								idDocumentoLong = documento.getId();
+							}
+						}
+						
+					} catch (MultipleResultException e) {
+						throw new ServiceException(e); // in realta' nell'implementazione non viene lanciata... 
 					}
 					
 					versamento.setIdDocumento(idDocumentoLong);

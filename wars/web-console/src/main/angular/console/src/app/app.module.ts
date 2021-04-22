@@ -53,7 +53,7 @@ import { BadgeCardComponent } from './elements/badge-card/badge-card.component';
 import { LoginCardComponent } from './elements/login-card/login-card.component';
 import { NotaViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/nota-view/nota-view.component';
 import { TwoColsViewComponent } from './elements/item-view/views/two-cols-view/two-cols-view.component';
-
+import { IamLoginCardComponent } from './elements/login-card/iam-login-card.component';
 import { JsonSchemaFormModule, MaterialDesignFrameworkModule } from 'angular2-json-schema-form';
 import { GeneratorsEntryListComponents } from "./classes/generators-entry-point-list";
 import { TipoPendenzaViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/tipo-pendenza-view/tipo-pendenza-view.component';
@@ -106,7 +106,8 @@ import { ScrollerContainerComponent } from './elements/list-view/scroller-contai
     AsyncFilterableSelectComponent,
     AsyncAutocompleteSelectComponent,
     ProfiloUtenteViewComponent,
-    ScrollerContainerComponent
+    ScrollerContainerComponent,
+    IamLoginCardComponent
   ],
   imports: [
     BrowserModule,

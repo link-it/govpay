@@ -59,6 +59,7 @@ dei vincoli sintattici e semantici.
    "83","idDocumento","Identificativo del documento a cui afferisce la pendenza, se ne esiste uno.","Opzionale, da usare in caso di rateizzazioni."
    "84","descrizioneDocumento","Titolo del documento. Verra' utilizzato per la stampa dell'avviso pagoPA.","Opzionale, se non valorizzato sarà usata la causale della pendenza."
    "85","numeroRata","Numero di rata in caso di pagamento rateale. In caso di pagamenti con soglia temporale, usare la sintassi `ENTROxxx` o `OLTRExxx` dove `xxx` è il numero di giorni previsto.","Opzionale, non valorizzare per il pagamento in soluzione unica."
+   "86","linguaSecondaria","Indica la seconda lingua da affiancare all'italiano nella stampa dell'avviso di pagamento, le lingue supportate sono Sloveno (`sl`), Inglese (`en`), Tedesco (`de`) e Francese (`fr`). Il valore speciale `false` forza la stampa nella sola lingua italiana","Opzionale, Enumerazione: [ de, en, fr, sl, false ], non valorizzare per gli avvisi di pagamento stampati solo in italiano."
    
 I campi che determinano una voce di pagamento della pendenza si ripetono
 sostituendo l'asterisco con la posizione della voce, ovvero:

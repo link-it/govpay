@@ -17,8 +17,10 @@ import it.govpay.backoffice.v1.beans.ConfigurazioneAvvisaturaAppIO;
 import it.govpay.backoffice.v1.beans.ConfigurazioneAvvisaturaMail;
 import it.govpay.backoffice.v1.beans.ConfigurazioneReCaptcha;
 import it.govpay.backoffice.v1.beans.Hardening;
+import it.govpay.backoffice.v1.beans.Keystore;
 import it.govpay.backoffice.v1.beans.MailBatch;
 import it.govpay.backoffice.v1.beans.Mailserver;
+import it.govpay.backoffice.v1.beans.SslConfig;
 import it.govpay.backoffice.v1.beans.TemplateMailPromemoriaAvviso;
 import it.govpay.backoffice.v1.beans.TemplateMailPromemoriaRicevuta;
 import it.govpay.backoffice.v1.beans.TemplatePromemoriaAvvisoBase;
@@ -26,6 +28,7 @@ import it.govpay.backoffice.v1.beans.TemplatePromemoriaRicevutaBase;
 import it.govpay.backoffice.v1.beans.TemplatePromemoriaScadenza;
 import it.govpay.backoffice.v1.beans.TipoTemplateTrasformazione;
 import it.govpay.backoffice.v1.beans.TracciatoCsv;
+import it.govpay.bd.configurazione.model.KeyStore;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
 import it.govpay.core.dao.configurazione.dto.PutConfigurazioneDTO;
@@ -456,12 +459,45 @@ public class ConfigurazioniConverter {
 			mailServerDTO.setFrom(mailBatch.getMailserver().getFrom());
 			mailServerDTO.setConnectionTimeout(mailBatch.getMailserver().getConnectionTimeout().intValue());
 			mailServerDTO.setReadTimeout(mailBatch.getMailserver().getReadTimeout().intValue());
+			if(mailBatch.getMailserver().getSslConfig() != null) {
+				mailServerDTO.setSslConfig(getConfigurazioneSslConfigDTO(mailBatch.getMailserver().getSslConfig()));
+			}
+			mailServerDTO.setStartTls(mailBatch.getMailserver().StartTls());
 		}
 		dto.setMailserver(mailServerDTO);
 
 		return dto;
 	}
+	
+	private static it.govpay.bd.configurazione.model.SslConfig getConfigurazioneSslConfigDTO(SslConfig sslConfig) {
+		it.govpay.bd.configurazione.model.SslConfig dto = new it.govpay.bd.configurazione.model.SslConfig();
+		
+		dto.setAbilitato(sslConfig.Abilitato());
+		dto.setHostnameVerifier(false);
+		if(sslConfig.HostnameVerifier() != null)
+			dto.setHostnameVerifier(sslConfig.HostnameVerifier());
+		dto.setType(sslConfig.getType());
+		dto.setKeyStore(getConfigurazioneKeyStoreDTO(sslConfig.getKeystore()));
+		dto.setTrustStore(getConfigurazioneKeyStoreDTO(sslConfig.getTruststore()));
+				
+		return dto;	
+	}
 
+	private static it.govpay.bd.configurazione.model.KeyStore getConfigurazioneKeyStoreDTO(Keystore keystore) {
+		
+		it.govpay.bd.configurazione.model.KeyStore dto = null;
+		
+		if(keystore != null) {
+			dto = new it.govpay.bd.configurazione.model.KeyStore();
+			
+			dto.setLocation(keystore.getLocation());
+			dto.setManagementAlgorithm(keystore.getManagementAlgorithm());
+			dto.setPassword(keystore.getPassword());
+			dto.setType(keystore.getType());
+		}
+		
+		return dto;	
+	}
 	private static MailBatch toConfigurazioneMailBatchRsModel(it.govpay.bd.configurazione.model.MailBatch batchSpedizioneEmail) {
 		MailBatch rsModel = new MailBatch();
 
@@ -478,6 +514,10 @@ public class ConfigurazioniConverter {
 			mailServerRsModel.setFrom(batchSpedizioneEmail.getMailserver().getFrom());
 			mailServerRsModel.setConnectionTimeout(new BigDecimal(batchSpedizioneEmail.getMailserver().getConnectionTimeout()));
 			mailServerRsModel.setReadTimeout(new BigDecimal(batchSpedizioneEmail.getMailserver().getReadTimeout()));
+			if(batchSpedizioneEmail.getMailserver().getSslConfig() != null) {
+				mailServerRsModel.setSslConfig(toConfigurazioneMailSslConfigRsModel(batchSpedizioneEmail.getMailserver().getSslConfig()));
+			}
+			mailServerRsModel.setStartTls(batchSpedizioneEmail.getMailserver().isStartTls());
 		}
 		rsModel.setMailserver(mailServerRsModel);
 
@@ -485,6 +525,31 @@ public class ConfigurazioniConverter {
 		return rsModel;
 	}
 
+	private static SslConfig toConfigurazioneMailSslConfigRsModel(it.govpay.bd.configurazione.model.SslConfig sslConfig) {
+		SslConfig rsModel = new SslConfig();
+		
+		rsModel.setAbilitato(sslConfig.isAbilitato());
+		rsModel.setHostnameVerifier(sslConfig.isHostnameVerifier());
+		rsModel.setType(sslConfig.getType());
+		rsModel.setKeystore(toConfigurazioneMailKeystoreRsModel(sslConfig.getKeyStore()));
+		rsModel.setTruststore(toConfigurazioneMailKeystoreRsModel(sslConfig.getTrustStore()));
+		
+		return rsModel;
+	}
+	private static Keystore toConfigurazioneMailKeystoreRsModel(KeyStore keystore) {
+		Keystore rsModel = null;
+		
+		if(keystore != null) {
+			rsModel = new Keystore();
+			
+			rsModel.setLocation(keystore.getLocation());
+			rsModel.setManagementAlgorithm(keystore.getManagementAlgorithm());
+			rsModel.setPassword(keystore.getPassword());
+			rsModel.setType(keystore.getType());
+		}
+		
+		return rsModel;
+	}
 	private static it.govpay.bd.configurazione.model.AppIOBatch getConfigurazioneAppIOBatchDTO(AppIOBatch appIoBatch) {
 		it.govpay.bd.configurazione.model.AppIOBatch dto = new it.govpay.bd.configurazione.model.AppIOBatch();
 

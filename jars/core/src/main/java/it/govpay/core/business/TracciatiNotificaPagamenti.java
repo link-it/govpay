@@ -2,6 +2,7 @@ package it.govpay.core.business;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -74,7 +75,7 @@ import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
 public class TracciatiNotificaPagamenti {
 
 	private static final String [] MYPIVOT_HEADER_FILE_CSV = { "IUD","codIuv","tipoIdentificativoUnivoco","codiceIdentificativoUnivoco","anagraficaPagatore","indirizzoPagatore","civicoPagatore","capPagatore","localitaPagatore","provinciaPagatore","nazionePagatore","mailPagatore","dataEsecuzionePagamento","importoDovutoPagato","commissioneCaricoPa","tipoDovuto","tipoVersamento","causaleVersamento","datiSpecificiRiscossione","bilancio" };
-	private static final String [] GOVPAY_HEADER_FILE_CSV = { "idA2A","idPendenza","idDocumento","descrizioneDocumento","codiceRata","dataScadenza","idVocePendenza","descrizioneVocePendenza","idTipoPendenza","anno","identificativoDebitore","anagraficaDebitore","identificativoDominio","identificativoUnivocoVersamento","codiceContestoPagamento","indiceDati","identificativoUnivocoRiscossione","singoloImportoPagato","dataEsitoSingoloPagamento","causaleVersamento","datiSpecificiRiscossione","datiAllegati","datiAllegatiVoce","denominazioneAttestante","identificativoAttestante" };
+	private static final String [] GOVPAY_HEADER_FILE_CSV = { "idA2A","idPendenza","idDocumento","descrizioneDocumento","codiceRata","dataScadenza","idVocePendenza","descrizioneVocePendenza","idTipoPendenza","descrizione","anno","identificativoDebitore","anagraficaDebitore","identificativoDominio","identificativoUnivocoVersamento","codiceContestoPagamento","indiceDati","identificativoUnivocoRiscossione","modelloPagamento","singoloImportoPagato","dataEsitoSingoloPagamento","causaleVersamento","datiSpecificiRiscossione","datiAllegati","datiAllegatiVoce","denominazioneAttestante","identificativoAttestante" };
 	private static final String [] GOVPAY_FLUSSI_HEADER_FILE_CSV = {"identificativoFlusso","dataOraFlusso","identificativoDominio","identificativoUnivocoRegolamento","dataRegolamento","codiceBicBancaDiRiversamento","numeroTotalePagamenti","importoTotalePagamenti","identificativoUnivocoVersamento","identificativoUnivocoRiscossione","indiceDatiSingoloPagamento","singoloImportoPagato","codiceEsitoSingoloPagamento","dataEsitoSingoloPagamento","denominazioneMittente","identificativoMittente","denominazioneRicevente","identificativoRicevente"	};
 	
 	private static Logger log = LoggerWrapperFactory.getLogger(TracciatiNotificaPagamenti.class);
@@ -743,6 +744,12 @@ public class TracciatiNotificaPagamenti {
 		String datiAllegati = versamento.getDatiAllegati();
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti();
 		Documento documento = versamento.getDocumento(configWrapper);
+		String causaleVersamento = null;
+		try {
+			causaleVersamento = versamento.getCausaleVersamento().getSimple();
+		} catch (UnsupportedEncodingException e) {
+			causaleVersamento = "";
+		}
 		
 		for(int indiceDati = 0; indiceDati < datiPagamento.getDatiSingoloPagamento().size(); indiceDati ++) {
 			CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiPagamento.getDatiSingoloPagamento().get(indiceDati);
@@ -773,6 +780,8 @@ public class TracciatiNotificaPagamenti {
 			linea.add(singoloVersamento.getDescrizione());
 //			idTipoPendenza: da pendenza
 			linea.add(tipoVersamento.getCodTipoVersamento());
+			// descrizione  pendenza.causale
+			linea.add(causaleVersamento);
 //			anno: da pendenza
 			linea.add(versamento.getCodAnnoTributario() != null ? versamento.getCodAnnoTributario() + "" : "");
 //			identificativoDebitore: da RT rt.datiPagamento.soggettoPagatore.identificativoUnivocoPagatore.codiceIdentificativoUnivoco
@@ -789,6 +798,8 @@ public class TracciatiNotificaPagamenti {
 			linea.add((indiceDati + 1) + "");
 //			identificativoUnivocoRiscossione: da RT
 			linea.add(ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione());
+			// modelloPagamento da RT
+			linea.add(rpt.getModelloPagamento().getCodifica()+"");
 //			singoloImportoPagato: da RT
 			linea.add(this.printImporto(ctDatiSingoloPagamentoRT.getSingoloImportoPagato(), false));
 //			dataEsitoSingoloPagamento: da RTrt.datiPagamento.datiSingoloPagamento[0].dataEsitoSingoloPagamento [YYYY]-[MM]-[DD]
