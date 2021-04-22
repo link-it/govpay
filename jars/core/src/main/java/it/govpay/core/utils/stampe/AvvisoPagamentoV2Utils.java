@@ -396,7 +396,7 @@ public class AvvisoPagamentoV2Utils {
 				input.setIntestatarioContoCorrentePostale(postale.getIntestatario());
 			rata.setCodiceAvvisoPostale(rata.getCodiceAvviso()); 
 
-			rata.setAutorizzazione(versamento.getDominio(configWrapper).getAutStampaPoste());
+			rata.setAutorizzazione(AvvisoPagamentoUtils.getAutorizzazionePoste(versamento.getDominio(configWrapper).getAutStampaPoste(), postale.getAutStampaPoste()));
 			
 			input.setPoste(true);
 		} else {
