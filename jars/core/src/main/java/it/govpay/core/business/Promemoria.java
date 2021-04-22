@@ -183,9 +183,18 @@ public class Promemoria {
 
 	public void setRicevutaDestinatari(it.govpay.bd.model.Rpt rpt, Versamento versamento, it.govpay.bd.model.Promemoria promemoria) throws JAXBException, SAXException {
 		String debitore = versamento.getAnagraficaDebitore().getEmail();
-		CtRichiestaPagamentoTelematico rptCtRichiestaPagamentoTelematico = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
-		String versante = rptCtRichiestaPagamentoTelematico.getSoggettoVersante() != null ? rptCtRichiestaPagamentoTelematico.getSoggettoVersante().getEMailVersante() : null;
-
+		String versante = null;
+		
+		switch(rpt.getVersione()) {
+			case SANP_230:
+				CtRichiestaPagamentoTelematico rptCtRichiestaPagamentoTelematico = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
+				versante = rptCtRichiestaPagamentoTelematico.getSoggettoVersante() != null ? rptCtRichiestaPagamentoTelematico.getSoggettoVersante().getEMailVersante() : null;
+				break;
+			case SANP_240:
+			default:
+				break;
+			}
+		
 		if(versante != null && debitore != null) {
 			promemoria.setDestinatarioTo(versante);
 			promemoria.setDestinatarioCc(debitore);

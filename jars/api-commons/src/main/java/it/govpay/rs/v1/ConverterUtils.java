@@ -10,6 +10,8 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.model.eventi.DettaglioRisposta;
@@ -31,8 +33,17 @@ public class ConverterUtils {
 			return null;
 
 		try {
+			switch (rpt.getVersione()) {
+			case SANP_230:
+				CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
+				return mapper.writeValueAsString(ctRpt);
+			case SANP_240:
+				PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
+				return mapper.writeValueAsString(paGetPaymentRes_RPT);
+			}
+			
 			CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
-			return getRptJson(ctRpt);
+			return mapper.writeValueAsString(ctRpt);
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}
@@ -55,8 +66,17 @@ public class ConverterUtils {
 
 
 		try {
+			switch (rpt.getVersione()) {
+			case SANP_230:
+				CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
+				return mapper.writeValueAsString(ctRt);
+			case SANP_240:
+				PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+				return mapper.writeValueAsString(paSendRTReq_RT);
+			}
+			
 			CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
-			return getRtJson(ctRt);
+			return mapper.writeValueAsString(ctRt);
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}
