@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.23.0"
+  version: "1.24.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -2104,6 +2104,25 @@ paths:
         '403':
           $ref: '#/components/responses/403'
         '500':
+          $ref: '#/components/responses/500'
+  '/logout':
+    get:
+      summary: Operazione di Logout
+      operationId: logout
+      tags:
+        - Utenti
+      responses:
+        '200':
+          description: Operazione eseguita con successo
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '503':
           $ref: '#/components/responses/500'
   '/info':
     get:

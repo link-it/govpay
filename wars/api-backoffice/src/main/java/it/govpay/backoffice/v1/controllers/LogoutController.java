@@ -1,4 +1,5 @@
-package it.govpay.user.v1.controller;
+package it.govpay.backoffice.v1.controllers;
+
 
 import java.text.MessageFormat;
 
@@ -7,8 +8,12 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
+
+
+
 
 public class LogoutController extends BaseController {
 
@@ -16,9 +21,11 @@ public class LogoutController extends BaseController {
 		super(nomeServizio,log);
 	}
 
+
+
 	public Response logout(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
 		String methodName = "logout";  
-		String transactionId = this.context.getTransactionId();
+		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			if(this.request.getSession() != null) {
@@ -31,10 +38,9 @@ public class LogoutController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.log(ContextThreadLocal.get());
 		}
 	}
-
 }
 
 
