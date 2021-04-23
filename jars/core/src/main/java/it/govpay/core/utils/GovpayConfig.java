@@ -136,6 +136,8 @@ public class GovpayConfig {
 	
 	private boolean batchCaricamentoTracciatiNotificaPagamenti;
 	
+	private boolean ricercaRiconciliazioniIdFlussoCaseInsensitive;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -197,6 +199,7 @@ public class GovpayConfig {
 		this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
 		
 		this.batchCaricamentoTracciatiNotificaPagamenti = false;
+		this.ricercaRiconciliazioniIdFlussoCaseInsensitive = false;
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -590,6 +593,10 @@ public class GovpayConfig {
 			if(batchCaricamentoTracciatiNotificaPagamentiString != null && Boolean.valueOf(batchCaricamentoTracciatiNotificaPagamentiString))
 				this.batchCaricamentoTracciatiNotificaPagamenti = true;
 			
+			String ricercaRiconciliazioniIdFlussoCaseInsensitiveString = getProperty("it.govpay.riconciliazione.idFlussoCaseInsensitive.enabled", this.props, false, log);
+			if(ricercaRiconciliazioniIdFlussoCaseInsensitiveString != null && Boolean.valueOf(ricercaRiconciliazioniIdFlussoCaseInsensitiveString))
+				this.ricercaRiconciliazioniIdFlussoCaseInsensitive = true;
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -907,5 +914,9 @@ public class GovpayConfig {
 
 	public boolean isBatchCaricamentoTracciatiNotificaPagamenti() {
 		return batchCaricamentoTracciatiNotificaPagamenti;
+	}
+	
+	public boolean isRicercaRiconciliazioniIdFlussoCaseInsensitive() {
+		return ricercaRiconciliazioniIdFlussoCaseInsensitive;
 	}
 }

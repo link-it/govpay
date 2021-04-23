@@ -19,7 +19,6 @@
  */
 package it.govpay.core.business;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +47,6 @@ import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
-import it.govpay.bd.pagamento.filters.IncassoFilter;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.exceptions.EcException;
@@ -276,7 +274,7 @@ public class Incassi {
 				
 				try {
 					// Cerco l'idf come case insensitive
-					fr = frBD.getFr(idf);
+					fr = frBD.getFr(idf, richiestaIncasso.isRicercaIdFlussoCaseInsensitive());
 					
 					if(!fr.getStato().equals(StatoFr.ACCETTATA)) {
 						ctx.getApplicationLogger().log("incasso.frAnomala", idf);

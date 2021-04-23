@@ -228,6 +228,7 @@ CREATE TABLE iban_accredito
 	abilitato NUMBER NOT NULL,
 	descrizione VARCHAR2(255 CHAR),
 	intestatario VARCHAR2(255 CHAR),
+	aut_stampa_poste VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,

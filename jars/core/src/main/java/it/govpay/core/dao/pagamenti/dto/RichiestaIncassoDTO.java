@@ -27,11 +27,15 @@ import org.springframework.security.core.Authentication;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Operatore;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
+import it.govpay.core.utils.GovpayConfig;
 
 public class RichiestaIncassoDTO extends BasicFindRequestDTO {
 	
 	public RichiestaIncassoDTO(Authentication user) {
 		super(user);
+		
+		// imposto valore di default per la ricerca dell'idflusso rendicontazione
+		this.ricercaIdFlussoCaseInsensitive = GovpayConfig.getInstance().isRicercaRiconciliazioniIdFlussoCaseInsensitive();
 	}
 	
 	private Applicazione applicazione;
@@ -47,6 +51,7 @@ public class RichiestaIncassoDTO extends BasicFindRequestDTO {
 	private String iuv;
 	private String idFlusso;
 	private String sct;
+	private boolean ricercaIdFlussoCaseInsensitive = false;
 	
 	public String getTrn() {
 		return this.trn;
@@ -125,5 +130,11 @@ public class RichiestaIncassoDTO extends BasicFindRequestDTO {
 	}
 	public void setSct(String sct) {
 		this.sct = sct;
+	}
+	public boolean isRicercaIdFlussoCaseInsensitive() {
+		return ricercaIdFlussoCaseInsensitive;
+	}
+	public void setRicercaIdFlussoCaseInsensitive(boolean ricercaIdFlussoCaseInsensitive) {
+		this.ricercaIdFlussoCaseInsensitive = ricercaIdFlussoCaseInsensitive;
 	}
 }

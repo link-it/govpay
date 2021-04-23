@@ -112,6 +112,7 @@ public class DominiConverter {
 		iban.setCodIban(idIbanAccredito);
 		iban.setPostale(ibanAccreditoPost.isPostale());
 		iban.setIntestatario(ibanAccreditoPost.getIntestatario());
+		iban.setAutStampaPoste(ibanAccreditoPost.getAutStampaPosteItaliane());
 
 		ibanAccreditoDTO.setIban(iban);
 		ibanAccreditoDTO.setIdDominio(idDominio);
@@ -377,7 +378,8 @@ public class DominiConverter {
 		.iban(iban.getCodIban())
 		.descrizione(iban.getDescrizione())
 		.postale(iban.isPostale())
-		.intestatario(iban.getIntestatario());
+		.intestatario(iban.getIntestatario())
+		.autStampaPosteItaliane(iban.getAutStampaPoste());
 
 		return rsModel;
 	}

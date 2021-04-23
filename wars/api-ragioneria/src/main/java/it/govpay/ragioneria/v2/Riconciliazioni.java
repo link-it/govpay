@@ -38,9 +38,9 @@ public class Riconciliazioni extends BaseRsServiceV2{
     @Path("/{idDominio}")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    public Response addRiconciliazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, java.io.InputStream is){
+    public Response addRiconciliazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, java.io.InputStream is, @QueryParam("idFlussoCaseInsensitive") Boolean idFlussoCaseInsensitive){
         this.buildContext();
-        return this.controller.addRiconciliazione(this.getUser(), uriInfo, httpHeaders,  idDominio, is);
+        return this.controller.addRiconciliazione(this.getUser(), uriInfo, httpHeaders,  idDominio, is, idFlussoCaseInsensitive);
     }
 
     @GET

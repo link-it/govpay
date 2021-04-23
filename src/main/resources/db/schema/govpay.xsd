@@ -827,6 +827,7 @@
 			</xsd:element>
 			<xsd:element name="descrizione" type="String255" minOccurs="0"/>
 			<xsd:element name="intestatario" type="String255" minOccurs="0"/>
+			<xsd:element name="autStampaPoste" type="String255" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
