@@ -596,6 +596,25 @@ paths:
           $ref: '#/components/responses/401NotAuthenticated'
         '503':
           $ref: '#/components/responses/500ServiceUnavailable'
+  '/logout':
+    get:
+      summary: Logout
+      operationId: logout
+      tags:
+        - Anagrafica
+      responses:
+        '200':
+          description: Operazione eseguita con successo
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '503':
+          $ref: '#/components/responses/500ServiceUnavailable'
 components:
   securitySchemes:
     basicAuth:
