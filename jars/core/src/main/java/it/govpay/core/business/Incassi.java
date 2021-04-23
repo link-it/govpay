@@ -254,6 +254,10 @@ public class Incassi {
 			if(iuv != null) {
 				try {
 					it.govpay.bd.model.Pagamento pagamento = pagamentiBD.getPagamento(richiestaIncasso.getCodDominio(), iuv);
+					
+					if(richiestaIncasso.getImporto().doubleValue() != pagamento.getImportoPagato().doubleValue())
+						throw new IncassiException(FaultType.IMPORTO_ERRATO, "La richiesta di riconciliazione presenta un importo [" + richiestaIncasso.getImporto() + "] non corripondente a quello riscosso [" + pagamento.getImportoPagato().doubleValue() + "]");
+					
 					pagamenti.add(pagamento);
 				} catch (NotFoundException nfe) {
 					ctx.getApplicationLogger().log("incasso.iuvNonTrovato", iuv);
@@ -262,6 +266,8 @@ public class Incassi {
 					ctx.getApplicationLogger().log("incasso.iuvPagamentiMultipli", iuv, richiestaIncasso.getCodDominio());
 					throw new IncassiException(FaultType.PAGAMENTO_NON_IDENTIFICATO, "Lo IUV " + iuv + " estratto dalla causale di incasso identifica piu' di un pagamento per il creditore " + richiestaIncasso.getCodDominio());
 				}
+				
+				
 			}
 			
 			// Riversamento cumulativo
@@ -365,6 +371,10 @@ public class Incassi {
 								ctx.getApplicationLogger().log("incasso.frAnomala", idf);
 								throw new IncassiException(FaultType.FR_ANOMALA, "La rendicontazione [Dominio:"+fr.getCodDominio()+" Iuv:" + rendicontazione.getIuv()+ " Iur:" + rendicontazione.getIur() + " Indice:" + rendicontazione.getIndiceDati() + "] non identifica univocamente un pagamento");
 							}
+						} else {
+							// Verifica che l'importo rendicontato corrisponda al pagato
+							if(rendicontazione.getImporto().doubleValue() != pagamento.getImportoPagato().doubleValue())
+								throw new IncassiException(FaultType.IMPORTO_ERRATO, "La rendicontazione [Dominio:"+fr.getCodDominio()+" Iuv:" + rendicontazione.getIuv()+ " Iur:" + rendicontazione.getIur() + " Indice:" + rendicontazione.getIndiceDati() + "] presenta un importo [" + rendicontazione.getImporto() + "] non corripondente a quello riscosso [" + pagamento.getImportoPagato().doubleValue() + "]");
 						}
 						
 						//Aggiorno la FK della rendicontazione
@@ -379,7 +389,7 @@ public class Incassi {
 				} 
 			}
 			
-			// Verifica stato dei pagamenti da incassare e calcolo dell'importo pagato
+			// Verifica stato dei pagamenti da incassare 
 			for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
 				if(Stato.INCASSATO.equals(pagamento.getStato())) {
 					ctx.getApplicationLogger().log("incasso.pagamentoGiaIncassato", pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur());
