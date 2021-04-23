@@ -7,10 +7,8 @@ Background:
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
-# * def esitoAttivaRPT = read('classpath:test/workflow/modello3/v1/msg/attiva-response-ok.json')
-# * def esitoVerificaRPT = read('classpath:test/workflow/modello3/v1/msg/verifica-response-ok.json')
+# * def esitoAttivaRPT = read('msg/attiva-response-ok.json')
 * configure followRedirects = false
-
 
 * def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
 * def dominioNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/dominio.json')
@@ -18,12 +16,12 @@ Background:
 * def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
 * def esitoGetPayment = read('classpath:test/workflow/modello3/v2/msg/getPayment-response-ok.json')
 
-
-Scenario: Pagamento eseguito dovuto precaricato con verifica
+Scenario: Pagamento eseguito dovuto precaricato
 
 * call read('classpath:utils/pa-carica-avviso.feature')
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo
 
 # Configurazione dell'applicazione
@@ -63,7 +61,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 # Attivo il pagamento 
 
-* def tipoRicevuta = "R01"
+* def tipoRicevuta = "R02"
 * call read('classpath:utils/psp-attiva-rpt.feature')
 * match response.dati == esitoGetPayment
 
@@ -79,18 +77,15 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def ccp =  ccp_numero_avviso
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-eseguito.json')
+* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-non-eseguito.json')
 
 # Verifico lo stato della pendenza
 
 * call read('classpath:utils/api/v1/backoffice/pendenza-get-dettaglio.feature')
-* match response.stato == 'ESEGUITA'
-* match response.dataPagamento == '#regex \\d\\d\\d\\d-\\d\\d-\\d\\d'
-* match response.voci[0].stato == 'Eseguito'
+* match response.stato == 'NON_ESEGUITA'
+* match response.voci[0].stato == 'Non eseguito'
 * match response.rpp == '#[1]'
 * match response.rpp[0].stato == 'RT_ACCETTATA_PA'
-* match response.rpp[0].rt == '#notnull'
-
 
 # ripristino dominio e stazione
 
@@ -101,9 +96,4 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
 
 * call read('classpath:utils/nodo-config-stazione-put.feature')
-
-
-
-
-
 
