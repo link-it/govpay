@@ -33,13 +33,8 @@ export class SelectViewComponent implements IFormComponent, AfterViewInit {
     if(this.json && this.json.promise && this.json.promise.async) {
       if(this.json.promise.loaded) {
         this.fGroup.controls[this.json.id+'_ctrl'].enable();
-        if(this.json.promise.preventSelection) {
-          if(this.json.values.length === 1) {
-            this.fGroup.controls[this.json.id+'_ctrl'].setValue(this.json.values[0].value);
-          }
-          if(this.json.values.length === 0) {
-            this.fGroup.controls[this.json.id+'_ctrl'].disable();
-          }
+        if(this.json.values.length === 0) {
+          this.fGroup.controls[this.json.id+'_ctrl'].disable();
         }
       } else {
         this.fGroup.controls[this.json.id+'_ctrl'].disable();
@@ -62,9 +57,12 @@ export class SelectViewComponent implements IFormComponent, AfterViewInit {
 
   markRequiredFormControl(value: boolean) {
     if(!value) {
-      if(this.json.required && this.json.dependency) {
-        if(this.fGroup.controls.hasOwnProperty(this.json.id+'_ctrl')) {
-          this.fGroup.removeControl(this.json.id+'_ctrl');
+      if(this.json.dependency) {
+        this.fGroup.controls[this.json.id+'_ctrl'].reset();
+        if(this.json.required) {
+          if(this.fGroup.controls.hasOwnProperty(this.json.id+'_ctrl')) {
+            this.fGroup.removeControl(this.json.id+'_ctrl');
+          }
         }
       }
     } else {

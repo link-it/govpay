@@ -91,7 +91,7 @@ public class EventiFilter extends AbstractFilter{
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.ilike(Evento.model().IUV, this.iuv, LikeMode.ANYWHERE);
+				newExpression.equals(Evento.model().IUV, this.iuv);
 				addAnd = true;
 			}
 			
@@ -287,7 +287,7 @@ public class EventiFilter extends AbstractFilter{
 
 			
 			if(this.iuv != null && StringUtils.isNotEmpty(this.iuv)) {
-				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.IUV, true), this.iuv, true, true);
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.IUV, true) + " = ? ");
 			}
 			
 			if(this.ccp != null && StringUtils.isNotEmpty(this.ccp)) {
@@ -380,7 +380,7 @@ public class EventiFilter extends AbstractFilter{
 
 		
 		if(this.iuv != null && StringUtils.isNotEmpty(this.iuv)) {
-			// donothing
+			lst.add(this.iuv);
 		}
 		
 		if(this.ccp != null && StringUtils.isNotEmpty(this.ccp)) {

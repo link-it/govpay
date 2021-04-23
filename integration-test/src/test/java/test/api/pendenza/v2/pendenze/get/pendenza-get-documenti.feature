@@ -6,6 +6,7 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
+* def pagamentoBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 
@@ -26,6 +27,12 @@ And request pendenzaPut
 When method put
 Then status 201
 
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('../put/msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.documento.identificativo = idDocumento
@@ -38,6 +45,12 @@ And headers basicAutenticationHeader
 And request pendenzaPut
 When method put
 Then status 201
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+When method get
+Then status 200
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('../put/msg/pendenza-put_monovoce_riferimento.json')
@@ -52,8 +65,20 @@ And request pendenzaPut
 When method put
 Then status 201
 
+Given url pagamentoBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
 Given url pendenzeBaseurl
-And path '/documenti', response.idDominio, idDocumento, 'avvisi'
+And path '/pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url pendenzeBaseurl
+And path '/documenti', response.dominio.idDominio, idDocumento, 'avvisi'
 And headers basicAutenticationHeader
 And header Accept = 'application/pdf'
 When method get
@@ -77,6 +102,12 @@ And request pendenzaPut
 When method put
 Then status 201
 
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('../put/msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.documento.identificativo = idDocumento
@@ -90,6 +121,12 @@ And headers basicAutenticationHeader
 And request pendenzaPut
 When method put
 Then status 201
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+When method get
+Then status 200
 
 * def idPendenza = getCurrentTimeMillis()
 * def idPendenza = getCurrentTimeMillis()
@@ -107,7 +144,13 @@ When method put
 Then status 201
 
 Given url pendenzeBaseurl
-And path 'documenti', response.idDominio, idDocumento, 'avvisi'
+And path '/pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url pendenzeBaseurl
+And path 'documenti', response.dominio.idDominio, idDocumento, 'avvisi'
 And headers basicAutenticationHeader
 And header Accept = 'application/pdf'
 When method get

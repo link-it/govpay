@@ -21,6 +21,13 @@ body,
   word-break: break-all !important;
 }
 
+.break-word {
+  word-wrap: break-word;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
+}
+
 .stato-error {
   color: mat-color($link-error);
 }

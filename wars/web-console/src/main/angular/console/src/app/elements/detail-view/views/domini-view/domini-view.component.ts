@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { UtilService } from '../../../../services/util.service';
 import { IModalDialog } from '../../../../classes/interfaces/IModalDialog';
 import { ModalBehavior } from '../../../../classes/modal-behavior';
@@ -9,6 +9,7 @@ import { Dato } from '../../../../classes/view/dato';
 import { Parameters } from '../../../../classes/parameters';
 import { Standard } from '../../../../classes/view/standard';
 import { DomSanitizer } from '@angular/platform-browser';
+import { SimpleListItem } from '../../../simple-list-card/simple-list-card.component';
 
 @Component({
   selector: 'link-domini-view',
@@ -24,6 +25,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   @Input() entrate = [];
   @Input() unita_operative = [];
   @Input() tipiPendenza = [];
+  @Input() connettori = [];
 
   @Input() json: any;
   @Input() modified: boolean = false;
@@ -36,6 +38,9 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   protected _IBAN = UtilService.IBAN_ACCREDITO;
   protected _ENTRATA_DOMINIO = UtilService.ENTRATA_DOMINIO;
   protected _TIPI_PENDENZA_DOMINIO = UtilService.TIPI_PENDENZA_DOMINIO;
+  protected _CONNETTORE_MY_PIVOT = UtilService.CONNETTORE_MY_PIVOT;
+  protected _CONNETTORE_SECIM = UtilService.CONNETTORE_SECIM;
+  protected _CONNETTORE_GOVPAY = UtilService.CONNETTORE_GOVPAY;
   protected _UNITA = UtilService.UNITA_OPERATIVA;
   protected _PLUS_CREDIT = UtilService.USER_ACL.hasCreditore;
 
@@ -45,6 +50,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     entrate: { page: 0, pages: 1, risultati: [], url: '', search: '', refresh: false },
     pendenze: { page: 0, pages: 1, risultati: [], url: '', search: '', refresh: false }
   };
+  protected _availableConnectors: SimpleListItem[] = [];
 
   constructor(private _sanitizer: DomSanitizer, public gps: GovpayService, public us: UtilService) { }
 
@@ -173,7 +179,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       _dettaglio.info.push(new Dato({ label: Voce.AREA, value: json.area }));
     }
     if (json.idDominio) {
-      _dettaglio.info.push(new Dato({ label: Voce.CODICE_FISCALE, value: json.idDominio }));
+      _dettaglio.info.push(new Dato({ label: Voce.ID_DOMINIO, value: json.idDominio }));
     }
     if (json.indirizzo) {
       _dettaglio.info.push(new Dato({ label: Voce.INDIRIZZO, value: json.indirizzo }));
@@ -235,6 +241,34 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     this.informazioni = _dettaglio.info.slice(0);
     this.informazioniPA = _dettaglio.infoPA.slice(0);
     this.informazioniExtra = _dettaglio.infoExtra.slice(0);
+
+    const _connettori: any[] = [];
+    // MyPivot
+    if (json.servizioMyPivot && json.servizioMyPivot.abilitato) {
+      const p = new Parameters();
+      p.id = this._CONNETTORE_MY_PIVOT;
+      p.jsonP = json.servizioMyPivot;
+      p.model = this._mapNewItemByType(json.servizioMyPivot, this._CONNETTORE_MY_PIVOT);
+      _connettori.push(p);
+    }
+    // SECIM
+    if (json.servizioSecim && json.servizioSecim.abilitato) {
+      const p = new Parameters();
+      p.id = this._CONNETTORE_SECIM;
+      p.jsonP = json.servizioSecim;
+      p.model = this._mapNewItemByType(json.servizioSecim, this._CONNETTORE_SECIM);
+      _connettori.push(p);
+    }
+    // GOVPAY
+    if (json.servizioGovPay && json.servizioGovPay.abilitato) {
+      const p = new Parameters();
+      p.id = this._CONNETTORE_GOVPAY;
+      p.jsonP = json.servizioGovPay;
+      p.model = this._mapNewItemByType(json.servizioGovPay, this._CONNETTORE_GOVPAY);
+      _connettori.push(p);
+    }
+    this.connettori = [].concat(_connettori);
+    this.filtroConnettori();
   }
 
   protected elencoUnitaOperative(jsonList: any[]) {
@@ -304,29 +338,27 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   }
 
   protected _iconClick(type: string, ref: any, event: any) {
-    //TODO: Delete non sono impostati
     let _ivm = ref.getItemViewModel();
     switch(event.type) {
       case 'edit':
         this._addEdit(type, true, _ivm.jsonP);
         break;
-        // let _json;
-        // case 'delete':
-        //   switch(type) {
-        //     case this._UNITA:
-        //       _json = [ { op: UtilService.PATCH_METHODS.DELETE, path: UtilService.URL_UNITA_OPERATIVE, value: _ivm.jsonP.idUnita } ];
-        //       break;
-        //     case this._ENTRATA_DOMINIO:
-        //       _json = [ { op: UtilService.PATCH_METHODS.DELETE, path: UtilService.URL_ENTRATE, value: _ivm.jsonP.idEntrata }];
-        //       break;
-        //     case this._IBAN:
-        //       _json = [ { op: UtilService.PATCH_METHODS.DELETE, path: UtilService.URL_IBAN_ACCREDITI, value: _ivm.jsonP.iban }];
-        //       break;
-        //   }
-        //   if(_json) {
-        //     this.updateElements(type, _json);
-        //   }
-        //  break;
+      case 'delete':
+        if (type === this._CONNETTORE_MY_PIVOT) {
+          delete this.json.servizioMyPivot;
+        }
+        if (type === this._CONNETTORE_SECIM) {
+          delete this.json.servizioSecim;
+        }
+        if (type === this._CONNETTORE_GOVPAY) {
+          delete this.json.servizioGovPay;
+        }
+        delete this.json.entrate;
+        delete this.json.unitaOperative;
+        delete this.json.contiAccredito;
+        delete this.json.tipiPendenza;
+        this.__updateConnettoriDominio();
+       break;
     }
   }
 
@@ -386,8 +418,29 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         _std.titolo = new Dato({ value: item.iban });
         _std.sottotitolo = item.descrizione?new Dato({ label: Voce.DESCRIZIONE+': ', value: item.descrizione }):new Dato();
       break;
+      case this._CONNETTORE_MY_PIVOT:
+        _std.titolo = new Dato({ value: 'MyPivot' });
+        _std.sottotitolo = new Dato({ label: Voce.MODALITA_CONNETTORE+': ', value: item.tipoConnettore });
+      break;
+      case this._CONNETTORE_SECIM:
+        _std.titolo = new Dato({ value: 'SECIM' });
+        _std.sottotitolo = new Dato({ label: Voce.MODALITA_CONNETTORE+': ', value: item.tipoConnettore });
+      break;
+      case this._CONNETTORE_GOVPAY:
+        _std.titolo = new Dato({ value: 'GovPay' });
+        _std.sottotitolo = new Dato({ label: Voce.MODALITA_CONNETTORE+': ', value: item.tipoConnettore });
+      break;
     }
     return _std;
+  }
+
+  protected _listCardAction(event: any) {
+    this._addEdit(event.target);
+  }
+
+  protected _listCardIconClick(event: any) {
+    const el: Parameters = event.item.getItemViewModel();
+    this._iconClick(el.id, event.item, event.bubbleEvent);
   }
 
   protected _addEdit(type: string, mode: boolean = false, _viewModel?: any) {
@@ -431,11 +484,30 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         };
         UtilService.dialogBehavior.next(_mb);
       break;
+      case this._CONNETTORE_MY_PIVOT:
+      case this._CONNETTORE_SECIM:
+      case this._CONNETTORE_GOVPAY:
+        _mb.info = {
+          viewModel: _viewModel,
+          parent: this,
+          dialogTitle: (!mode)?'Nuovo connettore MyPivot':'Modifica connettore MyPivot',
+          templateName: this._CONNETTORE_MY_PIVOT
+        };
+        if (type === this._CONNETTORE_SECIM) {
+          _mb.info.dialogTitle = (!mode)?'Nuovo connettore SECIM':'Modifica connettore SECIM';
+          _mb.info.templateName = this._CONNETTORE_SECIM;
+        }
+        if (type === this._CONNETTORE_GOVPAY) {
+          _mb.info.dialogTitle = (!mode)?'Nuovo connettore GovPay':'Modifica connettore GovPay';
+          _mb.info.templateName = this._CONNETTORE_GOVPAY;
+        }
+        UtilService.blueDialogBehavior.next(_mb);
+        break;
     }
   }
 
   /**
-   * Save Dominio|Entrata-Dominio|Unità operativa|Iban|tipoPendenza (Put to: /domini/{idDominio} )
+   * Save Dominio|Entrata-Dominio|Unità operativa|Iban|tipoPendenza|Connettori (Put to: /domini/{idDominio} )
    * @param {BehaviorSubject<any>} responseService
    * @param {ModalBehavior} mb
    */
@@ -446,6 +518,17 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     switch(mb.info.templateName) {
       case UtilService.DOMINIO:
         _json = mb.info.viewModel;
+        if (mb.editMode) {
+          if (this.json.servizioMyPivot) {
+            _json.servizioMyPivot = this.json.servizioMyPivot;
+          }
+          if (this.json.servizioSecim) {
+            _json.servizioSecim = this.json.servizioSecim;
+          }
+          if (this.json.servizioGovPay) {
+            _json.servizioGovPay = this.json.servizioGovPay;
+          }
+        }
         delete _json.idDominio;
       break;
       case this._ENTRATA_DOMINIO:
@@ -467,6 +550,25 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         _service += UtilService.URL_IBAN_ACCREDITI+'/'+mb.info.viewModel.iban;
         _json = JSON.parse(JSON.stringify(mb.info.viewModel));
         delete _json.iban;
+      break;
+      case this._CONNETTORE_MY_PIVOT:
+      case this._CONNETTORE_SECIM:
+      case this._CONNETTORE_GOVPAY:
+        _json = JSON.parse(JSON.stringify(this.json));
+        if (mb.info.templateName === this._CONNETTORE_MY_PIVOT) {
+          _json.servizioMyPivot = JSON.parse(JSON.stringify(mb.info.viewModel));
+        }
+        if (mb.info.templateName === this._CONNETTORE_SECIM) {
+          _json.servizioSecim = JSON.parse(JSON.stringify(mb.info.viewModel));
+        }
+        if (mb.info.templateName === this._CONNETTORE_GOVPAY) {
+          _json.servizioGovPay = JSON.parse(JSON.stringify(mb.info.viewModel));
+        }
+        delete _json.idDominio;
+        delete _json.entrate;
+        delete _json.unitaOperative;
+        delete _json.contiAccredito;
+        delete _json.tipiPendenza;
       break;
     }
     if(_json && _service) {
@@ -572,8 +674,42 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
             });
           }
         break;
+        case this._CONNETTORE_MY_PIVOT:
+        case this._CONNETTORE_SECIM:
+        case this._CONNETTORE_GOVPAY:
+          this.dettaglioDominio();
+        break;
       }
     }
+  }
+
+  __updateConnettoriDominio() {
+    const _service = UtilService.URL_DOMINI+'/'+UtilService.EncodeURIComponent(this.json.idDominio);
+    const _json = JSON.parse(JSON.stringify(this.json));
+    delete _json.idDominio;
+    if(_json && _service) {
+      this.gps.saveData(_service, _json).subscribe(
+        () => {
+          this.gps.updateSpinner(false);
+          this.dettaglioDominio();
+        },
+        (error) => {
+          this.gps.updateSpinner(false);
+          this.us.onError(error);
+        });
+    }
+  }
+
+  filtroConnettori() {
+    this._availableConnectors = UtilService.CONNETTORI.filter((el: SimpleListItem) => {
+      let visible: boolean = true;
+      this.connettori.forEach(c => {
+        if (c.id === el.value) {
+          visible = false;
+        }
+      });
+      return visible;
+    });
   }
 
   title(): string {
@@ -584,3 +720,4 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     return null;
   }
 }
+

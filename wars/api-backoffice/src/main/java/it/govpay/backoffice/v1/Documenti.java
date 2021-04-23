@@ -35,12 +35,12 @@ public class Documenti extends BaseRsServiceV1{
 
 
     @GET
-    @Path("/{idDominio}/{numeroDocumento}/avvisi")
+    @Path("/{idA2A}/{idDominio}/{numeroDocumento}/avvisi")
     
     @Produces({ "application/pdf" })
-    public Response getAvvisiDocumento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("numeroDocumento") String numeroDocumento, @QueryParam("linguaSecondaria") String linguaSecondaria, @QueryParam("numeriAvviso") List<String> numeriAvviso){
+    public Response getAvvisiDocumento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idDominio") String idDominio, @PathParam("numeroDocumento") String numeroDocumento, @QueryParam("linguaSecondaria") String linguaSecondaria, @QueryParam("numeriAvviso") List<String> numeriAvviso){
     	this.buildContext();
-        return this.controller.getAvvisiDocumento(this.getUser(), uriInfo, httpHeaders,  idDominio,  numeroDocumento, linguaSecondaria, numeriAvviso);
+        return this.controller.getAvvisiDocumento(this.getUser(), uriInfo, httpHeaders,  idA2A,  idDominio,  numeroDocumento, linguaSecondaria, numeriAvviso);
     }
 
 }

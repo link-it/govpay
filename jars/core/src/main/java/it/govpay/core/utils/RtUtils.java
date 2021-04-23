@@ -248,6 +248,10 @@ public class RtUtils extends NdpValidationUtils {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
 			}
 			
+			// Faccio adesso la select for update, altrimenti in caso di 
+			// ricezione di due RT afferenti allo stesso carrello di pagamento
+			// vado in deadlock tra la getRpt precedente e la findAll seguente
+			
 			rptBD.enableSelectForUpdate();
 			
 			Long idPagamentoPortale = rpt.getIdPagamentoPortale();
@@ -258,6 +262,15 @@ public class RtUtils extends NdpValidationUtils {
 				RptFilter filter = rptBD.newFilter();
 				filter.setIdPagamentoPortale(idPagamentoPortale);
 				rptsCarrello = rptBD.findAll(filter);
+			}
+			
+			// Rifaccio la getRpt adesso che ho il lock per avere lo stato aggiornato
+			// infatti in caso di RT concorrente, non viene gestito bene l'errore.
+			
+			try {
+				rpt = rptBD.getRpt(codDominio, iuv, ccp, true);
+			} catch (NotFoundException e) {
+				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
 			}
 			
 			if(!acquisizioneDaCruscotto) {

@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs/Subscription';
 import * as moment from 'moment';
 import { HttpClient } from '@angular/common/http';
 import { Voce } from './voce.service';
+import { SimpleListItem } from '../elements/simple-list-card/simple-list-card.component';
 
 declare let GovPayConfig: any;
 
@@ -24,9 +25,11 @@ export class UtilService {
   // Config.govpay: Autenticazione
   public static ACCESS_BASIC: string = 'Basic';
   public static ACCESS_SPID: string = 'Spid';
+  public static ACCESS_IAM: string = 'Iam';
   public static BASIC: any = GovPayConfig.BASIC;
   public static SPID: any = GovPayConfig.SPID;
-  public static TOA: any = { Spid: false, Basic: false };
+  public static IAM: any = GovPayConfig.IAM;
+  public static TOA: any = { Spid: false, Basic: false, Iam: false };
 
   // Config.govpay
   public static INFORMATION: any = GovPayConfig.INFO;
@@ -161,6 +164,12 @@ export class UtilService {
     ESEGUITO: 'Eseguito',
     ESEGUITO_CON_ERRORI: 'Eseguito con errori',
     SCARTATO: 'Scartato'
+  };
+
+  //LIVELLI SEVERITA
+  public static LIVELLI_SEVERITA: any = {
+    2: 'Warning',
+    4: 'Fatal'
   };
 
   //TIPOLOGIE OPERAZIONI TRACCIATO
@@ -302,6 +311,19 @@ export class UtilService {
     client: 'Client',
     server: 'Server'
   };
+
+  public static CODIFICHE_SSL: any[] = [
+    { label: 'SSL', value: 'SSL' },
+    { label: 'SSL v3', value: 'SSLv3' },
+    { label: 'TLS', value: 'TLS' },
+    { label: 'TLS v1', value: 'TLSv1' },
+    { label: 'TLS v1.1', value: 'TLSv1.1' },
+    { label: 'TLS v1.2', value: 'TLSv1.2' }
+  ];
+
+  public static TIPI_KEYSTORE_TRUSTSTORE: any[] = [
+    { label: 'JKS', value: 'JKS' }
+  ];
 
   public static TIPI_CONTABILITA: any = {
     CAPITOLO: 'Capitolo',
@@ -458,6 +480,11 @@ export class UtilService {
   public static TIPI_PENDENZA: string = 'tipi_pendenza';
   public static TIPO_PENDENZA: string = 'tipo_pendenza';
   public static TIPI_PENDENZA_DOMINIO: string = 'tipi_pendenza_dominio';
+  public static CONNETTORE_MY_PIVOT: string = 'connettore_my_pivot';
+  public static CONNETTORE_SECIM: string = 'connettore_secim';
+  public static CONNETTORE_GOVPAY: string = 'connettore_govpay';
+  public static CONNETTORE_MODALITA_EMAIL: string = 'EMAIL';
+  public static CONNETTORE_MODALITA_FILESYSTEM: string = 'FILESYSTEM';
   public static TENTATIVO_RT: string = 'tentativo_rt';
   public static ENTRATA_DOMINIO: string = 'entrata_dominio';
   public static UNITA_OPERATIVA: string = 'unita_operativa';
@@ -502,6 +529,7 @@ export class UtilService {
   public static EXPORT_RISCOSSIONI: string = 'esporta_riscossioni';
   public static EXPORT_PROSPETTO_RISCOSSIONI: string = 'esporta_prospetto_riscossioni';
   public static EXPORT_INCASSI: string = 'esporta_incassi';
+  public static EXPORT_INCASSO: string = 'esporta_incasso';
   public static EXPORT_RENDICONTAZIONI: string = 'esporta_rendicontazioni';
   public static EXPORT_FLUSSO_XML: string = 'esporta_flusso_xml';
   public static EXPORT_TRACCIATO_RICHIESTA: string = 'esporta_tracciato_richiesta';
@@ -509,6 +537,28 @@ export class UtilService {
   public static EXPORT_TRACCIATO_AVVISI: string = 'esporta_tracciato_avvisi';
   public static ESCLUDI_NOTIFICA: string = 'escludi_notifica';
   public static VISTA_COMPLETA_EVENTO_JSON: string = 'vista_completa_evento_json';
+
+  // CONNETTORI
+  public static CONNETTORI: SimpleListItem[] = [
+    { label: 'MyPivot', value: UtilService.CONNETTORE_MY_PIVOT },
+    { label: 'SECIM', value: UtilService.CONNETTORE_SECIM },
+    { label: 'GovPay', value: UtilService.CONNETTORE_GOVPAY }
+  ];
+
+  public static MODALITA_MYPIVOT: SimpleListItem[] = [
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
+    { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
+  ];
+
+  public static MODALITA_SECIM: SimpleListItem[] = [
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
+    { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
+  ];
+
+  public static MODALITA_GOVPAY: SimpleListItem[] = [
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
+    { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
+  ];
 
   // CSV Export
   protected _csv: any;
@@ -560,7 +610,7 @@ export class UtilService {
 
   /**
    * Set TOA
-   * @param {string} toa: Basic | Spid
+   * @param {string} toa: Basic | Spid | Iam
    * @param {boolean} value
    */
   public static SetTOA(toa: string, value: boolean = false) {
@@ -568,13 +618,16 @@ export class UtilService {
   }
 
   public static ResetTOA() {
-    UtilService.TOA = { Spid: false, Basic: false };
+    UtilService.TOA = { Spid: false, Basic: false, Iam: false };
   }
 
   public static RootByTOA(): string {
     let _root = UtilService.BASIC.HTTP_ROOT_SERVICE;
     if(!UtilService.TOA.Basic && UtilService.TOA.Spid) {
       _root = UtilService.SPID.HTTPS_ROOT_SERVICE;
+    }
+    if(!UtilService.TOA.Basic && !UtilService.TOA.Spid && UtilService.TOA.Iam) {
+      _root = UtilService.IAM.ROOT_SERVICE;
     }
     return _root;
   }
@@ -583,6 +636,9 @@ export class UtilService {
     let _root = UtilService.BASIC.HTTP_LOGOUT_SERVICE;
     if(!UtilService.TOA.Basic && UtilService.TOA.Spid) {
       _root = UtilService.SPID.HTTPS_LOGOUT_SERVICE;
+    }
+    if(!UtilService.TOA.Basic && !UtilService.TOA.Spid && UtilService.TOA.Iam) {
+      _root = UtilService.IAM.LOGOUT_SERVICE;
     }
     return _root;
   }
@@ -905,6 +961,24 @@ export class UtilService {
   }
 
   /**
+   * Get query param value
+   * @param query string
+   * @param param string
+   * @returns {string}
+   */
+  getQueryParamValue(query: string, param: string): string {
+    let value = '';
+    query.split('&').some(function(p: string) {
+      const name: string[] = p.split('=');
+      if (param === name[0]) {
+        value = (name[1] || '');
+        return true;
+      }
+    });
+    return value;
+  }
+
+  /**
    * Get property value by path
    * @param path {string}
    * @param stack {string}
@@ -926,15 +1000,29 @@ export class UtilService {
 
   jsonToCsv(name: string, jsonData: any): string {
     let _csv: string = '';
+    let _keys: string[] = [];
+    let _jsonArray: any[] = [];
     switch(name) {
       case 'Eventi.csv':
-        let _jsonArray: any[] = jsonData.risultati;
-        let _keys = [];
+        _jsonArray = jsonData.risultati;
         _keys = this._elaborateKeys(_jsonArray);
         _jsonArray.forEach((_json, index) => {
           _csv += this.jsonToCsvRows((index===0), _keys, _json);
         });
         break;
+      case 'Riconciliazione.csv':
+        _keys = this._elaborateKeys([ jsonData ]);
+        [ jsonData ].forEach((_json, index) => {
+          _csv += this.jsonToCsvRows((index===0), _keys, _json);
+        });
+        break;
+      case 'PagamentiRiconciliati.csv':
+        _keys = this._elaborateKeys(jsonData);
+        jsonData.forEach((_json, index) => {
+          _csv += this.jsonToCsvRows((index===0), _keys, _json);
+        });
+        break;
+      default:
     }
 
     return _csv;
@@ -963,6 +1051,7 @@ export class UtilService {
     if (jsonData) {
       if (typeof jsonData === 'object') {
         _val = JSON.stringify(jsonData);
+        _val = _val.replace(/"+/g, '');
       } else {
         _val = (jsonData).toString().replace(/("("")*)+/g, '"$1');
       }
@@ -1138,6 +1227,14 @@ export class UtilService {
     let zip = new JSZip();
     zip.file(filename, body);
     this.saveZip(zip, (zipname || _zipname));
+  }
+
+  initZip(): any {
+    return new JSZip();
+  }
+
+  addDataToZip(data: any, filename: string, zip: any): any {
+    zip.file(filename, data);
   }
 
   generateStructuredZip(data: any, structure: any, name: string) {
@@ -1357,11 +1454,11 @@ export class UtilService {
         _list = [
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI + '?' + UtilService.QUERY_ASSOCIATI, mapFct: this.asyncElencoDominiPendenza.bind(this),
-                   eventType: 'idDominio-async-load', preventSelection: false } }, this.http),
+                   eventType: 'idDominio-async-load' } }, this.http),
           new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
           new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
-                   eventType: 'idA2A-async-load', preventSelection: true } }, this.http),
+                   eventType: 'idA2A-async-load' } }, this.http),
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'idDebitore', label: FormService.FORM_DEBITORE, placeholder: FormService.FORM_PH_DEBITORE,
                         type: UtilService.INPUT, pattern: FormService.VAL_CF_PI }),
@@ -1378,12 +1475,22 @@ export class UtilService {
       case UtilService.PAGAMENTI:
         _list = [
           new FormInput({ id: 'versante', label: FormService.FORM_VERSANTE, placeholder: FormService.FORM_PH_VERSANTE, type: UtilService.INPUT,
-                     pattern: FormService.VAL_CF_PI }),
+            pattern: FormService.VAL_CF_PI }),
+          new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+              eventType: 'idDominio-async-load' } }, this.http),
+          new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
+          new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
+              eventType: 'idA2A-async-load' } }, this.http),
+          new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPagamento() }),
+          new FormInput({ id: 'severitaDa', label: FormService.FORM_LIVELLO_SEVERITA, noOptionLabel: 'Info', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, showTooltip: false,
+            values: this.livelliSeverita(), dependency: 'stato', target: this.getKeyByValue(UtilService.STATI_PAGAMENTO, UtilService.STATI_PAGAMENTO.FALLITO) }),
           new FormInput({ id: 'id', label: FormService.FORM_SESSIONE, placeholder: FormService.FORM_PH_SESSIONE, type: UtilService.INPUT }),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_INIZIO, type: UtilService.DATE_PICKER, }),
           new FormInput({ id: 'dataA', label: FormService.FORM_DATA_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' }),
-          new FormInput({ id: 'verificato', label: FormService.FORM_VERIFICATO, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiVerifica() })
+          new FormInput({ id: 'verificato', label: FormService.FORM_VERIFICATO, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiVerifica() }),
         ];
         break;
       case UtilService.APPLICAZIONI:
@@ -1400,6 +1507,10 @@ export class UtilService {
         break;
       case UtilService.DOMINI:
         _list = [
+          new FormInput({ id: 'ragioneSociale', label: FormService.FORM_RAGIONE_SOCIALE, type: UtilService.INPUT }),
+          new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, type: UtilService.FILTERABLE,
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+              eventType: 'idDominio-async-load' } }, this.http),
           new FormInput({ id: 'idStazione', label: FormService.FORM_STAZIONE, placeholder: FormService.FORM_PH_STAZIONE, type: UtilService.INPUT }),
           new FormInput({ id: 'abilitato', label: FormService.FORM_PH_SELECT, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiAbilitazione() })
         ];
@@ -1422,10 +1533,11 @@ export class UtilService {
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
           //   promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
-          //     eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+          //     eventType: 'idDominio-async-load' } }, this.http),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
-              eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+              eventType: 'idDominio-async-load' } }, this.http),
+          new FormInput({ id: 'idFlusso', label: FormService.FORM_IDENTIFICATIVO_FLUSSO, type: UtilService.INPUT }),
           new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_RISC_INIZIO+' '+FormService.FORM_PH_DATA_RISC_INIZIO, type: UtilService.DATE_PICKER, }),
           new FormInput({ id: 'dataA', label: FormService.FORM_DATA_RISC_FINE+' '+FormService.FORM_PH_DATA_RISC_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
@@ -1436,17 +1548,17 @@ export class UtilService {
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
           //   promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
-          //     eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+          //     eventType: 'idDominio-async-load' } }, this.http),
           new FormInput({ id: 'tipoEvento', label: FormService.FORM_TIPI_EVENTO, type: UtilService.FILTERABLE, values: UtilService._MAP_TIPI_EVENTO,
             optionControlValue: true, showTooltip: false }),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
-              eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+              eventType: 'idDominio-async-load' } }, this.http),
           new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
           // new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, placeholder: FormService.FORM_PH_A2A, type: UtilService.INPUT }),
           new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
-              eventType: 'idA2A-async-load', preventSelection: true } }, this.http),
+              eventType: 'idA2A-async-load' } }, this.http),
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'ruolo', label: FormService.FORM_RUOLO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
             showTooltip: false, values: this.ruoliGdE() }),
@@ -1454,7 +1566,7 @@ export class UtilService {
             showTooltip: false, values: this.esitiGdE() }),
           new FormInput({ id: 'componente', label: FormService.FORM_COMPONENTE, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_COMPONENTI_EVENTO, mapFct: this.asyncComponentiGdE.bind(this),
-              eventType: 'componente-async-load', preventSelection: true }, showTooltip: false }, this.http),
+              eventType: 'componente-async-load' }, showTooltip: false }, this.http),
         ];
       break;
       case UtilService.RISCOSSIONI:
@@ -1462,14 +1574,14 @@ export class UtilService {
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
           //   promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
-          //     eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+          //     eventType: 'idDominio-async-load' } }, this.http),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
-              eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+              eventType: 'idDominio-async-load' } }, this.http),
           // new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, placeholder: FormService.FORM_PH_A2A, type: UtilService.INPUT }),
           new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_APPLICAZIONI, mapFct: this.asyncElencoApplicazioniPendenza.bind(this),
-              eventType: 'idA2A-async-load', preventSelection: true } }, this.http),
+              eventType: 'idA2A-async-load' } }, this.http),
           new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'stato', label: FormService.FORM_STATO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiRiscossione() }),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_RISC_INIZIO+' '+FormService.FORM_PH_DATA_RISC_INIZIO, type: UtilService.DATE_PICKER, }),
@@ -1485,9 +1597,10 @@ export class UtilService {
       break;
       case UtilService.INCASSI:
         _list = [
+          new FormInput({ id: 'sct', label: FormService.FORM_SCT, type: UtilService.INPUT }),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
-              eventType: 'idDominio-async-load', preventSelection: true } }, this.http),
+              eventType: 'idDominio-async-load' } }, this.http),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_INIZIO, type: UtilService.DATE_PICKER, }),
           new FormInput({ id: 'dataA', label: FormService.FORM_DATA_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
         ];
@@ -1632,6 +1745,12 @@ export class UtilService {
   statiVerifica(): any[] {
     return Object.keys(UtilService.VERIFICHE).map((key) => {
       return { label: UtilService.VERIFICHE[key], value: key == 'true' };
+    });
+  }
+
+  livelliSeverita(): any[] {
+    return Object.keys(UtilService.LIVELLI_SEVERITA).map((key) => {
+      return { label: UtilService.LIVELLI_SEVERITA[key], value: key };
     });
   }
 

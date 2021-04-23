@@ -35,6 +35,7 @@ import it.govpay.bd.configurazione.model.MailServer;
 import it.govpay.bd.configurazione.model.PromemoriaAvviso;
 import it.govpay.bd.configurazione.model.PromemoriaRicevuta;
 import it.govpay.bd.configurazione.model.PromemoriaScadenza;
+import it.govpay.bd.configurazione.model.SslConfig;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.TipoVersamentoDominio;
@@ -70,6 +71,10 @@ public class Promemoria {
 	private PromemoriaAvviso configurazionePromemoriaAvvisoMail;
 	private PromemoriaRicevuta configurazionePromemoriaRicevutaMail;
 	private PromemoriaScadenza configurazionePromemoriaScadenzaMail;
+
+	private SSLConfig sslConfig;
+
+	private boolean startTls;
 	
 
 	public Promemoria() {
@@ -95,6 +100,31 @@ public class Promemoria {
 				this.senderCommonsMail.setReadTimeout(mailserver.getReadTimeout());
 			if(mailserver.getConnectionTimeout() != null)
 				this.senderCommonsMail.setConnectionTimeout(mailserver.getConnectionTimeout());
+			
+			SslConfig sslConfigSistema = mailserver.getSslConfig();
+			if(sslConfigSistema != null && sslConfigSistema.isAbilitato()) {
+				this.sslConfig = new SSLConfig();
+				this.sslConfig.setSslType(sslConfigSistema.getType());
+				this.sslConfig.setHostnameVerifier(sslConfigSistema.isHostnameVerifier());
+				if(sslConfigSistema.getKeyStore() != null) {
+					this.sslConfig.setKeyStoreLocation(sslConfigSistema.getKeyStore().getLocation());
+					this.sslConfig.setKeyManagementAlgorithm(sslConfigSistema.getKeyStore().getManagementAlgorithm());
+					this.sslConfig.setKeyStorePassword(sslConfigSistema.getKeyStore().getPassword());
+					this.sslConfig.setKeyStoreType(sslConfigSistema.getKeyStore().getType());
+				}
+				
+				if(sslConfigSistema.getTrustStore() != null) {
+					this.sslConfig.setTrustStoreLocation(sslConfigSistema.getTrustStore().getLocation());
+					this.sslConfig.setTrustManagementAlgorithm(sslConfigSistema.getTrustStore().getManagementAlgorithm());
+					this.sslConfig.setTrustStorePassword(sslConfigSistema.getTrustStore().getPassword());
+					this.sslConfig.setTrustStoreType(sslConfigSistema.getTrustStore().getType());
+				}
+				
+				log.debug("Abilitazione configurazione SSL per comunicazione al mailserver");
+			}
+			
+			this.startTls = mailserver.isStartTls();
+			
 		} catch (ServiceException e) {
 			log.error("Errore durante l'inizializzazione del Promemoria: " + e.getMessage(),e);
 		}
@@ -301,16 +331,14 @@ public class Promemoria {
 				mail.setUsername(this.username);
 				mail.setPassword(this.password);
 			}
-			mail.setStartTls(it.govpay.core.utils.GovpayConfig.getInstance().isMailStartTLS());
-			if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSL()) {
-				SSLConfig sslConfig = new SSLConfig();
-				sslConfig.setSslType(it.govpay.core.utils.GovpayConfig.getInstance().getMailSSLType());
-				mail.setSslConfig(sslConfig );
-			}
+			mail.setSslConfig(this.sslConfig);
+			mail.setStartTls(this.startTls);
 			mail.setFrom(this.from);
 			mail.setTo(promemoria.getDestinatarioTo());
 			if(promemoria.getDestinatarioCc() !=null)
 				mail.setCc(Arrays.asList(promemoria.getDestinatarioCc()));
+			
+			
 
 			log.debug("Invio promemoria avviso di pagamento per la pendenza [IDA2A: "+versamento.getApplicazione(configWrapper).getCodApplicazione()
 					+" , IdPendenza: "+versamento.getCodVersamentoEnte()+ "], al destinatario ["+promemoria.getDestinatarioTo()+"] CC["+(promemoria.getDestinatarioCc() !=null ? promemoria.getDestinatarioCc() : "")+"]");
@@ -454,12 +482,9 @@ public class Promemoria {
 				mail.setPassword(this.password);
 			}
 
-			mail.setStartTls(it.govpay.core.utils.GovpayConfig.getInstance().isMailStartTLS());
-			if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSL()) {
-				SSLConfig sslConfig = new SSLConfig();
-				sslConfig.setSslType(it.govpay.core.utils.GovpayConfig.getInstance().getMailSSLType());
-				mail.setSslConfig(sslConfig );
-			}
+			mail.setSslConfig(this.sslConfig);
+			mail.setStartTls(this.startTls);
+
 			mail.setFrom(this.from);
 			mail.setTo(promemoria.getDestinatarioTo());
 			if(promemoria.getDestinatarioCc() !=null)
@@ -602,12 +627,8 @@ public class Promemoria {
 				mail.setUsername(this.username);
 				mail.setPassword(this.password);
 			}
-			mail.setStartTls(it.govpay.core.utils.GovpayConfig.getInstance().isMailStartTLS());
-			if(it.govpay.core.utils.GovpayConfig.getInstance().isMailServerSSL()) {
-				SSLConfig sslConfig = new SSLConfig();
-				sslConfig.setSslType(it.govpay.core.utils.GovpayConfig.getInstance().getMailSSLType());
-				mail.setSslConfig(sslConfig );
-			}
+			mail.setSslConfig(this.sslConfig);
+			mail.setStartTls(this.startTls);
 			mail.setFrom(this.from);
 			mail.setTo(promemoria.getDestinatarioTo());
 			if(promemoria.getDestinatarioCc() !=null)

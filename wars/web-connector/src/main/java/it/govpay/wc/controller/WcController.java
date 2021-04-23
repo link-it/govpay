@@ -7,6 +7,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.utils.json.ValidationException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
@@ -25,6 +27,14 @@ public class WcController  extends BaseController {
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
+			if(StringUtils.isBlank(idSession)) {
+				throw new ValidationException("Parametro 'idSession' obbligatorio.");
+			}
+			
+			if(StringUtils.isBlank(esito)) {
+				throw new ValidationException("Parametro 'esito' obbligatorio.");
+			}
+			
 			RedirectDaPspDTO redirectDaPspDTO = new RedirectDaPspDTO();
 			redirectDaPspDTO.setEsito(esito);
 			redirectDaPspDTO.setIdSession(idSession);

@@ -17,10 +17,16 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
 @ViewChild('tgIO', { read: MatTabGroup }) tgIO: MatTabGroup;
 
   protected Voce = Voce;
+  protected Util = UtilService;
   protected json: any;
 
   protected _tgFormIsValid: boolean = false;
   protected _tgIOFormIsValid: boolean = false;
+  protected hasTsValue: boolean = false;
+  protected hasKsValue: boolean = false;
+  protected _tsControllers: string[] = ['tsType_ctrl', 'truststoreLocation_ctrl', 'truststorePassword_ctrl', 'truststoreAlgorithm_ctrl'];
+  protected _ksControllers: string[] = ['ksType_ctrl', 'keystoreLocation_ctrl', 'keystorePassword_ctrl', 'keystoreAlgorithm_ctrl'];
+  protected _sslControllers: string[] = ['cryptoType_ctrl'];
 
   protected gdeForm: FormGroup;
   protected serverForm: FormGroup;
@@ -30,8 +36,11 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
   protected parserForm: FormGroup;
   protected protezioneForm: FormGroup;
 
-  protected _serverAbilitato: FormControl = new FormControl({ value: false, updateOn: 'blur' }, Validators.required);
-  protected _appIOBatchAbilitato: FormControl = new FormControl({ value: false, updateOn: 'blur' }, Validators.required);
+  protected _serverAbilitato: FormControl = new FormControl(false);
+  protected _sslConfigAbilitato: FormControl = new FormControl(false);
+  protected _truststoreLocation: FormControl = new FormControl();
+  protected _keystoreLocation: FormControl = new FormControl();
+  protected _appIOBatchAbilitato: FormControl = new FormControl(false);
   protected _protezioneAbilitato: FormControl = new FormControl(false);
 
   constructor(protected us: UtilService, protected gps: GovpayService) {
@@ -76,7 +85,19 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
       serverPassword_ctrl: new FormControl(''),
       serverMittente_ctrl: new FormControl(''),
       serverCTimeout_ctrl: new FormControl('10000'),
-      serverRTimeout_ctrl: new FormControl('120000')
+      serverRTimeout_ctrl: new FormControl('120000'),
+      sslConfig_ctrl: this._sslConfigAbilitato,
+      startTls_ctrl: new FormControl(false),
+      cryptoType_ctrl: new FormControl(''),
+      hostnameVerifier_ctrl: new FormControl(false),
+      tsType_ctrl: new FormControl(''),
+      truststoreLocation_ctrl: this._truststoreLocation,
+      truststorePassword_ctrl: new FormControl(''),
+      truststoreAlgorithm_ctrl: new FormControl(''),
+      ksType_ctrl: new FormControl(''),
+      keystoreLocation_ctrl: this._keystoreLocation,
+      keystorePassword_ctrl: new FormControl(''),
+      keystoreAlgorithm_ctrl: new FormControl('')
     });
     this.avvisaturaAppIOForm = new FormGroup({
       promemoriaAvvisoIOTipo_ctrl: new FormControl('', Validators.required),
@@ -231,6 +252,27 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
         this.serverForm.controls['serverMittente_ctrl'].setValue(this.json.mailBatch.mailserver.from || '');
         this.serverForm.controls['serverCTimeout_ctrl'].setValue(this.json.mailBatch.mailserver.readTimeout || '');
         this.serverForm.controls['serverRTimeout_ctrl'].setValue(this.json.mailBatch.mailserver.connectionTimeout || '');
+        this.serverForm.controls['startTls_ctrl'].setValue(this.json.mailBatch.mailserver.startTls || false);
+        if (this.json.mailBatch.mailserver.sslConfig) {
+          const _sslConfig: any = this.json.mailBatch.mailserver.sslConfig;
+          this.serverForm.controls['sslConfig_ctrl'].setValue(_sslConfig.abilitato || false);
+          this.serverForm.controls['cryptoType_ctrl'].setValue(_sslConfig.type || '');
+          this.serverForm.controls['hostnameVerifier_ctrl'].setValue(_sslConfig.hostnameVerifier || false);
+          if (_sslConfig.truststore) {
+            this.serverForm.controls['tsType_ctrl'].setValue(_sslConfig.truststore.type || '');
+            this.serverForm.controls['truststoreLocation_ctrl'].setValue(_sslConfig.truststore.location || '');
+            this.serverForm.controls['truststorePassword_ctrl'].setValue(_sslConfig.truststore.password || '');
+            this.serverForm.controls['truststoreAlgorithm_ctrl'].setValue(_sslConfig.truststore.managementAlgorithm || '');
+          }
+          if (_sslConfig.keystore) {
+            this.serverForm.controls['ksType_ctrl'].setValue(_sslConfig.keystore.type || '');
+            this.serverForm.controls['keystoreLocation_ctrl'].setValue(_sslConfig.keystore.location || '');
+            this.serverForm.controls['keystorePassword_ctrl'].setValue(_sslConfig.keystore.password || '');
+            this.serverForm.controls['keystoreAlgorithm_ctrl'].setValue(_sslConfig.keystore.managementAlgorithm || '');
+          }
+          this._ksTsValidators('hasTsValue', this._tsControllers);
+          this._ksTsValidators('hasKsValue', this._ksControllers);
+        }
       }
     }
 
@@ -306,6 +348,10 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
     }
   }
 
+  protected _cryptoTypeChangeSelection(event: any) {
+
+  }
+
   /**
    *
    * @param {any} event
@@ -313,7 +359,7 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
    * @param options
    * @private
    */
-  protected _toggleValidators(event: any, fgName: string, options: any = { all: false, ctrls: [] }) {
+  protected _toggleValidators(event: any, fgName: string, options: any = { all: false, ctrls: [], disable: false }) {
     if (options.all) {
       options.ctrls = Object.keys(this[fgName].controls);
     }
@@ -321,6 +367,32 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
       const c: FormControl = this[fgName].controls[ctrl];
       c.setErrors(null);
       (event.checked)?c.setValidators(Validators.required):c.clearValidators();
+      (!event.checked && options.disable)?c.disable():c.enable();
+      c.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+    });
+    if (fgName === 'serverForm') {
+      this._ksTsValidators('hasTsValue', this._tsControllers);
+      this._ksTsValidators('hasKsValue', this._ksControllers);
+    }
+  }
+
+  protected _ksTsValidators(target: string, ctrls: string[] = []) {
+    this[target] = false;
+    const controls: any = this['serverForm'].controls;
+    ctrls.some((ctrl: string) => {
+      const c: FormControl = controls[ctrl];
+      if ((c.value) && this._sslConfigAbilitato.value) {
+        this[target] = true;
+        return this[target];
+      }
+    });
+    ctrls.forEach((ctrl: string) => {
+      const c: FormControl = controls[ctrl];
+      c.setErrors(null);
+      c.clearValidators();
+      if (this[target]) {
+        c.setValidators(Validators.required)
+      }
       c.updateValueAndValidity({ onlySelf: false, emitEvent: true });
     });
   }
@@ -329,22 +401,41 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
     let _bodyPatch: any = {};
     switch(form) {
       case 'serverForm':
-        _bodyPatch = [{
+        _bodyPatch = [];
+        const _obj: any = {
           op: UtilService.PATCH_METHODS.REPLACE,
           path: "/mailBatch",
           value: {
             abilitato: values.serverAbilitato_ctrl,
             mailserver:  {
-              host: values.serverHost_ctrl,
-              port: values.serverPorta_ctrl,
-              username: values.serverUsername_ctrl,
-              password: values.serverPassword_ctrl,
-              from: values.serverMittente_ctrl,
-              readTimeout: values.serverCTimeout_ctrl,
-              connectionTimeout: values.serverRTimeout_ctrl
+              host: values.serverHost_ctrl || '',
+              port: values.serverPorta_ctrl || '',
+              username: values.serverUsername_ctrl || '',
+              password: values.serverPassword_ctrl || '',
+              from: values.serverMittente_ctrl || '',
+              readTimeout: values.serverCTimeout_ctrl || '',
+              connectionTimeout: values.serverRTimeout_ctrl || '',
+              startTls: values.startTls_ctrl
             }
           }
-        }];
+        };
+        _obj.value.mailserver.sslConfig = {};
+        _obj.value.mailserver.sslConfig.abilitato = values.sslConfig_ctrl;
+        _obj.value.mailserver.sslConfig.type = values.cryptoType_ctrl || '';
+        _obj.value.mailserver.sslConfig.hostnameVerifier = values.hostnameVerifier_ctrl;
+        _obj.value.mailserver.sslConfig.truststore = {};
+        _obj.value.mailserver.sslConfig.truststore.type = values.tsType_ctrl || '';
+        _obj.value.mailserver.sslConfig.truststore.location = values.truststoreLocation_ctrl || '';
+        _obj.value.mailserver.sslConfig.truststore.password = values.truststorePassword_ctrl || '';
+        _obj.value.mailserver.sslConfig.truststore.managementAlgorithm = values.truststoreAlgorithm_ctrl || '';
+        if (this.hasKsValue) {
+          _obj.value.mailserver.sslConfig.keystore = {};
+          _obj.value.mailserver.sslConfig.keystore.type = values.ksType_ctrl || '';
+          _obj.value.mailserver.sslConfig.keystore.location = values.keystoreLocation_ctrl || '';
+          _obj.value.mailserver.sslConfig.keystore.password = values.keystorePassword_ctrl || '';
+          _obj.value.mailserver.sslConfig.keystore.managementAlgorithm = values.keystoreAlgorithm_ctrl || '';
+        }
+        _bodyPatch = [_obj];
         break;
       case 'avvisaturaAppIOForm':
         _bodyPatch = [{

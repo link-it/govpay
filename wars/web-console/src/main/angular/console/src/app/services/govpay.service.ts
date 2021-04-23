@@ -198,6 +198,9 @@ export class GovpayService {
     if(UtilService.SPID.ENABLED) {
       methods.push({ service: UtilService.SPID.HTTPS_ROOT_SERVICE, type: UtilService.ACCESS_SPID });
     }
+    if(UtilService.IAM.ENABLED) {
+      methods.push({ service: UtilService.IAM.ROOT_SERVICE, type: UtilService.ACCESS_IAM });
+    }
 
     methods.forEach((_method) => {
       fullMethods.push(this.http.get(_method.service + service, { headers: headers, observe: 'response' }).catch(error => of(error)));
@@ -208,6 +211,7 @@ export class GovpayService {
       .map((responses: any) => {
         UtilService.TOA.Basic = false;
         UtilService.TOA.Spid = false;
+        UtilService.TOA.Iam = false;
         let _result;
         const _validResponse = responses.filter((response, index) => {
           UtilService.TOA[methods[index].type] = (response.status === 200);
