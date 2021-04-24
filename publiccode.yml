@@ -80,7 +80,7 @@ description:
       - Interoperabilità con gestionali
       - Integrabilità con altri front-end
       - Supporto stampa avvisi bilingue
-      - Interoperabilità nativa con l'applicativo SECIM 
+      - Servizi di esportazione pagamenti compatibiliti con MyPIVOT e SECIM 
     shortDescription: >-
       Infrastruttura per l'integrazione di Enti Pubblici, Intermediari o Partner
       Tecnologici alla piattaforma di pagamento pagoPA.
