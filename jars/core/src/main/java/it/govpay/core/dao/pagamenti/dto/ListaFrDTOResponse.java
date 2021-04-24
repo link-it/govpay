@@ -6,7 +6,7 @@ import it.govpay.core.dao.anagrafica.dto.BasicFindResponseDTO;
 
 public class ListaFrDTOResponse extends BasicFindResponseDTO<LeggiFrDTOResponse> {
 
-	public ListaFrDTOResponse(long totalResults, List<LeggiFrDTOResponse> results) {
+	public ListaFrDTOResponse(Long totalResults, List<LeggiFrDTOResponse> results) {
 		super(totalResults, results);
 	}
 

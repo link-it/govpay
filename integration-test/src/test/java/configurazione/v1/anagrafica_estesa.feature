@@ -4,6 +4,7 @@ Background:
 
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 * def idDominio_2 = '12345678902'
+* def ragioneSocialeDominio_2 = 'Ente Creditore Test 2'
 * def ibanAccredito_2 = 'IT04L1234512345123456789012'
 * def ibanAccredito_2Descrizione = 'IBAN Accredito 2'
 * def ibanAccreditoPostale_2 = 'IT04L0760112345123456789012'
@@ -18,12 +19,14 @@ Scenario: configurazione anagrafica base
 #### creazione stazione
 
 #### creazione dominio
-* def dominio = read('classpath:configurazione/v1/msg/dominio.json')
+* def dominio2 = read('classpath:configurazione/v1/msg/dominio.json')
+
+* set dominio2.ragioneSociale = ragioneSocialeDominio_2
 
 Given url backofficeBaseurl
 And path 'domini', idDominio_2 
 And headers basicAutenticationHeader
-And request dominio
+And request dominio2
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 

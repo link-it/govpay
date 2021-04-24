@@ -136,6 +136,7 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().CCP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().COD_DOMINIO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().ID_SESSIONE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getEventoFieldConverter().toColumn(Evento.model().SEVERITA,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_fr","?");
 		sqlQueryObjectInsert.addInsertField("id_incasso","?");
 		sqlQueryObjectInsert.addInsertField("id_tracciato","?");
@@ -162,6 +163,7 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getCcp(),Evento.model().CCP.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getCodDominio(),Evento.model().COD_DOMINIO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getIdSessione(),Evento.model().ID_SESSIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(evento.getSeverita(),Evento.model().SEVERITA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_fr,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_incasso,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tracciato,Long.class)
@@ -297,6 +299,8 @@ public class JDBCEventoServiceImpl extends JDBCEventoServiceSearchImpl
 		lstObjects_evento.add(new JDBCObject(evento.getCodDominio(), Evento.model().COD_DOMINIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().ID_SESSIONE,false), "?");
 		lstObjects_evento.add(new JDBCObject(evento.getIdSessione(), Evento.model().ID_SESSIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getEventoFieldConverter().toColumn(Evento.model().SEVERITA,false), "?");
+		lstObjects_evento.add(new JDBCObject(evento.getSeverita(), Evento.model().SEVERITA.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_fr","?");
 		}

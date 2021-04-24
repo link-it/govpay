@@ -17,7 +17,7 @@ public class LogoutController extends BaseController {
 	}
 
 	public Response logout(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders ) {
-		String methodName = "login";  
+		String methodName = "logout";  
 		String transactionId = this.context.getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{

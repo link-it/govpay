@@ -1,8 +1,10 @@
 {
-   "idDominio":"#notnull",
+   "dominio":"#notnull",
    "idIncasso":"#notnull",
    "causale":"#notnull",
    "importo":"#notnull",
+   "data":"#notnull",
+   "sct":"#notnull",
    "riscossioni":[
       {
          "idDominio":"#notnull",
@@ -10,7 +12,7 @@
          "iur":"#notnull",
          "indice":"#notnull",
          "pendenza":"#notnull",
-         "idVocePendenza":"#notnull",
+         "vocePendenza":"#notnull",
          "rpp":"#notnull",
          "stato":"#notnull",
          "tipo":"#notnull",
@@ -25,7 +27,7 @@
          "iur":"#notnull",
          "indice":"#notnull",
          "pendenza":"#notnull",
-         "idVocePendenza":"#notnull",
+         "vocePendenza":"#notnull",
          "rpp":"#notnull",
          "stato":"#notnull",
          "tipo":"#notnull",

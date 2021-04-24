@@ -29,7 +29,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
-import it.govpay.bd.model.Applicazione;
 
 public class Incasso extends it.govpay.model.Incasso {
 

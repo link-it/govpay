@@ -211,8 +211,30 @@ public class VersamentiIncassiBD  extends BasicBD {
 	public VersamentoIncassoFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new VersamentoIncassoFilter(this.getVersamentoIncassoServiceSearch(),simpleSearch);
 	}
-
+	
 	public long count(VersamentoIncassoFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(VersamentoIncassoFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getVersamentoIncassoServiceSearch());
+			}
+			
+			return this.getVersamentoIncassoServiceSearch().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(VersamentoIncassoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());

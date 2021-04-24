@@ -7,7 +7,7 @@ import it.govpay.core.dao.anagrafica.dto.BasicFindResponseDTO;
 
 public class ListaRendicontazioniDTOResponse extends BasicFindResponseDTO<Rendicontazione> {
 
-	public ListaRendicontazioniDTOResponse(long totalResults, List<Rendicontazione> results) {
+	public ListaRendicontazioniDTOResponse(Long totalResults, List<Rendicontazione> results) {
 		super(totalResults, results);
 	}
 

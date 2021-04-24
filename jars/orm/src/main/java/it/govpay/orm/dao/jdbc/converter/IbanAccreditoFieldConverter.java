@@ -116,6 +116,13 @@ public class IbanAccreditoFieldConverter extends AbstractSQLFieldConverter {
 				return "intestatario";
 			}
 		}
+		if(field.equals(IbanAccredito.model().AUT_STAMPA_POSTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".aut_stampa_poste";
+			}else{
+				return "aut_stampa_poste";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -148,6 +155,9 @@ public class IbanAccreditoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(IbanAccredito.model(), returnAlias);
 		}
 		if(field.equals(IbanAccredito.model().INTESTATARIO)){
+			return this.toTable(IbanAccredito.model(), returnAlias);
+		}
+		if(field.equals(IbanAccredito.model().AUT_STAMPA_POSTE)){
 			return this.toTable(IbanAccredito.model(), returnAlias);
 		}
 

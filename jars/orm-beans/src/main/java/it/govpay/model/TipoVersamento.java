@@ -2,9 +2,6 @@ package it.govpay.model;
 
 import java.math.BigDecimal;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 public class TipoVersamento extends BasicModel {
 	private static final long serialVersionUID = 1L;
 

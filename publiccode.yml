@@ -79,6 +79,8 @@ description:
       - Interoperabilità con contabilità
       - Interoperabilità con gestionali
       - Integrabilità con altri front-end
+      - Supporto stampa avvisi bilingue
+      - Interoperabilità nativa con l'applicativo SECIM 
     shortDescription: >-
       Infrastruttura per l'integrazione di Enti Pubblici, Intermediari o Partner
       Tecnologici alla piattaforma di pagamento pagoPA.
@@ -132,10 +134,10 @@ outputTypes:
   - application/pdf
 platforms:
   - web
-releaseDate: '2021-03-19'
+releaseDate: '2021-04-24'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
-softwareVersion: '3.3.4'
+softwareVersion: '3.4.0'
 url: 'https://github.com/link-it/govpay'
 usedBy:
   - MISE - Ministero dello Sviluppo Economico

@@ -22,8 +22,7 @@ export class FormInput {
                      url: '',
                   mapFct: Function,
                   loaded: true,
-               eventType: null,
-        preventSelection: false //Prevent single option selection
+               eventType: null
   };
 
   dependency: string = null;

@@ -1,14 +1,14 @@
 <div class="container pt-4 card-container">
   <mat-card class="shadow no-border-radius mb-4">
-    <p class="d-block pb-0 color-gray regular-24">Riepilogo informazioni</p>
+    <p class="d-block pb-0 color-gray regular-24">{{ _voce.RIEPILOGO }}</p>
     <link-riepilogo-view class="d-block" [info]="info"></link-riepilogo-view>
   </mat-card>
   <mat-card class="shadow no-border-radius mb-4 pb-0">
-    <p class="d-block matcard-title color-gray regular-24">Riscossioni</p>
+    <p class="d-block matcard-title color-gray regular-24">{{ _voce.PAGAMENTI_RICONCILIATI }}</p>
     <mat-card-content>
-      <p class="d-block matcard-title py-3 regular-16 normal-color" *ngIf="riscossioni.length == 0">Nessuna informazione</p>
+      <p class="d-block matcard-title py-3 regular-16 normal-color" *ngIf="riscossioni.length == 0">{{ _voce.NESSUNA_INFORMAZIONE }}</p>
       <div class="d-block" *ngIf="riscossioni.length != 0">
-        <link-item-view class="d-block link-item-view-fill-mat-card" *ngFor="let item of riscossioni" [component-data]="item"
+        <link-item-view class="d-block pagamenti-riconciliati link-item-view-fill-mat-card" *ngFor="let item of riscossioni" [component-data]="item"
                         [use-item-view-directive]="true" [show-over-icons]="false"></link-item-view>
       </div>
     </mat-card-content>

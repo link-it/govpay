@@ -16,6 +16,7 @@ import { IExport } from '../../classes/interfaces/IExport';
 import { ItemViewComponent } from '../item-view/item-view.component';
 import { TwoCols } from '../../classes/view/two-cols';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { SocketNotification } from '../../classes/socket-notification';
 
 @Component({
   selector: 'link-side-list',
@@ -32,8 +33,10 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   @Output() _isLoadingChange: EventEmitter<boolean> = new EventEmitter();
 
   protected rsc: any;
-
+  protected _isLoadingMeta: boolean = false;
+  protected _indexResults: any[] = [];
   protected _lastResponse: any;
+  protected _lastMetaResponse: any;
   protected _chunks: any[] = [];
 
   constructor(public ls: LinkService, public gps: GovpayService, public us: UtilService) { }
@@ -54,6 +57,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     let _dashboard_link_query = UtilService.DASHBOARD_LINKS_PARAMS.params.map((item) => {
       return item.controller + '=' + item.value;
     }).join('&');
+    this.loadMetadati(_service, _dashboard_link_query);
     this.getList(_service, _dashboard_link_query);
   }
 
@@ -77,23 +81,169 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   getList(service?: string, query?: string, concat?: boolean) {
     service = (service || this.rsc.fullPath); // ROUTING - fullPath
     concat = (concat || false);
+    if (!concat) {
+      UtilService.HasSocketNotification = false;
+    }
+    const _query: string = this.__setupQueryForList(service, query, concat);
     if(!this._isLoading) {
       this._isLoading = true;
-      this.gps.getDataService(service, query).subscribe(
-        (_response) => {
-          this._lastResponse = JSON.parse(JSON.stringify(_response.body));
-          this.listResults = concat?this.listResults.concat(this._mapListResults(_response)):this._mapListResults(_response);
-          this.gps.updateSpinner(false);
-          this._isLoading = false;
-          this._isLoadingChange.emit(this._isLoading);
-        },
-        (error) => {
-          this._isLoading = false;
-          this._isLoadingChange.emit(this._isLoading);
-          this.gps.updateSpinner(false);
-          this.us.onError(error);
-        });
+      this.gps.getDataService(service, _query).subscribe(
+      (_response) => {
+        this._lastResponse = JSON.parse(JSON.stringify(_response.body));
+        if (this._lastResponse && this._lastResponse.risultati) {
+          if (this._lastResponse.risultati.length === 0) {
+            this._lastResponse.prossimiRisultati = '';
+          }
+        }
+        const mlr: any[] = this._mapListResults(_response);
+        const imap: string[] = (concat)?mlr.map((p: any) => p.id)
+          .filter((pid: string) => {
+          return (this._indexResults.indexOf(pid) === -1);
+        }):mlr.map((p: any) => p.id);
+        this._indexResults = (concat)?this._indexResults.concat(imap):imap;
+        this.listResults = (concat)?this.listResults.concat(mlr.filter((o: any) => {
+          return (imap.indexOf(o.id) !== -1);
+        })):mlr;
+        this.gps.updateSpinner(false);
+        this._isLoading = false;
+        this._isLoadingChange.emit(this._isLoading);
+      },
+      (error) => {
+        this._isLoading = false;
+        this._isLoadingChange.emit(this._isLoading);
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
     }
+  }
+
+  /**
+   * Setup query string for list
+   *
+   * @param {string} service
+   * @param {string} query
+   * @param {boolean} concat
+   * @returns {string}
+   * @private
+   */
+  protected __setupQueryForList(service: string, query: string, concat?: boolean): string {
+    if (!concat) {
+      if (service.indexOf('?') === -1) {
+        if (query) {
+          if (query.indexOf(UtilService.QUERY_ESCLUDI_METADATI_PAGINAZIONE) === -1) {
+            query += '&' + UtilService.QUERY_ESCLUDI_METADATI_PAGINAZIONE;
+          }
+        } else {
+          query = UtilService.QUERY_ESCLUDI_METADATI_PAGINAZIONE;
+        }
+      } else {
+        if (service.indexOf(UtilService.QUERY_ESCLUDI_METADATI_PAGINAZIONE) === -1) {
+          if (query) {
+            if (query.indexOf(UtilService.QUERY_ESCLUDI_METADATI_PAGINAZIONE) === -1) {
+              query += '&' + UtilService.QUERY_ESCLUDI_METADATI_PAGINAZIONE;
+            }
+          } else {
+            query = UtilService.QUERY_ESCLUDI_METADATI_PAGINAZIONE;
+          }
+        }
+      }
+    }
+    return query;
+  }
+
+  /**
+   * Setup query string for meta
+   *
+   * @param {string} service
+   * @param {string} query
+   * @returns {string}
+   * @private
+   */
+  protected __setupQueryForMeta(service: string, query: string): string {
+    if (service.indexOf('?') === -1) {
+      if (query) {
+        if (query.indexOf(UtilService.QUERY_METADATI_PAGINAZIONE) === -1) {
+          query += '&' + UtilService.QUERY_METADATI_PAGINAZIONE;
+        }
+        if (query.indexOf(UtilService.QUERY_ESCLUDI_RISULTATI) === -1) {
+          query += '&' + UtilService.QUERY_ESCLUDI_RISULTATI;
+        }
+      } else {
+        query = `${UtilService.QUERY_METADATI_PAGINAZIONE}&${UtilService.QUERY_ESCLUDI_RISULTATI}`;
+      }
+    } else {
+      if (service.indexOf(UtilService.QUERY_METADATI_PAGINAZIONE) === -1) {
+        if (query) {
+          if (query.indexOf(UtilService.QUERY_METADATI_PAGINAZIONE) === -1) {
+            query += '&' + UtilService.QUERY_METADATI_PAGINAZIONE;
+          }
+        } else {
+          query = UtilService.QUERY_ESCLUDI_METADATI_PAGINAZIONE;
+        }
+      }
+      if (service.indexOf(UtilService.QUERY_ESCLUDI_RISULTATI) === -1) {
+        if (query) {
+          if (query.indexOf(UtilService.QUERY_ESCLUDI_RISULTATI) === -1) {
+            query += '&' + UtilService.QUERY_ESCLUDI_RISULTATI;
+          }
+        } else {
+          query = UtilService.QUERY_ESCLUDI_RISULTATI;
+        }
+      }
+    }
+    return query;
+  }
+
+  /**
+   * Caricamento metadati
+   * @param {string} service
+   * @param {string} query
+   * @private
+   */
+  loadMetadati(service: string = '', query: string = '') {
+    service = (service || this.rsc.fullPath); // ROUTING - fullPath
+    this.__waitForMeta();
+    let _query: string = this.__setupQueryForMeta(service, query);
+    if(!this._isLoadingMeta) {
+      this._isLoadingMeta = true;
+      this.gps.getDataServiceBkg(service, _query).subscribe(
+      (_response) => {
+        this._lastMetaResponse = _response.body;
+        this._isLoadingMeta = false;
+        this.__waitForMeta(true);
+      },
+      (error) => {
+        this._isLoadingMeta = false;
+        this.us.onError(error);
+      });
+    }
+  }
+
+  /**
+   * Enable action menu when meta data is loaded
+   * @param {boolean} enableActions
+   * @private
+   */
+  __waitForMeta(enableActions: boolean = false) {
+    setTimeout(() => {
+      if (this.rsc.data.actions === true) {
+        this.rsc.data.actions = 0;
+      }
+      if (enableActions) {
+        if (this.rsc.data.actions === 0) {
+          this.rsc.data.actions = true;
+          UtilService.headBehavior.next(this.rsc);
+        }
+      }
+    });
+  }
+
+  /**
+   * Get last meta data
+   * @returns {any}
+   */
+  getLastMeta(): any {
+    return this._lastMetaResponse;
   }
 
   /**
@@ -200,6 +350,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     let _results = response.body['risultati']?response.body['risultati']:response.body;
     _mappedData = _results.map(function (item) {
       let _mappedElement = new Parameters();
+      _mappedElement.id = this.__mapId(item);
       _mappedElement.model = this.mapNewItem(item);
       _mappedElement.jsonP = item;
       _mappedElement.type = this.classTemplate();
@@ -210,7 +361,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   }
 
   protected _risultati(_lastResponse: any) {
-    let txt: string = `Nessun risultato.`;
+    let txt: string = (!_lastResponse && this._isLoadingMeta)?'Caricamento in corso...':'Nessun risultato.';
     if (_lastResponse) {
       const _value = (_lastResponse.numRisultati || 0);
       txt = (_value !== 1)?`Trovati ${_value} risultati`:`Trovato ${_value} risultato`;
@@ -404,10 +555,12 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   }
 
   protected classTemplate(_service?: string): string {
-    _service = (_service || this.rsc.path);
+    _service = (_service || this.rsc.fullPath); // ROUTING - fullPath
     let _classTemplate = '';
     switch(_service) {
       case UtilService.URL_GIORNALE_EVENTI:
+      case UtilService.URL_TRACCIATI:
+      case UtilService.URL_INCASSI:
         _classTemplate = UtilService.TWO_COLS;
       break;
     }
@@ -415,9 +568,61 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     return _classTemplate;
   }
 
+  protected __mapId(item: any): string {
+    let id: string;
+    switch(this.rsc.fullPath) { // ROUTING - fullPath
+      case UtilService.URL_PENDENZE:
+        id = (item.idPendenza || '');
+        break;
+      case UtilService.URL_PAGAMENTI:
+        id = (item.id || '');
+        break;
+      case UtilService.URL_REGISTRO_INTERMEDIARI:
+        id = (item.idIntermediario || '');
+        break;
+      case UtilService.URL_APPLICAZIONI:
+        id = (item.idA2A || '');
+        break;
+      case UtilService.URL_INCASSI:
+        id = (item.idIncasso || '');
+        break;
+      case UtilService.URL_GIORNALE_EVENTI:
+        id = (item.id || '');
+        break;
+      case UtilService.URL_RISCOSSIONI:
+        id = (item.iur || '');
+        break;
+      case UtilService.URL_RENDICONTAZIONI:
+        id = (item.idFlusso || '');
+        break;
+      case UtilService.URL_OPERATORI:
+        id = (item.principal || '');
+        break;
+      case UtilService.URL_DOMINI:
+        id = (item.idDominio || '');
+        break;
+      case UtilService.URL_RUOLI:
+        id = (item.id || '');
+        break;
+      case UtilService.URL_TRACCIATI:
+        id = (item.id || '');
+        break;
+      case UtilService.URL_TIPI_PENDENZA:
+        id = (item.idTipoPendenza || '');
+        break;
+      // case UtilService.URL_ENTRATE:
+      //   break;
+      // case UtilService.URL_RPPS:
+      //   break;
+      default:
+        id = '';
+    }
+    return id;
+  }
+
   protected mapNewItem(item: any): Standard {
     let _std = new Standard();
-    let _st, _date;
+    let _st, _stdTC, _date;
     switch(this.rsc.fullPath) { // ROUTING - fullPath
       case UtilService.URL_PENDENZE:
         const _iuv = (item.iuvAvviso)?item.iuvAvviso:item.iuvPagamento;
@@ -448,12 +653,16 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _std.sottotitolo = _st;
         break;
       case UtilService.URL_INCASSI:
-        _std.titolo = new Dato({ label: Voce.ID_INCASSO+': ', value: item.idIncasso });
-        _std.sottotitolo = new Dato({ label: Voce.CAUSALE+': ', value: item.causale });
-        _std.importo = this.us.currencyFormat(item.importo);
+        _stdTC = new TwoCols();
+        _stdTC.generalTemplate = true;
+        _stdTC.gtTextUL = `${Voce.SCT}: ${item.sct}`;
+        _stdTC.gtTextBL = `${Voce.CAUSALE}: ${item.causale}`;
+        _stdTC.gtTextUR = this.us.currencyFormat(item.importo);
+        _stdTC.gtTextBR = item.data?moment(item.data).format('DD/MM/YYYY'):'';
+        _std = _stdTC;
         break;
       case UtilService.URL_GIORNALE_EVENTI:
-        const _stdTC: TwoCols = new TwoCols();
+        _stdTC = new TwoCols();
         const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
         const _riferimento = this.us.mapRiferimentoGiornale(item);
         _stdTC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
@@ -515,10 +724,24 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _std.stato = this._mapStato(item).stato;
         break;
       case UtilService.URL_TRACCIATI:
+        _stdTC = new TwoCols();
         let _tmpDC = item.dataOraCaricamento?moment(item.dataOraCaricamento).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE;
-        _std.titolo = new Dato({ label: '',  value: item.nomeFile });
-        _std.sottotitolo = new Dato({ label: Voce.DATA_CARICAMENTO+': ',  value: _tmpDC });
-        _std.stato = UtilService.STATI_TRACCIATO[item.stato];
+        const _pda: string = this.us.pdaTracciato(item);
+        _stdTC.gtTextUL = item.nomeFile;
+        _stdTC.gtTextBL = Voce.DATA_CARICAMENTO+': ' + _tmpDC;
+        _stdTC.gtTextUR = UtilService.STATI_TRACCIATO[item.stato];
+        _stdTC.gtTextBR = _pda;
+        _stdTC.generalTemplate = true;
+        if (_pda !== undefined) {
+          UtilService.HasSocketNotification = true;
+          _stdTC.socketNotification = new SocketNotification({
+            notifier: this._mapNotifierByURL.bind(this),
+            URI: UtilService.URL_TRACCIATI,
+            data: item,
+            timeout: UtilService.PREFERENCES['POLLING_TRACCIATI'] || null
+          });
+        }
+        _std = _stdTC;
         break;
       case UtilService.URL_TIPI_PENDENZA:
         _st = Dato.arraysToDato(
@@ -531,6 +754,53 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         break;
     }
     return _std;
+  }
+
+  /**
+   * Socket notification handler
+   * @param {TwoCols} info
+   * @param {Function} updater
+   * @private
+   */
+  _mapNotifierByURL(info: TwoCols, updater: Function) {
+    if (info && info.socketNotification) {
+      let _url: string = '';
+      switch (info.socketNotification.URI) {
+        case UtilService.URL_TRACCIATI:
+          _url = info.socketNotification.URI+'/'+info.socketNotification.data.id;
+          break;
+        default:
+      }
+      if (_url) {
+        setTimeout(() => {
+          if (info.socketNotification) {
+            this.gps.getDataServiceBkg(_url).subscribe(
+              function (_response) {
+                if (info.socketNotification) {
+                  info.socketNotification.data = _response.body;
+                  const _pda = this.us.pdaTracciato(info.socketNotification.data);
+                  switch (info.socketNotification.URI) {
+                    case UtilService.URL_TRACCIATI:
+                      updater({ property: 'gtTextUR', value: UtilService.STATI_TRACCIATO[info.socketNotification.data.stato] });
+                      updater({ property: 'gtTextBR', value: _pda });
+                      break;
+                    default:
+                  }
+                  if (_pda !== undefined) {
+                    this._mapNotifierByURL(info, updater);
+                  } else {
+                    info.resetSocket();
+                  }
+                }
+              }.bind(this),
+              (error) => {
+                info.resetSocket();
+                this.us.onError(error);
+              });
+          }
+        }, info.socketNotification.timeout);
+      }
+    }
   }
 
   _mapStato(item: any): any {
@@ -563,14 +833,18 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       switch(mb.info.templateName) {
         case UtilService.INTERMEDIARIO:
           _mappedElement = new Parameters();
+          _mappedElement.id = this.__mapId(json);
           _mappedElement.model = this.mapNewItem(json);
           _mappedElement.jsonP = json;
+          _mappedElement.type = this.classTemplate();
           _mappedElement?this.listResults.push(_mappedElement):null;
         break;
         case UtilService.INCASSO:
           _mappedElement = new Parameters();
+          _mappedElement.id = this.__mapId(json);
           _mappedElement.model = this.mapNewItem(json);
           _mappedElement.jsonP = json;
+          _mappedElement.type = this.classTemplate();
           this.listResults.unshift(_mappedElement);
           const _component = this.ls.resolveComponentType(ItemViewComponent);
           _component.instance._componentData = _mappedElement;
@@ -607,8 +881,9 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         break;
     }
     let _preloadedData:any = this.getLastResult();
-    if(_preloadedData['prossimiRisultati']) {
-      let _results: number = _preloadedData['numRisultati'];
+    let _preloadedMeta:any = this.getLastMeta();
+    if(_preloadedData['prossimiRisultati'] && _preloadedMeta['numRisultati']) {
+      let _results: number = _preloadedMeta['numRisultati'];
       const _limit: number = UtilService.PREFERENCES['MAX_EXPORT_LIMIT'];
       const _maxThread: number = UtilService.PREFERENCES['MAX_THREAD_EXPORT_LIMIT'];
       let _pages: number = Math.ceil((_results / _limit));
@@ -635,6 +910,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         return acc;
       }, []);
     }
+    _preloadedData['numPagine'] = Math.ceil(_preloadedMeta['numRisultati']/_preloadedData['risultatiPerPagina']);
     if(_preloadedData['pagina'] == _preloadedData['numPagine']) {
       const cachedCalls: any[] = this.listResults.map((result) => {
         return result.jsonP;

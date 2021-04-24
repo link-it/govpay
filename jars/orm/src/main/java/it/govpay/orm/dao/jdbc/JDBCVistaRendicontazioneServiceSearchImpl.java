@@ -176,6 +176,7 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 			fields.add(VistaRendicontazione.model().FR_ID);
 			fields.add(VistaRendicontazione.model().FR_RAGIONE_SOCIALE_DOMINIO);
 			fields.add(VistaRendicontazione.model().FR_RAGIONE_SOCIALE_PSP);
+			fields.add(VistaRendicontazione.model().FR_OBSOLETO);
 			
 			fields.add(VistaRendicontazione.model().RND_IUV);
 			fields.add(VistaRendicontazione.model().RND_IUR);
@@ -242,6 +243,7 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 			fields.add(VistaRendicontazione.model().VRS_IUV_PAGAMENTO);
 			fields.add(VistaRendicontazione.model().VRS_COD_RATA);
 			fields.add(VistaRendicontazione.model().VRS_TIPO);
+			fields.add(VistaRendicontazione.model().VRS_PROPRIETA);
 			
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 

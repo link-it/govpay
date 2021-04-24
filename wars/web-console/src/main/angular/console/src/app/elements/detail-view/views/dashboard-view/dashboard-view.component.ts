@@ -29,6 +29,7 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
 
   protected _GovPayInfo: any = UtilService.INFORMATION;
   protected _SPIDInfo: any = UtilService.SPID;
+  protected _IAMInfo: any = UtilService.IAM;
   protected _BASICInfo: any = UtilService.BASIC;
 
   protected DASHBOARD: string = UtilService.URL_DASHBOARD;
@@ -145,6 +146,10 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
         UtilService.SaveCookie(UtilService.COOKIE_RIFIUTATI);
         UtilService.DASHBOARD_LINKS_PARAMS.params.push({ controller: 'stato', value: 'FALLITO' });
         UtilService.DASHBOARD_LINKS_PARAMS.params.push({ controller: 'verificato', value: false });
+        const livelloErrore: string = this.us.getQueryParamValue(UtilService.BADGE.QUERY_PARAMETERS.FALLITI, 'severitaDa');
+        if (livelloErrore) {
+          UtilService.DASHBOARD_LINKS_PARAMS.params.push({ controller: 'severitaDa', value: livelloErrore });
+        }
         break;
       case 1:
         //Sospesi
@@ -160,14 +165,22 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   }
 
   initBadges() {
+    const badgeExtraQueryParameters: any = { picQS: '', picExamQS: '', pfQS: '', pfExamQS: '' };
+    if (UtilService.BADGE.QUERY_PARAMETERS) {
+      badgeExtraQueryParameters.picQS = (UtilService.BADGE.QUERY_PARAMETERS.IN_CORSO || '');
+      badgeExtraQueryParameters.picExamQS = (UtilService.BADGE.QUERY_PARAMETERS.IN_CORSO_VERIFICATI || '');
+      badgeExtraQueryParameters.pfQS = (UtilService.BADGE.QUERY_PARAMETERS.FALLITI || '');
+      badgeExtraQueryParameters.pfExamQS = (UtilService.BADGE.QUERY_PARAMETERS.FALLITI_VERIFICATI || '');
+    }
+
     //Sospesi
     this._PICService = '';
     this._PICExamService = '';
     this._PICDiffService = '';
 
     UtilService.BACK_IN_TIME_DATE = moment().subtract(UtilService.BADGE.HOUR, 'h').format('YYYY-MM-DDTHH:mm:ss');
-    this._PICService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=IN_CORSO&verificato=false&dataA='+UtilService.BACK_IN_TIME_DATE;
-    this._PICExamService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=IN_CORSO&verificato=true&dataA='+UtilService.BACK_IN_TIME_DATE;
+    this._PICService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=IN_CORSO&verificato=false&dataA='+UtilService.BACK_IN_TIME_DATE+badgeExtraQueryParameters.picQS;
+    this._PICExamService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=IN_CORSO&verificato=true&dataA='+UtilService.BACK_IN_TIME_DATE+badgeExtraQueryParameters.picExamQS;
 
     this._PICDiffService = this._PICService + '&dataDa=';
     UtilService.COOKIE_SESSION = UtilService.ReadCookie(UtilService.COOKIE_SOSPESI);
@@ -181,8 +194,8 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
     this._PFExamService = '';
     this._PFDiffService = '';
 
-    this._PFService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=FALLITO&verificato=false';
-    this._PFExamService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=FALLITO&verificato=true';
+    this._PFService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=FALLITO&verificato=false'+badgeExtraQueryParameters.pfQS;
+    this._PFExamService = UtilService.URL_PAGAMENTI+'?risultatiPerPagina=1&stato=FALLITO&verificato=true'+badgeExtraQueryParameters.pfExamQS;
 
     this._PFDiffService = this._PFService + '&dataDa=';
     UtilService.COOKIE_SESSION = UtilService.ReadCookie(UtilService.COOKIE_RIFIUTATI);

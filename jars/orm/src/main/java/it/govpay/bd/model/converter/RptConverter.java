@@ -30,8 +30,8 @@ import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.orm.IdPagamentoPortale;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
+import it.govpay.orm.IdPagamentoPortale;
 import it.govpay.orm.IdVersamento;
 
 public class RptConverter {
@@ -96,6 +96,7 @@ public class RptConverter {
 		dto.setIdentificativoAttestante(vo.getIdentificativoAttestante());
 		dto.setDenominazioneAttestante(vo.getDenominazioneAttestante());
 		dto.setBloccante(vo.isBloccante()); 
+		
 		return dto;
 	}
 
@@ -158,6 +159,7 @@ public class RptConverter {
 		vo.setIdentificativoAttestante(dto.getIdentificativoAttestante());
 		vo.setDenominazioneAttestante(dto.getDenominazioneAttestante());
 		vo.setBloccante(dto.isBloccante());
+		
 		return vo;
 	}
 

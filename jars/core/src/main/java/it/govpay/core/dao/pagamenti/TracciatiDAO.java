@@ -126,6 +126,7 @@ public class TracciatiDAO extends BaseDAO{
 			filter.setDettaglioStato(listaTracciatiDTO.getDettaglioStato()); 
 			filter.setCodTipoVersamento(listaTracciatiDTO.getIdTipoPendenza());
 			filter.setFormato(listaTracciatiDTO.getFormatoTracciato());
+			filter.setEseguiCountConLimit(listaTracciatiDTO.isEseguiCountConLimit());
 
 			List<FilterSortWrapper> filterSortList = new ArrayList<>();
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -134,10 +135,14 @@ public class TracciatiDAO extends BaseDAO{
 			filterSortList.add(fsw );
 			filter.setFilterSortList(filterSortList );
 
-			long count = tracciatoBD.count(filter);
+			Long count = null;
+			
+			if(listaTracciatiDTO.isEseguiCount()) {
+				 count = tracciatoBD.count(filter);
+			}
 
 			List<Tracciato> resList = new ArrayList<>();
-			if(count > 0) {
+			if(listaTracciatiDTO.isEseguiFindAll()) {
 				List<Tracciato> resListTmp = new ArrayList<>();
 
 				resListTmp = tracciatoBD.findAll(filter);
@@ -176,6 +181,7 @@ public class TracciatiDAO extends BaseDAO{
 
 			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = new TracciatoPendenza();
 			beanDati.setStepElaborazione(StatoTracciatoType.NUOVO.getValue());
+			beanDati.setStampaAvvisi(postTracciatoDTO.isStampaAvvisi());
 
 			Tracciato tracciato = new Tracciato();
 			tracciato.setCodDominio(postTracciatoDTO.getIdDominio());
@@ -221,11 +227,17 @@ public class TracciatiDAO extends BaseDAO{
 			filter.setLimit(listaOperazioniTracciatoDTO.getLimit());
 			filter.setStato(listaOperazioniTracciatoDTO.getStato());
 			filter.setTipo(listaOperazioniTracciatoDTO.getTipo());
+			filter.setEseguiCountConLimit(listaOperazioniTracciatoDTO.isEseguiCountConLimit());
+			filter.setFilterSortList(listaOperazioniTracciatoDTO.getFieldSortList());
 
-			long count = operazioniBD.count(filter);
+			Long count = null;
+			
+			if(listaOperazioniTracciatoDTO.isEseguiCount()) {
+				 count = operazioniBD.count(filter);
+			}
 
 			List<Operazione> resList = new ArrayList<>();
-			if(count > 0) {
+			if(listaOperazioniTracciatoDTO.isEseguiFindAll()) {
 				List<Operazione> resListTmp = operazioniBD.findAll(filter);
 
 				Tracciati tracciatiBD = new Tracciati();

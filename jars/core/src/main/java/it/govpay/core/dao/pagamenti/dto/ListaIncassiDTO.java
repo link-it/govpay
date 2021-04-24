@@ -31,6 +31,7 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 	
 	public ListaIncassiDTO(Authentication user) {
 		super(user);
+		this.addSortField("data", Incasso.model().DATA_ORA_INCASSO);
 		this.addDefaultSort(Incasso.model().DATA_ORA_INCASSO,SortOrder.DESC);
 	}
 	
@@ -38,6 +39,7 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 	private String idDominio;
 	private Date dataDa;
 	private Date dataA;
+	private String sct;
 
 	 
 	public String getIdDominio() {
@@ -63,5 +65,11 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 	}
 	public void setIdA2A(String idA2A) {
 		this.idA2A = idA2A;
+	}
+	public String getSct() {
+		return sct;
+	}
+	public void setSct(String sct) {
+		this.sct = sct;
 	}
 }

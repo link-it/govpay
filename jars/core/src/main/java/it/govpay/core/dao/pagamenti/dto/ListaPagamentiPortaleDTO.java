@@ -27,6 +27,12 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	private String codApplicazione;
 	private String idSessione;
 	private String idDebitore;
+	private Integer severitaDa;
+	private Integer severitaA;
+	private String idDominio;
+	private String idA2A;
+	private String idPendenza;
+	private String iuv;
 	
 	public String getIdSessione() {
 		return idSessione;
@@ -94,5 +100,40 @@ public class ListaPagamentiPortaleDTO extends BasicFindRequestDTO{
 	public void setIdDebitore(String idDebitore) {
 		this.idDebitore = idDebitore;
 	}
-	
+	public Integer getSeveritaDa() {
+		return severitaDa;
+	}
+	public void setSeveritaDa(Integer severitaDa) {
+		this.severitaDa = severitaDa;
+	}
+	public Integer getSeveritaA() {
+		return severitaA;
+	}
+	public void setSeveritaA(Integer severitaA) {
+		this.severitaA = severitaA;
+	}
+	public String getIdDominio() {
+		return idDominio;
+	}
+	public void setIdDominio(String idDominio) {
+		this.idDominio = idDominio;
+	}
+	public String getIdA2A() {
+		return idA2A;
+	}
+	public void setIdA2A(String idA2A) {
+		this.idA2A = idA2A;
+	}
+	public String getIdPendenza() {
+		return idPendenza;
+	}
+	public void setIdPendenza(String idPendenza) {
+		this.idPendenza = idPendenza;
+	}
+	public String getIuv() {
+		return iuv;
+	}
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
 }

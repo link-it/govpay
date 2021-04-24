@@ -160,8 +160,12 @@ public class NotificheBD extends BasicBD {
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(stato != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Notifica.model().STATO, stato.toString()));
-			if(descrizione != null)
+			if(descrizione != null) {
+				if(descrizione.length() >= 255) {
+					descrizione = descrizione.substring(0, 252) + "...";
+				}
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Notifica.model().DESCRIZIONE_STATO, descrizione));
+			}
 			if(tentativi != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Notifica.model().TENTATIVI_SPEDIZIONE, tentativi));
 			if(prossimaSpedizione != null) 
@@ -187,8 +191,30 @@ public class NotificheBD extends BasicBD {
 	public NotificaFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new NotificaFilter(this.getNotificaService(),simpleSearch);
 	}
-
+	
 	public long count(NotificaFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(NotificaFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getNotificaService());
+			}
+			
+			return this.getNotificaService().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(NotificaFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());

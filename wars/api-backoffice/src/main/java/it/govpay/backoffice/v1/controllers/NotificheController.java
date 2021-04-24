@@ -42,7 +42,7 @@ public class NotificheController extends BaseController {
 
 
 
-    public Response findNotifiche(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String dataDa, String dataA, String stato, String tipo) {
+    public Response findNotifiche(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String dataDa, String dataA, String stato, String tipo, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findNotifiche";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		try{
@@ -58,6 +58,8 @@ public class NotificheController extends BaseController {
 			
 			listaNotificheDTO.setLimit(risultatiPerPagina);
 			listaNotificheDTO.setPagina(pagina);
+			listaNotificheDTO.setEseguiCount(metadatiPaginazione);
+			listaNotificheDTO.setEseguiCountConLimit(maxRisultati);
 			
 			if(stato != null) {
 				StatoNotifica statoNotifica = StatoNotifica.fromValue(stato);

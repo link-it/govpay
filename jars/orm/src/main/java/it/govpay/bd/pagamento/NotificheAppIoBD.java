@@ -92,6 +92,7 @@ public class NotificheAppIoBD extends BasicBD {
 			
 			IPaginatedExpression exp = this.getNotificaAppIOService().newPaginatedExpression();
 			long adesso = new Date().getTime();
+			exp.isNotNull(it.govpay.orm.NotificaAppIO.model().DATA_PROSSIMA_SPEDIZIONE).and();
 			exp.lessEquals(it.govpay.orm.NotificaAppIO.model().DATA_PROSSIMA_SPEDIZIONE, new Date(adesso));
 			exp.equals(it.govpay.orm.NotificaAppIO.model().STATO, NotificaAppIo.StatoSpedizione.DA_SPEDIRE.toString());
 			
@@ -156,8 +157,12 @@ public class NotificheAppIoBD extends BasicBD {
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(stato != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.NotificaAppIO.model().STATO, stato.toString()));
-			if(descrizione != null)
+			if(descrizione != null) {
+				if(descrizione.length() >= 255) {
+					descrizione = descrizione.substring(0, 252) + "...";
+				}
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.NotificaAppIO.model().DESCRIZIONE_STATO, descrizione));
+			}
 			if(tentativi != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.NotificaAppIO.model().TENTATIVI_SPEDIZIONE, tentativi));
 			if(prossimaSpedizione != null) 
@@ -189,8 +194,30 @@ public class NotificheAppIoBD extends BasicBD {
 	public NotificaAppIoFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new NotificaAppIoFilter(this.getNotificaAppIOService(),simpleSearch);
 	}
-
+	
 	public long count(NotificaAppIoFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(NotificaAppIoFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getNotificaAppIOService());
+			}
+			
+			return this.getNotificaAppIOService().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(NotificaAppIoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());

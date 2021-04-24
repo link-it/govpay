@@ -1,7 +1,7 @@
 {
    "id":"#notnull",
    "nome":"#notnull",
-   "dataRichiestaPagamento":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+   "dataRichiestaPagamento":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
    "idSessionePsp":"##null",
    "importo":"#? isImportoConDueDecimali(_)",
    "stato":"FALLITO",
@@ -110,7 +110,8 @@
          "stato":"NON_ESEGUITA",
          "rpp":"#notnull",
          "pagamenti":"#notnull",
-         "tipo":"#string"
+         "tipo":"#string",
+		 "UUID":"#string"
       } 
    ]
 }

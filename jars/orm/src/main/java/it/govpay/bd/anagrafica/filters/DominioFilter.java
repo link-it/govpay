@@ -95,28 +95,11 @@ public class DominioFilter extends AbstractFilter {
 			}
 			
 			if(this.codDominio != null){
-				IExpression exp = this.newExpression();
-				//1 provo a convertirlo in un long
-				long l = -1l;
-				try{
-					l = Long.parseLong(this.codDominio);
-				}catch (NumberFormatException e){
-					l = -1l;
-				}
-
-				// se e' un numero valido maggiore di zero
-				if(l>0){
-					exp.equals(this.cf, l);
-					exp.or();
-				}
-				
-				// 2. metto in or l'eventuale stringa per il nome dell'dominio
 				if(!this.searchModeEquals)
-					exp.ilike(Dominio.model().COD_DOMINIO, this.codDominio,LikeMode.ANYWHERE);
+					newExpression.ilike(Dominio.model().COD_DOMINIO, this.codDominio,LikeMode.ANYWHERE);
 				else 
-					exp.equals(Dominio.model().COD_DOMINIO, this.codDominio);
+					newExpression.equals(Dominio.model().COD_DOMINIO, this.codDominio);
 				
-				newExpression.and(exp);
 				addAnd = true;
 			}
 			

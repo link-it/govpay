@@ -25,6 +25,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
@@ -45,6 +46,7 @@ import it.govpay.core.dao.pagamenti.exception.DocumentoNonTrovatoException;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -107,6 +109,8 @@ public class AvvisiDAO extends BaseDAO{
 				printAvvisoDTO.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 				printAvvisoDTO.setIuv(versamento.getIuvVersamento());
 				printAvvisoDTO.setVersamento(versamento); 
+				printAvvisoDTO.setSalvaSuDB(false);
+				printAvvisoDTO.setLinguaSecondaria(getAvvisoDTO.getLinguaSecondaria());
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 				response.setApplicazione(versamento.getApplicazione(configWrapper));
 				response.setVersamento(versamento);
@@ -133,18 +137,18 @@ public class AvvisiDAO extends BaseDAO{
 		}  
 	}
 	
-	public GetDocumentoAvvisiDTOResponse getDocumento(GetDocumentoAvvisiDTO getAvvisoDTO) throws ServiceException, DocumentoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException {
+	public GetDocumentoAvvisiDTOResponse getDocumento(GetDocumentoAvvisiDTO getAvvisoDTO) throws ServiceException, DocumentoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException, UnprocessableEntityException {
 		DocumentiBD documentiBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
 			documentiBD = new DocumentiBD(configWrapper);
 			
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(getAvvisoDTO.getCodDominio());
-			//((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(getAvvisoDTO.getIuv());
 
 			Dominio dominio = AnagraficaManager.getDominio(configWrapper, getAvvisoDTO.getCodDominio());
+			Applicazione applicazione = AnagraficaManager.getApplicazione(configWrapper, getAvvisoDTO.getCodApplicazione());
 			
-			Documento documento =  documentiBD.getDocumentoByDominioIdentificativo(dominio.getId(), getAvvisoDTO.getNumeroDocumento());
+			Documento documento =  documentiBD.getDocumentoByApplicazioneDominioIdentificativo(applicazione.getId(), dominio.getId(), getAvvisoDTO.getNumeroDocumento());
 
 			GetDocumentoAvvisiDTOResponse response = new GetDocumentoAvvisiDTOResponse();
 			String pdfFileName = dominio.getCodDominio() + "_" + documento.getCodDocumento() + ".pdf";
@@ -154,10 +158,13 @@ public class AvvisiDAO extends BaseDAO{
 				it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
 				PrintAvvisoDocumentoDTO printAvvisoDTO = new PrintAvvisoDocumentoDTO();
 				printAvvisoDTO.setDocumento(documento);
+				printAvvisoDTO.setSalvaSuDB(false);
+				printAvvisoDTO.setLinguaSecondaria(getAvvisoDTO.getLinguaSecondaria()); 
+				printAvvisoDTO.setNumeriAvviso(getAvvisoDTO.getNumeriAvviso());
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printAvvisoDTO);
 				response.setDocumento(documento);
 				response.setDominio(dominio);
-				response.setApplicazione(documento.getApplicazione(configWrapper));
+				response.setApplicazione(applicazione);
 				response.setDocumentoPdf(printAvvisoDTOResponse.getAvviso().getPdf());
 				break;
 			case JSON:

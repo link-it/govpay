@@ -22,6 +22,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.converter.StampaConverter;
 import it.govpay.bd.pagamento.filters.StampaFilter;
 import it.govpay.model.Stampa;
+import it.govpay.orm.IdDocumento;
 import it.govpay.orm.IdStampa;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.dao.jdbc.JDBCStampaServiceSearch;
@@ -242,6 +243,28 @@ public class StampeBD extends BasicBD{
 			IdVersamento idVersamentoObj = new IdVersamento();
 			idVersamentoObj.setId(idVersamento);
 			idStampa.setIdVersamento(idVersamentoObj);
+			
+			this.getStampaService().deleteById(idStampa);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public void cancellaAvvisoDocumento(long idDocumento) throws ServiceException, NotFoundException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IdStampa idStampa = new IdStampa();
+			idStampa.setTipo(Stampa.TIPO.AVVISO.toString());
+			IdDocumento idDocumentoObj = new IdDocumento();
+			idDocumentoObj.setId(idDocumento);
+			idStampa.setIdDocumento(idDocumentoObj);
 			
 			this.getStampaService().deleteById(idStampa);
 		} catch (NotImplementedException e) {

@@ -1,8 +1,38 @@
 {
-   "idDominio":"#(idDominio)",
+   "dominio": {
+	  "idDominio":"#(idDominio)",
+	  "ragioneSociale": "#notnull",
+	  "indirizzo": "#ignore",
+	  "civico": "#ignore",
+	  "cap": "#ignore",
+	  "localita": "#ignore",
+	  "provincia": "#ignore",
+	  "nazione": "#ignore",
+	  "email": "#ignore",
+	  "pec": "#ignore",
+	  "tel": "#ignore",
+	  "fax": "#ignore",
+	  "web": "#ignore",
+	  "gln": "#ignore",
+	  "cbill": "#ignore",
+	  "iuvPrefix": "#ignore",
+	  "stazione": "#ignore",
+	  "auxDigit": "#ignore",
+	  "segregationCode": "#ignore",
+	  "logo": "#ignore",
+	  "abilitato": "#notnull",
+	  "autStampaPosteItaliane": "#ignore",
+	  "area": "#ignore",
+	  "unitaOperative": "#ignore",
+	  "contiAccredito": "#ignore",
+	  "entrate": "#ignore",
+	  "tipiPendenza": "#ignore"
+	},
    "idIncasso":"#notnull",
    "causale":"#(causale)",
    "importo":"#(importo)",
+   "data":"#notnull",
+   "sct":"#notnull",
    "riscossioni":[
       {
          "idDominio":"#(idDominio)",
@@ -16,7 +46,7 @@
             "importo":"#(importo1)",
             "descrizione":"Diritti e segreteria",
             "stato":"Eseguito",
-            "codEntrata":"SEGRETERIA"
+            "pendenza" : "#notnull"
          },
          "rpp":"#notnull",
          "stato":"INCASSATA",
@@ -44,7 +74,7 @@
             "importo":"#(importo2)",
             "descrizione":"Diritti e segreteria",
             "stato":"Eseguito",
-            "codEntrata":"SEGRETERIA"
+            "pendenza" : "#notnull"
          },
          "rpp":"#notnull",
          "stato":"INCASSATA",

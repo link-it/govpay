@@ -185,7 +185,7 @@ public class PendenzeController extends BaseController {
 		}
 	}
 
-	public Response findPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, String dataDa, String dataA, String idTipoPendenza, String direzione, String divisione, String iuv, Boolean mostraSpontaneiNonPagati) {
+	public Response findPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idDebitore, String stato, String idPagamento, String idPendenza, String dataDa, String dataA, String idTipoPendenza, String direzione, String divisione, String iuv, Boolean mostraSpontaneiNonPagati, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findPendenze";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		try{
@@ -201,6 +201,9 @@ public class PendenzeController extends BaseController {
 
 			listaPendenzeDTO.setLimit(risultatiPerPagina);
 			listaPendenzeDTO.setPagina(pagina);
+			
+			listaPendenzeDTO.setEseguiCount(metadatiPaginazione);
+			listaPendenzeDTO.setEseguiCountConLimit(maxRisultati);
 			
 			if(stato != null) {
 				StatoPendenza statoPendenza = StatoPendenza.fromValue(stato);
@@ -414,6 +417,7 @@ public class PendenzeController extends BaseController {
 				pc.setIdUnitaOperativa(createOrUpdate.getUo().getCodUo());
 			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());
 			pc.pdf(createOrUpdate.getPdf());
+			pc.setUUID(createOrUpdate.getVersamento().getIdSessione());
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
@@ -464,6 +468,7 @@ public class PendenzeController extends BaseController {
 				pc.setIdUnitaOperativa(createOrUpdate.getUo().getCodUo());
 			pc.setNumeroAvviso(createOrUpdate.getVersamento().getNumeroAvviso());
 			pc.pdf(createOrUpdate.getPdf());
+			pc.setUUID(createOrUpdate.getVersamento().getIdSessione());
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
@@ -530,6 +535,7 @@ public class PendenzeController extends BaseController {
 			pc.setIdPendenza(createOrUpdate.getVersamento().getCodVersamentoEnte());
 			if(createOrUpdate.getUo()!= null && !it.govpay.model.Dominio.EC.equals(createOrUpdate.getUo().getCodUo()))
 				pc.setIdUnitaOperativa(createOrUpdate.getUo().getCodUo());
+			pc.setUUID(createOrUpdate.getVersamento().getIdSessione());
 			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
@@ -542,7 +548,7 @@ public class PendenzeController extends BaseController {
 	}
 
 
-	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
+	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, Boolean stampaAvvisi) {
 		String methodName = "addTracciatoPendenze";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 
@@ -607,6 +613,10 @@ public class PendenzeController extends BaseController {
 			postTracciatoDTO.setNomeFile(tracciatoPendenzeRequest.getIdTracciato());
 			postTracciatoDTO.setContenuto(baos.toByteArray());
 			postTracciatoDTO.setFormato(FORMATO_TRACCIATO.JSON);
+			
+			if(stampaAvvisi == null)
+				stampaAvvisi = true;
+			postTracciatoDTO.setStampaAvvisi(stampaAvvisi);
 
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 			Operatore operatore = userDetails.getOperatore();
@@ -633,16 +643,16 @@ public class PendenzeController extends BaseController {
 		}
 	}
 	
-	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-		return _addTracciatoPendenze(user, uriInfo, httpHeaders, is, idDominio, null, avvisaturaDigitale, modalitaAvvisaturaDigitale, false);
+	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, Boolean stampaAvvisi, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+		return _addTracciatoPendenze(user, uriInfo, httpHeaders, is, idDominio, null, stampaAvvisi, avvisaturaDigitale, modalitaAvvisaturaDigitale, false);
 	}
 	
-	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
-		return _addTracciatoPendenze(user, uriInfo, httpHeaders, is, idDominio, idTipoPendenza, avvisaturaDigitale, modalitaAvvisaturaDigitale, true);
+	public Response addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza, Boolean stampaAvvisi, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale) {
+		return _addTracciatoPendenze(user, uriInfo, httpHeaders, is, idDominio, idTipoPendenza, stampaAvvisi, avvisaturaDigitale, modalitaAvvisaturaDigitale, true);
 	}
 
 	private Response _addTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idDominio, String idTipoPendenza,
-			Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale, boolean checkTipoPendenza) {
+			Boolean stampaAvvisi, Boolean avvisaturaDigitale, ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale, boolean checkTipoPendenza) {
 		String methodName = "addTracciatoPendenze";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 
@@ -724,6 +734,9 @@ public class PendenzeController extends BaseController {
 					postTracciatoDTO.setNomeFile(idDominio);
 			postTracciatoDTO.setContenuto(baos.size() > 0 ? baos.toByteArray() : null);
 			postTracciatoDTO.setFormato(FORMATO_TRACCIATO.CSV);
+			if(stampaAvvisi == null)
+				stampaAvvisi = true;
+			postTracciatoDTO.setStampaAvvisi(stampaAvvisi);
 
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 			Operatore operatore = userDetails.getOperatore();
@@ -752,7 +765,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response findTracciatiPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, StatoTracciatoPendenza stato) {
+	public Response findTracciatiPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String idDominio, String stato, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findTracciatiPendenze";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		try{
@@ -769,12 +782,23 @@ public class PendenzeController extends BaseController {
 
 			listaTracciatiDTO.setLimit(risultatiPerPagina);
 			listaTracciatiDTO.setPagina(pagina);
-			if(stato != null)
-				listaTracciatiDTO.setStatoTracciatoPendenza(it.govpay.model.StatoTracciatoPendenza.fromValue(stato.name()));
+			if(stato != null) {
+				StatoTracciatoPendenza statoPendenza = StatoTracciatoPendenza.fromValue(stato);
+				if(statoPendenza != null) {
+					listaTracciatiDTO.setStatoTracciatoPendenza(it.govpay.model.StatoTracciatoPendenza.fromValue(stato));
+				} else {
+					throw new ValidationException("Codifica inesistente per statoTracciatoPendenza. Valore fornito [" + stato
+							+ "] valori possibili " + ArrayUtils.toString(StatoTracciatoPendenza.values()));
+				}
+			}
+			
+			
 			List<TIPO_TRACCIATO> tipoTracciato = new ArrayList<>();
 			tipoTracciato.add(TIPO_TRACCIATO.PENDENZA);
 			listaTracciatiDTO.setTipoTracciato(tipoTracciato);
 			listaTracciatiDTO.setIdDominio(idDominio);
+			listaTracciatiDTO.setEseguiCount(metadatiPaginazione);
+			listaTracciatiDTO.setEseguiCountConLimit(maxRisultati);
 
 			// Autorizzazione sui domini
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
@@ -928,7 +952,7 @@ public class PendenzeController extends BaseController {
 
 
 
-	public Response findOperazioniTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id, Integer pagina, Integer risultatiPerPagina) {
+	public Response findOperazioniTracciatoPendenze(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer id, Integer pagina, Integer risultatiPerPagina, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		String methodName = "findOperazioniTracciatoPendenze";
 		try{
@@ -947,6 +971,8 @@ public class PendenzeController extends BaseController {
 			listaOperazioniTracciatoDTO.setLimit(risultatiPerPagina);
 			listaOperazioniTracciatoDTO.setPagina(pagina);
 			listaOperazioniTracciatoDTO.setIdTracciato((long) id);
+			listaOperazioniTracciatoDTO.setEseguiCount(metadatiPaginazione);
+			listaOperazioniTracciatoDTO.setEseguiCountConLimit(maxRisultati);
 
 			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
 			if(idDomini == null) {
@@ -1062,6 +1088,11 @@ public class PendenzeController extends BaseController {
 
 			TracciatiDAO tracciatiDAO = new TracciatiDAO();
 			Tracciato tracciato = tracciatiDAO.leggiTracciato(leggiTracciatoDTO);
+			it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = TracciatiConverter.leggiBeanDati(tracciato.getBeanDati());
+			
+			if(!beanDati.isStampaAvvisi()) {
+				throw new NonTrovataException("La stampa degli avvisi di pagamento non e' stata richiesta per il tracciato");
+			}
 
 			if(tracciato.getStato().equals(STATO_ELABORAZIONE.ELABORAZIONE) || tracciato.getStato().equals(STATO_ELABORAZIONE.IN_STAMPA))
 				throw new NonTrovataException("Stampe avvisi non disponibili per il tracciato: elaborazione ancora in corso");

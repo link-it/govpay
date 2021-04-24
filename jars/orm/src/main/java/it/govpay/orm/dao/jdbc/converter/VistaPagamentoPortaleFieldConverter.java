@@ -270,6 +270,27 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 				return "src_debitore_identificativo";
 			}
 		}
+		if(field.equals(VistaPagamentoPortale.model().SEVERITA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".severita";
+			}else{
+				return "severita";
+			}
+		}
+		if(field.equals(VistaPagamentoPortale.model().COD_VERSAMENTO_ENTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_versamento_ente";
+			}else{
+				return "cod_versamento_ente";
+			}
+		}
+		if(field.equals(VistaPagamentoPortale.model().SRC_IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".src_iuv";
+			}else{
+				return "src_iuv";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -368,6 +389,15 @@ public class VistaPagamentoPortaleFieldConverter extends AbstractSQLFieldConvert
 			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
 		}
 		if(field.equals(VistaPagamentoPortale.model().SRC_DEBITORE_IDENTIFICATIVO)){
+			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
+		}
+		if(field.equals(VistaPagamentoPortale.model().SEVERITA)){
+			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
+		}
+		if(field.equals(VistaPagamentoPortale.model().COD_VERSAMENTO_ENTE)){
+			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
+		}
+		if(field.equals(VistaPagamentoPortale.model().SRC_IUV)){
 			return this.toTable(VistaPagamentoPortale.model(), returnAlias);
 		}
 

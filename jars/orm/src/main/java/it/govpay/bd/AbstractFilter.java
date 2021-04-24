@@ -63,6 +63,8 @@ public abstract class AbstractFilter implements IFilter {
 	
 	protected IField fieldAbilitato = null;
 	protected Boolean searchAbilitato = null;
+	
+	protected boolean eseguiCountConLimit = true;
 
 	public Integer getOffset() {
 		return this.offset;
@@ -269,5 +271,13 @@ public abstract class AbstractFilter implements IFilter {
 
 	public void setExpressionConstructor(IExpressionConstructor expressionConstructor) {
 		this.expressionConstructor = expressionConstructor;
+	}
+
+	public boolean isEseguiCountConLimit() {
+		return eseguiCountConLimit;
+	}
+
+	public void setEseguiCountConLimit(boolean eseguiCountConLimit) {
+		this.eseguiCountConLimit = eseguiCountConLimit;
 	}
 }

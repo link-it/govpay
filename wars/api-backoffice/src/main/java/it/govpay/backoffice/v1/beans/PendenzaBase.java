@@ -28,6 +28,7 @@ import it.govpay.core.beans.JSONSerializable;
 "documento",
 "dataNotificaAvviso",
 "dataPromemoriaScadenza",
+"proprieta",
 })
 public class PendenzaBase extends JSONSerializable {
   
@@ -84,6 +85,9 @@ public class PendenzaBase extends JSONSerializable {
   
   @JsonProperty("dataPromemoriaScadenza")
   private Date dataPromemoriaScadenza = null;
+  
+  @JsonProperty("proprieta")
+  private ProprietaPendenza proprieta = null;
   
   /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
@@ -370,6 +374,21 @@ public class PendenzaBase extends JSONSerializable {
     this.dataPromemoriaScadenza = dataPromemoriaScadenza;
   }
 
+  /**
+   **/
+  public PendenzaBase proprieta(ProprietaPendenza proprieta) {
+    this.proprieta = proprieta;
+    return this;
+  }
+
+  @JsonProperty("proprieta")
+  public ProprietaPendenza getProprieta() {
+    return proprieta;
+  }
+  public void setProprieta(ProprietaPendenza proprieta) {
+    this.proprieta = proprieta;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -396,12 +415,13 @@ public class PendenzaBase extends JSONSerializable {
         Objects.equals(divisione, pendenzaBase.divisione) &&
         Objects.equals(documento, pendenzaBase.documento) &&
         Objects.equals(dataNotificaAvviso, pendenzaBase.dataNotificaAvviso) &&
-        Objects.equals(dataPromemoriaScadenza, pendenzaBase.dataPromemoriaScadenza);
+        Objects.equals(dataPromemoriaScadenza, pendenzaBase.dataPromemoriaScadenza) &&
+        Objects.equals(proprieta, pendenzaBase.proprieta);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta);
   }
 
   public static PendenzaBase parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -436,6 +456,7 @@ public class PendenzaBase extends JSONSerializable {
     sb.append("    documento: ").append(toIndentedString(documento)).append("\n");
     sb.append("    dataNotificaAvviso: ").append(toIndentedString(dataNotificaAvviso)).append("\n");
     sb.append("    dataPromemoriaScadenza: ").append(toIndentedString(dataPromemoriaScadenza)).append("\n");
+    sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
     sb.append("}");
     return sb.toString();
   }

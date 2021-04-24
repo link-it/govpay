@@ -12,13 +12,13 @@
     "changeOrigin": true
   },
   "/govpay/backend/api/backoffice/rs/form/*": {
-    "target": "https://demo.govcloud.it",
+    "target": "https://dev.govcloud.it/",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true
   },
   "/govpay/backend/api/backoffice/rs/spid/*": {
-    "target": "https://demo.govcloud.it",
+    "target": "https://dev.govcloud.it/",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true

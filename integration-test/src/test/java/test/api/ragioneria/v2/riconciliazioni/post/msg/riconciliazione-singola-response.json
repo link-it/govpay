@@ -3,6 +3,7 @@
    "idRiconciliazione":"#notnull",
    "causale":"#(causale)",
    "importo":"#(importo)",
+   "sct":"#notnull",
    "riscossioni":[
       {
          "dominio": {

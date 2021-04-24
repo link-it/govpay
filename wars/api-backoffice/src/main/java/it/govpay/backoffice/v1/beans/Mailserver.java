@@ -20,6 +20,8 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "from",
 "readTimeout",
 "connectionTimeout",
+"sslConfig",
+"startTls",
 })
 public class Mailserver extends JSONSerializable implements IValidable{
   
@@ -43,6 +45,12 @@ public class Mailserver extends JSONSerializable implements IValidable{
   
   @JsonProperty("connectionTimeout")
   private BigDecimal connectionTimeout = null;
+  
+  @JsonProperty("sslConfig")
+  private SslConfig sslConfig = null;
+  
+  @JsonProperty("startTls")
+  private Boolean startTls = false;
   
   /**
    * host del servizio di posta
@@ -156,6 +164,37 @@ public class Mailserver extends JSONSerializable implements IValidable{
     this.connectionTimeout = connectionTimeout;
   }
 
+  /**
+   **/
+  public Mailserver sslConfig(SslConfig sslConfig) {
+    this.sslConfig = sslConfig;
+    return this;
+  }
+
+  @JsonProperty("sslConfig")
+  public SslConfig getSslConfig() {
+    return sslConfig;
+  }
+  public void setSslConfig(SslConfig sslConfig) {
+    this.sslConfig = sslConfig;
+  }
+
+  /**
+   * abilita la crittografia delle informazioni trasmesse mediante il protocollo TLS
+   **/
+  public Mailserver startTls(Boolean startTls) {
+    this.startTls = startTls;
+    return this;
+  }
+
+  @JsonProperty("startTls")
+  public Boolean StartTls() {
+    return startTls;
+  }
+  public void setStartTls(Boolean startTls) {
+    this.startTls = startTls;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -171,15 +210,17 @@ public class Mailserver extends JSONSerializable implements IValidable{
         Objects.equals(password, mailserver.password) &&
         Objects.equals(from, mailserver.from) &&
         Objects.equals(readTimeout, mailserver.readTimeout) &&
-        Objects.equals(connectionTimeout, mailserver.connectionTimeout);
+        Objects.equals(connectionTimeout, mailserver.connectionTimeout) &&
+        Objects.equals(sslConfig, mailserver.sslConfig) &&
+        Objects.equals(startTls, mailserver.startTls);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(host, port, username, password, from, readTimeout, connectionTimeout);
+    return Objects.hash(host, port, username, password, from, readTimeout, connectionTimeout, sslConfig, startTls);
   }
 
-  public static Mailserver parse(String json) throws ServiceException, ValidationException { 
+  public static Mailserver parse(String json) throws ServiceException, ValidationException {
     return (Mailserver) parse(json, Mailserver.class);
   }
 
@@ -200,6 +241,8 @@ public class Mailserver extends JSONSerializable implements IValidable{
     sb.append("    from: ").append(toIndentedString(from)).append("\n");
     sb.append("    readTimeout: ").append(toIndentedString(readTimeout)).append("\n");
     sb.append("    connectionTimeout: ").append(toIndentedString(connectionTimeout)).append("\n");
+    sb.append("    sslConfig: ").append(toIndentedString(sslConfig)).append("\n");
+    sb.append("    startTls: ").append(toIndentedString(startTls)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -220,11 +263,13 @@ public class Mailserver extends JSONSerializable implements IValidable{
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	vf.getValidator("host", this.host).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_NO_WHITE_SPACES);
 	vf.getValidator("port", this.port).notNull().min(BigDecimal.ONE);
-	vf.getValidator("username", this.username).notNull().minLength(1).maxLength(35).pattern(CostantiValidazione.PATTERN_NO_WHITE_SPACES);
-	vf.getValidator("password", this.password).notNull().minLength(1).maxLength(35);
+	vf.getValidator("username", this.username).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_NO_WHITE_SPACES);
+	vf.getValidator("password", this.password).notNull().minLength(1);
 	vf.getValidator("from", this.from).notNull().minLength(1).pattern(CostantiValidazione.PATTERN_EMAIL);
 	vf.getValidator("readTimeout", this.readTimeout).notNull().min(BigDecimal.ZERO);
 	vf.getValidator("connectionTimeout", this.connectionTimeout).notNull().min(BigDecimal.ZERO);
+	vf.getValidator("sslConfig", this.sslConfig).validateFields();
+	vf.getValidator("startTls", this.startTls).notNull();
   }
 }
 

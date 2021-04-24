@@ -27,6 +27,7 @@ import it.govpay.core.beans.JSONSerializable;
 "idPendenza",
 "idPagamento",
 "datiPagoPA",
+"severita",
 "parametriRichiesta",
 "parametriRisposta",
 })
@@ -85,6 +86,9 @@ public class Evento extends JSONSerializable {
   
   @JsonProperty("datiPagoPA")
   private DatiPagoPA datiPagoPA = null;
+  
+  @JsonProperty("severita")
+  private Integer severita = null;
   
   @JsonProperty("parametriRichiesta")
   private Object parametriRichiesta = null;
@@ -373,6 +377,22 @@ public class Evento extends JSONSerializable {
   }
 
   /**
+   * indica il livello di severita nel caso di evento con esito KO/FAIL
+   **/
+  public Evento severita(Integer severita) {
+    this.severita = severita;
+    return this;
+  }
+
+  @JsonProperty("severita")
+  public Integer getSeverita() {
+    return severita;
+  }
+  public void setSeverita(Integer severita) {
+    this.severita = severita;
+  }
+
+  /**
    * Dettaglio del messaggio di richiesta
    **/
   public Evento parametriRichiesta(Object parametriRichiesta) {
@@ -431,13 +451,14 @@ public class Evento extends JSONSerializable {
         Objects.equals(idPendenza, evento.idPendenza) &&
         Objects.equals(idPagamento, evento.idPagamento) &&
         Objects.equals(datiPagoPA, evento.datiPagoPA) &&
+        Objects.equals(severita, evento.severita) &&
         Objects.equals(parametriRichiesta, evento.parametriRichiesta) &&
         Objects.equals(parametriRisposta, evento.parametriRisposta);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, componente, categoriaEvento, ruolo, tipoEvento, esito, dataEvento, durataEvento, sottotipoEvento, sottotipoEsito, dettaglioEsito, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, datiPagoPA, parametriRichiesta, parametriRisposta);
+    return Objects.hash(id, componente, categoriaEvento, ruolo, tipoEvento, esito, dataEvento, durataEvento, sottotipoEvento, sottotipoEsito, dettaglioEsito, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, datiPagoPA, severita, parametriRichiesta, parametriRisposta);
   }
 
   public static Evento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -472,6 +493,7 @@ public class Evento extends JSONSerializable {
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
     sb.append("    idPagamento: ").append(toIndentedString(idPagamento)).append("\n");
     sb.append("    datiPagoPA: ").append(toIndentedString(datiPagoPA)).append("\n");
+    sb.append("    severita: ").append(toIndentedString(severita)).append("\n");
     sb.append("    parametriRichiesta: ").append(toIndentedString(parametriRichiesta)).append("\n");
     sb.append("    parametriRisposta: ").append(toIndentedString(parametriRisposta)).append("\n");
     sb.append("}");

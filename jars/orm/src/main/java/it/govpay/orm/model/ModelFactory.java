@@ -97,8 +97,6 @@ public class ModelFactory {
 	
 	public static FRModel FR = new FRModel();
 	
-	public static RendicontazionePagamentoModel RENDICONTAZIONE_PAGAMENTO = new RendicontazionePagamentoModel();
-	
 	public static VistaRendicontazioneModel VISTA_RENDICONTAZIONE = new VistaRendicontazioneModel();
 	
 	public static VistaRptVersamentoModel VISTA_RPT_VERSAMENTO = new VistaRptVersamentoModel();
@@ -109,6 +107,8 @@ public class ModelFactory {
 	
 	public static TracciatoModel TRACCIATO = new TracciatoModel();
 	
+	public static TracciatoNotificaPagamentiModel TRACCIATO_NOTIFICA_PAGAMENTI = new TracciatoNotificaPagamentiModel();
+	
 	public static StampaModel STAMPA = new StampaModel();
 	
 	public static VersamentoIncassoModel VERSAMENTO_INCASSO = new VersamentoIncassoModel();
@@ -116,6 +116,10 @@ public class ModelFactory {
 	public static VistaRiscossioniModel VISTA_RISCOSSIONI = new VistaRiscossioniModel();
 	
 	public static VistaPagamentoPortaleModel VISTA_PAGAMENTO_PORTALE = new VistaPagamentoPortaleModel();
+	
+	public static VistaPagamentoModel VISTA_PAGAMENTO = new VistaPagamentoModel();
+	
+	public static VistaVersamentoModel VISTA_VERSAMENTO = new VistaVersamentoModel();
 	
 
 }

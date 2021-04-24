@@ -7,7 +7,7 @@ import it.govpay.core.dao.anagrafica.dto.BasicFindResponseDTO;
 
 public class ListaNotificheDTOResponse extends BasicFindResponseDTO<Notifica> {
 
-	public ListaNotificheDTOResponse(long totalResults, List<Notifica> results) {
+	public ListaNotificheDTOResponse(Long totalResults, List<Notifica> results) {
 		super(totalResults, results);
 	}
 

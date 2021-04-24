@@ -168,8 +168,52 @@ public class EventiBD extends BasicBD {
 
 		return this.getEventoService();
 	}
-
+	
 	public long count(EventiFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(EventiFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				if(this.vista == null) {
+					filter.setExpressionConstructor(this.getEventoService());
+				}else {
+					switch (this.vista) {
+					case PAGAMENTI:
+					case RPT:
+						filter.setExpressionConstructor(this.getEventoService());
+						break;
+					case VERSAMENTI:
+						filter.setExpressionConstructor(this.getVistaEventiVersamentoService());
+						break;
+					}
+				}
+			}
+			
+			if(this.vista == null) {
+				return this.getEventoService().count(filter.toExpression()).longValue();
+			}else {
+				switch (this.vista) {
+				case PAGAMENTI:
+				case RPT:
+					return this.getEventoService().count(filter.toExpression()).longValue();
+				case VERSAMENTI:
+					return  this.getVistaEventiVersamentoService().count(filter.toExpression()).longValue();
+				}
+			}
+			return 0l;
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(EventiFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());

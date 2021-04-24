@@ -4,14 +4,6 @@
     return this.location.protocol + '//' + this.location.host;
   }
 
-  function httpRootService() {
-    return '/govpay/backend/api/backoffice/rs/form/v1'; // Root URL servizi pubblici
-  }
-
-  function httpLogOutService() {
-    return '/govpay/backend/api/backoffice/rs/form/v1/logout'; // URL per il servizio di 'logout' pubblico
-  }
-
   function httpDocumentsRoot() {
     return hostname() + '/govpay/backend/api/backoffice/public'; // Root URL informazioni/documenti
   }
@@ -57,23 +49,46 @@
     },
     BADGE_FILTER: {
       HOUR: 1, // Ore, (filtro badge)
-      TIMER: 30000 // Millisecondi, (timer badge)
+      TIMER: 30000, // Millisecondi, (timer badge)
+      QUERY_PARAMETERS: {
+        IN_CORSO: '',
+        IN_CORSO_VERIFICATI: '',
+        FALLITI: '&severitaDa=4',
+        FALLITI_VERIFICATI: '&severitaDa=4'
+      }
     },
     GENERATORI: generatori(),
     MGK: _mkg(),
     EXTERNAL_JS_PROCEDURE_URL: 'Converter.js', //Http URL al file Js per conversioni esterne (caricamento tracciati)
     BASIC: {
       ENABLED: true,
-      HTTP_ROOT_SERVICE: httpRootService(),
-      HTTP_LOGOUT_SERVICE: httpLogOutService()
+      HTTP_ROOT_SERVICE: '/govpay/backend/api/backoffice/rs/form/v1',
+      HTTP_LOGOUT_SERVICE: '/govpay/backend/api/backoffice/rs/form/v1/logout'
     },
     SPID: {
-      ENABLED: true,
+      ENABLED: false,
       HTTPS_ROOT_SERVICE: '/govpay/backend/api/backoffice/rs/spid/v1',
       HTTPS_LOGOUT_SERVICE: 'https://spcoop.it/govpay/frontend/api/pagamento/rs/spid/v1/logout',
       SERVICE_TARGET: 'http://localhost:4200/',
-      TEST_PROVIDER: 'https://idp.spid.gov.it',
-      ACTION_FORM_URL: 'https://lab.link.it/Shibboleth.sso/Login'
+      ACTION_FORM_URL: 'https://lab.link.it/Shibboleth.sso/Login',
+      PROVIDERS: {
+        SPID_TEST: 'https://idp.spid.gov.it',
+        ARUBA: 'https://sp.agenziaentrate.gov.it/rp/aruba/s3',
+        INFOCERT: 'https://sp.agenziaentrate.gov.it/rp/infocert/s3',
+        INTESA: 'https://sp.agenziaentrate.gov.it/rp/intesa/s3',
+        LEPIDA: 'https://sp.agenziaentrate.gov.it/rp/lepida/s3',
+        NAMIRIAL: 'https://sp.agenziaentrate.gov.it/rp/namirial/s3',
+        POSTE: 'https://sp.agenziaentrate.gov.it/rp/poste/s3',
+        REGISTER: 'https://sp.agenziaentrate.gov.it/rp/register/s3',
+        SIELTE: 'https://sp.agenziaentrate.gov.it/rp/sielte/s3',
+        TIM: 'https://sp.agenziaentrate.gov.it/rp/titt/s3'
+      }
+    },
+    IAM: {
+      ENABLED: false,
+      LOGIN_URL: 'https://lab.link.it/Login',
+      ROOT_SERVICE: '/govpay/backend/api/backoffice/rs/form/v1',
+      LOGOUT_SERVICE: '/govpay/backend/api/backoffice/rs/form/v1/logout'
     },
     GESTIONE_PASSWORD: {
       ENABLED: true
@@ -81,7 +96,8 @@
     PREFERENCES: {
       TIMEOUT: false,            // Http timeout NN(millisec)|false
       MAX_EXPORT_LIMIT: 200,     // Max page elements
-      MAX_THREAD_EXPORT_LIMIT: 5 // Max sincro calls
+      MAX_THREAD_EXPORT_LIMIT: 5, // Max sincro calls
+      POLLING_TRACCIATI: 5000    // Timeout per tracciati NN(millisec)|false
     }
   };
 

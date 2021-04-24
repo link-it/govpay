@@ -7,7 +7,7 @@ import it.govpay.bd.model.Evento;
 
 public class ListaEventiDTOResponse  extends BasicFindResponseDTO<Evento> {
 
-	public ListaEventiDTOResponse(long totalResults, List<Evento> results) {
+	public ListaEventiDTOResponse(Long totalResults, List<Evento> results) {
 		super(totalResults, results);
 	}
 

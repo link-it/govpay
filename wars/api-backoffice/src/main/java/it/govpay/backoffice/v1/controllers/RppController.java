@@ -65,7 +65,7 @@ public class RppController extends BaseController {
 		super(nomeServizio,log);
 	}
 
-	public Response findRpps(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento, String idDebitore, String dataRptDa, String dataRptA, String dataRtDa, String dataRtA, List<String> direzione, List<String> divisione, String tassonomia, String idUnita, String idTipoPendenza, String anagraficaDebitore) {
+	public Response findRpps(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String esito, String idPagamento, String idDebitore, String dataRptDa, String dataRptA, String dataRtDa, String dataRtA, List<String> direzione, List<String> divisione, String tassonomia, String idUnita, String idTipoPendenza, String anagraficaDebitore, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findRpps";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -81,6 +81,8 @@ public class RppController extends BaseController {
 			ListaRptDTO listaRptDTO = new ListaRptDTO(user);
 			listaRptDTO.setLimit(risultatiPerPagina);
 			listaRptDTO.setPagina(pagina);
+			listaRptDTO.setEseguiCount(metadatiPaginazione);
+			listaRptDTO.setEseguiCountConLimit(maxRisultati);
 
 			if(esito != null) {
 				EsitoRpt esitoRPT = EsitoRpt.fromValue(esito);

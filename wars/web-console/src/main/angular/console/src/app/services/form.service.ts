@@ -12,7 +12,7 @@ export class FormService {
 
   //FORM_LABEL
   //Pendenze
-  public static FORM_DOMINIO: string = 'Identificativo Dominio';
+  public static FORM_DOMINIO: string = 'Id dominio';
   public static FORM_PH_DOMINIO: string = '';
   public static FORM_A2A: string = 'Identificativo A2A';
   public static FORM_PH_A2A: string = '';
@@ -29,6 +29,7 @@ export class FormService {
   public static FORM_DATA_INIZIO: string = 'Data da';
   public static FORM_DATA_FINE: string = 'Data a';
   public static FORM_VERIFICATO: string = 'Stato verifica';
+  public static FORM_LIVELLO_SEVERITA: string = 'Livello di errore';
 
   //PSP
   // public static FORM_BOLLO: string = 'Bollo';
@@ -36,6 +37,7 @@ export class FormService {
   public static FORM_ABILITATO: string = 'Abilitato';
 
   //Domini
+  public static FORM_RAGIONE_SOCIALE: string = 'Ragione sociale';
   public static FORM_STAZIONE: string = 'Identificativo stazione';
   public static FORM_PH_STAZIONE: string = '';
 
@@ -61,6 +63,7 @@ export class FormService {
   public static FORM_TIPO_RISCOSSIONE: string = 'Tipo';
 
   //Rendicontazioni
+  public static FORM_IDENTIFICATIVO_FLUSSO: string = 'Identificativo flusso';
   public static FORM_DATA_RISC_INIZIO: string = 'Data riscossione';
   public static FORM_DATA_RISC_FINE: string = 'Data riscossione';
   public static FORM_PH_DATA_RISC_INIZIO: string = '(Inzio)';
@@ -77,4 +80,6 @@ export class FormService {
   public static FORM_ID_TIPO_PENDENZA: string = 'Id tipo pendenza';
   public static FORM_TIPO_PENDENZA: string = 'Tipo pendenza';
 
+  //Incassi
+  public static FORM_SCT: string = 'SCT';
 }

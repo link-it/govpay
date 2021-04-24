@@ -25,7 +25,7 @@ import it.govpay.bd.model.Stazione;
 
 public class FindStazioniDTOResponse extends BasicFindResponseDTO<Stazione> {
 
-	public FindStazioniDTOResponse(long totalResults, List<Stazione> stazioni) {
+	public FindStazioniDTOResponse(Long totalResults, List<Stazione> stazioni) {
 		super(totalResults, stazioni);
 	}
 

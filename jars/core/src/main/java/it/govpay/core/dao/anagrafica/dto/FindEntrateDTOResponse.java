@@ -25,7 +25,7 @@ import it.govpay.model.TipoTributo;
 
 public class FindEntrateDTOResponse extends BasicFindResponseDTO<TipoTributo> {
 
-	public FindEntrateDTOResponse(long totalResults, List<TipoTributo> domini) {
+	public FindEntrateDTOResponse(Long totalResults, List<TipoTributo> domini) {
 		super(totalResults, domini);
 	}
 

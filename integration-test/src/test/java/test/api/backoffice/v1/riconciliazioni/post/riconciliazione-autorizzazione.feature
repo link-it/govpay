@@ -33,7 +33,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path '/incassi', idDominio
 And headers idA2ABasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789' }
 When method post
 Then status 403
 And match response == read('msg/errore_auth.json')
@@ -72,7 +72,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path '/incassi', idDominio
 And headers idA2ABasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789' }
 When method post
 Then status 403
 And match response == read('msg/errore_auth.json')
@@ -104,7 +104,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path '/incassi', idDominio
 And headers idA2ABasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)', sct : 'SCT0123456789' }
 When method post
 Then status 403
 And match response == read('msg/errore_auth.json')
@@ -139,7 +139,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path '/incassi', idDominio
 And headers spidHeadersRossi
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)', sct : 'SCT0123456789' }
 When method post
 Then status 403
 And match response == read('msg/errore_auth.json')
@@ -181,7 +181,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path '/incassi', idDominio
 And headers spidHeadersRossi
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)', sct : 'SCT0123456789' }
 When method post
 Then status 403
 And match response == read('msg/errore_auth.json')
@@ -224,7 +224,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 Given url backofficeBaseurl
 And path '/incassi', idDominio
 And headers spidHeadersRossi
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)', sct : 'SCT0123456789' }
 When method post
 Then status 403
 And match response == read('msg/errore_auth.json')

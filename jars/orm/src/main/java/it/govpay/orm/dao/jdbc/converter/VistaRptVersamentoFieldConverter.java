@@ -732,6 +732,13 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 				return "vrs_tipo";
 			}
 		}
+		if(field.equals(VistaRptVersamento.model().VRS_PROPRIETA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".vrs_proprieta";
+			}else{
+				return "vrs_proprieta";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -1028,6 +1035,9 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 			return this.toTable(VistaRptVersamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
 		}
 		if(field.equals(VistaRptVersamento.model().VRS_TIPO)){
+			return this.toTable(VistaRptVersamento.model(), returnAlias);
+		}
+		if(field.equals(VistaRptVersamento.model().VRS_PROPRIETA)){
 			return this.toTable(VistaRptVersamento.model(), returnAlias);
 		}
 

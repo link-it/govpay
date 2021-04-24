@@ -20,10 +20,12 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -33,6 +35,7 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
@@ -43,6 +46,8 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.converter.RptConverter;
 import it.govpay.bd.pagamento.filters.RptFilter;
+import it.govpay.model.Rpt.EsitoPagamento;
+import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.orm.IdRpt;
 import it.govpay.orm.RPT;
 import it.govpay.orm.dao.jdbc.JDBCRPTService;
@@ -113,11 +118,13 @@ public class RptBD extends BasicBD {
 			
 			PagamentiBD pagamentiBD = new PagamentiBD(this);
 			pagamentiBD.setAtomica(false);
-			rpt.setPagamenti(pagamentiBD.getPagamenti(rpt.getId()));
+			rpt.setPagamenti(pagamentiBD.getPagamenti(rpt.getId(), deep));
 			
-			PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(this);
-			pagamentiPortaleBD.setAtomica(false);
-			rpt.setPagamentoPortale(pagamentiPortaleBD.getPagamento(rpt.getIdPagamentoPortale()));
+			if(rpt.getIdPagamentoPortale() != null) {
+				PagamentiPortaleBD pagamentiPortaleBD = new PagamentiPortaleBD(this);
+				pagamentiPortaleBD.setAtomica(false);
+				rpt.setPagamentoPortale(pagamentiPortaleBD.getPagamento(rpt.getIdPagamentoPortale()));
+			}
 		}
 	}
 
@@ -336,8 +343,30 @@ public class RptBD extends BasicBD {
 	public RptFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new RptFilter(this.getRptService(),simpleSearch);
 	}
-
+	
 	public long count(RptFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(RptFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getRptService());
+			}
+			
+			return this.getRptService().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(RptFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -453,4 +482,175 @@ public class RptBD extends BasicBD {
 		}
 	}
 
+	public List<Rpt> ricercaRtDominio(String codDominio, Date dataRtDa, Date dataRtA, List<String> listaTipiPendenza, Integer offset, Integer limit) throws ServiceException{
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getRptService().newExpression();
+			exp.equals(RPT.model().COD_DOMINIO, codDominio).and();
+			if(dataRtDa != null) {
+				exp.greaterEquals(RPT.model().DATA_MSG_RICEVUTA, dataRtDa);
+			}
+			exp.lessEquals(RPT.model().DATA_MSG_RICEVUTA, dataRtA);
+			exp.in(RPT.model().COD_ESITO_PAGAMENTO, EsitoPagamento.PAGAMENTO_ESEGUITO.getCodifica(), EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO.getCodifica());
+			exp.equals(RPT.model().STATO, StatoRpt.RT_ACCETTATA_PA.toString());
+			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
+				listaTipiPendenza.removeAll(Collections.singleton(null));
+				exp.in(RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, listaTipiPendenza);
+			}
+			
+			IPaginatedExpression pagExp = this.getRptService().toPaginatedExpression(exp);
+			pagExp.offset(offset).limit(limit);
+			pagExp.addOrder(RPT.model().DATA_MSG_RICEVUTA, SortOrder.ASC);
+			
+			List<Rpt> rptLst = new ArrayList<>();
+			List<it.govpay.orm.RPT> rptVOLst = this.getRptService().findAll(pagExp);
+			for(it.govpay.orm.RPT rptVO: rptVOLst) {
+				Rpt rpt = RptConverter.toDTO(rptVO);
+				
+				try {
+					popolaRpt(true, rpt);
+				}catch (NotFoundException e) {} // pagamentoportale puo' non esserci
+				
+				rptLst.add(rpt);
+			}
+			
+			return rptLst;
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+		
+	}
+	
+	public long countRtDominio(String codDominio, Date dataRtDa, Date dataRtA, List<String> listaTipiPendenza) throws ServiceException{
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getRptService().newExpression();
+			exp.equals(RPT.model().COD_DOMINIO, codDominio).and();
+			if(dataRtDa != null) {
+				exp.greaterEquals(RPT.model().DATA_MSG_RICEVUTA, dataRtDa);
+			}
+			exp.lessEquals(RPT.model().DATA_MSG_RICEVUTA, dataRtA);
+			exp.in(RPT.model().COD_ESITO_PAGAMENTO, EsitoPagamento.PAGAMENTO_ESEGUITO.getCodifica(), EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO.getCodifica());
+			exp.equals(RPT.model().STATO, StatoRpt.RT_ACCETTATA_PA.toString());
+			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
+				listaTipiPendenza.removeAll(Collections.singleton(null));
+				exp.in(RPT.model().ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, listaTipiPendenza);
+			}
+			
+			NonNegativeNumber count = this.getRptService().count(exp);
+			
+			return count.longValue();
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+		
+	}
+	
+	public long updateIdTracciatoMyPivotRtDominio(String codDominio, Date dataRtDa, Date dataRtA, Long idTracciato, List<String> listaTipiPendenza) throws ServiceException{
+		String nomeColonnaIDTracciatoDaAggiornare = "id_tracciato_mypivot";
+		
+		return _updateIdTracciatoRtDominio(codDominio, dataRtDa, dataRtA, idTracciato, listaTipiPendenza, nomeColonnaIDTracciatoDaAggiornare);
+	}
+	
+	public long updateIdTracciatoSecimRtDominio(String codDominio, Date dataRtDa, Date dataRtA, Long idTracciato, List<String> listaTipiPendenza) throws ServiceException{
+		String nomeColonnaIDTracciatoDaAggiornare = "id_tracciato_secim";
+		
+		return _updateIdTracciatoRtDominio(codDominio, dataRtDa, dataRtA, idTracciato, listaTipiPendenza, nomeColonnaIDTracciatoDaAggiornare);
+	}
+
+	private long _updateIdTracciatoRtDominio(String codDominio, Date dataRtDa, Date dataRtA, Long idTracciato,
+			List<String> listaTipiPendenza, String nomeColonnaIDTracciatoDaAggiornare) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			
+			ISQLQueryObject sqlQueryObjectUpdate = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			
+			RPTFieldConverter converter = new RPTFieldConverter(this.getJdbcProperties().getDatabase());
+			RPTModel model = it.govpay.orm.RPT.model();
+			
+			List<Object> lst = new ArrayList<Object>();
+//			java.util.List<JDBCObject> lstObjects_rpt = new java.util.ArrayList<>();
+			
+			sqlQueryObjectUpdate.addUpdateTable(converter.toTable(model.IUV));
+			sqlQueryObjectUpdate.addUpdateField(nomeColonnaIDTracciatoDaAggiornare, "?");
+			lst.add(idTracciato);
+//			lstObjects_rpt.add(new JDBCObject(idTracciato, Long.class));
+			sqlQueryObjectUpdate.setANDLogicOperator(true);
+			
+			sqlQueryObjectUpdate.addWhereCondition(true,converter.toColumn(model.COD_DOMINIO, true) + " = ? ");
+			lst.add(codDominio);
+			
+			if(dataRtDa != null) {
+				sqlQueryObjectUpdate.addWhereCondition(true,converter.toColumn(model.DATA_MSG_RICEVUTA, true) + " >= ? ");
+				lst.add(dataRtDa);
+			}
+			
+			if(dataRtA != null) {
+				sqlQueryObjectUpdate.addWhereCondition(true,converter.toColumn(model.DATA_MSG_RICEVUTA, true) + " <= ? ");
+				lst.add(dataRtA);
+			}
+			
+			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
+				listaTipiPendenza.removeAll(Collections.singleton(null));
+				String [] lista = listaTipiPendenza.toArray(new String[listaTipiPendenza.size()]);
+				
+				String tableNameRPT = converter.toAliasTable(model);
+				String tableNameVersamenti = converter.toAliasTable(model.ID_VERSAMENTO);
+				String tableNameTipiVersamento = converter.toAliasTable(model.ID_VERSAMENTO.ID_TIPO_VERSAMENTO);
+				
+				sqlQueryObjectUpdate.addFromTable(tableNameVersamenti);
+				sqlQueryObjectUpdate.addWhereCondition(tableNameVersamenti+".id="+tableNameRPT+".id_versamento");
+				sqlQueryObjectUpdate.addFromTable(tableNameTipiVersamento);
+				
+				sqlQueryObjectUpdate.addWhereCondition(tableNameTipiVersamento+".id="+tableNameVersamenti+".id_tipo_versamento");
+				sqlQueryObjectUpdate.addWhereINCondition(converter.toColumn(model.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, true), true, lista);
+			}
+			
+			String [] esitiS = { ""+EsitoPagamento.PAGAMENTO_ESEGUITO.getCodifica(), ""+EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO.getCodifica()};
+			sqlQueryObjectUpdate.addWhereINCondition(converter.toColumn(model.COD_ESITO_PAGAMENTO, true), true, esitiS);
+			
+			sqlQueryObjectUpdate.addWhereCondition(true,converter.toColumn(model.STATO, true) + " = ? ");
+			lst.add(StatoRpt.RT_ACCETTATA_PA.toString());
+			
+			String sql = sqlQueryObjectUpdate.createSQLUpdate();
+			Object[] parameters = lst.toArray(new Object[lst.size()]);
+			int count = ((JDBCRPTService) this.getRptService()).nativeUpdate(sql, parameters);
+			return count;
+		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	
 }

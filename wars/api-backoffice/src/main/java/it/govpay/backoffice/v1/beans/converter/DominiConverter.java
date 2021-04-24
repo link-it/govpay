@@ -51,9 +51,11 @@ import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.commons.Dominio.Uo;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Anagrafica;
+import it.govpay.model.ConnettoreNotificaPagamenti.Tipo;
 
 public class DominiConverter {
 
@@ -110,6 +112,7 @@ public class DominiConverter {
 		iban.setCodIban(idIbanAccredito);
 		iban.setPostale(ibanAccreditoPost.isPostale());
 		iban.setIntestatario(ibanAccreditoPost.getIntestatario());
+		iban.setAutStampaPoste(ibanAccreditoPost.getAutStampaPosteItaliane());
 
 		ibanAccreditoDTO.setIban(iban);
 		ibanAccreditoDTO.setIdDominio(idDominio);
@@ -149,7 +152,7 @@ public class DominiConverter {
 		return uoDTO;		
 	}
 
-	public static PutDominioDTO getPutDominioDTO(DominioPost dominioPost, String idDominio, Authentication user) {
+	public static PutDominioDTO getPutDominioDTO(DominioPost dominioPost, String idDominio, Authentication user) throws NotAuthorizedException, ServiceException {
 		PutDominioDTO dominioDTO = new PutDominioDTO(user);
 
 		it.govpay.bd.model.Dominio dominio = new it.govpay.bd.model.Dominio();
@@ -187,6 +190,15 @@ public class DominiConverter {
 			dominio.setSegregationCode(Integer.parseInt(dominioPost.getSegregationCode()));
 
 		dominio.setAutStampaPoste(dominioPost.getAutStampaPosteItaliane());
+		
+		if(dominioPost.getServizioMyPivot() != null)
+			dominio.setConnettoreMyPivot(ConnettoreNotificaPagamentiMyPivotConverter.getConnettoreDTO(dominioPost.getServizioMyPivot(), user, Tipo.MYPIVOT));
+		
+		if(dominioPost.getServizioSecim() != null)
+			dominio.setConnettoreSecim(ConnettoreNotificaPagamentiSecimConverter.getConnettoreDTO(dominioPost.getServizioSecim(), user, Tipo.SECIM));
+		
+		if(dominioPost.getServizioGovPay() != null)
+			dominio.setConnettoreGovPay(ConnettoreNotificaPagamentiGovPayConverter.getConnettoreDTO(dominioPost.getServizioGovPay(), user, Tipo.GOVPAY));
 
 		dominioDTO.setDominio(dominio);
 		dominioDTO.setIdDominio(idDominio);
@@ -346,6 +358,15 @@ public class DominiConverter {
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(new String(dominio.getLogo(), StandardCharsets.UTF_8));  
 		}
+		
+		if(dominio.getConnettoreMyPivot()!=null)
+			rsModel.setServizioMyPivot(ConnettoreNotificaPagamentiMyPivotConverter.toRsModel(dominio.getConnettoreMyPivot()));
+		
+		if(dominio.getConnettoreSecim()!=null)
+			rsModel.setServizioSecim(ConnettoreNotificaPagamentiSecimConverter.toRsModel(dominio.getConnettoreSecim()));
+		
+		if(dominio.getConnettoreGovPay()!=null)
+			rsModel.setServizioGovPay(ConnettoreNotificaPagamentiGovPayConverter.toRsModel(dominio.getConnettoreGovPay()));
 
 		return rsModel;
 	}
@@ -357,7 +378,8 @@ public class DominiConverter {
 		.iban(iban.getCodIban())
 		.descrizione(iban.getDescrizione())
 		.postale(iban.isPostale())
-		.intestatario(iban.getIntestatario());
+		.intestatario(iban.getIntestatario())
+		.autStampaPosteItaliane(iban.getAutStampaPoste());
 
 		return rsModel;
 	}
@@ -1001,6 +1023,7 @@ public class DominiConverter {
 		tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaScadenzaAbilitatoCustom(false);
 		tipoVersamentoDominio.setAvvisaturaAppIoPromemoriaRicevutaAbilitatoCustom(false);
 		if(tipoPendenzaRequest.getAvvisaturaAppIO() != null) {
+			tipoVersamentoDominio.setAppIOAPIKey(tipoPendenzaRequest.getAvvisaturaAppIO().getApiKey());
 			if(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaAvviso() != null) {
 				if(tipoPendenzaRequest.getAvvisaturaAppIO().getPromemoriaAvviso().Abilitato() != null) {
 					

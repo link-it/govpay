@@ -23,7 +23,7 @@ import java.util.List;
 
 public class FindTipiPendenzaDominioDTOResponse extends BasicFindResponseDTO<GetTipoPendenzaDominioDTOResponse> {
 
-	public FindTipiPendenzaDominioDTOResponse(long totalResults, List<GetTipoPendenzaDominioDTOResponse> tipiVersamento) {
+	public FindTipiPendenzaDominioDTOResponse(Long totalResults, List<GetTipoPendenzaDominioDTOResponse> tipiVersamento) {
 		super(totalResults, tipiVersamento);
 	}
 

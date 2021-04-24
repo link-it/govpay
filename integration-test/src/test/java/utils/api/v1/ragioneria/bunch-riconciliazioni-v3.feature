@@ -42,7 +42,7 @@ Scenario: Riconciliazione singola IUV non ISO
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
 And headers idA2ABasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
 
@@ -65,7 +65,7 @@ Then status 201
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
 And headers idA2A2BasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
 
@@ -97,7 +97,7 @@ Then status 201
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
 And headers idA2A2BasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
 
@@ -129,7 +129,7 @@ Then status 201
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio
 And headers idA2A2BasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
 
@@ -158,7 +158,7 @@ Then assert responseStatus == 200
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio_2
 And headers idA2ABasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
 
@@ -184,7 +184,7 @@ Then assert responseStatus == 200
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio_2
 And headers idA2A2BasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
 
@@ -219,7 +219,7 @@ Then assert responseStatus == 200
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio_2
 And headers idA2A2BasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
 
@@ -254,7 +254,7 @@ Then assert responseStatus == 200
 Given url ragioneriaBaseurl
 And path '/incassi', idDominio_2
 And headers idA2A2BasicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
 

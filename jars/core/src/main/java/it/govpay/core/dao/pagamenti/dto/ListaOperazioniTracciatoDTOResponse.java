@@ -7,7 +7,7 @@ import it.govpay.bd.model.Operazione;
 
 public class ListaOperazioniTracciatoDTOResponse extends BasicFindResponseDTO<Operazione> {
 
-	public ListaOperazioniTracciatoDTOResponse(long totalResults, List<Operazione> results) {
+	public ListaOperazioniTracciatoDTOResponse(Long totalResults, List<Operazione> results) {
 		super(totalResults, results);
 	}
 

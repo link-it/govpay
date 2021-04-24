@@ -221,6 +221,13 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "ragione_sociale_dominio";
 			}
 		}
+		if(field.equals(Rendicontazione.model().ID_FR.OBSOLETO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".obsoleto";
+			}else{
+				return "obsoleto";
+			}
+		}
 		if(field.equals(Rendicontazione.model().ID_PAGAMENTO.ID_PAGAMENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".id_pagamento";
@@ -480,6 +487,9 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
 		}
 		if(field.equals(Rendicontazione.model().ID_FR.RAGIONE_SOCIALE_DOMINIO)){
+			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
+		}
+		if(field.equals(Rendicontazione.model().ID_FR.OBSOLETO)){
 			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
 		}
 		if(field.equals(Rendicontazione.model().ID_PAGAMENTO.ID_PAGAMENTO)){

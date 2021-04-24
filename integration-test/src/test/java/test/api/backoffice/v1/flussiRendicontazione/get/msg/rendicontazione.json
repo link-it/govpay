@@ -12,7 +12,7 @@
 	"iur":"#string",
 	"indice":"#number",
 	"pendenza":"#string",
-	"idVocePendenza":"#string",
+	"vocePendenza":"#notnull",
 	"rpp":"#string",
 	"stato":"#string",
 	"tipo":"#string",

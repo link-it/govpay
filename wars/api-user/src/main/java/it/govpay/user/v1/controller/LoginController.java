@@ -48,6 +48,10 @@ public class LoginController extends BaseController {
 					Authentication authentication = this.context.getAuthentication();
 					session.setAttribute(SessionPrincipalExtractorPreAuthFilter.SESSION_PRINCIPAL_ATTRIBUTE_NAME, authentication != null ? authentication.getName() : null);
 					session.setAttribute(SessionPrincipalExtractorPreAuthFilter.SESSION_PRINCIPAL_OBJECT_ATTRIBUTE_NAME, authentication != null ? authentication.getPrincipal() : null);
+					this.log.debug("Sessione " + session.getId() + " creata [principal:" +(authentication != null ? authentication.getName() : null)+"]"
+							+ " [principalObj:" + (authentication != null ? authentication.getPrincipal() : null) +"]");	
+				} else {
+					this.log.debug("Sessione " + this.request.getSession().getId() + " gia' esistente");	
 				}
 				
 				MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(false);
@@ -56,11 +60,12 @@ public class LoginController extends BaseController {
 				Iterator<Entry<String, List<String>>> iterator = queryParameters.entrySet().iterator();
 				while(iterator.hasNext()) {
 					Entry<String, List<String>> next = iterator.next();
+					this.log.debug("Aggiungo queryParam " + next.getKey() + ": " + next.getValue());
 					target = target.queryParam(next.getKey(), next.getValue().get(0));
 				}
-				
+				redirectURL = target.build().toString();
 				this.log.info("Esecuzione " + methodName + " completata con redirect verso la URL ["+ redirectURL +"].");	
-				return this.handleResponseOk(Response.seeOther(new URI(target.toString())),transactionId).build();
+				return this.handleResponseOk(Response.seeOther(new URI(redirectURL)),transactionId).build();
 			}
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);

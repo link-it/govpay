@@ -49,6 +49,7 @@ public class RendicontazioneConverter {
 			fr.setIdIncasso(vo.getFrIdIncasso().getId());
 		fr.setRagioneSocialeDominio(vo.getFrRagioneSocialeDominio());
 		fr.setRagioneSocialePsp(vo.getFrRagioneSocialePsp());
+		fr.setObsoleto(vo.getFrObsoleto());
 
 		dto.setFr(fr);
 
@@ -197,6 +198,8 @@ public class RendicontazioneConverter {
 		
 		if(vo.getVrsTipo() != null)
 			versamento.setTipo(TipologiaTipoVersamento.toEnum(vo.getVrsTipo()));
+		
+		versamento.setProprieta(vo.getVrsProprieta());
 
 		dto.setVersamento(versamento );
 

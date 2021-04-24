@@ -223,7 +223,7 @@ And headers idA2ABasicAutenticationHeader
 And request pendenzaPut
 When method put
 Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' }
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' , UUID: '#notnull'}
 
 * def responsePut = response
 
@@ -300,14 +300,14 @@ And match response.risultati[0] ==
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#notnull",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 401,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -392,7 +392,7 @@ And headers idA2ABasicAutenticationHeader
 And request pendenzaPut
 When method put
 Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' }
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' , UUID: '#notnull'}
 
 * def responsePut = response
 
@@ -469,14 +469,14 @@ And match response.risultati[0] ==
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#notnull",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 404,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -561,7 +561,7 @@ And headers idA2ABasicAutenticationHeader
 And request pendenzaPut
 When method put
 Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' }
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' , UUID: '#notnull'}
 
 * def responsePut = response
 
@@ -638,14 +638,14 @@ And match response.risultati[0] ==
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#notnull",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -730,7 +730,7 @@ And headers idA2ABasicAutenticationHeader
 And request pendenzaPut
 When method put
 Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' }
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' , UUID: '#notnull'}
 
 * def responsePut = response
 
@@ -807,14 +807,14 @@ And match response.risultati[0] ==
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#notnull",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -865,14 +865,14 @@ And match response.risultati[0] ==
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#notnull",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 201,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -958,7 +958,7 @@ And headers idA2ABasicAutenticationHeader
 And request pendenzaPut
 When method put
 Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' }
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' , UUID: '#notnull'}
 
 * def responsePut = response
 
@@ -1035,14 +1035,14 @@ And match response.risultati[0] ==
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#notnull",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -1093,14 +1093,14 @@ And match response.risultati[0] ==
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#notnull",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 400,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -1185,7 +1185,7 @@ And headers idA2ABasicAutenticationHeader
 And request pendenzaPut
 When method put
 Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' }
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' , UUID: '#notnull'}
 
 * def responsePut = response
 
@@ -1262,14 +1262,14 @@ And match response.risultati[0] ==
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#notnull",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -1320,14 +1320,14 @@ And match response.risultati[0] ==
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#notnull",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 500,
 		"headers": "#array",
 		"payload": "#notnull"
@@ -1413,7 +1413,7 @@ And headers idA2ABasicAutenticationHeader
 And request pendenzaPut
 When method put
 Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' }
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' , UUID: '#notnull'}
 
 * def responsePut = response
 

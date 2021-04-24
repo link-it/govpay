@@ -9,7 +9,7 @@ public class ListaEntratePrevisteDTOResponse extends BasicFindResponseDTO<Entrat
 	
 	private byte[] pdf;
 
-	public ListaEntratePrevisteDTOResponse(long totalResults, List<EntrataPrevista> results) {
+	public ListaEntratePrevisteDTOResponse(Long totalResults, List<EntrataPrevista> results) {
 		super(totalResults, results);
 	}
 

@@ -81,7 +81,7 @@ public class EventiConverter {
 		rsModel.setIdPagamento(evento.getIdSessione());
 		
 		rsModel.setDatiPagoPA(getDatiPagoPA(evento));
-
+		rsModel.setSeverita(evento.getSeverita());
 
 		return rsModel;
 	}
@@ -159,6 +159,8 @@ public class EventiConverter {
 			rsModel.setParametriRisposta(new RawObject(evento.getDettaglioAsString(evento.getDettaglioRisposta())));
 //			rsModel.setParametriRisposta(new RawObject(ConverterUtils.getParametriRispostaEvento(evento.getDettaglioRisposta())));
 		}
+		
+		rsModel.setSeverita(evento.getSeverita());
 
 		return rsModel;
 	}

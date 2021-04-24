@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.3.4</version>
+		<version>3.4.0</version>
 	</parent>
 
 	<artifactId>stampe</artifactId>
@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>net.sourceforge.dynamicreports</groupId>
 			<artifactId>dynamicreports-core</artifactId>
-			<version>4.1.1</version>
+			<version>${dynamicreports-core.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>core</artifactId>
@@ -75,37 +75,31 @@
 		<dependency>
 			<groupId>com.google.zxing</groupId>
 			<artifactId>javase</artifactId>
-			<version>2.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.iban4j</groupId>
-			<artifactId>iban4j</artifactId>
-			<version>3.2.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>xmlgraphics-commons</artifactId>
-			<version>2.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
-			<version>2.4.5</version>
 		</dependency>
 
 		<dependency>
 			<groupId>net.sourceforge.barbecue</groupId>
 			<artifactId>barbecue</artifactId>
-			<version>1.5-beta1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>xalan</groupId>
 			<artifactId>xalan</artifactId>
-			<version>2.7.1</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>jaxen</groupId>
+		    <artifactId>jaxen</artifactId>
 		</dependency>
 		
 		<dependency>
@@ -125,6 +119,7 @@
 				<filtering>true</filtering>
 				<excludes>
 					<exclude>*.jasper</exclude>
+					<exclude>avvisoPagamentoV2/*.jasper</exclude>
 				</excludes>
 			</resource>
 			<resource>
@@ -132,6 +127,7 @@
 				<filtering>false</filtering>
 				<includes>
 					<include>*.jasper</include>
+					<include>avvisoPagamentoV2/*.jasper</include>
 				</includes>
 			</resource>
 		</resources>
@@ -152,6 +148,20 @@
 								<source>src/main/resources/schemi/xsd/govpayStampe.xsd</source>
 							</sources>
 							<packageName>it.govpay.stampe.model</packageName>
+							<clearOutputDir>false</clearOutputDir>
+						</configuration>
+					</execution>
+					<execution>
+						<id>xjc2</id>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+						<configuration>
+							<target>2.1</target>
+							<sources>
+								<source>src/main/resources/schemi/xsd/avvisiPagamento_v2.xsd</source>
+							</sources>
+							<packageName>it.govpay.stampe.model.v2</packageName>
 							<clearOutputDir>false</clearOutputDir>
 						</configuration>
 					</execution>

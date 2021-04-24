@@ -3,6 +3,7 @@
    "idRiconciliazione":"#notnull",
    "causale":"#(causale)",
    "importo":"#(importo)",
+   "sct":"#notnull",
    "riscossioni":[
       {
          "dominio": {
@@ -36,7 +37,8 @@
 				"datiAllegati": "##object",
 				"tassonomiaAvviso":"##string",
 				"direzione":"##string",
-				"divisione":"##string"
+				"divisione":"##string",
+				"UUID":"#string"
 					}
 				},
          "riconciliazione":"##string"

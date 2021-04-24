@@ -109,8 +109,8 @@ public class WebControllerDAO extends BaseDAO{
 				throw new PagamentoPortaleNonTrovatoException("Non esiste un pagamento associato all'ID sessione Psp ["+redirectDaPspDTO.getIdSession()+"]");
 			}
 
-			if(redirectDaPspDTO.getEsito() == null || redirectDaPspDTO.getIdSession() == null)
-				throw new ParametriNonTrovatiException(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() ,"esito","FAIL"), "Parametri 'idSession' ed 'esito' obbligatori");
+//			if(redirectDaPspDTO.getEsito() == null || redirectDaPspDTO.getIdSession() == null)
+//				throw new ParametriNonTrovatiException(UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() ,"esito","FAIL"), "Parametri 'idSession' ed 'esito' obbligatori");
 
 			switch (pagamentoPortale.getCodiceStato()) {
 			case PAGAMENTO_IN_CORSO_AL_PSP:
@@ -125,7 +125,7 @@ public class WebControllerDAO extends BaseDAO{
 			
 			if(urlRitorno != null) {
 				urlRitorno = UrlUtils.addParameter(urlRitorno, "idPagamento", pagamentoPortale.getIdSessione());
-				urlRitorno = UrlUtils.addParameter(pagamentoPortale.getUrlRitorno() , "esito",redirectDaPspDTO.getEsito());
+				urlRitorno = UrlUtils.addParameter(urlRitorno , "esito",redirectDaPspDTO.getEsito());
 				redirectDaPspDTOResponse.setLocation(urlRitorno);
 			} else {
 				throw new GovPayException("Impossibile indirizzare il Portale di Pagamento: non e' stata fornita una URL di ritorno in fase di richiesta. IdCarrello " + pagamentoPortale.getIdSessione(), EsitoOperazione.PAG_013, pagamentoPortale.getIdSessione());

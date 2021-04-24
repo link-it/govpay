@@ -564,6 +564,13 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "stato";
 			}
 		}
+		if(field.equals(Versamento.model().PROPRIETA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".proprieta";
+			}else{
+				return "proprieta";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -789,6 +796,9 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(Versamento.model().ID_OPERAZIONE.STATO)){
 			return this.toTable(Versamento.model().ID_OPERAZIONE, returnAlias);
+		}
+		if(field.equals(Versamento.model().PROPRIETA)){
+			return this.toTable(Versamento.model(), returnAlias);
 		}
 
 

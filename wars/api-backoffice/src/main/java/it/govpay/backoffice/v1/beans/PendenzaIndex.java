@@ -29,6 +29,7 @@ import it.govpay.core.beans.JSONSerializable;
 "documento",
 "dataNotificaAvviso",
 "dataPromemoriaScadenza",
+"proprieta",
 "idA2A",
 "idPendenza",
 "tipoPendenza",
@@ -44,6 +45,7 @@ import it.govpay.core.beans.JSONSerializable;
 "anomalo",
 "verificato",
 "tipo",
+"UUID",
 "rpp",
 "pagamenti",
 })
@@ -103,6 +105,9 @@ public class PendenzaIndex extends JSONSerializable {
   @JsonProperty("dataPromemoriaScadenza")
   private Date dataPromemoriaScadenza = null;
   
+  @JsonProperty("proprieta")
+  private ProprietaPendenza proprieta = null;
+  
   @JsonProperty("idA2A")
   private String idA2A = null;
   
@@ -147,6 +152,9 @@ public class PendenzaIndex extends JSONSerializable {
   
   @JsonProperty("tipo")
   private TipoPendenzaTipologia tipo = null;
+  
+  @JsonProperty("UUID")
+  private String UUID = null;
   
   @JsonProperty("rpp")
   private String rpp = null;
@@ -451,6 +459,21 @@ public class PendenzaIndex extends JSONSerializable {
   }
 
   /**
+   **/
+  public PendenzaIndex proprieta(ProprietaPendenza proprieta) {
+    this.proprieta = proprieta;
+    return this;
+  }
+
+  @JsonProperty("proprieta")
+  public ProprietaPendenza getProprieta() {
+    return proprieta;
+  }
+  public void setProprieta(ProprietaPendenza proprieta) {
+    this.proprieta = proprieta;
+  }
+
+  /**
    * Identificativo del gestionale responsabile della pendenza
    **/
   public PendenzaIndex idA2A(String idA2A) {
@@ -686,6 +709,22 @@ public class PendenzaIndex extends JSONSerializable {
   }
 
   /**
+   * Parametro di randomizzazione delle URL di pagamento statiche
+   **/
+  public PendenzaIndex UUID(String UUID) {
+    this.UUID = UUID;
+    return this;
+  }
+
+  @JsonProperty("UUID")
+  public String getUUID() {
+    return UUID;
+  }
+  public void setUUID(String UUID) {
+    this.UUID = UUID;
+  }
+
+  /**
    * Url per l'elenco delle rpp emesse per la pendenza
    **/
   public PendenzaIndex rpp(String rpp) {
@@ -744,6 +783,7 @@ public class PendenzaIndex extends JSONSerializable {
         Objects.equals(documento, pendenzaIndex.documento) &&
         Objects.equals(dataNotificaAvviso, pendenzaIndex.dataNotificaAvviso) &&
         Objects.equals(dataPromemoriaScadenza, pendenzaIndex.dataPromemoriaScadenza) &&
+        Objects.equals(proprieta, pendenzaIndex.proprieta) &&
         Objects.equals(idA2A, pendenzaIndex.idA2A) &&
         Objects.equals(idPendenza, pendenzaIndex.idPendenza) &&
         Objects.equals(tipoPendenza, pendenzaIndex.tipoPendenza) &&
@@ -759,13 +799,14 @@ public class PendenzaIndex extends JSONSerializable {
         Objects.equals(anomalo, pendenzaIndex.anomalo) &&
         Objects.equals(verificato, pendenzaIndex.verificato) &&
         Objects.equals(tipo, pendenzaIndex.tipo) &&
+        Objects.equals(UUID, pendenzaIndex.UUID) &&
         Objects.equals(rpp, pendenzaIndex.rpp) &&
         Objects.equals(pagamenti, pendenzaIndex.pagamenti);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, tipo, rpp, pagamenti);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, tipo, UUID, rpp, pagamenti);
   }
 
   public static PendenzaIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -800,6 +841,7 @@ public class PendenzaIndex extends JSONSerializable {
     sb.append("    documento: ").append(toIndentedString(documento)).append("\n");
     sb.append("    dataNotificaAvviso: ").append(toIndentedString(dataNotificaAvviso)).append("\n");
     sb.append("    dataPromemoriaScadenza: ").append(toIndentedString(dataPromemoriaScadenza)).append("\n");
+    sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
     sb.append("    tipoPendenza: ").append(toIndentedString(tipoPendenza)).append("\n");
@@ -815,6 +857,7 @@ public class PendenzaIndex extends JSONSerializable {
     sb.append("    anomalo: ").append(toIndentedString(anomalo)).append("\n");
     sb.append("    verificato: ").append(toIndentedString(verificato)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
+    sb.append("    UUID: ").append(toIndentedString(UUID)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("    pagamenti: ").append(toIndentedString(pagamenti)).append("\n");
     sb.append("}");

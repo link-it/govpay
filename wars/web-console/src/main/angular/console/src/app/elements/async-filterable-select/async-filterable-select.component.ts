@@ -43,8 +43,11 @@ export class AsyncFilterableSelectComponent implements OnInit {
 
   ngOnInit() { }
 
-  protected _keyUp(target: any) {
-    this._onAsyncKeyUp.emit({ target: target, trigger: this._trigger, panel: this._panel });
+  protected _keyUp(target: any, event: any) {
+    if ((event.code !== "ArrowLeft" && event.code !== "ArrowDown" && event.code !== "ArrowUp" && event.code !== "ArrowRight") ||
+        (event.keyCode !== 37 && event.keyCode !== 38 && event.keyCode !== 39 && event.keyCode !== 40)) {
+      this._onAsyncKeyUp.emit({ target: target, trigger: this._trigger, panel: this._panel, originalEvent: event });
+    }
   }
 
   protected _codeSelection(event: any, target: any) {
