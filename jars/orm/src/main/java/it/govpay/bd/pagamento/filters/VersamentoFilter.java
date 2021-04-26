@@ -198,7 +198,19 @@ public class VersamentoFilter extends AbstractFilter {
 				calendar.set(Calendar.SECOND, 0);
 				calendar.set(Calendar.MILLISECOND, 0);
 				
-				newExpression.isNotNull(Versamento.model().DATA_SCADENZA).and().greaterEquals(Versamento.model().DATA_SCADENZA, calendar.getTime());
+				IExpression orExpression = this.newExpression();
+
+				// Filtro non scaduti = data scadenza successiva ad ora oppure data scadenza == null
+				IExpression or1Expression = this.newExpression();
+				IExpression or2Expression = this.newExpression();
+				
+				
+				or1Expression.isNotNull(Versamento.model().DATA_SCADENZA).and().greaterEquals(Versamento.model().DATA_SCADENZA, calendar.getTime());
+				or2Expression.isNull(Versamento.model().DATA_SCADENZA);
+				
+				orExpression.or(or1Expression,or2Expression);
+				
+				newExpression.and(orExpression);
 				
 				addAnd = true;
 			}
@@ -523,8 +535,13 @@ public class VersamentoFilter extends AbstractFilter {
 			}
 			
 			if(this.abilitaFiltroNonScaduto) {
-				sqlQueryObject.addWhereIsNotNullCondition(converter.toColumn(model.DATA_SCADENZA, true));
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_SCADENZA, true) + " >= ? ");
+				String or1Expression = converter.toColumn(model.DATA_SCADENZA, true) + " is not null and " + converter.toColumn(model.DATA_SCADENZA, true) + " >= ? ";
+				String or2Expression = converter.toColumn(model.DATA_SCADENZA, true) + " is null ";
+				
+				sqlQueryObject.addWhereCondition(false, or1Expression, or2Expression);
+				
+//				sqlQueryObject.addWhereIsNotNullCondition(converter.toColumn(model.DATA_SCADENZA, true));
+//				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_SCADENZA, true) + " >= ? ");
 			}
 
 			if(this.dataInizio != null && this.dataFine != null) {
