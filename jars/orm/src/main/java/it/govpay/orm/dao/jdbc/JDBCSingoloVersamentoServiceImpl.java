@@ -153,6 +153,7 @@ public class JDBCSingoloVersamentoServiceImpl extends JDBCSingoloVersamentoServi
 		sqlQueryObjectInsert.addInsertField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().DATI_ALLEGATI,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().INDICE_DATI,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().CONTABILITA,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_tributo","?");
 		sqlQueryObjectInsert.addInsertField("id_iban_accredito","?");
@@ -173,6 +174,7 @@ public class JDBCSingoloVersamentoServiceImpl extends JDBCSingoloVersamentoServi
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(singoloVersamento.getDatiAllegati(),SingoloVersamento.model().DATI_ALLEGATI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(singoloVersamento.getIndiceDati(),SingoloVersamento.model().INDICE_DATI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(singoloVersamento.getDescrizioneCausaleRPT(),SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(singoloVersamento.getContabilita(),SingoloVersamento.model().CONTABILITA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tributo,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_ibanAccredito,Long.class),
@@ -323,6 +325,8 @@ public class JDBCSingoloVersamentoServiceImpl extends JDBCSingoloVersamentoServi
 		lstObjects_singoloVersamento.add(new JDBCObject(singoloVersamento.getIndiceDati(), SingoloVersamento.model().INDICE_DATI.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT,false), "?");
 		lstObjects_singoloVersamento.add(new JDBCObject(singoloVersamento.getDescrizioneCausaleRPT(), SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getSingoloVersamentoFieldConverter().toColumn(SingoloVersamento.model().CONTABILITA,false), "?");
+		lstObjects_singoloVersamento.add(new JDBCObject(singoloVersamento.getContabilita(), SingoloVersamento.model().CONTABILITA.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_versamento","?");
 		}
