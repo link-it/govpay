@@ -69,6 +69,8 @@ public class SingoloVersamentoConverter {
 		dto.setDescrizione(vo.getDescrizione());
 		dto.setIndiceDati(vo.getIndiceDati()); 
 		dto.setDescrizioneCausaleRPT(vo.getDescrizioneCausaleRPT());
+		dto.setContabilita(vo.getContabilita());
+		
 		return dto;
 	}
 
@@ -112,6 +114,8 @@ public class SingoloVersamentoConverter {
 		vo.setDescrizione(dto.getDescrizione());
 		vo.setIndiceDati(dto.getIndiceDati());
 		vo.setDescrizioneCausaleRPT(dto.getDescrizioneCausaleRPT());
+		vo.setContabilita(dto.getContabilita());
+		
 		return vo;
 	}
 }

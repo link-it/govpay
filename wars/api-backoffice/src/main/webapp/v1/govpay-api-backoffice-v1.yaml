@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.24.0"
+  version: "1.25.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -6670,6 +6670,10 @@ components:
           description: Testo libero per la causale versamento
           example: Sanzione CdS n. abc00000
           maxLength: 140
+        contabilita:
+          type: array
+          items:
+            $ref: '#/components/schemas/contabilita'
     vocePendenza:
       allOf:
         - $ref: '#/components/schemas/vocePendenzaBase'
@@ -6746,6 +6750,49 @@ components:
           properties:
             pendenza:
               $ref: '#/components/schemas/pendenzaIndex'
+    contabilita:
+      type: object
+      required:
+        - capitolo
+        - annoEsercizio
+        - importo
+      properties:
+        ufficio:
+          type: string
+          description: Codice dell’ufficio
+          maxLength: 64
+        capitolo:
+          type: string
+          description: Codice del capitolo
+          maxLength: 64
+        annoEsercizio:
+          type: number
+          description: Anno di esercizio
+          example: 2020
+        accertamento:
+          type: string
+          description: Codice dell’accertamento
+          maxLength: 64
+        annoAccertamento:
+          type: number
+          description: Anno accertamento
+          example: 2020
+        subAccertemento:
+          type: string
+          description: Codice dell’accertamento se contabilita' di terze parti
+          maxLength: 64
+        siope:
+          type: string
+          description: Codice siope dell'entrata
+          maxLength: 64
+        importo:
+          type: number
+          description: Importo della voce di contabilita'
+          example: 10.01
+        codGestionaleEnte:
+          type: string
+          description: Codice contabilita' utilizzato dal gestionale dell'ente
+          maxLength: 256
     pendenzaCreata:
       type: object
       required:

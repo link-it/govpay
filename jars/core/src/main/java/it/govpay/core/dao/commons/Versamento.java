@@ -419,6 +419,14 @@ public class Versamento {
 			this.descrizioneCausaleRPT = descrizioneCausaleRPT;
 		}
 
+		public String getContabilita() {
+			return contabilita;
+		}
+
+		public void setContabilita(String contabilita) {
+			this.contabilita = contabilita;
+		}
+
 		private BigDecimal importo;
 		private String datiAllegati;
         private String descrizione;
@@ -426,6 +434,7 @@ public class Versamento {
         private String codTributo;
         private Versamento.SingoloVersamento.BolloTelematico bolloTelematico;
         private Versamento.SingoloVersamento.Tributo tributo;
+        private String contabilita;
 
         public static class BolloTelematico {
 
