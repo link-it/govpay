@@ -6777,7 +6777,7 @@ components:
           type: number
           description: Anno accertamento
           example: 2020
-        subAccertemento:
+        subAccertamento:
           type: string
           description: Codice dell’accertamento se contabilita' di terze parti
           maxLength: 64

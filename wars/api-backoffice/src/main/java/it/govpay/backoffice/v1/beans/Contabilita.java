@@ -19,7 +19,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "annoEsercizio",
 "accertamento",
 "annoAccertamento",
-"subAccertemento",
+"subAccertamento",
 "siope",
 "importo",
 "codGestionaleEnte",
@@ -41,8 +41,8 @@ public class Contabilita extends JSONSerializable implements IValidable{
   @JsonProperty("annoAccertamento")
   private BigDecimal annoAccertamento = null;
   
-  @JsonProperty("subAccertemento")
-  private String subAccertemento = null;
+  @JsonProperty("subAccertamento")
+  private String subAccertamento = null;
   
   @JsonProperty("siope")
   private String siope = null;
@@ -136,17 +136,17 @@ public class Contabilita extends JSONSerializable implements IValidable{
   /**
    * Codice dell’accertamento se contabilita' di terze parti
    **/
-  public Contabilita subAccertemento(String subAccertemento) {
-    this.subAccertemento = subAccertemento;
+  public Contabilita subAccertamento(String subAccertamento) {
+    this.subAccertamento = subAccertamento;
     return this;
   }
 
-  @JsonProperty("subAccertemento")
-  public String getSubAccertemento() {
-    return subAccertemento;
+  @JsonProperty("subAccertamento")
+  public String getSubAccertamento() {
+    return subAccertamento;
   }
-  public void setSubAccertemento(String subAccertemento) {
-    this.subAccertemento = subAccertemento;
+  public void setSubAccertamento(String subAccertamento) {
+    this.subAccertamento = subAccertamento;
   }
 
   /**
@@ -211,7 +211,7 @@ public class Contabilita extends JSONSerializable implements IValidable{
         Objects.equals(annoEsercizio, contabilita.annoEsercizio) &&
         Objects.equals(accertamento, contabilita.accertamento) &&
         Objects.equals(annoAccertamento, contabilita.annoAccertamento) &&
-        Objects.equals(subAccertemento, contabilita.subAccertemento) &&
+        Objects.equals(subAccertamento, contabilita.subAccertamento) &&
         Objects.equals(siope, contabilita.siope) &&
         Objects.equals(importo, contabilita.importo) &&
         Objects.equals(codGestionaleEnte, contabilita.codGestionaleEnte);
@@ -219,7 +219,7 @@ public class Contabilita extends JSONSerializable implements IValidable{
 
   @Override
   public int hashCode() {
-    return Objects.hash(ufficio, capitolo, annoEsercizio, accertamento, annoAccertamento, subAccertemento, siope, importo, codGestionaleEnte);
+    return Objects.hash(ufficio, capitolo, annoEsercizio, accertamento, annoAccertamento, subAccertamento, siope, importo, codGestionaleEnte);
   }
 
   public static Contabilita parse(String json) throws ServiceException, ValidationException {
@@ -241,7 +241,7 @@ public class Contabilita extends JSONSerializable implements IValidable{
     sb.append("    annoEsercizio: ").append(toIndentedString(annoEsercizio)).append("\n");
     sb.append("    accertamento: ").append(toIndentedString(accertamento)).append("\n");
     sb.append("    annoAccertamento: ").append(toIndentedString(annoAccertamento)).append("\n");
-    sb.append("    subAccertemento: ").append(toIndentedString(subAccertemento)).append("\n");
+    sb.append("    subAccertamento: ").append(toIndentedString(subAccertamento)).append("\n");
     sb.append("    siope: ").append(toIndentedString(siope)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    codGestionaleEnte: ").append(toIndentedString(codGestionaleEnte)).append("\n");
@@ -272,7 +272,7 @@ public class Contabilita extends JSONSerializable implements IValidable{
 
 		vf.getValidator("accertamento", accertamento).minLength(1).maxLength(64);
 		ValidatoreUtils.validaAnnoRiferimento(vf, "annoAccertamento", annoAccertamento);
-		vf.getValidator("subAccertemento", subAccertemento).minLength(1).maxLength(64);
+		vf.getValidator("subAccertamento", subAccertamento).minLength(1).maxLength(64);
 		vf.getValidator("siope", siope).minLength(1).maxLength(64);
 		ValidatoreUtils.validaImporto(vf, "importo", importo);
 		vf.getValidator("codGestionaleEnte", codGestionaleEnte).minLength(1).maxLength(256);
