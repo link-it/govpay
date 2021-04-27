@@ -881,6 +881,7 @@ CREATE TABLE singoli_versamenti
 	dati_allegati CLOB,
 	indice_dati NUMBER NOT NULL,
 	descrizione_causale_rpt VARCHAR2(140 CHAR),
+	contabilita CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,

@@ -1,5 +1,6 @@
 package it.govpay.backoffice.v1.beans.converter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class IncassiConverter {
 	}
 	
 	
-	public static Incasso toRsModel(it.govpay.bd.model.Incasso i) throws ServiceException {
+	public static Incasso toRsModel(it.govpay.bd.model.Incasso i) throws ServiceException, IOException {
 		Incasso rsModel = new Incasso();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		

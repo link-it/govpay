@@ -1,4 +1,4 @@
-package it.govpay.backoffice.v1.beans.converter;
+package it.govpay.pendenze.v2.beans.converter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -10,12 +10,13 @@ import org.openspcoop2.utils.serialization.SerializationConfig;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import it.govpay.backoffice.v1.beans.Contabilita;
+import it.govpay.pendenze.v2.beans.Contabilita;
+
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class ContabilitaConverter {
-	
+
 	public static List<Contabilita> toRsModel(String contabilitaJson) throws java.io.IOException {
 		if(contabilitaJson == null)
 			return null;
@@ -109,5 +110,4 @@ public class ContabilitaConverter {
 		}
 		return null;
 	}
-	
 }

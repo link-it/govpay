@@ -625,6 +625,7 @@ CREATE TABLE singoli_versamenti
 	dati_allegati VARCHAR(max),
 	indice_dati INT NOT NULL,
 	descrizione_causale_rpt VARCHAR(140),
+	contabilita VARCHAR(max),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_versamento BIGINT NOT NULL,

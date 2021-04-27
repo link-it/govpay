@@ -1,5 +1,6 @@
 package it.govpay.backoffice.v1.beans.converter;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 import javax.xml.bind.JAXBException;
@@ -156,7 +157,7 @@ public class RiscossioniConverter {
 //		return rsModel;
 //	}
 	
-	public static Riscossione toRsModel(Pagamento input) {
+	public static Riscossione toRsModel(Pagamento input) throws IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Riscossione rsModel = new Riscossione();
 		try {

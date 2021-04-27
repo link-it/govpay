@@ -444,7 +444,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 		ValidatoreUtils.validaImporto(vf, "importo", this.importo);
 		ValidatoreUtils.validaDescrizione(vf, "descrizione", this.descrizione);
 		ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.descrizioneCausaleRPT);
-		vf.getValidator("contabilita", this.contabilita);
+		vf.getValidator("contabilita", this.contabilita).validateObjects();
 		
 		if(this.codEntrata != null) {
 			vi.validaIdEntrata("codEntrata", this.codEntrata);
