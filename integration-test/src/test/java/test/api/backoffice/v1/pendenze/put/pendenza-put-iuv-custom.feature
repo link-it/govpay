@@ -60,6 +60,6 @@ Examples:
 | Anno di quattro cifre | '%(Y)' | "[0-9]{3}" + currentYear4 + "[0-9]{11}" |
 | Applicazione | '%(a)' | "[0-9]{3}34[0-9]{13}" | 
 | Applicazione, Anno e Entrata | '%(a)%(y)%(t)' | "[0-9]{3}34"+ currentYear2 +"89[0-9]{9}" |
-
+| Applicazione, Anno e Tipo Pendenza | '%(a)%(y)%(p)' | "[0-9]{3}34"+ currentYear2 +"89[0-9]{9}" |
 
 
