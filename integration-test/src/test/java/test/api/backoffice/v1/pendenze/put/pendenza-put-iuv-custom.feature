@@ -56,6 +56,7 @@ And match response == { idDominio: '#(idDominio)', numeroAvviso: '#? isValidNume
 Examples:
 | scenariodescr | iuvprefix | regex |
 | Pendenza | '%(t)' | "[0-9]{3}89[0-9]{11}" |
+| Pendenza | '%(p)' | "[0-9]{3}89[0-9]{11}" |
 | Anno di due cifre | '%(y)' | "[0-9]{3}" + currentYear2 + "[0-9]{13}" |
 | Anno di quattro cifre | '%(Y)' | "[0-9]{3}" + currentYear4 + "[0-9]{11}" |
 | Applicazione | '%(a)' | "[0-9]{3}34[0-9]{13}" | 
