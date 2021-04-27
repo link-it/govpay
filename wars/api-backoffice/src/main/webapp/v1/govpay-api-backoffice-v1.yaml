@@ -5130,9 +5130,8 @@ components:
                 - %(a) Valore indicato nel campo codificaIuv dell'applicazione
                 - %(t) Valore indicato nel campo codificaIuv del tipo pendenza
                 - %(p) Valore indicato nel campo codificaIuv del tipo pendenza
-                - %(u) Identificativo UO
           example: '%(y)%(a)'
-          pattern: '(\d*(%\([yYa{t|p}u]\))?)+'
+          pattern: '(\d*(%\([yYa{t|p}]\))?)+'
         stazione:
           type: string
           description: Codice stazione PagoPA che intermedia il beneficiario
