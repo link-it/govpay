@@ -3,7 +3,13 @@
 Enti Creditori
 --------------
 
-Ogni Ente Creditore su pagoPA va registrato nell'anagrafica di GovPay.
+L'adesione di un Ente Creditore alla piattaforma deve essere preliminarmente essere eseguita
+sui sistemi pagoPA tramite il Portale delle Adesioni:
+
+ #. Il Referente dei Pagamenti (RP) aggiunge una nuova connessione intermediata all'Ente Creditore individuando il Partner/Intermediario
+ #. Il Referente Tecnico del Partner/Intermediario associa l'Ente Creditore alla stazione, individuando il codice di segregazione.
+  
+Eseguita questa procedura, si può perfezionare la configurazione in GovPay per abilitare l'intermediazione.
 
 Accedendo alla sezione *Configurazioni > Enti Creditori*, viene visualizzato l'elenco degli enti già censiti. Sul lato sinistro è presente il form per filtrare i domini visualizzati in elenco, con i possibili parametri di ricerca, ovvero:
 
@@ -12,8 +18,6 @@ Accedendo alla sezione *Configurazioni > Enti Creditori*, viene visualizzato l'e
 
    Parametri di filtro per la ricerca di un Ente Creditore
 
-
-Ciascun Ente Creditore presente in elenco è identificato tramite denominazione e codice identificativo.
 
 Nuovo Ente Creditore
 ~~~~~~~~~~~~~~~~~~~~
@@ -26,32 +30,39 @@ Utilizzando il pulsante di creazione, presente in basso a destra nella pagina di
 
    Campi del form di inserimento Nuovo Ente Creditore
 
-.. csv-table:: Dettagli di un Nuovo Ente Creditore
-   :header: "Campo", "Significato", "Note"
-   :widths: 40,40,20
+.. csv-table:: Dati Anagrafici
+   :header: "Campo", "Descrizione"
+   :widths: 30,60
 
-   "Id Dominio", "Identificativo del dominio, fornito da AgID, corrisponde alla Partita Iva dell'ente", "Obbligatorio"
-   "Ragione Sociale", "Ragione sociale del dominio", "Obbligatorio"
-   "Area", "Identificativo interno dell'Area", ""
-   "GLN (Global Location Number)", "Identificativo del dominio nella codifica standard GS1. Obbligatorio, fornito da AgIDD", ""
-   "Intermediario", "Intermediario selezionato", "Obbligatorio"
-   "Stazione", "Stazione tecnologica scelta in fase di adesione a pagoPA, deve ovviamente essere stata già censita sul sistema", "Obbligatorio"
-   "Riferimenti anagrafici del Dominio", "Riferimenti anagrafici del dominio forniti dal Referente dei Pagamenti: Indirizzo (Indirizzo completo di toponimo), Numero Civico, CAP, Località, Provincia, Nazione (condice di due lettere, IT per Itaia), eMail, PEC, Sito web, Telefono, Fax", ""
-   "CBILL", "Codice CBILL per i domini che supportano questa modalità di pagamento, attribuito da PagoPA", ""
-   "Prefisso IUV", "Prefisso da inserire negli IUV generati da GovPay per questo dominio. Il prefisso, numerico, può contenere dei placeholder racchiusi tra graffe", ""
-   "Aux", "Valore numerico che definisce la struttura del codice IUV in funzione del numero di punti di generazione dello stesso (cfr. *Specifiche Attuative dei codici identificativi di versamento, riversamento e rendicontazione*)", ""
-   "Codice di segregazione", "Se configurato come dominio pluri-intermediato, imposta il codice numerico di segregazione.", "Fornito da AgID"
+   "Id Dominio", "Identificativo dell'Ente Creditore in pagoPA, corrisponde al Codice Fiscale dell'ente"
+   "Altre informazioni anagrafiche", "Dovrebbero corrispondere a quanto indicato nell'IndicePA"
    "Abilitato", "Indica se il dominio è usabile da GovPay per gestire nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste (disabilitato)", ""
-   "Autorizzazione stampa PT", "Numero di autorizzazione PT per la stampa in proprio del bollettino postale", ""
-   "Sfoglia.. (Logo)", "Elemento per il caricamento del logo dell’ente creditore corrispondente al dominio", ""
 
+.. csv-table:: Parametri adesione pagoPA
+   :header: "Campo", "Descrizione"
+   :widths: 30,60
+   
+   "Intermediario", "Intermediario o Partner di integrazione a pagoPA"
+   "Stazione", "Stazione di intermediazione a pagoPA"
+   "Codice interbancario", "Codice CBILL assegnato da pagoPA"
+   "Aux Digit", "Come individuato in sede di associazione alla stazione sul Portale delle Adesioni"
+   "Codice di segregazione", "Come individuato in sede di associazione alla stazione sul Portale delle Adesioni"
+   
+.. csv-table:: Altre informazioni
+   :header: "Campo", "Descrizione"
+   :widths: 30,60
+   
+   "Autorizzazione stampa BT", "Autorizzazione alla stampa in proprio assegnata da Poste Italiane"
+   "Sintassi IUV", "Prefisso degli IUV generati da GovPay per questo dominio. Il prefisso, numerico, può contenere dei placeholder indicati successivamente"
+   "Sfoglia...", "Araldo dell'Ente Creditore da apporre nelle stampe di avvisi o ricevute. Preferibilmente vettoriale monocromatico"   
+      
 I **placeholder contenuti nel prefisso IUV** vengono sostituiti a runtime con i valori forniti dagli applicativi richiedenti o con i valori di sistema configurati. La lunghezza del prefisso riduce lo spazio di IUV generabili, quindi è necessario che sia il più breve possibile.
 I seguenti sono i placeholder di sistema, sovrascrivibili dall'applicazione chiamante:
 
-* a: codice IUV assegnato all'applicazione che gestisce il debito
-* t: codice IUV assegnato al tributo
-* y: anno di emissione dello IUV, due cifre
-* Y: anno di emissione dello IUV, quattro cifre
+* %(a): codifica dell'applicazione
+* %(p): codifica del tipo pendenza
+* %(y): anno di emissione dello IUV, due cifre
+* %(Y): anno di emissione dello IUV, quattro cifre
 
 Dettaglio Ente Creditore
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,13 +71,14 @@ Selezionando uno degli enti creditori presenti nella pagina di elenco si accede 
 
 .. csv-table:: Aree del dettaglio Ente Creditore
    :header: "Area", "Descrizione"
-   :widths: 40,40
+   :widths: 30,60
 
    "*Riepilogo Informazioni*", "Dati che caratterizzano l'ente creditore, appena visti nella sezione `Nuovo Ente Creditore`_"
    "*Unità Operative*", "Uffici di gestione dei pagamenti in cui è suddiviso il dominio dell’ente creditore."
-   "*Iban*", "Codici IBAN dei conti correnti su cui l’ente creditore riceve gli accrediti in banca tesoriera. Tali IBAN sono quelli già comunicati ad AgID in fase di accreditamento."
-   "*Entrate*", "Sono le entrate attive nel dominio dell’ente creditore e quindi sulle quali è predisposto per ricevere dei pagamenti."
-   "*Pendenze*", "Sono le entrate attive nel dominio dell’ente creditore e quindi sulle quali è predisposto per ricevere dei pagamenti."
+   "*Iban*", "Conti di accredito utilizzati dall'Ente Creditore in pagoPA."
+   "*Tipi Entrata*", "Anagrafica delle entrate, riferibili dalle voci pendenza delle posizioni."
+   "*Tipi Pendenza*", "Anagrafica delle tipologie di pendenza."
+   "*Connettori*", "Configurazione dei connettori di esportazione dati."
 
 Tramite il pulsante di modifica presente nella pagina di dettaglio è possibile procedere con l'aggiornamento dei dati di base, visualizzati nell'area "Riepilogo Informazioni". Si tenga presente che il **valore del campo “Codice Dominio” non è modificabile**.
 
@@ -75,14 +87,6 @@ Tramite il pulsante di modifica presente nella pagina di dettaglio è possibile 
    :name: CampiDelDettaglioDominio
 
    Campi del dettaglio dell'Ente Creditore
-
-Le aree seguenti contengono i relativi pulsanti di creazione e modifica dei rispettivi elementi, con le solite, naturali, uniformi convenzioni grafiche.
-
-.. figure:: ../../_images/20DettaglioDominio2.png
-   :align: center
-   :name: CampiDegliOggettiDiEnteCreditore
-
-   Campi degli oggetti correlati all'Ente Creditore
 
 
 Unità Operative
@@ -111,7 +115,7 @@ Ovviamente dall'elenco delle unità operative associate a un Ente Creditore, è 
 Iban
 ^^^^
 
-Gli iban utilizzati per l'accredito degli importi versati vanno censiti su GovPay. Esiste quindi una maschera di definizione degli IBAN associati all'Ente Creditore.
+Gli iban utilizzati per l'accredito degli importi versati devono essere censiti su GovPay:
 
 .. figure:: ../../_images/22NuovoIBAN.png
    :align: center
@@ -119,26 +123,28 @@ Gli iban utilizzati per l'accredito degli importi versati vanno censiti su GovPa
 
    Maschera di creazione IBAN associato all'Ente Creditore
 
-Il form di creazione di un Iban deve essere compilato con i dati
-seguenti:
+Il form di creazione di un Iban deve essere compilato con i dati seguenti:
 
 .. csv-table:: Dettagli di un nuovo IBAN
    :header: "Campo", "Significato", "Note"
    :widths: 40,40,20
 
-   "IBAN Accredito", "Codice IBAN del conto di accredito", "Obbligatorio, fornito dal referente dei Pagamenti"
-   "BIC Accredito", "BIC del conto di accredito", "Obbligatorio"
-   "Postale", "Indica se l'iban di accredito è riferito ad un conto corrente postale", ""
-   "My Bank", "Indica se l'iban di accredito è è abilitato alle transazioni MyBank", ""
-   "Abilitato", "Indica se l'IBAN  è abilitato o meno nel contesto del dominio su cui si opera", ""
+   "IBAN Accredito", "Codice IBAN del conto di accredito"
+   "BIC Accredito", "BIC del conto di accredito"
+   "Descrizione", "Descrizione del conto per una più agevole ricerca"
+   "Intestatario del conto", "Visualizzato se postale, valorizza l'omonimo campo nel bollettino postale."
+   "Autorizzazione stampa PT", "Visualizzato se postale, consente di sovrascrivere il valore nel dettaglio dell'Ente Creditore."
+   "Postale", "Indica se l'iban è riferito ad un conto corrente postale"
+   "Abilitato", "Indica se l'IBAN  è abilitato o meno"
 
-Tornando all'elenco degli Iban, è possibile scegliere le operazioni di modifica degli elementi precedentemente creati. Il campo
-Iban Accredito non è, ovviamente, modificabile.
+Tornando all'elenco degli Iban, è possibile scegliere le operazioni di modifica degli elementi precedentemente creati.
 
-Entrate
-^^^^^^^
+Tipi entrata
+^^^^^^^^^^^^
 
-Ogni importo che costituisce un versamento deve essere associato ad una entrata censita sul sistema. L'entrata associata al versamento ne determina l'iban di accredito dell'importo e le coordinate di rendicontazione.
+Nella definizione di una pendenza è possibile specificare fino a 5 voi di importo, ciascuna con i dati di contablità e 
+conto di accredito. Queste informazioni possono essere fornite esplicitamente nella pendenza dall'applicativo chiamante
+oppure riferire un codice Entrata che individua un Tipo Entrata in questa anagrafica dove si possono configurare questi dati.
 
 .. note:: **Si noti come la gestione delle Entrate sia stata sostituita da quella delle Pendenze, assai più flessibile e con in più la possibilità di generazione automatica delle interfacce per la riscossione: ciò semplifica grandemente l'implementazione effettiva di queste modalità di pagamento verso l'Utente finale, fornendogli al contempo un'interfaccia omogenea e consistente. Si decide di lasciare questa tipologia di oggetti per meri scopi di ereditarietà. Le nuove configurazioni dovrebbero pertanto utilizzare la Gestione delle Pendenze.**
 
@@ -152,10 +158,10 @@ Ogni importo che costituisce un versamento deve essere associato ad una entrata 
 Il form di creazione di un'entrata va compilato con le seguenti informazioni:
 
 .. csv-table:: Dettagli di una nuova entrata
-   :header: "Campo", "Significato", "Note"
-   :widths: 40,40,20
+   :header: "Campo", "Descrizione"
+   :widths: 40,60
 
-   "Tipo entrata", "Selezione tra le tipologie già censite", "Se non risulta presente la voce desiderata, selezionare *Nuova Entrata*
+   "Tipo entrata", "Selezione tra le tipologie già censite. Se non risulta presente la voce desiderata, selezionare *Nuova Entrata*
       -  Id Entrata: identificativo dell'entrata.
       -  Descrizione: testo di descrizione dell'entrata per facilitarne
          il riconoscimento agli operatori. Obbligatorio, a discrezione
@@ -168,53 +174,55 @@ Il form di creazione di un'entrata va compilato con le seguenti informazioni:
          fornito dalla segreteria.
       -  *Codifica IUV*: codifica dell'entrata nel contesto degli IUV
          generati da GovPay, se configurato in tal senso."
-   "IBAN Accredito", "IBAN di accredito del tributo a scelta tra quelli censiti per il dominio", "Obbligatorio"
-   "IBAN Appoggio", "utilizzato nelle situazioni in cui il PSP non è in condizioni di accreditare somme sul conto di accredito (si considerino le limitazioni in essere nel circuito postale)", ""
-   "Tipo contabilità", "Se valorizzato sovrascive l'mpostazione prevista nel default per l'entrata cui si fa riferimento", ""
-   "Codice contabilità", "Se valorizzato sovrascive l'mpostazione prevista nel default per l'entrata cui si fa riferimento", ""
-   "Abilitato", "Indica se l'Entrata è abilitata o meno nel contesto del dominio su cui si opera", ""
+   "IBAN Accredito", "IBAN di accredito del tributo a scelta tra quelli censiti per il dominio"
+   "IBAN Appoggio", "utilizzato nelle situazioni in cui il PSP non è in condizioni di accreditare somme sul conto di accredito (si considerino le limitazioni in essere nel circuito postale)"
+   "Tipo contabilità", "Se valorizzato sovrascive l'mpostazione prevista nel default per l'entrata cui si fa riferimento"
+   "Codice contabilità", "Se valorizzato sovrascive l'mpostazione prevista nel default per l'entrata cui si fa riferimento"
+   "Abilitato", "Indica se l'Entrata è abilitata o meno nel contesto del dominio su cui si opera"
 
 .. note:: I campi *Tipo Contabilità e Codice Contabilità* rappresentano i valori di default per il tipo entrata e saranno attualizzabili nel contesto di ciascun Ente Creditore.
 
-Dalla lista delle Entrate rimane sempre possibile modificare la singola Entrata, con il campo *Codice Entrata* non modificabile. Fa eccezione l'entrata preconfigurata “Marca da Bollo Telematica” per la quale si ha la sola possibilità di modificare i parametri di contabilizzazione.
+Dalla lista delle Entrate rimane sempre possibile modificare la singola Entrata. Fa eccezione l'entrata preconfigurata “Marca da Bollo Telematica” per la quale si ha la sola possibilità di modificare i parametri di contabilizzazione.
 
 
-Pendenze
-^^^^^^^^
+Tipi pendenze
+^^^^^^^^^^^^^
 
-Questa sezione permette la scelta e la personalizzazione delle pendenze (ovvero oggetti che vanno riconciliati con i pagamenti) ammissibili per l'Ente Creditore in essere. Si noti come le pendenze possano essere associate all'Ente selezionandole da quelle censite (l'aggiunta di un nuovo tipo di pendenza viene gestita nella funzionalità associata alla voce `Tipi Pendenze`_ del menu sulla sinistra). Il sistema, ovviamente, permette di aggiungere solo le pendenze che, per l'Ente, non siano state già scelte.
-Ad esempio, in un Ente Creditore abbiamo le seguenti tipologie di pendenza già selezionate:
+Questa sezione permette la scelta e la personalizzazione delle tipologie di pendenza ammissibili per l'Ente Creditore tra
+quelle registrate nell'anagrafica dei `Tipi Pendenze`_. Il sistema dà la possibilità, una volta aggiunta una nuova pendenza, 
+di personalizzarla per l'Ente Creditore rispetto alla configurazione di base eventualmente definita nel registro `Tipi Pendenze`_.
 
-.. figure:: ../../_images/25PendenzeSceltePerIlDominio.png
+Associando un Tipo Pendenza ad un Ente Creditore è possibile indicare le seguenti informazioni generali:
+
+.. figure:: ../../_images/30TipoPendenza_RiepilogoInformazioni.png
    :align: center
-   :name: PendenzeRelativeAUnDominio
+   :name: TipoPendenza_RiepilogoInformazioni
+   
+.. csv-table:: Informazioni generali
+   :header: "Campo", "Descrizione"
+   :widths: 40,60   
+   
+   "Tipo pendenza", "Tipologia di pendenza da associare tra quelle registrate nell'omonima anagrafica"
+   "Codifica IUV", "Codice numerico associato alla tipologia pendenze, usato nella generazione degli IUV, se previsto"
+   "Pagabile da terzi", "Indica se la tipologia di pendenza è pagabile anche da soggetti diversi dall'intestatario. Al momento l'informazione non viene utilizzata in nessun controllo."
+   "Abilitato", "Abilita o disabilita l'associazione"
 
-   Pendenze associate a un Ente Creditore
+Le funzioni a valore aggiunto che è possibile configurare sono le seguenti:
 
-A questo punto, sull'Ente Creditore selezionato, si potrà aggiungere una sola pendenza (quella non ancora selezionata), come mostrato:
+.. csv-table:: Servizi aggiuntivi configurabili per tipologie di pendenza
+   :header: "Servizio", "Descrizione"
+   :widths: 40,60
+   
+   "Inserimento pendenza da Operatore","Configura la form per l'inserimento manuale di una pendenza. `:_govpay_configurazione_enti_formoperatore`_"
+   "Pagamento spontanto","Configura la pagina di pagamento spontaneo sul Portale di pagamento GovPay"
+   "Comunicazioni via Mail","Configura il contenuto della messaggistica via mail all'utente finale"
+   "Comunicazioni via AppIO","Configura la messaggistica via AppIO all'utente finale"
+   "Altre funzioni","Consente la configurazioni di altre funzioni di GovPay"
+  
+   
 
-.. figure:: ../../_images/26PendenzaSelezionabile.png
-   :align: center
-   :name: PendenzaSelezionabilePerAggiunta
+.. toctree::
+   :maxdepth: 2
+   :hidden:
 
-   Pendenza selezionabile per aggiunta all'Ente Creditore
-
-Il sistema dà la possibilità, una volta aggiunta una nuova pendenza, di personalizzarla per l'Ente Creditore, consentendo anche la generazione di maschere automatiche per l'immissione dei dati.
-Si tenga presente che si affronterà il dettaglio dei campi delle pendenze nella sezione apposita, cui si fa riferimento. Al momento si noti come una pendenza possa essere completamente personalizzata per un dominio a partire da una *standard* definita nella sezione *`Tipi Pendenze`_*.
-I meccanismi di selezione sono del tutto analoghi a quanto già visto in altri contesti del sistema: selezioniamo la Pendenza *Sanzione Amministrativa*
-
-.. figure:: ../../_images/27SelezioneDellaPendenzaPerModifica.png
-   :align: center
-   :name: SelezionePendenzaSanzioneAmministrativa
-
-   Selezione della Pendenza *Sanzione Amministrativa*
-
-Il sistema mostra la seguente maschera
-
-.. figure:: ../../_images/30ModificaSanzioneAmministrativa.png
-   :align: center
-   :name: ModificaSanzioneAmministrativa
-
-   Modifica *Sanzione Amministrativa*
-
-Da qui possiamo personalizzare **senza modificare le informazioni standard del tipo Sanzione Amministrativa**.
+   ./dovuto      
