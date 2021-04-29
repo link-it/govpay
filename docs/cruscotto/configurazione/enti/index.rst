@@ -103,12 +103,12 @@ Creditore. È quindi possibile censire le Unità operative del Dominio in GovPay
 
 .. csv-table:: Dettagli di una nuova Unità Operativa
    :header: "Campo", "Significato", "Note"
-   :widths: 40,40,20
+   :widths: 40,60
 
-   "Id unità", "Codice identificativo, ad uso interno, dell'unità operativa", "Obbligatorio"
-   "Ragione Sociale", "Ragione sociale dell'Unità Operativa", "Obbligatorio"
-   "Sezione Anagrafica", "Riferimenti anagrafici dell'unità forniti dal Referente dei Pagamenti", ""
-   "Abilitato", "Indica se l'unità operativa è abilitata o meno nel contesto del dominio su cui si opera", ""
+   "Id unità", "Codice identificativo, ad uso interno, dell'unità operativa"
+   "Ragione Sociale", "Ragione sociale dell'Unità Operativa"
+   "Sezione Anagrafica", "Riferimenti anagrafici dell'unità forniti dal Referente dei Pagamenti"
+   "Abilitato", "Indica se l'unità operativa è abilitata o meno nel contesto del dominio su cui si opera"
 
 Ovviamente dall'elenco delle unità operative associate a un Ente Creditore, è possibile modificarne le informazioni associate.
 
@@ -127,7 +127,7 @@ Il form di creazione di un Iban deve essere compilato con i dati seguenti:
 
 .. csv-table:: Dettagli di un nuovo IBAN
    :header: "Campo", "Significato", "Note"
-   :widths: 40,40,20
+   :widths: 40,60
 
    "IBAN Accredito", "Codice IBAN del conto di accredito"
    "BIC Accredito", "BIC del conto di accredito"
@@ -213,7 +213,7 @@ Le funzioni a valore aggiunto che è possibile configurare sono le seguenti:
    :header: "Servizio", "Descrizione"
    :widths: 40,60
    
-   "Inserimento pendenza da Operatore","Configura la form per l'inserimento manuale di una pendenza. `:_govpay_configurazione_enti_formoperatore`_"
+   "Inserimento pendenza da Operatore",":ref:`govpay_configurazione_enti_formoperatore`"
    "Pagamento spontanto","Configura la pagina di pagamento spontaneo sul Portale di pagamento GovPay"
    "Comunicazioni via Mail","Configura il contenuto della messaggistica via mail all'utente finale"
    "Comunicazioni via AppIO","Configura la messaggistica via AppIO all'utente finale"
