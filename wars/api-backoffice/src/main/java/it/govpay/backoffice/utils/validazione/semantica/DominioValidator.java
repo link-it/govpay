@@ -46,6 +46,9 @@ public class DominioValidator implements IValidable {
 			
 			// Tributo inserisco la dimensione massima 4 caratter
 			props.put(PagamentoContext.codificaIuvKey, "3333");
+			
+			// Tipo Pendenza inserisco la dimensione massima 4 Caratteri
+			props.put(PagamentoContext.codificaTipoPendenzaIuvKey, "3333");
 							
 			Calendar now = Calendar.getInstance(); 
 			int year = now.get(Calendar.YEAR);  

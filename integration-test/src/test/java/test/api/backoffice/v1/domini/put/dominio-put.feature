@@ -83,6 +83,7 @@ Examples:
 | cbill | null |
 | iuvPrefix | '%(a)' |
 | iuvPrefix | '%(t)' |
+| iuvPrefix | '%(p)' |
 | iuvPrefix | '%(y)' |
 | iuvPrefix | '%(Y)' |
 | iuvPrefix | '%(u)' |
