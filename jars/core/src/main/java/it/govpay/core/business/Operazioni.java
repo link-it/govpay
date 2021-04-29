@@ -530,7 +530,7 @@ public class Operazioni{
 		try {
 
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_TRACCIATI)) {
-				log.trace("Elaborazione tracciati");
+				log.debug("Elaborazione tracciati");
 
 				TracciatiBD tracciatiBD = new TracciatiBD(configWrapper);
 				TracciatoFilter filter = tracciatiBD.newFilter();
@@ -589,7 +589,7 @@ public class Operazioni{
 
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_SPEDIZIONE_PROMEMORIA)) {
 				int limit = 100;
-				log.trace("Spedizione primi ["+limit+"] promemoria non consegnati");
+				log.debug("Spedizione primi ["+limit+"] promemoria non consegnati");
 				Promemoria promemoriaBD = new Promemoria(); 
 				List<it.govpay.bd.model.Promemoria> promemorias = promemoriaBD.findPromemoriaDaSpedire(0, limit);
 
@@ -639,7 +639,7 @@ public class Operazioni{
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_GESTIONE_PROMEMORIA)) {
 				int limit = 100;
 
-				log.trace("Elaborazione primi ["+limit+"] versamenti con promemoria avviso non consegnati");
+				log.debug("Elaborazione primi ["+limit+"] versamenti con promemoria avviso non consegnati");
 				VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
 				List<Versamento> listaPromemoriaAvviso = versamentiBD.findVersamentiConAvvisoDiPagamentoDaSpedire(0, limit);
@@ -656,7 +656,7 @@ public class Operazioni{
 
 				aggiornaSondaOK(configWrapper, BATCH_GESTIONE_PROMEMORIA);
 
-				log.trace("Elaborazione primi ["+limit+"] versamenti con promemoria scadenza via mail non consegnati");
+				log.debug("Elaborazione primi ["+limit+"] versamenti con promemoria scadenza via mail non consegnati");
 				List<Versamento> listaPromemoriaScadenzaMail = versamentiBD.findVersamentiConAvvisoDiScadenzaDaSpedireViaMail(0, limit);
 
 				if(listaPromemoriaScadenzaMail.size() == 0) {
@@ -670,7 +670,7 @@ public class Operazioni{
 
 				aggiornaSondaOK(configWrapper, BATCH_GESTIONE_PROMEMORIA);
 
-				log.trace("Elaborazione primi ["+limit+"] versamenti con promemoria scadenza via appIO non consegnati");
+				log.debug("Elaborazione primi ["+limit+"] versamenti con promemoria scadenza via appIO non consegnati");
 				List<Versamento> listaPromemoriaScadenzaAppIO = versamentiBD.findVersamentiConAvvisoDiScadenzaDaSpedireViaAppIO(0, limit);
 
 				if(listaPromemoriaScadenzaAppIO.size() == 0) {
@@ -728,7 +728,7 @@ public class Operazioni{
 						tracciatiMyPivot.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreMyPivot(), ctx);
 						log.debug("Elaborazione Tracciato MyPivot per il Dominio ["+codDominio+"] completata.");
 					} else {
-						log.trace("Connettore MyPivot non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
+						log.debug("Connettore MyPivot non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
 					}
 					
 					if(dominio.getConnettoreSecim() != null && dominio.getConnettoreSecim().isAbilitato()) {
@@ -737,7 +737,7 @@ public class Operazioni{
 						tracciatiSecim.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreSecim(), ctx);
 						log.debug("Elaborazione Tracciato Secim per il Dominio ["+codDominio+"] completata.");
 					} else {
-						log.trace("Connettore Secim non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
+						log.debug("Connettore Secim non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
 					}
 					
 					if(dominio.getConnettoreGovPay() != null && dominio.getConnettoreGovPay().isAbilitato()) {
@@ -746,7 +746,7 @@ public class Operazioni{
 						tracciatiGovpay.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreGovPay(), ctx);
 						log.debug("Elaborazione Tracciato GovPay per il Dominio ["+codDominio+"] completata.");
 					} else {
-						log.trace("Connettore GovPay non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
+						log.debug("Connettore GovPay non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
 					}
 				}
 				
@@ -840,7 +840,7 @@ public class Operazioni{
 							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
 						}
 					} else {
-						log.trace("Connettore MyPivot non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
+						log.debug("Connettore MyPivot non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
 					}
 					
 					if(dominio.getConnettoreSecim() != null && dominio.getConnettoreSecim().isAbilitato()) {
@@ -894,7 +894,7 @@ public class Operazioni{
 							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
 						}
 					} else {
-						log.trace("Connettore Secim non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
+						log.debug("Connettore Secim non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
 					}
 					
 					if(dominio.getConnettoreGovPay() != null && dominio.getConnettoreGovPay().isAbilitato()) {
@@ -948,7 +948,7 @@ public class Operazioni{
 							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
 						}
 					} else {
-						log.trace("Connettore GovPay non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
+						log.debug("Connettore GovPay non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
 					}
 				}
 				
