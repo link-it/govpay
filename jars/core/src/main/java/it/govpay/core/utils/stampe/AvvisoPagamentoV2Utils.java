@@ -380,7 +380,7 @@ public class AvvisoPagamentoV2Utils {
 			input.getEtichette().getItaliano().setPagaApp2(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_PAGA_APP_POSTE));
 			if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null) {
 				input.getEtichette().getTraduzione().setPagaTerritorio2(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_PAGA_TERRITORIO_POSTE));
-				input.getEtichette().getTraduzione().setPagaApp2(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_PAGA_TERRITORIO_POSTE));
+				input.getEtichette().getTraduzione().setPagaApp2(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_PAGA_APP_POSTE));
 			}
 			
 			rata.setDataMatrix(AvvisoPagamentoUtils.creaDataMatrix(versamento.getNumeroAvviso(), AvvisoPagamentoUtils.getNumeroCCDaIban(postale.getCodIban()), 
@@ -405,7 +405,7 @@ public class AvvisoPagamentoV2Utils {
 			input.getEtichette().getItaliano().setPagaApp2(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_PAGA_APP_STANDARD));
 			if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null ) {
 				input.getEtichette().getTraduzione().setPagaTerritorio2(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_PAGA_TERRITORIO_STANDARD));
-				input.getEtichette().getTraduzione().setPagaApp2(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_PAGA_TERRITORIO_STANDARD));
+				input.getEtichette().getTraduzione().setPagaApp2(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_PAGA_APP_STANDARD));
 			}
 		}
 
