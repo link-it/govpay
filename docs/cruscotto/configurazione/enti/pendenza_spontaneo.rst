@@ -30,7 +30,7 @@ le API Pagamento e visualizzarle al cittadino. Un esempio di implementazione e' 
 
 I tipi di layout al momento disponibili sono i seguenti:
 	
-	-  *Angular json schema form*: `Progetto GitHub <https://github.com/dschnelldavis/angular2-json-schema-form>`_ - `Playground <https://angular2-json-schema-form.firebaseapp.com/>`
+	-  *Angular json schema form*: `Progetto GitHub <https://github.com/dschnelldavis/angular2-json-schema-form>`_ - `Playground <https://angular2-json-schema-form.firebaseapp.com/>`_.
 
 La struttura del documento di impaginazione dipende dall'implementazione del Portale al cittadino. Nel caso del Portale di Pagamento GovPay
 il JSON deve rispettare il :download:`seguente schema <paginazione.json>`
@@ -44,12 +44,12 @@ Trasformazione dati
 ~~~~~~~~~~~~~~~~~~~
 
 In questa sezione può essere configurato il processo che, dai dati inseriti nella form, produce una pendenza. Il dato di Input è il JSON prodotto
-dalla form di inserimento dati, mentre l'output deve essere un JSON che rispetta lo schema di una `PendenzaPost <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml#model-pendenzaPost>`
+dalla form di inserimento dati, mentre l'output deve essere un JSON che rispetta lo schema di una `PendenzaPost <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml#model-pendenzaPost>`_.
 oppure un JSON compatibile con il successivo servizio di inoltro, se configurato. 
 
 Inoltro
 ~~~~~~~
 
 E' possibile inviare i dati ricevuti ed eventualmente trasformati ad una applicazione per il processo di istruttoria. Il JSON ritornato da tale
-servizio deve rispettare lo schema di una `PendenzaPost <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml#model-pendenzaPost>`
+servizio deve rispettare lo schema di una `PendenzaPost <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml#model-pendenzaPost>`_.
 

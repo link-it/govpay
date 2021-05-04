@@ -71,7 +71,7 @@ Selezionando uno degli enti creditori presenti nella pagina di elenco si accede 
 
 .. csv-table:: Aree del dettaglio Ente Creditore
    :header: "Area", "Descrizione"
-   :widths: 30,60
+   :widths: 40,60
 
    "*Riepilogo Informazioni*", "Dati che caratterizzano l'ente creditore, appena visti nella sezione `Nuovo Ente Creditore`_"
    "*Unità Operative*", "Uffici di gestione dei pagamenti in cui è suddiviso il dominio dell’ente creditore."
@@ -102,7 +102,7 @@ Creditore. È quindi possibile censire le Unità operative del Dominio in GovPay
    Campi per creare una Nuova Unità Operativa
 
 .. csv-table:: Dettagli di una nuova Unità Operativa
-   :header: "Campo", "Significato", "Note"
+   :header: "Campo", "Descrizione"
    :widths: 40,60
 
    "Id unità", "Codice identificativo, ad uso interno, dell'unità operativa"
@@ -126,7 +126,7 @@ Gli iban utilizzati per l'accredito degli importi versati devono essere censiti 
 Il form di creazione di un Iban deve essere compilato con i dati seguenti:
 
 .. csv-table:: Dettagli di un nuovo IBAN
-   :header: "Campo", "Significato", "Note"
+   :header: "Campo", "Descrizione"
    :widths: 40,60
 
    "IBAN Accredito", "Codice IBAN del conto di accredito"
