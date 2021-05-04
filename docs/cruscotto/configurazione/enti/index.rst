@@ -214,10 +214,10 @@ Le funzioni a valore aggiunto che è possibile configurare sono le seguenti:
    :widths: 40,60
    
    "Inserimento pendenza da Operatore",":ref:`govpay_configurazione_enti_formoperatore`"
-   "Pagamento spontanto","Configura la pagina di pagamento spontaneo sul Portale di pagamento GovPay"
-   "Comunicazioni via Mail","Configura il contenuto della messaggistica via mail all'utente finale"
-   "Comunicazioni via AppIO","Configura la messaggistica via AppIO all'utente finale"
-   "Altre funzioni","Consente la configurazioni di altre funzioni di GovPay"
+   "Pagamento spontanto",":ref:`govpay_configurazione_enti_spontaneo`"
+   "Comunicazioni via Mail",":ref:`govpay_configurazione_enti_email`"
+   "Comunicazioni via AppIO",":ref:`govpay_configurazione_enti_appio`"
+   "Altre funzioni",":ref:`govpay_configurazione_enti_altrefunzioni`"
   
    
 
@@ -225,4 +225,8 @@ Le funzioni a valore aggiunto che è possibile configurare sono le seguenti:
    :maxdepth: 2
    :hidden:
 
-   ./dovuto      
+   ./pendenza_dovuto
+   ./pendenza_spontaneo
+   ./pendenza_email
+   ./pendenza_appio
+   ./pendenza_altre      

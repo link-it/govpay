@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "requireUserConfirm": {
+      "type": "boolean",
+      "description": "Abilita la visualizzazione della conferma dei dati inseriti prima dell'invio della form."
+    },
+    "img": {
+      "type": "string",
+      "description": "Url dell'immagine visualizzata nella form."
+    },
+    "ita": { "$ref": "#/definitions/traduzione" },
+    "eng": { "$ref": "#/definitions/traduzione" },
+    "fra": { "$ref": "#/definitions/traduzione" },
+    "deu": { "$ref": "#/definitions/traduzione" },
+    "slo": { "$ref": "#/definitions/traduzione" }
+  },
+  "required": [
+    "requireUserConfirm",
+    "img",
+    "ita"
+  ],
+  "definitions": {
+  	"traduzione" : {
+      "type": "object",
+      "properties": {
+        "group": {
+          "type": "string",
+          "description": "Nome del gruppo di appartenenza. Esempio 'Concessioni'."
+        },
+        "group_icon": {
+          "type": "string",
+          "description": "Icona del gruppo. Inserire 'default'."
+        },
+        "subgroup": {
+          "type": "string",
+          "description": "Nome del sottogruppo di appartenenza. Esempio 'Igiene e sanità'"
+        },
+        "name": {
+          "type": "string",
+          "description": "Nome della pendenza. Non deve essere maggiore di xxx caratteri."
+        },
+        "search_tems": {
+          "type": "string",
+          "description": "Lista dei termini che saranno usati per la ricerca."
+        },
+        "long_description": {
+          "type": "string",
+          "description": "Descrizione dettagliata della pendenza."
+        },
+        "properties": {
+          "type": "array",
+          "description": "Lista di elementi che saranno visualizzati dopo la descrizione dettagliata. Utili per inserire riferimenti di contatto come email, numeri di telefono o link a documentazione sulla pendenza.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string",
+                "description": "Etichetta dell'elemento, come ad esempio Telefono, Fax, Documentazione, etc..."
+              },
+              "text": {
+                "type": "string",
+                "description": "Testo da visualizzare a fianco della label a cui viene applicato il link se l'attributo 'url' è definito."
+              },
+              "url": {
+                "type": "string",
+                "description": "Url o link ipertestaule come 'mailto'."
+              }
+            },
+            "required": [
+              "label",
+              "text"
+            ]
+          }
+        }
+      },
+      "required": [
+        "group",
+        "group_icon",
+        "subgroup",
+        "name",
+        "search_tems",
+        "long_description",
+        "properties"
+      ]
+    }
+  }
+}
