@@ -175,7 +175,7 @@ public class GovPayException extends Exception {
 		case VER_001: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") presenta il codSingoloPagamentoEnte (" + params[2] + ") piu' di una volta";
 		case VER_002: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") ha un importo totale (" + params[3] + ") diverso dalla somma dei singoli importi (" + params[2] + ")";
 		case VER_003: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") e' in uno stato che non consente l'aggiornamento (" + params[2] + ")";
-		case VER_004: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") inviato ha un'unita' operativa beneficiaria (" + params[2] + ") diversa da quello originale (" + params[3] + ")";
+		case VER_004: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") inviato ha un ente creditore (" + params[2] + ") diversa da quello originale (" + params[3] + ")";
 		case VER_005: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") inviato ha un numero di singoli versamenti (" + params[2] + ") diverso da quello originale (" + params[3] + ")";
 		case VER_006: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") inviato ha un singolo versamento con codSingoloVersamentoEnte (" + params[2] + ") non presente nell'originale";
 		case VER_007: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") ha il singolo versamento con codSingoloVersamentoEnte (" + params[2] + ") inviato ha un tipo tributo (" + params[3] + ") diverso dall'originale (" + params[4] + ")";

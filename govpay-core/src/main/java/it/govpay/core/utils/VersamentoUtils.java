@@ -141,6 +141,7 @@ public class VersamentoUtils {
 		
 		model.setImportoTotale(versamento.getImportoTotale());
 		model.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
+		model.setIuvProposto(versamento.getIuv());
 		
 		for(it.govpay.servizi.commons.Versamento.SingoloVersamento singoloVersamento : versamento.getSingoloVersamento()) {
 			model.addSingoloVersamento(toSingoloVersamentoModel(model, singoloVersamento, bd));
@@ -262,9 +263,10 @@ public class VersamentoUtils {
 			throw new GovPayException(EsitoOperazione.VER_003, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoLetto.getCodVersamentoEnte(), versamentoLetto.getStatoVersamento().toString());
 		}
 		
-//		if(versamentoLetto.getIdUo() != versamentoNuovo.getIdUo()) {
-//			throw new GovPayException(EsitoOperazione.VER_004, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoLetto.getCodVersamentoEnte(), versamentoLetto.getUo(bd).getCodUo(), versamentoNuovo.getUo(bd).getCodUo());
-//		}
+		if(versamentoLetto.getUo(bd).getIdDominio() != versamentoNuovo.getUo(bd).getIdDominio()) {
+			throw new GovPayException(EsitoOperazione.VER_004, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoLetto.getCodVersamentoEnte(), versamentoLetto.getUo(bd).getDominio(bd).getRagioneSociale(), versamentoNuovo.getUo(bd).getDominio(bd).getRagioneSociale());
+		}
+		
 		versamentoNuovo.setId(versamentoLetto.getId());
 		versamentoNuovo.setDataCreazione(versamentoLetto.getDataCreazione());
 		
@@ -387,7 +389,10 @@ public class VersamentoUtils {
 			throw e;
 		} 
 		
+		// Controllo che i dati siano coerenti con la richiesta
+		
 		it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
+		
 		versamentoBusiness.caricaVersamento(applicazione, versamento, false, true);
 		return versamento;
 	}

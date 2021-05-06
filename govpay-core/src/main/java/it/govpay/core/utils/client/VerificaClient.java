@@ -143,6 +143,21 @@ public class VerificaClient extends BasicClient {
 				}
 				switch (paVerificaVersamentoResponse.getCodEsito()) {
 				case OK:
+					
+					// Verifica che la risposta sia compatibile con la richiesta:
+					
+					if(codVersamentoEnte!=null && !codVersamentoEnte.equals(paVerificaVersamentoResponse.getVersamento().getCodVersamentoEnte())) {
+						ctx.log("verifica.Fail", codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "Ritornato versamento con codVersamentoEnte errato ["+paVerificaVersamentoResponse.getVersamento().getCodVersamentoEnte()+"]");
+					}
+						
+					if(codDominio!=null && !codDominio.equals(paVerificaVersamentoResponse.getVersamento().getCodDominio())) {
+						ctx.log("verifica.Fail", codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, iuvD, "Ritornato versamento con idDominio errato ["+paVerificaVersamentoResponse.getVersamento().getCodDominio()+"]");
+					}	
+					
+					if(iuv!=null && !iuv.equals(paVerificaVersamentoResponse.getVersamento().getIuv())) {
+						ctx.log("verifica.Fail", codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, iuvD, "Ritornato versamento con iuv errato ["+paVerificaVersamentoResponse.getVersamento().getIuv()+"]");
+					}	
+					
 					ctx.log("verifica.avvio", codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
 					try {
 						return VersamentoUtils.toVersamentoModel(paVerificaVersamentoResponse.getVersamento(), bd);
