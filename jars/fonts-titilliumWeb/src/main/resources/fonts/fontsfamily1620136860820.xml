@@ -6,18 +6,21 @@
        <bold><![CDATA[fonts/TitilliumWeb-SemiBold.ttf]]></bold>
        <italic><![CDATA[fonts/TitilliumWeb-Italic.ttf]]></italic>
        <boldItalic><![CDATA[fonts/TitilliumWeb-SemiBoldItalic.ttf]]></boldItalic>
+       <pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>
+       <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+   </fontFamily>
+
+
+   <fontFamily name="TitilliumWeb-Black">
+       <normal><![CDATA[fonts/TitilliumWeb-Black.ttf]]></normal>
+       <pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>
        <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
    </fontFamily>
 
 
    <fontFamily name="TitilliumWeb-Bold">
        <normal><![CDATA[fonts/TitilliumWeb-Bold.ttf]]></normal>
-       <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
-   </fontFamily>
-   
-   
-   <fontFamily name="TitilliumWeb-Black">
-       <normal><![CDATA[fonts/TitilliumWeb-Black.ttf]]></normal>
+       <pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>
        <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
    </fontFamily>
 
