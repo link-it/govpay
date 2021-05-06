@@ -84,43 +84,34 @@ In questa sottosezione sono contenute le informazioni che definiscono un'applica
 
    Sezione API Integrazione di un'applicazione
 
-.. csv-table:: Dettagli della sezione *API Integrazione* di una nuova Applicazione
-   :header: "Campo", "Significato", "Note"
-   :widths: 40,40,20
+.. csv-table:: Dettagli della sezione *API Integrazione* di una Applicazione
+   :header: "Campo", "Significato"
+   :widths: 40,60
 
-   "API Integrazione", "Endpoint del servizio del verticale che viene integrato da GovPay", ""
-   "Versione API", "Versione delle interfacce di integrazione utilizzate dall'applicazione", ""
-   "Tipo Autenticazione", "selezione a scelta tra: Nessuna, Http-Basic e SSL", "In base al valore selezionato sarà necessario inserire i conseguenti dati di configurazione della specifica modalità di autenticazione"
+   "API Integrazione", "Endpoint del servizio del verticale che viene integrato da GovPay"
+   "Versione API", "Versione delle interfacce di integrazione utilizzate dall'applicazione"
+   "Tipo Autenticazione", "Modalità di autenticazione prevista: Nessuna, Http-Basic e SSL"
 
 
 Autorizzazioni
 ^^^^^^^^^^^^^^
 
-In questa sezione il sistema permette di autorizzare:
-
-*  Specifici (o tutti) `Enti Creditori`_ all'utilizzo dell'applicazione
-*  Specifici (o tutti) `Tipi Pendenze`_ ad essere elaborate attraverso l'applicazione
-*  Specifici `Ruoli`_ all'utilizzo dell'applicazione
-
-Inoltre in questa sottosezione è possibile definire se l'applicazione è in grado oppure no di interfacciarsi con le tre API (Pagamenti, Pendenze e Ragioneria) messe a disposizione da GovPay.
+In questa sezione è possibile specificare le autorizzazioni dell'Applicazione sulle API di integrazione:
 
 .. figure:: ../../_images/41ApplicazioneAutorizzazioni.png
 	:align: center
 	:name: ApplicazioneAutorizzazioni
 
 	Sezione Autorizzazioni di un'applicazione
+	
+.. csv-table:: Dettagli della sezione *API Integrazione* di una Applicazione
+   :header: "Campo", "Significato"
+   :widths: 40,60
 
+   "Tipi pendenza", "Lista delle tipologie di pendenza su cui l'applicazione può operare"
+   "Ruoli", "Ruoli autorizzativi sulle API di Backoffice"
+   "API Pagamenti", "Abilita/disabilita l'utilizzo delle Api di pagamento"
+   "API Pendenze", "Abilita/disabilita l'utilizzo delle Api di pendenze"
+   "API Ragioneria", "Abilita/disabilita l'utilizzo delle Api di ragioneria"
+   "Enti creditori", "Lista degli Enti ed unità operative su cui l'applicazione può operare"
 
-Dettaglio Applicazione
-~~~~~~~~~~~~~~~~~~~~~~
-
-Selezionando una delle applicazioni presenti nella pagina di elenco si accede alla pagina di dettaglio, che permette di vedere i dati di sintesi dell'applicazione:
-
-
-.. figure:: ../../_images/43ApplicazioneVistaDiSintesiPreModifica.png
-   :align: center
-   :name: ApplicazioneVistaSintesi
-
-   Vista di sintesi di un'applicazione
-
-Con l'uso delle solite metafore (matita su cerchio verde) è possibile accedere alle modifiche puntuali della definizione dell'applicazione. In tale processo le informazioni rimangono esattamente quelle appena viste per la definizione di una nuova applicazione.
