@@ -664,14 +664,16 @@ public class PendenzeConverter {
 				
 				sv.setContabilita(ContabilitaConverter.toStringDTO(vocePendenza.getContabilita()));
 				
-				BigDecimal somma = BigDecimal.ZERO;
-				for (Contabilita voceContabilita : vocePendenza.getContabilita()) {
-					somma = somma.add(voceContabilita.getImporto());
-				}
-				
-				if(somma.compareTo(vocePendenza.getImporto()) != 0) {
-					throw new GovPayException(EsitoOperazione.VER_035, vocePendenza.getIdVocePendenza(),  versamento.getCodApplicazione(), versamento.getCodVersamentoEnte(),
-						Double.toString(sv.getImporto().doubleValue()), Double.toString(somma.doubleValue()));
+				if(vocePendenza.getContabilita() != null) {
+					BigDecimal somma = BigDecimal.ZERO;
+					for (Contabilita voceContabilita : vocePendenza.getContabilita()) {
+						somma = somma.add(voceContabilita.getImporto());
+					}
+					
+					if(somma.compareTo(vocePendenza.getImporto()) != 0) {
+						throw new GovPayException(EsitoOperazione.VER_035, vocePendenza.getIdVocePendenza(),  versamento.getCodApplicazione(), versamento.getCodVersamentoEnte(),
+							Double.toString(sv.getImporto().doubleValue()), Double.toString(somma.doubleValue()));
+					}
 				}
 
 				versamento.getSingoloVersamento().add(sv);

@@ -70,7 +70,9 @@ public class PendenzaVerificataValidator  implements IValidable{
 				throw new ValidationException("Il campo voci deve avere massimo 5 elemento.");
 
 			for (VocePendenza vocePendenza : this.pendenzaVerificata.getVoci()) {
-				new VocePendenzaValidator(vocePendenza).validate();
+				VocePendenzaValidator vocePendenzaValidator = new VocePendenzaValidator(vocePendenza);
+				vocePendenzaValidator.validate();
+				vocePendenzaValidator.validazioneSemanticaContabilita(vf, this.pendenzaVerificata.getIdA2A(), this.pendenzaVerificata.getIdPendenza());
 			}
 		}
 	}

@@ -1,7 +1,13 @@
 package it.govpay.core.utils.validator;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.openspcoop2.utils.json.ValidationException;
 
+import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.exceptions.GovPayException;
+import it.govpay.ec.v1.beans.Contabilita;
 import it.govpay.ec.v1.beans.VocePendenza;
 
 public class VocePendenzaValidator implements IValidable{
@@ -19,11 +25,12 @@ public class VocePendenzaValidator implements IValidable{
 
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreIdentificativi vi = ValidatoreIdentificativi.newInstance();
-			
+
 			vi.validaIdVocePendenza("idVocePendenza", this.vocePendenza.getIdVocePendenza());
 			ValidatoreUtils.validaImporto(vf, "importo", this.vocePendenza.getImporto());
 			ValidatoreUtils.validaDescrizione(vf, "descrizione", this.vocePendenza.getDescrizione());
 			ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.vocePendenza.getDescrizioneCausaleRPT());
+			this.validaContabilita(vf);
 
 			if(this.vocePendenza.getCodEntrata() != null) {
 				vi.validaIdEntrata("codEntrata", this.vocePendenza.getCodEntrata());
@@ -77,6 +84,48 @@ public class VocePendenzaValidator implements IValidable{
 
 			else {
 				throw new ValidationException("Uno dei campi tra ibanAccredito, tipoBollo o codEntrata deve essere valorizzato");
+			}
+		}
+	}
+
+	private void validaContabilita(ValidatorFactory vf) throws ValidationException {
+		List<Contabilita> listaContabilita = this.vocePendenza.getContabilita();
+		if(listaContabilita != null) {
+			for (Contabilita contabilita : listaContabilita) {
+
+				vf.getValidator("ufficio", contabilita.getUfficio()).minLength(1).maxLength(64);
+				vf.getValidator("capitolo", contabilita.getCapitolo()).notNull().minLength(1).maxLength(64);
+
+				vf.getValidator("annoEsercizio", contabilita.getAnnoEsercizio()).notNull();
+				ValidatoreUtils.validaAnnoRiferimento(vf, "annoEsercizio", contabilita.getAnnoEsercizio());
+
+				vf.getValidator("accertamento", contabilita.getAccertamento()).minLength(1).maxLength(64);
+				ValidatoreUtils.validaAnnoRiferimento(vf, "annoAccertamento", contabilita.getAnnoAccertamento());
+				vf.getValidator("subAccertamento", contabilita.getSubAccertamento()).minLength(1).maxLength(64);
+				vf.getValidator("siope", contabilita.getSiope()).minLength(1).maxLength(64);
+				ValidatoreUtils.validaImporto(vf, "importo", contabilita.getImporto());
+				vf.getValidator("codGestionaleEnte", contabilita.getCodGestionaleEnte()).minLength(1).maxLength(256);
+
+			}
+		}
+	}
+
+	public void validazioneSemanticaContabilita(ValidatorFactory vf, String idA2A, String idPendenza) throws ValidationException {
+		List<Contabilita> listaContabilita = this.vocePendenza.getContabilita();
+		BigDecimal importoVocePendenza = this.vocePendenza.getImporto();
+		if(listaContabilita != null) {
+			try {
+				BigDecimal somma = BigDecimal.ZERO;
+				for (Contabilita voceContabilita : vocePendenza.getContabilita()) {
+					somma = somma.add(voceContabilita.getImporto());
+				}
+
+				if(somma.compareTo(vocePendenza.getImporto()) != 0) {
+					throw new GovPayException(EsitoOperazione.VER_035, vocePendenza.getIdVocePendenza(), idA2A, idPendenza,
+							Double.toString(importoVocePendenza.doubleValue()), Double.toString(somma.doubleValue()));
+				}
+			}catch (GovPayException e) {
+				throw new ValidationException(e.getMessage(), e);
 			}
 		}
 	}

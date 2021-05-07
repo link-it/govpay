@@ -50,6 +50,7 @@ And match response ==
 	dettaglio: '#("La voce ("+pendenzaPut.voci[0].idVocePendenza+") della pendenza (IdA2A:" + idA2A + ", Id:" + idPendenza + ") ha un importo (" + pendenzaPut.voci[0].importo + ") diverso dalla somma dei singoli importi definiti nella lista delle contabilita\' (" + pendenzaPutImportoOrig + ")")'
 }
 """
+
 Scenario Outline: <field> non valida
 
 * set <fieldRequest> = <fieldValue>

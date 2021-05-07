@@ -99,6 +99,58 @@ Examples:
 | voci.hashDocumento | pendenzaPut.voci[0] | { idVocePendenza: 1, importo: 10.00, descrizione: "descrizione", tipoBollo: "01", hashDocumento: "#(loremIpsum)", provinciaResidenza: "RO" } | 'hashDocumento' |
 | voci.provinciaResidenza | pendenzaPut.voci[0] | { idVocePendenza: 1, importo: 10.00, descrizione: "descrizione", tipoBollo: "01", hashDocumento: "a/CWqtFtCEyA/ymBySahGSaqKMiak5mlX3BoX0jupy8=", provinciaResidenza: null } | 'provinciaResidenza' |
 | voci.provinciaResidenza | pendenzaPut.voci[0] | { idVocePendenza: 1, importo: 10.00, descrizione: "descrizione", tipoBollo: "01", hashDocumento: "a/CWqtFtCEyA/ymBySahGSaqKMiak5mlX3BoX0jupy8=", provinciaResidenza: "xxx" } | 'provinciaResidenza' |
+| voci.descrizioneCausaleRPT | pendenzaPut.voci[0].descrizioneCausaleRPT | '' | 'descrizioneCausaleRPT' |
+| voci.descrizioneCausaleRPT | pendenzaPut.voci[0].descrizioneCausaleRPT | loremIpsum | 'descrizioneCausaleRPT' |
+
+Scenario Outline: <field> non valida
+
+* def pendenzaPut = read('classpath:test/api/backoffice/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento_contabilita.json')
+
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* call read('classpath:utils/pa-prepara-avviso.feature')
+* def ccp = getCurrentTimeMillis()
+* def importo = 100.99
+
+* set pendenza.idA2A = idA2A
+* set pendenza.idPendenza = idPendenza
+* set pendenza.numeroAvviso = numeroAvviso
+* set pendenza.stato = 'NON_ESEGUITA'
+
+* set <fieldRequest> = <fieldValue>
+
+Given url ente_api_url
+And path '/v1/avvisi', idDominio, iuv
+And request pendenza
+When method post
+Then status 200
+
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-attiva-rpt.feature')
+* match response contains { dati: '##null'}
+* match response.faultBean == esitoAttivaRPT
+* match response.faultBean.description contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| importo | pendenzaPut.voci[0].contabilita[0].importo | null | 'importo' |
+| importo | pendenzaPut.voci[0].contabilita[0].importo | '10.001' | 'importo' |
+| importo | pendenzaPut.voci[0].contabilita[0].importo | '10,000' | 'importo' |
+| importo | pendenzaPut.voci[0].contabilita[0].importo | '10,00.0' | 'importo' |
+| importo | pendenzaPut.voci[0].contabilita[0].importo | 'aaaa' | 'importo' |
+| importo | pendenzaPut.voci[0].contabilita[0].importo | '12345678901234567,89' | 'importo' |
+| ufficio | pendenzaPut.voci[0].contabilita[0].ufficio | loremIpsum | 'ufficio' |
+| capitolo | pendenzaPut.voci[0].contabilita[0].capitolo | loremIpsum | 'capitolo' |
+| capitolo | pendenzaPut.voci[0].contabilita[0].capitolo | null | 'capitolo' |
+| accertamento | pendenzaPut.voci[0].contabilita[0].accertamento | loremIpsum | 'accertamento' |
+| subAccertamento | pendenzaPut.voci[0].contabilita[0].subAccertamento | loremIpsum | 'subAccertamento' |
+| siope | pendenzaPut.voci[0].contabilita[0].siope | loremIpsum | 'siope' |
+| codGestionaleEnte | pendenzaPut.voci[0].contabilita[0].codGestionaleEnte | loremIpsum | 'codGestionaleEnte' |
+| annoEsercizio | pendenzaPut.voci[0].contabilita[0].annoEsercizio | 12345 | 'annoEsercizio' |
+| annoEsercizio | pendenzaPut.voci[0].contabilita[0].annoEsercizio | loremIpsum | 'annoEsercizio' |
+| annoEsercizio | pendenzaPut.voci[0].contabilita[0].annoEsercizio | null | 'annoEsercizio' |
+| annoAccertamento | pendenzaPut.voci[0].contabilita[0].annoAccertamento | 12345 | 'annoAccertamento' |
+| annoAccertamento | pendenzaPut.voci[0].contabilita[0].annoAccertamento | loremIpsum | 'annoAccertamento' |
 
 Scenario Outline: <field> non valida 
 

@@ -4,7 +4,7 @@ info:
     API di integrazione ai servizi di pagamento di 
     [GovPay](https://github.com/link-it/GovPay) erogate
     dagli applicativi dell'Ente Creditore
-  version: "1.1.0"
+  version: "1.2.0"
   title: "GovPay - API Applicazioni"
   contact:
     name: GitHub Project Page
@@ -443,7 +443,15 @@ components:
               description: >-
                 Dati applicativi allegati dal gestionale secondo un
                 formato proprietario.
-        
+            descrizioneCausaleRPT:
+              type: string
+              description: Testo libero per la causale versamento
+              example: Sanzione CdS n. abc00000
+              maxLength: 140
+            contabilita:
+              type: array
+              items:
+                $ref: '#/components/schemas/Contabilita'
     datiEntrata:
       type: object
       oneOf:
@@ -713,6 +721,49 @@ components:
           type: string
           description: Descrizione estesa della motivazione che ha portato alla cancellazione del pagamento
           example: Errore gestione nel PSP  
+    Contabilita:
+      type: object
+      required:
+        - capitolo
+        - annoEsercizio
+        - importo
+      properties:
+        ufficio:
+          type: string
+          description: Codice dell’ufficio
+          maxLength: 64
+        capitolo:
+          type: string
+          description: Codice del capitolo
+          maxLength: 64
+        annoEsercizio:
+          type: number
+          description: Anno di esercizio
+          example: 2020
+        accertamento:
+          type: string
+          description: Codice dell’accertamento
+          maxLength: 64
+        annoAccertamento:
+          type: number
+          description: Anno accertamento
+          example: 2020
+        subAccertamento:
+          type: string
+          description: Codice dell’accertamento se contabilita' di terze parti
+          maxLength: 64
+        siope:
+          type: string
+          description: Codice siope dell'entrata
+          maxLength: 64
+        importo:
+          type: number
+          description: Importo della voce di contabilita'
+          example: 10.01
+        codGestionaleEnte:
+          type: string
+          description: Codice contabilita' utilizzato dal gestionale dell'ente
+          maxLength: 256
     LinguaSecondaria:
       example: 'false'
       type: string

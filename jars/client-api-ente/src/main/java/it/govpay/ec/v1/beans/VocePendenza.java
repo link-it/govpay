@@ -1,6 +1,7 @@
 package it.govpay.ec.v1.beans;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -46,6 +47,8 @@ public class VocePendenza extends DatiEntrata {
    * Testo libero per la causale versamento  
   **/
   private String descrizioneCausaleRPT = null;
+  
+  private List<Contabilita> contabilita = null;
   
  /**
    * indice di voce all&#x27;interno della pendenza
@@ -164,6 +167,21 @@ public class VocePendenza extends DatiEntrata {
     this.descrizioneCausaleRPT = descrizioneCausaleRPT;
     return this;
   }
+  
+  /**
+   **/
+  public VocePendenza contabilita(List<Contabilita> contabilita) {
+    this.contabilita = contabilita;
+    return this;
+  }
+
+  @JsonProperty("contabilita")
+  public List<Contabilita> getContabilita() {
+    return contabilita;
+  }
+  public void setContabilita(List<Contabilita> contabilita) {
+    this.contabilita = contabilita;
+  }
 
 
   @Override
@@ -177,6 +195,7 @@ public class VocePendenza extends DatiEntrata {
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
+    sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
     sb.append("}");
     return sb.toString();
   }
