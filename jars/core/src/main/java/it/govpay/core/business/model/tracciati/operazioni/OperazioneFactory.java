@@ -412,7 +412,7 @@ public class OperazioneFactory {
 	}
 
 	
-	public AbstractOperazioneResponse elaboraLineaCSV(CaricamentoRequest request, TracciatiPendenzeManager manager, BasicBD basicBD) {
+	public AbstractOperazioneResponse elaboraLineaCSV(CaricamentoRequest request, TracciatiPendenzeManager manager, String threadName, BasicBD basicBD) {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		AbstractOperazioneResponse operazioneResponse = new CaricamentoResponse();
 		operazioneResponse.setNumero(request.getLinea());
@@ -423,7 +423,7 @@ public class OperazioneFactory {
 		operazioneResponse.setJsonRichiesta(request.getDati() == null || request.getDati().length == 0 ? "" : new String(request.getDati()));
 		
 		try {
-			log.debug(Thread.currentThread().getName() + ": Numero Linea ["+request.getLinea() +"], Dati ["+operazioneResponse.getJsonRichiesta()+"]");
+			log.debug(threadName + ": Numero Linea ["+request.getLinea() +"], Dati ["+operazioneResponse.getJsonRichiesta()+"]");
 			if(request.getDati() == null || request.getDati().length == 0) throw new ValidationException("Record vuoto");
 			
 			TrasformazioneDTOResponse trasformazioneResponse = TracciatiUtils.trasformazioneInputCSV(log, request.getCodDominio(), request.getCodTipoVersamento(), new String(request.getDati()), request.getTipoTemplateTrasformazioneRichiesta() , request.getTemplateTrasformazioneRichiesta() );
@@ -432,7 +432,7 @@ public class OperazioneFactory {
 			
 			operazioneResponse.setJsonRichiesta(trasformazioneResponse.getOutput());
 			
-			log.debug(Thread.currentThread().getName() + ": Operazione da eseguire ["+trasformazioneResponse.getTipoOperazione()+"]");
+			log.debug(threadName + ": Operazione da eseguire ["+trasformazioneResponse.getTipoOperazione()+"]");
 			
 			Versamento versamento = new Versamento();
 			if(trasformazioneResponse.getTipoOperazione() == null || trasformazioneResponse.getTipoOperazione().equals(TipoOperazioneType.ADD)) {
@@ -444,14 +444,14 @@ public class OperazioneFactory {
 				
 				new PendenzaPostValidator(pendenzaPost).validate();
 				
-				if(manager.checkPendenza(pendenzaPost.getIdA2A(), pendenzaPost.getIdPendenza())) {
+				if(manager.checkPendenza(threadName, pendenzaPost.getIdA2A(), pendenzaPost.getIdPendenza())) {
 					throw new ValidationException("Pendenza [IdA2A:"+pendenzaPost.getIdA2A()+", IdPendenza:"+pendenzaPost.getIdPendenza()+"], e' duplicata all'interno del tracciato.");
 				}
 				
-				manager.addPendenza(pendenzaPost.getIdA2A(), pendenzaPost.getIdPendenza()); 
+				manager.addPendenza(threadName, pendenzaPost.getIdA2A(), pendenzaPost.getIdPendenza()); 
 				
 				if(pendenzaPost.getDocumento() != null) { //attesa primo inserimento documento
-					manager.getDocumento(pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 
+					manager.getDocumento(threadName, pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 
 				}
 				
 				it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
@@ -482,7 +482,7 @@ public class OperazioneFactory {
 				manager.addNumeroAvviso(versamentoModel.getNumeroAvviso());				
 				
 				if(pendenzaPost.getDocumento() != null) { // sblocco thread che attendono il documento
-					manager.releaseDocumento(pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 
+					manager.releaseDocumento(threadName, pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 
 				}
 				
 				Avviso avviso = new Avviso();
@@ -538,7 +538,7 @@ public class OperazioneFactory {
 			}
 			
 		} catch(GovPayException e) {
-			log.debug("Impossibile eseguire elaborazione della linea ("+request.getLinea()+"): "+ e.getMessage(),e);
+			log.debug(threadName + ": Impossibile eseguire elaborazione della linea ("+request.getLinea()+"): "+ e.getMessage(),e);
 			operazioneResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
 			if(tipoOperazioneType.equals(TipoOperazioneType.ADD))
 				operazioneResponse.setEsito(AbstractOperazioneResponse.ESITO_ADD_KO);
@@ -562,7 +562,7 @@ public class OperazioneFactory {
 			}
 			operazioneResponse.setFaultBean(respKo);
 		} catch(ValidationException e) {
-			log.debug("Impossibile eseguire elaborazione della linea ("+request.getLinea()+"): "+ e.getMessage(),e);
+			log.debug(threadName + ": Impossibile eseguire elaborazione della linea ("+request.getLinea()+"): "+ e.getMessage(),e);
 			
 			operazioneResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
 			if(tipoOperazioneType.equals(TipoOperazioneType.ADD))
@@ -578,7 +578,7 @@ public class OperazioneFactory {
 			respKo.setDettaglio(e.getMessage());
 			operazioneResponse.setFaultBean(respKo);
 		} catch(Throwable e) {
-			log.error("Impossibile eseguire elaborazione della linea ("+request.getLinea()+"): "+ e.getMessage(),e);
+			log.error(threadName + ": Impossibile eseguire elaborazione della linea ("+request.getLinea()+"): "+ e.getMessage(),e);
 			operazioneResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
 			if(tipoOperazioneType.equals(TipoOperazioneType.ADD))
 				operazioneResponse.setEsito(AbstractOperazioneResponse.ESITO_ADD_KO);

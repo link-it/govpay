@@ -130,4 +130,13 @@ public class CSVUtils {
 			return false;
 		}
 	}
+	
+	public String getCodDocumento(CSVRecord record, int position) {
+		try {
+			String codDocumento = record.get(position);
+			return codDocumento; 
+		} catch (Throwable t) {
+			return null;
+		}
+	}
 }

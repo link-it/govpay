@@ -6,12 +6,14 @@ Background:
 
 * callonce read('classpath:utils/api/v1/ragioneria/bunch-riconciliazioni-v2.feature')
 
+* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
+
 Scenario: Ricerca flussiRendicontazione con iuv impostato 
 
-Given url backofficeBaseurl
+Given url ragioneriaBaseurl
 And path pathServizio
 And param iuv = '1_2_3_4'
-And headers gpAdminBasicAutenticationHeader
+And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
 And match response == 
@@ -27,25 +29,24 @@ And match response ==
 """
 
 
-Scenario Outline: Ricerca rendicontazioni da operatore <operatore>.
+Scenario Outline: Ricerca rendicontazioni da applicazione <applicazione>.
 
+* def applicazione = read('msg/<applicazione>')
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
 Given url backofficeBaseurl
-And path 'operatori', 'RSSMRA30A01H501I'
+And path 'applicazioni', idA2A
 And headers gpAdminBasicAutenticationHeader
-And request read('msg/<operatore>')
+And request applicazione
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+* def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v2', autenticazione: 'basic'})
 
-* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
-* def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
-
-Given url backofficeBaseurl
+Given url ragioneriaBaseurl
 And path pathServizio
-And headers spidHeadersRossi
+And headers idA2ABasicAutenticationHeader
 And param dataDa = dataInizioFR
 And param dataA = dataFineFR
 And param iuv = '1_2_3_4'
@@ -64,12 +65,9 @@ And match response ==
 """ 
 
 Examples:
-| operatore | numRisultati | 
-| operatore_star.json | 0 |
-| operatore_domini1e2.json | 0 |
-| operatore_domini1.json | 0 |
-| operatore_domini2.json | 0 |
-| operatore_none.json | 0 |
-
-
+| applicazione | numRisultati | 
+| applicazione_star.json | 0 |
+| applicazione_dominio1.json | 0 |
+| applicazione_dominio2.json | 0 |
+| applicazione_nonAuthDominio.json | 0 |
 
