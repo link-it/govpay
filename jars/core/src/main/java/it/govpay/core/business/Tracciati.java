@@ -634,12 +634,12 @@ public class Tracciati {
 		idTracciato.setIdTracciato(tracciato.getId());
 
 		List<CaricamentoRequest> richiesteThread = new ArrayList<>();
-		
-		TracciatiPendenzeManager manager = new TracciatiPendenzeManager();
 
+		TracciatiPendenzeManager manager = new TracciatiPendenzeManager();
+		
 		for(int i = 0; i < lst.size() ; i ++) {
 			byte[] linea = lst.get(i);
-
+			
 			CaricamentoRequest request = new CaricamentoRequest();
 			// inserisco l'identificativo del dominio
 			request.setCodDominio(codDominio);
@@ -652,9 +652,9 @@ public class Tracciati {
 			request.setIdTracciato(tracciato.getId());
 
 			richiesteThread.add(request);
-
+            
 			if(richiesteThread.size() == maxRichiestePerThread) {
-				CaricamentoTracciatoThread sender = new CaricamentoTracciatoThread(richiesteThread, idTracciato, manager, ctx);
+				CaricamentoTracciatoThread sender = new CaricamentoTracciatoThread(richiesteThread, idTracciato, ("ThreadElaborazione_" + (threads.size() + 1)), manager, ctx);
 				ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciati().execute(sender);
 				threads.add(sender);
 				richiesteThread = new ArrayList<CaricamentoRequest>();
@@ -665,7 +665,7 @@ public class Tracciati {
 
 		// richieste residue
 		if(richiesteThread.size() > 0) {
-			CaricamentoTracciatoThread sender = new CaricamentoTracciatoThread(richiesteThread, idTracciato, manager, ctx);
+			CaricamentoTracciatoThread sender = new CaricamentoTracciatoThread(richiesteThread, idTracciato, ("ThreadElaborazione_" + (threads.size() + 1)), manager, ctx);
 			ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciati().execute(sender);
 			threads.add(sender);
 		}
