@@ -30,7 +30,7 @@ public class FlussoRendicontazione extends JSONSerializable {
   @JsonProperty("idFlusso")
   private String idFlusso = null;
   
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS", locale = "it_IT", timezone = "Europe/Rome")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
   @JsonProperty("dataFlusso")
   private Date dataFlusso = null;
   

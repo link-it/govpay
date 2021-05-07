@@ -4,7 +4,7 @@ info:
     API di integrazione ai servizi di pagamento di 
     [GovPay](https://github.com/link-it/GovPay) erogate
     dagli applicativi dell'Ente Creditore
-  version: "1.0.0"
+  version: "1.1.0"
   title: "GovPay - API Applicazioni"
   contact:
     name: GitHub Project Page
@@ -379,7 +379,9 @@ components:
           minItems: 1
           maxItems: 5
           items:
-            $ref: '#/components/schemas/vocePendenza'          
+            $ref: '#/components/schemas/vocePendenza'  
+        proprieta:
+          $ref: '#/components/schemas/ProprietaPendenza'
     statoPendenzaVerificata:
       example: NON_ESEGUITA
       type: string
@@ -711,4 +713,40 @@ components:
           type: string
           description: Descrizione estesa della motivazione che ha portato alla cancellazione del pagamento
           example: Errore gestione nel PSP  
+    LinguaSecondaria:
+      example: 'false'
+      type: string
+      enum:
+        - 'false'
+        - 'de'
+        - 'en'
+        - 'fr'
+        - 'sl'
+    ProprietaPendenza:
+      type: object
+      description: Dati supporto per la gestione del ciclo di vita della pendenza.
+      properties:
+        linguaSecondaria:
+          $ref: '#/components/schemas/LinguaSecondaria'
+        descrizioneImporto:
+          type: array
+          items: 
+            $ref: '#/components/schemas/VoceDescrizioneImporto'
+        lineaTestoRicevuta1:
+          type: string
+          description: stringa personalizzata da inserire nella ricevuta
+        lineaTestoRicevuta2:
+          type: string
+          description: stringa personalizzata da inserire nella ricevuta
+    VoceDescrizioneImporto:
+      type: object
+      properties:
+        voce: 
+          type: string
+          description: voce importo
+          example: canone annuo
+        importo: 
+          type: number
+          description: importo
+          example: 10.01
     

@@ -17,7 +17,7 @@ public class SimpleDateFormatUtils {
 	public static SimpleDateFormatUtils getInstance() {
 		return new SimpleDateFormatUtils();
 	}
-	
+	private static final String PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM_SS_SSS_Z = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 	private static final String PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM_SS_SSS = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 	private static final String PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM = "yyyy-MM-dd'T'HH:mm";
 	private static final String PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM_SS = "yyyy-MM-dd'T'HH:mm:ss";
@@ -39,6 +39,7 @@ public class SimpleDateFormatUtils {
 	static {
 		datePatternsRest = new ArrayList<>();
 		datePatternsRest.addAll(datePatterns);
+		datePatternsRest.add(PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM_SS_SSS_Z);
 		datePatternsRest.add(PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM_SS_SSS);
 		datePatternsRest.add(PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM);
 		datePatternsRest.add(PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM_SS);

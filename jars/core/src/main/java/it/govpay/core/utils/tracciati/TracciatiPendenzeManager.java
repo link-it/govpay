@@ -22,35 +22,35 @@ public class TracciatiPendenzeManager {
 		this.listaNumeriAvviso = new ArrayList<>();
 	}
 	
-	public synchronized void addPendenza(String idA2A, String idPendenza) {
-		//log.debug("AAAAAA " + Thread.currentThread().getName() + " ADD Pendenza [IdA2A:"+idA2A+", IdPendenza:"+idPendenza+"]");
+	public synchronized void addPendenza(String nomeThread, String idA2A, String idPendenza) {
+//		log.debug(nomeThread + " ADD Pendenza [IdA2A:"+idA2A+", IdPendenza:"+idPendenza+"]");
 		this.listaPendenze.add(idA2A + "@" + idPendenza);
 	}
 	
-	public synchronized boolean checkPendenza(String idA2A, String idPendenza) {
-		//log.debug("AAAAAA " + Thread.currentThread().getName() + " CHECK Pendenza [IdA2A:"+idA2A+", IdPendenza:"+idPendenza+"]");
+	public synchronized boolean checkPendenza(String nomeThread, String idA2A, String idPendenza) {
+//		log.debug(nomeThread + " CHECK Pendenza [IdA2A:"+idA2A+", IdPendenza:"+idPendenza+"]");
 		return this.listaPendenze.contains(idA2A + "@" + idPendenza);
 	}
 	
-	public synchronized boolean getDocumento(String idA2A, String codDocumento) {
-//		log.debug("AAAAAA " + Thread.currentThread().getName() + " GET Documento ["+codDocumento+"]");
+	public synchronized boolean getDocumento(String nomeThread, String idA2A, String codDocumento) {
+		log.debug(nomeThread + ": acquisizione lock sul documento ["+codDocumento+"]");
 		
 		while(this.listaDocumenti.contains(idA2A + "@" + codDocumento)) {
-//			log.debug("AAAAAA " + Thread.currentThread().getName() + " GET Documento ["+codDocumento+"], wait");
+			log.debug(nomeThread + ": Documento gia' in uso in un altro thread ["+codDocumento+"], wait");
 			try {
 				wait();
 			} catch (Exception e) {
-				log.error("Errore durante la wait: " + e.getMessage(),e); 
+				log.error(nomeThread + ": Errore durante la wait: " + e.getMessage(),e); 
 			}
 		}
 		
-//		log.debug("AAAAAA " + Thread.currentThread().getName() + " GET Documento ["+codDocumento+"], resume");
+		log.debug(nomeThread + " acquisizione lock sul documento ["+codDocumento+"], ok");
 		this.listaDocumenti.add(idA2A + "@" + codDocumento);
 		return true;
 	}
 	
-	public synchronized void releaseDocumento(String idA2A, String codDocumento) {
-//		log.debug("AAAAAA " + Thread.currentThread().getName() + " RELEASE Documento ["+codDocumento+"]");
+	public synchronized void releaseDocumento(String nomeThread, String idA2A, String codDocumento) {
+		log.debug(nomeThread + " rilascio documento ["+codDocumento+"]");
 		this.listaDocumenti.remove((idA2A + "@" + codDocumento));
 		notify();
 	}

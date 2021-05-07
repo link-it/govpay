@@ -290,9 +290,11 @@ public class VersamentiBD extends BasicBD {
 				IdApplicazione idApplicazione = new IdApplicazione();
 				BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
 				idApplicazione.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
+				idApplicazione.setId(versamento.getApplicazione(configWrapper).getId());
 				idDocumento.setIdApplicazione(idApplicazione);
 				IdDominio idDominio = new IdDominio();
 				idDominio.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
+				idDominio.setId(versamento.getDominio(configWrapper).getId());
 				idDocumento.setIdDominio(idDominio);
 					
 				
@@ -431,9 +433,11 @@ public class VersamentiBD extends BasicBD {
 					IdApplicazione idApplicazione = new IdApplicazione();
 					BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
 					idApplicazione.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
+					idApplicazione.setId(versamento.getApplicazione(configWrapper).getId());
 					idDocumento.setIdApplicazione(idApplicazione);
 					IdDominio idDominio = new IdDominio();
 					idDominio.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
+					idDominio.setId(versamento.getDominio(configWrapper).getId());
 					idDocumento.setIdDominio(idDominio );
 					
 					try {
