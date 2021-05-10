@@ -19,16 +19,7 @@ description:
     apiDocumentation: 'https://govpay.readthedocs.io/it/latest/integrazione/api/index.html'
     documentation: 'https://govpay.readthedocs.io/it/latest/'
     features:
-      - Implementazione delle specifiche di interconnessione a pagoPA
-      - Supporto completo dei modelli di pagamento ad iniziativa Ente o PSP
-      - Servizio di stampa degli Avvisi di Pagamento pagoPA anche per pagamenti rateizzati o in forma ridotta
-      - Servizio notifica email degli Avvisi di Pagamento pagoPA, delle Ricevute di Pagamento e dei promemoria di scadenza
-      - Integrazione al Backend IO per l'avvisatura digitale dei bollettini di pagamento al cittadino tramite AppIO (https://io.italia.it/) e di notifica dei promemoria di scadenza e delle ricevute di pagamento
-      - Cruscotto di monitoraggio (Tavolo Operativo) conforme ai requisiti pagoPA
-      - Servizi REST di pagamento e consultazione della posizione debitoria per l'integrazione di portali al cittadino
-      - Servizi REST di gestione pendenze per l'integrazione di gestionali posizioni debitorie
-      - Servizi REST di riconciliazione pagamenti per l'integrazione di verticali di contabilità
-      - Profilazione degli operatori di cruscotto
+      Gateway per l'interconnessione alla piattaforma di pagamento pagoPA per Enti Creditori e Partner/Intermediari Tecnologici.
     genericName: Gateway di integrazione a pagoPA
     longDescription: >
       La piattaforma GovPay soddisfa i requisiti richiesti dalla normativa per
@@ -80,8 +71,7 @@ description:
       - Interoperabilità con gestionali
       - Integrabilità con altri front-end
     shortDescription: >-
-      Infrastruttura per l'integrazione di Enti Pubblici, Intermediari o Partner
-      Tecnologici alla piattaforma di pagamento pagoPA.
+      Gateway di integrazione alla piattaforma di pagamento pagoPA.
 developmentStatus: stable
 inputTypes:
   - text/xml
@@ -132,10 +122,10 @@ outputTypes:
   - application/pdf
 platforms:
   - web
-releaseDate: '2021-01-31'
+releaseDate: '2021-05-31'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
-softwareVersion: '3.4.0-SNAPSHOT'
+softwareVersion: '3.4.0'
 url: 'https://github.com/link-it/govpay'
 usedBy:
   - MISE - Ministero dello Sviluppo Economico
