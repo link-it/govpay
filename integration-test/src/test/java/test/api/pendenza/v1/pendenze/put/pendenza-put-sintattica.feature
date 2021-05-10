@@ -93,6 +93,8 @@ Examples:
 | voci.hashDocumento | pendenzaPut.voci[2].hashDocumento | loremIpsum | 'hashDocumento' |
 | voci.provinciaResidenza | pendenzaPut.voci[2].provinciaResidenza | null | 'provinciaResidenza' |
 | voci.provinciaResidenza | pendenzaPut.voci[2].provinciaResidenza | 'xxx' | 'provinciaResidenza' |
+| voci.descrizioneCausaleRPT | pendenzaPut.voci[0].descrizioneCausaleRPT | '' | 'descrizioneCausaleRPT' |
+| voci.descrizioneCausaleRPT | pendenzaPut.voci[0].descrizioneCausaleRPT | loremIpsum | 'descrizioneCausaleRPT' |
 
 Scenario: Numero voci eccessivo
 
