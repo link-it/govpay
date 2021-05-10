@@ -1,0 +1,368 @@
+openapi: 3.0.0
+info:
+  description: >-
+    API di integrazione ai servizi di pagamento di 
+    [GovPay](https://github.com/link-it/GovPay) erogate
+    dall'Ente Creditore per la ricezione delle rendicontazioni dei pagamenti gestiti su govpay
+  version: "1.0.0"
+  title: "GovPay - API Ente - Rendicontazioni"
+  contact:
+    name: GitHub Project Page
+    url: 'https://github.com/link-it/GovPay/'
+  license:
+    name: GPL
+    url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
+servers:
+  - description: Base url servizio
+    url: https://host/baseurl
+tags:
+  - name: Rendicontazioni
+paths:
+  '/rpp': 
+    post:
+      operationId: inviaSintesiPagamenti
+      summary: Invio csv di sintesi dei pagamenti registrati
+      tags:
+        - Rendicontazioni
+      parameters: 
+        - in: header
+          name: X-DataInizio
+          schema:
+            type: string
+            format: date-time
+          required: true
+          description: Data Inizio pagamenti registrati
+        - in: header
+          name: X-DataFine
+          schema:
+            type: string
+            format: date-time
+          required: true
+          description: Data Fine pagamenti registrati
+        - in: header
+          name: X-TipiPendenza
+          schema:
+            type: string
+          required: false
+          description: Tipologie di Pendenze incluse nel report
+      requestBody:
+        description: Tracciato csv di sintesi pagamenti registrati
+        content:
+          text/csv:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: Informazioni acquisite correttamente
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  '/rpp/{idDominio}/{iuv}/{ccp}':
+    post:
+      summary: Invio Dettaglio di una richiesta di pagamento
+      operationId: invioRpp
+      tags:
+        - Rendicontazioni
+      parameters:
+        - in: path
+          name: idDominio
+          description: Codice fiscale del dominio beneficiario
+          required: true
+          schema:
+            type: string
+            pattern: '(^([0-9]){11}$)'
+        - in: path
+          name: iuv
+          description: Identificativo univoco di versamento
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: ccp
+          description: Codice di contesto pagamento
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Dettaglio transazione registrata
+        content:
+          application/json:
+              schema:
+                $ref: '#/components/schemas/rpp'
+      responses:
+        '200':
+          description: Informazioni acquisite correttamente
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  '/rpp/{idDominio}/{iuv}/{ccp}/rpt':
+    post:
+      summary: Invio Dettaglio della richiesta di pagamento pagopa
+      operationId: invioRpt
+      tags:
+        - Rendicontazioni
+      parameters:
+        - in: path
+          name: idDominio
+          description: Codice fiscale del dominio beneficiario
+          required: true
+          schema:
+            type: string
+            pattern: '(^([0-9]){11}$)'
+        - in: path
+          name: iuv
+          description: Identificativo univoco di versamento
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: ccp
+          description: Codice di contesto pagamento
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Xml della richiesta di pagamento
+        content:
+          application/xml:
+            schema:
+              type: string
+              example: xml della richiesta di pagamento pagopa
+      responses:
+        '200':
+          description: Informazioni acquisite correttamente
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  '/rpp/{idDominio}/{iuv}/{ccp}/rt':
+    post:
+      summary: Dettaglio della ricevuta di pagamento
+      operationId: getRt
+      tags:
+        - Rendicontazioni
+      parameters:
+        - in: path
+          name: idDominio
+          description: Codice fiscale del dominio beneficiario
+          required: true
+          schema:
+            type: string
+            pattern: '(^([0-9]){11}$)'
+        - in: path
+          name: iuv
+          description: Identificativo univoco di versamento
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: ccp
+          description: Codice di contesto pagamento
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: visualizzaSoggettoDebitore
+          description: Indica se inserire il soggetto debitore nel pdf della ricevuta
+          schema:
+            type: boolean
+      requestBody:
+        description: Xml della ricevuta di pagamento
+        content:
+          application/xml:
+            schema:
+              type: string
+              example: xml della ricevuta
+      responses:
+        '200':
+          description: Informazioni acquisite correttamente
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  '/flussiRendicontazione': 
+    post:
+      operationId: inviaSintesiFlussiRendicontazione
+      summary: Invio csv di sintesi dei flussi di rendicontazione acquisiti
+      tags:
+        - Rendicontazioni
+      parameters: 
+        - in: header
+          name: X-DataInizio
+          schema:
+            type: string
+            format: date-time
+          required: true
+          description: Data Inizio flussi acquisiti
+        - in: header
+          name: X-DataFine
+          schema:
+            type: string
+            format: date-time
+          required: true
+          description: Data Fine flussi acquisiti
+        - in: header
+          name: X-TipiPendenza
+          schema:
+            type: string
+          required: false
+          description: Tipologie di Pendenze incluse nel report
+      requestBody:
+        description: Tracciato csv di sintesi flussi rendicontazione acquisiti
+        content:
+          text/csv:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: Informazioni acquisite correttamente
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  '/flussiRendicontazione/{idFlusso}/{dataOraFlusso}':
+    post:
+      operationId: inviaFlussoRendicontazione
+      summary: Invio xml flusso di rendicontazione 
+      tags:
+        - Rendicontazioni
+      parameters: 
+        - in: path
+          name: idFlusso
+          description: Identificativo del flusso di rendicontazione
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: dataOraFlusso
+          description: Data di emissione del flusso
+          required: true
+          schema:
+            type: string
+            format: date-time
+      requestBody:
+        description: Tracciato csv di sintesi flussi rendicontazione acquisiti
+        content:
+          application/xml:
+            schema:
+              type: string
+              example: xml del flusso di rendicontazione
+      responses:
+        '200':
+          description: Informazioni acquisite correttamente
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+components:
+  responses:
+    '400':
+      description: Richiesta non correttamente formata
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/faultBean'
+          example:
+            categoria: RICHIESTA
+            codice: INTERNO
+            descrizione: Servizio non disponibile
+    '401':
+      description: Richiesta non autenticata
+    '403':
+      description: Richiesta non autorizzata
+    '404':
+      description: Risorsa inesistente
+    '500':
+      description: Servizio non disponibile
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/faultBean'
+          example:
+            categoria: INTERNO
+            codice: INTERNO
+            descrizione: Servizio non disponibile
+  schemas:
+    faultBean:
+      type: object
+      required:
+        - categoria
+        - codice
+        - descrizione
+      properties:
+        categoria:
+          type: string
+          description: >-
+            Categoria dell'errore riscontrato:
+             * `AUTORIZZAZIONE` - Operazione non autorizzata
+             * `RICHIESTA` - Richiesta non valida
+             * `OPERAZIONE` - Operazione non eseguibile
+             * `EC` - Errore da Ente Creditore
+             * `INTERNO` - Errore interno
+          enum:
+            - AUTORIZZAZIONE
+            - RICHIESTA
+            - OPERAZIONE
+            - INTERNO
+            - EC
+        codice:
+          type: string
+          description: Codice di errore
+        descrizione:
+          type: string
+          description: Descrizione dell'errore
+        dettaglio:
+          type: string
+          description: Descrizione aggiuntiva
+      example:
+        categoria: INTERNO
+        codice: INTERNO
+        descrizione: Servizio non disponibile
+    rpp:
+      type: object
+      required:
+        - versione
+        - rt
+      properties:
+        dettaglioStato:
+          type: string
+          description: >-
+            Dettaglio fornito dal Nodo dei Pagamenti sullo stato della
+            richiesta.
+        versione:
+          type: string
+          description: Versione degli oggetti xml inviati.
+        rpt:
+          type: object
+          description: "Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico"
+        rt:
+          type: object
+          description: "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica"
+          
+          
