@@ -18,29 +18,43 @@ servers:
 tags:
   - name: Rendicontazioni
 paths:
-  '/rpp': 
+  '/rpp/{idDominio}/{idTracciato}': 
     post:
       operationId: inviaSintesiPagamenti
       summary: Invio csv di sintesi dei pagamenti registrati
       tags:
         - Rendicontazioni
       parameters: 
-        - in: header
-          name: X-DataInizio
+        - in: path
+          name: idDominio
+          description: Codice fiscale del dominio beneficiario
+          required: true
+          schema:
+            type: string
+            pattern: '(^([0-9]){11}$)'
+        - in: path
+          name: idTracciato
+          description: Identificti
+          required: true
+          schema:
+            type: string
+            pattern: '(^([0-9]){11}$)'
+        - in: query
+          name: dataInizio
           schema:
             type: string
             format: date-time
           required: true
           description: Data Inizio pagamenti registrati
-        - in: header
-          name: X-DataFine
+        - in: query
+          name: dataFine
           schema:
             type: string
             format: date-time
           required: true
           description: Data Fine pagamenti registrati
-        - in: header
-          name: X-TipiPendenza
+        - in: query
+          name: tipiPendenza
           schema:
             type: string
           required: false
@@ -105,122 +119,43 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
-  '/rpp/{idDominio}/{iuv}/{ccp}/rpt':
-    post:
-      summary: Invio Dettaglio della richiesta di pagamento pagopa
-      operationId: invioRpt
-      tags:
-        - Rendicontazioni
-      parameters:
-        - in: path
-          name: idDominio
-          description: Codice fiscale del dominio beneficiario
-          required: true
-          schema:
-            type: string
-            pattern: '(^([0-9]){11}$)'
-        - in: path
-          name: iuv
-          description: Identificativo univoco di versamento
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: ccp
-          description: Codice di contesto pagamento
-          required: true
-          schema:
-            type: string
-      requestBody:
-        description: Xml della richiesta di pagamento
-        content:
-          application/xml:
-            schema:
-              type: string
-              example: xml della richiesta di pagamento pagopa
-      responses:
-        '200':
-          description: Informazioni acquisite correttamente
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
-  '/rpp/{idDominio}/{iuv}/{ccp}/rt':
-    post:
-      summary: Dettaglio della ricevuta di pagamento
-      operationId: getRt
-      tags:
-        - Rendicontazioni
-      parameters:
-        - in: path
-          name: idDominio
-          description: Codice fiscale del dominio beneficiario
-          required: true
-          schema:
-            type: string
-            pattern: '(^([0-9]){11}$)'
-        - in: path
-          name: iuv
-          description: Identificativo univoco di versamento
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: ccp
-          description: Codice di contesto pagamento
-          required: true
-          schema:
-            type: string
-        - in: query
-          name: visualizzaSoggettoDebitore
-          description: Indica se inserire il soggetto debitore nel pdf della ricevuta
-          schema:
-            type: boolean
-      requestBody:
-        description: Xml della ricevuta di pagamento
-        content:
-          application/xml:
-            schema:
-              type: string
-              example: xml della ricevuta
-      responses:
-        '200':
-          description: Informazioni acquisite correttamente
-        '401':
-          $ref: '#/components/responses/401'
-        '403':
-          $ref: '#/components/responses/403'
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
-  '/flussiRendicontazione': 
+  '/flussiRendicontazione/{idDominio}/{idTracciato}': 
     post:
       operationId: inviaSintesiFlussiRendicontazione
       summary: Invio csv di sintesi dei flussi di rendicontazione acquisiti
       tags:
         - Rendicontazioni
       parameters: 
-        - in: header
-          name: X-DataInizio
+        - in: path
+          name: idDominio
+          description: Codice fiscale del dominio beneficiario
+          required: true
+          schema:
+            type: string
+            pattern: '(^([0-9]){11}$)'
+        - in: path
+          name: idTracciato
+          description: Identificti
+          required: true
+          schema:
+            type: string
+            pattern: '(^([0-9]){11}$)'
+        - in: query
+          name: dataInizio
           schema:
             type: string
             format: date-time
           required: true
-          description: Data Inizio flussi acquisiti
-        - in: header
-          name: X-DataFine
+          description: Data Inizio pagamenti registrati
+        - in: query
+          name: dataFine
           schema:
             type: string
             format: date-time
           required: true
-          description: Data Fine flussi acquisiti
-        - in: header
-          name: X-TipiPendenza
+          description: Data Fine pagamenti registrati
+        - in: query
+          name: tipiPendenza
           schema:
             type: string
           required: false
@@ -242,7 +177,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  '/flussiRendicontazione/{idFlusso}/{dataOraFlusso}':
+  '/flussiRendicontazione/{idDominio}/{idFlusso}':
     post:
       operationId: inviaFlussoRendicontazione
       summary: Invio xml flusso di rendicontazione 
@@ -250,18 +185,18 @@ paths:
         - Rendicontazioni
       parameters: 
         - in: path
+          name: idDominio
+          description: Codice fiscale del dominio beneficiario
+          required: true
+          schema:
+            type: string
+            pattern: '(^([0-9]){11}$)'
+        - in: path
           name: idFlusso
           description: Identificativo del flusso di rendicontazione
           required: true
           schema:
             type: string
-        - in: path
-          name: dataOraFlusso
-          description: Data di emissione del flusso
-          required: true
-          schema:
-            type: string
-            format: date-time
       requestBody:
         description: Tracciato csv di sintesi flussi rendicontazione acquisiti
         content:
@@ -350,19 +285,13 @@ components:
         - versione
         - rt
       properties:
-        dettaglioStato:
-          type: string
-          description: >-
-            Dettaglio fornito dal Nodo dei Pagamenti sullo stato della
-            richiesta.
-        versione:
-          type: string
-          description: Versione degli oggetti xml inviati.
         rpt:
-          type: object
+          type: string
+          format: byte
           description: "Rpt inviata a PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRichiestaPagamentoTelematico"
         rt:
-          type: object
+          type: string
+          format: byte
           description: "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica"
           
           

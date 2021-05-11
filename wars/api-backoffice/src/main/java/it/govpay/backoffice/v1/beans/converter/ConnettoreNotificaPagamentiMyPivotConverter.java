@@ -142,6 +142,7 @@ public class ConnettoreNotificaPagamentiMyPivotConverter {
 				rsModel.setFileSystemPath(connettore.getFileSystemPath());
 				break;
 			case WEB_SERVICE:
+			case REST:
 				break;
 			}
 			

@@ -144,6 +144,7 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 				rsModel.setFileSystemPath(connettore.getFileSystemPath());
 				break;
 			case WEB_SERVICE:
+			case REST:
 				break;
 			}
 			

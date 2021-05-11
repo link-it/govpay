@@ -37,11 +37,12 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	
 	public static final String P_CODICE_CLIENTE = "CODICE_CLIENTE";
 	public static final String P_CODICE_ISTITUTO = "CODICE_ISTITUTO";
+	public static final String P_CONTENUTI = "CONTENUTI";
 	
 	
 	
 	public enum TipoConnettore {
-		WEB_SERVICE, EMAIL, FILE_SYSTEM;
+		WEB_SERVICE, EMAIL, FILE_SYSTEM, REST;
 	}
 	
 	public enum Tipo {
@@ -60,6 +61,7 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	private String codiceCliente;
 	private String codiceIstituto;
 	private String emailSubject;
+	private List<String> contenuti;
 	
 	public ConnettoreNotificaPagamenti() {
 	}
@@ -162,5 +164,13 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
+	}
+
+	public List<String> getContenuti() {
+		return contenuti;
+	}
+
+	public void setContenuti(List<String> contenuti) {
+		this.contenuti = contenuti;
 	}
 }

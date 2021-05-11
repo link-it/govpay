@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.24.0"
+  version: "1.25.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -7566,6 +7566,7 @@ components:
           enum:
             - 'EMAIL'
             - 'FILESYSTEM'
+            - 'REST'
         versioneCsv:
           type: string
           example: '7.0'
@@ -7592,6 +7593,31 @@ components:
                 description: identificativo tipo pendenza
                 example:
                   SEGRETERIA
+        url:
+          type: string
+          description: URL Base del servizio rest di ricezione dei dati
+        versioneApi:
+          type: string
+          enum:
+            - 'REST v1'
+          description: Versione delle API di integrazione utilizzate.
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
+        contenuti:
+          type: array
+          description: Lista dei contenuti da inviare al servizio REST
+          items:
+            $ref: '#/components/schemas/contenutoNotificaPagamentiGovpay'
+    contenutoNotificaPagamentiGovpay:
+      example: SINTESI_PAGAMENTI
+      type: string
+      enum:
+        - SINTESI_PAGAMENTI
+        - SINTESI_FLUSSI_RENDICONTAZIONE
+        - RPP
+        - RPT
+        - RT
+        - FLUSSI_RENDICONTAZIONE
     soggetto:
       description: dati anagrafici di un versante o pagatore.
       type: object

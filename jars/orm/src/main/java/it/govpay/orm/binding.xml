@@ -1249,6 +1249,7 @@
     <value name="dataCompletamento" field="dataCompletamento" usage="optional"/>
     <value name="rawContenuto" field="rawContenuto" usage="optional"/>
     <value name="beanDati" field="beanDati" usage="optional"/>
+    <value name="identificativo" field="identificativo" usage="required"/>
   </mapping>
   <mapping name="Stampa" class="it.govpay.orm.Stampa">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

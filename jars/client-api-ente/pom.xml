@@ -68,35 +68,56 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
-		<plugins>
-			<plugin>
-				<groupId>io.swagger.codegen.v3</groupId>
-				<artifactId>swagger-codegen-maven-plugin</artifactId>
-				<version>${swagger-codegen-maven-plugin.version}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<id>generate-sources</id>
-						<phase>generate-sources</phase>
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/govpay-api-rendicontazioni-ec-v1.yaml</inputSpec>
-							<language>jaxrs-cxf</language>
-							<configOptions>
-								<dateLibrary>joda</dateLibrary>
-								<sourceFolder>target/generated-sources/java/</sourceFolder>
-								<apiPackage>it.govpay.ec.rendicontazioni.v1</apiPackage>
-								<invokerPackage>it.govpay.ec.rendicontazioni.v1.client</invokerPackage>
-								<modelPackage>it.govpay.ec.rendicontazioni.v1.beans</modelPackage>
-							</configOptions>
-							<output>${project.basedir}</output>
-							<generateApiTests>false</generateApiTests>
-							<generateModelTests>false</generateModelTests>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
+<!-- 		<plugins> -->
+<!-- 			<plugin> -->
+<!-- 				<groupId>io.swagger.codegen.v3</groupId> -->
+<!-- 				<artifactId>swagger-codegen-maven-plugin</artifactId> -->
+<!-- 				<version>${swagger-codegen-maven-plugin.version}</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<goals> -->
+<!-- 							<goal>generate</goal> -->
+<!-- 						</goals> -->
+<!-- 						<id>generate-sources-rendicontazione</id> -->
+<!-- 						<phase>generate-sources</phase> -->
+<!-- 						<configuration> -->
+<!-- 							<inputSpec>${project.basedir}/src/main/resources/govpay-api-rendicontazioni-ec-v1.yaml</inputSpec> -->
+<!-- 							<language>jaxrs-cxf</language> -->
+<!-- 							<configOptions> -->
+<!-- 								<dateLibrary>joda</dateLibrary> -->
+<!-- 								<sourceFolder>target/generated-sources/java/</sourceFolder> -->
+<!-- 								<apiPackage>it.govpay.ec.rendicontazioni.v1</apiPackage> -->
+<!-- 								<invokerPackage>it.govpay.ec.rendicontazioni.v1.client</invokerPackage> -->
+<!-- 								<modelPackage>it.govpay.ec.rendicontazioni.v1.beans</modelPackage> -->
+<!-- 							</configOptions> -->
+<!-- 							<output>${project.basedir}</output> -->
+<!-- 							<generateApiTests>false</generateApiTests> -->
+<!-- 							<generateModelTests>false</generateModelTests> -->
+<!-- 						</configuration> -->
+<!-- 					</execution> -->
+<!-- 					<execution> -->
+<!-- 						<goals> -->
+<!-- 							<goal>generate</goal> -->
+<!-- 						</goals> -->
+<!-- 						<id>generate-sources</id> -->
+<!-- 						<phase>generate-sources</phase> -->
+<!-- 						<configuration> -->
+<!-- 							<inputSpec>${project.basedir}/src/main/resources/govpay-api-ec-v1.yaml</inputSpec> -->
+<!-- 							<language>jaxrs-cxf</language> -->
+<!-- 							<configOptions> -->
+<!-- 								<dateLibrary>joda</dateLibrary> -->
+<!-- 								<sourceFolder>target/generated-sources/java/</sourceFolder> -->
+<!-- 								<apiPackage>it.govpay.ec.v1</apiPackage> -->
+<!-- 								<invokerPackage>it.govpay.ec.v1.client</invokerPackage> -->
+<!-- 								<modelPackage>it.govpay.ec.v1.beans</modelPackage> -->
+<!-- 							</configOptions> -->
+<!-- 							<output>${project.basedir}</output> -->
+<!-- 							<generateApiTests>false</generateApiTests> -->
+<!-- 							<generateModelTests>false</generateModelTests> -->
+<!-- 						</configuration> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
+<!-- 		</plugins> -->
 	</build>
 </project>

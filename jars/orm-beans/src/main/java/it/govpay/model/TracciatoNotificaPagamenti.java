@@ -55,6 +55,7 @@ public class TracciatoNotificaPagamenti extends BasicModel {
 	private byte[] rawContenuto;	
 	private String versione;
 	private TIPO_TRACCIATO tipo;
+	private String identificativo;
 	
 	public String getNomeFile() {
 		return nomeFile;
@@ -151,5 +152,11 @@ public class TracciatoNotificaPagamenti extends BasicModel {
 	}
 	public void setTipo(TIPO_TRACCIATO tipo) {
 		this.tipo = tipo;
+	}
+	public String getIdentificativo() {
+		return identificativo;
+	}
+	public void setIdentificativo(String identificativo) {
+		this.identificativo = identificativo;
 	}
 }
