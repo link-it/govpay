@@ -745,6 +745,7 @@ CREATE TABLE trac_notif_pag
 	data_completamento TIMESTAMP(3) COMMENT 'data completamento spedizione notifica',
 	raw_contenuto MEDIUMBLOB COMMENT 'Contenuto tracciato',
 	bean_dati LONGTEXT COMMENT 'Gestione stato elaborazione',
+	identificativo VARCHAR(255) NOT NULL COMMENT 'Identificativo univoco tracciato',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_dominio BIGINT NOT NULL,

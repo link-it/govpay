@@ -719,6 +719,7 @@ CREATE TABLE trac_notif_pag
 	data_completamento DATETIME2,
 	raw_contenuto VARBINARY(MAX),
 	bean_dati VARCHAR(max),
+	identificativo VARCHAR(255) NOT NULL,
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_dominio BIGINT NOT NULL,

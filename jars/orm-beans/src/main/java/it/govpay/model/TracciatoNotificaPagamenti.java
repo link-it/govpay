@@ -39,6 +39,12 @@ public class TracciatoNotificaPagamenti extends BasicModel {
 		statiNonTerminaliFileSystem.add(STATO_ELABORAZIONE.FILE_NUOVO);
 	}
 	
+	public static List<STATO_ELABORAZIONE> statiNonTerminaliREST = new ArrayList<TracciatoNotificaPagamenti.STATO_ELABORAZIONE>();
+	
+	static {
+		statiNonTerminaliREST.add(STATO_ELABORAZIONE.FILE_NUOVO);
+	}
+	
 	private String nomeFile;
 	private STATO_ELABORAZIONE stato;
 	private Date dataCreazione;

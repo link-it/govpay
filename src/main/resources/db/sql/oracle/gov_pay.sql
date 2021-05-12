@@ -1013,6 +1013,7 @@ CREATE TABLE trac_notif_pag
 	data_completamento TIMESTAMP,
 	raw_contenuto BLOB,
 	bean_dati CLOB,
+	identificativo VARCHAR2(255 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,

@@ -767,6 +767,34 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+  '/tracciatiNotificaPagamenti/{id}':
+    get:
+      tags:
+        - Tracciati
+      summary: Tracciato Notifica Pagamenti in formato zip
+      operationId: getTracciatoNotificaPagamenti
+      parameters:
+        - in: path
+          name: id
+          description: identificativo di un tracciato
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Zip contenente i dati del tracciato 
+          content:
+            application/zip:
+              schema:
+               type: object
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
   '/intermediari':
     get:
       tags:
@@ -7615,8 +7643,6 @@ components:
         - SINTESI_PAGAMENTI
         - SINTESI_FLUSSI_RENDICONTAZIONE
         - RPP
-        - RPT
-        - RT
         - FLUSSI_RENDICONTAZIONE
     soggetto:
       description: dati anagrafici di un versante o pagatore.

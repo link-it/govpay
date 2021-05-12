@@ -735,6 +735,7 @@ CREATE TABLE trac_notif_pag
 	data_completamento TIMESTAMP,
 	raw_contenuto OID,
 	bean_dati TEXT,
+	identificativo VARCHAR(255) NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_trac_notif_pag') NOT NULL,
 	id_dominio BIGINT NOT NULL,
