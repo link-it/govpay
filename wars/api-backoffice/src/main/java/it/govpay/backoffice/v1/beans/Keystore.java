@@ -3,6 +3,7 @@ package it.govpay.backoffice.v1.beans;
 import java.util.Objects;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 
@@ -166,15 +167,18 @@ public class Keystore extends JSONSerializable implements IValidable {
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	
-	vf.getValidator("type", this.type).notNull();
-	
-	if(KeystoreType.fromValue(this.type) == null){
-		throw new ValidationException("Codifica inesistente per type. Valore fornito [" + this.type + "] valori possibili " + ArrayUtils.toString(KeystoreType.values()));
+	// se e' stato compilato almeno un campo valido tutta la form
+	if(StringUtils.isNotEmpty(this.type) || StringUtils.isNotEmpty(this.location) || StringUtils.isNotEmpty(this.password) || StringUtils.isNotEmpty(this.managementAlgorithm)) {
+		vf.getValidator("type", this.type).notNull();
+		
+		if(KeystoreType.fromValue(this.type) == null){
+			throw new ValidationException("Codifica inesistente per type. Valore fornito [" + this.type + "] valori possibili " + ArrayUtils.toString(KeystoreType.values()));
+		}
+		
+		vf.getValidator("location", this.location).notNull().minLength(1).maxLength(1024);
+		vf.getValidator("password", this.password).minLength(1).maxLength(255);
+		vf.getValidator("managementAlgorithm", this.managementAlgorithm).minLength(1).maxLength(255);
 	}
-	
-	vf.getValidator("location", this.location).notNull().minLength(1).maxLength(1024);
-	vf.getValidator("password", this.password).minLength(1).maxLength(255);
-	vf.getValidator("managementAlgorithm", this.managementAlgorithm).minLength(1).maxLength(255);
   }
 }
 
