@@ -759,7 +759,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 
 		PreparedStatement prepareStatement = null;
 		ResultSet resultSet = null;
-		try {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();){
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
@@ -780,7 +780,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
 
 			String sql = sqlQueryObject.createSQLQuery();
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			
 			
 			prepareStatement = this.getConnection().prepareStatement(sql);
 			prepareStatement.setLong(1, idTracciato);

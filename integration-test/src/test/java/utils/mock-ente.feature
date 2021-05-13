@@ -36,7 +36,7 @@ Background:
 
 * def recaptchaPath = '/recaptcha'
 * def appIoPath = '/appio'
-
+* def enteRendicontazioniPath = '/enteRendicontazioni'
 
 # Servizi per il caricamento dati
 Scenario: pathMatches(pagamentiPath+'/v1/avvisi/{idDominio}/{iuv}') && methodIs('post')
@@ -277,4 +277,17 @@ Scenario:
 	* def responseStatus = 404
   * def response = "PATH NON PREVISTO DAL MOCK"
 
+
+# servizio rendicontazioni ente accetta le richieste ricevute
+Scenario: pathMatches(enteRendicontazioniPath+'/rpp/{idDominio}/{iuv}/{ccp}') && methodIs('post')
+	* def responseStatus = 200
+	
+Scenario: pathMatches(enteRendicontazioniPath+'/rpp/{idDominio}/{idTracciato}') && methodIs('post')
+	* def responseStatus = 200
+	
+	Scenario: pathMatches(enteRendicontazioniPath+'/flussiRendicontazione/{idDominio}/{idFlusso}') && methodIs('post') && typeContains('xml')
+	* def responseStatus = 200
+	
+Scenario: pathMatches(enteRendicontazioniPath+'/flussiRendicontazione/{idDominio}/{idTracciato}') && methodIs('post') && typeContains('csv')
+	* def responseStatus = 200
 

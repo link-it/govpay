@@ -19,12 +19,21 @@
  */
 package it.govpay.core.utils.thread;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -37,6 +46,7 @@ import org.openspcoop2.utils.mail.MailBinaryAttach;
 import org.openspcoop2.utils.mail.Sender;
 import org.openspcoop2.utils.mail.SenderFactory;
 import org.openspcoop2.utils.mail.SenderType;
+import org.openspcoop2.utils.resources.Charset;
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
@@ -65,6 +75,7 @@ import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.TracciatiNotificaPagamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.GiornaleEventi;
+import it.govpay.core.business.TracciatiNotificaPagamenti;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Categoria;
@@ -75,6 +86,7 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.EnteRendicontazioniClient;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.ConnettoreNotificaPagamenti.TipoConnettore;
@@ -216,6 +228,16 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.spedizione");
 				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.webServiceOk");
 				break;
+			case REST:
+				url = this.connettore.getUrl();
+				operationId = appContext.setupNotificaPagamentiClient(TRACCIATO_NOTIFICA_FLUSSO_PAGAMENTI, url);
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("restUrl", url));
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("tipoTracciato", this.tipoTracciato.toString()));
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.rest");
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.spedizione");
+				this.inviaTracciatoViaAPIRest(operationId, this.tracciato, this.connettore, this.dominio, tracciatiMyPivotBD, configWrapper, beanDati, serializer, ctx, dumpRequest, dumpResponse);
+				break;
 			}
 			
 			this.eventoCtx.setEsito(Esito.OK);
@@ -256,6 +278,131 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			
 			this.completed = true;
 			ContextThreadLocal.unset();
+		}
+	}
+
+	private void inviaTracciatoViaAPIRest(String operationId, TracciatoNotificaPagamenti tracciato,
+			ConnettoreNotificaPagamenti connettore, Dominio dominio, TracciatiNotificaPagamentiBD tracciatiMyPivotBD,
+			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati,
+			ISerializer serializer, IContext ctx, DumpRequest dumpRequest, DumpResponse dumpResponse) throws ServiceException {
+		
+		String errore = null;
+		List<String> contenuti = connettore.getContenuti();
+		
+		byte[] blobRawContentuto = tracciatiMyPivotBD.leggiBlobRawContentuto(tracciato.getId(), it.govpay.orm.TracciatoNotificaPagamenti.model().RAW_CONTENUTO);
+		
+		Map<String, String> queryParams = new HashMap<String, String>();
+		queryParams.put("dataInizio", encode(SimpleDateFormatUtils.newSimpleDateFormat().format(tracciato.getDataRtDa())));
+		queryParams.put("dataFine", encode(SimpleDateFormatUtils.newSimpleDateFormat().format(tracciato.getDataRtA())));
+		if(connettore.getTipiPendenza() != null) {
+			queryParams.put("tipiPendenza", encode(StringUtils.join(connettore.getTipiPendenza(), ",")));
+		}
+		
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(blobRawContentuto);
+				ZipInputStream stream = new ZipInputStream(bais)){
+
+			EnteRendicontazioniClient client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale);
+			
+			ZipEntry entry;
+            while ((entry = stream.getNextEntry()) != null) {
+            	
+            	try (ByteArrayOutputStream baos = new ByteArrayOutputStream();){
+	            	// sintesi pagamenti
+	            	if(entry.getName().equals(TracciatiNotificaPagamenti.GOVPAY_RENDICONTAZIONE_CSV_FILE_NAME) 
+	            			&& contenuti.contains(ConnettoreNotificaPagamenti.Contenuti.SINTESI_PAGAMENTI.toString())) {
+	            		log.debug("Spedizione File: " + entry.getName());
+	            		IOUtils.copy(stream, baos);
+						client.inviaFile(baos.toByteArray(), queryParams, ConnettoreNotificaPagamenti.Contenuti.SINTESI_PAGAMENTI, null);
+	            	}
+	            	
+	            	// sintesi flussi
+	            	if(entry.getName().equals(TracciatiNotificaPagamenti.GOVPAY_FLUSSI_RENDICONTAZIONE_CSV_FILE_NAME) 
+	            			&& contenuti.contains(ConnettoreNotificaPagamenti.Contenuti.SINTESI_FLUSSI_RENDICONTAZIONE.toString())) {
+	            		log.debug("Spedizione File: " + entry.getName());
+	            		IOUtils.copy(stream, baos);
+						client.inviaFile(baos.toByteArray(), queryParams, ConnettoreNotificaPagamenti.Contenuti.SINTESI_FLUSSI_RENDICONTAZIONE, null);
+	            	}
+	            	
+	            	// elenco RT
+	            	if(entry.getName().startsWith(TracciatiNotificaPagamenti.FILE_RT_DIR_PREFIX) 
+	            			&& contenuti.contains(ConnettoreNotificaPagamenti.Contenuti.RPP.toString())) {
+	            		log.debug("Spedizione File: " + entry.getName());
+//	            		IOUtils.copy(stream, baos);
+//	            		client.inviaFile(baos.toByteArray(), null, ConnettoreNotificaPagamenti.Contenuti.RPP, idFile);
+	            	}
+	            	
+	            	// elenco flussi
+	            	if(entry.getName().startsWith(TracciatiNotificaPagamenti.FLUSSI_RENDICONTAZIONE_DIR_PREFIX) 
+	            			&& contenuti.contains(ConnettoreNotificaPagamenti.Contenuti.FLUSSI_RENDICONTAZIONE.toString())) {
+	            		log.debug("Spedizione File: " + entry.getName());
+//	            		IOUtils.copy(stream, baos);
+//	            		client.inviaFile(baos.toByteArray(), null, ConnettoreNotificaPagamenti.Contenuti.FLUSSI_RENDICONTAZIONE, idFile);
+	            	}
+            	
+            	} catch (ClientException e) {
+        			// TODO Auto-generated catch block
+        			e.printStackTrace();
+        		} 
+            }
+			
+			try {
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.restOk");
+			} catch (UtilsException e1) {
+				log.error(e1.getMessage(), e1);
+			}
+		} catch (java.io.IOException e) {
+			errore = "Errore durante la lettura del contenuto dello zip dal db durante l'invio del Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() 
+			+ "], al destinatario ["+ this.connettore.getUrl()+"]:"+e.getMessage();
+			log.error(errore, e);
+			
+//			log.debug("La spedizione del Tracciato " + this.tipoTracciato + " si e' conclusa con errore che non prevede la rispedizione...");
+			tracciato.setStato(STATO_ELABORAZIONE.ERROR_LOAD);
+			tracciato.setDataCompletamento(new Date());
+			beanDati.setStepElaborazione(STATO_ELABORAZIONE.ERROR_LOAD.name());
+			beanDati.setDescrizioneStepElaborazione(errore);
+			log.debug("Salvataggio Tracciato " + this.tipoTracciato + " in stato 'ERROR_LOAD'");
+			try {
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.restKo", e.getMessage());
+			} catch (UtilsException e1) {
+				log.error(e1.getMessage(), e1);
+			}
+			
+			dumpResponse.setPayload(errore.getBytes());
+		} catch (ClientException e) {
+			errore = "Errore durante la creazione del client REST per l'invio del Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() 
+			+ "], al destinatario ["+ this.connettore.getUrl()+"]:"+e.getMessage();
+			log.error(errore, e);
+			
+//			log.debug("La spedizione del Tracciato " + this.tipoTracciato + " si e' conclusa con errore che non prevede la rispedizione...");
+			tracciato.setStato(STATO_ELABORAZIONE.ERROR_LOAD);
+			tracciato.setDataCompletamento(new Date());
+			beanDati.setStepElaborazione(STATO_ELABORAZIONE.ERROR_LOAD.name());
+			beanDati.setDescrizioneStepElaborazione(errore);
+			log.debug("Salvataggio Tracciato " + this.tipoTracciato + " in stato 'ERROR_LOAD'");
+			try {
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.restKo", e.getMessage());
+			} catch (UtilsException e1) {
+				log.error(e1.getMessage(), e1);
+			}
+			
+			dumpResponse.setPayload(errore.getBytes());
+			
+		} finally {
+			tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());
+			try {
+				tracciato.setBeanDati(serializer.getObject(beanDati));
+			} catch (IOException e1) {}
+			
+			tracciatiMyPivotBD.updateFineElaborazione(tracciato);
+			
+		} 
+	}
+	
+	private String encode(String value) {
+		try {
+			return URLEncoder.encode(value, Charset.UTF_8.getValue());
+		} catch (UnsupportedEncodingException e) {
+			return "";
 		}
 	}
 

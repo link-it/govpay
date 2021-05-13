@@ -165,11 +165,11 @@ public abstract class BasicClient {
 	}
 
 	public enum TipoConnettore {
-		VERIFICA, NOTIFICA, APP_IO, MYPIVOT;
+		VERIFICA, NOTIFICA, APP_IO, MYPIVOT, GOVPAY;
 	}
 	
 	public enum TipoDestinatario {
-		APPLICAZIONE, INTERMEDIARIO, APP_IO, MYPIVOT;
+		APPLICAZIONE, INTERMEDIARIO, APP_IO, MYPIVOT, GOVPAY;
 	}
 
 	protected BasicClient(Intermediario intermediario, TipoOperazioneNodo tipoOperazione) throws ClientException {
@@ -217,7 +217,17 @@ public abstract class BasicClient {
 		integrationCtx.setApplicazione(null);
 		integrationCtx.setIntermediario(null);
 		integrationCtx.setTipoConnettore(tipoConnettore);
-		integrationCtx.setTipoDestinatario(TipoDestinatario.MYPIVOT);
+		
+		switch (tipoConnettore) {
+		case GOVPAY:
+			integrationCtx.setTipoDestinatario(TipoDestinatario.GOVPAY);
+			break;
+		case MYPIVOT:
+			integrationCtx.setTipoDestinatario(TipoDestinatario.MYPIVOT);
+			break;
+		default:
+			break;
+		}
 	}
 
 	private BasicClient(String bundleKey, Connettore connettore) throws ClientException {
@@ -575,15 +585,15 @@ public abstract class BasicClient {
 		return this.handleJsonRequest(path, null, headerProperties, HttpRequestMethod.GET, null,swaggerOperationId);
 	}
 
-	public byte[] sendJson(String path, String jsonBody, List<Property> headerProperties, String swaggerOperationId) throws ClientException {
-		return this.handleJsonRequest(path, jsonBody, headerProperties, HttpRequestMethod.POST, "application/json",swaggerOperationId);
-	}
-
-	public byte[] sendJson(String path, String jsonBody, List<Property> headerProperties, HttpRequestMethod httpMethod, String swaggerOperationId) throws ClientException {
+	public byte[] sendJson(String path, byte[] jsonBody, List<Property> headerProperties, HttpRequestMethod httpMethod, String swaggerOperationId) throws ClientException {
 		return this.handleJsonRequest(path, jsonBody, headerProperties, httpMethod, "application/json",swaggerOperationId);
 	}
+	
+	public byte[] sendJson(String path, byte[] jsonBody, List<Property> headerProperties, HttpRequestMethod httpMethod, String contentType, String swaggerOperationId) throws ClientException {
+		return this.handleJsonRequest(path, jsonBody, headerProperties, httpMethod, contentType,swaggerOperationId);
+	}
 
-	private byte[] handleJsonRequest(String path, String jsonBody, List<Property> headerProperties, 
+	private byte[] handleJsonRequest(String path, byte[] jsonBody, List<Property> headerProperties, 
 			HttpRequestMethod httpMethod, String contentType, String swaggerOperationId) throws ClientException {
 
 		// Salvataggio Tipo Evento
@@ -625,7 +635,7 @@ public abstract class BasicClient {
 
 			try {
 				connection = (HttpURLConnection) this.url.openConnection();
-				if(httpMethod.equals(HttpRequestMethod.POST) || StringUtils.isNotEmpty(jsonBody))
+				if(httpMethod.equals(HttpRequestMethod.POST) || (jsonBody != null && jsonBody.length > 0))
 					connection.setDoOutput(true);
 
 				if(contentType != null) {
@@ -660,7 +670,7 @@ public abstract class BasicClient {
 				}
 
 
-				integrationCtx.setMsg(jsonBody != null ? jsonBody.getBytes() : "".getBytes());
+				integrationCtx.setMsg(jsonBody);
 				this.invokeOutHandlers();
 
 				if(log.isTraceEnabled()) {
@@ -679,7 +689,7 @@ public abstract class BasicClient {
 
 				this.serverInfoContext.processBeforeSend(serverInfoRequest, dumpRequest);
 
-				if(StringUtils.isNotEmpty(jsonBody))
+				if(connection.getDoOutput())
 					connection.getOutputStream().write(integrationCtx.getMsg());
 
 			} catch (Exception e) {

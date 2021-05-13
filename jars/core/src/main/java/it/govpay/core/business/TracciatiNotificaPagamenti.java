@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -74,6 +75,10 @@ import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
 
 public class TracciatiNotificaPagamenti {
 
+	public static final String FLUSSI_RENDICONTAZIONE_DIR_PREFIX = "FlussiRendicontazione/";
+	public static final String GOVPAY_FLUSSI_RENDICONTAZIONE_CSV_FILE_NAME = "govpay_flussi_rendicontazione.csv";
+	public static final String FILE_RT_DIR_PREFIX = "RT/";
+	public static final String GOVPAY_RENDICONTAZIONE_CSV_FILE_NAME = "govpay_rendicontazione.csv";
 	private static final String [] MYPIVOT_HEADER_FILE_CSV = { "IUD","codIuv","tipoIdentificativoUnivoco","codiceIdentificativoUnivoco","anagraficaPagatore","indirizzoPagatore","civicoPagatore","capPagatore","localitaPagatore","provinciaPagatore","nazionePagatore","mailPagatore","dataEsecuzionePagamento","importoDovutoPagato","commissioneCaricoPa","tipoDovuto","tipoVersamento","causaleVersamento","datiSpecificiRiscossione","bilancio" };
 	private static final String [] GOVPAY_HEADER_FILE_CSV = { "idA2A","idPendenza","idDocumento","descrizioneDocumento","codiceRata","dataScadenza","idVocePendenza","descrizioneVocePendenza","idTipoPendenza","descrizione","anno","identificativoDebitore","anagraficaDebitore","identificativoDominio","identificativoUnivocoVersamento","codiceContestoPagamento","indiceDati","identificativoUnivocoRiscossione","modelloPagamento","singoloImportoPagato","dataEsitoSingoloPagamento","causaleVersamento","datiSpecificiRiscossione","datiAllegati","datiAllegatiVoce","denominazioneAttestante","identificativoAttestante" };
 	private static final String [] GOVPAY_FLUSSI_HEADER_FILE_CSV = {"identificativoFlusso","dataOraFlusso","identificativoDominio","identificativoUnivocoRegolamento","dataRegolamento","codiceBicBancaDiRiversamento","numeroTotalePagamenti","importoTotalePagamenti","identificativoUnivocoVersamento","identificativoUnivocoRiscossione","indiceDatiSingoloPagamento","singoloImportoPagato","codiceEsitoSingoloPagamento","dataEsitoSingoloPagamento","denominazioneMittente","identificativoMittente","denominazioneRicevente","identificativoRicevente"	};
@@ -189,6 +194,8 @@ public class TracciatiNotificaPagamenti {
 						beanDati.setDataUltimoAggiornamento(new Date());
 						beanDati.setLineaElaborazione(0);
 						tracciato.setBeanDati(serializer.getObject(beanDati));
+						// identificativo univoco
+						tracciato.setIdentificativo(UUID.randomUUID().toString());
 
 						// insert tracciato
 						tracciatiNotificaPagamentiBD.insertTracciato(tracciato);
@@ -469,7 +476,7 @@ public class TracciatiNotificaPagamenti {
 		
 		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT);
 		
-		ZipEntry tracciatoOutputEntry = new ZipEntry("govpay_rendicontazione.csv");
+		ZipEntry tracciatoOutputEntry = new ZipEntry(GOVPAY_RENDICONTAZIONE_CSV_FILE_NAME);
 		zos.putNextEntry(tracciatoOutputEntry);
 		
 		zos.write(csvUtils.toCsv(GOVPAY_HEADER_FILE_CSV).getBytes());
@@ -524,7 +531,7 @@ public class TracciatiNotificaPagamenti {
 					if(ccp == null || ccp.equals("n/a"))
 						ccp = "na";
 					
-					ZipEntry rtEntry = new ZipEntry("RT/"+idDominio +"_"+ iuv + "_"+ ccp +".xml");
+					ZipEntry rtEntry = new ZipEntry(FILE_RT_DIR_PREFIX+idDominio +"_"+ iuv + "_"+ ccp +".xml");
 					zos.putNextEntry(rtEntry);
 					
 					byte[] b = rpt.getXmlRt();
@@ -550,7 +557,7 @@ public class TracciatiNotificaPagamenti {
 		
 		log.debug("Creazione file di sintesi flussi in corso...");
 		
-		ZipEntry frOutputEntry = new ZipEntry("govpay_flussi_rendicontazione.csv");
+		ZipEntry frOutputEntry = new ZipEntry(GOVPAY_FLUSSI_RENDICONTAZIONE_CSV_FILE_NAME);
 		zos.putNextEntry(frOutputEntry);
 		
 		zos.write(csvUtils.toCsv(GOVPAY_FLUSSI_HEADER_FILE_CSV).getBytes());
@@ -603,7 +610,7 @@ public class TracciatiNotificaPagamenti {
 					Date dataFlusso = fr.getDataFlusso();
 					String dataFlussoS = SimpleDateFormatUtils.newSimpleDateFormat().format(dataFlusso);
 					
-					ZipEntry rtEntry = new ZipEntry("FlussiRendicontazione/"+idFlusso+"_"+dataFlussoS+".xml");
+					ZipEntry rtEntry = new ZipEntry(FLUSSI_RENDICONTAZIONE_DIR_PREFIX+idFlusso+"_"+dataFlussoS+".xml");
 					zos.putNextEntry(rtEntry);
 					
 					byte[] b = fr.getXml();

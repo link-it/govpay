@@ -79,7 +79,7 @@ paths:
   '/rpp/{idDominio}/{iuv}/{ccp}':
     post:
       summary: Invio Dettaglio di una richiesta di pagamento
-      operationId: invioRpp
+      operationId: inviaRpp
       tags:
         - Rendicontazioni
       parameters:

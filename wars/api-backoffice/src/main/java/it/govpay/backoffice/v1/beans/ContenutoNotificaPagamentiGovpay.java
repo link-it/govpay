@@ -22,12 +22,6 @@ public enum ContenutoNotificaPagamentiGovpay {
   RPP("RPP"),
   
   
-  RPT("RPT"),
-  
-  
-  RT("RT"),
-  
-  
   FLUSSI_RENDICONTAZIONE("FLUSSI_RENDICONTAZIONE");
   
   

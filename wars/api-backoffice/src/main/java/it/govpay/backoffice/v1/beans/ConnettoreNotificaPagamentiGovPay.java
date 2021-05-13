@@ -460,7 +460,7 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
 				vf.getValidator("fileSystemPath", this.fileSystemPath).notNull().minLength(1).maxLength(4000);
 				break;
 			case REST:
-				vf.getValidator("url", this.url).pattern("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
+				vf.getValidator("url", this.url).notNull().pattern("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
 				vf.getValidator("versioneApi", this.versioneApi).notNull();
 				try {
 					VersioneApiEnum v = VersioneApiEnum.fromValue(this.versioneApi);
