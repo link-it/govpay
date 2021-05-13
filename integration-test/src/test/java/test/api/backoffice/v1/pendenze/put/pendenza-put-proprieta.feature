@@ -74,7 +74,6 @@ And match response == read('msg/pendenza-get.json')
 * match response.voci[0].stato == 'Non eseguito'
 * match response.proprieta == pendenzaPut.proprieta
 
-@test1
 Scenario: Caricamento pendenza con linguaSecondaria = DE
 
 * set pendenzaPut.proprieta = 
