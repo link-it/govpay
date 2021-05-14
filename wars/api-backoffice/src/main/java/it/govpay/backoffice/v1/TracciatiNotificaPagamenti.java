@@ -5,6 +5,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -34,9 +35,9 @@ public class TracciatiNotificaPagamenti extends BaseRsServiceV1{
     @Path("/{id}")
     
     @Produces({ "application/zip" })
-    public Response getTracciatoNotificaPagamenti(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String id){
+    public Response getTracciatoNotificaPagamenti(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Long id, @QueryParam("secID") String secID){
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.getTracciatoNotificaPagamenti(this.getUser(), uriInfo, httpHeaders,  id);
+        return this.controller.getTracciatoNotificaPagamenti(this.getUser(), uriInfo, httpHeaders,  id, secID);
     }
 
 }

@@ -48,7 +48,7 @@ public class TracciatiNotificaPagamentiDAO extends BaseDAO{
 
 		try {
 			tracciatoBD = new TracciatiNotificaPagamentiBD(configWrapper);
-			TracciatoNotificaPagamenti tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getIdentificativo(), leggiTracciatoDTO.isIncludiRaw());
+			TracciatoNotificaPagamenti tracciato = tracciatoBD.getTracciato(leggiTracciatoDTO.getId(), leggiTracciatoDTO.getIdentificativo(), leggiTracciatoDTO.isIncludiRaw());
 			return tracciato;
 
 		} catch (NotFoundException e) {
@@ -61,7 +61,7 @@ public class TracciatiNotificaPagamentiDAO extends BaseDAO{
 		}
 	}
 	
-	public StreamingOutput leggiBlobTracciato(String idTracciato, List<Long> idDomini, IField field) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+	public StreamingOutput leggiBlobTracciato(Long idTracciato, String identificativo, List<Long> idDomini, IField field) throws ServiceException,TracciatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 
 		try {
 			BlobJDBCAdapter jdbcAdapter = new BlobJDBCAdapter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -75,6 +75,7 @@ public class TracciatiNotificaPagamentiDAO extends BaseDAO{
 			sqlQueryObject.addFromTable(converter.toTable(model.IDENTIFICATIVO));
 			sqlQueryObject.addSelectField(converter.toTable(model.IDENTIFICATIVO), columnName);
 
+			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
 			sqlQueryObject.addWhereCondition(true, converter.toColumn(model.IDENTIFICATIVO, true) + " = ? ");
 			
 			if(idDomini != null && !idDomini.isEmpty()){
@@ -100,7 +101,8 @@ public class TracciatiNotificaPagamentiDAO extends BaseDAO{
 						bd.setAutoCommit(false);
 						
 						prepareStatement = bd.getConnection().prepareStatement(sql);
-						prepareStatement.setString(1, idTracciato);
+						prepareStatement.setLong(1, idTracciato);
+						prepareStatement.setString(2, identificativo);
 
 						resultSet = prepareStatement.executeQuery();
 						if(resultSet.next()){

@@ -37,6 +37,7 @@ public class EventoContext {
 	
 	public static final String APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOEMAIL = "govpayInviaTracciatoEmail";
 	public static final String APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOFILESYSTEM = "govpayInviaTracciatoFileSystem";
+	public static final String APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOREST = "govpayInviaTracciatoRest";
 	
 	public static final String APIPAGOPA_SOTTOTIPOEVENTO_FLUSSO_RENDICONTAZIONE_DUPLICATO = "FlussoRendicontazioneDuplicato";
 

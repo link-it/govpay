@@ -102,6 +102,14 @@ public class ConnettoreNotificaPagamentiConverter {
 						dto.setContenuti(new ArrayList<String>());
 					}
 				}
+				
+				if(ConnettoreNotificaPagamenti.P_EMAIL_ALLEGATO.equals(connettore.getCodProprieta())) {
+					dto.setEmailAllegato(Boolean.parseBoolean(connettore.getValore()));
+				}
+				
+				if(ConnettoreNotificaPagamenti.P_DOWNLOAD_BASE_URL.equals(connettore.getCodProprieta())) {
+					dto.setDownloadBaseURL(connettore.getValore());
+				}
 
 
 				// ereditato da connettore
@@ -260,6 +268,14 @@ public class ConnettoreNotificaPagamentiConverter {
 			vo.setValore(!connettore.getContenuti().isEmpty() ? StringUtils.join(connettore.getContenuti(), ","): "");
 			voList.add(vo);
 		}
+		
+		if(connettore.getDownloadBaseURL() != null && !connettore.getDownloadBaseURL().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_DOWNLOAD_BASE_URL);
+			vo.setValore(connettore.getDownloadBaseURL());
+			voList.add(vo);
+		}
 
 		if(connettore.getHttpUser() != null && !connettore.getHttpUser().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
@@ -372,7 +388,7 @@ public class ConnettoreNotificaPagamentiConverter {
 			vo.setValore(connettore.getVersione().getApiLabel());
 			voList.add(vo);
 		}
-
+		
 		it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 		vo.setCodConnettore(connettore.getIdConnettore());
 		vo.setCodProprieta(Connettore.P_AZIONEINURL_NAME);
@@ -384,7 +400,13 @@ public class ConnettoreNotificaPagamentiConverter {
 		voAbilitato.setCodProprieta(ConnettoreNotificaPagamenti.P_ABILITATO);
 		voAbilitato.setValore(Boolean.toString(connettore.isAbilitato()));
 		voList.add(voAbilitato);
-
+		
+		it.govpay.orm.Connettore voEmailAllegato = new it.govpay.orm.Connettore();
+		voEmailAllegato.setCodConnettore(connettore.getIdConnettore());
+		voEmailAllegato.setCodProprieta(ConnettoreNotificaPagamenti.P_EMAIL_ALLEGATO);
+		voEmailAllegato.setValore(Boolean.toString(connettore.isEmailAllegato()));
+		voList.add(voEmailAllegato);
+		
 		return voList;
 	}
 	

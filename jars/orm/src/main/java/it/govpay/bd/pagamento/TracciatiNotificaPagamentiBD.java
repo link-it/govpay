@@ -465,13 +465,6 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		}
 	}
 
-	public TracciatoNotificaPagamenti getTracciato(Long idTracciato, boolean includiRawContenuto) throws NotFoundException, ServiceException, MultipleResultException {
-		return this.getTracciato(idTracciato, null, includiRawContenuto);
-	}
-	
-	public TracciatoNotificaPagamenti getTracciato(String identificativo, boolean includiRawContenuto) throws NotFoundException, ServiceException, MultipleResultException {
-		return this.getTracciato(null, identificativo, includiRawContenuto);
-	}
 	/**
 	 * Recupera l'tracciato tramite l'id fisico
 	 * 
@@ -484,9 +477,9 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 	 * @throws MultipleResultException in caso di duplicati.
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	private TracciatoNotificaPagamenti getTracciato(Long idTracciato, String identificativo, boolean includiRawContenuto) throws NotFoundException, ServiceException, MultipleResultException {
-		if(idTracciato == null) {
-			throw new ServiceException("Parameter 'id' cannot be NULL");
+	public TracciatoNotificaPagamenti getTracciato(Long idTracciato, String identificativo, boolean includiRawContenuto) throws NotFoundException, ServiceException, MultipleResultException {
+		if(idTracciato == null && identificativo == null) {
+			throw new ServiceException("Parameter 'id' o 'identificativo' cannot be NULL");
 		}
 		
 		List<it.govpay.orm.TracciatoNotificaPagamenti> list = new ArrayList<>();
@@ -596,6 +589,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 //		fields.add(model.UPLOAD_URL);
 		fields.add(model.TIPO);
 		fields.add(model.VERSIONE);
+		fields.add(model.IDENTIFICATIVO);
 		if(includiRawContenuto) {
 			fields.add(model.RAW_CONTENUTO);	
 		}

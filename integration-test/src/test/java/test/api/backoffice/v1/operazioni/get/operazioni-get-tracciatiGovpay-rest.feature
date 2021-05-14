@@ -8,9 +8,9 @@ Background:
 
 * set dominio.servizioGovPay.versioneCsv = "3.0"
 * set dominio.servizioGovPay.tipoConnettore = 'REST'
-* set dominio.servizioGovPay.url = 'http://localhost:8080/servizioRendicontazioniEnte'
+* set dominio.servizioGovPay.url = 'http://localhost:8888/enteRendicontazioni'
 * set dominio.servizioGovPay.versioneApi = 'REST v1'
-* set dominio.servizioGovPay.contenuti = ['RPP', 'SINTESI_PAGAMENTI']
+* set dominio.servizioGovPay.contenuti = ['RPP', 'SINTESI_PAGAMENTI', 'SINTESI_FLUSSI_RENDICONTAZIONE', 'FLUSSI_RENDICONTAZIONE']
 * set dominio.servizioGovPay.tipiPendenza =  [ '#(codEntrataSegreteria)' ]
 
 Scenario: Configurazione Dominio per spedizione tracciati govpay via rest e invocazione delle operazioni di creazione e spedizione tracciato
@@ -30,3 +30,4 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:utils/govpay-op-spedizione-tracciati-notifica-pagamenti.feature')
 
+* call sleep(60000)

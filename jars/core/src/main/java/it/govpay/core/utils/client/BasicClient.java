@@ -45,7 +45,6 @@ import javax.xml.soap.SOAPMessage;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
@@ -212,7 +211,7 @@ public abstract class BasicClient {
 		this("D_" + tipoConnettore + "_" + dominio.getCodDominio(), connettore);
 		errMsg = tipoConnettore.toString() + " del dominio (" + dominio.getCodDominio() + ")";
 		mittente = "GovPay";
-		destinatario = "ServizioMyPivot";
+		
 		integrationCtx = new IntegrationContext();
 		integrationCtx.setApplicazione(null);
 		integrationCtx.setIntermediario(null);
@@ -221,9 +220,11 @@ public abstract class BasicClient {
 		switch (tipoConnettore) {
 		case GOVPAY:
 			integrationCtx.setTipoDestinatario(TipoDestinatario.GOVPAY);
+			destinatario = dominio.getCodDominio();
 			break;
 		case MYPIVOT:
 			integrationCtx.setTipoDestinatario(TipoDestinatario.MYPIVOT);
+			destinatario = "ServizioMyPivot";
 			break;
 		default:
 			break;
@@ -750,9 +751,9 @@ public abstract class BasicClient {
 			if(log.isTraceEnabled() && headerFields != null) {
 				StringBuffer sb = new StringBuffer();
 				for(String key : headerFields.keySet()) { 
-					sb.append("\n\t" + key + ": " + headerFields.get(key));
+					sb.append("\n\t" + (key == null ? "Status-line" : key) + ": " + headerFields.get(key));
 				}
-				sb.append("\n" + new String(msg));
+				sb.append("\nResponse Body Size: " + (msg != null ? msg.length : 0));
 				log.trace(sb.toString());
 			}
 			popolaContextEvento(httpMethodEnum, responseCode, dumpRequest, dumpResponse);

@@ -25,6 +25,8 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "versioneCsv",
 "emailIndirizzi",
 "emailSubject",
+"emailAllegato",
+"downloadBaseUrl",
 "fileSystemPath",
 "tipiPendenza",
 })
@@ -91,6 +93,12 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
   
   @JsonProperty("emailSubject")
   private String emailSubject = null;
+  
+  @JsonProperty("emailAllegato")
+  private Boolean emailAllegato = null;
+  
+  @JsonProperty("downloadBaseUrl")
+  private String downloadBaseUrl = null;
   
   @JsonProperty("fileSystemPath")
   private String fileSystemPath = null;
@@ -210,6 +218,38 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
   }
 
   /**
+   * Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+   **/
+  public ConnettoreNotificaPagamentiSecim emailAllegato(Boolean emailAllegato) {
+    this.emailAllegato = emailAllegato;
+    return this;
+  }
+
+  @JsonProperty("emailAllegato")
+  public Boolean EmailAllegato() {
+    return emailAllegato;
+  }
+  public void setEmailAllegato(Boolean emailAllegato) {
+    this.emailAllegato = emailAllegato;
+  }
+
+  /**
+   * URL base del link dove scaricare il tracciato
+   **/
+  public ConnettoreNotificaPagamentiSecim downloadBaseUrl(String downloadBaseUrl) {
+    this.downloadBaseUrl = downloadBaseUrl;
+    return this;
+  }
+
+  @JsonProperty("downloadBaseUrl")
+  public String getDownloadBaseUrl() {
+    return downloadBaseUrl;
+  }
+  public void setDownloadBaseUrl(String downloadBaseUrl) {
+    this.downloadBaseUrl = downloadBaseUrl;
+  }
+
+  /**
    * Path nel quale verra' salvato il tracciato
    **/
   public ConnettoreNotificaPagamentiSecim fileSystemPath(String fileSystemPath) {
@@ -257,13 +297,15 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
         Objects.equals(versioneCsv, connettoreNotificaPagamentiSecim.versioneCsv) &&
         Objects.equals(emailIndirizzi, connettoreNotificaPagamentiSecim.emailIndirizzi) &&
         Objects.equals(emailSubject, connettoreNotificaPagamentiSecim.emailSubject) &&
+        Objects.equals(emailAllegato, connettoreNotificaPagamentiSecim.emailAllegato) &&
+        Objects.equals(downloadBaseUrl, connettoreNotificaPagamentiSecim.downloadBaseUrl) &&
         Objects.equals(fileSystemPath, connettoreNotificaPagamentiSecim.fileSystemPath) &&
         Objects.equals(tipiPendenza, connettoreNotificaPagamentiSecim.tipiPendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(abilitato, codiceCliente, codiceIstituto, tipoConnettore, versioneCsv, emailIndirizzi, emailSubject, fileSystemPath, tipiPendenza);
+    return Objects.hash(abilitato, codiceCliente, codiceIstituto, tipoConnettore, versioneCsv, emailIndirizzi, emailSubject, emailAllegato, downloadBaseUrl, fileSystemPath, tipiPendenza);
   }
 
   public static ConnettoreNotificaPagamentiSecim parse(String json) throws ServiceException, ValidationException {
@@ -287,6 +329,8 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
     sb.append("    versioneCsv: ").append(toIndentedString(versioneCsv)).append("\n");
     sb.append("    emailIndirizzi: ").append(toIndentedString(emailIndirizzi)).append("\n");
     sb.append("    emailSubject: ").append(toIndentedString(emailSubject)).append("\n");
+    sb.append("    emailAllegato: ").append(toIndentedString(emailAllegato)).append("\n");
+    sb.append("    downloadBaseUrl: ").append(toIndentedString(downloadBaseUrl)).append("\n");
     sb.append("    fileSystemPath: ").append(toIndentedString(fileSystemPath)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
     sb.append("}");
@@ -327,6 +371,10 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
 					throw new ValidationException("Il campo emailIndirizzi non deve essere vuoto.");
 				}
 				vf.getValidator("emailSubject", this.emailSubject).minLength(1).maxLength(4000);
+				vf.getValidator("emailAllegato", this.emailAllegato).notNull();
+				if(!this.emailAllegato) {
+					vf.getValidator("downloadBaseUrl", this.downloadBaseUrl).notNull().pattern("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
+				}
 				break;
 			case FILESYSTEM:
 				vf.getValidator("fileSystemPath", this.fileSystemPath).notNull().minLength(1).maxLength(4000);

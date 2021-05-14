@@ -273,11 +273,6 @@ Scenario: pathMatches(appIoPath+'/resetCacheAppIO') && methodIs('get')
 	* def responseStatus = 200
 	* eval cacheInvocazioniAppIO = {}
 
-Scenario:
-	* def responseStatus = 404
-  * def response = "PATH NON PREVISTO DAL MOCK"
-
-
 # servizio rendicontazioni ente accetta le richieste ricevute
 Scenario: pathMatches(enteRendicontazioniPath+'/rpp/{idDominio}/{iuv}/{ccp}') && methodIs('post')
 	* def responseStatus = 200
@@ -285,9 +280,16 @@ Scenario: pathMatches(enteRendicontazioniPath+'/rpp/{idDominio}/{iuv}/{ccp}') &&
 Scenario: pathMatches(enteRendicontazioniPath+'/rpp/{idDominio}/{idTracciato}') && methodIs('post')
 	* def responseStatus = 200
 	
-	Scenario: pathMatches(enteRendicontazioniPath+'/flussiRendicontazione/{idDominio}/{idFlusso}') && methodIs('post') && typeContains('xml')
+Scenario: pathMatches(enteRendicontazioniPath+'/flussiRendicontazione/{idDominio}/{idFlusso}') && methodIs('post') && typeContains('xml')
 	* def responseStatus = 200
 	
 Scenario: pathMatches(enteRendicontazioniPath+'/flussiRendicontazione/{idDominio}/{idTracciato}') && methodIs('post') && typeContains('csv')
 	* def responseStatus = 200
+
+Scenario:
+	* def responseStatus = 404
+  * def response = "PATH NON PREVISTO DAL MOCK"
+
+
+
 

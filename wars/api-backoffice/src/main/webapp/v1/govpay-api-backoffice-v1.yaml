@@ -779,6 +779,13 @@ paths:
           description: identificativo di un tracciato
           required: true
           schema:
+            type: integer
+            format: int64
+        - in: query
+          name: secID
+          description: chiave di accesso al tracciato
+          required: true
+          schema:
             type: string
       responses:
         '200':
@@ -7469,6 +7476,12 @@ components:
         emailSubject:
           type: string
           description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato
@@ -7515,6 +7528,12 @@ components:
         emailSubject:
           type: string
           description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato
@@ -7564,6 +7583,12 @@ components:
         emailSubject:
           type: string
           description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato
@@ -7607,6 +7632,12 @@ components:
         emailSubject:
           type: string
           description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato

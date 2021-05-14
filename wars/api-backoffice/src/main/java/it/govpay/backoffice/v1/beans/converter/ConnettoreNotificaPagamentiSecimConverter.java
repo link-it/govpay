@@ -112,6 +112,8 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 				connettore.setTipoConnettore(TipoConnettore.EMAIL);
 				connettore.setEmailIndirizzi(connector.getEmailIndirizzi());
 				connettore.setEmailSubject(connector.getEmailSubject());
+				connettore.setEmailAllegato(connector.EmailAllegato());
+				connettore.setDownloadBaseURL(connector.getDownloadBaseUrl());
 				break;
 			case FILESYSTEM:
 				connettore.setTipoConnettore(TipoConnettore.FILE_SYSTEM);
@@ -138,6 +140,8 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 				rsModel.setTipoConnettore(TipoConnettoreEnum.EMAIL);
 				rsModel.setEmailIndirizzi(connettore.getEmailIndirizzi());
 				rsModel.setEmailSubject(connettore.getEmailSubject());
+				rsModel.setEmailAllegato(connettore.isEmailAllegato());
+				rsModel.setDownloadBaseUrl(connettore.getDownloadBaseURL());
 				break;
 			case FILE_SYSTEM:
 				rsModel.setTipoConnettore(TipoConnettoreEnum.FILESYSTEM);

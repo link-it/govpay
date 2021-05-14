@@ -73,7 +73,7 @@ case $key in
     *)    # unknown option
     echo "Opzione non riconosciuta $1"
     echo "usage:"
-    echo "   -bo <args> : lista di autenticazioni da abilitare sulle api di backoffice (spid,header,wildfly,basic,ssl,hdrcert,session). Default: basic,ssl" 
+    echo "   -bo <args> : lista di autenticazioni da abilitare sulle api di backoffice (spid,header,wildfly,basic,ssl,hdrcert,public,session). Default: basic,ssl" 
     echo "   -pag <args> : lista di autenticazioni da abilitare sulle api di pagamento (spid,header,wildfly,basic,ssl,hdrcert,public,session). Default: basic,ssl"
     echo "   -pen <args> : lista di autenticazioni da abilitare sulle api di pendenza (basic,ssl). Default: basic,basic-gp,ssl,hdrcert"
     echo "   -rag <args> : lista di autenticazioni da abilitare sulle api di ragioneria (basic,ssl). Default: basic,basic-gp,ssl,hdrcert"
@@ -94,6 +94,7 @@ BACKOFFICE_BASIC_GP=false
 [[ $BACKOFFICE == *"hdrcert"* ]] && BACKOFFICE_SSL_HEADER=true || BACKOFFICE_SSL_HEADER=false
 [[ $BACKOFFICE == *"header"* ]] && BACKOFFICE_HEADER=true || BACKOFFICE_HEADER=false
 [[ $BACKOFFICE == *"spid"* ]] && BACKOFFICE_SPID=true || BACKOFFICE_SPID=false
+[[ $PAGAMENTI == *"public"* ]] && BACKOFFICE_PUBLIC=true || BACKOFFICE_PUBLIC=false
 [[ $BACKOFFICE == *"session"* ]] && BACKOFFICE_SESSION=true || BACKOFFICE_SESSION=false
 
 PAGAMENTI_BASIC_WF=false
@@ -209,6 +210,13 @@ then
   sed -i -e "s#SESSION_START#HEADER_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   sed -i -e "s#SESSION_END#<!-- SESSION_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   echo "API-Backoffice abilitazione Session auth completata.";
+fi
+if $BACKOFFICE_PUBLIC
+then
+  echo "API-Backoffice abilitazione accesso in forma anonima...";
+  sed -i -e "s#PUBLIC_START#PUBLIC_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#PUBLIC_END#<!-- PUBLIC_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Backoffice abilitazione accesso in forma anonima completata.";
 fi
 if $DEFAULT_BASIC
 then

@@ -115,6 +115,8 @@ public class ConnettoreNotificaPagamentiConverter {
 				connettore.setTipoConnettore(TipoConnettore.EMAIL);
 				connettore.setEmailIndirizzi(connector.getEmailIndirizzi());
 				connettore.setEmailSubject(connector.getEmailSubject());
+				connettore.setEmailAllegato(connector.EmailAllegato());
+				connettore.setDownloadBaseURL(connector.getDownloadBaseUrl());
 				break;
 			case FILESYSTEM:
 				connettore.setTipoConnettore(TipoConnettore.FILE_SYSTEM);
@@ -172,6 +174,8 @@ public class ConnettoreNotificaPagamentiConverter {
 				rsModel.setTipoConnettore(TipoConnettoreEnum.EMAIL);
 				rsModel.setEmailIndirizzi(connettore.getEmailIndirizzi());
 				rsModel.setEmailSubject(connettore.getEmailSubject());
+				rsModel.setEmailAllegato(connettore.isEmailAllegato());
+				rsModel.setDownloadBaseUrl(connettore.getDownloadBaseURL());
 				break;
 			case FILE_SYSTEM:
 				rsModel.setTipoConnettore(TipoConnettoreEnum.FILESYSTEM);
@@ -182,6 +186,8 @@ public class ConnettoreNotificaPagamentiConverter {
 				if(!connettore.getTipoAutenticazione().equals(EnumAuthType.NONE))
 					rsModel.setWebServiceAuth(toTipoAutenticazioneRsModel(connettore));
 				rsModel.setWebServiceUrl(connettore.getUrl());
+				break;
+			case REST:
 				break;
 			}
 			

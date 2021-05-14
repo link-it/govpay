@@ -68,12 +68,18 @@ paths:
       responses:
         '200':
           description: Informazioni acquisite correttamente
+        '201':
+          description: Informazioni acquisite correttamente
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '403':
           $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
   '/rpp/{idDominio}/{iuv}/{ccp}':
@@ -111,12 +117,18 @@ paths:
       responses:
         '200':
           description: Informazioni acquisite correttamente
+        '201':
+          description: Informazioni acquisite correttamente
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '403':
           $ref: '#/components/responses/403'
         '404':
-          $ref: '#/components/responses/400'
+          $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
   '/flussiRendicontazione/{idDominio}/{idTracciato}': 
@@ -169,12 +181,18 @@ paths:
       responses:
         '200':
           description: Informazioni acquisite correttamente
+        '201':
+          description: Informazioni acquisite correttamente
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '403':
           $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
   '/flussiRendicontazione/{idDominio}/{idFlusso}':
@@ -197,6 +215,13 @@ paths:
           required: true
           schema:
             type: string
+        - in: query
+          name: dataOraFlusso
+          schema:
+            type: string
+            format: date-time
+          required: true
+          description: Data e Ora di acquisizione del flusso
       requestBody:
         description: Tracciato csv di sintesi flussi rendicontazione acquisiti
         content:
@@ -207,12 +232,18 @@ paths:
       responses:
         '200':
           description: Informazioni acquisite correttamente
+        '201':
+          description: Informazioni acquisite correttamente
+        '400':
+          $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
         '403':
           $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/404'
+        '422':
+          $ref: '#/components/responses/422'
         '500':
           $ref: '#/components/responses/500'
 components:
@@ -226,13 +257,23 @@ components:
           example:
             categoria: RICHIESTA
             codice: INTERNO
-            descrizione: Servizio non disponibile
+            descrizione: Richiesta non correttamente formata
     '401':
       description: Richiesta non autenticata
     '403':
       description: Richiesta non autorizzata
     '404':
       description: Risorsa inesistente
+    '422':
+      description: Richiesta non processabile
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/faultBean'
+          example:
+            categoria: RICHIESTA
+            codice: INTERNO
+            descrizione: Richiesta non processabile
     '500':
       description: Servizio non disponibile
       content:
@@ -258,14 +299,12 @@ components:
              * `AUTORIZZAZIONE` - Operazione non autorizzata
              * `RICHIESTA` - Richiesta non valida
              * `OPERAZIONE` - Operazione non eseguibile
-             * `EC` - Errore da Ente Creditore
              * `INTERNO` - Errore interno
           enum:
             - AUTORIZZAZIONE
             - RICHIESTA
             - OPERAZIONE
             - INTERNO
-            - EC
         codice:
           type: string
           description: Codice di errore

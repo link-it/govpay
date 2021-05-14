@@ -25,6 +25,8 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "versioneCsv",
 "emailIndirizzi",
 "emailSubject",
+"emailAllegato",
+"downloadBaseUrl",
 "fileSystemPath",
 "tipiPendenza",
 "url",
@@ -93,6 +95,12 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
   @JsonProperty("emailSubject")
   private String emailSubject = null;
   
+  @JsonProperty("emailAllegato")
+  private Boolean emailAllegato = null;
+  
+  @JsonProperty("downloadBaseUrl")
+  private String downloadBaseUrl = null;
+  
   @JsonProperty("fileSystemPath")
   private String fileSystemPath = null;
   
@@ -154,6 +162,7 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
 		}
 	}
   }
+
     
   private VersioneApiEnum versioneApiEnum = null;
   
@@ -245,6 +254,38 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
   }
   public void setEmailSubject(String emailSubject) {
     this.emailSubject = emailSubject;
+  }
+
+  /**
+   * Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+   **/
+  public ConnettoreNotificaPagamentiGovPay emailAllegato(Boolean emailAllegato) {
+    this.emailAllegato = emailAllegato;
+    return this;
+  }
+
+  @JsonProperty("emailAllegato")
+  public Boolean EmailAllegato() {
+    return emailAllegato;
+  }
+  public void setEmailAllegato(Boolean emailAllegato) {
+    this.emailAllegato = emailAllegato;
+  }
+
+  /**
+   * URL base del link dove scaricare il tracciato
+   **/
+  public ConnettoreNotificaPagamentiGovPay downloadBaseUrl(String downloadBaseUrl) {
+    this.downloadBaseUrl = downloadBaseUrl;
+    return this;
+  }
+
+  @JsonProperty("downloadBaseUrl")
+  public String getDownloadBaseUrl() {
+    return downloadBaseUrl;
+  }
+  public void setDownloadBaseUrl(String downloadBaseUrl) {
+    this.downloadBaseUrl = downloadBaseUrl;
   }
 
   /**
@@ -381,6 +422,8 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
         Objects.equals(versioneCsv, connettoreNotificaPagamentiGovPay.versioneCsv) &&
         Objects.equals(emailIndirizzi, connettoreNotificaPagamentiGovPay.emailIndirizzi) &&
         Objects.equals(emailSubject, connettoreNotificaPagamentiGovPay.emailSubject) &&
+        Objects.equals(emailAllegato, connettoreNotificaPagamentiGovPay.emailAllegato) &&
+        Objects.equals(downloadBaseUrl, connettoreNotificaPagamentiGovPay.downloadBaseUrl) &&
         Objects.equals(fileSystemPath, connettoreNotificaPagamentiGovPay.fileSystemPath) &&
         Objects.equals(tipiPendenza, connettoreNotificaPagamentiGovPay.tipiPendenza) &&
         Objects.equals(url, connettoreNotificaPagamentiGovPay.url) &&
@@ -391,7 +434,7 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
 
   @Override
   public int hashCode() {
-    return Objects.hash(abilitato, tipoConnettore, versioneCsv, emailIndirizzi, emailSubject, fileSystemPath, tipiPendenza, url, versioneApi, auth, contenuti);
+    return Objects.hash(abilitato, tipoConnettore, versioneCsv, emailIndirizzi, emailSubject, emailAllegato, downloadBaseUrl, fileSystemPath, tipiPendenza, url, versioneApi, auth, contenuti);
   }
 
   public static ConnettoreNotificaPagamentiGovPay parse(String json) throws ServiceException, ValidationException {
@@ -413,6 +456,8 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
     sb.append("    versioneCsv: ").append(toIndentedString(versioneCsv)).append("\n");
     sb.append("    emailIndirizzi: ").append(toIndentedString(emailIndirizzi)).append("\n");
     sb.append("    emailSubject: ").append(toIndentedString(emailSubject)).append("\n");
+    sb.append("    emailAllegato: ").append(toIndentedString(emailAllegato)).append("\n");
+    sb.append("    downloadBaseUrl: ").append(toIndentedString(downloadBaseUrl)).append("\n");
     sb.append("    fileSystemPath: ").append(toIndentedString(fileSystemPath)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
     sb.append("    url: ").append(toIndentedString(url)).append("\n");
@@ -455,6 +500,10 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
 					throw new ValidationException("Il campo emailIndirizzi non deve essere vuoto.");
 				}
 				vf.getValidator("emailSubject", this.emailSubject).minLength(1).maxLength(4000);
+				vf.getValidator("emailAllegato", this.emailAllegato).notNull();
+				if(!this.emailAllegato) {
+					vf.getValidator("downloadBaseUrl", this.downloadBaseUrl).notNull().pattern("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
+				}
 				break;
 			case FILESYSTEM:
 				vf.getValidator("fileSystemPath", this.fileSystemPath).notNull().minLength(1).maxLength(4000);
@@ -482,7 +531,6 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
 						throw new ValidationException("Il valore [" + contenutoNotificaPagamentiGovpay + "] del campo contenuti non corrisponde con uno dei valori consentiti: " + Arrays.asList(ContenutoNotificaPagamentiGovpay.values()));
 					}
 				}
-				
 				break;
 			}
 			

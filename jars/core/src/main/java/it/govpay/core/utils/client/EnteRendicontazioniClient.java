@@ -39,7 +39,7 @@ public class EnteRendicontazioniClient extends BasicClient {
 
 	public enum Azione {
 		
-		pivotSILAutorizzaImportFlusso, pivotSILChiediStatoImportFlusso, pivotSILInviaFlusso
+		inviaFlussoRendicontazione, inviaRpp, inviaSintesiFlussiRendicontazione, inviaSintesiPagamenti
 	}
 
 	private static ObjectFactory objectFactory;
@@ -75,16 +75,16 @@ public class EnteRendicontazioniClient extends BasicClient {
 		
 		switch (contenuto) {
 		case FLUSSI_RENDICONTAZIONE:
-			swaggerOperationID = "inviaFlussoRendicontazione";
+			swaggerOperationID = Azione.inviaFlussoRendicontazione.toString();
 			break;
 		case RPP:
-			swaggerOperationID = "inviaRpp";
+			swaggerOperationID = Azione.inviaRpp.toString();
 			break;
 		case SINTESI_FLUSSI_RENDICONTAZIONE:
-			swaggerOperationID = "inviaSintesiFlussiRendicontazione";
+			swaggerOperationID = Azione.inviaSintesiFlussiRendicontazione.toString();
 			break;
 		case SINTESI_PAGAMENTI:
-			swaggerOperationID = "inviaSintesiPagamenti";
+			swaggerOperationID = Azione.inviaSintesiPagamenti.toString();
 			break;
 		}
 		
@@ -113,10 +113,6 @@ public class EnteRendicontazioniClient extends BasicClient {
 	}
 	
 	public byte[] inviaFile(byte[] body, Map<String, String> queryParams, ConnettoreNotificaPagamenti.Contenuti contenuto, String idFile) throws ClientException { 
-		
-		log.debug("Spedisco il contentuto " + contenuto.toString() + " del Tracciato (Dominio: " 
-				+ this.dominio.getCodDominio() + ", Identificativo" + this.tracciato.getIdentificativo() + ") alla URL ("+this.url+")");
-
 		List<Property> headerProperties = new ArrayList<>();
 		headerProperties.add(new Property("Accept", "application/json"));
 		StringBuilder sb = new StringBuilder();
@@ -152,6 +148,8 @@ public class EnteRendicontazioniClient extends BasicClient {
 				sb.append(key).append("=").append(queryParams.get(key));
 			}
 		}
+		
+		log.debug("Spedisco il contentuto " + contenuto.toString() + " del Tracciato (Dominio: " + this.dominio.getCodDominio() + ", Identificativo" + this.tracciato.getIdentificativo() + ") alla URL ("+sb.toString()+")");
 		
 		String contentType = this.getContentType(contenuto);
 		

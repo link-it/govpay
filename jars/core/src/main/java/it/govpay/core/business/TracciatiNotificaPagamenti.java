@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -68,6 +67,7 @@ import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
@@ -75,6 +75,8 @@ import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
 
 public class TracciatiNotificaPagamenti {
 
+	public static final String SUFFIX_FILE_RPT_XML = "/rpt.xml";
+	public static final String SUFFIX_FILE_RT_XML = "/rt.xml";
 	public static final String FLUSSI_RENDICONTAZIONE_DIR_PREFIX = "FlussiRendicontazione/";
 	public static final String GOVPAY_FLUSSI_RENDICONTAZIONE_CSV_FILE_NAME = "govpay_flussi_rendicontazione.csv";
 	public static final String FILE_RT_DIR_PREFIX = "RT/";
@@ -195,7 +197,7 @@ public class TracciatiNotificaPagamenti {
 						beanDati.setLineaElaborazione(0);
 						tracciato.setBeanDati(serializer.getObject(beanDati));
 						// identificativo univoco
-						tracciato.setIdentificativo(UUID.randomUUID().toString());
+						tracciato.setIdentificativo(TracciatiNotificaPagamentiUtils.generaIdentificativoTracciato());
 
 						// insert tracciato
 						tracciatiNotificaPagamentiBD.insertTracciato(tracciato);
@@ -531,16 +533,32 @@ public class TracciatiNotificaPagamenti {
 					if(ccp == null || ccp.equals("n/a"))
 						ccp = "na";
 					
-					ZipEntry rtEntry = new ZipEntry(FILE_RT_DIR_PREFIX+idDominio +"_"+ iuv + "_"+ ccp +".xml");
-					zos.putNextEntry(rtEntry);
+					if(rpt.getXmlRt() != null) {
+						ZipEntry rtEntry = new ZipEntry(TracciatiNotificaPagamentiUtils.creaNomeEntryRT(idDominio, iuv, ccp));
+						zos.putNextEntry(rtEntry);
+						
+						byte[] b = rpt.getXmlRt();
+						
+						zos.write(b);
+						
+						// chiusa entry
+						zos.flush();
+						zos.closeEntry();
+					}
 					
-					byte[] b = rpt.getXmlRt();
+					if(rpt.getXmlRpt() != null) {
+						ZipEntry rtEntry = new ZipEntry(TracciatiNotificaPagamentiUtils.creaNomeEntryRPT(idDominio, iuv, ccp));
+						zos.putNextEntry(rtEntry);
+						
+						byte[] b = rpt.getXmlRpt();
+						
+						zos.write(b);
+						
+						// chiusa entry
+						zos.flush();
+						zos.closeEntry();
+					}
 					
-					zos.write(b);
-					
-					// chiusa entry
-					zos.flush();
-					zos.closeEntry();
 				}
 				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+rtList.size()+"] RT nel tracciato completato");
 			}
@@ -610,7 +628,7 @@ public class TracciatiNotificaPagamenti {
 					Date dataFlusso = fr.getDataFlusso();
 					String dataFlussoS = SimpleDateFormatUtils.newSimpleDateFormat().format(dataFlusso);
 					
-					ZipEntry rtEntry = new ZipEntry(FLUSSI_RENDICONTAZIONE_DIR_PREFIX+idFlusso+"_"+dataFlussoS+".xml");
+					ZipEntry rtEntry = new ZipEntry(TracciatiNotificaPagamentiUtils.creaNomeEntryFlussoRendicontazione(idFlusso, dataFlussoS));
 					zos.putNextEntry(rtEntry);
 					
 					byte[] b = fr.getXml();
@@ -635,6 +653,8 @@ public class TracciatiNotificaPagamenti {
 		
 		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"] completato.");
 	}
+
+
 	
 	private List<List<String>> creaLineaCsvFrGovPay(Fr fr, BDConfigWrapper configWrapper) throws JAXBException, SAXException {
 		List<List<String>> linee = new ArrayList<List<String>>();
