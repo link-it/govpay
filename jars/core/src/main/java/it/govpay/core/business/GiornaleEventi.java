@@ -40,6 +40,7 @@ import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Categoria;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.client.EnteRendicontazioniClient;
 import it.govpay.core.utils.client.NodoClient;
 
 public class GiornaleEventi {
@@ -274,6 +275,10 @@ public class GiornaleEventi {
 				|| EventoContext.APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOEMAIL.equals(operazione)
 				|| EventoContext.APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOFILESYSTEM.equals(operazione)
 				|| EventoContext.APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOREST.equals(operazione)
+				|| EnteRendicontazioniClient.Azione.inviaFlussoRendicontazione.toString().equals(operazione)
+				|| EnteRendicontazioniClient.Azione.inviaRpp.toString().equals(operazione)
+				|| EnteRendicontazioniClient.Azione.inviaSintesiFlussiRendicontazione.toString().equals(operazione)
+				|| EnteRendicontazioniClient.Azione.inviaSintesiPagamenti.toString().equals(operazione)
 				) {
 			return true;
 		}

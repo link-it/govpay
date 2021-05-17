@@ -1087,6 +1087,7 @@ public class TracciatiNotificaPagamenti {
 		sb.append(filler);
 		
 //		RIFERIMENTO CREDITORE	345	379	35	Carattere		SECIM +	$pendenza.{datiAllegati}.secim.riferimentoCreditore o, in sua assenza, il campo $pendenza.voce[0].idVoce
+		// il prefisso SECIM viene valorizzato cosi se il campo $pendenza.{datiAllegati}.secim.tipoRiferimentoCreditore e' vuoto, altrimenti ci viene messo il valore ricevuto
 		if(riferimentoCreditore == null)
 			riferimentoCreditore = singoliVersamenti.get(0).getCodSingoloVersamentoEnte();
 		riferimentoCreditore = (tipoRiferimentoCreditore == null) ? ("SECIM" + riferimentoCreditore) : (tipoRiferimentoCreditore + riferimentoCreditore); 
