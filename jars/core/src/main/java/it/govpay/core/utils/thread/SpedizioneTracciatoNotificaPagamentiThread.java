@@ -378,7 +378,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	            	// elenco RT
 	            	if(entryName.startsWith(TracciatiNotificaPagamenti.FILE_RT_DIR_PREFIX) 
 	            			&& contenuti.contains(ConnettoreNotificaPagamenti.Contenuti.RPP.toString())) {
-	            		log.debug("Spedizione Entry: " + entryName + " in corso...");
+	            		log.debug("Creazione RPP a partire dalla Entry: " + entryName + " in corso...");
 	            		
 	            		appContext.getServerByOperationId(operationId).addGenericProperty(new Property("contenuto", ConnettoreNotificaPagamenti.Contenuti.RPP.toString()));
 	            		
@@ -397,6 +397,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	            			remove.setRt(baos.toByteArray());
 	            			
 	            			mappaRPP.put(pathRT, remove);
+	            			log.debug("Creazione RPP a partire dalla Entry: " + entryName + " aggiunta RT.");
 	            		} 
 	            		
 	            		boolean isRPT = TracciatiNotificaPagamentiUtils.isRPT(entry.getName());
@@ -412,7 +413,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	            			remove.setRpt(baos.toByteArray());
 	            			
 	            			mappaRPP.put(pathRPT, remove);
+	            			log.debug("Creazione RPP a partire dalla Entry: " + entryName + " aggiunta RPT.");
 	            		}
+	            		log.debug("Creazione RPP a partire dalla Entry: " + entryName + " completata.");
 	            	}
 	            	
 	            	// elenco flussi

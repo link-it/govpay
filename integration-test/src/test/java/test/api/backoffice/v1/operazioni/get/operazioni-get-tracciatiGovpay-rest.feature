@@ -3,6 +3,7 @@ Feature: Creazione Tracciato GovPay
 Background:
 
 * callonce read('classpath:utils/workflow/modello1/v1/modello1-bunch-pagamenti-v2.feature')
+* callonce read('classpath:utils/api/v1/ragioneria/bunch-riconciliazioni-v2.feature')
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
 * def dominio = read('classpath:test/api/backoffice/v1/domini/put/msg/dominio-connettore-govpay.json')
 

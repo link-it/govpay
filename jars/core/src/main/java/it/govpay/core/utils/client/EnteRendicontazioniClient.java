@@ -121,7 +121,7 @@ public class EnteRendicontazioniClient extends BasicClient {
 		
 		switch (contenuto) {
 		case FLUSSI_RENDICONTAZIONE:
-			sb.append("/flussiRendicontazione/" + idFile);
+			sb.append("/flussiRendicontazione/" + this.dominio.getCodDominio() + "/" + idFile);
 			break;
 		case RPP:
 			sb.append("/rpp/" + idFile);
