@@ -40,6 +40,7 @@ import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Categoria;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.client.EnteRendicontazioniClient;
 import it.govpay.core.utils.client.NodoClient;
 
 public class GiornaleEventi {
@@ -170,7 +171,7 @@ public class GiornaleEventi {
 				return false;
 		}
 		
-		if(componente.equals(Componente.API_SECIM) || componente.equals(Componente.API_MYPIVOT)) {
+		if(componente.equals(Componente.API_SECIM) || componente.equals(Componente.API_MYPIVOT) || componente.equals(Componente.API_GOVPAY)) {
 			if(operazione != null)
 				return !isOperazioneScritturaTracciatiNotificaPagamenti(operazione);
 			else 
@@ -185,7 +186,7 @@ public class GiornaleEventi {
 			return isOperazioneScrittura(operazione);
 		}
 		
-		if(componente.equals(Componente.API_SECIM) || componente.equals(Componente.API_MYPIVOT)) {
+		if(componente.equals(Componente.API_SECIM) || componente.equals(Componente.API_MYPIVOT) || componente.equals(Componente.API_GOVPAY)) {
 			return isOperazioneScritturaTracciatiNotificaPagamenti(operazione);
 		}
 
@@ -273,6 +274,11 @@ public class GiornaleEventi {
 				|| EventoContext.APISECIM_TIPOEVENTO_SECIMINVIATRACCIATOFILESYSTEM.equals(operazione)
 				|| EventoContext.APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOEMAIL.equals(operazione)
 				|| EventoContext.APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOFILESYSTEM.equals(operazione)
+				|| EventoContext.APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOREST.equals(operazione)
+				|| EnteRendicontazioniClient.Azione.inviaFlussoRendicontazione.toString().equals(operazione)
+				|| EnteRendicontazioniClient.Azione.inviaRpp.toString().equals(operazione)
+				|| EnteRendicontazioniClient.Azione.inviaSintesiFlussiRendicontazione.toString().equals(operazione)
+				|| EnteRendicontazioniClient.Azione.inviaSintesiPagamenti.toString().equals(operazione)
 				) {
 			return true;
 		}

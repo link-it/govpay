@@ -27,6 +27,7 @@ public class TracciatoNotificaPagamentiConverter {
 //		dto.setUploadUrl(vo.getUploadUrl());
 		dto.setTipo(TIPO_TRACCIATO.valueOf(vo.getTipo()));
 		dto.setVersione(vo.getVersione()); 
+		dto.setIdentificativo(vo.getIdentificativo());
 
 		return dto;
 	}
@@ -54,6 +55,7 @@ public class TracciatoNotificaPagamentiConverter {
 //		vo.setUploadUrl(dto.getUploadUrl());
 		vo.setTipo(dto.getTipo().name());
 		vo.setVersione(dto.getVersione());
+		vo.setIdentificativo(dto.getIdentificativo());
 		
 		return vo;
 	}

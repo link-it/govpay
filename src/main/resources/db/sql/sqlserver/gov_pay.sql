@@ -720,6 +720,7 @@ CREATE TABLE trac_notif_pag
 	data_completamento DATETIME2,
 	raw_contenuto VARBINARY(MAX),
 	bean_dati VARCHAR(max),
+	identificativo VARCHAR(255) NOT NULL,
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_dominio BIGINT NOT NULL,
@@ -1111,6 +1112,7 @@ CREATE TABLE eventi
 CREATE INDEX idx_evt_data ON eventi (data);
 CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
 CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
+CREATE INDEX idx_evt_iuv ON eventi (iuv);
 
 
 

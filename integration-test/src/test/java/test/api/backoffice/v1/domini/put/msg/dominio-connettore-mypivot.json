@@ -25,6 +25,8 @@
   		"abilitato" : true,
   		"tipoConnettore" : "EMAIL",
   		"emailIndirizzi" : [ "pec@creditore.it" ],
+  		"emailAllegato" :  true,
+  		"downloadBaseUrl" : "http://localhost:8080/servizioDownloadTracciati",
   		"codiceIPA": "IPA",
   		"versioneCsv" : "1.0",
   		"tipiPendenza" : [ "*" ]

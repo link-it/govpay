@@ -321,6 +321,27 @@
         
         SESSION_END -->
         
+        <!-- PUBLIC_START
+        <b:bean id="http403ForbiddenEntryPointPublic" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
+        </b:bean>
+        <b:bean id="preAuthFilterAnonymous" class="it.govpay.rs.v1.authentication.preauth.filter.AnonymousAuthenticationFilter">
+        	<b:constructor-arg index="0" value="GovPay_API_Backoffice_Utenza_Anonima" />
+        </b:bean>
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointPublic" pattern="/rs/public/v1/**">
+                <csrf disabled="true"/>
+                <intercept-url pattern="/rs/public/v1/tracciatiNotificaPagamenti/**" access="permitAll" method="GET" />
+                <intercept-url pattern="/rs/public/v1/info" access="permitAll" />
+                <intercept-url pattern="/rs/public/v1/**" access="denyAll" />
+                <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterAnonymous" />
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        
+        PUBLIC_END -->
+        
         <!-- DEFAULT_SSL_START
         
         <b:bean id="x509AuthenticationEntryPointDefault" class="it.govpay.rs.v1.authentication.entrypoint.X509AuthenticationEntryPoint" />

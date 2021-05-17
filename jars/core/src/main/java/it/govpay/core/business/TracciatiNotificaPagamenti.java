@@ -67,6 +67,7 @@ import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
@@ -74,6 +75,12 @@ import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
 
 public class TracciatiNotificaPagamenti {
 
+	public static final String SUFFIX_FILE_RPT_XML = "/rpt.xml";
+	public static final String SUFFIX_FILE_RT_XML = "/rt.xml";
+	public static final String FLUSSI_RENDICONTAZIONE_DIR_PREFIX = "FlussiRendicontazione/";
+	public static final String GOVPAY_FLUSSI_RENDICONTAZIONE_CSV_FILE_NAME = "govpay_flussi_rendicontazione.csv";
+	public static final String FILE_RT_DIR_PREFIX = "RT/";
+	public static final String GOVPAY_RENDICONTAZIONE_CSV_FILE_NAME = "govpay_rendicontazione.csv";
 	private static final String [] MYPIVOT_HEADER_FILE_CSV = { "IUD","codIuv","tipoIdentificativoUnivoco","codiceIdentificativoUnivoco","anagraficaPagatore","indirizzoPagatore","civicoPagatore","capPagatore","localitaPagatore","provinciaPagatore","nazionePagatore","mailPagatore","dataEsecuzionePagamento","importoDovutoPagato","commissioneCaricoPa","tipoDovuto","tipoVersamento","causaleVersamento","datiSpecificiRiscossione","bilancio" };
 	private static final String [] GOVPAY_HEADER_FILE_CSV = { "idA2A","idPendenza","idDocumento","descrizioneDocumento","codiceRata","dataScadenza","idVocePendenza","descrizioneVocePendenza","idTipoPendenza","descrizione","anno","identificativoDebitore","anagraficaDebitore","identificativoDominio","identificativoUnivocoVersamento","codiceContestoPagamento","indiceDati","identificativoUnivocoRiscossione","modelloPagamento","singoloImportoPagato","dataEsitoSingoloPagamento","causaleVersamento","datiSpecificiRiscossione","datiAllegati","datiAllegatiVoce","denominazioneAttestante","identificativoAttestante" };
 	private static final String [] GOVPAY_FLUSSI_HEADER_FILE_CSV = {"identificativoFlusso","dataOraFlusso","identificativoDominio","identificativoUnivocoRegolamento","dataRegolamento","codiceBicBancaDiRiversamento","numeroTotalePagamenti","importoTotalePagamenti","identificativoUnivocoVersamento","identificativoUnivocoRiscossione","indiceDatiSingoloPagamento","singoloImportoPagato","codiceEsitoSingoloPagamento","dataEsitoSingoloPagamento","denominazioneMittente","identificativoMittente","denominazioneRicevente","identificativoRicevente"	};
@@ -189,6 +196,8 @@ public class TracciatiNotificaPagamenti {
 						beanDati.setDataUltimoAggiornamento(new Date());
 						beanDati.setLineaElaborazione(0);
 						tracciato.setBeanDati(serializer.getObject(beanDati));
+						// identificativo univoco
+						tracciato.setIdentificativo(TracciatiNotificaPagamentiUtils.generaIdentificativoTracciato());
 
 						// insert tracciato
 						tracciatiNotificaPagamentiBD.insertTracciato(tracciato);
@@ -469,7 +478,7 @@ public class TracciatiNotificaPagamenti {
 		
 		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT);
 		
-		ZipEntry tracciatoOutputEntry = new ZipEntry("govpay_rendicontazione.csv");
+		ZipEntry tracciatoOutputEntry = new ZipEntry(GOVPAY_RENDICONTAZIONE_CSV_FILE_NAME);
 		zos.putNextEntry(tracciatoOutputEntry);
 		
 		zos.write(csvUtils.toCsv(GOVPAY_HEADER_FILE_CSV).getBytes());
@@ -524,16 +533,32 @@ public class TracciatiNotificaPagamenti {
 					if(ccp == null || ccp.equals("n/a"))
 						ccp = "na";
 					
-					ZipEntry rtEntry = new ZipEntry("RT/"+idDominio +"_"+ iuv + "_"+ ccp +".xml");
-					zos.putNextEntry(rtEntry);
+					if(rpt.getXmlRt() != null) {
+						ZipEntry rtEntry = new ZipEntry(TracciatiNotificaPagamentiUtils.creaNomeEntryRT(idDominio, iuv, ccp));
+						zos.putNextEntry(rtEntry);
+						
+						byte[] b = rpt.getXmlRt();
+						
+						zos.write(b);
+						
+						// chiusa entry
+						zos.flush();
+						zos.closeEntry();
+					}
 					
-					byte[] b = rpt.getXmlRt();
+					if(rpt.getXmlRpt() != null) {
+						ZipEntry rtEntry = new ZipEntry(TracciatiNotificaPagamentiUtils.creaNomeEntryRPT(idDominio, iuv, ccp));
+						zos.putNextEntry(rtEntry);
+						
+						byte[] b = rpt.getXmlRpt();
+						
+						zos.write(b);
+						
+						// chiusa entry
+						zos.flush();
+						zos.closeEntry();
+					}
 					
-					zos.write(b);
-					
-					// chiusa entry
-					zos.flush();
-					zos.closeEntry();
 				}
 				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+rtList.size()+"] RT nel tracciato completato");
 			}
@@ -550,7 +575,7 @@ public class TracciatiNotificaPagamenti {
 		
 		log.debug("Creazione file di sintesi flussi in corso...");
 		
-		ZipEntry frOutputEntry = new ZipEntry("govpay_flussi_rendicontazione.csv");
+		ZipEntry frOutputEntry = new ZipEntry(GOVPAY_FLUSSI_RENDICONTAZIONE_CSV_FILE_NAME);
 		zos.putNextEntry(frOutputEntry);
 		
 		zos.write(csvUtils.toCsv(GOVPAY_FLUSSI_HEADER_FILE_CSV).getBytes());
@@ -603,7 +628,7 @@ public class TracciatiNotificaPagamenti {
 					Date dataFlusso = fr.getDataFlusso();
 					String dataFlussoS = SimpleDateFormatUtils.newSimpleDateFormat().format(dataFlusso);
 					
-					ZipEntry rtEntry = new ZipEntry("FlussiRendicontazione/"+idFlusso+"_"+dataFlussoS+".xml");
+					ZipEntry rtEntry = new ZipEntry(TracciatiNotificaPagamentiUtils.creaNomeEntryFlussoRendicontazione(idFlusso, dataFlussoS));
 					zos.putNextEntry(rtEntry);
 					
 					byte[] b = fr.getXml();
@@ -628,6 +653,8 @@ public class TracciatiNotificaPagamenti {
 		
 		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"] completato.");
 	}
+
+
 	
 	private List<List<String>> creaLineaCsvFrGovPay(Fr fr, BDConfigWrapper configWrapper) throws JAXBException, SAXException {
 		List<List<String>> linee = new ArrayList<List<String>>();
@@ -1060,6 +1087,7 @@ public class TracciatiNotificaPagamenti {
 		sb.append(filler);
 		
 //		RIFERIMENTO CREDITORE	345	379	35	Carattere		SECIM +	$pendenza.{datiAllegati}.secim.riferimentoCreditore o, in sua assenza, il campo $pendenza.voce[0].idVoce
+		// il prefisso SECIM viene valorizzato cosi se il campo $pendenza.{datiAllegati}.secim.tipoRiferimentoCreditore e' vuoto, altrimenti ci viene messo il valore ricevuto
 		if(riferimentoCreditore == null)
 			riferimentoCreditore = singoliVersamenti.get(0).getCodSingoloVersamentoEnte();
 		riferimentoCreditore = (tipoRiferimentoCreditore == null) ? ("SECIM" + riferimentoCreditore) : (tipoRiferimentoCreditore + riferimentoCreditore); 

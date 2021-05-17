@@ -2204,6 +2204,9 @@
 						<linkit:sql-table-index name="idx_evt_id_sessione">
 							<linkit:sql-table-index-field name="idSessione"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_evt_iuv">
+							<linkit:sql-table-index-field name="iuv"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -3925,6 +3928,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="identificativo" type="String255"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

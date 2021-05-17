@@ -746,6 +746,7 @@ CREATE TABLE trac_notif_pag
 	data_completamento TIMESTAMP(3) COMMENT 'data completamento spedizione notifica',
 	raw_contenuto MEDIUMBLOB COMMENT 'Contenuto tracciato',
 	bean_dati LONGTEXT COMMENT 'Gestione stato elaborazione',
+	identificativo VARCHAR(255) NOT NULL COMMENT 'Identificativo univoco tracciato',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_dominio BIGINT NOT NULL,
@@ -1161,6 +1162,7 @@ CREATE TABLE eventi
 CREATE INDEX idx_evt_data ON eventi (data);
 CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
 CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
+CREATE INDEX idx_evt_iuv ON eventi (iuv);
 
 
 

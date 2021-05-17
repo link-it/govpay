@@ -767,6 +767,41 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+  '/tracciatiNotificaPagamenti/{id}':
+    get:
+      tags:
+        - Tracciati
+      summary: Tracciato Notifica Pagamenti in formato zip
+      operationId: getTracciatoNotificaPagamenti
+      parameters:
+        - in: path
+          name: id
+          description: identificativo di un tracciato
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          name: secID
+          description: chiave di accesso al tracciato
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Zip contenente i dati del tracciato 
+          content:
+            application/zip:
+              schema:
+               type: object
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
   '/intermediari':
     get:
       tags:
@@ -7488,6 +7523,12 @@ components:
         emailSubject:
           type: string
           description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato
@@ -7534,6 +7575,12 @@ components:
         emailSubject:
           type: string
           description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato
@@ -7583,6 +7630,12 @@ components:
         emailSubject:
           type: string
           description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato
@@ -7613,6 +7666,7 @@ components:
           enum:
             - 'EMAIL'
             - 'FILESYSTEM'
+            - 'REST'
         versioneCsv:
           type: string
           example: '7.0'
@@ -7625,6 +7679,12 @@ components:
         emailSubject:
           type: string
           description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato
@@ -7639,6 +7699,29 @@ components:
                 description: identificativo tipo pendenza
                 example:
                   SEGRETERIA
+        url:
+          type: string
+          description: URL Base del servizio rest di ricezione dei dati
+        versioneApi:
+          type: string
+          enum:
+            - 'REST v1'
+          description: Versione delle API di integrazione utilizzate.
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
+        contenuti:
+          type: array
+          description: Lista dei contenuti da inviare al servizio REST
+          items:
+            $ref: '#/components/schemas/contenutoNotificaPagamentiGovpay'
+    contenutoNotificaPagamentiGovpay:
+      example: SINTESI_PAGAMENTI
+      type: string
+      enum:
+        - SINTESI_PAGAMENTI
+        - SINTESI_FLUSSI_RENDICONTAZIONE
+        - RPP
+        - FLUSSI_RENDICONTAZIONE
     soggetto:
       description: dati anagrafici di un versante o pagatore.
       type: object

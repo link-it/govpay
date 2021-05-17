@@ -37,15 +37,23 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	
 	public static final String P_CODICE_CLIENTE = "CODICE_CLIENTE";
 	public static final String P_CODICE_ISTITUTO = "CODICE_ISTITUTO";
+	public static final String P_CONTENUTI = "CONTENUTI";
+	
+	public static final String P_EMAIL_ALLEGATO = "EMAIL_ALLEGATO";
+	public static final String P_DOWNLOAD_BASE_URL = "DOWNLOAD_BASE_URL";
 	
 	
 	
 	public enum TipoConnettore {
-		WEB_SERVICE, EMAIL, FILE_SYSTEM;
+		WEB_SERVICE, EMAIL, FILE_SYSTEM, REST;
 	}
 	
 	public enum Tipo {
 		MYPIVOT, SECIM, GOVPAY;
+	}
+	
+	public enum Contenuti {
+		SINTESI_PAGAMENTI, SINTESI_FLUSSI_RENDICONTAZIONE, RPP, FLUSSI_RENDICONTAZIONE;
 	}
 
 	private String idConnettore;
@@ -60,6 +68,9 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	private String codiceCliente;
 	private String codiceIstituto;
 	private String emailSubject;
+	private List<String> contenuti;
+	private boolean emailAllegato;
+	private String downloadBaseURL;
 	
 	public ConnettoreNotificaPagamenti() {
 	}
@@ -162,5 +173,29 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
+	}
+
+	public List<String> getContenuti() {
+		return contenuti;
+	}
+
+	public void setContenuti(List<String> contenuti) {
+		this.contenuti = contenuti;
+	}
+
+	public String getDownloadBaseURL() {
+		return downloadBaseURL;
+	}
+
+	public void setDownloadBaseURL(String downloadBaseURL) {
+		this.downloadBaseURL = downloadBaseURL;
+	}
+
+	public boolean isEmailAllegato() {
+		return emailAllegato;
+	}
+
+	public void setEmailAllegato(boolean emailAllegato) {
+		this.emailAllegato = emailAllegato;
 	}
 }

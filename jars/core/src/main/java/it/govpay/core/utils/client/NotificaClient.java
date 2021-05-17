@@ -141,7 +141,7 @@ public class NotificaClient extends BasicClient {
 		
 		jsonBody = this.getMessaggioRichiesta(notifica, rpt, applicazione, versamento, pagamenti);
 
-		return this.sendJson(sb.toString(), jsonBody, headerProperties, httpMethod, swaggerOperationID);
+		return this.sendJson(sb.toString(), jsonBody.getBytes(), headerProperties, httpMethod, swaggerOperationID);
 	}
 
 	public String getSwaggerOperationId(Notifica notifica, Rpt rpt) {

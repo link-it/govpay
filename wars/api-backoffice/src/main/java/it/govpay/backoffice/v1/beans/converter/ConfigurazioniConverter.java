@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.json.ValidationException;
@@ -487,7 +488,9 @@ public class ConfigurazioniConverter {
 		
 		it.govpay.bd.configurazione.model.KeyStore dto = null;
 		
-		if(keystore != null) {
+		if(keystore != null && 
+			(StringUtils.isNotEmpty(keystore.getType()) || StringUtils.isNotEmpty(keystore.getLocation()) || StringUtils.isNotEmpty(keystore.getPassword()) || StringUtils.isNotEmpty(keystore.getManagementAlgorithm()))	
+				) {
 			dto = new it.govpay.bd.configurazione.model.KeyStore();
 			
 			dto.setLocation(keystore.getLocation());

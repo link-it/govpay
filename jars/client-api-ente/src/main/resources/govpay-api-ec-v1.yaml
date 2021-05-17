@@ -382,6 +382,71 @@ components:
             $ref: '#/components/schemas/vocePendenza'  
         proprieta:
           $ref: '#/components/schemas/ProprietaPendenza'
+        documento:
+          $ref: '#/components/schemas/documento'
+    documento:
+      allOf:
+        - type: object
+          required:
+            - identificativo
+            - descrizione
+          properties:
+            identificativo:
+              type: string
+              description: Identificativo del documento
+              example: abcdef12345_1
+              minLength: 1
+              maxLength: 35                 
+            descrizione:
+              type: string
+              description: descrizione del documento
+              example: Sanzione CdS n. abc00000
+              minLength: 1
+              maxLength: 80 
+        - $ref: "#/components/schemas/tipoRiferimentoDocumento"
+    rataDocumento:
+      type: object
+      required: 
+        - rata
+      properties:
+        rata:
+          type: number
+          description: Rata del documento
+          example: 1
+          minimum: 1
+    tipoRiferimentoDocumento:
+      type: object              
+      oneOf:
+        - $ref: "#/components/schemas/rataDocumento"
+        - $ref: "#/components/schemas/vincoloDocumento"
+    tipoSogliaVincoloPagamento:
+      description: >-
+        Indica se il pagamento deve avvenire entro o oltre la soglia di giorni indicata
+      type: string
+      enum:
+        - ENTRO
+        - OLTRE
+      example: ENTRO 
+    vincoloDocumento:
+      type: object
+      required: 
+        - soglia
+      properties:
+        soglia:
+          $ref: "#/components/schemas/vincoloPagamento"
+    vincoloPagamento:
+      type: object
+      required:
+        - tipo
+        - giorni
+      properties:
+        giorni:
+          type: number
+          description: numero di giorni vincolo per il pagamento
+          example: 5
+          minimum: 1
+        tipo:
+          $ref: "#/components/schemas/tipoSogliaVincoloPagamento"
     statoPendenzaVerificata:
       example: NON_ESEGUITA
       type: string
