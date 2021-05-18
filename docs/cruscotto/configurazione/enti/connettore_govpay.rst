@@ -1,9 +1,9 @@
 .. _govpay_configurazione_connettori_govpay:
 
-Connettore per l'esportazione dei pagamenti verso SECIM
-------------------------------------------------------------
+Connettore per l'esportazione dei pagamenti in sandard GovPay
+-------------------------------------------------------------
 
-Questo connettore consente di esportare i dati dei pagamenti gestiti da GovPay per l'importazione verso applicativi terzi: 
+Questo connettore consente di esportare i dati dei pagamenti gestiti da GovPay per l'esportazione verso applicativi terzi: 
 
 .. figure:: ../../_images/48ConnettoreGOVPAY.png
    :align: center
