@@ -26,7 +26,7 @@ Il tracciato CSV esportato viene nominato con il seguente pattern: "GOVPAY_" + i
 Versione 1.0
 ~~~~~~~~~~~~
 
-Il tracciato è conforme alla nota tecnica `MyPivot Integrazione Ente https://www.regione.puglia.it/documents/410606/413675/MyPivot+-+Nota+tecnica+Integrazione+Ente+V.5.6.2.pdf/60cc0453-c0ec-3076-77bf-5794f2171116?t=1591803805170`_
+Il tracciato è conforme alla nota tecnica `MyPivot Integrazione Ente <https://www.regione.puglia.it/documents/410606/413675/MyPivot+-+Nota+tecnica+Integrazione+Ente+V.5.6.2.pdf/60cc0453-c0ec-3076-77bf-5794f2171116?t=1591803805170>`_
 valorizzando i campi con le seguenti convenzioni:
  
 .. csv-table:: *Valori di esportazione*
