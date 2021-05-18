@@ -219,7 +219,19 @@ Le funzioni a valore aggiunto che è possibile configurare sono le seguenti:
    "Comunicazioni via AppIO",":ref:`govpay_configurazione_enti_appio`"
    "Altre funzioni",":ref:`govpay_configurazione_enti_altrefunzioni`"
   
+Connettori
+^^^^^^^^^^
+
+I connettori sono dei servizi utili all'esportazione dei dati dei pagamenti all'Ente Creditore presenti in GovPay verso l'esterno
+in formati e modalità compatibili con applicativi terzi. Di seguito i connettori supportati:
+
+.. csv-table:: Connettori
+   :header: "Connettore", "Descrizione"
+   :widths: 40,60
    
+   "GovPay",":ref:`govpay_configurazione_connettori_govpay`"
+   "MyPivot",":ref:`govpay_configurazione_connettori_mypivot`"
+   "SECIM",":ref:`govpay_configurazione_connettori_secim`"
 
 .. toctree::
    :maxdepth: 2
@@ -229,4 +241,7 @@ Le funzioni a valore aggiunto che è possibile configurare sono le seguenti:
    ./pendenza_spontaneo
    ./pendenza_email
    ./pendenza_appio
-   ./pendenza_altre      
+   ./pendenza_altre
+   ./connettore_secim
+   ./connettore_govpay
+   ./connettore_mypivot  
