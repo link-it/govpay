@@ -1,7 +1,6 @@
 package it.govpay.pendenze.v2.beans;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -44,7 +43,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable{
   private String descrizioneCausaleRPT = null;
   
   @JsonProperty("contabilita")
-  private List<Contabilita> contabilita = null;
+  private Contabilita contabilita = null;
   
   @JsonProperty("indice")
   private BigDecimal indice = null;
@@ -134,16 +133,16 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable{
 
   /**
    **/
-  public VocePendenza contabilita(List<Contabilita> contabilita) {
+  public VocePendenza contabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
     return this;
   }
 
   @JsonProperty("contabilita")
-  public List<Contabilita> getContabilita() {
+  public Contabilita getContabilita() {
     return contabilita;
   }
-  public void setContabilita(List<Contabilita> contabilita) {
+  public void setContabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
   }
 

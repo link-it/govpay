@@ -61,7 +61,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
   private String descrizioneCausaleRPT = null;
   
   @JsonProperty("contabilita")
-  private List<Contabilita> contabilita = null;
+  private Contabilita contabilita = null;
   
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
@@ -193,16 +193,16 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 
   /**
    **/
-  public VocePendenza contabilita(List<Contabilita> contabilita) {
+  public VocePendenza contabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
     return this;
   }
 
   @JsonProperty("contabilita")
-  public List<Contabilita> getContabilita() {
+  public Contabilita getContabilita() {
     return contabilita;
   }
-  public void setContabilita(List<Contabilita> contabilita) {
+  public void setContabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
   }
 
@@ -361,7 +361,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     VocePendenza vocePendenza = (VocePendenza) o;
@@ -444,7 +444,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 		ValidatoreUtils.validaImporto(vf, "importo", this.importo);
 		ValidatoreUtils.validaDescrizione(vf, "descrizione", this.descrizione);
 		ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.descrizioneCausaleRPT);
-		vf.getValidator("contabilita", this.contabilita).validateObjects();
+		vf.getValidator("contabilita", this.contabilita).validateFields();
 		
 		if(this.codEntrata != null) {
 			vi.validaIdEntrata("codEntrata", this.codEntrata);

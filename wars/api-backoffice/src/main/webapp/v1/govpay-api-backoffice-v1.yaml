@@ -6713,9 +6713,7 @@ components:
           example: Sanzione CdS n. abc00000
           maxLength: 140
         contabilita:
-          type: array
-          items:
-            $ref: '#/components/schemas/contabilita'
+          $ref: '#/components/schemas/contabilita'
     vocePendenza:
       allOf:
         - $ref: '#/components/schemas/vocePendenzaBase'
@@ -6794,15 +6792,21 @@ components:
               $ref: '#/components/schemas/pendenzaIndex'
     contabilita:
       type: object
+      properties:
+        quote:
+          type: array
+          items: 
+            $ref: '#/components/schemas/quotaContabilita'
+        proprietaCustom:
+          type: object
+          description: Dati specifici del gestionale di contabilità
+    quotaContabilita:
+      type: object
       required:
         - capitolo
         - annoEsercizio
         - importo
       properties:
-        ufficio:
-          type: string
-          description: Codice dell’ufficio
-          maxLength: 64
         capitolo:
           type: string
           description: Codice del capitolo
@@ -6811,30 +6815,17 @@ components:
           type: number
           description: Anno di esercizio
           example: 2020
-        accertamento:
-          type: string
-          description: Codice dell’accertamento
-          maxLength: 64
-        annoAccertamento:
-          type: number
-          description: Anno accertamento
-          example: 2020
-        subAccertamento:
-          type: string
-          description: Codice dell’accertamento se contabilita' di terze parti
-          maxLength: 64
-        siope:
-          type: string
-          description: Codice siope dell'entrata
-          maxLength: 64
         importo:
           type: number
           description: Importo della voce di contabilita'
           example: 10.01
-        codGestionaleEnte:
+        accertamento:
           type: string
-          description: Codice contabilita' utilizzato dal gestionale dell'ente
-          maxLength: 256
+          description: Codice dell’accertamento
+          maxLength: 64        
+        proprietaCustom:
+          type: object
+          description: Dati specifici del gestionale di contabilità
     pendenzaCreata:
       type: object
       required:

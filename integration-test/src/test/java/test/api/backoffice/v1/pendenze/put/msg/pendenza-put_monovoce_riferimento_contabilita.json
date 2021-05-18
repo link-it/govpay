@@ -18,30 +18,26 @@
 			"importo": 100.99,
 			"descrizione": "Diritti e segreteria",
 			"codEntrata": "SEGRETERIA",
-			"contabilita" : [
-				{
-					"ufficio": null,
-				    "capitolo": "capitolo1",
-				    "annoEsercizio": 2020,
-				    "accertamento": null,
-				    "annoAccertamento": null,
-				    "subAccertamento": null,
-				    "siope": null,
-				    "importo": 0.99,
-				    "codGestionaleEnte": null
-				},
-				{
-					"ufficio": null,
-				    "capitolo": "capitolo2",
-				    "annoEsercizio": 2020,
-				    "accertamento": null,
-				    "annoAccertamento": null,
-				    "subAccertamento": null,
-				    "siope": null,
-				    "importo": 100.00,
-				    "codGestionaleEnte": null
-				}
-			]
+			"contabilita" : {
+				"quote" :
+					[
+						{
+						    "capitolo": "capitolo1",
+						    "annoEsercizio": 2020,
+						    "accertamento": null,
+						    "importo": 0.99,
+						    "proprietaCustom": null
+						},
+						{
+						    "capitolo": "capitolo2",
+						    "annoEsercizio": 2020,
+						    "accertamento": null,
+						    "importo": 100.00,
+						    "proprietaCustom": null
+						}
+					],
+				"proprietaCustom" : null
+			}
 		}
 	]
 }

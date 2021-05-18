@@ -15,7 +15,6 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.backoffice.v1.beans.Avviso;
 import it.govpay.backoffice.v1.beans.Avviso.StatoEnum;
-import it.govpay.backoffice.v1.beans.Contabilita;
 import it.govpay.backoffice.v1.beans.Documento;
 import it.govpay.backoffice.v1.beans.LinguaSecondaria;
 import it.govpay.backoffice.v1.beans.Pendenza;
@@ -23,6 +22,7 @@ import it.govpay.backoffice.v1.beans.PendenzaIndex;
 import it.govpay.backoffice.v1.beans.PendenzaPost;
 import it.govpay.backoffice.v1.beans.PendenzaPut;
 import it.govpay.backoffice.v1.beans.ProprietaPendenza;
+import it.govpay.backoffice.v1.beans.QuotaContabilita;
 import it.govpay.backoffice.v1.beans.Riscossione;
 import it.govpay.backoffice.v1.beans.Rpp;
 import it.govpay.backoffice.v1.beans.Soggetto;
@@ -54,14 +54,14 @@ import it.govpay.core.utils.rawutils.ConverterUtils;
 public class PendenzeConverter {
 
 
-	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto) throws ServiceException, IOException, java.io.IOException {
+	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto) throws ServiceException, IOException, java.io.IOException, ValidationException {
 		return toRsModel(dto.getVersamento(),
 				dto.getUnitaOperativa(), dto.getApplicazione(), dto.getDominio(), dto.getLstSingoliVersamenti(), 
 				dto.getPagamenti(), dto.getRpts(),true);
 	}
 
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
-			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti,List<PagamentoPortale> pagamenti, List<Rpt> rpts , boolean addInfoIncasso) throws ServiceException, IOException, java.io.IOException {
+			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti,List<PagamentoPortale> pagamenti, List<Rpt> rpts , boolean addInfoIncasso) throws ServiceException, IOException, java.io.IOException, ValidationException {
 		Pendenza rsModel = new Pendenza();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		if(versamento.getCodAnnoTributario()!= null)
@@ -295,7 +295,7 @@ public class PendenzeConverter {
 		return rsModel;
 	}
 
-	public static VocePendenza toVocePendenzaRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, boolean addInfoIncasso, BDConfigWrapper configWrapper) throws ServiceException, java.io.IOException {
+	public static VocePendenza toVocePendenzaRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, boolean addInfoIncasso, BDConfigWrapper configWrapper) throws ServiceException, java.io.IOException, ValidationException {
 		VocePendenza rsModel = new VocePendenza();
 
 		if(singoloVersamento.getDatiAllegati() != null)
@@ -357,7 +357,7 @@ public class PendenzeConverter {
 		return rsModel;
 	}
 	
-	public static VocePendenzaRendicontazione toVocePendenzaRendicontazioneRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, it.govpay.bd.model.Versamento versamento) throws ServiceException, java.io.IOException {
+	public static VocePendenzaRendicontazione toVocePendenzaRendicontazioneRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, it.govpay.bd.model.Versamento versamento) throws ServiceException, java.io.IOException, ValidationException {
 		VocePendenzaRendicontazione rsModel = new VocePendenzaRendicontazione();
 
 //		if(singoloVersamento.getDatiAllegati() != null)
@@ -381,7 +381,7 @@ public class PendenzeConverter {
 		return rsModel;
 	}
 	
-	public static VocePendenzaRiscossione toVocePendenzaRiscossioneRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, it.govpay.bd.model.Versamento versamento) throws ServiceException, java.io.IOException {
+	public static VocePendenzaRiscossione toVocePendenzaRiscossioneRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, it.govpay.bd.model.Versamento versamento) throws ServiceException, java.io.IOException, ValidationException {
 		VocePendenzaRiscossione rsModel = new VocePendenzaRiscossione();
 
 //		if(singoloVersamento.getDatiAllegati() != null)
@@ -665,14 +665,16 @@ public class PendenzeConverter {
 				sv.setContabilita(ContabilitaConverter.toStringDTO(vocePendenza.getContabilita()));
 				
 				if(vocePendenza.getContabilita() != null) {
-					BigDecimal somma = BigDecimal.ZERO;
-					for (Contabilita voceContabilita : vocePendenza.getContabilita()) {
-						somma = somma.add(voceContabilita.getImporto());
-					}
-					
-					if(somma.compareTo(vocePendenza.getImporto()) != 0) {
-						throw new GovPayException(EsitoOperazione.VER_035, vocePendenza.getIdVocePendenza(),  versamento.getCodApplicazione(), versamento.getCodVersamentoEnte(),
-							Double.toString(sv.getImporto().doubleValue()), Double.toString(somma.doubleValue()));
+					if(vocePendenza.getContabilita().getQuote() != null) {
+						BigDecimal somma = BigDecimal.ZERO;
+						for (QuotaContabilita voceContabilita : vocePendenza.getContabilita().getQuote()) {
+							somma = somma.add(voceContabilita.getImporto());
+						}
+						
+						if(somma.compareTo(vocePendenza.getImporto()) != 0) {
+							throw new GovPayException(EsitoOperazione.VER_035, vocePendenza.getIdVocePendenza(),  versamento.getCodApplicazione(), versamento.getCodVersamentoEnte(),
+								Double.toString(sv.getImporto().doubleValue()), Double.toString(somma.doubleValue()));
+						}
 					}
 				}
 

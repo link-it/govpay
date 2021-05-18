@@ -26,30 +26,26 @@
 			"importo": "#? isImportoConDueDecimali(_)",
 			"descrizione": "#string",
 			"codEntrata": "#notnull",
-			"contabilita" : [
-				{
-					"ufficio": "#ignore",
-				    "capitolo": "#notnull",
-				    "annoEsercizio": "#notnull",
-				    "accertamento": "#ignore",
-				    "annoAccertamento": "#ignore",
-				    "subAccertamento": "#ignore",
-				    "siope": "#ignore",
-				    "importo": "#? isImportoConDueDecimali(_)",
-				    "codGestionaleEnte": "#ignore"
-				},
-				{
-					"ufficio": "#ignore",
-				    "capitolo": "#notnull",
-				    "annoEsercizio": "#notnull",
-				    "accertamento": "#ignore",
-				    "annoAccertamento": "#ignore",
-				    "subAccertamento": "#ignore",
-				    "siope": "#ignore",
-				    "importo": "#? isImportoConDueDecimali(_)",
-				    "codGestionaleEnte": "#ignore"
-				}
-			]
+			"contabilita" : {
+				"quote" :
+					[
+						{
+						    "capitolo": "#notnull",
+						    "annoEsercizio": "#notnull",
+						    "accertamento": "#ignore",
+						    "importo": "#? isImportoConDueDecimali(_)",
+						    "proprietaCustom": "#ignore"
+						},
+						{
+						    "capitolo": "#notnull",
+						    "annoEsercizio": "#notnull",
+						    "accertamento": "#ignore",
+						    "importo": "#? isImportoConDueDecimali(_)",
+						    "proprietaCustom": "#ignore"
+						}
+					],
+				"proprietaCustom" : "#ignore"
+			} 
 		}
 	],
    "rpp":"#[]",

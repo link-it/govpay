@@ -42,7 +42,7 @@ public class VocePendenzaRiscossione extends JSONSerializable {
   private String descrizioneCausaleRPT = null;
   
   @JsonProperty("contabilita")
-  private List<Contabilita> contabilita = null;
+  private Contabilita contabilita = null;
   
   @JsonProperty("pendenza")
   private PendenzaIndex pendenza = null;
@@ -144,16 +144,16 @@ public class VocePendenzaRiscossione extends JSONSerializable {
 
   /**
    **/
-  public VocePendenzaRiscossione contabilita(List<Contabilita> contabilita) {
+  public VocePendenzaRiscossione contabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
     return this;
   }
 
   @JsonProperty("contabilita")
-  public List<Contabilita> getContabilita() {
+  public Contabilita getContabilita() {
     return contabilita;
   }
-  public void setContabilita(List<Contabilita> contabilita) {
+  public void setContabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
   }
 

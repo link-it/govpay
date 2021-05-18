@@ -1,7 +1,6 @@
 package it.govpay.pendenze.v2.beans;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;
@@ -38,7 +37,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
   private String descrizioneCausaleRPT = null;
   
   @JsonProperty("contabilita")
-  private List<Contabilita> contabilita = null;
+  private Contabilita contabilita = null;
   
   /**
    * Identificativo della voce di pedenza nel gestionale proprietario
@@ -122,16 +121,16 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 
   /**
    **/
-  public NuovaVocePendenza contabilita(List<Contabilita> contabilita) {
+  public NuovaVocePendenza contabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
     return this;
   }
 
   @JsonProperty("contabilita")
-  public List<Contabilita> getContabilita() {
+  public Contabilita getContabilita() {
     return contabilita;
   }
-  public void setContabilita(List<Contabilita> contabilita) {
+  public void setContabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
   }
 
@@ -404,7 +403,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 		ValidatoreUtils.validaImporto(vf, "importo", this.importo);
 		ValidatoreUtils.validaDescrizione(vf, "descrizione", this.descrizione);
 		ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.descrizioneCausaleRPT);
-		vf.getValidator("contabilita", this.contabilita).validateObjects();
+		vf.getValidator("contabilita", this.contabilita).validateFields();
 		
 		if(this.codEntrata != null) {
 			vi.validaIdEntrata("codEntrata", this.codEntrata);

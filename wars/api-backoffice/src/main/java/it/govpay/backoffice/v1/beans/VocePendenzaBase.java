@@ -42,7 +42,7 @@ public class VocePendenzaBase extends JSONSerializable {
   private String descrizioneCausaleRPT = null;
   
   @JsonProperty("contabilita")
-  private List<Contabilita> contabilita = null;
+  private Contabilita contabilita = null;
   
   /**
    * indice di voce all'interno della pendenza
@@ -141,16 +141,16 @@ public class VocePendenzaBase extends JSONSerializable {
 
   /**
    **/
-  public VocePendenzaBase contabilita(List<Contabilita> contabilita) {
+  public VocePendenzaBase contabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
     return this;
   }
 
   @JsonProperty("contabilita")
-  public List<Contabilita> getContabilita() {
+  public Contabilita getContabilita() {
     return contabilita;
   }
-  public void setContabilita(List<Contabilita> contabilita) {
+  public void setContabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
   }
 

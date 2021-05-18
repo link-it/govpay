@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.backoffice.v1.beans.FlussoRendicontazione;
 import it.govpay.backoffice.v1.beans.FlussoRendicontazioneIndex;
@@ -17,7 +18,7 @@ import it.govpay.model.Fr.StatoFr;
 
 public class FlussiRendicontazioneConverter {
 
-	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr) throws ServiceException, IOException {
+	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr) throws ServiceException, IOException, ValidationException {
 		FlussoRendicontazione rsModel = new FlussoRendicontazione();
 		rsModel.setIdFlusso(fr.getCodFlusso());
 		rsModel.setDataFlusso(fr.getDataFlusso());
@@ -104,7 +105,7 @@ public class FlussiRendicontazioneConverter {
 		return rsModel;
 	}
 
-	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione) throws ServiceException, IOException {
+	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione) throws ServiceException, IOException, ValidationException {
 		it.govpay.backoffice.v1.beans.Rendicontazione rsModel = new it.govpay.backoffice.v1.beans.Rendicontazione();
 		rsModel.setIuv(rendicontazione.getIuv());
 		rsModel.setIur(rendicontazione.getIur());
