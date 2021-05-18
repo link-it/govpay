@@ -1,4 +1,4 @@
-.. govpay_configurazione_connettori_secim:
+.. _govpay_configurazione_connettori_secim:
 
 Connettore per l'esportazione dei pagamenti verso SECIM
 ------------------------------------------------------------

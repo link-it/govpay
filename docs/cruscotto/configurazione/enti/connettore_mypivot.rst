@@ -1,4 +1,4 @@
-.. govpay_configurazione_connettori_mypivot:
+.. _govpay_configurazione_connettori_mypivot:
 
 Connettore per l'esportazione dei pagamenti verso MyPIVOT
 ------------------------------------------------------------
