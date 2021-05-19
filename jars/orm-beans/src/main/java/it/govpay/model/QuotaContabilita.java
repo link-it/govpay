@@ -8,7 +8,7 @@ public class QuotaContabilita {
 	private int annoEsercizio;
 	private String accertamento;
 	private BigDecimal importo;
-	private String proprietaCustom;
+	private Object proprietaCustom;
 	
 	public String getCapitolo() {
 		return capitolo;
@@ -34,10 +34,10 @@ public class QuotaContabilita {
 	public void setImporto(BigDecimal importo) {
 		this.importo = importo;
 	}
-	public String getProprietaCustom() {
+	public Object getProprietaCustom() {
 		return proprietaCustom;
 	}
-	public void setProprietaCustom(String proprietaCustom) {
+	public void setProprietaCustom(Object proprietaCustom) {
 		this.proprietaCustom = proprietaCustom;
 	} 
 	

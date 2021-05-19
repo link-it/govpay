@@ -5,7 +5,7 @@ import java.util.List;
 public class Contabilita {
 	
 	private List<QuotaContabilita> quote;
-	private String proprietaCustom;
+	private Object proprietaCustom;
 	
 	public List<QuotaContabilita> getQuote() {
 		return quote;
@@ -13,10 +13,10 @@ public class Contabilita {
 	public void setQuote(List<QuotaContabilita> quote) {
 		this.quote = quote;
 	}
-	public String getProprietaCustom() {
+	public Object getProprietaCustom() {
 		return proprietaCustom;
 	}
-	public void setProprietaCustom(String proprietaCustom) {
+	public void setProprietaCustom(Object proprietaCustom) {
 		this.proprietaCustom = proprietaCustom;
 	} 
 	

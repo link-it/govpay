@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -84,7 +85,7 @@ public class TracciatiNotificaPagamenti {
 	public static final String FILE_RT_DIR_PREFIX = "RT/";
 	public static final String GOVPAY_RENDICONTAZIONE_CSV_FILE_NAME = "govpay_rendicontazione.csv";
 	private static final String [] MYPIVOT_HEADER_FILE_CSV = { "IUD","codIuv","tipoIdentificativoUnivoco","codiceIdentificativoUnivoco","anagraficaPagatore","indirizzoPagatore","civicoPagatore","capPagatore","localitaPagatore","provinciaPagatore","nazionePagatore","mailPagatore","dataEsecuzionePagamento","importoDovutoPagato","commissioneCaricoPa","tipoDovuto","tipoVersamento","causaleVersamento","datiSpecificiRiscossione","bilancio" };
-	private static final String [] GOVPAY_HEADER_FILE_CSV = { "idA2A","idPendenza","idDocumento","descrizioneDocumento","codiceRata","dataScadenza","idVocePendenza","descrizioneVocePendenza","idTipoPendenza","descrizione","anno","identificativoDebitore","anagraficaDebitore","identificativoDominio","identificativoUnivocoVersamento","codiceContestoPagamento","indiceDati","identificativoUnivocoRiscossione","modelloPagamento","singoloImportoPagato","dataEsitoSingoloPagamento","causaleVersamento","datiSpecificiRiscossione","datiAllegati","datiAllegatiVoce","denominazioneAttestante","identificativoAttestante" };
+	private static final String [] GOVPAY_HEADER_FILE_CSV = { "idA2A","idPendenza","idDocumento","descrizioneDocumento","codiceRata","dataScadenza","idVocePendenza","descrizioneVocePendenza","idTipoPendenza","descrizione","anno","identificativoDebitore","anagraficaDebitore","identificativoDominio","identificativoUnivocoVersamento","codiceContestoPagamento","indiceDati","identificativoUnivocoRiscossione","modelloPagamento","singoloImportoPagato","dataEsitoSingoloPagamento","causaleVersamento","datiSpecificiRiscossione","datiAllegati","datiAllegatiVoce","denominazioneAttestante","identificativoAttestante", "contabilita" };
 	private static final String [] GOVPAY_FLUSSI_HEADER_FILE_CSV = {"identificativoFlusso","dataOraFlusso","identificativoDominio","identificativoUnivocoRegolamento","dataRegolamento","codiceBicBancaDiRiversamento","numeroTotalePagamenti","importoTotalePagamenti","identificativoUnivocoVersamento","identificativoUnivocoRiscossione","indiceDatiSingoloPagamento","singoloImportoPagato","codiceEsitoSingoloPagamento","dataEsitoSingoloPagamento","denominazioneMittente","identificativoMittente","denominazioneRicevente","identificativoRicevente"	};
 	
 	private static Logger log = LoggerWrapperFactory.getLogger(TracciatiNotificaPagamenti.class);
@@ -845,6 +846,12 @@ public class TracciatiNotificaPagamenti {
 			linea.add(istitutoAttestante.getDenominazioneAttestante());
 //			identificativoAttestante: da RT
 			linea.add(istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco());
+			// contabilita
+			if(singoloVersamento.getContabilita() != null && singoloVersamento.getContabilita().length() > 0) {
+				linea.add(singoloVersamento.getContabilita());
+			} else {
+				linea.add("");
+			}
 			
 			linee.add(linea);
 		}
@@ -889,16 +896,26 @@ public class TracciatiNotificaPagamenti {
 		String bilancio = null;
 		if(contabilitaString != null && contabilitaString.length() > 0) {
 			Contabilita contabilita = JSONSerializable.parse(contabilitaString, Contabilita.class);
-			String proprietaCustom = contabilita.getProprietaCustom();
 			
-			if(proprietaCustom != null && proprietaCustom.length() > 0) {
-				Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
-				// leggo oggetto mypivot
-				if(parse.containsKey("mypivot")) {
-					Object mypivotObj = parse.get("mypivot");
-					Map<String, Object> mypivot = (Map<String, Object>) mypivotObj;
-					if(mypivot.containsKey("tipoDovuto")) {
-						tipoDovuto = (String) mypivot.get("tipoDovuto");
+			Object proprietaCustomObj = contabilita.getProprietaCustom();
+			
+			if(proprietaCustomObj != null) {
+				if(proprietaCustomObj instanceof String) {
+					String proprietaCustom = (String) proprietaCustomObj;
+					
+					if(proprietaCustom != null && proprietaCustom.length() > 0) {
+						Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
+						// leggo proprieta tipoDovuto
+						if(parse.containsKey("tipoDovuto")) {
+							tipoDovuto = (String) parse.get("tipoDovuto");
+						}
+					}
+				}  else if(proprietaCustomObj instanceof java.util.LinkedHashMap) {
+					java.util.LinkedHashMap<?,?> parse = (LinkedHashMap<?,?>) proprietaCustomObj;
+					
+					// leggo proprieta tipoDovuto
+					if(parse.containsKey("tipoDovuto")) {
+						tipoDovuto = (String) parse.get("tipoDovuto");
 					}
 				}
 			}
@@ -1000,21 +1017,37 @@ public class TracciatiNotificaPagamenti {
 		String tipoRiferimentoCreditore = null;
 		if(contabilitaString != null && contabilitaString.length() > 0) {
 			Contabilita contabilita = JSONSerializable.parse(contabilitaString, Contabilita.class);
-			String proprietaCustom = contabilita.getProprietaCustom();
-			if(proprietaCustom != null && proprietaCustom.length() > 0) {
-				Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
-				// leggo oggetto secim
-				if(parse.containsKey("secim")) {
-					Object secimObj = parse.get("secim");
-					Map<String, Object> secim = (Map<String, Object>) secimObj;
-					if(secim.containsKey("riferimentoCreditore")) {
-						riferimentoCreditore = (String) secim.get("riferimentoCreditore");
+			
+			Object proprietaCustomObj = contabilita.getProprietaCustom();
+			
+			if(proprietaCustomObj != null) {
+				if(proprietaCustomObj instanceof String) {
+					String proprietaCustom = (String) proprietaCustomObj;
+					if(proprietaCustom != null && proprietaCustom.length() > 0) {
+						Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
+						// leggo proprieta
+						if(parse.containsKey("riferimentoCreditore")) {
+							riferimentoCreditore = (String) parse.get("riferimentoCreditore");
+						}
+						if(parse.containsKey("tipoflusso")) {
+							tipoflusso = (String) parse.get("tipoflusso");
+						}
+						if(parse.containsKey("tipoRiferimentoCreditore")) {
+							tipoRiferimentoCreditore = (String) parse.get("tipoRiferimentoCreditore");
+						}
 					}
-					if(secim.containsKey("tipoflusso")) {
-						tipoflusso = (String) secim.get("tipoflusso");
+				}  else if(proprietaCustomObj instanceof java.util.LinkedHashMap) {
+					java.util.LinkedHashMap<?,?> parse = (LinkedHashMap<?,?>) proprietaCustomObj;
+					
+					// leggo proprieta
+					if(parse.containsKey("riferimentoCreditore")) {
+						riferimentoCreditore = (String) parse.get("riferimentoCreditore");
 					}
-					if(secim.containsKey("tipoRiferimentoCreditore")) {
-						tipoRiferimentoCreditore = (String) secim.get("tipoRiferimentoCreditore");
+					if(parse.containsKey("tipoflusso")) {
+						tipoflusso = (String) parse.get("tipoflusso");
+					}
+					if(parse.containsKey("tipoRiferimentoCreditore")) {
+						tipoRiferimentoCreditore = (String) parse.get("tipoRiferimentoCreditore");
 					}
 				}
 			}

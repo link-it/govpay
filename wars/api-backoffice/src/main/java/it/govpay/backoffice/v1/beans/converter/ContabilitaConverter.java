@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 
@@ -47,7 +46,7 @@ public class ContabilitaConverter {
 		rsModel.setAnnoEsercizio(new BigDecimal(dto.getAnnoEsercizio()));
 		rsModel.setCapitolo(dto.getCapitolo());
 		rsModel.setImporto(dto.getImporto());
-		rsModel.setProprietaCustom(new RawObject(dto.getProprietaCustom()));
+		rsModel.setProprietaCustom(dto.getProprietaCustom());
 		
 		return rsModel;
 	}
@@ -56,7 +55,7 @@ public class ContabilitaConverter {
 		Contabilita rsModel = new Contabilita();
 		
 		rsModel.setQuote(toRsModel(dto.getQuote()));
-		rsModel.setProprietaCustom(new RawObject(dto.getProprietaCustom()));
+		rsModel.setProprietaCustom(dto.getProprietaCustom());
 		
 		return rsModel;
 	}
@@ -89,7 +88,7 @@ public class ContabilitaConverter {
 		it.govpay.model.Contabilita rsModel = new it.govpay.model.Contabilita();
 		
 		rsModel.setQuote(toDTO(dto.getQuote()));
-		rsModel.setProprietaCustom(ConverterUtils.toJSON(dto.getProprietaCustom(),null));
+		rsModel.setProprietaCustom(dto.getProprietaCustom());
 		
 		
 		return rsModel;
@@ -102,7 +101,7 @@ public class ContabilitaConverter {
 		rsModel.setAnnoEsercizio(dto.getAnnoEsercizio().intValue());
 		rsModel.setCapitolo(dto.getCapitolo());
 		rsModel.setImporto(dto.getImporto());
-		rsModel.setProprietaCustom(ConverterUtils.toJSON(dto.getProprietaCustom(),null));
+		rsModel.setProprietaCustom(dto.getProprietaCustom());
 		
 		return rsModel;
 	}
