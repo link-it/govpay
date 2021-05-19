@@ -30,6 +30,57 @@ Then status 200
 * match response.stato == 'NON_ESEGUITA'
 
 
+Scenario: Caricamento pendenza con contabilita.proprietaCustom definita
+
+* def proprietaCustom = 
+"""
+{ "test1" : 1, "test2" : "test", "test3" : false, "test4" : { "test1" : 1 } }
+"""
+* set pendenzaPut.voci[0].contabilita.proprietaCustom = proprietaCustom
+* set pendenzaResponse.voci[0].contabilita.proprietaCustom = proprietaCustom
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+
+* match response.voci[0].contabilita == pendenzaResponse.voci[0].contabilita
+* match response.stato == 'NON_ESEGUITA'
+
+Scenario: Caricamento pendenza con contabilita.quote[0].proprietaCustom definita
+
+* def proprietaCustom = 
+"""
+{ "test1" : 1, "test2" : "test", "test3" : false, "test4" : { "test1" : 1 } }
+"""
+* set pendenzaPut.voci[0].contabilita.quote[0].proprietaCustom = proprietaCustom
+* set pendenzaResponse.voci[0].contabilita.quote[0].proprietaCustom = proprietaCustom
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+
+* match response.voci[0].contabilita == pendenzaResponse.voci[0].contabilita
+* match response.stato == 'NON_ESEGUITA'
+
+
 Scenario: Caricamento pendenza con contabilita errore validazione importi
 
 * def pendenzaPutImportoOrig = pendenzaPut.voci[0].importo

@@ -69,6 +69,7 @@ import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
 import it.govpay.model.ConnettoreNotificaPagamenti;
+import it.govpay.model.Contabilita;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
 import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
@@ -957,30 +958,35 @@ public class TracciatiNotificaPagamenti {
 
 		Versamento versamento = rpt.getVersamento();
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
+		SingoloVersamento singoloVersamento = singoliVersamenti.get(0);
 		CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt(), false);
 		CtDatiVersamentoRT datiPagamento = rt.getDatiPagamento();
 		CtSoggettoPagatore soggettoPagatore = rt.getSoggettoPagatore();
 		CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiPagamento.getDatiSingoloPagamento().get(0);
 		CtIstitutoAttestante istitutoAttestante = rt.getIstitutoAttestante();
 
-		String datiAllegati = versamento.getDatiAllegati();
+		String contabilitaString = singoloVersamento.getContabilita();
 		String riferimentoCreditore = null;
 		String tipoflusso = null;
 		String tipoRiferimentoCreditore = null;
-		if(datiAllegati != null && datiAllegati.length() > 0) {
-			Map<String, Object> parse = JSONSerializable.parse(datiAllegati, Map.class);
-			// leggo oggetto secim
-			if(parse.containsKey("secim")) {
-				Object secimObj = parse.get("secim");
-				Map<String, Object> secim = (Map<String, Object>) secimObj;
-				if(secim.containsKey("riferimentoCreditore")) {
-					riferimentoCreditore = (String) secim.get("riferimentoCreditore");
-				}
-				if(secim.containsKey("tipoflusso")) {
-					tipoflusso = (String) secim.get("tipoflusso");
-				}
-				if(secim.containsKey("tipoRiferimentoCreditore")) {
-					tipoRiferimentoCreditore = (String) secim.get("tipoRiferimentoCreditore");
+		if(contabilitaString != null && contabilitaString.length() > 0) {
+			Contabilita contabilita = JSONSerializable.parse(contabilitaString, Contabilita.class);
+			String proprietaCustom = contabilita.getProprietaCustom();
+			if(proprietaCustom != null && proprietaCustom.length() > 0) {
+				Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
+				// leggo oggetto secim
+				if(parse.containsKey("secim")) {
+					Object secimObj = parse.get("secim");
+					Map<String, Object> secim = (Map<String, Object>) secimObj;
+					if(secim.containsKey("riferimentoCreditore")) {
+						riferimentoCreditore = (String) secim.get("riferimentoCreditore");
+					}
+					if(secim.containsKey("tipoflusso")) {
+						tipoflusso = (String) secim.get("tipoflusso");
+					}
+					if(secim.containsKey("tipoRiferimentoCreditore")) {
+						tipoRiferimentoCreditore = (String) secim.get("tipoRiferimentoCreditore");
+					}
 				}
 			}
 		}
@@ -1088,8 +1094,9 @@ public class TracciatiNotificaPagamenti {
 		
 //		RIFERIMENTO CREDITORE	345	379	35	Carattere		SECIM +	$pendenza.{datiAllegati}.secim.riferimentoCreditore o, in sua assenza, il campo $pendenza.voce[0].idVoce
 		// il prefisso SECIM viene valorizzato cosi se il campo $pendenza.{datiAllegati}.secim.tipoRiferimentoCreditore e' vuoto, altrimenti ci viene messo il valore ricevuto
-		if(riferimentoCreditore == null)
-			riferimentoCreditore = singoliVersamenti.get(0).getCodSingoloVersamentoEnte();
+		if(riferimentoCreditore == null) {
+			riferimentoCreditore = singoloVersamento.getCodSingoloVersamentoEnte();
+		}
 		riferimentoCreditore = (tipoRiferimentoCreditore == null) ? ("SECIM" + riferimentoCreditore) : (tipoRiferimentoCreditore + riferimentoCreditore); 
 		riferimentoCreditore = this.completaValoreCampoConFiller(riferimentoCreditore, 35, false, false);
 		this.validaCampo("RIFERIMENTO CREDITORE", riferimentoCreditore, 35);
