@@ -53,7 +53,7 @@ Il tracciato risulta una personalizzazione del :download:`Tracciato di Riconcili
    "CAUSALE VERSAMENTO [518..657]","rt.datiPagamento.datiSingoloPagamentoRT.causaleVersamento"
    "FILLER [658..713]","Spazi bianchi"
    "TIPO DEBITORE [714..716]","rt.soggettoPagatore.identificativoUnivocoPagatore.tipoIdentificativoUnivoco ('F' o 'G')"
-   "TIPO CODICE DEBITORE [717..718]","se rt.soggettoPagatore.identificativoUnivocoPagatore.tipoIdentificativoUnivoco == 'F' allora "CF" altrimenti "PI""
+   "TIPO CODICE DEBITORE [717..718]","se rt.soggettoPagatore.identificativoUnivocoPagatore.tipoIdentificativoUnivoco == 'F' allora 'CF' altrimenti 'PI'"
    "CODICE DEBITORE [719..753]","rt.soggettoPagatore.identificativoUnivocoPagatore.codiceIdentificativoUnivoco"
    "ANAGRAFICA DEBITORE [754..803]","rt.soggettoPagatore.anagraficaPagatore"
    "FILLER [804..838]","Spazi bianchi"
