@@ -70,6 +70,7 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Contabilita;
+import it.govpay.model.QuotaContabilita;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
 import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
@@ -875,28 +876,56 @@ public class TracciatiNotificaPagamenti {
 		List<String> linea = new ArrayList<String>();
 
 		Versamento versamento = rpt.getVersamento();
+		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
+		SingoloVersamento singoloVersamento = singoliVersamenti.get(0);
 		Applicazione applicazione = versamento.getApplicazione(configWrapper);
 		CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt(), false);
 		CtDatiVersamentoRT datiPagamento = rt.getDatiPagamento();
 		CtSoggettoPagatore soggettoPagatore = rt.getSoggettoPagatore();
 		CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiPagamento.getDatiSingoloPagamento().get(0);
 
-		String datiAllegati = versamento.getDatiAllegati();
+		String contabilitaString = singoloVersamento.getContabilita();
 		String tipoDovuto = null;
 		String bilancio = null;
-		if(datiAllegati != null && datiAllegati.length() > 0) {
-			Map<String, Object> parse = JSONSerializable.parse(datiAllegati, Map.class);
-			// leggo oggetto mypivot
-			if(parse.containsKey("mypivot")) {
-				Object mypivotObj = parse.get("mypivot");
-				Map<String, Object> mypivot = (Map<String, Object>) mypivotObj;
-				if(mypivot.containsKey("tipoDovuto")) {
-					tipoDovuto = (String) mypivot.get("tipoDovuto");
-				}
-				if(mypivot.containsKey("bilancio")) {
-					bilancio = (String) mypivot.get("bilancio");
+		if(contabilitaString != null && contabilitaString.length() > 0) {
+			Contabilita contabilita = JSONSerializable.parse(contabilitaString, Contabilita.class);
+			String proprietaCustom = contabilita.getProprietaCustom();
+			
+			if(proprietaCustom != null && proprietaCustom.length() > 0) {
+				Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
+				// leggo oggetto mypivot
+				if(parse.containsKey("mypivot")) {
+					Object mypivotObj = parse.get("mypivot");
+					Map<String, Object> mypivot = (Map<String, Object>) mypivotObj;
+					if(mypivot.containsKey("tipoDovuto")) {
+						tipoDovuto = (String) mypivot.get("tipoDovuto");
+					}
 				}
 			}
+			
+			// bilancio a partire dalle quote ricevute nell'oggetto contabilita'
+			if(contabilita.getQuote() != null && contabilita.getQuote().size() > 0) {
+				StringBuilder sb = new StringBuilder();
+				
+				sb.append("<bilancio>");
+				for (QuotaContabilita quota : contabilita.getQuote()) {
+					sb.append("<capitolo>");
+					
+					sb.append("<codice>");
+					sb.append(quota.getCapitolo());
+					sb.append("</codice>");
+					
+					sb.append("<importo>");
+					sb.append(this.printImporto(quota.getImporto(), false));
+					sb.append("</importo>");
+					
+					sb.append("</capitolo>");
+				}
+				sb.append("</bilancio>");
+				
+				bilancio = sb.toString();
+			}
+			
 		}
 
 		// IUD cod_applicazione@cod_versamento_ente
