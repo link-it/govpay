@@ -55,6 +55,7 @@ export class Voce {
   public static CONTABILITA: string = 'Contabilità';
   public static COMUNICAZIONI_EMAIL: string = 'Comunicazioni via email';
   public static COMUNICAZIONI_APP_IO: string = 'Comunicazioni via App IO';
+  public static CONTENUTI: string = 'Contenuti';
   public static CONTENUTO_ALLEGATO: string = 'Contenuto allegato';
   public static CONTO_ACCREDITO: string = 'Conto accredito';
 
@@ -85,6 +86,7 @@ export class Voce {
   public static DIVISIONE: string = 'Divisione';
   public static DOMINIO: string = 'Dominio';
   public static DOMINI: string = 'Domini';
+  public static DOWNLOAD_BASE_URL: string = 'Base URL link download';
   public static DURATA: string = 'Durata';
 
   public static ELABORAZIONE: string = 'Elaborazione';
@@ -139,6 +141,7 @@ export class Voce {
   public static INSERIMENTO_DATI: string = 'Form inserimento dati';
   public static INTESTATARIO: string = 'Intestatario del conto';
   public static INTESTAZIONE_ESITO: string = 'Linea intestazione esito';
+  public static INVIO_TRACCIATO_ALLEGATO: string = 'Invia tracciato come allegato';
   public static ISTITUTO: string = 'Istituto';
   public static IUR: string = 'Riscossione (IUR)';
   public static IUR_SIGLA: string = 'IUR';
@@ -276,6 +279,7 @@ export class Voce {
   public static VERSIONE_API: string = 'Versione API';
   public static VERIFICATORE_HOSTNAME: string = 'Verificatore hostname';
   public static VERSIONE_CSV: string = 'Versione CSV';
+  public static VERSIONE_ZIP: string = 'Versione ZIP';
   public static VISUALIZZAZIONE: string = 'Visualizzazione';
   public static VISTA_COMPLETA: string = 'Vista completa';
 

@@ -485,6 +485,7 @@ export class UtilService {
   public static CONNETTORE_GOVPAY: string = 'connettore_govpay';
   public static CONNETTORE_MODALITA_EMAIL: string = 'EMAIL';
   public static CONNETTORE_MODALITA_FILESYSTEM: string = 'FILESYSTEM';
+  public static CONNETTORE_MODALITA_REST: string = 'REST';
   public static TENTATIVO_RT: string = 'tentativo_rt';
   public static ENTRATA_DOMINIO: string = 'entrata_dominio';
   public static UNITA_OPERATIVA: string = 'unita_operativa';
@@ -557,7 +558,21 @@ export class UtilService {
 
   public static MODALITA_GOVPAY: SimpleListItem[] = [
     { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
-    { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
+    { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM },
+    { label: 'REST', value: UtilService.CONNETTORE_MODALITA_REST }
+  ];
+
+  public static API_CONNETTORI: SimpleListItem[] = [
+    { label: 'API MyPivot', value: 'API_MYPIVOT' },
+    { label: 'API SECIM', value: 'API_SECIM' },
+    { label: 'API GovPay', value: 'API_GOVPAY' }
+  ];
+
+  public static CONTENUTI_NOTIFICA_CONNETTORE: SimpleListItem[] = [
+    { label: 'Sintesi pagamenti', value: 'SINTESI_PAGAMENTI' },
+    { label: 'Sintesi flussi rendicontazione', value: 'SINTESI_FLUSSI_RENDICONTAZIONE' },
+    { label: 'RPP', value: 'RPP' },
+    { label: 'Flussi rendicontazione', value: 'FLUSSI_RENDICONTAZIONE' }
   ];
 
   // CSV Export
@@ -1699,6 +1714,7 @@ export class UtilService {
         return { label: item.idA2A, value: item.idA2A };
       });
     }
+    _elenco = _elenco.concat(UtilService.API_CONNETTORI);
     return _elenco;
   }
 

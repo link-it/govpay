@@ -48,6 +48,18 @@
           <input matInput [placeholder]="_Voce.OGGETTO" formControlName="emailSubject_ctrl" autocomplete="off">
         </mat-form-field>
       </div>
+      <div class="row align-items-center" *ngIf="tipoConnettore.value === Util.CONNETTORE_MODALITA_EMAIL">
+        <div class="col-12 col-md-5 col-lg-4" [formGroup]="fGroup">
+          <mat-slide-toggle color="accent" formControlName="emailAllegato_ctrl" (change)="_allegatoChange($event)">
+            {{ _Voce.INVIO_TRACCIATO_ALLEGATO }}
+          </mat-slide-toggle>
+        </div>
+        <mat-form-field class="col" color="accent" [formGroup]="fGroup" *ngIf="!_isAllegatoEmail && tipoConnettore.value === Util.CONNETTORE_MODALITA_EMAIL">
+          <input matInput [placeholder]="_Voce.DOWNLOAD_BASE_URL" formControlName="downloadBaseUrl_ctrl" autocomplete="off"
+                 [required]="secimAbilitato?.value && !_isAllegatoEmail && secimModalita === Util.CONNETTORE_MODALITA_EMAIL">
+          <mat-hint>Indicare la base URL dalla quale sarà possibile scaricare il tracciato</mat-hint>
+        </mat-form-field>
+      </div>
       <div class="row" *ngIf="tipoConnettore.value === Util.CONNETTORE_MODALITA_FILESYSTEM">
         <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
           <input matInput [placeholder]="_Voce.PATH" formControlName="fileSystemPath_ctrl" autocomplete="off"
