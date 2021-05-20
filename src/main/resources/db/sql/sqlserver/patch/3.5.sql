@@ -11,3 +11,8 @@ ALTER TABLE trac_notif_pag ALTER COLUMN identificativo VARCHAR(255) NOT NULL;
 -- 17/05/2021 Indice sulla colonna iuv della tabella eventi
 CREATE INDEX idx_evt_iuv ON eventi (iuv);
 
+
+-- 20/05/2021 Aggiunta colonna connettore hyper_sic_apk alla tabella domini
+ALTER TABLE domini ADD cod_connettore_hyper_sic_apk VARCHAR(255);
+
+

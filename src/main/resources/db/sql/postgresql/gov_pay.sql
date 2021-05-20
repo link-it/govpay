@@ -122,6 +122,7 @@ CREATE TABLE domini
 	cod_connettore_my_pivot VARCHAR(255),
 	cod_connettore_secim VARCHAR(255),
 	cod_connettore_gov_pay VARCHAR(255),
+	cod_connettore_hyper_sic_apk VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_domini') NOT NULL,
 	id_stazione BIGINT NOT NULL,

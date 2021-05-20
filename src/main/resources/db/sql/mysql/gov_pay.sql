@@ -125,6 +125,7 @@ CREATE TABLE domini
 	cod_connettore_my_pivot VARCHAR(255) COMMENT 'Identificativo connettore mypivot',
 	cod_connettore_secim VARCHAR(255) COMMENT 'Identificativo connettore secim',
 	cod_connettore_gov_pay VARCHAR(255) COMMENT 'Identificativo connettore govpay',
+	cod_connettore_hyper_sic_apk VARCHAR(255) COMMENT 'Identificativo connettore hypersic_apk',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_stazione BIGINT NOT NULL COMMENT 'Riferimento alla stazione',
