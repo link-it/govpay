@@ -27,7 +27,7 @@
   		"emailIndirizzi" : [ "pec@creditore.it" ],
   		"emailAllegato" :  true,
   		"downloadBaseUrl" : "http://localhost:8080/servizioDownloadTracciati",
-  		"versioneCsv" : "1.0",
+  		"versioneZip" : "1.0",
   		"tipiPendenza" : [ "*" ]
   }
 }

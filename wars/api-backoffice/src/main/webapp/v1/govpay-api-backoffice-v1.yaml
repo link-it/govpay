@@ -7646,7 +7646,6 @@ components:
       required:
         - abilitato
         - tipoConnettore
-        - versioneCsv
       properties:
         abilitato:
           type: boolean
@@ -7658,10 +7657,10 @@ components:
             - 'EMAIL'
             - 'FILESYSTEM'
             - 'REST'
-        versioneCsv:
+        versioneZip:
           type: string
           example: '7.0'
-          description: Versione del CSV prodotto.
+          description: Versione del file zip prodotto.
         emailIndirizzi:
           type: array
           items:

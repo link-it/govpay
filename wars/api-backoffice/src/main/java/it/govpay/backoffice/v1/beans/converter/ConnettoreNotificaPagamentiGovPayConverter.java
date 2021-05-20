@@ -33,7 +33,6 @@ public class ConnettoreNotificaPagamentiGovPayConverter {
 		
 		if(connector.Abilitato()) {
 			connettore.setTipoTracciato(tipo.name());
-			connettore.setVersioneCsv(connector.getVersioneCsv());
 			
 //			boolean appAuthTipiPendenzaAll = false;
 			if(connector.getTipiPendenza() != null) {
@@ -111,6 +110,7 @@ public class ConnettoreNotificaPagamentiGovPayConverter {
 			
 			switch (connector.getTipoConnettore()) {
 			case EMAIL:
+				connettore.setVersioneCsv(connector.getVersioneZip());
 				connettore.setTipoConnettore(TipoConnettore.EMAIL);
 				connettore.setEmailIndirizzi(connector.getEmailIndirizzi());
 				connettore.setEmailSubject(connector.getEmailSubject());
@@ -118,6 +118,7 @@ public class ConnettoreNotificaPagamentiGovPayConverter {
 				connettore.setDownloadBaseURL(connector.getDownloadBaseUrl());
 				break;
 			case FILESYSTEM:
+				connettore.setVersioneCsv(connector.getVersioneZip());
 				connettore.setTipoConnettore(TipoConnettore.FILE_SYSTEM);
 				connettore.setFileSystemPath(connector.getFileSystemPath());
 				break;
@@ -169,10 +170,9 @@ public class ConnettoreNotificaPagamentiGovPayConverter {
 		
 		rsModel.setAbilitato(connettore.isAbilitato());
 		if(connettore.isAbilitato()) {
-			rsModel.setVersioneCsv(connettore.getVersioneCsv());
-			
 			switch (connettore.getTipoConnettore()) {
 			case EMAIL:
+				rsModel.setVersioneZip(connettore.getVersioneCsv());
 				rsModel.setTipoConnettore(TipoConnettoreEnum.EMAIL);
 				rsModel.setEmailIndirizzi(connettore.getEmailIndirizzi());
 				rsModel.setEmailSubject(connettore.getEmailSubject());
@@ -180,6 +180,7 @@ public class ConnettoreNotificaPagamentiGovPayConverter {
 				rsModel.setDownloadBaseUrl(connettore.getDownloadBaseURL());
 				break;
 			case FILE_SYSTEM:
+				rsModel.setVersioneZip(connettore.getVersioneCsv());
 				rsModel.setTipoConnettore(TipoConnettoreEnum.FILESYSTEM);
 				rsModel.setFileSystemPath(connettore.getFileSystemPath());
 				break;
