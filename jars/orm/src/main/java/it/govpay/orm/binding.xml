@@ -781,6 +781,7 @@
     <value name="datiAllegati" field="datiAllegati" usage="optional"/>
     <value name="indiceDati" field="indiceDati" usage="required"/>
     <value name="descrizioneCausaleRPT" field="descrizioneCausaleRPT" usage="optional"/>
+    <value name="contabilita" field="contabilita" usage="optional"/>
   </mapping>
   <mapping name="RPT" class="it.govpay.orm.RPT">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

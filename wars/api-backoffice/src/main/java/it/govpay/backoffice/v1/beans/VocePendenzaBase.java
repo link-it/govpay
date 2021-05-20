@@ -3,6 +3,7 @@ package it.govpay.backoffice.v1.beans;
 
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -18,6 +19,7 @@ import it.govpay.core.beans.JSONSerializable;
 "descrizione",
 "stato",
 "descrizioneCausaleRPT",
+"contabilita",
 })
 public class VocePendenzaBase extends JSONSerializable {
   
@@ -38,6 +40,9 @@ public class VocePendenzaBase extends JSONSerializable {
   
   @JsonProperty("descrizioneCausaleRPT")
   private String descrizioneCausaleRPT = null;
+  
+  @JsonProperty("contabilita")
+  private Contabilita contabilita = null;
   
   /**
    * indice di voce all'interno della pendenza
@@ -134,6 +139,21 @@ public class VocePendenzaBase extends JSONSerializable {
     this.descrizioneCausaleRPT = descrizioneCausaleRPT;
   }
 
+  /**
+   **/
+  public VocePendenzaBase contabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
+    return this;
+  }
+
+  @JsonProperty("contabilita")
+  public Contabilita getContabilita() {
+    return contabilita;
+  }
+  public void setContabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -148,12 +168,13 @@ public class VocePendenzaBase extends JSONSerializable {
         Objects.equals(importo, vocePendenzaBase.importo) &&
         Objects.equals(descrizione, vocePendenzaBase.descrizione) &&
         Objects.equals(stato, vocePendenzaBase.stato) &&
-        Objects.equals(descrizioneCausaleRPT, vocePendenzaBase.descrizioneCausaleRPT);
+        Objects.equals(descrizioneCausaleRPT, vocePendenzaBase.descrizioneCausaleRPT) &&
+        Objects.equals(contabilita, vocePendenzaBase.contabilita);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT);
+    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita);
   }
 
   public static VocePendenzaBase parse(String json) throws ServiceException, ValidationException { 
@@ -176,6 +197,7 @@ public class VocePendenzaBase extends JSONSerializable {
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
+    sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -881,6 +881,7 @@ CREATE TABLE singoli_versamenti
 	dati_allegati CLOB,
 	indice_dati NUMBER NOT NULL,
 	descrizione_causale_rpt VARCHAR2(140 CHAR),
+	contabilita CLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
@@ -1548,6 +1549,7 @@ CREATE TABLE eventi
 CREATE INDEX idx_evt_data ON eventi (data);
 CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
 CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
+CREATE INDEX idx_evt_iuv ON eventi (iuv);
 CREATE TRIGGER trg_eventi
 BEFORE
 insert on eventi

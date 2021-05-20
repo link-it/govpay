@@ -6712,6 +6712,8 @@ components:
           description: Testo libero per la causale versamento
           example: Sanzione CdS n. abc00000
           maxLength: 140
+        contabilita:
+          $ref: '#/components/schemas/contabilita'
     vocePendenza:
       allOf:
         - $ref: '#/components/schemas/vocePendenzaBase'
@@ -6788,6 +6790,42 @@ components:
           properties:
             pendenza:
               $ref: '#/components/schemas/pendenzaIndex'
+    contabilita:
+      type: object
+      properties:
+        quote:
+          type: array
+          items: 
+            $ref: '#/components/schemas/quotaContabilita'
+        proprietaCustom:
+          type: object
+          description: Dati specifici del gestionale di contabilità
+    quotaContabilita:
+      type: object
+      required:
+        - capitolo
+        - annoEsercizio
+        - importo
+      properties:
+        capitolo:
+          type: string
+          description: Codice del capitolo
+          maxLength: 64
+        annoEsercizio:
+          type: number
+          description: Anno di esercizio
+          example: 2020
+        importo:
+          type: number
+          description: Importo della voce di contabilita'
+          example: 10.01
+        accertamento:
+          type: string
+          description: Codice dell’accertamento
+          maxLength: 64        
+        proprietaCustom:
+          type: object
+          description: Dati specifici del gestionale di contabilità
     pendenzaCreata:
       type: object
       required:
@@ -7608,7 +7646,6 @@ components:
       required:
         - abilitato
         - tipoConnettore
-        - versioneCsv
       properties:
         abilitato:
           type: boolean
@@ -7620,10 +7657,10 @@ components:
             - 'EMAIL'
             - 'FILESYSTEM'
             - 'REST'
-        versioneCsv:
+        versioneZip:
           type: string
           example: '7.0'
-          description: Versione del CSV prodotto.
+          description: Versione del file zip prodotto.
         emailIndirizzi:
           type: array
           items:

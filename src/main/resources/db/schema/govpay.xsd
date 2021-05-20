@@ -2204,6 +2204,9 @@
 						<linkit:sql-table-index name="idx_evt_id_sessione">
 							<linkit:sql-table-index-field name="idSessione"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_evt_iuv">
+							<linkit:sql-table-index-field name="iuv"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2390,6 +2393,15 @@
 			</xsd:element>
 			<xsd:element name="indiceDati" type="xsd:positiveInteger" minOccurs="1"/>
 			<xsd:element name="descrizioneCausaleRPT" type="String140" minOccurs="0"/>
+			<xsd:element name="contabilita" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 

@@ -1,5 +1,6 @@
 package it.govpay.backoffice.v1.beans.converter;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 import javax.xml.bind.JAXBException;
@@ -7,6 +8,7 @@ import javax.xml.bind.JAXBException;
 import org.apache.commons.codec.binary.Base64;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.xml.sax.SAXException;
 
@@ -156,7 +158,7 @@ public class RiscossioniConverter {
 //		return rsModel;
 //	}
 	
-	public static Riscossione toRsModel(Pagamento input) {
+	public static Riscossione toRsModel(Pagamento input) throws IOException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Riscossione rsModel = new Riscossione();
 		try {

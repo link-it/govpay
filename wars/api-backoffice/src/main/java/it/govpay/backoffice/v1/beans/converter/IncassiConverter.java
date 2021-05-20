@@ -1,9 +1,11 @@
 package it.govpay.backoffice.v1.beans.converter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
@@ -32,7 +34,7 @@ public class IncassiConverter {
 	}
 	
 	
-	public static Incasso toRsModel(it.govpay.bd.model.Incasso i) throws ServiceException {
+	public static Incasso toRsModel(it.govpay.bd.model.Incasso i) throws ServiceException, IOException, ValidationException {
 		Incasso rsModel = new Incasso();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		

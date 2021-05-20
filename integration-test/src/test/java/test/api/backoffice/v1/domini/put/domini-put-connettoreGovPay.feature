@@ -40,7 +40,7 @@ And match response.servizioGovPay.<field> == checkValue
 Examples:
 | field | value | retValue | 
 | abilitato | false | false |
-| versioneCsv | '1.0' | '1.0' |
+| versioneZip | '1.0' | '1.0' |
 | emailIndirizzi | ['pec2@creditore.it'] | ['pec2@creditore.it'] |
 | emailIndirizzi | ['pec2@creditore.it' , 'pec3@creditore.it' ] | ['pec2@creditore.it' , 'pec3@creditore.it' ] |
 | emailSubject | '[Govpay] Export pagamenti Secim tipo pendenza #(codEntrataSegreteria)' | '[Govpay] Export pagamenti Secim tipo pendenza #(codEntrataSegreteria)' |
@@ -73,7 +73,7 @@ And match response.servizioGovPay.<field> == checkValue
 Examples:
 | field | value | retValue | 
 | abilitato | false | false |
-| versioneCsv | '1.0' | '1.0' |
+| versioneZip | '1.0' | '1.0' |
 | fileSystemPath | '/var/' | '/var/' |
 | tipiPendenza | [ '#(codEntrataSegreteria)' ] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
 | tipiPendenza | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
@@ -105,7 +105,6 @@ And match response.servizioGovPay.<field> == checkValue
 Examples:
 | field | value | retValue | 
 | abilitato | false | false |
-| versioneCsv | '1.0' | '1.0' |
 | url | 'http://prova.it' | 'http://prova.it' |
 | versioneApi | 'REST v1' | 'REST v1' |
 | auth | { username: 'usr', password: 'pwd' } | { username: 'usr', password: 'pwd' } |
@@ -137,7 +136,7 @@ Then status 400
 
 Examples:
 | field | fieldRequest | fieldValue | fieldResponse |
-| versioneCsv | versioneCsv | null | 'versioneCsv' |
+| versioneZip | versioneZip | null | 'versioneZip' |
 | emailIndirizzi | emailIndirizzi | null | 'emailIndirizzi' |
 | emailIndirizzi | emailIndirizzi | ['mail@errata@it'] | 'emailIndirizzi' |
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
@@ -184,7 +183,7 @@ Then status 400
 
 Examples:
 | field | fieldRequest | fieldValue | fieldResponse |
-| versioneCsv | versioneCsv | null | 'versioneCsv' |
+| versioneZip | versioneZip | null | 'versioneZip' |
 | fileSystemPath | fileSystemPath | null | 'fileSystemPath' |
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
 | tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
@@ -210,7 +209,6 @@ Then status 400
 
 Examples:
 | field | fieldRequest | fieldValue | fieldResponse |
-| versioneCsv | versioneCsv | null | 'versioneCsv' |
 | contenuti | contenuti | null | 'contenuti' |
 | contenuti | contenuti | ['XXXX'] | 'contenuti' |
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |

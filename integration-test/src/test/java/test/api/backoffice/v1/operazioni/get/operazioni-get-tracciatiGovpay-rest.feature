@@ -7,7 +7,6 @@ Background:
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: govpay_backoffice_user, password: govpay_backoffice_password } )
 * def dominio = read('classpath:test/api/backoffice/v1/domini/put/msg/dominio-connettore-govpay.json')
 
-* set dominio.servizioGovPay.versioneCsv = "3.0"
 * set dominio.servizioGovPay.tipoConnettore = 'REST'
 * set dominio.servizioGovPay.url = 'http://localhost:8888/enteRendicontazioni'
 * set dominio.servizioGovPay.versioneApi = 'REST v1'

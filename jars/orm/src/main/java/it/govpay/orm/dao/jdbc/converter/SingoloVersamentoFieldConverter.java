@@ -305,6 +305,13 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "descrizione_causale_rpt";
 			}
 		}
+		if(field.equals(SingoloVersamento.model().CONTABILITA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".contabilita";
+			}else{
+				return "contabilita";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -418,6 +425,9 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
 		if(field.equals(SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT)){
+			return this.toTable(SingoloVersamento.model(), returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().CONTABILITA)){
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
 

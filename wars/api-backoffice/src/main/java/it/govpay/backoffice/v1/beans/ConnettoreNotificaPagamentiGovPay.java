@@ -22,7 +22,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "abilitato",
 "tipoConnettore",
-"versioneCsv",
+"versioneZip",
 "emailIndirizzi",
 "emailSubject",
 "emailAllegato",
@@ -86,8 +86,8 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
   @JsonProperty("tipoConnettore")
   private TipoConnettoreEnum tipoConnettore = null;
   
-  @JsonProperty("versioneCsv")
-  private String versioneCsv = null;
+  @JsonProperty("versioneZip")
+  private String versioneZip = null;
   
   @JsonProperty("emailIndirizzi")
   private List<String> emailIndirizzi = null;
@@ -209,19 +209,19 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
   }
 
   /**
-   * Versione del CSV prodotto.
+   * Versione del file zip prodotto.
    **/
-  public ConnettoreNotificaPagamentiGovPay versioneCsv(String versioneCsv) {
-    this.versioneCsv = versioneCsv;
+  public ConnettoreNotificaPagamentiGovPay versioneZip(String versioneZip) {
+    this.versioneZip = versioneZip;
     return this;
   }
 
-  @JsonProperty("versioneCsv")
-  public String getVersioneCsv() {
-    return versioneCsv;
+  @JsonProperty("versioneZip")
+  public String getVersioneZip() {
+    return versioneZip;
   }
-  public void setVersioneCsv(String versioneCsv) {
-    this.versioneCsv = versioneCsv;
+  public void setVersioneZip(String versioneZip) {
+    this.versioneZip = versioneZip;
   }
 
   /**
@@ -419,7 +419,7 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
     ConnettoreNotificaPagamentiGovPay connettoreNotificaPagamentiGovPay = (ConnettoreNotificaPagamentiGovPay) o;
     return Objects.equals(abilitato, connettoreNotificaPagamentiGovPay.abilitato) &&
         Objects.equals(tipoConnettore, connettoreNotificaPagamentiGovPay.tipoConnettore) &&
-        Objects.equals(versioneCsv, connettoreNotificaPagamentiGovPay.versioneCsv) &&
+        Objects.equals(versioneZip, connettoreNotificaPagamentiGovPay.versioneZip) &&
         Objects.equals(emailIndirizzi, connettoreNotificaPagamentiGovPay.emailIndirizzi) &&
         Objects.equals(emailSubject, connettoreNotificaPagamentiGovPay.emailSubject) &&
         Objects.equals(emailAllegato, connettoreNotificaPagamentiGovPay.emailAllegato) &&
@@ -434,7 +434,7 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
 
   @Override
   public int hashCode() {
-    return Objects.hash(abilitato, tipoConnettore, versioneCsv, emailIndirizzi, emailSubject, emailAllegato, downloadBaseUrl, fileSystemPath, tipiPendenza, url, versioneApi, auth, contenuti);
+    return Objects.hash(abilitato, tipoConnettore, versioneZip, emailIndirizzi, emailSubject, emailAllegato, downloadBaseUrl, fileSystemPath, tipiPendenza, url, versioneApi, auth, contenuti);
   }
 
   public static ConnettoreNotificaPagamentiGovPay parse(String json) throws ServiceException, ValidationException {
@@ -453,7 +453,7 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
     
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    tipoConnettore: ").append(toIndentedString(tipoConnettore)).append("\n");
-    sb.append("    versioneCsv: ").append(toIndentedString(versioneCsv)).append("\n");
+    sb.append("    versioneZip: ").append(toIndentedString(versioneZip)).append("\n");
     sb.append("    emailIndirizzi: ").append(toIndentedString(emailIndirizzi)).append("\n");
     sb.append("    emailSubject: ").append(toIndentedString(emailSubject)).append("\n");
     sb.append("    emailAllegato: ").append(toIndentedString(emailAllegato)).append("\n");
@@ -486,10 +486,10 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
 		
 		if(this.abilitato) {
 			vf.getValidator("tipoConnettore", this.tipoConnettore).notNull();
-			vf.getValidator("versioneCsv", this.versioneCsv).notNull().minLength(1).maxLength(255);
 			
 			switch (this.tipoConnettore) {
 			case EMAIL:
+				vf.getValidator("versioneZip", this.versioneZip).notNull().minLength(1).maxLength(255);
 				if(this.emailIndirizzi != null && !this.emailIndirizzi.isEmpty()) {
 					for (String indirizzo : emailIndirizzi) {
 						vf.getValidator("emailIndirizzi", indirizzo).minLength(1).pattern(CostantiValidazione.PATTERN_EMAIL);
@@ -506,6 +506,7 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
 				}
 				break;
 			case FILESYSTEM:
+				vf.getValidator("versioneZip", this.versioneZip).notNull().minLength(1).maxLength(255);
 				vf.getValidator("fileSystemPath", this.fileSystemPath).notNull().minLength(1).maxLength(4000);
 				break;
 			case REST:

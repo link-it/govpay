@@ -2,6 +2,7 @@ package it.govpay.backoffice.v1.beans;
 
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -17,6 +18,7 @@ import it.govpay.core.beans.JSONSerializable;
 "descrizione",
 "stato",
 "descrizioneCausaleRPT",
+"contabilita",
 "pendenza",
 })
 public class VocePendenzaRendicontazione extends JSONSerializable {
@@ -38,6 +40,9 @@ public class VocePendenzaRendicontazione extends JSONSerializable {
   
   @JsonProperty("descrizioneCausaleRPT")
   private String descrizioneCausaleRPT = null;
+  
+  @JsonProperty("contabilita")
+  private Contabilita contabilita = null;
   
   @JsonProperty("pendenza")
   private PendenzaIndex pendenza = null;
@@ -139,6 +144,21 @@ public class VocePendenzaRendicontazione extends JSONSerializable {
 
   /**
    **/
+  public VocePendenzaRendicontazione contabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
+    return this;
+  }
+
+  @JsonProperty("contabilita")
+  public Contabilita getContabilita() {
+    return contabilita;
+  }
+  public void setContabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
+  }
+
+  /**
+   **/
   public VocePendenzaRendicontazione pendenza(PendenzaIndex pendenza) {
     this.pendenza = pendenza;
     return this;
@@ -167,12 +187,13 @@ public class VocePendenzaRendicontazione extends JSONSerializable {
         Objects.equals(descrizione, vocePendenzaRendicontazione.descrizione) &&
         Objects.equals(stato, vocePendenzaRendicontazione.stato) &&
         Objects.equals(descrizioneCausaleRPT, vocePendenzaRendicontazione.descrizioneCausaleRPT) &&
+        Objects.equals(contabilita, vocePendenzaRendicontazione.contabilita) &&
         Objects.equals(pendenza, vocePendenzaRendicontazione.pendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, pendenza);
+    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, pendenza);
   }
 
   public static VocePendenzaRendicontazione parse(String json) throws ServiceException, ValidationException {
@@ -195,6 +216,7 @@ public class VocePendenzaRendicontazione extends JSONSerializable {
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
+    sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
     sb.append("}");
     return sb.toString();

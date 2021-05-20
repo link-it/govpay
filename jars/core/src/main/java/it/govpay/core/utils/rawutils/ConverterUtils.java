@@ -2,6 +2,7 @@ package it.govpay.core.utils.rawutils;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -13,6 +14,7 @@ import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -102,6 +104,22 @@ public class ConverterUtils {
 		} catch(org.openspcoop2.utils.serialization.IOException e) {
 			throw new ValidationException(e.getMessage(), e);
 		}
+	}
+	
+	public static <T> List<T> convertFromJsonToList(String json, TypeReference<List<T>> var)  throws java.io.IOException{
+		if(json != null && var != null) {
+			SerializationConfig serializationConfig = new SerializationConfig();
+			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi());
+			serializationConfig.setIgnoreNullValues(true);
+
+			mapper.setDateFormat(serializationConfig.getDf());
+			if(serializationConfig.isSerializeEnumAsString())
+				  mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+			
+			return mapper.readerFor(var).readValue(json);
+		}
+
+		return null;
 	}
 	
 //	public static <T> T parse(String jsonString, Class<T> t) throws ServiceException, ValidationException  {
