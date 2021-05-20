@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.25.0"
+  version: "1.26.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -5201,6 +5201,8 @@ components:
           $ref: '#/components/schemas/connettoreNotificaPagamentiSecim'
         servizioGovPay:
           $ref: '#/components/schemas/connettoreNotificaPagamentiGovPay'
+        servizioHyperSicAPKappa:
+          $ref: '#/components/schemas/connettoreNotificaPagamentiHyperSicAPKappa'
     dominioIndex:
       type: object
       allOf:
@@ -7612,6 +7614,54 @@ components:
         versioneCsv:
           type: string
           example: '7.0'
+          description: Versione del CSV prodotto.
+        emailIndirizzi:
+          type: array
+          items:
+            type: string
+          description: Indirizzi Email al quale verra' spedito il tracciato
+        emailSubject:
+          type: string
+          description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
+        fileSystemPath:
+          type: string
+          description: Path nel quale verra' salvato il tracciato
+        tipiPendenza:
+          type: array
+          description: tipi pendenza da includere nel tracciato
+          items:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+              - type: string
+                description: identificativo tipo pendenza
+                example:
+                  SEGRETERIA
+    connettoreNotificaPagamentiHyperSicAPKappa:
+      type: object
+      required:
+        - abilitato
+        - tipoConnettore
+        - versioneCsv
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se il connettore e' abilitato
+          example: true
+        tipoConnettore:
+          type: string
+          enum:
+            - 'EMAIL'
+            - 'FILESYSTEM'
+        versioneCsv:
+          type: string
+          example: '2.0'
           description: Versione del CSV prodotto.
         emailIndirizzi:
           type: array
