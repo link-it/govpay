@@ -385,7 +385,7 @@ public class PagamentiBD extends BasicBD {
 				exp.greaterEquals(model.DATA_PAGAMENTO, dataRtDa);
 			}
 			exp.lessEquals(model.DATA_PAGAMENTO, dataRtA);
-			exp.equals(model.STATO, Stato.INCASSATO.toString());
+//			exp.equals(model.STATO, Stato.INCASSATO.toString());
 			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
 				listaTipiPendenza.removeAll(Collections.singleton(null));
 				exp.in(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, listaTipiPendenza);
@@ -434,7 +434,7 @@ public class PagamentiBD extends BasicBD {
 				exp.greaterEquals(model.DATA_PAGAMENTO, dataRtDa);
 			}
 			exp.lessEquals(model.DATA_PAGAMENTO, dataRtA);
-			exp.equals(model.STATO, Stato.INCASSATO.toString());
+//			exp.equals(model.STATO, Stato.INCASSATO.toString());
 			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
 				listaTipiPendenza.removeAll(Collections.singleton(null));
 				exp.in(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, listaTipiPendenza);

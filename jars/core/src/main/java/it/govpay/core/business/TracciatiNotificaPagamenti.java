@@ -127,7 +127,7 @@ public class TracciatiNotificaPagamenti {
 
 		if(countTracciatiInStatoNonTerminalePerDominio == 0) {
 			try {
-				log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], non sono stati trovati tracciati in sospeso, ricerco RT da inserire in un nuovo tracciato");
+				log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], non sono stati trovati tracciati in sospeso, ricerco record da inserire in un nuovo tracciato");
 				
 				tracciatiNotificaPagamentiBD = new TracciatiNotificaPagamentiBD(configWrapper);
 
@@ -703,7 +703,7 @@ public class TracciatiNotificaPagamenti {
 • “Progressivo Flusso”, per la data di creazione flusso nel formato NNN.
 		 * */
 		
-		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT.withDelimiter(';'));
+		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT);
 		
 		String dataCreazioneFlusso = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(tracciato.getDataCreazione());
 		String progressivoS = this.completaValoreCampoConFiller(progressivo +"", 3, true, true);
