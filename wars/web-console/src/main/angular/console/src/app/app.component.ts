@@ -722,7 +722,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
           this.us.updateProgress(true, 'Download in corso...', 'determinate', 100);
           setTimeout(() => {
             this.saveFile(dataCalls, null, '.csv');
-          }, 1000);
+          }, 500);
         }
       }.bind(this),
       (error) => {
