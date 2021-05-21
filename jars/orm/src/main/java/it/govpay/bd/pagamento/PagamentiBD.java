@@ -20,16 +20,21 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
@@ -40,6 +45,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.converter.PagamentoConverter;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
+import it.govpay.model.Pagamento.Stato;
 import it.govpay.orm.IdPagamento;
 import it.govpay.orm.dao.jdbc.JDBCPagamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
@@ -364,5 +370,90 @@ public class PagamentiBD extends BasicBD {
 				this.closeConnection();
 			}
 		}
+	}
+	
+	public List<Pagamento> ricercaRiscossioniDominio(String codDominio, Date dataRtDa, Date dataRtA, List<String> listaTipiPendenza, Integer offset, Integer limit) throws ServiceException{
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			PagamentoModel model = it.govpay.orm.Pagamento.model();
+			IExpression exp = this.getPagamentoService().newExpression();
+			exp.equals(model.COD_DOMINIO, codDominio).and();
+			if(dataRtDa != null) {
+				exp.greaterEquals(model.DATA_PAGAMENTO, dataRtDa);
+			}
+			exp.lessEquals(model.DATA_PAGAMENTO, dataRtA);
+			exp.equals(model.STATO, Stato.INCASSATO.toString());
+			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
+				listaTipiPendenza.removeAll(Collections.singleton(null));
+				exp.in(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, listaTipiPendenza);
+			}
+			
+			IPaginatedExpression pagExp = this.getPagamentoService().toPaginatedExpression(exp);
+			pagExp.offset(offset).limit(limit);
+			pagExp.addOrder(model.DATA_PAGAMENTO, SortOrder.ASC);
+			
+			List<it.govpay.orm.Pagamento> singoliPagamenti = this.getPagamentoService().findAll(pagExp);
+			
+			List<Pagamento> dtos = PagamentoConverter.toDTO(singoliPagamenti);
+			
+			for (Pagamento pagamento : dtos) {
+				VersamentiBD singoliVersamentiBD = new VersamentiBD(this);
+				singoliVersamentiBD.setAtomica(false); // la connessione deve essere gia' aperta
+				pagamento.setSingoloVersamento(singoliVersamentiBD.getSingoloVersamento(pagamento.getIdSingoloVersamento()));
+			}
+			
+			return dtos;
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+		
+	}
+	
+	
+	public long countRiscossioniDominio(String codDominio, Date dataRtDa, Date dataRtA, List<String> listaTipiPendenza) throws ServiceException{
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			PagamentoModel model = it.govpay.orm.Pagamento.model();
+			IExpression exp = this.getPagamentoService().newExpression();
+			exp.equals(model.COD_DOMINIO, codDominio).and();
+			if(dataRtDa != null) {
+				exp.greaterEquals(model.DATA_PAGAMENTO, dataRtDa);
+			}
+			exp.lessEquals(model.DATA_PAGAMENTO, dataRtA);
+			exp.equals(model.STATO, Stato.INCASSATO.toString());
+			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
+				listaTipiPendenza.removeAll(Collections.singleton(null));
+				exp.in(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, listaTipiPendenza);
+			}
+			
+			NonNegativeNumber count = this.getPagamentoService().count(exp);
+			
+			return count.longValue();
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+		
 	}
 }
