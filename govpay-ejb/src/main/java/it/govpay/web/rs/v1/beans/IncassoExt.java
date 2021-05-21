@@ -25,10 +25,15 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Fr;
+import it.govpay.bd.pagamento.FrBD;
+import it.govpay.bd.pagamento.filters.FrFilter;
+import it.govpay.core.utils.IncassoUtils;
 
 public class IncassoExt extends Incasso{
 	
 	private List<Pagamento> pagamenti;
+	private String riferimento_rendicontazione;
 	
 	public IncassoExt() {
 		super();
@@ -40,6 +45,23 @@ public class IncassoExt extends Incasso{
 		for(it.govpay.bd.model.Pagamento p : i.getPagamenti(bd)) {
 			pagamenti.add(new Pagamento(p, bd));
 		}
+		List<String> idfs = IncassoUtils.getRiferimentoIncassoCumulativo(this.getCausale());
+		
+		if(idfs.size()==1){
+			this.setRiferimento_rendicontazione(idfs.get(0));
+			return;
+		}
+			
+		FrBD frBD = new FrBD(bd);
+		for(String codFlusso : idfs) {
+			FrFilter newFilter = frBD.newFilter();
+			newFilter.setCodFlusso(codFlusso);
+			List<Fr> frs = frBD.findAll(newFilter);
+			if(frs.size() > 0) {
+				this.setRiferimento_rendicontazione(codFlusso);
+				return;
+			}
+		}
 	}
 	
 	public List<Pagamento> getPagamenti() {
@@ -47,6 +69,14 @@ public class IncassoExt extends Incasso{
 	}
 	public void setPagamenti(List<Pagamento> pagamenti) {
 		this.pagamenti = pagamenti;
+	}
+
+	public String getRiferimento_rendicontazione() {
+		return riferimento_rendicontazione;
+	}
+
+	public void setRiferimento_rendicontazione(String riferimento_rendicontazione) {
+		this.riferimento_rendicontazione = riferimento_rendicontazione;
 	}
 
 }
