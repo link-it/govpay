@@ -86,8 +86,30 @@ public class VistaRiscossioniFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_entrata", VistaRiscossioni.model().COD_ENTRATA.getFieldType()));
 				setParameter(object, "setIdentificativoDebitore", VistaRiscossioni.model().IDENTIFICATIVO_DEBITORE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "identificativo_debitore", VistaRiscossioni.model().IDENTIFICATIVO_DEBITORE.getFieldType()));
+				setParameter(object, "setDebitoreAnagrafica", VistaRiscossioni.model().DEBITORE_ANAGRAFICA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "debitore_anagrafica", VistaRiscossioni.model().DEBITORE_ANAGRAFICA.getFieldType()));
 				setParameter(object, "setAnno", VistaRiscossioni.model().ANNO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "anno", VistaRiscossioni.model().ANNO.getFieldType()));
+				setParameter(object, "setDescrTipoVersamento", VistaRiscossioni.model().DESCR_TIPO_VERSAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descr_tipo_versamento", VistaRiscossioni.model().DESCR_TIPO_VERSAMENTO.getFieldType()));
+				setParameter(object, "setCodPsp", VistaRiscossioni.model().COD_PSP.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_psp", VistaRiscossioni.model().COD_PSP.getFieldType()));
+				setParameter(object, "setRagioneSocialePsp", VistaRiscossioni.model().RAGIONE_SOCIALE_PSP.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ragione_sociale_psp", VistaRiscossioni.model().RAGIONE_SOCIALE_PSP.getFieldType()));
+				setParameter(object, "setCodRata", VistaRiscossioni.model().COD_RATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_rata", VistaRiscossioni.model().COD_RATA.getFieldType()));
+				setParameter(object, "setCausaleVersamento", VistaRiscossioni.model().CAUSALE_VERSAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "causale_versamento", VistaRiscossioni.model().CAUSALE_VERSAMENTO.getFieldType()));
+				setParameter(object, "setImportoVersamento", VistaRiscossioni.model().IMPORTO_VERSAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "importo_versamento", VistaRiscossioni.model().IMPORTO_VERSAMENTO.getFieldType()));
+				setParameter(object, "setNumeroAvviso", VistaRiscossioni.model().NUMERO_AVVISO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "numero_avviso", VistaRiscossioni.model().NUMERO_AVVISO.getFieldType()));
+				setParameter(object, "setIuvPagamento", VistaRiscossioni.model().IUV_PAGAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv_pagamento", VistaRiscossioni.model().IUV_PAGAMENTO.getFieldType()));
+				setParameter(object, "setDataScadenza", VistaRiscossioni.model().DATA_SCADENZA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_scadenza", VistaRiscossioni.model().DATA_SCADENZA.getFieldType()));
+				setParameter(object, "setContabilita", VistaRiscossioni.model().CONTABILITA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "contabilita", VistaRiscossioni.model().CONTABILITA.getFieldType()));
 				return object;
 			}
 			
@@ -142,8 +164,30 @@ public class VistaRiscossioniFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codEntrata"));
 				setParameter(object, "setIdentificativoDebitore", VistaRiscossioni.model().IDENTIFICATIVO_DEBITORE.getFieldType(),
 					this.getObjectFromMap(map,"identificativoDebitore"));
+				setParameter(object, "setDebitoreAnagrafica", VistaRiscossioni.model().DEBITORE_ANAGRAFICA.getFieldType(),
+					this.getObjectFromMap(map,"debitoreAnagrafica"));
 				setParameter(object, "setAnno", VistaRiscossioni.model().ANNO.getFieldType(),
 					this.getObjectFromMap(map,"anno"));
+				setParameter(object, "setDescrTipoVersamento", VistaRiscossioni.model().DESCR_TIPO_VERSAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"descrTipoVersamento"));
+				setParameter(object, "setCodPsp", VistaRiscossioni.model().COD_PSP.getFieldType(),
+					this.getObjectFromMap(map,"codPsp"));
+				setParameter(object, "setRagioneSocialePsp", VistaRiscossioni.model().RAGIONE_SOCIALE_PSP.getFieldType(),
+					this.getObjectFromMap(map,"ragioneSocialePsp"));
+				setParameter(object, "setCodRata", VistaRiscossioni.model().COD_RATA.getFieldType(),
+					this.getObjectFromMap(map,"codRata"));
+				setParameter(object, "setCausaleVersamento", VistaRiscossioni.model().CAUSALE_VERSAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"causaleVersamento"));
+				setParameter(object, "setImportoVersamento", VistaRiscossioni.model().IMPORTO_VERSAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"importoVersamento"));
+				setParameter(object, "setNumeroAvviso", VistaRiscossioni.model().NUMERO_AVVISO.getFieldType(),
+					this.getObjectFromMap(map,"numeroAvviso"));
+				setParameter(object, "setIuvPagamento", VistaRiscossioni.model().IUV_PAGAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"iuvPagamento"));
+				setParameter(object, "setDataScadenza", VistaRiscossioni.model().DATA_SCADENZA.getFieldType(),
+					this.getObjectFromMap(map,"dataScadenza"));
+				setParameter(object, "setContabilita", VistaRiscossioni.model().CONTABILITA.getFieldType(),
+					this.getObjectFromMap(map,"contabilita"));
 				return object;
 			}
 			

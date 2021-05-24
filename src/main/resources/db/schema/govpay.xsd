@@ -4248,7 +4248,37 @@
 			<xsd:element name="codTipoVersamento" type="String35" minOccurs="0"/>
 			<xsd:element name="codEntrata" type="String35" minOccurs="0"/>
 			<xsd:element name="identificativoDebitore" type="String35" minOccurs="0" />
+			<xsd:element name="debitoreAnagrafica" type="String70"/>
 			<xsd:element name="anno" type="String35" minOccurs="0"/>
+			
+			<xsd:element name="descrTipoVersamento" type="String255" />
+			<xsd:element name="codPsp" type="String35"/>
+			<xsd:element name="ragioneSocialePsp" type="String70" minOccurs="0" />
+			<xsd:element name="codRata" type="String35" minOccurs="0"/>
+			<xsd:element name="idDocumento" type="id-documento" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Documento" object-type="Documento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="causaleVersamento" type="String1024" minOccurs="0"/>
+			<xsd:element name="importoVersamento" type="xsd:double"/>
+			<xsd:element name="numeroAvviso" type="String35" minOccurs="0"/>
+			<xsd:element name="iuvPagamento" type="String35" minOccurs="0"/>
+			<xsd:element name="dataScadenza" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="contabilita" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.beans.InUse;
@@ -178,10 +179,35 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
  			fields.add(VistaRiscossioni.model().IDENTIFICATIVO_DEBITORE);
  			fields.add(VistaRiscossioni.model().ANNO);
  	
+ 			fields.add(VistaRiscossioni.model().DESCR_TIPO_VERSAMENTO);
+ 			fields.add(VistaRiscossioni.model().DEBITORE_ANAGRAFICA);
+ 			fields.add(VistaRiscossioni.model().COD_PSP);
+ 			fields.add(VistaRiscossioni.model().COD_RATA);
+ 			fields.add(VistaRiscossioni.model().CAUSALE_VERSAMENTO);
+ 			fields.add(VistaRiscossioni.model().IMPORTO_VERSAMENTO);
+ 			fields.add(VistaRiscossioni.model().IUV_PAGAMENTO);
+ 			fields.add(VistaRiscossioni.model().NUMERO_AVVISO);
+ 			fields.add(VistaRiscossioni.model().DATA_SCADENZA);
+ 			fields.add(VistaRiscossioni.model().CONTABILITA);
+ 			
+ 			fields.add(new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", this.getVistaRiscossioniFieldConverter().toTable(VistaRiscossioni.model())));
+ 			fields.add(new CustomField("id_documento", Long.class, "id_documento", this.getVistaRiscossioniFieldConverter().toTable(VistaRiscossioni.model())));
+ 			
+ 			
  			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
  	
  			for(Map<String, Object> map: returnMap) {
+ 				Object idDocumentoObject = map.remove("id_documento");
+ 				
  				VistaRiscossioni riscossione = (VistaRiscossioni)this.getFetch().fetch(jdbcProperties.getDatabase(), VistaRiscossioni.model(), map);
+ 				
+ 				if(idDocumentoObject instanceof Long) {
+					Long idDocumento = (Long) idDocumentoObject;
+					it.govpay.orm.IdDocumento id_versamento_documento = new it.govpay.orm.IdDocumento();
+					id_versamento_documento.setId(idDocumento);
+					riscossione.setIdDocumento(id_versamento_documento);
+				}
+ 				
  				list.add(riscossione);
  			}
  		} catch(NotFoundException e) {}
@@ -479,55 +505,29 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 	}
 	
 	protected VistaRiscossioni _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Object objectId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
-	
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-		
 		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
-		
-		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
-				
-		VistaRiscossioni vistaRiscossioni = new VistaRiscossioni();
+//		if(idMappingResolutionBehaviour==null){
+//			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
+//		}
 		
 		IdVistaRiscossione convertObjectIdToId = this.convertObjectIdToId(objectId);
 
-		// Object vistaRiscossioni
-		ISQLQueryObject sqlQueryObjectGet_vistaRiscossioni = sqlQueryObjectGet.newSQLQueryObject();
-		sqlQueryObjectGet_vistaRiscossioni.setANDLogicOperator(true);
-		sqlQueryObjectGet_vistaRiscossioni.addFromTable(this.getVistaRiscossioniFieldConverter().toTable(VistaRiscossioni.model()));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_DOMINIO,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IUV,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IUR,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_FLUSSO,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().FR_IUR,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().DATA_REGOLAMENTO,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().NUMERO_PAGAMENTI,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IMPORTO_TOTALE_PAGAMENTI,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IMPORTO_PAGATO,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_SINGOLO_VERSAMENTO_ENTE,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().INDICE_DATI,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_VERSAMENTO_ENTE,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_APPLICAZIONE,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().DATA_PAGAMENTO,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_TIPO_VERSAMENTO,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_ENTRATA,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IDENTIFICATIVO_DEBITORE,true));
-		sqlQueryObjectGet_vistaRiscossioni.addSelectField(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().ANNO,true));
+		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
+
+		expression.equals(VistaRiscossioni.model().COD_DOMINIO , convertObjectIdToId.getCodDominio());
+		expression.equals(VistaRiscossioni.model().IUV  , convertObjectIdToId.getIuv());
+		expression.equals(VistaRiscossioni.model().INDICE_DATI  , convertObjectIdToId.getIndiceDati());
 		
-		sqlQueryObjectGet_vistaRiscossioni.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().COD_DOMINIO,true) + "=?");
-		sqlQueryObjectGet_vistaRiscossioni.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().IUV,true) + "=?");
-		sqlQueryObjectGet_vistaRiscossioni.addWhereCondition(this.getVistaRiscossioniFieldConverter().toColumn(VistaRiscossioni.model().INDICE_DATI,true) + "=?");
+		List<VistaRiscossioni> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 
-		// Get vistaRiscossioni
-		vistaRiscossioni = (VistaRiscossioni) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_vistaRiscossioni.createSQLQuery(), jdbcProperties.isShowSql(), VistaRiscossioni.model(), this.getVistaRiscossioniFetch(),
-			new JDBCObject(convertObjectIdToId.getCodDominio(),convertObjectIdToId.getCodDominio().getClass()),
-			new JDBCObject(convertObjectIdToId.getIuv(),convertObjectIdToId.getIuv().getClass()),
-			new JDBCObject(convertObjectIdToId.getIndiceDati(),convertObjectIdToId.getIndiceDati().getClass()));
+		if(lst.size() <=0)
+			throw new NotFoundException("Id ["+objectId+"]");
 
-        return vistaRiscossioni;  
+		if(lst.size() > 1)
+			throw new MultipleResultException("Id ["+objectId+"]");
+
+
+		return lst.get(0);
 	
 	} 
 	
@@ -566,7 +566,11 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-        
+		if(expression.inUseModel(VistaRiscossioni.model().ID_DOCUMENTO,false)){
+			String tableName1 = this.getFieldConverter().toAliasTable(VistaRiscossioni.model());
+			String tableName2 = this.getFieldConverter().toAliasTable(VistaRiscossioni.model().ID_DOCUMENTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_documento="+tableName2+".id");
+		}
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVistaRiscossione id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -585,7 +589,27 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 
 		// VistaRiscossioni.model()
 		mapTableToPKColumn.put(converter.toTable(VistaRiscossioni.model()),
-			utilities.newList(VistaRiscossioni.model().COD_DOMINIO, VistaRiscossioni.model().IUV, VistaRiscossioni.model().INDICE_DATI));
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(VistaRiscossioni.model()))
+			));
+
+		// VistaRiscossioni.model().ID_DOCUMENTO
+		mapTableToPKColumn.put(converter.toTable(VistaRiscossioni.model().ID_DOCUMENTO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(VistaRiscossioni.model().ID_DOCUMENTO))
+			));
+
+		// VistaRiscossioni.model().ID_DOCUMENTO.ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(VistaRiscossioni.model().ID_DOCUMENTO.ID_APPLICAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(VistaRiscossioni.model().ID_DOCUMENTO.ID_APPLICAZIONE))
+			));
+
+		// VistaRiscossioni.model().ID_DOCUMENTO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(VistaRiscossioni.model().ID_DOCUMENTO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(VistaRiscossioni.model().ID_DOCUMENTO.ID_DOMINIO))
+			));
         
         return mapTableToPKColumn;		
 	}

@@ -1376,7 +1376,18 @@ SELECT fr.cod_dominio AS cod_dominio,
     versamenti.debitore_identificativo AS debitore_identificativo,
     versamenti.id_tipo_versamento AS id_tipo_versamento,
     versamenti.cod_anno_tributario AS cod_anno_tributario,
-    singoli_versamenti.id_tributo AS id_tributo
+    singoli_versamenti.id_tributo AS id_tributo,
+    versamenti.debitore_anagrafica AS debitore_anagrafica,
+    fr.cod_psp AS cod_psp,
+    fr.ragione_sociale_psp AS ragione_sociale_psp,
+    versamenti.cod_rata AS cod_rata,
+    versamenti.id_documento AS id_documento,
+    versamenti.causale_versamento AS causale_versamento,
+    versamenti.importo_totale AS importo_versamento,
+    versamenti.numero_avviso AS numero_avviso,
+    versamenti.iuv_pagamento AS iuv_pagamento,
+    versamenti.data_scadenza AS data_scadenza,
+    singoli_versamenti.contabilita AS contabilita
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN versamenti ON versamenti.iuv_versamento = rendicontazioni.iuv
@@ -1402,7 +1413,18 @@ SELECT pagamenti.cod_dominio AS cod_dominio,
     versamenti.debitore_identificativo AS debitore_identificativo,
     versamenti.id_tipo_versamento AS id_tipo_versamento,
     versamenti.cod_anno_tributario AS cod_anno_tributario,
-    singoli_versamenti.id_tributo AS id_tributo
+    singoli_versamenti.id_tributo AS id_tributo,
+    versamenti.debitore_anagrafica AS debitore_anagrafica,
+    fr.cod_psp AS cod_psp,
+    fr.ragione_sociale_psp AS ragione_sociale_psp,
+    versamenti.cod_rata AS cod_rata,
+    versamenti.id_documento AS id_documento,
+    versamenti.causale_versamento AS causale_versamento,
+    versamenti.importo_totale AS importo_versamento,
+    versamenti.numero_avviso AS numero_avviso,
+    versamenti.iuv_pagamento AS iuv_pagamento,
+    versamenti.data_scadenza AS data_scadenza,
+    singoli_versamenti.contabilita AS contabilita
    FROM pagamenti
      LEFT JOIN rendicontazioni ON rendicontazioni.id_pagamento = pagamenti.id
      LEFT JOIN fr ON rendicontazioni.id_fr = fr.id
@@ -1427,7 +1449,19 @@ CREATE VIEW v_riscossioni AS
     a.debitore_identificativo AS identificativo_debitore,
     a.cod_anno_tributario AS anno,
     tipi_versamento.cod_tipo_versamento,
-    tipi_tributo.cod_tributo AS cod_entrata
+    tipi_tributo.cod_tributo AS cod_entrata,
+    tipi_versamento.descrizione AS descr_tipo_versamento,
+    a.debitore_anagrafica,
+    a.cod_psp,
+    a.ragione_sociale_psp,
+    a.cod_rata,
+    a.id_documento,
+    a.causale_versamento,
+    a.importo_versamento,
+    a.numero_avviso,
+    a.iuv_pagamento,
+    a.data_scadenza,
+    a.contabilita
    FROM ( SELECT v_riscossioni_senza_rpt.cod_dominio,
             v_riscossioni_senza_rpt.iuv,
             v_riscossioni_senza_rpt.iur,
@@ -1445,7 +1479,18 @@ CREATE VIEW v_riscossioni AS
             v_riscossioni_senza_rpt.debitore_identificativo,
             v_riscossioni_senza_rpt.id_tipo_versamento,
             v_riscossioni_senza_rpt.cod_anno_tributario,
-            v_riscossioni_senza_rpt.id_tributo
+            v_riscossioni_senza_rpt.id_tributo,
+		    v_riscossioni_senza_rpt.debitore_anagrafica,
+		    v_riscossioni_senza_rpt.cod_psp,
+		    v_riscossioni_senza_rpt.ragione_sociale_psp,
+		    v_riscossioni_senza_rpt.cod_rata,
+		    v_riscossioni_senza_rpt.id_documento,
+		    v_riscossioni_senza_rpt.causale_versamento,
+		    v_riscossioni_senza_rpt.importo_versamento,
+		    v_riscossioni_senza_rpt.numero_avviso,
+		    v_riscossioni_senza_rpt.iuv_pagamento,
+		    v_riscossioni_senza_rpt.data_scadenza,
+		    v_riscossioni_senza_rpt.contabilita
            FROM v_riscossioni_senza_rpt
         UNION
          SELECT v_riscossioni_con_rpt.cod_dominio,
@@ -1465,7 +1510,18 @@ CREATE VIEW v_riscossioni AS
             v_riscossioni_con_rpt.debitore_identificativo,
             v_riscossioni_con_rpt.id_tipo_versamento,
             v_riscossioni_con_rpt.cod_anno_tributario,
-            v_riscossioni_con_rpt.id_tributo
+            v_riscossioni_con_rpt.id_tributo,
+		    v_riscossioni_con_rpt.debitore_anagrafica,
+		    v_riscossioni_con_rpt.cod_psp,
+		    v_riscossioni_con_rpt.ragione_sociale_psp,
+		    v_riscossioni_con_rpt.cod_rata,
+		    v_riscossioni_con_rpt.id_documento,
+		    v_riscossioni_con_rpt.causale_versamento,
+		    v_riscossioni_con_rpt.importo_versamento,
+		    v_riscossioni_con_rpt.numero_avviso,
+		    v_riscossioni_con_rpt.iuv_pagamento,
+		    v_riscossioni_con_rpt.data_scadenza,
+		    v_riscossioni_con_rpt.contabilita
            FROM v_riscossioni_con_rpt) a
      JOIN applicazioni ON a.id_applicazione = applicazioni.id 
      LEFT JOIN tipi_versamento ON a.id_tipo_versamento = tipi_versamento.id 

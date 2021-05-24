@@ -58,7 +58,19 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 		this.COD_TIPO_VERSAMENTO = new Field("codTipoVersamento",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.COD_ENTRATA = new Field("codEntrata",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.IDENTIFICATIVO_DEBITORE = new Field("identificativoDebitore",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.DEBITORE_ANAGRAFICA = new Field("debitoreAnagrafica",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.ANNO = new Field("anno",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.DESCR_TIPO_VERSAMENTO = new Field("descrTipoVersamento",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.COD_PSP = new Field("codPsp",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.RAGIONE_SOCIALE_PSP = new Field("ragioneSocialePsp",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.COD_RATA = new Field("codRata",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new Field("idDocumento",it.govpay.orm.IdDocumento.class,"VistaRiscossioni",VistaRiscossioni.class));
+		this.CAUSALE_VERSAMENTO = new Field("causaleVersamento",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.IMPORTO_VERSAMENTO = new Field("importoVersamento",double.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.NUMERO_AVVISO = new Field("numeroAvviso",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.IUV_PAGAMENTO = new Field("iuvPagamento",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.DATA_SCADENZA = new Field("dataScadenza",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.CONTABILITA = new Field("contabilita",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 	
 	}
 	
@@ -83,7 +95,19 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 		this.COD_TIPO_VERSAMENTO = new ComplexField(father,"codTipoVersamento",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.COD_ENTRATA = new ComplexField(father,"codEntrata",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.IDENTIFICATIVO_DEBITORE = new ComplexField(father,"identificativoDebitore",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.DEBITORE_ANAGRAFICA = new ComplexField(father,"debitoreAnagrafica",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.ANNO = new ComplexField(father,"anno",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.DESCR_TIPO_VERSAMENTO = new ComplexField(father,"descrTipoVersamento",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.COD_PSP = new ComplexField(father,"codPsp",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.RAGIONE_SOCIALE_PSP = new ComplexField(father,"ragioneSocialePsp",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.COD_RATA = new ComplexField(father,"codRata",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.ID_DOCUMENTO = new it.govpay.orm.model.IdDocumentoModel(new ComplexField(father,"idDocumento",it.govpay.orm.IdDocumento.class,"VistaRiscossioni",VistaRiscossioni.class));
+		this.CAUSALE_VERSAMENTO = new ComplexField(father,"causaleVersamento",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.IMPORTO_VERSAMENTO = new ComplexField(father,"importoVersamento",double.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.NUMERO_AVVISO = new ComplexField(father,"numeroAvviso",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.IUV_PAGAMENTO = new ComplexField(father,"iuvPagamento",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.DATA_SCADENZA = new ComplexField(father,"dataScadenza",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.CONTABILITA = new ComplexField(father,"contabilita",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 	
 	}
 	
@@ -123,7 +147,31 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 	 
 	public IField IDENTIFICATIVO_DEBITORE = null;
 	 
+	public IField DEBITORE_ANAGRAFICA = null;
+	 
 	public IField ANNO = null;
+	 
+	public IField DESCR_TIPO_VERSAMENTO = null;
+	 
+	public IField COD_PSP = null;
+	 
+	public IField RAGIONE_SOCIALE_PSP = null;
+	 
+	public IField COD_RATA = null;
+	 
+	public it.govpay.orm.model.IdDocumentoModel ID_DOCUMENTO = null;
+	 
+	public IField CAUSALE_VERSAMENTO = null;
+	 
+	public IField IMPORTO_VERSAMENTO = null;
+	 
+	public IField NUMERO_AVVISO = null;
+	 
+	public IField IUV_PAGAMENTO = null;
+	 
+	public IField DATA_SCADENZA = null;
+	 
+	public IField CONTABILITA = null;
 	 
 
 	@Override

@@ -52,7 +52,19 @@ import java.io.Serializable;
  * 			&lt;element name="codTipoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codEntrata" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="identificativoDebitore" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="debitoreAnagrafica" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="anno" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="descrTipoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codPsp" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="ragioneSocialePsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codRata" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="causaleVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="importoVersamento" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="numeroAvviso" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="iuvPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="contabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -84,7 +96,19 @@ import java.io.Serializable;
   	"codTipoVersamento",
   	"codEntrata",
   	"identificativoDebitore",
-  	"anno"
+  	"debitoreAnagrafica",
+  	"anno",
+  	"descrTipoVersamento",
+  	"codPsp",
+  	"ragioneSocialePsp",
+  	"codRata",
+  	"idDocumento",
+  	"causaleVersamento",
+  	"importoVersamento",
+  	"numeroAvviso",
+  	"iuvPagamento",
+  	"dataScadenza",
+  	"contabilita"
   }
 )
 
@@ -244,12 +268,108 @@ public class VistaRiscossioni extends org.openspcoop2.utils.beans.BaseBean imple
     this.identificativoDebitore = identificativoDebitore;
   }
 
+  public java.lang.String getDebitoreAnagrafica() {
+    return this.debitoreAnagrafica;
+  }
+
+  public void setDebitoreAnagrafica(java.lang.String debitoreAnagrafica) {
+    this.debitoreAnagrafica = debitoreAnagrafica;
+  }
+
   public java.lang.String getAnno() {
     return this.anno;
   }
 
   public void setAnno(java.lang.String anno) {
     this.anno = anno;
+  }
+
+  public java.lang.String getDescrTipoVersamento() {
+    return this.descrTipoVersamento;
+  }
+
+  public void setDescrTipoVersamento(java.lang.String descrTipoVersamento) {
+    this.descrTipoVersamento = descrTipoVersamento;
+  }
+
+  public java.lang.String getCodPsp() {
+    return this.codPsp;
+  }
+
+  public void setCodPsp(java.lang.String codPsp) {
+    this.codPsp = codPsp;
+  }
+
+  public java.lang.String getRagioneSocialePsp() {
+    return this.ragioneSocialePsp;
+  }
+
+  public void setRagioneSocialePsp(java.lang.String ragioneSocialePsp) {
+    this.ragioneSocialePsp = ragioneSocialePsp;
+  }
+
+  public java.lang.String getCodRata() {
+    return this.codRata;
+  }
+
+  public void setCodRata(java.lang.String codRata) {
+    this.codRata = codRata;
+  }
+
+  public IdDocumento getIdDocumento() {
+    return this.idDocumento;
+  }
+
+  public void setIdDocumento(IdDocumento idDocumento) {
+    this.idDocumento = idDocumento;
+  }
+
+  public java.lang.String getCausaleVersamento() {
+    return this.causaleVersamento;
+  }
+
+  public void setCausaleVersamento(java.lang.String causaleVersamento) {
+    this.causaleVersamento = causaleVersamento;
+  }
+
+  public double getImportoVersamento() {
+    return this.importoVersamento;
+  }
+
+  public void setImportoVersamento(double importoVersamento) {
+    this.importoVersamento = importoVersamento;
+  }
+
+  public java.lang.String getNumeroAvviso() {
+    return this.numeroAvviso;
+  }
+
+  public void setNumeroAvviso(java.lang.String numeroAvviso) {
+    this.numeroAvviso = numeroAvviso;
+  }
+
+  public java.lang.String getIuvPagamento() {
+    return this.iuvPagamento;
+  }
+
+  public void setIuvPagamento(java.lang.String iuvPagamento) {
+    this.iuvPagamento = iuvPagamento;
+  }
+
+  public java.util.Date getDataScadenza() {
+    return this.dataScadenza;
+  }
+
+  public void setDataScadenza(java.util.Date dataScadenza) {
+    this.dataScadenza = dataScadenza;
+  }
+
+  public java.lang.String getContabilita() {
+    return this.contabilita;
+  }
+
+  public void setContabilita(java.lang.String contabilita) {
+    this.contabilita = contabilita;
   }
 
   private static final long serialVersionUID = 1L;
@@ -342,7 +462,55 @@ public class VistaRiscossioni extends org.openspcoop2.utils.beans.BaseBean imple
   protected java.lang.String identificativoDebitore;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreAnagrafica",required=true,nillable=false)
+  protected java.lang.String debitoreAnagrafica;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="anno",required=false,nillable=false)
   protected java.lang.String anno;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="descrTipoVersamento",required=true,nillable=false)
+  protected java.lang.String descrTipoVersamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codPsp",required=true,nillable=false)
+  protected java.lang.String codPsp;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="ragioneSocialePsp",required=false,nillable=false)
+  protected java.lang.String ragioneSocialePsp;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codRata",required=false,nillable=false)
+  protected java.lang.String codRata;
+
+  @XmlElement(name="idDocumento",required=false,nillable=false)
+  protected IdDocumento idDocumento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="causaleVersamento",required=false,nillable=false)
+  protected java.lang.String causaleVersamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="double")
+  @XmlElement(name="importoVersamento",required=true,nillable=false)
+  protected double importoVersamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="numeroAvviso",required=false,nillable=false)
+  protected java.lang.String numeroAvviso;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="iuvPagamento",required=false,nillable=false)
+  protected java.lang.String iuvPagamento;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataScadenza",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataScadenza;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="contabilita",required=false,nillable=false)
+  protected java.lang.String contabilita;
 
 }

@@ -1,10 +1,14 @@
 package it.govpay.bd.viste.model;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Date;
 
 import it.govpay.model.BasicModel;
+import it.govpay.model.Versamento;
+import it.govpay.model.Versamento.Causale;
+import it.govpay.model.Versamento.TipoSogliaVersamento;
 
 public class EntrataPrevista extends BasicModel implements Comparable<EntrataPrevista>{
 	
@@ -27,6 +31,21 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	private String codEntrata;
 	private String identificativoDebitore;
 	private String anno; 
+	private String anagraficaDebitore;
+	private String descrizioneTipoVersamento;
+	private String codPsp;
+	private String ragioneSocialePsp;
+	private String iuvPagamento;
+	private Integer numeroRata;
+	private String codDocumento;
+	private Long idDocumento;
+	private TipoSogliaVersamento tipoSoglia;
+	private Integer giorniSoglia;
+	private Causale causaleVersamento;
+	private Date dataScadenza;
+	private BigDecimal importoVersamento;
+	private String numeroAvviso;
+	private String contabilita;
 	
 	public String getCodDominio() {
 		return codDominio;
@@ -135,6 +154,100 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	}
 	public void setAnno(String anno) {
 		this.anno = anno;
+	}
+
+	public String getAnagraficaDebitore() {
+		return anagraficaDebitore;
+	}
+	public void setAnagraficaDebitore(String anagraficaDebitore) {
+		this.anagraficaDebitore = anagraficaDebitore;
+	}
+	public String getDescrizioneTipoVersamento() {
+		return descrizioneTipoVersamento;
+	}
+	public void setDescrizioneTipoVersamento(String descrizioneTipoVersamento) {
+		this.descrizioneTipoVersamento = descrizioneTipoVersamento;
+	}
+	public String getCodPsp() {
+		return codPsp;
+	}
+	public void setCodPsp(String codPsp) {
+		this.codPsp = codPsp;
+	}
+	public String getRagioneSocialePsp() {
+		return ragioneSocialePsp;
+	}
+	public void setRagioneSocialePsp(String ragioneSocialePsp) {
+		this.ragioneSocialePsp = ragioneSocialePsp;
+	}
+	public String getIuvPagamento() {
+		return iuvPagamento;
+	}
+	public void setIuvPagamento(String iuvPagamento) {
+		this.iuvPagamento = iuvPagamento;
+	}
+	public Integer getNumeroRata() {
+		return numeroRata;
+	}
+	public void setNumeroRata(Integer numeroRata) {
+		this.numeroRata = numeroRata;
+	}
+	public String getCodDocumento() {
+		return codDocumento;
+	}
+	public void setCodDocumento(String codDocumento) {
+		this.codDocumento = codDocumento;
+	}
+	public Long getIdDocumento() {
+		return idDocumento;
+	}
+	public void setIdDocumento(Long idDocumento) {
+		this.idDocumento = idDocumento;
+	}
+	public TipoSogliaVersamento getTipoSoglia() {
+		return tipoSoglia;
+	}
+	public void setTipoSoglia(TipoSogliaVersamento tipoSoglia) {
+		this.tipoSoglia = tipoSoglia;
+	}
+	public Integer getGiorniSoglia() {
+		return giorniSoglia;
+	}
+	public void setGiorniSoglia(Integer giorniSoglia) {
+		this.giorniSoglia = giorniSoglia;
+	}
+	public Causale getCausaleVersamento() {
+		return causaleVersamento;
+	}
+	public void setCausaleVersamento(String causaleVersamentoEncoded) throws UnsupportedEncodingException {
+		if(causaleVersamentoEncoded == null) 
+			this.causaleVersamento = null;
+		else
+			this.causaleVersamento = Versamento.decode(causaleVersamentoEncoded);
+	}
+	public Date getDataScadenza() {
+		return dataScadenza;
+	}
+	public void setDataScadenza(Date dataScadenza) {
+		this.dataScadenza = dataScadenza;
+	}
+	public BigDecimal getImportoVersamento() {
+		return importoVersamento;
+	}
+	public void setImportoVersamento(BigDecimal importoVersamento) {
+		this.importoVersamento = importoVersamento;
+	}
+	public String getNumeroAvviso() {
+		return numeroAvviso;
+	}
+	public void setNumeroAvviso(String numeroAvviso) {
+		this.numeroAvviso = numeroAvviso;
+	}
+	public String getContabilita() {
+		return contabilita;
+	}
+	public void setContabilita(String contabilita) {
+		this.contabilita = contabilita;
 	}
 
 	public class IUVComparator implements Comparator<EntrataPrevista> {
