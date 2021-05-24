@@ -20,13 +20,20 @@
 package it.govpay.core.utils.client.v1;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.serialization.SerializationConfig;
 
+import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.ec.v1.beans.Contabilita;
 import it.govpay.ec.v1.beans.PendenzaVerificata;
 import it.govpay.ec.v1.beans.ProprietaPendenza;
+import it.govpay.ec.v1.beans.QuotaContabilita;
 import it.govpay.ec.v1.beans.Soggetto;
 import it.govpay.ec.v1.beans.TassonomiaAvviso;
 import it.govpay.ec.v1.beans.VoceDescrizioneImporto;
@@ -35,7 +42,7 @@ import it.govpay.model.Versamento.StatoVersamento;
 
 public class VerificaConverter {
 	
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) throws ValidationException {
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) throws ValidationException, ServiceException {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 		
 		if(pendenzaVerificata.getAnnoRiferimento() != null)
@@ -93,7 +100,7 @@ public class VerificaConverter {
 		return versamento;
 	}
 	
-	public static void fillSingoliVersamentiFromVociPendenzaBase(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) {
+	public static void fillSingoliVersamentiFromVociPendenzaBase(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) throws ServiceException {
 
 		if(voci != null && voci.size() > 0) {
 			for (VocePendenza vocePendenza : voci) {
@@ -104,6 +111,7 @@ public class VerificaConverter {
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setImporto(vocePendenza.getImporto());
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
+				sv.setContabilita(contabilitaToStringDTO(vocePendenza.getContabilita()));
 
 				// Definisce i dati di un bollo telematico
 				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
@@ -190,5 +198,60 @@ public class VerificaConverter {
 		}
 		
 		return dto;
+	}
+	
+	public static String contabilitaToStringDTO(Contabilita contabilita) throws ServiceException {
+		if(contabilita == null)
+			return null;
+		
+		it.govpay.model.Contabilita dto = toDTO(contabilita);
+		
+		return getDettaglioAsString(dto);
+	}
+	
+	public static List<it.govpay.model.QuotaContabilita> toDTO(List<QuotaContabilita> dto) throws ServiceException {
+		if(dto != null) {
+			List<it.govpay.model.QuotaContabilita> rsModel = new ArrayList<it.govpay.model.QuotaContabilita>();
+			for (QuotaContabilita contabilita : dto) {
+				rsModel.add(toDTO(contabilita));
+			}
+			
+			return rsModel;
+		}
+		
+		return null;
+	}
+
+	public static it.govpay.model.Contabilita toDTO(Contabilita dto) throws ServiceException {
+		it.govpay.model.Contabilita rsModel = new it.govpay.model.Contabilita();
+		
+		rsModel.setQuote(toDTO(dto.getQuote()));
+		rsModel.setProprietaCustom(dto.getProprietaCustom());
+		
+		
+		return rsModel;
+	}
+	
+	public static it.govpay.model.QuotaContabilita toDTO(QuotaContabilita dto) throws ServiceException {
+		it.govpay.model.QuotaContabilita rsModel = new it.govpay.model.QuotaContabilita();
+		
+		rsModel.setAccertamento(dto.getAccertamento());
+		rsModel.setAnnoEsercizio(dto.getAnnoEsercizio().intValue());
+		rsModel.setCapitolo(dto.getCapitolo());
+		rsModel.setImporto(dto.getImporto());
+		rsModel.setProprietaCustom(dto.getProprietaCustom());
+		
+		return rsModel;
+	}
+	
+	private static String getDettaglioAsString(Object obj) throws ServiceException {
+		if(obj != null) {
+			SerializationConfig serializationConfig = new SerializationConfig();
+			serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+			serializationConfig.setIgnoreNullValues(true);
+			return ConverterUtils.toJSON(obj, null, serializationConfig);
+		}
+		return null;
 	}
 }

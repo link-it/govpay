@@ -61,8 +61,8 @@ Examples:
 Scenario: Caricamento pendenza con contabilita errore validazione importi
 
 * def pendenzaPut = read('classpath:test/api/backoffice/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento_contabilita.json')
-* def pendenzaPutImportoOrig = pendenzaPut.voci[0].importo + 10
-* set pendenzaPut.voci[0].contabilita[0].importo = pendenzaPut.voci[0].contabilita[0].importo + 10
+* def pendenzaPutImportoOrig = pendenzaPut.voci[0].importo
+* set pendenzaPut.voci[0].importo = pendenzaPut.voci[0].importo + 10
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
