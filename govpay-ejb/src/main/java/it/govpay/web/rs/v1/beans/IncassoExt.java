@@ -32,8 +32,8 @@ import it.govpay.core.utils.IncassoUtils;
 
 public class IncassoExt extends Incasso{
 	
-	private List<Pagamento> pagamenti;
 	private String riferimento_rendicontazione;
+	private List<Pagamento> pagamenti;
 	
 	public IncassoExt() {
 		super();
@@ -64,13 +64,6 @@ public class IncassoExt extends Incasso{
 		}
 	}
 	
-	public List<Pagamento> getPagamenti() {
-		return pagamenti;
-	}
-	public void setPagamenti(List<Pagamento> pagamenti) {
-		this.pagamenti = pagamenti;
-	}
-
 	public String getRiferimento_rendicontazione() {
 		return riferimento_rendicontazione;
 	}
@@ -78,5 +71,14 @@ public class IncassoExt extends Incasso{
 	public void setRiferimento_rendicontazione(String riferimento_rendicontazione) {
 		this.riferimento_rendicontazione = riferimento_rendicontazione;
 	}
+	
+	public List<Pagamento> getPagamenti() {
+		return pagamenti;
+	}
+	public void setPagamenti(List<Pagamento> pagamenti) {
+		this.pagamenti = pagamenti;
+	}
+
+
 
 }
