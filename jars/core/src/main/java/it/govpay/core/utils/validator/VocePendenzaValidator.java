@@ -7,7 +7,7 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.ec.v1.beans.Contabilita;
+import it.govpay.ec.v1.beans.QuotaContabilita;
 import it.govpay.ec.v1.beans.VocePendenza;
 
 public class VocePendenzaValidator implements IValidable{
@@ -89,44 +89,44 @@ public class VocePendenzaValidator implements IValidable{
 	}
 
 	private void validaContabilita(ValidatorFactory vf) throws ValidationException {
-		List<Contabilita> listaContabilita = this.vocePendenza.getContabilita();
-		if(listaContabilita != null) {
-			for (Contabilita contabilita : listaContabilita) {
+		if(this.vocePendenza.getContabilita() != null) {
+			List<QuotaContabilita> listaContabilita = this.vocePendenza.getContabilita().getQuote();
+			if(listaContabilita != null) {
+				for (QuotaContabilita contabilita : listaContabilita) {
 
-				vf.getValidator("ufficio", contabilita.getUfficio()).minLength(1).maxLength(64);
-				vf.getValidator("capitolo", contabilita.getCapitolo()).notNull().minLength(1).maxLength(64);
+					vf.getValidator("capitolo", contabilita.getCapitolo()).notNull().minLength(1).maxLength(64);
+					
+					vf.getValidator("annoEsercizio", contabilita.getAnnoEsercizio()).notNull();
+					ValidatoreUtils.validaAnnoRiferimento(vf, "annoEsercizio", contabilita.getAnnoEsercizio());
 
-				vf.getValidator("annoEsercizio", contabilita.getAnnoEsercizio()).notNull();
-				ValidatoreUtils.validaAnnoRiferimento(vf, "annoEsercizio", contabilita.getAnnoEsercizio());
+					vf.getValidator("accertamento", contabilita.getAccertamento()).minLength(1).maxLength(64);
+					ValidatoreUtils.validaImporto(vf, "importo", contabilita.getImporto());
 
-				vf.getValidator("accertamento", contabilita.getAccertamento()).minLength(1).maxLength(64);
-				ValidatoreUtils.validaAnnoRiferimento(vf, "annoAccertamento", contabilita.getAnnoAccertamento());
-				vf.getValidator("subAccertamento", contabilita.getSubAccertamento()).minLength(1).maxLength(64);
-				vf.getValidator("siope", contabilita.getSiope()).minLength(1).maxLength(64);
-				ValidatoreUtils.validaImporto(vf, "importo", contabilita.getImporto());
-				vf.getValidator("codGestionaleEnte", contabilita.getCodGestionaleEnte()).minLength(1).maxLength(256);
-
+				}
 			}
 		}
 	}
 
 	public void validazioneSemanticaContabilita(ValidatorFactory vf, String idA2A, String idPendenza) throws ValidationException {
-		List<Contabilita> listaContabilita = this.vocePendenza.getContabilita();
-		BigDecimal importoVocePendenza = this.vocePendenza.getImporto();
-		if(listaContabilita != null) {
-			try {
-				BigDecimal somma = BigDecimal.ZERO;
-				for (Contabilita voceContabilita : vocePendenza.getContabilita()) {
-					somma = somma.add(voceContabilita.getImporto());
+		if(this.vocePendenza.getContabilita() != null) {
+			List<QuotaContabilita> listaContabilita = this.vocePendenza.getContabilita().getQuote();
+			BigDecimal importoVocePendenza = this.vocePendenza.getImporto();
+			if(listaContabilita != null) {
+				try {
+					BigDecimal somma = BigDecimal.ZERO;
+					for (QuotaContabilita voceContabilita : listaContabilita) {
+						somma = somma.add(voceContabilita.getImporto());
+					}
+	
+					if(somma.compareTo(vocePendenza.getImporto()) != 0) {
+						throw new GovPayException(EsitoOperazione.VER_035, vocePendenza.getIdVocePendenza(), idA2A, idPendenza,
+								Double.toString(importoVocePendenza.doubleValue()), Double.toString(somma.doubleValue()));
+					}
+				}catch (GovPayException e) {
+					throw new ValidationException(e.getMessage(), e);
 				}
-
-				if(somma.compareTo(vocePendenza.getImporto()) != 0) {
-					throw new GovPayException(EsitoOperazione.VER_035, vocePendenza.getIdVocePendenza(), idA2A, idPendenza,
-							Double.toString(importoVocePendenza.doubleValue()), Double.toString(somma.doubleValue()));
-				}
-			}catch (GovPayException e) {
-				throw new ValidationException(e.getMessage(), e);
 			}
 		}
 	}
+	
 }
