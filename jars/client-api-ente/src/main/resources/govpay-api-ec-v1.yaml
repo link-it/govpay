@@ -514,8 +514,6 @@ components:
               example: Sanzione CdS n. abc00000
               maxLength: 140
             contabilita:
-              type: array
-              items:
                 $ref: '#/components/schemas/Contabilita'
     datiEntrata:
       type: object
@@ -788,47 +786,14 @@ components:
           example: Errore gestione nel PSP  
     Contabilita:
       type: object
-      required:
-        - capitolo
-        - annoEsercizio
-        - importo
       properties:
-        ufficio:
-          type: string
-          description: Codice dell’ufficio
-          maxLength: 64
-        capitolo:
-          type: string
-          description: Codice del capitolo
-          maxLength: 64
-        annoEsercizio:
-          type: number
-          description: Anno di esercizio
-          example: 2020
-        accertamento:
-          type: string
-          description: Codice dell’accertamento
-          maxLength: 64
-        annoAccertamento:
-          type: number
-          description: Anno accertamento
-          example: 2020
-        subAccertamento:
-          type: string
-          description: Codice dell’accertamento se contabilita' di terze parti
-          maxLength: 64
-        siope:
-          type: string
-          description: Codice siope dell'entrata
-          maxLength: 64
-        importo:
-          type: number
-          description: Importo della voce di contabilita'
-          example: 10.01
-        codGestionaleEnte:
-          type: string
-          description: Codice contabilita' utilizzato dal gestionale dell'ente
-          maxLength: 256
+        quote:
+          type: array
+          items: 
+            $ref: '#/components/schemas/QuotaContabilita'
+        proprietaCustom:
+          type: object
+          description: Dati specifici del gestionale di contabilità
     LinguaSecondaria:
       example: 'false'
       type: string
@@ -854,6 +819,32 @@ components:
         lineaTestoRicevuta2:
           type: string
           description: stringa personalizzata da inserire nella ricevuta
+    QuotaContabilita:
+      type: object
+      required:
+        - capitolo
+        - annoEsercizio
+        - importo
+      properties:
+        capitolo:
+          type: string
+          description: Codice del capitolo
+          maxLength: 64
+        annoEsercizio:
+          type: number
+          description: Anno di esercizio
+          example: 2020
+        importo:
+          type: number
+          description: Importo della voce di contabilita'
+          example: 10.01
+        accertamento:
+          type: string
+          description: Codice dell’accertamento
+          maxLength: 64        
+        proprietaCustom:
+          type: object
+          description: Dati specifici del gestionale di contabilità
     VoceDescrizioneImporto:
       type: object
       properties:

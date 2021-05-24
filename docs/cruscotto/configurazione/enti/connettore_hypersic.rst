@@ -1,4 +1,4 @@
-.. _govpay_configurazione_connettori_secim:
+.. govpay_configurazione_connettori_hypersic:
 
 Connettore per l'esportazione dei pagamenti verso HyperSIC di APKappa
 ---------------------------------------------------------------------
