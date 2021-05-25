@@ -34,8 +34,8 @@ public class FindTributiDTO extends BasicFindRequestDTO {
 		this.codDominio = codDominio;
 		this.addSortField("idEntrata", it.govpay.orm.Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO);
 		this.addSortField("descrizione", it.govpay.orm.Tributo.model().TIPO_TRIBUTO.DESCRIZIONE);
-		this.addDefaultSort(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO, SortOrder.ASC);
 		this.addDefaultSort(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.DESCRIZIONE, SortOrder.ASC);
+		this.addDefaultSort(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO, SortOrder.ASC);
 	}
 	
 	public String getCodDominio(){

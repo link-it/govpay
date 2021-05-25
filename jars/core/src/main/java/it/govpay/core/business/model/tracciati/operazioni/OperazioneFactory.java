@@ -450,10 +450,6 @@ public class OperazioneFactory {
 				
 				manager.addPendenza(threadName, pendenzaPost.getIdA2A(), pendenzaPost.getIdPendenza()); 
 				
-				if(pendenzaPost.getDocumento() != null) { //attesa primo inserimento documento
-					manager.getDocumento(threadName, pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 
-				}
-				
 				it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 				
 				// 12/12/2019 codDominio e codTipoVersamento sono settati nella trasformazione
@@ -469,7 +465,26 @@ public class OperazioneFactory {
 				boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
 				Boolean avvisatura = trasformazioneResponse.getAvvisatura();
 				Date dataAvvisatura = trasformazioneResponse.getDataAvvisatura();
-				versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, avvisatura,dataAvvisatura, null);
+					
+				try {
+					if(pendenzaPost.getDocumento() != null) { //attesa primo inserimento documento
+						manager.getDocumento(threadName, pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 
+					}	
+					
+					versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, avvisatura,dataAvvisatura, null);
+				
+				} catch(GovPayException e) {
+					log.debug(threadName + ": Riscontrato errore durante elaborazione della linea ("+request.getLinea()+"): "+ e.getMessage(),e);
+					throw e;
+				} catch(Throwable e) {
+					log.debug(threadName + ": Riscontrato errore durante elaborazione della linea ("+request.getLinea()+"): "+ e.getMessage(),e);
+					throw e;
+				} finally {
+					if(pendenzaPost.getDocumento() != null) { // sblocco thread che attendono il documento
+						manager.releaseDocumento(threadName, pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 
+					}	
+				}
+				
 				Dominio dominio = versamentoModel.getDominio(configWrapper);
 				it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(configWrapper), dominio);
 				caricamentoResponse.setBarCode(iuvGenerato.getBarCode());
@@ -479,11 +494,7 @@ public class OperazioneFactory {
 				caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_OK);
 				caricamentoResponse.setIdVersamento(versamentoModel.getId());
 				
-				manager.addNumeroAvviso(versamentoModel.getNumeroAvviso());				
-				
-				if(pendenzaPost.getDocumento() != null) { // sblocco thread che attendono il documento
-					manager.releaseDocumento(threadName, pendenzaPost.getIdA2A(), pendenzaPost.getDocumento().getIdentificativo()); 
-				}
+				manager.addNumeroAvviso(versamentoModel.getNumeroAvviso());		
 				
 				Avviso avviso = new Avviso();
 				
