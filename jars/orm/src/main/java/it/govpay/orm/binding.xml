@@ -1361,6 +1361,7 @@
     <value name="importoVersamento" field="importoVersamento" usage="required"/>
     <value name="numeroAvviso" field="numeroAvviso" usage="optional"/>
     <value name="iuvPagamento" field="iuvPagamento" usage="optional"/>
+    <value name="dataCreazione" field="dataCreazione" usage="optional"/>
     <value name="dataScadenza" field="dataScadenza" usage="optional"/>
     <value name="contabilita" field="contabilita" usage="optional"/>
   </mapping>

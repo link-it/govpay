@@ -106,6 +106,8 @@ public class VistaRiscossioniFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "numero_avviso", VistaRiscossioni.model().NUMERO_AVVISO.getFieldType()));
 				setParameter(object, "setIuvPagamento", VistaRiscossioni.model().IUV_PAGAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iuv_pagamento", VistaRiscossioni.model().IUV_PAGAMENTO.getFieldType()));
+				setParameter(object, "setDataCreazione", VistaRiscossioni.model().DATA_CREAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_creazione", VistaRiscossioni.model().DATA_CREAZIONE.getFieldType()));
 				setParameter(object, "setDataScadenza", VistaRiscossioni.model().DATA_SCADENZA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_scadenza", VistaRiscossioni.model().DATA_SCADENZA.getFieldType()));
 				setParameter(object, "setContabilita", VistaRiscossioni.model().CONTABILITA.getFieldType(),
@@ -184,6 +186,8 @@ public class VistaRiscossioniFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"numeroAvviso"));
 				setParameter(object, "setIuvPagamento", VistaRiscossioni.model().IUV_PAGAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"iuvPagamento"));
+				setParameter(object, "setDataCreazione", VistaRiscossioni.model().DATA_CREAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"dataCreazione"));
 				setParameter(object, "setDataScadenza", VistaRiscossioni.model().DATA_SCADENZA.getFieldType(),
 					this.getObjectFromMap(map,"dataScadenza"));
 				setParameter(object, "setContabilita", VistaRiscossioni.model().CONTABILITA.getFieldType(),

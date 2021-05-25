@@ -63,6 +63,7 @@ import java.io.Serializable;
  * 			&lt;element name="importoVersamento" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="numeroAvviso" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="iuvPagamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="contabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -107,6 +108,7 @@ import java.io.Serializable;
   	"importoVersamento",
   	"numeroAvviso",
   	"iuvPagamento",
+  	"dataCreazione",
   	"dataScadenza",
   	"contabilita"
   }
@@ -356,6 +358,14 @@ public class VistaRiscossioni extends org.openspcoop2.utils.beans.BaseBean imple
     this.iuvPagamento = iuvPagamento;
   }
 
+  public java.util.Date getDataCreazione() {
+    return this.dataCreazione;
+  }
+
+  public void setDataCreazione(java.util.Date dataCreazione) {
+    this.dataCreazione = dataCreazione;
+  }
+
   public java.util.Date getDataScadenza() {
     return this.dataScadenza;
   }
@@ -503,6 +513,11 @@ public class VistaRiscossioni extends org.openspcoop2.utils.beans.BaseBean imple
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iuvPagamento",required=false,nillable=false)
   protected java.lang.String iuvPagamento;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataCreazione",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataCreazione;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")

@@ -46,6 +46,7 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	private BigDecimal importoVersamento;
 	private String numeroAvviso;
 	private String contabilita;
+	private Date dataCreazione;
 	
 	public String getCodDominio() {
 		return codDominio;
@@ -248,6 +249,13 @@ public class EntrataPrevista extends BasicModel implements Comparable<EntrataPre
 	}
 	public void setContabilita(String contabilita) {
 		this.contabilita = contabilita;
+	}
+
+	public Date getDataCreazione() {
+		return dataCreazione;
+	}
+	public void setDataCreazione(Date dataCreazione) {
+		this.dataCreazione = dataCreazione;
 	}
 
 	public class IUVComparator implements Comparator<EntrataPrevista> {

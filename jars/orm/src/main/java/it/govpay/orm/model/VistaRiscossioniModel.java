@@ -69,6 +69,7 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 		this.IMPORTO_VERSAMENTO = new Field("importoVersamento",double.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.NUMERO_AVVISO = new Field("numeroAvviso",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.IUV_PAGAMENTO = new Field("iuvPagamento",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.DATA_CREAZIONE = new Field("dataCreazione",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.DATA_SCADENZA = new Field("dataScadenza",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.CONTABILITA = new Field("contabilita",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 	
@@ -106,6 +107,7 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 		this.IMPORTO_VERSAMENTO = new ComplexField(father,"importoVersamento",double.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.NUMERO_AVVISO = new ComplexField(father,"numeroAvviso",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.IUV_PAGAMENTO = new ComplexField(father,"iuvPagamento",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
+		this.DATA_CREAZIONE = new ComplexField(father,"dataCreazione",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.DATA_SCADENZA = new ComplexField(father,"dataScadenza",java.util.Date.class,"VistaRiscossioni",VistaRiscossioni.class);
 		this.CONTABILITA = new ComplexField(father,"contabilita",java.lang.String.class,"VistaRiscossioni",VistaRiscossioni.class);
 	
@@ -168,6 +170,8 @@ public class VistaRiscossioniModel extends AbstractModel<VistaRiscossioni> {
 	public IField NUMERO_AVVISO = null;
 	 
 	public IField IUV_PAGAMENTO = null;
+	 
+	public IField DATA_CREAZIONE = null;
 	 
 	public IField DATA_SCADENZA = null;
 	 

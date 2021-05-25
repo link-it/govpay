@@ -1387,6 +1387,7 @@ SELECT fr.cod_dominio AS cod_dominio,
     versamenti.numero_avviso AS numero_avviso,
     versamenti.iuv_pagamento AS iuv_pagamento,
     versamenti.data_scadenza AS data_scadenza,
+    versamenti.data_creazione AS data_creazione,
     singoli_versamenti.contabilita AS contabilita
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
@@ -1424,6 +1425,7 @@ SELECT pagamenti.cod_dominio AS cod_dominio,
     versamenti.numero_avviso AS numero_avviso,
     versamenti.iuv_pagamento AS iuv_pagamento,
     versamenti.data_scadenza AS data_scadenza,
+    versamenti.data_creazione AS data_creazione,
     singoli_versamenti.contabilita AS contabilita
    FROM pagamenti
      LEFT JOIN rendicontazioni ON rendicontazioni.id_pagamento = pagamenti.id
@@ -1461,6 +1463,7 @@ CREATE VIEW v_riscossioni AS
     a.numero_avviso,
     a.iuv_pagamento,
     a.data_scadenza,
+    a.data_creazione,
     a.contabilita
    FROM ( SELECT v_riscossioni_senza_rpt.cod_dominio,
             v_riscossioni_senza_rpt.iuv,
@@ -1490,6 +1493,7 @@ CREATE VIEW v_riscossioni AS
 		    v_riscossioni_senza_rpt.numero_avviso,
 		    v_riscossioni_senza_rpt.iuv_pagamento,
 		    v_riscossioni_senza_rpt.data_scadenza,
+		    v_riscossioni_senza_rpt.data_creazione,
 		    v_riscossioni_senza_rpt.contabilita
            FROM v_riscossioni_senza_rpt
         UNION
@@ -1521,6 +1525,7 @@ CREATE VIEW v_riscossioni AS
 		    v_riscossioni_con_rpt.numero_avviso,
 		    v_riscossioni_con_rpt.iuv_pagamento,
 		    v_riscossioni_con_rpt.data_scadenza,
+		    v_riscossioni_con_rpt.data_creazione,
 		    v_riscossioni_con_rpt.contabilita
            FROM v_riscossioni_con_rpt) a
      JOIN applicazioni ON a.id_applicazione = applicazioni.id 

@@ -25,6 +25,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.TipiDatabase;
@@ -57,16 +58,18 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.DocumentiBD;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.TracciatiNotificaPagamentiBD;
+import it.govpay.bd.viste.EntratePrevisteBD;
+import it.govpay.bd.viste.model.EntrataPrevista;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.JaxbUtils;
@@ -716,10 +719,10 @@ public class TracciatiNotificaPagamenti {
 		int lineaElaborazione = 0;
 		int offset = 0;
 		int limit = 100; 
-		PagamentiBD pagamentiBD = new PagamentiBD(rptBD);
-		pagamentiBD.setAtomica(false);
+		EntratePrevisteBD entratePrevisteBD = new EntratePrevisteBD(rptBD);
+		entratePrevisteBD.setAtomica(false);
 		
-		List<Pagamento> riscossioniList = pagamentiBD.ricercaRiscossioniDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+		List<EntrataPrevista> riscossioniList = entratePrevisteBD.ricercaRiscossioniDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
 		log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+riscossioniList.size()+"] Riscossioni da inserire nel tracciato");
 		int totaleRt = riscossioniList.size();
 		
@@ -729,16 +732,16 @@ public class TracciatiNotificaPagamenti {
 			
 			do {
 				if(riscossioniList.size() > 0) {
-					for (Pagamento pagamento : riscossioniList) {
+					for (EntrataPrevista pagamento : riscossioniList) {
 						lineaElaborazione ++;
 						beanDati.setLineaElaborazione(lineaElaborazione);
-						this.creaLineaCsvHyperSicAPKappa(pagamentiBD, pagamento, configWrapper, lineaElaborazione, connettore, zos, baos, csvUtils);
+						zos.write(csvUtils.toCsv(this.creaLineaCsvHyperSicAPKappa(entratePrevisteBD, pagamento, configWrapper, totaleRt, connettore)).getBytes());
 					}
 					log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+riscossioniList.size()+"] Riscossioni nel tracciato completato");
 				}
 	
 				offset += limit;
-				riscossioniList = pagamentiBD.ricercaRiscossioniDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+				riscossioniList = entratePrevisteBD.ricercaRiscossioniDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
 				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+riscossioniList.size()+"] Riscossioni da inserire nel tracciato");
 				totaleRt += riscossioniList.size();
 			}while(riscossioniList.size() > 0);
@@ -1472,7 +1475,155 @@ public class TracciatiNotificaPagamenti {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void creaLineaCsvHyperSicAPKappa(PagamentiBD pagamentiBD, it.govpay.bd.model.Pagamento pagamento, BDConfigWrapper configWrapper, int numeroLinea, 
+	private String[] creaLineaCsvHyperSicAPKappa(EntratePrevisteBD pagamentiBD, EntrataPrevista pagamento, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore) throws ServiceException, JAXBException, SAXException, ValidationException, java.io.IOException { 
+		List<String> linea = new ArrayList<String>();
+
+		Documento documento = null;
+		if(pagamento.getIdDocumento() != null) {
+			DocumentiBD documentiBD = new DocumentiBD(pagamentiBD);
+			documentiBD.setAtomica(false);
+			try {
+				documento = documentiBD.getDocumento(pagamento.getIdDocumento());
+			} catch (NotFoundException e) { // documento non trovato 
+				
+			}
+		}
+		
+		String contabilitaString = pagamento.getContabilita();
+		String codiceServizio = null;
+		String descrizioneServizio = null;
+		Contabilita contabilita = null;
+		if(contabilitaString != null && contabilitaString.length() > 0) {
+			contabilita = JSONSerializable.parse(contabilitaString, Contabilita.class);
+			
+			Object proprietaCustomObj = contabilita.getProprietaCustom();
+			
+			if(proprietaCustomObj != null) {
+				if(proprietaCustomObj instanceof String) {
+					String proprietaCustom = (String) proprietaCustomObj;
+					if(proprietaCustom != null && proprietaCustom.length() > 0) {
+						Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
+						// leggo proprieta
+						if(parse.containsKey("codiceServizio")) {
+							codiceServizio = (String) parse.get("codiceServizio");
+						}
+						if(parse.containsKey("descrizioneServizio")) {
+							descrizioneServizio = (String) parse.get("descrizioneServizio");
+						}
+					}
+				}  else if(proprietaCustomObj instanceof java.util.LinkedHashMap) {
+					java.util.LinkedHashMap<?,?> parse = (LinkedHashMap<?,?>) proprietaCustomObj;
+					
+					// leggo proprieta
+					if(parse.containsKey("codiceServizio")) {
+						codiceServizio = (String) parse.get("codiceServizio");
+					}
+					if(parse.containsKey("descrizioneServizio")) {
+						descrizioneServizio = (String) parse.get("descrizioneServizio");
+					}
+				}
+			}
+		}
+		
+//		CodiceServizio	$.vocePendenza.contabilita.quoteContabili.proprietaCustom.codiceServizio o versamento.tipoPendenza.codTipoPendenza	
+		linea.add(codiceServizio != null ? codiceServizio : pagamento.getCodTipoVersamento());
+
+//		DescrizioneServizio $.vocePendenza.contabilita.quoteContabili.proprietaCustom.descrizioneServizio o versamento.tipoPendenza.descrizione		
+		linea.add(descrizioneServizio != null ? descrizioneServizio : (pagamento.getDescrizioneTipoVersamento() != null ? pagamento.getDescrizioneTipoVersamento() : ""));
+			
+//		CodiceDebitore VUOTO
+		linea.add("");
+			
+//		CFPIVADebitore $.soggettoPagatore.identificativo
+		linea.add(pagamento.getIdentificativoDebitore());
+		
+//		NominativoDebitore $.soggettoPagatore.anagrafica
+		linea.add(pagamento.getAnagraficaDebitore());
+		
+//		CodiceDebito $.documento.identificativo o $.idPendenza
+		linea.add(documento != null ? documento.getCodDocumento() : pagamento.getCodVersamentoEnte());
+		
+//		DataEmissione $.dataCaricamento 
+		linea.add(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA().format(pagamento.getDataCreazione()));
+		
+//		CausaleDebito $.causale
+		linea.add(pagamento.getCausaleVersamento().getSimple());
+		
+//		ImportoDebito importo (in centesimi)
+		linea.add(this.printImporto(pagamento.getImportoVersamento(), true));
+		
+//		CodiceRata $.documento.numeroRata
+		linea.add(pagamento.getNumeroRata() != null ? pagamento.getNumeroRata() +"" : "");
+		
+//		CodiceAvviso $.numeroAvviso
+		linea.add(pagamento.getNumeroAvviso());
+		
+//		CodiceIUV $.iuvPagamento
+		linea.add(pagamento.getIuvPagamento());
+		
+//		DataScadenza $.dataScadenza
+		linea.add(pagamento.getDataScadenza() != null ? SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA().format(pagamento.getDataScadenza()) : "");
+		
+//		DataPagamento	rendicontazione.data
+		linea.add(pagamento.getDataPagamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA().format(pagamento.getDataPagamento()) : "");
+		
+//		ImportoPagato rendicontazione.importo
+		linea.add(pagamento.getImportoPagato() != null ? this.printImporto(pagamento.getImportoPagato(), true) : "");
+		
+//		IstitutoMittente fr.ragioneSocialePsp
+		linea.add(pagamento.getRagioneSocialePsp() != null ? pagamento.getRagioneSocialePsp() : "");
+		
+//		ModalitaPagamento VUOTO
+		linea.add("");
+		
+//		IBANIncasso VUOTO
+		linea.add("");
+		
+//		CodiceFlussoRiversamento fr.codFlusso
+		linea.add(pagamento.getCodFlusso() != null ? pagamento.getCodFlusso() : "");
+		
+//		DataRiversamento fr.dataRegolamento
+		linea.add(pagamento.getDataRegolamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA().format(pagamento.getDataRegolamento()) : "");
+		
+//		Annotazioni VUOTO
+		linea.add("");
+		
+		// IF sv.contabilita = null, tutto a null.
+		if(contabilita == null) {
+			linea.addAll(this.aggiungiCampiVuoti(30));
+		} else {  
+			// conto le quote disponibili
+			List<QuotaContabilita> quote = contabilita.getQuote();
+			
+			int numeroQuote = Math.min(quote.size(), 10);
+			
+			for (int i = 0; i < numeroQuote; i++) {
+				QuotaContabilita quotaContabilita = quote.get(i);
+				
+//				LivelloContabile1 Se sv.contabilita.quote[0].accertamento = null THEN LivelloContabile1 = CAP ELSE LivelloContabile1 = ACC
+//				CodificaContabile1 IF LivelloContabile1 = CAP THEN CodificaContabile1 = {sv.contabilita.quote[0].annoEsercizio}/{sv.contabilita.quote[0].capitolo} ELSE CodificaContabile1 = {sv.contabilita.quote[0].annoEsercizio}/{sv.contabilita.quote[0].accertamento}	
+
+				if(quotaContabilita.getAccertamento() == null) {
+					linea.add(QUOTA_CONTABILITA_CAPITOLO);
+					linea.add(quotaContabilita.getAnnoEsercizio() + "/" + quotaContabilita.getCapitolo());
+				} else {
+					linea.add(QUOTA_CONTABILITA_ACCERTAMENTO);
+					linea.add(quotaContabilita.getAnnoEsercizio() + "/" + quotaContabilita.getAccertamento());
+				}
+//				QuotaContabile1	sv.contabilita.quote[0].importo in centesimi	
+				linea.add(this.printImporto(quotaContabilita.getImporto(), true));
+			}
+			
+			if(numeroQuote < 10) { // aggiungo campi vuoti per arrivare alla fine del record
+				linea.addAll(this.aggiungiCampiVuoti(((10 -numeroQuote) *3) ));
+			}
+		}
+		
+		return linea.toArray(new String[linea.size()]);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void creaLineaCsvHyperSicAPKappaNonRendicontato(PagamentiBD pagamentiBD, it.govpay.bd.model.Pagamento pagamento, BDConfigWrapper configWrapper, int numeroLinea, 
 			ConnettoreNotificaPagamenti connettore, OutputStream rendicontateOS, ByteArrayOutputStream nonRendicontateOS, CSVUtils csvUtils) throws ServiceException, JAXBException, SAXException, ValidationException, java.io.IOException { 
 		List<String> linea = new ArrayList<String>();
 

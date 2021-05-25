@@ -277,6 +277,13 @@ public class VistaRiscossioniFieldConverter extends AbstractSQLFieldConverter {
 				return "iuv_pagamento";
 			}
 		}
+		if(field.equals(VistaRiscossioni.model().DATA_CREAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_creazione";
+			}else{
+				return "data_creazione";
+			}
+		}
 		if(field.equals(VistaRiscossioni.model().DATA_SCADENZA)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_scadenza";
@@ -392,6 +399,9 @@ public class VistaRiscossioniFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(VistaRiscossioni.model(), returnAlias);
 		}
 		if(field.equals(VistaRiscossioni.model().IUV_PAGAMENTO)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().DATA_CREAZIONE)){
 			return this.toTable(VistaRiscossioni.model(), returnAlias);
 		}
 		if(field.equals(VistaRiscossioni.model().DATA_SCADENZA)){

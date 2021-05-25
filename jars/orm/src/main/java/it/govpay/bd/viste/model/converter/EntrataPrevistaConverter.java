@@ -54,6 +54,7 @@ public class EntrataPrevistaConverter {
 			dto.setNumeroAvviso(vo.getNumeroAvviso());
 			dto.setIuvPagamento(vo.getIuvPagamento());
 			dto.setCausaleVersamento(vo.getCausaleVersamento());
+			dto.setDataCreazione(vo.getDataCreazione());
 
 			if(vo.getIdDocumento() != null)
 				dto.setIdDocumento(vo.getIdDocumento().getId());

@@ -189,6 +189,7 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
  			fields.add(VistaRiscossioni.model().NUMERO_AVVISO);
  			fields.add(VistaRiscossioni.model().DATA_SCADENZA);
  			fields.add(VistaRiscossioni.model().CONTABILITA);
+ 			fields.add(VistaRiscossioni.model().DATA_CREAZIONE);
  			
  			fields.add(new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", this.getVistaRiscossioniFieldConverter().toTable(VistaRiscossioni.model())));
  			fields.add(new CustomField("id_documento", Long.class, "id_documento", this.getVistaRiscossioniFieldConverter().toTable(VistaRiscossioni.model())));
