@@ -149,17 +149,13 @@ public class IntermediariController extends BaseController {
 
 
 
-    public Response findIntermediari(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response findIntermediari(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findIntermediari";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_PAGOPA), Arrays.asList(Diritti.LETTURA));
-			
-			if(risultatiPerPagina == null) {
-				risultatiPerPagina = BaseController.DEFAULT_NUMERO_ENTRIES_ANAGRAFICA;
-			}
 			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
@@ -172,6 +168,9 @@ public class IntermediariController extends BaseController {
 			listaIntermediariDTO.setPagina(pagina);
 			listaIntermediariDTO.setOrderBy(ordinamento);
 			listaIntermediariDTO.setAbilitato(abilitato);
+			
+			listaIntermediariDTO.setEseguiCount(metadatiPaginazione);
+			listaIntermediariDTO.setEseguiCountConLimit(maxRisultati);
 			
 			// INIT DAO
 			
@@ -239,7 +238,7 @@ public class IntermediariController extends BaseController {
 		}
     }
 
-    public Response findStazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response findStazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idIntermediario, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findStazioni";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -249,10 +248,6 @@ public class IntermediariController extends BaseController {
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdIntermediario("idIntermediario", idIntermediario);
-			
-			if(risultatiPerPagina == null) {
-				risultatiPerPagina = BaseController.DEFAULT_NUMERO_ENTRIES_ANAGRAFICA;
-			}
 			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
@@ -266,6 +261,9 @@ public class IntermediariController extends BaseController {
 			listaStazioniDTO.setOrderBy(ordinamento);
 			listaStazioniDTO.setAbilitato(abilitato);
 			listaStazioniDTO.setCodIntermediario(idIntermediario);
+			
+			listaStazioniDTO.setEseguiCount(metadatiPaginazione);
+			listaStazioniDTO.setEseguiCountConLimit(maxRisultati);
 			
 			// INIT DAO
 			

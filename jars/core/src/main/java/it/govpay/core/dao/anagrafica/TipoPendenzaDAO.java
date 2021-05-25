@@ -20,6 +20,7 @@
 package it.govpay.core.dao.anagrafica;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -47,6 +48,7 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.model.TipoVersamento;
 
 public class TipoPendenzaDAO extends BaseDAO{
 	
@@ -164,6 +166,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 			filter.setCodTipoVersamento(findTipiPendenzaDTO.getCodTipoVersamento());
 			filter.setDescrizione(findTipiPendenzaDTO.getDescrizione());
 			filter.setTrasformazione(findTipiPendenzaDTO.getTrasformazione());
+			filter.setEseguiCountConLimit(findTipiPendenzaDTO.isEseguiCountConLimit());
 			
 			if(findTipiPendenzaDTO.getNonAssociati() != null) {
 				Long idDominio = null;
@@ -190,8 +193,20 @@ public class TipoPendenzaDAO extends BaseDAO{
 				List<Long> idTipiTributiDefinitiPerDominio = tipiVersamentoDominiBD.getIdTipiVersamentoDefinitiPerDominio(idDominio);
 				filter.setListaIdTipiVersamentoDaIncludere(idTipiTributiDefinitiPerDominio);
 			}
+			
+			Long count = null;
+			
+			if(findTipiPendenzaDTO.isEseguiCount()) {
+				 count = tipiVersamentoBD.count(filter);
+			}
+			
+			List<TipoVersamento> findAll = new ArrayList<>();
+			if(findTipiPendenzaDTO.isEseguiFindAll()) {
+				findAll = tipiVersamentoBD.findAll(filter);
+			}
 
-			return new FindTipiPendenzaDTOResponse(tipiVersamentoBD.count(filter), tipiVersamentoBD.findAll(filter));
+			
+			return new FindTipiPendenzaDTOResponse(count, findAll);
 		} finally {
 			if(tipiVersamentoBD != null)
 				tipiVersamentoBD.closeConnection();

@@ -206,17 +206,13 @@ public class OperatoriController extends BaseController {
 
 
 
-    public Response findOperatori(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response findOperatori(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findOperatori";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.LETTURA));
-			
-			if(risultatiPerPagina == null) {
-				risultatiPerPagina = BaseController.DEFAULT_NUMERO_ENTRIES_ANAGRAFICA;
-			}
 			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
@@ -230,6 +226,9 @@ public class OperatoriController extends BaseController {
 			listaDominiDTO.setOrderBy(ordinamento);
 			listaDominiDTO.setAbilitato(abilitato);
 			listaDominiDTO.setOrderBy(ordinamento); 
+			
+			listaDominiDTO.setEseguiCount(metadatiPaginazione);
+			listaDominiDTO.setEseguiCountConLimit(maxRisultati);
 			
 			// INIT DAO
 			

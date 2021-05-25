@@ -32,6 +32,7 @@ public class FindStazioniDTO extends BasicFindRequestDTO {
 		super(user);
 		this.addSortField("idStazione", it.govpay.orm.Stazione.model().COD_STAZIONE);
 		this.addDefaultSort(it.govpay.orm.Stazione.model().COD_STAZIONE, SortOrder.ASC);
+		this.ricercaAnagrafica = true;
 	}
 
 	public String getCodIntermediario() {

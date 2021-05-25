@@ -50,7 +50,7 @@ public class TipiPendenzaController extends BaseController {
 
 
 
-    public Response findTipiPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo, Boolean associati, Boolean form, String idTipoPendenza, String descrizione, Boolean trasformazione, String nonAssociati) {
+    public Response findTipiPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo, Boolean associati, Boolean form, String idTipoPendenza, String descrizione, Boolean trasformazione, String nonAssociati, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findTipiPendenza";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -69,10 +69,6 @@ public class TipiPendenzaController extends BaseController {
 				throw new ValidationException("Il valore indicato per il parametro associati non e' valido.");
 			}
 			
-			if(risultatiPerPagina == null) {
-				risultatiPerPagina = BaseController.DEFAULT_NUMERO_ENTRIES_ANAGRAFICA;
-			}
-			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 			
@@ -85,6 +81,9 @@ public class TipiPendenzaController extends BaseController {
 			findTipiPendenzaDTO.setAbilitato(abilitato);
 			findTipiPendenzaDTO.setFormBackoffice(form);
 			findTipiPendenzaDTO.setTrasformazione(trasformazione);
+			
+			findTipiPendenzaDTO.setEseguiCount(metadatiPaginazione);
+			findTipiPendenzaDTO.setEseguiCountConLimit(maxRisultati);
 			
 			if(associati != null && associati) {
 				List<Long> idTipiVersamentoAutorizzati = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);

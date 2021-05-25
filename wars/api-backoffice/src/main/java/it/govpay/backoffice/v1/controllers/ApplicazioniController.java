@@ -210,7 +210,7 @@ public class ApplicazioniController extends BaseController {
 
 
 
-	public Response findApplicazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String idA2A, String principal) {
+	public Response findApplicazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String idA2A, String principal, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findApplicazioni";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -221,10 +221,6 @@ public class ApplicazioniController extends BaseController {
 				this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_APPLICAZIONI), Arrays.asList(Diritti.LETTURA));
 			}catch (NotAuthorizedException e) {
 				associati = !associati;
-			}
-			
-			if(risultatiPerPagina == null) {
-				risultatiPerPagina = BaseController.DEFAULT_NUMERO_ENTRIES_ANAGRAFICA;
 			}
 			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
@@ -240,6 +236,9 @@ public class ApplicazioniController extends BaseController {
 			listaDominiDTO.setAbilitato(abilitato);
 			listaDominiDTO.setPrincipal(principal);
 			listaDominiDTO.setCodApplicazione(idA2A);
+			
+			listaDominiDTO.setEseguiCount(metadatiPaginazione);
+			listaDominiDTO.setEseguiCountConLimit(maxRisultati);
 
 			// INIT DAO
 

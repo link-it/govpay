@@ -310,8 +310,21 @@ public class UtentiDAO extends BaseDAO{
 			filter.setOffset(listaOperatoriDTO.getOffset());
 			filter.setLimit(listaOperatoriDTO.getLimit());
 			filter.getFilterSortList().addAll(listaOperatoriDTO.getFieldSortList());
+			filter.setEseguiCountConLimit(listaOperatoriDTO.isEseguiCountConLimit());
+			
+			Long count = null;
+			
+			if(listaOperatoriDTO.isEseguiCount()) {
+				 count = operatoriBD.count(filter);
+			}
+			
+			List<Operatore> findAll = new ArrayList<>();
+			if(listaOperatoriDTO.isEseguiFindAll()) {
+				findAll = operatoriBD.findAll(filter);
+			}
 
-			return new FindOperatoriDTOResponse(operatoriBD.count(filter), operatoriBD.findAll(filter));
+			
+			return new FindOperatoriDTOResponse(count, findAll);
 
 		} finally {
 			if(operatoriBD != null)

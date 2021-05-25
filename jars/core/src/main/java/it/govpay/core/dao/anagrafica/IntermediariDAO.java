@@ -19,6 +19,7 @@
  */
 package it.govpay.core.dao.anagrafica;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -33,6 +34,7 @@ import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Stazione;
 import it.govpay.core.dao.anagrafica.dto.FindIntermediariDTO;
 import it.govpay.core.dao.anagrafica.dto.FindIntermediariDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindStazioniDTO;
@@ -51,6 +53,7 @@ import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.model.Intermediario;
 
 public class IntermediariDAO extends BaseDAO{
 
@@ -138,8 +141,20 @@ public class IntermediariDAO extends BaseDAO{
 			filter.setOffset(listaIntermediariDTO.getOffset());
 			filter.setLimit(listaIntermediariDTO.getLimit());
 			filter.getFilterSortList().addAll(listaIntermediariDTO.getFieldSortList());
-
-			return new FindIntermediariDTOResponse(intermediariBD.count(filter), intermediariBD.findAll(filter));
+			filter.setEseguiCountConLimit(listaIntermediariDTO.isEseguiCountConLimit());
+			
+			Long count = null;
+			
+			if(listaIntermediariDTO.isEseguiCount()) {
+				 count = intermediariBD.count(filter);
+			}
+			
+			List<Intermediario> findAll = new ArrayList<>();
+			if(listaIntermediariDTO.isEseguiFindAll()) {
+				findAll = intermediariBD.findAll(filter);
+			}
+			
+			return new FindIntermediariDTOResponse(count, findAll);
 
 		} finally {
 			if(intermediariBD != null)
@@ -178,8 +193,21 @@ public class IntermediariDAO extends BaseDAO{
 			filter.setOffset(findStazioniDTO.getOffset());
 			filter.setLimit(findStazioniDTO.getLimit());
 			filter.getFilterSortList().addAll(findStazioniDTO.getFieldSortList());
+			filter.setEseguiCountConLimit(findStazioniDTO.isEseguiCountConLimit());
+			
+			Long count = null;
+			
+			if(findStazioniDTO.isEseguiCount()) {
+				 count = stazioneBD.count(filter);
+			}
+			
+			List<Stazione> findAll = new ArrayList<>();
+			if(findStazioniDTO.isEseguiFindAll()) {
+				findAll = stazioneBD.findAll(filter);
+			}
 
-			return new FindStazioniDTOResponse(stazioneBD.count(filter), stazioneBD.findAll(filter));
+			
+			return new FindStazioniDTOResponse(count, findAll);
 		} finally {
 			if(stazioneBD != null)
 				stazioneBD.closeConnection();

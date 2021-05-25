@@ -104,12 +104,25 @@ public class Lista<T extends JSONSerializable> extends JSONSerializable {
 		boolean generaLinkProssimiRisultati = false;
 		
 		URIBuilder builder = new URIBuilder(requestUri);
-		builder.setParameter(Costanti.PARAMETRO_RISULTATI_PER_PAGINA, Long.toString(this.risultatiPerPagina));
+		
+		if(this.risultatiPerPagina != null) {
+			builder.setParameter(Costanti.PARAMETRO_RISULTATI_PER_PAGINA, Long.toString(this.risultatiPerPagina));
+		} else {
+			this.risultatiPerPagina = this.numRisultati != null ? this.numRisultati.intValue() : null;
+		}
 		
 		this.numPagine = null;
 		
 		if(count != null) {
-			this.numPagine = (limit > 0) ? (count == 0 ? 1 : (long) Math.ceil(count/(double)limit)) : null;
+			if(limit != null) {
+				if(limit > 0) {
+					this.numPagine = (count == 0 ? 1L : (long) Math.ceil(count/(double)limit));
+				} else {
+					this.numPagine = null;
+				}
+			} else {
+				this.numPagine = 1L;
+			}
 			
 			if(this.pagina != null && this.numPagine != null && this.pagina < this.numPagine) {
 				generaLinkProssimiRisultati = true;

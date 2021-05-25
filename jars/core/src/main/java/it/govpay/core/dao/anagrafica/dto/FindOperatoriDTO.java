@@ -32,6 +32,7 @@ public class FindOperatoriDTO extends BasicFindRequestDTO {
 		this.addSortField("principal", it.govpay.orm.Operatore.model().ID_UTENZA.PRINCIPAL);
 		this.addSortField("ragioneSociale", it.govpay.orm.Operatore.model().NOME);
 		this.addDefaultSort(it.govpay.orm.Operatore.model().NOME, SortOrder.ASC);
+		this.ricercaAnagrafica = true;
 	}
 
 	public Boolean getAbilitato() {

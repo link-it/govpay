@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.24.0"
+  version: "1.25.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -788,6 +788,8 @@ paths:
             default: +denominazione
         - $ref: '#/components/parameters/campi'
         - $ref: '#/components/parameters/abilitato'    
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata degli intermediari ricercati
@@ -894,6 +896,8 @@ paths:
             default: +idStazione
         - $ref: '#/components/parameters/campi'
         - $ref: '#/components/parameters/abilitato'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata delle stazioni dell'intermediario
@@ -1012,6 +1016,8 @@ paths:
         - $ref: '#/components/parameters/form'
         - $ref: '#/components/parameters/idDominio'
         - $ref: '#/components/parameters/ragioneSociale'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -1122,6 +1128,8 @@ paths:
         - $ref: '#/components/parameters/abilitato'
         - $ref: '#/components/parameters/associati'
         - $ref: '#/components/parameters/ragioneSociale'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -1243,6 +1251,8 @@ paths:
         - $ref: '#/components/parameters/campi'
         - $ref: '#/components/parameters/abilitato'
         - $ref: '#/components/parameters/iban'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -1364,6 +1374,8 @@ paths:
         - $ref: '#/components/parameters/campi'
         - $ref: '#/components/parameters/abilitato'
         - $ref: '#/components/parameters/descrizione'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata delle entrate ricercate
@@ -1488,6 +1500,8 @@ paths:
         - $ref: '#/components/parameters/form'
         - $ref: '#/components/parameters/trasformazione'
         - $ref: '#/components/parameters/descrizione'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata delle tipologie di pendenza ricercate
@@ -1607,6 +1621,8 @@ paths:
         - $ref: '#/components/parameters/descrizione'
         - $ref: '#/components/parameters/trasformazione'
         - $ref: '#/components/parameters/nonAssociati'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata delle entrate ricercate
@@ -1705,6 +1721,8 @@ paths:
             format: csv
             default: +idEntrata
         - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata delle entrate ricercate
@@ -1806,6 +1824,8 @@ paths:
         - $ref: '#/components/parameters/abilitato'
         - $ref: '#/components/parameters/idA2A'
         - $ref: '#/components/parameters/principal'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata delle applicazioni ricercate
@@ -1943,6 +1963,8 @@ paths:
             default: +ragioneSociale
         - $ref: '#/components/parameters/campi'
         - $ref: '#/components/parameters/abilitato'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata degli operatori ricercati
@@ -3595,6 +3617,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/pagina'
         - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '201':
           description: Elenco dei ruoli
