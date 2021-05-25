@@ -20,8 +20,8 @@ export class Voce {
   public static APPLICAZIONE: string = 'Applicazione';
   public static AREA: string = 'Area';
   public static AUT_PT: string = 'Autorizzazione stampa PT';
-  public static AUTENTICAZIONE_SERVER: string = 'Autenticazione Server';
   public static AUTENTICAZIONE_CLIENT: string = 'Autenticazione Client';
+  public static AUTENTICAZIONE_SERVER: string = 'Autenticazione Server';
   public static AUTORIZZAZIONI: string = 'Autorizzazioni';
   public static AUTORIZZAZIONI_API: string = 'Autorizzazioni API';
   public static AUTORIZZAZIONI_BACKOFFICE: string = 'Autorizzazioni Backoffice';
