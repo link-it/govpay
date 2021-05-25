@@ -223,6 +223,10 @@ public class ApplicazioniController extends BaseController {
 				associati = !associati;
 			}
 			
+			if(risultatiPerPagina == null) {
+				risultatiPerPagina = BaseController.DEFAULT_NUMERO_ENTRIES_ANAGRAFICA;
+			}
+			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 
