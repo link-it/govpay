@@ -643,6 +643,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
           if(!mb.editMode) {
             this._paginatorOptions.pendenze.search = p.jsonP.descrizione;
             this._paginatorOptions.pendenze.refresh = true;
+            this.associazioniDisponibili();
           } else {
             this.tipiPendenza.map((item) => {
               if (item.jsonP.idTipoPendenza == mb.info.viewModel['idTipoPendenza']) {
