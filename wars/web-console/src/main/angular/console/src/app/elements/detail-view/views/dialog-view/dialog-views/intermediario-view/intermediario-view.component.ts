@@ -53,21 +53,21 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
         this.fGroup.controls['principalPagoPa_ctrl'].setValue(this.json.principalPagoPa);
         this.fGroup.controls['abilita_ctrl'].setValue(this.json.abilitato);
         this.fGroup.controls['auth_ctrl'].setValue('');
-        if(this.json.servizioPagoPa) {
+        if (this.json.servizioPagoPa) {
           const _rpt = this.json.servizioPagoPa;
           this.fGroup.controls['urlRPT_ctrl'].setValue(_rpt.urlRPT?_rpt.urlRPT:'');
           this.fGroup.controls['urlAvvisatura_ctrl'].setValue(_rpt.urlAvvisatura && UtilService.TEMPORARY_DEPRECATED_CODE?_rpt.urlAvvisatura:'');
           // this.fGroup.controls['versioneApi_ctrl'].setValue(this.json.servizioPagoPa.versioneApi);
           if(_rpt.auth) {
             let _sppaa = _rpt.auth;
-            if(_sppaa.hasOwnProperty('username')) {
+            if (_sppaa.hasOwnProperty('username')) {
               this.addBasicControls();
               this.fGroup.controls['auth_ctrl'].setValue(this.BASIC);
               this.fGroup.controls['username_ctrl'].setValue((_sppaa.username)?_sppaa.username:'');
               this.fGroup.controls['password_ctrl'].setValue((_sppaa.password)?_sppaa.password:'');
               this._isBasicAuth = true;
             }
-            if(_sppaa.hasOwnProperty('tipo')) {
+            if (_sppaa.hasOwnProperty('tipo')) {
               this.fGroup.controls['auth_ctrl'].setValue(this.SSL);
               this.addSslControls();
               this.fGroup.controls['ssl_ctrl'].setValue(_sppaa.tipo === this.CLIENT);
