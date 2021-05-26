@@ -114,6 +114,10 @@ button[mat-button] {
   cursor: pointer;
 }
 
+.word-break-all {
+  word-break: break-all !important;
+}
+
 .fab-action {
   position: fixed !important;
   bottom: 24px;
