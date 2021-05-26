@@ -34,6 +34,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   protected NO_LOGO: string = '#';
   protected logo: any = null;
   protected logoError: boolean = false;
+  protected _hasAssociazioniPendenza: boolean = false;
 
   protected _IBAN = UtilService.IBAN_ACCREDITO;
   protected _ENTRATA_DOMINIO = UtilService.ENTRATA_DOMINIO;
@@ -56,6 +57,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
 
   ngOnInit() {
     this.dettaglioDominio();
+    this.associazioniDisponibili();
     this.elencoMultiplo();
   }
 
@@ -63,7 +65,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   }
 
   protected dettaglioDominio() {
-    let _url = UtilService.URL_DOMINI+'/'+UtilService.EncodeURIComponent(this.json.idDominio);
+    const _url = UtilService.URL_DOMINI+'/'+UtilService.EncodeURIComponent(this.json.idDominio);
     this.gps.getDataService(_url).subscribe(
       function (_response) {
         this.json = _response.body;
@@ -72,6 +74,21 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         this.gps.updateSpinner(false);
       }.bind(this),
       (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
+
+  protected associazioniDisponibili() {
+    let _url = UtilService.URL_TIPI_PENDENZA + '?&descrizione=&nonAssociati=' + UtilService.EncodeURIComponent(this.json.idDominio);
+    _url += '&'+UtilService.QUERY_METADATI_PAGINAZIONE+'&'+UtilService.QUERY_ESCLUDI_RISULTATI;
+    this.gps.getDataService(_url).subscribe(
+      function (_response) {
+        this._hasAssociazioniPendenza = (_response.body && _response.body.numRisultati > 0);
+        this.gps.updateSpinner(false);
+      }.bind(this),
+      (error) => {
+        this._hasAssociazioniPendenza = false;
         this.gps.updateSpinner(false);
         this.us.onError(error);
       });

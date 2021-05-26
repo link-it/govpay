@@ -22,6 +22,7 @@ package it.govpay.bd.anagrafica.filters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -33,44 +34,44 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.Dominio;
 import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
+import it.govpay.orm.model.DominioModel;
 
 public class DominioFilter extends AbstractFilter {
 
 	private String codStazione = null;
 	private List<Long> idDomini = null; 
-	private CustomField cf;
-	
 	private String codDominio = null;
 	private String ragioneSociale = null;
-	private Boolean abilitato = null;
 	private boolean searchModeEquals = false; 
+	
+	private static DominioModel model = Dominio.model();
+	private DominioFieldConverter converter = null;
 	
 	public enum SortFields {
 	}
 	
-	public DominioFilter(IExpressionConstructor expressionConstructor) {
+	public DominioFilter(IExpressionConstructor expressionConstructor) throws ServiceException {
 		this(expressionConstructor, false);
 	}
 	
-	public DominioFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+	public DominioFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) throws ServiceException {
 		super(expressionConstructor, simpleSearch);
 		this.idDomini = new ArrayList<>();
-		try{
-			DominioFieldConverter converter = new DominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Dominio.model()));
-			this.listaFieldSimpleSearch.add(it.govpay.orm.Dominio.model().ID_STAZIONE.COD_STAZIONE);
-			this.listaFieldSimpleSearch.add(it.govpay.orm.Dominio.model().COD_DOMINIO);
-			this.listaFieldSimpleSearch.add(it.govpay.orm.Dominio.model().RAGIONE_SOCIALE);
-			this.fieldAbilitato = it.govpay.orm.Dominio.model().ABILITATO;
-		} catch(Exception e){
-			
-		}
+		
+		this.converter = new DominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+		this.eseguiCountConLimit = false;
+		
+		this.listaFieldSimpleSearch.add(model.ID_STAZIONE.COD_STAZIONE);
+		this.listaFieldSimpleSearch.add(model.COD_DOMINIO);
+		this.listaFieldSimpleSearch.add(model.RAGIONE_SOCIALE);
+		this.fieldAbilitato = model.ABILITATO;
 	}
 
 	@Override
@@ -80,7 +81,7 @@ public class DominioFilter extends AbstractFilter {
 			boolean addAnd = false;
 			
 			if(this.getCodStazione() != null){
-				newExpression.equals(it.govpay.orm.Dominio.model().ID_STAZIONE.COD_STAZIONE, this.getCodStazione());
+				newExpression.equals(model.ID_STAZIONE.COD_STAZIONE, this.getCodStazione());
 				addAnd = true;
 			}
 			
@@ -90,15 +91,16 @@ public class DominioFilter extends AbstractFilter {
 				
 				this.idDomini.removeAll(Collections.singleton(null));
 				
-				newExpression.in(this.cf, this.idDomini);
+				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(model));
+				newExpression.in(cf, this.idDomini);
 				addAnd = true;
 			}
 			
 			if(this.codDominio != null){
 				if(!this.searchModeEquals)
-					newExpression.ilike(Dominio.model().COD_DOMINIO, this.codDominio,LikeMode.ANYWHERE);
+					newExpression.ilike(model.COD_DOMINIO, this.codDominio,LikeMode.ANYWHERE);
 				else 
-					newExpression.equals(Dominio.model().COD_DOMINIO, this.codDominio);
+					newExpression.equals(model.COD_DOMINIO, this.codDominio);
 				
 				addAnd = true;
 			}
@@ -108,14 +110,7 @@ public class DominioFilter extends AbstractFilter {
 					newExpression.and();
 				
 				// 2. metto in and la stringa con la ragione sociale
-				newExpression.ilike(Dominio.model().RAGIONE_SOCIALE, this.ragioneSociale,LikeMode.ANYWHERE);
-				addAnd = true;
-			}
-			
-			if(this.abilitato != null) {
-				if(addAnd)
-					newExpression.and();
-				newExpression.equals(Dominio.model().ABILITATO, this.abilitato);
+				newExpression.ilike(model.RAGIONE_SOCIALE, this.ragioneSociale,LikeMode.ANYWHERE);
 				addAnd = true;
 			}
 			
@@ -139,12 +134,74 @@ public class DominioFilter extends AbstractFilter {
 	
 	@Override
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		try {
+			if(this.codStazione != null){
+				sqlQueryObject.addFromTable(converter.toTable(model.ID_STAZIONE));
+				sqlQueryObject.addWhereCondition(converter.toTable(model.COD_DOMINIO, true) + ".id_stazione="
+						+converter.toTable(model.ID_STAZIONE, true)+".id");
+				
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_STAZIONE.COD_STAZIONE, true) + " = ? ");
+			}
+			
+			if(this.idDomini != null && this.idDomini.size() > 0 ){
+				this.idDomini.removeAll(Collections.singleton(null));
+				
+				String [] ids = this.idDomini.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idDomini.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.COD_DOMINIO, true) + ".id", false, ids );
+			}
+			
+			if(this.codDominio != null){
+				if(!this.searchModeEquals)
+					sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.COD_DOMINIO, true), this.codDominio, true, true);
+				else 
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_DOMINIO, true) + " = ? ");
+				
+			}
+			
+			if(this.ragioneSociale != null){
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.RAGIONE_SOCIALE, true), this.ragioneSociale, true, true);
+			}
+			
+			// filtro abilitato
+			sqlQueryObject = this.setFiltroAbilitato(sqlQueryObject, converter);
+			
+			return sqlQueryObject;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	@Override
 	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		List<Object> lst = new ArrayList<Object>();
+		
+		if(this.codStazione != null){
+			lst.add(this.codStazione);
+		}
+		
+		if(this.idDomini != null && this.idDomini.size() > 0 ){
+			// do nothing
+		}
+		
+		if(this.codDominio != null){
+			if(this.searchModeEquals)
+				lst.add(this.codDominio);
+		}
+		
+		if(this.ragioneSociale != null){
+			// do nothing
+		}
+		
+		// filtro abilitato
+		try {
+			lst = this.setValoreFiltroAbilitato(lst, converter);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+		
+		return lst.toArray(new Object[lst.size()]);
 	}
 
 	public String getCodStazione() {
@@ -179,14 +236,6 @@ public class DominioFilter extends AbstractFilter {
 		this.ragioneSociale = ragioneSociale;
 	}
 
-	public Boolean getAbilitato() {
-		return this.abilitato;
-	}
-
-	public void setAbilitato(Boolean abilitato) {
-		this.abilitato = abilitato;
-	}
-	
 	public boolean isSearchModeEquals() {
 		return this.searchModeEquals;
 	}

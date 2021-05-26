@@ -19,7 +19,10 @@
  */
 package it.govpay.bd.anagrafica.filters;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -31,40 +34,41 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.Applicazione;
 import it.govpay.orm.dao.jdbc.converter.ApplicazioneFieldConverter;
+import it.govpay.orm.model.ApplicazioneModel;
 
 public class ApplicazioneFilter extends AbstractFilter {
 
 	private List<Long> listaIdApplicazioni = null;
-	private CustomField cf;
 	private String codApplicazione = null;
 	private String principalOriginale = null;
 	private boolean searchModeEquals = false; 
+	
+	private static ApplicazioneModel model = Applicazione.model();
+	private ApplicazioneFieldConverter converter = null;
 	
 	
 	public enum SortFields {
 	}
 
-	public ApplicazioneFilter(IExpressionConstructor expressionConstructor) {
+	public ApplicazioneFilter(IExpressionConstructor expressionConstructor) throws ServiceException {
 		this(expressionConstructor, false);
 	}
 	
-	public ApplicazioneFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+	public ApplicazioneFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) throws ServiceException {
 		super(expressionConstructor, simpleSearch);
 		
-		try{
-			ApplicazioneFieldConverter converter = new ApplicazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Applicazione.model()));
-			this.listaFieldSimpleSearch.add(Applicazione.model().COD_APPLICAZIONE);
-			this.fieldAbilitato = Applicazione.model().ID_UTENZA.ABILITATO;
-		} catch(Exception e){
-			
-		}
+		this.converter = new ApplicazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+		this.eseguiCountConLimit = false;
+		
+		this.listaFieldSimpleSearch.add(model.COD_APPLICAZIONE);
+		this.fieldAbilitato = model.ID_UTENZA.ABILITATO;
 	}
 
 	@Override
@@ -73,7 +77,8 @@ public class ApplicazioneFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression(); 
 			boolean addAnd = false;
 			if(this.listaIdApplicazioni != null && this.listaIdApplicazioni.size() > 0){
-				newExpression.in(this.cf, this.listaIdApplicazioni);
+				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(model));
+				newExpression.in(cf, this.listaIdApplicazioni);
 				addAnd = true;
 			}
 			
@@ -81,16 +86,16 @@ public class ApplicazioneFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				if(!this.searchModeEquals)
-					newExpression.ilike(Applicazione.model().COD_APPLICAZIONE, this.codApplicazione,LikeMode.ANYWHERE);
+					newExpression.ilike(model.COD_APPLICAZIONE, this.codApplicazione,LikeMode.ANYWHERE);
 				else 
-					newExpression.equals(Applicazione.model().COD_APPLICAZIONE, this.codApplicazione);
+					newExpression.equals(model.COD_APPLICAZIONE, this.codApplicazione);
 			}
 			
 			if(this.principalOriginale != null){
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.ilike(Applicazione.model().ID_UTENZA.PRINCIPAL_ORIGINALE, this.principalOriginale,LikeMode.ANYWHERE);
+				newExpression.ilike(model.ID_UTENZA.PRINCIPAL_ORIGINALE, this.principalOriginale,LikeMode.ANYWHERE);
 			}
 			
 			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
@@ -113,12 +118,79 @@ public class ApplicazioneFilter extends AbstractFilter {
 	
 	@Override
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		try {
+			if(this.listaIdApplicazioni != null && this.listaIdApplicazioni.size() > 0){
+				this.listaIdApplicazioni.removeAll(Collections.singleton(null));
+				
+				String [] ids = this.listaIdApplicazioni.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.listaIdApplicazioni.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.COD_APPLICAZIONE, true) + ".id", false, ids );
+			}
+			
+			if(this.codApplicazione != null){
+				if(!this.searchModeEquals)
+					sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.COD_APPLICAZIONE, true), this.codApplicazione, true, true);
+				else 
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_APPLICAZIONE, true) + " = ? ");
+			}
+			
+			boolean addTabellaUtenze = false;
+			
+			if(this.principalOriginale != null){
+				sqlQueryObject.addFromTable(converter.toTable(model.ID_UTENZA));
+				sqlQueryObject.addWhereCondition(converter.toTable(model.COD_APPLICAZIONE, true) + ".id_utenza="
+						+converter.toTable(model.ID_UTENZA, true)+".id");
+				
+				addTabellaUtenze = true;
+				
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.ID_UTENZA.PRINCIPAL_ORIGINALE, true), this.principalOriginale, true, true);
+			}
+			
+			// filtro abilitato
+			if(this.searchAbilitato != null && this.fieldAbilitato != null) {
+				if(!addTabellaUtenze) {
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_UTENZA));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.COD_APPLICAZIONE, true) + ".id_utenza="
+							+converter.toTable(model.ID_UTENZA, true)+".id");
+					
+					addTabellaUtenze = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(this.fieldAbilitato, true) + " = ? ");
+			}
+			
+			return sqlQueryObject;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	@Override
 	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		List<Object> lst = new ArrayList<Object>();
+		
+		if(this.listaIdApplicazioni != null && this.listaIdApplicazioni.size() > 0){
+			// do nothing
+		}
+		
+		if(this.codApplicazione != null){
+			if(this.searchModeEquals)
+				lst.add(this.codApplicazione);
+		}
+		
+		if(this.principalOriginale != null){
+			// do nothing
+		}
+		
+		// filtro abilitato
+		try {
+			lst = this.setValoreFiltroAbilitato(lst, converter);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+		
+		return lst.toArray(new Object[lst.size()]);
 	}
 
 	public List<Long> getListaIdApplicazioni() {

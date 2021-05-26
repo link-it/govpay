@@ -33,6 +33,7 @@ public class FindIntermediariDTO extends BasicFindRequestDTO {
 		this.addSortField("denominazione", it.govpay.orm.Intermediario.model().DENOMINAZIONE);
 		this.addDefaultSort(it.govpay.orm.Intermediario.model().DENOMINAZIONE, SortOrder.ASC);
 		this.addDefaultSort(it.govpay.orm.Intermediario.model().COD_INTERMEDIARIO, SortOrder.ASC);
+		this.ricercaAnagrafica = true;
 	}
 
 	public String getCodIntermediario() {

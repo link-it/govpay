@@ -16,6 +16,7 @@ import it.govpay.core.exceptions.RequestParamException.FaultType;
 
 public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	
+	protected boolean ricercaAnagrafica = false;
 	private Integer limit;
 	private String simpleSearch;
 	private List<FilterSortWrapper> fieldsSort;
@@ -65,16 +66,29 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 		else return 1;
 	}
 
-	public int getLimit() {
+	public Integer getLimit() {
 		return this.limit;
 	}
 	public void setLimit(Integer limit) {
-		this.limit = limit != null ?  limit : DEFAULT_LIMIT;
-		if(this.limit < 0)
-			this.limit = 0;
-		
-		if(this.limit == 0) {
-			this.eseguiFindAll = false;
+		if(!this.ricercaAnagrafica) { 
+			this.limit = limit != null ?  limit : DEFAULT_LIMIT;
+			if(this.limit < 0)
+				this.limit = 0;
+			
+			if(this.limit == 0) {
+				this.eseguiFindAll = false;
+			}
+		} else {
+			this.limit = limit;
+			
+			if(this.limit != null) {
+				if(this.limit < 0)
+					this.limit = 0;
+				
+				if(this.limit == 0) {
+					this.eseguiFindAll = false;
+				}
+			}
 		}
 	}
 
@@ -180,6 +194,5 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	public void setEseguiFindAll(boolean eseguiFindAll) {
 		this.eseguiFindAll = eseguiFindAll;
 	}
-	
 	
 }
