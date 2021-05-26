@@ -148,7 +148,7 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
   protected elencoDominiPendenzeRuoli() {
     let _services: string[] = [];
     _services.push(UtilService.URL_DOMINI);
-    _services.push(UtilService.URL_TIPI_PENDENZA);
+    _services.push(UtilService.URL_TIPI_PENDENZA+'?'+UtilService.QUERY_ESCLUDI_METADATI_PAGINAZIONE);
     _services.push(UtilService.URL_RUOLI);
     this.gps.updateSpinner(true);
     this.gps.forkService(_services).subscribe(function (_response) {
