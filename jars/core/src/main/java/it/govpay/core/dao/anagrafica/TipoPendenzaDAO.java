@@ -203,6 +203,10 @@ public class TipoPendenzaDAO extends BaseDAO{
 			List<TipoVersamento> findAll = new ArrayList<>();
 			if(findTipiPendenzaDTO.isEseguiFindAll()) {
 				findAll = tipiVersamentoBD.findAll(filter);
+				
+				if(findTipiPendenzaDTO.getLimit() == null && !findTipiPendenzaDTO.isEseguiCount()) {
+					count = (long) findAll.size();
+				}
 			}
 
 			

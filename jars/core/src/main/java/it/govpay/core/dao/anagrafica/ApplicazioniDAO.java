@@ -98,6 +98,10 @@ public class ApplicazioniDAO extends BaseDAO {
 			List<Applicazione> findAll = new ArrayList<>();
 			if(listaApplicazioniDTO.isEseguiFindAll()) {
 				findAll = applicazioniBD.findAll(filter);
+				
+				if(listaApplicazioniDTO.getLimit() == null && !listaApplicazioniDTO.isEseguiCount()) {
+					count = (long) findAll.size();
+				}
 			}
 			
 			return new FindApplicazioniDTOResponse(count, findAll);

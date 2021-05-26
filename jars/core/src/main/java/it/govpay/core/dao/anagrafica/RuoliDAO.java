@@ -85,6 +85,10 @@ public class RuoliDAO extends BaseDAO{
 			List<String> resList = new ArrayList<>();
 			if(listaRuoliDTO.isEseguiFindAll()) {
 				resList = aclBD.findAllRuoli(filter);
+				
+				if(listaRuoliDTO.getLimit() == null && !listaRuoliDTO.isEseguiCount()) {
+					count = (long) resList.size();
+				}
 			}
 	
 			return new ListaRuoliDTOResponse(count, resList);

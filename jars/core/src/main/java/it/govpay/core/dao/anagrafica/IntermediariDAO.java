@@ -152,6 +152,10 @@ public class IntermediariDAO extends BaseDAO{
 			List<Intermediario> findAll = new ArrayList<>();
 			if(listaIntermediariDTO.isEseguiFindAll()) {
 				findAll = intermediariBD.findAll(filter);
+				
+				if(listaIntermediariDTO.getLimit() == null && !listaIntermediariDTO.isEseguiCount()) {
+					count = (long) findAll.size();
+				}
 			}
 			
 			return new FindIntermediariDTOResponse(count, findAll);
@@ -204,6 +208,10 @@ public class IntermediariDAO extends BaseDAO{
 			List<Stazione> findAll = new ArrayList<>();
 			if(findStazioniDTO.isEseguiFindAll()) {
 				findAll = stazioneBD.findAll(filter);
+				
+				if(findStazioniDTO.getLimit() == null && !findStazioniDTO.isEseguiCount()) {
+					count = (long) findAll.size();
+				}
 			}
 
 			

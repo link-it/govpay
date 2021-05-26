@@ -321,6 +321,10 @@ public class UtentiDAO extends BaseDAO{
 			List<Operatore> findAll = new ArrayList<>();
 			if(listaOperatoriDTO.isEseguiFindAll()) {
 				findAll = operatoriBD.findAll(filter);
+				
+				if(listaOperatoriDTO.getLimit() == null && !listaOperatoriDTO.isEseguiCount()) {
+					count = (long) findAll.size();
+				}
 			}
 
 			

@@ -106,6 +106,10 @@ public class EntrateDAO extends BaseDAO{
 			List<TipoTributo> findAll = new ArrayList<>();
 			if(findEntrateDTO.isEseguiFindAll()) {
 				findAll = entrateBD.findAll(filter);
+				
+				if(findEntrateDTO.getLimit() == null && !findEntrateDTO.isEseguiCount()) {
+					count = (long) findAll.size();
+				}
 			}
 			
 			return new FindEntrateDTOResponse(count, findAll);
