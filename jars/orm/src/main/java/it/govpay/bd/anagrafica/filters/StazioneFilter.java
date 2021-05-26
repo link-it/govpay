@@ -30,26 +30,38 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.orm.Dominio;
 import it.govpay.orm.Stazione;
+import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.StazioneFieldConverter;
+import it.govpay.orm.model.DominioModel;
+import it.govpay.orm.model.StazioneModel;
 
 public class StazioneFilter extends AbstractFilter {
 
 	// Filtro che indica che voglio solo le stazioni dell'intermediario passato.
 	private String codIntermediario;
 	private String codStazione;
+	
+	private static StazioneModel model = Stazione.model();
+	private StazioneFieldConverter converter = null;
 
 	public enum SortFields {
 		COD_STAZIONE
 	}
 
-	public StazioneFilter(IExpressionConstructor expressionConstructor) {
+	public StazioneFilter(IExpressionConstructor expressionConstructor) throws ServiceException {
 		this(expressionConstructor,false);
 	}
 	
-	public StazioneFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+	public StazioneFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) throws ServiceException {
 		super(expressionConstructor, simpleSearch);
-		this.fieldAbilitato = it.govpay.orm.Stazione.model().ABILITATO;
+		this.fieldAbilitato = model.ABILITATO;
+		
+		this.converter = new StazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+		this.eseguiCountConLimit = false;
 	}
 
 	@Override
@@ -59,13 +71,13 @@ public class StazioneFilter extends AbstractFilter {
 			boolean addAnd = false; 
 			if(StringUtils.isNotEmpty(this.getCodIntermediario())){
 				//long id = Long.parseLong(this.getCodIntermediario());
-				expr.equals(Stazione.model().ID_INTERMEDIARIO.COD_INTERMEDIARIO, this.getCodIntermediario());
+				expr.equals(model.ID_INTERMEDIARIO.COD_INTERMEDIARIO, this.getCodIntermediario());
 				addAnd = true;
 			} 
 			
 			if(StringUtils.isNotEmpty(this.getCodStazione())){
 				//long id = Long.parseLong(this.getCodIntermediario());
-				expr.equals(Stazione.model().COD_STAZIONE, this.getCodStazione());
+				expr.equals(model.COD_STAZIONE, this.getCodStazione());
 				addAnd = true;
 			} 
 			
@@ -84,7 +96,7 @@ public class StazioneFilter extends AbstractFilter {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 
 		switch(field) {
-		case COD_STAZIONE: filterSortWrapper.setField(Stazione.model().COD_STAZIONE);
+		case COD_STAZIONE: filterSortWrapper.setField(model.COD_STAZIONE);
 		break;
 		default:
 			break;

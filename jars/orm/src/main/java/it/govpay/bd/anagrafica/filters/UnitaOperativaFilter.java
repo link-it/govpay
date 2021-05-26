@@ -33,9 +33,11 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.Uo;
 import it.govpay.orm.dao.jdbc.converter.UoFieldConverter;
+import it.govpay.orm.model.UoModel;
 
 public class UnitaOperativaFilter extends AbstractFilter {
 
@@ -43,7 +45,6 @@ public class UnitaOperativaFilter extends AbstractFilter {
 
 	}
 
-	private String dbType;
 	private Long idDominio;
 	private String codDominio;
 	private List<Long> listaIdUo = null;
@@ -53,16 +54,22 @@ public class UnitaOperativaFilter extends AbstractFilter {
 	private boolean excludeEC = false;
 	private Boolean abilitato; 
 	private boolean searchModeEquals = false; 
+	
+	private static UoModel model = Uo.model();
+	private UoFieldConverter converter = null;
 
-	public UnitaOperativaFilter(IExpressionConstructor expressionConstructor, String dbType) {
-		this(expressionConstructor,dbType,false);
+	public UnitaOperativaFilter(IExpressionConstructor expressionConstructor) throws ServiceException {
+		this(expressionConstructor,false);
 	}
 	
-	public UnitaOperativaFilter(IExpressionConstructor expressionConstructor, String dbType, boolean simpleSearch) {
+	public UnitaOperativaFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) throws ServiceException {
 		super(expressionConstructor, simpleSearch);
-		this.dbType = dbType;
+		
+		this.converter = new UoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+		this.eseguiCountConLimit = false;
+		
 		this.listaFieldSimpleSearch.add(Uo.model().COD_UO);
-		this.fieldAbilitato = it.govpay.orm.Uo.model().ABILITATO;
+		this.fieldAbilitato = model.ABILITATO;
 	}
 
 	@Override
@@ -71,8 +78,7 @@ public class UnitaOperativaFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
 			if(this.idDominio != null){
-				UoFieldConverter fieldConverter = new UoFieldConverter(this.dbType);
-				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Uo.model())), this.idDominio);
+				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(model)), this.idDominio);
 				addAnd = true;
 			}
 			
@@ -118,8 +124,7 @@ public class UnitaOperativaFilter extends AbstractFilter {
 			
 			if(this.listaIdUo != null && this.listaIdUo.size() > 0){
 				if(addAnd) newExpression.and();
-				UoFieldConverter fieldConverter = new UoFieldConverter(this.dbType);
-				newExpression.in(new CustomField("id", Long.class, "id", fieldConverter.toTable(it.govpay.orm.Uo.model())), this.listaIdUo);				
+				newExpression.in(new CustomField("id", Long.class, "id", converter.toTable(model)), this.listaIdUo);				
 			}
 			
 			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
@@ -141,8 +146,7 @@ public class UnitaOperativaFilter extends AbstractFilter {
 			boolean addAnd = false;
 			
 			if(this.idDominio != null){
-				UoFieldConverter fieldConverter = new UoFieldConverter(this.dbType);
-				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Uo.model())), this.idDominio);
+				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(model)), this.idDominio);
 				addAnd = true;
 			}
 			

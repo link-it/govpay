@@ -36,7 +36,12 @@ import org.openspcoop2.utils.sql.ISQLQueryObject;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.orm.Dominio;
+import it.govpay.orm.Tributo;
+import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.TributoFieldConverter;
+import it.govpay.orm.model.DominioModel;
+import it.govpay.orm.model.TributoModel;
 
 public class TributoFilter extends AbstractFilter {
 	
@@ -50,19 +55,24 @@ public class TributoFilter extends AbstractFilter {
 	private Long idIbanAppoggio = null;
 	private boolean searchModeEquals = false; 
 	
+	private static TributoModel model = Tributo.model();
+	private TributoFieldConverter converter = null;
+	
 	public enum SortFields { }
 	
-	public TributoFilter(IExpressionConstructor expressionConstructor) {
+	public TributoFilter(IExpressionConstructor expressionConstructor) throws ServiceException {
 		this(expressionConstructor,false);
 	}
 	
-	public TributoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+	public TributoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) throws ServiceException {
 		super(expressionConstructor, simpleSearch);
+		
+		this.converter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+		this.eseguiCountConLimit = false;
 		try{
-			TributoFieldConverter converter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Tributo.model()));
-			this.fieldAbilitato = it.govpay.orm.Tributo.model().ABILITATO;
-			this.listaFieldSimpleSearch.add(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO);
+			this.fieldAbilitato = model.ABILITATO;
+			this.listaFieldSimpleSearch.add(model.TIPO_TRIBUTO.COD_TRIBUTO);
 		} catch(Exception e){
 			
 		}
@@ -74,15 +84,14 @@ public class TributoFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
 			if(this.idDominio != null){
-				TributoFieldConverter fieldConverter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Tributo.model())), this.idDominio);
+				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(model)), this.idDominio);
 				addAnd = true;
 			}
 			
 			if(this.getCodDominio() != null && StringUtils.isNotEmpty(this.getCodDominio())){
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(it.govpay.orm.Tributo.model().ID_DOMINIO.COD_DOMINIO, this.getCodDominio());
+				newExpression.equals(model.ID_DOMINIO.COD_DOMINIO, this.getCodDominio());
 				addAnd = true;
 			}
 			
@@ -99,9 +108,9 @@ public class TributoFilter extends AbstractFilter {
 					newExpression.and();
 				
 				if(!this.searchModeEquals)
-					newExpression.ilike(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO, this.codTributo,LikeMode.ANYWHERE);
+					newExpression.ilike(model.TIPO_TRIBUTO.COD_TRIBUTO, this.codTributo,LikeMode.ANYWHERE);
 				else 
-					newExpression.equals(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO, this.codTributo);
+					newExpression.equals(model.TIPO_TRIBUTO.COD_TRIBUTO, this.codTributo);
 				addAnd = true;
 			}
 			
@@ -109,8 +118,7 @@ public class TributoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				TributoFieldConverter fieldConverter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-				newExpression.equals(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", fieldConverter.toTable(it.govpay.orm.Tributo.model())), this.idIbanAccredito);
+				newExpression.equals(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", converter.toTable(model)), this.idIbanAccredito);
 				addAnd = true;
 			}
 			
@@ -118,15 +126,14 @@ public class TributoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				TributoFieldConverter fieldConverter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-				newExpression.equals(new CustomField("id_iban_appoggio", Long.class, "id_iban_appoggio", fieldConverter.toTable(it.govpay.orm.Tributo.model())), this.idIbanAppoggio);
+				newExpression.equals(new CustomField("id_iban_appoggio", Long.class, "id_iban_appoggio", converter.toTable(model)), this.idIbanAppoggio);
 				addAnd = true;
 			}
 			
 			if(this.descrizione != null && StringUtils.isNotEmpty(this.descrizione)){
 				if(addAnd)
 					newExpression.and();
-				newExpression.ilike(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.DESCRIZIONE, this.descrizione,LikeMode.ANYWHERE);
+				newExpression.ilike(model.TIPO_TRIBUTO.DESCRIZIONE, this.descrizione,LikeMode.ANYWHERE);
 				addAnd = true;
 			}
 

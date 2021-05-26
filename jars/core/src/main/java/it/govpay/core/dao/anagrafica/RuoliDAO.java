@@ -79,7 +79,7 @@ public class RuoliDAO extends BaseDAO{
 			Long count = null;
 			
 			if(listaRuoliDTO.isEseguiCount()) {
-				 count = aclBD.count(filter);
+				 count = aclBD.countRuoli(filter);
 			}
 			
 			List<String> resList = new ArrayList<>();

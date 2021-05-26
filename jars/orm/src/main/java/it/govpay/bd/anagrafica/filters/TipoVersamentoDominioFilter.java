@@ -38,6 +38,7 @@ import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.TipoVersamentoDominio;
 import it.govpay.orm.dao.jdbc.converter.TipoVersamentoDominioFieldConverter;
+import it.govpay.orm.model.TipoVersamentoDominioModel;
 
 public class TipoVersamentoDominioFilter extends AbstractFilter {
 	
@@ -52,24 +53,23 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 	private Boolean trasformazione;
 	private boolean searchModeEquals = false; 
 	
+	private static TipoVersamentoDominioModel model = TipoVersamentoDominio.model();
+	private TipoVersamentoDominioFieldConverter converter = null;
+	
 	public enum SortFields { }
 	
-	public TipoVersamentoDominioFilter(IExpressionConstructor expressionConstructor) {
+	public TipoVersamentoDominioFilter(IExpressionConstructor expressionConstructor) throws ServiceException {
 		this(expressionConstructor,false);
 	}
 	
-	public TipoVersamentoDominioFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+	public TipoVersamentoDominioFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) throws ServiceException {
 		super(expressionConstructor, simpleSearch);
 		
-		try{
-			//TipoVersamentoDominioFieldConverter converter = new TipoVersamentoDominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			//this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model()));
-			this.listaFieldSimpleSearch.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
-			this.listaFieldSimpleSearch.add(TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE);
-			this.fieldAbilitato = it.govpay.orm.TipoVersamentoDominio.model().ABILITATO;
-		} catch(Exception e){
-			
-		}
+		this.converter = new TipoVersamentoDominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+		this.eseguiCountConLimit = false;
+		this.listaFieldSimpleSearch.add(model.TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO);
+		this.listaFieldSimpleSearch.add(model.TIPO_VERSAMENTO.DESCRIZIONE);
+		this.fieldAbilitato = model.ABILITATO;
 	}
 
 	@Override
@@ -79,15 +79,14 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 			boolean addAnd = false;
 			
 			if(this.idDominio != null){
-				TipoVersamentoDominioFieldConverter converter = new TipoVersamentoDominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model())), this.idDominio);
+				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(model)), this.idDominio);
 				addAnd = true;
 			}
 			
 			if(this.getCodDominio() != null && StringUtils.isNotEmpty(this.getCodDominio())){
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(it.govpay.orm.TipoVersamentoDominio.model().ID_DOMINIO.COD_DOMINIO, this.getCodDominio());
+				newExpression.equals(model.ID_DOMINIO.COD_DOMINIO, this.getCodDominio());
 				addAnd = true;
 			}
 			
@@ -95,16 +94,16 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				if(!this.searchModeEquals)
-					newExpression.ilike(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento,LikeMode.ANYWHERE);
+					newExpression.ilike(model.TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento,LikeMode.ANYWHERE);
 				else 
-					newExpression.equals(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento);
+					newExpression.equals(model.TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, this.codTipoVersamento);
 				addAnd = true;
 			}
 			
 			if(this.descrizione != null && StringUtils.isNotEmpty(this.descrizione)){
 				if(addAnd)
 					newExpression.and();
-				newExpression.ilike(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE, this.descrizione,LikeMode.ANYWHERE);
+				newExpression.ilike(model.TIPO_VERSAMENTO.DESCRIZIONE, this.descrizione,LikeMode.ANYWHERE);
 				addAnd = true;
 			}
 			
@@ -112,8 +111,7 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				TipoVersamentoDominioFieldConverter converter = new TipoVersamentoDominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-				newExpression.in(new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model())), this.listaIdTipiVersamento);
+				newExpression.in(new CustomField("id_tipo_versamento", Long.class, "id_tipo_versamento", converter.toTable(model)), this.listaIdTipiVersamento);
 				
 				addAnd = true;
 			}
@@ -122,8 +120,7 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				TipoVersamentoDominioFieldConverter converter = new TipoVersamentoDominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-				newExpression.in(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.TipoVersamentoDominio.model())), this.listaIdDomini);
+				newExpression.in(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(model)), this.listaIdDomini);
 				
 				addAnd = true;
 			}
@@ -134,20 +131,20 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 				
 				if(this.formBackoffice) {
 					IExpression formRidefinitoExpression = this.newExpression();
-					formRidefinitoExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().BO_FORM_DEFINIZIONE).and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().BO_FORM_TIPO);
+					formRidefinitoExpression.isNotNull(model.BO_FORM_DEFINIZIONE).and().isNotNull(model.BO_FORM_TIPO);
 					
 					IExpression formDefaultExpression = this.newExpression();
-					formDefaultExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_FORM_DEFINIZIONE)
-						.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_FORM_TIPO)
-						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().BO_FORM_DEFINIZIONE)
-						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().BO_FORM_TIPO);
+					formDefaultExpression.isNotNull(model.TIPO_VERSAMENTO.BO_FORM_DEFINIZIONE)
+						.and().isNotNull(model.TIPO_VERSAMENTO.BO_FORM_TIPO)
+						.and().isNull(model.BO_FORM_DEFINIZIONE)
+						.and().isNull(model.BO_FORM_TIPO);
 					
 					newExpression.or(formRidefinitoExpression,formDefaultExpression);
 				} else {
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_FORM_DEFINIZIONE);
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.BO_FORM_TIPO);
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().BO_FORM_DEFINIZIONE);
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().BO_FORM_TIPO);
+					newExpression.isNull(model.TIPO_VERSAMENTO.BO_FORM_DEFINIZIONE);
+					newExpression.isNull(model.TIPO_VERSAMENTO.BO_FORM_TIPO);
+					newExpression.isNull(model.BO_FORM_DEFINIZIONE);
+					newExpression.isNull(model.BO_FORM_TIPO);
 				}
 				
 				addAnd = true;
@@ -159,20 +156,20 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 				
 				if(this.formPortalePagamento) {
 					IExpression formRidefinitoExpression = this.newExpression();
-					formRidefinitoExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().PAG_FORM_DEFINIZIONE).and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().PAG_FORM_TIPO);
+					formRidefinitoExpression.isNotNull(model.PAG_FORM_DEFINIZIONE).and().isNotNull(model.PAG_FORM_TIPO);
 					
 					IExpression formDefaultExpression = this.newExpression();
-					formDefaultExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_DEFINIZIONE)
-						.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_TIPO)
-						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().PAG_FORM_DEFINIZIONE)
-						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().PAG_FORM_TIPO);
+					formDefaultExpression.isNotNull(model.TIPO_VERSAMENTO.PAG_FORM_DEFINIZIONE)
+						.and().isNotNull(model.TIPO_VERSAMENTO.PAG_FORM_TIPO)
+						.and().isNull(model.PAG_FORM_DEFINIZIONE)
+						.and().isNull(model.PAG_FORM_TIPO);
 					
 					newExpression.or(formRidefinitoExpression,formDefaultExpression);
 				} else {
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_DEFINIZIONE);
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.PAG_FORM_TIPO);
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().PAG_FORM_DEFINIZIONE);
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().PAG_FORM_TIPO);
+					newExpression.isNull(model.TIPO_VERSAMENTO.PAG_FORM_DEFINIZIONE);
+					newExpression.isNull(model.TIPO_VERSAMENTO.PAG_FORM_TIPO);
+					newExpression.isNull(model.PAG_FORM_DEFINIZIONE);
+					newExpression.isNull(model.PAG_FORM_TIPO);
 				}
 				
 				addAnd = true;
@@ -184,31 +181,31 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 				
 				if(this.trasformazione) {
 					IExpression trasformazioneRidefinitoExpression = this.newExpression();
-					trasformazioneRidefinitoExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_HEADER_RISPOSTA)
-					.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA)
-					.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA)
-					.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TIPO);
+					trasformazioneRidefinitoExpression.isNotNull(model.TRAC_CSV_HEADER_RISPOSTA)
+					.and().isNotNull(model.TRAC_CSV_TEMPLATE_RICHIESTA)
+					.and().isNotNull(model.TRAC_CSV_TEMPLATE_RISPOSTA)
+					.and().isNotNull(model.TRAC_CSV_TIPO);
 					
 					IExpression trasformazioneDefaultExpression = this.newExpression();
-					trasformazioneDefaultExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA)
-						.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA)
-						.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA)
-						.and().isNotNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TIPO)
-						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_HEADER_RISPOSTA)
-						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA)
-						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA)
-						.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TIPO);
+					trasformazioneDefaultExpression.isNotNull(model.TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA)
+						.and().isNotNull(model.TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA)
+						.and().isNotNull(model.TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA)
+						.and().isNotNull(model.TIPO_VERSAMENTO.TRAC_CSV_TIPO)
+						.and().isNull(model.TRAC_CSV_HEADER_RISPOSTA)
+						.and().isNull(model.TRAC_CSV_TEMPLATE_RICHIESTA)
+						.and().isNull(model.TRAC_CSV_TEMPLATE_RISPOSTA)
+						.and().isNull(model.TRAC_CSV_TIPO);
 					
 					newExpression.or(trasformazioneRidefinitoExpression,trasformazioneDefaultExpression);
 				} else {
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA);
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA);
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA);
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.TRAC_CSV_TIPO);
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_HEADER_RISPOSTA);
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RICHIESTA);
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TEMPLATE_RISPOSTA);
-					newExpression.isNull(it.govpay.orm.TipoVersamentoDominio.model().TRAC_CSV_TIPO);
+					newExpression.isNull(model.TIPO_VERSAMENTO.TRAC_CSV_HEADER_RISPOSTA);
+					newExpression.isNull(model.TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RICHIESTA);
+					newExpression.isNull(model.TIPO_VERSAMENTO.TRAC_CSV_TEMPLATE_RISPOSTA);
+					newExpression.isNull(model.TIPO_VERSAMENTO.TRAC_CSV_TIPO);
+					newExpression.isNull(model.TRAC_CSV_HEADER_RISPOSTA);
+					newExpression.isNull(model.TRAC_CSV_TEMPLATE_RICHIESTA);
+					newExpression.isNull(model.TRAC_CSV_TEMPLATE_RISPOSTA);
+					newExpression.isNull(model.TRAC_CSV_TIPO);
 				}
 				
 				addAnd = true;
@@ -219,11 +216,11 @@ public class TipoVersamentoDominioFilter extends AbstractFilter {
 					newExpression.and();
 				
 				IExpression abilitatoRidefinitoExpression = this.newExpression();
-				abilitatoRidefinitoExpression.isNotNull(it.govpay.orm.TipoVersamentoDominio.model().ABILITATO).and().equals(it.govpay.orm.TipoVersamentoDominio.model().ABILITATO,this.searchAbilitato);
+				abilitatoRidefinitoExpression.isNotNull(model.ABILITATO).and().equals(model.ABILITATO,this.searchAbilitato);
 				
 				IExpression abilitatoDefaultExpression = this.newExpression();
-				abilitatoDefaultExpression.equals(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.ABILITATO,this.searchAbilitato)
-					.and().isNull(it.govpay.orm.TipoVersamentoDominio.model().ABILITATO);
+				abilitatoDefaultExpression.equals(model.TIPO_VERSAMENTO.ABILITATO,this.searchAbilitato)
+					.and().isNull(model.ABILITATO);
 				
 				newExpression.or(abilitatoRidefinitoExpression,abilitatoDefaultExpression);
 				
