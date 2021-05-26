@@ -84,7 +84,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     _url += '&'+UtilService.QUERY_METADATI_PAGINAZIONE+'&'+UtilService.QUERY_ESCLUDI_RISULTATI;
     this.gps.getDataService(_url).subscribe(
       function (_response) {
-        this._hasAssociazioniPendenza = (_response.body && _response.body.numeroRisultati > 0);
+        this._hasAssociazioniPendenza = (_response.body && _response.body.numRisultati > 0);
         this.gps.updateSpinner(false);
       }.bind(this),
       (error) => {
