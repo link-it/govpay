@@ -4,12 +4,14 @@ Background:
 
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
-* def pathServizio = '/ruoli'
 
-Scenario: Ricerca ruoli senza filtri sui metadati di paginazione
+* def pathServizioDomini = '/domini'
+* def pathServizio = '/contiAccredito'
+
+Scenario: Ricerca contiAccredito senza filtri sui metadati di paginazione
 
 Given url backofficeBaseurl
-And path pathServizio
+And path pathServizioDomini, idDominio, pathServizio
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -25,10 +27,10 @@ And match response ==
 }
 """
 
-Scenario: Ricerca ruoli con metadatiPaginazione true
+Scenario: Ricerca contiAccredito con metadatiPaginazione true
 
 Given url backofficeBaseurl
-And path pathServizio
+And path pathServizioDomini, idDominio, pathServizio
 And param metadatiPaginazione = true
 And headers gpAdminBasicAutenticationHeader
 When method get
@@ -45,10 +47,10 @@ And match response ==
 }
 """
 
-Scenario: Ricerca ruoli con metadatiPaginazione false
+Scenario: Ricerca contiAccredito con metadatiPaginazione false
 
 Given url backofficeBaseurl
-And path pathServizio
+And path pathServizioDomini, idDominio, pathServizio
 And param metadatiPaginazione = false
 And headers gpAdminBasicAutenticationHeader
 When method get
@@ -65,10 +67,10 @@ And match response ==
 }
 """
 
-Scenario: Ricerca ruoli con metadatiPaginazione true e risultatiPerPagina = 0
+Scenario: Ricerca contiAccredito con metadatiPaginazione true e risultatiPerPagina = 0
 
 Given url backofficeBaseurl
-And path pathServizio
+And path pathServizioDomini, idDominio, pathServizio
 And param metadatiPaginazione = true
 And param risultatiPerPagina = 0
 And headers gpAdminBasicAutenticationHeader
@@ -85,4 +87,45 @@ And match response ==
 	risultati: '#[0]'
 }
 """
+
+Scenario: Ricerca contiAccredito con maxRisultati true
+
+Given url backofficeBaseurl
+And path pathServizioDomini, idDominio, pathServizio
+And param maxRisultati = true
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: '#notnull',
+	numPagine: '#notnull',
+	risultatiPerPagina: '#notnull',
+	pagina: '#notnull',
+	prossimiRisultati: '##null',
+	risultati: '#[]'
+}
+"""
+
+Scenario: Ricerca contiAccredito con maxRisultati false
+
+Given url backofficeBaseurl
+And path pathServizioDomini, idDominio, pathServizio
+And param maxRisultati = false
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: '#notnull',
+	numPagine: '#notnull',
+	risultatiPerPagina: '#notnull',
+	pagina: '#notnull',
+	prossimiRisultati: '##null',
+	risultati: '#[]'
+}
+"""
+
 

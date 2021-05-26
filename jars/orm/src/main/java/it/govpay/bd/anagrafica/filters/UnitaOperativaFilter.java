@@ -19,7 +19,10 @@
  */
 package it.govpay.bd.anagrafica.filters;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -31,6 +34,7 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
@@ -52,7 +56,6 @@ public class UnitaOperativaFilter extends AbstractFilter {
 	private String codIdentificativo= null;
 	private String ragioneSociale= null;
 	private boolean excludeEC = false;
-	private Boolean abilitato; 
 	private boolean searchModeEquals = false; 
 	
 	private static UoModel model = Uo.model();
@@ -106,12 +109,6 @@ public class UnitaOperativaFilter extends AbstractFilter {
 			if(this.ragioneSociale != null){
 				if(addAnd) newExpression.and();
 				newExpression.ilike(Uo.model().UO_DENOMINAZIONE, this.ragioneSociale, LikeMode.ANYWHERE);
-				addAnd = true;
-			}
-			
-			if(this.abilitato != null){
-				if(addAnd) newExpression.and();
-				newExpression.equals(Uo.model().ABILITATO, this.abilitato);
 				addAnd = true;
 			}
 			
@@ -173,12 +170,105 @@ public class UnitaOperativaFilter extends AbstractFilter {
 	
 	@Override
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		try {
+			boolean addTabellaDomini = false;
+			
+			if(this.idDominio != null){
+				sqlQueryObject.addWhereCondition(true,converter.toTable(model.COD_UO, true) + ".id_dominio" + " = ? ");
+			}
+			
+			if(this.codDominio != null){
+				if(!addTabellaDomini) {
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_DOMINIO));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.COD_UO, true) + ".id_dominio="
+							+converter.toTable(model.ID_DOMINIO, true)+".id");
+
+					addTabellaDomini = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_DOMINIO.COD_DOMINIO, true) + " = ? ");
+			}
+			
+			if(this.codUo != null){
+				if(!this.searchModeEquals)
+					sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.COD_UO, true), this.codUo, true, true);
+				else 
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_UO, true) + " = ? ");
+			}
+			
+			if(this.codIdentificativo != null){
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.UO_CODICE_IDENTIFICATIVO, true), this.codIdentificativo, true, true);
+			}
+			
+			if(this.ragioneSociale != null){
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.UO_DENOMINAZIONE, true), this.ragioneSociale, true, true);
+			}
+			
+			// esclude tutte le UO con codUo = EC
+			if(this.excludeEC){
+				sqlQueryObject.addWhereCondition(true, true, converter.toColumn(model.COD_UO, true) + " = ? ");
+			}
+			
+			if(this.listaIdUo != null && this.listaIdUo.size() > 0){
+				this.listaIdUo.removeAll(Collections.singleton(null));
+				
+				String [] ids = this.listaIdUo.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.listaIdUo.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toTable(model.COD_UO, true) + ".id", false, ids );
+			}
+			
+			// filtro abilitato
+			sqlQueryObject = this.setFiltroAbilitato(sqlQueryObject, converter);
+			
+			return sqlQueryObject;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	@Override
 	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		List<Object> lst = new ArrayList<Object>();
+		
+		if(this.idDominio != null){
+			lst.add(this.idDominio);
+		}
+		
+		if(this.codDominio != null){
+			lst.add(this.codDominio);
+		}
+		
+		if(this.codUo != null){
+			if(this.searchModeEquals)
+				lst.add(this.codUo);
+		}
+		
+		if(this.codIdentificativo != null){
+			// do nothing
+		}
+		
+		if(this.ragioneSociale != null){
+			// do nothing
+		}
+		
+		// esclude tutte le UO con codUo = EC
+		if(this.excludeEC){
+			lst.add(it.govpay.model.Dominio.EC);
+		}
+		
+		if(this.listaIdUo != null && this.listaIdUo.size() > 0){
+			// do nothing
+		}
+		
+		// filtro abilitato
+		try {
+			lst = this.setValoreFiltroAbilitato(lst, converter);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+		
+		return lst.toArray(new Object[lst.size()]);
 	}
 
 	public void setDominioFilter(long idDominio) {

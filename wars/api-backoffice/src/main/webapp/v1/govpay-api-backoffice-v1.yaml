@@ -3618,7 +3618,6 @@ paths:
         - $ref: '#/components/parameters/pagina'
         - $ref: '#/components/parameters/risultatiPerPagina'
         - $ref: '#/components/parameters/metadatiPaginazione'
-        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '201':
           description: Elenco dei ruoli

@@ -168,8 +168,7 @@ public class StazioniBD extends BasicBD {
 	}
 
 	public long count(StazioneFilter filter) throws ServiceException {
-		return this._countSenzaLimit(filter);
-//		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
 	}
 	
 	private long _countSenzaLimit(StazioneFilter filter) throws ServiceException {

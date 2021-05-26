@@ -199,8 +199,7 @@ public class IbanAccreditoBD extends BasicBD {
 	}
 
 	public long count(IbanAccreditoFilter filter) throws ServiceException {
-		return this._countSenzaLimit(filter);
-//		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
 	}
 	
 	private long _countSenzaLimit(IbanAccreditoFilter filter) throws ServiceException {

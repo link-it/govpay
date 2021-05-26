@@ -292,7 +292,7 @@ public class DominiDAO extends BaseDAO{
 				filter.setCodStazione(listaDominiDTO.getCodStazione());
 				filter.setCodDominio(listaDominiDTO.getCodDominio());
 				filter.setRagioneSociale(listaDominiDTO.getRagioneSociale());
-				filter.setAbilitato(listaDominiDTO.getAbilitato());
+				filter.setSearchAbilitato(listaDominiDTO.getAbilitato());
 			}
 			if(listaDominiDTO.getIdDomini() != null && listaDominiDTO.getIdDomini().size() >0) {
 				filter.getIdDomini().addAll(listaDominiDTO.getIdDomini());

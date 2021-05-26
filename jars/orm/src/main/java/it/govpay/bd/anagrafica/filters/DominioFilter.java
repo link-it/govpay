@@ -49,7 +49,6 @@ public class DominioFilter extends AbstractFilter {
 	private List<Long> idDomini = null; 
 	private String codDominio = null;
 	private String ragioneSociale = null;
-	private Boolean abilitato = null;
 	private boolean searchModeEquals = false; 
 	
 	private static DominioModel model = Dominio.model();
@@ -137,6 +136,10 @@ public class DominioFilter extends AbstractFilter {
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
 		try {
 			if(this.codStazione != null){
+				sqlQueryObject.addFromTable(converter.toTable(model.ID_STAZIONE));
+				sqlQueryObject.addWhereCondition(converter.toTable(model.COD_DOMINIO, true) + ".id_stazione="
+						+converter.toTable(model.ID_STAZIONE, true)+".id");
+				
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_STAZIONE.COD_STAZIONE, true) + " = ? ");
 			}
 			
@@ -233,14 +236,6 @@ public class DominioFilter extends AbstractFilter {
 		this.ragioneSociale = ragioneSociale;
 	}
 
-	public Boolean getAbilitato() {
-		return this.abilitato;
-	}
-
-	public void setAbilitato(Boolean abilitato) {
-		this.abilitato = abilitato;
-	}
-	
 	public boolean isSearchModeEquals() {
 		return this.searchModeEquals;
 	}

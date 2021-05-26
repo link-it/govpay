@@ -212,8 +212,7 @@ public class TributiBD extends BasicBD {
 	}
 
 	public long count(TributoFilter filter) throws ServiceException {
-		return this._countSenzaLimit(filter);
-//		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
 	}
 	
 	private long _countSenzaLimit(TributoFilter filter) throws ServiceException {

@@ -142,6 +142,7 @@ public class IntermediariDAO extends BaseDAO{
 			filter.setLimit(listaIntermediariDTO.getLimit());
 			filter.getFilterSortList().addAll(listaIntermediariDTO.getFieldSortList());
 			filter.setEseguiCountConLimit(listaIntermediariDTO.isEseguiCountConLimit());
+			filter.setSearchAbilitato(listaIntermediariDTO.getAbilitato());
 			
 			Long count = null;
 			

@@ -190,8 +190,7 @@ public class UnitaOperativeBD extends BasicBD {
 	}
 
 	public long count(UnitaOperativaFilter filter) throws ServiceException {
-		return this._countSenzaLimit(filter);
-//		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
 	}
 	
 	private long _countSenzaLimit(UnitaOperativaFilter filter) throws ServiceException {

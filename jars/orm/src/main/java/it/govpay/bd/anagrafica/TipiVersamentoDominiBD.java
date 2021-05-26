@@ -243,8 +243,7 @@ public class TipiVersamentoDominiBD extends BasicBD {
 	}
 
 	public long count(TipoVersamentoDominioFilter filter) throws ServiceException {
-		return this._countSenzaLimit(filter);
-//		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
 	}
 	
 	private long _countSenzaLimit(TipoVersamentoDominioFilter filter) throws ServiceException {

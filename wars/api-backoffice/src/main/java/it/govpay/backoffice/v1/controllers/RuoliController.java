@@ -53,7 +53,7 @@ public class RuoliController extends BaseController {
  		super(nomeServizio,log);
      }
 
-    public Response findRuoli(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, Boolean metadatiPaginazione, Boolean maxRisultati) {
+    public Response findRuoli(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, Boolean metadatiPaginazione) {
 		String methodName = "findRuoli";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -71,7 +71,6 @@ public class RuoliController extends BaseController {
 			listaRptDTO.setPagina(pagina);
 			
 			listaRptDTO.setEseguiCount(metadatiPaginazione);
-			listaRptDTO.setEseguiCountConLimit(maxRisultati);
 
 			// INIT DAO
 

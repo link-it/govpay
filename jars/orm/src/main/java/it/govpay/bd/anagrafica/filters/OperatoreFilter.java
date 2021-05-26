@@ -100,7 +100,15 @@ public class OperatoreFilter extends AbstractFilter {
 	@Override
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
 		try {
+			
+			boolean addTabellaUtenze = false;
 			if(this.principal != null){
+				sqlQueryObject.addFromTable(converter.toTable(model.ID_UTENZA));
+				sqlQueryObject.addWhereCondition(converter.toTable(model.NOME, true) + ".id_utenza="
+						+converter.toTable(model.ID_UTENZA, true)+".id");
+				
+				addTabellaUtenze = true;
+				
 				if(!this.searchModeEquals)
 					sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.ID_UTENZA.PRINCIPAL, true), this.principal, true, true);
 				else 
@@ -109,7 +117,17 @@ public class OperatoreFilter extends AbstractFilter {
 			}
 			
 			// filtro abilitato
-			sqlQueryObject = this.setFiltroAbilitato(sqlQueryObject, converter);
+			if(this.searchAbilitato != null && this.fieldAbilitato != null) {
+				if(!addTabellaUtenze) {
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_UTENZA));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.NOME, true) + ".id_utenza="
+							+converter.toTable(model.ID_UTENZA, true)+".id");
+					
+					addTabellaUtenze = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(this.fieldAbilitato, true) + " = ? ");
+			}
 			
 			return sqlQueryObject;
 		} catch (ExpressionException e) {

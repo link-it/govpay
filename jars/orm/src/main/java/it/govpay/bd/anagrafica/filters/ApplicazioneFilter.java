@@ -133,12 +133,30 @@ public class ApplicazioneFilter extends AbstractFilter {
 					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_APPLICAZIONE, true) + " = ? ");
 			}
 			
+			boolean addTabellaUtenze = false;
+			
 			if(this.principalOriginale != null){
+				sqlQueryObject.addFromTable(converter.toTable(model.ID_UTENZA));
+				sqlQueryObject.addWhereCondition(converter.toTable(model.COD_APPLICAZIONE, true) + ".id_utenza="
+						+converter.toTable(model.ID_UTENZA, true)+".id");
+				
+				addTabellaUtenze = true;
+				
 				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.ID_UTENZA.PRINCIPAL_ORIGINALE, true), this.principalOriginale, true, true);
 			}
 			
 			// filtro abilitato
-			sqlQueryObject = this.setFiltroAbilitato(sqlQueryObject, converter);
+			if(this.searchAbilitato != null && this.fieldAbilitato != null) {
+				if(!addTabellaUtenze) {
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_UTENZA));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.COD_APPLICAZIONE, true) + ".id_utenza="
+							+converter.toTable(model.ID_UTENZA, true)+".id");
+					
+					addTabellaUtenze = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(this.fieldAbilitato, true) + " = ? ");
+			}
 			
 			return sqlQueryObject;
 		} catch (ExpressionException e) {
