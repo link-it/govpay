@@ -72,6 +72,7 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.PASSWORD, value: this.json.servizioPagoPa.auth.password }));
         }
         if(this.json.servizioPagoPa.auth.tipo) {
+          _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.SSL }));
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.TIPO, value: this.json.servizioPagoPa.auth.tipo }));
           if(this.json.servizioPagoPa.auth.tsLocation) {
             _dettaglio.connettoriSoap.push(new Dato({label: Voce.TRUST_STORE_LOC, value: this.json.servizioPagoPa.auth.tsLocation }));

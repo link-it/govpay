@@ -223,6 +223,7 @@ export class Voce {
   public static SOGGETTO_VERSANTE: string = 'Versante';
   public static SOLO_PAGAMENTI: string = 'Notifica solo pagamenti eseguiti';
   public static SOTTOTIPO_ESITO: string = 'Sottotipo esito';
+  public static SSL: string = 'SSL';
   public static STAMPA_AVVISI: string = 'Stampa avvisi';
   public static STATO: string = 'Stato';
   public static STAZIONE: string = 'Stazione';
