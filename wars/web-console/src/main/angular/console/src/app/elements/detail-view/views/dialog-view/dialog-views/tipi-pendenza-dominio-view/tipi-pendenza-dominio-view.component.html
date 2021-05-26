@@ -7,7 +7,7 @@
                                     form-ctrl-name="tipoPendenza_ctrl" [searching]="_searching" [required]="true" [input-hint]="_mapRisultati"
                                     (async-keyup)="_asyncKeyUp($event)" (option-click)="_onOptionSelection($event)" [options]="tipiPendenza_items">
         <ng-template let-item>
-          <div class="d-block lh-15">{{item.model.titolo.label}}</div>
+          <div class="d-block lh-15 slim-option">{{item.model.titolo.label}}</div>
         </ng-template>
       </link-async-filterable-select>
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
