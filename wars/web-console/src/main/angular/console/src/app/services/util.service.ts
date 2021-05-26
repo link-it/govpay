@@ -839,7 +839,7 @@ export class UtilService {
     if (UtilService.PROFILO_UTENTE) {
       this.setUserACLStarCheck();
       if (UtilService.USER_ACL.hasTuttiTipiPendenza) {
-        services.push(UtilService.URL_TIPI_PENDENZA);
+        services.push(UtilService.URL_TIPI_PENDENZA+'?'+UtilService.QUERY_ESCLUDI_METADATI_PAGINAZIONE);
         UtilService.PROFILO_UTENTE.tipiPendenza = [];
       }
       if (UtilService.USER_ACL.hasTuttiDomini) {
