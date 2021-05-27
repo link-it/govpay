@@ -1,5 +1,6 @@
 package it.govpay.core.dao.anagrafica;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -73,13 +74,22 @@ public class RuoliDAO extends BaseDAO{
 			filter.setLimit(listaRuoliDTO.getLimit());
 			filter.setForceRuolo(true);
 			filter.getFilterSortList().addAll(listaRuoliDTO.getFieldSortList());
+			filter.setEseguiCountConLimit(listaRuoliDTO.isEseguiCountConLimit());
 			
-			long count = aclBD.countRuoli(filter);
-	
-			List<String> resList = null;
-			if(count > 0) {
+			Long count = null;
+			
+			if(listaRuoliDTO.isEseguiCount()) {
+				 count = aclBD.countRuoli(filter);
+			}
+			
+			List<String> resList = new ArrayList<>();
+			if(listaRuoliDTO.isEseguiFindAll()) {
 				resList = aclBD.findAllRuoli(filter);
-			} 
+				
+				if(listaRuoliDTO.getLimit() == null && !listaRuoliDTO.isEseguiCount()) {
+					count = (long) resList.size();
+				}
+			}
 	
 			return new ListaRuoliDTOResponse(count, resList);
 			

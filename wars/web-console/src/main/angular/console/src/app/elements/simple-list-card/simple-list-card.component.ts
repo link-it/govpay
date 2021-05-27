@@ -7,11 +7,12 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class SimpleListCardComponent implements OnInit {
 
-  @Input('title') _title: string = '';
+  @Input('card-title') _cardTitle: string = '';
   @Input('data-list') _dataList: any[] = [];
   @Input('no-data-label') _noDataLabel: string = 'Nessuna informazione';
   @Input('use-directive') _directiveEnable: boolean = true;
   @Input('show-actions') _showActions: boolean = false;
+  @Input('tooltip-trigger-icon') _tooltipTriggerIcon: string = '';
   @Input('action-list') _iconsList: string[] = ['edit'];
 
   @Input('trigger-icon') _triggerIcon: string = 'more_vert';

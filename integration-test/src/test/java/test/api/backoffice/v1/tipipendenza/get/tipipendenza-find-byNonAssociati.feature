@@ -67,7 +67,7 @@ And match response ==
 {
 	numRisultati: 0,
 	numPagine: 1,
-	risultatiPerPagina: 25,
+	risultatiPerPagina: '#notnull',
 	pagina: 1,
 	prossimiRisultati: '##null',
 	risultati: []

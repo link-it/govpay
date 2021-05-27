@@ -33,7 +33,6 @@ import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
-import it.govpay.bd.model.Rendicontazione;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 
 public class Pagamento extends it.govpay.model.Pagamento {

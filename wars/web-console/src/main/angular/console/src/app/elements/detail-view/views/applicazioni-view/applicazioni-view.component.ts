@@ -89,15 +89,21 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
         }
         if(this.json.servizioIntegrazione.auth.tipo) {
           _dettaglio.serviziApi.push(new Dato({label: Voce.TIPO, value: this.json.servizioIntegrazione.auth.tipo }));
-          _dettaglio.serviziApi.push(new Dato({label: Voce.KEY_STORE_LOC, value: this.json.servizioIntegrazione.auth.ksLocation }));
-          _dettaglio.serviziApi.push(new Dato({label: Voce.KEY_STORE_PWD, value: this.json.servizioIntegrazione.auth.ksPassword }));
           if(this.json.servizioIntegrazione.auth.tsLocation) {
             _dettaglio.serviziApi.push(new Dato({label: Voce.TRUST_STORE_LOC, value: this.json.servizioIntegrazione.auth.tsLocation }));
           }
           if(this.json.servizioIntegrazione.auth.tsPassword) {
             _dettaglio.serviziApi.push(new Dato({label: Voce.TRUST_STORE_PWD, value: this.json.servizioIntegrazione.auth.tsPassword }));
           }
+          if(this.json.servizioIntegrazione.auth.ksLocation) {
+            _dettaglio.serviziApi.push(new Dato({label: Voce.KEY_STORE_LOC, value: this.json.servizioIntegrazione.auth.ksLocation }));
+          }
+          if(this.json.servizioIntegrazione.auth.ksPassword) {
+            _dettaglio.serviziApi.push(new Dato({label: Voce.KEY_STORE_PWD, value: this.json.servizioIntegrazione.auth.ksPassword }));
+          }
         }
+      } else {
+        _dettaglio.serviziApi.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.NESSUNA }));
       }
     }
 

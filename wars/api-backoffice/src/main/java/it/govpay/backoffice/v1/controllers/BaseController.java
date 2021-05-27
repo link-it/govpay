@@ -52,6 +52,8 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
  * 
  */
 public abstract class BaseController {
+	
+	public final static Integer DEFAULT_NUMERO_ENTRIES_ANAGRAFICA = 500;
 
 	public final static String PARAMETRO_CONTENT_DISPOSITION = "Content-Disposition";
 	public final static String PREFIX_CONTENT_DISPOSITION = "form-data; name=\"";

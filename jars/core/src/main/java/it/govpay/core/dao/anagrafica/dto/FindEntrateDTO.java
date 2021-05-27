@@ -32,6 +32,7 @@ public class FindEntrateDTO extends BasicFindRequestDTO {
 		this.addSortField("idEntrata", it.govpay.orm.TipoTributo.model().COD_TRIBUTO);
 		this.addDefaultSort(it.govpay.orm.TipoTributo.model().DESCRIZIONE, SortOrder.ASC);
 		this.addDefaultSort(it.govpay.orm.TipoTributo.model().COD_TRIBUTO, SortOrder.ASC);
+		this.ricercaAnagrafica = true;
 	}
 
 	public Boolean getAbilitato() {

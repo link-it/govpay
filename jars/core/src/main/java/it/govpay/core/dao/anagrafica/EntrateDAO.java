@@ -19,6 +19,9 @@
  */
 package it.govpay.core.dao.anagrafica;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
@@ -36,6 +39,7 @@ import it.govpay.core.dao.anagrafica.exception.TipoTributoNonTrovatoException;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.model.TipoTributo;
 
 public class EntrateDAO extends BaseDAO{
 	
@@ -91,8 +95,24 @@ public class EntrateDAO extends BaseDAO{
 			filter.setOffset(findEntrateDTO.getOffset());
 			filter.setLimit(findEntrateDTO.getLimit());
 			filter.getFilterSortList().addAll(findEntrateDTO.getFieldSortList());
-
-			return new FindEntrateDTOResponse(entrateBD.count(filter), entrateBD.findAll(filter));
+			filter.setEseguiCountConLimit(findEntrateDTO.isEseguiCountConLimit());
+			
+			Long count = null;
+			
+			if(findEntrateDTO.isEseguiCount()) {
+				 count = entrateBD.count(filter);
+			}
+			
+			List<TipoTributo> findAll = new ArrayList<>();
+			if(findEntrateDTO.isEseguiFindAll()) {
+				findAll = entrateBD.findAll(filter);
+				
+				if(findEntrateDTO.getLimit() == null && !findEntrateDTO.isEseguiCount()) {
+					count = (long) findAll.size();
+				}
+			}
+			
+			return new FindEntrateDTOResponse(count, findAll);
 		} finally {
 			if(entrateBD != null)
 				entrateBD.closeConnection();

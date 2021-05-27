@@ -40,6 +40,7 @@ public class FindTipiPendenzaDominioDTO extends BasicFindRequestDTO {
 		this.addSortField("descrizione", it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE);
 		this.addDefaultSort(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.DESCRIZIONE, SortOrder.ASC);
 		this.addDefaultSort(it.govpay.orm.TipoVersamentoDominio.model().TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, SortOrder.ASC);
+		this.ricercaAnagrafica = true;
 	}
 
 	public String getCodDominio() {

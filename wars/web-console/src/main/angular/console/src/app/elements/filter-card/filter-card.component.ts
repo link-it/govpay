@@ -16,13 +16,16 @@ export class FilterCardComponent implements OnInit, OnDestroy {
   }
   @Input('search') _text: string = '';
   @Input('target') _target: string = 'searchTarget';
-  @Input('title') _title: string = '';
+  @Input('card-title') _cardTitle: string = '';
   @Input('data-list') _dataList: any[] = [];
   @Input('action-list') _iconsList: string[] = ['edit'];
   @Input('no-data-label') _noDataLabel: string = 'Nessuna informazione';
   @Input('placeholder') _placeholder: string = 'Cerca...';
   @Input('use-directive') _directiveEnable: boolean = true;
   @Input('show-actions') _showActions: boolean = false;
+  @Input('show-over-icons') _showOverIcons: boolean = false;
+  @Input('disable-action') _disableAction: boolean = false;
+  @Input('tooltip-action') _tooltipAction: string = '';
 
   @Input('next-page') _next: string = '';
   @Input('previous-page') _previous: string = '';

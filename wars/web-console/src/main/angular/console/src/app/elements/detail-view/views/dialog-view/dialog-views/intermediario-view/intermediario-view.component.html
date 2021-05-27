@@ -29,7 +29,7 @@
         </mat-select>
       </mat-form-field>-->
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-        <mat-select #authentication placeholder="Tipo autenticazione" formControlName="auth_ctrl"
+        <mat-select #authentication [placeholder]="voce.TIPO_AUTH" formControlName="auth_ctrl"
                     (selectionChange)="_onAuthChange(authentication)">
           <mat-option value="">Nessuna</mat-option>
           <mat-option [value]="BASIC">HTTP Basic</mat-option>
