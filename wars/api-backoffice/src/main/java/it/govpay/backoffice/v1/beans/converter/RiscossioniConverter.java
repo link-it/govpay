@@ -47,50 +47,61 @@ public class RiscossioniConverter {
 			rsModel.setIuv(input.getIuv());
 			rsModel.setIur(input.getIur());
 			rsModel.setIndice(new BigDecimal(input.getIndiceDati()));
-			
-			rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte()));
-			rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
-			if(rpt!= null)
-				rsModel.setRpp(UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp()));
 			rsModel.setImporto(input.getImportoPagato());
 			rsModel.setData(input.getDataPagamento());
-			Stato stato = input.getStato();
-			switch(stato) {
-			case INCASSATO: rsModel.setStato(StatoRiscossione.INCASSATA);
+			switch (input.getTipo()) {
+			case ALTRO_INTERMEDIARIO:
+				rsModel.setTipo(TipoRiscossione.ALTRO_INTERMEDIARIO);
 				break;
-			case PAGATO: rsModel.setStato(StatoRiscossione.RISCOSSA);
-				break;
-			case PAGATO_SENZA_RPT: rsModel.setStato(StatoRiscossione.RISCOSSA);
-				break;
-			default:
-				break;
-			}
-			
-			if(input.getTipo().equals(TipoPagamento.ENTRATA)) {
+			case ENTRATA:
 				rsModel.setTipo(TipoRiscossione.ENTRATA);
-			} else {
+				break;
+			case MBT:
 				rsModel.setTipo(TipoRiscossione.MBT);
-			} 
-			
-			rsModel.setCommissioni(input.getCommissioniPsp());
-			Allegato allegato = new Allegato();
-			allegato.setTesto(Base64.encodeBase64String(input.getAllegato()));
-			if(input.getTipoAllegato() != null)
-				allegato.setTipo(TipoEnum.fromCodifica(input.getTipoAllegato().toString()));
-			
-			if(allegato.getTipo() != null && allegato.getTipo().equals(TipoEnum.MARCA_DA_BOLLO)) {
-				byte[] xmlMarca = input.getAllegato();
-				try {
-					allegato.setContenuto(JaxbUtils.toMarcaDaBollo(xmlMarca));
-				} catch (JAXBException | SAXException e) {
-					allegato.setContenuto(new MarcaDaBollo());
-				}
+				break;
 			}
-			rsModel.setAllegato(allegato);
+			
+			// solo per i pagamenti interni
+			if(!input.getTipo().equals(TipoPagamento.ALTRO_INTERMEDIARIO)) {
+				rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte()));
+				rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
+				
+				if(rpt!= null)
+					rsModel.setRpp(UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp()));
+				
+				Stato stato = input.getStato();
+				if(stato != null) {
+					switch(stato) {
+					case INCASSATO: rsModel.setStato(StatoRiscossione.INCASSATA);
+						break;
+					case PAGATO: rsModel.setStato(StatoRiscossione.RISCOSSA);
+						break;
+					case PAGATO_SENZA_RPT: rsModel.setStato(StatoRiscossione.RISCOSSA);
+						break;
+					default:
+						break;
+					}
+				}
+				
+				rsModel.setCommissioni(input.getCommissioniPsp());
+				Allegato allegato = new Allegato();
+				allegato.setTesto(Base64.encodeBase64String(input.getAllegato()));
+				if(input.getTipoAllegato() != null)
+					allegato.setTipo(TipoEnum.fromCodifica(input.getTipoAllegato().toString()));
+				
+				if(allegato.getTipo() != null && allegato.getTipo().equals(TipoEnum.MARCA_DA_BOLLO)) {
+					byte[] xmlMarca = input.getAllegato();
+					try {
+						allegato.setContenuto(JaxbUtils.toMarcaDaBollo(xmlMarca));
+					} catch (JAXBException | SAXException e) {
+						allegato.setContenuto(new MarcaDaBollo());
+					}
+				}
+				rsModel.setAllegato(allegato);
+			}
 			
 			if(incasso !=null)
 				rsModel.setIncasso(UriBuilderUtils.getIncassiByIdDominioIdIncasso(incasso.getCodDominio(), incasso.getTrn()));
-			
 		} catch(ServiceException e) {
 			LoggerWrapperFactory.getLogger(BaseRsService.class).error("Errore nella conversione del pagamento: " + e.getMessage(), e);
 		}
@@ -166,48 +177,58 @@ public class RiscossioniConverter {
 			rsModel.setIuv(input.getIuv());
 			rsModel.setIur(input.getIur());
 			rsModel.setIndice(new BigDecimal(input.getIndiceDati()));
-			
-			rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(input.getSingoloVersamento(null).getVersamento(null).getApplicazione(configWrapper).getCodApplicazione(), input.getSingoloVersamento(null).getVersamento(null).getCodVersamentoEnte()));
-			rsModel.setVocePendenza(PendenzeConverter.toVocePendenzaRiscossioneRsModel(input.getSingoloVersamento(null), input.getSingoloVersamento(null).getVersamento(null)));
-			Rpt rpt = input.getRpt(null);
-			if(rpt!= null)
-				rsModel.setRpp(UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp()));
 			rsModel.setImporto(input.getImportoPagato());
 			rsModel.setData(input.getDataPagamento());
-			Stato stato = input.getStato();
-			switch(stato) {
-			case INCASSATO: rsModel.setStato(StatoRiscossione.INCASSATA);
+			switch (input.getTipo()) {
+			case ALTRO_INTERMEDIARIO:
+				rsModel.setTipo(TipoRiscossione.ALTRO_INTERMEDIARIO);
 				break;
-			case PAGATO: rsModel.setStato(StatoRiscossione.RISCOSSA);
-				break;
-			case PAGATO_SENZA_RPT: rsModel.setStato(StatoRiscossione.RISCOSSA);
-				break;
-			default:
-				break;
-			}
-			
-			if(input.getTipo().equals(TipoPagamento.ENTRATA)) {
+			case ENTRATA:
 				rsModel.setTipo(TipoRiscossione.ENTRATA);
-			} else {
+				break;
+			case MBT:
 				rsModel.setTipo(TipoRiscossione.MBT);
-			} 
-			
-			rsModel.setCommissioni(input.getCommissioniPsp());
-			Allegato allegato = new Allegato();
-			allegato.setTesto(Base64.encodeBase64String(input.getAllegato()));
-			if(input.getTipoAllegato() != null)
-				allegato.setTipo(TipoEnum.fromCodifica(input.getTipoAllegato().toString()));
-			
-			if(allegato.getTipo() != null && allegato.getTipo().equals(TipoEnum.MARCA_DA_BOLLO)) {
-				byte[] xmlMarca = input.getAllegato();
-				try {
-					allegato.setContenuto(JaxbUtils.toMarcaDaBollo(xmlMarca));
-				} catch (JAXBException | SAXException e) {
-					allegato.setContenuto(new MarcaDaBollo());
-				}
+				break;
 			}
-			rsModel.setAllegato(allegato);
 			
+			// solo per i pagamenti interni
+			if(!input.getTipo().equals(TipoPagamento.ALTRO_INTERMEDIARIO)) {
+				rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(input.getSingoloVersamento(null).getVersamento(null).getApplicazione(configWrapper).getCodApplicazione(), input.getSingoloVersamento(null).getVersamento(null).getCodVersamentoEnte()));
+				rsModel.setVocePendenza(PendenzeConverter.toVocePendenzaRiscossioneRsModel(input.getSingoloVersamento(null), input.getSingoloVersamento(null).getVersamento(null)));
+				Rpt rpt = input.getRpt(null);
+				if(rpt!= null)
+					rsModel.setRpp(UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp()));
+				rsModel.setImporto(input.getImportoPagato());
+				rsModel.setData(input.getDataPagamento());
+				Stato stato = input.getStato();
+				switch(stato) {
+				case INCASSATO: rsModel.setStato(StatoRiscossione.INCASSATA);
+					break;
+				case PAGATO: rsModel.setStato(StatoRiscossione.RISCOSSA);
+					break;
+				case PAGATO_SENZA_RPT: rsModel.setStato(StatoRiscossione.RISCOSSA);
+					break;
+				default:
+					break;
+				}
+				
+				
+				rsModel.setCommissioni(input.getCommissioniPsp());
+				Allegato allegato = new Allegato();
+				allegato.setTesto(Base64.encodeBase64String(input.getAllegato()));
+				if(input.getTipoAllegato() != null)
+					allegato.setTipo(TipoEnum.fromCodifica(input.getTipoAllegato().toString()));
+				
+				if(allegato.getTipo() != null && allegato.getTipo().equals(TipoEnum.MARCA_DA_BOLLO)) {
+					byte[] xmlMarca = input.getAllegato();
+					try {
+						allegato.setContenuto(JaxbUtils.toMarcaDaBollo(xmlMarca));
+					} catch (JAXBException | SAXException e) {
+						allegato.setContenuto(new MarcaDaBollo());
+					}
+				}
+				rsModel.setAllegato(allegato);
+			}
 			if(input.getIncasso(null)!=null)
 				rsModel.setIncasso(UriBuilderUtils.getIncassiByIdDominioIdIncasso(input.getCodDominio(), input.getIncasso(null).getTrn()));
 			

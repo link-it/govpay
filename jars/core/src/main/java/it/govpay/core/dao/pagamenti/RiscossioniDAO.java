@@ -50,7 +50,7 @@ public class RiscossioniDAO extends BaseDAO{
 			filter.setIdDomini(listaRiscossioniDTO.getCodDomini());
 			filter.setDataInizio(listaRiscossioniDTO.getDataRiscossioneDa());
 			filter.setDataFine(listaRiscossioniDTO.getDataRiscossioneA());
-			filter.setTipo(listaRiscossioniDTO.getTipo());
+//			filter.setTipo(listaRiscossioniDTO.getTipo()); TODO
 			filter.setIdA2A(listaRiscossioniDTO.getIdA2A());
 			filter.setCodVersamentoEnte(listaRiscossioniDTO.getIdPendenza());
 			if(listaRiscossioniDTO.getStato() != null)

@@ -92,7 +92,7 @@ public class RiscossioniController extends BaseController {
 
 
 
-    public Response findRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String idUnita, String idTipoPendenza, String stato, String dataDa, String dataA, String tipo, String iuv, List<String> direzione, List<String> divisione, List<String> tassonomia, Boolean metadatiPaginazione, Boolean maxRisultati) {
+    public Response findRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String idUnita, String idTipoPendenza, String stato, String dataDa, String dataA, List<String> tipo, String iuv, List<String> direzione, List<String> divisione, List<String> tassonomia, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findRiscossioni";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -140,17 +140,25 @@ public class RiscossioniController extends BaseController {
 							+ "] valori possibili " + ArrayUtils.toString(StatoRiscossione.values()));
 				}
 			}
+			
+			List<TIPO_PAGAMENTO> tipoEnum = new ArrayList<>();
+			if(tipo == null || tipo.isEmpty()) { // valori di default
+				tipoEnum.add(TIPO_PAGAMENTO.ENTRATA);
+				tipoEnum.add(TIPO_PAGAMENTO.MBT);
+			}
 
 			if(tipo!=null) {
-				TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipo);
-				if(tipoRiscossione != null) {
-					findRiscossioniDTO.setTipo(TIPO_PAGAMENTO.valueOf(tipoRiscossione.toString()));
-				} else {
-					throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + tipo
-							+ "] valori possibili " + ArrayUtils.toString(TipoRiscossione.values()));
+				for (String tipoS : tipo) {
+					TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipoS);
+					if(tipoRiscossione != null) {
+						tipoEnum.add(TIPO_PAGAMENTO.valueOf(tipoRiscossione.toString()));
+					} else {
+						throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + tipo + "] valori possibili " + ArrayUtils.toString(TipoRiscossione.values()));
+					}
 				}
 			}
 			
+			findRiscossioniDTO.setTipo(tipoEnum);
 			findRiscossioniDTO.setIuv(iuv);
 			findRiscossioniDTO.setIdUnita(idUnita);
 			findRiscossioniDTO.setIdTipoPendenza(idTipoPendenza);

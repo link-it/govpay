@@ -13,6 +13,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -20,7 +22,9 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.Incasso;
 import it.govpay.backoffice.v1.beans.IncassoPost;
 import it.govpay.backoffice.v1.beans.ListaIncassiIndex;
+import it.govpay.backoffice.v1.beans.TipoRiscossione;
 import it.govpay.backoffice.v1.beans.converter.IncassiConverter;
+import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.JSONSerializable;
@@ -102,7 +106,7 @@ public class IncassiController extends BaseController {
 	}
 
 
-	public Response getRiconciliazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
+	public Response getRiconciliazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso, List<String> riscossioniTipo) {
 		String methodName = "getRiconciliazione";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -122,6 +126,25 @@ public class IncassiController extends BaseController {
 			if(!AuthorizationManager.isDominioAuthorized(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio(), null);
 			}
+			
+			List<TIPO_PAGAMENTO> tipoEnum = new ArrayList<>();
+			if(riscossioniTipo == null || riscossioniTipo.isEmpty()) { // valori di default
+				tipoEnum.add(TIPO_PAGAMENTO.ENTRATA);
+				tipoEnum.add(TIPO_PAGAMENTO.MBT);
+			}
+
+			if(riscossioniTipo!=null) {
+				for (String tipoS : riscossioniTipo) {
+					TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipoS);
+					if(tipoRiscossione != null) {
+						tipoEnum.add(TIPO_PAGAMENTO.valueOf(tipoRiscossione.toString()));
+					} else {
+						throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + riscossioniTipo + "] valori possibili " + ArrayUtils.toString(TipoRiscossione.values()));
+					}
+				}
+			}
+			
+			leggiIncassoDTO.setTipoRiscossioni(tipoEnum);
 
 			IncassiDAO incassiDAO = new IncassiDAO();
 

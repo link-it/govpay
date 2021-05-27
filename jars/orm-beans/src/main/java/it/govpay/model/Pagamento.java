@@ -28,7 +28,7 @@ public class Pagamento extends BasicModel {
 	private static final long serialVersionUID = 1L;
 
 	public enum TipoPagamento {
-		ENTRATA, MBT
+		ENTRATA, MBT, ALTRO_INTERMEDIARIO
 	}
 	
 	public enum TipoAllegato {

@@ -23,7 +23,7 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	
 	private Date dataRiscossioneDa;
 	private Date dataRiscossioneA;
-	private TIPO_PAGAMENTO tipo;
+	private List<TIPO_PAGAMENTO> tipo;
 	private String idPendenza;
 	private String idA2A;
 	private String idDominio;
@@ -53,11 +53,11 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 		this.dataRiscossioneA = dataRiscossioneA;
 	}
 
-	public TIPO_PAGAMENTO getTipo() {
+	public List<TIPO_PAGAMENTO> getTipo() {
 		return this.tipo;
 	}
 
-	public void setTipo(TIPO_PAGAMENTO tipo) {
+	public void setTipo(List<TIPO_PAGAMENTO> tipo) {
 		this.tipo = tipo;
 	}
 

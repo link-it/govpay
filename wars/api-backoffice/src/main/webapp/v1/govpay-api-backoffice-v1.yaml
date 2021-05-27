@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.25.0"
+  version: "1.26.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -3112,7 +3112,7 @@ paths:
         - $ref: '#/components/parameters/statoRiscossione'
         - $ref: '#/components/parameters/dataDa'
         - $ref: '#/components/parameters/dataA'
-        - $ref: '#/components/parameters/tipoRiscossione'
+        - $ref: '#/components/parameters/tipiRiscossione'
         - $ref: '#/components/parameters/iuv'
         - $ref: '#/components/parameters/direzioni'
         - $ref: '#/components/parameters/divisioni'
@@ -3469,6 +3469,7 @@ paths:
           required: true
           schema:
             type: string
+        - $ref: '#/components/parameters/tipiRiscossioneRiconciliazione'
       responses:
         '201':
           description: Dettaglio dell'incasso
@@ -4423,10 +4424,19 @@ components:
         type: array
         items:
           type: string
+    tipiRiscossioneRiconciliazione:
+      in: query
+      name: riscossioni.tipo
+      description: Tipologia della riscossione (default [ENTRATA, MBT] )
+      required: false
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/tipoRiscossione'
     tipiRiscossione:
       in: query
       name: tipo
-      description: Tipologia della riscossione
+      description: Tipologia della riscossione (default [ENTRATA, MBT] )
       required: false
       schema:
         type: array
@@ -6951,9 +6961,6 @@ components:
         - iuv
         - iur
         - indice
-        - pendenza
-        - idVocePendenza
-        - stato
         - tipo
         - importo
         - data
@@ -7019,9 +7026,6 @@ components:
         - iuv
         - iur
         - indice
-        - pendenza
-        - vocePendenza
-        - stato
         - tipo
         - importo
         - data
@@ -7865,10 +7869,12 @@ components:
         Tipologia della voce riscossa
          * ENTRATA: Entrata in tesoreria
          * MBT: Marca da bollo telematica
+         * ALTRO_INTERMEDIARIO: Entrata relativa a un intermediario esterno
       type: string
       enum:
         - ENTRATA
         - MBT
+        - ALTRO_INTERMEDIARIO
     listaPaginata:
       type: object
       properties:
