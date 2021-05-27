@@ -42,14 +42,13 @@ import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.model.Pagamento.Stato;
+import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.orm.Pagamento;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 import it.govpay.orm.model.PagamentoModel;
 
 public class PagamentoFilter extends AbstractFilter {
 
-	public enum TIPO_PAGAMENTO {ENTRATA, MBT}
-	
 	private Long idIncasso;
 	private Long idRr;
 	private Long idRpt;
@@ -67,7 +66,7 @@ public class PagamentoFilter extends AbstractFilter {
 	private String iur;
 	private String iuv;
 	private String idA2A;
-	private TIPO_PAGAMENTO tipo;
+	private List<TipoPagamento> tipo;
 	private String idUnita;
 	private String idTipoPendenza;
 	private List<String> direzione;
@@ -121,11 +120,13 @@ public class PagamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 
-			if(this.tipo != null) {
+			if(this.tipo != null  && !this.tipo.isEmpty()) {
+				this.tipo.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
-
-				newExpression.equals(Pagamento.model().TIPO,this.tipo.toString());
+				
+				List<String> tipiS = this.tipo.stream().map(e -> e.toString()).collect(Collectors.toList());
+				newExpression.in(Pagamento.model().TIPO, tipiS);
 				addAnd = true;
 			}
 
@@ -389,8 +390,11 @@ public class PagamentoFilter extends AbstractFilter {
 				sqlQueryObject.addWhereCondition(true,tableNameApplicazioni + ".cod_applicazione" + " = ? ");
 			}
 
-			if(this.tipo != null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.TIPO, true) + " = ? ");
+			if(this.tipo != null  && !this.tipo.isEmpty()) {
+				this.tipo.removeAll(Collections.singleton(null));
+				
+				String [] tipiS = this.tipo.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.tipo.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.TIPO, true), true, tipiS );
 			}
 
 			if(this.getIdIncasso() != null) {
@@ -646,7 +650,7 @@ public class PagamentoFilter extends AbstractFilter {
 		}
 
 		if(this.tipo != null) {
-			lst.add(this.tipo.toString());
+			// donothing
 		}
 
 		if(this.getIdIncasso() != null) {
@@ -853,11 +857,11 @@ public class PagamentoFilter extends AbstractFilter {
 		this.idA2A = idA2A;
 	}
 
-	public TIPO_PAGAMENTO getTipo() {
+	public List<TipoPagamento> getTipo() {
 		return this.tipo;
 	}
 
-	public void setTipo(TIPO_PAGAMENTO tipo) {
+	public void setTipo(List<TipoPagamento> tipo) {
 		this.tipo = tipo;
 	}
 

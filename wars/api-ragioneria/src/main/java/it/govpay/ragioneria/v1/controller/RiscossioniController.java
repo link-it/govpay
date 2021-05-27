@@ -17,7 +17,6 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
 import it.govpay.bd.viste.model.Pagamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
@@ -33,6 +32,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Pagamento.Stato;
+import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.ragioneria.v1.beans.ListaRiscossioni;
 import it.govpay.ragioneria.v1.beans.Riscossione;
@@ -150,7 +150,9 @@ public class RiscossioniController extends BaseController {
 			if(tipo!=null) {
 				TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipo);
 				if(tipoRiscossione != null) {
-					findRiscossioniDTO.setTipo(TIPO_PAGAMENTO.valueOf(tipoRiscossione.toString()));
+					List<TipoPagamento> tipoEnum = new ArrayList<>();
+					tipoEnum.add(TipoPagamento.valueOf(tipoRiscossione.toString()));
+					findRiscossioniDTO.setTipo(tipoEnum);
 				} else {
 					throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + tipo
 							+ "] valori possibili " + ArrayUtils.toString(TipoRiscossione.values()));

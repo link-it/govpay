@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.security.core.Authentication;
 
-import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
+import it.govpay.model.Pagamento.TipoPagamento;
 
 public class LeggiIncassoDTO extends BasicFindRequestDTO {
 	
@@ -15,7 +15,7 @@ public class LeggiIncassoDTO extends BasicFindRequestDTO {
 	
 	private String idDominio;
 	private String idIncasso;
-	private List<TIPO_PAGAMENTO> tipoRiscossioni;
+	private List<TipoPagamento> tipoRiscossioni;
 	
 	public String getIdDominio() {
 		return this.idDominio;
@@ -29,10 +29,10 @@ public class LeggiIncassoDTO extends BasicFindRequestDTO {
 	public void setIdIncasso(String idIncasso) {
 		this.idIncasso = idIncasso;
 	}
-	public List<TIPO_PAGAMENTO> getTipoRiscossioni() {
+	public List<TipoPagamento> getTipoRiscossioni() {
 		return tipoRiscossioni;
 	}
-	public void setTipoRiscossioni(List<TIPO_PAGAMENTO> tipoRiscossioni) {
+	public void setTipoRiscossioni(List<TipoPagamento> tipoRiscossioni) {
 		this.tipoRiscossioni = tipoRiscossioni;
 	}
 

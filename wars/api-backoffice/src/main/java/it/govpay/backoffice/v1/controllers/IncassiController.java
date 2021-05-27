@@ -24,7 +24,6 @@ import it.govpay.backoffice.v1.beans.IncassoPost;
 import it.govpay.backoffice.v1.beans.ListaIncassiIndex;
 import it.govpay.backoffice.v1.beans.TipoRiscossione;
 import it.govpay.backoffice.v1.beans.converter.IncassiConverter;
-import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.JSONSerializable;
@@ -41,6 +40,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 
@@ -127,17 +127,17 @@ public class IncassiController extends BaseController {
 				throw AuthorizationManager.toNotAuthorizedException(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio(), null);
 			}
 			
-			List<TIPO_PAGAMENTO> tipoEnum = new ArrayList<>();
+			List<TipoPagamento> tipoEnum = new ArrayList<>();
 			if(riscossioniTipo == null || riscossioniTipo.isEmpty()) { // valori di default
-				tipoEnum.add(TIPO_PAGAMENTO.ENTRATA);
-				tipoEnum.add(TIPO_PAGAMENTO.MBT);
+				tipoEnum.add(TipoPagamento.ENTRATA);
+				tipoEnum.add(TipoPagamento.MBT);
 			}
 
 			if(riscossioniTipo!=null) {
 				for (String tipoS : riscossioniTipo) {
 					TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipoS);
 					if(tipoRiscossione != null) {
-						tipoEnum.add(TIPO_PAGAMENTO.valueOf(tipoRiscossione.toString()));
+						tipoEnum.add(TipoPagamento.valueOf(tipoRiscossione.toString()));
 					} else {
 						throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + riscossioniTipo + "] valori possibili " + ArrayUtils.toString(TipoRiscossione.values()));
 					}

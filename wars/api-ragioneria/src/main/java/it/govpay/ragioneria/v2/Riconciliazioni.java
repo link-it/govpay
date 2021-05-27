@@ -60,7 +60,7 @@ public class Riconciliazioni extends BaseRsServiceV2{
     @Produces({ "application/json" })
     public Response getRiconciliazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idIncasso") String idIncasso, @QueryParam("riscossioni.tipo") List<String> riscossioniTipo){
         this.buildContext();
-        return this.controller.getRiconciliazione(this.getUser(), uriInfo, httpHeaders,  idDominio,  idIncasso, tipo);
+        return this.controller.getRiconciliazione(this.getUser(), uriInfo, httpHeaders,  idDominio,  idIncasso, riscossioniTipo);
     }
 
 }

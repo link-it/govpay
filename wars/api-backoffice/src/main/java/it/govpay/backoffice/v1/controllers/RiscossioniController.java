@@ -23,7 +23,6 @@ import it.govpay.backoffice.v1.beans.Riscossione;
 import it.govpay.backoffice.v1.beans.StatoRiscossione;
 import it.govpay.backoffice.v1.beans.TipoRiscossione;
 import it.govpay.backoffice.v1.beans.converter.RiscossioniConverter;
-import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.RiscossioniDAO;
@@ -38,6 +37,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Pagamento.Stato;
+import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 
@@ -141,17 +141,17 @@ public class RiscossioniController extends BaseController {
 				}
 			}
 			
-			List<TIPO_PAGAMENTO> tipoEnum = new ArrayList<>();
+			List<TipoPagamento> tipoEnum = new ArrayList<>();
 			if(tipo == null || tipo.isEmpty()) { // valori di default
-				tipoEnum.add(TIPO_PAGAMENTO.ENTRATA);
-				tipoEnum.add(TIPO_PAGAMENTO.MBT);
+				tipoEnum.add(TipoPagamento.ENTRATA);
+				tipoEnum.add(TipoPagamento.MBT);
 			}
 
 			if(tipo!=null) {
 				for (String tipoS : tipo) {
 					TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipoS);
 					if(tipoRiscossione != null) {
-						tipoEnum.add(TIPO_PAGAMENTO.valueOf(tipoRiscossione.toString()));
+						tipoEnum.add(TipoPagamento.valueOf(tipoRiscossione.toString()));
 					} else {
 						throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + tipo + "] valori possibili " + ArrayUtils.toString(TipoRiscossione.values()));
 					}
