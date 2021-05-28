@@ -88,7 +88,7 @@ public class EntratePrevisteBD extends BasicBD {
 		}
 	}
 	
-	public List<EntrataPrevista> ricercaRiscossioniDominio(String codDominio, Date dataRtDa, Date dataRtA, List<String> listaTipiPendenza, Integer offset, Integer limit) throws ServiceException{
+	public List<EntrataPrevista> ricercaRiscossioniDominio(String codDominio, Date dataRtDa, Date dataRtA, List<String> listaTipiPendenza, boolean fr, Integer offset, Integer limit) throws ServiceException{
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -106,7 +106,11 @@ public class EntratePrevisteBD extends BasicBD {
 				listaTipiPendenza.removeAll(Collections.singleton(null));
 				exp.in(model.COD_TIPO_VERSAMENTO, listaTipiPendenza);
 			}
-			exp.isNotNull(model.COD_FLUSSO);
+			if(fr) {
+				exp.isNotNull(model.COD_FLUSSO);
+			} else {
+				exp.isNull(model.COD_FLUSSO);
+			}
 			
 			IPaginatedExpression pagExp = this.getPagamentoService().toPaginatedExpression(exp);
 			pagExp.offset(offset).limit(limit);
@@ -131,7 +135,7 @@ public class EntratePrevisteBD extends BasicBD {
 		}
 	}
 	
-	public long countRiscossioniDominio(String codDominio, Date dataRtDa, Date dataRtA, List<String> listaTipiPendenza) throws ServiceException{
+	public long countRiscossioniDominio(String codDominio, Date dataRtDa, Date dataRtA, List<String> listaTipiPendenza, boolean fr) throws ServiceException{
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -149,7 +153,11 @@ public class EntratePrevisteBD extends BasicBD {
 				listaTipiPendenza.removeAll(Collections.singleton(null));
 				exp.in(model.COD_TIPO_VERSAMENTO, listaTipiPendenza);
 			}
-			exp.isNotNull(model.COD_FLUSSO);
+			if(fr) {
+				exp.isNotNull(model.COD_FLUSSO);
+			} else {
+				exp.isNull(model.COD_FLUSSO);
+			}
 			
 			NonNegativeNumber count = this.getVistaRiscossioniServiceSearch().count(exp);
 			
