@@ -28,6 +28,8 @@ export class ConnettoreSecimComponent implements IFormComponent, OnInit, AfterVi
   _all: any = { descrizione: UtilService.TUTTI_TIPI_PENDENZA.label, idTipoPendenza: UtilService.TUTTI_TIPI_PENDENZA.value };
   _tipiPendenza: any[] = (UtilService.PROFILO_UTENTE.tipiPendenza || []);
 
+  _isAllegatoEmail: boolean = false;
+
   constructor() { }
 
   ngOnInit() {
@@ -39,6 +41,8 @@ export class ConnettoreSecimComponent implements IFormComponent, OnInit, AfterVi
     this.fGroup.addControl('tipiPendenza_ctrl', new FormControl(''));
     this.fGroup.addControl('emailIndirizzi_ctrl', new FormControl(''));
     this.fGroup.addControl('emailSubject_ctrl', new FormControl(''));
+    this.fGroup.addControl('emailAllegato_ctrl', new FormControl(false));
+    this.fGroup.addControl('downloadBaseUrl_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('fileSystemPath_ctrl', new FormControl(''));
   }
 
@@ -60,8 +64,15 @@ export class ConnettoreSecimComponent implements IFormComponent, OnInit, AfterVi
           this.fGroup.controls['emailIndirizzi_ctrl'].setValue(this.json.emailIndirizzi.join(SEPARATORE) || '');
         }
         this.fGroup.controls['emailSubject_ctrl'].setValue(this.json.emailSubject || '');
+        this.fGroup.controls['emailAllegato_ctrl'].setValue(this.json.emailAllegato || false);
+        if (!this.json.emailAllegato) {
+          this.fGroup.controls['downloadBaseUrl_ctrl'].setValue(this.json.downloadBaseUrl || '');
+        }
         this.fGroup.controls['fileSystemPath_ctrl'].setValue(this.json.fileSystemPath || '');
         this.__bools(this.json.tipiPendenza);
+        this._allegatoChange({ checked: this.json.emailAllegato });
+        this._onChangeSecim({ checked: this.json.abilitato }, 'secimAbilitato_ctrl');
+        this._onChangeSecim({ value: this.json.tipoConnettore }, 'tipoConnettore_ctrl');
       }
     });
   }
@@ -96,15 +107,27 @@ export class ConnettoreSecimComponent implements IFormComponent, OnInit, AfterVi
       this.fGroup.controls['tipiPendenza_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
       if (!event.checked) {
         this.fGroup.controls['emailIndirizzi_ctrl'].clearValidators();
+        this.fGroup.controls['downloadBaseUrl_ctrl'].clearValidators();
         this.fGroup.controls['fileSystemPath_ctrl'].clearValidators();
       }
     }
     if (type === 'tipoConnettore_ctrl') {
+      // EMAIL
       (this.secimAbilitato.value && event.value === UtilService.CONNETTORE_MODALITA_EMAIL)?this.fGroup.controls['emailIndirizzi_ctrl'].setValidators([Validators.required, Validators.pattern(this.pattern)]):this.fGroup.controls['emailIndirizzi_ctrl'].clearValidators();
+      (this.secimAbilitato.value && !this._isAllegatoEmail && event.value === UtilService.CONNETTORE_MODALITA_EMAIL)?this.fGroup.controls['downloadBaseUrl_ctrl'].setValidators([Validators.required]):this.fGroup.controls['downloadBaseUrl_ctrl'].clearValidators();
+      // FS
       (this.secimAbilitato.value && event.value === UtilService.CONNETTORE_MODALITA_FILESYSTEM)?this.fGroup.controls['fileSystemPath_ctrl'].setValidators(Validators.required):this.fGroup.controls['fileSystemPath_ctrl'].clearValidators();
     }
     this.fGroup.controls['emailIndirizzi_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+    this.fGroup.controls['downloadBaseUrl_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
     this.fGroup.controls['fileSystemPath_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+  }
+
+  protected _allegatoChange(event: any) {
+    this._isAllegatoEmail = event.checked;
+    (event.checked)?this.fGroup.controls['downloadBaseUrl_ctrl'].clearValidators():this.fGroup.controls['downloadBaseUrl_ctrl'].setValidators(Validators.required);
+    (event.checked)?this.fGroup.controls['downloadBaseUrl_ctrl'].disable():this.fGroup.controls['downloadBaseUrl_ctrl'].enable();
+    this.fGroup.controls['downloadBaseUrl_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
   }
 
   _pendenzaCmpFn(p1: any, p2: any): boolean {
@@ -130,6 +153,10 @@ export class ConnettoreSecimComponent implements IFormComponent, OnInit, AfterVi
       if (_json.tipoConnettore === UtilService.CONNETTORE_MODALITA_EMAIL) {
         _json.emailIndirizzi = _info['emailIndirizzi_ctrl']?_info['emailIndirizzi_ctrl'].split(SEPARATORE):null;
         _json.emailSubject = _info['emailSubject_ctrl'] || null;
+        _json.emailAllegato = _info['emailAllegato_ctrl'] || false;
+        if (_info['emailAllegato_ctrl'] === false) {
+          _json.downloadBaseUrl = _info['downloadBaseUrl_ctrl'] || null;
+        }
       } else {
         _json.fileSystemPath = _info['fileSystemPath_ctrl'] || null;
       }

@@ -27,6 +27,7 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
   protected SSL = UtilService.TIPI_AUTENTICAZIONE.ssl;
   protected CLIENT = UtilService.TIPI_SSL.client;
   protected SERVER = UtilService.TIPI_SSL.server;
+  protected sslTypeValue: string = '';
 
   protected versioni: any[] = UtilService.TIPI_VERSIONE_API;
 
@@ -38,6 +39,7 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
   protected tipiPendenza = [];
 
   protected _attivaGestionePassword: boolean = false;
+
 
   constructor(public gps: GovpayService, public us: UtilService) {
     this._attivaGestionePassword = !!(UtilService.GESTIONE_PASSWORD && UtilService.GESTIONE_PASSWORD.ENABLED);
@@ -112,16 +114,13 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
             if (item.auth.hasOwnProperty('tipo')) {
               this._isSslAuth = true;
               this.fGroup.controls['auth_ctrl'].setValue(this.SSL);
-              this.addSslControls();
-              this.fGroup.controls['ssl_ctrl'].setValue(item.auth.tipo === this.CLIENT);
-              this.fGroup.controls['tsLocation_ctrl'].setValue(item.auth.tsLocation);
-              this.fGroup.controls['tsPassword_ctrl'].setValue(item.auth.tsPassword);
-              if (item.auth.tipo === this.CLIENT) {
-                this.addSslClientControls();
-                this.fGroup.controls['ksLocation_ctrl'].setValue(item.auth.ksLocation);
-                this.fGroup.controls['ksPassword_ctrl'].setValue(item.auth.ksPassword);
-                this._isSslClient = true;
-              }
+              this.addSslTypeControls(item.auth.tipo);
+              this.addSslControls(item.auth.tipo);
+              (item.auth.tipo)?this.fGroup.controls['ssl_ctrl'].setValue(item.auth.tipo):null;
+              (item.auth.ksLocation)?this.fGroup.controls['ksLocation_ctrl'].setValue(item.auth.ksLocation):null;
+              (item.auth.ksPassword)?this.fGroup.controls['ksPassword_ctrl'].setValue(item.auth.ksPassword):null;
+              (item.auth.tsLocation)?this.fGroup.controls['tsLocation_ctrl'].setValue(item.auth.tsLocation):null;
+              (item.auth.tsPassword)?this.fGroup.controls['tsPassword_ctrl'].setValue(item.auth.tsPassword):null;
             }
           }
         }
@@ -296,40 +295,46 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
         this._isBasicAuth = true;
         break;
       case this.SSL:
-        this.addSslControls();
-        this._isSslAuth = true;
+        this.addSslTypeControls(this.SERVER);
+        this.addSslControls(this.SERVER);
+        this.sslAuth = true;
         break;
     }
   }
 
-  protected _onTypeChange(target) {
-    this._isSslClient = false;
-    this.removeSslClientControls();
-    if (target.checked === true) {
-      this._isSslClient = true;
-      this.addSslClientControls();
+  protected _onSslTypeChange(target: any) {
+    this.sslTypeValue = target.value;
+    this.fGroup.controls['ksLocation_ctrl'].clearValidators();
+    this.fGroup.controls['ksPassword_ctrl'].clearValidators();
+    if (target.value === this.CLIENT) {
+      this.fGroup.controls['ksLocation_ctrl'].setValidators(Validators.required);
+      this.fGroup.controls['ksPassword_ctrl'].setValidators(Validators.required);
     }
+    this.fGroup.controls['ksLocation_ctrl'].updateValueAndValidity();
+    this.fGroup.controls['ksPassword_ctrl'].updateValueAndValidity();
   }
 
   protected addBasicControls() {
     this.fGroup.addControl('username_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('password_ctrl', new FormControl('', Validators.required));
+    this.fGroup.controls['username_ctrl'].updateValueAndValidity();
+    this.fGroup.controls['password_ctrl'].updateValueAndValidity();
   }
 
-  protected addSslControls() {
-    this.fGroup.addControl('ssl_ctrl', new FormControl(false, Validators.required));
+  protected addSslTypeControls(tipo: string) {
+    this.fGroup.addControl('ssl_ctrl', new FormControl(tipo, Validators.required));
+    this.fGroup.controls['ssl_ctrl'].updateValueAndValidity();
+  }
+
+  protected addSslControls(tipo: string) {
     this.fGroup.addControl('tsLocation_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('tsPassword_ctrl', new FormControl('', Validators.required));
-  }
-
-  protected addSslClientControls() {
-    this.fGroup.addControl('ksLocation_ctrl', new FormControl('', Validators.required));
-    this.fGroup.addControl('ksPassword_ctrl', new FormControl('', Validators.required));
-  }
-
-  protected removeSslClientControls() {
-    this.fGroup.removeControl('ksLocation_ctrl');
-    this.fGroup.removeControl('ksPassword_ctrl');
+    this.fGroup.addControl('ksLocation_ctrl', new FormControl(''));
+    this.fGroup.addControl('ksPassword_ctrl', new FormControl(''));
+    this.fGroup.controls['tsLocation_ctrl'].updateValueAndValidity();
+    this.fGroup.controls['tsPassword_ctrl'].updateValueAndValidity();
+    this.fGroup.controls['ksLocation_ctrl'].updateValueAndValidity();
+    this.fGroup.controls['ksPassword_ctrl'].updateValueAndValidity();
   }
 
   protected removeBasicControls() {
@@ -339,10 +344,10 @@ export class ApplicazioneViewComponent implements IModalDialog, IFormComponent, 
 
   protected removeSslControls() {
     this.fGroup.removeControl('ssl_ctrl');
-    this.fGroup.removeControl('ksLocation_ctrl');
-    this.fGroup.removeControl('ksPassword_ctrl');
     this.fGroup.removeControl('tsLocation_ctrl');
     this.fGroup.removeControl('tsPassword_ctrl');
+    this.fGroup.removeControl('ksLocation_ctrl');
+    this.fGroup.removeControl('ksPassword_ctrl');
   }
 
   /**

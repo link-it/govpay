@@ -10,7 +10,9 @@
       </div>
       <div class="row">
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="_Voce.VERSIONE_CSV" formControlName="versioneCsv_ctrl" [required]="!!govpayAbilitato?.value">
+          <mat-select [placeholder]="_Voce.VERSIONE_ZIP" formControlName="versioneZip_ctrl"
+                      [required]="!!govpayAbilitato?.value && (tipoConnettore.value === Util.CONNETTORE_MODALITA_EMAIL || tipoConnettore.value === Util.CONNETTORE_MODALITA_FILESYSTEM)">
+            <mat-option value="" *ngIf="tipoConnettore.value === Util.CONNETTORE_MODALITA_REST">Nessuna</mat-option>
             <mat-option value="1.0">1.0</mat-option>
           </mat-select>
         </mat-form-field>
@@ -42,10 +44,70 @@
           <input matInput [placeholder]="_Voce.OGGETTO" formControlName="emailSubject_ctrl" autocomplete="off">
         </mat-form-field>
       </div>
+      <div class="row align-items-center" *ngIf="tipoConnettore.value === Util.CONNETTORE_MODALITA_EMAIL">
+        <div class="col-12 col-md-5 col-lg-4" [formGroup]="fGroup">
+          <mat-slide-toggle color="accent" formControlName="emailAllegato_ctrl" (change)="_allegatoChange($event)">
+            {{ _Voce.INVIO_TRACCIATO_ALLEGATO }}
+          </mat-slide-toggle>
+        </div>
+        <mat-form-field class="col" color="accent" [formGroup]="fGroup" *ngIf="!_isAllegatoEmail && tipoConnettore.value === Util.CONNETTORE_MODALITA_EMAIL">
+          <input matInput [placeholder]="_Voce.DOWNLOAD_BASE_URL" formControlName="downloadBaseUrl_ctrl" autocomplete="off"
+                 [required]="govpayAbilitato?.value && !_isAllegatoEmail && govpayModalita === Util.CONNETTORE_MODALITA_EMAIL">
+          <mat-hint>Indicare la base URL dalla quale sarà possibile scaricare il tracciato</mat-hint>
+        </mat-form-field>
+      </div>
       <div class="row" *ngIf="tipoConnettore.value === Util.CONNETTORE_MODALITA_FILESYSTEM">
         <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
           <input matInput [placeholder]="_Voce.PATH" formControlName="fileSystemPath_ctrl" autocomplete="off"
                  [required]="govpayAbilitato?.value && govpayModalita === Util.CONNETTORE_MODALITA_FILESYSTEM">
+        </mat-form-field>
+      </div>
+      <div class="row" *ngIf="tipoConnettore.value === Util.CONNETTORE_MODALITA_REST">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_Voce.CONTENUTI" formControlName="contenuti_ctrl" multiple [required]="!!govpayAbilitato?.value">
+            <mat-option *ngFor="let item of _contenuti" [value]="item.value">{{item.label}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <input #urlCtrl matInput placeholder="URL" formControlName="url_ctrl" autocomplete="off" [required]="!!govpayAbilitato?.value">
+        </mat-form-field>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select placeholder="Versione API" formControlName="versioneApi_ctrl" [required]="!!govpayAbilitato?.value">
+            <mat-option *ngFor="let ver of versioni" [value]="ver">{{ver}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select #auth placeholder="Tipo autenticazione" formControlName="auth_ctrl" (selectionChange)="_onAuthChange(auth)">
+            <mat-option value="">Nessuna</mat-option>
+            <mat-option [value]="BASIC">HTTP Basic</mat-option>
+            <mat-option [value]="SSL">SSL</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- Basic -->
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup" *ngIf="basicAuth">
+          <input matInput placeholder="Username" formControlName="username_ctrl" autocomplete="off" required>
+        </mat-form-field>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup" *ngIf="basicAuth">
+          <input matInput placeholder="Password" formControlName="password_ctrl" autocomplete="off" required>
+        </mat-form-field>
+        <!-- SSL -->
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup" *ngIf="sslAuth">
+          <mat-select #sslType placeholder="SSL Type" formControlName="ssl_ctrl" (selectionChange)="_onSslTypeChange(sslType)" [required]="auth && auth.value === SSL">
+            <mat-option [value]="CLIENT">Client</mat-option>
+            <mat-option [value]="SERVER">Server</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup" *ngIf="sslAuth">
+          <input matInput [placeholder]="_Voce.TRUST_STORE_LOC" formControlName="tsLocation_ctrl" autocomplete="off" required>
+        </mat-form-field>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup" *ngIf="sslAuth">
+          <input matInput [placeholder]="_Voce.TRUST_STORE_PWD" formControlName="tsPassword_ctrl" autocomplete="off" required>
+        </mat-form-field>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup" *ngIf="sslAuth">
+          <input matInput [placeholder]="_Voce.KEY_STORE_LOC" formControlName="ksLocation_ctrl" autocomplete="off" [required]="sslTypeValue === CLIENT">
+        </mat-form-field>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup" *ngIf="sslAuth">
+          <input matInput [placeholder]="_Voce.KEY_STORE_PWD" formControlName="ksPassword_ctrl" autocomplete="off" [required]="sslTypeValue === CLIENT">
         </mat-form-field>
       </div>
     </mat-card>
