@@ -42,6 +42,7 @@ public class Dominio extends BasicModel {
 	private ConnettoreNotificaPagamenti connettoreMyPivot;
 	private ConnettoreNotificaPagamenti connettoreSecim;
 	private ConnettoreNotificaPagamenti connettoreGovPay;
+	private ConnettoreNotificaPagamenti connettoreHyperSicAPKappa;
 
 	@Override
 	public Long getId() {
@@ -170,6 +171,14 @@ public class Dominio extends BasicModel {
 
 	public void setConnettoreGovPay(ConnettoreNotificaPagamenti connettoreGovPay) {
 		this.connettoreGovPay = connettoreGovPay;
+	}
+
+	public ConnettoreNotificaPagamenti getConnettoreHyperSicAPKappa() {
+		return connettoreHyperSicAPKappa;
+	}
+
+	public void setConnettoreHyperSicAPKappa(ConnettoreNotificaPagamenti connettoreHyperSicAPKappa) {
+		this.connettoreHyperSicAPKappa = connettoreHyperSicAPKappa;
 	}
 	
 }

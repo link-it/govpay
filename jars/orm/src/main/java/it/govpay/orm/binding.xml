@@ -408,6 +408,7 @@
     <value name="codConnettoreMyPivot" field="codConnettoreMyPivot" usage="optional"/>
     <value name="codConnettoreSecim" field="codConnettoreSecim" usage="optional"/>
     <value name="codConnettoreGovPay" field="codConnettoreGovPay" usage="optional"/>
+    <value name="codConnettoreHyperSicAPK" field="codConnettoreHyperSicAPK" usage="optional"/>
   </mapping>
   <mapping name="Uo" class="it.govpay.orm.Uo">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1349,7 +1350,20 @@
     <value name="codTipoVersamento" field="codTipoVersamento" usage="optional"/>
     <value name="codEntrata" field="codEntrata" usage="optional"/>
     <value name="identificativoDebitore" field="identificativoDebitore" usage="optional"/>
+    <value name="debitoreAnagrafica" field="debitoreAnagrafica" usage="required"/>
     <value name="anno" field="anno" usage="optional"/>
+    <value name="descrTipoVersamento" field="descrTipoVersamento" usage="required"/>
+    <value name="codPsp" field="codPsp" usage="required"/>
+    <value name="ragioneSocialePsp" field="ragioneSocialePsp" usage="optional"/>
+    <value name="codRata" field="codRata" usage="optional"/>
+    <structure name="idDocumento" field="idDocumento" usage="optional" map-as="_IdDocumento_Type"/>
+    <value name="causaleVersamento" field="causaleVersamento" usage="optional"/>
+    <value name="importoVersamento" field="importoVersamento" usage="required"/>
+    <value name="numeroAvviso" field="numeroAvviso" usage="optional"/>
+    <value name="iuvPagamento" field="iuvPagamento" usage="optional"/>
+    <value name="dataCreazione" field="dataCreazione" usage="optional"/>
+    <value name="dataScadenza" field="dataScadenza" usage="optional"/>
+    <value name="contabilita" field="contabilita" usage="optional"/>
   </mapping>
   <mapping name="VistaPagamentoPortale" class="it.govpay.orm.VistaPagamentoPortale">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
