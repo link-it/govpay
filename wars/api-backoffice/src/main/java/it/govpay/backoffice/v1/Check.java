@@ -43,7 +43,6 @@ import org.openspcoop2.utils.sonde.SondaFactory;
 import org.openspcoop2.utils.sonde.impl.SondaCoda;
 import org.slf4j.Logger;
 
-import it.govpay.backoffice.v1.sonde.CheckSonda;
 import it.govpay.backoffice.v1.sonde.DettaglioSonda;
 import it.govpay.backoffice.v1.sonde.DettaglioSonda.TipoSonda;
 import it.govpay.backoffice.v1.sonde.ElencoSonde;
@@ -125,18 +124,21 @@ public class Check {
 		} 
 	}
 
-	private Sonda getSonda(BasicBD bd, CheckSonda checkSonda) throws SondaException, ServiceException, NotFoundException {
-		Sonda sonda = SondaFactory.get(checkSonda.getName(), bd.getConnection(), bd.getJdbcProperties().getDatabase());
+	private Sonda getSonda(BasicBD bd, String nome) throws SondaException, ServiceException, NotFoundException {
+		Sonda sonda = SondaFactory.get(nome, bd.getConnection(), bd.getJdbcProperties().getDatabase());
 		if(sonda == null)
-			throw new NotFoundException("Sonda con nome ["+checkSonda.getName()+"] non configurata");
-		if(checkSonda.isCoda()) {
+			throw new NotFoundException("Sonda con nome ["+nome+"] non configurata");
+		if(Operazioni.CHECK_NTFY.equals(nome)) {
 			long num = -1;
-			if(Operazioni.CHECK_NTFY.equals(checkSonda.getName())) {
-				NotificheBD notBD = new NotificheBD(bd);
-				num = notBD.countNotificheInAttesa();
-			} 
+			NotificheBD notBD = new NotificheBD(bd);
+			num = notBD.countNotificheInAttesa();
 			((SondaCoda)sonda).aggiornaStatoSonda(num, bd.getConnection(), bd.getJdbcProperties().getDatabase());
 		}
+		if(Operazioni.CHECK_NTFY_APP_IO.equals(nome)) {
+			long num = -1;
+			((SondaCoda)sonda).aggiornaStatoSonda(num, bd.getConnection(), bd.getJdbcProperties().getDatabase());
+		}
+		
 		return sonda;
 	}
 
@@ -149,7 +151,8 @@ public class Check {
 		
 		if(nome.equals("check-db")) {
 			DettaglioSonda dettaglioSonda = new DettaglioSonda(TipoSonda.Sconosciuto);
-			dettaglioSonda.setNome("check-db");
+			dettaglioSonda.setId("check-db");
+			dettaglioSonda.setNome("Controllo operativita del database");
 			dettaglioSonda.setDataUltimoCheck(new Date());
 			try {
 				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), true);
@@ -172,16 +175,14 @@ public class Check {
 			try {
 				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), true);
 				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
-				CheckSonda checkSonda = CheckSonda.getCheckSonda(nome);
-
-				if(checkSonda == null)
-					return Response.status(404).entity("Sonda con nome ["+nome+"] non configurata").build();
 
 				DettaglioSonda dettaglioSonda = null;
 				try {
-					Sonda sonda = this.getSonda(bd, checkSonda);
+					Sonda sonda = this.getSonda(bd, nome);
 					dettaglioSonda = new DettaglioSonda(sonda.getClass());
 					ParametriSonda param = sonda.getParam();
+					
+					dettaglioSonda.setId(nome);
 					dettaglioSonda.setNome(param.getNome());
 
 					StatoSonda statoSonda = sonda.getStatoSonda();
@@ -195,9 +196,11 @@ public class Check {
 					dettaglioSonda.setDataUltimoCheck(param.getDataUltimoCheck());
 					dettaglioSonda.setSogliaError(param.getSogliaError());
 					dettaglioSonda.setSogliaWarn(param.getSogliaWarn());
+				} catch (NotFoundException t){
+					return Response.status(404).entity("Sonda con nome ["+nome+"] non configurata").build();
 				} catch (Throwable t){
 					dettaglioSonda = new DettaglioSonda(TipoSonda.Sconosciuto);
-					dettaglioSonda.setNome(nome);
+					dettaglioSonda.setId(nome);
 					dettaglioSonda.setStato(2);
 					dettaglioSonda.setDescrizioneStato("Impossibile acquisire lo stato della sonda: " + t);
 					log.error("Impossibile acquisire lo stato della sonda", t);
