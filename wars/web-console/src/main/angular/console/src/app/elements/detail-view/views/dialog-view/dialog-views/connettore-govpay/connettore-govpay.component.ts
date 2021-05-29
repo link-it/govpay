@@ -38,8 +38,9 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
   protected CLIENT = UtilService.TIPI_SSL.client;
   protected SERVER = UtilService.TIPI_SSL.server;
   protected versioni: any[] = UtilService.TIPI_VERSIONE_API;
-  protected basicAuth: boolean = false;
-  protected sslAuth: boolean = false;
+  protected _isBasicAuth: boolean = false;
+  protected _isSslAuth: boolean = false;
+  protected _isSslClient: boolean = false;
   protected sslTypeValue: string = '';
 
   constructor() { }
@@ -83,8 +84,8 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
         this.fGroup.controls['fileSystemPath_ctrl'].setValue(this.json.fileSystemPath || '');
         if (this.json.contenuti) {
           this.fGroup.controls['contenuti_ctrl'].setValue(this.json.contenuti || '');
-          this.sslAuth = false;
-          this.basicAuth = false;
+          this._isSslAuth = false;
+          this._isBasicAuth = false;
           if (this.json.url) {
             this.fGroup.controls['url_ctrl'].setValue(this.json.url);
           }
@@ -93,25 +94,26 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
           }
           if(this.json.auth) {
             if(this.json.auth.hasOwnProperty('username')){
-              this.basicAuth = true;
+              this._isBasicAuth = true;
               this.fGroup.controls['auth_ctrl'].setValue(this.BASIC);
               this.addBasicControls();
-              (this.json.auth.username)?this.fGroup.controls['username_ctrl'].setValue(this.json.auth.username):null;
-              (this.json.auth.password)?this.fGroup.controls['password_ctrl'].setValue(this.json.auth.password):null;
+              this.fGroup.controls['username_ctrl'].setValue(this.json.auth.username);
+              this.fGroup.controls['password_ctrl'].setValue(this.json.auth.password);
             }
             if(this.json.auth.hasOwnProperty('tipo')){
-              this.sslAuth = true;
+              this._isSslAuth = true;
               this.fGroup.controls['auth_ctrl'].setValue(this.SSL);
-              this.addSslTypeControls(this.json.auth.tipo);
-              this.addSslControls(this.json.auth.tipo);
-              // (this.json.auth.tipo)?this.fGroup.controls['ssl_ctrl'].setValue(this.json.auth.tipo):null;
-              (this.json.auth.ksLocation)?this.fGroup.controls['ksLocation_ctrl'].setValue(this.json.auth.ksLocation):null;
-              (this.json.auth.ksPassword)?this.fGroup.controls['ksPassword_ctrl'].setValue(this.json.auth.ksPassword):null;
-              (this.json.auth.tsLocation)?this.fGroup.controls['tsLocation_ctrl'].setValue(this.json.auth.tsLocation):null;
-              (this.json.auth.tsPassword)?this.fGroup.controls['tsPassword_ctrl'].setValue(this.json.auth.tsPassword):null;
+              this.addSslControls();
+              this.fGroup.controls['ssl_ctrl'].setValue(this.json.auth.tipo === this.CLIENT);
+              this.fGroup.controls['tsLocation_ctrl'].setValue(this.json.auth.tsLocation);
+              this.fGroup.controls['tsPassword_ctrl'].setValue(this.json.auth.tsPassword);
+              if (this.json.auth.tipo === this.CLIENT) {
+                this.addSslClientControls();
+                this.fGroup.controls['ksLocation_ctrl'].setValue(this.json.auth.ksLocation);
+                this.fGroup.controls['ksPassword_ctrl'].setValue(this.json.auth.ksPassword);
+                this._isSslClient = true;
+              }
             }
-          } else {
-            this.fGroup.controls['auth_ctrl'].setValue('');
           }
         }
         this.__bools(this.json.tipiPendenza);
@@ -186,33 +188,29 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
   }
 
   protected _onAuthChange(target: any) {
+    this._isSslAuth = false;
+    this._isBasicAuth = false;
     this.removeBasicControls();
     this.removeSslControls();
-    this.sslAuth = false;
-    this.basicAuth = false;
     switch(target.value) {
       case this.BASIC:
         this.addBasicControls();
-        this.basicAuth = true;
+        this._isBasicAuth = true;
         break;
       case this.SSL:
-        this.addSslTypeControls(this.SERVER);
-        this.addSslControls(this.SERVER);
-        this.sslAuth = true;
+        this.addSslControls();
+        this._isSslAuth = true;
         break;
     }
   }
 
-  protected _onSslTypeChange(target: any) {
-    this.sslTypeValue = target.value;
-    this.fGroup.controls['ksLocation_ctrl'].clearValidators();
-    this.fGroup.controls['ksPassword_ctrl'].clearValidators();
-    if (target.value === this.CLIENT) {
-      this.fGroup.controls['ksLocation_ctrl'].setValidators(Validators.required);
-      this.fGroup.controls['ksPassword_ctrl'].setValidators(Validators.required);
+  protected _onTypeChange(target) {
+    this._isSslClient = false;
+    this.removeSslClientControls();
+    if (target.checked === true) {
+      this._isSslClient = true;
+      this.addSslClientControls();
     }
-    this.fGroup.controls['ksLocation_ctrl'].updateValueAndValidity();
-    this.fGroup.controls['ksPassword_ctrl'].updateValueAndValidity();
   }
 
   protected _allegatoChange(event: any) {
@@ -225,24 +223,22 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
   protected addBasicControls() {
     this.fGroup.addControl('username_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('password_ctrl', new FormControl('', Validators.required));
-    this.fGroup.controls['username_ctrl'].updateValueAndValidity();
-    this.fGroup.controls['password_ctrl'].updateValueAndValidity();
   }
 
-  protected addSslTypeControls(tipo: string) {
-    this.fGroup.addControl('ssl_ctrl', new FormControl(tipo, Validators.required));
-    this.fGroup.controls['ssl_ctrl'].updateValueAndValidity();
-  }
-
-  protected addSslControls(tipo: string) {
+  protected addSslControls() {
+    this.fGroup.addControl('ssl_ctrl', new FormControl(false, Validators.required));
     this.fGroup.addControl('tsLocation_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('tsPassword_ctrl', new FormControl('', Validators.required));
-    this.fGroup.addControl('ksLocation_ctrl', new FormControl(''));
-    this.fGroup.addControl('ksPassword_ctrl', new FormControl(''));
-    this.fGroup.controls['tsLocation_ctrl'].updateValueAndValidity();
-    this.fGroup.controls['tsPassword_ctrl'].updateValueAndValidity();
-    this.fGroup.controls['ksLocation_ctrl'].updateValueAndValidity();
-    this.fGroup.controls['ksPassword_ctrl'].updateValueAndValidity();
+  }
+
+  protected addSslClientControls() {
+    this.fGroup.addControl('ksLocation_ctrl', new FormControl('', Validators.required));
+    this.fGroup.addControl('ksPassword_ctrl', new FormControl('', Validators.required));
+  }
+
+  protected removeSslClientControls() {
+    this.fGroup.removeControl('ksLocation_ctrl');
+    this.fGroup.removeControl('ksPassword_ctrl');
   }
 
   protected removeBasicControls() {
@@ -289,17 +285,18 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
         }
         if(_info.hasOwnProperty('ssl_ctrl')) {
           _json.auth = {
-            tipo: _info['ssl_ctrl'],
-            ksLocation: _info['ksLocation_ctrl'],
-            ksPassword: _info['ksPassword_ctrl'],
-            tsLocation: '',
-            tsPassword: ''
+            tipo: _info['ssl_ctrl']?this.CLIENT:this.SERVER,
+            tsLocation: _info['tsLocation_ctrl'],
+            tsPassword: _info['tsPassword_ctrl'],
+            ksLocation: '',
+            ksPassword: ''
           };
-          if(_info.hasOwnProperty('tsLocation_ctrl')) {
-            _json.auth.tsLocation = _info['tsLocation_ctrl'];
-          }
-          if(_info.hasOwnProperty('tsPassword_ctrl')) {
-            _json.auth.tsPassword = _info['tsPassword_ctrl'];
+          if(_info['ssl_ctrl'] === true) {
+            _json.auth.ksLocation = _info['ksLocation_ctrl'];
+            _json.auth.ksPassword = _info['ksPassword_ctrl'];
+          } else {
+            delete _json.auth.ksLocation;
+            delete _json.auth.ksPassword;
           }
         }
         if(_json.auth == null) { delete _json.auth; }
