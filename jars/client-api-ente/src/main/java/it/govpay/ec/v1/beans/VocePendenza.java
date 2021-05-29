@@ -1,7 +1,6 @@
 package it.govpay.ec.v1.beans;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -48,7 +47,7 @@ public class VocePendenza extends DatiEntrata {
   **/
   private String descrizioneCausaleRPT = null;
   
-  private List<Contabilita> contabilita = null;
+  private Contabilita contabilita = null;
   
  /**
    * indice di voce all&#x27;interno della pendenza
@@ -170,16 +169,16 @@ public class VocePendenza extends DatiEntrata {
   
   /**
    **/
-  public VocePendenza contabilita(List<Contabilita> contabilita) {
+  public VocePendenza contabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
     return this;
   }
 
   @JsonProperty("contabilita")
-  public List<Contabilita> getContabilita() {
+  public Contabilita getContabilita() {
     return contabilita;
   }
-  public void setContabilita(List<Contabilita> contabilita) {
+  public void setContabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
   }
 

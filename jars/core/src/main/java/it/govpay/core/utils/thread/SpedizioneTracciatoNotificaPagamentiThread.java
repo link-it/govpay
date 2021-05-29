@@ -99,7 +99,8 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		
 		secimInviaTracciatoEmail, pivotInviaTracciatoEmail,
 		secimInviaTracciatoFileSystem, pivotInviaTracciatoFileSystem, 
-		govpayInviaTracciatoFileSystem, govpayInviaTracciatoEmail, govpayInviaTracciatoRest
+		govpayInviaTracciatoFileSystem, govpayInviaTracciatoEmail, govpayInviaTracciatoRest,
+		hyperSicAPKappaInviaTracciatoEmail, hyperSicAPKappaInviaTracciatoFileSystem
 	} 
 	
 	public static final String CONNETTORE_NOTIFICA_DISABILITATO = "Connettore Notifica non configurato";
@@ -146,6 +147,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			break;
 		case GOVPAY:
 			this.componente = Componente.API_GOVPAY;
+			break;
+		case HYPERSIC_APK:
+			this.componente = Componente.API_HYPERSIC_APK;
 			break;
 		}
 		this.eventoCtx.setComponente(this.componente);
@@ -603,6 +607,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		case GOVPAY:
 			this.eventoCtx.setTipoEvento(Operazione.govpayInviaTracciatoEmail.name());
 			break;
+		case HYPERSIC_APK:
+			this.eventoCtx.setTipoEvento(Operazione.hyperSicAPKappaInviaTracciatoEmail.name());
+			break;
 		}
 		
 		dumpRequest.setContentType("text/plain");
@@ -757,6 +764,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		case GOVPAY:
 			tipoTracciatoString = ""; 
 			break;
+		case HYPERSIC_APK:
+			tipoTracciatoString = " per l'importazione in APKappa"; 
+			break;
 		}
 		
 		if(connettore.getEmailSubject() != null && !connettore.getEmailSubject().isEmpty()) {
@@ -810,6 +820,10 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 				break;
 			case GOVPAY:
 				this.eventoCtx.setTipoEvento(Operazione.govpayInviaTracciatoFileSystem.name());
+				break;
+			case HYPERSIC_APK:
+				this.eventoCtx.setTipoEvento(Operazione.hyperSicAPKappaInviaTracciatoFileSystem.name());
+				break;
 			}
 			
 			dumpRequest.setContentType("application/zip");

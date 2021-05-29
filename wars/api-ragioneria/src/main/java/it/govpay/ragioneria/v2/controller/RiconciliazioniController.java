@@ -13,6 +13,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -35,11 +37,13 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.ragioneria.v2.beans.NuovaRiconciliazione;
 import it.govpay.ragioneria.v2.beans.Riconciliazione;
 import it.govpay.ragioneria.v2.beans.RiconciliazioneIndex;
 import it.govpay.ragioneria.v2.beans.Riconciliazioni;
+import it.govpay.ragioneria.v2.beans.TipoRiscossione;
 import it.govpay.ragioneria.v2.beans.converter.RiconciliazioniConverter;
 
 
@@ -112,7 +116,7 @@ public class RiconciliazioniController extends BaseController {
     }
 
 
-    public Response getRiconciliazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
+    public Response getRiconciliazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso, List<String> riscossioniTipo) {
     	String methodName = "getRiconciliazione";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -133,6 +137,25 @@ public class RiconciliazioniController extends BaseController {
 			if(!AuthorizationManager.isDominioAuthorized(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio(), null);
 			}
+			
+			List<TipoPagamento> tipoEnum = new ArrayList<>();
+			if(riscossioniTipo == null || riscossioniTipo.isEmpty()) { // valori di default
+				tipoEnum.add(TipoPagamento.ENTRATA);
+				tipoEnum.add(TipoPagamento.MBT);
+			}
+
+			if(riscossioniTipo!=null) {
+				for (String tipoS : riscossioniTipo) {
+					TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipoS);
+					if(tipoRiscossione != null) {
+						tipoEnum.add(TipoPagamento.valueOf(tipoRiscossione.toString()));
+					} else {
+						throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + riscossioniTipo + "] valori possibili " + ArrayUtils.toString(TipoRiscossione.values()));
+					}
+				}
+			}
+			
+			leggiIncassoDTO.setTipoRiscossioni(tipoEnum);
 			
 			IncassiDAO incassiDAO = new IncassiDAO();
 			

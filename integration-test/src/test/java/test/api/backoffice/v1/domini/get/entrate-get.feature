@@ -12,7 +12,7 @@ Scenario: Lettura Entrate associate ad un dominio non esistente
 * def idDominioNonCensito = '11221122331'
 
 Given url backofficeBaseurl
-And path 'domini', '11221122331', 'contiAccredito'
+And path 'domini', '11221122331', 'entrate'
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 404

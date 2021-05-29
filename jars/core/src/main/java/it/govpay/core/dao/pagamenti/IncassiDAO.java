@@ -18,7 +18,9 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.IncassiBD;
+import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
+import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -81,27 +83,38 @@ public class IncassiDAO extends BaseDAO{
 			
 			ListaIncassiDTOResponse listaIncassiDTOResponse = new ListaIncassiDTOResponse(count, findAll);
 
-			if(listaIncassiDTOResponse.getResults() != null && listaIncassiDTOResponse.getResults().size() > 0) {
-				for (Incasso incasso : listaIncassiDTOResponse.getResults()) {
-					// popolo valori
-					List<Pagamento> pagamenti = incasso.getPagamenti(incassiBD);
-
-					if(pagamenti != null) {
-						for(Pagamento pagamento: pagamenti) {
-							pagamento.getDominio(configWrapper);
-							SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(incassiBD);
-							Versamento versamento = singoloVersamento.getVersamento(incassiBD);
-							versamento.getApplicazione(configWrapper);
-							versamento.getDominio(configWrapper);
-							versamento.getUo(configWrapper);
-							singoloVersamento.getIbanAccredito(configWrapper);
-							pagamento.getRpt(incassiBD);
-							pagamento.getIncasso(incassiBD);
+			if(listaIncassoDTO.isIncludiPagamenti()) {
+				if(listaIncassiDTOResponse.getResults() != null && listaIncassiDTOResponse.getResults().size() > 0) {
+					PagamentiBD pagamentiBD = new PagamentiBD(incassiBD);
+					pagamentiBD.setAtomica(false);
+					
+					for (Incasso incasso : listaIncassiDTOResponse.getResults()) {
+						
+						PagamentoFilter filter = pagamentiBD.newFilter();
+						filter.setIdIncasso(incasso.getId());
+						List<Pagamento> pagamenti = pagamentiBD.findAll(filter);
+						
+						// popolo valori
+						if(pagamenti != null) {
+							for(Pagamento pagamento: pagamenti) {
+								pagamento.getDominio(configWrapper);
+								SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(incassiBD);
+								Versamento versamento = singoloVersamento.getVersamento(incassiBD);
+								versamento.getApplicazione(configWrapper);
+								versamento.getDominio(configWrapper);
+								versamento.getUo(configWrapper);
+								singoloVersamento.getIbanAccredito(configWrapper);
+								pagamento.getRpt(incassiBD);
+								pagamento.getIncasso(incassiBD);
+							}
 						}
+	
+						incasso.setPagamenti(pagamenti);
+						
+						
+						incasso.getApplicazione(configWrapper);
+						incasso.getDominio(configWrapper);
 					}
-
-					incasso.getApplicazione(configWrapper);
-					incasso.getDominio(configWrapper);
 				}
 			}
 
@@ -128,13 +141,21 @@ public class IncassiDAO extends BaseDAO{
 			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdIncasso());
 
 			response.setIncasso(incasso);
-			List<Pagamento> pagamenti = response.getIncasso().getPagamenti(incassiBD);
-
+			
+			PagamentiBD pagamentiBD = new PagamentiBD(incassiBD);
+			pagamentiBD.setAtomica(false);
+			PagamentoFilter filter = pagamentiBD.newFilter();
+			filter.setIdIncasso(response.getIncasso().getId());
+			filter.setTipo(leggiIncassoDTO.getTipoRiscossioni()); 
+			List<Pagamento> pagamenti = pagamentiBD.findAll(filter);
+			
 			if(pagamenti != null) {
 				for(Pagamento pagamento: pagamenti) {
 					this.populatePagamento(pagamento, incassiBD, configWrapper);
 				}
 			}
+			
+			response.getIncasso().setPagamenti(pagamenti);
 
 			response.getIncasso().getApplicazione(configWrapper);
 			response.getIncasso().getDominio(configWrapper);
@@ -185,10 +206,14 @@ public class IncassiDAO extends BaseDAO{
 			
 			incassiBD.setupConnection(configWrapper.getTransactionID());
 			
-			incassiBD.setAtomica(false); 
+			incassiBD.setAtomica(false);
 			
-			List<Pagamento> pagamenti = richiestaIncassoDTOResponse.getIncasso().getPagamenti(incassiBD);
-
+			PagamentiBD pagamentiBD = new PagamentiBD(incassiBD);
+			pagamentiBD.setAtomica(false);
+			PagamentoFilter filter = pagamentiBD.newFilter();
+			filter.setIdIncasso(richiestaIncassoDTOResponse.getIncasso().getId());
+			List<Pagamento> pagamenti = pagamentiBD.findAll(filter);
+			
 			if(pagamenti != null) {
 				for(Pagamento pagamento: pagamenti) {
 					try {
@@ -198,6 +223,9 @@ public class IncassiDAO extends BaseDAO{
 					}
 				}
 			}
+			
+			richiestaIncassoDTOResponse.getIncasso().setPagamenti(pagamenti);
+			
 
 			richiestaIncassoDTOResponse.getIncasso().getApplicazione(configWrapper);
 			richiestaIncassoDTOResponse.getIncasso().getOperatore(configWrapper);

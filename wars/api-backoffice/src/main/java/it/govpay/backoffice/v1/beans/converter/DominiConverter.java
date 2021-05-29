@@ -199,6 +199,9 @@ public class DominiConverter {
 		
 		if(dominioPost.getServizioGovPay() != null)
 			dominio.setConnettoreGovPay(ConnettoreNotificaPagamentiGovPayConverter.getConnettoreDTO(dominioPost.getServizioGovPay(), user, Tipo.GOVPAY));
+		
+		if(dominioPost.getServizioHyperSicAPKappa() != null)
+			dominio.setConnettoreHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappaConverter.getConnettoreDTO(dominioPost.getServizioHyperSicAPKappa(), user, Tipo.HYPER_SIC_APKAPPA));
 
 		dominioDTO.setDominio(dominio);
 		dominioDTO.setIdDominio(idDominio);
@@ -370,6 +373,9 @@ public class DominiConverter {
 		
 		if(dominio.getConnettoreGovPay()!=null)
 			rsModel.setServizioGovPay(ConnettoreNotificaPagamentiGovPayConverter.toRsModel(dominio.getConnettoreGovPay()));
+		
+		if(dominio.getConnettoreHyperSicAPKappa()!=null)
+			rsModel.setServizioHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappaConverter.toRsModel(dominio.getConnettoreHyperSicAPKappa()));
 
 		return rsModel;
 	}

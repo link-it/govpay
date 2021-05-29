@@ -187,6 +187,7 @@ public class ConnettoreNotificaPagamentiGovPayConverter {
 			case WEB_SERVICE:
 				break;
 			case REST:
+				rsModel.setTipoConnettore(TipoConnettoreEnum.REST);
 				if(connettore.getTipoAutenticazione()!=null && !connettore.getTipoAutenticazione().equals(EnumAuthType.NONE))
 					rsModel.setAuth(ConnettoriConverter.toTipoAutenticazioneRsModel(connettore));
 				rsModel.setUrl(connettore.getUrl());

@@ -82,6 +82,7 @@ public class GiornaleEventi {
 		case API_MYPIVOT:
 		case API_SECIM:
 		case API_GOVPAY:
+		case API_HYPERSIC_APK:
 			return getConfigurazioneTracciatiNotificaPagamenti();
 		}
 		
@@ -171,7 +172,7 @@ public class GiornaleEventi {
 				return false;
 		}
 		
-		if(componente.equals(Componente.API_SECIM) || componente.equals(Componente.API_MYPIVOT) || componente.equals(Componente.API_GOVPAY)) {
+		if(componente.equals(Componente.API_SECIM) || componente.equals(Componente.API_MYPIVOT) || componente.equals(Componente.API_GOVPAY) || componente.equals(Componente.API_HYPERSIC_APK)) {
 			if(operazione != null)
 				return !isOperazioneScritturaTracciatiNotificaPagamenti(operazione);
 			else 
@@ -186,7 +187,7 @@ public class GiornaleEventi {
 			return isOperazioneScrittura(operazione);
 		}
 		
-		if(componente.equals(Componente.API_SECIM) || componente.equals(Componente.API_MYPIVOT) || componente.equals(Componente.API_GOVPAY)) {
+		if(componente.equals(Componente.API_SECIM) || componente.equals(Componente.API_MYPIVOT) || componente.equals(Componente.API_GOVPAY) || componente.equals(Componente.API_HYPERSIC_APK)) {
 			return isOperazioneScritturaTracciatiNotificaPagamenti(operazione);
 		}
 
@@ -279,6 +280,8 @@ public class GiornaleEventi {
 				|| EnteRendicontazioniClient.Azione.inviaRpp.toString().equals(operazione)
 				|| EnteRendicontazioniClient.Azione.inviaSintesiFlussiRendicontazione.toString().equals(operazione)
 				|| EnteRendicontazioniClient.Azione.inviaSintesiPagamenti.toString().equals(operazione)
+				|| EventoContext.APIHYPERSICAPKAPPA_TIPOEVENTO_HYPERSIC_APKINVIATRACCIATOEMAIL.equals(operazione)
+				|| EventoContext.APIHYPERSICAPKAPPA_TIPOEVENTO_HYPERSIC_APKINVIATRACCIATOFILESYSTEM.equals(operazione)
 				) {
 			return true;
 		}

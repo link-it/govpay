@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.25.0"
+  version: "1.26.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -823,6 +823,8 @@ paths:
             default: +denominazione
         - $ref: '#/components/parameters/campi'
         - $ref: '#/components/parameters/abilitato'    
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata degli intermediari ricercati
@@ -929,6 +931,8 @@ paths:
             default: +idStazione
         - $ref: '#/components/parameters/campi'
         - $ref: '#/components/parameters/abilitato'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata delle stazioni dell'intermediario
@@ -1047,6 +1051,8 @@ paths:
         - $ref: '#/components/parameters/form'
         - $ref: '#/components/parameters/idDominio'
         - $ref: '#/components/parameters/ragioneSociale'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -1157,6 +1163,8 @@ paths:
         - $ref: '#/components/parameters/abilitato'
         - $ref: '#/components/parameters/associati'
         - $ref: '#/components/parameters/ragioneSociale'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -1278,6 +1286,8 @@ paths:
         - $ref: '#/components/parameters/campi'
         - $ref: '#/components/parameters/abilitato'
         - $ref: '#/components/parameters/iban'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -1399,6 +1409,8 @@ paths:
         - $ref: '#/components/parameters/campi'
         - $ref: '#/components/parameters/abilitato'
         - $ref: '#/components/parameters/descrizione'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata delle entrate ricercate
@@ -1523,6 +1535,8 @@ paths:
         - $ref: '#/components/parameters/form'
         - $ref: '#/components/parameters/trasformazione'
         - $ref: '#/components/parameters/descrizione'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata delle tipologie di pendenza ricercate
@@ -1642,6 +1656,8 @@ paths:
         - $ref: '#/components/parameters/descrizione'
         - $ref: '#/components/parameters/trasformazione'
         - $ref: '#/components/parameters/nonAssociati'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata delle entrate ricercate
@@ -1740,6 +1756,8 @@ paths:
             format: csv
             default: +idEntrata
         - $ref: '#/components/parameters/campi'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata delle entrate ricercate
@@ -1841,6 +1859,8 @@ paths:
         - $ref: '#/components/parameters/abilitato'
         - $ref: '#/components/parameters/idA2A'
         - $ref: '#/components/parameters/principal'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata delle applicazioni ricercate
@@ -1978,6 +1998,8 @@ paths:
             default: +ragioneSociale
         - $ref: '#/components/parameters/campi'
         - $ref: '#/components/parameters/abilitato'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
       responses:
         '200':
           description: Lista paginata degli operatori ricercati
@@ -3090,7 +3112,7 @@ paths:
         - $ref: '#/components/parameters/statoRiscossione'
         - $ref: '#/components/parameters/dataDa'
         - $ref: '#/components/parameters/dataA'
-        - $ref: '#/components/parameters/tipoRiscossione'
+        - $ref: '#/components/parameters/tipiRiscossione'
         - $ref: '#/components/parameters/iuv'
         - $ref: '#/components/parameters/direzioni'
         - $ref: '#/components/parameters/divisioni'
@@ -3447,6 +3469,7 @@ paths:
           required: true
           schema:
             type: string
+        - $ref: '#/components/parameters/tipiRiscossioneRiconciliazione'
       responses:
         '201':
           description: Dettaglio dell'incasso
@@ -3630,6 +3653,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/pagina'
         - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/metadatiPaginazione'
       responses:
         '201':
           description: Elenco dei ruoli
@@ -4400,10 +4424,19 @@ components:
         type: array
         items:
           type: string
+    tipiRiscossioneRiconciliazione:
+      in: query
+      name: riscossioni.tipo
+      description: Tipologia della riscossione (default [ENTRATA, MBT] )
+      required: false
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/tipoRiscossione'
     tipiRiscossione:
       in: query
       name: tipo
-      description: Tipologia della riscossione
+      description: Tipologia della riscossione (default [ENTRATA, MBT] )
       required: false
       schema:
         type: array
@@ -5201,6 +5234,8 @@ components:
           $ref: '#/components/schemas/connettoreNotificaPagamentiSecim'
         servizioGovPay:
           $ref: '#/components/schemas/connettoreNotificaPagamentiGovPay'
+        servizioHyperSicAPKappa:
+          $ref: '#/components/schemas/connettoreNotificaPagamentiHyperSicAPKappa'
     dominioIndex:
       type: object
       allOf:
@@ -6928,9 +6963,6 @@ components:
         - iuv
         - iur
         - indice
-        - pendenza
-        - idVocePendenza
-        - stato
         - tipo
         - importo
         - data
@@ -6996,9 +7028,6 @@ components:
         - iuv
         - iur
         - indice
-        - pendenza
-        - vocePendenza
-        - stato
         - tipo
         - importo
         - data
@@ -7641,6 +7670,54 @@ components:
                 description: identificativo tipo pendenza
                 example:
                   SEGRETERIA
+    connettoreNotificaPagamentiHyperSicAPKappa:
+      type: object
+      required:
+        - abilitato
+        - tipoConnettore
+        - versioneCsv
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se il connettore e' abilitato
+          example: true
+        tipoConnettore:
+          type: string
+          enum:
+            - 'EMAIL'
+            - 'FILESYSTEM'
+        versioneCsv:
+          type: string
+          example: '2.0'
+          description: Versione del CSV prodotto.
+        emailIndirizzi:
+          type: array
+          items:
+            type: string
+          description: Indirizzi Email al quale verra' spedito il tracciato
+        emailSubject:
+          type: string
+          description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
+        fileSystemPath:
+          type: string
+          description: Path nel quale verra' salvato il tracciato
+        tipiPendenza:
+          type: array
+          description: tipi pendenza da includere nel tracciato
+          items:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+              - type: string
+                description: identificativo tipo pendenza
+                example:
+                  SEGRETERIA
     connettoreNotificaPagamentiGovPay:
       type: object
       required:
@@ -7842,10 +7919,12 @@ components:
         Tipologia della voce riscossa
          * ENTRATA: Entrata in tesoreria
          * MBT: Marca da bollo telematica
+         * ALTRO_INTERMEDIARIO: Entrata relativa a un intermediario esterno
       type: string
       enum:
         - ENTRATA
         - MBT
+        - ALTRO_INTERMEDIARIO
     listaPaginata:
       type: object
       properties:

@@ -50,6 +50,7 @@ import java.io.Serializable;
  * 			&lt;element name="codConnettoreMyPivot" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreSecim" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreGovPay" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codConnettoreHyperSicAPK" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -78,7 +79,8 @@ import java.io.Serializable;
   	"autStampaPoste",
   	"codConnettoreMyPivot",
   	"codConnettoreSecim",
-  	"codConnettoreGovPay"
+  	"codConnettoreGovPay",
+  	"codConnettoreHyperSicAPK"
   }
 )
 
@@ -232,6 +234,14 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.codConnettoreGovPay = codConnettoreGovPay;
   }
 
+  public java.lang.String getCodConnettoreHyperSicAPK() {
+    return this.codConnettoreHyperSicAPK;
+  }
+
+  public void setCodConnettoreHyperSicAPK(java.lang.String codConnettoreHyperSicAPK) {
+    this.codConnettoreHyperSicAPK = codConnettoreHyperSicAPK;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -316,5 +326,9 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreGovPay",required=false,nillable=false)
   protected java.lang.String codConnettoreGovPay;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codConnettoreHyperSicAPK",required=false,nillable=false)
+  protected java.lang.String codConnettoreHyperSicAPK;
 
 }

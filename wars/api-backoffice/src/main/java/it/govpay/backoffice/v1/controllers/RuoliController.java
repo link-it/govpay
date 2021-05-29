@@ -53,14 +53,14 @@ public class RuoliController extends BaseController {
  		super(nomeServizio,log);
      }
 
-    public Response findRuoli(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
+    public Response findRuoli(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, Boolean metadatiPaginazione) {
 		String methodName = "findRuoli";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.LETTURA));
-
+			
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 			
@@ -69,6 +69,8 @@ public class RuoliController extends BaseController {
 			ListaRuoliDTO listaRptDTO = new ListaRuoliDTO(user);
 			listaRptDTO.setLimit(risultatiPerPagina);
 			listaRptDTO.setPagina(pagina);
+			
+			listaRptDTO.setEseguiCount(metadatiPaginazione);
 
 			// INIT DAO
 

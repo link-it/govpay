@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.6.0"
+  version: "2.7.0"
   title: GovPay - API Ragioneria
   contact:
     name: GitHub Project Page
@@ -212,6 +212,7 @@ paths:
           required: true
           schema:
             type: string
+        - $ref: '#/components/parameters/tipiRiscossioneRiconciliazione'
       responses:
         '200':
           description: Dettaglio dell'incasso
@@ -241,7 +242,7 @@ paths:
         - $ref: '#/components/parameters/idDominio'
         - $ref: '#/components/parameters/dataDa'
         - $ref: '#/components/parameters/dataA'
-        - $ref: '#/components/parameters/tipoRiscossione'   
+        - $ref: '#/components/parameters/tipiRiscossione'   
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
       responses:
@@ -470,6 +471,24 @@ components:
       required: false
       schema:
         $ref: '#/components/schemas/StatoFlussoRendicontazione'
+    tipiRiscossione:
+      in: query
+      name: tipo
+      description: Tipologia della riscossione (default [ENTRATA, MBT] )
+      required: false
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/TipoRiscossione'
+    tipiRiscossioneRiconciliazione:
+      in: query
+      name: riscossioni.tipo
+      description: Tipologia della riscossione (default [ENTRATA, MBT] )
+      required: false
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/TipoRiscossione'
     tipoRiscossione:
       name: tipoRiscossione
       in: query
@@ -1041,8 +1060,6 @@ components:
         - iuv
         - iur
         - indice
-        - vocePendenza
-        - stato
         - tipo
         - importo
         - data
@@ -1229,10 +1246,12 @@ components:
         Tipologia della voce riscossa
          * ENTRATA: Entrata in tesoreria
          * MBT: Marca da bollo telematica
+         * ALTRO_INTERMEDIARIO: Entrata relativa a un intermediario esterno
       type: string
       enum:
         - ENTRATA
-        - MBT        
+        - MBT
+        - ALTRO_INTERMEDIARIO
     TipoServizio:
       type: string
       enum:

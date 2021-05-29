@@ -133,24 +133,18 @@ Then status 200
 
 Examples:
 | field | fieldRequest | fieldValue | fieldResponse |
-| importo | pendenzaPut.voci[0].contabilita[0].importo | null | 'importo' |
-| importo | pendenzaPut.voci[0].contabilita[0].importo | '10.001' | 'importo' |
-| importo | pendenzaPut.voci[0].contabilita[0].importo | '10,000' | 'importo' |
-| importo | pendenzaPut.voci[0].contabilita[0].importo | '10,00.0' | 'importo' |
-| importo | pendenzaPut.voci[0].contabilita[0].importo | 'aaaa' | 'importo' |
-| importo | pendenzaPut.voci[0].contabilita[0].importo | '12345678901234567,89' | 'importo' |
-| ufficio | pendenzaPut.voci[0].contabilita[0].ufficio | loremIpsum | 'ufficio' |
-| capitolo | pendenzaPut.voci[0].contabilita[0].capitolo | loremIpsum | 'capitolo' |
-| capitolo | pendenzaPut.voci[0].contabilita[0].capitolo | null | 'capitolo' |
-| accertamento | pendenzaPut.voci[0].contabilita[0].accertamento | loremIpsum | 'accertamento' |
-| subAccertamento | pendenzaPut.voci[0].contabilita[0].subAccertamento | loremIpsum | 'subAccertamento' |
-| siope | pendenzaPut.voci[0].contabilita[0].siope | loremIpsum | 'siope' |
-| codGestionaleEnte | pendenzaPut.voci[0].contabilita[0].codGestionaleEnte | loremIpsum | 'codGestionaleEnte' |
-| annoEsercizio | pendenzaPut.voci[0].contabilita[0].annoEsercizio | 12345 | 'annoEsercizio' |
-| annoEsercizio | pendenzaPut.voci[0].contabilita[0].annoEsercizio | loremIpsum | 'annoEsercizio' |
-| annoEsercizio | pendenzaPut.voci[0].contabilita[0].annoEsercizio | null | 'annoEsercizio' |
-| annoAccertamento | pendenzaPut.voci[0].contabilita[0].annoAccertamento | 12345 | 'annoAccertamento' |
-| annoAccertamento | pendenzaPut.voci[0].contabilita[0].annoAccertamento | loremIpsum | 'annoAccertamento' |
+| importo | pendenzaPut.voci[0].contabilita.quote[0].importo | null | 'importo' |
+| importo | pendenzaPut.voci[0].contabilita.quote[0].importo | '10.001' | 'importo' |
+| importo | pendenzaPut.voci[0].contabilita.quote[0].importo | '10,000' | 'importo' |
+| importo | pendenzaPut.voci[0].contabilita.quote[0].importo | '10,00.0' | 'importo' |
+| importo | pendenzaPut.voci[0].contabilita.quote[0].importo | 'aaaa' | 'importo' |
+| importo | pendenzaPut.voci[0].contabilita.quote[0].importo | '12345678901234567,89' | 'importo' |
+| capitolo | pendenzaPut.voci[0].contabilita.quote[0].capitolo | loremIpsum | 'capitolo' |
+| capitolo | pendenzaPut.voci[0].contabilita.quote[0].capitolo | null | 'capitolo' |
+| accertamento | pendenzaPut.voci[0].contabilita.quote[0].accertamento | loremIpsum | 'accertamento' |
+| annoEsercizio | pendenzaPut.voci[0].contabilita.quote[0].annoEsercizio | 12345 | 'annoEsercizio' |
+| annoEsercizio | pendenzaPut.voci[0].contabilita.quote[0].annoEsercizio | loremIpsum | 'annoEsercizio' |
+| annoEsercizio | pendenzaPut.voci[0].contabilita.quote[0].annoEsercizio | null | 'annoEsercizio' |
 
 Scenario Outline: <field> non valida 
 

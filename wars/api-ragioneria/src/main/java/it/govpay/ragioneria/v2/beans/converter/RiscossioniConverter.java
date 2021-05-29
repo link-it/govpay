@@ -22,7 +22,7 @@ import it.govpay.rs.BaseRsService;
 import it.govpay.rs.v1.ConverterUtils;
 
 public class RiscossioniConverter {
-	
+
 	public static Riscossione toRsModel(Pagamento input) throws NotFoundException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Riscossione rsModel = new Riscossione();
@@ -31,36 +31,46 @@ public class RiscossioniConverter {
 			rsModel.setIuv(input.getIuv());
 			rsModel.setIur(input.getIur());
 			rsModel.setIndice(new BigDecimal(input.getIndiceDati()));
-			
 			rsModel.setImporto(input.getImportoPagato());
 			rsModel.setData(input.getDataPagamento());
-			Stato stato = input.getStato();
-			switch(stato) {
-			case INCASSATO: rsModel.setStato(StatoRiscossione.INCASSATA);
+			switch (input.getTipo()) {
+			case ALTRO_INTERMEDIARIO:
+				rsModel.setTipo(TipoRiscossione.ALTRO_INTERMEDIARIO);
 				break;
-			case PAGATO: rsModel.setStato(StatoRiscossione.RISCOSSA);
+			case ENTRATA:
+				rsModel.setTipo(TipoRiscossione.ENTRATA);
 				break;
-			case PAGATO_SENZA_RPT: rsModel.setStato(StatoRiscossione.RISCOSSA);
-				break; 
-			default:
+			case MBT:
+				rsModel.setTipo(TipoRiscossione.MBT);
 				break;
 			}
-			
-			if(input.getTipo().equals(TipoPagamento.ENTRATA)) {
-				rsModel.setTipo(TipoRiscossione.ENTRATA);
-			} else {
-				rsModel.setTipo(TipoRiscossione.MBT);
-			} 
-			
-			rsModel.setVocePendenza(PendenzeConverter.toRsModelVocePendenza(input.getSingoloVersamento(null), input.getIndiceDati()));
-			if(input.getRpt(null) != null)
-				rsModel.setRt(ConverterUtils.getRtJson(input.getRpt(null)));
+
+
+			// solo per i pagamenti interni
+			if(!input.getTipo().equals(TipoPagamento.ALTRO_INTERMEDIARIO)) {
+				Stato stato = input.getStato();
+				if(stato != null) {
+					switch(stato) {
+					case INCASSATO: rsModel.setStato(StatoRiscossione.INCASSATA);
+					break;
+					case PAGATO: rsModel.setStato(StatoRiscossione.RISCOSSA);
+					break;
+					case PAGATO_SENZA_RPT: rsModel.setStato(StatoRiscossione.RISCOSSA);
+					break; 
+					default:
+						break;
+					}
+				}
+
+
+
+				rsModel.setVocePendenza(PendenzeConverter.toRsModelVocePendenza(input.getSingoloVersamento(null), input.getIndiceDati()));
+				if(input.getRpt(null) != null)
+					rsModel.setRt(ConverterUtils.getRtJson(input.getRpt(null)));
+			}
 			
 			if(input.getIncasso(null)!=null)
 				rsModel.setRiconciliazione(UriBuilderUtils.getRiconciliazioniByIdDominioIdIncasso(input.getCodDominio(), input.getIncasso(null).getTrn()));
-			
-//			if(input.getIncasso(null) != null)
-//				rsModel.setRiconciliazione(IncassiConverter.toRsIndexModel(input.getIncasso(null)));
 
 		} catch(ServiceException e) {
 			LoggerWrapperFactory.getLogger(BaseRsService.class).error("Errore nella conversione del pagamento: " + e.getMessage(), e);
@@ -68,7 +78,7 @@ public class RiscossioniConverter {
 
 		return rsModel;
 	}
-	
+
 	public static RiscossioneIndex toRsModelIndexOld(Pagamento input) throws NotFoundException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		RiscossioneIndex rsModel = new RiscossioneIndex();
@@ -77,36 +87,46 @@ public class RiscossioniConverter {
 			rsModel.setIuv(input.getIuv());
 			rsModel.setIur(input.getIur());
 			rsModel.setIndice(new BigDecimal(input.getIndiceDati()));
-			
 			rsModel.setImporto(input.getImportoPagato());
 			rsModel.setData(input.getDataPagamento());
-			Stato stato = input.getStato();
-			switch(stato) {
-			case INCASSATO: rsModel.setStato(StatoRiscossione.INCASSATA);
+			switch (input.getTipo()) {
+			case ALTRO_INTERMEDIARIO:
+				rsModel.setTipo(TipoRiscossione.ALTRO_INTERMEDIARIO);
 				break;
-			case PAGATO: rsModel.setStato(StatoRiscossione.RISCOSSA);
+			case ENTRATA:
+				rsModel.setTipo(TipoRiscossione.ENTRATA);
 				break;
-			case PAGATO_SENZA_RPT: rsModel.setStato(StatoRiscossione.RISCOSSA);
-				break;
-			default:
+			case MBT:
+				rsModel.setTipo(TipoRiscossione.MBT);
 				break;
 			}
-			
-			if(input.getTipo().equals(TipoPagamento.ENTRATA)) {
-				rsModel.setTipo(TipoRiscossione.ENTRATA);
-			} else {
-				rsModel.setTipo(TipoRiscossione.MBT);
-			} 
-			
-			rsModel.setVocePendenza(PendenzeConverter.toRsModelVocePendenza(input.getSingoloVersamento(null), input.getIndiceDati()));
+
+			// solo per i pagamenti interni
+			if(!input.getTipo().equals(TipoPagamento.ALTRO_INTERMEDIARIO)) {
+				Stato stato = input.getStato();
+				if(stato != null) {
+					switch(stato) {
+					case INCASSATO: rsModel.setStato(StatoRiscossione.INCASSATA);
+					break;
+					case PAGATO: rsModel.setStato(StatoRiscossione.RISCOSSA);
+					break;
+					case PAGATO_SENZA_RPT: rsModel.setStato(StatoRiscossione.RISCOSSA);
+					break;
+					default:
+						break;
+					}
+				}
+
+				rsModel.setVocePendenza(PendenzeConverter.toRsModelVocePendenza(input.getSingoloVersamento(null), input.getIndiceDati()));
+			}
 			if(input.getIncasso(null)!=null)
 				rsModel.setRiconciliazione(UriBuilderUtils.getRiconciliazioniByIdDominioIdIncasso(input.getCodDominio(), input.getIncasso(null).getTrn()));
-			
+
 		} catch(ServiceException e) {}
 
 		return rsModel;
 	}
-	
+
 	public static RiscossioneIndex toRsModelIndex(it.govpay.bd.viste.model.Pagamento dto) {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		RiscossioneIndex rsModel = new RiscossioneIndex();
@@ -114,42 +134,52 @@ public class RiscossioniConverter {
 			Pagamento input = dto.getPagamento();
 			SingoloVersamento singoloVersamento = dto.getSingoloVersamento();
 			Incasso incasso = dto.getIncasso();
-			
+
 			rsModel.setDominio(DominiConverter.toRsModelIndex(input.getDominio(configWrapper)));
 			rsModel.setIuv(input.getIuv());
 			rsModel.setIur(input.getIur());
 			rsModel.setIndice(new BigDecimal(input.getIndiceDati()));
-			
 			rsModel.setImporto(input.getImportoPagato());
 			rsModel.setData(input.getDataPagamento());
-			Stato stato = input.getStato();
-			switch(stato) {
-			case INCASSATO: rsModel.setStato(StatoRiscossione.INCASSATA);
+			switch (input.getTipo()) {
+			case ALTRO_INTERMEDIARIO:
+				rsModel.setTipo(TipoRiscossione.ALTRO_INTERMEDIARIO);
 				break;
-			case PAGATO: rsModel.setStato(StatoRiscossione.RISCOSSA);
-				break;
-			case PAGATO_SENZA_RPT: rsModel.setStato(StatoRiscossione.RISCOSSA);
-				break;
-			default:
-				break;
-			}
-			
-			if(input.getTipo().equals(TipoPagamento.ENTRATA)) {
+			case ENTRATA:
 				rsModel.setTipo(TipoRiscossione.ENTRATA);
-			} else {
+				break;
+			case MBT:
 				rsModel.setTipo(TipoRiscossione.MBT);
+				break;
 			} 
-			
-			rsModel.setVocePendenza(PendenzeConverter.toRsModelVocePendenza(singoloVersamento, input.getIndiceDati()));
-			
+
+			// solo per i pagamenti interni
+			if(!input.getTipo().equals(TipoPagamento.ALTRO_INTERMEDIARIO)) {
+				Stato stato = input.getStato();
+				if(stato != null) {
+					switch(stato) {
+					case INCASSATO: rsModel.setStato(StatoRiscossione.INCASSATA);
+					break;
+					case PAGATO: rsModel.setStato(StatoRiscossione.RISCOSSA);
+					break;
+					case PAGATO_SENZA_RPT: rsModel.setStato(StatoRiscossione.RISCOSSA);
+					break;
+					default:
+						break;
+					}
+				}
+
+
+				rsModel.setVocePendenza(PendenzeConverter.toRsModelVocePendenza(singoloVersamento, input.getIndiceDati()));
+			}
 			if(incasso !=null)
 				rsModel.setRiconciliazione(UriBuilderUtils.getIncassiByIdDominioIdIncasso(incasso.getCodDominio(), incasso.getTrn()));
-			
+
 		} catch(ServiceException e) {
 			LoggerWrapperFactory.getLogger(BaseRsService.class).error("Errore nella conversione del pagamento: " + e.getMessage(), e);
 		}
 
 		return rsModel;
 	}
-	
+
 }

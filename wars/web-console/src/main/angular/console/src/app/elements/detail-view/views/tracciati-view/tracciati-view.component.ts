@@ -165,9 +165,10 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
     this.info.extraInfo = [];
     this.info.extraInfo.push({ label: Voce.DATA_CARICAMENTO,  value: _tmpDC });
     this.info.extraInfo.push({ label: Voce.RICHIESTA_STAMPA_AVVISI+': ', value: UtilService.ABILITA[(_json.stampaAvvisi || false).toString()] });
-    if((UtilService.STATI_TRACCIATO[_json.stato] === UtilService.STATI_TRACCIATO.ELABORAZIONE_STAMPA) ||
-      (UtilService.STATI_TRACCIATO[_json.stato] === UtilService.STATI_TRACCIATO.ESEGUITO) ||
-      (UtilService.STATI_TRACCIATO[_json.stato] === UtilService.STATI_TRACCIATO.ESEGUITO_CON_ERRORI)) {
+    if((UtilService.STATI_TRACCIATO[_json.stato.toUpperCase()] === UtilService.STATI_TRACCIATO.ELABORAZIONE_STAMPA) ||
+      (UtilService.STATI_TRACCIATO[_json.stato.toUpperCase()] === UtilService.STATI_TRACCIATO.IN_ELABORAZIONE) ||
+      (UtilService.STATI_TRACCIATO[_json.stato.toUpperCase()] === UtilService.STATI_TRACCIATO.ESEGUITO) ||
+      (UtilService.STATI_TRACCIATO[_json.stato.toUpperCase()] === UtilService.STATI_TRACCIATO.ESEGUITO_CON_ERRORI)) {
       if(_json.numeroOperazioniTotali !== null) {
         this.info.extraInfo.push({ label: Voce.OPERAZIONI_TOTALI+': ', value: _json.numeroOperazioniTotali });
       }
@@ -178,9 +179,10 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
         this.info.extraInfo.push({ label: Voce.OPERAZIONI_FALLITE+': ', value: _json.numeroOperazioniFallite });
       }
     }
-    if(_json.stampaAvvisi && ((UtilService.STATI_TRACCIATO[_json.stato] === UtilService.STATI_TRACCIATO.ELABORAZIONE_STAMPA) ||
-        (UtilService.STATI_TRACCIATO[_json.stato] === UtilService.STATI_TRACCIATO.ESEGUITO) ||
-        (UtilService.STATI_TRACCIATO[_json.stato] === UtilService.STATI_TRACCIATO.ESEGUITO_CON_ERRORI))) {
+    if(_json.stampaAvvisi && ((UtilService.STATI_TRACCIATO[_json.stato.toUpperCase()] === UtilService.STATI_TRACCIATO.ELABORAZIONE_STAMPA) ||
+        (UtilService.STATI_TRACCIATO[_json.stato.toUpperCase()] === UtilService.STATI_TRACCIATO.IN_ELABORAZIONE) ||
+        (UtilService.STATI_TRACCIATO[_json.stato.toUpperCase()] === UtilService.STATI_TRACCIATO.ESEGUITO) ||
+        (UtilService.STATI_TRACCIATO[_json.stato.toUpperCase()] === UtilService.STATI_TRACCIATO.ESEGUITO_CON_ERRORI))) {
       if(_json.numeroOperazioniTotali !== null) {
         this.info.extraInfo.push({ label: Voce.AVVISI_TOTALI+': ', value: _json.numeroAvvisiTotali });
       }
@@ -194,8 +196,8 @@ export class TracciatiViewComponent implements IModalDialog, IExport, OnInit {
     if(_json.operatoreMittente) {
       this.info.extraInfo.push({ label: Voce.OPERATORE_MITTENTE+': ', value: _json.operatoreMittente });
     }
-    if((UtilService.STATI_TRACCIATO[_json.stato] === UtilService.STATI_TRACCIATO.ESEGUITO ||
-        UtilService.STATI_TRACCIATO[_json.stato] === UtilService.STATI_TRACCIATO.ESEGUITO_CON_ERRORI) &&
+    if((UtilService.STATI_TRACCIATO[_json.stato.toUpperCase()] === UtilService.STATI_TRACCIATO.ESEGUITO ||
+        UtilService.STATI_TRACCIATO[_json.stato.toUpperCase()] === UtilService.STATI_TRACCIATO.ESEGUITO_CON_ERRORI) &&
         _json.dataOraUltimoAggiornamento) {
       this.info.extraInfo.push({ label: Voce.DATA_COMPLETAMENTO+': ', value: moment(_json.dataOraUltimoAggiornamento).format('DD/MM/YYYY [ore] HH:mm') });
     }

@@ -25,10 +25,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.pagamento.PagamentiBD;
-import it.govpay.bd.pagamento.filters.PagamentoFilter;
 
 public class Incasso extends it.govpay.model.Incasso {
 
@@ -39,16 +36,12 @@ public class Incasso extends it.govpay.model.Incasso {
 	private transient Operatore operatore;
 	private transient Dominio dominio;
 
-
-	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException {
-		if(this.pagamenti == null && this.getId() != null){
-			PagamentiBD pagamentiBD = new PagamentiBD(bd);
-			pagamentiBD.setAtomica(false);
-			PagamentoFilter filter = pagamentiBD.newFilter();
-			filter.setIdIncasso(this.getId());
-			this.pagamenti = pagamentiBD.findAll(filter);
-		}
+	public List<Pagamento> getPagamenti() {
 		return this.pagamenti;
+	}
+	
+	public void setPagamenti(List<Pagamento> pagamenti) {
+		this.pagamenti = pagamenti;
 	}
 	
 	public Applicazione getApplicazione(BDConfigWrapper configWrapper) throws ServiceException {

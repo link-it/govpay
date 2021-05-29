@@ -854,7 +854,7 @@ export class UtilService {
     if (UtilService.PROFILO_UTENTE) {
       this.setUserACLStarCheck();
       if (UtilService.USER_ACL.hasTuttiTipiPendenza) {
-        services.push(UtilService.URL_TIPI_PENDENZA);
+        services.push(UtilService.URL_TIPI_PENDENZA+'?'+UtilService.QUERY_ESCLUDI_METADATI_PAGINAZIONE);
         UtilService.PROFILO_UTENTE.tipiPendenza = [];
       }
       if (UtilService.USER_ACL.hasTuttiDomini) {
@@ -1117,7 +1117,7 @@ export class UtilService {
         this.updateProgress(true, 'Export in corso...', 'determinate',100);
         this.generateCsvZip();
       }
-    }, 2000);
+    }, 1000);
 
     for(let _index = 0; _index < _jsonData.length; _index++) {
       setTimeout(() => {
@@ -1140,7 +1140,7 @@ export class UtilService {
           this._csv.data = _csv;
         }
         this.updateProgress(true, 'Export in corso...', 'determinate', Math.trunc(100 * (_index/_jsonData.length)));
-      }, 1000);
+      }, 500);
     }
   }
 
@@ -1155,7 +1155,7 @@ export class UtilService {
         this.updateProgress(true, 'Export in corso...', 'determinate',100);
         this.generateCsvZip();
       }
-    }, 2000);
+    }, 1000);
     // _jsonData items not homogeneous
     // csvKeys:
     const _jkeys: string[] = this._elaborateKeys(_jsonData);
@@ -1166,7 +1166,7 @@ export class UtilService {
         if(_index == (_jsonData.length - 1)) {
           this._csv.data = _csv;
         }
-      }, 1000);
+      }, 500);
     }
   }
 
@@ -1302,12 +1302,12 @@ export class UtilService {
       }
       setTimeout(() => {
         this.__loopFilesStructure(data, structure, index, 0, { zipRef: zipRef, zfolder: zfolder });
-      }, 1000);
+      }, 500);
     } else {
       this.updateProgress(true, 'Salvataggio in corso...', 'determinate',100);
       setTimeout(() => {
         this.saveZip(zipRef['zip'], zipRef['zipname']);
-      }, 1000);
+      }, 500);
     }
   }
 
@@ -1344,7 +1344,7 @@ export class UtilService {
       this.updateProgress(true, 'Export in corso...', 'determinate', Math.trunc(100 * ((folderIndex + 1)/folders.length)), Math.trunc(100 * ((index + 1)/names.length)));
       setTimeout(() => {
         this.__loopFilesStructure(data, structure, folderIndex, index, zip);
-      }, 1000);
+      }, 500);
     } else {
       this.updateProgress(true, 'Export in corso...', 'determinate', Math.trunc(100 * ((folderIndex + 1)/folders.length)), 100);
       folderIndex++;

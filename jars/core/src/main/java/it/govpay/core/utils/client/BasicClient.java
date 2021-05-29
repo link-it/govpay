@@ -679,7 +679,7 @@ public abstract class BasicClient {
 					for(String key : connection.getRequestProperties().keySet()) {
 						sb.append("\n\t" + key + ": " + connection.getRequestProperties().get(key));
 					}
-					sb.append("\n" + new String(integrationCtx.getMsg()));
+					sb.append("\n" + ( integrationCtx.getMsg() != null ? new String(integrationCtx.getMsg()) : "Messaggio di richiesta non previsto dall'operazione"));
 					log.trace(sb.toString());
 				}
 

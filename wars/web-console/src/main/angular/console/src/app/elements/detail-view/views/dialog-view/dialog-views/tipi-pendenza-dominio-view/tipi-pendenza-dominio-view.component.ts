@@ -253,7 +253,7 @@ export class TipiPendenzaDominioViewComponent implements IFormComponent,  OnInit
   }
 
   protected _getTipiPendenza(value: string) {
-    let _service = UtilService.URL_TIPI_PENDENZA + '?descrizione=' + value + '&nonAssociati=' + this.parent.json.idDominio;
+    const _service = UtilService.URL_TIPI_PENDENZA + '?descrizione=' + value + '&nonAssociati=' + this.parent.json.idDominio + '&' + UtilService.QUERY_ESCLUDI_METADATI_PAGINAZIONE;
     this._searching = true;
     this.fGroup.controls['tipoPendenza_ctrl'].disable();
     this.gps.forkService([_service]).subscribe(

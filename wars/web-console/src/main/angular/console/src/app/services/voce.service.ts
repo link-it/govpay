@@ -20,8 +20,8 @@ export class Voce {
   public static APPLICAZIONE: string = 'Applicazione';
   public static AREA: string = 'Area';
   public static AUT_PT: string = 'Autorizzazione stampa PT';
-  public static AUTENTICAZIONE_SERVER: string = 'Autenticazione Server';
   public static AUTENTICAZIONE_CLIENT: string = 'Autenticazione Client';
+  public static AUTENTICAZIONE_SERVER: string = 'Autenticazione Server';
   public static AUTORIZZAZIONI: string = 'Autorizzazioni';
   public static AUTORIZZAZIONI_API: string = 'Autorizzazioni API';
   public static AUTORIZZAZIONI_BACKOFFICE: string = 'Autorizzazioni Backoffice';
@@ -226,6 +226,7 @@ export class Voce {
   public static SOGGETTO_VERSANTE: string = 'Versante';
   public static SOLO_PAGAMENTI: string = 'Notifica solo pagamenti eseguiti';
   public static SOTTOTIPO_ESITO: string = 'Sottotipo esito';
+  public static SSL: string = 'SSL';
   public static STAMPA_AVVISI: string = 'Stampa avvisi';
   public static STATO: string = 'Stato';
   public static STAZIONE: string = 'Stazione';

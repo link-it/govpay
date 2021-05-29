@@ -42,40 +42,39 @@
           </mat-select>
         </mat-form-field>
         <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-          <mat-select #auth placeholder="Tipo autenticazione" formControlName="auth_ctrl" (selectionChange)="_onAuthChange(auth)">
+          <mat-select #authentication [placeholder]="voce.TIPO_AUTH" formControlName="auth_ctrl"
+                      (selectionChange)="_onAuthChange(authentication)">
             <mat-option value="">Nessuna</mat-option>
             <mat-option [value]="BASIC">HTTP Basic</mat-option>
             <mat-option [value]="SSL">SSL</mat-option>
           </mat-select>
         </mat-form-field>
-        <div *ngIf="basicAuth">
+        <div *ngIf="_isBasicAuth">
           <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-            <input matInput placeholder="Username" formControlName="username_ctrl" autocomplete="off" required>
+            <input matInput [placeholder]="voce.USERNAME" formControlName="username_ctrl" autocomplete="off" required>
           </mat-form-field>
           <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-            <input matInput placeholder="Password" formControlName="password_ctrl" autocomplete="off" required>
+            <input matInput [placeholder]="voce.PASSWORD" formControlName="password_ctrl" autocomplete="off" required>
           </mat-form-field>
         </div>
-        <div *ngIf="sslAuth">
-          <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-            <mat-select #sslType placeholder="SSL Type" formControlName="ssl_ctrl" (selectionChange)="_onSslTypeChange(sslType)" [required]="auth && auth.value === SSL">
-              <mat-option [value]="CLIENT">Client</mat-option>
-              <mat-option [value]="SERVER">Server</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+        <div *ngIf="_isSslAuth">
+          <div class="w-100" [formGroup]="fGroup">
+            <mat-slide-toggle #type formControlName="ssl_ctrl" color="accent" (change)="_onTypeChange(type)">{{ voce.AUTENTICAZIONE_CLIENT }}</mat-slide-toggle>
+          </div>
+          <mat-form-field class="w-100 mt-3" color="accent" [formGroup]="fGroup">
             <input matInput [placeholder]="voce.TRUST_STORE_LOC" formControlName="tsLocation_ctrl" autocomplete="off" required>
           </mat-form-field>
           <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
             <input matInput [placeholder]="voce.TRUST_STORE_PWD" formControlName="tsPassword_ctrl" autocomplete="off" required>
           </mat-form-field>
-          <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-            <input matInput [placeholder]="voce.KEY_STORE_LOC" formControlName="ksLocation_ctrl" autocomplete="off" [required]="sslTypeValue === CLIENT">
+          <mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_isSslClient">
+            <input matInput [placeholder]="voce.KEY_STORE_LOC" formControlName="ksLocation_ctrl" autocomplete="off" required>
           </mat-form-field>
-          <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
-            <input matInput [placeholder]="voce.KEY_STORE_PWD" formControlName="ksPassword_ctrl" autocomplete="off" [required]="sslTypeValue === CLIENT">
+          <mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_isSslClient">
+            <input matInput [placeholder]="voce.KEY_STORE_PWD" formControlName="ksPassword_ctrl" autocomplete="off" required>
           </mat-form-field>
         </div>
+
       </div>
     </mat-card>
   </div>
