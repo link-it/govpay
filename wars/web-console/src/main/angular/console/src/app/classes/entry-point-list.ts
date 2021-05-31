@@ -59,6 +59,7 @@ import { ProfiloUtenteViewComponent } from '../elements/detail-view/views/dialog
 import { ConnettoreMypivotComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-mypivot/connettore-mypivot.component';
 import { ConnettoreSecimComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-secim/connettore-secim.component';
 import { ConnettoreGovpayComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-govpay/connettore-govpay.component';
+import { ConnettoreHypersicComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-hypersic/connettore-hypersic.component';
 
 export class EntryPointList {
 
@@ -117,7 +118,8 @@ export class EntryPointList {
     ProfiloUtenteViewComponent,
     ConnettoreMypivotComponent,
     ConnettoreSecimComponent,
-    ConnettoreGovpayComponent
+    ConnettoreGovpayComponent,
+    ConnettoreHypersicComponent
   ];
 
   public static getComponentByName(name: string):Type<any> {
@@ -270,6 +272,9 @@ export class EntryPointList {
         break;
       case UtilService.CONNETTORE_GOVPAY:
         _type = ConnettoreGovpayComponent;
+        break;
+      case UtilService.CONNETTORE_HYPERSIC:
+        _type = ConnettoreHypersicComponent;
         break;
       //Material Lib
       case UtilService.INPUT:
@@ -447,6 +452,9 @@ export class EntryPointList {
         break;
       case 'ConnettoreGovpayComponent':
         _name = UtilService.CONNETTORE_GOVPAY;
+        break;
+      case 'ConnettoreHypersicComponent':
+        _name = UtilService.CONNETTORE_HYPERSIC;
         break;
       //Material Lib
       case 'InputViewComponent':

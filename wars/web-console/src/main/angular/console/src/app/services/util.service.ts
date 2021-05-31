@@ -483,6 +483,7 @@ export class UtilService {
   public static CONNETTORE_MY_PIVOT: string = 'connettore_my_pivot';
   public static CONNETTORE_SECIM: string = 'connettore_secim';
   public static CONNETTORE_GOVPAY: string = 'connettore_govpay';
+  public static CONNETTORE_HYPERSIC: string = 'connettore_hypersic';
   public static CONNETTORE_MODALITA_EMAIL: string = 'EMAIL';
   public static CONNETTORE_MODALITA_FILESYSTEM: string = 'FILESYSTEM';
   public static CONNETTORE_MODALITA_REST: string = 'REST';
@@ -543,7 +544,8 @@ export class UtilService {
   public static CONNETTORI: SimpleListItem[] = [
     { label: 'MyPivot', value: UtilService.CONNETTORE_MY_PIVOT },
     { label: 'SECIM', value: UtilService.CONNETTORE_SECIM },
-    { label: 'GovPay', value: UtilService.CONNETTORE_GOVPAY }
+    { label: 'GovPay', value: UtilService.CONNETTORE_GOVPAY },
+    { label: 'Suite HyperSIC - APKappa', value: UtilService.CONNETTORE_HYPERSIC }
   ];
 
   public static MODALITA_MYPIVOT: SimpleListItem[] = [
@@ -560,6 +562,11 @@ export class UtilService {
     { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
     { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM },
     { label: 'REST', value: UtilService.CONNETTORE_MODALITA_REST }
+  ];
+
+  public static MODALITA_HYPERSIC: SimpleListItem[] = [
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
+    { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
   ];
 
   public static API_CONNETTORI: SimpleListItem[] = [
