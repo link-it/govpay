@@ -316,8 +316,8 @@ CREATE VIEW v_rendicontazioni_ext AS
 	incassi.trn AS rnc_trn
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
-     JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
-     JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento 
+     LEFT JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
+     LEFT JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento 
      LEFT JOIN pagamenti on rendicontazioni.id_pagamento = pagamenti.id 
      LEFT JOIN rpt on pagamenti.id_rpt = rpt.id
      LEFT JOIN incassi on pagamenti.id_incasso = incassi.id;

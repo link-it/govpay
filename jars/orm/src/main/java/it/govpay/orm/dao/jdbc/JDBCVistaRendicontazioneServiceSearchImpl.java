@@ -287,30 +287,42 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 				if(idPagamentoObj instanceof Long)
 					id_pagamento = (Long) idPagamentoObj;
 				
-				Object idTributoObj = map.remove("sng_id_tributo");
 				Long idTributo = null;
+				Object idTributoObj = map.remove("sng_id_tributo");
 				if(idTributoObj instanceof Long) {
 					idTributo = (Long) idTributoObj;
 				}
 				
-				Long idApplicazione = (Long)map.remove("vrs_id_applicazione");
-				Long idDominio = (Long)map.remove("vrs_id_dominio");
+				Long idApplicazione = null;
+				Object idApplicazioneObj = map.remove("vrs_id_applicazione");
+				if(idApplicazioneObj instanceof Long) {
+					idApplicazione = (Long) idApplicazioneObj;
+				}
+				
+				Long idDominio = null;
+				Object idDominioObj = map.remove("vrs_id_dominio");
+				if(idDominioObj instanceof Long) {
+					idDominio = (Long) idDominioObj;
+				}
 				
 				Long idUO = null;
 				Object idUoObject = map.remove("vrs_id_uo");
 				if(idUoObject instanceof Long) {
 					idUO = (Long) idUoObject;
 				}
+				
 				Long idTipoVersamento = null;
 				Object idTipoVersamentoObject = map.remove("vrs_id_tipo_versamento");
 				if(idTipoVersamentoObject instanceof Long) {
 					idTipoVersamento = (Long) idTipoVersamentoObject;
 				}
+				
 				Long idTipoVersamentoDominio = null;
 				Object idTipoVersamentoDominioObject = map.remove("vrs_id_tipo_versamento_dominio");
 				if(idTipoVersamentoDominioObject instanceof Long) {
 					idTipoVersamentoDominio = (Long) idTipoVersamentoDominioObject;
 				}
+				
 				Long idDocumento = null;
 				Object idDocumentoObject = map.remove("vrs_id_documento");
 				if(idDocumentoObject instanceof Long) {
@@ -336,13 +348,17 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 					rendicontazione.setSngIdTributo(id_singoloVersamento_tributo);
 				}
 				
-				it.govpay.orm.IdApplicazione id_versamento_applicazione = new it.govpay.orm.IdApplicazione();
-				id_versamento_applicazione.setId(idApplicazione);
-				rendicontazione.setVrsIdApplicazione(id_versamento_applicazione);
+				if(idApplicazione != null) {
+					it.govpay.orm.IdApplicazione id_versamento_applicazione = new it.govpay.orm.IdApplicazione();
+					id_versamento_applicazione.setId(idApplicazione);
+					rendicontazione.setVrsIdApplicazione(id_versamento_applicazione);
+				}
 
-				it.govpay.orm.IdDominio id_versamento_dominio = new it.govpay.orm.IdDominio();
-				id_versamento_dominio.setId(idDominio);
-				rendicontazione.setVrsIdDominio(id_versamento_dominio);
+				if(idDominio != null) {
+					it.govpay.orm.IdDominio id_versamento_dominio = new it.govpay.orm.IdDominio();
+					id_versamento_dominio.setId(idDominio);
+					rendicontazione.setVrsIdDominio(id_versamento_dominio);
+				}
 
 				if(idUO != null) {
 					it.govpay.orm.IdUo id_versamento_ente = new it.govpay.orm.IdUo();

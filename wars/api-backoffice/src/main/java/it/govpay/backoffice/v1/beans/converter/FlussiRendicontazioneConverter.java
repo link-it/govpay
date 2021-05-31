@@ -42,8 +42,10 @@ public class FlussiRendicontazioneConverter {
 		rsModel.setRagioneSocialePsp(fr.getRagioneSocialePsp());
 
 		List<it.govpay.backoffice.v1.beans.Rendicontazione> rendicontazioniLst = new ArrayList<>();
-		for(it.govpay.bd.viste.model.Rendicontazione rendicontazione: listaRendicontazioni) {
-			rendicontazioniLst.add(toRendicontazioneRsModel(rendicontazione));
+		if(listaRendicontazioni != null) {
+			for(it.govpay.bd.viste.model.Rendicontazione rendicontazione: listaRendicontazioni) {
+				rendicontazioniLst.add(toRendicontazioneRsModel(rendicontazione));
+			}
 		}
 		rsModel.setRendicontazioni(rendicontazioniLst);
 		

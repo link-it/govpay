@@ -120,11 +120,19 @@ public class RendicontazioniDAO extends BaseDAO{
 				
 				List<it.govpay.bd.viste.model.Rendicontazione> findAll = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso(), leggiRendicontazioniDTO.getObsoleto(), leggiRendicontazioniDTO.getDataOraFlusso());
 				
-				Fr flussoRendicontazione = findAll.get(0).getFr();
-				response.setFr(flussoRendicontazione);
-				response.setDominio(flussoRendicontazione.getDominio(configWrapper));
-				response.setRendicontazioni(findAll);
-	
+				if(findAll != null && !findAll.isEmpty()) {
+					Fr flussoRendicontazione = findAll.get(0).getFr();
+					response.setFr(flussoRendicontazione);
+					response.setDominio(flussoRendicontazione.getDominio(configWrapper));
+					response.setRendicontazioni(findAll);
+				} else { // flusso senza rendicontazioni
+					FrBD frBD = new FrBD(rendicontazioniBD);
+					frBD.setAtomica(false);
+					
+					Fr flussoRendicontazione = frBD.getFr(leggiRendicontazioniDTO.getIdFlusso(), leggiRendicontazioniDTO.getObsoleto(), leggiRendicontazioniDTO.getDataOraFlusso());
+					response.setFr(flussoRendicontazione);
+					response.setDominio(flussoRendicontazione.getDominio(configWrapper));
+				}
 			} catch (NotFoundException e) {
 				throw new RendicontazioneNonTrovataException(e.getMessage(), e);
 			} finally {
