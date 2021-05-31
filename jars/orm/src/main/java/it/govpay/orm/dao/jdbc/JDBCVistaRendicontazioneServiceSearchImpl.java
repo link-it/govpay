@@ -194,6 +194,8 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 			fields.add(VistaRendicontazione.model().SNG_DATI_ALLEGATI);
 			fields.add(VistaRendicontazione.model().SNG_INDICE_DATI);
 			fields.add(VistaRendicontazione.model().SNG_DESCRIZIONE_CAUSALE_RPT);
+			fields.add(VistaRendicontazione.model().SNG_CONTABILITA);
+			
 			fields.add(VistaRendicontazione.model().VRS_ID);
 			fields.add(VistaRendicontazione.model().VRS_COD_VERSAMENTO_ENTE);
 			fields.add(VistaRendicontazione.model().VRS_NOME);
@@ -244,6 +246,30 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 			fields.add(VistaRendicontazione.model().VRS_COD_RATA);
 			fields.add(VistaRendicontazione.model().VRS_TIPO);
 			fields.add(VistaRendicontazione.model().VRS_PROPRIETA);
+			
+			fields.add(VistaRendicontazione.model().PAG_ALLEGATO);
+			fields.add(VistaRendicontazione.model().PAG_CAUSALE_REVOCA);
+			fields.add(VistaRendicontazione.model().PAG_COD_DOMINIO);
+			fields.add(VistaRendicontazione.model().PAG_COMMISSIONI_PSP);
+			fields.add(VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE);
+			fields.add(VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE_REVOCA);
+			fields.add(VistaRendicontazione.model().PAG_DATA_PAGAMENTO);
+			fields.add(VistaRendicontazione.model().PAG_DATI_ESITO_REVOCA);
+			fields.add(VistaRendicontazione.model().PAG_DATI_REVOCA);
+			fields.add(VistaRendicontazione.model().PAG_ESITO_REVOCA);
+			fields.add(VistaRendicontazione.model().PAG_IMPORTO_PAGATO);
+			fields.add(VistaRendicontazione.model().PAG_IMPORTO_REVOCATO);
+			fields.add(VistaRendicontazione.model().PAG_INDICE_DATI);
+			fields.add(VistaRendicontazione.model().PAG_IUR);
+			fields.add(VistaRendicontazione.model().PAG_IUV);
+			fields.add(VistaRendicontazione.model().PAG_STATO);
+			fields.add(VistaRendicontazione.model().PAG_TIPO);
+			fields.add(VistaRendicontazione.model().PAG_TIPO_ALLEGATO);
+			
+			fields.add(VistaRendicontazione.model().RPT_CCP);
+			fields.add(VistaRendicontazione.model().RPT_IUV);
+			
+			fields.add(VistaRendicontazione.model().RNC_TRN);
 			
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 

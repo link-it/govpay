@@ -174,14 +174,14 @@ And match response ==
 	risultati: '#[8]'
 }
 """
-And match response.risultati[0].tipo == 'MBT'
-And match response.risultati[1].tipo == 'ENTRATA'
-And match response.risultati[2].tipo == 'MBT'
-And match response.risultati[3].tipo == 'ENTRATA'
-And match response.risultati[4].tipo == 'MBT'
-And match response.risultati[5].tipo == 'ENTRATA'
-And match response.risultati[6].tipo == 'MBT'
-And match response.risultati[7].tipo == 'ENTRATA'
+And match response.risultati[0].tipo == 'ENTRATA'
+And match response.risultati[1].tipo == 'MBT'
+And match response.risultati[2].tipo == 'ENTRATA'
+And match response.risultati[3].tipo == 'MBT'
+And match response.risultati[4].tipo == 'ENTRATA'
+And match response.risultati[5].tipo == 'MBT'
+And match response.risultati[6].tipo == 'ENTRATA'
+And match response.risultati[7].tipo == 'MBT'
 
 
 Given url ragioneriaBaseurl

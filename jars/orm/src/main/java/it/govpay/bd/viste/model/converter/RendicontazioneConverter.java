@@ -8,12 +8,17 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.Incasso;
+import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.Fr.StatoFr;
+import it.govpay.model.Pagamento.Stato;
+import it.govpay.model.Pagamento.TipoAllegato;
+import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
@@ -79,6 +84,7 @@ public class RendicontazioneConverter {
 		singoloVersamento.setDescrizione(vo.getSngDescrizione());
 		singoloVersamento.setIndiceDati(vo.getSngIndiceDati()); 
 		singoloVersamento.setDescrizioneCausaleRPT(vo.getSngDescrizioneCausaleRPT());
+		singoloVersamento.setContabilita(vo.getSngContabilita());
 
 		dto.setSingoloVersamento(singoloVersamento);
 
@@ -202,7 +208,62 @@ public class RendicontazioneConverter {
 		versamento.setProprieta(vo.getVrsProprieta());
 
 		dto.setVersamento(versamento );
+		
+		it.govpay.bd.model.Pagamento pagamento = new it.govpay.bd.model.Pagamento();
 
+		pagamento.setCodDominio(vo.getPagCodDominio());
+		pagamento.setIuv(vo.getPagIuv());
+		pagamento.setIur(vo.getPagIur());
+		pagamento.setIndiceDati(vo.getPagIndiceDati());
+		pagamento.setImportoPagato(BigDecimal.valueOf(vo.getPagImportoPagato()));
+		pagamento.setDataAcquisizione(vo.getPagDataAcquisizione());
+		pagamento.setDataPagamento(vo.getPagDataPagamento());
+		if(vo.getPagCommissioniPsp() != null)
+			pagamento.setCommissioniPsp(BigDecimal.valueOf(vo.getPagCommissioniPsp()));
+		if(vo.getPagTipoAllegato() != null)
+			pagamento.setTipoAllegato(TipoAllegato.valueOf(vo.getPagTipoAllegato()));
+		pagamento.setAllegato(vo.getPagAllegato());
+
+		pagamento.setDataAcquisizioneRevoca(vo.getPagDataAcquisizioneRevoca());
+		pagamento.setCausaleRevoca(vo.getPagCausaleRevoca());
+		pagamento.setDatiRevoca(vo.getPagDatiRevoca());
+		pagamento.setEsitoRevoca(vo.getPagEsitoRevoca());
+		pagamento.setDatiEsitoRevoca(vo.getPagDatiEsitoRevoca());
+		if(vo.getPagImportoRevocato() != null)
+			pagamento.setImportoRevocato(BigDecimal.valueOf(vo.getPagImportoRevocato()));
+		if(vo.getPagStato() != null)
+			pagamento.setStato(Stato.valueOf(vo.getPagStato()));
+
+		pagamento.setTipo(TipoPagamento.valueOf(vo.getPagTipo()));
+		
+		dto.setPagamento(pagamento);
+		
+		singoloVersamento.setVersamento(versamento);
+		pagamento.setSingoloVersamento(singoloVersamento);
+		
+		rendicontazione.setPagamento(pagamento);
+		
+		// Rpt
+		
+		if(vo.getRptIuv() != null) {
+			Rpt rpt = new Rpt();
+			rpt.setIuv(vo.getRptIuv());
+			rpt.setCodDominio(vo.getPagCodDominio());
+			rpt.setCcp(vo.getRptCcp());
+			dto.setRpt(rpt);
+			pagamento.setRpt(rpt);
+		}
+		
+		// Incasso
+		
+		if(vo.getRncTrn() != null) {
+			Incasso incasso = new Incasso();
+			incasso.setCodDominio(vo.getPagCodDominio());
+			incasso.setTrn(vo.getRncTrn());
+			dto.setIncasso(incasso );
+			pagamento.setIncasso(incasso);
+		}
+		
 		return dto;
 	}
 

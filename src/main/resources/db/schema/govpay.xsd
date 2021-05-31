@@ -3305,6 +3305,15 @@
 			<xsd:element name="sngDatiAllegati" type="String1024" minOccurs="0" />
 			<xsd:element name="sngIndiceDati" type="xsd:positiveInteger" minOccurs="1"/>
 			<xsd:element name="sngDescrizioneCausaleRPT" type="String140" minOccurs="0"/>
+			<xsd:element name="sngContabilita" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 			
 			<xsd:element name="vrsId" type="xsd:long" minOccurs="0"/>
 			<xsd:element name="vrsCodVersamentoEnte" type="String35"/>
@@ -3429,6 +3438,40 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			
+			<xsd:element name="pagCodDominio" type="String35"/>
+			<xsd:element name="pagIuv" type="String35"/>
+			<xsd:element name="pagIndiceDati" type="xsd:int"/>
+			<xsd:element name="pagImportoPagato" type="xsd:double"/>
+			<xsd:element name="pagDataAcquisizione" type="xsd:dateTime"/>
+			<xsd:element name="pagIur" type="String35"/>
+			<xsd:element name="pagDataPagamento" type="xsd:dateTime"/>
+			<xsd:element name="pagCommissioniPsp" type="xsd:decimal" minOccurs="0"/>
+			<xsd:element name="pagTipoAllegato" type="String2" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-comment><![CDATA[Valori possibili:\nES: Esito originario\nBD: Marca da Bollo]]></linkit:sql-column-comment>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
+			<xsd:element name="pagAllegato" type="xsd:base64Binary" minOccurs="0"/>
+			<xsd:element name="pagDataAcquisizioneRevoca" type="xsd:dateTime" minOccurs="0"/>
+			<xsd:element name="pagCausaleRevoca" type="String140" minOccurs="0"/>
+			<xsd:element name="pagDatiRevoca" type="String140" minOccurs="0"/>
+			<xsd:element name="pagImportoRevocato" type="xsd:decimal" minOccurs="0"/>
+			<xsd:element name="pagEsitoRevoca" type="String140" minOccurs="0"/>
+			<xsd:element name="pagDatiEsitoRevoca" type="String140" minOccurs="0"/>
+			<xsd:element name="pagStato" type="String35" minOccurs="0"/>
+			<xsd:element name="pagTipo" type="String35"/>
+			
+			<xsd:element name="rptIuv" type="String35"/>
+			<xsd:element name="rptCcp" type="String35"/>
+			
+			<xsd:element name="rncTrn" type="String35"/>
+			
 		</xsd:sequence>
 	</xsd:complexType>
 	

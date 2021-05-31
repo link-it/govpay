@@ -1726,6 +1726,7 @@ CREATE VIEW v_rendicontazioni_ext AS
     singoli_versamenti.stato_singolo_versamento AS sng_stato_singolo_versamento,
     singoli_versamenti.indice_dati AS sng_indice_dati,
     singoli_versamenti.descrizione_causale_rpt AS sng_descrizione_causale_rpt,
+    singoli_versamenti.contabilita AS sng_contabilita,
     singoli_versamenti.id_tributo AS sng_id_tributo,
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
     versamenti.importo_totale AS vrs_importo_totale,
@@ -1781,11 +1782,35 @@ CREATE VIEW v_rendicontazioni_ext AS
     versamenti.cod_rata as vrs_cod_rata,
     versamenti.id_documento as vrs_id_documento,
     versamenti.tipo as vrs_tipo,
-    versamenti.proprieta as vrs_proprieta
+    versamenti.proprieta as vrs_proprieta,
+    pagamenti.cod_dominio AS pag_cod_dominio,             
+	pagamenti.iuv AS pag_iuv,                     
+	pagamenti.indice_dati AS pag_indice_dati,             
+	pagamenti.importo_pagato AS pag_importo_pagato,          
+	pagamenti.data_acquisizione AS pag_data_acquisizione,       
+	pagamenti.iur AS pag_iur,                     
+	pagamenti.data_pagamento AS pag_data_pagamento,          
+	pagamenti.commissioni_psp AS pag_commissioni_psp,         
+	pagamenti.tipo_allegato AS pag_tipo_allegato,           
+	pagamenti.allegato AS pag_allegato,                
+	pagamenti.data_acquisizione_revoca AS pag_data_acquisizione_revoca,
+	pagamenti.causale_revoca AS pag_causale_revoca,          
+	pagamenti.dati_revoca AS pag_dati_revoca,             
+	pagamenti.importo_revocato AS pag_importo_revocato,        
+	pagamenti.esito_revoca AS pag_esito_revoca,            
+	pagamenti.dati_esito_revoca AS pag_dati_esito_revoca,       
+	pagamenti.stato AS pag_stato,                  
+	pagamenti.tipo AS pag_tipo,                  
+	rpt.iuv AS rpt_iuv,
+	rpt.ccp AS rpt_ccp,
+	incassi.trn AS rnc_trn
    FROM fr
      JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
      JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
-     JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento WHERE fr.obsoleto = 0;
+     JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento 
+     LEFT JOIN pagamenti on rendicontazioni.id_pagamento = pagamenti.id 
+     LEFT JOIN rpt on pagamenti.id_rpt = rpt.id
+     LEFT JOIN incassi on pagamenti.id_incasso = incassi.id;
 
 
 -- Vista Rpt Versamento
