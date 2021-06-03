@@ -4,14 +4,19 @@ import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "tipo",
 "ksLocation",
 "ksPassword",
+"ksType",
+"ksPKeyPassword",
 "tsLocation",
 "tsPassword",
+"tsType",
+"sslType",
 })
 public class TipoAutenticazioneSSL extends it.govpay.core.beans.JSONSerializable {
   
@@ -41,7 +46,7 @@ public class TipoAutenticazioneSSL extends it.govpay.core.beans.JSONSerializable
     @Override
     @JsonValue
     public String toString() {
-      return String.valueOf(this.value);
+      return String.valueOf(value);
     }
 
     public static TipoEnum fromValue(String text) {
@@ -65,11 +70,25 @@ public class TipoAutenticazioneSSL extends it.govpay.core.beans.JSONSerializable
   @JsonProperty("ksPassword")
   private String ksPassword = null;
   
+  @JsonProperty("ksType")
+  private KeystoreType ksType = null;
+  
+  @JsonProperty("ksPKeyPassword")
+  private String ksPKeyPassword = null;
+  
   @JsonProperty("tsLocation")
   private String tsLocation = null;
   
   @JsonProperty("tsPassword")
   private String tsPassword = null;
+  
+  @JsonProperty("tsType")
+  private KeystoreType tsType = null;
+  
+  private SslConfigType sslTypeEnum = null;
+  
+  @JsonProperty("sslType")
+  private String sslType = null;
   
   /**
    **/
@@ -80,7 +99,7 @@ public class TipoAutenticazioneSSL extends it.govpay.core.beans.JSONSerializable
 
   @JsonProperty("tipo")
   public TipoEnum getTipo() {
-    return this.tipo;
+    return tipo;
   }
   public void setTipo(TipoEnum tipo) {
     this.tipo = tipo;
@@ -96,7 +115,7 @@ public class TipoAutenticazioneSSL extends it.govpay.core.beans.JSONSerializable
 
   @JsonProperty("ksLocation")
   public String getKsLocation() {
-    return this.ksLocation;
+    return ksLocation;
   }
   public void setKsLocation(String ksLocation) {
     this.ksLocation = ksLocation;
@@ -112,10 +131,41 @@ public class TipoAutenticazioneSSL extends it.govpay.core.beans.JSONSerializable
 
   @JsonProperty("ksPassword")
   public String getKsPassword() {
-    return this.ksPassword;
+    return ksPassword;
   }
   public void setKsPassword(String ksPassword) {
     this.ksPassword = ksPassword;
+  }
+
+  /**
+   **/
+  public TipoAutenticazioneSSL ksType(KeystoreType ksType) {
+    this.ksType = ksType;
+    return this;
+  }
+
+  @JsonProperty("ksType")
+  public KeystoreType getKsType() {
+    return ksType;
+  }
+  public void setKsType(KeystoreType ksType) {
+    this.ksType = ksType;
+  }
+
+  /**
+   * Password della chiave privata del keystore
+   **/
+  public TipoAutenticazioneSSL ksPKeyPassword(String ksPKeyPassword) {
+    this.ksPKeyPassword = ksPKeyPassword;
+    return this;
+  }
+
+  @JsonProperty("ksPKeyPassword")
+  public String getKsPKeyPassword() {
+    return ksPKeyPassword;
+  }
+  public void setKsPKeyPassword(String ksPKeyPassword) {
+    this.ksPKeyPassword = ksPKeyPassword;
   }
 
   /**
@@ -128,7 +178,7 @@ public class TipoAutenticazioneSSL extends it.govpay.core.beans.JSONSerializable
 
   @JsonProperty("tsLocation")
   public String getTsLocation() {
-    return this.tsLocation;
+    return tsLocation;
   }
   public void setTsLocation(String tsLocation) {
     this.tsLocation = tsLocation;
@@ -144,10 +194,55 @@ public class TipoAutenticazioneSSL extends it.govpay.core.beans.JSONSerializable
 
   @JsonProperty("tsPassword")
   public String getTsPassword() {
-    return this.tsPassword;
+    return tsPassword;
   }
   public void setTsPassword(String tsPassword) {
     this.tsPassword = tsPassword;
+  }
+
+  /**
+   **/
+  public TipoAutenticazioneSSL tsType(KeystoreType tsType) {
+    this.tsType = tsType;
+    return this;
+  }
+
+  @JsonProperty("tsType")
+  public KeystoreType getTsType() {
+    return tsType;
+  }
+  public void setTsType(KeystoreType tsType) {
+    this.tsType = tsType;
+  }
+
+  /**
+   **/
+  public TipoAutenticazioneSSL sslTypeEnum(SslConfigType type) {
+    this.sslTypeEnum = type;
+    return this;
+  }
+
+  @JsonIgnore
+  public SslConfigType getSslTypeEnum() {
+    return sslTypeEnum;
+  }
+  public void setSslTypeEnum(SslConfigType type) {
+    this.sslTypeEnum = type;
+  }
+  
+  /**
+   **/
+  public TipoAutenticazioneSSL sslType(String sslType) {
+    this.sslType = sslType;
+    return this;
+  }
+
+  @JsonProperty("type")
+  public String getSslType() {
+    return sslType;
+  }
+  public void setSslType(String sslType) {
+    this.sslType = sslType;
   }
 
   @Override
@@ -155,20 +250,24 @@ public class TipoAutenticazioneSSL extends it.govpay.core.beans.JSONSerializable
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     TipoAutenticazioneSSL tipoAutenticazioneSSL = (TipoAutenticazioneSSL) o;
-    return Objects.equals(this.tipo, tipoAutenticazioneSSL.tipo) &&
-        Objects.equals(this.ksLocation, tipoAutenticazioneSSL.ksLocation) &&
-        Objects.equals(this.ksPassword, tipoAutenticazioneSSL.ksPassword) &&
-        Objects.equals(this.tsLocation, tipoAutenticazioneSSL.tsLocation) &&
-        Objects.equals(this.tsPassword, tipoAutenticazioneSSL.tsPassword);
+    return Objects.equals(tipo, tipoAutenticazioneSSL.tipo) &&
+        Objects.equals(ksLocation, tipoAutenticazioneSSL.ksLocation) &&
+        Objects.equals(ksPassword, tipoAutenticazioneSSL.ksPassword) &&
+        Objects.equals(ksType, tipoAutenticazioneSSL.ksType) &&
+        Objects.equals(ksPKeyPassword, tipoAutenticazioneSSL.ksPKeyPassword) &&
+        Objects.equals(tsLocation, tipoAutenticazioneSSL.tsLocation) &&
+        Objects.equals(tsPassword, tipoAutenticazioneSSL.tsPassword) &&
+        Objects.equals(tsType, tipoAutenticazioneSSL.tsType) &&
+        Objects.equals(sslType, tipoAutenticazioneSSL.sslType);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.tipo, this.ksLocation, this.ksPassword, this.tsLocation, this.tsPassword);
+    return Objects.hash(tipo, ksLocation, ksPassword, ksType, ksPKeyPassword, tsLocation, tsPassword, tsType, sslType);
   }
 
   public static TipoAutenticazioneSSL parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -185,11 +284,15 @@ public class TipoAutenticazioneSSL extends it.govpay.core.beans.JSONSerializable
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoAutenticazioneSSL {\n");
     
-    sb.append("    tipo: ").append(this.toIndentedString(this.tipo)).append("\n");
-    sb.append("    ksLocation: ").append(this.toIndentedString(this.ksLocation)).append("\n");
-    sb.append("    ksPassword: ").append(this.toIndentedString(this.ksPassword)).append("\n");
-    sb.append("    tsLocation: ").append(this.toIndentedString(this.tsLocation)).append("\n");
-    sb.append("    tsPassword: ").append(this.toIndentedString(this.tsPassword)).append("\n");
+    sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
+    sb.append("    ksLocation: ").append(toIndentedString(ksLocation)).append("\n");
+    sb.append("    ksPassword: ").append(toIndentedString(ksPassword)).append("\n");
+    sb.append("    ksType: ").append(toIndentedString(ksType)).append("\n");
+    sb.append("    ksPKeyPassword: ").append(toIndentedString(ksPKeyPassword)).append("\n");
+    sb.append("    tsLocation: ").append(toIndentedString(tsLocation)).append("\n");
+    sb.append("    tsPassword: ").append(toIndentedString(tsPassword)).append("\n");
+    sb.append("    tsType: ").append(toIndentedString(tsType)).append("\n");
+    sb.append("    sslType: ").append(toIndentedString(sslType)).append("\n");
     sb.append("}");
     return sb.toString();
   }

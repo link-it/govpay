@@ -22,6 +22,10 @@ public class ConnettoriConverter {
 			connettore.setSslTsLocation(connector.getAuth().getTsLocation());
 			connettore.setSslKsPasswd(connector.getAuth().getKsPassword());
 			connettore.setSslTsPasswd(connector.getAuth().getTsPassword());
+			connettore.setSslTsType(connector.getAuth().getTsType());
+			connettore.setSslType(connector.getAuth().getSslType());
+			connettore.setSslKsType(connector.getAuth().getKsType());
+			connettore.setSslPKeyPasswd(connector.getAuth().getKsPKeyPassword());
 			
 			if(connector.getAuth().getTipo() != null) {
 				connettore.setTipoAutenticazione(EnumAuthType.SSL);
@@ -69,7 +73,11 @@ public class ConnettoriConverter {
 		.ksLocation(connettore.getSslKsLocation())
 		.ksPassword(connettore.getSslKsPasswd())
 		.tsLocation(connettore.getSslTsLocation())
-		.tsPassword(connettore.getSslTsPasswd());
+		.tsPassword(connettore.getSslTsPasswd())
+		.tsType(connettore.getSslTsType())
+		.sslType(connettore.getSslType())
+		.ksType(connettore.getSslKsType())
+		.ksPKeyPassword(connettore.getSslPKeyPasswd());
 		
 		if(connettore.getTipoSsl() != null) {
 			switch (connettore.getTipoSsl() ) {
