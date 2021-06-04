@@ -175,8 +175,11 @@ public class AvvisoPagamentoUtils {
 		if(versamento.getImportoTotale() != null)
 			rata.setImporto(versamento.getImportoTotale().doubleValue());
 
-		if(versamento.getDataValidita() != null)
+		if(versamento.getDataValidita() != null) {
 			rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataValidita()));
+		} else if(versamento.getDataScadenza() != null) {
+			rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataScadenza()));
+		} 
 
 		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));
 		if(iuvGenerato.getQrCode() != null)
