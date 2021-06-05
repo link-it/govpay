@@ -1,10 +1,11 @@
-import { AfterContentChecked, AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { IFormComponent } from '../../../../../../classes/interfaces/IFormComponent';
 import { Voce } from '../../../../../../services/voce.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UtilService } from '../../../../../../services/util.service';
 import { MatSelectChange } from '@angular/material';
 import { SimpleListItem } from '../../../../../simple-list-card/simple-list-card.component';
+import { SslConfigComponent } from '../../../ssl-config/ssl-config.component';
 
 const SEPARATORE: string = ', ';
 
@@ -13,7 +14,8 @@ const SEPARATORE: string = ', ';
   templateUrl: './connettore-govpay.component.html',
   styleUrls: ['./connettore-govpay.component.scss']
 })
-export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterViewInit, AfterContentChecked {
+export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterViewInit {
+  @ViewChild('sslConfig') sslConfig: SslConfigComponent;
 
   _Voce = Voce;
   Util = UtilService;
@@ -22,7 +24,7 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
   @Input() parent: any;
 
   pattern: string = '^(|([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5}){1,25})+((,\\s)(([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5}){1,25})+)*$';
-  govpayAbilitato: FormControl = new FormControl(false, { updateOn: 'change', validators: Validators.required });
+  govpayAbilitato: boolean;
   tipoConnettore: FormControl = new FormControl('');
   govpayModalita: string = '';
   _option: any = { hasOption: false, hasAllOption: false };
@@ -33,20 +35,13 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
 
   // REST
   _contenuti: SimpleListItem[] = UtilService.CONTENUTI_NOTIFICA_CONNETTORE;
-  protected BASIC = UtilService.TIPI_AUTENTICAZIONE.basic;
-  protected SSL = UtilService.TIPI_AUTENTICAZIONE.ssl;
-  protected CLIENT = UtilService.TIPI_SSL.client;
-  protected SERVER = UtilService.TIPI_SSL.server;
   protected versioni: any[] = UtilService.TIPI_VERSIONE_API;
-  protected _isBasicAuth: boolean = false;
-  protected _isSslAuth: boolean = false;
-  protected _isSslClient: boolean = false;
   protected sslTypeValue: string = '';
 
   constructor() { }
 
   ngOnInit() {
-    this.fGroup.addControl('govpayAbilitato_ctrl', this.govpayAbilitato);
+    this.fGroup.addControl('govpayAbilitato_ctrl', new FormControl(false));
     this.fGroup.addControl('versioneZip_ctrl', new FormControl(''));
     this.fGroup.addControl('tipoConnettore_ctrl', this.tipoConnettore);
     this.fGroup.addControl('tipiPendenza_ctrl', new FormControl(''));
@@ -58,70 +53,39 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
     this.fGroup.addControl('contenuti_ctrl', new FormControl(''));
     this.fGroup.addControl('url_ctrl', new FormControl(''));
     this.fGroup.addControl('versioneApi_ctrl', new FormControl('', null));
-    this.fGroup.addControl('auth_ctrl', new FormControl(''));
-  }
-
-  ngAfterContentChecked() {
-    this.govpayModalita = (this.fGroup && this.fGroup.controls)?this.fGroup.controls['tipoConnettore_ctrl'].value:'';
   }
 
   ngAfterViewInit() {
-    setTimeout(() => {
-      this.fGroup.controls['govpayAbilitato_ctrl'].setValue(false);
-      if(this.json) {
-        this.fGroup.controls['govpayAbilitato_ctrl'].setValue(this.json.abilitato || false);
-        this.fGroup.controls['versioneZip_ctrl'].setValue(this.json.versioneZip || '');
-        this.fGroup.controls['tipoConnettore_ctrl'].setValue(this.json.tipoConnettore || '');
-        this.fGroup.controls['tipiPendenza_ctrl'].setValue(this.json.tipiPendenza || '');
-        if (this.json.emailIndirizzi) {
-          this.fGroup.controls['emailIndirizzi_ctrl'].setValue(this.json.emailIndirizzi.join(SEPARATORE) || '');
-        }
-        this.fGroup.controls['emailSubject_ctrl'].setValue(this.json.emailSubject || '');
-        this.fGroup.controls['emailAllegato_ctrl'].setValue(this.json.emailAllegato || false);
-        if (!this.json.emailAllegato) {
-          this.fGroup.controls['downloadBaseUrl_ctrl'].setValue(this.json.downloadBaseUrl || '');
-        }
-        this.fGroup.controls['fileSystemPath_ctrl'].setValue(this.json.fileSystemPath || '');
-        if (this.json.contenuti) {
-          this.fGroup.controls['contenuti_ctrl'].setValue(this.json.contenuti || '');
-          this._isSslAuth = false;
-          this._isBasicAuth = false;
-          if (this.json.url) {
-            this.fGroup.controls['url_ctrl'].setValue(this.json.url);
-          }
-          if (this.json.versioneApi) {
-            this.fGroup.controls['versioneApi_ctrl'].setValue(this.json.versioneApi);
-          }
-          if(this.json.auth) {
-            if(this.json.auth.hasOwnProperty('username')){
-              this._isBasicAuth = true;
-              this.fGroup.controls['auth_ctrl'].setValue(this.BASIC);
-              this.addBasicControls();
-              this.fGroup.controls['username_ctrl'].setValue(this.json.auth.username);
-              this.fGroup.controls['password_ctrl'].setValue(this.json.auth.password);
-            }
-            if(this.json.auth.hasOwnProperty('tipo')){
-              this._isSslAuth = true;
-              this.fGroup.controls['auth_ctrl'].setValue(this.SSL);
-              this.addSslControls();
-              this.fGroup.controls['ssl_ctrl'].setValue(this.json.auth.tipo === this.CLIENT);
-              this.fGroup.controls['tsLocation_ctrl'].setValue(this.json.auth.tsLocation);
-              this.fGroup.controls['tsPassword_ctrl'].setValue(this.json.auth.tsPassword);
-              if (this.json.auth.tipo === this.CLIENT) {
-                this.addSslClientControls();
-                this.fGroup.controls['ksLocation_ctrl'].setValue(this.json.auth.ksLocation);
-                this.fGroup.controls['ksPassword_ctrl'].setValue(this.json.auth.ksPassword);
-                this._isSslClient = true;
-              }
-            }
-          }
-        }
-        this.__bools(this.json.tipiPendenza);
-        this._allegatoChange({ checked: this.json.emailAllegato });
+    if(this.json) {
+      this.fGroup.controls['govpayAbilitato_ctrl'].setValue(this.json.abilitato || false);
+      this.fGroup.controls['versioneZip_ctrl'].setValue(this.json.versioneZip || '');
+      this.fGroup.controls['tipoConnettore_ctrl'].setValue(this.json.tipoConnettore || '');
+      this.fGroup.controls['tipiPendenza_ctrl'].setValue(this.json.tipiPendenza || '');
+      if (this.json.emailIndirizzi) {
+        this.fGroup.controls['emailIndirizzi_ctrl'].setValue(this.json.emailIndirizzi.join(SEPARATORE) || '');
+      }
+      this.fGroup.controls['emailSubject_ctrl'].setValue(this.json.emailSubject || '');
+      this.fGroup.controls['emailAllegato_ctrl'].setValue(this.json.emailAllegato || false);
+      if (!this.json.emailAllegato) {
+        this.fGroup.controls['downloadBaseUrl_ctrl'].setValue(this.json.downloadBaseUrl || '');
+      }
+      this.fGroup.controls['fileSystemPath_ctrl'].setValue(this.json.fileSystemPath || '');
+      if (this.json.contenuti) {
+        this.fGroup.controls['contenuti_ctrl'].setValue(this.json.contenuti || '');
+      }
+      if (this.json.url) {
+        this.fGroup.controls['url_ctrl'].setValue(this.json.url);
+      }
+      if (this.json.versioneApi) {
+        this.fGroup.controls['versioneApi_ctrl'].setValue(this.json.versioneApi);
+      }
+      this.__bools(this.json.tipiPendenza);
+      this._allegatoChange({ checked: this.json.emailAllegato });
+      setTimeout(() => {
         this._onChangeGovpay({ checked: this.json.abilitato }, 'govpayAbilitato_ctrl');
         this._onChangeGovpay({ value: this.json.tipoConnettore }, 'tipoConnettore_ctrl');
-      }
-    });
+      });
+    }
   }
 
   protected _tipoChange(event: MatSelectChange) {
@@ -144,40 +108,59 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
 
   _onChangeGovpay(event: any, type: string) {
     if (type === 'govpayAbilitato_ctrl') {
-      (event.checked)?this.fGroup.controls['tipoConnettore_ctrl'].setValidators(Validators.required):this.fGroup.controls['tipoConnettore_ctrl'].clearValidators();
-      (event.checked)?this.fGroup.controls['tipiPendenza_ctrl'].setValidators(Validators.required):this.fGroup.controls['tipiPendenza_ctrl'].clearValidators();
-      this.fGroup.controls['tipoConnettore_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
-      this.fGroup.controls['tipiPendenza_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
-      if (!event.checked) {
-        this.fGroup.controls['versioneZip_ctrl'].clearValidators();
-        this.fGroup.controls['versioneApi_ctrl'].clearValidators();
-        this.fGroup.controls['emailIndirizzi_ctrl'].clearValidators();
-        this.fGroup.controls['downloadBaseUrl_ctrl'].clearValidators();
-        this.fGroup.controls['fileSystemPath_ctrl'].clearValidators();
-        this.fGroup.controls['contenuti_ctrl'].clearValidators();
-        this.fGroup.controls['url_ctrl'].clearValidators();
-        this.removeBasicControls();
-        this.removeSslControls();
-      }
+      this.govpayAbilitato = event.checked;
     }
     if (type === 'tipoConnettore_ctrl') {
+      this.govpayModalita = event.value;
+    }
+    this.fGroup.controls['tipoConnettore_ctrl'].clearValidators();
+    this.fGroup.controls['tipiPendenza_ctrl'].clearValidators();
+    // REST
+    this.fGroup.controls['contenuti_ctrl'].clearValidators();
+    this.fGroup.controls['url_ctrl'].clearValidators();
+    this.fGroup.controls['versioneApi_ctrl'].clearValidators();
+    if (this.sslConfig) {
+      this.sslConfig.clearValidators();
+    }
+    // EMAIL
+    this.fGroup.controls['emailIndirizzi_ctrl'].clearValidators();
+    this.fGroup.controls['downloadBaseUrl_ctrl'].clearValidators();
+    // EMAIL, FS
+    this.fGroup.controls['versioneZip_ctrl'].clearValidators();
+    // FS
+    this.fGroup.controls['fileSystemPath_ctrl'].clearValidators();
+    if (this.govpayAbilitato) {
+      this.fGroup.controls['tipoConnettore_ctrl'].setValidators(Validators.required);
+      this.fGroup.controls['tipiPendenza_ctrl'].setValidators(Validators.required);
       // EMAIL
-      (this.govpayAbilitato.value && event.value === UtilService.CONNETTORE_MODALITA_EMAIL)?this.fGroup.controls['emailIndirizzi_ctrl'].setValidators([Validators.required, Validators.pattern(this.pattern)]):this.fGroup.controls['emailIndirizzi_ctrl'].clearValidators();
-      (this.govpayAbilitato.value && !this._isAllegatoEmail && event.value === UtilService.CONNETTORE_MODALITA_EMAIL)?this.fGroup.controls['downloadBaseUrl_ctrl'].setValidators([Validators.required]):this.fGroup.controls['downloadBaseUrl_ctrl'].clearValidators();
+      if (this.govpayModalita === UtilService.CONNETTORE_MODALITA_EMAIL) {
+        this.fGroup.controls['emailIndirizzi_ctrl'].setValidators([Validators.required, Validators.pattern(this.pattern)]);
+        if (!this._isAllegatoEmail) {
+          this.fGroup.controls['downloadBaseUrl_ctrl'].setValidators([Validators.required]);
+        }
+      }
       // EMAIL, FS
-      this.fGroup.controls['versioneZip_ctrl'].clearValidators();
-      if (this.govpayAbilitato.value) {
-        if (event.value === UtilService.CONNETTORE_MODALITA_EMAIL || event.value === UtilService.CONNETTORE_MODALITA_FILESYSTEM) {
+      if (this.govpayAbilitato) {
+        if (this.govpayModalita === UtilService.CONNETTORE_MODALITA_EMAIL || this.govpayModalita === UtilService.CONNETTORE_MODALITA_FILESYSTEM) {
           this.fGroup.controls['versioneZip_ctrl'].setValidators(Validators.required);
         }
       }
       // FS
-      (this.govpayAbilitato.value && event.value === UtilService.CONNETTORE_MODALITA_FILESYSTEM)?this.fGroup.controls['fileSystemPath_ctrl'].setValidators(Validators.required):this.fGroup.controls['fileSystemPath_ctrl'].clearValidators();
+      if (this.govpayModalita === UtilService.CONNETTORE_MODALITA_FILESYSTEM) {
+        this.fGroup.controls['fileSystemPath_ctrl'].setValidators(Validators.required);
+      }
       // REST
-      (this.govpayAbilitato.value && event.value === UtilService.CONNETTORE_MODALITA_REST)?this.fGroup.controls['contenuti_ctrl'].setValidators(Validators.required):this.fGroup.controls['contenuti_ctrl'].clearValidators();
-      (this.govpayAbilitato.value && event.value === UtilService.CONNETTORE_MODALITA_REST)?this.fGroup.controls['url_ctrl'].setValidators(Validators.required):this.fGroup.controls['url_ctrl'].clearValidators();
-      (this.govpayAbilitato.value && event.value === UtilService.CONNETTORE_MODALITA_REST)?this.fGroup.controls['versioneApi_ctrl'].setValidators(Validators.required):this.fGroup.controls['versioneApi_ctrl'].clearValidators();
+      if (this.govpayModalita === UtilService.CONNETTORE_MODALITA_REST) {
+        this.fGroup.controls['contenuti_ctrl'].setValidators(Validators.required);
+        this.fGroup.controls['url_ctrl'].setValidators(Validators.required)
+        this.fGroup.controls['versioneApi_ctrl'].setValidators(Validators.required);
+        if (this.sslConfig) {
+          this.sslConfig.setValidatorsRequired();
+        }
+      }
     }
+    this.fGroup.controls['tipoConnettore_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+    this.fGroup.controls['tipiPendenza_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
     this.fGroup.controls['versioneZip_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
     this.fGroup.controls['versioneApi_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
     this.fGroup.controls['emailIndirizzi_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
@@ -185,32 +168,7 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
     this.fGroup.controls['fileSystemPath_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
     this.fGroup.controls['contenuti_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
     this.fGroup.controls['url_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
-  }
 
-  protected _onAuthChange(target: any) {
-    this._isSslAuth = false;
-    this._isBasicAuth = false;
-    this.removeBasicControls();
-    this.removeSslControls();
-    switch(target.value) {
-      case this.BASIC:
-        this.addBasicControls();
-        this._isBasicAuth = true;
-        break;
-      case this.SSL:
-        this.addSslControls();
-        this._isSslAuth = true;
-        break;
-    }
-  }
-
-  protected _onTypeChange(target) {
-    this._isSslClient = false;
-    this.removeSslClientControls();
-    if (target.checked === true) {
-      this._isSslClient = true;
-      this.addSslClientControls();
-    }
   }
 
   protected _allegatoChange(event: any) {
@@ -218,40 +176,6 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
     (event.checked)?this.fGroup.controls['downloadBaseUrl_ctrl'].clearValidators():this.fGroup.controls['downloadBaseUrl_ctrl'].setValidators(Validators.required);
     (event.checked)?this.fGroup.controls['downloadBaseUrl_ctrl'].disable():this.fGroup.controls['downloadBaseUrl_ctrl'].enable();
     this.fGroup.controls['downloadBaseUrl_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
-  }
-
-  protected addBasicControls() {
-    this.fGroup.addControl('username_ctrl', new FormControl('', Validators.required));
-    this.fGroup.addControl('password_ctrl', new FormControl('', Validators.required));
-  }
-
-  protected addSslControls() {
-    this.fGroup.addControl('ssl_ctrl', new FormControl(false, Validators.required));
-    this.fGroup.addControl('tsLocation_ctrl', new FormControl('', Validators.required));
-    this.fGroup.addControl('tsPassword_ctrl', new FormControl('', Validators.required));
-  }
-
-  protected addSslClientControls() {
-    this.fGroup.addControl('ksLocation_ctrl', new FormControl('', Validators.required));
-    this.fGroup.addControl('ksPassword_ctrl', new FormControl('', Validators.required));
-  }
-
-  protected removeSslClientControls() {
-    this.fGroup.removeControl('ksLocation_ctrl');
-    this.fGroup.removeControl('ksPassword_ctrl');
-  }
-
-  protected removeBasicControls() {
-    this.fGroup.removeControl('username_ctrl');
-    this.fGroup.removeControl('password_ctrl');
-  }
-
-  protected removeSslControls() {
-    this.fGroup.removeControl('ssl_ctrl');
-    this.fGroup.removeControl('ksLocation_ctrl');
-    this.fGroup.removeControl('ksPassword_ctrl');
-    this.fGroup.removeControl('tsLocation_ctrl');
-    this.fGroup.removeControl('tsPassword_ctrl');
   }
 
   _pendenzaCmpFn(p1: any, p2: any): boolean {
@@ -274,31 +198,10 @@ export class ConnettoreGovpayComponent implements IFormComponent, OnInit, AfterV
       _json.tipoConnettore = _info['tipoConnettore_ctrl'] || null;
       if (_json.tipoConnettore === UtilService.CONNETTORE_MODALITA_REST) {
         _json.contenuti = _info['contenuti_ctrl'] || null;
-        _json.auth = null;
+        _json.auth = this.sslConfig.mapToJson();
         _json.url = _info['url_ctrl']?_info['url_ctrl']:null;
         _json.versioneApi = _info['versioneApi_ctrl']?_info['versioneApi_ctrl']:null;
-        if(_info.hasOwnProperty('username_ctrl')) {
-          _json.auth = {
-            password: _info['password_ctrl'],
-            username: _info['username_ctrl']
-          };
-        }
-        if(_info.hasOwnProperty('ssl_ctrl')) {
-          _json.auth = {
-            tipo: _info['ssl_ctrl']?this.CLIENT:this.SERVER,
-            tsLocation: _info['tsLocation_ctrl'],
-            tsPassword: _info['tsPassword_ctrl'],
-            ksLocation: '',
-            ksPassword: ''
-          };
-          if(_info['ssl_ctrl'] === true) {
-            _json.auth.ksLocation = _info['ksLocation_ctrl'];
-            _json.auth.ksPassword = _info['ksPassword_ctrl'];
-          } else {
-            delete _json.auth.ksLocation;
-            delete _json.auth.ksPassword;
-          }
-        }
+
         if(_json.auth == null) { delete _json.auth; }
         if(_json.url == null) { delete _json.url; }
       }
