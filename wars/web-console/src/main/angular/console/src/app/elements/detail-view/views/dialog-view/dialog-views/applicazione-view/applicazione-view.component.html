@@ -42,7 +42,8 @@
           </mat-select>
         </mat-form-field>
         <!-- SSL Config -->
-        <link-ssl-config #sslConfig [fGroup]="fGroup" [json]="json?.servizioIntegrazione?.auth" [disabled]="!urlCtrl.value" [required]="!!urlCtrl.value"></link-ssl-config>
+        <link-ssl-config #sslConfig [fGroup]="fGroup" [json]="json?.servizioIntegrazione?.auth" [disabled]="!urlCtrl.value"
+                         [required]="!!urlCtrl.value"></link-ssl-config>
       </div>
     </mat-card>
   </div>

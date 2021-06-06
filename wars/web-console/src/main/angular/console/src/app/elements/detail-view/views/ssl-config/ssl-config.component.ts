@@ -38,8 +38,8 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
 
   protected _isBasicAuth: boolean = false;
   protected _isSslAuth: boolean = false;
-
   protected _isSslClient: boolean = false;
+  protected _isRequired: boolean = false;
 
   protected authCtrl: FormControl = new FormControl('');
 
@@ -51,17 +51,23 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.required && changes.required.currentValue ) {
-      this.authCtrl.setValidators(Validators.required);
+      this.setValidatorsRequired();
+      this.updateValueAndValidity();
     }
     if (changes.required && !changes.required.currentValue ) {
-      this.authCtrl.clearValidators();
+      this.clearValidators();
+      this.updateValueAndValidity();
     }
     if (changes.disabled && changes.disabled.currentValue ) {
+      this.resetSslConfig();
       this.authCtrl.disable();
     }
     if (changes.disabled && !changes.disabled.currentValue ) {
       this.authCtrl.enable();
     }
+    setTimeout(() => {
+      this._isRequired = this.required;
+    }, 100);
   }
 
   ngAfterViewInit() {
@@ -96,25 +102,29 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
             this._isSslClient = true;
           }
         }
+        this.setValidatorsRequired();
+        this.updateValueAndValidity();
       }
     });
   }
 
   protected _onAuthChange(target: any) {
-    this._isSslAuth = false;
     this._isBasicAuth = false;
+    this._isSslClient = false;
+    this._isSslAuth = false;
     this.removeBasicControls();
     this.removeSslControls();
     switch(target.value) {
       case this.BASIC:
-        this.addBasicControls();
         this._isBasicAuth = true;
+        this.addBasicControls();
         break;
       case this.SSL:
-        this.addSslControls();
         this._isSslAuth = true;
+        this.addSslControls();
         break;
     }
+    this.updateValueAndValidity();
   }
 
   protected _onTypeChange(target) {
@@ -124,31 +134,32 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
       this._isSslClient = true;
       this.addSslClientControls();
     }
+    this.updateValueAndValidity();
   }
 
   protected addBasicControls() {
     if (this.fGroup) {
-      this.fGroup.addControl('username_ctrl', new FormControl('', Validators.required));
-      this.fGroup.addControl('password_ctrl', new FormControl('', Validators.required));
+      this.fGroup.addControl('username_ctrl', new FormControl('', (this._isBasicAuth && this.required)?[Validators.required]:[]));
+      this.fGroup.addControl('password_ctrl', new FormControl('', (this._isBasicAuth && this.required)?[Validators.required]:[]));
     }
   }
 
   protected addSslControls() {
     if (this.fGroup) {
-      this.fGroup.addControl('ssl_ctrl', new FormControl(false, Validators.required));
-      this.fGroup.addControl('sslType_ctrl', new FormControl('', Validators.required));
-      this.fGroup.addControl('tsType_ctrl', new FormControl('', Validators.required));
-      this.fGroup.addControl('tsLocation_ctrl', new FormControl('', Validators.required));
-      this.fGroup.addControl('tsPassword_ctrl', new FormControl('', Validators.required));
+      this.fGroup.addControl('ssl_ctrl', new FormControl(false));
+      this.fGroup.addControl('sslType_ctrl', new FormControl('', (this._isSslAuth && this.required)?[Validators.required]:[]));
+      this.fGroup.addControl('tsType_ctrl', new FormControl('', (this._isSslAuth && this.required)?[Validators.required]:[]));
+      this.fGroup.addControl('tsLocation_ctrl', new FormControl('', (this._isSslAuth && this.required)?[Validators.required]:[]));
+      this.fGroup.addControl('tsPassword_ctrl', new FormControl('', (this._isSslAuth && this.required)?[Validators.required]:[]));
     }
   }
 
   protected addSslClientControls() {
     if (this.fGroup) {
-      this.fGroup.addControl('ksType_ctrl', new FormControl('', Validators.required));
-      this.fGroup.addControl('ksLocation_ctrl', new FormControl('', Validators.required));
-      this.fGroup.addControl('ksPassword_ctrl', new FormControl('', Validators.required));
-      this.fGroup.addControl('ksPKeyPasswd_ctrl', new FormControl('', Validators.required));
+      this.fGroup.addControl('ksType_ctrl', new FormControl('', (this._isSslClient && this.required)?[Validators.required]:[]));
+      this.fGroup.addControl('ksLocation_ctrl', new FormControl('', (this._isSslClient && this.required)?[Validators.required]:[]));
+      this.fGroup.addControl('ksPassword_ctrl', new FormControl('', (this._isSslClient && this.required)?[Validators.required]:[]));
+      this.fGroup.addControl('ksPKeyPasswd_ctrl', new FormControl('', (this._isSslClient && this.required)?[Validators.required]:[]));
     }
   }
 
@@ -182,11 +193,101 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
     }
   }
 
-  resetControllers() {
+  resetSslConfig() {
     this._isSslAuth = false;
     this._isBasicAuth = false;
+    this.resetControllers();
+  }
+
+  resetControllers() {
+    this.authCtrl.setValue(this.NESSUNA);
     this.removeBasicControls();
     this.removeSslControls();
+  }
+
+  clearValidators() {
+    this.authCtrl.clearValidators();
+    if (this.fGroup) {
+      const controls: any = this.fGroup.controls;
+      if (this._isBasicAuth) {
+        controls['username_ctrl'].clearValidators();
+        controls['username_ctrl'].setErrors(null);
+        controls['password_ctrl'].clearValidators();
+        controls['password_ctrl'].setErrors(null);
+      }
+      if (this._isSslAuth) {
+        controls['ssl_ctrl'].clearValidators();
+        controls['ssl_ctrl'].setErrors(null);
+        controls['sslType_ctrl'].clearValidators();
+        controls['sslType_ctrl'].setErrors(null);
+        controls['tsType_ctrl'].clearValidators();
+        controls['tsType_ctrl'].setErrors(null);
+        controls['tsLocation_ctrl'].clearValidators();
+        controls['tsLocation_ctrl'].setErrors(null);
+        controls['tsPassword_ctrl'].clearValidators();
+        controls['tsPassword_ctrl'].setErrors(null);
+        if (this._isSslClient) {
+          controls['ksType_ctrl'].clearValidators();
+          controls['ksType_ctrl'].setErrors(null);
+          controls['ksLocation_ctrl'].clearValidators();
+          controls['ksLocation_ctrl'].setErrors(null);
+          controls['ksPassword_ctrl'].clearValidators();
+          controls['ksPassword_ctrl'].setErrors(null);
+          controls['ksPKeyPasswd_ctrl'].clearValidators();
+          controls['ksPKeyPasswd_ctrl'].setErrors(null);
+        }
+      }
+    }
+  }
+
+  setValidatorsRequired() {
+    this.authCtrl.setValidators(Validators.required);
+    if (this.fGroup) {
+      const controls: any = this.fGroup.controls;
+      if (this._isBasicAuth) {
+        controls['username_ctrl'].setValidators(Validators.required);
+        controls['password_ctrl'].setValidators(Validators.required);
+      }
+      if (this._isSslAuth) {
+        controls['ssl_ctrl'].setValidators(Validators.required);
+        controls['sslType_ctrl'].setValidators(Validators.required);
+        controls['tsType_ctrl'].setValidators(Validators.required);
+        controls['tsLocation_ctrl'].setValidators(Validators.required);
+        controls['tsPassword_ctrl'].setValidators(Validators.required);
+        if (this._isSslClient) {
+          controls['ksType_ctrl'].setValidators(Validators.required);
+          controls['ksLocation_ctrl'].setValidators(Validators.required);
+          controls['ksPassword_ctrl'].setValidators(Validators.required);
+          controls['ksPKeyPasswd_ctrl'].setValidators(Validators.required);
+        }
+      }
+    }
+  }
+
+  updateValueAndValidity() {
+    setTimeout(() => {
+      if (this.fGroup) {
+        const controls: any = this.fGroup.controls;
+        if (this._isBasicAuth) {
+          controls['username_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+          controls['password_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+        }
+        if (this._isSslAuth) {
+          controls['ssl_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+          controls['sslType_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+          controls['tsType_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+          controls['tsLocation_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+          controls['tsPassword_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+          if (this._isSslClient) {
+            controls['ksType_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+            controls['ksLocation_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+            controls['ksPassword_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+            controls['ksPKeyPasswd_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+          }
+        }
+      }
+      this.authCtrl.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+    });
   }
 
   mapToJson(): any {
