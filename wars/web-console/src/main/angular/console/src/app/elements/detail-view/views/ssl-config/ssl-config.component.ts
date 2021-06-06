@@ -1,4 +1,4 @@
-import { AfterContentChecked, AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IFormComponent } from '../../../../classes/interfaces/IFormComponent';
 import { UtilService } from '../../../../services/util.service';
@@ -9,9 +9,10 @@ import { Voce } from '../../../../services/voce.service';
   templateUrl: './ssl-config.component.html',
   styles: []
 })
-export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, AfterContentChecked, AfterViewInit {
+export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, AfterViewInit {
   @Input() fGroup: FormGroup;
   @Input() json: any;
+  @Input() disabled: boolean = true;
   @Input() required: boolean = false;
 
   protected voce = Voce;
@@ -57,12 +58,16 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
       this.clearValidators();
       this.updateValueAndValidity();
     }
+    if (changes.disabled && changes.disabled.currentValue ) {
+      this.resetSslConfig();
+      this.authCtrl.disable();
+    }
+    if (changes.disabled && !changes.disabled.currentValue ) {
+      this.authCtrl.enable();
+    }
     setTimeout(() => {
       this._isRequired = this.required;
     }, 100);
-  }
-
-  ngAfterContentChecked() {
   }
 
   ngAfterViewInit() {
@@ -71,6 +76,7 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
       this._isBasicAuth = false;
       this.fGroup.controls['auth_ctrl'].setValue(this.NESSUNA);
       if (this.json) {
+        this.authCtrl.enable();
         if (this.json.hasOwnProperty('username')) {
           this._isBasicAuth = true;
           this.fGroup.controls['auth_ctrl'].setValue(this.BASIC);

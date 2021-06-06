@@ -79,7 +79,7 @@
           </mat-select>
         </mat-form-field>
         <!-- SSL Config -->
-        <link-ssl-config #sslConfig class="col-12" [fGroup]="fGroup" [json]="json?.auth"
+        <link-ssl-config #sslConfig class="col-12" [fGroup]="fGroup" [json]="json?.auth" [disabled]="!urlCtrl.value"
                          [required]="govpayAbilitato && !!urlCtrl.value && tipoConnettore.value === Util.CONNETTORE_MODALITA_REST"></link-ssl-config>
       </div>
     </mat-card>
