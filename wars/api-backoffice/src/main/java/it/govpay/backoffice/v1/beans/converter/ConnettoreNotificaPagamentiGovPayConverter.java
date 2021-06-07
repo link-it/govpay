@@ -131,6 +131,10 @@ public class ConnettoreNotificaPagamentiGovPayConverter {
 					connettore.setSslTsLocation(connector.getAuth().getTsLocation());
 					connettore.setSslKsPasswd(connector.getAuth().getKsPassword());
 					connettore.setSslTsPasswd(connector.getAuth().getTsPassword());
+					connettore.setSslTsType(connector.getAuth().getTsType());
+					connettore.setSslType(connector.getAuth().getSslType());
+					connettore.setSslKsType(connector.getAuth().getKsType());
+					connettore.setSslPKeyPasswd(connector.getAuth().getKsPKeyPasswd());
 					
 					if(connector.getAuth().getTipo() != null) {
 						connettore.setTipoAutenticazione(EnumAuthType.SSL);
