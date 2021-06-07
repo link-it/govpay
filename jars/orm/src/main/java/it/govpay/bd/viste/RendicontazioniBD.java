@@ -1,13 +1,20 @@
 package it.govpay.bd.viste;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
@@ -18,8 +25,12 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.viste.filters.RendicontazioneFilter;
 import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.bd.viste.model.converter.RendicontazioneConverter;
+import it.govpay.orm.FR;
+import it.govpay.orm.VistaRendicontazione;
 import it.govpay.orm.dao.jdbc.JDBCVistaRendicontazioneServiceSearch;
+import it.govpay.orm.dao.jdbc.converter.FRFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.VistaRendicontazioneFieldConverter;
+import it.govpay.orm.model.FRModel;
 import it.govpay.orm.model.VistaRendicontazioneModel;
 
 public class RendicontazioniBD extends BasicBD {
@@ -170,6 +181,83 @@ public class RendicontazioniBD extends BasicBD {
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public List<it.govpay.bd.viste.model.Rendicontazione> getFr(String codFlusso, Boolean obsoleto, Date dataOraFlusso) throws NotFoundException, ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			IExpression expr = this.getVistaRendicontazioneServiceSearch().newExpression();
+			expr.equals(VistaRendicontazione.model().FR_COD_FLUSSO, codFlusso);
+			
+			if(obsoleto != null) {
+				expr.equals(VistaRendicontazione.model().FR_OBSOLETO, obsoleto);
+			}
+			
+			if(dataOraFlusso != null) {
+				// controllo millisecondi
+				Calendar cDataDa = Calendar.getInstance();
+				cDataDa.setTime(dataOraFlusso);
+				int currentMillis = cDataDa.get(Calendar.MILLISECOND);
+
+				// in questo caso posso avere una data dove non sono stati impostati i millisecondi oppure millisecondi == 0, faccio una ricerca su un intervallo di un secondo
+				if(currentMillis == 0) {
+					Calendar cDataA = Calendar.getInstance();
+					cDataA.setTime(dataOraFlusso);
+					cDataA.set(Calendar.MILLISECOND, 999);
+					Date dataA = cDataA.getTime();
+					
+					IExpression exprFR =  this.getFrService().newExpression();
+					exprFR.equals(FR.model().COD_FLUSSO, codFlusso);
+					
+					if(obsoleto != null) {
+						exprFR.equals(FR.model().OBSOLETO, obsoleto);
+					}
+
+					exprFR.greaterEquals(FR.model().DATA_ORA_FLUSSO, dataOraFlusso).and().lessEquals(FR.model().DATA_ORA_FLUSSO, dataA);
+					IPaginatedExpression pagExpr = this.getFrService().toPaginatedExpression(exprFR);
+					pagExpr.offset(0).limit(1);
+					pagExpr.addOrder(FR.model().DATA_ORA_FLUSSO, SortOrder.DESC); // prendo il piu' recente
+					
+					FRFieldConverter converter = new FRFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+					FRModel model = it.govpay.orm.FR.model();
+					CustomField cf = new CustomField("id", Long.class, "id", converter.toAliasTable(model));
+					
+					try {
+						List<Object> select = this.getFrService().select(pagExpr, cf);
+						
+						Long idFR = 0L;
+						for (Object obj : select) {
+							idFR = (Long) obj;
+						}
+						expr.equals(VistaRendicontazione.model().FR_ID, idFR);
+					} catch (NotFoundException e) {
+						throw new NotFoundException("Nessuna entry corrisponde ai criteri indicati.");
+					}
+				} else {
+					expr.equals(VistaRendicontazione.model().FR_DATA_ORA_FLUSSO, dataOraFlusso);
+				}
+			}
+			
+			IPaginatedExpression pagExpr = this.getVistaRendicontazioneServiceSearch().toPaginatedExpression(expr);
+			pagExpr.offset(0);
+			
+			VistaRendicontazioneFieldConverter converter = new VistaRendicontazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			VistaRendicontazioneModel model = it.govpay.orm.VistaRendicontazione.model();
+			CustomField cf = new CustomField("id", Long.class, "id", converter.toAliasTable(model));
+			pagExpr.addOrder(cf, SortOrder.ASC);
+			
+			List<it.govpay.orm.VistaRendicontazione> rendicontazioneVOLst = this.getVistaRendicontazioneServiceSearch().findAll(pagExpr);
+			return RendicontazioneConverter.toDTO(rendicontazioneVOLst);
+			
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

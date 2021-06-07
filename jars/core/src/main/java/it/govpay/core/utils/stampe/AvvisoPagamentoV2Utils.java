@@ -140,8 +140,13 @@ public class AvvisoPagamentoV2Utils {
 				addNota1 = false;
 				
 				RataAvviso rata = new RataAvviso();
-				String dataValidita = AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataValidita());
-				rata.setData(dataValidita);
+				if(versamento.getDataValidita() != null) {
+					rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataValidita()));
+				} else if(versamento.getDataScadenza() != null) {
+					rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataScadenza()));
+				} else {
+					rata.setData("-"); 
+				}
 				
 				// calcolo dell'importo totale
 				BigDecimal importoTotale = BigDecimal.ZERO;
@@ -196,8 +201,13 @@ public class AvvisoPagamentoV2Utils {
 				AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 				
 				RataAvviso rata = new RataAvviso();
-				String dataValidita = AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataValidita());
-				rata.setData(dataValidita);
+				if(versamento.getDataValidita() != null) {
+					rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataValidita()));
+				} else if(versamento.getDataScadenza() != null) {
+					rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataScadenza()));
+				} else {
+					rata.setData("-"); 
+				}
 				
 				switch (versamento.getTipoSoglia()) {
 				case ENTRO:
@@ -412,11 +422,16 @@ public class AvvisoPagamentoV2Utils {
 		if(versamento.getImportoTotale() != null)
 			rata.setImporto(versamento.getImportoTotale().doubleValue());
 
-		if(addDataValidita && versamento.getDataValidita() != null) {
-			String dataValidita = AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataValidita());
-			rata.setData(dataValidita);
+		if(addDataValidita) {
+			if(versamento.getDataValidita() != null) {
+				rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataValidita()));
+			} else if(versamento.getDataScadenza() != null) {
+				rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataScadenza()));
+			} else {
+				rata.setData("-"); 
+			}
 		}
-
+		
 		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));
 		if(iuvGenerato.getQrCode() != null)
 			rata.setQrCode(new String(iuvGenerato.getQrCode()));

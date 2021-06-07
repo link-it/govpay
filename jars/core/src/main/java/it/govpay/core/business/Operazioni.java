@@ -53,6 +53,7 @@ import it.govpay.bd.pagamento.filters.TracciatoFilter;
 import it.govpay.core.business.Rendicontazioni.DownloadRendicontazioniResponse;
 import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.client.BasicClient;
 import it.govpay.core.utils.thread.InviaNotificaAppIoThread;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.SpedizioneTracciatoNotificaPagamentiThread;
@@ -411,6 +412,7 @@ public class Operazioni{
 			batch.setAggiornamento(new Date());
 			batchBD.update(batch);
 			AnagraficaManager.cleanCache();
+			BasicClient.cleanCache();
 			log.info("Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.");	
 			return "Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.";
 		} catch (Exception e) {
@@ -439,6 +441,7 @@ public class Operazioni{
 
 				log.info("Nodo ["+clusterId+"]: Reset della cache anagrafica locale in corso...");	
 				AnagraficaManager.cleanCache();
+				BasicClient.cleanCache();
 				log.info("Nodo ["+clusterId+"]: Reset della cache anagrafica locale completato.");
 			}
 

@@ -76,6 +76,13 @@ Examples:
 | ksPassword | intermediarioClientAuth.servizioPagoPa.auth.ksPassword | null |  'ksPassword' |
 | tsLocation | intermediarioClientAuth.servizioPagoPa.auth.tsLocation | null |  'tsLocation' |
 | tsPassword | intermediarioClientAuth.servizioPagoPa.auth.tsPassword | null |  'tsPassword' |
+| tsType | intermediarioClientAuth.servizioPagoPa.auth.tsType | null |  'tsType' |
+| tsType | intermediarioClientAuth.servizioPagoPa.auth.tsType | 'XXX' |  'tsType' |
+| sslType | intermediarioClientAuth.servizioPagoPa.auth.sslType | null |  'sslType' |
+| sslType | intermediarioClientAuth.servizioPagoPa.auth.sslType | 'XXX' |  'sslType' |
+| ksType | intermediarioClientAuth.servizioPagoPa.auth.ksType | null |  'ksType' |
+| ksType | intermediarioClientAuth.servizioPagoPa.auth.ksType | 'XXX' |  'ksType' |
+| ksPKeyPasswd | intermediarioClientAuth.servizioPagoPa.auth.ksPKeyPasswd | null |  'ksPKeyPasswd' |
 
 Scenario Outline: <field> non valida
 
@@ -97,3 +104,8 @@ Examples:
 | tipo | intermediarioServerAuth.servizioPagoPa.auth.tipo | 'XXXX' |  'tipo' |
 | tsLocation | intermediarioServerAuth.servizioPagoPa.auth.tsLocation | null |  'tsLocation' |
 | tsPassword | intermediarioServerAuth.servizioPagoPa.auth.tsPassword | null |  'tsPassword' |
+| tsType | intermediarioServerAuth.servizioPagoPa.auth.tsType | null |  'tsType' |
+| tsType | intermediarioServerAuth.servizioPagoPa.auth.tsType | 'XXX' |  'tsType' |
+| sslType | intermediarioServerAuth.servizioPagoPa.auth.sslType | null |  'sslType' |
+| sslType | intermediarioServerAuth.servizioPagoPa.auth.sslType | 'XXX' |  'sslType' |
+

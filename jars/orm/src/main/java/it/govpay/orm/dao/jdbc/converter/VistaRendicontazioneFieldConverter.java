@@ -333,6 +333,13 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return "sng_descrizione_causale_rpt";
 			}
 		}
+		if(field.equals(VistaRendicontazione.model().SNG_CONTABILITA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".sng_contabilita";
+			}else{
+				return "sng_contabilita";
+			}
+		}
 		if(field.equals(VistaRendicontazione.model().VRS_ID)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".vrs_id";
@@ -725,6 +732,13 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return "cod_applicazione";
 			}
 		}
+		if(field.equals(VistaRendicontazione.model().VRS_ID_DOCUMENTO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
 		if(field.equals(VistaRendicontazione.model().VRS_TIPO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".vrs_tipo";
@@ -737,6 +751,153 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return this.toAliasTable(field)+".vrs_proprieta";
 			}else{
 				return "vrs_proprieta";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_cod_dominio";
+			}else{
+				return "pag_cod_dominio";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_iuv";
+			}else{
+				return "pag_iuv";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_INDICE_DATI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_indice_dati";
+			}else{
+				return "pag_indice_dati";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_IMPORTO_PAGATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_importo_pagato";
+			}else{
+				return "pag_importo_pagato";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_data_acquisizione";
+			}else{
+				return "pag_data_acquisizione";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_IUR)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_iur";
+			}else{
+				return "pag_iur";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_DATA_PAGAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_data_pagamento";
+			}else{
+				return "pag_data_pagamento";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_COMMISSIONI_PSP)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_commissioni_psp";
+			}else{
+				return "pag_commissioni_psp";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_TIPO_ALLEGATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_tipo_allegato";
+			}else{
+				return "pag_tipo_allegato";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_ALLEGATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_allegato";
+			}else{
+				return "pag_allegato";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE_REVOCA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_data_acquisizione_revoca";
+			}else{
+				return "pag_data_acquisizione_revoca";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_CAUSALE_REVOCA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_causale_revoca";
+			}else{
+				return "pag_causale_revoca";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_DATI_REVOCA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_dati_revoca";
+			}else{
+				return "pag_dati_revoca";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_IMPORTO_REVOCATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_importo_revocato";
+			}else{
+				return "pag_importo_revocato";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_ESITO_REVOCA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_esito_revoca";
+			}else{
+				return "pag_esito_revoca";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_DATI_ESITO_REVOCA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_dati_esito_revoca";
+			}else{
+				return "pag_dati_esito_revoca";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_STATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_stato";
+			}else{
+				return "pag_stato";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_TIPO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".pag_tipo";
+			}else{
+				return "pag_tipo";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().RPT_IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".rpt_iuv";
+			}else{
+				return "rpt_iuv";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().RPT_CCP)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".rpt_ccp";
+			}else{
+				return "rpt_ccp";
+			}
+		}
+		if(field.equals(VistaRendicontazione.model().RNC_TRN)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".rnc_trn";
+			}else{
+				return "rnc_trn";
 			}
 		}
 
@@ -864,6 +1025,9 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().SNG_DESCRIZIONE_CAUSALE_RPT)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().SNG_CONTABILITA)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().VRS_ID)){
@@ -1034,10 +1198,76 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 		if(field.equals(VistaRendicontazione.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(VistaRendicontazione.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
 		}
+		if(field.equals(VistaRendicontazione.model().VRS_ID_DOCUMENTO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(VistaRendicontazione.model().VRS_ID_DOCUMENTO.ID_DOMINIO, returnAlias);
+		}
 		if(field.equals(VistaRendicontazione.model().VRS_TIPO)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().VRS_PROPRIETA)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_COD_DOMINIO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_IUV)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_INDICE_DATI)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_IMPORTO_PAGATO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_IUR)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_DATA_PAGAMENTO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_COMMISSIONI_PSP)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_TIPO_ALLEGATO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_ALLEGATO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE_REVOCA)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_CAUSALE_REVOCA)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_DATI_REVOCA)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_IMPORTO_REVOCATO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_ESITO_REVOCA)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_DATI_ESITO_REVOCA)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_STATO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().PAG_TIPO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().RPT_IUV)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().RPT_CCP)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().RNC_TRN)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 
@@ -1100,6 +1330,9 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 		}
 		if(model.equals(VistaRendicontazione.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(VistaRendicontazione.model().VRS_ID_DOCUMENTO.ID_DOMINIO)){
+			return "domini";
 		}
 
 

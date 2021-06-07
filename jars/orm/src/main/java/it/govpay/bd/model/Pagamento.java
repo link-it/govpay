@@ -62,7 +62,9 @@ public class Pagamento extends it.govpay.model.Pagamento {
 
 	public void setRpt(Rpt rpt) {
 		this.rpt = rpt;
-		this.setIdRpt(rpt.getId());
+		if(rpt.getId() != null) {
+			this.setIdRpt(rpt.getId());
+		}
 	}
 	
 	public Rr getRr(BasicBD bd) throws ServiceException {
@@ -122,7 +124,9 @@ public class Pagamento extends it.govpay.model.Pagamento {
 
 	public void setIncasso(Incasso incasso) {
 		this.incasso = incasso;
-		this.setIdIncasso(incasso.getId());
+		if(this.incasso.getId() != null) {
+			this.setIdIncasso(incasso.getId());
+		}
 	}
 	
 	public boolean isPagamentoRendicontato(BasicBD bd) throws ServiceException {

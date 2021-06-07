@@ -1038,6 +1038,7 @@
     <value name="sngDatiAllegati" field="sngDatiAllegati" usage="optional"/>
     <value name="sngIndiceDati" field="sngIndiceDati" usage="required"/>
     <value name="sngDescrizioneCausaleRPT" field="sngDescrizioneCausaleRPT" usage="optional"/>
+    <value name="sngContabilita" field="sngContabilita" usage="optional"/>
     <value name="vrsId" field="vrsId" usage="optional"/>
     <value name="vrsCodVersamentoEnte" field="vrsCodVersamentoEnte" usage="required"/>
     <value name="vrsNome" field="vrsNome" usage="optional"/>
@@ -1093,6 +1094,27 @@
     <structure name="vrsIdDocumento" field="vrsIdDocumento" usage="optional" map-as="_IdDocumento_Type"/>
     <value name="vrsTipo" field="vrsTipo" usage="required"/>
     <value name="vrsProprieta" field="vrsProprieta" usage="optional"/>
+    <value name="pagCodDominio" field="pagCodDominio" usage="required"/>
+    <value name="pagIuv" field="pagIuv" usage="required"/>
+    <value name="pagIndiceDati" field="pagIndiceDati" usage="required"/>
+    <value name="pagImportoPagato" field="pagImportoPagato" usage="required"/>
+    <value name="pagDataAcquisizione" field="pagDataAcquisizione" usage="required"/>
+    <value name="pagIur" field="pagIur" usage="required"/>
+    <value name="pagDataPagamento" field="pagDataPagamento" usage="required"/>
+    <value name="pagCommissioniPsp" field="pagCommissioniPsp" usage="optional"/>
+    <value name="pagTipoAllegato" field="pagTipoAllegato" usage="optional"/>
+    <value name="pagAllegato" field="pagAllegato" usage="optional"/>
+    <value name="pagDataAcquisizioneRevoca" field="pagDataAcquisizioneRevoca" usage="optional"/>
+    <value name="pagCausaleRevoca" field="pagCausaleRevoca" usage="optional"/>
+    <value name="pagDatiRevoca" field="pagDatiRevoca" usage="optional"/>
+    <value name="pagImportoRevocato" field="pagImportoRevocato" usage="optional"/>
+    <value name="pagEsitoRevoca" field="pagEsitoRevoca" usage="optional"/>
+    <value name="pagDatiEsitoRevoca" field="pagDatiEsitoRevoca" usage="optional"/>
+    <value name="pagStato" field="pagStato" usage="optional"/>
+    <value name="pagTipo" field="pagTipo" usage="required"/>
+    <value name="rptIuv" field="rptIuv" usage="required"/>
+    <value name="rptCcp" field="rptCcp" usage="required"/>
+    <value name="rncTrn" field="rncTrn" usage="required"/>
   </mapping>
   <mapping name="VistaRptVersamento" class="it.govpay.orm.VistaRptVersamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

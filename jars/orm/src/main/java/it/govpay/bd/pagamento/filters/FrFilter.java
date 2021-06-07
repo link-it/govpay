@@ -66,16 +66,19 @@ public class FrFilter extends AbstractFilter {
 	private boolean searchModeEquals = false; 
 	private Boolean obsoleto;
 	private boolean ricercaIdFlussoCaseInsensitive = false;
+	
+	FRFieldConverter converter = null;
 
-	public FrFilter(IExpressionConstructor expressionConstructor) {
+	public FrFilter(IExpressionConstructor expressionConstructor) throws ServiceException {
 		this(expressionConstructor,false);
 	}
 	
-	public FrFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+	public FrFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) throws ServiceException {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(FR.model().COD_FLUSSO);
 		this.listaFieldSimpleSearch.add(FR.model().IUR);
 		this.listaFieldSimpleSearch.add(Rendicontazione.model().ID_PAGAMENTO.IUV);
+		this.converter = new FRFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 	}
 
 //	public List<Object> getFields(boolean count) throws ServiceException {
@@ -528,7 +531,12 @@ public class FrFilter extends AbstractFilter {
 		}
 		
 		if(this.obsoleto != null) {
-			lst.add(this.obsoleto);
+			try {
+				lst = this.setValoreFiltroBoolean(lst, converter, this.obsoleto);
+			} catch (ExpressionException e) {
+				throw new ServiceException(e);
+			}
+			
 		}
 		
 		if(this.iuv != null) {

@@ -194,6 +194,8 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 			fields.add(VistaRendicontazione.model().SNG_DATI_ALLEGATI);
 			fields.add(VistaRendicontazione.model().SNG_INDICE_DATI);
 			fields.add(VistaRendicontazione.model().SNG_DESCRIZIONE_CAUSALE_RPT);
+			fields.add(VistaRendicontazione.model().SNG_CONTABILITA);
+			
 			fields.add(VistaRendicontazione.model().VRS_ID);
 			fields.add(VistaRendicontazione.model().VRS_COD_VERSAMENTO_ENTE);
 			fields.add(VistaRendicontazione.model().VRS_NOME);
@@ -245,6 +247,30 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 			fields.add(VistaRendicontazione.model().VRS_TIPO);
 			fields.add(VistaRendicontazione.model().VRS_PROPRIETA);
 			
+			fields.add(VistaRendicontazione.model().PAG_ALLEGATO);
+			fields.add(VistaRendicontazione.model().PAG_CAUSALE_REVOCA);
+			fields.add(VistaRendicontazione.model().PAG_COD_DOMINIO);
+			fields.add(VistaRendicontazione.model().PAG_COMMISSIONI_PSP);
+			fields.add(VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE);
+			fields.add(VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE_REVOCA);
+			fields.add(VistaRendicontazione.model().PAG_DATA_PAGAMENTO);
+			fields.add(VistaRendicontazione.model().PAG_DATI_ESITO_REVOCA);
+			fields.add(VistaRendicontazione.model().PAG_DATI_REVOCA);
+			fields.add(VistaRendicontazione.model().PAG_ESITO_REVOCA);
+			fields.add(VistaRendicontazione.model().PAG_IMPORTO_PAGATO);
+			fields.add(VistaRendicontazione.model().PAG_IMPORTO_REVOCATO);
+			fields.add(VistaRendicontazione.model().PAG_INDICE_DATI);
+			fields.add(VistaRendicontazione.model().PAG_IUR);
+			fields.add(VistaRendicontazione.model().PAG_IUV);
+			fields.add(VistaRendicontazione.model().PAG_STATO);
+			fields.add(VistaRendicontazione.model().PAG_TIPO);
+			fields.add(VistaRendicontazione.model().PAG_TIPO_ALLEGATO);
+			
+			fields.add(VistaRendicontazione.model().RPT_CCP);
+			fields.add(VistaRendicontazione.model().RPT_IUV);
+			
+			fields.add(VistaRendicontazione.model().RNC_TRN);
+			
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
@@ -261,30 +287,42 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 				if(idPagamentoObj instanceof Long)
 					id_pagamento = (Long) idPagamentoObj;
 				
-				Object idTributoObj = map.remove("sng_id_tributo");
 				Long idTributo = null;
+				Object idTributoObj = map.remove("sng_id_tributo");
 				if(idTributoObj instanceof Long) {
 					idTributo = (Long) idTributoObj;
 				}
 				
-				Long idApplicazione = (Long)map.remove("vrs_id_applicazione");
-				Long idDominio = (Long)map.remove("vrs_id_dominio");
+				Long idApplicazione = null;
+				Object idApplicazioneObj = map.remove("vrs_id_applicazione");
+				if(idApplicazioneObj instanceof Long) {
+					idApplicazione = (Long) idApplicazioneObj;
+				}
+				
+				Long idDominio = null;
+				Object idDominioObj = map.remove("vrs_id_dominio");
+				if(idDominioObj instanceof Long) {
+					idDominio = (Long) idDominioObj;
+				}
 				
 				Long idUO = null;
 				Object idUoObject = map.remove("vrs_id_uo");
 				if(idUoObject instanceof Long) {
 					idUO = (Long) idUoObject;
 				}
+				
 				Long idTipoVersamento = null;
 				Object idTipoVersamentoObject = map.remove("vrs_id_tipo_versamento");
 				if(idTipoVersamentoObject instanceof Long) {
 					idTipoVersamento = (Long) idTipoVersamentoObject;
 				}
+				
 				Long idTipoVersamentoDominio = null;
 				Object idTipoVersamentoDominioObject = map.remove("vrs_id_tipo_versamento_dominio");
 				if(idTipoVersamentoDominioObject instanceof Long) {
 					idTipoVersamentoDominio = (Long) idTipoVersamentoDominioObject;
 				}
+				
 				Long idDocumento = null;
 				Object idDocumentoObject = map.remove("vrs_id_documento");
 				if(idDocumentoObject instanceof Long) {
@@ -310,13 +348,17 @@ public class JDBCVistaRendicontazioneServiceSearchImpl implements IJDBCServiceSe
 					rendicontazione.setSngIdTributo(id_singoloVersamento_tributo);
 				}
 				
-				it.govpay.orm.IdApplicazione id_versamento_applicazione = new it.govpay.orm.IdApplicazione();
-				id_versamento_applicazione.setId(idApplicazione);
-				rendicontazione.setVrsIdApplicazione(id_versamento_applicazione);
+				if(idApplicazione != null) {
+					it.govpay.orm.IdApplicazione id_versamento_applicazione = new it.govpay.orm.IdApplicazione();
+					id_versamento_applicazione.setId(idApplicazione);
+					rendicontazione.setVrsIdApplicazione(id_versamento_applicazione);
+				}
 
-				it.govpay.orm.IdDominio id_versamento_dominio = new it.govpay.orm.IdDominio();
-				id_versamento_dominio.setId(idDominio);
-				rendicontazione.setVrsIdDominio(id_versamento_dominio);
+				if(idDominio != null) {
+					it.govpay.orm.IdDominio id_versamento_dominio = new it.govpay.orm.IdDominio();
+					id_versamento_dominio.setId(idDominio);
+					rendicontazione.setVrsIdDominio(id_versamento_dominio);
+				}
 
 				if(idUO != null) {
 					it.govpay.orm.IdUo id_versamento_ente = new it.govpay.orm.IdUo();

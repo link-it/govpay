@@ -19,16 +19,24 @@
  */
 package it.govpay.orm.dao.jdbc;
 
+import java.sql.Connection;
+import java.util.List;
+import java.util.Map;
+
+import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.UnionExpression;
 import org.openspcoop2.generic_project.dao.IDBServiceUtilities;
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-import it.govpay.orm.IdRendicontazione;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
-import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.beans.Union;
-import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCProperties;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
@@ -37,24 +45,13 @@ import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCProperties;
-import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-import it.govpay.orm.dao.jdbc.JDBCLimitedServiceManager;
+import it.govpay.orm.IdRendicontazione;
 import it.govpay.orm.VistaRendicontazione;
 import it.govpay.orm.dao.IDBVistaRendicontazioneServiceSearch;
 import it.govpay.orm.utils.ProjectInfo;
-
-import java.sql.Connection;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
  * Service can be used to search for the backend objects of type {@link it.govpay.orm.VistaRendicontazione} 

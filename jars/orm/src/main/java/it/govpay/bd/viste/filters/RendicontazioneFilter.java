@@ -60,16 +60,19 @@ public class RendicontazioneFilter extends AbstractFilter {
 	private List<Long> idVersamento= null;
 	private List<Long> idUo;
 	private List<Long> idTipiVersamento = null;
+	
+	private VistaRendicontazioneFieldConverter converter = null;
 
-	public RendicontazioneFilter(IExpressionConstructor expressionConstructor) {
+	public RendicontazioneFilter(IExpressionConstructor expressionConstructor) throws ServiceException {
 		this(expressionConstructor,false);
 	}
 	
-	public RendicontazioneFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+	public RendicontazioneFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) throws ServiceException {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(VistaRendicontazione.model().RND_IUV);
 		this.listaFieldSimpleSearch.add(VistaRendicontazione.model().RND_IUR);
 		this.listaFieldSimpleSearch.add(VistaRendicontazione.model().FR_COD_DOMINIO);
+		this.converter = new VistaRendicontazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 	}
 	
 	@Override
@@ -609,7 +612,11 @@ public class RendicontazioneFilter extends AbstractFilter {
 		}
 		
 		if(this.frObsoleto != null) {
-			lst.add(this.frObsoleto);
+			try {
+				lst = this.setValoreFiltroBoolean(lst, converter, this.frObsoleto);
+			} catch (ExpressionException e) {
+				throw new ServiceException(e);
+			}
 		}
 		
 		
