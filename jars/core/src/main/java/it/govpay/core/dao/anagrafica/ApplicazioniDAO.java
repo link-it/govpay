@@ -87,8 +87,24 @@ public class ApplicazioniDAO extends BaseDAO {
 			filter.getFilterSortList().addAll(listaApplicazioniDTO.getFieldSortList());
 			filter.setCodApplicazione(listaApplicazioniDTO.getCodApplicazione());
 			filter.setPrincipalOriginale(listaApplicazioniDTO.getPrincipal());
-
-			return new FindApplicazioniDTOResponse(applicazioniBD.count(filter), applicazioniBD.findAll(filter));
+			filter.setEseguiCountConLimit(listaApplicazioniDTO.isEseguiCountConLimit());
+			
+			Long count = null;
+			
+			if(listaApplicazioniDTO.isEseguiCount()) {
+				 count = applicazioniBD.count(filter);
+			}
+			
+			List<Applicazione> findAll = new ArrayList<>();
+			if(listaApplicazioniDTO.isEseguiFindAll()) {
+				findAll = applicazioniBD.findAll(filter);
+				
+				if(listaApplicazioniDTO.getLimit() == null && !listaApplicazioniDTO.isEseguiCount()) {
+					count = (long) findAll.size();
+				}
+			}
+			
+			return new FindApplicazioniDTOResponse(count, findAll);
 
 		} finally {
 			if(applicazioniBD != null) 

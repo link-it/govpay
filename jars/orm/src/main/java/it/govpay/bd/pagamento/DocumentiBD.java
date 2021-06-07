@@ -127,10 +127,10 @@ public class DocumentiBD extends BasicBD {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
-				filter.setExpressionConstructor(this.getDominioService());
+				filter.setExpressionConstructor(this.getDocumentoService());
 			}
 			
-			return this.getDominioService().count(filter.toExpression()).longValue();
+			return this.getDocumentoService().count(filter.toExpression()).longValue();
 	
 		} catch (NotImplementedException e) {
 			return 0;
@@ -186,7 +186,7 @@ public class DocumentiBD extends BasicBD {
 			List<Class<?>> returnTypes = new ArrayList<>();
 			returnTypes.add(Long.class); // Count
 			
-			List<List<Object>> nativeQuery = this.getDominioService().nativeQuery(sql, returnTypes, parameters);
+			List<List<Object>> nativeQuery = this.getDocumentoService().nativeQuery(sql, returnTypes, parameters);
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
