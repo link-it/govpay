@@ -1,0 +1,51 @@
+<mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+  <mat-select #authentication [placeholder]="voce.TIPO_AUTH" formControlName="auth_ctrl" [required]="_isRequired"
+              (selectionChange)="_onAuthChange(authentication)">
+    <mat-option [value]="NESSUNA">{{NESSUNA}}</mat-option>
+    <mat-option [value]="BASIC">HTTP Basic</mat-option>
+    <mat-option [value]="SSL">SSL</mat-option>
+  </mat-select>
+</mat-form-field>
+<div *ngIf="_isBasicAuth">
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput [placeholder]="voce.USERNAME" formControlName="username_ctrl" autocomplete="off" [required]="_isRequired">
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput [placeholder]="voce.PASSWORD" formControlName="password_ctrl" autocomplete="off" [required]="_isRequired">
+  </mat-form-field>
+</div>
+<div *ngIf="_isSslAuth">
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <mat-select [placeholder]="voce.SSL_CFG_TYPE" formControlName="sslType_ctrl" [required]="_isRequired">
+      <mat-option *ngFor="let ssl of tipiCfgSSL" [value]="ssl.value">{{ssl.label}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <mat-select [placeholder]="voce.TRUST_STORE_TYPE" formControlName="tsType_ctrl" [required]="_isRequired">
+      <mat-option *ngFor="let ts of tipiTruststore" [value]="ts.value">{{ts.label}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput [placeholder]="voce.TRUST_STORE_LOC" formControlName="tsLocation_ctrl" autocomplete="off" [required]="_isRequired">
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput [placeholder]="voce.TRUST_STORE_PWD" formControlName="tsPassword_ctrl" autocomplete="off" [required]="_isRequired">
+  </mat-form-field>
+  <div class="w-100" [formGroup]="fGroup">
+    <mat-slide-toggle #type formControlName="ssl_ctrl" color="accent" (change)="_onTypeChange(type)">{{ voce.AUTENTICAZIONE_CLIENT }}</mat-slide-toggle>
+  </div>
+  <mat-form-field class="w-100 mt-3" color="accent" [formGroup]="fGroup" *ngIf="_isSslClient">
+    <mat-select [placeholder]="voce.KEY_STORE_TYPE" formControlName="ksType_ctrl" [required]="_isRequired">
+      <mat-option *ngFor="let ks of tipiKeystore" [value]="ks.value">{{ks.label}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_isSslClient">
+    <input matInput [placeholder]="voce.KEY_STORE_LOC" formControlName="ksLocation_ctrl" autocomplete="off" [required]="_isRequired">
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_isSslClient">
+    <input matInput [placeholder]="voce.KEY_STORE_PWD" formControlName="ksPassword_ctrl" autocomplete="off" [required]="_isRequired">
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_isSslClient">
+    <input matInput [placeholder]="voce.KEY_STORE_PWD_PRIVATE_KEY" formControlName="ksPKeyPasswd_ctrl" autocomplete="off" [required]="_isRequired">
+  </mat-form-field>
+</div>

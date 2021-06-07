@@ -154,8 +154,10 @@ export class Voce {
 
   public static JSON_SCHEMA: string = 'JSON Schema';
 
-  public static KEY_STORE_LOC: string = 'Keystore Location';
-  public static KEY_STORE_PWD: string = 'Keystore Password';
+  public static KEY_STORE_LOC: string = 'Keystore location';
+  public static KEY_STORE_PWD: string = 'Keystore password';
+  public static KEY_STORE_PWD_PRIVATE_KEY: string = 'Keystore password chiave privata';
+  public static KEY_STORE_TYPE: string = 'Tipo keystore';
 
   public static LUOGO: string = 'Località';
   public static LAYOUT_FORM_DATI: string = 'Layout form dati';
@@ -227,6 +229,7 @@ export class Voce {
   public static SOLO_PAGAMENTI: string = 'Notifica solo pagamenti eseguiti';
   public static SOTTOTIPO_ESITO: string = 'Sottotipo esito';
   public static SSL: string = 'SSL';
+  public static SSL_CFG_TYPE: string = 'Tipo SSL';
   public static STAMPA_AVVISI: string = 'Stampa avvisi';
   public static STATO: string = 'Stato';
   public static STAZIONE: string = 'Stazione';
@@ -262,6 +265,7 @@ export class Voce {
   public static TRN: string = 'Id operazione di riversamento (TRN)';
   public static TRUST_STORE_LOC: string = 'Truststore Location';
   public static TRUST_STORE_PWD: string = 'Truststore Password';
+  public static TRUST_STORE_TYPE: string = 'Tipo truststore';
   public static TTL: string = 'Time to live';
   public static TUTTE: string = 'Tutte';
   public static TUTTI: string = 'Tutti';
