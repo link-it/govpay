@@ -12,7 +12,7 @@
 			"tsType": "JKS",
 			"sslType": "TLSv1.2",
 			"ksType": "JKS",
-			"ksPKeyPassword": "ksPKeyPassword"
+			"ksPKeyPasswd": "ksPKeyPasswd"
 		}
 	},
 	"abilitato": true

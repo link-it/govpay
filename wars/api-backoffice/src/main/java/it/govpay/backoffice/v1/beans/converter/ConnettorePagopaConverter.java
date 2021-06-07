@@ -23,7 +23,7 @@ public class ConnettorePagopaConverter {
 			connettore.setSslTsType(connector.getAuth().getTsType());
 			connettore.setSslType(connector.getAuth().getSslType());
 			connettore.setSslKsType(connector.getAuth().getKsType());
-			connettore.setSslPKeyPasswd(connector.getAuth().getKsPKeyPassword());
+			connettore.setSslPKeyPasswd(connector.getAuth().getKsPKeyPasswd());
 			
 			if(connector.getAuth().getTipo() != null) {
 				connettore.setTipoAutenticazione(EnumAuthType.SSL);
@@ -73,7 +73,7 @@ public class ConnettorePagopaConverter {
 		.tsType(connettore.getSslTsType())
 		.sslType(connettore.getSslType())
 		.ksType(connettore.getSslKsType())
-		.ksPKeyPassword(connettore.getSslPKeyPasswd());
+		.ksPKeyPasswd(connettore.getSslPKeyPasswd());
 		
 		if(connettore.getTipoSsl() != null) {
 			switch (connettore.getTipoSsl() ) {

@@ -7391,7 +7391,7 @@ components:
           description: Password del keystore
         ksType:
           $ref: '#/components/schemas/keystoreType'
-        ksPKeyPassword:
+        ksPKeyPasswd:
           type: string
           description: Password della chiave privata del keystore
         tsLocation:

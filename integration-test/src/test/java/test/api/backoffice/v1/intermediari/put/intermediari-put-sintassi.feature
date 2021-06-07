@@ -82,7 +82,7 @@ Examples:
 | sslType | intermediarioClientAuth.servizioPagoPa.auth.sslType | 'XXX' |  'sslType' |
 | ksType | intermediarioClientAuth.servizioPagoPa.auth.ksType | null |  'ksType' |
 | ksType | intermediarioClientAuth.servizioPagoPa.auth.ksType | 'XXX' |  'ksType' |
-| ksPKeyPassword | intermediarioClientAuth.servizioPagoPa.auth.ksPKeyPassword | null |  'ksPKeyPassword' |
+| ksPKeyPasswd | intermediarioClientAuth.servizioPagoPa.auth.ksPKeyPasswd | null |  'ksPKeyPasswd' |
 
 Scenario Outline: <field> non valida
 
