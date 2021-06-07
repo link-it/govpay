@@ -47,6 +47,7 @@ import java.io.Serializable;
  * 			&lt;element name="dataCompletamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="rawContenuto" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="beanDati" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="identificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -72,7 +73,8 @@ import java.io.Serializable;
   	"dataCaricamento",
   	"dataCompletamento",
   	"rawContenuto",
-  	"beanDati"
+  	"beanDati",
+  	"identificativo"
   }
 )
 
@@ -192,6 +194,14 @@ public class TracciatoNotificaPagamenti extends org.openspcoop2.utils.beans.Base
     this.beanDati = beanDati;
   }
 
+  public java.lang.String getIdentificativo() {
+    return this.identificativo;
+  }
+
+  public void setIdentificativo(java.lang.String identificativo) {
+    this.identificativo = identificativo;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -262,5 +272,9 @@ public class TracciatoNotificaPagamenti extends org.openspcoop2.utils.beans.Base
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="beanDati",required=false,nillable=false)
   protected java.lang.String beanDati;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="identificativo",required=true,nillable=false)
+  protected java.lang.String identificativo;
 
 }

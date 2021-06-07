@@ -45,7 +45,6 @@ import javax.xml.soap.SOAPMessage;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
@@ -142,7 +141,7 @@ public abstract class BasicClient {
 			return this.responseContent;
 		}
 	}
-
+	
 	protected static Map<String, SSLContext> sslContexts = new HashMap<>();
 	protected URL url = null;
 	protected SSLContext sslContext;
@@ -165,16 +164,17 @@ public abstract class BasicClient {
 	}
 
 	public enum TipoConnettore {
-		VERIFICA, NOTIFICA, APP_IO, MYPIVOT;
+		VERIFICA, NOTIFICA, APP_IO, MYPIVOT, GOVPAY;
 	}
 	
 	public enum TipoDestinatario {
-		APPLICAZIONE, INTERMEDIARIO, APP_IO, MYPIVOT;
+		APPLICAZIONE, INTERMEDIARIO, APP_IO, MYPIVOT, GOVPAY;
 	}
 
 	protected BasicClient(Intermediario intermediario, TipoOperazioneNodo tipoOperazione) throws ClientException {
-		this("I_" + intermediario.getCodIntermediario() + "_" + tipoOperazione, tipoOperazione.equals(TipoOperazioneNodo.NODO) ? intermediario.getConnettorePdd() : intermediario.getConnettorePddAvvisatura());
-		errMsg = tipoOperazione.toString() + " dell'intermediario (" + intermediario.getCodIntermediario() + ")";
+		this("I_" + intermediario.getCodIntermediario() + "_" + tipoOperazione, tipoOperazione.equals(TipoOperazioneNodo.NODO) ? intermediario.getConnettorePdd() : intermediario.getConnettorePddAvvisatura(),
+				tipoOperazione.toString() + " dell'intermediario (" + intermediario.getCodIntermediario() + ")");
+//		errMsg = tipoOperazione.toString() + " dell'intermediario (" + intermediario.getCodIntermediario() + ")";
 		mittente = intermediario.getDenominazione();
 		destinatario = "NodoDeiPagamentiDellaPA";
 		integrationCtx = new IntegrationContext();
@@ -185,8 +185,9 @@ public abstract class BasicClient {
 	}
 
 	protected BasicClient(Applicazione applicazione, TipoConnettore tipoConnettore) throws ClientException {
-		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione(), applicazione.getConnettoreIntegrazione());
-		errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
+		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione(), applicazione.getConnettoreIntegrazione(),
+				tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")");
+//		errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
 		mittente = "GovPay";
 		destinatario = applicazione.getCodApplicazione();
 		integrationCtx = new IntegrationContext();
@@ -197,8 +198,8 @@ public abstract class BasicClient {
 	}
 	
 	protected BasicClient(String operazioneSwagger, TipoDestinatario tipoDestinatario, Connettore connettore) throws ClientException {
-		this(tipoDestinatario +"_" + operazioneSwagger, connettore);
-		errMsg = operazioneSwagger + " per invocazione APP_IO";
+		this(tipoDestinatario +"_" + operazioneSwagger, connettore, operazioneSwagger + " per invocazione APP_IO");
+//		errMsg = operazioneSwagger + " per invocazione APP_IO";
 		mittente = "GovPay";
 		destinatario = "APP_IO";
 		integrationCtx = new IntegrationContext();
@@ -209,18 +210,31 @@ public abstract class BasicClient {
 	}
 	
 	protected BasicClient(Dominio dominio, TipoConnettore tipoConnettore, ConnettoreNotificaPagamenti connettore) throws ClientException {
-		this("D_" + tipoConnettore + "_" + dominio.getCodDominio(), connettore);
-		errMsg = tipoConnettore.toString() + " del dominio (" + dominio.getCodDominio() + ")";
+		this("D_" + tipoConnettore + "_" + dominio.getCodDominio(), connettore, tipoConnettore.toString() + " del dominio (" + dominio.getCodDominio() + ")");
+//		errMsg = tipoConnettore.toString() + " del dominio (" + dominio.getCodDominio() + ")";
 		mittente = "GovPay";
-		destinatario = "ServizioMyPivot";
+		
 		integrationCtx = new IntegrationContext();
 		integrationCtx.setApplicazione(null);
 		integrationCtx.setIntermediario(null);
 		integrationCtx.setTipoConnettore(tipoConnettore);
-		integrationCtx.setTipoDestinatario(TipoDestinatario.MYPIVOT);
+		
+		switch (tipoConnettore) {
+		case GOVPAY:
+			integrationCtx.setTipoDestinatario(TipoDestinatario.GOVPAY);
+			destinatario = dominio.getCodDominio();
+			break;
+		case MYPIVOT:
+			integrationCtx.setTipoDestinatario(TipoDestinatario.MYPIVOT);
+			destinatario = "ServizioMyPivot";
+			break;
+		default:
+			break;
+		}
 	}
 
-	private BasicClient(String bundleKey, Connettore connettore) throws ClientException {
+	private BasicClient(String bundleKey, Connettore connettore, String errMsg) throws ClientException {
+		this.errMsg = errMsg;
 		// inizializzazione base del context evento
 		this.eventoCtx = new EventoContext();
 		this.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
@@ -575,15 +589,15 @@ public abstract class BasicClient {
 		return this.handleJsonRequest(path, null, headerProperties, HttpRequestMethod.GET, null,swaggerOperationId);
 	}
 
-	public byte[] sendJson(String path, String jsonBody, List<Property> headerProperties, String swaggerOperationId) throws ClientException {
-		return this.handleJsonRequest(path, jsonBody, headerProperties, HttpRequestMethod.POST, "application/json",swaggerOperationId);
-	}
-
-	public byte[] sendJson(String path, String jsonBody, List<Property> headerProperties, HttpRequestMethod httpMethod, String swaggerOperationId) throws ClientException {
+	public byte[] sendJson(String path, byte[] jsonBody, List<Property> headerProperties, HttpRequestMethod httpMethod, String swaggerOperationId) throws ClientException {
 		return this.handleJsonRequest(path, jsonBody, headerProperties, httpMethod, "application/json",swaggerOperationId);
 	}
+	
+	public byte[] sendJson(String path, byte[] jsonBody, List<Property> headerProperties, HttpRequestMethod httpMethod, String contentType, String swaggerOperationId) throws ClientException {
+		return this.handleJsonRequest(path, jsonBody, headerProperties, httpMethod, contentType,swaggerOperationId);
+	}
 
-	private byte[] handleJsonRequest(String path, String jsonBody, List<Property> headerProperties, 
+	private byte[] handleJsonRequest(String path, byte[] jsonBody, List<Property> headerProperties, 
 			HttpRequestMethod httpMethod, String contentType, String swaggerOperationId) throws ClientException {
 
 		// Salvataggio Tipo Evento
@@ -625,7 +639,7 @@ public abstract class BasicClient {
 
 			try {
 				connection = (HttpURLConnection) this.url.openConnection();
-				if(httpMethod.equals(HttpRequestMethod.POST) || StringUtils.isNotEmpty(jsonBody))
+				if(httpMethod.equals(HttpRequestMethod.POST) || (jsonBody != null && jsonBody.length > 0))
 					connection.setDoOutput(true);
 
 				if(contentType != null) {
@@ -660,7 +674,7 @@ public abstract class BasicClient {
 				}
 
 
-				integrationCtx.setMsg(jsonBody != null ? jsonBody.getBytes() : "".getBytes());
+				integrationCtx.setMsg(jsonBody);
 				this.invokeOutHandlers();
 
 				if(log.isTraceEnabled()) {
@@ -668,7 +682,7 @@ public abstract class BasicClient {
 					for(String key : connection.getRequestProperties().keySet()) {
 						sb.append("\n\t" + key + ": " + connection.getRequestProperties().get(key));
 					}
-					sb.append("\n" + new String(integrationCtx.getMsg()));
+					sb.append("\n" + ( integrationCtx.getMsg() != null ? new String(integrationCtx.getMsg()) : "Messaggio di richiesta non previsto dall'operazione"));
 					log.trace(sb.toString());
 				}
 
@@ -679,7 +693,7 @@ public abstract class BasicClient {
 
 				this.serverInfoContext.processBeforeSend(serverInfoRequest, dumpRequest);
 
-				if(StringUtils.isNotEmpty(jsonBody))
+				if(connection.getDoOutput())
 					connection.getOutputStream().write(integrationCtx.getMsg());
 
 			} catch (Exception e) {
@@ -740,9 +754,9 @@ public abstract class BasicClient {
 			if(log.isTraceEnabled() && headerFields != null) {
 				StringBuffer sb = new StringBuffer();
 				for(String key : headerFields.keySet()) { 
-					sb.append("\n\t" + key + ": " + headerFields.get(key));
+					sb.append("\n\t" + (key == null ? "Status-line" : key) + ": " + headerFields.get(key));
 				}
-				sb.append("\n" + new String(msg));
+				sb.append("\nResponse Body Size: " + (msg != null ? msg.length : 0));
 				log.trace(sb.toString());
 			}
 			popolaContextEvento(httpMethodEnum, responseCode, dumpRequest, dumpResponse);

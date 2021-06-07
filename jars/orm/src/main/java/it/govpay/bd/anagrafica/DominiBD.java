@@ -31,9 +31,13 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.converter.ConnettoreNotificaPagamentiConverter;
@@ -41,6 +45,8 @@ import it.govpay.bd.model.converter.DominioConverter;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.dao.jdbc.JDBCDominioServiceSearch;
+import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
+import it.govpay.orm.model.DominioModel;
 
 public class DominiBD extends BasicBD {
 
@@ -73,6 +79,10 @@ public class DominiBD extends BasicBD {
 	public static String getIDConnettoreGovPay(String codDominio) {
 		return "DOM_" + codDominio + "_"+ ConnettoreNotificaPagamenti.Tipo.GOVPAY.toString();
 	}
+	
+	public static String getIDConnettoreHyperSicAPKappa(String codDominio) {
+		return "DOM_" + codDominio + "_"+ ConnettoreNotificaPagamenti.Tipo.HYPER_SIC_APKAPPA.toString();
+	}
 
 	/**
 	 * Recupera il Dominio tramite il codDominio
@@ -92,7 +102,7 @@ public class DominiBD extends BasicBD {
 			expr.equals(it.govpay.orm.Dominio.model().COD_DOMINIO, codDominio);
 			it.govpay.orm.Dominio dominioVO = this.getDominioService().find(expr);
 			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
-			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO), this.getConnettoreGovPay(dominioVO));
+			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO), this.getConnettoreGovPay(dominioVO), this.getConnettoreHyperSicAPKappa(dominioVO));
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -165,6 +175,25 @@ public class DominiBD extends BasicBD {
 			throw new ServiceException(e);
 		} 
 	}
+	
+	private ConnettoreNotificaPagamenti getConnettoreHyperSicAPKappa(it.govpay.orm.Dominio dominioVO) throws ServiceException {
+		try {
+			ConnettoreNotificaPagamenti connettoreGovpay = null;
+			
+			if(dominioVO.getCodConnettoreHyperSicAPK()!= null) {
+				IPaginatedExpression expIntegrazione = this.getConnettoreService().newPaginatedExpression();
+				expIntegrazione.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominioVO.getCodConnettoreHyperSicAPK());
+				connettoreGovpay = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
+			}
+			return connettoreGovpay;
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} 
+	}
 
 	/**
 	 * Recupera il Dominio tramite id
@@ -188,7 +217,7 @@ public class DominiBD extends BasicBD {
 			}
 			it.govpay.orm.Dominio dominioVO = ((JDBCDominioServiceSearch)this.getDominioService()).get(id);
 			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
-			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO), this.getConnettoreGovPay(dominioVO));
+			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO), this.getConnettoreGovPay(dominioVO), this.getConnettoreHyperSicAPKappa(dominioVO));
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -250,6 +279,18 @@ public class DominiBD extends BasicBD {
 
 				IExpression expDelete = this.getConnettoreService().newExpression();
 				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreGovPay().getIdConnettore());
+				this.getConnettoreService().deleteAll(expDelete);
+
+				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
+					this.getConnettoreService().create(connettore);
+				}
+			}
+			
+			if(dominio.getConnettoreHyperSicAPKappa() != null) {
+				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreHyperSicAPKappa());
+
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreHyperSicAPKappa().getIdConnettore());
 				this.getConnettoreService().deleteAll(expDelete);
 
 				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
@@ -358,6 +399,22 @@ public class DominiBD extends BasicBD {
 				this.getConnettoreService().deleteAll(expDelete);
 			}
 			
+			if(dominio.getConnettoreHyperSicAPKappa() != null) {
+				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreHyperSicAPKappa());
+
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreHyperSicAPKappa().getIdConnettore());
+				this.getConnettoreService().deleteAll(expDelete);
+
+				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
+					this.getConnettoreService().create(connettore);
+				}
+			} else {
+				IExpression expDelete = this.getConnettoreService().newExpression();
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, getIDConnettoreHyperSicAPKappa(dominio.getCodDominio()));
+				this.getConnettoreService().deleteAll(expDelete);
+			}
+			
 			this.emitAudit(dominio);
 			if(this.isAtomica()) {
 				this.commit();
@@ -394,6 +451,10 @@ public class DominiBD extends BasicBD {
 	}
 
 	public long count(DominioFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(DominioFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -408,6 +469,71 @@ public class DominiBD extends BasicBD {
 			}
 		}
 	}
+	
+	private long _countConLimit(DominioFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
+			
+			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			ISQLQueryObject sqlQueryObjectDistinctID = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			
+			DominioModel model = it.govpay.orm.Dominio.model();
+			DominioFieldConverter converter = new DominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			/*
+			SELECT count(distinct id) 
+				FROM
+				  (
+				  SELECT versamenti.id
+				  FROM versamenti
+				  WHERE ...restrizioni di autorizzazione o ricerca...
+				  ORDER BY data_richiesta 
+				  LIMIT K
+				  ) a
+				);
+			*/
+			
+			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_DOMINIO));
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_DOMINIO), "id");
+			sqlQueryObjectInterno.setANDLogicOperator(true);
+			
+			// creo condizioni
+			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
+			// preparo parametri
+			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
+			
+			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_DOMINIO, true), false);
+			sqlQueryObjectInterno.setLimit(limitInterno);
+			
+			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
+			sqlQueryObjectDistinctID.addSelectCountField("id","id",true);
+			
+			String sql = sqlQueryObjectDistinctID.createSQLQuery();
+			List<Class<?>> returnTypes = new ArrayList<>();
+			returnTypes.add(Long.class); // Count
+			
+			List<List<Object>> nativeQuery = this.getDominioService().nativeQuery(sql, returnTypes, parameters);
+			
+			Long count = 0L;
+			for (List<Object> row : nativeQuery) {
+				int pos = 0;
+				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+			}
+			
+			return count.longValue();
+		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
 
 	private List<Dominio> _findAll(DominioFilter filter) throws ServiceException {
 		try {
@@ -415,7 +541,7 @@ public class DominiBD extends BasicBD {
 			
 			List<Dominio> dtoList = new ArrayList<>();
 			for(it.govpay.orm.Dominio dominioVO: this.getDominioService().findAll(filter.toPaginatedExpression())) {
-				Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO), this.getConnettoreGovPay(dominioVO));
+				Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO), this.getConnettoreGovPay(dominioVO), this.getConnettoreHyperSicAPKappa(dominioVO));
 				dtoList.add(dominio);
 			}
 			return dtoList;

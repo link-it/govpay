@@ -33,6 +33,7 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 		super(user);
 		this.addSortField("data", Incasso.model().DATA_ORA_INCASSO);
 		this.addDefaultSort(Incasso.model().DATA_ORA_INCASSO,SortOrder.DESC);
+		this.includiPagamenti = false;
 	}
 	
 	private String idA2A;
@@ -40,6 +41,7 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 	private Date dataDa;
 	private Date dataA;
 	private String sct;
+	private boolean includiPagamenti;
 
 	 
 	public String getIdDominio() {
@@ -71,5 +73,11 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 	}
 	public void setSct(String sct) {
 		this.sct = sct;
+	}
+	public boolean isIncludiPagamenti() {
+		return includiPagamenti;
+	}
+	public void setIncludiPagamenti(boolean includiPagamenti) {
+		this.includiPagamenti = includiPagamenti;
 	}
 }

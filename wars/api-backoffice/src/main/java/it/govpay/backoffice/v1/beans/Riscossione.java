@@ -1,15 +1,12 @@
 package it.govpay.backoffice.v1.beans;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import it.govpay.backoffice.v1.beans.Allegato;
-import it.govpay.backoffice.v1.beans.StatoRiscossione;
-import it.govpay.backoffice.v1.beans.TipoRiscossione;
-import java.math.BigDecimal;
-import java.util.Date;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idDominio",
 "iuv",

@@ -2,7 +2,6 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.apache.commons.jcs.access.exception.InvalidArgumentException;
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;

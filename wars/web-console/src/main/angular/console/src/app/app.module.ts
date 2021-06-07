@@ -68,6 +68,7 @@ import { AsyncFilterableSelectComponent } from './elements/async-filterable-sele
 import { AsyncAutocompleteSelectComponent } from './elements/async-autocomplete-select/async-autocomplete-select.component';
 import { ProfiloUtenteViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/profilo-utente-view/profilo-utente-view.component';
 import { ScrollerContainerComponent } from './elements/list-view/scroller-container/scroller-container.component';
+import { SslConfigComponent } from './elements/detail-view/views/ssl-config/ssl-config.component';
 
 @NgModule({
   declarations: [
@@ -107,7 +108,8 @@ import { ScrollerContainerComponent } from './elements/list-view/scroller-contai
     AsyncAutocompleteSelectComponent,
     ProfiloUtenteViewComponent,
     ScrollerContainerComponent,
-    IamLoginCardComponent
+    IamLoginCardComponent,
+    SslConfigComponent
   ],
   imports: [
     BrowserModule,

@@ -38,9 +38,13 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.certificate.CertificateUtils;
 import org.openspcoop2.utils.certificate.PrincipalType;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.model.Acl;
@@ -52,6 +56,8 @@ import it.govpay.bd.model.converter.ConnettoreConverter;
 import it.govpay.model.Connettore;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.dao.jdbc.JDBCApplicazioneServiceSearch;
+import it.govpay.orm.dao.jdbc.converter.ApplicazioneFieldConverter;
+import it.govpay.orm.model.ApplicazioneModel;
 
 public class ApplicazioniBD extends BasicBD {
 
@@ -423,6 +429,10 @@ public class ApplicazioniBD extends BasicBD {
 	}
 
 	public long count(ApplicazioneFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(ApplicazioneFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -432,6 +442,71 @@ public class ApplicazioniBD extends BasicBD {
 			return this.getApplicazioneService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	private long _countConLimit(ApplicazioneFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
+			
+			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			ISQLQueryObject sqlQueryObjectDistinctID = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			
+			ApplicazioneModel model = it.govpay.orm.Applicazione.model();
+			ApplicazioneFieldConverter converter = new ApplicazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			/*
+			SELECT count(distinct id) 
+				FROM
+				  (
+				  SELECT versamenti.id
+				  FROM versamenti
+				  WHERE ...restrizioni di autorizzazione o ricerca...
+				  ORDER BY data_richiesta 
+				  LIMIT K
+				  ) a
+				);
+			*/
+			
+			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_APPLICAZIONE));
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_APPLICAZIONE), "id");
+			sqlQueryObjectInterno.setANDLogicOperator(true);
+			
+			// creo condizioni
+			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
+			// preparo parametri
+			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
+			
+			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_APPLICAZIONE, true), false);
+			sqlQueryObjectInterno.setLimit(limitInterno);
+			
+			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
+			sqlQueryObjectDistinctID.addSelectCountField("id","id",true);
+			
+			String sql = sqlQueryObjectDistinctID.createSQLQuery();
+			List<Class<?>> returnTypes = new ArrayList<>();
+			returnTypes.add(Long.class); // Count
+			
+			List<List<Object>> nativeQuery = this.getApplicazioneService().nativeQuery(sql, returnTypes, parameters);
+			
+			Long count = 0L;
+			for (List<Object> row : nativeQuery) {
+				int pos = 0;
+				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+			}
+			
+			return count.longValue();
+		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			return 0;
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();

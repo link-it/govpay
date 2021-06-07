@@ -68,6 +68,7 @@ public class EventiBD extends BasicBD {
 	
 	public EventiBD(String idTransaction, VISTA vista) {
 		super(idTransaction);
+		this.vista = vista;
 	}
 	
 	public EventiBD(String idTransaction, boolean useCache) {
@@ -76,6 +77,7 @@ public class EventiBD extends BasicBD {
 	
 	public EventiBD(String idTransaction, boolean useCache, VISTA vista) {
 		super(idTransaction, useCache);
+		this.vista = vista;
 	}
 	
 	public EventiBD(BDConfigWrapper configWrapper) {
@@ -83,7 +85,7 @@ public class EventiBD extends BasicBD {
 	}
 	
 	public EventiBD(BDConfigWrapper configWrapper, VISTA vista) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		this(configWrapper.getTransactionID(), configWrapper.isUseCache(), vista);
 	}
 
 	public Evento getEvento(long id) throws ServiceException, NotFoundException {

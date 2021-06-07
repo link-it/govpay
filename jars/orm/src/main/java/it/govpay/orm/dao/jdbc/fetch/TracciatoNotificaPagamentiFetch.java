@@ -76,6 +76,8 @@ public class TracciatoNotificaPagamentiFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "raw_contenuto", TracciatoNotificaPagamenti.model().RAW_CONTENUTO.getFieldType()));
 				setParameter(object, "setBeanDati", TracciatoNotificaPagamenti.model().BEAN_DATI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "bean_dati", TracciatoNotificaPagamenti.model().BEAN_DATI.getFieldType()));
+				setParameter(object, "setIdentificativo", TracciatoNotificaPagamenti.model().IDENTIFICATIVO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "identificativo", TracciatoNotificaPagamenti.model().IDENTIFICATIVO.getFieldType()));
 				return object;
 			}
 			
@@ -120,6 +122,8 @@ public class TracciatoNotificaPagamentiFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"rawContenuto"));
 				setParameter(object, "setBeanDati", TracciatoNotificaPagamenti.model().BEAN_DATI.getFieldType(),
 					this.getObjectFromMap(map,"beanDati"));
+				setParameter(object, "setIdentificativo", TracciatoNotificaPagamenti.model().IDENTIFICATIVO.getFieldType(),
+					this.getObjectFromMap(map,"identificativo"));
 				return object;
 			}
 			

@@ -72,14 +72,31 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.PASSWORD, value: this.json.servizioPagoPa.auth.password }));
         }
         if(this.json.servizioPagoPa.auth.tipo) {
+          _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.SSL }));
           _dettaglio.connettoriSoap.push(new Dato({label: Voce.TIPO, value: this.json.servizioPagoPa.auth.tipo }));
-          _dettaglio.connettoriSoap.push(new Dato({label: Voce.KEY_STORE_LOC, value: this.json.servizioPagoPa.auth.ksLocation }));
-          _dettaglio.connettoriSoap.push(new Dato({label: Voce.KEY_STORE_PWD, value: this.json.servizioPagoPa.auth.ksPassword }));
+          if(this.json.servizioPagoPa.auth.sslType) {
+            _dettaglio.connettoriSoap.push(new Dato({label: Voce.SSL_CFG_TYPE, value: this.json.servizioPagoPa.auth.sslType }));
+          }
+          if(this.json.servizioPagoPa.auth.tsType) {
+            _dettaglio.connettoriSoap.push(new Dato({label: Voce.TRUST_STORE_TYPE, value: this.json.servizioPagoPa.auth.tsType }));
+          }
           if(this.json.servizioPagoPa.auth.tsLocation) {
             _dettaglio.connettoriSoap.push(new Dato({label: Voce.TRUST_STORE_LOC, value: this.json.servizioPagoPa.auth.tsLocation }));
           }
           if(this.json.servizioPagoPa.auth.tsPassword) {
             _dettaglio.connettoriSoap.push(new Dato({label: Voce.TRUST_STORE_PWD, value: this.json.servizioPagoPa.auth.tsPassword }));
+          }
+          if(this.json.servizioPagoPa.auth.ksType) {
+            _dettaglio.connettoriSoap.push(new Dato({label: Voce.KEY_STORE_TYPE, value: this.json.servizioPagoPa.auth.ksType }));
+          }
+          if(this.json.servizioPagoPa.auth.ksLocation) {
+            _dettaglio.connettoriSoap.push(new Dato({label: Voce.KEY_STORE_LOC, value: this.json.servizioPagoPa.auth.ksLocation }));
+          }
+          if(this.json.servizioPagoPa.auth.ksPassword) {
+            _dettaglio.connettoriSoap.push(new Dato({label: Voce.KEY_STORE_PWD, value: this.json.servizioPagoPa.auth.ksPassword }));
+          }
+          if(this.json.servizioPagoPa.auth.ksPKeyPasswd) {
+            _dettaglio.connettoriSoap.push(new Dato({label: Voce.KEY_STORE_PWD_PRIVATE_KEY, value: this.json.servizioPagoPa.auth.ksPKeyPasswd }));
           }
         }
       } else {

@@ -101,6 +101,7 @@ public class JDBCTracciatoNotificaPagamentiServiceImpl extends JDBCTracciatoNoti
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoNotificaPagamentiFieldConverter().toColumn(TracciatoNotificaPagamenti.model().DATA_COMPLETAMENTO,false),"?");
 //		sqlQueryObjectInsert.addInsertField(this.getTracciatoNotificaPagamentiFieldConverter().toColumn(TracciatoNotificaPagamenti.model().RAW_CONTENUTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoNotificaPagamentiFieldConverter().toColumn(TracciatoNotificaPagamenti.model().BEAN_DATI,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTracciatoNotificaPagamentiFieldConverter().toColumn(TracciatoNotificaPagamenti.model().IDENTIFICATIVO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 
 		// Insert tracciatoNotificaPagamenti
@@ -117,6 +118,7 @@ public class JDBCTracciatoNotificaPagamentiServiceImpl extends JDBCTracciatoNoti
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciatoNotificaPagamenti.getDataCompletamento(),TracciatoNotificaPagamenti.model().DATA_COMPLETAMENTO.getFieldType()),
 //			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciatoNotificaPagamenti.getRawContenuto(),TracciatoNotificaPagamenti.model().RAW_CONTENUTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciatoNotificaPagamenti.getBeanDati(),TracciatoNotificaPagamenti.model().BEAN_DATI.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciatoNotificaPagamenti.getIdentificativo(),TracciatoNotificaPagamenti.model().IDENTIFICATIVO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class)
 		);
 		tracciatoNotificaPagamenti.setId(id);
@@ -209,6 +211,8 @@ public class JDBCTracciatoNotificaPagamentiServiceImpl extends JDBCTracciatoNoti
 //		lstObjects_tracciatoNotificaPagamenti.add(new JDBCObject(tracciatoNotificaPagamenti.getRawContenuto(), TracciatoNotificaPagamenti.model().RAW_CONTENUTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoNotificaPagamentiFieldConverter().toColumn(TracciatoNotificaPagamenti.model().BEAN_DATI,false), "?");
 		lstObjects_tracciatoNotificaPagamenti.add(new JDBCObject(tracciatoNotificaPagamenti.getBeanDati(), TracciatoNotificaPagamenti.model().BEAN_DATI.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoNotificaPagamentiFieldConverter().toColumn(TracciatoNotificaPagamenti.model().IDENTIFICATIVO,false), "?");
+		lstObjects_tracciatoNotificaPagamenti.add(new JDBCObject(tracciatoNotificaPagamenti.getIdentificativo(), TracciatoNotificaPagamenti.model().IDENTIFICATIVO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_dominio","?");
 		}

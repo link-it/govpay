@@ -19,12 +19,20 @@
  */
 package it.govpay.core.utils.thread;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -65,6 +73,7 @@ import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.TracciatiNotificaPagamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.GiornaleEventi;
+import it.govpay.core.business.TracciatiNotificaPagamenti;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Categoria;
@@ -75,7 +84,10 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.EnteRendicontazioniClient;
 import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
+import it.govpay.ec.rendicontazioni.v1.beans.Rpp;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.ConnettoreNotificaPagamenti.TipoConnettore;
 import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
@@ -87,7 +99,8 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		
 		secimInviaTracciatoEmail, pivotInviaTracciatoEmail,
 		secimInviaTracciatoFileSystem, pivotInviaTracciatoFileSystem, 
-		govpayInviaTracciatoFileSystem, govpayInviaTracciatoEmail
+		govpayInviaTracciatoFileSystem, govpayInviaTracciatoEmail, govpayInviaTracciatoRest,
+		hyperSicAPKappaInviaTracciatoEmail, hyperSicAPKappaInviaTracciatoFileSystem
 	} 
 	
 	public static final String CONNETTORE_NOTIFICA_DISABILITATO = "Connettore Notifica non configurato";
@@ -134,6 +147,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			break;
 		case GOVPAY:
 			this.componente = Componente.API_GOVPAY;
+			break;
+		case HYPERSIC_APK:
+			this.componente = Componente.API_HYPERSIC_APK;
 			break;
 		}
 		this.eventoCtx.setComponente(this.componente);
@@ -216,6 +232,16 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.spedizione");
 				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.webServiceOk");
 				break;
+			case REST:
+				url = this.connettore.getUrl();
+				operationId = appContext.setupNotificaPagamentiClient(TRACCIATO_NOTIFICA_FLUSSO_PAGAMENTI, url);
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.dominio.getCodDominio()));
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("restUrl", url));
+				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("tipoTracciato", this.tipoTracciato.toString()));
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.rest");
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.spedizione");
+				this.inviaTracciatoViaAPIRest(operationId, this.tracciato, this.connettore, this.dominio, tracciatiMyPivotBD, configWrapper, beanDati, serializer, ctx, dumpRequest, dumpResponse);
+				break;
 			}
 			
 			this.eventoCtx.setEsito(Esito.OK);
@@ -259,6 +285,300 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		}
 	}
 
+	private void inviaTracciatoViaAPIRest(String operationId, TracciatoNotificaPagamenti tracciato,
+			ConnettoreNotificaPagamenti connettore, Dominio dominio, TracciatiNotificaPagamentiBD tracciatiMyPivotBD,
+			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati,
+			ISerializer serializer, IContext ctx, DumpRequest dumpRequest, DumpResponse dumpResponse) throws ServiceException {
+		
+		this.eventoCtx.setTipoEvento(Operazione.govpayInviaTracciatoRest.name());
+		
+		GpContext appContext = (GpContext) ctx.getApplicationContext();
+		String errore = null;
+		List<String> contenuti = connettore.getContenuti();
+		
+		byte[] blobRawContentuto = tracciatiMyPivotBD.leggiBlobRawContentuto(tracciato.getId(), it.govpay.orm.TracciatoNotificaPagamenti.model().RAW_CONTENUTO);
+		
+		dumpRequest.getHeaders().put("Destinatari", StringUtils.join(this.connettore.getEmailIndirizzi(), ","));
+		dumpRequest.getHeaders().put("Ente creditore", dominio.getRagioneSociale());
+		dumpRequest.getHeaders().put("Id Dominio", dominio.getCodDominio());
+		String dataInizio = SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(tracciato.getDataRtDa());
+		dumpRequest.getHeaders().put("Data inizio", dataInizio);
+		String dataFine = SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(tracciato.getDataRtA());
+		dumpRequest.getHeaders().put("Data fine", dataFine);
+		dumpRequest.getHeaders().put("Numero pagamenti", beanDati.getNumRtTotali()+"");
+		dumpRequest.getHeaders().put("Versione tracciato", tracciato.getVersione());
+		
+		List<String> erroriSpedizione = new ArrayList<String>();
+		
+		tracciato.setDataCaricamento(new Date());
+		
+		Map<String, Rpp> mappaRPP = new HashMap<String, Rpp>();
+		
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(blobRawContentuto);
+				ZipInputStream stream = new ZipInputStream(bais)){
+
+			EnteRendicontazioniClient client = null;
+			
+			ZipEntry entry;
+            while ((entry = stream.getNextEntry()) != null) {
+            	String entryName = entry.getName();
+            	log.debug("Elaborazione Entry: " + entryName);
+            	appContext.getServerByOperationId(operationId).addGenericProperty(new Property("fileContenuto", entryName));
+            	
+            	try (ByteArrayOutputStream baos = new ByteArrayOutputStream();){
+	            	// sintesi pagamenti
+	            	
+					if(entryName.equals(TracciatiNotificaPagamenti.GOVPAY_RENDICONTAZIONE_CSV_FILE_NAME) 
+	            			&& contenuti.contains(ConnettoreNotificaPagamenti.Contenuti.SINTESI_PAGAMENTI.toString())) {
+						log.debug("Spedizione Entry: " + entryName + " in corso...");
+						
+						appContext.getServerByOperationId(operationId).addGenericProperty(new Property("contenuto", ConnettoreNotificaPagamenti.Contenuti.SINTESI_PAGAMENTI.toString()));
+						
+						Map<String, String> queryParams = new HashMap<String, String>();
+						queryParams.put("dataInizio", TracciatiNotificaPagamentiUtils.encode(SimpleDateFormatUtils.newSimpleDateFormat().format(tracciato.getDataRtDa())));
+						queryParams.put("dataFine", TracciatiNotificaPagamentiUtils.encode(SimpleDateFormatUtils.newSimpleDateFormat().format(tracciato.getDataRtA())));
+						if(connettore.getTipiPendenza() != null) {
+							queryParams.put("tipiPendenza", TracciatiNotificaPagamentiUtils.encode(StringUtils.join(connettore.getTipiPendenza(), ",")));
+						}
+						
+	            		IOUtils.copy(stream, baos);
+	            		client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale);
+						client.inviaFile(baos.toByteArray(), queryParams, ConnettoreNotificaPagamenti.Contenuti.SINTESI_PAGAMENTI, null);
+						client.getEventoCtx().setEsito(Esito.OK);
+						log.debug("Spedizione Entry: " + entryName + " completata.");
+						try {
+							ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.restContenutoOk");
+						} catch (UtilsException e1) {
+							log.error(e1.getMessage(), e1);
+						}
+	            	}
+	            	
+	            	// sintesi flussi
+	            	if(entryName.equals(TracciatiNotificaPagamenti.GOVPAY_FLUSSI_RENDICONTAZIONE_CSV_FILE_NAME) 
+	            			&& contenuti.contains(ConnettoreNotificaPagamenti.Contenuti.SINTESI_FLUSSI_RENDICONTAZIONE.toString())) {
+	            		log.debug("Spedizione Entry: " + entryName + " in corso...");
+	            		
+	            		appContext.getServerByOperationId(operationId).addGenericProperty(new Property("contenuto", ConnettoreNotificaPagamenti.Contenuti.SINTESI_FLUSSI_RENDICONTAZIONE.toString()));
+	            		
+	            		Map<String, String> queryParams = new HashMap<String, String>();
+	            		queryParams.put("dataInizio", TracciatiNotificaPagamentiUtils.encode(SimpleDateFormatUtils.newSimpleDateFormat().format(tracciato.getDataRtDa())));
+	            		queryParams.put("dataFine", TracciatiNotificaPagamentiUtils.encode(SimpleDateFormatUtils.newSimpleDateFormat().format(tracciato.getDataRtA())));
+	            		if(connettore.getTipiPendenza() != null) {
+	            			queryParams.put("tipiPendenza", TracciatiNotificaPagamentiUtils.encode(StringUtils.join(connettore.getTipiPendenza(), ",")));
+	            		}
+	            		
+	            		IOUtils.copy(stream, baos);
+	            		client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale);
+						client.inviaFile(baos.toByteArray(), queryParams, ConnettoreNotificaPagamenti.Contenuti.SINTESI_FLUSSI_RENDICONTAZIONE, null);
+						client.getEventoCtx().setEsito(Esito.OK);
+						log.debug("Spedizione Entry: " + entryName + " completata.");
+						try {
+							ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.restContenutoOk");
+						} catch (UtilsException e1) {
+							log.error(e1.getMessage(), e1);
+						}
+	            	}
+	            	
+	            	// elenco RT
+	            	if(entryName.startsWith(TracciatiNotificaPagamenti.FILE_RT_DIR_PREFIX) 
+	            			&& contenuti.contains(ConnettoreNotificaPagamenti.Contenuti.RPP.toString())) {
+	            		log.debug("Creazione RPP a partire dalla Entry: " + entryName + " in corso...");
+	            		
+	            		appContext.getServerByOperationId(operationId).addGenericProperty(new Property("contenuto", ConnettoreNotificaPagamenti.Contenuti.RPP.toString()));
+	            		
+	            		IOUtils.copy(stream, baos);
+	            		
+	            		boolean isRT = TracciatiNotificaPagamentiUtils.isRT(entry.getName());
+	            		if(isRT) {
+	            			String pathRT = TracciatiNotificaPagamentiUtils.creaPathRT(entry.getName());	
+	            			
+	            			Rpp remove = mappaRPP.remove(pathRT);
+	            			
+	            			if(remove == null) {
+	            				remove = new  Rpp();
+	            			}
+	            			
+	            			remove.setRt(baos.toByteArray());
+	            			
+	            			mappaRPP.put(pathRT, remove);
+	            			log.debug("Creazione RPP a partire dalla Entry: " + entryName + " aggiunta RT.");
+	            		} 
+	            		
+	            		boolean isRPT = TracciatiNotificaPagamentiUtils.isRPT(entry.getName());
+	            		if(isRPT) {
+	            			String pathRPT = TracciatiNotificaPagamentiUtils.creaPathRPT(entry.getName());
+	            			
+	            			Rpp remove = mappaRPP.remove(pathRPT);
+	            			
+	            			if(remove == null) {
+	            				remove = new  Rpp();
+	            			}
+	            			
+	            			remove.setRpt(baos.toByteArray());
+	            			
+	            			mappaRPP.put(pathRPT, remove);
+	            			log.debug("Creazione RPP a partire dalla Entry: " + entryName + " aggiunta RPT.");
+	            		}
+	            		log.debug("Creazione RPP a partire dalla Entry: " + entryName + " completata.");
+	            	}
+	            	
+	            	// elenco flussi
+	            	if(entryName.startsWith(TracciatiNotificaPagamenti.FLUSSI_RENDICONTAZIONE_DIR_PREFIX) 
+	            			&& contenuti.contains(ConnettoreNotificaPagamenti.Contenuti.FLUSSI_RENDICONTAZIONE.toString())) {
+	            		log.debug("Spedizione Entry: " + entryName + " in corso...");
+	            		
+	            		appContext.getServerByOperationId(operationId).addGenericProperty(new Property("contenuto", ConnettoreNotificaPagamenti.Contenuti.FLUSSI_RENDICONTAZIONE.toString()));
+	            		
+	            		Map<String, String> queryParams = new HashMap<String, String>();
+	            		queryParams.put("dataOraFlusso", TracciatiNotificaPagamentiUtils.getDataFlussoRendicontazione(entry.getName()));
+	            		
+	            		IOUtils.copy(stream, baos);
+	            		String pathFlussoRendicontazione = TracciatiNotificaPagamentiUtils.creaPathFlussoRendicontazione(entry.getName());
+	            		
+	            		client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale);
+						client.inviaFile(baos.toByteArray(), queryParams, ConnettoreNotificaPagamenti.Contenuti.FLUSSI_RENDICONTAZIONE, pathFlussoRendicontazione);
+						client.getEventoCtx().setEsito(Esito.OK);
+						log.debug("Spedizione Entry: " + entryName + " completata.");
+						try {
+							ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.restContenutoOk");
+						} catch (UtilsException e1) {
+							log.error(e1.getMessage(), e1);
+						}
+	            	}
+            	
+            	} catch (ClientException e) {
+        			errore = "Errore durante la spedizione del file "+entryName+" del Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() 
+        			+ "], al destinatario ["+ this.connettore.getUrl()+"]:"+e.getMessage();
+        			log.error(errore, e);
+        			erroriSpedizione.add(errore);
+        			
+        			try {
+        				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.restContenutoKo");
+        			} catch (UtilsException e1) {
+        				log.error(e1.getMessage(), e1);
+        			}
+        			
+        			if(client != null) {
+    					client.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
+        				client.getEventoCtx().setEsito(Esito.FAIL);
+        				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
+        				client.getEventoCtx().setException(e);
+        			}
+        		} finally {
+        			if(client != null && client.getEventoCtx().isRegistraEvento()) {
+        				EventiBD eventiBD = new EventiBD(configWrapper);
+        				try {
+        					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO());
+        				} catch (ServiceException e) {
+        					log.error("Errore durante il salvataggio dell'evento: ", e);
+        				}
+        			}
+				}
+            }
+            
+            if(!mappaRPP.isEmpty()) {
+            	for (String rppKey : mappaRPP.keySet()) {	
+            		try {
+						Rpp rpp = mappaRPP.get(rppKey);
+						
+						log.debug("Spedizione RPP: " + rppKey + " in corso...");
+						appContext.getServerByOperationId(operationId).addGenericProperty(new Property("contenuto", ConnettoreNotificaPagamenti.Contenuti.RPP.toString()));
+						
+						client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale);
+						client.inviaFile(ConverterUtils.toJSON(rpp, null).getBytes(), null, ConnettoreNotificaPagamenti.Contenuti.RPP, rppKey);
+						client.getEventoCtx().setEsito(Esito.OK);
+						log.debug("Spedizione RPP: " + rppKey + " completata.");
+						try {
+							ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.restContenutoOk");
+						} catch (UtilsException e1) {
+							log.error(e1.getMessage(), e1);
+						}
+            		} catch (ClientException e) {
+            			errore = "Errore durante la spedizione RPP "+rppKey+" del Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() 
+            			+ "], al destinatario ["+ this.connettore.getUrl()+"]:"+e.getMessage();
+            			log.error(errore, e);
+            			erroriSpedizione.add(errore);
+            			
+            			try {
+            				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.restContenutoKo");
+            			} catch (UtilsException e1) {
+            				log.error(e1.getMessage(), e1);
+            			}
+            			
+            			if(client != null) {
+        					client.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
+            				client.getEventoCtx().setEsito(Esito.FAIL);
+            				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
+            				client.getEventoCtx().setException(e);
+            			}
+            		} finally {
+            			if(client != null && client.getEventoCtx().isRegistraEvento()) {
+            				EventiBD eventiBD = new EventiBD(configWrapper);
+            				try {
+            					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO());
+            				} catch (ServiceException e) {
+            					log.error("Errore durante il salvataggio dell'evento: ", e);
+            				}
+            			}
+    				}
+				}
+            }
+			
+            if(erroriSpedizione.isEmpty()) {
+				try {
+					ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.restOk");
+				} catch (UtilsException e1) {
+					log.error(e1.getMessage(), e1);
+				}
+				
+				// aggiornare in stato spedito
+				tracciato.setStato(STATO_ELABORAZIONE.FILE_CARICATO);
+				beanDati.setStepElaborazione(STATO_ELABORAZIONE.FILE_CARICATO.name());
+				beanDati.setDescrizioneStepElaborazione(null);
+				tracciato.setDataCompletamento(new Date());
+				
+            } else {
+            	// rischedulo esecuzione (non cambio lo stato)
+            	try {
+            		String errorMsg = erroriSpedizione.size() + (erroriSpedizione.size() == 1 ? " invio non e' andato a buon fine." : " invii non sono andati a buon fine." ) ;
+    				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.restRetryKo", errorMsg);
+    			} catch (UtilsException e1) {
+    				log.error(e1.getMessage(), e1);
+    			}
+            	log.debug("La spedizione del Tracciato " + this.tipoTracciato + " si e' conclusa con errore, verra' effettuato un nuovo tentativo durante la prossima esecuzione del Batch di spedizione...");
+            	beanDati.setDescrizioneStepElaborazione(StringUtils.join(erroriSpedizione, ","));
+            }
+		} catch (java.io.IOException e) {
+			errore = "Errore durante la lettura del contenuto dello zip dal db durante l'invio del Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() 
+			+ "], al destinatario ["+ this.connettore.getUrl()+"]:"+e.getMessage();
+			log.error(errore, e);
+			
+//			log.debug("La spedizione del Tracciato " + this.tipoTracciato + " si e' conclusa con errore che non prevede la rispedizione...");
+			tracciato.setStato(STATO_ELABORAZIONE.ERROR_LOAD);
+			tracciato.setDataCompletamento(new Date());
+			beanDati.setStepElaborazione(STATO_ELABORAZIONE.ERROR_LOAD.name());
+			beanDati.setDescrizioneStepElaborazione(errore);
+			log.debug("Salvataggio Tracciato " + this.tipoTracciato + " in stato 'ERROR_LOAD'");
+			try {
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.restKo", e.getMessage());
+			} catch (UtilsException e1) {
+				log.error(e1.getMessage(), e1);
+			}
+			
+			dumpResponse.setPayload(errore.getBytes());
+		} finally {
+			tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());
+			try {
+				tracciato.setBeanDati(serializer.getObject(beanDati));
+			} catch (IOException e1) {}
+			
+			tracciatiMyPivotBD.updateFineElaborazione(tracciato);
+			
+		} 
+	}
+	
+
+
 	public boolean isCompleted() {
 		return this.completed;
 	}
@@ -286,6 +606,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			break;
 		case GOVPAY:
 			this.eventoCtx.setTipoEvento(Operazione.govpayInviaTracciatoEmail.name());
+			break;
+		case HYPERSIC_APK:
+			this.eventoCtx.setTipoEvento(Operazione.hyperSicAPKappaInviaTracciatoEmail.name());
 			break;
 		}
 		
@@ -353,9 +676,6 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 
 		this.impostaOggettoEBodyMail(tracciato, dominio, connettore, beanDati, mail);
 		
-		String attachmentName = tracciato.getNomeFile();
-		byte[] blobRawContentuto = tracciatiMyPivotBD.leggiBlobRawContentuto(tracciato.getId(), it.govpay.orm.TracciatoNotificaPagamenti.model().RAW_CONTENUTO);
-		
 		//dumpRequest.setPayload(blobRawContentuto);
 		dumpRequest.getHeaders().put("Destinatari", StringUtils.join(this.connettore.getEmailIndirizzi(), ","));
 		dumpRequest.getHeaders().put("Ente creditore", dominio.getRagioneSociale());
@@ -367,9 +687,12 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		dumpRequest.getHeaders().put("Numero pagamenti", beanDati.getNumRtTotali()+"");
 		dumpRequest.getHeaders().put("Versione tracciato", tracciato.getVersione());
 		
-		MailAttach avvisoAttach = new MailBinaryAttach(attachmentName, blobRawContentuto);
-		mail.getBody().getAttachments().add(avvisoAttach );
-		
+		if(connettore.isEmailAllegato()) { // spedizione dell'allegato solo se previsto dal connettore
+			String attachmentName = tracciato.getNomeFile();
+			byte[] blobRawContentuto = tracciatiMyPivotBD.leggiBlobRawContentuto(tracciato.getId(), it.govpay.orm.TracciatoNotificaPagamenti.model().RAW_CONTENUTO);
+			MailAttach avvisoAttach = new MailBinaryAttach(attachmentName, blobRawContentuto);
+			mail.getBody().getAttachments().add(avvisoAttach );
+		}
 		try {
 			
 			tracciato.setDataCaricamento(new Date());
@@ -433,13 +756,16 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		String dataFine = SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(tracciato.getDataRtA());
 		switch (this.tipoTracciato) {
 		case MYPIVOT:
-			tipoTracciatoString = "MyPivot "; 
+			tipoTracciatoString = " per l'importazione in MyPivot"; 
 			break;
 		case SECIM:
-			tipoTracciatoString = "Secim "; 
+			tipoTracciatoString = " per l'importazione in Secim"; 
 			break;
 		case GOVPAY:
 			tipoTracciatoString = ""; 
+			break;
+		case HYPERSIC_APK:
+			tipoTracciatoString = " per l'importazione in APKappa"; 
 			break;
 		}
 		
@@ -453,7 +779,16 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		
 		sb.append("Salve,");
 		sb.append("\n");
-		sb.append("\nin allegato alla presente il tracciato dei pagamenti per l'importazione in ").append(tipoTracciatoString).append(":");
+		
+		if(connettore.isEmailAllegato()) {
+			sb.append("\nin allegato alla presente il tracciato dei pagamenti").append(tipoTracciatoString).append(":");
+		} else {
+			sb.append("\nall'indirizzo: ");
+			sb.append("\n");
+			sb.append(TracciatiNotificaPagamentiUtils.getURLDownloadTracciato(connettore, tracciato));
+			sb.append("\n");
+			sb.append("e' possibile scaricare il tracciato dei pagamenti").append(tipoTracciatoString).append(":");
+		}
 		sb.append("\n");
 		sb.append("\nEnte creditore: ").append(dominio.getRagioneSociale());
 		sb.append("\nId Dominio: ").append(dominio.getCodDominio());
@@ -485,6 +820,10 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 				break;
 			case GOVPAY:
 				this.eventoCtx.setTipoEvento(Operazione.govpayInviaTracciatoFileSystem.name());
+				break;
+			case HYPERSIC_APK:
+				this.eventoCtx.setTipoEvento(Operazione.hyperSicAPKappaInviaTracciatoFileSystem.name());
+				break;
 			}
 			
 			dumpRequest.setContentType("application/zip");

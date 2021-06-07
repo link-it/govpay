@@ -17,14 +17,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "descrizione",
 "datiAllegati",
 "descrizioneCausaleRPT",
-"codEntrata",
-"ibanAccredito",
-"ibanAppoggio",
-"tipoContabilita",
-"codiceContabilita",
-"tipoBollo",
-"hashDocumento",
-"provinciaResidenza",
+"contabilita",
 })
 public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable implements IValidable{
   
@@ -42,6 +35,9 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
   
   @JsonProperty("descrizioneCausaleRPT")
   private String descrizioneCausaleRPT = null;
+  
+  @JsonProperty("contabilita")
+  private Contabilita contabilita = null;
   
   /**
    * Identificativo della voce di pedenza nel gestionale proprietario
@@ -121,6 +117,21 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
   }
   public void setDescrizioneCausaleRPT(String descrizioneCausaleRPT) {
     this.descrizioneCausaleRPT = descrizioneCausaleRPT;
+  }
+
+  /**
+   **/
+  public NuovaVocePendenza contabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
+    return this;
+  }
+
+  @JsonProperty("contabilita")
+  public Contabilita getContabilita() {
+    return contabilita;
+  }
+  public void setContabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
   }
 
  @JsonProperty("codEntrata")
@@ -324,6 +335,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
         Objects.equals(descrizione, nuovaVocePendenza.descrizione) &&
         Objects.equals(datiAllegati, nuovaVocePendenza.datiAllegati) &&
         Objects.equals(descrizioneCausaleRPT, nuovaVocePendenza.descrizioneCausaleRPT) &&
+        Objects.equals(contabilita, nuovaVocePendenza.contabilita) &&
         Objects.equals(codEntrata, nuovaVocePendenza.codEntrata) &&
         Objects.equals(ibanAccredito, nuovaVocePendenza.ibanAccredito) &&
         Objects.equals(ibanAppoggio, nuovaVocePendenza.ibanAppoggio) &&
@@ -336,7 +348,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 
   @Override
   public int hashCode() {
-    return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita, tipoBollo, hashDocumento, provinciaResidenza);
+    return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita, tipoBollo, hashDocumento, provinciaResidenza);
   }
 
   public static NuovaVocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -358,6 +370,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
+    sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
     sb.append("    codEntrata: ").append(toIndentedString(codEntrata)).append("\n");
     sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
     sb.append("    ibanAppoggio: ").append(toIndentedString(ibanAppoggio)).append("\n");
@@ -390,6 +403,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 		ValidatoreUtils.validaImporto(vf, "importo", this.importo);
 		ValidatoreUtils.validaDescrizione(vf, "descrizione", this.descrizione);
 		ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.descrizioneCausaleRPT);
+		vf.getValidator("contabilita", this.contabilita).validateFields();
 		
 		if(this.codEntrata != null) {
 			vi.validaIdEntrata("codEntrata", this.codEntrata);

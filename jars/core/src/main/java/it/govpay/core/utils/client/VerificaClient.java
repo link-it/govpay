@@ -236,7 +236,7 @@ public class VerificaClient extends BasicClient {
 
 			PendenzaVerificata pendenzaVerificata = null;
 				try {
-					jsonResponse = new String(this.sendJson(path, jsonBody, headerProperties, HttpRequestMethod.POST, swaggerOperationID));
+					jsonResponse = new String(this.sendJson(path, jsonBody.getBytes(), headerProperties, HttpRequestMethod.POST, swaggerOperationID));
 					pendenzaVerificata = ConverterUtils.parse(jsonResponse, PendenzaVerificata.class); 
 				}catch(ClientException e) {
 					String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());

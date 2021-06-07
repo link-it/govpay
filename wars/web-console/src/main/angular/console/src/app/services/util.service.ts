@@ -483,8 +483,10 @@ export class UtilService {
   public static CONNETTORE_MY_PIVOT: string = 'connettore_my_pivot';
   public static CONNETTORE_SECIM: string = 'connettore_secim';
   public static CONNETTORE_GOVPAY: string = 'connettore_govpay';
+  public static CONNETTORE_HYPERSIC: string = 'connettore_hypersic';
   public static CONNETTORE_MODALITA_EMAIL: string = 'EMAIL';
   public static CONNETTORE_MODALITA_FILESYSTEM: string = 'FILESYSTEM';
+  public static CONNETTORE_MODALITA_REST: string = 'REST';
   public static TENTATIVO_RT: string = 'tentativo_rt';
   public static ENTRATA_DOMINIO: string = 'entrata_dominio';
   public static UNITA_OPERATIVA: string = 'unita_operativa';
@@ -542,7 +544,8 @@ export class UtilService {
   public static CONNETTORI: SimpleListItem[] = [
     { label: 'MyPivot', value: UtilService.CONNETTORE_MY_PIVOT },
     { label: 'SECIM', value: UtilService.CONNETTORE_SECIM },
-    { label: 'GovPay', value: UtilService.CONNETTORE_GOVPAY }
+    { label: 'GovPay', value: UtilService.CONNETTORE_GOVPAY },
+    { label: 'Suite HyperSIC - APKappa', value: UtilService.CONNETTORE_HYPERSIC }
   ];
 
   public static MODALITA_MYPIVOT: SimpleListItem[] = [
@@ -557,7 +560,26 @@ export class UtilService {
 
   public static MODALITA_GOVPAY: SimpleListItem[] = [
     { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
+    { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM },
+    { label: 'REST', value: UtilService.CONNETTORE_MODALITA_REST }
+  ];
+
+  public static MODALITA_HYPERSIC: SimpleListItem[] = [
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL },
     { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
+  ];
+
+  public static API_CONNETTORI: SimpleListItem[] = [
+    { label: 'API MyPivot', value: 'API_MYPIVOT' },
+    { label: 'API SECIM', value: 'API_SECIM' },
+    { label: 'API GovPay', value: 'API_GOVPAY' }
+  ];
+
+  public static CONTENUTI_NOTIFICA_CONNETTORE: SimpleListItem[] = [
+    { label: 'Sintesi pagamenti', value: 'SINTESI_PAGAMENTI' },
+    { label: 'Sintesi flussi rendicontazione', value: 'SINTESI_FLUSSI_RENDICONTAZIONE' },
+    { label: 'RPP', value: 'RPP' },
+    { label: 'Flussi rendicontazione', value: 'FLUSSI_RENDICONTAZIONE' }
   ];
 
   // CSV Export
@@ -839,7 +861,7 @@ export class UtilService {
     if (UtilService.PROFILO_UTENTE) {
       this.setUserACLStarCheck();
       if (UtilService.USER_ACL.hasTuttiTipiPendenza) {
-        services.push(UtilService.URL_TIPI_PENDENZA);
+        services.push(UtilService.URL_TIPI_PENDENZA+'?'+UtilService.QUERY_ESCLUDI_METADATI_PAGINAZIONE);
         UtilService.PROFILO_UTENTE.tipiPendenza = [];
       }
       if (UtilService.USER_ACL.hasTuttiDomini) {
@@ -1102,7 +1124,7 @@ export class UtilService {
         this.updateProgress(true, 'Export in corso...', 'determinate',100);
         this.generateCsvZip();
       }
-    }, 2000);
+    }, 1000);
 
     for(let _index = 0; _index < _jsonData.length; _index++) {
       setTimeout(() => {
@@ -1125,7 +1147,7 @@ export class UtilService {
           this._csv.data = _csv;
         }
         this.updateProgress(true, 'Export in corso...', 'determinate', Math.trunc(100 * (_index/_jsonData.length)));
-      }, 1000);
+      }, 500);
     }
   }
 
@@ -1140,7 +1162,7 @@ export class UtilService {
         this.updateProgress(true, 'Export in corso...', 'determinate',100);
         this.generateCsvZip();
       }
-    }, 2000);
+    }, 1000);
     // _jsonData items not homogeneous
     // csvKeys:
     const _jkeys: string[] = this._elaborateKeys(_jsonData);
@@ -1151,7 +1173,7 @@ export class UtilService {
         if(_index == (_jsonData.length - 1)) {
           this._csv.data = _csv;
         }
-      }, 1000);
+      }, 500);
     }
   }
 
@@ -1287,12 +1309,12 @@ export class UtilService {
       }
       setTimeout(() => {
         this.__loopFilesStructure(data, structure, index, 0, { zipRef: zipRef, zfolder: zfolder });
-      }, 1000);
+      }, 500);
     } else {
       this.updateProgress(true, 'Salvataggio in corso...', 'determinate',100);
       setTimeout(() => {
         this.saveZip(zipRef['zip'], zipRef['zipname']);
-      }, 1000);
+      }, 500);
     }
   }
 
@@ -1329,7 +1351,7 @@ export class UtilService {
       this.updateProgress(true, 'Export in corso...', 'determinate', Math.trunc(100 * ((folderIndex + 1)/folders.length)), Math.trunc(100 * ((index + 1)/names.length)));
       setTimeout(() => {
         this.__loopFilesStructure(data, structure, folderIndex, index, zip);
-      }, 1000);
+      }, 500);
     } else {
       this.updateProgress(true, 'Export in corso...', 'determinate', Math.trunc(100 * ((folderIndex + 1)/folders.length)), 100);
       folderIndex++;
@@ -1699,6 +1721,7 @@ export class UtilService {
         return { label: item.idA2A, value: item.idA2A };
       });
     }
+    _elenco = _elenco.concat(UtilService.API_CONNETTORI);
     return _elenco;
   }
 

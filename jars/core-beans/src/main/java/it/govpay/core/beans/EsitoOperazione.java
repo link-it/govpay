@@ -753,7 +753,13 @@ public enum EsitoOperazione {
      * Errore generazione messggio promemoria scadenza
      * 
      */
-    PRM_006;
+    PRM_006,
+    
+    /**
+     * Somma importi contabilita' non coincide con importo vocependenza 
+     * 
+     */
+    VER_035;
 	
 
     public String value() {

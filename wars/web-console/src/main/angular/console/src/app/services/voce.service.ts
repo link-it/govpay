@@ -20,8 +20,8 @@ export class Voce {
   public static APPLICAZIONE: string = 'Applicazione';
   public static AREA: string = 'Area';
   public static AUT_PT: string = 'Autorizzazione stampa PT';
-  public static AUTENTICAZIONE_SERVER: string = 'Autenticazione Server';
   public static AUTENTICAZIONE_CLIENT: string = 'Autenticazione Client';
+  public static AUTENTICAZIONE_SERVER: string = 'Autenticazione Server';
   public static AUTORIZZAZIONI: string = 'Autorizzazioni';
   public static AUTORIZZAZIONI_API: string = 'Autorizzazioni API';
   public static AUTORIZZAZIONI_BACKOFFICE: string = 'Autorizzazioni Backoffice';
@@ -55,6 +55,7 @@ export class Voce {
   public static CONTABILITA: string = 'Contabilità';
   public static COMUNICAZIONI_EMAIL: string = 'Comunicazioni via email';
   public static COMUNICAZIONI_APP_IO: string = 'Comunicazioni via App IO';
+  public static CONTENUTI: string = 'Contenuti';
   public static CONTENUTO_ALLEGATO: string = 'Contenuto allegato';
   public static CONTO_ACCREDITO: string = 'Conto accredito';
 
@@ -85,6 +86,7 @@ export class Voce {
   public static DIVISIONE: string = 'Divisione';
   public static DOMINIO: string = 'Dominio';
   public static DOMINI: string = 'Domini';
+  public static DOWNLOAD_BASE_URL: string = 'Base URL link download';
   public static DURATA: string = 'Durata';
 
   public static ELABORAZIONE: string = 'Elaborazione';
@@ -139,6 +141,7 @@ export class Voce {
   public static INSERIMENTO_DATI: string = 'Form inserimento dati';
   public static INTESTATARIO: string = 'Intestatario del conto';
   public static INTESTAZIONE_ESITO: string = 'Linea intestazione esito';
+  public static INVIO_TRACCIATO_ALLEGATO: string = 'Invia tracciato come allegato';
   public static ISTITUTO: string = 'Istituto';
   public static IUR: string = 'Riscossione (IUR)';
   public static IUR_SIGLA: string = 'IUR';
@@ -151,8 +154,10 @@ export class Voce {
 
   public static JSON_SCHEMA: string = 'JSON Schema';
 
-  public static KEY_STORE_LOC: string = 'Keystore Location';
-  public static KEY_STORE_PWD: string = 'Keystore Password';
+  public static KEY_STORE_LOC: string = 'Keystore location';
+  public static KEY_STORE_PWD: string = 'Keystore password';
+  public static KEY_STORE_PWD_PRIVATE_KEY: string = 'Keystore password chiave privata';
+  public static KEY_STORE_TYPE: string = 'Tipo keystore';
 
   public static LUOGO: string = 'Località';
   public static LAYOUT_FORM_DATI: string = 'Layout form dati';
@@ -223,6 +228,8 @@ export class Voce {
   public static SOGGETTO_VERSANTE: string = 'Versante';
   public static SOLO_PAGAMENTI: string = 'Notifica solo pagamenti eseguiti';
   public static SOTTOTIPO_ESITO: string = 'Sottotipo esito';
+  public static SSL: string = 'SSL';
+  public static SSL_CFG_TYPE: string = 'Tipo SSL';
   public static STAMPA_AVVISI: string = 'Stampa avvisi';
   public static STATO: string = 'Stato';
   public static STAZIONE: string = 'Stazione';
@@ -258,6 +265,7 @@ export class Voce {
   public static TRN: string = 'Id operazione di riversamento (TRN)';
   public static TRUST_STORE_LOC: string = 'Truststore Location';
   public static TRUST_STORE_PWD: string = 'Truststore Password';
+  public static TRUST_STORE_TYPE: string = 'Tipo truststore';
   public static TTL: string = 'Time to live';
   public static TUTTE: string = 'Tutte';
   public static TUTTI: string = 'Tutti';
@@ -276,6 +284,7 @@ export class Voce {
   public static VERSIONE_API: string = 'Versione API';
   public static VERIFICATORE_HOSTNAME: string = 'Verificatore hostname';
   public static VERSIONE_CSV: string = 'Versione CSV';
+  public static VERSIONE_ZIP: string = 'Versione ZIP';
   public static VISUALIZZAZIONE: string = 'Visualizzazione';
   public static VISTA_COMPLETA: string = 'Vista completa';
 

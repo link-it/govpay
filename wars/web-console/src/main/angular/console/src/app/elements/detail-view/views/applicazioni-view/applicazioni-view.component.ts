@@ -89,15 +89,33 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
         }
         if(this.json.servizioIntegrazione.auth.tipo) {
           _dettaglio.serviziApi.push(new Dato({label: Voce.TIPO, value: this.json.servizioIntegrazione.auth.tipo }));
-          _dettaglio.serviziApi.push(new Dato({label: Voce.KEY_STORE_LOC, value: this.json.servizioIntegrazione.auth.ksLocation }));
-          _dettaglio.serviziApi.push(new Dato({label: Voce.KEY_STORE_PWD, value: this.json.servizioIntegrazione.auth.ksPassword }));
+          if(this.json.servizioIntegrazione.auth.sslType) {
+            _dettaglio.serviziApi.push(new Dato({label: Voce.SSL_CFG_TYPE, value: this.json.servizioIntegrazione.auth.sslType }));
+          }
+          if(this.json.servizioIntegrazione.auth.tsType) {
+            _dettaglio.serviziApi.push(new Dato({label: Voce.TRUST_STORE_TYPE, value: this.json.servizioIntegrazione.auth.tsType }));
+          }
           if(this.json.servizioIntegrazione.auth.tsLocation) {
             _dettaglio.serviziApi.push(new Dato({label: Voce.TRUST_STORE_LOC, value: this.json.servizioIntegrazione.auth.tsLocation }));
           }
           if(this.json.servizioIntegrazione.auth.tsPassword) {
             _dettaglio.serviziApi.push(new Dato({label: Voce.TRUST_STORE_PWD, value: this.json.servizioIntegrazione.auth.tsPassword }));
           }
+          if(this.json.servizioIntegrazione.auth.ksType) {
+            _dettaglio.serviziApi.push(new Dato({label: Voce.KEY_STORE_TYPE, value: this.json.servizioIntegrazione.auth.ksType }));
+          }
+          if(this.json.servizioIntegrazione.auth.ksLocation) {
+            _dettaglio.serviziApi.push(new Dato({label: Voce.KEY_STORE_LOC, value: this.json.servizioIntegrazione.auth.ksLocation }));
+          }
+          if(this.json.servizioIntegrazione.auth.ksPassword) {
+            _dettaglio.serviziApi.push(new Dato({label: Voce.KEY_STORE_PWD, value: this.json.servizioIntegrazione.auth.ksPassword }));
+          }
+          if(this.json.servizioIntegrazione.auth.ksPKeyPasswd) {
+            _dettaglio.serviziApi.push(new Dato({label: Voce.KEY_STORE_PWD_PRIVATE_KEY, value: this.json.servizioIntegrazione.auth.ksPKeyPasswd }));
+          }
         }
+      } else {
+        _dettaglio.serviziApi.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.NESSUNA }));
       }
     }
 

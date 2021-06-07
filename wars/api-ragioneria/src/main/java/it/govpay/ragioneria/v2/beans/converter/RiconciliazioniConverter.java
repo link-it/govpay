@@ -47,9 +47,9 @@ public class RiconciliazioniConverter {
 		rsModel.setIdDominio(i.getCodDominio());
 		rsModel.setSct(i.getSct());
 		rsModel.setContoAccredito(i.getIbanAccredito());
-		if(i.getPagamenti(null)!= null) {
+		if(i.getPagamenti()!= null) {
 			List<RiscossioneIndex> riscossioni = new ArrayList<>();
-			for (Pagamento pagamento : i.getPagamenti(null)) {
+			for (Pagamento pagamento : i.getPagamenti()) {
 				riscossioni.add(RiscossioniConverter.toRsModelIndexOld(pagamento));
 			} 
 			

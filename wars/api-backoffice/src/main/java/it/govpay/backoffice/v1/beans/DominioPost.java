@@ -35,6 +35,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "servizioMyPivot",
 "servizioSecim",
 "servizioGovPay",
+"servizioHyperSicAPKappa",
 })
 public class DominioPost extends it.govpay.core.beans.JSONSerializable implements IValidable{
   
@@ -112,6 +113,9 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
   
   @JsonProperty("servizioGovPay")
   private ConnettoreNotificaPagamentiGovPay servizioGovPay = null;
+  
+  @JsonProperty("servizioHyperSicAPKappa")
+  private ConnettoreNotificaPagamentiHyperSicAPKappa servizioHyperSicAPKappa = null;
   
   /**
    * Ragione sociale del beneficiario
@@ -510,6 +514,21 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
     this.servizioGovPay = servizioGovPay;
   }
 
+  /**
+   **/
+  public DominioPost servizioHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappa servizioHyperSicAPKappa) {
+    this.servizioHyperSicAPKappa = servizioHyperSicAPKappa;
+    return this;
+  }
+
+  @JsonProperty("servizioHyperSicAPKappa")
+  public ConnettoreNotificaPagamentiHyperSicAPKappa getServizioHyperSicAPKappa() {
+    return servizioHyperSicAPKappa;
+  }
+  public void setServizioHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappa servizioHyperSicAPKappa) {
+    this.servizioHyperSicAPKappa = servizioHyperSicAPKappa;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -543,12 +562,13 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
         Objects.equals(this.area, dominioPost.area) &&
         Objects.equals(servizioMyPivot, dominioPost.servizioMyPivot) &&
         Objects.equals(servizioSecim, dominioPost.servizioSecim) &&
-        Objects.equals(servizioGovPay, dominioPost.servizioGovPay);
+        Objects.equals(servizioGovPay, dominioPost.servizioGovPay) &&
+        Objects.equals(servizioHyperSicAPKappa, dominioPost.servizioHyperSicAPKappa);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa);
   }
 
   public static DominioPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -590,6 +610,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
     sb.append("    servizioMyPivot: ").append(toIndentedString(servizioMyPivot)).append("\n");
     sb.append("    servizioSecim: ").append(toIndentedString(servizioSecim)).append("\n");
     sb.append("    servizioGovPay: ").append(toIndentedString(servizioGovPay)).append("\n");
+    sb.append("    servizioHyperSicAPKappa: ").append(toIndentedString(servizioHyperSicAPKappa)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -616,7 +637,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 			vf.getValidator("segregationCode", this.segregationCode).length(2).pattern("(^[0-4][0-9]$)");
 			vf.getValidator("cbill", this.cbill).length(5).pattern("(^([0-9A-Z]){5}$)");
 			vf.getValidator("autStampaPosteItaliane", this.autStampaPosteItaliane).maxLength(255);
-			vf.getValidator("iuvPrefix", this.iuvPrefix).pattern("(\\d*(%\\([yYatu]\\))?)+");
+			vf.getValidator("iuvPrefix", this.iuvPrefix).pattern("(\\d*(%\\([yYa{t|p}u]\\))?)+");
 			vf.getValidator("abilitato", this.abilitato).notNull();
 			
 			// uo associata al dominio
@@ -637,6 +658,8 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 			vf.getValidator("servizioMyPivot", this.servizioMyPivot).validateFields();
 			vf.getValidator("servizioSecim", this.servizioSecim).validateFields();
 			vf.getValidator("servizioGovPay", this.servizioGovPay).validateFields();
+			vf.getValidator("servizioHyperSicAPKappa", this.servizioHyperSicAPKappa).validateFields();
+
 	  }
 }
 

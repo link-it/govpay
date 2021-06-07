@@ -1,8 +1,11 @@
 package it.govpay.bd.viste.model;
 
 import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.Rpt;
 import it.govpay.model.BasicModel;
 
 public class Rendicontazione extends BasicModel{
@@ -17,6 +20,9 @@ public class Rendicontazione extends BasicModel{
 	private it.govpay.bd.model.Rendicontazione rendicontazione;
 	private SingoloVersamento singoloVersamento;
 	private Versamento versamento;
+	private Pagamento pagamento;
+	private Rpt rpt;
+	private Incasso incasso;
 	
 	@Override
 	public Long getId() {
@@ -49,6 +55,23 @@ public class Rendicontazione extends BasicModel{
 	public void setVersamento(Versamento versamento) {
 		this.versamento = versamento;
 	}
-	
+	public Pagamento getPagamento() {
+		return pagamento;
+	}
+	public void setPagamento(Pagamento pagamento) {
+		this.pagamento = pagamento;
+	}
+	public Rpt getRpt() {
+		return rpt;
+	}
+	public void setRpt(Rpt rpt) {
+		this.rpt = rpt;
+	}
+	public Incasso getIncasso() {
+		return incasso;
+	}
+	public void setIncasso(Incasso incasso) {
+		this.incasso = incasso;
+	}
 	
 }

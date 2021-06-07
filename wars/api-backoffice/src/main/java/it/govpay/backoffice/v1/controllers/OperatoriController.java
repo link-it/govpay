@@ -206,7 +206,7 @@ public class OperatoriController extends BaseController {
 
 
 
-    public Response findOperatori(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato) {
+    public Response findOperatori(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findOperatori";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -226,6 +226,9 @@ public class OperatoriController extends BaseController {
 			listaDominiDTO.setOrderBy(ordinamento);
 			listaDominiDTO.setAbilitato(abilitato);
 			listaDominiDTO.setOrderBy(ordinamento); 
+			
+			listaDominiDTO.setEseguiCount(metadatiPaginazione);
+			listaDominiDTO.setEseguiCountConLimit(maxRisultati);
 			
 			// INIT DAO
 			

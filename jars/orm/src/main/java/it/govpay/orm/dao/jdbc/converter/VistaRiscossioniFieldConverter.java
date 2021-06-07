@@ -186,11 +186,116 @@ public class VistaRiscossioniFieldConverter extends AbstractSQLFieldConverter {
 				return "identificativo_debitore";
 			}
 		}
+		if(field.equals(VistaRiscossioni.model().DEBITORE_ANAGRAFICA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_anagrafica";
+			}else{
+				return "debitore_anagrafica";
+			}
+		}
 		if(field.equals(VistaRiscossioni.model().ANNO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".anno";
 			}else{
 				return "anno";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().DESCR_TIPO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".descr_tipo_versamento";
+			}else{
+				return "descr_tipo_versamento";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().COD_PSP)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_psp";
+			}else{
+				return "cod_psp";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().RAGIONE_SOCIALE_PSP)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ragione_sociale_psp";
+			}else{
+				return "ragione_sociale_psp";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().COD_RATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_rata";
+			}else{
+				return "cod_rata";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().ID_DOCUMENTO.COD_DOCUMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_documento";
+			}else{
+				return "cod_documento";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().ID_DOCUMENTO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().CAUSALE_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".causale_versamento";
+			}else{
+				return "causale_versamento";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().IMPORTO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_versamento";
+			}else{
+				return "importo_versamento";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().NUMERO_AVVISO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".numero_avviso";
+			}else{
+				return "numero_avviso";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().IUV_PAGAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv_pagamento";
+			}else{
+				return "iuv_pagamento";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().DATA_CREAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_creazione";
+			}else{
+				return "data_creazione";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().DATA_SCADENZA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_scadenza";
+			}else{
+				return "data_scadenza";
+			}
+		}
+		if(field.equals(VistaRiscossioni.model().CONTABILITA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".contabilita";
+			}else{
+				return "contabilita";
 			}
 		}
 
@@ -257,7 +362,52 @@ public class VistaRiscossioniFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(VistaRiscossioni.model().IDENTIFICATIVO_DEBITORE)){
 			return this.toTable(VistaRiscossioni.model(), returnAlias);
 		}
+		if(field.equals(VistaRiscossioni.model().DEBITORE_ANAGRAFICA)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
 		if(field.equals(VistaRiscossioni.model().ANNO)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().DESCR_TIPO_VERSAMENTO)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().COD_PSP)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().RAGIONE_SOCIALE_PSP)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().COD_RATA)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().ID_DOCUMENTO.COD_DOCUMENTO)){
+			return this.toTable(VistaRiscossioni.model().ID_DOCUMENTO, returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(VistaRiscossioni.model().ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().ID_DOCUMENTO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(VistaRiscossioni.model().ID_DOCUMENTO.ID_DOMINIO, returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().CAUSALE_VERSAMENTO)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().IMPORTO_VERSAMENTO)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().NUMERO_AVVISO)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().IUV_PAGAMENTO)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().DATA_CREAZIONE)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().DATA_SCADENZA)){
+			return this.toTable(VistaRiscossioni.model(), returnAlias);
+		}
+		if(field.equals(VistaRiscossioni.model().CONTABILITA)){
 			return this.toTable(VistaRiscossioni.model(), returnAlias);
 		}
 
@@ -275,6 +425,15 @@ public class VistaRiscossioniFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(VistaRiscossioni.model())){
 			return "v_riscossioni";
+		}
+		if(model.equals(VistaRiscossioni.model().ID_DOCUMENTO)){
+			return "documenti";
+		}
+		if(model.equals(VistaRiscossioni.model().ID_DOCUMENTO.ID_APPLICAZIONE)){
+			return "applicazioni";
+		}
+		if(model.equals(VistaRiscossioni.model().ID_DOCUMENTO.ID_DOMINIO)){
+			return "domini";
 		}
 
 

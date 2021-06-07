@@ -186,6 +186,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			fields.add(SingoloVersamento.model().DATI_ALLEGATI);
 			fields.add(SingoloVersamento.model().INDICE_DATI);
 			fields.add(SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT);
+			fields.add(SingoloVersamento.model().CONTABILITA);
 			
 			fields.add(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(new CustomField("id_iban_appoggio", Long.class, "id_iban_appoggio", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));

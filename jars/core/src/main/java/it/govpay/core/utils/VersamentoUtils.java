@@ -678,6 +678,7 @@ public class VersamentoUtils {
 		model.setDescrizione(singoloVersamento.getDescrizione()); 
 		model.setDescrizioneCausaleRPT(singoloVersamento.getDescrizioneCausaleRPT()); 
 		model.setDatiAllegati(singoloVersamento.getDatiAllegati()); 
+		model.setContabilita(singoloVersamento.getContabilita());
 		Dominio dominio = versamento.getDominio(configWrapper);
 		if(singoloVersamento.getBolloTelematico() != null) {
 			try {

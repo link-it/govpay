@@ -53,6 +53,7 @@ import it.govpay.bd.pagamento.filters.TracciatoFilter;
 import it.govpay.core.business.Rendicontazioni.DownloadRendicontazioniResponse;
 import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.client.BasicClient;
 import it.govpay.core.utils.thread.InviaNotificaAppIoThread;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.SpedizioneTracciatoNotificaPagamentiThread;
@@ -411,6 +412,7 @@ public class Operazioni{
 			batch.setAggiornamento(new Date());
 			batchBD.update(batch);
 			AnagraficaManager.cleanCache();
+			BasicClient.cleanCache();
 			log.info("Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.");	
 			return "Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.";
 		} catch (Exception e) {
@@ -439,6 +441,7 @@ public class Operazioni{
 
 				log.info("Nodo ["+clusterId+"]: Reset della cache anagrafica locale in corso...");	
 				AnagraficaManager.cleanCache();
+				BasicClient.cleanCache();
 				log.info("Nodo ["+clusterId+"]: Reset della cache anagrafica locale completato.");
 			}
 
@@ -530,7 +533,7 @@ public class Operazioni{
 		try {
 
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_TRACCIATI)) {
-				log.trace("Elaborazione tracciati");
+				log.debug("Elaborazione tracciati");
 
 				TracciatiBD tracciatiBD = new TracciatiBD(configWrapper);
 				TracciatoFilter filter = tracciatiBD.newFilter();
@@ -589,7 +592,7 @@ public class Operazioni{
 
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_SPEDIZIONE_PROMEMORIA)) {
 				int limit = 100;
-				log.trace("Spedizione primi ["+limit+"] promemoria non consegnati");
+				log.debug("Spedizione primi ["+limit+"] promemoria non consegnati");
 				Promemoria promemoriaBD = new Promemoria(); 
 				List<it.govpay.bd.model.Promemoria> promemorias = promemoriaBD.findPromemoriaDaSpedire(0, limit);
 
@@ -639,7 +642,7 @@ public class Operazioni{
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_GESTIONE_PROMEMORIA)) {
 				int limit = 100;
 
-				log.trace("Elaborazione primi ["+limit+"] versamenti con promemoria avviso non consegnati");
+				log.debug("Elaborazione primi ["+limit+"] versamenti con promemoria avviso non consegnati");
 				VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
 				List<Versamento> listaPromemoriaAvviso = versamentiBD.findVersamentiConAvvisoDiPagamentoDaSpedire(0, limit);
@@ -656,7 +659,7 @@ public class Operazioni{
 
 				aggiornaSondaOK(configWrapper, BATCH_GESTIONE_PROMEMORIA);
 
-				log.trace("Elaborazione primi ["+limit+"] versamenti con promemoria scadenza via mail non consegnati");
+				log.debug("Elaborazione primi ["+limit+"] versamenti con promemoria scadenza via mail non consegnati");
 				List<Versamento> listaPromemoriaScadenzaMail = versamentiBD.findVersamentiConAvvisoDiScadenzaDaSpedireViaMail(0, limit);
 
 				if(listaPromemoriaScadenzaMail.size() == 0) {
@@ -670,7 +673,7 @@ public class Operazioni{
 
 				aggiornaSondaOK(configWrapper, BATCH_GESTIONE_PROMEMORIA);
 
-				log.trace("Elaborazione primi ["+limit+"] versamenti con promemoria scadenza via appIO non consegnati");
+				log.debug("Elaborazione primi ["+limit+"] versamenti con promemoria scadenza via appIO non consegnati");
 				List<Versamento> listaPromemoriaScadenzaAppIO = versamentiBD.findVersamentiConAvvisoDiScadenzaDaSpedireViaAppIO(0, limit);
 
 				if(listaPromemoriaScadenzaAppIO.size() == 0) {
@@ -728,7 +731,7 @@ public class Operazioni{
 						tracciatiMyPivot.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreMyPivot(), ctx);
 						log.debug("Elaborazione Tracciato MyPivot per il Dominio ["+codDominio+"] completata.");
 					} else {
-						log.trace("Connettore MyPivot non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
+						log.debug("Connettore MyPivot non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
 					}
 					
 					if(dominio.getConnettoreSecim() != null && dominio.getConnettoreSecim().isAbilitato()) {
@@ -737,7 +740,7 @@ public class Operazioni{
 						tracciatiSecim.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreSecim(), ctx);
 						log.debug("Elaborazione Tracciato Secim per il Dominio ["+codDominio+"] completata.");
 					} else {
-						log.trace("Connettore Secim non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
+						log.debug("Connettore Secim non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
 					}
 					
 					if(dominio.getConnettoreGovPay() != null && dominio.getConnettoreGovPay().isAbilitato()) {
@@ -746,7 +749,16 @@ public class Operazioni{
 						tracciatiGovpay.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreGovPay(), ctx);
 						log.debug("Elaborazione Tracciato GovPay per il Dominio ["+codDominio+"] completata.");
 					} else {
-						log.trace("Connettore GovPay non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
+						log.debug("Connettore GovPay non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
+					}
+					
+					if(dominio.getConnettoreHyperSicAPKappa() != null && dominio.getConnettoreHyperSicAPKappa().isAbilitato()) {
+						log.debug("Elaborazione Tracciato HyperSicAPKappa per il Dominio ["+codDominio+"]...");
+						TracciatiNotificaPagamenti tracciatiGovpay = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.HYPERSIC_APK);
+						tracciatiGovpay.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreHyperSicAPKappa(), ctx);
+						log.debug("Elaborazione Tracciato HyperSicAPKappa per il Dominio ["+codDominio+"] completata.");
+					} else {
+						log.debug("Connettore HyperSicAPKappa non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
 					}
 				}
 				
@@ -840,7 +852,7 @@ public class Operazioni{
 							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
 						}
 					} else {
-						log.trace("Connettore MyPivot non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
+						log.debug("Connettore MyPivot non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
 					}
 					
 					if(dominio.getConnettoreSecim() != null && dominio.getConnettoreSecim().isAbilitato()) {
@@ -894,7 +906,7 @@ public class Operazioni{
 							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
 						}
 					} else {
-						log.trace("Connettore Secim non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
+						log.debug("Connettore Secim non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
 					}
 					
 					if(dominio.getConnettoreGovPay() != null && dominio.getConnettoreGovPay().isAbilitato()) {
@@ -948,7 +960,61 @@ public class Operazioni{
 							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
 						}
 					} else {
-						log.trace("Connettore GovPay non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
+						log.debug("Connettore GovPay non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
+					}
+					
+					if(dominio.getConnettoreHyperSicAPKappa() != null && dominio.getConnettoreHyperSicAPKappa().isAbilitato()) {
+						log.debug("Scheduling spedizione Tracciati HyperSicAPKappa per il Dominio ["+codDominio+"]...");
+						TracciatiNotificaPagamenti tracciatiGovPay = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.HYPERSIC_APK);
+						
+						int offset = 0;
+						int limit = (2 * threadNotificaPoolSize);
+						List<SpedizioneTracciatoNotificaPagamentiThread> threads = new ArrayList<>();
+						List<TracciatoNotificaPagamenti> tracciatiInStatoNonTerminalePerDominio = tracciatiGovPay.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, dominio.getConnettoreHyperSicAPKappa(), ctx);
+						
+						log.debug("Trovati ["+tracciatiInStatoNonTerminalePerDominio.size()+"] Tracciati HyperSicAPKappa da spedire per il Dominio ["+codDominio+"]...");
+
+						if(tracciatiInStatoNonTerminalePerDominio.size() > 0) {
+							for(TracciatoNotificaPagamenti tracciatoHyperSicAPKappa: tracciatiInStatoNonTerminalePerDominio) {
+								SpedizioneTracciatoNotificaPagamentiThread sender = new SpedizioneTracciatoNotificaPagamentiThread(tracciatoHyperSicAPKappa, dominio.getConnettoreHyperSicAPKappa(), ctx);
+								ThreadExecutorManager.getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti().execute(sender);
+								threads.add(sender);
+							}
+
+							log.debug("Processi di spedizione Tracciati HyperSicAPKappa avviati.");
+							aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+
+							// Aspetto che abbiano finito tutti
+							int numeroErrori = 0;
+							while(true){
+								try {
+									Thread.sleep(2000);
+								} catch (InterruptedException e) {
+
+								}
+								boolean completed = true;
+								for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
+									if(!sender.isCompleted()) 
+										completed = false;
+								}
+
+								if(completed) { 
+									for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
+										if(sender.isErrore()) 
+											numeroErrori ++;
+									}
+									int numOk = threads.size() - numeroErrori;
+									log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, OK ["+numOk+"], Errore ["+numeroErrori+"]");
+									break; // esco
+								}
+							}
+							
+							log.info("Spedizione Tracciati HyperSicAPKappa per il Dominio ["+codDominio+"] completata.");
+							//Hanno finito tutti, aggiorno stato esecuzione
+							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+						}
+					} else {
+						log.debug("Connettore HyperSicAPKappa non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
 					}
 				}
 				

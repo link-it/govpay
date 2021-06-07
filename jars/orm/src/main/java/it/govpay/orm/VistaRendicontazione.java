@@ -69,6 +69,7 @@ import java.io.Serializable;
  * 			&lt;element name="sngDatiAllegati" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="sngIndiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="sngDescrizioneCausaleRPT" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="sngContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsCodVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsNome" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -124,6 +125,27 @@ import java.io.Serializable;
  * 			&lt;element name="vrsIdDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsTipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="vrsProprieta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="pagCodDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="pagIuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="pagIndiceDati" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="pagImportoPagato" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="pagDataAcquisizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="pagIur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="pagDataPagamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="pagCommissioniPsp" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="pagTipoAllegato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="pagAllegato" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="pagDataAcquisizioneRevoca" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="pagCausaleRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="pagDatiRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="pagImportoRevocato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="pagEsitoRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="pagDatiEsitoRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="pagStato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="pagTipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="rptIuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="rptCcp" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="rncTrn" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -172,6 +194,7 @@ import java.io.Serializable;
   	"sngDatiAllegati",
   	"sngIndiceDati",
   	"sngDescrizioneCausaleRPT",
+  	"sngContabilita",
   	"vrsId",
   	"vrsCodVersamentoEnte",
   	"vrsNome",
@@ -226,7 +249,28 @@ import java.io.Serializable;
   	"vrsCodRata",
   	"vrsIdDocumento",
   	"vrsTipo",
-  	"vrsProprieta"
+  	"vrsProprieta",
+  	"pagCodDominio",
+  	"pagIuv",
+  	"pagIndiceDati",
+  	"pagImportoPagato",
+  	"pagDataAcquisizione",
+  	"pagIur",
+  	"pagDataPagamento",
+  	"pagCommissioniPsp",
+  	"pagTipoAllegato",
+  	"pagAllegato",
+  	"pagDataAcquisizioneRevoca",
+  	"pagCausaleRevoca",
+  	"pagDatiRevoca",
+  	"pagImportoRevocato",
+  	"pagEsitoRevoca",
+  	"pagDatiEsitoRevoca",
+  	"pagStato",
+  	"pagTipo",
+  	"rptIuv",
+  	"rptCcp",
+  	"rncTrn"
   }
 )
 
@@ -520,6 +564,14 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
 
   public void setSngDescrizioneCausaleRPT(java.lang.String sngDescrizioneCausaleRPT) {
     this.sngDescrizioneCausaleRPT = sngDescrizioneCausaleRPT;
+  }
+
+  public java.lang.String getSngContabilita() {
+    return this.sngContabilita;
+  }
+
+  public void setSngContabilita(java.lang.String sngContabilita) {
+    this.sngContabilita = sngContabilita;
   }
 
   public long getVrsId() {
@@ -974,6 +1026,174 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
     this.vrsProprieta = vrsProprieta;
   }
 
+  public java.lang.String getPagCodDominio() {
+    return this.pagCodDominio;
+  }
+
+  public void setPagCodDominio(java.lang.String pagCodDominio) {
+    this.pagCodDominio = pagCodDominio;
+  }
+
+  public java.lang.String getPagIuv() {
+    return this.pagIuv;
+  }
+
+  public void setPagIuv(java.lang.String pagIuv) {
+    this.pagIuv = pagIuv;
+  }
+
+  public int getPagIndiceDati() {
+    return this.pagIndiceDati;
+  }
+
+  public void setPagIndiceDati(int pagIndiceDati) {
+    this.pagIndiceDati = pagIndiceDati;
+  }
+
+  public double getPagImportoPagato() {
+    return this.pagImportoPagato;
+  }
+
+  public void setPagImportoPagato(double pagImportoPagato) {
+    this.pagImportoPagato = pagImportoPagato;
+  }
+
+  public java.util.Date getPagDataAcquisizione() {
+    return this.pagDataAcquisizione;
+  }
+
+  public void setPagDataAcquisizione(java.util.Date pagDataAcquisizione) {
+    this.pagDataAcquisizione = pagDataAcquisizione;
+  }
+
+  public java.lang.String getPagIur() {
+    return this.pagIur;
+  }
+
+  public void setPagIur(java.lang.String pagIur) {
+    this.pagIur = pagIur;
+  }
+
+  public java.util.Date getPagDataPagamento() {
+    return this.pagDataPagamento;
+  }
+
+  public void setPagDataPagamento(java.util.Date pagDataPagamento) {
+    this.pagDataPagamento = pagDataPagamento;
+  }
+
+  public java.lang.Double getPagCommissioniPsp() {
+    return this.pagCommissioniPsp;
+  }
+
+  public void setPagCommissioniPsp(java.lang.Double pagCommissioniPsp) {
+    this.pagCommissioniPsp = pagCommissioniPsp;
+  }
+
+  public java.lang.String getPagTipoAllegato() {
+    return this.pagTipoAllegato;
+  }
+
+  public void setPagTipoAllegato(java.lang.String pagTipoAllegato) {
+    this.pagTipoAllegato = pagTipoAllegato;
+  }
+
+  public byte[] getPagAllegato() {
+    return this.pagAllegato;
+  }
+
+  public void setPagAllegato(byte[] pagAllegato) {
+    this.pagAllegato = pagAllegato;
+  }
+
+  public java.util.Date getPagDataAcquisizioneRevoca() {
+    return this.pagDataAcquisizioneRevoca;
+  }
+
+  public void setPagDataAcquisizioneRevoca(java.util.Date pagDataAcquisizioneRevoca) {
+    this.pagDataAcquisizioneRevoca = pagDataAcquisizioneRevoca;
+  }
+
+  public java.lang.String getPagCausaleRevoca() {
+    return this.pagCausaleRevoca;
+  }
+
+  public void setPagCausaleRevoca(java.lang.String pagCausaleRevoca) {
+    this.pagCausaleRevoca = pagCausaleRevoca;
+  }
+
+  public java.lang.String getPagDatiRevoca() {
+    return this.pagDatiRevoca;
+  }
+
+  public void setPagDatiRevoca(java.lang.String pagDatiRevoca) {
+    this.pagDatiRevoca = pagDatiRevoca;
+  }
+
+  public java.lang.Double getPagImportoRevocato() {
+    return this.pagImportoRevocato;
+  }
+
+  public void setPagImportoRevocato(java.lang.Double pagImportoRevocato) {
+    this.pagImportoRevocato = pagImportoRevocato;
+  }
+
+  public java.lang.String getPagEsitoRevoca() {
+    return this.pagEsitoRevoca;
+  }
+
+  public void setPagEsitoRevoca(java.lang.String pagEsitoRevoca) {
+    this.pagEsitoRevoca = pagEsitoRevoca;
+  }
+
+  public java.lang.String getPagDatiEsitoRevoca() {
+    return this.pagDatiEsitoRevoca;
+  }
+
+  public void setPagDatiEsitoRevoca(java.lang.String pagDatiEsitoRevoca) {
+    this.pagDatiEsitoRevoca = pagDatiEsitoRevoca;
+  }
+
+  public java.lang.String getPagStato() {
+    return this.pagStato;
+  }
+
+  public void setPagStato(java.lang.String pagStato) {
+    this.pagStato = pagStato;
+  }
+
+  public java.lang.String getPagTipo() {
+    return this.pagTipo;
+  }
+
+  public void setPagTipo(java.lang.String pagTipo) {
+    this.pagTipo = pagTipo;
+  }
+
+  public java.lang.String getRptIuv() {
+    return this.rptIuv;
+  }
+
+  public void setRptIuv(java.lang.String rptIuv) {
+    this.rptIuv = rptIuv;
+  }
+
+  public java.lang.String getRptCcp() {
+    return this.rptCcp;
+  }
+
+  public void setRptCcp(java.lang.String rptCcp) {
+    this.rptCcp = rptCcp;
+  }
+
+  public java.lang.String getRncTrn() {
+    return this.rncTrn;
+  }
+
+  public void setRncTrn(java.lang.String rncTrn) {
+    this.rncTrn = rncTrn;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -1129,6 +1349,10 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="sngDescrizioneCausaleRPT",required=false,nillable=false)
   protected java.lang.String sngDescrizioneCausaleRPT;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="sngContabilita",required=false,nillable=false)
+  protected java.lang.String sngContabilita;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="vrsId",required=false,nillable=false)
@@ -1348,5 +1572,92 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="vrsProprieta",required=false,nillable=false)
   protected java.lang.String vrsProprieta;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="pagCodDominio",required=true,nillable=false)
+  protected java.lang.String pagCodDominio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="pagIuv",required=true,nillable=false)
+  protected java.lang.String pagIuv;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="int")
+  @XmlElement(name="pagIndiceDati",required=true,nillable=false)
+  protected int pagIndiceDati;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="double")
+  @XmlElement(name="pagImportoPagato",required=true,nillable=false)
+  protected double pagImportoPagato;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="pagDataAcquisizione",required=true,nillable=false,type=java.lang.String.class)
+  protected java.util.Date pagDataAcquisizione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="pagIur",required=true,nillable=false)
+  protected java.lang.String pagIur;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="pagDataPagamento",required=true,nillable=false,type=java.lang.String.class)
+  protected java.util.Date pagDataPagamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
+  @XmlElement(name="pagCommissioniPsp",required=false,nillable=false)
+  protected java.lang.Double pagCommissioniPsp;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="pagTipoAllegato",required=false,nillable=false)
+  protected java.lang.String pagTipoAllegato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @XmlElement(name="pagAllegato",required=false,nillable=false)
+  protected byte[] pagAllegato;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="pagDataAcquisizioneRevoca",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date pagDataAcquisizioneRevoca;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="pagCausaleRevoca",required=false,nillable=false)
+  protected java.lang.String pagCausaleRevoca;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="pagDatiRevoca",required=false,nillable=false)
+  protected java.lang.String pagDatiRevoca;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
+  @XmlElement(name="pagImportoRevocato",required=false,nillable=false)
+  protected java.lang.Double pagImportoRevocato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="pagEsitoRevoca",required=false,nillable=false)
+  protected java.lang.String pagEsitoRevoca;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="pagDatiEsitoRevoca",required=false,nillable=false)
+  protected java.lang.String pagDatiEsitoRevoca;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="pagStato",required=false,nillable=false)
+  protected java.lang.String pagStato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="pagTipo",required=true,nillable=false)
+  protected java.lang.String pagTipo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="rptIuv",required=true,nillable=false)
+  protected java.lang.String rptIuv;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="rptCcp",required=true,nillable=false)
+  protected java.lang.String rptCcp;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="rncTrn",required=true,nillable=false)
+  protected java.lang.String rncTrn;
 
 }

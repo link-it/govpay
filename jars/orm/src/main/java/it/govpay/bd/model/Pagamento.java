@@ -33,7 +33,6 @@ import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
-import it.govpay.bd.model.Rendicontazione;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 
 public class Pagamento extends it.govpay.model.Pagamento {
@@ -63,7 +62,9 @@ public class Pagamento extends it.govpay.model.Pagamento {
 
 	public void setRpt(Rpt rpt) {
 		this.rpt = rpt;
-		this.setIdRpt(rpt.getId());
+		if(rpt.getId() != null) {
+			this.setIdRpt(rpt.getId());
+		}
 	}
 	
 	public Rr getRr(BasicBD bd) throws ServiceException {
@@ -123,7 +124,9 @@ public class Pagamento extends it.govpay.model.Pagamento {
 
 	public void setIncasso(Incasso incasso) {
 		this.incasso = incasso;
-		this.setIdIncasso(incasso.getId());
+		if(this.incasso.getId() != null) {
+			this.setIdIncasso(incasso.getId());
+		}
 	}
 	
 	public boolean isPagamentoRendicontato(BasicBD bd) throws ServiceException {
