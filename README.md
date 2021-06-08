@@ -59,6 +59,7 @@ quale si rimanda per una descrizione piu' estesa.
 * Alimentazione APA via CSV: possibilità di alimentare l'archivio dei pagamenti in attesa tramite tracciati CSV dalla struttura configurabile
 * Servizio di notifica email: oltre alla possibilità di notificare gli avvisi di pagamento via email, la piattaforma consente di configurare la notifica delle ricevute di pagamento e dei promemoria di scadenza
 * Pagamenti spontanei: supporto alla gestione di pagamenti spontanei
+* Integrazione nativa ad applicativi terzi, come MyPIVOT, SECIM ed altri
 
 ## Licenza
 
