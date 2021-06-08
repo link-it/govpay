@@ -18,7 +18,7 @@ public class DettaglioSonda {
 	public enum TipoSonda {
 		Coda, Batch, Sconosciuto
 	}
-
+	private String id;
 	private String nome;
 	private Integer stato;
 	private String descrizioneStato;
@@ -142,5 +142,13 @@ public class DettaglioSonda {
 	
 	private String toString(long millis) {
 		return org.openspcoop2.utils.Utilities.convertSystemTimeIntoString_millisecondi(millis, false);
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }

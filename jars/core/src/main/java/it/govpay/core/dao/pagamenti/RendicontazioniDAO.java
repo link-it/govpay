@@ -3,6 +3,8 @@ package it.govpay.core.dao.pagamenti;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.core.MediaType;
+
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -100,8 +102,11 @@ public class RendicontazioniDAO extends BaseDAO{
 			
 			Fr flussoRendicontazione = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso(), leggiRendicontazioniDTO.getObsoleto(), leggiRendicontazioniDTO.getDataOraFlusso());
 
-			this.populateFlussoRendicontazione(flussoRendicontazione, rendicontazioniBD);
-			flussoRendicontazione.getIncasso(rendicontazioniBD);
+			if(!leggiRendicontazioniDTO.getAccept().toLowerCase().contains(MediaType.APPLICATION_XML)) {
+				this.populateFlussoRendicontazione(flussoRendicontazione, rendicontazioniBD);
+				flussoRendicontazione.getIncasso(rendicontazioniBD);
+			}
+			
 			response.setFr(flussoRendicontazione);
 			response.setDominio(flussoRendicontazione.getDominio(configWrapper));
 

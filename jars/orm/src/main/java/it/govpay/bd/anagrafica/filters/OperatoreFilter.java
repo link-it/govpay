@@ -19,6 +19,9 @@
  */
 package it.govpay.bd.anagrafica.filters;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -28,28 +31,38 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.Operatore;
+import it.govpay.orm.dao.jdbc.converter.OperatoreFieldConverter;
+import it.govpay.orm.model.OperatoreModel;
 
 public class OperatoreFilter extends AbstractFilter {
 	
 	private String principal= null;
 	private boolean searchModeEquals = false; 
+	
+	private static OperatoreModel model = Operatore.model();
+	private OperatoreFieldConverter converter = null;
 
 	public enum SortFields {
 	}
 	
-	public OperatoreFilter(IExpressionConstructor expressionConstructor) {
+	public OperatoreFilter(IExpressionConstructor expressionConstructor) throws ServiceException {
 		this(expressionConstructor,false);
 	}
 	
-	public OperatoreFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+	public OperatoreFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) throws ServiceException {
 		super(expressionConstructor, simpleSearch);
-		this.listaFieldSimpleSearch.add(Operatore.model().ID_UTENZA.PRINCIPAL);
-		this.listaFieldSimpleSearch.add(Operatore.model().NOME);
-		this.fieldAbilitato = it.govpay.orm.Operatore.model().ID_UTENZA.ABILITATO;
+		this.listaFieldSimpleSearch.add(model.ID_UTENZA.PRINCIPAL);
+		this.listaFieldSimpleSearch.add(model.NOME);
+		this.fieldAbilitato = model.ID_UTENZA.ABILITATO;
+		
+		this.converter = new OperatoreFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+		this.eseguiCountConLimit = false;
 	}
 
 	@Override
@@ -60,9 +73,9 @@ public class OperatoreFilter extends AbstractFilter {
 			
 			if(this.principal != null){
 				if(!this.searchModeEquals)
-					newExpression.ilike(Operatore.model().ID_UTENZA.PRINCIPAL, this.principal,LikeMode.ANYWHERE);
+					newExpression.ilike(model.ID_UTENZA.PRINCIPAL, this.principal,LikeMode.ANYWHERE);
 				else 
-					newExpression.equals(Operatore.model().ID_UTENZA.PRINCIPAL, this.principal);
+					newExpression.equals(model.ID_UTENZA.PRINCIPAL, this.principal);
 				addAnd = true;
 			}
 
@@ -86,12 +99,61 @@ public class OperatoreFilter extends AbstractFilter {
 	
 	@Override
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		try {
+			
+			boolean addTabellaUtenze = false;
+			if(this.principal != null){
+				sqlQueryObject.addFromTable(converter.toTable(model.ID_UTENZA));
+				sqlQueryObject.addWhereCondition(converter.toTable(model.NOME, true) + ".id_utenza="
+						+converter.toTable(model.ID_UTENZA, true)+".id");
+				
+				addTabellaUtenze = true;
+				
+				if(!this.searchModeEquals)
+					sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.ID_UTENZA.PRINCIPAL, true), this.principal, true, true);
+				else 
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_UTENZA.PRINCIPAL, true) + " = ? ");
+				
+			}
+			
+			// filtro abilitato
+			if(this.searchAbilitato != null && this.fieldAbilitato != null) {
+				if(!addTabellaUtenze) {
+					sqlQueryObject.addFromTable(converter.toTable(model.ID_UTENZA));
+					sqlQueryObject.addWhereCondition(converter.toTable(model.NOME, true) + ".id_utenza="
+							+converter.toTable(model.ID_UTENZA, true)+".id");
+					
+					addTabellaUtenze = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(this.fieldAbilitato, true) + " = ? ");
+			}
+			
+			return sqlQueryObject;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	@Override
 	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		List<Object> lst = new ArrayList<Object>();
+		
+		if(this.principal != null){
+			if(this.searchModeEquals)
+				lst.add(this.principal);
+		}
+		
+		// filtro abilitato
+		try {
+			lst = this.setValoreFiltroAbilitato(lst, converter);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+		
+		return lst.toArray(new Object[lst.size()]);
 	}
 
 	public String getPrincipal() {

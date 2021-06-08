@@ -580,6 +580,6 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     this.us.updateProgress(true, 'Download in corso...', 'determinate', 100);
     setTimeout(() => {
       this.us.generateStructuredZip(dataCalls, structure, 'Pendenza_' + this.json.idA2A + '_' + this.json.idPendenza);
-    }, 1000);
+    }, 500);
   }
 }

@@ -1,6 +1,6 @@
 {
   "idFlusso": "#notnull",
-  "dataFlusso": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d",
+  "dataFlusso": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d\\+\\d\\d\\d\\d",
   "trn": "#notnull",
   "dataRegolamento": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
   "idPsp": "#string",

@@ -19,6 +19,9 @@
  */
 package it.govpay.bd.anagrafica.filters;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -29,12 +32,14 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.Intermediario;
 import it.govpay.orm.dao.jdbc.converter.IntermediarioFieldConverter;
+import it.govpay.orm.model.IntermediarioModel;
 
 public class IntermediarioFilter extends AbstractFilter {
 
@@ -43,24 +48,28 @@ public class IntermediarioFilter extends AbstractFilter {
 	private String codIntermediario;
 	private String denominazione;
 	private CustomField cf;
+	
+	private static IntermediarioModel model = Intermediario.model();
+	private IntermediarioFieldConverter converter = null;
 
 	public enum SortFields {
 		ID_INTERMEDIARIO, COD_INTERMEDIARIO
 	}
 
-	public IntermediarioFilter(IExpressionConstructor expressionConstructor) {
+	public IntermediarioFilter(IExpressionConstructor expressionConstructor) throws ServiceException {
 		this(expressionConstructor,false);
 	}
 	
-	public IntermediarioFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+	public IntermediarioFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) throws ServiceException {
 		super(expressionConstructor, simpleSearch);
 		
+		this.converter = new IntermediarioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+		this.eseguiCountConLimit = false;
 		try{
-			IntermediarioFieldConverter converter = new IntermediarioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			this.cf = new CustomField("id", Long.class, "id", converter.toTable(Intermediario.model()));
-			this.listaFieldSimpleSearch.add(Intermediario.model().COD_INTERMEDIARIO);
-			this.listaFieldSimpleSearch.add(Intermediario.model().DENOMINAZIONE);
-			this.fieldAbilitato = it.govpay.orm.Intermediario.model().ABILITATO;
+			this.cf = new CustomField("id", Long.class, "id", converter.toTable(model));
+			this.listaFieldSimpleSearch.add(model.COD_INTERMEDIARIO);
+			this.listaFieldSimpleSearch.add(model.DENOMINAZIONE);
+			this.fieldAbilitato = model.ABILITATO;
 		} catch(Exception e){
 			
 		}
@@ -73,22 +82,22 @@ public class IntermediarioFilter extends AbstractFilter {
 			boolean addAnd = false;
 			
 			if(this.idIntermediario != null){
-				//1 provo a convertirlo in un long
-				long l = -1l;
-				try{
-					l =Long.parseLong(this.idIntermediario);
-				}catch (NumberFormatException e){
-					l = -1l;
-				}
-
-				// se e' un numero valido maggiore di zero
-				if(l>0){
-					exp.equals(this.cf, l);
-					exp.or();
-				}
+//				//1 provo a convertirlo in un long
+//				long l = -1l;
+//				try{
+//					l =Long.parseLong(this.idIntermediario);
+//				}catch (NumberFormatException e){
+//					l = -1l;
+//				}
+//
+//				// se e' un numero valido maggiore di zero
+//				if(l>0){
+//					exp.equals(this.cf, l);
+//					exp.or();
+//				}
 				
 				// 2. metto in or l'eventuale stringa per il nome dell'intermediario
-				exp.ilike(Intermediario.model().COD_INTERMEDIARIO, this.idIntermediario,LikeMode.ANYWHERE); 
+				exp.ilike(model.COD_INTERMEDIARIO, this.idIntermediario,LikeMode.ANYWHERE); 
 				
 				addAnd = true;
 			}
@@ -97,14 +106,14 @@ public class IntermediarioFilter extends AbstractFilter {
 				if(addAnd)
 					exp.and();
 				
-				exp.ilike(Intermediario.model().DENOMINAZIONE, this.denominazione,LikeMode.ANYWHERE);
+				exp.ilike(model.DENOMINAZIONE, this.denominazione,LikeMode.ANYWHERE);
 			}
 			
 			if(this.codIntermediario != null){
 				if(addAnd)
 					exp.and();
 				
-				exp.equals(Intermediario.model().COD_INTERMEDIARIO, this.codIntermediario);
+				exp.equals(model.COD_INTERMEDIARIO, this.codIntermediario);
 			}
 			
 			
@@ -124,7 +133,7 @@ public class IntermediarioFilter extends AbstractFilter {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 
 		switch(field) {
-		case COD_INTERMEDIARIO: filterSortWrapper.setField(Intermediario.model().COD_INTERMEDIARIO);
+		case COD_INTERMEDIARIO: filterSortWrapper.setField(model.COD_INTERMEDIARIO);
 		break;
 		case ID_INTERMEDIARIO: 
 			filterSortWrapper.setField(this.cf);
@@ -139,12 +148,54 @@ public class IntermediarioFilter extends AbstractFilter {
 	
 	@Override
 	public ISQLQueryObject toWhereCondition(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		try {
+			if(this.idIntermediario != null){
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.COD_INTERMEDIARIO, true), this.idIntermediario, true, true);
+			}
+			
+			if(this.denominazione != null){
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.DENOMINAZIONE, true), this.denominazione, true, true);
+			}
+			
+			if(this.codIntermediario != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_INTERMEDIARIO, true) + " = ? ");
+			}
+			
+			// filtro abilitato
+			sqlQueryObject = this.setFiltroAbilitato(sqlQueryObject, converter);
+			
+			return sqlQueryObject;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	@Override
 	public Object[] getParameters(ISQLQueryObject sqlQueryObject) throws ServiceException {
-		return null;
+		List<Object> lst = new ArrayList<Object>();
+		
+		if(this.idIntermediario != null){
+			// do nothing
+		}
+		
+		if(this.denominazione != null){
+			// do nothing
+		}
+		
+		if(this.codIntermediario != null){
+			lst.add(this.codIntermediario);
+		}
+		
+		// filtro abilitato
+		try {
+			lst = this.setValoreFiltroAbilitato(lst, converter);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+		
+		return lst.toArray(new Object[lst.size()]);
 	}
 
 	public String getIdIntermediario() {

@@ -27,8 +27,6 @@ And match response ==
 """
 
 
-Scenario: Ricerca flussiRendicontazione con iuv impostato e autorizzazioni sulle UO
-
 Scenario Outline: Ricerca rendicontazioni da operatore <operatore>.
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})

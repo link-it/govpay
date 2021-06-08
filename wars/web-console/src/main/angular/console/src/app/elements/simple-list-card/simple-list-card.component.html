@@ -1,7 +1,9 @@
 <mat-card class="shadow no-border-radius mb-4 pb-0">
-  <div class="d-flex flex-row">
-    <p class="w-100 mr-3 matcard-title color-gray regular-24 lh-100 mb-3">{{_title}}</p>
-    <button mat-icon-button [matMenuTriggerFor]="actionMenu" *ngIf="_showMenuActions"><mat-icon>{{_triggerIcon}}</mat-icon></button>
+  <div class="d-flex flex-row align-items-center">
+    <p class="w-100 mr-3 matcard-title color-gray regular-24 lh-100">{{_cardTitle}}</p>
+    <button mat-icon-button [matMenuTriggerFor]="actionMenu" *ngIf="_showMenuActions" [attr.title]="_tooltipTriggerIcon">
+      <mat-icon>{{_triggerIcon}}</mat-icon>
+    </button>
   </div>
   <mat-menu #actionMenu="matMenu">
     <button mat-menu-item *ngFor="let ma of _menuActions" (click)="_actionTriggerClick(ma.value)">{{ma.label}}</button>

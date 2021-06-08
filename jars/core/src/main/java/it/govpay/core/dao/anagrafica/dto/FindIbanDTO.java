@@ -33,6 +33,7 @@ public class FindIbanDTO extends BasicFindRequestDTO {
 		this.codDominio = codDominio;
 		this.addSortField("ibanAccredito", it.govpay.orm.IbanAccredito.model().COD_IBAN);
 		this.addDefaultSort(it.govpay.orm.IbanAccredito.model().COD_IBAN, SortOrder.ASC);
+		this.ricercaAnagrafica = true;
 	}
 	
 	public String getCodDominio(){

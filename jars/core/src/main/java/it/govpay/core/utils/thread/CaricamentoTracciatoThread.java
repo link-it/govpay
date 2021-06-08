@@ -42,12 +42,14 @@ public class CaricamentoTracciatoThread implements Runnable {
 	private List<AbstractOperazioneResponse> risposte = null;
 	private IContext ctx = null;
 	private TracciatiPendenzeManager manager = null;
+	private String nomeThread = "";
 	
-	public CaricamentoTracciatoThread(List<CaricamentoRequest> richieste, IdTracciato idTracciato, TracciatiPendenzeManager manager, IContext ctx) {
+	public CaricamentoTracciatoThread(List<CaricamentoRequest> richieste, IdTracciato idTracciato, String id, TracciatiPendenzeManager manager, IContext ctx) {
 		this.richieste = richieste;
 		this.idTracciato = idTracciato;
 		this.ctx = ctx;
 		this.manager = manager;
+		this.nomeThread = id;
 	}
 
 	@Override
@@ -82,7 +84,7 @@ public class CaricamentoTracciatoThread implements Runnable {
 						created = true;
 					}
 					
-					AbstractOperazioneResponse operazioneResponse = factory.elaboraLineaCSV(request, this.manager, operazioniBD);
+					AbstractOperazioneResponse operazioneResponse = factory.elaboraLineaCSV(request, this.manager, this.nomeThread, operazioniBD);
 					
 					operazione.setCodVersamentoEnte(operazioneResponse.getIdPendenza());
 					operazione.setDatiRichiesta(operazioneResponse.getJsonRichiesta().getBytes());
@@ -192,5 +194,9 @@ public class CaricamentoTracciatoThread implements Runnable {
 
 	public void setCommit(boolean commit) {
 		this.commit = commit;
+	}
+	
+	public String getNomeThread() {
+		return nomeThread;
 	}
 }

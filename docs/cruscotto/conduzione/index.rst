@@ -11,11 +11,11 @@ Le attività supportate per la fase di conduzione comprendono le operazioni di m
         :caption: Argomenti trattati:
         :maxdepth: 2
 
+        cruscotto/index
         pendenze/index
         pagamenti/index
-        cruscotto/index
+        riconciliazioni/index
         giornale/index
         avanzate/index
-        riconciliazioni/index
         manutenzione/index
-        appendici/index
+        impostazioni/index

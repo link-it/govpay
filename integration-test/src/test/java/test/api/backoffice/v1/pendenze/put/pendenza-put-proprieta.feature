@@ -74,6 +74,39 @@ And match response == read('msg/pendenza-get.json')
 * match response.voci[0].stato == 'Non eseguito'
 * match response.proprieta == pendenzaPut.proprieta
 
+Scenario: Caricamento pendenza con linguaSecondaria = DE
+
+* set pendenzaPut.proprieta = 
+"""
+{
+	linguaSecondaria : 'de'
+}
+"""
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', UUID: '#notnull' }
+
+* def responsePut = response
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+And match response == read('msg/pendenza-get.json')
+
+* match response.numeroAvviso == responsePut.numeroAvviso
+* match response.stato == 'NON_ESEGUITA'
+* match response.voci == '#[1]'
+* match response.voci[0].indice == 1
+* match response.voci[0].stato == 'Non eseguito'
+* match response.proprieta == pendenzaPut.proprieta
+
 Scenario: Caricamento pendenza con linguaSecondaria errata
 
 * set pendenzaPut.proprieta = 
