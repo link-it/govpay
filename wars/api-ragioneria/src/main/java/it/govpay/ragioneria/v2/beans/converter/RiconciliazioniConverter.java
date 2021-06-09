@@ -1,10 +1,12 @@
 package it.govpay.ragioneria.v2.beans.converter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Pagamento;
@@ -36,7 +38,7 @@ public class RiconciliazioniConverter {
 	}
 	
 	
-	public static Riconciliazione toRsModel(it.govpay.bd.model.Incasso i) throws ServiceException, NotFoundException {
+	public static Riconciliazione toRsModel(it.govpay.bd.model.Incasso i) throws ServiceException, NotFoundException, IOException, ValidationException {
 		Riconciliazione rsModel = new Riconciliazione();
 		
 		rsModel.setCausale(i.getCausale());
