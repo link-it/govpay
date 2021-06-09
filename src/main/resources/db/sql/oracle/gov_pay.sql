@@ -190,9 +190,10 @@ CREATE TABLE domini
 	cod_connettore_secim VARCHAR2(255 CHAR),
 	cod_connettore_gov_pay VARCHAR2(255 CHAR),
 	cod_connettore_hyper_sic_apk VARCHAR2(255 CHAR),
+	intermediato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	id_stazione NUMBER NOT NULL,
+	id_stazione NUMBER,
 	id_applicazione_default NUMBER,
 	-- unique constraints
 	CONSTRAINT unique_domini_1 UNIQUE (cod_dominio),

@@ -393,7 +393,7 @@
   </mapping>
   <mapping name="Dominio" class="it.govpay.orm.Dominio">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure field="idStazione" usage="required" map-as="it.govpay.orm.IdStazione"/>
+    <structure field="idStazione" usage="optional" map-as="it.govpay.orm.IdStazione"/>
     <value name="codDominio" field="codDominio" usage="required"/>
     <value name="gln" field="gln" usage="optional"/>
     <value name="abilitato" field="abilitato" usage="required"/>
@@ -409,6 +409,7 @@
     <value name="codConnettoreSecim" field="codConnettoreSecim" usage="optional"/>
     <value name="codConnettoreGovPay" field="codConnettoreGovPay" usage="optional"/>
     <value name="codConnettoreHyperSicAPK" field="codConnettoreHyperSicAPK" usage="optional"/>
+    <value name="intermediato" field="intermediato" usage="required"/>
   </mapping>
   <mapping name="Uo" class="it.govpay.orm.Uo">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.26.0"
+  version: "1.27.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -1053,6 +1053,7 @@ paths:
         - $ref: '#/components/parameters/ragioneSociale'
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
+        - $ref: '#/components/parameters/intermediato'
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -4194,6 +4195,13 @@ components:
       required: false
       schema:
         type: boolean
+    intermediato:
+      name: intermediato
+      in: query
+      description: filtro sui domini intermediati
+      required: false
+      schema:
+        type: boolean
     iuv:
       name: iuv
       in: query
@@ -5236,6 +5244,10 @@ components:
           $ref: '#/components/schemas/connettoreNotificaPagamentiGovPay'
         servizioHyperSicAPKappa:
           $ref: '#/components/schemas/connettoreNotificaPagamentiHyperSicAPKappa'
+        intermediato:
+          type: boolean
+          description: Indica se il creditore viene configurato per utilizzare una  stazione di intermediazione
+          example: true
     dominioIndex:
       type: object
       allOf:

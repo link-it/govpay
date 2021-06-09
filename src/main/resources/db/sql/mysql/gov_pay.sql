@@ -126,9 +126,10 @@ CREATE TABLE domini
 	cod_connettore_secim VARCHAR(255) COMMENT 'Identificativo connettore secim',
 	cod_connettore_gov_pay VARCHAR(255) COMMENT 'Identificativo connettore govpay',
 	cod_connettore_hyper_sic_apk VARCHAR(255) COMMENT 'Identificativo connettore hypersic_apk',
+	intermediato BOOLEAN NOT NULL COMMENT 'Indica se l\'ente e\' intermediato',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_stazione BIGINT NOT NULL COMMENT 'Riferimento alla stazione',
+	id_stazione BIGINT COMMENT 'Riferimento alla stazione',
 	id_applicazione_default BIGINT COMMENT 'Rferimento all\'appplicazione di default in caso di non risoluzione dello iuv',
 	-- unique constraints
 	CONSTRAINT unique_domini_1 UNIQUE (cod_dominio),

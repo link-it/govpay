@@ -584,7 +584,7 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="idStazione" type="id-stazione">
+			<xsd:element name="idStazione" type="id-stazione" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -620,6 +620,7 @@
 			<xsd:element name="codConnettoreSecim" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="codConnettoreGovPay" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="codConnettoreHyperSicAPK" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="intermediato" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

@@ -425,5 +425,16 @@ rpt.id_pagamento_portale as id_pagamento_portale,
     versamenti.tipo as vrs_tipo,
     versamenti.proprieta as vrs_proprieta
 FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
+
+
+-- 07/06/2021 Aggiunta colonna intermediato alla tabella domini
+ALTER TABLE domini ADD COLUMN intermediato BOOLEAN;
+UPDATE domini SET intermediato = true;
+ALTER TABLE domini ALTER COLUMN intermediato SET NOT NULL;
+
+-- 08/06/2021 Stazione di un dominio opzionale
+ALTER TABLE domini ALTER COLUMN id_stazione DROP NOT NULL;
+
+
      
 

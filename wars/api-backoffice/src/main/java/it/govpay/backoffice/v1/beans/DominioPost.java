@@ -36,6 +36,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "servizioSecim",
 "servizioGovPay",
 "servizioHyperSicAPKappa",
+"intermediato",
 })
 public class DominioPost extends it.govpay.core.beans.JSONSerializable implements IValidable{
   
@@ -116,6 +117,9 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
   
   @JsonProperty("servizioHyperSicAPKappa")
   private ConnettoreNotificaPagamentiHyperSicAPKappa servizioHyperSicAPKappa = null;
+  
+  @JsonProperty("intermediato")
+  private Boolean intermediato = null;
   
   /**
    * Ragione sociale del beneficiario
@@ -529,6 +533,22 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
     this.servizioHyperSicAPKappa = servizioHyperSicAPKappa;
   }
 
+  /**
+   * Indica se il creditore viene configurato per utilizzare una  stazione di intermediazione
+   **/
+  public DominioPost intermediato(Boolean intermediato) {
+    this.intermediato = intermediato;
+    return this;
+  }
+
+  @JsonProperty("intermediato")
+  public Boolean Intermediato() {
+    return intermediato;
+  }
+  public void setIntermediato(Boolean intermediato) {
+    this.intermediato = intermediato;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -563,12 +583,13 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
         Objects.equals(servizioMyPivot, dominioPost.servizioMyPivot) &&
         Objects.equals(servizioSecim, dominioPost.servizioSecim) &&
         Objects.equals(servizioGovPay, dominioPost.servizioGovPay) &&
-        Objects.equals(servizioHyperSicAPKappa, dominioPost.servizioHyperSicAPKappa);
+        Objects.equals(servizioHyperSicAPKappa, dominioPost.servizioHyperSicAPKappa) &&
+        Objects.equals(intermediato, dominioPost.intermediato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa, intermediato);
   }
 
   public static DominioPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -611,6 +632,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
     sb.append("    servizioSecim: ").append(toIndentedString(servizioSecim)).append("\n");
     sb.append("    servizioGovPay: ").append(toIndentedString(servizioGovPay)).append("\n");
     sb.append("    servizioHyperSicAPKappa: ").append(toIndentedString(servizioHyperSicAPKappa)).append("\n");
+    sb.append("    intermediato: ").append(toIndentedString(intermediato)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -631,15 +653,6 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 	
 			vf.getValidator("ragioneSociale", this.ragioneSociale).notNull().minLength(1).maxLength(70);
-			vf.getValidator("gln", this.gln).length(13).pattern("(^([0-9]){13}$)");
-			vf.getValidator("auxDigit", this.auxDigit).notNull().length(1).pattern("(^([0-3]){1}$)");;
-			vf.getValidator("stazione", this.stazione).notNull();
-			vf.getValidator("segregationCode", this.segregationCode).length(2).pattern("(^[0-4][0-9]$)");
-			vf.getValidator("cbill", this.cbill).length(5).pattern("(^([0-9A-Z]){5}$)");
-			vf.getValidator("autStampaPosteItaliane", this.autStampaPosteItaliane).maxLength(255);
-			vf.getValidator("iuvPrefix", this.iuvPrefix).pattern("(\\d*(%\\([yYa{t|p}u]\\))?)+");
-			vf.getValidator("abilitato", this.abilitato).notNull();
-			
 			// uo associata al dominio
 			vf.getValidator("indirizzo", this.indirizzo).minLength(1).maxLength(70);
 			vf.getValidator("civico", this.civico).minLength(1).maxLength(16);
@@ -653,13 +666,36 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 			vf.getValidator("fax", this.fax).minLength(1).maxLength(255);
 			vf.getValidator("web", this.web).minLength(1).maxLength(255);
 			vf.getValidator("area", this.area).minLength(1).maxLength(255);
+			vf.getValidator("abilitato", this.abilitato).notNull();
+			vf.getValidator("intermediato", this.intermediato).notNull();
 			
-			// connettori
-			vf.getValidator("servizioMyPivot", this.servizioMyPivot).validateFields();
-			vf.getValidator("servizioSecim", this.servizioSecim).validateFields();
-			vf.getValidator("servizioGovPay", this.servizioGovPay).validateFields();
-			vf.getValidator("servizioHyperSicAPKappa", this.servizioHyperSicAPKappa).validateFields();
-
+			if(this.intermediato) {
+				vf.getValidator("gln", this.gln).length(13).pattern("(^([0-9]){13}$)");
+				vf.getValidator("stazione", this.stazione).notNull();
+				vf.getValidator("segregationCode", this.segregationCode).length(2).pattern("(^[0-4][0-9]$)");
+				vf.getValidator("cbill", this.cbill).length(5).pattern("(^([0-9A-Z]){5}$)");
+				vf.getValidator("autStampaPosteItaliane", this.autStampaPosteItaliane).maxLength(255);
+				vf.getValidator("iuvPrefix", this.iuvPrefix).pattern("(\\d*(%\\([yYa{t|p}u]\\))?)+");
+				vf.getValidator("auxDigit", this.auxDigit).notNull().length(1).pattern("(^([0-3]){1}$)");
+				// connettori
+				vf.getValidator("servizioMyPivot", this.servizioMyPivot).validateFields();
+				vf.getValidator("servizioSecim", this.servizioSecim).validateFields();
+				vf.getValidator("servizioGovPay", this.servizioGovPay).validateFields();
+				vf.getValidator("servizioHyperSicAPKappa", this.servizioHyperSicAPKappa).validateFields();
+			} else {
+				vf.getValidator("gln", this.gln).isNull();
+				vf.getValidator("stazione", this.stazione).isNull();
+				vf.getValidator("segregationCode", this.segregationCode).isNull();
+				vf.getValidator("cbill", this.cbill).isNull();
+				vf.getValidator("autStampaPosteItaliane", this.autStampaPosteItaliane).isNull();
+				vf.getValidator("iuvPrefix", this.iuvPrefix).isNull();
+				vf.getValidator("auxDigit", this.auxDigit).isNull();
+				// connettori
+				vf.getValidator("servizioMyPivot", this.servizioMyPivot).isNull();
+				vf.getValidator("servizioSecim", this.servizioSecim).isNull();
+				vf.getValidator("servizioGovPay", this.servizioGovPay).isNull();
+				vf.getValidator("servizioHyperSicAPKappa", this.servizioHyperSicAPKappa).isNull();
+			}
 	  }
 }
 

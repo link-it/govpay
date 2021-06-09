@@ -98,6 +98,7 @@ Examples:
 | logo | null |
 | autStampaPosteItaliane | 'test' |
 | autStampaPosteItaliane | null |
+| intermediato | true |
 
 Scenario: Modifica di un dominio (segregation code)
 
