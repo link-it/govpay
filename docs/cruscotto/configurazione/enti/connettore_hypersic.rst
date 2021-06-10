@@ -35,14 +35,16 @@ Le riscossioni non rendicontate per piu' di 5 gg vengono incluse in un csv separ
 Versione 2.3
 ~~~~~~~~~~~~
 
-Il tracciato è conforme alle specifiche risulta una personalizzazione del :download:`Tracciato Standard Acquisizioni Rendicontazioni pagoPA <APK pagoPA Tracciato Import Rendicontazione V2.3.docx>` valorizzando i campi con le seguenti convenzioni:
+Il tracciato è conforme alle specifiche :download:`Tracciato Standard Acquisizioni Rendicontazioni pagoPA v2.3<APK pagoPA Tracciato Import Rendicontazione V2.3.docx>` valorizzando i campi con le seguenti convenzioni:
  
 .. csv-table:: *Valori di esportazione*
    :header: "Campo", "Descrizione"
    :widths: 40,60
 
-   "CodiceServizio","vocePendenza.contabilita.proprietaCustom.codiceServizio<br />o versamento.tipoPendenza.codTipoPendenza"
-   "DescrizioneServizio","vocePendenza.contabilita.proprietaCustom.descrizioneServizio<br />o versamento.tipoPendenza.descrizione"
+   "CodiceServizio","vocePendenza.contabilita.proprietaCustom.codiceServizio
+   o versamento.tipoPendenza.codTipoPendenza"
+   "DescrizioneServizio","vocePendenza.contabilita.proprietaCustom.descrizioneServizio
+   o versamento.tipoPendenza.descrizione"
    "CodiceDebitore","<vuoto>"
    "CFPIVADebitore","pendenza.soggettoDebitore.identificativo"
    "NominativoDebitore","pendenza.soggettoDebitore.anagrafica"
@@ -62,7 +64,11 @@ Il tracciato è conforme alle specifiche risulta una personalizzazione del :down
    "CodiceFlussoRiversamento","flussoRendicontazione.identificativoFlusso"
    "DataRiversamento","flussoRendicontazione.dataRegolamento"
    "Annotazioni",""
-   "LivelloContabile1","Se vocependenza.contabilita.quota[0] = null, tutto a null.<br />Se quota[0].accertamento = null allora LivelloContabile = CAP altrimenti LivelloContabile = ACC"
-   "CodificaContabile1","Se LivelloContabile = CAP <br />allora CodificaContabile = {quota[0].annoEsercizio}/{quota[0].capitolo} <br />altrimenti CodificaContabile = {quota[0].annoEsercizio}/{contabilita.accertamento}"
+   "LivelloContabile1","Se vocependenza.contabilita.quota[0] = null, tutto a null.
+   Se quota[0].accertamento = null allora LivelloContabile = CAP 
+   altrimenti LivelloContabile = ACC"
+   "CodificaContabile1","Se LivelloContabile = CAP 
+   allora CodificaContabile = {quota[0].annoEsercizio}/{quota[0].capitolo}
+   altrimenti CodificaContabile = {quota[0].annoEsercizio}/{contabilita.accertamento}"
    "QuotaContabile1","quota[0].importo"
    "Altre quote contabili","Come nel caso della prima, fino alle 10 consentite"
