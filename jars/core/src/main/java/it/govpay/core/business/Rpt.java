@@ -205,6 +205,11 @@ public class Rpt {
 							ctx.getApplicationLogger().log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp);
 						}
 					}
+					
+					// controllo se la pendenza e' multibeneficiario, se lo e' allora non puo' essere pagata col modello3 SANP 2.3
+					if(VersamentoUtils.isPendenzaMultibeneficiario(versamento, configWrapper)) {
+						throw new GovPayException(EsitoOperazione.VER_038, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
+					}
 
 					if(pagamentoPortale !=  null && pagamentoPortale.getTipo() == 1 && GovpayConfig.getInstance().isTimeoutPendentiModello1()) {
 						log.debug("Blocco pagamento per il Mod1 attivo con soglia: [" + GovpayConfig.getInstance().getTimeoutPendentiModello1Mins() + " minuti]"); 

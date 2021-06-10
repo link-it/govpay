@@ -320,6 +320,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, "Riscontrato errore durante l'attivazione del versamento: " + e1, codDominio, e1);
 			}
 			
+			// controllo se la pendenza e' multibeneficiario, se lo e' allora non puo' essere pagata col modello3 SANP 2.3
+			if(VersamentoUtils.isPendenzaMultibeneficiario(versamento, configWrapper)) {
+				String messaggio = "La pendenza e' di tipo multibeneficiario, non ammesso per pagamenti ad iniziativa psp con specifica SANP 2.3.0.";
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_MULTIBENEFICIARIO_NON_CONSENTITO, messaggio, codDominio);
+			}
 			
 			RptBD rptBD = new RptBD(configWrapper);
 			if(GovpayConfig.getInstance().isTimeoutPendentiModello3()) {

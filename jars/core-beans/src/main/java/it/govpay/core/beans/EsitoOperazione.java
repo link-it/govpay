@@ -771,7 +771,13 @@ public enum EsitoOperazione {
      * Iban Appoggio non univoco all'interno del sistema  
      * 
      */
-    VER_037;
+    VER_037,
+    
+    /**
+     * Pendenza multibeneficiario non puo' essere pagata col modello 1  
+     * 
+     */
+    VER_038;
 	
 
     public String value() {
