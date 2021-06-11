@@ -261,60 +261,8 @@
 		  <xsd:simpleType name="stFaultCode">
 		    <xsd:annotation>
 		      <xsd:documentation>
-		### Generic Errors
-		
-		**PPT_SINTASSI_EXTRAXSD** : _Generic error related to any WSDL/XSD syntax error. It can be returned from any message_
-		
-		**PPT_STAZIONE_INT_PA_ERRORE_RESPONSE** : _Generic error related to any PA error. It can be returned from verifyPaymentNotice and ActivatePaymentNotice messages_
-		
-		**PPT_STAZIONE_INT_PA_DISABILITATA** : _PA configuration error. It can be returned from VerifyPaymentNotice and ActivatePaymentNotice messages_
-		
-		**PPT_STAZIONE_INT_PA_IRRAGGIUNGIBILE** : _PA configuration error. It can be returned from VerifyPaymentNotice and ActivatePaymentNotice messages_
-		
-		**PPT_INTERMEDIARIO_PA_DISABILITATO** : _PA configuration error. It can be returned from VerifyPaymentNotice and ActivatePaymentNotice messages_
-		
-		**PPT_STAZIONE_INT_PA_TIMEOUT** : _PA information is not available, the operation can not be authorized. It can be returned from VerifyPaymentNotice and ActivatePaymentNotice messages_
-		 
-		### Authentication Errors
-		
-		**PPT_PSP_SCONOSCIUTO** : _Authentication Error. It can be returned from any messages_
-		
-		**PPT_PSP_DISABILITATO** : _Authentication Error. It can be returned from any messages_
-		
-		**PPT_INTERMEDIARIO_PSP_SCONOSCIUTO** : _Authentication Error. It can be returned from any messages_
-		
-		**PPT_INTERMEDIARIO_PSP_DISABILITATO** : _Authentication Error. It can be returned from any messages_
-		
-		**PPT_CANALE_SCONOSCIUTO** : _Authentication Error. It can be returned from any messages_
-		
-		**PPT_CANALE_DISABILITATO** : _Authentication Error. It can be returned from any messages_
-		
-		**PPT_AUTORIZZAZIONE** : _Authentication Error. It can be returned from any messages_
-		
-		### Request Errors
-		
-		**PPT_DOMINIO_SCONOSCIUTO** : _Request Error. Unknown PA fiscal code. It can be returned from VerifyPaymentNotice and ActivatePaymentNotice messages_
-		
-		**PPT_DOMINIO_DISABILITATO** : _Request Error. Unknown PA fiscal code. It can be returned from VerifyPaymentNotice and ActivatePaymentNotice messages_
-		
-		**PPT_INT_PA_SCONOSCIUTA** :  _Notice Number Error. It can be returned from VerifyPaymentNotice messages_
-		
-		### Business Errors
-		
-		**PPT_ERRORE_EMESSO_DA_PAA** : _Operation not authorized. It can be returned from VerifyPaymentNotice and ActivatePaymentNotice messages_
-		
-		**PPT_SEMANTICA** : _Idempotency key expired. It can be returned from  ActivatePaymentNotice messages; The same fault code can be related to an integration error._
-		
-		**PPT_PAGAMENTO_IN_CORSO** : _Payment in process, the operation can not be authorized. It can be returned from  ActivatePaymentNotice messages:
-		
-		**PPT_TOKEN_SCONOSCIUTO** : _Unknown Payment Token, the operation can not be authorized. It can be returned from  SendPaymentOutcome messages_
-		
-		**PPT_ESITO_GIA_ACQUISITO** : _Idempotency Error, the same request has been already processed with different params. It can be returned from  SendPaymentOutcome messages_
-		
-		**PPT_TOKEN_SCADUTO** : _Expired payment token, the position debt is still payable. The operation can not be authorized. It can be returned from  SendPaymentOutcome messages_
-		
-		**PPT_PAGAMENTO_DUPLICATO** : _Expired payment token, the position debt has benn already payed. The operation can not be authorized. It can be returned from  SendPaymentOutcome messages_
-		
+		        All fault codes are described
+		        <a href="https://docs.google.com/spreadsheets/d/15sJplTLu6kWPomW3jbBzZYvD7QyIswERKktFG0bk1IQ/edit?usp=sharing" target="_blank">here</a>
 		      </xsd:documentation>
 		    </xsd:annotation>
 		    <xsd:restriction base="xsd:string"></xsd:restriction>
@@ -367,7 +315,7 @@
 		      <!-- Data di scadenza del pagamento -->
 		      <xsd:element name="dueDate" type="tns:stISODate" minOccurs="0" />
 		      <xsd:element name="detailDescription" type="tns:stText140" minOccurs="0" />
-		      <xsd:element name="transferType" type="tns:stTransferType" minOccurs="0" /> <!-- settato dal nodo in base alla config -->
+		      <xsd:element name="allCCP" type="xsd:boolean" minOccurs="1" />
 		    </xsd:sequence>
 		  </xsd:complexType>
 		
@@ -384,7 +332,7 @@
 		- `options` : indicates the payment criteria accepted by the institution with respect to the amount, or if it accepts for this payment option other than `amount`.
 		- `dueDate` : indicates the expiration payment date according to the ISO 8601 format `[YYYY]-[MM]-[DD]`.
 		- `detailDescription` : Free text available to describe the payment reasons
-		- `transferType` : _specific only for POSTE Italiane_
+		- `allCCP` : indicates that all transfers are associable to all postal IBAN
 		
 		      </xsd:documentation>
 		    </xsd:annotation>
@@ -422,7 +370,13 @@
 		- `fiscalCodePA` : Tax code of the public administration
 		- `IBAN` : contains the IBAN of the account to be credited
 		- `remittanceInformation` : reason for payment (_alias_ `causaleVersamento`)
-		- `transferCategory` : contains the union of **CODICE TIPOLOGIA SERVIZIO** following by ***TIPO SERVIZIO* as define in [Tassonomia dei servizi](https://drive.google.com/file/d/13xOd__Qd4pwKHr3wjE-73NAB2O7UKmIt/view)
+		- `transferCategory` : contains taxonomic code, composed by `Codice tipo Ente Creditore`+`Progressivo macro area`+`Codice tipologia servizio`+`Motivo Giuridico` ( ex. `0101002IM` ) 
+		| Segment                     | Regex                       |Example |
+		|-----------------------------|-----------------------------|--------|
+		|Codice tipo Ente Creditore   | `\d{2}`                     | 01     |
+		|Progressivo macro area       | `\d{2}`                     | 01     |
+		|Codice tipologia servizio    | `\d{2}`                     | 002    |
+		|Motivo Giuridico             | `\w{2}`                     | IM     |
 		
 		      </xsd:documentation>
 		    </xsd:annotation>
@@ -821,9 +775,7 @@ All available options will then be proposed until one of the following events oc
 A PA connected to the pagoPA Platform must offer a service that returns a payment linked to a debt position through the
 primitive `paGetPayment`.
 
-Each request is specified through the parameters `amount` and `due_date`, which are returned by the `paVerifyPayment`,
-and the `transferType` parameter that defines the type of credit that the PSP would like to have.
-**NOTE** : _(currently the only option is related to necessity of a postal current account)._
+Each request is specified through the parameters `amount` and `due_date`, which are returned by the `paVerifyPayment`.
 
 If these parameters are not present, the PA will set the real amount.
 In response, the PA returns all the data necessary for the payment.

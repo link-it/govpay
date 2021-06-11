@@ -1036,4 +1036,37 @@ public class VersamentoUtils {
 				
 		return generaIuv;
 	}
+	
+	public static boolean isAllIBANPostali(Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException {
+		for(SingoloVersamento singoloVersamento : versamento.getSingoliVersamenti(configWrapper)) {
+			// sv con tributo definito
+			it.govpay.bd.model.Tributo tributo = singoloVersamento.getTributo(configWrapper);
+			IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(configWrapper);
+			IbanAccredito ibanAppoggio = singoloVersamento.getIbanAppoggio(configWrapper);
+			
+			if(tributo != null) {
+				IbanAccredito ibanAccreditoTributo = tributo.getIbanAccredito();
+				IbanAccredito ibanAppoggioTributo = tributo.getIbanAppoggio();
+				if(ibanAccreditoTributo != null) {
+					if(!ibanAccreditoTributo.isPostale())
+						return false;
+				} else if(ibanAppoggioTributo != null) {
+					if(!ibanAppoggioTributo.isPostale())
+						return false;
+				} else {
+					// MBT
+					return false;
+				} 
+			} else if(ibanAccredito != null) {
+				if(!ibanAccredito.isPostale())
+					return false;
+			} else if(ibanAppoggio != null) {
+				if(!ibanAppoggio.isPostale())
+						return false;
+			} else { // iban non definito per la voce 
+
+			}
+		}
+		return true;
+	}
 }

@@ -162,6 +162,14 @@ public class RptBD extends BasicBD {
 		}
 	}
 	
+	public Rpt getRpt(String codDominio, String iuv) throws NotFoundException, ServiceException {
+		return this.getRpt(codDominio, iuv, null, false);
+	}
+	
+	public Rpt getRpt(String codDominio, String iuv, boolean deep) throws NotFoundException, ServiceException {
+		return this.getRpt(codDominio, iuv, null, deep);
+	}
+	
 	public Rpt getRpt(String codDominio, String iuv, String ccp) throws NotFoundException, ServiceException {
 		return this.getRpt(codDominio, iuv, ccp, false);
 	}
@@ -175,7 +183,8 @@ public class RptBD extends BasicBD {
 			IExpression exp = this.getRptService().newExpression();
 			exp.equals(RPT.model().COD_DOMINIO, codDominio);
 			exp.equals(RPT.model().IUV, iuv);
-			exp.equals(RPT.model().CCP, ccp);
+			if(ccp != null)
+				exp.equals(RPT.model().CCP, ccp);
 			RPT rptVO = this.getRptService().find(exp);
 			Rpt dto = RptConverter.toDTO(rptVO);
 			

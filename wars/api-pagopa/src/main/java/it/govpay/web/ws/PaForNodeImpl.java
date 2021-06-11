@@ -37,11 +37,11 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaVerifyPaymentNoticeReq;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaVerifyPaymentNoticeRes;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StAmountOption;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StOutcome;
-import it.gov.pagopa.pagopa_api.pa.pafornode.StTransferType;
 import it.gov.pagopa.pagopa_api.pa.pafornode_wsdl.PaForNodePortType;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Evento.TipoEventoCooperazione;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
@@ -292,7 +292,7 @@ public class PaForNodeImpl implements PaForNodePortType{
 	public PaVerifyPaymentNoticeRes paVerifyPaymentNotice(PaVerifyPaymentNoticeReq requestBody) {
 		String codIntermediario = requestBody.getIdBrokerPA();
 		String codStazione = requestBody.getIdStation();
-		String idDominio = requestBody.getIdPA();
+		//String idDominio = requestBody.getIdPA();
 		
 		CtQrCode qrCode = requestBody.getQrCode();
 		String numeroAvviso = qrCode.getNoticeNumber();
@@ -306,14 +306,11 @@ public class PaForNodeImpl implements PaForNodePortType{
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 			String iuv = IuvUtils.toIuv(numeroAvviso);
-			String ccp = qrCode.getNoticeNumber(); // TODO numero avviso da: https://github.com/pagopa/pagopa-api/issues/126
-			String psp =  null; // TODO
 			
-			appContext.setCorrelationId(codDominio + iuv + ccp);
+			appContext.setCorrelationId(codDominio + numeroAvviso);
 			
 			appContext.getEventoCtx().setCodDominio(codDominio);
 			appContext.getEventoCtx().setIuv(iuv);
-			appContext.getEventoCtx().setCcp(ccp);
 			
 			Actor from = new Actor();
 			from.setName(GpContext.NodoDeiPagamentiSPC);
@@ -325,25 +322,22 @@ public class PaForNodeImpl implements PaForNodePortType{
 			from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
 			appContext.getTransaction().setTo(to);
 
-			appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
 			appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 			appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
-			appContext.getRequest().addGenericProperty(new Property("codPsp", psp));
 			try {
 				ctx.getApplicationLogger().log("ccp.ricezioneVerifica");
 			} catch (UtilsException e) {
 				log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
 			}
 		
-			log.info("Ricevuta richiesta paVerifyPaymentNotice [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "][" + ccp + "]");
+			log.info("Ricevuta richiesta paVerifyPaymentNotice [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + numeroAvviso + "]");
 
 			DatiPagoPA datiPagoPA = new DatiPagoPA();
 			datiPagoPA.setCodStazione(codStazione);
 			datiPagoPA.setFruitore(GpContext.NodoDeiPagamentiSPC);
 			appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
 			datiPagoPA.setCodDominio(codDominio);
-//			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.paaVerificaRPT.name());
-			datiPagoPA.setCodPsp(psp);
+			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.paVerifyPaymentNotice.name());
 			datiPagoPA.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 			datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP);
 			datiPagoPA.setErogatore(codIntermediario);
@@ -521,10 +515,10 @@ public class PaForNodeImpl implements PaForNodePortType{
 				}
 			}
 
-			// Verifico che abbia un solo singolo versamento
-			if(versamento.getSingoliVersamenti().size() != 1) {
-				throw new NdpException(FaultPa.PAA_SEMANTICA, "Il versamento contiene piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.", codDominio);
-			}
+			// Verifico che abbia un solo singolo versamento N.B. controllo eliminato perche' e' consentito pagare pendenze multibeneficiario
+//			if(versamento.getSingoliVersamenti().size() != 1) {
+//				throw new NdpException(FaultPa.PAA_SEMANTICA, "Il versamento contiene piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.", codDominio);
+//			}
 			
 			response.setOutcome(StOutcome.OK);
 			response.setFiscalCodePA(versamento.getDominio(configWrapper).getCodDominio());
@@ -539,21 +533,6 @@ public class PaForNodeImpl implements PaForNodePortType{
 					response.setPaymentDescription(((CausaleSemplice) versamento.getCausaleVersamento()).getCausale());
 				}
 
-//				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoni) {
-//					datiPagamento.setSpezzoniCausaleVersamento(new CtSpezzoniCausaleVersamento());
-//					datiPagamento.getSpezzoniCausaleVersamento().getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento().addAll(((CausaleSpezzoni) versamento.getCausaleVersamento()).getSpezzoni());
-//				}
-//
-//				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoniStrutturati) {
-//					datiPagamento.setSpezzoniCausaleVersamento(new CtSpezzoniCausaleVersamento());
-//					CausaleSpezzoniStrutturati causale = (CausaleSpezzoniStrutturati) versamento.getCausaleVersamento();
-//					for(int i=0; i < causale.getSpezzoni().size(); i++) {
-//						CtSpezzoneStrutturatoCausaleVersamento spezzone = new CtSpezzoneStrutturatoCausaleVersamento();
-//						spezzone.setCausaleSpezzone(causale.getSpezzoni().get(i));
-//						spezzone.setImportoSpezzone(causale.getImporti().get(i));
-//						datiPagamento.getSpezzoniCausaleVersamento().getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento().add(spezzone);
-//					}
-//				}
 			} else {
 				response.setPaymentDescription(" ");
 			}
@@ -563,21 +542,21 @@ public class PaForNodeImpl implements PaForNodePortType{
 			CtPaymentOptionsDescriptionListPA paymentList = new CtPaymentOptionsDescriptionListPA();
 			
 			
+			
+			
 			CtPaymentOptionDescriptionPA ctPaymentOptionDescriptionPA = new CtPaymentOptionDescriptionPA();
 			StAmountOption stAmountOption = StAmountOption.EQ;
 			ctPaymentOptionDescriptionPA.setOptions(stAmountOption );
 			ctPaymentOptionDescriptionPA.setAmount(versamento.getImportoTotale());
 			ctPaymentOptionDescriptionPA.setDetailDescription(singoloVersamento.getDescrizione());
 			ctPaymentOptionDescriptionPA.setDueDate(versamento.getDataValidita());
-			ctPaymentOptionDescriptionPA.setTransferType(StTransferType.POSTAL); // ???
+			ctPaymentOptionDescriptionPA.setAllCCP(VersamentoUtils.isAllIBANPostali(versamento, configWrapper));
 			paymentList.getPaymentOptionDescription().add(ctPaymentOptionDescriptionPA );
 
 			response.setPaymentList(paymentList);
-			// response.setPaaVerificaRPTRisposta(esito); TODO
 			ctx.getApplicationLogger().log("ccp.ricezioneVerificaOk", versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
 			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (NdpException e) {
-//			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, response);
 			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
 			try {
@@ -592,7 +571,6 @@ public class PaForNodeImpl implements PaForNodePortType{
 			else 
 				appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
-//			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, codDominio, response);
 			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
 			try {
@@ -605,7 +583,6 @@ public class PaForNodeImpl implements PaForNodePortType{
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
 		} finally {
 			GpContext.setResult(appContext.getTransaction(), response.getFault() == null ? null : response.getFault().getFaultCode());
-//			if(bd != null) bd.closeConnection();
 		}
 		return response;
 	}
@@ -620,11 +597,6 @@ public class PaForNodeImpl implements PaForNodePortType{
 		String numeroAvviso = qrCode.getNoticeNumber();
 		String codDominio = qrCode.getFiscalCode();
 		
-		requestBody.getAmount();
-		requestBody.getDueDate();
-		requestBody.getPaymentNote();
-		requestBody.getTransferType();
-		
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		
@@ -633,16 +605,13 @@ public class PaForNodeImpl implements PaForNodePortType{
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 			String iuv = IuvUtils.toIuv(numeroAvviso);
-			String ccp = qrCode.getNoticeNumber(); // TODO numero avviso da: https://github.com/pagopa/pagopa-api/issues/126
-			String psp =  null; // TODO
-			String canale =  null; // TODO
+//			String ccp = qrCode.getNoticeNumber(); // TODO numero avviso da: https://github.com/pagopa/pagopa-api/issues/126
 		
 		
-			appContext.setCorrelationId(codDominio + iuv + ccp);
+			appContext.setCorrelationId(codDominio + numeroAvviso);
 		
 			appContext.getEventoCtx().setCodDominio(codDominio);
 			appContext.getEventoCtx().setIuv(iuv);
-			appContext.getEventoCtx().setCcp(ccp);
 
 			Actor from = new Actor();
 			from.setName(GpContext.NodoDeiPagamentiSPC);
@@ -654,11 +623,8 @@ public class PaForNodeImpl implements PaForNodePortType{
 			from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
 			appContext.getTransaction().setTo(to);
 	
-			appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
 			appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 			appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
-			appContext.getRequest().addGenericProperty(new Property("codPsp", psp));
-			appContext.getRequest().addGenericProperty(new Property("codCanale", canale));
 			
 			try {
 				ctx.getApplicationLogger().log("ccp.ricezioneAttiva");
@@ -667,17 +633,14 @@ public class PaForNodeImpl implements PaForNodePortType{
 			}
 
 		
-			log.info("Ricevuta richiesta di attiva RPT [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "][" + ccp + "]");
+			log.info("Ricevuta richiesta di attiva RPT [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "][" + numeroAvviso + "]");
 	
 			DatiPagoPA datiPagoPA = new DatiPagoPA();
 			datiPagoPA.setCodStazione(codStazione);
 			datiPagoPA.setFruitore(GpContext.NodoDeiPagamentiSPC);
 			datiPagoPA.setErogatore(codIntermediario);
 			datiPagoPA.setCodIntermediario(codIntermediario);
-	//		appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.paaAttivaRPT.name());
-			datiPagoPA.setCodPsp(psp);
-	//		datiPagoPA.setCodIntermediarioPsp(bodyrichiesta.getIdentificativoIntermediarioPSP());
-			datiPagoPA.setCodCanale(canale);
+			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.paGetPayment.name());
 			datiPagoPA.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 			datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP);
 			datiPagoPA.setCodDominio(codDominio);
@@ -853,10 +816,9 @@ public class PaForNodeImpl implements PaForNodePortType{
 				throw new NdpException(FaultPa.PAA_SEMANTICA, "Il versamento contiente piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.", codDominio);
 			}
 
-			String intermediarioPsp = null;
 //			PaaTipoDatiPagamentoPSP datiPagamentoPSP = null;
 			// Creazione dell'RPT
-			Rpt rpt = new CtPaymentPABuilder().buildRptAttivata(intermediarioPsp, psp, canale, versamento, iuv, ccp);
+			Rpt rpt = new CtPaymentPABuilder().buildRptAttivata(requestBody,versamento, iuv, numeroAvviso);
 
 			ctx.getApplicationLogger().log("ccp.attivazione", rpt.getCodMsgRichiesta());
 
@@ -874,7 +836,7 @@ public class PaForNodeImpl implements PaForNodePortType{
 	
 				// Controllo se gia' non esiste la RPT (lo devo fare solo adesso per essere in transazione con l'inserimento)
 				try {
-					Rpt oldrpt = rptBD.getRpt(codDominio, iuv, ccp, true);
+					Rpt oldrpt = rptBD.getRpt(codDominio, iuv, true);
 					if(oldrpt.getPagamentoPortale() != null)
 						appContext.getEventoCtx().setIdPagamento(oldrpt.getPagamentoPortale().getIdSessione());
 					throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, "RTP attivata in data " + oldrpt.getDataMsgRichiesta() + " [idMsgRichiesta: " + oldrpt.getCodMsgRichiesta() + "]" , codDominio);
