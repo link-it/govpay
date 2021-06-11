@@ -144,7 +144,9 @@ public class AvvisoPagamentoV2Utils {
 					rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataValidita()));
 				} else if(versamento.getDataScadenza() != null) {
 					rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataScadenza()));
-				} 
+				} else {
+					rata.setData("-"); 
+				}
 				
 				// calcolo dell'importo totale
 				BigDecimal importoTotale = BigDecimal.ZERO;
@@ -203,7 +205,9 @@ public class AvvisoPagamentoV2Utils {
 					rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataValidita()));
 				} else if(versamento.getDataScadenza() != null) {
 					rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataScadenza()));
-				} 
+				} else {
+					rata.setData("-"); 
+				}
 				
 				switch (versamento.getTipoSoglia()) {
 				case ENTRO:
@@ -423,7 +427,9 @@ public class AvvisoPagamentoV2Utils {
 				rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataValidita()));
 			} else if(versamento.getDataScadenza() != null) {
 				rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataScadenza()));
-			} 
+			} else {
+				rata.setData("-"); 
+			}
 		}
 		
 		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));

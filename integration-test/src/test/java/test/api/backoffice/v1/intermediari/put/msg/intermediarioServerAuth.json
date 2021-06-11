@@ -7,6 +7,8 @@
 			"tipo": "Server",
 			"tsLocation": "/tmp/keystore.jks",
 			"tsPassword": "kspwd",
+			"tsType": "JKS",
+			"sslType": "TLSv1.2"
 		}
 	},
 	"abilitato": true
