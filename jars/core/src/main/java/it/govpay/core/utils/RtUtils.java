@@ -322,6 +322,37 @@ public class RtUtils extends NdpValidationUtils {
 				throw e;
 			}
 			
+			// Caso anomalo. RT gia' acquisita, ma non registrata correttamente:
+			if(rpt.getXmlRt() != null && (rpt.getStato().equals(StatoRpt.RPT_ACCETTATA_NODO) || rpt.getStato().equals(StatoRpt.RPT_ACCETTATA_PSP))) {
+				try {
+					CtRicevutaTelematica oldRT = JaxbUtils.toRT(rpt.getXmlRt(), true);
+					if(oldRT.getIdentificativoMessaggioRicevuta().equals(ctRt.getIdentificativoMessaggioRicevuta()) 
+							&& rpt.getEsitoPagamento() != null 
+							&& rpt.getImportoTotalePagato() != null
+							&& rpt.getDenominazioneAttestante() != null ) {
+						rpt.setImportoTotalePagato(ctRt.getDatiPagamento().getImportoTotalePagato());
+						rpt.setStato(StatoRpt.RT_ACCETTATA_PA);
+						rpt.setDescrizioneStato(null);
+						try {
+							rptBD.updateRpt(rpt.getId(), rpt);
+							rptBD.commit();
+						}catch (ServiceException e1) {
+							rptBD.rollback();
+							throw e1;
+						} finally {
+							rptBD.disableSelectForUpdate();
+						}
+						throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "RT già acquisita in data " + rpt.getDataMsgRicevuta(), rpt.getCodDominio());
+					}
+				} catch (ServiceException e) {
+					log.warn("Errore nella gestione di una RT gia' acquisita", e);
+				} catch (JAXBException e) {
+					log.warn("Errore nella gestione di una RT gia' acquisita", e);
+				} catch (SAXException e) {
+					log.warn("Errore nella gestione di una RT gia' acquisita", e);
+				}
+			}
+			
 			if(acquisizioneDaCruscotto) {
 				// controllo esito validazione semantica
 				

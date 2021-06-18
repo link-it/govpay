@@ -3,6 +3,7 @@ package it.govpay.core.utils.stampe;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.text.MessageFormat;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -322,13 +323,22 @@ public class AvvisoPagamentoUtils {
 
 
 	public static String creaDataMatrix(String numeroAvviso, String numeroCC, double importo, String codDominio, String cfDebitore, String denominazioneDebitore, String causale) {
-
+		
+		
 		String importoInCentesimi = getImportoInCentesimi(importo);
 		String codeLine = createCodeLine(numeroAvviso, numeroCC, importoInCentesimi);
 		//		log.debug("CodeLine ["+codeLine+"] Lunghezza["+codeLine.length()+"]");
+		
+
 		String cfDebitoreFilled = getCfDebitoreFilled(cfDebitore);
-		String denominazioneDebitoreFilled = getDenominazioneDebitoreFilled(denominazioneDebitore);
-		String causaleFilled = getCausaleFilled(causale);
+		
+		String denominazioneDebitoreASCII = Normalizer.normalize(denominazioneDebitore, Normalizer.Form.NFD);
+		denominazioneDebitoreASCII = denominazioneDebitoreASCII.replaceAll("[^\\x00-\\x7F]", "");
+		String denominazioneDebitoreFilled = getDenominazioneDebitoreFilled(denominazioneDebitoreASCII);
+		
+		String causaleASCII = Normalizer.normalize(causale, Normalizer.Form.NFD);
+		causaleASCII = causaleASCII.replaceAll("[^\\x00-\\x7F]", "");
+		String causaleFilled = getCausaleFilled(causaleASCII);
 
 		String dataMatrix = MessageFormat.format(AvvisoPagamentoCostanti.PATTERN_DATAMATRIX, codeLine, codDominio, cfDebitoreFilled, denominazioneDebitoreFilled, causaleFilled, AvvisoPagamentoCostanti.FILLER_DATAMATRIX);
 		//		log.debug("DataMatrix ["+dataMatrix+"] Lunghezza["+dataMatrix.length()+"]"); 

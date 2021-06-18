@@ -131,10 +131,10 @@ outputTypes:
   - application/pdf
 platforms:
   - web
-releaseDate: '2021-05-31'
+releaseDate: '2021-06-08'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
-softwareVersion: '3.4.0'
+softwareVersion: '3.4.1'
 url: 'https://github.com/link-it/govpay'
 usedBy:
   - MISE - Ministero dello Sviluppo Economico
