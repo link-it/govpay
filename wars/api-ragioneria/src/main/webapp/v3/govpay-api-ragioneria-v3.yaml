@@ -41,6 +41,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Riconciliazioni'
+              example:
+                numRisultati: 2
+                numPagine: 1
+                risultatiPerPagina: 25
+                pagina: 1
+                risultati:
+                  - id: '12345'
+                    idDominio: 01234567890
+                    importo: 10
+                    data: '2020-12-31'
+                    dataValuta: '2020-12-31'
+                    dataContabile: '2020-12-31'
+                    contoAccredito: IT60X0542811101000000123456
+                    sct: 2017-01-01ABI00000011234
+                    trn: 2017-01-01ABI00000011234
+                    iuv: RF23567483937849450550875
+                  - id: '12346'
+                    idDominio: 01234567890
+                    importo: 100.01
+                    data: '2020-12-31'
+                    dataValuta: '2020-12-31'
+                    dataContabile: '2020-12-31'
+                    contoAccredito: IT60X0542811101000000123456
+                    idFlussoRendicontazione: '2020-11-21GovPAYPsp-1234567890'
+                    causale: '000000000000000,00000000000000101,01EUR000000000000000,000000000000000000000000,000000000000,00/ZZ2SATISPAY EUROPE SA/ZZ3Comune Dimostrativo/PUR/LGPE-RIVERSAMENTO/URI/2020-11-21GovPAYPsp-1234567890/ZZ4/4184/ZZ4/ID1357a8662b2256347456532f53f9a9825357a8662b2b911eb8da402f53f9a9825'
+                
         '400':
           $ref: '#/components/responses/400BadRequest'
         '401':
@@ -953,6 +979,10 @@ components:
                   idUnitaOperativa: 'UO33132'
                   tipoPendenza: 
                     idTipoPendenza: 'CDS'
-                    descrizione: 'Violazione del codice della strada'
+                    descrizione: 'Violazioni del codice della strada'
                   causale: 'Sanzione CdS n. abc00000'
                   dataScadenza: '2020-12-31'
+          
+          
+          
+      
