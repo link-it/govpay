@@ -173,7 +173,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 				List<Rendicontazione> rendsFiltrato = new ArrayList<Rendicontazione>();
 				
 				for(Rendicontazione rend : rends) {
-					if(rend.getVersamento(bd) ==  null || rend.getVersamento(bd).getIdApplicazione() != idApplicazione.longValue()) {
+					if(rend.getVersamento(bd) !=  null && rend.getVersamento(bd).getIdApplicazione() != idApplicazione.longValue()) {
 						continue;
 					}
 					rendsFiltrato.add(rend);

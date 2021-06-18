@@ -27,6 +27,7 @@
 			
 			<xsd:complexType name="canale">
 				<xsd:sequence>
+					<xsd:element name="codIntermediarioPsp" type="com:cod35" />
 					<xsd:element name="codPsp" type="com:cod35" />
 					<xsd:element name="codCanale" type="com:cod35" />
 					<xsd:element name="tipoVersamento" type="com:tipoVersamento" />
@@ -822,6 +823,7 @@
 						<xsd:element name="codSessionePortale" type="com:uuid" minOccurs="0" />
 						<xsd:element name="codPortale" type="com:cod35" />
 						<xsd:element name="versante" type="com:anagrafica" minOccurs="0" />
+						<xsd:element name="canale" type="com:canale" minOccurs="0" />
 						<xsd:element name="ibanAddebito" type="com:cod35" minOccurs="0" />
 						<xsd:element name="autenticazione" type="com:tipoAutenticazione" />
 						<xsd:element name="urlRitorno" type="xsd:anyURI" minOccurs="0" />

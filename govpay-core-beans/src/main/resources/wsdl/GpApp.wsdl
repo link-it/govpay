@@ -28,6 +28,7 @@
 			
 			<xsd:complexType name="canale">
 				<xsd:sequence>
+					<xsd:element name="codIntermediarioPsp" type="com:cod35" />
 					<xsd:element name="codPsp" type="com:cod35" />
 					<xsd:element name="codCanale" type="com:cod35" />
 					<xsd:element name="tipoVersamento" type="com:tipoVersamento" />

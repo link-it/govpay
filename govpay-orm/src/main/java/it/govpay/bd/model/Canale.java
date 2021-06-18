@@ -44,8 +44,10 @@ public class Canale extends it.govpay.model.Canale {
 		this.psp = psp;
 	}
 	
-	// Business
-	
+	public Canale(it.govpay.servizi.commons.Canale canale) throws ServiceException {
+		this(canale.getCodIntermediarioPsp(), canale.getCodPsp(), canale.getCodCanale(), TipoVersamento.toEnum(canale.getTipoVersamento().value()), "");
+	}
+
 	private transient Psp psp;
 	
 	public Psp getPsp() {

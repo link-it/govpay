@@ -142,7 +142,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			
 			it.govpay.bd.model.Canale canale = null;
 			if(bodyrichiesta.getCanale() != null) {
-				throw new GovPayException(EsitoOperazione.PAG_012);
+				//throw new GovPayException(EsitoOperazione.PAG_012);
 			} else if(bodyrichiesta.getSceltaWisp() != null){
 				ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", bodyrichiesta.getSceltaWisp().getCodDominio()));
 				ctx.getContext().getRequest().addGenericProperty(new Property("codKeyPA", bodyrichiesta.getSceltaWisp().getCodKeyPA()));
@@ -203,6 +203,9 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			dto.setUrlRitorno(bodyrichiesta.getUrlRitorno());
 			dto.setVersamentoOrVersamentoRef(bodyrichiesta.getVersamentoOrVersamentoRef());
 			dto.setVersante(bodyrichiesta.getVersante());
+			if(bodyrichiesta.getCanale() != null) {
+				dto.setCanale(new it.govpay.bd.model.Canale(bodyrichiesta.getCanale()));
+			}
 			AvviaTransazioneDTOResponse dtoResponse = pagamentoBusiness.avviaTransazione(dto);
 			response.getRifTransazione().addAll(Gp23Utils.toRifTransazione(dtoResponse.getRifTransazioni()));
 			response.setPspSessionId(dtoResponse.getCodSessione());

@@ -145,6 +145,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			dto.setUrlRitorno(bodyrichiesta.getUrlRitorno());
 			dto.setVersamentoOrVersamentoRef(bodyrichiesta.getVersamentoOrVersamentoRef());
 			dto.setVersante(bodyrichiesta.getVersante());
+			if(bodyrichiesta.getCanale() != null) {
+				dto.setCanale(new it.govpay.bd.model.Canale(bodyrichiesta.getCanale()));
+			}
+			
 			
 			AvviaTransazioneDTOResponse dtoResponse = pagamentoBusiness.avviaTransazione(dto);
 			response.getRifTransazione().addAll(Gp21Utils.toRifTransazione(dtoResponse.getRifTransazioni()));
