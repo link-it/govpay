@@ -935,7 +935,7 @@ components:
           example:
             id: '12345'
             idDominio: '01234567890'
-            importo: 100.01
+            importo: 130.05
             dataValuta: '2020-12-31'
             dataContabile: '2020-12-31'
             contoAccredito: 'IT60X0542811101000000123456'
@@ -982,6 +982,12 @@ components:
                     descrizione: 'Violazioni del codice della strada'
                   causale: 'Sanzione CdS n. abc00000'
                   dataScadenza: '2020-12-31'
+            - iuv: '301000001234567890'
+              iur: 'A43def48ED'
+              indice: 1
+              tipo: 'ALTRO_INTERMEDIARIO'
+              importo: 30.40
+              data: '2020-12-31'
           
           
           
