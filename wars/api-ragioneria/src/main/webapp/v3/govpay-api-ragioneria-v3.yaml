@@ -110,6 +110,8 @@ paths:
       responses:
         '201':
           $ref: '#/components/responses/Riconciliazione'
+        '202':
+          $ref: '#/components/responses/202Accepted'          
         '400':
           $ref: '#/components/responses/400BadRequest'
         '401':
@@ -899,6 +901,14 @@ components:
         type: integer
         format: int32
   responses:
+    '202Accepted':
+      description: Richiesta accettata
+      headers:
+        Location: 
+          description: Path del risultato dell'elaborazione
+          schema:
+            type: string
+            example: '/riconciliazioni/12345'  
     '400BadRequest':
       description: Richiesta non correttamente formata
       content:
@@ -989,6 +999,3 @@ components:
               importo: 30.40
               data: '2020-12-31'
           
-          
-          
-      
