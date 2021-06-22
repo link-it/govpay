@@ -29,7 +29,6 @@ public class IncassoUtils {
 		while (matcher.find()) {
 			for(int i=1; i<=matcher.groupCount(); i++) {
 				String match = matcher.group(i);
-				System.out.println(match);
 				if(patternIDF.matcher(match).find()) {
 					return match;
 				}
