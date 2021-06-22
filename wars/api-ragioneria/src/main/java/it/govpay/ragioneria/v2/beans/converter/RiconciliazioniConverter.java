@@ -1,10 +1,7 @@
 package it.govpay.ragioneria.v2.beans.converter;
 
-<<<<<<< HEAD
 import java.io.IOException;
-=======
 import java.math.BigDecimal;
->>>>>>> feature/326_pagamenti_altri_intermediari_nelle_riconciliazioni
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +44,7 @@ public class RiconciliazioniConverter {
 	}
 	
 	
-	public static Riconciliazione toRsModel(it.govpay.bd.model.Incasso i, Fr fr, List<TipoPagamento> riscossioniTipo) throws ServiceException, NotFoundException {
+	public static Riconciliazione toRsModel(it.govpay.bd.model.Incasso i, Fr fr, List<TipoPagamento> riscossioniTipo) throws ServiceException, NotFoundException, IOException, ValidationException {
 		Riconciliazione rsModel = new Riconciliazione();
 		
 		rsModel.setCausale(i.getCausale());
