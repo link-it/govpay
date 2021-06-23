@@ -60,6 +60,7 @@ import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.Evento.RuoloEvento;
 import it.govpay.model.Fr.StatoFr;
+import it.govpay.model.Incasso.StatoIncasso;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
@@ -410,6 +411,10 @@ public class Incassi {
 				incasso.setIdApplicazione(idApplicazione);
 				incasso.setIdOperatore(idOperatore); 
 				incasso.setSct(richiestaIncasso.getSct());
+				incasso.setIuv(richiestaIncasso.getIuv());
+				incasso.setIdFlussoRendicontazione(richiestaIncasso.getIdFlusso());
+				incasso.setIdRiconciliazione(richiestaIncasso.getIdRiconciliazione() != null ? richiestaIncasso.getIdRiconciliazione() : richiestaIncasso.getTrn());
+				incasso.setStato(StatoIncasso.ACQUISITO);
 				richiestaIncassoResponse.setIncasso(incasso);
 				incassiBD.insertIncasso(incasso);
 				

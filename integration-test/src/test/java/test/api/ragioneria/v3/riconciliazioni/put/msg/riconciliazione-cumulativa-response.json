@@ -1,0 +1,75 @@
+{
+   "id":"#notnull",
+   "idDominio":"#(idDominio)",
+   "importo":"#(importo)",
+   "data": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+   "sct":"#notnull",
+   "trn":"#notnull",
+   "causale":"#(causale)",
+   "riscossioni":[
+      {
+      	 "iuv":"#(iuv1)",
+      	 "iur":"#notnull",
+      	 "indice":1,
+      	 "tipo":"ENTRATA",
+      	 "importo":"#? isImportoConDueDecimali(_)",
+      	 "data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+         "vocePendenza": {
+         	"idDominio":"#(idDominio)",
+			"idVocePendenza":"1",
+			"descrizione": "##string",
+			"datiAllegati": "##object",
+			"descrizioneCausaleRPT": "##string",
+			"contabilita": "##object",
+			"pendenza": {
+				"idA2A":"#string",
+				"idPendenza":"#string",
+				"idDominio":"#string",
+				"idUnitaOperativa":"##string",
+				"idTipoPendenza":"#string",
+				"causale":"##string",
+				"dataScadenza": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"annoRiferimento": "##number",
+				"cartellaPagamento":"##string",
+				"datiAllegati": "##object",
+				"tassonomia":"##string",
+				"direzione":"##string",
+				"divisione":"##string",
+				"soggettoPagatore":"#notnull"
+					}
+				}
+      },
+      {
+         "iuv":"#(iuv2)",
+      	 "iur":"#notnull",
+      	 "indice":1,
+      	 "tipo":"ENTRATA",
+      	 "importo":"#? isImportoConDueDecimali(_)",
+      	 "data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+         "vocePendenza": {
+         	"idDominio":"#(idDominio)",
+			"idVocePendenza":"1",
+			"descrizione": "##string",
+			"datiAllegati": "##object",
+			"descrizioneCausaleRPT": "##string",
+			"contabilita": "##object",
+			"pendenza": {
+				"idA2A":"#string",
+				"idPendenza":"#string",
+				"idDominio":"#string",
+				"idUnitaOperativa":"##string",
+				"idTipoPendenza":"#string",
+				"causale":"##string",
+				"dataScadenza": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"annoRiferimento": "##number",
+				"cartellaPagamento":"##string",
+				"datiAllegati": "##object",
+				"tassonomia":"##string",
+				"direzione":"##string",
+				"divisione":"##string",
+				"soggettoPagatore":"#notnull"
+					}
+				}
+      }
+   ]
+}

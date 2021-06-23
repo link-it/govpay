@@ -158,11 +158,11 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return "fr_id";
 			}
 		}
-		if(field.equals(VistaRendicontazione.model().FR_ID_INCASSO.TRN)){
+		if(field.equals(VistaRendicontazione.model().FR_ID_INCASSO.IDENTIFICATIVO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".trn";
+				return this.toAliasTable(field)+".identificativo";
 			}else{
-				return "trn";
+				return "identificativo";
 			}
 		}
 		if(field.equals(VistaRendicontazione.model().FR_ID_INCASSO.COD_DOMINIO)){
@@ -952,7 +952,7 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 		if(field.equals(VistaRendicontazione.model().FR_ID)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
-		if(field.equals(VistaRendicontazione.model().FR_ID_INCASSO.TRN)){
+		if(field.equals(VistaRendicontazione.model().FR_ID_INCASSO.IDENTIFICATIVO)){
 			return this.toTable(VistaRendicontazione.model().FR_ID_INCASSO, returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().FR_ID_INCASSO.COD_DOMINIO)){

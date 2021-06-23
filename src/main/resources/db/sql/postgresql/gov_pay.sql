@@ -981,12 +981,17 @@ CREATE TABLE incassi
 	nome_dispositivo VARCHAR(512),
 	iban_accredito VARCHAR(35),
 	sct VARCHAR(35),
+	identificativo VARCHAR(35) NOT NULL,
+	iuv VARCHAR(35),
+	cod_flusso_rendicontazione VARCHAR(35),
+	stato VARCHAR(35) NOT NULL,
+	descrizione_stato VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_incassi') NOT NULL,
 	id_applicazione BIGINT,
 	id_operatore BIGINT,
 	-- unique constraints
-	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn),
+	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,identificativo),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),

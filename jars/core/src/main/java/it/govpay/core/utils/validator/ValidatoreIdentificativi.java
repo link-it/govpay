@@ -175,6 +175,14 @@ public class ValidatoreIdentificativi {
 		this.validaId(fieldName, nomeParametro, CostantiValidazione.PATTERN_PASSWORD_HTTP_BASIC_DEFAULT, 1, 255, false);
 	}
 	
+	public void validaIdRiconciliazione(String idRiconciliazione) throws ValidationException {
+		this.validaIdRiconciliazione("idRiconciliazione", idRiconciliazione);
+	}
+	
+	public void validaIdRiconciliazione(String fieldName, String idRiconciliazione) throws ValidationException {
+		this.validaId(fieldName, idRiconciliazione, CostantiValidazione.PATTERN_ID_RICONCILIAZIONE, 1, 35);
+	}
+	
 	public StringValidator validaId(String fieldName, String id, String pattern, Integer minLength, Integer maxLength) throws ValidationException {
 		return validaId(fieldName, id, pattern, minLength, maxLength, true);
 	}

@@ -83,6 +83,10 @@ public class IncassiBD extends BasicBD {
 	}
 	
 	public Incasso getIncasso(String codDominio, String trn) throws ServiceException, NotFoundException {
+		return getIncasso(codDominio, trn, null);
+	}
+	
+	public Incasso getIncasso(String codDominio, String trn, String idRiconciliazione) throws ServiceException, NotFoundException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -90,8 +94,14 @@ public class IncassiBD extends BasicBD {
 			
 			IExpression expr = this.getIncassoService().newExpression();
 			expr.equals(it.govpay.orm.Incasso.model().COD_DOMINIO, codDominio);
-			expr.and();
-			expr.equals(it.govpay.orm.Incasso.model().TRN, trn);
+			if(trn != null) {
+				expr.and();
+				expr.equals(it.govpay.orm.Incasso.model().TRN, trn);
+			} 
+			if(idRiconciliazione != null) {
+				expr.and();
+				expr.equals(it.govpay.orm.Incasso.model().IDENTIFICATIVO, idRiconciliazione);
+			}
 			
 			it.govpay.orm.Incasso pagamentoVO = this.getIncassoService().find(expr);
 			return IncassoConverter.toDTO(pagamentoVO);

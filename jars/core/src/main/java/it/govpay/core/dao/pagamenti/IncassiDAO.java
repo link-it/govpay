@@ -105,7 +105,7 @@ public class IncassiDAO extends BaseDAO{
 								versamento.getUo(configWrapper);
 								singoloVersamento.getIbanAccredito(configWrapper);
 								pagamento.getRpt(incassiBD);
-								pagamento.getIncasso(incassiBD);
+								pagamento.setIncasso(incasso);
 							}
 						}
 	
@@ -138,7 +138,7 @@ public class IncassiDAO extends BaseDAO{
 
 			incassiBD.setAtomica(false);
 
-			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdIncasso());
+			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getTrn(), leggiIncassoDTO.getIdRiconciliazione());
 
 			response.setIncasso(incasso);
 			
@@ -152,6 +152,7 @@ public class IncassiDAO extends BaseDAO{
 			if(pagamenti != null) {
 				for(Pagamento pagamento: pagamenti) {
 					this.populatePagamento(pagamento, incassiBD, configWrapper);
+					pagamento.setIncasso(incasso);
 				}
 			}
 			
@@ -218,6 +219,7 @@ public class IncassiDAO extends BaseDAO{
 				for(Pagamento pagamento: pagamenti) {
 					try {
 						this.populatePagamento(pagamento, incassiBD, configWrapper);
+						pagamento.setIncasso(richiestaIncassoDTOResponse.getIncasso());
 					} catch (NotFoundException e) { 
 
 					}
@@ -254,6 +256,5 @@ public class IncassiDAO extends BaseDAO{
 		pagamento.getRpt(bd);
 		pagamento.getDominio(configWrapper);
 		pagamento.getRendicontazioni(bd);
-		pagamento.getIncasso(bd);
 	}
 }

@@ -1,0 +1,85 @@
+{
+   "idDominio":"#(idDominio)",
+   "idRiconciliazione":"#notnull",
+   "causale":"#(causale)",
+   "importo":"#(importo)",
+   "sct":"#notnull",
+   "riscossioni":[
+      {
+         "dominio": {
+         	"idDominio":"#(idDominio)",
+         	"ragioneSociale": "#notnull"
+         },
+         "iuv":"#(iuv1)",
+         "iur":"#notnull",
+         "indice":1,
+         "stato":"INCASSATA",
+         "tipo":"ENTRATA",
+         "importo":"#(importo1)",
+         "data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+         "vocePendenza": {
+			"indice":1,
+			"idVocePendenza":"1",
+			"importo": "#(importo1)",
+			"datiAllegati": "##object",
+			"pendenza": {
+				"idA2A":"#string",
+				"idPendenza":"#string",
+				"idDominio":"#string",
+				"idUnitaOperativa":"##string",
+				"idTipoPendenza":"#string",
+				"causale":"##string",
+				"dataCaricamento": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"dataValidita": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"dataScadenza": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"annoRiferimento": "##number",
+				"cartellaPagamento":"##string",
+				"datiAllegati": "##object",
+				"tassonomiaAvviso":"##string",
+				"direzione":"##string",
+				"divisione":"##string",
+				"UUID":"#string"
+					}
+				},
+         "riconciliazione":"##string"
+      },
+      {
+         "dominio": {
+         	"idDominio":"#(idDominio)",
+         	"ragioneSociale": "#notnull"
+         },
+         "iuv":"#(iuv2)",
+         "iur":"#notnull",
+         "indice":1,
+         "stato":"INCASSATA",
+         "tipo":"ENTRATA",
+         "importo":"#(importo2)",
+         "data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+         "vocePendenza": {
+			"indice":1,
+			"idVocePendenza":"1",
+			"importo": "#(importo2)",
+			"datiAllegati": "##object",
+			"pendenza": {
+				"idA2A":"#string",
+				"idPendenza":"#string",
+				"idDominio":"#string",
+				"idUnitaOperativa":"##string",
+				"idTipoPendenza":"#string",
+				"causale":"##string",
+				"dataCaricamento": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"dataValidita": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"dataScadenza": "##regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+				"annoRiferimento": "##number",
+				"cartellaPagamento":"##string",
+				"datiAllegati": "##object",
+				"tassonomiaAvviso":"##string",
+				"direzione":"##string",
+				"divisione":"##string",
+				"UUID":"#string"
+					}
+				},
+         "riconciliazione":"##string"
+      }
+   ]
+}

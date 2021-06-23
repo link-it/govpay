@@ -312,11 +312,11 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "obsoleto";
 			}
 		}
-		if(field.equals(Evento.model().ID_INCASSO.TRN)){
+		if(field.equals(Evento.model().ID_INCASSO.IDENTIFICATIVO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".trn";
+				return this.toAliasTable(field)+".identificativo";
 			}else{
-				return "trn";
+				return "identificativo";
 			}
 		}
 		if(field.equals(Evento.model().ID_INCASSO.COD_DOMINIO)){
@@ -451,7 +451,7 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Evento.model().ID_FR.OBSOLETO)){
 			return this.toTable(Evento.model().ID_FR, returnAlias);
 		}
-		if(field.equals(Evento.model().ID_INCASSO.TRN)){
+		if(field.equals(Evento.model().ID_INCASSO.IDENTIFICATIVO)){
 			return this.toTable(Evento.model().ID_INCASSO, returnAlias);
 		}
 		if(field.equals(Evento.model().ID_INCASSO.COD_DOMINIO)){

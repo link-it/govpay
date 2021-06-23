@@ -52,6 +52,7 @@ public class RichiestaIncassoDTO extends BasicFindRequestDTO {
 	private String idFlusso;
 	private String sct;
 	private boolean ricercaIdFlussoCaseInsensitive = false;
+	private String idRiconciliazione;
 	
 	public String getTrn() {
 		return this.trn;
@@ -136,5 +137,11 @@ public class RichiestaIncassoDTO extends BasicFindRequestDTO {
 	}
 	public void setRicercaIdFlussoCaseInsensitive(boolean ricercaIdFlussoCaseInsensitive) {
 		this.ricercaIdFlussoCaseInsensitive = ricercaIdFlussoCaseInsensitive;
+	}
+	public String getIdRiconciliazione() {
+		return idRiconciliazione;
+	}
+	public void setIdRiconciliazione(String idRiconciliazione) {
+		this.idRiconciliazione = idRiconciliazione;
 	}
 }
