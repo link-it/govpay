@@ -68,7 +68,7 @@ public class RiconciliazioniConverter {
 					RiscossioneIndex riscossioneIdx = new RiscossioneIndex();
 					riscossioneIdx.setData(r.getData());
 					riscossioneIdx.setImporto(r.getImporto());
-					riscossioneIdx.setIndice(BigDecimal.valueOf(r.getIndiceDati()));
+					riscossioneIdx.setIndice((r.getIndiceDati() != null) ? BigDecimal.valueOf(r.getIndiceDati()) : BigDecimal.ONE);
 					riscossioneIdx.setIur(r.getIur());
 					riscossioneIdx.setIuv(r.getIuv());
 					riscossioneIdx.setTipo(TipoRiscossione.ALTRO_INTERMEDIARIO);

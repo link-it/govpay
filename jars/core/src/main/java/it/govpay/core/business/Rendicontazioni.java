@@ -626,6 +626,16 @@ public class Rendicontazioni {
 			if(isNumerico && iuv.length() == 15)
 				return true;
 		}
+		
+		if(dominio.getAuxDigit() == 1) {
+			// AuxDigit 1: Ente monointermediato. 
+			// Per i pagamenti di tipo 1 e 2, se non ho trovato il pagamento e sono arrivato qui, posso assumere che non e' interno.
+			// Per i pagamenti di tipo 3, e' mio se e' di 17 cifre.
+			// Quindi controllo solo se e' numerico e di 17 cifre.
+
+			if(isNumerico && iuv.length() == 17)
+				return true;
+		}
 
 		if(dominio.getAuxDigit() == 3) {
 			// AuxDigit 3: Ente plurintermediato.
