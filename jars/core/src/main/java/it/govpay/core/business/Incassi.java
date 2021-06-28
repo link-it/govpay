@@ -786,7 +786,7 @@ public class Incassi {
 					
 					Versamento versamentoBusiness = new Versamento();
 					EventiBD eventiBD = new EventiBD(configWrapper);
-					
+					richiestaIncassoResponse.setFr(fr);
 					for(Rendicontazione rendicontazione : fr.getRendicontazioni(incassiBD)) {
 						
 						if(rendicontazione.getStato().equals(StatoRendicontazione.ALTRO_INTERMEDIARIO)) continue;

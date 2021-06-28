@@ -12,13 +12,16 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.PagamentiBD;
+import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
@@ -317,9 +320,18 @@ public class IncassiDAO extends BaseDAO{
 				}
 			}
 			
-			richiestaIncassoDTOResponse.getIncasso().setPagamenti(pagamenti);
+			FrBD frBD = new FrBD(incassiBD);
+			frBD.setAtomica(false);
+			FrFilter frFilter = frBD.newFilter();
+			frFilter.setIdIncasso(richiestaIncassoDTOResponse.getIncasso().getId());
+			List<Fr> frs = frBD.findAll(frFilter);
+			if(frs.size() > 0) {
+				Fr fr = frs.get(0);
+				fr.getRendicontazioni(frBD);
+				richiestaIncassoDTOResponse.setFr(fr);
+			}
 			
-
+			richiestaIncassoDTOResponse.getIncasso().setPagamenti(pagamenti);
 			richiestaIncassoDTOResponse.getIncasso().getApplicazione(configWrapper);
 			richiestaIncassoDTOResponse.getIncasso().getOperatore(configWrapper);
 			richiestaIncassoDTOResponse.getIncasso().getDominio(configWrapper);

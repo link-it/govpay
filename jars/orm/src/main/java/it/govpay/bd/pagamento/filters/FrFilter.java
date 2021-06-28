@@ -50,6 +50,7 @@ public class FrFilter extends AbstractFilter {
 	
 	//select distinct id from fr join rendicontazioni on rendicontazioni.id_fr = fr.id join pagamenti on rendicontazioni.id_pagamento = pagamenti.id join singoli_versamenti on pagamenti.id_singolo_versamento = singoli_versamenti.id join versamenti on singoli_versamenti.id_versamento = versamenti.id and versamenti.id_applicazione = 5;
 	private Long idApplicazione;
+	private Long idIncasso;
 	private List<String> codDominio;
 	private String codDominioFiltro;
 	private String codPsp;
@@ -174,6 +175,16 @@ public class FrFilter extends AbstractFilter {
 				} else {
 					newExpression.isNull(idIncassoField);
 				}
+
+				addAnd = true;
+			}
+			
+			if(this.idIncasso != null){
+				if(addAnd)
+					newExpression.and();
+				
+				CustomField idIncassoField = new CustomField("id_incasso", Long.class, "id_incasso", this.getTable(FR.model()));
+				newExpression.equals(idIncassoField, idIncasso);
 
 				addAnd = true;
 			}
@@ -680,5 +691,13 @@ public class FrFilter extends AbstractFilter {
 
 	public void setRicercaIdFlussoCaseInsensitive(boolean ricercaIdFlussoCaseInsensitive) {
 		this.ricercaIdFlussoCaseInsensitive = ricercaIdFlussoCaseInsensitive;
+	}
+
+	public Long getIdIncasso() {
+		return idIncasso;
+	}
+
+	public void setIdIncasso(Long idIncasso) {
+		this.idIncasso = idIncasso;
 	}
 }
