@@ -3,6 +3,7 @@ package it.govpay.core.dao.pagamenti;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
@@ -142,7 +143,7 @@ public class IncassiDAO extends BaseDAO{
 
 			incassiBD.setAtomica(false);
 
-			Incasso incasso = incassiBD.getIncassoByCodDominioIdRiconciliazione(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdRiconciliazione());
+			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdRiconciliazione());
 
 			response.setIncasso(incasso);
 			
@@ -167,6 +168,8 @@ public class IncassiDAO extends BaseDAO{
 
 		} catch (NotFoundException e) {
 			throw new IncassoNonTrovatoException(e.getMessage(), e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(incassiBD != null)
 				incassiBD.closeConnection();
@@ -212,7 +215,7 @@ public class IncassiDAO extends BaseDAO{
 			incassiBD.setupConnection(configWrapper.getTransactionID());
 			
 			try {
-				Incasso incasso = incassiBD.getIncassoByCodDominioIdRiconciliazione(richiestaIncassoDTO.getCodDominio(), richiestaIncassoDTO.getIdRiconciliazione());
+				Incasso incasso = incassiBD.getIncasso(richiestaIncassoDTO.getCodDominio(), richiestaIncassoDTO.getIdRiconciliazione());
 				
 				// informazioni sui pagamenti
 				PagamentiBD pagamentiBD = new PagamentiBD(incassiBD);
@@ -240,9 +243,11 @@ public class IncassiDAO extends BaseDAO{
 				richiestaIncassoDTOResponse.getIncasso().getOperatore(configWrapper);
 				richiestaIncassoDTOResponse.getIncasso().getDominio(configWrapper);
 				return richiestaIncassoDTOResponse;
-			}catch (NotFoundException e) {
+			} catch (NotFoundException e) {
 				// Incasso non registrato.
 				richiestaIncassoDTOResponse.setCreated(true);
+			}  catch (MultipleResultException e) {
+				throw new GovPayException(e);
 			}
 			
 			Incasso incasso = richiestaIncassoDTO.toIncassoModel();

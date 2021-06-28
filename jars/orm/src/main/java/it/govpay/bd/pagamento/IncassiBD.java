@@ -90,15 +90,7 @@ public class IncassiBD extends BasicBD {
 		}
 	}
 	
-	public Incasso getIncassoByCodDominioIdRiconciliazione(String codDominio, String idRiconciliazione) throws ServiceException, NotFoundException {
-		return getIncasso(codDominio, null, idRiconciliazione);
-	}
-	
-	public Incasso getIncasso(String codDominio, String trn) throws ServiceException, NotFoundException {
-		return getIncasso(codDominio, trn, null);
-	}
-	
-	private Incasso getIncasso(String codDominio, String trn, String idRiconciliazione) throws ServiceException, NotFoundException {
+	public Incasso getIncasso(String codDominio, String idRiconciliazione) throws ServiceException, NotFoundException, MultipleResultException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -106,21 +98,15 @@ public class IncassiBD extends BasicBD {
 			
 			IExpression expr = this.getIncassoService().newExpression();
 			expr.equals(it.govpay.orm.Incasso.model().COD_DOMINIO, codDominio);
-			if(trn != null) {
-				expr.and();
-				expr.equals(it.govpay.orm.Incasso.model().TRN, trn);
-			} 
-			if(idRiconciliazione != null) {
-				expr.and();
-				expr.equals(it.govpay.orm.Incasso.model().IDENTIFICATIVO, idRiconciliazione);
-			}
+			expr.and();
+			expr.equals(it.govpay.orm.Incasso.model().IDENTIFICATIVO, idRiconciliazione);
 			
 			it.govpay.orm.Incasso pagamentoVO = this.getIncassoService().find(expr);
 			return IncassoConverter.toDTO(pagamentoVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
+			throw e;
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {

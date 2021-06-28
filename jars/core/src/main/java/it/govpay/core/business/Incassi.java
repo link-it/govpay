@@ -168,7 +168,7 @@ public class Incassi {
 			incassiBD.setAtomica(false);
 			
 			try {
-				Incasso incasso = incassiBD.getIncassoByCodDominioIdRiconciliazione(richiestaIncasso.getCodDominio(), richiestaIncasso.getIdRiconciliazione());
+				Incasso incasso = incassiBD.getIncasso(richiestaIncasso.getCodDominio(), richiestaIncasso.getIdRiconciliazione());
 				
 				// Richiesta presente. Verifico che i dati accessori siano gli stessi
 				if(!iuvIdFlussoSet) {
@@ -201,6 +201,8 @@ public class Incassi {
 				}
 			} catch(NotFoundException nfe) {
 				// Incasso non registrato. OK
+			}  catch (MultipleResultException e) {
+				throw new GovPayException(e);
 			}
 			
 			// Validazione Riversamento singolo
@@ -264,7 +266,8 @@ public class Incassi {
 		}
 	}
 	
-	public void elaboraRiconciliazione(String codDomino, String idRiconciliazione, IContext ctx) throws ServiceException, GovPayException  {
+	public RichiestaIncassoDTOResponse elaboraRiconciliazione(String codDomino, String idRiconciliazione, IContext ctx) throws ServiceException, GovPayException  {
+		RichiestaIncassoDTOResponse richiestaIncassoResponse = new RichiestaIncassoDTOResponse();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		IncassiBD incassiBD = null;
 		Incasso incasso = null;
@@ -280,21 +283,20 @@ public class Incassi {
 			}
 			
 			incassiBD = new IncassiBD(configWrapper);
-			// Sto selezionando i pagamenti per impostarli come Incassati.
 			incassiBD.setupConnection(configWrapper.getTransactionID());
-			
 			incassiBD.setAtomica(false);
-			
 			incassiBD.enableSelectForUpdate();
-			
-			
+
 			try {
 				log.debug("Lettura riconciliazione [Dominio: "+codDomino+", Id: "+idRiconciliazione+"] dal db...");
-				incasso = incassiBD.getIncassoByCodDominioIdRiconciliazione(codDomino, idRiconciliazione);
+				incasso = incassiBD.getIncasso(codDomino, idRiconciliazione);
+				richiestaIncassoResponse.setIncasso(incasso);
 			} catch (NotFoundException e) {
 				// non dovrebbe succedere perche' la coppia viene letta dal db
 				log.warn("La riconciliazione [Dominio: "+codDomino+", Id: "+idRiconciliazione+"] non e' presente sul db: " + e.getMessage(), e);
-				return;
+				return richiestaIncassoResponse;
+			}  catch (MultipleResultException e) {
+				throw new GovPayException(e);
 			}
 			
 			log.debug("Lettura riconciliazione [Dominio: "+codDomino+", Id: "+idRiconciliazione+"] dal db completata.");
@@ -306,20 +308,6 @@ public class Incassi {
 			gpContext.getEventoCtx().getDatiPagoPA().setSct(incasso.getSct());
 			
 			incassiBD.setAutoCommit(false);
-			
-			List<it.govpay.bd.model.Pagamento> pagamenti = new ArrayList<>();
-			
-			PagamentiBD pagamentiBD = new PagamentiBD(incassiBD);
-			pagamentiBD.setAtomica(false);
-			
-			FrBD frBD = new FrBD(incassiBD);
-			frBD.setAtomica(false);
-			
-			VersamentiBD versamentiBD = new VersamentiBD(incassiBD);
-			versamentiBD.setAtomica(false);
-			
-			RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(incassiBD);
-			rendicontazioniBD.setAtomica(false);
 			
 			// Validazione della causale
 			causale = incasso.getCausale();
@@ -333,208 +321,13 @@ public class Incassi {
 					} 
 				} catch (Throwable e) {
 					log.error("Riscontrato errore durante il parsing della causale",e);
-				} finally {
-//					if(iuv == null && idf==null) {
-//						ctx.getApplicationLogger().log("incasso.causaleNonValida", causale);
-//						throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
-//					}
 				} 
 			} else {
 				iuv = incasso.getIuv();
 				idf = incasso.getIdFlussoRendicontazione();
-//				causale = iuv != null ? iuv : idf;
-//				incasso.setCausale(causale);
 			}
 			
-			log.debug("Riconciliazione [Dominio: "+codDomino+", Id: "+idRiconciliazione+"] Iuv ["+iuv+"], IdFlusso ["+idf+"], Causale ["+causale+"] in corso...");
-			
-			// Riversamento singolo
-			if(iuv != null) {
-				try {
-					log.debug("Ricerca riconciliazione per riversamento Singolo [Dominio: "+codDomino+", Iuv: "+iuv+"]...");
-					it.govpay.bd.model.Pagamento pagamento = pagamentiBD.getPagamento(incasso.getCodDominio(), iuv);
-					
-					if(incasso.getImporto().doubleValue() != pagamento.getImportoPagato().doubleValue())
-						throw new IncassiException(FaultType.IMPORTO_ERRATO, "La richiesta di riconciliazione presenta un importo [" + incasso.getImporto() + "] non corripondente a quello riscosso [" + pagamento.getImportoPagato().doubleValue() + "]");
-					
-					pagamenti.add(pagamento);
-					log.debug("Ricerca riconciliazione per riversamento Singolo [Dominio: "+codDomino+", Iuv: "+iuv+"] completata.");
-				} catch (NotFoundException nfe) {
-					ctx.getApplicationLogger().log("incasso.iuvNonTrovato", iuv);
-					throw new IncassiException(FaultType.PAGAMENTO_NON_TROVATO, "Lo IUV " + iuv + " estratto dalla causale di incasso non identifica alcun pagamento per il creditore " + incasso.getCodDominio());
-				} catch (MultipleResultException mre) {
-					ctx.getApplicationLogger().log("incasso.iuvPagamentiMultipli", iuv, incasso.getCodDominio());
-					throw new IncassiException(FaultType.PAGAMENTO_NON_IDENTIFICATO, "Lo IUV " + iuv + " estratto dalla causale di incasso identifica piu' di un pagamento per il creditore " + incasso.getCodDominio());
-				}
-				
-				
-			}
-			
-			// Riversamento cumulativo
-			Fr fr = null;
-			if(idf != null) {
-				
-				try {
-					log.debug("Ricerca flusso per riversamento cumulativo [Dominio: "+codDomino+", IdFlusso: "+idf+"]...");
-					// Cerco l'idf come case insensitive
-//					fr = frBD.getFr(idf, richiestaIncasso.isRicercaIdFlussoCaseInsensitive()); TODO come si gestisce ora?
-					fr = frBD.getFr(idf, false);
-					
-					log.debug("Ricerca flusso per riversamento cumulativo [Dominio: "+codDomino+", IdFlusso: "+idf+"] completata.");
-					if(!fr.getStato().equals(StatoFr.ACCETTATA)) {
-						ctx.getApplicationLogger().log("incasso.frAnomala", idf);
-						throw new IncassiException(FaultType.FR_ANOMALA, "Il flusso di rendicontazione " + idf + " identificato dalla causale di incasso risulta avere delle anomalie");
-					}
-					
-					// Verifica importo pagato con l'incassato
-					if(fr.getImportoTotalePagamenti().doubleValue() != incasso.getImporto().doubleValue()) {
-						ctx.getApplicationLogger().log("incasso.importoErrato", fr.getImportoTotalePagamenti().doubleValue() + "", incasso.getImporto().doubleValue() + "");
-						throw new IncassiException(FaultType.IMPORTO_ERRATO, "L'importo del flusso di redicontazione [" + incasso.getImporto() + "] non corriponde all'importo del riversamento [" + fr.getImportoTotalePagamenti().doubleValue() + "]");
-					}
-					
-					Versamento versamentoBusiness = new Versamento();
-					EventiBD eventiBD = new EventiBD(configWrapper);
-					
-					for(Rendicontazione rendicontazione : fr.getRendicontazioni(incassiBD)) {
-						
-						if(rendicontazione.getStato().equals(StatoRendicontazione.ALTRO_INTERMEDIARIO)) continue;
-						
-						if(rendicontazione.getStato().equals(StatoRendicontazione.ANOMALA)) {
-							ctx.getApplicationLogger().log("incasso.frAnomala", idf);
-							throw new IncassiException(FaultType.FR_ANOMALA, "Il flusso di rendicontazione " + idf + " identificato dalla causale di incasso risulta avere delle anomalie");
-						}
-						
-						it.govpay.bd.model.Pagamento pagamento = rendicontazione.getPagamento(incassiBD);
-						
-						if(pagamento == null && rendicontazione.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT)) {
-							// Incasso di un pagamento senza RPT. Controllo se il pagamento non e' stato creato nel frattempo dall'arrivo di una RT
-							try {
-								pagamento = pagamentiBD.getPagamento(fr.getCodDominio(), rendicontazione.getIuv(), rendicontazione.getIur(), rendicontazione.getIndiceDati());
-							} catch (NotFoundException e) {
-								// Pagamento non presente. Lo inserisco 
-								it.govpay.bd.model.Versamento versamento = null;
-								try {
-									// Workaround per le limitazioni in select for update. Da rimuovere quando lo iuv sara nel versamento.
-									incassiBD.disableSelectForUpdate();
-									versamento = versamentoBusiness.chiediVersamento(null, null, null, null, fr.getCodDominio(), rendicontazione.getIuv(), TipologiaTipoVersamento.DOVUTO);
-									incassiBD.enableSelectForUpdate();
-									versamento = versamentiBD.getVersamento(versamento.getId(), true);
-								} catch (GovPayException gpe) {
-									// Non deve accadere... la rendicontazione
-									throw new IncassiException(FaultType.FR_ANOMALA, "Il versamento rendicontato [Dominio:" + fr.getCodDominio()+ " IUV:"+rendicontazione.getIuv()+"] non esiste.");
-								} catch (EcException e2) {
-									// Non deve accadere... la rendicontazione
-									throw new IncassiException(FaultType.FR_ANOMALA, "Il versamento rendicontato [Dominio:" + fr.getCodDominio()+ " IUV:"+rendicontazione.getIuv()+"] non esiste.");
-								}
-								
-								List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti();
-								
-								pagamento = new it.govpay.bd.model.Pagamento();
-								pagamento.setTipo(TipoPagamento.ENTRATA);
-								pagamento.setStato(Stato.PAGATO_SENZA_RPT);
-								pagamento.setCodDominio(fr.getCodDominio());
-								pagamento.setDataAcquisizione(rendicontazione.getData());
-								pagamento.setDataPagamento(rendicontazione.getData());
-								pagamento.setImportoPagato(rendicontazione.getImporto());
-								pagamento.setIur(rendicontazione.getIur());
-								pagamento.setIuv(rendicontazione.getIuv());
-								pagamento.setIndiceDati(rendicontazione.getIndiceDati() == null ? 1 : rendicontazione.getIndiceDati());
-								
-								pagamento.setSingoloVersamento(singoliVersamenti.get(0));
-								rendicontazione.setPagamento(pagamento);
-								pagamentiBD.insertPagamento(pagamento);
-								rendicontazione.setIdPagamento(pagamento.getId());
-									
-								//Aggiorno lo stato del versamento:
-								switch (singoliVersamenti.get(0).getStatoSingoloVersamento()) {
-									case NON_ESEGUITO:
-										versamentiBD.updateStatoSingoloVersamento(singoliVersamenti.get(0).getId(), StatoSingoloVersamento.ESEGUITO);
-										versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Eseguito senza RPT");
-										// Aggiornamento stato promemoria
-										versamentiBD.updateStatoPromemoriaAvvisoVersamento(versamento.getId(), true, null);
-										versamentiBD.updateStatoPromemoriaScadenzaAppIOVersamento(versamento.getId(), true, null);
-										versamentiBD.updateStatoPromemoriaScadenzaMailVersamento(versamento.getId(), true, null);
-										
-										break;
-									case ESEGUITO:
-										versamento.setAnomalo(true);
-										versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Pagamento duplicato");
-										break;
-								}
-								
-								versamentiBD.updateVersamento(versamento);
-								
-								Evento eventoNota = new Evento();
-								eventoNota.setCategoriaEvento(CategoriaEvento.INTERNO);
-								eventoNota.setRuoloEvento(RuoloEvento.CLIENT);
-								eventoNota.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
-								eventoNota.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
-								eventoNota.setEsitoEvento(EsitoEvento.OK);
-								eventoNota.setDettaglioEsito("Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "].");
-								eventoNota.setTipoEvento("Pagamento eseguito senza RPT");
-								eventiBD.insertEvento(eventoNota);
-							} catch (MultipleResultException e) {
-								ctx.getApplicationLogger().log("incasso.frAnomala", idf);
-								throw new IncassiException(FaultType.FR_ANOMALA, "La rendicontazione [Dominio:"+fr.getCodDominio()+" Iuv:" + rendicontazione.getIuv()+ " Iur:" + rendicontazione.getIur() + " Indice:" + rendicontazione.getIndiceDati() + "] non identifica univocamente un pagamento");
-							}
-						} else {
-							// Verifica che l'importo rendicontato corrisponda al pagato
-							if(rendicontazione.getImporto().doubleValue() != pagamento.getImportoPagato().doubleValue())
-								throw new IncassiException(FaultType.IMPORTO_ERRATO, "La rendicontazione [Dominio:"+fr.getCodDominio()+" Iuv:" + rendicontazione.getIuv()+ " Iur:" + rendicontazione.getIur() + " Indice:" + rendicontazione.getIndiceDati() + "] presenta un importo [" + rendicontazione.getImporto() + "] non corripondente a quello riscosso [" + pagamento.getImportoPagato().doubleValue() + "]");
-						}
-						
-						//Aggiorno la FK della rendicontazione
-						rendicontazione.setIdPagamento(pagamento.getId());
-						rendicontazioniBD.updateRendicontazione(rendicontazione);
-						
-						pagamenti.add(pagamento);
-					}
-				} catch (NotFoundException nfe) {
-					ctx.getApplicationLogger().log("incasso.idfNonTrovato", idf);
-					throw new IncassiException(FaultType.IDF_NON_TROVATO, "L'identificativo " + idf + " estratto dalla causale di incasso non identifica alcun flusso di rendicontazione");
-				} 
-			}
-			
-			// Verifica stato dei pagamenti da incassare 
-			for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
-				if(Stato.INCASSATO.equals(pagamento.getStato())) {
-					ctx.getApplicationLogger().log("incasso.pagamentoGiaIncassato", pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur());
-					throw new IncassiException(FaultType.PAGAMENTO_GIA_INCASSATO, "Uno dei pagamenti incassati [Dominio:" + pagamento.getCodDominio() + " Iuv:" + pagamento.getIuv() + " Iur:" + pagamento.getIur() + "] risuta gia' incassato.");
-				}
-			}
-			
-			// Inserisco l'incasso e aggiorno lo stato dei pagamenti
-			try {
-				// salvataggio stato incasso
-				incasso.setStato(StatoIncasso.ACQUISITO);
-				incasso.setDataIncasso(new Date());
-				incassiBD.updateIncasso(incasso);
-				
-				for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
-					pagamento.setStato(Stato.INCASSATO);
-					pagamento.setIncasso(incasso);
-					pagamentiBD.updatePagamento(pagamento);
-					versamentiBD.aggiornaIncassoVersamento(pagamento);
-				}
-				
-				// se e' un incasso cumulativo collego il flusso all'incasso
-				if(fr != null) {
-					frBD.updateIdIncasso(fr.getId(), incasso.getId());
-				}
-				incassiBD.commit();
-				gpContext.getEventoCtx().setIdIncasso(incasso.getId()); 
-				
-				log.debug("Riconciliazione [Dominio: "+codDomino+", Id: "+idRiconciliazione+"] Iuv ["+iuv+"], IdFlusso ["+idf+"], Causale ["+causale+"] completata con esito OK.");
-			} catch(Exception e) {
-				incassiBD.rollback();
-				throw new GovPayException(e);
-			} finally {
-				try {
-					incassiBD.setAutoCommit(true);
-				} catch (ServiceException e) {
-					throw new GovPayException(e);
-				} 
-			}
+			return eseguiAcquisizioneRiconciliazione(richiestaIncassoResponse, codDomino, idRiconciliazione, ctx, configWrapper, incassiBD, incasso, causale, iuv, idf, false, true);
 		} catch (ServiceException e) {
 			throw new GovPayException(e);
 		} catch (UtilsException e) {
@@ -563,6 +356,7 @@ public class Incassi {
 			} finally {
 				incassiBD.setAutoCommit(true);
 			}
+			return richiestaIncassoResponse;
 		} finally {
 			try {
 				if(incassiBD != null)
@@ -574,8 +368,225 @@ public class Incassi {
 		}
 	}
 
+
+	private RichiestaIncassoDTOResponse eseguiAcquisizioneRiconciliazione(RichiestaIncassoDTOResponse richiestaIncassoResponse, String codDomino, String idRiconciliazione, IContext ctx, BDConfigWrapper configWrapper,
+			IncassiBD incassiBD, Incasso incasso, String causale, String iuv, String idf, boolean ricercaIdFlussoCaseInsensitive, boolean salvaConUpdate)
+			throws ServiceException, IncassiException, UtilsException, GovPayException {
+		GpContext gpContext = (GpContext) ctx.getApplicationContext();
+		
+		log.debug("Riconciliazione [Dominio: "+codDomino+", Id: "+idRiconciliazione+"] Iuv ["+iuv+"], IdFlusso ["+idf+"], Causale ["+causale+"] in corso...");
+		
+		PagamentiBD pagamentiBD = new PagamentiBD(incassiBD);
+		pagamentiBD.setAtomica(false);
+		
+		FrBD frBD = new FrBD(incassiBD);
+		frBD.setAtomica(false);
+		
+		VersamentiBD versamentiBD = new VersamentiBD(incassiBD);
+		versamentiBD.setAtomica(false);
+		
+		RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(incassiBD);
+		rendicontazioniBD.setAtomica(false);
+		
+		List<it.govpay.bd.model.Pagamento> pagamenti = new ArrayList<>();
+		
+		// Riversamento singolo
+		if(iuv != null) {
+			try {
+				log.debug("Ricerca riconciliazione per riversamento Singolo [Dominio: "+codDomino+", Iuv: "+iuv+"]...");
+				it.govpay.bd.model.Pagamento pagamento = pagamentiBD.getPagamento(incasso.getCodDominio(), iuv);
+				
+				if(incasso.getImporto().doubleValue() != pagamento.getImportoPagato().doubleValue())
+					throw new IncassiException(FaultType.IMPORTO_ERRATO, "La richiesta di riconciliazione presenta un importo [" + incasso.getImporto() + "] non corripondente a quello riscosso [" + pagamento.getImportoPagato().doubleValue() + "]");
+				
+				pagamenti.add(pagamento);
+				log.debug("Ricerca riconciliazione per riversamento Singolo [Dominio: "+codDomino+", Iuv: "+iuv+"] completata.");
+			} catch (NotFoundException nfe) {
+				ctx.getApplicationLogger().log("incasso.iuvNonTrovato", iuv);
+				throw new IncassiException(FaultType.PAGAMENTO_NON_TROVATO, "Lo IUV " + iuv + " estratto dalla causale di incasso non identifica alcun pagamento per il creditore " + incasso.getCodDominio());
+			} catch (MultipleResultException mre) {
+				ctx.getApplicationLogger().log("incasso.iuvPagamentiMultipli", iuv, incasso.getCodDominio());
+				throw new IncassiException(FaultType.PAGAMENTO_NON_IDENTIFICATO, "Lo IUV " + iuv + " estratto dalla causale di incasso identifica piu' di un pagamento per il creditore " + incasso.getCodDominio());
+			}
+			
+			
+		}
+		
+		// Riversamento cumulativo
+		Fr fr = null;
+		if(idf != null) {
+			try {
+				log.debug("Ricerca flusso per riversamento cumulativo [Dominio: "+codDomino+", IdFlusso: "+idf+"]...");
+				// Cerco l'idf come case insensitive
+				fr = frBD.getFr(idf, ricercaIdFlussoCaseInsensitive);
+				richiestaIncassoResponse.setFr(fr);
+				log.debug("Ricerca flusso per riversamento cumulativo [Dominio: "+codDomino+", IdFlusso: "+idf+"] completata.");
+				if(!fr.getStato().equals(StatoFr.ACCETTATA)) {
+					ctx.getApplicationLogger().log("incasso.frAnomala", idf);
+					throw new IncassiException(FaultType.FR_ANOMALA, "Il flusso di rendicontazione " + idf + " identificato dalla causale di incasso risulta avere delle anomalie");
+				}
+				
+				// Verifica importo pagato con l'incassato
+				if(fr.getImportoTotalePagamenti().doubleValue() != incasso.getImporto().doubleValue()) {
+					ctx.getApplicationLogger().log("incasso.importoErrato", fr.getImportoTotalePagamenti().doubleValue() + "", incasso.getImporto().doubleValue() + "");
+					throw new IncassiException(FaultType.IMPORTO_ERRATO, "L'importo del flusso di redicontazione [" + incasso.getImporto() + "] non corriponde all'importo del riversamento [" + fr.getImportoTotalePagamenti().doubleValue() + "]");
+				}
+				
+				Versamento versamentoBusiness = new Versamento();
+				EventiBD eventiBD = new EventiBD(configWrapper);
+				
+				for(Rendicontazione rendicontazione : fr.getRendicontazioni(incassiBD)) {
+					
+					if(rendicontazione.getStato().equals(StatoRendicontazione.ALTRO_INTERMEDIARIO)) continue;
+					
+					if(rendicontazione.getStato().equals(StatoRendicontazione.ANOMALA)) {
+						ctx.getApplicationLogger().log("incasso.frAnomala", idf);
+						throw new IncassiException(FaultType.FR_ANOMALA, "Il flusso di rendicontazione " + idf + " identificato dalla causale di incasso risulta avere delle anomalie");
+					}
+					
+					it.govpay.bd.model.Pagamento pagamento = rendicontazione.getPagamento(incassiBD);
+					
+					if(pagamento == null && rendicontazione.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT)) {
+						// Incasso di un pagamento senza RPT. Controllo se il pagamento non e' stato creato nel frattempo dall'arrivo di una RT
+						try {
+							pagamento = pagamentiBD.getPagamento(fr.getCodDominio(), rendicontazione.getIuv(), rendicontazione.getIur(), rendicontazione.getIndiceDati());
+						} catch (NotFoundException e) {
+							// Pagamento non presente. Lo inserisco 
+							it.govpay.bd.model.Versamento versamento = null;
+							try {
+								// Workaround per le limitazioni in select for update. Da rimuovere quando lo iuv sara nel versamento.
+								incassiBD.disableSelectForUpdate();
+								versamento = versamentoBusiness.chiediVersamento(null, null, null, null, fr.getCodDominio(), rendicontazione.getIuv(), TipologiaTipoVersamento.DOVUTO);
+								incassiBD.enableSelectForUpdate();
+								versamento = versamentiBD.getVersamento(versamento.getId(), true);
+							} catch (GovPayException gpe) {
+								// Non deve accadere... la rendicontazione
+								throw new IncassiException(FaultType.FR_ANOMALA, "Il versamento rendicontato [Dominio:" + fr.getCodDominio()+ " IUV:"+rendicontazione.getIuv()+"] non esiste.");
+							} catch (EcException e2) {
+								// Non deve accadere... la rendicontazione
+								throw new IncassiException(FaultType.FR_ANOMALA, "Il versamento rendicontato [Dominio:" + fr.getCodDominio()+ " IUV:"+rendicontazione.getIuv()+"] non esiste.");
+							}
+							
+							List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti();
+							
+							pagamento = new it.govpay.bd.model.Pagamento();
+							pagamento.setTipo(TipoPagamento.ENTRATA);
+							pagamento.setStato(Stato.PAGATO_SENZA_RPT);
+							pagamento.setCodDominio(fr.getCodDominio());
+							pagamento.setDataAcquisizione(rendicontazione.getData());
+							pagamento.setDataPagamento(rendicontazione.getData());
+							pagamento.setImportoPagato(rendicontazione.getImporto());
+							pagamento.setIur(rendicontazione.getIur());
+							pagamento.setIuv(rendicontazione.getIuv());
+							pagamento.setIndiceDati(rendicontazione.getIndiceDati() == null ? 1 : rendicontazione.getIndiceDati());
+							
+							pagamento.setSingoloVersamento(singoliVersamenti.get(0));
+							rendicontazione.setPagamento(pagamento);
+							pagamentiBD.insertPagamento(pagamento);
+							rendicontazione.setIdPagamento(pagamento.getId());
+								
+							//Aggiorno lo stato del versamento:
+							switch (singoliVersamenti.get(0).getStatoSingoloVersamento()) {
+								case NON_ESEGUITO:
+									versamentiBD.updateStatoSingoloVersamento(singoliVersamenti.get(0).getId(), StatoSingoloVersamento.ESEGUITO);
+									versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Eseguito senza RPT");
+									// Aggiornamento stato promemoria
+									versamentiBD.updateStatoPromemoriaAvvisoVersamento(versamento.getId(), true, null);
+									versamentiBD.updateStatoPromemoriaScadenzaAppIOVersamento(versamento.getId(), true, null);
+									versamentiBD.updateStatoPromemoriaScadenzaMailVersamento(versamento.getId(), true, null);
+									
+									break;
+								case ESEGUITO:
+									versamento.setAnomalo(true);
+									versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Pagamento duplicato");
+									break;
+							}
+							
+							versamentiBD.updateVersamento(versamento);
+							
+							Evento eventoNota = new Evento();
+							eventoNota.setCategoriaEvento(CategoriaEvento.INTERNO);
+							eventoNota.setRuoloEvento(RuoloEvento.CLIENT);
+							eventoNota.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
+							eventoNota.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
+							eventoNota.setEsitoEvento(EsitoEvento.OK);
+							eventoNota.setDettaglioEsito("Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "].");
+							eventoNota.setTipoEvento("Pagamento eseguito senza RPT");
+							eventiBD.insertEvento(eventoNota);
+						} catch (MultipleResultException e) {
+							ctx.getApplicationLogger().log("incasso.frAnomala", idf);
+							throw new IncassiException(FaultType.FR_ANOMALA, "La rendicontazione [Dominio:"+fr.getCodDominio()+" Iuv:" + rendicontazione.getIuv()+ " Iur:" + rendicontazione.getIur() + " Indice:" + rendicontazione.getIndiceDati() + "] non identifica univocamente un pagamento");
+						}
+					} else {
+						// Verifica che l'importo rendicontato corrisponda al pagato
+						if(rendicontazione.getImporto().doubleValue() != pagamento.getImportoPagato().doubleValue())
+							throw new IncassiException(FaultType.IMPORTO_ERRATO, "La rendicontazione [Dominio:"+fr.getCodDominio()+" Iuv:" + rendicontazione.getIuv()+ " Iur:" + rendicontazione.getIur() + " Indice:" + rendicontazione.getIndiceDati() + "] presenta un importo [" + rendicontazione.getImporto() + "] non corripondente a quello riscosso [" + pagamento.getImportoPagato().doubleValue() + "]");
+					}
+					
+					//Aggiorno la FK della rendicontazione
+					rendicontazione.setIdPagamento(pagamento.getId());
+					rendicontazioniBD.updateRendicontazione(rendicontazione);
+					
+					pagamenti.add(pagamento);
+				}
+			} catch (NotFoundException nfe) {
+				ctx.getApplicationLogger().log("incasso.idfNonTrovato", idf);
+				throw new IncassiException(FaultType.IDF_NON_TROVATO, "L'identificativo " + idf + " estratto dalla causale di incasso non identifica alcun flusso di rendicontazione");
+			} 
+		}
+		
+		// Verifica stato dei pagamenti da incassare 
+		for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
+			if(Stato.INCASSATO.equals(pagamento.getStato())) {
+				ctx.getApplicationLogger().log("incasso.pagamentoGiaIncassato", pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur());
+				throw new IncassiException(FaultType.PAGAMENTO_GIA_INCASSATO, "Uno dei pagamenti incassati [Dominio:" + pagamento.getCodDominio() + " Iuv:" + pagamento.getIuv() + " Iur:" + pagamento.getIur() + "] risuta gia' incassato.");
+			}
+		}
+		
+		// Inserisco l'incasso e aggiorno lo stato dei pagamenti
+		try {
+			// salvataggio stato incasso
+			incasso.setStato(StatoIncasso.ACQUISITO);
+			incasso.setDataIncasso(new Date());
+			
+			if(salvaConUpdate) {
+				incassiBD.updateIncasso(incasso);
+			} else {
+				incassiBD.insertIncasso(incasso);
+			}
+			
+			for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
+				pagamento.setStato(Stato.INCASSATO);
+				pagamento.setIncasso(incasso);
+				pagamentiBD.updatePagamento(pagamento);
+				versamentiBD.aggiornaIncassoVersamento(pagamento);
+			}
+			
+			// se e' un incasso cumulativo collego il flusso all'incasso
+			if(fr != null) {
+				frBD.updateIdIncasso(fr.getId(), incasso.getId());
+			}
+			incassiBD.commit();
+			gpContext.getEventoCtx().setIdIncasso(incasso.getId()); 
+			
+			log.debug("Riconciliazione [Dominio: "+codDomino+", Id: "+idRiconciliazione+"] Iuv ["+iuv+"], IdFlusso ["+idf+"], Causale ["+causale+"] completata con esito OK.");
+		} catch(Exception e) {
+			incassiBD.rollback();
+			throw new GovPayException(e);
+		} finally {
+			try {
+				incassiBD.setAutoCommit(true);
+			} catch (ServiceException e) {
+				throw new GovPayException(e);
+			} 
+		}
+		
+		return richiestaIncassoResponse;
+	}
+
 	public RichiestaIncassoDTOResponse richiestaIncasso(RichiestaIncassoDTO richiestaIncasso) throws NotAuthorizedException, GovPayException, IncassiException, EcException {
 		
+		boolean ricercaIdFlussoCaseInsensitive = richiestaIncasso.isRicercaIdFlussoCaseInsensitive();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		IncassiBD incassiBD = null;
 		try {
@@ -667,6 +678,9 @@ public class Incassi {
 			
 			// OVERRIDE TRN NUOVA GESTIONE
 			richiestaIncasso.setTrn(iuv != null ? iuv : idf);
+			// IDENTIFICATIVO INCASSO
+			if(richiestaIncasso.getIdRiconciliazione() == null)
+				richiestaIncasso.setIdRiconciliazione(richiestaIncasso.getTrn());
 			RichiestaIncassoDTOResponse richiestaIncassoResponse = new RichiestaIncassoDTOResponse();
 			
 			if(gpContext.getEventoCtx().getDatiPagoPA() == null) {
@@ -678,8 +692,9 @@ public class Incassi {
 			// Controllo se il TRN dell'incasso e' gia registrato
 			
 			incassiBD = new IncassiBD(configWrapper);
+			Incasso incasso = null;
 			try {
-				Incasso incasso = incassiBD.getIncasso(dominio.getCodDominio(), richiestaIncasso.getTrn());
+				incasso = incassiBD.getIncasso(dominio.getCodDominio(), richiestaIncasso.getIdRiconciliazione());
 				gpContext.getEventoCtx().getDatiPagoPA().setSct(incasso.getSct());
 				gpContext.getEventoCtx().setIdIncasso(incasso.getId()); 
 				
@@ -702,6 +717,26 @@ public class Incassi {
 			} catch(NotFoundException nfe) {
 				// Incasso non registrato.
 				richiestaIncassoResponse.setCreated(true);
+				
+				incasso = new it.govpay.bd.model.Incasso();
+				incasso.setCausale(richiestaIncasso.getCausale());
+				incasso.setCodDominio(richiestaIncasso.getCodDominio());
+				incasso.setDataValuta(richiestaIncasso.getDataValuta());
+				incasso.setDataContabile(richiestaIncasso.getDataContabile());
+				incasso.setDispositivo(richiestaIncasso.getDispositivo());
+				incasso.setImporto(richiestaIncasso.getImporto());
+				incasso.setTrn(richiestaIncasso.getTrn());
+				incasso.setIbanAccredito(richiestaIncasso.getIbanAccredito());
+				incasso.setIdApplicazione(idApplicazione);
+				incasso.setIdOperatore(idOperatore); 
+				incasso.setSct(richiestaIncasso.getSct());
+				incasso.setIuv(richiestaIncasso.getIuv());
+				incasso.setIdFlussoRendicontazione(richiestaIncasso.getIdFlusso());
+				incasso.setIdRiconciliazione(richiestaIncasso.getIdRiconciliazione());
+				richiestaIncassoResponse.setIncasso(incasso);
+				
+			} catch (MultipleResultException e) {
+				throw new GovPayException(e);
 			}
 			
 //			// Controllo se l'idf o lo iuv sono gia' stati incassati in precedenti incassi
@@ -731,211 +766,7 @@ public class Incassi {
 			
 			incassiBD.setAutoCommit(false);
 			
-			List<it.govpay.bd.model.Pagamento> pagamenti = new ArrayList<>();
-			
-			PagamentiBD pagamentiBD = new PagamentiBD(incassiBD);
-			pagamentiBD.setAtomica(false);
-			
-			FrBD frBD = new FrBD(incassiBD);
-			frBD.setAtomica(false);
-			
-			VersamentiBD versamentiBD = new VersamentiBD(incassiBD);
-			versamentiBD.setAtomica(false);
-			
-			RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(incassiBD);
-			rendicontazioniBD.setAtomica(false);
-			
-			// Riversamento singolo
-			if(iuv != null) {
-				try {
-					it.govpay.bd.model.Pagamento pagamento = pagamentiBD.getPagamento(richiestaIncasso.getCodDominio(), iuv);
-					
-					if(richiestaIncasso.getImporto().doubleValue() != pagamento.getImportoPagato().doubleValue())
-						throw new IncassiException(FaultType.IMPORTO_ERRATO, "La richiesta di riconciliazione presenta un importo [" + richiestaIncasso.getImporto() + "] non corripondente a quello riscosso [" + pagamento.getImportoPagato().doubleValue() + "]");
-					
-					pagamenti.add(pagamento);
-				} catch (NotFoundException nfe) {
-					ctx.getApplicationLogger().log("incasso.iuvNonTrovato", iuv);
-					throw new IncassiException(FaultType.PAGAMENTO_NON_TROVATO, "Lo IUV " + iuv + " estratto dalla causale di incasso non identifica alcun pagamento per il creditore " + richiestaIncasso.getCodDominio());
-				} catch (MultipleResultException mre) {
-					ctx.getApplicationLogger().log("incasso.iuvPagamentiMultipli", iuv, richiestaIncasso.getCodDominio());
-					throw new IncassiException(FaultType.PAGAMENTO_NON_IDENTIFICATO, "Lo IUV " + iuv + " estratto dalla causale di incasso identifica piu' di un pagamento per il creditore " + richiestaIncasso.getCodDominio());
-				}
-				
-				
-			}
-			
-			// Riversamento cumulativo
-			Fr fr = null;
-			if(idf != null) {
-				
-				try {
-					// Cerco l'idf come case insensitive
-					fr = frBD.getFr(idf, richiestaIncasso.isRicercaIdFlussoCaseInsensitive());
-					
-					if(!fr.getStato().equals(StatoFr.ACCETTATA)) {
-						ctx.getApplicationLogger().log("incasso.frAnomala", idf);
-						throw new IncassiException(FaultType.FR_ANOMALA, "Il flusso di rendicontazione " + idf + " identificato dalla causale di incasso risulta avere delle anomalie");
-					}
-					
-					// Verifica importo pagato con l'incassato
-					if(fr.getImportoTotalePagamenti().doubleValue() != richiestaIncasso.getImporto().doubleValue()) {
-						ctx.getApplicationLogger().log("incasso.importoErrato", fr.getImportoTotalePagamenti().doubleValue() + "", richiestaIncasso.getImporto().doubleValue() + "");
-						throw new IncassiException(FaultType.IMPORTO_ERRATO, "L'importo del flusso di redicontazione [" + richiestaIncasso.getImporto() + "] non corriponde all'importo del riversamento [" + fr.getImportoTotalePagamenti().doubleValue() + "]");
-					}
-					
-					Versamento versamentoBusiness = new Versamento();
-					EventiBD eventiBD = new EventiBD(configWrapper);
-					richiestaIncassoResponse.setFr(fr);
-					for(Rendicontazione rendicontazione : fr.getRendicontazioni(incassiBD)) {
-						
-						if(rendicontazione.getStato().equals(StatoRendicontazione.ALTRO_INTERMEDIARIO)) continue;
-						
-						if(rendicontazione.getStato().equals(StatoRendicontazione.ANOMALA)) {
-							ctx.getApplicationLogger().log("incasso.frAnomala", idf);
-							throw new IncassiException(FaultType.FR_ANOMALA, "Il flusso di rendicontazione " + idf + " identificato dalla causale di incasso risulta avere delle anomalie");
-						}
-						
-						it.govpay.bd.model.Pagamento pagamento = rendicontazione.getPagamento(incassiBD);
-						
-						if(pagamento == null && rendicontazione.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT)) {
-							// Incasso di un pagamento senza RPT. Controllo se il pagamento non e' stato creato nel frattempo dall'arrivo di una RT
-							try {
-								pagamento = pagamentiBD.getPagamento(fr.getCodDominio(), rendicontazione.getIuv(), rendicontazione.getIur(), rendicontazione.getIndiceDati());
-							} catch (NotFoundException e) {
-								// Pagamento non presente. Lo inserisco 
-								it.govpay.bd.model.Versamento versamento = null;
-								try {
-									// Workaround per le limitazioni in select for update. Da rimuovere quando lo iuv sara nel versamento.
-									incassiBD.disableSelectForUpdate();
-									versamento = versamentoBusiness.chiediVersamento(null, null, null, null, fr.getCodDominio(), rendicontazione.getIuv(), TipologiaTipoVersamento.DOVUTO);
-									incassiBD.enableSelectForUpdate();
-									versamento = versamentiBD.getVersamento(versamento.getId(), true);
-								} catch (GovPayException gpe) {
-									// Non deve accadere... la rendicontazione
-									throw new IncassiException(FaultType.FR_ANOMALA, "Il versamento rendicontato [Dominio:" + fr.getCodDominio()+ " IUV:"+rendicontazione.getIuv()+"] non esiste.");
-								}
-								
-								List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti();
-								
-								pagamento = new it.govpay.bd.model.Pagamento();
-								pagamento.setTipo(TipoPagamento.ENTRATA);
-								pagamento.setStato(Stato.PAGATO_SENZA_RPT);
-								pagamento.setCodDominio(fr.getCodDominio());
-								pagamento.setDataAcquisizione(rendicontazione.getData());
-								pagamento.setDataPagamento(rendicontazione.getData());
-								pagamento.setImportoPagato(rendicontazione.getImporto());
-								pagamento.setIur(rendicontazione.getIur());
-								pagamento.setIuv(rendicontazione.getIuv());
-								pagamento.setIndiceDati(rendicontazione.getIndiceDati() == null ? 1 : rendicontazione.getIndiceDati());
-								
-								pagamento.setSingoloVersamento(singoliVersamenti.get(0));
-								rendicontazione.setPagamento(pagamento);
-								pagamentiBD.insertPagamento(pagamento);
-								rendicontazione.setIdPagamento(pagamento.getId());
-									
-								//Aggiorno lo stato del versamento:
-								switch (singoliVersamenti.get(0).getStatoSingoloVersamento()) {
-									case NON_ESEGUITO:
-										versamentiBD.updateStatoSingoloVersamento(singoliVersamenti.get(0).getId(), StatoSingoloVersamento.ESEGUITO);
-										versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Eseguito senza RPT");
-										// Aggiornamento stato promemoria
-										versamentiBD.updateStatoPromemoriaAvvisoVersamento(versamento.getId(), true, null);
-										versamentiBD.updateStatoPromemoriaScadenzaAppIOVersamento(versamento.getId(), true, null);
-										versamentiBD.updateStatoPromemoriaScadenzaMailVersamento(versamento.getId(), true, null);
-										
-										break;
-									case ESEGUITO:
-										versamento.setAnomalo(true);
-										versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Pagamento duplicato");
-										break;
-								}
-								
-								versamentiBD.updateVersamento(versamento);
-								
-								Evento eventoNota = new Evento();
-								eventoNota.setCategoriaEvento(CategoriaEvento.INTERNO);
-								eventoNota.setRuoloEvento(RuoloEvento.CLIENT);
-								eventoNota.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
-								eventoNota.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
-								eventoNota.setEsitoEvento(EsitoEvento.OK);
-								eventoNota.setDettaglioEsito("Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "].");
-								eventoNota.setTipoEvento("Pagamento eseguito senza RPT");
-								eventiBD.insertEvento(eventoNota);
-							} catch (MultipleResultException e) {
-								ctx.getApplicationLogger().log("incasso.frAnomala", idf);
-								throw new IncassiException(FaultType.FR_ANOMALA, "La rendicontazione [Dominio:"+fr.getCodDominio()+" Iuv:" + rendicontazione.getIuv()+ " Iur:" + rendicontazione.getIur() + " Indice:" + rendicontazione.getIndiceDati() + "] non identifica univocamente un pagamento");
-							}
-						} else {
-							// Verifica che l'importo rendicontato corrisponda al pagato
-							if(rendicontazione.getImporto().doubleValue() != pagamento.getImportoPagato().doubleValue())
-								throw new IncassiException(FaultType.IMPORTO_ERRATO, "La rendicontazione [Dominio:"+fr.getCodDominio()+" Iuv:" + rendicontazione.getIuv()+ " Iur:" + rendicontazione.getIur() + " Indice:" + rendicontazione.getIndiceDati() + "] presenta un importo [" + rendicontazione.getImporto() + "] non corripondente a quello riscosso [" + pagamento.getImportoPagato().doubleValue() + "]");
-						}
-						
-						//Aggiorno la FK della rendicontazione
-						rendicontazione.setIdPagamento(pagamento.getId());
-						rendicontazioniBD.updateRendicontazione(rendicontazione);
-						
-						pagamenti.add(pagamento);
-					}
-				} catch (NotFoundException nfe) {
-					ctx.getApplicationLogger().log("incasso.idfNonTrovato", idf);
-					throw new IncassiException(FaultType.IDF_NON_TROVATO, "L'identificativo " + idf + " estratto dalla causale di incasso non identifica alcun flusso di rendicontazione");
-				} 
-			}
-			
-			// Verifica stato dei pagamenti da incassare 
-			for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
-				if(Stato.INCASSATO.equals(pagamento.getStato())) {
-					ctx.getApplicationLogger().log("incasso.pagamentoGiaIncassato", pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur());
-					throw new IncassiException(FaultType.PAGAMENTO_GIA_INCASSATO, "Uno dei pagamenti incassati [Dominio:" + pagamento.getCodDominio() + " Iuv:" + pagamento.getIuv() + " Iur:" + pagamento.getIur() + "] risuta gia' incassato.");
-				}
-			}
-			
-			// Inserisco l'incasso e aggiorno lo stato dei pagamenti
-			try {
-				it.govpay.bd.model.Incasso incasso = new it.govpay.bd.model.Incasso();
-				incasso.setCausale(richiestaIncasso.getCausale());
-				incasso.setCodDominio(richiestaIncasso.getCodDominio());
-				incasso.setDataIncasso(new Date());
-				incasso.setDataValuta(richiestaIncasso.getDataValuta());
-				incasso.setDataContabile(richiestaIncasso.getDataContabile());
-				incasso.setDispositivo(richiestaIncasso.getDispositivo());
-				incasso.setImporto(richiestaIncasso.getImporto());
-				incasso.setTrn(richiestaIncasso.getTrn());
-				incasso.setIbanAccredito(richiestaIncasso.getIbanAccredito());
-				incasso.setIdApplicazione(idApplicazione);
-				incasso.setIdOperatore(idOperatore); 
-				incasso.setSct(richiestaIncasso.getSct());
-				incasso.setIuv(richiestaIncasso.getIuv());
-				incasso.setIdFlussoRendicontazione(richiestaIncasso.getIdFlusso());
-				incasso.setIdRiconciliazione(richiestaIncasso.getIdRiconciliazione() != null ? richiestaIncasso.getIdRiconciliazione() : richiestaIncasso.getTrn());
-				incasso.setStato(StatoIncasso.ACQUISITO);
-				richiestaIncassoResponse.setIncasso(incasso);
-				incassiBD.insertIncasso(incasso);
-				
-				for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
-					pagamento.setStato(Stato.INCASSATO);
-					pagamento.setIncasso(incasso);
-					pagamentiBD.updatePagamento(pagamento);
-					versamentiBD.aggiornaIncassoVersamento(pagamento);
-				}
-				
-				// se e' un incasso cumulativo collego il flusso all'incasso
-				if(fr != null) {
-					frBD.updateIdIncasso(fr.getId(), incasso.getId());
-				}
-				
-				incassiBD.commit();
-				gpContext.getEventoCtx().setIdIncasso(incasso.getId()); 
-			} catch(Exception e) {
-				incassiBD.rollback();
-				throw new GovPayException(e);
-			} finally {
-				incassiBD.setAutoCommit(true);
-			}
-			
-			return richiestaIncassoResponse;
+			return eseguiAcquisizioneRiconciliazione(richiestaIncassoResponse, incasso.getCodDominio(), incasso.getIdRiconciliazione(), ctx, configWrapper, incassiBD, incasso, causale, iuv, idf, ricercaIdFlussoCaseInsensitive, false);
 		} catch (ServiceException e) {
 			throw new GovPayException(e);
 		} catch (UtilsException e) {
