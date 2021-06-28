@@ -323,6 +323,7 @@ CREATE VIEW v_rendicontazioni_ext AS
 
 
 -- 22/06/2021 API-Rendicontazione V3, nuovi campi tabella incassi
+
 ALTER TABLE incassi ADD COLUMN identificativo VARCHAR(35);
 UPDATE incassi SET identificativo = trn;
 ALTER TABLE incassi ALTER COLUMN identificativo SET NOT NULL;
@@ -338,7 +339,10 @@ ALTER TABLE incassi ADD COLUMN descrizione_stato VARCHAR(255);
 ALTER TABLE incassi DROP CONSTRAINT unique_incassi_1;
 ALTER TABLE incassi ADD CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,identificativo);
 
+ALTER TABLE incassi ALTER COLUMN causale DROP NOT NULL;
 
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
 
 
 

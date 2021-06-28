@@ -13,6 +13,8 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "id",
 "idDominio",
+"stato",
+"descrizioneStato",
 "importo",
 "data",
 "dataValuta",
@@ -31,6 +33,12 @@ public class RiconciliazioneIndex extends JSONSerializable {
   
   @JsonProperty("idDominio")
   private String idDominio = null;
+  
+  @JsonProperty("stato")
+  private StatoRiconciliazione stato = null;
+  
+  @JsonProperty("descrizioneStato")
+  private String descrizioneStato = null;
   
   @JsonProperty("importo")
   private BigDecimal importo = null;
@@ -92,6 +100,37 @@ public class RiconciliazioneIndex extends JSONSerializable {
   }
   public void setIdDominio(String idDominio) {
     this.idDominio = idDominio;
+  }
+
+  /**
+   **/
+  public RiconciliazioneIndex stato(StatoRiconciliazione stato) {
+    this.stato = stato;
+    return this;
+  }
+
+  @JsonProperty("stato")
+  public StatoRiconciliazione getStato() {
+    return stato;
+  }
+  public void setStato(StatoRiconciliazione stato) {
+    this.stato = stato;
+  }
+
+  /**
+   * Dettaglio dello stato riconciliazione
+   **/
+  public RiconciliazioneIndex descrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+    return this;
+  }
+
+  @JsonProperty("descrizioneStato")
+  public String getDescrizioneStato() {
+    return descrizioneStato;
+  }
+  public void setDescrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
   }
 
   /**
@@ -265,6 +304,8 @@ public class RiconciliazioneIndex extends JSONSerializable {
     RiconciliazioneIndex riconciliazioneIndex = (RiconciliazioneIndex) o;
     return Objects.equals(id, riconciliazioneIndex.id) &&
         Objects.equals(idDominio, riconciliazioneIndex.idDominio) &&
+        Objects.equals(stato, riconciliazioneIndex.stato) &&
+        Objects.equals(descrizioneStato, riconciliazioneIndex.descrizioneStato) &&
         Objects.equals(importo, riconciliazioneIndex.importo) &&
         Objects.equals(data, riconciliazioneIndex.data) &&
         Objects.equals(dataValuta, riconciliazioneIndex.dataValuta) &&
@@ -279,7 +320,7 @@ public class RiconciliazioneIndex extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, idDominio, importo, data, dataValuta, dataContabile, contoAccredito, sct, trn, causale, iuv, idFlussoRendicontazione);
+    return Objects.hash(id, idDominio, stato, descrizioneStato, importo, data, dataValuta, dataContabile, contoAccredito, sct, trn, causale, iuv, idFlussoRendicontazione);
   }
 
   public static RiconciliazioneIndex parse(String json) throws ServiceException, ValidationException {
@@ -298,6 +339,8 @@ public class RiconciliazioneIndex extends JSONSerializable {
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("    dataValuta: ").append(toIndentedString(dataValuta)).append("\n");

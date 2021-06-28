@@ -29,6 +29,10 @@
 	<b:bean id="batchSpedizioneTracciatiNotificaPagamentiCheck" class="it.govpay.core.utils.tasks.SpedizioneTracciatiNotificaPagamentiCheck"/>
 	<b:bean id="batchSpedizioneTracciatiNotificaPagamenti" class="it.govpay.core.utils.tasks.SpedizioneTracciatiNotificaPagamenti"/>
 	
+	<b:bean id="batchElaborazioneRiconciliazioniCheck" class="it.govpay.core.utils.tasks.ElaborazioneRiconciliazioniCheck"/>
+	<b:bean id="batchElaborazioneRiconciliazioni" class="it.govpay.core.utils.tasks.ElaborazioneRiconciliazioni"/>
+	
+	
 	<task:scheduled-tasks scheduler="myScheduler">
 		<!-- Rendicontazioni acquisite ogni giorno alle 4, 12 e 18 -->
 		<task:scheduled ref="batchAcquisizioneRendicontazioni" method="exec" cron="0 0 4,12,18 * * ?" />
@@ -65,6 +69,11 @@
         <task:scheduled ref="batchSpedizioneTracciatiNotificaPagamentiCheck" method="exec" cron="0/5 * * * * ?" />
          <!-- tracciati notifica pagamenti spediti tutti i giorni ogni mezzora -->
         <task:scheduled ref="batchSpedizioneTracciatiNotificaPagamenti" method="exec" cron="0 0/30 * * * ?" />
+        
+        <!-- Check riconciliazioni da elaborare viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchElaborazioneRiconciliazioniCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- Elaborazione riconciliazioni viene eseguito ogni ora -->
+        <task:scheduled ref="batchElaborazioneRiconciliazioni" method="exec" cron="0 0 * * * ?" />
         
     </task:scheduled-tasks>
  

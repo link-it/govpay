@@ -973,7 +973,7 @@ CREATE TABLE incassi
 (
 	trn VARCHAR(35) NOT NULL,
 	cod_dominio VARCHAR(35) NOT NULL,
-	causale VARCHAR(512) NOT NULL,
+	causale VARCHAR(512),
 	importo DOUBLE PRECISION NOT NULL,
 	data_valuta DATE,
 	data_contabile DATE,

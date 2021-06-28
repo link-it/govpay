@@ -1,6 +1,8 @@
 {
    "id":"#notnull",
    "idDominio":"#(idDominio)",
+   "stato":"#notnull",
+   "descrizioneStato":"##string",
    "importo":"#(importo)",
    "data": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
    "sct":"#notnull",

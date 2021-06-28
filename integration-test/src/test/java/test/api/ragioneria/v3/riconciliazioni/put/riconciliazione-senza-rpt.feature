@@ -47,6 +47,17 @@ And path '/riconciliazioni', idDominio, idRiconciliazione
 And headers basicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method put
-Then status 201
+Then status 202
+
+* def riconciliazioneLocation = responseHeaders['Location'][0]
+
+# Attesa batch elaborazione rendicontazioni
+* call sleep(5000)
+
+Given url ragioneriaBaseurl
+And path riconciliazioneLocation
+And headers basicAutenticationHeader
+When method get
+Then status 200
 And match response == read('msg/riconciliazione-singola-senza-rpt.json')
 

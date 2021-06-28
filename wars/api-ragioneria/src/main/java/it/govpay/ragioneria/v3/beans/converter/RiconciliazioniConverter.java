@@ -17,6 +17,7 @@ import it.govpay.ragioneria.v3.beans.NuovaRiconciliazione;
 import it.govpay.ragioneria.v3.beans.Riconciliazione;
 import it.govpay.ragioneria.v3.beans.RiconciliazioneIndex;
 import it.govpay.ragioneria.v3.beans.RiscossioneIndex;
+import it.govpay.ragioneria.v3.beans.StatoRiconciliazione;
 
 public class RiconciliazioniConverter {
 
@@ -39,7 +40,6 @@ public class RiconciliazioniConverter {
 		
 		return dto;
 	}
-	
 	
 	public static Riconciliazione toRsModel(it.govpay.bd.model.Incasso i) throws ServiceException, NotFoundException, IOException, ValidationException {
 		Riconciliazione rsModel = new Riconciliazione();
@@ -65,6 +65,19 @@ public class RiconciliazioniConverter {
 		rsModel.setIuv(i.getIuv());
 		rsModel.setIdFlussoRendicontazione(i.getIdFlussoRendicontazione());
 		
+		switch (i.getStato()) {
+		case ACQUISITO:
+			rsModel.setStato(StatoRiconciliazione.ACQUISITA);
+			break;
+		case ERRORE:
+			rsModel.setStato(StatoRiconciliazione.ERRORE);
+			break;
+		case NUOVO:
+			rsModel.setStato(StatoRiconciliazione.IN_ELABORAZIONE);
+			break;
+		}
+		rsModel.setDescrizioneStato(i.getDescrizioneStato());
+		
 		return rsModel;
 	}
 	
@@ -83,6 +96,18 @@ public class RiconciliazioniConverter {
 		rsModel.setContoAccredito(i.getIbanAccredito());
 		rsModel.setIuv(i.getIuv());
 		rsModel.setIdFlussoRendicontazione(i.getIdFlussoRendicontazione());
+		switch (i.getStato()) {
+		case ACQUISITO:
+			rsModel.setStato(StatoRiconciliazione.ACQUISITA);
+			break;
+		case ERRORE:
+			rsModel.setStato(StatoRiconciliazione.ERRORE);
+			break;
+		case NUOVO:
+			rsModel.setStato(StatoRiconciliazione.IN_ELABORAZIONE);
+			break;
+		}
+		rsModel.setDescrizioneStato(i.getDescrizioneStato());
 		
 		return rsModel;
 	}

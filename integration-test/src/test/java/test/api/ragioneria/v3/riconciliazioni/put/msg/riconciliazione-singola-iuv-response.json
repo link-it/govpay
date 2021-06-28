@@ -7,7 +7,7 @@
    "data": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
    "sct":"#notnull",
    "trn":"#notnull",
-   "causale":"#(causale)",
+   "iuv":"#(iuv)",
    "riscossioni":[
       {
       	 "iuv":"#(iuv)",

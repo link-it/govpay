@@ -323,6 +323,27 @@ CREATE VIEW v_rendicontazioni_ext AS
      LEFT JOIN incassi on pagamenti.id_incasso = incassi.id;
      
      
+-- 22/06/2021 API-Rendicontazione V3, nuovi campi tabella incassi
+
+ALTER TABLE incassi ADD identificativo VARCHAR(35);
+UPDATE incassi SET identificativo = trn;
+ALTER TABLE incassi ALTER COLUMN identificativo VARCHAR(35) NOT NULL;
+
+ALTER TABLE incassi ADD stato VARCHAR(35);
+UPDATE incassi SET stato = 'ACQUISITO';
+ALTER TABLE incassi ALTER COLUMN stato VARCHAR(35) NOT NULL;
+
+ALTER TABLE incassi ADD iuv VARCHAR(35);
+ALTER TABLE incassi ADD cod_flusso_rendicontazione VARCHAR(35);
+ALTER TABLE incassi ADD descrizione_stato VARCHAR(255);
+
+ALTER TABLE incassi DROP CONSTRAINT unique_incassi_1;
+ALTER TABLE incassi ADD CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,identificativo);
+
+ALTER TABLE incassi ALTER COLUMN causale VARCHAR(512) NULL;
+
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
 
 
      

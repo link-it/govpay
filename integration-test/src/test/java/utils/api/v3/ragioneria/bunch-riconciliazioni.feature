@@ -34,7 +34,18 @@ And path '/riconciliazioni', idDominio, idRiconciliazione
 And headers idA2ABasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method put
-Then status 201
+Then status 202
+
+* def riconciliazioneLocation = responseHeaders['Location'][0]
+
+# Attesa batch elaborazione rendicontazioni
+* call sleep(5000)
+
+Given url ragioneriaBaseurl
+And path riconciliazioneLocation
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
 And match response == read('msg/riconciliazione-singola-response.json')
 
 * def idRiconciliazioneSin_DOM1_A2A = response.id
@@ -58,7 +69,18 @@ And path '/riconciliazioni', idDominio, idRiconciliazione
 And headers idA2A2BasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method put
-Then status 201
+Then status 202
+
+* def riconciliazioneLocation = responseHeaders['Location'][0]
+
+# Attesa batch elaborazione rendicontazioni
+* call sleep(5000)
+
+Given url ragioneriaBaseurl
+And path riconciliazioneLocation
+And headers idA2A2BasicAutenticationHeader
+When method get
+Then status 200
 
 * def idRiconciliazioneSin_DOM1_A2A2 = response.id
 * def riconciliazioneSin_DOM1_A2A2 = response
@@ -90,7 +112,18 @@ And path '/riconciliazioni', idDominio, idRiconciliazione
 And headers idA2ABasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method put
-Then status 201
+Then status 202
+
+* def riconciliazioneLocation = responseHeaders['Location'][0]
+
+# Attesa batch elaborazione rendicontazioni
+* call sleep(5000)
+
+Given url ragioneriaBaseurl
+And path riconciliazioneLocation
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
 
 * def idRiconciliazioneCum_DOM1_A2A = response.id
 * def riconciliazioneCum_DOM1_A2A = response
@@ -122,7 +155,18 @@ And path '/riconciliazioni', idDominio, idRiconciliazione
 And headers idA2A2BasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method put
-Then status 201
+Then status 202
+
+* def riconciliazioneLocation = responseHeaders['Location'][0]
+
+# Attesa batch elaborazione rendicontazioni
+* call sleep(5000)
+
+Given url ragioneriaBaseurl
+And path riconciliazioneLocation
+And headers idA2A2BasicAutenticationHeader
+When method get
+Then status 200
 
 * def idRiconciliazioneCum_DOM1_A2A2 = response.id
 * def riconciliazioneSin_DOM1_A2A2 = response

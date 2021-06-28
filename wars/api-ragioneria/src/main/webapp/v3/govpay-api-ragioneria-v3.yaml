@@ -108,7 +108,7 @@ paths:
               sct: 00000011234
               causale: '000000000000000,00000000000000101,01EUR000000000000000,000000000000000000000000,000000000000,00/ZZ2SATISPAY EUROPE SA/ZZ3Comune Dimostrativo/PUR/LGPE-RIVERSAMENTO/URI/2020-11-21GovPAYPsp-1234567890/ZZ4/4184/ZZ4/ID1357a8662b2256347456532f53f9a9825357a8662b2b911eb8da402f53f9a9825'
       responses:
-        '201':
+        '200':
           $ref: '#/components/responses/Riconciliazione'
         '202':
           $ref: '#/components/responses/202Accepted'          
@@ -127,11 +127,7 @@ paths:
         - Riconciliazioni
       responses:
         '200':
-          description: Dettaglio dell'incasso
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/Riconciliazione'
+          $ref: '#/components/responses/Riconciliazione'
         '401':
           $ref: '#/components/responses/401NotAuthenticated'
         '403':
@@ -463,8 +459,8 @@ components:
           required:
             - id
             - idDominio
-            - importo
             - data
+            - stato
           properties:
             id:
               type: string
@@ -474,6 +470,11 @@ components:
               type: string
               description: Identificativo ente creditore
               example: 01234567890
+            stato:
+              $ref: '#/components/schemas/StatoRiconciliazione'
+            descrizioneStato:
+              type: string
+              description: Dettaglio dello stato riconciliazione
             importo:
               type: number
               example: 100.01
@@ -630,6 +631,17 @@ components:
           type: string
           example: +39 000 1234567    
           pattern: "\\+[0-9]{2,2}\\s[0-9]{3,3}\\-[0-9]{7,7}"
+    StatoRiconciliazione:
+      description: > 
+        Stato della riconciliazione
+         * IN_ELABORAZIONE: In elaborazione
+         * ACQUISITA: Acquisizione completata con successo
+         * ERRORE: Acquisizione completata con errore
+      type: string
+      enum:
+        - IN_ELABORAZIONE
+        - ACQUISITA
+        - ERRORE
     TipoAutorizzazione:
       type: array
       items:

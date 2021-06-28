@@ -3107,7 +3107,7 @@
 			
 			<xsd:element name="trn" type="String35" />
 			<xsd:element name="codDominio" type="String35" />
-			<xsd:element name="causale" type="String512" />
+			<xsd:element name="causale" type="String512" minOccurs="0"/>
 			<xsd:element name="importo" type="xsd:decimal"/>
 			<xsd:element name="dataValuta" type="xsd:date" minOccurs="0"/>
 			<xsd:element name="dataContabile" type="xsd:date" minOccurs="0"/>

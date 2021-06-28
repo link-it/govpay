@@ -20,6 +20,7 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -29,6 +30,8 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
@@ -37,8 +40,13 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Incasso;
+import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.converter.IncassoConverter;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
+import it.govpay.bd.pagamento.filters.PagamentoFilter;
+import it.govpay.orm.IdIncasso;
 import it.govpay.orm.dao.jdbc.JDBCIncassoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.IncassoFieldConverter;
 import it.govpay.orm.model.IncassoModel;
@@ -82,11 +90,15 @@ public class IncassiBD extends BasicBD {
 		}
 	}
 	
+	public Incasso getIncassoByCodDominioIdRiconciliazione(String codDominio, String idRiconciliazione) throws ServiceException, NotFoundException {
+		return getIncasso(codDominio, null, idRiconciliazione);
+	}
+	
 	public Incasso getIncasso(String codDominio, String trn) throws ServiceException, NotFoundException {
 		return getIncasso(codDominio, trn, null);
 	}
 	
-	public Incasso getIncasso(String codDominio, String trn, String idRiconciliazione) throws ServiceException, NotFoundException {
+	private Incasso getIncasso(String codDominio, String trn, String idRiconciliazione) throws ServiceException, NotFoundException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -125,6 +137,27 @@ public class IncassiBD extends BasicBD {
 			it.govpay.orm.Incasso vo = IncassoConverter.toVO(incasso);
 			this.getIncassoService().create(vo);
 			incasso.setId(vo.getId());
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public void updateIncasso(Incasso incasso) throws ServiceException, NotFoundException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			it.govpay.orm.Incasso vo = IncassoConverter.toVO(incasso);
+			IdIncasso oldId = new IdIncasso();
+			oldId.setCodDominio(incasso.getCodDominio());
+			oldId.setIdentificativo(incasso.getIdRiconciliazione());
+			
+			this.getIncassoService().update(oldId ,vo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} finally {
@@ -246,6 +279,81 @@ public class IncassiBD extends BasicBD {
 			}
 			return incassoLst;
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public List<Incasso> findRiconciliazioniDaAcquisire(BDConfigWrapper configWrapper, Integer offset, Integer limit) throws ServiceException {
+		return findRiconciliazioniDaAcquisire(configWrapper,offset,limit,false);
+		
+	}
+	
+	public List<Incasso> findRiconciliazioniDaAcquisire(BDConfigWrapper configWrapper, Integer offset, Integer limit, boolean deep) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IPaginatedExpression exp = this.getIncassoService().newPaginatedExpression();
+			exp.lessThan(it.govpay.orm.Incasso.model().DATA_ORA_INCASSO, new Date());
+			exp.equals(it.govpay.orm.Incasso.model().STATO, it.govpay.model.Incasso.StatoIncasso.NUOVO.toString());
+			
+			if(offset != null) {
+				exp.offset(offset);
+			}
+			
+			if(limit != null) {
+				exp.limit(limit);
+			}
+			
+			exp.addOrder(it.govpay.orm.Incasso.model().DATA_ORA_INCASSO, SortOrder.DESC);
+			
+			List<Incasso> incassoLst = new ArrayList<>();
+			
+			List<it.govpay.orm.Incasso> findAll = this.getIncassoService().findAll(exp);
+			for(it.govpay.orm.Incasso incassoVO: findAll) {
+				incassoLst.add(IncassoConverter.toDTO(incassoVO));
+			}
+			
+			if(deep) {
+				PagamentiBD pagamentiBD = new PagamentiBD(this);
+				pagamentiBD.setAtomica(false);
+				
+				for (Incasso incasso : incassoLst) {
+					
+					PagamentoFilter filter = pagamentiBD.newFilter();
+					filter.setIdIncasso(incasso.getId());
+					List<Pagamento> pagamenti = pagamentiBD.findAll(filter);
+					
+					// popolo valori
+					if(pagamenti != null) {
+						for(Pagamento pagamento: pagamenti) {
+							pagamento.getDominio(configWrapper);
+							SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(this);
+							Versamento versamento = singoloVersamento.getVersamento(this);
+							versamento.getApplicazione(configWrapper);
+							versamento.getDominio(configWrapper);
+							versamento.getUo(configWrapper);
+							singoloVersamento.getIbanAccredito(configWrapper);
+							pagamento.getRpt(this);
+							pagamento.setIncasso(incasso);
+						}
+					}
+
+					incasso.setPagamenti(pagamenti);
+				}
+			}
+			
+			return incassoLst;
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

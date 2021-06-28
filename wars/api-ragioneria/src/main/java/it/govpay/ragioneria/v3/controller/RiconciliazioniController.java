@@ -30,6 +30,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
@@ -78,14 +79,20 @@ public class RiconciliazioniController extends BaseController {
 			
 			IncassiDAO incassiDAO = new IncassiDAO();
 			
-			RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = incassiDAO.richiestaIncasso(richiestaIncassoDTO);
+			RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = incassiDAO.addRiconciliazione(richiestaIncassoDTO);
 			
 			Riconciliazione incassoExt = RiconciliazioniConverter.toRsModel(richiestaIncassoDTOResponse.getIncasso());
 			
-			Status responseStatus = richiestaIncassoDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
-			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(responseStatus).entity(incassoExt.toJSON(null)),transactionId).build();
+			if(richiestaIncassoDTOResponse.isCreated()) {
+				Status responseStatus = Status.ACCEPTED;
+				
+				return this.handleResponseOk(Response.status(responseStatus)
+						.header("Location", UriBuilderUtils.getRiconciliazioniByIdDominioIdIncasso(incassoExt.getIdDominio(), incassoExt.getId())),transactionId).build();
+			} else {
+				Status responseStatus = Status.OK;
+				return this.handleResponseOk(Response.status(responseStatus).entity(incassoExt.toJSON(null)),transactionId).build();
+			}
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {

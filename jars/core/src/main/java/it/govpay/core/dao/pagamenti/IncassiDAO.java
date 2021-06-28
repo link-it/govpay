@@ -24,6 +24,7 @@ import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.business.Incassi;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiIncassoDTOResponse;
@@ -138,7 +139,7 @@ public class IncassiDAO extends BaseDAO{
 
 			incassiBD.setAtomica(false);
 
-			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getTrn(), leggiIncassoDTO.getIdRiconciliazione());
+			Incasso incasso = incassiBD.getIncassoByCodDominioIdRiconciliazione(leggiIncassoDTO.getIdDominio(), leggiIncassoDTO.getIdRiconciliazione());
 
 			response.setIncasso(incasso);
 			
@@ -168,6 +169,96 @@ public class IncassiDAO extends BaseDAO{
 				incassiBD.closeConnection();
 		}
 		return response;
+	}
+	
+	public RichiestaIncassoDTOResponse addRiconciliazione(RichiestaIncassoDTO richiestaIncassoDTO) throws NotAuthorizedException, GovPayException, IncassiException {
+		RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = new RichiestaIncassoDTOResponse();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		IncassiBD incassiBD = null;
+		
+		try {
+			if(!AuthorizationManager.isDominioAuthorized(richiestaIncassoDTO.getUser(), richiestaIncassoDTO.getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(richiestaIncassoDTO.getUser(), richiestaIncassoDTO.getCodDominio(), null);
+			}
+
+			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(richiestaIncassoDTO.getUser());
+			Applicazione applicazione = authenticationDetails.getApplicazione();
+			Operatore operatore = authenticationDetails.getOperatore();
+			boolean isApp = true, isOp = true;
+			if(applicazione == null) {
+				isApp = false;
+			} 
+
+			if(operatore == null) {
+				isOp = false;
+			} 
+
+			if(!isApp && !isOp){
+				throw new NotAuthorizedException("L'utenza autenticata non e' registrata nel sistema.");
+			}
+
+			richiestaIncassoDTO.setApplicazione(applicazione);
+			richiestaIncassoDTO.setOperatore(operatore);
+			
+			// verifica sintassi / semantica incasso
+			Incassi incassi = new Incassi();
+			incassi.verificaRiconciliazione(richiestaIncassoDTO);
+			
+			incassiBD = new IncassiBD(configWrapper);
+			
+			incassiBD.setupConnection(configWrapper.getTransactionID());
+			
+			try {
+				Incasso incasso = incassiBD.getIncassoByCodDominioIdRiconciliazione(richiestaIncassoDTO.getCodDominio(), richiestaIncassoDTO.getIdRiconciliazione());
+				
+				// informazioni sui pagamenti
+				PagamentiBD pagamentiBD = new PagamentiBD(incassiBD);
+				pagamentiBD.setAtomica(false);
+				PagamentoFilter filter = pagamentiBD.newFilter();
+				filter.setIdIncasso(incasso.getId());
+				List<Pagamento> pagamenti = pagamentiBD.findAll(filter);
+				
+				if(pagamenti != null) {
+					for(Pagamento pagamento: pagamenti) {
+						try {
+							this.populatePagamento(pagamento, incassiBD, configWrapper);
+							pagamento.setIncasso(incasso);
+						} catch (NotFoundException e) { 
+
+						}
+					}
+				}
+				
+				incasso.setPagamenti(pagamenti);
+
+				richiestaIncassoDTOResponse.setIncasso(incasso);
+				richiestaIncassoDTOResponse.setCreated(false);
+				richiestaIncassoDTOResponse.getIncasso().getApplicazione(configWrapper);
+				richiestaIncassoDTOResponse.getIncasso().getOperatore(configWrapper);
+				richiestaIncassoDTOResponse.getIncasso().getDominio(configWrapper);
+				return richiestaIncassoDTOResponse;
+			}catch (NotFoundException e) {
+				// Incasso non registrato.
+				richiestaIncassoDTOResponse.setCreated(true);
+			}
+			
+			Incasso incasso = richiestaIncassoDTO.toIncassoModel();
+			incassiBD.insertIncasso(incasso);
+			
+			richiestaIncassoDTOResponse.setIncasso(incasso);
+			richiestaIncassoDTOResponse.getIncasso().getApplicazione(configWrapper);
+			richiestaIncassoDTOResponse.getIncasso().getOperatore(configWrapper);
+			richiestaIncassoDTOResponse.getIncasso().getDominio(configWrapper);
+			
+			// avvio elaborazione riconciliazioni
+			it.govpay.core.business.Operazioni.setEseguiElaborazioneRiconciliazioni();
+		} catch (ServiceException e) {
+			throw new GovPayException(e);
+		}finally {
+			if(incassiBD != null)
+				incassiBD.closeConnection();
+		}
+		return richiestaIncassoDTOResponse;
 	}
 
 	public RichiestaIncassoDTOResponse richiestaIncasso(RichiestaIncassoDTO richiestaIncassoDTO) throws NotAuthorizedException, ServiceException, IncassiException, GovPayException, EcException{
