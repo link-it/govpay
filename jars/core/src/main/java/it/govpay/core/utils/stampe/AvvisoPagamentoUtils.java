@@ -181,7 +181,7 @@ public class AvvisoPagamentoUtils {
 		} else if(versamento.getDataScadenza() != null) {
 			rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataScadenza()));
 		} else {
-			rata.setData("-"); 
+			rata.setData(null); 
 		}
 
 		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));
