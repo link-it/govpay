@@ -187,6 +187,7 @@ public class VerificaConverter {
 					break;
 				}				
 			}
+			dto.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
 		}
 		
 		return dto;
