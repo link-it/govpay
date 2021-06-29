@@ -277,6 +277,13 @@ public class OperazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_DOCUMENTO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
 		if(field.equals(Operazione.model().ID_STAMPA.TIPO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".tipo";
@@ -499,6 +506,9 @@ public class OperazioneFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Operazione.model().ID_STAMPA.ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(Operazione.model().ID_STAMPA.ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
 		}
+		if(field.equals(Operazione.model().ID_STAMPA.ID_DOCUMENTO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(Operazione.model().ID_STAMPA.ID_DOCUMENTO.ID_DOMINIO, returnAlias);
+		}
 		if(field.equals(Operazione.model().ID_STAMPA.TIPO)){
 			return this.toTable(Operazione.model().ID_STAMPA, returnAlias);
 		}
@@ -595,6 +605,9 @@ public class OperazioneFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Operazione.model().ID_STAMPA.ID_DOCUMENTO.ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(Operazione.model().ID_STAMPA.ID_DOCUMENTO.ID_DOMINIO)){
+			return "domini";
 		}
 		if(model.equals(Operazione.model().ID_VERSAMENTO)){
 			return "versamenti";

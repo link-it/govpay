@@ -272,7 +272,7 @@
 	
 	<xsd:complexType name="id-incasso">
 		<xsd:sequence>
-			<xsd:element name="trn" type="String35"/>
+			<xsd:element name="identificativo" type="String35"/>
 			<xsd:element name="codDominio" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
@@ -3097,7 +3097,7 @@
 						<linkit:sql-table-constraint foreign-key="fk_inc"/>
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codDominio"/>
-							<linkit:sql-table-unique-field name="trn"/>
+							<linkit:sql-table-unique-field name="identificativo"/>
 						</linkit:sql-table-unique>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -3107,7 +3107,7 @@
 			
 			<xsd:element name="trn" type="String35" />
 			<xsd:element name="codDominio" type="String35" />
-			<xsd:element name="causale" type="String512" />
+			<xsd:element name="causale" type="String512" minOccurs="0"/>
 			<xsd:element name="importo" type="xsd:decimal"/>
 			<xsd:element name="dataValuta" type="xsd:date" minOccurs="0"/>
 			<xsd:element name="dataContabile" type="xsd:date" minOccurs="0"/>
@@ -3135,6 +3135,11 @@
 			</xsd:element>
 			<xsd:element name="ibanAccredito" type="String35" minOccurs="0" />
 			<xsd:element name="sct" type="String35" minOccurs="0" />
+			<xsd:element name="identificativo" type="String35" />
+			<xsd:element name="iuv" type="String35" minOccurs="0" />
+			<xsd:element name="codFlussoRendicontazione" type="String35" minOccurs="0"/>
+			<xsd:element name="stato" type="String35"/>
+			<xsd:element name="descrizioneStato" type="xsd:string" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

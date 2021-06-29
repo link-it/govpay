@@ -102,7 +102,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	
 		IdIncasso idIncasso = new IdIncasso();
 		idIncasso.setCodDominio(incasso.getCodDominio());
-		idIncasso.setTrn(incasso.getTrn());
+		idIncasso.setIdentificativo(incasso.getIdentificativo());
 
 		return idIncasso;
 	}
@@ -177,7 +177,12 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 			fields.add(Incasso.model().NOME_DISPOSITIVO);
 			fields.add(Incasso.model().IBAN_ACCREDITO);
 			fields.add(Incasso.model().SCT);
-
+			fields.add(Incasso.model().IUV);
+			fields.add(Incasso.model().IDENTIFICATIVO);
+			fields.add(Incasso.model().COD_FLUSSO_RENDICONTAZIONE);
+			fields.add(Incasso.model().STATO);
+			fields.add(Incasso.model().DESCRIZIONE_STATO);
+			
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
 			for(Map<String, Object> map: returnMap) {
@@ -696,7 +701,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		// Object _incasso
 		sqlQueryObjectGet.addFromTable(this.getIncassoFieldConverter().toTable(Incasso.model()));
 		sqlQueryObjectGet.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().COD_DOMINIO,true));
-		sqlQueryObjectGet.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().TRN,true));
+		sqlQueryObjectGet.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().IDENTIFICATIVO,true));
 
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
@@ -707,7 +712,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		};
 		List<Class<?>> listaFieldIdReturnType_incasso = new ArrayList<>();
 		listaFieldIdReturnType_incasso.add(Incasso.model().COD_DOMINIO.getFieldType());
-		listaFieldIdReturnType_incasso.add(Incasso.model().TRN.getFieldType());
+		listaFieldIdReturnType_incasso.add(Incasso.model().IDENTIFICATIVO.getFieldType());
 
 		it.govpay.orm.IdIncasso id_incasso = null;
 		List<Object> listaFieldId_incasso = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
@@ -721,7 +726,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 			// set _incasso
 			id_incasso = new it.govpay.orm.IdIncasso();
 			id_incasso.setCodDominio((String) listaFieldId_incasso.get(0));
-			id_incasso.setTrn((String) listaFieldId_incasso.get(1));
+			id_incasso.setIdentificativo((String) listaFieldId_incasso.get(1));
 		}
 		
 		return id_incasso;
@@ -760,12 +765,12 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		sqlQueryObjectGet.setANDLogicOperator(true);
 //		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getIncassoFieldConverter().toColumn(Incasso.model().COD_DOMINIO,true)+"=?");
-		sqlQueryObjectGet.addWhereCondition(this.getIncassoFieldConverter().toColumn(Incasso.model().TRN,true)+"=?");
+		sqlQueryObjectGet.addWhereCondition(this.getIncassoFieldConverter().toColumn(Incasso.model().IDENTIFICATIVO,true)+"=?");
 
 		// Recupero _incasso
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_incasso = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodDominio(),Incasso.model().COD_DOMINIO.getFieldType()),
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getTrn(),Incasso.model().TRN.getFieldType()),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdentificativo(),Incasso.model().IDENTIFICATIVO.getFieldType()),
 		};
 		Long id_incasso = null;
 		try{

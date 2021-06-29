@@ -508,7 +508,6 @@ public class Rendicontazioni {
 							
 							// Procedo al salvataggio
 							RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(configWrapper);
-							EventiBD eventiBD = new EventiBD(configWrapper);
 							// Tutte le operazioni di salvataggio devono essere in transazione.
 							try {
 								rendicontazioniBD.setupConnection(configWrapper.getTransactionID());

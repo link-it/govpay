@@ -132,7 +132,7 @@ public class RiconciliazioniController extends BaseController {
 			
 			LeggiIncassoDTO leggiIncassoDTO = new LeggiIncassoDTO(user);
 			leggiIncassoDTO.setIdDominio(idDominio);
-			leggiIncassoDTO.setIdIncasso(idIncasso);
+			leggiIncassoDTO.setIdRiconciliazione(idIncasso);
 
 			if(!AuthorizationManager.isDominioAuthorized(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio(), null);

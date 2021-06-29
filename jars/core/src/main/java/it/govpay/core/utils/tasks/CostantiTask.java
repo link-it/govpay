@@ -28,4 +28,7 @@ public class CostantiTask {
 	public final static String SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "SpedizioneTracciatiNotificaPagamenti";
 	public final static String SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI_CHECK = "SpedizioneTracciatiNotificaPagamentiCheck";
 	
+	public final static String ELABORAZIONE_RICONCILIAZIONI = "ElaborazioneRiconciliazioni";
+	public final static String ELABORAZIONE_RICONCILIAZIONI_CHECK = "ElaborazioneRiconciliazioniCheck";
+	
 }

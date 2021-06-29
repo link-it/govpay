@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:beans xmlns:b="http://www.springframework.org/schema/beans"
+        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+        xmlns:cxf="http://cxf.apache.org/core"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+        http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
+
+        <b:import resource="classpath:META-INF/cxf/cxf.xml"/>
+        <b:import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+        
+	<!-- Parameter Converter -->
+    <b:bean id="parameterConverter" class="org.openspcoop2.utils.jaxrs.ParameterConverterProvider"/>
+
+	<!--  Object BodyReader -->
+    <b:bean id="objectMessageBodyReader" class="org.openspcoop2.utils.jaxrs.ObjectMessageBodyReader"/>
+
+    <!--  Jackson Provider for JSON/XML -->
+    <b:bean id="jacksonJsonProvider" class="org.openspcoop2.utils.jaxrs.JacksonJsonProvider"/>
+    <b:bean id="jacksonXmlProvider" class="org.openspcoop2.utils.jaxrs.JacksonXmlProvider"/>
+    
+    <!-- FaultBean Exception Mapper -->
+    <b:bean id="webApplicationExceptionMapper" class="it.govpay.rs.v1.handler.WebApplicationExceptionHandler"/>
+    
+    <!-- Context -->
+	<b:bean id="contextConfigV3" class="it.govpay.rs.v3.service.context.ContextConfig">
+	</b:bean>
+	<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory">
+		<b:property name="apiName" value="API_RAGIONERIA" />
+	</b:bean>
+	<b:bean id="contextV3" class="org.openspcoop2.utils.service.context.ContextFeature">
+		<b:property name="contextFactory" >
+			<b:ref bean="customContextFactory"/>
+		</b:property>
+		<b:property name="contextConfig" >
+			<b:ref bean="contextConfigV3"/>
+		</b:property>
+	</b:bean>
+	
+	<!-- Giornale Eventi -->
+	<b:bean id="giornaleEventiConfigV3" class="it.govpay.rs.eventi.GiornaleEventiConfig">
+		<b:property name="apiName" value="API_RAGIONERIA" />
+	</b:bean>
+	<b:bean id="giornaleEventiV3" class="it.govpay.rs.eventi.GiornaleEventiFeature">
+		<b:property name="giornaleEventiConfig" >
+			<b:ref bean="giornaleEventiConfigV3"/>
+		</b:property>
+	</b:bean>
+        
+   	<!-- JAX-RS Service Impl -->
+
+   	<b:bean id="riconciliazioniV3" class="it.govpay.ragioneria.v3.Riconciliazioni"/>
+   	<b:bean id="profiloV3" class="it.govpay.ragioneria.v3.Profilo"/>
+       
+   	<!-- JAX-RS Configuration -->
+   
+   <!-- BASIC_START -->
+    <jaxrs:server id="apiRagioneriaBasicV3" address="/basic/v3/">
+        <jaxrs:serviceBeans>
+			   	<ref bean="riconciliazioniV3" />
+			   	<ref bean="profiloV3" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+        	<ref bean="giornaleEventiV3" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV3" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- BASIC_END -->
+    
+   <!-- SSL_START -->
+    <jaxrs:server id="apiRagioneriaSSLV3" address="/ssl/v3/">
+        <jaxrs:serviceBeans>
+			   	<ref bean="riconciliazioniV3" />
+			   	<ref bean="profiloV3" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+        	<ref bean="giornaleEventiV3" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV3" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- SSL_END -->
+    
+        <!-- SSL_HEADER_START -->
+    <jaxrs:server id="apiRagioneriaSSLHeaderV3" address="/sslheader/v3/">
+        <jaxrs:serviceBeans>
+			   	<ref bean="riconciliazioniV3" />
+			   	<ref bean="profiloV3" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+        	<ref bean="giornaleEventiV3" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV3" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- SSL_HEADER_END -->
+    
+    <!-- HEADER_START -->
+    <jaxrs:server id="apiRagioneriaHeaderV3" address="/header/v3/">
+        <jaxrs:serviceBeans>
+			   	<ref bean="riconciliazioniV3" />
+			   	<ref bean="profiloV3" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+        	<ref bean="giornaleEventiV3" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV3" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- HEADER_END -->
+    
+        <!-- DEFAULT_START -->
+    <jaxrs:server id="apiRagioneriaDEFAULTV3" address="/v3/">
+        <jaxrs:serviceBeans>
+			   	<ref bean="riconciliazioniV3" />
+			   	<ref bean="profiloV3" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+        	<ref bean="giornaleEventiV3" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV3" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- DEFAULT_END -->
+</b:beans>
+        
