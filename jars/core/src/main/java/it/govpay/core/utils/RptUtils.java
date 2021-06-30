@@ -49,11 +49,15 @@ import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
+import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.EventiBD;
+import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
@@ -223,6 +227,8 @@ public class RptUtils {
 						
 						rptBD.setAtomica(false);
 						
+						rptBD.setAutoCommit(false);
+						
 						rptBD.enableSelectForUpdate();
 						
 						Rpt rpt_attuale = rptBD.getRpt(rpt.getId());
@@ -240,7 +246,31 @@ public class RptUtils {
 						rpt.setDescrizioneStato("Stato aggiornato in fase di recupero pendenti.");
 						
 						rptBD.disableSelectForUpdate();
+						
+						//aggiorno lo stato del pagamento portale
+						Long idPagamentoPortale = rpt.getIdPagamentoPortale();
+						if(idPagamentoPortale != null) {
+							PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rptBD); 
+						}
+						
+						rptBD.commit();
+					} catch (ServiceException e) {
+						if(!rptBD.isAutoCommit()) {
+							rptBD.rollback();
+						}
+						
+						throw e;
+					} catch (NotFoundException e) {
+						if(!rptBD.isAutoCommit()) {
+							rptBD.rollback();
+						}
+						
+						throw e;
 					} finally {
+						if(!rptBD.isAutoCommit()) {
+							rptBD.setAutoCommit(false);
+						}
+						
 						if(rptBD != null)
 							rptBD.closeConnection();
 					}
@@ -322,6 +352,8 @@ public class RptUtils {
 								
 								rptBD.setAtomica(false);
 								
+								rptBD.setAutoCommit(false);
+								
 								rptBD.enableSelectForUpdate();
 								// Controllo che lo stato sia ancora quello originale per il successivo aggiornamento
 								Rpt rpt_attuale = rptBD.getRpt(rpt.getId());
@@ -331,8 +363,34 @@ public class RptUtils {
 									return false;
 								}
 								rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Stato sul nodo: PPT_RPT_SCONOSCIUTA", null, null,null);
+							
 								rptBD.disableSelectForUpdate();
+								//aggiorno lo stato del pagamento portale
+								Long idPagamentoPortale = rpt.getIdPagamentoPortale();
+								if(idPagamentoPortale != null) {
+									PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rptBD); 
+								}
+								
+								rptBD.commit();
+							} catch (ServiceException e) {
+								if(!rptBD.isAutoCommit()) {
+									rptBD.rollback();
+								}
+								
+								throw e;
+							} catch (NotFoundException e) {
+								if(!rptBD.isAutoCommit()) {
+									rptBD.rollback();
+								}
+								
+								throw e;
 							} finally {
+								
+								
+								if(!rptBD.isAutoCommit()) {
+									rptBD.setAutoCommit(false);
+								}
+								
 								if(rptBD != null)
 									rptBD.closeConnection();
 							}
@@ -528,6 +586,8 @@ public class RptUtils {
 								
 								rptBD2.setAtomica(false);
 								
+								rptBD2.setAutoCommit(false);
+								
 								rptBD2.enableSelectForUpdate();
 							
 								Rpt rpt_attuale = rptBD2.getRpt(rpt.getId());
@@ -542,6 +602,18 @@ public class RptUtils {
 								rpt.setStato(nuovoStato);
 								rpt.setDescrizioneStato("Stato acquisito da Nodo dei Pagamenti");
 								rptBD2.disableSelectForUpdate();
+								
+								// aggiornamento del pagamento portale
+								Long idPagamentoPortale = rpt.getIdPagamentoPortale();
+								if(idPagamentoPortale != null) {
+									PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rptBD2); 
+								}
+
+								rptBD2.commit();
+							}catch(ServiceException e) {
+								if(!rptBD2.isAutoCommit())
+									rptBD2.rollback();
+								throw e;
 							} finally {
 								if(rptBD2 != null)
 									rptBD2.closeConnection();
