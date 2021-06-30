@@ -63,6 +63,7 @@ public class Gp21Utils {
 		Canale canale = new Canale();
 		canale.setCodCanale(rpt.getCodCanale());
 		canale.setCodPsp(rpt.getCodPsp());
+		canale.setCodIntermediarioPsp(rpt.getCodIntermediarioPsp());
 		if(rpt.getTipoVersamento() != null)
 			canale.setTipoVersamento(TipoVersamento.valueOf(rpt.getTipoVersamento().getCodifica()));
 		t.setCanale(canale);
