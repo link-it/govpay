@@ -63,7 +63,7 @@ import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.utils.EventoContext.Esito;
-import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaRptThread;

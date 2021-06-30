@@ -60,7 +60,7 @@ import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.NotificaAppIo.TipoNotifica;
 import it.govpay.model.Versamento.StatoPagamento;
