@@ -344,6 +344,7 @@ ALTER TABLE incassi ALTER COLUMN causale DROP NOT NULL;
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
 
-
+-- 20/04/2021 Aggiunto campo opzionale autStampaPoste alla tabella IBAN Accredito
+ALTER TABLE iban_accredito ADD COLUMN aut_stampa_poste VARCHAR(255);
 
 
