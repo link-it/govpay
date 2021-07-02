@@ -19,7 +19,6 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.tracciati.LinguaSecondaria;
-import it.govpay.core.beans.tracciati.ProprietaPendenza;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.LabelAvvisiProperties;
@@ -39,30 +38,20 @@ public class AvvisoPagamentoV2Utils {
 	public static AvvisoPagamentoInput fromVersamento(it.govpay.bd.model.Versamento versamento, LinguaSecondaria secondaLinguaScelta) throws ServiceException, UtilsException {
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		
-		
-		it.govpay.stampe.model.v2.AvvisoPagamentoInput.Etichette etichettes = new it.govpay.stampe.model.v2.AvvisoPagamentoInput.Etichette();
-		etichettes.setItaliano(getEtichetteItaliano());
-		etichettes.setTraduzione(getEtichetteTraduzione(secondaLinguaScelta));
-		input.setEtichette(etichettes);
-		
 		String causaleVersamento = "";
 		if(versamento.getCausaleVersamento() != null) {
 			try {
 				causaleVersamento = versamento.getCausaleVersamento().getSimple();
-				input.getEtichette().getItaliano().setOggettoDelPagamento(causaleVersamento);
+				input.setOggettoDelPagamento(causaleVersamento);
 			}catch (UnsupportedEncodingException e) {
 				throw new ServiceException(e);
 			}
 		}
 		
-		// causale nella seconda lingua
-		if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null ) {
-			ProprietaPendenza proprieta = versamento.getProprietaPendenza();
-			if(proprieta != null && StringUtils.isNotBlank(proprieta.getLinguaSecondariaCausale())) {
-				input.getEtichette().getTraduzione().setOggettoDelPagamento(proprieta.getLinguaSecondariaCausale());
-			}
-		}
+		it.govpay.stampe.model.v2.AvvisoPagamentoInput.Etichette etichettes = new it.govpay.stampe.model.v2.AvvisoPagamentoInput.Etichette();
+		etichettes.setItaliano(getEtichetteItaliano());
+		etichettes.setTraduzione(getEtichetteTraduzione(secondaLinguaScelta));
+		input.setEtichette(etichettes);
 
 		AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 		AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
@@ -88,13 +77,12 @@ public class AvvisoPagamentoV2Utils {
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		
+		input.setOggettoDelPagamento(documento.getDescrizione());
+		
 		it.govpay.stampe.model.v2.AvvisoPagamentoInput.Etichette etichettes = new it.govpay.stampe.model.v2.AvvisoPagamentoInput.Etichette();
 		etichettes.setItaliano(getEtichetteItaliano());
 		etichettes.setTraduzione(getEtichetteTraduzione(secondaLinguaScelta));
 		input.setEtichette(etichettes);
-		
-		
-		input.getEtichette().getItaliano().setOggettoDelPagamento(documento.getDescrizione());
 
 		if(input.getPagine() == null)
 			input.setPagine(new PagineAvviso());
@@ -410,7 +398,7 @@ public class AvvisoPagamentoV2Utils {
 					input.getCfEnte(),
 					input.getCfDestinatario(),
 					input.getNomeCognomeDestinatario(),
-					input.getEtichette().getItaliano().getOggettoDelPagamento()));
+					input.getOggettoDelPagamento()));
 			rata.setNumeroCcPostale(AvvisoPagamentoUtils.getNumeroCCDaIban(postale.getCodIban()));
 			if(StringUtils.isBlank(postale.getIntestatario()))
 				input.setIntestatarioContoCorrentePostale(input.getEnteCreditore());

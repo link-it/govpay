@@ -8839,10 +8839,6 @@ components:
         lineaTestoRicevuta2:
           type: string
           description: stringa personalizzata da inserire nella ricevuta
-        linguaSecondariaCausale:
-          type: string
-          description: >-
-              causale della pendenza nella lingua secondaria da inserire nell'avviso
     RisultatiPerPagina:
       type: integer
       default: 25
