@@ -546,8 +546,6 @@ public class PendenzeConverter {
 					break;
 				}				
 			}
-			
-			dto.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
 		}
 		
 		return dto;
@@ -594,7 +592,6 @@ public class PendenzeConverter {
 				if(rsModel.getLinguaSecondariaEnum() != null)
 					rsModel.setLinguaSecondaria(rsModel.getLinguaSecondariaEnum().toString());
 			}
-			rsModel.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
 		}
 		
 		return rsModel;

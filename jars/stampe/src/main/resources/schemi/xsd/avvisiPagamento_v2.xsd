@@ -15,6 +15,7 @@
 			</xsd:element>
 			<xsd:element name="logo_ente" type="xsd:string"/>
 			<xsd:element name="logo_ente_secondario" type="xsd:string"/>
+			<xsd:element name="oggetto_del_pagamento" type="xsd:string"/>
 			<xsd:element name="cf_ente" type="xsd:string"/>
 			<xsd:element name="cf_destinatario" type="xsd:string"/>
 			<xsd:element name="nome_cognome_destinatario" type="xsd:string"/>
@@ -57,7 +58,6 @@
 			<xsd:element name="codice_cbill" type="xsd:string"/>
 			<xsd:element name="codice_avviso" type="xsd:string"/>
 			<xsd:element name="codice_fiscale_ente" type="xsd:string"/>
-			<xsd:element name="oggetto_del_pagamento" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

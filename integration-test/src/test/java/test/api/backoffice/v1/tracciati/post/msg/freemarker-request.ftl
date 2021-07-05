@@ -55,14 +55,8 @@
 	},
 	</#if>
 	<#if !csvUtils.isEmpty(csvRecord, 86)>
-		<#assign linguaSecondariaString = csvRecord.get(86)!/>
-		<#assign mappedArray_string = linguaSecondariaString?split("|") !/>
-		
 	"proprieta": {
-		"linguaSecondaria" : "${mappedArray_string[0]}"
-		<#if (mappedArray_string?size > 1)>
-			, "linguaSecondariaCausale" : "${mappedArray_string[1]}"
-		</#if>
+		"linguaSecondaria" : ${csvUtils.toJsonValue(csvRecord, 86)}
 	},
 	</#if>
 	"soggettoPagatore": {

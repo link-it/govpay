@@ -17,7 +17,6 @@ import it.govpay.core.beans.JSONSerializable;
 "descrizioneImporto",
 "lineaTestoRicevuta1",
 "lineaTestoRicevuta2",
-"linguaSecondariaCausale",
 })
 public class ProprietaPendenza extends JSONSerializable {
   
@@ -32,9 +31,6 @@ public class ProprietaPendenza extends JSONSerializable {
   
   @JsonProperty("lineaTestoRicevuta2")
   private String lineaTestoRicevuta2 = null;
-  
-  @JsonProperty("linguaSecondariaCausale")
-  private String linguaSecondariaCausale = null;
   
   /**
    **/
@@ -97,22 +93,6 @@ public class ProprietaPendenza extends JSONSerializable {
   public void setLineaTestoRicevuta2(String lineaTestoRicevuta2) {
     this.lineaTestoRicevuta2 = lineaTestoRicevuta2;
   }
-  
-  /**
-   * traduzione nella causale 
-   **/
-  public ProprietaPendenza linguaSecondariaCausale(String linguaSecondariaCausale) {
-    this.linguaSecondariaCausale = linguaSecondariaCausale;
-    return this;
-  }
-
-  @JsonProperty("linguaSecondariaCausale")
-  public String getLinguaSecondariaCausale() {
-    return linguaSecondariaCausale;
-  }
-  public void setLinguaSecondariaCausale(String linguaSecondariaCausale) {
-    this.linguaSecondariaCausale = linguaSecondariaCausale;
-  }
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -126,13 +106,12 @@ public class ProprietaPendenza extends JSONSerializable {
     return Objects.equals(linguaSecondaria, proprietaPendenza.linguaSecondaria) &&
         Objects.equals(descrizioneImporto, proprietaPendenza.descrizioneImporto) &&
         Objects.equals(lineaTestoRicevuta1, proprietaPendenza.lineaTestoRicevuta1) &&
-        Objects.equals(lineaTestoRicevuta2, proprietaPendenza.lineaTestoRicevuta2) &&
-        Objects.equals(linguaSecondariaCausale, proprietaPendenza.linguaSecondariaCausale);
+        Objects.equals(lineaTestoRicevuta2, proprietaPendenza.lineaTestoRicevuta2);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(linguaSecondaria, descrizioneImporto, lineaTestoRicevuta1, lineaTestoRicevuta2, linguaSecondariaCausale);
+    return Objects.hash(linguaSecondaria, descrizioneImporto, lineaTestoRicevuta1, lineaTestoRicevuta2);
   }
 
   public static ProprietaPendenza parse(String json) throws ServiceException, ValidationException { 
@@ -153,7 +132,6 @@ public class ProprietaPendenza extends JSONSerializable {
     sb.append("    descrizioneImporto: ").append(toIndentedString(descrizioneImporto)).append("\n");
     sb.append("    lineaTestoRicevuta1: ").append(toIndentedString(lineaTestoRicevuta1)).append("\n");
     sb.append("    lineaTestoRicevuta2: ").append(toIndentedString(lineaTestoRicevuta2)).append("\n");
-    sb.append("    linguaSecondariaCausale: ").append(toIndentedString(linguaSecondariaCausale)).append("\n");
     sb.append("}");
     return sb.toString();
   }

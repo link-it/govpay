@@ -1777,8 +1777,8 @@ And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
 Then match response contains { descrizioneStato: '##null' } 
-Then match response.numeroOperazioniTotali == 10
-Then match response.numeroOperazioniEseguite == 10
+Then match response.numeroOperazioniTotali == 9
+Then match response.numeroOperazioniEseguite == 9
 Then match response.numeroOperazioniFallite == 0
 
 Given url backofficeBaseurl
