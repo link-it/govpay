@@ -78,7 +78,7 @@ import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.model.Fr.StatoFr;
@@ -508,7 +508,6 @@ public class Rendicontazioni {
 							
 							// Procedo al salvataggio
 							RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(configWrapper);
-							EventiBD eventiBD = new EventiBD(configWrapper);
 							// Tutte le operazioni di salvataggio devono essere in transazione.
 							try {
 								rendicontazioniBD.setupConnection(configWrapper.getTransactionID());
@@ -624,6 +623,16 @@ public class Rendicontazioni {
 			// Quindi controllo solo se e' numerico e di 15 cifre.
 
 			if(isNumerico && iuv.length() == 15)
+				return true;
+		}
+		
+		if(dominio.getAuxDigit() == 1) {
+			// AuxDigit 1: Ente monointermediato. 
+			// Per i pagamenti di tipo 1 e 2, se non ho trovato il pagamento e sono arrivato qui, posso assumere che non e' interno.
+			// Per i pagamenti di tipo 3, e' mio se e' di 17 cifre.
+			// Quindi controllo solo se e' numerico e di 17 cifre.
+
+			if(isNumerico && iuv.length() == 17)
 				return true;
 		}
 

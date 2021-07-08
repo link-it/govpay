@@ -31,6 +31,7 @@ import it.govpay.core.utils.appio.impl.auth.ApiKeyAuth;
 import it.govpay.core.utils.appio.model.LimitedProfile;
 import it.govpay.core.utils.appio.model.MessageCreated;
 import it.govpay.core.utils.appio.model.NewMessage;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;

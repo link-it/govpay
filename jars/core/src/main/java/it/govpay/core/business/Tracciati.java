@@ -844,99 +844,96 @@ public class Tracciati {
 			TracciatiBD tracciatiBeanDatiBD = null;
 			try (ZipOutputStream zos = new ZipOutputStream(oututStreamDestinazione);) {
 
-				int offset = 0;
-				int limit = 500;  
-
 				int stampePerThread = GovpayConfig.getInstance().getBatchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread();
+				int numeroThread = GovpayConfig.getInstance().getDimensionePoolCaricamentoTracciatiStampaAvvisi();
+				
+				int offset = 0;
+				int limit = Math.max(500, stampePerThread * numeroThread);  
 
 				VersamentiBD versamentiBD = new VersamentiBD(tracciatiBD);
 				versamentiBD.setAtomica(false);
 
-				List<Versamento> versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
-				log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
-
 				int sommaStampeOk = 0;
 				int sommaStampeKo = 0;
 				
-				if(versamentiDaStampare.size() > 0) {
-					tracciatiBeanDatiBD = new TracciatiBD(configWrapper);
-					tracciatiBeanDatiBD.setupConnection(configWrapper.getTransactionID());
-					tracciatiBeanDatiBD.setAtomica(false);
-					tracciatiBeanDatiBD.setAutoCommit(false); 
-					do {
-						if(versamentiDaStampare.size() > 0) {
-							List<CreaStampeTracciatoThread> threadsStampe = new ArrayList<CreaStampeTracciatoThread>();
+				tracciatiBeanDatiBD = new TracciatiBD(configWrapper);
+				tracciatiBeanDatiBD.setupConnection(configWrapper.getTransactionID());
+				tracciatiBeanDatiBD.setAtomica(false);
+				tracciatiBeanDatiBD.setAutoCommit(false); 
+				
+				while(true) {
+					List<Versamento> versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
+					log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
+					
+					if(versamentiDaStampare.size() == 0) {
+						// Finito di stampare.
+						break;
+					}
+					
 
-							if(stampePerThread > versamentiDaStampare.size()) {
-								CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), manager, ctx); 
-								ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
-								threadsStampe.add(sender);
-							} else {
-								for (int i = 0; i < versamentiDaStampare.size(); i += stampePerThread) {
-									int end = Math.min(versamentiDaStampare.size(), i + stampePerThread);
+					List<CreaStampeTracciatoThread> threadsStampe = new ArrayList<CreaStampeTracciatoThread>();
 
-									CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare.subList(i, end), idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), manager, ctx); 
-									ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
-									threadsStampe.add(sender);
-								}
-							}
+					int listStart = 0, listEnd = 0;
+					
+					while (listEnd < versamentiDaStampare.size()) {
+						listStart = listEnd;
+						listEnd = Math.min(versamentiDaStampare.size(), listStart + stampePerThread);
+						List<Versamento> subList = versamentiDaStampare.subList(listStart, listEnd);
+						log.debug("Avvio thread per stampe da posizione " + listStart + " a " + listEnd + " per " + subList.size() + "stampe");
+						CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(subList, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), manager, ctx); 
+						ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
+						threadsStampe.add(sender);
+					}
 
-							while(true){
-								try {
-									Thread.sleep(2000);
-								} catch (InterruptedException e) {
-
-								}
-								boolean completed = true;
-								for(CreaStampeTracciatoThread sender : threadsStampe) {
-									if(!sender.isCompleted()) { 
-										completed = false;
-									} else {
-										if(!sender.isCommit()) {
-											sender.setCommit(true);
-											synchronized (this) {
-												
-												List<PrintAvvisoDTOResponse> stampe = sender.getStampe();
-												
-												sommaStampeOk += sender.getStampeOk();
-												sommaStampeKo += sender.getStampeKo();
-			
-												log.debug(sender.getNomeThread() + " ha eseguito ["+stampe.size()+"] stampe");
-			
-												for (PrintAvvisoDTOResponse stampa : stampe) {
-													// inserisco l'eventuale pdf nello zip
-													TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, stampa, log);
-												}
-												
-												beanDati.setNumStampeOk(sommaStampeOk);
-												beanDati.setNumStampeKo(sommaStampeKo);
-												beanDati.setDataUltimoAggiornamento(new Date());
-												
-												log.debug("Aggiornamento delle informazioni progresso stampa...");
-												tracciato.setBeanDati(serializer.getObject(beanDati));
-												tracciatiBeanDatiBD.updateBeanDati(tracciato);
-	
-												if(!tracciatiBeanDatiBD.isAutoCommit()) tracciatiBeanDatiBD.commit();
-												log.debug("Aggiornamento delle informazioni progresso stampa completato.");
-												
-												
-											}
-										}
-									}
-								}
-
-								if(completed) { 
-									log.debug("Completata Esecuzione dei ["+threadsStampe.size()+"] Threads di stampa");
-									break; // esco
-								}
-							}
+					while(true){
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
 
 						}
+						boolean completed = true;
+						for(CreaStampeTracciatoThread sender : threadsStampe) {
+							if(!sender.isCompleted()) { 
+								completed = false;
+							} else {
+								if(!sender.isCommit()) {
+									sender.setCommit(true);
+									synchronized (this) {
+										
+										List<PrintAvvisoDTOResponse> stampe = sender.getStampe();
+										
+										sommaStampeOk += sender.getStampeOk();
+										sommaStampeKo += sender.getStampeKo();
+	
+										log.debug(sender.getNomeThread() + " ha eseguito ["+stampe.size()+"] stampe");
+	
+										for (PrintAvvisoDTOResponse stampa : stampe) {
+											// inserisco l'eventuale pdf nello zip
+											TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, stampa, log);
+										}
+										
+										beanDati.setNumStampeOk(sommaStampeOk);
+										beanDati.setNumStampeKo(sommaStampeKo);
+										beanDati.setDataUltimoAggiornamento(new Date());
+										
+										log.debug("Aggiornamento delle informazioni progresso stampa...");
+										tracciato.setBeanDati(serializer.getObject(beanDati));
+										tracciatiBeanDatiBD.updateBeanDati(tracciato);
 
-						offset += limit;
-						versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
-						log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
-					} while (versamentiDaStampare.size() > 0);
+										if(!tracciatiBeanDatiBD.isAutoCommit()) tracciatiBeanDatiBD.commit();
+										log.debug("Aggiornamento delle informazioni progresso stampa completato.");
+									}
+								}
+							}
+						}
+
+						if(completed) { 
+							log.debug("Completata Esecuzione dei ["+threadsStampe.size()+"] Threads di stampa");
+							break; // esco
+						}
+					}
+					
+					offset += limit;
 				}
 
 				if(numeriAvviso.isEmpty() && numeriDocumento.isEmpty()){ // non ho aggiunto neanche un pdf

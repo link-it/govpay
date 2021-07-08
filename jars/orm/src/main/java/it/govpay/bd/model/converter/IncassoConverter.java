@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Incasso;
+import it.govpay.model.Incasso.StatoIncasso;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdOperatore;
 
@@ -28,6 +29,11 @@ public class IncassoConverter {
 			dto.setTrn(vo.getTrn());
 			dto.setIbanAccredito(vo.getIbanAccredito());
 			dto.setSct(vo.getSct());
+			dto.setIuv(vo.getIuv());
+			dto.setIdRiconciliazione(vo.getIdentificativo());
+			dto.setIdFlussoRendicontazione(vo.getCodFlussoRendicontazione());
+			dto.setStato(StatoIncasso.valueOf(vo.getStato()));
+			dto.setDescrizioneStato(vo.getDescrizioneStato());
 			return dto;
 	}
 
@@ -54,6 +60,12 @@ public class IncassoConverter {
 		vo.setTrn(dto.getTrn());
 		vo.setIbanAccredito(dto.getIbanAccredito());
 		vo.setSct(dto.getSct());
+		vo.setIuv(dto.getIuv());
+		vo.setIdentificativo(dto.getIdRiconciliazione());
+		vo.setCodFlussoRendicontazione(dto.getIdFlussoRendicontazione());
+		vo.setStato(dto.getStato().toString());
+		vo.setDescrizioneStato(dto.getDescrizioneStato());
+		
 		return vo;
 }
 }

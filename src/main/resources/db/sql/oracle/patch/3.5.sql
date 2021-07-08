@@ -434,8 +434,32 @@ ALTER TABLE domini ADD intermediato NUMBER;
 UPDATE domini SET intermediato = 1;
 ALTER TABLE domini MODIFY (intermediato NOT NULL);
 
-
 -- 08/06/2021 Stazione di un dominio opzionale
 ALTER TABLE domini MODIFY (id_stazione NULL);
 
-     
+
+
+
+-- 22/06/2021 API-Rendicontazione V3, nuovi campi tabella incassi
+
+ALTER TABLE incassi ADD identificativo VARCHAR2(35 CHAR);
+UPDATE incassi SET identificativo = trn;
+ALTER TABLE incassi MODIFY (identificativo NOT NULL);
+
+ALTER TABLE incassi ADD stato VARCHAR2(35 CHAR);
+UPDATE incassi SET stato = 'ACQUISITO';
+ALTER TABLE incassi MODIFY (stato NOT NULL);
+
+ALTER TABLE incassi ADD iuv VARCHAR2(35 CHAR);
+ALTER TABLE incassi ADD cod_flusso_rendicontazione VARCHAR2(35 CHAR);
+ALTER TABLE incassi ADD descrizione_stato VARCHAR2(255 CHAR);
+
+ALTER TABLE incassi DROP CONSTRAINT unique_incassi_1;
+ALTER TABLE incassi ADD CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,identificativo);
+
+ALTER TABLE incassi MODIFY (causale NULL);
+
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
+
+

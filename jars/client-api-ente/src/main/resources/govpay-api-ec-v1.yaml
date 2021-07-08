@@ -845,6 +845,10 @@ components:
         proprietaCustom:
           type: object
           description: Dati specifici del gestionale di contabilità
+        linguaSecondariaCausale:
+          type: string
+          description: >-
+              causale della pendenza nella lingua secondaria da inserire nell'avviso
     VoceDescrizioneImporto:
       type: object
       properties:

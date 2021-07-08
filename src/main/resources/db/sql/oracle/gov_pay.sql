@@ -1338,7 +1338,7 @@ CREATE TABLE incassi
 (
 	trn VARCHAR2(35 CHAR) NOT NULL,
 	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
-	causale VARCHAR2(512 CHAR) NOT NULL,
+	causale VARCHAR2(512 CHAR),
 	importo BINARY_DOUBLE NOT NULL,
 	data_valuta DATE,
 	data_contabile DATE,
@@ -1346,12 +1346,17 @@ CREATE TABLE incassi
 	nome_dispositivo VARCHAR2(512 CHAR),
 	iban_accredito VARCHAR2(35 CHAR),
 	sct VARCHAR2(35 CHAR),
+	identificativo VARCHAR2(35 CHAR) NOT NULL,
+	iuv VARCHAR2(35 CHAR),
+	cod_flusso_rendicontazione VARCHAR2(35 CHAR),
+	stato VARCHAR2(35 CHAR) NOT NULL,
+	descrizione_stato VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER,
 	id_operatore NUMBER,
 	-- unique constraints
-	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn),
+	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,identificativo),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),

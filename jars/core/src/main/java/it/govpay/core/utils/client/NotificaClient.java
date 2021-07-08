@@ -47,6 +47,7 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.utils.EventoContext.Componente;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.v1.NotificaAttivazioneConverter;
 import it.govpay.core.utils.client.v1.NotificaConverter;
 import it.govpay.core.utils.client.v1.NotificaTerminazioneConverter;

@@ -117,6 +117,11 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().NOME_DISPOSITIVO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().IBAN_ACCREDITO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().SCT,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().IDENTIFICATIVO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().IUV,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().COD_FLUSSO_RENDICONTAZIONE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().STATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getIncassoFieldConverter().toColumn(Incasso.model().DESCRIZIONE_STATO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 		sqlQueryObjectInsert.addInsertField("id_operatore","?");
 
@@ -133,6 +138,11 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getNomeDispositivo(),Incasso.model().NOME_DISPOSITIVO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getIbanAccredito(),Incasso.model().IBAN_ACCREDITO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getSct(),Incasso.model().SCT.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getIdentificativo(),Incasso.model().IDENTIFICATIVO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getIuv(),Incasso.model().IUV.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getCodFlussoRendicontazione(),Incasso.model().COD_FLUSSO_RENDICONTAZIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getStato(),Incasso.model().STATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(incasso.getDescrizioneStato(),Incasso.model().DESCRIZIONE_STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore,Long.class)
 		);
@@ -242,6 +252,16 @@ public class JDBCIncassoServiceImpl extends JDBCIncassoServiceSearchImpl
 		lstObjects_incasso.add(new JDBCObject(incasso.getIbanAccredito(), Incasso.model().IBAN_ACCREDITO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIncassoFieldConverter().toColumn(Incasso.model().SCT,false), "?");
 		lstObjects_incasso.add(new JDBCObject(incasso.getSct(), Incasso.model().SCT.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getIncassoFieldConverter().toColumn(Incasso.model().IDENTIFICATIVO,false), "?");
+		lstObjects_incasso.add(new JDBCObject(incasso.getIdentificativo(), Incasso.model().IDENTIFICATIVO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getIncassoFieldConverter().toColumn(Incasso.model().IUV,false), "?");
+		lstObjects_incasso.add(new JDBCObject(incasso.getIuv(), Incasso.model().IUV.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getIncassoFieldConverter().toColumn(Incasso.model().COD_FLUSSO_RENDICONTAZIONE,false), "?");
+		lstObjects_incasso.add(new JDBCObject(incasso.getCodFlussoRendicontazione(), Incasso.model().COD_FLUSSO_RENDICONTAZIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getIncassoFieldConverter().toColumn(Incasso.model().STATO,false), "?");
+		lstObjects_incasso.add(new JDBCObject(incasso.getStato(), Incasso.model().STATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getIncassoFieldConverter().toColumn(Incasso.model().DESCRIZIONE_STATO,false), "?");
+		lstObjects_incasso.add(new JDBCObject(incasso.getDescrizioneStato(), Incasso.model().DESCRIZIONE_STATO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
 		}

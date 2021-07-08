@@ -63,6 +63,13 @@ public class Incasso extends it.govpay.model.Incasso {
 		
 	}
 	
+	public void setApplicazione(Applicazione applicazione) {
+		this.applicazione = applicazione;
+		if(this.applicazione != null) {
+			this.setIdApplicazione(this.applicazione.getId());
+		}
+	}
+	
 	public Operatore getOperatore(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.getIdOperatore() != null && this.operatore == null) {
 			try {
@@ -80,6 +87,13 @@ public class Incasso extends it.govpay.model.Incasso {
 		} catch (NotFoundException e) {
 		}
 		
+	}
+	
+	public void setOperatore(Operatore operatore) {
+		this.operatore = operatore;
+		if(this.operatore != null) {
+			this.setIdOperatore(this.operatore.getId());
+		}
 	}
 
 	public Dominio getDominio(BDConfigWrapper configWrapper) throws ServiceException {

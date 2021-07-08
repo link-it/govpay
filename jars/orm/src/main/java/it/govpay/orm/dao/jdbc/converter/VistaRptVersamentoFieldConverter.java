@@ -732,6 +732,13 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 				return "cod_applicazione";
 			}
 		}
+		if(field.equals(VistaRptVersamento.model().VRS_ID_DOCUMENTO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
 		if(field.equals(VistaRptVersamento.model().VRS_TIPO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".vrs_tipo";
@@ -1044,6 +1051,9 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 		if(field.equals(VistaRptVersamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(VistaRptVersamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
 		}
+		if(field.equals(VistaRptVersamento.model().VRS_ID_DOCUMENTO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(VistaRptVersamento.model().VRS_ID_DOCUMENTO.ID_DOMINIO, returnAlias);
+		}
 		if(field.equals(VistaRptVersamento.model().VRS_TIPO)){
 			return this.toTable(VistaRptVersamento.model(), returnAlias);
 		}
@@ -1101,6 +1111,9 @@ public class VistaRptVersamentoFieldConverter extends AbstractSQLFieldConverter 
 		}
 		if(model.equals(VistaRptVersamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(VistaRptVersamento.model().VRS_ID_DOCUMENTO.ID_DOMINIO)){
+			return "domini";
 		}
 
 

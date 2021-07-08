@@ -990,7 +990,7 @@ CREATE TABLE incassi
 (
 	trn VARCHAR(35) NOT NULL COMMENT 'Identificativo del movimento bancario riconciliato',
 	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificaitvo dell\'ente',
-	causale VARCHAR(512) NOT NULL COMMENT 'Causale del bonifico',
+	causale VARCHAR(512) COMMENT 'Causale del bonifico',
 	importo DOUBLE NOT NULL COMMENT 'Importo riconciliato',
 	data_valuta TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data valuta del bonifico',
 	data_contabile TIMESTAMP(3) DEFAULT  CURRENT_TIMESTAMP(3) COMMENT 'Data contabile del bonifico',
@@ -999,12 +999,17 @@ CREATE TABLE incassi
 	nome_dispositivo VARCHAR(512) COMMENT 'Riferimento al giornale di cassa',
 	iban_accredito VARCHAR(35) COMMENT 'Conto di accredito',
         sct VARCHAR(35) COMMENT 'Identificativo SEPA credit transfert',
+	identificativo VARCHAR(35) NOT NULL COMMENT 'Identificativo univoco della riconciliazione',
+	iuv VARCHAR(35) COMMENT 'Identificativo iuv riconciliato',
+	cod_flusso_rendicontazione VARCHAR(35) COMMENT 'Identificativo flusso rendicontazione riconciliato',
+	stato VARCHAR(35) NOT NULL COMMENT 'Stato della riconciliazione',
+	descrizione_stato VARCHAR(255) COMMENT 'Decrizione dettaglio stato nei casi di errore',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_applicazione BIGINT COMMENT 'Riferimento all\'applicativo che ha registrato l\'inccasso',
 	id_operatore BIGINT COMMENT 'Riferimento all\'operatore che ha registrato l\'inccasso',
 	-- unique constraints
-	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn),
+	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,identificativo),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
@@ -1012,7 +1017,7 @@ CREATE TABLE incassi
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Riconciliazioni';
 
 -- index
-CREATE UNIQUE INDEX index_incassi_1 ON incassi (cod_dominio,trn);
+CREATE UNIQUE INDEX index_incassi_1 ON incassi (cod_dominio,identificativo);
 
 
 

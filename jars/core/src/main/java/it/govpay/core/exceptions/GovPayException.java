@@ -28,7 +28,7 @@ import gov.telematici.pagamenti.ws.rpt.FaultBean;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.beans.Mittente;
-import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Evento.EsitoEvento;
 
 public class GovPayException extends Exception {

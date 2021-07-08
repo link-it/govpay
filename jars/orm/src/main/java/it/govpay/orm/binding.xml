@@ -75,13 +75,13 @@
   </mapping>
   <mapping name="idIncasso" class="it.govpay.orm.IdIncasso" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="trn" field="trn" usage="required"/>
+    <value name="identificativo" field="identificativo" usage="required"/>
     <value name="codDominio" field="codDominio" usage="required"/>
   </mapping>
 
   <mapping type-name="_IdIncasso_Type" class="it.govpay.orm.IdIncasso" abstract="true">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="trn" field="trn" usage="required"/>
+    <value name="identificativo" field="identificativo" usage="required"/>
     <value name="codDominio" field="codDominio" usage="required"/>
   </mapping>
   <mapping name="vrsIdDominio" class="it.govpay.orm.IdDominio" abstract="false">
@@ -981,6 +981,11 @@
     <structure name="idOperatore" field="idOperatore" usage="optional" map-as="_IdOperatore_Type"/>
     <value name="ibanAccredito" field="ibanAccredito" usage="optional"/>
     <value name="sct" field="sct" usage="optional"/>
+    <value name="identificativo" field="identificativo" usage="required"/>
+    <value name="iuv" field="iuv" usage="optional"/>
+    <value name="codFlussoRendicontazione" field="codFlussoRendicontazione" usage="optional"/>
+    <value name="stato" field="stato" usage="required"/>
+    <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
   </mapping>
   <mapping name="FR" class="it.govpay.orm.FR">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

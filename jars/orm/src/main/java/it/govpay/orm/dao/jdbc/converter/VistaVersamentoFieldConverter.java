@@ -494,6 +494,13 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
+		if(field.equals(VistaVersamento.model().ID_DOCUMENTO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
 		if(field.equals(VistaVersamento.model().TIPO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".tipo";
@@ -781,6 +788,9 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(VistaVersamento.model().ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(VistaVersamento.model().ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
 		}
+		if(field.equals(VistaVersamento.model().ID_DOCUMENTO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(VistaVersamento.model().ID_DOCUMENTO.ID_DOMINIO, returnAlias);
+		}
 		if(field.equals(VistaVersamento.model().TIPO)){
 			return this.toTable(VistaVersamento.model(), returnAlias);
 		}
@@ -874,6 +884,9 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(VistaVersamento.model().ID_DOCUMENTO.ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(VistaVersamento.model().ID_DOCUMENTO.ID_DOMINIO)){
+			return "domini";
 		}
 		if(model.equals(VistaVersamento.model().ID_OPERAZIONE)){
 			return "operazioni";

@@ -53,6 +53,8 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-elab-t
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('elaborazione-trac-notif-pag', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-spedizione-trac-notif-pag', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('spedizione-trac-notif-pag', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
 
 -- Configurazione della variabile per memorizzare la data reset della cache
 insert into batch(cod_batch) values ('cache-anagrafica');

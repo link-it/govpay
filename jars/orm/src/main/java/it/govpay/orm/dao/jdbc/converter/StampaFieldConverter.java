@@ -214,6 +214,13 @@ public class StampaFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
+		if(field.equals(Stampa.model().ID_DOCUMENTO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -290,6 +297,9 @@ public class StampaFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Stampa.model().ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(Stampa.model().ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
 		}
+		if(field.equals(Stampa.model().ID_DOCUMENTO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(Stampa.model().ID_DOCUMENTO.ID_DOMINIO, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -326,6 +336,9 @@ public class StampaFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Stampa.model().ID_DOCUMENTO.ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(Stampa.model().ID_DOCUMENTO.ID_DOMINIO)){
+			return "domini";
 		}
 
 
