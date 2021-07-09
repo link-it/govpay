@@ -6873,6 +6873,26 @@ components:
         proprietaCustom:
           type: object
           description: Dati specifici del gestionale di contabilità
+        titolo:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'titolo'
+        tipologia:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'tipologia'
+        categoria:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'categoria'
+        articolo:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'articolo'
     pendenzaCreata:
       type: object
       required:
@@ -9027,6 +9047,10 @@ components:
         lineaTestoRicevuta2:
           type: string
           description: stringa personalizzata da inserire nella ricevuta
+        linguaSecondariaCausale:
+          type: string
+          description: >-
+              causale della pendenza nella lingua secondaria da inserire nell'avviso
     RisultatiPerPagina:
       type: integer
       default: 25

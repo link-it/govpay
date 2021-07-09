@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "descrizioneImporto",
 "lineaTestoRicevuta1",
 "lineaTestoRicevuta2",
+"linguaSecondariaCausale",
 })
 public class ProprietaPendenza {
   
@@ -26,6 +27,9 @@ public class ProprietaPendenza {
   
   @JsonProperty("lineaTestoRicevuta2")
   private String lineaTestoRicevuta2 = null;
+  
+  @JsonProperty("linguaSecondariaCausale")
+  private String linguaSecondariaCausale = null;
   
   /**
    **/
@@ -88,6 +92,22 @@ public class ProprietaPendenza {
   public void setLineaTestoRicevuta2(String lineaTestoRicevuta2) {
     this.lineaTestoRicevuta2 = lineaTestoRicevuta2;
   }
+  
+  /**
+   * traduzione nella causale 
+   **/
+  public ProprietaPendenza linguaSecondariaCausale(String linguaSecondariaCausale) {
+    this.linguaSecondariaCausale = linguaSecondariaCausale;
+    return this;
+  }
+
+  @JsonProperty("linguaSecondariaCausale")
+  public String getLinguaSecondariaCausale() {
+    return linguaSecondariaCausale;
+  }
+  public void setLinguaSecondariaCausale(String linguaSecondariaCausale) {
+    this.linguaSecondariaCausale = linguaSecondariaCausale;
+  }
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -101,12 +121,13 @@ public class ProprietaPendenza {
     return Objects.equals(linguaSecondaria, proprietaPendenza.linguaSecondaria) &&
         Objects.equals(descrizioneImporto, proprietaPendenza.descrizioneImporto) &&
         Objects.equals(lineaTestoRicevuta1, proprietaPendenza.lineaTestoRicevuta1) &&
-        Objects.equals(lineaTestoRicevuta2, proprietaPendenza.lineaTestoRicevuta2);
+        Objects.equals(lineaTestoRicevuta2, proprietaPendenza.lineaTestoRicevuta2) &&
+        Objects.equals(linguaSecondariaCausale, proprietaPendenza.linguaSecondariaCausale);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(linguaSecondaria, descrizioneImporto, lineaTestoRicevuta1, lineaTestoRicevuta2);
+    return Objects.hash(linguaSecondaria, descrizioneImporto, lineaTestoRicevuta1, lineaTestoRicevuta2, linguaSecondariaCausale);
   }
 
   @Override
@@ -118,6 +139,7 @@ public class ProprietaPendenza {
     sb.append("    descrizioneImporto: ").append(toIndentedString(descrizioneImporto)).append("\n");
     sb.append("    lineaTestoRicevuta1: ").append(toIndentedString(lineaTestoRicevuta1)).append("\n");
     sb.append("    lineaTestoRicevuta2: ").append(toIndentedString(lineaTestoRicevuta2)).append("\n");
+    sb.append("    linguaSecondariaCausale: ").append(toIndentedString(linguaSecondariaCausale)).append("\n");
     sb.append("}");
     return sb.toString();
   }
