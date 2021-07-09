@@ -241,6 +241,10 @@ public class VerificaConverter {
 		rsModel.setCapitolo(dto.getCapitolo());
 		rsModel.setImporto(dto.getImporto());
 		rsModel.setProprietaCustom(dto.getProprietaCustom());
+		rsModel.setTitolo(dto.getTitolo());
+		rsModel.setTipologia(dto.getTipologia());
+		rsModel.setCategoria(dto.getCategoria());
+		rsModel.setArticolo(dto.getArticolo());
 		
 		return rsModel;
 	}

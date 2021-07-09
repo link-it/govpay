@@ -26,14 +26,22 @@
 						    "annoEsercizio": 2020,
 						    "accertamento": null,
 						    "importo": 0.99,
-						    "proprietaCustom": null
+						    "proprietaCustom": null,
+						    "titolo": null,
+						    "tipologia": null,
+						    "categoria": null,
+						    "articolo": null
 						},
 						{
 						    "capitolo": "capitolo2",
 						    "annoEsercizio": 2020,
 						    "accertamento": null,
 						    "importo": 100.00,
-						    "proprietaCustom": null
+						    "proprietaCustom": null,
+						    "titolo": null,
+						    "tipologia": null,
+						    "categoria": null,
+						    "articolo": null
 						}
 					],
 				"proprietaCustom" : null

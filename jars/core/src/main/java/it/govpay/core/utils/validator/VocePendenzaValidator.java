@@ -102,6 +102,10 @@ public class VocePendenzaValidator implements IValidable{
 					vf.getValidator("accertamento", contabilita.getAccertamento()).minLength(1).maxLength(64);
 					ValidatoreUtils.validaImporto(vf, "importo", contabilita.getImporto());
 
+					vf.getValidator("titolo", contabilita.getTitolo()).minLength(1).maxLength(64);
+					vf.getValidator("tipologia", contabilita.getTipologia()).minLength(1).maxLength(64);
+					vf.getValidator("categoria", contabilita.getCategoria()).minLength(1).maxLength(64);
+					vf.getValidator("articolo", contabilita.getArticolo()).minLength(1).maxLength(64);
 				}
 			}
 		}

@@ -34,14 +34,22 @@
 						    "annoEsercizio": "#notnull",
 						    "accertamento": "#ignore",
 						    "importo": "#? isImportoConDueDecimali(_)",
-						    "proprietaCustom": "#ignore"
+						    "proprietaCustom": "#ignore",
+						    "titolo": "#ignore",
+						    "tipologia": "#ignore",
+						    "categoria": "#ignore",
+						    "articolo": "#ignore"
 						},
 						{
 						    "capitolo": "#notnull",
 						    "annoEsercizio": "#notnull",
 						    "accertamento": "#ignore",
 						    "importo": "#? isImportoConDueDecimali(_)",
-						    "proprietaCustom": "#ignore"
+						    "proprietaCustom": "#ignore",
+						    "titolo": "#ignore",
+						    "tipologia": "#ignore",
+						    "categoria": "#ignore",
+						    "articolo": "#ignore"
 						}
 					],
 				"proprietaCustom" : "#ignore"
