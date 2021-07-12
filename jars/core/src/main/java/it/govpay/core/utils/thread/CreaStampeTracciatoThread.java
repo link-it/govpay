@@ -52,7 +52,7 @@ public class CreaStampeTracciatoThread implements Runnable {
 		this.stampe = new ArrayList<PrintAvvisoDTOResponse>();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		try {
-			log.debug("Creazione stampe di " + this.versamenti.size() + " versamenti...");
+			log.debug(this.nomeThread + ": creazione stampe di " + this.versamenti.size() + " versamenti...");
 			it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
 			
 			for (Versamento versamento : versamenti) {
@@ -88,10 +88,10 @@ public class CreaStampeTracciatoThread implements Runnable {
 								+" | IdPendenza: " + versamento.getCodVersamentoEnte() + "] non ha numero avviso, procedura di stampa non eseguita.");
 					}
 					stampeOk ++;
-				}catch(ServiceException e) {
+				} catch(ServiceException e) {
 					log.error("Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
 					stampeKo ++;
-				} catch(UnprocessableEntityException e) {
+				} catch(Exception e) {
 					log.error("Errore durante la creazione dell'avviso: " + e.getMessage());
 					stampeKo ++;
 				}
