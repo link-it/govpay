@@ -61,12 +61,13 @@ import it.govpay.model.Versamento.CausaleSemplice;
 
 public class CtPaymentPABuilder {
 	
-	public Rpt buildRptAttivata (PaGetPaymentReq requestBody, Versamento versamento,	String iuv,	String numeroavviso) throws ServiceException {
+	public Rpt buildRptAttivata (PaGetPaymentReq requestBody, Versamento versamento, String iuv, String ccp, String numeroavviso) throws ServiceException {
 		
 		return this.buildRpt(requestBody,
 				null,
 				versamento,
 				iuv,
+				ccp,
 				numeroavviso,
 				TipoVersamento.ATTIVATO_PRESSO_PSP,
 				ModelloPagamento.ATTIVATO_PRESSO_PSP,
@@ -79,6 +80,7 @@ public class CtPaymentPABuilder {
 			String codCarrello, 
 			Versamento versamento, 
 			String iuv, 
+			String ccp, 
 			String numeroavviso, 
 			TipoVersamento tipoVersamento,
 			ModelloPagamento modelloPagamento,
@@ -106,6 +108,7 @@ public class CtPaymentPABuilder {
 		rpt.setIdVersamento(versamento.getId());
 		rpt.setVersamento(versamento);
 		rpt.setIuv(iuv);
+		rpt.setCcp(ccp);
 		rpt.setModelloPagamento(modelloPagamento);
 		rpt.setPspRedirectURL(null);
 		rpt.setStato(StatoRpt.RPT_ATTIVATA);

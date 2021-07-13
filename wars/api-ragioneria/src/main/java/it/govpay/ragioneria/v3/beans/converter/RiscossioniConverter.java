@@ -35,6 +35,9 @@ public class RiscossioniConverter {
 			case MBT:
 				rsModel.setTipo(TipoRiscossione.MBT);
 				break;
+			case ENTRATA_PA_NON_INTERMEDIATA:
+				rsModel.setTipo(TipoRiscossione.ENTRATA_PA_NON_INTERMEDIATA);
+				break;
 			} 
 
 			// solo per i pagamenti interni

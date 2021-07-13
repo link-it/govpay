@@ -7963,11 +7963,13 @@ components:
          * ENTRATA: Entrata in tesoreria
          * MBT: Marca da bollo telematica
          * ALTRO_INTERMEDIARIO: Entrata relativa a un intermediario esterno
+         * ENTRATA_PA_NON_INTERMEDIATA: Entrata relativa ad un ente creditore non intermediato da GovPay
       type: string
       enum:
         - ENTRATA
         - MBT
         - ALTRO_INTERMEDIARIO
+        - ENTRATA_PA_NON_INTERMEDIATA
     listaPaginata:
       type: object
       properties:

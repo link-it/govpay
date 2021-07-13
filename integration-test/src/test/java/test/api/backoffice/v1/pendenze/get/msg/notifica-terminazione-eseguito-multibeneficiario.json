@@ -29,11 +29,19 @@
             "transfer":[
                {
                   "idTransfer":1,
-                  "transferAmount":"#(pendenzaPut.voci[0].importo + '')",
+                  "transferAmount":"#? _ == pendenzaPut.voci[0].importo || _ == pendenzaPut.voci[0].importo.toString()",
                   "fiscalCodePA":"#(idDominio)",
                   "IBAN":"#(ibanAccredito)",
-                  "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Diritti e segreteria')",
+                  "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Pagamento TARI n.' + idPendenza + '')",
                   "transferCategory":"9/SEGRETERIA"
+               },
+               {
+                  "idTransfer":2,
+                  "transferAmount":"#? _ == pendenzaPut.voci[1].importo || _ == pendenzaPut.voci[0].importo.toString()",
+                  "fiscalCodePA":"#(idDominio_2)",
+                  "IBAN":"#(ibanAccreditoEnteNonIntermediato)",
+                  "remittanceInformation":"#('/RFB/' + iuv + '/10.00/TXT/Pagamento TEFA n.' + idPendenza + '')",
+                  "transferCategory":"9/CodiceContabilita"
                }
             ]
          },
@@ -74,11 +82,19 @@
             "transfer":[
                {
                   "idTransfer":1,
-                  "transferAmount":"#(pendenzaPut.voci[0].importo + '')",
+                  "transferAmount":"#? _ == pendenzaPut.voci[0].importo || _ == pendenzaPut.voci[0].importo.toString()",
                   "fiscalCodePA":"#(idDominio)",
                   "IBAN":"#(ibanAccredito)",
-                  "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Diritti e segreteria')",
+                  "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Pagamento TARI n.' + idPendenza + '')",
                   "transferCategory":"9/SEGRETERIA"
+               },
+               {
+                  "idTransfer":2,
+                  "transferAmount":"#? _ == pendenzaPut.voci[1].importo || _ == pendenzaPut.voci[0].importo.toString()",
+                  "fiscalCodePA":"#(idDominio_2)",
+                  "IBAN":"#(ibanAccreditoEnteNonIntermediato)",
+                  "remittanceInformation":"#('/RFB/' + iuv + '/10.00/TXT/Pagamento TEFA n.' + idPendenza + '')",
+                  "transferCategory":"9/CodiceContabilita"
                }
             ]
          },
@@ -108,7 +124,22 @@
 	      "rpp":"#notnull",
 	      "stato":"RISCOSSA",
 	      "tipo":"ENTRATA",
-	      "importo": "#(pendenzaPut.importo)",
+	      "importo": "#(pendenzaPut.voci[0].importo)",
+	      "data":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\d",
+	      "commissioni":null,
+	      "allegato":null
+	   },
+	   {
+	      "idDominio":"#(idDominio_2)",
+	      "iuv":"#(iuv)",
+	      "iur":"#notnull",
+	      "indice":2,
+	      "pendenza":"#('/pendenze/' + idA2A + '/' + idPendenza)",
+	      "idVocePendenza":"#(pendenzaPut.voci[1].idVocePendenza)",
+	      "rpp":"#notnull",
+	      "stato":"RISCOSSA",
+	      "tipo":"ENTRATA_PA_NON_INTERMEDIATA",
+	      "importo": "#(pendenzaPut.voci[1].importo)",
 	      "data":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\d",
 	      "commissioni":null,
 	      "allegato":null

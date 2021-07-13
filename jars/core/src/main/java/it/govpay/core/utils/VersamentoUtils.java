@@ -1069,4 +1069,63 @@ public class VersamentoUtils {
 		}
 		return true;
 	}
+	
+	public static Dominio getDominioSingoloVersamento(SingoloVersamento singoloVersamento,Dominio dominio, BDConfigWrapper configWrapper) throws ServiceException {
+		// sv con tributo definito
+		it.govpay.bd.model.Tributo tributo = singoloVersamento.getTributo(configWrapper);
+		if(tributo != null) {
+			IbanAccredito ibanAccredito = tributo.getIbanAccredito();
+			if(ibanAccredito != null) {
+				try {
+					Dominio dominio2 = AnagraficaManager.getDominio(configWrapper, ibanAccredito.getIdDominio());
+					if(!dominio2.getCodDominio().equals(dominio.getCodDominio())) {
+						return dominio2;
+					}
+				} catch (NotFoundException e) {
+					// se passo qui ho fallito la validazione della pendenza !
+					throw new ServiceException("Dominio ["+ibanAccredito.getIdDominio()+"] non censito in base dati.");
+				}
+			} else {
+				IbanAccredito ibanAppoggio = tributo.getIbanAppoggio();
+				if(ibanAppoggio != null) {
+					try {
+						Dominio dominio2 = AnagraficaManager.getDominio(configWrapper, ibanAppoggio.getIdDominio());
+						if(!dominio2.getCodDominio().equals(dominio.getCodDominio())) {
+							return dominio2;
+						}
+					} catch (NotFoundException e) {
+						// se passo qui ho fallito la validazione della pendenza !
+						throw new ServiceException("Dominio ["+ibanAppoggio.getIdDominio()+"] non censito in base dati.");
+					}
+				}
+			}
+		} else { // sv con le informazioni tributo direttamente nei dati 
+			IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(configWrapper);
+			if(ibanAccredito != null) {
+				try {
+					Dominio dominio2 = AnagraficaManager.getDominio(configWrapper, ibanAccredito.getIdDominio());
+					if(!dominio2.getCodDominio().equals(dominio.getCodDominio())) {
+						return dominio2;
+					}
+				} catch (NotFoundException e) {
+					// se passo qui ho fallito la validazione della pendenza !
+					throw new ServiceException("Dominio ["+ibanAccredito.getIdDominio()+"] non censito in base dati.");
+				}
+			} else {
+				IbanAccredito ibanAppoggio = singoloVersamento.getIbanAppoggio(configWrapper);
+				if(ibanAppoggio != null) {
+					try {
+						Dominio dominio2 = AnagraficaManager.getDominio(configWrapper, ibanAppoggio.getIdDominio());
+						if(!dominio2.getCodDominio().equals(dominio.getCodDominio())) {
+							return dominio2;
+						}
+					} catch (NotFoundException e) {
+						// se passo qui ho fallito la validazione della pendenza !
+						throw new ServiceException("Dominio ["+ibanAppoggio.getIdDominio()+"] non censito in base dati.");
+					}
+				}
+			}
+		}
+		return dominio;
+	}
 }

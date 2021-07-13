@@ -41,7 +41,6 @@ import it.govpay.bd.pagamento.PromemoriaBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
-import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
@@ -137,29 +136,6 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		}
 	}
 
-	private static Rpt.EsitoPagamento validaSemanticaCodiceEsitoPagamento(String codiceEsitoPagamento, EsitoValidazione esito) {
-		try{
-			switch (Integer.parseInt(codiceEsitoPagamento)) {
-			case 0:
-				return Rpt.EsitoPagamento.PAGAMENTO_ESEGUITO;
-			case 1:
-				return Rpt.EsitoPagamento.PAGAMENTO_NON_ESEGUITO;
-			case 2:
-				return Rpt.EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO;
-			case 3:
-				return Rpt.EsitoPagamento.DECORRENZA_TERMINI;
-			case 4:
-				return Rpt.EsitoPagamento.DECORRENZA_TERMINI_PARZIALE;
-			default:
-				break;
-			} 
-		} catch (Throwable e) {
-
-		}
-		esito.addErrore("CodiceEsitoPagamento [" + codiceEsitoPagamento + "] sconosciuto", true);
-		return null;
-	}
-
 	public static void validaSemantica(CtSubject rpt, CtSubject rt, EsitoValidazione esito) {
 		valida(rpt.getFullName(),rt.getFullName(), esito, "FullNameDebtor non corrisponde", false);
 		valida(rpt.getPostalCode(),rt.getPostalCode(), esito, "PostalCodeDebtor non corrisponde", false);
@@ -172,11 +148,11 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		valida(rpt.getStateProvinceRegion(),rt.getStateProvinceRegion(), esito, "StateProvinceDebtor non corrisponde", false);
 	}
 
-	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, PaSendRTReq ctRt, boolean recupero) throws ServiceException, NdpException, UtilsException, GovPayException {
-		return acquisisciRT(codDominio, iuv, ccp, ctRt, recupero, false);
+	public static Rpt acquisisciRT(String codDominio, String iuv, PaSendRTReq ctRt, boolean recupero) throws ServiceException, NdpException, UtilsException, GovPayException {
+		return acquisisciRT(codDominio, iuv, ctRt, recupero, false);
 	}
 
-	public static Rpt acquisisciRT(String codDominio, String iuv, String ccp, PaSendRTReq ctRt, boolean recupero, boolean acquisizioneDaCruscotto) throws ServiceException, NdpException, UtilsException, GovPayException {
+	public static Rpt acquisisciRT(String codDominio, String iuv, PaSendRTReq ctRt, boolean recupero, boolean acquisizioneDaCruscotto) throws ServiceException, NdpException, UtilsException, GovPayException {
 
 		RptBD rptBD = null; 
 		try {
@@ -192,24 +168,13 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 			rptBD.setAutoCommit(false);
 
-
 			VersamentiBD versamentiBD = new VersamentiBD(rptBD);
 
 			versamentiBD.setAtomica(false);
-			try {
-				// TODO cercare di capire come trovare il ccp per pescare l'RPT giusta
-				Dominio dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
-				Versamento versamentoByDominioIuv = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv);
-				ccp = versamentoByDominioIuv.getNumeroAvviso();
-			}catch (Exception e) {
-				throw new GovPayException("L'avviso di pagamento [Dominio:" + codDominio + " Iuv:" + iuv + "] non risulta registrato.", EsitoOperazione.VER_008);
-			}
-
-
 
 			Rpt rpt = null;
 			try {
-				rpt = rptBD.getRpt(codDominio, iuv, ccp, true);
+				rpt = rptBD.getRpt(codDominio, iuv, true);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
 			}
@@ -234,7 +199,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			// infatti in caso di RT concorrente, non viene gestito bene l'errore.
 
 			try {
-				rpt = rptBD.getRpt(codDominio, iuv, ccp, true);
+				rpt = rptBD.getRpt(codDominio, iuv, true);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
 			}
@@ -246,38 +211,6 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			}
 
 			PaGetPaymentRes ctRpt = null; 
-			/*
-			 // Questo blocco non ha senso perche' dal servizio ora mi arriva l'oggetto e non piu' l'xml raw
-			// Validazione RT
-			try {
-				// Validazione Sintattica
-				try {
-					ctRt = JaxbUtils.toRT(rtByte, true);
-				} catch (Exception e) {
-					log.warn("Errore durante la validazione sintattica della Ricevuta Telematica.", e);
-					if(e.getCause() != null)
-						throw new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getCause().getMessage(), codDominio);
-					else
-						throw new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getMessage(), codDominio);
-				}
-			} catch (NdpException e) {
-				log.warn("Rt rifiutata: " + e.getDescrizione());
-				if(!acquisizioneDaCruscotto) {
-					rpt.setStato(StatoRpt.RT_RIFIUTATA_PA);
-					rpt.setDescrizioneStato(e.getDescrizione());
-					rpt.setXmlRt(rtByte);
-					try {
-						rptBD.updateRpt(rpt.getId(), rpt);
-						rptBD.commit();
-					}catch (ServiceException e1) {
-						rptBD.rollback();
-					} finally {
-						rptBD.disableSelectForUpdate();
-					}
-				}
-				throw e;
-			}
-			 */
 
 			// Validazione Semantica
 			RtUtils.EsitoValidazione esito = null;
@@ -410,11 +343,18 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				//pagamentiNote += "[" +(indice+1) + "/" + ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione() + "/" + ctDatiSingoloPagamentoRT.getSingoloImportoPagato() + "]";
 
 				SingoloVersamento singoloVersamento = singoliVersamenti.get(indice);
+//				Dominio dominioSingoloVersamento = VersamentoUtils.getDominioSingoloVersamento(singoloVersamento, versamento.getDominio(configWrapper), configWrapper);
+				Dominio dominioSingoloVersamento = null;
+				try {
+					dominioSingoloVersamento = AnagraficaManager.getDominio(configWrapper, ctDatiSingoloPagamentoRT.getFiscalCodePA());
+				} catch (NotFoundException e1) {
+					dominioSingoloVersamento = versamento.getDominio(configWrapper);
+				}
 
 				Pagamento pagamento = null;
 				boolean insert = true;
 				try {
-					pagamento = pagamentiBD.getPagamento(codDominio, iuv, ctReceipt.getReceiptId(), ctDatiSingoloPagamentoRT.getIdTransfer());
+					pagamento = pagamentiBD.getPagamento(dominioSingoloVersamento.getCodDominio(), iuv, ctReceipt.getReceiptId(), ctDatiSingoloPagamentoRT.getIdTransfer());
 
 					// Pagamento rendicontato precedentemente senza RPT
 					// Probabilmente sono stati scambiati i tracciati per sanare la situazione
@@ -422,7 +362,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 					if(pagamento.getIdRpt() != null) {
 						//!! Pagamento gia' notificato da un'altra RPT !!
-						throw new ServiceException("ERRORE: RT con pagamento gia' presente in sistema ["+codDominio+"/"+iuv+"/"+ctReceipt.getReceiptId()+"]");
+						throw new ServiceException("ERRORE: RT con pagamento gia' presente in sistema ["+dominioSingoloVersamento.getCodDominio()+"/"+iuv+"/"+ctReceipt.getReceiptId()+"]");
 					}
 
 			 		Date dataSingoloPagamento = ctReceipt.getPaymentDateTime() != null ? ctReceipt.getPaymentDateTime() : new Date();
@@ -443,7 +383,12 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					if(singoloVersamento.getIdTributo() != null && singoloVersamento.getTributo(configWrapper).getCodTributo().equals(it.govpay.model.Tributo.BOLLOT)) {
 						pagamento.setTipo(TipoPagamento.MBT);
 					} else {
-						pagamento.setTipo(TipoPagamento.ENTRATA);
+						if(dominioSingoloVersamento.isIntermediato()) {
+							pagamento.setTipo(TipoPagamento.ENTRATA);
+						} else {
+							pagamento.setTipo(TipoPagamento.ENTRATA_PA_NON_INTERMEDIATA);
+							ctx.getApplicationLogger().log("pagamento.entrataPaNonIntermediata", dominioSingoloVersamento.getCodDominio(), iuv, ctReceipt.getReceiptId(), ctDatiSingoloPagamentoRT.getTransferAmount().toString());
+						}
 					}
 					Date dataSingoloPagamento = ctReceipt.getPaymentDateTime() != null ? ctReceipt.getPaymentDateTime() : new Date();
 					pagamento.setDataPagamento(dataSingoloPagamento); // <!--data esecuzione pagamento da parte dell'utente-->
@@ -451,12 +396,12 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					pagamento.setSingoloVersamento(singoloVersamento);
 					pagamento.setImportoPagato(ctDatiSingoloPagamentoRT.getTransferAmount());
 					pagamento.setIur(ctReceipt.getReceiptId());
-					pagamento.setCodDominio(rpt.getCodDominio());
+					pagamento.setCodDominio(dominioSingoloVersamento.getCodDominio());
 					pagamento.setIuv(rpt.getIuv());
 					pagamento.setIndiceDati(ctDatiSingoloPagamentoRT.getIdTransfer());
 					pagamento.setCommissioniPsp(pagamento.getCommissioniPsp());
 				} catch (MultipleResultException e) {
-					throw new ServiceException("Identificativo pagamento non univoco: [Dominio:"+codDominio+" Iuv:"+iuv+" Iur:"+ctReceipt.getReceiptId()+" Indice:"+ctDatiSingoloPagamentoRT.getIdTransfer()+"]");
+					throw new ServiceException("Identificativo pagamento non univoco: [Dominio:"+dominioSingoloVersamento.getCodDominio()+" Iuv:"+iuv+" Iur:"+ctReceipt.getReceiptId()+" Indice:"+ctDatiSingoloPagamentoRT.getIdTransfer()+"]");
 				}
 
 				//				if(ctDatiSingoloPagamentoRT.getAllegatoRicevuta() != null) {

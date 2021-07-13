@@ -163,11 +163,37 @@ public class RptBD extends BasicBD {
 	}
 	
 	public Rpt getRpt(String codDominio, String iuv) throws NotFoundException, ServiceException {
-		return this.getRpt(codDominio, iuv, null, false);
+		return this.getRpt(codDominio, iuv, false);
 	}
 	
 	public Rpt getRpt(String codDominio, String iuv, boolean deep) throws NotFoundException, ServiceException {
-		return this.getRpt(codDominio, iuv, null, deep);
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getRptService().newExpression();
+			exp.equals(RPT.model().COD_DOMINIO, codDominio);
+			exp.equals(RPT.model().IUV, iuv);
+			RPT rptVO = this.getRptService().find(exp);
+			Rpt dto = RptConverter.toDTO(rptVO);
+			
+			popolaRpt(deep, dto);
+			
+			return dto;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 	
 	public Rpt getRpt(String codDominio, String iuv, String ccp) throws NotFoundException, ServiceException {
@@ -183,8 +209,7 @@ public class RptBD extends BasicBD {
 			IExpression exp = this.getRptService().newExpression();
 			exp.equals(RPT.model().COD_DOMINIO, codDominio);
 			exp.equals(RPT.model().IUV, iuv);
-			if(ccp != null)
-				exp.equals(RPT.model().CCP, ccp);
+			exp.equals(RPT.model().CCP, ccp);
 			RPT rptVO = this.getRptService().find(exp);
 			Rpt dto = RptConverter.toDTO(rptVO);
 			

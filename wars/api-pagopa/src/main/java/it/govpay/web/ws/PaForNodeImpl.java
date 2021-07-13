@@ -116,14 +116,13 @@ public class PaForNodeImpl implements PaForNodePortType{
 		
 		CtReceipt receipt = requestBody.getReceipt();
 		
-		String ccp =  null; // receipt.getReceiptId(); // TODO 
 		String codDominio = receipt.getFiscalCode();
 		String iuv = receipt.getCreditorReferenceId();
 
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		
-		appContext.setCorrelationId(codDominio + iuv + ccp);
+		appContext.setCorrelationId(codDominio + iuv);
 
 		Actor from = new Actor();
 		from.setName(GpContext.NodoDeiPagamentiSPC);
@@ -135,13 +134,11 @@ public class PaForNodeImpl implements PaForNodePortType{
 		from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
 		appContext.getTransaction().setTo(to);
 
-		appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
 		appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 		appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
 
 		appContext.getEventoCtx().setCodDominio(codDominio);
 		appContext.getEventoCtx().setIuv(iuv);
-		appContext.getEventoCtx().setCcp(ccp);
 
 		try {
 			ctx.getApplicationLogger().log("pagamento.ricezioneRt");
@@ -149,7 +146,7 @@ public class PaForNodeImpl implements PaForNodePortType{
 			log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
 		}
 
-		log.info("Ricevuta richiesta di acquisizione RT [" + codDominio + "][" + iuv + "][" + ccp + "]");
+		log.info("Ricevuta richiesta di acquisizione RT [" + codDominio + "][" + iuv + "]");
 		PaSendRTRes response = new PaSendRTRes();
 
 		//		BasicBD bd = null;
@@ -214,7 +211,7 @@ public class PaForNodeImpl implements PaForNodePortType{
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
-			Rpt rpt = CtReceiptUtils.acquisisciRT(codDominio, iuv, ccp, requestBody, false);
+			Rpt rpt = CtReceiptUtils.acquisisciRT(codDominio, iuv, requestBody, false);
 
 			appContext.getEventoCtx().setIdA2A(rpt.getVersamento(configWrapper).getApplicazione(configWrapper).getCodApplicazione());
 			appContext.getEventoCtx().setIdPendenza(rpt.getVersamento(configWrapper).getCodVersamentoEnte());
@@ -605,13 +602,13 @@ public class PaForNodeImpl implements PaForNodePortType{
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 			String iuv = IuvUtils.toIuv(numeroAvviso);
-//			String ccp = qrCode.getNoticeNumber(); // TODO numero avviso da: https://github.com/pagopa/pagopa-api/issues/126
+			String ccp = System.currentTimeMillis() + "";
 		
-		
-			appContext.setCorrelationId(codDominio + numeroAvviso);
+			appContext.setCorrelationId(codDominio + iuv + ccp);
 		
 			appContext.getEventoCtx().setCodDominio(codDominio);
 			appContext.getEventoCtx().setIuv(iuv);
+			appContext.getEventoCtx().setCcp(ccp);
 
 			Actor from = new Actor();
 			from.setName(GpContext.NodoDeiPagamentiSPC);
@@ -625,6 +622,7 @@ public class PaForNodeImpl implements PaForNodePortType{
 	
 			appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 			appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
+			appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
 			
 			try {
 				ctx.getApplicationLogger().log("ccp.ricezioneAttiva");
@@ -633,7 +631,7 @@ public class PaForNodeImpl implements PaForNodePortType{
 			}
 
 		
-			log.info("Ricevuta richiesta di attiva RPT [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "][" + numeroAvviso + "]");
+			log.info("Ricevuta richiesta di attiva RPT [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "]["+ ccp +"][" + numeroAvviso + "]");
 	
 			DatiPagoPA datiPagoPA = new DatiPagoPA();
 			datiPagoPA.setCodStazione(codStazione);
@@ -789,7 +787,8 @@ public class PaForNodeImpl implements PaForNodePortType{
 			
 			
 			RptBD rptBD = new RptBD(configWrapper);
-			if(GovpayConfig.getInstance().isTimeoutPendentiModello3()) {
+			// controllo che non ci sia un pagamento modello 1 attivo per il versamento corrente.
+			if(GovpayConfig.getInstance().isTimeoutPendentiModello1()) {
 				// Controllo che non ci sia un pagamento in corso
 				// Prendo tutte le RPT pendenti
 				RptFilter filter = rptBD.newFilter();
@@ -805,20 +804,15 @@ public class PaForNodeImpl implements PaForNodePortType{
 					Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
 					
 					// se l'RPT e' bloccata allora controllo che il blocco sia indefinito oppure definito, altrimenti passo
-					if(rpt_pendente.isBloccante() && (GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() == 0 || dataSoglia.before(dataMsgRichiesta))) {
+					if(rpt_pendente.isBloccante() && (GovpayConfig.getInstance().getTimeoutPendentiModello1Mins() == 0 || dataSoglia.before(dataMsgRichiesta))) {
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, codDominio, "Pagamento in corso [CCP:" + rpt_pendente.getCcp() + "].");
 					}
 				}
 			}
 			
-			// Verifico che abbia un solo singolo versamento
-			if(versamento.getSingoliVersamenti().size() != 1) {
-				throw new NdpException(FaultPa.PAA_SEMANTICA, "Il versamento contiente piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.", codDominio);
-			}
-
 //			PaaTipoDatiPagamentoPSP datiPagamentoPSP = null;
 			// Creazione dell'RPT
-			Rpt rpt = new CtPaymentPABuilder().buildRptAttivata(requestBody,versamento, iuv, numeroAvviso);
+			Rpt rpt = new CtPaymentPABuilder().buildRptAttivata(requestBody,versamento, iuv, ccp, numeroAvviso);
 
 			ctx.getApplicationLogger().log("ccp.attivazione", rpt.getCodMsgRichiesta());
 
@@ -835,97 +829,118 @@ public class PaForNodeImpl implements PaForNodePortType{
 				rptBD.enableSelectForUpdate();
 	
 				// Controllo se gia' non esiste la RPT (lo devo fare solo adesso per essere in transazione con l'inserimento)
+				// se e' gia' presente allora devo farla scadere e attivarne una nuova
 				try {
 					Rpt oldrpt = rptBD.getRpt(codDominio, iuv, true);
 					if(oldrpt.getPagamentoPortale() != null)
 						appContext.getEventoCtx().setIdPagamento(oldrpt.getPagamentoPortale().getIdSessione());
-					throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, "RTP attivata in data " + oldrpt.getDataMsgRichiesta() + " [idMsgRichiesta: " + oldrpt.getCodMsgRichiesta() + "]" , codDominio);
-				} catch (NotFoundException e2) {
-	
 					
-					PagamentoPortale pagamentoPortale = new PagamentoPortale();
-					Versamento versamento2 = rpt.getVersamento();
-					it.govpay.bd.model.Applicazione applicazione = AnagraficaManager.getApplicazione(configWrapper, versamento2.getIdApplicazione());
-					pagamentoPortale.setPrincipal(applicazione.getPrincipal());
-					pagamentoPortale.setTipoUtenza(TIPO_UTENZA.APPLICAZIONE);
-					pagamentoPortale.setCodCanale(rpt.getCodCanale());
-					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP);
-					pagamentoPortale.setCodPsp(rpt.getCodPsp());
-					pagamentoPortale.setDataRichiesta(rpt.getDataMsgRichiesta());
-					pagamentoPortale.setIdSessione(ctx.getTransactionId().replaceAll("-", ""));
-					
-					appContext.getEventoCtx().setIdPagamento(pagamentoPortale.getIdSessione());
-	
-					List<IdVersamento> idVersamentoList = new ArrayList<>();
-	
-					IdVersamento idVersamento = new IdVersamento();
-					idVersamento.setCodVersamentoEnte(versamento2.getCodVersamentoEnte());
-					idVersamento.setId(versamento2.getId());
-					
-					idVersamentoList.add(idVersamento);
-					pagamentoPortale.setIdVersamento(idVersamentoList);
-					
-					pagamentoPortale.setImporto(versamento2.getImportoTotale());
-					pagamentoPortale.setMultiBeneficiario(rpt.getCodDominio());
-					
-					if(versamento2.getNome()!=null) {
-						pagamentoPortale.setNome(versamento2.getNome());
-					} else {
-						try {
-							pagamentoPortale.setNome(versamento2.getCausaleVersamento().getSimple());
-						} catch(UnsupportedEncodingException e) {}
-					}
-	
-					pagamentoPortale.setStato(STATO.IN_CORSO);
-					pagamentoPortale.setTipo(3);
+					oldrpt.setStato(StatoRpt.RPT_ANNULLATA);
+					oldrpt.setDescrizioneStato("Ricevuta richiesta di un nuovo tentativo di pagamento");
+					PagamentoPortale oldPagamentoPortale = oldrpt.getPagamentoPortale();
+					oldPagamentoPortale.setStato(STATO.ANNULLATO);
+					oldPagamentoPortale.setDescrizioneStato("Ricevuta richiesta di un nuovo tentativo di pagamento");
 					
 					PagamentiPortaleBD ppbd = new PagamentiPortaleBD(rptBD);
 					ppbd.setAtomica(false);
-										
-					ppbd.insertPagamento(pagamentoPortale, true);
-					
-					// imposto l'id pagamento all'rpt
-					rpt.setIdPagamentoPortale(pagamentoPortale.getId());
-					rpt.setPagamentoPortale(pagamentoPortale);
 					
 					try {
-						// 	L'RPT non esiste, procedo
-						rptBD.insertRpt(rpt);
-					}catch(ServiceException e) {
-						rptBD.rollback();
-						rptBD.disableSelectForUpdate();
-	
-						// update della entry pagamento portale
-						pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
-						pagamentoPortale.setStato(STATO.FALLITO);
-						pagamentoPortale.setDescrizioneStato(e.getMessage());
-						pagamentoPortale.setAck(false);
-						ppbd.updatePagamento(pagamentoPortale, false, true);
+						rptBD.updateRpt(oldrpt.getId(), oldrpt);
+						ppbd.updatePagamento(oldPagamentoPortale);
 						
-						ppbd.commit();
+						rptBD.commit();
+						log.info("RPT [idDominio:"+oldrpt.getCodDominio()+"][iuv:"+oldrpt.getIuv()+"][ccp:"+oldrpt.getCcp()+"] annullata con successo.");
+					} catch(ServiceException e) {
+						log.error("Errore durante l'annullamento della RPT [idDominio:"+oldrpt.getCodDominio()+"][iuv:"+oldrpt.getIuv()+"][ccp:"+oldrpt.getCcp()+"]: " +e .getMessage(), e);
 						throw e;
-					}
+					} finally {
+						
+					} 
+				} catch (NotFoundException e2) {}
+				
 					
-					// RptUtils.inviaRPTAsync(rpt, ctx); la risposta a questa chiamata e' gia' l'invio
+				PagamentoPortale pagamentoPortale = new PagamentoPortale();
+				Versamento versamento2 = rpt.getVersamento();
+				it.govpay.bd.model.Applicazione applicazione = AnagraficaManager.getApplicazione(configWrapper, versamento2.getIdApplicazione());
+				pagamentoPortale.setPrincipal(applicazione.getPrincipal());
+				pagamentoPortale.setTipoUtenza(TIPO_UTENZA.APPLICAZIONE);
+				pagamentoPortale.setCodCanale(rpt.getCodCanale());
+				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_CORSO_AL_PSP);
+				pagamentoPortale.setCodPsp(rpt.getCodPsp());
+				pagamentoPortale.setDataRichiesta(rpt.getDataMsgRichiesta());
+				pagamentoPortale.setIdSessione(ctx.getTransactionId().replaceAll("-", ""));
+				
+				appContext.getEventoCtx().setIdPagamento(pagamentoPortale.getIdSessione());
+
+				List<IdVersamento> idVersamentoList = new ArrayList<>();
+
+				IdVersamento idVersamento = new IdVersamento();
+				idVersamento.setCodVersamentoEnte(versamento2.getCodVersamentoEnte());
+				idVersamento.setId(versamento2.getId());
+				
+				idVersamentoList.add(idVersamento);
+				pagamentoPortale.setIdVersamento(idVersamentoList);
+				
+				pagamentoPortale.setImporto(versamento2.getImportoTotale());
+				pagamentoPortale.setMultiBeneficiario(rpt.getCodDominio());
+				
+				if(versamento2.getNome()!=null) {
+					pagamentoPortale.setNome(versamento2.getNome());
+				} else {
+					try {
+						pagamentoPortale.setNome(versamento2.getCausaleVersamento().getSimple());
+					} catch(UnsupportedEncodingException e) {}
+				}
+
+				pagamentoPortale.setStato(STATO.IN_CORSO);
+				pagamentoPortale.setTipo(3);
+				
+				PagamentiPortaleBD ppbd = new PagamentiPortaleBD(rptBD);
+				ppbd.setAtomica(false);
+									
+				ppbd.insertPagamento(pagamentoPortale, true);
+				
+				// imposto l'id pagamento all'rpt
+				rpt.setIdPagamentoPortale(pagamentoPortale.getId());
+				rpt.setPagamentoPortale(pagamentoPortale);
+				
+				try {
+					// 	L'RPT non esiste, procedo
+					rptBD.insertRpt(rpt);
+				}catch(ServiceException e) {
+					rptBD.rollback();
+					rptBD.disableSelectForUpdate();
+
+					// update della entry pagamento portale
+					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
+					pagamentoPortale.setStato(STATO.FALLITO);
+					pagamentoPortale.setDescrizioneStato(e.getMessage());
+					pagamentoPortale.setAck(false);
+					ppbd.updatePagamento(pagamentoPortale, false, true);
 					
-					// RPT accettata dal Nodo
-					// Invio la notifica e aggiorno lo stato
-					Notifica notifica = new Notifica(rpt, TipoNotifica.ATTIVAZIONE, configWrapper);
-					it.govpay.core.business.Notifica notificaBD = new it.govpay.core.business.Notifica();
-					
-					rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_ACCETTATA_NODO, null, null, null,null);
-					boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica, rptBD);
-					
-					if(schedulaThreadInvio)
-						ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, ctx));
-					log.info("RPT inviata correttamente al nodo");
-					ctx.getApplicationLogger().log("pagamento.invioRptAttivataOk");
-				} 
+					ppbd.commit();
+					throw e;
+				}
+				
+				// RptUtils.inviaRPTAsync(rpt, ctx); la risposta a questa chiamata e' gia' l'invio
+				
+				// RPT accettata dal Nodo
+				// Invio la notifica e aggiorno lo stato
+				Notifica notifica = new Notifica(rpt, TipoNotifica.ATTIVAZIONE, configWrapper);
+				it.govpay.core.business.Notifica notificaBD = new it.govpay.core.business.Notifica();
+				
+				rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_ACCETTATA_NODO, null, null, null,null);
+				boolean schedulaThreadInvio = notificaBD.inserisciNotifica(notifica, rptBD);
+				
+				if(schedulaThreadInvio)
+					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, ctx));
+				log.info("RPT inviata correttamente al nodo");
+				ctx.getApplicationLogger().log("pagamento.invioRptAttivataOk");
 	
 				rptBD.commit();
 				
 				rptBD.disableSelectForUpdate();
-			} catch (NdpException | ServiceException e) {
+			} catch (ServiceException e) {
 				if(rptBD != null && !rptBD.isAutoCommit()) {
 					rptBD.rollback();
 				}
