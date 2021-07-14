@@ -46,6 +46,7 @@ import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.v1.VerificaConverter;
 import it.govpay.core.utils.rawutils.ConverterUtils;
@@ -54,7 +55,7 @@ import it.govpay.ec.v1.beans.PendenzaVerificata;
 import it.govpay.ec.v1.beans.StatoPendenzaVerificata;
 import it.govpay.model.Versionabile.Versione;
 
-public class VerificaClient extends BasicClient {
+public class VerificaClient extends BasicClientCORE {
 
 	private static final String ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0 = "Errore nella deserializzazione del messaggio di risposta ({0})";
 	private static final String AZIONE_SOAP_PA_VERIFICA_VERSAMENTO = "paVerificaVersamento";
