@@ -857,7 +857,7 @@ public abstract class BasicClientCORE {
 
 
 	public byte[] sendSoap(String azione, byte[] body, boolean isAzioneInUrl) throws ClientException { 
-		return this.send(true, azione, body, isAzioneInUrl, azione, null, null, null, HttpRequestMethod.POST);
+		return this.send(true, azione, body, isAzioneInUrl, "text/xml", null, null, null, HttpRequestMethod.POST);
 	}
 
 	public byte[] getJson(String path, List<Property> headerProperties, String swaggerOperationId) throws ClientException {
