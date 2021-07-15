@@ -172,32 +172,36 @@ public class Incassi {
 				
 				// Richiesta presente. Verifico che i dati accessori siano gli stessi
 				if(!iuvIdFlussoSet) {
-					if(!causale.trim().equals(incasso.getCausale())) {
+					if(!causale.trim().equalsIgnoreCase(incasso.getCausale())) {
 						ctx.getApplicationLogger().log("incasso.duplicato", "causale");
-						throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con causale diversa");
+						throw new IncassiException(FaultType.DUPLICATO, "La causale inviata è diversa dall'originale [" + incasso.getCausale()+ "]");
 					}
 				}else {
 					if(iuv != null) {
 						if(!iuv.trim().equals(incasso.getIuv())) {
 							ctx.getApplicationLogger().log("incasso.duplicato", "iuv");
-							throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con iuv diverso");
+							throw new IncassiException(FaultType.DUPLICATO, "Incasso già registrato con iuv diverso: "+incasso.getIuv()+"");
 						}
 					}
 					
 					if(idf != null) {
 						if(!idf.trim().equals(incasso.getIdFlussoRendicontazione())) {
 							ctx.getApplicationLogger().log("incasso.duplicato", "idf");
-							throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con id flusso rendicontazione diverso");
+							throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con id flusso rendicontazione diverso: " + incasso.getIdFlussoRendicontazione());
 						}
 					}
 				}
+				if(richiestaIncasso.getSct() != null && !richiestaIncasso.getSct().equals(incasso.getSct())) {
+					ctx.getApplicationLogger().log("incasso.duplicato", "sct");
+					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con sct diverso: " + incasso.getSct());
+				}
 				if(!richiestaIncasso.getCodDominio().equals(incasso.getCodDominio())) {
 					ctx.getApplicationLogger().log("incasso.duplicato", "dominio");
-					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con dominio diverso");
+					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con dominio diverso: " + incasso.getCodDominio());
 				}
 				if(richiestaIncasso.getImporto().compareTo(incasso.getImporto()) != 0) {
 					ctx.getApplicationLogger().log("incasso.duplicato", "importo");
-					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso");
+					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso: " + incasso.getImporto());
 				}
 			} catch(NotFoundException nfe) {
 				// Incasso non registrato. OK
@@ -699,18 +703,38 @@ public class Incassi {
 				gpContext.getEventoCtx().setIdIncasso(incasso.getId()); 
 				
 				// Richiesta presente. Verifico che i dati accessori siano gli stessi
-				if(!richiestaIncasso.getCausale().trim().equals(incasso.getCausale())) {
-					ctx.getApplicationLogger().log("incasso.duplicato", "causale");
-					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con causale diversa");
+				if(!iuvIdFlussoSet) {
+					if(!causale.trim().equalsIgnoreCase(incasso.getCausale())) {
+						ctx.getApplicationLogger().log("incasso.duplicato", "causale");
+						throw new IncassiException(FaultType.DUPLICATO, "La causale inviata è diversa dall'originale [" + incasso.getCausale()+ "]");
+					}
+				}else {
+					if(iuv != null) {
+						if(!iuv.trim().equals(incasso.getIuv())) {
+							ctx.getApplicationLogger().log("incasso.duplicato", "iuv");
+							throw new IncassiException(FaultType.DUPLICATO, "Incasso già registrato con iuv diverso: "+incasso.getIuv()+"");
+						}
+					}
+					
+					if(idf != null) {
+						if(!idf.trim().equals(incasso.getIdFlussoRendicontazione())) {
+							ctx.getApplicationLogger().log("incasso.duplicato", "idf");
+							throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con id flusso rendicontazione diverso: " + incasso.getIdFlussoRendicontazione());
+						}
+					}
+				}
+				if(richiestaIncasso.getSct() != null && !richiestaIncasso.getSct().equals(incasso.getSct())) {
+					ctx.getApplicationLogger().log("incasso.duplicato", "sct");
+					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con sct diverso: " + incasso.getSct());
 				}
 				if(!richiestaIncasso.getCodDominio().equals(incasso.getCodDominio())) {
 					ctx.getApplicationLogger().log("incasso.duplicato", "dominio");
-					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con dominio diverso");
+					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con dominio diverso: " + incasso.getCodDominio());
 				}
 				if(richiestaIncasso.getImporto().compareTo(incasso.getImporto()) != 0) {
 					ctx.getApplicationLogger().log("incasso.duplicato", "importo");
-					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso");
-				}
+					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso: " + incasso.getImporto());
+				}				
 				richiestaIncassoResponse.setIncasso(incasso);
 				richiestaIncassoResponse.setCreated(false);
 				return richiestaIncassoResponse;
