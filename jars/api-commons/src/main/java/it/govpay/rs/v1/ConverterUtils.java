@@ -59,6 +59,17 @@ public class ConverterUtils {
 			throw new ServiceException(e);
 		}
 	}
+	
+	public static String getRptJson(PaGetPaymentRes paGetPaymentRes_RPT) throws ServiceException {
+		if(paGetPaymentRes_RPT == null)
+			return null;
+
+		try {
+			return mapper.writeValueAsString(paGetPaymentRes_RPT);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
 
 	public static String getRtJson(Rpt rpt) throws ServiceException {
 		if(rpt.getXmlRt() == null)

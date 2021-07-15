@@ -188,11 +188,6 @@
 									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodoRichiestaAvvisi.wsdl</wsdl>
 									<wsdlLocation>classpath:wsdl/PaPerNodoRichiestaAvvisi.wsdl</wsdlLocation>
 								</wsdlOption>
-								<wsdlOption>
-									<frontEnd>jaxws21</frontEnd>
-									<wsdl>${basedir}/src/main/resources/wsdl/paForNode.wsdl</wsdl>
-									<wsdlLocation>classpath:wsdl/paForNode.wsdl</wsdlLocation>
-								</wsdlOption>
 							</wsdlOptions>
 						</configuration>
 						<goals>

@@ -111,3 +111,51 @@ When method put
 Then status 400
 And match response contains { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida' }
 And match response.dettaglio contains 'voci'
+
+Scenario: caricamento pendenza con payload json vuoto
+
+* def pendenzaPutVuota = 
+"""
+{
+
+}
+"""
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+And request pendenzaPutVuota
+When method put
+Then status 400
+And match response contains { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida' }
+
+Scenario: caricamento pendenza con payload vuoto
+
+* def pendenzaPutVuota = ""
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+And headers { 'Content-Type' : 'application/json' }
+And request pendenzaPutVuota
+When method put
+Then status 400
+And match response contains { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida' }
+
+
+Scenario: caricamento pendenza con payload contenente uno spazio bianco
+
+* def pendenzaPutVuota = " "
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+And headers { 'Content-Type' : 'application/json' }
+And request pendenzaPutVuota
+When method put
+Then status 400
+And match response contains { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida' }
+
+
+
+

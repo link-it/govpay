@@ -47,9 +47,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:utils/nodo-config-dominio-put.feature')
 
-* set stazioneNdpSymPut.urlCCP = 'http://localhost:8080/govpay/frontend/api/pagopa/PaForNodeservice'
-* set stazioneNdpSymPut.urlRT = 'http://localhost:8080/govpay/frontend/api/pagopa/PaForNodeservice'
-
 * call read('classpath:utils/nodo-config-stazione-put.feature')
 
 # Verifico il pagamento
@@ -61,7 +58,9 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 # Attivo il pagamento 
 
-* def tipoRicevuta = "R02"
+# NON_ESEGUITO_SANP_24("R22")
+
+* def tipoRicevuta = "R22"
 * call read('classpath:utils/psp-attiva-rpt.feature')
 * match response.dati == esitoGetPayment
 
@@ -70,14 +69,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def ccp = 'n_a'
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 * match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
-
-# Verifico la notifica di terminazione
-
-* def ccp = 'n_a'
-* call read('classpath:utils/pa-notifica-terminazione.feature')
-
-* def ccp =  ccp_numero_avviso
-* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-non-eseguito.json')
 
 # Verifico lo stato della pendenza
 

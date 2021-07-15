@@ -49,9 +49,6 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:utils/nodo-config-dominio-put.feature')
 
-* set stazioneNdpSymPut.urlCCP = 'http://localhost:8080/govpay/frontend/api/pagopa/PaForNodeservice'
-* set stazioneNdpSymPut.urlRT = 'http://localhost:8080/govpay/frontend/api/pagopa/PaForNodeservice'
-
 * call read('classpath:utils/nodo-config-stazione-put.feature')
 
 # Verifico il pagamento

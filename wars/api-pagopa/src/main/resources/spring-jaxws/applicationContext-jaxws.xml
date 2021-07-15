@@ -62,15 +62,5 @@
 				<b:ref bean="contextV1" />
 			</jaxws:features>
 		</jaxws:endpoint>
-		
-		<jaxws:endpoint id="apiPagoPaForNodeV1" address="/PaForNodeservice" implementorClass="it.govpay.web.ws.PaForNodeImpl">
-			<jaxws:handlers>
-				<b:ref bean="messageLoggingHandlerV1" />
-			</jaxws:handlers>
-			<jaxws:features>
-				<b:ref bean="giornaleEventiV1" /> <!-- Inserire prima della contextFeature -->
-				<b:ref bean="contextV1" />
-			</jaxws:features>
-		</jaxws:endpoint>
 
 </b:beans>

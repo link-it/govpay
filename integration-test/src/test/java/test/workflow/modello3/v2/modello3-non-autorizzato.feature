@@ -42,9 +42,6 @@ Scenario: Verifica pagamento
 
 * call read('classpath:utils/nodo-config-dominio-put.feature')
 
-* set stazioneNdpSymPut.urlCCP = 'http://localhost:8080/govpay/frontend/api/pagopa/PaForNodeservice'
-* set stazioneNdpSymPut.urlRT = 'http://localhost:8080/govpay/frontend/api/pagopa/PaForNodeservice'
-
 * call read('classpath:utils/nodo-config-stazione-put.feature')
 
 * def numeroAvviso = '000000000000000000'
@@ -68,9 +65,6 @@ Scenario: Attiva pagamento
 * set dominioNdpSymPut.versione = 3
 
 * call read('classpath:utils/nodo-config-dominio-put.feature')
-
-* set stazioneNdpSymPut.urlCCP = 'http://localhost:8080/govpay/frontend/api/pagopa/PaForNodeservice'
-* set stazioneNdpSymPut.urlRT = 'http://localhost:8080/govpay/frontend/api/pagopa/PaForNodeservice'
 
 * call read('classpath:utils/nodo-config-stazione-put.feature')
 

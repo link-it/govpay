@@ -7,6 +7,9 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaFG;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersFG;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentPA;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtSubject;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
 import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -88,7 +91,22 @@ public class RptConverter {
 					rsModel.setRpt(ConverterUtils.getRptJson(ctRpt));
 					break;
 				case SANP_240:
-					rsModel.setRpt(ConverterUtils.getRptJson(rpt));
+					PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
+					
+					CtPaymentPA data = paGetPaymentRes_RPT.getData();
+					
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+						// in questa versione non sono presenti informazioni sul versante
+					}
+					
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+						// in questa versione non sono presenti informazioni sul versante
+						
+						// imposto il soggetto pagatore a null
+						data.setDebtor(null);
+					}
+					
+					rsModel.setRpt(ConverterUtils.getRptJson(paGetPaymentRes_RPT));
 					break;
 				}
 			}
@@ -176,7 +194,22 @@ public class RptConverter {
 					rsModel.setRpt(ConverterUtils.getRptJson(ctRpt));
 					break;
 				case SANP_240:
-					rsModel.setRpt(ConverterUtils.getRptJson(rpt));
+					PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
+					
+					CtPaymentPA data = paGetPaymentRes_RPT.getData();
+					
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+						// in questa versione non sono presenti informazioni sul versante
+					}
+					
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+						// in questa versione non sono presenti informazioni sul versante
+						
+						// imposto il soggetto pagatore a null
+						data.setDebtor(null);
+					}
+					
+					rsModel.setRpt(ConverterUtils.getRptJson(paGetPaymentRes_RPT));
 					break;
 				}
 			}

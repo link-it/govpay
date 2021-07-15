@@ -110,9 +110,6 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 * call read('classpath:utils/nodo-config-dominio-put.feature')
 
-* set stazioneNdpSymPut.urlCCP = 'http://localhost:8080/govpay/frontend/api/pagopa/PaForNodeservice'
-* set stazioneNdpSymPut.urlRT = 'http://localhost:8080/govpay/frontend/api/pagopa/PaForNodeservice'
-
 * call read('classpath:utils/nodo-config-stazione-put.feature')
 
 # Verifico il pagamento
