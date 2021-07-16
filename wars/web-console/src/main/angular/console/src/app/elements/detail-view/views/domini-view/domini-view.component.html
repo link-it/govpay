@@ -24,7 +24,7 @@
                     [data-list]="unita_operative" [show-actions]="_PLUS_CREDIT" [show-over-icons]="_PLUS_CREDIT" [next-page]="_paginatorOptions.unita.next"
                     [previous-page]="_paginatorOptions.unita.previous" [page]="_paginatorOptions.unita.page" [target]="_UNITA"
                     [pages]="_paginatorOptions.unita.pages" (page-event)="paginatorLoader($event, _UNITA)" [tooltip-action]="'Unità operativa'"
-                    [search]="_paginatorOptions.unita.search" [refresh]="_paginatorOptions.unita.refresh"></link-filter-card>
+                    [search]="_paginatorOptions.unita.search" [refresh]="_paginatorOptions.unita.refresh" *ngIf="_isIntermediato"></link-filter-card>
   <link-filter-card (over-icon-click)="_iconCardClick(_IBAN, $event)" (add-icon-click)="_addEdit(_IBAN)" [card-title]="'Iban'"
                     [data-list]="iban_cc" [show-actions]="_PLUS_CREDIT" [show-over-icons]="_PLUS_CREDIT" [next-page]="_paginatorOptions.iban.next"
                     [previous-page]="_paginatorOptions.iban.previous" [page]="_paginatorOptions.iban.page" [target]="_IBAN"
@@ -34,15 +34,15 @@
                     [data-list]="entrate" [show-actions]="_PLUS_CREDIT" [show-over-icons]="_PLUS_CREDIT" [next-page]="_paginatorOptions.entrate.next"
                     [previous-page]="_paginatorOptions.entrate.previous" [page]="_paginatorOptions.entrate.page" [target]="_ENTRATA_DOMINIO"
                     [pages]="_paginatorOptions.entrate.pages" (page-event)="paginatorLoader($event, _ENTRATA_DOMINIO)" [tooltip-action]="'Tipi entrata'"
-                    [search]="_paginatorOptions.entrate.search" [refresh]="_paginatorOptions.entrate.refresh"></link-filter-card>
+                    [search]="_paginatorOptions.entrate.search" [refresh]="_paginatorOptions.entrate.refresh" *ngIf="_isIntermediato"></link-filter-card>
   <link-filter-card (over-icon-click)="_iconCardClick(_TIPI_PENDENZA_DOMINIO, $event)" (add-icon-click)="_addEdit(_TIPI_PENDENZA_DOMINIO)" [card-title]="'Tipi pendenza'"
                     [data-list]="tipiPendenza" [show-actions]="_PLUS_CREDIT" [disable-action]="!_hasAssociazioniPendenza" [show-over-icons]="_PLUS_CREDIT"
                     [tooltip-action]="!_hasAssociazioniPendenza?'Non ci sono pendenze disponibili':'Tipi pendenza'"
                     [next-page]="_paginatorOptions.pendenze.next" [previous-page]="_paginatorOptions.pendenze.previous" [page]="_paginatorOptions.pendenze.page"
                     [target]="_TIPI_PENDENZA_DOMINIO" [pages]="_paginatorOptions.pendenze.pages" (page-event)="paginatorLoader($event, _TIPI_PENDENZA_DOMINIO)"
-                    [search]="_paginatorOptions.pendenze.search" [refresh]="_paginatorOptions.pendenze.refresh"></link-filter-card>
+                    [search]="_paginatorOptions.pendenze.search" [refresh]="_paginatorOptions.pendenze.refresh" *ngIf="_isIntermediato"></link-filter-card>
   <link-simple-list-card (over-icon-click)="_listCardIconClick($event)" (menu-action-click)="_listCardAction($event)" [trigger-icon]="'add'" [card-title]="'Connettori'"
                          [tooltip-trigger-icon]="'Connettori'" [data-list]="connettori" [show-actions]="_PLUS_CREDIT" [action-list]="['edit', 'delete']"
-                         [show-menu-actions]="_PLUS_CREDIT && _availableConnectors.length !== 0" [menu-actions]="_availableConnectors"></link-simple-list-card>
+                         [show-menu-actions]="_PLUS_CREDIT && _availableConnectors.length !== 0" [menu-actions]="_availableConnectors" *ngIf="_isIntermediato"></link-simple-list-card>
 </div>
 <button mat-fab class="fab-action" (click)="_editDominio()"><i class="material-icons">edit</i></button>
