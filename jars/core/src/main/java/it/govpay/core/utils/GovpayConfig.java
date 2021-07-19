@@ -138,6 +138,13 @@ public class GovpayConfig {
 	
 	private boolean ricercaRiconciliazioniIdFlussoCaseInsensitive;
 	
+	
+	private Integer connectionTimeout;
+	private Integer readTimeout;
+	private Integer connectionRequestTimeout;
+	private Integer numeroMassimoConnessioniPerPool;
+	private Integer numeroMassimoConnessioniPerRouteDefault;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -200,6 +207,13 @@ public class GovpayConfig {
 		
 		this.batchCaricamentoTracciatiNotificaPagamenti = false;
 		this.ricercaRiconciliazioniIdFlussoCaseInsensitive = false;
+		
+		this.readTimeout = 180000;
+		this.connectionTimeout = 10000;
+		this.connectionRequestTimeout = 180000;
+		this.numeroMassimoConnessioniPerRouteDefault = 20;
+		this.numeroMassimoConnessioniPerPool = 200;
+		
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -597,6 +611,46 @@ public class GovpayConfig {
 			if(ricercaRiconciliazioniIdFlussoCaseInsensitiveString != null && Boolean.valueOf(ricercaRiconciliazioniIdFlussoCaseInsensitiveString))
 				this.ricercaRiconciliazioniIdFlussoCaseInsensitive = true;
 			
+			String connectTimeoutString = getProperty("it.govpay.client.connectionTimeout", this.props, false, log);
+			try{
+				this.connectionTimeout = Integer.parseInt(connectTimeoutString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.connectionTimeout\" impostata com valore di default 10000");
+				this.connectionTimeout = 10000;
+			}
+			
+			String readTimeoutString = getProperty("it.govpay.client.readTimeout", this.props, false, log);
+			try{
+				this.readTimeout = Integer.parseInt(readTimeoutString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.readTimeout\" impostata com valore di default 180000");
+				this.readTimeout = 180000;
+			}
+			
+			String connectionRequestTimeoutString = getProperty("it.govpay.client.connectionRequestTimeout", this.props, false, log);
+			try{
+				this.connectionRequestTimeout = Integer.parseInt(connectionRequestTimeoutString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.connectionTimeout\" impostata com valore di default 180000");
+				this.connectionRequestTimeout = 10000;
+			}
+			
+			String numeroMassimoConnessioniPerPoolString = getProperty("it.govpay.client.numeroMassimoConnessioniPerPool", this.props, false, log);
+			try{
+				this.numeroMassimoConnessioniPerPool = Integer.parseInt(numeroMassimoConnessioniPerPoolString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.numeroMassimoConnessioniPerPool\" impostata com valore di default 200");
+				this.numeroMassimoConnessioniPerPool = 200;
+			}
+			
+			String numeroMassimoConnessioniPerRouteDefaultString = getProperty("it.govpay.client.numeroMassimoConnessioniPerRouteDefault", this.props, false, log);
+			try{
+				this.numeroMassimoConnessioniPerPool = Integer.parseInt(numeroMassimoConnessioniPerRouteDefaultString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.numeroMassimoConnessioniPerRouteDefault\" impostata com valore di default 20");
+				this.numeroMassimoConnessioniPerRouteDefault = 20;
+			}
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -919,4 +973,25 @@ public class GovpayConfig {
 	public boolean isRicercaRiconciliazioniIdFlussoCaseInsensitive() {
 		return ricercaRiconciliazioniIdFlussoCaseInsensitive;
 	}
+
+	public Integer getConnectionTimeout() {
+		return connectionTimeout;
+	}
+
+	public Integer getReadTimeout() {
+		return readTimeout;
+	}
+
+	public Integer getConnectionRequestTimeout() {
+		return connectionRequestTimeout;
+	}
+
+	public Integer getNumeroMassimoConnessioniPerPool() {
+		return numeroMassimoConnessioniPerPool;
+	}
+
+	public Integer getNumeroMassimoConnessioniPerRouteDefault() {
+		return numeroMassimoConnessioniPerRouteDefault;
+	}
+	
 }

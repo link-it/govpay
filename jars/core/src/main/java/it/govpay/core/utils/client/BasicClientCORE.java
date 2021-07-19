@@ -93,7 +93,6 @@ import org.openspcoop2.utils.transport.TransportUtils;
 import org.openspcoop2.utils.transport.http.HttpBodyParameters;
 import org.openspcoop2.utils.transport.http.HttpConstants;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
-import org.openspcoop2.utils.transport.http.HttpUtilities;
 import org.openspcoop2.utils.transport.http.WrappedLogSSLSocketFactory;
 import org.slf4j.Logger;
 
@@ -154,6 +153,7 @@ public abstract class BasicClientCORE {
 
 	protected Integer connectionTimeout;
 	protected Integer readTimeout;
+	protected Integer connectionRequestTimeout;
 
 	protected DumpRequest dumpRequest = null;
 	protected DumpResponse dumpResponse = null;
@@ -214,8 +214,9 @@ public abstract class BasicClientCORE {
 	}
 
 	private BasicClientCORE(String bundleKey, Connettore connettore) throws ClientException {
-		this.readTimeout = 180000;
-		this.connectionTimeout = 10000;
+		this.readTimeout = GovpayConfig.getInstance().getReadTimeout();
+		this.connectionTimeout = GovpayConfig.getInstance().getConnectionTimeout();
+		this.connectionRequestTimeout = GovpayConfig.getInstance().getConnectionRequestTimeout();
 		
 		this.dumpRequest = new DumpRequest();
 		this.dumpResponse = new DumpResponse();
@@ -320,9 +321,9 @@ public abstract class BasicClientCORE {
 				cm = new PoolingHttpClientConnectionManager();
 			}
 			// Increase max total connection to 200
-			cm.setMaxTotal(200);
+			cm.setMaxTotal(GovpayConfig.getInstance().getNumeroMassimoConnessioniPerPool());
 			// Increase default max connection per route to 20
-			cm.setDefaultMaxPerRoute(5);
+			cm.setDefaultMaxPerRoute(GovpayConfig.getInstance().getNumeroMassimoConnessioniPerRouteDefault());
 			// Increase max connections for localhost:80 to 50
 			//HttpHost localhost = new HttpHost("locahost", 80);
 			//cm.setMaxPerRoute(new HttpRoute(localhost), 50);
@@ -563,26 +564,12 @@ public abstract class BasicClientCORE {
 			// Impostazione timeout
 			if(this.debug)
 				log.debug("Impostazione timeout...");
-			int connectionTimeout = -1;
-			int readConnectionTimeout = -1;
-			if(this.connectionTimeout!=null){
-				connectionTimeout = this.connectionTimeout.intValue();
-			}
-			if(connectionTimeout==-1){
-				connectionTimeout = HttpUtilities.HTTP_CONNECTION_TIMEOUT;
-			}
-			if(this.readTimeout !=null){
-				readConnectionTimeout = this.readTimeout.intValue();
-			}
-			if(readConnectionTimeout==-1){
-				readConnectionTimeout = HttpUtilities.HTTP_READ_CONNECTION_TIMEOUT;
-			}
 			if(this.debug)
-				log.info("Impostazione http timeout CT["+connectionTimeout+"] RT["+readConnectionTimeout+"]",false);
+				log.info("Impostazione http timeout CT["+this.connectionTimeout+"] RT["+this.readTimeout+"] CReqT["+this.connectionRequestTimeout+"]",false);
 
-			requestConfigBuilder.setConnectionRequestTimeout(connectionTimeout);
-			requestConfigBuilder.setConnectTimeout(connectionTimeout);
-			requestConfigBuilder.setSocketTimeout(readConnectionTimeout);
+			requestConfigBuilder.setConnectionRequestTimeout(this.connectionRequestTimeout);
+			requestConfigBuilder.setConnectTimeout(this.connectionTimeout);
+			requestConfigBuilder.setSocketTimeout(this.readTimeout);
 
 			// Gestione automatica del redirect
 			//this.httpConn.setInstanceFollowRedirects(true); 
