@@ -443,15 +443,10 @@ public class Incassi {
 					
 					if(rendicontazione.getStato().equals(StatoRendicontazione.ALTRO_INTERMEDIARIO)) continue;
 					
-					if(rendicontazione.getStato().equals(StatoRendicontazione.ANOMALA)) {
-						ctx.getApplicationLogger().log("incasso.frAnomala", idf);
-						throw new IncassiException(FaultType.FR_ANOMALA, "Il flusso di rendicontazione " + idf + " identificato dalla causale di incasso risulta avere delle anomalie");
-					}
-					
 					it.govpay.bd.model.Pagamento pagamento = rendicontazione.getPagamento(incassiBD);
 					
-					if(pagamento == null && rendicontazione.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT)) {
-						// Incasso di un pagamento senza RPT. Controllo se il pagamento non e' stato creato nel frattempo dall'arrivo di una RT
+					if(pagamento == null) {
+						// Incasso di un pagamento non presente. Controllo se il pagamento non e' stato creato nel frattempo dall'arrivo di una RT
 						try {
 							pagamento = pagamentiBD.getPagamento(fr.getCodDominio(), rendicontazione.getIuv(), rendicontazione.getIur(), rendicontazione.getIndiceDati());
 						} catch (NotFoundException e) {
