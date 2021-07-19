@@ -86,7 +86,8 @@ public class NdpException extends Exception {
 		PAA_SINTASSI_XSD("Errore di sintassi XSD."),
 		PAA_STAZIONE_INT_ERRATA("Stazione intermediario non corrispondente."),
 		PAA_SYSTEM_ERROR("Errore generico."),
-		PAA_TIPOFIRMA_SCONOSCIUTO("Il campo tipoFirma non corrisponde ad alcun valore previsto.");
+		PAA_TIPOFIRMA_SCONOSCIUTO("Il campo tipoFirma non corrisponde ad alcun valore previsto."),
+		PAA_PAGAMENTO_MULTIBENEFICIARIO_NON_CONSENTITO("Pagamento multibeneficiario non consentito con le specifiche SANP-SPC 2.3.0.");
 		
 		private String fault;
 		

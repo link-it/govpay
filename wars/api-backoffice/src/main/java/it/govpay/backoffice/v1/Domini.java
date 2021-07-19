@@ -45,9 +45,9 @@ public class Domini extends BaseRsServiceV1{
     @Path("/")
     
     @Produces({ "application/json" })
-    public Response findDomini(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1")  Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) Integer risultatiPerPagina, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("ordinamento") String ordinamento, @QueryParam("idStazione") String idStazione, @QueryParam("associati") Boolean associati, @QueryParam("form") Boolean form, @QueryParam("idDominio") String idDominio, @QueryParam("ragioneSociale") String ragioneSociale, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
+    public Response findDomini(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1")  Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) Integer risultatiPerPagina, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("ordinamento") String ordinamento, @QueryParam("idStazione") String idStazione, @QueryParam("associati") Boolean associati, @QueryParam("form") Boolean form, @QueryParam("idDominio") String idDominio, @QueryParam("ragioneSociale") String ragioneSociale, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati, @QueryParam("intermediato") Boolean intermediato){
         this.buildContext();
-        return this.controller.findDomini(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, campi, abilitato, ordinamento, idStazione, associati, form, idDominio, ragioneSociale, metadatiPaginazione, maxRisultati);
+        return this.controller.findDomini(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, campi, abilitato, ordinamento, idStazione, associati, form, idDominio, ragioneSociale, metadatiPaginazione, maxRisultati, intermediato);
     }
 
     @GET

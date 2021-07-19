@@ -1,0 +1,9 @@
+{
+  "urlEC": "http://localhost:8080/govpay/frontend/web/connector/ecsp/psp",
+  "auxDigit": 0,
+  "versione": 1,
+  "segregationCode": null,
+  "ragioneSociale": "Ente Creditore Test",
+  "idStazione": "11111111113_01",
+  "idIntermediario": "11111111113"
+}

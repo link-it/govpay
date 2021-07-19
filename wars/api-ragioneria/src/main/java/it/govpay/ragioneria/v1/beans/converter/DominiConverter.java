@@ -31,7 +31,8 @@ public class DominiConverter {
 			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
 		}
 		rsModel.setIuvPrefix(dominio.getIuvPrefix());
-		rsModel.setStazione(dominio.getStazione().getCodStazione());
+		if(dominio.getStazione() != null)
+			rsModel.setStazione(dominio.getStazione().getCodStazione());
 		rsModel.setAbilitato(dominio.isAbilitato());
 		
 		return rsModel;

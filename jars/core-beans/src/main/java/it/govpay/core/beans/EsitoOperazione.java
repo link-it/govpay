@@ -654,13 +654,13 @@ public enum EsitoOperazione {
     VER_032,
     
     /**
-     * Iban di accredito non censito
+     * Iban Appoggio non censito
      * 
      */
     VER_033,
     
     /**
-     * Iban Accredito disabilitato 
+     * Iban Appoggio disabilitato 
      * 
      */
     VER_034,
@@ -759,7 +759,25 @@ public enum EsitoOperazione {
      * Somma importi contabilita' non coincide con importo vocependenza 
      * 
      */
-    VER_035;
+    VER_035,
+    
+    /**
+     * Iban Accredito non univoco all'interno del sistema 
+     * 
+     */
+    VER_036,
+    
+    /**
+     * Iban Appoggio non univoco all'interno del sistema  
+     * 
+     */
+    VER_037,
+    
+    /**
+     * Pendenza multibeneficiario non puo' essere pagata col modello 1  
+     * 
+     */
+    VER_038;
 	
 
     public String value() {

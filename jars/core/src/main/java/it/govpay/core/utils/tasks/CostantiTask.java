@@ -31,4 +31,7 @@ public class CostantiTask {
 	public final static String ELABORAZIONE_RICONCILIAZIONI = "ElaborazioneRiconciliazioni";
 	public final static String ELABORAZIONE_RICONCILIAZIONI_CHECK = "ElaborazioneRiconciliazioniCheck";
 	
+	public final static String CHIUSURA_RPT_SCADUTE = "ChiusuraRptScadute";
+	public final static String CHIUSURA_RPT_SCADUTE_CHECK = "ChiusuraRptScaduteCheck";
+	
 }

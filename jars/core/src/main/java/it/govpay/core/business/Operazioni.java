@@ -93,6 +93,9 @@ public class Operazioni{
 	
 	public static final String BATCH_RICONCILIAZIONI = "riconciliazioni";
 	public static final String CHECK_RICONCILIAZIONI = "check-riconciliazioni";
+	
+	public static final String BATCH_CHIUSURA_RPT_SCADUTE = "rpt-scadute";
+	public static final String CHECK_CHIUSURA_RPT_SCADUTE = "check-rpt-scadute";
 
 	private static boolean eseguiGestionePromemoria;
 	private static boolean eseguiInvioPromemoria;
@@ -105,6 +108,7 @@ public class Operazioni{
 	private static boolean eseguiInvioTracciatiNotificaPagamenti;
 	
 	private static boolean eseguiElaborazioneRiconciliazioni;
+	private static boolean eseguiElaborazioneChiusuraRptScadute;
 
 	public static synchronized void setEseguiGestionePromemoria() {
 		eseguiGestionePromemoria = true;
@@ -213,6 +217,18 @@ public class Operazioni{
 	public static synchronized boolean getEseguiElaborazioneRiconciliazioni() {
 		return eseguiElaborazioneRiconciliazioni;
 	}
+	
+	public static synchronized void setEseguiElaborazioneChiusuraRptScadute() {
+		eseguiElaborazioneChiusuraRptScadute = true;
+	}
+
+	public static synchronized void resetEseguiElaborazioneChiusuraRptScadute() {
+		eseguiElaborazioneChiusuraRptScadute = false;
+	}
+
+	public static synchronized boolean getEseguiElaborazioneChiusuraRptScadute() {
+		return eseguiElaborazioneChiusuraRptScadute;
+	}
 
 	public static String acquisizioneRendicontazioni(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
@@ -249,6 +265,25 @@ public class Operazioni{
 			return "Acquisizione fallita#" + e;
 		} finally {
 			BatchManager.stopEsecuzione(configWrapper, PND);
+		}
+	}
+	
+	public static String chiusuraRptScadute(IContext ctx){
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		try {
+			if(BatchManager.startEsecuzione(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE)) {
+				String chiusuraRPTScadute = new Pagamento().chiusuraRPTScadute(ctx);
+				aggiornaSondaOK(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE);
+				return chiusuraRPTScadute;
+			} else {
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			log.error("Chiusura RPT scadute fallita", e);
+			aggiornaSondaKO(configWrapper, PND, e);
+			return "Chiusura RPT scadute fallita#" + e;
+		} finally {
+			BatchManager.stopEsecuzione(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE);
 		}
 	}
 

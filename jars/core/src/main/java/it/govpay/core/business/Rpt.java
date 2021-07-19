@@ -205,15 +205,51 @@ public class Rpt {
 							ctx.getApplicationLogger().log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp);
 						}
 					}
-
-					if(pagamentoPortale !=  null && pagamentoPortale.getTipo() == 1 && GovpayConfig.getInstance().isTimeoutPendentiModello1()) {
-						log.debug("Blocco pagamento per il Mod1 attivo con soglia: [" + GovpayConfig.getInstance().getTimeoutPendentiModello1Mins() + " minuti]"); 
+					
+					// controllo se la pendenza e' multibeneficiario, se lo e' allora non puo' essere pagata col modello3 SANP 2.3
+					if(VersamentoUtils.isPendenzaMultibeneficiario(versamento, configWrapper)) {
+						throw new GovPayException(EsitoOperazione.VER_038, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
+					}
+					
+					// blocco dei pagamenti modello 3 per le RPT SANP 2.4.0
+					// il nuovo pagamento modello 3 ha un timeout sempre impostato di max 30 minuti
+					if(pagamentoPortale != null && pagamentoPortale.getTipo() == 1) {
+						log.debug("Blocco pagamento per il Mod3 SANP 2.4 attivo con soglia: [" + GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins() + " minuti]"); 
 						log.debug("Controllo che non ci siano transazioni di pagamento in corso per il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
 
 						// Controllo che non ci sia un pagamento in corso per i versamenti che sto provando ad eseguire
 						RptFilter filter = rptBD.newFilter();
 						filter.setStato(it.govpay.model.Rpt.stati_pendenti);
 						filter.setIdVersamento(versamento.getId());
+						filter.setVersione(it.govpay.model.Rpt.Versione.SANP_240.toString());
+						List<it.govpay.bd.model.Rpt> rpt_pendenti = rptBD.findAll(filter);
+
+						log.debug("Trovate ["+rpt_pendenti.size()+"] RPT pendenti per  il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
+
+						// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
+						// Altrimenti lancio il fault
+						Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins() * 60000);
+						
+						for(it.govpay.bd.model.Rpt rpt_pendente : rpt_pendenti) {
+							Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
+
+							// se l'RPT e' bloccata allora controllo che il blocco sia indefinito oppure definito, altrimenti passo
+							if(rpt_pendente.isBloccante() && dataSoglia.before(dataMsgRichiesta)) {
+								throw new GovPayException(EsitoOperazione.PAG_014, rpt_pendente.getCodDominio(), rpt_pendente.getIuv(), rpt_pendente.getCcp());
+							}
+						}
+					}
+
+					// blocco dei pagamenti modello 1 per le RPT SANP 2.3.0
+					if(pagamentoPortale !=  null && pagamentoPortale.getTipo() == 1 && GovpayConfig.getInstance().isTimeoutPendentiModello1()) {
+						log.debug("Blocco pagamento per il Mod1 SANP 2.3 attivo con soglia: [" + GovpayConfig.getInstance().getTimeoutPendentiModello1Mins() + " minuti]"); 
+						log.debug("Controllo che non ci siano transazioni di pagamento in corso per il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
+
+						// Controllo che non ci sia un pagamento in corso per i versamenti che sto provando ad eseguire
+						RptFilter filter = rptBD.newFilter();
+						filter.setStato(it.govpay.model.Rpt.stati_pendenti);
+						filter.setIdVersamento(versamento.getId());
+						filter.setVersione(it.govpay.model.Rpt.Versione.SANP_230.toString());
 						List<it.govpay.bd.model.Rpt> rpt_pendenti = rptBD.findAll(filter);
 
 						log.debug("Trovate ["+rpt_pendenti.size()+"] RPT pendenti per  il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
@@ -230,7 +266,7 @@ public class Rpt {
 								throw new GovPayException(EsitoOperazione.PAG_014, rpt_pendente.getCodDominio(), rpt_pendente.getIuv(), rpt_pendente.getCcp());
 							}
 						}
-					} 
+					}
 
 					if(appContext.getPagamentoCtx().getCodCarrello() != null) {
 						appContext.setCorrelationId(appContext.getPagamentoCtx().getCodCarrello());

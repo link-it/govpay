@@ -94,6 +94,8 @@ public class GovpayConfig {
 	private Integer timeoutPendentiModello1Mins;
 	private Integer intervalloControlloRptPendenti;
 	
+	private Integer timeoutPendentiModello3_SANP_24_Mins;
+	
 	private Properties[] props;
 	private IConservazione conservazionePlugin;
 	
@@ -165,6 +167,7 @@ public class GovpayConfig {
 		this.timeoutPendentiModello3Mins = null;
 		this.timeoutPendentiModello1 = false;
 		this.timeoutPendentiModello1Mins = null;
+		this.timeoutPendentiModello3_SANP_24_Mins = 30;
 		
 		this.appName = null;
 		this.ambienteDeploy = null;
@@ -463,6 +466,25 @@ public class GovpayConfig {
 					this.timeoutPendentiModello1 = true;
 				} catch(NumberFormatException nfe) {
 					log.warn("La proprieta \"it.govpay.modello1.timeoutPagamento\" deve essere valorizzata a `false` o con un numero. Utilizzato valore di default `false`");
+				}
+			}
+			
+			String timeoutPendentiModello3_SANP_24_String = getProperty("it.govpay.modello3.sanp24.timeoutPagamento", props, false, log);
+			if(timeoutPendentiModello3_SANP_24_String != null) {
+				try{
+					this.timeoutPendentiModello3_SANP_24_Mins = Integer.parseInt(timeoutPendentiModello3_SANP_24_String);
+					
+					if(this.timeoutPendentiModello3_SANP_24_Mins.intValue() > 30) {
+						this.timeoutPendentiModello3_SANP_24_Mins = 30;
+						log.warn("La proprieta \"it.govpay.modello3.sanp24.timeoutPagamento\" deve essere valorizzata con un numero non superiore a 30. Utilizzato valore di default: 30");
+					}
+					
+					if(this.timeoutPendentiModello3_SANP_24_Mins.intValue() < 1) {
+						this.timeoutPendentiModello3_SANP_24_Mins = 1;
+						log.warn("La proprieta \"it.govpay.modello3.sanp24.timeoutPagamento\" deve essere valorizzata con un numero non inferiore a 1. Utilizzato valore di default: 30");
+					}
+				} catch(NumberFormatException nfe) {
+					log.warn("La proprieta \"it.govpay.modello3.sanp24.timeoutPagamento\" deve essere valorizzata con un numero. Utilizzato valore di default: 30");
 				}
 			}
 			
@@ -806,6 +828,10 @@ public class GovpayConfig {
 
 	public Integer getTimeoutPendentiModello1Mins() {
 		return timeoutPendentiModello1Mins;
+	}
+	
+	public Integer getTimeoutPendentiModello3_SANP_24_Mins() {
+		return timeoutPendentiModello3_SANP_24_Mins;
 	}
 
 	public String getAppName() {

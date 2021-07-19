@@ -30,7 +30,8 @@ public class DominiConverter {
 			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
 		}
 		rsModel.setIuvPrefix(dominio.getIuvPrefix());
-		rsModel.setStazione(dominio.getStazione().getCodStazione());
+		if(dominio.getStazione() != null)
+			rsModel.setStazione(dominio.getStazione().getCodStazione());
 		rsModel.setContiAccredito(UriBuilderUtils.getContiAccreditoByDominio(dominio.getCodDominio()));
 		rsModel.setUnitaOperative(UriBuilderUtils.getListUoByDominio(dominio.getCodDominio()));
 		rsModel.setEntrate(UriBuilderUtils.getEntrateByDominio(dominio.getCodDominio()));

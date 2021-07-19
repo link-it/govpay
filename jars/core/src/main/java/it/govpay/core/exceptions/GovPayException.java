@@ -236,6 +236,9 @@ public class GovPayException extends Exception {
 	
 		// Aggiunti nella versione 3.5.x
 		case VER_035: return "La voce ("+this.params[0]+") della pendenza (IdA2A:" + this.params[1] + ", Id:" + this.params[2] + ") ha un importo (" + this.params[3] + ") diverso dalla somma dei singoli importi definiti nella lista delle contabilita' (" + this.params[4] + ")";
+		case VER_036: return "Iban di accredito (" + this.params[0] + ") non univoco all'interno del sistema.";
+		case VER_037: return "Iban di appoggio (" + this.params[0] + ") non univoco all'interno del sistema.";
+		case VER_038: return "La pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") e' di tipo multibeneficiario non consentito per pagamenti spontanei.";
 		}
 		
 		return "";
@@ -396,6 +399,9 @@ public class GovPayException extends Exception {
 		
 		// Aggiunti nella versione 3.5.x
 		case VER_035: return 422; // "Richiesta non valida";
+		case VER_036: return 422; // "Richiesta non valida";
+		case VER_037: return 422; // "Richiesta non valida";
+		case VER_038: return 422; // "Richiesta non valida";
 		}
 		
 		return 500;
@@ -521,6 +527,9 @@ public class GovPayException extends Exception {
 		
 		// Aggiunti nella versione 3.5.x
 		case VER_035: return "Richiesta non valida";
+		case VER_036: return "Richiesta non valida";
+		case VER_037: return "Richiesta non valida";
+		case VER_038: return "Richiesta non valida";
 		}
 		
 		return "";

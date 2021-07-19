@@ -57,6 +57,7 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.COD_CONNETTORE_SECIM = new Field("codConnettoreSecim",java.lang.String.class,"Dominio",Dominio.class);
 		this.COD_CONNETTORE_GOV_PAY = new Field("codConnettoreGovPay",java.lang.String.class,"Dominio",Dominio.class);
 		this.COD_CONNETTORE_HYPER_SIC_APK = new Field("codConnettoreHyperSicAPK",java.lang.String.class,"Dominio",Dominio.class);
+		this.INTERMEDIATO = new Field("intermediato",boolean.class,"Dominio",Dominio.class);
 	
 	}
 	
@@ -80,6 +81,7 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.COD_CONNETTORE_SECIM = new ComplexField(father,"codConnettoreSecim",java.lang.String.class,"Dominio",Dominio.class);
 		this.COD_CONNETTORE_GOV_PAY = new ComplexField(father,"codConnettoreGovPay",java.lang.String.class,"Dominio",Dominio.class);
 		this.COD_CONNETTORE_HYPER_SIC_APK = new ComplexField(father,"codConnettoreHyperSicAPK",java.lang.String.class,"Dominio",Dominio.class);
+		this.INTERMEDIATO = new ComplexField(father,"intermediato",boolean.class,"Dominio",Dominio.class);
 	
 	}
 	
@@ -116,6 +118,8 @@ public class DominioModel extends AbstractModel<Dominio> {
 	public IField COD_CONNETTORE_GOV_PAY = null;
 	 
 	public IField COD_CONNETTORE_HYPER_SIC_APK = null;
+	 
+	public IField INTERMEDIATO = null;
 	 
 
 	@Override
