@@ -62,5 +62,4 @@ Examples:
 | autStampaPosteItaliane | dominio.autStampaPosteItaliane | loremIpsum | 'autStampaPosteItaliane' |
 | area | dominio.area | loremIpsum | 'area' |
 | intermediato | dominio.intermediato | 'boh' |  'intermediato' |
-| intermediato | dominio.intermediato | null |  'intermediato' |
 

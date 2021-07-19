@@ -667,9 +667,8 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 			vf.getValidator("web", this.web).minLength(1).maxLength(255);
 			vf.getValidator("area", this.area).minLength(1).maxLength(255);
 			vf.getValidator("abilitato", this.abilitato).notNull();
-			vf.getValidator("intermediato", this.intermediato).notNull();
 			
-			if(this.intermediato) {
+			if(this.intermediato == null || this.intermediato) {
 				vf.getValidator("gln", this.gln).length(13).pattern("(^([0-9]){13}$)");
 				vf.getValidator("stazione", this.stazione).notNull();
 				vf.getValidator("segregationCode", this.segregationCode).length(2).pattern("(^[0-4][0-9]$)");
