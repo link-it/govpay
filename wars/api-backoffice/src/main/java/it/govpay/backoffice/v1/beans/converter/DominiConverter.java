@@ -203,7 +203,7 @@ public class DominiConverter {
 		if(dominioPost.getServizioHyperSicAPKappa() != null)
 			dominio.setConnettoreHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappaConverter.getConnettoreDTO(dominioPost.getServizioHyperSicAPKappa(), user, Tipo.HYPER_SIC_APKAPPA));
 		
-		dominio.setIntermediato(dominioPost.Intermediato());
+		dominio.setIntermediato(dominioPost.Intermediato() != null ? dominioPost.Intermediato() : true);
 		
 		dominioDTO.setDominio(dominio);
 		dominioDTO.setIdDominio(idDominio);
