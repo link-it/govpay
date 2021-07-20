@@ -676,11 +676,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 				vf.getValidator("autStampaPosteItaliane", this.autStampaPosteItaliane).maxLength(255);
 				vf.getValidator("iuvPrefix", this.iuvPrefix).pattern("(\\d*(%\\([yYa{t|p}u]\\))?)+");
 				vf.getValidator("auxDigit", this.auxDigit).notNull().length(1).pattern("(^([0-3]){1}$)");
-				// connettori
-				vf.getValidator("servizioMyPivot", this.servizioMyPivot).validateFields();
-				vf.getValidator("servizioSecim", this.servizioSecim).validateFields();
-				vf.getValidator("servizioGovPay", this.servizioGovPay).validateFields();
-				vf.getValidator("servizioHyperSicAPKappa", this.servizioHyperSicAPKappa).validateFields();
+				
 			} else {
 				vf.getValidator("gln", this.gln).isNull();
 				vf.getValidator("stazione", this.stazione).isNull();
@@ -689,12 +685,13 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 				vf.getValidator("autStampaPosteItaliane", this.autStampaPosteItaliane).isNull();
 				vf.getValidator("iuvPrefix", this.iuvPrefix).isNull();
 				vf.getValidator("auxDigit", this.auxDigit).isNull();
-				// connettori
-				vf.getValidator("servizioMyPivot", this.servizioMyPivot).isNull();
-				vf.getValidator("servizioSecim", this.servizioSecim).isNull();
-				vf.getValidator("servizioGovPay", this.servizioGovPay).isNull();
-				vf.getValidator("servizioHyperSicAPKappa", this.servizioHyperSicAPKappa).isNull();
 			}
+			
+			// connettori
+			vf.getValidator("servizioMyPivot", this.servizioMyPivot).validateFields();
+			vf.getValidator("servizioSecim", this.servizioSecim).validateFields();
+			vf.getValidator("servizioGovPay", this.servizioGovPay).validateFields();
+			vf.getValidator("servizioHyperSicAPKappa", this.servizioHyperSicAPKappa).validateFields();
 	  }
 }
 
