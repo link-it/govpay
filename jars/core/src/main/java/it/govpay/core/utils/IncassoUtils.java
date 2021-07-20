@@ -5,15 +5,14 @@ import java.util.regex.Pattern;
 
 public class IncassoUtils {
 
-	private static Pattern patternSingoloRFS = Pattern.compile("^.*RFS[ \\/]([^ \\/]+)[ \\/]?.*$");
-	private static Pattern patternSingoloRFB = Pattern.compile("^.*RFB[ \\/]([^ \\/]+)[ \\/]?.*$");
+	private static Pattern patternSingolo = Pattern.compile("RF[SB].([0-9A-Za-z\\-_]+)");
 	private static Pattern patternCumulativo = Pattern.compile("PUR.LGPE-RIVERSAMENTO.URI.([0-9A-Za-z\\-_]+)");
 	private static Pattern patternCausale = Pattern.compile("^.*TXT[ \\/]([ \\/]?.*)$");
 	private static Pattern patternIDF = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d[0-9A-Za-z_]*-\\S*");
-	private static Pattern patternIUV = Pattern.compile("[0-9]{15,17}");
+	private static Pattern patternIUV = Pattern.compile("[0-9]{15,17}|^RF.*");
 
 	public static String getRiferimentoIncassoSingolo(String causale) {
-		Matcher matcher = patternSingoloRFS.matcher(causale);
+		Matcher matcher = patternSingolo.matcher(causale);
 		while (matcher.find()) {
 			for(int i=1; i<=matcher.groupCount(); i++) {
 				String match = matcher.group(i);
@@ -22,15 +21,6 @@ public class IncassoUtils {
 				}
 			}
 		} 
-		matcher = patternSingoloRFB.matcher(causale);
-		while (matcher.find()) {
-			for(int i=1; i<=matcher.groupCount(); i++) {
-				String match = matcher.group(i);
-				if(patternIUV.matcher(match).find()) {
-					return match;
-				}
-			}
-		} 		
 		return null;
 	}
 

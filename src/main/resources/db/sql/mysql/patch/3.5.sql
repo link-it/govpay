@@ -373,4 +373,8 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-riconc
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('rpt-scadute', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-rpt-scadute', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
 
+-- 20/07/2021 Fix anomalie per rendicontazione senza RT
+
+update rendicontazioni set stato='OK', anomalie=null where anomalie = '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.';
+update fr set stato='OK', descrizione_stato = null where stato='ANOMALA' and id not in (select fr.id from fr join rendicontazioni on rendicontazioni.id_fr=fr.id where fr.stato='ANOMALA' and rendicontazioni.stato='ANOMALA');
 
