@@ -1,4 +1,4 @@
-package it.govpay.backoffice.v1.beans.converter;
+package it.govpay.pagamento.v2.beans.converter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -9,13 +9,13 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 
-import it.govpay.backoffice.v1.beans.Contabilita;
-import it.govpay.backoffice.v1.beans.QuotaContabilita;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.pagamento.v2.beans.Contabilita;
+import it.govpay.pagamento.v2.beans.QuotaContabilita;
 
 public class ContabilitaConverter {
-	
+
 	public static Contabilita toRsModel(String contabilitaJson) throws java.io.IOException, ServiceException, ValidationException {
 		if(contabilitaJson == null)
 			return null;
@@ -124,5 +124,4 @@ public class ContabilitaConverter {
 		}
 		return null;
 	}
-	
 }

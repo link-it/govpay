@@ -130,5 +130,10 @@ Examples:
 | annoEsercizio | pendenzaPut.voci[0].contabilita.quote[0].annoEsercizio | 12345 | 'annoEsercizio' |
 | annoEsercizio | pendenzaPut.voci[0].contabilita.quote[0].annoEsercizio | loremIpsum | 'annoEsercizio' |
 | annoEsercizio | pendenzaPut.voci[0].contabilita.quote[0].annoEsercizio | null | 'annoEsercizio' |
+| titolo | pendenzaPut.voci[0].contabilita.quote[0].titolo | loremIpsum | 'titolo' |
+| tipologia | pendenzaPut.voci[0].contabilita.quote[0].tipologia | loremIpsum | 'tipologia' |
+| categoria | pendenzaPut.voci[0].contabilita.quote[0].categoria | loremIpsum | 'categoria' |
+| articolo | pendenzaPut.voci[0].contabilita.quote[0].articolo | loremIpsum | 'articolo' |
+
 
     

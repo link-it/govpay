@@ -1,4 +1,5 @@
-package it.govpay.ragioneria.v3.beans;
+package it.govpay.pagamento.v2.beans;
+
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -9,6 +10,9 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "capitolo",
 "annoEsercizio",
@@ -20,7 +24,7 @@ import it.govpay.core.beans.JSONSerializable;
 "categoria",
 "articolo",
 })
-public class QuotaContabilita extends JSONSerializable {
+public class QuotaContabilita extends JSONSerializable implements IValidable {
   
   @JsonProperty("capitolo")
   private String capitolo = null;
@@ -254,6 +258,24 @@ public class QuotaContabilita extends JSONSerializable {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
+  }
+  
+  @Override
+	public void validate() throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+		
+		vf.getValidator("capitolo", capitolo).notNull().minLength(1).maxLength(64);
+		
+		vf.getValidator("annoEsercizio", annoEsercizio).notNull();
+		ValidatoreUtils.validaAnnoRiferimento(vf, "annoEsercizio", annoEsercizio);
+
+		vf.getValidator("accertamento", accertamento).minLength(1).maxLength(64);
+		ValidatoreUtils.validaImporto(vf, "importo", importo);
+
+		vf.getValidator("titolo", titolo).minLength(1).maxLength(64);
+		vf.getValidator("tipologia", tipologia).minLength(1).maxLength(64);
+		vf.getValidator("categoria", categoria).minLength(1).maxLength(64);
+		vf.getValidator("articolo", articolo).minLength(1).maxLength(64);
   }
 }
 

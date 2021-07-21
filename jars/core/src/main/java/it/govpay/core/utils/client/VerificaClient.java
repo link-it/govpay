@@ -46,6 +46,7 @@ import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.v1.VerificaConverter;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.core.utils.validator.PendenzaVerificataValidator;

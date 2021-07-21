@@ -1,4 +1,5 @@
-package it.govpay.ragioneria.v3.beans;
+package it.govpay.core.beans.tracciati;
+
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -20,7 +21,7 @@ import it.govpay.core.beans.JSONSerializable;
 "categoria",
 "articolo",
 })
-public class QuotaContabilita extends JSONSerializable {
+public class QuotaContabilita extends JSONSerializable{
   
   @JsonProperty("capitolo")
   private String capitolo = null;

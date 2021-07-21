@@ -56,6 +56,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rpt;
 import it.govpay.model.Stazione;

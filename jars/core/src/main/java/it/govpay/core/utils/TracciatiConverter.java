@@ -20,23 +20,30 @@
 package it.govpay.core.utils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.serialization.SerializationConfig;
 
+import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.tracciati.Contabilita;
 import it.govpay.core.beans.tracciati.PendenzaPost;
+import it.govpay.core.beans.tracciati.QuotaContabilita;
 import it.govpay.core.beans.tracciati.Soggetto;
 import it.govpay.core.beans.tracciati.TassonomiaAvviso;
 import it.govpay.core.beans.tracciati.TipoSogliaVincoloPagamento;
 import it.govpay.core.beans.tracciati.VocePendenza;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class TracciatiConverter {
 	
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) throws ServiceException, ValidationException { 
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(PendenzaPost pendenza) throws ServiceException, ValidationException, GovPayException { 
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -129,7 +136,7 @@ public class TracciatiConverter {
 		return anagraficaCommons;
 	}
 	
-	public static BigDecimal fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) throws ServiceException {
+	public static BigDecimal fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) throws ServiceException, GovPayException {
 
 		BigDecimal importoTotale = BigDecimal.ZERO;
 		
@@ -166,11 +173,87 @@ public class TracciatiConverter {
 					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
 					sv.setTributo(tributo);
 				}
+				
+				sv.setContabilita(toStringDTO(vocePendenza.getContabilita()));
+				
+				if(vocePendenza.getContabilita() != null) {
+					if(vocePendenza.getContabilita().getQuote() != null) {
+						BigDecimal somma = BigDecimal.ZERO;
+						for (QuotaContabilita voceContabilita : vocePendenza.getContabilita().getQuote()) {
+							somma = somma.add(voceContabilita.getImporto());
+						}
+						
+						if(somma.compareTo(vocePendenza.getImporto()) != 0) {
+							throw new GovPayException(EsitoOperazione.VER_035, vocePendenza.getIdVocePendenza(),  versamento.getCodApplicazione(), versamento.getCodVersamentoEnte(),
+								Double.toString(sv.getImporto().doubleValue()), Double.toString(somma.doubleValue()));
+						}
+					}
+				}
 
 				versamento.getSingoloVersamento().add(sv);
 			}
 		}
 		
 		return importoTotale;
+	}
+	
+	public static String toStringDTO(Contabilita contabilita) throws ServiceException {
+		if(contabilita == null)
+			return null;
+		
+		it.govpay.model.Contabilita dto = toDTO(contabilita);
+		
+		return getDettaglioAsString(dto);
+	}
+	
+	
+	public static List<it.govpay.model.QuotaContabilita> toDTO(List<QuotaContabilita> dto) throws ServiceException {
+		if(dto != null) {
+			List<it.govpay.model.QuotaContabilita> rsModel = new ArrayList<it.govpay.model.QuotaContabilita>();
+			for (QuotaContabilita contabilita : dto) {
+				rsModel.add(toDTO(contabilita));
+			}
+			
+			return rsModel;
+		}
+		
+		return null;
+	}
+
+	public static it.govpay.model.Contabilita toDTO(Contabilita dto) throws ServiceException {
+		it.govpay.model.Contabilita rsModel = new it.govpay.model.Contabilita();
+		
+		rsModel.setQuote(toDTO(dto.getQuote()));
+		rsModel.setProprietaCustom(dto.getProprietaCustom());
+		
+		
+		return rsModel;
+	}
+	
+	public static it.govpay.model.QuotaContabilita toDTO(QuotaContabilita dto) throws ServiceException {
+		it.govpay.model.QuotaContabilita rsModel = new it.govpay.model.QuotaContabilita();
+		
+		rsModel.setAccertamento(dto.getAccertamento());
+		rsModel.setAnnoEsercizio(dto.getAnnoEsercizio().intValue());
+		rsModel.setCapitolo(dto.getCapitolo());
+		rsModel.setImporto(dto.getImporto());
+		rsModel.setProprietaCustom(dto.getProprietaCustom());
+		rsModel.setTitolo(dto.getTitolo());
+		rsModel.setTipologia(dto.getTipologia());
+		rsModel.setCategoria(dto.getCategoria());
+		rsModel.setArticolo(dto.getArticolo());
+		
+		return rsModel;
+	}
+	
+	private static String getDettaglioAsString(Object obj) throws ServiceException {
+		if(obj != null) {
+			SerializationConfig serializationConfig = new SerializationConfig();
+			serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+			serializationConfig.setIgnoreNullValues(true);
+			return ConverterUtils.toJSON(obj, null, serializationConfig);
+		}
+		return null;
 	}
 }

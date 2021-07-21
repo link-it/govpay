@@ -345,5 +345,3 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('riconciliazi
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
 
 
-
-

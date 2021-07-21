@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.10.0"
+  version: "2.11.0"
   title: GovPay - API Pagamento
   contact:
     name: GitHub Project Page
@@ -1040,6 +1040,16 @@ components:
           type: string
           example: "RO"
           pattern: "[A-Z]{2,2}"
+    Contabilita:
+      type: object
+      properties:
+        quote:
+          type: array
+          items: 
+            $ref: '#/components/schemas/QuotaContabilita'
+        proprietaCustom:
+          type: object
+          description: Dati specifici del gestionale di contabilità
     Conto:
       type: object
       required:
@@ -1409,6 +1419,8 @@ components:
               example: Sanzione CdS n. abc00000
               minLength: 1
               maxLength: 140
+            contabilita:
+                $ref: '#/components/schemas/Contabilita'
         - oneOf:
           - $ref: '#/components/schemas/RiferimentoEntrata'
           - $ref: '#/components/schemas/Entrata'
@@ -1808,6 +1820,56 @@ components:
         lineaTestoRicevuta2:
           type: string
           description: stringa personalizzata da inserire nella ricevuta
+        linguaSecondariaCausale:
+          type: string
+          description: >-
+              causale della pendenza nella lingua secondaria da inserire nell'avviso
+    QuotaContabilita:
+      type: object
+      required:
+        - capitolo
+        - annoEsercizio
+        - importo
+      properties:
+        capitolo:
+          type: string
+          description: Codice del capitolo
+          maxLength: 64
+        annoEsercizio:
+          type: number
+          description: Anno di esercizio
+          example: 2020
+        importo:
+          type: number
+          description: Importo della voce di contabilita'
+          example: 10.01
+        accertamento:
+          type: string
+          description: Codice dell’accertamento
+          maxLength: 64        
+        proprietaCustom:
+          type: object
+          description: Dati specifici del gestionale di contabilità
+        titolo:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'titolo'
+        tipologia:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'tipologia'
+        categoria:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'categoria'
+        articolo:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'articolo'
     RiferimentoAvviso:
       type: object
       required:

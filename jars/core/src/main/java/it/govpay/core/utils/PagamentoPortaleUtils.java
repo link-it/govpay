@@ -61,10 +61,11 @@ public class PagamentoPortaleUtils {
 			int numeroEseguiti = 0;
 			int numeroNonEseguiti = 0;
 			int numeroFalliti = 0;
+			String descrizioneStato = null;
 			//int numeroResidui = 0;
 			for (int i = 0; i <findAll.size(); i++) {
 				Rpt rpt  = findAll.get(i);
-				log.debug("RPT corrente ["+rpt.getId()+"] Stato ["+rpt.getStato()+ "] EsitoPagamento ["+rpt.getEsitoPagamento()+"]");
+				log.debug("AAAAA RPT corrente ["+rpt.getId()+"] Stato ["+rpt.getStato()+ "] EsitoPagamento ["+rpt.getEsitoPagamento()+"]");
 				StatoRpt stato = rpt.getStato();
 				if(it.govpay.model.Rpt.stati_pendenti.contains(stato)) {
 //						rpt.getEsitoPagamento() == null) {
@@ -78,7 +79,10 @@ public class PagamentoPortaleUtils {
 					|| stato.equals(StatoRpt.RPT_RIFIUTATA_PSP)) {
 					numeroFalliti ++;
 				}
-				else {
+				else if(stato.equals(StatoRpt.RPT_ERRORE_INVIO_A_NODO)) {
+					descrizioneStato = "Errore nella spedizione della richiesta di pagamento a pagoPA";
+					numeroFalliti ++;
+				} else {
 					if(rpt.getEsitoPagamento() != null) {
 						if(rpt.getEsitoPagamento().equals(EsitoPagamento.PAGAMENTO_ESEGUITO)) {
 							numeroEseguiti ++;
@@ -94,7 +98,7 @@ public class PagamentoPortaleUtils {
 				}
 			}
 			
-			log.debug("Esito analisi rpt Update ["+updateStato+"] #OK ["+numeroEseguiti+"], #KO ["+numeroNonEseguiti+"], #Fallite ["+numeroFalliti+"]"); 
+			log.debug("AAAAA Esito analisi rpt Update ["+updateStato+"] #OK ["+numeroEseguiti+"], #KO ["+numeroNonEseguiti+"], #Fallite ["+numeroFalliti+"]"); 
 			
 			if(updateStato) {
 				if(numeroFalliti == findAll.size()) {
@@ -110,14 +114,14 @@ public class PagamentoPortaleUtils {
 					pagamentoPortale.setStato(STATO.ESEGUITO_PARZIALE);
 					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_PARZIALMENTE_ESEGUITO); 
 				}
-				
+				pagamentoPortale.setDescrizioneStato(descrizioneStato);
 				 
 			} else {
 				pagamentoPortale.setStato(STATO.IN_CORSO);
 				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
 			}
 			
-			log.debug("Nuovo Stato ["+pagamentoPortale.getStato()+"]"); 
+			log.debug("AAAAA Nuovo Stato ["+pagamentoPortale.getStato()+"]"); 
 			
 			pagamentiPortaleBD.updatePagamento(pagamentoPortale, false, true);
 			
