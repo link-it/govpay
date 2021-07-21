@@ -455,9 +455,6 @@ public class Rendicontazioni {
 
 									ctx.getApplicationLogger().log("rendicontazioni.noPagamento", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
 									log.info("Pagamento [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] rendicontato con errore: il pagamento non risulta presente in base dati.");
-									rendicontazione.addAnomalia("007101", "Il pagamento riferito dalla rendicontazione non risulta presente in base dati.");
-									fr.addAnomalia("007101", "Il pagamento riferito dalla rendicontazione non risulta presente in base dati.");
-									continue;
 								} catch (MultipleResultException e) {
 									// Individuati piu' pagamenti riferiti dalla rendicontazione
 									ctx.getApplicationLogger().log("rendicontazioni.poliPagamento", iuv, iur, indiceDati!=null ? indiceDati+"" : "null");
