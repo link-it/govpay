@@ -1518,13 +1518,15 @@ export class UtilService {
       case UtilService.APPLICAZIONI:
         _list = [
           new FormInput({ id: 'principal', label: FormService.FORM_PRINCIPAL, placeholder: FormService.FORM_PH_PRINCIPAL, type: UtilService.INPUT }),
-          new FormInput({ id: 'abilitato', label: FormService.FORM_PH_SELECT, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiAbilitazione() })
+          new FormInput({ id: 'abilitato', label: FormService.FORM_PH_ABILITAZIONE, noOptionLabel: 'Tutti', showTooltip: false, type: UtilService.SELECT,
+            values: this.statiAbilitazione() })
         ];
         break;
       case UtilService.REGISTRO_INTERMEDIARI:
       case UtilService.OPERATORI:
         _list = [
-          new FormInput({ id: 'abilitato', label: FormService.FORM_PH_SELECT, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiAbilitazione() })
+          new FormInput({ id: 'abilitato', label: FormService.FORM_PH_ABILITAZIONE, noOptionLabel: 'Tutti', showTooltip: false, type: UtilService.SELECT,
+            values: this.statiAbilitazione() })
         ];
         break;
       case UtilService.DOMINI:
@@ -1534,7 +1536,8 @@ export class UtilService {
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load' } }, this.http),
           new FormInput({ id: 'idStazione', label: FormService.FORM_STAZIONE, placeholder: FormService.FORM_PH_STAZIONE, type: UtilService.INPUT }),
-          new FormInput({ id: 'abilitato', label: FormService.FORM_PH_SELECT, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiAbilitazione() })
+          new FormInput({ id: 'abilitato', label: FormService.FORM_PH_ABILITAZIONE, noOptionLabel: 'Tutti', showTooltip: false, type: UtilService.SELECT,
+            values: this.statiAbilitazione() })
         ];
         break;
       case UtilService.RPPS:
