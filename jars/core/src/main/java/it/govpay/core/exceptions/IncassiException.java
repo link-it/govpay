@@ -38,7 +38,8 @@ public class IncassiException extends BaseException {
 		DUPLICATO("021409","Riconciliazione duplicata."),
 		DOMINIO_INESISTENTE("021410","Dominio inesistente."),
 		CAUSALE_GIA_INCASSATA("021411","Riversamento gia' riconciliato."),
-		IBAN_INESISTENTE("021412","Iban inesistente.");
+		IBAN_INESISTENTE("021412","Iban inesistente."),
+		FLUSSO_GIA_INCASSATO("021413","Flusso gia riconciliata.");
 		
 		private String faultSubCode;
 		private String description;
