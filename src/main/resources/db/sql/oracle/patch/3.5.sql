@@ -470,5 +470,5 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-rpt-sc
 -- 20/07/2021 Fix anomalie per rendicontazione senza RT
 
 update rendicontazioni set stato='OK', anomalie=null where anomalie = '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.';
-update fr set stato='OK', descrizione_stato = null where stato='ANOMALA' and id not in (select fr.id from fr join rendicontazioni on rendicontazioni.id_fr=fr.id where fr.stato='ANOMALA' and rendicontazioni.stato='ANOMALA');
+update fr set stato='ACCETTATA', descrizione_stato = null where stato='ANOMALA' and id not in (select fr.id from fr join rendicontazioni on rendicontazioni.id_fr=fr.id where fr.stato='ANOMALA' and rendicontazioni.stato='ANOMALA');
 
