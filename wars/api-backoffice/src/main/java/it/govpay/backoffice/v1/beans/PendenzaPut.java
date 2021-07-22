@@ -112,7 +112,7 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
   private String idTipoPendenza = null;
   
   @JsonProperty("voci")
-  private List<VocePendenza> voci = new ArrayList<>();
+  private List<NuovaVocePendenza> voci = new ArrayList<NuovaVocePendenza>();
   
   /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
@@ -470,16 +470,16 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
 
   /**
    **/
-  public PendenzaPut voci(List<VocePendenza> voci) {
+  public PendenzaPut voci(List<NuovaVocePendenza> voci) {
     this.voci = voci;
     return this;
   }
 
   @JsonProperty("voci")
-  public List<VocePendenza> getVoci() {
-    return this.voci;
+  public List<NuovaVocePendenza> getVoci() {
+    return voci;
   }
-  public void setVoci(List<VocePendenza> voci) {
+  public void setVoci(List<NuovaVocePendenza> voci) {
     this.voci = voci;
   }
 
@@ -488,7 +488,7 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     PendenzaPut pendenzaPut = (PendenzaPut) o;

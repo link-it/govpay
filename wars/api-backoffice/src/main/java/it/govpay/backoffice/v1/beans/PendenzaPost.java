@@ -113,7 +113,7 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
   private ProprietaPendenza proprieta = null;
   
   @JsonProperty("voci")
-  private List<VocePendenza> voci = new ArrayList<>();
+  private List<NuovaVocePendenza> voci = new ArrayList<NuovaVocePendenza>();
   
   @JsonProperty("idA2A")
   private String idA2A = null;
@@ -489,16 +489,16 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
 
   /**
    **/
-  public PendenzaPost voci(List<VocePendenza> voci) {
+  public PendenzaPost voci(List<NuovaVocePendenza> voci) {
     this.voci = voci;
     return this;
   }
 
   @JsonProperty("voci")
-  public List<VocePendenza> getVoci() {
-    return this.voci;
+  public List<NuovaVocePendenza> getVoci() {
+    return voci;
   }
-  public void setVoci(List<VocePendenza> voci) {
+  public void setVoci(List<NuovaVocePendenza> voci) {
     this.voci = voci;
   }
 

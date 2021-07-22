@@ -52,6 +52,7 @@ import java.io.Serializable;
  * 			&lt;element name="indiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizioneCausaleRPT" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="contabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -82,7 +83,8 @@ import java.io.Serializable;
   	"datiAllegati",
   	"indiceDati",
   	"descrizioneCausaleRPT",
-  	"contabilita"
+  	"contabilita",
+  	"idDominio"
   }
 )
 
@@ -242,6 +244,14 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
     this.contabilita = contabilita;
   }
 
+  public IdDominio getIdDominio() {
+    return this.idDominio;
+  }
+
+  public void setIdDominio(IdDominio idDominio) {
+    this.idDominio = idDominio;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -324,5 +334,8 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="contabilita",required=false,nillable=false)
   protected java.lang.String contabilita;
+
+  @XmlElement(name="idDominio",required=false,nillable=false)
+  protected IdDominio idDominio;
 
 }

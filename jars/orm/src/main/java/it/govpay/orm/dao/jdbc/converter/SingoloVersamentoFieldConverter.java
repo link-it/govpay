@@ -312,6 +312,13 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "contabilita";
 			}
 		}
+		if(field.equals(SingoloVersamento.model().ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -430,6 +437,9 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(SingoloVersamento.model().CONTABILITA)){
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
+		if(field.equals(SingoloVersamento.model().ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(SingoloVersamento.model().ID_DOMINIO, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -480,6 +490,9 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return "iban_accredito";
 		}
 		if(model.equals(SingoloVersamento.model().ID_IBAN_APPOGGIO.ID_DOMINIO)){
+			return "domini";
+		}
+		if(model.equals(SingoloVersamento.model().ID_DOMINIO)){
 			return "domini";
 		}
 

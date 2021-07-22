@@ -1,34 +1,45 @@
-package it.govpay.pendenze.v2.beans;
+package it.govpay.backoffice.v1.beans;
+
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
+"indice",
 "idVocePendenza",
 "importo",
 "descrizione",
-"datiAllegati",
+"stato",
 "descrizioneCausaleRPT",
 "contabilita",
 "idDominio",
+"datiAllegati",
+"hashDocumento",
+"tipoBollo",
+"provinciaResidenza",
 "codEntrata",
+"codiceContabilita",
 "ibanAccredito",
 "ibanAppoggio",
 "tipoContabilita",
-"codiceContabilita",
-"tipoBollo",
-"hashDocumento",
-"provinciaResidenza",
+"riscossioni",
+"rendicontazioni",
 })
-public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable implements IValidable{
+public class NuovaVocePendenza extends JSONSerializable implements IValidable {
+  
+  @JsonProperty("indice")
+  private BigDecimal indice = null;
   
   @JsonProperty("idVocePendenza")
   private String idVocePendenza = null;
@@ -39,8 +50,8 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
   @JsonProperty("descrizione")
   private String descrizione = null;
   
-  @JsonProperty("datiAllegati")
-  private Object datiAllegati = null;
+  @JsonProperty("stato")
+  private StatoVocePendenza stato = null;
   
   @JsonProperty("descrizioneCausaleRPT")
   private String descrizioneCausaleRPT = null;
@@ -51,6 +62,55 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
   @JsonProperty("idDominio")
   private String idDominio = null;
   
+  @JsonProperty("datiAllegati")
+  private Object datiAllegati = null;
+  
+  @JsonProperty("hashDocumento")
+  private String hashDocumento= null;
+  
+  @JsonProperty("tipoBollo")
+  private String tipoBollo= null;
+  
+  @JsonProperty("provinciaResidenza")
+  private String provinciaResidenza= null;
+  
+  @JsonProperty("codEntrata")
+  private String codEntrata= null;
+  
+  @JsonProperty("codiceContabilita")
+  private String codiceContabilita= null;
+  
+  @JsonProperty("ibanAccredito")
+  private String ibanAccredito= null;
+  
+  @JsonProperty("ibanAppoggio")
+  private String ibanAppoggio= null;
+  
+  @JsonProperty("tipoContabilita")
+  private TipoContabilita tipoContabilita= null;
+
+  @JsonProperty("riscossioni")
+  private List<Riscossione> riscossioni = null;
+  
+  @JsonProperty("rendicontazioni")
+  private List<Rendicontazione> rendicontazioni = null;
+  
+  /**
+   * indice di voce all'interno della pendenza
+   **/
+  public NuovaVocePendenza indice(BigDecimal indice) {
+    this.indice = indice;
+    return this;
+  }
+
+  @JsonProperty("indice")
+  public BigDecimal getIndice() {
+    return indice;
+  }
+  public void setIndice(BigDecimal indice) {
+    this.indice = indice;
+  }
+
   /**
    * Identificativo della voce di pedenza nel gestionale proprietario
    **/
@@ -100,19 +160,18 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
   }
 
   /**
-   * Dati applicativi allegati dal gestionale secondo un formato proprietario.
    **/
-  public NuovaVocePendenza datiAllegati(Object datiAllegati) {
-    this.datiAllegati = datiAllegati;
+  public NuovaVocePendenza stato(StatoVocePendenza stato) {
+    this.stato = stato;
     return this;
   }
 
-  @JsonProperty("datiAllegati")
-  public Object getDatiAllegati() {
-    return datiAllegati;
+  @JsonProperty("stato")
+  public StatoVocePendenza getStato() {
+    return stato;
   }
-  public void setDatiAllegati(Object datiAllegati) {
-    this.datiAllegati = datiAllegati;
+  public void setStato(StatoVocePendenza stato) {
+    this.stato = stato;
   }
 
   /**
@@ -162,164 +221,22 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
     this.idDominio = idDominio;
   }
 
- @JsonProperty("codEntrata")
-  private String codEntrata = null;
-  
   /**
+   * Dati applicativi allegati dal gestionale secondo un formato proprietario.
    **/
-  public NuovaVocePendenza codEntrata(String codEntrata) {
-    this.codEntrata = codEntrata;
+  public NuovaVocePendenza datiAllegati(Object datiAllegati) {
+    this.datiAllegati = datiAllegati;
     return this;
   }
 
-  @JsonProperty("codEntrata")
-  public String getCodEntrata() {
-    return codEntrata;
+  @JsonProperty("datiAllegati")
+  public Object getDatiAllegati() {
+    return datiAllegati;
   }
-  public void setCodEntrata(String codEntrata) {
-    this.codEntrata = codEntrata;
-  }
-
-  @JsonProperty("ibanAccredito")
-  private String ibanAccredito = null;
-  
-  @JsonProperty("ibanAppoggio")
-  private String ibanAppoggio = null;
-  
-  @JsonProperty("tipoContabilita")
-  private TipoContabilita tipoContabilita = null;
-  
-  @JsonProperty("codiceContabilita")
-  private String codiceContabilita = null;
-  
-  /**
-   **/
-  public NuovaVocePendenza ibanAccredito(String ibanAccredito) {
-    this.ibanAccredito = ibanAccredito;
-    return this;
+  public void setDatiAllegati(Object datiAllegati) {
+    this.datiAllegati = datiAllegati;
   }
 
-  @JsonProperty("ibanAccredito")
-  public String getIbanAccredito() {
-    return ibanAccredito;
-  }
-  public void setIbanAccredito(String ibanAccredito) {
-    this.ibanAccredito = ibanAccredito;
-  }
-
-  /**
-   **/
-  public NuovaVocePendenza ibanAppoggio(String ibanAppoggio) {
-    this.ibanAppoggio = ibanAppoggio;
-    return this;
-  }
-
-  @JsonProperty("ibanAppoggio")
-  public String getIbanAppoggio() {
-    return ibanAppoggio;
-  }
-  public void setIbanAppoggio(String ibanAppoggio) {
-    this.ibanAppoggio = ibanAppoggio;
-  }
-
-  /**
-   **/
-  public NuovaVocePendenza tipoContabilita(TipoContabilita tipoContabilita) {
-    this.tipoContabilita = tipoContabilita;
-    return this;
-  }
-
-  @JsonProperty("tipoContabilita")
-  public TipoContabilita getTipoContabilita() {
-    return tipoContabilita;
-  }
-  public void setTipoContabilita(TipoContabilita tipoContabilita) {
-    this.tipoContabilita = tipoContabilita;
-  }
-
-  /**
-   * Codifica del capitolo di bilancio
-   **/
-  public NuovaVocePendenza codiceContabilita(String codiceContabilita) {
-    this.codiceContabilita = codiceContabilita;
-    return this;
-  }
-
-  @JsonProperty("codiceContabilita")
-  public String getCodiceContabilita() {
-    return codiceContabilita;
-  }
-  public void setCodiceContabilita(String codiceContabilita) {
-    this.codiceContabilita = codiceContabilita;
-  }
-
-  
-    
-  /**
-   * Tipologia di Bollo digitale
-   */
-  public enum TipoBolloEnum {
-    
-    
-        
-            
-    _01("01");
-            
-        
-    
-
-    private String value;
-
-    TipoBolloEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @com.fasterxml.jackson.annotation.JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    public static TipoBolloEnum fromValue(String text) {
-      for (TipoBolloEnum b : TipoBolloEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
-  @JsonProperty("tipoBollo")
-  private TipoBolloEnum tipoBollo = null;
-  
-  @JsonProperty("hashDocumento")
-  private String hashDocumento = null;
-  
-  @JsonProperty("provinciaResidenza")
-  private String provinciaResidenza = null;
-  
-  /**
-   * Tipologia di Bollo digitale
-   **/
-  public NuovaVocePendenza tipoBollo(TipoBolloEnum tipoBollo) {
-    this.tipoBollo = tipoBollo;
-    return this;
-  }
-
-  @JsonProperty("tipoBollo")
-  public TipoBolloEnum getTipoBollo() {
-    return tipoBollo;
-  }
-  public void setTipoBollo(TipoBolloEnum tipoBollo) {
-    this.tipoBollo = tipoBollo;
-  }
-
-  /**
-   * Digest in base64 del documento informatico associato alla marca da bollo
-   **/
   public NuovaVocePendenza hashDocumento(String hashDocumento) {
     this.hashDocumento = hashDocumento;
     return this;
@@ -327,15 +244,38 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 
   @JsonProperty("hashDocumento")
   public String getHashDocumento() {
-    return hashDocumento;
+    return this.hashDocumento;
   }
   public void setHashDocumento(String hashDocumento) {
     this.hashDocumento = hashDocumento;
   }
 
-  /**
-   * Sigla automobilistica della provincia di residenza del soggetto pagatore
-   **/
+  public NuovaVocePendenza tipoBollo(String tipoBollo) {
+    this.tipoBollo = tipoBollo;
+    return this;
+  }
+
+  @JsonProperty("tipoBollo")
+  public String getTipoBollo() {
+    return this.tipoBollo;
+  }
+  public void setTipoBollo(String tipoBollo) {
+    this.tipoBollo = tipoBollo;
+  }
+
+  public NuovaVocePendenza codEntrata(String codEntrata) {
+    this.codEntrata = codEntrata;
+    return this;
+  }
+
+  @JsonProperty("codEntrata")
+  public String getCodEntrata() {
+    return this.codEntrata;
+  }
+  public void setCodEntrata(String codEntrata) {
+    this.codEntrata= codEntrata;
+  }
+
   public NuovaVocePendenza provinciaResidenza(String provinciaResidenza) {
     this.provinciaResidenza = provinciaResidenza;
     return this;
@@ -343,10 +283,92 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 
   @JsonProperty("provinciaResidenza")
   public String getProvinciaResidenza() {
-    return provinciaResidenza;
+    return this.provinciaResidenza;
   }
   public void setProvinciaResidenza(String provinciaResidenza) {
     this.provinciaResidenza = provinciaResidenza;
+  }
+
+  public NuovaVocePendenza codiceContabilita(String codiceContabilita) {
+    this.codiceContabilita= codiceContabilita;
+    return this;
+  }
+
+  @JsonProperty("codiceContabilita")
+  public String getCodiceContabilita() {
+    return this.codiceContabilita;
+  }
+  public void setCodiceContabilita(String CodiceContabilita) {
+    this.codiceContabilita = CodiceContabilita;
+  }
+
+  public NuovaVocePendenza ibanAccredito(String ibanAccredito) {
+    this.ibanAccredito= ibanAccredito;
+    return this;
+  }
+
+  @JsonProperty("ibanAccredito")
+  public String getIbanAccredito() {
+    return this.ibanAccredito;
+  }
+  public void setIbanAccredito(String ibanAccredito) {
+    this.ibanAccredito = ibanAccredito;
+  }
+
+  public NuovaVocePendenza tipoContabilita(TipoContabilita tipoContabilita) {
+    this.tipoContabilita= tipoContabilita;
+    return this;
+  }
+  
+	public NuovaVocePendenza ibanAppoggio(String ibanAppoggio) {
+		this.ibanAppoggio= ibanAppoggio;
+		return this;
+	}
+
+	@JsonProperty("ibanAppoggio")
+	public String getIbanAppoggio() {
+		return this.ibanAppoggio;
+	}
+	public void setIbanAppoggio(String ibanAppoggio) {
+		this.ibanAppoggio = ibanAppoggio;
+	}
+
+  @JsonProperty("tipoContabilita")
+  public TipoContabilita getTipoContabilita() {
+    return this.tipoContabilita;
+  }
+  public void setTipoContabilita(TipoContabilita tipoContabilita) {
+    this.tipoContabilita = tipoContabilita;
+  }
+
+ /**
+   **/
+  public NuovaVocePendenza riscossioni(List<Riscossione> riscossioni) {
+    this.riscossioni = riscossioni;
+    return this;
+  }
+
+  @JsonProperty("riscossioni")
+  public List<Riscossione> getRiscossioni() {
+    return riscossioni;
+  }
+  public void setRiscossioni(List<Riscossione> riscossioni) {
+    this.riscossioni = riscossioni;
+  }
+
+  /**
+   **/
+  public NuovaVocePendenza rendicontazioni(List<Rendicontazione> rendicontazioni) {
+    this.rendicontazioni = rendicontazioni;
+    return this;
+  }
+
+  @JsonProperty("rendicontazioni")
+  public List<Rendicontazione> getRendicontazioni() {
+    return rendicontazioni;
+  }
+  public void setRendicontazioni(List<Rendicontazione> rendicontazioni) {
+    this.rendicontazioni = rendicontazioni;
   }
 
   @Override
@@ -358,30 +380,33 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
       return false;
     }
     NuovaVocePendenza nuovaVocePendenza = (NuovaVocePendenza) o;
-    return Objects.equals(idVocePendenza, nuovaVocePendenza.idVocePendenza) &&
+    return Objects.equals(indice, nuovaVocePendenza.indice) &&
+        Objects.equals(idVocePendenza, nuovaVocePendenza.idVocePendenza) &&
         Objects.equals(importo, nuovaVocePendenza.importo) &&
         Objects.equals(descrizione, nuovaVocePendenza.descrizione) &&
-        Objects.equals(datiAllegati, nuovaVocePendenza.datiAllegati) &&
+        Objects.equals(stato, nuovaVocePendenza.stato) &&
         Objects.equals(descrizioneCausaleRPT, nuovaVocePendenza.descrizioneCausaleRPT) &&
         Objects.equals(contabilita, nuovaVocePendenza.contabilita) &&
         Objects.equals(idDominio, nuovaVocePendenza.idDominio) &&
-        Objects.equals(codEntrata, nuovaVocePendenza.codEntrata) &&
-        Objects.equals(ibanAccredito, nuovaVocePendenza.ibanAccredito) &&
-        Objects.equals(ibanAppoggio, nuovaVocePendenza.ibanAppoggio) &&
-        Objects.equals(tipoContabilita, nuovaVocePendenza.tipoContabilita) &&
-        Objects.equals(codiceContabilita, nuovaVocePendenza.codiceContabilita) &&
-        Objects.equals(tipoBollo, nuovaVocePendenza.tipoBollo) &&
-        Objects.equals(hashDocumento, nuovaVocePendenza.hashDocumento) &&
-        Objects.equals(provinciaResidenza, nuovaVocePendenza.provinciaResidenza);
+        Objects.equals(datiAllegati, nuovaVocePendenza.datiAllegati) &&
+        Objects.equals(this.hashDocumento, nuovaVocePendenza.hashDocumento) &&
+        Objects.equals(this.tipoBollo, nuovaVocePendenza.tipoBollo) &&
+        Objects.equals(this.provinciaResidenza, nuovaVocePendenza.provinciaResidenza) &&
+        Objects.equals(this.codiceContabilita, nuovaVocePendenza.codiceContabilita) &&
+        Objects.equals(this.ibanAccredito, nuovaVocePendenza.ibanAccredito) &&
+        Objects.equals(this.ibanAppoggio, nuovaVocePendenza.ibanAppoggio) &&
+        Objects.equals(this.tipoContabilita, nuovaVocePendenza.tipoContabilita) &&
+        Objects.equals(riscossioni, nuovaVocePendenza.riscossioni) &&
+        Objects.equals(rendicontazioni, nuovaVocePendenza.rendicontazioni);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, idDominio, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita, tipoBollo, hashDocumento, provinciaResidenza);
+    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, idDominio, datiAllegati, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita, riscossioni, rendicontazioni);
   }
 
-  public static NuovaVocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return parse(json, NuovaVocePendenza.class);
+  public static NuovaVocePendenza parse(String json) throws ServiceException, ValidationException {
+    return (NuovaVocePendenza) parse(json, NuovaVocePendenza.class); 
   }
 
   @Override
@@ -394,21 +419,24 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
     StringBuilder sb = new StringBuilder();
     sb.append("class NuovaVocePendenza {\n");
     sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    sb.append("    indice: ").append(toIndentedString(indice)).append("\n");
     sb.append("    idVocePendenza: ").append(toIndentedString(idVocePendenza)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
-    sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
-    sb.append("    codEntrata: ").append(toIndentedString(codEntrata)).append("\n");
-    sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
-    sb.append("    ibanAppoggio: ").append(toIndentedString(ibanAppoggio)).append("\n");
-    sb.append("    tipoContabilita: ").append(toIndentedString(tipoContabilita)).append("\n");
-    sb.append("    codiceContabilita: ").append(toIndentedString(codiceContabilita)).append("\n");
-    sb.append("    tipoBollo: ").append(toIndentedString(tipoBollo)).append("\n");
-    sb.append("    hashDocumento: ").append(toIndentedString(hashDocumento)).append("\n");
-    sb.append("    provinciaResidenza: ").append(toIndentedString(provinciaResidenza)).append("\n");
+    sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
+    sb.append("    hashDocumento: ").append(this.toIndentedString(this.hashDocumento)).append("\n");
+    sb.append("    tipoBollo: ").append(this.toIndentedString(this.tipoBollo)).append("\n");
+    sb.append("    provinciaResidenza: ").append(this.toIndentedString(this.provinciaResidenza)).append("\n");
+    sb.append("    codiceContabilita: ").append(this.toIndentedString(this.codiceContabilita)).append("\n");
+    sb.append("    ibanAccredito: ").append(this.toIndentedString(this.ibanAccredito)).append("\n");
+    sb.append("    ibanAppoggio: ").append(this.toIndentedString(this.ibanAppoggio)).append("\n");
+    sb.append("    tipoContabilita: ").append(this.toIndentedString(this.tipoContabilita)).append("\n");
+    sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");
+    sb.append("    rendicontazioni: ").append(toIndentedString(rendicontazioni)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -423,12 +451,12 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
     }
     return o.toString().replace("\n", "\n    ");
   }
-
-	@Override
+  
+  @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		ValidatoreIdentificativi vi = ValidatoreIdentificativi.newInstance();
-
+		
 		vi.validaIdVocePendenza("idVocePendenza", this.idVocePendenza);
 		ValidatoreUtils.validaImporto(vf, "importo", this.importo);
 		ValidatoreUtils.validaDescrizione(vf, "descrizione", this.descrizione);
@@ -459,7 +487,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 			ValidatoreUtils.validaTipoBollo(vf, "tipoBollo", this.tipoBollo);
 			ValidatoreUtils.validaHashDocumento(vf, "hashDocumento", this.hashDocumento);
 			ValidatoreUtils.validaProvinciaResidenza(vf, "provinciaResidenza", this.provinciaResidenza);
-			
+
 			try {
 				vf.getValidator("ibanAccredito", this.ibanAccredito).isNull();
 				vf.getValidator("ibanAppoggio", this.ibanAppoggio).isNull();
@@ -470,10 +498,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 			}
 
 			return;
-		}
-
-
-		else if(this.ibanAccredito != null) {
+		} else if(this.ibanAccredito != null) {
 			vi.validaIdIbanAccredito("ibanAccredito", this.ibanAccredito, true);
 			vi.validaIdIbanAccredito("ibanAppoggio", this.ibanAppoggio);
 

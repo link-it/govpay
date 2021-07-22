@@ -25,7 +25,8 @@
 			"descrizione": '#("Pagamento TEFA n." + idPendenza)',
 			"ibanAccredito": "#(ibanAccreditoEnteNonIntermediato)",
 			"tipoContabilita": "ALTRO",
-			"codiceContabilita": "CodiceContabilita"
+			"codiceContabilita": "CodiceContabilita",
+			"idDominio": '#(idDominio_2)'
 		}
 	]
 }

@@ -753,6 +753,8 @@ components:
           $ref: '#/components/schemas/Contabilita'
         pendenza:
           $ref: '#/components/schemas/Pendenza'  
+        dominio:
+          $ref: '#/components/schemas/Dominio'
   securitySchemes:
     basicAuth:
       type: http

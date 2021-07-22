@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.8.0"
+  version: "2.9.0"
   title: GovPay - API Ragioneria
   contact:
     name: GitHub Project Page
@@ -1370,4 +1370,6 @@ components:
           $ref: '#/components/schemas/Contabilita'
         pendenza:
           $ref: '#/components/schemas/Pendenza'
+        dominio:
+          $ref: '#/components/schemas/Dominio'
             

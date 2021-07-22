@@ -304,6 +304,9 @@ public class PendenzeConverter {
 			}
 			rsModel.setTipoContabilita(TipoContabilita.fromValue(singoloVersamento.getTipoContabilita().name()));
 		}
+		if(singoloVersamento.getDominio(configWrapper) != null) {
+			rsModel.setDominio(DominiConverter.toRsModel(singoloVersamento.getDominio(configWrapper)));
+		}
 		
 		
 		return rsModel;

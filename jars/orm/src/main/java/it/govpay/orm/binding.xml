@@ -784,6 +784,7 @@
     <value name="indiceDati" field="indiceDati" usage="required"/>
     <value name="descrizioneCausaleRPT" field="descrizioneCausaleRPT" usage="optional"/>
     <value name="contabilita" field="contabilita" usage="optional"/>
+    <structure name="idDominio" field="idDominio" usage="optional" map-as="_IdDominio_Type"/>
   </mapping>
   <mapping name="RPT" class="it.govpay.orm.RPT">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -971,7 +972,7 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="trn" field="trn" usage="required"/>
     <value name="codDominio" field="codDominio" usage="required"/>
-    <value name="causale" field="causale" usage="required"/>
+    <value name="causale" field="causale" usage="optional"/>
     <value name="importo" field="importo" usage="required"/>
     <value name="dataValuta" field="dataValuta" usage="optional"/>
     <value name="dataContabile" field="dataContabile" usage="optional"/>

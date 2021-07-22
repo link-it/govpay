@@ -2404,6 +2404,17 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			
+			<xsd:element name="idDominio" type="id-dominio" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Dominio" object-type="Dominio"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 

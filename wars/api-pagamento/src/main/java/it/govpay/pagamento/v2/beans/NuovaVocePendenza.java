@@ -19,6 +19,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "datiAllegati",
 "descrizioneCausaleRPT",
 "contabilita",
+"idDominio",
 "tipoBollo",
 "hashDocumento",
 "provinciaResidenza",
@@ -47,6 +48,9 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
   
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
+  
+  @JsonProperty("idDominio")
+  private String idDominio = null;
   
   /**
    * Identificativo della voce di pendenza nel gestionale proprietario
@@ -141,6 +145,22 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
   }
   public void setContabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
+  }
+
+  /**
+   * Identificativo del dominio creditore
+   **/
+  public NuovaVocePendenza idDominio(String idDominio) {
+    this.idDominio = idDominio;
+    return this;
+  }
+
+  @JsonProperty("idDominio")
+  public String getIdDominio() {
+    return idDominio;
+  }
+  public void setIdDominio(String idDominio) {
+    this.idDominio = idDominio;
   }
 
   public enum TipoBolloEnum {
@@ -354,6 +374,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
         Objects.equals(datiAllegati, nuovaVocePendenza.datiAllegati) &&
         Objects.equals(descrizioneCausaleRPT, nuovaVocePendenza.descrizioneCausaleRPT) &&
         Objects.equals(contabilita, nuovaVocePendenza.contabilita) &&
+        Objects.equals(idDominio, nuovaVocePendenza.idDominio) &&
         Objects.equals(tipoBollo, nuovaVocePendenza.tipoBollo) &&
         Objects.equals(hashDocumento, nuovaVocePendenza.hashDocumento) &&
         Objects.equals(provinciaResidenza, nuovaVocePendenza.provinciaResidenza) &&
@@ -366,7 +387,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, tipoBollo, hashDocumento, provinciaResidenza, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita);
+    return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, idDominio, tipoBollo, hashDocumento, provinciaResidenza, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita);
   }
 
   public static NuovaVocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
@@ -389,6 +410,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    tipoBollo: ").append(toIndentedString(tipoBollo)).append("\n");
     sb.append("    hashDocumento: ").append(toIndentedString(hashDocumento)).append("\n");
     sb.append("    provinciaResidenza: ").append(toIndentedString(provinciaResidenza)).append("\n");

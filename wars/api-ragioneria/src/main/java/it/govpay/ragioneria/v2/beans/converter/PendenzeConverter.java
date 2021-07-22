@@ -59,6 +59,7 @@ public class PendenzeConverter {
 	}
 
 	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice) throws ServiceException, IOException, ValidationException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		VocePendenza rsModel = new VocePendenza();
 		
 		if(singoloVersamento.getDatiAllegati() != null)
@@ -71,6 +72,9 @@ public class PendenzeConverter {
 		rsModel.setIndice(new BigDecimal(indice));
 		rsModel.setPendenza(toRsModel(singoloVersamento.getVersamento(null)));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
+		if(singoloVersamento.getDominio(configWrapper) != null) {
+			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
+		}
 		return rsModel;
 	}
 

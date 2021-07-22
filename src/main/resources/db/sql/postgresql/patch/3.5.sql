@@ -470,3 +470,10 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-rpt-sc
 
 update rendicontazioni set stato='OK', anomalie=null where anomalie = '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.';
 update fr set stato='OK', descrizione_stato = null where stato='ANOMALA' and id not in (select fr.id from fr join rendicontazioni on rendicontazioni.id_fr=fr.id where fr.stato='ANOMALA' and rendicontazioni.stato='ANOMALA');
+
+
+-- 21/07/2021 Identificativo dominio nel singolo versamento per gestire le pendenze multibeneficiario
+ALTER TABLE singoli_versamenti ADD COLUMN id_dominio BIGINT;
+ALTER TABLE singoli_versamenti ADD CONSTRAINT fk_sng_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
+
+
