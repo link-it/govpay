@@ -40,6 +40,7 @@ export class FormService {
   public static FORM_RAGIONE_SOCIALE: string = 'Ragione sociale';
   public static FORM_STAZIONE: string = 'Identificativo stazione';
   public static FORM_PH_STAZIONE: string = '';
+  public static FORM_PH_ABILITAZIONE: string = 'Stato abilitazione';
 
   //RPPS
   public static FORM_IUV: string = 'Codice IUV';
