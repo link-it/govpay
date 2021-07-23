@@ -202,6 +202,9 @@ public class Incassi {
 					ctx.getApplicationLogger().log("incasso.duplicato", "importo");
 					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso: " + incasso.getImporto());
 				}
+				
+				// se l'incasso e' gia' acquisito lo restituisco
+				return;
 			} catch(NotFoundException nfe) {
 				// Incasso non registrato. OK
 			}  catch (MultipleResultException e) {

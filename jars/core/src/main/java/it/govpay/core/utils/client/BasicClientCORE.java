@@ -106,6 +106,7 @@ import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Categoria;
 import it.govpay.core.utils.EventoContext.Componente;
+import it.govpay.core.utils.ExceptionUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.beans.TipoDestinatario;
@@ -450,8 +451,8 @@ public abstract class BasicClientCORE {
 					try {
 						this.url = new URL(location.concat(azione));
 					} catch (MalformedURLException e) {
-						//					responseCode = 500;
-						throw new ClientException("Url di connessione malformata: " + location.concat(azione), e);
+						responseCode = 500;
+						throw new ClientException("Url di connessione malformata: " + location.concat(azione), e, responseCode);
 					}
 				}
 			} else {
@@ -462,13 +463,16 @@ public abstract class BasicClientCORE {
 					this.url = new URL(location.concat(path));
 					log.debug("La richiesta sara' spedita alla URL: ["+this.url+"].");
 				} catch (MalformedURLException e) {
-					throw new ClientException("Url di connessione malformata: " + location.concat(path), e);
+					responseCode = 500;
+					throw new ClientException("Url di connessione malformata: " + location.concat(path), e, responseCode);
 				}
 			}
 
 			this.serverInfoContext = new ServerInfoContextManuallyAdd(this.getServerConfig(ctx));
 			this.serverInfoRequest.setAddress(this.url.toString());
 			this.serverInfoRequest.setHttpRequestMethod(httpMethod);
+			
+			this.getEventoCtx().setUrl(this.url.toExternalForm());
 
 			if(this.debug)
 				log.debug("Creazione URL ["+location+"]...");
@@ -485,7 +489,7 @@ public abstract class BasicClientCORE {
 				this.httpClient = buildHttpClient(keepAliveStrategy, this.sslContextFactory, BasicClientCORE.USE_POOL, this.serverID, this.connettore); 
 			} catch (UtilsException e) {
 				responseCode = 500;
-				throw new ClientException(e);
+				throw new ClientException(e,responseCode);
 			}
 
 			// HttpMethod
@@ -618,7 +622,7 @@ public abstract class BasicClientCORE {
 				httpBody = new HttpBodyParameters(httpMethod, contentType);
 			} catch (UtilsException e) {
 				responseCode = 500;
-				throw new ClientException(e);
+				throw new ClientException(e,responseCode);
 			}
 
 			// Preparazione messaggio da spedire
@@ -642,7 +646,8 @@ public abstract class BasicClientCORE {
 					((HttpEntityEnclosingRequestBase)this.httpRequest).setEntity(httpEntity);
 				}
 				else{
-					throw new ClientException("Tipo ["+this.httpRequest.getClass().getName()+"] non utilizzabile per una richiesta di tipo ["+httpMethod+"]");
+					responseCode = 500;
+					throw new ClientException("Tipo ["+this.httpRequest.getClass().getName()+"] non utilizzabile per una richiesta di tipo ["+httpMethod+"]", responseCode);
 				}
 			}
 
@@ -658,10 +663,15 @@ public abstract class BasicClientCORE {
 				httpResponse = this.httpClient.execute(this.httpRequest);
 			} catch (ClientProtocolException e) {
 				responseCode = 500;
-				throw new ClientException(e);
+				throw new ClientException(e, responseCode);
 			} catch (IOException e) {
 				responseCode = 500;
-				throw new ClientException(e);
+				
+				// retrocompatibilita'
+				if(ExceptionUtils.getInnerException(e, java.net.UnknownHostException.class) != null) {
+					responseCode = 999;
+				}
+				throw new ClientException(e, responseCode);
 			}
 			this.httpEntityResponse = httpResponse.getEntity();
 
@@ -838,7 +848,7 @@ public abstract class BasicClientCORE {
 
 		if(listExceptionChiusura!=null && !listExceptionChiusura.isEmpty()) {
 			org.openspcoop2.utils.UtilsMultiException multiException = new org.openspcoop2.utils.UtilsMultiException(listExceptionChiusura.toArray(new Throwable[1]));
-			throw new ClientException("Chiusura connessione non riuscita: "+multiException.getMessage(),multiException);
+			throw new ClientException("Chiusura connessione non riuscita: "+multiException.getMessage(),multiException,500);
 		}
 	}
 
