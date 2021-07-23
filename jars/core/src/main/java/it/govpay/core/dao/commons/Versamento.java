@@ -427,6 +427,14 @@ public class Versamento {
 			this.contabilita = contabilita;
 		}
 
+		public String getCodDominio() {
+			return codDominio;
+		}
+
+		public void setCodDominio(String codDominio) {
+			this.codDominio = codDominio;
+		}
+
 		private BigDecimal importo;
 		private String datiAllegati;
         private String descrizione;
@@ -435,6 +443,7 @@ public class Versamento {
         private Versamento.SingoloVersamento.BolloTelematico bolloTelematico;
         private Versamento.SingoloVersamento.Tributo tributo;
         private String contabilita;
+        private String codDominio;
 
         public static class BolloTelematico {
 

@@ -152,6 +152,7 @@ public class TracciatiConverter {
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setImporto(vocePendenza.getImporto());
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
+				sv.setCodDominio(vocePendenza.getIdDominio());
 				
 				importoTotale = importoTotale.add(vocePendenza.getImporto());
 

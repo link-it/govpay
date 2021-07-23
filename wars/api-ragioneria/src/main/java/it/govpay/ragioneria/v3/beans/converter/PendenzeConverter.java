@@ -71,6 +71,9 @@ public class PendenzeConverter {
 //		rsModel.setIndice(new BigDecimal(indice));
 		rsModel.setPendenza(toRsModel(singoloVersamento.getVersamento(null)));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
+		if(singoloVersamento.getDominio(configWrapper) != null) {
+			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
+		}
 		return rsModel;
 	}
 

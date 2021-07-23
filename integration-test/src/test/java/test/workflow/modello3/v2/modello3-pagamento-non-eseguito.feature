@@ -76,7 +76,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * match response.stato == 'NON_ESEGUITA'
 * match response.voci[0].stato == 'Non eseguito'
 * match response.rpp == '#[1]'
-* match response.rpp[0].stato == 'RT_ACCETTATA_PA'
+* match response.rpp[0].stato == 'RPT_ACCETTATA_NODO'
 
 # ripristino dominio e stazione
 

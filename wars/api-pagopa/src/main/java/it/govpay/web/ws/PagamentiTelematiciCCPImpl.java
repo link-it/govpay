@@ -600,7 +600,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 
 		log.info("Ricevuta richiesta di verifica RPT [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "][" + ccp + "]");
-//		BasicBD bd = null;
 		PaaVerificaRPTRisposta response = new PaaVerificaRPTRisposta();
 
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
@@ -617,7 +616,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-//			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
@@ -866,7 +864,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
 		} finally {
 			GpContext.setResult(appContext.getTransaction(), response.getPaaVerificaRPTRisposta().getFault() == null ? null : response.getPaaVerificaRPTRisposta().getFault().getFaultCode());
-//			if(bd != null) bd.closeConnection();
 		}
 		return response;
 	}
@@ -909,10 +906,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
 		}
 
-		log.info("Ricevuta richiesta di acquisizione RT [" + codDominio + "][" + iuv + "]");
+		log.info("Ricevuta richiesta paSendRT [" + codDominio + "][" + iuv + "]");
 		PaSendRTRes response = new PaSendRTRes();
-
-		//		BasicBD bd = null;
 
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
 		datiPagoPA.setCodStazione(codStazione);
@@ -924,7 +919,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-			//			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
@@ -1297,18 +1291,15 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				response.setPaymentDescription(" ");
 			}
 			
-			SingoloVersamento singoloVersamento = versamento.getSingoliVersamenti().get(0);
-			
 			CtPaymentOptionsDescriptionListPA paymentList = new CtPaymentOptionsDescriptionListPA();
-			
-			
-			
-			
+
+			// Inserisco come opzione di pagamento solo quella con importo esatto del versamento
+			// TODO capire come proporre eventuali altre soluzioni (es. rate o pagamenti con soglie.)
 			CtPaymentOptionDescriptionPA ctPaymentOptionDescriptionPA = new CtPaymentOptionDescriptionPA();
 			StAmountOption stAmountOption = StAmountOption.EQ;
 			ctPaymentOptionDescriptionPA.setOptions(stAmountOption );
 			ctPaymentOptionDescriptionPA.setAmount(versamento.getImportoTotale());
-			ctPaymentOptionDescriptionPA.setDetailDescription(singoloVersamento.getDescrizione());
+			ctPaymentOptionDescriptionPA.setDetailDescription(versamento.getCausaleVersamento().getSimple());
 			ctPaymentOptionDescriptionPA.setDueDate(versamento.getDataValidita());
 			ctPaymentOptionDescriptionPA.setAllCCP(VersamentoUtils.isAllIBANPostali(versamento, configWrapper));
 			paymentList.getPaymentOptionDescription().add(ctPaymentOptionDescriptionPA );
@@ -1394,7 +1385,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}
 
 		
-			log.info("Ricevuta richiesta di attiva RPT [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "]["+ ccp +"][" + numeroAvviso + "]");
+			log.info("Ricevuta richiesta paGetPayment [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "]["+ ccp +"][" + numeroAvviso + "]");
 	
 			DatiPagoPA datiPagoPA = new DatiPagoPA();
 			datiPagoPA.setCodStazione(codStazione);
@@ -1451,6 +1442,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			Versamento versamento = null;
 			it.govpay.bd.model.Applicazione applicazioneGestisceIuv = null;
 			try {
+				// TODO 
+				// Aggiungere la ricerca del versamento corretto, utilizzando anche amount e due date
+				// perche' la verify potrebbe aver restituito tra le opzioni di pagamento una rata o un pagamento con soglia.
 				versamento = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv, true);
 				appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
@@ -1573,7 +1567,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				}
 			}
 			
-//			PaaTipoDatiPagamentoPSP datiPagamentoPSP = null;
 			// Creazione dell'RPT
 			Rpt rpt = new CtPaymentPABuilder().buildRptAttivata(requestBody,versamento, iuv, ccp, numeroAvviso);
 
@@ -1685,8 +1678,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					throw e;
 				}
 				
-				// RptUtils.inviaRPTAsync(rpt, ctx); la risposta a questa chiamata e' gia' l'invio
-				
 				// RPT accettata dal Nodo
 				// Invio la notifica e aggiorno lo stato
 				Notifica notifica = new Notifica(rpt, TipoNotifica.ATTIVAZIONE, configWrapper);
@@ -1717,7 +1708,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			response.setOutcome(StOutcome.OK);
 
 			PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), true);
-			// TODO trovare un metodo migliore
 			response.setData(paGetPaymentRes_RPT.getData()); 
 			
 			ctx.getApplicationLogger().log("ccp.ricezioneAttivaOk", versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");

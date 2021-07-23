@@ -343,21 +343,6 @@ public class DominiConverter {
 				rsModel.setStazione(dominio.getStazione().getCodStazione());
 	
 			rsModel.setAutStampaPosteItaliane(dominio.getAutStampaPoste());
-	
-			
-			
-			if(dominio.getConnettoreMyPivot()!=null)
-				rsModel.setServizioMyPivot(ConnettoreNotificaPagamentiMyPivotConverter.toRsModel(dominio.getConnettoreMyPivot()));
-			
-			if(dominio.getConnettoreSecim()!=null)
-				rsModel.setServizioSecim(ConnettoreNotificaPagamentiSecimConverter.toRsModel(dominio.getConnettoreSecim()));
-			
-			if(dominio.getConnettoreGovPay()!=null)
-				rsModel.setServizioGovPay(ConnettoreNotificaPagamentiGovPayConverter.toRsModel(dominio.getConnettoreGovPay()));
-			
-			if(dominio.getConnettoreHyperSicAPKappa()!=null)
-				rsModel.setServizioHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappaConverter.toRsModel(dominio.getConnettoreHyperSicAPKappa()));
-			
 		}
 		
 		if(uoLst != null) {
@@ -395,6 +380,18 @@ public class DominiConverter {
 			}
 			rsModel.setTipiPendenza(tipiPendenzaDominio);
 		}
+		
+		if(dominio.getConnettoreMyPivot()!=null)
+			rsModel.setServizioMyPivot(ConnettoreNotificaPagamentiMyPivotConverter.toRsModel(dominio.getConnettoreMyPivot()));
+		
+		if(dominio.getConnettoreSecim()!=null)
+			rsModel.setServizioSecim(ConnettoreNotificaPagamentiSecimConverter.toRsModel(dominio.getConnettoreSecim()));
+		
+		if(dominio.getConnettoreGovPay()!=null)
+			rsModel.setServizioGovPay(ConnettoreNotificaPagamentiGovPayConverter.toRsModel(dominio.getConnettoreGovPay()));
+		
+		if(dominio.getConnettoreHyperSicAPKappa()!=null)
+			rsModel.setServizioHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappaConverter.toRsModel(dominio.getConnettoreHyperSicAPKappa()));
 		
 		return rsModel;
 	}

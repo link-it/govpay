@@ -14,6 +14,7 @@ import it.govpay.core.beans.JSONSerializable;
 "descrizioneCausaleRPT",
 "indice",
 "stato",
+"dominio",
 "tipoBollo",
 "hashDocumento",
 "provinciaResidenza",
@@ -45,6 +46,9 @@ public class VocePendenza extends JSONSerializable {
   
   @JsonProperty("stato")
   private StatoVocePendenza stato = null;
+  
+  @JsonProperty("dominio")
+  private Dominio dominio = null;
   
   /**
    * Identificativo della voce di pendenza nel gestionale proprietario
@@ -155,6 +159,21 @@ public class VocePendenza extends JSONSerializable {
   }
   public void setStato(StatoVocePendenza stato) {
     this.stato = stato;
+  }
+
+  /**
+   **/
+  public VocePendenza dominio(Dominio dominio) {
+    this.dominio = dominio;
+    return this;
+  }
+
+  @JsonProperty("dominio")
+  public Dominio getDominio() {
+    return dominio;
+  }
+  public void setDominio(Dominio dominio) {
+    this.dominio = dominio;
   }
 
   public enum TipoBolloEnum {
@@ -369,6 +388,7 @@ public class VocePendenza extends JSONSerializable {
         Objects.equals(descrizioneCausaleRPT, vocePendenza.descrizioneCausaleRPT) &&
         Objects.equals(indice, vocePendenza.indice) &&
         Objects.equals(stato, vocePendenza.stato) &&
+        Objects.equals(dominio, vocePendenza.dominio) &&
         Objects.equals(tipoBollo, vocePendenza.tipoBollo) &&
         Objects.equals(hashDocumento, vocePendenza.hashDocumento) &&
         Objects.equals(provinciaResidenza, vocePendenza.provinciaResidenza) &&
@@ -381,7 +401,7 @@ public class VocePendenza extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, indice, stato, tipoBollo, hashDocumento, provinciaResidenza, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita);
+    return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, indice, stato, dominio, tipoBollo, hashDocumento, provinciaResidenza, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita);
   }
 
   public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
@@ -397,7 +417,7 @@ public class VocePendenza extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class VocePendenza {\n");
-    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    
     sb.append("    idVocePendenza: ").append(toIndentedString(idVocePendenza)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
@@ -405,6 +425,7 @@ public class VocePendenza extends JSONSerializable {
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    indice: ").append(toIndentedString(indice)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    tipoBollo: ").append(toIndentedString(tipoBollo)).append("\n");
     sb.append("    hashDocumento: ").append(toIndentedString(hashDocumento)).append("\n");
     sb.append("    provinciaResidenza: ").append(toIndentedString(provinciaResidenza)).append("\n");
