@@ -329,11 +329,13 @@ public class RptBuilder {
 		//Controllo se lo IUV che mi e' stato passato e' ISO11640:2011
 		if(IuvUtils.checkISO11640(iuv)) {
 			sb.append("/RFS/");
+			// Issue #366. Formato causale RFS prevede uno spazio ogni 4 cifre dello IUV
+			sb.append(iuv.replaceAll("(.{4})", "$1 ").trim());
 		}else { 
 			sb.append("/RFB/");
+			sb.append(iuv);
 		}
 		
-		sb.append(iuv);
 		sb.append("/");
 		sb.append(nFormatter.format(importoTotale));
 		if(StringUtils.isNotEmpty(descrizioneCausaleRPT)) {
