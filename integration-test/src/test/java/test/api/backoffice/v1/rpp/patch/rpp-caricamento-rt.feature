@@ -214,6 +214,7 @@ And match response.stato == 'NON_ESEGUITO'
 * def idDominioRT = response.rpp[0].rpt.dominio.identificativoDominio
 * def iuvRT = response.rpp[0].rpt.datiVersamento.identificativoUnivocoVersamento
 * def ccpRT = response.rpp[0].rpt.datiVersamento.codiceContestoPagamento
+* def iuvRTCausale = iuvRT.substring(0,4) + " " + iuvRT.substring(4,8) + " "+ iuvRT.substring(8,12) + " " + iuvRT.substring(12,16) + " " + iuvRT.substring(16,20) + " " + iuvRT.substring(20,24) + " " + iuvRT.substring(24,25)
 
 Given url backofficeBaseurl
 And path '/rpp', idDominioRT, iuvRT, ccpRT, 'rt'
@@ -235,14 +236,14 @@ Then status 200
     <ns2:singoloImportoPagato>109.99</ns2:singoloImportoPagato>
     <ns2:dataEsitoSingoloPagamento>2020-01-10+01:00</ns2:dataEsitoSingoloPagamento>
     <ns2:identificativoUnivocoRiscossione>#('idRisc-' + iuvRT)</ns2:identificativoUnivocoRiscossione>
-    <ns2:causaleVersamento>#('/RFS/' + iuvRT + '/109.99/TXT/Diritti e segreteria')</ns2:causaleVersamento>
+    <ns2:causaleVersamento>#('/RFS/' + iuvRTCausale + '/109.99/TXT/Diritti e segreteria')</ns2:causaleVersamento>
     <ns2:datiSpecificiRiscossione>9/SEGRETERIA</ns2:datiSpecificiRiscossione>
  </ns2:datiSingoloPagamento>
  <ns2:datiSingoloPagamento>
     <ns2:singoloImportoPagato>16.00</ns2:singoloImportoPagato>
     <ns2:dataEsitoSingoloPagamento>2020-01-10+01:00</ns2:dataEsitoSingoloPagamento>
     <ns2:identificativoUnivocoRiscossione>#('idRisc-' + iuvRT)</ns2:identificativoUnivocoRiscossione>
-    <ns2:causaleVersamento>#('/RFS/' + iuvRT + '/16.00/TXT/Marca da bollo')</ns2:causaleVersamento>
+    <ns2:causaleVersamento>#('/RFS/' + iuvRTCausale + '/16.00/TXT/Marca da bollo')</ns2:causaleVersamento>
     <ns2:datiSpecificiRiscossione>9/MBT</ns2:datiSpecificiRiscossione>
     <ns2:allegatoRicevuta>
        <ns2:tipoAllegatoRicevuta>BD</ns2:tipoAllegatoRicevuta>
@@ -425,6 +426,7 @@ Then status 200
 
 * def newRt = response 
 * remove newRt /RT/datiPagamento
+* def iuvRTCausale = iuvRT.substring(0,4) + " " + iuvRT.substring(4,8) + " "+ iuvRT.substring(8,12) + " " + iuvRT.substring(12,16) + " " + iuvRT.substring(16,20) + " " + iuvRT.substring(20,24) + " " + iuvRT.substring(24,25)
 * set newRt /RT = 
 """
 <ns2:datiPagamento>
@@ -436,14 +438,14 @@ Then status 200
     <ns2:singoloImportoPagato>109.99</ns2:singoloImportoPagato>
     <ns2:dataEsitoSingoloPagamento>2020-01-10+01:00</ns2:dataEsitoSingoloPagamento>
     <ns2:identificativoUnivocoRiscossione>#('idRisc-' + iuvRT)</ns2:identificativoUnivocoRiscossione>
-    <ns2:causaleVersamento>#('/RFS/' + iuvRT + '/109.99/TXT/Diritti e segreteria modificato')</ns2:causaleVersamento>
+    <ns2:causaleVersamento>#('/RFS/' + iuvRTCausale + '/109.99/TXT/Diritti e segreteria modificato')</ns2:causaleVersamento>
     <ns2:datiSpecificiRiscossione>9/SEGRETERIA</ns2:datiSpecificiRiscossione>
  </ns2:datiSingoloPagamento>
  <ns2:datiSingoloPagamento>
     <ns2:singoloImportoPagato>16.00</ns2:singoloImportoPagato>
     <ns2:dataEsitoSingoloPagamento>2020-01-10+01:00</ns2:dataEsitoSingoloPagamento>
     <ns2:identificativoUnivocoRiscossione>#('idRisc-' + iuvRT)</ns2:identificativoUnivocoRiscossione>
-    <ns2:causaleVersamento>#('/RFS/' + iuvRT + '/16.00/TXT/Marca da bollo')</ns2:causaleVersamento>
+    <ns2:causaleVersamento>#('/RFS/' + iuvRTCausale + '/16.00/TXT/Marca da bollo')</ns2:causaleVersamento>
     <ns2:datiSpecificiRiscossione>9/MBT</ns2:datiSpecificiRiscossione>
     <ns2:allegatoRicevuta>
        <ns2:tipoAllegatoRicevuta>BD</ns2:tipoAllegatoRicevuta>
@@ -493,7 +495,6 @@ Then status 200
 And match response == newRt
 
 
-@debug
 Scenario: Update RT non pagata con RT pagata con variazione della causale versamento non valida
 
 * def dataRptStart = getDateTime()
@@ -540,6 +541,7 @@ Then status 200
 
 * def newRt = response 
 * remove newRt /RT/datiPagamento
+* def iuvRTCausale = iuvRT.substring(0,4) + " " + iuvRT.substring(4,8) + " "+ iuvRT.substring(8,12) + " " + iuvRT.substring(12,16) + " " + iuvRT.substring(16,20) + " " + iuvRT.substring(20,24) + " " + iuvRT.substring(24,25)
 * set newRt /RT = 
 """
 <ns2:datiPagamento>
@@ -551,14 +553,14 @@ Then status 200
     <ns2:singoloImportoPagato>109.99</ns2:singoloImportoPagato>
     <ns2:dataEsitoSingoloPagamento>2020-01-10+01:00</ns2:dataEsitoSingoloPagamento>
     <ns2:identificativoUnivocoRiscossione>#('idRisc-' + iuvRT)</ns2:identificativoUnivocoRiscossione>
-    <ns2:causaleVersamento>#('/RFS/' + iuvRT + '/109.98/TXT/Diritti e segreteria')</ns2:causaleVersamento>
+    <ns2:causaleVersamento>#('/RFS/' + iuvRTCausale + '/109.98/TXT/Diritti e segreteria')</ns2:causaleVersamento>
     <ns2:datiSpecificiRiscossione>9/SEGRETERIA</ns2:datiSpecificiRiscossione>
  </ns2:datiSingoloPagamento>
  <ns2:datiSingoloPagamento>
     <ns2:singoloImportoPagato>16.00</ns2:singoloImportoPagato>
     <ns2:dataEsitoSingoloPagamento>2020-01-10+01:00</ns2:dataEsitoSingoloPagamento>
     <ns2:identificativoUnivocoRiscossione>#('idRisc-' + iuvRT)</ns2:identificativoUnivocoRiscossione>
-    <ns2:causaleVersamento>#('/RFS/' + iuvRT + '/16.00/TXT/Marca da bollo')</ns2:causaleVersamento>
+    <ns2:causaleVersamento>#('/RFS/' + iuvRTCausale + '/16.00/TXT/Marca da bollo')</ns2:causaleVersamento>
     <ns2:datiSpecificiRiscossione>9/MBT</ns2:datiSpecificiRiscossione>
     <ns2:allegatoRicevuta>
        <ns2:tipoAllegatoRicevuta>BD</ns2:tipoAllegatoRicevuta>
@@ -590,7 +592,7 @@ And request patchRequest
 When method patch
 Then assert responseStatus == 422
 * match response contains { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida' }
-* match response.dettaglio contains 'RT non valida: CausaleVersamento non corrisponde [Atteso:"/RFS/' + iuvRT + '/109.99" Ricevuto:"/RFS/' + iuvRT + '/109.98"]'
+* match response.dettaglio contains 'RT non valida: CausaleVersamento non corrisponde [Atteso:"/RFS/' + iuvRTCausale + '/109.99" Ricevuto:"/RFS/' + iuvRTCausale + '/109.98"]'
 
 # controllo che lo stato del pagamento non sia cambiato e la RPT sia in stato rifiutato
 
@@ -615,5 +617,5 @@ And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
 And match response.stato == 'RT_RIFIUTATA_PA'
-And match response.dettaglioStato contains 'CausaleVersamento non corrisponde [Atteso:"/RFS/' + iuvRT + '/109.99" Ricevuto:"/RFS/' + iuvRT + '/109.98"]'
+And match response.dettaglioStato contains 'CausaleVersamento non corrisponde [Atteso:"/RFS/' + iuvRTCausale + '/109.99" Ricevuto:"/RFS/' + iuvRTCausale + '/109.98"]'
 
