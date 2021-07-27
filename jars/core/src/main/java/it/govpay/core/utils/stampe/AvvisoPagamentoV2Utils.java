@@ -23,6 +23,7 @@ import it.govpay.core.beans.tracciati.ProprietaPendenza;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.LabelAvvisiProperties;
+import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.IbanAccredito;
 import it.govpay.stampe.model.v2.AvvisoPagamentoInput;
@@ -64,7 +65,7 @@ public class AvvisoPagamentoV2Utils {
 			}
 		}
 
-		AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
+		AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, versamento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 		AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 
 		PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
@@ -126,7 +127,7 @@ public class AvvisoPagamentoV2Utils {
 		// pagina principale
 		while(versamenti.size() > 0 && versamenti.get(0).getNumeroRata() == null && versamenti.get(0).getTipoSoglia() == null) {
 			Versamento versamento = versamenti.remove(0);
-			AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
+			AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 			AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 			pagina.setRata(getRata(versamento, input, secondaLinguaScelta));
@@ -140,7 +141,7 @@ public class AvvisoPagamentoV2Utils {
 				PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 				Versamento versamento = versamenti.get(0); // leggo alcuni dati dalla prima rata
 				
-				AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
+				AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 				AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 				
 				input.getEtichette().getItaliano().setNota1(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_PRIMA_RATA));
@@ -172,7 +173,7 @@ public class AvvisoPagamentoV2Utils {
 				input.getPagine().getSingolaOrDoppia().add(pagina);
 			} else { // versamenti dispari la prima pagina e la prima rata coincidono
 				Versamento versamento = versamenti.remove(0);
-				AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
+				AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 				AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 				PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 				
@@ -209,7 +210,7 @@ public class AvvisoPagamentoV2Utils {
 				PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 				Versamento versamento = versamenti.get(0); // leggo alcuni dati dalla prima rata
 				
-				AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
+				AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 				AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 				
 				RataAvviso rata = new RataAvviso();
@@ -240,7 +241,7 @@ public class AvvisoPagamentoV2Utils {
 				input.getPagine().getSingolaOrDoppia().add(pagina);
 			} else {  // versamenti dispari la prima pagina e la prima soglia coincidono
 				Versamento versamento = versamenti.remove(0);
-				AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
+				AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 				AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 				PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 				pagina.setRata(getRata(versamento, input, secondaLinguaScelta));
@@ -253,7 +254,7 @@ public class AvvisoPagamentoV2Utils {
 		while(versamenti.size() > 1) {
 			Versamento v1 = versamenti.remove(0);
 			Versamento v2 = versamenti.remove(0);
-			AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(documento.getDominio(configWrapper), v2.getUo(configWrapper), input);
+			AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(v2, documento.getDominio(configWrapper), v2.getUo(configWrapper), input);
 			AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(v2.getAnagraficaDebitore(), input);
 			PaginaAvvisoDoppia pagina = new PaginaAvvisoDoppia();
 			RataAvviso rataSx = getRata(v1, input, secondaLinguaScelta);
@@ -313,7 +314,7 @@ public class AvvisoPagamentoV2Utils {
 		// rata unica?
 		if(versamenti.size() == 1) {
 			Versamento versamento = versamenti.remove(0);
-			AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
+			AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 			AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 			pagina.setRata(getRata(versamento, input, secondaLinguaScelta));
@@ -451,7 +452,7 @@ public class AvvisoPagamentoV2Utils {
 		return rata;
 	}
 	
-	public static void impostaAnagraficaEnteCreditore(Dominio dominio, UnitaOperativa uo, AvvisoPagamentoInput input)
+	public static void impostaAnagraficaEnteCreditore(Versamento versamento, Dominio dominio, UnitaOperativa uo, AvvisoPagamentoInput input)
 			throws ServiceException {
 
 		String codDominio = dominio.getCodDominio();
@@ -518,6 +519,19 @@ public class AvvisoPagamentoV2Utils {
 		// se e' presente un logo lo inserisco altrimemti verra' caricato il logo di default.
 		if(dominio.getLogo() != null && dominio.getLogo().length > 0)
 			input.setLogoEnte(new String(dominio.getLogo()));
+		
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		if(VersamentoUtils.isPendenzaMultibeneficiario(versamento, configWrapper)) {
+			// se il versamento e' multibeneficiario inserisco anche il logo del primo dominio diverso che trovo
+			for (SingoloVersamento sv : versamento.getSingoliVersamenti(configWrapper)) {
+				Dominio dominioSingoloVersamento = VersamentoUtils.getDominioSingoloVersamento(sv, dominio, configWrapper);
+				if(dominioSingoloVersamento != null && !dominioSingoloVersamento.getCodDominio().equals(dominio.getCodDominio())) {
+					if(dominioSingoloVersamento.getLogo() != null && dominioSingoloVersamento.getLogo().length > 0)
+					input.setLogoEnteSecondario(new String(dominioSingoloVersamento.getLogo()));
+					break;
+				}
+			}
+		}
 		return;
 	}
 

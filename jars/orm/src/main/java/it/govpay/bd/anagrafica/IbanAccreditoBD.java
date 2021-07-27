@@ -137,6 +137,46 @@ public class IbanAccreditoBD extends BasicBD {
 		}
 	}
 	
+	/**
+	 * Recupera l'ibanAccredito tramite l'id logico
+	 * 
+	 * @param idIbanAccredito
+	 * @return
+	 * @throws NotFoundException se non esiste.
+	 * @throws MultipleResultException in caso di duplicati.
+	 * @throws ServiceException in caso di errore DB.
+	 */
+	public IbanAccredito getIbanAccredito(String codIban) throws NotFoundException, ServiceException, MultipleResultException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+//			IbanAccreditoFieldConverter converter = new IbanAccreditoFieldConverter(this.getJdbcProperties().getDatabaseType());
+			
+//			IdIbanAccredito id = new IdIbanAccredito();
+//			id.setCodIban(codIban);
+//			IdDominio idDominioVo = new IdDominio();
+//			idDominioVo.setId(idDominio);
+//			id.setIdDominio(idDominioVo);
+			
+			IExpression expr = this.getIbanAccreditoService().newExpression();
+			expr.equals(it.govpay.orm.IbanAccredito.model().COD_IBAN, codIban);
+//			expr.and();
+//			expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.IbanAccredito.model())), idDominio);
+			
+			it.govpay.orm.IbanAccredito ibanAccreditoVO = this.getIbanAccreditoService().find(expr);
+			IbanAccredito ibanAccredito = IbanAccreditoConverter.toDTO(ibanAccreditoVO);
+			return ibanAccredito;
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) { 
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
 	
 	/**
 	 * Aggiorna l'ibanAccredito con i dati forniti

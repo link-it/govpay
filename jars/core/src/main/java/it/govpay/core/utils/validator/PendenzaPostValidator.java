@@ -163,6 +163,8 @@ public class PendenzaPostValidator  implements IValidable{
 				ValidatoreUtils.validaDescrizione(vf, "descrizione", this.vocePendenza.getDescrizione());
 				ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.vocePendenza.getDescrizioneCausaleRPT());
 				new ContabilitaValidator(this.vocePendenza.getContabilita()).validate();
+				if(this.vocePendenza.getIdDominio() != null)
+					vi.validaIdDominio("idDominio", this.vocePendenza.getIdDominio());
 
 				if(this.vocePendenza.getCodEntrata() != null) {
 					vi.validaIdEntrata("codEntrata", this.vocePendenza.getCodEntrata());

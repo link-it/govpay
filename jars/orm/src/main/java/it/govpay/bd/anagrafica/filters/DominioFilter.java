@@ -54,6 +54,8 @@ public class DominioFilter extends AbstractFilter {
 	private static DominioModel model = Dominio.model();
 	private DominioFieldConverter converter = null;
 	
+	private Boolean intermediato = null; 
+	
 	public enum SortFields {
 	}
 	
@@ -114,6 +116,14 @@ public class DominioFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.intermediato != null){
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(model.INTERMEDIATO, this.intermediato);
+				addAnd = true;
+			}
+			
 			addAnd = this.setFiltroAbilitato(newExpression, addAnd);
 			
 			return newExpression;
@@ -162,6 +172,10 @@ public class DominioFilter extends AbstractFilter {
 				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.RAGIONE_SOCIALE, true), this.ragioneSociale, true, true);
 			}
 			
+			if(this.intermediato != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.INTERMEDIATO, true) + " = ? ");
+			}
+			
 			// filtro abilitato
 			sqlQueryObject = this.setFiltroAbilitato(sqlQueryObject, converter);
 			
@@ -192,6 +206,15 @@ public class DominioFilter extends AbstractFilter {
 		
 		if(this.ragioneSociale != null){
 			// do nothing
+		}
+		
+		if(this.intermediato != null) {
+			try {
+				lst = this.setValoreFiltroBoolean(lst, this.converter, this.intermediato);
+			} catch (ExpressionException e) {
+				throw new ServiceException(e);
+			}
+			
 		}
 		
 		// filtro abilitato
@@ -242,5 +265,13 @@ public class DominioFilter extends AbstractFilter {
 
 	public void setSearchModeEquals(boolean searchModeEquals) {
 		this.searchModeEquals = searchModeEquals;
+	}
+
+	public Boolean getIntermediato() {
+		return intermediato;
+	}
+
+	public void setIntermediato(Boolean intermediato) {
+		this.intermediato = intermediato;
 	}
 }

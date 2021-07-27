@@ -944,11 +944,13 @@ components:
          * ENTRATA: Entrata in tesoreria
          * MBT: Marca da bollo telematica
          * ALTRO_INTERMEDIARIO: Entrata relativa a un intermediario esterno
+         * ENTRATA_PA_NON_INTERMEDIATA: Entrata relativa ad un ente creditore non intermediato da GovPay
       type: string
       enum:
         - ENTRATA
         - MBT
         - ALTRO_INTERMEDIARIO
+        - ENTRATA_PA_NON_INTERMEDIATA
     TipoServizio:
       type: string
       enum:
@@ -1005,6 +1007,8 @@ components:
           $ref: '#/components/schemas/Contabilita'
         pendenza:
           $ref: '#/components/schemas/Pendenza'  
+        dominio:
+          $ref: '#/components/schemas/Dominio'
   securitySchemes:
     basicAuth:
       type: http

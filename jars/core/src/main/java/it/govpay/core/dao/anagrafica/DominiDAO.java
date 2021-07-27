@@ -118,12 +118,15 @@ public class DominiDAO extends BaseDAO{
 			
 			dominiBD.setAtomica(false); // gestione esplicita della connessione
 			
-			// stazione
-			try {
-				putDominioDTO.getDominio().setIdStazione(AnagraficaManager.getStazione(configWrapper, putDominioDTO.getCodStazione()).getId());
-			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-				throw new UnprocessableEntityException("La stazione intermediaria "+putDominioDTO.getCodStazione()+" indicata non esiste.");
-			} 
+			// inserisco la stazione solo per i domini intermediati
+			if(putDominioDTO.getDominio().isIntermediato()) {
+				// stazione
+				try {
+					putDominioDTO.getDominio().setIdStazione(AnagraficaManager.getStazione(configWrapper, putDominioDTO.getCodStazione()).getId());
+				} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+					throw new UnprocessableEntityException("La stazione intermediaria "+putDominioDTO.getCodStazione()+" indicata non esiste.");
+				} 
+			}
 
 			TipiVersamentoDominiBD tvdBD = new TipiVersamentoDominiBD(dominiBD);
 			tvdBD.setAtomica(false); 
@@ -143,63 +146,71 @@ public class DominiDAO extends BaseDAO{
 					throw new NotAuthorizedException("L'utenza non possiede i diritti per creare nuovi Enti Creditori");
 				}
 				
-				
-				TipoTributo bolloT = null;
-				// bollo telematico
-				try {
-					bolloT = AnagraficaManager.getTipoTributo(configWrapper, it.govpay.model.Tributo.BOLLOT);
-				} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
-					throw new TipoTributoNonTrovatoException(e.getMessage());
-				}
-
 				TributiBD tributiBD = new TributiBD(dominiBD);
 				tributiBD.setAtomica(false); 
-
-				Tributo tributo = new Tributo();
-				tributo.setCodTributo(it.govpay.model.Tributo.BOLLOT);
-				tributo.setAbilitato(false);
-				tributo.setDescrizione(bolloT.getDescrizione());
-				tributo.setIdTipoTributo(bolloT.getId());
-
-				TipoVersamento libero = null;
-
-				try {
-					libero = AnagraficaManager.getTipoVersamento(configWrapper, GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
-				} catch(org.openspcoop2.generic_project.exception.NotFoundException e) {
-					throw new TipoVersamentoNonTrovatoException(e.getMessage());
-				}  
-				TipoVersamentoDominio tvd = new TipoVersamentoDominio();
-				tvd.setCodTipoVersamento(libero.getCodTipoVersamento());
-				tvd.setIdTipoVersamento(libero.getId());
-				tvd.setDescrizione(libero.getDescrizione());
-
+				
+				Tributo tributo = null;
+				TipoVersamentoDominio tvd = null;
 				TipoVersamentoDominio tvdNonCensite = null;
-				if(!GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere().equals(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite())) {
-					TipoVersamento nonCensite = null;
-
+				TipoVersamentoDominio tvdBollo = null;
+				
+				// creo le entries collegate solo ai domini intermediati
+				if(putDominioDTO.getDominio().isIntermediato()) {
+					
+					TipoTributo bolloT = null;
+					// bollo telematico
 					try {
-						nonCensite = AnagraficaManager.getTipoVersamento(configWrapper, GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());
+						bolloT = AnagraficaManager.getTipoTributo(configWrapper, it.govpay.model.Tributo.BOLLOT);
+					} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+						throw new TipoTributoNonTrovatoException(e.getMessage());
+					}
+	
+					tributo = new Tributo();
+					tributo.setCodTributo(it.govpay.model.Tributo.BOLLOT);
+					tributo.setAbilitato(false);
+					tributo.setDescrizione(bolloT.getDescrizione());
+					tributo.setIdTipoTributo(bolloT.getId());
+	
+					TipoVersamento libero = null;
+	
+					try {
+						libero = AnagraficaManager.getTipoVersamento(configWrapper, GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere());
 					} catch(org.openspcoop2.generic_project.exception.NotFoundException e) {
 						throw new TipoVersamentoNonTrovatoException(e.getMessage());
 					}  
-					tvdNonCensite = new TipoVersamentoDominio();
-					tvdNonCensite.setCodTipoVersamento(nonCensite.getCodTipoVersamento());
-					tvdNonCensite.setIdTipoVersamento(nonCensite.getId());
-					tvdNonCensite.setDescrizione(nonCensite.getDescrizione());
+					tvd = new TipoVersamentoDominio();
+					tvd.setCodTipoVersamento(libero.getCodTipoVersamento());
+					tvd.setIdTipoVersamento(libero.getId());
+					tvd.setDescrizione(libero.getDescrizione());
+	
+					
+					if(!GovpayConfig.getInstance().getCodTipoVersamentoPendenzeLibere().equals(GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite())) {
+						TipoVersamento nonCensite = null;
+	
+						try {
+							nonCensite = AnagraficaManager.getTipoVersamento(configWrapper, GovpayConfig.getInstance().getCodTipoVersamentoPendenzeNonCensite());
+						} catch(org.openspcoop2.generic_project.exception.NotFoundException e) {
+							throw new TipoVersamentoNonTrovatoException(e.getMessage());
+						}  
+						tvdNonCensite = new TipoVersamentoDominio();
+						tvdNonCensite.setCodTipoVersamento(nonCensite.getCodTipoVersamento());
+						tvdNonCensite.setIdTipoVersamento(nonCensite.getId());
+						tvdNonCensite.setDescrizione(nonCensite.getDescrizione());
+					}
+	
+					TipoVersamento tipoVersamentoBolloT = null;
+	
+					try {
+						tipoVersamentoBolloT = AnagraficaManager.getTipoVersamento(configWrapper, it.govpay.model.Tributo.BOLLOT);
+					} catch(org.openspcoop2.generic_project.exception.NotFoundException e) {
+						throw new TipoVersamentoNonTrovatoException(e.getMessage());
+					}  
+					tvdBollo = new TipoVersamentoDominio();
+					tvdBollo.setCodTipoVersamento(tipoVersamentoBolloT.getCodTipoVersamento());
+					tvdBollo.setIdTipoVersamento(tipoVersamentoBolloT.getId());
+					tvdBollo.setDescrizione(tipoVersamentoBolloT.getDescrizione());
+					
 				}
-
-				TipoVersamento tipoVersamentoBolloT = null;
-
-				try {
-					tipoVersamentoBolloT = AnagraficaManager.getTipoVersamento(configWrapper, it.govpay.model.Tributo.BOLLOT);
-				} catch(org.openspcoop2.generic_project.exception.NotFoundException e) {
-					throw new TipoVersamentoNonTrovatoException(e.getMessage());
-				}  
-				TipoVersamentoDominio tvdBollo = new TipoVersamentoDominio();
-				tvdBollo.setCodTipoVersamento(tipoVersamentoBolloT.getCodTipoVersamento());
-				tvdBollo.setIdTipoVersamento(tipoVersamentoBolloT.getId());
-				tvdBollo.setDescrizione(tipoVersamentoBolloT.getDescrizione());
-
 
 				UnitaOperativa uo = new UnitaOperativa();
 				uo.setAbilitato(true);
@@ -214,24 +225,26 @@ public class DominiDAO extends BaseDAO{
 					uo.setIdDominio(putDominioDTO.getDominio().getId());
 					uoBd.insertUnitaOperativa(uo);
 
-					// MBT
-					tributo.setIdDominio(putDominioDTO.getDominio().getId());
-					tributiBD.insertTributo(tributo);
-
-					// LIBERO
-					tvd.setIdDominio(putDominioDTO.getDominio().getId());
-					tvdBD.insertTipoVersamentoDominio(tvd);
-
-					// NON CENSITE
-					if(tvdNonCensite != null) {
-						tvdNonCensite.setIdDominio(putDominioDTO.getDominio().getId());
-						tvdBD.insertTipoVersamentoDominio(tvdNonCensite);
+					// creo le entries collegate solo ai domini intermediati
+					if(putDominioDTO.getDominio().isIntermediato()) {
+						// MBT
+						tributo.setIdDominio(putDominioDTO.getDominio().getId());
+						tributiBD.insertTributo(tributo);
+	
+						// LIBERO
+						tvd.setIdDominio(putDominioDTO.getDominio().getId());
+						tvdBD.insertTipoVersamentoDominio(tvd);
+	
+						// NON CENSITE
+						if(tvdNonCensite != null) {
+							tvdNonCensite.setIdDominio(putDominioDTO.getDominio().getId());
+							tvdBD.insertTipoVersamentoDominio(tvdNonCensite);
+						}
+	
+						// TV MBT
+						tvdBollo.setIdDominio(putDominioDTO.getDominio().getId());
+						tvdBD.insertTipoVersamentoDominio(tvdBollo);
 					}
-
-					// TV MBT
-					tvdBollo.setIdDominio(putDominioDTO.getDominio().getId());
-					tvdBD.insertTipoVersamentoDominio(tvdBollo);
-
 					dominiBD.commit();
 				} catch (ServiceException e) {
 					dominiBD.rollback(); 
@@ -343,6 +356,7 @@ public class DominiDAO extends BaseDAO{
 			}
 			
 			filter.setEseguiCountConLimit(listaDominiDTO.isEseguiCountConLimit());
+			filter.setIntermediato(listaDominiDTO.getIntermediato());
 			
 			Long count = null;
 			
@@ -420,6 +434,10 @@ public class DominiDAO extends BaseDAO{
 			}
 			try {
 				filter.setDominioFilter(AnagraficaManager.getDominio(configWrapper, findUnitaOperativeDTO.getCodDominio()).getId());
+				
+				if(!AnagraficaManager.getDominio(configWrapper, findUnitaOperativeDTO.getCodDominio()).isIntermediato()) {
+					return new FindUnitaOperativeDTOResponse(0L, new ArrayList<>());
+				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + findUnitaOperativeDTO.getCodDominio() + " non censito in Anagrafica");
 			}
@@ -471,6 +489,10 @@ public class DominiDAO extends BaseDAO{
 			Dominio dominio = null;
 			try {
 				dominio = AnagraficaManager.getDominio(configWrapper, getUnitaOperativaDTO.getCodDominio());
+				
+				if(!AnagraficaManager.getDominio(configWrapper, getUnitaOperativaDTO.getCodDominio()).isIntermediato()) {
+					throw new UnitaOperativaNonTrovataException("Unita Operativa " + getUnitaOperativaDTO.getCodUnivocoUnitaOperativa() + " non censita in Anagrafica per il Dominio " + getUnitaOperativaDTO.getCodDominio());
+				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + getUnitaOperativaDTO.getCodDominio() + " non censito in Anagrafica");
 			}
@@ -490,6 +512,10 @@ public class DominiDAO extends BaseDAO{
 			try {
 				// inserisco l'iddominio
 				putUnitaOperativaDTO.getUo().setIdDominio(AnagraficaManager.getDominio(configWrapper, putUnitaOperativaDTO.getIdDominio()).getId());
+				
+				if(!AnagraficaManager.getDominio(configWrapper, putUnitaOperativaDTO.getIdDominio()).isIntermediato()) {
+					throw new UnprocessableEntityException("La risorsa richiesta non e' disponibile per il dominio " + putUnitaOperativaDTO.getIdDominio() + " non intermediato.");
+				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new UnprocessableEntityException("Il dominio "+putUnitaOperativaDTO.getIdDominio()+" indicato non esiste.");
 			}
@@ -637,6 +663,10 @@ public class DominiDAO extends BaseDAO{
 			}
 			try {
 				filter.setIdDominio(AnagraficaManager.getDominio(configWrapper, findTributiDTO.getCodDominio()).getId());
+				
+				if(!AnagraficaManager.getDominio(configWrapper, findTributiDTO.getCodDominio()).isIntermediato()) {
+					return new FindTributiDTOResponse(0L, new ArrayList<>());
+				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + findTributiDTO.getCodDominio() + " non censito in Anagrafica");
 			}
@@ -677,6 +707,10 @@ public class DominiDAO extends BaseDAO{
 			Dominio dominio = null;
 			try {
 				dominio = AnagraficaManager.getDominio(configWrapper, getTributoDTO.getCodDominio());
+				
+				if(!AnagraficaManager.getDominio(configWrapper, getTributoDTO.getCodDominio()).isIntermediato()) {
+					throw new TributoNonTrovatoException("Entrata " + getTributoDTO.getCodTributo() + " non censita in Anagrafica per il Dominio " + getTributoDTO.getCodDominio());
+				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + getTributoDTO.getCodDominio() + " non censito in Anagrafica");
 			}
@@ -700,6 +734,10 @@ public class DominiDAO extends BaseDAO{
 				// inserisco l'iddominio
 				dominio = AnagraficaManager.getDominio(configWrapper, putEntrataDominioDTO.getIdDominio()); 
 				putEntrataDominioDTO.getTributo().setIdDominio(dominio.getId());
+				
+				if(!AnagraficaManager.getDominio(configWrapper, putEntrataDominioDTO.getIdDominio()).isIntermediato()) {
+					throw new UnprocessableEntityException("La risorsa richiesta non e' disponibile per il dominio " + putEntrataDominioDTO.getIdDominio() + " non intermediato.");
+				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new UnprocessableEntityException("Il dominio "+putEntrataDominioDTO.getIdDominio()+" indicato non esiste.");
 			}
@@ -776,6 +814,10 @@ public class DominiDAO extends BaseDAO{
 			//			}
 			try {
 				filter.setIdDominio(AnagraficaManager.getDominio(configWrapper, findTipiPendenzaDTO.getCodDominio()).getId());
+				
+				if(!AnagraficaManager.getDominio(configWrapper, findTipiPendenzaDTO.getCodDominio()).isIntermediato()) {
+					return new FindTipiPendenzaDominioDTOResponse(0L, new ArrayList<>());
+				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + findTipiPendenzaDTO.getCodDominio() + " non censito in Anagrafica");
 			}
@@ -823,6 +865,10 @@ public class DominiDAO extends BaseDAO{
 			Long idDominio = null;
 			try {
 				idDominio = AnagraficaManager.getDominio(configWrapper, findTipiPendenzaDTO.getCodDominio()).getId();
+				
+				if(!AnagraficaManager.getDominio(configWrapper, findTipiPendenzaDTO.getCodDominio()).isIntermediato()) {
+					return new FindTipiPendenzaDominioDTOResponse(0L, new ArrayList<>());
+				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + findTipiPendenzaDTO.getCodDominio() + " non censito in Anagrafica");
 			}
@@ -856,6 +902,10 @@ public class DominiDAO extends BaseDAO{
 			Dominio dominio = null;
 			try {
 				dominio = AnagraficaManager.getDominio(configWrapper, getTipoPendenzaDTO.getCodDominio());
+				
+				if(!AnagraficaManager.getDominio(configWrapper, getTipoPendenzaDTO.getCodDominio()).isIntermediato()) {
+					throw new TipoVersamentoNonTrovatoException("Tipo Pendenza " + getTipoPendenzaDTO.getCodTipoVersamento() + " non censito in Anagrafica per il Dominio " + getTipoPendenzaDTO.getCodDominio());
+				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + getTipoPendenzaDTO.getCodDominio() + " non censito in Anagrafica");
 			}
@@ -878,6 +928,10 @@ public class DominiDAO extends BaseDAO{
 			try {
 				// inserisco l'iddominio
 				putTipoPendenzaDominioDTO.getTipoVersamentoDominio().setIdDominio(AnagraficaManager.getDominio(configWrapper, putTipoPendenzaDominioDTO.getIdDominio()).getId());
+				
+				if(!AnagraficaManager.getDominio(configWrapper, putTipoPendenzaDominioDTO.getIdDominio()).isIntermediato()) {
+					throw new UnprocessableEntityException("La risorsa richiesta non e' disponibile per il dominio " + putTipoPendenzaDominioDTO.getIdDominio() + " non intermediato.");
+				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new UnprocessableEntityException("Il dominio "+putTipoPendenzaDominioDTO.getIdDominio()+" indicato non esiste.");
 			}

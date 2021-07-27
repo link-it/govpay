@@ -37,7 +37,7 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="trn" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="causale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="causale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="importo" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataValuta" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataContabile" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0" maxOccurs="1"/>
@@ -270,7 +270,7 @@ public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Ser
   protected java.lang.String codDominio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="causale",required=true,nillable=false)
+  @XmlElement(name="causale",required=false,nillable=false)
   protected java.lang.String causale;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="decimal")

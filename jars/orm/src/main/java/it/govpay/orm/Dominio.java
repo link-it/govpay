@@ -35,7 +35,7 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Dominio">
  * 		&lt;sequence>
- * 			&lt;element name="idStazione" type="{http://www.govpay.it/orm}id-stazione" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idStazione" type="{http://www.govpay.it/orm}id-stazione" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="gln" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
@@ -51,6 +51,7 @@ import java.io.Serializable;
  * 			&lt;element name="codConnettoreSecim" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreGovPay" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreHyperSicAPK" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="intermediato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -80,7 +81,8 @@ import java.io.Serializable;
   	"codConnettoreMyPivot",
   	"codConnettoreSecim",
   	"codConnettoreGovPay",
-  	"codConnettoreHyperSicAPK"
+  	"codConnettoreHyperSicAPK",
+  	"intermediato"
   }
 )
 
@@ -242,6 +244,18 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.codConnettoreHyperSicAPK = codConnettoreHyperSicAPK;
   }
 
+  public boolean isIntermediato() {
+    return this.intermediato;
+  }
+
+  public boolean getIntermediato() {
+    return this.intermediato;
+  }
+
+  public void setIntermediato(boolean intermediato) {
+    this.intermediato = intermediato;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -261,7 +275,7 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   }
 
 
-  @XmlElement(name="idStazione",required=true,nillable=false)
+  @XmlElement(name="idStazione",required=false,nillable=false)
   protected IdStazione idStazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
@@ -330,5 +344,9 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreHyperSicAPK",required=false,nillable=false)
   protected java.lang.String codConnettoreHyperSicAPK;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="intermediato",required=true,nillable=false)
+  protected boolean intermediato;
 
 }

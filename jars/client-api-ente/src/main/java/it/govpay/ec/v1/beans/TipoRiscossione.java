@@ -8,7 +8,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum TipoRiscossione {
 ENTRATA("ENTRATA"),
-  MBT("MBT");
+  MBT("MBT"), 
+  ALTRO_INTERMEDIARIO("ALTRO_INTERMEDIARIO"), 
+  ENTRATA_PA_NON_INTERMEDIATA("ENTRATA_PA_NON_INTERMEDIATA");
 
   private String value;
 

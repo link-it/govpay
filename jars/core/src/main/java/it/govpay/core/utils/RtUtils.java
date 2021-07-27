@@ -69,6 +69,7 @@ import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
+import it.govpay.model.Rpt.Versione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
@@ -246,6 +247,13 @@ public class RtUtils extends NdpValidationUtils {
 				rpt = rptBD.getRpt(codDominio, iuv, ccp, true);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
+			}
+			
+			// se provo ad acquisire un RT da cruscotto deve essere solo ti vecchio tipo
+			if(acquisizioneDaCruscotto) {
+				if(!rpt.getVersione().equals(Versione.SANP_230)) {
+					throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, "Aggiornamento di RT versione "+rpt.getVersione()+" non supportata tramite cruscotto.", rpt.getCodDominio());
+				}
 			}
 			
 			// Faccio adesso la select for update, altrimenti in caso di 

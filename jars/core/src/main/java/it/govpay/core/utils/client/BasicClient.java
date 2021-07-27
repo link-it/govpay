@@ -72,6 +72,9 @@ import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Categoria;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.client.beans.TipoConnettore;
+import it.govpay.core.utils.client.beans.TipoDestinatario;
+import it.govpay.core.utils.client.beans.TipoOperazioneNodo;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.handler.IntegrationContext;
 import it.govpay.core.utils.client.handler.IntegrationOutHandler;
@@ -103,18 +106,6 @@ public abstract class BasicClient {
 	protected EventoContext eventoCtx;
 
 	protected IntegrationContext integrationCtx;
-
-	public enum TipoOperazioneNodo {
-		AVVISATURA, NODO;
-	}
-
-	public enum TipoConnettore {
-		VERIFICA, NOTIFICA, APP_IO, MYPIVOT, GOVPAY;
-	}
-	
-	public enum TipoDestinatario {
-		APPLICAZIONE, INTERMEDIARIO, APP_IO, MYPIVOT, GOVPAY;
-	}
 
 	protected BasicClient(Intermediario intermediario, TipoOperazioneNodo tipoOperazione) throws ClientException {
 		this("I_" + intermediario.getCodIntermediario() + "_" + tipoOperazione, tipoOperazione.equals(TipoOperazioneNodo.NODO) ? intermediario.getConnettorePdd() : intermediario.getConnettorePddAvvisatura(),

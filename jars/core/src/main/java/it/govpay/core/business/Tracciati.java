@@ -895,7 +895,7 @@ public class Tracciati {
 				
 				while(true) {
 					List<Versamento> versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
-					log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
+					log.debug("Trovati ["+versamentiDaStampare.size()+"] versamenti per cui stampare l'avviso");
 					
 					if(versamentiDaStampare.size() == 0) {
 						// Finito di stampare.
@@ -911,8 +911,11 @@ public class Tracciati {
 						listStart = listEnd;
 						listEnd = Math.min(versamentiDaStampare.size(), listStart + stampePerThread);
 						List<Versamento> subList = versamentiDaStampare.subList(listStart, listEnd);
-						log.debug("Avvio thread per stampe da posizione " + listStart + " a " + listEnd + " per " + subList.size() + "stampe");
 						CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(subList, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), manager, ctx); 
+						log.debug("Avvio thread "+sender.getNomeThread()+" per stampe da posizione " + listStart + " a " + listEnd + " per " + subList.size() + " stampe: ");
+						for(int i = 0; i<subList.size(); i++) {
+							log.debug(sender.getNomeThread() + ": [Doc:" + subList.get(i).getCodDocumento() + " NAV:" + subList.get(i).getNumeroAvviso());
+						}
 						ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
 						threadsStampe.add(sender);
 					}

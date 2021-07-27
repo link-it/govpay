@@ -177,34 +177,25 @@ public class TracciatiUtils {
 		if(numeroDocumento != null) {
 			// evito duplicati
 			if(numeriDocumento.contains(idDominio + numeroDocumento)) return;
-			
-			log.debug("Aggiungo Documento ["+numeroDocumento+"] per il Dominio ["+idDominio+"]");
-			
 			numeriDocumento.add(idDominio + numeroDocumento);
-			
 			pdfFileName = idDominio + "_DOC_" + numeroDocumento + ".pdf"; 
 			bytePdf = avviso.getAvviso().getPdf();
-			
 		} else {
 			// Non tutte le pendenze caricate hanno il numero avviso
 			// In questo caso posso saltare alla successiva.
 			// Se lo hanno, controllo che non sia oggetto di una precedente generazione
 			if(numeroAvviso == null || numeriAvviso.contains(idDominio + numeroAvviso)) return;
-			
 			numeriAvviso.add(idDominio + numeroAvviso);
-
 			pdfFileName = idDominio + "_" + numeroAvviso + ".pdf"; 
 			bytePdf = avviso.getAvviso().getPdf();
-			
-			log.debug("Aggiungo Avviso ["+numeroAvviso+"] per il Dominio ["+idDominio+"]");
 		}
 		
-		ZipEntry tracciatoOutputEntry = new ZipEntry(pdfFileName );
+		log.debug("Aggiungo pdf ["+pdfFileName+"]");
+		ZipEntry tracciatoOutputEntry = new ZipEntry(pdfFileName);
 		zos.putNextEntry(tracciatoOutputEntry);
 		zos.write(bytePdf);
 		zos.flush();
 		zos.closeEntry();
-		
-		log.debug("Pdf inserito correttamente nello zip");
+		log.debug("Pdf ["+pdfFileName+"] inserito correttamente nello zip");
 	}
 }

@@ -139,6 +139,7 @@ export class Voce {
   public static INDICE_VOCE: string = 'Indice voce';
   public static INDIRIZZO: string = 'Indirizzo';
   public static INSERIMENTO_DATI: string = 'Form inserimento dati';
+  public static INTERMEDIATO: string = 'Intermediato';
   public static INTESTATARIO: string = 'Intestatario del conto';
   public static INTESTAZIONE_ESITO: string = 'Linea intestazione esito';
   public static INVIO_TRACCIATO_ALLEGATO: string = 'Invia tracciato come allegato';

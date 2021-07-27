@@ -30,5 +30,6 @@
   		"versioneCsv" : "1.0",
   		"codiceCliente" : "1234567",
   		"tipiPendenza" : [ "*" ]
-  }
+  },
+  "intermediato": "true"
 }

@@ -4,7 +4,7 @@ import { IFormComponent } from '../../../../../../classes/interfaces/IFormCompon
 import { FormInput } from '../../../../../../classes/view/form-input';
 import { DomSanitizer } from '@angular/platform-browser';
 import { UtilService } from '../../../../../../services/util.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material';
 import { GovpayService } from '../../../../../../services/govpay.service';
 
 declare global {
@@ -55,6 +55,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
       this.fGroup.addControl('intermediarioStazione_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('stazione_ctrl', new FormControl('', Validators.required));
       this.fGroup.addControl('abilita_ctrl', new FormControl(false));
+      this.fGroup.addControl('intermediato_ctrl', new FormControl(true));
       this.fGroup.addControl('indirizzo_ctrl', new FormControl(''));
       this.fGroup.addControl('civico_ctrl', new FormControl(''));
       this.fGroup.addControl('cap_ctrl', new FormControl(''));
@@ -89,6 +90,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
           this.fGroup.controls['intermediarioStazione_ctrl'].setValue((this.json.stazione)?this.json.stazione.split('_')[0]:'');
           this.fGroup.controls['stazione_ctrl'].setValue((this.json.stazione)?this.json.stazione:'');
           this.fGroup.controls['abilita_ctrl'].setValue((this.json.abilitato)?this.json.abilitato:false);
+          this.fGroup.controls['intermediato_ctrl'].setValue(this.json.intermediato);
           this.fGroup.controls['indirizzo_ctrl'].setValue((this.json.indirizzo)?this.json.indirizzo:'');
           this.fGroup.controls['civico_ctrl'].setValue((this.json.civico)?this.json.civico:'');
           this.fGroup.controls['cap_ctrl'].setValue((this.json.cap)?this.json.cap:'');
@@ -124,7 +126,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
   protected _resetSelection() {
     if(this.iBrowse) {
       this.iBrowse.nativeElement.value = '';
-      this.fGroup.controls.logo_ctrl.setValue('');
+      this.fGroup.controls['logo_ctrl'].setValue('');
     }
     this._base64File = null;
     this._name = '';
@@ -189,10 +191,10 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
 
 
   protected _askForConversion(data: any) {
-      let askDialogRef = this.askDialog.open(AlertDialog, {
-        width: '50%',
-        data: data
-      });
+    const mdc: MatDialogConfig = new MatDialogConfig();
+    mdc.width = '50%';
+    mdc.data =  data;
+    let askDialogRef = this.askDialog.open(AlertDialog, mdc);
 
     askDialogRef.afterClosed().subscribe(response => {
       let _result = response.data.original;
@@ -242,6 +244,18 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
         this.us.onError(error);
       });
   }
+  protected _intermediatoChange(event: any) {
+    const controls: any = this.fGroup.controls;
+    if (event.checked) {
+      controls.intermediarioStazione_ctrl.setValidators(Validators.required);
+      controls.stazione_ctrl.setValidators(Validators.required);
+    } else {
+      controls.intermediarioStazione_ctrl.clearValidators();
+      controls.stazione_ctrl.clearValidators();
+    }
+    controls.intermediarioStazione_ctrl.updateValueAndValidity();
+    controls.stazione_ctrl.updateValueAndValidity();
+  }
 
   mapToJson(): any {
     let _info = this.fGroup.value;
@@ -258,8 +272,9 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
       _json.idDominio = (!this.fGroup.controls['idDominio_ctrl'].disabled)?_info['idDominio_ctrl']:this.json.idDominio;
       _json.ragioneSociale = (_info['ragioneSociale_ctrl'])?_info['ragioneSociale_ctrl']:null;
       _json.area = (_info['area_ctrl'])?_info['area_ctrl']:null;
-      _json.stazione = (_info['stazione_ctrl'])?_info['stazione_ctrl']:null;
+      _json.stazione = (_info['stazione_ctrl'] && _info['intermediato_ctrl'])?_info['stazione_ctrl']:null;
       _json.abilitato = _info['abilita_ctrl'];
+      _json.intermediato = _info['intermediato_ctrl'];
       _json.indirizzo = (_info['indirizzo_ctrl'])?_info['indirizzo_ctrl']:null;
       _json.civico = (_info['civico_ctrl'])?_info['civico_ctrl']:null;
       _json.cap = (_info['cap_ctrl'])?_info['cap_ctrl']:null;
@@ -271,11 +286,11 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
       _json.tel = (_info['tel_ctrl'])?_info['tel_ctrl']:null;
       _json.fax = (_info['fax_ctrl'])?_info['fax_ctrl']:null;
       _json.web = (_info['web_ctrl'])?_info['web_ctrl']:null;
-      _json.cbill = (_info['cbill_ctrl'])?_info['cbill_ctrl']:null;
-      _json.iuvPrefix = (_info['iuvPrefix_ctrl'])?_info['iuvPrefix_ctrl']:null;
-      _json.auxDigit = (_info['auxDigit_ctrl'])?_info['auxDigit_ctrl']:null;
-      _json.segregationCode = (_info['segregationCode_ctrl'])?_info['segregationCode_ctrl']:null;
-      _json.autStampaPosteItaliane = (_info['autStampaPosteItaliane_ctrl'])?_info['autStampaPosteItaliane_ctrl']:null;
+      _json.cbill = (_info['cbill_ctrl'] && _info['intermediato_ctrl'])?_info['cbill_ctrl']:null;
+      _json.iuvPrefix = (_info['iuvPrefix_ctrl'] && _info['intermediato_ctrl'])?_info['iuvPrefix_ctrl']:null;
+      _json.auxDigit = (_info['auxDigit_ctrl'] && _info['intermediato_ctrl'])?_info['auxDigit_ctrl']:null;
+      _json.segregationCode = (_info['segregationCode_ctrl'] && _info['intermediato_ctrl'])?_info['segregationCode_ctrl']:null;
+      _json.autStampaPosteItaliane = (_info['autStampaPosteItaliane_ctrl'] && _info['intermediato_ctrl'])?_info['autStampaPosteItaliane_ctrl']:null;
       //Sanitizer
       if(this._base64File && this._base64File.hasOwnProperty('changingThisBreaksApplicationSecurity')) {
         _json.logo = this._base64File['changingThisBreaksApplicationSecurity'] || null;//_info['logo_ctrl'];

@@ -229,6 +229,122 @@ CREATE VIEW v_rendicontazioni_ext AS
      LEFT JOIN incassi on pagamenti.id_incasso = incassi.id;
 
 
+-- 07/06/2021 Aggiunta colonna con la versione dell'RPT
+DROP VIEW IF EXISTS v_rpt_versamenti;
+
+ALTER TABLE rpt ADD COLUMN versione VARCHAR(35);
+UPDATE rpt SET versione = 'SANP_230';
+ALTER TABLE rpt MODIFY COLUMN versione VARCHAR(35) NOT NULL;
+
+CREATE VIEW v_rpt_versamenti AS
+ SELECT 
+rpt.cod_carrello as cod_carrello,                   
+rpt.iuv as iuv,                            
+rpt.ccp as ccp,                            
+rpt.cod_dominio as cod_dominio,                    
+rpt.cod_msg_richiesta as cod_msg_richiesta,              
+rpt.data_msg_richiesta as data_msg_richiesta,             
+rpt.stato as stato,                          
+rpt.descrizione_stato as descrizione_stato,              
+rpt.cod_sessione as cod_sessione,                   
+rpt.cod_sessione_portale as cod_sessione_portale,           
+rpt.psp_redirect_url as psp_redirect_url,               
+rpt.xml_rpt as xml_rpt,                        
+rpt.data_aggiornamento_stato as data_aggiornamento_stato,       
+rpt.callback_url as callback_url,                   
+rpt.modello_pagamento as modello_pagamento,              
+rpt.cod_msg_ricevuta as cod_msg_ricevuta,               
+rpt.data_msg_ricevuta as data_msg_ricevuta,              
+rpt.cod_esito_pagamento as cod_esito_pagamento,            
+rpt.importo_totale_pagato as importo_totale_pagato,          
+rpt.xml_rt as xml_rt,                         
+rpt.cod_canale as cod_canale,                     
+rpt.cod_psp as cod_psp,                        
+rpt.cod_intermediario_psp as cod_intermediario_psp,          
+rpt.tipo_versamento as tipo_versamento,                
+rpt.tipo_identificativo_attestante as tipo_identificativo_attestante, 
+rpt.identificativo_attestante as identificativo_attestante,      
+rpt.denominazione_attestante as denominazione_attestante,       
+rpt.cod_stazione as cod_stazione,                   
+rpt.cod_transazione_rpt as cod_transazione_rpt,            
+rpt.cod_transazione_rt as cod_transazione_rt,             
+rpt.stato_conservazione as stato_conservazione,            
+rpt.descrizione_stato_cons as descrizione_stato_cons,         
+rpt.data_conservazione as data_conservazione,             
+rpt.bloccante as bloccante,                      
+rpt.versione as versione,
+rpt.id as id,                             
+rpt.id_pagamento_portale as id_pagamento_portale, 
+    versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
+    versamenti.importo_totale AS vrs_importo_totale,
+    versamenti.debitore_identificativo AS vrs_debitore_identificativo,
+    versamenti.debitore_anagrafica AS vrs_debitore_anagrafica,
+    versamenti.tassonomia AS vrs_tassonomia,
+    versamenti.divisione AS vrs_divisione,
+    versamenti.direzione AS vrs_direzione,
+    versamenti.id_tipo_versamento AS vrs_id_tipo_versamento,
+    versamenti.id_tipo_versamento_dominio AS vrs_id_tipo_versamento_dominio,
+    versamenti.id_dominio AS vrs_id_dominio,
+    versamenti.id_uo AS vrs_id_uo,
+    versamenti.id_applicazione AS vrs_id_applicazione,
+    versamenti.id AS vrs_id,
+    versamenti.nome AS vrs_nome,
+    versamenti.stato_versamento AS vrs_stato_versamento,
+    versamenti.descrizione_stato AS vrs_descrizione_stato,
+    versamenti.aggiornabile AS vrs_aggiornabile,
+    versamenti.data_creazione AS vrs_data_creazione,
+    versamenti.data_validita AS vrs_data_validita,
+    versamenti.data_scadenza AS vrs_data_scadenza,
+    versamenti.data_ora_ultimo_aggiornamento AS vrs_data_ora_ultimo_agg,
+    versamenti.causale_versamento AS vrs_causale_versamento,
+    versamenti.debitore_tipo AS vrs_debitore_tipo,
+    versamenti.debitore_indirizzo AS vrs_debitore_indirizzo,
+    versamenti.debitore_civico AS vrs_debitore_civico,
+    versamenti.debitore_cap AS vrs_debitore_cap,
+    versamenti.debitore_localita AS vrs_debitore_localita,
+    versamenti.debitore_provincia AS vrs_debitore_provincia,
+    versamenti.debitore_nazione AS vrs_debitore_nazione,
+    versamenti.debitore_email AS vrs_debitore_email,
+    versamenti.debitore_telefono AS vrs_debitore_telefono,
+    versamenti.debitore_cellulare AS vrs_debitore_cellulare,
+    versamenti.debitore_fax AS vrs_debitore_fax,
+    versamenti.tassonomia_avviso AS vrs_tassonomia_avviso,
+    versamenti.cod_lotto AS vrs_cod_lotto,
+    versamenti.cod_versamento_lotto AS vrs_cod_versamento_lotto,
+    versamenti.cod_anno_tributario AS vrs_cod_anno_tributario,
+    versamenti.cod_bundlekey AS vrs_cod_bundlekey,
+    versamenti.dati_allegati AS vrs_dati_allegati,
+    versamenti.incasso AS vrs_incasso,
+    versamenti.anomalie AS vrs_anomalie,
+    versamenti.iuv_versamento AS vrs_iuv_versamento,
+    versamenti.numero_avviso AS vrs_numero_avviso,
+    versamenti.ack AS vrs_ack,
+    versamenti.anomalo AS vrs_anomalo,
+    versamenti.id_sessione AS vrs_id_sessione,
+    versamenti.data_pagamento AS vrs_data_pagamento,
+    versamenti.importo_pagato AS vrs_importo_pagato,
+    versamenti.importo_incassato AS vrs_importo_incassato,
+    versamenti.stato_pagamento AS vrs_stato_pagamento,
+    versamenti.iuv_pagamento AS vrs_iuv_pagamento,
+    versamenti.src_debitore_identificativo as vrs_src_debitore_identificativ,
+    versamenti.cod_rata as vrs_cod_rata,
+    versamenti.id_documento as vrs_id_documento,
+    versamenti.tipo as vrs_tipo,
+    versamenti.proprieta as vrs_proprieta
+FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
+
+
+-- 07/06/2021 Aggiunta colonna intermediato alla tabella domini
+ALTER TABLE domini ADD COLUMN intermediato BOOLEAN;
+UPDATE domini SET intermediato = true;
+ALTER TABLE domini MODIFY COLUMN intermediato BOOLEAN NOT NULL;
+
+
+-- 08/06/2021 Stazione di un dominio opzionale
+ALTER TABLE domini MODIFY COLUMN id_stazione BIGINT NULL;
+
+
+
 -- 22/06/2021 API-Rendicontazione V3, nuovi campi tabella incassi
 
 ALTER TABLE incassi ADD COLUMN identificativo VARCHAR(35);
@@ -251,5 +367,20 @@ ALTER TABLE incassi MODIFY COLUMN causale VARCHAR(512) NULL;
 
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
+
+
+-- 14/07/2021 Batch per la chiusura delle RPT scadute
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('rpt-scadute', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-rpt-scadute', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
+
+-- 20/07/2021 Fix anomalie per rendicontazione senza RT
+
+update rendicontazioni set stato='OK', anomalie=null where anomalie = '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.';
+update fr set stato='ACCETTATA', descrizione_stato = null where stato='ANOMALA' and id not in (select fr.id from fr join rendicontazioni on rendicontazioni.id_fr=fr.id where fr.stato='ANOMALA' and rendicontazioni.stato='ANOMALA');
+
+
+-- 21/07/2021 Identificativo dominio nel singolo versamento per gestire le pendenze multibeneficiario
+ALTER TABLE singoli_versamenti ADD COLUMN id_dominio BIGINT;
+ALTER TABLE singoli_versamenti ADD CONSTRAINT fk_sng_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
 
 

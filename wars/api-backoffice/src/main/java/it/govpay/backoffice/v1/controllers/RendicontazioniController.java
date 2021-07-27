@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.ListaRendicontazioni;
 import it.govpay.backoffice.v1.beans.RendicontazioneConFlussoEVocePendenza;
 import it.govpay.backoffice.v1.beans.converter.RendicontazioniConverter;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.core.autorizzazione.AuthorizationManager;
@@ -106,8 +107,9 @@ public class RendicontazioniController extends BaseController {
 			// CONVERT TO JSON DELLA RISPOSTA
 			List<RendicontazioneConFlussoEVocePendenza> risultati = new ArrayList<RendicontazioneConFlussoEVocePendenza>();
 			
+			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 			for (Rendicontazione rendicontazione : findRendicontazioniDTOResponse.getResults()) {
-				risultati.add(RendicontazioniConverter.toRsModel(rendicontazione));
+				risultati.add(RendicontazioniConverter.toRsModel(rendicontazione, configWrapper));
 			}
 			
 			ListaRendicontazioni response = new ListaRendicontazioni(risultati,	this.getServicePath(uriInfo), findRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);

@@ -32,6 +32,9 @@
 	<b:bean id="batchElaborazioneRiconciliazioniCheck" class="it.govpay.core.utils.tasks.ElaborazioneRiconciliazioniCheck"/>
 	<b:bean id="batchElaborazioneRiconciliazioni" class="it.govpay.core.utils.tasks.ElaborazioneRiconciliazioni"/>
 	
+	<b:bean id="batchChiusuraRptScaduteCheck" class="it.govpay.core.utils.tasks.ChiusuraRptScaduteCheck"/>
+	<b:bean id="batchChiusuraRptScadute" class="it.govpay.core.utils.tasks.ChiusuraRptScadute"/>
+	
 	
 	<task:scheduled-tasks scheduler="myScheduler">
 		<!-- Rendicontazioni acquisite ogni giorno alle 4, 12 e 18 -->
@@ -74,6 +77,11 @@
         <task:scheduled ref="batchElaborazioneRiconciliazioniCheck" method="exec" cron="0/5 * * * * ?" />
         <!-- Elaborazione riconciliazioni viene eseguito ogni ora -->
         <task:scheduled ref="batchElaborazioneRiconciliazioni" method="exec" cron="0 0 * * * ?" />
+        
+        <!-- Check Rpt scadute da chiudere viene eseguito tutti i giorni ogni 5 secondi -->
+        <task:scheduled ref="batchChiusuraRptScaduteCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- Rpt scadute da chiudere viene eseguito tutti i giorni ogni 30 minuti -->
+        <task:scheduled ref="batchChiusuraRptScadute" method="exec" cron="0 0/30 * * * ?" />
         
     </task:scheduled-tasks>
  

@@ -515,6 +515,13 @@ components:
               maxLength: 140
             contabilita:
                 $ref: '#/components/schemas/Contabilita'
+            idDominio:
+              type: string
+              description: Identificativo del dominio creditore
+              example: 1234567890
+              minLength: 1
+              maxLength: 35   
+              pattern: '(^([0-9]){11}$)'
     datiEntrata:
       type: object
       oneOf:

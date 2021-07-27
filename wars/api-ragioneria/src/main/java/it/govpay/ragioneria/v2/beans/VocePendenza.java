@@ -17,6 +17,7 @@ import it.govpay.core.beans.JSONSerializable;
 "descrizioneCausaleRPT",
 "contabilita",
 "pendenza",
+"dominio",
 })
 public class VocePendenza extends JSONSerializable {
   
@@ -43,6 +44,9 @@ public class VocePendenza extends JSONSerializable {
   
   @JsonProperty("pendenza")
   private Pendenza pendenza = null;
+  
+  @JsonProperty("dominio")
+  private Dominio dominio = null;
   
   /**
    * indice di voce all'interno della pendenza
@@ -170,6 +174,21 @@ public class VocePendenza extends JSONSerializable {
     this.pendenza = pendenza;
   }
 
+  /**
+   **/
+  public VocePendenza dominio(Dominio dominio) {
+    this.dominio = dominio;
+    return this;
+  }
+
+  @JsonProperty("dominio")
+  public Dominio getDominio() {
+    return dominio;
+  }
+  public void setDominio(Dominio dominio) {
+    this.dominio = dominio;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -186,12 +205,13 @@ public class VocePendenza extends JSONSerializable {
         Objects.equals(datiAllegati, vocePendenza.datiAllegati) &&
         Objects.equals(descrizioneCausaleRPT, vocePendenza.descrizioneCausaleRPT) &&
         Objects.equals(contabilita, vocePendenza.contabilita) &&
-        Objects.equals(pendenza, vocePendenza.pendenza);
+        Objects.equals(pendenza, vocePendenza.pendenza) &&
+        Objects.equals(dominio, vocePendenza.dominio);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(indice, idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, pendenza);
+    return Objects.hash(indice, idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, pendenza, dominio);
   }
 
   public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -216,6 +236,7 @@ public class VocePendenza extends JSONSerializable {
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
+    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("}");
     return sb.toString();
   }
