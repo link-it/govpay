@@ -51,6 +51,7 @@
         
    	<!-- JAX-RS Service Impl -->
 
+	<b:bean id="flussiRendicontazioneV3" class="it.govpay.ragioneria.v3.FlussiRendicontazione"/>
    	<b:bean id="riconciliazioniV3" class="it.govpay.ragioneria.v3.Riconciliazioni"/>
    	<b:bean id="profiloV3" class="it.govpay.ragioneria.v3.Profilo"/>
        
@@ -59,6 +60,7 @@
    <!-- BASIC_START -->
     <jaxrs:server id="apiRagioneriaBasicV3" address="/basic/v3/">
         <jaxrs:serviceBeans>
+        		<ref bean="flussiRendicontazioneV3" />
 			   	<ref bean="riconciliazioniV3" />
 			   	<ref bean="profiloV3" />
         </jaxrs:serviceBeans>
@@ -79,6 +81,7 @@
    <!-- SSL_START -->
     <jaxrs:server id="apiRagioneriaSSLV3" address="/ssl/v3/">
         <jaxrs:serviceBeans>
+        		<ref bean="flussiRendicontazioneV3" />
 			   	<ref bean="riconciliazioniV3" />
 			   	<ref bean="profiloV3" />
         </jaxrs:serviceBeans>
@@ -99,6 +102,7 @@
         <!-- SSL_HEADER_START -->
     <jaxrs:server id="apiRagioneriaSSLHeaderV3" address="/sslheader/v3/">
         <jaxrs:serviceBeans>
+        		<ref bean="flussiRendicontazioneV3" />
 			   	<ref bean="riconciliazioniV3" />
 			   	<ref bean="profiloV3" />
         </jaxrs:serviceBeans>
@@ -119,6 +123,7 @@
     <!-- HEADER_START -->
     <jaxrs:server id="apiRagioneriaHeaderV3" address="/header/v3/">
         <jaxrs:serviceBeans>
+        		<ref bean="flussiRendicontazioneV3" />
 			   	<ref bean="riconciliazioniV3" />
 			   	<ref bean="profiloV3" />
         </jaxrs:serviceBeans>
@@ -139,6 +144,7 @@
         <!-- DEFAULT_START -->
     <jaxrs:server id="apiRagioneriaDEFAULTV3" address="/v3/">
         <jaxrs:serviceBeans>
+        		<ref bean="flussiRendicontazioneV3" />
 			   	<ref bean="riconciliazioniV3" />
 			   	<ref bean="profiloV3" />
         </jaxrs:serviceBeans>

@@ -28,7 +28,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/pagina'
         - $ref: '#/components/parameters/risultatiPerPagina'
-        - $ref: '#/components/parameters/campi'
         - $ref: '#/components/parameters/ordinamento'
         - $ref: '#/components/parameters/idDominio'
         - $ref: '#/components/parameters/dataDa'
@@ -1007,8 +1006,6 @@ components:
           $ref: '#/components/schemas/Contabilita'
         pendenza:
           $ref: '#/components/schemas/Pendenza'  
-        dominio:
-          $ref: '#/components/schemas/Dominio'
   securitySchemes:
     basicAuth:
       type: http
@@ -1148,7 +1145,7 @@ components:
         default: 25
         maximum: 200
     statoFlussoRendicontazione:
-      name: statoFlussoRendicontazione
+      name: stato
       in: query
       description: Stato del flusso di rendicontazione
       required: false

@@ -62,8 +62,8 @@ public class RiconciliazioniConverter {
 			
 			rsModel.setRiscossioni(riscossioni);
 		}
-		rsModel.setIuv(i.getIuv());
-		rsModel.setIdFlussoRendicontazione(i.getIdFlussoRendicontazione());
+//		rsModel.setIuv(i.getIuv());
+//		rsModel.setIdFlussoRendicontazione(i.getIdFlussoRendicontazione());
 		
 		switch (i.getStato()) {
 		case ACQUISITO:
@@ -94,8 +94,8 @@ public class RiconciliazioniConverter {
 		rsModel.setSct(i.getSct());
 		rsModel.setTrn(i.getTrn());
 		rsModel.setContoAccredito(i.getIbanAccredito());
-		rsModel.setIuv(i.getIuv());
-		rsModel.setIdFlussoRendicontazione(i.getIdFlussoRendicontazione());
+//		rsModel.setIuv(i.getIuv());
+//		rsModel.setIdFlussoRendicontazione(i.getIdFlussoRendicontazione());
 		switch (i.getStato()) {
 		case ACQUISITO:
 			rsModel.setStato(StatoRiconciliazione.ACQUISITA);
