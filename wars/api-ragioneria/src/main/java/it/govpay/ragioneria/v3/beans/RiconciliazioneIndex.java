@@ -23,6 +23,8 @@ import it.govpay.core.beans.JSONSerializable;
 "sct",
 "trn",
 "causale",
+"iuv",
+"idFlussoRendicontazione",
 })
 public class RiconciliazioneIndex extends JSONSerializable {
   
@@ -61,6 +63,12 @@ public class RiconciliazioneIndex extends JSONSerializable {
   
   @JsonProperty("causale")
   private String causale = null;
+  
+  @JsonProperty("iuv")
+  private String iuv = null;
+  
+  @JsonProperty("idFlussoRendicontazione")
+  private String idFlussoRendicontazione = null;
   
   /**
    * Identificativo della riconciliazione assegnato da GovPay
@@ -252,6 +260,38 @@ public class RiconciliazioneIndex extends JSONSerializable {
   public void setCausale(String causale) {
     this.causale = causale;
   }
+  
+  /**
+   * Identificativo univoco di riscossione.
+   **/
+  public RiconciliazioneIndex iuv(String iuv) {
+    this.iuv = iuv;
+    return this;
+  }
+
+  @JsonProperty("iuv")
+  public String getIuv() {
+    return this.iuv;
+  }
+  public void setIuv(String iuv) {
+    this.iuv = iuv;
+  }
+
+  /**
+   * Identificativo del flusso di rendicontazione.
+   **/
+  public RiconciliazioneIndex idFlussoRendicontazione(String idFlusso) {
+    this.idFlussoRendicontazione = idFlusso;
+    return this;
+  }
+
+  @JsonProperty("idFlussoRendicontazione")
+  public String getIdFlussoRendicontazione() {
+    return this.idFlussoRendicontazione;
+  }
+  public void setIdFlussoRendicontazione(String idFlusso) {
+    this.idFlussoRendicontazione = idFlusso;
+  }
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -273,12 +313,14 @@ public class RiconciliazioneIndex extends JSONSerializable {
         Objects.equals(contoAccredito, riconciliazioneIndex.contoAccredito) &&
         Objects.equals(sct, riconciliazioneIndex.sct) &&
         Objects.equals(trn, riconciliazioneIndex.trn) &&
-        Objects.equals(causale, riconciliazioneIndex.causale);
+        Objects.equals(causale, riconciliazioneIndex.causale) &&
+        Objects.equals(this.iuv, riconciliazioneIndex.iuv) &&
+        Objects.equals(this.idFlussoRendicontazione, riconciliazioneIndex.idFlussoRendicontazione);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, idDominio, stato, descrizioneStato, importo, data, dataValuta, dataContabile, contoAccredito, sct, trn, causale);
+    return Objects.hash(id, idDominio, stato, descrizioneStato, importo, data, dataValuta, dataContabile, contoAccredito, sct, trn, causale, iuv, idFlussoRendicontazione);
   }
 
   public static RiconciliazioneIndex parse(String json) throws ServiceException, ValidationException {
@@ -307,6 +349,8 @@ public class RiconciliazioneIndex extends JSONSerializable {
     sb.append("    sct: ").append(toIndentedString(sct)).append("\n");
     sb.append("    trn: ").append(toIndentedString(trn)).append("\n");
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
+    sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
+    sb.append("    idFlusso: ").append(this.toIndentedString(this.idFlussoRendicontazione)).append("\n");
     sb.append("}");
     return sb.toString();
   }

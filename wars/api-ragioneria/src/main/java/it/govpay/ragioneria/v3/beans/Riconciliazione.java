@@ -23,6 +23,8 @@ import it.govpay.core.beans.JSONSerializable;
 "sct",
 "trn",
 "causale",
+"iuv",
+"idFlussoRendicontazione",
 "riscossioni",
 })
 public class Riconciliazione extends JSONSerializable {
@@ -262,6 +264,38 @@ public class Riconciliazione extends JSONSerializable {
   public void setCausale(String causale) {
     this.causale = causale;
   }
+  
+  /**
+   * Identificativo univoco di riscossione.
+   **/
+  public Riconciliazione iuv(String iuv) {
+    this.iuv = iuv;
+    return this;
+  }
+
+  @JsonProperty("iuv")
+  public String getIuv() {
+    return this.iuv;
+  }
+  public void setIuv(String iuv) {
+    this.iuv = iuv;
+  }
+
+  /**
+   * Identificativo del flusso di rendicontazione.
+   **/
+  public Riconciliazione idFlussoRendicontazione(String idFlusso) {
+    this.idFlussoRendicontazione = idFlusso;
+    return this;
+  }
+
+  @JsonProperty("idFlussoRendicontazione")
+  public String getIdFlussoRendicontazione() {
+    return this.idFlussoRendicontazione;
+  }
+  public void setIdFlussoRendicontazione(String idFlusso) {
+    this.idFlussoRendicontazione = idFlusso;
+  }
 
   /**
    **/
@@ -299,12 +333,14 @@ public class Riconciliazione extends JSONSerializable {
         Objects.equals(sct, riconciliazione.sct) &&
         Objects.equals(trn, riconciliazione.trn) &&
         Objects.equals(causale, riconciliazione.causale) &&
+        Objects.equals(this.iuv, riconciliazione.iuv) &&
+        Objects.equals(this.idFlussoRendicontazione, riconciliazione.idFlussoRendicontazione) &&
         Objects.equals(riscossioni, riconciliazione.riscossioni);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, idDominio, stato, descrizioneStato, importo, data, dataValuta, dataContabile, contoAccredito, sct, trn, causale, riscossioni);
+    return Objects.hash(id, idDominio, stato, descrizioneStato, importo, data, dataValuta, dataContabile, contoAccredito, sct, trn, causale, iuv, idFlussoRendicontazione, riscossioni);
   }
 
   public static Riconciliazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -333,6 +369,8 @@ public class Riconciliazione extends JSONSerializable {
     sb.append("    sct: ").append(toIndentedString(sct)).append("\n");
     sb.append("    trn: ").append(toIndentedString(trn)).append("\n");
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
+    sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
+    sb.append("    idFlusso: ").append(this.toIndentedString(this.idFlussoRendicontazione)).append("\n");
     sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");
     sb.append("}");
     return sb.toString();
