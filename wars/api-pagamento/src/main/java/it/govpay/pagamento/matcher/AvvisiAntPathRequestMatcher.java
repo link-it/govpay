@@ -1,6 +1,6 @@
 package it.govpay.pagamento.matcher;
 
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.configurazione.model.Hardening;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
@@ -190,10 +191,10 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 			if(session!= null) {
 				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], trovata sessione con id ["+session.getId()+"]");
 				 @SuppressWarnings("unchecked")
-				 List<String> listaIdentificativi = (List<String>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
-				 logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], lista identificativi pendenze: ["+(listaIdentificativi!= null ? (StringUtils.join(listaIdentificativi, ",")): "non presente")+"]");
+				 Map<String, Versamento> listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+				 logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], lista identificativi pendenze: ["+(listaIdentificativi!= null ? (StringUtils.join(listaIdentificativi.keySet(), ",")): "non presente")+"]");
 				 
-				 if(listaIdentificativi != null && listaIdentificativi.contains((idA2A+idPendenza)) ) {
+				 if(listaIdentificativi != null && listaIdentificativi.containsKey((idA2A+idPendenza)) ) {
 					 logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], identificativo [idA2A:"+idA2A+", idPendenza: "+idPendenza+"] presente tra quelli autorizzati: accesso consentito");
 					 authorized = true;
 				 } else {

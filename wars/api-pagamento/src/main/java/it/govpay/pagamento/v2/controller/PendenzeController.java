@@ -5,7 +5,9 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
@@ -24,6 +26,7 @@ import org.springframework.security.core.Authentication;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -89,15 +92,17 @@ public class PendenzeController extends BaseController {
 			}
 			
 			// controllo che i parametri passati siano abilitati per l'utenza che prova a fare l'aggiornamento
+			boolean usaDB = true;
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
-			if((idA2A != null && idPendenza != null)) {
-				if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+				usaDB = false;
+				if((idA2A != null && idPendenza != null)) {
 					 HttpSession session = this.request.getSession(false);
 					 if(session!= null) {
 						 @SuppressWarnings("unchecked")
-						 List<String> listaIdentificativi = (List<String>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
+						 Map<String, Versamento> listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
 						 
-						 if(listaIdentificativi == null || listaIdentificativi.size() == 0 || !listaIdentificativi.contains((idA2A+idPendenza)) ) {
+						 if(listaIdentificativi == null || listaIdentificativi.size() == 0 || !listaIdentificativi.containsKey((idA2A+idPendenza)) ) {
 							 throw new UnprocessableEntityException("Impossibile effettuare l'operazione di aggiornamento, i paramentri 'idA2A' e 'idPendenza' non corrispondono a nessuna pendenza disponibile per l'utenza.");
 						 }
 					 } else {
@@ -119,6 +124,7 @@ public class PendenzeController extends BaseController {
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
+			putVersamentoDTO.setInserimentoDB(usaDB);
 			putVersamentoDTO.setTipo(TipologiaTipoVersamento.SPONTANEO);
 			putVersamentoDTO.setCustomReq(jsonRequest);
 			putVersamentoDTO.setCodDominio(idDominio);
@@ -138,14 +144,14 @@ public class PendenzeController extends BaseController {
 				if(session != null) {
 					log.debug("Inserimento della pendenza [idA2A:"+pc.getIdA2A()+", idPendenza: "+pc.getIdPendenza()+"] nella sessione con id ["+session.getId()+"]");
 					@SuppressWarnings("unchecked")
-					List<String> listaIdentificativi = (List<String>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
-					log.debug("Letta lista identificativi pendenze: ["+(listaIdentificativi!= null ? (StringUtils.join(listaIdentificativi, ",")): "non presente")+"]");
+					Map<String, Versamento> listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
+					log.debug("Letta lista identificativi pendenze: ["+(listaIdentificativi!= null ? (StringUtils.join(listaIdentificativi.keySet(), ",")): "non presente")+"]");
 					
 					if(listaIdentificativi == null)
-						listaIdentificativi = new ArrayList<>();
+						listaIdentificativi = new HashMap<>();
 					
-					if(!listaIdentificativi.contains((pc.getIdA2A()+pc.getIdPendenza())))
-						listaIdentificativi.add((pc.getIdA2A()+pc.getIdPendenza()));
+					if(!listaIdentificativi.containsKey((pc.getIdA2A()+pc.getIdPendenza())))
+						listaIdentificativi.put((pc.getIdA2A()+pc.getIdPendenza()), createOrUpdate.getVersamento());
 					
 					log.debug("Id Pendenza [idA2A:"+pc.getIdA2A()+", idPendenza: "+pc.getIdPendenza()+"] aggiunto alla lista identificativi.");
 					session.setAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE, listaIdentificativi);
