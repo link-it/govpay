@@ -23,9 +23,9 @@ import it.govpay.core.beans.JSONSerializable;
 "sct",
 "trn",
 "causale",
-"riscossioni",
 "iuv",
 "idFlussoRendicontazione",
+"riscossioni",
 })
 public class Riconciliazione extends JSONSerializable {
   
@@ -264,21 +264,6 @@ public class Riconciliazione extends JSONSerializable {
   public void setCausale(String causale) {
     this.causale = causale;
   }
-
-  /**
-   **/
-  public Riconciliazione riscossioni(List<RiscossioneIndex> riscossioni) {
-    this.riscossioni = riscossioni;
-    return this;
-  }
-
-  @JsonProperty("riscossioni")
-  public List<RiscossioneIndex> getRiscossioni() {
-    return riscossioni;
-  }
-  public void setRiscossioni(List<RiscossioneIndex> riscossioni) {
-    this.riscossioni = riscossioni;
-  }
   
   /**
    * Identificativo univoco di riscossione.
@@ -299,8 +284,8 @@ public class Riconciliazione extends JSONSerializable {
   /**
    * Identificativo del flusso di rendicontazione.
    **/
-  public Riconciliazione idFlussoRendicontazione(String idFlussoRendicontazione) {
-    this.idFlussoRendicontazione = idFlussoRendicontazione;
+  public Riconciliazione idFlussoRendicontazione(String idFlusso) {
+    this.idFlussoRendicontazione = idFlusso;
     return this;
   }
 
@@ -308,8 +293,23 @@ public class Riconciliazione extends JSONSerializable {
   public String getIdFlussoRendicontazione() {
     return this.idFlussoRendicontazione;
   }
-  public void setIdFlussoRendicontazione(String idFlussoRendicontazione) {
-    this.idFlussoRendicontazione = idFlussoRendicontazione;
+  public void setIdFlussoRendicontazione(String idFlusso) {
+    this.idFlussoRendicontazione = idFlusso;
+  }
+
+  /**
+   **/
+  public Riconciliazione riscossioni(List<RiscossioneIndex> riscossioni) {
+    this.riscossioni = riscossioni;
+    return this;
+  }
+
+  @JsonProperty("riscossioni")
+  public List<RiscossioneIndex> getRiscossioni() {
+    return riscossioni;
+  }
+  public void setRiscossioni(List<RiscossioneIndex> riscossioni) {
+    this.riscossioni = riscossioni;
   }
 
   @Override
@@ -333,14 +333,14 @@ public class Riconciliazione extends JSONSerializable {
         Objects.equals(sct, riconciliazione.sct) &&
         Objects.equals(trn, riconciliazione.trn) &&
         Objects.equals(causale, riconciliazione.causale) &&
-        Objects.equals(riscossioni, riconciliazione.riscossioni) &&
         Objects.equals(this.iuv, riconciliazione.iuv) &&
-        Objects.equals(this.idFlussoRendicontazione, riconciliazione.idFlussoRendicontazione);
+        Objects.equals(this.idFlussoRendicontazione, riconciliazione.idFlussoRendicontazione) &&
+        Objects.equals(riscossioni, riconciliazione.riscossioni);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, idDominio, stato, descrizioneStato, importo, data, dataValuta, dataContabile, contoAccredito, sct, trn, causale, riscossioni, iuv, idFlussoRendicontazione);
+    return Objects.hash(id, idDominio, stato, descrizioneStato, importo, data, dataValuta, dataContabile, contoAccredito, sct, trn, causale, iuv, idFlussoRendicontazione, riscossioni);
   }
 
   public static Riconciliazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -369,9 +369,9 @@ public class Riconciliazione extends JSONSerializable {
     sb.append("    sct: ").append(toIndentedString(sct)).append("\n");
     sb.append("    trn: ").append(toIndentedString(trn)).append("\n");
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
-    sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");
     sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
     sb.append("    idFlusso: ").append(this.toIndentedString(this.idFlussoRendicontazione)).append("\n");
+    sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");
     sb.append("}");
     return sb.toString();
   }
