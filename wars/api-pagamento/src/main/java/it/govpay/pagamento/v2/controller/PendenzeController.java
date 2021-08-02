@@ -93,6 +93,7 @@ public class PendenzeController extends BaseController {
 			
 			// controllo che i parametri passati siano abilitati per l'utenza che prova a fare l'aggiornamento
 			boolean usaDB = true;
+			boolean isUpdate = false;
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 				usaDB = false;
@@ -108,6 +109,7 @@ public class PendenzeController extends BaseController {
 					 } else {
 						 throw new UnprocessableEntityException("Impossibile effettuare l'operazione di aggiornamento, nessuna pendenza disponibile per l'utenza.");
 					 }
+					 isUpdate = true;
 				}
 			}
 			
@@ -139,6 +141,8 @@ public class PendenzeController extends BaseController {
 
 			PendenzaCreata pc = PendenzeConverter.toRsPendenzaCreataModel(createOrUpdate.getDominio(), createOrUpdate.getVersamento(), createOrUpdate.getUo(), createOrUpdate.getPdf(), user);
 			
+			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
+			
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 				HttpSession session = this.request.getSession();
 				if(session != null) {
@@ -150,8 +154,14 @@ public class PendenzeController extends BaseController {
 					if(listaIdentificativi == null)
 						listaIdentificativi = new HashMap<>();
 					
-					if(!listaIdentificativi.containsKey((pc.getIdA2A()+pc.getIdPendenza())))
-						listaIdentificativi.put((pc.getIdA2A()+pc.getIdPendenza()), createOrUpdate.getVersamento());
+//					if(!listaIdentificativi.containsKey((pc.getIdA2A()+pc.getIdPendenza())))
+					// inserisco sempre nella mappa sia in caso di insert che di update
+					listaIdentificativi.put((pc.getIdA2A()+pc.getIdPendenza()), createOrUpdate.getVersamento());
+					
+					// in questo caso forzo lo stato a OK perche' il check sul db da sempre esito negativo
+					if(isUpdate) {
+						responseStatus =  Status.OK;
+					}
 					
 					log.debug("Id Pendenza [idA2A:"+pc.getIdA2A()+", idPendenza: "+pc.getIdPendenza()+"] aggiunto alla lista identificativi.");
 					session.setAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE, listaIdentificativi);
@@ -161,7 +171,6 @@ public class PendenzeController extends BaseController {
 				}
 			}
 			
-			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
 
