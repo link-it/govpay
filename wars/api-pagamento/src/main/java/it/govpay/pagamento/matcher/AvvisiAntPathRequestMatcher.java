@@ -51,7 +51,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 
 			String idDominio = null;
 			String iuv = null;
-			
+
 			if(splitAvvisi != null && splitAvvisi.length > 0) {
 				String[]  split = splitAvvisi[1].split("/");
 
@@ -62,7 +62,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 					iuv = split[1];	
 				}
 			}
-			
+
 			if(setting.isAbilitato()) {
 				logger.debug("Applico regole di hardening per l'accesso alla risorsa ["+getPathInfo+"]...");
 				// per il servizio di avviso i controlli sono in cascata
@@ -73,12 +73,12 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 				String uuid = request.getParameter(PARAMETER_UUID);
 				boolean authorizedUUID = false;
 				logger.debug("Controllo presenza del parametro "+PARAMETER_UUID+"...");
-				
+
 				try {
 					if(uuid != null) {
 						logger.debug("Parametro "+PARAMETER_UUID+" trovato, controllo disponibilita' avviso nel sistema...");
 						if(idDominio != null && iuv != null) {
-							authorizedUUID = authorizedPathMatch && checkDirittiAvviso(idDominio, iuv, uuid); //se hai diritto di vedere la risorsa passi altrimenti controllo il captcha
+							authorizedUUID = authorizedPathMatch && checkDirittiAvviso(request, idDominio, iuv, uuid); //se hai diritto di vedere la risorsa passi altrimenti controllo il captcha
 						} else { // parametri non validi
 							authorizedUUID = false;
 						}
@@ -89,7 +89,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 					logger.error("Errore durante il check disponibilita' avviso: " + e.getMessage(), e);
 					authorizedUUID = false;
 				}
-				
+
 				// 2. Controllo del captcha se UUID = null oppure se non ho passato il controllo con UUID
 				if(!authorizedUUID) {
 					logger.debug("Applico controllo tramite validazione ReCaptcha...");
@@ -102,7 +102,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 				logger.debug("Regole di hardening disabilitate per l'accesso alla risorsa ["+getPathInfo+"], accesso consentito.");
 				authorizedPathMatch = true; // se il controllo e' disabilitato passo
 			}
-			
+
 			// se ho richiesto un pdf devo sempre controllare se l'identificativo della pendenza e' tra quelli in sessione 
 			if(authorizedPathMatch && this.richiestoPdf(request)) {
 				if(idDominio != null && iuv != null) { // controllo presenza dei parametri di identificazione dell'avviso
@@ -121,7 +121,7 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 
 		return authorizedPathMatch;
 	}
-	
+
 	private boolean richiestoPdf(HttpServletRequest request) {
 		String acceptH = request.getHeader("Accept");
 		if(acceptH == null) {
@@ -133,13 +133,14 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 		if(acceptH == null) {
 			acceptH = "";
 		}
-		
+
 		return "application/pdf".equals(acceptH.toLowerCase());
 	}
 
-	private boolean checkDirittiAvviso(String idDominio,String iuv, String uuid) {
+	@SuppressWarnings("unchecked")
+	private boolean checkDirittiAvviso(HttpServletRequest request, String idDominio,String iuv, String uuid) {
 		boolean authorized = false;
-		
+
 		BDConfigWrapper configWrapper = new BDConfigWrapper(UUID.randomUUID().toString(), true);
 		VersamentiBD versamentiBD = null;
 		try {
@@ -147,6 +148,41 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 			versamentiBD = new VersamentiBD(configWrapper);
 			AvvisiDAO avvisiDAO = new AvvisiDAO();
 			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(SecurityContextHolder.getContext().getAuthentication(), idDominio);
+
+			// nel caso in cui la pendenza sia stata caricata in memoria, puo' non essere ancora presente sul db
+			HttpSession session = request.getSession(false);
+			if(session!= null) {
+				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], trovata sessione con id ["+session.getId()+"]");
+
+				String chiaveAvviso = idDominio+iuv;
+
+				Map<String, String> listaAvvisi = null;
+				if(iuv.length() == 18) {
+					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE); 
+				} else {
+					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
+				}
+				
+				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], lista avvisi: ["+((listaAvvisi!= null && listaAvvisi.size() > 0 )? (StringUtils.join(listaAvvisi.keySet(), ",")): "non presente")+"]");
+
+				if(listaAvvisi != null && listaAvvisi.size() > 0) {
+					if(listaAvvisi.containsKey(chiaveAvviso)) {
+						logger.debug("Avviso [idDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"] presente in lista avvisi, effettuo controllo uuid...");
+						Map<String, Versamento> listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+						String chiavePendenza = listaAvvisi.get(chiaveAvviso);
+
+						if(listaIdentificativi.containsKey(chiavePendenza)) {
+							Versamento versamento = listaIdentificativi.get(chiavePendenza);
+	
+							if(versamento.getIdSessione() != null && uuid.equals(versamento.getIdSessione())) {
+								logger.debug("Avviso [idDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+", UUID: "+uuid+"] presente in lista pendenze, autorizzazione concessa.");
+								return true;
+							}
+						}
+					}
+				}
+			}
+
 			if(iuv.length() == 18)
 				getAvvisoDTO.setNumeroAvviso(iuv);
 			else 
@@ -166,14 +202,48 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 
 		return authorized;
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	private boolean checkDirittiAvvisoSessione(HttpServletRequest request, String idDominio,String iuv) {
 		boolean authorized = false;
-		
+
 		BDConfigWrapper configWrapper = new BDConfigWrapper(UUID.randomUUID().toString(), true);
 		VersamentiBD versamentiBD = null;
 		try {
 			logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"] in corso...");
+
+			// gli avvisi disponibili potrebbero non essere ancora stati inseriti sul db, faccio prima un check in sessione
+			Map<String, Versamento> listaIdentificativi = null;
+			Map<String, String> listaAvvisi = null;
+			HttpSession session = request.getSession(false);
+			String chiaveAvviso = idDominio+iuv;
+			if(session!= null) {
+				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], trovata sessione con id ["+session.getId()+"]");
+				listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], lista identificativi pendenze: ["+((listaIdentificativi!= null && listaIdentificativi.size() > 0 ) ? (StringUtils.join(listaIdentificativi.keySet(), ",")): "non presente")+"]");
+				if(iuv.length() == 18) {
+					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE); 
+				} else {
+					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
+				}
+				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], lista avvisi: ["+((listaAvvisi!= null && listaAvvisi.size() > 0 ) ? (StringUtils.join(listaAvvisi.keySet(), ",")): "non presente")+"]");
+		
+				if(listaAvvisi != null && listaAvvisi.size() > 0) {
+					if(listaAvvisi.containsKey(chiaveAvviso)) {
+						logger.debug("Avviso [idDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"] presente in lista avvisi, effettuo controllo id Pendenza...");
+						
+						String chiavePendenza = listaAvvisi.get(chiaveAvviso);
+
+						if(listaIdentificativi.containsKey(chiavePendenza)) {
+							logger.debug("Avviso [idDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"] presente in lista pendenze, autorizzazione concessa.");
+							return true;
+						}
+					}
+				}
+				
+				logger.debug("Avviso [idDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"] non presente in lista pendenze, effettuo controllo su DB.");
+			}
+
 			versamentiBD = new VersamentiBD(configWrapper);
 			AvvisiDAO avvisiDAO = new AvvisiDAO();
 			GetAvvisoDTO getAvvisoDTO = new GetAvvisoDTO(SecurityContextHolder.getContext().getAuthentication(), idDominio);
@@ -186,24 +256,22 @@ public class AvvisiAntPathRequestMatcher extends HardeningAntPathRequestMatcher 
 			logger.debug("Lettura avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"] completata, controllo identificativi consentiti all'utente in corso...");
 			String idPendenza = checkDisponibilitaAvviso.getVersamento().getCodVersamentoEnte();
 			String idA2A = checkDisponibilitaAvviso.getApplicazione().getCodApplicazione();
-			
-			HttpSession session = request.getSession(false);
+
 			if(session!= null) {
 				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], trovata sessione con id ["+session.getId()+"]");
-				 @SuppressWarnings("unchecked")
-				 Map<String, Versamento> listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
-				 logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], lista identificativi pendenze: ["+(listaIdentificativi!= null ? (StringUtils.join(listaIdentificativi.keySet(), ",")): "non presente")+"]");
-				 
-				 if(listaIdentificativi != null && listaIdentificativi.containsKey((idA2A+idPendenza)) ) {
-					 logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], identificativo [idA2A:"+idA2A+", idPendenza: "+idPendenza+"] presente tra quelli autorizzati: accesso consentito");
-					 authorized = true;
-				 } else {
-					 logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], identificativo [idA2A:"+idA2A+", idPendenza: "+idPendenza+"] non presente in lista: accesso negato");
-				 }
-			 } else {
-				 logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], la sessione corrente e' null");
-			 }
-			
+				listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], lista identificativi pendenze: ["+(listaIdentificativi!= null ? (StringUtils.join(listaIdentificativi.keySet(), ",")): "non presente")+"]");
+
+				if(listaIdentificativi != null && listaIdentificativi.containsKey((idA2A+idPendenza)) ) {
+					logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], identificativo [idA2A:"+idA2A+", idPendenza: "+idPendenza+"] presente tra quelli autorizzati: accesso consentito");
+					authorized = true;
+				} else {
+					logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], identificativo [idA2A:"+idA2A+", idPendenza: "+idPendenza+"] non presente in lista: accesso negato");
+				}
+			} else {
+				logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"], la sessione corrente e' null");
+			}
+
 			logger.debug("Controllo diritti sull'avviso [IdDominio:"+idDominio+", Iuv/NumeroAvviso: "+iuv+"] completato con esito ["+(authorized ? "accesso consentito" : "accesso negato")+"].");
 		} catch(PendenzaNonTrovataException e){
 			return false;

@@ -59,6 +59,8 @@ public abstract class BaseController {
 	public final static String SUFFIX_FILENAME = "\"";
 	
 	public final static String PENDENZE_CITTADINO_ATTRIBUTE = "pendenzeCittadino";
+	public final static String AVVISI_CITTADINO_ATTRIBUTE = "avvisiCittadino";
+	public final static String IUV_CITTADINO_ATTRIBUTE = "iuvCittadino";
 
 	private static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean"; 
 	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = "Esecuzione {0} completata.";

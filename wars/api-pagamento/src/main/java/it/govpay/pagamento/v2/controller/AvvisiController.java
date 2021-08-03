@@ -2,7 +2,9 @@ package it.govpay.pagamento.v2.controller;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Map;
 
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -15,7 +17,10 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
@@ -33,14 +38,15 @@ import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
 
 public class AvvisiController extends BaseController {
 
-     public AvvisiController(String nomeServizio,Logger log) {
+	public AvvisiController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
-     }
+	}
 
 
 
-    public Response avvisiIdDominioIuvGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso, String idDebitore, String UUID, String gRecaptchaResponse, String linguaSecondaria) {
-    	String methodName = "avvisiIdDominioIuvGET";  
+	@SuppressWarnings("unchecked")
+	public Response avvisiIdDominioIuvGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso, String idDebitore, String UUID, String gRecaptchaResponse, String linguaSecondaria) {
+		String methodName = "avvisiIdDominioIuvGET";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -48,7 +54,7 @@ public class AvvisiController extends BaseController {
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
-			
+
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 
@@ -56,16 +62,16 @@ public class AvvisiController extends BaseController {
 			getAvvisoDTO.setCfDebitore(idDebitore);
 			getAvvisoDTO.setIdentificativoCreazionePendenza(UUID);
 			getAvvisoDTO.setRecaptcha(gRecaptchaResponse);
-			
+
 			String accept = MediaType.APPLICATION_JSON;
 			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
 				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
 			}
-			
+
 			if(!AuthorizationManager.isDominioAuthorized(getAvvisoDTO.getUser(), getAvvisoDTO.getCodDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(getAvvisoDTO.getUser(), getAvvisoDTO.getCodDominio(),null);
 			}
-			
+
 			if(linguaSecondaria != null) {
 				LinguaSecondaria linguaSecondariaEnum = LinguaSecondaria.fromValue(linguaSecondaria);
 				if(linguaSecondariaEnum != null) {
@@ -90,9 +96,39 @@ public class AvvisiController extends BaseController {
 					throw new ValidationException("Codifica inesistente per linguaSecondaria. Valore fornito [" + linguaSecondaria + "] valori possibili " + ArrayUtils.toString(LinguaSecondaria.values()));
 				}
 			}
-			
+
+			// il versamento riferito dall'avviso potrebbe non essere ancora stato inserito nel db ma essere in sessione
+			Map<String, Versamento> listaIdentificativi = null;
+			Map<String, String> listaAvvisi = null;
+			Versamento versamentoFromSession = null;
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
+			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+				HttpSession session = this.request.getSession(false);
+				if(session!= null) {
+					listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+
+					String chiaveAvviso = idDominio+numeroAvviso;
+					if(numeroAvviso.length() == 18) {
+						listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE); 
+					} else {
+						listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
+					}
+
+					if(listaAvvisi != null && listaAvvisi.size() > 0) {
+						if(listaAvvisi.containsKey(chiaveAvviso)) {
+							String chiavePendenza = listaAvvisi.get(chiaveAvviso);
+
+							if(listaIdentificativi.containsKey(chiavePendenza)) {
+								versamentoFromSession = listaIdentificativi.get(chiavePendenza);
+							}
+						}
+					}
+				}
+			}
+			getAvvisoDTO.setVersamentoFromSession(versamentoFromSession);
+
 			AvvisiDAO avvisiDAO = new AvvisiDAO();
-			
+
 			if(accept.toLowerCase().contains("application/pdf")) {
 				getAvvisoDTO.setFormato(FormatoAvviso.PDF);
 				GetAvvisoDTOResponse getAvvisoDTOResponse = avvisiDAO.getAvviso(getAvvisoDTO);
@@ -121,7 +157,7 @@ public class AvvisiController extends BaseController {
 		} finally {
 			this.log(ContextThreadLocal.get());
 		}
-    }
+	}
 
 }
 

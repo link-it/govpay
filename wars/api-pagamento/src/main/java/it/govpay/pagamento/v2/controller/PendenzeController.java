@@ -156,7 +156,8 @@ public class PendenzeController extends BaseController {
 					
 //					if(!listaIdentificativi.containsKey((pc.getIdA2A()+pc.getIdPendenza())))
 					// inserisco sempre nella mappa sia in caso di insert che di update
-					listaIdentificativi.put((pc.getIdA2A()+pc.getIdPendenza()), createOrUpdate.getVersamento());
+					String chiavePendenza = pc.getIdA2A()+pc.getIdPendenza();
+					listaIdentificativi.put(chiavePendenza, createOrUpdate.getVersamento());
 					
 					// in questo caso forzo lo stato a OK perche' il check sul db da sempre esito negativo
 					if(isUpdate) {
@@ -166,6 +167,36 @@ public class PendenzeController extends BaseController {
 					log.debug("Id Pendenza [idA2A:"+pc.getIdA2A()+", idPendenza: "+pc.getIdPendenza()+"] aggiunto alla lista identificativi.");
 					session.setAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE, listaIdentificativi);
 					log.debug("Lista identificativi pendenze salvata nella sessione con id ["+session.getId()+"]");
+					
+					// salvo anche gli identificativi avviso per eventuali letture dell'avviso
+					if(pc.getNumeroAvviso() != null) {
+						@SuppressWarnings("unchecked")
+						Map<String, String> listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE);
+						if(listaAvvisi == null)
+							listaAvvisi = new HashMap<>();
+						
+						String chiaveAvviso = createOrUpdate.getDominio().getCodDominio() + pc.getNumeroAvviso();
+						listaAvvisi.put(chiaveAvviso, chiavePendenza);
+						
+						log.debug("Avviso [idDominio:"+createOrUpdate.getDominio().getCodDominio()+", numero: "+pc.getNumeroAvviso()+"] aggiunto alla lista avvisi.");
+						session.setAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE, listaAvvisi);
+					}
+					
+					// salvo anche gli iuv avviso 
+					if(createOrUpdate.getVersamento().getIuvVersamento() != null) {
+						
+						@SuppressWarnings("unchecked")
+						Map<String, String> listaIuv = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
+						if(listaIuv == null)
+							listaIuv = new HashMap<>();
+						
+						String chiaveIuv = createOrUpdate.getDominio().getCodDominio() + createOrUpdate.getVersamento().getIuvVersamento();
+						listaIuv.put(chiaveIuv, chiavePendenza);
+						
+						log.debug("Iuv [idDominio:"+createOrUpdate.getDominio().getCodDominio()+", iuv: "+ createOrUpdate.getVersamento().getIuvVersamento()+"] aggiunto alla lista avvisi.");
+						session.setAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE, listaIuv);
+					}
+					
 				} else {
 					log.debug("Inserimento della pendenza [idA2A:"+pc.getIdA2A()+", idPendenza: "+pc.getIdPendenza()+"] nella sessione non effettuato, perche' la sessione e' null");
 				}
