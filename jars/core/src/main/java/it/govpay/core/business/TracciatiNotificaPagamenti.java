@@ -727,7 +727,7 @@ public class TracciatiNotificaPagamenti {
 		
 		// file rendicontazioni
 		if(totaleRt > 0) {
-			ZipEntry tracciatoOutputEntry = new ZipEntry("RENDICONTAZIONE_AV20_" + codDominio + "_"+ dataCreazioneFlusso + "_" + progressivoS+ ".txt");
+			ZipEntry tracciatoOutputEntry = new ZipEntry("RENDICONTAZIONE_AV20_" + codDominio + "_"+ dataCreazioneFlusso + "_" + progressivoS+ ".csv");
 			zos.putNextEntry(tracciatoOutputEntry);
 			
 			zos.write(csvUtils.toCsv(HYPERSIC_APKAPPA_HEADER_FILE_CSV).getBytes());
@@ -780,7 +780,7 @@ public class TracciatiNotificaPagamenti {
 		
 		// file rendicontazioni
 		if(totaleRt > 0) {
-			ZipEntry tracciatoNoSecimOutputEntry = new ZipEntry("RENDICONTAZIONE_AV20_" + codDominio + "_"+ dataCreazioneFlusso + "_" + "999"+ ".txt");
+			ZipEntry tracciatoNoSecimOutputEntry = new ZipEntry("RENDICONTAZIONE_AV20_" + codDominio + "_"+ dataCreazioneFlusso + "_" + "999"+ ".csv");
 			zos.putNextEntry(tracciatoNoSecimOutputEntry);
 			
 			zos.write(csvUtils.toCsv(HYPERSIC_APKAPPA_HEADER_FILE_CSV).getBytes());

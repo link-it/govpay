@@ -3,7 +3,6 @@ package it.govpay.core.utils.thread;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -17,7 +16,6 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
-import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.orm.IdTracciato;
 
