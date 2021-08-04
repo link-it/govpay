@@ -53,4 +53,8 @@ public class IncassoUtils {
 
 		return "";
 	}
+	
+	public static String formattaCausaleRFS(String iuv) {
+		return iuv.replaceAll("(.{4})", "$1 ");
+	}
 }

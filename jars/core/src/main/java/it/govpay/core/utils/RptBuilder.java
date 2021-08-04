@@ -332,7 +332,7 @@ public class RptBuilder {
 		if(IuvUtils.checkISO11640(iuv)) {
 			sb.append("/RFS/");
 			// Issue #366. Formato causale RFS prevede uno spazio ogni 4 cifre dello IUV
-			sb.append(iuv.replaceAll("(.{4})", "$1 ").trim());
+			sb.append(formattaCausaleRFS(iuv).trim());
 		}else { 
 			sb.append("/RFB/");
 			sb.append(iuv);
@@ -352,6 +352,10 @@ public class RptBuilder {
 			return sb.toString().substring(0, 140);
 		
 		return sb.toString();
+	}
+
+	public static String formattaCausaleRFS(String iuv) {
+		return iuv.replaceAll("(.{4})", "$1 ");
 	}
 
 	private Anagrafica toOrm(CtSoggettoVersante soggettoVersante) {

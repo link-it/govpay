@@ -356,6 +356,10 @@ public class RptBD extends BasicBD {
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
 			
+			// questa procedura di recupero e' disponibile solo per le RPT SANP 2.3
+			exp.and();
+			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.Versione.SANP_230.toString());
+			
 			List<RPT> findAll = this.getRptService().findAll(exp);
 			return RptConverter.toDTOList(findAll);
 		} catch(NotImplementedException e) {
