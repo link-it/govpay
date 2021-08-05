@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.1.0"
+  version: "1.2.0"
   title: GovPay - API User
   contact:
     name: GitHub Project Page
@@ -16,6 +16,25 @@ tags:
 security:
   - basicAuth: []
 paths:
+  '/login':
+    get:
+      summary: Login
+      operationId: loginSenzaRedirect
+      tags:
+        - Utenti
+      responses:
+        '200':
+          $ref: '#/components/responses/200Ok'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '503':
+          $ref: '#/components/responses/500ServiceUnavailable'
   '/login/{urlID}':
     get:
       summary: Login
@@ -40,12 +59,37 @@ paths:
   '/logout':
     get:
       summary: Logout
-      operationId: logout
+      operationId: logoutSenzaRedirect
+      description: Servizio di logout, se si valorizza il parametro urlID il logout terminera' con un redirect alla url corrispondente all'identificativo indicato come parametro.
       tags:
         - Utenti
       responses:
         '200':
           $ref: '#/components/responses/200Ok'
+        '303':
+          $ref: '#/components/responses/303SeeOther'
+        '400':
+          $ref: '#/components/responses/400BadRequest'
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '503':
+          $ref: '#/components/responses/500ServiceUnavailable'
+  '/logout/{urlID}':
+    get:
+      summary: Logout
+      operationId: logout
+      description: Servizio di logout, se si valorizza il parametro urlID il logout terminera' con un redirect alla url corrispondente all'identificativo indicato come parametro.
+      tags:
+        - Utenti
+      parameters:
+        - $ref: '#/components/parameters/logoutUrlID'
+      responses:
+        '303':
+          $ref: '#/components/responses/303SeeOther'
         '400':
           $ref: '#/components/responses/400BadRequest'
         '401':
@@ -67,6 +111,13 @@ components:
       in: path
       description: Identificativo della URL dove si viene indirizzati in caso di successo del login
       required: true
+      schema:
+        type: string
+    logoutUrlID:
+      name: urlID
+      in: path
+      required: true
+      description: Identificativo della URL dove si viene indirizzati in caso di successo del logout
       schema:
         type: string
   headers:

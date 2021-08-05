@@ -128,6 +128,7 @@ public class GovpayConfig {
 	private String templateProspettoRiscossioni;
 	
 	private Properties apiUserLoginRedirectURLs;
+	private Properties apiUserLogoutRedirectURLs;
 	
 	private Integer batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread;
 	private Integer batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread;
@@ -202,6 +203,7 @@ public class GovpayConfig {
 		this.templateProspettoRiscossioni = null;
 		
 		this.apiUserLoginRedirectURLs = new Properties();
+		this.apiUserLogoutRedirectURLs = new Properties();
 		
 		this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = 100;
 		this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = 100;
@@ -617,6 +619,9 @@ public class GovpayConfig {
 			Map<String, String> redirectURLs = getProperties("it.govpay.login-redirect.",this.props, false, log);
 			this.apiUserLoginRedirectURLs.putAll(redirectURLs);
 			
+			Map<String, String> logoutRedirectURLs = getProperties("it.govpay.logout-redirect.",this.props, false, log);
+			this.apiUserLogoutRedirectURLs.putAll(logoutRedirectURLs);
+			
 			String dimensioneMassimaListaRisultatiString = getProperty("it.govpay.api.find.maxRisultatiPerPagina", this.props, false, log);
 			try{
 				this.dimensioneMassimaListaRisultati = Integer.parseInt(dimensioneMassimaListaRisultatiString);
@@ -966,6 +971,10 @@ public class GovpayConfig {
 
 	public Properties getApiUserLoginRedirectURLs() {
 		return apiUserLoginRedirectURLs;
+	}
+	
+	public Properties getApiUserLogoutRedirectURLs() {
+		return apiUserLogoutRedirectURLs;
 	}
 
 	public Properties getAutenticazioneSSLHeaderProperties() {
