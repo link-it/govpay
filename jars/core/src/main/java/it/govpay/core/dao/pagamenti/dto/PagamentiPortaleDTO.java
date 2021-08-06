@@ -8,6 +8,7 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
 import it.govpay.core.dao.commons.Anagrafica;
 
@@ -34,6 +35,7 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	private Map<String, String> headers;
 	private String identificativoCreazionePendenza;
 	private String reCaptcha;
+	private Map<String,Versamento> listaPendenzeDaSessione = null;
 
 	public String getJsonRichiesta() {
 		return this.jsonRichiesta;
@@ -144,6 +146,14 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	public void setReCaptcha(String reCaptcha) {
 		this.reCaptcha = reCaptcha;
 	}
+
+	public Map<String, Versamento> getListaPendenzeDaSessione() {
+		return listaPendenzeDaSessione;
+	}
+	public void setListaPendenzeDaSessione(Map<String, Versamento> listaPendenzeDaSessione) {
+		this.listaPendenzeDaSessione = listaPendenzeDaSessione;
+	}
+
 
 	public class RefVersamentoAvviso {
 

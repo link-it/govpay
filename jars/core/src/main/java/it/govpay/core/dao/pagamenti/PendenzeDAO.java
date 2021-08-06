@@ -1016,7 +1016,7 @@ public class PendenzeDAO extends BaseDAO{
 
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
 			boolean generaIuv = VersamentoUtils.generaIUV(chiediVersamento, configWrapper);
-			versamentoBusiness.caricaVersamento(chiediVersamento, generaIuv, true, putVersamentoDTO.getAvvisatura(), putVersamentoDTO.getDataAvvisatura(),null);
+			versamentoBusiness.caricaVersamento(chiediVersamento, generaIuv, true, putVersamentoDTO.getAvvisatura(), putVersamentoDTO.getDataAvvisatura(),null, putVersamentoDTO.isInserimentoDB());
 
 			// restituisco il versamento creato
 			createOrUpdatePendenzaResponse.setVersamento(chiediVersamento);
