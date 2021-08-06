@@ -369,6 +369,7 @@ components:
         - numeroPagamenti
         - importoTotale
         - stato
+        - dataAcquisizione
       properties:
         idFlusso:
           type: string
@@ -378,6 +379,11 @@ components:
           type: string
           format: date-time
           description: Data di emissione del flusso
+          example: '2020-12-31 10:27:27.903'
+        dataAcquisizione:
+          type: string
+          format: date-time
+          description: Data di acquisizione del flusso
           example: '2020-12-31 10:27:27.903'
         trn:
           type: string

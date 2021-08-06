@@ -62,6 +62,8 @@ public class FlussiRendicontazioneConverter {
 				break;
 			}
 		}
+		
+		rsModel.setDataAcquisizione(fr.getDataAcquisizione());
 
 		return rsModel;
 	}
@@ -99,6 +101,8 @@ public class FlussiRendicontazioneConverter {
 				break;
 			}
 		}
+		
+		rsModel.setDataAcquisizione(fr.getDataAcquisizione());
 
 		return rsModel;
 	}

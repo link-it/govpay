@@ -15,6 +15,7 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idFlusso",
 "dataFlusso",
+"dataAcquisizione",
 "trn",
 "dataRegolamento",
 "idPsp",
@@ -34,6 +35,10 @@ public class FlussoRendicontazione extends JSONSerializable {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
   @JsonProperty("dataFlusso")
   private Date dataFlusso = null;
+  
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
+  @JsonProperty("dataAcquisizione")
+  private Date dataAcquisizione = null;
   
   @JsonProperty("trn")
   private String trn = null;
@@ -95,6 +100,22 @@ public class FlussoRendicontazione extends JSONSerializable {
   }
   public void setDataFlusso(Date dataFlusso) {
     this.dataFlusso = dataFlusso;
+  }
+
+  /**
+   * Data di acquisizione del flusso
+   **/
+  public FlussoRendicontazione dataAcquisizione(Date dataAcquisizione) {
+    this.dataAcquisizione = dataAcquisizione;
+    return this;
+  }
+
+  @JsonProperty("dataAcquisizione")
+  public Date getDataAcquisizione() {
+    return dataAcquisizione;
+  }
+  public void setDataAcquisizione(Date dataAcquisizione) {
+    this.dataAcquisizione = dataAcquisizione;
   }
 
   /**
@@ -265,6 +286,7 @@ public class FlussoRendicontazione extends JSONSerializable {
     FlussoRendicontazione flussoRendicontazione = (FlussoRendicontazione) o;
     return Objects.equals(idFlusso, flussoRendicontazione.idFlusso) &&
         Objects.equals(dataFlusso, flussoRendicontazione.dataFlusso) &&
+        Objects.equals(dataAcquisizione, flussoRendicontazione.dataAcquisizione) &&
         Objects.equals(trn, flussoRendicontazione.trn) &&
         Objects.equals(dataRegolamento, flussoRendicontazione.dataRegolamento) &&
         Objects.equals(idPsp, flussoRendicontazione.idPsp) &&
@@ -279,7 +301,7 @@ public class FlussoRendicontazione extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idFlusso, dataFlusso, trn, dataRegolamento, idPsp, bicRiversamento, idDominio, numeroPagamenti, importoTotale, stato, segnalazioni, rendicontazioni);
+    return Objects.hash(idFlusso, dataFlusso, dataAcquisizione, trn, dataRegolamento, idPsp, bicRiversamento, idDominio, numeroPagamenti, importoTotale, stato, segnalazioni, rendicontazioni);
   }
 
   public static FlussoRendicontazione parse(String json) throws ServiceException, ValidationException { 
@@ -298,6 +320,7 @@ public class FlussoRendicontazione extends JSONSerializable {
     sb.append("    ").append(toIndentedString(super.toString())).append("\n");
     sb.append("    idFlusso: ").append(toIndentedString(idFlusso)).append("\n");
     sb.append("    dataFlusso: ").append(toIndentedString(dataFlusso)).append("\n");
+    sb.append("    dataAcquisizione: ").append(toIndentedString(dataAcquisizione)).append("\n");
     sb.append("    trn: ").append(toIndentedString(trn)).append("\n");
     sb.append("    dataRegolamento: ").append(toIndentedString(dataRegolamento)).append("\n");
     sb.append("    idPsp: ").append(toIndentedString(idPsp)).append("\n");

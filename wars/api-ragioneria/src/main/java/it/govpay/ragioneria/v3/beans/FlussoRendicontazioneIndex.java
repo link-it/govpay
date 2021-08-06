@@ -15,6 +15,7 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idFlusso",
 "dataFlusso",
+"dataAcquisizione",
 "trn",
 "dataRegolamento",
 "idPsp",
@@ -33,6 +34,10 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
   @JsonProperty("dataFlusso")
   private Date dataFlusso = null;
+  
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
+  @JsonProperty("dataAcquisizione")
+  private Date dataAcquisizione = null;
   
   @JsonProperty("trn")
   private String trn = null;
@@ -91,6 +96,22 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   }
   public void setDataFlusso(Date dataFlusso) {
     this.dataFlusso = dataFlusso;
+  }
+
+  /**
+   * Data di acquisizione del flusso
+   **/
+  public FlussoRendicontazioneIndex dataAcquisizione(Date dataAcquisizione) {
+    this.dataAcquisizione = dataAcquisizione;
+    return this;
+  }
+
+  @JsonProperty("dataAcquisizione")
+  public Date getDataAcquisizione() {
+    return dataAcquisizione;
+  }
+  public void setDataAcquisizione(Date dataAcquisizione) {
+    this.dataAcquisizione = dataAcquisizione;
   }
 
   /**
@@ -259,7 +280,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idFlusso, dataFlusso, trn, dataRegolamento, idPsp, bicRiversamento, idDominio, numeroPagamenti, importoTotale, stato, segnalazioni);
+    return Objects.hash(idFlusso, dataFlusso, dataAcquisizione, trn, dataRegolamento, idPsp, bicRiversamento, idDominio, numeroPagamenti, importoTotale, stato, segnalazioni);
   }
 
   public static FlussoRendicontazioneIndex parse(String json) throws ServiceException, ValidationException { 
@@ -278,6 +299,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
     
     sb.append("    idFlusso: ").append(toIndentedString(idFlusso)).append("\n");
     sb.append("    dataFlusso: ").append(toIndentedString(dataFlusso)).append("\n");
+    sb.append("    dataAcquisizione: ").append(toIndentedString(dataAcquisizione)).append("\n");
     sb.append("    trn: ").append(toIndentedString(trn)).append("\n");
     sb.append("    dataRegolamento: ").append(toIndentedString(dataRegolamento)).append("\n");
     sb.append("    idPsp: ").append(toIndentedString(idPsp)).append("\n");
