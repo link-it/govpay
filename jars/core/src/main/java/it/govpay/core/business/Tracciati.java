@@ -679,7 +679,7 @@ public class Tracciati {
 			request.setTipoTemplateTrasformazioneRichiesta(tracciatoCsv.getTipo());
 			request.setTemplateTrasformazioneRichiesta(tracciatoCsv.getRichiesta());
 			request.setDati(linea);
-			request.setLinea(numLinea + 1);
+			request.setLinea(numLinea);
 			request.setOperatore(tracciato.getOperatore(configWrapper));
 			request.setIdTracciato(tracciato.getId());
 
