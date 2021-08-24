@@ -56,8 +56,18 @@ public class NotificaConverter {
 
 		if(pagamento.getAllegato() != null) {
 			Allegato allegato = new Allegato();
+			if(pagamento.getTipoAllegato() != null) {
+				switch (pagamento.getTipoAllegato()) {
+				case BD:
+					allegato.setTipo(TipoEnum.MARCA_DA_BOLLO);
+					break;
+				case ES:
+					allegato.setTipo(TipoEnum.ESITO_PAGAMENTO);
+					break;
+				}
+			}
+			
 			allegato.setTesto(Base64.encodeBase64String(pagamento.getAllegato()));
-			allegato.setTipo(TipoEnum.fromValue(pagamento.getTipoAllegato().toString()));
 			riscossione.setAllegato(allegato);
 		}
 		riscossione.setCommissioni(pagamento.getCommissioniPsp());
