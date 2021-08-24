@@ -25,3 +25,4 @@ effettuare per verificarne la riuscita.
         verifica/index
         loadbalancing/index
         monitoraggio/index
+        aggiornamento/index
