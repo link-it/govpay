@@ -29,6 +29,7 @@ description:
       - "Servizi REST di gestione pendenze per l'integrazione di gestionali posizioni debitorie"
       - "Servizi REST di riconciliazione pagamenti per l'integrazione di verticali di contabilità"
       - "Profilazione degli operatori di cruscotto"
+      - "Plugin di integrazione ad applicativi di terze parti"
     genericName: Gateway di integrazione a pagoPA
     longDescription: >
       La piattaforma GovPay soddisfa i requisiti richiesti dalla normativa per
@@ -79,6 +80,11 @@ description:
       - Interoperabilità con contabilità
       - Interoperabilità con gestionali
       - Integrabilità con altri front-end
+      ### Servizi a valore aggiunto non individuati dal quadro sinottico
+      - Possibilità di alimentare l'archivio dei pagamenti in attesa e ottenere i corrispondenti avvisi di pagamento tramite tracciati CSV
+      - Servizio di notifica email degli avvisi di pagamento e delle ricevute
+      - Supporto alla gestione di pagamenti spontanei
+      - Integrazione nativa ad applicativi terzi: MyPIVOT, SECIM, HyperSIC (APKappa)
     shortDescription: >-
       Gateway di integrazione alla piattaforma di pagamento pagoPA.
 developmentStatus: stable
@@ -131,10 +137,10 @@ outputTypes:
   - application/pdf
 platforms:
   - web
-releaseDate: '2021-06-08'
+releaseDate: '2021-08-25'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
-softwareVersion: '3.4.1'
+softwareVersion: '3.4.2'
 url: 'https://github.com/link-it/govpay'
 usedBy:
   - MISE - Ministero dello Sviluppo Economico
