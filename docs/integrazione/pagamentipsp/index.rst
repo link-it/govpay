@@ -86,7 +86,7 @@ Il tentativo di pagamento di un Avviso attiva una serie di verifiche da
 parte della piattaforma pagoPA. GovPay gestisce il colloquio e, se
 necessario, effettua verso il Gestore Pendenze titolare dell'Avviso
 oggetto di pagamento una richiesta di verifica della pendenza associata
-all'avviso tramite l'operazione *GET /avvisi/{idDominio}/{numeroAvviso}*.
+all'avviso tramite l'operazione *GET /avvisi/{idDominio}/{iuv}*.
 
 Ci sono due contesti in cui GovPay esegue la richiesta di verifica:
 

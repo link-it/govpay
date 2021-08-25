@@ -6,7 +6,7 @@ Ambiente e architettura di riferimento
 L'ambiente di esecuzione di GovPay richiede la presenza di software di
 base, precedentemente installato i cui riferimenti sono:
 
--  JVM Oracle Java 8
+-  JVM Java 8
 -  Application Server WildFly 18
 
 Relativamente alla versione di RDBMS, l’attuale versione di

@@ -21,14 +21,15 @@ description:
     features:
       - "Implementazione delle specifiche di interconnessione a pagoPA"
       - "Supporto completo dei modelli di pagamento ad iniziativa Ente o PSP"
-      - "Servizio di stampa degli Avvisi di Pagamento pagoPA anche per pagamenti rateizzati o in forma ridotta"
-      - "Servizio notifica email degli Avvisi di Pagamento pagoPA, delle Ricevute di Pagamento e dei promemoria di scadenza"
+      - "Stampa degli Avvisi di Pagamento pagoPA anche per pagamenti rateizzati o in forma ridotta"
+      - "Notifica email per Avvisi di Pagamento pagoPA, Ricevute di Pagamento e promemoria di scadenza"
       - "Integrazione al Backend IO per l'avvisatura digitale"
       - "Cruscotto di monitoraggio (Tavolo Operativo) conforme ai requisiti pagoPA"
-      - "Servizi REST di pagamento e consultazione della posizione debitoria per l'integrazione di portali al cittadino"
+      - "Servizi REST di pagamento e consultazione della posizione debitoria"
       - "Servizi REST di gestione pendenze per l'integrazione di gestionali posizioni debitorie"
       - "Servizi REST di riconciliazione pagamenti per l'integrazione di verticali di contabilità"
       - "Profilazione degli operatori di cruscotto"
+      - "Plugin di integrazione ad applicativi di terze parti"
     genericName: Gateway di integrazione a pagoPA
     longDescription: >
       La piattaforma GovPay soddisfa i requisiti richiesti dalla normativa per
@@ -79,6 +80,11 @@ description:
       - Interoperabilità con contabilità
       - Interoperabilità con gestionali
       - Integrabilità con altri front-end
+      ### Servizi a valore aggiunto non individuati dal quadro sinottico
+      - Possibilità di alimentare l'archivio dei pagamenti in attesa e ottenere i corrispondenti avvisi di pagamento tramite tracciati CSV
+      - Servizio di notifica email degli avvisi di pagamento e delle ricevute
+      - Supporto alla gestione di pagamenti spontanei
+      - Integrazione nativa ad applicativi terzi: MyPIVOT, SECIM, HyperSIC (APKappa)
     shortDescription: >-
       Gateway di integrazione alla piattaforma di pagamento pagoPA.
 developmentStatus: stable
@@ -131,10 +137,11 @@ outputTypes:
   - application/pdf
 platforms:
   - web
-releaseDate: '2021-06-08'
+releaseDate: '2021-08-25'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
-softwareVersion: '3.4.1'
+softwareVersion: '3.4.2'
 url: 'https://github.com/link-it/govpay'
 usedBy:
   - MISE - Ministero dello Sviluppo Economico
+  - CNR - Consiglio Nazionale delle Ricerche
