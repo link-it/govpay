@@ -388,7 +388,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			stato = STATO.IN_CORSO;
 
 			try {
-				rpts = rptBD.avviaTransazione(versamenti, pagamentiPortaleDTO.getUser(), null, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(), pagamentiPortaleDTO.getUrlRitorno(), true, pagamentoPortale);
+				rpts = rptBD.avviaTransazione(versamenti, pagamentiPortaleDTO.getUser(), null, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(),
+						pagamentiPortaleDTO.getUrlRitorno(), true, pagamentoPortale, pagamentiPortaleDTO.getCodiceConvenzione());
 				Rpt rpt = rpts.get(0);
 
 				GpAvviaTransazionePagamentoResponse.RifTransazione rifTransazione = new GpAvviaTransazionePagamentoResponse.RifTransazione();

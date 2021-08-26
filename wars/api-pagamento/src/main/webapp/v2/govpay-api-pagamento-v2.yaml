@@ -38,6 +38,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/idSessionePortale'
         - $ref: '#/components/parameters/reCaptcha'
+        - $ref: '#/components/parameters/codiceConvenzione'
       requestBody:
         content:
           application/json:
@@ -643,6 +644,15 @@ components:
       required: false
       schema:
         type: string
+    codiceConvenzione:
+      name: codiceConvenzione
+      in: query
+      description: Convenzione in essere tra EC e PSP
+      required: false
+      schema:
+        type: string
+        minLength: 5
+        maxLength: 35
     dataDa:
       name: dataDa
       in: query

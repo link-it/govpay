@@ -36,6 +36,7 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	private String identificativoCreazionePendenza;
 	private String reCaptcha;
 	private Map<String,Versamento> listaPendenzeDaSessione = null;
+	private String codiceConvenzione = null;
 
 	public String getJsonRichiesta() {
 		return this.jsonRichiesta;
@@ -152,6 +153,14 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	}
 	public void setListaPendenzeDaSessione(Map<String, Versamento> listaPendenzeDaSessione) {
 		this.listaPendenzeDaSessione = listaPendenzeDaSessione;
+	}
+
+
+	public String getCodiceConvenzione() {
+		return codiceConvenzione;
+	}
+	public void setCodiceConvenzione(String codiceConvenzione) {
+		this.codiceConvenzione = codiceConvenzione;
 	}
 
 

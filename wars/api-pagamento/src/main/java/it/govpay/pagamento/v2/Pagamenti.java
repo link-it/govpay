@@ -38,10 +38,10 @@ public class Pagamenti extends BaseRsServiceV2{
     @Path("/")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    public Response addPagamento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("idSessionePortale") String idSessionePortale, @QueryParam("gRecaptchaResponse") String gRecaptchaResponse){
+    public Response addPagamento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, java.io.InputStream is, @QueryParam("idSessionePortale") String idSessionePortale, @QueryParam("gRecaptchaResponse") String gRecaptchaResponse, @QueryParam("codiceConvenzione") String codiceConvenzione){
         this.buildContext();
         this.controller.setRequestResponse(this.request, this.response);
-        return this.controller.pagamentiPOST(this.getUser(), uriInfo, httpHeaders, is, idSessionePortale, gRecaptchaResponse);
+        return this.controller.addPagamento(this.getUser(), uriInfo, httpHeaders, is, idSessionePortale, gRecaptchaResponse, codiceConvenzione);
     }
     
     @GET

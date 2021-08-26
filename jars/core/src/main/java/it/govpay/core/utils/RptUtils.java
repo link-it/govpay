@@ -122,7 +122,7 @@ public class RptUtils {
 			return text;
 	}
 
-	public static it.govpay.core.business.model.Risposta inviaCarrelloRPT(NodoClient client, Intermediario intermediario, Stazione stazione, List<Rpt> rpts, String operationId) throws GovPayException, ClientException, ServiceException, UtilsException {
+	public static it.govpay.core.business.model.Risposta inviaCarrelloRPT(NodoClient client, Intermediario intermediario, Stazione stazione, List<Rpt> rpts, String operationId, String codiceConvenzione) throws GovPayException, ClientException, ServiceException, UtilsException {
 		it.govpay.core.business.model.Risposta risposta = null;
 		NodoInviaCarrelloRPT inviaCarrelloRpt = new NodoInviaCarrelloRPT();
 		inviaCarrelloRpt.setIdentificativoCanale(rpts.get(0).getCodCanale());
@@ -139,6 +139,7 @@ public class RptUtils {
 			listaRpt.getElementoListaRPT().add(elementoListaRpt);
 		}
 		inviaCarrelloRpt.setListaRPT(listaRpt);
+		inviaCarrelloRpt.setCodiceConvenzione(codiceConvenzione);
 		risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaCarrelloRPT(intermediario, stazione, inviaCarrelloRpt, rpts.get(0).getCodCarrello())); 
 		return risposta;
 	}
