@@ -75,7 +75,7 @@ In assenza di errori, la risposta ottenuta contiene le seguenti informazioni:
 
     - Una URL, contenuta in **redirect**, a cui indirizzare l’utente per proseguire nella successiva fase di esecuzione del pagamento.
 
-Una volto confermato il corretto avvio del pagamento, il portale effettua la redirezione dell'utente sulla URL ottenuta come **redirect**, per procedere con la fase di esecuzione del versamento.
+Una volta confermato il corretto avvio del pagamento, il portale effettua la redirezione dell'utente sulla URL ottenuta come **redirect**, per procedere con la fase di esecuzione del versamento.
 
 
 Acquisizione Esito
