@@ -8,6 +8,7 @@ Background:
 * def idPendenza = getCurrentTimeMillis()
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
 
+@test1
 Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e codiceConvenzione = CCOK-REDIRECT
 
 * def codiceConvenzione = 'CCOK-REDIRECT'
@@ -40,8 +41,32 @@ When method post
 Then status 201
 And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
 
+* def idPagamento = response.id
+
+* configure followRedirects = false
+* def idSession = response.idSession
+* def idPagamento = response.id
+* def tipoRicevuta = "R01"
+* def cumulativo = "0"
+
+Given url ndpsym_url + '/psp'
+And path '/eseguiPagamento'
+And param idSession = idSession
+And param idDominio = idDominio
+And param codice = tipoRicevuta
+And param riversamento = cumulativo
+When method get
+Then status 302
+And match responseHeaders.Location == '#notnull'
+
+# Verifico la notifica di terminazione
+
+* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+
+* def rptToCheck = rptNotificaTerminazione
+
 Given url pagamentiBaseurl
-And path '/pagamenti/byIdSession/', response.idSession
+And path '/pagamenti/', idPagamento
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
@@ -62,7 +87,9 @@ And match response.rpp[0].rpt.soggettoVersante ==
 	"e-mailVersante":"#(pagamentoPost.soggettoVersante.email)"
 }
 """
+And match response.rpp[0].rt.datiPagamento.datiSingoloPagamento[0].commissioniApplicatePA == '1.00'
 
+@test2
 Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e codiceConvenzione = CCOK-NOREDIRECT
 
 * def codiceConvenzione = 'CCOK-NOREDIRECT'
@@ -93,10 +120,10 @@ And param codiceConvenzione = codiceConvenzione
 And request pagamentoPost
 When method post
 Then status 201
-And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
+And match response ==  { id: '#notnull', location: '#notnull', redirect: '##null', idSession: '##null' }
 
 Given url pagamentiBaseurl
-And path '/pagamenti/byIdSession/', response.idSession
+And path '/pagamenti/', response.id
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
@@ -118,6 +145,7 @@ And match response.rpp[0].rpt.soggettoVersante ==
 }
 """
 
+@test3
 Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e codiceConvenzione = CCKOX
 
 * def codiceConvenzione = 'CCKOX'
@@ -147,33 +175,11 @@ And headers idA2ABasicAutenticationHeader
 And param codiceConvenzione = codiceConvenzione
 And request pagamentoPost
 When method post
-Then status 201
-And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
+Then status 502
+And match response == { id: '#notnull', location: '#notnull', categoria : 'PAGOPA', codice : 'PPT_OPER_CODICE_CONVENZIONE_ERRATO', descrizione: '##string', dettaglio: '#notnull' }
+And match response.dettaglio == 'Simulazione errore codice convenzione.'
 
-Given url pagamentiBaseurl
-And path '/pagamenti/byIdSession/', response.idSession
-And headers idA2ABasicAutenticationHeader
-When method get
-Then status 200
-And match response.rpp[0].rpt.soggettoVersante == 
-"""
-{
-	"identificativoUnivocoVersante": {
-		"tipoIdentificativoUnivoco":"#(pagamentoPost.soggettoVersante.tipo)",
-		"codiceIdentificativoUnivoco":"#(pagamentoPost.soggettoVersante.identificativo)"
-	},
-	"anagraficaVersante":"#(pagamentoPost.soggettoVersante.anagrafica)",
-	"indirizzoVersante":"#(pagamentoPost.soggettoVersante.indirizzo)",
-	"civicoVersante":"#(pagamentoPost.soggettoVersante.civico)",
-	"capVersante":"#(pagamentoPost.soggettoVersante.cap + '')",
-	"localitaVersante":"#(pagamentoPost.soggettoVersante.localita)",
-	"provinciaVersante":"#(pagamentoPost.soggettoVersante.provincia)",
-	"nazioneVersante":"#(pagamentoPost.soggettoVersante.nazione)",
-	"e-mailVersante":"#(pagamentoPost.soggettoVersante.email)"
-}
-"""
-
-
+@test4
 Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e codiceConvenzione in errore sintassi
 
 * def codiceConvenzione = 'XXXXX'
