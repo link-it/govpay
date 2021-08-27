@@ -9,6 +9,9 @@ How-To
         :maxdepth: 2
         :caption: Argomenti trattati:
 
-        rateizzazione
+		bilinguismo
+		convenzione
         bollo
-        bilinguismo
+        rateizzazione
+        
+        
