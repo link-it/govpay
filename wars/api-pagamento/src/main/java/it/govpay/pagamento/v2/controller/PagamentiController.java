@@ -44,6 +44,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaPagamentiPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.UriBuilderUtils;
@@ -81,7 +82,7 @@ public class PagamentiController extends BaseController {
 
 
     @SuppressWarnings("unchecked")
-	public Response pagamentiPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale, String gRecaptchaResponse) {
+	public Response addPagamento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale, String gRecaptchaResponse, String codiceConvenzione) {
     	String methodName = "pagamentiPOST";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -108,7 +109,6 @@ public class PagamentiController extends BaseController {
 				 } 
 			}
 			
-			
 			String idSession = transactionId.replace("-", "");
 			PagamentiPortaleDTO pagamentiPortaleDTO = PagamentiPortaleConverter.getPagamentiPortaleDTO(pagamentiPortaleRequest, jsonRequest, user,idSession, idSessionePortale, listaIdentificativi, this.log);
 			
@@ -118,6 +118,18 @@ public class PagamentiController extends BaseController {
 			pagamentiPortaleDTO.setPathParameters(uriInfo.getPathParameters());
 			pagamentiPortaleDTO.setQueryParameters(uriInfo.getQueryParameters());
 			pagamentiPortaleDTO.setReCaptcha(gRecaptchaResponse);
+			
+			if(codiceConvenzione != null) {
+				if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+					throw new NotAuthorizedException("Il richiedente non è autorizzato ad indicare un codice convenzione per il pagamento");
+				}
+				
+				ValidatorFactory vf = ValidatorFactory.newInstance();
+				ValidatoreUtils.validaCodiceConvenzione(vf, "codiceConvenzione", codiceConvenzione);
+				
+				pagamentiPortaleDTO.setCodiceConvenzione(codiceConvenzione);
+			}
+			
 			
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
 			
