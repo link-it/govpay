@@ -160,6 +160,7 @@
 					"causaleVersamento": "#notnull",
 					"datiSpecificiRiscossione": "#notnull",
 					"commissioniApplicatePSP": "#ignore",
+					"commissioniApplicatePA": "#ignore",
 					"allegatoRicevuta": "#ignore"
 				}
 			]
