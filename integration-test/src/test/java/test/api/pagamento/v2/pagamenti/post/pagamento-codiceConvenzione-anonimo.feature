@@ -6,7 +6,7 @@ Background:
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 
 @test1
-Scenario: Pagamento spontaneo anonimo con entrata riferita, versante specificato e codiceConvenzione = CCOK-REDIRECT
+Scenario: Pagamento spontaneo anonimo con codiceConvenzione = CCOK-REDIRECT
 
 * def codiceConvenzione = 'CCOK-REDIRECT'
 
