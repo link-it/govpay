@@ -36,6 +36,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "servizioSecim",
 "servizioGovPay",
 "servizioHyperSicAPKappa",
+"servizioMaggioliJPPA",
 "intermediato",
 })
 public class DominioPost extends it.govpay.core.beans.JSONSerializable implements IValidable{
@@ -117,6 +118,9 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
   
   @JsonProperty("servizioHyperSicAPKappa")
   private ConnettoreNotificaPagamentiHyperSicAPKappa servizioHyperSicAPKappa = null;
+  
+  @JsonProperty("servizioMaggioliJPPA")
+  private ConnettoreNotificaPagamentiMaggioliJPPA servizioMaggioliJPPA = null;
   
   @JsonProperty("intermediato")
   private Boolean intermediato = null;
@@ -534,6 +538,21 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
   }
 
   /**
+   **/
+  public DominioPost servizioMaggioliJPPA(ConnettoreNotificaPagamentiMaggioliJPPA servizioMaggioliJPPA) {
+    this.servizioMaggioliJPPA = servizioMaggioliJPPA;
+    return this;
+  }
+
+  @JsonProperty("servizioMaggioliJPPA")
+  public ConnettoreNotificaPagamentiMaggioliJPPA getServizioMaggioliJPPA() {
+    return servizioMaggioliJPPA;
+  }
+  public void setServizioMaggioliJPPA(ConnettoreNotificaPagamentiMaggioliJPPA servizioMaggioliJPPA) {
+    this.servizioMaggioliJPPA = servizioMaggioliJPPA;
+  }
+
+  /**
    * Indica se il creditore viene configurato per utilizzare una  stazione di intermediazione
    **/
   public DominioPost intermediato(Boolean intermediato) {
@@ -584,12 +603,13 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
         Objects.equals(servizioSecim, dominioPost.servizioSecim) &&
         Objects.equals(servizioGovPay, dominioPost.servizioGovPay) &&
         Objects.equals(servizioHyperSicAPKappa, dominioPost.servizioHyperSicAPKappa) &&
+        Objects.equals(servizioMaggioliJPPA, dominioPost.servizioMaggioliJPPA) &&
         Objects.equals(intermediato, dominioPost.intermediato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa, intermediato);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa, servizioMaggioliJPPA, intermediato);
   }
 
   public static DominioPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -632,6 +652,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
     sb.append("    servizioSecim: ").append(toIndentedString(servizioSecim)).append("\n");
     sb.append("    servizioGovPay: ").append(toIndentedString(servizioGovPay)).append("\n");
     sb.append("    servizioHyperSicAPKappa: ").append(toIndentedString(servizioHyperSicAPKappa)).append("\n");
+    sb.append("    servizioMaggioliJPPA: ").append(toIndentedString(servizioMaggioliJPPA)).append("\n");
     sb.append("    intermediato: ").append(toIndentedString(intermediato)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -692,6 +713,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 			vf.getValidator("servizioSecim", this.servizioSecim).validateFields();
 			vf.getValidator("servizioGovPay", this.servizioGovPay).validateFields();
 			vf.getValidator("servizioHyperSicAPKappa", this.servizioHyperSicAPKappa).validateFields();
+			vf.getValidator("servizioMaggioliJPPA", this.servizioMaggioliJPPA).validateFields();
 	  }
 }
 

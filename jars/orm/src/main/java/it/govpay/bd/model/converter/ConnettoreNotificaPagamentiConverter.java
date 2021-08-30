@@ -110,6 +110,10 @@ public class ConnettoreNotificaPagamentiConverter {
 				if(ConnettoreNotificaPagamenti.P_DOWNLOAD_BASE_URL.equals(connettore.getCodProprieta())) {
 					dto.setDownloadBaseURL(connettore.getValore());
 				}
+				
+				if(ConnettoreNotificaPagamenti.P_PRINCIPAL_MAGGIOLI.equals(connettore.getCodProprieta())) {
+					dto.setPrincipalMaggioli(connettore.getValore());
+				}
 
 
 				// ereditato da connettore
@@ -386,6 +390,14 @@ public class ConnettoreNotificaPagamentiConverter {
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_VERSIONE);
 			vo.setValore(connettore.getVersione().getApiLabel());
+			voList.add(vo);
+		}
+		
+		if(connettore.getPrincipalMaggioli() != null && !connettore.getPrincipalMaggioli().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_PRINCIPAL_MAGGIOLI);
+			vo.setValore(connettore.getPrincipalMaggioli());
 			voList.add(vo);
 		}
 		

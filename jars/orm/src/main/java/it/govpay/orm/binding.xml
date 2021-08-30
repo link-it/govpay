@@ -409,6 +409,7 @@
     <value name="codConnettoreSecim" field="codConnettoreSecim" usage="optional"/>
     <value name="codConnettoreGovPay" field="codConnettoreGovPay" usage="optional"/>
     <value name="codConnettoreHyperSicAPK" field="codConnettoreHyperSicAPK" usage="optional"/>
+    <value name="codConnettoreMaggioliJPPA" field="codConnettoreMaggioliJPPA" usage="optional"/>
     <value name="intermediato" field="intermediato" usage="required"/>
   </mapping>
   <mapping name="Uo" class="it.govpay.orm.Uo">

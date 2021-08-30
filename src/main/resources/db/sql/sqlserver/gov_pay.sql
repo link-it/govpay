@@ -125,6 +125,7 @@ CREATE TABLE domini
 	cod_connettore_secim VARCHAR(255),
 	cod_connettore_gov_pay VARCHAR(255),
 	cod_connettore_hyper_sic_apk VARCHAR(255),
+	cod_connettore_maggioli_jppa VARCHAR(255),
 	intermediato BIT NOT NULL,
 	-- fk/pk columns
 	id BIGINT IDENTITY,

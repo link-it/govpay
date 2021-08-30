@@ -620,6 +620,7 @@
 			<xsd:element name="codConnettoreSecim" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="codConnettoreGovPay" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="codConnettoreHyperSicAPK" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="codConnettoreMaggioliJPPA" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="intermediato" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>

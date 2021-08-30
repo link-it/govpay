@@ -477,5 +477,8 @@ ALTER TABLE singoli_versamenti ADD id_dominio BIGINT;
 ALTER TABLE singoli_versamenti ADD CONSTRAINT fk_sng_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
 
 
+-- 30/08/2021 Aggiunta colonna connettore maggioli jppa alla tabella domini
+ALTER TABLE domini ADD cod_connettore_maggioli_jppa VARCHAR(255);
+
 
 

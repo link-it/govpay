@@ -190,6 +190,7 @@ CREATE TABLE domini
 	cod_connettore_secim VARCHAR2(255 CHAR),
 	cod_connettore_gov_pay VARCHAR2(255 CHAR),
 	cod_connettore_hyper_sic_apk VARCHAR2(255 CHAR),
+	cod_connettore_maggioli_jppa VARCHAR2(255 CHAR),
 	intermediato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,

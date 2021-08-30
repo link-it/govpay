@@ -51,6 +51,7 @@ import java.io.Serializable;
  * 			&lt;element name="codConnettoreSecim" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreGovPay" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreHyperSicAPK" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codConnettoreMaggioliJPPA" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="intermediato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -82,6 +83,7 @@ import java.io.Serializable;
   	"codConnettoreSecim",
   	"codConnettoreGovPay",
   	"codConnettoreHyperSicAPK",
+  	"codConnettoreMaggioliJPPA",
   	"intermediato"
   }
 )
@@ -244,6 +246,14 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.codConnettoreHyperSicAPK = codConnettoreHyperSicAPK;
   }
 
+  public java.lang.String getCodConnettoreMaggioliJPPA() {
+    return this.codConnettoreMaggioliJPPA;
+  }
+
+  public void setCodConnettoreMaggioliJPPA(java.lang.String codConnettoreMaggioliJPPA) {
+    this.codConnettoreMaggioliJPPA = codConnettoreMaggioliJPPA;
+  }
+
   public boolean isIntermediato() {
     return this.intermediato;
   }
@@ -344,6 +354,10 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreHyperSicAPK",required=false,nillable=false)
   protected java.lang.String codConnettoreHyperSicAPK;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codConnettoreMaggioliJPPA",required=false,nillable=false)
+  protected java.lang.String codConnettoreMaggioliJPPA;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="intermediato",required=true,nillable=false)
