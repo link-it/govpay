@@ -33,6 +33,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
 		
 		if(connector.Abilitato()) {
 			connettore.setTipoTracciato(tipo.name());
+			connettore.setPrincipalMaggioli(connector.getPrincipal());
 			
 //			boolean appAuthTipiPendenzaAll = false;
 			if(connector.getTipiPendenza() != null) {
@@ -209,6 +210,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
 			}
 			
 			rsModel.setTipiPendenza(idTipiPendenza);
+			rsModel.setPrincipal(connettore.getPrincipalMaggioli());
 		}
 		return rsModel;
 	}
