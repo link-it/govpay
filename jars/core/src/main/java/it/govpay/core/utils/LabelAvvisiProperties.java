@@ -61,7 +61,7 @@ public class LabelAvvisiProperties {
 
 	private static LabelAvvisiProperties instance;
 
-	private static Logger log = LoggerWrapperFactory.getLogger(LabelAvvisiProperties.class);
+	private static Logger log = LoggerWrapperFactory.getLogger("boot");
 
 	private String govpayResourceDir = null;
 	
