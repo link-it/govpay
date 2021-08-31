@@ -723,7 +723,7 @@ public class TracciatiNotificaPagamenti {
 • “Progressivo Flusso”, per la data di creazione flusso nel formato NNN.
 		 * */
 		
-		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT);
+		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT.withDelimiter(';'));
 		
 		String dataCreazioneFlusso = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(tracciato.getDataCreazione());
 		String progressivoS = this.completaValoreCampoConFiller(progressivo +"", 3, true, true);
