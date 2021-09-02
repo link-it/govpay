@@ -8390,6 +8390,10 @@ components:
         - API_BACKEND_IO
         - API_SECIM
         - API_MYPIVOT
+        - API_MAGGIOLI_JPPA
+        - API_GOVPAY
+        - API_HYPERSIC_APK
+        - API_USER
       example: 'API_PAGOPA'
     categoriaEvento:
       type: string

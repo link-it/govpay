@@ -59,6 +59,8 @@ import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.core.utils.thread.InviaNotificaPagamentoMaggioliJPPAThread;
+import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Contabilita;
@@ -79,6 +81,8 @@ public class TracciatiNotificaPagamenti {
 	private static final String [] GOVPAY_HEADER_FILE_CSV = { "idA2A","idPendenza","idDocumento","descrizioneDocumento","codiceRata","dataScadenza","idVocePendenza","descrizioneVocePendenza","idTipoPendenza","descrizione","anno","identificativoDebitore","anagraficaDebitore","identificativoDominio","identificativoUnivocoVersamento","codiceContestoPagamento","indiceDati","identificativoUnivocoRiscossione","modelloPagamento","singoloImportoPagato","dataEsitoSingoloPagamento","causaleVersamento","datiSpecificiRiscossione","datiAllegati","datiAllegatiVoce","denominazioneAttestante","identificativoAttestante", "contabilita" };
 	private static final String [] GOVPAY_FLUSSI_HEADER_FILE_CSV = {"identificativoFlusso","dataOraFlusso","identificativoDominio","identificativoUnivocoRegolamento","dataRegolamento","codiceBicBancaDiRiversamento","numeroTotalePagamenti","importoTotalePagamenti","identificativoUnivocoVersamento","identificativoUnivocoRiscossione","indiceDatiSingoloPagamento","singoloImportoPagato","codiceEsitoSingoloPagamento","dataEsitoSingoloPagamento","denominazioneMittente","identificativoMittente","denominazioneRicevente","identificativoRicevente"	};
 	private static final String [] HYPERSIC_APKAPPA_HEADER_FILE_CSV = {"CodiceServizio","DescrizioneServizio","CodiceDebitore","CFPIVADebitore","NominativoDebitore","CodiceDebito","DataEmissione","CausaleDebito","ImportoDebito","CodiceRata","CodiceAvviso","CodiceIUV","DataScadenza","DataPagamento","ImportoPagato","IstitutoMittente","ModalitaPagamento","IBANIncasso","CodiceFlussoRiversamento","DataRiversamento","Annotazioni","LivelloContabile1","CodificaContabile1","QuotaContabile1","LivelloContabile2","CodificaContabile2","QuotaContabile2","LivelloContabile3","CodificaContabile3","QuotaContabile3","LivelloContabile4","CodificaContabile4","QuotaContabile4","LivelloContabile5","CodificaContabile5","QuotaContabile5","LivelloContabile6","CodificaContabile6","QuotaContabile6","LivelloContabile7","CodificaContabile7","QuotaContabile7","LivelloContabile8","CodificaContabile8","QuotaContabile8","LivelloContabile9","CodificaContabile9","QuotaContabile9","LivelloContabile10","CodificaContabile10","QuotaContabile10"}; 
+	private static final String [] MAGGIOLI_JPPA_HEADER_FILE_CSV = {"idDominio","iuv","cpp","esito","descrizioneEsito"}; 
+	
 	
 	private static final String QUOTA_CONTABILITA_ACCERTAMENTO = "ACC";
 	private static final String QUOTA_CONTABILITA_CAPITOLO = "CAP";
@@ -295,6 +299,9 @@ public class TracciatiNotificaPagamenti {
 							case HYPERSIC_APK:
 								this.popolaTracciatoHyperSicAPK(tracciato, connettore, configWrapper, codDominio, beanDati, dataRtDa, dataRtA, rptBD, listaTipiPendenza, progressivo, zos); 
 								break;
+							case MAGGIOLI_JPPA:
+								this.popolaTracciatoMaggioliJPPA(ctx, connettore, configWrapper, dominio, beanDati, dataRtDa, dataRtA, rptBD, listaTipiPendenza, progressivo, serializer, zos); 
+								break;
 							}
 							// chiuso stream
 							zos.flush();
@@ -356,6 +363,7 @@ public class TracciatiNotificaPagamenti {
 		case GOVPAY:
 		case MYPIVOT:
 		case SECIM:
+		case MAGGIOLI_JPPA:
 			log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], verranno ricercate RT da inserire in un nuovo tracciato da ["
 					+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
 			entriesDaInserireNelTracciato = rptBD.countRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza);
@@ -1114,6 +1122,112 @@ public class TracciatiNotificaPagamenti {
 				linea.addAll(TracciatiNotificaPagamentiUtils.aggiungiCampiVuoti(((10 -numeroQuote) *3) ));
 			}
 		}
+		
+		return linea.toArray(new String[linea.size()]);
+	}
+	
+	private void popolaTracciatoMaggioliJPPA(IContext ctx, ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, Dominio dominio,
+			it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, Date dataRtDa, Date dataRtA,
+			RptBD rptBD, List<String> listaTipiPendenza, long progressivo, ISerializer serializer, ZipOutputStream zos)
+			throws Exception { 
+		String codDominio = dominio.getCodDominio();
+		
+		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"] in corso...");
+		
+		// Entry 1. file di esito invio Notifiche di pagamento
+		
+		ZipEntry tracciatoOutputEntry = new ZipEntry("GOVPAY_" + codDominio + "_"+progressivo+".csv");
+		zos.putNextEntry(tracciatoOutputEntry);
+		
+		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT);
+		
+		zos.write(csvUtils.toCsv(MAGGIOLI_JPPA_HEADER_FILE_CSV).getBytes());
+		
+		int lineaElaborazione = 0;
+		int offset = 0;
+		int limit = 100; 
+		List<Rpt> rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+		log.trace("Invio notifiche pagamento, trovate ["+rtList.size()+"] RT da notificare a Maggioli...");
+		int totaleRt = 0;
+		do {
+			if(rtList.size() > 0) {
+				List<InviaNotificaPagamentoMaggioliJPPAThread> threadsSpedizioni = new ArrayList<InviaNotificaPagamentoMaggioliJPPAThread>();
+				
+				for (Rpt rpt : rtList) {
+					
+					InviaNotificaPagamentoMaggioliJPPAThread sender = new InviaNotificaPagamentoMaggioliJPPAThread(rpt, dominio, ("ThreadSpedizione_" + (threadsSpedizioni.size() + 1)), ctx);
+					ThreadExecutorManager.getExecutorSpedizioneNotificaPagamentoMaggioli().execute(sender);
+					threadsSpedizioni.add(sender);
+				}
+				
+				while(true){
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+
+					}
+					boolean completed = true;
+					for(InviaNotificaPagamentoMaggioliJPPAThread sender : threadsSpedizioni) {
+						if(!sender.isCompleted()) {
+							completed = false;
+						} else {
+							if(!sender.isCommit()) {
+								sender.setCommit(true);
+								synchronized (this) {
+									if(sender.getException() != null) {
+										log.error("Si e' verificato un errore durante l'invio della notifica per il " + sender.getNomeThread() + ": "+sender.getException().getMessage());
+										throw sender.getException();
+									}
+
+									log.debug(sender.getNomeThread() + " ha eseguito l'invio correttamente");
+									zos.write(csvUtils.toCsv(this.inviaNotificaMaggioliJppa(sender.getRpt(), sender.getEsito(), sender.getDescrizioneEsito())).getBytes());
+								}
+							}
+						}
+					}
+
+					if(completed) { 
+						log.debug("Completata Esecuzione dei ["+threadsSpedizioni.size()+"] Threads di spedizione");
+						break; // esco
+					}
+				}
+				
+				lineaElaborazione += threadsSpedizioni.size();
+				totaleRt += threadsSpedizioni.size();
+				beanDati.setLineaElaborazione(lineaElaborazione);
+				log.trace("Completato invio ["+rtList.size()+"] RT a Maggioli e inserimento esiti nel file csv");
+			}
+
+			offset += limit;
+			rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+			log.trace("Invio notifiche pagamento, trovate ["+rtList.size()+"] RT da notificare a Maggioli...");
+		}while(rtList.size() > 0);
+		
+		beanDati.setNumRtTotali(totaleRt);
+		
+		log.debug("Completato invio ["+totaleRt+"] RT a Maggioli e completata generazione del file csv di esito.");
+
+		// chiusa entry
+		zos.flush();
+		zos.closeEntry();
+		
+		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"] completato.");
+	}
+
+	private String[] inviaNotificaMaggioliJppa(Rpt rpt, String esito, String descrizioneEsito) {
+
+		List<String> linea = new ArrayList<String>();
+		
+		// coddominio
+		linea.add(rpt.getCodDominio());
+		// iuv
+		linea.add(rpt.getIuv());
+		// ccp
+		linea.add(rpt.getCcp());
+		// esito invio notifica		
+		linea.add(esito);
+		// descrizione esito
+		linea.add(descrizioneEsito != null ? descrizioneEsito : ""); 
 		
 		return linea.toArray(new String[linea.size()]);
 	}

@@ -27,7 +27,8 @@ function() {
 			ente_api_rendicontazioni_url: 'http://localhost:8888/enteRendicontazioni',
 			pagopa_api_url: 'http://localhost:8888/pagopa',
 			recaptcha_api_url: 'http://localhost:8888/recaptcha',
-			appio_api_url: 'http://localhost:8888/appio'
+			appio_api_url: 'http://localhost:8888/appio',
+			maggioli_url: 'http://localhost:8888/maggioli',
 	};
 	return config;
 }

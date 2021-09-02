@@ -52,7 +52,7 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 
 public class JaxbUtils {
 
-	private static JAXBContext jaxbBolloContext, jaxbRptRtContext, jaxbRrErContext, jaxbFrContext, jaxbWsRptContext, jaxbPaForNodeContext;
+	private static JAXBContext jaxbBolloContext, jaxbRptRtContext, jaxbRrErContext, jaxbFrContext, jaxbWsRptContext, jaxbPaForNodeContext, jaxbWsJPPAPdPInternalContext, jaxbWsJPPAPdPExternalContext;
 	private static Schema RPT_RT_schema, RR_ER_schema, FR_schema, PAForNode_Schema;
 	private static boolean initialized = false;
 
@@ -70,6 +70,8 @@ public class JaxbUtils {
 			jaxbRrErContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti.revoche");
 			jaxbFrContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti.riversamento");
 			jaxbPaForNodeContext = JAXBContext.newInstance("it.gov.pagopa.pagopa_api.pa.pafornode");
+			jaxbWsJPPAPdPInternalContext = JAXBContext.newInstance("it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.internal:it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.internal.schema._1_0");
+			jaxbWsJPPAPdPExternalContext = JAXBContext.newInstance("it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external:it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0");
 			initialized = true;
 		}
 	}
@@ -184,6 +186,40 @@ public class JaxbUtils {
 		
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbWsRptContext.createUnmarshaller();
+		jaxbUnmarshaller.setSchema(schema);
+		jaxbUnmarshaller.setEventHandler(new JaxbUtils().new GpEventHandler());
+		return jaxbUnmarshaller.unmarshal(xsr);
+	}
+	
+	public static void marshalJPPAPdPInternalService(Object jaxb, OutputStream os) throws JAXBException, SAXException {
+		if(jaxb == null) return;
+		init();
+		Marshaller jaxbMarshaller = jaxbWsJPPAPdPInternalContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.marshal(jaxb, os);
+	}
+	
+	public static String marshalJPPAPdPInternalService(Object jaxb) throws JAXBException, SAXException {
+		if(jaxb == null) return null;
+		init();
+		Marshaller jaxbMarshaller = jaxbWsJPPAPdPInternalContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		jaxbMarshaller.marshal(jaxb, baos);
+		return new String(baos.toByteArray());
+	}
+	
+	public static Object unmarshalJPPAPdPInternalService(XMLStreamReader xsr) throws JAXBException, SAXException {
+		init();
+		Unmarshaller jaxbUnmarshaller = jaxbWsJPPAPdPInternalContext.createUnmarshaller();
+		return jaxbUnmarshaller.unmarshal(xsr);
+	}
+	
+	public static Object unmarshalJPPAPdPInternalService(XMLStreamReader xsr, Schema schema) throws JAXBException, SAXException {
+		if(schema == null) return unmarshalJPPAPdPInternalService(xsr);
+		
+		init();
+		Unmarshaller jaxbUnmarshaller = jaxbWsJPPAPdPInternalContext.createUnmarshaller();
 		jaxbUnmarshaller.setSchema(schema);
 		jaxbUnmarshaller.setEventHandler(new JaxbUtils().new GpEventHandler());
 		return jaxbUnmarshaller.unmarshal(xsr);

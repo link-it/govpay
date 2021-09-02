@@ -37,6 +37,7 @@ Background:
 * def recaptchaPath = '/recaptcha'
 * def appIoPath = '/appio'
 * def enteRendicontazioniPath = '/enteRendicontazioni'
+* def maggioliPath = '/maggioli'
 
 # Servizi per il caricamento dati
 Scenario: pathMatches(pagamentiPath+'/v1/avvisi/{idDominio}/{iuv}') && methodIs('post')
@@ -295,11 +296,33 @@ Scenario: pathMatches(enteRendicontazioniPath+'/flussiRendicontazione/{idDominio
 	
 Scenario: pathMatches(enteRendicontazioniPath+'/flussiRendicontazione/{idDominio}/{idTracciato}') && methodIs('post') && typeContains('csv')
 	* def responseStatus = 200
+	
+# Servizio Notifiche Maggioli
+Scenario: pathMatches(maggioliPath) && methodIs('post')
+	* def dataRisposta = getDateTimeRispostaMaggioli()
+	* def responseStatus = 200  
+	* def response =  
+"""	
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+   <soap:Body>
+      <InviaEsitoPagamentoRisposta xmlns="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/internal">
+         <operazione>InviaEsitoPagamento</operazione>
+         <dataOperazione>#(dataRisposta)</dataOperazione>
+         <esito>OK</esito>
+         <xmlDettaglioRisposta><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<InviaEsitoPagamentoRisposta xmlns="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/internal/schema/1_0">
+    <esito>
+        <codice>OK</codice>
+    </esito>
+</InviaEsitoPagamentoRisposta>]]></xmlDettaglioRisposta>
+      </InviaEsitoPagamentoRisposta>
+   </soap:Body>
+</soap:Envelope>
+"""
 
 Scenario:
 	* def responseStatus = 404
   * def response = "PATH NON PREVISTO DAL MOCK"
-
-
 
 

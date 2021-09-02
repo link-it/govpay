@@ -1,0 +1,1080 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		   xmlns:jcg_pagopa="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/external/schema/1_0" 
+		   targetNamespace="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/external/schema/1_0" 
+		   elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+	<!-- INIZIO DEFINIZIONE SIMPLETYPE -->
+	<xs:simpleType name="stTipoIdentificativoUnivocoPersFG">
+		<xs:restriction base="xs:string">
+			<xs:length value="1"/>
+			<xs:enumeration value="F"/>
+			<xs:enumeration value="G"/>
+			<!-- Persona Fisica -->
+			<!-- Persona Giuridica -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stText16">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="16"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stText35">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="35"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stText70">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="70"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stText140">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="140"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stAutenticazioneSoggetto">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="4"/>
+			<xs:enumeration value="CNS"/>
+			<xs:enumeration value="USR"/>
+			<xs:enumeration value="OTH"/>
+			<xs:enumeration value="N/A"/>
+			<!-- CIE/CNS -->
+			<!-- Userid e passaword -->
+			<!-- Altro -->
+			<!-- Non applicabile -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stImporto">
+		<xs:restriction base="xs:decimal">
+			<xs:minInclusive value="0.00"/>
+			<xs:maxInclusive value="99999999.99"/>
+			<xs:fractionDigits value="2"/>
+			<xs:totalDigits value="12"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stNazioneProvincia">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[A-Z]{2,2}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stEMail">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="256"/>
+			<xs:pattern value="[a-zA-Z0-9_\.\+\-]+@[a-zA-Z0-9\-]+(\.[a-zA-Z0-9\-]+)*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stISODate">
+		<xs:restriction base="xs:date"/>
+	</xs:simpleType>
+	<xs:simpleType name="stTipoVersamento">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="4"/>
+			<xs:enumeration value="BBT"/>
+			<xs:enumeration value="BP"/>
+			<xs:enumeration value="AD"/>
+			<xs:enumeration value="CP"/>
+			<xs:enumeration value="PO"/>
+			<xs:enumeration value="OBEP"/>
+			<xs:enumeration value="OTH"/>
+			<!-- Bonifico Bancario di Tesoreria -->
+			<!--- Bollettino Postale -->
+			<!--- Addebito Diretto -->
+			<!--- Carta di Pagamento -->
+			<!--- Pagamento attivato presso PSP -->
+			<!--- On-line Banking E-Payment -->
+			<!-- Altre forme di versamento -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stTipoBollo">
+		<xs:restriction base="xs:string">
+			<xs:length value="2"/>
+			<xs:enumeration value="01"/>
+			<!-- Imposta di bollo -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stIBANIdentifier">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stBICIdentifier">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stDatiSpecificiRiscossione">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0129]{1}/\S{3,138}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stISODateTime">
+		<xs:restriction base="xs:dateTime"/>
+	</xs:simpleType>
+	<xs:simpleType name="stTipoIdentificativoUnivoco">
+		<xs:restriction base="xs:string">
+			<xs:length value="1"/>
+			<xs:enumeration value="G"/>
+			<xs:enumeration value="A"/>
+			<xs:enumeration value="B"/>
+			<!-- Persona Giuridica -->
+			<!-- Codice ABI -->
+			<!-- Codice BIC -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stTipoIdentificativoUnivocoPersG">
+		<xs:restriction base="xs:string">
+			<xs:length value="1"/>
+			<xs:enumeration value="G"/>
+			<!-- Persona Giuridica -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stCodiceEsitoPagamento">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]{1,1}"/>
+			<xs:enumeration value="0"/>
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+			<!-- Pagamento eseguito -->
+			<!-- Pagamento non eseguito -->
+			<!-- Pagamento parzialmente eseguito -->
+			<!-- Decorrenza termini -->
+			<!-- Decorrenza termini parziale -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stTipoAllegatoRicevuta">
+		<xs:restriction base="xs:string">
+			<xs:length value="2"/>
+			<xs:enumeration value="ES"/>
+			<xs:enumeration value="BD"/>
+			<!-- Esito originario pagamento (come ricevuto da PSP) -->
+			<!-- Marca da bollo digitale  -->
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stBase64">
+		<xs:restriction base="xs:base64Binary"/>
+	</xs:simpleType>
+	<xs:simpleType name="stItentificativoUnivocoVersamento">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="35"/>
+			<xs:pattern value="[a-zA-Z0-9]{1,35}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- FINE DEFINIZIONE SIMPLETYPE -->
+	
+	<!-- INIZIO DEFINIZIONE COMPLEXTYPE -->
+	<xs:complexType name="ctParametriPSP">
+		<xs:sequence>
+			<xs:element name="identificativoPSP" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Identifier of the PSP.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="35"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="identificativoIntermediarioPSP" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Identifier of the PSP intermediate.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="35"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="identificativoCanale" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Identifier of the PSP channel.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="35"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctIdentificativoUnivocoPersonaFG">
+		<xs:sequence>
+			<xs:element name="tipoIdentificativoUnivoco" type="jcg_pagopa:stTipoIdentificativoUnivocoPersFG" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Campo alfanumerico che indica la natura del soggetto,  può assumere i seguenti valori:</xs:documentation>
+					<xs:documentation>F - Persona Fisica</xs:documentation>
+					<xs:documentation>G - Persona Giuridica</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="codiceIdentificativoUnivoco" type="jcg_pagopa:stText35" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Campo alfanumerico che può contenere il codice fiscale o, in alternativa, la partita IVA del soggetto.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctIdentificativoUnivoco">
+		<xs:sequence>
+			<xs:element name="tipoIdentificativoUnivoco" type="jcg_pagopa:stTipoIdentificativoUnivoco" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Campo alfanumerico che indica la natura del soggetto,  può assumere i seguenti valori:</xs:documentation>
+					<xs:documentation>G - Persona Giuridica</xs:documentation>
+					<xs:documentation>A - Codice ABI</xs:documentation>
+					<xs:documentation>B - Codice BIC</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="codiceIdentificativoUnivoco" type="jcg_pagopa:stText35" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Campo alfanumerico che può contenere il codice fiscale o la partita IVA del soggetto o il codice ABI o il codice BIC</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctIdentificativoUnivocoPersonaG">
+		<xs:sequence>
+			<xs:element name="tipoIdentificativoUnivoco" type="jcg_pagopa:stTipoIdentificativoUnivocoPersG" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Campo alfanumerico che indica la natura del soggetto,  può assumere i seguenti valori:</xs:documentation>
+					<xs:documentation>G - Persona Giuridica</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="codiceIdentificativoUnivoco" type="jcg_pagopa:stText35" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Campo alfanumerico che può contenere il codice fiscale o, in alternativa, la partita IVA del soggetto.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctSoggettoVersante">
+		<xs:sequence>
+			<xs:element name="identificativoUnivocoVersante" type="jcg_pagopa:ctIdentificativoUnivocoPersonaFG" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Aggregazione che riporta le informazioni concernenti l’identificazione fiscale del versante.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="anagraficaVersante" type="jcg_pagopa:stText70" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Indica il nominativo o la ragione sociale del versante.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="indirizzoVersante" type="jcg_pagopa:stText70" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica l’indirizzo del versante.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="civicoVersante" type="jcg_pagopa:stText16" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica il numero civico del versante.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="capVersante" type="jcg_pagopa:stText16" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica il CAP del versante.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="localitaVersante" type="jcg_pagopa:stText35" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica la località del versante.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="provinciaVersante" type="jcg_pagopa:stText35" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica la provincia del versante.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nazioneVersante" type="jcg_pagopa:stNazioneProvincia" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica il codice nazione del versante secondo lo standard ISO 3166.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="e-mailVersante" type="jcg_pagopa:stEMail" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indirizzo di posta elettronica del versante.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctSoggettoPagatore">
+		<xs:sequence>
+			<xs:element name="identificativoUnivocoPagatore" type="jcg_pagopa:ctIdentificativoUnivocoPersonaFG" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Aggregazione che riporta le informazioni concernenti l’identificazione fiscale del pagatore.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="anagraficaPagatore" type="jcg_pagopa:stText70" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Indica il nominativo o la ragione sociale del pagatore.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="indirizzoPagatore" type="jcg_pagopa:stText70" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica l’indirizzo del pagatore.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="civicoPagatore" type="jcg_pagopa:stText16" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica il numero civico del pagatore.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="capPagatore" type="jcg_pagopa:stText16" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica il CAP del pagatore.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="localitaPagatore" type="jcg_pagopa:stText35" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica la località del pagatore.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="provinciaPagatore" type="jcg_pagopa:stText35" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica la provincia del pagatore.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nazionePagatore" type="jcg_pagopa:stNazioneProvincia" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica il codice nazione del pagatore secondo lo standard ISO 3166.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="e-mailPagatore" type="jcg_pagopa:stEMail" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indirizzo di posta elettronica del pagatore.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctIstitutoAttestante">
+		<xs:sequence>
+			<xs:element name="identificativoUnivocoAttestante" type="jcg_pagopa:ctIdentificativoUnivoco" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Aggregazione che riporta le informazioni concernenti l’identificazione fiscale dell’Istituto attestante il pagamento.</xs:documentation>
+					<xs:documentation>tipo_identificativo_univoco - deve assumere il valore ‘G’, Persona Giuridica.</xs:documentation>
+					<xs:documentation>codice_identificativo_univoco - Campo alfanumerico che può contenere il codice fiscale o, in alternativa, la partita IVA dell’Istituto attestante il pagamento.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="denominazioneAttestante" type="jcg_pagopa:stText70" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Contiene la denominazione dell’Istituto  finanziario  che emette il documento di attestazione dell’avvenuto versamento.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="codiceUnitOperAttestante" type="jcg_pagopa:stText35" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica il codice dell’unità operativa che rilascia la quietanza.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="denomUnitOperAttestante" type="jcg_pagopa:stText70" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Contiene la denominazione dell’unità operativa attestante.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="indirizzoAttestante" type="jcg_pagopa:stText70" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica l’indirizzo dell’attestante.</xs:documentation>
+					<xs:documentation>Può coincidere con quello dell’unità operativa che rilascia la ricevuta</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="civicoAttestante" type="jcg_pagopa:stText16" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica il numero civico dell'attestante.</xs:documentation>
+					<xs:documentation>Può coincidere con quello dell’unità operativa che rilascia la ricevuta</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="capAttestante" type="jcg_pagopa:stText16" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica il CAP dell’attestante.</xs:documentation>
+					<xs:documentation>Può coincidere con quello dell’unità operativa che rilascia la ricevuta</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="localitaAttestante" type="jcg_pagopa:stText35" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica la località dell’attestante.</xs:documentation>
+					<xs:documentation>Può coincidere con quello dell’unità operativa che rilascia la ricevuta</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="provinciaAttestante" type="jcg_pagopa:stText35" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica la provincia dell’attestante.</xs:documentation>
+					<xs:documentation>Può coincidere con quello dell’unità operativa che rilascia la ricevuta</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nazioneAttestante" type="jcg_pagopa:stNazioneProvincia" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica il codice nazione dell’attestante secondo lo standard ISO 3166.</xs:documentation>
+					<xs:documentation>Può coincidere con quello dell’unità operativa che rilascia la ricevuta</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Richiesta pagamento Telematico (RPT) -->
+	<xs:complexType name="ctRichiestaPagamentoTelematico">
+		<xs:sequence>
+			<xs:element name="idDominio" type="jcg_pagopa:stText35" nillable="false" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Campo alfanumerico contenente il codice fiscale
+						della struttura che invia la richiesta di
+						pagamento
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="autenticazioneSoggetto" type="jcg_pagopa:stAutenticazioneSoggetto" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Contiene la modalità di identificazione  applicata  al soggetto che deve essere addebitato per il pagamento</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="soggettoVersante" type="jcg_pagopa:ctSoggettoVersante" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Aggregazione “versante” che riporta le informazioni concernenti il soggetto che effettua il pagamento per conto del soggetto Pagatore.</xs:documentation>
+					<xs:documentation>Se coincide con il soggetto Pagatore deve essere omesso.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="soggettoPagatore" type="jcg_pagopa:ctSoggettoPagatore" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Aggregazione “soggetto pagatore” che riporta le informazioni concernenti il soggetto che effettua il pagamento.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="datiVersamento" type="jcg_pagopa:ctDatiVersamentoRPT" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Aggregazione “dati del versamento”.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctDatiVersamentoRPT">
+		<xs:sequence>
+			<xs:element name="dataEsecuzionePagamento" type="jcg_pagopa:stISODate" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica la data in cui si richiede che venga effettuato il pagamento secondo il formato ISO 8601 [YYYY]-[MM]-[DD].</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="importoTotaleDaVersare" type="jcg_pagopa:stImporto" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Campo numerico (due cifre per la parte decimale, il separatore dei centesimi è il punto “.”), indicante l’importo totale della somma da versare.</xs:documentation>
+					<xs:documentation>Deve essere diverso da “0.00”.</xs:documentation>
+					<xs:documentation>Deve uguale alla somma delle varie occorrenze (da 1 a 5) del dato importoSingoloVersamento presente nella struttura DatiSingoloVersamento</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tipoVersamento" type="jcg_pagopa:stTipoVersamento" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Forma tecnica di versamento delle somme dovute presso la Tesoreria Statale. Può assumere i seguenti valori:</xs:documentation>
+					<xs:documentation>- BBT - Bonifico Bancario di Tesoreria.</xs:documentation>
+					<xs:documentation>- BP  - Bonifico Postale.</xs:documentation>
+					<xs:documentation>- AD  - Addebito diretto.</xs:documentation>
+					<xs:documentation>- CP  - Carta di Pagamento.</xs:documentation>
+					<xs:documentation>- PO  - Pagamento attivato presso PSP.</xs:documentation>
+				</xs:annotation>
+				<!--CHIEDERE-->
+				<!-- CHIEDERE -->
+			</xs:element>
+			<xs:element name="identificativoUnivocoVersamento" type="jcg_pagopa:stItentificativoUnivocoVersamento" nillable="false" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Riferimento univoco assegnato al versamento dall’ente beneficiario, utilizzato ai fini specifici della rendicontazione e riconciliazione eseguita sui conti di tesoreria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="codiceContestoPagamento" type="jcg_pagopa:stText35" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Codice univoco necessario a definire il contesto nel quale viene effettuato il versamento.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ibanAddebito" type="jcg_pagopa:stIBANIdentifier" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Identifica l’International Bank Account Number del conto da addebitare riferito al soggetto pagatore, definito secondo lo standard ISO 13616.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="bicAddebito" type="jcg_pagopa:stBICIdentifier" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Bank Identifier Code della banca ordinante, definito secondo lo standard ISO 9362.</xs:documentation>
+				</xs:annotation>
+				<!-- CHIEDERE -->
+			</xs:element>
+			<xs:element name="datiSingoloVersamento" type="jcg_pagopa:ctDatiSingoloVersamentoRPT" minOccurs="1" maxOccurs="5">
+				<xs:annotation>
+					<xs:documentation>Aggregazione “dati dei singoli versamenti”, da un minimo di uno ad un massimo di 5 occorrenze di versamento, facenti capo ad un unico identificativoUnivocoVersamento.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctDatiSingoloVersamentoRPT">
+		<xs:sequence>
+			<xs:element name="importoSingoloVersamento" type="jcg_pagopa:stImporto" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Campo numerico (due cifre per la parte decimale, il separatore dei centesimi è il punto “.”), indicante l’importo relativo alla somma da versare. Deve essere diverso da “0.00”.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="commissioneCaricoPA" type="jcg_pagopa:stImporto" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Campo numerico (due cifre per la parte decimale, il separatore dei centesimi è il punto “.”), indicante l’importo relativo alla somma da versare. Il data è riportato a solo titolo indicativo e non comporta attività a carico del PSP. Se presente deve essere diverso da “0.00”.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ibanAccredito" type="jcg_pagopa:stIBANIdentifier" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Identifica l’International Bank Account Number, definito secondo lo standard ISO 13616, del conto da accreditare presso la Banca di accredito indicata dall’ente creditore, di norma la Banca Tesoriera. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="bicAccredito" type="jcg_pagopa:stBICIdentifier" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Bank Identifier Code definito secondo lo standard ISO 9362.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ibanAppoggio" type="jcg_pagopa:stIBANIdentifier" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Identifica l’International Bank Account Number,, definito secondo lo standard ISO 13616, del conto da accreditare presso un PSP che provvederà a trasferire, nei tempi previsti dal DM, i fondi incassati sul conto indicato nell’elemento ibanAccredito.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="bicAppoggio" type="jcg_pagopa:stBICIdentifier" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Bank Identifier Code definito secondo lo standard ISO 9362 dell’elemento ibanAppoggio</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="credenzialiPagatore" type="jcg_pagopa:stText35" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Eventuali credenziali richieste dal Prestatore di servizi di Pagamento necessarie per completare l’operazione (ad esempio: un codice bilaterale utilizzabile una sola volta).</xs:documentation>
+				</xs:annotation>
+				<!-- CHIEDERE -->
+			</xs:element>
+			<xs:element name="causaleVersamento" type="jcg_pagopa:stText140" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Rappresenta la descrizione estesa della causale del versamento. Può assumere i seguenti valori:</xs:documentation>
+				</xs:annotation>
+				<!-- CHIEDERE -->
+			</xs:element>
+			<xs:element name="datiSpecificiRiscossione" type="jcg_pagopa:stDatiSpecificiRiscossione" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Rappresenta l’indicazione dell’imputazione della specifica entrata ed è così articolato:</xs:documentation>
+					<xs:documentation>"tipo contabilità"/"codice contabilità", dove "tipo contabilità" può assumere i seguenti valori :</xs:documentation>
+					<xs:documentation>0 Capitolo e articolo di Entrata del Bilancio dello stato </xs:documentation>
+					<xs:documentation>1 Numero della contabilità speciale </xs:documentation>
+					<xs:documentation>2 Codice SIOPE</xs:documentation>
+					<xs:documentation>9 Altro codice ad uso dell’amministrazione</xs:documentation>
+					<xs:documentation>Esempio: 0/3321.00 per indicare il Contributo Unificato delle spese di giustizia</xs:documentation>
+				</xs:annotation>
+				<!-- CHIEDERE -->
+			</xs:element>
+			<xs:element name="datiMarcaBolloDigitale" type="jcg_pagopa:ctDatiMarcaBolloDigitale" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Aggregazione che contiene le informazioni necessarie al PSP per generare la marca da bollo digitale.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctEnteBeneficiario">
+		<xs:sequence>
+			<xs:element name="identificativoUnivocoBeneficiario" type="jcg_pagopa:ctIdentificativoUnivocoPersonaG" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Aggregazione che riporta le informazioni concernenti l’identificazione fiscale dell’ente beneficiario.</xs:documentation>
+					<xs:documentation>tipo_identificativo_univoco - se presente deve assumere il valore ‘G’, Persona Giuridica.</xs:documentation>
+					<xs:documentation>codice_identificativo_univoco - contenente il codice fiscale dell’amministrazione destinataria del pagamento.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="denominazioneBeneficiario" type="jcg_pagopa:stText70" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Contiene la denominazione della PA.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="codiceUnitOperBeneficiario" type="jcg_pagopa:stText35" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica il codice dell’unità operativa destinataria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="denomUnitOperBeneficiario" type="jcg_pagopa:stText70" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Contiene la denominazione dell’unità operativa destinataria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="indirizzoBeneficiario" type="jcg_pagopa:stText70" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica l’indirizzo dell’ente beneficiario.</xs:documentation>
+					<xs:documentation>Può coincidere con quello dell’unità operativa destinataria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="civicoBeneficiario" type="jcg_pagopa:stText16" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica il numero civico del beneficiario.</xs:documentation>
+					<xs:documentation>Può coincidere con quello dell’unità operativa destinataria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="capBeneficiario" type="jcg_pagopa:stText16" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica il CAP dell’ente beneficiario.</xs:documentation>
+					<xs:documentation>Può coincidere con quello dell’unità operativa destinataria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="localitaBeneficiario" type="jcg_pagopa:stText35" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica la località dell’ente beneficiario.</xs:documentation>
+					<xs:documentation>Può coincidere con quello dell’unità operativa destinataria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="provinciaBeneficiario" type="jcg_pagopa:stText35" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica la provincia del beneficiario.</xs:documentation>
+					<xs:documentation>Può coincidere con quello dell’unità operativa destinataria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nazioneBeneficiario" type="jcg_pagopa:stNazioneProvincia" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Indica il codice nazione dell’ente beneficiario secondo lo standard ISO 3166.</xs:documentation>
+					<xs:documentation>Può coincidere con quello dell’unità operativa destinataria.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Ricevuta Telematica (RT)-->
+	<xs:complexType name="ctRicevutaTelematica">
+		<xs:sequence>
+			<xs:element name="ricevutaXML" type="xs:string" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Ricevuta telematica nel formato XML standard ADIG</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="idDominio" type="jcg_pagopa:stText35" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Campo alfanumerico contenente il codice fiscale della struttura che invia la richiesta di pagamento</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="identificativoMessaggioRicevuta" type="jcg_pagopa:stText35" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Identificativo legato alla trasmissione della quietanza telematica.</xs:documentation>
+					<xs:documentation>Deve essere univoco nell’ambito della stessa data riferita all’elemento dataMessaggioRicevuta.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dataOraMessaggioRicevuta" type="jcg_pagopa:stISODateTime" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Indica la data del messaggio di quietanza, secondo il formato ISO 8601</xs:documentation>
+					<xs:documentation>[YYYY]-[MM]-[DD]T[hh]:[mm]:[ss]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="riferimentoMessaggioRichiesta" type="jcg_pagopa:stText35" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Con riferimento al messaggio di Ricevuta Telematica (RT) l’elemento contiene il dato identificativoMessaggioRichiesta legato alla trasmissione della Richiesta di Pagamento Telematico (RPT).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="riferimentoDataRichiesta" type="jcg_pagopa:stISODate" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Indica la data secondo il formato ISO 8601 [YYYY]-[MM]-[DD] cui si riferisce la generazione del dato riferimentoMessaggioRichiesta.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="istitutoAttestante" type="jcg_pagopa:ctIstitutoAttestante" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Aggregazione relativa al soggetto Prestatore dei servizi di Pagamento che emette il documento di attestazione dell’avvenuto versamento. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="enteBeneficiario" type="jcg_pagopa:ctEnteBeneficiario" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Riporta le stesse informazioni presenti nel blocco “Ente Beneficiario” della Richiesta di Pagamento Telematico (RPT) cui si riferisce il messaggio di Ricevuta Telematica.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="soggettoVersante" type="jcg_pagopa:ctSoggettoVersante" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Riporta le stesse informazioni presenti nel blocco “Soggetto Versante” della Richiesta di Pagamento Telematico (RPT) cui si riferisce il messaggio di Ricevuta Telematica.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="soggettoPagatore" type="jcg_pagopa:ctSoggettoPagatore" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Riporta le stesse informazioni presenti nel blocco “Soggetto Pagatore” della Richiesta di Pagamento Telematico (RPT) cui si riferisce il messaggio di Ricevuta Telematica.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="datiPagamento" type="jcg_pagopa:ctDatiVersamentoRT" minOccurs="1">
+				<xs:annotation xml:base="jcg_pagopa:stImporto">
+					<xs:documentation>Aggregazione “dati del versamento”</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="parametriPSP" type="jcg_pagopa:ctParametriPSP" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>nodo ereditato da EB non standard xsd AGID</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Dati versamento della Ricevuta Telematica (RT)-->
+	<xs:complexType name="ctDatiVersamentoRT">
+		<xs:sequence>
+			<xs:element name="codiceEsitoPagamento" type="jcg_pagopa:stCodiceEsitoPagamento" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Campo numerico indicante l’esito del pagamento.</xs:documentation>
+					<xs:documentation>Può assumere i seguenti valori:</xs:documentation>
+					<xs:documentation>0 - Pagamento eseguito</xs:documentation>
+					<xs:documentation>1 - Pagamento non eseguito</xs:documentation>
+					<xs:documentation>2 - Pagamento parzialmente  eseguito</xs:documentation>
+					<xs:documentation>3 - Decorrenza termini</xs:documentation>
+					<xs:documentation>4 - Decorrenza termini parziale</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="importoTotalePagato" type="jcg_pagopa:stImporto" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Campo numerico (due cifre per la parte decimale, il separatore dei centesimi è il punto “.”), indicante l’importo relativo alla somma versata.</xs:documentation>
+					<xs:documentation>Deve essere uguale alla somma delle varie occorrenze (da 1 a 5) dell’informazione singoloImportoVersato presente nella struttura DatiSingoloPagamento.</xs:documentation>
+					<xs:documentation>Se il versamento non è stato effettuato l’importo deve essere impostato a 0.00</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="identificativoUnivocoVersamento" type="jcg_pagopa:stItentificativoUnivocoVersamento" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Il dato deve essere riportato invariato, a cura del prestatore di servizi di pagamento, così come presente nella Richiesta di Pagamento Telematico (RPT) cui si riferisce il messaggio di Ricevuta Telematica.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CodiceContestoPagamento" type="jcg_pagopa:stText35" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Il dato deve essere riportato invariato, a cura del prestatore di servizi di pagamento, così come presente nella Richiesta di Pagamento Telematico (RPT) cui si riferisce il messaggio di Ricevuta Telematica.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="datiSingoloPagamento" type="jcg_pagopa:ctDatiSingoloPagamentoRT" minOccurs="0" maxOccurs="5">
+				<xs:annotation>
+					<xs:documentation>Aggregazione “dati dei singoli versamenti”, da un minimo di uno ad un massimo di 5 occorrenze di versamento, facenti capo ad un unico identificativoUnivocoVersamento.</xs:documentation>
+					<xs:documentation>Obbligatorio nel caso che l’elemento codiceEsitoPagamento sia 0 o 2 </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tipoVersamento" type="jcg_pagopa:stTipoVersamento" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>campo specifico ereditato da EB non standard xsd AGID </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Dati singoli pagamenti della Ricevuta Telematica (RT)-->
+	<xs:complexType name="ctDatiSingoloPagamentoRT">
+		<xs:sequence>
+			<xs:element name="singoloImportoPagato" type="jcg_pagopa:stImporto" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Campo numerico (due cifre per la parte decimale, il separatore dei centesimi è il punto “.”), indicante l’importo relativo alla somma versata.</xs:documentation>
+					<xs:documentation>Se il singolo versamento non è stato effettuato l’importo deve essere impostato a 0.00.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="esitoSingoloPagamento" type="jcg_pagopa:stText35" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Contiene la descrizione in formato testo dell’esito del singolo pagamento.</xs:documentation>
+					<xs:documentation>Obbligatorio nel caso che l’elemento singoloImportoVersato sia 0.00.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dataEsitoSingoloPagamento" type="jcg_pagopa:stISODate" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Indica la data di esecuzione o di rifiuto del pagamento, nel formato iso 8601 [YYYY]-[MM]-[DD].</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="identificativoUnivocoRiscossione" type="jcg_pagopa:stText35" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Riferimento univoco dell’operazione assegnato al versamento dal Prestatore dei servizi di Pagamento. Può coincidere con il CRO nel caso di Bonifico Bancario o con il CODELINE nel caso di bollettino postale.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="causaleVersamento" type="jcg_pagopa:stText140" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Il dato deve essere riportato invariato, a cura del PSP, così come presente nella Richiesta di Pagamento Telematico (RPT) cui si riferisce il messaggio di Ricevuta Telematica.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="datiSpecificiRiscossione" type="jcg_pagopa:stDatiSpecificiRiscossione" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Il dato, se presente, deve essere riportato invariato, a cura del Psp, così come presente nella Richiesta di Pagamento Telematico (RPT) cui si riferisce il messaggio di Ricevuta Telematica.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="commissioniApplicatePSP" type="jcg_pagopa:stImporto" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Campo numerico (due cifre per la parte decimale, il separatore dei centesimi è il punto “.”), indicante l’importo della commissione applicata dal PSP al proprio cliente (soggetto versante o soggetto pagatore).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="allegatoRicevuta" type="jcg_pagopa:ctAllegatoRicevuta" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Aggregazione contenente l'allegato al singolo pagamento.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctAllegatoRicevuta">
+		<xs:sequence>
+			<xs:element name="tipoAllegatoRicevuta" type="jcg_pagopa:stTipoAllegatoRicevuta" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Identifica il tipo di allegato trasportato con la RT.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="testoAllegato" type="jcg_pagopa:stBase64" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Contiene l’allegato vero e proprio, il cui significato è indicato dal dato tipoAllegatoRicevuta.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctDatiRestituiti">
+		<xs:sequence>
+			<xs:element name="identificativoUnivocoVersamento" type="jcg_pagopa:stItentificativoUnivocoVersamento" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>IUV - Unique identifier of the payment connected to the debit.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="pspSupportaRedirect" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Capability of selected PSP in order to perform the redirect of the final user.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:totalDigits value="1"/>
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="1"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="redirectURL" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Target URL final user must be redirect.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="256"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctNotificaCallback">
+		<xs:sequence>
+			<xs:element name="callbackURL" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Target full publication URL of implemented SOAP WEB Services by DATA PROVIDER in order to expose the dpInviaStatoPagamento public method.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="140"/>
+						<xs:pattern value="https?://.+"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="callbackUsername" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Assigned username to EasyBridge CLIENT process in order to satisfy required Basic Authentication.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="35"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="callbackPassword" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Assigned password to EasyBridge CLIENT process in order to satisfy required Basic Authentication.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="35"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctDatiMarcaBolloDigitale">
+		<xs:sequence>
+			<xs:element name="tipoBollo" type="jcg_pagopa:stTipoBollo" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Contiene la tipologia di Bollo Digitale.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="hashDocumento" type="jcg_pagopa:stText70" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Contiene l’impronta informatica (digest), rappresentata in “base 64 binary”, del documento informatico o della segnatura di protocollo cui è associata la marca da bollo digitale</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="provinciaResidenza" type="jcg_pagopa:stNazioneProvincia" minOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Sigla automobilistica della provincia di residenza del soggetto pagatore.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctEsitoChiediStatoRPT">
+		<xs:sequence>
+			<xs:element name="stato" type="xs:string" minOccurs="1"/>
+			<xs:element name="redirect" type="xs:int" default="0" minOccurs="0"/>
+			<xs:element name="url" type="xs:string" default="" minOccurs="0"/>
+			<xs:element name="elementoStoricoRPT" type="jcg_pagopa:ctTipoStoricoRPT" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="elementoStoricoVersamento" type="jcg_pagopa:ctTipoStoricoVersamento" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctTipoStoricoRPT">
+		<xs:sequence>
+			<xs:element name="data" type="xs:dateTime" minOccurs="1"/>
+			<xs:element name="stato" type="xs:string" minOccurs="1"/>
+			<xs:element name="descrizione" type="xs:string" minOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctTipoStoricoVersamento">
+		<xs:sequence>
+			<xs:element name="progressivo" type="xs:int" minOccurs="1"/>
+			<xs:element name="data" type="xs:dateTime" minOccurs="1"/>
+			<xs:element name="stato" type="xs:string" minOccurs="1"/>
+			<xs:element name="descrizione" type="xs:string" minOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctRisposta">
+		<xs:sequence>
+			<xs:element name="fault" type="jcg_pagopa:ctFaultBean" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctFaultBean">
+		<xs:sequence>
+			<xs:element name="faultCode" type="xs:string" minOccurs="0"/>
+			<xs:element name="aultString" type="xs:string" minOccurs="0"/>
+			<xs:element name="id" type="xs:string" minOccurs="0"/>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			<xs:element name="serial" type="xs:int" minOccurs="0"/>
+			<xs:element name="originalFaultCode" type="xs:string" minOccurs="0"/>
+			<xs:element name="originalFaultString" type="xs:string" minOccurs="0"/>
+			<xs:element name="originalDescription" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctEsito">
+		<xs:annotation>
+			<xs:documentation>Esito delle richieste: tipo complesso che contiene un codice di errore più un lista di messaggi </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="code" minOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="OK"/>
+						<xs:enumeration value="ERROR"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="messaggi" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="messaggio" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="code" type="xs:string" minOccurs="1">
+										<xs:annotation>
+											<xs:documentation>Codice Messaggio di errore</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="descrizione" type="xs:string" minOccurs="1">
+										<xs:annotation>
+											<xs:documentation>Descrizione Messaggio di errore</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctDettaglioImporto">
+		<xs:annotation>
+			<xs:documentation>
+				tipo complesso che rappresenta un dettaglio di importo, dato un importo i relativi dettagli servono 
+				per poter specificare con maggiore precisione da cosa quell'importo è costituito</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="capitoloBilancio" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>utilizzato per inserire il TIPO VOCE</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="anno" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>anno relativo al capitolo di bilancio - sovrascrive il campo capito di bilancio (non utilizzato al momento)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="importo" type="jcg_pagopa:stImporto">
+				<xs:annotation>
+					<xs:documentation>valore decimale del dettaglio importo</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="descrizione" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>descrizione testuale leggibile del dettaglio importo</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctDettagliImporto">
+		<xs:annotation>
+			<xs:documentation>tipo complesso che rappresenta una lista di dettagli importo.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="dettaglioImporto" type="jcg_pagopa:ctDettaglioImporto" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- FINE DEFINIZIONE COMPLEXTYPE -->
+	
+	<xs:element name="InviaCarrelloRPTRisposta">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="outcome" type="jcg_pagopa:ctEsito" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>Short outcome of the operation.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="dataResult" type="jcg_pagopa:ctDatiRestituiti" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="InviaCarrelloRPTRichiesta">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="carrelloRTP" type="jcg_pagopa:ctRichiestaPagamentoTelematico" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RecuperaRTRichiesta">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="identificativoUnivocoVersamento" type="jcg_pagopa:stItentificativoUnivocoVersamento" nillable="false" minOccurs="1">
+					<xs:annotation>
+						<xs:documentation>IUV - Identificatore univoco del pagamento collegato al debito</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="codiceContestoPagamento" type="jcg_pagopa:stText35" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation/>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RecuperaRTRisposta">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="esito" type="jcg_pagopa:ctEsito" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>Short outcome of the operation.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="ricevutaTelematica" type="jcg_pagopa:ctRicevutaTelematica" nillable="false" minOccurs="0"/>
+				<xs:element name="dettagliImporto" type="jcg_pagopa:ctDettagliImporto" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ChiediStatoRPTRichiesta">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="identificativoDominio" type="jcg_pagopa:stText35" nillable="false" minOccurs="1"/>
+				<xs:element name="identificativoUnivocoVersamento" type="jcg_pagopa:stItentificativoUnivocoVersamento" nillable="false" minOccurs="1"/>
+				<xs:element name="codiceContestoPagamento" type="jcg_pagopa:stText35" nillable="false" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ChiediStatoRPTRisposta">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="jcg_pagopa:ctRisposta">
+					<xs:sequence>
+						<xs:element name="esito" type="jcg_pagopa:ctEsitoChiediStatoRPT" minOccurs="0"/>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

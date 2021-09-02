@@ -78,6 +78,8 @@ public class GpContext extends ApplicationContext {
 	public static final String TIPO_SERVIZIO_GOVPAY_OPT = "GPO";
 	
 	public static final String MyPivot = "MyPivot";
+	public static final String MaggioliJPPA = "MaggioliJPPA";
+	public static final String TIPO_SOGGETTO_MAGGIOLI_JPPA = "MaggioliJPPA";
 
 
 	public GpContext() {
@@ -295,6 +297,16 @@ public class GpContext extends ApplicationContext {
 	public synchronized String setupNotificaPagamentiClient(String azione, String url) {
 		HttpServer server = new HttpServer();
 		server.setName(MyPivot);
+		server.setEndpoint(url);
+		server.setIdOperation(UUID.randomUUID().toString());
+		this.getTransaction().addServer(server); 
+
+		return server.getIdOperation();
+	}
+	
+	public synchronized String setupInvioNotificaPagamentiMaggioliJPPAClient(String azione, String url) {
+		HttpServer server = new HttpServer();
+		server.setName(MaggioliJPPA);
 		server.setEndpoint(url);
 		server.setIdOperation(UUID.randomUUID().toString());
 		this.getTransaction().addServer(server); 

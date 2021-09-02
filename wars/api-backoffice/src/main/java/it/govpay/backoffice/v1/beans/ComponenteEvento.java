@@ -40,7 +40,19 @@ public enum ComponenteEvento {
   SECIM("API_SECIM"),
   
   
-  MYPIVOT("API_MYPIVOT");
+  MYPIVOT("API_MYPIVOT"),
+  
+  
+  MAGGIOLI_JPPA("API_MAGGIOLI_JPPA"),
+  
+  
+  GOVPAY("API_GOVPAY"),
+  
+  
+  HYPERSIC_APK("API_HYPERSIC_APK"),
+  
+  
+  USER("API_USER");
   
   
   

@@ -46,6 +46,7 @@ public class EventoContext {
 	
 	public static final String APIMAGGIOLI_JPPA_TIPOEVENTO_INVIAESITOPAGAMENTO = "maggioliJppaInviaEsitoPagamento";
 	public static final String APIMAGGIOLI_JPPA_TIPOEVENTO_RECUPERART = "maggioliJppaRecuperaRT";
+	public static final String APIMAGGIOLI_JPPA_TIPOEVENTO_INVIATRACCIATOEMAIL = "maggioliJppaInviaTracciatoEmail";
 
 	public static final String SOTTOTIPO_EVENTO_NOTA = "nota";
 	
