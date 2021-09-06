@@ -467,7 +467,7 @@ public class GovPayException extends Exception {
 		case VER_011: return "Richiesta non valida";
 		case VER_012: return "Richiesta non valida";
 		case VER_013: return "Richiesta non valida";
-		case VER_014: return "Impossibile aggiornare la pendenza scaduta.";
+		case VER_014: return "Impossibile acquisire i dati aggiornati della pendenza.";
 		case VER_015: return "Richiesta non valida";
 		case VER_016: return "Richiesta non valida";
 		case VER_017: return "Richiesta non valida";

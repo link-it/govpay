@@ -1,9 +1,22 @@
 openapi: 3.0.0
 info:
   description: >-
-    API di integrazione ai servizi di pagamento di 
-    [GovPay](https://github.com/link-it/GovPay) erogate
-    dagli applicativi dell'Ente Creditore
+   API di integrazione a GovPay esposte dagli applicativi gestori delle Posizioni Debitorie dell'Ente Creditore per:
+    - Notificare i pagamenti effettuati sulla piattaforma pagoPA
+    - Verificare i dati delle pendenze oggetto di pagamento
+    
+   ## Notifica Pagamenti
+    La piattaforma GovPay prevede l'invio di una notifica all'atto dell'attivazione di una transazione di pagamento, ovvero all'invio con successo di una RPT a pagoPA, ed una notifica alla conclusione, ovvero alla ricezione con successo di una RT da pagoPA. I pagamenti sono notificati indipendentemente dal modello di pagamento e dall'esito della transazione pagoPA.
+    
+    Le notifiche sono inviate contestualmente all'evento che le genera. In caso di errori di consegna, le notifiche sono rispedite in tempi successivi da un batch fino a successo, ovvero fin quando il servizio di notifica non risponde  con un HTTP 2xx.
+
+   ## Verifica Pendenze
+    In sede di pagamento, la piattaforma GovPay potrebbe aver necessità di richiedere all'applicativo gestore i dati aggiornati della pendenza oggetto del pagamento. Questo può accadere in due scenari:
+    - La pendenza associata al pagamento non è disponibile in GovPay
+    - La data di validità presente nella pendenza oggetto del pagamento è decorsa.
+    
+    Le informazioni restituite dal servizio vanno ad aggiornare la pendenza negli archivi di GovPay ed utilizzate per perfezionare il pagamento. 
+
   version: "1.2.0"
   title: "GovPay - API Applicazioni"
   contact:

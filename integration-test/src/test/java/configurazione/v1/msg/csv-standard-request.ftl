@@ -56,14 +56,12 @@
 	</#if>
 	<#if !csvUtils.isEmpty(csvRecord, 86)>
 		<#assign linguaSecondariaString = csvRecord.get(86)!/>
-		<#assign mappedArray_string = []>
-		<#list linguaSecondariaString?split("\\|") as item>
-			<#assign mappedArray_string += [item]>
-		</#list>
+		<#assign mappedArray_string = linguaSecondariaString?split("|") !/>
+		
 	"proprieta": {
-		"linguaSecondaria" : ${mappedArray_string[0]}
-		<#if mappedArray_string?length > 1>
-			, "linguaSecondariaCausale" : ${mappedArray_string[1]}
+		"linguaSecondaria" : "${mappedArray_string[0]}"
+		<#if (mappedArray_string?size > 1)>
+			, "linguaSecondariaCausale" : "${mappedArray_string[1]}"
 		</#if>
 	},
 	</#if>
@@ -86,7 +84,7 @@
 			"importo": ${csvUtils.toJsonValue(csvRecord, 28)},
 			"descrizione": ${csvUtils.toJsonValue(csvRecord, 29)},
 			<#if !csvUtils.isEmpty(csvRecord, 34)>
-			"tipoEntrata": ${csvUtils.toJsonValue(csvRecord, 34)}
+			"codEntrata": ${csvUtils.toJsonValue(csvRecord, 34)}
 			<#elseif !csvUtils.isEmpty(csvRecord, 35)>
 			"tipoBollo": ${csvUtils.toJsonValue(csvRecord, 35)},
        		"hashDocumento": ${csvUtils.toJsonValue(csvRecord, 36)},
@@ -105,7 +103,7 @@
 			"importo": ${csvUtils.toJsonValue(csvRecord, 39)},
 			"descrizione": ${csvUtils.toJsonValue(csvRecord, 40)},
 			<#if !csvUtils.isEmpty(csvRecord, 45)>
-			"tipoEntrata": ${csvUtils.toJsonValue(csvRecord, 45)}
+			"codEntrata": ${csvUtils.toJsonValue(csvRecord, 45)}
 			<#elseif !csvUtils.isEmpty(csvRecord, 46)>
 			"tipoBollo": ${csvUtils.toJsonValue(csvRecord, 46)},
        		"hashDocumento": ${csvUtils.toJsonValue(csvRecord, 47)},
@@ -124,7 +122,7 @@
 			"importo": ${csvUtils.toJsonValue(csvRecord, 50)},
 			"descrizione": ${csvUtils.toJsonValue(csvRecord, 51)},
 			<#if !csvUtils.isEmpty(csvRecord, 56)>
-			"tipoEntrata": ${csvUtils.toJsonValue(csvRecord, 56)}
+			"codEntrata": ${csvUtils.toJsonValue(csvRecord, 56)}
 			<#elseif !csvUtils.isEmpty(csvRecord, 57)>
 			"tipoBollo": ${csvUtils.toJsonValue(csvRecord, 57)},
        		"hashDocumento": ${csvUtils.toJsonValue(csvRecord, 58)},
@@ -143,7 +141,7 @@
 			"importo": ${csvUtils.toJsonValue(csvRecord, 61)},
 			"descrizione": ${csvUtils.toJsonValue(csvRecord, 62)},
 			<#if !csvUtils.isEmpty(csvRecord, 67)>
-			"tipoEntrata": ${csvUtils.toJsonValue(csvRecord, 67)}
+			"codEntrata": ${csvUtils.toJsonValue(csvRecord, 67)}
 			<#elseif !csvUtils.isEmpty(csvRecord, 68)>
 			"tipoBollo": ${csvUtils.toJsonValue(csvRecord, 68)},
        		"hashDocumento": ${csvUtils.toJsonValue(csvRecord, 69)},
@@ -162,7 +160,7 @@
 			"importo": ${csvUtils.toJsonValue(csvRecord, 72)},
 			"descrizione": ${csvUtils.toJsonValue(csvRecord, 73)},
 			<#if !csvUtils.isEmpty(csvRecord, 78)>
-			"tipoEntrata": ${csvUtils.toJsonValue(csvRecord, 78)}
+			"codEntrata": ${csvUtils.toJsonValue(csvRecord, 78)}
 			<#elseif !csvUtils.isEmpty(csvRecord, 79)>
 			"tipoBollo": ${csvUtils.toJsonValue(csvRecord, 79)},
        		"hashDocumento": ${csvUtils.toJsonValue(csvRecord, 80)},
