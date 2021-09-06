@@ -219,6 +219,8 @@ public class GovpayConfig {
 		this.numeroMassimoConnessioniPerRouteDefault = 20;
 		this.numeroMassimoConnessioniPerPool = 200;
 		
+		this.aggiornamentoValiditaMandatorio = false;
+		
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -677,6 +679,10 @@ public class GovpayConfig {
 				log.info("Proprieta \"it.govpay.client.numeroMassimoConnessioniPerRouteDefault\" impostata com valore di default 20");
 				this.numeroMassimoConnessioniPerRouteDefault = 20;
 			}
+			
+			String aggiornamentoValiditaMandatorioString = getProperty("it.govpay.context.aggiornamentoValiditaMandatorio", this.props, false, log);
+			if(aggiornamentoValiditaMandatorioString != null && Boolean.valueOf(aggiornamentoValiditaMandatorioString))
+				this.aggiornamentoValiditaMandatorio = true;
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
