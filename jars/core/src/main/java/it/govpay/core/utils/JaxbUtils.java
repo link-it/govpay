@@ -225,6 +225,40 @@ public class JaxbUtils {
 		return jaxbUnmarshaller.unmarshal(xsr);
 	}
 	
+	public static void marshalJPPAPdPExternalService(Object jaxb, OutputStream os) throws JAXBException, SAXException {
+		if(jaxb == null) return;
+		init();
+		Marshaller jaxbMarshaller = jaxbWsJPPAPdPExternalContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.marshal(jaxb, os);
+	}
+	
+	public static String marshalJPPAPdPExternalService(Object jaxb) throws JAXBException, SAXException {
+		if(jaxb == null) return null;
+		init();
+		Marshaller jaxbMarshaller = jaxbWsJPPAPdPExternalContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		jaxbMarshaller.marshal(jaxb, baos);
+		return new String(baos.toByteArray());
+	}
+	
+	public static Object unmarshalJPPAPdPExternalService(XMLStreamReader xsr) throws JAXBException, SAXException {
+		init();
+		Unmarshaller jaxbUnmarshaller = jaxbWsJPPAPdPExternalContext.createUnmarshaller();
+		return jaxbUnmarshaller.unmarshal(xsr);
+	}
+	
+	public static Object unmarshalJPPAPdPExternalService(XMLStreamReader xsr, Schema schema) throws JAXBException, SAXException {
+		if(schema == null) return unmarshalJPPAPdPExternalService(xsr);
+		
+		init();
+		Unmarshaller jaxbUnmarshaller = jaxbWsJPPAPdPExternalContext.createUnmarshaller();
+		jaxbUnmarshaller.setSchema(schema);
+		jaxbUnmarshaller.setEventHandler(new JaxbUtils().new GpEventHandler());
+		return jaxbUnmarshaller.unmarshal(xsr);
+	}
+	
 	public class GpEventHandler implements ValidationEventHandler {
 		@Override
 		public boolean handleEvent(ValidationEvent ve) {

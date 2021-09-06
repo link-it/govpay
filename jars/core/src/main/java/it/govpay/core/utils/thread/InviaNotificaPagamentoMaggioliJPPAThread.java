@@ -1,11 +1,7 @@
 package it.govpay.core.utils.thread;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
-
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
@@ -45,11 +41,6 @@ import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.
 
 public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 	
-	// root element elemento di input
-	public static final String INVIA_ESITO_PAGAMENTO_RICHIESTA_ROOT_ELEMENT_NAME = "InviaEsitoPagamentoRichiesta"; 
-	public static final String CDATA_TOKEN_START = "<![CDATA["; 
-	public static final String CDATA_TOKEN_END = "]]>"; 
-
 	private Rpt rpt;
 	private static Logger log = LoggerWrapperFactory.getLogger(InviaRptThread.class);
 	private IContext ctx = null;
@@ -142,11 +133,11 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 				return;
 			}
 			
-			JAXBElement<InviaEsitoPagamentoRichiesta> jaxbElement = new JAXBElement<InviaEsitoPagamentoRichiesta>(new QName("", INVIA_ESITO_PAGAMENTO_RICHIESTA_ROOT_ELEMENT_NAME), 
+			JAXBElement<InviaEsitoPagamentoRichiesta> jaxbElement = new JAXBElement<InviaEsitoPagamentoRichiesta>(new QName("",  MaggioliJPPAUtils.INVIA_ESITO_PAGAMENTO_RICHIESTA_ROOT_ELEMENT_NAME), 
 					InviaEsitoPagamentoRichiesta.class, null, inviaEsitoPagamentoRichiesta);
 			
 			String xmlDettaglioRichiesta = MaggioliJPPAUtils.getBodyAsString(false, jaxbElement, null);
-			richiestaStandard.setXmlDettaglioRichiesta(CDATA_TOKEN_START + xmlDettaglioRichiesta + CDATA_TOKEN_END);
+			richiestaStandard.setXmlDettaglioRichiesta( MaggioliJPPAUtils.CDATA_TOKEN_START + xmlDettaglioRichiesta +  MaggioliJPPAUtils.CDATA_TOKEN_END);
 			CtRispostaStandard rispostaStandard = client.maggioliJPPAInviaEsitoPagamentoRichiesta(richiestaStandard);
 
 			this.esito = rispostaStandard.getEsito().toString();
