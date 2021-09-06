@@ -129,7 +129,7 @@ public class Rpt {
 								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: errore di interazione con il servizio di verifica.");
 								throw new GovPayException(EsitoOperazione.VER_014, codApplicazione, codVersamentoEnte, e.getMessage());
 							} catch (VersamentoNonValidoException e) {
-								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: errore di validazine dei dati ricevuti dal servizio di verifica.");
+								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: errore di validazione dei dati ricevuti dal servizio di verifica.");
 								throw new GovPayException(EsitoOperazione.VER_014, codApplicazione, codVersamentoEnte, e.getMessage());
 							}
 						}
