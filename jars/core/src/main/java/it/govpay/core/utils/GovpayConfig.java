@@ -200,6 +200,9 @@ public class GovpayConfig {
 		
 		this.batchCaricamentoTracciatiNotificaPagamenti = false;
 		this.ricercaRiconciliazioniIdFlussoCaseInsensitive = false;
+		
+		this.aggiornamentoValiditaMandatorio = false;
+		
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -596,6 +599,10 @@ public class GovpayConfig {
 			String ricercaRiconciliazioniIdFlussoCaseInsensitiveString = getProperty("it.govpay.riconciliazione.idFlussoCaseInsensitive.enabled", this.props, false, log);
 			if(ricercaRiconciliazioniIdFlussoCaseInsensitiveString != null && Boolean.valueOf(ricercaRiconciliazioniIdFlussoCaseInsensitiveString))
 				this.ricercaRiconciliazioniIdFlussoCaseInsensitive = true;
+			
+			String aggiornamentoValiditaMandatorioString = getProperty("it.govpay.context.aggiornamentoValiditaMandatorio", this.props, false, log);
+			if(aggiornamentoValiditaMandatorioString != null && Boolean.valueOf(aggiornamentoValiditaMandatorioString))
+				this.aggiornamentoValiditaMandatorio = true;
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
