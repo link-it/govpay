@@ -41,7 +41,9 @@
 		</b:bean>
 		
 		<!-- handlers -->
-		<b:bean id="messageLoggingHandlerV1" class="it.govpay.web.handler.MessageLoggingHandlerNDP_010702"></b:bean>
+		<b:bean id="messageLoggingHandlerV1" class="it.govpay.web.handler.MessageLoggingHandlerNDP_010702">
+			<b:property name="apiName" value="API_MAGGIOLI_JPPA" />
+		</b:bean>
 		
 		<jaxws:endpoint id="apiMaggioliJPPAV1" address="/JppaPdpExternalFacetService" implementorClass="it.govpay.jppapdp.web.ws.JppaPdpExternalFacetServiceImpl">
 			<jaxws:handlers>

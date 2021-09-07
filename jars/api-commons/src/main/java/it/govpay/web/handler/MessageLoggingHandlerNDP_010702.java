@@ -41,11 +41,13 @@ import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.EventoContext.Categoria;
+import it.govpay.core.utils.EventoContext.Componente;
 
 public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageContext> {
 
 	private static Logger log = LoggerWrapperFactory.getLogger(MessageLoggingHandlerNDP_010702.class);
 	private static final String SOAP_ACTION = "SOAPAction";
+	private String apiName;
 
 	@Override
 	public Set<QName> getHeaders() {
@@ -86,7 +88,7 @@ public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageC
 					if(smc.get(MessageContext.WSDL_OPERATION) != null)
 		    			MDC.put(MD5Constants.OPERATION_ID, ((QName) smc.get(MessageContext.WSDL_OPERATION)).getLocalPart());
 					MDC.put(MD5Constants.TRANSACTION_ID, context.getTransactionId());
-					GpContext.popolaGpContext(ctx, smc, GpContext.TIPO_SERVIZIO_NDP, 010702);
+					GpContext.popolaGpContext(ctx, smc, GpContext.TIPO_SERVIZIO_NDP, 010702, this.getApiNameEnum());
 					
 					
 					Map<String, List<String>> httpHeaders = (Map<String, List<String>>) smc.get(MessageContext.HTTP_REQUEST_HEADERS);
@@ -119,6 +121,18 @@ public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageC
 			log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
 			return true;
 		}
+	}
+	
+	public Componente getApiNameEnum() {
+		return Componente.valueOf(this.apiName);
+	}
+
+	public String getApiName() {
+		return apiName;
+	}
+
+	public void setApiName(String apiName) {
+		this.apiName = apiName;
 	}
 }
 

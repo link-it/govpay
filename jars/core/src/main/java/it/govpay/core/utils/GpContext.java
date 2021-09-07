@@ -86,12 +86,12 @@ public class GpContext extends ApplicationContext {
 		super();
 	}
 
-	public GpContext(MessageContext msgCtx, String tipoServizio, int versioneServizio) throws ServiceException {
+	public GpContext(MessageContext msgCtx, String tipoServizio, int versioneServizio, Componente componente) throws ServiceException {
 		this();
-		popolaGpContext(this, msgCtx, tipoServizio, versioneServizio);
+		popolaGpContext(this, msgCtx, tipoServizio, versioneServizio, componente);
 	}
 	
-	public static void popolaGpContext(GpContext ctx, MessageContext msgCtx, String tipoServizio, int versioneServizio) throws ServiceException {
+	public static void popolaGpContext(GpContext ctx, MessageContext msgCtx, String tipoServizio, int versioneServizio, Componente componente) throws ServiceException {
 		ApplicationTransaction transaction = ctx.getTransaction();
 		transaction.setRole(Role.SERVER);
 		transaction.setProtocol(TIPO_PROTOCOLLO_WS);
