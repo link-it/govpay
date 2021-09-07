@@ -31,6 +31,8 @@ public class VocePendenzaValidator implements IValidable{
 			ValidatoreUtils.validaDescrizione(vf, "descrizione", this.vocePendenza.getDescrizione());
 			ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.vocePendenza.getDescrizioneCausaleRPT());
 			this.validaContabilita(vf);
+			if(this.vocePendenza.getIdDominio() != null)
+				vi.validaIdDominio("idDominio", this.vocePendenza.getIdDominio());
 
 			if(this.vocePendenza.getCodEntrata() != null) {
 				vi.validaIdEntrata("codEntrata", this.vocePendenza.getCodEntrata());
@@ -102,6 +104,10 @@ public class VocePendenzaValidator implements IValidable{
 					vf.getValidator("accertamento", contabilita.getAccertamento()).minLength(1).maxLength(64);
 					ValidatoreUtils.validaImporto(vf, "importo", contabilita.getImporto());
 
+					vf.getValidator("titolo", contabilita.getTitolo()).minLength(1).maxLength(64);
+					vf.getValidator("tipologia", contabilita.getTipologia()).minLength(1).maxLength(64);
+					vf.getValidator("categoria", contabilita.getCategoria()).minLength(1).maxLength(64);
+					vf.getValidator("articolo", contabilita.getArticolo()).minLength(1).maxLength(64);
 				}
 			}
 		}

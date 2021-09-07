@@ -151,6 +151,41 @@ public class IncassoFieldConverter extends AbstractSQLFieldConverter {
 				return "sct";
 			}
 		}
+		if(field.equals(Incasso.model().IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".identificativo";
+			}else{
+				return "identificativo";
+			}
+		}
+		if(field.equals(Incasso.model().IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv";
+			}else{
+				return "iuv";
+			}
+		}
+		if(field.equals(Incasso.model().COD_FLUSSO_RENDICONTAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_flusso_rendicontazione";
+			}else{
+				return "cod_flusso_rendicontazione";
+			}
+		}
+		if(field.equals(Incasso.model().STATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato";
+			}else{
+				return "stato";
+			}
+		}
+		if(field.equals(Incasso.model().DESCRIZIONE_STATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".descrizione_stato";
+			}else{
+				return "descrizione_stato";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -198,6 +233,21 @@ public class IncassoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Incasso.model(), returnAlias);
 		}
 		if(field.equals(Incasso.model().SCT)){
+			return this.toTable(Incasso.model(), returnAlias);
+		}
+		if(field.equals(Incasso.model().IDENTIFICATIVO)){
+			return this.toTable(Incasso.model(), returnAlias);
+		}
+		if(field.equals(Incasso.model().IUV)){
+			return this.toTable(Incasso.model(), returnAlias);
+		}
+		if(field.equals(Incasso.model().COD_FLUSSO_RENDICONTAZIONE)){
+			return this.toTable(Incasso.model(), returnAlias);
+		}
+		if(field.equals(Incasso.model().STATO)){
+			return this.toTable(Incasso.model(), returnAlias);
+		}
+		if(field.equals(Incasso.model().DESCRIZIONE_STATO)){
 			return this.toTable(Incasso.model(), returnAlias);
 		}
 

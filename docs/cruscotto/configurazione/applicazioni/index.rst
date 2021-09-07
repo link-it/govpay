@@ -76,21 +76,23 @@ In questa sottosezione sono contenute le informazioni che definiscono un'applica
 API Integrazione
 ^^^^^^^^^^^^^^^^
 
-In questa sottosezione sono contenute le informazioni che definiscono un'applicazione in tutti i suoi aspetti di interazione con il sistema dei pagamenti.
+La piattaforma GovPay utilizza le API di Notifica e Verifica esposte dagli applicativi integrati
+per completare gli scenari d'uso descritti nelle sezioni di integrazione. In questa sezione si
+definiscono i dettagli del connettore per l'invocazione delle API.
 
 .. figure:: ../../_images/40ApplicazioneAPIIntegrazione.png
    :align: center
    :name: ApplicazioneAPIIntegrazione
 
-   Sezione API Integrazione di un'applicazione
+   Connettore alle API di Integrazione
 
 .. csv-table:: Dettagli della sezione *API Integrazione* di una Applicazione
    :header: "Campo", "Significato"
    :widths: 40,60
 
-   "API Integrazione", "Endpoint del servizio del verticale che viene integrato da GovPay"
-   "Versione API", "Versione delle interfacce di integrazione utilizzate dall'applicazione"
-   "Tipo Autenticazione", "Modalità di autenticazione prevista: Nessuna, Http-Basic e SSL"
+   "API Integrazione", "URL di invocazione del servizio esposto dall'applicazione"
+   "Versione API", "Versione delle API da invocare"
+   "Tipo Autenticazione", "Modalità di autenticazione di GovPay verso le API"
 
 
 Autorizzazioni

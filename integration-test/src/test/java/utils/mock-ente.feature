@@ -83,6 +83,24 @@ Scenario: pathMatches(pagamentiPath+'/vTP/pendenze/{idDominio}/{idTipoPendenza}'
   * eval pendenza.idTipoPendenza = 'CODENTRATA'
   * def response = pendenza
 
+# Errore validazione
+Scenario: pathMatches(pagamentiPath+'/vERROREVALIDAZIONE/pendenze/{idA2A}/{idPendenza}') && methodIs('get')
+	* def responseStatus = 200  
+	* def response =  
+"""	
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV = "http://schemas.xmlsoap.org/soap/envelope/"
+   xmlns:xsi = "http://www.w3.org/1999/XMLSchema-instance"
+   xmlns:xsd = "http://www.w3.org/1999/XMLSchema">
+   <SOAP-ENV:Body>
+      <SOAP-ENV:Fault>
+         <faultcode xsi:type = "xsd:string">SOAP-ENV:Client</faultcode>
+         <faultstring xsi:type = "xsd:string">Failed to locate method</faultstring>
+      </SOAP-ENV:Fault>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+"""
+
 # Errore interno
 Scenario: pathMatches(pagamentiPath+'/vERROR/pendenze/{idDominio}/{idTipoPendenza}') && methodIs('post')
 	* def responseStatus = 500  
@@ -112,6 +130,16 @@ Scenario: pathMatches(pagamentiPath+'/v1/pagamenti/{idDominio}/{iuv}') && method
   * def responseStatus = repo[idDominio+iuv+ccp] == null ? 200: 201
   * eval repo[idDominio+iuv+ccp] = request    
   * eval repoByIdSession[paramValue('idSession')] = request   
+  
+  Scenario: pathMatches(pagamentiPath+'/v2/pagamenti/{idDominio}/{iuv}') && methodIs('post')
+  * def idDominio = pathParams.idDominio
+  * def iuv = pathParams.iuv
+  * def ccp = 'n_a'
+  * def repo = request.rt == null ? notificheAttivazione : notificheTerminazione
+  * def repoByIdSession = request.rt == null ? notificheAttivazioneByIdSession : notificheTerminazioneByIdSession
+  * def responseStatus = repo[idDominio+iuv+ccp] == null ? 200: 201
+  * eval repo[idDominio+iuv+ccp] = request    
+  * eval repoByIdSession[paramValue('idSession')] = request 
     
 Scenario: pathMatches(pagamentiPath+'/notificaAttivazione/{idDominio}/{iuv}/{ccp}') && methodIs('get')
   * def responseStatus = notificheAttivazione[pathParams.idDominio+pathParams.iuv+pathParams.ccp] == null ? 404: 200

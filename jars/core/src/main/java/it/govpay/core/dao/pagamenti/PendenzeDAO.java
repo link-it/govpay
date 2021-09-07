@@ -863,7 +863,7 @@ public class PendenzeDAO extends BaseDAO{
 				applicazioniBD.autorizzaApplicazione(putVersamentoDTO.getVersamento().getCodApplicazione(), applicazioneAutenticata, configWrapper);
 
 
-			boolean generaIuv = versamento.getNumeroAvviso() == null && versamento.getSingoliVersamenti().size() == 1;
+			boolean generaIuv = VersamentoUtils.generaIUV(versamento, configWrapper);
 			versamento = versamentoBusiness.caricaVersamento(versamento, generaIuv, true, putVersamentoDTO.getAvvisatura(), putVersamentoDTO.getDataAvvisatura(),null);
 			createOrUpdatePendenzaResponse.setCreated(versamento.isCreated());
 			createOrUpdatePendenzaResponse.setVersamento(versamento);
@@ -1015,8 +1015,8 @@ public class PendenzeDAO extends BaseDAO{
 			chiediVersamento.setTipo(putVersamentoDTO.getTipo());
 
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
-			boolean generaIuv = chiediVersamento.getNumeroAvviso() == null && chiediVersamento.getSingoliVersamenti().size() == 1;
-			versamentoBusiness.caricaVersamento(chiediVersamento, generaIuv, true, putVersamentoDTO.getAvvisatura(), putVersamentoDTO.getDataAvvisatura(),null);
+			boolean generaIuv = VersamentoUtils.generaIUV(chiediVersamento, configWrapper);
+			versamentoBusiness.caricaVersamento(chiediVersamento, generaIuv, true, putVersamentoDTO.getAvvisatura(), putVersamentoDTO.getDataAvvisatura(),null, putVersamentoDTO.isInserimentoDB());
 
 			// restituisco il versamento creato
 			createOrUpdatePendenzaResponse.setVersamento(chiediVersamento);

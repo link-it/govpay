@@ -35,7 +35,7 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="id-incasso">
  * 		&lt;sequence>
- * 			&lt;element name="trn" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="identificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codDominio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -51,7 +51,7 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "id-incasso", 
   propOrder = {
-  	"trn",
+  	"identificativo",
   	"codDominio"
   }
 )
@@ -76,12 +76,12 @@ public class IdIncasso extends org.openspcoop2.utils.beans.BaseBean implements S
 		this.id=new Long(-1);
   }
 
-  public java.lang.String getTrn() {
-    return this.trn;
+  public java.lang.String getIdentificativo() {
+    return this.identificativo;
   }
 
-  public void setTrn(java.lang.String trn) {
-    this.trn = trn;
+  public void setIdentificativo(java.lang.String identificativo) {
+    this.identificativo = identificativo;
   }
 
   public java.lang.String getCodDominio() {
@@ -100,8 +100,8 @@ public class IdIncasso extends org.openspcoop2.utils.beans.BaseBean implements S
 
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="trn",required=true,nillable=false)
-  protected java.lang.String trn;
+  @XmlElement(name="identificativo",required=true,nillable=false)
+  protected java.lang.String identificativo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codDominio",required=true,nillable=false)

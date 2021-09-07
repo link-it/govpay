@@ -15,7 +15,9 @@ import it.govpay.core.beans.JSONSerializable;
 "descrizione",
 "datiAllegati",
 "descrizioneCausaleRPT",
+"contabilita",
 "pendenza",
+"dominio",
 })
 public class VocePendenza extends JSONSerializable {
   
@@ -37,8 +39,14 @@ public class VocePendenza extends JSONSerializable {
   @JsonProperty("descrizioneCausaleRPT")
   private String descrizioneCausaleRPT = null;
   
+  @JsonProperty("contabilita")
+  private Contabilita contabilita = null;
+  
   @JsonProperty("pendenza")
   private Pendenza pendenza = null;
+  
+  @JsonProperty("dominio")
+  private Dominio dominio = null;
   
   /**
    * indice di voce all'interno della pendenza
@@ -138,6 +146,21 @@ public class VocePendenza extends JSONSerializable {
 
   /**
    **/
+  public VocePendenza contabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
+    return this;
+  }
+
+  @JsonProperty("contabilita")
+  public Contabilita getContabilita() {
+    return contabilita;
+  }
+  public void setContabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
+  }
+
+  /**
+   **/
   public VocePendenza pendenza(Pendenza pendenza) {
     this.pendenza = pendenza;
     return this;
@@ -149,6 +172,21 @@ public class VocePendenza extends JSONSerializable {
   }
   public void setPendenza(Pendenza pendenza) {
     this.pendenza = pendenza;
+  }
+
+  /**
+   **/
+  public VocePendenza dominio(Dominio dominio) {
+    this.dominio = dominio;
+    return this;
+  }
+
+  @JsonProperty("dominio")
+  public Dominio getDominio() {
+    return dominio;
+  }
+  public void setDominio(Dominio dominio) {
+    this.dominio = dominio;
   }
 
   @Override
@@ -166,12 +204,14 @@ public class VocePendenza extends JSONSerializable {
         Objects.equals(descrizione, vocePendenza.descrizione) &&
         Objects.equals(datiAllegati, vocePendenza.datiAllegati) &&
         Objects.equals(descrizioneCausaleRPT, vocePendenza.descrizioneCausaleRPT) &&
-        Objects.equals(pendenza, vocePendenza.pendenza);
+        Objects.equals(contabilita, vocePendenza.contabilita) &&
+        Objects.equals(pendenza, vocePendenza.pendenza) &&
+        Objects.equals(dominio, vocePendenza.dominio);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(indice, idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, pendenza);
+    return Objects.hash(indice, idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, pendenza, dominio);
   }
 
   public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -194,7 +234,9 @@ public class VocePendenza extends JSONSerializable {
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
+    sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
+    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("}");
     return sb.toString();
   }

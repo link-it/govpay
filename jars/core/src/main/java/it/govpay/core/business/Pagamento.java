@@ -51,11 +51,14 @@ import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.PagamentiBD;
+import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.core.beans.EsitoOperazione;
@@ -69,7 +72,7 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.RrUtils;
-import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaNotificaThread;
@@ -547,6 +550,81 @@ public class Pagamento   {
 			return rr;
 		} catch (NotFoundException e) {
 			throw new GovPayException(EsitoOperazione.PAG_010);
+		}
+	}
+	
+	public String chiusuraRPTScadute(IContext ctx) throws GovPayException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		List<String> response = new ArrayList<>();
+		RptBD rptBD = null;
+		try {
+			DominiBD dominiBD = new DominiBD(configWrapper);
+			DominioFilter filter = dominiBD.newFilter();
+			
+			List<String> codDomini  = dominiBD.findAllCodDominio(filter);
+			
+			rptBD = new RptBD(configWrapper);
+			
+			rptBD.setupConnection(configWrapper.getTransactionID());
+			
+			rptBD.setAtomica(false);
+			
+			PagamentiPortaleBD ppbd = new PagamentiPortaleBD(rptBD);
+			
+			ppbd.setAtomica(false);
+
+			for (String codDominio : codDomini) {
+				int offset = 0;
+				int limit = 100;
+				List<Rpt> rtList = rptBD.getRptScadute(codDominio, GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins(), offset, limit);
+				log.trace("Identificate su GovPay per il Dominio ["+codDominio+"]: " + rtList.size() + " transazioni scadute da piu' di ["+GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()+"] minuti.");
+				do {
+					if(rtList.size() > 0) {
+						for (Rpt rpt : rtList) {
+							try {
+								rptBD.setAutoCommit(false);
+
+								rpt.setStato(StatoRpt.RPT_SCADUTA);
+								rpt.setDescrizioneStato("Tentativo di pagamento scaduto dopo timeout di "+GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()+" minuti.");
+								PagamentoPortale oldPagamentoPortale = rpt.getPagamentoPortale();
+								oldPagamentoPortale.setStato(STATO.NON_ESEGUITO);
+								oldPagamentoPortale.setDescrizioneStato("Tentativo di pagamento scaduto dopo timeout di "+GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()+" minuti.");
+
+								rptBD.updateRpt(rpt.getId(), rpt);
+								ppbd.updatePagamento(oldPagamentoPortale);
+								
+								rptBD.commit();
+								log.info("RPT [idDominio:"+rpt.getCodDominio()+"][iuv:"+rpt.getIuv()+"][ccp:"+rpt.getCcp()+"] annullata con successo.");
+								
+							}catch(ServiceException e) {
+								rptBD.rollback();
+								log.error("Errore durante l'annullamento della RPT [idDominio:"+rpt.getCodDominio()+"][iuv:"+rpt.getIuv()+"][ccp:"+rpt.getCcp()+"]: " +e .getMessage(), e);
+								throw e;
+							}finally {
+								rptBD.setAutoCommit(false);
+							}
+						}
+						log.trace("Completato inserimento ["+rtList.size()+"] RT nel file di sintesi pagamenti");
+					}
+
+					offset += limit;
+					rtList = rptBD.getRptScadute(codDominio, GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins(), offset, limit);
+					log.trace("Identificate su GovPay per il Dominio ["+codDominio+"]: " + rtList.size() + " transazioni scadute da piu' di ["+GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()+"] minuti.");
+				}while(rtList.size() > 0);
+			}
+		} catch (Exception e) {
+			log.warn("Fallito aggiornamento pendenti", e);
+			throw new GovPayException(EsitoOperazione.INTERNAL, e);
+		} finally {
+			if(rptBD != null) {
+				rptBD.closeConnection();
+			}
+		}
+
+		if(response.isEmpty()) {
+			return "Chiusura RPT Scadute#Nessuna RPT pendente.";
+		} else {
+			return StringUtils.join(response,"|");
 		}
 	}
 }

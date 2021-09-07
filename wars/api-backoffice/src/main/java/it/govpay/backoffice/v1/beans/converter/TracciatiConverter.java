@@ -120,7 +120,8 @@ public class TracciatiConverter {
 		
 		it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = leggiBeanDati(tracciato.getBeanDati());
 		
-		rsModel.setOperatoreMittente(tracciato.getOperatore(null).getNome());
+		if(tracciato.getOperatore(null) != null)
+			rsModel.setOperatoreMittente(tracciato.getOperatore(null).getNome());
 		rsModel.setNumeroOperazioniEseguite(BigDecimal.valueOf(beanDati.getNumAddOk() + beanDati.getNumDelOk()));
 		rsModel.setNumeroOperazioniFallite(BigDecimal.valueOf(beanDati.getNumAddKo() + beanDati.getNumDelKo()));
 		rsModel.setNumeroOperazioniTotali(BigDecimal.valueOf(beanDati.getNumAddTotali() + beanDati.getNumDelTotali()));

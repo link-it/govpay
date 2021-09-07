@@ -112,6 +112,7 @@ public class VerificaConverter {
 				sv.setImporto(vocePendenza.getImporto());
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				sv.setContabilita(contabilitaToStringDTO(vocePendenza.getContabilita()));
+				sv.setCodDominio(vocePendenza.getIdDominio());
 
 				// Definisce i dati di un bollo telematico
 				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
@@ -195,6 +196,7 @@ public class VerificaConverter {
 					break;
 				}				
 			}
+			dto.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
 		}
 		
 		return dto;
@@ -240,6 +242,10 @@ public class VerificaConverter {
 		rsModel.setCapitolo(dto.getCapitolo());
 		rsModel.setImporto(dto.getImporto());
 		rsModel.setProprietaCustom(dto.getProprietaCustom());
+		rsModel.setTitolo(dto.getTitolo());
+		rsModel.setTipologia(dto.getTipologia());
+		rsModel.setCategoria(dto.getCategoria());
+		rsModel.setArticolo(dto.getArticolo());
 		
 		return rsModel;
 	}

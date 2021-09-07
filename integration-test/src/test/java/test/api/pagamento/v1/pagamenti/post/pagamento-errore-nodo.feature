@@ -69,7 +69,7 @@ And headers spidHeaders
 And request pagamentoPost
 When method post
 Then status 502
-And match response == { id: '#notnull', location: '#notnull', categoria : 'PAGOPA', codice : 'PAA_NODO_INDISPONIBILE', descrizione: '#notnull' }
+And match response == { id: '#notnull', location: '#notnull', categoria : 'PAGOPA', codice : 'PAA_NODO_INDISPONIBILE', descrizione: '#notnull' , dettaglio: '#notnull'}
 
 Given url pagamentiBaseurl
 And path '/pagamenti/', response.id

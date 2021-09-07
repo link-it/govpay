@@ -69,6 +69,7 @@ import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
+import it.govpay.model.Rpt.Versione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
@@ -248,6 +249,13 @@ public class RtUtils extends NdpValidationUtils {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
 			}
 			
+			// se provo ad acquisire un RT da cruscotto deve essere solo ti vecchio tipo
+			if(acquisizioneDaCruscotto) {
+				if(!rpt.getVersione().equals(Versione.SANP_230)) {
+					throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, "Aggiornamento di RT versione "+rpt.getVersione()+" non supportata tramite cruscotto.", rpt.getCodDominio());
+				}
+			}
+			
 			// Faccio adesso la select for update, altrimenti in caso di 
 			// ricezione di due RT afferenti allo stesso carrello di pagamento
 			// vado in deadlock tra la getRpt precedente e la findAll seguente
@@ -320,6 +328,37 @@ public class RtUtils extends NdpValidationUtils {
 				throw e;
 			} catch (SAXException e) {
 				throw e;
+			}
+			
+			// Caso anomalo. RT gia' acquisita, ma non registrata correttamente:
+			if(rpt.getXmlRt() != null && (rpt.getStato().equals(StatoRpt.RPT_ACCETTATA_NODO) || rpt.getStato().equals(StatoRpt.RPT_ACCETTATA_PSP))) {
+				try {
+					CtRicevutaTelematica oldRT = JaxbUtils.toRT(rpt.getXmlRt(), true);
+					if(oldRT.getIdentificativoMessaggioRicevuta().equals(ctRt.getIdentificativoMessaggioRicevuta()) 
+							&& rpt.getEsitoPagamento() != null 
+							&& rpt.getImportoTotalePagato() != null
+							&& rpt.getDenominazioneAttestante() != null ) {
+						rpt.setImportoTotalePagato(ctRt.getDatiPagamento().getImportoTotalePagato());
+						rpt.setStato(StatoRpt.RT_ACCETTATA_PA);
+						rpt.setDescrizioneStato(null);
+						try {
+							rptBD.updateRpt(rpt.getId(), rpt);
+							rptBD.commit();
+						}catch (ServiceException e1) {
+							rptBD.rollback();
+							throw e1;
+						} finally {
+							rptBD.disableSelectForUpdate();
+						}
+						throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "RT già acquisita in data " + rpt.getDataMsgRicevuta(), rpt.getCodDominio());
+					}
+				} catch (ServiceException e) {
+					log.warn("Errore nella gestione di una RT gia' acquisita", e);
+				} catch (JAXBException e) {
+					log.warn("Errore nella gestione di una RT gia' acquisita", e);
+				} catch (SAXException e) {
+					log.warn("Errore nella gestione di una RT gia' acquisita", e);
+				}
 			}
 			
 			if(acquisizioneDaCruscotto) {

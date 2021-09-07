@@ -125,9 +125,10 @@ CREATE TABLE domini
 	cod_connettore_secim VARCHAR(255),
 	cod_connettore_gov_pay VARCHAR(255),
 	cod_connettore_hyper_sic_apk VARCHAR(255),
+	intermediato BIT NOT NULL,
 	-- fk/pk columns
 	id BIGINT IDENTITY,
-	id_stazione BIGINT NOT NULL,
+	id_stazione BIGINT,
 	id_applicazione_default BIGINT,
 	-- unique constraints
 	CONSTRAINT unique_domini_1 UNIQUE (cod_dominio),
@@ -633,11 +634,13 @@ CREATE TABLE singoli_versamenti
 	id_tributo BIGINT,
 	id_iban_accredito BIGINT,
 	id_iban_appoggio BIGINT,
+	id_dominio BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_sng_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_sng_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
 	CONSTRAINT fk_sng_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
 	CONSTRAINT fk_sng_id_iban_appoggio FOREIGN KEY (id_iban_appoggio) REFERENCES iban_accredito(id),
+	CONSTRAINT fk_sng_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_singoli_versamenti PRIMARY KEY (id)
 );
 
@@ -775,6 +778,7 @@ CREATE TABLE rpt
 	descrizione_stato_cons VARCHAR(512),
 	data_conservazione DATETIME2,
 	bloccante BIT NOT NULL DEFAULT 'true',
+	versione VARCHAR(35) NOT NULL,
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_versamento BIGINT NOT NULL,
@@ -947,7 +951,7 @@ CREATE TABLE incassi
 (
 	trn VARCHAR(35) NOT NULL,
 	cod_dominio VARCHAR(35) NOT NULL,
-	causale VARCHAR(512) NOT NULL,
+	causale VARCHAR(512),
 	importo DECIMAL(15,2) NOT NULL,
 	data_valuta DATE,
 	data_contabile DATE,
@@ -955,12 +959,17 @@ CREATE TABLE incassi
 	nome_dispositivo VARCHAR(512),
 	iban_accredito VARCHAR(35),
 	sct VARCHAR(35),
+	identificativo VARCHAR(35) NOT NULL,
+	iuv VARCHAR(35),
+	cod_flusso_rendicontazione VARCHAR(35),
+	stato VARCHAR(35) NOT NULL,
+	descrizione_stato VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_applicazione BIGINT,
 	id_operatore BIGINT,
 	-- unique constraints
-	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn),
+	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,identificativo),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
@@ -1849,7 +1858,8 @@ rpt.cod_transazione_rt as cod_transazione_rt,
 rpt.stato_conservazione as stato_conservazione,            
 rpt.descrizione_stato_cons as descrizione_stato_cons,         
 rpt.data_conservazione as data_conservazione,             
-rpt.bloccante as bloccante,                      
+rpt.bloccante as bloccante,   
+rpt.versione as versione,                    
 rpt.id as id,                             
 rpt.id_pagamento_portale as id_pagamento_portale, 
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,

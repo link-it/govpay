@@ -37,7 +37,7 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="trn" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="causale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="causale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="importo" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataValuta" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataContabile" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0" maxOccurs="1"/>
@@ -47,6 +47,11 @@ import java.io.Serializable;
  * 			&lt;element name="idOperatore" type="{http://www.govpay.it/orm}id-operatore" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ibanAccredito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="sct" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="identificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codFlussoRendicontazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -72,7 +77,12 @@ import java.io.Serializable;
   	"idApplicazione",
   	"idOperatore",
   	"ibanAccredito",
-  	"sct"
+  	"sct",
+  	"identificativo",
+  	"iuv",
+  	"codFlussoRendicontazione",
+  	"stato",
+  	"descrizioneStato"
   }
 )
 
@@ -192,6 +202,46 @@ public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.sct = sct;
   }
 
+  public java.lang.String getIdentificativo() {
+    return this.identificativo;
+  }
+
+  public void setIdentificativo(java.lang.String identificativo) {
+    this.identificativo = identificativo;
+  }
+
+  public java.lang.String getIuv() {
+    return this.iuv;
+  }
+
+  public void setIuv(java.lang.String iuv) {
+    this.iuv = iuv;
+  }
+
+  public java.lang.String getCodFlussoRendicontazione() {
+    return this.codFlussoRendicontazione;
+  }
+
+  public void setCodFlussoRendicontazione(java.lang.String codFlussoRendicontazione) {
+    this.codFlussoRendicontazione = codFlussoRendicontazione;
+  }
+
+  public java.lang.String getStato() {
+    return this.stato;
+  }
+
+  public void setStato(java.lang.String stato) {
+    this.stato = stato;
+  }
+
+  public java.lang.String getDescrizioneStato() {
+    return this.descrizioneStato;
+  }
+
+  public void setDescrizioneStato(java.lang.String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -220,7 +270,7 @@ public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Ser
   protected java.lang.String codDominio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="causale",required=true,nillable=false)
+  @XmlElement(name="causale",required=false,nillable=false)
   protected java.lang.String causale;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
@@ -259,5 +309,25 @@ public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="sct",required=false,nillable=false)
   protected java.lang.String sct;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="identificativo",required=true,nillable=false)
+  protected java.lang.String identificativo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="iuv",required=false,nillable=false)
+  protected java.lang.String iuv;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codFlussoRendicontazione",required=false,nillable=false)
+  protected java.lang.String codFlussoRendicontazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="stato",required=true,nillable=false)
+  protected java.lang.String stato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="descrizioneStato",required=false,nillable=false)
+  protected java.lang.String descrizioneStato;
 
 }

@@ -20,6 +20,7 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -147,6 +148,40 @@ public class RptBD extends BasicBD {
 			exp.equals(RPT.model().COD_MSG_RICHIESTA, codMsgRichiesta);
 			RPT rptVO = this.getRptService().find(exp);
 			return RptConverter.toDTO(rptVO);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public Rpt getRpt(String codDominio, String iuv) throws NotFoundException, ServiceException {
+		return this.getRpt(codDominio, iuv, false);
+	}
+	
+	public Rpt getRpt(String codDominio, String iuv, boolean deep) throws NotFoundException, ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getRptService().newExpression();
+			exp.equals(RPT.model().COD_DOMINIO, codDominio);
+			exp.equals(RPT.model().IUV, iuv);
+			RPT rptVO = this.getRptService().find(exp);
+			Rpt dto = RptConverter.toDTO(rptVO);
+			
+			popolaRpt(deep, dto);
+			
+			return dto;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -321,8 +356,65 @@ public class RptBD extends BasicBD {
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
 			
+			// questa procedura di recupero e' disponibile solo per le RPT SANP 2.3
+			exp.and();
+			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.Versione.SANP_230.toString());
+			
 			List<RPT> findAll = this.getRptService().findAll(exp);
 			return RptConverter.toDTOList(findAll);
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public List<Rpt> getRptScadute(String codDominio, Integer minutiSogliaScadenza, Integer offset, Integer limit) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IPaginatedExpression exp = this.getRptService().newPaginatedExpression();
+			exp.equals(RPT.model().COD_DOMINIO, codDominio);
+			exp.and();
+			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.Versione.SANP_240.toString());
+			
+			Date now = new Date();
+			Calendar c = Calendar.getInstance();
+			c.setTime(now);
+			c.add(Calendar.MINUTE, -minutiSogliaScadenza);
+			Date dataSoglia = c.getTime();
+			exp.lessThan(RPT.model().DATA_MSG_RICHIESTA, dataSoglia);
+			
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_NODO.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
+			
+			exp.offset(offset).limit(limit);
+			exp.addOrder(RPT.model().DATA_MSG_RICEVUTA, SortOrder.ASC);
+			
+			List<Rpt> rptLst = new ArrayList<>();
+			List<it.govpay.orm.RPT> rptVOLst = this.getRptService().findAll(exp);
+			for(it.govpay.orm.RPT rptVO: rptVOLst) {
+				Rpt rpt = RptConverter.toDTO(rptVO);
+				
+				try {
+					popolaRpt(true, rpt);
+				}catch (NotFoundException e) {} // pagamentoportale puo' non esserci
+				
+				rptLst.add(rpt);
+			}
+			
+			return rptLst;
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {

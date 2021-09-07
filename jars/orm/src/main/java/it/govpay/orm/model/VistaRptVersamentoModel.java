@@ -76,6 +76,7 @@ public class VistaRptVersamentoModel extends AbstractModel<VistaRptVersamento> {
 		this.DESCRIZIONE_STATO_CONS = new Field("descrizioneStatoCons",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.DATA_CONSERVAZIONE = new Field("dataConservazione",java.util.Date.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.BLOCCANTE = new Field("bloccante",boolean.class,"VistaRptVersamento",VistaRptVersamento.class);
+		this.VERSIONE = new Field("versione",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_ID = new Field("vrsId",long.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_COD_VERSAMENTO_ENTE = new Field("vrsCodVersamentoEnte",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_NOME = new Field("vrsNome",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
@@ -174,6 +175,7 @@ public class VistaRptVersamentoModel extends AbstractModel<VistaRptVersamento> {
 		this.DESCRIZIONE_STATO_CONS = new ComplexField(father,"descrizioneStatoCons",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.DATA_CONSERVAZIONE = new ComplexField(father,"dataConservazione",java.util.Date.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.BLOCCANTE = new ComplexField(father,"bloccante",boolean.class,"VistaRptVersamento",VistaRptVersamento.class);
+		this.VERSIONE = new ComplexField(father,"versione",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_ID = new ComplexField(father,"vrsId",long.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_COD_VERSAMENTO_ENTE = new ComplexField(father,"vrsCodVersamentoEnte",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
 		this.VRS_NOME = new ComplexField(father,"vrsNome",java.lang.String.class,"VistaRptVersamento",VistaRptVersamento.class);
@@ -304,6 +306,8 @@ public class VistaRptVersamentoModel extends AbstractModel<VistaRptVersamento> {
 	public IField DATA_CONSERVAZIONE = null;
 	 
 	public IField BLOCCANTE = null;
+	 
+	public IField VERSIONE = null;
 	 
 	public IField VRS_ID = null;
 	 

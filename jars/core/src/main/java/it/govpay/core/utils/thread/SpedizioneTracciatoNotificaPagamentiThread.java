@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -83,7 +84,7 @@ import it.govpay.core.utils.ExceptionUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.EnteRendicontazioniClient;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
@@ -94,6 +95,9 @@ import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
 import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
 
 public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
+
+	private static final String OGGETTO_DEFAULT_MAIL_GOVPAY_EXPORT_PAGAMENTI_TIPO_AL_DATA = "[GovPay] Export pagamenti {0} al {1}.";
+
 
 	public enum Operazione {
 		
@@ -772,7 +776,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		if(connettore.getEmailSubject() != null && !connettore.getEmailSubject().isEmpty()) {
 			mail.setSubject(connettore.getEmailSubject());
 		} else {
-			mail.setSubject("[Govpay] Export pagamenti "+tipoTracciatoString+"al " + dataFine + ".");
+			mail.setSubject(MessageFormat.format(OGGETTO_DEFAULT_MAIL_GOVPAY_EXPORT_PAGAMENTI_TIPO_AL_DATA, tipoTracciatoString, dataFine));
 		}
 		
 		StringBuilder  sb = new StringBuilder();

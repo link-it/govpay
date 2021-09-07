@@ -13,6 +13,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "importo",
 "accertamento",
 "proprietaCustom",
+"titolo",
+"tipologia",
+"categoria",
+"articolo",
 })
 public class QuotaContabilita {
   
@@ -30,6 +34,18 @@ public class QuotaContabilita {
   
   @JsonProperty("proprietaCustom")
   private Object proprietaCustom = null;
+  
+  @JsonProperty("titolo")
+  private String titolo = null;
+  
+  @JsonProperty("tipologia")
+  private String tipologia = null;
+  
+  @JsonProperty("categoria")
+  private String categoria = null;
+  
+  @JsonProperty("articolo")
+  private String articolo = null;
   
   /**
    * Codice del capitolo
@@ -111,6 +127,70 @@ public class QuotaContabilita {
     this.proprietaCustom = proprietaCustom;
   }
 
+  /**
+   * Classificazione delle entrate in bilancio
+   **/
+  public QuotaContabilita titolo(String titolo) {
+    this.titolo = titolo;
+    return this;
+  }
+
+  @JsonProperty("titolo")
+  public String getTitolo() {
+    return titolo;
+  }
+  public void setTitolo(String titolo) {
+    this.titolo = titolo;
+  }
+
+  /**
+   * Classificazione delle entrate in bilancio
+   **/
+  public QuotaContabilita tipologia(String tipologia) {
+    this.tipologia = tipologia;
+    return this;
+  }
+
+  @JsonProperty("tipologia")
+  public String getTipologia() {
+    return tipologia;
+  }
+  public void setTipologia(String tipologia) {
+    this.tipologia = tipologia;
+  }
+
+  /**
+   * Classificazione delle entrate in bilancio
+   **/
+  public QuotaContabilita categoria(String categoria) {
+    this.categoria = categoria;
+    return this;
+  }
+
+  @JsonProperty("categoria")
+  public String getCategoria() {
+    return categoria;
+  }
+  public void setCategoria(String categoria) {
+    this.categoria = categoria;
+  }
+
+  /**
+   * Classificazione delle entrate in bilancio
+   **/
+  public QuotaContabilita articolo(String articolo) {
+    this.articolo = articolo;
+    return this;
+  }
+
+  @JsonProperty("articolo")
+  public String getArticolo() {
+    return articolo;
+  }
+  public void setArticolo(String articolo) {
+    this.articolo = articolo;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -124,12 +204,16 @@ public class QuotaContabilita {
         Objects.equals(annoEsercizio, quotaContabilita.annoEsercizio) &&
         Objects.equals(importo, quotaContabilita.importo) &&
         Objects.equals(accertamento, quotaContabilita.accertamento) &&
-        Objects.equals(proprietaCustom, quotaContabilita.proprietaCustom);
+        Objects.equals(proprietaCustom, quotaContabilita.proprietaCustom) &&
+        Objects.equals(titolo, quotaContabilita.titolo) &&
+        Objects.equals(tipologia, quotaContabilita.tipologia) &&
+        Objects.equals(categoria, quotaContabilita.categoria) &&
+        Objects.equals(articolo, quotaContabilita.articolo);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(capitolo, annoEsercizio, importo, accertamento, proprietaCustom);
+    return Objects.hash(capitolo, annoEsercizio, importo, accertamento, proprietaCustom, titolo, tipologia, categoria, articolo);
   }
 
   @Override
@@ -142,6 +226,10 @@ public class QuotaContabilita {
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    accertamento: ").append(toIndentedString(accertamento)).append("\n");
     sb.append("    proprietaCustom: ").append(toIndentedString(proprietaCustom)).append("\n");
+    sb.append("    titolo: ").append(toIndentedString(titolo)).append("\n");
+    sb.append("    tipologia: ").append(toIndentedString(tipologia)).append("\n");
+    sb.append("    categoria: ").append(toIndentedString(categoria)).append("\n");
+    sb.append("    articolo: ").append(toIndentedString(articolo)).append("\n");
     sb.append("}");
     return sb.toString();
   }

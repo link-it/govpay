@@ -73,12 +73,13 @@ import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.EventoContext.Esito;
-import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.VerificaClient;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 import it.govpay.core.utils.validator.PendenzaPostValidator;
 import it.govpay.model.Anagrafica.TIPO;
+import it.govpay.model.IbanAccredito;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
@@ -106,7 +107,8 @@ public class VersamentoUtils {
 	public static void validazioneSemantica(Versamento versamento, boolean generaIuv) throws GovPayException, ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		
-		if(generaIuv && versamento.getSingoliVersamenti().size() != 1) {
+		// solo se non e' multibeneficiario
+		if(generaIuv && !VersamentoUtils.isPendenzaMultibeneficiario(versamento, configWrapper) && versamento.getSingoliVersamenti().size() != 1) {
 			throw new GovPayException(EsitoOperazione.VER_000, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
 		}
 
@@ -227,6 +229,10 @@ public class VersamentoUtils {
 						// Versamento sconosciuto all'ente (bug dell'ente?). Controllo se e' mandatoria o uso quel che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
 							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
+					} catch (VersamentoNonValidoException e) {
+						// Versamento non valido per errori di validazione, se e' mandatorio l'aggiornamento rilancio l'eccezione altrimenti uso quello che ho
+						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio())
+							throw e;
 					}
 				} else if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
 					// connettore verifica non definito, versamento non aggiornabile
@@ -313,7 +319,7 @@ public class VersamentoUtils {
 			} 
 
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
-			boolean generaIuv = versamento.getNumeroAvviso() == null && versamento.getSingoliVersamenti().size() == 1;
+			boolean generaIuv = VersamentoUtils.generaIUV(versamento, configWrapper);
 			versamento.setTipo(tipo);
 			versamentoBusiness.caricaVersamento(versamento, generaIuv, true, false, null, null);
 		}finally {
@@ -679,17 +685,35 @@ public class VersamentoUtils {
 		model.setDescrizioneCausaleRPT(singoloVersamento.getDescrizioneCausaleRPT()); 
 		model.setDatiAllegati(singoloVersamento.getDatiAllegati()); 
 		model.setContabilita(singoloVersamento.getContabilita());
-		Dominio dominio = versamento.getDominio(configWrapper);
+		
+		Dominio dominioSingoloVersamento = null;
+		if(singoloVersamento.getCodDominio() != null) {
+			try {
+				dominioSingoloVersamento = AnagraficaManager.getDominio(configWrapper, singoloVersamento.getCodDominio());
+				model.setIdDominio(dominioSingoloVersamento.getId()); 
+				
+				
+			} catch (NotFoundException e) {
+				throw new GovPayException(EsitoOperazione.DOM_000, singoloVersamento.getCodDominio());
+			}
+	
+			if(!dominioSingoloVersamento.isAbilitato())
+				throw new GovPayException(EsitoOperazione.DOM_001, dominioSingoloVersamento.getCodDominio());
+		} else {
+			// se il dominio non e' esplicitamente indicato nel singolo versamento utilizzo quello del versamento
+			dominioSingoloVersamento = versamento.getDominio(configWrapper);
+		}
+		
 		if(singoloVersamento.getBolloTelematico() != null) {
 			try {
 				model.setTributo(Tributo.BOLLOT, configWrapper);
 			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.TRB_000, dominio.getCodDominio(), Tributo.BOLLOT);
+				throw new GovPayException(EsitoOperazione.TRB_000, dominioSingoloVersamento.getCodDominio(), Tributo.BOLLOT);
 			}
 
 			if(model.getTributo(configWrapper)!= null) {
 				if(!model.getTributo(configWrapper).isAbilitato())
-					throw new GovPayException(EsitoOperazione.TRB_001, dominio.getCodDominio(), Tributo.BOLLOT);
+					throw new GovPayException(EsitoOperazione.TRB_001, dominioSingoloVersamento.getCodDominio(), Tributo.BOLLOT);
 			}
 
 			model.setHashDocumento(singoloVersamento.getBolloTelematico().getHash());
@@ -705,12 +729,12 @@ public class VersamentoUtils {
 			try {
 				model.setTributo(singoloVersamento.getCodTributo(), configWrapper);
 			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.TRB_000, dominio.getCodDominio(), singoloVersamento.getCodTributo());
+				throw new GovPayException(EsitoOperazione.TRB_000, dominioSingoloVersamento.getCodDominio(), singoloVersamento.getCodTributo());
 			}
 
 			if(model.getTributo(configWrapper)!= null) {
 				if(!model.getTributo(configWrapper).isAbilitato())
-					throw new GovPayException(EsitoOperazione.TRB_001, dominio.getCodDominio(), singoloVersamento.getCodTributo());
+					throw new GovPayException(EsitoOperazione.TRB_001, dominioSingoloVersamento.getCodDominio(), singoloVersamento.getCodTributo());
 			}
 
 		}
@@ -728,22 +752,22 @@ public class VersamentoUtils {
 			model.setCodContabilita(singoloVersamento.getTributo().getCodContabilita());
 			
 			try {
-				model.setIbanAccredito(AnagraficaManager.getIbanAccredito(configWrapper, dominio.getId(), singoloVersamento.getTributo().getIbanAccredito()));
+				model.setIbanAccredito(AnagraficaManager.getIbanAccredito(configWrapper, dominioSingoloVersamento.getId(), singoloVersamento.getTributo().getIbanAccredito()));
 				if(!model.getIbanAccredito(configWrapper).isAbilitato())
-					throw new GovPayException(EsitoOperazione.VER_032, dominio.getCodDominio(), singoloVersamento.getTributo().getIbanAccredito());
+					throw new GovPayException(EsitoOperazione.VER_032, dominioSingoloVersamento.getCodDominio(), singoloVersamento.getTributo().getIbanAccredito());
 			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.VER_020, dominio.getCodDominio(), singoloVersamento.getTributo().getIbanAccredito());
+				throw new GovPayException(EsitoOperazione.VER_020, dominioSingoloVersamento.getCodDominio(), singoloVersamento.getTributo().getIbanAccredito());
 			}
 			
 			try {
 				if(singoloVersamento.getTributo().getIbanAppoggio() != null) {
-					model.setIbanAppoggio(AnagraficaManager.getIbanAccredito(configWrapper, dominio.getId(), singoloVersamento.getTributo().getIbanAppoggio()));
+					model.setIbanAppoggio(AnagraficaManager.getIbanAccredito(configWrapper, dominioSingoloVersamento.getId(), singoloVersamento.getTributo().getIbanAppoggio()));
 
 					if(!model.getIbanAppoggio(configWrapper).isAbilitato())
-						throw new GovPayException(EsitoOperazione.VER_034, dominio.getCodDominio(), singoloVersamento.getTributo().getIbanAppoggio());
+						throw new GovPayException(EsitoOperazione.VER_034, dominioSingoloVersamento.getCodDominio(), singoloVersamento.getTributo().getIbanAppoggio());
 				}
 			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.VER_033, dominio.getCodDominio(), singoloVersamento.getTributo().getIbanAppoggio());
+				throw new GovPayException(EsitoOperazione.VER_033, dominioSingoloVersamento.getCodDominio(), singoloVersamento.getTributo().getIbanAppoggio());
 			}
 		}
 
@@ -952,5 +976,72 @@ public class VersamentoUtils {
 		} catch (Throwable t) {
 			return null;
 		}
+	}
+	
+	public static boolean isPendenzaMultibeneficiario(Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException {
+		for(SingoloVersamento singoloVersamento : versamento.getSingoliVersamenti(configWrapper)) {
+			// appena trovo un singolo versamento con un id dominio definito sono in modalita' multibeneficiario
+			if(singoloVersamento.getIdDominio() != null) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean generaIUV(Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException {
+		if(isPendenzaMultibeneficiario(versamento, configWrapper)) {
+			return versamento.getNumeroAvviso() == null;
+		}
+		
+		boolean generaIuv = versamento.getNumeroAvviso() == null && versamento.getSingoliVersamenti(configWrapper).size() == 1;
+				
+		return generaIuv;
+	}
+	
+	public static boolean isAllIBANPostali(Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException {
+		for(SingoloVersamento singoloVersamento : versamento.getSingoliVersamenti(configWrapper)) {
+			// sv con tributo definito
+			it.govpay.bd.model.Tributo tributo = singoloVersamento.getTributo(configWrapper);
+			IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(configWrapper);
+			IbanAccredito ibanAppoggio = singoloVersamento.getIbanAppoggio(configWrapper);
+			
+			if(tributo != null) {
+				IbanAccredito ibanAccreditoTributo = tributo.getIbanAccredito();
+				IbanAccredito ibanAppoggioTributo = tributo.getIbanAppoggio();
+				if(ibanAccreditoTributo != null) {
+					if(!ibanAccreditoTributo.isPostale())
+						return false;
+				} else if(ibanAppoggioTributo != null) {
+					if(!ibanAppoggioTributo.isPostale())
+						return false;
+				} else {
+					// MBT
+					return false;
+				} 
+			} else if(ibanAccredito != null) {
+				if(!ibanAccredito.isPostale())
+					return false;
+			} else if(ibanAppoggio != null) {
+				if(!ibanAppoggio.isPostale())
+						return false;
+			} else { // iban non definito per la voce 
+
+			}
+		}
+		return true;
+	}
+	
+	public static Dominio getDominioSingoloVersamento(SingoloVersamento singoloVersamento,Dominio dominio, BDConfigWrapper configWrapper) throws ServiceException {
+		
+		// appena trovo un singolo versamento con un id dominio definito sono in modalita' multibeneficiario
+		if(singoloVersamento.getIdDominio() != null) {
+			try {
+				return AnagraficaManager.getDominio(configWrapper, singoloVersamento.getIdDominio());
+			} catch (NotFoundException e) {
+				// se passo qui ho fallito la validazione della pendenza !
+				throw new ServiceException("Dominio ["+singoloVersamento.getIdDominio()+"] non censito in base dati.");
+			}
+		}
+		return dominio;
 	}
 }

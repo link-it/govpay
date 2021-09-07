@@ -74,6 +74,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	private Integer indiceDati;
 	private String descrizioneCausaleRPT;
 	private String contabilita;
+	private Long idDominio;
 	
 	
 	@Override
@@ -225,6 +226,14 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 
 	public void setContabilita(String contabilita) {
 		this.contabilita = contabilita;
+	}
+
+	public Long getIdDominio() {
+		return idDominio;
+	}
+
+	public void setIdDominio(Long idDominio) {
+		this.idDominio = idDominio;
 	}
 	
 }

@@ -42,11 +42,13 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.BatchBD;
 import it.govpay.bd.configurazione.model.AppIOBatch;
 import it.govpay.bd.configurazione.model.MailBatch;
+import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
@@ -88,6 +90,12 @@ public class Operazioni{
 	
 	public static final String BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "spedizione-trac-notif-pag";
 	public static final String CHECK_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "check-spedizione-trac-notif-pag";
+	
+	public static final String BATCH_RICONCILIAZIONI = "riconciliazioni";
+	public static final String CHECK_RICONCILIAZIONI = "check-riconciliazioni";
+	
+	public static final String BATCH_CHIUSURA_RPT_SCADUTE = "rpt-scadute";
+	public static final String CHECK_CHIUSURA_RPT_SCADUTE = "check-rpt-scadute";
 
 	private static boolean eseguiGestionePromemoria;
 	private static boolean eseguiInvioPromemoria;
@@ -98,6 +106,9 @@ public class Operazioni{
 	
 	private static boolean eseguiElaborazioneTracciatiNotificaPagamenti;
 	private static boolean eseguiInvioTracciatiNotificaPagamenti;
+	
+	private static boolean eseguiElaborazioneRiconciliazioni;
+	private static boolean eseguiElaborazioneChiusuraRptScadute;
 
 	public static synchronized void setEseguiGestionePromemoria() {
 		eseguiGestionePromemoria = true;
@@ -194,6 +205,30 @@ public class Operazioni{
 	public static synchronized boolean getEseguiInvioTracciatiNotificaPagamenti() {
 		return eseguiInvioTracciatiNotificaPagamenti;
 	}
+	
+	public static synchronized void setEseguiElaborazioneRiconciliazioni() {
+		eseguiElaborazioneRiconciliazioni = true;
+	}
+
+	public static synchronized void resetEseguiElaborazioneRiconciliazioni() {
+		eseguiElaborazioneRiconciliazioni = false;
+	}
+
+	public static synchronized boolean getEseguiElaborazioneRiconciliazioni() {
+		return eseguiElaborazioneRiconciliazioni;
+	}
+	
+	public static synchronized void setEseguiElaborazioneChiusuraRptScadute() {
+		eseguiElaborazioneChiusuraRptScadute = true;
+	}
+
+	public static synchronized void resetEseguiElaborazioneChiusuraRptScadute() {
+		eseguiElaborazioneChiusuraRptScadute = false;
+	}
+
+	public static synchronized boolean getEseguiElaborazioneChiusuraRptScadute() {
+		return eseguiElaborazioneChiusuraRptScadute;
+	}
 
 	public static String acquisizioneRendicontazioni(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
@@ -230,6 +265,25 @@ public class Operazioni{
 			return "Acquisizione fallita#" + e;
 		} finally {
 			BatchManager.stopEsecuzione(configWrapper, PND);
+		}
+	}
+	
+	public static String chiusuraRptScadute(IContext ctx){
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		try {
+			if(BatchManager.startEsecuzione(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE)) {
+				String chiusuraRPTScadute = new Pagamento().chiusuraRPTScadute(ctx);
+				aggiornaSondaOK(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE);
+				return chiusuraRPTScadute;
+			} else {
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			log.error("Chiusura RPT scadute fallita", e);
+			aggiornaSondaKO(configWrapper, PND, e);
+			return "Chiusura RPT scadute fallita#" + e;
+		} finally {
+			BatchManager.stopEsecuzione(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE);
 		}
 	}
 
@@ -1035,6 +1089,50 @@ public class Operazioni{
 				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
 			}
 			return "Non è stato possibile avviare la spedizione dei tracciati notifica pagamenti: " + e;
+		} finally {
+		}
+	}
+	
+	public static String elaborazioneRiconciliazioni(IContext ctx){
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		try {
+			if(BatchManager.startEsecuzione(configWrapper, BATCH_RICONCILIAZIONI)) {
+				
+				int offset = 0;
+				int limit = 25;
+				IncassiBD incassiBD = new IncassiBD(configWrapper);
+				
+				log.debug("Ricerca nuove riconciliazioni da elaborare...");
+				
+				List<Incasso> findRiconciliazioniDaAcquisire = incassiBD.findRiconciliazioniDaAcquisire(configWrapper, offset, limit, true);
+				
+				log.debug("Trovate ["+findRiconciliazioniDaAcquisire.size()+"] riconciliazioni.");
+				
+				if(findRiconciliazioniDaAcquisire.size() > 0) {
+					Incassi incassi = new Incassi();
+					
+					for (Incasso incasso : findRiconciliazioniDaAcquisire) {
+						incassi.elaboraRiconciliazione(incasso.getCodDominio(), incasso.getIdRiconciliazione(), ctx);
+					}
+				}
+				
+				aggiornaSondaOK(configWrapper, BATCH_RICONCILIAZIONI);
+				BatchManager.stopEsecuzione(configWrapper, BATCH_RICONCILIAZIONI);
+			
+				log.debug("Elaborazione riconciliazioni terminata.");
+				return "Elaborazione riconciliazioni terminata.";
+			} else {
+				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			log.error("Non è stato possibile avviare l'elaborazione delle riconciliazioni", e);
+			try {
+				aggiornaSondaKO(configWrapper, BATCH_RICONCILIAZIONI, e); 
+			} catch (Throwable e1) {
+				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
+			}
+			return "Non è stato possibile avviare l'elaborazione delle riconciliazioni: " + e;
 		} finally {
 		}
 	}

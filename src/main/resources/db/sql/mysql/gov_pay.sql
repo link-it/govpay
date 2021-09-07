@@ -126,9 +126,10 @@ CREATE TABLE domini
 	cod_connettore_secim VARCHAR(255) COMMENT 'Identificativo connettore secim',
 	cod_connettore_gov_pay VARCHAR(255) COMMENT 'Identificativo connettore govpay',
 	cod_connettore_hyper_sic_apk VARCHAR(255) COMMENT 'Identificativo connettore hypersic_apk',
+	intermediato BOOLEAN NOT NULL COMMENT 'Indica se l\'ente e\' intermediato',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
-	id_stazione BIGINT NOT NULL COMMENT 'Riferimento alla stazione',
+	id_stazione BIGINT COMMENT 'Riferimento alla stazione',
 	id_applicazione_default BIGINT COMMENT 'Rferimento all\'appplicazione di default in caso di non risoluzione dello iuv',
 	-- unique constraints
 	CONSTRAINT unique_domini_1 UNIQUE (cod_dominio),
@@ -654,11 +655,13 @@ CREATE TABLE singoli_versamenti
 	id_tributo BIGINT COMMENT 'Riferimento alla tipologia di tribuito',
 	id_iban_accredito BIGINT COMMENT 'Riferimento al conto di accredito',
 	id_iban_appoggio BIGINT COMMENT 'Riferimento al conto di appoggio',
+	id_dominio BIGINT COMMENT 'Riferimento al dominio',
 	-- fk/pk keys constraints
 	CONSTRAINT fk_sng_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_sng_id_tributo FOREIGN KEY (id_tributo) REFERENCES tributi(id),
 	CONSTRAINT fk_sng_id_iban_accredito FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
 	CONSTRAINT fk_sng_id_iban_appoggio FOREIGN KEY (id_iban_appoggio) REFERENCES iban_accredito(id),
+	CONSTRAINT fk_sng_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_singoli_versamenti PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Voci di pendenza';
 
@@ -806,6 +809,7 @@ CREATE TABLE rpt
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_conservazione TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di gestione del processo di conservazione a norma della RT',
 	bloccante BOOLEAN NOT NULL DEFAULT true COMMENT 'Indicazione se la RPT risulta bloccante per ulteriori transazioni di pagamento',
+	versione VARCHAR(35) NOT NULL COMMENT 'Versione dell'api PagoPA utilizzata per la transazione.',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza oggetto della richeista di pagmaento',
@@ -988,7 +992,7 @@ CREATE TABLE incassi
 (
 	trn VARCHAR(35) NOT NULL COMMENT 'Identificativo del movimento bancario riconciliato',
 	cod_dominio VARCHAR(35) NOT NULL COMMENT 'Identificaitvo dell\'ente',
-	causale VARCHAR(512) NOT NULL COMMENT 'Causale del bonifico',
+	causale VARCHAR(512) COMMENT 'Causale del bonifico',
 	importo DOUBLE NOT NULL COMMENT 'Importo riconciliato',
 	data_valuta TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data valuta del bonifico',
 	data_contabile TIMESTAMP(3) DEFAULT  CURRENT_TIMESTAMP(3) COMMENT 'Data contabile del bonifico',
@@ -997,12 +1001,17 @@ CREATE TABLE incassi
 	nome_dispositivo VARCHAR(512) COMMENT 'Riferimento al giornale di cassa',
 	iban_accredito VARCHAR(35) COMMENT 'Conto di accredito',
         sct VARCHAR(35) COMMENT 'Identificativo SEPA credit transfert',
+	identificativo VARCHAR(35) NOT NULL COMMENT 'Identificativo univoco della riconciliazione',
+	iuv VARCHAR(35) COMMENT 'Identificativo iuv riconciliato',
+	cod_flusso_rendicontazione VARCHAR(35) COMMENT 'Identificativo flusso rendicontazione riconciliato',
+	stato VARCHAR(35) NOT NULL COMMENT 'Stato della riconciliazione',
+	descrizione_stato VARCHAR(255) COMMENT 'Decrizione dettaglio stato nei casi di errore',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_applicazione BIGINT COMMENT 'Riferimento all\'applicativo che ha registrato l\'inccasso',
 	id_operatore BIGINT COMMENT 'Riferimento all\'operatore che ha registrato l\'inccasso',
 	-- unique constraints
-	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn),
+	CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,identificativo),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_inc_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
@@ -1010,7 +1019,7 @@ CREATE TABLE incassi
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Riconciliazioni';
 
 -- index
-CREATE UNIQUE INDEX index_incassi_1 ON incassi (cod_dominio,trn);
+CREATE UNIQUE INDEX index_incassi_1 ON incassi (cod_dominio,identificativo);
 
 
 
@@ -1887,6 +1896,7 @@ rpt.stato_conservazione as stato_conservazione,
 rpt.descrizione_stato_cons as descrizione_stato_cons,         
 rpt.data_conservazione as data_conservazione,             
 rpt.bloccante as bloccante,                      
+rpt.versione as versione,
 rpt.id as id,                             
 rpt.id_pagamento_portale as id_pagamento_portale, 
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,

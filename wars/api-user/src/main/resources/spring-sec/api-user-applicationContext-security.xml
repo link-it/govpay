@@ -48,11 +48,9 @@
         			<b:bean id="authenticationDetailsSource" class="it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource"/>
         		</b:property>
         </b:bean>
-        <b:bean id="logoutSuccessHandler" class="org.openspcoop2.utils.service.authentication.handler.jaxrs.DefaultLogoutSuccessHandler" />
-        <b:bean id="authenticationSuccessHandlerSPID" class="it.govpay.user.v1.authentication.handler.RedirectAuthenticationSuccessHandler" >
-        	<b:property name="apiName" value="API_USER" />
-        	<b:property name="authType" value="SPID" />
-       	</b:bean>
+        <b:bean id="logoutSuccessHandler" class="it.govpay.user.v1.authentication.handler.RedirectLogoutSuccessHandler" >
+        	<b:constructor-arg index="0" value="/rs/spid/v1/logout/**" />
+        </b:bean>
         
         <b:bean id="invalidSessionStrategy" class="it.govpay.rs.v1.authentication.session.NotAuthorizedInvalidSessionStrategy">
         	<b:property name="createNewSession" value="false" />
@@ -60,6 +58,31 @@
         
         <b:bean id="expiredSessionStrategy" class="it.govpay.rs.v1.authentication.session.NotAuthorizedSessionInformationExpiredStrategy">
         </b:bean>
+        
+        <b:bean id="logoutGetRequestMatcherV1" class="it.govpay.user.v1.authentication.matcher.LogoutRequestMatcher">
+        	<b:constructor-arg index="0" value="/rs/spid/v1/logout/**" />
+        	<b:constructor-arg index="1" value="GET" />
+        </b:bean>
+        <b:bean id="securityContextLogoutHandler" class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler">
+        </b:bean>
+
+        <b:bean id="cookieClearingLogoutHandler" class="org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler">
+            <b:constructor-arg value="JSESSIONID"/>
+        </b:bean>
+        
+        <b:bean id="logoutFilter"
+              class="org.springframework.security.web.authentication.logout.LogoutFilter">
+            <b:constructor-arg  name="logoutSuccessHandler" ref="logoutSuccessHandler" />
+            <b:constructor-arg  name="handlers">
+                <b:list>
+                    <b:ref bean="securityContextLogoutHandler" />
+                    <b:ref bean="cookieClearingLogoutHandler" />
+                </b:list>
+            </b:constructor-arg>
+            <b:property name="filterProcessesUrl" value="/logout"/>
+            <b:property name="logoutRequestMatcher" ref="logoutGetRequestMatcherV1"/>
+        </b:bean>
+        
         <http auto-config="false" use-expressions="true" create-session="never" entry-point-ref="http403ForbiddenEntryPoint" pattern="/rs/spid/v1/**">
 
                 <csrf disabled="true"/>
@@ -68,7 +91,7 @@
                 <intercept-url pattern="/**" access="denyAll" />
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterSPID" />
                 
-                <logout logout-url="/rs/spid/v1/logout" success-handler-ref="logoutSuccessHandler" delete-cookies="JSESSIONID" invalidate-session="true" />
+               <custom-filter ref="logoutFilter" after="LOGOUT_FILTER"/>
                 
                 <session-management session-fixation-protection="changeSessionId" invalid-session-strategy-ref="invalidSessionStrategy" >
                 	<concurrency-control max-sessions="2" expired-session-strategy-ref="expiredSessionStrategy" />

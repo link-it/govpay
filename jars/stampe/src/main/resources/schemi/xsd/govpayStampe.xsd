@@ -8,6 +8,7 @@
     <xsd:complexType name="AvvisoPagamentoInput">
 		<xsd:sequence>
 			<xsd:element name="logo_ente" type="xsd:string"/>
+			<xsd:element name="logo_ente_secondario" type="xsd:string"/>
 			<xsd:element name="oggetto_del_pagamento" type="xsd:string"/>
 			<xsd:element name="cf_ente" type="xsd:string"/>
 			<xsd:element name="cf_destinatario" type="xsd:string"/>

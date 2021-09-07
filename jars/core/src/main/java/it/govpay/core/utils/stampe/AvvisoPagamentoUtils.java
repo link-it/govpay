@@ -3,6 +3,7 @@ package it.govpay.core.utils.stampe;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.text.MessageFormat;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.IbanAccredito;
 import it.govpay.stampe.model.AvvisoPagamentoInput;
@@ -50,7 +52,7 @@ public class AvvisoPagamentoUtils {
 			}
 		}
 
-		AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(versamento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
+		AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(versamento, versamento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 		AvvisoPagamentoUtils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 
 		PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
@@ -75,7 +77,7 @@ public class AvvisoPagamentoUtils {
 
 		while(versamenti.size() > 0 && versamenti.get(0).getNumeroRata() == null && versamenti.get(0).getTipoSoglia() == null) {
 			Versamento versamento = versamenti.remove(0);
-			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
+			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 			AvvisoPagamentoUtils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 			pagina.setRata(getRata(versamento, input));
@@ -85,7 +87,7 @@ public class AvvisoPagamentoUtils {
 		while(versamenti.size() > 1 && versamenti.size()%3 != 0) {
 			Versamento v1 = versamenti.remove(0);
 			Versamento v2 = versamenti.remove(0);
-			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(documento.getDominio(configWrapper), v2.getUo(configWrapper), input);
+			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v2, documento.getDominio(configWrapper), v2.getUo(configWrapper), input);
 			AvvisoPagamentoUtils.impostaAnagraficaDebitore(v2.getAnagraficaDebitore(), input);
 			PaginaAvvisoDoppia pagina = new PaginaAvvisoDoppia();
 			pagina.getRata().add(getRata(v1, input));
@@ -97,7 +99,7 @@ public class AvvisoPagamentoUtils {
 			Versamento v1 = versamenti.remove(0);
 			Versamento v2 = versamenti.remove(0);
 			Versamento v3 = versamenti.remove(0);
-			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(documento.getDominio(configWrapper), v3.getUo(configWrapper), input);
+			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v3, documento.getDominio(configWrapper), v3.getUo(configWrapper), input);
 			AvvisoPagamentoUtils.impostaAnagraficaDebitore(v3.getAnagraficaDebitore(), input);
 			PaginaAvvisoTripla pagina = new PaginaAvvisoTripla();
 			pagina.getRata().add(getRata(v1, input));
@@ -108,7 +110,7 @@ public class AvvisoPagamentoUtils {
 
 		if(versamenti.size() == 1) {
 			Versamento versamento = versamenti.remove(0);
-			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
+			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 			AvvisoPagamentoUtils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 			pagina.setRata(getRata(versamento, input));
@@ -180,7 +182,7 @@ public class AvvisoPagamentoUtils {
 		} else if(versamento.getDataScadenza() != null) {
 			rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataScadenza()));
 		} else {
-			rata.setData("-"); 
+			rata.setData(null); 
 		}
 
 		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));
@@ -190,7 +192,7 @@ public class AvvisoPagamentoUtils {
 		return rata;
 	}
 
-	public static void impostaAnagraficaEnteCreditore(Dominio dominio, UnitaOperativa uo, AvvisoPagamentoInput input)
+	public static void impostaAnagraficaEnteCreditore(Versamento versamento, Dominio dominio, UnitaOperativa uo, AvvisoPagamentoInput input)
 			throws ServiceException {
 
 		String codDominio = dominio.getCodDominio();
@@ -257,6 +259,19 @@ public class AvvisoPagamentoUtils {
 		// se e' presente un logo lo inserisco altrimemti verra' caricato il logo di default.
 		if(dominio.getLogo() != null && dominio.getLogo().length > 0)
 			input.setLogoEnte(new String(dominio.getLogo()));
+		
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		if(VersamentoUtils.isPendenzaMultibeneficiario(versamento, configWrapper)) {
+			// se il versamento e' multibeneficiario inserisco anche il logo del primo dominio diverso che trovo
+			for (SingoloVersamento sv : versamento.getSingoliVersamenti(configWrapper)) {
+				Dominio dominioSingoloVersamento = VersamentoUtils.getDominioSingoloVersamento(sv, dominio, configWrapper);
+				if(dominioSingoloVersamento != null && !dominioSingoloVersamento.getCodDominio().equals(dominio.getCodDominio())) {
+					if(dominioSingoloVersamento.getLogo() != null && dominioSingoloVersamento.getLogo().length > 0)
+					input.setLogoEnteSecondario(new String(dominioSingoloVersamento.getLogo()));
+					break;
+				}
+			}
+		}
 		return;
 	}
 
@@ -322,13 +337,22 @@ public class AvvisoPagamentoUtils {
 
 
 	public static String creaDataMatrix(String numeroAvviso, String numeroCC, double importo, String codDominio, String cfDebitore, String denominazioneDebitore, String causale) {
-
+		
+		
 		String importoInCentesimi = getImportoInCentesimi(importo);
 		String codeLine = createCodeLine(numeroAvviso, numeroCC, importoInCentesimi);
 		//		log.debug("CodeLine ["+codeLine+"] Lunghezza["+codeLine.length()+"]");
+		
+
 		String cfDebitoreFilled = getCfDebitoreFilled(cfDebitore);
-		String denominazioneDebitoreFilled = getDenominazioneDebitoreFilled(denominazioneDebitore);
-		String causaleFilled = getCausaleFilled(causale);
+		
+		String denominazioneDebitoreASCII = Normalizer.normalize(denominazioneDebitore, Normalizer.Form.NFD);
+		denominazioneDebitoreASCII = denominazioneDebitoreASCII.replaceAll("[^\\x00-\\x7F]", "");
+		String denominazioneDebitoreFilled = getDenominazioneDebitoreFilled(denominazioneDebitoreASCII);
+		
+		String causaleASCII = Normalizer.normalize(causale, Normalizer.Form.NFD);
+		causaleASCII = causaleASCII.replaceAll("[^\\x00-\\x7F]", "");
+		String causaleFilled = getCausaleFilled(causaleASCII);
 
 		String dataMatrix = MessageFormat.format(AvvisoPagamentoCostanti.PATTERN_DATAMATRIX, codeLine, codDominio, cfDebitoreFilled, denominazioneDebitoreFilled, causaleFilled, AvvisoPagamentoCostanti.FILLER_DATAMATRIX);
 		//		log.debug("DataMatrix ["+dataMatrix+"] Lunghezza["+dataMatrix.length()+"]"); 

@@ -6,7 +6,6 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.certificate.CertificateUtils;
 import org.openspcoop2.utils.certificate.PrincipalType;
@@ -34,12 +33,19 @@ public class AuthorizationManager {
 	public static final String CODICE_FISCALE_CITTADINO = "cf_cittadino";
 	public static final String UTENZA_ANONIMA = "utenzaAnonima";
 
+	public static boolean checkPrincipal(Authentication authentication, String principalToCheck) throws NotAuthorizedException { 
+		return checkPrincipal(authentication, principalToCheck, true);
+	}
 
-	public static boolean checkPrincipal(Authentication authentication, String principalToCheck) throws Exception { 
+	public static boolean checkPrincipal(Authentication authentication, String principalToCheck, boolean throwsException) throws NotAuthorizedException { 
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-		Utenza user = details.getUtenza();
 
+		if(details == null && throwsException) {
+			throw new NotAuthorizedException("Utenza non autorizzata: impossibile leggere il principal.");
+		}
+		
 		boolean authOk = false;
+		Utenza user = details.getUtenza();
 
 		if(user.isCheckSubject()) {
 			// check tra subject
@@ -47,24 +53,24 @@ public class AuthorizationManager {
 		} else {
 			authOk = user.getPrincipal().equals(principalToCheck);
 		}
-
+		
 		return authOk;
 	}
 
-	public static boolean checkSubject(String principalToCheck, String principalFromRequest) throws Exception{
+	public static boolean checkSubject(String principalToCheck, String principalFromRequest) throws NotAuthorizedException{
 		boolean ok = true;
 
 		Hashtable<String,List<String>> hashSubject = null;
 		try {
 			principalToCheck = CertificateUtils.formatPrincipal(principalToCheck,PrincipalType.subject);
 		}catch(UtilsException e) {
-			throw new NotFoundException("L'utenza registrata non e' un subject valido");
+			throw new NotAuthorizedException("L'utenza registrata non e' un subject valido");
 		}
 		try {
 			principalFromRequest = CertificateUtils.formatPrincipal(principalFromRequest,PrincipalType.subject);
 			hashSubject = CertificateUtils.getPrincipalIntoHashtable(principalFromRequest,PrincipalType.subject);
 		}catch(UtilsException e) {
-			throw new NotFoundException("Utenza" + principalFromRequest + "non autorizzata");
+			throw new NotAuthorizedException("Utenza" + principalFromRequest + "non autorizzata");
 		}
 		Enumeration<String> keys = hashSubject.keys();
 		while(keys.hasMoreElements()){

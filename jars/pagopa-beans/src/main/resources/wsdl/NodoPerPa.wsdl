@@ -102,6 +102,21 @@
 					<xsd:maxLength value="4" />
 				</xsd:restriction>
 			</xsd:simpleType>
+
+			<xsd:simpleType name="stConvenzione">
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="5" />
+					<xsd:maxLength value="35" />
+				</xsd:restriction>
+			</xsd:simpleType>
+
+			<xsd:simpleType name="stZeroUno">
+				<xsd:restriction base="xsd:int">
+					<xsd:enumeration value="0"/>
+					<xsd:enumeration value="1"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+
 			<xsd:element name="nodoChiediCopiaRT" type="ppt:nodoChiediCopiaRT" />
 			<xsd:element name="nodoChiediCopiaRTRisposta" type="ppt:nodoChiediCopiaRTRisposta" />
 
@@ -178,7 +193,7 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="esito" type="ppt:esitoChiediStatoRPT" minOccurs="0" />
+							<xsd:element name="esito" type="ppt:esitoChiediStatoRPT" minOccurs="1" />
 						</xsd:sequence>
 					</xsd:extension>
 				</xsd:complexContent>
@@ -249,7 +264,7 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="esito" type="xsd:string" minOccurs="0" />
+							<xsd:element name="esito" type="xsd:string" minOccurs="1" />
 						</xsd:sequence>
 					</xsd:extension>
 				</xsd:complexContent>
@@ -271,7 +286,7 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="esito" type="xsd:string" />
+							<xsd:element name="esito" type="xsd:string" minOccurs="1"/>
 						</xsd:sequence>
 					</xsd:extension>
 				</xsd:complexContent>
@@ -292,7 +307,7 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="esito" type="xsd:string" minOccurs="0" />
+							<xsd:element name="esito" type="xsd:string" minOccurs="1" />
 							<xsd:element name="redirect" type="xsd:int" default="0" minOccurs="0" />
 							<xsd:element name="url" type="xsd:string" default="" minOccurs="0" />
 						</xsd:sequence>
@@ -307,12 +322,14 @@
 					<xsd:element name="identificativoIntermediarioPSP" type="ppt:stText35" />
 					<xsd:element name="identificativoCanale" type="ppt:stText35" />
 					<xsd:element name="listaRPT" type="ppt:tipoListaRPT" />
+					<xsd:element name="requireLightPayment" type="ppt:stZeroUno" minOccurs="0"/>
+					<xsd:element name="codiceConvenzione" type="ppt:stConvenzione" minOccurs="0"/>
 				</xsd:sequence>
 			</xsd:complexType>
 
 			<xsd:complexType name="tipoListaRPT">
 				<xsd:sequence>
-					<xsd:element name="elementoListaRPT" type="ppt:tipoElementoListaRPT" minOccurs="1" maxOccurs="unbounded" />
+					<xsd:element name="elementoListaRPT" type="ppt:tipoElementoListaRPT" minOccurs="1" maxOccurs="5" />
 				</xsd:sequence>
 			</xsd:complexType>
 
@@ -349,7 +366,7 @@
 					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" />
+					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
 					<xsd:element name="rangeDa" type="xsd:dateTime" minOccurs="0" />
 					<xsd:element name="rangeA" type="xsd:dateTime" minOccurs="0" />
 					<xsd:element name="dimensioneLista" type="xsd:positiveInteger" />
@@ -387,7 +404,7 @@
 					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35"/>
+					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
 					<xsd:element name="identificativoPSP" type="ppt:stText35" minOccurs="0" />
 				</xsd:sequence>
 			</xsd:complexType>
@@ -426,7 +443,7 @@
 					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" />
+					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
 				</xsd:sequence>
 			</xsd:complexType>
 
@@ -459,7 +476,7 @@
 					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" />
+					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
 					<xsd:element name="identificativoFlusso" type="xsd:string" />
 				</xsd:sequence>
 			</xsd:complexType>
@@ -479,7 +496,7 @@
 					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" />
+					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
 					<xsd:element name="identificativoPSP" type="ppt:stText35" minOccurs="0" />
 				</xsd:sequence>
 			</xsd:complexType>
@@ -513,7 +530,7 @@
 					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
 					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35"  />
+					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
 					<xsd:element name="identificativoPSP" type="ppt:stText35" minOccurs="0" />
 					<xsd:element name="identificativoFlusso" type="xsd:string" />
 				</xsd:sequence>

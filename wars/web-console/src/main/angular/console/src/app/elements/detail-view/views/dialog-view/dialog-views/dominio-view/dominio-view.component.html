@@ -60,24 +60,30 @@
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
         <input matInput [placeholder]="_voce.WEB_SITE" formControlName="web_ctrl" autocomplete="off">
       </mat-form-field>
-      <div class="w-100 my-3" [formGroup]="fGroup">
-        <mat-slide-toggle formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
-      </div>
-      <p class="d-block matcard-title py-3 color-gray regular-18">Parametri adesione a pagoPA</p>
       <div class="row">
+        <div class="col-12 col-sm-6" [formGroup]="fGroup">
+          <mat-slide-toggle formControlName="abilita_ctrl" color="accent">{{_voce.ABILITATO}}</mat-slide-toggle>
+        </div>
+        <div class="col-12 col-sm-6" [formGroup]="fGroup">
+          <mat-slide-toggle formControlName="intermediato_ctrl" color="accent" (change)="_intermediatoChange($event)">{{_voce.INTERMEDIATO}}</mat-slide-toggle>
+        </div>
+      </div>
+      <p class="d-block matcard-title py-3 color-gray regular-18" *ngIf="fGroup.value?.intermediato_ctrl">Parametri adesione a pagoPA</p>
+      <div class="row" *ngIf="fGroup.value?.intermediato_ctrl">
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-          <mat-select placeholder="Intermediario" formControlName="intermediarioStazione_ctrl" (selectionChange)="_intermediarioChange($event)" required>
+          <mat-select placeholder="Intermediario" formControlName="intermediarioStazione_ctrl" (selectionChange)="_intermediarioChange($event)"
+                      [required]="fGroup.value?.intermediato_ctrl">
             <mat-option *ngFor="let _interSta of _intermediariStazione" [value]="_interSta.value">{{_interSta.label}}</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="_voce.ID_STAZIONE" formControlName="stazione_ctrl" required>
+          <mat-select [placeholder]="_voce.ID_STAZIONE" formControlName="stazione_ctrl" [required]="fGroup.value?.intermediato_ctrl">
             <mat-option *ngFor="let _stazione of _stazioniDominio" [value]="_stazione">{{_stazione}}</mat-option>
           </mat-select>
           <!--<input matInput placeholder="Stazione" formControlName="stazione_ctrl" autocomplete="off" required>-->
         </mat-form-field>
       </div>
-      <div class="row">
+      <div class="row" *ngIf="fGroup.value?.intermediato_ctrl">
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
           <input matInput [placeholder]="_voce.CODICE_INTERBANCARIO" formControlName="cbill_ctrl" autocomplete="off">
         </mat-form-field>
@@ -88,8 +94,8 @@
           <input matInput [placeholder]="_voce.SECRET_CODE" formControlName="segregationCode_ctrl" autocomplete="off">
         </mat-form-field>
       </div>
-      <p class="d-block matcard-title py-3 color-gray regular-18">Altre informazioni</p>
-      <div class="row">
+      <p class="d-block matcard-title py-3 color-gray regular-18" *ngIf="fGroup.value?.intermediato_ctrl">Altre informazioni</p>
+      <div class="row" *ngIf="fGroup.value?.intermediato_ctrl">
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
           <input matInput [placeholder]="_voce.AUT_PT" formControlName="autStampaPosteItaliane_ctrl" autocomplete="off">
         </mat-form-field>

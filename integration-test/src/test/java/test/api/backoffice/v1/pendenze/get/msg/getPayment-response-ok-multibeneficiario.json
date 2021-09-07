@@ -1,0 +1,46 @@
+{
+	"creditorReferenceId" : "#string",
+    "paymentAmount" : '#? _ == pendenzaPut.importo || _ == pendenzaPut.importo.toString()',
+    "dueDate" : "#ignore",
+    "retentionDate" : "#ignore",
+    "lastPayment" : true,
+    "description" : "#string",
+    "companyName" : "#(dominio.ragioneSociale)",
+    "officeName" : "#ignore",
+    "debtor" : {
+    		"uniqueIdentifier" : {
+    				"entityUniqueIdentifierType" : "#string",
+    				"entityUniqueIdentifierValue" : "#string"
+    			},
+		    "fullName" : "#string",
+		    "streetName" : "#ignore",
+		    "civicNumber" : "#ignore",
+		    "postalCode" : "#ignore",
+		    "city" : "#ignore",
+		    "stateProvinceRegion" : "#ignore",
+		    "country" : "#ignore",
+		    "eMail" : "#ignore"
+    	},
+    "transferList" : {
+	    	"transfer" :
+			    [
+			    	{
+			    		"idTransfer" : 1,
+					    "transferAmount" : '#? _ == pendenzaPut.voci[0].importo || _ == pendenzaPut.voci[0].importo.toString()',
+					    "fiscalCodePA" : "#(idDominio)",
+					    "IBAN" : "#string",
+					    "remittanceInformation" : "#string",
+					    "transferCategory" : "#string"
+			    	},
+			    	{
+			    		"idTransfer" : 2,
+					    "transferAmount" : '#? _ == pendenzaPut.voci[1].importo || _ == pendenzaPut.voci[0].importo.toString()',
+					    "fiscalCodePA" : "#(idDominio_2)",
+					    "IBAN" : "#string",
+					    "remittanceInformation" : "#string",
+					    "transferCategory" : "#string"
+			    	}
+			    ]
+	     },
+    "metadata" : "#ignore"
+}

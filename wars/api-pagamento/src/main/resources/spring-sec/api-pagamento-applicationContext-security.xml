@@ -253,11 +253,16 @@
         	<b:constructor-arg index="0" value="/rs/public/v2/pagamenti" />
         	<b:constructor-arg index="1" value="POST" />
         </b:bean>
+        <b:bean id="pendenzaPostRequestMatcherV2" class="it.govpay.rs.v1.authentication.hardening.matcher.HardeningAntPathRequestMatcher">
+        	<b:constructor-arg index="0" value="/rs/public/v2/pendenze/**" />
+        	<b:constructor-arg index="1" value="POST" />
+        </b:bean>
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointPublic" pattern="/rs/public/v2/**">
                 <csrf disabled="true"/>
                 <intercept-url pattern="/rs/public/v2/avvisi/**" access="isAnonymous()" method="GET" request-matcher-ref="avvisiGetRequestMatcherV2" />
                 <intercept-url pattern="/rs/public/v2/pagamenti" access="isAnonymous()" method="POST" request-matcher-ref="pagamentoPostRequestMatcherV2" />
-                <intercept-url pattern="/rs/public/v2/pendenze/**" access="isAnonymous()" method="POST" />
+                <intercept-url pattern="/rs/public/v2/pendenze/**" access="isAnonymous()" method="POST" request-matcher-ref="pendenzaPostRequestMatcherV2"  />
+                <intercept-url pattern="/rs/public/v2/pendenze/**" access="isAnonymous()" method="GET" />
                 <intercept-url pattern="/rs/public/v2/pagamenti/**" access="isAnonymous()" method="GET" />
                 <intercept-url pattern="/rs/public/v2/domini/**" access="isAnonymous()" method="GET" />
                 <intercept-url pattern="/rs/public/v2/rpp/**" access="isAnonymous()" />

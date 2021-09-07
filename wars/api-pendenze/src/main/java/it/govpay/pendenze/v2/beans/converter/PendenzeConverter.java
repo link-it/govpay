@@ -315,7 +315,9 @@ public class PendenzeConverter {
 		}
 		
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
-
+		if(singoloVersamento.getDominio(configWrapper) != null) {
+			rsModel.setDominio(DominiConverter.toRsModel(singoloVersamento.getDominio(configWrapper)));
+		}
 
 		return rsModel;
 	}
@@ -405,6 +407,7 @@ public class PendenzeConverter {
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				sv.setImporto(vocePendenza.getImporto());
+				sv.setCodDominio(vocePendenza.getIdDominio());
 
 				// Definisce i dati di un bollo telematico
 				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
@@ -546,6 +549,8 @@ public class PendenzeConverter {
 					break;
 				}				
 			}
+			
+			dto.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
 		}
 		
 		return dto;
@@ -592,6 +597,7 @@ public class PendenzeConverter {
 				if(rsModel.getLinguaSecondariaEnum() != null)
 					rsModel.setLinguaSecondaria(rsModel.getLinguaSecondariaEnum().toString());
 			}
+			rsModel.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
 		}
 		
 		return rsModel;

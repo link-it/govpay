@@ -53,6 +53,11 @@ public class IncassoModel extends AbstractModel<Incasso> {
 		this.ID_OPERATORE = new it.govpay.orm.model.IdOperatoreModel(new Field("idOperatore",it.govpay.orm.IdOperatore.class,"Incasso",Incasso.class));
 		this.IBAN_ACCREDITO = new Field("ibanAccredito",java.lang.String.class,"Incasso",Incasso.class);
 		this.SCT = new Field("sct",java.lang.String.class,"Incasso",Incasso.class);
+		this.IDENTIFICATIVO = new Field("identificativo",java.lang.String.class,"Incasso",Incasso.class);
+		this.IUV = new Field("iuv",java.lang.String.class,"Incasso",Incasso.class);
+		this.COD_FLUSSO_RENDICONTAZIONE = new Field("codFlussoRendicontazione",java.lang.String.class,"Incasso",Incasso.class);
+		this.STATO = new Field("stato",java.lang.String.class,"Incasso",Incasso.class);
+		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"Incasso",Incasso.class);
 	
 	}
 	
@@ -72,6 +77,11 @@ public class IncassoModel extends AbstractModel<Incasso> {
 		this.ID_OPERATORE = new it.govpay.orm.model.IdOperatoreModel(new ComplexField(father,"idOperatore",it.govpay.orm.IdOperatore.class,"Incasso",Incasso.class));
 		this.IBAN_ACCREDITO = new ComplexField(father,"ibanAccredito",java.lang.String.class,"Incasso",Incasso.class);
 		this.SCT = new ComplexField(father,"sct",java.lang.String.class,"Incasso",Incasso.class);
+		this.IDENTIFICATIVO = new ComplexField(father,"identificativo",java.lang.String.class,"Incasso",Incasso.class);
+		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"Incasso",Incasso.class);
+		this.COD_FLUSSO_RENDICONTAZIONE = new ComplexField(father,"codFlussoRendicontazione",java.lang.String.class,"Incasso",Incasso.class);
+		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"Incasso",Incasso.class);
+		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"Incasso",Incasso.class);
 	
 	}
 	
@@ -100,6 +110,16 @@ public class IncassoModel extends AbstractModel<Incasso> {
 	public IField IBAN_ACCREDITO = null;
 	 
 	public IField SCT = null;
+	 
+	public IField IDENTIFICATIVO = null;
+	 
+	public IField IUV = null;
+	 
+	public IField COD_FLUSSO_RENDICONTAZIONE = null;
+	 
+	public IField STATO = null;
+	 
+	public IField DESCRIZIONE_STATO = null;
 	 
 
 	@Override

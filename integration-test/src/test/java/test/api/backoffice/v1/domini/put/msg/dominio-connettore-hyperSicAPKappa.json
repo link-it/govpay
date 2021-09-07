@@ -29,5 +29,6 @@
   		"downloadBaseUrl" : "http://localhost:8080/servizioDownloadTracciati",
   		"versioneCsv" : "2.0",
   		"tipiPendenza" : [ "*" ]
-  }
+  },
+  "intermediato": "true"
 }

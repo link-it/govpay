@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.7.0"
+  version: "2.9.0"
   title: GovPay - API Ragioneria
   contact:
     name: GitHub Project Page
@@ -565,6 +565,16 @@ components:
           $ref: "#/components/schemas/TipoServizio"
         autorizzazioni:
           $ref: "#/components/schemas/TipoAutorizzazione"  
+    Contabilita:
+      type: object
+      properties:
+        quote:
+          type: array
+          items: 
+            $ref: '#/components/schemas/QuotaContabilita'
+        proprietaCustom:
+          type: object
+          description: Dati specifici del gestionale di contabilità
     Dominio:
       type: object
       required:
@@ -889,6 +899,52 @@ components:
           $ref: '#/components/schemas/Soggetto'
         identityData:
           type: object 
+    QuotaContabilita:
+      type: object
+      required:
+        - capitolo
+        - annoEsercizio
+        - importo
+      properties:
+        capitolo:
+          type: string
+          description: Codice del capitolo
+          maxLength: 64
+        annoEsercizio:
+          type: number
+          description: Anno di esercizio
+          example: 2020
+        importo:
+          type: number
+          description: Importo della voce di contabilita'
+          example: 10.01
+        accertamento:
+          type: string
+          description: Codice dell’accertamento
+          maxLength: 64        
+        proprietaCustom:
+          type: object
+          description: Dati specifici del gestionale di contabilità
+        titolo:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'titolo'
+        tipologia:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'tipologia'
+        categoria:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'categoria'
+        articolo:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'articolo'
     Rendicontazione:
       type: object
       required:
@@ -1247,11 +1303,13 @@ components:
          * ENTRATA: Entrata in tesoreria
          * MBT: Marca da bollo telematica
          * ALTRO_INTERMEDIARIO: Entrata relativa a un intermediario esterno
+         * ENTRATA_PA_NON_INTERMEDIATA: Entrata relativa ad un ente creditore non intermediato da GovPay
       type: string
       enum:
         - ENTRATA
         - MBT
         - ALTRO_INTERMEDIARIO
+        - ENTRATA_PA_NON_INTERMEDIATA
     TipoServizio:
       type: string
       enum:
@@ -1308,6 +1366,10 @@ components:
           example: Sanzione CdS n. abc00000
           minLength: 1
           maxLength: 140
+        contabilita:
+          $ref: '#/components/schemas/Contabilita'
         pendenza:
           $ref: '#/components/schemas/Pendenza'
+        dominio:
+          $ref: '#/components/schemas/Dominio'
             

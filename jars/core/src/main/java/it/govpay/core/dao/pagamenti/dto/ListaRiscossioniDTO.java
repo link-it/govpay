@@ -19,6 +19,11 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 		this.addSortField("stato", VistaPagamento.model().STATO);
 		this.addSortField("iuv", VistaPagamento.model().IUV);
 		this.addDefaultSort(VistaPagamento.model().DATA_PAGAMENTO,SortOrder.DESC);
+		// ordinamento per chiave logica crescente
+		this.addDefaultSort(VistaPagamento.model().COD_DOMINIO,SortOrder.ASC);
+		this.addDefaultSort(VistaPagamento.model().IUV,SortOrder.ASC);
+		this.addDefaultSort(VistaPagamento.model().IUR,SortOrder.ASC);
+		this.addDefaultSort(VistaPagamento.model().INDICE_DATI,SortOrder.ASC);
 	}
 	
 	private Date dataRiscossioneDa;

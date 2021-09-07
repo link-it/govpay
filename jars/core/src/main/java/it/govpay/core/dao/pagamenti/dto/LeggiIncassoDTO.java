@@ -14,7 +14,7 @@ public class LeggiIncassoDTO extends BasicFindRequestDTO {
 	}
 	
 	private String idDominio;
-	private String idIncasso;
+	private String idRiconciliazione;	
 	private List<TipoPagamento> tipoRiscossioni;
 	
 	public String getIdDominio() {
@@ -23,17 +23,17 @@ public class LeggiIncassoDTO extends BasicFindRequestDTO {
 	public void setIdDominio(String idDominio) {
 		this.idDominio = idDominio;
 	}
-	public String getIdIncasso() {
-		return this.idIncasso;
-	}
-	public void setIdIncasso(String idIncasso) {
-		this.idIncasso = idIncasso;
-	}
 	public List<TipoPagamento> getTipoRiscossioni() {
 		return tipoRiscossioni;
 	}
 	public void setTipoRiscossioni(List<TipoPagamento> tipoRiscossioni) {
 		this.tipoRiscossioni = tipoRiscossioni;
+	}
+	public String getIdRiconciliazione() {
+		return idRiconciliazione;
+	}
+	public void setIdRiconciliazione(String idRiconciliazione) {
+		this.idRiconciliazione = idRiconciliazione;
 	}
 
 }

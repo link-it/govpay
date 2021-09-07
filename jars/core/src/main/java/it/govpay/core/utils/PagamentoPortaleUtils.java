@@ -61,6 +61,7 @@ public class PagamentoPortaleUtils {
 			int numeroEseguiti = 0;
 			int numeroNonEseguiti = 0;
 			int numeroFalliti = 0;
+			String descrizioneStato = null;
 			//int numeroResidui = 0;
 			for (int i = 0; i <findAll.size(); i++) {
 				Rpt rpt  = findAll.get(i);
@@ -78,7 +79,10 @@ public class PagamentoPortaleUtils {
 					|| stato.equals(StatoRpt.RPT_RIFIUTATA_PSP)) {
 					numeroFalliti ++;
 				}
-				else {
+				else if(stato.equals(StatoRpt.RPT_ERRORE_INVIO_A_NODO)) {
+					descrizioneStato = "Errore nella spedizione della richiesta di pagamento a pagoPA";
+					numeroFalliti ++;
+				} else {
 					if(rpt.getEsitoPagamento() != null) {
 						if(rpt.getEsitoPagamento().equals(EsitoPagamento.PAGAMENTO_ESEGUITO)) {
 							numeroEseguiti ++;
@@ -110,7 +114,7 @@ public class PagamentoPortaleUtils {
 					pagamentoPortale.setStato(STATO.ESEGUITO_PARZIALE);
 					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_PARZIALMENTE_ESEGUITO); 
 				}
-				
+				pagamentoPortale.setDescrizioneStato(descrizioneStato);
 				 
 			} else {
 				pagamentoPortale.setStato(STATO.IN_CORSO);

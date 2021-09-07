@@ -9,7 +9,11 @@ public class QuotaContabilita {
 	private String accertamento;
 	private BigDecimal importo;
 	private Object proprietaCustom;
-	
+	private String titolo;
+	private String tipologia;
+	private String categoria;
+	private String articolo;
+
 	public String getCapitolo() {
 		return capitolo;
 	}
@@ -39,7 +43,31 @@ public class QuotaContabilita {
 	}
 	public void setProprietaCustom(Object proprietaCustom) {
 		this.proprietaCustom = proprietaCustom;
+	}
+	public String getTitolo() {
+		return titolo;
+	}
+	public void setTitolo(String titolo) {
+		this.titolo = titolo;
+	}
+	public String getTipologia() {
+		return tipologia;
+	}
+	public void setTipologia(String tipologia) {
+		this.tipologia = tipologia;
+	}
+	public String getCategoria() {
+		return categoria;
+	}
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
+	public String getArticolo() {
+		return articolo;
+	}
+	public void setArticolo(String articolo) {
+		this.articolo = articolo;
 	} 
-	
-	
+
+
 }

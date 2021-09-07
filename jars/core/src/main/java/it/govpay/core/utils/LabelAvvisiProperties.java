@@ -38,8 +38,10 @@ public class LabelAvvisiProperties {
 	public static final String LABEL_NOTA_RATA_UNICA = "nota_rata_unica";
 	public static final String LABEL_RATA_UNICA_ENTRO_IL = "rata_unica_entro_il";
 	public static final String LABEL_RATA_UNICA_ENTRO_GIORNI = "rata_unica_entro_giorni";
+	public static final String LABEL_RATA_ENTRO_IL = "rata_entro_il";
 	public static final String LABEL_PRIMA_RATA = "prima_rata";
 	public static final String LABEL_PRIMA_RATA_ENTRO_GIORNI = "prima_rata_entro_giorni";
+	public static final String LABEL_ELENCO_RATE_1 = "elenco_rate_1";
 	public static final String LABEL_ELENCO_RATE_2 = "elenco_rate_2";
 	public static final String LABEL_ELENCO_RATE_3 = "elenco_rate_3";
 	public static final String LABEL_NUMERO_RATA = "numero_rata";
@@ -59,7 +61,7 @@ public class LabelAvvisiProperties {
 
 	private static LabelAvvisiProperties instance;
 
-	private static Logger log = LoggerWrapperFactory.getLogger(LabelAvvisiProperties.class);
+	private static Logger log = LoggerWrapperFactory.getLogger("boot");
 
 	private String govpayResourceDir = null;
 	

@@ -40,6 +40,16 @@ public class Incasso extends BasicModel {
 	private Long idOperatore;
 	private String sct;
 	
+	private String idRiconciliazione;
+	private String iuv;
+	private String idFlussoRendicontazione;
+	private StatoIncasso stato;
+	private String descrizioneStato;
+	
+	public enum StatoIncasso {
+		NUOVO, ACQUISITO, ERRORE
+	}
+	
 	@Override
 	public Long getId() {
 		return this.id;
@@ -122,5 +132,36 @@ public class Incasso extends BasicModel {
 	public void setSct(String sct) {
 		this.sct = sct;
 	}
+	public String getIdRiconciliazione() {
+		return idRiconciliazione;
+	}
+	public void setIdRiconciliazione(String idRiconciliazione) {
+		this.idRiconciliazione = idRiconciliazione;
+	}
+	public String getIuv() {
+		return iuv;
+	}
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
+	public String getIdFlussoRendicontazione() {
+		return idFlussoRendicontazione;
+	}
+	public void setIdFlussoRendicontazione(String idFlussoRendicontazione) {
+		this.idFlussoRendicontazione = idFlussoRendicontazione;
+	}
+	public StatoIncasso getStato() {
+		return stato;
+	}
+	public void setStato(StatoIncasso stato) {
+		this.stato = stato;
+	}
+	public String getDescrizioneStato() {
+		return descrizioneStato;
+	}
+	public void setDescrizioneStato(String descrizioneStato) {
+		this.descrizioneStato = descrizioneStato;
+	}
+	
 }
 

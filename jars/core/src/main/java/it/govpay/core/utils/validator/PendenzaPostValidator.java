@@ -5,8 +5,10 @@ import java.util.Date;
 
 import org.openspcoop2.utils.json.ValidationException;
 
+import it.govpay.core.beans.tracciati.Contabilita;
 import it.govpay.core.beans.tracciati.Documento;
 import it.govpay.core.beans.tracciati.PendenzaPost;
+import it.govpay.core.beans.tracciati.QuotaContabilita;
 import it.govpay.core.beans.tracciati.Soggetto;
 import it.govpay.core.beans.tracciati.VincoloPagamento;
 import it.govpay.core.beans.tracciati.VocePendenza;
@@ -160,6 +162,9 @@ public class PendenzaPostValidator  implements IValidable{
 				ValidatoreUtils.validaImporto(vf, "importo", this.vocePendenza.getImporto());
 				ValidatoreUtils.validaDescrizione(vf, "descrizione", this.vocePendenza.getDescrizione());
 				ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.vocePendenza.getDescrizioneCausaleRPT());
+				new ContabilitaValidator(this.vocePendenza.getContabilita()).validate();
+				if(this.vocePendenza.getIdDominio() != null)
+					vi.validaIdDominio("idDominio", this.vocePendenza.getIdDominio());
 
 				if(this.vocePendenza.getCodEntrata() != null) {
 					vi.validaIdEntrata("codEntrata", this.vocePendenza.getCodEntrata());
@@ -262,4 +267,38 @@ public class PendenzaPostValidator  implements IValidable{
 		}
 	  
 	}
+	
+	public class ContabilitaValidator implements IValidable{
+		
+		private Contabilita contabilita = null;
+
+
+		public ContabilitaValidator(Contabilita contabilita) {
+			this.contabilita = contabilita;
+		}
+		
+		 @Override
+			public void validate() throws ValidationException {
+			  	ValidatorFactory vf = ValidatorFactory.newInstance();
+			  	
+			  	if(this.contabilita != null) {
+			  		if(this.contabilita.getQuote() != null) {
+			  			for (QuotaContabilita quota : this.contabilita.getQuote()) {
+			  				vf.getValidator("capitolo", quota.getCapitolo()).notNull().minLength(1).maxLength(64);
+			  				
+			  				vf.getValidator("annoEsercizio", quota.getAnnoEsercizio()).notNull();
+			  				ValidatoreUtils.validaAnnoRiferimento(vf, "annoEsercizio", quota.getAnnoEsercizio());
+
+			  				vf.getValidator("accertamento", quota.getAccertamento()).minLength(1).maxLength(64);
+			  				ValidatoreUtils.validaImporto(vf, "importo", quota.getImporto());
+
+			  				vf.getValidator("titolo", quota.getTitolo()).minLength(1).maxLength(64);
+			  				vf.getValidator("tipologia", quota.getTipologia()).minLength(1).maxLength(64);
+			  				vf.getValidator("categoria", quota.getCategoria()).minLength(1).maxLength(64);
+			  				vf.getValidator("articolo", quota.getArticolo()).minLength(1).maxLength(64);
+						}
+			  		}
+			  	}
+		 }
+	}	
 }

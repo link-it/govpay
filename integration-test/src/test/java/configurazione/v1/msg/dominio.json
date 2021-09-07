@@ -19,5 +19,6 @@
 	"abilitato": true,
 	"iuvPrefix": "%(a)",
 	"cbill": "AB123",
-	"autStampaPosteItaliane": "Aut. num. 0129302934764583"
+	"autStampaPosteItaliane": "Aut. num. 0129302934764583",
+    "intermediato": "true"
 }

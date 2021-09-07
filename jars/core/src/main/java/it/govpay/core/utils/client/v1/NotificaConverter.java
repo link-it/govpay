@@ -37,7 +37,6 @@ import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.ec.v1.beans.Allegato;
 import it.govpay.ec.v1.beans.Allegato.TipoEnum;
 import it.govpay.ec.v1.beans.Notifica;
-import it.govpay.ec.v1.beans.NotificaAnnullamento;
 import it.govpay.ec.v1.beans.Riscossione;
 import it.govpay.ec.v1.beans.Riscossione.StatoEnum;
 import it.govpay.ec.v1.beans.TipoRiscossione;
@@ -57,8 +56,18 @@ public class NotificaConverter {
 
 		if(pagamento.getAllegato() != null) {
 			Allegato allegato = new Allegato();
+			if(pagamento.getTipoAllegato() != null) {
+				switch (pagamento.getTipoAllegato()) {
+				case BD:
+					allegato.setTipo(TipoEnum.MARCA_DA_BOLLO);
+					break;
+				case ES:
+					allegato.setTipo(TipoEnum.ESITO_PAGAMENTO);
+					break;
+				}
+			}
+			
 			allegato.setTesto(Base64.encodeBase64String(pagamento.getAllegato()));
-			allegato.setTipo(TipoEnum.fromValue(pagamento.getTipoAllegato().toString()));
 			riscossione.setAllegato(allegato);
 		}
 		riscossione.setCommissioni(pagamento.getCommissioniPsp());
@@ -75,15 +84,5 @@ public class NotificaConverter {
 		riscossione.setTipo(TipoRiscossione.fromValue(pagamento.getTipo().name()));
 		
 		return riscossione;
-	}
-	
-	
-	public NotificaAnnullamento toNotificaCancellazioneRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt) throws ServiceException, JAXBException, SAXException {
-		NotificaAnnullamento rsModel = new NotificaAnnullamento();
-		
-		String motivazione = rpt.getDescrizioneStato() + ": " + rpt.getStato().name();
-		rsModel.codice(rpt.getStato().name()).motivazione(motivazione);
-		
-		return rsModel;
 	}
 }

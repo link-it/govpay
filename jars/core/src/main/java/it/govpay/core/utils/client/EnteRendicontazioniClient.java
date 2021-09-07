@@ -33,9 +33,11 @@ import gov.telematici.pagamenti.ws.rpt.ObjectFactory;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.utils.EventoContext.Componente;
+import it.govpay.core.utils.client.beans.TipoConnettore;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 
-public class EnteRendicontazioniClient extends BasicClient {
+public class EnteRendicontazioniClient extends BasicClientCORE {
 
 	public enum Azione {
 		

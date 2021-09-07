@@ -19,13 +19,17 @@ l'applicativo di riconciliazione HyperSIC di APKappa.
    "Versione", "Versione del tracciato utilizzata per l'esportazione"
    "Modalità di consegna", "Canale di trasmissione del CSV verso l'ente"
    "Tipi pendenza", "Elenco dei tipi pendenza oggetto di esportazione"
-   "TBD", "TBD"
+   "Email", "Se selezionata la consegna email, specifica la lista degli indirizzi destinatari separati da virgola"
+   "Oggetto", "Se selezionata la consegna email, specifica l'oggetto della mail"
+   "Invia tracciato come allegato", "Se selezionata la consegna email, indica se il tracciato deve essere inserito in allegato o riferito con un link."
+   "Base URL link download", "Se deselezionato l'invio come allegato, indica la base URL del link di download. Deve puntare alla risorsa /tracciatiNotificaPagamenti delle API di backoffice"
+   "Path", "Se selezionata la consegna File System, specifica il path sul server dove verranno depositati i file. Accertarsi che la directory esista e che siano forniti i diritti necessari alla scrittura dei file"
   
 Il batch di esportazione viene eseguito quotidianamente alle 3 di mattina.
 
 Il naming segue le specifiche del servizio HyperSIC che prevede i seguenti parametri separati da “_”:
 - “RENDICONTAZIONE”, stringa fissa per identificativo tipologia di flusso;
-- “AV20”, stringa fissa per identificativo versione del flusso;
+- “AV20”, stringa per identificativo versione del flusso;
 - “Codice Fiscale Ente Creditore”, nel formato numerico di 11 caratteri;
 - “Data Creazione Flusso”, nel formato AAAAMMGG;
 - “Progressivo Flusso”, per la data di creazione flusso nel formato NNN.
@@ -35,14 +39,16 @@ Le riscossioni non rendicontate per piu' di 5 gg vengono incluse in un csv separ
 Versione 2.3
 ~~~~~~~~~~~~
 
-Il tracciato è conforme alle specifiche risulta una personalizzazione del :download:`Tracciato Standard Acquisizioni Rendicontazioni pagoPA <APK pagoPA Tracciato Import Rendicontazione V2.3.docx>` valorizzando i campi con le seguenti convenzioni:
+Il tracciato è conforme alle specifiche :download:`Tracciato Standard Acquisizioni Rendicontazioni pagoPA v2.3<APK pagoPA Tracciato Import Rendicontazione V2.3.docx>` valorizzando i campi con le seguenti convenzioni:
  
 .. csv-table:: *Valori di esportazione*
    :header: "Campo", "Descrizione"
    :widths: 40,60
 
-   "CodiceServizio","vocePendenza.contabilita.proprietaCustom.codiceServizio<br />o versamento.tipoPendenza.codTipoPendenza"
-   "DescrizioneServizio","vocePendenza.contabilita.proprietaCustom.descrizioneServizio<br />o versamento.tipoPendenza.descrizione"
+   "CodiceServizio","vocePendenza.contabilita.proprietaCustom.codiceServizio
+   o versamento.tipoPendenza.codTipoPendenza"
+   "DescrizioneServizio","vocePendenza.contabilita.proprietaCustom.descrizioneServizio
+   o versamento.tipoPendenza.descrizione"
    "CodiceDebitore","<vuoto>"
    "CFPIVADebitore","pendenza.soggettoDebitore.identificativo"
    "NominativoDebitore","pendenza.soggettoDebitore.anagrafica"
@@ -62,7 +68,11 @@ Il tracciato è conforme alle specifiche risulta una personalizzazione del :down
    "CodiceFlussoRiversamento","flussoRendicontazione.identificativoFlusso"
    "DataRiversamento","flussoRendicontazione.dataRegolamento"
    "Annotazioni",""
-   "LivelloContabile1","Se vocependenza.contabilita.quota[0] = null, tutto a null.<br />Se quota[0].accertamento = null allora LivelloContabile = CAP altrimenti LivelloContabile = ACC"
-   "CodificaContabile1","Se LivelloContabile = CAP <br />allora CodificaContabile = {quota[0].annoEsercizio}/{quota[0].capitolo} <br />altrimenti CodificaContabile = {quota[0].annoEsercizio}/{contabilita.accertamento}"
+   "LivelloContabile1","Se vocependenza.contabilita.quota[0] = null, tutto a null.
+   Se quota[0].accertamento = null allora LivelloContabile = CAP 
+   altrimenti LivelloContabile = ACC"
+   "CodificaContabile1","Se LivelloContabile = CAP 
+   allora CodificaContabile = {quota[0].annoEsercizio}/{quota[0].capitolo}
+   altrimenti CodificaContabile = {quota[0].annoEsercizio}/{contabilita.accertamento}"
    "QuotaContabile1","quota[0].importo"
    "Altre quote contabili","Come nel caso della prima, fino alle 10 consentite"

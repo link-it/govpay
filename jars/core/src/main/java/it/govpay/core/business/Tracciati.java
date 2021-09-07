@@ -79,8 +79,10 @@ import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.beans.tracciati.AnnullamentoPendenza;
 import it.govpay.core.beans.tracciati.DettaglioTracciatoPendenzeEsito;
 import it.govpay.core.beans.tracciati.EsitoOperazionePendenza;
+import it.govpay.core.beans.tracciati.FaultBean;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.TracciatoPendenzePost;
+import it.govpay.core.beans.tracciati.FaultBean.CategoriaEnum;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.tracciati.operazioni.AnnullamentoRequest;
 import it.govpay.core.business.model.tracciati.operazioni.AnnullamentoResponse;
@@ -220,26 +222,56 @@ public class Tracciati {
 		for(long linea = numLinea; linea < beanDati.getNumAddTotali() ; linea ++) {
 			PendenzaPost pendenzaPost = inserimenti.get((int) linea);
 			String jsonPendenza = pendenzaPost.toJSON(null);
+			
+			CaricamentoResponse caricamentoResponse = null;
 
-			it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+			String codVersamentoEnte = null;
+			try {
+				it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+				codVersamentoEnte = versamentoToAdd.getCodVersamentoEnte();
 
-			// inserisco l'identificativo del dominio
-			versamentoToAdd.setCodDominio(codDominio);
-
-			CaricamentoRequest request = new CaricamentoRequest();
-			request.setCodApplicazione(pendenzaPost.getIdA2A());
-			request.setCodVersamentoEnte(pendenzaPost.getIdPendenza());
-			request.setVersamento(versamentoToAdd);
-			request.setLinea(linea + 1);
-			request.setOperatore(tracciato.getOperatore(configWrapper));
-			request.setIdTracciato(tracciato.getId());
-
-			CaricamentoResponse caricamentoResponse = factory.caricaVersamento(request, manager, tracciatiBD);
-
+				// inserisco l'identificativo del dominio
+				versamentoToAdd.setCodDominio(codDominio);
+	
+				CaricamentoRequest request = new CaricamentoRequest();
+				request.setCodApplicazione(pendenzaPost.getIdA2A());
+				request.setCodVersamentoEnte(pendenzaPost.getIdPendenza());
+				request.setVersamento(versamentoToAdd);
+				request.setLinea(linea + 1);
+				request.setOperatore(tracciato.getOperatore(configWrapper));
+				request.setIdTracciato(tracciato.getId());
+	
+				caricamentoResponse = factory.caricaVersamento(request, manager, tracciatiBD);
+			}catch(GovPayException e) {
+				caricamentoResponse = new CaricamentoResponse();
+				caricamentoResponse.setNumero(linea + 1);
+				caricamentoResponse.setTipo(TipoOperazioneType.ADD);
+				log.debug("Impossibile eseguire il caricamento della linea [: "+(linea +1)+": "+ e.getMessage(),e);
+				caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
+				caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_KO);
+				caricamentoResponse.setEsito(e.getCodEsito().name());
+				caricamentoResponse.setDescrizioneEsito(e.getCodEsito().name() + ": " + e.getMessage());
+				
+				FaultBean respKo = new FaultBean();
+				if(e.getFaultBean()!=null) {
+					respKo.setCategoria(CategoriaEnum.PAGOPA);
+					respKo.setCodice(e.getFaultBean().getFaultCode());
+					respKo.setDescrizione(e.getFaultBean().getFaultString());
+					respKo.setDettaglio(e.getFaultBean().getDescription());
+				} else {
+					respKo.setCategoria(CategoriaEnum.fromValue(e.getCategoria().name()));
+					respKo.setCodice(e.getCodEsitoV3());
+					respKo.setDescrizione(e.getDescrizioneEsito());
+					respKo.setDettaglio(e.getMessageV3());
+					
+				}
+				caricamentoResponse.setFaultBean(respKo);
+			}
+			
 			tracciatiBD.setAutoCommit(false);
 
 			Operazione operazione = new Operazione();
-			operazione.setCodVersamentoEnte(versamentoToAdd.getCodVersamentoEnte());
+			operazione.setCodVersamentoEnte(codVersamentoEnte);
 			operazione.setDatiRichiesta(jsonPendenza.getBytes());
 			operazione.setDatiRisposta(caricamentoResponse.getEsitoOperazionePendenza().toJSON(null).getBytes());
 			operazione.setStato(caricamentoResponse.getStato());
@@ -647,7 +679,7 @@ public class Tracciati {
 			request.setTipoTemplateTrasformazioneRichiesta(tracciatoCsv.getTipo());
 			request.setTemplateTrasformazioneRichiesta(tracciatoCsv.getRichiesta());
 			request.setDati(linea);
-			request.setLinea(numLinea + 1);
+			request.setLinea(numLinea);
 			request.setOperatore(tracciato.getOperatore(configWrapper));
 			request.setIdTracciato(tracciato.getId());
 
@@ -844,99 +876,99 @@ public class Tracciati {
 			TracciatiBD tracciatiBeanDatiBD = null;
 			try (ZipOutputStream zos = new ZipOutputStream(oututStreamDestinazione);) {
 
-				int offset = 0;
-				int limit = 500;  
-
 				int stampePerThread = GovpayConfig.getInstance().getBatchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread();
+				int numeroThread = GovpayConfig.getInstance().getDimensionePoolCaricamentoTracciatiStampaAvvisi();
+				
+				int offset = 0;
+				int limit = Math.max(500, stampePerThread * numeroThread);  
 
 				VersamentiBD versamentiBD = new VersamentiBD(tracciatiBD);
 				versamentiBD.setAtomica(false);
 
-				List<Versamento> versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
-				log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
-
 				int sommaStampeOk = 0;
 				int sommaStampeKo = 0;
 				
-				if(versamentiDaStampare.size() > 0) {
-					tracciatiBeanDatiBD = new TracciatiBD(configWrapper);
-					tracciatiBeanDatiBD.setupConnection(configWrapper.getTransactionID());
-					tracciatiBeanDatiBD.setAtomica(false);
-					tracciatiBeanDatiBD.setAutoCommit(false); 
-					do {
-						if(versamentiDaStampare.size() > 0) {
-							List<CreaStampeTracciatoThread> threadsStampe = new ArrayList<CreaStampeTracciatoThread>();
+				tracciatiBeanDatiBD = new TracciatiBD(configWrapper);
+				tracciatiBeanDatiBD.setupConnection(configWrapper.getTransactionID());
+				tracciatiBeanDatiBD.setAtomica(false);
+				tracciatiBeanDatiBD.setAutoCommit(false); 
+				
+				while(true) {
+					List<Versamento> versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
+					log.debug("Trovati ["+versamentiDaStampare.size()+"] versamenti per cui stampare l'avviso");
+					
+					if(versamentiDaStampare.size() == 0) {
+						// Finito di stampare.
+						break;
+					}
+					
 
-							if(stampePerThread > versamentiDaStampare.size()) {
-								CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), manager, ctx); 
-								ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
-								threadsStampe.add(sender);
-							} else {
-								for (int i = 0; i < versamentiDaStampare.size(); i += stampePerThread) {
-									int end = Math.min(versamentiDaStampare.size(), i + stampePerThread);
+					List<CreaStampeTracciatoThread> threadsStampe = new ArrayList<CreaStampeTracciatoThread>();
 
-									CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(versamentiDaStampare.subList(i, end), idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), manager, ctx); 
-									ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
-									threadsStampe.add(sender);
-								}
-							}
+					int listStart = 0, listEnd = 0;
+					
+					while (listEnd < versamentiDaStampare.size()) {
+						listStart = listEnd;
+						listEnd = Math.min(versamentiDaStampare.size(), listStart + stampePerThread);
+						List<Versamento> subList = versamentiDaStampare.subList(listStart, listEnd);
+						CreaStampeTracciatoThread sender = new CreaStampeTracciatoThread(subList, idTracciato, ("ThreadStampe_" + (threadsStampe.size() + 1)), manager, ctx); 
+						log.debug("Avvio thread "+sender.getNomeThread()+" per stampe da posizione " + listStart + " a " + listEnd + " per " + subList.size() + " stampe: ");
+						for(int i = 0; i<subList.size(); i++) {
+							log.debug(sender.getNomeThread() + ": [Doc:" + subList.get(i).getCodDocumento() + " NAV:" + subList.get(i).getNumeroAvviso());
+						}
+						ThreadExecutorManager.getClientPoolExecutorCaricamentoTracciatiStampeAvvisi().execute(sender);
+						threadsStampe.add(sender);
+					}
 
-							while(true){
-								try {
-									Thread.sleep(2000);
-								} catch (InterruptedException e) {
-
-								}
-								boolean completed = true;
-								for(CreaStampeTracciatoThread sender : threadsStampe) {
-									if(!sender.isCompleted()) { 
-										completed = false;
-									} else {
-										if(!sender.isCommit()) {
-											sender.setCommit(true);
-											synchronized (this) {
-												
-												List<PrintAvvisoDTOResponse> stampe = sender.getStampe();
-												
-												sommaStampeOk += sender.getStampeOk();
-												sommaStampeKo += sender.getStampeKo();
-			
-												log.debug(sender.getNomeThread() + " ha eseguito ["+stampe.size()+"] stampe");
-			
-												for (PrintAvvisoDTOResponse stampa : stampe) {
-													// inserisco l'eventuale pdf nello zip
-													TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, stampa, log);
-												}
-												
-												beanDati.setNumStampeOk(sommaStampeOk);
-												beanDati.setNumStampeKo(sommaStampeKo);
-												beanDati.setDataUltimoAggiornamento(new Date());
-												
-												log.debug("Aggiornamento delle informazioni progresso stampa...");
-												tracciato.setBeanDati(serializer.getObject(beanDati));
-												tracciatiBeanDatiBD.updateBeanDati(tracciato);
-	
-												if(!tracciatiBeanDatiBD.isAutoCommit()) tracciatiBeanDatiBD.commit();
-												log.debug("Aggiornamento delle informazioni progresso stampa completato.");
-												
-												
-											}
-										}
-									}
-								}
-
-								if(completed) { 
-									log.debug("Completata Esecuzione dei ["+threadsStampe.size()+"] Threads di stampa");
-									break; // esco
-								}
-							}
+					while(true){
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
 
 						}
+						boolean completed = true;
+						for(CreaStampeTracciatoThread sender : threadsStampe) {
+							if(!sender.isCompleted()) { 
+								completed = false;
+							} else {
+								if(!sender.isCommit()) {
+									sender.setCommit(true);
+									synchronized (this) {
+										
+										List<PrintAvvisoDTOResponse> stampe = sender.getStampe();
+										
+										sommaStampeOk += sender.getStampeOk();
+										sommaStampeKo += sender.getStampeKo();
+	
+										log.debug(sender.getNomeThread() + " ha eseguito ["+stampe.size()+"] stampe");
+	
+										for (PrintAvvisoDTOResponse stampa : stampe) {
+											// inserisco l'eventuale pdf nello zip
+											TracciatiUtils.aggiungiStampaAvviso(zos, numeriAvviso, numeriDocumento, stampa, log);
+										}
+										
+										beanDati.setNumStampeOk(sommaStampeOk);
+										beanDati.setNumStampeKo(sommaStampeKo);
+										beanDati.setDataUltimoAggiornamento(new Date());
+										
+										log.debug("Aggiornamento delle informazioni progresso stampa...");
+										tracciato.setBeanDati(serializer.getObject(beanDati));
+										tracciatiBeanDatiBD.updateBeanDati(tracciato);
 
-						offset += limit;
-						versamentiDaStampare = versamentiBD.findVersamentiDiUnTracciato(tracciato.getId(), offset, limit);
-						log.debug("Trovati ["+versamentiDaStampare.size()+"] Versamenti per cui stampare l'avviso");
-					} while (versamentiDaStampare.size() > 0);
+										if(!tracciatiBeanDatiBD.isAutoCommit()) tracciatiBeanDatiBD.commit();
+										log.debug("Aggiornamento delle informazioni progresso stampa completato.");
+									}
+								}
+							}
+						}
+
+						if(completed) { 
+							log.debug("Completata Esecuzione dei ["+threadsStampe.size()+"] Threads di stampa");
+							break; // esco
+						}
+					}
+					
+					offset += limit;
 				}
 
 				if(numeriAvviso.isEmpty() && numeriDocumento.isEmpty()){ // non ho aggiunto neanche un pdf

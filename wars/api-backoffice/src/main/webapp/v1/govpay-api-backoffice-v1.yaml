@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.26.0"
+  version: "1.27.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -1053,6 +1053,7 @@ paths:
         - $ref: '#/components/parameters/ragioneSociale'
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
+        - $ref: '#/components/parameters/intermediato'
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -4194,6 +4195,13 @@ components:
       required: false
       schema:
         type: boolean
+    intermediato:
+      name: intermediato
+      in: query
+      description: filtro sui domini intermediati
+      required: false
+      schema:
+        type: boolean
     iuv:
       name: iuv
       in: query
@@ -5236,6 +5244,10 @@ components:
           $ref: '#/components/schemas/connettoreNotificaPagamentiGovPay'
         servizioHyperSicAPKappa:
           $ref: '#/components/schemas/connettoreNotificaPagamentiHyperSicAPKappa'
+        intermediato:
+          type: boolean
+          description: Indica se il creditore viene configurato per utilizzare una  stazione di intermediazione
+          example: true
     dominioIndex:
       type: object
       allOf:
@@ -6532,7 +6544,7 @@ components:
               minItems: 1
               maxItems: 5
               items:
-                $ref: '#/components/schemas/vocePendenza'
+                $ref: '#/components/schemas/NuovaVocePendenza'
     pendenzaPost:
       allOf:
         - type: object
@@ -6754,6 +6766,8 @@ components:
         - $ref: '#/components/schemas/vocePendenzaBase'
         - type: object
           properties:
+            dominio:
+              $ref: '#/components/schemas/dominioIndex'
             datiAllegati:
               type: object
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
@@ -6816,6 +6830,8 @@ components:
         - $ref: '#/components/schemas/vocePendenzaBase'
         - type: object
           properties:
+            dominio:
+              $ref: '#/components/schemas/dominioIndex'
             pendenza:
               $ref: '#/components/schemas/pendenzaIndex'
     vocePendenzaRiscossione:
@@ -6823,8 +6839,76 @@ components:
         - $ref: '#/components/schemas/vocePendenzaBase'
         - type: object
           properties:
+            dominio:
+              $ref: '#/components/schemas/dominioIndex'
             pendenza:
               $ref: '#/components/schemas/pendenzaIndex'
+    NuovaVocePendenza:
+      allOf:
+        - $ref: '#/components/schemas/vocePendenzaBase'
+        - type: object
+          properties:
+            idDominio:
+              type: string
+              description: Identificativo del dominio creditore
+              example: 1234567890
+            datiAllegati:
+              type: object
+              description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+            riscossioni:
+              type: array
+              items:
+                $ref: '#/components/schemas/riscossione'
+            rendicontazioni:
+              type: array
+              items:
+                $ref: '#/components/schemas/rendicontazione'
+        - oneOf:
+            - description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
+              type: object
+              required:
+                - codEntrata
+              properties:
+                codEntrata:
+                  type: string
+                  pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
+            - description: Definisce i dettagli di incasso.
+              type: object
+              required:
+                - ibanAccredito
+                - tipoContabilita
+                - codiceContabilita
+              properties:
+                ibanAccredito:
+                  type: string
+                  example: IT60X0542811101000000123456
+                ibanAppoggio:
+                  type: string
+                  example: IT60X0542811101000000123456
+                tipoContabilita:
+                  $ref: '#/components/schemas/tipoContabilita'
+                codiceContabilita:
+                  description: Codifica del capitolo di bilancio
+                  type: string
+                  example: 3321
+            - description: Definisce i dati di un bollo telematico
+              type: object
+              required:
+                - tipoBollo
+                - hashDocumento
+                - provinciaResidenza
+              properties:
+                tipoBollo:
+                  description: Tipologia di Bollo digitale
+                  type: string
+                  enum:
+                    - Imposta di bollo
+                hashDocumento:
+                  description: Digest in base64 del documento informatico associato alla marca da bollo
+                  type: string
+                provinciaResidenza:
+                  description: Sigla automobilistica della provincia di residenza del soggetto pagatore
+                  type: string
     contabilita:
       type: object
       properties:
@@ -6861,6 +6945,26 @@ components:
         proprietaCustom:
           type: object
           description: Dati specifici del gestionale di contabilità
+        titolo:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'titolo'
+        tipologia:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'tipologia'
+        categoria:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'categoria'
+        articolo:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'articolo'
     pendenzaCreata:
       type: object
       required:
@@ -7931,11 +8035,13 @@ components:
          * ENTRATA: Entrata in tesoreria
          * MBT: Marca da bollo telematica
          * ALTRO_INTERMEDIARIO: Entrata relativa a un intermediario esterno
+         * ENTRATA_PA_NON_INTERMEDIATA: Entrata relativa ad un ente creditore non intermediato da GovPay
       type: string
       enum:
         - ENTRATA
         - MBT
         - ALTRO_INTERMEDIARIO
+        - ENTRATA_PA_NON_INTERMEDIATA
     listaPaginata:
       type: object
       properties:
@@ -9015,6 +9121,10 @@ components:
         lineaTestoRicevuta2:
           type: string
           description: stringa personalizzata da inserire nella ricevuta
+        linguaSecondariaCausale:
+          type: string
+          description: >-
+              causale della pendenza nella lingua secondaria da inserire nell'avviso
     RisultatiPerPagina:
       type: integer
       default: 25

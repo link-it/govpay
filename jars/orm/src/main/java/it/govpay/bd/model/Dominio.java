@@ -45,13 +45,15 @@ public class Dominio extends it.govpay.model.Dominio {
 	}
 
 	// Business
-	public Dominio(BDConfigWrapper configWrapper, long idDominio, long idStazione) throws ServiceException {
+	public Dominio(BDConfigWrapper configWrapper, long idDominio, Long idStazione) throws ServiceException {
 		super.setId(idDominio);
 		super.setIdStazione(idStazione);
 
 		try {
 			this.anagrafica = AnagraficaManager.getUnitaOperativa(configWrapper, idDominio, EC).getAnagrafica();
-			this.stazione = AnagraficaManager.getStazione(configWrapper, idStazione);
+			if(idStazione !=null) {
+				this.stazione = AnagraficaManager.getStazione(configWrapper, idStazione);
+			}
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		}

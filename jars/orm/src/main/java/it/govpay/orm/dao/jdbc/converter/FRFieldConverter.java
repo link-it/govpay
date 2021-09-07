@@ -319,11 +319,11 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return "importo_singolo_versamento";
 			}
 		}
-		if(field.equals(FR.model().ID_INCASSO.TRN)){
+		if(field.equals(FR.model().ID_INCASSO.IDENTIFICATIVO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".trn";
+				return this.toAliasTable(field)+".identificativo";
 			}else{
-				return "trn";
+				return "identificativo";
 			}
 		}
 		if(field.equals(FR.model().ID_INCASSO.COD_DOMINIO)){
@@ -331,20 +331,6 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".cod_dominio";
 			}else{
 				return "cod_dominio";
-			}
-		}
-		if(field.equals(FR.model().ID_RENDICONTAZIONE.ID_RENDICONTAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".id";
-			}else{
-				return "id";
-			}
-		}
-		if(field.equals(FR.model().ID_RENDICONTAZIONE.IUV)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".iuv";
-			}else{
-				return "iuv";
 			}
 		}
 		if(field.equals(FR.model().RAGIONE_SOCIALE_PSP)){
@@ -366,6 +352,20 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".obsoleto";
 			}else{
 				return "obsoleto";
+			}
+		}
+		if(field.equals(FR.model().ID_RENDICONTAZIONE.ID_RENDICONTAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".id_rendicontazione";
+			}else{
+				return "id_rendicontazione";
+			}
+		}
+		if(field.equals(FR.model().ID_RENDICONTAZIONE.IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv";
+			}else{
+				return "iuv";
 			}
 		}
 
@@ -489,17 +489,11 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(FR.model().ID_SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO)){
 			return this.toTable(FR.model().ID_SINGOLO_VERSAMENTO, returnAlias);
 		}
-		if(field.equals(FR.model().ID_INCASSO.TRN)){
+		if(field.equals(FR.model().ID_INCASSO.IDENTIFICATIVO)){
 			return this.toTable(FR.model().ID_INCASSO, returnAlias);
 		}
 		if(field.equals(FR.model().ID_INCASSO.COD_DOMINIO)){
 			return this.toTable(FR.model().ID_INCASSO, returnAlias);
-		}
-		if(field.equals(FR.model().ID_RENDICONTAZIONE.ID_RENDICONTAZIONE)){
-			return this.toTable(FR.model().ID_RENDICONTAZIONE, returnAlias);
-		}
-		if(field.equals(FR.model().ID_RENDICONTAZIONE.IUV)){
-			return this.toTable(FR.model().ID_RENDICONTAZIONE, returnAlias);
 		}
 		if(field.equals(FR.model().RAGIONE_SOCIALE_PSP)){
 			return this.toTable(FR.model(), returnAlias);
@@ -509,6 +503,12 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(FR.model().OBSOLETO)){
 			return this.toTable(FR.model(), returnAlias);
+		}
+		if(field.equals(FR.model().ID_RENDICONTAZIONE.ID_RENDICONTAZIONE)){
+			return this.toTable(FR.model().ID_RENDICONTAZIONE, returnAlias);
+		}
+		if(field.equals(FR.model().ID_RENDICONTAZIONE.IUV)){
+			return this.toTable(FR.model().ID_RENDICONTAZIONE, returnAlias);
 		}
 
 

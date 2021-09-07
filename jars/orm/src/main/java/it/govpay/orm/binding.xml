@@ -75,13 +75,13 @@
   </mapping>
   <mapping name="idIncasso" class="it.govpay.orm.IdIncasso" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="trn" field="trn" usage="required"/>
+    <value name="identificativo" field="identificativo" usage="required"/>
     <value name="codDominio" field="codDominio" usage="required"/>
   </mapping>
 
   <mapping type-name="_IdIncasso_Type" class="it.govpay.orm.IdIncasso" abstract="true">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <value name="trn" field="trn" usage="required"/>
+    <value name="identificativo" field="identificativo" usage="required"/>
     <value name="codDominio" field="codDominio" usage="required"/>
   </mapping>
   <mapping name="vrsIdDominio" class="it.govpay.orm.IdDominio" abstract="false">
@@ -393,7 +393,7 @@
   </mapping>
   <mapping name="Dominio" class="it.govpay.orm.Dominio">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure field="idStazione" usage="required" map-as="it.govpay.orm.IdStazione"/>
+    <structure field="idStazione" usage="optional" map-as="it.govpay.orm.IdStazione"/>
     <value name="codDominio" field="codDominio" usage="required"/>
     <value name="gln" field="gln" usage="optional"/>
     <value name="abilitato" field="abilitato" usage="required"/>
@@ -409,6 +409,7 @@
     <value name="codConnettoreSecim" field="codConnettoreSecim" usage="optional"/>
     <value name="codConnettoreGovPay" field="codConnettoreGovPay" usage="optional"/>
     <value name="codConnettoreHyperSicAPK" field="codConnettoreHyperSicAPK" usage="optional"/>
+    <value name="intermediato" field="intermediato" usage="required"/>
   </mapping>
   <mapping name="Uo" class="it.govpay.orm.Uo">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -783,6 +784,7 @@
     <value name="indiceDati" field="indiceDati" usage="required"/>
     <value name="descrizioneCausaleRPT" field="descrizioneCausaleRPT" usage="optional"/>
     <value name="contabilita" field="contabilita" usage="optional"/>
+    <structure name="idDominio" field="idDominio" usage="optional" map-as="_IdDominio_Type"/>
   </mapping>
   <mapping name="RPT" class="it.govpay.orm.RPT">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -822,6 +824,7 @@
     <value name="descrizioneStatoCons" field="descrizioneStatoCons" usage="optional"/>
     <value name="dataConservazione" field="dataConservazione" usage="optional"/>
     <value name="bloccante" field="bloccante" default="true" usage="required"/>
+    <value name="versione" field="versione" usage="required"/>
   </mapping>
   <mapping name="RR" class="it.govpay.orm.RR">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -969,7 +972,7 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="trn" field="trn" usage="required"/>
     <value name="codDominio" field="codDominio" usage="required"/>
-    <value name="causale" field="causale" usage="required"/>
+    <value name="causale" field="causale" usage="optional"/>
     <value name="importo" field="importo" usage="required"/>
     <value name="dataValuta" field="dataValuta" usage="optional"/>
     <value name="dataContabile" field="dataContabile" usage="optional"/>
@@ -979,6 +982,11 @@
     <structure name="idOperatore" field="idOperatore" usage="optional" map-as="_IdOperatore_Type"/>
     <value name="ibanAccredito" field="ibanAccredito" usage="optional"/>
     <value name="sct" field="sct" usage="optional"/>
+    <value name="identificativo" field="identificativo" usage="required"/>
+    <value name="iuv" field="iuv" usage="optional"/>
+    <value name="codFlussoRendicontazione" field="codFlussoRendicontazione" usage="optional"/>
+    <value name="stato" field="stato" usage="required"/>
+    <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
   </mapping>
   <mapping name="FR" class="it.govpay.orm.FR">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1153,6 +1161,7 @@
     <value name="descrizioneStatoCons" field="descrizioneStatoCons" usage="optional"/>
     <value name="dataConservazione" field="dataConservazione" usage="optional"/>
     <value name="bloccante" field="bloccante" default="true" usage="required"/>
+    <value name="versione" field="versione" usage="required"/>
     <value name="vrsId" field="vrsId" usage="optional"/>
     <value name="vrsCodVersamentoEnte" field="vrsCodVersamentoEnte" usage="required"/>
     <value name="vrsNome" field="vrsNome" usage="optional"/>

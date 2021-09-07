@@ -31,6 +31,7 @@ public class FindDominiDTO extends BasicFindRequestDTO {
 	private Boolean abilitato = null;
 	private Boolean formBackoffice;
 	private Boolean formPortalePagamento;
+	private Boolean intermediato = null;
 	
 	public FindDominiDTO(Authentication user) throws ServiceException {
 		super(user);
@@ -87,5 +88,13 @@ public class FindDominiDTO extends BasicFindRequestDTO {
 
 	public void setFormPortalePagamento(Boolean formPortalePagamento) {
 		this.formPortalePagamento = formPortalePagamento;
+	}
+
+	public Boolean getIntermediato() {
+		return intermediato;
+	}
+
+	public void setIntermediato(Boolean intermediato) {
+		this.intermediato = intermediato;
 	}
 }

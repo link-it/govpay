@@ -46,7 +46,7 @@ import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaNotificaThread;
@@ -66,7 +66,8 @@ public class Rpt {
 	public Rpt() {
 	}
 
-	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Authentication authentication, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste, PagamentoPortale pagamentoPortale) throws GovPayException, UtilsException {
+	public List<it.govpay.bd.model.Rpt> avviaTransazione(List<Versamento> versamenti, Authentication authentication, Canale canale, String ibanAddebito, 
+			Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste, PagamentoPortale pagamentoPortale, String codiceConvenzione) throws GovPayException, UtilsException {
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -129,7 +130,7 @@ public class Rpt {
 								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: errore di interazione con il servizio di verifica.");
 								throw new GovPayException(EsitoOperazione.VER_014, codApplicazione, codVersamentoEnte, e.getMessage());
 							} catch (VersamentoNonValidoException e) {
-								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: errore di validazine dei dati ricevuti dal servizio di verifica.");
+								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: errore di validazione dei dati ricevuti dal servizio di verifica.");
 								throw new GovPayException(EsitoOperazione.VER_014, codApplicazione, codVersamentoEnte, e.getMessage());
 							}
 						}
@@ -205,15 +206,51 @@ public class Rpt {
 							ctx.getApplicationLogger().log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp);
 						}
 					}
-
-					if(pagamentoPortale !=  null && pagamentoPortale.getTipo() == 1 && GovpayConfig.getInstance().isTimeoutPendentiModello1()) {
-						log.debug("Blocco pagamento per il Mod1 attivo con soglia: [" + GovpayConfig.getInstance().getTimeoutPendentiModello1Mins() + " minuti]"); 
+					
+					// controllo se la pendenza e' multibeneficiario, se lo e' allora non puo' essere pagata col modello3 SANP 2.3
+					if(VersamentoUtils.isPendenzaMultibeneficiario(versamento, configWrapper)) {
+						throw new GovPayException(EsitoOperazione.VER_038, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
+					}
+					
+					// blocco dei pagamenti modello 3 per le RPT SANP 2.4.0
+					// il nuovo pagamento modello 3 ha un timeout sempre impostato di max 30 minuti
+					if(pagamentoPortale != null && pagamentoPortale.getTipo() == 1) {
+						log.debug("Blocco pagamento per il Mod3 SANP 2.4 attivo con soglia: [" + GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins() + " minuti]"); 
 						log.debug("Controllo che non ci siano transazioni di pagamento in corso per il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
 
 						// Controllo che non ci sia un pagamento in corso per i versamenti che sto provando ad eseguire
 						RptFilter filter = rptBD.newFilter();
 						filter.setStato(it.govpay.model.Rpt.stati_pendenti);
 						filter.setIdVersamento(versamento.getId());
+						filter.setVersione(it.govpay.model.Rpt.Versione.SANP_240.toString());
+						List<it.govpay.bd.model.Rpt> rpt_pendenti = rptBD.findAll(filter);
+
+						log.debug("Trovate ["+rpt_pendenti.size()+"] RPT pendenti per  il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
+
+						// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
+						// Altrimenti lancio il fault
+						Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins() * 60000);
+						
+						for(it.govpay.bd.model.Rpt rpt_pendente : rpt_pendenti) {
+							Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
+
+							// se l'RPT e' bloccata allora controllo che il blocco sia indefinito oppure definito, altrimenti passo
+							if(rpt_pendente.isBloccante() && dataSoglia.before(dataMsgRichiesta)) {
+								throw new GovPayException(EsitoOperazione.PAG_014, rpt_pendente.getCodDominio(), rpt_pendente.getIuv(), rpt_pendente.getCcp());
+							}
+						}
+					}
+
+					// blocco dei pagamenti modello 1 per le RPT SANP 2.3.0
+					if(pagamentoPortale !=  null && pagamentoPortale.getTipo() == 1 && GovpayConfig.getInstance().isTimeoutPendentiModello1()) {
+						log.debug("Blocco pagamento per il Mod1 SANP 2.3 attivo con soglia: [" + GovpayConfig.getInstance().getTimeoutPendentiModello1Mins() + " minuti]"); 
+						log.debug("Controllo che non ci siano transazioni di pagamento in corso per il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
+
+						// Controllo che non ci sia un pagamento in corso per i versamenti che sto provando ad eseguire
+						RptFilter filter = rptBD.newFilter();
+						filter.setStato(it.govpay.model.Rpt.stati_pendenti);
+						filter.setIdVersamento(versamento.getId());
+						filter.setVersione(it.govpay.model.Rpt.Versione.SANP_230.toString());
 						List<it.govpay.bd.model.Rpt> rpt_pendenti = rptBD.findAll(filter);
 
 						log.debug("Trovate ["+rpt_pendenti.size()+"] RPT pendenti per  il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
@@ -230,7 +267,7 @@ public class Rpt {
 								throw new GovPayException(EsitoOperazione.PAG_014, rpt_pendente.getCodDominio(), rpt_pendente.getIuv(), rpt_pendente.getCcp());
 							}
 						}
-					} 
+					}
 
 					if(appContext.getPagamentoCtx().getCodCarrello() != null) {
 						appContext.setCorrelationId(appContext.getPagamentoCtx().getCodCarrello());
@@ -274,7 +311,7 @@ public class Rpt {
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
 				ctx.getApplicationLogger().log("rpt.invioCarrelloRpt");
 				clientInviaCarrelloRPT = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale);
-				risposta = RptUtils.inviaCarrelloRPT(clientInviaCarrelloRPT, intermediario, stazione, rpts, operationId);
+				risposta = RptUtils.inviaCarrelloRPT(clientInviaCarrelloRPT, intermediario, stazione, rpts, operationId, codiceConvenzione);
 				
 				// ripristino la connessione
 				rptBD = new RptBD(configWrapper);
@@ -382,7 +419,7 @@ public class Rpt {
 						}
 						ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTFail", ee.getMessage());
 						log.warn("Errore nella richiesta di stato RPT: " + ee.getMessage() + ". Recupero stato fallito.");
-						this.updateStatoRpt(rpts, StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Impossibile comunicare con il Nodo dei Pagamenti SPC: " + e.getMessage(), pagamentoPortale, null);
+						this.updateStatoRpt(rpts, StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Impossibile comunicare con il Nodo dei Pagamenti SPC: " + e.getMessage(), pagamentoPortale, e);
 						throw new GovPayException(EsitoOperazione.NDP_000, e, "Errore nella consegna della richiesta di pagamento al Nodo dei Pagamenti");
 					} finally {
 						

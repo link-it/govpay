@@ -74,6 +74,16 @@ public class IncassoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "iban_accredito", Incasso.model().IBAN_ACCREDITO.getFieldType()));
 				setParameter(object, "setSct", Incasso.model().SCT.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "sct", Incasso.model().SCT.getFieldType()));
+				setParameter(object, "setIdentificativo", Incasso.model().IDENTIFICATIVO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "identificativo", Incasso.model().IDENTIFICATIVO.getFieldType()));
+				setParameter(object, "setIuv", Incasso.model().IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv", Incasso.model().IUV.getFieldType()));
+				setParameter(object, "setCodFlussoRendicontazione", Incasso.model().COD_FLUSSO_RENDICONTAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_flusso_rendicontazione", Incasso.model().COD_FLUSSO_RENDICONTAZIONE.getFieldType()));
+				setParameter(object, "setStato", Incasso.model().STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "stato", Incasso.model().STATO.getFieldType()));
+				setParameter(object, "setDescrizioneStato", Incasso.model().DESCRIZIONE_STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", Incasso.model().DESCRIZIONE_STATO.getFieldType()));
 				return object;
 			}
 			
@@ -116,6 +126,16 @@ public class IncassoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"ibanAccredito"));
 				setParameter(object, "setSct", Incasso.model().SCT.getFieldType(),
 					this.getObjectFromMap(map,"sct"));
+				setParameter(object, "setIdentificativo", Incasso.model().IDENTIFICATIVO.getFieldType(),
+					this.getObjectFromMap(map,"identificativo"));
+				setParameter(object, "setIuv", Incasso.model().IUV.getFieldType(),
+					this.getObjectFromMap(map,"iuv"));
+				setParameter(object, "setCodFlussoRendicontazione", Incasso.model().COD_FLUSSO_RENDICONTAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"codFlussoRendicontazione"));
+				setParameter(object, "setStato", Incasso.model().STATO.getFieldType(),
+					this.getObjectFromMap(map,"stato"));
+				setParameter(object, "setDescrizioneStato", Incasso.model().DESCRIZIONE_STATO.getFieldType(),
+					this.getObjectFromMap(map,"descrizioneStato"));
 				return object;
 			}
 			

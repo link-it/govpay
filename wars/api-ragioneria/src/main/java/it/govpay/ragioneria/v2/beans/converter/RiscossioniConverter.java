@@ -1,10 +1,12 @@
 package it.govpay.ragioneria.v2.beans.converter;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
@@ -23,7 +25,7 @@ import it.govpay.rs.v1.ConverterUtils;
 
 public class RiscossioniConverter {
 
-	public static Riscossione toRsModel(Pagamento input) throws NotFoundException {
+	public static Riscossione toRsModel(Pagamento input) throws NotFoundException, IOException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Riscossione rsModel = new Riscossione();
 		try {
@@ -42,6 +44,9 @@ public class RiscossioniConverter {
 				break;
 			case MBT:
 				rsModel.setTipo(TipoRiscossione.MBT);
+				break;
+			case ENTRATA_PA_NON_INTERMEDIATA:
+				rsModel.setTipo(TipoRiscossione.ENTRATA_PA_NON_INTERMEDIATA);
 				break;
 			}
 
@@ -79,7 +84,7 @@ public class RiscossioniConverter {
 		return rsModel;
 	}
 
-	public static RiscossioneIndex toRsModelIndexOld(Pagamento input) throws NotFoundException {
+	public static RiscossioneIndex toRsModelIndexOld(Pagamento input) throws NotFoundException, IOException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		RiscossioneIndex rsModel = new RiscossioneIndex();
 		try {
@@ -98,6 +103,9 @@ public class RiscossioniConverter {
 				break;
 			case MBT:
 				rsModel.setTipo(TipoRiscossione.MBT);
+				break;
+			case ENTRATA_PA_NON_INTERMEDIATA:
+				rsModel.setTipo(TipoRiscossione.ENTRATA_PA_NON_INTERMEDIATA);
 				break;
 			}
 
@@ -127,7 +135,7 @@ public class RiscossioniConverter {
 		return rsModel;
 	}
 
-	public static RiscossioneIndex toRsModelIndex(it.govpay.bd.viste.model.Pagamento dto) {
+	public static RiscossioneIndex toRsModelIndex(it.govpay.bd.viste.model.Pagamento dto) throws IOException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		RiscossioneIndex rsModel = new RiscossioneIndex();
 		try {
