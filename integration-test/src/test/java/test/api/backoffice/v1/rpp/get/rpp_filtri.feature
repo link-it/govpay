@@ -205,9 +205,12 @@ And match response ==
 }
 """
 
+#aggiungo il filtro dataRptDa, altrimenti mi becco anche RT di test precedenti
+
 Given url backofficeBaseurl
 And path '/rpp'
 And param dataRtDa = dataRptStart 
+And param dataRptDa = dataRptStart
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 200
@@ -225,6 +228,7 @@ And match response ==
 
 Given url backofficeBaseurl
 And path '/rpp'
+And param dataRptDa = dataRptStart
 And param dataRtDa = dataRptStart 
 And param dataRtA = dataRtEnd1 
 And headers gpAdminBasicAutenticationHeader
@@ -244,6 +248,7 @@ And match response ==
 
 Given url backofficeBaseurl
 And path '/rpp'
+And param dataRptDa = dataRptStart
 And param dataRtDa = dataRptStart 
 And param dataRtA = dataRtEnd2 
 And headers gpAdminBasicAutenticationHeader
