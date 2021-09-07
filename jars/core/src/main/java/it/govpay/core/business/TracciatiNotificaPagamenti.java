@@ -726,7 +726,7 @@ public class TracciatiNotificaPagamenti {
 		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT.withDelimiter(';'));
 		
 		String dataCreazioneFlusso = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(tracciato.getDataCreazione());
-		String progressivoS = this.completaValoreCampoConFiller(progressivo +"", 3, true, true);
+		String progressivoS = this.completaValoreCampoConFiller("","progressivoFile",progressivo +"", 3, true, true);
 		
 		int lineaElaborazione = 0;
 		int offset = 0;
@@ -1169,6 +1169,7 @@ public class TracciatiNotificaPagamenti {
 		if(numeroLinea > 1)
 			sb.append("\n");
 
+		String entryKey = "RPT_" + rpt.getCodDominio() + "_" + rpt.getIuv() + "_" + rpt.getCcp();
 		Versamento versamento = rpt.getVersamento();
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		SingoloVersamento singoloVersamento = singoliVersamenti.get(0);
@@ -1246,7 +1247,7 @@ public class TracciatiNotificaPagamenti {
 		sb.append(codiceCliente);
 		
 //		FILLER	13	22	10	
-		String filler = this.completaValoreCampoConFiller("", 10, false, true);
+		String filler = this.completaValoreCampoConFiller(entryKey, "FILLER 1", "", 10, false, true);
 		this.validaCampo("FILLER 1", filler, 10);
 		sb.append(filler);
 		
@@ -1254,7 +1255,7 @@ public class TracciatiNotificaPagamenti {
 		if(tipoflusso == null) {
 			tipoflusso = "NDP001C0";
 		}
-		tipoflusso = this.completaValoreCampoConFiller(tipoflusso, 8, false, false);
+		tipoflusso = this.completaValoreCampoConFiller(entryKey, "TIPO FLUSSO", tipoflusso, 8, false, false);
 		this.validaCampo("TIPO FLUSSO", tipoflusso, 8);
 		sb.append(tipoflusso);
 		
@@ -1265,13 +1266,13 @@ public class TracciatiNotificaPagamenti {
 		sb.append(dataCreazione);
 		
 //		FILLER	39	77	39	
-		filler = this.completaValoreCampoConFiller("", 39, false, true);
+		filler = this.completaValoreCampoConFiller(entryKey, "FILLER 2", "", 39, false, true);
 		this.validaCampo("FILLER 2", filler, 39);
 		sb.append(filler);
 		
 //		PROGRESSIVO RECORD	78	90	13	Numerico	13	0		Numero di record incrementale
 		String progressivoRecord = "" + numeroLinea;
-		progressivoRecord = this.completaValoreCampoConFiller(progressivoRecord, 13, true, true);
+		progressivoRecord = this.completaValoreCampoConFiller(entryKey, "PROGRESSIVO RECORD", progressivoRecord, 13, true, true);
 		this.validaCampo("PROGRESSIVO RECORD", progressivoRecord, 13);
 		sb.append(progressivoRecord);
 		
@@ -1281,7 +1282,7 @@ public class TracciatiNotificaPagamenti {
 		sb.append(operazione);
 		
 //		FILLER	94	163	70	Carattere	
-		filler = this.completaValoreCampoConFiller("", 70, false, true);
+		filler = this.completaValoreCampoConFiller(entryKey, "FILLER 3", "", 70, false, true);
 		this.validaCampo("FILLER 3", filler, 70);
 		sb.append(filler);
 		
@@ -1292,32 +1293,32 @@ public class TracciatiNotificaPagamenti {
 		
 //		CODICE PRESENTAZIONE	170	187	18	Carattere				versamento.numero_avviso
 		String codicePresentazione = versamento.getNumeroAvviso() != null ? versamento.getNumeroAvviso() : "";
-		codicePresentazione = this.completaValoreCampoConFiller(codicePresentazione, 18, false, false);
+		codicePresentazione = this.completaValoreCampoConFiller(entryKey, "CODICE PRESENTAZIONE", codicePresentazione, 18, false, false);
 		this.validaCampo("CODICE PRESENTAZIONE", codicePresentazione, 18);
 		sb.append(codicePresentazione);
 		
 //		FILLER	188	204	17	Carattere	
-		filler = this.completaValoreCampoConFiller("", 17, false, true);
+		filler = this.completaValoreCampoConFiller(entryKey, "FILLER 4", "", 17, false, true);
 		this.validaCampo("FILLER 4", filler, 17);
 		sb.append(filler);
 		
 //		IUV	205	239	35	Carattere				versamento.iuv
 		String iuvVersamento = datiPagamento.getIdentificativoUnivocoVersamento();
-		iuvVersamento = this.completaValoreCampoConFiller(iuvVersamento, 35, false, false);
+		iuvVersamento = this.completaValoreCampoConFiller(entryKey, "IUV", iuvVersamento, 35, false, false);
 		this.validaCampo("IUV", iuvVersamento, 35);
 		sb.append(iuvVersamento);
 		
 //		RATA	240	274	35	Carattere				versamento.cod_rata
 		String prefixRata = versamento.getNumeroRata() != null ? "S" : "T";
 		Integer numeroRata = versamento.getNumeroRata() != null ? versamento.getNumeroRata() : 1;
-		String rata = this.completaValoreCampoConFiller(numeroRata+"", 8, true, true); // Aggiungo zeri a sx fino ad arrivare a 8 caratteri
+		String rata = this.completaValoreCampoConFiller(entryKey, "RATA", numeroRata+"", 8, true, true); // Aggiungo zeri a sx fino ad arrivare a 8 caratteri
 		rata = prefixRata + rata; // aggiungo prefisso
-		rata = this.completaValoreCampoConFiller(rata, 35, false, false); // completo con spazi bianchi a dx fino a 35 caratteri
+		rata = this.completaValoreCampoConFiller(entryKey, "RATA", rata, 35, false, false); // completo con spazi bianchi a dx fino a 35 caratteri
 		this.validaCampo("RATA", rata, 35);
 		sb.append(rata);
 		
 //		FILLER	275	344	70	
-		filler = this.completaValoreCampoConFiller("", 70, false, true);
+		filler = this.completaValoreCampoConFiller(entryKey, "FILLER 5", "", 70, false, true);
 		this.validaCampo("FILLER 5", filler, 70);
 		sb.append(filler);
 		
@@ -1327,41 +1328,41 @@ public class TracciatiNotificaPagamenti {
 			riferimentoCreditore = singoloVersamento.getCodSingoloVersamentoEnte();
 		}
 		riferimentoCreditore = (tipoRiferimentoCreditore == null) ? ("SECIM" + riferimentoCreditore) : (tipoRiferimentoCreditore + riferimentoCreditore); 
-		riferimentoCreditore = this.completaValoreCampoConFiller(riferimentoCreditore, 35, false, false);
+		riferimentoCreditore = this.completaValoreCampoConFiller(entryKey, "RIFERIMENTO CREDITORE", riferimentoCreditore, 35, false, false);
 		this.validaCampo("RIFERIMENTO CREDITORE", riferimentoCreditore, 35);
 		sb.append(riferimentoCreditore);
 		
 //		FILLER	380	457	78	
-		filler = this.completaValoreCampoConFiller("", 78, false, true);
+		filler = this.completaValoreCampoConFiller(entryKey, "FILLER 6", "", 78, false, true);
 		this.validaCampo("FILLER 6", filler, 78);
 		sb.append(filler);
 		
 //		IMPORTO VERSAMENTO	458	472	15	Numerico	13	2	SI	singolo_versamento.importo_singolo_versamento o versamento.importo_totale
 		String importoTotalePagato = this.printImporto(versamento.getImportoTotale(), true);
-		importoTotalePagato = this.completaValoreCampoConFiller(importoTotalePagato, 15, true, true);
+		importoTotalePagato = this.completaValoreCampoConFiller(entryKey, "IMPORTO VERSAMENTO", importoTotalePagato, 15, true, true);
 		this.validaCampo("IMPORTO VERSAMENTO", importoTotalePagato, 15);
 		sb.append(importoTotalePagato);
 		
 //		FILLER	473	517	45	
-		filler = this.completaValoreCampoConFiller("", 45, false, true);
+		filler = this.completaValoreCampoConFiller(entryKey, "FILLER 7", "", 45, false, true);
 		this.validaCampo("FILLER 7", filler, 45);
 		sb.append(filler);
 		
 //		CAUSALE VERSAMENTO	518	657	140	Carattere			SI	singolo_versamento.descrizione_causale_RPT o versamento.causale
 		String causaleVersamento = ctDatiSingoloPagamentoRT.getCausaleVersamento();
-		causaleVersamento = this.completaValoreCampoConFiller(causaleVersamento, 140, false, false);
+		causaleVersamento = this.completaValoreCampoConFiller(entryKey, "CAUSALE VERSAMENTO", causaleVersamento, 140, false, false);
 		this.validaCampo("CAUSALE VERSAMENTO", causaleVersamento, 140);
 		sb.append(causaleVersamento);
 		
 //		FILLER	658	713	56	
-		filler = this.completaValoreCampoConFiller("", 56, false, true);
+		filler = this.completaValoreCampoConFiller(entryKey, "FILLER 8", "", 56, false, true);
 		this.validaCampo("FILLER 8", filler, 56);
 		sb.append(filler);
 		
 //		TIPO DEBITORE	714	716	3	Carattere				versamento.debitore_tipo
 		StTipoIdentificativoUnivocoPersFG tipoIdentificativoUnivoco = soggettoPagatore.getIdentificativoUnivocoPagatore().getTipoIdentificativoUnivoco();
 		String tipoDebitore = tipoIdentificativoUnivoco.equals(StTipoIdentificativoUnivocoPersFG.F) ? "F" : "G";
-		tipoDebitore = this.completaValoreCampoConFiller(tipoDebitore, 3, false, false);
+		tipoDebitore = this.completaValoreCampoConFiller(entryKey, "TIPO DEBITORE", tipoDebitore, 3, false, false);
 		this.validaCampo("TIPO DEBITORE", tipoDebitore, 3);
 		sb.append(tipoDebitore);
 		
@@ -1372,59 +1373,59 @@ public class TracciatiNotificaPagamenti {
 		
 //		CODICE DEBITORE	719	753	35	Carattere			SI	versamento.debitore_identificativo
 		String codiceDebitore = soggettoPagatore.getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco();
-		codiceDebitore = this.completaValoreCampoConFiller(codiceDebitore, 35, false, false);
+		codiceDebitore = this.completaValoreCampoConFiller(entryKey, "CODICE DEBITORE", codiceDebitore, 35, false, false);
 		this.validaCampo("CODICE DEBITORE", codiceDebitore, 35);
 		sb.append(codiceDebitore);
 		
 //		ANAGRAFICA DEBITORE	754	803	50	Carattere			SI	versamento.debitore_anagrafica
 		String anagraficaDebitore = soggettoPagatore.getAnagraficaPagatore();
-		anagraficaDebitore = this.completaValoreCampoConFiller(anagraficaDebitore, 50, false, false);
+		anagraficaDebitore = this.completaValoreCampoConFiller(entryKey, "ANAGRAFICA DEBITORE", anagraficaDebitore, 50, false, false);
 		this.validaCampo("ANAGRAFICA DEBITORE", anagraficaDebitore, 50);
 		sb.append(anagraficaDebitore);
 		
 //		FILLER	804	838	35	
-		filler = this.completaValoreCampoConFiller("", 35, false, true);
+		filler = this.completaValoreCampoConFiller(entryKey, "FILLER 9", "", 35, false, true);
 		this.validaCampo("FILLER 9", filler, 35);
 		sb.append(filler);
 		
 //		INDIRIZZO DEBITORE	839	888	50	Carattere				versamento.debitore_indirizzo
 		String indirizzoDebitore = soggettoPagatore.getIndirizzoPagatore();
-		indirizzoDebitore = this.completaValoreCampoConFiller(indirizzoDebitore, 50, false, false);
+		indirizzoDebitore = this.completaValoreCampoConFiller(entryKey, "INDIRIZZO DEBITORE", indirizzoDebitore, 50, false, false);
 		this.validaCampo("INDIRIZZO DEBITORE", indirizzoDebitore, 50);
 		sb.append(indirizzoDebitore);
 		
 //		NUMERO CIVICO DEBITORE	889	893	5	Carattere				versamento.debitore_civico
 		String numeroCivicoDebitore = soggettoPagatore.getCivicoPagatore();
-		numeroCivicoDebitore = this.completaValoreCampoConFiller(numeroCivicoDebitore, 5, false, false);
+		numeroCivicoDebitore = this.completaValoreCampoConFiller(entryKey, "NUMERO CIVICO DEBITORE", numeroCivicoDebitore, 5, false, false);
 		this.validaCampo("NUMERO CIVICO DEBITORE", numeroCivicoDebitore, 5);
 		sb.append(numeroCivicoDebitore);
 		
 //		CAP DEBITORE	894	898	5	Carattere				versamento.debitore_cap
 		String capDebitore = soggettoPagatore.getCapPagatore();
-		capDebitore = this.completaValoreCampoConFiller(capDebitore, 5, false, false);
+		capDebitore = this.completaValoreCampoConFiller(entryKey, "CAP DEBITORE", capDebitore, 5, false, false);
 		this.validaCampo("CAP DEBITORE", capDebitore, 5);
 		sb.append(capDebitore);
 		
 //		LOCALITA DEBITORE	899	948	50	Carattere				versamento.debitore_localita
 		String localitaDebitore = soggettoPagatore.getLocalitaPagatore();
-		localitaDebitore = this.completaValoreCampoConFiller(localitaDebitore, 50, false, false);
+		localitaDebitore = this.completaValoreCampoConFiller(entryKey, "LOCALITA DEBITORE", localitaDebitore, 50, false, false);
 		this.validaCampo("LOCALITA DEBITORE", localitaDebitore, 50);
 		sb.append(localitaDebitore);
 		
 //		PROVINCIA DEBITORE	949	950	2	Carattere				versamento.debitore_provincia
 		String provinciaDebitore = soggettoPagatore.getProvinciaPagatore();
-		provinciaDebitore = this.completaValoreCampoConFiller(provinciaDebitore, 2, false, false);
+		provinciaDebitore = this.completaValoreCampoConFiller(entryKey, "PROVINCIA DEBITORE", provinciaDebitore, 2, false, false);
 		this.validaCampo("PROVINCIA DEBITORE", provinciaDebitore, 2);
 		sb.append(provinciaDebitore);
 		
 //		STATO DEBITORE	951	985	35	Carattere				versamento.debitore_nazione
 		String nazioneDebitore = soggettoPagatore.getNazionePagatore();
-		nazioneDebitore = this.completaValoreCampoConFiller(nazioneDebitore, 35, false, false);
+		nazioneDebitore = this.completaValoreCampoConFiller(entryKey, "STATO DEBITORE", nazioneDebitore, 35, false, false);
 		this.validaCampo("STATO DEBITORE", nazioneDebitore, 35);
 		sb.append(nazioneDebitore);
 		
 //		FILLER	986	1055	70	
-		filler = this.completaValoreCampoConFiller("", 70, false, true);
+		filler = this.completaValoreCampoConFiller(entryKey, "FILLER 10", "", 70, false, true);
 		this.validaCampo("FILLER 10", filler, 70);
 		sb.append(filler);
 		
@@ -1435,83 +1436,83 @@ public class TracciatiNotificaPagamenti {
 		
 //		DATA INCASSO	1064	1071	8	Numerico	8	0		fr.data_ora_flusso se disponibile
 		String dataIncasso = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
-		dataIncasso = this.completaValoreCampoConFiller(dataIncasso, 8, true, true);
+		dataIncasso = this.completaValoreCampoConFiller(entryKey, "DATA INCASSO", dataIncasso, 8, true, true);
 		this.validaCampo("DATA INCASSO", dataIncasso, 8);
 		sb.append(dataIncasso);
 		
 //		ESERCIZIO DI RIFERIMENTO	1072	1075	4	Numerico	4	0		??? nel file di esempio vale sempre 0000
 		String esercizioRiferimento = "";
-		esercizioRiferimento = this.completaValoreCampoConFiller(esercizioRiferimento, 4, true, true);
+		esercizioRiferimento = this.completaValoreCampoConFiller(entryKey, "ESERCIZIO DI RIFERIMENTO", esercizioRiferimento, 4, true, true);
 		this.validaCampo("ESERCIZIO DI RIFERIMENTO", esercizioRiferimento, 4);
 		sb.append(esercizioRiferimento);
 		
 //		NUMERO PROVVISORIO	1076	1082	7	Numerico	7	0		??? nel file di esempio vale sempre 0000000
 		String numeroProvvisorio = "";
-		numeroProvvisorio = this.completaValoreCampoConFiller(numeroProvvisorio, 7, true, true);
+		numeroProvvisorio = this.completaValoreCampoConFiller(entryKey, "NUMERO PROVVISORIO", numeroProvvisorio, 7, true, true);
 		this.validaCampo("NUMERO PROVVISORIO", numeroProvvisorio, 7);
 		sb.append(numeroProvvisorio);
 		
 //		CODICE RETE INCASSO	1083	1085	3	Carattere				NDP nei casi normali, PST se non si ha la RT ma il pagamento e’ stato solamente rendicontato da un flusso con codice esito = 9
 		String codiceReteIncasso = "NDP";
-		codiceReteIncasso = this.completaValoreCampoConFiller(codiceReteIncasso, 3, false, true);
+		codiceReteIncasso = this.completaValoreCampoConFiller(entryKey, "CODICE RETE INCASSO", codiceReteIncasso, 3, false, true);
 		this.validaCampo("CODICE RETE INCASSO", codiceReteIncasso, 3);
 		sb.append(codiceReteIncasso);
 		
 //		CODICE CANALE INCASSO	1086	1088	3	Carattere				Dal PSP che ha e’ stato utilizzato
 		String codiceCanaleIncasso = "";
-		codiceCanaleIncasso = this.completaValoreCampoConFiller(codiceCanaleIncasso, 3, false, true);
+		codiceCanaleIncasso = this.completaValoreCampoConFiller(entryKey, "CODICE CANALE INCASSO", codiceCanaleIncasso, 3, false, true);
 		this.validaCampo("CODICE CANALE INCASSO", codiceCanaleIncasso, 3);
 		sb.append(codiceCanaleIncasso);
 		
 //		CODICE STRUMENTO INCASSO	1089	1091	3	Carattere				NDP se il campo precedente e’ di tipo PSP, altrimenti bisogna chiedere il codice bollettino
 		String codiceStrumentoIncasso = "NDP";
-		codiceStrumentoIncasso = this.completaValoreCampoConFiller(codiceStrumentoIncasso, 3, false, true);
+		codiceStrumentoIncasso = this.completaValoreCampoConFiller(entryKey, "CODICE STRUMENTO INCASSO", codiceStrumentoIncasso, 3, false, true);
 		this.validaCampo("CODICE STRUMENTO INCASSO", codiceStrumentoIncasso, 3);
 		sb.append(codiceStrumentoIncasso);
 
 //		NUMERO BOLLETTA	1092	1104	13	Numerico	13	0		fr.trn se disponibile
 		String numeroBolletta = "";
-		numeroBolletta = this.completaValoreCampoConFiller(numeroBolletta, 13, true, true);
+		numeroBolletta = this.completaValoreCampoConFiller(entryKey, "NUMERO BOLLETTA", numeroBolletta, 13, true, true);
 		this.validaCampo("NUMERO BOLLETTA", numeroBolletta, 13);
 		sb.append(numeroBolletta);
 		
 //		IMPORTO PAGATO	1105	1119	15	Numerico	13	2		versamento.importo_pagato o rendicontazione.importo_pagato
 		String importoPagato = this.printImporto(datiPagamento.getImportoTotalePagato(), true);
-		importoPagato = this.completaValoreCampoConFiller(importoPagato, 15, true, true);
+		importoPagato = this.completaValoreCampoConFiller(entryKey, "IMPORTO PAGATO", importoPagato, 15, true, true);
 		this.validaCampo("IMPORTO PAGATO", importoPagato, 15);
 		sb.append(importoPagato);
 		
 //		FILLER	1120	1172	53		
-		filler = this.completaValoreCampoConFiller("", 53, false, true);
+		filler = this.completaValoreCampoConFiller(entryKey, "FILLER 11", "", 53, false, true);
 		this.validaCampo("FILLER 11", filler, 53);
 		sb.append(filler);
 		
 //		IMPORTO COMMISSIONE PA	1173	1187	15	Numerico	13	2		0
 		String importoCommissionePA = "";
-		importoCommissionePA = this.completaValoreCampoConFiller(importoCommissionePA, 15, true, true);
+		importoCommissionePA = this.completaValoreCampoConFiller(entryKey, "IMPORTO COMMISSIONE PA", importoCommissionePA, 15, true, true);
 		this.validaCampo("IMPORTO COMMISSIONE PA", importoCommissionePA, 15);
 		sb.append(importoCommissionePA);
 		
 //		IMPORTO COMMISSIONE DEBITORE	1188	1202	15	Numerico	13	2		Da RT? rt.datiPagamento.datiSingoloPagamento[i].commissioniApplicatePSP
 		BigDecimal commissioniApplicatePSP = ctDatiSingoloPagamentoRT.getCommissioniApplicatePSP() != null ? ctDatiSingoloPagamentoRT.getCommissioniApplicatePSP() : BigDecimal.ZERO;
 		String importoCommissioniDebitore = this.printImporto(commissioniApplicatePSP, true);
-		importoCommissioniDebitore = this.completaValoreCampoConFiller(importoCommissioniDebitore, 15, true, true);
+		importoCommissioniDebitore = this.completaValoreCampoConFiller(entryKey, "IMPORTO COMMISSIONE DEBITORE", importoCommissioniDebitore, 15, true, true);
 		this.validaCampo("IMPORTO COMMISSIONE DEBITORE", importoCommissioniDebitore, 15);
 		sb.append(importoCommissioniDebitore);
 		
 //		FILLER	1203	1589	387	
-		filler = this.completaValoreCampoConFiller("", 387, false, true);
+		filler = this.completaValoreCampoConFiller(entryKey, "FILLER 12", "", 387, false, true);
 		this.validaCampo("FILLER 12", filler, 387);
 		sb.append(filler);
 		
 //		CCP	1590	1601	12	Numerico				numero conto corrente postale?
 		String ccp = "";
-		ccp = this.completaValoreCampoConFiller(ccp, 12, true, true);
+		ccp = this.completaValoreCampoConFiller(entryKey, "CCP", ccp, 12, true, true);
 		this.validaCampo("CCP", ccp, 12);
 		sb.append(ccp);
 		
 //		FILLER	1602	2000	399	
-		filler = this.completaValoreCampoConFiller("", 399, false, true);
+		filler = this.completaValoreCampoConFiller(entryKey, "FILLER 13", "", 399, false, true);
 		this.validaCampo("FILLER 13", filler, 399);
 		sb.append(filler);
 		
@@ -1537,6 +1538,7 @@ public class TracciatiNotificaPagamenti {
 			}
 		}
 		
+		String entryKey = "RISC_" + pagamento.getIuvPagamento();
 		String contabilitaString = pagamento.getContabilita();
 		String codiceServizio = null;
 		String descrizioneServizio = null;
@@ -1545,7 +1547,7 @@ public class TracciatiNotificaPagamenti {
 			contabilita = JSONSerializable.parse(contabilitaString, Contabilita.class);
 			
 			Object proprietaCustomObj = contabilita.getProprietaCustom();
-			
+						
 			if(proprietaCustomObj != null) {
 				if(proprietaCustomObj instanceof String) {
 					String proprietaCustom = (String) proprietaCustomObj;
@@ -1573,41 +1575,59 @@ public class TracciatiNotificaPagamenti {
 			}
 		}
 		
-//		CodiceServizio	$.vocePendenza.contabilita.quoteContabili.proprietaCustom.codiceServizio o versamento.tipoPendenza.codTipoPendenza	
-		linea.add(codiceServizio != null ? codiceServizio : pagamento.getCodTipoVersamento());
+//		CodiceServizio 10	$.vocePendenza.contabilita.quoteContabili.proprietaCustom.codiceServizio o versamento.tipoPendenza.codTipoPendenza
+		String codiceServizioValue = codiceServizio != null ? codiceServizio : pagamento.getCodTipoVersamento();
+		codiceServizioValue = impostaLunghezzaMassimaCampo(entryKey, "CodiceServizio", codiceServizioValue, 10);
+		linea.add(codiceServizioValue);
 
-//		DescrizioneServizio $.vocePendenza.contabilita.quoteContabili.proprietaCustom.descrizioneServizio o versamento.tipoPendenza.descrizione		
-		linea.add(descrizioneServizio != null ? descrizioneServizio : (pagamento.getDescrizioneTipoVersamento() != null ? pagamento.getDescrizioneTipoVersamento() : ""));
+//		DescrizioneServizio 123 $.vocePendenza.contabilita.quoteContabili.proprietaCustom.descrizioneServizio o versamento.tipoPendenza.descrizione		
+		String descrizioneServizioValue = descrizioneServizio != null ? descrizioneServizio : (pagamento.getDescrizioneTipoVersamento() != null ? pagamento.getDescrizioneTipoVersamento() : "");
+		descrizioneServizioValue = impostaLunghezzaMassimaCampo(entryKey, "DescrizioneServizio", descrizioneServizioValue, 123);
+		linea.add(descrizioneServizioValue);
 			
-//		CodiceDebitore VUOTO
+//		CodiceDebitore 20 VUOTO 
 		linea.add("");
 			
-//		CFPIVADebitore $.soggettoPagatore.identificativo
-		linea.add(pagamento.getIdentificativoDebitore());
+//		CFPIVADebitore 16 $.soggettoPagatore.identificativo
+		String identificativoDebitoreValue = pagamento.getIdentificativoDebitore();
+		identificativoDebitoreValue = impostaLunghezzaMassimaCampo(entryKey, "CFPIVADebitore", identificativoDebitoreValue, 16);
+		linea.add(identificativoDebitoreValue);
 		
-//		NominativoDebitore $.soggettoPagatore.anagrafica
-		linea.add(pagamento.getAnagraficaDebitore());
+//		NominativoDebitore 70 $.soggettoPagatore.anagrafica
+		String anagraficaDebitoreValue = pagamento.getAnagraficaDebitore();
+		anagraficaDebitoreValue = impostaLunghezzaMassimaCampo(entryKey, "NominativoDebitore", anagraficaDebitoreValue, 70);
+		linea.add(anagraficaDebitoreValue);
 		
-//		CodiceDebito $.documento.identificativo o $.idPendenza
-		linea.add(documento != null ? documento.getCodDocumento() : pagamento.getCodVersamentoEnte());
+//		CodiceDebito 30 $.documento.identificativo o $.idPendenza
+		String codiceDebitoValue = documento != null ? documento.getCodDocumento() : pagamento.getCodVersamentoEnte();
+		codiceDebitoValue = impostaLunghezzaMassimaCampo(entryKey, "CodiceDebito", codiceDebitoValue, 30);
+		linea.add(codiceDebitoValue);
 		
 //		DataEmissione $.dataCaricamento 
 		linea.add(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA().format(pagamento.getDataCreazione()));
 		
-//		CausaleDebito $.causale
-		linea.add(pagamento.getCausaleVersamento().getSimple());
+//		CausaleDebito 100 $.causale
+		String causaleValue = pagamento.getCausaleVersamento().getSimple();
+		causaleValue = impostaLunghezzaMassimaCampo(entryKey, "CausaleDebito", causaleValue, 100);
+		linea.add(causaleValue);
 		
 //		ImportoDebito importo (in centesimi)
 		linea.add(this.printImporto(pagamento.getImportoVersamento(), true));
 		
-//		CodiceRata $.documento.numeroRata
-		linea.add(pagamento.getNumeroRata() != null ? pagamento.getNumeroRata() +"" : "");
+//		CodiceRata 30 $.documento.numeroRata
+		String codiceRataValue = pagamento.getNumeroRata() != null ? pagamento.getNumeroRata() +"" : "";
+		codiceRataValue = impostaLunghezzaMassimaCampo(entryKey, "CodiceRata", codiceRataValue, 30);
+		linea.add(codiceRataValue);
 		
-//		CodiceAvviso $.numeroAvviso
-		linea.add(pagamento.getNumeroAvviso());
+//		CodiceAvviso 35 $.numeroAvviso
+		String codiceAvvisoValue = pagamento.getNumeroAvviso();
+		codiceAvvisoValue = impostaLunghezzaMassimaCampo(entryKey, "CodiceAvviso", codiceAvvisoValue, 35);
+		linea.add(codiceAvvisoValue);
 		
-//		CodiceIUV $.iuvPagamento
-		linea.add(pagamento.getIuvPagamento());
+//		CodiceIUV 35 $.iuvPagamento
+		String iuvPagamentoValue = pagamento.getIuvPagamento();
+		iuvPagamentoValue = impostaLunghezzaMassimaCampo(entryKey, "CodiceIUV", iuvPagamentoValue, 35);
+		linea.add(iuvPagamentoValue);
 		
 //		DataScadenza $.dataScadenza
 		linea.add(pagamento.getDataScadenza() != null ? SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA().format(pagamento.getDataScadenza()) : "");
@@ -1618,26 +1638,30 @@ public class TracciatiNotificaPagamenti {
 //		ImportoPagato rendicontazione.importo
 		linea.add(pagamento.getImportoPagato() != null ? this.printImporto(pagamento.getImportoPagato(), true) : "");
 		
-//		IstitutoMittente fr.ragioneSocialePsp
-		linea.add(pagamento.getRagioneSocialePsp() != null ? pagamento.getRagioneSocialePsp() : "");
+//		IstitutoMittente 120 fr.ragioneSocialePsp
+		String istitutoMittenteValue = pagamento.getRagioneSocialePsp() != null ? pagamento.getRagioneSocialePsp() : "";
+		istitutoMittenteValue = impostaLunghezzaMassimaCampo(entryKey, "IstitutoMittente", istitutoMittenteValue, 120);
+		linea.add(istitutoMittenteValue);
 		
-//		ModalitaPagamento VUOTO
+//		ModalitaPagamento 100 VUOTO
 		linea.add("");
 		
-//		IBANIncasso VUOTO
+//		IBANIncasso 27 VUOTO
 		linea.add("");
 		
-//		CodiceFlussoRiversamento fr.codFlusso
-		linea.add(pagamento.getCodFlusso() != null ? pagamento.getCodFlusso() : "");
+//		CodiceFlussoRiversamento 60 fr.codFlusso
+		String codiceFlussoRiversamentoValue = pagamento.getCodFlusso() != null ? pagamento.getCodFlusso() : "";
+		codiceFlussoRiversamentoValue = impostaLunghezzaMassimaCampo(entryKey, "CodiceFlussoRiversamento", codiceFlussoRiversamentoValue, 60);
+		linea.add(codiceFlussoRiversamentoValue);
 		
 //		DataRiversamento fr.dataRegolamento
 		linea.add(pagamento.getDataRegolamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA().format(pagamento.getDataRegolamento()) : "");
 		
-//		Annotazioni VUOTO
+//		Annotazioni 255 VUOTO
 		linea.add("");
 		
 		// IF sv.contabilita = null, tutto a null.
-		if(contabilita == null) {
+		if(contabilita == null || contabilita.getQuote() == null) {
 			linea.addAll(this.aggiungiCampiVuoti(30));
 		} else {  
 			// conto le quote disponibili
@@ -1648,15 +1672,19 @@ public class TracciatiNotificaPagamenti {
 			for (int i = 0; i < numeroQuote; i++) {
 				QuotaContabilita quotaContabilita = quote.get(i);
 				
-//				LivelloContabile1 Se sv.contabilita.quote[0].accertamento = null THEN LivelloContabile1 = CAP ELSE LivelloContabile1 = ACC
-//				CodificaContabile1 IF LivelloContabile1 = CAP THEN CodificaContabile1 = {sv.contabilita.quote[0].annoEsercizio}/{sv.contabilita.quote[0].capitolo} ELSE CodificaContabile1 = {sv.contabilita.quote[0].annoEsercizio}/{sv.contabilita.quote[0].accertamento}	
+//				LivelloContabile1 3 Se sv.contabilita.quote[0].accertamento = null THEN LivelloContabile1 = CAP ELSE LivelloContabile1 = ACC
+//				CodificaContabile1 35 IF LivelloContabile1 = CAP THEN CodificaContabile1 = {sv.contabilita.quote[0].annoEsercizio}/{sv.contabilita.quote[0].capitolo} ELSE CodificaContabile1 = {sv.contabilita.quote[0].annoEsercizio}/{sv.contabilita.quote[0].accertamento}	
 
 				if(quotaContabilita.getAccertamento() == null) {
 					linea.add(QUOTA_CONTABILITA_CAPITOLO);
-					linea.add(quotaContabilita.getAnnoEsercizio() + "/" + quotaContabilita.getCapitolo());
+					String codificaContabileValue = quotaContabilita.getAnnoEsercizio() + "/" + quotaContabilita.getCapitolo();
+					codificaContabileValue = impostaLunghezzaMassimaCampo(entryKey, ("CodificaContabile" + (i+1)), codificaContabileValue, 35);
+					linea.add(codificaContabileValue);
 				} else {
 					linea.add(QUOTA_CONTABILITA_ACCERTAMENTO);
-					linea.add(quotaContabilita.getAnnoEsercizio() + "/" + quotaContabilita.getAccertamento());
+					String codificaContabileValue = quotaContabilita.getAnnoEsercizio() + "/" + quotaContabilita.getAccertamento();
+					codificaContabileValue = impostaLunghezzaMassimaCampo(entryKey, ("CodificaContabile" + (i+1)), codificaContabileValue, 35);
+					linea.add(codificaContabileValue);
 				}
 //				QuotaContabile1	sv.contabilita.quote[0].importo in centesimi	
 				linea.add(this.printImporto(quotaContabilita.getImporto(), true));
@@ -1670,7 +1698,7 @@ public class TracciatiNotificaPagamenti {
 		return linea.toArray(new String[linea.size()]);
 	}
 	
-	private String completaValoreCampoConFiller(String valoreCampo, int dimensioneTotaleCampo, boolean numerico, boolean left) {
+	private String completaValoreCampoConFiller(String entryKey, String nomeCampo, String valoreCampo, int dimensioneTotaleCampo, boolean numerico, boolean left) {
 		String filler = " ";
 		if(numerico) {
 			filler = "0";
@@ -1682,7 +1710,21 @@ public class TracciatiNotificaPagamenti {
 		
 		String tmp = left ? StringUtils.leftPad(valoreCampo, dimensioneTotaleCampo, filler) : StringUtils.rightPad(valoreCampo, dimensioneTotaleCampo, filler);
 		
-		return tmp.length() > dimensioneTotaleCampo ? tmp.substring(0,dimensioneTotaleCampo) : tmp;
+		return impostaLunghezzaMassimaCampo(entryKey, nomeCampo, tmp, dimensioneTotaleCampo);
+	}
+
+	private String impostaLunghezzaMassimaCampo(String entryKey, String nomeCampo, String valoreCampo, int dimensioneTotaleCampo) {
+		if(valoreCampo == null) {
+			valoreCampo = "";
+		}
+		
+		if(valoreCampo.length() > dimensioneTotaleCampo) {
+			String nuovoValoreCampo = valoreCampo.substring(0,dimensioneTotaleCampo);
+			log.warn("Entry ["+entryKey+"]: Campo ["+nomeCampo+"], valore ["+valoreCampo+"] lunghezza ["+ valoreCampo.length()+"] viene troncato alla dimensione massima consentita ["+dimensioneTotaleCampo+"]: ["+nuovoValoreCampo+"].");
+			return nuovoValoreCampo;
+		}
+		
+		return valoreCampo;
 	}
 	
 	private boolean validaCampo(String nomeCampo, String valoreCampo, int dimensioneCampo) throws ValidationException {
