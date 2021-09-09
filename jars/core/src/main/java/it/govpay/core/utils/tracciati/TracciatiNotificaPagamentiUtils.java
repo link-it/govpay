@@ -177,6 +177,22 @@ public class TracciatiNotificaPagamentiUtils {
 
 		return impostaLunghezzaMassimaCampo(log, entryKey, nomeCampo, tmp, dimensioneTotaleCampo);
 	}
+	
+	public static String rimuoviCaratteriDaStringa(Logger log, String entryKey, String nomeCampo, String valoreCampo, String tokenToDelete) {
+		return sostituisciCaratteriDaStringa(log, entryKey, nomeCampo, valoreCampo, tokenToDelete, "");
+	}
+	
+	public static String sostituisciCaratteriDaStringa(Logger log, String entryKey, String nomeCampo, String valoreCampo, String tokenToDelete, String tokenToReplace) {
+		if(valoreCampo != null) {
+			if(valoreCampo.contains(tokenToDelete)) {
+				String nuovoValoreCampo = valoreCampo.replace(tokenToDelete, tokenToReplace);
+				log.warn("Entry ["+entryKey+"]: Campo ["+nomeCampo+"], valore ["+valoreCampo+"] contiene il token ["+ tokenToDelete+"], tutte le occorrenza vengono sostituite con il token ["+tokenToReplace+"]: ["+nuovoValoreCampo+"].");
+				return nuovoValoreCampo;
+			}
+		}
+		
+		return valoreCampo;
+	}
 
 	public static String impostaLunghezzaMassimaCampo(Logger log, String entryKey, String nomeCampo, String valoreCampo, int dimensioneTotaleCampo) {
 		if(valoreCampo == null) {
