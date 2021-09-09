@@ -21,6 +21,7 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.bind.JAXBException;
 
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.QuoteMode;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -729,7 +730,14 @@ public class TracciatiNotificaPagamenti {
 • “Progressivo Flusso”, per la data di creazione flusso nel formato NNN.
 		 * */
 		
-		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT.withDelimiter(';'));
+		/*
+		 new CSVFormat(';', null, QuoteMode.NONE, null, null, false, true, CRLF,
+            null, null, null, false, false, false, false, false);
+            CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.newFormat(';').withRecordSeparator("\r\n").withQuoteMode(QuoteMode.NONE).withIgnoreEmptyLines(true));
+		 * */
+		
+		
+		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT.withDelimiter(';').withEscape(Character.valueOf('\0')).withQuoteMode(QuoteMode.NONE));
 		
 		String dataCreazioneFlusso = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(tracciato.getDataCreazione());
 		String progressivoS = TracciatiNotificaPagamentiUtils.completaValoreCampoConFiller(log, "", "progressivoFile",progressivo +"", 3, true, true);
