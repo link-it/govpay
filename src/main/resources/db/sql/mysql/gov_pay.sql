@@ -1138,7 +1138,7 @@ CREATE TABLE eventi
 	componente VARCHAR(35) COMMENT 'Componente che ha generato l\'evento',
 	ruolo VARCHAR(1) COMMENT 'Ruolo (Client/Server)',
 	categoria_evento VARCHAR(1) COMMENT 'Categoria dell\'evento',
-	tipo_evento VARCHAR(70) COMMENT 'Tipologia dell\'evento',
+	tipo_evento VARCHAR(255) COMMENT 'Tipologia dell\'evento',
 	sottotipo_evento VARCHAR(35) COMMENT 'Sotto tipologia dell\'evento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	-- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 

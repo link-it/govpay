@@ -84,7 +84,7 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 		ConnettoreNotificaPagamenti connettoreMaggioliJPPA = dominio.getConnettoreMaggioliJPPA();
 		String rptKey = this.rpt.getCodDominio() + "@" + this.rpt.getIuv() + "@" + this.rpt.getCcp();
 		try {
-			String operationId = appContext.setupInvioNotificaPagamentiMaggioliJPPAClient(Azione.InviaEsitoPagamento.toString(), connettoreMaggioliJPPA.getUrl());
+			String operationId = appContext.setupInvioNotificaPagamentiMaggioliJPPAClient(Azione.maggioliInviaEsitoPagamento.toString(), connettoreMaggioliJPPA.getUrl());
 			log.info("Id Server: [" + operationId + "]");
 			log.info("Spedizione Notifica Pagamento Maggioli [RPT: " + rptKey + "]");
 
@@ -137,7 +137,8 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 					InviaEsitoPagamentoRichiesta.class, null, inviaEsitoPagamentoRichiesta);
 			
 			String xmlDettaglioRichiesta = MaggioliJPPAUtils.getBodyAsString(false, jaxbElement, null);
-			richiestaStandard.setXmlDettaglioRichiesta( MaggioliJPPAUtils.CDATA_TOKEN_START + xmlDettaglioRichiesta +  MaggioliJPPAUtils.CDATA_TOKEN_END);
+//			richiestaStandard.setXmlDettaglioRichiesta( MaggioliJPPAUtils.CDATA_TOKEN_START + xmlDettaglioRichiesta +  MaggioliJPPAUtils.CDATA_TOKEN_END);
+			richiestaStandard.setXmlDettaglioRichiesta( xmlDettaglioRichiesta );
 			CtRispostaStandard rispostaStandard = client.maggioliJPPAInviaEsitoPagamentoRichiesta(richiestaStandard);
 
 			this.esito = rispostaStandard.getEsito().toString();

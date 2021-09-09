@@ -28,8 +28,10 @@ import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.
 public class MaggioliJPPAClient extends BasicClientCORE {
 	
 	public enum Azione {
-		InviaEsitoPagamento, VerificaPagamentoInAttesa
+		maggioliInviaEsitoPagamento, maggioliVerificaPagamentoInAttesa
 	}
+	
+	public static final String SOAP_ACTION_INVIA_ESITO_PAGAMENTO = "http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/internal/InviaEsitoPagamento";
 	
 	private boolean isAzioneInUrl;
 	private static Logger log = LoggerWrapperFactory.getLogger(MaggioliJPPAClient.class);
@@ -104,6 +106,8 @@ public class MaggioliJPPAClient extends BasicClientCORE {
 	
 	public CtRispostaStandard maggioliJPPAInviaEsitoPagamentoRichiesta(CtRichiestaStandard richiestaStandard) throws GovPayException, ClientException, UtilsException {
 		byte [] body = MaggioliJPPAUtils.getBody(true, objectFactory.createInviaEsitoPagamentoRichiesta(richiestaStandard), null);
-		return this.send(Azione.InviaEsitoPagamento.toString(), body);
+		this.setTipoEventoCustom(Azione.maggioliInviaEsitoPagamento.toString());
+		return this.send(SOAP_ACTION_INVIA_ESITO_PAGAMENTO, body);
 	}
+	
 }

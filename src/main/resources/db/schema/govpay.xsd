@@ -2218,7 +2218,7 @@
 			<xsd:element name="componente" type="String35" minOccurs="0"/>
 			<xsd:element name="ruolo" type="String1" minOccurs="0"/>
 			<xsd:element name="categoriaEvento" type="String1" minOccurs="0"/>
-			<xsd:element name="tipoEvento" type="String70" minOccurs="0"/>
+			<xsd:element name="tipoEvento" type="String255" minOccurs="0"/>
 			<xsd:element name="sottotipoEvento" type="String35" minOccurs="0" />
 			<xsd:element name="data" type="xsd:dateTime" minOccurs="0" />
 			<xsd:element name="intervallo" type="xsd:long" minOccurs="0" />
