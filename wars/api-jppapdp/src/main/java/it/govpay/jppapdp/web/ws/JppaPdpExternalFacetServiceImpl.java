@@ -39,6 +39,7 @@ import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.exceptions.BaseExceptionV1.CategoriaEnum;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
@@ -171,9 +172,7 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 				if(!(rpt.getEsitoPagamento().equals(EsitoPagamento.PAGAMENTO_ESEGUITO) || rpt.getEsitoPagamento().equals(EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO))) {
 					// stato non valido
 					log.debug("Lettura RT [" + codDominio + "][" + iuv + "][" + ccp + "] in stato ["+rpt.getEsitoPagamento()+"] non valido per il recupero.");
-					response.setEsito(StEsito.ERROR);
-					errore = CategoriaEnum.OPERAZIONE.name();
-					return response;
+					throw new UnprocessableEntityException("RPT [" + codDominio + "][" + iuv + "][" + ccp + "] in stato ["+rpt.getEsitoPagamento()+"] non valido per il recupero.");
 				}
 				
 				RecuperaRTRisposta recuperaRTRisposta = MaggioliJPPAUtils.buildRTRisposta(this.objectFactory,rpt,configWrapper);
@@ -198,7 +197,7 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 					rptBD.closeConnection();
 				}
 			}
-		} catch (NotAuthorizedException e) {
+		}  catch (NotAuthorizedException e) {
 			log.error("Errore di autorizzazione rilevato: "+ e.getMessage(),e);
 			String faultDescription = e.getMessage() == null ? "<Nessuna descrizione>" : e.getDetails(); 
 			errore = CategoriaEnum.AUTORIZZAZIONE.name();
@@ -222,6 +221,32 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 			
 			Messaggio messaggio = new Messaggio();
 			messaggio.setCodice(CategoriaEnum.AUTORIZZAZIONE.name());
+			messaggio.setDescrizione(faultDescription); 
+			response.getMessaggi().getMessaggio().add(messaggio );
+		} catch (UnprocessableEntityException e) {
+			log.error("Errore di operazione rilevato: "+ e.getMessage(),e);
+			String faultDescription = e.getMessage() == null ? "<Nessuna descrizione>" : e.getDetails(); 
+			errore = CategoriaEnum.OPERAZIONE.name();
+			try {
+				ctx.getApplicationLogger().log("jppapdp.ricezioneRecuperaRTKo", CategoriaEnum.OPERAZIONE.name(), e.getMessage(), faultDescription);
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
+			}
+			appContext.getEventoCtx().setSottotipoEsito("FAIL");
+			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
+			
+			try {
+				response.setDataOperazione(MaggioliJPPAUtils.impostaDataOperazione(new Date()));
+			} catch (DatatypeConfigurationException e1) {
+				log.error("Errore durante l'esecuzione del metodo impostaDataOperazione: " + e1.getMessage(),e1);
+			}
+			response.setEsito(StEsito.ERROR);
+			if(response.getMessaggi() == null)
+				response.setMessaggi(new CtMessaggi());
+			
+			Messaggio messaggio = new Messaggio();
+			messaggio.setCodice(CategoriaEnum.OPERAZIONE.name());
 			messaggio.setDescrizione(faultDescription); 
 			response.getMessaggi().getMessaggio().add(messaggio );
 		} catch (DatatypeConfigurationException | UtilsException | ServiceException | 
