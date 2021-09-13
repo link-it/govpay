@@ -109,15 +109,20 @@ public class AvvisoPagamentoV2Utils {
 		if(input.getPagine() == null)
 			input.setPagine(new PagineAvviso());
 		
+		log.debug("Documento ["+documento.getCodDocumento()+"] Numero totale di versamenti da inserire: " + versamenti.size());
+		
 		// pagina principale
 		while(versamenti.size() > 0 && versamenti.get(0).getNumeroRata() == null && versamenti.get(0).getTipoSoglia() == null) {
 			Versamento versamento = versamenti.remove(0);
+			log.debug("Inserisco versamento senza rata o soglia [IDA2A: "+versamento.getApplicazione(configWrapper)+", IdPendenza: "+versamento.getCodVersamentoEnte()+"]");
 			AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 			AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 			pagina.setRata(getRata(versamento, input, secondaLinguaScelta));
 			input.getPagine().getSingolaOrDoppia().add(pagina);
 		}
+		
+		log.debug("Documento ["+documento.getCodDocumento()+"] numero di versamenti da inserire dopo la pagina principale: " + versamenti.size());
 		
 		boolean addNota1 = true;
 		
@@ -128,6 +133,8 @@ public class AvvisoPagamentoV2Utils {
 				numeroRate ++;
 			}
 		}
+		
+		log.debug("Documento ["+documento.getCodDocumento()+"] numero di versamenti con rate da inserire: " + numeroRate);	
 		
 		// questo controllo bisogna farlo all'inizio perche' la procedura carica la rata unica togliendola dall'elenco versamenti.
 		boolean soloRate = numeroRate == versamenti.size();
@@ -140,13 +147,16 @@ public class AvvisoPagamentoV2Utils {
 			}
 		}
 		
+		log.debug("Documento ["+documento.getCodDocumento()+"] numero di versamenti con soglie da inserire: " + numeroSoglia);	
+		
 		// questo controllo bisogna farlo all'inizio perche' la procedura carica la rata unica togliendola dall'elenco versamenti.
 		boolean soloSoglie = numeroSoglia == versamenti.size();
 
         // se ho tutte rate non sono entrato sicuramente nell'if precedente e devo aggiungere la pagina principale
-		if(soloRate) {
+		if(versamenti.size() > 0 && soloRate) {
 			// numero di versamenti pari devo creara la pagina principale con i dati della prima rata
 			if(versamenti.size() % 2 == 0) {
+				log.debug("Documento ["+documento.getCodDocumento()+"] numero di versamenti con rate e' pari, riporto i dati della prima rata anche nella pagina principale.");	
 				PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 				Versamento versamento = versamenti.get(0); // leggo alcuni dati dalla prima rata
 				
@@ -181,6 +191,7 @@ public class AvvisoPagamentoV2Utils {
 				
 				input.getPagine().getSingolaOrDoppia().add(pagina);
 			} else { // versamenti dispari la prima pagina e la prima rata coincidono
+				log.debug("Documento ["+documento.getCodDocumento()+"] numero di versamenti con rate e' dispari, la prima pagina coincide con la prima rata.");	
 				Versamento versamento = versamenti.remove(0);
 				AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 				AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
@@ -213,9 +224,10 @@ public class AvvisoPagamentoV2Utils {
 		}
 		
 		// ho tutti pagamenti con soglia
-		if(soloSoglie) {
+		if(versamenti.size() > 0 && soloSoglie) {
 			// numero di versamenti pari devo creara la pagina principale con i dati della prima rata
 			if(versamenti.size() % 2 == 0) {
+				log.debug("Documento ["+documento.getCodDocumento()+"] numero di versamenti con soglie, riporto i dati della prima soglia anche nella pagina principale.");	
 				PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 				Versamento versamento = versamenti.get(0); // leggo alcuni dati dalla prima rata
 				
@@ -249,6 +261,7 @@ public class AvvisoPagamentoV2Utils {
 				pagina.setRata(rata);
 				input.getPagine().getSingolaOrDoppia().add(pagina);
 			} else {  // versamenti dispari la prima pagina e la prima soglia coincidono
+				log.debug("Documento ["+documento.getCodDocumento()+"] numero di versamenti con soglie e' dispari, la prima pagina coincide con la prima soglia.");	
 				Versamento versamento = versamenti.remove(0);
 				AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 				AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
@@ -259,6 +272,7 @@ public class AvvisoPagamentoV2Utils {
 		}
 		
 		
+		log.debug("Documento ["+documento.getCodDocumento()+"] inserisco i versamenti due per pagina");	
 		// 2 rate per pagina
 		while(versamenti.size() > 1) {
 			Versamento v1 = versamenti.remove(0);
@@ -286,6 +300,7 @@ public class AvvisoPagamentoV2Utils {
 			input.getPagine().getSingolaOrDoppia().add(pagina);
 		}
 
+		log.debug("Documento ["+documento.getCodDocumento()+"] inserisco i versamenti residui uno per pagina");	
 		// rata rimasta
 		if(versamenti.size() == 1) {
 			Versamento versamento = versamenti.remove(0);
@@ -323,6 +338,8 @@ public class AvvisoPagamentoV2Utils {
 				input.getEtichette().getTraduzione().setNota2(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
 			}
 		}
+		
+		log.debug("Documento ["+documento.getCodDocumento()+"] procedura creazione pagine completata");
 
 		return input;
 	}
