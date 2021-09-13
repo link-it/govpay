@@ -27,7 +27,7 @@
   		"emailIndirizzi" : [ "pec@creditore.it" ],
   		"emailAllegato" :  true,
   		"downloadBaseUrl" : "http://localhost:8080/servizioDownloadTracciati",
-  		"versioneCsv" : "1.0",
+  		"versione" : "1.0",
   		"tipiPendenza" : [ "*" ],
   		"principal" : "maggioli",
   		"url" : "http://prova.it",

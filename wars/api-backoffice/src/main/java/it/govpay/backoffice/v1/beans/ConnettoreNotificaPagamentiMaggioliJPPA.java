@@ -22,7 +22,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "abilitato",
 "tipoConnettore",
-"versioneCsv",
+"versione",
 "principal",
 "emailIndirizzi",
 "emailSubject",
@@ -80,8 +80,8 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
   @JsonProperty("tipoConnettore")
   private TipoConnettoreEnum tipoConnettore = null;
   
-  @JsonProperty("versioneCsv")
-  private String versioneCsv = null;
+  @JsonProperty("versione")
+  private String versione = null;
   
   @JsonProperty("principal")
   private String principal = null;
@@ -201,19 +201,19 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
   }
 
   /**
-   * Versione del file csv prodotto.
+   * Versione del servizio.
    **/
-  public ConnettoreNotificaPagamentiMaggioliJPPA versioneCsv(String versioneCsv) {
-    this.versioneCsv = versioneCsv;
+  public ConnettoreNotificaPagamentiMaggioliJPPA versione(String versione) {
+    this.versione = versione;
     return this;
   }
 
-  @JsonProperty("versioneCsv")
-  public String getVersioneCsv() {
-    return versioneCsv;
+  @JsonProperty("versione")
+  public String getVersione() {
+    return versione;
   }
-  public void setVersioneCsv(String versioneCsv) {
-    this.versioneCsv = versioneCsv;
+  public void setVersione(String versione) {
+    this.versione = versione;
   }
 
   /**
@@ -399,7 +399,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
     ConnettoreNotificaPagamentiMaggioliJPPA connettoreNotificaPagamentiMaggioliJPPA = (ConnettoreNotificaPagamentiMaggioliJPPA) o;
     return Objects.equals(abilitato, connettoreNotificaPagamentiMaggioliJPPA.abilitato) &&
         Objects.equals(tipoConnettore, connettoreNotificaPagamentiMaggioliJPPA.tipoConnettore) &&
-        Objects.equals(versioneCsv, connettoreNotificaPagamentiMaggioliJPPA.versioneCsv) &&
+        Objects.equals(versione, connettoreNotificaPagamentiMaggioliJPPA.versione) &&
         Objects.equals(principal, connettoreNotificaPagamentiMaggioliJPPA.principal) &&
         Objects.equals(emailIndirizzi, connettoreNotificaPagamentiMaggioliJPPA.emailIndirizzi) &&
         Objects.equals(emailSubject, connettoreNotificaPagamentiMaggioliJPPA.emailSubject) &&
@@ -414,7 +414,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
 
   @Override
   public int hashCode() {
-    return Objects.hash(abilitato, tipoConnettore, versioneCsv, principal, emailIndirizzi, emailSubject, emailAllegato, downloadBaseUrl, tipiPendenza, url, versioneApi, auth, contenuti);
+    return Objects.hash(abilitato, tipoConnettore, versione, principal, emailIndirizzi, emailSubject, emailAllegato, downloadBaseUrl, tipiPendenza, url, versioneApi, auth, contenuti);
   }
 
   public static ConnettoreNotificaPagamentiMaggioliJPPA parse(String json) throws ServiceException, ValidationException {
@@ -433,7 +433,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
     
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    tipoConnettore: ").append(toIndentedString(tipoConnettore)).append("\n");
-    sb.append("    versioneCsv: ").append(toIndentedString(versioneCsv)).append("\n");
+    sb.append("    versione: ").append(toIndentedString(versione)).append("\n");
     sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
     sb.append("    emailIndirizzi: ").append(toIndentedString(emailIndirizzi)).append("\n");
     sb.append("    emailSubject: ").append(toIndentedString(emailSubject)).append("\n");
@@ -470,7 +470,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
  			
  			switch (this.tipoConnettore) {
  			case EMAIL:
- 				vf.getValidator("versioneCsv", this.versioneCsv).notNull().minLength(1).maxLength(255);
+ 				vf.getValidator("versione", this.versione).notNull().minLength(1).maxLength(255);
  				if(this.emailIndirizzi != null && !this.emailIndirizzi.isEmpty()) {
  					for (String indirizzo : emailIndirizzi) {
  						vf.getValidator("emailIndirizzi", indirizzo).minLength(1).pattern(CostantiValidazione.PATTERN_EMAIL);

@@ -111,7 +111,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
 			
 			switch (connector.getTipoConnettore()) {
 			case EMAIL:
-				connettore.setVersioneCsv(connector.getVersioneCsv());
+				connettore.setVersioneCsv(connector.getVersione());
 				connettore.setTipoConnettore(TipoConnettore.EMAIL);
 				connettore.setEmailIndirizzi(connector.getEmailIndirizzi());
 				connettore.setEmailSubject(connector.getEmailSubject());
@@ -168,7 +168,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
 		if(connettore.isAbilitato()) {
 			switch (connettore.getTipoConnettore()) {
 			case EMAIL:
-				rsModel.setVersioneCsv(connettore.getVersioneCsv());
+				rsModel.setVersione(connettore.getVersioneCsv());
 				rsModel.setTipoConnettore(TipoConnettoreEnum.EMAIL);
 				rsModel.setEmailIndirizzi(connettore.getEmailIndirizzi());
 				rsModel.setEmailSubject(connettore.getEmailSubject());

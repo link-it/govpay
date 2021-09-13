@@ -40,7 +40,7 @@ And match response.servizioMaggioliJPPA.<field> == checkValue
 Examples:
 | field | value | retValue | 
 | abilitato | false | false |
-| versioneCsv | '1.0' | '1.0' |
+| versione | '1.0' | '1.0' |
 | emailIndirizzi | ['pec2@creditore.it'] | ['pec2@creditore.it'] |
 | emailIndirizzi | ['pec2@creditore.it' , 'pec3@creditore.it' ] | ['pec2@creditore.it' , 'pec3@creditore.it' ] |
 | emailSubject | '[Govpay] Export pagamenti Secim tipo pendenza #(codEntrataSegreteria)' | '[Govpay] Export pagamenti Secim tipo pendenza #(codEntrataSegreteria)' |

@@ -7924,10 +7924,10 @@ components:
           type: string
           enum:
             - 'EMAIL'
-        versioneCsv:
+        versione:
           type: string
           example: '1.0'
-          description: Versione del file csv prodotto.
+          description: Versione del servizio.
         principal:
           type: string
           description: principal autenticato dalla chiamata di Maggioli
