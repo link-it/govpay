@@ -74,6 +74,7 @@ import org.apache.http.impl.client.DefaultClientConnectionReuseStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -529,22 +530,12 @@ public abstract class BasicClientCORE {
 
 			RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
 
-			// Impostazione Content-Type della Spedizione su HTTP
-
-			if(this.debug)
-				log.debug("Impostazione content type...");
-
-			if(contentType != null) {
-				this.dumpRequest.setContentType(contentType);
-				this.httpRequest.addHeader("Content-Type", contentType);
-			}
-
 			// Impostazione transfer-length
-			if(this.debug)
-				log.debug("Impostazione transfer-length...");
-			boolean transferEncodingChunked = false;
-			String tlm = null;
-			int chunkLength = -1;
+//			if(this.debug)
+//				log.debug("Impostazione transfer-length...");
+//			boolean transferEncodingChunked = false;
+//			String tlm = null;
+//			int chunkLength = -1;
 
 			//			TODO
 			//			if(ConsegnaContenutiApplicativi.ID_MODULO.equals(this.idModulo)){
@@ -560,8 +551,8 @@ public abstract class BasicClientCORE {
 			//			if(transferEncodingChunked){
 			//				//this.httpConn.setChunkedStreamingMode(chunkLength);
 			//			}
-			if(this.debug)
-				log.info("Impostazione transfer-length effettuata (chunkLength:"+chunkLength+"): "+tlm,false);
+//			if(this.debug)
+//				log.info("Impostazione transfer-length effettuata (chunkLength:"+chunkLength+"): "+tlm,false);
 
 
 
@@ -579,7 +570,15 @@ public abstract class BasicClientCORE {
 			//this.httpConn.setInstanceFollowRedirects(true); 
 
 
+			// Impostazione Content-Type della Spedizione su HTTP
 
+			if(contentType != null) {
+				if(this.debug)
+					log.debug("Impostazione content type ["+contentType+"]");
+				this.dumpRequest.setContentType(contentType);
+				this.dumpRequest.getHeaders().put(HTTP.CONTENT_TYPE, contentType);
+				this.httpRequest.addHeader(HTTP.CONTENT_TYPE, contentType);
+			}
 
 
 
@@ -594,24 +593,30 @@ public abstract class BasicClientCORE {
 			}
 
 			// Authentication BASIC
-			if(this.debug)
-				log.debug("Impostazione autenticazione...");
 			if(this.ishttpBasicEnabled) {
+				if(this.debug)
+					log.debug("Impostazione autenticazione...");
+				
 				Base64 base = new Base64();
 				String encoding = new String(base.encode((this.httpBasicUser + ":" + this.httpBasicPassword).getBytes()));
 
 				this.dumpRequest.getHeaders().put("Authorization", "Basic " + encoding);
 				this.httpRequest.addHeader("Authorization", "Basic " + encoding);
+				if(this.debug)
+					log.debug("Impostato Header Authorization [Basic "+encoding+"]");
 			}
 
 
 			// Impostazione Proprieta del trasporto
-			if(this.debug)
-				log.debug("Impostazione header di trasporto...");
 			if(headerProperties!= null  && headerProperties.size() > 0) {
+				if(this.debug)
+					log.debug("Impostazione header di trasporto...");
+				
 				for (Property prop : headerProperties) {
 					this.httpRequest.addHeader(prop.getName(), prop.getValue());
-					dumpRequest.getHeaders().put(prop.getName(), prop.getValue());
+					this.dumpRequest.getHeaders().put(prop.getName(), prop.getValue());
+					if(this.debug)
+						log.debug("Aggiunto Header ["+prop.getName()+"]: ["+prop.getValue()+"]");
 				}
 			}
 
@@ -649,10 +654,28 @@ public abstract class BasicClientCORE {
 					responseCode = 500;
 					throw new ClientException("Tipo ["+this.httpRequest.getClass().getName()+"] non utilizzabile per una richiesta di tipo ["+httpMethod+"]", responseCode);
 				}
+				if(contentType != null) {
+					((ByteArrayEntity) httpEntity).setContentType(contentType);
+				}
 			}
 
 			// Imposto Configurazione
 			this.httpRequest.setConfig(requestConfigBuilder.build());
+			
+			
+			if(this.debug) {
+				log.debug("Elenco Header impostati nella request:");
+				
+				for (Header prop : this.httpRequest.getAllHeaders()) {
+					log.debug("Header ["+prop.getName()+"]: ["+prop.getValue()+"]");
+				}
+				
+				log.debug("Elenco Header impostati nella dumpRequest:");
+				
+				for (String key : this.dumpRequest.getHeaders().keySet()) {
+					log.debug("Header ["+key+"]: ["+this.dumpRequest.getHeaders().get(key)+"]");
+				}
+			}
 
 			// Spedizione byte
 			if(this.debug)
