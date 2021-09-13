@@ -226,9 +226,9 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 		} catch (UnprocessableEntityException e) {
 			log.error("Errore di operazione rilevato: "+ e.getMessage(),e);
 			String faultDescription = e.getMessage() == null ? "<Nessuna descrizione>" : e.getDetails(); 
-			errore = CategoriaEnum.OPERAZIONE.name();
+			errore = CategoriaEnum.RICHIESTA.name();
 			try {
-				ctx.getApplicationLogger().log("jppapdp.ricezioneRecuperaRTKo", CategoriaEnum.OPERAZIONE.name(), e.getMessage(), faultDescription);
+				ctx.getApplicationLogger().log("jppapdp.ricezioneRecuperaRTKo", CategoriaEnum.RICHIESTA.name(), e.getMessage(), faultDescription);
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
@@ -246,7 +246,7 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 				response.setMessaggi(new CtMessaggi());
 			
 			Messaggio messaggio = new Messaggio();
-			messaggio.setCodice(CategoriaEnum.OPERAZIONE.name());
+			messaggio.setCodice(CategoriaEnum.RICHIESTA.name());
 			messaggio.setDescrizione(faultDescription); 
 			response.getMessaggi().getMessaggio().add(messaggio );
 		} catch (DatatypeConfigurationException | UtilsException | ServiceException | 
