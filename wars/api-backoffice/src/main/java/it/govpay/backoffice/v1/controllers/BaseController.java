@@ -165,7 +165,7 @@ public abstract class BaseController {
 			return this.handleValidationException(uriInfo, httpHeaders, methodName, (ValidationException)e,transactionId);
 		}
 		
-		this.log.error("Errore interno durante "+methodName+": " + e.getMessage(), e);
+		this.log.error("Errore interno durante "+methodName, e);
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.INTERNO);
 		respKo.setCodice(EsitoOperazione.INTERNAL.toString());
