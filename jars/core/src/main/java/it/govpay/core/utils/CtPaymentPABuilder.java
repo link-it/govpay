@@ -143,8 +143,8 @@ public class CtPaymentPABuilder {
 		} else if(versamento.getDataScadenza() != null) {
 			ctRpt.setDueDate(versamento.getDataScadenza()); // indicates the expiration payment date
 		} else {
-			ctRpt.setDueDate(new Date(32551804800000l)); //31.12.2999
-		}
+			ctRpt.setDueDate(new Date(32503590000000l)); //31.12.2999
+		}                             
 //		ctRpt.setRetentionDate(null); // <!-- fino a questa data non ci rigereremo verso la PA --> TODO ????
 		
 		// TODO usare questi dati per configurare la soluzione di pagamento
