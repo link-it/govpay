@@ -143,23 +143,19 @@ public class CtPaymentPABuilder {
 		} else if(versamento.getDataScadenza() != null) {
 			ctRpt.setDueDate(versamento.getDataScadenza()); // indicates the expiration payment date
 		} else {
-			Calendar c = Calendar.getInstance();
-			c.setTime(new Date());
-			c.set(Calendar.DATE, 31);
-			c.set(Calendar.MONTH, 11);
-			c.set(Calendar.YEAR, 9999);
+			ctRpt.setDueDate(new Date(32551804800000l)); //31.12.2999
 		}
-		ctRpt.setRetentionDate(null); // <!-- fino a questa data non ci rigereremo verso la PA --> TODO ????
+//		ctRpt.setRetentionDate(null); // <!-- fino a questa data non ci rigereremo verso la PA --> TODO ????
 		
 		// TODO usare questi dati per configurare la soluzione di pagamento
-		requestBody.getAmount();
-		requestBody.getDueDate();
-		requestBody.getPaymentNote();
-		requestBody.getTransferType();
+//		requestBody.getAmount();
+//		requestBody.getDueDate();
+//		requestBody.getPaymentNote();
+//		requestBody.getTransferType();
 		
 
 		// Capire se il numero avviso utilizzato e' relativo alla rata di un documento, nel caso sia l'ultima valorizzare true altrimenti e' sempre false
-		// se non e' una rata o rata unica e' sempre true. TODO
+		// se non e' una rata o rata unica e' sempre true. 
 		ctRpt.setLastPayment(true); 
 		
 		if(versamento.getCausaleVersamento() != null) {
