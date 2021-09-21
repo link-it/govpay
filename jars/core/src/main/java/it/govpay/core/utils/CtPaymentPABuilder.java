@@ -22,6 +22,7 @@ package it.govpay.core.utils;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -141,7 +142,13 @@ public class CtPaymentPABuilder {
 			ctRpt.setDueDate(versamento.getDataValidita()); // indicates the expiration payment date
 		} else if(versamento.getDataScadenza() != null) {
 			ctRpt.setDueDate(versamento.getDataScadenza()); // indicates the expiration payment date
-		}  
+		} else {
+			Calendar c = Calendar.getInstance();
+			c.setTime(new Date());
+			c.set(Calendar.DATE, 31);
+			c.set(Calendar.MONTH, 11);
+			c.set(Calendar.YEAR, 9999);
+		}
 		ctRpt.setRetentionDate(null); // <!-- fino a questa data non ci rigereremo verso la PA --> TODO ????
 		
 		// TODO usare questi dati per configurare la soluzione di pagamento
