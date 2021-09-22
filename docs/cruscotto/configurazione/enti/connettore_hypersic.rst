@@ -76,3 +76,9 @@ Il tracciato è conforme alle specifiche :download:`Tracciato Standard Acquisizi
    altrimenti CodificaContabile = {quota[0].annoEsercizio}/{contabilita.accertamento}"
    "QuotaContabile1","quota[0].importo"
    "Altre quote contabili","Come nel caso della prima, fino alle 10 consentite"
+   
+Alcune note sul processo di produzione del CSV:
+- Il CSV APKappa non contempla il carattere di escape, pertanto eventuali punti e virgola vegono rimossi dai valori.
+- I vincoli di lunghezza dei campi del CSV sono più stringenti di quelli previsti da pagoPA, pertanto i valori inseriti vengono troncati ove necessario.
+
+Nell'eventualità che vengano applicate le policy individuate nelle note, nel log di GovPay viene emesso un log di warning che ne da evidenza.
