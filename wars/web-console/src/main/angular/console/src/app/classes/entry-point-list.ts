@@ -60,6 +60,7 @@ import { ConnettoreMypivotComponent } from '../elements/detail-view/views/dialog
 import { ConnettoreSecimComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-secim/connettore-secim.component';
 import { ConnettoreGovpayComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-govpay/connettore-govpay.component';
 import { ConnettoreHypersicComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-hypersic/connettore-hypersic.component';
+import { ConnettoreMaggioliComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-maggioli/connettore-maggioli.component';
 
 export class EntryPointList {
 
@@ -119,7 +120,8 @@ export class EntryPointList {
     ConnettoreMypivotComponent,
     ConnettoreSecimComponent,
     ConnettoreGovpayComponent,
-    ConnettoreHypersicComponent
+    ConnettoreHypersicComponent,
+    ConnettoreMaggioliComponent
   ];
 
   public static getComponentByName(name: string):Type<any> {
@@ -275,6 +277,9 @@ export class EntryPointList {
         break;
       case UtilService.CONNETTORE_HYPERSIC:
         _type = ConnettoreHypersicComponent;
+        break;
+      case UtilService.CONNETTORE_MAGGIOLI:
+        _type = ConnettoreMaggioliComponent;
         break;
       //Material Lib
       case UtilService.INPUT:
@@ -455,6 +460,9 @@ export class EntryPointList {
         break;
       case 'ConnettoreHypersicComponent':
         _name = UtilService.CONNETTORE_HYPERSIC;
+        break;
+      case 'ConnettoreMaggioliComponent':
+        _name = UtilService.CONNETTORE_MAGGIOLI;
         break;
       //Material Lib
       case 'InputViewComponent':

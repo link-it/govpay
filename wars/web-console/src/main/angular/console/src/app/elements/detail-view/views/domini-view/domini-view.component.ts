@@ -44,6 +44,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   protected _CONNETTORE_SECIM = UtilService.CONNETTORE_SECIM;
   protected _CONNETTORE_GOVPAY = UtilService.CONNETTORE_GOVPAY;
   protected _CONNETTORE_HYPERSIC = UtilService.CONNETTORE_HYPERSIC;
+  protected _CONNETTORE_MAGGIOLI = UtilService.CONNETTORE_MAGGIOLI;
   protected _UNITA = UtilService.UNITA_OPERATIVA;
   protected _PLUS_CREDIT = UtilService.USER_ACL.hasCreditore;
 
@@ -306,6 +307,14 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         p.model = this._mapNewItemByType(json.servizioHyperSicAPKappa, this._CONNETTORE_HYPERSIC);
         _connettori.push(p);
       }
+      // Maggioli
+      if (json.servizioMaggioliJPPA && json.servizioMaggioliJPPA.abilitato) {
+        const p = new Parameters();
+        p.id = this._CONNETTORE_MAGGIOLI;
+        p.jsonP = json.servizioMaggioliJPPA;
+        p.model = this._mapNewItemByType(json.servizioMaggioliJPPA, this._CONNETTORE_MAGGIOLI);
+        _connettori.push(p);
+      }
       this.connettori = [].concat(_connettori);
       this.filtroConnettori();
 
@@ -400,6 +409,9 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         if (type === this._CONNETTORE_HYPERSIC) {
           delete this.json.servizioHyperSicAPKappa;
         }
+        if (type === this._CONNETTORE_MAGGIOLI) {
+          delete this.json.servizioMaggioliJPPA;
+        }
         delete this.json.entrate;
         delete this.json.unitaOperative;
         delete this.json.contiAccredito;
@@ -481,6 +493,10 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         _std.titolo = new Dato({ value: 'Suite HyperSIC - APKappa' });
         _std.sottotitolo = new Dato({ label: Voce.MODALITA_CONNETTORE+': ', value: item.tipoConnettore });
       break;
+      case this._CONNETTORE_MAGGIOLI:
+        _std.titolo = new Dato({ value: 'Maggioli JPPA' });
+        _std.sottotitolo = new Dato({ label: Voce.MODALITA_CONNETTORE+': ', value: item.tipoConnettore });
+      break;
     }
     return _std;
   }
@@ -539,6 +555,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       case this._CONNETTORE_SECIM:
       case this._CONNETTORE_GOVPAY:
       case this._CONNETTORE_HYPERSIC:
+      case this._CONNETTORE_MAGGIOLI:
         _mb.info = {
           viewModel: _viewModel,
           parent: this,
@@ -556,6 +573,10 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         if (type === this._CONNETTORE_HYPERSIC) {
           _mb.info.dialogTitle = (!mode)?'Nuovo connettore Suite HyperSIC - APKappa':'Modifica connettore Suite HyperSIC - APKappa';
           _mb.info.templateName = this._CONNETTORE_HYPERSIC;
+        }
+        if (type === this._CONNETTORE_MAGGIOLI) {
+          _mb.info.dialogTitle = (!mode)?'Nuovo connettore Maggioli JPPA':'Modifica connettore Maggioli JPPA';
+          _mb.info.templateName = this._CONNETTORE_MAGGIOLI;
         }
         UtilService.blueDialogBehavior.next(_mb);
         break;
@@ -614,6 +635,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       case this._CONNETTORE_SECIM:
       case this._CONNETTORE_GOVPAY:
       case this._CONNETTORE_HYPERSIC:
+      case this._CONNETTORE_MAGGIOLI:
         _json = JSON.parse(JSON.stringify(this.json));
         if (mb.info.templateName === this._CONNETTORE_MY_PIVOT) {
           _json.servizioMyPivot = JSON.parse(JSON.stringify(mb.info.viewModel));
@@ -626,6 +648,9 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         }
         if (mb.info.templateName === this._CONNETTORE_HYPERSIC) {
           _json.servizioHyperSicAPKappa = JSON.parse(JSON.stringify(mb.info.viewModel));
+        }
+        if (mb.info.templateName === this._CONNETTORE_MAGGIOLI) {
+          _json.servizioMaggioliJPPA = JSON.parse(JSON.stringify(mb.info.viewModel));
         }
         delete _json.idDominio;
         delete _json.entrate;
@@ -742,6 +767,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         case this._CONNETTORE_SECIM:
         case this._CONNETTORE_GOVPAY:
         case this._CONNETTORE_HYPERSIC:
+        case this._CONNETTORE_MAGGIOLI:
           this.dettaglioDominio();
         break;
       }
@@ -774,6 +800,14 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         }
       });
       return visible;
+    }).sort((a: SimpleListItem, b: SimpleListItem) => {
+      if (a.label < b.label) {
+        return -1;
+      }
+      if (a.label > b.label) {
+        return 1;
+      }
+      return 0;
     });
   }
 

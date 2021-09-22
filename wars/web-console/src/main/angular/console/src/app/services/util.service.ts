@@ -484,6 +484,7 @@ export class UtilService {
   public static CONNETTORE_SECIM: string = 'connettore_secim';
   public static CONNETTORE_GOVPAY: string = 'connettore_govpay';
   public static CONNETTORE_HYPERSIC: string = 'connettore_hypersic';
+  public static CONNETTORE_MAGGIOLI: string = 'connettore_maggioli';
   public static CONNETTORE_MODALITA_EMAIL: string = 'EMAIL';
   public static CONNETTORE_MODALITA_FILESYSTEM: string = 'FILESYSTEM';
   public static CONNETTORE_MODALITA_REST: string = 'REST';
@@ -545,7 +546,8 @@ export class UtilService {
     { label: 'MyPivot', value: UtilService.CONNETTORE_MY_PIVOT },
     { label: 'SECIM', value: UtilService.CONNETTORE_SECIM },
     { label: 'GovPay', value: UtilService.CONNETTORE_GOVPAY },
-    { label: 'Suite HyperSIC - APKappa', value: UtilService.CONNETTORE_HYPERSIC }
+    { label: 'Suite HyperSIC - APKappa', value: UtilService.CONNETTORE_HYPERSIC },
+    { label: 'Maggioli JPPA', value: UtilService.CONNETTORE_MAGGIOLI }
   ];
 
   public static MODALITA_MYPIVOT: SimpleListItem[] = [
@@ -569,10 +571,15 @@ export class UtilService {
     { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
   ];
 
+  public static MODALITA_MAGGIOLI: SimpleListItem[] = [
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL }
+  ];
+
   public static API_CONNETTORI: SimpleListItem[] = [
     { label: 'API MyPivot', value: 'API_MYPIVOT' },
     { label: 'API SECIM', value: 'API_SECIM' },
-    { label: 'API GovPay', value: 'API_GOVPAY' }
+    { label: 'API GovPay', value: 'API_GOVPAY' },
+    { label: 'API Maggioli', value: 'API_MAGGIOLI' }
   ];
 
   public static CONTENUTI_NOTIFICA_CONNETTORE: SimpleListItem[] = [
