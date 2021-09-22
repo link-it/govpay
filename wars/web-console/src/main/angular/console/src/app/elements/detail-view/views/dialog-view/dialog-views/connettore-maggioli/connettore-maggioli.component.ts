@@ -40,7 +40,7 @@ export class ConnettoreMaggioliComponent implements IFormComponent, OnInit, Afte
 
   ngOnInit() {
     this.fGroup.addControl('maggioliAbilitato_ctrl', new FormControl(false));
-    this.fGroup.addControl('versioneCsv_ctrl', new FormControl(''));
+    this.fGroup.addControl('versione_ctrl', new FormControl(''));
     this.fGroup.addControl('tipoConnettore_ctrl', this.tipoConnettore);
     this.fGroup.addControl('tipiPendenza_ctrl', new FormControl(''));
     this.fGroup.addControl('emailIndirizzi_ctrl', new FormControl(''));
@@ -55,7 +55,7 @@ export class ConnettoreMaggioliComponent implements IFormComponent, OnInit, Afte
   ngAfterViewInit() {
     if(this.json) {
       this.fGroup.controls['maggioliAbilitato_ctrl'].setValue(this.json.abilitato || false);
-      this.fGroup.controls['versioneCsv_ctrl'].setValue(this.json.versioneCsv || '');
+      this.fGroup.controls['versione_ctrl'].setValue(this.json.versione || '');
       this.fGroup.controls['tipoConnettore_ctrl'].setValue(this.json.tipoConnettore || '');
       this.fGroup.controls['tipiPendenza_ctrl'].setValue(this.json.tipiPendenza || '');
       if (this.json.emailIndirizzi) {
@@ -123,7 +123,7 @@ export class ConnettoreMaggioliComponent implements IFormComponent, OnInit, Afte
     }
     this.fGroup.controls['emailIndirizzi_ctrl'].clearValidators();
     this.fGroup.controls['downloadBaseUrl_ctrl'].clearValidators();
-    this.fGroup.controls['versioneCsv_ctrl'].clearValidators();
+    this.fGroup.controls['versione_ctrl'].clearValidators();
     if (this.maggioliAbilitato) {
       this.fGroup.controls['tipoConnettore_ctrl'].setValidators(Validators.required);
       this.fGroup.controls['tipiPendenza_ctrl'].setValidators(Validators.required);
@@ -133,7 +133,7 @@ export class ConnettoreMaggioliComponent implements IFormComponent, OnInit, Afte
         if (!this._isAllegatoEmail) {
           this.fGroup.controls['downloadBaseUrl_ctrl'].setValidators([Validators.required]);
         }
-        this.fGroup.controls['versioneCsv_ctrl'].setValidators(Validators.required);
+        this.fGroup.controls['versione_ctrl'].setValidators(Validators.required);
       }
       this.fGroup.controls['principal_ctrl'].setValidators(Validators.required);
       this.fGroup.controls['url_ctrl'].setValidators(Validators.required);
@@ -144,7 +144,7 @@ export class ConnettoreMaggioliComponent implements IFormComponent, OnInit, Afte
     }
     this.fGroup.controls['tipoConnettore_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
     this.fGroup.controls['tipiPendenza_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
-    this.fGroup.controls['versioneCsv_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+    this.fGroup.controls['versione_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
     this.fGroup.controls['versioneApi_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
     this.fGroup.controls['emailIndirizzi_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
     this.fGroup.controls['downloadBaseUrl_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
@@ -175,7 +175,7 @@ export class ConnettoreMaggioliComponent implements IFormComponent, OnInit, Afte
           descrizione: p.descrizione,
         };
       }):null;
-      _json.versioneCsv = _info['versioneCsv_ctrl'] || null;
+      _json.versione = _info['versione_ctrl'] || null;
       _json.tipoConnettore = _info['tipoConnettore_ctrl'] || null;
       _json.principal = _info['principal_ctrl'] || null;
       _json.auth = this.sslConfig.mapToJson();

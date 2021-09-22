@@ -10,7 +10,7 @@
       </div>
       <div class="row">
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="_Voce.VERSIONE_CSV" formControlName="versioneCsv_ctrl"
+          <mat-select [placeholder]="_Voce.VERSIONE_CSV" formControlName="versione_ctrl"
                       [required]="(maggioliAbilitato && tipoConnettore.value === Util.CONNETTORE_MODALITA_EMAIL)">
             <mat-option value="1.0">1.0</mat-option>
           </mat-select>
