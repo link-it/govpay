@@ -76,6 +76,7 @@ public class RptFilter extends AbstractFilter {
 	private String tassonomia;
 	private String anagraficaDebitore;
 	private String versione;
+	private String modelloPagamento;
 
 	public RptFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -321,6 +322,14 @@ public class RptFilter extends AbstractFilter {
 					newExpression.and();
  
 				newExpression.equals(RPT.model().VERSIONE, this.versione);
+				addAnd = true;
+			}
+			
+			if(this.modelloPagamento != null){
+				if(addAnd)
+					newExpression.and();
+ 
+				newExpression.equals(RPT.model().MODELLO_PAGAMENTO, this.modelloPagamento);
 				addAnd = true;
 			}
 
@@ -653,6 +662,10 @@ public class RptFilter extends AbstractFilter {
 			if(this.versione != null){
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.VERSIONE, true) + " = ? ");
 			}
+			
+			if(this.modelloPagamento != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.MODELLO_PAGAMENTO, true) + " = ? ");
+			}
 
 			return sqlQueryObject;
 		} catch (ExpressionException e) {
@@ -776,6 +789,10 @@ public class RptFilter extends AbstractFilter {
 		
 		if(this.versione != null){
 			lst.add(this.versione);
+		}
+		
+		if(this.modelloPagamento != null){
+			lst.add(this.modelloPagamento);
 		}
 		
 		return lst.toArray(new Object[lst.size()]);
@@ -1006,4 +1023,11 @@ public class RptFilter extends AbstractFilter {
 		this.versione = versione;
 	}
 
+	public String getModelloPagamento() {
+		return modelloPagamento;
+	}
+
+	public void setModelloPagamento(String modelloPagamento) {
+		this.modelloPagamento = modelloPagamento;
+	}
 }

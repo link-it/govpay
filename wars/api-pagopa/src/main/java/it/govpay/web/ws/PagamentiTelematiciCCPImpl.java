@@ -1545,33 +1545,37 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			
 			RptBD rptBD = new RptBD(configWrapper);
 			// controllo che non ci sia un pagamento modello 1 attivo per il versamento corrente.
-			if(GovpayConfig.getInstance().isTimeoutPendentiModello1()) {
-				// Controllo che non ci sia un pagamento in corso
-				// Prendo tutte le RPT pendenti
-				RptFilter filter = rptBD.newFilter();
-				filter.setStato(Rpt.stati_pendenti);
-				filter.setIdVersamento(versamento.getId());
-				List<Rpt> rpt_pendenti = rptBD.findAll(filter);
-				
-				// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
-				// Altrimenti lancio il fault
-				Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() * 60000);
-				
-				for(Rpt rpt_pendente : rpt_pendenti) {
-					Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
-					
-					// se l'RPT e' bloccata allora controllo che il blocco sia indefinito oppure definito, altrimenti passo
-					if(rpt_pendente.isBloccante() && (GovpayConfig.getInstance().getTimeoutPendentiModello1Mins() == 0 || dataSoglia.before(dataMsgRichiesta))) {
-						throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, codDominio, "Pagamento in corso [CCP:" + rpt_pendente.getCcp() + "].");
-					}
-				}
-			}
+//			if(GovpayConfig.getInstance().isTimeoutPendentiModello1()) {
+//				// Controllo che non ci sia un pagamento in corso
+//				// Prendo tutte le RPT pendenti
+//				RptFilter filter = rptBD.newFilter();
+//				filter.setStato(Rpt.stati_pendenti);
+//				filter.setIdVersamento(versamento.getId());
+//				List<Rpt> rpt_pendenti = rptBD.findAll(filter);
+//				
+//				// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
+//				// Altrimenti lancio il fault
+//				Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() * 60000);
+//				
+//				for(Rpt rpt_pendente : rpt_pendenti) {
+//					Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
+//					
+//					// se l'RPT e' bloccata allora controllo che il blocco sia indefinito oppure definito, altrimenti passo
+//					if(rpt_pendente.isBloccante() && (GovpayConfig.getInstance().getTimeoutPendentiModello1Mins() == 0 || dataSoglia.before(dataMsgRichiesta))) {
+//						throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, codDominio, "Pagamento in corso [CCP:" + rpt_pendente.getCcp() + "].");
+//					}
+//				}
+//			}
 			
 			// Creazione dell'RPT
 			Rpt rpt = new CtPaymentPABuilder().buildRptAttivata(requestBody,versamento, iuv, ccp, numeroAvviso);
 
 			ctx.getApplicationLogger().log("ccp.attivazione", rpt.getCodMsgRichiesta());
 
+			// annullo tutte le RPT esistenti modello 3 in stato pendente per la coppia coddominio/iuv 
+			it.govpay.core.business.Rpt rptBusiness = new it.govpay.core.business.Rpt();
+			rptBusiness.annullaRPTPendenti(codDominio, iuv, configWrapper);
+			
 			rptBD = null;
 			try {
 				rptBD = new RptBD(configWrapper);
@@ -1582,39 +1586,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				
 				rptBD.setAutoCommit(false);
 				
-				rptBD.enableSelectForUpdate();
-	
-				// Controllo se gia' non esiste la RPT (lo devo fare solo adesso per essere in transazione con l'inserimento)
-				// se e' gia' presente allora devo farla scadere e attivarne una nuova
-				try {
-					Rpt oldrpt = rptBD.getRpt(codDominio, iuv, true);
-					if(oldrpt.getPagamentoPortale() != null)
-						appContext.getEventoCtx().setIdPagamento(oldrpt.getPagamentoPortale().getIdSessione());
-					
-					oldrpt.setStato(StatoRpt.RPT_ANNULLATA);
-					oldrpt.setDescrizioneStato("Ricevuta richiesta di un nuovo tentativo di pagamento");
-					PagamentoPortale oldPagamentoPortale = oldrpt.getPagamentoPortale();
-					oldPagamentoPortale.setStato(STATO.ANNULLATO);
-					oldPagamentoPortale.setDescrizioneStato("Ricevuta richiesta di un nuovo tentativo di pagamento");
-					
-					PagamentiPortaleBD ppbd = new PagamentiPortaleBD(rptBD);
-					ppbd.setAtomica(false);
-					
-					try {
-						rptBD.updateRpt(oldrpt.getId(), oldrpt);
-						ppbd.updatePagamento(oldPagamentoPortale);
-						
-						rptBD.commit();
-						log.info("RPT [idDominio:"+oldrpt.getCodDominio()+"][iuv:"+oldrpt.getIuv()+"][ccp:"+oldrpt.getCcp()+"] annullata con successo.");
-					} catch(ServiceException e) {
-						log.error("Errore durante l'annullamento della RPT [idDominio:"+oldrpt.getCodDominio()+"][iuv:"+oldrpt.getIuv()+"][ccp:"+oldrpt.getCcp()+"]: " +e .getMessage(), e);
-						throw e;
-					} finally {
-						
-					} 
-				} catch (NotFoundException e2) {}
-				
-					
 				PagamentoPortale pagamentoPortale = new PagamentoPortale();
 				Versamento versamento2 = rpt.getVersamento();
 				it.govpay.bd.model.Applicazione applicazione = AnagraficaManager.getApplicazione(configWrapper, versamento2.getIdApplicazione());
@@ -1665,7 +1636,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					rptBD.insertRpt(rpt);
 				}catch(ServiceException e) {
 					rptBD.rollback();
-					rptBD.disableSelectForUpdate();
+//					rptBD.disableSelectForUpdate();
 
 					// update della entry pagamento portale
 					pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_FALLITO);
@@ -1677,6 +1648,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					ppbd.commit();
 					throw e;
 				}
+				
+				rptBD.enableSelectForUpdate();
 				
 				// RPT accettata dal Nodo
 				// Invio la notifica e aggiorno lo stato

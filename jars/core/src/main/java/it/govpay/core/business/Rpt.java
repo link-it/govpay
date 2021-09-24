@@ -25,7 +25,9 @@ import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.pagamento.EventiBD;
+import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.beans.EsitoOperazione;
@@ -46,12 +48,13 @@ import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Anagrafica;
+import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.Notifica.TipoNotifica;
@@ -167,11 +170,11 @@ public class Rpt {
 
 			try {
 				rptBD = new RptBD(configWrapper);
-				
+
 				rptBD.setupConnection(configWrapper.getTransactionID());
-				
+
 				rptBD.setAutoCommit(false);
-				
+
 				rptBD.setAtomica(false);
 
 				for(Versamento versamento : versamenti) {
@@ -206,12 +209,12 @@ public class Rpt {
 							ctx.getApplicationLogger().log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp);
 						}
 					}
-					
+
 					// controllo se la pendenza e' multibeneficiario, se lo e' allora non puo' essere pagata col modello3 SANP 2.3
 					if(VersamentoUtils.isPendenzaMultibeneficiario(versamento, configWrapper)) {
 						throw new GovPayException(EsitoOperazione.VER_038, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
 					}
-					
+
 					// blocco dei pagamenti modello 3 per le RPT SANP 2.4.0
 					// il nuovo pagamento modello 3 ha un timeout sempre impostato di max 30 minuti
 					if(pagamentoPortale != null && pagamentoPortale.getTipo() == 1) {
@@ -230,7 +233,7 @@ public class Rpt {
 						// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
 						// Altrimenti lancio il fault
 						Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins() * 60000);
-						
+
 						for(it.govpay.bd.model.Rpt rpt_pendente : rpt_pendenti) {
 							Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
 
@@ -304,7 +307,7 @@ public class Rpt {
 			// Se ho una GovPayException, non ho sicuramente spedito nulla.
 			// Se ho una ClientException non so come sia andata la consegna.
 			NodoClient clientInviaCarrelloRPT = null;
-		    rptBD = null;
+			rptBD = null;
 			try {
 				Risposta risposta = null;
 				String operationId = appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoInviaCarrelloRPT);
@@ -312,10 +315,10 @@ public class Rpt {
 				ctx.getApplicationLogger().log("rpt.invioCarrelloRpt");
 				clientInviaCarrelloRPT = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale);
 				risposta = RptUtils.inviaCarrelloRPT(clientInviaCarrelloRPT, intermediario, stazione, rpts, operationId, codiceConvenzione);
-				
+
 				// ripristino la connessione
 				rptBD = new RptBD(configWrapper);
-				
+
 				if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
 					// RPT rifiutata dal Nodo
 					// Aggiorno lo stato e ritorno l'errore
@@ -393,7 +396,7 @@ public class Rpt {
 				log.info("Attivazione della procedura di recupero del processo di pagamento.");
 
 				NodoClient chiediStatoRptClient = null;
-				
+
 				try {
 					try {
 						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), Azione.nodoChiediStatoRPT);
@@ -422,7 +425,7 @@ public class Rpt {
 						this.updateStatoRpt(rpts, StatoRpt.RPT_ERRORE_INVIO_A_NODO, "Impossibile comunicare con il Nodo dei Pagamenti SPC: " + e.getMessage(), pagamentoPortale, e);
 						throw new GovPayException(EsitoOperazione.NDP_000, e, "Errore nella consegna della richiesta di pagamento al Nodo dei Pagamenti");
 					} finally {
-						
+
 					}
 					if(risposta.getEsito() == null) {
 						if(chiediStatoRptClient != null) {
@@ -470,7 +473,7 @@ public class Rpt {
 					}
 				}
 			}  finally {
-								
+
 				if(clientInviaCarrelloRPT != null && clientInviaCarrelloRPT.getEventoCtx().isRegistraEvento()) {
 					EventiBD eventiBD = new EventiBD(configWrapper);
 					for(it.govpay.bd.model.Rpt rpt : rpts) {
@@ -568,6 +571,70 @@ public class Rpt {
 			log.info("RPT inviata correttamente al nodo");
 			return rpts;
 		}
-		
+
+	}
+
+	public void annullaRPTPendenti(String codDominio, String iuv, BDConfigWrapper configWrapper)  throws ServiceException {
+		RptBD rptBD = null;
+		try {
+			rptBD = new RptBD(configWrapper);
+
+			rptBD.setupConnection(configWrapper.getTransactionID());
+
+			rptBD.setAtomica(false);
+
+			rptBD.setAutoCommit(false);
+
+			rptBD.enableSelectForUpdate();
+
+			RptFilter filter = rptBD.newFilter();
+			filter.setCodDominio(codDominio);
+			filter.setIuv(iuv);
+			filter.setStato(it.govpay.bd.model.Rpt.stati_pendenti);
+			filter.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
+
+			
+			List<it.govpay.bd.model.Rpt> listaRptDaAnnullare = rptBD.findAll(filter );
+			
+			PagamentiPortaleBD ppbd = new PagamentiPortaleBD(rptBD);
+			ppbd.setAtomica(false);
+
+			for (it.govpay.bd.model.Rpt rpt : listaRptDaAnnullare) {
+				rpt.setStato(StatoRpt.RPT_ANNULLATA);
+				rpt.setDescrizioneStato("Ricevuta richiesta di un nuovo tentativo di pagamento");
+				
+				PagamentoPortale oldPagamentoPortale = null;
+				if(rpt.getIdPagamentoPortale() != null) {
+					try {
+						oldPagamentoPortale = ppbd.getPagamento(rpt.getIdPagamentoPortale());
+						oldPagamentoPortale.setStato(STATO.ANNULLATO);
+						oldPagamentoPortale.setDescrizioneStato("Ricevuta richiesta di un nuovo tentativo di pagamento");
+					}catch (NotFoundException e) {
+
+					}
+				}
+
+				try {
+					rptBD.updateRpt(rpt.getId(), rpt);
+					if(oldPagamentoPortale != null) {
+						ppbd.updatePagamento(oldPagamentoPortale, false, true); // aggiorna versamenti = false, autocommit gestito esternamente true
+					}
+
+					rptBD.commit();
+					log.info("RPT [idDominio:"+rpt.getCodDominio()+"][iuv:"+rpt.getIuv()+"][ccp:"+rpt.getCcp()+"] annullata con successo.");
+				} catch(ServiceException e) {
+					rptBD.rollback();
+					log.error("Errore durante l'annullamento della RPT [idDominio:"+rpt.getCodDominio()+"][iuv:"+rpt.getIuv()+"][ccp:"+rpt.getCcp()+"]: " +e .getMessage(), e);
+					throw e;
+				} 
+			}
+
+		}finally {
+			if(rptBD != null) {
+				rptBD.disableSelectForUpdate();
+				
+				rptBD.closeConnection();
+			}
+		}
 	}
 }

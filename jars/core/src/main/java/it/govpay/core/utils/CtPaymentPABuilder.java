@@ -22,6 +22,7 @@ package it.govpay.core.utils;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -141,18 +142,20 @@ public class CtPaymentPABuilder {
 			ctRpt.setDueDate(versamento.getDataValidita()); // indicates the expiration payment date
 		} else if(versamento.getDataScadenza() != null) {
 			ctRpt.setDueDate(versamento.getDataScadenza()); // indicates the expiration payment date
-		}  
-		ctRpt.setRetentionDate(null); // <!-- fino a questa data non ci rigereremo verso la PA --> TODO ????
+		} else {
+			ctRpt.setDueDate(new Date(32503590000000l)); //31.12.2999
+		}                             
+//		ctRpt.setRetentionDate(null); // <!-- fino a questa data non ci rigereremo verso la PA --> TODO ????
 		
 		// TODO usare questi dati per configurare la soluzione di pagamento
-		requestBody.getAmount();
-		requestBody.getDueDate();
-		requestBody.getPaymentNote();
-		requestBody.getTransferType();
+//		requestBody.getAmount();
+//		requestBody.getDueDate();
+//		requestBody.getPaymentNote();
+//		requestBody.getTransferType();
 		
 
 		// Capire se il numero avviso utilizzato e' relativo alla rata di un documento, nel caso sia l'ultima valorizzare true altrimenti e' sempre false
-		// se non e' una rata o rata unica e' sempre true. TODO
+		// se non e' una rata o rata unica e' sempre true. 
 		ctRpt.setLastPayment(true); 
 		
 		if(versamento.getCausaleVersamento() != null) {

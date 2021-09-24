@@ -47,6 +47,7 @@ import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.RtUtils.EsitoValidazione;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
@@ -173,10 +174,10 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			versamentiBD.setAtomica(false);
 
 			Rpt rpt = null;
-			try {
-				rpt = rptBD.getRpt(codDominio, iuv, true);
+			try { 
+				rpt = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, it.govpay.model.Rpt.Versione.SANP_240, true);
 			} catch (NotFoundException e) {
-				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
+				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, e.getMessage(), codDominio);
 			}
 
 			// Faccio adesso la select for update, altrimenti in caso di 
@@ -199,9 +200,9 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			// infatti in caso di RT concorrente, non viene gestito bene l'errore.
 
 			try {
-				rpt = rptBD.getRpt(codDominio, iuv, true);
+				rpt = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, it.govpay.model.Rpt.Versione.SANP_240, true);
 			} catch (NotFoundException e) {
-				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
+				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, e.getMessage(), codDominio);
 			}
 
 			if(!acquisizioneDaCruscotto) {

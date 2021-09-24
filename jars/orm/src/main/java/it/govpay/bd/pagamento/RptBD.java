@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -47,6 +48,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.converter.RptConverter;
 import it.govpay.bd.pagamento.filters.RptFilter;
+import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.orm.IdRpt;
@@ -163,11 +165,7 @@ public class RptBD extends BasicBD {
 		}
 	}
 	
-	public Rpt getRpt(String codDominio, String iuv) throws NotFoundException, ServiceException {
-		return this.getRpt(codDominio, iuv, false);
-	}
-	
-	public Rpt getRpt(String codDominio, String iuv, boolean deep) throws NotFoundException, ServiceException {
+	public Rpt getRpt(String codDominio, String iuv, ModelloPagamento modelloPagamento, it.govpay.model.Rpt.Versione versione, boolean deep) throws NotFoundException, ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -175,16 +173,30 @@ public class RptBD extends BasicBD {
 			
 			IExpression exp = this.getRptService().newExpression();
 			exp.equals(RPT.model().COD_DOMINIO, codDominio);
+			exp.and();
 			exp.equals(RPT.model().IUV, iuv);
-			RPT rptVO = this.getRptService().find(exp);
-			Rpt dto = RptConverter.toDTO(rptVO);
+			exp.and();
+			exp.equals(RPT.model().MODELLO_PAGAMENTO, modelloPagamento.getCodifica()+"");
+			exp.and();
+			exp.equals(RPT.model().VERSIONE, versione.toString());
 			
-			popolaRpt(deep, dto);
+			RPTFieldConverter converter = new RPTFieldConverter(this.getJdbcProperties().getDatabase());
+			CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(RPT.model()));
+			IPaginatedExpression pagExpr = this.getRptService().toPaginatedExpression(exp);
+			pagExpr.addOrder(RPT.model().DATA_MSG_RICHIESTA, SortOrder.DESC);
+			List<Object> select = this.getRptService().select(pagExpr , cf);
 			
-			return dto;
+			if(select != null && select.size() > 0) {
+				Object idObj = select.get(0); // prendo l'ultimo id
+				if(idObj instanceof Long) {
+					Long id = (Long) idObj;
+					return this.getRpt(id,deep);
+				}
+			} 
+
+			throw new NotFoundException("Nessuna RPT Dominio: ["+codDominio+"], Iuv: ["+iuv+"], ModelloPagamento: ["+modelloPagamento.name()
+				+"], Versione: ["+versione.name()+"] corrisponde ai parametri indicati.");
 		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
