@@ -39,21 +39,15 @@ Vediamo di seguito un esempio di invocazione della *POST /pagamenti*
                     "anagrafica":"Mario Rossi"
                 },
                 "importo":45.01,
-                "numeroAvviso":"002152784494177803",
-                "dataCaricamento":"2018-06-01",
-                "dataValidita":"2018-06-01",
-                "tassonomia":"Ticket n.1527844941778",
-                "tassonomiaAvviso":"Ticket e prestazioni sanitarie",
                 "voci":
                 [
                     {
-                    "indice":1,
-                    "idVocePendenza":"1527844941778-1100",
-                    "importo":45.01,
-                    "descrizione":"Compartecipazione alla spesa per prestazioni sanitarie (ticket)",
-                    "codiceContabilita":"COD_CONTABILITA_11",
-                    "ibanAccredito":"IT02L1234512345123456789012",
-                    "tipoContabilita":"ALTRO"
+	                    "idVocePendenza":"1527844941778-1100",
+	                    "importo":45.01,
+	                    "descrizione":"Compartecipazione alla spesa per prestazioni sanitarie (ticket)",
+	                    "tipoContabilita":"ALTRO",                    
+	                    "codiceContabilita":"0501100TS/",
+	                    "ibanAccredito":"IT02L1234512345123456789012"
                     }
                 ]
             }
@@ -81,7 +75,7 @@ In assenza di errori, la risposta ottenuta contiene le seguenti informazioni:
 
     - Una URL, contenuta in **redirect**, a cui indirizzare l’utente per proseguire nella successiva fase di esecuzione del pagamento.
 
-Una volto confermato il corretto avvio del pagamento, il portale effettua la redirezione dell'utente sulla URL ottenuta come **redirect**, per procedere con la fase di esecuzione del versamento.
+Una volta confermato il corretto avvio del pagamento, il portale effettua la redirezione dell'utente sulla URL ottenuta come **redirect**, per procedere con la fase di esecuzione del versamento.
 
 
 Acquisizione Esito

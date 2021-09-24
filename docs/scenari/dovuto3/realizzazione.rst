@@ -43,21 +43,21 @@ Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pende
 			"tipo":"F",
 			"identificativo":"RSSMRA30A01H501I",
 			"anagrafica":"Mario Rossi",
-			"email":"mario@dimostrativo.it"},
-			"causale":"Prestazione n.ABC-001",
-			"importo":45.01,
-			"voci":
-			[
-				{
-					"idVocePendenza":"ABC-001-1100",
-					"importo":45.01,
-					"descrizione":"Compartecipazione alla spesa per prestazioni sanitarie (ticket)",
-					"ibanAccredito":"IT02L1234512345123456789012",
-					"tipoContabilita":"ALTRO",
-					"codiceContabilita":"1100"
-				}
-			]
-		}
+			"email":"mario@dimostrativo.it"
+		},
+		"causale":"Prestazione n.ABC-001",
+		"importo":45.01,
+		"voci":
+		[
+			{
+				"idVocePendenza":"ABC-001-1100",
+				"importo":45.01,
+				"descrizione":"Compartecipazione alla spesa per prestazioni sanitarie (ticket)",
+				"ibanAccredito":"IT02L1234512345123456789012",
+				"tipoContabilita":"ALTRO",
+				"codiceContabilita":"1100"
+			}
+		]
 	}
 
 .. code-block:: json
@@ -67,7 +67,7 @@ Il seguente esempio mostra l'invocazione della **PUT /pendenze/{idA2A}/{id_pende
 	{
 		"idDominio":"01234567890",
 		"numeroAvviso":"001110000000000164"
-		"pdf":"JVBERi0xLjUKJYCBgoMKMSAwIG9iago8PC9GaWx0ZXIvRmxhdGVEZWNvZGUvRmlyc3QgMTQxL04gMjAvTGVuZ3=="
+		"pdf":"...BASE64..."
 	}
 
 
@@ -101,9 +101,9 @@ GovPay interroga il gestionale dell'ente, per verificare gli estremi della pende
 	    "causale":"Prestazione n.ABC-001",
 	    "soggettoPagatore":
 	    {
-		"tipo":"F",
-		"identificativo":"RSSMRA30A01H501I",
-		"anagrafica":"Mario Rossi"
+			"tipo":"F",
+			"identificativo":"RSSMRA30A01H501I",
+			"anagrafica":"Mario Rossi"
 	    },
 	    "importo":45.01,
 	    "numeroAvviso":"001110000000000164",
@@ -112,14 +112,14 @@ GovPay interroga il gestionale dell'ente, per verificare gli estremi della pende
 	    "tassonomiaAvviso":"Ticket e prestazioni sanitarie",
 	    "voci":
 	    [
-		{
-		    "idVocePendenza":"ABC-001-1100",
-		    "importo":45.01,
-		    "descrizione":"Compartecipazione alla spesa per prestazioni sanitarie (ticket)",
-		    "codiceContabilita":"1100",
-		    "ibanAccredito":"IT02L1234512345123456789012",
-		    "tipoContabilita":"ALTRO"
-		}
+			{
+			    "idVocePendenza":"ABC-001-1100",
+			    "importo":45.01,
+			    "descrizione":"Compartecipazione alla spesa per prestazioni sanitarie (ticket)",
+			    "codiceContabilita":"1100",
+			    "ibanAccredito":"IT02L1234512345123456789012",
+			    "tipoContabilita":"ALTRO"
+			}
 	    ],
 	    "idA2A":"GestPag",
 	    "idPendenza":"ABC-001",
@@ -141,8 +141,8 @@ Superata la fase di verifica, il PSP perfeziona la riscossione degli importi dov
 	    "idPendenza":"ABC-001",
 	    "rpt":
 	    {
-		"versioneOggetto":"6.2",
-		"dominio":
+			"versioneOggetto":"6.2",
+			"dominio":
 		{
 		    --[OMISSIS]--
 		},
@@ -168,54 +168,54 @@ Superata la fase di verifica, il PSP perfeziona la riscossione degli importi dov
 	    },
 	    "rt":
 	    {
-		"versioneOggetto":"6.2",
-		"dominio":
-		{
-		    --[OMISSIS]--
-		},
-		"identificativoMessaggioRicevuta":"3014931b62ab4333be07164c2fda6fa3",
-		"dataOraMessaggioRicevuta":"2018-06-01",
-		"riferimentoMessaggioRichiesta":"3014931b62ab4333be07164c2fda6fa3",
-		"riferimentoDataRichiesta":"2018-06-01",
-		"istitutoAttestante":
-		{
-		    --[OMISSIS]--
-		},
-		"enteBeneficiario":
-		{
-		    --[OMISSIS]--
-		},
-		"soggettoVersante":
-		{
-		    --[OMISSIS]--
-		},
-		"soggettoPagatore":
-		{
-		    --[OMISSIS]--
-		},
-		"datiPagamento":
-		{
-		    --[OMISSIS]--
-		}
+			"versioneOggetto":"6.2",
+			"dominio":
+			{
+			    --[OMISSIS]--
+			},
+			"identificativoMessaggioRicevuta":"3014931b62ab4333be07164c2fda6fa3",
+			"dataOraMessaggioRicevuta":"2018-06-01",
+			"riferimentoMessaggioRichiesta":"3014931b62ab4333be07164c2fda6fa3",
+			"riferimentoDataRichiesta":"2018-06-01",
+			"istitutoAttestante":
+			{
+			    --[OMISSIS]--
+			},
+			"enteBeneficiario":
+			{
+			    --[OMISSIS]--
+			},
+			"soggettoVersante":
+			{
+			    --[OMISSIS]--
+			},
+			"soggettoPagatore":
+			{
+			    --[OMISSIS]--
+			},
+			"datiPagamento":
+			{
+			    --[OMISSIS]--
+			}
 	    },
 	    "riscossioni":
 	    [
-		{
-		    "idDominio":"01234567890",
-		    "iuv":"000000000000141",
-		    "iur":"idRisc-152784362114159",
-		    "indice":1,
-		    "pendenza":"/pendenze/GestPag/ABC-001",
-		    "idVocePendenza":"ABC-001-1100",
-		    "rpp":"/rpp/01234567890/000000000000141/1871148690",
-		    "stato":null,
-		    "tipo":null,
-		    "importo":45.01,
-		    "data":"2018-06-01",
-		    "commissioni":null,
-		    "allegato":null,
-		    "incasso":null
-		}
+			{
+			    "idDominio":"01234567890",
+			    "iuv":"000000000000141",
+			    "iur":"idRisc-152784362114159",
+			    "indice":1,
+			    "pendenza":"/pendenze/GestPag/ABC-001",
+			    "idVocePendenza":"ABC-001-1100",
+			    "rpp":"/rpp/01234567890/000000000000141/1871148690",
+			    "stato":null,
+			    "tipo":null,
+			    "importo":45.01,
+			    "data":"2018-06-01",
+			    "commissioni":null,
+			    "allegato":null,
+			    "incasso":null
+			}
 	    ]
 	}
 
