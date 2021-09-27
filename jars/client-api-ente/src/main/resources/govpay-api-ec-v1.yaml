@@ -4,7 +4,7 @@ info:
     API di integrazione ai servizi di pagamento di 
     [GovPay](https://github.com/link-it/GovPay) erogate
     dagli applicativi dell'Ente Creditore
-  version: "1.1.0"
+  version: "1.1.1"
   title: "GovPay - API Applicazioni"
   contact:
     name: GitHub Project Page
@@ -32,12 +32,16 @@ paths:
           required: true
           schema:
             type: string
+            minLength: 1
+            maxLength: 35
         - name: iuv
           in: path
           description: Identificativo univoco di versamento
           required: true
           schema:
             type: string
+            minLength: 1
+            maxLength: 35
       responses:
         '201':
           description: Pendenza
@@ -66,12 +70,16 @@ paths:
           required: true
           schema:
             type: string
+            minLength: 1
+            maxLength: 35
         - name: idPendenza
           in: path
           description: Identificativo univoco della pendenza nel gestionale responsabile
           required: true
           schema:
             type: string
+            minLength: 1
+            maxLength: 35
       responses:
         '201':
           description: Pendenza
@@ -102,12 +110,16 @@ paths:
           required: true
           schema:
             type: string
+            minLength: 1
+            maxLength: 35
         - name: idTipoPendenza
           in: path
           description: Identificativo della tipologia di pendenza
           required: true
           schema:
             type: string
+            minLength: 1
+            maxLength: 35
       requestBody:
         description: Pendenza nel formato custom
         content:
@@ -142,27 +154,37 @@ paths:
           required: true
           schema:
             type: string
+            minLength: 1
+            maxLength: 35
         - name: iuv
           in: path
           description: Identificativo di versamento
           required: true
           schema:
             type: string
+            minLength: 1
+            maxLength: 35
         - in: query
           name: idSession
           description: Identificativo di sessione assegnato al pagamento da pagoPA
           schema:
             type: string
+            minLength: 1
+            maxLength: 35
         - in: query
           name: idSessionePortale
           description: Identificativo della sessione di pagamento assegnato dall'EC
           schema:
-            type: string     
+            type: string
+            minLength: 1
+            maxLength: 35    
         - in: query
           name: idCarrello
           description: Identificativo del carrello
           schema:
-            type: string     
+            type: string
+            minLength: 1
+            maxLength: 35    
       requestBody:
         description: Notifica di pagamento
         content:
@@ -193,18 +215,24 @@ paths:
           required: true
           schema:
             type: string
+            minLength: 1
+            maxLength: 35
         - name: iuv
           in: path
           description: Identificativo di versamento
           required: true
           schema:
             type: string
+            minLength: 1
+            maxLength: 35
         - name: ccp
           in: path
           description: CCP
           required: true
           schema:
             type: string
+            minLength: 1
+            maxLength: 35
       requestBody:
         description: Notifica annullamento di pagamento
         content:
