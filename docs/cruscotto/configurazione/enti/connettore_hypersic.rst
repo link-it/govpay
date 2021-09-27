@@ -1,4 +1,4 @@
-.. govpay_configurazione_connettori_hypersic:
+.. _govpay_configurazione_connettori_hypersic:
 
 Connettore per l'esportazione dei pagamenti verso HyperSIC di APKappa
 ---------------------------------------------------------------------
@@ -27,14 +27,9 @@ l'applicativo di riconciliazione HyperSIC di APKappa.
   
 Il batch di esportazione viene eseguito quotidianamente alle 3 di mattina.
 
-Il naming segue le specifiche del servizio HyperSIC che prevede i seguenti parametri separati da “_”:
-- “RENDICONTAZIONE”, stringa fissa per identificativo tipologia di flusso;
-- “AV20”, stringa per identificativo versione del flusso;
-- “Codice Fiscale Ente Creditore”, nel formato numerico di 11 caratteri;
-- “Data Creazione Flusso”, nel formato AAAAMMGG;
-- “Progressivo Flusso”, per la data di creazione flusso nel formato NNN.
-
-Le riscossioni non rendicontate per piu' di 5 gg vengono incluse in un csv separato avente la medesima sintassi, ma con i campi relativi al flusso di rendicontazione vuoti e con progressivo flusso = 999.  
+Il servizio di esportazione di HyperSIC non contempla i pagamenti non rendicontati (riconciliazione singola), pertanto 
+le riscossioni non rendicontate per piu' di 5 gg vengono incluse in un csv separato avente la medesima sintassi, 
+ma con i campi relativi al flusso di rendicontazione vuoti e con progressivo flusso = 999.  
 
 Versione 2.3
 ~~~~~~~~~~~~
@@ -78,7 +73,8 @@ Il tracciato è conforme alle specifiche :download:`Tracciato Standard Acquisizi
    "Altre quote contabili","Come nel caso della prima, fino alle 10 consentite"
    
 Alcune note sul processo di produzione del CSV:
-- Il CSV APKappa non contempla il carattere di escape, pertanto eventuali punti e virgola vegono rimossi dai valori.
-- I vincoli di lunghezza dei campi del CSV sono più stringenti di quelli previsti da pagoPA, pertanto i valori inseriti vengono troncati ove necessario.
+
+* Il CSV APKappa non contempla il carattere di escape, pertanto eventuali punti e virgola vegono rimossi dai valori.
+* I vincoli di lunghezza dei campi del CSV sono più stringenti di quelli previsti da pagoPA, pertanto i valori inseriti vengono troncati ove necessario.
 
 Nell'eventualità che vengano applicate le policy individuate nelle note, nel log di GovPay viene emesso un log di warning che ne da evidenza.
