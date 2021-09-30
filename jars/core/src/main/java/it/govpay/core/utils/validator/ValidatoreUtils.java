@@ -21,6 +21,13 @@ public class ValidatoreUtils {
 		vf.getValidator(nomeCampo, codiceConvenzione).minLength(5).maxLength(35);
 	}
 	
+	public static void validaStringa35(ValidatorFactory vf, String nomeCampo, String valore, boolean mandatorio) throws ValidationException {
+		if(mandatorio) 
+			vf.getValidator(nomeCampo, valore).notNull().minLength(1).maxLength(35);
+		else
+			vf.getValidator(nomeCampo, valore).minLength(1).maxLength(35);
+	}
+	
 	public static void validaCF(ValidatorFactory vf, String nomeCampo, String codiceFiscale) throws ValidationException {
 		validaField(vf, nomeCampo, codiceFiscale, CostantiValidazione.PATTERN_CF, null, null, true);
 	}
