@@ -43,7 +43,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 # Configurazione del simulatore
 
-* set dominioNdpSymPut.versione = 3
+* set dominioNdpSymPut.versione = 2
 
 * call read('classpath:utils/nodo-config-dominio-put.feature')
 
