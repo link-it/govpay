@@ -63,7 +63,7 @@ public class RppController extends BaseController {
 		super(nomeServizio,log);
 	}
 
-	public Response rppGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi,  String dataDa, String dataA, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String idDebitore, String esito, String idPagamento) {
+	public Response rppGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String dataRptDa, String dataRptA, String dataRtDa, String dataRtA, String idDominio, String iuv, String ccp, String idA2A, String idPendenza, String idDebitore, String esito, String idPagamento, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "rppGET";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -145,15 +145,27 @@ public class RppController extends BaseController {
 			if(ordinamento != null)
 				listaRptDTO.setOrderBy(ordinamento);
 			
-			if(dataDa!=null) {
-				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
+			// dat RPT
+			if(dataRptDa!=null) {
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRptDa, "dataRptDa");
 				listaRptDTO.setDataDa(dataDaDate);
+			}
+			
+			if(dataRptA!=null) {
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRptA, "dataRptA");
+				listaRptDTO.setDataA(dataADate);
+			}
+			
+			// data RT
+			if(dataRtDa!=null) {
+				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRtDa, "dataRtDa");
+				listaRptDTO.setDataRtDa(dataDaDate);
 			}
 				
 			
-			if(dataA!=null) {
-				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
-				listaRptDTO.setDataA(dataADate);
+			if(dataRtA!=null) {
+				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRtA, "dataRtA");
+				listaRptDTO.setDataRtA(dataADate);
 			}
 			
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaRptDTO.getUser());
@@ -167,6 +179,9 @@ public class RppController extends BaseController {
 			}
 			
 			listaRptDTO.setIdDebitore(idDebitore);
+			
+			listaRptDTO.setEseguiCount(metadatiPaginazione);
+			listaRptDTO.setEseguiCountConLimit(maxRisultati);
 			
 			RptDAO rptDAO = new RptDAO();
 

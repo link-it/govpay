@@ -17,6 +17,8 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
+import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.orm.IdTracciato;
 
 public class CreaStampeTracciatoThread implements Runnable {
@@ -25,17 +27,22 @@ public class CreaStampeTracciatoThread implements Runnable {
 	private List<PrintAvvisoDTOResponse> stampe = null;
 	
 	private boolean completed = false;
+	private boolean commit = false;
 	private static Logger log = LoggerWrapperFactory.getLogger(CreaStampeTracciatoThread.class);
 	@SuppressWarnings("unused")
 	private IdTracciato idTracciato = null;
 	private IContext ctx = null;
 	private String nomeThread = "";
-	
-	public CreaStampeTracciatoThread(List<Versamento> versamenti, IdTracciato idTracciato, String id, IContext ctx) {
+	private int stampeOk = 0;
+	private int stampeKo = 0;
+	private TracciatiPendenzeManager manager = null;
+		
+	public CreaStampeTracciatoThread(List<Versamento> versamenti, IdTracciato idTracciato, String id, TracciatiPendenzeManager manager, IContext ctx) {
 		this.versamenti = versamenti;
 		this.idTracciato = idTracciato;
 		this.ctx = ctx;
 		this.nomeThread = id;
+		this.manager = manager;
 	}
 
 	@Override
@@ -51,37 +58,44 @@ public class CreaStampeTracciatoThread implements Runnable {
 			for (Versamento versamento : versamenti) {
 					
 				PrintAvvisoDTOResponse printAvvisoDTOResponse =  null;
-				
-				if(versamento.getNumeroAvviso() != null) {
-					Documento documento = versamento.getDocumento(configWrapper);
-					if(documento != null) {
+				try {
+					if(versamento.getNumeroAvviso() != null) {
+						Documento documento = versamento.getDocumento(configWrapper);
+						if(documento != null) {
+							
+							PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
+							printDocumentoDTO.setDocumento(documento);
+							printDocumentoDTO.setUpdate(true);
+							printDocumentoDTO.setSalvaSuDB(false);
+							printDocumentoDTO.setNumeriAvviso(this.manager.getListaNumeriAvviso());
+							printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printDocumentoDTO);
+							printAvvisoDTOResponse.setCodDocumento(documento.getCodDocumento());
+						} else {
+							PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
+							printAvvisoDTO.setUpdate(true);
+							printAvvisoDTO.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
+							printAvvisoDTO.setIuv(versamento.getIuvVersamento());
+							printAvvisoDTO.setVersamento(versamento);
+							printAvvisoDTO.setSalvaSuDB(false);
+							printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
+						}
 						
-						PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
-						printDocumentoDTO.setDocumento(documento);
-						printDocumentoDTO.setUpdate(true);
-						printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printDocumentoDTO);
-						printAvvisoDTOResponse.setCodDocumento(documento.getCodDocumento());
+						printAvvisoDTOResponse.setCodDominio(versamento.getDominio(configWrapper).getCodDominio()); 
+						printAvvisoDTOResponse.setNumeroAvviso(versamento.getNumeroAvviso());
+						this.stampe.add(printAvvisoDTOResponse);
 					} else {
-						PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
-						printAvvisoDTO.setUpdate(true);
-						printAvvisoDTO.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
-						printAvvisoDTO.setIuv(versamento.getIuvVersamento());
-						printAvvisoDTO.setVersamento(versamento); 
-						printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
+						log.debug("Pendenza [IDA2A: " + versamento.getApplicazione(configWrapper).getCodApplicazione()	
+								+" | IdPendenza: " + versamento.getCodVersamentoEnte() + "] non ha numero avviso, procedura di stampa non eseguita.");
 					}
-					
-					printAvvisoDTOResponse.setCodDominio(versamento.getDominio(configWrapper).getCodDominio()); 
-					printAvvisoDTOResponse.setNumeroAvviso(versamento.getNumeroAvviso());
-					this.stampe.add(printAvvisoDTOResponse);
-				} else {
-					log.debug("Pendenza [IDA2A: " + versamento.getApplicazione(configWrapper).getCodApplicazione()	
-							+" | IdPendenza: " + versamento.getCodVersamentoEnte() + "] non ha numero avviso, procedura di stampa non eseguita.");
+					stampeOk ++;
+				}catch(ServiceException e) {
+					log.error("Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
+					stampeKo ++;
+				} catch(UnprocessableEntityException e) {
+					log.error("Errore durante la creazione dell'avviso: " + e.getMessage());
+					stampeKo ++;
 				}
 			}
-			
-		}catch(ServiceException e) {
-			log.error("Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
-			
 		} finally {
 			this.completed = true;
 			log.debug("Stampe prodotte: " + this.stampe.size());
@@ -101,6 +115,20 @@ public class CreaStampeTracciatoThread implements Runnable {
 	public String getNomeThread() {
 		return nomeThread;
 	}
-	
-	
+
+	public int getStampeOk() {
+		return stampeOk;
+	}
+
+	public int getStampeKo() {
+		return stampeKo;
+	}
+
+	public boolean isCommit() {
+		return commit;
+	}
+
+	public void setCommit(boolean commit) {
+		this.commit = commit;
+	}
 }

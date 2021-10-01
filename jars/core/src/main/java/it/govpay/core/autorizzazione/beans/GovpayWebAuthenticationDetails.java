@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
@@ -61,8 +62,9 @@ public class GovpayWebAuthenticationDetails extends WebAuthenticationDetails {
 		Map<String, List<String>> headerValues = new HashMap<>();
 		for (String headerName : headersNames) {
 			Enumeration<String> headers = request.getHeaders(headerName);
-			log.debug("Header: ["+headerName+"] Valore ["+headers+"]");
-			headerValues.put(headerName, Collections.list(headers)); 
+			List<String> list = Collections.list(headers);
+			log.debug("Header: ["+headerName+"] Valore ["+StringUtils.join(list, ",")+"]");
+			headerValues.put(headerName, list); 
 		}
 		return headerValues;
 	}
@@ -90,9 +92,11 @@ public class GovpayWebAuthenticationDetails extends WebAuthenticationDetails {
 		Map<String, List<String>> headerValues = new HashMap<>();
 		// per ogni header previsto cerco l'header SPID corrispondente
 		for (String headerName : headersMap.keySet()) {
-			Enumeration<String> headers = request.getHeaders(headersMap.get(headerName));
-			log.debug("Header: ["+headersMap.get(headerName)+"] Valore ["+headers+"]");
-			headerValues.put(headerName, Collections.list(headers)); 
+			String nomeHeader = headersMap.get(headerName);
+			Enumeration<String> headers = request.getHeaders(nomeHeader);
+			List<String> list = Collections.list(headers);
+			log.debug("Proprieta': ["+headerName+"] Letta dall'header: ["+nomeHeader+"] contiene valore ["+StringUtils.join(list, ",")+"]");
+			headerValues.put(headerName, list); 
 		}
 		return headerValues;
 	}
@@ -103,8 +107,9 @@ public class GovpayWebAuthenticationDetails extends WebAuthenticationDetails {
 		HttpSession session = request.getSession(false);
 		if(session != null) {
 			for (String headerName : headersMap.keySet()) {
-				Object attribute = session.getAttribute(headersMap.get(headerName));
-				log.debug("Attributo: ["+headerName+"] Valore ["+attribute+"]");
+				String nomeHeader = headersMap.get(headerName);
+				Object attribute = session.getAttribute(nomeHeader);
+				log.debug("Proprieta': ["+headerName+"] Letta dall'attributo: ["+nomeHeader+"] contiene valore [" + attribute+"]");
 				
 				if(attribute != null) {
 					headerValues.put(headerName, attribute);

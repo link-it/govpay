@@ -37,10 +37,17 @@
           <p class="card-title-margin color-gray regular-24">Autenticazione SPID</p>
         </mat-card-header>
         <mat-card-content>
-          <link-login-card [action]="_SPIDInfo.ACTION_FORM_URL"
-                           [spid-test-url]="_SPIDInfo.TEST_PROVIDER"
+          <link-login-card [action]="_SPIDInfo.ACTION_FORM_URL" [label]="'Accedi con SPID'" [providers]="_SPIDInfo.PROVIDERS"
                            [response-target]="_SPIDInfo.SERVICE_TARGET">
           </link-login-card>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="mat-elevation-card mb-3" *ngIf="!hasAuthentication && _IAMInfo.ENABLED">
+        <mat-card-header>
+          <p class="card-title-margin color-gray regular-24">Autenticazione IAM</p>
+        </mat-card-header>
+        <mat-card-content>
+          <link-iam-login-card [url]="_IAMInfo.LOGIN_URL" [label]="'Accedi con IAM'"></link-iam-login-card>
         </mat-card-content>
       </mat-card>
       <mat-card class="mat-elevation-card mb-3" *ngIf="_GovPayInfo.DOCUMENTS.ENABLED">

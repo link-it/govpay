@@ -276,8 +276,30 @@ public class PagamentiBD extends BasicBD {
 			}
 		}
 	}
-
+	
 	public long count(PagamentoFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(PagamentoFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getPagamentoService());
+			}
+			
+			return this.getPagamentoService().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(PagamentoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());

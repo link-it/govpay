@@ -95,7 +95,7 @@ export class FileSelectorViewComponent implements OnInit, OnDestroy {
       reader.onload = function() {
         try {
           if(typeof reader.result === 'string') {
-            const encoded = btoa(reader.result.toString());
+            const encoded = btoa(reader.result.toString().replace(/\n*$/, ''));
             this._name = _name;
             this._selected = true;
             this._userSelected = true;

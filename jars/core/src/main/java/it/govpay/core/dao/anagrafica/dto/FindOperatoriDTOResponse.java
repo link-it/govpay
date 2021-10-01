@@ -25,7 +25,7 @@ import it.govpay.bd.model.Operatore;
 
 public class FindOperatoriDTOResponse extends BasicFindResponseDTO<Operatore> {
 
-	public FindOperatoriDTOResponse(long totalResults, List<Operatore> operatori) {
+	public FindOperatoriDTOResponse(Long totalResults, List<Operatore> operatori) {
 		super(totalResults, operatori);
 	}
 

@@ -87,7 +87,7 @@ public class DominiController extends BaseController {
 	}
 
 
-	public Response findDomini(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String campi, Boolean abilitato, String ordinamento, String idStazione, Boolean associati, Boolean form) {
+	public Response findDomini(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String campi, Boolean abilitato, String ordinamento, String idStazione, Boolean associati, Boolean form, String idDominio, String ragioneSociale, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findDomini";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -126,6 +126,11 @@ public class DominiController extends BaseController {
 				listaDominiDTO.setIdDomini(idDominiAutorizzati);
 			}
 			listaDominiDTO.setFormBackoffice(form);
+			listaDominiDTO.setCodDominio(idDominio);
+			listaDominiDTO.setRagioneSociale(ragioneSociale);
+			
+			listaDominiDTO.setEseguiCount(metadatiPaginazione);
+			listaDominiDTO.setEseguiCountConLimit(maxRisultati);
 
 			// INIT DAO
 
@@ -158,7 +163,7 @@ public class DominiController extends BaseController {
 
 
 
-	public Response findContiAccredito(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String iban) {
+	public Response findContiAccredito(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String iban, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findContiAccredito";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -191,6 +196,9 @@ public class DominiController extends BaseController {
 			listaDominiIbanDTO.setOrderBy(ordinamento);
 			listaDominiIbanDTO.setAbilitato(abilitato);
 			listaDominiIbanDTO.setIban(iban);
+			
+			listaDominiIbanDTO.setEseguiCount(metadatiPaginazione);
+			listaDominiIbanDTO.setEseguiCountConLimit(maxRisultati);
 
 			// INIT DAO
 
@@ -314,7 +322,7 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response findEntrate(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String descrizione) {
+	public Response findEntrate(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String descrizione, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findEntrate";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -347,6 +355,9 @@ public class DominiController extends BaseController {
 			listaDominiEntrateDTO.setOrderBy(ordinamento);
 			listaDominiEntrateDTO.setAbilitato(abilitato);
 			listaDominiEntrateDTO.setDescrizione(descrizione);
+			
+			listaDominiEntrateDTO.setEseguiCount(metadatiPaginazione);
+			listaDominiEntrateDTO.setEseguiCountConLimit(maxRisultati);
 
 			// INIT DAO
 
@@ -558,7 +569,7 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response findTipiPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo, Boolean associati, Boolean form, Boolean trasformazione, String descrizione) {
+	public Response findTipiPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo, Boolean associati, Boolean form, Boolean trasformazione, String descrizione, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findTipiPendenza";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -597,6 +608,9 @@ public class DominiController extends BaseController {
 			findTipiPendenzaDominioDTO.setFormBackoffice(form); 
 			findTipiPendenzaDominioDTO.setTrasformazione(trasformazione);
 			findTipiPendenzaDominioDTO.setDescrizione(descrizione);
+			
+			findTipiPendenzaDominioDTO.setEseguiCount(metadatiPaginazione);
+			findTipiPendenzaDominioDTO.setEseguiCountConLimit(maxRisultati);
 			
 			if(associati != null && associati) {
 				List<Long> idTipiVersamentoAutorizzati = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
@@ -748,7 +762,7 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response findUnitaOperative(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, Boolean associati, String ragioneSociale) {    	
+	public Response findUnitaOperative(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, Boolean associati, String ragioneSociale, Boolean metadatiPaginazione, Boolean maxRisultati) {    	
 		String methodName = "findUnitaOperative";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -793,6 +807,9 @@ public class DominiController extends BaseController {
 				listaDominiUoDTO.setAssociati(associati);
 			}
 			listaDominiUoDTO.setRagioneSociale(ragioneSociale);
+			
+			listaDominiUoDTO.setEseguiCount(metadatiPaginazione);
+			listaDominiUoDTO.setEseguiCountConLimit(maxRisultati);
 
 			// INIT DAO
 

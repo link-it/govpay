@@ -69,6 +69,8 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.SeveritaProperties;
 import it.govpay.core.utils.TracciatiConverter;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
@@ -405,6 +407,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				pagamentoPortale.setStato(STATO.FALLITO);
 				pagamentoPortale.setDescrizioneStato(e.getMessage());
 				pagamentoPortale.setAck(false);
+				this.impostaSeveritaErrore(pagamentoPortale, e);
 				pagamentiPortaleBD.updatePagamento(pagamentoPortale, true, false);
 
 
@@ -425,6 +428,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				pagamentoPortale.setStato(STATO.FALLITO);
 				pagamentoPortale.setDescrizioneStato(e.getMessage());
 				pagamentoPortale.setAck(false);
+				this.impostaSeveritaErrore(pagamentoPortale, e);
 				pagamentiPortaleBD.updatePagamento(pagamentoPortale, true, false);
 				throw e;
 			}
@@ -458,6 +462,15 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(pagamentiPortaleBD != null)
 				pagamentiPortaleBD.closeConnection();
 		}
+	}
+
+	private void impostaSeveritaErrore(PagamentoPortale pagamentoPortale, Exception e) {
+		if(e instanceof GovPayException) {
+			pagamentoPortale.setSeverita(SeveritaProperties.getInstance().getSeverita(((GovPayException) e).getCodEsito()));
+		} else {
+			pagamentoPortale.setSeverita(SeveritaProperties.getInstance().getSeverita(new GovPayException(e).getCodEsito()));
+		}
+		
 	}
 
 	public LeggiPagamentoPortaleDTOResponse leggiPagamentoPortale(LeggiPagamentoPortaleDTO leggiPagamentoPortaleDTO) throws ServiceException,PagamentoPortaleNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
@@ -503,7 +516,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				listaPendenzaDTO.setIdPagamento(pagamentoPortale.getIdSessione());
 				listaPendenzaDTO.setIdDomini(leggiPagamentoPortaleDTO.getIdDomini());
 				listaPendenzaDTO.setIdTipiVersamento(leggiPagamentoPortaleDTO.getIdTipiVersamento());
-				VersamentiBD versamentiBD = new VersamentiBD(pagamentiPortaleBD);
+				it.govpay.bd.viste.VersamentiBD versamentiBD = new it.govpay.bd.viste.VersamentiBD(pagamentiPortaleBD);
 				versamentiBD.setAtomica(false);
 				ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, versamentiBD);
 				leggiPagamentoPortaleDTOResponse.setListaPendenze(listaPendenze.getResults());
@@ -547,21 +560,10 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			filter.setIdDomini(listaPagamentiPortaleDTO.getIdDomini());
 			filter.setIdTipiVersamento(listaPagamentiPortaleDTO.getIdTipiVersamento());		
+			filter.setEseguiCountConLimit(listaPagamentiPortaleDTO.isEseguiCountConLimit());
 			
 			if(listaPagamentiPortaleDTO.getUnitaOperative() != null) {
-				List<Long> idDomini = new ArrayList<>();
-				List<Long> idUO = new ArrayList<>();
-				for (IdUnitaOperativa uo : listaPagamentiPortaleDTO.getUnitaOperative()) {
-					if(uo.getIdDominio() != null && !idDomini.contains(uo.getIdDominio())) {
-						idDomini.add(uo.getIdDominio());
-					}
-					
-					if(uo.getIdUnita() != null) {
-						idUO.add(uo.getIdUnita());
-					}
-				}
-				filter.setIdDomini(idDomini);
-				filter.setIdUo(idUO);
+				filter.setIdUo(listaPagamentiPortaleDTO.getUnitaOperative());
 			}
 			
 			filter.setOffset(listaPagamentiPortaleDTO.getOffset());
@@ -580,6 +582,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				Applicazione applicazione = AnagraficaManager.getApplicazione(configWrapper, listaPagamentiPortaleDTO.getCodApplicazione());
 				filter.setIdApplicazione(applicazione.getId());
 			}
+			filter.setSeveritaDa(listaPagamentiPortaleDTO.getSeveritaDa());
+			filter.setSeveritaA(listaPagamentiPortaleDTO.getSeveritaA());
 
 			long count = pagamentiPortaleBD.count(filter);
 			return new ListaPagamentiPortaleDTOResponse(count, new ArrayList<LeggiPagamentoPortaleDTOResponse>());
@@ -589,7 +593,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 		}
 	}
 	
-	public ListaPagamentiPortaleDTOResponse listaPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{ 
+	public ListaPagamentiPortaleDTOResponse listaPagamentiPortale(ListaPagamentiPortaleDTO listaPagamentiPortaleDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException, ValidationException{ 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		PagamentiPortaleBD pagamentiPortaleBD = null;
 
@@ -599,21 +603,10 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 			filter.setIdDomini(listaPagamentiPortaleDTO.getIdDomini());
 			filter.setIdTipiVersamento(listaPagamentiPortaleDTO.getIdTipiVersamento());
+			filter.setEseguiCountConLimit(listaPagamentiPortaleDTO.isEseguiCountConLimit());
 			
 			if(listaPagamentiPortaleDTO.getUnitaOperative() != null) {
-				List<Long> idDomini = new ArrayList<>();
-				List<Long> idUO = new ArrayList<>();
-				for (IdUnitaOperativa uo : listaPagamentiPortaleDTO.getUnitaOperative()) {
-					if(uo.getIdDominio() != null && !idDomini.contains(uo.getIdDominio())) {
-						idDomini.add(uo.getIdDominio());
-					}
-					
-					if(uo.getIdUnita() != null) {
-						idUO.add(uo.getIdUnita());
-					}
-				}
-				filter.setIdDomini(idDomini);
-				filter.setIdUo(idUO);
+				filter.setIdUo(listaPagamentiPortaleDTO.getUnitaOperative());
 			}
 			
 			filter.setOffset(listaPagamentiPortaleDTO.getOffset());
@@ -629,16 +622,32 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			filter.setFilterSortList(listaPagamentiPortaleDTO.getFieldSortList());
 			filter.setCfCittadino(listaPagamentiPortaleDTO.getCfCittadino()); 
 			filter.setIdDebitore(listaPagamentiPortaleDTO.getIdDebitore());
-
+			if(listaPagamentiPortaleDTO.getIuv() != null) {
+				if(listaPagamentiPortaleDTO.getIuv().length() == 18) {
+					filter.setIuv(IuvUtils.toIuv(listaPagamentiPortaleDTO.getIuv()));
+				} else {
+					filter.setIuv(listaPagamentiPortaleDTO.getIuv());
+				}
+			}
+			filter.setCodDominio(listaPagamentiPortaleDTO.getIdDominio() );
+			filter.setCodApplicazione(listaPagamentiPortaleDTO.getIdA2A());
+			filter.setCodVersamento(listaPagamentiPortaleDTO.getIdPendenza());
 			
 			if(StringUtils.isNotBlank(listaPagamentiPortaleDTO.getCodApplicazione())) {
 				Applicazione applicazione = AnagraficaManager.getApplicazione(configWrapper, listaPagamentiPortaleDTO.getCodApplicazione());
 				filter.setIdApplicazione(applicazione.getId());
 			}
 			
-			long count = pagamentiPortaleBD.count(filter);
+			filter.setSeveritaDa(listaPagamentiPortaleDTO.getSeveritaDa());
+			filter.setSeveritaA(listaPagamentiPortaleDTO.getSeveritaA());
+			
+			Long count = null;
+			
+			if(listaPagamentiPortaleDTO.isEseguiCount()) {
+				 count = pagamentiPortaleBD.count(filter);
+			}
 
-			if(count > 0) {
+			if(listaPagamentiPortaleDTO.isEseguiFindAll()) {
 				List<LeggiPagamentoPortaleDTOResponse> lst = new ArrayList<>();
 				List<PagamentoPortale> findAll = pagamentiPortaleBD.findAll(filter);
 
@@ -688,7 +697,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			listaPendenzaDTO.setIdPagamento(patchDTO.getIdSessione());
 			listaPendenzaDTO.setIdDomini(patchDTO.getIdDomini());
 			listaPendenzaDTO.setIdTipiVersamento(patchDTO.getIdTipiVersamento());
-			VersamentiBD versamentiBD = new VersamentiBD(pagamentiPortaleBD);
+			it.govpay.bd.viste.VersamentiBD versamentiBD = new it.govpay.bd.viste.VersamentiBD(pagamentiPortaleBD);
 			versamentiBD.setAtomica(false);
 			ListaPendenzeDTOResponse listaPendenze = pendenzeDao.listaPendenze(listaPendenzaDTO, versamentiBD);
 			leggiPagamentoPortaleDTOResponse.setListaPendenze(listaPendenze.getResults());

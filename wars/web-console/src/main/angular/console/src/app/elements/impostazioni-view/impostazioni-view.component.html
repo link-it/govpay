@@ -270,7 +270,8 @@
                   <div class="w-100 px-4 pt-4 pb-0">
                     <form class="w-100" [formGroup]="serverForm" novalidate>
                       <mat-slide-toggle class="mb-3" color="accent" formControlName="serverAbilitato_ctrl"
-                                        (change)="_toggleValidators($event, 'serverForm', { ctrls: ['serverHost_ctrl','serverPorta_ctrl','serverUsername_ctrl','serverPassword_ctrl','serverMittente_ctrl','serverCTimeout_ctrl','serverRTimeout_ctrl'] })">
+                                        (change)="_toggleValidators($event, 'serverForm', { ctrls: ['serverHost_ctrl','serverPorta_ctrl','serverUsername_ctrl',
+                                        'serverPassword_ctrl','serverMittente_ctrl','serverCTimeout_ctrl','serverRTimeout_ctrl'] })">
                         {{ Voce.ABILITATO }}
                       </mat-slide-toggle>
                       <mat-form-field class="w-100" color="accent">
@@ -295,6 +296,64 @@
                       <mat-form-field class="w-100" color="accent">
                         <input matInput placeholder="Read timeout" formControlName="serverRTimeout_ctrl" [required]="!!_serverAbilitato.value">
                         <mat-hint>Durata in millisecondi</mat-hint>
+                      </mat-form-field>
+                      <div class="row mb-2">
+                        <mat-slide-toggle class="mt-3 col-12 col-sm-6" color="accent" formControlName="sslConfig_ctrl"
+                                          (change)="_toggleValidators($event, 'serverForm', { ctrls: _sslControllers })">
+                          {{ Voce.ABILITA_CONFIGURAZIONE_SSL }}
+                        </mat-slide-toggle>
+                        <mat-slide-toggle class="mt-3 col-12 col-sm-6" color="accent" formControlName="startTls_ctrl">
+                          {{ Voce.ABILITA_PROTOCOLLO_TLS }}
+                        </mat-slide-toggle>
+                      </div>
+                      <p class="py-2">{{ Voce.CONFIGURAZIONE_SSL }}</p>
+                      <mat-form-field class="w-100" color="accent">
+                        <mat-select [placeholder]="Voce.TIPO" formControlName="cryptoType_ctrl"
+                                    (selectionChange)="_cryptoTypeChangeSelection($event)" [required]="_sslConfigAbilitato.value">
+                          <mat-option value="">Seleziona...</mat-option>
+                          <mat-option *ngFor="let item of Util.CODIFICHE_SSL" [value]="item.value">{{item.label}}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <mat-slide-toggle class="mb-3" color="accent" formControlName="hostnameVerifier_ctrl">{{ Voce.ABILITA_VERIFICATORE_HOSTNAME }}</mat-slide-toggle>
+                      <p class="color-gray">{{ Voce.AUTENTICAZIONE_SERVER }}</p>
+                      <mat-form-field class="w-100" color="accent">
+                        <mat-select [placeholder]="Voce.TIPO" formControlName="tsType_ctrl" [required]="hasTsValue"
+                                    (selectionChange)="_ksTsValidators('hasTsValue', _tsControllers)">
+                          <mat-option value="">Seleziona...</mat-option>
+                          <mat-option *ngFor="let item of Util.TIPI_KEYSTORE_TRUSTSTORE" [value]="item.value">{{item.label}}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <mat-form-field class="w-100" color="accent">
+                        <input matInput [placeholder]="Voce.PATH" formControlName="truststoreLocation_ctrl"
+                               (input)="_ksTsValidators('hasTsValue', _tsControllers)" [required]="hasTsValue">
+                      </mat-form-field>
+                      <mat-form-field class="w-100" color="accent">
+                        <input matInput [placeholder]="Voce.PASSWORD" formControlName="truststorePassword_ctrl"
+                               (input)="_ksTsValidators('hasTsValue', _tsControllers)" [required]="hasTsValue">
+                      </mat-form-field>
+                      <mat-form-field class="w-100" color="accent">
+                        <input matInput [placeholder]="Voce.ALGORITHM" formControlName="truststoreAlgorithm_ctrl"
+                               (input)="_ksTsValidators('hasTsValue', _tsControllers)" [required]="hasTsValue">
+                      </mat-form-field>
+                      <p class="color-gray">{{ Voce.AUTENTICAZIONE_CLIENT }}</p>
+                      <mat-form-field class="w-100" color="accent">
+                        <mat-select [placeholder]="Voce.TIPO" formControlName="ksType_ctrl" [required]="hasKsValue"
+                                    (selectionChange)="_ksTsValidators('hasKsValue', _ksControllers)">
+                          <mat-option value="">Seleziona...</mat-option>
+                          <mat-option *ngFor="let item of Util.TIPI_KEYSTORE_TRUSTSTORE" [value]="item.value">{{item.label}}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <mat-form-field class="w-100" color="accent">
+                        <input matInput [placeholder]="Voce.PATH" formControlName="keystoreLocation_ctrl"
+                               (input)="_ksTsValidators('hasKsValue', _ksControllers)" [required]="hasKsValue">
+                      </mat-form-field>
+                      <mat-form-field class="w-100" color="accent">
+                        <input matInput [placeholder]="Voce.PASSWORD" formControlName="keystorePassword_ctrl"
+                               (input)="_ksTsValidators('hasKsValue', _ksControllers)" [required]="hasKsValue">
+                      </mat-form-field>
+                      <mat-form-field class="w-100" color="accent">
+                        <input matInput [placeholder]="Voce.ALGORITHM" formControlName="keystoreAlgorithm_ctrl"
+                               (input)="_ksTsValidators('hasKsValue', _ksControllers)" [required]="hasKsValue">
                       </mat-form-field>
                     </form>
                   </div>

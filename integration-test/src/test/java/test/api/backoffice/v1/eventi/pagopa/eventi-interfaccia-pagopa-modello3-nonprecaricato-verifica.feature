@@ -101,14 +101,14 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciRTservice",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#ignore"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#ignore"
@@ -151,14 +151,14 @@ And match response.risultati[1] ==
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "#notnull",
 	"parametriRichiesta": {
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "http://localhost:8080/govpay-ndpsym/pagopa/PagamentiTelematiciRPTservice",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#ignore"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#ignore"
@@ -204,14 +204,14 @@ And match response.risultati[2] ==
 	"datiPagoPA" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#ignore"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#ignore"
@@ -257,14 +257,14 @@ And match response.risultati[3] ==
 	"datiPagoPA" : "#notnull",
 	"parametriRichiesta": {
 	  "principal": "#(ndpsym_user)",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#ignore"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#ignore"
@@ -314,7 +314,7 @@ And headers backofficeBasicAutenticationHeader
 And request pendenzaPut
 When method put
 Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}' }
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', UUID: '#notnull' }
 
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
@@ -410,14 +410,14 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciRTservice",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#ignore"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#ignore"
@@ -460,14 +460,14 @@ And match response.risultati[1] ==
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "#notnull",
 	"parametriRichiesta": {
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "http://localhost:8080/govpay-ndpsym/pagopa/PagamentiTelematiciRPTservice",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#ignore"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#ignore"
@@ -513,14 +513,14 @@ And match response.risultati[2] ==
 	"datiPagoPA" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
-		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#ignore"
 	},
 	"parametriRisposta": {
-		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d\\+\\d\\d\\d\\d",
+		"dataOraRisposta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"status": 200,
 		"headers": "#array",
 		"payload": "#ignore"

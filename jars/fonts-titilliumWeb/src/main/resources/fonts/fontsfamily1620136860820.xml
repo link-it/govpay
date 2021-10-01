@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fontFamilies>
+
+   <fontFamily name="TitilliumWeb">
+       <normal><![CDATA[fonts/TitilliumWeb-Regular.ttf]]></normal>
+       <bold><![CDATA[fonts/TitilliumWeb-SemiBold.ttf]]></bold>
+       <italic><![CDATA[fonts/TitilliumWeb-Italic.ttf]]></italic>
+       <boldItalic><![CDATA[fonts/TitilliumWeb-SemiBoldItalic.ttf]]></boldItalic>
+       <pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>
+       <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+   </fontFamily>
+
+
+   <fontFamily name="TitilliumWeb-Black">
+       <normal><![CDATA[fonts/TitilliumWeb-Black.ttf]]></normal>
+       <pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>
+       <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+   </fontFamily>
+
+
+   <fontFamily name="TitilliumWeb-Bold">
+       <normal><![CDATA[fonts/TitilliumWeb-Bold.ttf]]></normal>
+       <pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>
+       <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+   </fontFamily>
+
+
+</fontFamilies>

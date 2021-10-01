@@ -100,6 +100,7 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().XML,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().RAGIONE_SOCIALE_PSP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().RAGIONE_SOCIALE_DOMINIO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().OBSOLETO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_incasso","?");
 
 		// Insert fr
@@ -120,6 +121,7 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getXml(),FR.model().XML.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getRagioneSocialePsp(),FR.model().RAGIONE_SOCIALE_PSP.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getRagioneSocialeDominio(),FR.model().RAGIONE_SOCIALE_DOMINIO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getObsoleto(),FR.model().OBSOLETO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_incasso,Long.class)
 		);
 		fr.setId(id);
@@ -221,6 +223,8 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		lstObjects_fr.add(new JDBCObject(fr.getRagioneSocialePsp(), FR.model().RAGIONE_SOCIALE_PSP.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().RAGIONE_SOCIALE_DOMINIO,false), "?");
 		lstObjects_fr.add(new JDBCObject(fr.getRagioneSocialeDominio(), FR.model().RAGIONE_SOCIALE_DOMINIO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().OBSOLETO,false), "?");
+		lstObjects_fr.add(new JDBCObject(fr.getObsoleto(), FR.model().OBSOLETO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_incasso","?");
 		}

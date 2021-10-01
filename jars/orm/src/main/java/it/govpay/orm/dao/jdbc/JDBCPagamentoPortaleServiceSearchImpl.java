@@ -183,6 +183,7 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 			fields.add(PagamentoPortale.model().PRINCIPAL);
 			fields.add(PagamentoPortale.model().TIPO_UTENZA);
 			fields.add(PagamentoPortale.model().SRC_VERSANTE_IDENTIFICATIVO);
+			fields.add(PagamentoPortale.model().SEVERITA);
 
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getPagamentoPortaleFieldConverter().toTable(PagamentoPortale.model())));
 			
@@ -196,13 +197,7 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 				
 				if(idApplicazioneObject instanceof Long) {
 					Long idApplicazione = (Long) idApplicazioneObject;
-					
-					it.govpay.orm.IdApplicazione id_pagamentoPortale_applicazione = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_pagamentoPortale_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idApplicazione, false);
-					}else{
-						id_pagamentoPortale_applicazione = new it.govpay.orm.IdApplicazione();
-					}
+					it.govpay.orm.IdApplicazione id_pagamentoPortale_applicazione = new it.govpay.orm.IdApplicazione();
 					id_pagamentoPortale_applicazione.setId(idApplicazione);
 					pagamentoPortale.setIdApplicazione(id_pagamentoPortale_applicazione);
 				}

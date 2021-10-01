@@ -11,7 +11,7 @@ public class FlussiRendicontazione extends Lista<FlussoRendicontazioneIndex> {
 		super();
 	}
 	
-	public FlussiRendicontazione(List<FlussoRendicontazioneIndex> flussiRendicontazione, URI requestUri, long count, long pagina, long limit) {
+	public FlussiRendicontazione(List<FlussoRendicontazioneIndex> flussiRendicontazione, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(flussiRendicontazione, requestUri, count, pagina, limit);
 	}
 	

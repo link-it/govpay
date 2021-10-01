@@ -1,6 +1,7 @@
 package it.govpay.core.business.model;
 
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.beans.tracciati.LinguaSecondaria;
 
 public class PrintAvvisoVersamentoDTO {
 	
@@ -8,6 +9,8 @@ public class PrintAvvisoVersamentoDTO {
 	private String codDominio;
 	private String iuv;
 	private boolean update;
+	private boolean salvaSuDB = true;
+	private LinguaSecondaria linguaSecondaria = null;
 
 	public Versamento getVersamento() {
 		return versamento;
@@ -33,6 +36,16 @@ public class PrintAvvisoVersamentoDTO {
 	public void setUpdate(boolean update) {
 		this.update = update;
 	}
-
-	
+	public boolean isSalvaSuDB() {
+		return salvaSuDB;
+	}
+	public void setSalvaSuDB(boolean salvaSuDB) {
+		this.salvaSuDB = salvaSuDB;
+	}
+	public LinguaSecondaria getLinguaSecondaria() {
+		return linguaSecondaria;
+	}
+	public void setLinguaSecondaria(LinguaSecondaria linguaSecondaria) {
+		this.linguaSecondaria = linguaSecondaria;
+	}
 }

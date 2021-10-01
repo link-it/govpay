@@ -77,6 +77,7 @@ public class GovpayConfig {
 	private int dimensionePoolThreadRPT;
 	private int dimensionePoolThreadCaricamentoTracciati;
 	private int dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
+	private int dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
 	private String ksLocation, ksPassword, ksAlias;
 	private String mLogClass, mLogDS;
 	private Severity mLogLevel;
@@ -133,6 +134,10 @@ public class GovpayConfig {
 	
 	private Integer dimensioneMassimaListaRisultati;
 	
+	private boolean batchCaricamentoTracciatiNotificaPagamenti;
+	
+	private boolean ricercaRiconciliazioniIdFlussoCaseInsensitive;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -141,6 +146,7 @@ public class GovpayConfig {
 		this.dimensionePoolThreadCaricamentoTracciati = 10;
 		this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = 10;
 		this.dimensionePoolThreadRPT = 10;
+		this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
 		this.log4j2Config = null;
 		this.ksAlias = null;
 		this.ksLocation = null;
@@ -191,6 +197,11 @@ public class GovpayConfig {
 		this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = 100;
 		
 		this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
+		
+		this.batchCaricamentoTracciatiNotificaPagamenti = false;
+		this.ricercaRiconciliazioniIdFlussoCaseInsensitive = false;
+		
+		this.aggiornamentoValiditaMandatorio = false;
 		
 		try {
 
@@ -323,6 +334,20 @@ public class GovpayConfig {
 			} catch (Exception e) {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
 				this.dimensionePoolThreadCaricamentoTracciati = 10;
+			}
+			
+			try {
+				String dimensionePoolProperty = getProperty("it.govpay.thread.pool.spedizioneTracciatiNotificaPagamenti", this.props, false, log);
+				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
+					try {
+						this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = Integer.parseInt(dimensionePoolProperty.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.thread.pool.spedizioneTracciatiNotificaPagamenti\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
+				this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
 			}
 
 
@@ -541,7 +566,7 @@ public class GovpayConfig {
 			
 			String numeroVersamentiPerThreadString = getProperty("it.govpay.batch.caricamentoTracciati.numeroVersamentiPerThread", this.props, false, log);
 			try{
-				this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = Integer.parseInt(numeroVersamentiPerThreadString) * 1000;
+				this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = Integer.parseInt(numeroVersamentiPerThreadString);
 			} catch(Throwable t) {
 				log.info("Proprieta \"it.govpay.batch.caricamentoTracciati.numeroVersamentiPerThread\" impostata com valore di default 100");
 				this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = 100;
@@ -549,7 +574,7 @@ public class GovpayConfig {
 			
 			String numeroStampePerThreadString = getProperty("it.govpay.batch.caricamentoTracciati.numeroAvvisiDaStamparePerThread", this.props, false, log);
 			try{
-				this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = Integer.parseInt(numeroStampePerThreadString) * 1000;
+				this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = Integer.parseInt(numeroStampePerThreadString);
 			} catch(Throwable t) {
 				log.info("Proprieta \"it.govpay.batch.caricamentoTracciati.numeroAvvisiDaStamparePerThread\" impostata com valore di default 100");
 				this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = 100;
@@ -567,6 +592,18 @@ public class GovpayConfig {
 				this.dimensioneMassimaListaRisultati = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
 			}
 			
+			String batchCaricamentoTracciatiNotificaPagamentiString = getProperty("it.govpay.batch.caricamentoTracciatiNotificaPagamenti.enabled", this.props, false, log);
+			if(batchCaricamentoTracciatiNotificaPagamentiString != null && Boolean.valueOf(batchCaricamentoTracciatiNotificaPagamentiString))
+				this.batchCaricamentoTracciatiNotificaPagamenti = true;
+			
+			String ricercaRiconciliazioniIdFlussoCaseInsensitiveString = getProperty("it.govpay.riconciliazione.idFlussoCaseInsensitive.enabled", this.props, false, log);
+			if(ricercaRiconciliazioniIdFlussoCaseInsensitiveString != null && Boolean.valueOf(ricercaRiconciliazioniIdFlussoCaseInsensitiveString))
+				this.ricercaRiconciliazioniIdFlussoCaseInsensitive = true;
+			
+			String aggiornamentoValiditaMandatorioString = getProperty("it.govpay.context.aggiornamentoValiditaMandatorio", this.props, false, log);
+			if(aggiornamentoValiditaMandatorioString != null && Boolean.valueOf(aggiornamentoValiditaMandatorioString))
+				this.aggiornamentoValiditaMandatorio = true;
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -575,21 +612,27 @@ public class GovpayConfig {
 	
 	private static Map<String,String> getProperties(String baseName, Properties[] props, boolean required, Logger log) throws Exception {
 		Map<String, String> valori = new HashMap<>();
-		String value = null;
+		
+		List<String> nomiProperties = new ArrayList<String>();
+		// 1. collezionare tutti i nomi di properties da leggere (possono essere definiti in piu' file)
 		for(int i=0; i<props.length; i++) {
 			if(props[i] != null) {
 				for (Object nameObj : props[i].keySet()) {
 					String name = (String) nameObj;
-					if(name.startsWith(baseName)) {
-						String key = name.substring(baseName.length());
-						try { value = getProperty(name, props[i], required, i==1, log); } catch (Exception e) { }
-						if(value != null && !value.trim().isEmpty()) {
-							if(!valori.containsKey(key)) {
-								valori.put(key, value);
-							}
-						}
+					if(name.startsWith(baseName) && !nomiProperties.contains(name)) {
+						nomiProperties.add(name);
 					}
 				}
+			}
+		}
+		
+		// 2. leggere la property singola
+		for (String nomeProprieta : nomiProperties) {
+			String valoreProprieta = getProperty(nomeProprieta, props, required, log);
+			
+			if (valoreProprieta != null) {
+				String key = nomeProprieta.substring(baseName.length());
+				valori.put(key, valoreProprieta);
 			}
 		}
 		
@@ -674,6 +717,10 @@ public class GovpayConfig {
 	
 	public int getDimensionePoolCaricamentoTracciatiStampaAvvisi() {
 		return dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
+	}
+	
+	public int getDimensionePoolThreadSpedizioneTracciatiNotificaPagamenti() {
+		return dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
 	}
 
 	public String getKsLocation() {
@@ -871,5 +918,12 @@ public class GovpayConfig {
 	public Integer getDimensioneMassimaListaRisultati() {
 		return dimensioneMassimaListaRisultati;
 	}
+
+	public boolean isBatchCaricamentoTracciatiNotificaPagamenti() {
+		return batchCaricamentoTracciatiNotificaPagamenti;
+	}
 	
+	public boolean isRicercaRiconciliazioniIdFlussoCaseInsensitive() {
+		return ricercaRiconciliazioniIdFlussoCaseInsensitive;
+	}
 }

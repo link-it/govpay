@@ -1,0 +1,15 @@
+name: 'Close stale Support Issues'
+on:
+  schedule:
+    - cron: '30 1 * * *'
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v4
+        with:
+          any-of-labels: 'Type: Support'
+          stale-issue-message: 'Questa richiesta di supporto è stata segnata come inattiva poichè non ci sono state attività da oltre 15 giorni. La richiesta sarà chiusa tra 5 giorni se non ci saranno nuove attività.'
+          days-before-stale: 15
+          days-before-close: 5 
+          stale-issue-label: 'Status: Stale'

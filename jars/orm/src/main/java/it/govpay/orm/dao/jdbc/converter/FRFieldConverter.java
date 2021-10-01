@@ -333,6 +333,20 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_dominio";
 			}
 		}
+		if(field.equals(FR.model().ID_RENDICONTAZIONE.ID_RENDICONTAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".id";
+			}else{
+				return "id";
+			}
+		}
+		if(field.equals(FR.model().ID_RENDICONTAZIONE.IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv";
+			}else{
+				return "iuv";
+			}
+		}
 		if(field.equals(FR.model().RAGIONE_SOCIALE_PSP)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".ragione_sociale_psp";
@@ -345,6 +359,13 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".ragione_sociale_dominio";
 			}else{
 				return "ragione_sociale_dominio";
+			}
+		}
+		if(field.equals(FR.model().OBSOLETO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".obsoleto";
+			}else{
+				return "obsoleto";
 			}
 		}
 
@@ -474,10 +495,19 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(FR.model().ID_INCASSO.COD_DOMINIO)){
 			return this.toTable(FR.model().ID_INCASSO, returnAlias);
 		}
+		if(field.equals(FR.model().ID_RENDICONTAZIONE.ID_RENDICONTAZIONE)){
+			return this.toTable(FR.model().ID_RENDICONTAZIONE, returnAlias);
+		}
+		if(field.equals(FR.model().ID_RENDICONTAZIONE.IUV)){
+			return this.toTable(FR.model().ID_RENDICONTAZIONE, returnAlias);
+		}
 		if(field.equals(FR.model().RAGIONE_SOCIALE_PSP)){
 			return this.toTable(FR.model(), returnAlias);
 		}
 		if(field.equals(FR.model().RAGIONE_SOCIALE_DOMINIO)){
+			return this.toTable(FR.model(), returnAlias);
+		}
+		if(field.equals(FR.model().OBSOLETO)){
 			return this.toTable(FR.model(), returnAlias);
 		}
 
@@ -525,6 +555,9 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(FR.model().ID_INCASSO)){
 			return "incassi";
+		}
+		if(model.equals(FR.model().ID_RENDICONTAZIONE)){
+			return "rendicontazioni";
 		}
 
 

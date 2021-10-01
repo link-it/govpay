@@ -25,7 +25,7 @@ import it.govpay.bd.model.Applicazione;
 
 public class FindApplicazioniDTOResponse extends BasicFindResponseDTO<Applicazione> {
 
-	public FindApplicazioniDTOResponse(long totalResults, List<Applicazione> domini) {
+	public FindApplicazioniDTOResponse(Long totalResults, List<Applicazione> domini) {
 		super(totalResults, domini);
 	}
 

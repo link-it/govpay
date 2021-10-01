@@ -33,7 +33,7 @@ Scenario: Riconciliazione cumulativa
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio
 And headers basicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
 When method post
 Then status 201
 And match response == read('msg/riconciliazione-cumulativa-response.json')
@@ -62,7 +62,7 @@ Scenario: Idempotenza riconciliazione cumulativa
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio
 And headers basicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789' }
 When method post
 Then status 201
 And match response == read('msg/riconciliazione-cumulativa-response.json')
@@ -72,7 +72,7 @@ And match response == read('msg/riconciliazione-cumulativa-response.json')
 Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio
 And headers basicAutenticationHeader
-And request { causale: '#(causale)', importo: '#(importo)' }
+And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789' }
 When method post
 Then status 200
 And match response == response1

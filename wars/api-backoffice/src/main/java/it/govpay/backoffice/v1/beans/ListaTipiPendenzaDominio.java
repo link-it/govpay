@@ -7,7 +7,7 @@ import it.govpay.core.beans.Lista;
 
 public class ListaTipiPendenzaDominio extends Lista<TipoPendenzaDominio> {
 	
-	public ListaTipiPendenzaDominio(List<TipoPendenzaDominio> tipiEntrata, URI requestUri, long count, long pagina, long limit) {
+	public ListaTipiPendenzaDominio(List<TipoPendenzaDominio> tipiEntrata, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(tipiEntrata, requestUri, count, pagina, limit);
 	}
 	

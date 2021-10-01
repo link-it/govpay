@@ -3,6 +3,8 @@ package it.govpay.core.dao.pagamenti;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.core.MediaType;
+
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -57,11 +59,18 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setCodFlusso(listaRendicontazioniDTO.getIdFlusso());
 			filter.setDominiUOAutorizzati(listaRendicontazioniDTO.getUnitaOperative());
 			filter.setStato(listaRendicontazioniDTO.getStato());
+			filter.setEseguiCountConLimit(listaRendicontazioniDTO.isEseguiCountConLimit());
+			filter.setObsoleto(listaRendicontazioniDTO.getObsoleto()); 
+			filter.setIuv(listaRendicontazioniDTO.getIuv());
 
-			long count = rendicontazioniBD.count(filter);
+			Long count = null;
+			
+			if(listaRendicontazioniDTO.isEseguiCount()) {
+				 count = rendicontazioniBD.count(filter);
+			}
 
 			List<LeggiFrDTOResponse> resList = new ArrayList<>();
-			if(count > 0) {
+			if(listaRendicontazioniDTO.isEseguiFindAll()) {
 				List<Fr> findAll = rendicontazioniBD.findAll(filter);
 
 				for (Fr fr : findAll) {
@@ -91,10 +100,13 @@ public class RendicontazioniDAO extends BaseDAO{
 			
 			rendicontazioniBD.setAtomica(false);
 			
-			Fr flussoRendicontazione = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso());
+			Fr flussoRendicontazione = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso(), leggiRendicontazioniDTO.getObsoleto(), leggiRendicontazioniDTO.getDataOraFlusso());
 
-			this.populateFlussoRendicontazione(flussoRendicontazione, rendicontazioniBD);
-			flussoRendicontazione.getIncasso(rendicontazioniBD);
+			if(!leggiRendicontazioniDTO.getAccept().toLowerCase().contains(MediaType.APPLICATION_XML)) {
+				this.populateFlussoRendicontazione(flussoRendicontazione, rendicontazioniBD);
+				flussoRendicontazione.getIncasso(rendicontazioniBD);
+			}
+			
 			response.setFr(flussoRendicontazione);
 			response.setDominio(flussoRendicontazione.getDominio(configWrapper));
 
@@ -186,6 +198,7 @@ public class RendicontazioniDAO extends BaseDAO{
 
 			filter.setOffset(listaRendicontazioniDTO.getOffset());
 			filter.setLimit(listaRendicontazioniDTO.getLimit());
+			filter.setEseguiCountConLimit(listaRendicontazioniDTO.isEseguiCountConLimit());
 
 			filter.setIdDomini(listaRendicontazioniDTO.getIdDomini());
 			filter.setIdTipiVersamento(listaRendicontazioniDTO.getIdTipiVersamento());
@@ -218,11 +231,16 @@ public class RendicontazioniDAO extends BaseDAO{
 
 			filter.setDirezione(listaRendicontazioniDTO.getDirezione());
 			filter.setDivisione(listaRendicontazioniDTO.getDivisione());
+			filter.setFrObsoleto(listaRendicontazioniDTO.getFrObsoleto());
 
-			long count = rendicontazioniBD.count(filter);
+			Long count = null;
+			
+			if(listaRendicontazioniDTO.isEseguiCount()) {
+				 count = rendicontazioniBD.count(filter);
+			}
 
 			List<it.govpay.bd.viste.model.Rendicontazione> resList = new ArrayList<>();
-			if(count > 0) {
+			if(listaRendicontazioniDTO.isEseguiFindAll()) {
 				List<it.govpay.bd.viste.model.Rendicontazione> findAll = rendicontazioniBD.findAll(filter);
 
 				for (it.govpay.bd.viste.model.Rendicontazione rendicontazione : findAll) {

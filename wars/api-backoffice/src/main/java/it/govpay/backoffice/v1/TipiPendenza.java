@@ -48,9 +48,9 @@ public class TipiPendenza extends BaseRsServiceV1{
     @Path("/")
     
     @Produces({ "application/json" })
-    public Response findTipiPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("tipo") String tipo, @QueryParam("associati") Boolean associati, @QueryParam("form") Boolean form, @QueryParam("idTipoPendenza") String idTipoPendenza, @QueryParam("descrizione") String descrizione, @QueryParam("trasformazione") Boolean trasformazione, @QueryParam("nonAssociati") String nonAssociati){
+    public Response findTipiPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("abilitato") Boolean abilitato, @QueryParam("tipo") String tipo, @QueryParam("associati") Boolean associati, @QueryParam("form") Boolean form, @QueryParam("idTipoPendenza") String idTipoPendenza, @QueryParam("descrizione") String descrizione, @QueryParam("trasformazione") Boolean trasformazione, @QueryParam("nonAssociati") String nonAssociati, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
         this.buildContext();
-        return this.controller.findTipiPendenza(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato, tipo, associati, form, idTipoPendenza, descrizione, trasformazione, nonAssociati);
+        return this.controller.findTipiPendenza(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, abilitato, tipo, associati, form, idTipoPendenza, descrizione, trasformazione, nonAssociati, metadatiPaginazione, maxRisultati);
     }
 
     @PUT

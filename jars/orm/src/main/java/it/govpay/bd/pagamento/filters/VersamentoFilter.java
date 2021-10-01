@@ -40,6 +40,7 @@ import org.openspcoop2.utils.sql.SQLQueryObjectException;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
@@ -53,7 +54,7 @@ public class VersamentoFilter extends AbstractFilter {
 	private String codUnivocoDebitore;
 	private List<Long> idDomini;
 	private List<Long> idVersamento= null;
-	private List<Long> idUo;
+	private List<IdUnitaOperativa> idUo;
 	private String codVersamento = null;
 	private Long idPagamentoPortale = null;
 	private String codPagamentoPortale = null;
@@ -197,7 +198,19 @@ public class VersamentoFilter extends AbstractFilter {
 				calendar.set(Calendar.SECOND, 0);
 				calendar.set(Calendar.MILLISECOND, 0);
 				
-				newExpression.isNotNull(Versamento.model().DATA_SCADENZA).and().greaterEquals(Versamento.model().DATA_SCADENZA, calendar.getTime());
+				IExpression orExpression = this.newExpression();
+
+				// Filtro non scaduti = data scadenza successiva ad ora oppure data scadenza == null
+				IExpression or1Expression = this.newExpression();
+				IExpression or2Expression = this.newExpression();
+				
+				
+				or1Expression.isNotNull(Versamento.model().DATA_SCADENZA).and().greaterEquals(Versamento.model().DATA_SCADENZA, calendar.getTime());
+				or2Expression.isNull(Versamento.model().DATA_SCADENZA);
+				
+				orExpression.or(or1Expression,or2Expression);
+				
+				newExpression.and(orExpression);
 				
 				addAnd = true;
 			}
@@ -260,12 +273,31 @@ public class VersamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.getIdUo() != null && !this.getIdUo().isEmpty()){
-				this.getIdUo().removeAll(Collections.singleton(null));
+			if(this.idUo != null && !this.idUo.isEmpty()){
+				this.idUo.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
-				CustomField cf = new CustomField("id_uo", Long.class, "id_uo", converter.toTable(Versamento.model()));
-				newExpression.in(cf, this.getIdUo());
+				
+				IExpression orExprExt = this.newExpression();
+				List<IExpression> listaUoExpr = new ArrayList<IExpression>();
+				for (IdUnitaOperativa uo : this.idUo) {
+					IExpression orExpr = this.newExpression();
+					if(uo.getIdDominio() != null) {
+						CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model()));
+						orExpr.equals(cf, uo.getIdDominio());
+					}
+
+					if(uo.getIdUnita() != null) {
+						CustomField cf = new CustomField("id_uo", Long.class, "id_uo", converter.toTable(Versamento.model()));
+						orExpr.and().equals(cf, uo.getIdUnita());
+					}
+					
+					listaUoExpr.add(orExpr);
+				}
+				
+				orExprExt.or(listaUoExpr.toArray(new IExpression[listaUoExpr.size()]));
+				
+				newExpression.and(orExprExt);
 				addAnd = true;
 			}
 
@@ -503,8 +535,13 @@ public class VersamentoFilter extends AbstractFilter {
 			}
 			
 			if(this.abilitaFiltroNonScaduto) {
-				sqlQueryObject.addWhereIsNotNullCondition(converter.toColumn(model.DATA_SCADENZA, true));
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_SCADENZA, true) + " >= ? ");
+				String or1Expression = converter.toColumn(model.DATA_SCADENZA, true) + " is not null and " + converter.toColumn(model.DATA_SCADENZA, true) + " >= ? ";
+				String or2Expression = converter.toColumn(model.DATA_SCADENZA, true) + " is null ";
+				
+				sqlQueryObject.addWhereCondition(false, or1Expression, or2Expression);
+				
+//				sqlQueryObject.addWhereIsNotNullCondition(converter.toColumn(model.DATA_SCADENZA, true));
+//				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_SCADENZA, true) + " >= ? ");
 			}
 
 			if(this.dataInizio != null && this.dataFine != null) {
@@ -545,8 +582,24 @@ public class VersamentoFilter extends AbstractFilter {
 			if(this.idUo != null && !this.idUo.isEmpty()){
 				this.idUo.removeAll(Collections.singleton(null));
 				
-				String [] idsUo = this.idUo.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idUo.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toTable(model.ID_SESSIONE, true) + ".id_uo", false, idsUo );
+				
+				List<String> listaUoExpr = new ArrayList<String>();
+				for (IdUnitaOperativa uo : this.idUo) {
+					String orExpr = "";
+					
+					if(uo.getIdDominio() != null) {
+						orExpr = converter.toTable(model.ID_SESSIONE, true) + ".id_dominio" + " = ? ";
+					}
+
+					if(uo.getIdUnita() != null) {
+						orExpr += " and " ;
+						orExpr += converter.toTable(model.ID_SESSIONE, true) + ".id_uo" + " = ? ";
+					}
+					
+					listaUoExpr.add(orExpr);
+				}
+				
+				sqlQueryObject.addWhereCondition(false, listaUoExpr.toArray(new String[listaUoExpr.size()]));
 			}
 
 			if(this.codVersamento != null){
@@ -747,7 +800,15 @@ public class VersamentoFilter extends AbstractFilter {
 		}
 		
 		if(this.idUo != null && !this.idUo.isEmpty()){
-			// donothing
+			for (IdUnitaOperativa uo : this.idUo) {
+				if(uo.getIdDominio() != null) {
+					lst.add(uo.getIdDominio());
+				}
+
+				if(uo.getIdUnita() != null) {
+					lst.add(uo.getIdUnita());
+				}
+			}
 		}
 
 		if(this.codVersamento != null){
@@ -969,11 +1030,11 @@ public class VersamentoFilter extends AbstractFilter {
 		this.iuv = iuv;
         }
 
-	public List<Long> getIdUo() {
+	public List<IdUnitaOperativa> getIdUo() {
 		return idUo;
 	}
 
-	public void setIdUo(List<Long> idUo) {
+	public void setIdUo(List<IdUnitaOperativa> idUo) {
 		this.idUo = idUo;
 	}
 

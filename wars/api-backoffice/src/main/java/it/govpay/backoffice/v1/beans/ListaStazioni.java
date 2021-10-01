@@ -7,7 +7,7 @@ import it.govpay.core.beans.Lista;
 
 public class ListaStazioni extends Lista<StazioneIndex> {
 	
-	public ListaStazioni(List<StazioneIndex> incassi, URI requestUri, long count, long offset, long limit) {
+	public ListaStazioni(List<StazioneIndex> incassi, URI requestUri, Long count, Integer offset, Integer limit) {
 		super(incassi, requestUri, count, offset, limit);
 	}
 	

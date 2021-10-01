@@ -135,6 +135,7 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 			fields.add(Evento.model().CCP);
 			fields.add(Evento.model().COD_DOMINIO);
 			fields.add(Evento.model().ID_SESSIONE);
+			fields.add(Evento.model().SEVERITA);
 		
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
@@ -160,50 +161,21 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 				Evento evento = (Evento)this.getEventoFetch().fetch(jdbcProperties.getDatabase(), Evento.model(), map);
 				
 				if(id_fr != null) {
-					if(idMappingResolutionBehaviour==null ||
-							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-						){
-							it.govpay.orm.IdFr id_rendicontazione_fr = null;
-							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-								id_rendicontazione_fr = ((JDBCFRServiceSearch)(this.getServiceManager().getFRServiceSearch())).findId(id_fr, false);
-							}else{
-								id_rendicontazione_fr = new it.govpay.orm.IdFr();
-							}
-							id_rendicontazione_fr.setId(id_fr);
-							evento.setIdFR(id_rendicontazione_fr);
-						}
+					it.govpay.orm.IdFr id_rendicontazione_fr = new it.govpay.orm.IdFr();
+					id_rendicontazione_fr.setId(id_fr);
+					evento.setIdFR(id_rendicontazione_fr);
 				}
 				
 				if(idIncasso != null) {
-					if(idMappingResolutionBehaviour==null ||
-							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-							){
-						it.govpay.orm.IdIncasso id_pagamento_incasso = null;
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_pagamento_incasso = ((JDBCIncassoServiceSearch)(this.getServiceManager().getIncassoServiceSearch())).findId(idIncasso, false);
-						}else{
-							id_pagamento_incasso = new it.govpay.orm.IdIncasso();
-						}
-						id_pagamento_incasso.setId(idIncasso);
-						evento.setIdIncasso(id_pagamento_incasso);
-					}			
+					it.govpay.orm.IdIncasso id_pagamento_incasso = new it.govpay.orm.IdIncasso();
+					id_pagamento_incasso.setId(idIncasso);
+					evento.setIdIncasso(id_pagamento_incasso);
 				}
 								
-				
 				if(idFK_operazione_tracciato != null) {
-					if(idMappingResolutionBehaviour==null ||
-	        				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-	        			){
-
-	        			it.govpay.orm.IdTracciato id_operazione_tracciato = null;
-	        			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-	        				id_operazione_tracciato = ((JDBCTracciatoServiceSearch)(this.getServiceManager().getTracciatoServiceSearch())).findId(idFK_operazione_tracciato, false);
-	        			}else{
-	        				id_operazione_tracciato = new it.govpay.orm.IdTracciato();
-	        			}
-	        			id_operazione_tracciato.setId(idFK_operazione_tracciato);
-	        			evento.setIdTracciato(id_operazione_tracciato);
-					}
+        			it.govpay.orm.IdTracciato id_operazione_tracciato = new it.govpay.orm.IdTracciato();
+        			id_operazione_tracciato.setId(idFK_operazione_tracciato);
+        			evento.setIdTracciato(id_operazione_tracciato);
 				}
 				
 				list.add(evento);

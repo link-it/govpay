@@ -53,6 +53,7 @@ public class IncassoFilter extends AbstractFilter{
 	private String codApplicazione;
 	private List<Long> idIncasso= null;
 	private String codDominio =null;
+	private String sct;
 
 	public IncassoFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -145,6 +146,14 @@ public class IncassoFilter extends AbstractFilter{
 				newExpression.ilike(Incasso.model().TRN, this.trn, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
+			
+			if(this.sct != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(Incasso.model().SCT, this.sct, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
 
 			if(this.dispositivo != null){
 				if(addAnd)
@@ -222,6 +231,10 @@ public class IncassoFilter extends AbstractFilter{
 			if(this.trn != null){
 				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.TRN, true), this.trn, true, true);
 			}
+			
+			if(this.sct != null){
+				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.SCT, true), this.sct, true, true);
+			}
 
 			if(this.dispositivo != null){
 				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.NOME_DISPOSITIVO, true), this.dispositivo, true, true);
@@ -281,6 +294,10 @@ public class IncassoFilter extends AbstractFilter{
 		}
 
 		if(this.trn != null){
+			// donothing
+		}
+		
+		if(this.sct != null){
 			// donothing
 		}
 
@@ -368,6 +385,14 @@ public class IncassoFilter extends AbstractFilter{
 
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
+	}
+
+	public String getSct() {
+		return sct;
+	}
+
+	public void setSct(String sct) {
+		this.sct = sct;
 	}
 	
 }

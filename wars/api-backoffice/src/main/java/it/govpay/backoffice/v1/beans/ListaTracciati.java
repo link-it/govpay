@@ -11,7 +11,7 @@ public class ListaTracciati extends Lista<Tracciato> {
 		super();
 	}
 	
-	public ListaTracciati(List<Tracciato> rpt, URI requestUri, long count, long pagina, long limit) {
+	public ListaTracciati(List<Tracciato> rpt, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(rpt, requestUri, count, pagina, limit);
 	}
 	

@@ -9,7 +9,7 @@ Background:
 
 Scenario Outline: Errore di validazione della richiesta: <scenario>
 
-* def incassoPost = { causale: 'string', importo: '10' }
+* def incassoPost = { causale: 'string', importo: '10' , sct : 'string'}
 * set <fieldRequest> = <fieldValue>
 
 Given url ragioneriaBaseurl

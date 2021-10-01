@@ -45,6 +45,7 @@ import it.govpay.bd.anagrafica.filters.TipoVersamentoDominioFilter;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.UnitaOperativa;
@@ -291,7 +292,7 @@ public class DominiDAO extends BaseDAO{
 				filter.setCodStazione(listaDominiDTO.getCodStazione());
 				filter.setCodDominio(listaDominiDTO.getCodDominio());
 				filter.setRagioneSociale(listaDominiDTO.getRagioneSociale());
-				filter.setAbilitato(listaDominiDTO.getAbilitato());
+				filter.setSearchAbilitato(listaDominiDTO.getAbilitato());
 			}
 			if(listaDominiDTO.getIdDomini() != null && listaDominiDTO.getIdDomini().size() >0) {
 				filter.getIdDomini().addAll(listaDominiDTO.getIdDomini());
@@ -317,7 +318,7 @@ public class DominiDAO extends BaseDAO{
 					}
 //					filter.getIdDomini().addAll(idDomini);
 				} else {
-					return new FindDominiDTOResponse(0, new ArrayList<Dominio>());
+					return new FindDominiDTOResponse(0L, new ArrayList<Dominio>());
 				}
 			}
 
@@ -337,11 +338,28 @@ public class DominiDAO extends BaseDAO{
 					}
 //					filter.getIdDomini().addAll(idDomini);
 				} else {
-					return new FindDominiDTOResponse(0, new ArrayList<Dominio>());
+					return new FindDominiDTOResponse(0L, new ArrayList<Dominio>());
 				}
 			}
-
-			return new FindDominiDTOResponse(dominiBD.count(filter), dominiBD.findAll(filter));
+			
+			filter.setEseguiCountConLimit(listaDominiDTO.isEseguiCountConLimit());
+			
+			Long count = null;
+			
+			if(listaDominiDTO.isEseguiCount()) {
+				 count = dominiBD.count(filter);
+			}
+			
+			List<Dominio> findAll = new ArrayList<>();
+			if(listaDominiDTO.isEseguiFindAll()) {
+				findAll = dominiBD.findAll(filter);
+				
+				if(listaDominiDTO.getLimit() == null && !listaDominiDTO.isEseguiCount()) {
+					count = (long) findAll.size();
+				}
+			}
+			
+			return new FindDominiDTOResponse(count, findAll);
 
 		} finally {
 			if(dominiBD != null)
@@ -422,8 +440,25 @@ public class DominiDAO extends BaseDAO{
 				filter.setExcludeEC(false);
 			else 
 				filter.setExcludeEC(true);
-
-			return new FindUnitaOperativeDTOResponse(unitaOperativeBD.count(filter), unitaOperativeBD.findAll(filter));
+			
+			filter.setEseguiCountConLimit(findUnitaOperativeDTO.isEseguiCountConLimit());
+			
+			Long count = null;
+			
+			if(findUnitaOperativeDTO.isEseguiCount()) {
+				 count = unitaOperativeBD.count(filter);
+			}
+			
+			List<UnitaOperativa> findAll = new ArrayList<>();
+			if(findUnitaOperativeDTO.isEseguiFindAll()) {
+				findAll = unitaOperativeBD.findAll(filter);
+				
+				if(findUnitaOperativeDTO.getLimit() == null && !findUnitaOperativeDTO.isEseguiCount()) {
+					count = (long) findAll.size();
+				}
+			}
+			
+			return new FindUnitaOperativeDTOResponse(count, findAll);
 		} finally {
 			if(unitaOperativeBD != null)
 				unitaOperativeBD.closeConnection();
@@ -509,8 +544,24 @@ public class DominiDAO extends BaseDAO{
 			filter.setOffset(findIbanDTO.getOffset());
 			filter.setLimit(findIbanDTO.getLimit());
 			filter.getFilterSortList().addAll(findIbanDTO.getFieldSortList());
-
-			return new FindIbanDTOResponse(ibanAccreditoBD.count(filter), ibanAccreditoBD.findAll(filter));
+			filter.setEseguiCountConLimit(findIbanDTO.isEseguiCountConLimit());
+			
+			Long count = null;
+			
+			if(findIbanDTO.isEseguiCount()) {
+				 count = ibanAccreditoBD.count(filter);
+			}
+			
+			List<IbanAccredito> findAll = new ArrayList<>();
+			if(findIbanDTO.isEseguiFindAll()) {
+				 findAll = ibanAccreditoBD.findAll(filter);
+				 
+				 if(findIbanDTO.getLimit() == null && !findIbanDTO.isEseguiCount()) {
+						count = (long) findAll.size();
+					}
+			}
+			
+			return new FindIbanDTOResponse(count, findAll);
 		} finally {
 			if(ibanAccreditoBD != null)
 				ibanAccreditoBD.closeConnection();
@@ -592,15 +643,28 @@ public class DominiDAO extends BaseDAO{
 			filter.setOffset(findTributiDTO.getOffset());
 			filter.setLimit(findTributiDTO.getLimit());
 			filter.getFilterSortList().addAll(findTributiDTO.getFieldSortList());
-
-			List<it.govpay.bd.model.Tributo> findAll = tributiBD.findAll(filter);
-
-			List<GetTributoDTOResponse> lst = new ArrayList<>();
-			for(it.govpay.bd.model.Tributo t: findAll) {
-				lst.add(new GetTributoDTOResponse(t, t.getIbanAccredito(), t.getIbanAppoggio()));
+			filter.setEseguiCountConLimit(findTributiDTO.isEseguiCountConLimit());
+			
+			Long count = null;
+			
+			if(findTributiDTO.isEseguiCount()) {
+				 count = tributiBD.count(filter);
 			}
+			
+			List<GetTributoDTOResponse> lst = new ArrayList<>();
+			if(findTributiDTO.isEseguiFindAll()) {
+				List<it.govpay.bd.model.Tributo> findAll = tributiBD.findAll(filter);
+				
+				for(it.govpay.bd.model.Tributo t: findAll) {
+					lst.add(new GetTributoDTOResponse(t, t.getIbanAccredito(), t.getIbanAppoggio()));
+				}
 
-			return new FindTributiDTOResponse(tributiBD.count(filter), lst);
+				if(findTributiDTO.getLimit() == null && !findTributiDTO.isEseguiCount()) {
+					count = (long) findAll.size();
+				}
+			}
+			
+			return new FindTributiDTOResponse(count, lst);
 		} finally {
 			if(tributiBD != null)
 				tributiBD.closeConnection();
@@ -724,15 +788,29 @@ public class DominiDAO extends BaseDAO{
 			filter.setFormPortalePagamento(findTipiPendenzaDTO.getFormPortalePagamento());
 			filter.setTrasformazione(findTipiPendenzaDTO.getTrasformazione());
 			filter.setDescrizione(findTipiPendenzaDTO.getDescrizione());
-
-			List<it.govpay.bd.model.TipoVersamentoDominio> findAll = tipiVersamentoDominiBD.findAll(filter);
-
+			filter.setEseguiCountConLimit(findTipiPendenzaDTO.isEseguiCountConLimit());
+			
+			Long count = null;
+			
+			if(findTipiPendenzaDTO.isEseguiCount()) {
+				 count = tipiVersamentoDominiBD.count(filter);
+			}
+			
 			List<GetTipoPendenzaDominioDTOResponse> lst = new ArrayList<>();
-			for(it.govpay.bd.model.TipoVersamentoDominio t: findAll) {
-				lst.add(new GetTipoPendenzaDominioDTOResponse(t));
+			if(findTipiPendenzaDTO.isEseguiFindAll()) {
+				List<it.govpay.bd.model.TipoVersamentoDominio> findAll = tipiVersamentoDominiBD.findAll(filter);
+
+				
+				for(it.govpay.bd.model.TipoVersamentoDominio t: findAll) {
+					lst.add(new GetTipoPendenzaDominioDTOResponse(t));
+				}
+				
+				if(findTipiPendenzaDTO.getLimit() == null && !findTipiPendenzaDTO.isEseguiCount()) {
+					count = (long) findAll.size();
+				}
 			}
 
-			return new FindTipiPendenzaDominioDTOResponse(tipiVersamentoDominiBD.count(filter), lst);
+			return new FindTipiPendenzaDominioDTOResponse(count, lst);
 		} finally {
 			if(tipiVersamentoDominiBD != null)
 				tipiVersamentoDominiBD.closeConnection();
@@ -767,7 +845,7 @@ public class DominiDAO extends BaseDAO{
 				lst.add(new GetTipoPendenzaDominioDTOResponse(t));
 			}
 
-			return new FindTipiPendenzaDominioDTOResponse(lst.size(), lst);
+			return new FindTipiPendenzaDominioDTOResponse((long) lst.size(), lst);
 		} finally {
 		}
 	}

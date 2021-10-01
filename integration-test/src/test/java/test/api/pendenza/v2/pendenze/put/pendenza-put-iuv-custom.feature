@@ -51,7 +51,7 @@ And headers idA2ABasicAutenticationHeader
 And request pendenzaPut
 When method put
 Then status 201
-And match response == { idDominio: '#(idDominio)', numeroAvviso: '#? isValidNumeroAvviso(_)' }
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#? isValidNumeroAvviso(_)', UUID: '#notnull' }
 
 Examples:
 | scenariodescr | iuvprefix | regex |

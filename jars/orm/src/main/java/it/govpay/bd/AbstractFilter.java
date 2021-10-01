@@ -35,8 +35,10 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.generic_project.expression.impl.sql.AbstractSQLFieldConverter;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 public abstract class AbstractFilter implements IFilter {
 	
@@ -63,6 +65,8 @@ public abstract class AbstractFilter implements IFilter {
 	
 	protected IField fieldAbilitato = null;
 	protected Boolean searchAbilitato = null;
+	
+	protected boolean eseguiCountConLimit = true;
 
 	public Integer getOffset() {
 		return this.offset;
@@ -224,6 +228,46 @@ public abstract class AbstractFilter implements IFilter {
 		
 		return addAnd;
 	}
+	
+	protected ISQLQueryObject setFiltroAbilitato(ISQLQueryObject sqlQueryObject, AbstractSQLFieldConverter converter) throws SQLQueryObjectException, ExpressionException {
+		if(this.searchAbilitato != null && this.fieldAbilitato != null) {
+			sqlQueryObject.addWhereCondition(true,converter.toColumn(this.fieldAbilitato, true) + " = ? ");
+		}
+		
+		return sqlQueryObject;
+	}
+	
+	protected List<Object> setValoreFiltroAbilitato(List<Object> lst, AbstractSQLFieldConverter converter) throws ExpressionException {
+		if(this.searchAbilitato != null && this.fieldAbilitato != null) {
+			return this.setValoreFiltroBoolean(lst, converter, searchAbilitato);
+		}
+		
+		return lst;
+	}
+	
+	protected List<Object> setValoreFiltroBoolean(List<Object> lst, AbstractSQLFieldConverter converter, Boolean valoreFiltro) throws ExpressionException {
+		if(valoreFiltro != null) {
+			
+			org.openspcoop2.utils.TipiDatabase tipoDatabase = converter.getDatabaseType();
+			
+			switch (tipoDatabase) {
+			case ORACLE:
+			case DB2:
+			case SQLSERVER:
+				lst.add(valoreFiltro ? 1 : 0);
+				break;
+			case DERBY:
+			case HSQL:
+			case MYSQL:
+			case POSTGRESQL:
+			default:
+				lst.add(valoreFiltro);
+				break;
+			}
+		}
+		
+		return lst;
+	}
 
 	public Boolean getSearchAbilitato() {
 		return this.searchAbilitato;
@@ -269,5 +313,13 @@ public abstract class AbstractFilter implements IFilter {
 
 	public void setExpressionConstructor(IExpressionConstructor expressionConstructor) {
 		this.expressionConstructor = expressionConstructor;
+	}
+
+	public boolean isEseguiCountConLimit() {
+		return eseguiCountConLimit;
+	}
+
+	public void setEseguiCountConLimit(boolean eseguiCountConLimit) {
+		this.eseguiCountConLimit = eseguiCountConLimit;
 	}
 }

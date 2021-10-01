@@ -47,7 +47,7 @@ public class IncassiController extends BaseController {
 	}
 
 
-	public Response findRiconciliazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio) {
+	public Response findRiconciliazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean metadatiPaginazione, Boolean maxRisultati, String sct) {
 		String methodName = "findRiconciliazioni";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -63,6 +63,9 @@ public class IncassiController extends BaseController {
 			listaIncassoDTO.setLimit(risultatiPerPagina);
 			listaIncassoDTO.setPagina(pagina);
 			listaIncassoDTO.setIdDominio(idDominio);
+			listaIncassoDTO.setEseguiCount(metadatiPaginazione);
+			listaIncassoDTO.setEseguiCountConLimit(maxRisultati);
+			listaIncassoDTO.setSct(sct);
 			
 			if(dataDa != null) {
 				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
@@ -78,7 +81,7 @@ public class IncassiController extends BaseController {
 			listaIncassoDTO.setCodDomini(domini);
 
 			IncassiDAO incassiDAO = new IncassiDAO();
-			ListaIncassiDTOResponse listaIncassiDTOResponse = domini != null ? incassiDAO.listaIncassi(listaIncassoDTO) : new ListaIncassiDTOResponse(0, new ArrayList<>());
+			ListaIncassiDTOResponse listaIncassiDTOResponse = domini != null ? incassiDAO.listaIncassi(listaIncassoDTO) : new ListaIncassiDTOResponse(0L, new ArrayList<>());
 
 			List<it.govpay.backoffice.v1.beans.IncassoIndex> listaIncassi = new ArrayList<>();
 			for(it.govpay.bd.model.Incasso i : listaIncassiDTOResponse.getResults()) {
@@ -140,7 +143,7 @@ public class IncassiController extends BaseController {
 		}
 	}
 
-	public Response addRiconciliazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
+	public Response addRiconciliazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is, Boolean idFlussoCaseInsensitive) {
     	String methodName = "addRiconciliazione"; 
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -158,6 +161,10 @@ public class IncassiController extends BaseController {
 			incasso.validate();
 			
 			RichiestaIncassoDTO richiestaIncassoDTO = IncassiConverter.toRichiestaIncassoDTO(incasso, idDominio, user);
+			
+			if(idFlussoCaseInsensitive != null) {
+				richiestaIncassoDTO.setRicercaIdFlussoCaseInsensitive(idFlussoCaseInsensitive);
+			}
 			
 			IncassiDAO incassiDAO = new IncassiDAO();
 			

@@ -11,7 +11,7 @@ public class ListaOperazioniPendenza extends Lista<OperazionePendenza> {
 		super();
 	}
 	
-	public ListaOperazioniPendenza(List<OperazionePendenza> flussiRendicontazione, URI requestUri, long count, long pagina, long limit) {
+	public ListaOperazioniPendenza(List<OperazionePendenza> flussiRendicontazione, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(flussiRendicontazione, requestUri, count, pagina, limit);
 	}
 	

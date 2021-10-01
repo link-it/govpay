@@ -99,6 +99,8 @@ Examples:
 | voci.hashDocumento | pendenzaPut.voci[0] | { idVocePendenza: 1, importo: 10.00, descrizione: "descrizione", tipoBollo: "01", hashDocumento: "#(loremIpsum)", provinciaResidenza: "RO" } | 'hashDocumento' |
 | voci.provinciaResidenza | pendenzaPut.voci[0] | { idVocePendenza: 1, importo: 10.00, descrizione: "descrizione", tipoBollo: "01", hashDocumento: "a/CWqtFtCEyA/ymBySahGSaqKMiak5mlX3BoX0jupy8=", provinciaResidenza: null } | 'provinciaResidenza' |
 | voci.provinciaResidenza | pendenzaPut.voci[0] | { idVocePendenza: 1, importo: 10.00, descrizione: "descrizione", tipoBollo: "01", hashDocumento: "a/CWqtFtCEyA/ymBySahGSaqKMiak5mlX3BoX0jupy8=", provinciaResidenza: "xxx" } | 'provinciaResidenza' |
+| voci.descrizioneCausaleRPT | pendenzaPut.voci[0].descrizioneCausaleRPT | '' | 'descrizioneCausaleRPT' |
+| voci.descrizioneCausaleRPT | pendenzaPut.voci[0].descrizioneCausaleRPT | loremIpsum | 'descrizioneCausaleRPT' |
 
 Scenario Outline: <field> non valida 
 

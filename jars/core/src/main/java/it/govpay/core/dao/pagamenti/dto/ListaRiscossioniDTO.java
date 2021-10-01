@@ -9,16 +9,16 @@ import org.springframework.security.core.Authentication;
 import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.Pagamento.Stato;
-import it.govpay.orm.Pagamento;
+import it.govpay.orm.VistaPagamento;
 
 public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	
 	public ListaRiscossioniDTO(Authentication user) {
 		super(user);
-		this.addSortField("data", Pagamento.model().DATA_PAGAMENTO);
-		this.addSortField("stato", Pagamento.model().STATO);
-		this.addSortField("iuv", Pagamento.model().IUV);
-		this.addDefaultSort(Pagamento.model().DATA_PAGAMENTO,SortOrder.DESC);
+		this.addSortField("data", VistaPagamento.model().DATA_PAGAMENTO);
+		this.addSortField("stato", VistaPagamento.model().STATO);
+		this.addSortField("iuv", VistaPagamento.model().IUV);
+		this.addDefaultSort(VistaPagamento.model().DATA_PAGAMENTO,SortOrder.DESC);
 	}
 	
 	private Date dataRiscossioneDa;
@@ -34,6 +34,7 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	private List<String> direzione;
 	private List<String> divisione;
 	private List<String> tassonomia;
+	private boolean deep = false;
 	
 
 	public Date getDataRiscossioneDa() {
@@ -139,4 +140,13 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	public void setTassonomia(List<String> tassonomia) {
 		this.tassonomia = tassonomia;
 	}
+
+	public boolean isDeep() {
+		return deep;
+	}
+
+	public void setDeep(boolean deep) {
+		this.deep = deep;
+	}
+	
 }

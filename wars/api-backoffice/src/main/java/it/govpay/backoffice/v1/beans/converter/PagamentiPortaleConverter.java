@@ -99,6 +99,8 @@ public class PagamentiPortaleConverter {
 			rsModel.setModello(ModelloEnum.PSP);
 		}
 		
+		rsModel.setSeverita(pagamentoPortale.getSeverita());
+		
 		return rsModel;
 	}
 	public static PagamentoIndex toRsModelIndex(LeggiPagamentoPortaleDTOResponse dto) throws ServiceException, IOException {
@@ -160,6 +162,8 @@ public class PagamentiPortaleConverter {
 		} else if(pagamentoPortale.getTipo() == 3) {
 			rsModel.setModello(it.govpay.backoffice.v1.beans.PagamentoIndex.ModelloEnum.PSP);
 		}
+		
+		rsModel.setSeverita(pagamentoPortale.getSeverita());
 
 		return rsModel;
 

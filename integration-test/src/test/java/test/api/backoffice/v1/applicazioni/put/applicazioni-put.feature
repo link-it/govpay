@@ -63,8 +63,8 @@ Examples:
 | servizioIntegrazione | null |
 | servizioIntegrazione.url | 'http://prova.it' |
 | servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { username: 'usr', password: 'pwd' } } |
-| servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd'	} } | 
-| servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { tipo: 'Server', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd'	} } | 
+| servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2' , ksType: 'JKS', ksPKeyPasswd: 'ksPKeyPasswd'	} } | 
+| servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { tipo: 'Server', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} } | 
 | abilitato | false | 
 | abilitato | true |
 | apiPagamenti | false | 
@@ -123,12 +123,13 @@ And match response.<field> == <checkValue>
 
 Examples:
 | field | value | checkValue |
-| domini | [ { idDominio: '#(idDominio)', unitaOperative: [ ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ ] } ] |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: [ '*' ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '*', ragioneSociale: '#string' } ] } ] |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: [ ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '*', ragioneSociale: '#string' } ] } ] |
 | domini | [ { idDominio: '#(idDominio)', unitaOperative: [ '#(idUnitaOperativa2)' ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '#(idUnitaOperativa2)', ragioneSociale: '#string' } ] } ] | 
 | domini | [ { idDominio: '#(idDominio)', unitaOperative: [ '#(idUnitaOperativa)', '#(idUnitaOperativa2)' ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '#(idUnitaOperativa)', ragioneSociale: '#string' }, { idUnita: '#(idUnitaOperativa2)', ragioneSociale: '#string' } ] } ] |
-| domini | [ { idDominio: '#(idDominio)', unitaOperative: null } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ ] } ] |
-| domini | [ { idDominio: '#(idDominio)' } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ ] } ] |
-| domini | [ { idDominio: '#(idDominio)', unitaOperative: [ ] }, { idDominio: '#(idDominio_2)', unitaOperative: [ ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ ] }, { idDominio: '#(idDominio_2)', ragioneSociale: '#string', unitaOperative: [ ] } ] |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: null } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '*', ragioneSociale: '#string' } ] } ] |
+| domini | [ { idDominio: '#(idDominio)' } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '*', ragioneSociale: '#string' } ] } ] |
+| domini | [ { idDominio: '#(idDominio)', unitaOperative: [ ] }, { idDominio: '#(idDominio_2)', unitaOperative: [ ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '*', ragioneSociale: '#string' } ] }, { idDominio: '#(idDominio_2)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '*', ragioneSociale: '#string' } ] } ] |
 | domini | [ { idDominio: '#(idDominio)', unitaOperative: [ '#(idUnitaOperativa2)' ] }, { idDominio: '#(idDominio_2)', unitaOperative: [ '#(idUnitaOperativa)' ] } ] | [ { idDominio: '#(idDominio)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '#(idUnitaOperativa2)', ragioneSociale: '#string' } ] }, { idDominio: '#(idDominio_2)', ragioneSociale: '#string', unitaOperative: [ { idUnita: '#(idUnitaOperativa)', ragioneSociale: '#string' } ] } ] |
 
 Scenario: Configurazione di due applicazioni con idA2A della seconda che e' una sottostringa del primo idA2A	 

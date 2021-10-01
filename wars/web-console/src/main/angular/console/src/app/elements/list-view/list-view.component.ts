@@ -1,4 +1,4 @@
-import { AfterContentChecked, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterContentChecked, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { LinkService } from '../../services/link.service';
 import { UtilService } from '../../services/util.service';
 import { SideListComponent } from './side-list.component';
@@ -10,6 +10,7 @@ import { FormViewComponent } from './form-view.component';
   styleUrls: ['./list-view.component.scss']
 })
 export class ListViewComponent implements OnInit, AfterContentChecked {
+  @ViewChild('cheat') cheat: ElementRef;
   @ViewChild('fv') formView: FormViewComponent;
   @ViewChild('sl') sideList: SideListComponent;
 
@@ -34,6 +35,8 @@ export class ListViewComponent implements OnInit, AfterContentChecked {
   protected _formSubmit(event) {
     if(this.sideList) {
       let _query:string = this._formQuery(event);
+
+      this.sideList.loadMetadati(null, _query);
       this.sideList.getList(null, _query);
     }
   }
@@ -77,6 +80,19 @@ export class ListViewComponent implements OnInit, AfterContentChecked {
 
   protected _isVisible() {
     return Form.toggle || (this._showFormView && this.ls.checkMediumMediaMatch().matches);
+  }
+
+  protected _cheatClass(target: any) {
+    return {
+      'to-top': true,
+      'd-none': ((target && target.scrollTop <= window.innerHeight) || window.innerWidth < 768)
+    }
+  }
+
+  protected _toTop(target: any) {
+    if (target) {
+      target.scrollTop = 0;
+    }
   }
 
 }

@@ -1,4 +1,4 @@
-Feature: Lista tipipendenza
+Feature: Filtri sulla lista Domini
 
 Background:
 

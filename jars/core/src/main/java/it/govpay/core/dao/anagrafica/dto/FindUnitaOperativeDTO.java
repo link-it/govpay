@@ -34,8 +34,9 @@ public class FindUnitaOperativeDTO extends BasicFindRequestDTO {
 		super(user);
 		this.codDominio = codDominio;
 		this.addSortField("ragioneSociale", it.govpay.orm.Uo.model().UO_DENOMINAZIONE);
-		this.addDefaultSort(it.govpay.orm.Uo.model().COD_UO, SortOrder.ASC);
 		this.addDefaultSort(it.govpay.orm.Uo.model().UO_DENOMINAZIONE, SortOrder.ASC);
+		this.addDefaultSort(it.govpay.orm.Uo.model().COD_UO, SortOrder.ASC);
+		this.ricercaAnagrafica = true;
 	}
 	
 	public String getCodDominio(){

@@ -20,11 +20,18 @@
 package it.govpay.bd.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.serialization.IDeserializer;
+import org.openspcoop2.utils.serialization.IOException;
+import org.openspcoop2.utils.serialization.ISerializer;
+import org.openspcoop2.utils.serialization.SerializationConfig;
+import org.openspcoop2.utils.serialization.SerializationFactory;
+import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
@@ -34,6 +41,8 @@ import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
+import it.govpay.core.beans.tracciati.ProprietaPendenza;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Iuv;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.TipoVersamento;
@@ -52,6 +61,7 @@ public class Versamento extends it.govpay.model.Versamento {
 	private transient TipoVersamento tipoVersamento;
 	private transient TipoVersamentoDominio tipoVersamentoDominio;
 	private transient Documento documento;
+	private transient ProprietaPendenza proprietaPendenza;
 	
 	// Indica se il versamento e' stato creato o aggiornato. Utile per individuare il codice di ritorno nelle api rest.
 	private transient boolean created;
@@ -234,5 +244,50 @@ public class Versamento extends it.govpay.model.Versamento {
 
 	public void setCreated(boolean created) {
 		this.created = created;
+	}
+
+	public ProprietaPendenza getProprietaPendenza(){
+		if(this.proprietaPendenza == null) {
+			try {
+				this.proprietaPendenza = this._getFromJson(super.getProprieta(), ProprietaPendenza.class);
+			} catch (IOException e) {
+				return null;
+			}
+		}
+		
+		return proprietaPendenza;
+	}
+
+	public void setProprietaPendenza(ProprietaPendenza proprietaPendenza) {
+		this.proprietaPendenza = proprietaPendenza;
+	}
+	
+	@Override
+	public String getProprieta() {
+		try {
+			return this._getJson(this.getProprietaPendenza());
+		} catch (IOException e) {
+			return super.getProprieta();
+		}
+	}
+	
+	private <T> T _getFromJson(String jsonString, Class<T> tClass) throws IOException {
+		if(jsonString != null) {
+			SerializationConfig serializationConfig = new SerializationConfig();
+			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+			serializationConfig.setIgnoreNullValues(true);
+			IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+			return tClass.cast(deserializer.getObject(jsonString, tClass));
+		}
+
+		return null;
+	}
+
+	private String _getJson(Object objToSerialize) throws IOException {
+		SerializationConfig serializationConfig = new SerializationConfig();
+		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+		return serializer.getObject(objToSerialize); 
 	}
 }

@@ -248,6 +248,10 @@ public class RtUtils extends NdpValidationUtils {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
 			}
 			
+			// Faccio adesso la select for update, altrimenti in caso di 
+			// ricezione di due RT afferenti allo stesso carrello di pagamento
+			// vado in deadlock tra la getRpt precedente e la findAll seguente
+			
 			rptBD.enableSelectForUpdate();
 			
 			Long idPagamentoPortale = rpt.getIdPagamentoPortale();
@@ -258,6 +262,15 @@ public class RtUtils extends NdpValidationUtils {
 				RptFilter filter = rptBD.newFilter();
 				filter.setIdPagamentoPortale(idPagamentoPortale);
 				rptsCarrello = rptBD.findAll(filter);
+			}
+			
+			// Rifaccio la getRpt adesso che ho il lock per avere lo stato aggiornato
+			// infatti in caso di RT concorrente, non viene gestito bene l'errore.
+			
+			try {
+				rpt = rptBD.getRpt(codDominio, iuv, ccp, true);
+			} catch (NotFoundException e) {
+				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
 			}
 			
 			if(!acquisizioneDaCruscotto) {
@@ -307,6 +320,37 @@ public class RtUtils extends NdpValidationUtils {
 				throw e;
 			} catch (SAXException e) {
 				throw e;
+			}
+			
+			// Caso anomalo. RT gia' acquisita, ma non registrata correttamente:
+			if(rpt.getXmlRt() != null && (rpt.getStato().equals(StatoRpt.RPT_ACCETTATA_NODO) || rpt.getStato().equals(StatoRpt.RPT_ACCETTATA_PSP))) {
+				try {
+					CtRicevutaTelematica oldRT = JaxbUtils.toRT(rpt.getXmlRt(), true);
+					if(oldRT.getIdentificativoMessaggioRicevuta().equals(ctRt.getIdentificativoMessaggioRicevuta()) 
+							&& rpt.getEsitoPagamento() != null 
+							&& rpt.getImportoTotalePagato() != null
+							&& rpt.getDenominazioneAttestante() != null ) {
+						rpt.setImportoTotalePagato(ctRt.getDatiPagamento().getImportoTotalePagato());
+						rpt.setStato(StatoRpt.RT_ACCETTATA_PA);
+						rpt.setDescrizioneStato(null);
+						try {
+							rptBD.updateRpt(rpt.getId(), rpt);
+							rptBD.commit();
+						}catch (ServiceException e1) {
+							rptBD.rollback();
+							throw e1;
+						} finally {
+							rptBD.disableSelectForUpdate();
+						}
+						throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "RT già acquisita in data " + rpt.getDataMsgRicevuta(), rpt.getCodDominio());
+					}
+				} catch (ServiceException e) {
+					log.warn("Errore nella gestione di una RT gia' acquisita", e);
+				} catch (JAXBException e) {
+					log.warn("Errore nella gestione di una RT gia' acquisita", e);
+				} catch (SAXException e) {
+					log.warn("Errore nella gestione di una RT gia' acquisita", e);
+				}
 			}
 			
 			if(acquisizioneDaCruscotto) {

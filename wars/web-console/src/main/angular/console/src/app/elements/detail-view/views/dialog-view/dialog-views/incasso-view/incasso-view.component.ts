@@ -91,9 +91,14 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
 
   protected _codeSelection(event: any) {
     if(event.original.option && event.original.option.value) {
+      const fluxIUV: any = event.original.option.value;
       if(event.target) {
-        event.target.value = event.original.option.value.label;
+        event.target.value = fluxIUV.label;
         event.target.blur();
+      }
+      this.fGroup.controls['sct_ctrl'].setValue('');
+      if (fluxIUV.flusso && fluxIUV.trn) {
+        this.fGroup.controls['sct_ctrl'].setValue(fluxIUV.trn);
       }
       this.fGroup.controls['importo_ctrl'].setValue(event.original.option.value.importo);
     } else {
@@ -145,6 +150,7 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
           const _riscos = _responses[0]['body'].risultati.map(_ris => {
             return {
               flusso: '',
+              trn: '',
               importo: _ris.importo,
               data: moment(_ris.data).format('DD/MM/YYYY'),
               iuv: _ris.iuv,
@@ -154,6 +160,7 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
           const _rendis = _responses[1]['body'].risultati.map(_rend => {
             return {
               flusso: _rend.idFlusso,
+              trn: _rend.trn,
               importo: _rend.importoTotale,
               data: moment(_rend.dataFlusso).format('DD/MM/YYYY'),
               iuv: '',
@@ -164,6 +171,7 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
           if(!this._asyncIdfIuv.isOpen()) {
             this._asyncIdfIuv.open();
           }
+          this._asyncIdfIuv.focusInput();
         }
       }, (error) => {
         this._asyncIdfIuv.asyncOptions.clearAllTimeout();

@@ -78,7 +78,6 @@ import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRPTServiceSearch;
 import it.govpay.orm.dao.IRRService;
 import it.govpay.orm.dao.IRRServiceSearch;
-import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
 import it.govpay.orm.dao.IRendicontazioneService;
 import it.govpay.orm.dao.IRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IServiceManager;
@@ -94,6 +93,8 @@ import it.govpay.orm.dao.ITipoVersamentoDominioService;
 import it.govpay.orm.dao.ITipoVersamentoDominioServiceSearch;
 import it.govpay.orm.dao.ITipoVersamentoService;
 import it.govpay.orm.dao.ITipoVersamentoServiceSearch;
+import it.govpay.orm.dao.ITracciatoNotificaPagamentiService;
+import it.govpay.orm.dao.ITracciatoNotificaPagamentiServiceSearch;
 import it.govpay.orm.dao.ITracciatoService;
 import it.govpay.orm.dao.ITracciatoServiceSearch;
 import it.govpay.orm.dao.ITributoService;
@@ -116,9 +117,11 @@ import it.govpay.orm.dao.IVistaEventiRptServiceSearch;
 import it.govpay.orm.dao.IVistaEventiVersamentoService;
 import it.govpay.orm.dao.IVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IVistaPagamentoPortaleServiceSearch;
+import it.govpay.orm.dao.IVistaPagamentoServiceSearch;
 import it.govpay.orm.dao.IVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
 import it.govpay.orm.dao.IVistaRptVersamentoServiceSearch;
+import it.govpay.orm.dao.IVistaVersamentoServiceSearch;
 
 /**     
  * Manager that allows you to obtain the services of research and management of objects
@@ -521,7 +524,7 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:TipoTributo type:TipoTributo
+	 Services relating to the object with name:tipoTributo type:TipoTributo
 	 =====================================================================================================================
 	*/
 	
@@ -1321,27 +1324,6 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:RendicontazionePagamento type:RendicontazionePagamento
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazionePagamento}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazionePagamento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IRendicontazionePagamentoServiceSearch getRendicontazionePagamentoServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCRendicontazionePagamentoServiceSearch(this);
-	}
-	
-	
-	
-	
-	/*
-	 =====================================================================================================================
 	 Services relating to the object with name:VistaRendicontazione type:VistaRendicontazione
 	 =====================================================================================================================
 	*/
@@ -1474,6 +1456,38 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public ITracciatoService getTracciatoService() throws ServiceException,NotImplementedException{
 		return new JDBCTracciatoService(this);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:TracciatoNotificaPagamenti type:TracciatoNotificaPagamenti
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public ITracciatoNotificaPagamentiServiceSearch getTracciatoNotificaPagamentiServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCTracciatoNotificaPagamentiServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.TracciatoNotificaPagamenti}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public ITracciatoNotificaPagamentiService getTracciatoNotificaPagamentiService() throws ServiceException,NotImplementedException{
+		return new JDBCTracciatoNotificaPagamentiService(this);
 	}
 	
 	
@@ -1669,6 +1683,47 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	
 	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaPagamento type:VistaPagamento
+	 =====================================================================================================================
+	*/
 	
-
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaPagamento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaPagamento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaPagamentoServiceSearch getVistaPagamentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaPagamentoServiceSearch(this);
+	}
+	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaVersamento type:VistaVersamento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaVersamento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaVersamento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IVistaVersamentoServiceSearch getVistaVersamentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCVistaVersamentoServiceSearch(this);
+	}
+	
+	
+	
+	
+	
 }

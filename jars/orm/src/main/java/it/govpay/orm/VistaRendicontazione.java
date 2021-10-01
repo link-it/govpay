@@ -51,6 +51,7 @@ import java.io.Serializable;
  * 			&lt;element name="frIdIncasso" type="{http://www.govpay.it/orm}id-incasso" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="frRagioneSocialePsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="frRagioneSocialeDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="frObsoleto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="rndIuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="rndIur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="rndIndiceDati" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
@@ -122,6 +123,7 @@ import java.io.Serializable;
  * 			&lt;element name="vrsCodRata" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsIdDocumento" type="{http://www.govpay.it/orm}id-documento" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsTipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="vrsProprieta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -152,6 +154,7 @@ import java.io.Serializable;
   	"frIdIncasso",
   	"frRagioneSocialePsp",
   	"frRagioneSocialeDominio",
+  	"frObsoleto",
   	"rndIuv",
   	"rndIur",
   	"rndIndiceDati",
@@ -222,7 +225,8 @@ import java.io.Serializable;
   	"vrsIuvPagamento",
   	"vrsCodRata",
   	"vrsIdDocumento",
-  	"vrsTipo"
+  	"vrsTipo",
+  	"vrsProprieta"
   }
 )
 
@@ -372,6 +376,14 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
 
   public void setFrRagioneSocialeDominio(java.lang.String frRagioneSocialeDominio) {
     this.frRagioneSocialeDominio = frRagioneSocialeDominio;
+  }
+
+  public Boolean getFrObsoleto() {
+    return this.frObsoleto;
+  }
+
+  public void setFrObsoleto(Boolean frObsoleto) {
+    this.frObsoleto = frObsoleto;
   }
 
   public java.lang.String getRndIuv() {
@@ -954,6 +966,14 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
     this.vrsTipo = vrsTipo;
   }
 
+  public java.lang.String getVrsProprieta() {
+    return this.vrsProprieta;
+  }
+
+  public void setVrsProprieta(java.lang.String vrsProprieta) {
+    this.vrsProprieta = vrsProprieta;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -1038,6 +1058,10 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="frRagioneSocialeDominio",required=false,nillable=false)
   protected java.lang.String frRagioneSocialeDominio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="frObsoleto",required=true,nillable=false)
+  protected Boolean frObsoleto;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="rndIuv",required=true,nillable=false)
@@ -1320,5 +1344,9 @@ public class VistaRendicontazione extends org.openspcoop2.utils.beans.BaseBean i
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="vrsTipo",required=true,nillable=false)
   protected java.lang.String vrsTipo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="vrsProprieta",required=false,nillable=false)
+  protected java.lang.String vrsProprieta;
 
 }

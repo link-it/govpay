@@ -65,6 +65,7 @@ import org.slf4j.Logger;
 import it.govpay.bd.configurazione.model.GdeInterfaccia;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.core.business.GiornaleEventi;
@@ -78,6 +79,7 @@ import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.Connettore.EnumSslType;
+import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Intermediario;
 
 public abstract class BasicClient {
@@ -140,7 +142,7 @@ public abstract class BasicClient {
 			return this.responseContent;
 		}
 	}
-
+	
 	protected static Map<String, SSLContext> sslContexts = new HashMap<>();
 	protected URL url = null;
 	protected SSLContext sslContext;
@@ -163,16 +165,17 @@ public abstract class BasicClient {
 	}
 
 	public enum TipoConnettore {
-		VERIFICA, NOTIFICA, APP_IO;
+		VERIFICA, NOTIFICA, APP_IO, MYPIVOT;
 	}
 	
 	public enum TipoDestinatario {
-		APPLICAZIONE, INTERMEDIARIO, APP_IO;
+		APPLICAZIONE, INTERMEDIARIO, APP_IO, MYPIVOT;
 	}
 
 	protected BasicClient(Intermediario intermediario, TipoOperazioneNodo tipoOperazione) throws ClientException {
-		this("I_" + intermediario.getCodIntermediario() + "_" + tipoOperazione, tipoOperazione.equals(TipoOperazioneNodo.NODO) ? intermediario.getConnettorePdd() : intermediario.getConnettorePddAvvisatura());
-		errMsg = tipoOperazione.toString() + " dell'intermediario (" + intermediario.getCodIntermediario() + ")";
+		this("I_" + intermediario.getCodIntermediario() + "_" + tipoOperazione, tipoOperazione.equals(TipoOperazioneNodo.NODO) ? intermediario.getConnettorePdd() : intermediario.getConnettorePddAvvisatura(),
+				tipoOperazione.toString() + " dell'intermediario (" + intermediario.getCodIntermediario() + ")");
+//		errMsg = tipoOperazione.toString() + " dell'intermediario (" + intermediario.getCodIntermediario() + ")";
 		mittente = intermediario.getDenominazione();
 		destinatario = "NodoDeiPagamentiDellaPA";
 		integrationCtx = new IntegrationContext();
@@ -183,8 +186,9 @@ public abstract class BasicClient {
 	}
 
 	protected BasicClient(Applicazione applicazione, TipoConnettore tipoConnettore) throws ClientException {
-		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione(), applicazione.getConnettoreIntegrazione());
-		errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
+		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione(), applicazione.getConnettoreIntegrazione(),
+				tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")");
+//		errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
 		mittente = "GovPay";
 		destinatario = applicazione.getCodApplicazione();
 		integrationCtx = new IntegrationContext();
@@ -195,8 +199,8 @@ public abstract class BasicClient {
 	}
 	
 	protected BasicClient(String operazioneSwagger, TipoDestinatario tipoDestinatario, Connettore connettore) throws ClientException {
-		this(tipoDestinatario +"_" + operazioneSwagger, connettore);
-		errMsg = operazioneSwagger + " per invocazione APP_IO";
+		this(tipoDestinatario +"_" + operazioneSwagger, connettore, operazioneSwagger + " per invocazione APP_IO");
+//		errMsg = operazioneSwagger + " per invocazione APP_IO";
 		mittente = "GovPay";
 		destinatario = "APP_IO";
 		integrationCtx = new IntegrationContext();
@@ -205,8 +209,21 @@ public abstract class BasicClient {
 		integrationCtx.setTipoConnettore(null);
 		integrationCtx.setTipoDestinatario(tipoDestinatario);
 	}
+	
+	protected BasicClient(Dominio dominio, TipoConnettore tipoConnettore, ConnettoreNotificaPagamenti connettore) throws ClientException {
+		this("D_" + tipoConnettore + "_" + dominio.getCodDominio(), connettore, tipoConnettore.toString() + " del dominio (" + dominio.getCodDominio() + ")");
+//		errMsg = tipoConnettore.toString() + " del dominio (" + dominio.getCodDominio() + ")";
+		mittente = "GovPay";
+		destinatario = "ServizioMyPivot";
+		integrationCtx = new IntegrationContext();
+		integrationCtx.setApplicazione(null);
+		integrationCtx.setIntermediario(null);
+		integrationCtx.setTipoConnettore(tipoConnettore);
+		integrationCtx.setTipoDestinatario(TipoDestinatario.MYPIVOT);
+	}
 
-	private BasicClient(String bundleKey, Connettore connettore) throws ClientException {
+	private BasicClient(String bundleKey, Connettore connettore, String errMsg) throws ClientException {
+		this.errMsg = errMsg;
 		// inizializzazione base del context evento
 		this.eventoCtx = new EventoContext();
 		this.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);

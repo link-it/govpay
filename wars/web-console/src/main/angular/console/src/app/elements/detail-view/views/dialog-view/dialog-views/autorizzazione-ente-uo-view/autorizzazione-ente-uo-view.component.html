@@ -1,7 +1,7 @@
 <link-async-autocomplete-select [label]="_voce.ENTI_CREDITORI" [dataProvider]="domini" [optionFilter]="'ragioneSociale'" [scrollLimit]="true"
                                 (change)="_dominiChangeSelection($event)" [optionValue]="'ragioneSociale'" [optionLabel]="'ragioneSociale'"
                                 [control]="_dominioCtrl" [fieldRequired]="true" (scrollOver)="_loadMore()"></link-async-autocomplete-select>
-<mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="unitaOperativeDominio?.length !== 0">
+<mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
   <mat-select [placeholder]="_voce.UNITA_OPERATIVA" formControlName="unitaOperative_ctrl" multiple required
               (selectionChange)="_unitaOperativaChangeSelection($event)">
     <mat-option [value]="_all" [disabled]="_option.hasNoOption || _option.hasOption">{{_all.ragioneSociale}}</mat-option>

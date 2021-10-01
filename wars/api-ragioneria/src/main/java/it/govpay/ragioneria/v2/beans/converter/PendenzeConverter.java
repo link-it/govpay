@@ -51,6 +51,7 @@ public class PendenzeConverter {
 		rsModel.setDirezione(versamento.getDirezione());
 		rsModel.setDivisione(versamento.getDivisione());
 		rsModel.setTassonomia(versamento.getTassonomia()); 
+		rsModel.setUUID(versamento.getIdSessione());
 		
 		return rsModel;
 	}

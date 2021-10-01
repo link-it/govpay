@@ -19,6 +19,7 @@ public class PagamentoContext {
 	public static final String codApplicazioneIuvKey="a";
 	public static final String anno4="Y";
 	public static final String anno2="y";
+	public static final String codificaTipoPendenzaIuvKey="p";
 	
 	private String codSessionePortale;
 	private boolean carrello;
@@ -102,6 +103,7 @@ public class PagamentoContext {
 		if(this.versamentoCtx != null) {
 			if(this.versamentoCtx.getCodificaIuv() != null)
 				props.put(codificaIuvKey, this.versamentoCtx.getCodificaIuv());
+				props.put(codificaTipoPendenzaIuvKey, this.versamentoCtx.getCodificaIuv());
 		}
 		
 		Calendar now = Calendar.getInstance(); 

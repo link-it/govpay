@@ -1,15 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-
 import { UtilService } from './util.service';
-
 import { Observable } from 'rxjs/Observable';
-
+import { forkJoin } from 'rxjs/observable/forkJoin';
+import { of } from 'rxjs/observable/of';
+import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
-import { forkJoin } from 'rxjs/observable/forkJoin';
-
-import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class GovpayService {
@@ -51,6 +48,18 @@ export class GovpayService {
    */
   getDataService(service: string, query?: string): Observable<any> {
     this.updateSpinner(true);
+    return this.__getDataService(service, query).switchMap((data: any) => {
+      return of(data);
+    });
+  }
+
+  getDataServiceBkg(service: string, query?: string): Observable<any> {
+    return this.__getDataService(service, query).switchMap((data: any) => {
+      return of(data);
+    });
+  }
+
+  protected __getDataService(service: string, query?: string): Observable<any> {
     let url = UtilService.RootByTOA() + service;
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json');
@@ -189,6 +198,9 @@ export class GovpayService {
     if(UtilService.SPID.ENABLED) {
       methods.push({ service: UtilService.SPID.HTTPS_ROOT_SERVICE, type: UtilService.ACCESS_SPID });
     }
+    if(UtilService.IAM.ENABLED) {
+      methods.push({ service: UtilService.IAM.ROOT_SERVICE, type: UtilService.ACCESS_IAM });
+    }
 
     methods.forEach((_method) => {
       fullMethods.push(this.http.get(_method.service + service, { headers: headers, observe: 'response' }).catch(error => of(error)));
@@ -199,6 +211,7 @@ export class GovpayService {
       .map((responses: any) => {
         UtilService.TOA.Basic = false;
         UtilService.TOA.Spid = false;
+        UtilService.TOA.Iam = false;
         let _result;
         const _validResponse = responses.filter((response, index) => {
           UtilService.TOA[methods[index].type] = (response.status === 200);

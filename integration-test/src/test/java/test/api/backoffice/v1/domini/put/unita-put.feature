@@ -72,6 +72,7 @@ Scenario: Configurazione di due UO con idUo della seconda che e' una sottostring
 * def idDominioUO = '55555555555'
 * def idUo1 = 'PROVA_' + idDominioUO
 * def idUo2 = 'OVA_' + idDominioUO
+* set dominio.ragioneSociale = 'Ente Creditore Test 3'
 
 
 Given url backofficeBaseurl

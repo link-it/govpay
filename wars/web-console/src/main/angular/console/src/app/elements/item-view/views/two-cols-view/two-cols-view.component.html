@@ -1,20 +1,43 @@
-<div class="d-block">
-  <div class="row m-0 normal-color break-all">
-    <div class="col-12 col-sm-7 px-0">
-      <p class="m-sm-0 mb-1 m-0 lh-130">{{info.titolo?.label}} {{info.titolo?.value}}</p>
+<ng-template [ngIf]="!info.generalTemplate">
+  <div class="d-block">
+    <div class="row m-0 normal-color">
+      <div class="col-12 col-sm-7 px-0">
+        <p class="mb-2 m-0 lh-130 break-word" [attr.title]="info.titolo?.label+' '+info.titolo?.value">
+          {{info.titolo?.label}} {{info.titolo?.value}}</p>
+      </div>
+      <div class="col-12 col-sm-5 px-0 text-sm-right">
+        <p class="mb-2 m-0 color-gray regular-14 lh-130 break-word">{{info.data}}</p>
+      </div>
     </div>
-    <div class="col-12 col-sm-5 px-0 text-sm-right">
-      <p class="m-sm-0 mb-1 m-0 text-truncate color-gray regular-14 lh-130">{{info.data}}</p>
+    <div class="row m-0 normal-color">
+      <div class="col-12 col-sm-9 px-0">
+        <p class="mb-2 m-0 mb-sm-0 color-gray regular-14 lh-130 break-word" *ngIf="info.sottotitolo?.label || info.sottotitolo?.value">
+          {{info.sottotitolo?.label}} {{info.sottotitolo?.value}}
+        </p>
+      </div>
+      <div class="col-12 col-sm-3 px-0 text-sm-right">
+        <p class="m-0 color-gray regular-14 lh-130 break-word" *ngIf="info.stato">{{info.stato}}</p>
+      </div>
     </div>
   </div>
-  <div class="row m-0 normal-color break-all">
-    <div class="col-12 col-sm-9 px-0">
-      <p class="m-sm-0 mb-1 m-0 color-gray regular-14 lh-130" *ngIf="info.sottotitolo?.label || info.sottotitolo?.value">
-        {{info.sottotitolo?.label}} {{info.sottotitolo?.value}}
-      </p>
+</ng-template>
+<ng-template [ngIf]="info.generalTemplate">
+  <div class="d-block">
+    <div class="row m-0 normal-color">
+      <div class="col-12 col-sm-8 px-0">
+        <p class="mb-2 m-0 lh-130 break-word" [attr.title]="info.gtTextUL">{{ info.gtTextUL || '' }}</p>
+      </div>
+      <div class="col-12 col-sm-4 px-0 text-sm-right">
+        <p class="mb-2 m-0 lh-130 break-word">{{ info.gtTextUR || '' }}</p>
+      </div>
     </div>
-    <div class="col-12 col-sm-3 px-0 text-sm-right">
-      <p class="m-0 text-truncate m-0 color-gray regular-14 lh-130" *ngIf="info.stato">{{info.stato}}</p>
+    <div class="row m-0 normal-color">
+      <div class="col-12 col-sm-9 px-0">
+        <p class="mb-2 m-0 mb-sm-0 color-gray regular-14 lh-130 break-word">{{ info.gtTextBL || '' }}</p>
+      </div>
+      <div class="col-12 col-sm-3 px-0 text-sm-right">
+        <p class="m-0 color-gray regular-14 lh-130 break-word">{{ info.gtTextBR || '' }}</p>
+      </div>
     </div>
   </div>
-</div>
+</ng-template>

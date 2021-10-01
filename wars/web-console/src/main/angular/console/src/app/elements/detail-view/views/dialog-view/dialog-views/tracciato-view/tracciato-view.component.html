@@ -25,3 +25,6 @@
     <mat-option *ngFor="let item of _tipiPendenzaDominio" [value]="item">{{item.descrizione}}</mat-option>
   </mat-select>
 </mat-form-field>
+<div class="w-100" [formGroup]="fGroup" [hidden]="!_advancedSettings">
+  <mat-slide-toggle formControlName="stampaAvvisi_ctrl" color="accent">{{ _voce.STAMPA_AVVISI }}</mat-slide-toggle>
+</div>

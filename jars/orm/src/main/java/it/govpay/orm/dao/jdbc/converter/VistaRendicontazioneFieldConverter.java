@@ -186,6 +186,13 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return "fr_ragione_sociale_dominio";
 			}
 		}
+		if(field.equals(VistaRendicontazione.model().FR_OBSOLETO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".fr_obsoleto";
+			}else{
+				return "fr_obsoleto";
+			}
+		}
 		if(field.equals(VistaRendicontazione.model().RND_IUV)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".rnd_iuv";
@@ -725,6 +732,13 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 				return "vrs_tipo";
 			}
 		}
+		if(field.equals(VistaRendicontazione.model().VRS_PROPRIETA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".vrs_proprieta";
+			}else{
+				return "vrs_proprieta";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -787,6 +801,9 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().FR_RAGIONE_SOCIALE_DOMINIO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().FR_OBSOLETO)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().RND_IUV)){
@@ -1018,6 +1035,9 @@ public class VistaRendicontazioneFieldConverter extends AbstractSQLFieldConverte
 			return this.toTable(VistaRendicontazione.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
 		}
 		if(field.equals(VistaRendicontazione.model().VRS_TIPO)){
+			return this.toTable(VistaRendicontazione.model(), returnAlias);
+		}
+		if(field.equals(VistaRendicontazione.model().VRS_PROPRIETA)){
 			return this.toTable(VistaRendicontazione.model(), returnAlias);
 		}
 

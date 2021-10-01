@@ -17,14 +17,26 @@ import it.govpay.model.Versamento.TipoSogliaVersamento;
 
 public class ValidatoreUtils {
 	
+	public static void validaCF(ValidatorFactory vf, String nomeCampo, String codiceFiscale) throws ValidationException {
+		validaField(vf, nomeCampo, codiceFiscale, CostantiValidazione.PATTERN_CF, null, null, true);
+	}
+	
+	public static void validaSeveritaA(ValidatorFactory vf, String nomeCampo, Integer valoreCampo) throws ValidationException {
+		vf.getValidator(nomeCampo, BigInteger.valueOf(valoreCampo)).min(BigInteger.ZERO);
+	}
+	
+	public static void validaSeveritaDa(ValidatorFactory vf, String nomeCampo, Integer valoreCampo) throws ValidationException {
+		vf.getValidator(nomeCampo, BigInteger.valueOf(valoreCampo)).min(BigInteger.ZERO);
+	}
+	
 	public static void validaRisultatiPerPagina(ValidatorFactory vf, String nomeCampo, Integer valoreCampo) throws ValidationException {
 		if(valoreCampo != null) {
-			vf.getValidator(nomeCampo, BigInteger.valueOf(valoreCampo)).min(BigInteger.ONE).max(BigInteger.valueOf(GovpayConfig.getInstance().getDimensioneMassimaListaRisultati()));
+			vf.getValidator(nomeCampo, BigInteger.valueOf(valoreCampo)).min(BigInteger.ZERO).max(BigInteger.valueOf(GovpayConfig.getInstance().getDimensioneMassimaListaRisultati()));
 		}
 	}
 	
 	public static void validaRisultatiPerPagina(ValidatorFactory vf, String nomeCampo, BigInteger valoreCampo) throws ValidationException {
-		vf.getValidator(nomeCampo, valoreCampo).min(BigInteger.ONE).maxOrEquals(BigInteger.valueOf(GovpayConfig.getInstance().getDimensioneMassimaListaRisultati()));
+		vf.getValidator(nomeCampo, valoreCampo).min(BigInteger.ZERO).maxOrEquals(BigInteger.valueOf(GovpayConfig.getInstance().getDimensioneMassimaListaRisultati()));
 	}
 	
 	public static void checkIsNotNull(ValidatorFactory vf, String nomeCampo, String valoreCampo) throws ValidationException {

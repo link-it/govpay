@@ -129,7 +129,7 @@ public class Rpt {
 								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: errore di interazione con il servizio di verifica.");
 								throw new GovPayException(EsitoOperazione.VER_014, codApplicazione, codVersamentoEnte, e.getMessage());
 							} catch (VersamentoNonValidoException e) {
-								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: errore di validazine dei dati ricevuti dal servizio di verifica.");
+								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: errore di validazione dei dati ricevuti dal servizio di verifica.");
 								throw new GovPayException(EsitoOperazione.VER_014, codApplicazione, codVersamentoEnte, e.getMessage());
 							}
 						}
@@ -188,10 +188,7 @@ public class Rpt {
 						TipoIUV tipoIuv = iuvBusiness.getTipoIUV(versamento.getIuvProposto());
 						iuvBusiness.checkIUV(versamento.getDominio(configWrapper), versamento.getIuvProposto(), tipoIuv);
 						iuv = versamento.getIuvProposto();
-						if(tipoIuv.equals(TipoIUV.NUMERICO))
-							ccp = IuvUtils.buildCCP();
-						else 
-							ccp = it.govpay.model.Rpt.CCP_NA;
+						ccp = IuvUtils.buildCCP();
 						ctx.getApplicationLogger().log("iuv.assegnazioneIUVCustom", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), versamento.getIuvProposto(), ccp);
 					} else {
 						// Verifico se ha gia' uno IUV numerico assegnato. In tal caso lo riuso. 
@@ -204,11 +201,7 @@ public class Rpt {
 							log.debug("Iuv non assegnato. Generazione...");
 							// Non c'e' iuv assegnato. Glielo genero io.
 							iuv = iuvBusiness.generaIUV(versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.TipoIUV.ISO11694, rptBD);
-							if(iuvBusiness.getTipoIUV(iuv).equals(TipoIUV.ISO11694)) {
-								ccp = it.govpay.model.Rpt.CCP_NA;
-							} else {
-								ccp = IuvUtils.buildCCP();
-							}
+							ccp = IuvUtils.buildCCP();
 							ctx.getApplicationLogger().log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp);
 						}
 					}
@@ -355,6 +348,7 @@ public class Rpt {
 					clientInviaCarrelloRPT.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 					clientInviaCarrelloRPT.getEventoCtx().setEsito(Esito.FAIL);
 					clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(e.getMessage());
+					clientInviaCarrelloRPT.getEventoCtx().setException(e);
 				}
 				ctx.getApplicationLogger().log("rpt.invioFail", e.getMessage());
 				log.warn("Errore nella spedizione dell'Rpt: " + e);
@@ -384,6 +378,7 @@ public class Rpt {
 						if(chiediStatoRptClient != null) {
 							chiediStatoRptClient.getEventoCtx().setEsito(Esito.FAIL);
 							chiediStatoRptClient.getEventoCtx().setDescrizioneEsito(ee.getMessage());
+							chiediStatoRptClient.getEventoCtx().setException(ee);
 						}
 						ctx.getApplicationLogger().log("rpt.invioRecoveryStatoRPTFail", ee.getMessage());
 						log.warn("Errore nella richiesta di stato RPT: " + ee.getMessage() + ". Recupero stato fallito.");

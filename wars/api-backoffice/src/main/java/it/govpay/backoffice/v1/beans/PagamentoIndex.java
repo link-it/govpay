@@ -30,6 +30,7 @@ import it.govpay.core.beans.JSONSerializable;
 "lingua",
 "rpp",
 "verificato",
+"severita",
 })
 public class PagamentoIndex extends JSONSerializable {
   
@@ -39,7 +40,7 @@ public class PagamentoIndex extends JSONSerializable {
   @JsonProperty("nome")
   private String nome = null;
   
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS", locale = "it_IT", timezone = "Europe/Rome")
   @JsonProperty("dataRichiestaPagamento")
   private Date dataRichiestaPagamento = null;
   
@@ -228,6 +229,9 @@ public class PagamentoIndex extends JSONSerializable {
   
   @JsonProperty("verificato")
   private Boolean verificato = null;
+  
+  @JsonProperty("severita")
+  private Integer severita = null;
   
   /**
    * Identificativo del pagamento assegnato da GovPay
@@ -530,6 +534,22 @@ public class PagamentoIndex extends JSONSerializable {
     this.verificato = verificato;
   }
 
+  /**
+   * indica il livello di severita dell'errore che ha portato il pagamento in stato FALLITO
+   **/
+  public PagamentoIndex severita(Integer severita) {
+    this.severita = severita;
+    return this;
+  }
+
+  @JsonProperty("severita")
+  public Integer getSeverita() {
+    return severita;
+  }
+  public void setSeverita(Integer severita) {
+    this.severita = severita;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -557,12 +577,13 @@ public class PagamentoIndex extends JSONSerializable {
         Objects.equals(autenticazioneSoggetto, pagamentoIndex.autenticazioneSoggetto) &&
         Objects.equals(lingua, pagamentoIndex.lingua) &&
         Objects.equals(rpp, pagamentoIndex.rpp) &&
-        Objects.equals(verificato, pagamentoIndex.verificato);
+        Objects.equals(verificato, pagamentoIndex.verificato) &&
+        Objects.equals(severita, pagamentoIndex.severita);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, descrizioneStato, modello, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp, verificato);
+    return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, descrizioneStato, modello, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp, verificato, severita);
   }
 
   public static PagamentoIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -598,6 +619,7 @@ public class PagamentoIndex extends JSONSerializable {
     sb.append("    lingua: ").append(toIndentedString(lingua)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("    verificato: ").append(toIndentedString(verificato)).append("\n");
+    sb.append("    severita: ").append(toIndentedString(severita)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -50,6 +50,8 @@ Examples:
 | bic | 'AAABBBDABAI' |
 | intestatario | null |
 | intestatario | 'Comune di Monopoli' |
+| autStampaPosteItaliane | 'test' |
+| autStampaPosteItaliane | null |
 
 Scenario: Iban associato ad un dominio non esistente
 

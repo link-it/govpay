@@ -71,3 +71,28 @@ Examples:
 | tracciatoCsv | {tipo: "freemarker", "intestazione": null, "richiesta": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "risposta": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | tracciatoCsv |
 | tracciatoCsv | {tipo: null, "intestazione": "idA2A,idPendenza,idDominio", "richiesta": "eyAidHlwZSI6ICJvYmplY3QiIH0=", "risposta": "eyAidHlwZSI6ICJvYmplY3QiIH0=" } | tracciatoCsv |
 
+
+Scenario Outline: <field> non valida
+
+* set tipoPendenza.avvisaturaAppIO.apiKey = null
+* set tipoPendenza.<field> = <fieldValue>
+* def messaggioErrore = 'Il campo \'apiKey\' e\' obbligatorio quando si abilita uno tra promemoriaAvviso, promemoriaRicevuta o promemoriaScadenza.'
+
+Given url backofficeBaseurl
+And path 'domini', idDominio, 'tipiPendenza', 'test'
+And headers basicAutenticationHeader
+And request tipoPendenza
+When method put
+Then status 400
+And match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+And match response.dettaglio contains '<checkValue>'
+
+Examples:
+
+| field | fieldValue | checkValue |
+| avvisaturaAppIO.promemoriaAvviso | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare" } | #(messaggioErrore) |
+| avvisaturaAppIO.promemoriaRicevuta | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "soloEseguiti" : null} |  #(messaggioErrore) |
+| avvisaturaAppIO.promemoriaScadenza | { "abilitato": true, "tipo": "freemarker", "oggetto": "Promemoria pagamento", "messaggio": "Devi pagare", "preavviso": 0 } |  #(messaggioErrore) |
+
+
+

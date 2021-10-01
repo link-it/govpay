@@ -31,6 +31,7 @@ public class IbanAccredito extends BasicModel {
 	private Long idDominio;
 	private String descrizione;
 	private String intestatario;
+	private String autStampaPoste;
 	
 	@Override
 	public Long getId() {
@@ -80,6 +81,12 @@ public class IbanAccredito extends BasicModel {
 	}
 	public void setIntestatario(String intestatario) {
 		this.intestatario = intestatario;
+	}
+	public String getAutStampaPoste() {
+		return autStampaPoste;
+	}
+	public void setAutStampaPoste(String autStampaPoste) {
+		this.autStampaPoste = autStampaPoste;
 	}
 }
 

@@ -170,7 +170,7 @@ public abstract class BaseController {
 		String respKoJson = this.getRespJson(respKo);
 		 
 		ResponseBuilder responseBuilder = Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.APPLICATION_JSON).entity(respKoJson); 
-		this.handleEventoFail(responseBuilder, transactionId, respKo.getCodice(),  respKo.getDettaglio());
+		this.handleEventoFail(responseBuilder, transactionId, respKo.getCodice(),  respKo.getDettaglio(), e);
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
@@ -203,9 +203,9 @@ public abstract class BaseController {
 		String respJson = this.getRespJson(respKo);
 		ResponseBuilder responseBuilder = Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson);
 		if(e.getTransportErrorCode() > 499)
-			this.handleEventoFail(responseBuilder, transactionId, sottotipoEsito, respKo.getDettaglio());
+			this.handleEventoFail(responseBuilder, transactionId, sottotipoEsito, respKo.getDettaglio(), e);
 		else 
-			this.handleEventoKo(responseBuilder, transactionId, sottotipoEsito, respKo.getDettaglio());
+			this.handleEventoKo(responseBuilder, transactionId, sottotipoEsito, respKo.getDettaglio(), e);
 		return handleResponseKo(responseBuilder, transactionId).build(); 
 	}
 
@@ -229,9 +229,9 @@ public abstract class BaseController {
 		String respJson = this.getRespJson(respKo);
 		ResponseBuilder responseBuilder = Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson);
 		if(statusCode > 499)
-			this.handleEventoFail(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio());
+			this.handleEventoFail(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
 		else 
-			this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio());
+			this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
 		
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
@@ -248,7 +248,7 @@ public abstract class BaseController {
 		
 		String respJson = this.getRespJson(respKo);
 		ResponseBuilder responseBuilder = Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson);
-		this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio());
+		this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
@@ -274,9 +274,9 @@ public abstract class BaseController {
 		String respJson = this.getRespJson(respKo);
 		ResponseBuilder responseBuilder = Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson);
 		if(e.getTransportErrorCode() > 499)
-			this.handleEventoFail(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio());
+			this.handleEventoFail(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
 		else 
-			this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio());
+			this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
 		
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
@@ -306,7 +306,7 @@ public abstract class BaseController {
 		return responseBuilder;
 	}
 	
-	protected ResponseBuilder handleEventoKo(ResponseBuilder responseBuilder, String transactionId, String sottotipoEsito, String dettaglioEsito) {
+	protected ResponseBuilder handleEventoKo(ResponseBuilder responseBuilder, String transactionId, String sottotipoEsito, String dettaglioEsito, Exception exception) {
 		GpContext ctx = (GpContext) this.context.getApplicationContext();
 		ctx.getEventoCtx().setEsito(Esito.KO);
 		if(transactionId != null)
@@ -316,10 +316,12 @@ public abstract class BaseController {
 		if(sottotipoEsito != null)
 			ctx.getEventoCtx().setSottotipoEsito(sottotipoEsito);
 		
+		ctx.getEventoCtx().setException(exception);
+		
 		return responseBuilder;
 	}
 	
-	protected ResponseBuilder handleEventoFail(ResponseBuilder responseBuilder, String transactionId, String sottotipoEsito, String dettaglioEsito) {
+	protected ResponseBuilder handleEventoFail(ResponseBuilder responseBuilder, String transactionId, String sottotipoEsito, String dettaglioEsito, Exception exception) {
 		GpContext ctx = (GpContext) this.context.getApplicationContext();
 		ctx.getEventoCtx().setEsito(Esito.FAIL);
 		if(transactionId != null)
@@ -328,6 +330,8 @@ public abstract class BaseController {
 		
 		if(sottotipoEsito != null)
 			ctx.getEventoCtx().setSottotipoEsito(sottotipoEsito);
+		
+		ctx.getEventoCtx().setException(exception);
 		
 		return responseBuilder;
 	}

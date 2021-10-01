@@ -197,42 +197,19 @@ public class JDBCPromemoriaServiceSearchImpl implements IJDBCServiceSearchWithId
 				Promemoria notifica = (Promemoria)this.getPromemoriaFetch().fetch(jdbcProperties.getDatabase(), Promemoria.model(), map);
 				
 				if(id_versamento != null && id_versamento > 0) {
-					if(idMappingResolutionBehaviour==null ||
-							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-						){
-							it.govpay.orm.IdVersamento id_promemoria_versamento = null;
-							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-								id_promemoria_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(id_versamento, false);
-							}else{
-								id_promemoria_versamento = new it.govpay.orm.IdVersamento();
-							}
-							id_promemoria_versamento.setId(id_versamento);
-							notifica.setIdVersamento(id_promemoria_versamento);
-						}
+					it.govpay.orm.IdVersamento id_promemoria_versamento = new it.govpay.orm.IdVersamento();
+					id_promemoria_versamento.setId(id_versamento);
+					notifica.setIdVersamento(id_promemoria_versamento);
 				}
+				
 				if(id_rpt != null) {
-					if(idMappingResolutionBehaviour==null ||
-							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-						){
-							// Object _notifica_rpt (recupero id)
-							it.govpay.orm.IdRpt id_promemoria_rpt = null;
-							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-								id_promemoria_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findId(id_rpt, false);
-							}else{
-								id_promemoria_rpt = new it.govpay.orm.IdRpt();
-							}
-							id_promemoria_rpt.setId(id_rpt);
-							notifica.setIdRPT(id_promemoria_rpt);
-						}
+					it.govpay.orm.IdRpt id_promemoria_rpt = new it.govpay.orm.IdRpt();
+					id_promemoria_rpt.setId(id_rpt);
+					notifica.setIdRPT(id_promemoria_rpt);
 				}
 				
 				if(idDocumento != null && idDocumento > 0) {
-					it.govpay.orm.IdDocumento id_stampa_documento = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_stampa_documento = ((JDBCDocumentoServiceSearch)(this.getServiceManager().getDocumentoServiceSearch())).findId(idDocumento, false);
-					}else{
-						id_stampa_documento = new it.govpay.orm.IdDocumento();
-					}
+					it.govpay.orm.IdDocumento id_stampa_documento = new it.govpay.orm.IdDocumento();
 					id_stampa_documento.setId(idDocumento);
 					notifica.setIdDocumento(id_stampa_documento);
 				}

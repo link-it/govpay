@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -16,6 +17,7 @@ import it.govpay.bd.configurazione.model.AppIOBatch;
 import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.PromemoriaAvvisoBase;
+import it.govpay.bd.configurazione.model.PromemoriaScadenza;
 import it.govpay.bd.model.Configurazione;
 import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.TipoVersamentoDominio;
@@ -33,12 +35,17 @@ import it.govpay.core.utils.appio.model.MessageCreated;
 import it.govpay.core.utils.appio.model.NewMessage;
 import it.govpay.core.utils.client.AppIoClient;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreUtils;
+import it.govpay.model.NotificaAppIo.TipoNotifica;
 import it.govpay.model.TipoVersamento;
 
 public class InviaNotificaAppIoThread implements Runnable{
 	
 	public static final String SWAGGER_OPERATION_GET_PROFILE = "getProfile";
-	public static final String SWAGGER_OPERATION_POST_MESSAGE = "submitMessageforUserWithFiscalCodeInBody";
+	public static final String SWAGGER_OPERATION_POST_MESSAGE_AVVISO_PAGAMENTO = "submitMessageforUserWithFiscalCodeInBody";
+	public static final String SWAGGER_OPERATION_POST_MESSAGE_SCADENZA_PAGAMENTO = "submitMessageforUserWithFiscalCodeInBodyScadenza";
+	
 
 	private IContext ctx = null;
 	private Giornale giornale = null;
@@ -50,6 +57,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 	private boolean errore = false;
 	private TipoVersamentoDominio tipoVersamentoDominio = null;
 	private TipoVersamento tipoVersamento = null;
+	private TipoNotifica tipo;
 
 	public InviaNotificaAppIoThread(NotificaAppIo notifica, IContext ctx) throws ServiceException {
 		this.ctx = ctx;
@@ -61,6 +69,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 		this.notifica = notifica;
 		this.tipoVersamentoDominio = notifica.getTipoVersamentoDominio(configWrapper);
 		this.tipoVersamento = this.tipoVersamentoDominio.getTipoVersamento(configWrapper);
+		this.tipo = this.notifica.getTipo();
 	}
 
 
@@ -99,6 +108,10 @@ public class InviaNotificaAppIoThread implements Runnable{
 				clientGetProfile.getEventoCtx().setIdPendenza(this.notifica.getCodVersamentoEnte());
 				clientGetProfile.getEventoCtx().setIuv(this.notifica.getIuv());
 				
+				// controllo CF debitore
+				ValidatorFactory vf = ValidatorFactory.newInstance();
+				ValidatoreUtils.validaCF(vf, "fiscal_code", this.notifica.getDebitoreIdentificativo());
+				
 				LimitedProfile profile = clientGetProfile.getProfile(this.notifica.getDebitoreIdentificativo(), this.tipoVersamentoDominio.getAppIOAPIKey(), SWAGGER_OPERATION_GET_PROFILE);
 						
 				if(profile.isSenderAllowed()) { // spedizione abilitata procedo
@@ -111,6 +124,17 @@ public class InviaNotificaAppIoThread implements Runnable{
 				
 				clientGetProfile.getEventoCtx().setEsito(Esito.OK);
 				log.info("Lettura Profilo del Debitore completata con successo, "+(postMessage ? "" : "non ")+" verra' spedito il messaggio di notifica.");
+			} catch(ValidationException e) {
+				errore = true;
+				log.error("Validazione del codice fiscale debitore fallita: " + e.getMessage());
+				this.aggiornaNotificaAnnullata(notificheBD, e.getMessage());
+				
+				if(clientGetProfile != null) {
+					clientGetProfile.getEventoCtx().setSottotipoEsito("Validazione");
+					clientGetProfile.getEventoCtx().setEsito(Esito.FAIL);
+					clientGetProfile.getEventoCtx().setDescrizioneEsito(e.getMessage());
+					clientGetProfile.getEventoCtx().setException(e);
+				}
 			} catch(ClientException e) {
 				errore = true;
 				log.error("Errore nella creazione del client di spedizione: " + e.getMessage());
@@ -128,6 +152,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 						clientGetProfile.getEventoCtx().setEsito(Esito.FAIL);
 					}
 					clientGetProfile.getEventoCtx().setDescrizioneEsito(e.getMessage());
+					clientGetProfile.getEventoCtx().setException(e);
 				}
 				
 				if(e.getCode() == 429) { // troppe chiamate al servizio in questo momento rischedulo invio
@@ -135,19 +160,6 @@ public class InviaNotificaAppIoThread implements Runnable{
 				} else { // invio notifica terminato con errore
 					this.aggiornaNotificaAnnullata(notificheBD, e.getMessage());
 				}
-				
-//			} catch(ServiceException e) {
-//				errore = true;
-//				log.error("Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
-//			
-//				if(clientGetProfile != null) {
-//					clientGetProfile.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-//					clientGetProfile.getEventoCtx().setEsito(Esito.FAIL);
-//					clientGetProfile.getEventoCtx().setDescrizioneEsito(e.getMessage());
-//				}
-//				
-//				// provo a salvare l'errore 
-//				this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 			} catch(Throwable e) {
 				errore = true;
 				log.error("Errore non previsto durante l'invocazione del servizio: " + e.getMessage(), e);
@@ -156,6 +168,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 					clientGetProfile.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
 					clientGetProfile.getEventoCtx().setEsito(Esito.FAIL);
 					clientGetProfile.getEventoCtx().setDescrizioneEsito(e.getMessage());
+					clientGetProfile.getEventoCtx().setException(e);
 				}
 				
 				// provo a salvare l'errore 
@@ -171,7 +184,20 @@ public class InviaNotificaAppIoThread implements Runnable{
 
 			if(postMessage) { // Effettuo la POST Message
 				try {
-					String operationId = appContext.setupAppIOClient(SWAGGER_OPERATION_POST_MESSAGE, url);
+					String azione = null;
+					switch (this.tipo) {
+					case AVVISO:
+						azione = SWAGGER_OPERATION_POST_MESSAGE_AVVISO_PAGAMENTO;
+						break;
+					case SCADENZA:
+						azione = SWAGGER_OPERATION_POST_MESSAGE_SCADENZA_PAGAMENTO;
+						break;
+					case RICEVUTA:
+						break;
+					}
+					
+					
+					String operationId = appContext.setupAppIOClient(azione, url);
 					
 					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.notifica.getCodDominio()));
 					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codTipoVersamento", this.tipoVersamento.getCodTipoVersamento()));
@@ -179,18 +205,30 @@ public class InviaNotificaAppIoThread implements Runnable{
 					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("idPendenza", this.notifica.getCodVersamentoEnte()));
 					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.notifica.getIuv()));
 					
-					log.info("Invio della notifica al Debitore "+ this.notifica.getDebitoreIdentificativo()+" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "]");
+					log.info("Invio della notifica ["+this.tipo+"] al Debitore "+ this.notifica.getDebitoreIdentificativo()+" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "]");
 					
-					clientPostMessage = new AppIoClient(SWAGGER_OPERATION_POST_MESSAGE, this.appIo, operationId, this.giornale);
+					clientPostMessage = new AppIoClient(azione, this.appIo, operationId, this.giornale);
 					
 					clientPostMessage.getEventoCtx().setCodDominio(this.notifica.getCodDominio());
 					clientPostMessage.getEventoCtx().setIdA2A(this.notifica.getCodApplicazione());
 					clientPostMessage.getEventoCtx().setIdPendenza(this.notifica.getCodVersamentoEnte());
 					clientPostMessage.getEventoCtx().setIuv(this.notifica.getIuv());
 					
-					PromemoriaAvvisoBase promemoriaAvviso = this.avvisaturaViaAppIo.getPromemoriaAvviso() != null ? this.avvisaturaViaAppIo.getPromemoriaAvviso() : new PromemoriaAvvisoBase();
-					NewMessage messageWithCF = AppIOUtils.creaNuovoMessaggio(log, versamento, this.tipoVersamentoDominio, promemoriaAvviso, this.appIo.getTimeToLive());
-					MessageCreated messageCreated = clientPostMessage.postMessage(messageWithCF , this.tipoVersamentoDominio.getAppIOAPIKey(), SWAGGER_OPERATION_POST_MESSAGE);
+					NewMessage messageWithCF = null;
+					switch (this.tipo) {
+					case AVVISO:
+						PromemoriaAvvisoBase promemoriaAvviso = this.avvisaturaViaAppIo.getPromemoriaAvviso() != null ? this.avvisaturaViaAppIo.getPromemoriaAvviso() : new PromemoriaAvvisoBase();
+						messageWithCF = AppIOUtils.creaNuovoMessaggioAvvisoPagamento(log, versamento, this.tipoVersamentoDominio, promemoriaAvviso, this.appIo.getTimeToLive());
+						break;
+					case SCADENZA:
+						PromemoriaScadenza promemoriaScadenza = this.avvisaturaViaAppIo.getPromemoriaScadenza() != null ? this.avvisaturaViaAppIo.getPromemoriaScadenza() : new PromemoriaScadenza();
+						messageWithCF = AppIOUtils.creaNuovoMessaggioScadenzaPagamento(log, versamento, this.tipoVersamentoDominio, promemoriaScadenza, this.appIo.getTimeToLive());
+						break;
+					case RICEVUTA:
+						break;
+					}
+
+					MessageCreated messageCreated = clientPostMessage.postMessage(messageWithCF , this.tipoVersamentoDominio.getAppIOAPIKey(), azione);
 					//String location = clientPostMessage.getMessageLocation();
 					
 					// salvataggio stato notifica
@@ -210,6 +248,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 						clientPostMessage.getEventoCtx().setSottotipoEsito(e.getCode() + "");
 						clientPostMessage.getEventoCtx().setEsito(Esito.FAIL);
 						clientPostMessage.getEventoCtx().setDescrizioneEsito(e.getMessage());
+						clientPostMessage.getEventoCtx().setException(e);
 					}
 					
 					if(e.getCode() == 429 || e.getCode() == 500) { // troppe chiamate al servizio in questo momento oppure errore interno del servizio rischedulo invio
@@ -238,6 +277,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 						clientPostMessage.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
 						clientPostMessage.getEventoCtx().setEsito(Esito.FAIL);
 						clientPostMessage.getEventoCtx().setDescrizioneEsito(e.getMessage());
+						clientPostMessage.getEventoCtx().setException(e);
 					}
 					
 					// provo a salvare l'errore 
@@ -246,10 +286,11 @@ public class InviaNotificaAppIoThread implements Runnable{
 					errore = true;
 					log.error("Errore non previsto durante l'invocazione del servizio: " + e.getMessage(), e);
 				
-					if(clientGetProfile != null) {
-						clientGetProfile.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
-						clientGetProfile.getEventoCtx().setEsito(Esito.FAIL);
-						clientGetProfile.getEventoCtx().setDescrizioneEsito(e.getMessage());
+					if(clientPostMessage != null) {
+						clientPostMessage.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+						clientPostMessage.getEventoCtx().setEsito(Esito.FAIL);
+						clientPostMessage.getEventoCtx().setDescrizioneEsito(e.getMessage());
+						clientPostMessage.getEventoCtx().setException(e);
 					}
 					
 					// provo a salvare l'errore 
@@ -296,7 +337,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 //						ctx.getApplicationLogger().log("notifica.carrelloRetryko", e.getMessage(), prossima.toString());
 //					}
 			
-			log.debug("Aggiornamento Notifica del Debitore "+ this.notifica.getDebitoreIdentificativo() +" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "] in stato ANNULLATA.");
+			log.debug("Aggiornamento Notifica ["+this.tipo+"] del Debitore "+ this.notifica.getDebitoreIdentificativo() +" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "] in stato ANNULLATA.");
 			notificheBD.updateAnnullata(this.notifica.getId(), message, tentativi, prossima);
 			
 		} catch (Exception ee) {
@@ -322,7 +363,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 //					} else {
 //						ctx.getApplicationLogger().log("notifica.carrelloRetryko", e.getMessage(), prossima.toString());
 //					}
-			log.debug("Aggiornamento Notifica del Debitore "+ this.notifica.getDebitoreIdentificativo() +" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "] in stato DA SPEDIRE.");
+			log.debug("Aggiornamento Notifica ["+this.tipo+"] del Debitore "+ this.notifica.getDebitoreIdentificativo() +" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "] in stato DA SPEDIRE.");
 			notificheBD.updateDaSpedire(this.notifica.getId(), message, tentativi, prossima);
 			
 		} catch (Exception ee) {

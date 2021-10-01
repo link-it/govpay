@@ -62,7 +62,7 @@ public class DocumentiBD extends BasicBD {
 		}
 	}
 	
-	public Documento getDocumentoByDominioIdentificativo(Long idDominio, String codDocumento) throws NotFoundException, ServiceException {
+	public Documento getDocumentoByApplicazioneDominioIdentificativo(Long idApplicazione, Long idDominio, String codDocumento) throws NotFoundException, ServiceException {
 		
 		try {
 			if(this.isAtomica()) {
@@ -73,6 +73,7 @@ public class DocumentiBD extends BasicBD {
 			
 			DocumentoFieldConverter fieldConverter = new DocumentoFieldConverter(this.getJdbcProperties().getDatabaseType());
 			exp.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Documento.model())), idDominio);
+			exp.equals(new CustomField("id_applicazione", Long.class, "id_applicazione", fieldConverter.toTable(it.govpay.orm.Documento.model())), idApplicazione);
 			exp.equals(it.govpay.orm.Documento.model().COD_DOCUMENTO, codDocumento);
 			it.govpay.orm.Documento docuemnto = this.getDocumentoService().find(exp);
 			return DocumentoConverter.toDTO(docuemnto);
@@ -117,8 +118,30 @@ public class DocumentiBD extends BasicBD {
 	public DocumentoFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new DocumentoFilter(this.getDocumentoService(),simpleSearch);
 	}
-
+	
 	public long count(DocumentoFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(DocumentoFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getDocumentoService());
+			}
+			
+			return this.getDocumentoService().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(DocumentoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -163,7 +186,7 @@ public class DocumentiBD extends BasicBD {
 			List<Class<?>> returnTypes = new ArrayList<>();
 			returnTypes.add(Long.class); // Count
 			
-			List<List<Object>> nativeQuery = this.getDominioService().nativeQuery(sql, returnTypes, parameters);
+			List<List<Object>> nativeQuery = this.getDocumentoService().nativeQuery(sql, returnTypes, parameters);
 			
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {

@@ -53,7 +53,7 @@ import { BadgeCardComponent } from './elements/badge-card/badge-card.component';
 import { LoginCardComponent } from './elements/login-card/login-card.component';
 import { NotaViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/nota-view/nota-view.component';
 import { TwoColsViewComponent } from './elements/item-view/views/two-cols-view/two-cols-view.component';
-
+import { IamLoginCardComponent } from './elements/login-card/iam-login-card.component';
 import { JsonSchemaFormModule, MaterialDesignFrameworkModule } from 'angular2-json-schema-form';
 import { GeneratorsEntryListComponents } from "./classes/generators-entry-point-list";
 import { TipoPendenzaViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/tipo-pendenza-view/tipo-pendenza-view.component';
@@ -63,10 +63,12 @@ import { ReportProspettoRiscossioniViewComponent } from './elements/detail-view/
 import { ImpostazioniViewComponent } from './elements/impostazioni-view/impostazioni-view.component';
 import { AutorizzazioneEnteUoViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/autorizzazione-ente-uo-view/autorizzazione-ente-uo-view.component';
 import { FilterCardComponent } from './elements/filter-card/filter-card.component';
+import { SimpleListCardComponent } from './elements/simple-list-card/simple-list-card.component';
 import { AsyncFilterableSelectComponent } from './elements/async-filterable-select/async-filterable-select.component';
 import { AsyncAutocompleteSelectComponent } from './elements/async-autocomplete-select/async-autocomplete-select.component';
 import { ProfiloUtenteViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/profilo-utente-view/profilo-utente-view.component';
 import { ScrollerContainerComponent } from './elements/list-view/scroller-container/scroller-container.component';
+import { SslConfigComponent } from './elements/detail-view/views/ssl-config/ssl-config.component';
 
 @NgModule({
   declarations: [
@@ -101,10 +103,13 @@ import { ScrollerContainerComponent } from './elements/list-view/scroller-contai
     ImpostazioniViewComponent,
     AutorizzazioneEnteUoViewComponent,
     FilterCardComponent,
+    SimpleListCardComponent,
     AsyncFilterableSelectComponent,
     AsyncAutocompleteSelectComponent,
     ProfiloUtenteViewComponent,
-    ScrollerContainerComponent
+    ScrollerContainerComponent,
+    IamLoginCardComponent,
+    SslConfigComponent
   ],
   imports: [
     BrowserModule,

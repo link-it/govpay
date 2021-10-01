@@ -7,7 +7,7 @@
                                     form-ctrl-name="tipoPendenza_ctrl" [searching]="_searching" [required]="true" [input-hint]="_mapRisultati"
                                     (async-keyup)="_asyncKeyUp($event)" (option-click)="_onOptionSelection($event)" [options]="tipiPendenza_items">
         <ng-template let-item>
-          <div class="d-block lh-15">{{item.model.titolo.label}}</div>
+          <div class="d-block lh-15 slim-option">{{item.model.titolo.label}}</div>
         </ng-template>
       </link-async-filterable-select>
       <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
@@ -243,6 +243,11 @@
     <!-- COMUNICAZINI VIA APP IO -->
     <mat-card class="shadow no-border-radius mb-4">
       <p class="d-block matcard-title pb-3 color-gray regular-24">{{_voce.COMUNICAZIONI_APP_IO}}</p>
+      <div class="row">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <input matInput [placeholder]="_voce.API_KEY" formControlName="apiKeyNAP_IO_ctrl" autocomplete="off" [required]="_apiKeyRequired">
+        </mat-form-field>
+      </div>
       <div class="row">
         <p class="col-12 matcard-title pb-3 color-gray regular-18">{{_voce.NOTIFICA_AVVISO_PAGAMENTO}}</p>
         <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">

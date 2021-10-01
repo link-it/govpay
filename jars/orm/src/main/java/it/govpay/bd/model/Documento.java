@@ -55,12 +55,19 @@ public class Documento extends it.govpay.model.Documento {
 		return this.versamenti;
 	}
 	
-	public List<Versamento> getVersamentiPagabili(BDConfigWrapper configWrapper) throws ServiceException {
+	public List<Versamento> getVersamentiPagabili(BDConfigWrapper configWrapper, List<String> numeriAvviso) throws ServiceException {
 		List<Versamento> versamentiPagabili = new ArrayList<Versamento>();
 		List<Versamento> versamenti = getVersamenti(configWrapper);
 		for(Versamento v : versamenti) {
-			if(v.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO))
-				versamentiPagabili.add(v);
+			if(v.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
+				if(numeriAvviso != null && !numeriAvviso.isEmpty()) {
+					if(numeriAvviso.contains(v.getNumeroAvviso())) {
+						versamentiPagabili.add(v);
+					}
+				} else {
+					versamentiPagabili.add(v);	
+				}
+			}
 		}
 		return versamentiPagabili;
 	}

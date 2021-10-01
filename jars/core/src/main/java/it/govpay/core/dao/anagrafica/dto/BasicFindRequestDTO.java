@@ -16,6 +16,7 @@ import it.govpay.core.exceptions.RequestParamException.FaultType;
 
 public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	
+	protected boolean ricercaAnagrafica = false;
 	private Integer limit;
 	private String simpleSearch;
 	private List<FilterSortWrapper> fieldsSort;
@@ -26,6 +27,9 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	public final static int DEFAULT_LIMIT = 50;
 	public final static int DEFAULT_MAX_LIMIT = 200;
 	
+	private boolean eseguiCount = true;
+	private boolean eseguiCountConLimit = true;
+	private boolean eseguiFindAll = true;
 
 	public BasicFindRequestDTO(Authentication authentication) {
 		super(authentication);
@@ -62,13 +66,30 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 		else return 1;
 	}
 
-	public int getLimit() {
+	public Integer getLimit() {
 		return this.limit;
 	}
 	public void setLimit(Integer limit) {
-		this.limit = limit != null ?  limit : DEFAULT_LIMIT;
-		if(this.limit < 0)
-			this.limit = 0;
+		if(!this.ricercaAnagrafica) { 
+			this.limit = limit != null ?  limit : DEFAULT_LIMIT;
+			if(this.limit < 0)
+				this.limit = 0;
+			
+			if(this.limit == 0) {
+				this.eseguiFindAll = false;
+			}
+		} else {
+			this.limit = limit;
+			
+			if(this.limit != null) {
+				if(this.limit < 0)
+					this.limit = 0;
+				
+				if(this.limit == 0) {
+					this.eseguiFindAll = false;
+				}
+			}
+		}
 	}
 
 	public String getSimpleSearch() {
@@ -149,6 +170,29 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	public boolean isOrderEnabled() {
 		return !this.fieldsSort.isEmpty();
 	}
-	
+
+	public boolean isEseguiCount() {
+		return eseguiCount;
+	}
+
+	public void setEseguiCount(boolean eseguiCount) {
+		this.eseguiCount = eseguiCount;
+	}
+
+	public boolean isEseguiCountConLimit() {
+		return eseguiCountConLimit;
+	}
+
+	public void setEseguiCountConLimit(boolean eseguiCountConLimit) {
+		this.eseguiCountConLimit = eseguiCountConLimit;
+	}
+
+	public boolean isEseguiFindAll() {
+		return eseguiFindAll;
+	}
+
+	public void setEseguiFindAll(boolean eseguiFindAll) {
+		this.eseguiFindAll = eseguiFindAll;
+	}
 	
 }

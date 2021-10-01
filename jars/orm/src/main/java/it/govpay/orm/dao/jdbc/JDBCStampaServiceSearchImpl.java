@@ -160,23 +160,13 @@ public class JDBCStampaServiceSearchImpl implements IJDBCServiceSearchWithId<Sta
 				}
 
 				if(idVersamento != null && idVersamento > 0) {
-					it.govpay.orm.IdVersamento id_stampa_versamento = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_stampa_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idVersamento, false);
-					}else{
-						id_stampa_versamento = new it.govpay.orm.IdVersamento();
-					}
+					it.govpay.orm.IdVersamento id_stampa_versamento = new it.govpay.orm.IdVersamento();
 					id_stampa_versamento.setId(idVersamento);
 					idStampa.setIdVersamento(id_stampa_versamento);
 				}
 				
 				if(idDocumento != null && idDocumento > 0) {
-					it.govpay.orm.IdDocumento id_stampa_documento = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_stampa_documento = ((JDBCDocumentoServiceSearch)(this.getServiceManager().getDocumentoServiceSearch())).findId(idDocumento, false);
-					}else{
-						id_stampa_documento = new it.govpay.orm.IdDocumento();
-					}
+					it.govpay.orm.IdDocumento id_stampa_documento = new it.govpay.orm.IdDocumento();
 					id_stampa_documento.setId(idDocumento);
 					idStampa.setIdDocumento(id_stampa_documento);
 				}

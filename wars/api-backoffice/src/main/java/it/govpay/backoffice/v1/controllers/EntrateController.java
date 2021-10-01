@@ -120,7 +120,7 @@ public class EntrateController extends BaseController {
 
 
 
-    public Response findEntrate(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi) {
+    public Response findEntrate(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findEntrate";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -137,6 +137,9 @@ public class EntrateController extends BaseController {
 			findEntrateDTO.setLimit(risultatiPerPagina);
 			findEntrateDTO.setPagina(pagina);
 			findEntrateDTO.setOrderBy(ordinamento);
+			
+			findEntrateDTO.setEseguiCount(metadatiPaginazione);
+			findEntrateDTO.setEseguiCountConLimit(maxRisultati);
 			
 			// INIT DAO
 			

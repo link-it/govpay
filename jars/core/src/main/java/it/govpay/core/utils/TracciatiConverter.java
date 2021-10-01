@@ -101,6 +101,8 @@ public class TracciatiConverter {
 
 			versamento.setDocumento(documento );
 		}
+		
+		versamento.setProprieta(pendenza.getProprieta());
 
 		return versamento;
 		
@@ -171,5 +173,4 @@ public class TracciatiConverter {
 		
 		return importoTotale;
 	}
-	
 }

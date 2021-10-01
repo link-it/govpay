@@ -60,11 +60,18 @@ public class EventiDAO extends BaseDAO {
 			filter.setTipoEvento(listaEventiDTO.getTipoEvento());
 			filter.setSottotipoEvento(listaEventiDTO.getSottotipoEvento());
 			filter.setVista(listaEventiDTO.getVista()); 
+			filter.setEseguiCountConLimit(listaEventiDTO.isEseguiCountConLimit());
+			filter.setSeveritaDa(listaEventiDTO.getSeveritaDa());
+			filter.setSeveritaA(listaEventiDTO.getSeveritaA());
 
-			long count = eventiBD.count(filter);
+			Long count = null;
+			
+			if(listaEventiDTO.isEseguiCount()) {
+				 count = eventiBD.count(filter);
+			}
 			
 			List<Evento> resList = new ArrayList<>();
-			if(count > 0) {
+			if(listaEventiDTO.isEseguiFindAll()) {
 				eventiBD.setupConnection(configWrapper.getTransactionID());
 				
 				eventiBD.setAtomica(false);
@@ -72,7 +79,7 @@ public class EventiDAO extends BaseDAO {
 				filter.setExpressionConstructor(eventiBD.getExpressionConstructor());
 				
 				filter.setFilterSortList(listaEventiDTO.getFieldSortList());
-				if(!listaEventiDTO.isOrderEnabled()) {
+				if(listaEventiDTO.getFieldSortList().isEmpty()) { // se non c'e' impostato nessun filtro allora metto l'ordinamento per id.
 					filter.addFilterSort(filter.getDefaultFilterSortWrapperDesc());
 				}
 				

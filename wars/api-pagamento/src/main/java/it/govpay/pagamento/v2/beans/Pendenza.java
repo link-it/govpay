@@ -37,6 +37,8 @@ import it.govpay.core.beans.JSONSerializable;
 "direzione",
 "divisione",
 "tipo",
+"UUID",
+"proprieta",
 "voci",
 "rpp",
 "pagamenti",
@@ -117,6 +119,12 @@ public class Pendenza extends JSONSerializable {
   
   @JsonProperty("tipo")
   private TipoPendenzaTipologia tipo = null;
+  
+  @JsonProperty("UUID")
+  private String UUID = null;
+  
+  @JsonProperty("proprieta")
+  private ProprietaPendenza proprieta = null;
   
   @JsonProperty("voci")
   private List<VocePendenza> voci = null;
@@ -521,6 +529,37 @@ public class Pendenza extends JSONSerializable {
   }
 
   /**
+   * Parametro di randomizzazione delle URL di pagamento statiche
+   **/
+  public Pendenza UUID(String UUID) {
+    this.UUID = UUID;
+    return this;
+  }
+
+  @JsonProperty("UUID")
+  public String getUUID() {
+    return UUID;
+  }
+  public void setUUID(String UUID) {
+    this.UUID = UUID;
+  }
+
+  /**
+   **/
+  public Pendenza proprieta(ProprietaPendenza proprieta) {
+    this.proprieta = proprieta;
+    return this;
+  }
+
+  @JsonProperty("proprieta")
+  public ProprietaPendenza getProprieta() {
+    return proprieta;
+  }
+  public void setProprieta(ProprietaPendenza proprieta) {
+    this.proprieta = proprieta;
+  }
+
+  /**
    **/
   public Pendenza voci(List<VocePendenza> voci) {
     this.voci = voci;
@@ -599,6 +638,8 @@ public class Pendenza extends JSONSerializable {
         Objects.equals(direzione, pendenza.direzione) &&
         Objects.equals(divisione, pendenza.divisione) &&
         Objects.equals(tipo, pendenza.tipo) &&
+        Objects.equals(UUID, pendenza.UUID) &&
+        Objects.equals(proprieta, pendenza.proprieta) &&
         Objects.equals(voci, pendenza.voci) &&
         Objects.equals(rpp, pendenza.rpp) &&
         Objects.equals(pagamenti, pendenza.pagamenti);
@@ -606,7 +647,7 @@ public class Pendenza extends JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, idTipoPendenza, dominio, unitaOperativa, stato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, tipo, voci, rpp, pagamenti);
+    return Objects.hash(idA2A, idPendenza, idTipoPendenza, dominio, unitaOperativa, stato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, tipo, UUID, proprieta, voci, rpp, pagamenti);
   }
 
   public static Pendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -648,6 +689,8 @@ public class Pendenza extends JSONSerializable {
     sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
     sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
+    sb.append("    UUID: ").append(toIndentedString(UUID)).append("\n");
+    sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
     sb.append("    rpp: ").append(toIndentedString(rpp)).append("\n");
     sb.append("    pagamenti: ").append(toIndentedString(pagamenti)).append("\n");

@@ -171,12 +171,7 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
 			for(Map<String, Object> map: returnMap) {
 				Long id_intermediario = (Long) map.remove("id_intermediario");
 				Stazione stazione = (Stazione)this.getStazioneFetch().fetch(jdbcProperties.getDatabase(), Stazione.model(), map);
-				it.govpay.orm.IdIntermediario id_stazione_intermediario = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_stazione_intermediario = ((JDBCIntermediarioServiceSearch)(this.getServiceManager().getIntermediarioServiceSearch())).findId(id_intermediario, false);
-				}else{
-					id_stazione_intermediario = new it.govpay.orm.IdIntermediario();
-        }
+				it.govpay.orm.IdIntermediario id_stazione_intermediario = new it.govpay.orm.IdIntermediario();
 				id_stazione_intermediario.setId(id_intermediario);
 				stazione.setIdIntermediario(id_stazione_intermediario);
 

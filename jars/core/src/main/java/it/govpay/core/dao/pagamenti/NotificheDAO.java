@@ -31,13 +31,14 @@ public class NotificheDAO extends BaseDAO{
 			filter.setLimit(listaNotificheDTO.getLimit());
 			filter.setDataInizio(listaNotificheDTO.getDataDa());
 			filter.setDataFine(listaNotificheDTO.getDataA());
+			filter.setEseguiCountConLimit(listaNotificheDTO.isEseguiCountConLimit());
 			
 			if(listaNotificheDTO.getStato() != null) {
 				try {
 					it.govpay.model.Notifica.StatoSpedizione statoSpedizione = listaNotificheDTO.getStato();
 					filter.setStato(statoSpedizione.toString());
 				} catch(Exception e) {
-					return new ListaNotificheDTOResponse(0, new ArrayList<>());
+					return new ListaNotificheDTOResponse(0L, new ArrayList<>());
 				}
 			}
 			
@@ -46,13 +47,17 @@ public class NotificheDAO extends BaseDAO{
 					it.govpay.model.Notifica.TipoNotifica tipoNotifica =  listaNotificheDTO.getTipo();
 					filter.setTipo(tipoNotifica.toString());
 				} catch(Exception e) {
-					return new ListaNotificheDTOResponse(0, new ArrayList<>());
+					return new ListaNotificheDTOResponse(0L, new ArrayList<>());
 				}
 			}
 			
-			long count = notificheBD.count(filter);
+			Long count = null;
+			
+			if(listaNotificheDTO.isEseguiCount()) {
+				 count = notificheBD.count(filter);
+			}
 
-			if(count > 0) {
+			if(listaNotificheDTO.isEseguiFindAll()) {
 				List<Notifica> lst = notificheBD.findAll(filter);
 				
 				for (Notifica notifica : lst) {

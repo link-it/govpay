@@ -4,6 +4,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -33,9 +34,9 @@ public class Avvisi extends BaseRsServiceV1{
     @Path("/{idDominio}/{numeroAvviso}")
     
     @Produces({ "application/json", "application/pdf" })
-    public Response getAvviso(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("numeroAvviso") String numeroAvviso){
+    public Response getAvviso(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("numeroAvviso") String numeroAvviso, @QueryParam("linguaSecondaria") String linguaSecondaria){
         this.buildContext();
-        return this.controller.getAvviso(this.getUser(), uriInfo, httpHeaders,  idDominio,  numeroAvviso);
+        return this.controller.getAvviso(this.getUser(), uriInfo, httpHeaders,  idDominio,  numeroAvviso, linguaSecondaria);
     }
 
 }

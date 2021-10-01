@@ -76,6 +76,8 @@ public class GpContext extends ApplicationContext {
 	public static final String TIPO_SERVIZIO_GOVPAY_JSON = "GPJSON";
 	public static final String TIPO_SERVIZIO_GOVPAY_WS = "GPWS";
 	public static final String TIPO_SERVIZIO_GOVPAY_OPT = "GPO";
+	
+	public static final String MyPivot = "MyPivot";
 
 
 	public GpContext() {
@@ -283,6 +285,16 @@ public class GpContext extends ApplicationContext {
 	public synchronized String setupAppIOClient(String azione, String url) {
 		HttpServer server = new HttpServer();
 		server.setName(AppIO);
+		server.setEndpoint(url);
+		server.setIdOperation(UUID.randomUUID().toString());
+		this.getTransaction().addServer(server); 
+
+		return server.getIdOperation();
+	}
+	
+	public synchronized String setupNotificaPagamentiClient(String azione, String url) {
+		HttpServer server = new HttpServer();
+		server.setName(MyPivot);
 		server.setEndpoint(url);
 		server.setIdOperation(UUID.randomUUID().toString());
 		this.getTransaction().addServer(server); 

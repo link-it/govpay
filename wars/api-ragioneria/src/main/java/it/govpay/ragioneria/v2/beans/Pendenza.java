@@ -26,6 +26,7 @@ import it.govpay.core.beans.JSONSerializable;
 "tassonomiaAvviso",
 "direzione",
 "divisione",
+"UUID",
 })
 public class Pendenza extends JSONSerializable {
   
@@ -76,6 +77,9 @@ public class Pendenza extends JSONSerializable {
   
   @JsonProperty("divisione")
   private String divisione = null;
+  
+  @JsonProperty("UUID")
+  private String UUID = null;
   
   /**
    * Identificativo del gestionale responsabile della pendenza
@@ -332,6 +336,22 @@ public class Pendenza extends JSONSerializable {
     this.divisione = divisione;
   }
 
+  /**
+   * Parametro di randomizzazione delle URL di pagamento statiche
+   **/
+  public Pendenza UUID(String UUID) {
+    this.UUID = UUID;
+    return this;
+  }
+
+  @JsonProperty("UUID")
+  public String getUUID() {
+    return UUID;
+  }
+  public void setUUID(String UUID) {
+    this.UUID = UUID;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -356,12 +376,13 @@ public class Pendenza extends JSONSerializable {
         Objects.equals(tassonomia, pendenza.tassonomia) &&
         Objects.equals(tassonomiaAvviso, pendenza.tassonomiaAvviso) &&
         Objects.equals(direzione, pendenza.direzione) &&
-        Objects.equals(divisione, pendenza.divisione);
+        Objects.equals(divisione, pendenza.divisione) &&
+        Objects.equals(UUID, pendenza.UUID);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, idDominio, idUnitaOperativa, idTipoPendenza, causale, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione);
+    return Objects.hash(idA2A, idPendenza, idDominio, idUnitaOperativa, idTipoPendenza, causale, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, UUID);
   }
 
   public static Pendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -394,6 +415,7 @@ public class Pendenza extends JSONSerializable {
     sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
     sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
     sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
+    sb.append("    UUID: ").append(toIndentedString(UUID)).append("\n");
     sb.append("}");
     return sb.toString();
   }

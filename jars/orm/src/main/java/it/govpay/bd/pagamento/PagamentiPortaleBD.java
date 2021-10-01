@@ -59,8 +59,30 @@ public class PagamentiPortaleBD extends BasicBD{
 	public PagamentoPortaleFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new PagamentoPortaleFilter(this.getVistaPagamentoPortaleServiceSearch(),simpleSearch);
 	}
-
+	
 	public long count(PagamentoPortaleFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(PagamentoPortaleFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getVistaPagamentoPortaleServiceSearch());
+			}
+			
+			return this.getVistaPagamentoPortaleServiceSearch().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(PagamentoPortaleFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -86,7 +108,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(ppvFieldConverter.toTable(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE));
-			sqlQueryObjectInterno.addSelectField("id");
+			sqlQueryObjectInterno.addSelectField(ppvFieldConverter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE, true));
 			sqlQueryObjectInterno.addSelectField(ppvFieldConverter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			// creo condizioni
@@ -98,7 +120,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
-			sqlQueryObjectDistinctID.addSelectCountField("id","id",true);
+			sqlQueryObjectDistinctID.addSelectCountField(ppvFieldConverter.toColumn(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE, false),"cont",true);
 			
 			String sql = sqlQueryObjectDistinctID.createSQLQuery();
 			List<Class<?>> returnTypes = new ArrayList<>();
@@ -163,7 +185,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(ppvFieldConverter.toTable(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE));
-			sqlQueryObjectInterno.addSelectField("id");
+			sqlQueryObjectInterno.addSelectField(ppvFieldConverter.toTable(it.govpay.orm.VistaPagamentoPortale.model().ID_SESSIONE) + ".id");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			// creo condizioni
 			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
@@ -201,6 +223,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().ACK, true));
 			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().PRINCIPAL, true));
 			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().TIPO_UTENZA, true));
+			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toColumn(it.govpay.orm.PagamentoPortale.model().SEVERITA, true));
 			sqlQueryObjectPagamentiPortale.addSelectField(ppFieldConverter.toTable(it.govpay.orm.PagamentoPortale.model().ID_SESSIONE) + ".id_applicazione"); // Id Applicazione
 			
 			sqlQueryObjectPagamentiPortale.addWhereINSelectSQLCondition(false, "id", sqlQueryObjectDistinctID);
@@ -233,6 +256,7 @@ public class PagamentiPortaleBD extends BasicBD{
 			returnTypes.add(it.govpay.orm.PagamentoPortale.model().ACK.getFieldType());
 			returnTypes.add(it.govpay.orm.PagamentoPortale.model().PRINCIPAL.getFieldType());
 			returnTypes.add(it.govpay.orm.PagamentoPortale.model().TIPO_UTENZA.getFieldType());
+			returnTypes.add(it.govpay.orm.PagamentoPortale.model().SEVERITA.getFieldType());
 			returnTypes.add(Long.class); // Id Applicazione
 			
 			
@@ -266,6 +290,7 @@ public class PagamentiPortaleBD extends BasicBD{
 				vo.setAck(BasicBD.getValueOrNull(row.get(pos++),Boolean.class));
 				vo.setPrincipal(BasicBD.getValueOrNull(row.get(pos++),String.class));
 				vo.setTipoUtenza(BasicBD.getValueOrNull(row.get(pos++),String.class));
+				vo.setSeverita(BasicBD.getValueOrNull(row.get(pos++),Integer.class));
 				
 				Long idApplicazioneLong = BasicBD.getValueOrNull(row.get(pos++), Long.class);
 				if(idApplicazioneLong != null) {

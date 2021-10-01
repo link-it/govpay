@@ -68,6 +68,7 @@ import it.govpay.orm.dao.IDBStazioneService;
 import it.govpay.orm.dao.IDBTipoTributoService;
 import it.govpay.orm.dao.IDBTipoVersamentoDominioService;
 import it.govpay.orm.dao.IDBTipoVersamentoService;
+import it.govpay.orm.dao.IDBTracciatoNotificaPagamentiService;
 import it.govpay.orm.dao.IDBTracciatoService;
 import it.govpay.orm.dao.IDBTributoService;
 import it.govpay.orm.dao.IDBUoService;
@@ -77,8 +78,10 @@ import it.govpay.orm.dao.IDBUtenzaTipoVersamentoService;
 import it.govpay.orm.dao.IDBVersamentoService;
 import it.govpay.orm.dao.IDBVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IDBVistaPagamentoPortaleServiceSearch;
+import it.govpay.orm.dao.IDBVistaPagamentoServiceSearch;
 import it.govpay.orm.dao.IDBVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IDBVistaRptVersamentoServiceSearch;
+import it.govpay.orm.dao.IDBVistaVersamentoServiceSearch;
 import it.govpay.orm.dao.IDocumentoService;
 import it.govpay.orm.dao.IDominioService;
 import it.govpay.orm.dao.IEventoService;
@@ -97,7 +100,6 @@ import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.IPromemoriaService;
 import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRRService;
-import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
 import it.govpay.orm.dao.IRendicontazioneService;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.IStampaService;
@@ -105,6 +107,7 @@ import it.govpay.orm.dao.IStazioneService;
 import it.govpay.orm.dao.ITipoTributoService;
 import it.govpay.orm.dao.ITipoVersamentoDominioService;
 import it.govpay.orm.dao.ITipoVersamentoService;
+import it.govpay.orm.dao.ITracciatoNotificaPagamentiService;
 import it.govpay.orm.dao.ITracciatoService;
 import it.govpay.orm.dao.ITributoService;
 import it.govpay.orm.dao.IUoService;
@@ -115,9 +118,11 @@ import it.govpay.orm.dao.IVersamentoIncassoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVistaEventiVersamentoServiceSearch;
 import it.govpay.orm.dao.IVistaPagamentoPortaleServiceSearch;
+import it.govpay.orm.dao.IVistaPagamentoServiceSearch;
 import it.govpay.orm.dao.IVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
 import it.govpay.orm.dao.IVistaRptVersamentoServiceSearch;
+import it.govpay.orm.dao.IVistaVersamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 public class BasicBD {
@@ -164,12 +169,14 @@ public class BasicBD {
 	private IVistaRiscossioniServiceSearch vistaRiscossioniServiceSearch;
 	private IStampaService stampaService;
 	private IConfigurazioneService configurazioneService;
-	private IRendicontazionePagamentoServiceSearch rendicontazionePagamentoServiceSearch;
 	private IPromemoriaService promemoriaService;
 	private IVistaPagamentoPortaleServiceSearch vistaPagamentoPortaleServiceSearch;
 	private IVistaRendicontazioneServiceSearch vistaRendicontazioneServiceSearch;
 	private IVistaRptVersamentoServiceSearch vistaRptVersamentoServiceSearch;
 	private IDocumentoService documentoService;
+	private ITracciatoNotificaPagamentiService tracciatoNotificaPagamentiService;
+	private IVistaPagamentoServiceSearch vistaPagamentoServiceSearch;
+	private IVistaVersamentoServiceSearch vistaVersamentoServiceSearch;
 	
 	private String idTransaction;
 	private String idModulo;
@@ -270,12 +277,14 @@ public class BasicBD {
 				this.vistaRiscossioniServiceSearch = this.serviceManager.getVistaRiscossioniServiceSearch();
 				this.stampaService = this.serviceManager.getStampaService();
 				this.configurazioneService = this.serviceManager.getConfigurazioneService();
-				this.rendicontazionePagamentoServiceSearch = this.serviceManager.getRendicontazionePagamentoServiceSearch();
 				this.promemoriaService = this.serviceManager.getPromemoriaService();
 				this.vistaPagamentoPortaleServiceSearch = this.serviceManager.getVistaPagamentoPortaleServiceSearch();
 				this.vistaRendicontazioneServiceSearch = this.serviceManager.getVistaRendicontazioneServiceSearch();
 				this.vistaRptVersamentoServiceSearch = this.serviceManager.getVistaRptVersamentoServiceSearch();
 				this.documentoService = this.serviceManager.getDocumentoService();
+				this.tracciatoNotificaPagamentiService = this.serviceManager.getTracciatoNotificaPagamentiService();
+				this.vistaPagamentoServiceSearch =this.serviceManager.getVistaPagamentoServiceSearch();
+				this.vistaVersamentoServiceSearch = this.serviceManager.getVistaVersamentoServiceSearch();
 			} catch(NotImplementedException e) {
 				throw new ServiceException(e);
 			}
@@ -332,6 +341,9 @@ public class BasicBD {
 			((IDBVistaRendicontazioneServiceSearch)this.vistaRendicontazioneServiceSearch).enableSelectForUpdate();
 			((IDBVistaRptVersamentoServiceSearch)this.vistaRptVersamentoServiceSearch).enableSelectForUpdate();
 			((IDBDocumentoService)this.documentoService).enableSelectForUpdate();
+			((IDBTracciatoNotificaPagamentiService)this.tracciatoNotificaPagamentiService).enableSelectForUpdate();
+			((IDBVistaPagamentoServiceSearch)this.vistaPagamentoServiceSearch).enableSelectForUpdate();
+			((IDBVistaVersamentoServiceSearch)this.vistaVersamentoServiceSearch).enableSelectForUpdate();
 			
 			this.isSelectForUpdate = true;
 		} catch(NotImplementedException e) {
@@ -387,6 +399,9 @@ public class BasicBD {
 			((IDBVistaRendicontazioneServiceSearch)this.vistaRendicontazioneServiceSearch).disableSelectForUpdate();
 			((IDBVistaRptVersamentoServiceSearch)this.vistaRptVersamentoServiceSearch).disableSelectForUpdate();
 			((IDBDocumentoService)this.documentoService).disableSelectForUpdate();
+			((IDBTracciatoNotificaPagamentiService)this.tracciatoNotificaPagamentiService).disableSelectForUpdate();
+			((IDBVistaPagamentoServiceSearch)this.vistaPagamentoServiceSearch).disableSelectForUpdate();
+			((IDBVistaVersamentoServiceSearch)this.vistaVersamentoServiceSearch).disableSelectForUpdate();
 			
 			this.isSelectForUpdate = false;
 		} catch(NotImplementedException e) {
@@ -655,14 +670,6 @@ public class BasicBD {
 		return this.stampaService;
 	}
 	
-
-	public IRendicontazionePagamentoServiceSearch getRendicontazionePagamentoServiceSearch() {
-		if(this.father != null) {
-			return this.father.getRendicontazionePagamentoServiceSearch();
-		}
-		return this.rendicontazionePagamentoServiceSearch;
-	}
-	
 	public IVersamentoIncassoServiceSearch getVersamentoIncassoServiceSearch() {
 		if(this.father != null) {
 			return this.father.getVersamentoIncassoServiceSearch();
@@ -717,6 +724,27 @@ public class BasicBD {
 			return this.father.getDocumentoService();
 		}
 		return this.documentoService;
+	}
+	
+	public ITracciatoNotificaPagamentiService getTracciatoNotificaPagamentiService() {
+		if(this.father != null) {
+			return this.father.getTracciatoNotificaPagamentiService();
+		}
+		return this.tracciatoNotificaPagamentiService;
+	}
+	
+	public IVistaPagamentoServiceSearch getVistaPagamentoServiceSearch() {
+		if(this.father != null) {
+			return this.father.getVistaPagamentoServiceSearch();
+		}
+		return this.vistaPagamentoServiceSearch;
+	}
+
+	public IVistaVersamentoServiceSearch getVistaVersamentoServiceSearch() {
+		if(this.father != null) {
+			return this.father.getVistaVersamentoServiceSearch();
+		}
+		return this.vistaVersamentoServiceSearch;
 	}
 
 	public void setAutoCommit(boolean autoCommit) throws ServiceException {

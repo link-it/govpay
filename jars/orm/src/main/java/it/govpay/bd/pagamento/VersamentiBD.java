@@ -65,6 +65,7 @@ import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.Documento;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdDocumento;
+import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.constants.StatoOperazioneType;
@@ -264,7 +265,7 @@ public class VersamentiBD extends BasicBD {
 	/**
 	 * Crea un nuovo versamento.
 	 */
-	public void insertVersamento(Versamento versamento) throws ServiceException{
+	public void insertVersamento(Versamento versamento) throws ServiceException {
 		_insertVersamento(versamento, null, null);
 	}
 	
@@ -284,29 +285,60 @@ public class VersamentiBD extends BasicBD {
 			Long idDocumentoLong = null;
 			Documento documento = null;
 			if(versamento.getDocumento(this) != null) {
-				try {
-					this.enableSelectForUpdate();
-				
-					IdDocumento idDocumento = new IdDocumento();
-					idDocumento.setCodDocumento(versamento.getDocumento(this).getCodDocumento());
-					IdApplicazione idApplicazione = new IdApplicazione();
-					BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
-					idApplicazione.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
-					idDocumento.setIdApplicazione(idApplicazione);
+				IdDocumento idDocumento = new IdDocumento();
+				idDocumento.setCodDocumento(versamento.getDocumento(this).getCodDocumento());
+				IdApplicazione idApplicazione = new IdApplicazione();
+				BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
+				idApplicazione.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
+				idApplicazione.setId(versamento.getApplicazione(configWrapper).getId());
+				idDocumento.setIdApplicazione(idApplicazione);
+				IdDominio idDominio = new IdDominio();
+				idDominio.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
+				idDominio.setId(versamento.getDominio(configWrapper).getId());
+				idDocumento.setIdDominio(idDominio);
 					
-					try {
-						documento = this.getDocumentoService().get(idDocumento);
-						idDocumentoLong = documento.getId();
-					} catch (NotFoundException | MultipleResultException e) {
-					}
-				}finally {
-					this.disableSelectForUpdate();
-				}
 				
-				if(documento == null) {
+				try {
+					boolean existsDocumento = this.getDocumentoService().exists(idDocumento);
 					Documento documentoVo = DocumentoConverter.toVO(versamento.getDocumento(this));
-					this.getDocumentoService().create(documentoVo);
-					idDocumentoLong = documentoVo.getId();
+					
+					if(existsDocumento) { // update
+						try {
+							this.enableSelectForUpdate();
+							documento = this.getDocumentoService().get(idDocumento);
+							idDocumentoLong = documento.getId();
+							
+							this.getDocumentoService().update(idDocumento, documentoVo);
+						} catch (NotFoundException e) {
+							throw new ServiceException(e); // non dovrei entrare mai in questo punto perche' ho fatto la exists prima 
+						} finally {
+							this.disableSelectForUpdate();
+						}
+					} else { // create
+						// Provo ad inserirlo, ma un thread concorrente potrebbe anticiparmi
+						try {
+							this.getDocumentoService().create(documentoVo);
+							idDocumentoLong = documentoVo.getId();
+						} catch (ServiceException se) {
+							try {
+								// Verifico che un concorrente non abbia inserito il documento
+								this.enableSelectForUpdate();
+								documento = this.getDocumentoService().get(idDocumento);
+								this.getDocumentoService().update(idDocumento, documentoVo);
+							} catch (NotFoundException nfe) {
+								throw new ServiceException(se);
+							} catch (Exception ie){
+								throw new ServiceException(ie);
+							} finally {
+								this.disableSelectForUpdate();
+							}
+							
+							idDocumentoLong = documento.getId();
+						}
+					}
+					
+				} catch (MultipleResultException e) {
+					throw new ServiceException(e); // in realta' nell'implementazione non viene lanciata... 
 				}
 				
 				versamento.setIdDocumento(idDocumentoLong);
@@ -401,25 +433,54 @@ public class VersamentiBD extends BasicBD {
 					IdApplicazione idApplicazione = new IdApplicazione();
 					BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
 					idApplicazione.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
+					idApplicazione.setId(versamento.getApplicazione(configWrapper).getId());
 					idDocumento.setIdApplicazione(idApplicazione);
-					try {
-						this.enableSelectForUpdate();
-
-						try {
-							documento = this.getDocumentoService().get(idDocumento);
-							idDocumentoLong = documento.getId();
-						} catch (NotFoundException | MultipleResultException e) {
-						}
-					}finally {
-						this.disableSelectForUpdate();
-					}
+					IdDominio idDominio = new IdDominio();
+					idDominio.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
+					idDominio.setId(versamento.getDominio(configWrapper).getId());
+					idDocumento.setIdDominio(idDominio );
 					
-					Documento documentoVo = DocumentoConverter.toVO(versamento.getDocumento(this));
-					if(documento == null) {
-						this.getDocumentoService().create(documentoVo);
-						idDocumentoLong = documentoVo.getId();
-					} else {
-						this.getDocumentoService().update(idDocumento, documentoVo);
+					try {
+						boolean existsDocumento = this.getDocumentoService().exists(idDocumento);
+						Documento documentoVo = DocumentoConverter.toVO(versamento.getDocumento(this));
+						
+						if(existsDocumento) { // update
+							try {
+								this.enableSelectForUpdate();
+								documento = this.getDocumentoService().get(idDocumento);
+								idDocumentoLong = documento.getId();
+								
+								this.getDocumentoService().update(idDocumento, documentoVo);
+							} catch (NotFoundException e) {
+								throw new ServiceException(e); // non dovrei entrare mai in questo punto perche' ho fatto la exists prima 
+							} finally {
+								this.disableSelectForUpdate();
+							}
+						} else { // create
+							// Provo ad inserirlo, ma un thread concorrente potrebbe anticiparmi
+							try {
+								this.getDocumentoService().create(documentoVo);
+								idDocumentoLong = documentoVo.getId();
+							} catch (ServiceException se) {
+								try {
+									// Verifico che un concorrente non abbia inserito il documento
+									this.enableSelectForUpdate();
+									documento = this.getDocumentoService().get(idDocumento);
+									this.getDocumentoService().update(idDocumento, documentoVo);
+								} catch (NotFoundException nfe) {
+									throw new ServiceException(se);
+								} catch (Exception ie){
+									throw new ServiceException(ie);
+								} finally {
+									this.disableSelectForUpdate();
+								}
+								
+								idDocumentoLong = documento.getId();
+							}
+						}
+						
+					} catch (MultipleResultException e) {
+						throw new ServiceException(e); // in realta' nell'implementazione non viene lanciata... 
 					}
 					
 					versamento.setIdDocumento(idDocumentoLong);
@@ -570,8 +631,30 @@ public class VersamentiBD extends BasicBD {
 	public VersamentoFilter newFilter(boolean simpleSearch) throws ServiceException {
 		return new VersamentoFilter(this.getVersamentoService(),simpleSearch);
 	}
-
+	
 	public long count(VersamentoFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(VersamentoFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getVersamentoService());
+			}
+			
+			return this.getVersamentoService().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(VersamentoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());

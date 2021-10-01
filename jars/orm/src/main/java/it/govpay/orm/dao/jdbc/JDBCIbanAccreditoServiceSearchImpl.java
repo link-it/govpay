@@ -147,22 +147,11 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 				IdIbanAccredito idIbanAccredito = new IdIbanAccredito();
 				idIbanAccredito.setCodIban((String) map.remove(IbanAccredito.model().COD_IBAN.getFieldName()));
 				
-				
 				Long idDominio = (Long) map.remove("id_dominio");
 
-				if(idMappingResolutionBehaviour==null ||
-						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-						){
-					it.govpay.orm.IdDominio id_ibanAccredito_dominio = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_ibanAccredito_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idDominio, false);
-					}else{
-						id_ibanAccredito_dominio = new it.govpay.orm.IdDominio();
-					}
-					id_ibanAccredito_dominio.setId(idDominio);
-					idIbanAccredito.setIdDominio(id_ibanAccredito_dominio);
-				}
-
+				it.govpay.orm.IdDominio id_ibanAccredito_dominio = new it.govpay.orm.IdDominio();
+				id_ibanAccredito_dominio.setId(idDominio);
+				idIbanAccredito.setIdDominio(id_ibanAccredito_dominio);
 				
 				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (IbanAccredito)this.getIbanAccreditoFetch().fetch(jdbcProperties.getDatabase(), IbanAccredito.model(), map)));
         }
@@ -191,6 +180,7 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 			fields.add(IbanAccredito.model().DESCRIZIONE);
 			fields.add(IbanAccredito.model().ABILITATO);
 			fields.add(IbanAccredito.model().INTESTATARIO);
+			fields.add(IbanAccredito.model().AUT_STAMPA_POSTE);
 
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFieldConverter().toTable(IbanAccredito.model())));
 
@@ -200,18 +190,10 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 				Long idDominio = (Long) map.remove("id_dominio");
 				
 				IbanAccredito ibanAccredito = (IbanAccredito)this.getIbanAccreditoFetch().fetch(jdbcProperties.getDatabase(), IbanAccredito.model(), map);
-				if(idMappingResolutionBehaviour==null ||
-						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-					){
-						it.govpay.orm.IdDominio id_ibanAccredito_dominio = null;
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_ibanAccredito_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idDominio, false);
-						}else{
-							id_ibanAccredito_dominio = new it.govpay.orm.IdDominio();
-        }
-						id_ibanAccredito_dominio.setId(idDominio);
-						ibanAccredito.setIdDominio(id_ibanAccredito_dominio);
-					}
+
+				it.govpay.orm.IdDominio id_ibanAccredito_dominio = new it.govpay.orm.IdDominio();
+				id_ibanAccredito_dominio.setId(idDominio);
+				ibanAccredito.setIdDominio(id_ibanAccredito_dominio);
 
 				list.add(ibanAccredito);
 			}

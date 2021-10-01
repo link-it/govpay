@@ -7,7 +7,7 @@ import it.govpay.core.dao.anagrafica.dto.BasicFindResponseDTO;
 
 public class ListaRiscossioniDTOResponse extends BasicFindResponseDTO<StatisticaRiscossione> {
 
-	public ListaRiscossioniDTOResponse(long totalResults, List<StatisticaRiscossione> results) {
+	public ListaRiscossioniDTOResponse(Long totalResults, List<StatisticaRiscossione> results) {
 		super(totalResults, results);
 	}
 

@@ -18,6 +18,8 @@ import it.govpay.core.utils.EventiUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.InitConstants;
+import it.govpay.core.utils.LabelAvvisiProperties;
+import it.govpay.core.utils.SeveritaProperties;
 import it.govpay.core.utils.StartupUtils;
 
 public class InitListener implements ServletContextListener{
@@ -41,7 +43,9 @@ public class InitListener implements ServletContextListener{
 		URL log4j2URL = InitListener.class.getResource(GovpayConfig.LOG4J2_XML_FILE);
 		InputStream msgDiagnosticiIS = InitListener.class.getResourceAsStream(GovpayConfig.MSG_DIAGNOSTICI_PROPERTIES_FILE);
 		InputStream mappingTipiEventoPropertiesIS = InitListener.class.getResourceAsStream(EventiUtils.MAPPING_TIPI_EVENTO_PROPERTIES_FILE);
-		IContext ctx = StartupUtils.startup(log, warName, InitConstants.GOVPAY_VERSION, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, mappingTipiEventoPropertiesIS, tipoServizioGovpay);
+		InputStream mappingSeveritaErroriPropertiesIS = InitListener.class.getResourceAsStream(SeveritaProperties.MAPPING_SEVERITA_ERRORI_PROPERTIES_FILE);
+		InputStream avvisiLabelPropertiesIS = InitListener.class.getResourceAsStream(LabelAvvisiProperties.PROPERTIES_FILE);
+		IContext ctx = StartupUtils.startup(log, warName, InitConstants.GOVPAY_VERSION, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, mappingTipiEventoPropertiesIS, tipoServizioGovpay, mappingSeveritaErroriPropertiesIS, avvisiLabelPropertiesIS);
 		try {
 			log = LoggerWrapperFactory.getLogger("boot");	
 			StartupUtils.startupServices(log, warName, InitConstants.GOVPAY_VERSION, commit, ctx, dominioAnagraficaManager, GovpayConfig.getInstance());

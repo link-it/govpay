@@ -43,7 +43,6 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.IdUnitaOperativa;
 //import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
@@ -126,21 +125,10 @@ public class PendenzeDAO extends BaseDAO{
 
 			filter.setIdDomini(listaPendenzaDTO.getIdDomini());
 			filter.setIdTipiVersamento(listaPendenzaDTO.getIdTipiVersamento());
+			filter.setEseguiCountConLimit(listaPendenzaDTO.isEseguiCountConLimit());
 
 			if(listaPendenzaDTO.getUnitaOperative() != null) {
-				List<Long> idDomini = new ArrayList<>();
-				List<Long> idUO = new ArrayList<>();
-				for (IdUnitaOperativa uo : listaPendenzaDTO.getUnitaOperative()) {
-					if(uo.getIdDominio() != null && !idDomini.contains(uo.getIdDominio())) {
-						idDomini.add(uo.getIdDominio());
-					}
-
-					if(uo.getIdUnita() != null) {
-						idUO.add(uo.getIdUnita()); 
-					}
-				}
-				filter.setIdDomini(idDomini);
-				filter.setIdUo(idUO);
+				filter.setIdUo(listaPendenzaDTO.getUnitaOperative());
 			}
 
 			filter.setOffset(listaPendenzaDTO.getOffset());
@@ -175,7 +163,7 @@ public class PendenzeDAO extends BaseDAO{
 					}
 					filter.setStatoVersamento(statoVersamento);
 				} catch(Exception e) {
-					return new ListaPendenzeDTOResponse(0, new ArrayList<LeggiPendenzaDTOResponse>());
+					return new ListaPendenzeDTOResponse(0L, new ArrayList<LeggiPendenzaDTOResponse>());
 				}
 			}
 			filter.setCodDominio(listaPendenzaDTO.getIdDominio() );
@@ -211,11 +199,11 @@ public class PendenzeDAO extends BaseDAO{
 	}
 
 	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
-		VersamentiBD versamentiBD = null;
+		it.govpay.bd.viste.VersamentiBD versamentiBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
 		try {
-			versamentiBD = new VersamentiBD(configWrapper);
+			versamentiBD = new it.govpay.bd.viste.VersamentiBD(configWrapper);
 			return this.listaPendenze(listaPendenzaDTO, versamentiBD);
 		}finally {
 			if(versamentiBD != null)
@@ -223,28 +211,17 @@ public class PendenzeDAO extends BaseDAO{
 		}
 	}
 
-	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO, VersamentiBD versamentiBD) throws NotAuthenticatedException, NotAuthorizedException, ServiceException, ValidationException {
+	public ListaPendenzeDTOResponse listaPendenze(ListaPendenzeDTO listaPendenzaDTO, it.govpay.bd.viste.VersamentiBD versamentiBD) throws NotAuthenticatedException, NotAuthorizedException, ServiceException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
-		VersamentoFilter filter = versamentiBD.newFilter();
+		it.govpay.bd.viste.filters.VersamentoFilter filter = versamentiBD.newFilter();
 
 		filter.setIdDomini(listaPendenzaDTO.getIdDomini());
 		filter.setIdTipiVersamento(listaPendenzaDTO.getIdTipiVersamento());
+		filter.setEseguiCountConLimit(listaPendenzaDTO.isEseguiCountConLimit());
 
 		if(listaPendenzaDTO.getUnitaOperative() != null) {
-			List<Long> idDomini = new ArrayList<>();
-			List<Long> idUO = new ArrayList<>();
-			for (IdUnitaOperativa uo : listaPendenzaDTO.getUnitaOperative()) {
-				if(uo.getIdDominio() != null && !idDomini.contains(uo.getIdDominio())) {
-					idDomini.add(uo.getIdDominio());
-				}
-
-				if(uo.getIdUnita() != null) {
-					idUO.add(uo.getIdUnita()); 
-				}
-			}
-			filter.setIdDomini(idDomini);
-			filter.setIdUo(idUO);
+			filter.setIdUo(listaPendenzaDTO.getUnitaOperative());
 		}
 
 		filter.setOffset(listaPendenzaDTO.getOffset());
@@ -279,7 +256,7 @@ public class PendenzeDAO extends BaseDAO{
 				}
 				filter.setStatoVersamento(statoVersamento);
 			} catch(Exception e) {
-				return new ListaPendenzeDTOResponse(0, new ArrayList<LeggiPendenzaDTOResponse>());
+				return new ListaPendenzeDTOResponse(0L, new ArrayList<LeggiPendenzaDTOResponse>());
 			}
 		}
 		filter.setCodDominio(listaPendenzaDTO.getIdDominio() );
@@ -305,10 +282,15 @@ public class PendenzeDAO extends BaseDAO{
 		} 
 		filter.setMostraSpontaneiNonPagati(listaPendenzaDTO.getMostraSpontaneiNonPagati());
 
-		long count = versamentiBD.count(filter);
-
+		Long count = null;
+		
+		if(listaPendenzaDTO.isEseguiCount()) {
+			 count = versamentiBD.count(filter);
+		}
+		
 		List<LeggiPendenzaDTOResponse> resList = new ArrayList<>();
-		if(count > 0) {
+
+		if(listaPendenzaDTO.isEseguiFindAll()) {
 			List<Versamento> findAll = versamentiBD.findAll(filter);
 
 			for (Versamento versamento : findAll) {
@@ -339,21 +321,10 @@ public class PendenzeDAO extends BaseDAO{
 
 			filter.setIdDomini(listaPendenzaDTO.getIdDomini());
 			filter.setIdTipiVersamento(listaPendenzaDTO.getIdTipiVersamento());
+			filter.setEseguiCountConLimit(listaPendenzaDTO.isEseguiCountConLimit());
 
 			if(listaPendenzaDTO.getUnitaOperative() != null) {
-				List<Long> idDomini = new ArrayList<>();
-				List<Long> idUO = new ArrayList<>();
-				for (IdUnitaOperativa uo : listaPendenzaDTO.getUnitaOperative()) {
-					if(uo.getIdDominio() != null && !idDomini.contains(uo.getIdDominio())) {
-						idDomini.add(uo.getIdDominio());
-					}
-
-					if(uo.getIdUnita() != null) {
-						idUO.add(uo.getIdUnita());
-					}
-				}
-				filter.setIdDomini(idDomini);
-				filter.setIdUo(idUO);
+				filter.setIdUo(listaPendenzaDTO.getUnitaOperative());
 			}
 
 			filter.setOffset(listaPendenzaDTO.getOffset());
@@ -388,7 +359,7 @@ public class PendenzeDAO extends BaseDAO{
 					}
 					filter.setStatoVersamento(statoVersamento);
 				} catch(Exception e) {
-					return new ListaPendenzeDTOResponse(0, new ArrayList<LeggiPendenzaDTOResponse>());
+					return new ListaPendenzeDTOResponse(0L, new ArrayList<LeggiPendenzaDTOResponse>());
 				}
 			}
 			filter.setCodDominio(listaPendenzaDTO.getIdDominio() );
@@ -414,10 +385,14 @@ public class PendenzeDAO extends BaseDAO{
 			} 
 			filter.setMostraSpontaneiNonPagati(listaPendenzaDTO.getMostraSpontaneiNonPagati());
 
-			long count = versamentiBD.count(filter);
+			Long count = null;
+			
+			if(listaPendenzaDTO.isEseguiCount()) {
+				 count = versamentiBD.count(filter);
+			}
 
 			List<LeggiPendenzaDTOResponse> resList = new ArrayList<>();
-			if(count > 0) {
+			if(listaPendenzaDTO.isEseguiFindAll()) {
 				List<Versamento> findAll = versamentiBD.findAll(filter);
 
 				for (Versamento versamento : findAll) {
@@ -907,6 +882,7 @@ public class PendenzeDAO extends BaseDAO{
 				printAvvisoDTO.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 				printAvvisoDTO.setIuv(iuv.getIuv());
 				printAvvisoDTO.setVersamento(versamento); 
+				printAvvisoDTO.setSalvaSuDB(false);
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 				createOrUpdatePendenzaResponse.setPdf(Base64.getEncoder().encodeToString(printAvvisoDTOResponse.getAvviso().getPdf()));
 			} else { // non devo fare la stampa.
@@ -992,6 +968,8 @@ public class PendenzeDAO extends BaseDAO{
 				json = VersamentoUtils.trasformazioneInputVersamentoModello4(log, dominio, codTipoVersamento, trasformazioneTipo, uo, json, queryParameters, pathParameters, headers, trasformazioneDefinizione);
 			}
 			Versamento chiediVersamento = null;
+			
+			log.debug("Json di input dopo validazione e trasformazione: ["+json+"]");
 
 			if(codApplicazione != null) {
 				chiediVersamento =  VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUo, codApplicazione, json);
@@ -1057,6 +1035,7 @@ public class PendenzeDAO extends BaseDAO{
 				printAvvisoDTO.setCodDominio(chiediVersamento.getDominio(configWrapper).getCodDominio());
 				printAvvisoDTO.setIuv(iuv.getIuv());
 				printAvvisoDTO.setVersamento(chiediVersamento); 
+				printAvvisoDTO.setSalvaSuDB(false);
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 				createOrUpdatePendenzaResponse.setPdf(Base64.getEncoder().encodeToString(printAvvisoDTOResponse.getAvviso().getPdf()));
 			} else { // non devo fare la stampa.
@@ -1099,6 +1078,7 @@ public class PendenzeDAO extends BaseDAO{
 			printAvvisoDTO.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 			printAvvisoDTO.setIuv(versamento.getIuvVersamento());
 			printAvvisoDTO.setVersamento(versamento); 
+			printAvvisoDTO.setSalvaSuDB(false);
 			PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 			response.setAvvisoPdf(printAvvisoDTOResponse.getAvviso().getPdf());
 		} catch (NotFoundException e) {
