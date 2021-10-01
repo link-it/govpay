@@ -447,17 +447,13 @@ components:
         - 'en'
         - 'fr'
         - 'sl'
-    PendenzaBase:
+    Pendenza:
       type: object
+      description: Dati della pendenza
       required:
         - idA2A
         - idPendenza
-        - dominio
-        - stato
-        - soggettoPagatore
-        - importo
         - dataCaricamento
-        - tipo
       properties:
         idA2A:
           type: string
@@ -471,21 +467,14 @@ components:
           type: string
           description: Identificativo della tipologia pendenza
           example: IMU           
-        dominio:
-          $ref: '#/components/schemas/Dominio'
-        unitaOperativa:
-          $ref: '#/components/schemas/UnitaOperativa'
-        stato:
-          $ref: '#/components/schemas/StatoPendenza'
-        descrizioneStato:
+        idDominio:
           type: string
-          description: Descrizione estesa dello stato di elaborazione della pendenza
-          example: 'Pendenza in stato...'
-        dataPagamento:
+          description: Identificativo del dominio creditore
+          example: 1234567890
+        idUnitaOperativa:
           type: string
-          format: date
-          description: Data di pagamento della pendenza
-          example: '2018-12-31'
+          description: Identificativo dell'unita' operativa
+          example: UO33132
         causale:
           type: string
           description: Descrizione da inserire nell'avviso di pagamento
@@ -866,37 +855,19 @@ components:
         versante:
           $ref: "#/components/schemas/Soggetto"
         pendenza:
-          $ref: '#/components/schemas/PendenzaBase'            
+          $ref: '#/components/schemas/Pendenza'            
         riscossioni:
           type: array
           items:
-            type: object
-            required:
-              - iur
-              - indice
-              - tipo
-              - importo
-              - data
-            properties:
-              iur:
-                type: string
-                description: Identificativo univoco di riscossione.
-                example: '1234acdc'
-              indice:
-                type: number
-                description: indice posizionale della voce pendenza riscossa
-                example: 1
-              tipo:
-                $ref: '#/components/schemas/TipoRiscossione'
-              importo:
-                type: number
-                description: Importo riscosso. 
-                example: 10.01
-              vocePendenza:
-                $ref: '#/components/schemas/VocePendenza'    
+            $ref: '#/components/schemas/Riscossione' 
+        data:
+          type: string
+          format: date-time
+          description: Data di acquisizione della ricevuta
+          example: '2020-12-31'        
         dataPagamento:
           type: string
-          format: date
+          format: date-time
           description: Data di esecuzione della riscossione
           example: '2020-12-31'
         rpt:
@@ -936,7 +907,7 @@ components:
               format: byte
             json:
               description: ricevuta in formato JSON
-              type: object                
+              type: object            
     RiferimentoEntrata:
       description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
       type: object

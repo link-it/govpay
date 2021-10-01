@@ -523,6 +523,26 @@ components:
         proprietaCustom:
           type: object
           description: Dati specifici del gestionale di contabilità  
+    Documento:
+      allOf:
+        - type: object
+          required:
+            - identificativo
+            - descrizione
+          properties:
+            identificativo:
+              type: string
+              description: Identificativo del documento
+              example: abcdef12345_1
+              minLength: 1
+              maxLength: 35                 
+            descrizione:
+              type: string
+              description: descrizione del documento
+              example: Sanzione CdS n. abc00000
+              minLength: 1
+              maxLength: 80 
+        - $ref: "#/components/schemas/TipoRiferimentoDocumento"          
     Dominio:
       type: object
       required:
@@ -574,6 +594,10 @@ components:
         dettaglio:
           type: string
           description: Descrizione aggiuntiva
+      example:
+        categoria: INTERNO
+        codice: INTERNO
+        descrizione: Servizio non disponibile
     FlussiRendicontazione:
       type: object
       allOf:
@@ -658,6 +682,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Segnalazione'
+    LinguaSecondaria:
+      example: 'false'
+      type: string
+      enum:
+        - 'false'
+        - 'de'
+        - 'en'
+        - 'fr'
+        - 'sl'            
     Lista:
       type: object
       properties:
@@ -751,6 +784,10 @@ components:
           type: string
           description: Identificativo della pendenza nel gestionale responsabile
           example: abcdef12345
+        idTipoPendenza:
+          type: string
+          description: Identificativo della tipologia pendenza
+          example: IMU           
         idDominio:
           type: string
           description: Identificativo del dominio creditore
@@ -759,15 +796,29 @@ components:
           type: string
           description: Identificativo dell'unita' operativa
           example: UO33132
-        idTipoPendenza:
-          type: string
-          description: Identificativo della tipologia pendenza
-          example: IMU
         causale:
           type: string
           description: Descrizione da inserire nell'avviso di pagamento
           example: 'Sanzione CdS n. abc00000'
-          maxLength: 140     
+          maxLength: 140
+        soggettoPagatore:
+          $ref: '#/components/schemas/Soggetto'
+        importo:
+          type: number
+          description: Importo della pendenza. Deve corrispondere alla somma delle singole voci.
+          example: 10.01
+          minimum: 0.00
+          maximum: 9999999999999999.99
+        numeroAvviso:
+          type: string
+          description: Identificativo univoco versamento, assegnato se pagabile da psp
+          example: 123456789012345678
+          pattern: "[0-9]18"
+        dataValidita:
+          type: string
+          format: date
+          description: Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.
+          example: '2019-12-31'
         dataScadenza:
           type: string
           format: date
@@ -791,16 +842,22 @@ components:
         direzione:
           type: string
           description: Identificativo della direzione interna all'ente creditore
-          example: Direzione ABC
+          example: Direzione
+          minLength: 1
+          maxLength: 35
         divisione:
           type: string
           description: Identificativo della divisione interna all'ente creditore
-          example: Divisione001
+          example: Divisione  
+          minLength: 1
+          maxLength: 35
+        documento:
+          $ref: '#/components/schemas/Documento'
         UUID:
           type: string
           description: Parametro di randomizzazione delle URL di pagamento statiche
-        soggettoPagatore:
-          $ref: '#/components/schemas/Soggetto'
+        proprieta:
+          $ref: '#/components/schemas/ProprietaPendenza'
     Profilo:
       type: object
       required: 
@@ -830,6 +887,26 @@ components:
           $ref: '#/components/schemas/Soggetto'
         identityData:
           type: object
+    ProprietaPendenza:
+      type: object
+      description: Dati supporto per la gestione del ciclo di vita della pendenza.
+      properties:
+        linguaSecondaria:
+          $ref: '#/components/schemas/LinguaSecondaria'
+        descrizioneImporto:
+          type: array
+          items: 
+            $ref: '#/components/schemas/VoceDescrizioneImporto'
+        lineaTestoRicevuta1:
+          type: string
+          description: stringa personalizzata da inserire nella ricevuta
+        lineaTestoRicevuta2:
+          type: string
+          description: stringa personalizzata da inserire nella ricevuta
+        linguaSecondariaCausale:
+          type: string
+          description: >-
+              causale della pendenza nella lingua secondaria da inserire nell'avviso                  
     QuotaContabilita:
       type: object
       required:
@@ -886,6 +963,16 @@ components:
         proprietaCustom: 
           capo: 1
           riferimento: abc123
+    RataDocumento:
+      type: object
+      required: 
+        - rata
+      properties:
+        rata:
+          type: number
+          description: Rata del documento
+          example: 1
+          minimum: 1          
     Rendicontazione:
       type: object
       required:
@@ -1319,7 +1406,12 @@ components:
           example: REFNIDO
         descrizione:
           type: string
-          example: Refezione scolastica Asilo Nido         
+          example: Refezione scolastica Asilo Nido     
+    TipoRiferimentoDocumento:
+      type: object              
+      oneOf:
+        - $ref: "#/components/schemas/RataDocumento"
+        - $ref: "#/components/schemas/VincoloDocumento"              
     TipoRiscossione:
       description: > 
         Tipologia della voce riscossa
@@ -1356,6 +1448,45 @@ components:
         - G
         - F
       example: F
+    TipoSogliaVincoloPagamento:
+      description: >-
+        Indica se il pagamento deve avvenire entro o oltre la soglia di giorni indicata
+      type: string
+      enum:
+        - ENTRO
+        - OLTRE
+      example: ENTRO       
+    VincoloDocumento:
+      type: object
+      required: 
+        - soglia
+      properties:
+        soglia:
+          $ref: "#/components/schemas/VincoloPagamento"
+    VincoloPagamento:
+      type: object
+      required:
+        - tipo
+        - giorni
+      properties:
+        giorni:
+          type: number
+          description: numero di giorni vincolo per il pagamento
+          example: 5
+          minimum: 1
+        tipo:
+          $ref: "#/components/schemas/TipoSogliaVincoloPagamento"      
+    VoceDescrizioneImporto:
+      type: object
+      properties:
+        voce: 
+          type: string
+          description: voce importo
+          example: canone annuo
+        importo: 
+          type: number
+          description: importo
+          example: 10.01          
     VocePendenza:
       type: object
       required:
