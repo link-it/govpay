@@ -99,7 +99,26 @@ And request { codificaIUV: null, pagaTerzi: false }
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-#### creazione applicazione
+
+
+
+Given url ndpsym_config_url 
+And path 'domini', idDominio_2
+And request 
+"""
+{
+  "urlEC": "http://localhost:8080/govpay/frontend/web/connector/ecsp/psp",
+  "auxDigit": 0,
+  "versione": 1,
+  "segregationCode": null,
+  "ragioneSociale": "Ente Creditore Test 2",
+  "idStazione": "11111111113_01",
+  "idIntermediario": "11111111113"
+}
+"""
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
 
 #### resetCache
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
