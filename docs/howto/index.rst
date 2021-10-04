@@ -9,9 +9,9 @@ How-To
         :maxdepth: 2
         :caption: Argomenti trattati:
 
-		bilinguismo
-		convenzione
+        bilinguismo
+        convenzione
         bollo
         rateizzazione
-        
+        nexi        
         
