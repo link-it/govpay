@@ -89,6 +89,8 @@ And match responseHeaders.Location == '#notnull'
 
 * def rptToCheck = rptNotificaTerminazione
 
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
+
 Given url pagamentiBaseurl
 And path '/pagamenti/', idPagamento
 And headers idA2ABasicAutenticationHeader
@@ -118,7 +120,7 @@ And match response.rpp[0].rt.datiPagamento.datiSingoloPagamento[0].commissioniAp
 Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e codiceConvenzione = CCOK-NOREDIRECT
 
 * def codiceConvenzione = 'CCOK-NOREDIRECT'
-
+* def idPendenza = getCurrentTimeMillis()
 * def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 
 * set pagamentoPost.soggettoVersante = 
@@ -138,6 +140,8 @@ Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e
 }
 """
 
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
+
 Given url pagamentiBaseurl
 And path '/pagamenti'
 And headers idA2ABasicAutenticationHeader
@@ -151,7 +155,19 @@ And match response ==  { id: '#notnull', location: '#notnull', redirect: '##null
 
 # Verifico la notifica di terminazione
 
-* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+# Non ho l'idSessione, devo recuperarmi iuv e ccp
+Given url pagamentiBaseurl
+And path '/pagamenti/', idPagamento
+And headers idA2ABasicAutenticationHeader
+And retry until response.stato == 'ESEGUITO'
+When method get
+Then status 200
+
+* def idDominio = response.rpp[0].rpt.dominio.identificativoDominio
+* def iuv = response.rpp[0].rpt.datiVersamento.identificativoUnivocoVersamento
+* def ccp = response.rpp[0].rpt.datiVersamento.codiceContestoPagamento
+
+* call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def rptToCheck = rptNotificaTerminazione
 
@@ -168,7 +184,7 @@ And match response.rpp[0].rt.datiPagamento.datiSingoloPagamento[0].commissioniAp
 Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e codiceConvenzione = CCKOX
 
 * def codiceConvenzione = 'CCKOX'
-
+* def idPendenza = getCurrentTimeMillis()
 * def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 
 * set pagamentoPost.soggettoVersante = 
@@ -187,6 +203,8 @@ Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e
   "cellulare": "+39 000-1234567"
 }
 """
+
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -202,7 +220,7 @@ And match response.dettaglio == 'Simulazione errore codice convenzione.'
 Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e codiceConvenzione in errore sintassi
 
 * def codiceConvenzione = 'XXXXX'
-
+* def idPendenza = getCurrentTimeMillis()
 * def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 
 * set pagamentoPost.soggettoVersante = 
@@ -221,6 +239,9 @@ Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e
   "cellulare": "+39 000-1234567"
 }
 """
+
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
+
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -236,6 +257,7 @@ And match response.dettaglio == 'Errore di sintassi nel campo codiceConvenzione.
 @convenzione @convenzione-6
 Scenario Outline: Validazione sintassi parametro codiceConvenzione
 
+* def idPendenza = getCurrentTimeMillis()
 * def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 * set pagamentoPost.soggettoVersante = 
 """
@@ -253,6 +275,7 @@ Scenario Outline: Validazione sintassi parametro codiceConvenzione
   "cellulare": "+39 000-1234567"
 }
 """
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
