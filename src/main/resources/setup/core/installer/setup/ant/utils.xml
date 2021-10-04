@@ -23,10 +23,6 @@
         		        <filter token="GOVPAY_DATASOURCE" value="govpay"/>
                 		<filter token="GOVPAY_JMX_AS" value="${antinstaller_as}"/>
 
-                                <filter token="GOVPAY_URL_VERIFICA" value="${protocollo}://${antinstaller_domain_name}:${antinstaller_domain_port}/openspcoop2/PD"/>
-                                <filter token="GOVPAY_API_URL" value="${protocollo}://${antinstaller_domain_name}:${antinstaller_domain_port}"/>
-                                <filter token="GOVPAY_WISP_URL" value="${protocollo}://${antinstaller_domain_name}:${antinstaller_domain_port}/govpay-ndpsym/wisp/"/>
-                                <filter token="GOVPAY_WC_URL" value="${protocollo}://${antinstaller_domain_name}:${antinstaller_domain_port}/govpay/frontend/web/connector/ecsp/v1/gw"/>
                                 <filter token="GOVPAY_AUTENTICAZIONE" value="${autenticazione}"/>
 
 

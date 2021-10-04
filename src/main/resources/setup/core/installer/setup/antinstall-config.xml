@@ -40,12 +40,6 @@
 	</page>
 
 	<page name="informazioniApplicative" type="input" displayText="Riferimenti accesso GovPay">
-		<large-select defaultValue="https" property="protocollo" displayText="Protocollo di trasporto">
-			<option value="http" text="HTTP" />
-			<option value="https" text="HTTPS" />
-		</large-select>
-		<validated property="antinstaller_domain_name" defaultValue="yourdomain.it" displayText="Nome host o IP" regex="(?:(?:0|1\d?\d?|2[0-4]?\d?|25[0-5]?|[3-9]\d?)\.){3}(?:0|1\d?\d?|2[0-4]?\d?|25[0-5]?|[3-9]\d?)$|(?:(?:[a-z\u00a1-\uffffA-Z0-9]+-?)*[a-z\u00a1-\uffffA-Z0-9]+)(?:\.(?:[a-z\u00a1-\uffffA-Z0-9]+-?)*[a-z\u00a1-\uffffA-Z0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))$|localhost$" />
-		<validated property="antinstaller_domain_port" defaultValue="443" displayText="Porta" regex="([0-5]?[0-9]{1,4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" />
 		<comment displayText="Credenziali utente amministratore:" />
 		<validated property="antinstaller_ragione_sociale" displayText="Nome e cognome" regex=".+" />
 		<validated defaultValue="gpadmin" property="antinstaller_principal" displayText="Username" regex=".+" />

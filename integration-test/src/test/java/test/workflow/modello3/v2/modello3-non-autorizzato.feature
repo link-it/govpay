@@ -38,7 +38,7 @@ Scenario: Verifica pagamento
 
 # Configurazione del simulatore
 
-* set dominioNdpSymPut.versione = 3
+* set dominioNdpSymPut.versione = 2
 
 * call read('classpath:utils/nodo-config-dominio-put.feature')
 
@@ -62,7 +62,7 @@ Scenario: Attiva pagamento
 
 # Configurazione del simulatore
 
-* set dominioNdpSymPut.versione = 3
+* set dominioNdpSymPut.versione = 2
 
 * call read('classpath:utils/nodo-config-dominio-put.feature')
 

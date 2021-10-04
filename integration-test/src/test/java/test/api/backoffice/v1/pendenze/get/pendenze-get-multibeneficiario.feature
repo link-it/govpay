@@ -106,7 +106,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 # Configurazione del simulatore
 
-* set dominioNdpSymPut.versione = 3
+* set dominioNdpSymPut.versione = 2
 
 * call read('classpath:utils/nodo-config-dominio-put.feature')
 
@@ -219,7 +219,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 
 # Configurazione del simulatore
 
-* set dominioNdpSymPut.versione = 3
+* set dominioNdpSymPut.versione = 2
 
 * call read('classpath:utils/nodo-config-dominio-put.feature')
 

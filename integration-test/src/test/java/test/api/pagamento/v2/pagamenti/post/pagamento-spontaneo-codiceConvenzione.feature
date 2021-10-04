@@ -5,13 +5,35 @@ Background:
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 
+@convenzione @convenzione-1
+Scenario: Pagamento spontaneo cittadino con codiceConvenzione = CCOK-REDIRECT
+
+* def idPendenza = getCurrentTimeMillis()
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'spid'})
+* def spidHeaders = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'} 
+
+* def codiceConvenzione = 'CCOK-REDIRECT'
+
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+
+Given url pagamentiBaseurl
+And path '/pagamenti'
+And param codiceConvenzione = codiceConvenzione
+And headers spidHeaders
+And request pagamentoPost
+When method post
+Then status 403
+And match response == { categoria : 'AUTORIZZAZIONE', codice : '403000', descrizione: '#notnull', dettaglio: '#notnull' }
+And match response.descrizione == 'Operazione non autorizzata'
+And match response.dettaglio == 'Il richiedente non è autorizzato ad indicare un codice convenzione per il pagamento'
+
+@convenzione @convenzione-2
+Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e codiceConvenzione = CCOK-REDIRECT
+
 * def idPendenza = getCurrentTimeMillis()
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
 
 * configure retry = { count: 25, interval: 10000 }
-
-@test1
-Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e codiceConvenzione = CCOK-REDIRECT
 
 * def codiceConvenzione = 'CCOK-REDIRECT'
 
@@ -67,6 +89,8 @@ And match responseHeaders.Location == '#notnull'
 
 * def rptToCheck = rptNotificaTerminazione
 
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
+
 Given url pagamentiBaseurl
 And path '/pagamenti/', idPagamento
 And headers idA2ABasicAutenticationHeader
@@ -92,11 +116,11 @@ And match response.rpp[0].rpt.soggettoVersante ==
 And match response.rpp[0].stato == 'RT_ACCETTATA_PA' 
 And match response.rpp[0].rt.datiPagamento.datiSingoloPagamento[0].commissioniApplicatePA == '1.00'
 
-@test2
+@convenzione @convenzione-3
 Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e codiceConvenzione = CCOK-NOREDIRECT
 
 * def codiceConvenzione = 'CCOK-NOREDIRECT'
-
+* def idPendenza = getCurrentTimeMillis()
 * def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 
 * set pagamentoPost.soggettoVersante = 
@@ -115,6 +139,8 @@ Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e
   "cellulare": "+39 000-1234567"
 }
 """
+
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -129,7 +155,19 @@ And match response ==  { id: '#notnull', location: '#notnull', redirect: '##null
 
 # Verifico la notifica di terminazione
 
-* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+# Non ho l'idSessione, devo recuperarmi iuv e ccp
+Given url pagamentiBaseurl
+And path '/pagamenti/', idPagamento
+And headers idA2ABasicAutenticationHeader
+And retry until response.stato == 'ESEGUITO'
+When method get
+Then status 200
+
+* def idDominio = response.rpp[0].rpt.dominio.identificativoDominio
+* def iuv = response.rpp[0].rpt.datiVersamento.identificativoUnivocoVersamento
+* def ccp = response.rpp[0].rpt.datiVersamento.codiceContestoPagamento
+
+* call read('classpath:utils/pa-notifica-terminazione.feature')
 
 * def rptToCheck = rptNotificaTerminazione
 
@@ -142,11 +180,11 @@ Then status 200
 And match response.rpp[0].stato == 'RT_ACCETTATA_PA' 
 And match response.rpp[0].rt.datiPagamento.datiSingoloPagamento[0].commissioniApplicatePA == '1.00'
 
-@test3
+@convenzione @convenzione-4
 Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e codiceConvenzione = CCKOX
 
 * def codiceConvenzione = 'CCKOX'
-
+* def idPendenza = getCurrentTimeMillis()
 * def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 
 * set pagamentoPost.soggettoVersante = 
@@ -165,6 +203,8 @@ Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e
   "cellulare": "+39 000-1234567"
 }
 """
+
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -176,11 +216,11 @@ Then status 502
 And match response == { id: '#notnull', location: '#notnull', categoria : 'PAGOPA', codice : 'PPT_OPER_CODICE_CONVENZIONE_ERRATO', descrizione: '##string', dettaglio: '#notnull' }
 And match response.dettaglio == 'Simulazione errore codice convenzione.'
 
-@test4
+@convenzione @convenzione-5
 Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e codiceConvenzione in errore sintassi
 
 * def codiceConvenzione = 'XXXXX'
-
+* def idPendenza = getCurrentTimeMillis()
 * def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 
 * set pagamentoPost.soggettoVersante = 
@@ -199,6 +239,9 @@ Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e
   "cellulare": "+39 000-1234567"
 }
 """
+
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
+
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -211,9 +254,10 @@ And match response == { id: '#notnull', location: '#notnull', categoria : 'PAGOP
 And match response.dettaglio == 'Errore di sintassi nel campo codiceConvenzione.'
 
 
-@test5
+@convenzione @convenzione-6
 Scenario Outline: Validazione sintassi parametro codiceConvenzione
 
+* def idPendenza = getCurrentTimeMillis()
 * def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 * set pagamentoPost.soggettoVersante = 
 """
@@ -231,6 +275,7 @@ Scenario Outline: Validazione sintassi parametro codiceConvenzione
   "cellulare": "+39 000-1234567"
 }
 """
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
 
 Given url pagamentiBaseurl
 And path '/pagamenti'
@@ -246,5 +291,51 @@ Examples:
 | codiceConvenzione |
 | 'XXX' |
 | '123456789012345678901234567890123456' |
+
+@convenzione @convenzione-7
+Scenario: Pagamento spontaneo anonimo con codiceConvenzione = CCOK-REDIRECT
+
+* def codiceConvenzione = 'CCOK-REDIRECT'
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
+* def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+
+Given url pendenzeBaseurl
+And path 'pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+And request pendenza
+When method put
+Then status 201
+
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'public'})
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_riferimento_pendenza.json')
+* set pagamentoPost.soggettoVersante = 
+"""
+{
+  "tipo": "F",
+  "identificativo": "RSSMRA30A01H501I",
+  "anagrafica": "Mario Rossi",
+  "indirizzo": "Piazza della Vittoria",
+  "civico": "10/A",
+  "cap": 0,
+  "localita": "Roma",
+  "provincia": "Roma",
+  "nazione": "IT",
+  "email": "mario.rossi@host.eu",
+  "cellulare": "+39 000-1234567"
+}
+"""
+
+Given url pagamentiBaseurl
+And path '/pagamenti'
+And param codiceConvenzione = codiceConvenzione
+And request pagamentoPost
+When method post
+Then status 403
+And match response == { categoria : 'AUTORIZZAZIONE', codice : '403000', descrizione: '#notnull', dettaglio: '#notnull' }
+And match response.descrizione == 'Operazione non autorizzata'
+And match response.dettaglio == 'Il richiedente non è autorizzato ad indicare un codice convenzione per il pagamento'
 
 

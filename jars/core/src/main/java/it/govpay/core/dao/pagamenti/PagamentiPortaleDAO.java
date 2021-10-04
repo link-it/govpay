@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
@@ -388,7 +389,13 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			stato = STATO.IN_CORSO;
 
 			try {
-				rpts = rptBD.avviaTransazione(versamenti, pagamentiPortaleDTO.getUser(), null, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(),
+				Canale canale = Canale.canaleUniversale;
+				
+				if(pagamentiPortaleDTO.getIdentificativoPSP() != null && pagamentiPortaleDTO.getIdentificativoIntermediarioPSP() != null && pagamentiPortaleDTO.getIdentificativoCanale() != null) {
+					canale = new Canale(pagamentiPortaleDTO.getIdentificativoIntermediarioPSP(), pagamentiPortaleDTO.getIdentificativoPSP(), pagamentiPortaleDTO.getIdentificativoCanale(), Rpt.tipoVersamentoWISP20, null);
+				}
+				
+				rpts = rptBD.avviaTransazione(versamenti, pagamentiPortaleDTO.getUser(), canale, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(),
 						pagamentiPortaleDTO.getUrlRitorno(), true, pagamentoPortale, pagamentiPortaleDTO.getCodiceConvenzione());
 				Rpt rpt = rpts.get(0);
 

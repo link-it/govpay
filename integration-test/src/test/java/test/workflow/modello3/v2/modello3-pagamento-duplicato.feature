@@ -1,4 +1,4 @@
-Feature: Pagamento eseguito ad iniziativa PSP
+Feature: Pagamento duplicato ad iniziativa PSP
 
 Background:
 
@@ -7,8 +7,10 @@ Background:
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
-# * def esitoAttivaRPT = read('msg/attiva-response-ok.json')
+# * def esitoAttivaRPT = read('classpath:test/workflow/modello3/v1/msg/attiva-response-ok.json')
+# * def esitoVerificaRPT = read('classpath:test/workflow/modello3/v1/msg/verifica-response-ok.json')
 * configure followRedirects = false
+
 
 * def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
 * def dominioNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/dominio.json')
@@ -16,12 +18,12 @@ Background:
 * def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
 * def esitoGetPayment = read('classpath:test/workflow/modello3/v2/msg/getPayment-response-ok.json')
 
-Scenario: Pagamento eseguito dovuto precaricato
+
+Scenario: Pagamento eseguito dovuto precaricato con verifica
 
 * call read('classpath:utils/pa-carica-avviso.feature')
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
-* def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo
 
 # Configurazione dell'applicazione
@@ -58,9 +60,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 # Attivo il pagamento 
 
-# NON_ESEGUITO_SANP_24("R22")
-
-* def tipoRicevuta = "R22"
+* def tipoRicevuta = "R01"
 * call read('classpath:utils/psp-attiva-rpt.feature')
 * match response.dati == esitoGetPayment
 
@@ -70,13 +70,39 @@ Then assert responseStatus == 200 || responseStatus == 201
 * call read('classpath:utils/pa-notifica-attivazione.feature')
 * match response == read('classpath:test/workflow/modello3/v2/msg/notifica-attivazione.json')
 
+# Verifico la notifica di terminazione
+
+* def ccp = 'n_a'
+* call read('classpath:utils/pa-notifica-terminazione.feature')
+
+* def ccp =  ccp_numero_avviso
+* match response == read('classpath:test/workflow/modello3/v2/msg/notifica-terminazione-eseguito.json')
+
 # Verifico lo stato della pendenza
 
 * call read('classpath:utils/api/v1/backoffice/pendenza-get-dettaglio.feature')
-* match response.stato == 'NON_ESEGUITA'
-* match response.voci[0].stato == 'Non eseguito'
+* match response.stato == 'ESEGUITA'
+* match response.dataPagamento == '#regex \\d\\d\\d\\d-\\d\\d-\\d\\d'
+* match response.voci[0].stato == 'Eseguito'
 * match response.rpp == '#[1]'
-* match response.rpp[0].stato == 'RPT_ACCETTATA_NODO'
+* match response.rpp[0].stato == 'RT_ACCETTATA_PA'
+* match response.rpp[0].rt == '#notnull'
+
+# Verifico il pagamento
+
+* call read('classpath:utils/psp-verifica-rpt.feature')
+* match response.faultBean == 
+"""
+{
+"faultCode":"PAA_PAGAMENTO_DUPLICATO",
+"faultString":"Pagamento in attesa risulta concluso all'Ente Creditore.",
+"id":"#(idDominio)",
+"description":"#notnull",
+"serial":'##null'
+}
+"""
+* def ccp = response.ccp
+* def ccp_numero_avviso = response.ccp
 
 # ripristino dominio e stazione
 
@@ -87,4 +113,3 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
 
 * call read('classpath:utils/nodo-config-stazione-put.feature')
-

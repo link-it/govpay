@@ -9,7 +9,7 @@ info:
     name: GPL
     url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
 servers:
-  - url: ${it.govpay.apiurl}/govpay/frontend/api/pagamento/rs/basic/v2/
+  - url: /govpay/frontend/api/pagamento/rs/basic/v2/
 tags:
   - name: Pagamenti
     description: Avvio e consultazione dei pagamenti delle pendenze
@@ -39,6 +39,9 @@ paths:
         - $ref: '#/components/parameters/idSessionePortale'
         - $ref: '#/components/parameters/reCaptcha'
         - $ref: '#/components/parameters/codiceConvenzione'
+        - $ref: '#/components/parameters/identificativoPSP'
+        - $ref: '#/components/parameters/identificativoIntermediarioPSP'
+        - $ref: '#/components/parameters/identificativoCanale'        
       requestBody:
         content:
           application/json:
@@ -739,6 +742,30 @@ components:
       schema:
         type: string
       example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+    identificativoPSP:
+      name: identificativoPSP
+      in: query
+      description: Identificativo PSP con cui eseguire il pagamento.
+      required: false
+      schema:
+        type: string
+      example: 'GovPAYPsp1'
+    identificativoIntermediarioPSP:
+      name: identificativoIntermediarioPSP
+      in: query
+      description: Identificativo dell'intermediario del PSP con cui eseguire il pagamento.
+      required: false
+      schema:
+        type: string
+      example: 'GovPAYPsp'
+    identificativoCanale:
+      name: identificativoCanale
+      in: query
+      description: Identificativo del canale PSP con cui eseguire il pagamento.
+      required: false
+      schema:
+        type: string
+      example: 'GovPAYPsp1_CP'            
     idSessionePortale:
       name: idSessionePortale
       in: query

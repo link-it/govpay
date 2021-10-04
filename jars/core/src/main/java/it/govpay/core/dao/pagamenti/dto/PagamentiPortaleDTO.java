@@ -37,6 +37,9 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	private String reCaptcha;
 	private Map<String,Versamento> listaPendenzeDaSessione = null;
 	private String codiceConvenzione = null;
+	private String identificativoPSP = null;
+	private String identificativoIntermediarioPSP = null;
+	private String identificativoCanale = null;
 
 	public String getJsonRichiesta() {
 		return this.jsonRichiesta;
@@ -161,6 +164,27 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	}
 	public void setCodiceConvenzione(String codiceConvenzione) {
 		this.codiceConvenzione = codiceConvenzione;
+	}
+	
+	public String getIdentificativoPSP() {
+		return identificativoPSP;
+	}
+	public void setIdentificativoPSP(String identificativoPSP) {
+		this.identificativoPSP = identificativoPSP;
+	}
+	
+	public String getIdentificativoIntermediarioPSP() {
+		return identificativoIntermediarioPSP;
+	}
+	public void setIdentificativoIntermediarioPSP(String identificativoIntermediarioPSP) {
+		this.identificativoIntermediarioPSP = identificativoIntermediarioPSP;
+	}
+	
+	public String getIdentificativoCanale() {
+		return identificativoCanale;
+	}
+	public void setIdentificativoCanale(String identificativoCanale) {
+		this.identificativoCanale = identificativoCanale;
 	}
 
 

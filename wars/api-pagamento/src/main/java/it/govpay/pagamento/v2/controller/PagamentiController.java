@@ -82,7 +82,16 @@ public class PagamentiController extends BaseController {
 
 
     @SuppressWarnings("unchecked")
-	public Response addPagamento(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idSessionePortale, String gRecaptchaResponse, String codiceConvenzione) {
+	public Response addPagamento(Authentication user, 
+			UriInfo uriInfo, 
+			HttpHeaders httpHeaders, 
+			java.io.InputStream is, 
+			String idSessionePortale, 
+			String gRecaptchaResponse, 
+			String codiceConvenzione,
+			String identificativoPSP,
+    		String identificativoIntermediarioPSP,
+    		String identificativoCanale) {
     	String methodName = "pagamentiPOST";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -128,6 +137,21 @@ public class PagamentiController extends BaseController {
 				ValidatoreUtils.validaCodiceConvenzione(vf, "codiceConvenzione", codiceConvenzione);
 				
 				pagamentiPortaleDTO.setCodiceConvenzione(codiceConvenzione);
+			}
+			
+			if(identificativoPSP != null || identificativoIntermediarioPSP != null || identificativoCanale != null) {
+				if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+					throw new NotAuthorizedException("Il richiedente non è autorizzato ad indicare un PSP per il pagamento");
+				}
+				
+				ValidatorFactory vf = ValidatorFactory.newInstance();
+				ValidatoreUtils.validaStringa35(vf, "identificativoPSP", identificativoPSP, true);
+				ValidatoreUtils.validaStringa35(vf, "identificativoIntermediarioPSP", identificativoIntermediarioPSP, true);
+				ValidatoreUtils.validaStringa35(vf, "identificativoCanale", identificativoCanale, true);
+				
+				pagamentiPortaleDTO.setIdentificativoPSP(identificativoPSP);
+				pagamentiPortaleDTO.setIdentificativoIntermediarioPSP(identificativoIntermediarioPSP);
+				pagamentiPortaleDTO.setIdentificativoCanale(identificativoCanale);
 			}
 			
 			
