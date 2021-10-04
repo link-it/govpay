@@ -193,7 +193,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Ricevuta'
               example: 
-                idDominio: '01234567890'
+                dominio: 
+                  idDominio: '01234567890'
+                  ragioneSociale: 'Comune Dimostrativo'
                 iuv: '01000000202012345'
                 receiptId: '1234acdc'
                 dataPagamento: '2020-12-31T12:55:12'              
@@ -210,6 +212,9 @@ paths:
                   idA2A: A2A-12345
                   idPendenza: abcdef12345
                   idTipoPendenza: TARI
+                  dominio: 
+                    idDominio: '01234567890'
+                    ragioneSociale: 'Comune Dimostrativo'                
                   stato: ESEGUITA
                   causale: 'TARI/TEFA 2021'
                   soggettoPagatore:
@@ -268,7 +273,7 @@ paths:
                   data: '2020-12-31T12:55:12'
                   tipo: 'ctReceipt'
                   xml: '...[XML originale codificato Base64]...'
-                  json: '...[XML originale convertito in json]...'                   
+                  json: '...[XML originale convertito in json]...'                           
         '400':
           $ref: '#/components/responses/400BadRequest'
         '401':
@@ -306,7 +311,9 @@ paths:
                 pagina: 1
                 risultati:
                   - id: '12345'
-                    idDominio: 01234567890
+                    dominio: 
+                      idDominio: 01234567890
+                      ragioneSociale: "Comune Dimostrativo"
                     importo: 10
                     data: '2020-12-31'
                     dataValuta: '2020-12-31'
@@ -316,7 +323,9 @@ paths:
                     trn: 2017-01-01ABI00000011234
                     iuv: RF23567483937849450550875
                   - id: '12346'
-                    idDominio: 01234567890
+                    dominio: 
+                      idDominio: 01234567890
+                      ragioneSociale: "Comune Dimostrativo"
                     importo: 100.01
                     data: '2020-12-31'
                     dataValuta: '2020-12-31'
@@ -547,7 +556,6 @@ components:
       type: object
       required:
         - idDominio
-        - ragioneSociale
       properties:
         idDominio:
           type: string
@@ -558,7 +566,7 @@ components:
         ragioneSociale:
           type: string
           description: Ragione sociale
-          example: Ufficio due
+          example: "Comune Dimostrativo"
           minLength: 1
           maxLength: 70
     FaultBean:
@@ -626,7 +634,7 @@ components:
         - trn
         - dataRegolamento
         - idPsp
-        - idDominio
+        - dominio
         - numeroPagamenti
         - importoTotale
         - stato
@@ -663,10 +671,8 @@ components:
           type: string
           description: Codice Bic della banca che ha generato il riversamento
           example: 'BIC-12345' 
-        idDominio:
-          type: string
-          description: Identificativo dominio destinatario
-          example: '01234567890' 
+        dominio:
+          $ref: '#/components/schemas/Dominio'
         numeroPagamenti:
           type: number
           description: numero di pagamenti oggetto della rendicontazione
@@ -788,14 +794,10 @@ components:
           type: string
           description: Identificativo della tipologia pendenza
           example: IMU           
-        idDominio:
-          type: string
-          description: Identificativo del dominio creditore
-          example: 1234567890
-        idUnitaOperativa:
-          type: string
-          description: Identificativo dell'unita' operativa
-          example: UO33132
+        dominio:
+          $ref: '#/components/schemas/Dominio'
+        UnitaOperativa:
+          $ref: '#/components/schemas/UnitaOperativa'
         causale:
           type: string
           description: Descrizione da inserire nell'avviso di pagamento
@@ -1021,7 +1023,7 @@ components:
     Ricevuta:
       type: object
       required:
-        - idDominio
+        - dominio
         - iuv
         - idRicevuta
         - importo
@@ -1029,10 +1031,8 @@ components:
         - istitutoAttestante
         - raw
       properties:
-        idDominio:
-          type: string
-          description: Ente Creditore titolare della posizione
-          example: 01234567890    
+        dominio:
+          $ref: '#/components/schemas/Dominio'
         iuv:
           type: string
           description: Identificativo univoco di versamento
@@ -1124,10 +1124,8 @@ components:
               items: 
                 type: object 
                 properties:
-                  idDominio:
-                    type: string
-                    description: Ente Creditore titolare della posizione
-                    example: 01234567890    
+                  dominio:
+                    $ref: '#/components/schemas/Dominio'
                   iuv:
                     type: string
                     description: Identificativo univoco di versamento
@@ -1165,10 +1163,8 @@ components:
               type: string
               description: Identificativo della riconciliazione assegnato da GovPay
               example: '12345' 
-            idDominio:
-              type: string
-              description: Identificativo ente creditore
-              example: 01234567890
+            dominio:
+              $ref: '#/components/schemas/Dominio'
             stato:
               $ref: '#/components/schemas/StatoRiconciliazione'
             descrizioneStato:
@@ -1247,10 +1243,8 @@ components:
         - importo
         - data
       properties:
-        idDominio:
-          type: string
-          description: Ente Creditore titolare della posizione 
-          example: 01234567890    
+        dominio:
+          $ref: '#/components/schemas/Dominio'
         iuv:
           type: string
           description: Identificativo univoco di versamento
@@ -1455,7 +1449,24 @@ components:
       enum:
         - ENTRO
         - OLTRE
-      example: ENTRO       
+      example: ENTRO    
+    UnitaOperativa:
+      type: object
+      required: 
+        - ragioneSociale
+      properties:
+        idUnita:
+          type: string
+          description: Codice fiscale
+          example: 01234567890
+          minLength: 1
+          maxLength: 35          
+        ragioneSociale:
+          type: string
+          description: Ragione sociale
+          example: Ufficio due
+          minLength: 1
+          maxLength: 70         
     VincoloDocumento:
       type: object
       required: 
@@ -1493,10 +1504,8 @@ components:
         - idVocePendenza
         - pendenza
       properties:
-        idDominio:
-          type: string
-          description: Identificativo del dominio creditore
-          example: 1234567890      
+        dominio:
+          $ref: '#/components/schemas/Dominio'
         idVocePendenza:
           type: string
           description: Identificativo della voce di pedenza nel gestionale proprietario
