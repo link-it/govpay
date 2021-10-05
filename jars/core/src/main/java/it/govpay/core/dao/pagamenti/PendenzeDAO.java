@@ -34,6 +34,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -41,6 +42,7 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 //import it.govpay.bd.model.Evento;
@@ -493,6 +495,8 @@ public class PendenzeDAO extends BaseDAO{
 			RptFilter newFilter2 = rptBD.newFilter();
 			newFilter2.setIdPendenza(versamento.getCodVersamentoEnte());
 			newFilter2.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
+			FilterSortWrapper ordinamentoRPT = new FilterSortWrapper(it.govpay.orm.RPT.model().DATA_MSG_RICHIESTA,SortOrder.ASC);
+			newFilter2.addFilterSort(ordinamentoRPT);
 			long count = rptBD.count(newFilter2);
 
 			if(count > 0) {

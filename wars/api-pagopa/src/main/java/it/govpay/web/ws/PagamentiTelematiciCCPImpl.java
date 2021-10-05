@@ -1245,29 +1245,29 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}
 			
 		
-			RptBD rptBD = new RptBD(configWrapper);
-			if(GovpayConfig.getInstance().isTimeoutPendentiModello3()) {
-				// Controllo che non ci sia un pagamento in corso
-				// Prendo tutte le RPT pendenti
-				RptFilter filter = rptBD.newFilter();
-				filter.setStato(Rpt.stati_pendenti);
-				filter.setIdVersamento(versamento.getId());
-				List<Rpt> rpt_pendenti = rptBD.findAll(filter);
-				
-				// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
-				// Altrimenti lancio il fault
-				Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() * 60000);
-				
-				for(Rpt rpt_pendente : rpt_pendenti) {
-					if(rpt_pendente.getPagamentoPortale() != null)
-						appContext.getEventoCtx().setIdPagamento(rpt_pendente.getPagamentoPortale().getIdSessione());
-					Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
-					// se l'RPT e' bloccata allora controllo che il blocco sia indefinito oppure definito, altrimenti passo
-					if(rpt_pendente.isBloccante() && (GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() == 0 || dataSoglia.before(dataMsgRichiesta))) {
-						throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, "Pagamento in corso [CCP:" + rpt_pendente.getCcp() + "].", codDominio);
-					}
-				}
-			}
+//			RptBD rptBD = new RptBD(configWrapper);
+//			if(GovpayConfig.getInstance().isTimeoutPendentiModello3()) {
+//				// Controllo che non ci sia un pagamento in corso
+//				// Prendo tutte le RPT pendenti
+//				RptFilter filter = rptBD.newFilter();
+//				filter.setStato(Rpt.stati_pendenti);
+//				filter.setIdVersamento(versamento.getId());
+//				List<Rpt> rpt_pendenti = rptBD.findAll(filter);
+//				
+//				// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
+//				// Altrimenti lancio il fault
+//				Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() * 60000);
+//				
+//				for(Rpt rpt_pendente : rpt_pendenti) {
+//					if(rpt_pendente.getPagamentoPortale() != null)
+//						appContext.getEventoCtx().setIdPagamento(rpt_pendente.getPagamentoPortale().getIdSessione());
+//					Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
+//					// se l'RPT e' bloccata allora controllo che il blocco sia indefinito oppure definito, altrimenti passo
+//					if(rpt_pendente.isBloccante() && (GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() == 0 || dataSoglia.before(dataMsgRichiesta))) {
+//						throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, "Pagamento in corso [CCP:" + rpt_pendente.getCcp() + "].", codDominio);
+//					}
+//				}
+//			}
 
 			// Verifico che abbia un solo singolo versamento N.B. controllo eliminato perche' e' consentito pagare pendenze multibeneficiario
 //			if(versamento.getSingoliVersamenti().size() != 1) {

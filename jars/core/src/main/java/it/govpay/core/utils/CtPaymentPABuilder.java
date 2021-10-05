@@ -22,7 +22,6 @@ package it.govpay.core.utils;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -137,7 +136,17 @@ public class CtPaymentPABuilder {
 		*/
 		
 		ctRpt.setCreditorReferenceId(iuv);
-		ctRpt.setPaymentAmount(versamento.getImportoTotale());
+		
+		if(requestBody.getAmount() != null) {
+			if(requestBody.getAmount().equals(versamento.getImportoTotale())) {
+				ctRpt.setPaymentAmount(versamento.getImportoTotale()); 
+			} else {
+				ctRpt.setPaymentAmount(requestBody.getAmount());
+			}
+		} else {
+			ctRpt.setPaymentAmount(versamento.getImportoTotale());
+		}
+		
 		if(versamento.getDataValidita() != null) {
 			ctRpt.setDueDate(versamento.getDataValidita()); // indicates the expiration payment date
 		} else if(versamento.getDataScadenza() != null) {

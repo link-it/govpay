@@ -207,7 +207,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 			if(!acquisizioneDaCruscotto) {
 				if(rpt.getStato().equals(StatoRpt.RT_ACCETTATA_PA)) {
-					throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "RT già acquisita in data " + rpt.getDataMsgRicevuta(), rpt.getCodDominio());
+					throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, "CtReceipt già acquisita in data " + rpt.getDataMsgRicevuta(), rpt.getCodDominio());
 				}
 			}
 
@@ -240,7 +240,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				case DECORRENZA_TERMINI_PARZIALE:
 				case PAGAMENTO_ESEGUITO:
 				case PAGAMENTO_PARZIALMENTE_ESEGUITO:
-					throw new NdpException(FaultPa.PAA_RT_DUPLICATA, "Aggiornamento di RT in pagamenti con esito "+rpt.getEsitoPagamento()+" non supportata.", rpt.getCodDominio());
+					throw new NdpException(FaultPa.PAA_RECEIPT_DUPLICATA, "Aggiornamento di CtReceipt in pagamenti con esito "+rpt.getEsitoPagamento()+" non supportata.", rpt.getCodDominio());
 				}
 			}
 

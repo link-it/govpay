@@ -193,9 +193,11 @@ Then assert responseStatus == 200 || responseStatus == 201
 * match response.stato == 'ESEGUITA'
 * match response.dataPagamento == '#regex \\d\\d\\d\\d-\\d\\d-\\d\\d'
 * match response.voci[0].stato == 'Eseguito'
-* match response.rpp == '#[1]'
-* match response.rpp[0].stato == 'RT_ACCETTATA_PA'
-* match response.rpp[0].rt == '#notnull'
+* match response.rpp == '#[2]'
+* match response.rpp[0].stato == 'RPT_ANNULLATA'
+* match response.rpp[0].rt == '#notpresent'
+* match response.rpp[1].stato == 'RT_ACCETTATA_PA'
+* match response.rpp[1].rt == '#notnull'
 
 
 # ripristino dominio e stazione

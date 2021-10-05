@@ -591,7 +591,7 @@ public class Pagamento   {
 								oldPagamentoPortale.setDescrizioneStato("Tentativo di pagamento scaduto dopo timeout di "+GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()+" minuti.");
 
 								rptBD.updateRpt(rpt.getId(), rpt);
-								ppbd.updatePagamento(oldPagamentoPortale);
+								ppbd.updatePagamento(oldPagamentoPortale, false, true);
 								
 								rptBD.commit();
 								log.info("RPT [idDominio:"+rpt.getCodDominio()+"][iuv:"+rpt.getIuv()+"][ccp:"+rpt.getCcp()+"] annullata con successo.");

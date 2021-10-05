@@ -98,7 +98,10 @@ Then assert responseStatus == 200 || responseStatus == 201
 "faultString":"Pagamento in attesa risulta concluso all'Ente Creditore.",
 "id":"#(idDominio)",
 "description":"#notnull",
-"serial":'##null'
+"serial":'##null',
+"originalFaultCode":'##null',
+"originalFaultString":'##null',
+"originalDescription":'##null'
 }
 """
 * def ccp = response.ccp
