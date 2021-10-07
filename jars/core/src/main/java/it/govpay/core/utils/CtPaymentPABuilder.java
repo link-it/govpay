@@ -137,15 +137,12 @@ public class CtPaymentPABuilder {
 		
 		ctRpt.setCreditorReferenceId(iuv);
 		
-		if(requestBody.getAmount() != null) {
-			if(requestBody.getAmount().equals(versamento.getImportoTotale())) {
-				ctRpt.setPaymentAmount(versamento.getImportoTotale()); 
-			} else {
-				ctRpt.setPaymentAmount(requestBody.getAmount());
-			}
-		} else {
-			ctRpt.setPaymentAmount(versamento.getImportoTotale());
-		}
+		// L'amount con il dueDate mi deve far scegliere tra le opzioni di pagamento
+		// da attivare. Al momento viene gestita una sola opzione di pagamento
+		// pertanto ignoro l'importo comunicato e rispondo sempre con il dovuto.
+		// https://github.com/pagopa/pagopa-api/issues/194
+		
+		ctRpt.setPaymentAmount(versamento.getImportoTotale());
 		
 		if(versamento.getDataValidita() != null) {
 			ctRpt.setDueDate(versamento.getDataValidita()); // indicates the expiration payment date
@@ -154,16 +151,9 @@ public class CtPaymentPABuilder {
 		} else {
 			ctRpt.setDueDate(new Date(32503590000000l)); //31.12.2999
 		}                             
-//		ctRpt.setRetentionDate(null); // <!-- fino a questa data non ci rigereremo verso la PA --> TODO ????
 		
-		// TODO usare questi dati per configurare la soluzione di pagamento
-//		requestBody.getAmount();
-//		requestBody.getDueDate();
-//		requestBody.getPaymentNote();
-//		requestBody.getTransferType();
-		
-
-		// Capire se il numero avviso utilizzato e' relativo alla rata di un documento, nel caso sia l'ultima valorizzare true altrimenti e' sempre false
+		// Capire se il numero avviso utilizzato e' relativo alla rata di un documento, 
+		// nel caso sia l'ultima valorizzare true altrimenti e' sempre false
 		// se non e' una rata o rata unica e' sempre true. 
 		ctRpt.setLastPayment(true); 
 		
