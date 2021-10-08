@@ -205,39 +205,12 @@ paths:
                 tipo: F
                 identificativo: ANONIMO
                 anagrafica: ANONIMO
-              pendenza:
-                idA2A: A2A-12345
-                idPendenza: abcdef12345
-                idTipoPendenza: TARI
-                dominio: 
-                  idDominio: '01234567890'
-                  ragioneSociale: 'Comune Dimostrativo'                
-                stato: ESEGUITA
-                causale: 'TARI/TEFA 2021'
-                soggettoPagatore:
-                  tipo: F
-                  identificativo: RSSMRA30A01H501I
-                  anagrafica: Mario Rossi
-                  indirizzo: Piazza della Vittoria
-                  civico: 10/A
-                  cap: '00000'
-                  localita: Roma
-                  provincia: Roma
-                  nazione: IT
-                  email: mario.rossi@host.eu
-                  cellulare: +39 000 1234567
-                importo: 250.50
-                numeroAvviso: '301000000202012345'
-                dataScadenza: '2021-12-31'
               riscossioni:
                 - iur: 1234acdc
                   indice: 1
                   tipo: ENTRATA
-                  importo: 210.00
+                  importo: 194.00
                   vocePendenza:
-                    dominio:
-                      idDominio: '01234567890'
-                      ragioneSociale: Comune Dimostrativo
                     idVocePendenza: TARI
                     descrizione: Importo TARI 
                     contabilita:
@@ -246,11 +219,33 @@ paths:
                           annoEsercizio: 2020
                           importo: 210.00
                     ibanAccredito: 'IT60X0542811101000000123456'
-                    tipoContabilita: 'ALTRO'
-                    codiceContabilita: '0101100IM'
+                    codiceTassonomicoPagoPA: '9/0101100IM/'
+                    pendenza:
+                      idA2A: A2A-12345
+                      idPendenza: abcdef12345
+                      idTipoPendenza: TARI
+                      dominio: 
+                        idDominio: '01234567890'
+                        ragioneSociale: 'Comune Dimostrativo'                
+                      causale: 'TARI/TEFA 2021'
+                      soggettoPagatore:
+                        tipo: F
+                        identificativo: RSSMRA30A01H501I
+                        anagrafica: Mario Rossi
+                        indirizzo: Piazza della Vittoria
+                        civico: 10/A
+                        cap: '00000'
+                        localita: Roma
+                        provincia: Roma
+                        nazione: IT
+                        email: mario.rossi@host.eu
+                        cellulare: +39 000 1234567
+                      importo: 250.50
+                      numeroAvviso: '301000000202012345'
+                      dataScadenza: '2021-12-31'
                 - iur: 1234acdc
                   indice: 1
-                  tipo: ENTRATA
+                  tipo: ENTRATA_PA_NON_INTERMEDIATA
                   importo: 40.50
                   vocePendenza:
                     dominio:
@@ -259,8 +254,64 @@ paths:
                     idVocePendenza: TEFA
                     descrizione: Importo TEFA 
                     ibanAccredito: 'IT60X0542811101000000987654'
-                    tipoContabilita: 'ALTRO'
-                    codiceContabilita: '0201102IM'
+                    codiceTassonomicoPagoPA: '9/0201102IM/'
+                    pendenza:
+                      idA2A: A2A-12345
+                      idPendenza: abcdef12345
+                      idTipoPendenza: TARI
+                      dominio: 
+                        idDominio: '01234567890'
+                        ragioneSociale: 'Comune Dimostrativo'                
+                      causale: 'TARI/TEFA 2021'
+                      soggettoPagatore:
+                        tipo: F
+                        identificativo: RSSMRA30A01H501I
+                        anagrafica: Mario Rossi
+                        indirizzo: Piazza della Vittoria
+                        civico: 10/A
+                        cap: '00000'
+                        localita: Roma
+                        provincia: Roma
+                        nazione: IT
+                        email: mario.rossi@host.eu
+                        cellulare: +39 000 1234567
+                      importo: 250.50
+                      numeroAvviso: '301000000202012345'
+                      dataScadenza: '2021-12-31'     
+                - iur: "1234acdc"
+                  indice: 1
+                  tipo: "MBT"
+                  importo: 16.00
+                  allegato:
+                    tipo: "Marca da bollo"
+                    testo: "[XML della Marca da bollo in base64]"
+                  vocePendenza:
+                    idVocePendenza: BOLLO
+                    descrizione: Imposta di bollo
+                    codiceTassonomicoPagoPA: '9/0201102IM/'
+                    pendenza:
+                      idA2A: A2A-12345
+                      idPendenza: abcdef12345
+                      idTipoPendenza: TARI
+                      dominio: 
+                        idDominio: '01234567890'
+                        ragioneSociale: 'Comune Dimostrativo'                
+                      causale: 'TARI/TEFA 2021'
+                      soggettoPagatore:
+                        tipo: F
+                        identificativo: RSSMRA30A01H501I
+                        anagrafica: Mario Rossi
+                        indirizzo: Piazza della Vittoria
+                        civico: 10/A
+                        cap: '00000'
+                        localita: Roma
+                        provincia: Roma
+                        nazione: IT
+                        email: mario.rossi@host.eu
+                        cellulare: +39 000 1234567
+                      importo: 250.50
+                      numeroAvviso: '301000000202012345'
+                      dataScadenza: '2021-12-31'                            
               rpt:
                 data: '2020-12-31T12:53:49'
                 tipo: 'ctPaymentPA'
@@ -270,7 +321,7 @@ paths:
                 data: '2020-12-31T12:55:12'
                 tipo: 'ctReceipt'
                 xml: '...[XML originale codificato Base64]...'
-                json: '...[XML originale convertito in json]...'            
+                json: '...[XML originale convertito in json]...'               
       responses:
         '201':
           description: ricevuta di pagamento acquisita
@@ -289,7 +340,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/faultBean'
+            $ref: '#/components/schemas/FaultBean'
           example:
             categoria: RICHIESTA
             codice: INTERNO
@@ -305,49 +356,27 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/faultBean'
+            $ref: '#/components/schemas/FaultBean'
           example:
             categoria: INTERNO
             codice: INTERNO
             descrizione: Servizio non disponibile
   schemas:
-    faultBean:
+    Allegato:
       type: object
       required:
-        - categoria
-        - codice
-        - descrizione
+        - tipo
+        - testo
       properties:
-        categoria:
+        tipo:
+          description: Tipologia di allegato
           type: string
-          description: >-
-            Categoria dell'errore riscontrato:
-             * `AUTORIZZAZIONE` - Operazione non autorizzata
-             * `RICHIESTA` - Richiesta non valida
-             * `OPERAZIONE` - Operazione non eseguibile
-             * `PAGOPA` - Errore da PagoPA
-             * `EC` - Errore da Ente Creditore
-             * `INTERNO` - Errore interno
           enum:
-            - AUTORIZZAZIONE
-            - RICHIESTA
-            - OPERAZIONE
-            - INTERNO
-            - PAGOPA
-            - EC
-        codice:
-          type: string
-          description: Codice di errore
-        descrizione:
-          type: string
-          description: Descrizione dell'errore
-        dettaglio:
-          type: string
-          description: Descrizione aggiuntiva
-      example:
-        categoria: INTERNO
-        codice: INTERNO
-        descrizione: Servizio non disponibile
+            - Esito pagamento
+            - Marca da bollo
+        testo:
+          description: allegato codificato in base64
+          type: string                
     Bollo:
       description: Definisce i dati di un bollo telematico
       type: object
@@ -371,6 +400,12 @@ components:
           type: string         
           example: "RO"
           pattern: "[A-Z]{2,2}"  
+        codiceTassonomicoPagoPA:
+          description: Tassonomia pagoPA
+          type: string
+          example: "9/3321"
+          minLength: 1
+          maxLength: 140          
     Contabilita:
       type: object
       properties:
@@ -434,14 +469,49 @@ components:
           type: string
           example: IT60X0542811101000000123456
           pattern: "[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"
-        tipoContabilita:
-          $ref: '#/components/schemas/TipoContabilita'
-        codiceContabilita:
-          description: Codifica del capitolo di bilancio
+        codiceTassonomicoPagoPA:
+          description: Tassonomia pagoPA
           type: string
-          example: 3321
+          example: "9/3321"
           minLength: 1
-          maxLength: 135
+          maxLength: 140
+    FaultBean:
+      type: object
+      required:
+        - categoria
+        - codice
+        - descrizione
+      properties:
+        categoria:
+          type: string
+          description: >-
+            Categoria dell'errore riscontrato:
+             * `AUTORIZZAZIONE` - Operazione non autorizzata
+             * `RICHIESTA` - Richiesta non valida
+             * `OPERAZIONE` - Operazione non eseguibile
+             * `PAGOPA` - Errore da PagoPA
+             * `EC` - Errore da Ente Creditore
+             * `INTERNO` - Errore interno
+          enum:
+            - AUTORIZZAZIONE
+            - RICHIESTA
+            - OPERAZIONE
+            - PAGOPA
+            - EC
+            - INTERNO
+        codice:
+          type: string
+          description: Codice di errore
+        descrizione:
+          type: string
+          description: Descrizione dell'errore
+        dettaglio:
+          type: string
+          description: Descrizione aggiuntiva
+      example:
+        categoria: INTERNO
+        codice: INTERNO
+        descrizione: Servizio non disponibile          
     LinguaSecondaria:
       example: 'false'
       type: string
@@ -719,16 +789,6 @@ components:
           properties: 
             stato:
               $ref: '#/components/schemas/StatoPendenzaVerificata'   
-    StatoPendenza:
-      example: NON_ESEGUITA
-      type: string
-      enum:
-        - ESEGUITA
-        - NON_ESEGUITA
-        - ESEGUITA_PARZIALE
-        - ANNULLATA
-        - SCADUTA
-        - ANOMALA              
     StatoPendenzaVerificata:
       example: NON_ESEGUITA
       type: string
@@ -852,8 +912,6 @@ components:
               type: string  
         versante:
           $ref: "#/components/schemas/Soggetto"
-        pendenza:
-          $ref: '#/components/schemas/Pendenza'            
         riscossioni:
           type: array
           items:
@@ -956,6 +1014,8 @@ components:
           type: string
           format: date-time
           description: Data di esecuzione della riscossione
+        allegato:
+          $ref: '#/components/schemas/Allegato'
         vocePendenza:
           $ref: '#/components/schemas/VocePendenza'              
     Soggetto:
@@ -1145,3 +1205,5 @@ components:
               maxLength: 140
             contabilita:
               $ref: '#/components/schemas/Contabilita'
+            pendenza:
+              $ref: '#/components/schemas/Pendenza'  
