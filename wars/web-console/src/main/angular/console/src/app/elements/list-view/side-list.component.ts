@@ -682,13 +682,11 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _std.importo = this.us.currencyFormat(item.importo);
         break;
       case UtilService.URL_RENDICONTAZIONI:
-        let _tmpDR = item.dataRegolamento?moment(item.dataRegolamento).format('DD/MM/YYYY'):Voce.NON_PRESENTE;
         let tmpValue = [];
-        tmpValue.push(_tmpDR);
         tmpValue.push(item.ragioneSocialeDominio?item.ragioneSocialeDominio:item.idDominio);
         tmpValue.push(item.ragioneSocialePsp?item.ragioneSocialePsp:item.idPsp);
         _st = Dato.arraysToDato(
-          [ Voce.DATA, Voce.ENTE_CREDITORE_SIGLA, Voce.PSP ],
+          [ Voce.ENTE_CREDITORE_SIGLA, Voce.PSP ],
           tmpValue,
           ', '
         );

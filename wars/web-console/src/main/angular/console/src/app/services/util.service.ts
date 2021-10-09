@@ -1539,8 +1539,8 @@ export class UtilService {
               eventType: 'idDominio-async-load' } }, this.http),
           new FormInput({ id: 'idFlusso', label: FormService.FORM_IDENTIFICATIVO_FLUSSO, type: UtilService.INPUT }),
           new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
-          new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_RISC_INIZIO+' '+FormService.FORM_PH_DATA_RISC_INIZIO, type: UtilService.DATE_PICKER, }),
-          new FormInput({ id: 'dataA', label: FormService.FORM_DATA_RISC_FINE+' '+FormService.FORM_PH_DATA_RISC_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
+          new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_REG_INIZIO+' '+FormService.FORM_PH_DATA_REG_INIZIO, type: UtilService.DATE_PICKER, }),
+          new FormInput({ id: 'dataA', label: FormService.FORM_DATA_REG_FINE+' '+FormService.FORM_PH_DATA_REG_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
         ];
       break;
       case UtilService.GIORNALE_EVENTI:
