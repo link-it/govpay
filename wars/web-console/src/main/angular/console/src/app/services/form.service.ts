@@ -65,8 +65,12 @@ export class FormService {
 
   //Rendicontazioni
   public static FORM_IDENTIFICATIVO_FLUSSO: string = 'Identificativo flusso';
+  public static FORM_DATA_REG_INIZIO: string = 'Data regolamento';
+  public static FORM_DATA_REG_FINE: string = 'Data regolamento';
   public static FORM_DATA_RISC_INIZIO: string = 'Data riscossione';
   public static FORM_DATA_RISC_FINE: string = 'Data riscossione';
+  public static FORM_PH_DATA_REG_INIZIO: string = '(Inzio)';
+  public static FORM_PH_DATA_REG_FINE: string = '(Fine)';
   public static FORM_PH_DATA_RISC_INIZIO: string = '(Inzio)';
   public static FORM_PH_DATA_RISC_FINE: string = '(Fine)';
 

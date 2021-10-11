@@ -65,6 +65,7 @@ export class Voce {
   public static DATA_CONTABILE: string = 'Data contabile';
   public static DATA_ESITO: string = 'Data esito';
   public static DATA_ESECUZIONE_RISCOSSIONE: string = 'Data esecuzione riscossione';
+  public static DATA_FLUSSO: string = 'Data flusso';
   public static DATA_REGOLAMENTO: string = 'Data regolamento';
   public static DATA_RICEVUTA: string = 'Data ricevuta';
   public static DATA_RICHIESTA: string = 'Data richiesta';
