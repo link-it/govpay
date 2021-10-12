@@ -39,10 +39,11 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 
-public class MyPivotClient extends BasicClient {
+public class MyPivotClient extends BasicClientCORE {
 
 	public enum Azione {
 		

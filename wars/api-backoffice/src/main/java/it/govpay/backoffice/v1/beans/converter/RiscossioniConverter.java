@@ -200,7 +200,7 @@ public class RiscossioniConverter {
 			// solo per i pagamenti interni
 			if(!input.getTipo().equals(TipoPagamento.ALTRO_INTERMEDIARIO)) {
 				rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(input.getSingoloVersamento(null).getVersamento(null).getApplicazione(configWrapper).getCodApplicazione(), input.getSingoloVersamento(null).getVersamento(null).getCodVersamentoEnte()));
-				rsModel.setVocePendenza(PendenzeConverter.toVocePendenzaRiscossioneRsModel(input.getSingoloVersamento(null), input.getSingoloVersamento(null).getVersamento(null)));
+				rsModel.setVocePendenza(PendenzeConverter.toVocePendenzaRiscossioneRsModel(input.getSingoloVersamento(null), input.getSingoloVersamento(null).getVersamento(null), configWrapper));
 				Rpt rpt = input.getRpt(null);
 				if(rpt!= null)
 					rsModel.setRpp(UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp()));

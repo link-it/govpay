@@ -3,7 +3,6 @@ package it.govpay.core.utils.thread;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -17,7 +16,6 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
-import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.orm.IdTracciato;
 
@@ -52,17 +50,18 @@ public class CreaStampeTracciatoThread implements Runnable {
 		this.stampe = new ArrayList<PrintAvvisoDTOResponse>();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		try {
-			log.debug("Creazione stampe di " + this.versamenti.size() + " versamenti...");
+			log.debug(this.nomeThread + ": creazione stampe di " + this.versamenti.size() + " versamenti...");
 			it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
 			
 			for (Versamento versamento : versamenti) {
-					
+				log.debug(this.getNomeThread() + ": stampa in corso [Doc:" + versamento.getCodBundlekey() + " NAV:" + versamento.getNumeroAvviso());
+
 				PrintAvvisoDTOResponse printAvvisoDTOResponse =  null;
 				try {
+					
 					if(versamento.getNumeroAvviso() != null) {
 						Documento documento = versamento.getDocumento(configWrapper);
 						if(documento != null) {
-							
 							PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
 							printDocumentoDTO.setDocumento(documento);
 							printDocumentoDTO.setUpdate(true);
@@ -83,15 +82,14 @@ public class CreaStampeTracciatoThread implements Runnable {
 						printAvvisoDTOResponse.setCodDominio(versamento.getDominio(configWrapper).getCodDominio()); 
 						printAvvisoDTOResponse.setNumeroAvviso(versamento.getNumeroAvviso());
 						this.stampe.add(printAvvisoDTOResponse);
+						log.debug(this.getNomeThread() + ": stampa eseguita [Doc:" + versamento.getCodBundlekey() + " NAV:" + versamento.getNumeroAvviso());
+
 					} else {
 						log.debug("Pendenza [IDA2A: " + versamento.getApplicazione(configWrapper).getCodApplicazione()	
 								+" | IdPendenza: " + versamento.getCodVersamentoEnte() + "] non ha numero avviso, procedura di stampa non eseguita.");
 					}
 					stampeOk ++;
-				}catch(ServiceException e) {
-					log.error("Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
-					stampeKo ++;
-				} catch(UnprocessableEntityException e) {
+				} catch(Exception e) {
 					log.error("Errore durante la creazione dell'avviso: " + e.getMessage());
 					stampeKo ++;
 				}

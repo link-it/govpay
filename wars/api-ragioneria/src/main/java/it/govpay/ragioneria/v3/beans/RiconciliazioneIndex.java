@@ -280,8 +280,8 @@ public class RiconciliazioneIndex extends JSONSerializable {
   /**
    * Identificativo del flusso di rendicontazione.
    **/
-  public RiconciliazioneIndex idFlussoRendicontazione(String idFlussoRendicontazione) {
-    this.idFlussoRendicontazione = idFlussoRendicontazione;
+  public RiconciliazioneIndex idFlussoRendicontazione(String idFlusso) {
+    this.idFlussoRendicontazione = idFlusso;
     return this;
   }
 
@@ -289,8 +289,8 @@ public class RiconciliazioneIndex extends JSONSerializable {
   public String getIdFlussoRendicontazione() {
     return this.idFlussoRendicontazione;
   }
-  public void setIdFlussoRendicontazione(String idFlussoRendicontazione) {
-    this.idFlussoRendicontazione = idFlussoRendicontazione;
+  public void setIdFlussoRendicontazione(String idFlusso) {
+    this.idFlussoRendicontazione = idFlusso;
   }
 
   @Override

@@ -6544,7 +6544,7 @@ components:
               minItems: 1
               maxItems: 5
               items:
-                $ref: '#/components/schemas/vocePendenza'
+                $ref: '#/components/schemas/NuovaVocePendenza'
     pendenzaPost:
       allOf:
         - type: object
@@ -6766,6 +6766,8 @@ components:
         - $ref: '#/components/schemas/vocePendenzaBase'
         - type: object
           properties:
+            dominio:
+              $ref: '#/components/schemas/dominioIndex'
             datiAllegati:
               type: object
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
@@ -6828,6 +6830,8 @@ components:
         - $ref: '#/components/schemas/vocePendenzaBase'
         - type: object
           properties:
+            dominio:
+              $ref: '#/components/schemas/dominioIndex'
             pendenza:
               $ref: '#/components/schemas/pendenzaIndex'
     vocePendenzaRiscossione:
@@ -6835,8 +6839,76 @@ components:
         - $ref: '#/components/schemas/vocePendenzaBase'
         - type: object
           properties:
+            dominio:
+              $ref: '#/components/schemas/dominioIndex'
             pendenza:
               $ref: '#/components/schemas/pendenzaIndex'
+    NuovaVocePendenza:
+      allOf:
+        - $ref: '#/components/schemas/vocePendenzaBase'
+        - type: object
+          properties:
+            idDominio:
+              type: string
+              description: Identificativo del dominio creditore
+              example: 1234567890
+            datiAllegati:
+              type: object
+              description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+            riscossioni:
+              type: array
+              items:
+                $ref: '#/components/schemas/riscossione'
+            rendicontazioni:
+              type: array
+              items:
+                $ref: '#/components/schemas/rendicontazione'
+        - oneOf:
+            - description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
+              type: object
+              required:
+                - codEntrata
+              properties:
+                codEntrata:
+                  type: string
+                  pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
+            - description: Definisce i dettagli di incasso.
+              type: object
+              required:
+                - ibanAccredito
+                - tipoContabilita
+                - codiceContabilita
+              properties:
+                ibanAccredito:
+                  type: string
+                  example: IT60X0542811101000000123456
+                ibanAppoggio:
+                  type: string
+                  example: IT60X0542811101000000123456
+                tipoContabilita:
+                  $ref: '#/components/schemas/tipoContabilita'
+                codiceContabilita:
+                  description: Codifica del capitolo di bilancio
+                  type: string
+                  example: 3321
+            - description: Definisce i dati di un bollo telematico
+              type: object
+              required:
+                - tipoBollo
+                - hashDocumento
+                - provinciaResidenza
+              properties:
+                tipoBollo:
+                  description: Tipologia di Bollo digitale
+                  type: string
+                  enum:
+                    - Imposta di bollo
+                hashDocumento:
+                  description: Digest in base64 del documento informatico associato alla marca da bollo
+                  type: string
+                provinciaResidenza:
+                  description: Sigla automobilistica della provincia di residenza del soggetto pagatore
+                  type: string
     contabilita:
       type: object
       properties:

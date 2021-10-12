@@ -17,6 +17,10 @@ import it.govpay.model.Versamento.TipoSogliaVersamento;
 
 public class ValidatoreUtils {
 	
+	public static void validaCodiceConvenzione(ValidatorFactory vf, String nomeCampo, String codiceConvenzione) throws ValidationException {
+		vf.getValidator(nomeCampo, codiceConvenzione).minLength(5).maxLength(35);
+	}
+	
 	public static void validaCF(ValidatorFactory vf, String nomeCampo, String codiceFiscale) throws ValidationException {
 		validaField(vf, nomeCampo, codiceFiscale, CostantiValidazione.PATTERN_CF, null, null, true);
 	}

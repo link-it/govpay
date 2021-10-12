@@ -128,6 +128,7 @@ public class GovpayConfig {
 	private String templateProspettoRiscossioni;
 	
 	private Properties apiUserLoginRedirectURLs;
+	private Properties apiUserLogoutRedirectURLs;
 	
 	private Integer batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread;
 	private Integer batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread;
@@ -139,6 +140,13 @@ public class GovpayConfig {
 	private boolean batchCaricamentoTracciatiNotificaPagamenti;
 	
 	private boolean ricercaRiconciliazioniIdFlussoCaseInsensitive;
+	
+	
+	private Integer connectionTimeout;
+	private Integer readTimeout;
+	private Integer connectionRequestTimeout;
+	private Integer numeroMassimoConnessioniPerPool;
+	private Integer numeroMassimoConnessioniPerRouteDefault;
 	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -195,6 +203,7 @@ public class GovpayConfig {
 		this.templateProspettoRiscossioni = null;
 		
 		this.apiUserLoginRedirectURLs = new Properties();
+		this.apiUserLogoutRedirectURLs = new Properties();
 		
 		this.batchCaricamentoTracciatiNumeroVersamentiDaCaricarePerThread = 100;
 		this.batchCaricamentoTracciatiNumeroAvvisiDaStamparePerThread = 100;
@@ -203,6 +212,15 @@ public class GovpayConfig {
 		
 		this.batchCaricamentoTracciatiNotificaPagamenti = false;
 		this.ricercaRiconciliazioniIdFlussoCaseInsensitive = false;
+		
+		this.readTimeout = 180000;
+		this.connectionTimeout = 10000;
+		this.connectionRequestTimeout = 180000;
+		this.numeroMassimoConnessioniPerRouteDefault = 20;
+		this.numeroMassimoConnessioniPerPool = 200;
+		
+		this.aggiornamentoValiditaMandatorio = false;
+		
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -603,6 +621,9 @@ public class GovpayConfig {
 			Map<String, String> redirectURLs = getProperties("it.govpay.login-redirect.",this.props, false, log);
 			this.apiUserLoginRedirectURLs.putAll(redirectURLs);
 			
+			Map<String, String> logoutRedirectURLs = getProperties("it.govpay.logout-redirect.",this.props, false, log);
+			this.apiUserLogoutRedirectURLs.putAll(logoutRedirectURLs);
+			
 			String dimensioneMassimaListaRisultatiString = getProperty("it.govpay.api.find.maxRisultatiPerPagina", this.props, false, log);
 			try{
 				this.dimensioneMassimaListaRisultati = Integer.parseInt(dimensioneMassimaListaRisultatiString);
@@ -618,6 +639,50 @@ public class GovpayConfig {
 			String ricercaRiconciliazioniIdFlussoCaseInsensitiveString = getProperty("it.govpay.riconciliazione.idFlussoCaseInsensitive.enabled", this.props, false, log);
 			if(ricercaRiconciliazioniIdFlussoCaseInsensitiveString != null && Boolean.valueOf(ricercaRiconciliazioniIdFlussoCaseInsensitiveString))
 				this.ricercaRiconciliazioniIdFlussoCaseInsensitive = true;
+			
+			String connectTimeoutString = getProperty("it.govpay.client.connectionTimeout", this.props, false, log);
+			try{
+				this.connectionTimeout = Integer.parseInt(connectTimeoutString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.connectionTimeout\" impostata com valore di default 10000");
+				this.connectionTimeout = 10000;
+			}
+			
+			String readTimeoutString = getProperty("it.govpay.client.readTimeout", this.props, false, log);
+			try{
+				this.readTimeout = Integer.parseInt(readTimeoutString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.readTimeout\" impostata com valore di default 180000");
+				this.readTimeout = 180000;
+			}
+			
+			String connectionRequestTimeoutString = getProperty("it.govpay.client.connectionRequestTimeout", this.props, false, log);
+			try{
+				this.connectionRequestTimeout = Integer.parseInt(connectionRequestTimeoutString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.connectionTimeout\" impostata com valore di default 180000");
+				this.connectionRequestTimeout = 10000;
+			}
+			
+			String numeroMassimoConnessioniPerPoolString = getProperty("it.govpay.client.numeroMassimoConnessioniPerPool", this.props, false, log);
+			try{
+				this.numeroMassimoConnessioniPerPool = Integer.parseInt(numeroMassimoConnessioniPerPoolString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.numeroMassimoConnessioniPerPool\" impostata com valore di default 200");
+				this.numeroMassimoConnessioniPerPool = 200;
+			}
+			
+			String numeroMassimoConnessioniPerRouteDefaultString = getProperty("it.govpay.client.numeroMassimoConnessioniPerRouteDefault", this.props, false, log);
+			try{
+				this.numeroMassimoConnessioniPerPool = Integer.parseInt(numeroMassimoConnessioniPerRouteDefaultString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.client.numeroMassimoConnessioniPerRouteDefault\" impostata com valore di default 20");
+				this.numeroMassimoConnessioniPerRouteDefault = 20;
+			}
+			
+			String aggiornamentoValiditaMandatorioString = getProperty("it.govpay.context.aggiornamentoValiditaMandatorio", this.props, false, log);
+			if(aggiornamentoValiditaMandatorioString != null && Boolean.valueOf(aggiornamentoValiditaMandatorioString))
+				this.aggiornamentoValiditaMandatorio = true;
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
@@ -913,6 +978,10 @@ public class GovpayConfig {
 	public Properties getApiUserLoginRedirectURLs() {
 		return apiUserLoginRedirectURLs;
 	}
+	
+	public Properties getApiUserLogoutRedirectURLs() {
+		return apiUserLogoutRedirectURLs;
+	}
 
 	public Properties getAutenticazioneSSLHeaderProperties() {
 		return autenticazioneSSLHeaderProperties;
@@ -945,4 +1014,25 @@ public class GovpayConfig {
 	public boolean isRicercaRiconciliazioniIdFlussoCaseInsensitive() {
 		return ricercaRiconciliazioniIdFlussoCaseInsensitive;
 	}
+
+	public Integer getConnectionTimeout() {
+		return connectionTimeout;
+	}
+
+	public Integer getReadTimeout() {
+		return readTimeout;
+	}
+
+	public Integer getConnectionRequestTimeout() {
+		return connectionRequestTimeout;
+	}
+
+	public Integer getNumeroMassimoConnessioniPerPool() {
+		return numeroMassimoConnessioniPerPool;
+	}
+
+	public Integer getNumeroMassimoConnessioniPerRouteDefault() {
+		return numeroMassimoConnessioniPerRouteDefault;
+	}
+	
 }

@@ -581,27 +581,6 @@ public class AnagraficaManager {
 		}
 	}
 	
-	public static IbanAccredito getIbanAccredito(BDConfigWrapper configWrapper, String codIbanAccredito) throws ServiceException, NotFoundException, MultipleResultException {
-		try {
-			String method = CACHE_KEY_GET_IBAN_ACCREDITO;
-			Object ibanAccredito = getIbanAccreditoBDWrapper(configWrapper.isUseCache()).getObjectCache(configWrapper, DEBUG, keyPrefCODICE + codIbanAccredito, method, codIbanAccredito);
-			return (IbanAccredito) ibanAccredito;
-		} catch (Throwable t) {
-			if(t instanceof NotFoundException) {
-				throw (NotFoundException) t;
-			}
-			if(t instanceof MultipleResultException) {
-				throw (MultipleResultException) t;
-			}
-			if(t instanceof ServiceException) {
-				throw (ServiceException) t;
-			}
-			throw new ServiceException(t);
-		} finally {
-		}
-	}
-
-
 	public static Intermediario getIntermediario(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_INTERMEDIARIO;

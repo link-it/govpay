@@ -19,13 +19,17 @@ l'applicativo di riconciliazione HyperSIC di APKappa.
    "Versione", "Versione del tracciato utilizzata per l'esportazione"
    "Modalità di consegna", "Canale di trasmissione del CSV verso l'ente"
    "Tipi pendenza", "Elenco dei tipi pendenza oggetto di esportazione"
-   "TBD", "TBD"
+   "Email", "Se selezionata la consegna email, specifica la lista degli indirizzi destinatari separati da virgola"
+   "Oggetto", "Se selezionata la consegna email, specifica l'oggetto della mail"
+   "Invia tracciato come allegato", "Se selezionata la consegna email, indica se il tracciato deve essere inserito in allegato o riferito con un link."
+   "Base URL link download", "Se deselezionato l'invio come allegato, indica la base URL del link di download. Deve puntare alla risorsa /tracciatiNotificaPagamenti delle API di backoffice"
+   "Path", "Se selezionata la consegna File System, specifica il path sul server dove verranno depositati i file. Accertarsi che la directory esista e che siano forniti i diritti necessari alla scrittura dei file"
   
 Il batch di esportazione viene eseguito quotidianamente alle 3 di mattina.
 
 Il naming segue le specifiche del servizio HyperSIC che prevede i seguenti parametri separati da “_”:
 - “RENDICONTAZIONE”, stringa fissa per identificativo tipologia di flusso;
-- “AV20”, stringa fissa per identificativo versione del flusso;
+- “AV20”, stringa per identificativo versione del flusso;
 - “Codice Fiscale Ente Creditore”, nel formato numerico di 11 caratteri;
 - “Data Creazione Flusso”, nel formato AAAAMMGG;
 - “Progressivo Flusso”, per la data di creazione flusso nel formato NNN.

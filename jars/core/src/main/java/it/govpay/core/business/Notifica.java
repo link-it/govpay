@@ -61,8 +61,7 @@ public class Notifica {
 		
 		List<it.govpay.bd.model.Notifica> notificheAttivazione = new ArrayList<>();
 		List<it.govpay.bd.model.Notifica> notificheTerminazione = new ArrayList<>();
-		List<it.govpay.bd.model.Notifica> notificheAnnullamentoAttivazione = new ArrayList<>();
-		List<it.govpay.bd.model.Notifica> notificheFallimentoAttivazione = new ArrayList<>();
+		List<it.govpay.bd.model.Notifica> notificheDaAnnullare = new ArrayList<>();
 		List<String> blackListChiaviRptAttivazione = new ArrayList<>();
 		
 		Map<String, List<it.govpay.bd.model.Notifica>> mappaAttivazioni = new HashMap<>();
@@ -84,17 +83,14 @@ public class Notifica {
 				notificheAttivazione.add(notifica);
 				notifichePerChiave.add(notifica);
 				break;
-			case ANNULLAMENTO:
-				notificheAnnullamentoAttivazione.add(notifica);
-				notifichePerChiave.add(notifica);
-				break;
-			case FALLIMENTO:
-				notificheFallimentoAttivazione.add(notifica);
-				notifichePerChiave.add(notifica);
-				break;
 			case RICEVUTA:
 				notificheTerminazione.add(notifica);
 				// le notifiche di terminazione devono essere eseguite sempre
+				break;
+			case FALLIMENTO:
+			case ANNULLAMENTO:
+				log.warn("Notifica RPT["+notifica.getRptKey() +"] di tipo ["+notifica.getTipo()+"] non verra' spedita verso l'applicazione.");
+				notificheDaAnnullare.add(notifica);
 				break;
 			}
 			
@@ -114,13 +110,14 @@ public class Notifica {
 					
 					switch (tipoNotifica) {
 					case ATTIVAZIONE:
-						notificheBD.updateAnnullata(notifica.getId(), "Trovata una notifica di annullamento/fallimento per la stessa RPT ["+key+"] schedulata per l'invio, spedizione annullata", tentativi, prossima);
-						break;
-					case ANNULLAMENTO:
-					case FALLIMENTO:
-						notificheBD.updateAnnullata(notifica.getId(), "Trovata una notifica di attivazione per la stessa RPT ["+key+"] schedulata per l'invio, spedizione annullata", tentativi, prossima);
+						notificheBD.updateAnnullata(notifica.getId(), "Trovata una notifica di spedizione per la stessa RPT ["+key+"] schedulata per l'invio, spedizione annullata", tentativi, prossima);
 						break;
 					case RICEVUTA:
+						break;
+					case FALLIMENTO:
+					case ANNULLAMENTO:
+						// non dovrei passare mai qua dentro
+						log.warn("Notifica RPT["+notifica.getRptKey() +"] di tipo ["+notifica.getTipo()+"] non verra' spedita verso l'applicazione.");
 						break;
 					}
 					
@@ -129,23 +126,18 @@ public class Notifica {
 			} 
 		}
 		
+		// annullo eventuali notifiche di terminazione/fallimento lette
+		for(it.govpay.bd.model.Notifica notifica: notificheDaAnnullare) {
+			Date prossima = new GregorianCalendar(9999,1,1).getTime();
+			long tentativi = notifica.getTentativiSpedizione() + 1;
+			notificheBD.updateAnnullata(notifica.getId(), "Notifica RPT["+notifica.getRptKey() +"] di tipo ["+notifica.getTipo()+"] non verra' spedita verso l'applicazione, spedizione annullata", tentativi, prossima);
+		}
+		
 		for(it.govpay.bd.model.Notifica notifica: notificheAttivazione) {
 			// avvio solo le notifiche che non sono in black list
 			if(!blackListChiaviRptAttivazione.contains(notifica.getRptKey())) { 
 				notificheToRet.add(notifica);
 			} 
-		}
-		for(it.govpay.bd.model.Notifica notifica: notificheAnnullamentoAttivazione) {
-			// avvio solo le notifiche che non sono in black list
-			if(!blackListChiaviRptAttivazione.contains(notifica.getRptKey())) { 
-				notificheToRet.add(notifica);
-			}
-		}
-		for(it.govpay.bd.model.Notifica notifica: notificheFallimentoAttivazione) {
-			// avvio solo le notifiche che non sono in black list
-			if(!blackListChiaviRptAttivazione.contains(notifica.getRptKey())) { 
-				notificheToRet.add(notifica);
-			}
 		}
 		for(it.govpay.bd.model.Notifica notifica: notificheTerminazione) {
 			notificheToRet.add(notifica);

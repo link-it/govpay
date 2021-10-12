@@ -738,6 +738,7 @@ public class PendenzeController extends BaseController {
 				stampaAvvisi = true;
 			postTracciatoDTO.setStampaAvvisi(stampaAvvisi);
 
+			// operatore opzionale
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 			Operatore operatore = userDetails.getOperatore();
 			postTracciatoDTO.setOperatore(operatore);

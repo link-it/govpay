@@ -14,11 +14,6 @@ installazione di GovPay. Sarà inoltre necessario:
 Le proprietà per la configurazione del singolo nodo sono le seguenti:
 
 -  **it.govpay.clusterId**: identificativo dell'istanza di GovPay. Deve essere un numero univoco tra le istanze.
--  **it.govpay.timeoutBatch**: timeout in secondi delle operazioni soggette alla gestione applicativa della concorrenza. Se non valorizzato viene usato il default di 5 minuti.
 
 Queste proprietà possono essere specificate sia nelle Java Options, dei processi Java associati agli application server, oppure nel file *govpay.properties* nella directory di lavoro di ogni nodo.
-
-Ad esempio è possibile ridefinire la directory di log impostando la seguente proprietà:
-
--  it.govpay.resource.log.path
 

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.11.0"
+  version: "2.12.0"
   title: GovPay - API Pendenze
   contact:
     name: GitHub Project Page
@@ -1247,6 +1247,13 @@ components:
               maxLength: 140
             contabilita:
                 $ref: '#/components/schemas/Contabilita'
+            idDominio:
+              type: string
+              description: Identificativo del dominio creditore
+              example: 1234567890
+              minLength: 1
+              maxLength: 35   
+              pattern: '(^([0-9]){11}$)'
     NuovoDocumento:
       allOf:
         - type: object
@@ -2082,12 +2089,44 @@ components:
           example: 10.01
     VocePendenza:
       allOf:
-        - $ref: "#/components/schemas/NuovaVocePendenza"
+        - $ref: "#/components/schemas/TipoRiferimentoVocePendenza"
         - type: object
           required:
+            - idVocePendenza
+            - importo
+            - descrizione
             - indice
             - stato
           properties:
+            idVocePendenza:
+              type: string
+              description: Identificativo della voce di pedenza nel gestionale proprietario
+              example: abcdef12345_1
+              minLength: 1
+              maxLength: 35                 
+            importo:
+              type: number
+              description: Importo della voce
+              example: 10.01
+              minimum: 0.00
+              maximum: 9999999999999999.99
+            descrizione:
+              type: string
+              description: descrizione della voce di pagamento
+              example: Sanzione CdS n. abc00000
+              minLength: 1
+              maxLength: 140                  
+            datiAllegati:
+              type: object
+              description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+            descrizioneCausaleRPT:
+              type: string
+              description: Testo libero per la causale versamento
+              example: Sanzione CdS n. abc00000
+              minLength: 1
+              maxLength: 140
+            contabilita:
+                $ref: '#/components/schemas/Contabilita'
             indice:
               type: number
               description: indice di voce all'interno della pendenza
@@ -2096,6 +2135,8 @@ components:
               maximum: 5
             stato:
               $ref: "#/components/schemas/StatoVocePendenza"
+            dominio:
+              $ref: '#/components/schemas/Dominio'
     VincoloDocumento:
       type: object
       required: 

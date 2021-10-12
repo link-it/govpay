@@ -19,6 +19,109 @@ tags:
 security:
   - basicAuth: []    
 paths:
+  '/flussiRendicontazione':
+    get:
+      summary: Elenco dei flussi di rendicontazione acquisite da pagoPa
+      operationId: findFlussiRendicontazione
+      tags:
+        - Rendicontazioni
+      parameters:
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/ordinamento'
+        - $ref: '#/components/parameters/idDominio'
+        - $ref: '#/components/parameters/dataDa'
+        - $ref: '#/components/parameters/dataA'
+        - $ref: '#/components/parameters/statoFlussoRendicontazione'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
+        - $ref: '#/components/parameters/iuv'
+      responses:
+        '200':
+          description: Lista dei flussi rendicontazione
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlussiRendicontazione'
+        '400':
+          $ref: '#/components/responses/400BadRequest'                
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '500':
+          $ref: '#/components/responses/500ServiceUnavailable'  
+  '/flussiRendicontazione/{idFlusso}':
+    get:
+      summary: Acquisizione di un flusso di rendicontazione
+      operationId: getFlussoRendicontazione
+      tags:
+        - Rendicontazioni
+      parameters:
+        - in: path
+          name: idFlusso
+          description: Identificativo del flusso di rendicontazione
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dettaglio della rendicontazione
+          content:
+            application/xml:
+              schema:
+                type: string
+                example: xml del flusso di rendicontazione
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlussoRendicontazione'
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500ServiceUnavailable'  
+  '/flussiRendicontazione/{idFlusso}/{dataOraFlusso}':
+    get:
+      summary: Acquisizione di un flusso di rendicontazione
+      operationId: getFlussoRendicontazioneByIdEData
+      tags:
+        - Rendicontazioni
+      parameters:
+        - in: path
+          name: idFlusso
+          description: Identificativo del flusso di rendicontazione
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: dataOraFlusso
+          description: Data di emissione del flusso
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '201':
+          description: Dettaglio della rendicontazione
+          content:
+            application/xml:
+              schema:
+                type: string
+                example: xml del flusso di rendicontazione
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlussoRendicontazione'
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500ServiceUnavailable'
   '/riconciliazioni':
     get:
       summary: Elenco dei movimenti di cassa riconciliati
@@ -234,6 +337,90 @@ components:
         dettaglio:
           type: string
           description: Descrizione aggiuntiva
+    FlussiRendicontazione:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Lista' 
+        - type: object
+          properties:
+            risultati:
+              type: array
+              items: 
+                $ref: '#/components/schemas/FlussoRendicontazioneIndex'                 
+    FlussoRendicontazione:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/FlussoRendicontazioneIndex'
+        - type: object
+          properties:
+            rendicontazioni:
+              type: array
+              items:
+                $ref: '#/components/schemas/Rendicontazione'              
+    FlussoRendicontazioneIndex:
+      type: object
+      required:
+        - idFlusso
+        - dataFlusso
+        - trn
+        - dataRegolamento
+        - idPsp
+        - idDominio
+        - numeroPagamenti
+        - importoTotale
+        - stato
+        - dataAcquisizione
+      properties:
+        idFlusso:
+          type: string
+          description: identificativo del flusso di rendicontazione
+          example: 2017-11-21GovPAYPsp1-10:27:27.903
+        dataFlusso:
+          type: string
+          format: date-time
+          description: Data di emissione del flusso
+          example: '2020-12-31 10:27:27.903'
+        dataAcquisizione:
+          type: string
+          format: date-time
+          description: Data di acquisizione del flusso
+          example: '2020-12-31 10:27:27.903'
+        trn:
+          type: string
+          description: Identificativo dell'operazione di riversamento assegnato dal psp debitore
+          example: 'idriversamento12345'
+        dataRegolamento:
+          type: string
+          format: date-time
+          description: Data dell'operazione di riversamento fondi
+          example: '2020-12-31 10:27:27.903'        
+        idPsp:
+          type: string
+          description: Identificativo dell'istituto mittente
+          example: 'ABI-12345' 
+        bicRiversamento:
+          type: string
+          description: Codice Bic della banca che ha generato il riversamento
+          example: 'BIC-12345' 
+        idDominio:
+          type: string
+          description: Identificativo dominio destinatario
+          example: '01234567890' 
+        numeroPagamenti:
+          type: number
+          description: numero di pagamenti oggetto della rendicontazione
+          example: 3
+        importoTotale:
+          type: number
+          description: somma degli importi rendicontati
+          format: double
+          example: 100.01      
+        stato:
+          $ref: '#/components/schemas/StatoFlussoRendicontazione'
+        segnalazioni:
+          type: array
+          items:
+            $ref: '#/components/schemas/Segnalazione'
     Lista:
       type: object
       properties:
@@ -462,6 +649,51 @@ components:
         proprietaCustom: 
           capo: 1
           riferimento: abc123
+    Rendicontazione:
+      type: object
+      required:
+        - iuv
+        - iur
+        - indice
+        - importo
+        - esito
+        - data
+      properties:
+        iuv:
+          type: string
+          description: Identificativo univoco di versamento
+          example: 'RF23567483937849450550875'
+        iur:
+          type: string
+          description: Identificativo univoco di riscossione
+          example: '1234acdc'
+        indice:
+          type: number
+          description: Indice dell'occorrenza del pagamento all’interno della struttura datiSingoloPagamento della Ricevuta Telematica.
+          example: 1          
+        importo:
+          type: number
+          description: Importo rendicontato. 
+          example: 10.01
+        esito:
+          type: number
+          description: >
+            Codice di esito dell'operazione rendicontata
+             * 0 = Pagamento eseguito
+             * 3 = Pagamento revocato
+             * 9 = Pagamento eseguito in assenza di RPT
+          example: 0
+        data:
+          type: string
+          format: date
+          description: Data di esito
+          example: '2018-12-31'
+        segnalazioni:
+          type: array
+          items:
+            $ref: '#/components/schemas/Segnalazione'
+        riscossione:
+          $ref: '#/components/schemas/RiscossioneIndex'
     Riconciliazione:
       type: object
       allOf:
@@ -593,6 +825,25 @@ components:
           example: '2020-12-31'
         vocePendenza:
           $ref: '#/components/schemas/VocePendenza'    
+    Segnalazione:
+      type: object
+      required:
+        - codice
+        - descrizione
+      properties:
+        data:
+          type: string
+          format: date-time
+          example: '2018-12-31T12:53:49'
+        codice:
+          type: string
+          example: '0013'
+        descrizione:
+          type: string   
+          example: 'Pagamento rendicontato senza RPT'
+        dettaglio:
+          type: string
+          example: 'Acquisita rendicontazione senza RPT nel flusso ABC-1234-DEFG'
     Soggetto:
       description: dati anagrafici di un versante o pagatore.
       type: object
@@ -651,6 +902,14 @@ components:
           type: string
           example: +39 000 1234567    
           pattern: "\\+[0-9]{2,2}\\s[0-9]{3,3}\\-[0-9]{7,7}"
+    StatoFlussoRendicontazione:
+      description: Stato del flusso di rendicontazione
+      example: Acquisito
+      type: string
+      enum:
+        - Acquisito
+        - Anomalo
+        - Rifiutato
     StatoRiconciliazione:
       description: > 
         Stato della riconciliazione
@@ -891,6 +1150,13 @@ components:
         type: integer
         default: 25
         maximum: 200
+    statoFlussoRendicontazione:
+      name: stato
+      in: query
+      description: Stato del flusso di rendicontazione
+      required: false
+      schema:
+        $ref: '#/components/schemas/StatoFlussoRendicontazione'
     tipiRiscossione:
       in: query
       name: tipo

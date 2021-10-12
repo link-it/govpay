@@ -43,6 +43,7 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 	private transient IbanAccredito ibanAppoggio;
 	private transient List<Pagamento> pagamenti;
 	private transient List<Rendicontazione> rendicontazioni;
+	private transient Dominio dominio;
 
 	
 	public Tributo getTributo(BDConfigWrapper configWrapper) throws ServiceException {
@@ -159,6 +160,23 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 
 	public void setRendicontazioni(List<Rendicontazione> rendicontazioni) {
 		this.rendicontazioni = rendicontazioni;
+	}
+	
+	public Dominio getDominio(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.dominio == null && this.getIdDominio() != null) {
+			try {
+				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getIdDominio());
+			} catch (NotFoundException e) {
+			}
+		} 
+		return this.dominio;
+	}
+	
+	public void setDominio(Dominio dominio) {
+		this.dominio = dominio;
+		if(this.dominio != null) {
+			this.setIdDominio(this.dominio.getId());
+		}
 	}
 }
 

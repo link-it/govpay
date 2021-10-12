@@ -310,7 +310,8 @@ public class RptBuilder {
 			}
 		} else {
 			CtDatiMarcaBolloDigitale marcaBollo = new CtDatiMarcaBolloDigitale();
-			marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento());
+			if(singoloVersamento.getHashDocumento() != null)
+				marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento().getBytes());
 			marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
 			if(singoloVersamento.getTipoBollo() != null)
 				marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
@@ -331,11 +332,13 @@ public class RptBuilder {
 		//Controllo se lo IUV che mi e' stato passato e' ISO11640:2011
 		if(IuvUtils.checkISO11640(iuv)) {
 			sb.append("/RFS/");
+			// Issue #366. Formato causale RFS prevede uno spazio ogni 4 cifre dello IUV
+			sb.append(formattaCausaleRFS(iuv).trim());
 		}else { 
 			sb.append("/RFB/");
+			sb.append(iuv);
 		}
 		
-		sb.append(iuv);
 		sb.append("/");
 		sb.append(nFormatter.format(importoTotale));
 		if(StringUtils.isNotEmpty(descrizioneCausaleRPT)) {
@@ -350,6 +353,10 @@ public class RptBuilder {
 			return sb.toString().substring(0, 140);
 		
 		return sb.toString();
+	}
+
+	public static String formattaCausaleRFS(String iuv) {
+		return iuv.replaceAll("(.{4})", "$1 ");
 	}
 
 	private Anagrafica toOrm(CtSoggettoVersante soggettoVersante) {

@@ -190,7 +190,9 @@ public class TracciatiDAO extends BaseDAO{
 			tracciato.setFileNameRichiesta(postTracciatoDTO.getNomeFile());
 			tracciato.setRawRichiesta(postTracciatoDTO.getContenuto());
 
-			tracciato.setIdOperatore(postTracciatoDTO.getOperatore().getId());
+			if(postTracciatoDTO.getOperatore() != null) {
+				tracciato.setIdOperatore(postTracciatoDTO.getOperatore().getId());
+			}
 			tracciato.setTipo(TIPO_TRACCIATO.PENDENZA);
 			tracciato.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
 			tracciato.setFormato(postTracciatoDTO.getFormato());

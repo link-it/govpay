@@ -139,4 +139,8 @@ public class CSVUtils {
 			return null;
 		}
 	}
+	
+	public String getDelimiter() {
+		return String.valueOf(this.csvFormat.getDelimiter());
+	}
 }

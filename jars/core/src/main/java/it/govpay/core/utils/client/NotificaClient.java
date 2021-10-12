@@ -47,14 +47,14 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.utils.EventoContext.Componente;
+import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.v1.NotificaAttivazioneConverter;
-import it.govpay.core.utils.client.v1.NotificaConverter;
 import it.govpay.core.utils.client.v1.NotificaTerminazioneConverter;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Versionabile.Versione;
 
-public class NotificaClient extends BasicClient {
+public class NotificaClient extends BasicClientCORE {
 
 	private static Logger log = LoggerWrapperFactory.getLogger(NotificaClient.class);
 	private Versione versione;
@@ -63,7 +63,7 @@ public class NotificaClient extends BasicClient {
 		super(applicazione, TipoConnettore.NOTIFICA);
 		this.versione = applicazione.getConnettoreIntegrazione().getVersione();
 		this.operationID = operationID;
-		
+
 		this.componente = Componente.API_ENTE;
 		this.setGiornale(giornale);
 		this.getEventoCtx().setComponente(this.componente); 
@@ -103,12 +103,6 @@ public class NotificaClient extends BasicClient {
 		String swaggerOperationID = this.getSwaggerOperationId(notifica, rpt);
 
 		switch (notifica.getTipo()) {
-		case ANNULLAMENTO:
-		case FALLIMENTO:
-			sb.append("/pagamenti/" + codDominio + "/"+ iuv);
-			sb.append("/").append(ccp).append("/annulla");
-			
-			break;
 		case ATTIVAZIONE:
 		case RICEVUTA:
 			sb.append("/pagamenti/" + codDominio + "/"+ iuv);
@@ -123,8 +117,10 @@ public class NotificaClient extends BasicClient {
 			if(rpt.getCodCarrello() != null) {
 				queryParams.put("idCarrello", encode(rpt.getCodCarrello()));
 			}
-			
 			break;
+		case FALLIMENTO:
+		case ANNULLAMENTO:
+			throw new ClientException("Notifica RPT["+notifica.getRptKey() +"] di tipo ["+notifica.getTipo()+"] non verra' spedita verso l'applicazione.");
 		}
 
 		// composizione URL
@@ -139,40 +135,33 @@ public class NotificaClient extends BasicClient {
 
 			sb.append(key).append("=").append(queryParams.get(key));
 		}
-		
+
 		jsonBody = this.getMessaggioRichiesta(notifica, rpt, applicazione, versamento, pagamenti);
 
 		return this.sendJson(sb.toString(), jsonBody.getBytes(), headerProperties, httpMethod, swaggerOperationID);
 	}
 
-	public String getSwaggerOperationId(Notifica notifica, Rpt rpt) {
+	public String getSwaggerOperationId(Notifica notifica, Rpt rpt) throws ServiceException { 
 		String swaggerOperationID = "";
-		
-		switch (notifica.getTipo()) {
-		case ANNULLAMENTO:
-		case FALLIMENTO:
-			swaggerOperationID = "deletePagamento";
 
-			break;
+		switch (notifica.getTipo()) {
 		case ATTIVAZIONE:
 		case RICEVUTA:
 			swaggerOperationID = "notifyPagamento";
 			break;
+		case FALLIMENTO:
+		case ANNULLAMENTO:
+			log.warn("Notifica RPT["+notifica.getRptKey() +"] di tipo ["+notifica.getTipo()+"] non verra' spedita verso l'applicazione.");
+			break;
 		}
-		
+
 		return swaggerOperationID;
 	}
-	
+
 	private String getMessaggioRichiesta(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, JAXBException, SAXException {
 		String jsonBody = "";
-		
-		switch (notifica.getTipo()) {
-		case ANNULLAMENTO:
-		case FALLIMENTO:
-			it.govpay.ec.v1.beans.NotificaAnnullamento notificaCancellazioneRsModel = new NotificaConverter().toNotificaCancellazioneRsModel(notifica, rpt);
-			jsonBody = ConverterUtils.toJSON(notificaCancellazioneRsModel, null);
 
-			break;
+		switch (notifica.getTipo()) {
 		case ATTIVAZIONE:
 			it.govpay.ec.v1.beans.Notifica notificaAttivazioneRsModel = new NotificaAttivazioneConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti);
 			jsonBody = ConverterUtils.toJSON(notificaAttivazioneRsModel, null);
@@ -181,8 +170,12 @@ public class NotificaClient extends BasicClient {
 			it.govpay.ec.v1.beans.Notifica notificaTerminazioneRsModel = new NotificaTerminazioneConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti);
 			jsonBody = ConverterUtils.toJSON(notificaTerminazioneRsModel, null);
 			break;
+		case FALLIMENTO:
+		case ANNULLAMENTO:
+			log.warn("Notifica RPT["+notifica.getRptKey() +"] di tipo ["+notifica.getTipo()+"] non verra' spedita verso l'applicazione.");
+			break;
 		}
-		
+
 		return jsonBody;
 	}
 
@@ -211,7 +204,7 @@ public class NotificaClient extends BasicClient {
 			this.detail = detail;
 		}
 	}
-	
+
 	@Override
 	public String getOperationId() {
 		return this.operationID;

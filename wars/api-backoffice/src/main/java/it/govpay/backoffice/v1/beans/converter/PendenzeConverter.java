@@ -17,6 +17,7 @@ import it.govpay.backoffice.v1.beans.Avviso;
 import it.govpay.backoffice.v1.beans.Avviso.StatoEnum;
 import it.govpay.backoffice.v1.beans.Documento;
 import it.govpay.backoffice.v1.beans.LinguaSecondaria;
+import it.govpay.backoffice.v1.beans.NuovaVocePendenza;
 import it.govpay.backoffice.v1.beans.Pendenza;
 import it.govpay.backoffice.v1.beans.PendenzaIndex;
 import it.govpay.backoffice.v1.beans.PendenzaPost;
@@ -352,12 +353,14 @@ public class PendenzeConverter {
 		}
 		
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
-
+		if(singoloVersamento.getDominio(configWrapper) != null) {
+			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
+		}
 
 		return rsModel;
 	}
 	
-	public static VocePendenzaRendicontazione toVocePendenzaRendicontazioneRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, it.govpay.bd.model.Versamento versamento) throws ServiceException, java.io.IOException, ValidationException {
+	public static VocePendenzaRendicontazione toVocePendenzaRendicontazioneRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, it.govpay.bd.model.Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException, java.io.IOException, ValidationException {
 		VocePendenzaRendicontazione rsModel = new VocePendenzaRendicontazione();
 
 //		if(singoloVersamento.getDatiAllegati() != null)
@@ -377,11 +380,14 @@ public class PendenzeConverter {
 		rsModel.setPendenza(toRsModelIndex(versamento));
 		
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
+		if(singoloVersamento.getDominio(configWrapper) != null) {
+			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
+		}
 
 		return rsModel;
 	}
 	
-	public static VocePendenzaRiscossione toVocePendenzaRiscossioneRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, it.govpay.bd.model.Versamento versamento) throws ServiceException, java.io.IOException, ValidationException {
+	public static VocePendenzaRiscossione toVocePendenzaRiscossioneRsModel(it.govpay.bd.model.SingoloVersamento singoloVersamento, it.govpay.bd.model.Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException, java.io.IOException, ValidationException {
 		VocePendenzaRiscossione rsModel = new VocePendenzaRiscossione();
 
 //		if(singoloVersamento.getDatiAllegati() != null)
@@ -401,6 +407,9 @@ public class PendenzeConverter {
 		rsModel.setPendenza(toRsModelIndex(versamento));
 		
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
+		if(singoloVersamento.getDominio(configWrapper) != null) {
+			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
+		}
 
 		return rsModel;
 	}
@@ -624,12 +633,12 @@ public class PendenzeConverter {
 		return versamento;
 	}
 
-	public static BigDecimal fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) throws ServiceException, IOException, GovPayException {
+	public static BigDecimal fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws ServiceException, IOException, GovPayException {
 
 		BigDecimal importoTotale = BigDecimal.ZERO;
 
 		if(voci != null && voci.size() > 0) {
-			for (VocePendenza vocePendenza : voci) {
+			for (NuovaVocePendenza vocePendenza : voci) {
 				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = new it.govpay.core.dao.commons.Versamento.SingoloVersamento();
 
 				//sv.setCodTributo(value); ??
@@ -640,6 +649,7 @@ public class PendenzeConverter {
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				sv.setImporto(vocePendenza.getImporto());
+				sv.setCodDominio(vocePendenza.getIdDominio());
 
 				importoTotale = importoTotale.add(vocePendenza.getImporto());
 

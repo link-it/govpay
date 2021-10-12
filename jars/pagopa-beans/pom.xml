@@ -165,28 +165,13 @@
 								</wsdlOption>
 								<wsdlOption>
 									<frontEnd>jaxws21</frontEnd>
-									<wsdl>${basedir}/src/main/resources/wsdl/NodoPerPaAvvisiDigitali.wsdl</wsdl>
-									<wsdlLocation>classpath:wsdl/NodoPerPaAvvisiDigitali.wsdl</wsdlLocation>
-								</wsdlOption>
-								<wsdlOption>
-									<frontEnd>jaxws21</frontEnd>
 									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodo.wsdl</wsdl>
 									<wsdlLocation>classpath:wsdl/PaPerNodo.wsdl</wsdlLocation>
 								</wsdlOption>
 								<wsdlOption>
 									<frontEnd>jaxws21</frontEnd>
-									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodoChiediElencoAvvisiDigitali.wsdl</wsdl>
-									<wsdlLocation>classpath:wsdl/PaPerNodoChiediElencoAvvisiDigitali.wsdl</wsdlLocation>
-								</wsdlOption>
-								<wsdlOption>
-									<frontEnd>jaxws21</frontEnd>
 									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodoPagamentoPsp.wsdl</wsdl>
 									<wsdlLocation>classpath:wsdl/PaPerNodoPagamentoPsp.wsdl</wsdlLocation>
-								</wsdlOption>
-								<wsdlOption>
-									<frontEnd>jaxws21</frontEnd>
-									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodoRichiestaAvvisi.wsdl</wsdl>
-									<wsdlLocation>classpath:wsdl/PaPerNodoRichiestaAvvisi.wsdl</wsdlLocation>
 								</wsdlOption>
 							</wsdlOptions>
 						</configuration>

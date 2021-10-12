@@ -21,6 +21,7 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.bind.JAXBException;
 
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.QuoteMode;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -179,9 +180,7 @@ public class TracciatiNotificaPagamenti {
 						tracciato.setDataRtA(dataRtA);
 						tracciato.setIdDominio(dominio.getId());
 						tracciato.setStato(STATO_ELABORAZIONE.DRAFT);
-						long progressivo = tracciatiNotificaPagamentiBD.generaProgressivoTracciato(dominio, this.tipoTracciato.toString(), "Tracciato_");
-						tracciato.setNomeFile("GOVPAY_" + codDominio + "_"+progressivo+".zip");
-						tracciato.setDataCreazione(new Date());
+						long progressivo = this.impostaNomeFileZip(dominio, tracciatiNotificaPagamentiBD, codDominio, tracciato);
 						tracciato.setTipo(this.tipoTracciato);
 						tracciato.setVersione(connettore.getVersioneCsv());
 						beanDati = new it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti();
@@ -346,6 +345,27 @@ public class TracciatiNotificaPagamenti {
 				}
 			}
 		}
+	}
+
+	private long impostaNomeFileZip(Dominio dominio, TracciatiNotificaPagamentiBD tracciatiNotificaPagamentiBD,
+			String codDominio, TracciatoNotificaPagamenti tracciato) throws ServiceException {
+		
+		long progressivo = tracciatiNotificaPagamentiBD.generaProgressivoTracciato(dominio, this.tipoTracciato.toString(), "Tracciato_");
+		tracciato.setDataCreazione(new Date());
+		switch (this.tipoTracciato) {
+		case MYPIVOT:
+		case SECIM:
+		case GOVPAY:
+			tracciato.setNomeFile("GOVPAY_" + codDominio + "_"+progressivo+".zip");
+			break;
+		case HYPERSIC_APK:
+			progressivo = 1;
+			String dataCreazioneFlusso = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(tracciato.getDataCreazione());
+			tracciato.setNomeFile("GOVPAY_" + codDominio + "_"+ dataCreazioneFlusso + "_"+progressivo+".zip");
+			break;
+		}
+		
+		return progressivo;
 	}
 
 	private long calcolaNumeroEntriesDaInserireNelTracciato(String codDominio, Date dataRtDa, Date dataRtA, RptBD rptBD, List<String> listaTipiPendenza) throws ServiceException {
@@ -710,10 +730,17 @@ public class TracciatiNotificaPagamenti {
 • “Progressivo Flusso”, per la data di creazione flusso nel formato NNN.
 		 * */
 		
-		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT);
+		/*
+		 new CSVFormat(';', null, QuoteMode.NONE, null, null, false, true, CRLF,
+            null, null, null, false, false, false, false, false);
+            CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.newFormat(';').withRecordSeparator("\r\n").withQuoteMode(QuoteMode.NONE).withIgnoreEmptyLines(true));
+		 * */
+		
+		
+		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT.withDelimiter(';').withEscape(Character.valueOf('\0')).withQuoteMode(QuoteMode.NONE));
 		
 		String dataCreazioneFlusso = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(tracciato.getDataCreazione());
-		String progressivoS = TracciatiNotificaPagamentiUtils.completaValoreCampoConFiller(progressivo +"", 3, true, true);
+		String progressivoS = TracciatiNotificaPagamentiUtils.completaValoreCampoConFiller(log, "", "progressivoFile",progressivo +"", 3, true, true);
 		
 		int lineaElaborazione = 0;
 		int offset = 0;
@@ -727,7 +754,7 @@ public class TracciatiNotificaPagamenti {
 		
 		// file rendicontazioni
 		if(totaleRt > 0) {
-			ZipEntry tracciatoOutputEntry = new ZipEntry("RENDICONTAZIONE_AV20_" + codDominio + "_"+ dataCreazioneFlusso + "_" + progressivoS+ ".txt");
+			ZipEntry tracciatoOutputEntry = new ZipEntry("RENDICONTAZIONE_AV20_" + codDominio + "_"+ dataCreazioneFlusso + "_" + progressivoS+ ".csv");
 			zos.putNextEntry(tracciatoOutputEntry);
 			
 			zos.write(csvUtils.toCsv(HYPERSIC_APKAPPA_HEADER_FILE_CSV).getBytes());
@@ -737,7 +764,7 @@ public class TracciatiNotificaPagamenti {
 					for (EntrataPrevista pagamento : riscossioniList) {
 						lineaElaborazione ++;
 						beanDati.setLineaElaborazione(lineaElaborazione);
-						zos.write(csvUtils.toCsv(this.creaLineaCsvHyperSicAPKappa(entratePrevisteBD, pagamento, configWrapper, totaleRt, connettore)).getBytes());
+						zos.write(csvUtils.toCsv(this.creaLineaCsvHyperSicAPKappa(entratePrevisteBD, pagamento, configWrapper, totaleRt, connettore, csvUtils)).getBytes());
 					}
 					log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+riscossioniList.size()+"] Riscossioni nel tracciato completato");
 				}
@@ -780,7 +807,7 @@ public class TracciatiNotificaPagamenti {
 		
 		// file rendicontazioni
 		if(totaleRt > 0) {
-			ZipEntry tracciatoNoSecimOutputEntry = new ZipEntry("RENDICONTAZIONE_AV20_" + codDominio + "_"+ dataCreazioneFlusso + "_" + "999"+ ".txt");
+			ZipEntry tracciatoNoSecimOutputEntry = new ZipEntry("RENDICONTAZIONE_AV20_" + codDominio + "_"+ dataCreazioneFlusso + "_" + "999"+ ".csv");
 			zos.putNextEntry(tracciatoNoSecimOutputEntry);
 			
 			zos.write(csvUtils.toCsv(HYPERSIC_APKAPPA_HEADER_FILE_CSV).getBytes());
@@ -790,7 +817,7 @@ public class TracciatiNotificaPagamenti {
 					for (EntrataPrevista pagamento : riscossioniList) {
 						lineaElaborazione ++;
 						beanDati.setLineaElaborazione(lineaElaborazione);
-						zos.write(csvUtils.toCsv(this.creaLineaCsvHyperSicAPKappa(entratePrevisteBD, pagamento, configWrapper, totaleRt, connettore)).getBytes());
+						zos.write(csvUtils.toCsv(this.creaLineaCsvHyperSicAPKappa(entratePrevisteBD, pagamento, configWrapper, totaleRt, connettore, csvUtils)).getBytes());
 					}
 					log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+riscossioniList.size()+"] Riscossioni non rendicontate nel tracciato completato");
 				}
@@ -961,17 +988,17 @@ public class TracciatiNotificaPagamenti {
 		
 		switch (versione) {
 		case SANP_240:
-			TracciatiNotificaPagamentiUtils.creaLineaCsvSecimRpt_SANP24(rpt, configWrapper, numeroLinea, connettore, secimOS, noSecimOS);
+			TracciatiNotificaPagamentiUtils.creaLineaCsvSecimRpt_SANP24(log, rpt, configWrapper, numeroLinea, connettore, secimOS, noSecimOS);
 			break;
 		case SANP_230:
 		default:
-			TracciatiNotificaPagamentiUtils.creaLineaCsvSecimRpt_SANP23(rpt, configWrapper, numeroLinea, connettore, secimOS, noSecimOS);
+			TracciatiNotificaPagamentiUtils.creaLineaCsvSecimRpt_SANP23(log, rpt, configWrapper, numeroLinea, connettore, secimOS, noSecimOS);
 			break;
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String[] creaLineaCsvHyperSicAPKappa(EntratePrevisteBD pagamentiBD, EntrataPrevista pagamento, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore) throws ServiceException, JAXBException, SAXException, ValidationException, java.io.IOException { 
+	private String[] creaLineaCsvHyperSicAPKappa(EntratePrevisteBD pagamentiBD, EntrataPrevista pagamento, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore, CSVUtils csvUtils) throws ServiceException, JAXBException, SAXException, ValidationException, java.io.IOException { 
 		List<String> linea = new ArrayList<String>();
 
 		Documento documento = null;
@@ -985,6 +1012,7 @@ public class TracciatiNotificaPagamenti {
 			}
 		}
 		
+		String entryKey = "RISC_" + pagamento.getIuvPagamento();
 		String contabilitaString = pagamento.getContabilita();
 		String codiceServizio = null;
 		String descrizioneServizio = null;
@@ -993,7 +1021,7 @@ public class TracciatiNotificaPagamenti {
 			contabilita = JSONSerializable.parse(contabilitaString, Contabilita.class);
 			
 			Object proprietaCustomObj = contabilita.getProprietaCustom();
-			
+						
 			if(proprietaCustomObj != null) {
 				if(proprietaCustomObj instanceof String) {
 					String proprietaCustom = (String) proprietaCustomObj;
@@ -1021,41 +1049,68 @@ public class TracciatiNotificaPagamenti {
 			}
 		}
 		
-//		CodiceServizio	$.vocePendenza.contabilita.quoteContabili.proprietaCustom.codiceServizio o versamento.tipoPendenza.codTipoPendenza	
-		linea.add(codiceServizio != null ? codiceServizio : pagamento.getCodTipoVersamento());
+//		CodiceServizio 10	$.vocePendenza.contabilita.quoteContabili.proprietaCustom.codiceServizio o versamento.tipoPendenza.codTipoPendenza
+		String codiceServizioValue = codiceServizio != null ? codiceServizio : pagamento.getCodTipoVersamento();
+		codiceServizioValue = TracciatiNotificaPagamentiUtils.rimuoviCaratteriDaStringa(log, entryKey, "CodiceServizio", codiceServizioValue, csvUtils.getDelimiter());
+		codiceServizioValue = TracciatiNotificaPagamentiUtils.impostaLunghezzaMassimaCampo(log, entryKey, "CodiceServizio", codiceServizioValue, 10);
+		linea.add(codiceServizioValue);
 
-//		DescrizioneServizio $.vocePendenza.contabilita.quoteContabili.proprietaCustom.descrizioneServizio o versamento.tipoPendenza.descrizione		
-		linea.add(descrizioneServizio != null ? descrizioneServizio : (pagamento.getDescrizioneTipoVersamento() != null ? pagamento.getDescrizioneTipoVersamento() : ""));
+//		DescrizioneServizio 123 $.vocePendenza.contabilita.quoteContabili.proprietaCustom.descrizioneServizio o versamento.tipoPendenza.descrizione		
+		String descrizioneServizioValue = descrizioneServizio != null ? descrizioneServizio : (pagamento.getDescrizioneTipoVersamento() != null ? pagamento.getDescrizioneTipoVersamento() : "");
+		descrizioneServizioValue = TracciatiNotificaPagamentiUtils.rimuoviCaratteriDaStringa(log, entryKey, "DescrizioneServizio", descrizioneServizioValue, csvUtils.getDelimiter());
+		descrizioneServizioValue = TracciatiNotificaPagamentiUtils.impostaLunghezzaMassimaCampo(log, entryKey, "DescrizioneServizio", descrizioneServizioValue, 123);
+		linea.add(descrizioneServizioValue);
 			
-//		CodiceDebitore VUOTO
+//		CodiceDebitore 20 VUOTO 
 		linea.add("");
 			
-//		CFPIVADebitore $.soggettoPagatore.identificativo
-		linea.add(pagamento.getIdentificativoDebitore());
+//		CFPIVADebitore 16 $.soggettoPagatore.identificativo
+		String identificativoDebitoreValue = pagamento.getIdentificativoDebitore();
+		identificativoDebitoreValue = TracciatiNotificaPagamentiUtils.rimuoviCaratteriDaStringa(log, entryKey, "CFPIVADebitore", identificativoDebitoreValue, csvUtils.getDelimiter());
+		identificativoDebitoreValue = TracciatiNotificaPagamentiUtils.impostaLunghezzaMassimaCampo(log, entryKey, "CFPIVADebitore", identificativoDebitoreValue, 16);
+		linea.add(identificativoDebitoreValue);
 		
-//		NominativoDebitore $.soggettoPagatore.anagrafica
-		linea.add(pagamento.getAnagraficaDebitore());
+//		NominativoDebitore 70 $.soggettoPagatore.anagrafica
+		String anagraficaDebitoreValue = pagamento.getAnagraficaDebitore();
+		anagraficaDebitoreValue = TracciatiNotificaPagamentiUtils.rimuoviCaratteriDaStringa(log, entryKey, "NominativoDebitore", anagraficaDebitoreValue, csvUtils.getDelimiter());
+		anagraficaDebitoreValue = TracciatiNotificaPagamentiUtils.impostaLunghezzaMassimaCampo(log, entryKey, "NominativoDebitore", anagraficaDebitoreValue, 70);
+		linea.add(anagraficaDebitoreValue);
 		
-//		CodiceDebito $.documento.identificativo o $.idPendenza
-		linea.add(documento != null ? documento.getCodDocumento() : pagamento.getCodVersamentoEnte());
+//		CodiceDebito 30 $.documento.identificativo o $.idPendenza
+		String codiceDebitoValue = documento != null ? documento.getCodDocumento() : pagamento.getCodVersamentoEnte();
+		codiceDebitoValue = TracciatiNotificaPagamentiUtils.rimuoviCaratteriDaStringa(log, entryKey, "CodiceDebito", codiceDebitoValue, csvUtils.getDelimiter());
+		codiceDebitoValue = TracciatiNotificaPagamentiUtils.impostaLunghezzaMassimaCampo(log, entryKey, "CodiceDebito", codiceDebitoValue, 30);
+		linea.add(codiceDebitoValue);
 		
 //		DataEmissione $.dataCaricamento 
 		linea.add(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA().format(pagamento.getDataCreazione()));
 		
-//		CausaleDebito $.causale
-		linea.add(pagamento.getCausaleVersamento().getSimple());
+//		CausaleDebito 100 $.causale
+		String causaleValue = pagamento.getCausaleVersamento().getSimple();
+		causaleValue = TracciatiNotificaPagamentiUtils.rimuoviCaratteriDaStringa(log, entryKey, "CausaleDebito", causaleValue, csvUtils.getDelimiter());
+		causaleValue = TracciatiNotificaPagamentiUtils.impostaLunghezzaMassimaCampo(log, entryKey, "CausaleDebito", causaleValue, 100);
+		linea.add(causaleValue);
 		
 //		ImportoDebito importo (in centesimi)
 		linea.add(TracciatiNotificaPagamentiUtils.printImporto(pagamento.getImportoVersamento(), true));
 		
-//		CodiceRata $.documento.numeroRata
-		linea.add(pagamento.getNumeroRata() != null ? pagamento.getNumeroRata() +"" : "");
+//		CodiceRata 30 $.documento.numeroRata
+		String codiceRataValue = pagamento.getNumeroRata() != null ? pagamento.getNumeroRata() +"" : "";
+		codiceRataValue = TracciatiNotificaPagamentiUtils.rimuoviCaratteriDaStringa(log, entryKey, "CodiceRata", codiceRataValue, csvUtils.getDelimiter());
+		codiceRataValue = TracciatiNotificaPagamentiUtils.impostaLunghezzaMassimaCampo(log, entryKey, "CodiceRata", codiceRataValue, 30);
+		linea.add(codiceRataValue);
 		
-//		CodiceAvviso $.numeroAvviso
-		linea.add(pagamento.getNumeroAvviso());
+//		CodiceAvviso 35 $.numeroAvviso
+		String codiceAvvisoValue = pagamento.getNumeroAvviso();
+		codiceAvvisoValue = TracciatiNotificaPagamentiUtils.rimuoviCaratteriDaStringa(log, entryKey, "CodiceAvviso", codiceAvvisoValue, csvUtils.getDelimiter());
+		codiceAvvisoValue = TracciatiNotificaPagamentiUtils.impostaLunghezzaMassimaCampo(log, entryKey, "CodiceAvviso", codiceAvvisoValue, 35);
+		linea.add(codiceAvvisoValue);
 		
-//		CodiceIUV $.iuvPagamento
-		linea.add(pagamento.getIuvPagamento());
+//		CodiceIUV 35 $.iuvPagamento
+		String iuvPagamentoValue = pagamento.getIuvPagamento();
+		iuvPagamentoValue = TracciatiNotificaPagamentiUtils.rimuoviCaratteriDaStringa(log, entryKey, "CodiceIUV", iuvPagamentoValue, csvUtils.getDelimiter());
+		iuvPagamentoValue = TracciatiNotificaPagamentiUtils.impostaLunghezzaMassimaCampo(log, entryKey, "CodiceIUV", iuvPagamentoValue, 35);
+		linea.add(iuvPagamentoValue);
 		
 //		DataScadenza $.dataScadenza
 		linea.add(pagamento.getDataScadenza() != null ? SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA().format(pagamento.getDataScadenza()) : "");
@@ -1066,26 +1121,32 @@ public class TracciatiNotificaPagamenti {
 //		ImportoPagato rendicontazione.importo
 		linea.add(pagamento.getImportoPagato() != null ? TracciatiNotificaPagamentiUtils.printImporto(pagamento.getImportoPagato(), true) : "");
 		
-//		IstitutoMittente fr.ragioneSocialePsp
-		linea.add(pagamento.getRagioneSocialePsp() != null ? pagamento.getRagioneSocialePsp() : "");
+//		IstitutoMittente 120 fr.ragioneSocialePsp
+		String istitutoMittenteValue = pagamento.getRagioneSocialePsp() != null ? pagamento.getRagioneSocialePsp() : "";
+		istitutoMittenteValue = TracciatiNotificaPagamentiUtils.rimuoviCaratteriDaStringa(log, entryKey, "IstitutoMittente", istitutoMittenteValue, csvUtils.getDelimiter());
+		istitutoMittenteValue = TracciatiNotificaPagamentiUtils.impostaLunghezzaMassimaCampo(log, entryKey, "IstitutoMittente", istitutoMittenteValue, 120);
+		linea.add(istitutoMittenteValue);
 		
-//		ModalitaPagamento VUOTO
+//		ModalitaPagamento 100 VUOTO
 		linea.add("");
 		
-//		IBANIncasso VUOTO
+//		IBANIncasso 27 VUOTO
 		linea.add("");
 		
-//		CodiceFlussoRiversamento fr.codFlusso
-		linea.add(pagamento.getCodFlusso() != null ? pagamento.getCodFlusso() : "");
+//		CodiceFlussoRiversamento 60 fr.codFlusso
+		String codiceFlussoRiversamentoValue = pagamento.getCodFlusso() != null ? pagamento.getCodFlusso() : "";
+		codiceFlussoRiversamentoValue = TracciatiNotificaPagamentiUtils.rimuoviCaratteriDaStringa(log, entryKey, "CodiceFlussoRiversamento", codiceFlussoRiversamentoValue, csvUtils.getDelimiter());
+		codiceFlussoRiversamentoValue = TracciatiNotificaPagamentiUtils.impostaLunghezzaMassimaCampo(log, entryKey, "CodiceFlussoRiversamento", codiceFlussoRiversamentoValue, 60);
+		linea.add(codiceFlussoRiversamentoValue);
 		
 //		DataRiversamento fr.dataRegolamento
 		linea.add(pagamento.getDataRegolamento() != null ? SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA().format(pagamento.getDataRegolamento()) : "");
 		
-//		Annotazioni VUOTO
+//		Annotazioni 255 VUOTO
 		linea.add("");
 		
 		// IF sv.contabilita = null, tutto a null.
-		if(contabilita == null) {
+		if(contabilita == null || contabilita.getQuote() == null) {
 			linea.addAll(TracciatiNotificaPagamentiUtils.aggiungiCampiVuoti(30));
 		} else {  
 			// conto le quote disponibili
@@ -1096,15 +1157,21 @@ public class TracciatiNotificaPagamenti {
 			for (int i = 0; i < numeroQuote; i++) {
 				QuotaContabilita quotaContabilita = quote.get(i);
 				
-//				LivelloContabile1 Se sv.contabilita.quote[0].accertamento = null THEN LivelloContabile1 = CAP ELSE LivelloContabile1 = ACC
-//				CodificaContabile1 IF LivelloContabile1 = CAP THEN CodificaContabile1 = {sv.contabilita.quote[0].annoEsercizio}/{sv.contabilita.quote[0].capitolo} ELSE CodificaContabile1 = {sv.contabilita.quote[0].annoEsercizio}/{sv.contabilita.quote[0].accertamento}	
+//				LivelloContabile1 3 Se sv.contabilita.quote[0].accertamento = null THEN LivelloContabile1 = CAP ELSE LivelloContabile1 = ACC
+//				CodificaContabile1 35 IF LivelloContabile1 = CAP THEN CodificaContabile1 = {sv.contabilita.quote[0].annoEsercizio}/{sv.contabilita.quote[0].capitolo} ELSE CodificaContabile1 = {sv.contabilita.quote[0].annoEsercizio}/{sv.contabilita.quote[0].accertamento}	
 
 				if(quotaContabilita.getAccertamento() == null) {
 					linea.add(QUOTA_CONTABILITA_CAPITOLO);
-					linea.add(quotaContabilita.getAnnoEsercizio() + "/" + quotaContabilita.getCapitolo());
+					String codificaContabileValue = quotaContabilita.getAnnoEsercizio() + "/" + quotaContabilita.getCapitolo();
+					codificaContabileValue = TracciatiNotificaPagamentiUtils.rimuoviCaratteriDaStringa(log, entryKey, ("CodificaContabile" + (i+1)), codificaContabileValue, csvUtils.getDelimiter());
+					codificaContabileValue = TracciatiNotificaPagamentiUtils.impostaLunghezzaMassimaCampo(log, entryKey, ("CodificaContabile" + (i+1)), codificaContabileValue, 35);
+					linea.add(codificaContabileValue);
 				} else {
 					linea.add(QUOTA_CONTABILITA_ACCERTAMENTO);
-					linea.add(quotaContabilita.getAnnoEsercizio() + "/" + quotaContabilita.getAccertamento());
+					String codificaContabileValue = quotaContabilita.getAnnoEsercizio() + "/" + quotaContabilita.getAccertamento();
+					codificaContabileValue = TracciatiNotificaPagamentiUtils.rimuoviCaratteriDaStringa(log, entryKey, ("CodificaContabile" + (i+1)), codificaContabileValue, csvUtils.getDelimiter());
+					codificaContabileValue = TracciatiNotificaPagamentiUtils.impostaLunghezzaMassimaCampo(log, entryKey, ("CodificaContabile" + (i+1)), codificaContabileValue, 35);
+					linea.add(codificaContabileValue);
 				}
 //				QuotaContabile1	sv.contabilita.quote[0].importo in centesimi	
 				linea.add(TracciatiNotificaPagamentiUtils.printImporto(quotaContabilita.getImporto(), true));

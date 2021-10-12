@@ -75,9 +75,14 @@ public class Versamento  {
 
 	public Versamento() {
 	}
-
+	
 	@Deprecated
 	public it.govpay.bd.model.Versamento caricaVersamento(it.govpay.bd.model.Versamento versamento, boolean generaIuv, boolean aggiornaSeEsiste, Boolean avvisatura, Date dataAvvisatura, BasicBD bd) throws GovPayException {
+		return caricaVersamento(versamento, generaIuv, aggiornaSeEsiste, avvisatura, dataAvvisatura, bd, true); 
+	}
+
+	@Deprecated
+	public it.govpay.bd.model.Versamento caricaVersamento(it.govpay.bd.model.Versamento versamento, boolean generaIuv, boolean aggiornaSeEsiste, Boolean avvisatura, Date dataAvvisatura, BasicBD bd, boolean salvataggioSuDB) throws GovPayException {
 		// Indica se devo gestire la transazione oppure se e' gestita dal chiamante
 		boolean doCommit = false;
 		IContext ctx = ContextThreadLocal.get();
@@ -136,13 +141,21 @@ public class Versamento  {
 					versamentiBD.setAtomica(false);
 				}
 
-				versamentiBD.updateVersamento(versamento, true);
-				if(versamento.getId()==null)
-					versamento.setId(versamentoLetto.getId());
-
-				ctx.getApplicationLogger().log("versamento.aggioramentoOk", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
-
-				log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(configWrapper).getCodApplicazione() + ") aggiornato");
+				if(salvataggioSuDB) {
+					versamentiBD.updateVersamento(versamento, true);
+					
+					if(versamento.getId()==null)
+						versamento.setId(versamentoLetto.getId());
+	
+					ctx.getApplicationLogger().log("versamento.aggioramentoOk", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
+	
+					log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(configWrapper).getCodApplicazione() + ") aggiornato");
+				} else {
+					if(versamento.getId()==null)
+						versamento.setId(versamentoLetto.getId());
+					
+					log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(configWrapper).getCodApplicazione() + ") aggiornato in memoria.");
+				}
 			} catch (NotFoundException e) {
 				if(versamento.getNumeroAvviso()!=null) {
 					try {
@@ -262,12 +275,16 @@ public class Versamento  {
 					versamento.setImportoPagato(BigDecimal.ZERO);
 				}
 
-				versamentiBD.insertVersamento(versamento);
-				ctx.getApplicationLogger().log("versamento.inserimentoOk", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
-				log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(configWrapper).getCodApplicazione() + ") inserito");
-
-				// avvio il batch di gestione dei promemoria
-				Operazioni.setEseguiGestionePromemoria();
+				if(salvataggioSuDB) {
+					versamentiBD.insertVersamento(versamento);
+					ctx.getApplicationLogger().log("versamento.inserimentoOk", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
+					log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(configWrapper).getCodApplicazione() + ") inserito");
+	
+					// avvio il batch di gestione dei promemoria
+					Operazioni.setEseguiGestionePromemoria();
+				} else {
+					log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(configWrapper).getCodApplicazione() + ") inserito in memoria");
+				}
 			}
 			if(doCommit) versamentiBD.commit();
 

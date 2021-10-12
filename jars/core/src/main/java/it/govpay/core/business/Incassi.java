@@ -63,7 +63,6 @@ import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Incasso.StatoIncasso;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
-import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoVersamento;
@@ -172,33 +171,40 @@ public class Incassi {
 				
 				// Richiesta presente. Verifico che i dati accessori siano gli stessi
 				if(!iuvIdFlussoSet) {
-					if(!causale.trim().equals(incasso.getCausale())) {
+					if(!causale.trim().equalsIgnoreCase(incasso.getCausale())) {
 						ctx.getApplicationLogger().log("incasso.duplicato", "causale");
-						throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con causale diversa");
+						throw new IncassiException(FaultType.DUPLICATO, "La causale inviata è diversa dall'originale [" + incasso.getCausale()+ "]");
 					}
 				}else {
 					if(iuv != null) {
 						if(!iuv.trim().equals(incasso.getIuv())) {
 							ctx.getApplicationLogger().log("incasso.duplicato", "iuv");
-							throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con iuv diverso");
+							throw new IncassiException(FaultType.DUPLICATO, "Incasso già registrato con iuv diverso: "+incasso.getIuv()+"");
 						}
 					}
 					
 					if(idf != null) {
 						if(!idf.trim().equals(incasso.getIdFlussoRendicontazione())) {
 							ctx.getApplicationLogger().log("incasso.duplicato", "idf");
-							throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con id flusso rendicontazione diverso");
+							throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con id flusso rendicontazione diverso: " + incasso.getIdFlussoRendicontazione());
 						}
 					}
 				}
+				if(richiestaIncasso.getSct() != null && !richiestaIncasso.getSct().equals(incasso.getSct())) {
+					ctx.getApplicationLogger().log("incasso.duplicato", "sct");
+					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con sct diverso: " + incasso.getSct());
+				}
 				if(!richiestaIncasso.getCodDominio().equals(incasso.getCodDominio())) {
 					ctx.getApplicationLogger().log("incasso.duplicato", "dominio");
-					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con dominio diverso");
+					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con dominio diverso: " + incasso.getCodDominio());
 				}
 				if(richiestaIncasso.getImporto().compareTo(incasso.getImporto()) != 0) {
 					ctx.getApplicationLogger().log("incasso.duplicato", "importo");
-					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso");
+					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso: " + incasso.getImporto());
 				}
+				
+				// se l'incasso e' gia' acquisito lo restituisco
+				return;
 			} catch(NotFoundException nfe) {
 				// Incasso non registrato. OK
 			}  catch (MultipleResultException e) {
@@ -211,13 +217,19 @@ public class Incassi {
 				pagamentiBD.setAtomica(false);
 				
 				try {
-					log.debug("Validazione riconciliazione per riversamento Singolo [Dominio: "+richiestaIncasso.getCodDominio()+", Iuv: "+iuv+"]...");
+					log.debug("Validazione riconciliazione per riversamento Singolo [Dominio:"+richiestaIncasso.getCodDominio()+", Iuv: "+iuv+"]...");
 					it.govpay.bd.model.Pagamento pagamento = pagamentiBD.getPagamento(richiestaIncasso.getCodDominio(), iuv);
+					
+					// Controllo se il pagamento e' stato gia' riconciliato
+					if(pagamento.getIdIncasso() != null) {
+						Incasso incasso = incassiBD.getIncasso(pagamento.getIdIncasso());
+						throw new IncassiException(FaultType.PAGAMENTO_GIA_INCASSATO, "Il pagamento [Dominio:" + pagamento.getCodDominio() + " Iuv:" + pagamento.getIuv() + " Iur:" + pagamento.getIur() + "] risuta gia' riconciliato [Sct:"+incasso.getSct()+" Trn: "+incasso.getTrn()+"].");
+					}
 					
 					if(richiestaIncasso.getImporto().doubleValue() != pagamento.getImportoPagato().doubleValue())
 						throw new IncassiException(FaultType.IMPORTO_ERRATO, "La richiesta di riconciliazione presenta un importo [" + richiestaIncasso.getImporto() + "] non corripondente a quello riscosso [" + pagamento.getImportoPagato().doubleValue() + "]");
 					
-					log.debug("Validazione riconciliazione per riversamento Singolo [Dominio: "+richiestaIncasso.getCodDominio()+", Iuv: "+iuv+"] completata con successo.");
+					log.debug("Validazione riconciliazione per riversamento Singolo [Dominio:"+richiestaIncasso.getCodDominio()+", Iuv: "+iuv+"] completata con successo.");
 				} catch (NotFoundException nfe) {
 					ctx.getApplicationLogger().log("incasso.iuvNonTrovato", iuv);
 					throw new IncassiException(FaultType.PAGAMENTO_NON_TROVATO, "Lo IUV " + iuv + " estratto dalla causale di incasso non identifica alcun pagamento per il creditore " + richiestaIncasso.getCodDominio());
@@ -234,15 +246,23 @@ public class Incassi {
 				frBD.setAtomica(false);
 				
 				try {
-					log.debug("Validazione riconciliazione per riversamento cumulativo [Dominio: "+richiestaIncasso.getCodDominio()+", IdFlusso: "+idf+"]...");
+					log.debug("Validazione riconciliazione per riversamento cumulativo [Dominio:"+richiestaIncasso.getCodDominio()+", IdFlusso:"+idf+"]...");
 					// Cerco l'idf come case insensitive
 //								fr = frBD.getFr(idf, richiestaIncasso.isRicercaIdFlussoCaseInsensitive()); TODO come si gestisce ora?
 					fr = frBD.getFr(idf, false);
 					
-					log.debug("Ricerca flusso per riversamento cumulativo [Dominio: "+richiestaIncasso.getCodDominio()+", IdFlusso: "+idf+"] completata.");
+					log.debug("Ricerca flusso per riversamento cumulativo [Dominio:"+richiestaIncasso.getCodDominio()+", IdFlusso:"+idf+"] completata.");
+					
+					// Controllo se il flusso e' stato gia' riconciliato
+					if(fr.getIdIncasso() != null) {
+						Incasso incasso = incassiBD.getIncasso(fr.getIdIncasso());
+						throw new IncassiException(FaultType.FLUSSO_GIA_INCASSATO, "Il flusso [IdFlusso:"+idf+"] risuta gia' riconciliato [Sct:"+incasso.getSct()+" Trn:"+incasso.getTrn()+"].");
+					}
+					
+					
 					if(!fr.getStato().equals(StatoFr.ACCETTATA)) {
 						ctx.getApplicationLogger().log("incasso.frAnomala", idf);
-						throw new IncassiException(FaultType.FR_ANOMALA, "Il flusso di rendicontazione " + idf + " identificato dalla causale di incasso risulta avere delle anomalie");
+						throw new IncassiException(FaultType.FR_ANOMALA, "Il flusso di rendicontazione [IdFlusso:"+idf+"] identificato dalla causale di incasso risulta avere delle anomalie");
 					}
 					
 					// Verifica importo pagato con l'incassato
@@ -250,7 +270,7 @@ public class Incassi {
 						ctx.getApplicationLogger().log("incasso.importoErrato", fr.getImportoTotalePagamenti().doubleValue() + "", richiestaIncasso.getImporto().doubleValue() + "");
 						throw new IncassiException(FaultType.IMPORTO_ERRATO, "L'importo del flusso di redicontazione [" + richiestaIncasso.getImporto() + "] non corriponde all'importo del riversamento [" + fr.getImportoTotalePagamenti().doubleValue() + "]");
 					}
-					log.debug("Validazione riconciliazione per riversamento cumulativo [Dominio: "+richiestaIncasso.getCodDominio()+", IdFlusso: "+idf+"] completata con successo.");
+					log.debug("Validazione riconciliazione per riversamento cumulativo [Dominio:"+richiestaIncasso.getCodDominio()+", IdFlusso: "+idf+"] completata con successo.");
 				} catch (NotFoundException nfe) {
 					ctx.getApplicationLogger().log("incasso.idfNonTrovato", idf);
 					throw new IncassiException(FaultType.IDF_NON_TROVATO, "L'identificativo " + idf + " estratto dalla causale di incasso non identifica alcun flusso di rendicontazione");
@@ -275,7 +295,7 @@ public class Incassi {
 		String causale = null;
 		String iuv = null;
 		String idf = null;
-		log.debug("Elaborazione riconciliazione [Dominio: "+codDomino+", Id: "+idRiconciliazione+"] ...");
+		log.debug("Elaborazione riconciliazione [Dominio:"+codDomino+", Id: "+idRiconciliazione+"] ...");
 		
 		try {
 			if(gpContext.getEventoCtx().getDatiPagoPA() == null) {
@@ -288,18 +308,18 @@ public class Incassi {
 			incassiBD.enableSelectForUpdate();
 
 			try {
-				log.debug("Lettura riconciliazione [Dominio: "+codDomino+", Id: "+idRiconciliazione+"] dal db...");
+				log.debug("Lettura riconciliazione [Dominio:"+codDomino+", Id: "+idRiconciliazione+"] dal db...");
 				incasso = incassiBD.getIncasso(codDomino, idRiconciliazione);
 				richiestaIncassoResponse.setIncasso(incasso);
 			} catch (NotFoundException e) {
 				// non dovrebbe succedere perche' la coppia viene letta dal db
-				log.warn("La riconciliazione [Dominio: "+codDomino+", Id: "+idRiconciliazione+"] non e' presente sul db: " + e.getMessage(), e);
+				log.warn("La riconciliazione [Dominio:"+codDomino+", Id: "+idRiconciliazione+"] non e' presente sul db: " + e.getMessage(), e);
 				return richiestaIncassoResponse;
 			}  catch (MultipleResultException e) {
 				throw new GovPayException(e);
 			}
 			
-			log.debug("Lettura riconciliazione [Dominio: "+codDomino+", Id: "+idRiconciliazione+"] dal db completata.");
+			log.debug("Lettura riconciliazione [Dominio:"+codDomino+", Id: "+idRiconciliazione+"] dal db completata.");
 			
 			// Validazione dati obbligatori
 			boolean iuvIdFlussoSet = incasso.getIuv() != null || incasso.getIdFlussoRendicontazione() != null;
@@ -338,7 +358,7 @@ public class Incassi {
 			incasso.setDataIncasso(new Date());
 			String descr = e.getMessage() + ": "  + e.getDetails();
 			
-			log.debug("Riconciliazione [Dominio: "+codDomino+", Id: "+idRiconciliazione+"] Iuv ["+iuv+"], IdFlusso ["+idf+"], Causale ["+causale+"] completata con errore: " + descr);
+			log.debug("Riconciliazione [Dominio:"+codDomino+", Id: "+idRiconciliazione+"] Iuv ["+iuv+"], IdFlusso ["+idf+"], Causale ["+causale+"] completata con errore: " + descr);
 			
 			if(descr.length() > 255) {
 				descr = descr.substring(0, 252) + "...";
@@ -374,7 +394,7 @@ public class Incassi {
 			throws ServiceException, IncassiException, UtilsException, GovPayException {
 		GpContext gpContext = (GpContext) ctx.getApplicationContext();
 		
-		log.debug("Riconciliazione [Dominio: "+codDomino+", Id: "+idRiconciliazione+"] Iuv ["+iuv+"], IdFlusso ["+idf+"], Causale ["+causale+"] in corso...");
+		log.debug("Riconciliazione [Dominio:"+codDomino+", Id: "+idRiconciliazione+"] Iuv ["+iuv+"], IdFlusso ["+idf+"], Causale ["+causale+"] in corso...");
 		
 		PagamentiBD pagamentiBD = new PagamentiBD(incassiBD);
 		pagamentiBD.setAtomica(false);
@@ -393,14 +413,14 @@ public class Incassi {
 		// Riversamento singolo
 		if(iuv != null) {
 			try {
-				log.debug("Ricerca riconciliazione per riversamento Singolo [Dominio: "+codDomino+", Iuv: "+iuv+"]...");
+				log.debug("Ricerca riconciliazione per riversamento Singolo [Dominio:"+codDomino+", Iuv: "+iuv+"]...");
 				it.govpay.bd.model.Pagamento pagamento = pagamentiBD.getPagamento(incasso.getCodDominio(), iuv);
 				
 				if(incasso.getImporto().doubleValue() != pagamento.getImportoPagato().doubleValue())
 					throw new IncassiException(FaultType.IMPORTO_ERRATO, "La richiesta di riconciliazione presenta un importo [" + incasso.getImporto() + "] non corripondente a quello riscosso [" + pagamento.getImportoPagato().doubleValue() + "]");
 				
 				pagamenti.add(pagamento);
-				log.debug("Ricerca riconciliazione per riversamento Singolo [Dominio: "+codDomino+", Iuv: "+iuv+"] completata.");
+				log.debug("Ricerca riconciliazione per riversamento Singolo [Dominio:"+codDomino+", Iuv: "+iuv+"] completata.");
 			} catch (NotFoundException nfe) {
 				ctx.getApplicationLogger().log("incasso.iuvNonTrovato", iuv);
 				throw new IncassiException(FaultType.PAGAMENTO_NON_TROVATO, "Lo IUV " + iuv + " estratto dalla causale di incasso non identifica alcun pagamento per il creditore " + incasso.getCodDominio());
@@ -416,11 +436,11 @@ public class Incassi {
 		Fr fr = null;
 		if(idf != null) {
 			try {
-				log.debug("Ricerca flusso per riversamento cumulativo [Dominio: "+codDomino+", IdFlusso: "+idf+"]...");
+				log.debug("Ricerca flusso per riversamento cumulativo [Dominio:"+codDomino+", IdFlusso: "+idf+"]...");
 				// Cerco l'idf come case insensitive
 				fr = frBD.getFr(idf, ricercaIdFlussoCaseInsensitive);
 				richiestaIncassoResponse.setFr(fr);
-				log.debug("Ricerca flusso per riversamento cumulativo [Dominio: "+codDomino+", IdFlusso: "+idf+"] completata.");
+				log.debug("Ricerca flusso per riversamento cumulativo [Dominio:"+codDomino+", IdFlusso: "+idf+"] completata.");
 				if(!fr.getStato().equals(StatoFr.ACCETTATA)) {
 					ctx.getApplicationLogger().log("incasso.frAnomala", idf);
 					throw new IncassiException(FaultType.FR_ANOMALA, "Il flusso di rendicontazione " + idf + " identificato dalla causale di incasso risulta avere delle anomalie");
@@ -439,15 +459,10 @@ public class Incassi {
 					
 					if(rendicontazione.getStato().equals(StatoRendicontazione.ALTRO_INTERMEDIARIO)) continue;
 					
-					if(rendicontazione.getStato().equals(StatoRendicontazione.ANOMALA)) {
-						ctx.getApplicationLogger().log("incasso.frAnomala", idf);
-						throw new IncassiException(FaultType.FR_ANOMALA, "Il flusso di rendicontazione " + idf + " identificato dalla causale di incasso risulta avere delle anomalie");
-					}
-					
 					it.govpay.bd.model.Pagamento pagamento = rendicontazione.getPagamento(incassiBD);
 					
-					if(pagamento == null && rendicontazione.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT)) {
-						// Incasso di un pagamento senza RPT. Controllo se il pagamento non e' stato creato nel frattempo dall'arrivo di una RT
+					if(pagamento == null) {
+						// Incasso di un pagamento non presente. Controllo se il pagamento non e' stato creato nel frattempo dall'arrivo di una RT
 						try {
 							pagamento = pagamentiBD.getPagamento(fr.getCodDominio(), rendicontazione.getIuv(), rendicontazione.getIur(), rendicontazione.getIndiceDati());
 						} catch (NotFoundException e) {
@@ -539,7 +554,7 @@ public class Incassi {
 		for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
 			if(Stato.INCASSATO.equals(pagamento.getStato())) {
 				ctx.getApplicationLogger().log("incasso.pagamentoGiaIncassato", pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur());
-				throw new IncassiException(FaultType.PAGAMENTO_GIA_INCASSATO, "Uno dei pagamenti incassati [Dominio:" + pagamento.getCodDominio() + " Iuv:" + pagamento.getIuv() + " Iur:" + pagamento.getIur() + "] risuta gia' incassato.");
+				throw new IncassiException(FaultType.PAGAMENTO_GIA_INCASSATO, "Uno dei pagamenti [Dominio:" + pagamento.getCodDominio() + " Iuv:" + pagamento.getIuv() + " Iur:" + pagamento.getIur() + "] risuta gia' riconciliato.");
 			}
 		}
 		
@@ -569,7 +584,7 @@ public class Incassi {
 			incassiBD.commit();
 			gpContext.getEventoCtx().setIdIncasso(incasso.getId()); 
 			
-			log.debug("Riconciliazione [Dominio: "+codDomino+", Id: "+idRiconciliazione+"] Iuv ["+iuv+"], IdFlusso ["+idf+"], Causale ["+causale+"] completata con esito OK.");
+			log.debug("Riconciliazione [Dominio:"+codDomino+", Id: "+idRiconciliazione+"] Iuv ["+iuv+"], IdFlusso ["+idf+"], Causale ["+causale+"] completata con esito OK.");
 		} catch(Exception e) {
 			incassiBD.rollback();
 			throw new GovPayException(e);
@@ -699,18 +714,38 @@ public class Incassi {
 				gpContext.getEventoCtx().setIdIncasso(incasso.getId()); 
 				
 				// Richiesta presente. Verifico che i dati accessori siano gli stessi
-				if(!richiestaIncasso.getCausale().trim().equals(incasso.getCausale())) {
-					ctx.getApplicationLogger().log("incasso.duplicato", "causale");
-					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con causale diversa");
+				if(!iuvIdFlussoSet) {
+					if(!causale.trim().equalsIgnoreCase(incasso.getCausale())) {
+						ctx.getApplicationLogger().log("incasso.duplicato", "causale");
+						throw new IncassiException(FaultType.DUPLICATO, "La causale inviata è diversa dall'originale [" + incasso.getCausale()+ "]");
+					}
+				}else {
+					if(iuv != null) {
+						if(!iuv.trim().equals(incasso.getIuv())) {
+							ctx.getApplicationLogger().log("incasso.duplicato", "iuv");
+							throw new IncassiException(FaultType.DUPLICATO, "Incasso già registrato con iuv diverso: "+incasso.getIuv()+"");
+						}
+					}
+					
+					if(idf != null) {
+						if(!idf.trim().equals(incasso.getIdFlussoRendicontazione())) {
+							ctx.getApplicationLogger().log("incasso.duplicato", "idf");
+							throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con id flusso rendicontazione diverso: " + incasso.getIdFlussoRendicontazione());
+						}
+					}
+				}
+				if(richiestaIncasso.getSct() != null && !richiestaIncasso.getSct().equals(incasso.getSct())) {
+					ctx.getApplicationLogger().log("incasso.duplicato", "sct");
+					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con sct diverso: " + incasso.getSct());
 				}
 				if(!richiestaIncasso.getCodDominio().equals(incasso.getCodDominio())) {
 					ctx.getApplicationLogger().log("incasso.duplicato", "dominio");
-					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con dominio diverso");
+					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con dominio diverso: " + incasso.getCodDominio());
 				}
 				if(richiestaIncasso.getImporto().compareTo(incasso.getImporto()) != 0) {
 					ctx.getApplicationLogger().log("incasso.duplicato", "importo");
-					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso");
-				}
+					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso: " + incasso.getImporto());
+				}				
 				richiestaIncassoResponse.setIncasso(incasso);
 				richiestaIncassoResponse.setCreated(false);
 				return richiestaIncassoResponse;
@@ -738,24 +773,6 @@ public class Incassi {
 			} catch (MultipleResultException e) {
 				throw new GovPayException(e);
 			}
-			
-//			// Controllo se l'idf o lo iuv sono gia' stati incassati in precedenti incassi
-//			IncassoFilter incassoFilter = incassiBD.newFilter();
-//			List<String> codDomini = new ArrayList<>();
-//			codDomini.add(richiestaIncasso.getCodDominio());
-//			incassoFilter.setCodDomini(codDomini);
-//			if(idf != null)
-//				incassoFilter.setCausale(idf);
-//			else
-//				incassoFilter.setCausale(iuv);
-//			List<Incasso> findAll = incassiBD.findAll(incassoFilter);
-//			if(findAll.size() != 0) {
-//				ctx.getApplicationLogger().log("incasso.causaleGiaIncassata", causale);
-//				if(idf != null)
-//					throw new IncassiException(FaultType.CAUSALE_GIA_INCASSATA, "Il flusso di rendicontazione [" + idf + "] indicato in causale risulta gia' incassato");
-//				else
-//					throw new IncassiException(FaultType.CAUSALE_GIA_INCASSATA, "Lo iuv [" + iuv + "] indicato in causale risulta gia' incassato");
-//			}
 			
 			// Sto selezionando i pagamenti per impostarli come Incassati.
 			incassiBD.setupConnection(configWrapper.getTransactionID());
