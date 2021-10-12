@@ -1,0 +1,180 @@
+components:
+  parameters:
+    idDominio:
+      name: idDominio
+      in: query
+      description: Identificativo del dominio dell'ente
+      required: false
+      schema:
+        type: string
+        pattern: '(^([0-9]){11}$)'
+    idFlussoCaseInsensitive:
+      in: query
+      name: idFlussoCaseInsensitive
+      description: Indica se effettuare la ricerca per Identificativo flusso in modalita' case insensitive
+      required: false
+      schema:
+        type: boolean
+    idRicevuta:
+      name: iuv
+      in: query
+      description: Identificativo del versamento
+      required: false
+      schema:
+        type: string    
+        pattern: '(^([0-9A-Za-z]){1,35}$)'
+    iuv:
+      name: iuv
+      in: query
+      description: Identificativo del versamento
+      required: false
+      schema:
+        type: string
+        pattern: '(^([0-9A-Za-z]){1,35}$)'
+    ccp:
+      name: ccp
+      in: query
+      description: Codice contesto pagamento
+      required: false
+      schema:
+        type: string
+        pattern: '(^([0-9A-Za-z]){1,35}$)'
+    dataDa:
+      name: dataDa
+      in: query
+      description: Inizio della finestra temporale di osservazione
+      required: false
+      schema:
+        type: string  
+        format: date-time     
+    dataA:
+      name: dataA
+      in: query
+      description: Fine della finestra temporale di osservazione
+      required: false
+      schema:
+        type: string  
+        format: date-time     
+    direzione:
+      name: direzione
+      in: query
+      description: Identificativo della direzione interna all'ente creditore
+      required: false
+      schema:
+        type: string
+        example: Direzione ABC
+        pattern: '(^([0-9A-Za-z]){1,35}$)'
+    divisione:
+      name: divisione
+      in: query
+      description: Identificativo della divisione interna all'ente creditore
+      required: false
+      schema:
+        type: string
+        example: Divisione001      
+        pattern: '(^([0-9A-Za-z]){1,35}$)'
+    campi:
+      name: campi
+      in: query
+      description: Fields to retrieve
+      required: false
+      schema:
+        type: string
+    idA2A:
+      name: idA2A
+      in: query
+      description: Identificativo del gestionale ente
+      required: false
+      schema:
+        type: string
+        pattern: '(^([0-9A-Za-z]){1,35}$)'
+    idPendenza:
+      name: idPendenza
+      in: query
+      description: Identificativo della pendenza nel gestionale ente
+      required: false
+      schema:
+        type: string
+        pattern: '(^([0-9A-Za-z]){1,35}$)'
+    idPagamento:
+      name: idPagamento
+      in: query
+      description: Identificativo della richiesta di pagamento
+      required: false
+      schema:
+        type: string
+        pattern: '(^([0-9A-Za-z]){1,35}$)'
+      example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'  
+    maxRisultati:
+      name: maxRisultati
+      in: query
+      description: >-
+            Indica se il servizio deve impostare o meno il limite sul calcolo del numero di risultati
+      required: false
+      schema:
+        type: boolean
+        default: true
+      example: true
+    metadatiPaginazione:
+      name: metadatiPaginazione
+      in: query
+      description: >- 
+              Indica se il servizio calcola e valorizza i dati di paginazione o meno
+      required: false
+      schema:
+        type: boolean
+        default: true
+      example: true
+    ordinamento:
+      name: ordinamento
+      in: query
+      description: Sorting order
+      required: false
+      schema:
+        type: string
+    pagina:
+      name: pagina
+      in: query
+      description: Numero di pagina di risultato
+      required: false
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/Pagina'        
+    risultatiPerPagina:
+      name: risultatiPerPagina
+      in: query
+      description: How many items to return at one time
+      required: false
+      schema:
+        type: integer
+        default: 25
+        maximum: 200
+    statoFlussoRendicontazione:
+      name: stato
+      in: query
+      description: Stato del flusso di rendicontazione
+      required: false
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/StatoFlussoRendicontazione'
+    tipiRiscossione:
+      in: query
+      name: tipo
+      description: Tipologia della riscossione (default [ENTRATA, MBT] )
+      required: false
+      schema:
+        type: array
+        items:
+          $ref: 'govpay-api-schemas.yaml#/components/schemas/TipoRiscossione'
+    tipoRiscossione:
+      name: tipoRiscossione
+      in: query
+      description: Tipo di riscossione
+      required: false
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/TipoRiscossione'
+    sct:
+      name: sct
+      in: query
+      description: Identificativo del Sepa Credit Transfert di riversamento da PSP a conto di accredito
+      required: false
+      schema:
+        type: string
