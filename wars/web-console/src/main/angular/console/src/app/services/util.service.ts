@@ -292,6 +292,12 @@ export class UtilService {
     'FAIL': 'Fail'
   };
 
+  //INTERMEDIATI
+  public static FILTRO_INTERMEDIATI: any = {
+    'true': 'Si',
+    'false': 'No'
+  };
+
   //ABILITAZIONI
   public static ABILITAZIONI: any = {
     'true': 'Abilitato',
@@ -692,6 +698,126 @@ export class UtilService {
       parseXml = function() { return null; }
     }
     return parseXml(data);
+  }
+
+  public static MapStato(item: any, versione620: boolean): any {
+    let _map: any = { stato: '', motivo: '', codiceEsito: -1 };
+    switch (item.stato) {
+      case 'RT_ACCETTATA_PA':
+        _map.stato = UtilService.STATI_RPP.ANOMALO;
+        _map.codiceEsito = -1;
+        if (versione620) {
+          if (item.rt && item.rt.datiPagamento) {
+            _map.stato = item.rt.datiPagamento.codiceEsitoPagamento?UtilService.STATI_ESITO_PAGAMENTO[item.rt.datiPagamento.codiceEsitoPagamento]:UtilService.STATI_RPP.ANOMALO;
+            _map.codiceEsito = item.rt.datiPagamento.codiceEsitoPagamento?parseInt(item.rt.datiPagamento.codiceEsitoPagamento):-1;
+          }
+        } else {
+          _map.stato = UtilService.STATI_PAGAMENTO.ESEGUITO;
+          _map.codiceEsito = 0;
+        }
+        break;
+      case 'RPT_SCADUTA':
+      case 'RPT_ANNULLATA':
+        _map.stato = UtilService.STATI_PAGAMENTO.NON_ESEGUITO;
+        _map.motivo = item.dettaglioStato+' - stato: '+item.stato;
+        break;
+      case 'RPT_RIFIUTATA_NODO':
+      case 'RPT_RIFIUTATA_PSP':
+      case 'RPT_ERRORE_INVIO_A_PSP':
+        _map.stato = UtilService.STATI_RPP.FALLITO;
+        _map.motivo = item.dettaglioStato+' - stato: '+item.stato;
+        break;
+      case 'RT_RIFIUTATA_PA':
+      case 'RT_ESITO_SCONOSCIUTO_PA':
+        _map.stato = UtilService.STATI_RPP.ANOMALO;
+        _map.motivo = item.dettaglioStato+' - stato: '+item.stato;
+        break;
+      default:
+        _map.stato = UtilService.STATI_RPP.IN_CORSO;
+    }
+    return _map;
+  }
+
+  public static ExportMapLoopCfg(item: any): any {
+    const ref: any = { idd: '', iuv: '', ccp: '', iddRT: '', iuvRT: '', ccpRT: '' };
+    const versione620: boolean = !!(item.rpt && item.rpt.versioneOggetto && item.rpt.versioneOggetto === '6.2.0');
+    if (versione620) {
+      if (item.rpt && item.rpt.dominio && item.rpt.dominio.identificativoDominio) {
+        ref.idd = item.rpt.dominio.identificativoDominio;
+      }
+      if (item.rpt && item.rpt.datiVersamento) {
+        if (item.rpt.datiVersamento.identificativoUnivocoVersamento) {
+          ref.iuv = item.rpt.datiVersamento.identificativoUnivocoVersamento;
+        }
+        if (item.rpt.datiVersamento.codiceContestoPagamento) {
+          ref.ccp = item.rpt.datiVersamento.codiceContestoPagamento;
+        }
+      }
+      if (item.rt) {
+        if (item.rt.dominio && item.rt.dominio.identificativoDominio) {
+          ref.iddRT = item.rt.dominio.identificativoDominio;
+        }
+        if (item.rt.datiPagamento && item.rt.datiPagamento.identificativoUnivocoVersamento) {
+          ref.iuvRT = item.rt.datiPagamento.identificativoUnivocoVersamento;
+        }
+        if (item.rt.datiPagamento && item.rt.datiPagamento.CodiceContestoPagamento) {
+          ref.ccpRT = item.rt.datiPagamento.CodiceContestoPagamento;
+        }
+      }
+    } else {
+      // rpt: ccp n.d.
+      if (item.rt) {
+        if (item.rt.idPA) {
+          ref.iddRT = item.rt.idPA;
+        }
+        if (item.rt.receipt) {
+          if (item.rt.receipt.creditorReferenceId) {
+            ref.iuvRT = item.rt.receipt.creditorReferenceId;
+          }
+          if (item.rt.receipt.receiptId) {
+            ref.ccpRT = item.rt.receipt.receiptId;
+          }
+        }
+      }
+    }
+    return ref;
+  }
+
+  public static ExportMapChunkLoopCfg(name: string, cfg: any, folder: string = ''): any {
+    const chunk: any = { url: '', content: '', name: '', type: '' };
+    switch (name) {
+      case 'Rpt.xml':
+        chunk.url = '/rpp/'+UtilService.EncodeURIComponent(cfg.idd)+'/'+UtilService.EncodeURIComponent(cfg.iuv)+'/'+UtilService.EncodeURIComponent(cfg.ccp)+'/rpt';
+        chunk.content = 'application/xml';
+        chunk.name = name+folder;
+        chunk.type = 'text';
+        break;
+      case 'Eventi.csv':
+        chunk.url = UtilService.URL_GIORNALE_EVENTI+'?risultatiPerPagina='+UtilService.PREFERENCES['MAX_EXPORT_LIMIT']+'&idDominio='+UtilService.EncodeURIComponent(cfg.idd)+'&iuv='+UtilService.EncodeURIComponent(cfg.iuv)+'&ccp='+UtilService.EncodeURIComponent(cfg.ccp);
+        chunk.content = 'application/json';
+        chunk.name = name+folder;
+        chunk.type = 'json';
+        break;
+      case 'Rt.xml':
+        chunk.url = '/rpp/'+UtilService.EncodeURIComponent(cfg.iddRT)+'/'+UtilService.EncodeURIComponent(cfg.iuvRT)+'/'+UtilService.EncodeURIComponent(cfg.ccpRT)+'/rt';
+        chunk.content = 'application/xml';
+        chunk.name = name+folder;
+        chunk.type = 'text';
+        break;
+      case 'Rt.pdf':
+        chunk.url = '/rpp/'+UtilService.EncodeURIComponent(cfg.iddRT)+'/'+UtilService.EncodeURIComponent(cfg.iuvRT)+'/'+UtilService.EncodeURIComponent(cfg.ccpRT)+'/rt';
+        chunk.content = 'application/pdf';
+        chunk.name = name+folder;
+        chunk.type = 'blob';
+        break;
+      default:
+        // Folder
+        chunk.url = UtilService.EncodeURIComponent(cfg.idd)+'_'+UtilService.EncodeURIComponent(cfg.iuv);
+        if (cfg.ccp) {
+          chunk.url += '_'+UtilService.EncodeURIComponent(cfg.ccp);
+        }
+    }
+    return chunk;
   }
 
   /**
@@ -1512,19 +1638,21 @@ export class UtilService {
           new FormInput({ id: 'id', label: FormService.FORM_SESSIONE, placeholder: FormService.FORM_PH_SESSIONE, type: UtilService.INPUT }),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_INIZIO, type: UtilService.DATE_PICKER, }),
           new FormInput({ id: 'dataA', label: FormService.FORM_DATA_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' }),
-          new FormInput({ id: 'verificato', label: FormService.FORM_VERIFICATO, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiVerifica() }),
+          new FormInput({ id: 'verificato', label: FormService.FORM_VERIFICATO, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiVerifica(), showTooltip: false })
         ];
         break;
       case UtilService.APPLICAZIONI:
         _list = [
           new FormInput({ id: 'principal', label: FormService.FORM_PRINCIPAL, placeholder: FormService.FORM_PH_PRINCIPAL, type: UtilService.INPUT }),
-          new FormInput({ id: 'abilitato', label: FormService.FORM_PH_SELECT, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiAbilitazione() })
+          new FormInput({ id: 'abilitato', label: FormService.FORM_PH_ABILITAZIONE, noOptionLabel: 'Tutti', showTooltip: false, type: UtilService.SELECT,
+            values: this.statiAbilitazione() })
         ];
         break;
       case UtilService.REGISTRO_INTERMEDIARI:
       case UtilService.OPERATORI:
         _list = [
-          new FormInput({ id: 'abilitato', label: FormService.FORM_PH_SELECT, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiAbilitazione() })
+          new FormInput({ id: 'abilitato', label: FormService.FORM_PH_ABILITAZIONE, noOptionLabel: 'Tutti', showTooltip: false, type: UtilService.SELECT,
+            values: this.statiAbilitazione() })
         ];
         break;
       case UtilService.DOMINI:
@@ -1534,20 +1662,11 @@ export class UtilService {
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load' } }, this.http),
           new FormInput({ id: 'idStazione', label: FormService.FORM_STAZIONE, placeholder: FormService.FORM_PH_STAZIONE, type: UtilService.INPUT }),
-          new FormInput({ id: 'abilitato', label: FormService.FORM_PH_SELECT, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.statiAbilitazione() })
+          new FormInput({ id: 'abilitato', label: FormService.FORM_PH_ABILITAZIONE, noOptionLabel: 'Tutti', showTooltip: false, type: UtilService.SELECT,
+            values: this.statiAbilitazione() }),
+          new FormInput({ id: 'intermediato', label: FormService.FORM_INTERMEDIATO, noOptionLabel: 'Tutti', type: UtilService.SELECT, values: this.filtroIntermediati(), showTooltip: false })
         ];
         break;
-      case UtilService.RPPS:
-        _list = [
-          new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, placeholder: FormService.FORM_PH_DOMINIO, type: UtilService.INPUT }),
-          new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
-          new FormInput({ id: 'ccp', label: FormService.FORM_CCP, placeholder: FormService.FORM_PH_CCP, type: UtilService.INPUT }),
-          new FormInput({ id: 'idA2A', label: FormService.FORM_A2A, placeholder: FormService.FORM_PH_A2A, type: UtilService.INPUT }),
-          new FormInput({ id: 'idPendenza', label: FormService.FORM_PENDENZA, placeholder: FormService.FORM_PH_PENDENZA, type: UtilService.INPUT }),
-          new FormInput({ id: 'esito', label: FormService.FORM_ESITO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT, values: this.statiPagamento() }),
-          new FormInput({ id: 'idPagamento', label: FormService.FORM_PAGAMENTO, placeholder: FormService.FORM_PH_PAGAMENTO, type: UtilService.INPUT })
-        ];
-      break;
       case UtilService.RUOLI:
       break;
       case UtilService.RENDICONTAZIONI:
@@ -1756,6 +1875,12 @@ export class UtilService {
   statiAbilitazione(): any[] {
     return Object.keys(UtilService.ABILITAZIONI).map((key) => {
       return { label: UtilService.ABILITAZIONI[key], value: key == 'true' };
+    });
+  }
+
+  filtroIntermediati(): any[] {
+    return Object.keys(UtilService.FILTRO_INTERMEDIATI).map((key) => {
+      return { label: UtilService.FILTRO_INTERMEDIATI[key], value: key == 'true' };
     });
   }
 

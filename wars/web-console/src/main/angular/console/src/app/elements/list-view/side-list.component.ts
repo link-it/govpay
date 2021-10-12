@@ -612,8 +612,6 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         break;
       // case UtilService.URL_ENTRATE:
       //   break;
-      // case UtilService.URL_RPPS:
-      //   break;
       default:
         id = '';
     }
@@ -623,6 +621,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   protected mapNewItem(item: any): Standard {
     let _std = new Standard();
     let _st, _stdTC, _date;
+    let _subtitle: string = '';
     switch(this.rsc.fullPath) { // ROUTING - fullPath
       case UtilService.URL_PENDENZE:
         const _iuv = (item.iuvAvviso)?item.iuvAvviso:item.iuvPagamento;
@@ -701,8 +700,9 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _std.sottotitolo = new Dato({ label: Voce.ABILITATO+': ', value: UtilService.ABILITA[item.abilitato.toString()] });
         break;
       case UtilService.URL_DOMINI:
+        _subtitle = Dato.concatStrings([ Voce.ID_DOMINIO+': '+item.idDominio, (!item.abilitato)?Voce.DISABILITATO:'', (!item.intermediato)?Voce.NON_INTERMEDIATO:'' ], ', ');
         _std.titolo = new Dato({ label: '',  value: item.ragioneSociale });
-        _std.sottotitolo = new Dato({ label: Voce.ID_DOMINIO+': ', value: item.idDominio });
+        _std.sottotitolo = new Dato({ label: '', value: _subtitle });
         break;
       case UtilService.URL_RUOLI:
         _std.titolo = new Dato({ label: item.id });
@@ -715,13 +715,6 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         );
         _std.titolo = new Dato({ label: '',  value: item.descrizione });
         _std.sottotitolo = _st;
-        break;
-      case UtilService.URL_RPPS:
-        _date = item.rpt.dataOraMessaggioRichiesta?moment(item.rpt.dataOraMessaggioRichiesta).format('DD/MM/YYYY'):Voce.NON_PRESENTE;
-        let _subtitle = Dato.concatStrings([ Voce.DATA+': '+_date, Voce.CCP+': '+item.rpt.datiVersamento.codiceContestoPagamento ], ', ');
-        _std.titolo = new Dato({ label: '', value: (item.rt && item.rt.istitutoAttestante)?item.rt.istitutoAttestante.denominazioneAttestante:Voce.NO_PSP });
-        _std.sottotitolo = new Dato({ label: '', value: _subtitle });
-        _std.stato = this._mapStato(item).stato;
         break;
       case UtilService.URL_TRACCIATI:
         _stdTC = new TwoCols();
@@ -801,29 +794,6 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         }, info.socketNotification.timeout);
       }
     }
-  }
-
-  _mapStato(item: any): any {
-    let _map: any = { stato: '', motivo: '' };
-    switch (item.stato) {
-      case 'RT_ACCETTATA_PA':
-        _map.stato = (item.rt)?UtilService.STATI_ESITO_PAGAMENTO[item.rt.datiPagamento.codiceEsitoPagamento]:'n/a';
-        break;
-      case 'RPT_RIFIUTATA_NODO':
-      case 'RPT_RIFIUTATA_PSP':
-      case 'RPT_ERRORE_INVIO_A_PSP':
-        _map.stato = UtilService.STATI_RPP.FALLITO;
-        _map.motivo = item.dettaglioStato+' - stato: '+item.stato;
-        break;
-      case 'RT_RIFIUTATA_PA':
-      case 'RT_ESITO_SCONOSCIUTO_PA':
-        _map.stato = UtilService.STATI_RPP.ANOMALO;
-        _map.motivo = item.dettaglioStato+' - stato: '+item.stato;
-        break;
-      default:
-        _map.stato = UtilService.STATI_RPP.IN_CORSO;
-    }
-    return _map;
   }
 
   protected refresh(mb: ModalBehavior) {

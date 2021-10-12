@@ -393,7 +393,6 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
         case 'Anagrafica PagoPA':
           UtilService.USER_ACL.hasPagoPA = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
           this._sideNavSetup.secMenu.push({ link: UtilService.URL_REGISTRO_INTERMEDIARI, name: UtilService.TXT_REGISTRO_INTERMEDIARI, xhttp: false, icon: false, sort: 0 });
-          //this._sideNavSetup.secMenu.push({ link: UtilService.URL_RPPS, name: UtilService.TXT_RPPS, xhttp: false, icon: false, sort: # });
           break;
         case 'Anagrafica Ruoli':
           UtilService.USER_ACL.hasRuoli = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
