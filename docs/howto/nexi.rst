@@ -12,20 +12,20 @@ Per ottenere questo risultato è sufficiente utilizzare le consuete API di Pagam
 gli omonimi parametri in query string secondo le indicazioni del PSP:
 
 .. code-block:: json
-	:caption: Richiesta pagamento
+   :caption: Richiesta pagamento
 
-	POST /pagamenti?identificativoPSP=12345&identificativoIntermediarioPSP=67890&identificativoCanale=XXXXX
-    Accept: application/json
-    Content-type: application/json"
-        
-    {
-      "pendenze": [
-        {
-          "idDominio": "01234567890",
-          "numeroAvviso": "301000001234567890"
-        }
-      ]
-    }
+   POST /pagamenti?identificativoPSP=12345&identificativoIntermediarioPSP=67890&identificativoCanale=XXXXX
+   Accept: application/json
+   Content-type: application/json"
+       
+   {
+     "pendenze": [
+       {
+         "idDominio": "01234567890",
+         "numeroAvviso": "301000001234567890"
+       }
+     ]
+   }
 
 
 Il pagamento cosi avviato sarà inoltrato al PSP senza ulteriori interazioni che si occuperà di
