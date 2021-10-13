@@ -273,44 +273,44 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     this.informazioniExtra = _dettaglio.infoExtra.slice(0);
 
     const _connettori: any[] = [];
-    if (json.intermediato) {
-      // MyPivot
-      if (json.servizioMyPivot && json.servizioMyPivot.abilitato) {
-        const p = new Parameters();
-        p.id = this._CONNETTORE_MY_PIVOT;
-        p.jsonP = json.servizioMyPivot;
-        p.model = this._mapNewItemByType(json.servizioMyPivot, this._CONNETTORE_MY_PIVOT);
-        _connettori.push(p);
-      }
-      // SECIM
-      if (json.servizioSecim && json.servizioSecim.abilitato) {
-        const p = new Parameters();
-        p.id = this._CONNETTORE_SECIM;
-        p.jsonP = json.servizioSecim;
-        p.model = this._mapNewItemByType(json.servizioSecim, this._CONNETTORE_SECIM);
-        _connettori.push(p);
-      }
-      // GOVPAY
-      if (json.servizioGovPay && json.servizioGovPay.abilitato) {
-        const p = new Parameters();
-        p.id = this._CONNETTORE_GOVPAY;
-        p.jsonP = json.servizioGovPay;
-        p.model = this._mapNewItemByType(json.servizioGovPay, this._CONNETTORE_GOVPAY);
-        _connettori.push(p);
-      }
-      // HyperSicAPKappa
-      if (json.servizioHyperSicAPKappa && json.servizioHyperSicAPKappa.abilitato) {
-        const p = new Parameters();
-        p.id = this._CONNETTORE_HYPERSIC;
-        p.jsonP = json.servizioHyperSicAPKappa;
-        p.model = this._mapNewItemByType(json.servizioHyperSicAPKappa, this._CONNETTORE_HYPERSIC);
-        _connettori.push(p);
-      }
-      this.connettori = [].concat(_connettori);
-      this.filtroConnettori();
 
-      this.associazioniDisponibili();
+    // MyPivot
+    if (json.servizioMyPivot && json.servizioMyPivot.abilitato) {
+      const p = new Parameters();
+      p.id = this._CONNETTORE_MY_PIVOT;
+      p.jsonP = json.servizioMyPivot;
+      p.model = this._mapNewItemByType(json.servizioMyPivot, this._CONNETTORE_MY_PIVOT);
+      _connettori.push(p);
     }
+    // SECIM
+    if (json.servizioSecim && json.servizioSecim.abilitato) {
+      const p = new Parameters();
+      p.id = this._CONNETTORE_SECIM;
+      p.jsonP = json.servizioSecim;
+      p.model = this._mapNewItemByType(json.servizioSecim, this._CONNETTORE_SECIM);
+      _connettori.push(p);
+    }
+    // GOVPAY
+    if (json.servizioGovPay && json.servizioGovPay.abilitato) {
+      const p = new Parameters();
+      p.id = this._CONNETTORE_GOVPAY;
+      p.jsonP = json.servizioGovPay;
+      p.model = this._mapNewItemByType(json.servizioGovPay, this._CONNETTORE_GOVPAY);
+      _connettori.push(p);
+    }
+    // HyperSicAPKappa
+    if (json.servizioHyperSicAPKappa && json.servizioHyperSicAPKappa.abilitato) {
+      const p = new Parameters();
+      p.id = this._CONNETTORE_HYPERSIC;
+      p.jsonP = json.servizioHyperSicAPKappa;
+      p.model = this._mapNewItemByType(json.servizioHyperSicAPKappa, this._CONNETTORE_HYPERSIC);
+      _connettori.push(p);
+    }
+    this.connettori = [].concat(_connettori);
+    this.filtroConnettori();
+
+    this.associazioniDisponibili();
+
     this.elencoMultiplo(json.intermediato);
     this._isIntermediato = json.intermediato;
   }

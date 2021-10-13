@@ -146,17 +146,35 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
 
   protected mapJsonDetail(_json: any) {
     //Riepilogo
-    let _ist, _tv;
-    if(_json.rpp && _json.rpp.length != 0) {
-      const _rpp: any = _json.rpp[0];
-      _ist = (_rpp.rt)?_rpp.rt.istitutoAttestante.denominazioneAttestante:'';
-      _tv = (_rpp.rpt)?_rpp.rpt.datiVersamento.tipoVersamento:'';
+    let _istituto;
+    let _soggettoVersante: string = Voce.UNDEFINED;
+    if(_json.rpp && _json.rpp.length !== 0) {
+      const _rpp0: any = _json.rpp[0];
+      const versione620: boolean = !!(_rpp0.rpt && _rpp0.rpt.versioneOggetto && _rpp0.rpt.versioneOggetto === '6.2.0');
+      if (versione620) {
+        _istituto = (_rpp0.rt && _rpp0.rt.istitutoAttestante)?_rpp0.rt.istitutoAttestante.denominazioneAttestante:'';
+        if(_json.soggettoVersante){
+          _soggettoVersante = Dato.concatStrings([ _json.soggettoVersante.anagrafica, _json.soggettoVersante.identificativo ], ', ');
+        }
+      } else {
+        const soggetto: string[] = [];
+        if (_rpp0.rt && _rpp0.rt.receipt) {
+          _istituto = (_rpp0.rt.receipt.PSPCompanyName || '');
+          if (_rpp0.rt && _rpp0.rt.receipt && _rpp0.rt.receipt.payer) {
+            if (_rpp0.rt.receipt.payer.fullName) {
+              soggetto.push(_rpp0.rt.receipt.payer.fullName);
+            }
+            if (_rpp0.rt.receipt.payer.uniqueIdentifier && _rpp0.rt.receipt.payer.uniqueIdentifier.entityUniqueIdentifierValue) {
+              soggetto.push(_rpp0.rt.receipt.payer.uniqueIdentifier.entityUniqueIdentifierValue);
+            }
+          }
+        }
+        if (soggetto.length !== 0) {
+          _soggettoVersante = Dato.concatStrings(soggetto, ', ');
+        }
+      }
     }
-    let _debitore = Voce.UNDEFINED;
-    if(_json.soggettoVersante){
-      _debitore = Dato.concatStrings([ _json.soggettoVersante.anagrafica, _json.soggettoVersante.identificativo ], ', ');
-    }
-    let _st = new Dato({ label: Voce.SOGGETTO_VERSANTE, value: _debitore });
+    const _st = new Dato({ label: Voce.SOGGETTO_VERSANTE, value: _soggettoVersante });
     this.info = new Riepilogo({
       titolo: new Dato({ label: Voce.DATA, value: _json.dataRichiestaPagamento?moment(_json.dataRichiestaPagamento).format('DD/MM/YYYY [ore] HH:mm'):Voce.NON_PRESENTE }),
       sottotitolo: _st,
@@ -164,11 +182,11 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
       stato: UtilService.STATI_PAGAMENTO[_json.stato],
       extraInfo: []
     });
-    if(_ist) {
-      this.info.extraInfo.push({ label: Voce.ISTITUTO+': ', value: _ist })
+    if(_istituto) {
+      this.info.extraInfo.push({ label: Voce.ISTITUTO+': ', value: _istituto })
     }
-    if(_tv) {
-      this.info.extraInfo.push({ label: Voce.TIPO+': ', value: UtilService.TIPI_VERSAMENTO[_tv] })
+    if(_json.modello) {
+      this.info.extraInfo.push({ label: Voce.TIPO+': ', value: _json.modello })
     }
     if(_json.id) {
       this.info.extraInfo.push({ label: Voce.ID_SESSIONE+': ', value: _json.id });
@@ -176,35 +194,39 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
     this._paymentsSum = 0;
     if(_json.rpp) {
       this.pagamenti = _json.rpp.map(function(item) {
-        let _stato, _dettaglio;
-        switch (item.stato) {
-          case 'RT_ACCETTATA_PA':
-            _stato = (item.rt)?UtilService.STATI_ESITO_PAGAMENTO[item.rt.datiPagamento.codiceEsitoPagamento]:-1;
-            break;
-          case 'RPT_RIFIUTATA_NODO':
-          case 'RPT_RIFIUTATA_PSP':
-          case 'RPT_ERRORE_INVIO_A_PSP':
-            _stato = UtilService.STATI_RPP.FALLITO;
-            _dettaglio = item.dettaglioStato;
-            break;
-          case 'RT_RIFIUTATA_PA':
-          case 'RT_ESITO_SCONOSCIUTO_PA':
-            _stato = UtilService.STATI_RPP.ANOMALO;
-            _dettaglio = item.dettaglioStato;
-            break;
-          default:
-            _stato = UtilService.STATI_RPP.IN_CORSO;
+        const versione620: boolean = !!(item.rpt && item.rpt.versioneOggetto && item.rpt.versioneOggetto === '6.2.0');
+        const ms: any = UtilService.MapStato(item, versione620);
+        const stStrings: string[] = [Voce.ENTE_CREDITORE+': '+item.pendenza.dominio.ragioneSociale];
+        let importoRpp: string = '0';
+        if (versione620) {
+          if (item.rpt.datiVersamento) {
+            if (item.rpt.datiVersamento.identificativoUnivocoVersamento) {
+              stStrings.push(Voce.IUV+': '+item.rpt.datiVersamento.identificativoUnivocoVersamento);
+            }
+            if (item.rpt.datiVersamento.identificativoUnivocoVersamento) {
+              importoRpp = item.rpt.datiVersamento.importoTotaleDaVersare;
+            }
+          }
+        } else {
+          if (item.rpt && item.rpt.data) {
+            if (item.rpt.data.creditorReferenceId) {
+              stStrings.push(Voce.IUV+': '+item.rpt.data.creditorReferenceId);
+            }
+          }
+          if (item.rt && item.rt.receipt) {
+            importoRpp = item.rt.receipt.paymentAmount;
+          }
         }
-        let _st = new Dato({ value: Dato.concatStrings([ Voce.ENTE_CREDITORE+': '+item.pendenza.dominio.ragioneSociale, Voce.IUV+': '+item.rpt.datiVersamento.identificativoUnivocoVersamento ], ', ') });
+        let _st = new Dato({ value: Dato.concatStrings(stStrings, ', ') });
         let _std = new StandardCollapse();
         _std.titolo = new Dato({ value: item.pendenza.causale });
         _std.sottotitolo = _st;
-        _std.stato = _stato;
-        _std.importo = this.us.currencyFormat(item.rpt.datiVersamento.importoTotaleDaVersare);
-        this._paymentsSum += UtilService.defaultDisplay({ value: parseFloat(item.rpt.datiVersamento.importoTotaleDaVersare), text: 0 });
-        //TODO: Disattivato collapse (_std.motivo)
-        // if (_dettaglio) {
-        //   _std.motivo = _dettaglio;
+        _std.stato = ms.stato;
+        _std.importo = this.us.currencyFormat(parseFloat(importoRpp));
+        this._paymentsSum += UtilService.defaultDisplay({ value: parseFloat(importoRpp), text: 0 });
+        // Disattivato collapse (_std.motivo)
+        // if (ms.dettaglio) {
+        //   _std.motivo = ms.dettaglio;
         // }
         let p = new Parameters();
         p.model = _std;
@@ -333,33 +355,20 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
         // /rpp/{idDominio}/{iuv}/{ccp}/rpt
         // /rpp/{idDominio}/{iuv}/{ccp}/rt
         const item = el.jsonP;
-        const _folder = UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'_'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'_'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento);
-        folders.push(_folder);
-        chunk.push({
-          url: '/rpp/'+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento)+'/rpt',
-          content: 'application/xml',
-          name: 'Rpt.xml'+_folder,
-          type: 'text'
-        });
-        chunk.push({
-          url: UtilService.URL_GIORNALE_EVENTI+'?risultatiPerPagina='+UtilService.PREFERENCES['MAX_EXPORT_LIMIT']+'&idDominio='+UtilService.EncodeURIComponent(item.rpt.dominio.identificativoDominio)+'&iuv='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.identificativoUnivocoVersamento)+'&ccp='+UtilService.EncodeURIComponent(item.rpt.datiVersamento.codiceContestoPagamento),
-          content: 'application/json',
-          name: 'Eventi.csv'+_folder,
-          type: 'json'
-        });
-        if(item.rt) {
-          chunk.push({
-            url: '/rpp/'+UtilService.EncodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt',
-            content: 'application/xml',
-            name: 'Rt.xml'+_folder,
-            type: 'text'
-          });
-          chunk.push({
-            url: '/rpp/'+UtilService.EncodeURIComponent(item.rt.dominio.identificativoDominio)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.identificativoUnivocoVersamento)+'/'+UtilService.EncodeURIComponent(item.rt.datiPagamento.CodiceContestoPagamento)+'/rt',
-            content: 'application/pdf',
-            name: 'Rt.pdf'+_folder,
-            type: 'blob'
-          });
+        const ref: any = UtilService.ExportMapLoopCfg(item);
+        if (ref.idd && ref.iuv) {
+          const _folder = UtilService.ExportMapChunkLoopCfg('folder', ref);
+          if (folders.indexOf(_folder) == -1) {
+            folders.push(_folder);
+          }
+          if (ref.ccp && _folder) {
+            chunk.push(UtilService.ExportMapChunkLoopCfg('Rpt.xml', ref, _folder));
+            chunk.push(UtilService.ExportMapChunkLoopCfg('Eventi.csv', ref, _folder));
+          }
+          if(ref.iddRT && ref.iuvRT && ref.ccpRT && _folder) {
+            chunk.push(UtilService.ExportMapChunkLoopCfg('Rt.xml', ref, _folder));
+            chunk.push(UtilService.ExportMapChunkLoopCfg('Rt.pdf', ref, _folder));
+          }
         }
       }, this);
     } catch (error) {

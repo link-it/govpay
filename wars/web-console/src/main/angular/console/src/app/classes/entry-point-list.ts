@@ -44,7 +44,6 @@ import { RiscossioniViewComponent } from '../elements/detail-view/views/riscossi
 import { RendicontazioniViewComponent } from '../elements/detail-view/views/rendicontazioni-view/rendicontazioni-view.component';
 import { IncassiViewComponent } from '../elements/detail-view/views/incassi-view/incassi-view.component';
 import { IncassoViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/incasso-view/incasso-view.component';
-import { RppsViewComponent } from '../elements/detail-view/views/rpps-view/rpps-view.component';
 import { StandardCollapseViewComponent } from '../elements/item-view/views/standard-collapse-view/standard-collapse-view.component';
 import { RuoloViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/ruolo-view/ruolo-view.component';
 import { TracciatiViewComponent } from '../elements/detail-view/views/tracciati-view/tracciati-view.component';
@@ -69,7 +68,6 @@ export class EntryPointList {
     RegistroIntermediariViewComponent,
     TipiPendenzeViewComponent,
     ApplicazioniViewComponent,
-    RppsViewComponent,
     GiornaleEventiViewComponent,
     RiscossioniViewComponent,
     RendicontazioniViewComponent,
@@ -207,9 +205,6 @@ export class EntryPointList {
       case UtilService.APPLICAZIONE:
         _type = ApplicazioneViewComponent;
         break;
-      case UtilService.RPPS:
-        _type = RppsViewComponent;
-        break;
       case UtilService.OPERATORE:
         _type = OperatoreViewComponent;
         break;
@@ -321,9 +316,6 @@ export class EntryPointList {
         break;
       case 'ApplicazioniViewComponent':
         _name = UtilService.APPLICAZIONI;
-        break;
-      case 'RppsViewComponent':
-        _name = UtilService.RPPS;
         break;
       case 'GiornaleEventiViewComponent':
         _name = UtilService.GIORNALE_EVENTI;

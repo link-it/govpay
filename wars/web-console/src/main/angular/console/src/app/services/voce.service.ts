@@ -84,6 +84,7 @@ export class Voce {
   public static DETTAGLIO_ESITO: string = 'Dettaglio esito';
   public static DETTAGLIO_PENDENZA_CUSTOM: string = 'Personalizzazione dettaglio pendenza';
   public static DIREZIONE: string = 'Direzione';
+  public static DISABILITATO: string = 'Disabilitato';
   public static DIVISIONE: string = 'Divisione';
   public static DOMINIO: string = 'Dominio';
   public static DOMINI: string = 'Domini';
@@ -110,6 +111,7 @@ export class Voce {
 
   public static IBAN_ACCREDITO: string = 'Iban accredito';
   public static IBAN_POSTALE: string = 'Iban postale';
+  public static ID: string = 'ID';
   public static ID_A2A: string = 'Id A2A';
   public static ID_BOLLO: string = 'Id bollo';
   public static ID_CANALE: string = 'Id canale';
@@ -176,6 +178,7 @@ export class Voce {
   public static NO_PSP: string = 'PSP non pervenuto';
   public static NUMERO_PAY: string = 'Numero di pagamenti';
   public static NOME: string = 'Nome';
+  public static NON_INTERMEDIATO: string = 'Non intermediato';
   public static NON_PRESENTE: string = 'Non presente';
   public static NOTIFICA_AVVISO_PAGAMENTO: string = 'Notifica avviso pagamento';
   public static NOTIFICA_RICEVUTA_PAGAMENTO: string = 'Notifica ricevuta pagamento';
