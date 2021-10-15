@@ -765,7 +765,17 @@ export class UtilService {
         }
       }
     } else {
-      // rpt: ccp n.d.
+      // rpt: ccp n.a. -> ccpRT
+      if (item.rpt && item.rpt.data) {
+        if (item.rpt.data.creditorReferenceId) {
+          ref.iuv = item.rpt.data.creditorReferenceId;
+        }
+      }
+      if (item.pendenza && item.pendenza.dominio) {
+        if (item.pendenza.dominio.idDominio) {
+          ref.idd = item.pendenza.dominio.idDominio;
+        }
+      }
       if (item.rt) {
         if (item.rt.idPA) {
           ref.iddRT = item.rt.idPA;
@@ -776,6 +786,7 @@ export class UtilService {
           }
           if (item.rt.receipt.receiptId) {
             ref.ccpRT = item.rt.receipt.receiptId;
+            ref.ccp = item.rt.receipt.receiptId;
           }
         }
       }
@@ -1392,12 +1403,33 @@ export class UtilService {
     this.__loopFoldersStructure(data, structure, 0, { zip: zip, zroot: zroot, zipname: name });
   }
 
+  filterEmptyFolders(zip: any) {
+    const folders = Object.values((zip.files || {})).reduce((files, element) => {
+      if (element.dir && !files[element.name]) {
+        files[element.name] = 0;
+      }
+      if (!element.dir) {
+        Object.keys(files).filter(k => element.name.indexOf(k) !== -1)
+          .forEach(name => {
+          files[name]++;
+        });
+      }
+      return files;
+    }, {});
+    Object.keys((folders || {})).forEach((k: string) => {
+      if (folders[k] === 0) {
+        delete zip.files[k];
+      }
+    });
+  }
+
   /**
    * Save zip instance
    * @param {JSZip} zip
    * @param {string} zipname
    */
   saveZip(zip: any, zipname: string) {
+    this.filterEmptyFolders(zip);
     zip.generateAsync({type: 'blob'}).then(function (zipData) {
       FileSaver(zipData, zipname + '.zip');
       this.updateProgress(false, '', 'indeterminate', 0 , 0);

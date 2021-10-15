@@ -490,7 +490,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
         const item = el.jsonP;
         const ref: any = UtilService.ExportMapLoopCfg(item);
         if (ref.idd && ref.iuv && ref.ccp) {
-          const _folder = UtilService.ExportMapChunkLoopCfg('folder', ref);
+          const _folder = (UtilService.ExportMapChunkLoopCfg('folder', ref).url || '');
           if (folders.indexOf(_folder) == -1) {
             folders.push(_folder);
           }
