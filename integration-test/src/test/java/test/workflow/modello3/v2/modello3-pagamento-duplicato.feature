@@ -7,17 +7,12 @@ Background:
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
-# * def esitoAttivaRPT = read('classpath:test/workflow/modello3/v1/msg/attiva-response-ok.json')
-# * def esitoVerificaRPT = read('classpath:test/workflow/modello3/v1/msg/verifica-response-ok.json')
 * configure followRedirects = false
-
-
-* def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
-* def dominioNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/dominio.json')
 
 * def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
 * def esitoGetPayment = read('classpath:test/workflow/modello3/v2/msg/getPayment-response-ok.json')
 
+* def versionePagamento = 2
 
 Scenario: Pagamento eseguito dovuto precaricato con verifica
 
@@ -42,14 +37,6 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
-
-# Configurazione del simulatore
-
-* set dominioNdpSymPut.versione = 2
-
-* call read('classpath:utils/nodo-config-dominio-put.feature')
-
-* call read('classpath:utils/nodo-config-stazione-put.feature')
 
 # Verifico il pagamento
 
@@ -107,12 +94,3 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def ccp = response.ccp
 * def ccp_numero_avviso = response.ccp
 
-# ripristino dominio e stazione
-
-* def dominioNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/dominio.json')
-
-* call read('classpath:utils/nodo-config-dominio-put.feature')
-
-* def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
-
-* call read('classpath:utils/nodo-config-stazione-put.feature')

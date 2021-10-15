@@ -10,5 +10,6 @@ Given url ndpsym_psp_url
 And path 'verifica' 
 And param codDominio = idDominio
 And param numeroAvviso = numeroAvviso
+And param versione = versionePagamento
 When method get
 Then assert responseStatus == 200

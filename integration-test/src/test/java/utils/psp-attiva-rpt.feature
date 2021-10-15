@@ -22,5 +22,6 @@ And param ccp = ccp
 And param importo = importo
 And param tipoRicevuta = tipoRicevuta
 And param ibanAccredito = ibanAccredito
+And param versione = versionePagamento
 When method get
 Then assert responseStatus == 200
