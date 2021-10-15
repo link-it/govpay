@@ -1224,9 +1224,11 @@ CREATE TABLE notifiche_app_io
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
 	id_tipo_versamento_dominio NUMBER NOT NULL,
+	id_rpt NUMBER,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_nai_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
 	CONSTRAINT fk_nai_id_tipo_versamento_dominio FOREIGN KEY (id_tipo_versamento_dominio) REFERENCES tipi_vers_domini(id),
+	CONSTRAINT fk_nai_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT pk_notifiche_app_io PRIMARY KEY (id)
 );
 

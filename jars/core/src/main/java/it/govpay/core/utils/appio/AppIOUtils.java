@@ -11,7 +11,10 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
 import it.govpay.bd.configurazione.model.PromemoriaAvvisoBase;
+import it.govpay.bd.configurazione.model.PromemoriaRicevutaBase;
 import it.govpay.bd.configurazione.model.PromemoriaScadenza;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.EsitoOperazione;
@@ -26,7 +29,7 @@ import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 
 public class AppIOUtils {
 	
-	public static NewMessage creaNuovoMessaggioAvvisoPagamento(Logger log, Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio, PromemoriaAvvisoBase configurazionePromemoriaAvviso, BigDecimal timeToLive) throws GovPayException {
+	public static NewMessage creaNuovoMessaggioAvvisoPagamento(Logger log, Versamento versamento, Dominio dominio, TipoVersamentoDominio tipoVersamentoDominio, PromemoriaAvvisoBase configurazionePromemoriaAvviso, BigDecimal timeToLive) throws GovPayException {
 		String appIOMessaggio = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoMessaggio();
 		String appIOOggetto = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoOggetto();
 		String appIOTipo = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoTipo();
@@ -43,11 +46,11 @@ public class AppIOUtils {
 			appIOTipo = configurazionePromemoriaAvviso.getTipo();
 		}
 		
-		NewMessage messageWithCF = AppIOUtils.getPostMessage(log, appIOTipo, appIOOggetto, appIOMessaggio, timeToLive, versamento, true);
+		NewMessage messageWithCF = AppIOUtils.getPostMessage(log, appIOTipo, appIOOggetto, appIOMessaggio, timeToLive, versamento, null, dominio, true);
 		return messageWithCF;
 	}
 	
-	public static NewMessage creaNuovoMessaggioScadenzaPagamento(Logger log, Versamento versamento, TipoVersamentoDominio tipoVersamentoDominio, PromemoriaScadenza configurazionePromemoriaScadenza, BigDecimal timeToLive) throws GovPayException {
+	public static NewMessage creaNuovoMessaggioScadenzaPagamento(Logger log, Versamento versamento, Dominio dominio, TipoVersamentoDominio tipoVersamentoDominio, PromemoriaScadenza configurazionePromemoriaScadenza, BigDecimal timeToLive) throws GovPayException {
 		String appIOMessaggio = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaMessaggio();
 		String appIOOggetto = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaOggetto();
 		String appIOTipo = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaTipo();
@@ -64,11 +67,32 @@ public class AppIOUtils {
 			appIOTipo = configurazionePromemoriaScadenza.getTipo();
 		}
 		
-		NewMessage messageWithCF = AppIOUtils.getPostMessage(log, appIOTipo, appIOOggetto, appIOMessaggio, timeToLive, versamento, false);
+		NewMessage messageWithCF = AppIOUtils.getPostMessage(log, appIOTipo, appIOOggetto, appIOMessaggio, timeToLive, versamento, null, dominio, false);
+		return messageWithCF;
+	}
+	
+	public static NewMessage creaNuovoMessaggioRicevutaPagamento(Logger log, Versamento versamento, Rpt rpt, Dominio dominio, TipoVersamentoDominio tipoVersamentoDominio, PromemoriaRicevutaBase configurazionePromemoriaRicevuta, BigDecimal timeToLive) throws GovPayException {
+		String appIOMessaggio = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaMessaggio();
+		String appIOOggetto = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaOggetto();
+		String appIOTipo = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaTipo();
+		
+		boolean usaConfigurazioneSistema = true;
+		
+		if(appIOMessaggio != null && appIOOggetto != null && appIOTipo != null) {
+			usaConfigurazioneSistema = false;
+		}
+		
+		if(usaConfigurazioneSistema) {
+			appIOMessaggio = configurazionePromemoriaRicevuta.getMessaggio();
+			appIOOggetto = configurazionePromemoriaRicevuta.getOggetto();
+			appIOTipo = configurazionePromemoriaRicevuta.getTipo();
+		}
+		
+		NewMessage messageWithCF = AppIOUtils.getPostMessage(log, appIOTipo, appIOOggetto, appIOMessaggio, timeToLive, versamento, rpt, dominio, false);
 		return messageWithCF;
 	}
 
-	public static NewMessage getPostMessage(Logger log, String tipo, String oggetto, String messaggio, BigDecimal timeToLive, Versamento versamento, boolean includePaymentData) throws GovPayException {
+	public static NewMessage getPostMessage(Logger log, String tipo, String oggetto, String messaggio, BigDecimal timeToLive, Versamento versamento, Rpt rpt, Dominio dominio, boolean includePaymentData) throws GovPayException {
 		NewMessage message = new NewMessage();
 		
 		if(timeToLive != null)
@@ -77,8 +101,8 @@ public class AppIOUtils {
 		message.setFiscalCode(versamento.getAnagraficaDebitore().getCodUnivoco());
 		MessageContent content = new MessageContent();
 		
-		String subject = trasformazioneSubject(log, versamento, tipo, oggetto);
-		String markdown = trasformazioneMarkdown(log, versamento, tipo, messaggio);
+		String subject = trasformazioneSubject(log, versamento, rpt, dominio, tipo, oggetto);
+		String markdown = trasformazioneMarkdown(log, versamento, rpt, dominio, tipo, messaggio);
 		
 		content.setSubject(subject);
 		content.setMarkdown(markdown);
@@ -124,7 +148,7 @@ public class AppIOUtils {
 	}
 	
 	
-	public static String trasformazioneSubject(Logger log, Versamento versamento, String tipoTemplate, String templateTrasformazione) throws GovPayException {
+	public static String trasformazioneSubject(Logger log, Versamento versamento, Rpt rpt, Dominio dominio, String tipoTemplate, String templateTrasformazione) throws GovPayException {
 		log.debug("Generazione del Subject della Notifica AppIO tramite template freemarker ...");
 		String name = "TrasformazioneSubjectAppIO";
 		try {
@@ -139,7 +163,7 @@ public class AppIOUtils {
 			//log.debug("Template: "+ new String(template) );
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			Map<String, Object> dynamicMap = new HashMap<String, Object>();
-			TrasformazioniUtils.fillDynamicMapSubjectMessageAppIO(log, dynamicMap, ContextThreadLocal.get(), versamento);
+			TrasformazioniUtils.fillDynamicMapSubjectMessageAppIO(log, dynamicMap, ContextThreadLocal.get(), versamento, rpt, dominio);
 			TrasformazioniUtils.convertFreeMarkerTemplate(name, template , dynamicMap , baos );
 			// assegno il json trasformato
 			log.debug("Generazione del Subject della Notifica AppIO tramite template freemarker completata con successo.");
@@ -154,7 +178,7 @@ public class AppIOUtils {
 		}
 	}
 	
-	public static String trasformazioneMarkdown(Logger log, Versamento versamento, String tipoTemplate, String templateTrasformazione) throws GovPayException {
+	public static String trasformazioneMarkdown(Logger log, Versamento versamento, Rpt rpt, Dominio dominio, String tipoTemplate, String templateTrasformazione) throws GovPayException {
 		log.debug("Generazione del Markdown della Notifica AppIO tramite template freemarker ...");
 		String name = "TrasformazioneMarkdownAppIO";
 		try {
@@ -169,7 +193,7 @@ public class AppIOUtils {
 			//log.debug("Template: "+ new String(template) );
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			Map<String, Object> dynamicMap = new HashMap<String, Object>();
-			TrasformazioniUtils.fillDynamicMapMarkdownMessageAppIO(log, dynamicMap, ContextThreadLocal.get(), versamento);
+			TrasformazioniUtils.fillDynamicMapMarkdownMessageAppIO(log, dynamicMap, ContextThreadLocal.get(), versamento, rpt, dominio);
 			TrasformazioniUtils.convertFreeMarkerTemplate(name, template , dynamicMap , baos );
 			// assegno il json trasformato
 			log.debug("Generazione del Markdown della Notifica AppIO tramite template freemarker completata con successo.");

@@ -57,6 +57,7 @@ public class NotificaAppIOModel extends AbstractModel<NotificaAppIO> {
 		this.TENTATIVI_SPEDIZIONE = new Field("tentativiSpedizione",java.lang.Long.class,"NotificaAppIO",NotificaAppIO.class);
 		this.ID_MESSAGGIO = new Field("idMessaggio",java.lang.String.class,"NotificaAppIO",NotificaAppIO.class);
 		this.STATO_MESSAGGIO = new Field("statoMessaggio",java.lang.String.class,"NotificaAppIO",NotificaAppIO.class);
+		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new Field("idRpt",it.govpay.orm.IdRpt.class,"NotificaAppIO",NotificaAppIO.class));
 	
 	}
 	
@@ -80,6 +81,7 @@ public class NotificaAppIOModel extends AbstractModel<NotificaAppIO> {
 		this.TENTATIVI_SPEDIZIONE = new ComplexField(father,"tentativiSpedizione",java.lang.Long.class,"NotificaAppIO",NotificaAppIO.class);
 		this.ID_MESSAGGIO = new ComplexField(father,"idMessaggio",java.lang.String.class,"NotificaAppIO",NotificaAppIO.class);
 		this.STATO_MESSAGGIO = new ComplexField(father,"statoMessaggio",java.lang.String.class,"NotificaAppIO",NotificaAppIO.class);
+		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new ComplexField(father,"idRpt",it.govpay.orm.IdRpt.class,"NotificaAppIO",NotificaAppIO.class));
 	
 	}
 	
@@ -116,6 +118,8 @@ public class NotificaAppIOModel extends AbstractModel<NotificaAppIO> {
 	public IField ID_MESSAGGIO = null;
 	 
 	public IField STATO_MESSAGGIO = null;
+	 
+	public it.govpay.orm.model.IdRptModel ID_RPT = null;
 	 
 
 	@Override

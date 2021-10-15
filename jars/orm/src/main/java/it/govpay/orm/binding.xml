@@ -948,6 +948,7 @@
     <value name="tentativiSpedizione" field="tentativiSpedizione" usage="optional"/>
     <value name="idMessaggio" field="idMessaggio" usage="optional"/>
     <value name="statoMessaggio" field="statoMessaggio" usage="optional"/>
+    <structure name="idRpt" field="idRpt" usage="optional" map-as="_IdRpt_Type"/>
   </mapping>
   <mapping name="Promemoria" class="it.govpay.orm.Promemoria">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

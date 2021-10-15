@@ -56,6 +56,7 @@ public class NotificaAppIo extends BasicModel {
 	// dati ricevuti da APP IO
 	private String idMessaggio;
 	private StatoMessaggio statoMessaggio;
+	private Long idRpt;
 	
 	@Override
 	public Long getId() {
@@ -159,5 +160,11 @@ public class NotificaAppIo extends BasicModel {
 	}
 	public void setStatoMessaggio(StatoMessaggio statoMessaggio) {
 		this.statoMessaggio = statoMessaggio;
+	}
+	public Long getIdRpt() {
+		return idRpt;
+	}
+	public void setIdRpt(Long idRpt) {
+		this.idRpt = idRpt;
 	}
 }

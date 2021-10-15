@@ -104,6 +104,23 @@ public class JDBCNotificaAppIOServiceImpl extends JDBCNotificaAppIOServiceSearch
 			}
 		}
 
+		// Object _rpt
+		Long id_rpt = null;
+		it.govpay.orm.IdRpt idLogic_rpt = null;
+		idLogic_rpt = notificaAppIO.getIdRpt();
+		if(idLogic_rpt!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findTableId(idLogic_rpt, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_rpt = idLogic_rpt.getId();
+				if(id_rpt==null || id_rpt<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object notificaAppIO
 		sqlQueryObjectInsert.addInsertTable(this.getNotificaAppIOFieldConverter().toTable(NotificaAppIO.model()));
@@ -123,6 +140,7 @@ public class JDBCNotificaAppIOServiceImpl extends JDBCNotificaAppIOServiceSearch
 		sqlQueryObjectInsert.addInsertField(this.getNotificaAppIOFieldConverter().toColumn(NotificaAppIO.model().STATO_MESSAGGIO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_versamento_dominio","?");
+		sqlQueryObjectInsert.addInsertField("id_rpt","?");
 
 		// Insert notificaAppIO
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getNotificaAppIOFetch().getKeyGeneratorObject(NotificaAppIO.model());
@@ -142,7 +160,8 @@ public class JDBCNotificaAppIOServiceImpl extends JDBCNotificaAppIOServiceSearch
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(notificaAppIO.getIdMessaggio(),NotificaAppIO.model().ID_MESSAGGIO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(notificaAppIO.getStatoMessaggio(),NotificaAppIO.model().STATO_MESSAGGIO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamentoDominio,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoVersamentoDominio,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rpt,Long.class)
 		);
 		
 		notificaAppIO.setId(id);
@@ -223,6 +242,23 @@ public class JDBCNotificaAppIOServiceImpl extends JDBCNotificaAppIOServiceSearch
 			}
 		}
 
+		// Object _notificaAppIO_rpt
+		Long id_notificaAppIO_rpt = null;
+		it.govpay.orm.IdRpt idLogic_notificaAppIO_rpt = null;
+		idLogic_notificaAppIO_rpt = notificaAppIO.getIdRpt();
+		if(idLogic_notificaAppIO_rpt!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_notificaAppIO_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findTableId(idLogic_notificaAppIO_rpt, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_notificaAppIO_rpt = idLogic_notificaAppIO_rpt.getId();
+				if(id_notificaAppIO_rpt==null || id_notificaAppIO_rpt<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object notificaAppIO
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
@@ -264,10 +300,16 @@ public class JDBCNotificaAppIOServiceImpl extends JDBCNotificaAppIOServiceSearch
 			sqlQueryObjectUpdate.addUpdateField("id_tipo_versamento_dominio","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_rpt","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			lstObjects_notificaAppIO.add(new JDBCObject(id_notificaAppIO_versamento, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_notificaAppIO.add(new JDBCObject(id_notificaAppIO_tipoVersamentoDominio, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_notificaAppIO.add(new JDBCObject(id_notificaAppIO_rpt, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_notificaAppIO.add(new JDBCObject(tableId, Long.class));

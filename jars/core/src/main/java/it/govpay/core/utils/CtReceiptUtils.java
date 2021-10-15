@@ -30,12 +30,14 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.NotificheAppIoBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PromemoriaBD;
 import it.govpay.bd.pagamento.RptBD;
@@ -554,6 +556,17 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				} catch (JAXBException | SAXException e) {
 					log.error("Errore durante la lettura dei dati della RT: ", e.getMessage(),e);
 				}
+			}
+			
+			//schedulo l'invio della notifica APPIO
+			if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaAbilitato()) {
+				log.debug("Creo notifica avvisatura ricevuta tramite App IO..."); 
+				NotificaAppIo notificaAppIo = new NotificaAppIo(rpt, versamento, it.govpay.model.NotificaAppIo.TipoNotifica.RICEVUTA, configWrapper);
+				log.debug("Creazione notifica avvisatura ricevuta tramite App IO completata.");
+				NotificheAppIoBD notificheAppIoBD = new NotificheAppIoBD(versamentiBD);
+				notificheAppIoBD.setAtomica(false); // riuso connessione
+				notificheAppIoBD.insertNotifica(notificaAppIo);
+				log.debug("Inserimento su DB notifica avvisatura ricevuta tramite App IO completata.");
 			}
 
 			// Aggiornamento dello stato del pagamento portale associato all'RPT
