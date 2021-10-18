@@ -40,6 +40,7 @@ components:
         - tipoBollo
         - hashDocumento
         - provinciaResidenza
+        - codiceTassonomicoPagoPA
       properties:
         tipoBollo:
           description: Tipologia di Bollo digitale

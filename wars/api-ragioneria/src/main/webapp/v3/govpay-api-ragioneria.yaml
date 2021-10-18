@@ -146,7 +146,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: 'govpay-api-schemas.yaml#/components/schemas/Ricevute'
+                $ref: 'govpay-api-schemas.yaml#/components/schemas/FlussiRendicontazione'
         '400':
           $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'                
         '401':
@@ -164,27 +164,9 @@ paths:
       tags:
         - Ricevute
       parameters:
-        - name: idDominio
-          in: path
-          description: Ente creditore titolare della pendenza
-          required: true
-          schema:
-            type: string
-            pattern: '(^([0-9]){11}$)'
-        - name: iuv
-          in: path
-          description: Identificativo di versamento
-          required: true
-          schema:
-            type: string
-            pattern: '(^([0-9A-Za-z]){1,35}$)'
-        - name: idRicevuta
-          in: path
-          description: Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento utilizzato.
-          required: true
-          schema:
-            type: string   
-            pattern: '(^([0-9A-Za-z]){1,35}$)'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdDominio'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIuv'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdRicevuta'
       responses:
         '201':
           description: ricevuta di pagamento acquisita
@@ -192,139 +174,11 @@ paths:
             application/json:
               schema:
                 $ref: 'govpay-api-schemas.yaml#/components/schemas/Ricevuta'
-              example: 
-                dominio: 
-                  idDominio: '01234567890'
-                  ragioneSociale: 'Comune Dimostrativo'
-                iuv: '01000000202012345'
-                receiptId: '1234acdc'
-                dataPagamento: '2020-12-31T12:55:12'              
-                attestante:
-                  idPSP: 'BPPONZI'
-                  denominazione: 'Banco Popolare Ponzi'
-                  idCanale: 'POS'
-                  descrizione: 'Pagamento con carta c/o sportello'
-                versante:
-                  tipo: F
-                  identificativo: ANONIMO
-                  anagrafica: ANONIMO
-                riscossioni:
-                  - iur: 1234acdc
-                    indice: 1
-                    tipo: ENTRATA
-                    importo: 194.00
-                    vocePendenza:
-                      idVocePendenza: TARI
-                      descrizione: Importo TARI 
-                      contabilita:
-                        quote:
-                          - capitolo: '0000'
-                            annoEsercizio: 2020
-                            importo: 210.00
-                      ibanAccredito: 'IT60X0542811101000000123456'
-                      codiceTassonomicoPagoPA: '9/0101100IM/'
-                      pendenza:
-                        idA2A: A2A-12345
-                        idPendenza: abcdef12345
-                        idTipoPendenza: TARI
-                        dominio: 
-                          idDominio: '01234567890'
-                          ragioneSociale: 'Comune Dimostrativo'                
-                        causale: 'TARI/TEFA 2021'
-                        soggettoPagatore:
-                          tipo: F
-                          identificativo: RSSMRA30A01H501I
-                          anagrafica: Mario Rossi
-                          indirizzo: Piazza della Vittoria
-                          civico: 10/A
-                          cap: '00000'
-                          localita: Roma
-                          provincia: Roma
-                          nazione: IT
-                          email: mario.rossi@host.eu
-                          cellulare: +39 000 1234567
-                        importo: 250.50
-                        numeroAvviso: '301000000202012345'
-                        dataScadenza: '2021-12-31'
-                  - iur: 1234acdc
-                    indice: 1
-                    tipo: ENTRATA_PA_NON_INTERMEDIATA
-                    importo: 40.50
-                    vocePendenza:
-                      dominio:
-                        idDominio: '999999999999'
-                        ragioneSociale: Provincia Dimostrativa
-                      idVocePendenza: TEFA
-                      descrizione: Importo TEFA 
-                      ibanAccredito: 'IT60X0542811101000000987654'
-                      codiceTassonomicoPagoPA: '9/0201102IM/'
-                      pendenza:
-                        idA2A: A2A-12345
-                        idPendenza: abcdef12345
-                        idTipoPendenza: TARI
-                        dominio: 
-                          idDominio: '01234567890'
-                          ragioneSociale: 'Comune Dimostrativo'                
-                        causale: 'TARI/TEFA 2021'
-                        soggettoPagatore:
-                          tipo: F
-                          identificativo: RSSMRA30A01H501I
-                          anagrafica: Mario Rossi
-                          indirizzo: Piazza della Vittoria
-                          civico: 10/A
-                          cap: '00000'
-                          localita: Roma
-                          provincia: Roma
-                          nazione: IT
-                          email: mario.rossi@host.eu
-                          cellulare: +39 000 1234567
-                        importo: 250.50
-                        numeroAvviso: '301000000202012345'
-                        dataScadenza: '2021-12-31'     
-                  - iur: "1234acdc"
-                    indice: 1
-                    tipo: "MBT"
-                    importo: 16.00
-                    allegato:
-                      tipo: "Marca da bollo"
-                      testo: "[XML della Marca da bollo in base64]"
-                    vocePendenza:
-                      idVocePendenza: BOLLO
-                      descrizione: Imposta di bollo
-                      codiceTassonomicoPagoPA: '9/0201102IM/'
-                      pendenza:
-                        idA2A: A2A-12345
-                        idPendenza: abcdef12345
-                        idTipoPendenza: TARI
-                        dominio: 
-                          idDominio: '01234567890'
-                          ragioneSociale: 'Comune Dimostrativo'                
-                        causale: 'TARI/TEFA 2021'
-                        soggettoPagatore:
-                          tipo: F
-                          identificativo: RSSMRA30A01H501I
-                          anagrafica: Mario Rossi
-                          indirizzo: Piazza della Vittoria
-                          civico: 10/A
-                          cap: '00000'
-                          localita: Roma
-                          provincia: Roma
-                          nazione: IT
-                          email: mario.rossi@host.eu
-                          cellulare: +39 000 1234567
-                        importo: 250.50
-                        numeroAvviso: '301000000202012345'
-                        dataScadenza: '2021-12-31'                            
-                rpt:
-                  data: '2020-12-31T12:53:49'
-                  tipo: 'ctPaymentPA'
-                  xml: '...[XML originale codificato Base64]...'
-                  json: '...[XML originale convertito in json]...'
-                rt:
-                  data: '2020-12-31T12:55:12'
-                  tipo: 'ctReceipt'
-                  xml: '...[XML originale codificato Base64]...'
-                  json: '...[XML originale convertito in json]...'                           
+              examples:
+                Pagamento standard: 
+                  $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaEntrata'
+                Marca da bollo: 
+                  $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaMBT'              
         '400':
           $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'
         '401':
@@ -395,13 +249,7 @@ paths:
           $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'        
   '/riconciliazioni/{idDominio}/{id}':
     parameters:
-      - in: path
-        name: idDominio
-        description: Identificativo del creditore
-        required: true
-        schema:
-          type: string  
-          pattern: '(^([0-9]){11}$)'
+      - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdDominio'
       - in: path
         name: id
         description: Identificativo dell'operazione di riconciliazione
@@ -502,19 +350,8 @@ paths:
       tags:
         - Riscossioni
       parameters:
-        - in: path
-          name: idDominio
-          description: Codice fiscale del dominio beneficiario
-          required: true
-          schema:
-            type: string
-            pattern: '(^([0-9]){11}$)'
-        - in: path
-          name: iuv
-          description: Identificativo univoco di versamento
-          required: true
-          schema:
-            type: string
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdDominio'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIuv'
         - in: path
           name: iur
           description: Identificativo univoco di riscossione

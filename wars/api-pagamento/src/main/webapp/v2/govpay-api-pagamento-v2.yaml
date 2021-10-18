@@ -41,7 +41,8 @@ paths:
         - $ref: '#/components/parameters/codiceConvenzione'
         - $ref: '#/components/parameters/identificativoPSP'
         - $ref: '#/components/parameters/identificativoIntermediarioPSP'
-        - $ref: '#/components/parameters/identificativoCanale'        
+        - $ref: '#/components/parameters/identificativoCanale'    
+        - $ref: '#/components/parameters/tipoVersamento'      
       requestBody:
         content:
           application/json:
@@ -892,6 +893,24 @@ components:
       schema:
         type: boolean
         default: false
+    tipoVersamento:
+      name: tipoVersamento
+      in: query
+      description: Tipologia di versamento indicata nella richiesta di pagamento
+      required: false
+      schema: 
+        type: string
+        enum:
+          - "BBT"
+          - "BP"
+          - "AD"
+          - "CP"
+          - "PO"
+          - "OBEP"
+          - "OTH"
+          - "JIF"
+          - "MYBK"
+        default: "BBT"
     uuid:
       name: UUID
       in: query
