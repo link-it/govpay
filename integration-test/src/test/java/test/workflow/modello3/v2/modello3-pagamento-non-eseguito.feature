@@ -41,7 +41,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 # Verifico il pagamento
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response == esitoVerifyPayment
 * def ccp = response.ccp
 * def ccp_numero_avviso = response.ccp
@@ -51,7 +51,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 # NON_ESEGUITO_SANP_24("R22")
 
 * def tipoRicevuta = "R22"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione

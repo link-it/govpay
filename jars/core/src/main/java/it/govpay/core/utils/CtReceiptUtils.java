@@ -294,6 +294,8 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 				ctx.getApplicationLogger().log("rt.acquisizione");
 			}
 
+			// aggiornamento del campo CCP con il valore RecepitID
+			rpt.setCcp(ctReceipt.getReceiptId());
 			rpt.setCodMsgRicevuta(ctReceipt.getReceiptId());
 			rpt.setDataMsgRicevuta(new Date());
 			rpt.setEsitoPagamento(rptEsito);

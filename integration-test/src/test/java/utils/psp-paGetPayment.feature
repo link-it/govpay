@@ -1,4 +1,4 @@
-Feature: Attivazione della rpt
+Feature: Attivazione della rpt API SANP 2.4
 
 #		PAGAMENTO_ESEGUITO_SENZA_RPT ("R00"), 
 #		PAGAMENTO_ESEGUITO ("R01"), 
@@ -22,5 +22,6 @@ And param ccp = ccp
 And param importo = importo
 And param tipoRicevuta = tipoRicevuta
 And param ibanAccredito = ibanAccredito
+And param versione = versionePagamento
 When method get
 Then assert responseStatus == 200
