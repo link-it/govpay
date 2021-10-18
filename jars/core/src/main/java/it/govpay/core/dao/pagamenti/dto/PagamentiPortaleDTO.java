@@ -40,6 +40,7 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	private String identificativoPSP = null;
 	private String identificativoIntermediarioPSP = null;
 	private String identificativoCanale = null;
+	private String tipoVersamento = null;
 
 	public String getJsonRichiesta() {
 		return this.jsonRichiesta;
@@ -185,6 +186,14 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	}
 	public void setIdentificativoCanale(String identificativoCanale) {
 		this.identificativoCanale = identificativoCanale;
+	}
+
+
+	public String getTipoVersamento() {
+		return tipoVersamento;
+	}
+	public void setTipoVersamento(String tipoVersamento) {
+		this.tipoVersamento = tipoVersamento;
 	}
 
 

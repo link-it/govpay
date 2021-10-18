@@ -91,7 +91,8 @@ public class PagamentiController extends BaseController {
 			String codiceConvenzione,
 			String identificativoPSP,
     		String identificativoIntermediarioPSP,
-    		String identificativoCanale) {
+    		String identificativoCanale,
+    		String tipoVersamento) {
     	String methodName = "pagamentiPOST";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -152,6 +153,7 @@ public class PagamentiController extends BaseController {
 				pagamentiPortaleDTO.setIdentificativoPSP(identificativoPSP);
 				pagamentiPortaleDTO.setIdentificativoIntermediarioPSP(identificativoIntermediarioPSP);
 				pagamentiPortaleDTO.setIdentificativoCanale(identificativoCanale);
+				pagamentiPortaleDTO.setTipoVersamento(tipoVersamento);
 			}
 			
 			

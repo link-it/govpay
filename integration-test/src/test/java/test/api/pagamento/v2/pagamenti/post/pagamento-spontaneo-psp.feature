@@ -175,4 +175,37 @@ And match response == { categoria : 'AUTORIZZAZIONE', codice : '403000', descriz
 And match response.descrizione == 'Operazione non autorizzata'
 And match response.dettaglio == 'Il richiedente non è autorizzato ad indicare un PSP per il pagamento'
 
+@pagamentopsp @pagamentopsp-6
+Scenario: Pagamento spontaneo basic e PSP specificato con tipoVersamento indicato
+
+* def idPendenza = getCurrentTimeMillis()
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
+
+* configure retry = { count: 25, interval: 10000 }
+
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+
+Given url pagamentiBaseurl
+And path '/pagamenti'
+And headers idA2ABasicAutenticationHeader
+And param identificativoPSP = identificativoPSP
+And param identificativoIntermediarioPSP = identificativoIntermediarioPSP
+And param identificativoCanale = identificativoCanale
+And param tipoVersamento = "CP"
+And request pagamentoPost
+When method post
+Then status 201
+And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
+
+Given url backofficeBaseurl
+And path 'eventi'
+And param tipoEvento = "nodoInviaCarrelloRPT"
+And param idPendenza = idPendenza
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response.risultati[0].datiPagoPA.idPsp == identificativoPSP
+And match response.risultati[0].datiPagoPA.idCanale == identificativoCanale
+And match response.risultati[0].datiPagoPA.idIntermediarioPsp == identificativoIntermediarioPSP
+And match response.risultati[0].datiPagoPA.tipoVersamento == 'CP'
 
