@@ -25,7 +25,9 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 
 public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
@@ -55,11 +57,37 @@ public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
 		this.setTipo(tipoNotifica);
 	}
 	
+	public NotificaAppIo(Rpt rpt, Versamento versamento, TipoNotifica tipoNotifica, BDConfigWrapper configWrapper) throws ServiceException {
+		if(versamento == null)
+			throw new ServiceException("Il versamento associato alla Notifica e' vuoto.");
+		
+		if(rpt == null)
+			throw new ServiceException("Rpt associato alla Notifica e' vuoto.");
+		
+		this.setVersamento(versamento);
+		this.setRpt(rpt);
+		this.setTipoVersamentoDominio(versamento.getTipoVersamentoDominio(configWrapper));
+		this.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
+		this.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
+		this.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
+		this.setIuv(versamento.getIuvVersamento());
+		this.setDebitoreIdentificativo(versamento.getAnagraficaDebitore().getCodUnivoco());
+		long adesso = new Date().getTime(); 
+		this.setDataAggiornamento(new Date(adesso));
+		this.setDataCreazione(new Date(adesso));
+		this.setDataProssimaSpedizione(new Date(adesso + 10000 ));
+		this.setDescrizioneStato(null);
+		this.setStato(StatoSpedizione.DA_SPEDIRE);
+		this.setTentativiSpedizione(0l);
+		this.setTipo(tipoNotifica);
+	}
+	
 	private static final long serialVersionUID = 1L;
 	
 	// Business 
 	private transient Versamento versamento;
 	private transient TipoVersamentoDominio tipoVersamentoDominio;
+	private transient Rpt rpt;
 	
 	public Versamento getVersamento(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.versamento == null && this.getIdVersamento() > 0) {
@@ -93,5 +121,32 @@ public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
 		this.tipoVersamentoDominio = tipoVersamentoDominio;
 		if(this.tipoVersamentoDominio.getId() != null)
 			this.setIdTipoVersamentoDominio(this.tipoVersamentoDominio.getId());
+	}
+	
+	public void setRpt(Rpt rpt) {
+		this.rpt = rpt;
+		if(rpt != null)
+			this.setIdRpt(rpt.getId());
+	}
+	
+	public Rpt getRpt() {
+		return this.rpt;
+	}
+	
+	public Rpt getRpt(BasicBD bd) throws ServiceException {
+		if(this.rpt == null && this.getIdRpt() != null) {
+			RptBD rptBD = new RptBD(bd);
+			this.rpt = rptBD.getRpt(this.getIdRpt());
+		}
+			
+		return this.rpt;
+	}
+	
+	public Rpt getRpt(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.rpt == null && this.getIdRpt() != null) {
+			RptBD rptBD = new RptBD(configWrapper);
+			this.rpt = rptBD.getRpt(this.getIdRpt());
+		}
+		return rpt;
 	}
 }

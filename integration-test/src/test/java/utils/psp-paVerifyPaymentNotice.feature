@@ -1,0 +1,15 @@
+Feature: Verifica della rpt API SANP 2.4
+
+Background: 
+
+* def ndpsym_psp_url = ndpsym_url + '/psp/rs/psp'
+
+Scenario: 
+
+Given url ndpsym_psp_url 
+And path 'verifica' 
+And param codDominio = idDominio
+And param numeroAvviso = numeroAvviso
+And param versione = versionePagamento
+When method get
+Then assert responseStatus == 200

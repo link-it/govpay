@@ -7,14 +7,12 @@ Background:
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
-# * def esitoAttivaRPT = read('msg/attiva-response-ok.json')
 * configure followRedirects = false
-
-* def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
-* def dominioNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/dominio.json')
 
 * def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
 * def esitoGetPayment = read('classpath:test/workflow/modello3/v2/msg/getPayment-response-ok.json')
+
+* def versionePagamento = 2
 
 Scenario: Pagamento eseguito dovuto precaricato
 
@@ -41,17 +39,9 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
-# Configurazione del simulatore
-
-* set dominioNdpSymPut.versione = 2
-
-* call read('classpath:utils/nodo-config-dominio-put.feature')
-
-* call read('classpath:utils/nodo-config-stazione-put.feature')
-
 # Verifico il pagamento
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response == esitoVerifyPayment
 * def ccp = response.ccp
 * def ccp_numero_avviso = response.ccp
@@ -61,7 +51,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 # NON_ESEGUITO_SANP_24("R22")
 
 * def tipoRicevuta = "R22"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione
@@ -77,14 +67,4 @@ Then assert responseStatus == 200 || responseStatus == 201
 * match response.voci[0].stato == 'Non eseguito'
 * match response.rpp == '#[1]'
 * match response.rpp[0].stato == 'RPT_ACCETTATA_NODO'
-
-# ripristino dominio e stazione
-
-* def dominioNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/dominio.json')
-
-* call read('classpath:utils/nodo-config-dominio-put.feature')
-
-* def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
-
-* call read('classpath:utils/nodo-config-stazione-put.feature')
 

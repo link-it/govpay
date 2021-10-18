@@ -9,8 +9,7 @@ Background:
 
 * configure followRedirects = false
 
-* def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
-* def dominioNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/dominio.json')
+* def versionePagamento = 2
 
 * def esitoVerifyPayment = read('classpath:test/workflow/modello3/v2/msg/verifyPayment-response-ok.json')
 * def esitoGetPayment = read('classpath:test/api/backoffice/v1/pendenze/get/msg/getPayment-response-ok-multibeneficiario.json')
@@ -104,17 +103,9 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * def importo = pendenzaPut.importo
 
-# Configurazione del simulatore
-
-* set dominioNdpSymPut.versione = 2
-
-* call read('classpath:utils/nodo-config-dominio-put.feature')
-
-* call read('classpath:utils/nodo-config-stazione-put.feature')
-
 # Verifico il pagamento
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response == esitoVerifyPayment
 * def ccp = response.ccp
 * def ccp_numero_avviso = response.ccp
@@ -122,7 +113,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione
@@ -148,18 +139,6 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * match response.rpp == '#[1]'
 * match response.rpp[0].stato == 'RT_ACCETTATA_PA'
 * match response.rpp[0].rt == '#notnull'
-
-
-# ripristino dominio e stazione
-
-* def dominioNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/dominio.json')
-
-* call read('classpath:utils/nodo-config-dominio-put.feature')
-
-* def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
-
-* call read('classpath:utils/nodo-config-stazione-put.feature')
-
 
 Scenario: Caricamento pendenza multibeneficiario di due enti che condividono l'IBAN
 
@@ -217,17 +196,9 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * def importo = pendenzaPut.importo
 
-# Configurazione del simulatore
-
-* set dominioNdpSymPut.versione = 2
-
-* call read('classpath:utils/nodo-config-dominio-put.feature')
-
-* call read('classpath:utils/nodo-config-stazione-put.feature')
-
 # Verifico il pagamento
 
-* call read('classpath:utils/psp-verifica-rpt.feature')
+* call read('classpath:utils/psp-paVerifyPaymentNotice.feature')
 * match response == esitoVerifyPayment
 * def ccp = response.ccp
 * def ccp_numero_avviso = response.ccp
@@ -235,7 +206,7 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 # Attivo il pagamento 
 
 * def tipoRicevuta = "R01"
-* call read('classpath:utils/psp-attiva-rpt.feature')
+* call read('classpath:utils/psp-paGetPayment.feature')
 * match response.dati == esitoGetPayment
 
 # Verifico la notifica di attivazione
@@ -261,17 +232,4 @@ And match response == read('classpath:test/api/backoffice/v1/pendenze/put/msg/pe
 * match response.rpp == '#[1]'
 * match response.rpp[0].stato == 'RT_ACCETTATA_PA'
 * match response.rpp[0].rt == '#notnull'
-
-
-# ripristino dominio e stazione
-
-* def dominioNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/dominio.json')
-
-* call read('classpath:utils/nodo-config-dominio-put.feature')
-
-* def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
-
-* call read('classpath:utils/nodo-config-stazione-put.feature')
-
-
 

@@ -26,6 +26,7 @@ import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.model.NotificaAppIo.StatoMessaggio;
 import it.govpay.model.NotificaAppIo.StatoSpedizione;
 import it.govpay.model.NotificaAppIo.TipoNotifica;
+import it.govpay.orm.IdRpt;
 import it.govpay.orm.IdTipoVersamentoDominio;
 import it.govpay.orm.IdVersamento;
 
@@ -63,6 +64,12 @@ public class NotificaAppIoConverter {
 		if(dto.getStatoMessaggio() != null)
 			vo.setStatoMessaggio(dto.getStatoMessaggio().toString());
 		
+		if(dto.getIdRpt() != null) {
+			IdRpt idRpt = new IdRpt();
+			idRpt.setId(dto.getIdRpt());
+			vo.setIdRpt(idRpt);
+		}
+		
 		return vo;
 	}
 
@@ -98,6 +105,8 @@ public class NotificaAppIoConverter {
 		if(vo.getStatoMessaggio() != null)
 			dto.setStatoMessaggio(StatoMessaggio.valueOf(vo.getStatoMessaggio()));
 		
+		if(vo.getIdRpt() != null)
+			dto.setIdRpt(vo.getIdRpt().getId());
 		
 		return dto;
 	}

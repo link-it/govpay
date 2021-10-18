@@ -477,5 +477,8 @@ ALTER TABLE singoli_versamenti ADD id_dominio BIGINT;
 ALTER TABLE singoli_versamenti ADD CONSTRAINT fk_sng_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
 
 
+-- 15/10/2021 Identificativo RPT nella tabella notificheAppIo per gestire l'invio delle ricevute di pagamento
+ALTER TABLE notifiche_app_io ADD id_rpt BIGINT;
+ALTER TABLE notifiche_app_io ADD CONSTRAINT fk_nai_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id);
 
 

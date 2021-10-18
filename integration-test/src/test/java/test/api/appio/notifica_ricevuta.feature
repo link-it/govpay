@@ -57,7 +57,6 @@ Background:
 """
 
 * def tipoPendenzaDominio_appIO_apiKey = 'ABC...........'
-* def tipoPendenzaDominio_appIO_apiKeyErrata = 'API_KEY_ERRATA'
 * def tipoPendenzaDominio_appIO = 
 """
 {
@@ -73,7 +72,10 @@ Background:
   		abilitato: true,
   		"tipo": "freemarker"
   		},
-		"promemoriaRicevuta": null,
+		"promemoriaRicevuta": {
+  		abilitato: true,
+  		"tipo": "freemarker"
+  		},
 		"promemoriaScadenza": null
   }
 }
@@ -81,6 +83,9 @@ Background:
 
 * set configurazione_avvisaturaAppIO.promemoriaAvviso.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/appio-subject-freemarker.ftl'))
 * set configurazione_avvisaturaAppIO.promemoriaAvviso.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/appio-body-freemarker.ftl'))
+
+* set configurazione_avvisaturaAppIO.promemoriaRicevuta.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/appio-subject-ricevuta-freemarker.ftl'))
+* set configurazione_avvisaturaAppIO.promemoriaRicevuta.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/appio-body-ricevuta-freemarker.ftl'))
 
 * def debitoreNoAuthAppIO = 
 """
@@ -352,7 +357,7 @@ Given url backofficeBaseurl
 And path '/eventi'
 And param idA2A = idA2A
 And param idPendenza = idPendenza
-And param tipoEvento = 'submitMessageforUserWithFiscalCodeInBody'
+And param tipoEvento = 'submitMessageforUserWithFiscalCodeInBodyRicevuta'
 And param messaggi = true
 And headers gpAdminBasicAutenticationHeader
 When method get
@@ -380,7 +385,7 @@ And match response.risultati[0] ==
 	"componente": "API_BACKEND_IO",
 	"categoriaEvento": "INTERFACCIA",
 	"ruolo": "CLIENT",
-	"tipoEvento": "submitMessageforUserWithFiscalCodeInBody",
+	"tipoEvento": "submitMessageforUserWithFiscalCodeInBodyRicevuta",
 	"sottotipoEvento": "##null",
 	"esito": "OK",
 	"sottotipoEsito": "201",

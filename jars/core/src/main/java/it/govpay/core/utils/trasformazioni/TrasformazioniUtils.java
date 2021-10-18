@@ -24,6 +24,7 @@ import freemarker.template.TemplateModel;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpContext;
@@ -379,7 +380,7 @@ public class TrasformazioniUtils {
 		}
 	}
 	
-	public static void fillDynamicMapSubjectMessageAppIO(Logger log, Map<String, Object> dynamicMap, IContext context, Versamento versamento) {
+	public static void fillDynamicMapSubjectMessageAppIO(Logger log, Map<String, Object> dynamicMap, IContext context, Versamento versamento, Rpt rpt, Dominio dominio) {
 		
 		if(dynamicMap.containsKey(Costanti.MAP_DATE_OBJECT)==false) {
 			dynamicMap.put(Costanti.MAP_DATE_OBJECT, DateManager.getDate());
@@ -405,11 +406,19 @@ public class TrasformazioniUtils {
 
 		if(dynamicMap.containsKey(Costanti.MAP_VERSAMENTO)==false && versamento !=null) {
 			dynamicMap.put(Costanti.MAP_VERSAMENTO, versamento);
+		}
+		
+		if(dynamicMap.containsKey(Costanti.MAP_RPT)==false && rpt !=null) {
+			dynamicMap.put(Costanti.MAP_RPT, rpt);
+		}
+		
+		if(dynamicMap.containsKey(Costanti.MAP_DOMINIO)==false && dominio !=null) {
+			dynamicMap.put(Costanti.MAP_DOMINIO, dominio);
 		}
 		
 	}
 	
-public static void fillDynamicMapMarkdownMessageAppIO(Logger log, Map<String, Object> dynamicMap, IContext context, Versamento versamento) {
+public static void fillDynamicMapMarkdownMessageAppIO(Logger log, Map<String, Object> dynamicMap, IContext context, Versamento versamento, Rpt rpt, Dominio dominio) {
 		
 		if(dynamicMap.containsKey(Costanti.MAP_DATE_OBJECT)==false) {
 			dynamicMap.put(Costanti.MAP_DATE_OBJECT, DateManager.getDate());
@@ -435,6 +444,14 @@ public static void fillDynamicMapMarkdownMessageAppIO(Logger log, Map<String, Ob
 
 		if(dynamicMap.containsKey(Costanti.MAP_VERSAMENTO)==false && versamento !=null) {
 			dynamicMap.put(Costanti.MAP_VERSAMENTO, versamento);
+		}
+		
+		if(dynamicMap.containsKey(Costanti.MAP_RPT)==false && rpt !=null) {
+			dynamicMap.put(Costanti.MAP_RPT, rpt);
+		}
+		
+		if(dynamicMap.containsKey(Costanti.MAP_DOMINIO)==false && dominio !=null) {
+			dynamicMap.put(Costanti.MAP_DOMINIO, dominio);
 		}
 		
 	}
