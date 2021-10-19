@@ -357,7 +357,7 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
         const item = el.jsonP;
         const ref: any = UtilService.ExportMapLoopCfg(item);
         if (ref.idd && ref.iuv) {
-          const _folder = UtilService.ExportMapChunkLoopCfg('folder', ref);
+          const _folder = (UtilService.ExportMapChunkLoopCfg('folder', ref).url || '');
           if (folders.indexOf(_folder) == -1) {
             folders.push(_folder);
           }
