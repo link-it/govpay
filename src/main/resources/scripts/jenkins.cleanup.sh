@@ -5,6 +5,7 @@ sudo rm -rf /var/govpay-ndpsym/cache/*.cache
 sudo rm -rf /var/govpay-ndpsym/cache/RH/*
 psql ndpsym ndpsym -c "delete from rpt;"
 psql ndpsym ndpsym -c "delete from wisp;"
+psql ndpsym ndpsym -c "update domini set versione = 1;"
 echo "Rimozione database e deploy di govpay..."
 sudo -u postgres dropdb --if-exists govpay
 sudo rm -rf /opt/wildfly/standalone_govpay/deployments/govpay.ear

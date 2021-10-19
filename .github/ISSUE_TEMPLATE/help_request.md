@@ -2,7 +2,7 @@
 name: Supporto
 about: Chiedi aiuto alla community.
 title: ''
-labels: 'Help wanted!, Type: Other'
+labels: 'Type: Support'
 assignees: ''
 
 ---
