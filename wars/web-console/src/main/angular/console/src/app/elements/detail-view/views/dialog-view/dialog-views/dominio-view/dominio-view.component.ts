@@ -172,10 +172,10 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
       if(_hasColor && _results && _results.length != 0 && _map_results && _map_results.length != 0) {
         this._askForConversion({ original: _result, xsvg: _xsvg, results: _results, map: _map_results });
       } else {
-        this._base64File = this._sanitizer.bypassSecurityTrustUrl(_result);
+        this._base64File = this._sanitizer.bypassSecurityTrustUrl((_result.indexOf('base64,')!==-1?_result:UtilService.RootByTOA() + _result));
       }
     } else {
-      this._base64File = this._sanitizer.bypassSecurityTrustUrl(_result);
+      this._base64File = this._sanitizer.bypassSecurityTrustUrl((_result.indexOf('base64,')!==-1?_result:UtilService.RootByTOA() + _result));
     }
   }
 

@@ -61,7 +61,7 @@
         <input matInput [placeholder]="_voce.WEB_SITE" formControlName="web_ctrl" autocomplete="off">
       </mat-form-field>
       <div class="row">
-        <div class="col-12 col-sm-6" [formGroup]="fGroup">
+        <div class="col-12 col-sm-6 mb-3 mb-sm-0" [formGroup]="fGroup">
           <mat-slide-toggle formControlName="abilita_ctrl" color="accent">{{_voce.ABILITATO}}</mat-slide-toggle>
         </div>
         <div class="col-12 col-sm-6" [formGroup]="fGroup">
@@ -110,7 +110,7 @@
           <input #iBrowse hidden placeholder="Logo" type="file" formControlName="logo_ctrl" autocomplete="off">
           <div class="d-inline action" *ngIf="!_base64File" (click)="_select()">Sfoglia...</div>
           <div class="d-block b64-group" *ngIf="_base64File">
-            <img class="d-block w-50" [src]="_base64File"/>
+            <img class="card-logo-dominio" [src]="_base64File"/>
             <mat-icon class="action b64-icon" (click)="_resetSelection()">delete</mat-icon>
           </div>
         </div>
