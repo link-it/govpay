@@ -266,7 +266,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     }
 
     this.logoError = false;
-    this.logo = json.logo?this._sanitizer.bypassSecurityTrustUrl(json.logo):this.NO_LOGO;
+    this.logo = json.logo?this._sanitizer.bypassSecurityTrustUrl(UtilService.RootByTOA()+json.logo):this.NO_LOGO;
 
     this.informazioni = _dettaglio.info.slice(0);
     this.informazioniPA = _dettaglio.infoPA.slice(0);

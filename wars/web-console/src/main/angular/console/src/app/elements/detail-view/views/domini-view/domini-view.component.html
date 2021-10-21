@@ -17,8 +17,8 @@
       <link-key-value-view class="d-block link-key-value-fill-mat-card" *ngFor="let item of informazioniExtra" [info]="item"></link-key-value-view>
     </div>
   </mat-card>
-  <mat-card class="shadow no-border-radius mb-4" *ngIf="!logoError">
-    <img class="d-block w-50 link-key-value-fill-mat-card px-3 py-3" [src]="logo" (error)="_onError($event)"/>
+  <mat-card class="shadow no-border-radius mb-4" *ngIf="!logoError && logo">
+    <img class="d-block card-logo-dominio link-key-value-fill-mat-card px-3 py-3" [src]="logo" (error)="_onError($event)"/>
   </mat-card>
   <link-filter-card (over-icon-click)="_iconCardClick(_UNITA, $event)" (add-icon-click)="_addEdit(_UNITA)" [card-title]="'Unità operative'"
                     [data-list]="unita_operative" [show-actions]="_PLUS_CREDIT" [show-over-icons]="_PLUS_CREDIT" [next-page]="_paginatorOptions.unita.next"

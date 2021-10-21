@@ -1508,15 +1508,19 @@ export class UtilService {
   }
 
   desaturateColor(_color: string): string {
-    let col = this.hexToRgb(_color);
-    let sat = 0;
-    let gray = col.r * 0.3086 + col.g * 0.6094 + col.b * 0.0820;
+    try {
+      let col = this.hexToRgb(_color);
+      let sat = 0;
+      let gray = col.r * 0.3086 + col.g * 0.6094 + col.b * 0.0820;
 
-    col.r = Math.round(col.r * sat + gray * (1-sat));
-    col.g = Math.round(col.g * sat + gray * (1-sat));
-    col.b = Math.round(col.b * sat + gray * (1-sat));
+      col.r = Math.round(col.r * sat + gray * (1-sat));
+      col.g = Math.round(col.g * sat + gray * (1-sat));
+      col.b = Math.round(col.b * sat + gray * (1-sat));
 
-    return this.rgbToHex(col.r,col.g,col.b);
+      return this.rgbToHex(col.r,col.g,col.b);
+    } catch (e) {
+      return _color;
+    }
   }
 
   static b64toBlob(b64Data: any, contentType: string = '', sliceSize: number = 512) {
