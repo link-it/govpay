@@ -266,7 +266,11 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     }
 
     this.logoError = false;
-    this.logo = json.logo?this._sanitizer.bypassSecurityTrustUrl(UtilService.RootByTOA()+json.logo):this.NO_LOGO;
+    if (json.logo) {
+      this.__asyncLoadingLogo(json.logo);
+    } else {
+      this.logo = this.NO_LOGO;
+    }
 
     this.informazioni = _dettaglio.info.slice(0);
     this.informazioniPA = _dettaglio.infoPA.slice(0);
@@ -313,6 +317,18 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
 
     this.elencoMultiplo(json.intermediato);
     this._isIntermediato = json.intermediato;
+  }
+
+  protected __asyncLoadingLogo(uri: string) {
+    this.gps.multiExportService([uri], ['application/*'], ['text']).subscribe(
+      (responses: any) => {
+        const bin: string = responses[0].body || '';
+        this.logo = this._sanitizer.bypassSecurityTrustUrl(bin);
+      },
+      (error: any) => {
+        this.logoError = true;
+        console.log('Logo Error', error);
+      });
   }
 
   protected elencoUnitaOperative(jsonList: any[]) {

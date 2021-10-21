@@ -150,33 +150,49 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
   }
 
   protected _reloadFile(_url: string, bypass: boolean = false) {
-    let _result = _url;
-
-    if(!bypass && _url.indexOf('data:image/svg+xml;') != -1 && _url.indexOf('base64,') != -1) {
+    const _result: string = _url;
+    const svg: boolean = (_url.indexOf('data:image/svg+xml;') != -1 && _url.indexOf('base64,') != -1);
+    if (!bypass) {
       let _hasColor: boolean = false;
-      let _bsvg = _url.split('base64,')[1];
-      let _xsvg = atob(_bsvg);
-      let re = RegExp('(#[a-z0-9]{6})','gmi');
-      let _tmp;
       let _results = [];
-      while ((_tmp = re.exec(_xsvg)) !== null) {
-        const _atmp = this._getRGB(_tmp[0]);
-        if (_atmp[0] !== _atmp[1] && _atmp[0] !== _atmp[2] && _atmp[1] !== _atmp[2]) {
-          _hasColor = true;
+      let _map_results = [];
+      let _xsvg = '';
+      if (svg) {
+        let _bsvg = _url.split('base64,')[1];
+        _xsvg = atob(_bsvg);
+        let re = RegExp('(#[a-z0-9]{6})','gmi');
+        let _tmp;
+        while ((_tmp = re.exec(_xsvg)) !== null) {
+          const _atmp = this._getRGB(_tmp[0]);
+          if (_atmp[0] !== _atmp[1] && _atmp[0] !== _atmp[2] && _atmp[1] !== _atmp[2]) {
+            _hasColor = true;
+          }
+          _results.push(_tmp[0]);
         }
-        _results.push(_tmp[0]);
+        _map_results = _results.map((_color) => {
+          return this.us.desaturateColor(_color);
+        }, this);
       }
-      let _map_results = _results.map((_color) => {
-        return this.us.desaturateColor(_color);
-      }, this);
       if(_hasColor && _results && _results.length != 0 && _map_results && _map_results.length != 0) {
         this._askForConversion({ original: _result, xsvg: _xsvg, results: _results, map: _map_results });
       } else {
-        this._base64File = this._sanitizer.bypassSecurityTrustUrl((_result.indexOf('base64,')!==-1?_result:UtilService.RootByTOA() + _result));
+        this._base64File = this._sanitizer.bypassSecurityTrustUrl(_result);
       }
     } else {
-      this._base64File = this._sanitizer.bypassSecurityTrustUrl((_result.indexOf('base64,')!==-1?_result:UtilService.RootByTOA() + _result));
+      this.__asyncLoadingLogo(_result);
     }
+  }
+
+  protected __asyncLoadingLogo(uri: string) {
+    this.gps.multiExportService([uri], ['application/*'], ['text']).subscribe(
+      (responses: any) => {
+        const bin: string = responses[0].body;
+        this._base64File = this._sanitizer.bypassSecurityTrustUrl(bin);
+      },
+      (error: any) => {
+        this._base64File = '';
+        console.log('Logo Error', error);
+      });
   }
 
   protected _getRGB(hexVal) {
