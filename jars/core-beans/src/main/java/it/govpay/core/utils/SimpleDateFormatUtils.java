@@ -2,6 +2,9 @@ package it.govpay.core.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -187,5 +190,25 @@ public class SimpleDateFormatUtils {
 		} finally {
 			
 		}
+	}
+	
+	public static LocalDate toLocalDate(Date dateToConvert) {
+		if(dateToConvert == null)
+			return null;
+		
+		Calendar c = Calendar.getInstance();
+		c.setTime(dateToConvert);
+		return LocalDate.of(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE));
+	}
+	
+	public static LocalDateTime toLocalDatetime(Date dateToConvert) {
+		if(dateToConvert == null)
+			return null;
+		
+		Calendar c = Calendar.getInstance();
+		c.setTime(dateToConvert);
+		LocalDate date = LocalDate.of(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE));
+        LocalTime time = LocalTime.of(c.get(Calendar.HOUR), c.get(Calendar.MINUTE), c.get(Calendar.SECOND), c.get(Calendar.MILLISECOND));
+		return LocalDateTime.of(date, time);
 	}
 }

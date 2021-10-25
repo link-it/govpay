@@ -477,7 +477,8 @@ paths:
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/idDominio'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/dataDa'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/dataA'
-        - $ref: 'govpay-api-parameters.yaml#/components/parameters/tipiRiscossione'   
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/statoRiscossione'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/tipiRiscossione'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/metadatiPaginazione'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/maxRisultati'
       responses:
@@ -569,7 +570,11 @@ components:
   schemas:
     NuovaRiconciliazione:
       allOf:
+        - $ref: '#/components/schemas/TipoRiferimentoNuovaRiconciliazione'
         - type: object
+          required:
+          - importo
+          - sct
           properties:
             importo:
               type: number
@@ -593,28 +598,18 @@ components:
               type: string
               description: Identificativo Sepa Credit Transfer
               example: 2017-01-01ABI00000011234
-        - oneOf:
-          - description: Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera.
-            type: object
-            required:
-              - causale
-            properties:
-              causale:
-                type: string
-                example: /PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234
-          - description: Identificativo univoco di versamento.
-            type: object
-            required:
-              - iuv
-            properties:
-              iuv:
-                type: string
-                example: RF23567483937849450550875
-          - description: Identificativo del flusso di rendicontazione.
-            type: object
-            required:
-              - idFlussoRendicontazione
-            properties:
-              idFlussoRendicontazione:
-                type: string
-                example: 2017-11-21GovPAYPsp1-10:27:27.903              
+    RiferimentoCausale:
+      description: Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera.
+      type: object
+      required:
+        - causale
+      properties:
+        causale:
+          type: string
+          example: /PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234  
+    TipoRiferimentoNuovaRiconciliazione:
+      type: object              
+      oneOf:
+        - $ref: '#/components/schemas/RiferimentoCausale'
+        - $ref: '#/components/schemas/RiferimentoIdentificativoUnivocoVersamento'
+        - $ref: '#/components/schemas/RiferimentoIdentificativoFlussoRendicontazione'

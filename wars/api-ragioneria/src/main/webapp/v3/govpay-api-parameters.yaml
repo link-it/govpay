@@ -155,6 +155,13 @@ components:
       required: false
       schema:
         $ref: 'govpay-api-schemas.yaml#/components/schemas/StatoFlussoRendicontazione'
+    statoRiscossione:
+      name: stato
+      in: query
+      description: Stato della riscossione
+      required: false
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/StatoRiscossione'
     tipiRiscossione:
       in: query
       name: tipo

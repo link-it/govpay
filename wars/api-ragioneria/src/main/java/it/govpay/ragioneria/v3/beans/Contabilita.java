@@ -1,84 +1,62 @@
 package it.govpay.ragioneria.v3.beans;
 
-
 import java.util.List;
-import java.util.Objects;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.govpay.core.beans.JSONSerializable;
-@com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"quote",
-"proprietaCustom",
-})
-public class Contabilita extends JSONSerializable {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public class Contabilita   {
   
-  @JsonProperty("quote")
+  @Schema(description = "")
   private List<QuotaContabilita> quote = null;
   
-  @JsonProperty("proprietaCustom")
+  @Schema(description = "Dati specifici del gestionale di contabilità")
+ /**
+   * Dati specifici del gestionale di contabilità  
+  **/
   private Object proprietaCustom = null;
-  
-  /**
-   **/
+ /**
+   * Get quote
+   * @return quote
+  **/
+  @JsonProperty("quote")
+  public List<QuotaContabilita> getQuote() {
+    return quote;
+  }
+
+  public void setQuote(List<QuotaContabilita> quote) {
+    this.quote = quote;
+  }
+
   public Contabilita quote(List<QuotaContabilita> quote) {
     this.quote = quote;
     return this;
   }
 
-  @JsonProperty("quote")
-  public List<QuotaContabilita> getQuote() {
-    return quote;
-  }
-  public void setQuote(List<QuotaContabilita> quote) {
-    this.quote = quote;
+  public Contabilita addQuoteItem(QuotaContabilita quoteItem) {
+    this.quote.add(quoteItem);
+    return this;
   }
 
-  /**
+ /**
    * Dati specifici del gestionale di contabilità
-   **/
+   * @return proprietaCustom
+  **/
+  @JsonProperty("proprietaCustom")
+  public Object getProprietaCustom() {
+    return proprietaCustom;
+  }
+
+  public void setProprietaCustom(Object proprietaCustom) {
+    this.proprietaCustom = proprietaCustom;
+  }
+
   public Contabilita proprietaCustom(Object proprietaCustom) {
     this.proprietaCustom = proprietaCustom;
     return this;
   }
 
-  @JsonProperty("proprietaCustom")
-  public Object getProprietaCustom() {
-    return proprietaCustom;
-  }
-  public void setProprietaCustom(Object proprietaCustom) {
-    this.proprietaCustom = proprietaCustom;
-  }
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Contabilita contabilita = (Contabilita) o;
-    return Objects.equals(quote, contabilita.quote) &&
-        Objects.equals(proprietaCustom, contabilita.proprietaCustom);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(quote, proprietaCustom);
-  }
-
-  public static Contabilita parse(String json) throws ServiceException, ValidationException {
-    return (Contabilita) parse(json, Contabilita.class);
-  }
-
-  @Override
-  public String getJsonIdFilter() {
-    return "contabilita";
-  }
 
   @Override
   public String toString() {
@@ -95,13 +73,10 @@ public class Contabilita extends JSONSerializable {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(java.lang.Object o) {
+  private static String toIndentedString(java.lang.Object o) {
     if (o == null) {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
   }
 }
-
-
-

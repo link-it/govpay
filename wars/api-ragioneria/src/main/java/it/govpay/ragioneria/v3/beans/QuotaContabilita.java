@@ -1,231 +1,234 @@
 package it.govpay.ragioneria.v3.beans;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.govpay.core.beans.JSONSerializable;
-@com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"capitolo",
-"annoEsercizio",
-"importo",
-"accertamento",
-"proprietaCustom",
-"titolo",
-"tipologia",
-"categoria",
-"articolo",
-})
-public class QuotaContabilita extends JSONSerializable {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public class QuotaContabilita   {
   
-  @JsonProperty("capitolo")
+  @Schema(example = "0101", required = true, description = "Codice del capitolo")
+ /**
+   * Codice del capitolo  
+  **/
   private String capitolo = null;
   
-  @JsonProperty("annoEsercizio")
+  @Schema(example = "2020", required = true, description = "Anno di esercizio")
+ /**
+   * Anno di esercizio  
+  **/
   private BigDecimal annoEsercizio = null;
   
-  @JsonProperty("importo")
+  @Schema(example = "10.01", required = true, description = "Importo della voce di contabilita'")
+ /**
+   * Importo della voce di contabilita'  
+  **/
   private BigDecimal importo = null;
   
-  @JsonProperty("accertamento")
+  @Schema(example = "22", description = "Codice dell’accertamento")
+ /**
+   * Codice dell’accertamento  
+  **/
   private String accertamento = null;
   
-  @JsonProperty("proprietaCustom")
+  @Schema(description = "Dati specifici del gestionale di contabilità")
+ /**
+   * Dati specifici del gestionale di contabilità  
+  **/
   private Object proprietaCustom = null;
   
-  @JsonProperty("titolo")
+  @Schema(example = "titolo", description = "Classificazione delle entrate in bilancio")
+ /**
+   * Classificazione delle entrate in bilancio  
+  **/
   private String titolo = null;
   
-  @JsonProperty("tipologia")
+  @Schema(example = "tipologia", description = "Classificazione delle entrate in bilancio")
+ /**
+   * Classificazione delle entrate in bilancio  
+  **/
   private String tipologia = null;
   
-  @JsonProperty("categoria")
+  @Schema(example = "categoria", description = "Classificazione delle entrate in bilancio")
+ /**
+   * Classificazione delle entrate in bilancio  
+  **/
   private String categoria = null;
   
-  @JsonProperty("articolo")
+  @Schema(example = "articolo", description = "Classificazione delle entrate in bilancio")
+ /**
+   * Classificazione delle entrate in bilancio  
+  **/
   private String articolo = null;
-  
-  /**
+ /**
    * Codice del capitolo
-   **/
+   * @return capitolo
+  **/
+  @JsonProperty("capitolo")
+  @NotNull
+ @Size(max=64)  public String getCapitolo() {
+    return capitolo;
+  }
+
+  public void setCapitolo(String capitolo) {
+    this.capitolo = capitolo;
+  }
+
   public QuotaContabilita capitolo(String capitolo) {
     this.capitolo = capitolo;
     return this;
   }
 
-  @JsonProperty("capitolo")
-  public String getCapitolo() {
-    return capitolo;
-  }
-  public void setCapitolo(String capitolo) {
-    this.capitolo = capitolo;
+ /**
+   * Anno di esercizio
+   * @return annoEsercizio
+  **/
+  @JsonProperty("annoEsercizio")
+  @NotNull
+  public BigDecimal getAnnoEsercizio() {
+    return annoEsercizio;
   }
 
-  /**
-   * Anno di esercizio
-   **/
+  public void setAnnoEsercizio(BigDecimal annoEsercizio) {
+    this.annoEsercizio = annoEsercizio;
+  }
+
   public QuotaContabilita annoEsercizio(BigDecimal annoEsercizio) {
     this.annoEsercizio = annoEsercizio;
     return this;
   }
 
-  @JsonProperty("annoEsercizio")
-  public BigDecimal getAnnoEsercizio() {
-    return annoEsercizio;
-  }
-  public void setAnnoEsercizio(BigDecimal annoEsercizio) {
-    this.annoEsercizio = annoEsercizio;
+ /**
+   * Importo della voce di contabilita&#x27;
+   * @return importo
+  **/
+  @JsonProperty("importo")
+  @NotNull
+  public BigDecimal getImporto() {
+    return importo;
   }
 
-  /**
-   * Importo della voce di contabilita'
-   **/
+  public void setImporto(BigDecimal importo) {
+    this.importo = importo;
+  }
+
   public QuotaContabilita importo(BigDecimal importo) {
     this.importo = importo;
     return this;
   }
 
-  @JsonProperty("importo")
-  public BigDecimal getImporto() {
-    return importo;
-  }
-  public void setImporto(BigDecimal importo) {
-    this.importo = importo;
+ /**
+   * Codice dell’accertamento
+   * @return accertamento
+  **/
+  @JsonProperty("accertamento")
+ @Size(max=64)  public String getAccertamento() {
+    return accertamento;
   }
 
-  /**
-   * Codice dell’accertamento
-   **/
+  public void setAccertamento(String accertamento) {
+    this.accertamento = accertamento;
+  }
+
   public QuotaContabilita accertamento(String accertamento) {
     this.accertamento = accertamento;
     return this;
   }
 
-  @JsonProperty("accertamento")
-  public String getAccertamento() {
-    return accertamento;
-  }
-  public void setAccertamento(String accertamento) {
-    this.accertamento = accertamento;
+ /**
+   * Dati specifici del gestionale di contabilità
+   * @return proprietaCustom
+  **/
+  @JsonProperty("proprietaCustom")
+  public Object getProprietaCustom() {
+    return proprietaCustom;
   }
 
-  /**
-   * Dati specifici del gestionale di contabilità
-   **/
+  public void setProprietaCustom(Object proprietaCustom) {
+    this.proprietaCustom = proprietaCustom;
+  }
+
   public QuotaContabilita proprietaCustom(Object proprietaCustom) {
     this.proprietaCustom = proprietaCustom;
     return this;
   }
 
-  @JsonProperty("proprietaCustom")
-  public Object getProprietaCustom() {
-    return proprietaCustom;
-  }
-  public void setProprietaCustom(Object proprietaCustom) {
-    this.proprietaCustom = proprietaCustom;
+ /**
+   * Classificazione delle entrate in bilancio
+   * @return titolo
+  **/
+  @JsonProperty("titolo")
+ @Size(max=64)  public String getTitolo() {
+    return titolo;
   }
 
-  /**
-   * Classificazione delle entrate in bilancio
-   **/
+  public void setTitolo(String titolo) {
+    this.titolo = titolo;
+  }
+
   public QuotaContabilita titolo(String titolo) {
     this.titolo = titolo;
     return this;
   }
 
-  @JsonProperty("titolo")
-  public String getTitolo() {
-    return titolo;
-  }
-  public void setTitolo(String titolo) {
-    this.titolo = titolo;
+ /**
+   * Classificazione delle entrate in bilancio
+   * @return tipologia
+  **/
+  @JsonProperty("tipologia")
+ @Size(max=64)  public String getTipologia() {
+    return tipologia;
   }
 
-  /**
-   * Classificazione delle entrate in bilancio
-   **/
+  public void setTipologia(String tipologia) {
+    this.tipologia = tipologia;
+  }
+
   public QuotaContabilita tipologia(String tipologia) {
     this.tipologia = tipologia;
     return this;
   }
 
-  @JsonProperty("tipologia")
-  public String getTipologia() {
-    return tipologia;
-  }
-  public void setTipologia(String tipologia) {
-    this.tipologia = tipologia;
+ /**
+   * Classificazione delle entrate in bilancio
+   * @return categoria
+  **/
+  @JsonProperty("categoria")
+ @Size(max=64)  public String getCategoria() {
+    return categoria;
   }
 
-  /**
-   * Classificazione delle entrate in bilancio
-   **/
+  public void setCategoria(String categoria) {
+    this.categoria = categoria;
+  }
+
   public QuotaContabilita categoria(String categoria) {
     this.categoria = categoria;
     return this;
   }
 
-  @JsonProperty("categoria")
-  public String getCategoria() {
-    return categoria;
-  }
-  public void setCategoria(String categoria) {
-    this.categoria = categoria;
+ /**
+   * Classificazione delle entrate in bilancio
+   * @return articolo
+  **/
+  @JsonProperty("articolo")
+ @Size(max=64)  public String getArticolo() {
+    return articolo;
   }
 
-  /**
-   * Classificazione delle entrate in bilancio
-   **/
+  public void setArticolo(String articolo) {
+    this.articolo = articolo;
+  }
+
   public QuotaContabilita articolo(String articolo) {
     this.articolo = articolo;
     return this;
   }
 
-  @JsonProperty("articolo")
-  public String getArticolo() {
-    return articolo;
-  }
-  public void setArticolo(String articolo) {
-    this.articolo = articolo;
-  }
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    QuotaContabilita quotaContabilita = (QuotaContabilita) o;
-    return Objects.equals(capitolo, quotaContabilita.capitolo) &&
-        Objects.equals(annoEsercizio, quotaContabilita.annoEsercizio) &&
-        Objects.equals(importo, quotaContabilita.importo) &&
-        Objects.equals(accertamento, quotaContabilita.accertamento) &&
-        Objects.equals(proprietaCustom, quotaContabilita.proprietaCustom) &&
-        Objects.equals(titolo, quotaContabilita.titolo) &&
-        Objects.equals(tipologia, quotaContabilita.tipologia) &&
-        Objects.equals(categoria, quotaContabilita.categoria) &&
-        Objects.equals(articolo, quotaContabilita.articolo);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(capitolo, annoEsercizio, importo, accertamento, proprietaCustom, titolo, tipologia, categoria, articolo);
-  }
-
-  public static QuotaContabilita parse(String json) throws ServiceException, ValidationException {
-    return (QuotaContabilita) parse(json, QuotaContabilita.class);
-  }
-
-  @Override
-  public String getJsonIdFilter() {
-    return "quotaContabilita";
-  }
 
   @Override
   public String toString() {
@@ -249,13 +252,10 @@ public class QuotaContabilita extends JSONSerializable {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(java.lang.Object o) {
+  private static String toIndentedString(java.lang.Object o) {
     if (o == null) {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
   }
 }
-
-
-

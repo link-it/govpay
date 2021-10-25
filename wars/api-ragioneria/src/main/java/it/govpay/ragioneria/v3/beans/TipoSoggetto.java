@@ -1,27 +1,15 @@
 package it.govpay.ragioneria.v3.beans;
 
-/**
- * tipologia di soggetto, se persona fisica (F) o giuridica (G)
- **/
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-
 
 /**
  * tipologia di soggetto, se persona fisica (F) o giuridica (G)
  */
 public enum TipoSoggetto {
-  
-  
-  
-  
   G("G"),
   
-  
   F("F");
-  
-  
-  
 
   private String value;
 
@@ -44,7 +32,5 @@ public enum TipoSoggetto {
     }
     return null;
   }
+  
 }
-
-
-

@@ -1,30 +1,17 @@
 package it.govpay.ragioneria.v3.beans;
 
-/**
- * Stato del flusso di rendicontazione
- **/
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-
 
 /**
  * Stato del flusso di rendicontazione
  */
 public enum StatoFlussoRendicontazione {
-  
-  
-  
-  
   ACQUISITO("Acquisito"),
-  
   
   ANOMALO("Anomalo"),
   
-  
   RIFIUTATO("Rifiutato");
-  
-  
-  
 
   private String value;
 
@@ -47,7 +34,5 @@ public enum StatoFlussoRendicontazione {
     }
     return null;
   }
+  
 }
-
-
-

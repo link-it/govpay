@@ -1,21 +1,66 @@
 package it.govpay.ragioneria.v3.beans;
 
-
 import java.net.URI;
 import java.util.List;
 
-import it.govpay.core.beans.Lista;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class FlussiRendicontazione extends Lista<FlussoRendicontazioneIndex> {
-	
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public class FlussiRendicontazione extends Lista  {
+
 	public FlussiRendicontazione() {
 		super();
 	}
 	
-	public FlussiRendicontazione(List<FlussoRendicontazioneIndex> flussiRendicontazione, URI requestUri, Long count, Integer pagina, Integer limit) {
-		super(flussiRendicontazione, requestUri, count, pagina, limit);
+	public FlussiRendicontazione(URI requestUri, Long count, Integer pagina, Integer limit) {
+		super(requestUri, count, pagina, limit);
 	}
+  
+  @Schema(description = "")
+  private List<FlussoRendicontazioneIndex> risultati = null;
+ /**
+   * Get risultati
+   * @return risultati
+  **/
+  @JsonProperty("risultati")
+  public List<FlussoRendicontazioneIndex> getRisultati() {
+    return risultati;
+  }
+
+  public void setRisultati(List<FlussoRendicontazioneIndex> risultati) {
+    this.risultati = risultati;
+  }
+
+  public FlussiRendicontazione risultati(List<FlussoRendicontazioneIndex> risultati) {
+    this.risultati = risultati;
+    return this;
+  }
+
+  public FlussiRendicontazione addRisultatiItem(FlussoRendicontazioneIndex risultatiItem) {
+    this.risultati.add(risultatiItem);
+    return this;
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class FlussiRendicontazione {\n");
+    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    sb.append("    risultati: ").append(toIndentedString(risultati)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private static String toIndentedString(java.lang.Object o) {
+    if (o == null) {
+      return "null";
+    }
+    return o.toString().replace("\n", "\n    ");
+  }
 }
-
-
-

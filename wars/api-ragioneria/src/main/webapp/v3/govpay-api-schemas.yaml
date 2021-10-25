@@ -74,6 +74,7 @@ components:
           description: Dati specifici del gestionale di contabilità  
     Documento:
       allOf:
+        - $ref: "#/components/schemas/TipoRiferimentoDocumento"
         - type: object
           required:
             - identificativo
@@ -91,7 +92,6 @@ components:
               example: Sanzione CdS n. abc00000
               minLength: 1
               maxLength: 80 
-        - $ref: "#/components/schemas/TipoRiferimentoDocumento"          
     Dominio:
       type: object
       required:
@@ -139,7 +139,7 @@ components:
             risultati:
               type: array
               items: 
-                $ref: '#/components/schemas/FlussoRendicontazioneIndex'                 
+                $ref: '#/components/schemas/FlussoRendicontazioneIndex'
     FlussoRendicontazione:
       type: object
       allOf:
@@ -244,6 +244,10 @@ components:
           type: string
           format: integer
           example: '/risorsa?pagina=2'
+        maxRisultati:
+          type: number
+          format: integer
+          example: '100'
     Pagina:
       type: integer
       default: 1
@@ -628,6 +632,7 @@ components:
     RiconciliazioneIndex:
       type: object
       allOf:
+        - $ref: '#/components/schemas/TipoRiferimentoRiconciliazione'
         - type: object
           required:
             - id
@@ -680,23 +685,6 @@ components:
             causale:
               type: string
               description: Causale bancaria dell'SCT di riversamento fondi dal PSP al conto di accredito.
-        - oneOf:
-          - description: Identificativo univoco di versamento.
-            type: object
-            required:
-              - iuv
-            properties:
-              iuv:
-                type: string
-                example: RF23567483937849450550875
-          - description: Identificativo del flusso di rendicontazione.
-            type: object
-            required:
-              - idFlussoRendicontazione
-            properties:
-              idFlussoRendicontazione:
-                type: string
-                example: 2020-11-21GovPAYPsp-1234567890
     Riconciliazioni:
       type: object
       allOf:
@@ -716,7 +704,25 @@ components:
         codEntrata:
           type: string
           example: SRV-12345  
-          pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'                
+          pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
+    RiferimentoIdentificativoFlussoRendicontazione:
+      description: Identificativo del flusso di rendicontazione.
+      type: object
+      required:
+        - idFlussoRendicontazione
+      properties:
+        idFlussoRendicontazione:
+          type: string
+          example: 2017-11-21GovPAYPsp1-10:27:27.903
+    RiferimentoIdentificativoUnivocoVersamento:
+      description: Identificativo univoco di versamento.
+      type: object
+      required:
+        - iuv
+      properties:
+        iuv:
+          type: string
+          example: RF23567483937849450550875
     Riscossione:          
       type: object
       required:
@@ -747,6 +753,8 @@ components:
           type: number
           description: indice posizionale della voce pendenza riscossa
           example: 1
+        stato:
+          $ref: '#/components/schemas/StatoRiscossione'
         tipo:
           $ref: '#/components/schemas/TipoRiscossione'
         importo:
@@ -875,6 +883,13 @@ components:
         - IN_ELABORAZIONE
         - ACQUISITA
         - ERRORE
+    StatoRiscossione:
+      description: Stato della riscossione
+      example: RISCOSSA
+      type: string
+      enum:
+        - RISCOSSA
+        - INCASSATA
     TipoAutorizzazione:
       type: array
       items:
@@ -902,6 +917,11 @@ components:
       oneOf:
         - $ref: "#/components/schemas/RataDocumento"
         - $ref: "#/components/schemas/VincoloDocumento"    
+    TipoRiferimentoRiconciliazione:
+      type: object              
+      oneOf:
+        - $ref: '#/components/schemas/RiferimentoIdentificativoUnivocoVersamento'
+        - $ref: '#/components/schemas/RiferimentoIdentificativoFlussoRendicontazione'
     TipoRiferimentoVocePendenza:
       type: object              
       oneOf:

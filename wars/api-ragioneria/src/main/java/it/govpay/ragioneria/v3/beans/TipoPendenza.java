@@ -1,81 +1,56 @@
 package it.govpay.ragioneria.v3.beans;
 
-import java.util.Objects;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.govpay.core.beans.JSONSerializable;
-@com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"idTipoPendenza",
-"descrizione",
-})
-public class TipoPendenza extends JSONSerializable {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public class TipoPendenza   {
   
-  @JsonProperty("idTipoPendenza")
+  @Schema(example = "REFNIDO", required = true, description = "")
   private String idTipoPendenza = null;
   
-  @JsonProperty("descrizione")
+  @Schema(example = "Refezione scolastica Asilo Nido", required = true, description = "")
   private String descrizione = null;
-  
-  /**
-   **/
+ /**
+   * Get idTipoPendenza
+   * @return idTipoPendenza
+  **/
+  @JsonProperty("idTipoPendenza")
+  @NotNull
+  public String getIdTipoPendenza() {
+    return idTipoPendenza;
+  }
+
+  public void setIdTipoPendenza(String idTipoPendenza) {
+    this.idTipoPendenza = idTipoPendenza;
+  }
+
   public TipoPendenza idTipoPendenza(String idTipoPendenza) {
     this.idTipoPendenza = idTipoPendenza;
     return this;
   }
 
-  @JsonProperty("idTipoPendenza")
-  public String getIdTipoPendenza() {
-    return idTipoPendenza;
-  }
-  public void setIdTipoPendenza(String idTipoPendenza) {
-    this.idTipoPendenza = idTipoPendenza;
+ /**
+   * Get descrizione
+   * @return descrizione
+  **/
+  @JsonProperty("descrizione")
+  @NotNull
+  public String getDescrizione() {
+    return descrizione;
   }
 
-  /**
-   **/
+  public void setDescrizione(String descrizione) {
+    this.descrizione = descrizione;
+  }
+
   public TipoPendenza descrizione(String descrizione) {
     this.descrizione = descrizione;
     return this;
   }
 
-  @JsonProperty("descrizione")
-  public String getDescrizione() {
-    return descrizione;
-  }
-  public void setDescrizione(String descrizione) {
-    this.descrizione = descrizione;
-  }
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    TipoPendenza tipoPendenza = (TipoPendenza) o;
-    return Objects.equals(idTipoPendenza, tipoPendenza.idTipoPendenza) &&
-        Objects.equals(descrizione, tipoPendenza.descrizione);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(idTipoPendenza, descrizione);
-  }
-
-  public static TipoPendenza parse(String json) throws ServiceException, ValidationException {
-    return (TipoPendenza) parse(json, TipoPendenza.class);
-  }
-
-  @Override
-  public String getJsonIdFilter() {
-    return "tipoPendenza";
-  }
 
   @Override
   public String toString() {
@@ -92,13 +67,10 @@ public class TipoPendenza extends JSONSerializable {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(java.lang.Object o) {
+  private static String toIndentedString(java.lang.Object o) {
     if (o == null) {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
   }
 }
-
-
-

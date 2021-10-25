@@ -33,7 +33,7 @@ Then status 202
 * def riconciliazioneLocation = responseHeaders['Location'][0]
 
 # Attesa batch elaborazione rendicontazioni
-* call sleep(5000)
+* call sleep(10000)
 
 Given url ragioneriaBaseurl
 And path riconciliazioneLocation
@@ -66,7 +66,7 @@ Then status 202
 * def riconciliazioneLocation = responseHeaders['Location'][0]
 
 # Attesa batch elaborazione rendicontazioni
-* call sleep(5000)
+* call sleep(10000)
 
 Given url ragioneriaBaseurl
 And path riconciliazioneLocation
@@ -110,7 +110,7 @@ Then status 202
 * def riconciliazioneLocation = responseHeaders['Location'][0]
 
 # Attesa batch elaborazione rendicontazioni
-* call sleep(5000)
+* call sleep(10000)
 
 Given url ragioneriaBaseurl
 And path riconciliazioneLocation
@@ -144,7 +144,7 @@ Then status 202
 * def riconciliazioneLocation = responseHeaders['Location'][0]
 
 # Attesa batch elaborazione rendicontazioni
-* call sleep(5000)
+* call sleep(10000)
 
 Given url ragioneriaBaseurl
 And path riconciliazioneLocation
@@ -189,7 +189,7 @@ Then status 202
 * def riconciliazioneLocation = responseHeaders['Location'][0]
 
 # Attesa batch elaborazione rendicontazioni
-* call sleep(5000)
+* call sleep(10000)
 
 Given url ragioneriaBaseurl
 And path riconciliazioneLocation
