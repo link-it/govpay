@@ -1,10 +1,12 @@
 package it.govpay.ragioneria.v3.beans;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,8 +28,20 @@ public class Ricevuta   {
   **/
   private String idRicevuta = null;
   
-  @Schema(description = "")
-  private RicevutaAttestante attestante = null;
+  @Schema(example = "10.01", required = true, description = "Importo della transazione di pagamento.")
+ /**
+   * Importo della transazione di pagamento.  
+  **/
+  private BigDecimal importo = null;
+  
+  @Schema(example = "PAGAMENTO_ESEGUITO", required = true, description = "Stato della richiesta di pagamento sulla piattaforma PagoPA.")
+ /**
+   * Stato della richiesta di pagamento sulla piattaforma PagoPA.  
+  **/
+  private String stato = null;
+  
+  @Schema(required = true, description = "")
+  private RicevutaIstitutoAttestante istitutoAttestante = null;
   
   @Schema(description = "")
   private Soggetto versante = null;
@@ -50,10 +64,10 @@ public class Ricevuta   {
   **/
   private Date dataPagamento = null;
   
-  @Schema(description = "")
+  @Schema(required = true, description = "")
   private RicevutaRpt rpt = null;
   
-  @Schema(description = "")
+  @Schema(required = true, description = "")
   private RicevutaRt rt = null;
  /**
    * Get dominio
@@ -113,20 +127,59 @@ public class Ricevuta   {
   }
 
  /**
-   * Get attestante
-   * @return attestante
+   * Importo della transazione di pagamento.
+   * @return importo
   **/
-  @JsonProperty("attestante")
-  public RicevutaAttestante getAttestante() {
-    return attestante;
+  @JsonProperty("importo")
+  @NotNull
+  public BigDecimal getImporto() {
+    return importo;
   }
 
-  public void setAttestante(RicevutaAttestante attestante) {
-    this.attestante = attestante;
+  public void setImporto(BigDecimal importo) {
+    this.importo = importo;
   }
 
-  public Ricevuta attestante(RicevutaAttestante attestante) {
-    this.attestante = attestante;
+  public Ricevuta importo(BigDecimal importo) {
+    this.importo = importo;
+    return this;
+  }
+
+ /**
+   * Stato della richiesta di pagamento sulla piattaforma PagoPA.
+   * @return stato
+  **/
+  @JsonProperty("stato")
+  @NotNull
+  public String getStato() {
+    return stato;
+  }
+
+  public void setStato(String stato) {
+    this.stato = stato;
+  }
+
+  public Ricevuta stato(String stato) {
+    this.stato = stato;
+    return this;
+  }
+
+ /**
+   * Get istitutoAttestante
+   * @return istitutoAttestante
+  **/
+  @JsonProperty("istitutoAttestante")
+  @NotNull
+  public RicevutaIstitutoAttestante getIstitutoAttestante() {
+    return istitutoAttestante;
+  }
+
+  public void setIstitutoAttestante(RicevutaIstitutoAttestante istitutoAttestante) {
+    this.istitutoAttestante = istitutoAttestante;
+  }
+
+  public Ricevuta istitutoAttestante(RicevutaIstitutoAttestante istitutoAttestante) {
+    this.istitutoAttestante = istitutoAttestante;
     return this;
   }
 
@@ -194,6 +247,7 @@ public class Ricevuta   {
    * @return data
   **/
   @JsonProperty("data")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
   public Date getData() {
     return data;
   }
@@ -212,6 +266,7 @@ public class Ricevuta   {
    * @return dataPagamento
   **/
   @JsonProperty("dataPagamento")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
   public Date getDataPagamento() {
     return dataPagamento;
   }
@@ -230,6 +285,7 @@ public class Ricevuta   {
    * @return rpt
   **/
   @JsonProperty("rpt")
+  @NotNull
   public RicevutaRpt getRpt() {
     return rpt;
   }
@@ -248,6 +304,7 @@ public class Ricevuta   {
    * @return rt
   **/
   @JsonProperty("rt")
+  @NotNull
   public RicevutaRt getRt() {
     return rt;
   }
@@ -270,7 +327,9 @@ public class Ricevuta   {
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    idRicevuta: ").append(toIndentedString(idRicevuta)).append("\n");
-    sb.append("    attestante: ").append(toIndentedString(attestante)).append("\n");
+    sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    istitutoAttestante: ").append(toIndentedString(istitutoAttestante)).append("\n");
     sb.append("    versante: ").append(toIndentedString(versante)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
     sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");

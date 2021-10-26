@@ -29,6 +29,12 @@ public class RicevuteRisultati   {
    * Data di acquisizione della ricevuta  
   **/
   private Date data = null;
+  
+  @Schema(example = "PAGAMENTO_ESEGUITO", description = "Stato della richiesta di pagamento sulla piattaforma PagoPA.")
+ /**
+   * Stato della richiesta di pagamento sulla piattaforma PagoPA.  
+  **/
+  private String stato = null;
  /**
    * Get dominio
    * @return dominio
@@ -102,6 +108,24 @@ public class RicevuteRisultati   {
     return this;
   }
 
+ /**
+   * Stato della richiesta di pagamento sulla piattaforma PagoPA.
+   * @return stato
+  **/
+  @JsonProperty("stato")
+  public String getStato() {
+    return stato;
+  }
+
+  public void setStato(String stato) {
+    this.stato = stato;
+  }
+
+  public RicevuteRisultati stato(String stato) {
+    this.stato = stato;
+    return this;
+  }
+
 
   @Override
   public String toString() {
@@ -112,6 +136,7 @@ public class RicevuteRisultati   {
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    idRicevuta: ").append(toIndentedString(idRicevuta)).append("\n");
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

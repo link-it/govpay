@@ -85,7 +85,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 //						esitoPagamento = EsitoPagamento.DECORRENZA_TERMINI;
 //						break;
 //					case ESEGUITO:
-						esitoPagamento = EsitoPagamento.PAGAMENTO_ESEGUITO;
+//						esitoPagamento = EsitoPagamento.PAGAMENTO_ESEGUITO;
 //						break;
 //					case ESEGUITO_PARZIALE:
 //						esitoPagamento = EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO;

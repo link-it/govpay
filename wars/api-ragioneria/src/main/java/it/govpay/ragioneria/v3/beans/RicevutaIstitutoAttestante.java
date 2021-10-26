@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   * PSP che ha gestito la transazione di pagamento ed emesso la ricevuta
  **/
 @Schema(description="PSP che ha gestito la transazione di pagamento ed emesso la ricevuta")
-public class RicevutaAttestante   {
+public class RicevutaIstitutoAttestante   {
   
   @Schema(description = "Identificativo del PSP assegnato da pagoPA")
  /**
@@ -46,7 +46,7 @@ public class RicevutaAttestante   {
     this.idPSP = idPSP;
   }
 
-  public RicevutaAttestante idPSP(String idPSP) {
+  public RicevutaIstitutoAttestante idPSP(String idPSP) {
     this.idPSP = idPSP;
     return this;
   }
@@ -64,7 +64,7 @@ public class RicevutaAttestante   {
     this.denominazione = denominazione;
   }
 
-  public RicevutaAttestante denominazione(String denominazione) {
+  public RicevutaIstitutoAttestante denominazione(String denominazione) {
     this.denominazione = denominazione;
     return this;
   }
@@ -82,7 +82,7 @@ public class RicevutaAttestante   {
     this.idCanale = idCanale;
   }
 
-  public RicevutaAttestante idCanale(String idCanale) {
+  public RicevutaIstitutoAttestante idCanale(String idCanale) {
     this.idCanale = idCanale;
     return this;
   }
@@ -100,7 +100,7 @@ public class RicevutaAttestante   {
     this.descrizione = descrizione;
   }
 
-  public RicevutaAttestante descrizione(String descrizione) {
+  public RicevutaIstitutoAttestante descrizione(String descrizione) {
     this.descrizione = descrizione;
     return this;
   }
@@ -109,7 +109,7 @@ public class RicevutaAttestante   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class RicevutaAttestante {\n");
+    sb.append("class RicevutaIstitutoAttestante {\n");
     
     sb.append("    idPSP: ").append(toIndentedString(idPSP)).append("\n");
     sb.append("    denominazione: ").append(toIndentedString(denominazione)).append("\n");

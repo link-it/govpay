@@ -385,7 +385,7 @@ components:
         linguaSecondariaCausale:
           type: string
           description: >-
-              causale della pendenza nella lingua secondaria da inserire nell'avviso                  
+              causale della pendenza nella lingua secondaria da inserire nell'avviso  
     QuotaContabilita:
       type: object
       required:
@@ -507,9 +507,11 @@ components:
         - iuv
         - idRicevuta
         - importo
+        - stato
         - soggettoPagatore
         - istitutoAttestante
-        - raw
+        - rpt
+        - rt
       properties:
         dominio:
           $ref: '#/components/schemas/Dominio'
@@ -521,7 +523,15 @@ components:
           type: string
           description: Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento
           example: ab12345 
-        attestante:
+        importo:
+          type: number
+          description: Importo della transazione di pagamento. 
+          example: 10.01
+        stato:
+          type: string
+          description: Stato della richiesta di pagamento sulla piattaforma PagoPA.
+          example: PAGAMENTO_ESEGUITO
+        istitutoAttestante:
           type: object
           description: PSP che ha gestito la transazione di pagamento ed emesso la ricevuta
           properties:
@@ -618,7 +628,11 @@ components:
                     type: string
                     format: date-time
                     description: Data di acquisizione della ricevuta
-                    example: '2020-12-31' 
+                    example: '2020-12-31'
+                  stato:
+                    type: string
+                    description: Stato della richiesta di pagamento sulla piattaforma PagoPA.
+                    example: PAGAMENTO_ESEGUITO
     Riconciliazione:
       type: object
       allOf:
