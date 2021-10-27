@@ -360,7 +360,7 @@ public class RrUtils extends NdpValidationUtils {
 			PagamentiBD pagamentiBD = new PagamentiBD(rrBD);
 			VersamentiBD versamentiBD = new VersamentiBD(rrBD);
 			
-			Versamento v = pagamenti.get(0).getSingoloVersamento(rrBD).getVersamento(rrBD);
+			Versamento v = pagamenti.get(0).getSingoloVersamento(rrBD).getVersamentoBD(rrBD);
 			if(rr.getImportoTotaleRevocato().compareTo(BigDecimal.ZERO) == 0) {
 				
 			} else {

@@ -13,6 +13,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.bd.model.Versamento;
 import it.govpay.ragioneria.v3.beans.Pendenza;
 import it.govpay.ragioneria.v3.beans.Soggetto;
 import it.govpay.ragioneria.v3.beans.TipoSoggetto;
@@ -61,17 +62,26 @@ public class PendenzeConverter {
 
 	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice) throws ServiceException, IOException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		return toRsModelVocePendenza(singoloVersamento, indice, singoloVersamento.getVersamento(configWrapper));
+	}
+
+	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice, Versamento versamento) throws ServiceException, IOException, ValidationException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		VocePendenza rsModel = new VocePendenza();
 		
 		if(singoloVersamento.getDatiAllegati() != null)
 			rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));
 		rsModel.setDescrizione(singoloVersamento.getDescrizione());
 		rsModel.setDescrizioneCausaleRPT(singoloVersamento.getDescrizioneCausaleRPT());
-		rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getVersamento(null).getDominio(configWrapper)));
+		
+		if(singoloVersamento.getDominio(configWrapper) != null) {
+			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
+		}
+		
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
 //		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
 //		rsModel.setIndice(new BigDecimal(indice));
-		rsModel.setPendenza(toRsModel(singoloVersamento.getVersamento(null)));
+		rsModel.setPendenza(toRsModel(versamento));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
 		return rsModel;
 	}

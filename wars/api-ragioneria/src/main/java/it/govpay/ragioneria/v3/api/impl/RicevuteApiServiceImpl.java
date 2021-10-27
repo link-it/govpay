@@ -10,17 +10,25 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.IdUnitaOperativa;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.RptDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -44,6 +52,7 @@ import it.govpay.ragioneria.v3.beans.converter.RicevuteConverter;
  */
 public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements RicevuteApi {
     
+	
 	public RicevuteApiServiceImpl() {
 		super("ricevute", RicevuteApiServiceImpl.class);
 	}
@@ -59,7 +68,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
 
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
@@ -94,7 +103,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 //						esitoPagamento = EsitoPagamento.IN_CORSO;
 //						break;
 //					case NON_ESEGUITO:
-//						esitoPagamento = EsitoPagamento.PAGAMENTO_NON_ESEGUITO;
+//						esitoPagamento = EsitoPagamento.PAGAMENTO_NON_ESEGUITO; 
 //						break;
 //					case RIFIUTATO:
 //						esitoPagamento = EsitoPagamento.RIFIUTATO;
@@ -188,7 +197,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 
 		try{
 			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PENDENZE), Arrays.asList(Diritti.LETTURA));
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
@@ -198,23 +207,15 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 			leggiRptDTO.setIuv(iuv);
 			idRicevuta = idRicevuta.contains("%") ? URLDecoder.decode(idRicevuta,"UTF-8") : idRicevuta;
 			leggiRptDTO.setCcp(idRicevuta);
-			
-			// controllo che il dominio sia autorizzato
-			if(!AuthorizationManager.isDominioAuthorized(leggiRptDTO.getUser(), idDominio)) {
-				throw AuthorizationManager.toNotAuthorizedException(leggiRptDTO.getUser(),idDominio, null);
-			}
 
 			RptDAO ricevuteDAO = new RptDAO(); 
 
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
+			
+			checkAutorizzazioniUtenza(leggiRptDTO.getUser(), leggiRptDTOResponse.getRpt());
 
 			Ricevuta response =  RicevuteConverter.toRsModel(leggiRptDTOResponse.getRpt());
 			
-			// controllo che il dominio sia autorizzato
-			if(!AuthorizationManager.isDominioAuthorized(user, leggiRptDTOResponse.getDominio().getCodDominio())) {
-				throw AuthorizationManager.toNotAuthorizedException(user, leggiRptDTOResponse.getDominio().getCodDominio(), null);
-			}
-
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -223,5 +224,20 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 		}
     }
     
+    private void checkAutorizzazioniUtenza(Authentication user, Rpt rpt) throws ServiceException, NotFoundException, NotAuthorizedException {
+		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(user);
+		
+		// se sei una applicazione allora vedi i pagamenti che hai caricato
+		if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
+			
+			Versamento versamento = rpt.getVersamento();
+			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+			
+			if(versamento.getApplicazione(configWrapper) == null || 
+					!versamento.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
+				throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce una pendenza che non appartiene all'applicazione chiamante");
+			}
+		}
+	}
 }
 

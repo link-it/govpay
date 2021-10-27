@@ -48,7 +48,7 @@ public class Rendicontazione extends it.govpay.model.Rendicontazione {
 	public Versamento getVersamento(BasicBD bd) throws ServiceException {
 		if(this.versamento == null) {
 			if(this.getPagamento(bd) != null)
-				this.versamento = this.getPagamento(bd).getSingoloVersamento(bd).getVersamento(bd);
+				this.versamento = this.getPagamento(bd).getSingoloVersamento(bd).getVersamentoBD(bd);
 		}
 		return this.versamento;
 	}

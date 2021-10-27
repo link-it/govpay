@@ -10,8 +10,6 @@ import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
-import org.openspcoop2.utils.serialization.SerializationFactory;
-import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.DeserializationConfig;
