@@ -19,10 +19,7 @@
 	"importo":"#? isImportoConDueDecimali(_)",
 	"data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
 	"vocePendenza": {
-		"dominio" : {
-			"idDominio" : "##string",
-			"ragioneSociale" : "##string"
-		},
+		"dominio" : "##object",
 		"idVocePendenza":"#string",
 		"descrizione" : "##string",
 		"datiAllegati": "##object",

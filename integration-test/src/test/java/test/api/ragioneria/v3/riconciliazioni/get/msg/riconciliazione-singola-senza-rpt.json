@@ -13,17 +13,19 @@
    "causale":"#(causale)",
    "riscossioni":[
       {
+      	"dominio" : {
+				"idDominio" : "#(idDominio)",
+				"ragioneSociale" : "#string"
+			},
       	 "iuv":"#(iuv)",
       	 "iur":"#notnull",
       	 "indice":1,
       	 "tipo":"ENTRATA",
+      	 "stato": "INCASSATA",
       	 "importo":"#? isImportoConDueDecimali(_)",
       	 "data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
          "vocePendenza": {
-         	"dominio" : {
-				"idDominio" : "#(idDominio)",
-				"ragioneSociale" : "##string"
-			},
+         	"dominio" : "##object",
 			"idVocePendenza":"1",
 			"descrizione": "##string",
 			"datiAllegati": "##object",
