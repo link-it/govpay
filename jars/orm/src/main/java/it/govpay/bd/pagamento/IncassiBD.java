@@ -320,7 +320,7 @@ public class IncassiBD extends BasicBD {
 						for(Pagamento pagamento: pagamenti) {
 							pagamento.getDominio(configWrapper);
 							SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(this);
-							Versamento versamento = singoloVersamento.getVersamento(this);
+							Versamento versamento = singoloVersamento.getVersamentoBD(this);
 							versamento.getApplicazione(configWrapper);
 							versamento.getDominio(configWrapper);
 							versamento.getUo(configWrapper);

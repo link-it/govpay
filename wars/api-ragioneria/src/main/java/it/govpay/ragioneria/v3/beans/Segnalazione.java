@@ -1,123 +1,100 @@
 package it.govpay.ragioneria.v3.beans;
 
 import java.util.Date;
-import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.govpay.core.beans.JSONSerializable;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"data",
-"codice",
-"descrizione",
-"dettaglio",
-})
-public class Segnalazione extends JSONSerializable {
+public class Segnalazione   {
   
-  @JsonProperty("data")
+  @Schema(description = "")
   private Date data = null;
   
-  @JsonProperty("codice")
+  @Schema(example = "0013", required = true, description = "")
   private String codice = null;
   
-  @JsonProperty("descrizione")
+  @Schema(example = "Pagamento rendicontato senza RPT", required = true, description = "")
   private String descrizione = null;
   
-  @JsonProperty("dettaglio")
+  @Schema(example = "Acquisita rendicontazione senza RPT nel flusso ABC-1234-DEFG", description = "")
   private String dettaglio = null;
-  
-  /**
-   **/
+ /**
+   * Get data
+   * @return data
+  **/
+  @JsonProperty("data")
+  public Date getData() {
+    return data;
+  }
+
+  public void setData(Date data) {
+    this.data = data;
+  }
+
   public Segnalazione data(Date data) {
     this.data = data;
     return this;
   }
 
-  @JsonProperty("data")
-  public Date getData() {
-    return data;
-  }
-  public void setData(Date data) {
-    this.data = data;
+ /**
+   * Get codice
+   * @return codice
+  **/
+  @JsonProperty("codice")
+  @NotNull
+  public String getCodice() {
+    return codice;
   }
 
-  /**
-   **/
+  public void setCodice(String codice) {
+    this.codice = codice;
+  }
+
   public Segnalazione codice(String codice) {
     this.codice = codice;
     return this;
   }
 
-  @JsonProperty("codice")
-  public String getCodice() {
-    return codice;
-  }
-  public void setCodice(String codice) {
-    this.codice = codice;
+ /**
+   * Get descrizione
+   * @return descrizione
+  **/
+  @JsonProperty("descrizione")
+  @NotNull
+  public String getDescrizione() {
+    return descrizione;
   }
 
-  /**
-   **/
+  public void setDescrizione(String descrizione) {
+    this.descrizione = descrizione;
+  }
+
   public Segnalazione descrizione(String descrizione) {
     this.descrizione = descrizione;
     return this;
   }
 
-  @JsonProperty("descrizione")
-  public String getDescrizione() {
-    return descrizione;
-  }
-  public void setDescrizione(String descrizione) {
-    this.descrizione = descrizione;
+ /**
+   * Get dettaglio
+   * @return dettaglio
+  **/
+  @JsonProperty("dettaglio")
+  public String getDettaglio() {
+    return dettaglio;
   }
 
-  /**
-   **/
+  public void setDettaglio(String dettaglio) {
+    this.dettaglio = dettaglio;
+  }
+
   public Segnalazione dettaglio(String dettaglio) {
     this.dettaglio = dettaglio;
     return this;
   }
 
-  @JsonProperty("dettaglio")
-  public String getDettaglio() {
-    return dettaglio;
-  }
-  public void setDettaglio(String dettaglio) {
-    this.dettaglio = dettaglio;
-  }
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Segnalazione segnalazione = (Segnalazione) o;
-    return Objects.equals(data, segnalazione.data) &&
-        Objects.equals(codice, segnalazione.codice) &&
-        Objects.equals(descrizione, segnalazione.descrizione) &&
-        Objects.equals(dettaglio, segnalazione.dettaglio);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(data, codice, descrizione, dettaglio);
-  }
-
-  public static Segnalazione parse(String json) throws ServiceException, ValidationException {
-    return (Segnalazione) parse(json, Segnalazione.class);
-  }
-
-  @Override
-  public String getJsonIdFilter() {
-    return "segnalazione";
-  }
 
   @Override
   public String toString() {
@@ -136,13 +113,10 @@ public class Segnalazione extends JSONSerializable {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(java.lang.Object o) {
+  private static String toIndentedString(java.lang.Object o) {
     if (o == null) {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
   }
 }
-
-
-

@@ -66,10 +66,10 @@ public class RiscossioniConverter {
 				rsModel.setAllegato(allegato);
 			}			
 			
-			rsModel.setPendenza(PendenzeConverter.toRsIndexModel(input.getSingoloVersamento(null).getVersamento(null)));
+			rsModel.setPendenza(PendenzeConverter.toRsIndexModel(input.getSingoloVersamento(null).getVersamentoBD(null)));
 			rsModel.setVocePendenza(PendenzeConverter.toRsModelVocePendenza(input.getSingoloVersamento(null), input.getIndiceDati(), configWrapper));
 			if(input.getRpt(null) != null)
-				rsModel.setRpp(RptConverter.toRsModelIndex(input.getRpt(null), input.getSingoloVersamento(null).getVersamento(null), input.getSingoloVersamento(null).getVersamento(null).getApplicazione(configWrapper)));
+				rsModel.setRpp(RptConverter.toRsModelIndex(input.getRpt(null), input.getSingoloVersamento(null).getVersamentoBD(null), input.getSingoloVersamento(null).getVersamentoBD(null).getApplicazione(configWrapper)));
 			
 			if(input.getIncasso(null) != null)
 				rsModel.setIncasso(IncassiConverter.toRsIndexModel(input.getIncasso(null)));
@@ -121,7 +121,7 @@ public class RiscossioniConverter {
 			
 			rsModel.setCommissioni(input.getCommissioniPsp());
 			
-			rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(input.getSingoloVersamento(null).getVersamento(null).getApplicazione(configWrapper).getCodApplicazione(), input.getSingoloVersamento(null).getVersamento(null).getCodVersamentoEnte()));
+			rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(input.getSingoloVersamento(null).getVersamentoBD(null).getApplicazione(configWrapper).getCodApplicazione(), input.getSingoloVersamento(null).getVersamentoBD(null).getCodVersamentoEnte()));
 			if(input.getRpt(null) != null)
 				rsModel.setRpp(UriBuilderUtils.getRppByDominioIuvCcp(input.getRpt(null).getCodDominio(), input.getRpt(null).getIuv(), input.getRpt(null).getCcp()));
 			if(input.getIncasso(null)!=null)

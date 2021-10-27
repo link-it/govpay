@@ -70,7 +70,7 @@ public class PendenzeConverter {
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
 		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
 		rsModel.setIndice(new BigDecimal(indice));
-		rsModel.setPendenza(toRsModel(singoloVersamento.getVersamento(null)));
+		rsModel.setPendenza(toRsModel(singoloVersamento.getVersamentoBD(null)));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
 		if(singoloVersamento.getDominio(configWrapper) != null) {
 			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));

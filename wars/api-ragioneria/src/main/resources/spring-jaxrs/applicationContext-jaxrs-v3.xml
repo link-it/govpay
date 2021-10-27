@@ -51,9 +51,11 @@
         
    	<!-- JAX-RS Service Impl -->
 
-	<b:bean id="flussiRendicontazioneV3" class="it.govpay.ragioneria.v3.FlussiRendicontazione"/>
-   	<b:bean id="riconciliazioniV3" class="it.govpay.ragioneria.v3.Riconciliazioni"/>
-   	<b:bean id="profiloV3" class="it.govpay.ragioneria.v3.Profilo"/>
+   	<b:bean id="flussiRendicontazioneV3" class="it.govpay.ragioneria.v3.api.impl.RendicontazioniApiServiceImpl"/>
+   	<b:bean id="riconciliazioniV3" class="it.govpay.ragioneria.v3.api.impl.RiconciliazioniApiServiceImpl"/>
+   	<b:bean id="profiloV3" class="it.govpay.ragioneria.v3.api.impl.UtentiApiServiceImpl"/>
+   	<b:bean id="riscossioniV3" class="it.govpay.ragioneria.v3.api.impl.RiscossioniApiServiceImpl"/>
+   	<b:bean id="ricevuteV3" class="it.govpay.ragioneria.v3.api.impl.RicevuteApiServiceImpl"/>
        
    	<!-- JAX-RS Configuration -->
    
@@ -63,6 +65,8 @@
         		<ref bean="flussiRendicontazioneV3" />
 			   	<ref bean="riconciliazioniV3" />
 			   	<ref bean="profiloV3" />
+			   	<ref bean="riscossioniV3" />
+			   	<ref bean="ricevuteV3" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
                 <ref bean="parameterConverter" />
@@ -84,6 +88,8 @@
         		<ref bean="flussiRendicontazioneV3" />
 			   	<ref bean="riconciliazioniV3" />
 			   	<ref bean="profiloV3" />
+			   	<ref bean="riscossioniV3" />
+			   	<ref bean="ricevuteV3" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
                 <ref bean="parameterConverter" />
@@ -105,6 +111,8 @@
         		<ref bean="flussiRendicontazioneV3" />
 			   	<ref bean="riconciliazioniV3" />
 			   	<ref bean="profiloV3" />
+			   	<ref bean="riscossioniV3" />
+			   	<ref bean="ricevuteV3" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
                 <ref bean="parameterConverter" />
@@ -126,6 +134,8 @@
         		<ref bean="flussiRendicontazioneV3" />
 			   	<ref bean="riconciliazioniV3" />
 			   	<ref bean="profiloV3" />
+			   	<ref bean="riscossioniV3" />
+			   	<ref bean="ricevuteV3" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
                 <ref bean="parameterConverter" />
@@ -147,6 +157,8 @@
         		<ref bean="flussiRendicontazioneV3" />
 			   	<ref bean="riconciliazioniV3" />
 			   	<ref bean="profiloV3" />
+			   	<ref bean="riscossioniV3" />
+			   	<ref bean="ricevuteV3" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
                 <ref bean="parameterConverter" />

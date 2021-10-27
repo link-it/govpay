@@ -1,265 +1,257 @@
 package it.govpay.ragioneria.v3.beans;
 
-import java.util.Objects;
-
-import org.openspcoop2.utils.json.ValidationException;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.govpay.core.beans.JSONSerializable;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * dati anagrafici di un versante o pagatore.
- **/@com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"tipo",
-"identificativo",
-"anagrafica",
-"indirizzo",
-"civico",
-"cap",
-"localita",
-"provincia",
-"nazione",
-"email",
-"cellulare",
-})
-public class Soggetto extends JSONSerializable {
+  * dati anagrafici di un versante o pagatore.
+ **/
+@Schema(description="dati anagrafici di un versante o pagatore.")
+public class Soggetto   {
   
-  @JsonProperty("tipo")
+  @Schema(required = true, description = "")
   private TipoSoggetto tipo = null;
   
-  @JsonProperty("identificativo")
+  @Schema(example = "RSSMRA30A01H501I", required = true, description = "codice fiscale o partita iva del soggetto")
+ /**
+   * codice fiscale o partita iva del soggetto  
+  **/
   private String identificativo = null;
   
-  @JsonProperty("anagrafica")
+  @Schema(example = "Mario Rossi", description = "nome e cognome o altra ragione sociale del soggetto")
+ /**
+   * nome e cognome o altra ragione sociale del soggetto  
+  **/
   private String anagrafica = null;
   
-  @JsonProperty("indirizzo")
+  @Schema(example = "Piazza della Vittoria", description = "")
   private String indirizzo = null;
   
-  @JsonProperty("civico")
+  @Schema(example = "10/A", description = "")
   private String civico = null;
   
-  @JsonProperty("cap")
+  @Schema(example = "0", description = "")
   private String cap = null;
   
-  @JsonProperty("localita")
+  @Schema(example = "Roma", description = "")
   private String localita = null;
   
-  @JsonProperty("provincia")
+  @Schema(example = "Roma", description = "")
   private String provincia = null;
   
-  @JsonProperty("nazione")
+  @Schema(example = "IT", description = "")
   private String nazione = null;
   
-  @JsonProperty("email")
+  @Schema(example = "mario.rossi@host.eu", description = "")
   private String email = null;
   
-  @JsonProperty("cellulare")
+  @Schema(example = "+39 000 1234567", description = "")
   private String cellulare = null;
-  
-  /**
-   **/
+ /**
+   * Get tipo
+   * @return tipo
+  **/
+  @JsonProperty("tipo")
+  @NotNull
+  public TipoSoggetto getTipo() {
+    return tipo;
+  }
+
+  public void setTipo(TipoSoggetto tipo) {
+    this.tipo = tipo;
+  }
+
   public Soggetto tipo(TipoSoggetto tipo) {
     this.tipo = tipo;
     return this;
   }
 
-  @JsonProperty("tipo")
-  public TipoSoggetto getTipo() {
-    return tipo;
-  }
-  public void setTipo(TipoSoggetto tipo) {
-    this.tipo = tipo;
+ /**
+   * codice fiscale o partita iva del soggetto
+   * @return identificativo
+  **/
+  @JsonProperty("identificativo")
+  @NotNull
+ @Size(min=1,max=35)  public String getIdentificativo() {
+    return identificativo;
   }
 
-  /**
-   * codice fiscale o partita iva del soggetto
-   **/
+  public void setIdentificativo(String identificativo) {
+    this.identificativo = identificativo;
+  }
+
   public Soggetto identificativo(String identificativo) {
     this.identificativo = identificativo;
     return this;
   }
 
-  @JsonProperty("identificativo")
-  public String getIdentificativo() {
-    return identificativo;
-  }
-  public void setIdentificativo(String identificativo) {
-    this.identificativo = identificativo;
+ /**
+   * nome e cognome o altra ragione sociale del soggetto
+   * @return anagrafica
+  **/
+  @JsonProperty("anagrafica")
+ @Size(min=1,max=70)  public String getAnagrafica() {
+    return anagrafica;
   }
 
-  /**
-   * nome e cognome o altra ragione sociale del soggetto
-   **/
+  public void setAnagrafica(String anagrafica) {
+    this.anagrafica = anagrafica;
+  }
+
   public Soggetto anagrafica(String anagrafica) {
     this.anagrafica = anagrafica;
     return this;
   }
 
-  @JsonProperty("anagrafica")
-  public String getAnagrafica() {
-    return anagrafica;
-  }
-  public void setAnagrafica(String anagrafica) {
-    this.anagrafica = anagrafica;
+ /**
+   * Get indirizzo
+   * @return indirizzo
+  **/
+  @JsonProperty("indirizzo")
+ @Size(min=1,max=70)  public String getIndirizzo() {
+    return indirizzo;
   }
 
-  /**
-   **/
+  public void setIndirizzo(String indirizzo) {
+    this.indirizzo = indirizzo;
+  }
+
   public Soggetto indirizzo(String indirizzo) {
     this.indirizzo = indirizzo;
     return this;
   }
 
-  @JsonProperty("indirizzo")
-  public String getIndirizzo() {
-    return indirizzo;
-  }
-  public void setIndirizzo(String indirizzo) {
-    this.indirizzo = indirizzo;
+ /**
+   * Get civico
+   * @return civico
+  **/
+  @JsonProperty("civico")
+ @Size(min=1,max=16)  public String getCivico() {
+    return civico;
   }
 
-  /**
-   **/
+  public void setCivico(String civico) {
+    this.civico = civico;
+  }
+
   public Soggetto civico(String civico) {
     this.civico = civico;
     return this;
   }
 
-  @JsonProperty("civico")
-  public String getCivico() {
-    return civico;
-  }
-  public void setCivico(String civico) {
-    this.civico = civico;
+ /**
+   * Get cap
+   * @return cap
+  **/
+  @JsonProperty("cap")
+ @Size(min=1,max=16)  public String getCap() {
+    return cap;
   }
 
-  /**
-   **/
+  public void setCap(String cap) {
+    this.cap = cap;
+  }
+
   public Soggetto cap(String cap) {
     this.cap = cap;
     return this;
   }
 
-  @JsonProperty("cap")
-  public String getCap() {
-    return cap;
-  }
-  public void setCap(String cap) {
-    this.cap = cap;
+ /**
+   * Get localita
+   * @return localita
+  **/
+  @JsonProperty("localita")
+ @Size(min=1,max=35)  public String getLocalita() {
+    return localita;
   }
 
-  /**
-   **/
+  public void setLocalita(String localita) {
+    this.localita = localita;
+  }
+
   public Soggetto localita(String localita) {
     this.localita = localita;
     return this;
   }
 
-  @JsonProperty("localita")
-  public String getLocalita() {
-    return localita;
-  }
-  public void setLocalita(String localita) {
-    this.localita = localita;
+ /**
+   * Get provincia
+   * @return provincia
+  **/
+  @JsonProperty("provincia")
+ @Size(min=1,max=35)  public String getProvincia() {
+    return provincia;
   }
 
-  /**
-   **/
+  public void setProvincia(String provincia) {
+    this.provincia = provincia;
+  }
+
   public Soggetto provincia(String provincia) {
     this.provincia = provincia;
     return this;
   }
 
-  @JsonProperty("provincia")
-  public String getProvincia() {
-    return provincia;
-  }
-  public void setProvincia(String provincia) {
-    this.provincia = provincia;
+ /**
+   * Get nazione
+   * @return nazione
+  **/
+  @JsonProperty("nazione")
+ @Pattern(regexp="[A-Z]{2,2}")  public String getNazione() {
+    return nazione;
   }
 
-  /**
-   **/
+  public void setNazione(String nazione) {
+    this.nazione = nazione;
+  }
+
   public Soggetto nazione(String nazione) {
     this.nazione = nazione;
     return this;
   }
 
-  @JsonProperty("nazione")
-  public String getNazione() {
-    return nazione;
-  }
-  public void setNazione(String nazione) {
-    this.nazione = nazione;
+ /**
+   * Get email
+   * @return email
+  **/
+  @JsonProperty("email")
+ @Pattern(regexp="[A-Za-z0-9_]+([\\-\\+\\.'][A-Za-z0-9_]+)*@[A-Za-z0-9_]+([\\-\\.][A-Za-z0-9_]+)*\\.[A-Za-z0-9_]+([\\-\\.][A-Za-z0-9_]+)*")  public String getEmail() {
+    return email;
   }
 
-  /**
-   **/
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
   public Soggetto email(String email) {
     this.email = email;
     return this;
   }
 
-  @JsonProperty("email")
-  public String getEmail() {
-    return email;
-  }
-  public void setEmail(String email) {
-    this.email = email;
+ /**
+   * Get cellulare
+   * @return cellulare
+  **/
+  @JsonProperty("cellulare")
+ @Pattern(regexp="\\+[0-9]{2,2}\\s[0-9]{3,3}\\-[0-9]{7,7}")  public String getCellulare() {
+    return cellulare;
   }
 
-  /**
-   **/
+  public void setCellulare(String cellulare) {
+    this.cellulare = cellulare;
+  }
+
   public Soggetto cellulare(String cellulare) {
     this.cellulare = cellulare;
     return this;
   }
 
-  @JsonProperty("cellulare")
-  public String getCellulare() {
-    return cellulare;
-  }
-  public void setCellulare(String cellulare) {
-    this.cellulare = cellulare;
-  }
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Soggetto soggetto = (Soggetto) o;
-    return Objects.equals(tipo, soggetto.tipo) &&
-        Objects.equals(identificativo, soggetto.identificativo) &&
-        Objects.equals(anagrafica, soggetto.anagrafica) &&
-        Objects.equals(indirizzo, soggetto.indirizzo) &&
-        Objects.equals(civico, soggetto.civico) &&
-        Objects.equals(cap, soggetto.cap) &&
-        Objects.equals(localita, soggetto.localita) &&
-        Objects.equals(provincia, soggetto.provincia) &&
-        Objects.equals(nazione, soggetto.nazione) &&
-        Objects.equals(email, soggetto.email) &&
-        Objects.equals(cellulare, soggetto.cellulare);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(tipo, identificativo, anagrafica, indirizzo, civico, cap, localita, provincia, nazione, email, cellulare);
-  }
-
-  public static Soggetto parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return parse(json, Soggetto.class);
-  }
-
-  @Override
-  public String getJsonIdFilter() {
-    return "soggetto";
-  }
 
   @Override
   public String toString() {
@@ -285,13 +277,10 @@ public class Soggetto extends JSONSerializable {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(java.lang.Object o) {
+  private static String toIndentedString(java.lang.Object o) {
     if (o == null) {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
   }
 }
-
-
-

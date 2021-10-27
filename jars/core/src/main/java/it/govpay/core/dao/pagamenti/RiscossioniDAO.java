@@ -122,7 +122,7 @@ public class RiscossioniDAO extends BaseDAO{
 			throws ServiceException, NotFoundException {
 		
 		SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
-		Versamento versamento = singoloVersamento.getVersamento(bd);
+		Versamento versamento = singoloVersamento.getVersamentoBD(bd);
 		versamento.getApplicazione(configWrapper);
 		versamento.getUo(configWrapper);
 		versamento.getDominio(configWrapper);
@@ -145,7 +145,7 @@ public class RiscossioniDAO extends BaseDAO{
 		Pagamento pagamento = dto.getPagamento();
 			
 		SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
-		Versamento versamento = singoloVersamento.getVersamento(bd);
+		Versamento versamento = singoloVersamento.getVersamentoBD(bd);
 		versamento.getApplicazione(configWrapper);
 		versamento.getUo(configWrapper);
 		versamento.getDominio(configWrapper);

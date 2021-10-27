@@ -9,9 +9,11 @@ import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.bd.model.Versamento;
 import it.govpay.ragioneria.v3.beans.Pendenza;
 import it.govpay.ragioneria.v3.beans.Soggetto;
 import it.govpay.ragioneria.v3.beans.TipoSoggetto;
@@ -36,15 +38,17 @@ public class PendenzeConverter {
 			}
 
 		rsModel.setDataScadenza(versamento.getDataScadenza());
-		rsModel.setIdDominio(versamento.getDominio(configWrapper).getCodDominio());
+		
+		rsModel.setDominio(DominiConverter.toRsModelIndex(versamento.getDominio(configWrapper)));
 		rsModel.setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		if(versamento.getDatiAllegati() != null)
 			rsModel.setDatiAllegati(new RawObject(versamento.getDatiAllegati()));
 
 		UnitaOperativa uo = versamento.getUo(configWrapper);
-		if(uo != null && !uo.getCodUo().equals(it.govpay.model.Dominio.EC))
-			rsModel.setIdUnitaOperativa(uo.getCodUo());
+		if(uo != null && !uo.getCodUo().equals(it.govpay.model.Dominio.EC)) {
+			rsModel.setUnitaOperativa(DominiConverter.toRsModelIndex(uo));
+		}
 		
 		rsModel.setIdTipoPendenza(versamento.getTipoVersamento(configWrapper).getCodTipoVersamento());
 		rsModel.setDirezione(versamento.getDirezione());
@@ -58,18 +62,26 @@ public class PendenzeConverter {
 
 	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice) throws ServiceException, IOException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		return toRsModelVocePendenza(singoloVersamento, indice, singoloVersamento.getVersamento(configWrapper));
+	}
+
+	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice, Versamento versamento) throws ServiceException, IOException, ValidationException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		VocePendenza rsModel = new VocePendenza();
 		
 		if(singoloVersamento.getDatiAllegati() != null)
 			rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));
 		rsModel.setDescrizione(singoloVersamento.getDescrizione());
 		rsModel.setDescrizioneCausaleRPT(singoloVersamento.getDescrizioneCausaleRPT());
-		rsModel.setIdDominio(singoloVersamento.getVersamento(null).getDominio(configWrapper).getCodDominio()); 
-
+		
+		if(singoloVersamento.getDominio(configWrapper) != null) {
+			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
+		}
+		
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
 //		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
 //		rsModel.setIndice(new BigDecimal(indice));
-		rsModel.setPendenza(toRsModel(singoloVersamento.getVersamento(null)));
+		rsModel.setPendenza(toRsModel(versamento));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
 		return rsModel;
 	}
@@ -91,6 +103,27 @@ public class PendenzeConverter {
 		rsModel.setNazione(anagrafica.getNazione());
 		rsModel.setEmail(anagrafica.getEmail());
 		rsModel.setCellulare(anagrafica.getCellulare());
+		
+		return rsModel;
+	}
+
+	public static Soggetto toSoggettoRsModel(CtSoggettoVersante soggettoVersante) {
+		if(soggettoVersante == null) return null;
+		Soggetto rsModel = new Soggetto();
+
+		if(soggettoVersante.getIdentificativoUnivocoVersante().getTipoIdentificativoUnivoco() != null)
+			rsModel.setTipo(TipoSoggetto.fromValue(soggettoVersante.getIdentificativoUnivocoVersante().getTipoIdentificativoUnivoco().toString()));
+
+		rsModel.setIdentificativo(soggettoVersante.getIdentificativoUnivocoVersante().getCodiceIdentificativoUnivoco());
+		rsModel.setAnagrafica(soggettoVersante.getAnagraficaVersante());
+		rsModel.setIndirizzo(soggettoVersante.getIndirizzoVersante());
+		rsModel.setCivico(soggettoVersante.getCivicoVersante());
+		rsModel.setCap(soggettoVersante.getCapVersante());
+		rsModel.setLocalita(soggettoVersante.getLocalitaVersante());
+		rsModel.setProvincia(soggettoVersante.getProvinciaVersante());
+		rsModel.setNazione(soggettoVersante.getNazioneVersante());
+		rsModel.setEmail(soggettoVersante.getEMailVersante());
+//		rsModel.setCellulare(soggettoVersante.getCellulare());
 		
 		return rsModel;
 	}

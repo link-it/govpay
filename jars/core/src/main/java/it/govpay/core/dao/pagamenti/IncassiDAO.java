@@ -104,7 +104,7 @@ public class IncassiDAO extends BaseDAO{
 							for(Pagamento pagamento: pagamenti) {
 								pagamento.getDominio(configWrapper);
 								SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(incassiBD);
-								Versamento versamento = singoloVersamento.getVersamento(incassiBD);
+								Versamento versamento = singoloVersamento.getVersamentoBD(incassiBD);
 								versamento.getApplicazione(configWrapper);
 								versamento.getDominio(configWrapper);
 								versamento.getUo(configWrapper);
@@ -350,7 +350,7 @@ public class IncassiDAO extends BaseDAO{
 	private void populatePagamento(Pagamento pagamento, BasicBD bd, BDConfigWrapper configWrapper)
 			throws ServiceException, NotFoundException {
 		SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd); 
-		Versamento versamento = singoloVersamento.getVersamento(bd); 
+		Versamento versamento = singoloVersamento.getVersamentoBD(bd); 
 		versamento.getApplicazione(configWrapper);
 		versamento.getUo(configWrapper);
 		versamento.getDominio(configWrapper);
