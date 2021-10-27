@@ -69,6 +69,8 @@ public class IncassiDAO extends BaseDAO{
 			newFilter.setLimit(listaIncassoDTO.getLimit());
 			newFilter.setCodApplicazione(listaIncassoDTO.getIdA2A());
 			newFilter.setSct(listaIncassoDTO.getSct());
+			newFilter.setCodFlusso(listaIncassoDTO.getCodFlusso());
+			newFilter.setIuv(listaIncassoDTO.getIuv());
 
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Incasso.model().DATA_ORA_INCASSO);

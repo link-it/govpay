@@ -19,6 +19,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "dataContabile",
 "ibanAccredito",
 "sct",
+"iuv",
+"idFlusso",
 "riscossioni",
 })
 public class Incasso extends it.govpay.core.beans.JSONSerializable {
@@ -52,6 +54,12 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("riscossioni")
   private List<Riscossione> riscossioni = new ArrayList<>();
+
+  @JsonProperty("iuv")
+  private String iuv = null;
+  
+  @JsonProperty("idFlusso")
+  private String idFlusso = null;
   
   /**
    **/
@@ -210,12 +218,44 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
     this.riscossioni = riscossioni;
   }
 
+  /**
+   * Identificativo univoco di riscossione.
+   **/
+  public Incasso iuv(String iuv) {
+    this.iuv = iuv;
+    return this;
+  }
+
+  @JsonProperty("iuv")
+  public String getIuv() {
+    return this.iuv;
+  }
+  public void setIuv(String iuv) {
+    this.iuv = iuv;
+  }
+
+  /**
+   * Identificativo del flusso di rendicontazione.
+   **/
+  public Incasso idFlusso(String idFlusso) {
+    this.idFlusso = idFlusso;
+    return this;
+  }
+
+  @JsonProperty("idFlusso")
+  public String getIdFlusso() {
+    return this.idFlusso;
+  }
+  public void setIdFlusso(String idFlusso) {
+    this.idFlusso = idFlusso;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     Incasso incasso = (Incasso) o;
@@ -228,7 +268,9 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(dataContabile, incasso.dataContabile) &&
         Objects.equals(ibanAccredito, incasso.ibanAccredito) &&
         Objects.equals(sct, incasso.sct) &&
-        Objects.equals(this.riscossioni, incasso.riscossioni);
+        Objects.equals(riscossioni, incasso.riscossioni) &&
+    	Objects.equals(iuv, incasso.iuv) &&
+    	Objects.equals(idFlusso, incasso.idFlusso);
   }
 
   @Override
@@ -260,6 +302,8 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
     sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
     sb.append("    sct: ").append(toIndentedString(sct)).append("\n");
     sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");
+    sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
+    sb.append("    idFlusso: ").append(this.toIndentedString(this.idFlusso)).append("\n");
     sb.append("}");
     return sb.toString();
   }
