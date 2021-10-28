@@ -169,7 +169,7 @@ public class Domini extends BaseRsServiceV1{
 
     @GET
     @Path("/{idDominio}/logo")
-    @Produces({ "application/json" })
+    @Produces({ "application/json" , "application/octet-stream"})
     public Response getLogo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
             this.buildContext();
             return this.controller.getLogo(this.getUser(), uriInfo, httpHeaders,  idDominio);
