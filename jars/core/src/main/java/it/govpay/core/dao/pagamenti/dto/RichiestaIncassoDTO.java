@@ -195,8 +195,8 @@ public class RichiestaIncassoDTO extends BasicFindRequestDTO {
 		incasso.setApplicazione(this.getApplicazione());
 		incasso.setOperatore(this.getOperatore());
 		incasso.setSct(this.getSct());
-		incasso.setIuv(this.getIuv());
-		incasso.setIdFlussoRendicontazione(this.getIdFlusso());
+		incasso.setIuv(iuv);
+		incasso.setIdFlussoRendicontazione(idf);
 		incasso.setIdRiconciliazione(this.getIdRiconciliazione());
 		incasso.setStato(StatoIncasso.NUOVO);
 		

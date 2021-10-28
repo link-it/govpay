@@ -691,6 +691,9 @@ public class Incassi {
 				richiestaIncasso.setCausale(causale);
 			}
 			
+			richiestaIncasso.setIuv(iuv);
+			richiestaIncasso.setIdFlusso(idf);
+			
 			// OVERRIDE TRN NUOVA GESTIONE
 			richiestaIncasso.setTrn(iuv != null ? iuv : idf);
 			// IDENTIFICATIVO INCASSO
