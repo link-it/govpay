@@ -42,6 +42,8 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 	private Date dataA;
 	private String sct;
 	private boolean includiPagamenti;
+	private String codFlusso;
+	private String iuv;
 
 	 
 	public String getIdDominio() {
@@ -79,5 +81,17 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 	}
 	public void setIncludiPagamenti(boolean includiPagamenti) {
 		this.includiPagamenti = includiPagamenti;
+	}
+	public String getCodFlusso() {
+		return codFlusso;
+	}
+	public void setCodFlusso(String codFlusso) {
+		this.codFlusso = codFlusso;
+	}
+	public String getIuv() {
+		return iuv;
+	}
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
 	}
 }

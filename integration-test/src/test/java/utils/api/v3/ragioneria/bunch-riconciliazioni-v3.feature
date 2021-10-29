@@ -43,7 +43,7 @@ Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio, idRiconciliazione
 And headers idA2ABasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
-When method post
+When method put
 Then status 202
 
 * def riconciliazioneLocation = responseHeaders['Location'][0]
@@ -77,7 +77,7 @@ Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio, idRiconciliazione
 And headers idA2A2BasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789' }
-When method post
+When method put
 Then status 202
 
 * def riconciliazioneLocation = responseHeaders['Location'][0]
@@ -120,7 +120,7 @@ Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio, idRiconciliazione
 And headers idA2A2BasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
-When method post
+When method put
 Then status 202
 
 * def riconciliazioneLocation = responseHeaders['Location'][0]
@@ -163,7 +163,7 @@ Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio, idRiconciliazione
 And headers idA2A2BasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
-When method post
+When method put
 Then status 202
 
 * def riconciliazioneLocation = responseHeaders['Location'][0]
@@ -204,7 +204,7 @@ Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio_2, idRiconciliazione
 And headers idA2ABasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
-When method post
+When method put
 Then status 202
 
 * def riconciliazioneLocation = responseHeaders['Location'][0]
@@ -242,7 +242,7 @@ Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio_2, idRiconciliazione
 And headers idA2A2BasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
-When method post
+When method put
 Then status 202
 
 * def riconciliazioneLocation = responseHeaders['Location'][0]
@@ -289,7 +289,7 @@ Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio_2, idRiconciliazione
 And headers idA2A2BasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
-When method post
+When method put
 Then status 202
 
 * def riconciliazioneLocation = responseHeaders['Location'][0]
@@ -336,7 +336,7 @@ Given url ragioneriaBaseurl
 And path '/riconciliazioni', idDominio_2, idRiconciliazione
 And headers idA2A2BasicAutenticationHeader
 And request { causale: '#(causale)', importo: '#(importo)' , sct : 'SCT0123456789'}
-When method post
+When method put
 Then status 202
 
 * def riconciliazioneLocation = responseHeaders['Location'][0]

@@ -1,82 +1,62 @@
 package it.govpay.ragioneria.v3.beans;
 
-import java.util.Objects;
-
-import org.openspcoop2.utils.json.ValidationException;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.govpay.core.beans.JSONSerializable;
-@com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"idDominio",
-"ragioneSociale",
-})
-public class Dominio extends JSONSerializable {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public class Dominio   {
   
-  @JsonProperty("idDominio")
+  @Schema(example = "1.23456789E+9", required = true, description = "Codice fiscale")
+ /**
+   * Codice fiscale  
+  **/
   private String idDominio = null;
   
-  @JsonProperty("ragioneSociale")
+  @Schema(example = "Comune Dimostrativo", description = "Ragione sociale")
+ /**
+   * Ragione sociale  
+  **/
   private String ragioneSociale = null;
-  
-  /**
+ /**
    * Codice fiscale
-   **/
+   * @return idDominio
+  **/
+  @JsonProperty("idDominio")
+  @NotNull
+ @Size(min=1,max=35)  public String getIdDominio() {
+    return idDominio;
+  }
+
+  public void setIdDominio(String idDominio) {
+    this.idDominio = idDominio;
+  }
+
   public Dominio idDominio(String idDominio) {
     this.idDominio = idDominio;
     return this;
   }
 
-  @JsonProperty("idDominio")
-  public String getIdDominio() {
-    return idDominio;
-  }
-  public void setIdDominio(String idDominio) {
-    this.idDominio = idDominio;
+ /**
+   * Ragione sociale
+   * @return ragioneSociale
+  **/
+  @JsonProperty("ragioneSociale")
+ @Size(min=1,max=70)  public String getRagioneSociale() {
+    return ragioneSociale;
   }
 
-  /**
-   * Ragione sociale
-   **/
+  public void setRagioneSociale(String ragioneSociale) {
+    this.ragioneSociale = ragioneSociale;
+  }
+
   public Dominio ragioneSociale(String ragioneSociale) {
     this.ragioneSociale = ragioneSociale;
     return this;
   }
 
-  @JsonProperty("ragioneSociale")
-  public String getRagioneSociale() {
-    return ragioneSociale;
-  }
-  public void setRagioneSociale(String ragioneSociale) {
-    this.ragioneSociale = ragioneSociale;
-  }
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Dominio dominio = (Dominio) o;
-    return Objects.equals(idDominio, dominio.idDominio) &&
-        Objects.equals(ragioneSociale, dominio.ragioneSociale);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(idDominio, ragioneSociale);
-  }
-
-  public static Dominio parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
-    return parse(json, Dominio.class);
-  }
-
-  @Override
-  public String getJsonIdFilter() {
-    return "dominio";
-  }
 
   @Override
   public String toString() {
@@ -93,13 +73,10 @@ public class Dominio extends JSONSerializable {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(java.lang.Object o) {
+  private static String toIndentedString(java.lang.Object o) {
     if (o == null) {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
   }
 }
-
-
-

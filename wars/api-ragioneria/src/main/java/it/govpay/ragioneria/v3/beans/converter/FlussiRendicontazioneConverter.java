@@ -8,7 +8,9 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.model.Fr.Anomalia;
 import it.govpay.model.Fr.StatoFr;
@@ -20,17 +22,17 @@ import it.govpay.ragioneria.v3.beans.StatoFlussoRendicontazione;
 public class FlussiRendicontazioneConverter {
 
 	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr, List<it.govpay.bd.viste.model.Rendicontazione> listaRendicontazioni) throws ServiceException, NotFoundException, IOException, ValidationException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		FlussoRendicontazione rsModel = new FlussoRendicontazione();
 		rsModel.setIdFlusso(fr.getCodFlusso());
 		rsModel.setDataFlusso(fr.getDataFlusso());
 		rsModel.setTrn(fr.getIur());
 		rsModel.setDataRegolamento(fr.getDataRegolamento());
 		rsModel.setBicRiversamento(fr.getCodBicRiversamento());
-		rsModel.setIdDominio(fr.getCodDominio());
+		rsModel.setDominio(DominiConverter.toRsModelIndex(fr.getDominio(configWrapper)));
 		rsModel.setNumeroPagamenti(BigDecimal.valueOf(fr.getNumeroPagamenti()));
 		rsModel.setImportoTotale(fr.getImportoTotalePagamenti().doubleValue());
 		rsModel.setIdPsp(fr.getCodPsp());
-		rsModel.setIdDominio(fr.getCodDominio());
 		
 		if(fr.getAnomalie() != null) {
 			List<Segnalazione> segnalazioni = new ArrayList<>();
@@ -60,22 +62,22 @@ public class FlussiRendicontazioneConverter {
 			case RIFIUTATA:
 				rsModel.setStato(StatoFlussoRendicontazione.RIFIUTATO);
 				break;
-			}
+			} 
 		}
 		
-		rsModel.setDataAcquisizione(fr.getDataAcquisizione());
-
+		rsModel.setData(fr.getDataAcquisizione());
 		return rsModel;
 	}
 
 	public static FlussoRendicontazioneIndex toRsIndexModel(it.govpay.bd.model.Fr fr) throws ServiceException, NotFoundException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		FlussoRendicontazioneIndex rsModel = new FlussoRendicontazioneIndex();
 		rsModel.setIdFlusso(fr.getCodFlusso());
 		rsModel.setDataFlusso(fr.getDataFlusso());
 		rsModel.setTrn(fr.getIur());
 		rsModel.setDataRegolamento(fr.getDataRegolamento());
 		rsModel.setBicRiversamento(fr.getCodBicRiversamento());
-		rsModel.setIdDominio(fr.getCodDominio());
+		rsModel.setDominio(DominiConverter.toRsModelIndex(fr.getDominio(configWrapper)));
 		rsModel.setNumeroPagamenti(BigDecimal.valueOf(fr.getNumeroPagamenti()));
 		rsModel.setImportoTotale(fr.getImportoTotalePagamenti().doubleValue());
 		rsModel.setIdPsp(fr.getCodPsp());
@@ -102,8 +104,7 @@ public class FlussiRendicontazioneConverter {
 			}
 		}
 		
-		rsModel.setDataAcquisizione(fr.getDataAcquisizione());
-
+		rsModel.setData(fr.getDataAcquisizione());
 		return rsModel;
 	}
 
@@ -121,6 +122,7 @@ public class FlussiRendicontazioneConverter {
 		
 		if(rendicontazione.getEsito() != null)
 			rsModel.setEsito(new BigDecimal(rendicontazione.getEsito().getCodifica()));
+		
 		rsModel.setData(rendicontazione.getData());
 		if(rendicontazione.getAnomalie() != null) {
 			List<Segnalazione> segnalazioni = new ArrayList<>();
@@ -131,7 +133,7 @@ public class FlussiRendicontazioneConverter {
 		}
 		
 		if(rendicontazione.getPagamento(null) != null)
-			rsModel.setRiscossione(RiscossioniConverter.toRsModelIndex(rendicontazione.getPagamento(null)));
+			rsModel.setRiscossione(RiscossioniConverter.toRsModel(rendicontazione.getPagamento(null)));
 		return rsModel;
 	}
 	
@@ -156,7 +158,7 @@ public class FlussiRendicontazioneConverter {
 		}
 		
 		if(rendicontazione.getPagamento(null) != null)
-			rsModel.setRiscossione(RiscossioniConverter.toRsModelIndex(rendicontazione.getPagamento(null)));
+			rsModel.setRiscossione(RiscossioniConverter.toRsModel(rendicontazione.getPagamento(null)));
 		return rsModel;
 	}
 }

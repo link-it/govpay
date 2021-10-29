@@ -1,23 +1,31 @@
 {
    "id":"#notnull",
-   "idDominio":"#(idDominio)",
+   "dominio" : {
+			"idDominio" : "#(idDominio)",
+			"ragioneSociale" : "#string"
+		},
    "stato":"#notnull",
    "descrizioneStato":"##string",
    "importo":"#(importo)",
-   "data": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+   "data": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d\\+\\d\\d\\d\\d",
    "sct":"#notnull",
    "trn":"#notnull",
    "idFlussoRendicontazione":"#(idFlussoRendicontazione)",
    "riscossioni":[
       {
+      	"dominio" : {
+			"idDominio" : "#(idDominio)",
+			"ragioneSociale" : "#string"
+		},
       	 "iuv":"#(iuv1)",
       	 "iur":"#notnull",
       	 "indice":1,
       	 "tipo":"ENTRATA",
+      	 "stato": "INCASSATA",
       	 "importo":"#? isImportoConDueDecimali(_)",
       	 "data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
          "vocePendenza": {
-         	"idDominio":"#(idDominio)",
+         	"dominio" : "##object",
 			"idVocePendenza":"1",
 			"descrizione": "##string",
 			"datiAllegati": "##object",
@@ -26,7 +34,10 @@
 			"pendenza": {
 				"idA2A":"#string",
 				"idPendenza":"#string",
-				"idDominio":"#string",
+				"dominio" : {
+					"idDominio" : "#(idDominio)",
+					"ragioneSociale" : "#string"
+				},
 				"idUnitaOperativa":"##string",
 				"idTipoPendenza":"#string",
 				"causale":"##string",
@@ -42,14 +53,19 @@
 				}
       },
       {
+      	"dominio" : {
+			"idDominio" : "#(idDominio)",
+			"ragioneSociale" : "#string"
+		},
          "iuv":"#(iuv2)",
       	 "iur":"#notnull",
       	 "indice":1,
       	 "tipo":"ENTRATA",
+      	 "stato": "INCASSATA",
       	 "importo":"#? isImportoConDueDecimali(_)",
       	 "data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
          "vocePendenza": {
-         	"idDominio":"#(idDominio)",
+         	"dominio" : "##object",
 			"idVocePendenza":"1",
 			"descrizione": "##string",
 			"datiAllegati": "##object",
@@ -58,7 +74,10 @@
 			"pendenza": {
 				"idA2A":"#string",
 				"idPendenza":"#string",
-				"idDominio":"#string",
+				"dominio" : {
+					"idDominio" : "#(idDominio)",
+					"ragioneSociale" : "#string"
+				},
 				"idUnitaOperativa":"##string",
 				"idTipoPendenza":"#string",
 				"causale":"##string",

@@ -57,6 +57,8 @@ public class IncassiConverter {
 		}
 		
 		rsModel.setSct(i.getSct());
+		rsModel.setIuv(i.getIuv());
+		rsModel.setIdFlusso(i.getIdFlussoRendicontazione());
 		
 		return rsModel;
 	}
@@ -74,6 +76,8 @@ public class IncassiConverter {
 		rsModel.setData(i.getDataIncasso());
 		rsModel.setIbanAccredito(i.getIbanAccredito());
 		rsModel.setSct(i.getSct());
+		rsModel.setIuv(i.getIuv());
+		rsModel.setIdFlusso(i.getIdFlussoRendicontazione());
 		
 		return rsModel;
 	}

@@ -896,7 +896,7 @@ public class VersamentiBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			Versamento versamento = pagamento.getSingoloVersamento(this).getVersamento(this);
+			Versamento versamento = pagamento.getSingoloVersamento(this).getVersamentoBD(this);
 			BigDecimal importoIncassato = versamento.getImportoIncassato() != null ? versamento.getImportoIncassato() : BigDecimal.ZERO;
 			if(pagamento.getImportoPagato() != null)
 				importoIncassato = importoIncassato.add(pagamento.getImportoPagato());

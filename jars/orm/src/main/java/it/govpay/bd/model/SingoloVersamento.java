@@ -71,9 +71,18 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 			this.setIdVersamento(versamento.getId());
 	}
 	
-	public Versamento getVersamento(BasicBD bd) throws ServiceException {
+	public Versamento getVersamentoBD(BasicBD bd) throws ServiceException {
 		if(this.versamento == null && bd != null) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			versamentiBD.setAtomica(false); // connessione condivisa
+			this.versamento = versamentiBD.getVersamento(this.getIdVersamento());
+		}
+		return this.versamento;
+	}
+	
+	public Versamento getVersamento(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.versamento == null) {
+			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			versamentiBD.setAtomica(false); // connessione condivisa
 			this.versamento = versamentiBD.getVersamento(this.getIdVersamento());
 		}

@@ -3,7 +3,7 @@ Feature: Riconciliazione pagamento singolo
 Background:
 
 * callonce read('classpath:utils/common-utils.feature')
-* callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
 * callonce read('classpath:utils/nodo-genera-rendicontazioni.feature')
 * callonce read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 * def ragioneriaBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v3', autenticazione: 'basic'})
@@ -46,7 +46,7 @@ And path riconciliazioneLocation
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
-And match response == read('msg/riconciliazione-singola-response.json')
+And match response == read('classpath:test/api/ragioneria/v3/riconciliazioni/get/msg/riconciliazione-singola-response.json')
 
 * def idRiconciliazioneSin_DOM1_A2A = response.id
 * def riconciliazioneSin_DOM1_A2A = response

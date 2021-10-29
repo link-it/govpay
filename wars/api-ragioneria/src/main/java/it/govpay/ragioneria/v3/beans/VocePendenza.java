@@ -1,193 +1,181 @@
 package it.govpay.ragioneria.v3.beans;
 
-import java.util.Objects;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.govpay.core.beans.JSONSerializable;
-@com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"idDominio",
-"idVocePendenza",
-"descrizione",
-"datiAllegati",
-"descrizioneCausaleRPT",
-"contabilita",
-"pendenza",
-})
-public class VocePendenza extends JSONSerializable {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public class VocePendenza extends TipoRiferimentoVocePendenza  {
   
-  @JsonProperty("idDominio")
-  private String idDominio = null;
+  @Schema(description = "")
+  private Dominio dominio = null;
   
-  @JsonProperty("idVocePendenza")
+  @Schema(example = "abcdef12345_1", required = true, description = "Identificativo della voce di pedenza nel gestionale proprietario")
+ /**
+   * Identificativo della voce di pedenza nel gestionale proprietario  
+  **/
   private String idVocePendenza = null;
   
-  @JsonProperty("descrizione")
+  @Schema(example = "Sanzione CdS n. abc00000", description = "descrizione della voce di pagamento")
+ /**
+   * descrizione della voce di pagamento  
+  **/
   private String descrizione = null;
   
-  @JsonProperty("datiAllegati")
+  @Schema(description = "Dati applicativi allegati dal gestionale secondo un formato proprietario.")
+ /**
+   * Dati applicativi allegati dal gestionale secondo un formato proprietario.  
+  **/
   private Object datiAllegati = null;
   
-  @JsonProperty("descrizioneCausaleRPT")
+  @Schema(example = "Sanzione CdS n. abc00000", description = "Testo libero per la causale versamento")
+ /**
+   * Testo libero per la causale versamento  
+  **/
   private String descrizioneCausaleRPT = null;
   
-  @JsonProperty("contabilita")
+  @Schema(description = "")
   private Contabilita contabilita = null;
   
-  @JsonProperty("pendenza")
+  @Schema(required = true, description = "")
   private Pendenza pendenza = null;
-  
-  /**
-   * Identificativo del dominio creditore
-   **/
-  public VocePendenza idDominio(String idDominio) {
-    this.idDominio = idDominio;
+ /**
+   * Get dominio
+   * @return dominio
+  **/
+  @JsonProperty("dominio")
+  public Dominio getDominio() {
+    return dominio;
+  }
+
+  public void setDominio(Dominio dominio) {
+    this.dominio = dominio;
+  }
+
+  public VocePendenza dominio(Dominio dominio) {
+    this.dominio = dominio;
     return this;
   }
 
-  @JsonProperty("idDominio")
-  public String getIdDominio() {
-    return idDominio;
-  }
-  public void setIdDominio(String idDominio) {
-    this.idDominio = idDominio;
+ /**
+   * Identificativo della voce di pedenza nel gestionale proprietario
+   * @return idVocePendenza
+  **/
+  @JsonProperty("idVocePendenza")
+  @NotNull
+  public String getIdVocePendenza() {
+    return idVocePendenza;
   }
 
-  /**
-   * Identificativo della voce di pedenza nel gestionale proprietario
-   **/
+  public void setIdVocePendenza(String idVocePendenza) {
+    this.idVocePendenza = idVocePendenza;
+  }
+
   public VocePendenza idVocePendenza(String idVocePendenza) {
     this.idVocePendenza = idVocePendenza;
     return this;
   }
 
-  @JsonProperty("idVocePendenza")
-  public String getIdVocePendenza() {
-    return idVocePendenza;
-  }
-  public void setIdVocePendenza(String idVocePendenza) {
-    this.idVocePendenza = idVocePendenza;
+ /**
+   * descrizione della voce di pagamento
+   * @return descrizione
+  **/
+  @JsonProperty("descrizione")
+ @Size(min=1,max=140)  public String getDescrizione() {
+    return descrizione;
   }
 
-  /**
-   * descrizione della voce di pagamento
-   **/
+  public void setDescrizione(String descrizione) {
+    this.descrizione = descrizione;
+  }
+
   public VocePendenza descrizione(String descrizione) {
     this.descrizione = descrizione;
     return this;
   }
 
-  @JsonProperty("descrizione")
-  public String getDescrizione() {
-    return descrizione;
-  }
-  public void setDescrizione(String descrizione) {
-    this.descrizione = descrizione;
+ /**
+   * Dati applicativi allegati dal gestionale secondo un formato proprietario.
+   * @return datiAllegati
+  **/
+  @JsonProperty("datiAllegati")
+  public Object getDatiAllegati() {
+    return datiAllegati;
   }
 
-  /**
-   * Dati applicativi allegati dal gestionale secondo un formato proprietario.
-   **/
+  public void setDatiAllegati(Object datiAllegati) {
+    this.datiAllegati = datiAllegati;
+  }
+
   public VocePendenza datiAllegati(Object datiAllegati) {
     this.datiAllegati = datiAllegati;
     return this;
   }
 
-  @JsonProperty("datiAllegati")
-  public Object getDatiAllegati() {
-    return datiAllegati;
-  }
-  public void setDatiAllegati(Object datiAllegati) {
-    this.datiAllegati = datiAllegati;
+ /**
+   * Testo libero per la causale versamento
+   * @return descrizioneCausaleRPT
+  **/
+  @JsonProperty("descrizioneCausaleRPT")
+ @Size(min=1,max=140)  public String getDescrizioneCausaleRPT() {
+    return descrizioneCausaleRPT;
   }
 
-  /**
-   * Testo libero per la causale versamento
-   **/
+  public void setDescrizioneCausaleRPT(String descrizioneCausaleRPT) {
+    this.descrizioneCausaleRPT = descrizioneCausaleRPT;
+  }
+
   public VocePendenza descrizioneCausaleRPT(String descrizioneCausaleRPT) {
     this.descrizioneCausaleRPT = descrizioneCausaleRPT;
     return this;
   }
 
-  @JsonProperty("descrizioneCausaleRPT")
-  public String getDescrizioneCausaleRPT() {
-    return descrizioneCausaleRPT;
-  }
-  public void setDescrizioneCausaleRPT(String descrizioneCausaleRPT) {
-    this.descrizioneCausaleRPT = descrizioneCausaleRPT;
+ /**
+   * Get contabilita
+   * @return contabilita
+  **/
+  @JsonProperty("contabilita")
+  public Contabilita getContabilita() {
+    return contabilita;
   }
 
-  /**
-   **/
+  public void setContabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
+  }
+
   public VocePendenza contabilita(Contabilita contabilita) {
     this.contabilita = contabilita;
     return this;
   }
 
-  @JsonProperty("contabilita")
-  public Contabilita getContabilita() {
-    return contabilita;
-  }
-  public void setContabilita(Contabilita contabilita) {
-    this.contabilita = contabilita;
+ /**
+   * Get pendenza
+   * @return pendenza
+  **/
+  @JsonProperty("pendenza")
+  @NotNull
+  public Pendenza getPendenza() {
+    return pendenza;
   }
 
-  /**
-   **/
+  public void setPendenza(Pendenza pendenza) {
+    this.pendenza = pendenza;
+  }
+
   public VocePendenza pendenza(Pendenza pendenza) {
     this.pendenza = pendenza;
     return this;
   }
 
-  @JsonProperty("pendenza")
-  public Pendenza getPendenza() {
-    return pendenza;
-  }
-  public void setPendenza(Pendenza pendenza) {
-    this.pendenza = pendenza;
-  }
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    VocePendenza vocePendenza = (VocePendenza) o;
-    return Objects.equals(idDominio, vocePendenza.idDominio) &&
-        Objects.equals(idVocePendenza, vocePendenza.idVocePendenza) &&
-        Objects.equals(descrizione, vocePendenza.descrizione) &&
-        Objects.equals(datiAllegati, vocePendenza.datiAllegati) &&
-        Objects.equals(descrizioneCausaleRPT, vocePendenza.descrizioneCausaleRPT) &&
-        Objects.equals(contabilita, vocePendenza.contabilita) &&
-        Objects.equals(pendenza, vocePendenza.pendenza);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(idDominio, idVocePendenza, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, pendenza);
-  }
-
-  public static VocePendenza parse(String json) throws ServiceException, ValidationException {
-    return (VocePendenza) parse(json, VocePendenza.class);
-  }
-
-  @Override
-  public String getJsonIdFilter() {
-    return "vocePendenza";
-  }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class VocePendenza {\n");
-    
-    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    idVocePendenza: ").append(toIndentedString(idVocePendenza)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
@@ -202,13 +190,10 @@ public class VocePendenza extends JSONSerializable {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(java.lang.Object o) {
+  private static String toIndentedString(java.lang.Object o) {
     if (o == null) {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
   }
 }
-
-
-

@@ -1,12 +1,15 @@
 {
   "idFlusso": "#notnull",
   "dataFlusso": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d\\+\\d\\d\\d\\d",
-  "dataAcquisizione": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d\\+\\d\\d\\d\\d",
+  "data": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d\\+\\d\\d\\d\\d",
   "trn": "#notnull",
   "dataRegolamento": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
   "idPsp": "#string",
   "bicRiversamento": "##string",
-  "idDominio": "#string",
+  "dominio" : {
+		"idDominio" : "#string",
+		"ragioneSociale" : "#string"
+	},
   "numeroPagamenti": "#number",
   "importoTotale":"#? isImportoConDueDecimali(_)",
   "stato" : "#notnull",

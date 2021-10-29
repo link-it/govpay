@@ -17,6 +17,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "dataContabile",
 "ibanAccredito",
 "sct",
+"iuv",
+"idFlusso",
 })
 public class IncassoIndex extends it.govpay.core.beans.JSONSerializable {
   
@@ -46,6 +48,12 @@ public class IncassoIndex extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("sct")
   private String sct = null;
+  
+  @JsonProperty("iuv")
+  private String iuv = null;
+  
+  @JsonProperty("idFlusso")
+  private String idFlusso = null;
   
   /**
    **/
@@ -189,12 +197,44 @@ public class IncassoIndex extends it.govpay.core.beans.JSONSerializable {
     this.sct = sct;
   }
 
+  /**
+   * Identificativo univoco di riscossione.
+   **/
+  public IncassoIndex iuv(String iuv) {
+    this.iuv = iuv;
+    return this;
+  }
+
+  @JsonProperty("iuv")
+  public String getIuv() {
+    return this.iuv;
+  }
+  public void setIuv(String iuv) {
+    this.iuv = iuv;
+  }
+
+  /**
+   * Identificativo del flusso di rendicontazione.
+   **/
+  public IncassoIndex idFlusso(String idFlusso) {
+    this.idFlusso = idFlusso;
+    return this;
+  }
+
+  @JsonProperty("idFlusso")
+  public String getIdFlusso() {
+    return this.idFlusso;
+  }
+  public void setIdFlusso(String idFlusso) {
+    this.idFlusso = idFlusso;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     IncassoIndex incassoIndex = (IncassoIndex) o;
@@ -206,12 +246,14 @@ public class IncassoIndex extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(dataValuta, incassoIndex.dataValuta) &&
         Objects.equals(dataContabile, incassoIndex.dataContabile) &&
         Objects.equals(ibanAccredito, incassoIndex.ibanAccredito) &&
-        Objects.equals(sct, incassoIndex.sct);
+        Objects.equals(sct, incassoIndex.sct) &&
+    	Objects.equals(iuv, incassoIndex.iuv) &&
+    	Objects.equals(idFlusso, incassoIndex.idFlusso);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(dominio, idIncasso, causale, importo, data, dataValuta, dataContabile, ibanAccredito, sct);
+    return Objects.hash(dominio, idIncasso, causale, importo, data, dataValuta, dataContabile, ibanAccredito, sct, iuv, idFlusso);
   }
 
   public static IncassoIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -237,6 +279,8 @@ public class IncassoIndex extends it.govpay.core.beans.JSONSerializable {
     sb.append("    dataContabile: ").append(toIndentedString(dataContabile)).append("\n");
     sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
     sb.append("    sct: ").append(toIndentedString(sct)).append("\n");
+    sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
+    sb.append("    idFlusso: ").append(this.toIndentedString(this.idFlusso)).append("\n");
     sb.append("}");
     return sb.toString();
   }

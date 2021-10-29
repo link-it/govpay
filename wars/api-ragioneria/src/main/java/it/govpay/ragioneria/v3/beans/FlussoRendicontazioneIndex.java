@@ -3,294 +3,312 @@ package it.govpay.ragioneria.v3.beans;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.govpay.core.beans.JSONSerializable;
-@com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"idFlusso",
-"dataFlusso",
-"dataAcquisizione",
-"trn",
-"dataRegolamento",
-"idPsp",
-"bicRiversamento",
-"idDominio",
-"numeroPagamenti",
-"importoTotale",
-"stato",
-"segnalazioni",
-})
-public class FlussoRendicontazioneIndex extends JSONSerializable {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public class FlussoRendicontazioneIndex   {
   
-  @JsonProperty("idFlusso")
+  @Schema(example = "2017-11-21GovPAYPsp1-10:27:27.903", required = true, description = "Identificativo del flusso di rendicontazione")
+ /**
+   * Identificativo del flusso di rendicontazione  
+  **/
   private String idFlusso = null;
   
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
-  @JsonProperty("dataFlusso")
+  @Schema(required = true, description = "Data di emissione del flusso")
+ /**
+   * Data di emissione del flusso  
+  **/
   private Date dataFlusso = null;
   
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
-  @JsonProperty("dataAcquisizione")
-  private Date dataAcquisizione = null;
+  @Schema(required = true, description = "Data di acquisizione del flusso")
+ /**
+   * Data di acquisizione del flusso  
+  **/
+  private Date data = null;
   
-  @JsonProperty("trn")
+  @Schema(example = "idriversamento12345", required = true, description = "Identificativo dell'operazione di riversamento assegnato dal psp debitore")
+ /**
+   * Identificativo dell'operazione di riversamento assegnato dal psp debitore  
+  **/
   private String trn = null;
   
-  @JsonProperty("dataRegolamento")
+  @Schema(required = true, description = "Data dell'operazione di riversamento fondi")
+ /**
+   * Data dell'operazione di riversamento fondi  
+  **/
   private Date dataRegolamento = null;
   
-  @JsonProperty("idPsp")
+  @Schema(example = "ABI-12345", required = true, description = "Identificativo dell'istituto mittente")
+ /**
+   * Identificativo dell'istituto mittente  
+  **/
   private String idPsp = null;
   
-  @JsonProperty("bicRiversamento")
+  @Schema(example = "BIC-12345", description = "Codice Bic della banca che ha generato il riversamento")
+ /**
+   * Codice Bic della banca che ha generato il riversamento  
+  **/
   private String bicRiversamento = null;
   
-  @JsonProperty("idDominio")
-  private String idDominio = null;
+  @Schema(required = true, description = "")
+  private Dominio dominio = null;
   
-  @JsonProperty("numeroPagamenti")
+  @Schema(example = "3", required = true, description = "numero di pagamenti oggetto della rendicontazione")
+ /**
+   * numero di pagamenti oggetto della rendicontazione  
+  **/
   private BigDecimal numeroPagamenti = null;
   
-  @JsonProperty("importoTotale")
+  @Schema(example = "100.01", required = true, description = "somma degli importi rendicontati")
+ /**
+   * somma degli importi rendicontati  
+  **/
   private Double importoTotale = null;
   
-  @JsonProperty("stato")
+  @Schema(required = true, description = "")
   private StatoFlussoRendicontazione stato = null;
   
-  @JsonProperty("segnalazioni")
+  @Schema(description = "")
   private List<Segnalazione> segnalazioni = null;
-  
-  /**
-   * identificativo del flusso di rendicontazione
-   **/
+ /**
+   * Identificativo del flusso di rendicontazione
+   * @return idFlusso
+  **/
+  @JsonProperty("idFlusso")
+  @NotNull
+  public String getIdFlusso() {
+    return idFlusso;
+  }
+
+  public void setIdFlusso(String idFlusso) {
+    this.idFlusso = idFlusso;
+  }
+
   public FlussoRendicontazioneIndex idFlusso(String idFlusso) {
     this.idFlusso = idFlusso;
     return this;
   }
 
-  @JsonProperty("idFlusso")
-  public String getIdFlusso() {
-    return idFlusso;
-  }
-  public void setIdFlusso(String idFlusso) {
-    this.idFlusso = idFlusso;
+ /**
+   * Data di emissione del flusso
+   * @return dataFlusso
+  **/
+  @JsonProperty("dataFlusso")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")  
+  @NotNull
+  public Date getDataFlusso() {
+    return dataFlusso;
   }
 
-  /**
-   * Data di emissione del flusso
-   **/
+  public void setDataFlusso(Date dataFlusso) {
+    this.dataFlusso = dataFlusso;
+  }
+
   public FlussoRendicontazioneIndex dataFlusso(Date dataFlusso) {
     this.dataFlusso = dataFlusso;
     return this;
   }
 
-  @JsonProperty("dataFlusso")
-  public Date getDataFlusso() {
-    return dataFlusso;
-  }
-  public void setDataFlusso(Date dataFlusso) {
-    this.dataFlusso = dataFlusso;
+ /**
+   * Data di acquisizione del flusso
+   * @return data
+  **/
+  @JsonProperty("data")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
+  @NotNull
+  public Date getData() {
+    return data;
   }
 
-  /**
-   * Data di acquisizione del flusso
-   **/
-  public FlussoRendicontazioneIndex dataAcquisizione(Date dataAcquisizione) {
-    this.dataAcquisizione = dataAcquisizione;
+  public void setData(Date data) {
+    this.data = data;
+  }
+
+  public FlussoRendicontazioneIndex data(Date data) {
+    this.data = data;
     return this;
   }
 
-  @JsonProperty("dataAcquisizione")
-  public Date getDataAcquisizione() {
-    return dataAcquisizione;
-  }
-  public void setDataAcquisizione(Date dataAcquisizione) {
-    this.dataAcquisizione = dataAcquisizione;
+ /**
+   * Identificativo dell&#x27;operazione di riversamento assegnato dal psp debitore
+   * @return trn
+  **/
+  @JsonProperty("trn")
+  @NotNull
+  public String getTrn() {
+    return trn;
   }
 
-  /**
-   * Identificativo dell'operazione di riversamento assegnato dal psp debitore
-   **/
+  public void setTrn(String trn) {
+    this.trn = trn;
+  }
+
   public FlussoRendicontazioneIndex trn(String trn) {
     this.trn = trn;
     return this;
   }
 
-  @JsonProperty("trn")
-  public String getTrn() {
-    return trn;
-  }
-  public void setTrn(String trn) {
-    this.trn = trn;
+ /**
+   * Data dell&#x27;operazione di riversamento fondi
+   * @return dataRegolamento
+  **/
+  @JsonProperty("dataRegolamento")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+  @NotNull
+  public Date getDataRegolamento() {
+    return dataRegolamento;
   }
 
-  /**
-   * Data dell'operazione di riversamento fondi
-   **/
+  public void setDataRegolamento(Date dataRegolamento) {
+    this.dataRegolamento = dataRegolamento;
+  }
+
   public FlussoRendicontazioneIndex dataRegolamento(Date dataRegolamento) {
     this.dataRegolamento = dataRegolamento;
     return this;
   }
 
-  @JsonProperty("dataRegolamento")
-  public Date getDataRegolamento() {
-    return dataRegolamento;
-  }
-  public void setDataRegolamento(Date dataRegolamento) {
-    this.dataRegolamento = dataRegolamento;
+ /**
+   * Identificativo dell&#x27;istituto mittente
+   * @return idPsp
+  **/
+  @JsonProperty("idPsp")
+  @NotNull
+  public String getIdPsp() {
+    return idPsp;
   }
 
-  /**
-   * Identificativo dell'istituto mittente
-   **/
+  public void setIdPsp(String idPsp) {
+    this.idPsp = idPsp;
+  }
+
   public FlussoRendicontazioneIndex idPsp(String idPsp) {
     this.idPsp = idPsp;
     return this;
   }
 
-  @JsonProperty("idPsp")
-  public String getIdPsp() {
-    return idPsp;
-  }
-  public void setIdPsp(String idPsp) {
-    this.idPsp = idPsp;
+ /**
+   * Codice Bic della banca che ha generato il riversamento
+   * @return bicRiversamento
+  **/
+  @JsonProperty("bicRiversamento")
+  public String getBicRiversamento() {
+    return bicRiversamento;
   }
 
-  /**
-   * Codice Bic della banca che ha generato il riversamento
-   **/
+  public void setBicRiversamento(String bicRiversamento) {
+    this.bicRiversamento = bicRiversamento;
+  }
+
   public FlussoRendicontazioneIndex bicRiversamento(String bicRiversamento) {
     this.bicRiversamento = bicRiversamento;
     return this;
   }
 
-  @JsonProperty("bicRiversamento")
-  public String getBicRiversamento() {
-    return bicRiversamento;
-  }
-  public void setBicRiversamento(String bicRiversamento) {
-    this.bicRiversamento = bicRiversamento;
+ /**
+   * Get dominio
+   * @return dominio
+  **/
+  @JsonProperty("dominio")
+  @NotNull
+  public Dominio getDominio() {
+    return dominio;
   }
 
-  /**
-   * Identificativo dominio destinatario
-   **/
-  public FlussoRendicontazioneIndex idDominio(String idDominio) {
-    this.idDominio = idDominio;
+  public void setDominio(Dominio dominio) {
+    this.dominio = dominio;
+  }
+
+  public FlussoRendicontazioneIndex dominio(Dominio dominio) {
+    this.dominio = dominio;
     return this;
   }
 
-  @JsonProperty("idDominio")
-  public String getIdDominio() {
-    return idDominio;
-  }
-  public void setIdDominio(String idDominio) {
-    this.idDominio = idDominio;
+ /**
+   * numero di pagamenti oggetto della rendicontazione
+   * @return numeroPagamenti
+  **/
+  @JsonProperty("numeroPagamenti")
+  @NotNull
+  public BigDecimal getNumeroPagamenti() {
+    return numeroPagamenti;
   }
 
-  /**
-   * numero di pagamenti oggetto della rendicontazione
-   **/
+  public void setNumeroPagamenti(BigDecimal numeroPagamenti) {
+    this.numeroPagamenti = numeroPagamenti;
+  }
+
   public FlussoRendicontazioneIndex numeroPagamenti(BigDecimal numeroPagamenti) {
     this.numeroPagamenti = numeroPagamenti;
     return this;
   }
 
-  @JsonProperty("numeroPagamenti")
-  public BigDecimal getNumeroPagamenti() {
-    return numeroPagamenti;
-  }
-  public void setNumeroPagamenti(BigDecimal numeroPagamenti) {
-    this.numeroPagamenti = numeroPagamenti;
+ /**
+   * somma degli importi rendicontati
+   * @return importoTotale
+  **/
+  @JsonProperty("importoTotale")
+  @NotNull
+  public Double getImportoTotale() {
+    return importoTotale;
   }
 
-  /**
-   * somma degli importi rendicontati
-   **/
+  public void setImportoTotale(Double importoTotale) {
+    this.importoTotale = importoTotale;
+  }
+
   public FlussoRendicontazioneIndex importoTotale(Double importoTotale) {
     this.importoTotale = importoTotale;
     return this;
   }
 
-  @JsonProperty("importoTotale")
-  public Double getImportoTotale() {
-    return importoTotale;
-  }
-  public void setImportoTotale(Double importoTotale) {
-    this.importoTotale = importoTotale;
+ /**
+   * Get stato
+   * @return stato
+  **/
+  @JsonProperty("stato")
+  @NotNull
+  public StatoFlussoRendicontazione getStato() {
+    return stato;
   }
 
-  /**
-   **/
+  public void setStato(StatoFlussoRendicontazione stato) {
+    this.stato = stato;
+  }
+
   public FlussoRendicontazioneIndex stato(StatoFlussoRendicontazione stato) {
     this.stato = stato;
     return this;
   }
 
-  @JsonProperty("stato")
-  public StatoFlussoRendicontazione getStato() {
-    return stato;
-  }
-  public void setStato(StatoFlussoRendicontazione stato) {
-    this.stato = stato;
+ /**
+   * Get segnalazioni
+   * @return segnalazioni
+  **/
+  @JsonProperty("segnalazioni")
+  public List<Segnalazione> getSegnalazioni() {
+    return segnalazioni;
   }
 
-  /**
-   **/
+  public void setSegnalazioni(List<Segnalazione> segnalazioni) {
+    this.segnalazioni = segnalazioni;
+  }
+
   public FlussoRendicontazioneIndex segnalazioni(List<Segnalazione> segnalazioni) {
     this.segnalazioni = segnalazioni;
     return this;
   }
 
-  @JsonProperty("segnalazioni")
-  public List<Segnalazione> getSegnalazioni() {
-    return segnalazioni;
-  }
-  public void setSegnalazioni(List<Segnalazione> segnalazioni) {
-    this.segnalazioni = segnalazioni;
+  public FlussoRendicontazioneIndex addSegnalazioniItem(Segnalazione segnalazioniItem) {
+    this.segnalazioni.add(segnalazioniItem);
+    return this;
   }
 
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    FlussoRendicontazioneIndex flussoRendicontazioneIndex = (FlussoRendicontazioneIndex) o;
-    return Objects.equals(idFlusso, flussoRendicontazioneIndex.idFlusso) &&
-        Objects.equals(dataFlusso, flussoRendicontazioneIndex.dataFlusso) &&
-        Objects.equals(trn, flussoRendicontazioneIndex.trn) &&
-        Objects.equals(dataRegolamento, flussoRendicontazioneIndex.dataRegolamento) &&
-        Objects.equals(idPsp, flussoRendicontazioneIndex.idPsp) &&
-        Objects.equals(bicRiversamento, flussoRendicontazioneIndex.bicRiversamento) &&
-        Objects.equals(idDominio, flussoRendicontazioneIndex.idDominio) &&
-        Objects.equals(numeroPagamenti, flussoRendicontazioneIndex.numeroPagamenti) &&
-        Objects.equals(importoTotale, flussoRendicontazioneIndex.importoTotale) &&
-        Objects.equals(stato, flussoRendicontazioneIndex.stato) &&
-        Objects.equals(segnalazioni, flussoRendicontazioneIndex.segnalazioni);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(idFlusso, dataFlusso, dataAcquisizione, trn, dataRegolamento, idPsp, bicRiversamento, idDominio, numeroPagamenti, importoTotale, stato, segnalazioni);
-  }
-
-  public static FlussoRendicontazioneIndex parse(String json) throws ServiceException, ValidationException { 
-    return (FlussoRendicontazioneIndex) parse(json, FlussoRendicontazioneIndex.class);
-  }
-
-  @Override
-  public String getJsonIdFilter() {
-    return "flussoRendicontazioneIndex";
-  }
 
   @Override
   public String toString() {
@@ -299,12 +317,12 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
     
     sb.append("    idFlusso: ").append(toIndentedString(idFlusso)).append("\n");
     sb.append("    dataFlusso: ").append(toIndentedString(dataFlusso)).append("\n");
-    sb.append("    dataAcquisizione: ").append(toIndentedString(dataAcquisizione)).append("\n");
+    sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("    trn: ").append(toIndentedString(trn)).append("\n");
     sb.append("    dataRegolamento: ").append(toIndentedString(dataRegolamento)).append("\n");
     sb.append("    idPsp: ").append(toIndentedString(idPsp)).append("\n");
     sb.append("    bicRiversamento: ").append(toIndentedString(bicRiversamento)).append("\n");
-    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
+    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    numeroPagamenti: ").append(toIndentedString(numeroPagamenti)).append("\n");
     sb.append("    importoTotale: ").append(toIndentedString(importoTotale)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
@@ -317,13 +335,10 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(java.lang.Object o) {
+  private static String toIndentedString(java.lang.Object o) {
     if (o == null) {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
   }
 }
-
-
-

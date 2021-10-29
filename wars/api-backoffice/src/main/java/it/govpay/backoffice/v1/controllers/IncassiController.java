@@ -34,6 +34,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
+import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -51,7 +52,7 @@ public class IncassiController extends BaseController {
 	}
 
 
-	public Response findRiconciliazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean metadatiPaginazione, Boolean maxRisultati, String sct) {
+	public Response findRiconciliazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean metadatiPaginazione, Boolean maxRisultati, String sct, String idFlusso, String iuv) {
 		String methodName = "findRiconciliazioni";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -70,6 +71,17 @@ public class IncassiController extends BaseController {
 			listaIncassoDTO.setEseguiCount(metadatiPaginazione);
 			listaIncassoDTO.setEseguiCountConLimit(maxRisultati);
 			listaIncassoDTO.setSct(sct);
+			
+			if(iuv != null) {
+				// se ho ricevuto un numero avviso lo converto in iuv
+				if(iuv.length() == 18) {
+					iuv = IuvUtils.toIuv(iuv);
+				}
+				
+				listaIncassoDTO.setIuv(iuv);
+			}
+			
+			listaIncassoDTO.setCodFlusso(idFlusso);
 			
 			if(dataDa != null) {
 				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");

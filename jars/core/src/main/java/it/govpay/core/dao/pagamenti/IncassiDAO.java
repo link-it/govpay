@@ -69,6 +69,20 @@ public class IncassiDAO extends BaseDAO{
 			newFilter.setLimit(listaIncassoDTO.getLimit());
 			newFilter.setCodApplicazione(listaIncassoDTO.getIdA2A());
 			newFilter.setSct(listaIncassoDTO.getSct());
+			newFilter.setCodFlusso(listaIncassoDTO.getCodFlusso());
+			
+			List<Incasso> findAll = new ArrayList<>();
+			if(listaIncassoDTO.getIuv() != null ) {
+				PagamentiBD pagamentiBD = new PagamentiBD(incassiBD);
+				pagamentiBD.setAtomica(false);
+				
+				try {
+					List<Long> idIncassoByIuv = pagamentiBD.getIdIncassoByIuv(listaIncassoDTO.getIuv());
+					newFilter.setIdIncasso(idIncassoByIuv);
+				} catch (NotFoundException e) {
+					return new ListaIncassiDTOResponse(0L, findAll);
+				}
+			}
 
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Incasso.model().DATA_ORA_INCASSO);
@@ -81,7 +95,7 @@ public class IncassiDAO extends BaseDAO{
 				 count = incassiBD.count(newFilter);
 			}
 			
-			List<Incasso> findAll = new ArrayList<>();
+			
 			if(listaIncassoDTO.isEseguiFindAll()) {
 				findAll = incassiBD.findAll(newFilter);
 			}
@@ -104,7 +118,7 @@ public class IncassiDAO extends BaseDAO{
 							for(Pagamento pagamento: pagamenti) {
 								pagamento.getDominio(configWrapper);
 								SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(incassiBD);
-								Versamento versamento = singoloVersamento.getVersamento(incassiBD);
+								Versamento versamento = singoloVersamento.getVersamentoBD(incassiBD);
 								versamento.getApplicazione(configWrapper);
 								versamento.getDominio(configWrapper);
 								versamento.getUo(configWrapper);
@@ -350,7 +364,7 @@ public class IncassiDAO extends BaseDAO{
 	private void populatePagamento(Pagamento pagamento, BasicBD bd, BDConfigWrapper configWrapper)
 			throws ServiceException, NotFoundException {
 		SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd); 
-		Versamento versamento = singoloVersamento.getVersamento(bd); 
+		Versamento versamento = singoloVersamento.getVersamentoBD(bd); 
 		versamento.getApplicazione(configWrapper);
 		versamento.getUo(configWrapper);
 		versamento.getDominio(configWrapper);

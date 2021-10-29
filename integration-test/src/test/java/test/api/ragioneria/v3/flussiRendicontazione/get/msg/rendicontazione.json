@@ -7,14 +7,19 @@
   "data": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
   "segnalazioni": "#ignore",
   "riscossione": {
+  	"dominio" : {
+		"idDominio" : "#string",
+		"ragioneSociale" : "#string"
+	},
 	"iuv":"#string",
 	"iur":"#string",
 	"indice":"#number",
+	"stato":"#string",
 	"tipo":"#string",
 	"importo":"#? isImportoConDueDecimali(_)",
 	"data":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
 	"vocePendenza": {
-		"idDominio" : "##string",
+		"dominio" : "##object",
 		"idVocePendenza":"#string",
 		"descrizione" : "##string",
 		"datiAllegati": "##object",
@@ -23,7 +28,10 @@
 		"pendenza": {
 			"idA2A":"#string",
 			"idPendenza":"#string",
-			"idDominio":"#string",
+			"dominio" : {
+				"idDominio" : "#string",
+				"ragioneSociale" : "#string"
+			},
 			"idUnitaOperativa":"##string",
 			"idTipoPendenza":"#string",
 			"causale":"##string",

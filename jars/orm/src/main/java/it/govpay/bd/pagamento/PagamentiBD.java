@@ -45,7 +45,6 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.converter.PagamentoConverter;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
-import it.govpay.model.Pagamento.Stato;
 import it.govpay.orm.IdPagamento;
 import it.govpay.orm.dao.jdbc.JDBCPagamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
@@ -455,5 +454,41 @@ public class PagamentiBD extends BasicBD {
 			}
 		}
 		
+	}
+	
+	public List<Long> getIdIncassoByIuv(String iuv) throws ServiceException, NotFoundException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			PagamentoModel model = it.govpay.orm.Pagamento.model();
+			PagamentoFieldConverter fieldConverter = new PagamentoFieldConverter(
+					this.getJdbcProperties().getDatabaseType());
+			CustomField cf =  new CustomField("id_incasso", Long.class, "id_incasso", fieldConverter.toTable(it.govpay.orm.Pagamento.model()));
+			
+			IPaginatedExpression exp = this.getPagamentoService()
+					.newPaginatedExpression();
+			exp.equals(model.IUV, iuv);
+			
+			List<Object> select = this.getPagamentoService().select(exp, cf);
+			
+			List<Long> res = new ArrayList<>();
+			if(select != null && select.size() > 0) {
+				for (Object object : select) {
+					if(object instanceof Long) {
+						res.add((Long) object);
+					}
+				}
+			}
+			
+			return res;
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException();
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 }

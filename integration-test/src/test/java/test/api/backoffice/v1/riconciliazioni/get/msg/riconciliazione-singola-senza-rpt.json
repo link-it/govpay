@@ -5,6 +5,8 @@
    "importo":"#notnull",
    "data":"#notnull",
    "sct":"#notnull",
+   "iuv":"##string",
+   "idFlusso":"##string",
    "riscossioni":[
       {
          "idDominio":"#notnull",

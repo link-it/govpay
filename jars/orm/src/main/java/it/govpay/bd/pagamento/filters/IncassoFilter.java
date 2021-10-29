@@ -54,6 +54,8 @@ public class IncassoFilter extends AbstractFilter{
 	private List<Long> idIncasso= null;
 	private String codDominio =null;
 	private String sct;
+	private String codFlusso = null;
+	private String iuv = null;
 
 	public IncassoFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -179,6 +181,22 @@ public class IncassoFilter extends AbstractFilter{
 				addAnd = true;
 			}
 			
+			if(this.codFlusso != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Incasso.model().COD_FLUSSO_RENDICONTAZIONE, this.codFlusso);
+				addAnd = true;
+			}
+			
+			if(this.iuv != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Incasso.model().IUV, this.iuv);
+				addAnd = true;
+			}
+			
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -256,6 +274,14 @@ public class IncassoFilter extends AbstractFilter{
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_APPLICAZIONE.COD_APPLICAZIONE, true) + " = ? ");
 			}
 			
+			if(this.codFlusso != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_FLUSSO_RENDICONTAZIONE, true) + " = ? ");
+			}
+			
+			if(this.iuv != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.IUV, true) + " = ? ");
+			}
+			
 			return sqlQueryObject;
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
@@ -311,6 +337,14 @@ public class IncassoFilter extends AbstractFilter{
 		
 		if(this.codApplicazione != null){
 			lst.add(this.codApplicazione);
+		}
+		
+		if(this.codFlusso != null){
+			lst.add(this.codFlusso);
+		}
+		
+		if(this.iuv != null){
+			lst.add(this.iuv);
 		}
 		
 		return lst.toArray(new Object[lst.size()]);
@@ -393,6 +427,22 @@ public class IncassoFilter extends AbstractFilter{
 
 	public void setSct(String sct) {
 		this.sct = sct;
+	}
+
+	public String getCodFlusso() {
+		return codFlusso;
+	}
+
+	public void setCodFlusso(String codFlusso) {
+		this.codFlusso = codFlusso;
+	}
+
+	public String getIuv() {
+		return iuv;
+	}
+
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
 	}
 	
 }
