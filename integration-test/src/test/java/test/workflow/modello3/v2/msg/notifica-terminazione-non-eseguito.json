@@ -89,11 +89,11 @@
          "idChannel":"#notnull",
          "channelDescription":"#notnull",
          "payer":null,
-         "paymentMethod":null,
-         "fee":null,
+         "paymentMethod": "##string",
+         "fee":"1.00",
          "paymentDateTime":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d",
-         "applicationDate":null,
-         "transferDate":null,
+         "applicationDate":"#ignore",
+         "transferDate":"#notnull",
          "metadata":null
       }
    },
