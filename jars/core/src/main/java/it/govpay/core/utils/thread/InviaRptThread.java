@@ -47,6 +47,7 @@ import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.client.exception.ClientException;
@@ -112,6 +113,14 @@ public class InviaRptThread implements Runnable {
 				client.getEventoCtx().setIdPagamento(this.pagamentoPortale.getIdSessione());
 
 			RptUtils.popolaEventoCooperazione(client, this.rpt, this.intermediario, this.stazione);
+			
+			Integer timeoutInvioRPTModello3Millis = GovpayConfig.getInstance().getTimeoutInvioRPTModello3Millis();
+			
+			if(timeoutInvioRPTModello3Millis > 0) {
+				log.debug("Invio dell'RPT in pausa per "+ timeoutInvioRPTModello3Millis + " ms...");
+				Thread.sleep(timeoutInvioRPTModello3Millis);
+				log.debug("Invio dell'RPT: ripresa esecuzione");
+			}
 
 			NodoInviaRPT inviaRPT = new NodoInviaRPT();
 			inviaRPT.setIdentificativoCanale(this.rpt.getCodCanale());
@@ -189,7 +198,7 @@ public class InviaRptThread implements Runnable {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
 			}
-		} catch (NotFoundException | ServiceException | GovPayException | UtilsException e) {
+		} catch (NotFoundException | ServiceException | GovPayException | UtilsException | InterruptedException e) {
 			log.error("Errore nella spedizione della RPT", e);
 			if(client != null) {
 				if(e instanceof GovPayException) {
