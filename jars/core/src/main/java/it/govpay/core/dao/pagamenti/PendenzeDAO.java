@@ -767,14 +767,15 @@ public class PendenzeDAO extends BaseDAO{
 
 		switch (nuovoStato) {
 		case ANNULLATO:
-			if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
+			if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)
+					|| versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
 				versamentoLetto.setStatoVersamento(StatoVersamento.ANNULLATO);
 				versamentoLetto.setAvvisoNotificato(null);
 				versamentoLetto.setAvvAppIOPromemoriaScadenzaNotificato(null); 
 				versamentoLetto.setAvvMailPromemoriaScadenzaNotificato(null);
 				//				eventoUtente.setDettaglioEsito("Pendenza annullata");
 			} else {
-				throw new ValidationException("Non e' consentito aggiornare lo stato di una pendenza ad ANNULLATO da uno stato diverso da NON_ESEGUITO");
+				throw new ValidationException("Non e' consentito aggiornare lo stato di una pendenza ad ANNULLATO da uno stato diverso da NON_ESEGUITO o ANNULLATO");
 			}
 			break;
 		case NON_ESEGUITO:
