@@ -192,3 +192,40 @@ Examples:
 | domini | [ '*' ] |
 | tipiPendenza | [ '*' ] |
 | tipiPendenza | [ 'autodeterminazione' ] |
+
+
+
+Scenario: Modifica del principal di una applicazione non deve modificare le autorizzazione sulle API
+
+* def applicazione = read('classpath:test/api/backoffice/v1/applicazioni/put/msg/applicazione.json')
+* def idComune = getCurrentTimeMillis()
+* def idAppl1 = 'PROVA_' + idComune
+
+* set applicazione.principal = idAppl1
+
+Given url backofficeBaseurl
+And path 'applicazioni', idAppl1
+And headers basicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* set applicazione.principal = 'PRINCIPAL_MODIFICATO'
+
+Given url backofficeBaseurl
+And path 'applicazioni', idAppl1
+And headers basicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'applicazioni', idAppl1
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.apiPagamenti == true
+And match response.apiPendenze == true
+And match response.apiRagioneria == true
+
+
