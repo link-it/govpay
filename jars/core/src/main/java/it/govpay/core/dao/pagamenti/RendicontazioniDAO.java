@@ -53,11 +53,13 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setDataFine(listaRendicontazioniDTO.getDataA()); 
 			filter.setIncassato(listaRendicontazioniDTO.getIncassato());
 			filter.setCodFlusso(listaRendicontazioniDTO.getIdFlusso());
+			filter.setRicercaIdFlussoCaseInsensitive(listaRendicontazioniDTO.isRicercaIdFlussoCaseInsensitive());
 			filter.setDominiUOAutorizzati(listaRendicontazioniDTO.getUnitaOperative());
 			filter.setStato(listaRendicontazioniDTO.getStato());
 			filter.setEseguiCountConLimit(listaRendicontazioniDTO.isEseguiCountConLimit());
 			filter.setObsoleto(listaRendicontazioniDTO.getObsoleto()); 
 			filter.setIuv(listaRendicontazioniDTO.getIuv());
+			filter.setRicercaIdFlussoCaseInsensitive(listaRendicontazioniDTO.isRicercaIdFlussoCaseInsensitive());
 
 			Long count = null;
 			
@@ -256,6 +258,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setDirezione(listaRendicontazioniDTO.getDirezione());
 			filter.setDivisione(listaRendicontazioniDTO.getDivisione());
 			filter.setFrObsoleto(listaRendicontazioniDTO.getFrObsoleto());
+			filter.setRicercaIdFlussoCaseInsensitive(listaRendicontazioniDTO.isRicercaIdFlussoCaseInsensitive());
 
 			Long count = null;
 			

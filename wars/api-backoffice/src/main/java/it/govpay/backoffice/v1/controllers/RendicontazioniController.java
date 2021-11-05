@@ -88,6 +88,7 @@ public class RendicontazioniController extends BaseController {
 			}
 
 			findRendicontazioniDTO.setCodFlusso(idFlusso);
+			findRendicontazioniDTO.setRicercaIdFlussoCaseInsensitive(true);
 			findRendicontazioniDTO.setIuv(iuv);
 			findRendicontazioniDTO.setDirezione(direzione);
 			findRendicontazioniDTO.setDivisione(divisione);

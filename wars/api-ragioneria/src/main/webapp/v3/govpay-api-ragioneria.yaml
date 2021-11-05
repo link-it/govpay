@@ -37,6 +37,7 @@ paths:
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/metadatiPaginazione'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/maxRisultati'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/iuv'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/idFlusso'
       responses:
         '200':
           description: Lista dei flussi rendicontazione

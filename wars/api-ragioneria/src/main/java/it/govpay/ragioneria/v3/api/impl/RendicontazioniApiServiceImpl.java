@@ -53,7 +53,7 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
      * Elenco dei flussi di rendicontazione acquisite da pagoPa
      *
      */
-    public Response findFlussiRendicontazione(Integer pagina, Integer risultatiPerPagina, String ordinamento, String idDominio, String dataDa, String dataA, String stato, Boolean metadatiPaginazione, Boolean maxRisultati, String iuv) {
+    public Response findFlussiRendicontazione(Integer pagina, Integer risultatiPerPagina, String ordinamento, String idDominio, String dataDa, String dataA, String stato, Boolean metadatiPaginazione, Boolean maxRisultati, String iuv, String idFlusso) {
     	Authentication user = this.getUser();
     	String methodName = "findFlussiRendicontazione";  
     	String transactionId = ContextThreadLocal.get().getTransactionId();
@@ -103,6 +103,8 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 			findRendicontazioniDTO.setUnitaOperative(uo);
 //			findRendicontazioniDTO.setObsoleto(false);
 			findRendicontazioniDTO.setIuv(iuv);
+			findRendicontazioniDTO.setRicercaIdFlussoCaseInsensitive(true);
+			findRendicontazioniDTO.setIdFlusso(idFlusso);
 			
 			findRendicontazioniDTO.setEseguiCount(metadatiPaginazione);
 			findRendicontazioniDTO.setEseguiCountConLimit(maxRisultati);
