@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -60,6 +61,8 @@ public class RendicontazioneFilter extends AbstractFilter {
 	private List<Long> idVersamento= null;
 	private List<Long> idUo;
 	private List<Long> idTipiVersamento = null;
+	
+	private boolean ricercaIdFlussoCaseInsensitive = false;
 
 	public RendicontazioneFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -204,12 +207,21 @@ public class RendicontazioneFilter extends AbstractFilter {
 			
 			// FR
 			
-			if(this.codFlusso != null) {
+			if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
 				if(addAnd)
 					newExpression.and();
 				
-//				newExpression.ilike(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
-				newExpression.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso);
+				if(this.ricercaIdFlussoCaseInsensitive) {
+					IExpression newExpressionIngnoreCase = this.newExpression();
+					
+					newExpressionIngnoreCase.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso).or()
+					.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso.toUpperCase()).or()
+					.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso.toLowerCase());
+					
+					newExpression.and(newExpressionIngnoreCase);
+				} else {
+					newExpression.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso);
+				}
 				addAnd = true;
 			}
 			
@@ -424,8 +436,12 @@ public class RendicontazioneFilter extends AbstractFilter {
 			
 			// FR
 			
-			if(this.codFlusso != null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ");
+			if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
+				if(this.ricercaIdFlussoCaseInsensitive) {
+					sqlQueryObject.addWhereCondition(false,converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ",converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ",converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ");
+				} else {
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ");
+				}
 			}
 			
 			if(this.idFr != null) {
@@ -579,8 +595,14 @@ public class RendicontazioneFilter extends AbstractFilter {
 		
 		// FR
 		
-		if(this.codFlusso != null) {
-			lst.add(this.codFlusso);
+		if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
+			if(this.ricercaIdFlussoCaseInsensitive) {
+				lst.add(this.codFlusso);
+				lst.add(this.codFlusso.toUpperCase());
+				lst.add(this.codFlusso.toLowerCase());
+			}else {
+				lst.add(this.codFlusso);
+			}
 		}
 		
 		if(this.idFr != null) {
@@ -874,6 +896,14 @@ public class RendicontazioneFilter extends AbstractFilter {
 
 	public void setFrObsoleto(Boolean frObsoleto) {
 		this.frObsoleto = frObsoleto;
+	}
+
+	public boolean isRicercaIdFlussoCaseInsensitive() {
+		return ricercaIdFlussoCaseInsensitive;
+	}
+
+	public void setRicercaIdFlussoCaseInsensitive(boolean ricercaIdFlussoCaseInsensitive) {
+		this.ricercaIdFlussoCaseInsensitive = ricercaIdFlussoCaseInsensitive;
 	}
 	
 	

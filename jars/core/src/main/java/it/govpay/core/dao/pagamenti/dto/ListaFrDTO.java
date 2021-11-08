@@ -25,6 +25,7 @@ public class ListaFrDTO extends BasicFindRequestDTO{
 	private Fr.StatoFr stato;
 	private Boolean obsoleto = null;
 	private String iuv;
+	private boolean ricercaIdFlussoCaseInsensitive = false;
 
 	public String getIdDominio() {
 		return this.idDominio;
@@ -73,5 +74,11 @@ public class ListaFrDTO extends BasicFindRequestDTO{
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
+	}
+	public boolean isRicercaIdFlussoCaseInsensitive() {
+		return ricercaIdFlussoCaseInsensitive;
+	}
+	public void setRicercaIdFlussoCaseInsensitive(boolean ricercaIdFlussoCaseInsensitive) {
+		this.ricercaIdFlussoCaseInsensitive = ricercaIdFlussoCaseInsensitive;
 	}
 }

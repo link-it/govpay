@@ -26,6 +26,7 @@ public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 	private List<String> direzione;
 	private List<String> divisione;
 	private Boolean frObsoleto;
+	private boolean ricercaIdFlussoCaseInsensitive = false;
 	
 	public Date getDataFlussoDa() {
 		return dataFlussoDa;
@@ -80,6 +81,12 @@ public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 	}
 	public void setFrObsoleto(Boolean frObsoleto) {
 		this.frObsoleto = frObsoleto;
+	}
+	public boolean isRicercaIdFlussoCaseInsensitive() {
+		return ricercaIdFlussoCaseInsensitive;
+	}
+	public void setRicercaIdFlussoCaseInsensitive(boolean ricercaIdFlussoCaseInsensitive) {
+		this.ricercaIdFlussoCaseInsensitive = ricercaIdFlussoCaseInsensitive;
 	}
 	
 }

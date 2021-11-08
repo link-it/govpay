@@ -40,6 +40,7 @@ paths:
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
         - $ref: '#/components/parameters/iuv'
+        - $ref: '#/components/parameters/idFlusso'
       responses:
         '200':
           description: Lista dei flussi rendicontazione
@@ -335,6 +336,13 @@ components:
       name: idDominio
       in: query
       description: Identificativo del dominio dell'ente
+      required: false
+      schema:
+        type: string
+    idFlusso:
+      in: query
+      name: idFlusso
+      description: Identificativo flusso
       required: false
       schema:
         type: string
