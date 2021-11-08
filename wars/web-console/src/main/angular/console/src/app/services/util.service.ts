@@ -1198,7 +1198,7 @@ export class UtilService {
     const row: string[] = [];
     csvKeys.forEach((_key) => {
       const _val = this.jsonToCsvRowEscape(json[_key]);
-      row.push('"'+(_val || 'n/a')+'"');
+      row.push('"'+(_val || '')+'"');
     });
     csvRow += row.join(', ')+'\r\n';
 
@@ -1774,6 +1774,8 @@ export class UtilService {
       break;
       case UtilService.INCASSI:
         _list = [
+          new FormInput({ id: 'idFlusso', label: FormService.FORM_IDENTIFICATIVO_FLUSSO, type: UtilService.INPUT }),
+          new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
           new FormInput({ id: 'sct', label: FormService.FORM_SCT, type: UtilService.INPUT }),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
