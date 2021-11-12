@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
@@ -34,6 +35,8 @@ import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 
+import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.ec.v1.converter.VerificaConverter;
@@ -243,6 +246,7 @@ public class VerificaClient extends BasicClientCORE {
 
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 
 		try {
 			this.operationID = appContext.setupPaClient(this.codApplicazione, VerificaClient.AZIONE_SOAP_PA_VERIFICA_VERSAMENTO, this.url.toExternalForm(), this.versione);
@@ -259,7 +263,13 @@ public class VerificaClient extends BasicClientCORE {
 				path = MessageFormat.format(VERIfICA_PENDENZE_V2_VERIFY_PENDENZA_OPERATION_PATH, this.codApplicazione, codVersamentoEnte);
 				swaggerOperationID = VERIFICA_PENDENZE_V2_VERIFY_PENDENZA_OPERATION_ID;
 			} else {
-				path = MessageFormat.format(VERIFICA_PENDENZE_V2_GET_AVVISO_OPERATION_PATH, codDominio, iuv);
+				
+				String numeroAvviso = iuv;
+				try {
+					numeroAvviso = IuvUtils.toNumeroAvviso(iuv, AnagraficaManager.getDominio(configWrapper, codDominio));
+				} catch (NotFoundException e) {	}
+				
+				path = MessageFormat.format(VERIFICA_PENDENZE_V2_GET_AVVISO_OPERATION_PATH, codDominio, numeroAvviso);
 			}
 
 			it.govpay.ec.v2.beans.PendenzaVerificata pendenzaVerificata = null;

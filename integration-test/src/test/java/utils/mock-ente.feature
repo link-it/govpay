@@ -55,7 +55,8 @@ Scenario: pathMatches(pagamentiPath+'/v1/avvisi/{idDominio}/{iuv}') && methodIs(
   * def response = pendenza
   
 Scenario: pathMatches(pagamentiPath+'/v2/avvisi/{idDominio}/{numeroAvviso}') && methodIs('get')
-  * eval versamenti[pathParams.idDominio + pathParams.numeroAvviso] = request
+  * eval pendenza = versamenti[pathParams.idDominio + pathParams.numeroAvviso] == null ? pendenzaSconosciuta : versamenti[pathParams.idDominio + pathParams.numeroAvviso] 
+  * def response = pendenza
 
 # API Verifica per numero Pendenza
 

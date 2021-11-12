@@ -112,6 +112,16 @@ public class IuvUtils {
 
 		return iuvGenerato;
 	}
+	
+	public static String toNumeroAvviso(String iuv, Dominio dominio) throws ServiceException { 
+		String iuvGenerato = iuv;
+		if(dominio.getAuxDigit() == 0)
+			iuvGenerato = dominio.getAuxDigit() + String.format("%02d", dominio.getStazione().getApplicationCode()) + iuv;
+		else
+			iuvGenerato = dominio.getAuxDigit() + iuv;
+		
+		return iuvGenerato;
+	}
 
 	public static String toIuv(String numeroAvviso) throws ValidationException {
 		if(numeroAvviso == null)

@@ -12,6 +12,7 @@ Background:
 
 * def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
 * set applicazione.servizioIntegrazione.versioneApi = 'REST v2'
+* set applicazione.servizioIntegrazione.url = ente_api_url + '/v2'
 
 Given url backofficeBaseurl
 And path 'applicazioni', idA2A
@@ -53,7 +54,7 @@ Scenario Outline: <field> non valida
 * set <fieldRequest> = <fieldValue>
 
 Given url ente_api_url
-And path '/v1/avvisi', idDominio, iuv
+And path '/v2/avvisi', idDominio, numeroAvviso
 And request pendenza
 When method post
 Then status 200
@@ -89,7 +90,7 @@ Scenario: Caricamento pendenza con contabilita errore validazione importi
 * set pendenza.stato = 'NON_ESEGUITA'
 
 Given url ente_api_url
-And path '/v1/avvisi', idDominio, iuv
+And path '/v2/avvisi', idDominio, numeroAvviso
 And request pendenza
 When method post
 Then status 200
