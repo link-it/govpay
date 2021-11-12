@@ -424,7 +424,7 @@ public class PendenzeConverter {
 					tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
 					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
 					tributo.setIbanAppoggio(vocePendenza.getIbanAppoggio());
-					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
+					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
 					sv.setTributo(tributo);
 				}
 				

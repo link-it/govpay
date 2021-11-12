@@ -31,7 +31,12 @@ public class Connector extends JSONSerializable implements IValidable {
     
         
             
-    V1("REST v1");
+    V1("REST v1"),
+    
+            
+    V2("REST v2");
+
+
 //SOAP_3("SOAP v3");
             
         
@@ -70,6 +75,7 @@ public class Connector extends JSONSerializable implements IValidable {
 	public String toNameString() {
 		switch(this) {
 		case V1: return "REST_1";
+		case V2: return "REST_2";
 		//case SOAP_3: return "SOAP_3";
 		default:  return "";
 		}

@@ -17,6 +17,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.model.Notifica.TipoNotifica;
+import it.govpay.model.Versionabile;
 
 public class Notifica {
 	
@@ -29,7 +30,17 @@ public class Notifica {
 		// prima di inserire le notifiche controllo che l'applicazione da utilizzare abbia il connettore per le notifiche abilitato, altrimenti non ha senso inserire.
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Applicazione applicazione = notifica.getApplicazione(configWrapper);
+		
+		TipoNotifica tipo = notifica.getTipo();
+		
 		if(applicazione.getConnettoreIntegrazione() != null) {
+			
+			// la versione V2 delle api client prevede solamente l'invio delle notifiche di tipo ricevuta
+			if(!tipo.equals(TipoNotifica.RICEVUTA) && !applicazione.getConnettoreIntegrazione().getVersione().equals(Versionabile.Versione.GP_REST_01)) {
+				log.debug("Inserimento notifica RPT["+notifica.getRptKey() +"] di tipo ["+tipo+"] non effettuato, la versione ["
+					+applicazione.getConnettoreIntegrazione().getVersione()+"] del connettore integrazione per l'applicazione ["+applicazione.getCodApplicazione()+"] non prevede la spedizione di questa tipo di notifica.");
+				return false;
+			}
 			
 			NotificheBD notificheBD = null;
 			if(bd == null) {

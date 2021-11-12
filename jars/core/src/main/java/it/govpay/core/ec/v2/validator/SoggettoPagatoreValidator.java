@@ -1,4 +1,7 @@
-package it.govpay.core.utils.validator;
+package it.govpay.core.ec.v2.validator;
+
+import it.govpay.core.utils.validator.CostantiValidazione;
+import it.govpay.core.utils.validator.ValidatorFactory;
 
 public class SoggettoPagatoreValidator{
 

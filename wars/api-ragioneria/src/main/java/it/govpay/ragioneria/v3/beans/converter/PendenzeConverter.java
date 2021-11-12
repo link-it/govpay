@@ -17,6 +17,7 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.ragioneria.v3.beans.Documento;
 import it.govpay.ragioneria.v3.beans.Pendenza;
 import it.govpay.ragioneria.v3.beans.Soggetto;
+import it.govpay.ragioneria.v3.beans.TipoRiferimentoVocePendenza.TipoBolloEnum;
 import it.govpay.ragioneria.v3.beans.TipoSoggetto;
 import it.govpay.ragioneria.v3.beans.TipoSogliaVincoloPagamento;
 import it.govpay.ragioneria.v3.beans.VincoloPagamento;
@@ -117,6 +118,30 @@ public class PendenzeConverter {
 		//		rsModel.setIndice(new BigDecimal(indice));
 		rsModel.setPendenza(toRsModel(versamento));
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
+		
+		
+		// Definisce i dati di un bollo telematico
+		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
+			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());
+			
+			switch(singoloVersamento.getTipoBollo()) {
+			case IMPOSTA_BOLLO:
+				rsModel.setTipoBollo(TipoBolloEnum._01);
+				break;
+			}
+			rsModel.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
+			if(singoloVersamento.getTipoContabilita() != null && singoloVersamento.getCodContabilita() != null)
+				rsModel.setCodiceTassonomicoPagoPA(singoloVersamento.getTipoContabilita().getCodifica() + "/"+ singoloVersamento.getCodContabilita());
+		} else if(singoloVersamento.getTributo(configWrapper) != null && singoloVersamento.getTributo(configWrapper).getCodTributo() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
+			rsModel.setCodEntrata(singoloVersamento.getTributo(configWrapper).getCodTributo());
+		} else { // Definisce i dettagli di incasso della singola entrata.
+			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(configWrapper).getCodIban());
+			if(singoloVersamento.getIbanAppoggio(configWrapper) !=null)
+				rsModel.setIbanAccredito(singoloVersamento.getIbanAppoggio(configWrapper).getCodIban());
+			if(singoloVersamento.getTipoContabilita() != null && singoloVersamento.getCodContabilita() != null)
+				rsModel.setCodiceTassonomicoPagoPA(singoloVersamento.getTipoContabilita().getCodifica() + "/"+ singoloVersamento.getCodContabilita());
+		}
+		
 		return rsModel;
 	}
 

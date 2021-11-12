@@ -42,6 +42,8 @@ Examples:
 | acl | [	{	servizio: 'Pagamenti' } ] | 'autorizzazioni' |
 | servizioIntegrazione.url | 'xxxx' | 'url' |
 | servizioIntegrazione | { versioneApi: 'xxxxxxx', url: 'http://prova.it', auth: { username: 'usr', password: 'pwd' } } | 'versioneApi' |
+| servizioIntegrazione | { versioneApi: 'REST v3', url: 'http://prova.it', auth: { username: 'usr', password: 'pwd' } } | 'versioneApi' |
+| servizioIntegrazione | { versioneApi: 'SOAP v4', url: 'http://prova.it', auth: { username: 'usr', password: 'pwd' } } | 'versioneApi' |
 | servizioIntegrazione | { versioneApi: 'REST v1', url: 'xxxx', auth: { username: 'usr', password: 'pwd' } } | 'url' |
 | servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { } } | 'tipo' |
 | servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { username: null, password: 'pwd' } } | 'username' |

@@ -21,6 +21,7 @@ package it.govpay.core.utils.client;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,7 @@ import javax.xml.bind.JAXBException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.resources.Charset;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
@@ -44,18 +46,25 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.ec.v1.converter.NotificaAttivazioneConverter;
+import it.govpay.core.ec.v1.converter.NotificaTerminazioneConverter;
+import it.govpay.core.ec.v2.converter.RicevuteConverter;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
-import it.govpay.core.utils.client.v1.NotificaAttivazioneConverter;
-import it.govpay.core.utils.client.v1.NotificaTerminazioneConverter;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Versionabile.Versione;
 
 public class NotificaClient extends BasicClientCORE {
 
+	private static final String NOTIFICHE_V1_NOTIFY_PAGAMENTO_OPERATION_ID = "notifyPagamento";
+	private static final String NOTIFICHE_V1_NOTIFY_PAGAMENTO_OPERATION_PATH = "/pagamenti/{0}/{1}";
+	
+	private static final String NOTIFICHE_V2_NOTIFICA_RICEVUTA_OPERATION_ID = "notificaRicevuta";
+	private static final String NOTIFICHE_V2_NOTIFICA_RICEVUTA_OPERATION_PATH = "/ricevute/{0}/{1}/{2}";
+	
 	private static Logger log = LoggerWrapperFactory.getLogger(NotificaClient.class);
 	private Versione versione;
 
@@ -86,13 +95,28 @@ public class NotificaClient extends BasicClientCORE {
 	 * @throws JAXBException 
 	 * @throws NdpException 
 	 * @throws UtilsException 
+	 * @throws ValidationException 
 	 */
 	public byte[] invoke(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti,
-			PagamentoPortale pagamentoPortale) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException, UtilsException {
+			PagamentoPortale pagamentoPortale) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException, UtilsException, ValidationException {
+		
+		switch (this.versione) {
+		case GP_REST_01:
+			return inviaNotificaConConnettoreV1(notifica, rpt, applicazione, versamento, pagamenti);
+		case GP_REST_02:
+			return inviaNotificaConConnettoreV2(notifica, rpt, applicazione, versamento, pagamenti);
+		case GP_SOAP_03:
+		default:
+			throw new ClientException("Versione ["+this.versione+"] non supportata per l'operazione di notifica");
+		}
+	}
+
+	private byte[] inviaNotificaConConnettoreV1(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento,
+			List<Pagamento> pagamenti) throws ServiceException, ClientException, JAXBException, SAXException {
 		String codDominio = rpt.getCodDominio();
 		String iuv = rpt.getIuv();
 		String ccp = rpt.getCcp();
-		log.debug("Spedisco la notifica di " + notifica.getTipo() + " PAGAMENTO della transazione (" + codDominio + ")(" + iuv + ")(" + ccp + ") in versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
+		log.debug("Spedisco la notifica di " + notifica.getTipo() + " PAGAMENTO della transazione (" + codDominio + ")(" + iuv + ")(" + ccp + ") col connettore versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
 
 		List<Property> headerProperties = new ArrayList<>();
 		headerProperties.add(new Property("Accept", "application/json"));
@@ -100,12 +124,12 @@ public class NotificaClient extends BasicClientCORE {
 		StringBuilder sb = new StringBuilder();
 		Map<String, String> queryParams = new HashMap<>();
 		HttpRequestMethod httpMethod = HttpRequestMethod.POST;
-		String swaggerOperationID = this.getSwaggerOperationId(notifica, rpt);
+		String swaggerOperationID = this.getSwaggerOperationIdApiV1(notifica, rpt);
 
 		switch (notifica.getTipo()) {
 		case ATTIVAZIONE:
 		case RICEVUTA:
-			sb.append("/pagamenti/" + codDominio + "/"+ iuv);
+			sb.append(MessageFormat.format(NOTIFICHE_V1_NOTIFY_PAGAMENTO_OPERATION_PATH, codDominio, iuv));
 			if(rpt.getCodSessione() != null) {
 				queryParams.put("idSession", encode(rpt.getCodSessione()));
 			}
@@ -136,18 +160,18 @@ public class NotificaClient extends BasicClientCORE {
 			sb.append(key).append("=").append(queryParams.get(key));
 		}
 
-		jsonBody = this.getMessaggioRichiesta(notifica, rpt, applicazione, versamento, pagamenti);
+		jsonBody = this.getMessaggioRichiestaApiV1(notifica, rpt, applicazione, versamento, pagamenti);
 
 		return this.sendJson(sb.toString(), jsonBody.getBytes(), headerProperties, httpMethod, swaggerOperationID);
 	}
 
-	public String getSwaggerOperationId(Notifica notifica, Rpt rpt) throws ServiceException { 
+	public String getSwaggerOperationIdApiV1(Notifica notifica, Rpt rpt) throws ServiceException { 
 		String swaggerOperationID = "";
 
 		switch (notifica.getTipo()) {
 		case ATTIVAZIONE:
 		case RICEVUTA:
-			swaggerOperationID = "notifyPagamento";
+			swaggerOperationID = NOTIFICHE_V1_NOTIFY_PAGAMENTO_OPERATION_ID;
 			break;
 		case FALLIMENTO:
 		case ANNULLAMENTO:
@@ -158,7 +182,7 @@ public class NotificaClient extends BasicClientCORE {
 		return swaggerOperationID;
 	}
 
-	private String getMessaggioRichiesta(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, JAXBException, SAXException {
+	private String getMessaggioRichiestaApiV1(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, JAXBException, SAXException {
 		String jsonBody = "";
 
 		switch (notifica.getTipo()) {
@@ -170,6 +194,96 @@ public class NotificaClient extends BasicClientCORE {
 			it.govpay.ec.v1.beans.Notifica notificaTerminazioneRsModel = new NotificaTerminazioneConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti);
 			jsonBody = ConverterUtils.toJSON(notificaTerminazioneRsModel, null);
 			break;
+		case FALLIMENTO:
+		case ANNULLAMENTO:
+			log.warn("Notifica RPT["+notifica.getRptKey() +"] di tipo ["+notifica.getTipo()+"] non verra' spedita verso l'applicazione.");
+			break;
+		}
+
+		return jsonBody;
+	}
+	
+	private byte[] inviaNotificaConConnettoreV2(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento,
+			List<Pagamento> pagamenti) throws ServiceException, ClientException, JAXBException, SAXException, ValidationException {
+		String codDominio = rpt.getCodDominio();
+		String iuv = rpt.getIuv();
+		String ccp = rpt.getCcp();
+		log.debug("Spedisco la notifica di " + notifica.getTipo() + " PAGAMENTO della transazione (" + codDominio + ")(" + iuv + ")(" + ccp + ") col connettore versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
+
+		List<Property> headerProperties = new ArrayList<>();
+		headerProperties.add(new Property("Accept", "application/json"));
+		String jsonBody = "";
+		StringBuilder sb = new StringBuilder();
+		Map<String, String> queryParams = new HashMap<>();
+		HttpRequestMethod httpMethod = HttpRequestMethod.PUT;
+		String swaggerOperationID = this.getSwaggerOperationIdApiV2(notifica, rpt);
+
+		switch (notifica.getTipo()) {
+		
+		case RICEVUTA:
+			sb.append(MessageFormat.format(NOTIFICHE_V2_NOTIFICA_RICEVUTA_OPERATION_PATH, codDominio, iuv, ccp));
+			if(rpt.getCodSessione() != null) {
+				queryParams.put("idSession", encode(rpt.getCodSessione()));
+			}
+
+			if(rpt.getCodSessionePortale() != null) {
+				queryParams.put("idSessionePortale", encode(rpt.getCodSessionePortale()));
+			}
+
+			if(rpt.getCodCarrello() != null) {
+				queryParams.put("idCarrello", encode(rpt.getCodCarrello()));
+			}
+			break;
+		case ATTIVAZIONE:
+		case FALLIMENTO:
+		case ANNULLAMENTO:
+			throw new ClientException("Notifica RPT["+notifica.getRptKey() +"] di tipo ["+notifica.getTipo()+"] non verra' spedita verso l'applicazione.");
+		}
+
+		// composizione URL
+		boolean amp = false;
+		for (String key : queryParams.keySet()) {
+			if(amp) {
+				sb.append("&");
+			} else {
+				sb.append("?");
+				amp = true;
+			}
+
+			sb.append(key).append("=").append(queryParams.get(key));
+		}
+
+		jsonBody = this.getMessaggioRichiestaApiV2(notifica, rpt, applicazione, versamento, pagamenti);
+
+		return this.sendJson(sb.toString(), jsonBody.getBytes(), headerProperties, httpMethod, swaggerOperationID);
+	}
+	
+	public String getSwaggerOperationIdApiV2(Notifica notifica, Rpt rpt) throws ServiceException { 
+		String swaggerOperationID = "";
+
+		switch (notifica.getTipo()) {
+		case RICEVUTA:
+			swaggerOperationID = NOTIFICHE_V2_NOTIFICA_RICEVUTA_OPERATION_ID;
+			break;
+		case ATTIVAZIONE:
+		case FALLIMENTO:
+		case ANNULLAMENTO:
+			log.warn("Notifica RPT["+notifica.getRptKey() +"] di tipo ["+notifica.getTipo()+"] non verra' spedita verso l'applicazione.");
+			break;
+		}
+
+		return swaggerOperationID;
+	}
+	
+	private String getMessaggioRichiestaApiV2(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, ValidationException {
+		String jsonBody = "";
+
+		switch (notifica.getTipo()) {
+		case RICEVUTA:
+			it.govpay.ec.v2.beans.Ricevuta notificaRicevutaRsModel = RicevuteConverter.toRsModel(notifica, rpt, applicazione, versamento, pagamenti);
+			jsonBody = ConverterUtils.toJSON(notificaRicevutaRsModel, null);
+			break;
+		case ATTIVAZIONE:
 		case FALLIMENTO:
 		case ANNULLAMENTO:
 			log.warn("Notifica RPT["+notifica.getRptKey() +"] di tipo ["+notifica.getTipo()+"] non verra' spedita verso l'applicazione.");

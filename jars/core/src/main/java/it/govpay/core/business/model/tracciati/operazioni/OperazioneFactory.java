@@ -55,7 +55,7 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.core.utils.tracciati.TracciatiUtils;
-import it.govpay.core.utils.validator.PendenzaPostValidator;
+import it.govpay.core.utils.tracciati.validator.PendenzaPostValidator;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;

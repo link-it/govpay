@@ -268,7 +268,7 @@ paths:
         - in: query
           name: stampaAvvisi
           description: >- 
-                indica se effettuare la stampa degli avvisi associati alle pendenze caricate col tracciato
+            indica se effettuare la stampa degli avvisi associati alle pendenze caricate col tracciato
           schema:
             type: boolean
             default: true
@@ -7641,6 +7641,7 @@ components:
           type: string
           enum:
             - 'REST v1'
+            - 'REST v2'
           description: Versione delle API di integrazione utilizzate.
         auth:
           $ref: '#/components/schemas/tipoAutenticazione'

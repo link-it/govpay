@@ -132,7 +132,14 @@ components:
       description: "Identificativo dell'Ente Creditore in pagoPA. Corrisponde al codice fiscale."
       required: false
       schema:
-        $ref: 'govpay-api-schemas.yaml#/components/schemas/IdDominio'   
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/IdDominio'
+    idFlusso:
+      in: query
+      name: idFlusso
+      description: Identificativo flusso
+      required: false
+      schema:
+        type: string
     idFlussoCaseInsensitive:
       in: query
       name: idFlussoCaseInsensitive
@@ -223,6 +230,13 @@ components:
       required: false
       schema:
         $ref: 'govpay-api-schemas.yaml#/components/schemas/StatoFlussoRendicontazione'
+    statoRiscossione:
+      name: stato
+      in: query
+      description: Stato della riscossione
+      required: false
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/StatoRiscossione'
     tipiRiscossione:
       in: query
       name: tipo

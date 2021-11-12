@@ -1,14 +1,20 @@
-package it.govpay.core.utils.validator;
+package it.govpay.core.ec.v2.validator;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.utils.json.ValidationException;
 
-import it.govpay.ec.v1.beans.Documento;
-import it.govpay.ec.v1.beans.PendenzaVerificata;
-import it.govpay.ec.v1.beans.Soggetto;
-import it.govpay.ec.v1.beans.VocePendenza;
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.core.utils.validator.ValidatoreUtils;
+import it.govpay.ec.v2.beans.NuovaVocePendenza;
+import it.govpay.ec.v2.beans.NuovoDocumento;
+import it.govpay.ec.v2.beans.PendenzaVerificata;
+import it.govpay.ec.v2.beans.Soggetto;
+import it.govpay.ec.v2.beans.TipoSogliaVincoloPagamento;
 
 public class PendenzaVerificataValidator  implements IValidable{
 
@@ -31,7 +37,6 @@ public class PendenzaVerificataValidator  implements IValidable{
 			validaIdDominio(this.pendenzaVerificata.getIdDominio());
 			validaIdUnitaOperativa(this.pendenzaVerificata.getIdUnitaOperativa());
 			validaIdTipoPendenza(this.pendenzaVerificata.getIdTipoPendenza());
-			validaNomePendenza(this.pendenzaVerificata.getNome());
 			validaCausale( this.pendenzaVerificata.getCausale());
 			
 			Soggetto soggetto = this.pendenzaVerificata.getSoggettoPagatore();
@@ -69,7 +74,7 @@ public class PendenzaVerificataValidator  implements IValidable{
 			if(this.pendenzaVerificata.getVoci().size() > 5)
 				throw new ValidationException("Il campo voci deve avere massimo 5 elemento.");
 
-			for (VocePendenza vocePendenza : this.pendenzaVerificata.getVoci()) {
+			for (NuovaVocePendenza vocePendenza : this.pendenzaVerificata.getVoci()) {
 				VocePendenzaValidator vocePendenzaValidator = new VocePendenzaValidator(vocePendenza);
 				vocePendenzaValidator.validate();
 				vocePendenzaValidator.validazioneSemanticaContabilita(vf, this.pendenzaVerificata.getIdA2A(), this.pendenzaVerificata.getIdPendenza());
@@ -129,18 +134,32 @@ public class PendenzaVerificataValidator  implements IValidable{
 		this.validatoreId.validaIdPendenza("idPendenza", idPendenza);
 	}
 	
-	public void validaDocumento(Documento documento) throws ValidationException {
-		if(documento != null) {
-			this.validatoreId.validaIdDocumento("identificativo", documento.getIdentificativo());
-			this.vf.getValidator("descrizione", documento.getDescrizione()).notNull().minLength(1).maxLength(255);
-			if(documento.getRata() != null) {
-				ValidatoreUtils.validaRata(vf, "rata", documento.getRata());
-			} else if(documento.getSoglia() != null) {
+	public void validaDocumento(NuovoDocumento nuovoDocumento) throws ValidationException { 
+		if(nuovoDocumento != null) {
+			this.validatoreId.validaIdDocumento("identificativo", nuovoDocumento.getIdentificativo());
+			this.vf.getValidator("descrizione", nuovoDocumento.getDescrizione()).notNull().minLength(1).maxLength(255);
+			if(nuovoDocumento.getRata() != null) {
+				ValidatoreUtils.validaRata(vf, "rata", nuovoDocumento.getRata());
+			} else if(nuovoDocumento.getSoglia() != null) {
 				
-			  	ValidatoreUtils.validaSogliaGiorni(vf, "giorni", documento.getSoglia().getGiorni());
-			  	ValidatoreUtils.validaSogliaTipo(vf, "tipo", documento.getSoglia().getTipo());
+			  	ValidatoreUtils.validaSogliaGiorni(vf, "giorni", nuovoDocumento.getSoglia().getGiorni());
+			  	validaSogliaTipo(vf, "tipo", nuovoDocumento.getSoglia().getTipo());
 			  	
 			}
 		}
+	}
+	
+	public static void validaSogliaTipo(ValidatorFactory vf, String nomeCampo, String tipo) throws ValidationException {
+		vf.getValidator(nomeCampo, tipo).notNull();
+		
+		TipoSogliaVincoloPagamento pCheck = null;
+		for(TipoSogliaVincoloPagamento p : TipoSogliaVincoloPagamento.values()){
+			if(p.toString().equals(tipo)) {
+				pCheck = p;
+				break;
+			}
+		}
+		if(pCheck == null)
+			throw new ValidationException("Codifica inesistente per '"+nomeCampo+"'. Valore fornito [" + tipo + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
 	}
 }

@@ -6,8 +6,8 @@ import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import it.govpay.core.ec.v1.validator.SoggettoPagatoreValidator;
 import it.govpay.core.utils.validator.IValidable;
-import it.govpay.core.utils.validator.SoggettoPagatoreValidator;
 
 /**
  * dati anagrafici di un versante o pagatore.

@@ -75,9 +75,9 @@ import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.tracciati.validator.PendenzaPostValidator;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
-import it.govpay.core.utils.validator.PendenzaPostValidator;
 import it.govpay.model.Anagrafica.TIPO;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Iuv.TipoIUV;
@@ -723,6 +723,13 @@ public class VersamentoUtils {
 			} catch (ServiceException e) {
 				throw new ValidationException(e.getMessage());
 			}
+			
+			// campi tipocompatibilita e codcompatibilita dalle nuove API
+			if(singoloVersamento.getBolloTelematico().getTipoContabilita() != null)
+				model.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getBolloTelematico().getTipoContabilita().toString()));
+			if(singoloVersamento.getBolloTelematico().getCodContabilita() != null)
+				model.setCodContabilita(singoloVersamento.getBolloTelematico().getCodContabilita());
+			
 		} 
 
 		if(singoloVersamento.getCodTributo() != null) {
