@@ -118,7 +118,7 @@ export class Voce {
   public static ID_CONTABILE: string = 'Identificativo contabile';
   public static ID_DOMINIO: string = 'Id dominio';
   public static ID_ENTRATA: string = 'Id entrata';
-  public static ID_FLUSSO: string = 'Id rendicontazione';
+  public static ID_FLUSSO: string = 'Id flusso rendicontazione';
   public static ID_INCASSO: string = 'Id incasso';
   public static ID_INTERMEDIARIO: string = 'Id intermediario';
   public static ID_INTERMEDIARIO_PSP: string = 'Id intermediario Psp';
@@ -133,6 +133,7 @@ export class Voce {
   public static ID_VOCE_PENDENZA: string = 'Id voce pendenza';
   public static IDENTIFICATIVO: string = 'Identificativo';
   public static IDF_IUV: string = 'Flusso/IUV';
+  public static IDF: string = 'IDF';
   public static IMPAGINAZIONE: string = 'Impaginazione';
   public static IMPORTO: string = 'Importo';
   public static INCASSO: string = 'Incasso';

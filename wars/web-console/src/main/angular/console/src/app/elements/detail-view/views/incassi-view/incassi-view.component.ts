@@ -71,8 +71,14 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
     if (_data) {
       this.info.extraInfo.push({ label: Voce.DATA+': ', value: _data });
     }
-    if (this.json.idIncasso) {
-      this.info.extraInfo.push({ label: Voce.RICONCILIAZIONE+': ', value: this.json.idIncasso });
+    // if (this.json.idIncasso) {
+    //   this.info.extraInfo.push({ label: Voce.RICONCILIAZIONE+': ', value: this.json.idIncasso });
+    // }
+    if (this.json.idFlusso) {
+      this.info.extraInfo.push({ label: Voce.ID_FLUSSO + ': ', value: this.json.idFlusso });
+    }
+    if (this.json.iuv) {
+      this.info.extraInfo.push({ label: Voce.IUV + ': ', value: this.json.iuv });
     }
 
     //Riscossioni
@@ -146,6 +152,56 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
   }
 
   exportData(data?: any) {
+    const _json: any = JSON.parse(JSON.stringify(this.json));
+    const _riscossioni: any[] = [];
+    this.json.riscossioni.forEach(risc => {
+      const quote = (risc.vocePendenza && risc.vocePendenza.contabilita) ? risc.vocePendenza.contabilita.quote : [];
+      const riscossione: any = {
+        idDominio: _json.dominio.idDominio,
+        idFlusso: _json.idFlusso ? _json.idFlusso : '',
+        iuv: risc.iuv || '',
+        importo: risc.importo || 0,
+        data: risc.data || '',
+        idPendenza: risc.vocePendenza.pendenza.idPendenza || '',
+        tipoPendenza: risc.vocePendenza.pendenza.idTipoPendenza || '',
+        idVocePendenza: risc.vocePendenza.idVocePendenza || '',
+        datiAllegatiPendenza: risc.vocePendenza.pendenza.datiAllegati || '',
+        datiAllegatiVocePendenza: risc.vocePendenza.datiAllegati || ''
+      };
+
+      [1,2,3,4,5,6,7,8,9,10].forEach(i => {
+        if (this.us.hasValue(quote[i - 1])) {
+          riscossione['capitolo' + i] = quote[i - 1].capitolo || '';
+          riscossione['anno' + i] = quote[i - 1].annoEsercizio || '';
+          riscossione['importo' + i] = quote[i - 1].importo || 0;
+          riscossione['accertamento' + i] = quote[i - 1].accertamento || '';
+          riscossione['titolo' + i] = quote[i - 1].titolo || '';
+          riscossione['tipologia' + i] = quote[i - 1].tipologia || '';
+          riscossione['articolo' + i] = quote[i - 1].articolo || '';
+        } else {
+          riscossione['capitolo' + i] = '';
+          riscossione['anno' + i] = '';
+          riscossione['importo' + i] = '';
+          riscossione['accertamento' + i] = '';
+          riscossione['titolo' + i] = '';
+          riscossione['tipologia' + i] = '';
+          riscossione['articolo' + i] = '';
+        }
+      });
+      _riscossioni.push(riscossione);
+    });
+
+    this.us.updateProgress(true, 'Export in corso...', 'determinate', 0);
+    const fileName = _json.idFlusso ? _json.idFlusso : _json.iuv;
+    const zip: any = this.us.initZip();
+    const csvData: string = this.us.jsonToCsv('PagamentiRiconciliati.csv', _riscossioni);
+    this.us.addDataToZip(csvData, fileName + '.csv', zip);
+    this.us.updateProgress(true, 'Export in corso...', 'determinate', 100);
+    this.us.updateProgress(false, '', 'indeterminate', 0, 0);
+    this.us.saveZip(zip, fileName);
+  }
+
+  exportData_(data?: any) {
     const _json: any = JSON.parse(JSON.stringify(this.json));
     delete _json['riscossioni'];
     const structure: any = {
