@@ -17,27 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.utils.client.v1;
+package it.govpay.core.ec.v2.converter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
-import it.govpay.ec.v1.beans.Contabilita;
-import it.govpay.ec.v1.beans.PendenzaVerificata;
-import it.govpay.ec.v1.beans.ProprietaPendenza;
-import it.govpay.ec.v1.beans.QuotaContabilita;
-import it.govpay.ec.v1.beans.Soggetto;
-import it.govpay.ec.v1.beans.TassonomiaAvviso;
-import it.govpay.ec.v1.beans.VoceDescrizioneImporto;
-import it.govpay.ec.v1.beans.VocePendenza;
+import it.govpay.ec.v2.beans.Contabilita;
+import it.govpay.ec.v2.beans.NuovaVocePendenza;
+import it.govpay.ec.v2.beans.PendenzaVerificata;
+import it.govpay.ec.v2.beans.ProprietaPendenza;
+import it.govpay.ec.v2.beans.QuotaContabilita;
+import it.govpay.ec.v2.beans.Soggetto;
+import it.govpay.ec.v2.beans.VoceDescrizioneImporto;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class VerificaConverter {
@@ -59,20 +57,11 @@ public class VerificaConverter {
 		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));;
 		versamento.setImportoTotale(pendenzaVerificata.getImporto());
 		versamento.setCodVersamentoLotto(pendenzaVerificata.getCartellaPagamento());
-		versamento.setDatiAllegati(pendenzaVerificata.getDatiAllegati());
+		
+		if(pendenzaVerificata.getDatiAllegati() != null)
+			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenzaVerificata.getDatiAllegati(),null));
 		
 		versamento.setTassonomia(pendenzaVerificata.getTassonomia());
-		
-		if(pendenzaVerificata.getTassonomiaAvviso() != null) {
-			// valore tassonomia avviso non valido
-			if(TassonomiaAvviso.fromValue(pendenzaVerificata.getTassonomiaAvviso()) == null) {
-				throw new ValidationException("Codifica inesistente per tassonomiaAvviso. Valore fornito [" + pendenzaVerificata.getTassonomiaAvviso() + "] valori possibili " + ArrayUtils.toString(TassonomiaAvviso.values()));
-			}
-
-			versamento.setTassonomiaAvviso(pendenzaVerificata.getTassonomiaAvviso().toString());
-		}
-		
-		versamento.setNome(pendenzaVerificata.getNome());
 		
 		versamento.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
 		versamento.setNumeroAvviso(pendenzaVerificata.getNumeroAvviso());
@@ -100,14 +89,15 @@ public class VerificaConverter {
 		return versamento;
 	}
 	
-	public static void fillSingoliVersamentiFromVociPendenzaBase(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) throws ServiceException {
+	public static void fillSingoliVersamentiFromVociPendenzaBase(it.govpay.core.dao.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws ServiceException, ValidationException {
 
 		if(voci != null && voci.size() > 0) {
-			for (VocePendenza vocePendenza : voci) {
+			for (NuovaVocePendenza vocePendenza : voci) {
 				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = new it.govpay.core.dao.commons.Versamento.SingoloVersamento();
 
 				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
-				sv.setDatiAllegati(vocePendenza.getDatiAllegati());
+				if(vocePendenza.getDatiAllegati() != null)
+					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati(),null));
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setImporto(vocePendenza.getImporto());
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
@@ -120,15 +110,24 @@ public class VerificaConverter {
 					bollo.setHash(vocePendenza.getHashDocumento());
 					bollo.setProvincia(vocePendenza.getProvinciaResidenza());
 					bollo.setTipo(vocePendenza.getTipoBollo());
+					 
+					String codiceTassonomicoPagoPA = vocePendenza.getCodiceTassonomicoPagoPA();
+					String[] split = codiceTassonomicoPagoPA.split("/");
+					bollo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.TipoContabilita.toEnum(split[0]));
+					bollo.setCodContabilita(split[1]);
+					
 					sv.setBolloTelematico(bollo);
 				} else if(vocePendenza.getCodEntrata() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
 					sv.setCodTributo(vocePendenza.getCodEntrata());
 
 				} else { // Definisce i dettagli di incasso della singola entrata.
 					it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo tributo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo();
-					tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
+					
+					String codiceTassonomicoPagoPA = vocePendenza.getCodiceTassonomicoPagoPA();
+					String[] split = codiceTassonomicoPagoPA.split("/");
+					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.TipoContabilita.toEnum(split[0]));
+					tributo.setCodContabilita(split[1]);
 					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
-					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
 					tributo.setIbanAppoggio(vocePendenza.getIbanAppoggio());
 					sv.setTributo(tributo);
 				}
@@ -156,7 +155,7 @@ public class VerificaConverter {
 		}
 
 		return anagraficaCommons;
-	}
+	} 
 	
 	public static it.govpay.core.beans.tracciati.ProprietaPendenza toProprietaPendenzaDTO(ProprietaPendenza proprieta) {
 		it.govpay.core.beans.tracciati.ProprietaPendenza dto = null;
@@ -178,7 +177,7 @@ public class VerificaConverter {
 			dto.setLineaTestoRicevuta1(proprieta.getLineaTestoRicevuta1());
 			dto.setLineaTestoRicevuta2(proprieta.getLineaTestoRicevuta2());
 			if(proprieta.getLinguaSecondaria() != null) {
-				switch(proprieta.getLinguaSecondaria()) {
+				switch(it.govpay.ec.v2.beans.LinguaSecondaria.fromValue(proprieta.getLinguaSecondaria())) {
 				case DE:
 					dto.setLinguaSecondaria(it.govpay.core.beans.tracciati.LinguaSecondaria.DE);
 					break;

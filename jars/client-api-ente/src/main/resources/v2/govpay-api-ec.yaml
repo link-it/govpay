@@ -29,15 +29,15 @@ tags:
   - name: Verifica pendenze
   - name: Notifica ricevute
 paths:
-  '/avvisi/{idDomino}/{iuv}':
+  '/avvisi/{idDomino}/{numeroAvviso}':
     get:
       operationId: getAvviso
       summary: Verifica di una pendenza da avviso
       tags:
         - Verifica pendenze
       parameters:
-       - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdDominio'
-       - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathNumeroAvviso'       
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdDominio'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathNumeroAvviso'
       responses:
         '201':
           description: Pendenza
@@ -54,7 +54,7 @@ paths:
         '404':
           $ref: 'govpay-api-responses.yaml#/components/responses/404NotFound'          
         '500':
-          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'  
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'
   '/pendenze/{idA2A}/{idPendenza}':
     get:
       operationId: verifyPendenza
@@ -62,8 +62,8 @@ paths:
       tags:
         - Verifica pendenze
       parameters:
-       - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdA2A'
-       - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdPendenza' 
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdA2A'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdPendenza'
       responses:
         '201':
           description: Pendenza
@@ -88,8 +88,8 @@ paths:
       tags:
         - Verifica pendenze
       parameters:
-       - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdA2A'
-       - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdTipoPendenza' 
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdDominio'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdTipoPendenza'
       requestBody:
         description: Pendenza nel formato custom
         content:
@@ -118,8 +118,7 @@ paths:
       operationId: notificaRicevuta
       summary: Notifica di una ricevuta di avvenuto pagamento pagoPA
       description: >-
-       La notifica di un pagamento corrisponde ad una ricevuta pagoPA, sia questa veicolata nella forma di `RT` o di `recepit`, di esito positivo. 
-       
+        La notifica di un pagamento corrisponde ad una ricevuta pagoPA, sia questa veicolata nella forma di `RT` o di `recepit`, di esito positivo. 
         Le notifiche sono inviate contestualmente all'evento che le genera. In caso di errori di consegna (ovvero senza risposta HTTP 2xx), le notifiche sono rispedite in tempi successivi. Se la ricevuta risulta gia' stata acquisita, puo' essere ignorata ed esitata con successo per interromperne la rispedizione.
       tags:
         - Notifica ricevute
@@ -129,7 +128,7 @@ paths:
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdRicevuta'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/QueryIdSession'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/QueryIdSessionePortale'
-        - $ref: 'govpay-api-parameters.yaml#/components/parameters/QueryIdCarrello'        
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/QueryIdCarrello'
       requestBody:
         description: Notifica di una ricevuta di pagamento
         content:

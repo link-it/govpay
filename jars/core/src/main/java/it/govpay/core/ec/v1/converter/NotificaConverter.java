@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.utils.client.v1;
+package it.govpay.core.ec.v1.converter;
 
 import java.math.BigDecimal;
 import java.util.List;

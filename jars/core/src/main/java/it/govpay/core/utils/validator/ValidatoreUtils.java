@@ -9,7 +9,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 
-import it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita;
+import it.govpay.core.dao.commons.Versamento.SingoloVersamento.TipoContabilita;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.SingoloVersamento.TipoBollo;
@@ -142,6 +142,30 @@ public class ValidatoreUtils {
 			TipoContabilita.valueOf(enumValue.toString());
 		} catch(InvalidArgumentException e) {
 			throw new ValidationException("Codifica inesistente per tipoContabilita. Valore fornito [" + enumValue + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
+		}
+	}
+	
+	public static void validaCodiceTassonomicoPagoPA(ValidatorFactory vf, String nomeCampo, String codiceTassonomicoPagoPA) throws ValidationException {
+		// validazione del pattern
+		validaField(vf, nomeCampo, codiceTassonomicoPagoPA, CostantiValidazione.PATTERN_CODICE_TASSONOMICO_PAGOPA, 5, 255, true);
+		
+		// split
+		String[] split = codiceTassonomicoPagoPA.split("/");
+
+		// validazione Tipo
+		try {
+			TipoContabilita.toEnum(split[0]);
+		} catch(ValidationException e) {
+			throw new ValidationException("La decodifica del valore ["+codiceTassonomicoPagoPA+"] contenuto nel campo ["+nomeCampo
+					+"] non ha avuto successo: codifica inesistente per la parte del TipoContabilita. Valore fornito [" + split[0] + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()) + ".");
+		}
+		
+		// validazione Codice
+		try {
+		validaCodiceContabilita(vf, nomeCampo, split[1]);
+		} catch(ValidationException e) {
+			throw new ValidationException("La decodifica del valore ["+codiceTassonomicoPagoPA+"] contenuto nel campo ["+nomeCampo
+					+"] non ha avuto successo: valore non valido per la parte del C	odiceContabilita. Valore fornito [" + split[1] + "] non rispetta il pattern previsto ["+CostantiValidazione.PATTERN_COD_CONTABILITA+"].");
 		}
 	}
 	

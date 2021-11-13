@@ -73,7 +73,7 @@ import it.govpay.core.utils.SeveritaProperties;
 import it.govpay.core.utils.TracciatiConverter;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.core.utils.validator.PendenzaPostValidator;
+import it.govpay.core.utils.tracciati.validator.PendenzaPostValidator;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.PatchOp;
 import it.govpay.model.TipoVersamento;

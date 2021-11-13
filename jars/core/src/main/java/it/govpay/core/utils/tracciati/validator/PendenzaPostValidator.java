@@ -1,4 +1,4 @@
-package it.govpay.core.utils.validator;
+package it.govpay.core.utils.tracciati.validator;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -12,6 +12,11 @@ import it.govpay.core.beans.tracciati.QuotaContabilita;
 import it.govpay.core.beans.tracciati.Soggetto;
 import it.govpay.core.beans.tracciati.VincoloPagamento;
 import it.govpay.core.beans.tracciati.VocePendenza;
+import it.govpay.core.ec.v1.validator.SoggettoPagatoreValidator;
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
+import it.govpay.core.utils.validator.ValidatoreIdentificativi;
+import it.govpay.core.utils.validator.ValidatoreUtils;
 
 public class PendenzaPostValidator  implements IValidable{
 

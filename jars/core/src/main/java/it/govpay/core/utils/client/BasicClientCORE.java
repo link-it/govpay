@@ -62,6 +62,7 @@ import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.config.Registry;
@@ -180,7 +181,7 @@ public abstract class BasicClientCORE {
 	}
 
 	protected BasicClientCORE(Applicazione applicazione, TipoConnettore tipoConnettore) throws ClientException {
-		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione(), applicazione.getConnettoreIntegrazione());
+		this("A_" + tipoConnettore + "_" + applicazione.getCodApplicazione()+ "_V_" + (applicazione.getConnettoreIntegrazione() != null ? applicazione.getConnettoreIntegrazione().getVersione() : "NON_CONFIGURATO"), applicazione.getConnettoreIntegrazione());
 		errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
 		mittente = "GovPay";
 		destinatario = applicazione.getCodApplicazione();
@@ -512,7 +513,7 @@ public abstract class BasicClientCORE {
 				this.httpRequest = new HttpPost(url.toString());
 				break;
 			case PUT:
-				this.httpRequest = new HttpPost(url.toString());
+				this.httpRequest = new HttpPut(url.toString());
 				break;
 			case OPTIONS:
 				this.httpRequest = new HttpOptions(url.toString());

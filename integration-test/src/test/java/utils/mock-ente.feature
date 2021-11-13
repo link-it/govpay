@@ -55,7 +55,8 @@ Scenario: pathMatches(pagamentiPath+'/v1/avvisi/{idDominio}/{iuv}') && methodIs(
   * def response = pendenza
   
 Scenario: pathMatches(pagamentiPath+'/v2/avvisi/{idDominio}/{numeroAvviso}') && methodIs('get')
-  * eval versamenti[pathParams.idDominio + pathParams.numeroAvviso] = request
+  * eval pendenza = versamenti[pathParams.idDominio + pathParams.numeroAvviso] == null ? pendenzaSconosciuta : versamenti[pathParams.idDominio + pathParams.numeroAvviso] 
+  * def response = pendenza
 
 # API Verifica per numero Pendenza
 
@@ -131,7 +132,17 @@ Scenario: pathMatches(pagamentiPath+'/v1/pagamenti/{idDominio}/{iuv}') && method
   * eval repo[idDominio+iuv+ccp] = request    
   * eval repoByIdSession[paramValue('idSession')] = request   
   
-  Scenario: pathMatches(pagamentiPath+'/v2/pagamenti/{idDominio}/{iuv}') && methodIs('post')
+Scenario: pathMatches(pagamentiPath+'/v1/ricevute/{idDominio}/{iuv}/{idRicevuta}') && methodIs('put')
+  * def idDominio = pathParams.idDominio
+  * def iuv = pathParams.iuv
+  * def ccp = pathParams.idRicevuta
+  * def repo = notificheTerminazione
+  * def repoByIdSession = notificheTerminazioneByIdSession
+  * def responseStatus = repo[idDominio+iuv+ccp] == null ? 200: 201
+  * eval repo[idDominio+iuv+ccp] = request    
+  * eval repoByIdSession[paramValue('idSession')] = request
+  
+Scenario: pathMatches(pagamentiPath+'/v2/pagamenti/{idDominio}/{iuv}') && methodIs('post')
   * def idDominio = pathParams.idDominio
   * def iuv = pathParams.iuv
   * def ccp = 'n_a'

@@ -40,6 +40,7 @@ components:
         - tipoBollo
         - hashDocumento
         - provinciaResidenza
+        - codiceTassonomicoPagoPA
       properties:
         tipoBollo:
           description: Tipologia di Bollo digitale
@@ -421,6 +422,7 @@ components:
                 $ref: '#/components/schemas/Contabilita'
     NuovoDocumento:
       allOf:
+        - $ref: "#/components/schemas/TipoRiferimentoDocumento" 
         - type: object
           required:
             - identificativo
@@ -438,7 +440,6 @@ components:
               example: Sanzione CdS n. abc00000
               minLength: 1
               maxLength: 80 
-        - $ref: "#/components/schemas/TipoRiferimentoDocumento"      
     Pagina:
       type: integer
       default: 1
@@ -566,8 +567,7 @@ components:
           description: stringa personalizzata da inserire nella ricevuta
         linguaSecondariaCausale:
           type: string
-          description: >-
-              causale della pendenza nella lingua secondaria da inserire nell'avviso  
+          description: causale della pendenza nella lingua secondaria da inserire nell'avviso
     QuotaContabilita:
       type: object
       required:
