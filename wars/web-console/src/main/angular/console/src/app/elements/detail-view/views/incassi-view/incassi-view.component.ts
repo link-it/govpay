@@ -177,6 +177,7 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
           riscossione['accertamento' + i] = quote[i - 1].accertamento || '';
           riscossione['titolo' + i] = quote[i - 1].titolo || '';
           riscossione['tipologia' + i] = quote[i - 1].tipologia || '';
+          riscossione['categoria' + i] = quote[i - 1].categoria || '';
           riscossione['articolo' + i] = quote[i - 1].articolo || '';
         } else {
           riscossione['capitolo' + i] = '';
@@ -185,6 +186,7 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
           riscossione['accertamento' + i] = '';
           riscossione['titolo' + i] = '';
           riscossione['tipologia' + i] = '';
+          riscossione['categoria' + i] = '';
           riscossione['articolo' + i] = '';
         }
       });
