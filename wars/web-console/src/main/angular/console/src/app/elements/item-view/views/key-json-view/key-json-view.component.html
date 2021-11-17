@@ -1,0 +1,25 @@
+<div class="container">
+  <div class="row lh-130 regular-16 mb-2 break-all">
+    <div class="col-12 col-sm-4 color-gray lh-130 mb-2 mb-sm-0">{{info.label?info.label + ':':info.label}}</div>
+    <ng-container [ngSwitch]="info.type">
+      <div class="col-12 col-sm-8 quote" *ngSwitchCase="'quote'">
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <th class="text-truncate" *ngFor="let key of quoteKeys">{{ quoteLabel[key] }}</th>
+            </tr>
+          </thead>
+          <tr *ngFor="let item of info.value" >
+            <td *ngFor="let key of quoteKeys">{{ item[key] }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="col-12 col-sm-8" *ngSwitchDefault>
+        <!-- <mat-expansion-panel class="mat-elevation-z0 px-0 py-0">
+          <mat-expansion-panel-header><mat-panel-title><mat-icon>visibility</mat-icon></mat-panel-title></mat-expansion-panel-header> -->
+          <div class="contenuto-json border"><div><pre>{{ info.value | json }}</pre></div></div>
+        <!-- </mat-expansion-panel> -->
+      </div>
+    </ng-container>
+  </div>
+</div>

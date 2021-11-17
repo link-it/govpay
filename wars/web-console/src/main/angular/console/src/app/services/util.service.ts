@@ -460,12 +460,14 @@ export class UtilService {
   //Item view ref
   public static STANDARD: string = '';
   public static STANDARD_COLLAPSE: string = 'standard_collapse';
+  public static NEW_STANDARD_COLLAPSE: string = 'new_standard_collapse';
   public static TWO_COLS: string = 'two_cols';
   public static TWO_COLS_COLLAPSE: string = 'two_cols_collapse';
   public static RIEPILOGO: string = 'riepilogo';
   public static CRONO: string = 'crono';
   public static CRONO_CODE: string = 'crono_code';
   public static KEY_VALUE: string = 'key_value';
+  public static KEY_JSON: string = 'key_json';
   //Dialog view ref
   public static AUTORIZZAZIONE_ENTE_UO: string = 'autorizazione_ente_uo';
   public static INTERMEDIARIO: string = 'intermediario';

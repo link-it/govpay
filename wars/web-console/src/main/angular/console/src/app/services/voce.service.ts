@@ -216,6 +216,8 @@ export class Voce {
   public static PROMEMORIA_SCADENZA_PAGAMENTO: string = 'Promemoria scadenza pagamento';
   public static PROVINCIA: string = 'Provincia';
   public static PSP: string = 'Psp';
+  
+  public static QUOTE: string = 'Quote';
 
   public static RAGIONE_SOCIALE: string = 'Ragione sociale';
   public static RICHIESTA_STAMPA_AVVISI: string = 'Richiesta stampa avvisi';

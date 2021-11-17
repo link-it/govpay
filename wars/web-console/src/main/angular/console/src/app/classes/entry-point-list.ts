@@ -7,6 +7,7 @@ import { StandardViewComponent } from '../elements/item-view/views/standard-view
 import { CronoViewComponent } from '../elements/item-view/views/crono-view/crono-view.component';
 import { CronoCodeViewComponent } from '../elements/item-view/views/crono-code-view/crono-code-view.component';
 import { KeyValueViewComponent } from '../elements/item-view/views/key-value-view/key-value-view.component';
+import { KeyJsonViewComponent } from '../elements/item-view/views/key-json-view/key-json-view.component';
 import { TwoColsViewComponent } from '../elements/item-view/views/two-cols-view/two-cols-view.component';
 import { TwoColsCollapseViewComponent } from '../elements/item-view/views/two-cols-collapse-view/two-cols-collapse-view.component';
 
@@ -45,6 +46,7 @@ import { RendicontazioniViewComponent } from '../elements/detail-view/views/rend
 import { IncassiViewComponent } from '../elements/detail-view/views/incassi-view/incassi-view.component';
 import { IncassoViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/incasso-view/incasso-view.component';
 import { StandardCollapseViewComponent } from '../elements/item-view/views/standard-collapse-view/standard-collapse-view.component';
+import { NewStandardCollapseViewComponent } from '../elements/item-view/views/new-standard-collapse-view/new-standard-collapse-view.component';
 import { RuoloViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/ruolo-view/ruolo-view.component';
 import { TracciatiViewComponent } from '../elements/detail-view/views/tracciati-view/tracciati-view.component';
 import { TracciatoViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/tracciato-view/tracciato-view.component';
@@ -83,6 +85,7 @@ export class EntryPointList {
     OperatoriViewComponent,
     StandardViewComponent,
     StandardCollapseViewComponent,
+    NewStandardCollapseViewComponent,
     RiepilogoViewComponent,
     StazioneViewComponent,
     IncassoViewComponent,
@@ -105,6 +108,7 @@ export class EntryPointList {
     CronoViewComponent,
     CronoCodeViewComponent,
     KeyValueViewComponent,
+    KeyJsonViewComponent,
     TwoColsViewComponent,
     TwoColsCollapseViewComponent,
     InputViewComponent,
@@ -180,6 +184,9 @@ export class EntryPointList {
       case UtilService.STANDARD_COLLAPSE:
         _type = StandardCollapseViewComponent;
         break;
+      case UtilService.NEW_STANDARD_COLLAPSE:
+        _type = NewStandardCollapseViewComponent;
+        break;
       case UtilService.TWO_COLS:
         _type = TwoColsViewComponent;
         break;
@@ -188,6 +195,9 @@ export class EntryPointList {
         break;
       case UtilService.KEY_VALUE:
         _type = KeyValueViewComponent;
+        break;
+      case UtilService.KEY_JSON:
+        _type = KeyJsonViewComponent;
         break;
       //Dialog views
       case UtilService.SCHEDA_PENDENZA:
@@ -357,6 +367,9 @@ export class EntryPointList {
       case 'StandardCollapseViewComponent':
         _name = UtilService.STANDARD_COLLAPSE;
         break;
+      case 'NewStandardCollapseViewComponent':
+        _name = UtilService.NEW_STANDARD_COLLAPSE;
+        break;
       case 'TwoColsViewComponent':
         _name = UtilService.TWO_COLS;
         break;
@@ -365,6 +378,9 @@ export class EntryPointList {
         break;
       case 'KeyValueViewComponent':
         _name = UtilService.KEY_VALUE;
+        break;
+      case 'KeyJsonViewComponent':
+        _name = UtilService.KEY_JSON;
         break;
       //Dialog views
       case 'StazioneViewComponent':

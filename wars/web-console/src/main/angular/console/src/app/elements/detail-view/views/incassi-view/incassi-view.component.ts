@@ -10,6 +10,7 @@ import { Riepilogo } from '../../../../classes/view/riepilogo';
 import { Parameters } from '../../../../classes/parameters';
 import { Standard } from '../../../../classes/view/standard';
 import { StandardCollapse } from '../../../../classes/view/standard-collapse';
+import { NewStandardCollapse } from '../../../../classes/view/new-standard-collapse';
 import { IExport } from '../../../../classes/interfaces/IExport';
 import { isNullOrUndefined } from 'util';
 
@@ -86,18 +87,19 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
       let p = new Parameters();
       p.jsonP = item;
       p.model = this._mapNewItemByType(item, UtilService.URL_RISCOSSIONI);
-      p.type = UtilService.STANDARD_COLLAPSE;
+      p.type = UtilService.NEW_STANDARD_COLLAPSE;
       return p;
     }, this);
   }
 
   protected _mapNewItemByType(item: any, type: string): Standard {
-    let _stdC = new StandardCollapse();
+    let _stdC = new NewStandardCollapse();
     switch(type) {
       case UtilService.URL_RISCOSSIONI:
         _stdC.titolo = new Dato({ value: item.vocePendenza.pendenza.causale });
         _stdC.sottotitolo = new Dato({ label: Voce.IUV+': ', value: item.iuv });
         _stdC.importo = this.us.currencyFormat(item.importo);
+        _stdC.item = item;
         _stdC.elenco = [];
         if (item.vocePendenza && item.vocePendenza.idVocePendenza) {
           _stdC.elenco.push({ label: Voce.ID_VOCE_PENDENZA, value: item.vocePendenza.idVocePendenza });

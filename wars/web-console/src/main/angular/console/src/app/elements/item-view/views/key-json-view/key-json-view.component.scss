@@ -1,0 +1,26 @@
+:host ::ng-deep {
+
+  .table-sm {
+    font-size: 14px;
+  }
+
+  .contenuto-json {
+    height: 250px;
+    overflow: auto;
+    padding: 5px;
+  }
+
+  .mat-expansion-panel-header {
+    padding: 0;
+    height: 18px !important;
+  }
+
+  .mat-expansion-panel-body {
+    padding: 0 0 16px;
+    margin-top: 16px;
+  }
+
+  .mat-expansion-panel-header:not([aria-disabled='true']):hover {
+    background-color: transparent !important;
+  }
+}
