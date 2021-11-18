@@ -1,6 +1,8 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { DatoEx } from '../../../../classes/view/dato-ex';
 
+declare let GovRiconciliazioniConfig: any;
+
 @Component({
   selector: 'link-key-json-view',
   templateUrl: './key-json-view.component.html',
@@ -12,9 +14,9 @@ export class KeyJsonViewComponent implements OnInit, OnChanges {
 
   quoteKeys: any[] = [];
 
-  // quoteOrder = ['capitolo', 'annoEsercizio', 'importo', 'titolo', 'accertamento', 'tipologia', 'categoria', 'articolo'];
-  quoteOrder = ['titolo', 'tipologia', 'categoria', 'capitolo', 'articolo', 'accertamento', 'annoEsercizio', 'importo'];
-  quoteLabel = {
+  // Default
+  _quoteOrder = ['titolo', 'tipologia', 'categoria', 'capitolo', 'articolo', 'accertamento', 'annoEsercizio', 'importo'];
+  _quoteLabel = {
     capitolo: 'Capitolo',
     annoEsercizio: 'Anno esercizio',
     importo: 'Importo',
@@ -26,7 +28,12 @@ export class KeyJsonViewComponent implements OnInit, OnChanges {
     proprietaCustom: 'Proprieta custom'
   };
 
-  constructor() { }
+  constructor() {
+    if (GovRiconciliazioniConfig && GovRiconciliazioniConfig.quoteOrder && GovRiconciliazioniConfig.quoteLabel) {
+      this._quoteOrder = GovRiconciliazioniConfig.quoteOrder;
+      this._quoteLabel = GovRiconciliazioniConfig.quoteLabel;
+    }
+  }
 
   ngOnInit() {
   }
@@ -40,7 +47,7 @@ export class KeyJsonViewComponent implements OnInit, OnChanges {
   prepareData() {
     if ((this.info.type == 'quote') && this.info.value && this.info.value[0]) {
       this.quoteKeys = Object.keys(this.info.value[0]);
-      const sorted = this.quoteKeys.sort((a, b) => this.quoteOrder.indexOf(a) - this.quoteOrder.indexOf(b));
+      const sorted = this.quoteKeys.sort((a, b) => this._quoteOrder.indexOf(a) - this._quoteOrder.indexOf(b));
       this.quoteKeys = sorted;
     }
   }
