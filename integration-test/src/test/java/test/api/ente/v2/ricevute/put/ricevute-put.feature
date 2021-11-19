@@ -162,7 +162,7 @@ And match response.risultati[1] ==
 	}
 }
 """
-And match response.risultati[1].parametriRichiesta.url == ente_api_url + "/v1/avvisi/"+ idDominio + "/" + iuv
+And match response.risultati[1].parametriRichiesta.url == ente_api_url + "/v1/avvisi/"+ idDominio + "/" + numeroAvviso
 
 
 
