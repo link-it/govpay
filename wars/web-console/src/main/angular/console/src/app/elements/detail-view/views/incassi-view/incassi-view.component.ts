@@ -16,6 +16,8 @@ import { isNullOrUndefined } from 'util';
 
 import * as moment from 'moment';
 
+declare let GovRiconciliazioniConfig: any;
+
 @Component({
   selector: 'link-incassi-view',
   templateUrl: './incassi-view.component.html',
@@ -32,7 +34,42 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
 
   protected info: Riepilogo;
 
-  constructor(public gps: GovpayService, public us: UtilService) { }
+  _quoteExport = ['titolo', 'tipologia', 'categoria', 'capitolo', 'articolo', 'accertamento', 'annoEsercizio', 'importo'];
+  _quoteLabel = {
+    capitolo: 'Capitolo',
+    annoEsercizio: 'Anno esercizio',
+    importo: 'Importo',
+    titolo: 'Titolo',
+    accertamento: 'Accertamento',
+    tipologia: 'Tipologia',
+    categoria: 'Categoria',
+    articolo: 'Articolo',
+    proprietaCustom: 'Proprieta custom'
+  };
+  _exportLabel = {
+    idDominio: 'Dominio',
+    idFlusso: 'Id Flusso',
+    iuv: 'IUV',
+    importo: 'Importo',
+    data: 'Data',
+    idPendenza: 'Id Pendenze',
+    tipoPendenza: 'Tipo pendenza',
+    idVocePendenza: 'Id voce pendenza',
+    datiAllegatiPendenza: 'Dati allegati pendenza',
+    datiAllegatiVocePendenza: 'Dati allegati voce pendenza'
+  };
+
+  _quoteCount = 10;
+
+  constructor(public gps: GovpayService, public us: UtilService) {
+    if (GovRiconciliazioniConfig && GovRiconciliazioniConfig.quoteExport && GovRiconciliazioniConfig.quoteLabel && GovRiconciliazioniConfig.exportLabel) {
+      this._quoteExport = GovRiconciliazioniConfig.quoteExport;
+      this._quoteLabel = GovRiconciliazioniConfig.quoteLabel;
+      this._exportLabel = GovRiconciliazioniConfig.exportLabel;
+      this._exportLabel = GovRiconciliazioniConfig.exportLabel;
+      this._quoteCount = GovRiconciliazioniConfig.quoteCount || 10;
+    }
+  }
 
   ngAfterViewInit() {
     setTimeout(() => {
@@ -158,40 +195,25 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
     const _riscossioni: any[] = [];
     this.json.riscossioni.forEach(risc => {
       const quote = (risc.vocePendenza && risc.vocePendenza.contabilita) ? risc.vocePendenza.contabilita.quote : [];
-      const riscossione: any = {
-        idDominio: _json.dominio.idDominio,
-        idFlusso: _json.idFlusso ? _json.idFlusso : '',
-        iuv: risc.iuv || '',
-        importo: risc.importo || 0,
-        data: risc.data || '',
-        idPendenza: risc.vocePendenza.pendenza.idPendenza || '',
-        tipoPendenza: risc.vocePendenza.pendenza.idTipoPendenza || '',
-        idVocePendenza: risc.vocePendenza.idVocePendenza || '',
-        datiAllegatiPendenza: risc.vocePendenza.pendenza.datiAllegati || '',
-        datiAllegatiVocePendenza: risc.vocePendenza.datiAllegati || ''
-      };
+      const riscossione: any = {};
+      riscossione[this._exportLabel['idDominio']] = _json.dominio.idDominio;
+      riscossione[this._exportLabel['idFlusso']] = _json.idFlusso ? _json.idFlusso : '';
+      riscossione[this._exportLabel['iuv']] = risc.iuv || '';
+      riscossione[this._exportLabel['importo']] = risc.importo || 0;
+      riscossione[this._exportLabel['data']] = risc.data || '';
+      riscossione[this._exportLabel['idPendenza']] = risc.vocePendenza.pendenza.idPendenza || '';
+      riscossione[this._exportLabel['tipoPendenza']] = risc.vocePendenza.pendenza.idTipoPendenza || '';
+      riscossione[this._exportLabel['idVocePendenza']] = risc.vocePendenza.idVocePendenza || '';
+      riscossione[this._exportLabel['datiAllegatiPendenza']] = risc.vocePendenza.pendenza.datiAllegati || '';
+      riscossione[this._exportLabel['datiAllegatiVocePendenza']] = risc.vocePendenza.datiAllegati || '';
 
-      [1,2,3,4,5,6,7,8,9,10].forEach(i => {
-        if (this.us.hasValue(quote[i - 1])) {
-          riscossione['capitolo' + i] = quote[i - 1].capitolo || '';
-          riscossione['anno' + i] = quote[i - 1].annoEsercizio || '';
-          riscossione['importo' + i] = quote[i - 1].importo || 0;
-          riscossione['accertamento' + i] = quote[i - 1].accertamento || '';
-          riscossione['titolo' + i] = quote[i - 1].titolo || '';
-          riscossione['tipologia' + i] = quote[i - 1].tipologia || '';
-          riscossione['categoria' + i] = quote[i - 1].categoria || '';
-          riscossione['articolo' + i] = quote[i - 1].articolo || '';
-        } else {
-          riscossione['capitolo' + i] = '';
-          riscossione['anno' + i] = '';
-          riscossione['importo' + i] = '';
-          riscossione['accertamento' + i] = '';
-          riscossione['titolo' + i] = '';
-          riscossione['tipologia' + i] = '';
-          riscossione['categoria' + i] = '';
-          riscossione['articolo' + i] = '';
-        }
-      });
+      for (let i = 0; i < this._quoteCount; i++) {
+        this._quoteExport.forEach(key => {
+          const label = `${this._quoteLabel[key]} ${i + 1}`;
+          riscossione[label] = (this.us.hasValue(quote[i])) ? quote[i][key] : '';
+        });
+      }
+
       _riscossioni.push(riscossione);
     });
 
