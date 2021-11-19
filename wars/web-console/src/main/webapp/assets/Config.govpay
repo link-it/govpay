@@ -1,5 +1,9 @@
 (function (global) {
 
+  function addScript(file) {
+    document.write('<script src="' + file + '"></script>');
+  }
+
   function hostname() {
     return this.location.protocol + '//' + this.location.host;
   }
@@ -108,5 +112,7 @@
       POLLING_TRACCIATI: ${it.govpay.backoffice.gui.export.polling}   // Timeout per tracciati NN(millisec)|false
     }
   };
+
+  addScript('assets/config/app-config.govpay');
 
 })(window);
