@@ -312,7 +312,7 @@ And request requestPendenza
 When method post
 Then status 422
 And match response contains { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-And match response.dettaglio == 'Impossibile effettuare l\'operazione di aggiornamento, nessuna pendenza disponibile per l\'utenza.'
+And match response.dettaglio == 'Impossibile effettuare l\'operazione di aggiornamento, i paramentri \'idA2A\' e \'idPendenza\' non corrispondono a nessuna pendenza disponibile per l\'utenza.'
 
 Scenario: caricamento di due pendenze con lo stesso id da parte di due utenti
 
