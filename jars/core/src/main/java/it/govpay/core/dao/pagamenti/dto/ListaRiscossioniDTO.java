@@ -40,6 +40,7 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	private List<String> divisione;
 	private List<String> tassonomia;
 	private boolean deep = false;
+	private String iur;
 	
 
 	public Date getDataRiscossioneDa() {
@@ -152,6 +153,14 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 
 	public void setDeep(boolean deep) {
 		this.deep = deep;
+	}
+
+	public String getIur() {
+		return iur;
+	}
+
+	public void setIur(String iur) {
+		this.iur = iur;
 	}
 	
 }

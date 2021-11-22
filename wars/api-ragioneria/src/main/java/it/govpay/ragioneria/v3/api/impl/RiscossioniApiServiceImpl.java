@@ -55,7 +55,7 @@ public class RiscossioniApiServiceImpl extends BaseApiServiceImpl  implements Ri
      * Elenco degli importi riscossi o stornati
      *
      */
-    public Response findRiscossioni(Integer pagina, Integer risultatiPerPagina, String campi, String ordinamento, String idDominio, String dataDa, String dataA, String stato, List<String> tipo, Boolean metadatiPaginazione, Boolean maxRisultati) {
+    public Response findRiscossioni(Integer pagina, Integer risultatiPerPagina, String campi, String ordinamento, String idDominio, String dataDa, String dataA, String stato, List<String> tipo, Boolean metadatiPaginazione, Boolean maxRisultati, String iur) {
     	Authentication user = this.getUser();
     	String methodName = "findRiscossioni";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
@@ -79,6 +79,7 @@ public class RiscossioniApiServiceImpl extends BaseApiServiceImpl  implements Ri
 			findRiscossioniDTO.setPagina(pagina);
 //			findRiscossioniDTO.setIdA2A(idA2A);
 //			findRiscossioniDTO.setIdPendenza(idPendenza);
+			findRiscossioniDTO.setIur(iur);
 			findRiscossioniDTO.setOrderBy(ordinamento);
 			if(stato != null) {
 				StatoRiscossione statoRisc = StatoRiscossione.fromValue(stato);

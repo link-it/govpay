@@ -330,6 +330,7 @@ paths:
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/tipiRiscossione'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/metadatiPaginazione'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/maxRisultati'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/iur'
       responses:
         '200':
           description: Dettaglio della riscossione

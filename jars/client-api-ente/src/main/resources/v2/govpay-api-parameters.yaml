@@ -171,6 +171,14 @@ components:
       schema:
         type: string    
         pattern: '(^([0-9A-Za-z]){1,35}$)'
+    iur:
+      name: iur
+      in: query
+      description: Identificativo univoco riscossione
+      required: false
+      schema:
+        type: string
+        pattern: '(^([0-9A-Za-z]){1,35}$)'      
     iuv:
       name: iuv
       in: query

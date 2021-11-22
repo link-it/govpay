@@ -215,7 +215,7 @@ public class PagamentoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.ilike(VistaPagamento.model().IUR, this.iur, LikeMode.ANYWHERE);
+				newExpression.equals(VistaPagamento.model().IUR, this.iur);
 				addAnd = true;
 			}
 
@@ -434,8 +434,8 @@ public class PagamentoFilter extends AbstractFilter {
 				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.VRS_COD_VERSAMENTO_ENTE, true), this.codVersamentoEnte, true, true);
 			}
 
-			if(this.iur != null && StringUtils.isNotEmpty(this.iur)){
-				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.IUR, true), this.iur, true, true);
+			if(this.iur != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.IUR, true) + " = ? ");
 			}
 
 			if(this.iuv != null && StringUtils.isNotEmpty(this.iuv)){
@@ -558,7 +558,7 @@ public class PagamentoFilter extends AbstractFilter {
 		}
 
 		if(this.iur != null){
-			// donothing
+			lst.add(this.iur);
 		}
 
 		if(this.iuv != null){

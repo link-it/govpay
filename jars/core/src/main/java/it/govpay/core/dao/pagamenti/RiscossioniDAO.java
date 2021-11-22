@@ -62,6 +62,7 @@ public class RiscossioniDAO extends BaseDAO{
 			filter.setTassonomia(listaRiscossioniDTO.getTassonomia());
 			filter.setIdTipoPendenza(listaRiscossioniDTO.getIdTipoPendenza());
 			filter.setIdUnita(listaRiscossioniDTO.getIdUnita());
+			filter.setIur(listaRiscossioniDTO.getIur());
 
 			Long count = null;
 			
