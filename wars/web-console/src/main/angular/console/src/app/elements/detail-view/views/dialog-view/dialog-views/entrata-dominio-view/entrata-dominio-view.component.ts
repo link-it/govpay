@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UtilService } from '../../../../../../services/util.service';
 import { Voce } from '../../../../../../services/voce.service';
@@ -10,6 +10,7 @@ import { GovpayService } from '../../../../../../services/govpay.service';
 import { Parameters } from '../../../../../../classes/parameters';
 import { Standard } from '../../../../../../classes/view/standard';
 import { Dato } from '../../../../../../classes/view/dato';
+import { AsyncFilterableSelectComponent } from '../../../../../async-filterable-select/async-filterable-select.component';
 
 @Component({
   selector: 'link-entrata-dominio-view',
@@ -17,6 +18,8 @@ import { Dato } from '../../../../../../classes/view/dato';
   styleUrls: ['./entrata-dominio-view.component.scss']
 })
 export class EntrataDominioViewComponent implements IModalDialog, IFormComponent, OnInit, AfterViewInit {
+  @ViewChild('filterIbanAcc', { read: AsyncFilterableSelectComponent }) _filterIbanAcc: AsyncFilterableSelectComponent;
+  @ViewChild('filterIbanApp', { read: AsyncFilterableSelectComponent }) _filterIbanApp: AsyncFilterableSelectComponent;
 
   @Input() fGroup: FormGroup;
   @Input() json: any;
@@ -27,6 +30,8 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
   protected ibanAccredito_items: any[];
   protected ibanAppoggio_items: any[];
 
+  protected elencoIbanAcc: any[];
+  protected elencoIbanApp: any[];
 
   protected contabilita_items: any[];
 
@@ -36,8 +41,9 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
   }
 
   ngOnInit() {
-    this.ibanAccredito_items = this.parent.iban_cc.slice(0);
-    this.ibanAppoggio_items = this.parent.iban_cc.slice(0);
+    this._getIBAN(); // Issue #422
+    // this.ibanAccredito_items = this.parent.iban_cc.slice(0);
+    // this.ibanAppoggio_items = this.parent.iban_cc.slice(0);
     this.fGroup.addControl('tipoEntrata_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('ibanAccredito_ctrl', new FormControl(''));
     this.fGroup.addControl('ibanAppoggio_ctrl', new FormControl({ value: '', disabled: true }));
@@ -102,8 +108,53 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
   }
 
   protected _filteringByIbanSelection(_accreditoSelectedValue: string) {
-    this.ibanAppoggio_items = this.parent.iban_cc.filter((iban) => {
+    // this.ibanAppoggio_items = this.parent.iban_cc.filter((iban) => {
+    this.ibanAppoggio_items = this.ibanAccredito_items.filter((iban) => {
       return (iban.jsonP.iban != _accreditoSelectedValue);
+    });
+  }
+
+  protected _onIbanChangeSelectionFilter(event: any, isAccredito: boolean) {
+    if (event.original.option && event.original.option.value) {
+      const ibanObj: any = event.original.option.value;
+      const ibanValue: string = ibanObj.jsonP.iban;
+      console.log('ibanValue', ibanValue, event);
+      if (event.target) {
+        event.target.value = ibanValue;
+        event.target.blur();
+      }
+      if (isAccredito) {
+        this._resetIban();
+        if (ibanValue != '') {
+          this._filteringByIbanSelection(ibanValue);
+          this.fGroup.controls['ibanAccredito_ctrl'].setValue(ibanValue);
+          this.fGroup.controls['ibanAppoggio_ctrl'].enable();
+        }
+      } else {
+        this.fGroup.controls['ibanAppoggio_ctrl'].setValue(ibanValue);
+      }
+    } else {
+      this._resetIban();
+    }
+  }
+
+  protected _resetIban() {
+    this.fGroup.controls['ibanAccredito_ctrl'].setValue('');
+    this.fGroup.controls['ibanAppoggio_ctrl'].setValue('');
+    this.fGroup.controls['ibanAppoggio_ctrl'].disable();
+  }
+
+  protected _keyUp(event: any, isAccredito: boolean = true) {
+    this.filterElencoIban(event.target.value, true);
+  }
+
+  protected filterElencoIban(value: string, isAccredito: boolean = true) {
+    const items = (isAccredito) ? this.ibanAccredito_items : this.ibanAppoggio_items;
+    this.elencoIbanAcc = items.filter((iban) => {
+      return (
+        (iban.jsonP.iban.indexOf(value) != -1) ||
+        (iban.jsonP.descrizione ? iban.jsonP.descrizione.indexOf(value) != -1 : false)
+      );
     });
   }
 
@@ -141,6 +192,51 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
       }
     });
     return _hasEntry;
+  }
+
+  getSottotitolo(item) {
+    const values = [];
+    if (item.jsonP['postale']) {
+      values.push('Postale');
+    }
+    if (item.jsonP['descrizione']) {
+      values.push(item.jsonP['descrizione']);
+    }
+    return values.join(' - ');
+  }
+
+  protected _getIBAN() {
+    const _service = this.parent._paginatorOptions.iban.base;
+    this.gps.getDataService(_service).subscribe(
+      (_response) => {
+        this.gps.updateSpinner(false);
+        this.elencoAccreditiAppoggioIban(_response.body.risultati);
+      },
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
+
+  protected elencoAccreditiAppoggioIban(jsonList: any[]) {
+    let p: Parameters;
+    const _di = jsonList.map(function (item) {
+      p = new Parameters();
+      p.jsonP = item;
+      p.model = this._mapNewIban(item);
+      return p;
+    }, this);
+    this.ibanAccredito_items = _di.slice(0);
+    this.ibanAppoggio_items = _di.slice(0);
+    this.elencoIbanAcc = _di.slice(0);
+    this.elencoIbanApp = _di.slice(0);
+  }
+
+  protected _mapNewIban(item: any): Standard {
+    let _std = new Standard();
+    _std.titolo = new Dato({ value: item.iban });
+    _std.sottotitolo = item.descrizione ? new Dato({ label: Voce.DESCRIZIONE + ': ', value: item.descrizione }) : new Dato();
+    return _std;
   }
 
   protected _getEntrate() {

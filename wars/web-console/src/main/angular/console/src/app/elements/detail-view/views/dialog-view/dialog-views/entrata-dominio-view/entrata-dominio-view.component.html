@@ -8,18 +8,70 @@
       </mat-select>
     </mat-form-field>
   </div>
+  <!-- <div class="row">
+    <link-async-filterable-select #filterIbanAcc class="col-12" color="accent"
+      placeholder="IBAN accredito"
+      [form-group]="fGroup"
+      form-ctrl-name="ibanAccredito_ctrl"
+      [searching]="false"
+      [required]="true"
+      [options]="elencoIbanAcc"
+      (async-keyup)="_keyUp($event, true)"
+      (option-click)="_onIbanChangeSelectionFilter($event, true)">
+      <ng-template let-item>
+        <div class="d-block lh-15">
+          <span>{{ item.jsonP['iban'] }}</span>
+          <small class="d-block">{{ getSottotitolo(item) }}</small>
+        </div>
+      </ng-template>
+    </link-async-filterable-select>
+  </div>
+  <div class="row">
+    <link-async-filterable-select #filterIbanApp class="col-12" color="accent"
+      placeholder="IBAN appoggio"
+      [form-group]="fGroup"
+      form-ctrl-name="ibanAppoggio_ctrl"
+      [searching]="false"
+      [required]="true"
+      [options]="elencoIbanApp"
+      (async-keyup)="_keyUp($event, false)"
+      (option-click)="_onIbanChangeSelectionFilter($event, false)">
+      <ng-template let-item>
+        <div class="d-block lh-15">
+          <span>{{ item.jsonP['iban'] }}</span>
+          <small class="d-block">{{ getSottotitolo(item) }}</small>
+        </div>
+      </ng-template>
+    </link-async-filterable-select>
+  </div> -->
   <div class="row">
     <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
       <mat-select #iban_acc placeholder="IBAN accredito" formControlName="ibanAccredito_ctrl" (selectionChange)="_onIbanChangeSelection(iban_acc, iban_app, true)" required>
-        <mat-option *ngFor="let item of ibanAccredito_items" [value]="item.jsonP['iban']">{{item.jsonP['iban']}}{{item.jsonP['postale']?' (Postale)':''}}</mat-option>
+        <mat-select-trigger>
+          <span>{{ fGroup.controls['ibanAccredito_ctrl'].value }}</span>
+        </mat-select-trigger>
+        <mat-option *ngFor="let item of ibanAccredito_items" [value]="item.jsonP['iban']">
+          <div class="d-block lh-15">
+            <span>{{ item.jsonP['iban'] }}</span>
+            <small class="d-block">{{ getSottotitolo(item) }}</small>
+          </div>
+        </mat-option>
       </mat-select>
     </mat-form-field>
   </div>
   <div class="row">
     <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
       <mat-select #iban_app placeholder="IBAN appoggio" formControlName="ibanAppoggio_ctrl" (selectionChange)="_onIbanChangeSelection(iban_acc, iban_app, false)">
+        <mat-select-trigger>
+          <span>{{ fGroup.controls['ibanAppoggio_ctrl'].value }}</span>
+        </mat-select-trigger>
         <mat-option>Nessuno</mat-option>
-        <mat-option *ngFor="let item of ibanAppoggio_items" [value]="item.jsonP['iban']">{{item.jsonP['iban']}}{{item.jsonP['postale']?' (Postale)':''}}</mat-option>
+        <mat-option *ngFor="let item of ibanAppoggio_items" [value]="item.jsonP['iban']">
+          <div class="d-block lh-15">
+            <span>{{ item.jsonP['iban'] }}</span>
+            <small class="d-block">{{ getSottotitolo(item) }}</small>
+          </div>
+        </mat-option>
       </mat-select>
     </mat-form-field>
   </div>
