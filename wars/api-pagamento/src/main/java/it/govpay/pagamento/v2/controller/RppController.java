@@ -270,7 +270,7 @@ public class RppController extends BaseController {
 						case SANP_240:
 							PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReq_RT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
 							this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-							return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paSendRTReq),transactionId).build();
+							return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paSendRTReq.getReceipt()),transactionId).build();
 					}
 					
 					CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
@@ -330,7 +330,7 @@ public class RppController extends BaseController {
 					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rpt),transactionId).build();
 				case SANP_240:
 					PaGetPaymentRes paGetPaymentRes = JaxbUtils.toPaGetPaymentRes_RPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
-					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paGetPaymentRes),transactionId).build();
+					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paGetPaymentRes.getData()),transactionId).build();
 				}
 				
 				CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);

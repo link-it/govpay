@@ -54,7 +54,7 @@ public class ConverterUtils {
 				return mapper.writeValueAsString(ctRpt);
 			case SANP_240:
 				PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
-				return mapper.writeValueAsString(paGetPaymentRes_RPT);
+				return mapper.writeValueAsString(paGetPaymentRes_RPT.getData());
 			}
 			
 			CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
@@ -76,7 +76,7 @@ public class ConverterUtils {
 				return mapper.writeValueAsString(ctRt);
 			case SANP_240:
 				PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
-				return mapper.writeValueAsString(paSendRTReq_RT);
+				return mapper.writeValueAsString(paSendRTReq_RT.getReceipt());
 			}
 			
 			CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
