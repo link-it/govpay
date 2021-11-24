@@ -2,7 +2,6 @@
    "idA2A":"#(idA2A)",
    "idPendenza":"#(idPendenza + '')",
    "rpt":{
-      "data":{
          "creditorReferenceId":"#(iuv)",
          "paymentAmount":"#(pendenzaPut.importo + '')",
          "dueDate":"#ignore",
@@ -46,9 +45,6 @@
             ]
          },
          "metadata":null
-      },
-      "outcome":"OK",
-      "fault":null
    },
    "rt":null,
    "riscossioni":null
