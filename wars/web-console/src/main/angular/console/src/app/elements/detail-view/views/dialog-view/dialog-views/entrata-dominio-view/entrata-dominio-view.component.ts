@@ -18,8 +18,8 @@ import { AsyncFilterableSelectComponent } from '../../../../../async-filterable-
   styleUrls: ['./entrata-dominio-view.component.scss']
 })
 export class EntrataDominioViewComponent implements IModalDialog, IFormComponent, OnInit, AfterViewInit {
-  @ViewChild('filterIbanAcc', { read: AsyncFilterableSelectComponent }) _filterIbanAcc: AsyncFilterableSelectComponent;
-  @ViewChild('filterIbanApp', { read: AsyncFilterableSelectComponent }) _filterIbanApp: AsyncFilterableSelectComponent;
+  // @ViewChild('filterIbanAcc', { read: AsyncFilterableSelectComponent }) _filterIbanAcc: AsyncFilterableSelectComponent;
+  // @ViewChild('filterIbanApp', { read: AsyncFilterableSelectComponent }) _filterIbanApp: AsyncFilterableSelectComponent;
 
   @Input() fGroup: FormGroup;
   @Input() json: any;
@@ -41,9 +41,7 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
   }
 
   ngOnInit() {
-    this._getIBAN(); // Issue #422
-    // this.ibanAccredito_items = this.parent.iban_cc.slice(0);
-    // this.ibanAppoggio_items = this.parent.iban_cc.slice(0);
+    this._getIBAN();
     this.fGroup.addControl('tipoEntrata_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('ibanAccredito_ctrl', new FormControl(''));
     this.fGroup.addControl('ibanAppoggio_ctrl', new FormControl({ value: '', disabled: true }));
@@ -63,7 +61,7 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
         this.fGroup.controls['codiceContabilita_ctrl'].setValue((this.json.codiceContabilita)?this.json.codiceContabilita:'');
         this.fGroup.controls['abilita_ctrl'].setValue((this.json.abilitato)?this.json.abilitato:false);
         (this.json.ibanAccredito)?this.fGroup.controls['ibanAppoggio_ctrl'].enable():this.fGroup.controls['ibanAppoggio_ctrl'].disable();
-        this._filteringByIbanSelection(this.json.ibanAccredito);
+        // this._filteringByIbanSelection(this.json.ibanAccredito);
         this._excludeIbans(this.json.tipoEntrata.idEntrata);
       }
     });
@@ -211,6 +209,9 @@ export class EntrataDominioViewComponent implements IModalDialog, IFormComponent
       (_response) => {
         this.gps.updateSpinner(false);
         this.elencoAccreditiAppoggioIban(_response.body.risultati);
+        const iban_acc = this.fGroup.controls['ibanAccredito_ctrl'].value;
+        const iban_app = this.fGroup.controls['ibanAppoggio_ctrl'].value;
+        this._onIbanChangeSelection(iban_acc, iban_app, true);
       },
       (error) => {
         this.gps.updateSpinner(false);
