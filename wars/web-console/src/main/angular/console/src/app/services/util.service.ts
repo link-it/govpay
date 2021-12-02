@@ -1880,7 +1880,7 @@ export class UtilService {
         return { label: item.idA2A, value: item.idA2A };
       });
     }
-    _elenco = _elenco.concat(UtilService.API_CONNETTORI);
+    // _elenco = _elenco.concat(UtilService.API_CONNETTORI);
     return _elenco;
   }
 
