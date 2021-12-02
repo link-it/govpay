@@ -26,6 +26,7 @@ import it.govpay.bd.viste.filters.RendicontazioneFilter;
 import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.bd.viste.model.converter.RendicontazioneConverter;
 import it.govpay.orm.FR;
+import it.govpay.orm.IdIncasso;
 import it.govpay.orm.VistaRendicontazione;
 import it.govpay.orm.dao.jdbc.JDBCVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.FRFieldConverter;
@@ -60,6 +61,10 @@ public class RendicontazioniBD extends BasicBD {
 	}
 
 	public List<Rendicontazione> findAll(RendicontazioneFilter filter) throws ServiceException {
+		return filter.isRicercaFR() ? this._findAllFR(filter) : this._findAll(filter);
+	}
+
+	public List<Rendicontazione> _findAll(RendicontazioneFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -78,7 +83,10 @@ public class RendicontazioniBD extends BasicBD {
 	}
 	
 	public long count(RendicontazioneFilter filter) throws ServiceException {
-		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+		if(filter.isRicercaFR())
+			return this._countConLimit(filter);
+		else 
+			return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
 	}
 	
 	private long _countSenzaLimit(RendicontazioneFilter filter) throws ServiceException {
@@ -126,8 +134,14 @@ public class RendicontazioniBD extends BasicBD {
 			*/
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.RND_IUV));
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.RND_IUV), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.RND_DATA), "rnd_data");
+			if(filter.isRicercaFR()) {
+				sqlQueryObjectInterno.addSelectField(converter.toTable(model.FR_COD_FLUSSO), "fr_cod_flusso");
+				sqlQueryObjectInterno.addSelectField(converter.toTable(model.FR_DATA_ORA_FLUSSO), "fr_data_ora_flusso");
+			} else {
+				sqlQueryObjectInterno.addSelectField(converter.toTable(model.RND_IUV), "id");
+				sqlQueryObjectInterno.addSelectField(converter.toTable(model.RND_DATA), "rnd_data");
+			}
+			
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
@@ -135,11 +149,20 @@ public class RendicontazioniBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.RND_DATA, true), false);
+			if(filter.isRicercaFR()) {
+				sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.FR_DATA_ORA_FLUSSO, true), false);
+			} else {
+				sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.RND_DATA, true), false);
+			}
+			
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
-			sqlQueryObjectDistinctID.addSelectCountField("id","id",true);
+			if(filter.isRicercaFR()) {
+				sqlQueryObjectDistinctID.addSelectCountField("fr_cod_flusso","id",true);
+			} else {
+				sqlQueryObjectDistinctID.addSelectCountField("id","id",true);
+			}
 			
 			String sql = sqlQueryObjectDistinctID.createSQLQuery();
 			List<Class<?>> returnTypes = new ArrayList<>();
@@ -158,6 +181,150 @@ public class RendicontazioniBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public List<Rendicontazione> _findAllFR(RendicontazioneFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+//				filter.setExpressionConstructor(this.getVistaRendicontazioneServiceSearch());
+			}
+			
+			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
+			
+			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			ISQLQueryObject sqlQueryObjectDistinctID = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			
+			VistaRendicontazioneFieldConverter converter = new VistaRendicontazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			VistaRendicontazioneModel model = it.govpay.orm.VistaRendicontazione.model();
+			
+			sqlQueryObjectInterno.addFromTable(converter.toTable(model.FR_COD_FLUSSO));
+			
+			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_ID, true));
+			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_COD_BIC_RIVERSAMENTO, true));
+			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_COD_DOMINIO, true));
+			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_COD_FLUSSO, true));
+			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_COD_PSP, true));
+			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_DATA_ACQUISIZIONE, true));
+			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_DATA_ORA_FLUSSO, true));
+			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_DATA_REGOLAMENTO, true));
+			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_DESCRIZIONE_STATO, true));
+			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_IMPORTO_TOTALE_PAGAMENTI, true));
+			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_IUR, true));
+			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_NUMERO_PAGAMENTI, true));
+			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_OBSOLETO, true));
+			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_RAGIONE_SOCIALE_DOMINIO, true));
+			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_RAGIONE_SOCIALE_PSP, true));
+			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_STATO, true));
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.FR_COD_FLUSSO) + ".fr_id_incasso");
+			
+			sqlQueryObjectInterno.setANDLogicOperator(true);
+			
+			// creo condizioni
+			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
+			// preparo parametri
+			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
+			
+			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.FR_DATA_ACQUISIZIONE, true), false);
+//			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.FR_COD_FLUSSO, true), false);
+			
+			sqlQueryObjectInterno.setLimit(limitInterno);
+			
+			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
+			
+			sqlQueryObjectDistinctID.setSelectDistinct(true);
+			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_ID, false));
+			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_COD_BIC_RIVERSAMENTO, false));
+			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_COD_DOMINIO, false));
+			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_COD_FLUSSO, false));
+			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_COD_PSP, false));
+			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_DATA_ACQUISIZIONE, false));
+			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_DATA_ORA_FLUSSO, false));
+			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_DATA_REGOLAMENTO, false));
+			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_DESCRIZIONE_STATO, false));
+			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_IMPORTO_TOTALE_PAGAMENTI, false));
+			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_IUR, false));
+			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_NUMERO_PAGAMENTI, false));
+			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_OBSOLETO, false));
+			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_RAGIONE_SOCIALE_DOMINIO, false));
+			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_RAGIONE_SOCIALE_PSP, false));
+			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_STATO, false));
+			sqlQueryObjectDistinctID.addSelectField("fr_id_incasso");
+			
+			if(filter.getOffset() != null)
+				sqlQueryObjectDistinctID.setOffset(filter.getOffset());
+			if(filter.getLimit() != null)
+				sqlQueryObjectDistinctID.setLimit(filter.getLimit());
+			
+			sqlQueryObjectDistinctID.addOrderBy(converter.toColumn(model.FR_DATA_ACQUISIZIONE, false), false);
+			
+			String sql = sqlQueryObjectDistinctID.createSQLQuery();
+			
+			List<Class<?>> returnTypes = new ArrayList<>();
+			returnTypes.add(Long.class); // ID
+			returnTypes.add(model.FR_COD_BIC_RIVERSAMENTO.getFieldType()); 
+			returnTypes.add(model.FR_COD_DOMINIO.getFieldType());
+			returnTypes.add(model.FR_COD_FLUSSO.getFieldType());
+			returnTypes.add(model.FR_COD_PSP.getFieldType());
+			returnTypes.add(model.FR_DATA_ACQUISIZIONE.getFieldType());
+			returnTypes.add(model.FR_DATA_ORA_FLUSSO.getFieldType());
+			returnTypes.add(model.FR_DATA_REGOLAMENTO.getFieldType());
+			returnTypes.add(model.FR_DESCRIZIONE_STATO.getFieldType());
+			returnTypes.add(model.FR_IMPORTO_TOTALE_PAGAMENTI.getFieldType());
+			returnTypes.add(model.FR_IUR.getFieldType());
+			returnTypes.add(model.FR_NUMERO_PAGAMENTI.getFieldType());
+			returnTypes.add(model.FR_OBSOLETO.getFieldType());
+			returnTypes.add(model.FR_RAGIONE_SOCIALE_DOMINIO.getFieldType());
+			returnTypes.add(model.FR_RAGIONE_SOCIALE_PSP.getFieldType());
+			returnTypes.add(model.FR_STATO.getFieldType());
+			returnTypes.add(Long.class); // ID_INCASSO
+			
+			List<List<Object>> nativeQuery = this.getVistaRendicontazioneServiceSearch().nativeQuery(sql, returnTypes, parameters);
+			
+			
+			List<it.govpay.orm.VistaRendicontazione> rendicontazioneVOLst = new ArrayList<>();
+			for (List<Object> row : nativeQuery) {
+				int pos = 0;
+				
+				it.govpay.orm.VistaRendicontazione vo = new VistaRendicontazione();
+				vo.setFrId(BasicBD.getValueOrNull(row.get(pos++), Long.class));
+				vo.setFrCodBicRiversamento(BasicBD.getValueOrNull(row.get(pos++), String.class));
+				vo.setFrCodDominio(BasicBD.getValueOrNull(row.get(pos++), String.class));
+				vo.setFrCodFlusso(BasicBD.getValueOrNull(row.get(pos++), String.class));
+				vo.setFrCodPsp(BasicBD.getValueOrNull(row.get(pos++), String.class));
+				vo.setFrDataAcquisizione(BasicBD.getValueOrNull(row.get(pos++), Date.class));
+				vo.setFrDataOraFlusso(BasicBD.getValueOrNull(row.get(pos++), Date.class));
+				vo.setFrDataRegolamento(BasicBD.getValueOrNull(row.get(pos++), Date.class));
+				vo.setFrDescrizioneStato(BasicBD.getValueOrNull(row.get(pos++), String.class));
+				vo.setFrImportoTotalePagamenti(BasicBD.getValueOrNull(row.get(pos++), Double.class));
+				vo.setFrIur(BasicBD.getValueOrNull(row.get(pos++), String.class));
+				vo.setFrNumeroPagamenti(BasicBD.getValueOrNull(row.get(pos++), Long.class));
+				vo.setFrObsoleto(BasicBD.getValueOrNull(row.get(pos++), Boolean.class));
+				vo.setFrRagioneSocialeDominio(BasicBD.getValueOrNull(row.get(pos++), String.class));
+				vo.setFrRagioneSocialePsp(BasicBD.getValueOrNull(row.get(pos++), String.class));
+				vo.setFrStato(BasicBD.getValueOrNull(row.get(pos++), String.class));
+				
+				Long idIncassoLong = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				if(idIncassoLong != null) {
+					IdIncasso idIncasso = new IdIncasso();
+					idIncasso.setId(idIncassoLong);
+					vo.setFrIdIncasso(idIncasso );
+				}
+				
+				rendicontazioneVOLst.add(vo);
+			}
+			
+//			List<it.govpay.orm.VistaRendicontazione> rendicontazioneVOLst = this.getVistaRendicontazioneServiceSearch().findAll(filter.toPaginatedExpression());
+			return RendicontazioneConverter.toDTO(rendicontazioneVOLst);
+		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			return new ArrayList<>();
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();

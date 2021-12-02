@@ -7,6 +7,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
+import it.govpay.model.Fr;
 import it.govpay.orm.VistaRendicontazione;
 
 public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
@@ -17,6 +18,8 @@ public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 		this.addDefaultSort(VistaRendicontazione.model().RND_DATA,SortOrder.DESC);
 	}
 	
+	private Date dataAcquisizioneFlussoDa;
+	private Date dataAcquisizioneFlussoA;
 	private Date dataFlussoDa;
 	private Date dataFlussoA;
 	private Date dataRendicontazioneDa;
@@ -27,6 +30,10 @@ public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 	private List<String> divisione;
 	private Boolean frObsoleto;
 	private boolean ricercaIdFlussoCaseInsensitive = false;
+	private Boolean incassato = null;
+	private String idDominio;
+	private Fr.StatoFr stato;
+	private boolean ricercaFR = false;
 	
 	public Date getDataFlussoDa() {
 		return dataFlussoDa;
@@ -87,6 +94,42 @@ public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 	}
 	public void setRicercaIdFlussoCaseInsensitive(boolean ricercaIdFlussoCaseInsensitive) {
 		this.ricercaIdFlussoCaseInsensitive = ricercaIdFlussoCaseInsensitive;
+	}
+	public Boolean getIncassato() {
+		return incassato;
+	}
+	public void setIncassato(Boolean incassato) {
+		this.incassato = incassato;
+	}
+	public String getIdDominio() {
+		return idDominio;
+	}
+	public void setIdDominio(String idDominio) {
+		this.idDominio = idDominio;
+	}
+	public Fr.StatoFr getStato() {
+		return stato;
+	}
+	public void setStato(Fr.StatoFr stato) {
+		this.stato = stato;
+	}
+	public Date getDataAcquisizioneFlussoDa() {
+		return dataAcquisizioneFlussoDa;
+	}
+	public void setDataAcquisizioneFlussoDa(Date dataAcquisizioneFlussoDa) {
+		this.dataAcquisizioneFlussoDa = dataAcquisizioneFlussoDa;
+	}
+	public Date getDataAcquisizioneFlussoA() {
+		return dataAcquisizioneFlussoA;
+	}
+	public void setDataAcquisizioneFlussoA(Date dataAcquisizioneFlussoA) {
+		this.dataAcquisizioneFlussoA = dataAcquisizioneFlussoA;
+	}
+	public boolean isRicercaFR() {
+		return ricercaFR;
+	}
+	public void setRicercaFR(boolean ricercaFR) {
+		this.ricercaFR = ricercaFR;
 	}
 	
 }

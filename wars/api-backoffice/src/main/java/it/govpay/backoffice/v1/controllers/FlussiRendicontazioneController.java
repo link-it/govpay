@@ -29,6 +29,8 @@ import it.govpay.core.dao.pagamenti.dto.LeggiFrDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiFrDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaFrDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaFrDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -70,7 +72,7 @@ public class FlussiRendicontazioneController extends BaseController {
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 
-			ListaFrDTO findRendicontazioniDTO = new ListaFrDTO(user);
+			ListaRendicontazioniDTO findRendicontazioniDTO = new ListaRendicontazioniDTO(user);
 			findRendicontazioniDTO.setIdDominio(idDominio);
 			findRendicontazioniDTO.setLimit(risultatiPerPagina);
 			findRendicontazioniDTO.setPagina(pagina);
@@ -79,16 +81,16 @@ public class FlussiRendicontazioneController extends BaseController {
 			findRendicontazioniDTO.setEseguiCountConLimit(maxRisultati);
 			if(dataDa != null) {
 				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
-				findRendicontazioniDTO.setDataDa(dataDaDate);
+				findRendicontazioniDTO.setDataAcquisizioneFlussoDa(dataDaDate);
 			}
 			if(dataA != null) {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
-				findRendicontazioniDTO.setDataA(dataADate);
+				findRendicontazioniDTO.setDataAcquisizioneFlussoA(dataADate);
 			}
 			if(incassato != null) {
 				findRendicontazioniDTO.setIncassato(incassato);
 			}
-			findRendicontazioniDTO.setIdFlusso(idFlusso);
+			findRendicontazioniDTO.setCodFlusso(idFlusso);
 			if(stato != null) {
 				StatoFlussoRendicontazione sfr = StatoFlussoRendicontazione.fromValue(stato);
 
@@ -112,13 +114,14 @@ public class FlussiRendicontazioneController extends BaseController {
 			findRendicontazioniDTO.setUnitaOperative(uo);
 			//findRendicontazioniDTO.setObsoleto(false);
 			findRendicontazioniDTO.setIuv(iuv);
+			findRendicontazioniDTO.setRicercaFR(true);
 
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
 
 			// CHIAMATA AL DAO
 
-			ListaFrDTOResponse findRendicontazioniDTOResponse = uo != null ? rendicontazioniDAO.listaFlussiRendicontazioni(findRendicontazioniDTO)
-					: new ListaFrDTOResponse(0L, new ArrayList<>());
+			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = uo != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO)
+					: new ListaRendicontazioniDTOResponse(0L, new ArrayList<>());
 
 			// CONVERT TO JSON DELLA RISPOSTA
 

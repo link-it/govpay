@@ -20,6 +20,7 @@ import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
+import it.govpay.model.Fr;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.orm.VistaRendicontazione;
@@ -28,6 +29,8 @@ import it.govpay.orm.model.VistaRendicontazioneModel;
 
 public class RendicontazioneFilter extends AbstractFilter {
 	
+	private Date dataAcquisizioneFlussoDa;
+	private Date dataAcquisizioneFlussoA;
 	private Date dataFlussoDa;
 	private Date dataFlussoA;
 	private Date dataRendicontazioneDa;
@@ -57,12 +60,16 @@ public class RendicontazioneFilter extends AbstractFilter {
 	private Long idApplicazione; // versamenti
 	private String codUnivocoDebitore;
 	private String codVersamento = null;
-	private List<Long> idDomini;
+	private List<String> codDomini;
 	private List<Long> idVersamento= null;
 	private List<Long> idUo;
 	private List<Long> idTipiVersamento = null;
 	
 	private boolean ricercaIdFlussoCaseInsensitive = false;
+	
+	private Boolean incassato;
+	private Fr.StatoFr statoFlusso;
+	private boolean ricercaFR = true;
 	
 	private VistaRendicontazioneFieldConverter converter = null;
 
@@ -91,10 +98,10 @@ public class RendicontazioneFilter extends AbstractFilter {
 				newExpression.and(newExpressionFr);
 			}
 			
-			if(this.idDomini != null){
+			if(this.codDomini != null){
 				IExpression newExpressionDomini = this.newExpression();
-				this.idDomini.removeAll(Collections.singleton(null));
-				newExpressionDomini.in(VistaRendicontazione.model().FR_COD_DOMINIO, this.idDomini);
+				this.codDomini.removeAll(Collections.singleton(null));
+				newExpressionDomini.in(VistaRendicontazione.model().FR_COD_DOMINIO, this.codDomini);
 				newExpression.and(newExpressionDomini);
 			}
 
@@ -209,6 +216,26 @@ public class RendicontazioneFilter extends AbstractFilter {
 			}
 			
 			// FR
+			if(this.getStatoFlusso() != null){
+				newExpression.equals(VistaRendicontazione.model().FR_STATO, this.getStatoFlusso().toString());
+				addAnd = true;
+			}
+			
+			if(this.dataAcquisizioneFlussoDa != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.greaterEquals(VistaRendicontazione.model().FR_DATA_ACQUISIZIONE, this.dataAcquisizioneFlussoDa);
+				addAnd = true;
+			}
+			
+			if(this.dataAcquisizioneFlussoA != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.lessEquals(VistaRendicontazione.model().FR_DATA_ACQUISIZIONE, this.dataAcquisizioneFlussoA);
+				addAnd = true;
+			}
 			
 			if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
 				if(addAnd)
@@ -294,13 +321,12 @@ public class RendicontazioneFilter extends AbstractFilter {
 			
 			// VERSAMENTI
 			
-			if(this.idDomini != null && !this.idDomini.isEmpty()){
-				this.idDomini.removeAll(Collections.singleton(null));
+			if(this.codDomini != null && !this.codDomini.isEmpty()){
+				this.codDomini.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
 				
-				CustomField cf = new CustomField("vrs_id_dominio", Long.class, "vrs_id_dominio", converter.toTable(VistaRendicontazione.model()));
-				newExpression.in(cf, this.idDomini);
+				newExpression.in(VistaRendicontazione.model().FR_COD_DOMINIO, this.codDomini);
 				addAnd = true;
 			}
 			
@@ -438,6 +464,17 @@ public class RendicontazioneFilter extends AbstractFilter {
 			}
 			
 			// FR
+			if(this.getStatoFlusso() != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_STATO, true) + " = ? ");
+			}
+			
+			if(this.dataAcquisizioneFlussoDa != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_DATA_ACQUISIZIONE, true) + " >= ? ");
+			}
+			
+			if(this.dataAcquisizioneFlussoA != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_DATA_ACQUISIZIONE, true) + " <= ? ");
+			}
 			
 			if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
 				if(this.ricercaIdFlussoCaseInsensitive) {
@@ -485,11 +522,10 @@ public class RendicontazioneFilter extends AbstractFilter {
 			
 			// VERSAMENTI
 			
-			if(this.idDomini != null && !this.idDomini.isEmpty()){
-				this.idDomini.removeAll(Collections.singleton(null));
+			if(this.codDomini != null && !this.codDomini.isEmpty()){
+				this.codDomini.removeAll(Collections.singleton(null));
 				
-				String [] idsDominio = this.idDomini.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idDomini.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toTable(model.RND_IUV, true) + ".vrs_id_dominio", false, idsDominio );
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.FR_COD_DOMINIO, true), true, this.codDomini.toArray(new String[this.codDomini.size()]) );
 			}
 			
 			if(this.idUo != null && !this.idUo.isEmpty()){
@@ -597,6 +633,17 @@ public class RendicontazioneFilter extends AbstractFilter {
 		}
 		
 		// FR
+		if(this.getStatoFlusso() != null){
+			lst.add(this.getStatoFlusso().toString());
+		}
+		
+		if(this.dataAcquisizioneFlussoDa != null) {
+			lst.add(this.dataAcquisizioneFlussoDa);
+		}
+		
+		if(this.dataAcquisizioneFlussoA != null) {
+			lst.add(this.dataAcquisizioneFlussoA);
+		}
 		
 		if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
 			if(this.ricercaIdFlussoCaseInsensitive) {
@@ -650,7 +697,7 @@ public class RendicontazioneFilter extends AbstractFilter {
 		
 		// VERSAMENTI
 		
-		if(this.idDomini != null && !this.idDomini.isEmpty()){
+		if(this.codDomini != null && !this.codDomini.isEmpty()){
 			// donothing
 		}
 		
@@ -865,12 +912,12 @@ public class RendicontazioneFilter extends AbstractFilter {
 		this.codVersamento = codVersamento;
 	}
 
-	public List<Long> getIdDomini() {
-		return idDomini;
+	public List<String> getCodDomini() {
+		return codDomini;
 	}
 
-	public void setIdDomini(List<Long> idDomini) {
-		this.idDomini = idDomini;
+	public void setCodDomini(List<String> idDomini) {
+		this.codDomini = idDomini;
 	}
 
 	public List<Long> getIdVersamento() {
@@ -911,6 +958,46 @@ public class RendicontazioneFilter extends AbstractFilter {
 
 	public void setRicercaIdFlussoCaseInsensitive(boolean ricercaIdFlussoCaseInsensitive) {
 		this.ricercaIdFlussoCaseInsensitive = ricercaIdFlussoCaseInsensitive;
+	}
+
+	public Date getDataAcquisizioneFlussoDa() {
+		return dataAcquisizioneFlussoDa;
+	}
+
+	public void setDataAcquisizioneFlussoDa(Date dataAcquisizioneFlussoDa) {
+		this.dataAcquisizioneFlussoDa = dataAcquisizioneFlussoDa;
+	}
+
+	public Date getDataAcquisizioneFlussoA() {
+		return dataAcquisizioneFlussoA;
+	}
+
+	public void setDataAcquisizioneFlussoA(Date dataAcquisizioneFlussoA) {
+		this.dataAcquisizioneFlussoA = dataAcquisizioneFlussoA;
+	}
+
+	public Boolean getIncassato() {
+		return incassato;
+	}
+
+	public void setIncassato(Boolean incassato) {
+		this.incassato = incassato;
+	}
+
+	public Fr.StatoFr getStatoFlusso() {
+		return statoFlusso;
+	}
+
+	public void setStatoFlusso(Fr.StatoFr statoFlusso) {
+		this.statoFlusso = statoFlusso;
+	}
+
+	public boolean isRicercaFR() {
+		return ricercaFR;
+	}
+
+	public void setRicercaFR(boolean ricercaFR) {
+		this.ricercaFR = ricercaFR;
 	}
 	
 	

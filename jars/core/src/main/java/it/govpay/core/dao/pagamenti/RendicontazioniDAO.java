@@ -226,22 +226,27 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setLimit(listaRendicontazioniDTO.getLimit());
 			filter.setEseguiCountConLimit(listaRendicontazioniDTO.isEseguiCountConLimit());
 
-			filter.setIdDomini(listaRendicontazioniDTO.getIdDomini());
+			filter.setCodDomini(listaRendicontazioniDTO.getCodDomini());
 			filter.setIdTipiVersamento(listaRendicontazioniDTO.getIdTipiVersamento());
+			if(listaRendicontazioniDTO.getIdDominio() != null) {
+				filter.setCodDominio(listaRendicontazioniDTO.getIdDominio());
+			}
+			filter.setStatoFlusso(listaRendicontazioniDTO.getStato());
+			filter.setIncassato(listaRendicontazioniDTO.getIncassato());
 
 			if(listaRendicontazioniDTO.getUnitaOperative() != null) {
-				List<Long> idDomini = new ArrayList<>();
+				List<String> idDomini = new ArrayList<>();
 				List<Long> idUO = new ArrayList<>();
 				for (IdUnitaOperativa uo : listaRendicontazioniDTO.getUnitaOperative()) {
-					if(uo.getIdDominio() != null && !idDomini.contains(uo.getIdDominio())) {
-						idDomini.add(uo.getIdDominio());
+					if(uo.getCodDominio() != null && !idDomini.contains(uo.getCodDominio())) {
+						idDomini.add(uo.getCodDominio());
 					}
 
 					if(uo.getIdUnita() != null) {
 						idUO.add(uo.getIdUnita());
 					}
 				}
-				filter.setIdDomini(idDomini);
+				filter.setCodDomini(idDomini);
 				filter.setIdUo(idUO);
 			}
 
@@ -250,6 +255,8 @@ public class RendicontazioniDAO extends BaseDAO{
 
 			filter.setFilterSortList(listaRendicontazioniDTO.getFieldSortList());
 
+			filter.setDataAcquisizioneFlussoDa(listaRendicontazioniDTO.getDataAcquisizioneFlussoDa());
+			filter.setDataAcquisizioneFlussoA(listaRendicontazioniDTO.getDataAcquisizioneFlussoA()); 
 			filter.setDataFlussoDa(listaRendicontazioniDTO.getDataFlussoDa());
 			filter.setDataFlussoA(listaRendicontazioniDTO.getDataFlussoA()); 
 			filter.setDataRendicontazioneDa(listaRendicontazioniDTO.getDataRendicontazioneDa());
@@ -259,6 +266,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setDivisione(listaRendicontazioniDTO.getDivisione());
 			filter.setFrObsoleto(listaRendicontazioniDTO.getFrObsoleto());
 			filter.setRicercaIdFlussoCaseInsensitive(listaRendicontazioniDTO.isRicercaIdFlussoCaseInsensitive());
+			filter.setRicercaFR(listaRendicontazioniDTO.isRicercaFR());
 
 			Long count = null;
 			
@@ -284,12 +292,13 @@ public class RendicontazioniDAO extends BaseDAO{
 
 	private it.govpay.bd.viste.model.Rendicontazione popolateRendicontazione(it.govpay.bd.viste.model.Rendicontazione rendicontazione, BasicBD bd, BDConfigWrapper configWrapper) throws ServiceException {
 
-		rendicontazione.getVersamento().getApplicazione(configWrapper);
-		rendicontazione.getVersamento().getUo(configWrapper);
-		rendicontazione.getVersamento().getDominio(configWrapper);
-		rendicontazione.getVersamento().getTipoVersamento(configWrapper);
-		rendicontazione.getVersamento().getTipoVersamentoDominio(configWrapper);
-
+		if(rendicontazione.getVersamento() != null) {
+			rendicontazione.getVersamento().getApplicazione(configWrapper);
+			rendicontazione.getVersamento().getUo(configWrapper);
+			rendicontazione.getVersamento().getDominio(configWrapper);
+			rendicontazione.getVersamento().getTipoVersamento(configWrapper);
+			rendicontazione.getVersamento().getTipoVersamentoDominio(configWrapper);
+		}
 
 		return rendicontazione;
 	}

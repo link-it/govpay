@@ -58,21 +58,23 @@ public class RendicontazioneConverter {
 
 		dto.setFr(fr);
 
-		it.govpay.bd.model.Rendicontazione rendicontazione = new it.govpay.bd.model.Rendicontazione();
-
-		rendicontazione.setAnomalie(vo.getRndAnomalie());
-		rendicontazione.setIuv(vo.getRndIuv());
-		rendicontazione.setIur(vo.getRndIur());
-		rendicontazione.setIndiceDati(vo.getRndIndiceDati());
-		rendicontazione.setImporto(BigDecimal.valueOf(vo.getRndImportoPagato()));
-		rendicontazione.setData(vo.getRndData());
-		rendicontazione.setEsito(EsitoRendicontazione.toEnum(vo.getRndEsito()));
-		rendicontazione.setStato(StatoRendicontazione.valueOf(vo.getRndStato()));
-		if(vo.getRndIdPagamento() != null)
-			rendicontazione.setIdPagamento(vo.getRndIdPagamento().getId());
-
-		dto.setRendicontazione(rendicontazione);
-
+		it.govpay.bd.model.Rendicontazione rendicontazione = null;
+		if(vo.getRndIuv() != null) {
+			rendicontazione = new it.govpay.bd.model.Rendicontazione();
+			rendicontazione.setAnomalie(vo.getRndAnomalie());
+			rendicontazione.setIuv(vo.getRndIuv());
+			rendicontazione.setIur(vo.getRndIur());
+			rendicontazione.setIndiceDati(vo.getRndIndiceDati());
+			rendicontazione.setImporto(BigDecimal.valueOf(vo.getRndImportoPagato()));
+			rendicontazione.setData(vo.getRndData());
+			rendicontazione.setEsito(EsitoRendicontazione.toEnum(vo.getRndEsito()));
+			rendicontazione.setStato(StatoRendicontazione.valueOf(vo.getRndStato()));
+			if(vo.getRndIdPagamento() != null)
+				rendicontazione.setIdPagamento(vo.getRndIdPagamento().getId());
+	
+			dto.setRendicontazione(rendicontazione);
+		}
+		
 		SingoloVersamento singoloVersamento = null;
 		if(vo.getSngCodSingVersEnte() != null) {
 			singoloVersamento = new SingoloVersamento();
