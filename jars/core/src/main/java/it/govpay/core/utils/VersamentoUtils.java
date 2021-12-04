@@ -133,7 +133,7 @@ public class VersamentoUtils {
 		if(!versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO) && !versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
 			throw new GovPayException(EsitoOperazione.VER_003, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoLetto.getCodVersamentoEnte(), versamentoLetto.getStatoVersamento().toString());
 		}
-		if(versamentoLetto.getIdUo() != versamentoNuovo.getIdUo()) {
+		if(versamentoLetto.getIdUo().compareTo(versamentoNuovo.getIdUo()) != 0) {
 			// Pendenza (idA2A,idPendenza) presenta un beneficiario (vNuovo.idDominio/vNuovo.idUo) diverso da quello originale (vLetto.idDominio/vLetto.idUo)
 			throw new GovPayException(EsitoOperazione.VER_004, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), 
 					versamentoNuovo.getUo(configWrapper).getDominio(configWrapper).getCodDominio() , versamentoNuovo.getUo(configWrapper).getCodUo(),
