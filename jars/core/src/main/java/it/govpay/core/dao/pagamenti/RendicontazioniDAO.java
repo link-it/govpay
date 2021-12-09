@@ -147,19 +147,36 @@ public class RendicontazioniDAO extends BaseDAO{
 
 	public LeggiFrDTOResponse checkAutorizzazioneFlussoRendicontazione(LeggiFrDTO leggiRendicontazioniDTO) throws ServiceException,RendicontazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiFrDTOResponse response = new LeggiFrDTOResponse();
-		FrBD rendicontazioniBD = null;
+		RendicontazioniBD rendicontazioniBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
 		try {
-			rendicontazioniBD = new FrBD(configWrapper);	
-			FrFilter filter = rendicontazioniBD.newFilter();
+			rendicontazioniBD = new RendicontazioniBD(configWrapper);	
+			RendicontazioneFilter filter = rendicontazioniBD.newFilter();
 
 			filter.setOffset(0);
 			filter.setLimit(BasicFindRequestDTO.DEFAULT_LIMIT);
 
-			filter.setSearchModeEquals(true);
+			filter.setRicercaFR(true);
+//			filter.setSearchModeEquals(true);
 			filter.setCodFlusso(leggiRendicontazioniDTO.getIdFlusso());
-			filter.setDominiUOAutorizzati(leggiRendicontazioniDTO.getUnitaOperative());
+			if(leggiRendicontazioniDTO.getUnitaOperative() != null) {
+				List<String> idDomini = new ArrayList<>();
+				List<Long> idUO = new ArrayList<>();
+				for (IdUnitaOperativa uo : leggiRendicontazioniDTO.getUnitaOperative()) {
+					if(uo.getCodDominio() != null && !idDomini.contains(uo.getCodDominio())) {
+						idDomini.add(uo.getCodDominio());
+					}
+
+					if(uo.getIdUnita() != null) {
+						idUO.add(uo.getIdUnita());
+					}
+				}
+				filter.setCodDomini(idDomini);
+				filter.setIdUo(idUO);
+			}
+			
+//			filter.setDominiUOAutorizzati(leggiRendicontazioniDTO.getUnitaOperative());
 
 			long count = rendicontazioniBD.count(filter);
 			response.setAuthorized(count > 0);

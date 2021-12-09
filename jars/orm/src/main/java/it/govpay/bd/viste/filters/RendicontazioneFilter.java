@@ -70,6 +70,7 @@ public class RendicontazioneFilter extends AbstractFilter {
 	private Boolean incassato;
 	private Fr.StatoFr statoFlusso;
 	private boolean ricercaFR = true;
+	private boolean searchModeEquals = true; 
 	
 	private VistaRendicontazioneFieldConverter converter = null;
 
@@ -241,16 +242,24 @@ public class RendicontazioneFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				if(this.ricercaIdFlussoCaseInsensitive) {
-					IExpression newExpressionIngnoreCase = this.newExpression();
-					
-					newExpressionIngnoreCase.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso).or()
-					.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso.toUpperCase()).or()
-					.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso.toLowerCase());
-					
-					newExpression.and(newExpressionIngnoreCase);
-				} else {
-					newExpression.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso);
+				if(!this.searchModeEquals) {
+					if(this.ricercaIdFlussoCaseInsensitive) {
+						newExpression.ilike(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
+					} else {
+						newExpression.like(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
+					}
+				}else {
+					if(this.ricercaIdFlussoCaseInsensitive) {
+						IExpression newExpressionIngnoreCase = this.newExpression();
+						
+						newExpressionIngnoreCase.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso).or()
+						.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso.toUpperCase()).or()
+						.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso.toLowerCase());
+						
+						newExpression.and(newExpressionIngnoreCase);
+					} else {
+						newExpression.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso);
+					}
 				}
 				addAnd = true;
 			}
@@ -477,10 +486,18 @@ public class RendicontazioneFilter extends AbstractFilter {
 			}
 			
 			if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
-				if(this.ricercaIdFlussoCaseInsensitive) {
-					sqlQueryObject.addWhereCondition(false,converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ",converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ",converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ");
-				} else {
-					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ");
+				if(!this.searchModeEquals) {
+					if(this.ricercaIdFlussoCaseInsensitive) {
+						sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.FR_COD_FLUSSO, true), this.codFlusso, true, true);
+					} else {
+						sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.FR_COD_FLUSSO, true), this.codFlusso, true, false);
+					}
+				}else {
+					if(this.ricercaIdFlussoCaseInsensitive) {
+						sqlQueryObject.addWhereCondition(false,converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ",converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ",converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ");
+					} else {
+						sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ");
+					}
 				}
 			}
 			
@@ -646,12 +663,14 @@ public class RendicontazioneFilter extends AbstractFilter {
 		}
 		
 		if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
-			if(this.ricercaIdFlussoCaseInsensitive) {
-				lst.add(this.codFlusso);
-				lst.add(this.codFlusso.toUpperCase());
-				lst.add(this.codFlusso.toLowerCase());
-			}else {
-				lst.add(this.codFlusso);
+			if(this.searchModeEquals) {
+				if(this.ricercaIdFlussoCaseInsensitive) {
+					lst.add(this.codFlusso);
+					lst.add(this.codFlusso.toUpperCase());
+					lst.add(this.codFlusso.toLowerCase());
+				}else {
+					lst.add(this.codFlusso);
+				}
 			}
 		}
 		
@@ -1000,5 +1019,11 @@ public class RendicontazioneFilter extends AbstractFilter {
 		this.ricercaFR = ricercaFR;
 	}
 	
-	
+	public boolean isSearchModeEquals() {
+		return this.searchModeEquals;
+	}
+
+	public void setSearchModeEquals(boolean searchModeEquals) {
+		this.searchModeEquals = searchModeEquals;
+	}
 }

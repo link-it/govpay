@@ -241,13 +241,13 @@ public class FrFilter extends AbstractFilter {
 					}
 				}else {
 					if(this.ricercaIdFlussoCaseInsensitive) {
-						IExpression newExpressionIngnoreCase = this.newExpression();
+						IExpression newExpressionIgnoreCase = this.newExpression();
 						
-						newExpressionIngnoreCase.equals(FR.model().COD_FLUSSO, this.codFlusso).or()
+						newExpressionIgnoreCase.equals(FR.model().COD_FLUSSO, this.codFlusso).or()
 						.equals(FR.model().COD_FLUSSO, this.codFlusso.toUpperCase()).or()
 						.equals(FR.model().COD_FLUSSO, this.codFlusso.toLowerCase());
 						
-						newExpression.and(newExpressionIngnoreCase);
+						newExpression.and(newExpressionIgnoreCase);
 					} else {
 						newExpression.equals(FR.model().COD_FLUSSO, this.codFlusso);
 					}
