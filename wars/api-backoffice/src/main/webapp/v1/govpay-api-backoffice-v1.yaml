@@ -3120,6 +3120,7 @@ paths:
         - $ref: '#/components/parameters/tassonomie'
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
+        - $ref: '#/components/parameters/iur'
       responses:
         '201':
           description: Dettaglio della riscossione
@@ -4204,6 +4205,13 @@ components:
       required: false
       schema:
         type: boolean
+    iur:
+      name: iur
+      in: query
+      description: Identificativo univoco riscossione
+      required: false
+      schema:
+        type: string
     iuv:
       name: iuv
       in: query

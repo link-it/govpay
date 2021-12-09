@@ -92,7 +92,7 @@ public class RiscossioniController extends BaseController {
 
 
 
-    public Response findRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String idUnita, String idTipoPendenza, String stato, String dataDa, String dataA, List<String> tipo, String iuv, List<String> direzione, List<String> divisione, List<String> tassonomia, Boolean metadatiPaginazione, Boolean maxRisultati) {
+    public Response findRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String idUnita, String idTipoPendenza, String stato, String dataDa, String dataA, List<String> tipo, String iuv, List<String> direzione, List<String> divisione, List<String> tassonomia, Boolean metadatiPaginazione, Boolean maxRisultati, String iur) {
     	String methodName = "findRiscossioni";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -165,6 +165,7 @@ public class RiscossioniController extends BaseController {
 			findRiscossioniDTO.setDirezione(direzione);
 			findRiscossioniDTO.setDivisione(divisione);
 			findRiscossioniDTO.setTassonomia(tassonomia);
+			findRiscossioniDTO.setIur(iur);
 			
 			// Autorizzazione sui domini
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
