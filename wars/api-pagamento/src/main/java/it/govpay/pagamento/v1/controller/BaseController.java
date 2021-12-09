@@ -206,7 +206,7 @@ public abstract class BaseController {
 	}
 
 	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
-		this.log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage(), e);
+		this.logMessageGovPayException(methodName, e);
 		FaultBean respKo = new FaultBean();
 		int statusCode = e.getStatusCode();
 		if(e.getFaultBean()!=null) {
@@ -230,6 +230,17 @@ public abstract class BaseController {
 			this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
 		
 		return handleResponseKo(responseBuilder, transactionId).build();
+	}
+	
+	private void logMessageGovPayException(String methodName, GovPayException e) {
+		switch (e.getCodEsito()) {
+		case PAG_014:
+			this.log.info("Rilevata GovPayException durante l'esecuzione del metodo: "+methodName+", causa: "+ e.getCausa() + ", messaggio: " + e.getMessageV3());
+			break;
+		default:
+			this.log.error("Rilevata GovPayException durante l'esecuzione del metodo: "+methodName+", causa: "+ e.getCausa() + ", messaggio: " + e.getMessageV3(), e);
+			break;
+		}
 	}
 	
 	private Response handleValidationException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, ValidationException e, String transactionId) {
