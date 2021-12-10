@@ -13,6 +13,8 @@
       articolo: 'Articolo',
       proprietaCustom: 'Proprieta custom'
     },
+    quoteHidden: ['proprietaCustom'],
+    showEmpty: false,
     quoteExport: ['titolo', 'tipologia', 'categoria', 'capitolo', 'articolo', 'accertamento', 'annoEsercizio', 'importo'],
     quoteCount: 10,
     exportLabel: {

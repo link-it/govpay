@@ -16,6 +16,7 @@ export class KeyJsonViewComponent implements OnInit, OnChanges {
 
   // Default
   _quoteOrder = ['titolo', 'tipologia', 'categoria', 'capitolo', 'articolo', 'accertamento', 'annoEsercizio', 'importo'];
+  _quoteHidden = ['proprietaCustom'];
   _quoteLabel = {
     capitolo: 'Capitolo',
     annoEsercizio: 'Anno esercizio',
@@ -27,11 +28,14 @@ export class KeyJsonViewComponent implements OnInit, OnChanges {
     articolo: 'Articolo',
     proprietaCustom: 'Proprieta custom'
   };
+  _showEmpty = false;
 
   constructor() {
-    if (GovRiconciliazioniConfig && GovRiconciliazioniConfig.quoteOrder && GovRiconciliazioniConfig.quoteLabel) {
-      this._quoteOrder = GovRiconciliazioniConfig.quoteOrder;
-      this._quoteLabel = GovRiconciliazioniConfig.quoteLabel;
+    if (GovRiconciliazioniConfig) {
+      this._quoteOrder = GovRiconciliazioniConfig.quoteOrder || this._quoteOrder;
+      this._quoteHidden = GovRiconciliazioniConfig.quoteHidden || this._quoteHidden;
+      this._quoteLabel = GovRiconciliazioniConfig.quoteLabel || this._quoteLabel;
+      this._showEmpty = (GovRiconciliazioniConfig.showEmpty) ? GovRiconciliazioniConfig.showEmpty : this._showEmpty;
     }
   }
 
@@ -47,9 +51,20 @@ export class KeyJsonViewComponent implements OnInit, OnChanges {
   prepareData() {
     if ((this.info.type == 'quote') && this.info.value && this.info.value[0]) {
       this.quoteKeys = Object.keys(this.info.value[0]);
+      this.quoteKeys = this.quoteKeys.filter(function (n) {
+        return (this._quoteHidden.indexOf(n) == -1);
+      }.bind(this));
       const sorted = this.quoteKeys.sort((a, b) => this._quoteOrder.indexOf(a) - this._quoteOrder.indexOf(b));
       this.quoteKeys = sorted;
     }
+  }
+
+  showValue() {
+    let show = true;
+    if (!this._showEmpty) {
+      show = Boolean(this.info.value);
+    }
+    return (show);
   }
 
   // protected _setLabelStyle() {

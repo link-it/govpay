@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" *ngIf="showValue()">
   <div class="row lh-130 regular-16 mb-2 break-all">
     <div class="col-12 col-sm-4 color-gray lh-130 mb-2 mb-sm-0">{{info.label?info.label + ':':info.label}}</div>
     <ng-container [ngSwitch]="info.type">
