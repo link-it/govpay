@@ -53,6 +53,8 @@ export class FormService {
   public static FORM_PENDENZA: string = 'Identificativo pendenza';
   public static FORM_PH_PENDENZA: string = '';
   public static FORM_ESITO: string = 'Esito pagamento';
+  public static FORM_IUR: string = 'Identificativo riscossione';
+  public static FORM_PH_IUR: string = '';
 
   //Ruoli
   public static FORM_RUOLO: string = 'Ruolo';
