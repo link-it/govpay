@@ -143,6 +143,7 @@ softwareType: standalone/web
 softwareVersion: '3.4.4'
 url: 'https://github.com/link-it/govpay'
 usedBy:
+  - CNR - Consiglio Nazionale delle Ricerche  
+  - ISS - Istituto Superiore della Sanità
+  - MIC - Ministero della Cultura    
   - MISE - Ministero dello Sviluppo Economico
-  - CNR - Consiglio Nazionale delle Ricerche
-  - MIC - Ministero della Cultura
