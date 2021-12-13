@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.4.3-SNAPSHOT</version>
+		<version>3.4.4</version>
 	</parent>
 
 	<artifactId>orm-beans</artifactId>
