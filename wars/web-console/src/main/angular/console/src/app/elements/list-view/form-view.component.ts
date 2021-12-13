@@ -49,14 +49,12 @@ export class FormViewComponent implements OnInit, AfterViewInit {
     });
     this.basicForm = this.fb.group(controls);
     this.fields.forEach(function(field) {
-      setTimeout(() => {
-        let _componentRef = this.ls.createComponent(field.type, this.formElementContainer);
-        _componentRef.instance.fGroup = this.basicForm;
-        _componentRef.instance.json = field;
-        field.dependency?_componentRef.instance.json['source'] = controls[field.dependency+'_ctrl']:null;
-        this.changeDetector.detectChanges();
-      }, this);
+      let _componentRef = this.ls.createComponent(field.type, this.formElementContainer);
+      _componentRef.instance.fGroup = this.basicForm;
+      _componentRef.instance.json = field;
+      field.dependency?_componentRef.instance.json['source'] = controls[field.dependency+'_ctrl']:null;
     }, this);
+    this.changeDetector.detectChanges();
   }
 
   protected onSubmit(_form) {

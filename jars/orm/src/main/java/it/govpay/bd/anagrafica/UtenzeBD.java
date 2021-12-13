@@ -668,6 +668,7 @@ public class UtenzeBD extends BasicBD {
 				aclBD.setAtomica(false);
 				for(Acl aclNuova : utenza.getAclPrincipal()) {
 					aclNuova.setIdUtenza(utenza.getId());
+					aclNuova.setUtenza(utenza);
 					aclBD.insertAcl(aclNuova);
 				}
 			}
