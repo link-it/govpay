@@ -12,7 +12,6 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.bd.viste.RendicontazioniBD;
@@ -160,23 +159,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setRicercaFR(true);
 //			filter.setSearchModeEquals(true);
 			filter.setCodFlusso(leggiRendicontazioniDTO.getIdFlusso());
-			if(leggiRendicontazioniDTO.getUnitaOperative() != null) {
-				List<String> idDomini = new ArrayList<>();
-				List<Long> idUO = new ArrayList<>();
-				for (IdUnitaOperativa uo : leggiRendicontazioniDTO.getUnitaOperative()) {
-					if(uo.getCodDominio() != null && !idDomini.contains(uo.getCodDominio())) {
-						idDomini.add(uo.getCodDominio());
-					}
-
-					if(uo.getIdUnita() != null) {
-						idUO.add(uo.getIdUnita());
-					}
-				}
-				filter.setCodDomini(idDomini);
-				filter.setIdUo(idUO);
-			}
-			
-//			filter.setDominiUOAutorizzati(leggiRendicontazioniDTO.getUnitaOperative());
+			filter.setDominiUOAutorizzati(leggiRendicontazioniDTO.getUnitaOperative());
 
 			long count = rendicontazioniBD.count(filter);
 			response.setAuthorized(count > 0);
@@ -243,30 +226,13 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setLimit(listaRendicontazioniDTO.getLimit());
 			filter.setEseguiCountConLimit(listaRendicontazioniDTO.isEseguiCountConLimit());
 
-			filter.setCodDomini(listaRendicontazioniDTO.getCodDomini());
 			filter.setIdTipiVersamento(listaRendicontazioniDTO.getIdTipiVersamento());
 			if(listaRendicontazioniDTO.getIdDominio() != null) {
 				filter.setCodDominio(listaRendicontazioniDTO.getIdDominio());
 			}
 			filter.setStatoFlusso(listaRendicontazioniDTO.getStato());
 			filter.setIncassato(listaRendicontazioniDTO.getIncassato());
-
-			if(listaRendicontazioniDTO.getUnitaOperative() != null) {
-				List<String> idDomini = new ArrayList<>();
-				List<Long> idUO = new ArrayList<>();
-				for (IdUnitaOperativa uo : listaRendicontazioniDTO.getUnitaOperative()) {
-					if(uo.getCodDominio() != null && !idDomini.contains(uo.getCodDominio())) {
-						idDomini.add(uo.getCodDominio());
-					}
-
-					if(uo.getIdUnita() != null) {
-						idUO.add(uo.getIdUnita());
-					}
-				}
-				filter.setCodDomini(idDomini);
-				filter.setIdUo(idUO);
-			}
-
+			filter.setDominiUOAutorizzati(listaRendicontazioniDTO.getUnitaOperative());
 			filter.setCodFlusso(listaRendicontazioniDTO.getCodFlusso());
 			filter.setIuv(listaRendicontazioniDTO.getIuv());
 

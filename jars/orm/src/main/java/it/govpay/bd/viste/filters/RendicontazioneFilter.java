@@ -20,6 +20,7 @@ import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.model.Fr;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
@@ -60,9 +61,7 @@ public class RendicontazioneFilter extends AbstractFilter {
 	private Long idApplicazione; // versamenti
 	private String codUnivocoDebitore;
 	private String codVersamento = null;
-	private List<String> codDomini;
 	private List<Long> idVersamento= null;
-	private List<Long> idUo;
 	private List<Long> idTipiVersamento = null;
 	
 	private boolean ricercaIdFlussoCaseInsensitive = false;
@@ -71,6 +70,7 @@ public class RendicontazioneFilter extends AbstractFilter {
 	private Fr.StatoFr statoFlusso;
 	private boolean ricercaFR = true;
 	private boolean searchModeEquals = true; 
+	private List<IdUnitaOperativa> dominiUOAutorizzati;
 	
 	private VistaRendicontazioneFieldConverter converter = null;
 
@@ -97,13 +97,6 @@ public class RendicontazioneFilter extends AbstractFilter {
 				CustomField idFrField = new CustomField("id_fr", Long.class, "id_fr", this.getRootTable());
 				newExpressionFr.equals(idFrField, this.idFr);
 				newExpression.and(newExpressionFr);
-			}
-			
-			if(this.codDomini != null){
-				IExpression newExpressionDomini = this.newExpression();
-				this.codDomini.removeAll(Collections.singleton(null));
-				newExpressionDomini.in(VistaRendicontazione.model().FR_COD_DOMINIO, this.codDomini);
-				newExpression.and(newExpressionDomini);
 			}
 
 			return newExpression;
@@ -330,21 +323,30 @@ public class RendicontazioneFilter extends AbstractFilter {
 			
 			// VERSAMENTI
 			
-			if(this.codDomini != null && !this.codDomini.isEmpty()){
-				this.codDomini.removeAll(Collections.singleton(null));
+			if(this.dominiUOAutorizzati != null && this.dominiUOAutorizzati.size() > 0) {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.in(VistaRendicontazione.model().FR_COD_DOMINIO, this.codDomini);
-				addAnd = true;
-			}
-			
-			if(this.idUo != null && !this.idUo.isEmpty()){
-				this.idUo.removeAll(Collections.singleton(null));
-				if(addAnd)
-					newExpression.and();
-				CustomField cf = new CustomField("vrs_id_uo", Long.class, "vrs_id_uo", converter.toTable(VistaRendicontazione.model()));
-				newExpression.in(cf, this.idUo);
+				IExpression newExpressionUO = this.newExpression();
+				List<IExpression> listExpressionSingolaUO = new ArrayList<>();
+				
+				for (IdUnitaOperativa idUnita : this.dominiUOAutorizzati) {
+					if(idUnita.getCodDominio() != null) {
+						IExpression newExpressionSingolaUO = this.newExpression();
+						
+						newExpressionSingolaUO.equals(VistaRendicontazione.model().FR_COD_DOMINIO, idUnita.getCodDominio());
+						
+						if(idUnita.getIdUnita() != null ) {
+							CustomField iduoCustomField = new CustomField("vrs_id_uo", Long.class, "vrs_id_uo", converter.toTable(VistaRendicontazione.model()));
+							newExpressionSingolaUO.and().equals(iduoCustomField, idUnita.getIdUnita());
+						}
+						
+						listExpressionSingolaUO.add(newExpressionSingolaUO);
+					}
+				}
+				
+				newExpressionUO.or(listExpressionSingolaUO.toArray(new IExpression[listExpressionSingolaUO.size()]));
+				newExpression.and(newExpressionUO);
 				addAnd = true;
 			}
 			
@@ -455,7 +457,7 @@ public class RendicontazioneFilter extends AbstractFilter {
 			}
 			
 			if(this.idRendicontazione != null && this.idRendicontazione.size() >0){ 
-				String [] idsRendicontazione = this.idUo.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idUo.size()]);
+				String [] idsRendicontazione = this.idRendicontazione.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idRendicontazione.size()]);
 				sqlQueryObject.addWhereINCondition(converter.toTable(model.RND_IUV, true) + ".id", false, idsRendicontazione );
 			}
 			
@@ -539,17 +541,25 @@ public class RendicontazioneFilter extends AbstractFilter {
 			
 			// VERSAMENTI
 			
-			if(this.codDomini != null && !this.codDomini.isEmpty()){
-				this.codDomini.removeAll(Collections.singleton(null));
-				
-				sqlQueryObject.addWhereINCondition(converter.toColumn(model.FR_COD_DOMINIO, true), true, this.codDomini.toArray(new String[this.codDomini.size()]) );
-			}
-			
-			if(this.idUo != null && !this.idUo.isEmpty()){
-				this.idUo.removeAll(Collections.singleton(null));
-				
-				String [] idsUo = this.idUo.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idUo.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toTable(model.RND_IUV, true) + ".vrs_id_uo", false, idsUo );
+			if(this.dominiUOAutorizzati != null && this.dominiUOAutorizzati.size() > 0) {
+				List<String> uoConditions = new ArrayList<>();
+				for (IdUnitaOperativa idUnita : this.dominiUOAutorizzati) {
+					if(idUnita.getIdDominio() != null) {
+						
+						StringBuilder sb = new StringBuilder();
+						sb.append(converter.toColumn(model.FR_COD_DOMINIO, true) + " = ? ");
+						
+						if(idUnita.getIdUnita() != null ) {
+							sb.append(" and ");
+							sb.append(converter.toTable(model.RND_IUV, true) + ".vrs_id_uo = ? ");
+						}
+						
+						uoConditions.add(sb.toString());
+					}
+				}
+				if(!uoConditions.isEmpty()) {
+					sqlQueryObject.addWhereCondition(false, uoConditions.toArray(new String[uoConditions.size()]));
+				}
 			}
 			
 			if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
@@ -716,12 +726,15 @@ public class RendicontazioneFilter extends AbstractFilter {
 		
 		// VERSAMENTI
 		
-		if(this.codDomini != null && !this.codDomini.isEmpty()){
-			// donothing
-		}
-		
-		if(this.idUo != null && !this.idUo.isEmpty()){
-			// donothing
+		if(this.dominiUOAutorizzati != null && this.dominiUOAutorizzati.size() > 0) {
+			for (IdUnitaOperativa idUnita : this.dominiUOAutorizzati) {
+				if(idUnita.getCodDominio() != null) {
+					lst.add(idUnita.getCodDominio());
+					if(idUnita.getIdUnita() != null ) {
+						lst.add(idUnita.getIdUnita());
+					}
+				}
+			}
 		}
 		
 		if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
@@ -931,28 +944,12 @@ public class RendicontazioneFilter extends AbstractFilter {
 		this.codVersamento = codVersamento;
 	}
 
-	public List<String> getCodDomini() {
-		return codDomini;
-	}
-
-	public void setCodDomini(List<String> idDomini) {
-		this.codDomini = idDomini;
-	}
-
 	public List<Long> getIdVersamento() {
 		return idVersamento;
 	}
 
 	public void setIdVersamento(List<Long> idVersamento) {
 		this.idVersamento = idVersamento;
-	}
-
-	public List<Long> getIdUo() {
-		return idUo;
-	}
-
-	public void setIdUo(List<Long> idUo) {
-		this.idUo = idUo;
 	}
 
 	public List<Long> getIdTipiVersamento() {
@@ -1025,5 +1022,13 @@ public class RendicontazioneFilter extends AbstractFilter {
 
 	public void setSearchModeEquals(boolean searchModeEquals) {
 		this.searchModeEquals = searchModeEquals;
+	}
+
+	public List<IdUnitaOperativa> getDominiUOAutorizzati() {
+		return dominiUOAutorizzati;
+	}
+
+	public void setDominiUOAutorizzati(List<IdUnitaOperativa> dominiUOAutorizzati) {
+		this.dominiUOAutorizzati = dominiUOAutorizzati;
 	}
 }

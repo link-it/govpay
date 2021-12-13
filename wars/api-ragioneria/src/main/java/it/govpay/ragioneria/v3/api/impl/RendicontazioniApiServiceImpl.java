@@ -14,13 +14,14 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.IdUnitaOperativa;
+import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.RendicontazioniDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiFrDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiFrDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.ListaFrDTO;
-import it.govpay.core.dao.pagamenti.dto.ListaFrDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreUtils;
@@ -67,18 +68,18 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 			
 			// Parametri - > DTO Input
 			
-			ListaFrDTO findRendicontazioniDTO = new ListaFrDTO(user);
+			ListaRendicontazioniDTO findRendicontazioniDTO = new ListaRendicontazioniDTO(user);
 			findRendicontazioniDTO.setIdDominio(idDominio);
 			findRendicontazioniDTO.setLimit(risultatiPerPagina);
 			findRendicontazioniDTO.setPagina(pagina);
 			findRendicontazioniDTO.setOrderBy(ordinamento);
 			if(dataDa != null) {
 				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
-				findRendicontazioniDTO.setDataDa(dataDaDate);
+				findRendicontazioniDTO.setDataAcquisizioneFlussoDa(dataDaDate);
 			}
 			if(dataA != null) {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
-				findRendicontazioniDTO.setDataA(dataADate);
+				findRendicontazioniDTO.setDataAcquisizioneFlussoA(dataADate);
 			}
 			if(stato != null) {
 				StatoFlussoRendicontazione sfr = StatoFlussoRendicontazione.fromValue(stato);
@@ -104,7 +105,8 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 //			findRendicontazioniDTO.setObsoleto(false);
 			findRendicontazioniDTO.setIuv(iuv);
 			findRendicontazioniDTO.setRicercaIdFlussoCaseInsensitive(true);
-			findRendicontazioniDTO.setIdFlusso(idFlusso);
+			findRendicontazioniDTO.setCodFlusso(idFlusso);
+			findRendicontazioniDTO.setRicercaFR(true);
 			
 			findRendicontazioniDTO.setEseguiCount(metadatiPaginazione);
 			findRendicontazioniDTO.setEseguiCountConLimit(maxRisultati);
@@ -113,14 +115,14 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 			
 			// CHIAMATA AL DAO
 			
-			ListaFrDTOResponse findRendicontazioniDTOResponse = uo != null ? rendicontazioniDAO.listaFlussiRendicontazioni(findRendicontazioniDTO) 
-					: new ListaFrDTOResponse(0L, new ArrayList<>());
+			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = uo != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO) 
+					: new ListaRendicontazioniDTOResponse(0L, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
 			List<FlussoRendicontazioneIndex> collect = new ArrayList<>();
 			
-			for(LeggiFrDTOResponse res: findRendicontazioniDTOResponse.getResults()) {
+			for(Rendicontazione res: findRendicontazioniDTOResponse.getResults()) {
 				collect.add(FlussiRendicontazioneConverter.toRsIndexModel(res.getFr()));
 			}
 			
