@@ -231,6 +231,7 @@ public class Incassi extends BasicBD {
 					// Cerco l'idf come case insensitive
 					Fr fr = null;
 					for(String codFlusso : idfs) {
+						idf = codFlusso;
 						FrFilter newFilter = frBD.newFilter();
 						newFilter.setCodFlusso(codFlusso);
 						List<Fr> frs = frBD.findAll(newFilter);
