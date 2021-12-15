@@ -121,5 +121,7 @@ public class ModelFactory {
 	
 	public static VistaVersamentoModel VISTA_VERSAMENTO = new VistaVersamentoModel();
 	
+	public static VistaVersamentoNonRendicontatoModel VISTA_VERSAMENTO_NON_RENDICONTATO = new VistaVersamentoNonRendicontatoModel();
+	
 
 }

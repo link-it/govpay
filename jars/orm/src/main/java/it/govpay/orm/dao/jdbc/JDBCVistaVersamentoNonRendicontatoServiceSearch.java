@@ -48,41 +48,41 @@ import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.slf4j.Logger;
 
-import it.govpay.orm.IdRpt;
-import it.govpay.orm.VistaRptVersamento;
-import it.govpay.orm.dao.IDBVistaRptVersamentoServiceSearch;
+import it.govpay.orm.IdPagamento;
+import it.govpay.orm.VistaVersamentoNonRendicontato;
+import it.govpay.orm.dao.IDBVistaVersamentoNonRendicontatoServiceSearch;
 import it.govpay.orm.utils.ProjectInfo;
 
 /**     
- * Service can be used to search for the backend objects of type {@link it.govpay.orm.VistaRptVersamento} 
+ * Service can be used to search for the backend objects of type {@link it.govpay.orm.VistaVersamentoNonRendicontato} 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
 */
-public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersamentoServiceSearch, IDBServiceUtilities<VistaRptVersamento> {
+public class JDBCVistaVersamentoNonRendicontatoServiceSearch implements IDBVistaVersamentoNonRendicontatoServiceSearch, IDBServiceUtilities<VistaVersamentoNonRendicontato> {
 
 
 	protected JDBCServiceManagerProperties jdbcProperties = null;
 	protected JDBCServiceManager jdbcServiceManager = null;
 	protected Logger log = null;
-	protected IJDBCServiceSearchWithId<VistaRptVersamento, IdRpt, JDBCServiceManager> serviceSearch = null;
+	protected IJDBCServiceSearchWithId<VistaVersamentoNonRendicontato, IdPagamento, JDBCServiceManager> serviceSearch = null;
 	protected JDBC_SQLObjectFactory jdbcSqlObjectFactory = null;
-	public JDBCVistaRptVersamentoServiceSearch(JDBCServiceManager jdbcServiceManager) throws ServiceException {
+	public JDBCVistaVersamentoNonRendicontatoServiceSearch(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		this.jdbcServiceManager = jdbcServiceManager;
 		this.jdbcProperties = jdbcServiceManager.getJdbcProperties();
 		this.log = jdbcServiceManager.getLog();
-		this.log.debug(JDBCVistaRptVersamentoServiceSearch.class.getName()+ " initialized");
-		this.serviceSearch = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceSearch("vistaRptVersamento");
+		this.log.debug(JDBCVistaVersamentoNonRendicontatoServiceSearch.class.getName()+ " initialized");
+		this.serviceSearch = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceSearch("vistaVersamentoNonRendicontato");
 		this.serviceSearch.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 		this.jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
 	}
 	
 	@Override
-	public void validate(VistaRptVersamento vistaRptVersamento) throws ServiceException,
+	public void validate(VistaVersamentoNonRendicontato vistaVersamentoNonRendicontato) throws ServiceException,
 			ValidationException, NotImplementedException {
-		org.openspcoop2.generic_project.utils.XSDValidator.validate(vistaRptVersamento, this.log, 
+		org.openspcoop2.generic_project.utils.XSDValidator.validate(vistaVersamentoNonRendicontato, this.log, 
 				it.govpay.orm.utils.XSDValidator.getXSDValidator(this.log));
 	}
 	
@@ -97,7 +97,7 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	}
 	
 	@Override
-	public IdRpt convertToId(VistaRptVersamento obj)
+	public IdPagamento convertToId(VistaVersamentoNonRendicontato obj)
 			throws ServiceException, NotImplementedException {
 		
 		Connection connection = null;
@@ -105,7 +105,7 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 			
 			// check parameters
 			if(obj==null){
-				throw new Exception("Parameter (type:"+VistaRptVersamento.class.getName()+") 'obj' is null");
+				throw new Exception("Parameter (type:"+VistaVersamentoNonRendicontato.class.getName()+") 'obj' is null");
 			}
 			
 			// ISQLQueryObject
@@ -131,14 +131,14 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	}
 		
 	@Override
-	public VistaRptVersamento get(IdRpt id) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+	public VistaVersamentoNonRendicontato get(IdPagamento id) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
     
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdRpt.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdPagamento.class.getName()+") 'id' is null");
 			}
 			
 			// ISQLQueryObject
@@ -168,13 +168,13 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	}
 
 	@Override
-	public VistaRptVersamento get(IdRpt id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+	public VistaVersamentoNonRendicontato get(IdPagamento id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdRpt.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdPagamento.class.getName()+") 'id' is null");
 			}
 			if(idMappingResolutionBehaviour==null){
 				throw new Exception("Parameter (type:"+org.openspcoop2.generic_project.beans.IDMappingBehaviour.class.getName()+") 'idMappingResolutionBehaviour' is null");
@@ -207,14 +207,14 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	}
 
 	@Override
-	public boolean exists(IdRpt id) throws MultipleResultException,ServiceException,NotImplementedException {
+	public boolean exists(IdPagamento id) throws MultipleResultException,ServiceException,NotImplementedException {
 
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdRpt.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdPagamento.class.getName()+") 'id' is null");
 			}
 
 			// ISQLQueryObject
@@ -242,7 +242,7 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	}
 	
 	@Override
-	public List<IdRpt> findAllIds(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
+	public List<IdPagamento> findAllIds(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -280,7 +280,7 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	}
 	
 	@Override
-	public List<IdRpt> findAllIds(IPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public List<IdPagamento> findAllIds(IPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -321,7 +321,7 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	}
 
 	@Override
-	public List<VistaRptVersamento> findAll(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
+	public List<VistaVersamentoNonRendicontato> findAll(IPaginatedExpression expression) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -359,7 +359,7 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	}
 	
 	@Override
-	public List<VistaRptVersamento> findAll(IPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public List<VistaVersamentoNonRendicontato> findAll(IPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -400,7 +400,7 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	}
 
 	@Override
-	public VistaRptVersamento find(IExpression expression) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
+	public VistaVersamentoNonRendicontato find(IExpression expression) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -442,7 +442,7 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	}
 	
 	@Override
-	public VistaRptVersamento find(IExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
+	public VistaVersamentoNonRendicontato find(IExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
 
 		Connection connection = null;
 		try{
@@ -525,14 +525,14 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	}
 
 	@Override
-	public InUse inUse(IdRpt id) throws ServiceException, NotFoundException,NotImplementedException {
+	public InUse inUse(IdPagamento id) throws ServiceException, NotFoundException,NotImplementedException {
 
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdRpt.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdPagamento.class.getName()+") 'id' is null");
 			}
 			
 			// ISQLQueryObject
@@ -980,16 +980,16 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	// -- DB
 	
 	@Override
-	public void mappingTableIds(IdRpt id, VistaRptVersamento obj) throws ServiceException,NotFoundException,NotImplementedException{
+	public void mappingTableIds(IdPagamento id, VistaVersamentoNonRendicontato obj) throws ServiceException,NotFoundException,NotImplementedException{
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(id==null){
-				throw new Exception("Parameter (type:"+IdRpt.class.getName()+") 'id' is null");
+				throw new Exception("Parameter (type:"+IdPagamento.class.getName()+") 'id' is null");
 			}
 			if(obj==null){
-				throw new Exception("Parameter (type:"+VistaRptVersamento.class.getName()+") 'obj' is null");
+				throw new Exception("Parameter (type:"+VistaVersamentoNonRendicontato.class.getName()+") 'obj' is null");
 			}
 			
 			// ISQLQueryObject
@@ -1016,16 +1016,16 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	}
 	
 	@Override
-	public void mappingTableIds(long tableId, VistaRptVersamento obj) throws ServiceException,NotFoundException,NotImplementedException{
+	public void mappingTableIds(long tableId, VistaVersamentoNonRendicontato obj) throws ServiceException,NotFoundException,NotImplementedException{
 		Connection connection = null;
 		try{
 			
 			// check parameters
 			if(tableId<=0){
-				throw new Exception("Parameter (type:"+IdRpt.class.getName()+") 'tableId' is lessEquals 0");
+				throw new Exception("Parameter (type:"+IdPagamento.class.getName()+") 'tableId' is lessEquals 0");
 			}
 			if(obj==null){
-				throw new Exception("Parameter (type:"+VistaRptVersamento.class.getName()+") 'obj' is null");
+				throw new Exception("Parameter (type:"+VistaVersamentoNonRendicontato.class.getName()+") 'obj' is null");
 			}
 			
 			// ISQLQueryObject
@@ -1052,7 +1052,7 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	}
 		
 	@Override
-	public VistaRptVersamento get(long tableId) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+	public VistaVersamentoNonRendicontato get(long tableId) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
     
 		Connection connection = null;
 		try{
@@ -1089,7 +1089,7 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	}
 	
 	@Override
-	public VistaRptVersamento get(long tableId,org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
+	public VistaVersamentoNonRendicontato get(long tableId,org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException,MultipleResultException, NotImplementedException {
     
 		Connection connection = null;
 		try{
@@ -1279,7 +1279,7 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	}
 	
 	@Override
-	public IdRpt findId(long tableId, boolean throwNotFound)
+	public IdPagamento findId(long tableId, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException {
 		
 		Connection connection = null;
@@ -1315,7 +1315,7 @@ public class JDBCVistaRptVersamentoServiceSearch implements IDBVistaRptVersament
 	}
 
 	@Override
-	public Long findTableId(IdRpt id, boolean throwNotFound)
+	public Long findTableId(IdPagamento id, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException {
 		
 		Connection connection = null;

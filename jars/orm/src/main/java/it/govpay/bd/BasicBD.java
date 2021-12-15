@@ -81,6 +81,7 @@ import it.govpay.orm.dao.IDBVistaPagamentoPortaleServiceSearch;
 import it.govpay.orm.dao.IDBVistaPagamentoServiceSearch;
 import it.govpay.orm.dao.IDBVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IDBVistaRptVersamentoServiceSearch;
+import it.govpay.orm.dao.IDBVistaVersamentoNonRendicontatoServiceSearch;
 import it.govpay.orm.dao.IDBVistaVersamentoServiceSearch;
 import it.govpay.orm.dao.IDocumentoService;
 import it.govpay.orm.dao.IDominioService;
@@ -122,6 +123,7 @@ import it.govpay.orm.dao.IVistaPagamentoServiceSearch;
 import it.govpay.orm.dao.IVistaRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IVistaRiscossioniServiceSearch;
 import it.govpay.orm.dao.IVistaRptVersamentoServiceSearch;
+import it.govpay.orm.dao.IVistaVersamentoNonRendicontatoServiceSearch;
 import it.govpay.orm.dao.IVistaVersamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
@@ -177,6 +179,7 @@ public class BasicBD {
 	private ITracciatoNotificaPagamentiService tracciatoNotificaPagamentiService;
 	private IVistaPagamentoServiceSearch vistaPagamentoServiceSearch;
 	private IVistaVersamentoServiceSearch vistaVersamentoServiceSearch;
+	private IVistaVersamentoNonRendicontatoServiceSearch vistaVersamentoNonRendicontatoServiceSearch;
 	
 	private String idTransaction;
 	private String idModulo;
@@ -285,6 +288,7 @@ public class BasicBD {
 				this.tracciatoNotificaPagamentiService = this.serviceManager.getTracciatoNotificaPagamentiService();
 				this.vistaPagamentoServiceSearch =this.serviceManager.getVistaPagamentoServiceSearch();
 				this.vistaVersamentoServiceSearch = this.serviceManager.getVistaVersamentoServiceSearch();
+				this.vistaVersamentoNonRendicontatoServiceSearch = this.serviceManager.getVistaVersamentoNonRendicontatoServiceSearch();
 			} catch(NotImplementedException e) {
 				throw new ServiceException(e);
 			}
@@ -344,6 +348,7 @@ public class BasicBD {
 			((IDBTracciatoNotificaPagamentiService)this.tracciatoNotificaPagamentiService).enableSelectForUpdate();
 			((IDBVistaPagamentoServiceSearch)this.vistaPagamentoServiceSearch).enableSelectForUpdate();
 			((IDBVistaVersamentoServiceSearch)this.vistaVersamentoServiceSearch).enableSelectForUpdate();
+			((IDBVistaVersamentoNonRendicontatoServiceSearch)this.vistaVersamentoNonRendicontatoServiceSearch).enableSelectForUpdate();
 			
 			this.isSelectForUpdate = true;
 		} catch(NotImplementedException e) {
@@ -402,6 +407,7 @@ public class BasicBD {
 			((IDBTracciatoNotificaPagamentiService)this.tracciatoNotificaPagamentiService).disableSelectForUpdate();
 			((IDBVistaPagamentoServiceSearch)this.vistaPagamentoServiceSearch).disableSelectForUpdate();
 			((IDBVistaVersamentoServiceSearch)this.vistaVersamentoServiceSearch).disableSelectForUpdate();
+			((IDBVistaVersamentoNonRendicontatoServiceSearch)this.vistaVersamentoNonRendicontatoServiceSearch).disableSelectForUpdate();
 			
 			this.isSelectForUpdate = false;
 		} catch(NotImplementedException e) {
@@ -745,6 +751,13 @@ public class BasicBD {
 			return this.father.getVistaVersamentoServiceSearch();
 		}
 		return this.vistaVersamentoServiceSearch;
+	}
+	
+	public IVistaVersamentoNonRendicontatoServiceSearch getVistaVersamentoNonRendicontatoServiceSearch() {
+		if(this.father != null) {
+			return this.father.getVistaVersamentoNonRendicontatoServiceSearch();
+		}
+		return vistaVersamentoNonRendicontatoServiceSearch;
 	}
 
 	public void setAutoCommit(boolean autoCommit) throws ServiceException {
