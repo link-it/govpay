@@ -121,6 +121,7 @@ import it.govpay.orm.VistaRendicontazione;
 import it.govpay.orm.VistaRiscossioni;
 import it.govpay.orm.VistaRptVersamento;
 import it.govpay.orm.VistaVersamento;
+import it.govpay.orm.VistaVersamentoNonRendicontato;
 
 /**     
  * XML Serializer of beans
@@ -7044,6 +7045,124 @@ public abstract class AbstractSerializer {
 	 */
 	public String toString(IdConnettore idConnettore,boolean prettyPrint) throws SerializerException {
 		return this.objToXml(IdConnettore.class, idConnettore, prettyPrint).toString();
+	}
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: VistaVersamentoNonRendicontato
+	 =================================================================================
+	*/
+	
+	/**
+	 * Serialize to file system in <var>fileName</var> the object <var>vistaVersamentoNonRendicontato</var> of type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * 
+	 * @param fileName Xml file to serialize the object <var>vistaVersamentoNonRendicontato</var>
+	 * @param vistaVersamentoNonRendicontato Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(String fileName,VistaVersamentoNonRendicontato vistaVersamentoNonRendicontato) throws SerializerException {
+		this.objToXml(fileName, VistaVersamentoNonRendicontato.class, vistaVersamentoNonRendicontato, false);
+	}
+	/**
+	 * Serialize to file system in <var>fileName</var> the object <var>vistaVersamentoNonRendicontato</var> of type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * 
+	 * @param fileName Xml file to serialize the object <var>vistaVersamentoNonRendicontato</var>
+	 * @param vistaVersamentoNonRendicontato Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(String fileName,VistaVersamentoNonRendicontato vistaVersamentoNonRendicontato,boolean prettyPrint) throws SerializerException {
+		this.objToXml(fileName, VistaVersamentoNonRendicontato.class, vistaVersamentoNonRendicontato, prettyPrint);
+	}
+	
+	/**
+	 * Serialize to file system in <var>file</var> the object <var>vistaVersamentoNonRendicontato</var> of type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * 
+	 * @param file Xml file to serialize the object <var>vistaVersamentoNonRendicontato</var>
+	 * @param vistaVersamentoNonRendicontato Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(File file,VistaVersamentoNonRendicontato vistaVersamentoNonRendicontato) throws SerializerException {
+		this.objToXml(file, VistaVersamentoNonRendicontato.class, vistaVersamentoNonRendicontato, false);
+	}
+	/**
+	 * Serialize to file system in <var>file</var> the object <var>vistaVersamentoNonRendicontato</var> of type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * 
+	 * @param file Xml file to serialize the object <var>vistaVersamentoNonRendicontato</var>
+	 * @param vistaVersamentoNonRendicontato Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(File file,VistaVersamentoNonRendicontato vistaVersamentoNonRendicontato,boolean prettyPrint) throws SerializerException {
+		this.objToXml(file, VistaVersamentoNonRendicontato.class, vistaVersamentoNonRendicontato, prettyPrint);
+	}
+	
+	/**
+	 * Serialize to output stream <var>out</var> the object <var>vistaVersamentoNonRendicontato</var> of type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * 
+	 * @param out OutputStream to serialize the object <var>vistaVersamentoNonRendicontato</var>
+	 * @param vistaVersamentoNonRendicontato Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(OutputStream out,VistaVersamentoNonRendicontato vistaVersamentoNonRendicontato) throws SerializerException {
+		this.objToXml(out, VistaVersamentoNonRendicontato.class, vistaVersamentoNonRendicontato, false);
+	}
+	/**
+	 * Serialize to output stream <var>out</var> the object <var>vistaVersamentoNonRendicontato</var> of type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * 
+	 * @param out OutputStream to serialize the object <var>vistaVersamentoNonRendicontato</var>
+	 * @param vistaVersamentoNonRendicontato Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(OutputStream out,VistaVersamentoNonRendicontato vistaVersamentoNonRendicontato,boolean prettyPrint) throws SerializerException {
+		this.objToXml(out, VistaVersamentoNonRendicontato.class, vistaVersamentoNonRendicontato, prettyPrint);
+	}
+			
+	/**
+	 * Serialize to byte array the object <var>vistaVersamentoNonRendicontato</var> of type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * 
+	 * @param vistaVersamentoNonRendicontato Object to be serialized
+	 * @return Object to be serialized in byte array
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public byte[] toByteArray(VistaVersamentoNonRendicontato vistaVersamentoNonRendicontato) throws SerializerException {
+		return this.objToXml(VistaVersamentoNonRendicontato.class, vistaVersamentoNonRendicontato, false).toByteArray();
+	}
+	/**
+	 * Serialize to byte array the object <var>vistaVersamentoNonRendicontato</var> of type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * 
+	 * @param vistaVersamentoNonRendicontato Object to be serialized
+	 * @param prettyPrint if true output the XML with indenting
+	 * @return Object to be serialized in byte array
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public byte[] toByteArray(VistaVersamentoNonRendicontato vistaVersamentoNonRendicontato,boolean prettyPrint) throws SerializerException {
+		return this.objToXml(VistaVersamentoNonRendicontato.class, vistaVersamentoNonRendicontato, prettyPrint).toByteArray();
+	}
+	
+	/**
+	 * Serialize to String the object <var>vistaVersamentoNonRendicontato</var> of type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * 
+	 * @param vistaVersamentoNonRendicontato Object to be serialized
+	 * @return Object to be serialized as String
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public String toString(VistaVersamentoNonRendicontato vistaVersamentoNonRendicontato) throws SerializerException {
+		return this.objToXml(VistaVersamentoNonRendicontato.class, vistaVersamentoNonRendicontato, false).toString();
+	}
+	/**
+	 * Serialize to String the object <var>vistaVersamentoNonRendicontato</var> of type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * 
+	 * @param vistaVersamentoNonRendicontato Object to be serialized
+	 * @param prettyPrint if true output the XML with indenting
+	 * @return Object to be serialized as String
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public String toString(VistaVersamentoNonRendicontato vistaVersamentoNonRendicontato,boolean prettyPrint) throws SerializerException {
+		return this.objToXml(VistaVersamentoNonRendicontato.class, vistaVersamentoNonRendicontato, prettyPrint).toString();
 	}
 	
 	

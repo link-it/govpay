@@ -116,6 +116,7 @@ import it.govpay.orm.VistaRendicontazione;
 import it.govpay.orm.VistaRiscossioni;
 import it.govpay.orm.VistaRptVersamento;
 import it.govpay.orm.VistaVersamento;
+import it.govpay.orm.VistaVersamentoNonRendicontato;
 
 /**     
  * XML Deserializer of beans
@@ -3828,6 +3829,69 @@ public abstract class AbstractDeserializer {
 	 */
 	public IdConnettore readIdConnettoreFromString(String in) throws DeserializerException {
 		return (IdConnettore) this.xmlToObj(in.getBytes(), IdConnettore.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: VistaVersamentoNonRendicontato
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * @return Object type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public VistaVersamentoNonRendicontato readVistaVersamentoNonRendicontato(String fileName) throws DeserializerException {
+		return (VistaVersamentoNonRendicontato) this.xmlToObj(fileName, VistaVersamentoNonRendicontato.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * @return Object type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public VistaVersamentoNonRendicontato readVistaVersamentoNonRendicontato(File file) throws DeserializerException {
+		return (VistaVersamentoNonRendicontato) this.xmlToObj(file, VistaVersamentoNonRendicontato.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * @return Object type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public VistaVersamentoNonRendicontato readVistaVersamentoNonRendicontato(InputStream in) throws DeserializerException {
+		return (VistaVersamentoNonRendicontato) this.xmlToObj(in, VistaVersamentoNonRendicontato.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * @return Object type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public VistaVersamentoNonRendicontato readVistaVersamentoNonRendicontato(byte[] in) throws DeserializerException {
+		return (VistaVersamentoNonRendicontato) this.xmlToObj(in, VistaVersamentoNonRendicontato.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * @return Object type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public VistaVersamentoNonRendicontato readVistaVersamentoNonRendicontatoFromString(String in) throws DeserializerException {
+		return (VistaVersamentoNonRendicontato) this.xmlToObj(in.getBytes(), VistaVersamentoNonRendicontato.class);
 	}	
 	
 	

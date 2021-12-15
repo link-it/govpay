@@ -2,10 +2,12 @@ package it.govpay.bd.viste;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -431,5 +433,85 @@ public class RendicontazioniBD extends BasicBD {
 				this.closeConnection();
 			}
 		}
+	}
+	
+	public List<it.govpay.bd.viste.model.Rendicontazione> ricercaRiscossioniDominio(String codDominio, Date dataRtDa, Date dataRtA, List<String> listaTipiPendenza, Integer offset, Integer limit) throws ServiceException{
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			VistaRendicontazioneModel model = it.govpay.orm.VistaRendicontazione.model();
+			IExpression exp = this.getVistaRendicontazioneServiceSearch().newExpression();
+			exp.equals(model.FR_COD_DOMINIO, codDominio).and();
+			if(dataRtDa != null) {
+				exp.greaterEquals(model.PAG_DATA_PAGAMENTO, dataRtDa);
+			}
+			exp.lessEquals(model.PAG_DATA_PAGAMENTO, dataRtA);
+//			exp.equals(model.STATO, Stato.INCASSATO.toString());
+			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
+				listaTipiPendenza.removeAll(Collections.singleton(null));
+				exp.in(model.VRS_ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, listaTipiPendenza);
+			}
+			exp.isNotNull(model.FR_COD_FLUSSO);
+			
+			IPaginatedExpression pagExp = this.getVistaRendicontazioneServiceSearch().toPaginatedExpression(exp);
+			pagExp.offset(offset).limit(limit);
+			pagExp.addOrder(model.PAG_DATA_PAGAMENTO, SortOrder.ASC);
+			
+			List<Rendicontazione> entratePrevisteLst = new ArrayList<>();
+			List<VistaRendicontazione> riscossioniVOLst = this.getVistaRendicontazioneServiceSearch().findAll(pagExp);
+			for(it.govpay.orm.VistaRendicontazione riscossioneVO: riscossioniVOLst) {
+				entratePrevisteLst.add(RendicontazioneConverter.toDTO(riscossioneVO));
+			}
+			return entratePrevisteLst;
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public long countRiscossioniDominio(String codDominio, Date dataRtDa, Date dataRtA, List<String> listaTipiPendenza) throws ServiceException{
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			VistaRendicontazioneModel model = it.govpay.orm.VistaRendicontazione.model();
+			IExpression exp = this.getVistaRendicontazioneServiceSearch().newExpression();
+			exp.equals(model.FR_COD_DOMINIO, codDominio).and();
+			if(dataRtDa != null) {
+				exp.greaterEquals(model.PAG_DATA_PAGAMENTO, dataRtDa);
+			}
+			exp.lessEquals(model.PAG_DATA_PAGAMENTO, dataRtA);
+//			exp.equals(model.STATO, Stato.INCASSATO.toString());
+			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
+				listaTipiPendenza.removeAll(Collections.singleton(null));
+				exp.in(model.VRS_ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, listaTipiPendenza);
+			}
+			exp.isNotNull(model.FR_COD_FLUSSO);
+			
+			NonNegativeNumber count = this.getVistaRendicontazioneServiceSearch().count(exp);
+			
+			return count.longValue();
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+		
 	}
 }
