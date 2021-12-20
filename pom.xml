@@ -38,7 +38,7 @@
 		
 		<!-- log -->
 		<slf4j.version>1.7.25</slf4j.version>
-		<logger.version>2.16.0</logger.version>
+		<logger.version>2.17.0</logger.version>
 		
 		<!-- swagger -->
 		<swagger-codegen-maven-plugin.version>3.0.4-gov4j-3</swagger-codegen-maven-plugin.version>
