@@ -446,15 +446,14 @@ public class RendicontazioniBD extends BasicBD {
 			IExpression exp = this.getVistaRendicontazioneServiceSearch().newExpression();
 			exp.equals(model.FR_COD_DOMINIO, codDominio).and();
 			if(dataRtDa != null) {
-				exp.greaterEquals(model.PAG_DATA_PAGAMENTO, dataRtDa);
+				exp.greaterEquals(model.RND_DATA, dataRtDa);
 			}
-			exp.lessEquals(model.PAG_DATA_PAGAMENTO, dataRtA);
+			exp.lessEquals(model.RND_DATA, dataRtA);
 			exp.equals(model.RND_STATO, StatoRendicontazione.OK.toString());
 			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
 				listaTipiPendenza.removeAll(Collections.singleton(null));
 				exp.in(model.VRS_ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, listaTipiPendenza);
 			}
-			exp.isNotNull(model.FR_COD_FLUSSO);
 			
 			IPaginatedExpression pagExp = this.getVistaRendicontazioneServiceSearch().toPaginatedExpression(exp);
 			pagExp.offset(offset).limit(limit);
@@ -489,15 +488,14 @@ public class RendicontazioniBD extends BasicBD {
 			IExpression exp = this.getVistaRendicontazioneServiceSearch().newExpression();
 			exp.equals(model.FR_COD_DOMINIO, codDominio).and();
 			if(dataRtDa != null) {
-				exp.greaterEquals(model.PAG_DATA_PAGAMENTO, dataRtDa);
+				exp.greaterEquals(model.RND_DATA, dataRtDa);
 			}
-			exp.lessEquals(model.PAG_DATA_PAGAMENTO, dataRtA);
+			exp.lessEquals(model.RND_DATA, dataRtA);
 			exp.equals(model.RND_STATO, StatoRendicontazione.OK.toString());
 			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
 				listaTipiPendenza.removeAll(Collections.singleton(null));
 				exp.in(model.VRS_ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, listaTipiPendenza);
 			}
-			exp.isNotNull(model.FR_COD_FLUSSO);
 			
 			NonNegativeNumber count = this.getVistaRendicontazioneServiceSearch().count(exp);
 			
