@@ -62,6 +62,7 @@ import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.bd.viste.model.VersamentoNonRendicontato;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.CSVUtils;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
@@ -751,7 +752,7 @@ public class TracciatiNotificaPagamenti {
 		
 		int lineaElaborazione = 0;
 		int offset = 0;
-		int limit = 100; 
+		Integer limit = GovpayConfig.getInstance().getBatchCaricamentoTracciatiNotificaPagamentiDimensionePagina(); 
 		RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(rptBD);
 		rendicontazioniBD.setAtomica(false);
 		

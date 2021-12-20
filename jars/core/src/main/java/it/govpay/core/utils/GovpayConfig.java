@@ -140,6 +140,7 @@ public class GovpayConfig {
 	private Integer dimensioneMassimaListaRisultati;
 	
 	private boolean batchCaricamentoTracciatiNotificaPagamenti;
+	private Integer batchCaricamentoTracciatiNotificaPagamentiDimensionePagina;
 	
 	private boolean ricercaRiconciliazioniIdFlussoCaseInsensitive;
 	
@@ -639,6 +640,14 @@ public class GovpayConfig {
 			if(batchCaricamentoTracciatiNotificaPagamentiString != null && Boolean.valueOf(batchCaricamentoTracciatiNotificaPagamentiString))
 				this.batchCaricamentoTracciatiNotificaPagamenti = true;
 			
+			String batchCaricamentoTracciatiNotificaPagamentiDimensionePaginaString = getProperty("it.govpay.batch.caricamentoTracciatiNotificaPagamenti.dimensionePagina", this.props, false, log);
+			try{
+				this.batchCaricamentoTracciatiNotificaPagamentiDimensionePagina = Integer.parseInt(batchCaricamentoTracciatiNotificaPagamentiDimensionePaginaString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.batch.caricamentoTracciatiNotificaPagamenti.dimensionePagina\" impostata con valore di default "+ BasicFindRequestDTO.DEFAULT_MAX_LIMIT);
+				this.batchCaricamentoTracciatiNotificaPagamentiDimensionePagina = BasicFindRequestDTO.DEFAULT_MAX_LIMIT;
+			}
+			
 			String ricercaRiconciliazioniIdFlussoCaseInsensitiveString = getProperty("it.govpay.riconciliazione.idFlussoCaseInsensitive.enabled", this.props, false, log);
 			if(ricercaRiconciliazioniIdFlussoCaseInsensitiveString != null && Boolean.valueOf(ricercaRiconciliazioniIdFlussoCaseInsensitiveString))
 				this.ricercaRiconciliazioniIdFlussoCaseInsensitive = true;
@@ -1026,6 +1035,10 @@ public class GovpayConfig {
 
 	public boolean isBatchCaricamentoTracciatiNotificaPagamenti() {
 		return batchCaricamentoTracciatiNotificaPagamenti;
+	}
+	
+	public Integer getBatchCaricamentoTracciatiNotificaPagamentiDimensionePagina() {
+		return batchCaricamentoTracciatiNotificaPagamentiDimensionePagina;
 	}
 	
 	public boolean isRicercaRiconciliazioniIdFlussoCaseInsensitive() {

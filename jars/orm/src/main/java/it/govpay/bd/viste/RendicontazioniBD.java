@@ -456,7 +456,11 @@ public class RendicontazioniBD extends BasicBD {
 			}
 			
 			IPaginatedExpression pagExp = this.getVistaRendicontazioneServiceSearch().toPaginatedExpression(exp);
-			pagExp.offset(offset).limit(limit);
+			if(offset != null)
+				pagExp.offset(offset);
+			
+			if(limit != null)
+				pagExp.limit(limit);
 			pagExp.addOrder(model.PAG_DATA_PAGAMENTO, SortOrder.ASC);
 			
 			List<Rendicontazione> entratePrevisteLst = new ArrayList<>();
