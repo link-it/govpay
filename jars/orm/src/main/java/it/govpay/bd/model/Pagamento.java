@@ -95,7 +95,8 @@ public class Pagamento extends it.govpay.model.Pagamento {
 
 	public void setSingoloVersamento(SingoloVersamento singoloVersamento) {
 		this.singoloVersamento = singoloVersamento;
-		this.setIdSingoloVersamento(singoloVersamento.getId());
+		if(this.singoloVersamento !=null)
+			this.setIdSingoloVersamento(singoloVersamento.getId());
 	}
 
 	public List<Rendicontazione> getRendicontazioni(BasicBD bd) throws ServiceException {
@@ -124,7 +125,7 @@ public class Pagamento extends it.govpay.model.Pagamento {
 
 	public void setIncasso(Incasso incasso) {
 		this.incasso = incasso;
-		if(this.incasso.getId() != null) {
+		if(this.incasso != null && this.incasso.getId() != null) {
 			this.setIdIncasso(incasso.getId());
 		}
 	}
