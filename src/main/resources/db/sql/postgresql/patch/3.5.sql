@@ -578,6 +578,10 @@ CREATE VIEW v_vrs_non_rnd AS
      LEFT JOIN rpt ON pagamenti.id_rpt = rpt.id
      LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id
   WHERE rendicontazioni.id IS NULL;
+  
+  
+-- 20/12/2021 Patch per gestione delle rendicontazioni che non venivano messe in stato anomala quando non viene trovato il versamento corrispondente.
+UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS null;
 
 
 

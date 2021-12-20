@@ -27,6 +27,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.viste.filters.RendicontazioneFilter;
 import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.bd.viste.model.converter.RendicontazioneConverter;
+import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.orm.FR;
 import it.govpay.orm.IdIncasso;
 import it.govpay.orm.VistaRendicontazione;
@@ -448,7 +449,7 @@ public class RendicontazioniBD extends BasicBD {
 				exp.greaterEquals(model.PAG_DATA_PAGAMENTO, dataRtDa);
 			}
 			exp.lessEquals(model.PAG_DATA_PAGAMENTO, dataRtA);
-//			exp.equals(model.STATO, Stato.INCASSATO.toString());
+			exp.equals(model.RND_STATO, StatoRendicontazione.OK.toString());
 			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
 				listaTipiPendenza.removeAll(Collections.singleton(null));
 				exp.in(model.VRS_ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, listaTipiPendenza);
@@ -491,7 +492,7 @@ public class RendicontazioniBD extends BasicBD {
 				exp.greaterEquals(model.PAG_DATA_PAGAMENTO, dataRtDa);
 			}
 			exp.lessEquals(model.PAG_DATA_PAGAMENTO, dataRtA);
-//			exp.equals(model.STATO, Stato.INCASSATO.toString());
+			exp.equals(model.RND_STATO, StatoRendicontazione.OK.toString());
 			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
 				listaTipiPendenza.removeAll(Collections.singleton(null));
 				exp.in(model.VRS_ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, listaTipiPendenza);
