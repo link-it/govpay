@@ -448,6 +448,10 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					ctx.getApplicationLogger().log("rt.acquisizionePagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte(), singoloVersamento.getStatoSingoloVersamento().toString());
 					versamentiBD.updateStatoSingoloVersamento(singoloVersamento.getId(), singoloVersamento.getStatoSingoloVersamento());
 					pagamentiBD.insertPagamento(pagamento);
+					
+					if(!irregolare) {
+						RtUtils.checkEsistenzaRendicontazioneAnomalaPerIlPagamento(pagamentiBD, pagamento);
+					}
 				}
 				else {
 					ctx.getApplicationLogger().log("rt.aggiornamentoPagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte());

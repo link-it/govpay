@@ -445,6 +445,7 @@ public class RendicontazioniBD extends BasicBD {
 			VistaRendicontazioneModel model = it.govpay.orm.VistaRendicontazione.model();
 			IExpression exp = this.getVistaRendicontazioneServiceSearch().newExpression();
 			exp.equals(model.FR_COD_DOMINIO, codDominio).and();
+			exp.equals(model.FR_OBSOLETO, false).and();
 			if(dataRtDa != null) {
 				exp.greaterEquals(model.RND_DATA, dataRtDa);
 			}
@@ -491,6 +492,7 @@ public class RendicontazioniBD extends BasicBD {
 			VistaRendicontazioneModel model = it.govpay.orm.VistaRendicontazione.model();
 			IExpression exp = this.getVistaRendicontazioneServiceSearch().newExpression();
 			exp.equals(model.FR_COD_DOMINIO, codDominio).and();
+			exp.equals(model.FR_OBSOLETO, false).and();
 			if(dataRtDa != null) {
 				exp.greaterEquals(model.RND_DATA, dataRtDa);
 			}
