@@ -232,9 +232,12 @@
         </b:bean>
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointPublic" pattern="/rs/public/v1/**">
                 <csrf disabled="true"/>
+                <intercept-url pattern="/rs/public/v1/avvisi" access="denyAll" />
                 <intercept-url pattern="/rs/public/v1/avvisi/**" access="isAnonymous()" method="GET" request-matcher-ref="avvisiGetRequestMatcherV1" />
                 <intercept-url pattern="/rs/public/v1/pagamenti" access="isAnonymous()" method="POST" request-matcher-ref="pagamentoPostRequestMatcherV1" />
+                <intercept-url pattern="/rs/public/v1/pagamenti" access="denyAll" />
                 <intercept-url pattern="/rs/public/v1/pagamenti/**" access="isAnonymous()" method="GET" />
+                <intercept-url pattern="/rs/public/v1/rpp" access="denyAll" />
                 <intercept-url pattern="/rs/public/v1/rpp/**" access="isAnonymous()" />
                 <intercept-url pattern="/rs/public/v1/**" access="denyAll" />
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterAnonymous" />
@@ -259,12 +262,16 @@
         </b:bean>
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointPublic" pattern="/rs/public/v2/**">
                 <csrf disabled="true"/>
+                <intercept-url pattern="/rs/public/v2/avvisi" access="denyAll" />
                 <intercept-url pattern="/rs/public/v2/avvisi/**" access="isAnonymous()" method="GET" request-matcher-ref="avvisiGetRequestMatcherV2" />
                 <intercept-url pattern="/rs/public/v2/pagamenti" access="isAnonymous()" method="POST" request-matcher-ref="pagamentoPostRequestMatcherV2" />
-                <intercept-url pattern="/rs/public/v2/pendenze/**" access="isAnonymous()" method="POST" request-matcher-ref="pendenzaPostRequestMatcherV2"  />
-                <intercept-url pattern="/rs/public/v2/pendenze/**" access="isAnonymous()" method="GET" />
+                <intercept-url pattern="/rs/public/v2/pagamenti" access="denyAll" />
                 <intercept-url pattern="/rs/public/v2/pagamenti/**" access="isAnonymous()" method="GET" />
+                <intercept-url pattern="/rs/public/v2/pendenze/**" access="isAnonymous()" method="POST" request-matcher-ref="pendenzaPostRequestMatcherV2"  />
+                <intercept-url pattern="/rs/public/v2/pendenze" access="denyAll" />
+                <intercept-url pattern="/rs/public/v2/pendenze/**" access="isAnonymous()" method="GET" />
                 <intercept-url pattern="/rs/public/v2/domini/**" access="isAnonymous()" method="GET" />
+                <intercept-url pattern="/rs/public/v2/rpp" access="denyAll" />
                 <intercept-url pattern="/rs/public/v2/rpp/**" access="isAnonymous()" />
                 <intercept-url pattern="/rs/public/v2/**" access="denyAll" />
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterAnonymous" />
