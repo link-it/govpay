@@ -582,5 +582,16 @@ CREATE VIEW v_vrs_non_rnd AS
 
 -- 20/12/2021 Patch per gestione delle rendicontazioni che non venivano messe in stato anomala quando non viene trovato il versamento corrispondente.
 UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS null;
-  
+
+
+-- 21/12/2021 Patch per la gestione del riferimento al pagamento di una rendicontazione che arriva prima della ricevuta.
+UPDATE rendicontazioni SET id_pagamento = pagamenti.id 
+	FROM fr, pagamenti 
+	WHERE fr.id=rendicontazioni.id_fr 
+	AND pagamenti.cod_dominio=fr.cod_dominio 
+	AND rendicontazioni.iuv=pagamenti.iuv 
+	AND rendicontazioni.iur=pagamenti.iur 
+	AND rendicontazioni.id_pagamento IS NULL;
+	
+	
 
