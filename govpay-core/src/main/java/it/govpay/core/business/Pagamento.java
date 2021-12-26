@@ -170,7 +170,7 @@ public class Pagamento extends BasicBD {
 
 		Anagrafica versanteModel = VersamentoUtils.toAnagraficaModel(dto.getVersante());
 		boolean aggiornaSeEsiste = dto.getAggiornaSeEsisteB() != null ? dto.getAggiornaSeEsisteB() : true;
-		List<Rpt> rpts = avviaTransazione(versamenti, dto.getPortale(), dto.getCanale(), dto.getIbanAddebito(), versanteModel, dto.getAutenticazione(), dto.getUrlRitorno(), aggiornaSeEsiste);
+		List<Rpt> rpts = avviaTransazione(versamenti, dto.getPortale(), dto.getCanale(), dto.getIbanAddebito(), versanteModel, dto.getAutenticazione(), dto.getUrlRitorno(), dto.getCodiceConvenzione(),aggiornaSeEsiste);
 
 		AvviaTransazioneDTOResponse response = new AvviaTransazioneDTOResponse();
 
@@ -190,7 +190,7 @@ public class Pagamento extends BasicBD {
 		return response;
 	}
 
-	public List<Rpt> avviaTransazione(List<Versamento> versamenti, Portale portale, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste) throws GovPayException {
+	public List<Rpt> avviaTransazione(List<Versamento> versamenti, Portale portale, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, String codiceConvenzione, boolean aggiornaSeEsiste) throws GovPayException {
 		GpContext ctx = GpThreadLocal.get();
 		try {
 			Stazione stazione = null;
@@ -369,7 +369,7 @@ public class Pagamento extends BasicBD {
 				ctx.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoInviaCarrelloRPT);
 				ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", ctx.getPagamentoCtx().getCodCarrello()));
 				ctx.log("rpt.invioCarrelloRpt");
-				risposta = RptUtils.inviaCarrelloRPT(intermediario, stazione, rpts, this);
+				risposta = RptUtils.inviaCarrelloRPT(intermediario, stazione, rpts, codiceConvenzione, this);
 
 
 				setupConnection(GpThreadLocal.get().getTransactionId());

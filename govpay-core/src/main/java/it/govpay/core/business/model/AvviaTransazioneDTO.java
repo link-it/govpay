@@ -35,6 +35,7 @@ public class AvviaTransazioneDTO {
 	private String urlRitorno;
 	private Boolean aggiornaSeEsisteB;
 	private Canale canale;
+	private String codiceConvenzione;
 	
 	public Portale getPortale() {
 		return portale;
@@ -83,6 +84,12 @@ public class AvviaTransazioneDTO {
 	}
 	public void setCanale(Canale canale) {
 		this.canale = canale;
+	}
+	public String getCodiceConvenzione() {
+		return codiceConvenzione;
+	}
+	public void setCodiceConvenzione(String codiceConvenzione) {
+		this.codiceConvenzione = codiceConvenzione;
 	}
 
 }

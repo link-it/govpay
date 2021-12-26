@@ -815,6 +815,7 @@
 			<xsd:element name="gpAvviaTransazionePagamento">
 				<xsd:complexType>
 					<xsd:sequence>
+						<xsd:element name="codConvenzione" type="xsd:string" minOccurs="0" />
 						<xsd:element name="codSessionePortale" type="com:uuid" minOccurs="0" />
 						<xsd:element name="codPortale" type="com:cod35" />
 						<xsd:element name="versante" type="com:anagrafica" minOccurs="0" />

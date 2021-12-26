@@ -145,6 +145,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			dto.setUrlRitorno(bodyrichiesta.getUrlRitorno());
 			dto.setVersamentoOrVersamentoRef(bodyrichiesta.getVersamentoOrVersamentoRef());
 			dto.setVersante(bodyrichiesta.getVersante());
+			dto.setCodiceConvenzione(bodyrichiesta.getCodConvenzione());
 			if(bodyrichiesta.getCanale() != null) {
 				dto.setCanale(new it.govpay.bd.model.Canale(bodyrichiesta.getCanale()));
 			}

@@ -159,7 +159,7 @@ public class RptUtils {
 		}
 	}
 
-	public static it.govpay.core.business.model.Risposta inviaCarrelloRPT(Intermediario intermediario, Stazione stazione, List<Rpt> rpts, BasicBD bd) throws GovPayException, ClientException, ServiceException {
+	public static it.govpay.core.business.model.Risposta inviaCarrelloRPT(Intermediario intermediario, Stazione stazione, List<Rpt> rpts, String codiceConvenzione, BasicBD bd) throws GovPayException, ClientException, ServiceException {
 		if(bd != null) bd.closeConnection();
 		Evento evento = new Evento();
 		it.govpay.core.business.model.Risposta risposta = null;
@@ -170,6 +170,7 @@ public class RptUtils {
 			inviaCarrelloRpt.setIdentificativoIntermediarioPSP(rpts.get(0).getCodIntermediarioPsp());
 			inviaCarrelloRpt.setIdentificativoPSP(rpts.get(0).getCodPsp());
 			inviaCarrelloRpt.setPassword(stazione.getPassword());
+			inviaCarrelloRpt.setCodiceConvenzione(codiceConvenzione);
 			TipoListaRPT listaRpt = new TipoListaRPT();
 			for(Rpt rpt : rpts) {
 				TipoElementoListaRPT elementoListaRpt = new TipoElementoListaRPT();
