@@ -54,7 +54,7 @@ Vediamo ad esempio un pendenza per il pagamento TARI-TEFA, dove il Comune (idDom
 
 L'avviso di pagamento corrispondente si presenta come segue e risulterà pagabile come un qualsiasi altro avviso:
 
-.. figure:: ../../_images/HowToAvvisoMultibeneficiario.png
+.. figure:: ./_images/HowToAvvisoMultibeneficiario.png
    :align: center
 
    Parametri di filtro per la ricerca di un Ente Creditore
