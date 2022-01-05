@@ -20,6 +20,8 @@
 package it.govpay.core.utils.thread;
 
 
+import java.util.Date;
+
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -152,11 +154,19 @@ public class InviaRptThread implements Runnable {
 				// Loggo l'errore ma lascio lo stato invariato. 
 				// v3.1: Perche' non cambiare lo stato a fronte di un rifiuto? Lo aggiorno e evito la rispedizione.
 				// Redo: Perche' e' difficile capire se e' un errore temporaneo o meno. Essendo un'attivazione di RPT, non devo smettere di riprovare.
+				// Re-redo: individuo le casistiche per le quali ritentare è certamente inutile. Prevedo comunque un limite superiore 24 ore
+				//          oltre il quale considerare l'attivazione scaduta
 				FaultBean fb = risposta.getFaultBean();
 				String descrizione = null; 
 				if(fb != null)
 					descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
-				rptBD.updateRpt(this.rpt.getId(), null, descrizione, null, null,null);
+				if(risposta.getFaultBean().getFaultCode().equals("PPT_IBAN_NON_CENSITO") ||
+						risposta.getFaultBean().getFaultCode().equals("PPT_SEMANTICA") ||
+						risposta.getFaultBean().getFaultCode().equals("PPT_SINTASSI") || 
+						(this.rpt.getDataMsgRichiesta().getTime() < new Date().getTime() - 86400000l))
+					rptBD.updateRpt(this.rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null,null);
+				else
+					rptBD.updateRpt(this.rpt.getId(), null, descrizione, null, null,null);
 				log.warn("RPT rifiutata dal nodo con fault " + descrizione);
 				ctx.getApplicationLogger().log("pagamento.invioRptAttivataKo", fb.getFaultCode(), fb.getFaultString(), fb.getDescription() != null ? fb.getDescription() : "[-- Nessuna descrizione --]");
 				if(client != null) {
