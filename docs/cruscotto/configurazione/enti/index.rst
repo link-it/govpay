@@ -22,7 +22,7 @@ Accedendo alla sezione *Configurazioni > Enti Creditori*, viene visualizzato l'e
 Nuovo Ente Creditore
 ~~~~~~~~~~~~~~~~~~~~
 
-Utilizzando il pulsante di creazione, presente in basso a destra nella pagina di elenco, è possibile procedere con la creazione di un nuovo Ente Creditore, compilando il seguente form di creazione:
+Utilizzando il pulsante di creazione, presente in basso a destra nella pagina di elenco, è possibile procedere con la creazione di un nuovo Ente Creditore:
 
 .. figure:: ../../_images/18ParametriDominio.png
    :align: center
@@ -36,7 +36,8 @@ Utilizzando il pulsante di creazione, presente in basso a destra nella pagina di
 
    "Id Dominio", "Identificativo dell'Ente Creditore in pagoPA, corrisponde al Codice Fiscale dell'ente"
    "Altre informazioni anagrafiche", "Dovrebbero corrispondere a quanto indicato nell'IndicePA"
-   "Abilitato", "Indica se il dominio è usabile da GovPay per gestire nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste (disabilitato)", ""
+   "Abilitato", "Indica se il dominio è usabile da GovPay per gestire nuovi pagamenti (abilitato) o se si vogliono impedire nuove richieste (disabilitato)"
+   "Intermediato", "Indica se l'Ente Creditore è intermediato dalla piattaforma oppure beneficiario di quota parte del dovuto ma non intermediato"
 
 .. csv-table:: Parametri adesione pagoPA
    :header: "Campo", "Descrizione"
@@ -67,7 +68,8 @@ I seguenti sono i placeholder di sistema, sovrascrivibili dall'applicazione chia
 Dettaglio Ente Creditore
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Selezionando uno degli enti creditori presenti nella pagina di elenco si accede alla pagina di dettaglio, che si compone a partire dalle seguenti aree:
+Selezionando uno degli enti creditori presenti nella pagina di elenco si accede alla pagina di dettaglio, 
+che si compone a partire dalle seguenti aree nel caso di Enti Creditori intermediati:
 
 .. csv-table:: Aree del dettaglio Ente Creditore
    :header: "Area", "Descrizione"
@@ -79,6 +81,8 @@ Selezionando uno degli enti creditori presenti nella pagina di elenco si accede 
    "*Tipi Entrata*", "Anagrafica delle entrate, riferibili dalle voci pendenza delle posizioni."
    "*Tipi Pendenza*", "Anagrafica delle tipologie di pendenza."
    "*Connettori*", "Configurazione dei connettori di esportazione dati."
+
+Gli enti creditori non intermediati presenteranno solo una parte delle sezioni sopra elencate.
 
 Tramite il pulsante di modifica presente nella pagina di dettaglio è possibile procedere con l'aggiornamento dei dati di base, visualizzati nell'area "Riepilogo Informazioni". Si tenga presente che il **valore del campo “Codice Dominio” non è modificabile**.
 
