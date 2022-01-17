@@ -15,3 +15,4 @@ How-To
         rateizzazione
         nexi        
         multibeneficiario
+        acquisizioneFRdaFS
