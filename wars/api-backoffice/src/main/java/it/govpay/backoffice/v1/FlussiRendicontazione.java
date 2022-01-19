@@ -39,7 +39,7 @@ public class FlussiRendicontazione extends BaseRsServiceV1{
     @Produces({ "application/json", MediaType.APPLICATION_XML })
     public Response getFlussoRendicontazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idFlusso") String idFlusso){
         this.buildContext();
-        return this.controller.getFlussoRendicontazione(this.getUser(), uriInfo, httpHeaders,  idFlusso);
+        return this.controller.getFlussoRendicontazione(this.getUser(), uriInfo, httpHeaders, null, idFlusso, null);
     }
 
     @GET
@@ -57,7 +57,16 @@ public class FlussiRendicontazione extends BaseRsServiceV1{
     @Produces({ "application/xml", "application/json" })
     public Response getFlussoRendicontazioneByIdEData(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idFlusso") String idFlusso, @PathParam("dataOraFlusso") String dataOraFlusso){
         this.buildContext();
-        return this.controller.getFlussoRendicontazione(this.getUser(), uriInfo, httpHeaders,  idFlusso,  dataOraFlusso);
+        return this.controller.getFlussoRendicontazione(this.getUser(), uriInfo, httpHeaders, null, idFlusso,  dataOraFlusso);
+    }
+    
+    @GET
+    @Path("/{idDominio}/{idFlusso}/{dataOraFlusso}")
+    
+    @Produces({ "application/xml", "application/json" })
+    public Response getFlussoRendicontazioneByDominioIdEData(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idFlusso") String idFlusso, @PathParam("dataOraFlusso") String dataOraFlusso){
+        this.buildContext();
+        return this.controller.getFlussoRendicontazione(this.getUser(), uriInfo, httpHeaders,  idDominio, idFlusso,  dataOraFlusso);
     }
 
 }

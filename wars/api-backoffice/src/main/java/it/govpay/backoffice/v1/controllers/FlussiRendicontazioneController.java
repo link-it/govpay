@@ -47,12 +47,6 @@ public class FlussiRendicontazioneController extends BaseController {
 		
 	}
 
-	public Response getFlussoRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso) {
-		return	this.getFlussoRendicontazione(user, uriInfo, httpHeaders, idFlusso, null);
-	}
-
-
-
 	public Response findFlussiRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean incassato, String idFlusso, String stato, String iuv, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findFlussiRendicontazione";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
@@ -138,7 +132,7 @@ public class FlussiRendicontazioneController extends BaseController {
 
 
 
-	public Response getFlussoRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso, String dataOraFlusso) {
+	public Response getFlussoRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idFlusso, String dataOraFlusso) {
 		String methodName = "getFlussoRendicontazione";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -153,6 +147,7 @@ public class FlussiRendicontazioneController extends BaseController {
 
 			// Parametri - > DTO Input
 			LeggiFrDTO leggiRendicontazioneDTO = new LeggiFrDTO(user, idFlusso);
+			leggiRendicontazioneDTO.setIdDominio(idDominio);
 			leggiRendicontazioneDTO.setAccept(accept);
 			if(dataOraFlusso != null) {
 				Date dataOraFlussoDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataOraFlusso, "dataOraFlusso");

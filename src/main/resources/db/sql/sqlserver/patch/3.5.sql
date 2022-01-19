@@ -593,4 +593,7 @@ UPDATE rendicontazioni SET id_pagamento = pagamenti.id
 	AND rendicontazioni.iur=pagamenti.iur 
 	AND rendicontazioni.id_pagamento IS NULL;
 	
+ALTER TABLE fr DROP CONSTRAINT unique_fr_1;
+ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_dominio,cod_flusso,data_ora_flusso);
+CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
 	

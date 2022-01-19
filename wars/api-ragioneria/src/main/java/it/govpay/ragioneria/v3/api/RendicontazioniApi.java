@@ -48,7 +48,7 @@ public interface RendicontazioniApi  {
      *
      */
     @GET
-    @Path("/flussiRendicontazione/{idFlusso}")
+    @Path("/flussiRendicontazione/{idDominio}/{idFlusso}")
     @Produces({ "application/xml", "application/json" })
     @Operation(summary = "Acquisizione di un flusso di rendicontazione", tags={ "Rendicontazioni" })
     @ApiResponses(value = { 
@@ -57,14 +57,14 @@ public interface RendicontazioniApi  {
         @ApiResponse(responseCode = "403", description = "Richiesta non autorizzata"),
         @ApiResponse(responseCode = "404", description = "Risorsa inesistente"),
         @ApiResponse(responseCode = "500", description = "Servizio non disponibile", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))) })
-    public Response getFlussoRendicontazione(@PathParam("idFlusso") String idFlusso);
+    public Response getFlussoRendicontazione(@PathParam("idDominio") String idDominio, @PathParam("idFlusso") String idFlusso);
 
     /**
      * Acquisizione di un flusso di rendicontazione
      *
      */
     @GET
-    @Path("/flussiRendicontazione/{idFlusso}/{dataOraFlusso}")
+    @Path("/flussiRendicontazione/{idDominio}/{idFlusso}/{dataOraFlusso}")
     @Produces({ "application/xml", "application/json" })
     @Operation(summary = "Acquisizione di un flusso di rendicontazione", tags={ "Rendicontazioni" })
     @ApiResponses(value = { 
@@ -73,5 +73,5 @@ public interface RendicontazioniApi  {
         @ApiResponse(responseCode = "403", description = "Richiesta non autorizzata"),
         @ApiResponse(responseCode = "404", description = "Risorsa inesistente"),
         @ApiResponse(responseCode = "500", description = "Servizio non disponibile", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))) })
-    public Response getFlussoRendicontazioneByIdEData(@PathParam("idFlusso") String idFlusso, @PathParam("dataOraFlusso") String dataOraFlusso);
+    public Response getFlussoRendicontazione(@PathParam("idDominio") String idDominio, @PathParam("idFlusso") String idFlusso, @PathParam("dataOraFlusso") String dataOraFlusso);
 }

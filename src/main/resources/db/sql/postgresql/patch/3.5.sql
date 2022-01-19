@@ -607,6 +607,8 @@ update rendicontazioni set id_singolo_versamento=singoli_versamenti.id
 update rendicontazioni set stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' where id_pagamento is null and stato='OK' and esito=0;
 UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS null;
 update rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null where stato='ANOMALA' and char_length(iuv) not in (15,17) and id_pagamento is null and id_singolo_versamento is null ;
-update rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null where id in (select rendicontazioni.id from rendicontazioni join fr on fr.id=rendicontazioni.id_fr join domini on domini.cod_dominio=fr.cod_dominio and  rendicontazioni.stato = 'ANOMALA' and aux_digit='3' and length(iuv) <> 17 and (iuv not like ('0' || segregation_code || '%') and length(segregation_code::char) = 1 ) OR (iuv not like (segregation_code || '%') and length(segregation_code::char) = 2 )));
+update rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null where id in (select rendicontazioni.id from rendicontazioni join fr on fr.id=rendicontazioni.id_fr join domini on domini.cod_dominio=fr.cod_dominio and  rendicontazioni.stato = 'ANOMALA' and aux_digit='3' and length(iuv) <> 17 and (iuv not like ('0' || segregation_code || '%') and length(segregation_code::char) = 1 ) OR (iuv not like (segregation_code || '%') and length(segregation_code::char) = 2 ));
 
+ALTER TABLE fr DROP CONSTRAINT unique_fr_1;
+ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_dominio,cod_flusso,data_ora_flusso);
 

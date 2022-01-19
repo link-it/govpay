@@ -1031,7 +1031,7 @@ CREATE TABLE fr
 	id BIGINT DEFAULT nextval('seq_fr') NOT NULL,
 	id_incasso BIGINT,
 	-- unique constraints
-	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,data_ora_flusso),
+	CONSTRAINT unique_fr_1 UNIQUE (cod_dominio,cod_flusso,data_ora_flusso),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_fr PRIMARY KEY (id)

@@ -119,18 +119,20 @@ public class Rendicontazioni {
 
 	public class RendicontazioneScaricata {
 		private TipoIdRendicontazione idFlussoRendicontazione;
+		private String codDominio;
 		private String idFlusso;
 		private List<String> errori;
 		private File frFile;
 		
-		public RendicontazioneScaricata(TipoIdRendicontazione idFlussoRendicontazione) {
+		public RendicontazioneScaricata(TipoIdRendicontazione idFlussoRendicontazione, String codDominio) {
 			this.setIdFlussoRendicontazione(idFlussoRendicontazione);
+			this.codDominio = codDominio;
 			this.idFlusso = idFlussoRendicontazione.getIdentificativoFlusso();
 			setErrori(new ArrayList<String>());
 		}
 		
-		public RendicontazioneScaricata(TipoIdRendicontazione idFlussoRendicontazione, File file) {
-			this(idFlussoRendicontazione);
+		public RendicontazioneScaricata(TipoIdRendicontazione idFlussoRendicontazione, String codDominio, File file) {
+			this(idFlussoRendicontazione, codDominio);
 			this.frFile = file;
 		}
 
@@ -165,6 +167,14 @@ public class Rendicontazioni {
 		public void setIdFlussoRendicontazione(TipoIdRendicontazione idFlussoRendicontazione) {
 			this.idFlussoRendicontazione = idFlussoRendicontazione;
 		}
+
+		public String getCodDominio() {
+			return codDominio;
+		}
+
+		public void setCodDominio(String codDominio) {
+			this.codDominio = codDominio;
+		}
 		
 	}
 
@@ -173,7 +183,7 @@ public class Rendicontazioni {
 	public Rendicontazioni() {
 	}
 
-	public DownloadRendicontazioniResponse downloadRendicontazioni(IContext ctx, boolean deep) throws GovPayException, UtilsException { 
+	public DownloadRendicontazioniResponse downloadRendicontazioni(IContext ctx) throws GovPayException, UtilsException { 
 		int frAcquisiti = 0;
 		int frNonAcquisiti = 0;
 		
@@ -193,22 +203,16 @@ public class Rendicontazioni {
 
 				Intermediario intermediario = stazione.getIntermediario(configWrapper);
 
-				if(deep) {
-					DominioFilter filter = dominiBD.newFilter();
-					filter.setCodStazione(stazione.getCodStazione());
-					List<Dominio> lstDomini = dominiBD.findAll(filter);
+				DominioFilter filter = dominiBD.newFilter();
+				filter.setCodStazione(stazione.getCodStazione());
+				List<Dominio> lstDomini = dominiBD.findAll(filter);
 
-					for(Dominio dominio : lstDomini) { 
-						log.debug("Acquisizione dei flussi di rendicontazione per il dominio [" + dominio.getCodDominio() + "] in corso.");
-						List<TipoIdRendicontazione> chiediListaFrResponse = this.chiediListaFr(stazione, dominio, giornale);
-						for(TipoIdRendicontazione i : chiediListaFrResponse)
-							flussiDaPagoPA.add(new RendicontazioneScaricata(i));
-					}
-				} else {
-					log.debug("Acquisizione dei flussi di rendicontazione per la stazione [" + stazione.getCodStazione() + "] in corso.");
-					List<TipoIdRendicontazione> chiediListaFrResponse = this.chiediListaFr(stazione, null, giornale);
+				// La lista deve essere richiesta per dominio visto che pagoPA non garantisce l'univocita globale per idFlusso
+				for(Dominio dominio : lstDomini) { 
+					log.debug("Acquisizione dei flussi di rendicontazione per il dominio [" + dominio.getCodDominio() + "] in corso.");
+					List<TipoIdRendicontazione> chiediListaFrResponse = this.chiediListaFr(stazione, dominio, giornale);
 					for(TipoIdRendicontazione i : chiediListaFrResponse)
-						flussiDaPagoPA.add(new RendicontazioneScaricata(i));
+						flussiDaPagoPA.add(new RendicontazioneScaricata(i, dominio.getCodDominio()));
 				}
 				
 				// Aggiungo alla lista quelli su FileSystem
@@ -231,7 +235,7 @@ public class Rendicontazioni {
 							TipoIdRendicontazione idRendicontazione = new TipoIdRendicontazione();
 							idRendicontazione.setDataOraFlusso(flussoRendicontazione.getDataOraFlusso());
 							idRendicontazione.setIdentificativoFlusso(flussoRendicontazione.getIdentificativoFlusso());
-							flussiDaPagoPA.add(new RendicontazioneScaricata(idRendicontazione, xmlfile));
+							flussiDaPagoPA.add(new RendicontazioneScaricata(idRendicontazione, flussoRendicontazione.getIstitutoRicevente().getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco(), xmlfile));
 						} catch (Exception e) {
 							log.error("Impossibile acquisire il flusso di rendicontazione da file: " + xmlfile.getAbsolutePath(), e);
 						}
@@ -251,7 +255,7 @@ public class Rendicontazioni {
 					// Controllo che il flusso non sia su db
 					try {
 						// Uso la GET perche' la exists risulta buggata con la data nella tupla di identificazione
-						frBD.getFr(idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());
+						frBD.getFr(rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());
 						// C'e' gia. Se viene da file, lo elimino
 						if(rnd.getFrFile() != null) {
 							try { 
@@ -262,17 +266,17 @@ public class Rendicontazioni {
 						}
 					} catch (NotFoundException e) {
 						// Flusso originale, lo aggiungo ma controllo che non sia gia' nella lista di quelli da aggiungere
-						if(!keys.contains(idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso().getTime())) {
+						if(!keys.contains(rnd.getCodDominio() + idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso().getTime())) {
 							log.debug("Flusso di rendicontazione [" + idRendicontazione.getIdentificativoFlusso() +", "+ idRendicontazione.getDataOraFlusso() + "] da acquisire" );
 							flussiDaAcquisire.add(rnd);
-							keys.add(idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso().getTime());
+							keys.add(rnd.getCodDominio() + idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso().getTime());
 						}
 					}
 				}
 
 				for(RendicontazioneScaricata rnd : flussiDaAcquisire) {
 					TipoIdRendicontazione idRendicontazione = rnd.getIdFlussoRendicontazione();
-					log.info("Acquisizione flusso di rendicontazione " + idRendicontazione.getIdentificativoFlusso());
+					log.info("Acquisizione flusso di rendicontazione " + rnd.getCodDominio() + " " + idRendicontazione.getIdentificativoFlusso());
 					
 					
 					boolean hasFrAnomalia = false;
@@ -292,6 +296,7 @@ public class Rendicontazioni {
 							NodoChiediFlussoRendicontazione richiestaFlusso = new NodoChiediFlussoRendicontazione();
 							richiestaFlusso.setIdentificativoIntermediarioPA(stazione.getIntermediario(configWrapper).getCodIntermediario());
 							richiestaFlusso.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
+							richiestaFlusso.setIdentificativoDominio(rnd.codDominio);
 							richiestaFlusso.setPassword(stazione.getPassword());
 							richiestaFlusso.setIdentificativoFlusso(idRendicontazione.getIdentificativoFlusso());
 	
@@ -601,7 +606,7 @@ public class Rendicontazioni {
 							
 							// Controllo se c'e' gia' un'altra versione
 							try {
-								Fr frEsistente = frBD.getFr(fr.getCodFlusso());
+								Fr frEsistente = frBD.getFr(fr.getCodDominio(), fr.getCodFlusso());
 								
 								// Ok, c'e' gia' una versione in DB. Vedo e' la data e' precedente o successiva
 								if(frEsistente.getDataFlusso().before(fr.getDataFlusso())) {

@@ -609,3 +609,6 @@ update rendicontazioni set id_singolo_versamento=singoli_versamenti.id
 
 update rendicontazioni set stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' where id_pagamento is null and esito=0;
 
+ALTER TABLE fr DROP CONSTRAINT unique_fr_1;
+ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,data_ora_flusso);
+

@@ -138,7 +138,7 @@ public class RendicontazioniBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.RND_IUV));
 			if(filter.isRicercaFR()) {
-				sqlQueryObjectInterno.addSelectField(converter.toTable(model.FR_COD_FLUSSO), "fr_cod_flusso");
+				sqlQueryObjectInterno.addSelectField(converter.toTable(model.FR_ID), "fr_id");
 				sqlQueryObjectInterno.addSelectField(converter.toTable(model.FR_DATA_ORA_FLUSSO), "fr_data_ora_flusso");
 			} else {
 				sqlQueryObjectInterno.addSelectField(converter.toTable(model.RND_IUV), "id");
@@ -162,7 +162,7 @@ public class RendicontazioniBD extends BasicBD {
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
 			if(filter.isRicercaFR()) {
-				sqlQueryObjectDistinctID.addSelectCountField("fr_cod_flusso","id",true);
+				sqlQueryObjectDistinctID.addSelectCountField("fr_id","id",true);
 			} else {
 				sqlQueryObjectDistinctID.addSelectCountField("id","id",true);
 			}
@@ -359,7 +359,7 @@ public class RendicontazioniBD extends BasicBD {
 		}
 	}
 	
-	public List<it.govpay.bd.viste.model.Rendicontazione> getFr(String codFlusso, Boolean obsoleto, Date dataOraFlusso) throws NotFoundException, ServiceException {
+	public List<it.govpay.bd.viste.model.Rendicontazione> getFr(String codDominio, String codFlusso, Date dataOraFlusso, Boolean obsoleto) throws NotFoundException, ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -369,6 +369,10 @@ public class RendicontazioniBD extends BasicBD {
 			
 			if(obsoleto != null) {
 				expr.equals(VistaRendicontazione.model().FR_OBSOLETO, obsoleto);
+			}
+			
+			if(codDominio != null) {
+				expr.equals(VistaRendicontazione.model().FR_COD_DOMINIO, codDominio);
 			}
 			
 			if(dataOraFlusso != null) {
