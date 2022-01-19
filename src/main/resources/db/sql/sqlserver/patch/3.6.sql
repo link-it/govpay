@@ -1,11 +1,11 @@
 -- 27/04/2021 Aggiunta colonna contabilita alla tabella singoli versamenti
-ALTER TABLE singoli_versamenti ADD COLUMN contabilita LONGTEXT;
+ALTER TABLE singoli_versamenti ADD contabilita VARCHAR(max);
 
 
 -- 11/05/2021 Aggiunto identificativo tracciato notifica pagamenti
-ALTER TABLE trac_notif_pag ADD COLUMN identificativo VARCHAR(255);
+ALTER TABLE trac_notif_pag ADD identificativo VARCHAR(255);
 UPDATE trac_notif_pag SET identificativo = nome_file;
-ALTER TABLE trac_notif_pag MODIFY COLUMN identificativo VARCHAR(255) NOT NULL;
+ALTER TABLE trac_notif_pag ALTER COLUMN identificativo VARCHAR(255) NOT NULL;
 
 
 -- 17/05/2021 Indice sulla colonna iuv della tabella eventi
@@ -13,7 +13,7 @@ CREATE INDEX idx_evt_iuv ON eventi (iuv);
 
 
 -- 20/05/2021 Aggiunta colonna connettore hyper_sic_apk alla tabella domini
-ALTER TABLE domini ADD COLUMN cod_connettore_hyper_sic_apk VARCHAR(255);
+ALTER TABLE domini ADD cod_connettore_hyper_sic_apk VARCHAR(255);
 
 
 -- 24/05/2021 Aggiornata vista v_riscossioni
@@ -98,14 +98,108 @@ SELECT fr.cod_dominio AS cod_dominio,
 
 
 CREATE VIEW v_riscossioni AS
-        SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data_pagamento, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, applicazioni.cod_applicazione, debitore_identificativo AS identificativo_debitore, cod_anno_tributario AS anno, cod_tipo_versamento, cod_tributo AS cod_entrata, tipi_versamento.descrizione AS descr_tipo_versamento, debitore_anagrafica, cod_psp, ragione_sociale_psp, cod_rata, id_documento, causale_versamento, importo_versamento, numero_avviso, iuv_pagamento, data_scadenza, data_creazione, contabilita FROM v_riscossioni_con_rpt JOIN applicazioni ON v_riscossioni_con_rpt.id_applicazione = applicazioni.id JOIN tipi_versamento ON v_riscossioni_con_rpt.id_tipo_versamento = tipi_versamento.id LEFT JOIN tributi ON v_riscossioni_con_rpt.id_tributo = tributi.id JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id           
+ SELECT a.cod_dominio,
+    a.iuv,
+    a.iur,
+    a.cod_flusso,
+    a.fr_iur,
+    a.data_regolamento,
+    a.importo_totale_pagamenti,
+    a.numero_pagamenti,
+    a.importo_pagato,
+    a.data_pagamento,
+    a.cod_singolo_versamento_ente,
+    a.indice_dati,
+    a.cod_versamento_ente,
+    applicazioni.cod_applicazione,
+    a.debitore_identificativo AS identificativo_debitore,
+    a.cod_anno_tributario AS anno,
+    tipi_versamento.cod_tipo_versamento,
+    tipi_tributo.cod_tributo AS cod_entrata,
+    tipi_versamento.descrizione AS descr_tipo_versamento,
+    a.debitore_anagrafica,
+    a.cod_psp,
+    a.ragione_sociale_psp,
+    a.cod_rata,
+    a.id_documento,
+    a.causale_versamento,
+    a.importo_versamento,
+    a.numero_avviso,
+    a.iuv_pagamento,
+    a.data_scadenza,
+    a.data_creazione,
+    a.contabilita
+   FROM ( SELECT v_riscossioni_senza_rpt.cod_dominio,
+            v_riscossioni_senza_rpt.iuv,
+            v_riscossioni_senza_rpt.iur,
+            v_riscossioni_senza_rpt.cod_flusso,
+            v_riscossioni_senza_rpt.fr_iur,
+            v_riscossioni_senza_rpt.data_regolamento,
+            v_riscossioni_senza_rpt.importo_totale_pagamenti,
+            v_riscossioni_senza_rpt.numero_pagamenti,
+            v_riscossioni_senza_rpt.importo_pagato,
+            v_riscossioni_senza_rpt.data_pagamento,
+            v_riscossioni_senza_rpt.cod_singolo_versamento_ente,
+            v_riscossioni_senza_rpt.indice_dati,
+            v_riscossioni_senza_rpt.cod_versamento_ente,
+            v_riscossioni_senza_rpt.id_applicazione,
+            v_riscossioni_senza_rpt.debitore_identificativo,
+            v_riscossioni_senza_rpt.id_tipo_versamento,
+            v_riscossioni_senza_rpt.cod_anno_tributario,
+            v_riscossioni_senza_rpt.id_tributo,
+		    v_riscossioni_senza_rpt.debitore_anagrafica,
+		    v_riscossioni_senza_rpt.cod_psp,
+		    v_riscossioni_senza_rpt.ragione_sociale_psp,
+		    v_riscossioni_senza_rpt.cod_rata,
+		    v_riscossioni_senza_rpt.id_documento,
+		    v_riscossioni_senza_rpt.causale_versamento,
+		    v_riscossioni_senza_rpt.importo_versamento,
+		    v_riscossioni_senza_rpt.numero_avviso,
+		    v_riscossioni_senza_rpt.iuv_pagamento,
+		    v_riscossioni_senza_rpt.data_scadenza,
+		    v_riscossioni_senza_rpt.data_creazione,
+		    v_riscossioni_senza_rpt.contabilita
+           FROM v_riscossioni_senza_rpt
         UNION
-        SELECT cod_dominio, iuv, iur, cod_flusso, fr_iur,  data_regolamento, importo_totale_pagamenti, numero_pagamenti, importo_pagato, data_pagamento, cod_singolo_versamento_ente, indice_dati, cod_versamento_ente, applicazioni.cod_applicazione, debitore_identificativo AS identificativo_debitore, cod_anno_tributario AS anno, cod_tipo_versamento, cod_tributo AS cod_entrata, tipi_versamento.descrizione AS descr_tipo_versamento, debitore_anagrafica, cod_psp, ragione_sociale_psp, cod_rata, id_documento, causale_versamento, importo_versamento, numero_avviso, iuv_pagamento, data_scadenza, data_creazione, contabilita FROM v_riscossioni_senza_rpt join applicazioni ON v_riscossioni_senza_rpt.id_applicazione = applicazioni.id LEFT JOIN tipi_versamento ON v_riscossioni_senza_rpt.id_tipo_versamento = tipi_versamento.id LEFT JOIN tributi ON v_riscossioni_senza_rpt.id_tributo = tributi.id LEFT JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id;
-
-
+         SELECT v_riscossioni_con_rpt.cod_dominio,
+            v_riscossioni_con_rpt.iuv,
+            v_riscossioni_con_rpt.iur,
+            v_riscossioni_con_rpt.cod_flusso,
+            v_riscossioni_con_rpt.fr_iur,
+            v_riscossioni_con_rpt.data_regolamento,
+            v_riscossioni_con_rpt.importo_totale_pagamenti,
+            v_riscossioni_con_rpt.numero_pagamenti,
+            v_riscossioni_con_rpt.importo_pagato,
+            v_riscossioni_con_rpt.data_pagamento,
+            v_riscossioni_con_rpt.cod_singolo_versamento_ente,
+            v_riscossioni_con_rpt.indice_dati,
+            v_riscossioni_con_rpt.cod_versamento_ente,
+            v_riscossioni_con_rpt.id_applicazione,
+            v_riscossioni_con_rpt.debitore_identificativo,
+            v_riscossioni_con_rpt.id_tipo_versamento,
+            v_riscossioni_con_rpt.cod_anno_tributario,
+            v_riscossioni_con_rpt.id_tributo,
+		    v_riscossioni_con_rpt.debitore_anagrafica,
+		    v_riscossioni_con_rpt.cod_psp,
+		    v_riscossioni_con_rpt.ragione_sociale_psp,
+		    v_riscossioni_con_rpt.cod_rata,
+		    v_riscossioni_con_rpt.id_documento,
+		    v_riscossioni_con_rpt.causale_versamento,
+		    v_riscossioni_con_rpt.importo_versamento,
+		    v_riscossioni_con_rpt.numero_avviso,
+		    v_riscossioni_con_rpt.iuv_pagamento,
+		    v_riscossioni_con_rpt.data_scadenza,
+		    v_riscossioni_con_rpt.data_creazione,
+		    v_riscossioni_con_rpt.contabilita
+           FROM v_riscossioni_con_rpt) a
+     JOIN applicazioni ON a.id_applicazione = applicazioni.id 
+     LEFT JOIN tipi_versamento ON a.id_tipo_versamento = tipi_versamento.id 
+     LEFT JOIN tributi ON a.id_tributo = tributi.id 
+     LEFT JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id;
+     
+   
 -- 28/05/2021
 DROP VIEW IF EXISTS v_rendicontazioni_ext;
-
 
 CREATE VIEW v_rendicontazioni_ext AS
  SELECT fr.cod_psp AS fr_cod_psp,
@@ -227,14 +321,14 @@ CREATE VIEW v_rendicontazioni_ext AS
      LEFT JOIN pagamenti on rendicontazioni.id_pagamento = pagamenti.id 
      LEFT JOIN rpt on pagamenti.id_rpt = rpt.id
      LEFT JOIN incassi on pagamenti.id_incasso = incassi.id;
-
-
+     
+     
 -- 07/06/2021 Aggiunta colonna con la versione dell'RPT
 DROP VIEW IF EXISTS v_rpt_versamenti;
 
-ALTER TABLE rpt ADD COLUMN versione VARCHAR(35);
+ALTER TABLE rpt ADD versione VARCHAR(35);
 UPDATE rpt SET versione = 'SANP_230';
-ALTER TABLE rpt MODIFY COLUMN versione VARCHAR(35) NOT NULL;
+ALTER TABLE rpt ALTER COLUMN versione VARCHAR(35) NOT NULL;
 
 CREATE VIEW v_rpt_versamenti AS
  SELECT 
@@ -271,8 +365,8 @@ rpt.cod_transazione_rt as cod_transazione_rt,
 rpt.stato_conservazione as stato_conservazione,            
 rpt.descrizione_stato_cons as descrizione_stato_cons,         
 rpt.data_conservazione as data_conservazione,             
-rpt.bloccante as bloccante,                      
-rpt.versione as versione,
+rpt.bloccante as bloccante,    
+rpt.versione as versione, 
 rpt.id as id,                             
 rpt.id_pagamento_portale as id_pagamento_portale, 
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
@@ -335,58 +429,213 @@ FROM rpt JOIN versamenti ON versamenti.id = rpt.id_versamento;
 
 
 -- 07/06/2021 Aggiunta colonna intermediato alla tabella domini
-ALTER TABLE domini ADD COLUMN intermediato BOOLEAN;
-UPDATE domini SET intermediato = true;
-ALTER TABLE domini MODIFY COLUMN intermediato BOOLEAN NOT NULL;
+ALTER TABLE domini ADD intermediato BIT;
+UPDATE domini SET intermediato = 1;
+ALTER TABLE domini ALTER COLUMN intermediato BIT NOT NULL;
 
 
 -- 08/06/2021 Stazione di un dominio opzionale
-ALTER TABLE domini MODIFY COLUMN id_stazione BIGINT NULL;
-
+ALTER TABLE domini ALTER COLUMN id_stazione BIGINT NULL;
 
 
 -- 22/06/2021 API-Rendicontazione V3, nuovi campi tabella incassi
 
-ALTER TABLE incassi ADD COLUMN identificativo VARCHAR(35);
+ALTER TABLE incassi ADD identificativo VARCHAR(35);
 UPDATE incassi SET identificativo = trn;
-ALTER TABLE incassi MODIFY COLUMN identificativo VARCHAR(35) NOT NULL;
+ALTER TABLE incassi ALTER COLUMN identificativo VARCHAR(35) NOT NULL;
 
-ALTER TABLE incassi ADD COLUMN stato VARCHAR(35);
+ALTER TABLE incassi ADD stato VARCHAR(35);
 UPDATE incassi SET stato = 'ACQUISITO';
-ALTER TABLE incassi MODIFY COLUMN stato VARCHAR(35) NOT NULL;
+ALTER TABLE incassi ALTER COLUMN stato VARCHAR(35) NOT NULL;
 
-ALTER TABLE incassi ADD COLUMN iuv VARCHAR(35);
-ALTER TABLE incassi ADD COLUMN cod_flusso_rendicontazione VARCHAR(35);
-ALTER TABLE incassi ADD COLUMN descrizione_stato VARCHAR(255);
+ALTER TABLE incassi ADD iuv VARCHAR(35);
+ALTER TABLE incassi ADD cod_flusso_rendicontazione VARCHAR(35);
+ALTER TABLE incassi ADD descrizione_stato VARCHAR(255);
 
-ALTER TABLE incassi DROP INDEX unique_incassi_1;
-ALTER TABLE incassi ADD CONSTRAINT unique_incassi_1 UNIQUE INDEX (cod_dominio,identificativo);
+ALTER TABLE incassi DROP CONSTRAINT unique_incassi_1;
+ALTER TABLE incassi ADD CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,identificativo);
 
-ALTER TABLE incassi MODIFY COLUMN causale VARCHAR(512) NULL;
+ALTER TABLE incassi ALTER COLUMN causale VARCHAR(512) NULL;
 
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
 
-
+     
 -- 14/07/2021 Batch per la chiusura delle RPT scadute
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('rpt-scadute', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-rpt-scadute', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
 
+
 -- 20/07/2021 Fix anomalie per rendicontazione senza RT
 
-update rendicontazioni set stato='OK', anomalie=null where anomalie = '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' and esito=9;
---update fr set stato='ACCETTATA', descrizione_stato = null where stato='ANOMALA' and id not in (select fr.id from fr join rendicontazioni on rendicontazioni.id_fr=fr.id where fr.stato='ANOMALA' and rendicontazioni.stato='ANOMALA');
-
+update rendicontazioni set stato='OK', anomalie=null where anomalie = '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.';
+update fr set stato='ACCETTATA', descrizione_stato = null where stato='ANOMALA' and id not in (select fr.id from fr join rendicontazioni on rendicontazioni.id_fr=fr.id where fr.stato='ANOMALA' and rendicontazioni.stato='ANOMALA');
+ 
 
 -- 21/07/2021 Identificativo dominio nel singolo versamento per gestire le pendenze multibeneficiario
-ALTER TABLE singoli_versamenti ADD COLUMN id_dominio BIGINT;
+ALTER TABLE singoli_versamenti ADD id_dominio BIGINT;
 ALTER TABLE singoli_versamenti ADD CONSTRAINT fk_sng_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
 
 
 -- 15/10/2021 Identificativo RPT nella tabella notificheAppIo per gestire l'invio delle ricevute di pagamento
-ALTER TABLE notifiche_app_io ADD COLUMN id_rpt BIGINT;
+ALTER TABLE notifiche_app_io ADD id_rpt BIGINT;
 ALTER TABLE notifiche_app_io ADD CONSTRAINT fk_nai_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id);
 
+-- 30/08/2021 Aggiunta colonna connettore maggioli jppa alla tabella domini
+ALTER TABLE domini ADD cod_connettore_maggioli_jppa VARCHAR(255);
+
+
+-- 08/09/2021 Estesa dimensione del campo tipo_evento della tabella eventi
+DROP VIEW IF EXISTS v_eventi_vers;
+DROP VIEW IF EXISTS v_eventi_vers_pagamenti;
+DROP VIEW IF EXISTS v_eventi_vers_rendicontazioni;
+DROP VIEW IF EXISTS v_eventi_vers_riconciliazioni;
+DROP VIEW IF EXISTS v_eventi_vers_tracciati;
+
+ALTER TABLE eventi ALTER tipo_evento VARCHAR(255);
+
+CREATE VIEW v_eventi_vers_rendicontazioni AS (
+        SELECT DISTINCT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               versamenti.cod_versamento_ente as cod_versamento_ente,
+               applicazioni.cod_applicazione as cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+	       eventi.severita,
+               eventi.id
+        FROM eventi 
+        JOIN rendicontazioni ON rendicontazioni.id_fr = eventi.id_fr
+        JOIN pagamenti ON pagamenti.id = rendicontazioni.id_pagamento
+        JOIN singoli_versamenti ON pagamenti.id_singolo_versamento=singoli_versamenti.id
+        JOIN versamenti ON singoli_versamenti.id_versamento=versamenti.id
+        JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+);
+
+CREATE VIEW v_eventi_vers_pagamenti AS (
+ SELECT DISTINCT eventi.componente,
+    eventi.ruolo,
+    eventi.categoria_evento,
+    eventi.tipo_evento,
+    eventi.sottotipo_evento,
+    eventi.data,
+    eventi.intervallo,
+    eventi.esito,
+    eventi.sottotipo_esito,
+    eventi.dettaglio_esito,
+    eventi.parametri_richiesta,
+    eventi.parametri_risposta,
+    eventi.dati_pago_pa,
+    versamenti.cod_versamento_ente,
+    applicazioni.cod_applicazione,
+    eventi.iuv,
+    eventi.cod_dominio,
+    eventi.ccp,
+    eventi.id_sessione,
+    eventi.severita,
+    eventi.id
+   FROM versamenti
+     JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+     JOIN pag_port_versamenti ON versamenti.id = pag_port_versamenti.id_versamento
+     JOIN pagamenti_portale ON pag_port_versamenti.id_pagamento_portale = pagamenti_portale.id
+     JOIN eventi ON eventi.id_sessione = pagamenti_portale.id_sessione);
+
+CREATE VIEW v_eventi_vers_riconciliazioni AS (
+        SELECT DISTINCT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               versamenti.cod_versamento_ente as cod_versamento_ente,
+               applicazioni.cod_applicazione as cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+               eventi.severita,
+               eventi.id
+        FROM eventi
+        JOIN pagamenti ON pagamenti.id_incasso = eventi.id_incasso
+        JOIN singoli_versamenti ON pagamenti.id_singolo_versamento=singoli_versamenti.id
+        JOIN versamenti ON singoli_versamenti.id_versamento=versamenti.id
+        JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+);
+
+CREATE VIEW v_eventi_vers_tracciati AS (
+        SELECT DISTINCT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               versamenti.cod_versamento_ente as cod_versamento_ente,
+               applicazioni.cod_applicazione as cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+	       eventi.severita,
+               eventi.id
+        FROM eventi
+        JOIN operazioni ON operazioni.id_tracciato = eventi.id_tracciato
+        JOIN versamenti ON operazioni.id_applicazione = versamenti.id_applicazione AND operazioni.cod_versamento_ente = versamenti.cod_versamento_ente
+        JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
+);
+
+CREATE VIEW v_eventi_vers AS (
+        SELECT eventi.componente,
+               eventi.ruolo,
+               eventi.categoria_evento,
+               eventi.tipo_evento,
+               eventi.sottotipo_evento,
+               eventi.data,
+               eventi.intervallo,
+               eventi.esito,
+               eventi.sottotipo_esito,
+               eventi.dettaglio_esito,
+               eventi.parametri_richiesta,
+               eventi.parametri_risposta,
+               eventi.dati_pago_pa,
+               eventi.cod_versamento_ente,
+               eventi.cod_applicazione,
+               eventi.iuv,
+               eventi.cod_dominio,
+               eventi.ccp,
+               eventi.id_sessione,
+	       eventi.severita,
+               eventi.id FROM eventi 
+        UNION SELECT * FROM v_eventi_vers_pagamenti 
+        UNION SELECT * FROM v_eventi_vers_rendicontazioni
+        UNION SELECT * FROM v_eventi_vers_riconciliazioni
+	UNION SELECT * FROM v_eventi_vers_tracciati
+);
 
 -- 15/12/2021 Vista per le pendenze non ancora rendicontate
 CREATE VIEW v_vrs_non_rnd AS 
@@ -485,20 +734,21 @@ CREATE VIEW v_vrs_non_rnd AS
      LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id
   WHERE rendicontazioni.id IS NULL;
   
-
+  
 -- 20/12/2021 Patch per gestione delle rendicontazioni che non venivano messe in stato anomala quando non viene trovato il versamento corrispondente.
 UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS null;
 
 
 -- 21/12/2021 Patch per la gestione del riferimento al pagamento di una rendicontazione che arriva prima della ricevuta.
-UPDATE rendicontazioni, fr, pagamenti SET id_pagamento = pagamenti.id 
+UPDATE rendicontazioni SET id_pagamento = pagamenti.id 
+	FROM fr, pagamenti 
 	WHERE fr.id=rendicontazioni.id_fr 
 	AND pagamenti.cod_dominio=fr.cod_dominio 
 	AND rendicontazioni.iuv=pagamenti.iuv 
 	AND rendicontazioni.iur=pagamenti.iur 
 	AND rendicontazioni.id_pagamento IS NULL;
-
-DROP INDEX unique_fr_1 ON fr;
-DROP INDEX index_fr_1 ON fr;
+	
+ALTER TABLE fr DROP CONSTRAINT unique_fr_1;
+ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_dominio,cod_flusso,data_ora_flusso);
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
-
+	
