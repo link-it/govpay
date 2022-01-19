@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>bom</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.5.1-SNAPSHOT</version>
+		<version>3.5.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>ear</artifactId>
@@ -26,6 +26,18 @@
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>api-pagopa</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-jppapdp</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-jppapdp</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
@@ -197,6 +209,11 @@
 							<groupId>it.govpay</groupId>
 							<artifactId>web-console</artifactId>
 							<contextRoot>/${war-base-name}/backend/gui/backoffice</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>api-jppapdp</artifactId>
+							<contextRoot>/${war-base-name}/backend/api/jppapdp</contextRoot>
 						</webModule>
 					</modules>
 					<version>6</version>

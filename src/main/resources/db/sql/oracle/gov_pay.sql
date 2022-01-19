@@ -190,6 +190,7 @@ CREATE TABLE domini
 	cod_connettore_secim VARCHAR2(255 CHAR),
 	cod_connettore_gov_pay VARCHAR2(255 CHAR),
 	cod_connettore_hyper_sic_apk VARCHAR2(255 CHAR),
+	cod_connettore_maggioli_jppa VARCHAR2(255 CHAR),
 	intermediato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -1528,7 +1529,7 @@ CREATE TABLE eventi
 	componente VARCHAR2(35 CHAR),
 	ruolo VARCHAR2(1 CHAR),
 	categoria_evento VARCHAR2(1 CHAR),
-	tipo_evento VARCHAR2(70 CHAR),
+	tipo_evento VARCHAR2(255 CHAR),
 	sottotipo_evento VARCHAR2(35 CHAR),
 	data TIMESTAMP,
 	intervallo NUMBER,

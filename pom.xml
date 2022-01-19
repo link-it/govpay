@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
 	<artifactId>bom</artifactId>
-	<version>3.5.1-SNAPSHOT</version>
+	<version>3.5.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
@@ -208,6 +208,14 @@
 			
 			<dependency>
 				<groupId>it.govpay</groupId>
+				<artifactId>api-jppapdp</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
 				<artifactId>orm-beans</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
@@ -280,6 +288,13 @@
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>appio-beans</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>jppapdp-beans</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 			</dependency>			

@@ -65,7 +65,7 @@ quale si rimanda per una descrizione piu' estesa.
 GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
 http://www.gov4j.it/govpay
 
-Copyright (c) 2014-2020 Link.it srl (http://www.link.it).
+Copyright (c) 2014-2022 Link.it srl (http://www.link.it).
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

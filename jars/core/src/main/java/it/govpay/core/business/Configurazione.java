@@ -117,6 +117,10 @@ public class Configurazione {
 		if(configurazione.getGiornale().getApiRagioneria() == null) {
 			configurazione.getGiornale().setApiRagioneria(configurazioneDefault.getGiornale().getApiRagioneria());
 		}
+		
+		if(configurazione.getGiornale().getApiMaggioliJPPA() == null) {
+			configurazione.getGiornale().setApiMaggioliJPPA(configurazioneDefault.getGiornale().getApiMaggioliJPPA());
+		}
 	}
 
 	public it.govpay.bd.model.Configurazione getConfigurazioneDefault() {
@@ -253,6 +257,17 @@ public class Configurazione {
 		apiBackendAppIOScritture.setLog(LogEnum.SEMPRE);
 		apiBackendAppIO.setScritture(apiBackendAppIOScritture);
 		giornale.setApiBackendIO(apiBackendAppIO);
+		
+		GdeInterfaccia apiMaggioliJPPA = new GdeInterfaccia();
+		GdeEvento apiMaggioliJPPALetture = new GdeEvento();
+		apiMaggioliJPPALetture.setDump(DumpEnum.SEMPRE);
+		apiMaggioliJPPALetture.setLog(LogEnum.SEMPRE);
+		apiMaggioliJPPA.setLetture(apiMaggioliJPPALetture);
+		GdeEvento apiMaggioliJPPAScritture = new GdeEvento();
+		apiMaggioliJPPAScritture.setDump(DumpEnum.SEMPRE);
+		apiMaggioliJPPAScritture.setLog(LogEnum.SEMPRE);
+		apiMaggioliJPPA.setScritture(apiMaggioliJPPAScritture);
+		giornale.setApiMaggioliJPPA(apiMaggioliJPPA);
 
 		return giornale;
 	}

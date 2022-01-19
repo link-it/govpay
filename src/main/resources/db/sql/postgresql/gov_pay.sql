@@ -123,6 +123,7 @@ CREATE TABLE domini
 	cod_connettore_secim VARCHAR(255),
 	cod_connettore_gov_pay VARCHAR(255),
 	cod_connettore_hyper_sic_apk VARCHAR(255),
+	cod_connettore_maggioli_jppa VARCHAR(255),
 	intermediato BOOLEAN NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_domini') NOT NULL,
@@ -1120,7 +1121,7 @@ CREATE TABLE eventi
 	componente VARCHAR(35),
 	ruolo VARCHAR(1),
 	categoria_evento VARCHAR(1),
-	tipo_evento VARCHAR(70),
+	tipo_evento VARCHAR(255),
 	sottotipo_evento VARCHAR(35),
 	data TIMESTAMP,
 	intervallo BIGINT,

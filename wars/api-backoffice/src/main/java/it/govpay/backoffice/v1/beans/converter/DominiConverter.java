@@ -202,6 +202,9 @@ public class DominiConverter {
 		
 		if(dominioPost.getServizioHyperSicAPKappa() != null)
 			dominio.setConnettoreHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappaConverter.getConnettoreDTO(dominioPost.getServizioHyperSicAPKappa(), user, Tipo.HYPER_SIC_APKAPPA));
+	
+		if(dominioPost.getServizioMaggioliJPPA() != null)
+			dominio.setConnettoreMaggioliJPPA(ConnettoreNotificaPagamentiMaggioliJPPAConverter.getConnettoreDTO(dominioPost.getServizioMaggioliJPPA(), user, Tipo.MAGGIOLI_JPPA));
 		
 		dominio.setIntermediato(dominioPost.Intermediato() != null ? dominioPost.Intermediato() : true);
 		
@@ -392,6 +395,9 @@ public class DominiConverter {
 		
 		if(dominio.getConnettoreHyperSicAPKappa()!=null)
 			rsModel.setServizioHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappaConverter.toRsModel(dominio.getConnettoreHyperSicAPKappa()));
+		
+		if(dominio.getConnettoreMaggioliJPPA()!=null)
+			rsModel.setServizioMaggioliJPPA(ConnettoreNotificaPagamentiMaggioliJPPAConverter.toRsModel(dominio.getConnettoreMaggioliJPPA()));
 		
 		return rsModel;
 	}

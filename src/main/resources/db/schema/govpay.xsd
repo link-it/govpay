@@ -620,6 +620,7 @@
 			<xsd:element name="codConnettoreSecim" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="codConnettoreGovPay" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="codConnettoreHyperSicAPK" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="codConnettoreMaggioliJPPA" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="intermediato" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>
@@ -2217,7 +2218,7 @@
 			<xsd:element name="componente" type="String35" minOccurs="0"/>
 			<xsd:element name="ruolo" type="String1" minOccurs="0"/>
 			<xsd:element name="categoriaEvento" type="String1" minOccurs="0"/>
-			<xsd:element name="tipoEvento" type="String70" minOccurs="0"/>
+			<xsd:element name="tipoEvento" type="String255" minOccurs="0"/>
 			<xsd:element name="sottotipoEvento" type="String35" minOccurs="0" />
 			<xsd:element name="data" type="xsd:dateTime" minOccurs="0" />
 			<xsd:element name="intervallo" type="xsd:long" minOccurs="0" />

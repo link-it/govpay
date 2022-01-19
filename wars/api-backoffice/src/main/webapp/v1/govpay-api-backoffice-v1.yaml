@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.27.0"
+  version: "1.28.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -4965,6 +4965,7 @@ components:
         - apiPagoPA
         - apiPendenze
         - apiBackendIO
+        - apiMaggioliJPPA
       properties:
         apiEnte:
           $ref: '#/components/schemas/gdeInterfaccia'
@@ -4979,6 +4980,8 @@ components:
         apiPendenze:
           $ref: '#/components/schemas/gdeInterfaccia'
         apiBackendIO:
+          $ref: '#/components/schemas/gdeInterfaccia'
+        apiMaggioliJPPA:
           $ref: '#/components/schemas/gdeInterfaccia'
     gdeInterfaccia:
       type: object
@@ -5299,6 +5302,8 @@ components:
           $ref: '#/components/schemas/connettoreNotificaPagamentiGovPay'
         servizioHyperSicAPKappa:
           $ref: '#/components/schemas/connettoreNotificaPagamentiHyperSicAPKappa'
+        servizioMaggioliJPPA:
+          $ref: '#/components/schemas/connettoreNotificaPagamentiMaggioliJPPA'  
         intermediato:
           type: boolean
           description: Indica se il creditore viene configurato per utilizzare una  stazione di intermediazione
@@ -7996,6 +8001,68 @@ components:
         - SINTESI_FLUSSI_RENDICONTAZIONE
         - RPP
         - FLUSSI_RENDICONTAZIONE
+    connettoreNotificaPagamentiMaggioliJPPA:
+      type: object
+      required:
+        - abilitato
+        - tipoConnettore
+        - principal
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se il connettore e' abilitato
+          example: true
+        tipoConnettore:
+          type: string
+          enum:
+            - 'EMAIL'
+        versione:
+          type: string
+          example: '1.0'
+          description: Versione del servizio.
+        principal:
+          type: string
+          description: principal autenticato dalla chiamata di Maggioli
+        emailIndirizzi:
+          type: array
+          items:
+            type: string
+          description: Indirizzi Email al quale verra' spedito il tracciato
+        emailSubject:
+          type: string
+          description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
+        tipiPendenza:
+          type: array
+          description: tipi pendenza da includere nel tracciato
+          items:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+              - type: string
+                description: identificativo tipo pendenza
+                example:
+                  SEGRETERIA
+        url:
+          type: string
+          description: URL Base del servizio rest di ricezione dei dati
+        versioneApi:
+          type: string
+          enum:
+            - 'SOAP v1'
+          description: Versione delle API di integrazione utilizzate.
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
+        contenuti:
+          type: array
+          description: Lista dei contenuti da inviare al servizio REST
+          items:
+            $ref: '#/components/schemas/contenutoNotificaPagamentiGovpay'
     soggetto:
       description: dati anagrafici di un versante o pagatore.
       type: object
@@ -8415,6 +8482,10 @@ components:
         - API_BACKEND_IO
         - API_SECIM
         - API_MYPIVOT
+        - API_MAGGIOLI_JPPA
+        - API_GOVPAY
+        - API_HYPERSIC_APK
+        - API_USER
       example: 'API_PAGOPA'
     categoriaEvento:
       type: string
