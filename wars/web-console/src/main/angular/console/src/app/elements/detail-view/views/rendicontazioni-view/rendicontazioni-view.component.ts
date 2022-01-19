@@ -40,7 +40,7 @@ export class RendicontazioniViewComponent implements IModalDialog, IExport, Afte
   }
 
   protected dettaglioEvento() {
-    let _url = UtilService.URL_RENDICONTAZIONI+'/'+UtilService.EncodeURIComponent(this.json.idFlusso)+'/'+this.json.dataFlusso;
+    let _url = UtilService.URL_RENDICONTAZIONI+'/'+UtilService.EncodeURIComponent(this.json.idDominio)+'/'+UtilService.EncodeURIComponent(this.json.idFlusso)+'/'+this.json.dataFlusso;
     this.gps.getDataService(_url).subscribe(
       function (_response) {
         this.json = _response.body;
@@ -117,7 +117,7 @@ export class RendicontazioniViewComponent implements IModalDialog, IExport, Afte
     let folders: string[] = [];
     let names: string[] = [];
 
-    urls.push(UtilService.URL_RENDICONTAZIONI+'/'+this.json.idFlusso+'/'+this.json.dataFlusso);
+    urls.push(UtilService.URL_RENDICONTAZIONI+'/'+this.json.idDominio+'/'+this.json.idFlusso+'/'+this.json.dataFlusso);
     names.push('Flusso_' + this.json.idFlusso.toString() + '.xml');
     contents.push('application/xml');
     types.push('text');
