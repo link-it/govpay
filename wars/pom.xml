@@ -19,6 +19,7 @@
 		<module>api-ragioneria</module>
 		<module>api-pendenze</module>
 		<module>api-pagopa</module>
+		<module>api-legacy</module>
 		<module>web-connector</module>
 		<module>web-console</module>
 	</modules>

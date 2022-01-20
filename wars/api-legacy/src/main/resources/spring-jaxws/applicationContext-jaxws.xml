@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:beans xmlns="http://www.springframework.org/schema/security"
+        xmlns:b="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:jaxws="http://cxf.apache.org/jaxws"
+        xmlns:cxf="http://cxf.apache.org/core"
+        xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security.xsd
+        http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+        http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
+        
+        <b:import resource="classpath:META-INF/cxf/cxf.xml"/>
+        <b:import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+
+	    <!-- Context -->
+		<b:bean id="contextConfigV1" class="it.govpay.web.ws.context.ContextConfig">
+		</b:bean>
+		<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory">
+			<b:property name="apiName" value="API_PAGOPA" />
+		</b:bean>
+		<b:bean id="contextV1" class="org.openspcoop2.utils.service.context.ContextFeature">
+			<b:property name="contextFactory" >
+				<b:ref bean="customContextFactory"/>
+			</b:property>
+			<b:property name="contextConfig" >
+				<b:ref bean="contextConfigV1"/>
+			</b:property>
+		</b:bean>
+		
+		<!-- Giornale Eventi -->
+		<b:bean id="giornaleEventiConfigV1" class="it.govpay.rs.eventi.GiornaleEventiConfig">
+			<b:property name="apiName" value="API_PAGOPA" />
+		</b:bean>
+		<b:bean id="giornaleEventiV1" class="it.govpay.rs.eventi.GiornaleEventiFeature">
+			<b:property name="giornaleEventiConfig" >
+				<b:ref bean="giornaleEventiConfigV1"/>
+			</b:property>
+		</b:bean>
+		
+		<!-- handlers -->
+		<b:bean id="messageLoggingHandlerV1" class="it.govpay.web.handler.MessageLoggingHandlerGPWS_020100"></b:bean>
+		
+		<jaxws:endpoint id="apiPagoPaRTV1" address="/PagamentiTelematiciRTservice" implementorClass="it.govpay.web.ws.PagamentiTelematiciRTImpl">
+			<jaxws:handlers>
+				<b:ref bean="messageLoggingHandlerV1" />
+			</jaxws:handlers>
+			<jaxws:features>
+				<b:ref bean="giornaleEventiV1" /> <!-- Inserire prima della contextFeature -->
+				<b:ref bean="contextV1" />
+			</jaxws:features>
+		</jaxws:endpoint>
+		
+		<jaxws:endpoint id="apiPagoPaCCPV1" address="/PagamentiTelematiciCCPservice" implementorClass="it.govpay.web.ws.PagamentiTelematiciCCPImpl">
+			<jaxws:handlers>
+				<b:ref bean="messageLoggingHandlerV1" />
+			</jaxws:handlers>
+			<jaxws:features>
+				<b:ref bean="giornaleEventiV1" /> <!-- Inserire prima della contextFeature -->
+				<b:ref bean="contextV1" />
+			</jaxws:features>
+		</jaxws:endpoint>
+
+</b:beans>
