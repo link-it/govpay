@@ -51,5 +51,5 @@ Inoltro
 ~~~~~~~
 
 E' possibile inviare i dati ricevuti ed eventualmente trasformati ad una applicazione per il processo di istruttoria. Il JSON ritornato da tale
-servizio deve rispettare lo schema di una `PendenzaPost <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml#model-pendenzaPost>`_.
+servizio deve rispettare lo schema di una `PendenzaPost <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml#model-pendenzaPost>`_.
 
