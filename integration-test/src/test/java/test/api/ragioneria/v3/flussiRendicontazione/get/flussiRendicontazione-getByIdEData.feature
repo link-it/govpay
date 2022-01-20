@@ -38,7 +38,7 @@ And match response ==
 }
 """ 
 
-* def idDominio = response.risultati[0].idDominio
+* def idDominio = response.risultati[0].dominio.idDominio
 * def idFlusso = response.risultati[0].idFlusso
 * def dataFlusso = response.risultati[0].dataFlusso
 
@@ -47,6 +47,6 @@ And path 'flussiRendicontazione', idDominio, idFlusso, dataFlusso
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
-And match response.idDominio == idDominio
+And match response.dominio.idDominio == idDominio
 And match response.idFlusso == idFlusso 
 And match response.dataFlusso == dataFlusso
