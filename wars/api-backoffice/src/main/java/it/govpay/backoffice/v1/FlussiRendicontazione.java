@@ -13,9 +13,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.backoffice.v1.controllers.FlussiRendicontazioneController;
 import it.govpay.core.beans.Costanti;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.rs.v1.BaseRsServiceV1;
 
 
@@ -52,12 +54,19 @@ public class FlussiRendicontazione extends BaseRsServiceV1{
     }
 
     @GET
-    @Path("/{idFlusso}/{dataOraFlusso}")
+    @Path("/{idDominio}/{idFlusso}")
     
     @Produces({ "application/xml", "application/json" })
-    public Response getFlussoRendicontazioneByIdEData(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idFlusso") String idFlusso, @PathParam("dataOraFlusso") String dataOraFlusso){
+    public Response getFlussoRendicontazioneByIdEData(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idFlusso") String idFlusso){
         this.buildContext();
-        return this.controller.getFlussoRendicontazione(this.getUser(), uriInfo, httpHeaders, null, idFlusso,  dataOraFlusso);
+        //Per retrocompatibilita, controllo se mi stanno invocando /{idFlusso}/{dataOraFlusso}
+        try {
+        	SimpleDateFormatUtils.getDataDaConTimestamp(idFlusso, "dataOraFlusso");
+        	return this.controller.getFlussoRendicontazione(this.getUser(), uriInfo, httpHeaders, null, idDominio, idFlusso);
+
+        } catch(ValidationException e) {
+        	return this.controller.getFlussoRendicontazione(this.getUser(), uriInfo, httpHeaders, idDominio, idFlusso, null);
+        }
     }
     
     @GET
