@@ -30,10 +30,10 @@ And match each response.rendicontazioni[*] == read('msg/rendicontazione.json')
 
 Examples:
 | applicazione | idDominio | idFlusso | httpStatus | risposta |
-| applicazione_star.json | idDominio1 | idflusso_dom1_1 | 200 | flussoRendicontazioni.json |
-| applicazione_star.json | idDominio2 | idflusso_dom2_1 | 200 | flussoRendicontazioni.json |
-| applicazione_dominio1.json | idDominio1 | idflusso_dom1_1 | 200 | flussoRendicontazioni.json |
-| applicazione_dominio2.json | idDominio2 | idflusso_dom2_1 | 200 | flussoRendicontazioni.json |
+| applicazione_star.json | idDominio | idflusso_dom1_1 | 200 | flussoRendicontazioni.json |
+| applicazione_star.json | idDominio_2 | idflusso_dom2_1 | 200 | flussoRendicontazioni.json |
+| applicazione_dominio1.json | idDominio | idflusso_dom1_1 | 200 | flussoRendicontazioni.json |
+| applicazione_dominio2.json | idDominio_2 | idflusso_dom2_1 | 200 | flussoRendicontazioni.json |
 
 
 Scenario Outline: Lettura dettaglio applicazione [<applicazione>] del flusso di rendicontazione [<idDominio> <idFlusso>]
@@ -60,10 +60,10 @@ And match response == read('msg/<risposta>')
 
 Examples:
 | applicazione | idDominio | idFlusso | httpStatus | risposta |
-| applicazione_dominio1.json | idDominio2 | idflusso_dom2_1 | 403 | errore_auth.json |
-| applicazione_dominio2.json | idDominio1 | idflusso_dom1_1 | 403 | errore_auth.json |
-| applicazione_nonAuthDominio.json | idDominio1 | idflusso_dom1_1 | 403 | errore_auth.json |
-| applicazione_nonAuthDominio.json | idDominio2 | idflusso_dom2_1 | 403 | errore_auth.json |
-| applicazione_nonAuthServizio.json | idDominio1 | idflusso_dom1_1 | 403 | errore_auth.json |
-| applicazione_nonAuthServizio.json | idDominio2 | idflusso_dom2_1 | 403 | errore_auth.json |
+| applicazione_dominio1.json | idDominio_2 | idflusso_dom2_1 | 403 | errore_auth.json |
+| applicazione_dominio2.json | idDominio | idflusso_dom1_1 | 403 | errore_auth.json |
+| applicazione_nonAuthDominio.json | idDominio | idflusso_dom1_1 | 403 | errore_auth.json |
+| applicazione_nonAuthDominio.json | idDominio_2 | idflusso_dom2_1 | 403 | errore_auth.json |
+| applicazione_nonAuthServizio.json | idDominio | idflusso_dom1_1 | 403 | errore_auth.json |
+| applicazione_nonAuthServizio.json | idDominio_2 | idflusso_dom2_1 | 403 | errore_auth.json |
 

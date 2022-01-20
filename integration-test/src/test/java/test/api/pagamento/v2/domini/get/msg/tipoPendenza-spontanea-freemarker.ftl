@@ -28,7 +28,7 @@
 			"idVocePendenza": "1",
 			"importo": "${request.get("importo").asDouble()?string["#.00"]}",
 			"descrizione": "Istruttoria",
-			"ibanAccredito": "IT02L1234512345123456789012",
+			"ibanAccredito": "IT02L1234512345123451111111",
 			"tipoContabilita": "ALTRO",
 			"codiceContabilita": "RINNOVO"
 		}

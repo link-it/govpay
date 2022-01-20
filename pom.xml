@@ -208,14 +208,6 @@
 			
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>api-jppapdp</artifactId>
-				<version>${project.version}</version>
-				<type>war</type>
-				<scope>compile</scope>
-			</dependency>
-			
-			<dependency>
-				<groupId>it.govpay</groupId>
 				<artifactId>orm-beans</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
@@ -288,13 +280,6 @@
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>appio-beans</artifactId>
-				<version>${project.version}</version>
-				<type>jar</type>
-			</dependency>
-			
-			<dependency>
-				<groupId>it.govpay</groupId>
-				<artifactId>jppapdp-beans</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 			</dependency>			
