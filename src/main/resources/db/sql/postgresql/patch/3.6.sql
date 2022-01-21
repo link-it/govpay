@@ -156,5 +156,7 @@ CREATE VIEW v_eventi_vers AS (
 
 
 
-
+-- Indici mancanti per la ricerca degli eventi 
+-- NOTA: DA AGGIUNGERE ALLE ALTRE PATCH E ALLA CREAZIONE DI BASE
+create index idx_evt_fk_fr on eventi (id_fr);
 
