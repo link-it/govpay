@@ -580,10 +580,6 @@ CREATE VIEW v_vrs_non_rnd AS
   WHERE rendicontazioni.id IS NULL;
   
   
--- 20/12/2021 Patch per gestione delle rendicontazioni che non venivano messe in stato anomala quando non viene trovato il versamento corrispondente.
-UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS null;
-
-
 -- 21/12/2021 Patch per la gestione del riferimento al pagamento di una rendicontazione che arriva prima della ricevuta.
 UPDATE rendicontazioni SET id_pagamento = pagamenti.id 
 	FROM fr, pagamenti 
@@ -604,10 +600,13 @@ update rendicontazioni set id_singolo_versamento=singoli_versamenti.id
         AND singoli_versamenti.id_versamento=versamenti.id
         AND rendicontazioni.id_singolo_versamento is null;
 
-update rendicontazioni set stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' where id_pagamento is null and stato='OK' and esito=0;
+UPDATE rendicontazioni set stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' where id_pagamento is null and esito=0;
 UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS null;
-update rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null where stato='ANOMALA' and char_length(iuv) not in (15,17) and id_pagamento is null and id_singolo_versamento is null ;
-update rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null where id in (select rendicontazioni.id from rendicontazioni join fr on fr.id=rendicontazioni.id_fr join domini on domini.cod_dominio=fr.cod_dominio and  rendicontazioni.stato = 'ANOMALA' and aux_digit='3' and length(iuv) <> 17 and (iuv not like ('0' || segregation_code || '%') and length(segregation_code::char) = 1 ) OR (iuv not like (segregation_code || '%') and length(segregation_code::char) = 2 ));
+UPDATE rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null where stato='ANOMALA' and char_length(iuv) not in (15,17) and id_pagamento is null and id_singolo_versamento is null ;
+UPDATE rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null where id in (select rendicontazioni.id from rendicontazioni join fr on fr.id=rendicontazioni.id_fr join domini on domini.cod_dominio=fr.cod_dominio and  rendicontazioni.stato = 'ANOMALA' and aux_digit='3' and length(iuv) <> 17 and (iuv not like ('0' || segregation_code || '%') and length(segregation_code::char) = 1 ) OR (iuv not like (segregation_code || '%') and length(segregation_code::char) = 2 ));
+
+-- Aggiornamento di rendicontazioni che risultano corrette da approfondire con ulteriori verifiche.
+-- UPDATE rendicontazioni set stato='OK', anomalie=null where id in (select rendicontazioni.id from versamenti join singoli_versamenti on versamenti.id=singoli_versamenti.id_versamento join rendicontazioni on singoli_versamenti.id=rendicontazioni.id_singolo_versamento where stato='ANOMALA' and rendicontazioni.id_pagamento is not null and rendicontazioni.id_singolo_versamento is not null and stato_versamento='ESEGUITO');
 
 ALTER TABLE fr DROP CONSTRAINT unique_fr_1;
 ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_dominio,cod_flusso,data_ora_flusso);
