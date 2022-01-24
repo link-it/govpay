@@ -24,13 +24,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IOException;
+import org.slf4j.Logger;
+import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
@@ -38,6 +42,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Iuv;
 import it.govpay.model.Iuv.TipoIUV;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
@@ -47,9 +52,20 @@ import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Versionabile;
 import it.govpay.model.Versionabile.Versione;
+import it.govpay.pagamento.v2.beans.NuovaPendenza;
+import it.govpay.pagamento.v2.beans.NuovoPagamento;
+import it.govpay.pagamento.v2.beans.TipoAutenticazioneSoggetto;
+import it.govpay.pagamento.v2.beans.converter.PagamentiPortaleConverter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter.SortFields;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
+import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoAvviso;
+import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoModello4;
+import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoPendenza;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.servizi.commons.Anagrafica;
@@ -57,6 +73,7 @@ import it.govpay.servizi.commons.Canale;
 import it.govpay.servizi.commons.EsitoTransazione;
 import it.govpay.servizi.commons.FlussoRendicontazione;
 import it.govpay.servizi.commons.IuvGenerato;
+import it.govpay.servizi.commons.MetaInfo;
 import it.govpay.servizi.commons.ModelloPagamento;
 import it.govpay.servizi.commons.StatoRevoca;
 import it.govpay.servizi.commons.StatoTransazione;
@@ -71,6 +88,7 @@ import it.govpay.servizi.gpapp.GpCaricaIuv;
 import it.govpay.servizi.gpprt.GpChiediListaVersamentiResponse.Versamento.SpezzoneCausaleStrutturata;
 import it.govpay.servizi.gpprt.GpChiediStatoRichiestaStornoResponse.Storno;
 import it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazioneResponse;
+import it.govpay.servizi.gpprt.GpAvviaTransazionePagamento;
 import it.govpay.servizi.gpprt.GpAvviaTransazionePagamentoResponse;
 
 public class Gp21Utils {
@@ -517,6 +535,99 @@ public class Gp21Utils {
 		anagraficaModel.setRagioneSociale(anagrafica.getRagioneSociale());
 		anagraficaModel.setTelefono(anagrafica.getTelefono());
 		return anagraficaModel;
+	}
+
+	public static PagamentiPortaleDTO getPagamentiPortaleDTO(GpAvviaTransazionePagamento bodyrichiesta,
+			MetaInfo metaInfo, Authentication user, String idSessione, Logger log) throws Exception {
+
+		String idSessionePortale = bodyrichiesta.getCodSessionePortale();
+		
+		Map<String, Versamento> listaPendenzeDaSessione = null;
+		PagamentiPortaleDTO pagamentiPortaleDTO = new PagamentiPortaleDTO(user);
+		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
+
+		pagamentiPortaleDTO.setIdSessione(idSessione);
+		pagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
+		if(pagamentiPortaleRequest.getAutenticazioneSoggetto() != null)
+			pagamentiPortaleDTO.setAutenticazioneSoggetto(pagamentiPortaleRequest.getAutenticazioneSoggetto().toString());
+		else 
+			pagamentiPortaleDTO.setAutenticazioneSoggetto(TipoAutenticazioneSoggetto.N_A.toString());
+
+		pagamentiPortaleDTO.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
+		pagamentiPortaleDTO.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
+
+		if(pagamentiPortaleRequest.getContoAddebito() != null) {
+			pagamentiPortaleDTO.setBicAddebito(pagamentiPortaleRequest.getContoAddebito().getBic());
+			pagamentiPortaleDTO.setIbanAddebito(pagamentiPortaleRequest.getContoAddebito().getIban());
+		}
+
+		pagamentiPortaleDTO.setUrlRitorno(pagamentiPortaleRequest.getUrlRitorno());
+
+
+		PagamentiPortaleConverter.controlloUtenzaVersante(pagamentiPortaleRequest, user);
+		pagamentiPortaleDTO.setVersante(toAnagraficaCommons(pagamentiPortaleRequest.getSoggettoVersante()));
+
+		if(pagamentiPortaleRequest.getPendenze() != null && pagamentiPortaleRequest.getPendenze().size() > 0 ) {
+			List<Object> listRefs = new ArrayList<>();
+
+			int i =0;
+			for (NuovaPendenza pendenza: pagamentiPortaleRequest.getPendenze()) {
+				
+				if((pendenza.getIdDominio() != null && pendenza.getIdTipoPendenza() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null && pendenza.getNumeroAvviso() == null)) {
+					PagamentiPortaleDTO.RefVersamentoModello4 ref = pagamentiPortaleDTO. new RefVersamentoModello4();
+					ref.setIdDominio(pendenza.getIdDominio());
+					ref.setIdTipoPendenza(pendenza.getIdTipoPendenza());
+					ref.setDati(ConverterUtils.toJSON(pendenza.getDati(),null));
+					listRefs.add(ref);
+					
+				} else if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
+
+					PagamentiPortaleDTO.RefVersamentoAvviso ref = pagamentiPortaleDTO. new RefVersamentoAvviso();
+					ref.setIdDominio(pendenza.getIdDominio());
+					ref.setNumeroAvviso(pendenza.getNumeroAvviso());
+					ref.setIdDebitore(pendenza.getIdDebitore());
+					listRefs.add(ref);
+
+				} else	if((pendenza.getIdDominio() == null) && (pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null)) {
+
+					PagamentiPortaleDTO.RefVersamentoPendenza ref = pagamentiPortaleDTO. new RefVersamentoPendenza();
+					ref.setIdA2A(pendenza.getIdA2A());
+					ref.setIdPendenza(pendenza.getIdPendenza());
+					listRefs.add(ref);
+					
+					// controllo se ci sono pendenze a disposizione in sessione
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+						if(listaIdentificativi != null && listaIdentificativi.size() > 0 && listaIdentificativi.containsKey((pendenza.getIdA2A()+pendenza.getIdPendenza()))) {
+							if(listaPendenzeDaSessione == null) {
+								listaPendenzeDaSessione = new HashMap<String,Versamento>(); 
+							}
+	
+							// aggiungo la pendenza da pagare
+							listaPendenzeDaSessione.put((pendenza.getIdA2A()+pendenza.getIdPendenza()), listaIdentificativi.get((pendenza.getIdA2A()+pendenza.getIdPendenza())));
+							log.debug("Letta pendenza [idA2A:"+pendenza.getIdA2A()+", idPendenza: "+pendenza.getIdPendenza()+"] dalla sessione");
+						}
+					}
+
+				}else if(pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null && pendenza.getIdDominio() != null) {
+					it.govpay.core.dao.commons.Versamento versamento = getVersamentoFromPendenza(pendenza);
+
+					listRefs.add(versamento);
+				} else {
+					throw new RequestValidationException("La pendenza "+(i+1)+" e' di un tipo non riconosciuto.");
+				}
+				i++;
+			}
+
+			pagamentiPortaleDTO.setPendenzeOrPendenzeRef(listRefs);
+		}
+
+		// Salvataggio del messaggio di richiesta sul db
+		//		pagamentiPortaleDTO.setJsonRichiesta(jsonRichiesta);
+		pagamentiPortaleDTO.setJsonRichiesta(pagamentiPortaleRequest.toJSON(null));
+		
+		pagamentiPortaleDTO.setListaPendenzeDaSessione(listaPendenzeDaSessione);
+
+		return pagamentiPortaleDTO;
 	}
 
 }

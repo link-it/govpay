@@ -39,6 +39,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
@@ -140,6 +141,15 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(appContext, user);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
 
+			String idSession = ctx.getTransactionId().replace("-", "");
+			PagamentiPortaleDTO pagamentiPortaleDTO = Gp21Utils.getPagamentiPortaleDTO(bodyrichiesta, metaInfo, user, idSession, log);
+			
+			
+			
+			
+			
+			
+			
 			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
 			ctx.getApplicationLogger().log("ws.autorizzazione");
