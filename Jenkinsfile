@@ -2,7 +2,7 @@ pipeline {
   agent any
   options { 
     disableConcurrentBuilds()
-    buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
+    buildDiscarder(logRotator(numToKeepStr: '2', artifactNumToKeepStr: '2'))
   }
   stages {
     stage('cleanup') {
