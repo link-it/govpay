@@ -83,7 +83,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 	}
 	@Override
 	public IJDBCFetch getFetch() {
-		return this.getFRFetch();
+		return getFRFetch();
 	}
 	
 	
@@ -106,6 +106,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		IdFr idFR = new IdFr();
 		idFR.setCodFlusso(fr.getCodFlusso());
 		idFR.setDataOraFlusso(fr.getDataOraFlusso());
+		idFR.setCodDominio(fr.getCodDominio());
 	
 		return idFR;
 	}
@@ -138,6 +139,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		try{
 			List<IField> fields = new ArrayList<>();
 
+			fields.add(FR.model().COD_DOMINIO);
 			fields.add(FR.model().COD_FLUSSO);
 			fields.add(FR.model().DATA_ORA_FLUSSO);
         
@@ -316,7 +318,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		
 		sqlQueryObject.addSelectCountField(this.getFRFieldConverter().toTable(FR.model())+".id","tot",true);
 		
-		this._join(expression,sqlQueryObject);
+		_join(expression,sqlQueryObject);
 		
 		return org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.count(jdbcProperties, log, connection, sqlQueryObject, expression,
 																			this.getFRFieldConverter(), FR.model(),listaQuery);
@@ -363,7 +365,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 						org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(distinct,sqlQueryObject, paginatedExpression, log,
 												this.getFRFieldConverter(), field);
 
-			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
+			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression, sqlQueryObjectDistinct);
 			
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,field);
@@ -384,7 +386,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			List<Map<String,Object>> list = this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			List<Map<String,Object>> list = _select(jdbcProperties, log, connection, sqlQueryObject, expression);
 			return list.get(0);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
@@ -401,7 +403,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,expression,functionField);
 		try{
-			return this._select(jdbcProperties, log, connection, sqlQueryObject, expression);
+			return _select(jdbcProperties, log, connection, sqlQueryObject, expression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,expression,functionField);
 		}
@@ -418,7 +420,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.setFields(sqlQueryObject,paginatedExpression,functionField);
 		try{
-			return this._select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
+			return _select(jdbcProperties, log, connection, sqlQueryObject, paginatedExpression);
 		}finally{
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.removeFields(sqlQueryObject,paginatedExpression,functionField);
 		}
@@ -426,7 +428,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 	
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression) throws ServiceException,NotFoundException,NotImplementedException,Exception {
-		return this._select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
+		return _select(jdbcProperties, log, connection, sqlQueryObject, expression, null);
 	}
 	protected List<Map<String,Object>> _select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
 												IExpression expression, ISQLQueryObject sqlQueryObjectDistinct) throws ServiceException,NotFoundException,NotImplementedException,Exception {
@@ -437,7 +439,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
         						expression, this.getFRFieldConverter(), FR.model(), 
         						listaQuery,listaParams);
 		
-		this._join(expression,sqlQueryObject);
+		_join(expression,sqlQueryObject);
         
         List<Map<String,Object>> list = org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.select(jdbcProperties, log, connection,
         								org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities.prepareSqlQueryObjectForSelectDistinct(sqlQueryObject,sqlQueryObjectDistinct), 
@@ -465,7 +467,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				this._join(expression,sqlQueryObjectInnerList.get(i));
+				_join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
@@ -494,7 +496,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			for (int i = 0; i < unionExpression.length; i++) {
 				UnionExpression ue = unionExpression[i];
 				IExpression expression = ue.getExpression();
-				this._join(expression,sqlQueryObjectInnerList.get(i));
+				_join(expression,sqlQueryObjectInnerList.get(i));
 			}
 		}
         
@@ -556,13 +558,13 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdFr id, FR obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
 	}
 	
 	@Override
 	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, FR obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		this._mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
+		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
 				this.get(jdbcProperties,log,connection,sqlQueryObject,tableId,null));
 	}
 	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, FR obj, FR imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
@@ -609,6 +611,10 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		if(obj.getIdIncasso()!=null && 
 				imgSaved.getIdIncasso()!=null){
 			obj.getIdIncasso().setId(imgSaved.getIdIncasso().getId());
+		}
+		if(obj.getIdRendicontazione()!=null && 
+				imgSaved.getIdRendicontazione()!=null){
+			obj.getIdRendicontazione().setId(imgSaved.getIdRendicontazione().getId());
 		}
 
 	}
@@ -790,6 +796,13 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_INCASSO))
 			));
 
+		// FR.model().ID_RENDICONTAZIONE
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_RENDICONTAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_RENDICONTAZIONE))
+			));
+
+
         
         return mapTableToPKColumn;		
 	}
@@ -876,6 +889,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 
 		// Object _fr
 		sqlQueryObjectGet.addFromTable(this.getFRFieldConverter().toTable(FR.model()));
+		sqlQueryObjectGet.addSelectField(this.getFRFieldConverter().toColumn(FR.model().COD_DOMINIO,true));
 		sqlQueryObjectGet.addSelectField(this.getFRFieldConverter().toColumn(FR.model().COD_FLUSSO,true));
 		sqlQueryObjectGet.addSelectField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_FLUSSO,true));
 		sqlQueryObjectGet.setANDLogicOperator(true);
@@ -886,6 +900,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
 		List<Class<?>> listaFieldIdReturnType_fr = new ArrayList<>();
+		listaFieldIdReturnType_fr.add(FR.model().COD_DOMINIO.getFieldType());
 		listaFieldIdReturnType_fr.add(FR.model().COD_FLUSSO.getFieldType());
 		listaFieldIdReturnType_fr.add(FR.model().DATA_ORA_FLUSSO.getFieldType());
 		it.govpay.orm.IdFr id_fr = null;
@@ -898,8 +913,9 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		}
 		else{
 			id_fr = new it.govpay.orm.IdFr();
-			id_fr.setCodFlusso((String)listaFieldId_fr.get(0));
-			id_fr.setDataOraFlusso((Date)listaFieldId_fr.get(1));
+			id_fr.setCodDominio((String)listaFieldId_fr.get(0));
+			id_fr.setCodFlusso((String)listaFieldId_fr.get(1));
+			id_fr.setDataOraFlusso((Date)listaFieldId_fr.get(2));
 		}
 		
 		return id_fr;
@@ -938,11 +954,13 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		sqlQueryObjectGet.addSelectField("id");
 		sqlQueryObjectGet.setANDLogicOperator(true);
 //		sqlQueryObjectGet.setSelectDistinct(true);
+		sqlQueryObjectGet.addWhereCondition(this.getFRFieldConverter().toColumn(FR.model().COD_DOMINIO,true)+"=?");
 		sqlQueryObjectGet.addWhereCondition(this.getFRFieldConverter().toColumn(FR.model().COD_FLUSSO,true)+"=?");
 		sqlQueryObjectGet.addWhereCondition(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_FLUSSO,true)+"=?");
 
 		// Recupero _fr
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_fr = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_fr = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] {
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodFlusso(),FR.model().COD_DOMINIO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodFlusso(),FR.model().COD_FLUSSO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getDataOraFlusso(),FR.model().DATA_ORA_FLUSSO.getFieldType()),
 		};

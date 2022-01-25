@@ -143,15 +143,15 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
      * Acquisizione di un flusso di rendicontazione
      *
      */
-    public Response getFlussoRendicontazione(String idFlusso) {
-        return this.getFlussoRendicontazioneByIdEData(idFlusso, null);
+    public Response getFlussoRendicontazione(String idDominio, String idFlusso) {
+        return this.getFlussoRendicontazione(idDominio, idFlusso, null);
     }
     
     /**
      * Acquisizione di un flusso di rendicontazione
      *
      */
-    public Response getFlussoRendicontazioneByIdEData(String idFlusso, String dataOraFlusso) {
+    public Response getFlussoRendicontazione(String idDominio, String idFlusso, String dataOraFlusso) {
     	Authentication user = this.getUser();
     	String methodName = "getFlussoRendicontazione";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
@@ -168,7 +168,9 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 			// Parametri - > DTO Input
 			
 			LeggiFrDTO leggiRendicontazioneDTO = new LeggiFrDTO(user, idFlusso);
+			leggiRendicontazioneDTO.setIdDominio(idDominio);
 			leggiRendicontazioneDTO.setAccept(accept);
+			
 			if(dataOraFlusso != null) {
 				Date dataOraFlussoDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataOraFlusso, "dataOraFlusso");
 				leggiRendicontazioneDTO.setDataOraFlusso(dataOraFlussoDate);

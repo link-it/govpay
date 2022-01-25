@@ -114,23 +114,20 @@ public class FrBD extends BasicBD {
 	 * @throws MultipleResultException
 	 * @throws ServiceException
 	 */
-	public Fr getFr(String codFlusso) throws NotFoundException, ServiceException {
-		return this.getFr(codFlusso, false);
+	
+	public Fr getFr(String codDominio, String codFlusso) throws NotFoundException, ServiceException {
+		return getFr(codDominio, codFlusso, null, null, false);
 	}
 
-	public Fr getFr(String codFlusso, boolean ricercaCaseInsensitive) throws NotFoundException, ServiceException {
-		return this.getFr(codFlusso, false, null, ricercaCaseInsensitive);
+	public Fr getFr(String codDominio, String codFlusso, Date dataOraFlusso) throws NotFoundException, ServiceException {
+		return getFr(codDominio, codFlusso, dataOraFlusso, null, false);
 	}
 
-	public Fr getFr(String codFlusso, Date dataOraFlusso) throws NotFoundException, ServiceException {
-		return getFr(codFlusso, null, dataOraFlusso);
+	public Fr getFr(String codDominio, String codFlusso, Date dataOraFlusso, Boolean obsoleto) throws NotFoundException, ServiceException {
+		return getFr(codDominio, codFlusso, dataOraFlusso, obsoleto, false);
 	}
 
-	public Fr getFr(String codFlusso, Boolean obsoleto, Date dataOraFlusso) throws NotFoundException, ServiceException {
-		return getFr(codFlusso, obsoleto, dataOraFlusso, false);
-	}
-
-	public Fr getFr(String codFlusso, Boolean obsoleto, Date dataOraFlusso, boolean ricercaCaseInsensitive) throws NotFoundException, ServiceException {
+	public Fr getFr(String codDominio, String codFlusso, Date dataOraFlusso, Boolean obsoleto, boolean ricercaCaseInsensitive) throws NotFoundException, ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -140,13 +137,6 @@ public class FrBD extends BasicBD {
 
 
 			if(ricercaCaseInsensitive) {
-				//				IExpression newExpressionIngnoreCase = this.getFrService().newExpression();
-				//				
-				//				newExpressionIngnoreCase.equals(FR.model().COD_FLUSSO, codFlusso).or()
-				//				.equals(FR.model().COD_FLUSSO, codFlusso.toUpperCase()).or()
-				//				.equals(FR.model().COD_FLUSSO, codFlusso.toLowerCase());
-				//
-				//				expr.and(newExpressionIngnoreCase);
 				expr.ilike(FR.model().COD_FLUSSO, codFlusso, LikeMode.EXACT);
 			} else {
 				expr.equals(FR.model().COD_FLUSSO, codFlusso);
@@ -155,6 +145,11 @@ public class FrBD extends BasicBD {
 			if(obsoleto != null) {
 				expr.equals(FR.model().OBSOLETO, obsoleto);
 			}
+			
+			if(codDominio != null) {
+				expr.equals(FR.model().COD_DOMINIO, codDominio);
+			}
+			
 			if(dataOraFlusso != null) {
 				// controllo millisecondi
 				Calendar cDataDa = Calendar.getInstance();
@@ -205,13 +200,14 @@ public class FrBD extends BasicBD {
 		}
 	}
 
-	public boolean exists(String codFlusso, Date dataOraFlusso) throws ServiceException {
+	public boolean exists(String codDominio, String codFlusso, Date dataOraFlusso) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
 
 			IdFr id = new IdFr();
+			id.setCodDominio(codDominio);
 			id.setCodFlusso(codFlusso);
 			id.setDataOraFlusso(dataOraFlusso);
 			return this.getFrService().exists(id);
@@ -226,7 +222,7 @@ public class FrBD extends BasicBD {
 		}
 	}
 
-	public boolean existsFlussoConDataDiversa(String codFlusso, Date dataOraFlusso) throws ServiceException {
+	public boolean existsFlussoConDataDiversa(String codDominio, String codFlusso, Date dataOraFlusso) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -234,6 +230,7 @@ public class FrBD extends BasicBD {
 
 
 			IExpression expr = this.getFrService().newExpression();
+			expr.equals(FR.model().COD_DOMINIO, codDominio);
 			expr.equals(FR.model().COD_FLUSSO, codFlusso);
 			expr.notEquals(FR.model().DATA_ORA_FLUSSO, dataOraFlusso);
 
@@ -518,7 +515,7 @@ public class FrBD extends BasicBD {
 		}
 	}
 
-	public void updateObsoleto(String codFlusso, Boolean obsoleto) throws ServiceException {
+	public void updateObsoleto(String codDominio, String codFlusso, Boolean obsoleto) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -528,7 +525,9 @@ public class FrBD extends BasicBD {
 			CustomField cfId = new CustomField("id", Long.class, "id", fieldConverter.toTable(FR.model()));
 			IExpression expr = this.getFrService().newExpression();
 			expr.equals(FR.model().COD_FLUSSO, codFlusso);
+			expr.equals(FR.model().COD_DOMINIO, codDominio);
 			IPaginatedExpression pagExpr = this.getFrService().toPaginatedExpression(expr );
+			pagExpr.addOrder(FR.model().COD_DOMINIO, SortOrder.ASC);
 			pagExpr.addOrder(FR.model().COD_FLUSSO, SortOrder.ASC);
 			List<Object> select = this.getFrService().select(pagExpr , cfId); 
 
@@ -554,7 +553,7 @@ public class FrBD extends BasicBD {
 		}
 	}
 
-	public List<Long> getIdsFlusso(String codFlusso) throws ServiceException {
+	public List<Long> getIdsFlusso(String codDominio, String codFlusso) throws ServiceException {
 		List<Long> ids = new ArrayList<Long>();
 		try {
 			if(this.isAtomica()) {
@@ -565,7 +564,9 @@ public class FrBD extends BasicBD {
 			CustomField cfId = new CustomField("id", Long.class, "id", fieldConverter.toTable(FR.model()));
 			IExpression expr = this.getFrService().newExpression();
 			expr.equals(FR.model().COD_FLUSSO, codFlusso);
+			expr.equals(FR.model().COD_DOMINIO, codDominio);
 			IPaginatedExpression pagExpr = this.getFrService().toPaginatedExpression(expr );
+			pagExpr.addOrder(FR.model().COD_DOMINIO, SortOrder.ASC);
 			pagExpr.addOrder(FR.model().COD_FLUSSO, SortOrder.ASC);
 			List<Object> select = this.getFrService().select(pagExpr , cfId); 
 

@@ -359,9 +359,8 @@ ALTER TABLE incassi ADD COLUMN iuv VARCHAR(35);
 ALTER TABLE incassi ADD COLUMN cod_flusso_rendicontazione VARCHAR(35);
 ALTER TABLE incassi ADD COLUMN descrizione_stato VARCHAR(255);
 
-ALTER TABLE incassi DROP CONSTRAINT unique_incassi_1;
-ALTER TABLE incassi ADD CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,identificativo);
-CREATE UNIQUE INDEX index_incassi_1 ON incassi (cod_dominio,identificativo);
+ALTER TABLE incassi DROP INDEX unique_incassi_1;
+ALTER TABLE incassi ADD CONSTRAINT unique_incassi_1 UNIQUE INDEX (cod_dominio,identificativo);
 
 ALTER TABLE incassi MODIFY COLUMN causale VARCHAR(512) NULL;
 
@@ -375,8 +374,8 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-rpt-sc
 
 -- 20/07/2021 Fix anomalie per rendicontazione senza RT
 
-update rendicontazioni set stato='OK', anomalie=null where anomalie = '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.';
-update fr set stato='ACCETTATA', descrizione_stato = null where stato='ANOMALA' and id not in (select fr.id from fr join rendicontazioni on rendicontazioni.id_fr=fr.id where fr.stato='ANOMALA' and rendicontazioni.stato='ANOMALA');
+update rendicontazioni set stato='OK', anomalie=null where anomalie = '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' and esito=9;
+--update fr set stato='ACCETTATA', descrizione_stato = null where stato='ANOMALA' and id not in (select fr.id from fr join rendicontazioni on rendicontazioni.id_fr=fr.id where fr.stato='ANOMALA' and rendicontazioni.stato='ANOMALA');
 
 
 -- 21/07/2021 Identificativo dominio nel singolo versamento per gestire le pendenze multibeneficiario
@@ -492,12 +491,16 @@ UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risul
 
 
 -- 21/12/2021 Patch per la gestione del riferimento al pagamento di una rendicontazione che arriva prima della ricevuta.
-UPDATE rendicontazioni SET id_pagamento = pagamenti.id 
-	FROM fr, pagamenti 
+UPDATE rendicontazioni, fr, pagamenti SET id_pagamento = pagamenti.id 
 	WHERE fr.id=rendicontazioni.id_fr 
 	AND pagamenti.cod_dominio=fr.cod_dominio 
 	AND rendicontazioni.iuv=pagamenti.iuv 
 	AND rendicontazioni.iur=pagamenti.iur 
 	AND rendicontazioni.id_pagamento IS NULL;
 
+
+-- 25/01/2022 Flusso Rendicontazione univoco per dominio
+DROP INDEX unique_fr_1 ON fr;
+DROP INDEX index_fr_1 ON fr;
+CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
 

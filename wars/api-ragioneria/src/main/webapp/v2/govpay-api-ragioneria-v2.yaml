@@ -60,6 +60,7 @@ paths:
     get:
       summary: Acquisizione di un flusso di rendicontazione
       operationId: getFlussoRendicontazione
+      deprecated: true
       tags:
         - Rendicontazioni
       parameters:
@@ -92,6 +93,7 @@ paths:
     get:
       summary: Acquisizione di un flusso di rendicontazione
       operationId: getFlussoRendicontazioneByIdEData
+      deprecated: true
       tags:
         - Rendicontazioni
       parameters:
@@ -127,6 +129,89 @@ paths:
           $ref: '#/components/responses/404NotFound'
         '500':
           $ref: '#/components/responses/500ServiceUnavailable'
+  '/flussiRendicontazione/{idDominio}/{idFlusso}':
+    get:
+      summary: Acquisizione di un flusso di rendicontazione
+      operationId: getFlussoRendicontazioneDominio
+      tags:
+        - Rendicontazioni
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del titolare del flusso
+          required: true
+          schema:
+            type: string      
+        - in: path
+          name: idFlusso
+          description: Identificativo del flusso di rendicontazione
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dettaglio della rendicontazione
+          content:
+            application/xml:
+              schema:
+                type: string
+                example: xml del flusso di rendicontazione
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlussoRendicontazione'
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500ServiceUnavailable'  
+  '/flussiRendicontazione/{idDominio}/{idFlusso}/{dataOraFlusso}':
+    get:
+      summary: Acquisizione di un flusso di rendicontazione
+      operationId: getFlussoRendicontazioneDominioByIdEData
+      tags:
+        - Rendicontazioni
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del titolare del flusso
+          required: true
+          schema:
+            type: string            
+        - in: path
+          name: idFlusso
+          description: Identificativo del flusso di rendicontazione
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: dataOraFlusso
+          description: Data di emissione del flusso
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '201':
+          description: Dettaglio della rendicontazione
+          content:
+            application/xml:
+              schema:
+                type: string
+                example: xml del flusso di rendicontazione
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlussoRendicontazione'
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500ServiceUnavailable'          
   '/riconciliazioni':
     get:
       summary: Elenco dei movimenti di cassa riconciliati

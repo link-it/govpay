@@ -21,6 +21,7 @@ public class LeggiFrDTO extends BasicCreateRequestDTO {
 
 	private Boolean obsoleto = null;
 	private String idFlusso;
+	private String idDominio;
 	private Date dataOraFlusso;
 	private String accept;	
 
@@ -60,6 +61,14 @@ public class LeggiFrDTO extends BasicCreateRequestDTO {
 
 	public void setAccept(String accept) {
 		this.accept = accept;
+	}
+
+	public String getIdDominio() {
+		return idDominio;
+	}
+
+	public void setIdDominio(String idDominio) {
+		this.idDominio = idDominio;
 	}
 
 }

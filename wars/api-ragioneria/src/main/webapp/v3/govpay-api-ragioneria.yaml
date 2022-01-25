@@ -53,13 +53,19 @@ paths:
           $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
         '500':
           $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'  
-  '/flussiRendicontazione/{idFlusso}':
+  '/flussiRendicontazione/{idDominio}/{idFlusso}':
     get:
       summary: Acquisizione di un flusso di rendicontazione
       operationId: getFlussoRendicontazione
       tags:
         - Rendicontazioni
       parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del titolare del flusso
+          required: true
+          schema:
+            type: string          
         - in: path
           name: idFlusso
           description: Identificativo del flusso di rendicontazione
@@ -85,13 +91,19 @@ paths:
           $ref: 'govpay-api-responses.yaml#/components/responses/404NotFound'
         '500':
           $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'  
-  '/flussiRendicontazione/{idFlusso}/{dataOraFlusso}':
+  '/flussiRendicontazione/{idDominio}/{idFlusso}/{dataOraFlusso}':
     get:
       summary: Acquisizione di un flusso di rendicontazione
       operationId: getFlussoRendicontazioneByIdEData
       tags:
         - Rendicontazioni
       parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del titolare del flusso
+          required: true
+          schema:
+            type: string          
         - in: path
           name: idFlusso
           description: Identificativo del flusso di rendicontazione

@@ -469,7 +469,7 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-rpt-sc
 
 -- 20/07/2021 Fix anomalie per rendicontazione senza RT
 
-update rendicontazioni set stato='OK', anomalie=null where anomalie = '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.';
+update rendicontazioni set stato='OK', anomalie=null where dbms_lob.compare(anomalie, '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.') = 0 and esito=9;
 update fr set stato='ACCETTATA', descrizione_stato = null where stato='ANOMALA' and id not in (select fr.id from fr join rendicontazioni on rendicontazioni.id_fr=fr.id where fr.stato='ANOMALA' and rendicontazioni.stato='ANOMALA');
 
 
@@ -592,6 +592,25 @@ UPDATE rendicontazioni SET id_pagamento = pagamenti.id
 	AND rendicontazioni.iuv=pagamenti.iuv 
 	AND rendicontazioni.iur=pagamenti.iur 
 	AND rendicontazioni.id_pagamento IS NULL;
-	
-	
+
+UPDATE rendicontazioni SET stato='OK', anomalie=null where anomalie='007111#Il versamento risulta sconosciuto' AND id_singolo_versamento IS NOT null;
+
+-- 30/12/2021 Patch rendicontazioni con riferimenti assenti
+
+update rendicontazioni set id_singolo_versamento = pagamenti.id_singolo_versamento from pagamenti where rendicontazioni.id_pagamento=pagamenti.id and rendicontazioni.id_singolo_versamento is null;
+
+UPDATE rendicontazioni SET stato='OK', anomalie=null where stato='ANOMALA' and anomalie='007111#Il versamento risulta sconosciuto' AND id_singolo_versamento IS not null;
+
+update rendicontazioni set id_singolo_versamento=singoli_versamenti.id
+        FROM fr, versamenti, domini, singoli_versamenti
+        WHERE fr.id=rendicontazioni.id_fr
+        AND fr.cod_dominio=domini.cod_dominio
+        AND domini.id=versamenti.id_dominio AND rendicontazioni.iuv=versamenti.iuv_versamento and singoli_versamenti.id_versamento=versamenti.id and rendicontazioni.id_singolo_versamento is null;
+
+update rendicontazioni set stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' where id_pagamento is null and esito=0;
+
+
+-- 25/01/2022 Flusso Rendicontazione univoco per dominio
+ALTER TABLE fr DROP CONSTRAINT unique_fr_1;
+ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,data_ora_flusso);
 

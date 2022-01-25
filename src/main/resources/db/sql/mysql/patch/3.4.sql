@@ -452,8 +452,8 @@ ALTER TABLE rpt ADD COLUMN id_tracciato_secim BIGINT;
 ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_tracciato_mypivot FOREIGN KEY (id_tracciato_mypivot) REFERENCES trac_notif_pag(id);
 ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_tracciato_secim FOREIGN KEY (id_tracciato_secim) REFERENCES trac_notif_pag(id);
 
-ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_tracciato_mypivot ;
-ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_tracciato_secim;
+ALTER TABLE rpt DROP FOREIGN KEY fk_rpt_id_tracciato_mypivot ;
+ALTER TABLE rpt DROP FOREIGN KEY fk_rpt_id_tracciato_secim;
 ALTER TABLE rpt DROP COLUMN id_tracciato_mypivot ;
 ALTER TABLE rpt DROP COLUMN id_tracciato_secim ;
 	
@@ -1071,7 +1071,7 @@ SELECT versamenti.id,
 
 
 -- 31/03/2021 Vincolo di univocita' documento
-ALTER TABLE documenti DROP CONSTRAINT unique_documenti_1;
+ALTER TABLE documenti DROP INDEX unique_documenti_1;
 ALTER TABLE documenti ADD CONSTRAINT unique_documenti_1 UNIQUE (cod_documento,id_applicazione,id_dominio);
     
 

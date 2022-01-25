@@ -16,6 +16,7 @@ import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.bd.viste.RendicontazioniBD;
 import it.govpay.bd.viste.filters.RendicontazioneFilter;
+import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiFrDTO;
@@ -27,6 +28,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.RendicontazioneNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.UnprocessableEntityException;
 
 public class RendicontazioniDAO extends BaseDAO{
 
@@ -85,7 +87,7 @@ public class RendicontazioniDAO extends BaseDAO{
 		}
 	}
 
-	public LeggiFrDTOResponse leggiFlussoRendicontazione(LeggiFrDTO leggiRendicontazioniDTO) throws ServiceException,RendicontazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiFrDTOResponse leggiFlussoRendicontazione(LeggiFrDTO leggiRendicontazioniDTO) throws ServiceException,RendicontazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException{
 		LeggiFrDTOResponse response = new LeggiFrDTOResponse();
 		
 		
@@ -100,7 +102,7 @@ public class RendicontazioniDAO extends BaseDAO{
 				
 				frBD.setAtomica(false);
 				
-				Fr flussoRendicontazione = frBD.getFr(leggiRendicontazioniDTO.getIdFlusso(), leggiRendicontazioniDTO.getObsoleto(), leggiRendicontazioniDTO.getDataOraFlusso());
+				Fr flussoRendicontazione = frBD.getFr(leggiRendicontazioniDTO.getIdDominio(), leggiRendicontazioniDTO.getIdFlusso(), leggiRendicontazioniDTO.getDataOraFlusso(), leggiRendicontazioniDTO.getObsoleto());
 				response.setFr(flussoRendicontazione);
 				response.setDominio(flussoRendicontazione.getDominio(configWrapper));
 	
@@ -119,10 +121,18 @@ public class RendicontazioniDAO extends BaseDAO{
 				
 				rendicontazioniBD.setAtomica(false);
 				
-				List<it.govpay.bd.viste.model.Rendicontazione> findAll = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdFlusso(), leggiRendicontazioniDTO.getObsoleto(), leggiRendicontazioniDTO.getDataOraFlusso());
+				List<it.govpay.bd.viste.model.Rendicontazione> findAll = rendicontazioniBD.getFr(leggiRendicontazioniDTO.getIdDominio(), leggiRendicontazioniDTO.getIdFlusso(), leggiRendicontazioniDTO.getDataOraFlusso(), leggiRendicontazioniDTO.getObsoleto());
+				
+				// Controllo che tutte le rendicontazioni siano di un solo flusso, altriemnti restituisco errore di risultati multipli
 				
 				if(findAll != null && !findAll.isEmpty()) {
 					Fr flussoRendicontazione = findAll.get(0).getFr();
+					
+					for (Rendicontazione rendicontazione : findAll) {
+						if(rendicontazione.getFr().getId().longValue() != flussoRendicontazione.getId().longValue())
+							throw new UnprocessableEntityException("L'identificativoFlusso non individua univocamente un flusso di rendicontazione");
+					}
+					
 					response.setFr(flussoRendicontazione);
 					response.setDominio(flussoRendicontazione.getDominio(configWrapper));
 					response.setRendicontazioni(findAll);
@@ -130,7 +140,7 @@ public class RendicontazioniDAO extends BaseDAO{
 					FrBD frBD = new FrBD(rendicontazioniBD);
 					frBD.setAtomica(false);
 					
-					Fr flussoRendicontazione = frBD.getFr(leggiRendicontazioniDTO.getIdFlusso(), leggiRendicontazioniDTO.getObsoleto(), leggiRendicontazioniDTO.getDataOraFlusso());
+					Fr flussoRendicontazione = frBD.getFr(leggiRendicontazioniDTO.getIdDominio(), leggiRendicontazioniDTO.getIdFlusso(), leggiRendicontazioniDTO.getDataOraFlusso(), leggiRendicontazioniDTO.getObsoleto());
 					response.setFr(flussoRendicontazione);
 					response.setDominio(flussoRendicontazione.getDominio(configWrapper));
 				}

@@ -249,7 +249,7 @@ public class Incassi {
 					log.debug("Validazione riconciliazione per riversamento cumulativo [Dominio:"+richiestaIncasso.getCodDominio()+", IdFlusso:"+idf+"]...");
 					// Cerco l'idf come case insensitive
 //								fr = frBD.getFr(idf, richiestaIncasso.isRicercaIdFlussoCaseInsensitive()); TODO come si gestisce ora?
-					fr = frBD.getFr(idf, false);
+					fr = frBD.getFr(richiestaIncasso.getCodDominio(), idf, null, false);
 					
 					log.debug("Ricerca flusso per riversamento cumulativo [Dominio:"+richiestaIncasso.getCodDominio()+", IdFlusso:"+idf+"] completata.");
 					
@@ -438,7 +438,7 @@ public class Incassi {
 			try {
 				log.debug("Ricerca flusso per riversamento cumulativo [Dominio:"+codDomino+", IdFlusso: "+idf+"]...");
 				// Cerco l'idf come case insensitive
-				fr = frBD.getFr(idf, ricercaIdFlussoCaseInsensitive);
+				fr = frBD.getFr(codDomino, idf, null, false, ricercaIdFlussoCaseInsensitive);
 				richiestaIncassoResponse.setFr(fr);
 				log.debug("Ricerca flusso per riversamento cumulativo [Dominio:"+codDomino+", IdFlusso: "+idf+"] completata.");
 				if(!fr.getStato().equals(StatoFr.ACCETTATA)) {
