@@ -71,7 +71,7 @@ Given url ragioneriaBaseurl
 And path 'flussiRendicontazione', idFlusso, dataFlusso 
 And headers idA2ABasicAutenticationHeader
 When method get
-Then status 422
+Then status 200
 
 * def idDominio = findResponse.risultati[1].idDominio
 * def idFlusso = findResponse.risultati[1].idFlusso
@@ -99,7 +99,7 @@ Given url ragioneriaBaseurl
 And path 'flussiRendicontazione', idFlusso, dataFlusso 
 And headers idA2ABasicAutenticationHeader
 When method get
-Then status 422
+Then status 200
 
 Given url ragioneriaBaseurl
 And path 'flussiRendicontazione', idFlusso 

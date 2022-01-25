@@ -202,7 +202,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
    */
   loadMetadati(service: string = '', query: string = '') {
     service = (service || this.rsc.fullPath); // ROUTING - fullPath
-    this.__waitForMeta();
+    // this.__waitForMeta();
     let _query: string = this.__setupQueryForMeta(service, query);
     if(!this._isLoadingMeta) {
       this._isLoadingMeta = true;
@@ -210,7 +210,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       (_response) => {
         this._lastMetaResponse = _response.body;
         this._isLoadingMeta = false;
-        this.__waitForMeta(true);
+        // this.__waitForMeta(true);
       },
       (error) => {
         this._isLoadingMeta = false;

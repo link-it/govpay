@@ -342,7 +342,7 @@
   <mapping name="idFR" class="it.govpay.orm.IdFr" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codFlusso" field="codFlusso" usage="required"/>
-    <value name="codDominio" field="codDominio" usage="optional"/>
+    <value name="codDominio" field="codDominio" usage="required"/>
     <value name="dataOraFlusso" field="dataOraFlusso" usage="required"/>
     <value name="codPsp" field="codPsp" usage="optional"/>
     <value name="stato" field="stato" usage="optional"/>
@@ -361,7 +361,7 @@
   <mapping type-name="_IdFr_Type" class="it.govpay.orm.IdFr" abstract="true">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codFlusso" field="codFlusso" usage="required"/>
-    <value name="codDominio" field="codDominio" usage="optional"/>
+    <value name="codDominio" field="codDominio" usage="required"/>
     <value name="dataOraFlusso" field="dataOraFlusso" usage="required"/>
     <value name="codPsp" field="codPsp" usage="optional"/>
     <value name="stato" field="stato" usage="optional"/>

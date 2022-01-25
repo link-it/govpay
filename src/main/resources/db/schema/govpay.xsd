@@ -497,7 +497,7 @@
 	<xsd:complexType name="id-fr">
 		<xsd:sequence>
 			<xsd:element name="codFlusso" type="xsd:string"/>
-			<xsd:element name="codDominio" type="String35" minOccurs="0"/>
+			<xsd:element name="codDominio" type="String35"/>
 			<xsd:element name="dataOraFlusso" type="xsd:dateTime"/>
 			<xsd:element name="codPsp" type="String35" minOccurs="0"/>
 			<xsd:element name="stato" type="String35" minOccurs="0"/>
@@ -2273,6 +2273,10 @@
 							<linkit:sql-id-mapping object-name="Incasso" object-type="Incasso"
 								relationship="reversed"/>
 						</linkit:generator>
+						<!--
+							Indice con creazione esplicita sullo script:
+							CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
+						-->
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
@@ -3179,6 +3183,7 @@
 					<linkit:sql-table-mapping generate-sql="true" name="fr" on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_fr"/>
 						<linkit:sql-table-unique create-index="true">
+							<linkit:sql-table-unique-field name="codDominio"/>
 							<linkit:sql-table-unique-field name="codFlusso"/>
 							<linkit:sql-table-unique-field name="dataOraFlusso" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-unique>

@@ -1155,7 +1155,7 @@ CREATE INDEX idx_evt_data ON eventi (data);
 CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
 CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
 CREATE INDEX idx_evt_iuv ON eventi (iuv);
-
+CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
 
 
 CREATE SEQUENCE seq_batch start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;

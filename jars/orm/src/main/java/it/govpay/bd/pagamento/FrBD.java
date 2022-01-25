@@ -515,7 +515,7 @@ public class FrBD extends BasicBD {
 		}
 	}
 
-	public void updateObsoleto(String codFlusso, Boolean obsoleto) throws ServiceException {
+	public void updateObsoleto(String codDominio, String codFlusso, Boolean obsoleto) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -525,7 +525,9 @@ public class FrBD extends BasicBD {
 			CustomField cfId = new CustomField("id", Long.class, "id", fieldConverter.toTable(FR.model()));
 			IExpression expr = this.getFrService().newExpression();
 			expr.equals(FR.model().COD_FLUSSO, codFlusso);
+			expr.equals(FR.model().COD_DOMINIO, codDominio);
 			IPaginatedExpression pagExpr = this.getFrService().toPaginatedExpression(expr );
+			pagExpr.addOrder(FR.model().COD_DOMINIO, SortOrder.ASC);
 			pagExpr.addOrder(FR.model().COD_FLUSSO, SortOrder.ASC);
 			List<Object> select = this.getFrService().select(pagExpr , cfId); 
 
@@ -551,7 +553,7 @@ public class FrBD extends BasicBD {
 		}
 	}
 
-	public List<Long> getIdsFlusso(String codFlusso) throws ServiceException {
+	public List<Long> getIdsFlusso(String codDominio, String codFlusso) throws ServiceException {
 		List<Long> ids = new ArrayList<Long>();
 		try {
 			if(this.isAtomica()) {
@@ -562,7 +564,9 @@ public class FrBD extends BasicBD {
 			CustomField cfId = new CustomField("id", Long.class, "id", fieldConverter.toTable(FR.model()));
 			IExpression expr = this.getFrService().newExpression();
 			expr.equals(FR.model().COD_FLUSSO, codFlusso);
+			expr.equals(FR.model().COD_DOMINIO, codDominio);
 			IPaginatedExpression pagExpr = this.getFrService().toPaginatedExpression(expr );
+			pagExpr.addOrder(FR.model().COD_DOMINIO, SortOrder.ASC);
 			pagExpr.addOrder(FR.model().COD_FLUSSO, SortOrder.ASC);
 			List<Object> select = this.getFrService().select(pagExpr , cfId); 
 

@@ -15,6 +15,7 @@ import { ModalBehavior } from '../../../../classes/modal-behavior';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { CronoCode } from '../../../../classes/view/crono-code';
 import { StandardCollapse } from '../../../../classes/view/standard-collapse';
+import { NewStandardCollapse } from '../../../../classes/view/new-standard-collapse';
 import { TwoColsCollapse } from '../../../../classes/view/two-cols-collapse';
 import { HttpResponse } from '@angular/common/http';
 
@@ -159,7 +160,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     //Dettaglio importi
     this._paymentsSum = 0;
     this.importi = _json.voci.map(function(item) {
-      let _std = new StandardCollapse();
+      let _std = new NewStandardCollapse();
       _std.titolo = new Dato({ value: item.descrizione });
       _std.elenco = [];
       const lbls: string[] = [];
@@ -185,9 +186,11 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
       _std.stato = item.stato;
       this._paymentsSum += UtilService.defaultDisplay({ value: item.importo, text: 0 });
       let p = new Parameters();
+      _std.item = item;
+      _std.item.idDominio = this.json.dominio.idDominio;
       p.jsonP = item;
       p.model = _std;
-      p.type = UtilService.STANDARD_COLLAPSE;
+      p.type = UtilService.NEW_STANDARD_COLLAPSE;
       return p;
     }, this);
     //Note

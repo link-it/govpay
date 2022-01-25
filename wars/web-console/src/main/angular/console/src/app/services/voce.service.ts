@@ -49,6 +49,7 @@ export class Voce {
   public static CODICE_INTERBANCARIO: string = 'Codice interbancario';
   public static CODICE_IPA: string = 'Codice IPA';
   public static CODICE_CLIENTE: string = 'Codice cliente';
+  public static CODICE_ENTRATA: string = 'Codice entrata';
   public static CODICE_ISTITUTO: string = 'Codice istituto';
   public static COMMISSIONI: string = 'Commissioni';
   public static CONFIGURAZIONE_SSL: string = 'Configurazione SSL';
@@ -216,7 +217,7 @@ export class Voce {
   public static PROMEMORIA_SCADENZA_PAGAMENTO: string = 'Promemoria scadenza pagamento';
   public static PROVINCIA: string = 'Provincia';
   public static PSP: string = 'Psp';
-  
+
   public static QUOTE: string = 'Quote';
 
   public static RAGIONE_SOCIALE: string = 'Ragione sociale';
