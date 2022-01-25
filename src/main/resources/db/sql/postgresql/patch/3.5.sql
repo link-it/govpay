@@ -608,6 +608,8 @@ UPDATE rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null where id i
 -- Aggiornamento di rendicontazioni che risultano corrette da approfondire con ulteriori verifiche.
 -- UPDATE rendicontazioni set stato='OK', anomalie=null where id in (select rendicontazioni.id from versamenti join singoli_versamenti on versamenti.id=singoli_versamenti.id_versamento join rendicontazioni on singoli_versamenti.id=rendicontazioni.id_singolo_versamento where stato='ANOMALA' and rendicontazioni.id_pagamento is not null and rendicontazioni.id_singolo_versamento is not null and stato_versamento='ESEGUITO');
 
+
+-- 25/01/2022 Flusso Rendicontazione univoco per dominio
 ALTER TABLE fr DROP CONSTRAINT unique_fr_1;
 ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_dominio,cod_flusso,data_ora_flusso);
 

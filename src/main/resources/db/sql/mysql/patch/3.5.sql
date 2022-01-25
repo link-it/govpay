@@ -498,6 +498,8 @@ UPDATE rendicontazioni, fr, pagamenti SET id_pagamento = pagamenti.id
 	AND rendicontazioni.iur=pagamenti.iur 
 	AND rendicontazioni.id_pagamento IS NULL;
 
+
+-- 25/01/2022 Flusso Rendicontazione univoco per dominio
 DROP INDEX unique_fr_1 ON fr;
 DROP INDEX index_fr_1 ON fr;
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
