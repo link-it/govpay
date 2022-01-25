@@ -171,7 +171,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 
 			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getVersamento().getCodApplicazione());
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
-			it.govpay.core.dao.commons.Versamento versamento = Gp21Utils.toVersamentoCommons(bodyrichiesta.getVersamento(), applicazioneAutenticata);
+			it.govpay.core.dao.commons.Versamento versamento = Gp21Utils.toVersamentoCommons(bodyrichiesta.getVersamento());
 			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(versamento);
 			boolean aggiornaSeEsiste = true;
 			if(bodyrichiesta.isAggiornaSeEsiste() != null) {
