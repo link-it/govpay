@@ -3,7 +3,7 @@
 Realizzazione
 -------------
 
-In questo scenario il Sistema di Gestione Contabile dell'ente creditore riconcilia i movimenti di accredito, presenti nel Giornale di Cassa fornito dalla banca tesoriera, con i singoli pagamenti effettuati su pagoPA. L'applicativo di contabilità effettua l'operazione di riconciliazione utilizzando l' `API Riconciliazione <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/3.5.x/wars/api-ragioneria/src/main/webapp/v2/govpay-api-ragioneria-v2.yaml>`_.
+In questo scenario il Sistema di Gestione Contabile dell'ente creditore riconcilia i movimenti di accredito, presenti nel Giornale di Cassa fornito dalla banca tesoriera, con i singoli pagamenti effettuati su pagoPA. L'applicativo di contabilità effettua l'operazione di riconciliazione utilizzando l' `API Riconciliazione <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-ragioneria/src/main/webapp/v2/govpay-api-ragioneria-v2.yaml>`_.
 
 
 Riconciliazione Entrate

@@ -19,7 +19,7 @@ La realizzazione di questo scenario prevede le seguenti tre fasi:
 Caricamento della Pendenza
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 Il caricamento della pendenza nell'archivio dei pagamenti in attesa di GovPay si realizza
-invocando l’operazione `PUT /pendenze/{idA2A}/{idPendenza}` dell’API `Pendenze <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/3.5.x/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml>`_.
+invocando l’operazione `PUT /pendenze/{idA2A}/{idPendenza}` dell’API `Pendenze <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml>`_.
 
 Di seguito un esempio di invocazione valida nell':ref:`govpay_scenari_demo`:
 
@@ -77,7 +77,7 @@ Consultazione della Posizione Debitoria
 
 Il cittadino, tramite il portale messo a disposizione dall'ente, deve individuare le
 pendenze di cui è debitore per avviarne il pagamento. A tale scopo GovPay espone le API di 
-`Pagamento <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/3.5.x/wars/api-pagamento/src/main/webapp/v2/govpay-api-pagamento-v2.yaml>`_
+`Pagamento <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pagamento/src/main/webapp/v2/govpay-api-pagamento-v2.yaml>`_
 che consentono di reperire la posizione debitoria di un cittadino 
 ed avviarne il pagamento utilizzando 
 

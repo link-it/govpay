@@ -1,8 +1,10 @@
 import { Input, Component, OnInit, AfterViewInit } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { GovpayService } from '../../../../services/govpay.service';
 import { UtilService } from '../../../../services/util.service';
 import { NewStandardCollapse } from '../../../../classes/view/new-standard-collapse';
 import { Voce } from '../../../../services/voce.service';
+import { Dato } from '../../../../classes/view/dato';
 
 @Component({
   selector: 'link-new-standard-collapse-view',
@@ -25,7 +27,7 @@ export class NewStandardCollapseViewComponent implements OnInit, AfterViewInit {
 
   _elenco: any[] = [];
 
-  constructor(public us: UtilService) {
+  constructor(public gps: GovpayService, public us: UtilService) {
   }
 
   ngOnInit() {
@@ -38,13 +40,58 @@ export class NewStandardCollapseViewComponent implements OnInit, AfterViewInit {
   }
 
   createElenco() {
-    const vocePendenza = this.info.item.vocePendenza;
-    const pendenza = vocePendenza.pendenza;
-    this._elenco.push({ label: Voce.ENTE_CREDITORE, value: `${pendenza.dominio.ragioneSociale} (${pendenza.dominio.idDominio})`, type: 'string' });
-    this._elenco.push({ label: Voce.DEBITORE, value: `${pendenza.soggettoPagatore.anagrafica} (${pendenza.soggettoPagatore.identificativo})`, type: 'string' });
-    this._elenco.push({ label: Voce.TIPI_PENDENZA, value: `${pendenza.causale}`, type: 'string' });
-    this._elenco.push({ label: Voce.QUOTE, value: vocePendenza.contabilita.quote, type: 'quote' });
-    this._elenco.push({ label: Voce.CONTENUTO_ALLEGATO, value: pendenza.datiAllegati, type: 'allegati' });
+    const item = this.info.item;
+    if (item) {
+      if (item.vocePendenza) { // Riconciliazioni/Pagamenti
+        const vocePendenza = item.vocePendenza;
+        const pendenza = vocePendenza.pendenza;
+        this._elenco.push({ label: Voce.ENTE_CREDITORE, value: `${pendenza.dominio.ragioneSociale} (${pendenza.dominio.idDominio})`, type: 'string' });
+        this._elenco.push({ label: Voce.DEBITORE, value: `${pendenza.soggettoPagatore.anagrafica} (${pendenza.soggettoPagatore.identificativo})`, type: 'string' });
+        this._elenco.push({ label: Voce.TIPI_PENDENZA, value: `${pendenza.causale}`, type: 'string' });
+        if (vocePendenza.contabilita.quote) {
+          this._elenco.push({ label: Voce.QUOTE, value: vocePendenza.contabilita.quote, type: 'quote' });
+        }
+        if (pendenza.datiAllegati) {
+          this._elenco.push({ label: Voce.CONTENUTO_ALLEGATO, value: pendenza.datiAllegati, type: 'allegati' });
+        }
+      } else { // Pendenze/Dettaglio/Importi
+        if (!item.tipoBollo) {
+          if (item.codEntrata) {
+            this._elenco.push({ label: Voce.CODICE_ENTRATA, value: item.codEntrata, type: 'string' });
+            if (item.idDominio) {
+              this.getEntrata(item.idDominio, item.codEntrata);
+            }
+          } else {
+            this._elenco.push({ label: Voce.CONTABILITA, value: Dato.concatStrings([item.tipoContabilita, item.codiceContabilita], ', '), type: 'string' });
+            this._elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.ibanAccredito, type: 'string' });
+            if (item.contabilita && item.contabilita.quote) {
+              this._elenco.push({ label: Voce.QUOTE, value: item.contabilita.quote, type: 'quote' });
+            }
+          }
+        }
+      }
+    }
+  }
+
+  protected getEntrata(idDominio, ideEntrata) {
+    // /domini/idDominio/entrate/idEntrata
+    const _url = UtilService.URL_DOMINI + '/' + UtilService.EncodeURIComponent(idDominio) + '/' + UtilService.ENTRATE + '/' + ideEntrata;
+    this.gps.getDataService(_url).subscribe(
+      function (_response) {
+        this.gps.updateSpinner(false);
+        if (_response.body) {
+          const entrata = _response.body;
+          this._elenco.push({ label: Voce.CONTABILITA, value: Dato.concatStrings([entrata.tipoContabilita, entrata.codiceContabilita], ', '), type: 'string' });
+          this._elenco.push({ label: Voce.CONTO_ACCREDITO, value: entrata.ibanAccredito, type: 'string' });
+          if (this.info.item.contabilita && this.info.item.contabilita.quote) {
+            this._elenco.push({ label: Voce.QUOTE, value: this.info.item.contabilita.quote, type: 'quote' });
+          }
+        }
+      }.bind(this),
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
   }
 
   // protected _hasStato(): boolean {
