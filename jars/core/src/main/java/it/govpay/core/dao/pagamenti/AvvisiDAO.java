@@ -53,6 +53,7 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class AvvisiDAO extends BaseDAO{
@@ -159,6 +160,7 @@ public class AvvisiDAO extends BaseDAO{
 				printAvvisoDTO.setVersamento(versamento); 
 				printAvvisoDTO.setSalvaSuDB(false);
 				printAvvisoDTO.setLinguaSecondaria(getAvvisoDTO.getLinguaSecondaria());
+				printAvvisoDTO.setSdfDataScadenza(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA());
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 				response.setApplicazione(versamento.getApplicazione(configWrapper));
 				response.setVersamento(versamento);
@@ -209,6 +211,7 @@ public class AvvisiDAO extends BaseDAO{
 				printAvvisoDTO.setSalvaSuDB(false);
 				printAvvisoDTO.setLinguaSecondaria(getAvvisoDTO.getLinguaSecondaria()); 
 				printAvvisoDTO.setNumeriAvviso(getAvvisoDTO.getNumeriAvviso());
+				printAvvisoDTO.setSdfDataScadenza(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA());
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printAvvisoDTO);
 				response.setDocumento(documento);
 				response.setDominio(dominio);

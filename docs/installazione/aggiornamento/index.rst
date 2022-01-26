@@ -31,13 +31,10 @@ Nel caso di aggiornamento di una minor version, ad esempio per aggiornare la ver
 Si consiglia di effettuare le operazioni di aggiornamento con l'Application Server spento
 e di eseguire un backup del DB prima di applicare le patch.
 
-Aggiornamento da versioni precedenti alla 3.5.0
+Aggiornamento da versioni precedenti alla v3.5.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Il nuovo client HTTP utilizzato da GovPay ignora la configurazione di keystore e trustore della JVM. Questo comporta che 
-in caso di autenticazione SSL con i servizi esterni, la configurazione di keystore e trustore debba essere definita nell'anagrafica 
-di GovPay.
-
-In caso di aggiornamento quindi verificare che la configurazione dei connettori sia di pagoPA nell'anagrafica dell'intermediario che 
-dei servizi di integrazione nell'anagrafica delle Applicazioni sia completa di queste informazioni (ove previsto)
+Il nuovo client HTTP utilizzato da GovPay ignora la configurazione del keystore e trustore nella fruizione dei servizi esterni. 
+Risulta quindi necessario verificare che i parametri per l'autenticazione SSL, ove prevista, sia specificata nel dettaglio
+delle Applicazioni e degli Intermediari.
 

@@ -1,5 +1,7 @@
 package it.govpay.core.business.model;
 
+import java.text.SimpleDateFormat;
+
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.tracciati.LinguaSecondaria;
 
@@ -11,6 +13,7 @@ public class PrintAvvisoVersamentoDTO {
 	private boolean update;
 	private boolean salvaSuDB = true;
 	private LinguaSecondaria linguaSecondaria = null;
+	private SimpleDateFormat sdfDataScadenza;
 
 	public Versamento getVersamento() {
 		return versamento;
@@ -47,5 +50,11 @@ public class PrintAvvisoVersamentoDTO {
 	}
 	public void setLinguaSecondaria(LinguaSecondaria linguaSecondaria) {
 		this.linguaSecondaria = linguaSecondaria;
+	}
+	public SimpleDateFormat getSdfDataScadenza() {
+		return sdfDataScadenza;
+	}
+	public void setSdfDataScadenza(SimpleDateFormat sdfDataScadenza) {
+		this.sdfDataScadenza = sdfDataScadenza;
 	}
 }
