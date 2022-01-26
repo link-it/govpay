@@ -3,6 +3,7 @@ package it.govpay.core.utils.stampe;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Properties;
 
@@ -20,6 +21,8 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.tracciati.LinguaSecondaria;
 import it.govpay.core.beans.tracciati.ProprietaPendenza;
+import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
+import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.LabelAvvisiProperties;
@@ -37,7 +40,8 @@ import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 public class AvvisoPagamentoV2Utils {
 
 	
-	public static AvvisoPagamentoInput fromVersamento(it.govpay.bd.model.Versamento versamento, LinguaSecondaria secondaLinguaScelta) throws ServiceException, UtilsException {
+	public static AvvisoPagamentoInput fromVersamento(PrintAvvisoVersamentoDTO printAvviso, LinguaSecondaria secondaLinguaScelta) throws ServiceException, UtilsException {
+		it.govpay.bd.model.Versamento versamento = printAvviso.getVersamento();
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		
@@ -69,7 +73,7 @@ public class AvvisoPagamentoV2Utils {
 		AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 
 		PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
-		pagina.setRata(getRata(versamento, input, secondaLinguaScelta));
+		pagina.setRata(getRata(versamento, input, secondaLinguaScelta, printAvviso.getSdfDataScadenza()));
 		
 		if(input.getPagine() == null)
 			input.setPagine(new PagineAvviso());
@@ -85,9 +89,11 @@ public class AvvisoPagamentoV2Utils {
 		return input;
 	} 
 
-	public static AvvisoPagamentoInput fromDocumento(Documento documento, List<Versamento> versamenti, LinguaSecondaria secondaLinguaScelta, Logger log) throws ServiceException, UnprocessableEntityException, UtilsException { 
+	public static AvvisoPagamentoInput fromDocumento(PrintAvvisoDocumentoDTO printAvviso, List<Versamento> versamenti, LinguaSecondaria secondaLinguaScelta, Logger log) throws ServiceException, UnprocessableEntityException, UtilsException { 
+		Documento documento = printAvviso.getDocumento();
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		SimpleDateFormat sdfDataScadenza = printAvviso.getSdfDataScadenza();
 		
 		it.govpay.stampe.model.v2.AvvisoPagamentoInput.Etichette etichettes = new it.govpay.stampe.model.v2.AvvisoPagamentoInput.Etichette();
 		etichettes.setItaliano(getEtichetteItaliano());
@@ -118,7 +124,7 @@ public class AvvisoPagamentoV2Utils {
 			AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 			AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
-			pagina.setRata(getRata(versamento, input, secondaLinguaScelta));
+			pagina.setRata(getRata(versamento, input, secondaLinguaScelta, sdfDataScadenza));
 			input.getPagine().getSingolaOrDoppia().add(pagina);
 		}
 		
@@ -173,9 +179,9 @@ public class AvvisoPagamentoV2Utils {
 				
 				RataAvviso rata = new RataAvviso();
 				if(versamento.getDataValidita() != null) {
-					rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataValidita()));
+					rata.setData(sdfDataScadenza.format(versamento.getDataValidita()));
 				} else if(versamento.getDataScadenza() != null) {
-					rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataScadenza()));
+					rata.setData(sdfDataScadenza.format(versamento.getDataScadenza()));
 				} else {
 					rata.setData("-"); 
 				}
@@ -197,7 +203,7 @@ public class AvvisoPagamentoV2Utils {
 				AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 				PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 				
-				RataAvviso rata = getRata(versamento, input, secondaLinguaScelta);
+				RataAvviso rata = getRata(versamento, input, secondaLinguaScelta, sdfDataScadenza);
 				
 				rata.setScadenza(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_PRIMA_RATA));
 				if(secondaLinguaScelta != null)
@@ -236,9 +242,9 @@ public class AvvisoPagamentoV2Utils {
 				
 				RataAvviso rata = new RataAvviso();
 				if(versamento.getDataValidita() != null) {
-					rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataValidita()));
+					rata.setData(sdfDataScadenza.format(versamento.getDataValidita()));
 				} else if(versamento.getDataScadenza() != null) {
-					rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataScadenza()));
+					rata.setData(sdfDataScadenza.format(versamento.getDataScadenza()));
 				} else {
 					rata.setData("-"); 
 				}
@@ -266,7 +272,7 @@ public class AvvisoPagamentoV2Utils {
 				AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 				AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 				PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
-				pagina.setRata(getRata(versamento, input, secondaLinguaScelta));
+				pagina.setRata(getRata(versamento, input, secondaLinguaScelta, sdfDataScadenza));
 				input.getPagine().getSingolaOrDoppia().add(pagina);
 			}
 		}
@@ -280,8 +286,8 @@ public class AvvisoPagamentoV2Utils {
 			AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(v2, documento.getDominio(configWrapper), v2.getUo(configWrapper), input);
 			AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(v2.getAnagraficaDebitore(), input);
 			PaginaAvvisoDoppia pagina = new PaginaAvvisoDoppia();
-			RataAvviso rataSx = getRata(v1, input, secondaLinguaScelta);
-			RataAvviso rataDx = getRata(v2, input, secondaLinguaScelta);
+			RataAvviso rataSx = getRata(v1, input, secondaLinguaScelta, sdfDataScadenza);
+			RataAvviso rataDx = getRata(v2, input, secondaLinguaScelta, sdfDataScadenza);
 			
 			if(v1.getNumeroRata() != null && v2.getNumeroRata() != null) {
 				// Titolo della pagina con 2 Rate
@@ -307,7 +313,7 @@ public class AvvisoPagamentoV2Utils {
 			AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 			AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 			PaginaAvvisoDoppia pagina = new PaginaAvvisoDoppia();
-			RataAvviso rataSx = getRata(versamento, input, secondaLinguaScelta);
+			RataAvviso rataSx = getRata(versamento, input, secondaLinguaScelta, sdfDataScadenza);
 			
 			if(versamento.getNumeroRata() != null) {
 				// Titolo della pagina con 2 Rate
@@ -344,7 +350,7 @@ public class AvvisoPagamentoV2Utils {
 		return input;
 	}
 
-	public static RataAvviso getRata(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input, LinguaSecondaria secondaLinguaScelta) throws ServiceException, UtilsException {
+	public static RataAvviso getRata(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input, LinguaSecondaria secondaLinguaScelta, SimpleDateFormat sdfDataScadenza) throws ServiceException, UtilsException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		RataAvviso rata = new RataAvviso();
 		
@@ -446,9 +452,9 @@ public class AvvisoPagamentoV2Utils {
 
 		if(addDataValidita) {
 			if(versamento.getDataValidita() != null) {
-				rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataValidita()));
+				rata.setData(sdfDataScadenza.format(versamento.getDataValidita()));
 			} else if(versamento.getDataScadenza() != null) {
-				rata.setData(AvvisoPagamentoUtils.getSdfDataScadenza().format(versamento.getDataScadenza()));
+				rata.setData(sdfDataScadenza.format(versamento.getDataScadenza()));
 			} else {
 				rata.setData("-"); 
 			}

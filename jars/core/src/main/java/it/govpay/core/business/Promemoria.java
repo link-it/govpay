@@ -49,8 +49,10 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.PromemoriaException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.ExceptionUtils;
 import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.trasformazioni.Costanti;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
@@ -393,6 +395,7 @@ public class Promemoria {
 				printAvviso.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 				printAvviso.setIuv(versamento.getIuvVersamento());
 				printAvviso.setSalvaSuDB(false);
+				printAvviso.setSdfDataScadenza(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA());
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoPagamento.printAvvisoVersamento(printAvviso);
 
 				String attachmentName = versamento.getDominio(configWrapper).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";
@@ -687,6 +690,7 @@ public class Promemoria {
 				printAvviso.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 				printAvviso.setIuv(versamento.getIuvVersamento());
 				printAvviso.setSalvaSuDB(false);
+				printAvviso.setSdfDataScadenza(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA());
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoPagamento.printAvvisoVersamento(printAvviso);
 
 				String attachmentName = versamento.getDominio(configWrapper).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";
