@@ -32,6 +32,18 @@
 
 		<dependency>
 			<groupId>it.govpay</groupId>
+			<artifactId>api-jppapdp</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-jppapdp</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
 			<artifactId>api-pagamento</artifactId>
 			<type>war</type>
 		</dependency>
