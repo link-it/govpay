@@ -1,5 +1,6 @@
 package it.govpay.core.utils.thread;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.orm.IdTracciato;
 
@@ -49,6 +51,7 @@ public class CreaStampeTracciatoThread implements Runnable {
 		MDC.put(MD5Constants.TRANSACTION_ID, ctx.getTransactionId());
 		this.stampe = new ArrayList<PrintAvvisoDTOResponse>();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
+		SimpleDateFormat newSimpleDateFormatGGMMAAAA = SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA();
 		try {
 			log.debug(this.nomeThread + ": creazione stampe di " + this.versamenti.size() + " versamenti...");
 			it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
@@ -61,12 +64,14 @@ public class CreaStampeTracciatoThread implements Runnable {
 					
 					if(versamento.getNumeroAvviso() != null) {
 						Documento documento = versamento.getDocumento(configWrapper);
+						
 						if(documento != null) {
 							PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
 							printDocumentoDTO.setDocumento(documento);
 							printDocumentoDTO.setUpdate(true);
 							printDocumentoDTO.setSalvaSuDB(false);
 							printDocumentoDTO.setNumeriAvviso(this.manager.getListaNumeriAvviso());
+							printDocumentoDTO.setSdfDataScadenza(newSimpleDateFormatGGMMAAAA);
 							printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printDocumentoDTO);
 							printAvvisoDTOResponse.setCodDocumento(documento.getCodDocumento());
 						} else {
@@ -76,6 +81,7 @@ public class CreaStampeTracciatoThread implements Runnable {
 							printAvvisoDTO.setIuv(versamento.getIuvVersamento());
 							printAvvisoDTO.setVersamento(versamento);
 							printAvvisoDTO.setSalvaSuDB(false);
+							printAvvisoDTO.setSdfDataScadenza(newSimpleDateFormatGGMMAAAA);
 							printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 						}
 						

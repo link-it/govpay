@@ -1,5 +1,6 @@
 package it.govpay.core.business.model;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import it.govpay.bd.model.Documento;
@@ -12,6 +13,7 @@ public class PrintAvvisoDocumentoDTO {
 	private boolean salvaSuDB = true;
 	private LinguaSecondaria linguaSecondaria = null;
 	private List<String> numeriAvviso = null;
+	private SimpleDateFormat sdfDataScadenza;
 	
 	public Documento getDocumento() {
 		return documento;
@@ -42,5 +44,11 @@ public class PrintAvvisoDocumentoDTO {
 	}
 	public void setNumeriAvviso(List<String> numeriAvviso) {
 		this.numeriAvviso = numeriAvviso;
+	}
+	public SimpleDateFormat getSdfDataScadenza() {
+		return sdfDataScadenza;
+	}
+	public void setSdfDataScadenza(SimpleDateFormat sdfDataScadenza) {
+		this.sdfDataScadenza = sdfDataScadenza;
 	}
 }
