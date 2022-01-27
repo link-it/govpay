@@ -33,6 +33,7 @@ import it.govpay.core.business.model.AvviaRichiestaStornoDTOResponse;
 import it.govpay.core.business.model.AvviaTransazioneDTO;
 import it.govpay.core.business.model.AvviaTransazioneDTOResponse;
 import it.govpay.core.business.model.SceltaWISP;
+import it.govpay.core.dao.pagamenti.PagamentiPortaleDAO;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.RptDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
@@ -40,6 +41,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
+import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
@@ -144,14 +146,8 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			String idSession = ctx.getTransactionId().replace("-", "");
 			PagamentiPortaleDTO pagamentiPortaleDTO = Gp21Utils.getPagamentiPortaleDTO(bodyrichiesta, metaInfo, user, idSession, log);
 			
-			
-			
-			
-			
-			
-			
-			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
-			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
+//			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
+//			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
 			ctx.getApplicationLogger().log("ws.autorizzazione");
 
 			appContext.getPagamentoCtx().setCarrello(true);
@@ -160,27 +156,27 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			appContext.getRequest().addGenericProperty(new Property("codCarrello", codCarrello));
 			appContext.setCorrelationId(codCarrello);
 			ctx.getApplicationLogger().log("pagamento.avviaTransazioneCarrelloWISP20");
+			
+			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO();
+			
+			PagamentiPortaleDTOResponse pagamentiPortaleDTOResponse = pagamentiPortaleDAO.inserisciPagamenti(pagamentiPortaleDTO);
+			
+//			AvviaTransazioneDTO dto = new AvviaTransazioneDTO();
+//			dto.setAggiornaSeEsisteB(bodyrichiesta.isAggiornaSeEsiste());
+//			dto.setAutenticazione(bodyrichiesta.getAutenticazione().value());
+//			dto.setIbanAddebito(bodyrichiesta.getIbanAddebito());
+//			dto.setPortale(portaleAutenticato);
+//			dto.setUrlRitorno(bodyrichiesta.getUrlRitorno());
+//			dto.setVersamentoOrVersamentoRef(bodyrichiesta.getVersamentoOrVersamentoRef());
+//			dto.setVersante(bodyrichiesta.getVersante());
+//			dto.setCodiceConvenzione(bodyrichiesta.getCodConvenzione());
+//			if(bodyrichiesta.getCanale() != null) {
+//				dto.setCanale(new it.govpay.bd.model.Canale(bodyrichiesta.getCanale()));
+//			}
 
-			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento();
-
-			AvviaTransazioneDTO dto = new AvviaTransazioneDTO();
-			dto.setAggiornaSeEsisteB(bodyrichiesta.isAggiornaSeEsiste());
-			dto.setAutenticazione(bodyrichiesta.getAutenticazione().value());
-			dto.setIbanAddebito(bodyrichiesta.getIbanAddebito());
-			dto.setPortale(portaleAutenticato);
-			dto.setUrlRitorno(bodyrichiesta.getUrlRitorno());
-			dto.setVersamentoOrVersamentoRef(bodyrichiesta.getVersamentoOrVersamentoRef());
-			dto.setVersante(bodyrichiesta.getVersante());
-			dto.setCodiceConvenzione(bodyrichiesta.getCodConvenzione());
-			if(bodyrichiesta.getCanale() != null) {
-				dto.setCanale(new it.govpay.bd.model.Canale(bodyrichiesta.getCanale()));
-			}
-
-
-			AvviaTransazioneDTOResponse dtoResponse = pagamentoBusiness.avviaTransazione(dto);
 			response.getRifTransazione().addAll(Gp21Utils.toRifTransazione(dtoResponse.getRifTransazioni()));
-			response.setPspSessionId(dtoResponse.getCodSessione());
-			response.setUrlRedirect(dtoResponse.getPspRedirectURL());
+			response.setPspSessionId(pagamentiPortaleDTOResponse.getIdSessionePsp());
+			response.setUrlRedirect(pagamentiPortaleDTOResponse.getRedirectUrl());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 
 			if(response.getPspSessionId() != null) {
@@ -438,6 +434,8 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			throw new GovPayException(it.govpay.core.beans.EsitoOperazione.AUT_001, AutorizzazioneUtils.getPrincipal(authentication));
 		}
 
+		if(!app.getUtenza().isAbilitato())
+			throw new GovPayException(it.govpay.core.beans.EsitoOperazione.APP_001, app.getCodApplicazione());
 		//		Applicazione app = null;
 		//		try {
 		//			app = AnagraficaManager.getApplicazioneByPrincipal(bd, wsCtxt.getUserPrincipal().getName());
@@ -455,13 +453,13 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		return app;
 	}
 
-	private void verificaApplicazione(Applicazione applicazioneAutenticata, String codApplicazione) throws GovPayException {
-		if(!applicazioneAutenticata.getCodApplicazione().equals(codApplicazione))
-			throw new GovPayException(it.govpay.core.beans.EsitoOperazione.APP_002, applicazioneAutenticata.getCodApplicazione(), codApplicazione);
-
-		if(!applicazioneAutenticata.getUtenza().isAbilitato())
-			throw new GovPayException(it.govpay.core.beans.EsitoOperazione.APP_001, applicazioneAutenticata.getCodApplicazione());
-	}
+//	private void verificaApplicazione(Applicazione applicazioneAutenticata, String codApplicazione) throws GovPayException {
+//		if(!applicazioneAutenticata.getCodApplicazione().equals(codApplicazione))
+//			throw new GovPayException(it.govpay.core.beans.EsitoOperazione.APP_002, applicazioneAutenticata.getCodApplicazione(), codApplicazione);
+//
+//		if(!applicazioneAutenticata.getUtenza().isAbilitato())
+//			throw new GovPayException(it.govpay.core.beans.EsitoOperazione.APP_001, applicazioneAutenticata.getCodApplicazione());
+//	}
 
 //	private Portale getPortaleAutenticato(GpContext appContext, Authentication authentication) throws GovPayException, ServiceException {
 //		if(wsCtxt.getUserPrincipal() == null) {

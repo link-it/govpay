@@ -25,8 +25,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -60,6 +63,7 @@ import it.govpay.bd.pagamento.filters.VersamentoFilter.SortFields;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.dao.commons.VersamentoKey;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoAvviso;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoModello4;
@@ -67,6 +71,7 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoPendenz
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.servizi.commons.Anagrafica;
 import it.govpay.servizi.commons.Canale;
@@ -544,7 +549,7 @@ public class Gp21Utils {
 		String idSessionePortale = bodyrichiesta.getCodSessionePortale();
 		
 		PagamentiPortaleDTO pagamentiPortaleDTO = new PagamentiPortaleDTO(user);
-		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
+//		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 
 		pagamentiPortaleDTO.setIdSessione(idSessione);
 		pagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
@@ -577,38 +582,35 @@ public class Gp21Utils {
 
 					listRefs.add(versamento);
 				} else if(pendenzaObj instanceof it.govpay.servizi.commons.VersamentoKey) {
+					it.govpay.servizi.commons.VersamentoKey pendenzaKey = (it.govpay.servizi.commons.VersamentoKey) pendenzaObj;
 					
-				} else {
-					throw new RequestValidationException("La pendenza "+(i+1)+" e' di un tipo non riconosciuto.");
-				}
-				
-				
-				if((pendenza.getIdDominio() != null && pendenza.getIdTipoPendenza() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null && pendenza.getNumeroAvviso() == null)) {
-					PagamentiPortaleDTO.RefVersamentoModello4 ref = pagamentiPortaleDTO. new RefVersamentoModello4();
-					ref.setIdDominio(pendenza.getIdDominio());
-					ref.setIdTipoPendenza(pendenza.getIdTipoPendenza());
-					ref.setDati(ConverterUtils.toJSON(pendenza.getDati(),null));
-					listRefs.add(ref);
+					VersamentoKey versamentoKey = new VersamentoKey();
 					
-				} else if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
+					Iterator<JAXBElement<String>> iterator = pendenzaKey.getContent().iterator();
+                    while(iterator.hasNext()){
+                            JAXBElement<String> element = iterator.next();
 
-					PagamentiPortaleDTO.RefVersamentoAvviso ref = pagamentiPortaleDTO. new RefVersamentoAvviso();
-					ref.setIdDominio(pendenza.getIdDominio());
-					ref.setNumeroAvviso(pendenza.getNumeroAvviso());
-					ref.setIdDebitore(pendenza.getIdDebitore());
-					listRefs.add(ref);
+                            if(element.getName().equals(VersamentoUtils._VersamentoKeyBundlekey_QNAME)) {
+                            	versamentoKey.setBundlekey(element.getValue());
+                            }
+                            if(element.getName().equals(VersamentoUtils._VersamentoKeyCodUnivocoDebitore_QNAME)) {
+                            	versamentoKey.setCodUnivocoDebitore(element.getValue());
+                            }
+                            if(element.getName().equals(VersamentoUtils._VersamentoKeyCodApplicazione_QNAME)) {
+                            	versamentoKey.setCodApplicazione(element.getValue());
+                            }
+                            if(element.getName().equals(VersamentoUtils._VersamentoKeyCodDominio_QNAME)) {
+                            	versamentoKey.setCodDominio(element.getValue());
+                            }
+                            if(element.getName().equals(VersamentoUtils._VersamentoKeyCodVersamentoEnte_QNAME)) {
+                            	versamentoKey.setCodVersamentoEnte(element.getValue());
+                            }
+                            if(element.getName().equals(VersamentoUtils._VersamentoKeyIuv_QNAME)) {
+                            	versamentoKey.setIuv(element.getValue());
+                            }
+                    }
 
-				} else	if((pendenza.getIdDominio() == null) && (pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null)) {
-
-					PagamentiPortaleDTO.RefVersamentoPendenza ref = pagamentiPortaleDTO. new RefVersamentoPendenza();
-					ref.setIdA2A(pendenza.getIdA2A());
-					ref.setIdPendenza(pendenza.getIdPendenza());
-					listRefs.add(ref);
-
-				}else if(pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null && pendenza.getIdDominio() != null) {
-					it.govpay.core.dao.commons.Versamento versamento = getVersamentoFromPendenza(pendenza);
-
-					listRefs.add(versamento);
+                    listRefs.add(versamentoKey);
 				} else {
 					throw new RequestValidationException("La pendenza "+(i+1)+" e' di un tipo non riconosciuto.");
 				}
@@ -617,10 +619,23 @@ public class Gp21Utils {
 
 			pagamentiPortaleDTO.setPendenzeOrPendenzeRef(listRefs);
 		}
+		
+		if(bodyrichiesta.getCanale() != null) {
+			Canale canale = bodyrichiesta.getCanale();
+			
+			pagamentiPortaleDTO.setIdentificativoCanale(canale.getCodCanale());
+			pagamentiPortaleDTO.setIdentificativoIntermediarioPSP(canale.getCodIntermediarioPsp());
+			pagamentiPortaleDTO.setIdentificativoPSP(canale.getCodPsp());
+			if(canale.getTipoVersamento() != null) {
+				pagamentiPortaleDTO.setTipoVersamento(canale.getTipoVersamento().toString());
+			}
+		}
 
 		// Salvataggio del messaggio di richiesta sul db
 		//		pagamentiPortaleDTO.setJsonRichiesta(jsonRichiesta);
 //		pagamentiPortaleDTO.setJsonRichiesta(pagamentiPortaleRequest.toJSON(null));
+		
+		pagamentiPortaleDTO.setCodiceConvenzione(bodyrichiesta.getCodConvenzione());
 		
 
 		return pagamentiPortaleDTO;

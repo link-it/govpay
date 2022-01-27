@@ -44,6 +44,7 @@ import it.govpay.core.beans.Mittente;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
+import it.govpay.core.dao.commons.VersamentoKey;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
@@ -268,6 +269,12 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						}
 					}
 					versamentoModel.setTipo(TipologiaTipoVersamento.SPONTANEO);
+				} else if(v instanceof VersamentoKey) { // Api Legacy
+					VersamentoKey versamentoKey = (VersamentoKey) v;
+					
+					TipologiaTipoVersamento tipoVersamento = TipologiaTipoVersamento.SPONTANEO;
+					versamentoModel = versamentoBusiness.chiediVersamento(versamentoKey.getCodApplicazione(), versamentoKey.getCodVersamentoEnte(), 
+							versamentoKey.getBundlekey(), versamentoKey.getCodUnivocoDebitore(), versamentoKey.getCodDominio(), versamentoKey.getIuv(), tipoVersamento);
 				}
 
 				if(versamentoModel != null) {
