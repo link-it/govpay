@@ -504,3 +504,9 @@ DROP INDEX unique_fr_1 ON fr;
 DROP INDEX index_fr_1 ON fr;
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
 
+
+-- 27/01/2022 Indice su id_fr nella tabella eventi
+CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
+
+
+
