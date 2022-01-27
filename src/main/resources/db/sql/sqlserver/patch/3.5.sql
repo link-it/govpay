@@ -598,4 +598,10 @@ UPDATE rendicontazioni SET id_pagamento = pagamenti.id
 ALTER TABLE fr DROP CONSTRAINT unique_fr_1;
 ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_dominio,cod_flusso,data_ora_flusso);
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
+
+
+-- 27/01/2022 Indice su id_fr nella tabella eventi
+CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
+
+
 	

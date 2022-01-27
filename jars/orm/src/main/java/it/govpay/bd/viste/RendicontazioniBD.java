@@ -451,9 +451,9 @@ public class RendicontazioniBD extends BasicBD {
 			exp.equals(model.FR_COD_DOMINIO, codDominio).and();
 			exp.equals(model.FR_OBSOLETO, false).and();
 			if(dataRtDa != null) {
-				exp.greaterEquals(model.RND_DATA, dataRtDa);
+				exp.greaterEquals(model.FR_DATA_ACQUISIZIONE, dataRtDa);
 			}
-			exp.lessEquals(model.RND_DATA, dataRtA);
+			exp.lessEquals(model.FR_DATA_ACQUISIZIONE, dataRtA);
 			exp.equals(model.RND_STATO, StatoRendicontazione.OK.toString());
 			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
 				listaTipiPendenza.removeAll(Collections.singleton(null));

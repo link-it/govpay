@@ -808,12 +808,12 @@ public class TracciatiNotificaPagamenti {
 		// allinea gli intervalli di date
 		Calendar cDa = Calendar.getInstance();
 		cDa.setTime(dataRtDa);
-		cDa.add(Calendar.DAY_OF_YEAR, -5);
+		cDa.add(Calendar.DAY_OF_YEAR, -15);
 		Date dateDa = cDa.getTime();
 		
 		Calendar cA = Calendar.getInstance();
 		cA.setTime(dataRtA);
-		cA.add(Calendar.DAY_OF_YEAR, -5);
+		cA.add(Calendar.DAY_OF_YEAR, -15);
 		Date dateA = cA.getTime(); 
 		
 		lineaElaborazione = 0;
