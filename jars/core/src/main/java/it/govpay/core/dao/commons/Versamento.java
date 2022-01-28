@@ -7,11 +7,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.core.beans.tracciati.ProprietaPendenza;
-import it.govpay.model.Tributo.TipoContabilita;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 

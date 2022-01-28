@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2022 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -19,10 +19,10 @@
  */
 package it.govpay.web.ws;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.jws.HandlerChain;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceContext;
 
@@ -50,11 +50,15 @@ import it.govpay.core.business.model.Iuv;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.model.PatchOp;
+import it.govpay.model.StatoPendenza;
+import it.govpay.model.PatchOp.OpEnum;
 import it.govpay.servizi.PagamentiTelematiciGPApp;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.GpResponse;
@@ -83,7 +87,7 @@ targetNamespace = "http://www.govpay.it/servizi/",
 portName = "GPAppPort",
 wsdlLocation="classpath:wsdl/GpApp.wsdl")
 
-@HandlerChain(file="../../../../handler-chains/handler-chain-gpws.xml")
+//@HandlerChain(file="../../../../handler-chains/handler-chain-gpws.xml")
 
 @org.apache.cxf.annotations.SchemaValidation
 public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
@@ -113,11 +117,13 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		try {
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(appContext, user);
+			appContext.getEventoCtx().setIdA2A(applicazioneAutenticata.getCodApplicazione());
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
 			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
 			response.getIuvCaricato().addAll(Gp21Utils.toIuvCaricato(configWrapper, bodyrichiesta, applicazioneAutenticata));
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiestaOk");
+			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(Utils.fromEsitoOperazioneGovpay(e.getCodEsito()));
 			response.setDescrizioneEsitoOperazione(e.getMessage());
@@ -127,19 +133,27 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			if(response.getCodEsitoOperazione().equals(EsitoOperazione.INTERNAL))
+				appContext.getEventoCtx().setEsito(Esito.FAIL);
+			else 
+				appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
+			new GovPayException(e).log(log);
 			try {
 				ctx.getApplicationLogger().log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
-			new GovPayException(e).log(log);
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
 		} finally {
 			if(ctx != null) {
 				PagamentiTelematiciGPAppImpl.setResult(appContext,response);
-				//				ctx.getApplicationLogger().log();
 			}
 		}
 
@@ -158,12 +172,12 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
 		appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(user));
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		//		BasicBD bd = null;
 		try {
-			//			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(appContext, user);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
 
+			appContext.getEventoCtx().setIdA2A(bodyrichiesta.getVersamento().getCodApplicazione());
+			appContext.getEventoCtx().setIdPendenza(bodyrichiesta.getVersamento().getCodVersamentoEnte());
 			appContext.getRequest().addGenericProperty(new Property("codApplicazione", bodyrichiesta.getVersamento().getCodApplicazione()));
 			appContext.getRequest().addGenericProperty(new Property("codVersamentoEnte", bodyrichiesta.getVersamento().getCodVersamentoEnte()));
 			appContext.setCorrelationId(bodyrichiesta.getVersamento().getCodApplicazione() + bodyrichiesta.getVersamento().getCodVersamentoEnte());
@@ -190,6 +204,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			}
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiestaOk");
+			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(Utils.fromEsitoOperazioneGovpay(e.getCodEsito()));
 			response.setDescrizioneEsitoOperazione(e.getMessage());
@@ -199,6 +214,12 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			if(response.getCodEsitoOperazione().equals(EsitoOperazione.INTERNAL))
+				appContext.getEventoCtx().setEsito(Esito.FAIL);
+			else 
+				appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
@@ -208,12 +229,13 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
 		} finally {
 			if(ctx != null) {
 				PagamentiTelematiciGPAppImpl.setResult(appContext,response);
-				//				ctx.getApplicationLogger().log();
 			}
-			//			if(bd != null) bd.closeConnection();
 		}
 		return response;
 	}
@@ -228,20 +250,16 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
 		appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(user));
-		//		BasicBD bd = null;
 		try {
-			//			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(appContext, user);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
 
+			appContext.getEventoCtx().setIdA2A(bodyrichiesta.getCodApplicazione());
+			appContext.getEventoCtx().setIdPendenza(bodyrichiesta.getCodVersamentoEnte());
 			appContext.getRequest().addGenericProperty(new Property("codApplicazione", bodyrichiesta.getCodApplicazione()));
 			appContext.getRequest().addGenericProperty(new Property("codVersamentoEnte", bodyrichiesta.getCodVersamentoEnte()));
 			appContext.setCorrelationId(bodyrichiesta.getCodApplicazione() + bodyrichiesta.getCodVersamentoEnte());
 			ctx.getApplicationLogger().log("versamento.annulla");
-
-			//			if(!(GovpayConfig.getInstance().getPrefissoAuthAnnulla() != null && applicazioneAutenticata.getCodApplicazione().startsWith(GovpayConfig.getInstance().getPrefissoAuthAnnulla())))
-			//				verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
-
 
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
 			AnnullaVersamentoDTO annullaVersamentoDTO = new AnnullaVersamentoDTO(applicazioneAutenticata, bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte());
@@ -250,6 +268,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiestaOk");
+			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(Utils.fromEsitoOperazioneGovpay(e.getCodEsito()));
 			response.setDescrizioneEsitoOperazione(e.getMessage());
@@ -259,6 +278,12 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			if(response.getCodEsitoOperazione().equals(EsitoOperazione.INTERNAL))
+				appContext.getEventoCtx().setEsito(Esito.FAIL);
+			else 
+				appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
@@ -268,10 +293,12 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
 		} finally {
 			if(ctx != null) {
 				PagamentiTelematiciGPAppImpl.setResult(appContext,response);
-				//				ctx.getApplicationLogger().log();
 			}
 		}
 		return response;
@@ -287,16 +314,42 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
 		appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(user));
-		//		BasicBD bd = null;
 		try {
-			//			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(appContext, user);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
 			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
-			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
-			versamentoBusiness.notificaPagamento(applicazioneAutenticata, bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte());
+
+			appContext.getEventoCtx().setIdA2A(bodyrichiesta.getCodApplicazione());
+			appContext.getEventoCtx().setIdPendenza(bodyrichiesta.getCodVersamentoEnte());
+			appContext.getRequest().addGenericProperty(new Property("codApplicazione", bodyrichiesta.getCodApplicazione()));
+			appContext.getRequest().addGenericProperty(new Property("codVersamentoEnte", bodyrichiesta.getCodVersamentoEnte()));
+			appContext.setCorrelationId(bodyrichiesta.getCodApplicazione() + bodyrichiesta.getCodVersamentoEnte());
+			
+			PendenzeDAO pendenzeDAO = new PendenzeDAO();
+			PatchPendenzaDTO patchPendenzaDTO = new PatchPendenzaDTO(user);
+			
+			patchPendenzaDTO.setIdA2a(bodyrichiesta.getCodApplicazione());
+			patchPendenzaDTO.setIdPendenza(bodyrichiesta.getCodVersamentoEnte());
+			
+			
+			List<PatchOp> lstOp = new ArrayList<>();
+			
+			PatchOp patchStato = new PatchOp();
+			patchStato.setOp(OpEnum.REPLACE);
+			patchStato.setPath(PendenzeDAO.PATH_STATO);
+			patchStato.setValue(StatoPendenza.ANNULLATA.toString());
+			lstOp.add(patchStato);
+			
+			PatchOp patchDescrizioneStato = new PatchOp();
+			patchDescrizioneStato.setOp(OpEnum.REPLACE);
+			patchDescrizioneStato.setPath(PendenzeDAO.PATH_DESCRIZIONE_STATO);
+			patchDescrizioneStato.setValue("Avviso pagato tramite canali alternativi a pagoPA");
+			lstOp.add(patchDescrizioneStato);
+			
+			pendenzeDAO.patch(patchPendenzaDTO);
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiestaOk");
+			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(Utils.fromEsitoOperazioneGovpay(e.getCodEsito()));
 			response.setDescrizioneEsitoOperazione(e.getMessage());
@@ -306,6 +359,12 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			if(response.getCodEsitoOperazione().equals(EsitoOperazione.INTERNAL))
+				appContext.getEventoCtx().setEsito(Esito.FAIL);
+			else 
+				appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
@@ -315,12 +374,13 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
 		} finally {
 			if(ctx != null) {
 				PagamentiTelematiciGPAppImpl.setResult(appContext,response);
-				ctx.getApplicationLogger().log();
 			}
-			//			if(bd != null) bd.closeConnection();
 		}
 		return response;
 	}
@@ -337,10 +397,15 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 		appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(user));
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		try {
-			//			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(appContext, user);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
 			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
+
+			appContext.getEventoCtx().setIdA2A(bodyrichiesta.getCodApplicazione());
+			appContext.getEventoCtx().setIdPendenza(bodyrichiesta.getCodVersamentoEnte());
+			appContext.getRequest().addGenericProperty(new Property("codApplicazione", bodyrichiesta.getCodApplicazione()));
+			appContext.getRequest().addGenericProperty(new Property("codVersamentoEnte", bodyrichiesta.getCodVersamentoEnte()));
+			appContext.setCorrelationId(bodyrichiesta.getCodApplicazione() + bodyrichiesta.getCodVersamentoEnte());
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO();
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
@@ -348,8 +413,6 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			leggiPendenzaDTO.setCodPendenza(bodyrichiesta.getCodVersamentoEnte());
 			LeggiPendenzaDTOResponse leggiPendenza = pendenzeDAO.leggiPendenza(leggiPendenzaDTO ); 
 
-			//			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
-			//			Versamento versamento = versamentoBusiness.chiediVersamento(bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte(), null, null, null, null);
 			Versamento versamento = leggiPendenza.getVersamento();
 
 			response.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
@@ -361,6 +424,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 				response.getTransazione().add(Gp21Utils.toTransazione(rpt, configWrapper));
 			}
 			ctx.getApplicationLogger().log("ws.ricevutaRichiestaOk");
+			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(Utils.fromEsitoOperazioneGovpay(e.getCodEsito()));
 			response.setDescrizioneEsitoOperazione(e.getMessage());
@@ -370,6 +434,12 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			if(response.getCodEsitoOperazione().equals(EsitoOperazione.INTERNAL))
+				appContext.getEventoCtx().setEsito(Esito.FAIL);
+			else 
+				appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
@@ -379,12 +449,13 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
 			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
 		} finally {
 			if(ctx != null) {
 				PagamentiTelematiciGPAppImpl.setResult(appContext,response);
-//				ctx.getApplicationLogger().log();
 			}
-			//			if(bd != null) bd.closeConnection();
 		}
 		return response;
 	}
@@ -406,40 +477,28 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			throw new GovPayException(it.govpay.core.beans.EsitoOperazione.AUT_000);
 		}
 
-		//		if(wsCtxt.getUserPrincipal() == null) {
-		//			throw new GovPayException(EsitoOperazione.AUT_000);
-		//		}
-
 		GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 		Applicazione app = authenticationDetails.getApplicazione();
 
 		if(app == null) {
 			throw new GovPayException(it.govpay.core.beans.EsitoOperazione.AUT_001, AutorizzazioneUtils.getPrincipal(authentication));
 		}
+		
+		if(!app.getUtenza().isAbilitato())
+			throw new GovPayException(it.govpay.core.beans.EsitoOperazione.APP_001, app.getCodApplicazione());
 
-		//		Applicazione app = null;
-		//		try {
-		//			app = AnagraficaManager.getApplicazioneByPrincipal(bd, wsCtxt.getUserPrincipal().getName());
-		//		} catch (NotFoundException e) {
-		//			throw new GovPayException(EsitoOperazione.AUT_001, wsCtxt.getUserPrincipal().getName());
-		//		}
-
-		if(app != null) {
-			Actor from = new Actor();
-			from.setName(app.getCodApplicazione());
-			from.setType(GpContext.TIPO_SOGGETTO_APP);
-			appContext.getTransaction().setFrom(from);
-			appContext.getTransaction().getClient().setName(app.getCodApplicazione());
-		}
+		Actor from = new Actor();
+		from.setName(app.getCodApplicazione());
+		from.setType(GpContext.TIPO_SOGGETTO_APP);
+		appContext.getTransaction().setFrom(from);
+		appContext.getTransaction().getClient().setName(app.getCodApplicazione());
+		
 		return app;
 	}
 
 	private void verificaApplicazione(Applicazione applicazioneAutenticata, String codApplicazione) throws GovPayException {
 		if(!applicazioneAutenticata.getCodApplicazione().equals(codApplicazione))
 			throw new GovPayException(it.govpay.core.beans.EsitoOperazione.APP_002, applicazioneAutenticata.getCodApplicazione(), codApplicazione);
-
-		if(!applicazioneAutenticata.getUtenza().isAbilitato())
-			throw new GovPayException(it.govpay.core.beans.EsitoOperazione.APP_001, applicazioneAutenticata.getCodApplicazione());
 	}
 
 	public static void setResult(GpContext appContext, GpResponse response) {

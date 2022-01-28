@@ -7695,6 +7695,7 @@ components:
           enum:
             - 'REST v1'
             - 'REST v2'
+            - 'SOAP v1'
           description: Versione delle API di integrazione utilizzate.
         auth:
           $ref: '#/components/schemas/tipoAutenticazione'

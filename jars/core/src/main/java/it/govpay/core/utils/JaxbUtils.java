@@ -52,7 +52,7 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 
 public class JaxbUtils {
 
-	private static JAXBContext jaxbBolloContext, jaxbRptRtContext, jaxbRrErContext, jaxbFrContext, jaxbWsRptContext, jaxbPaForNodeContext;
+	private static JAXBContext jaxbBolloContext, jaxbRptRtContext, jaxbRrErContext, jaxbFrContext, jaxbWsRptContext, jaxbPaForNodeContext, jaxbPaContext;
 	private static Schema RPT_RT_schema, RR_ER_schema, FR_schema, PAForNode_Schema;
 	private static boolean initialized = false;
 
@@ -70,6 +70,7 @@ public class JaxbUtils {
 			jaxbRrErContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti.revoche");
 			jaxbFrContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti.riversamento");
 			jaxbPaForNodeContext = JAXBContext.newInstance("it.gov.pagopa.pagopa_api.pa.pafornode");
+			jaxbPaContext = JAXBContext.newInstance("it.govpay.servizi.pa");
 			initialized = true;
 		}
 	}
@@ -234,4 +235,12 @@ public class JaxbUtils {
 	    JAXBElement<PaSendRTReq> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rt)), PaSendRTReq.class);
 		return root.getValue();
 	}
+	
+	public static void marshal(Object jaxb, OutputStream os) throws JAXBException, SAXException {
+        init();
+        Marshaller jaxbMarshaller = jaxbPaContext.createMarshaller();
+        jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+        jaxbMarshaller.marshal(jaxb, os);
+}
+
 }

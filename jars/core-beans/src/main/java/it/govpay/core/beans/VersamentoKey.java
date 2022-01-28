@@ -1,56 +1,49 @@
 
 package it.govpay.core.beans;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.JAXBElement;
 public class VersamentoKey {
 
-    protected List<JAXBElement<String>> content;
-
-    /**
-     * Recupera il resto del modello di contenuto. 
-     * 
-     * <p>
-     * Questa proprietà "catch-all" viene recuperata per il seguente motivo: 
-     * Il nome di campo "CodDominio" è usato da due diverse parti di uno schema. Vedere: 
-     * riga 187 di file:/home/bussu/NO_BACKUP/git/linkit-git/GovPay/govpay-core-beans/src/main/resources/wsdl/GpRnd_2.5.wsdl
-     * riga 179 di file:/home/bussu/NO_BACKUP/git/linkit-git/GovPay/govpay-core-beans/src/main/resources/wsdl/GpRnd_2.5.wsdl
-     * <p>
-     * Per eliminare questa proprietà, applicare una personalizzazione della proprietà a una 
-     * delle seguenti due dichiarazioni per modificarne il nome: 
-     * Gets the value of the content property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the content property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getContent().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link JAXBElement }{@code <}{@link String }{@code >}
-     * {@link JAXBElement }{@code <}{@link String }{@code >}
-     * {@link JAXBElement }{@code <}{@link String }{@code >}
-     * {@link JAXBElement }{@code <}{@link String }{@code >}
-     * {@link JAXBElement }{@code <}{@link String }{@code >}
-     * {@link JAXBElement }{@code <}{@link String }{@code >}
-     * 
-     * 
-     */
-    public List<JAXBElement<String>> getContent() {
-        if (this.content == null) {
-            this.content = new ArrayList<>();
-        }
-        return this.content;
-    }
+	private String codDominio = null;
+	private String codApplicazione = null;
+	private String codVersamentoEnte = null;
+	private String iuv = null;
+	private String bundlekey = null;
+	private String codUnivocoDebitore = null;
+	public String getCodDominio() {
+		return codDominio;
+	}
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
+	}
+	public String getCodVersamentoEnte() {
+		return codVersamentoEnte;
+	}
+	public void setCodVersamentoEnte(String codVersamentoEnte) {
+		this.codVersamentoEnte = codVersamentoEnte;
+	}
+	public String getIuv() {
+		return iuv;
+	}
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
+	public String getBundlekey() {
+		return bundlekey;
+	}
+	public void setBundlekey(String bundlekey) {
+		this.bundlekey = bundlekey;
+	}
+	public String getCodUnivocoDebitore() {
+		return codUnivocoDebitore;
+	}
+	public void setCodUnivocoDebitore(String codUnivocoDebitore) {
+		this.codUnivocoDebitore = codUnivocoDebitore;
+	}
 
 }

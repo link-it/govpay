@@ -41,10 +41,10 @@ import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.GpAvviaTransazionePagamentoResponse;
 import it.govpay.core.beans.Mittente;
+import it.govpay.core.beans.VersamentoKey;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
-import it.govpay.core.dao.commons.VersamentoKey;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTO;
 import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
@@ -501,6 +501,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			pagamentiPortaleBD.updatePagamento(pagamentoPortale, true, false); //inserisce anche i versamenti
 			response.setId(pagamentoPortale.getIdSessione());
 			response.setIdSessionePsp(pagamentoPortale.getIdSessionePsp());
+			response.setTransazioneResponse(transazioneResponse);
 
 			return response;
 		}finally {

@@ -36,7 +36,7 @@ public class Notifica {
 		if(applicazione.getConnettoreIntegrazione() != null) {
 			
 			// la versione V2 delle api client prevede solamente l'invio delle notifiche di tipo ricevuta
-			if(!tipo.equals(TipoNotifica.RICEVUTA) && !applicazione.getConnettoreIntegrazione().getVersione().equals(Versionabile.Versione.GP_REST_01)) {
+			if(!tipo.equals(TipoNotifica.RICEVUTA) && applicazione.getConnettoreIntegrazione().getVersione().equals(Versionabile.Versione.GP_REST_02)) {
 				log.debug("Inserimento notifica RPT["+notifica.getRptKey() +"] di tipo ["+tipo+"] non effettuato, la versione ["
 					+applicazione.getConnettoreIntegrazione().getVersione()+"] del connettore integrazione per l'applicazione ["+applicazione.getCodApplicazione()+"] non prevede la spedizione di questa tipo di notifica.");
 				return false;

@@ -25,6 +25,7 @@
 		<module>core</module>
 		<module>api-commons</module>
 		<module>client-api-ente</module>
+		<module>legacy-beans</module>
 	</modules>
 </project>
 

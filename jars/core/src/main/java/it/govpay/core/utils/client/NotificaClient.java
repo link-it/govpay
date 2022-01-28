@@ -19,6 +19,7 @@
  */
 package it.govpay.core.utils.client;
 
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
@@ -105,10 +106,41 @@ public class NotificaClient extends BasicClientCORE {
 			return inviaNotificaConConnettoreV1(notifica, rpt, applicazione, versamento, pagamenti);
 		case GP_REST_02:
 			return inviaNotificaConConnettoreV2(notifica, rpt, applicazione, versamento, pagamenti);
-		case GP_SOAP_03:
+		case GP_SOAP_01:
+			return inviaNotificaConConnettoreSoapV1(notifica, rpt, applicazione, versamento, pagamenti);
 		default:
 			throw new ClientException("Versione ["+this.versione+"] non supportata per l'operazione di notifica");
 		}
+	}
+
+	private byte[] inviaNotificaConConnettoreSoapV1(Notifica notifica, Rpt rpt, Applicazione applicazione,
+			Versamento versamento, List<Pagamento> pagamenti) throws ClientException {
+		String codDominio = rpt.getCodDominio();
+		String iuv = rpt.getIuv();
+		String ccp = rpt.getCcp();
+		log.debug("Spedisco la notifica di " + notifica.getTipo() + " PAGAMENTO della transazione (" + codDominio + ")(" + iuv + ")(" + ccp + ") col connettore versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
+		
+		List<Property> headerProperties = new ArrayList<>();
+		headerProperties.add(new Property("Accept", "text/xml"));
+		
+		Rpt rpt = notifica.getRpt(null);
+		PaNotificaTransazione paNotificaTransazione = new PaNotificaTransazione();
+		paNotificaTransazione.setCodApplicazione(notifica.getApplicazione(null).getCodApplicazione());
+		paNotificaTransazione.setCodVersamentoEnte(rpt.getVersamento(null).getCodVersamentoEnte());
+		paNotificaTransazione.setTransazione(Gp21Utils.toTransazione(versione, rpt, null));
+
+		if(notifica.getApplicazione(null).getVersione().compareTo(Versione.GP_02_02_01) >= 0)
+		        paNotificaTransazione.setCodSessionePortale(rpt.getCodSessionePortale());
+
+		QName qname = new QName("http://www.govpay.it/servizi/pa/", "paNotificaTransazione");
+		JAXBElement<PaNotificaTransazione> jaxbEl =  new JAXBElement<PaNotificaTransazione>(qname, PaNotificaTransazione.class, paNotificaTransazione);
+
+		
+		 ByteArrayOutputStream baos = new ByteArrayOutputStream();
+         SOAPUtils.writeMessage(jaxbEl, null, baos);
+
+		
+		return this.sendSoap("paNotificaTransazione", baos.toByteArray(), this.connettore.isAzioneInUrl());
 	}
 
 	private byte[] inviaNotificaConConnettoreV1(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento,

@@ -13,13 +13,13 @@ public abstract class Versionabile extends BasicModel {
 		// Se aggiunta una nuova versione, ricordarsi di aggiornare
 		// il metodo getUltimaVersione.
 		
-		GP_SOAP_03("SOAP","3"),
+		GP_SOAP_01("SOAP","1"),
 		GP_REST_01("REST","1"),
 		GP_REST_02("REST","2");
 		
 		private String api;
 		private String label;
-		public static String[] labels = {"SOAP_3","REST_1","REST_2"};
+		public static String[] labels = {"SOAP_1","REST_1","REST_2"};
 		
 		Versione(String api, String label){
 			this.label = label;
@@ -43,8 +43,8 @@ public abstract class Versionabile extends BasicModel {
 				return 020100;
 			case GP_REST_02:
 				return 020200;
-			case GP_SOAP_03:
-				return 010300;
+			case GP_SOAP_01:
+				return 010100;
 			default:
 				break;
 			}

@@ -111,7 +111,8 @@ public class VerificaClient extends BasicClientCORE {
 			return eseguiVerificaPendenzaConConnettoreV1(codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv);  
 		case GP_REST_02:
 			return eseguiVerificaPendenzaConConnettoreV2(codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv);  
-		case GP_SOAP_03:
+		case GP_SOAP_01:
+//			return eseguiVerificaPendenzaConConnettoreSoapV1(codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv);  TODO
 		default:
 			throw new ClientException("Versione ["+this.versione+"] non supportata per l'operazione di verifica pendenza");
 		}
@@ -369,7 +370,7 @@ public class VerificaClient extends BasicClientCORE {
 			return eseguiAcquisizionPendenzaConConnettoreV1(codDominio, codTipoVersamento, codUnitaOperativa, jsonBody);  
 		case GP_REST_02:
 			return eseguiAcquisizionPendenzaConConnettoreV2(codDominio, codTipoVersamento, codUnitaOperativa, jsonBody);  
-		case GP_SOAP_03:
+		case GP_SOAP_01:
 		default:
 			throw new ClientException("Versione ["+this.versione+"] non supportata per l'operazione di acquisizione pendenza con dati custom");
 		}

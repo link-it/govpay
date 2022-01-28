@@ -282,7 +282,23 @@
 				<artifactId>appio-beans</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
-			</dependency>			
+			</dependency>	
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>legacy-beans</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>	
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>api-legacy</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>	
 
 			<dependency>
 				<groupId>it.govpay</groupId>

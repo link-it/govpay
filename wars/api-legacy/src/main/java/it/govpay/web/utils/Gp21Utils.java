@@ -24,55 +24,38 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.JAXBElement;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IOException;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
-import it.govpay.model.Iuv;
-import it.govpay.model.Iuv.TipoIUV;
-import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
-import it.govpay.model.Versionabile;
-import it.govpay.model.Versionabile.Versione;
-import it.govpay.pagamento.v2.beans.NuovaPendenza;
-import it.govpay.pagamento.v2.beans.NuovoPagamento;
-import it.govpay.pagamento.v2.beans.TipoAutenticazioneSoggetto;
-import it.govpay.pagamento.v2.beans.converter.PagamentiPortaleConverter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter.SortFields;
-import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
-import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
-import it.govpay.core.beans.EsitoOperazione;
-import it.govpay.core.dao.commons.VersamentoKey;
+import it.govpay.core.beans.GpAvviaTransazionePagamentoResponse.RifTransazione;
+import it.govpay.core.beans.VersamentoKey;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
-import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoAvviso;
-import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoModello4;
-import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO.RefVersamentoPendenza;
+import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.model.Iuv;
+import it.govpay.model.Iuv.TipoIUV;
+import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.commons.Anagrafica;
 import it.govpay.servizi.commons.Canale;
 import it.govpay.servizi.commons.EsitoTransazione;
@@ -80,7 +63,7 @@ import it.govpay.servizi.commons.FlussoRendicontazione;
 import it.govpay.servizi.commons.IuvGenerato;
 import it.govpay.servizi.commons.MetaInfo;
 import it.govpay.servizi.commons.ModelloPagamento;
-import it.govpay.servizi.commons.StatoRevoca;
+import it.govpay.servizi.commons.Pagamento.Allegato;
 import it.govpay.servizi.commons.StatoTransazione;
 import it.govpay.servizi.commons.StatoVersamento;
 import it.govpay.servizi.commons.TipoAllegato;
@@ -89,13 +72,11 @@ import it.govpay.servizi.commons.TipoRendicontazione;
 import it.govpay.servizi.commons.TipoVersamento;
 import it.govpay.servizi.commons.Transazione;
 import it.govpay.servizi.commons.Versamento.SingoloVersamento;
-import it.govpay.servizi.commons.Pagamento.Allegato;
 import it.govpay.servizi.gpapp.GpCaricaIuv;
-import it.govpay.servizi.gpprt.GpChiediListaVersamentiResponse.Versamento.SpezzoneCausaleStrutturata;
-import it.govpay.servizi.gpprt.GpChiediStatoRichiestaStornoResponse.Storno;
-import it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazioneResponse;
 import it.govpay.servizi.gpprt.GpAvviaTransazionePagamento;
 import it.govpay.servizi.gpprt.GpAvviaTransazionePagamentoResponse;
+import it.govpay.servizi.gpprt.GpChiediListaVersamentiResponse.Versamento.SpezzoneCausaleStrutturata;
+import it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazioneResponse;
 
 public class Gp21Utils {
 
@@ -303,10 +284,12 @@ public class Gp21Utils {
 	}
 
 
-	public static List<GpAvviaTransazionePagamentoResponse.RifTransazione> toRifTransazione(List<it.govpay.core.business.model.AvviaTransazioneDTOResponse.RifTransazione> rifTransazioniModel) {
+	public static List<GpAvviaTransazionePagamentoResponse.RifTransazione> toRifTransazione(PagamentiPortaleDTOResponse pagamentiPortaleDTOResponse){
 		List<GpAvviaTransazionePagamentoResponse.RifTransazione> rifTransazioni = new ArrayList<GpAvviaTransazionePagamentoResponse.RifTransazione>();
 
-		for(it.govpay.core.business.model.AvviaTransazioneDTOResponse.RifTransazione rifTransazioneModel : rifTransazioniModel) {
+		it.govpay.core.beans.GpAvviaTransazionePagamentoResponse transazioneResponse = pagamentiPortaleDTOResponse.getTransazioneResponse();
+		
+		for(RifTransazione rifTransazioneModel : transazioneResponse.getRifTransazione()) {
 			GpAvviaTransazionePagamentoResponse.RifTransazione rifTransazione = new GpAvviaTransazionePagamentoResponse.RifTransazione();
 			rifTransazione.setCcp(rifTransazioneModel.getCcp());
 			rifTransazione.setCodApplicazione(rifTransazioneModel.getCodApplicazione());

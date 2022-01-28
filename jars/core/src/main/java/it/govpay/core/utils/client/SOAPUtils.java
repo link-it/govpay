@@ -86,4 +86,18 @@ public class SOAPUtils {
 		InputStream is = IOUtils.toInputStream(s,Charset.defaultCharset());
 		return  unmarshalRPT(is, schema);
 	}
+	
+	 public static void writeMessage(JAXBElement<?> body, Object header, OutputStream baos) throws JAXBException, SAXException, IOException {
+         baos.write("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">".getBytes());
+         if(header != null) {
+                 baos.write("<soap:Header>".getBytes());
+                 JaxbUtils.marshal(header, baos);
+                 baos.write("</soap:Header>".getBytes());
+         }
+         baos.write("<soap:Body>".getBytes());
+         JaxbUtils.marshal(body, baos);
+         baos.write("</soap:Body>".getBytes());
+         baos.write("</soap:Envelope>".getBytes());
+ }
+
 }

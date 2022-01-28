@@ -1,5 +1,7 @@
 package it.govpay.core.dao.pagamenti.dto;
 
+import it.govpay.core.beans.GpAvviaTransazionePagamentoResponse;
+
 public class PagamentiPortaleDTOResponse {
 
 	private String id;
@@ -8,6 +10,7 @@ public class PagamentiPortaleDTOResponse {
 	private String redirectUrl;
 	private String idSessionePsp;
 	private String idCarrelloRpt;
+	private GpAvviaTransazionePagamentoResponse transazioneResponse;
 	
 	public String getIdSessionePsp() {
 		return idSessionePsp;
@@ -44,6 +47,12 @@ public class PagamentiPortaleDTOResponse {
 	}
 	public void setIdSessione(String idSessione) {
 		this.idSessione = idSessione;
+	}
+	public GpAvviaTransazionePagamentoResponse getTransazioneResponse() {
+		return transazioneResponse;
+	}
+	public void setTransazioneResponse(GpAvviaTransazionePagamentoResponse transazioneResponse) {
+		this.transazioneResponse = transazioneResponse;
 	}
 	
 }

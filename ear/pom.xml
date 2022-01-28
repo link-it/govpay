@@ -129,6 +129,18 @@
 		
 		<dependency>
 			<groupId>it.govpay</groupId>
+			<artifactId>api-legacy</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-legacy</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
 			<artifactId>fonts-TitilliumWeb</artifactId>
 		</dependency>
 
