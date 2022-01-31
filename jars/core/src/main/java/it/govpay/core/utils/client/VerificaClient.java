@@ -120,7 +120,7 @@ public class VerificaClient extends BasicClientCORE {
 	 * @throws ValidationException 
 	 */
 	public Versamento invoke(String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv) throws ClientException, ServiceException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
-	VersamentoScadutoException, VersamentoSconosciutoException, GovPayException, UtilsException, VersamentoNonValidoException, JAXBException, SAXException, IOException {
+	VersamentoScadutoException, VersamentoSconosciutoException, GovPayException, UtilsException, VersamentoNonValidoException {
 
 		switch (this.versione) {
 		case GP_REST_01:
@@ -136,7 +136,7 @@ public class VerificaClient extends BasicClientCORE {
 
 	private Versamento eseguiVerificaPendenzaConConnettoreSoapV1(String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv) throws UtilsException, ClientException, VersamentoNonValidoException,
 	GovPayException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoScadutoException,
-	VersamentoSconosciutoException, ServiceException, JAXBException, SAXException, IOException {
+	VersamentoSconosciutoException, ServiceException {
 		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
 		String bundlekeyD = bundlekey != null ? bundlekey : "-";
 		String debitoreD = codUnivocoDebitore != null ? codUnivocoDebitore : "-";
@@ -173,7 +173,12 @@ public class VerificaClient extends BasicClientCORE {
 
 			JAXBElement<PaVerificaVersamento> jaxbEl =  new JAXBElement<PaVerificaVersamento>(qname, PaVerificaVersamento.class, paVerificaVersamento);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			SOAPUtils.writeMessage(jaxbEl, null, baos);
+			try {
+				SOAPUtils.writeMessage(jaxbEl, null, baos);
+			} catch (JAXBException | SAXException | IOException e) {
+				ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, codDominioD, iuvD, "Errore nella serializzazione del messaggio di richiesta (" + e.getMessage() + ")");
+				throw new ClientException(e);
+			}
 
 			byte[] response = this.sendSoap(AZIONE_SOAP_PA_VERIFICA_VERSAMENTO, baos.toByteArray(), this.connettore.isAzioneInUrl());
 			try {
