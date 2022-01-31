@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.ws;
+package it.govpay.web.legacy.ws;
 
 import java.net.URLDecoder;
 import java.util.List;
@@ -81,14 +81,14 @@ import it.govpay.servizi.gpprt.GpChiediStatoTransazioneResponse;
 import it.govpay.servizi.gpprt.GpChiediStatoVersamento;
 import it.govpay.servizi.gpprt.GpChiediStatoVersamentoResponse;
 import it.govpay.servizi.gpprt.GpChiediStatoVersamentoResponse.SpezzoneCausaleStrutturata;
-import it.govpay.web.utils.ConverterUtils;
-import it.govpay.web.utils.Utils;
+import it.govpay.web.legacy.utils.ConverterUtils;
+import it.govpay.web.legacy.utils.Utils;
 
 @WebService(serviceName = "PagamentiTelematiciGPPrtService",
 endpointInterface = "it.govpay.servizi.PagamentiTelematiciGPPrt",
 targetNamespace = "http://www.govpay.it/servizi/",
 portName = "GPPrtPort",
-wsdlLocation = "classpath:wsdl/GpPrt.wsdl")
+wsdlLocation = "/wsdl/GpPrt.wsdl")
 
 //@HandlerChain(file="../../../../handler-chains/handler-chain-gpws.xml")
 

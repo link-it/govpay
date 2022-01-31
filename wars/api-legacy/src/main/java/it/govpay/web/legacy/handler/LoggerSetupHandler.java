@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.handler;
+package it.govpay.web.legacy.handler;
 
 import java.util.Set;
 import java.util.UUID;

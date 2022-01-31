@@ -1,4 +1,4 @@
-package it.govpay.web.utils;
+package it.govpay.web.legacy.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;

@@ -68,6 +68,9 @@ Examples:
 | servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { username: 'usr', password: 'pwd' } } |
 | servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2' , ksType: 'JKS', ksPKeyPasswd: 'ksPKeyPasswd'	} } | 
 | servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { tipo: 'Server', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} } |
+| servizioIntegrazione | { versioneApi: 'SOAP v1', url: 'http://prova.it', auth: { username: 'usr', password: 'pwd' } } |
+| servizioIntegrazione | { versioneApi: 'SOAP v1', url: 'http://prova.it', auth: { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2' , ksType: 'JKS', ksPKeyPasswd: 'ksPKeyPasswd'	} } | 
+| servizioIntegrazione | { versioneApi: 'SOAP v1', url: 'http://prova.it', auth: { tipo: 'Server', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} } | 
 | abilitato | false | 
 | abilitato | true |
 | apiPagamenti | false | 

@@ -1,4 +1,4 @@
-package it.govpay.web.listener;
+package it.govpay.web.legacy.listener;
 
 import java.io.InputStream;
 import java.net.URL;

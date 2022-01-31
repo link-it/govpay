@@ -1,4 +1,4 @@
-package it.govpay.web.ws.context;
+package it.govpay.web.legacy.ws.context;
 
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;

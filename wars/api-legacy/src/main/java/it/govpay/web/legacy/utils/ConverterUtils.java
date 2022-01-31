@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.utils;
+package it.govpay.web.legacy.utils;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;

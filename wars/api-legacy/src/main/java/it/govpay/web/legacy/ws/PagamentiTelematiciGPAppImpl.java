@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.ws;
+package it.govpay.web.legacy.ws;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,14 +78,14 @@ import it.govpay.servizi.gpapp.GpChiediStatoVersamentoResponse;
 import it.govpay.servizi.gpapp.GpGeneraIuv;
 import it.govpay.servizi.gpapp.GpGeneraIuvResponse;
 import it.govpay.servizi.gpapp.GpNotificaPagamento;
-import it.govpay.web.utils.ConverterUtils;
-import it.govpay.web.utils.Utils;
+import it.govpay.web.legacy.utils.ConverterUtils;
+import it.govpay.web.legacy.utils.Utils;
 
 @WebService(serviceName = "PagamentiTelematiciGPAppService",
 endpointInterface = "it.govpay.servizi.PagamentiTelematiciGPApp",
 targetNamespace = "http://www.govpay.it/servizi/",
 portName = "GPAppPort",
-wsdlLocation="classpath:wsdl/GpApp.wsdl")
+wsdlLocation="/wsdl/GpApp.wsdl")
 
 //@HandlerChain(file="../../../../handler-chains/handler-chain-gpws.xml")
 

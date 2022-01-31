@@ -182,6 +182,11 @@
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
+							<artifactId>api-legacy</artifactId>
+							<contextRoot>/${war-base-name}/frontend/api/legacy</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
 							<artifactId>api-pagamento</artifactId>
 							<contextRoot>/${war-base-name}/frontend/api/pagamento</contextRoot>
 						</webModule>

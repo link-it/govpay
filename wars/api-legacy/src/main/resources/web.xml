@@ -9,7 +9,7 @@
     </context-param>
     
     <listener>
-	    <listener-class>it.govpay.web.listener.InitListener</listener-class>
+	    <listener-class>it.govpay.web.legacy.listener.InitListener</listener-class>
 	</listener>
 	<listener>
     	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.ws;
+package it.govpay.web.legacy.ws;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -63,14 +63,14 @@ import it.govpay.servizi.gprnd.GpChiediFlussoRendicontazione;
 import it.govpay.servizi.gprnd.GpChiediFlussoRendicontazioneResponse;
 import it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazione;
 import it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazioneResponse;
-import it.govpay.web.utils.ConverterUtils;
-import it.govpay.web.utils.Utils;
+import it.govpay.web.legacy.utils.ConverterUtils;
+import it.govpay.web.legacy.utils.Utils;
 
 @WebService(serviceName = "PagamentiTelematiciGPRndService",
 endpointInterface = "it.govpay.servizi.PagamentiTelematiciGPRnd",
 targetNamespace = "http://www.govpay.it/servizi/",
 portName = "GPRndPort",
-wsdlLocation = "classpath:wsdl/GpRnd.wsdl")
+wsdlLocation = "/wsdl/GpRnd.wsdl")
 
 //@HandlerChain(file="../../../../handler-chains/handler-chain-gpws.xml")
 
