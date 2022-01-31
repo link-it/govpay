@@ -63,7 +63,7 @@ import it.govpay.servizi.gprnd.GpChiediFlussoRendicontazione;
 import it.govpay.servizi.gprnd.GpChiediFlussoRendicontazioneResponse;
 import it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazione;
 import it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazioneResponse;
-import it.govpay.web.utils.Gp21Utils;
+import it.govpay.web.utils.ConverterUtils;
 import it.govpay.web.utils.Utils;
 
 @WebService(serviceName = "PagamentiTelematiciGPRndService",
@@ -136,7 +136,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 					: new ListaRendicontazioniDTOResponse(0L, new ArrayList<>());
 
 			for (it.govpay.bd.viste.model.Rendicontazione frModel : findRendicontazioniDTOResponse.getResults()) {
-				response.getFlussoRendicontazione().add(Gp21Utils.toFr(frModel.getFr()));
+				response.getFlussoRendicontazione().add(ConverterUtils.toFr(frModel.getFr()));
 			}
 
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
@@ -249,7 +249,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 
 				rends = rendsFiltrato;
 			}
-			response.setFlussoRendicontazione(Gp21Utils.toFr(frModel, rends, configWrapper));
+			response.setFlussoRendicontazione(ConverterUtils.toFr(frModel, rends, configWrapper));
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.getApplicationLogger().log("gprnd.ricevutaRichiestaOk");
 			appContext.getEventoCtx().setEsito(Esito.OK);

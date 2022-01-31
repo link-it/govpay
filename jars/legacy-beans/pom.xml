@@ -19,6 +19,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>pagopa-beans</artifactId>
+			<type>jar</type>
+		</dependency>
+	
+		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 		</dependency>

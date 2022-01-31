@@ -37,7 +37,7 @@ import org.xml.sax.SAXException;
 import it.govpay.core.utils.JaxbUtils;
 
 public class SOAPUtils {
-	
+
 	private static XMLInputFactory xif = XMLInputFactory.newInstance();
 
 	public static void writeRPTMessage(JAXBElement<?> body, Object header, OutputStream baos) throws JAXBException, SAXException, IOException {
@@ -52,52 +52,74 @@ public class SOAPUtils {
 		baos.write("</soap:Body>".getBytes());
 		baos.write("</soap:Envelope>".getBytes());
 	}
-	
+
 	public static Object unmarshalRPT(InputStream is, Schema schema) throws JAXBException, SAXException, IOException, XMLStreamException {
-		
-        XMLStreamReader xsr = xif.createXMLStreamReader(is);
-        
-        boolean isBody = false;
-        while(!isBody) {
-        	xsr.nextTag();
-        	if(xsr.isStartElement()) {
-        		String local = xsr.getLocalName();
-        		isBody = local.equals("Body");
-        	}
-        }
-        
-        xsr.nextTag();
-        if(!xsr.isStartElement()) {
-        	// Body vuoto
-        	return null;
-        } else {
-        	return JaxbUtils.unmarshalRptService(xsr, schema);
-        }
+
+		XMLStreamReader xsr = xif.createXMLStreamReader(is);
+
+		boolean isBody = false;
+		while(!isBody) {
+			xsr.nextTag();
+			if(xsr.isStartElement()) {
+				String local = xsr.getLocalName();
+				isBody = local.equals("Body");
+			}
+		}
+
+		xsr.nextTag();
+		if(!xsr.isStartElement()) {
+			// Body vuoto
+			return null;
+		} else {
+			return JaxbUtils.unmarshalRptService(xsr, schema);
+		}
 	}
-	
+
 	public static JAXBElement<?> toJaxbRPT(byte[] msg, Schema schema) throws JAXBException, SAXException, IOException, XMLStreamException {
 		String s = new String(msg);
 		InputStream is = IOUtils.toInputStream(s,Charset.defaultCharset());
 		return  (JAXBElement<?>) unmarshalRPT(is, schema);
 	}
-	
+
 	public static Object unmarshalRPT(byte[] msg, Schema schema) throws JAXBException, SAXException, IOException, XMLStreamException {
 		String s = new String(msg);
 		InputStream is = IOUtils.toInputStream(s,Charset.defaultCharset());
 		return  unmarshalRPT(is, schema);
 	}
+
+	public static void writeMessage(JAXBElement<?> body, Object header, OutputStream baos) throws JAXBException, SAXException, IOException {
+		baos.write("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">".getBytes());
+		if(header != null) {
+			baos.write("<soap:Header>".getBytes());
+			JaxbUtils.marshalPA(header, baos);
+			baos.write("</soap:Header>".getBytes());
+		}
+		baos.write("<soap:Body>".getBytes());
+		JaxbUtils.marshalPA(body, baos);
+		baos.write("</soap:Body>".getBytes());
+		baos.write("</soap:Envelope>".getBytes());
+	}
 	
-	 public static void writeMessage(JAXBElement<?> body, Object header, OutputStream baos) throws JAXBException, SAXException, IOException {
-         baos.write("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">".getBytes());
-         if(header != null) {
-                 baos.write("<soap:Header>".getBytes());
-                 JaxbUtils.marshal(header, baos);
-                 baos.write("</soap:Header>".getBytes());
-         }
-         baos.write("<soap:Body>".getBytes());
-         JaxbUtils.marshal(body, baos);
-         baos.write("</soap:Body>".getBytes());
-         baos.write("</soap:Envelope>".getBytes());
- }
+	public static Object unmarshalPA(InputStream is, Schema schema) throws JAXBException, SAXException, IOException, XMLStreamException {
+
+		XMLStreamReader xsr = xif.createXMLStreamReader(is);
+
+		boolean isBody = false;
+		while(!isBody) {
+			xsr.nextTag();
+			if(xsr.isStartElement()) {
+				String local = xsr.getLocalName();
+				isBody = local.equals("Body");
+			}
+		}
+
+		xsr.nextTag();
+		if(!xsr.isStartElement()) {
+			// Body vuoto
+			return null;
+		} else {
+			return JaxbUtils.unmarshalPA(xsr, schema);
+		}
+	}
 
 }

@@ -32,6 +32,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -49,11 +50,13 @@ import it.gov.digitpa.schemas._2011.pagamenti.revoche.RR;
 import it.gov.digitpa.schemas._2011.pagamenti.riversamento.FlussoRiversamento;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
+import it.govpay.servizi.pa.PaVerificaVersamentoResponse;
 
 public class JaxbUtils {
 
 	private static JAXBContext jaxbBolloContext, jaxbRptRtContext, jaxbRrErContext, jaxbFrContext, jaxbWsRptContext, jaxbPaForNodeContext, jaxbPaContext;
 	private static Schema RPT_RT_schema, RR_ER_schema, FR_schema, PAForNode_Schema;
+	public static Schema GP_PA_schema;
 	private static boolean initialized = false;
 
 	public static void init() throws JAXBException, SAXException {
@@ -63,7 +66,10 @@ public class JaxbUtils {
 			FR_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/comuni/FlussoRiversamento_1_0_4.xsd"))); 
 			RR_ER_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/comuni/RR_ER_1_0_0.xsd")));
 			PAForNode_Schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/comuni/paForNode.xsd"))); 
-			
+			Source[] GP_PA_sources = {new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/govpay_commons.xsd")), new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/govpay_pa.xsd"))};
+			GP_PA_schema = schemaFactory.newSchema(GP_PA_sources);
+
+
 			jaxbBolloContext = JAXBContext.newInstance("it.gov.agenziaentrate._2014.marcadabollo");
 			jaxbWsRptContext = JAXBContext.newInstance("gov.telematici.pagamenti.ws.rpt:gov.telematici.pagamenti.ws.rpt.ppthead");
 			jaxbRptRtContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti");
@@ -74,7 +80,7 @@ public class JaxbUtils {
 			initialized = true;
 		}
 	}
-	
+
 	public static byte[] toByte(CtRichiestaPagamentoTelematico rpt) throws JAXBException, SAXException {
 		init();
 		Marshaller jaxbMarshaller = jaxbRptRtContext.createMarshaller();
@@ -83,7 +89,7 @@ public class JaxbUtils {
 		jaxbMarshaller.marshal(new ObjectFactory().createRPT(rpt), baos);
 		return baos.toByteArray();
 	}
-	
+
 	public static byte[] toByte(RR rr) throws JAXBException, SAXException  {
 		init();
 		Marshaller jaxbMarshaller = jaxbRrErContext.createMarshaller();
@@ -92,7 +98,7 @@ public class JaxbUtils {
 		jaxbMarshaller.marshal(rr, baos);
 		return baos.toByteArray();
 	}
-	
+
 	public static byte[] toByte(CtRicevutaTelematica rt) throws JAXBException, SAXException  {
 		init();
 		Marshaller jaxbMarshaller = jaxbRptRtContext.createMarshaller();
@@ -101,22 +107,22 @@ public class JaxbUtils {
 		jaxbMarshaller.marshal(new ObjectFactory().createRT(rt), baos);
 		return baos.toByteArray();
 	}
-	
+
 	public static void toIntestazioneCarrelloPPT(IntestazioneCarrelloPPT jaxb, OutputStream os) throws JAXBException, SAXException {
 		init();
 		Marshaller jaxbMarshaller = jaxbWsRptContext.createMarshaller();
 		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		jaxbMarshaller.marshal(jaxb, os);
 	}
-	
+
 	public static CtRichiestaPagamentoTelematico toRPT(byte[] rpt, boolean validate) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbRptRtContext.createUnmarshaller();
 		if(validate) jaxbUnmarshaller.setSchema(RPT_RT_schema);
-	    JAXBElement<CtRichiestaPagamentoTelematico> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rpt)), CtRichiestaPagamentoTelematico.class);
+		JAXBElement<CtRichiestaPagamentoTelematico> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rpt)), CtRichiestaPagamentoTelematico.class);
 		return root.getValue();
 	}
-	
+
 	public static CtRicevutaTelematica toRT(byte[] rt, boolean validate) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbRptRtContext.createUnmarshaller();
@@ -124,7 +130,7 @@ public class JaxbUtils {
 		JAXBElement<CtRicevutaTelematica> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rt)), CtRicevutaTelematica.class);
 		return root.getValue();
 	}
-	
+
 	public static RR toRR(byte[] rr) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbRrErContext.createUnmarshaller();
@@ -132,7 +138,7 @@ public class JaxbUtils {
 		JAXBElement<RR> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rr)), RR.class);
 		return root.getValue();
 	}
-	
+
 	public static ER toER(byte[] er) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbRrErContext.createUnmarshaller();
@@ -140,7 +146,7 @@ public class JaxbUtils {
 		JAXBElement<ER> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(er)), ER.class);
 		return root.getValue();
 	}
-	
+
 	public static FlussoRiversamento toFR(byte[] fr) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbFrContext.createUnmarshaller();
@@ -148,14 +154,14 @@ public class JaxbUtils {
 		JAXBElement<FlussoRiversamento> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(fr)), FlussoRiversamento.class);
 		return root.getValue();
 	}
-	
+
 	public static MarcaDaBollo toMarcaDaBollo(byte[] marca) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbBolloContext.createUnmarshaller();
-	    JAXBElement<MarcaDaBollo> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(marca)), MarcaDaBollo.class);
+		JAXBElement<MarcaDaBollo> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(marca)), MarcaDaBollo.class);
 		return root.getValue();
 	}
-	
+
 	public static void marshalRptService(Object jaxb, OutputStream os) throws JAXBException, SAXException {
 		if(jaxb == null) return;
 		init();
@@ -163,7 +169,7 @@ public class JaxbUtils {
 		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		jaxbMarshaller.marshal(jaxb, os);
 	}
-	
+
 	public static String marshalRptService(Object jaxb) throws JAXBException, SAXException {
 		if(jaxb == null) return null;
 		init();
@@ -173,23 +179,23 @@ public class JaxbUtils {
 		jaxbMarshaller.marshal(jaxb, baos);
 		return new String(baos.toByteArray());
 	}
-	
+
 	public static Object unmarshalRptService(XMLStreamReader xsr) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbWsRptContext.createUnmarshaller();
 		return jaxbUnmarshaller.unmarshal(xsr);
 	}
-	
+
 	public static Object unmarshalRptService(XMLStreamReader xsr, Schema schema) throws JAXBException, SAXException {
 		if(schema == null) return unmarshalRptService(xsr);
-		
+
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbWsRptContext.createUnmarshaller();
 		jaxbUnmarshaller.setSchema(schema);
 		jaxbUnmarshaller.setEventHandler(new JaxbUtils().new GpEventHandler());
 		return jaxbUnmarshaller.unmarshal(xsr);
 	}
-	
+
 	public class GpEventHandler implements ValidationEventHandler {
 		@Override
 		public boolean handleEvent(ValidationEvent ve) {
@@ -210,7 +216,7 @@ public class JaxbUtils {
 		jaxbMarshaller.marshal(new it.gov.pagopa.pagopa_api.pa.pafornode.ObjectFactory().createPaGetPaymentRes(rpt), baos);
 		return baos.toByteArray();
 	}
-	
+
 	public static byte[] toByte(PaSendRTReq rt) throws JAXBException, SAXException {
 		init();
 		Marshaller jaxbMarshaller = jaxbPaForNodeContext.createMarshaller();
@@ -219,28 +225,53 @@ public class JaxbUtils {
 		jaxbMarshaller.marshal(new it.gov.pagopa.pagopa_api.pa.pafornode.ObjectFactory().createPaSendRTReq(rt), baos);
 		return baos.toByteArray();
 	}
-	
+
 	public static PaGetPaymentRes toPaGetPaymentRes_RPT(byte[] rpt, boolean validate) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbPaForNodeContext.createUnmarshaller();
 		if(validate) jaxbUnmarshaller.setSchema(PAForNode_Schema);
-	    JAXBElement<PaGetPaymentRes> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rpt)), PaGetPaymentRes.class);
+		JAXBElement<PaGetPaymentRes> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rpt)), PaGetPaymentRes.class);
 		return root.getValue();
 	}
-	
+
 	public static PaSendRTReq toPaSendRTReq_RT(byte[] rt, boolean validate) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbPaForNodeContext.createUnmarshaller();
 		if(validate) jaxbUnmarshaller.setSchema(PAForNode_Schema);
-	    JAXBElement<PaSendRTReq> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rt)), PaSendRTReq.class);
+		JAXBElement<PaSendRTReq> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rt)), PaSendRTReq.class);
 		return root.getValue();
 	}
-	
-	public static void marshal(Object jaxb, OutputStream os) throws JAXBException, SAXException {
-        init();
-        Marshaller jaxbMarshaller = jaxbPaContext.createMarshaller();
-        jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
-        jaxbMarshaller.marshal(jaxb, os);
-}
+
+	public static void marshalPA(Object jaxb, OutputStream os) throws JAXBException, SAXException {
+		init();
+		Marshaller jaxbMarshaller = jaxbPaContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.marshal(jaxb, os);
+	}
+
+	public static Object unmarshalPA(XMLStreamReader xsr) throws JAXBException, SAXException {
+		init();
+		Unmarshaller jaxbUnmarshaller = jaxbPaContext.createUnmarshaller();
+		return jaxbUnmarshaller.unmarshal(xsr);
+	}
+
+	public static Object unmarshalPA(XMLStreamReader xsr, Schema schema) throws JAXBException, SAXException {
+		if(schema == null) return unmarshalPA(xsr);
+
+		init();
+		Unmarshaller jaxbUnmarshaller = jaxbPaContext.createUnmarshaller();
+		jaxbUnmarshaller.setSchema(schema);
+		jaxbUnmarshaller.setEventHandler(new JaxbUtils().new GpEventHandler());
+		return jaxbUnmarshaller.unmarshal(xsr);
+	}
+
+
+	public static PaVerificaVersamentoResponse toPaVerificaVersamentoResponse(byte[] paVerificaVersamentoResponse) throws JAXBException, SAXException {
+		init();
+		Unmarshaller jaxbUnmarshaller = jaxbPaContext.createUnmarshaller();
+		jaxbUnmarshaller.setSchema(GP_PA_schema);
+		JAXBElement<PaVerificaVersamentoResponse> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(paVerificaVersamentoResponse)), PaVerificaVersamentoResponse.class);
+		return root.getValue();
+	}
 
 }

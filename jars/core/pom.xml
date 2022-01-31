@@ -56,6 +56,12 @@
 			<artifactId>stampe</artifactId>
 			<type>jar</type>
 		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>legacy-beans</artifactId>
+			<type>jar</type>
+		</dependency>
 
 		<dependency>
 			<groupId>commons-codec</groupId>

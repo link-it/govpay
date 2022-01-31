@@ -78,7 +78,7 @@ import it.govpay.servizi.gpapp.GpChiediStatoVersamentoResponse;
 import it.govpay.servizi.gpapp.GpGeneraIuv;
 import it.govpay.servizi.gpapp.GpGeneraIuvResponse;
 import it.govpay.servizi.gpapp.GpNotificaPagamento;
-import it.govpay.web.utils.Gp21Utils;
+import it.govpay.web.utils.ConverterUtils;
 import it.govpay.web.utils.Utils;
 
 @WebService(serviceName = "PagamentiTelematiciGPAppService",
@@ -120,7 +120,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			appContext.getEventoCtx().setIdA2A(applicazioneAutenticata.getCodApplicazione());
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
 			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
-			response.getIuvCaricato().addAll(Gp21Utils.toIuvCaricato(configWrapper, bodyrichiesta, applicazioneAutenticata));
+			response.getIuvCaricato().addAll(ConverterUtils.toIuvCaricato(configWrapper, bodyrichiesta, applicazioneAutenticata));
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiestaOk");
 			appContext.getEventoCtx().setEsito(Esito.OK);
@@ -185,7 +185,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 
 			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getVersamento().getCodApplicazione());
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
-			it.govpay.core.dao.commons.Versamento versamento = Gp21Utils.toVersamentoCommons(bodyrichiesta.getVersamento());
+			it.govpay.core.dao.commons.Versamento versamento = ConverterUtils.toVersamentoCommons(bodyrichiesta.getVersamento());
 			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(versamento);
 			boolean aggiornaSeEsiste = true;
 			if(bodyrichiesta.isAggiornaSeEsiste() != null) {
@@ -195,7 +195,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			Iuv iuv = IuvUtils.toIuv(versamentoModel, versamentoModel.getApplicazione(configWrapper), versamentoModel.getDominio(configWrapper));
 
 			if(iuv != null) {
-				response.setIuvGenerato(Gp21Utils.toIuvGenerato(iuv, applicazioneAutenticata));
+				response.setIuvGenerato(ConverterUtils.toIuvGenerato(iuv, applicazioneAutenticata));
 				appContext.getResponse().addGenericProperty(new Property("codDominio", iuv.getCodDominio()));
 				appContext.getResponse().addGenericProperty(new Property("iuv", iuv.getIuv()));
 				ctx.getApplicationLogger().log("versamento.caricaOkIuv");
@@ -421,7 +421,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			response.setStato(StatoVersamento.valueOf(versamento.getStatoVersamento().toString()));
 			List<Rpt> rpts = leggiPendenza.getRpts();
 			for(Rpt rpt : rpts) {
-				response.getTransazione().add(Gp21Utils.toTransazione(rpt, configWrapper));
+				response.getTransazione().add(ConverterUtils.toTransazione(rpt, configWrapper));
 			}
 			ctx.getApplicationLogger().log("ws.ricevutaRichiestaOk");
 			appContext.getEventoCtx().setEsito(Esito.OK);

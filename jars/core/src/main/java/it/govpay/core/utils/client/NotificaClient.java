@@ -20,6 +20,7 @@
 package it.govpay.core.utils.client;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
@@ -28,7 +29,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -52,20 +55,23 @@ import it.govpay.core.ec.v1.converter.NotificaTerminazioneConverter;
 import it.govpay.core.ec.v2.converter.RicevuteConverter;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
+import it.govpay.core.legacy.utils.Gp21Utils;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.model.Versionabile.Versione;
+import it.govpay.servizi.pa.PaNotificaTransazione;
 
 public class NotificaClient extends BasicClientCORE {
 
 	private static final String NOTIFICHE_V1_NOTIFY_PAGAMENTO_OPERATION_ID = "notifyPagamento";
 	private static final String NOTIFICHE_V1_NOTIFY_PAGAMENTO_OPERATION_PATH = "/pagamenti/{0}/{1}";
-	
+
 	private static final String NOTIFICHE_V2_NOTIFICA_RICEVUTA_OPERATION_ID = "notificaRicevuta";
 	private static final String NOTIFICHE_V2_NOTIFICA_RICEVUTA_OPERATION_PATH = "/ricevute/{0}/{1}/{2}";
-	
+
 	private static Logger log = LoggerWrapperFactory.getLogger(NotificaClient.class);
 	private Versione versione;
 
@@ -97,10 +103,11 @@ public class NotificaClient extends BasicClientCORE {
 	 * @throws NdpException 
 	 * @throws UtilsException 
 	 * @throws ValidationException 
+	 * @throws IOException 
 	 */
 	public byte[] invoke(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti,
-			PagamentoPortale pagamentoPortale) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException, UtilsException, ValidationException {
-		
+			PagamentoPortale pagamentoPortale) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException, UtilsException, ValidationException, IOException {
+
 		switch (this.versione) {
 		case GP_REST_01:
 			return inviaNotificaConConnettoreV1(notifica, rpt, applicazione, versamento, pagamenti);
@@ -114,33 +121,29 @@ public class NotificaClient extends BasicClientCORE {
 	}
 
 	private byte[] inviaNotificaConConnettoreSoapV1(Notifica notifica, Rpt rpt, Applicazione applicazione,
-			Versamento versamento, List<Pagamento> pagamenti) throws ClientException {
+			Versamento versamento, List<Pagamento> pagamenti) throws ClientException, ServiceException, JAXBException, SAXException, IOException {
 		String codDominio = rpt.getCodDominio();
 		String iuv = rpt.getIuv();
 		String ccp = rpt.getCcp();
 		log.debug("Spedisco la notifica di " + notifica.getTipo() + " PAGAMENTO della transazione (" + codDominio + ")(" + iuv + ")(" + ccp + ") col connettore versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
-		
+
 		List<Property> headerProperties = new ArrayList<>();
 		headerProperties.add(new Property("Accept", "text/xml"));
-		
-		Rpt rpt = notifica.getRpt(null);
-		PaNotificaTransazione paNotificaTransazione = new PaNotificaTransazione();
-		paNotificaTransazione.setCodApplicazione(notifica.getApplicazione(null).getCodApplicazione());
-		paNotificaTransazione.setCodVersamentoEnte(rpt.getVersamento(null).getCodVersamentoEnte());
-		paNotificaTransazione.setTransazione(Gp21Utils.toTransazione(versione, rpt, null));
 
-		if(notifica.getApplicazione(null).getVersione().compareTo(Versione.GP_02_02_01) >= 0)
-		        paNotificaTransazione.setCodSessionePortale(rpt.getCodSessionePortale());
+		PaNotificaTransazione paNotificaTransazione = new PaNotificaTransazione();
+		paNotificaTransazione.setCodApplicazione(applicazione.getCodApplicazione());
+		paNotificaTransazione.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
+		paNotificaTransazione.setTransazione(Gp21Utils.toTransazione(rpt, null));
+
+		paNotificaTransazione.setCodSessionePortale(rpt.getCodSessionePortale());
 
 		QName qname = new QName("http://www.govpay.it/servizi/pa/", "paNotificaTransazione");
 		JAXBElement<PaNotificaTransazione> jaxbEl =  new JAXBElement<PaNotificaTransazione>(qname, PaNotificaTransazione.class, paNotificaTransazione);
 
-		
-		 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-         SOAPUtils.writeMessage(jaxbEl, null, baos);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		SOAPUtils.writeMessage(jaxbEl, null, baos);
 
-		
-		return this.sendSoap("paNotificaTransazione", baos.toByteArray(), this.connettore.isAzioneInUrl());
+		return this.sendSoap(InviaNotificaThread.PA_NOTIFICA_TRANSAZIONE, baos.toByteArray(), this.connettore.isAzioneInUrl());
 	}
 
 	private byte[] inviaNotificaConConnettoreV1(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento,
@@ -234,7 +237,7 @@ public class NotificaClient extends BasicClientCORE {
 
 		return jsonBody;
 	}
-	
+
 	private byte[] inviaNotificaConConnettoreV2(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento,
 			List<Pagamento> pagamenti) throws ServiceException, ClientException, JAXBException, SAXException, ValidationException {
 		String codDominio = rpt.getCodDominio();
@@ -251,7 +254,7 @@ public class NotificaClient extends BasicClientCORE {
 		String swaggerOperationID = this.getSwaggerOperationIdApiV2(notifica, rpt);
 
 		switch (notifica.getTipo()) {
-		
+
 		case RICEVUTA:
 			sb.append(MessageFormat.format(NOTIFICHE_V2_NOTIFICA_RICEVUTA_OPERATION_PATH, codDominio, iuv, ccp));
 			if(rpt.getCodSessione() != null) {
@@ -289,7 +292,7 @@ public class NotificaClient extends BasicClientCORE {
 
 		return this.sendJson(sb.toString(), jsonBody.getBytes(), headerProperties, httpMethod, swaggerOperationID);
 	}
-	
+
 	public String getSwaggerOperationIdApiV2(Notifica notifica, Rpt rpt) throws ServiceException { 
 		String swaggerOperationID = "";
 
@@ -306,7 +309,7 @@ public class NotificaClient extends BasicClientCORE {
 
 		return swaggerOperationID;
 	}
-	
+
 	private String getMessaggioRichiestaApiV2(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, ValidationException {
 		String jsonBody = "";
 

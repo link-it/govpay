@@ -81,7 +81,7 @@ import it.govpay.servizi.gpprt.GpChiediStatoTransazioneResponse;
 import it.govpay.servizi.gpprt.GpChiediStatoVersamento;
 import it.govpay.servizi.gpprt.GpChiediStatoVersamentoResponse;
 import it.govpay.servizi.gpprt.GpChiediStatoVersamentoResponse.SpezzoneCausaleStrutturata;
-import it.govpay.web.utils.Gp21Utils;
+import it.govpay.web.utils.ConverterUtils;
 import it.govpay.web.utils.Utils;
 
 @WebService(serviceName = "PagamentiTelematiciGPPrtService",
@@ -129,7 +129,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
 
 			String idSession = ctx.getTransactionId().replace("-", "");
-			PagamentiPortaleDTO pagamentiPortaleDTO = Gp21Utils.getPagamentiPortaleDTO(bodyrichiesta, metaInfo, user, idSession, log);
+			PagamentiPortaleDTO pagamentiPortaleDTO = ConverterUtils.getPagamentiPortaleDTO(bodyrichiesta, metaInfo, user, idSession, log);
 
 			ctx.getApplicationLogger().log("ws.autorizzazione");
 
@@ -144,7 +144,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 
 			PagamentiPortaleDTOResponse pagamentiPortaleDTOResponse = pagamentiPortaleDAO.inserisciPagamenti(pagamentiPortaleDTO);
 
-			response.getRifTransazione().addAll(Gp21Utils.toRifTransazione(pagamentiPortaleDTOResponse));
+			response.getRifTransazione().addAll(ConverterUtils.toRifTransazione(pagamentiPortaleDTOResponse));
 			response.setPspSessionId(pagamentiPortaleDTOResponse.getIdSessionePsp());
 			response.setUrlRedirect(pagamentiPortaleDTOResponse.getRedirectUrl());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
@@ -233,7 +233,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
 			Rpt rpt = leggiRptDTOResponse.getRpt();
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			response.setTransazione(Gp21Utils.toTransazione(rpt, configWrapper));
+			response.setTransazione(ConverterUtils.toTransazione(rpt, configWrapper));
 			ctx.getApplicationLogger().log("ws.ricevutaRichiestaOk");
 			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (GovPayException e) {
@@ -360,7 +360,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 
 			List<Rpt> rpts = leggiPendenza.getRpts();
 			for(Rpt rpt : rpts) {
-				response.getTransazione().add(Gp21Utils.toTransazione(rpt, configWrapper));
+				response.getTransazione().add(ConverterUtils.toTransazione(rpt, configWrapper));
 			}
 			ctx.getApplicationLogger().log("ws.ricevutaRichiestaOk");
 			appContext.getEventoCtx().setEsito(Esito.OK);
