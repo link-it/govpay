@@ -210,6 +210,11 @@
 							<artifactId>web-console</artifactId>
 							<contextRoot>/${war-base-name}/backend/gui/backoffice</contextRoot>
 						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>api-jppapdp</artifactId>
+							<contextRoot>/${war-base-name}/backend/api/jppapdp</contextRoot>
+						</webModule>
 					</modules>
 					<version>6</version>
 				</configuration>
