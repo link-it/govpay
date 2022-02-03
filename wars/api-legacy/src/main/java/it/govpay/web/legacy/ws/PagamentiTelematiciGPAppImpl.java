@@ -26,6 +26,7 @@ import javax.annotation.Resource;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceContext;
 
+import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -51,14 +52,14 @@ import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
+import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
+import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.IuvUtils;
-import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.PatchOp;
-import it.govpay.model.StatoPendenza;
 import it.govpay.model.PatchOp.OpEnum;
+import it.govpay.model.StatoPendenza;
 import it.govpay.servizi.PagamentiTelematiciGPApp;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.GpResponse;
@@ -89,7 +90,7 @@ wsdlLocation="/wsdl/GpApp.wsdl")
 
 //@HandlerChain(file="../../../../handler-chains/handler-chain-gpws.xml")
 
-@org.apache.cxf.annotations.SchemaValidation
+@org.apache.cxf.annotations.SchemaValidation(type = SchemaValidationType.IN)
 public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 
 	@Resource
@@ -182,18 +183,22 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			appContext.getRequest().addGenericProperty(new Property("codVersamentoEnte", bodyrichiesta.getVersamento().getCodVersamentoEnte()));
 			appContext.setCorrelationId(bodyrichiesta.getVersamento().getCodApplicazione() + bodyrichiesta.getVersamento().getCodVersamentoEnte());
 			ctx.getApplicationLogger().log("versamento.carica");
-
+			
 			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getVersamento().getCodApplicazione());
-			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
+			
 			it.govpay.core.dao.commons.Versamento versamento = ConverterUtils.toVersamentoCommons(bodyrichiesta.getVersamento());
-			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(versamento);
-			boolean aggiornaSeEsiste = true;
-			if(bodyrichiesta.isAggiornaSeEsiste() != null) {
-				aggiornaSeEsiste = bodyrichiesta.isAggiornaSeEsiste();
-			}
-			versamentoModel = versamentoBusiness.caricaVersamento(versamentoModel, bodyrichiesta.isGeneraIuv(), aggiornaSeEsiste, null, null, null);
-			Iuv iuv = IuvUtils.toIuv(versamentoModel, versamentoModel.getApplicazione(configWrapper), versamentoModel.getDominio(configWrapper));
+			
+			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
+			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
+			putVersamentoDTO.setVersamento(versamento);
+			if(bodyrichiesta.isAggiornaSeEsiste() != null) {
+				putVersamentoDTO.setAggiornaSeEsiste(bodyrichiesta.isAggiornaSeEsiste());
+			}
+			
+			PutPendenzaDTOResponse createOrUpdate = pendenzeDAO.createOrUpdate(putVersamentoDTO);
+			Iuv iuv = createOrUpdate.getIuv();
+			
 			if(iuv != null) {
 				response.setIuvGenerato(ConverterUtils.toIuvGenerato(iuv, applicazioneAutenticata));
 				appContext.getResponse().addGenericProperty(new Property("codDominio", iuv.getCodDominio()));
@@ -420,8 +425,10 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			response.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
 			response.setStato(StatoVersamento.valueOf(versamento.getStatoVersamento().toString()));
 			List<Rpt> rpts = leggiPendenza.getRpts();
-			for(Rpt rpt : rpts) {
-				response.getTransazione().add(ConverterUtils.toTransazione(rpt, configWrapper));
+			if(rpts != null) {
+				for(Rpt rpt : rpts) {
+					response.getTransazione().add(ConverterUtils.toTransazione(rpt, configWrapper));
+				}
 			}
 			ctx.getApplicationLogger().log("ws.ricevutaRichiestaOk");
 			appContext.getEventoCtx().setEsito(Esito.OK);

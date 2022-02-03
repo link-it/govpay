@@ -922,7 +922,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		if(GovpayConfig.getInstance().isGiornaleEventiEnabled()) {
 			boolean logEvento = false;
 			boolean dumpEvento = false;
-			GdeInterfaccia configurazioneInterfaccia = GiornaleEventi.getConfigurazioneComponente(this.componente, this.giornale);
+			GdeInterfaccia configurazioneInterfaccia = GiornaleEventi.getConfigurazioneComponente(eventoContext, this.componente, this.giornale);
 			
 			log.debug("Log Evento Client: ["+this.componente +"] Tipo Connettore ["+tipoConnettore
 						+"], Destinatario ["+ url +"], Esito ["+eventoContext.getEsito()+"]");

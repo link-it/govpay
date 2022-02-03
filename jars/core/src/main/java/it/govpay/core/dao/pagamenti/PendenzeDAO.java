@@ -870,7 +870,7 @@ public class PendenzeDAO extends BaseDAO{
 
 
 			boolean generaIuv = VersamentoUtils.generaIUV(versamento, configWrapper);
-			versamento = versamentoBusiness.caricaVersamento(versamento, generaIuv, true, putVersamentoDTO.getAvvisatura(), putVersamentoDTO.getDataAvvisatura(),null);
+			versamento = versamentoBusiness.caricaVersamento(versamento, generaIuv, putVersamentoDTO.isAggiornaSeEsiste(), putVersamentoDTO.getAvvisatura(), putVersamentoDTO.getDataAvvisatura(),null);
 			createOrUpdatePendenzaResponse.setCreated(versamento.isCreated());
 			createOrUpdatePendenzaResponse.setVersamento(versamento);
 			createOrUpdatePendenzaResponse.setDominio(versamento.getDominio(configWrapper));
@@ -878,6 +878,7 @@ public class PendenzeDAO extends BaseDAO{
 
 			Iuv iuv = IuvUtils.toIuv(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));
 
+			createOrUpdatePendenzaResponse.setIuv(iuv);
 			createOrUpdatePendenzaResponse.setBarCode(iuv.getBarCode() != null ? new String(iuv.getBarCode()) : null);
 			createOrUpdatePendenzaResponse.setQrCode(iuv.getQrCode() != null ? new String(iuv.getQrCode()) : null);
 

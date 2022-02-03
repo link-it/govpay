@@ -30,6 +30,7 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	private String codVersamentoEnte;
 	private TipologiaTipoVersamento tipo;
 	private boolean inserimentoDB = true;
+	private boolean aggiornaSeEsiste = true;
 
 	public PutPendenzaDTO(Authentication user) {
 		super(user);
@@ -154,6 +155,14 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 
 	public void setInserimentoDB(boolean inserimentoDB) {
 		this.inserimentoDB = inserimentoDB;
+	}
+
+	public boolean isAggiornaSeEsiste() {
+		return aggiornaSeEsiste;
+	}
+
+	public void setAggiornaSeEsiste(boolean aggiornaSeEsiste) {
+		this.aggiornaSeEsiste = aggiornaSeEsiste;
 	}
 	
 }

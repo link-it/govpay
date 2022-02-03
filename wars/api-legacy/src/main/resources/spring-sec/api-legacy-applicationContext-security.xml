@@ -12,17 +12,46 @@
                 secured-annotations="enabled">
         </global-method-security>
         
-        
-        <!-- BASIC_START 
-        
         <b:bean id="basicAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
     		<b:property name="wwwAuthenticate" value="false"/>
         </b:bean>
         
-        <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeAnonimeDAO" >
-        	<b:property name="apiName" value="API_PAGOPA" />
+        <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+        	<b:property name="apiName" value="API_LEGACY" />
         	<b:property name="authType" value="BASIC" />
         </b:bean>
+        
+        
+        <!-- BASIC_GOVPAY_PROVIDER_START 
+        
+        <b:bean id="govpayPasswordEncoder" class="it.govpay.rs.security.crypto.GovpayPasswordEncoder" />
+        
+        <authentication-manager id="authenticationManager">
+                <authentication-provider user-service-ref="userDetailServiceUtenze">
+                	<password-encoder ref="govpayPasswordEncoder"/>
+                </authentication-provider>
+        </authentication-manager>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/**">
+
+                <csrf disabled="true"/>
+
+                <intercept-url pattern="*?wsdl" access="permitAll" />
+                
+                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
+                
+                <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
+
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+      	
+      	 BASIC_GOVPAY_PROVIDER_END -->
+      	 
+      	 <!-- BASIC_WILDFLY_PROVIDER_START 
         
         <b:bean id="wildflyApplicationAuthenticationProvider" class="org.openspcoop2.utils.service.authentication.provider.WildflyApplicationAuthenticationProvider" >
 			<b:property name="userDetailsService" ref="userDetailServiceUtenze"/>
@@ -50,15 +79,15 @@
                 </headers>
         </http>
       	
-      	 BASIC_END -->
+      	 BASIC_WILDFLY_PROVIDER_END -->
         
         <!-- SSL_START -->
         
         <b:bean id="x509AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.X509AuthenticationEntryPoint" />
        
-        <b:bean id="userDetailServiceUtenzeSSL" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeAnonimeDAO" >
+        <b:bean id="userDetailServiceUtenzeSSL" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
         	<b:property name="checkSubject" value="true"/>
-        	<b:property name="apiName" value="API_PAGOPA" />
+        	<b:property name="apiName" value="API_LEGACY" />
         	<b:property name="authType" value="SSL" />
         </b:bean>
         
@@ -84,9 +113,9 @@
           <!-- SSL_HDR_START
       	<b:bean id="http403ForbiddenEntryPointSSLHead" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
-      	<b:bean id="userDetailServiceUtenzeSSLHead" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeAnonimeDAO" >
+      	<b:bean id="userDetailServiceUtenzeSSLHead" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
       		<b:property name="checkSubject" value="true"/>
-      		<b:property name="apiName" value="API_PAGOPA" />
+      		<b:property name="apiName" value="API_LEGACY" />
         	<b:property name="authType" value="SSL_HEADER" />
         </b:bean>
         <b:bean id="preauthAuthProviderSSLHead" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
@@ -129,8 +158,8 @@
         <!-- HEADER_START
       	<b:bean id="http403ForbiddenEntryPointHead" class="it.govpay.rs.v1.authentication.entrypoint.Http403ForbiddenEntryPoint" >
         </b:bean>
-      	<b:bean id="userDetailServiceUtenzeHead" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeAnonimeDAO" >
-      		<b:property name="apiName" value="API_PAGOPA" />
+      	<b:bean id="userDetailServiceUtenzeHead" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+      		<b:property name="apiName" value="API_LEGACY" />
         	<b:property name="authType" value="HEADER" />
         </b:bean>
         <b:bean id="preauthAuthProviderHead" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">

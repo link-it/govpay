@@ -442,7 +442,7 @@ public abstract class BasicClient {
 		if(GovpayConfig.getInstance().isGiornaleEventiEnabled()) {
 			boolean logEvento = false;
 			boolean dumpEvento = false;
-			GdeInterfaccia configurazioneInterfaccia = GiornaleEventi.getConfigurazioneComponente(this.componente, this.getGiornale());
+			GdeInterfaccia configurazioneInterfaccia = GiornaleEventi.getConfigurazioneComponente(this.getEventoCtx(), this.componente, this.getGiornale());
 			
 			log.debug("Log Evento Client: ["+this.componente +"] Method ["+httpMethod+"], Url ["+this.url.toExternalForm()+"], StatusCode ["+responseCode+"]");
 

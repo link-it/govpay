@@ -30,10 +30,10 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.configurazione.model.GdeEvento;
-import it.govpay.bd.configurazione.model.GdeInterfaccia;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.GdeEvento.DumpEnum;
 import it.govpay.bd.configurazione.model.GdeEvento.LogEnum;
+import it.govpay.bd.configurazione.model.GdeInterfaccia;
+import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.core.utils.EventoContext;
@@ -60,7 +60,7 @@ public class GiornaleEventi {
 		}
 	}
 	
-	public static GdeInterfaccia getConfigurazioneComponente(Componente componente, Giornale giornale) {
+	public static GdeInterfaccia getConfigurazioneComponente(EventoContext eventoCtx, Componente componente, Giornale giornale) {
 		switch(componente) {
 		case API_BACKOFFICE:
 			return giornale.getApiBackoffice();
@@ -84,11 +84,50 @@ public class GiornaleEventi {
 		case API_GOVPAY:
 		case API_HYPERSIC_APK:
 			return getConfigurazioneTracciatiNotificaPagamenti();
+		case API_LEGACY:
+			return getConfigurazioneApiLegacy(eventoCtx,componente,giornale);
 		}
 		
 		return null;
 	}
 	
+	private static GdeInterfaccia getConfigurazioneApiLegacy(EventoContext eventoCtx, Componente componente,
+			Giornale giornale) {
+		
+		String operazione = eventoCtx.getTipoEvento();
+		
+		if(EventoContext.APILEGACY_TIPOEVENTO_GPAPP_GPANNULLAVERSAMENTO.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPAPP_GPCARICAIUV.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPAPP_GPCARICAVERSAMENTO.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPAPP_GPCHIEDIFLUSSORENDICONTAZIONE.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPAPP_GPCHIEDILISTAFLUSSIRENDICONTAZIONE.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPAPP_GPCHIEDISTATOVERSAMENTO.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPAPP_GPGENERAIUV.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPAPP_GPNOTIFICAPAGAMENTO.equals(operazione)
+				
+				) {
+			return giornale.getApiPendenze();
+		}
+		
+		if(EventoContext.APILEGACY_TIPOEVENTO_GPPRT_GPAVVIARICHIESTASTORNO.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPPRT_GPAVVIATRANSAZIONEPAGAMENTO.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPPRT_GPCHIEDILISTAVERSAMENTI.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPPRT_GPCHIEDISCELTAWISP.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPPRT_GPCHIEDISTATORICHIESTASTORNO.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPPRT_GPCHIEDISTATOTRANSAZIONE.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPPRT_GPCHIEDISTATOVERSAMENTO.equals(operazione)
+				) {
+			return giornale.getApiPagamento();
+		}
+		
+		if(EventoContext.APILEGACY_TIPOEVENTO_GPRND_GPCHIEDIFLUSSORENDICONTAZIONE.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPRND_GPCHIEDILISTAFLUSSIRENDICONTAZIONE.equals(operazione)
+				) {
+			return giornale.getApiRagioneria();
+		}
+		return null;
+	}
+
 	private static GdeInterfaccia getConfigurazioneTracciatiNotificaPagamenti() {
 		
 		GdeInterfaccia apiTracciatiNotificaPagamenti = new GdeInterfaccia();
@@ -165,7 +204,7 @@ public class GiornaleEventi {
 	}
 	
 	public static boolean isRequestLettura(HttpMethodEnum httpMethod, Componente componente, String operazione) {
-		if(componente.equals(Componente.API_PAGOPA)) {
+		if(componente.equals(Componente.API_PAGOPA) || componente.equals(Componente.API_LEGACY)) {
 			if(operazione != null)
 				return !isOperazioneScrittura(operazione);
 			else 
@@ -183,7 +222,7 @@ public class GiornaleEventi {
 	}
 	
 	public static boolean isRequestScrittura(HttpMethodEnum httpMethod, Componente componente, String operazione) {
-		if(componente.equals(Componente.API_PAGOPA)) {
+		if(componente.equals(Componente.API_PAGOPA) || componente.equals(Componente.API_LEGACY)) {
 			return isOperazioneScrittura(operazione);
 		}
 		
@@ -261,6 +300,14 @@ public class GiornaleEventi {
 				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAINVIAESITOSTORNO.equals(operazione)
 				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAINVIARICHIESTAREVOCA.equals(operazione)
 				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAINVIART.equals(operazione)
+				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAGETPAYMENT.equals(operazione)
+				|| EventoContext.APIPAGOPA_TIPOEVENTO_PASENDRT.equals(operazione)
+				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAVERIFYPAYMENTNOTICE.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPAPP_GPCARICAIUV.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPAPP_GPCARICAVERSAMENTO.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPAPP_GPNOTIFICAPAGAMENTO.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPAPP_GPANNULLAVERSAMENTO.equals(operazione)
+				|| EventoContext.APILEGACY_TIPOEVENTO_GPPRT_GPAVVIATRANSAZIONEPAGAMENTO.equals(operazione)
 				) {
 			return true;
 		}

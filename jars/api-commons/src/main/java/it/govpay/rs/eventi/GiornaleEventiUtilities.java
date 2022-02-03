@@ -28,12 +28,12 @@ import it.govpay.core.utils.EventoContext.Componente;
 
 public class GiornaleEventiUtilities {
 	
-	public static GdeInterfaccia getConfigurazioneGiornaleEventi (IContext context, ConfigurazioneDAO configurazioneDAO, GiornaleEventiConfig giornaleEventiConfig) throws ConfigurazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ServiceException {
+	public static GdeInterfaccia getConfigurazioneGiornaleEventi (IContext context, EventoContext eventoCtx, ConfigurazioneDAO configurazioneDAO, GiornaleEventiConfig giornaleEventiConfig) throws ConfigurazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ServiceException {
 		LeggiConfigurazioneDTO leggiConfigurazioneDTO = new LeggiConfigurazioneDTO(context.getAuthentication());
 		LeggiConfigurazioneDTOResponse configurazione = configurazioneDAO.getConfigurazione(leggiConfigurazioneDTO);
 		Giornale giornale = configurazione.getConfigurazione().getGiornale();
 		
-		return GiornaleEventi.getConfigurazioneComponente(giornaleEventiConfig.getApiNameEnum(), giornale);
+		return GiornaleEventi.getConfigurazioneComponente(eventoCtx, giornaleEventiConfig.getApiNameEnum(), giornale);
 	}
 	
     public static String safeGet(Message message, String key) {

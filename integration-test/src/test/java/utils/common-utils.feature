@@ -24,6 +24,8 @@ Scenario:
 		function(param) {
 			if (param.api == 'pagamento')
 				return govpay_url + '/govpay/frontend/api/' + param.api + '/rs/' + param.autenticazione + '/' + param.versione;
+			else if (param.api == 'legacy')
+				return govpay_url + '/govpay/frontend/api/legacy/' + param.ws ;
 			else
 				return govpay_url + '/govpay/backend/api/' + param.api + '/rs/' + param.autenticazione + '/' + param.versione;
 		}

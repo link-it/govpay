@@ -25,6 +25,7 @@ import it.govpay.ec.v1.beans.PendenzaVerificata;
 import it.govpay.ec.v1.beans.Soggetto;
 import it.govpay.ec.v1.beans.StatoPendenzaVerificata;
 import it.govpay.ec.v1.beans.TipoContabilita;
+import it.govpay.ec.v1.beans.TipoSoggetto;
 import it.govpay.ec.v1.beans.VocePendenza;
 import it.govpay.servizi.commons.Anagrafica;
 import it.govpay.servizi.commons.Canale;
@@ -347,6 +348,7 @@ public class Gp21Utils {
 		anagraficaModel.setProvincia(anagrafica.getProvincia());
 		anagraficaModel.setRagioneSociale(anagrafica.getRagioneSociale());
 		anagraficaModel.setTelefono(anagrafica.getTelefono());
+		anagraficaModel.setTipo(TipoSoggetto.F.toString());
 		return anagraficaModel;
 	}
 
@@ -498,6 +500,7 @@ public class Gp21Utils {
 		anagraficaModel.setNazione(anagrafica.getNazione());
 		anagraficaModel.setProvincia(anagrafica.getProvincia());
 		anagraficaModel.setAnagrafica(anagrafica.getRagioneSociale());
+		anagraficaModel.setTipo(TipoSoggetto.F);
 //		anagraficaModel.setTelefono(anagrafica.getTelefono());
 		return anagraficaModel;
 	}

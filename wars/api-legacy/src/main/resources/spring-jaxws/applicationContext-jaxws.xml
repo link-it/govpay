@@ -19,7 +19,7 @@
 		<b:bean id="contextConfigV1" class="it.govpay.web.legacy.ws.context.ContextConfig">
 		</b:bean>
 		<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory">
-			<b:property name="apiName" value="API_PAGOPA" />
+			<b:property name="apiName" value="API_LEGACY" />
 		</b:bean>
 		<b:bean id="contextV1" class="org.openspcoop2.utils.service.context.ContextFeature">
 			<b:property name="contextFactory" >
@@ -32,7 +32,7 @@
 		
 		<!-- Giornale Eventi -->
 		<b:bean id="giornaleEventiConfigV1" class="it.govpay.rs.eventi.GiornaleEventiConfig">
-			<b:property name="apiName" value="API_PAGOPA" />
+			<b:property name="apiName" value="API_LEGACY" />
 		</b:bean>
 		<b:bean id="giornaleEventiV1" class="it.govpay.rs.eventi.GiornaleEventiFeature">
 			<b:property name="giornaleEventiConfig" >

@@ -25,6 +25,29 @@ public class EventoContext {
 	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIAESITOSTORNO = "paaInviaEsitoStorno";
 	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIARICHIESTAREVOCA = "paaInviaRichiestaRevoca";
 	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIART = "paaInviaRT";
+	public static final String APIPAGOPA_TIPOEVENTO_PAVERIFYPAYMENTNOTICE = "paVerifyPaymentNotice";
+	public static final String APIPAGOPA_TIPOEVENTO_PAGETPAYMENT = "paGetPayment";
+	public static final String APIPAGOPA_TIPOEVENTO_PASENDRT = "paSendRT";
+	
+	public static final String APILEGACY_TIPOEVENTO_GPAPP_GPGENERAIUV = "gpGeneraIuv";
+	public static final String APILEGACY_TIPOEVENTO_GPAPP_GPCARICAIUV = "gpCaricaIuv";
+	public static final String APILEGACY_TIPOEVENTO_GPAPP_GPCARICAVERSAMENTO = "gpCaricaVersamento";
+	public static final String APILEGACY_TIPOEVENTO_GPAPP_GPANNULLAVERSAMENTO = "gpAnnullaVersamento";
+	public static final String APILEGACY_TIPOEVENTO_GPAPP_GPNOTIFICAPAGAMENTO = "gpNotificaPagamento";
+	public static final String APILEGACY_TIPOEVENTO_GPAPP_GPCHIEDISTATOVERSAMENTO = "gpChiediStatoVersamento";
+	public static final String APILEGACY_TIPOEVENTO_GPAPP_GPCHIEDILISTAFLUSSIRENDICONTAZIONE = "gpChiediListaFlussiRendicontazione";
+	public static final String APILEGACY_TIPOEVENTO_GPAPP_GPCHIEDIFLUSSORENDICONTAZIONE = "gpChiediFlussoRendicontazione";
+	public static final String APILEGACY_TIPOEVENTO_GPPRT_GPCHIEDISCELTAWISP = "gpChiediSceltaWisp";
+	public static final String APILEGACY_TIPOEVENTO_GPPRT_GPAVVIATRANSAZIONEPAGAMENTO = "gpAvviaTransazionePagamento";
+	public static final String APILEGACY_TIPOEVENTO_GPPRT_GPCHIEDISTATOTRANSAZIONE = "gpChiediStatoTransazione";
+	public static final String APILEGACY_TIPOEVENTO_GPPRT_GPAVVIARICHIESTASTORNO = "gpAvviaRichiestaStorno";
+	public static final String APILEGACY_TIPOEVENTO_GPPRT_GPCHIEDISTATORICHIESTASTORNO = "gpChiediStatoRichiestaStorno";
+	public static final String APILEGACY_TIPOEVENTO_GPPRT_GPCHIEDILISTAVERSAMENTI = "gpChiediListaVersamenti";
+	public static final String APILEGACY_TIPOEVENTO_GPPRT_GPCHIEDISTATOVERSAMENTO = "gpChiediStatoVersamento";
+	public static final String APILEGACY_TIPOEVENTO_GPRND_GPCHIEDILISTAFLUSSIRENDICONTAZIONE = "gpChiediListaFlussiRendicontazione";
+	public static final String APILEGACY_TIPOEVENTO_GPRND_GPCHIEDIFLUSSORENDICONTAZIONE = "gpChiediFlussoRendicontazione";
+	
+	
 	
 	public static final String APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOEMAIL = "pivotInviaTracciatoEmail";
 	public static final String APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOFILESYSTEM = "pivotInviaTracciatoFileSystem";
@@ -46,7 +69,7 @@ public class EventoContext {
 
 	public static final String SOTTOTIPO_EVENTO_NOTA = "nota";
 	
-	public enum Componente {API_ENTE, API_PAGAMENTO, API_RAGIONERIA, API_BACKOFFICE, API_PAGOPA, API_PENDENZE, API_WC, API_USER, API_BACKEND_IO, API_MYPIVOT, API_SECIM, API_GOVPAY, API_HYPERSIC_APK };
+	public enum Componente {API_ENTE, API_PAGAMENTO, API_RAGIONERIA, API_BACKOFFICE, API_PAGOPA, API_LEGACY, API_PENDENZE, API_WC, API_USER, API_BACKEND_IO, API_MYPIVOT, API_SECIM, API_GOVPAY, API_HYPERSIC_APK };
 	public enum Esito {OK, KO, FAIL};
 	public enum Categoria { INTERFACCIA, INTERNO, UTENTE };
 

@@ -16,6 +16,7 @@ PENDENZE=basic,ssl
 RAGIONERIA=basic,ssl
 USER=
 PAGOPA=ssl
+LEGACY=ssl
 APIDEFAULT=none
 GOVPAY_SRC_DIR="ear/target/"
 GOVPAY_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
@@ -55,6 +56,11 @@ case $key in
     shift # past argument
     shift # past value
     ;;
+    -leg|--legacy)
+    LEGACY="$2"
+    shift # past argument
+    shift # past value
+    ;;
     -src|--sourcedir)
     GOVPAY_SRC_DIR="$2"
     shift # past argument
@@ -79,6 +85,7 @@ case $key in
     echo "   -rag <args> : lista di autenticazioni da abilitare sulle api di ragioneria (basic,ssl). Default: basic,basic-gp,ssl,hdrcert"
     echo "   -usr <args> : lista di autenticazioni da abilitare sulle api di user (spid). Default: spid"
     echo "   -pp <args> : autenticazione da abilitare sulle api di pagopa (basic,basic-gp,ssl). Default: ssl,hdrcert"
+    echo "   -leg <args> : autenticazione da abilitare sulle api legacy (basic,basic-gp,ssl,hdrcert,header). Default: ssl"
     echo "   -d <args> : autenticazione da abilitare sui contesti senza autenticazione per retro-compatibilita (basic,ssl,hdrcert). Default: none"
     exit 2;
     ;;
@@ -128,6 +135,14 @@ RAGIONERIA_BASIC_GP=false
 
 [[ $PAGOPA == *"basic"* ]] && PAGOPA_BASIC=true || PAGOPA_BASIC=false
 [[ $PAGOPA == *"hdrcert"* ]] && PAGOPA_SSL_HEADER=true || PAGOPA_SSL_HEADER=false
+
+LEGACY_BASIC_WF=false
+LEGACY_BASIC_GP=false
+
+[[ $LEGACY == *"wildfly"* ]] && { LEGACY_BASIC_WF=true; LEGACY_BASIC_GP=false; }
+[[ $LEGACY == *"basic"* ]] && { LEGACY_BASIC_GP=true; LEGACY_BASIC_WF=false; }
+[[ $LEGACY == *"hdrcert"* ]] && LEGACY_SSL_HEADER=true || LEGACY_SSL_HEADER=false
+[[ $LEGACY == *"header"* ]] && LEGACY_HEADER=true || LEGACY_HEADER=false
 
 DEFAULT_BASIC=false
 DEFAULT_SSL=false
@@ -514,6 +529,103 @@ then
   echo "API-PagoPA abilitazione hdrcert completata.";
 fi
 
+# API-Legacy
+
+if $LEGACY_BASIC_WF
+then
+  echo "API-Legacy abilitazione HTTP Basic-auth wildfly...";
+
+  API_PREFIX="api-legacy-"
+  unzip -q $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # accendo la modalita' basic
+  sed -i -e "s#BASIC_WILDFLY_PROVIDER_START#BASIC_WILDFLY_PROVIDER_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#BASIC_WILDFLY_PROVIDER_END#<!-- BASIC_WILDFLY_PROVIDER_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # spengo modalita ssl
+  sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # ripristino file
+  zip -qr $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # eliminazione dei file temporanei
+  rm -rf $APP_CONTEXT_BASE_DIR
+
+  echo "API-Legacy abilitazione HTTP Basic-auth wildfly completata.";
+fi
+
+if $LEGACY_BASIC_GP
+then
+  echo "API-Legacy abilitazione HTTP Basic-auth GovPay...";
+
+  API_PREFIX="api-legacy-"
+  unzip -q $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # accendo la modalita' basic
+  sed -i -e "s#BASIC_GOVPAY_PROVIDER_START#BASIC_GOVPAY_PROVIDER_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#BASIC_GOVPAY_PROVIDER_END#<!-- BASIC_GOVPAY_PROVIDER_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # spengo modalita ssl
+  sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # ripristino file
+  zip -qr $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # eliminazione dei file temporanei
+  rm -rf $APP_CONTEXT_BASE_DIR
+
+  echo "API-Legacy abilitazione HTTP Basic-auth GovPay completata.";
+fi
+
+if $LEGACY_HEADER
+then
+  echo "API-Legacy abilitazione HTTP Header-auth...";
+
+  API_PREFIX="api-legacy-"
+  unzip -q $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # spengo modalita ssl
+  sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # accendo modalita hdrcert
+  sed -i -e "s#HEADER_START#HEADER_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#HEADER_END#<!-- HEADER_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # ripristino file
+  zip -qr $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # eliminazione dei file temporanei
+  rm -rf $APP_CONTEXT_BASE_DIR
+
+  echo "API-Legacy abilitazione HTTP Header-auth completata.";
+fi
+
+if $LEGACY_SSL_HEADER
+then
+  echo "API-Legacy abilitazione hdrcert...";
+
+  API_PREFIX="api-legacy-"
+  unzip -q $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # spengo modalita ssl
+  sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # accendo modalita hdrcert
+  sed -i -e "s#SSL_HDR_START#SSL_HDR_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#SSL_HDR_END#<!-- SSL_HDR_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # ripristino file
+  zip -qr $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # eliminazione dei file temporanei
+  rm -rf $APP_CONTEXT_BASE_DIR
+
+  echo "API-Legacy abilitazione hdrcert completata.";
+fi
 
 zip -qr $GOVPAY_EAR_NAME *
 

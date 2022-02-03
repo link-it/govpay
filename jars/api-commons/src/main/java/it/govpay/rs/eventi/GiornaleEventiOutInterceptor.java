@@ -66,7 +66,7 @@ public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Messa
 					if(eventoCtx.getDettaglioRisposta() == null)
 						eventoCtx.setDettaglioRisposta(new DettaglioRisposta());
 					
-					if(this.giornaleEventiConfig.getApiNameEnum().equals(Componente.API_PAGOPA)) {
+					if(this.giornaleEventiConfig.getApiNameEnum().equals(Componente.API_PAGOPA) || this.giornaleEventiConfig.getApiNameEnum().equals(Componente.API_LEGACY)) {
 //						HttpServletResponse httpResponse = (HttpServletResponse) message.get(AbstractHTTPDestination.HTTP_RESPONSE);
 //						httpResponse.setHeader(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, context.getTransactionId());
 						

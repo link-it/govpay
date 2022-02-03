@@ -26,6 +26,7 @@ import javax.annotation.Resource;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceContext;
 
+import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -92,8 +93,7 @@ wsdlLocation = "/wsdl/GpPrt.wsdl")
 
 //@HandlerChain(file="../../../../handler-chains/handler-chain-gpws.xml")
 
-@org.apache.cxf.annotations.SchemaValidation
-
+@org.apache.cxf.annotations.SchemaValidation(type = SchemaValidationType.IN)
 public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 
 	@Resource
