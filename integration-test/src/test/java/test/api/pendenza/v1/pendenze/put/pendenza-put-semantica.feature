@@ -232,7 +232,7 @@ And match response ==
 	categoria: 'RICHIESTA',
 	codice: 'VER_031',
 	descrizione: 'Richiesta non valida',
-	dettaglio: 'Non e\' possibile indicare il numero avviso per una pendenza di tipo multivoce.'
+	dettaglio: 'Non e\' possibile indicare il numero avviso per una pendenza di tipo multivoce se una delle voci e\' una Marca da Bollo Telematica.'
 }
 """
 
