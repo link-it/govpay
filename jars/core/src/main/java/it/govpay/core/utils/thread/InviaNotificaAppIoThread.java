@@ -97,6 +97,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 			notificheBD = new NotificheAppIoBD(configWrapper);
 			
 			String url = this.appIo.getUrl(); // Base url del servizio
+			String fiscalCode = this.notifica.getDebitoreIdentificativo();
 			try {
 				String operationId = appContext.setupAppIOClient(SWAGGER_OPERATION_GET_PROFILE, url);
 				
@@ -106,7 +107,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("idPendenza", this.notifica.getCodVersamentoEnte()));
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.notifica.getIuv()));
 				
-				log.info("Lettura Profilo del Debitore "+ this.notifica.getDebitoreIdentificativo() +" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "]");
+				log.info("Lettura Profilo del Debitore "+ fiscalCode +" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "]");
 				
 				clientGetProfile = new AppIoClient(SWAGGER_OPERATION_GET_PROFILE, this.appIo, operationId, this.giornale);
 
@@ -117,9 +118,9 @@ public class InviaNotificaAppIoThread implements Runnable{
 				
 				// controllo CF debitore
 				ValidatorFactory vf = ValidatorFactory.newInstance();
-				ValidatoreUtils.validaCF(vf, "fiscal_code", this.notifica.getDebitoreIdentificativo());
+				ValidatoreUtils.validaCF(vf, "fiscal_code", fiscalCode);
 				
-				LimitedProfile profile = clientGetProfile.getProfile(this.notifica.getDebitoreIdentificativo(), this.tipoVersamentoDominio.getAppIOAPIKey(), SWAGGER_OPERATION_GET_PROFILE);
+				LimitedProfile profile = clientGetProfile.getProfile(fiscalCode.toUpperCase(), this.tipoVersamentoDominio.getAppIOAPIKey(), SWAGGER_OPERATION_GET_PROFILE);
 						
 				if(profile.isSenderAllowed()) { // spedizione abilitata procedo
 					postMessage = true;
@@ -215,7 +216,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("idPendenza", this.notifica.getCodVersamentoEnte()));
 					appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.notifica.getIuv()));
 					
-					log.info("Invio della notifica ["+this.tipo+"] al Debitore "+ this.notifica.getDebitoreIdentificativo()+" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "]");
+					log.info("Invio della notifica ["+this.tipo+"] al Debitore "+ fiscalCode+" per la Pendenza [Id: "+this.notifica.getCodVersamentoEnte()+", IdA2A: " + this.notifica.getCodApplicazione() + "]");
 					
 					clientPostMessage = new AppIoClient(azione, this.appIo, operationId, this.giornale);
 					
