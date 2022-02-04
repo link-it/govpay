@@ -209,7 +209,8 @@ public class OperatoriController extends BaseController {
     public Response findOperatori(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findOperatori";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);  
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.LETTURA));
@@ -246,7 +247,7 @@ public class OperatoriController extends BaseController {
 			}
 			
 			ListaOperatori response = new ListaOperatori(results, this.getServicePath(uriInfo),
-					listaOperatoriDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					listaOperatoriDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();

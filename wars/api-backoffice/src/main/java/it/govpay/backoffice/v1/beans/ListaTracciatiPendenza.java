@@ -1,5 +1,6 @@
 package it.govpay.backoffice.v1.beans;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 
@@ -11,8 +12,8 @@ public class ListaTracciatiPendenza extends Lista<TracciatoPendenzeIndex> {
 		super();
 	}
 	
-	public ListaTracciatiPendenza(List<TracciatoPendenzeIndex> flussiRendicontazione, URI requestUri, Long count, Integer pagina, Integer limit) {
-		super(flussiRendicontazione, requestUri, count, pagina, limit);
+	public ListaTracciatiPendenza(List<TracciatoPendenzeIndex> risultati, URI requestUri, Long count, Integer pagina, Integer limit, BigDecimal maxRisultati) {
+		super(risultati, requestUri, count, pagina, limit, maxRisultati);
 	}
 	
 }

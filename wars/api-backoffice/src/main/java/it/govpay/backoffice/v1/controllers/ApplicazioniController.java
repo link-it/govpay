@@ -214,6 +214,7 @@ public class ApplicazioniController extends BaseController {
 		String methodName = "findApplicazioni";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true); 
 		try{
 			boolean associati = false;
 			// autorizzazione sulla API
@@ -256,7 +257,7 @@ public class ApplicazioniController extends BaseController {
 			}
 
 			ListaApplicazioni response = new ListaApplicazioni(results, this.getServicePath(uriInfo),
-					listaApplicazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					listaApplicazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();

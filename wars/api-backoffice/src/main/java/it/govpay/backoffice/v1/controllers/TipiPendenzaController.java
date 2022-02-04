@@ -54,6 +54,7 @@ public class TipiPendenzaController extends BaseController {
     	String methodName = "findTipiPendenza";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);  
 		try{
 			// autorizzazione sulla API
 			try {
@@ -126,7 +127,7 @@ public class TipiPendenzaController extends BaseController {
 			// CONVERT TO JSON DELLA RISPOSTA
 			
 			ListaTipiPendenza response = new ListaTipiPendenza(findTipiPendenzaDTOResponse.getResults().stream().map(t -> TipiPendenzaConverter.toTipoPendenzaRsModel(t)).collect(Collectors.toList()), 
-					this.getServicePath(uriInfo), findTipiPendenzaDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					this.getServicePath(uriInfo), findTipiPendenzaDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();

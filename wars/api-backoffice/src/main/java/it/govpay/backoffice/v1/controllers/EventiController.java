@@ -71,6 +71,7 @@ public class EventiController extends BaseController {
 		String methodName = "findEventi";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.setMaxRisultati(maxRisultati); 
 		try{
 			boolean autorizza = false;
 			try {
@@ -277,7 +278,7 @@ public class EventiController extends BaseController {
 			}
 
 			ListaEventi response = new ListaEventi(results, this.getServicePath(uriInfo),
-					listaEventiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					listaEventiDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null,this.serializationConfig)),transactionId).build();

@@ -1,7 +1,6 @@
 package it.govpay.backoffice.v1.controllers;
 
 import java.io.ByteArrayOutputStream;
-import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +28,6 @@ import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
 import it.govpay.backoffice.v1.beans.StatoPagamento;
 import it.govpay.backoffice.v1.beans.converter.PagamentiPortaleConverter;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
-import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.core.autorizzazione.AuthorizationManager;
@@ -116,6 +114,7 @@ public class PagamentiController extends BaseController {
     	String methodName = "findPagamenti";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.setMaxRisultati(maxRisultati); 
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.PAGAMENTI), Arrays.asList(Diritti.LETTURA));
@@ -230,11 +229,8 @@ public class PagamentiController extends BaseController {
 				results.add(PagamentiPortaleConverter.toRsModelIndex(pagamentoPortale));
 			}
 			
-			Integer maxRisultatiInt = GovpayConfig.getInstance().getMaxRisultati();
-			BigDecimal maxRisultatiBigDecimal = maxRisultati ? new BigDecimal(maxRisultatiInt.intValue()) : null;
-			
 			ListaPagamentiPortale response = new ListaPagamentiPortale(results, this.getServicePath(uriInfo),
-					pagamentoPortaleDTOResponse.getTotalResults(), pagina, risultatiPerPagina, maxRisultatiBigDecimal);
+					pagamentoPortaleDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi,this.serializationConfig)),transactionId).build();

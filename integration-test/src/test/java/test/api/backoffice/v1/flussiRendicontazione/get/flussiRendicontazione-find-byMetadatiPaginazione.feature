@@ -16,11 +16,12 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati : '#ignore',
 	numRisultati: '#notnull',
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#ignore',
+	prossimiRisultati: '#notnull',
 	risultati: '#[]'
 }
 """
@@ -36,11 +37,12 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati : '#ignore',
 	numRisultati: '#notnull',
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#ignore',
+	prossimiRisultati: '#notnull',
 	risultati: '#[]'
 }
 """
@@ -56,11 +58,12 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati : '#notpresent',
 	numRisultati: '#notpresent',
 	numPagine: '#notpresent',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#ignore',
+	prossimiRisultati: '#notnull',
 	risultati: '#[]'
 }
 """
@@ -77,6 +80,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati : '#notnull',
 	numRisultati: '#notnull',
 	numPagine: '#notpresent',
 	risultatiPerPagina: 0,
@@ -97,11 +101,12 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati : '#notnull',
 	numRisultati: '#notnull',
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#ignore',
+	prossimiRisultati: '#notnull',
 	risultati: '#[]'
 }
 """
@@ -117,11 +122,12 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati : '#notpresent',
 	numRisultati: '#notnull',
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
 	pagina: '#notnull',
-	prossimiRisultati: '#ignore',
+	prossimiRisultati: '#notnull',
 	risultati: '#[]'
 }
 """

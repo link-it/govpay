@@ -1,5 +1,6 @@
 package it.govpay.backoffice.v1.beans;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class ListaEventi extends Lista<Evento> {
 		super();
 	}
 	
-	public ListaEventi(List<Evento> eventi, URI requestUri, Long count, Integer pagina, Integer limit) {
-		super(eventi, requestUri, count, pagina, limit);
+	public ListaEventi(List<Evento> risultati, URI requestUri, Long count, Integer pagina, Integer limit, BigDecimal maxRisultati) {
+		super(risultati, requestUri, count, pagina, limit, maxRisultati);
 	}
 }

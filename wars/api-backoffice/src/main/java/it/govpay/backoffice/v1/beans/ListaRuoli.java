@@ -1,5 +1,6 @@
 package it.govpay.backoffice.v1.beans;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 
@@ -11,8 +12,8 @@ public class ListaRuoli extends Lista<RuoloIndex> {
 		super();
 	}
 	
-	public ListaRuoli(List<RuoloIndex> rpt, URI requestUri, Long count, Integer pagina, Integer limit) {
-		super(rpt, requestUri, count, pagina, limit);
+	public ListaRuoli(List<RuoloIndex> risultati, URI requestUri, Long count, Integer pagina, Integer limit, BigDecimal maxRisultati) {
+		super(risultati, requestUri, count, pagina, limit, maxRisultati);
 	}
 	
 }
