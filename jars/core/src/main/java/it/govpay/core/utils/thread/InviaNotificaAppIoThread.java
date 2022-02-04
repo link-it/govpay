@@ -97,7 +97,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 			notificheBD = new NotificheAppIoBD(configWrapper);
 			
 			String url = this.appIo.getUrl(); // Base url del servizio
-			String fiscalCode = this.notifica.getDebitoreIdentificativo();
+			String fiscalCode = this.notifica.getDebitoreIdentificativo().toUpperCase();
 			try {
 				String operationId = appContext.setupAppIOClient(SWAGGER_OPERATION_GET_PROFILE, url);
 				
@@ -120,7 +120,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 				ValidatorFactory vf = ValidatorFactory.newInstance();
 				ValidatoreUtils.validaCF(vf, "fiscal_code", fiscalCode);
 				
-				LimitedProfile profile = clientGetProfile.getProfile(fiscalCode.toUpperCase(), this.tipoVersamentoDominio.getAppIOAPIKey(), SWAGGER_OPERATION_GET_PROFILE);
+				LimitedProfile profile = clientGetProfile.getProfile(fiscalCode, this.tipoVersamentoDominio.getAppIOAPIKey(), SWAGGER_OPERATION_GET_PROFILE);
 						
 				if(profile.isSenderAllowed()) { // spedizione abilitata procedo
 					postMessage = true;
