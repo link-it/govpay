@@ -1576,7 +1576,7 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 
 * call sleep(20000)
 
-* def codiceFiscaleDebitore = pendenzaPut.soggettoPagatore.identificativo
+* def codiceFiscaleDebitore = toUpperCase(pendenzaPut.soggettoPagatore.identificativo)
 * call read('classpath:utils/appio-verifica-getprofile.feature')
 
 * call sleep(3000)
