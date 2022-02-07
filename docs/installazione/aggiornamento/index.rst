@@ -34,7 +34,7 @@ e di eseguire un backup del DB prima di applicare le patch.
 Aggiornamento da versioni precedenti alla v3.5.0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Il nuovo client HTTP utilizzato da GovPay ignora la configurazione del keystore e trustore nella fruizione dei servizi esterni. 
-Risulta quindi necessario verificare che i parametri per l'autenticazione SSL, ove prevista, sia specificata nel dettaglio
-delle Applicazioni e degli Intermediari.
+Il nuovo client HTTP utilizzato da GovPay ignora la configurazione del keystore e trustore della JVM. 
+Risulta quindi necessario verificare che i parametri per l'autenticazione SSL, ove prevista, siano
+specificati tramite Cruscotto di Backoffice nella configurazione delle Applicazioni e degli Intermediari.
 

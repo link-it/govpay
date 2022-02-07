@@ -565,7 +565,7 @@ public class AvvisoPagamentoV2Utils {
 			// Inserisco la virgola se la prima riga non e' vuota
 			String indirizzoDestinatario = StringUtils.isNotEmpty(indirizzoCivicoDebitore) ? indirizzoCivicoDebitore + "," : "";
 			input.setNomeCognomeDestinatario(anagraficaDebitore.getRagioneSociale());
-			input.setCfDestinatario(anagraficaDebitore.getCodUnivoco());
+			input.setCfDestinatario(anagraficaDebitore.getCodUnivoco().toUpperCase());
 
 			if(indirizzoDestinatario.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
 				input.setIndirizzoDestinatario1(indirizzoDestinatario);

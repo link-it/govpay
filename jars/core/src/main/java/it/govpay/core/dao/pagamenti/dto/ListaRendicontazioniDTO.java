@@ -15,6 +15,7 @@ public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 	public ListaRendicontazioniDTO(Authentication user) {
 		super(user);
 		this.addSortField("data", VistaRendicontazione.model().RND_DATA);
+		this.addSortField("idFlusso", VistaRendicontazione.model().FR_COD_FLUSSO);
 		this.addDefaultSort(VistaRendicontazione.model().RND_DATA,SortOrder.DESC);
 	}
 	

@@ -98,7 +98,7 @@ public class AppIOUtils {
 		if(timeToLive != null)
 			message.setTimeToLive(timeToLive.intValue());
 		
-		message.setFiscalCode(versamento.getAnagraficaDebitore().getCodUnivoco());
+		message.setFiscalCode(versamento.getAnagraficaDebitore().getCodUnivoco().toUpperCase());
 		MessageContent content = new MessageContent();
 		
 		String subject = trasformazioneSubject(log, versamento, rpt, dominio, tipo, oggetto);

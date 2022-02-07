@@ -124,6 +124,7 @@ public class EntrateController extends BaseController {
     	String methodName = "findEntrate";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);  
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
@@ -152,7 +153,7 @@ public class EntrateController extends BaseController {
 			// CONVERT TO JSON DELLA RISPOSTA
 			
 			ListaTipiEntrata response = new ListaTipiEntrata(findEntrateDTOResponse.getResults().stream().map(t -> EntrateConverter.toTipoEntrataRsModel(t)).collect(Collectors.toList()), 
-					this.getServicePath(uriInfo), findEntrateDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					this.getServicePath(uriInfo), findEntrateDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();

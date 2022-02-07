@@ -38,6 +38,7 @@ And match response.risultati[7].idIncasso == idRiconciliazioneSin_DOM1_A2A
 And match response ==
 """
 {
+	maxRisultati: '#number',
 	numRisultati: 8,
 	numPagine: 1,
 	risultatiPerPagina: 25,
@@ -66,6 +67,7 @@ And match response.risultati[7].idIncasso == idRiconciliazioneSin_DOM1_A2A
 And match response ==
 """
 {
+	maxRisultati: '#number',
 	numRisultati: 8,
 	numPagine: 1,
 	risultatiPerPagina: 25,
@@ -86,6 +88,7 @@ Then status 200
 And match response ==
 """
 {
+	maxRisultati: '#number',
 	numRisultati: 0,
 	numPagine: 1,
 	risultatiPerPagina: 25,
