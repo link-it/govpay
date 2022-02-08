@@ -1,7 +1,7 @@
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
    <soap:Body>
       <ns2:gpCaricaVersamento xmlns:ns2="http://www.govpay.it/servizi/gpApp/" xmlns:ns3="http://www.govpay.it/servizi/commons/">
-         <generaIuv>false</generaIuv>
+         <generaIuv>#(generaIuv)</generaIuv>
          <aggiornaSeEsiste>true</aggiornaSeEsiste>
          <versamento>
             <codApplicazione>#(idA2A)</codApplicazione>

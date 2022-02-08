@@ -53,18 +53,76 @@ public class Gp21Utils {
 		canale.setCodCanale(rpt.getCodCanale());
 		canale.setCodPsp(rpt.getCodPsp());
 		canale.setCodIntermediarioPsp(rpt.getCodIntermediarioPsp());
-		if(rpt.getTipoVersamento() != null)
-			canale.setTipoVersamento(TipoVersamento.valueOf(rpt.getTipoVersamento().getCodifica()));
+		if(rpt.getTipoVersamento() != null) {
+			switch (rpt.getTipoVersamento()) {
+			case ADDEBITO_DIRETTO:
+				canale.setTipoVersamento(TipoVersamento.AD);
+				break;
+			case ATTIVATO_PRESSO_PSP:
+				canale.setTipoVersamento(TipoVersamento.PO);
+				break;
+			case BOLLETTINO_POSTALE:
+				canale.setTipoVersamento(TipoVersamento.BP);
+				break;
+			case BONIFICO_BANCARIO_TESORERIA:
+				canale.setTipoVersamento(TipoVersamento.BBT);
+				break;
+			case CARTA_PAGAMENTO:
+				canale.setTipoVersamento(TipoVersamento.CP);
+				break;
+			case MYBANK:
+				canale.setTipoVersamento(TipoVersamento.OBEP);
+				break;
+			case OTHER:
+				canale.setTipoVersamento(TipoVersamento.OTH);
+				break;
+			}
+		}
 		t.setCanale(canale);
 		t.setCcp(rpt.getCcp());
 		t.setCodDominio(rpt.getCodDominio());
 		t.setDescrizioneStato(rpt.getDescrizioneStato());
 		if(rpt.getEsitoPagamento() != null) {
-			t.setEsito(EsitoTransazione.valueOf(rpt.getEsitoPagamento().toString()));
+			switch (rpt.getEsitoPagamento()) {
+			case DECORRENZA_TERMINI:
+				t.setEsito(EsitoTransazione.DECORRENZA_TERMINI);
+				break;
+			case DECORRENZA_TERMINI_PARZIALE:
+				t.setEsito(EsitoTransazione.DECORRENZA_TERMINI_PARZIALE);
+				break;
+			case PAGAMENTO_ESEGUITO:
+				t.setEsito(EsitoTransazione.PAGAMENTO_ESEGUITO);
+				break;
+			case PAGAMENTO_NON_ESEGUITO:
+				t.setEsito(EsitoTransazione.PAGAMENTO_NON_ESEGUITO);
+				break;
+			case PAGAMENTO_PARZIALMENTE_ESEGUITO:
+				t.setEsito(EsitoTransazione.PAGAMENTO_PARZIALMENTE_ESEGUITO);
+				break;
+			case IN_CORSO:
+			case RIFIUTATO:
+				// azioni non mappate nelle vecchie api
+				break;
+			}
 		}
 		t.setIuv(rpt.getIuv());
-		if(rpt.getModelloPagamento() != null)
-			t.setModello(ModelloPagamento.valueOf(rpt.getModelloPagamento().toString()));
+		if(rpt.getModelloPagamento() != null) {
+			switch(rpt.getModelloPagamento()) {
+			case ATTIVATO_PRESSO_PSP:
+				t.setModello(ModelloPagamento.ATTIVATO_PRESSO_PSP);
+				break;
+			case DIFFERITO:
+				t.setModello(ModelloPagamento.DIFFERITO);
+				break;
+			case IMMEDIATO:
+				t.setModello(ModelloPagamento.IMMEDIATO);
+				break;
+			case IMMEDIATO_MULTIBENEFICIARIO:
+				t.setModello(ModelloPagamento.IMMEDIATO_MULTIBENEFICIARIO);
+				break;
+			}
+		}
+
 		t.setRpt(rpt.getXmlRpt());
 		t.setRt(rpt.getXmlRt());
 
@@ -285,7 +343,7 @@ public class Gp21Utils {
 //				sv.setDescrizione(vocePendenza.getDescrizione());
 //				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				sv.setImporto(vocePendenza.getImporto());
-				sv.setCodDominio(versamento.getCodDominio());
+//				sv.setCodDominio(versamento.getCodDominio());
 
 				importoTotale = importoTotale.add(vocePendenza.getImporto());
 
@@ -458,7 +516,7 @@ public class Gp21Utils {
 
 				sv.setIdVocePendenza(vocePendenza.getCodSingoloVersamentoEnte());
 				sv.setImporto(vocePendenza.getImporto());
-				sv.setIdDominio(versamento.getIdDominio());
+//				sv.setIdDominio(versamento.getIdDominio());
 
 				importoTotale = importoTotale.add(vocePendenza.getImporto());
 

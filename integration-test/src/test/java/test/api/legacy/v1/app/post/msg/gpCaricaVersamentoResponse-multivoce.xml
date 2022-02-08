@@ -1,0 +1,15 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+   <soap:Body>
+      <ns2:gpCaricaVersamentoResponse xmlns:ns2="http://www.govpay.it/servizi/gpApp/" xmlns:ns3="http://www.govpay.it/servizi/commons/">
+         <codOperazione>#string</codOperazione>
+         <codEsitoOperazione>OK</codEsitoOperazione>
+         <iuvGenerato>
+            <codApplicazione>#(idA2A)</codApplicazione>
+            <codVersamentoEnte>#(idPendenza)</codVersamentoEnte>
+            <codDominio>#(idDominio)</codDominio>
+            <qrCode>#notnull</qrCode>
+            <barCode>#notnull</barCode>
+         </iuvGenerato>
+      </ns2:gpCaricaVersamentoResponse>
+   </soap:Body>
+</soap:Envelope>

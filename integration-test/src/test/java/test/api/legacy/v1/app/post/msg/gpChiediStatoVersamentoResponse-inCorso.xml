@@ -1,0 +1,26 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+	<soap:Body>
+		<ns2:gpChiediStatoVersamentoResponse xmlns:ns2="http://www.govpay.it/servizi/gpApp/" xmlns:ns3="http://www.govpay.it/servizi/commons/">
+			<codOperazione>#string</codOperazione>
+			<codEsitoOperazione>OK</codEsitoOperazione>
+			<codApplicazione>#(idA2A)</codApplicazione>
+			<codVersamentoEnte>#(idPendenza)</codVersamentoEnte>
+			<stato>NON_ESEGUITO</stato>
+			<transazione>
+				<data>#string</data>
+				<modello>#notnull</modello>
+				<codDominio>#(idDominio)</codDominio>
+				<iuv>#notnull</iuv>
+				<ccp>#notnull</ccp>
+				<canale>
+			    	<codIntermediarioPsp>97735020584</codIntermediarioPsp>
+			   		<codPsp>AGID_01</codPsp>
+			   		<codCanale>97735020584_02</codCanale>
+			   		<tipoVersamento>BBT</tipoVersamento>
+				</canale>
+				<stato>RPT_ACCETTATA_NODO</stato>
+				<rpt>#string</rpt>
+			</transazione>
+		</ns2:gpChiediStatoVersamentoResponse>
+	</soap:Body>
+</soap:Envelope>

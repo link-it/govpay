@@ -31,6 +31,7 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.context.core.Actor;
 import org.openspcoop2.utils.logger.constants.context.Result;
@@ -351,6 +352,8 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			patchDescrizioneStato.setValue("Avviso pagato tramite canali alternativi a pagoPA");
 			lstOp.add(patchDescrizioneStato);
 			
+			patchPendenzaDTO.setOp(lstOp);
+			
 			pendenzeDAO.patch(patchPendenzaDTO);
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiestaOk");
@@ -370,6 +373,18 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 				appContext.getEventoCtx().setEsito(Esito.FAIL);
 			else 
 				appContext.getEventoCtx().setEsito(Esito.KO);
+		} catch (ValidationException e) {
+			response.setCodEsitoOperazione(EsitoOperazione.VER_016);
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			new GovPayException(e).log(log);
+			try {
+				ctx.getApplicationLogger().log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
+			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());

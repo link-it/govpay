@@ -11,18 +11,18 @@
                <codUnivoco>RSSMRA30A01H501I</codUnivoco>
                <ragioneSociale>Mario Rossi</ragioneSociale>
             </debitore>
-            <importoTotale>10.00</importoTotale>
+            <importoTotale>16.00</importoTotale>
             <dataScadenza>2999-12-31T00:00:00.000Z</dataScadenza>
             <aggiornabile>true</aggiornabile>
             <causale>#("Pagamento dovuto n." + idPendenza)</causale>
             <singoloVersamento>
                <codSingoloVersamentoEnte>1</codSingoloVersamentoEnte>
-               <importo>10.00</importo>
-               <tributo>
-                  <ibanAccredito>#(ibanAccredito)</ibanAccredito>
-                  <tipoContabilita>ALTRO</tipoContabilita>
-                  <codContabilita>CodiceContabilita</codContabilita>
-               </tributo>
+               <importo>16.00</importo>
+               <bolloTelematico>
+                  <tipo>01</tipo>
+                  <hash>a/CWqtFtCEyA/ymBySahGSaqKMiak5mlX3BoX0jupy8=</hash>
+                  <provincia>RO</provincia>
+               </bolloTelematico>
             </singoloVersamento>
          </versamento>
       </ns2:gpCaricaVersamento>

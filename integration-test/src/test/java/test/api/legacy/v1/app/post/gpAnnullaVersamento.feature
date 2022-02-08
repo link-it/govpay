@@ -1,4 +1,4 @@
-Feature: GpAPP ChiediStatoVersamento
+Feature: GpAPP AnnullaVersamento
 
 Background: 
 
@@ -51,6 +51,17 @@ When method post
 Then status 200
 And match response == gpChiediStatoVersamentoResponse
 
+* def gpAnnullaVersamentoRequest = read('msg/gpAnnullaVersamentoRequest.xml')
+* def gpAnnullaVersamentoResponse = read('msg/gpAnnullaVersamentoResponse-ok.xml')
+
+Given url legacyBaseurl
+And header SoapAction = 'gpAnnullaVersamento'
+And header Content-Type = 'text/xml'
+And headers idA2ABasicAutenticationHeader
+And request gpAnnullaVersamentoRequest
+When method post
+Then status 200
+And match response == gpAnnullaVersamentoResponse
 
 Scenario: Lettura stato pendenza eseguita
 
@@ -158,6 +169,23 @@ And request gpChiediStatoVersamentoRequest
 When method post
 Then status 200
 And match response == gpChiediStatoVersamentoResponse
+
+* def gpAnnullaVersamentoRequest = read('msg/gpAnnullaVersamentoRequest.xml')
+* def gpAnnullaVersamentoResponse = read('msg/gpAnnullaVersamentoResponse-ko.xml')
+
+Given url legacyBaseurl
+And header SoapAction = 'gpAnnullaVersamento'
+And header Content-Type = 'text/xml'
+And headers idA2ABasicAutenticationHeader
+And request gpAnnullaVersamentoRequest
+When method post
+Then status 200
+And match response == gpAnnullaVersamentoResponse
+
+* xml res = response
+* def descrizioneEsitoOperazioneCheck = $res /Envelope/Body/gpAnnullaVersamentoResponse/descrizioneEsitoOperazione
+* match descrizioneEsitoOperazioneCheck == '#("La pendenza (IdA2A:" + idA2A + ", Id:" + idPendenza + ") e\' in uno stato che non consente l\'annullamento (ESEGUITO)")' 
+
 
 
 

@@ -1,0 +1,9 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+	<soap:Body>
+		<ns2:gpAnnullaVersamentoResponse xmlns:ns2="http://www.govpay.it/servizi/gpApp/" xmlns:ns3="http://www.govpay.it/servizi/commons/">
+			<codOperazione>#string</codOperazione>
+			<codEsitoOperazione>VER_009</codEsitoOperazione>
+			<descrizioneEsitoOperazione>#string</descrizioneEsitoOperazione>
+		</ns2:gpAnnullaVersamentoResponse>
+	</soap:Body>
+</soap:Envelope>

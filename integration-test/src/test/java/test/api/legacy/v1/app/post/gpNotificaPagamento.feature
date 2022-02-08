@@ -1,4 +1,4 @@
-Feature: GpAPP ChiediStatoVersamento
+Feature: GpAPP NotificaPagamento
 
 Background: 
 
@@ -51,6 +51,17 @@ When method post
 Then status 200
 And match response == gpChiediStatoVersamentoResponse
 
+* def gpNotificaPagamentoRequest = read('msg/gpNotificaPagamentoRequest.xml')
+* def gpNotificaPagamentoResponse = read('msg/gpNotificaPagamentoResponse-ok.xml')
+
+Given url legacyBaseurl
+And header SoapAction = 'gpNotificaPagamento'
+And header Content-Type = 'text/xml'
+And headers idA2ABasicAutenticationHeader
+And request gpNotificaPagamentoRequest
+When method post
+Then status 200
+And match response == gpNotificaPagamentoResponse
 
 Scenario: Lettura stato pendenza eseguita
 
@@ -159,5 +170,20 @@ When method post
 Then status 200
 And match response == gpChiediStatoVersamentoResponse
 
+* def gpNotificaPagamentoRequest = read('msg/gpNotificaPagamentoRequest.xml')
+* def gpNotificaPagamentoResponse = read('msg/gpNotificaPagamentoResponse-ko.xml')
+
+Given url legacyBaseurl
+And header SoapAction = 'gpNotificaPagamento'
+And header Content-Type = 'text/xml'
+And headers idA2ABasicAutenticationHeader
+And request gpNotificaPagamentoRequest
+When method post
+Then status 200
+And match response == gpNotificaPagamentoResponse
+
+* xml res = response
+* def descrizioneEsitoOperazioneCheck = $res /Envelope/Body/gpNotificaPagamentoResponse/descrizioneEsitoOperazione
+* match descrizioneEsitoOperazioneCheck == 'Non e\' consentito aggiornare lo stato di una pendenza ad ANNULLATO da uno stato diverso da NON_ESEGUITO o ANNULLATO'
 
 
