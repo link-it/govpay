@@ -20,6 +20,7 @@
 package it.govpay.web.legacy.ws;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -56,11 +57,15 @@ import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.StatoPendenza;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
 import it.govpay.servizi.PagamentiTelematiciGPApp;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.GpResponse;
@@ -122,6 +127,10 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			appContext.getEventoCtx().setIdA2A(applicazioneAutenticata.getCodApplicazione());
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
 			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
+			
+			// autorizzazione sulla API
+			Utils.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.SCRITTURA));
+			
 			response.getIuvCaricato().addAll(ConverterUtils.toIuvCaricato(configWrapper, bodyrichiesta, applicazioneAutenticata));
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiestaOk");
@@ -141,6 +150,18 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 				appContext.getEventoCtx().setEsito(Esito.FAIL);
 			else 
 				appContext.getEventoCtx().setEsito(Esito.KO);
+		} catch (NotAuthorizedException e) {
+			response.setCodEsitoOperazione(EsitoOperazione.APP_003);
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			new GovPayException(e).log(log);
+			try {
+				ctx.getApplicationLogger().log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
+			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
@@ -177,6 +198,9 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 		try {
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(appContext, user);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
+			
+			// autorizzazione sulla API
+			Utils.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.SCRITTURA));
 
 			appContext.getEventoCtx().setIdA2A(bodyrichiesta.getVersamento().getCodApplicazione());
 			appContext.getEventoCtx().setIdPendenza(bodyrichiesta.getVersamento().getCodVersamentoEnte());
@@ -226,6 +250,18 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 				appContext.getEventoCtx().setEsito(Esito.FAIL);
 			else 
 				appContext.getEventoCtx().setEsito(Esito.KO);
+		} catch (NotAuthorizedException e) {
+			response.setCodEsitoOperazione(EsitoOperazione.APP_003);
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			new GovPayException(e).log(log);
+			try {
+				ctx.getApplicationLogger().log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
+			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
@@ -259,6 +295,9 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 		try {
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(appContext, user);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
+			
+			// autorizzazione sulla API
+			Utils.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.SCRITTURA));
 
 			appContext.getEventoCtx().setIdA2A(bodyrichiesta.getCodApplicazione());
 			appContext.getEventoCtx().setIdPendenza(bodyrichiesta.getCodVersamentoEnte());
@@ -290,6 +329,18 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 				appContext.getEventoCtx().setEsito(Esito.FAIL);
 			else 
 				appContext.getEventoCtx().setEsito(Esito.KO);
+		} catch (NotAuthorizedException e) {
+			response.setCodEsitoOperazione(EsitoOperazione.APP_003);
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			new GovPayException(e).log(log);
+			try {
+				ctx.getApplicationLogger().log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
+			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
@@ -324,6 +375,9 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(appContext, user);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
 			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
+			
+			// autorizzazione sulla API
+			Utils.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.SCRITTURA));
 
 			appContext.getEventoCtx().setIdA2A(bodyrichiesta.getCodApplicazione());
 			appContext.getEventoCtx().setIdPendenza(bodyrichiesta.getCodVersamentoEnte());
@@ -385,6 +439,18 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
 			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
 			appContext.getEventoCtx().setEsito(Esito.KO);
+		} catch (NotAuthorizedException e) {
+			response.setCodEsitoOperazione(EsitoOperazione.APP_003);
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			new GovPayException(e).log(log);
+			try {
+				ctx.getApplicationLogger().log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
+			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
@@ -420,6 +486,9 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(appContext, user);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
 			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
+			
+			// autorizzazione sulla API
+			Utils.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
 
 			appContext.getEventoCtx().setIdA2A(bodyrichiesta.getCodApplicazione());
 			appContext.getEventoCtx().setIdPendenza(bodyrichiesta.getCodVersamentoEnte());
@@ -462,6 +531,18 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 				appContext.getEventoCtx().setEsito(Esito.FAIL);
 			else 
 				appContext.getEventoCtx().setEsito(Esito.KO);
+		} catch (NotAuthorizedException e) {
+			response.setCodEsitoOperazione(EsitoOperazione.APP_003);
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			new GovPayException(e).log(log);
+			try {
+				ctx.getApplicationLogger().log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
+			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());

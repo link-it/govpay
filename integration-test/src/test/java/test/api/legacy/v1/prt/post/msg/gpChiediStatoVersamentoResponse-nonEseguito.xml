@@ -1,0 +1,15 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+	<soap:Body>
+		<ns2:gpChiediStatoVersamentoResponse xmlns:ns2="http://www.govpay.it/servizi/gpPrt/" xmlns:ns3="http://www.govpay.it/servizi/commons/">
+			<codOperazione>#string</codOperazione>
+			<codEsitoOperazione>OK</codEsitoOperazione>
+			<codApplicazione>#(idA2A)</codApplicazione>
+			<codVersamentoEnte>#(idPendenza)</codVersamentoEnte>
+			<codDominio>#(idDominio)</codDominio>
+			<stato>NON_ESEGUITO</stato>
+			<importoTotale>#string</importoTotale>
+			<causale>#string</causale>
+			<dataScadenza>#string</dataScadenza>
+		</ns2:gpChiediStatoVersamentoResponse>
+	</soap:Body>
+</soap:Envelope>

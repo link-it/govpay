@@ -37,6 +37,7 @@ And path 'genera', idDominio
 When method get
 Then assert responseStatus == 200
 * def idflusso_dom1 = response.response.rendicontazioni[0].identificativoFlusso
+* def annoRif_flusso_dom1 = response.response.rendicontazioni[0].anno
 * def idpendenza_dom1 = idPendenza
 
 * def idPendenza = getCurrentTimeMillis()
@@ -51,6 +52,7 @@ And path 'genera', idDominio
 When method get
 Then assert responseStatus == 200
 * def idflusso_dom1_uo = response.response.rendicontazioni[0].identificativoFlusso
+* def annoRif_flusso_dom1_uo = response.response.rendicontazioni[0].anno
 * def idpendenza_dom1_uo = idPendenza
 
 * def idPendenza = getCurrentTimeMillis()
@@ -65,6 +67,7 @@ And path 'genera', idDominio
 When method get
 Then assert responseStatus == 200
 * def idflusso_dom1_uo2 = response.response.rendicontazioni[0].identificativoFlusso
+* def annoRif_flusso_dom1_uo2 = response.response.rendicontazioni[0].anno
 * def idpendenza_dom1_uo2 = idPendenza
 
 * def idPendenza = getCurrentTimeMillis()
@@ -82,6 +85,7 @@ And path 'genera', idDominio_2
 When method get
 Then assert responseStatus == 200
 * def idflusso_dom2_uo = response.response.rendicontazioni[0].identificativoFlusso
+* def annoRif_flusso_dom2_uo = response.response.rendicontazioni[0].anno
 * def idpendenza_dom2_uo = idPendenza
 
 * def idPendenza = getCurrentTimeMillis()
@@ -97,6 +101,7 @@ And path 'genera', idDominio_2
 When method get
 Then assert responseStatus == 200
 * def idflusso_dom2 = response.response.rendicontazioni[0].identificativoFlusso
+* def annoRif_flusso_dom2 = response.response.rendicontazioni[0].anno
 * def idpendenza_dom2 = idPendenza
 
 

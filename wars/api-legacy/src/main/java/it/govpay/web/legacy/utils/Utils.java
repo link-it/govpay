@@ -2,16 +2,29 @@ package it.govpay.web.legacy.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.security.core.Authentication;
+
+import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.MetaInfo;
 import it.govpay.servizi.commons.MetaInfo.IuvProp;
 
 public class Utils {
 	
-	public static SimpleDateFormat simpleDateFormatAnno = new SimpleDateFormat("yyyy");
+	
+	public static void isAuthorized(Authentication authentication, List<TIPO_UTENZA> tipoUtenza, List<Servizio> servizi, List<Diritti> listaDiritti) throws NotAuthorizedException {
+		if(!AuthorizationManager.isAuthorized(authentication, tipoUtenza, servizi, listaDiritti)) {
+			throw AuthorizationManager.toNotAuthorizedException(authentication);
+		}
+	}
 	
 	public static void loadMetaInfo(GpContext ctx, MetaInfo metaInfo) {
 		if(metaInfo != null){

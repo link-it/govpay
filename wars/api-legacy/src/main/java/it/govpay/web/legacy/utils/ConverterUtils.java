@@ -39,8 +39,9 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.core.beans.GpAvviaTransazionePagamentoResponse.RifTransazione;
 import it.govpay.core.beans.VersamentoKey;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
@@ -116,15 +117,19 @@ public class ConverterUtils extends Gp21Utils {
 		fr.setNumeroPagamenti(0l);
 		fr.setIur(frModel.getIur());
 
-		for(Rendicontazione rend : rends) {
-			it.govpay.servizi.commons.FlussoRendicontazione.Pagamento rendicontazionePagamento = ConverterUtils.toRendicontazionePagamento(rend, frModel, configWrapper);
-			if(rendicontazionePagamento != null) {
-				fr.setImportoTotale(rend.getImporto().add(fr.getImportoTotale()));
-				fr.setNumeroPagamenti(fr.getNumeroPagamenti() + 1);
-				fr.getPagamento().add(rendicontazionePagamento);
+		if(rends != null) {
+			for(Rendicontazione rend : rends) {
+				Pagamento pagamento = rend.getPagamento();
+				it.govpay.bd.model.Rendicontazione rendicontazione = rend.getRendicontazione();
+				it.govpay.servizi.commons.FlussoRendicontazione.Pagamento rendicontazionePagamento = ConverterUtils.toRendicontazionePagamento(rendicontazione, pagamento, frModel, configWrapper);
+				if(rendicontazionePagamento != null) {
+					fr.setImportoTotale(rendicontazione.getImporto().add(fr.getImportoTotale()));
+					fr.setNumeroPagamenti(fr.getNumeroPagamenti() + 1);
+					fr.getPagamento().add(rendicontazionePagamento);
+				}
 			}
 		}
-
+		
 		return fr;
 	}
 

@@ -174,13 +174,13 @@ public class Gp21Utils {
 		return p;
 	}
 
-	public static it.govpay.servizi.commons.FlussoRendicontazione.Pagamento toRendicontazionePagamento(Rendicontazione rend, Fr frModel, BDConfigWrapper configWrapper) throws ServiceException {
+	public static it.govpay.servizi.commons.FlussoRendicontazione.Pagamento toRendicontazionePagamento(Rendicontazione rend, Pagamento pagamento, Fr frModel, BDConfigWrapper configWrapper) throws ServiceException {
 
 		if(rend.getVersamento(null) == null) return null;
 
 		FlussoRendicontazione.Pagamento p = new FlussoRendicontazione.Pagamento();
-		if(rend.getPagamento(null) != null)
-			p.setCodSingoloVersamentoEnte(rend.getPagamento(null).getSingoloVersamento(null).getCodSingoloVersamentoEnte());
+		if(pagamento != null)
+			p.setCodSingoloVersamentoEnte(pagamento.getSingoloVersamento(null).getCodSingoloVersamentoEnte());
 		else
 			p.setCodSingoloVersamentoEnte(rend.getVersamento(null).getSingoliVersamenti().get(0).getCodSingoloVersamentoEnte());
 		p.setImportoRendicontato(rend.getImporto().abs());

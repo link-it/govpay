@@ -1,0 +1,11 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+	<soap:Body>
+		<ns2:gpChiediStatoTransazione xmlns:ns2="http://www.govpay.it/servizi/gpPrt/" xmlns:ns3="http://www.govpay.it/servizi/commons/">
+			<codPortale>#(idA2A)</codPortale>
+			<codDominio>#(idDominio)</codDominio>
+			<iuv>#(iuv)</iuv>
+			<ccp>#(ccp)</ccp>
+		</ns2:gpChiediStatoTransazione>
+	</soap:Body>
+</soap:Envelope>
+

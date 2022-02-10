@@ -1,0 +1,18 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+	<soap:Body>
+		<ns2:gpAvviaTransazionePagamentoResponse xmlns:ns2="http://www.govpay.it/servizi/gpPrt/" xmlns:ns3="http://www.govpay.it/servizi/commons/">
+			<codOperazione>#string</codOperazione>
+			<codEsitoOperazione>OK</codEsitoOperazione>
+			<urlRedirect>#string</urlRedirect>
+			<pspSessionId>#string</pspSessionId>
+			<rifTransazione>
+				<codApplicazione>#(idA2A)</codApplicazione>
+            	<codVersamentoEnte>#(idPendenza)</codVersamentoEnte>
+            	<codDominio>#(idDominio)</codDominio>
+				<iuv>#string</iuv>
+				<ccp>#string</ccp>
+			</rifTransazione>
+		</ns2:gpAvviaTransazionePagamentoResponse>
+	</soap:Body>
+</soap:Envelope>
+

@@ -20,6 +20,7 @@
 package it.govpay.web.legacy.ws;
 
 import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -56,11 +57,15 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.model.Iuv;
+import it.govpay.model.Acl.Diritti;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.servizi.PagamentiTelematiciGPPrt;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.MetaInfo;
@@ -119,6 +124,9 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(user));
 		try {
 			log.info("Richiesta operazione gpAvviaTransazionePagamento");
+			
+			// autorizzazione sulla API
+			Utils.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.SCRITTURA));
 
 			// Aggiungo il codSessionePortale al PaymentContext
 			appContext.getPagamentoCtx().setCodSessionePortale(bodyrichiesta.getCodSessionePortale());
@@ -176,6 +184,18 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 				appContext.getEventoCtx().setEsito(Esito.FAIL);
 			else 
 				appContext.getEventoCtx().setEsito(Esito.KO);
+		} catch (NotAuthorizedException e) {
+			response.setCodEsitoOperazione(EsitoOperazione.APP_003);
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			new GovPayException(e).log(log);
+			try {
+				ctx.getApplicationLogger().log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
+			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
 			log.error("Richiesta di pagamento fallita", e);
 			GovPayException gpe = new GovPayException(e);
@@ -213,8 +233,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			@SuppressWarnings("unused")
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(appContext, user);
 			ctx.getApplicationLogger().log("ws.ricevutaRichiesta");
-
 			ctx.getApplicationLogger().log("ws.autorizzazione");
+			
+			// autorizzazione sulla API
+			Utils.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
 
 			LeggiRptDTO leggiRptDTO = new LeggiRptDTO(user);
 			leggiRptDTO.setIdDominio(bodyrichiesta.getCodDominio());
@@ -251,6 +273,18 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 				appContext.getEventoCtx().setEsito(Esito.FAIL);
 			else 
 				appContext.getEventoCtx().setEsito(Esito.KO);
+		} catch (NotAuthorizedException e) {
+			response.setCodEsitoOperazione(EsitoOperazione.APP_003);
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			new GovPayException(e).log(log);
+			try {
+				ctx.getApplicationLogger().log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
+			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
 			log.error("Richiesta di stato pagamento fallita", e);
 			GovPayException gpe = new GovPayException(e);
@@ -314,6 +348,9 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 
 			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
 			ctx.getApplicationLogger().log("ws.autorizzazione");
+			
+			// autorizzazione sulla API
+			Utils.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO();
 			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
@@ -359,8 +396,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			}
 
 			List<Rpt> rpts = leggiPendenza.getRpts();
-			for(Rpt rpt : rpts) {
-				response.getTransazione().add(ConverterUtils.toTransazione(rpt, configWrapper));
+			if(rpts != null) {
+				for(Rpt rpt : rpts) {
+					response.getTransazione().add(ConverterUtils.toTransazione(rpt, configWrapper));
+				}
 			}
 			ctx.getApplicationLogger().log("ws.ricevutaRichiestaOk");
 			appContext.getEventoCtx().setEsito(Esito.OK);
@@ -379,6 +418,18 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 				appContext.getEventoCtx().setEsito(Esito.FAIL);
 			else 
 				appContext.getEventoCtx().setEsito(Esito.KO);
+		} catch (NotAuthorizedException e) {
+			response.setCodEsitoOperazione(EsitoOperazione.APP_003);
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			new GovPayException(e).log(log);
+			try {
+				ctx.getApplicationLogger().log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
+			}
+			appContext.getEventoCtx().setDescrizioneEsito(e.getMessage());
+			appContext.getEventoCtx().setSottotipoEsito(response.getCodEsitoOperazione().name());
+			appContext.getEventoCtx().setEsito(Esito.KO);
 		} catch (Exception e) {
 			log.error("Richiesta di verifica stato versamento fallita", e);
 			GovPayException gpe = new GovPayException(e);

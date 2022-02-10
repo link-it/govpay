@@ -29,8 +29,10 @@ When method get
 Then assert responseStatus == 200
 
 * def idflusso_dom1_1 = response.response.rendicontazioni[0].identificativoFlusso
+* def annoRif_flusso_dom1_1 = response.response.rendicontazioni[0].anno
 
 * def idflusso_dom2_1 = response.response.rendicontazioni[1].identificativoFlusso
+* def annoRif_flusso_dom2_1 = response.response.rendicontazioni[1].anno
 
 * call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
 

@@ -24,6 +24,8 @@ public class LeggiFrDTO extends BasicCreateRequestDTO {
 	private String idDominio;
 	private Date dataOraFlusso;
 	private String accept;	
+	private String codApplicazione;
+	private Integer annoRiferimento;
 
 	public LeggiFrDTO(Authentication user, String idFlusso) {
 		super(user);
@@ -69,6 +71,22 @@ public class LeggiFrDTO extends BasicCreateRequestDTO {
 
 	public void setIdDominio(String idDominio) {
 		this.idDominio = idDominio;
+	}
+
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
+	}
+
+	public Integer getAnnoRiferimento() {
+		return annoRiferimento;
+	}
+
+	public void setAnnoRiferimento(Integer annoRiferimento) {
+		this.annoRiferimento = annoRiferimento;
 	}
 
 }

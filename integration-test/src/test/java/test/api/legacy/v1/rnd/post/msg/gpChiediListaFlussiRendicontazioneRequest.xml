@@ -1,0 +1,10 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+   <soap:Body>
+      <ns2:gpChiediListaFlussiRendicontazione xmlns:ns2="http://www.govpay.it/servizi/gpRnd/" xmlns:ns3="http://www.govpay.it/servizi/commons/">
+         <codDominio>#(idDominioListaFlussiRendicontazione)</codDominio>
+         <dataInizio>#(dataInizioListaFlussiRendicontazione)</dataInizio>
+         <dataFine>#(dataFineListaFlussiRendicontazione)</dataFine>
+      </ns2:gpChiediListaFlussiRendicontazione>
+   </soap:Body>
+</soap:Envelope>
+
