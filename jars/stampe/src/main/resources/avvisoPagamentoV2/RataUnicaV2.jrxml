@@ -1,0 +1,871 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RataUnica" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="39fc760f-927a-41cb-a91e-1efbc2881e4d">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="AvvisoPagamento - Xml"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="573"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="413"/>
+	<property name="com.jaspersoft.studio.report.description" value=""/>
+	<import value="org.apache.commons.codec.binary.Base64"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/Users/roberto/Documents/Link.it/JasperReports/iReport v.5.6.0/Avviso Pagamento Bollettino/"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="logo_ente" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="logo_ente_secondario" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="cf_ente" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="cf_destinatario" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="nome_cognome_destinatario" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="ente_creditore" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="settore_ente" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="indirizzo_destinatario_1" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="indirizzo_destinatario_2" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="info_ente" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="cbill" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="intestatario_conto_corrente_postale" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="poste" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="oggetto_del_pagamento_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="avviso_pagamento_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="ente_creditore_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="destinatario_avviso_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="quanto_quando_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="come_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="paga_app_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="paga_app2_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="paga_territorio_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="paga_territorio2_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="nota_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="nota_1_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="nota_2_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="nota_3_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="prima_rata_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="importo_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="entro_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="canali_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="destinatario_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="intestatario_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="oggetto_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="descrizione_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="tipo_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="codice_cbill_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="codice_avviso_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="codice_fiscale_ente_ita" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="oggetto_del_pagamento_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="avviso_pagamento_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="ente_creditore_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="destinatario_avviso_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="quanto_quando_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="come_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="paga_app_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="paga_app2_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="paga_territorio_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="paga_territorio2_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="nota_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="nota_1_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="nota_2_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="nota_3_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="prima_rata_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="importo_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="entro_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="canali_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="destinatario_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="intestatario_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="oggetto_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="descrizione_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="tipo_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="codice_cbill_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="codice_avviso_tra" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="codice_fiscale_ente_tra" class="java.lang.String" isForPrompting="false"/>
+	<queryString language="xPath">
+		<![CDATA[/AvvisoPagamentoInput/pagine/singola]]>
+	</queryString>
+	<field name="importo" class="java.lang.String">
+		<fieldDescription><![CDATA[rata/importo]]></fieldDescription>
+	</field>
+	<field name="data" class="java.lang.String">
+		<fieldDescription><![CDATA[rata/data]]></fieldDescription>
+	</field>
+	<field name="qr_code" class="java.lang.String">
+		<fieldDescription><![CDATA[rata/qr_code]]></fieldDescription>
+	</field>
+	<field name="codice_avviso" class="java.lang.String">
+		<fieldDescription><![CDATA[rata/codice_avviso]]></fieldDescription>
+	</field>
+	<field name="codice_avviso_postale" class="java.lang.String">
+		<fieldDescription><![CDATA[rata/codice_avviso_postale]]></fieldDescription>
+	</field>
+	<field name="numero_cc_postale" class="java.lang.String">
+		<fieldDescription><![CDATA[rata/numero_cc_postale]]></fieldDescription>
+	</field>
+	<field name="data_matrix" class="java.lang.String">
+		<fieldDescription><![CDATA[rata/data_matrix]]></fieldDescription>
+	</field>
+	<field name="autorizzazione" class="java.lang.String">
+		<fieldDescription><![CDATA[rata/autorizzazione]]></fieldDescription>
+	</field>
+	<field name="scadenza" class="java.lang.String">
+		<fieldDescription><![CDATA[rata/scadenza]]></fieldDescription>
+	</field>
+	<field name="scadenza_tra" class="java.lang.String">
+		<fieldDescription><![CDATA[rata/scadenza_tra]]></fieldDescription>
+	</field>
+	<field name="numero_rata" class="java.lang.String">
+		<fieldDescription><![CDATA[rata/numero_rata]]></fieldDescription>
+	</field>
+	<field name="numero_rata_tra" class="java.lang.String">
+		<fieldDescription><![CDATA[rata/numero_rata_tra]]></fieldDescription>
+	</field>
+	<detail>
+		<band height="788">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="23" y="276" width="250" height="100" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="6ff7f0af-5e36-4af9-be62-7767ce7be597">
+					<printWhenExpression><![CDATA[new Boolean(!$P{nota_1_ita}.equals(null)) && new Boolean($P{nota_2_ita}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="html">
+					<font fontName="TitilliumWeb" size="9" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nota_1_ita} + "<br>" + ($P{nota_1_tra}.equals(null)?"":"<span style=\"color: #999999;\">" + $P{nota_1_tra} + "</span>")]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="" positionType="Float" mode="Opaque" x="-20" y="413" width="595" height="166" uuid="0f61e2a9-4160-476e-a763-cab36ec2414c"/>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="#000000"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="" positionType="Float" mode="Opaque" x="-20" y="579" width="595" height="209" backcolor="#FFFFFF" uuid="22f4694e-d6ef-44a6-84a3-dba3adf001a9">
+					<printWhenExpression><![CDATA[new Boolean($F{qr_code}.equals(null) || $P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="#000000"/>
+				</graphicElement>
+			</line>
+			<image hAlign="Left" vAlign="Top" onErrorType="Blank">
+				<reportElement positionType="Float" x="523" y="579" width="30" height="30" isRemoveLineWhenBlank="true" uuid="2bfbd81b-c89b-4818-9688-af85c95e08b7">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<imageExpression><![CDATA[net.sf.jasperreports.renderers.BatikRenderer.getInstanceFromText("<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='792px' height='612px' viewBox='0 0 792 612' enable-background='new 0 0 792 612' xml:space='preserve'><path id='path48999' stroke='#000000' stroke-width='7.5406' d='M239.552,533.899	c32.184-7.376,47.218-33.898,53.269-59.084l35.236-206.368l-5.573-43.878c-7.26-57.166,16.701-91.349,28.746-123.329 c12.376-26.134,0.705-60.55-25.624-72.886c-25.276-13.796-57.261,0.725-70.373,24.612c-14.83,22.919-11.005,58.032,12.404,72.733 c24.38,15.311,27.198,5.275,36.846,10.647c12.343,6.872-10.111,41.582-20.852,109.055L239.552,533.899z M311.3,42.074	c29.766,6.717,35.918,49.645,14.561,68.668c-21.896,21.995-61.074,2.869-61.114-30.051C264.72,58.156,287.86,34.796,311.3,42.074z'/><path id='path49000' stroke='#000000' stroke-width='7.5406' d='M37.873,334.897 c7.304-32.201,33.793-47.293,58.965-53.4l206.289-35.696l43.89,5.475c57.182,7.133,91.312-16.904,123.264-29.02 c26.106-12.435,60.548-0.841,72.943,25.462c13.852,25.245-0.597,57.262-24.455,70.428c-22.886,14.881-58.008,11.135-72.761-12.242 c-15.366-24.347-5.336-27.187-10.729-36.823c-6.899-12.327-41.559,10.204-109.008,21.095L37.873,334.897z M529.538,262.053	c-6.783-29.751-49.725-35.808-68.701-14.408c-21.947,21.944-2.733,61.08,30.187,61.047	C513.559,308.668,536.868,285.476,529.538,262.053z'/></svg>")]]></imageExpression>
+			</image>
+			<image scaleImage="RetainShape" hAlign="Left" vAlign="Top" onErrorType="Blank">
+				<reportElement positionType="Float" x="0" y="1" width="34" height="34" isRemoveLineWhenBlank="true" uuid="5076b5cb-7f3f-4b3c-aa71-eaf679bbeedf"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<imageExpression><![CDATA[net.sf.jasperreports.renderers.BatikRenderer.getInstanceFromText("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34.67 22.99'><defs><style>.cls-1{fill:#1d1d1b;}</style></defs><title>logo-pagopa</title><g id='Layer_2' data-name='Layer 2'><g id='Layer_1-2' data-name='Layer 1'><path class='cls-1' d='M24.43,6.89v2.9H22.3V0h3.92c1.26,0,1.9.34,1.91,1V5.79c0,.68-.62,1-1.85,1H24.43ZM26,1.13H24.42V5.67H26Z'/><path class='cls-1' d='M1.78,9.8v2.91H0V2.91H3.28c1.06,0,1.59.34,1.6,1V8.71c0,.67-.52,1-1.54,1H1.78ZM3.11,4.05H1.78V8.59H3.11Z'/><path class='cls-1' d='M10.36,9.72H7c-1,0-1.49-.34-1.49-1v-2C5.5,6,6,5.7,7,5.7H8.59V4.05H7.26V5H5.51v-1c0-.67.52-1,1.57-1l1.73,0q1.55,0,1.56,1ZM7.26,8.59H8.6V6.84H7.26Z'/><path class='cls-1' d='M14.24,9.72H12.68c-1,0-1.54-.34-1.54-1V3.93c0-.68.54-1,1.6-1H16v8.78c0,.68-.52,1-1.55,1H12.69c-1,0-1.55-.34-1.55-1v-1h1.77v.89h1.33V9.72ZM12.91,8.59h1.33V4.05H12.91Z'/><path class='cls-1' d='M21.5,8.71c0,.67-.53,1-1.59,1H18.19c-1,0-1.56-.34-1.56-1V3.93q0-1,1.56-1H20c1,0,1.54.34,1.54,1ZM19.74,4.05H18.4V8.59h1.33Z'/><path class='cls-1' d='M34.67,1.07c0-.68-.62-1-1.85-1H30.7q-1.86,0-1.86,1V9.81H31v-3h1.6v2.5a11.58,11.58,0,0,1-20.71,7.11l1.06-.81L8.66,12.76l.19,6,1.35-1.09A13.68,13.68,0,0,0,34.67,9.31ZM32.56,5.69H31V1.19h1.6Z'/></g></g></svg>")]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement positionType="Float" x="39" y="5" width="311" height="16" isRemoveLineWhenBlank="true" forecolor="#000000" uuid="1b279100-ff86-488d-8eaa-4143b45921ec"/>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{avviso_pagamento_ita}.toUpperCase() + ($P{avviso_pagamento_tra}.equals(null)?"":"<font face=\"TitilliumWeb\" size=\"10\"><style forecolor=\"#999999\"> · " + $P{avviso_pagamento_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<image onErrorType="Blank">
+				<reportElement positionType="Float" x="-9" y="431" width="88" height="88" isRemoveLineWhenBlank="true" uuid="c4cb3b41-8970-4ec1-987e-9f6a5d16a42c">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
+    new com.google.zxing.qrcode.QRCodeWriter().encode(
+    $F{qr_code},
+    com.google.zxing.BarcodeFormat.QR_CODE, 300, 300))]]></imageExpression>
+			</image>
+			<image hAlign="Right" vAlign="Top" onErrorType="Blank">
+				<reportElement positionType="Float" x="470" y="1" width="85" height="85" isRemoveLineWhenBlank="true" uuid="d8a00a95-a05e-4c47-9e42-ffaa70912ff0"/>
+				<imageExpression><![CDATA[new ByteArrayInputStream(Base64.decodeBase64((($P{logo_ente}.contains(','))?$P{logo_ente}.split(',')[1]:$P{logo_ente}).getBytes("UTF-8")))]]></imageExpression>
+			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="0" y="39" width="458" height="42" isRemoveLineWhenBlank="true" uuid="27b196d2-5c7d-4872-97c2-8c456dbaf791">
+					<printWhenExpression><![CDATA[new Boolean($P{logo_ente_secondario}.equals( null ))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="16" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="11.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{numero_rata}.equals(null)?"":$F{numero_rata}) +
+    ((!$F{numero_rata}.equals(null) && !$P{oggetto_del_pagamento_ita}.equals(null))?
+        ($P{oggetto_del_pagamento_tra}.equals(null)?($F{numero_rata_tra}.equals(null)?" - ":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $F{numero_rata_tra} + "</style></font> - "):" - "):"") +
+    ($P{oggetto_del_pagamento_ita}.equals(null)?"":$P{oggetto_del_pagamento_ita})) +
+(!$P{oggetto_del_pagamento_tra}.equals(null)?"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · </style></font>":"") +
+((($F{numero_rata_tra}.equals(null) || $P{oggetto_del_pagamento_tra}.equals(null))?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\">" + $F{numero_rata_tra} + "</style></font>") +
+    ((!$F{numero_rata_tra}.equals(null) && !$P{oggetto_del_pagamento_tra}.equals(null))?"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> - </style></font>":"") +
+    ($P{oggetto_del_pagamento_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\">" + $P{oggetto_del_pagamento_tra} + "</style></font>"))]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="0" y="246" width="115" height="24" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="1b93e81e-efa0-4b1a-94f8-7cc2c5f0a1fe"/>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="15" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat("#,###,##0.00", new DecimalFormatSymbols(Locale.ITALY)).format(Double.valueOf($F{importo})) + " Euro"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" mode="Transparent" x="275" y="228" width="278" height="18" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="3705e44d-838b-4ee7-aacf-4bc177d64c3b"/>
+				<box leftPadding="8"/>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{paga_app_ita}.toUpperCase() + ($P{paga_app_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{paga_app_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" mode="Opaque" x="-20" y="91" width="296" height="18" isRemoveLineWhenBlank="true" backcolor="#EBEBEB" uuid="62e9a58c-f063-405c-aebd-bd03fa185d6e"/>
+				<box leftPadding="20"/>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ente_creditore_ita}.toUpperCase() + ($P{ente_creditore_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{ente_creditore_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" mode="Opaque" x="276" y="91" width="299" height="18" isRemoveLineWhenBlank="true" backcolor="#EBEBEB" uuid="b3b30ebd-a78d-4265-880f-93de27c899fe"/>
+				<box leftPadding="8" rightPadding="20"/>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{destinatario_avviso_ita}.toUpperCase() + ($P{destinatario_avviso_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{destinatario_avviso_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="200" y="91" width="74" height="18" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="fe2fec52-c15d-443d-8498-559d5037e447"/>
+				<box leftPadding="10"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="html">
+					<font fontName="TitilliumWeb" size="9" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cf_ente}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="450" y="91" width="105" height="18" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="858be949-0f5e-45ba-8728-cdca3d540eca"/>
+				<box leftPadding="0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="html">
+					<font fontName="TitilliumWeb" size="9" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cf_destinatario}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="275" y="246" width="226" height="74" isRemoveLineWhenBlank="true" uuid="144fb928-3360-497d-b653-29aa3ae2117c"/>
+				<box leftPadding="8"/>
+				<textElement verticalAlignment="Top" markup="html">
+					<font fontName="TitilliumWeb" size="9" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{paga_app2_ita} + "<br>" + ($P{paga_app2_tra}.equals(null)?"":"<span style=\"color: #999999;\">" + $P{paga_app2_tra} + "</span>")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" mode="Transparent" x="276" y="321" width="278" height="18" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="07109309-7b7b-4b17-a967-c59644070a0e"/>
+				<box leftPadding="8"/>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{paga_territorio_ita}.toUpperCase() + ($P{paga_territorio_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{paga_territorio_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="276" y="339" width="226" height="68" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="caea4922-8dce-4fbf-bf5b-fe404b30cc3c"/>
+				<box leftPadding="8"/>
+				<textElement verticalAlignment="Top" markup="html">
+					<font fontName="TitilliumWeb" size="9" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{paga_territorio2_ita} + "<br>" + ($P{paga_territorio2_tra}.equals(null)?"":"<span style=\"color: #999999;\">" + $P{paga_territorio2_tra} + "</span>")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" mode="Opaque" x="-20" y="413" width="296" height="18" isRemoveLineWhenBlank="true" backcolor="#EBEBEB" uuid="c1fbbf12-d2ba-456f-a6e9-45493a58852e">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<box leftPadding="20" rightPadding="20"/>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{canali_ita}.toUpperCase() + ($P{canali_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{canali_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement positionType="Float" mode="Opaque" x="275" y="413" width="299" height="18" isRemoveLineWhenBlank="true" backcolor="#EBEBEB" uuid="605f1d60-195c-4fd7-8a62-816b23d0fda0">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<box leftPadding="8" rightPadding="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{qr_code}.equals(null)?"":
+    ($F{data}.equals(null)?$F{scadenza} + ($F{scadenza_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $F{scadenza_tra} + "</style></font>"):
+        $F{scadenza} + ($F{scadenza_tra}.equals(null)?" ":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $F{scadenza_tra} + "</style></font> ") + $F{data})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" mode="Transparent" x="0" y="519" width="140" height="53" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="dd5d72e4-1777-4979-990d-c622631dc7aa">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb" size="9" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="6.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nota_ita} + ($P{nota_tra}.equals(null)?"":"<font face=\"TitilliumWeb\" size=\"9\"><style forecolor=\"#999999\"> · " + $P{nota_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="150" y="455" width="306" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="97814773-39ca-4b49-b3d4-264c4a52ab7c">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<box leftPadding="0"/>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="9" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nome_cognome_destinatario}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="458" y="440" width="97" height="29" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="dcc7606a-256e-4c7f-8135-bef81c52318e">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb" size="12" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Euro <style isBold=\"true\">"+(new java.text.DecimalFormat("#,###,##0.00", new DecimalFormatSymbols(Locale.ITALY)).format(Double.valueOf($F{importo}))).toString() + "</style>"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="150" y="440" width="305" height="14" isRemoveLineWhenBlank="true" uuid="0db511ed-c3b1-4af5-b677-cefad71ec3e4">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{destinatario_ita} + ($P{destinatario_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{destinatario_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="150" y="519" width="405" height="14" isRemoveLineWhenBlank="true" uuid="e8f74402-3d78-40c0-a605-9e84d9f9e1f8">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="9"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{oggetto_del_pagamento_ita} + ($P{oggetto_del_pagamento_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{oggetto_del_pagamento_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="149" y="541" width="108" height="14" isRemoveLineWhenBlank="true" uuid="ae157703-e615-41b2-8440-d4df6f88b765">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement markup="styled">
+					<font fontName="TitilliumWeb" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{codice_cbill_ita} + ($P{codice_cbill_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{codice_cbill_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="149" y="555" width="59" height="16" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="58fe7dfd-7120-4ca6-9765-5a2e3d08594b">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cbill}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="257" y="555" width="128" height="16" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="81673c31-7b2f-4ecf-a107-ceb4dbe1805c">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codice_avviso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="257" y="541" width="138" height="14" isRemoveLineWhenBlank="true" uuid="2c86a158-e270-4549-9301-d87659a20bd9">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement markup="styled">
+					<font fontName="TitilliumWeb" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{codice_avviso_ita} + ($P{codice_avviso_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{codice_avviso_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="395" y="541" width="160" height="14" isRemoveLineWhenBlank="true" uuid="7c42999e-27d7-4cdb-93c7-0e1775bff53c">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" markup="styled">
+					<font fontName="TitilliumWeb" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{codice_fiscale_ente_ita} + ($P{codice_fiscale_ente_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{codice_fiscale_ente_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="395" y="555" width="160" height="16" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="cfd03364-7c1b-4b31-b109-80aa9702e2cd">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cf_ente}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="-20" y="593" width="575" height="18" isRemoveLineWhenBlank="true" backcolor="#EBEBEB" uuid="ef2e71f6-1f3a-458f-bf68-b357a697484a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<box leftPadding="20">
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[BOLLETTINO POSTALE PA]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="179" y="628" width="216" height="19" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="ccc9f519-25f6-403e-aafc-9a25755c8476">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Justified" verticalAlignment="Middle" markup="styled">
+					<font fontName="TitilliumWeb" size="12" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["sul C/C n. <style isBold=\"true\">" + $F{numero_cc_postale} + "</style>"]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="458" y="628" width="97" height="19" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="0028ce29-80f4-492d-96ec-f01e7b3726f8">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Bottom" markup="styled">
+					<font fontName="TitilliumWeb" size="12" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Euro <style isBold=\"true\">"+(new java.text.DecimalFormat("#,###,##0.00", new DecimalFormatSymbols(Locale.ITALY)).format(Double.valueOf($F{importo}))).toString() + "</style>"]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="200" y="681" width="262" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="11b8fdb2-0243-49d8-8cdf-6d74de0c132a">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="9" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nome_cognome_destinatario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="150" y="663" width="50" height="14" isRemoveLineWhenBlank="true" uuid="93d2c7f2-44fb-4696-9c00-9252d3575d29">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Bottom" markup="styled">
+					<font fontName="TitilliumWeb" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{intestatario_ita}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="150" y="681" width="50" height="14" isRemoveLineWhenBlank="true" uuid="03ae89ad-90e8-4c75-8e35-fd46f5c84bf0">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Bottom" markup="styled">
+					<font fontName="TitilliumWeb" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{destinatario_ita}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="200" y="663" width="262" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="f8f5ae85-2f42-4072-94dd-ba884c9481e9">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<box leftPadding="0"/>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="9" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{intestatario_conto_corrente_postale}]]></textFieldExpression>
+			</textField>
+			<image hAlign="Left" vAlign="Top" onErrorType="Blank">
+				<reportElement positionType="Float" x="518" y="264" width="35" height="35" isRemoveLineWhenBlank="true" uuid="6fc6b6cb-f355-4ac5-98ec-c5173fdad8ba"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<imageExpression><![CDATA[net.sf.jasperreports.renderers.BatikRenderer.getInstanceFromText("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 33.31 31.09'><defs><style>.cls-1{fill:#1d1d1b;}</style></defs><title>canali-digitali</title><g id='Layer_2' data-name='Layer 2'><g id='Layer_1-2' data-name='Layer 1'><path class='cls-1' d='M31.65,15V2.78A2.79,2.79,0,0,0,28.87,0H4.44A2.78,2.78,0,0,0,1.67,2.78V11.1A1.67,1.67,0,0,0,0,12.77V29.43a1.67,1.67,0,0,0,1.67,1.66H13.88a1.67,1.67,0,0,0,1.67-1.66H20.2a1.65,1.65,0,0,0,1.32-.66,1.67,1.67,0,0,0,.29-1.45l-1.1-4h3.16v6.11a1.67,1.67,0,0,0,1.67,1.66h6.11a1.67,1.67,0,0,0,1.66-1.66V16.66A1.67,1.67,0,0,0,31.65,15Zm.55,1.67v1.11H25V16.66a.56.56,0,0,1,.56-.56h6.11A.56.56,0,0,1,32.2,16.66ZM25,18.88H32.2V27.2H25ZM2.78,2.78A1.66,1.66,0,0,1,4.44,1.11H28.87a1.67,1.67,0,0,1,1.67,1.67V15h-5a1.67,1.67,0,0,0-1.67,1.67v1.11H15.55v-5a1.67,1.67,0,0,0-1.67-1.67H2.78ZM14.44,27.2H1.11V15H14.44Zm-12.77-15H13.88a.56.56,0,0,1,.56.56v1.11H1.11V12.77A.56.56,0,0,1,1.67,12.21ZM13.88,30H1.67a.56.56,0,0,1-.56-.55V28.32H14.44v1.11A.56.56,0,0,1,13.88,30Zm6.76-1.88a.56.56,0,0,1-.44.22H15.55V27.2h5.07l.11.41A.54.54,0,0,1,20.64,28.1Zm-.32-2H15.55V23.32h4Zm-4.77-3.88V18.88h8.32v3.33ZM31.65,30H25.54a.56.56,0,0,1-.56-.55V28.32H32.2v1.11A.55.55,0,0,1,31.65,30Z'/></g></g></svg>")]]></imageExpression>
+			</image>
+			<image hAlign="Left" vAlign="Top" onErrorType="Blank">
+				<reportElement positionType="Float" x="518" y="343" width="35" height="35" isRemoveLineWhenBlank="true" uuid="fd1a6814-4bbe-4b50-9b48-1384d959d966"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<imageExpression><![CDATA[net.sf.jasperreports.renderers.BatikRenderer.getInstanceFromText("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 33.14 33.45'><title>canali-fisici</title><g id='Layer_2' data-name='Layer 2'><g id='Layer_1-2' data-name='Layer 1'><path d='M24,6.47a12.68,12.68,0,0,1,1.06.88.67.67,0,0,0,.91-1,12.26,12.26,0,0,0-1.18-1A.67.67,0,1,0,24,6.47Z'/><path d='M5.73,14.34a3.52,3.52,0,1,0,3.51,3.52,3.52,3.52,0,0,0-3.51-3.52Zm0,5.7a2.18,2.18,0,1,1,2.18-2.18A2.19,2.19,0,0,1,5.73,20Z'/><path d='M20.1,5.73a3.51,3.51,0,1,0-3.51,3.51A3.51,3.51,0,0,0,20.1,5.73Zm-5.69,0a2.18,2.18,0,1,1,2.18,2.18,2.19,2.19,0,0,1-2.18-2.18Z'/><path d='M30.3,18.43a13.48,13.48,0,0,0,.13-1.9,13.75,13.75,0,0,0-2.83-8.4A.67.67,0,0,0,26.66,8a.66.66,0,0,0-.12.93,12.48,12.48,0,0,1,2.56,7.6c0,.45,0,.9-.07,1.35a5.82,5.82,0,0,0-1.62-.23,5.74,5.74,0,0,0-5.73,5.73A9.3,9.3,0,0,0,23,27.27a12.55,12.55,0,0,1-15.2-1.78c.32-.46.66-1,1-1.52,1.75-2.77,2.63-4.83,2.63-6.11a5.74,5.74,0,0,0-5.73-5.74,5.62,5.62,0,0,0-.92.08,12.58,12.58,0,0,1,6.06-6.83c0,.12,0,.24,0,.36,0,1.29.89,3.34,2.63,6.11,1.27,2,2.52,3.64,2.57,3.71a.67.67,0,0,0,1.06,0c.05-.07,1.3-1.7,2.57-3.71C21.43,9.07,22.32,7,22.32,5.73a5.73,5.73,0,0,0-11.1-2,13.93,13.93,0,0,0-8,9A5.74,5.74,0,0,0,0,17.86C0,19.14.89,21.2,2.64,24c1.26,2,2.51,3.63,2.56,3.7a.67.67,0,0,0,1.06,0s.33-.44.79-1.07A13.69,13.69,0,0,0,11,29.22a13.86,13.86,0,0,0,12.68-.79c.2.34.41.69.64,1.06,1.27,2,2.52,3.63,2.57,3.7a.67.67,0,0,0,1.06,0c0-.07,1.3-1.7,2.56-3.7,1.75-2.77,2.64-4.83,2.64-6.11a5.73,5.73,0,0,0-2.84-4.95ZM16.59,1.33A4.41,4.41,0,0,1,21,5.73c0,1.87-2.81,6.12-4.4,8.3-1.59-2.18-4.4-6.43-4.4-8.3a4.41,4.41,0,0,1,4.4-4.4ZM5.73,26.15c-1.59-2.18-4.4-6.42-4.4-8.29a4.4,4.4,0,0,1,8.8,0c0,1.87-2.81,6.11-4.4,8.29Zm21.68,5.52C25.82,29.5,23,25.25,23,23.38a4.4,4.4,0,0,1,8.8,0c0,1.87-2.81,6.12-4.4,8.29Z'/><path d='M27.41,19.86a3.52,3.52,0,1,0,3.51,3.52,3.52,3.52,0,0,0-3.51-3.52Zm0,5.7a2.18,2.18,0,1,1,2.18-2.18,2.19,2.19,0,0,1-2.18,2.18Z'/></g></g></svg>")]]></imageExpression>
+			</image>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="325" y="761" width="137" height="16" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="6bace4c5-c45f-4db7-9495-bd51378ebbfa">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cf_ente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="149" y="747" width="140" height="14" isRemoveLineWhenBlank="true" uuid="9235bebb-0b2b-4682-b6ff-8133a8d2fd7c">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement markup="styled">
+					<font fontName="TitilliumWeb" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{codice_avviso_ita}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="149" y="761" width="140" height="16" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="0ff29527-109a-499b-8ccf-d8a98a5f1e2f">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codice_avviso_postale}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="290" y="747" width="33" height="14" isRemoveLineWhenBlank="true" uuid="b4a1b8df-a502-46fe-8326-8228d5f47db5">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" markup="styled">
+					<font fontName="TitilliumWeb" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tipo_ita}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="290" y="761" width="33" height="16" isRemoveLineWhenBlank="true" uuid="80a587cf-4389-468d-950d-d5a6c7b20475">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="TitilliumWeb-Bold" size="10"/>
+				</textElement>
+				<text><![CDATA[P1]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="0" y="707" width="137" height="48" isRemoveLineWhenBlank="true" uuid="faab2289-0cbd-400c-b325-b9a4ec781f59">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb" size="9"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="6.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Bollettino Postale pagabile in tutti gli Uffici Postali e sui canali fisici o digitali abilitati di Poste Italiane e dell’Ente Creditore"]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="0" y="765" width="137" height="10" isRemoveLineWhenBlank="true" forecolor="#CCCCCC" backcolor="#FFFFFF" uuid="e81052ee-ee54-46b7-a01e-d42e41a44167">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="TitilliumWeb" size="6" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{autorizzazione}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="RetainShape" hAlign="Left" vAlign="Top" onErrorType="Blank">
+				<reportElement positionType="Float" x="0" y="629" width="128" height="75" isRemoveLineWhenBlank="true" uuid="ee8d295d-d246-47b0-aaad-27c9382c7c14">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[net.sf.jasperreports.renderers.BatikRenderer.getInstanceFromText("<svg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='2048px' height='1536px' viewBox='0 0 2048 1536' enable-background='new 0 0 2048 1536' xml:space='preserve'><title>logo-poste-italiane</title><g id='Layer_2'><g id='Layer_4'><path d='M2012.22,173.42c0-30.15-12.895-53.398-45.769-53.398c-28.333,0-45.224,23.974-45.224,53.398H2012.22z M1921.408,197.031	c-2.543,31.421,10.353,64.114,45.224,64.114c20.615,3.217,39.934-10.886,43.151-31.501c0.249-1.597,0.396-3.208,0.439-4.824	h36.325c-5.267,40.866-36.325,61.208-79.733,61.208c-57.757,0-80.641-40.866-80.641-93.9s25.791-97.532,82.639-97.532 c54.487,1.09,79.188,35.054,79.188,84.819v16.891L1921.408,197.031z M1735.424,127.287L1735.424,127.287 c11.041-19.729,31.879-31.954,54.487-31.966c12.532,0,68.109,3.269,68.109,60.844v124.231h-33.964V167.244 c0-29.605-12.532-45.769-41.229-45.769c-12.279-0.095-24.097,4.672-32.874,13.259c-5.085,5.085-14.348,12.895-14.348,47.949 v97.714h-33.419V100.77h33.237V127.287z M1598.297,193.035c-20.705,1.09-48.312,8.718-48.312,34.69 c-0.908,17.631,12.648,32.66,30.279,33.568c1.714,0.088,3.432,0.038,5.138-0.149c40.139,0,47.586-34.69,46.859-68.109H1598.297z M1632.261,169.424c0-31.058-1.635-49.402-37.959-49.402c-16.927-0.926-31.399,12.046-32.325,28.973 c-0.002,0.029-0.003,0.058-0.005,0.087h-36.325c1.635-39.776,32.329-54.487,67.928-54.487s72.65,11.079,72.65,61.208v85.908 c0,7.991,0,23.066,1.453,37.96h-22.34c-3.088,0-9.263,1.816-9.626-2.361c0-8.355-1.453-16.165-1.816-24.519l0,0 c-10.311,21.174-32.446,33.966-55.94,32.329c-31.058,0-62.66-16.165-62.66-51.218c0-50.492,44.68-65.203,87.361-65.203 L1632.261,169.424z M1446.822,21.945h40.502V58.27h-40.502V21.945z M1450.092,100.77h33.964v179.627h-33.964L1450.092,100.77z M1373.809,21.945h33.964v258.452h-33.964V21.945z M1271.373,193.035c-20.705,1.09-48.312,8.718-48.312,34.69	c-0.908,17.631,12.648,32.66,30.279,33.568c1.714,0.088,3.432,0.038,5.138-0.149c40.139,0,47.586-34.69,46.859-68.109H1271.373z M1305.337,169.424c0-31.058-1.816-49.402-37.959-49.402c-16.927-0.926-31.399,12.046-32.325,28.973	c-0.002,0.029-0.003,0.058-0.005,0.087h-36.325c1.635-39.776,32.329-54.487,67.746-54.487s72.65,11.079,72.65,61.208v85.908	c0,7.991,0,23.066,1.453,37.96h-22.158c-3.269,0-9.263,1.816-9.626-2.361c0-8.355-1.453-16.165-1.816-24.519l0,0 c-10.209,21.181-32.305,33.992-55.759,32.329c-31.24,0-62.661-16.165-62.661-51.218c0-50.492,44.68-65.203,87.18-65.203 L1305.337,169.424z M1096.832,100.77V62.447l33.964-10.716v49.039l41.592-1.09v25.427h-41.592v116.058	c0,12.714,9.989,18.162,22.158,18.162c6.12,0.006,12.218-0.725,18.162-2.18v26.154c-7.81,0-15.438,2.179-23.248,2.179 c-7.668,0.118-15.331-0.49-22.885-1.816c-7.933-1.35-15.101-5.548-20.16-11.806c-5.994-8.536-7.81-9.263-7.81-33.237V124.744 h-30.694V99.68L1096.832,100.77z M1005.111,21.945h40.321V58.27h-40.321V21.945z M1008.199,100.77h34.145v179.627h-34.145V100.77z M663.112,102.586V75.342l67.746-25.609v52.853h39.231v42.682h-38.504v71.015c0,4.722-2.724,27.97,12.895,27.97	c8.672,0.205,17.348-0.159,25.972-1.09v40.321c-11.959,2.401-24.127,3.618-36.325,3.633c-46.133,0-73.921-6.538-70.289-61.389 v-80.46h-35.054v-42.682H663.112z M551.413,157.073c0.458-5.335-1.097-10.648-4.359-14.893c-4.833-4.688-11.45-7.07-18.162-6.538 c-8.192-0.735-15.43,5.31-16.165,13.503c-0.079,0.886-0.079,1.776,0,2.662c0,13.077,27.607,12.35,69.925,25.609 c22.809,4.866,38.399,25.99,36.325,49.22c0,47.586-44.68,59.755-85.727,59.755c-43.772,0-86.635-9.081-86.272-63.569h64.295 c-0.929,5.737,0.734,11.591,4.541,15.983c3.859,4.951,9.71,7.943,15.983,8.173c13.259,0,22.885-4.904,22.885-16.346 c0-31.784-105.887-12.895-105.887-77.735c0-44.316,47.041-56.485,82.821-56.485c42.319,0,81.731,11.079,84.456,60.663 L551.413,157.073z M329.649,247.704c28.697,0,34.69-30.331,34.69-55.577s-5.994-55.759-34.69-55.759 c-28.697,0-34.509,30.876-34.509,55.759S301.134,247.704,329.649,247.704 M433.901,192.127c0,65.93-48.131,94.99-104.253,94.99 s-104.253-29.06-104.253-94.99s48.312-94.99,104.253-94.99S433.901,126.016,433.901,192.127 M108.975,139.637 c28.333-1.09,40.139-13.985,40.139-32.874S136.4,74.979,108.975,73.889H72.65v65.748H108.975z M0,281.668V23.943h118.601	c63.024,0,104.434,20.342,104.434,82.821s-41.41,82.821-104.434,82.821H71.379v92.084H0z M914.662,169.242 c0.135-9.535-2.723-18.873-8.173-26.699c-5.038-7.933-14.065-12.412-23.43-11.624c-23.611,1.09-29.423,18.162-31.058,38.141 L914.662,169.242z M850.548,205.567c0,23.066,5.63,43.045,31.058,43.045c15.997,2.213,30.76-8.961,32.973-24.958	c0.03-0.217,0.057-0.434,0.083-0.651h62.842c-2.181,21.101-14.519,39.812-33.056,50.128 c-17.266,9.893-36.963,14.739-56.849,13.985c-71.742,0-100.257-30.695-100.257-100.983c0-56.849,42.5-88.996,96.443-88.996	c72.65,0,95.898,41.774,95.898,108.975L850.548,205.567z'/></g></g></svg>")]]></imageExpression>
+			</image>
+			<componentElement>
+				<reportElement positionType="Float" x="475" y="693" width="80" height="80" isRemoveLineWhenBlank="true" uuid="e11e76d4-d2e9-42c6-b999-e746834f323f">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<jr:DataMatrix xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" moduleWidth="25.0" textPosition="bottom">
+					<jr:codeExpression><![CDATA[$F{data_matrix}]]></jr:codeExpression>
+				</jr:DataMatrix>
+			</componentElement>
+			<image hAlign="Left" vAlign="Top" onErrorType="Blank">
+				<reportElement positionType="Float" x="150" y="625" width="24" height="24" isRemoveLineWhenBlank="true" uuid="3b1877dd-f136-47e8-8a79-69e2294b4d86">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[net.sf.jasperreports.renderers.BatikRenderer.getInstanceFromText("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 19.91 19.91'><defs><style>.cls-1{fill:#1d1d1b;}</style></defs><title>logo-euro-bollettino</title><g id='Layer_2' data-name='Layer 2'><g id='Layer_4' data-name='Layer 4'><path class='cls-1' d='M0,0V19.91H19.91V0ZM15.42,8V8l-.68,1.64H6c0,.13,0,.25,0,.38a4.21,4.21,0,0,0,0,.62h8.32l-.69,1.67H6.46a5.58,5.58,0,0,0,9.71.83v2.23A7.06,7.06,0,0,1,4.85,12.31H2.29l.76-1.67H4.49c0-.2,0-.41,0-.62s0-.25,0-.38H2.29L3.11,8H4.76A7.07,7.07,0,0,1,16.62,5.09L16,6.64A5.57,5.57,0,0,0,6.35,8Z'/></g></g></svg>")]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement positionType="Float" mode="Opaque" x="-20" y="204" width="296" height="18" isRemoveLineWhenBlank="true" backcolor="#EBEBEB" uuid="8b2c09f0-763d-4e35-9b5a-d527d90e12ef"/>
+				<box leftPadding="20"/>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{quanto_quando_ita}.toUpperCase() + ($P{quanto_quando_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{quanto_quando_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" mode="Opaque" x="274" y="204" width="300" height="18" isRemoveLineWhenBlank="true" backcolor="#EBEBEB" uuid="5aebe9f8-fe31-41aa-8d1b-2cd985ba441d"/>
+				<box leftPadding="8" rightPadding="20"/>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{come_ita}.toUpperCase() + ($P{come_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{come_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" mode="Transparent" x="470" y="204" width="85" height="18" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="be973da6-63d6-40b8-9677-83678e5397bf">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box leftPadding="0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="html">
+					<font fontName="TitilliumWeb" size="9" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[<b>www.pagopa.gov.it</b>]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="150" y="487" width="405" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="9c0f6305-836a-4f1f-87c6-84de78803c83">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<box leftPadding="0"/>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="9" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ente_creditore}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="150" y="473" width="305" height="14" isRemoveLineWhenBlank="true" uuid="f96a29b3-b77f-4348-b14d-f76d7d846784">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ente_creditore_ita} + ($P{ente_creditore_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{ente_creditore_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="0" y="166" width="275" height="34" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="05cfc74e-2bb6-452f-a8da-3d580f1050c9"/>
+				<textElement verticalAlignment="Top" markup="html">
+					<font fontName="TitilliumWeb" size="9" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="6.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{info_ente}.equals(null)?"":$P{info_ente}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="0" y="136" width="274" height="30" isRemoveLineWhenBlank="true" uuid="e42c7895-4baa-4beb-a2e7-5019041f2251"/>
+				<textElement verticalAlignment="Top" markup="none">
+					<font fontName="TitilliumWeb" size="10" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{settore_ente}.equals(null))?"":$P{settore_ente}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="276" y="151" width="279" height="16" isRemoveLineWhenBlank="true" uuid="199d7e93-fa89-480e-ad0d-37ef9d2da4dc"/>
+				<box leftPadding="8"/>
+				<textElement verticalAlignment="Top" markup="none">
+					<font fontName="TitilliumWeb" size="10" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{indirizzo_destinatario_2}.equals(null))?"":$P{indirizzo_destinatario_2}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="276" y="136" width="279" height="16" isRemoveLineWhenBlank="true" uuid="008a1768-fe52-414c-8ed0-9fa6aaf62281"/>
+				<box leftPadding="8"/>
+				<textElement verticalAlignment="Top" markup="none">
+					<font fontName="TitilliumWeb" size="10" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{indirizzo_destinatario_1}.equals(null))?"":$P{indirizzo_destinatario_1}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="276" y="114" width="279" height="20" isRemoveLineWhenBlank="true" uuid="612433e6-d149-49ba-b53e-63740ecdf9fe"/>
+				<box leftPadding="8"/>
+				<textElement verticalAlignment="Top" markup="none">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{nome_cognome_destinatario}.equals(null))?"":$P{nome_cognome_destinatario}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="0" y="114" width="274" height="20" isRemoveLineWhenBlank="true" uuid="eab0b6cc-eb67-4673-b990-0c5f8e7631d8"/>
+				<textElement verticalAlignment="Top" markup="none">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{ente_creditore}.equals(null))?"":$P{ente_creditore}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="150" y="505" width="305" height="14" isRemoveLineWhenBlank="true" uuid="8dcbb41e-84cb-401e-af0e-537467e03f7f">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{oggetto_ita} + ($P{oggetto_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{oggetto_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="150" y="700" width="50" height="14" isRemoveLineWhenBlank="true" uuid="1c86c056-c02e-4799-aced-956997523b43">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Bottom" markup="styled">
+					<font fontName="TitilliumWeb" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{descrizione_ita}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="200" y="700" width="262" height="40" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="ea1319ec-9b0c-4545-b80b-19481cf89780">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="9" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{oggetto_del_pagamento_ita} + ($P{oggetto_del_pagamento_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{oggetto_del_pagamento_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<image scaleImage="RetainShape" hAlign="Left" vAlign="Top" onErrorType="Blank">
+				<reportElement positionType="Float" x="0" y="636" width="128" height="75" isRemoveLineWhenBlank="true" uuid="02f2e5b3-42a9-4b53-a241-87b5b84739f4">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA[net.sf.jasperreports.renderers.BatikRenderer.getInstanceFromText("<svg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='2048px' height='1536px' viewBox='0 0 2048 1536' enable-background='new 0 0 2048 1536' xml:space='preserve'><title>logo-bollettino-postale</title><g id='Layer_2'><path d='M412.935,355.197C184.877,355.051-0.118,539.81-0.265,767.868s184.613,413.054,412.67,413.2	c228.058,0.146,413.054-184.613,413.2-412.671c0-0.088,0-0.176,0-0.265C825.314,540.299,640.769,355.634,412.935,355.197'/><path fill='#FFFFFF' d='M694.843,766.015c0.146,155.839-126.068,282.291-281.908,282.437 c-155.839,0.146-282.291-126.068-282.437-281.908s126.068-282.291,281.908-282.437c0.176,0,0.353,0,0.529,0 C568.629,484.107,694.843,610.321,694.843,766.015L694.843,766.015'/><g id='Layer_4'><path d='M2011.736,756.75c0-5.823,2.118-10.588,9-10.853c2.634-0.304,5.208,0.931,6.618,3.176c1.571,2.25,2.403,4.932,2.382,7.676	L2011.736,756.75L2011.736,756.75z M2048.265,767.338c0-19.323-6.618-31.235-26.47-31.235c-14.619,0-26.47,11.851-26.47,26.47 c0,20.117,8.206,28.852,28.853,28.852c5-0.398,9.821-2.035,14.029-4.765c5.309-2.983,8.929-8.266,9.794-14.294h-18.265 c-0.544,4.646-4.751,7.972-9.398,7.428c-0.044-0.005-0.088-0.011-0.131-0.016c-7.147,0-9-5.823-9-12.441L2048.265,767.338z M1982.089,714.398h-19.323v74.117h19.323V714.398z M1950.06,788.514c0-6.353,0-8.47,0-10.588V752.25 c0-11.647-12.441-16.147-22.764-16.147c-6.075-0.286-12.137,0.799-17.735,3.176c-5.657,2.164-9.286,7.715-9,13.765h18.265 c-0.46-3.92,2.345-7.471,6.265-7.931c0.029-0.003,0.058-0.007,0.088-0.01c7.676,0,6.618,6.353,6.618,10.853h-6.088 c-16.941,0-28.323,5.029-28.588,17.735s6.088,16.941,18.529,16.941c6.612,0.412,12.917-2.842,16.412-8.47l0,0	c-0.344,2.37-0.344,4.777,0,7.147L1950.06,788.514z M1914.855,771.838c0.132-3.1,2.116-5.815,5.029-6.882 c3.493-0.713,7.095-0.713,10.588,0c0,6.882,0,14.823-9,14.823c-3.697-0.142-6.62-3.182-6.618-6.882 M1848.415,737.956v12.176 h10.059v23.294c0,15.617,6.882,17.47,20.117,17.47c3.515,0.449,7.073,0.449,10.588,0V778.72h-7.676 c-4.5,0-3.706-6.618-3.706-7.941v-20.647h11.382v-12.176h-11.382v-15.353l-19.323,7.412v7.941L1848.415,737.956L1848.415,737.956z M1842.326,753.838c0-14.294-12.176-17.47-24.353-17.47s-23.823,3.441-23.823,16.147c0,18.794,30.441,13.235,30.441,22.5 c0,3.176-2.647,4.765-6.353,4.765c-1.861-0.058-3.602-0.929-4.765-2.382c-0.618-1.528-0.618-3.237,0-4.765h-18.529	c0,15.882,12.441,18.264,24.882,18.264s24.617-3.441,24.617-16.941c0.696-6.697-3.747-12.849-10.323-14.294	c-12.176-3.706-20.117-3.441-20.117-7.412c-0.165-2.333,1.592-4.359,3.925-4.524c0.28-0.02,0.561-0.012,0.839,0.024	c1.961-0.28,3.936,0.411,5.294,1.853c0.464,1.374,0.464,2.862,0,4.235H1842.326z M1755.769,736.368	c-14.495,1.901-24.704,15.193-22.803,29.687c1.901,14.495,15.192,24.704,29.687,22.803c13.091-1.717,22.915-12.818,23.027-26.021 c0.124-14.619-11.626-26.57-26.245-26.694C1758.21,736.134,1756.984,736.209,1755.769,736.368 M1745.71,762.838 c0-7.147,1.853-15.882,10.059-15.882s9.794,8.735,9.794,15.882s-1.588,16.147-9.794,16.147S1745.71,770.25,1745.71,762.838 M1687.741,746.956c8.206,0,9.265,9.265,9.265,15.882s0,16.147-9.265,16.147s-9.529-9.529-9.529-16.147 S1678.211,746.956,1687.741,746.956 M1678.211,737.162h-19.588v71.205h19.588v-26.47l0,0c3.415,4.661,8.784,7.492,14.559,7.676 c16.411,0,24.088-12.706,24.088-26.47s-6.618-26.47-21.97-26.47c-6.734-0.339-13.121,3.006-16.676,8.735l0,0L1678.211,737.162z M1584.507,735.574c-14.475,2.047-24.55,15.441-22.502,29.916c2.047,14.475,15.442,24.55,29.917,22.502	c12.959-1.833,22.633-12.861,22.762-25.948c0.144-14.618-11.59-26.586-26.208-26.73 C1587.148,735.301,1585.821,735.388,1584.507,735.574 M1574.713,762.044c0-7.147,1.588-15.882,9.794-15.882 s10.059,8.735,10.059,15.882s-1.853,16.147-10.059,16.147S1574.713,769.456,1574.713,762.044 M1507.743,735.574h-20.118 c0.24,4.408,0.24,8.827,0,13.235v40.499h21.176v-29.647c0,0,0-11.117,8.47-11.117s7.412,5.294,7.676,10.323v30.441h19.323v-34.676 c0.32-9.936-7.476-18.25-17.412-18.569c-0.637-0.021-1.276-0.007-1.912,0.04c-6.188-0.194-12.129,2.436-16.147,7.147	L1507.743,735.574z M1474.391,715.192h-18.529v13.765h19.588L1474.391,715.192z M1474.391,737.692h-18.529v51.617h19.588 L1474.391,737.692z M1403.186,737.692v12.176h10.059v23.294c0,15.617,6.882,17.47,20.117,17.47c3.515,0.449,7.073,0.449,10.588,0 V778.72h-7.412c-4.5,0-3.706-6.618-3.706-7.941v-20.647h11.117v-12.176h-11.117v-15.353l-19.588,7.412v7.941L1403.186,737.692z M1357.657,737.692v12.176h10.059v23.294c0,15.617,6.882,17.47,20.117,17.47c3.515,0.449,7.073,0.449,10.588,0V778.72h-7.676 c-4.5,0-3.706-6.618-3.706-7.941v-20.647h11.382v-12.176h-11.382v-15.353l-19.323,7.412v7.941L1357.657,737.692z M1315.834,756.75 c0-5.823,2.118-10.588,9-10.853c2.623-0.241,5.165,0.979,6.618,3.176c1.571,2.25,2.403,4.932,2.382,7.676L1315.834,756.75 L1315.834,756.75z M1352.363,767.338c0-19.323-6.618-31.235-26.47-31.235c-14.619,0-26.47,11.851-26.47,26.47 c0,20.117,8.206,28.852,28.853,28.852c5.737,0.265,11.43-1.112,16.411-3.971c5.327-2.915,8.887-8.256,9.529-14.294h-18 c-0.927,4.585-5.395,7.552-9.98,6.625c-0.964-0.195-1.886-0.556-2.725-1.066c-7.147,0-9-5.823-9-12.441L1352.363,767.338z M1286.187,714.398h-19.323v74.117h19.323V714.398z M1252.041,714.398h-19.588v74.117h19.588V714.398z M1191.159,736.103	c-14.475,2.047-24.55,15.441-22.502,29.916c2.047,14.475,15.441,24.55,29.916,22.502c12.959-1.833,22.633-12.861,22.762-25.948 c0.144-14.618-11.59-26.586-26.208-26.73C1193.8,735.831,1192.474,735.917,1191.159,736.103 M1181.365,762.574 c0-7.147,1.588-15.882,9.794-15.882s10.059,8.735,10.059,15.882s-2.118,16.147-10.059,16.147S1181.365,769.985,1181.365,762.574 M1094.278,789.044h19.059v-7.676l0,0c2.422,5.687,8.119,9.273,14.294,9c16.941,0,24.088-12.441,24.088-28.058	s-7.147-26.47-23.029-26.47c-5.969-0.137-11.691,2.384-15.617,6.882l0,0v-27.529h-19.588L1094.278,789.044z M1123.396,747.221 c8.206,0,9.265,9.265,9.265,15.617s-1.323,16.411-10.059,16.411c-8.735,0-8.735-9.529-8.735-15.353 C1113.866,758.074,1113.866,747.221,1123.396,747.221'/><path d='M1475.979,622.546c-14.495,1.901-24.704,15.193-22.803,29.688s15.193,24.704,29.688,22.803 c13.091-1.717,22.915-12.818,23.027-26.021c0.124-14.619-11.626-26.57-26.245-26.694 C1478.42,622.312,1477.194,622.387,1475.979,622.546 M1465.92,649.016c0-7.412,1.853-16.147,10.059-16.147 s10.059,8.735,10.059,16.147s-1.853,15.882-10.059,15.882S1465.92,656.163,1465.92,649.016 M1397.362,622.546v12.441h10.059 v23.029c0,15.882,7.147,17.735,20.382,17.735c3.434,0.316,6.889,0.316,10.323,0v-11.647h-7.412c-4.5,0-3.706-6.618-3.706-7.941 v-20.382h11.382V623.34h-11.382v-14.294l-19.588,7.412v7.676L1397.362,622.546z M1388.892,600.047h-19.588v13.765h19.588V600.047z M1388.892,622.546h-19.588v51.617h19.588V622.546z M1335.951,674.163h19.853c-0.232-4.409-0.232-8.826,0-13.235v-36.794h-19.323 v29.647c0,0,0,11.117-8.47,11.117s-7.412-5.294-7.412-10.323v-30.441h-19.588v34.411c-0.466,9.93,7.206,18.358,17.136,18.824	c0.729,0.034,1.46,0.024,2.188-0.03c6.196,0.233,12.154-2.404,16.147-7.147L1335.951,674.163z M1289.628,640.546 c0-14.559-13.235-19.588-26.47-19.588c-14.583-1.023-27.235,9.969-28.258,24.552c-0.045,0.638-0.066,1.278-0.065,1.918	c0,17.735,8.735,26.47,28.323,26.47c6.482-0.149,12.799-2.071,18.264-5.559c5.144-3.746,8.114-9.785,7.941-16.147h-18.794 c0,4.5,0,9.794-7.412,10.323s-7.676-10.588-7.676-15.882s0-16.147,7.676-16.147c2.295-0.235,4.562,0.652,6.088,2.382 c0.608,1.894,0.608,3.93,0,5.823L1289.628,640.546z M1210.218,622.546h-19.058c0,5.559,0,8.735,0,13.235v38.382h19.588v-20.647 c0-9.794,3.176-15.882,13.235-16.147h3.971v-14.823c-7.81-1.198-15.254,3.726-17.206,11.382l0,0L1210.218,622.546z M1177.924,601.635h-19.588v13.764h19.588V601.635z M1177.924,624.134h-19.588v51.617h19.588V624.134z M1147.219,642.134 c0-14.559-13.235-19.588-26.47-19.588c-14.583-1.023-27.235,9.969-28.258,24.552c-0.045,0.638-0.066,1.278-0.065,1.918	c0,17.735,9,26.47,28.323,26.47c5.954,0.606,11.964-0.305,17.47-2.647c5.144-3.746,8.115-9.785,7.941-16.147h-18.529 c0,4.5,0,9.794-7.676,10.323s-7.412-10.588-7.412-15.882s0-16.147,7.412-16.147c2.307-0.334,4.62,0.571,6.088,2.382 c1.275,1.656,1.846,3.749,1.588,5.823L1147.219,642.134z'/><polygon fill='#FFFFFF' points='771.342,704.074 779.018,753.838 743.548,718.104 793.047,726.309 748.313,748.809 		'/><polygon fill='#FFFFFF' points='763.665,673.634 779.283,662.252 759.96,662.252 754.136,643.987 748.313,662.252 728.99,662.252 744.607,673.634 738.519,691.898 754.136,680.516 769.754,691.898 		'/><polygon fill='#FFFFFF' points='779.018,766.279 777.959,816.308 749.372,775.015 796.753,791.691 748.577,806.249 		'/><polygon fill='#FFFFFF' points='775.842,828.484 766.048,877.984 745.136,832.19 788.812,856.808 739.048,862.631 		'/><polygon fill='#FFFFFF' points='762.077,889.366 743.813,936.218 730.842,887.778 770.018,919.542 719.725,916.63 		'/><polygon fill='#FFFFFF' points='62.205,704.074 54.529,753.838 89.999,718.104 40.499,726.309 85.234,748.809 		'/><polygon fill='#FFFFFF' points='54.529,766.279 55.587,816.308 84.175,775.015 36.794,791.691 84.969,806.249 		'/><polygon fill='#FFFFFF' points='79.411,643.987 63.793,691.898 104.557,662.252 54.264,662.252 95.028,691.898 		'/><polygon fill='#FFFFFF' points='57.705,828.484 67.499,877.984 88.41,832.19 44.735,856.808 94.499,862.631 		'/><polygon fill='#FFFFFF' points='71.47,889.366 89.734,936.218 102.704,887.778 63.528,919.542 113.822,916.63 		'/><path fill='#FFFFFF' d='M683.196,587.606l46.588-28.588l18.794,30.705l-7.412,5.029l-13.235-21.706l-10.853,6.882l11.382,18.264	l-8.206,5.029l-11.382-18.529l-11.117,7.147l13.235,21.441l-8.206,5.029L683.196,587.606z M656.726,554.782l42.352-34.676 l6.618,8.47L671.284,556.9l15.617,19.323l-7.412,6.088L656.726,554.782z M663.079,506.871l-18.529,9.794l9.794,9.265 L663.079,506.871z M646.138,543.665l4.235-9.265l-14.294-13.235l-9,4.765l-7.941-7.676l52.94-26.47l6.088,5.559l-22.764,52.94 	L646.138,543.665z M636.873,476.166l-25.941,37.852l-8.735-6.353l26.47-36.529l-11.382-10.059l5.559-7.676l31.764,23.294 l-5.559,7.676L636.873,476.166z M569.639,487.548c-6.684-3.11-11.768-8.866-14.029-15.882l9.529-2.647	c1.559,4.556,4.903,8.283,9.265,10.323c5.559,2.912,9.794,2.382,11.912,0c0.647-1.522,0.647-3.242,0-4.765 c-0.61-1.698-1.717-3.174-3.176-4.235l-5.559-3.971c-3.329-2.108-5.848-5.28-7.147-9c-0.756-3.894-0.099-7.929,1.853-11.382 c4.443-8.068,14.584-11.006,22.652-6.564c0.684,0.377,1.341,0.801,1.965,1.27c5.949,2.7,10.472,7.8,12.441,14.029l-9,2.647 c-1.558-3.828-4.483-6.941-8.206-8.735c-5.029-2.647-8.735-1.324-10.588,2.118c-0.662,1.334-0.662,2.901,0,4.235 c0.723,1.709,1.916,3.178,3.441,4.235l5.294,3.971c3.27,2.056,5.779,5.123,7.147,8.735c0.932,4.147,0.271,8.494-1.853,12.176 	c-4.969,8.441-15.84,11.255-24.281,6.286c-0.767-0.452-1.499-0.96-2.19-1.522 M551.11,432.755 c-0.975-2.349-2.898-4.176-5.294-5.029c-2.446-1.076-5.231-1.076-7.676,0c-2.647,1.324-3.971,3.706-7.676,13.5 c-3.706,9.794-4.235,12.441-2.912,15.353c0.975,2.349,2.898,4.176,5.294,5.029c2.356,1.065,5.056,1.065,7.412,0 c2.912,0,4.235-3.706,7.941-13.5C551.904,438.314,552.169,435.667,551.11,432.755 M545.551,470.342 c-5.049,2.276-10.833,2.276-15.882,0c-5.309-1.8-9.627-5.734-11.912-10.853c-3.176-7.147,0-13.5,2.647-22.235	s5.559-15.353,12.706-18.529c5.049-2.276,10.833-2.276,15.882,0c5.261,1.881,9.55,5.789,11.912,10.853 c3.176,7.147,0,13.5-2.647,22.235S552.433,467.166,545.551,470.342 M497.905,413.696l-9.794-2.118l-3.176,14.559l9.794,2.118	c3.751,1.229,7.788-0.816,9.017-4.567c0.106-0.324,0.189-0.656,0.248-0.992c1.048-3.805-1.187-7.74-4.992-8.788	C498.641,413.809,498.275,413.738,497.905,413.696 M493.669,434.608h-10.323l-4.5,20.117l-10.323-2.382l11.912-52.94l20.647,4.5	c9.235,1.5,15.506,10.202,14.006,19.437c-0.066,0.406-0.147,0.809-0.242,1.209c-1.799,9.033-10.581,14.896-19.613,13.096 	c-0.527-0.105-1.049-0.235-1.563-0.391 M423.523,442.814c10.588,0,16.941-9.265,17.206-21.176s-4.765-20.911-15.882-21.176 c-11.117-0.265-16.941,9.794-17.206,20.911S412.935,442.549,423.523,442.814z M423.523,448.372 c-13.279-0.809-23.387-12.23-22.578-25.509c0.02-0.321,0.046-0.641,0.078-0.961c-1.023-13.557,9.137-25.377,22.694-26.4 c0.64-0.048,1.281-0.072,1.923-0.07c13.007,0.338,23.276,11.156,22.938,24.163c-0.02,0.771-0.078,1.541-0.174,2.307 c1.023,13.557-9.137,25.377-22.694,26.4c-0.64,0.048-1.281,0.072-1.923,0.07H423.523z M355.76,452.343l-6.618-51.352h7.412 l19.588,23.823c4.183,4.911,7.988,10.132,11.382,15.617l0,0c-1.511-6.906-2.659-13.886-3.441-20.911l-2.912-21.441h6.353 l6.618,51.352h-6.882l-19.588-24.088c-4.284-4.987-8.178-10.297-11.647-15.882l0,0c1.324,6.353,2.118,12.441,3.176,20.911 l2.912,21.97h-6.353V452.343z M334.848,404.432l11.647,50.558h-6.618l-11.647-50.293L334.848,404.432z M300.172,420.049 l-14.823,4.765l-1.853-5.559l35.999-11.117l1.853,5.559l-15.088,4.765l14.029,42.617l-6.353,2.118L300.172,420.049z M259.143,436.196l-14.294,6.618l-2.382-5.029l34.941-16.147l2.382,5.294l-15.088,7.676l19.059,41.823l-6.088,2.912	L259.143,436.196z M247.232,466.372l-16.941,10.323l9.529,15.882l19.059-11.647l2.912,5.029l-23.558,14.823l-26.47-44.205 l24.088-14.559l2.382,5.029L219.969,457.9l8.47,14.029l16.147-10.853L247.232,466.372z M178.145,479.872l5.559-3.971 l28.058,38.117l17.735-13.5l3.441,4.5l-23.029,17.47L178.145,479.872z M149.027,506.342l4.765-4.765l31.5,33.882l15.882-15.088 l3.971,3.971l-19.853,19.853L149.027,506.342z M160.939,563.518c5.701-8.674,3.292-20.327-5.382-26.028 c-0.232-0.153-0.468-0.3-0.706-0.442c-7.162-7.31-18.893-7.429-26.203-0.267c-0.09,0.088-0.179,0.177-0.267,0.267	c-7.147,8.735-2.647,19.323,6.088,26.47c7.162,7.31,18.893,7.429,26.203,0.267C160.762,563.697,160.851,563.608,160.939,563.518z M164.909,566.959c-8.349,9.979-23.207,11.3-33.186,2.95c-0.612-0.512-1.198-1.055-1.755-1.627	c-11.413-7.388-14.676-22.63-7.288-34.043c0.376-0.581,0.776-1.145,1.199-1.692c8.858-9.926,24.085-10.792,34.01-1.934 c0.318,0.284,0.628,0.575,0.93,0.875c11.328,7.251,14.633,22.311,7.383,33.639C165.801,565.758,165.369,566.369,164.909,566.959z M130.233,607.458l2.118-4.5c3.441-5.823,4.765-12.706-1.853-16.676c-6.618-3.971-11.647,0-15.353,6.353l-2.912,4.765 L130.233,607.458z M109.057,594.753l3.176-5.294c3.384-4.219,2.707-10.384-1.512-13.768c-0.112-0.09-0.225-0.177-0.341-0.261 c-5.029-2.912-9.529,0-12.97,5.294c-1.106,1.643-1.996,3.423-2.647,5.294L109.057,594.753z M87.352,589.458 c1.424-3.859,3.196-7.58,5.294-11.117c2.36-4.401,6.072-7.927,10.588-10.059c3.139-1.694,6.92-1.694,10.059,0	c4.501,2.752,6.655,8.138,5.294,13.235l0,0c4.127-4.747,11.105-5.76,16.412-2.382c3.451,1.848,5.883,5.155,6.618,9 c0.503,6.323-1.282,12.617-5.029,17.735c-1.791,3.07-3.827,5.992-6.088,8.735L87.352,589.458z'/><path fill='#FFFFFF' d='M150.615,975.394l-7.147-9l-13.764,10.588l7.147,9.265c2.681,3.834,7.962,4.768,11.796,2.087 c0.223-0.156,0.438-0.322,0.645-0.499c3.769-2.771,4.578-8.073,1.807-11.842C150.947,975.786,150.786,975.586,150.615,975.394 M128.645,993.394l-7.412-9.529l-18.794,14.823l-7.676-8.206l49.499-39.176l15.353,19.059c7.795,7.711,7.864,20.28,0.153,28.075 s-20.28,7.864-28.075,0.153c-1.173-1.16-2.197-2.462-3.048-3.876'/>	<path fill='#FFFFFF' d='M188.997,1019.864c0.109-3.03-1.156-5.948-3.441-7.941c-2.226-2.046-5.188-3.097-8.206-2.912 c-3.441,0-5.823,2.118-14.029,11.117c-8.206,9-9.794,11.382-9.794,15.088c0.031,3.058,1.382,5.953,3.706,7.941 c2.155,1.964,5.039,2.926,7.941,2.647c3.706,0,6.088-1.853,14.294-10.853C187.674,1025.952,188.997,1023.305,188.997,1019.864 M167.027,1057.452c-6.367,0.356-12.597-1.944-17.206-6.353c-4.885-4.187-7.769-10.245-7.941-16.676 c0-9,5.029-14.559,12.176-22.764s12.706-13.765,21.706-14.294c6.423-0.387,12.698,2.026,17.206,6.618 c4.818,4.125,7.696,10.074,7.941,16.412c0,9-5.029,14.823-12.441,22.764S176.027,1057.187,167.027,1057.452'/><path fill='#FFFFFF' d='M196.144,1087.628c-7.372-4.213-12.65-11.314-14.559-19.588l11.117-2.382 c1.264,5.523,4.828,10.243,9.794,12.97c6.088,3.97,10.853,3.706,13.5,0c1.292-1.436,1.788-3.419,1.324-5.294 c0-1.853-1.324-2.912-3.441-5.029l-5.823-5.029c-3.467-2.885-5.962-6.766-7.147-11.118c-0.806-4.539,0.243-9.212,2.912-12.97	c6.164-8.891,18.367-11.101,27.258-4.937c0.552,0.383,1.084,0.794,1.595,1.232c6.628,3.695,11.351,10.057,12.97,17.47 l-10.588,2.118c-1.08-4.892-4.149-9.112-8.47-11.647c-5.559-3.706-10.059-2.382-12.441,0c-0.679,1.516-0.679,3.249,0,4.765 	c0.721,2.008,1.899,3.82,3.441,5.294l5.823,5.029c3.455,2.672,5.961,6.384,7.147,10.588c0.861,4.829-0.286,9.801-3.176,13.765 c-6.599,9.12-19.341,11.164-28.461,4.565c-0.596-0.432-1.169-0.895-1.715-1.389'/><polygon fill='#FFFFFF' points='275.025,1071.216 253.055,1118.598 241.938,1113.304 263.908,1066.187 249.085,1059.04 253.585,1049.246 294.613,1068.305 290.113,1078.363 		'/><polygon fill='#FFFFFF' points='282.702,1130.774 300.702,1070.422 340.672,1082.334 337.495,1092.657 309.437,1084.451 305.201,1098.745 329.025,1105.627 325.848,1116.216 302.025,1109.069 297.79,1123.892 325.848,1132.098 322.672,1142.686 		'/><rect x='360.156' y='1114.464' transform='matrix(0.0605 -0.9982 0.9982 0.0605 -750.67 1443.8241)' fill='#FFFFFF' width='63.001' height='12.441'/>	<polygon fill='#FFFFFF' points='436.494,1100.069 439.141,1151.95 426.7,1152.744 424.053,1100.598 407.641,1101.392 407.112,1090.539 452.376,1088.157 452.905,1099.275 		'/><path fill='#FFFFFF' d='M477.787,1102.186l-3.441,24.088l15.353-3.441L477.787,1102.186z M500.552,1143.215l-5.823-10.323 l-21.97,4.235l-1.588,12.176l-12.706,2.382l10.853-66.176l9.529-1.853l34.411,57.705L500.552,1143.215z'/><polygon fill='#FFFFFF' points='526.228,1136.333 505.052,1077.04 516.698,1072.804 534.169,1121.774 561.168,1112.245 564.874,1122.568 		'/><rect x='562.971' y='1053.829' transform='matrix(0.8995 -0.437 0.437 0.8995 -417.0647 357.7796)' fill='#FFFFFF' width='12.176' height='63.001'/><path fill='#FFFFFF' d='M599.55,1053.481l5.559,23.558l13.235-8.47L599.55,1053.481z M635.285,1082.863l-9-7.147l-19.059,11.912	l2.912,11.382l-10.853,7.147l-14.823-65.646l8.206-5.029l52.94,40.499L635.285,1082.863z'/><polygon fill='#FFFFFF' points='685.578,1041.834 640.844,1030.187 667.049,1058.775 658.049,1066.981 615.432,1020.393 623.638,1012.982 668.108,1024.893 641.903,996.306 651.167,987.835 693.519,1034.423 		'/><polygon fill='#FFFFFF' points='707.549,1018.805 658.049,979.894 683.725,947.336 692.196,953.953 674.196,976.982 	685.843,986.247 701.196,966.394 709.931,973.276 694.578,992.864 706.49,1002.394 724.754,979.365 733.225,986.247 		'/><path d='M351.26,528.312c80.999,9.265,129.175,15.353,145.057,18c11.751,1.93,23.279,5.034,34.411,9.265	c7.291,3.173,14.288,6.982,20.911,11.382c7.367,5.836,13.951,12.597,19.588,20.117c13.309,19.103,20.424,41.835,20.382,65.117 v2.118c2.243,27.106-9.543,53.474-31.235,69.881c-3.16,1.58-6.172,3.44-9,5.559l0,0c19.693,10.863,34.472,28.863,41.294,50.293 c3.983,10.955,6.129,22.492,6.353,34.147v12.97c0,34.411-5.029,60.617-30.441,79.411c-28.044,22.13-57.585,42.296-88.41,60.352	c-18.466,8.243-38.55,12.224-58.764,11.647l0,0c-12.882,0-43.058-2.912-90.528-8.735l-69.881-8.47l0,0 c0-86.822,0-211.32,0-373.495C317.642,550.018,347.819,530.43,351.26,528.312 M488.111,915.042 c3.596-6.295,6.523-12.949,8.735-19.853c2.313-8.025,3.733-16.281,4.235-24.617c0.664-14.202-1.403-28.399-6.088-41.823 c-3.98-12.203-10.271-23.526-18.529-33.352c-2.508-2.699-5.159-5.261-7.941-7.676c-2.29-2.082-4.772-3.943-7.412-5.559 l-6.088-3.441h-1.324l2.118-1.588l8.206-5.294c2.468-1.725,4.772-3.675,6.882-5.823l3.971-3.706 c3.56-4.252,6.666-8.865,9.265-13.765c2.896-5.752,5.202-11.783,6.882-18c1.074-4.613,1.782-9.304,2.118-14.029 c0.27-4.937,0.27-9.886,0-14.823v-2.382c-0.188-11.505-2.061-22.92-5.559-33.882c-3.824-10.833-8.981-21.147-15.353-30.705 c-3.798-4.727-7.957-9.152-12.441-13.235c-2.901-3.143-6.192-5.9-9.794-8.206c-1.855-1.445-3.8-2.772-5.823-3.971	c-3.571-2.21-7.392-3.987-11.382-5.294c-4.461-1.497-9.08-2.474-13.765-2.912l-20.911-2.912l-60.352-4.765l-60.352-2.647 c0,33.617,0,79.411,0,138.174s0,132.351,0,218.115c43.941,5.559,78.087,9.529,102.704,11.912c14.619,1.274,29.321,1.274,43.941,0 c14.731-1.777,28.669-7.646,40.235-16.941c9.838-7.709,18.105-17.234,24.353-28.058 M337.495,792.75 c21.228,1.724,42.29,5.087,62.999,10.059c4.707,1.485,9.102,3.817,12.97,6.882c13.654,12.354,20.794,30.35,19.323,48.705	c5.756,22.671-7.957,45.716-30.628,51.472c-4.346,1.103-8.839,1.51-13.313,1.204l0,0c-5.029,0-22.235-1.853-51.352-5.823 c0-26.47,0-47.117,0-60.352v-50.558l0,0 M337.495,646.105c19.595,0.894,39.077,3.463,58.234,7.676	c10.611,3.333,19.525,10.635,24.882,20.382c4.537,9.402,6.803,19.738,6.618,30.176c0,21.97-5.559,35.735-16.412,41.029 c-8.218,4.022-17.338,5.846-26.47,5.294c-15.967-0.579-31.881-2.17-47.646-4.765L337.495,646.105z'/><line fill='none' stroke='#000000' stroke-width='20' stroke-miterlimit='10' x1='960.339' y1='555.577' x2='960.339' y2='984.923'/><path d='M1100.631,895.719h17.206c7.941,0,14.823-3.706,14.823-12.97s-6.882-12.706-14.823-12.706h-17.206V895.719z M1100.631,861.043h12.706c10.059,0,16.941-1.323,16.941-11.382s-6.882-11.647-16.941-11.382h-12.706V861.043z M1090.043,904.719 v-75.175h26.47c12.706,0,24.088,4.765,24.088,19.588c-0.116,7.63-5.317,14.24-12.706,16.147l0,0 c9.247,1.607,15.771,9.962,15.088,19.323c-0.189,8.413-5.729,15.765-13.765,18.264c-4.09,1.358-8.407,1.898-12.706,1.588	L1090.043,904.719z'/><path d='M1175.012,879.307c-6.088,0-14.029,2.382-14.029,10.059c-0.18,5.114,3.819,9.405,8.933,9.585	c0.464,0.016,0.929-0.002,1.391-0.056c11.647,0,13.765-10.059,13.5-19.588H1175.012z M1184.806,872.425	c0-9,0-14.559-10.853-14.559c-4.789-0.586-9.146,2.821-9.732,7.609c-0.035,0.286-0.056,0.573-0.062,0.861h-10.588 c0-11.647,9.529-15.617,19.853-15.617s21.441,3.176,21.441,17.735v25.147c0,2.382,0,6.618,0,11.117h-6.353h-2.647	c-0.131-2.38-0.131-4.766,0-7.147l0,0c-2.953,6.283-9.491,10.079-16.411,9.529c-8.692,1.177-16.693-4.915-17.87-13.608 c-0.066-0.491-0.11-0.985-0.13-1.48c0-14.559,12.97-18.794,26.47-18.794L1184.806,872.425z'/><path d='M1217.63,859.984L1217.63,859.984c3.11-5.721,9.105-9.278,15.617-9.265c9.888-1.024,18.734,6.162,19.758,16.05 c0.058,0.56,0.09,1.122,0.095,1.685v36.264h-9V871.63c0-8.47-3.706-13.235-11.912-13.235c-3.657-0.004-7.172,1.421-9.794,3.971	c0,1.323-3.971,3.706-3.971,13.765v28.588h-10.059v-52.94h9.265L1217.63,859.984L1217.63,859.984z'/><path d='M1297.04,869.249c0-6.618-3.706-11.382-10.853-11.382s-12.97,8.206-12.97,20.647s3.441,20.382,12.97,20.382 s10.588-4.235,11.117-11.647h10.059c-0.71,11.05-10.112,19.513-21.176,19.059c-16.941,0-23.558-11.912-23.558-26.47 s7.676-28.058,24.353-28.058c10.363-0.586,19.239,7.341,19.824,17.704c0.016,0.275,0.025,0.55,0.028,0.826L1297.04,869.249z'/><path d='M1336.481,898.895c11.912,0,15.882-9.265,15.882-20.382s-3.971-20.647-15.882-20.647s-15.617,9.529-15.617,20.647 S1324.834,898.895,1336.481,898.895 M1362.951,878.513c0,14.619-11.851,26.47-26.47,26.47s-26.47-11.851-26.47-26.47	s11.851-26.47,26.47-26.47C1351.1,852.043,1362.951,863.894,1362.951,878.513'/><path d='M1402.921,863.16c8.206,0,11.647-3.971,11.647-9.529s-3.441-9.265-11.647-9.529h-10.853v19.059L1402.921,863.16z M1371.422,904.719v-75.175h34.411c18.529,0,30.705,5.823,30.705,24.088s-12.176,24.088-30.705,24.088h-13.765v26.47 L1371.422,904.719z'/>	<path d='M1468.302,894.66c8.206,0,10.059-8.735,10.059-16.147s-1.853-16.147-10.059-16.147c-8.206,0-10.323,8.735-10.323,16.147 S1459.832,894.66,1468.302,894.66 M1498.478,878.513c1.462,16.748-10.93,31.51-27.679,32.972s-31.51-10.93-32.972-27.679 c-1.462-16.748,10.931-31.51,27.679-32.972c0.93-0.081,1.863-0.12,2.796-0.115c14.471-2.073,27.883,7.978,29.956,22.449 C1498.512,874.938,1498.586,876.729,1498.478,878.513'/><path d='M1531.831,868.454c0.559-1.356,0.559-2.879,0-4.235c-1.358-1.442-3.333-2.133-5.294-1.853	c-2.32-0.298-4.442,1.341-4.741,3.661c-0.036,0.278-0.044,0.559-0.024,0.839c0,3.971,7.941,3.706,20.382,7.676 c6.682,1.329,11.264,7.514,10.588,14.294c0,13.765-12.97,17.47-26.47,17.47s-25.147-2.647-25.147-18.529h18.794 c-0.575,1.445-0.575,3.055,0,4.5c1.204,1.401,2.921,2.26,4.765,2.382c3.971,0,6.618-1.323,6.618-4.765 c0-9.265-30.97-3.706-30.97-22.764c0-12.706,13.765-16.412,24.088-16.412s24.088,3.176,24.882,17.735L1531.831,868.454 L1531.831,868.454z'/><path d='M1564.919,852.308v-7.941l19.853-7.412v15.353h11.647v12.441h-11.647v19.853c0,1.323,0,7.941,3.706,7.941h7.676v11.912 c-3.522,0.317-7.066,0.317-10.588,0c-13.5,0-21.441-2.118-20.647-18v-23.558h-10.059v-12.441L1564.919,852.308z'/>	<path d='M1627.124,894.66c8.735,0,9.265-7.941,9.265-14.823c-3.583-0.706-7.27-0.706-10.853,0	c-2.96,1.004-4.972,3.757-5.029,6.882c-0.146,3.652,2.696,6.731,6.348,6.877c0.09,0.004,0.18,0.005,0.27,0.005 M1637.182,903.66	c-0.173-2.379-0.173-4.768,0-7.147l0,0c-3.514,5.773-9.929,9.133-16.676,8.735c-8.964,1.342-17.318-4.838-18.66-13.802 c-0.182-1.214-0.227-2.445-0.134-3.669c0-12.706,11.912-18,29.117-18h6.088c0-4.5,0-11.117-6.882-10.853	c-3.781,0.39-6.53,3.771-6.139,7.552c0.013,0.13,0.031,0.26,0.051,0.389h-18.794c-0.279-6.19,3.462-11.855,9.265-14.029	c5.727-2.251,11.848-3.331,18-3.176c10.588,0,23.294,4.5,23.029,16.412v26.47c0,2.118,0,4.5,0,10.853L1637.182,903.66z'/></g></g></svg>")]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="150" y="593" width="403" height="18" isRemoveLineWhenBlank="true" backcolor="#EBEBEB" uuid="61663c0b-7fc2-4782-98dd-e7fd2ef91348">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<box leftPadding="0">
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font fontName="TitilliumWeb" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Banco<style isBold="true">Posta</style>]]></text>
+			</staticText>
+			<textField pattern="">
+				<reportElement positionType="Float" mode="Opaque" x="275" y="593" width="299" height="18" isRemoveLineWhenBlank="true" backcolor="#EBEBEB" uuid="1b565e3b-dbbc-4339-86d6-dcc25526fef0">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<box leftPadding="0" rightPadding="20">
+					<topPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{qr_code}.equals(null)?"":
+    ($F{data}.equals(null)?$F{scadenza} + ($F{scadenza_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $F{scadenza_tra} + "</style></font>"):
+        $F{scadenza} + ($F{scadenza_tra}.equals(null)?" ":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $F{scadenza_tra} + "</style></font> ") + $F{data})]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="120" y="228" width="154" height="20" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="84d034e4-d6b9-4f81-8248-073d4b285076"/>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{qr_code}.equals(null)?($F{data}.equals(null)?$F{scadenza}:$P{prima_rata_ita} + ($P{prima_rata_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{prima_rata_tra} + "</style></font>")):
+    ($F{data}.equals(null)?$F{scadenza}:
+        $P{entro_ita} + ($P{entro_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{entro_tra} + "</style></font>"))]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="0" y="228" width="115" height="20" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="08763df9-c714-4276-bfed-ef87ea91b45b"/>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{importo_ita} + ($P{importo_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $P{importo_tra} + "</style></font>")]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="120" y="247" width="154" height="24" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="ca2a241e-f217-4290-baae-2442a85e9f8b"/>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="15" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="325" y="747" width="137" height="14" isRemoveLineWhenBlank="true" uuid="ea810fa4-f2d4-46c5-b531-7b73734ca5e8">
+					<printWhenExpression><![CDATA[new Boolean(!$F{qr_code}.equals(null) && !$P{poste}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" markup="styled">
+					<font fontName="TitilliumWeb" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{codice_fiscale_ente_ita}]]></textFieldExpression>
+			</textField>
+			<image hAlign="Right" vAlign="Top" onErrorType="Blank">
+				<reportElement positionType="Float" x="373" y="0" width="85" height="85" isRemoveLineWhenBlank="true" uuid="923f138e-c832-4d5d-afb5-5156c789e392"/>
+				<imageExpression><![CDATA[new ByteArrayInputStream(Base64.decodeBase64((($P{logo_ente_secondario}.contains(','))?$P{logo_ente_secondario}.split(',')[1]:$P{logo_ente_secondario}).getBytes("UTF-8")))]]></imageExpression>
+			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="0" y="39" width="350" height="42" isRemoveLineWhenBlank="true" uuid="4575eb15-b913-4858-bed3-32d813b05d10">
+					<printWhenExpression><![CDATA[new Boolean(!$P{logo_ente_secondario}.equals( null ))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="14" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="11.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{numero_rata}.equals(null)?"":$F{numero_rata}) +
+    ((!$F{numero_rata}.equals(null) && !$P{oggetto_del_pagamento_ita}.equals(null))?
+        ($P{oggetto_del_pagamento_tra}.equals(null)?($F{numero_rata_tra}.equals(null)?" - ":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · " + $F{numero_rata_tra} + "</style></font> - "):" - "):"") +
+    ($P{oggetto_del_pagamento_ita}.equals(null)?"":$P{oggetto_del_pagamento_ita})) +
+(!$P{oggetto_del_pagamento_tra}.equals(null)?"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> · </style></font>":"") +
+((($F{numero_rata_tra}.equals(null) || $P{oggetto_del_pagamento_tra}.equals(null))?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\">" + $F{numero_rata_tra} + "</style></font>") +
+    ((!$F{numero_rata_tra}.equals(null) && !$P{oggetto_del_pagamento_tra}.equals(null))?"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\"> - </style></font>":"") +
+    ($P{oggetto_del_pagamento_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\">" + $P{oggetto_del_pagamento_tra} + "</style></font>"))]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="120" y="248" width="154" height="20" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="3980710d-037a-44ac-a2d3-811eb66e78cf"/>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="TitilliumWeb-Bold" size="10" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{data}.equals(null)?($F{scadenza_tra}.equals(null)?"":"<font face=\"TitilliumWeb\"><style forecolor=\"#999999\">" + $F{scadenza_tra} + "</style></font>"):""]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="23" y="276" width="250" height="34" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="f28e3d8a-861e-48d0-b527-5a38e94606fe">
+					<printWhenExpression><![CDATA[new Boolean(!$P{nota_1_ita}.equals(null)) && new Boolean(!$P{nota_2_ita}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="html">
+					<font fontName="TitilliumWeb" size="9" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nota_1_ita} + "<br>" +($P{nota_1_tra}.equals(null)?"":"<span style=\"color: #999999;\">" + $P{nota_1_tra} + "</span>")]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="23" y="377" width="250" height="30" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="87016d6e-71ea-4997-9fae-89bb5a11adf9">
+					<printWhenExpression><![CDATA[new Boolean(!$P{nota_1_ita}.equals(null)) && new Boolean(!$P{nota_2_ita}.equals(null)) && new Boolean(!$P{nota_3_ita}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="html">
+					<font fontName="TitilliumWeb" size="9" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nota_3_ita} + "<br>" + ($P{nota_3_tra}.equals(null)?"":"<span style=\"color: #999999;\">" + $P{nota_3_tra} + "</span>")]]></textFieldExpression>
+			</textField>
+			<image scaleImage="RetainShape" hAlign="Left" vAlign="Top" onErrorType="Blank">
+				<reportElement positionType="Float" x="0" y="277" width="16" height="16" isRemoveLineWhenBlank="true" uuid="8d20d08c-ef17-40c1-b64f-b037b3d34ce5">
+					<printWhenExpression><![CDATA[new Boolean(!$P{nota_1_ita}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<imageExpression><![CDATA[net.sf.jasperreports.renderers.BatikRenderer.getInstanceFromText("<svg version='1.0' xmlns='http://www.w3.org/2000/svg' width='1280.000000pt' height='1280.000000pt' viewBox='0 0 1280.000000 1280.000000' preserveAspectRatio='xMidYMid meet'><g transform='translate(0.000000,1280.000000) scale(0.100000,-0.100000)' fill='#000000' stroke='none'><path d='M6099 11730 c-1220 -77 -2325 -532 -3236 -1332 -143 -125 -433 -424 -553 -568 -592 -713 -975 -1514 -1150 -2405 -67 -345 -94 -637 -94 -1030 0 -324 14 -522 55 -795 160 -1063 644 -2062 1377 -2840 469 -498 966 -866 1567 -1160 1287 -629 2806 -710 4159 -220 415 150 869 386 1227 637 631 441 1148 998 1548 1668 94 157 262 494 335 670 203 495 328 1001 382 1555 24 241 24 738 0 980 -99 1016 -454 1932 -1057 2730 -402 531 -893 978 -1462 1331 -189 117 -605 326 -797 401 -520 204 -967 312 -1500 363 -201 19 -616 27 -801 15z m666 -1085 c1922 -168 3495 -1605 3830 -3500 84 -474 86 -988 5 -1459 -305 -1786 -1700 -3181 -3485 -3486 -278 -47 -384 -55 -725 -55 -416 1 -635 27 -1015 120 -1639 403 -2892 1753 -3174 3420 -46 272 -56 395 -56 715 0 312 9 430 51 690 189 1162 858 2197 1846 2858 580 388 1273 632 1976 696 201 19 542 19 747 1z'/><path d='M5860 8535 l0 -535 540 0 540 0 0 535 0 535 -540 0 -540 0 0 -535z'/><path d='M5860 5335 l0 -1605 540 0 540 0 0 1605 0 1605 -540 0 -540 0 0 -1605z'/></g></svg>")]]></imageExpression>
+			</image>
+			<image scaleImage="RetainShape" hAlign="Left" vAlign="Top" onErrorType="Blank">
+				<reportElement positionType="Float" x="0" y="378" width="16" height="16" isRemoveLineWhenBlank="true" uuid="be012821-737c-4311-a57c-b2de3d3b294d">
+					<printWhenExpression><![CDATA[new Boolean(!$P{nota_3_ita}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<imageExpression><![CDATA[net.sf.jasperreports.renderers.BatikRenderer.getInstanceFromText("<svg version='1.0' xmlns='http://www.w3.org/2000/svg' width='1280.000000pt' height='1280.000000pt' viewBox='0 0 1280.000000 1280.000000' preserveAspectRatio='xMidYMid meet'><g transform='translate(0.000000,1280.000000) scale(0.100000,-0.100000)' fill='#000000' stroke='none'><path d='M6099 11730 c-1220 -77 -2325 -532 -3236 -1332 -143 -125 -433 -424 -553 -568 -592 -713 -975 -1514 -1150 -2405 -67 -345 -94 -637 -94 -1030 0 -324 14 -522 55 -795 160 -1063 644 -2062 1377 -2840 469 -498 966 -866 1567 -1160 1287 -629 2806 -710 4159 -220 415 150 869 386 1227 637 631 441 1148 998 1548 1668 94 157 262 494 335 670 203 495 328 1001 382 1555 24 241 24 738 0 980 -99 1016 -454 1932 -1057 2730 -402 531 -893 978 -1462 1331 -189 117 -605 326 -797 401 -520 204 -967 312 -1500 363 -201 19 -616 27 -801 15z m666 -1085 c1922 -168 3495 -1605 3830 -3500 84 -474 86 -988 5 -1459 -305 -1786 -1700 -3181 -3485 -3486 -278 -47 -384 -55 -725 -55 -416 1 -635 27 -1015 120 -1639 403 -2892 1753 -3174 3420 -46 272 -56 395 -56 715 0 312 9 430 51 690 189 1162 858 2197 1846 2858 580 388 1273 632 1976 696 201 19 542 19 747 1z'/><path d='M5860 8535 l0 -535 540 0 540 0 0 535 0 535 -540 0 -540 0 0 -535z'/><path d='M5860 5335 l0 -1605 540 0 540 0 0 1605 0 1605 -540 0 -540 0 0 -1605z'/></g></svg>")]]></imageExpression>
+			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" mode="Transparent" x="23" y="311" width="250" height="65" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="56a4d756-ad1f-4634-af16-f7827aadbf16">
+					<printWhenExpression><![CDATA[new Boolean(!$P{nota_1_ita}.equals(null)) && new Boolean(!$P{nota_2_ita}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top" markup="html">
+					<font fontName="TitilliumWeb" size="9" isBold="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="7.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nota_2_ita} + "<br>" + ($P{nota_2_tra}.equals(null)?"":"<span style=\"color: #999999;\">" + $P{nota_2_tra} + "</span>")]]></textFieldExpression>
+			</textField>
+			<image scaleImage="RetainShape" hAlign="Left" vAlign="Top" onErrorType="Blank">
+				<reportElement positionType="Float" x="0" y="312" width="16" height="16" isRemoveLineWhenBlank="true" uuid="30a45352-3c02-4369-9c4c-84a7465fc34a">
+					<printWhenExpression><![CDATA[new Boolean(!$P{nota_2_ita}.equals(null))]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<imageExpression><![CDATA[net.sf.jasperreports.renderers.BatikRenderer.getInstanceFromText("<svg version='1.0' xmlns='http://www.w3.org/2000/svg' width='1280.000000pt' height='1280.000000pt' viewBox='0 0 1280.000000 1280.000000' preserveAspectRatio='xMidYMid meet'><g transform='translate(0.000000,1280.000000) scale(0.100000,-0.100000)' fill='#000000' stroke='none'><path d='M6099 11730 c-1220 -77 -2325 -532 -3236 -1332 -143 -125 -433 -424 -553 -568 -592 -713 -975 -1514 -1150 -2405 -67 -345 -94 -637 -94 -1030 0 -324 14 -522 55 -795 160 -1063 644 -2062 1377 -2840 469 -498 966 -866 1567 -1160 1287 -629 2806 -710 4159 -220 415 150 869 386 1227 637 631 441 1148 998 1548 1668 94 157 262 494 335 670 203 495 328 1001 382 1555 24 241 24 738 0 980 -99 1016 -454 1932 -1057 2730 -402 531 -893 978 -1462 1331 -189 117 -605 326 -797 401 -520 204 -967 312 -1500 363 -201 19 -616 27 -801 15z m666 -1085 c1922 -168 3495 -1605 3830 -3500 84 -474 86 -988 5 -1459 -305 -1786 -1700 -3181 -3485 -3486 -278 -47 -384 -55 -725 -55 -416 1 -635 27 -1015 120 -1639 403 -2892 1753 -3174 3420 -46 272 -56 395 -56 715 0 312 9 430 51 690 189 1162 858 2197 1846 2858 580 388 1273 632 1976 696 201 19 542 19 747 1z'/><path d='M5860 8535 l0 -535 540 0 540 0 0 535 0 535 -540 0 -540 0 0 -535z'/><path d='M5860 5335 l0 -1605 540 0 540 0 0 1605 0 1605 -540 0 -540 0 0 -1605z'/></g></svg>")]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+</jasperReport>
