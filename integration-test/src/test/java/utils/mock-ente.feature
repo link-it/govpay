@@ -38,6 +38,21 @@ Background:
 * def appIoPath = '/appio'
 * def enteRendicontazioniPath = '/enteRendicontazioni'
 
+* def pendenzaSconosciutaAPISOAP =
+"""	
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV = "http://schemas.xmlsoap.org/soap/envelope/"
+   xmlns:xsi = "http://www.w3.org/1999/XMLSchema-instance"
+   xmlns:xsd = "http://www.w3.org/1999/XMLSchema">
+   <SOAP-ENV:Body>
+      <SOAP-ENV:Fault>
+         <faultcode xsi:type = "xsd:string">SOAP-ENV:Client</faultcode>
+         <faultstring xsi:type = "xsd:string">Pendenza Sconosciuta</faultstring>
+      </SOAP-ENV:Fault>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+"""
+
 # Servizi per il caricamento dati
 Scenario: pathMatches(pagamentiPath+'/v1/avvisi/{idDominio}/{iuv}') && methodIs('post')
   * eval versamenti[pathParams.idDominio + pathParams.iuv] = request
@@ -63,6 +78,30 @@ Scenario: pathMatches(pagamentiPath+'/v2/avvisi/{idDominio}/{numeroAvviso}') && 
 Scenario: pathMatches(pagamentiPath+'/v1/pendenze/{idA2A}/{idPendenza}') && methodIs('get')
   * eval pendenza = versamenti[pathParams.idA2A + pathParams.idPendenza] == null ? pendenzaSconosciuta : versamenti[pathParams.idA2A + pathParams.idPendenza] 
   * def response = pendenza
+  
+# API Verifica Pendenza SOAP
+Scenario: pathMatches(pagamentiPath+'/v1/SOAPNumeroPendenza') && methodIs('post') && karate.get('requestHeaders.SOAPAction[0]') == '"paVerificaVersamento"'
+* xml messaggioRichiesta = request
+* def idA2A = $messaggioRichiesta /Envelope/Body/paVerificaVersamento/codApplicazione
+* def idPendenza = $messaggioRichiesta /Envelope/Body/paVerificaVersamento/codVersamentoEnte
+* def responseStatus = 200
+* eval pendenzaCodVers = (idPendenza != null && versamenti[idA2A + idPendenza] != null) ? versamenti[idA2A + idPendenza] : null
+* eval pendenza = pendenzaCodVers != null ? pendenzaCodVers : pendenzaSconosciutaAPISOAP
+* xml messaggioRisposta = pendenza
+* def response = messaggioRisposta
+* def responseHeaders = { 'Content-Type': 'text/xml' }
+
+Scenario: pathMatches(pagamentiPath+'/v1/SOAP') && methodIs('post') && karate.get('requestHeaders.SOAPAction[0]') == '"paVerificaVersamento"'
+* xml messaggioRichiesta = request
+* def idA2A = $messaggioRichiesta /Envelope/Body/paVerificaVersamento/codApplicazione
+* def idDominio = $messaggioRichiesta /Envelope/Body/paVerificaVersamento/codDominio
+* def iuv = $messaggioRichiesta /Envelope/Body/paVerificaVersamento/iuv
+* def responseStatus = 200
+* eval pendenzaAvviso = (iuv != null && versamenti[idDominio + iuv] != null) ? versamenti[idDominio + iuv] : null
+* eval pendenza = pendenzaAvviso != null ? pendenzaAvviso : pendenzaSconosciutaAPISOAP
+* xml messaggioRisposta = pendenza
+* def response = messaggioRisposta
+* def responseHeaders = { 'Content-Type': 'text/xml' }
   
 # API Inoltro pendenza modello 4 al verticale
 
@@ -151,6 +190,28 @@ Scenario: pathMatches(pagamentiPath+'/v2/pagamenti/{idDominio}/{iuv}') && method
   * def responseStatus = repo[idDominio+iuv+ccp] == null ? 200: 201
   * eval repo[idDominio+iuv+ccp] = request    
   * eval repoByIdSession[paramValue('idSession')] = request 
+  
+Scenario: pathMatches(pagamentiPath+'/v1/SOAP') && methodIs('post') && karate.get('requestHeaders.SOAPAction[0]') == '"paNotificaTransazione"'
+* xml messaggioRichiesta = request
+* def idDominio = $messaggioRichiesta /Envelope/Body/paNotificaTransazione/transazione/codDominio
+* def iuv = $messaggioRichiesta /Envelope/Body/paNotificaTransazione/transazione/iuv
+* def ccp_tmp = $messaggioRichiesta /Envelope/Body/paNotificaTransazione/transazione/ccp
+* def ccp = ccp_tmp == 'n/a' ? 'n_a' : ccp_tmp
+* def rt_tmp = $messaggioRichiesta /Envelope/Body/paNotificaTransazione/transazione/rt
+* def repo = rt_tmp == null ? notificheAttivazione : notificheTerminazione
+* eval repo[idDominio+iuv+ccp] = request 
+* def responseStatus = 200
+* def response =  
+"""	
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV = "http://schemas.xmlsoap.org/soap/envelope/"
+   xmlns:xsi = "http://www.w3.org/1999/XMLSchema-instance"
+   xmlns:xsd = "http://www.w3.org/1999/XMLSchema">
+   <SOAP-ENV:Body>
+      
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+"""
     
 Scenario: pathMatches(pagamentiPath+'/notificaAttivazione/{idDominio}/{iuv}/{ccp}') && methodIs('get')
   * def responseStatus = notificheAttivazione[pathParams.idDominio+pathParams.iuv+pathParams.ccp] == null ? 404: 200

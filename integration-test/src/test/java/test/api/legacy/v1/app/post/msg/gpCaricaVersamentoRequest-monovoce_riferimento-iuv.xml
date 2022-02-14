@@ -1,0 +1,27 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+   <soap:Body>
+      <ns2:gpCaricaVersamento xmlns:ns2="http://www.govpay.it/servizi/gpApp/" xmlns:ns3="http://www.govpay.it/servizi/commons/">
+         <generaIuv>#(generaIuv)</generaIuv>
+         <aggiornaSeEsiste>true</aggiornaSeEsiste>
+         <versamento>
+            <codApplicazione>#(idA2A)</codApplicazione>
+            <codVersamentoEnte>#(idPendenza)</codVersamentoEnte>
+            <codDominio>#(idDominio)</codDominio>
+            <iuv>#(iuv)</iuv>
+            <debitore>
+               <codUnivoco>RSSMRA30A01H501I</codUnivoco>
+               <ragioneSociale>Mario Rossi</ragioneSociale>
+            </debitore>
+            <importoTotale>10.00</importoTotale>
+            <dataScadenza>2999-12-31T00:00:00.000Z</dataScadenza>
+            <aggiornabile>true</aggiornabile>
+            <causale>#("Pagamento dovuto n." + idPendenza)</causale>
+            <singoloVersamento>
+               <codSingoloVersamentoEnte>1</codSingoloVersamentoEnte>
+               <importo>10.00</importo>
+               <codTributo>SEGRETERIA</codTributo>
+            </singoloVersamento>
+         </versamento>
+      </ns2:gpCaricaVersamento>
+   </soap:Body>
+</soap:Envelope>

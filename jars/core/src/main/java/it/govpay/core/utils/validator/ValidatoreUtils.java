@@ -107,6 +107,11 @@ public class ValidatoreUtils {
 		if(annoRiferimento != null)
 			vf.getValidator(nomeCampo, annoRiferimento.toBigInteger().toString()).pattern(CostantiValidazione.PATTERN_ANNO_RIFERIMENTO);
 	}
+	
+	public static void validaAnnoRiferimento(ValidatorFactory vf, String nomeCampo, Integer annoRiferimento) throws ValidationException {
+		if(annoRiferimento != null)
+			vf.getValidator(nomeCampo, annoRiferimento.toString()).pattern(CostantiValidazione.PATTERN_ANNO_RIFERIMENTO);
+	}
 
 	public static void validaCodiceContabilita(ValidatorFactory vf, String nomeCampo, String codiceContabilita) throws ValidationException {
 		validaCodiceContabilita(vf, nomeCampo, codiceContabilita, true);

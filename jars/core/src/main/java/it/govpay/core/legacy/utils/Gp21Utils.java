@@ -5,32 +5,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.pagamento.filters.VersamentoFilter.SortFields;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.IuvUtils;
-import it.govpay.ec.v1.beans.PendenzaVerificata;
-import it.govpay.ec.v1.beans.Soggetto;
-import it.govpay.ec.v1.beans.StatoPendenzaVerificata;
-import it.govpay.ec.v1.beans.TipoContabilita;
 import it.govpay.ec.v1.beans.TipoSoggetto;
-import it.govpay.ec.v1.beans.VocePendenza;
 import it.govpay.servizi.commons.Anagrafica;
 import it.govpay.servizi.commons.Canale;
 import it.govpay.servizi.commons.EsitoTransazione;
-import it.govpay.servizi.commons.EsitoVerificaVersamento;
 import it.govpay.servizi.commons.FlussoRendicontazione;
 import it.govpay.servizi.commons.IuvGenerato;
 import it.govpay.servizi.commons.ModelloPagamento;
@@ -41,9 +29,7 @@ import it.govpay.servizi.commons.TipoAllegato;
 import it.govpay.servizi.commons.TipoRendicontazione;
 import it.govpay.servizi.commons.TipoVersamento;
 import it.govpay.servizi.commons.Transazione;
-import it.govpay.servizi.commons.Versamento;
 import it.govpay.servizi.commons.Versamento.SingoloVersamento;
-import it.govpay.servizi.pa.PaVerificaVersamentoResponse;
 
 public class Gp21Utils {
 
@@ -252,7 +238,7 @@ public class Gp21Utils {
 		return iuvGenerato;
 	}
 
-	public static it.govpay.core.dao.commons.Versamento toVersamentoCommons(it.govpay.servizi.commons.Versamento pendenza) throws ServiceException, IOException, GovPayException {
+	public static it.govpay.core.dao.commons.Versamento toVersamentoCommons(it.govpay.servizi.commons.Versamento pendenza) throws ServiceException, GovPayException {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 
 		if(pendenza.getAnnoTributario() != null)
@@ -327,15 +313,13 @@ public class Gp21Utils {
 		return versamento;
 	}
 
-	public static BigDecimal fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<SingoloVersamento> voci) throws ServiceException, IOException, GovPayException {
+	public static BigDecimal fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<SingoloVersamento> voci) throws ServiceException, GovPayException {
 
 		BigDecimal importoTotale = BigDecimal.ZERO;
 
 		if(voci != null && voci.size() > 0) {
 			for (SingoloVersamento vocePendenza : voci) {
 				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = new it.govpay.core.dao.commons.Versamento.SingoloVersamento();
-
-				//sv.setCodTributo(value); ??
 
 				sv.setCodSingoloVersamentoEnte(vocePendenza.getCodSingoloVersamentoEnte());
 //				if(vocePendenza.getDatiAllegati() != null)
@@ -368,22 +352,6 @@ public class Gp21Utils {
 					}
 				}
 				
-//				sv.setContabilita(ContabilitaConverter.toStringDTO(vocePendenza.getContabilita()));
-				
-//				if(vocePendenza.getContabilita() != null) {
-//					if(vocePendenza.getContabilita().getQuote() != null) {
-//						BigDecimal somma = BigDecimal.ZERO;
-//						for (QuotaContabilita voceContabilita : vocePendenza.getContabilita().getQuote()) {
-//							somma = somma.add(voceContabilita.getImporto());
-//						}
-//						
-//						if(somma.compareTo(vocePendenza.getImporto()) != 0) {
-//							throw new GovPayException(EsitoOperazione.VER_035, vocePendenza.getIdVocePendenza(),  versamento.getCodApplicazione(), versamento.getCodVersamentoEnte(),
-//								Double.toString(sv.getImporto().doubleValue()), Double.toString(somma.doubleValue()));
-//						}
-//					}
-//				}
-
 				versamento.getSingoloVersamento().add(sv);
 			}
 		}
@@ -410,156 +378,4 @@ public class Gp21Utils {
 		return anagraficaModel;
 	}
 
-	public static PendenzaVerificata toPendenzaVerificata(PaVerificaVersamentoResponse paVerificaVersamentoResponse, BDConfigWrapper configWrapper ) throws ValidationException, ServiceException {
-		if(paVerificaVersamentoResponse == null)
-			throw new ValidationException("Risposta vuota");
-		
-		PendenzaVerificata versamento = new PendenzaVerificata();
-		
-		EsitoVerificaVersamento codEsito = paVerificaVersamentoResponse.getCodEsito();
-		String descrizioneEsito = paVerificaVersamentoResponse.getDescrizioneEsito();
-		Versamento pendenza = paVerificaVersamentoResponse.getVersamento();
-		
-		if(codEsito != null) {
-			switch (codEsito) {
-			case OK:
-				versamento.setStato(StatoPendenzaVerificata.NON_ESEGUITA);
-				break;
-			case PAGAMENTO_ANNULLATO:
-				versamento.setStato(StatoPendenzaVerificata.ANNULLATA);
-				break;
-			case PAGAMENTO_DUPLICATO:
-				versamento.setStato(StatoPendenzaVerificata.DUPLICATA);
-				break;
-			case PAGAMENTO_SCADUTO:
-				versamento.setStato(StatoPendenzaVerificata.SCADUTA);
-				break;
-			case PAGAMENTO_SCONOSCIUTO:
-				versamento.setStato(StatoPendenzaVerificata.SCONOSCIUTA);
-				break;
-			}
-		}
-		versamento.setDescrizioneStato(descrizioneEsito);
-		
-		
-		if(pendenza.getAnnoTributario() != null)
-			versamento.setAnnoRiferimento(new BigDecimal(pendenza.getAnnoTributario().intValue()));
-
-		versamento.setCausale(pendenza.getCausale());
-		versamento.setIdA2A(pendenza.getCodApplicazione());
-
-		versamento.setIdDominio(pendenza.getCodDominio());
-		versamento.setIdUnitaOperativa(pendenza.getCodUnitaOperativa());
-		versamento.setIdPendenza(pendenza.getCodVersamentoEnte());
-		versamento.setDataScadenza(pendenza.getDataScadenza());
-		versamento.setSoggettoPagatore(toSoggettoPagatore(pendenza.getDebitore()));
-
-
-		Dominio dominio;
-		try {
-			dominio = AnagraficaManager.getDominio(configWrapper, pendenza.getCodDominio());
-		} catch (NotFoundException e) {
-			throw new ValidationException("Dominio ["+pendenza.getCodDominio()+"] inesistente.");
-		}
-		
-		versamento.setNumeroAvviso(IuvUtils.toNumeroAvviso(pendenza.getIuv(), dominio ));
-
-		// voci pagamento
-		BigDecimal importoVociPendenza = fillVociPendenzaFromSingoliVersamenti(versamento, pendenza.getSingoloVersamento());
-
-		// importo pendenza puo' essere null
-		versamento.setImporto(pendenza.getImportoTotale() != null ? pendenza.getImportoTotale() : importoVociPendenza); 
-
-		// tipo Pendenza
-//		versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza()); TODO
-
-		//		versamento.setDirezione(pendenza.getDirezione());
-		//		versamento.setDivisione(pendenza.getDivisione()); 
-//		versamento.setCodLotto(pendenza.getCodDebito());
-
-		//		if(pendenza.getDocumento() != null) {
-		//			it.govpay.core.dao.commons.Versamento.Documento documento = new it.govpay.core.dao.commons.Versamento.Documento();
-		//			
-		//			documento.setCodDocumento(pendenza.getDocumento().getIdentificativo());
-		//			if(pendenza.getDocumento().getRata() != null)
-		//				documento.setCodRata(pendenza.getDocumento().getRata().intValue());
-		//			if(pendenza.getDocumento().getSoglia() != null) {
-		//				// valore tassonomia avviso non valido
-		//				if(TipoSogliaVincoloPagamento.fromValue(pendenza.getDocumento().getSoglia().getTipo()) == null) {
-		//					throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" 
-		//								+ pendenza.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
-		//				}
-		//				
-		//				documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
-		//				documento.setTipoSoglia(pendenza.getDocumento().getSoglia().getTipo());
-		//			}
-		//			documento.setDescrizione(pendenza.getDocumento().getDescrizione());
-		//
-		//			versamento.setDocumento(documento );
-		//		}
-
-		//		versamento.setDataNotificaAvviso(pendenza.getDataNotificaAvviso());
-		//		versamento.setDataPromemoriaScadenza(pendenza.getDataPromemoriaScadenza());
-
-		//		versamento.setProprieta(toProprietaPendenzaDTO(pendenza.getProprieta()));
-		
-		
-		return versamento;
-	}
-
-	private static BigDecimal fillVociPendenzaFromSingoliVersamenti(PendenzaVerificata versamento, List<SingoloVersamento> voci) {
-		BigDecimal importoTotale = BigDecimal.ZERO;
-
-		if(voci != null && voci.size() > 0) {
-			for (SingoloVersamento vocePendenza : voci) {
-				VocePendenza sv = new VocePendenza();
-
-				sv.setIdVocePendenza(vocePendenza.getCodSingoloVersamentoEnte());
-				sv.setImporto(vocePendenza.getImporto());
-//				sv.setIdDominio(versamento.getIdDominio());
-
-				importoTotale = importoTotale.add(vocePendenza.getImporto());
-
-				// Definisce i dati di un bollo telematico
-				if(vocePendenza.getBolloTelematico() != null) {
-					sv.setHashDocumento(vocePendenza.getBolloTelematico().getHash());
-					sv.setProvinciaResidenza(vocePendenza.getBolloTelematico().getProvincia());
-					sv.setTipoBollo(vocePendenza.getBolloTelematico().getTipo());
-				} else if(vocePendenza.getCodTributo() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
-					sv.setCodEntrata(vocePendenza.getCodTributo());
-
-				} else { // Definisce i dettagli di incasso della singola entrata.
-					if(vocePendenza.getTributo() != null) {
-						sv.setCodiceContabilita(vocePendenza.getTributo().getCodContabilita());
-						sv.setIbanAccredito(vocePendenza.getTributo().getIbanAccredito());
-						sv.setIbanAppoggio(vocePendenza.getTributo().getIbanAppoggio());
-						sv.setTipoContabilita(TipoContabilita.valueOf(vocePendenza.getTributo().getTipoContabilita().name()));
-					}
-				}
-
-				versamento.getVoci().add(sv);
-			}
-		}
-
-		return importoTotale;
-	}
-
-	private static Soggetto toSoggettoPagatore(Anagrafica anagrafica) {
-		if(anagrafica == null) return null;
-		Soggetto anagraficaModel = new Soggetto();
-		anagraficaModel.setCap(anagrafica.getCap());
-		anagraficaModel.setCellulare(anagrafica.getCellulare());
-		anagraficaModel.setCivico(anagrafica.getCivico());
-		anagraficaModel.setIdentificativo(anagrafica.getCodUnivoco());
-		anagraficaModel.setEmail(anagrafica.getEmail());
-//		anagraficaModel.setFax(anagrafica.getFax());
-		anagraficaModel.setIndirizzo(anagrafica.getIndirizzo());
-		anagraficaModel.setLocalita(anagrafica.getLocalita());
-		anagraficaModel.setNazione(anagrafica.getNazione());
-		anagraficaModel.setProvincia(anagrafica.getProvincia());
-		anagraficaModel.setAnagrafica(anagrafica.getRagioneSociale());
-		anagraficaModel.setTipo(TipoSoggetto.F);
-//		anagraficaModel.setTelefono(anagrafica.getTelefono());
-		return anagraficaModel;
-	}
 }
