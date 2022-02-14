@@ -61,6 +61,7 @@ import it.govpay.model.IbanAccredito;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.Rpt.Versione;
 import it.govpay.model.SingoloVersamento.TipoBollo;
 
 public class RptBuilder {
@@ -107,10 +108,10 @@ public class RptBuilder {
 				versamento,
 				iuv,
 				ccp,
-				it.govpay.model.Rpt.codIntermediarioPspWISP20,
-				it.govpay.model.Rpt.codPspWISP20,
-				it.govpay.model.Rpt.codCanaleWISP20,
-				it.govpay.model.Rpt.tipoVersamentoWISP20,
+				canale.getPsp().getCodIntermediarioPsp(),
+				canale.getPsp().getCodPsp(),
+				canale.getCodCanale(),
+				canale.getTipoVersamento(),
 				it.govpay.model.Rpt.modelloPagamentoWISP20,
 				versante,
 				autenticazione,
@@ -143,6 +144,7 @@ public class RptBuilder {
 		UnitaOperativa uo = versamento.getUo(configWrapper);
 		
 		Rpt rpt = new Rpt();
+		rpt.setVersione(Versione.SANP_230);
 		rpt.setCallbackURL(redirect);
 		rpt.setCcp(ccp);
 		rpt.setCodCarrello(codCarrello);
@@ -308,7 +310,8 @@ public class RptBuilder {
 			}
 		} else {
 			CtDatiMarcaBolloDigitale marcaBollo = new CtDatiMarcaBolloDigitale();
-			marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento());
+			if(singoloVersamento.getHashDocumento() != null)
+				marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento().getBytes());
 			marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
 			if(singoloVersamento.getTipoBollo() != null)
 				marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
@@ -330,7 +333,7 @@ public class RptBuilder {
 		if(IuvUtils.checkISO11640(iuv)) {
 			sb.append("/RFS/");
 			// Issue #366. Formato causale RFS prevede uno spazio ogni 4 cifre dello IUV
-			sb.append(iuv.replaceAll("(.{4})", "$1 ").trim());
+			sb.append(formattaCausaleRFS(iuv).trim());
 		}else { 
 			sb.append("/RFB/");
 			sb.append(iuv);
@@ -350,6 +353,10 @@ public class RptBuilder {
 			return sb.toString().substring(0, 140);
 		
 		return sb.toString();
+	}
+
+	public static String formattaCausaleRFS(String iuv) {
+		return iuv.replaceAll("(.{4})", "$1 ");
 	}
 
 	private Anagrafica toOrm(CtSoggettoVersante soggettoVersante) {

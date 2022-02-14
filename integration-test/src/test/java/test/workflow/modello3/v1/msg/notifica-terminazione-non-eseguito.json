@@ -120,6 +120,7 @@
 	            "causaleVersamento":"#('/RFB/' + iuv + '/100.99/TXT/Diritti e segreteria')",
 	            "datiSpecificiRiscossione":"9/SEGRETERIA",
 	            "commissioniApplicatePSP":null,
+	            "commissioniApplicatePA": null,
 	            "allegatoRicevuta":null
 	         }
 	      ]

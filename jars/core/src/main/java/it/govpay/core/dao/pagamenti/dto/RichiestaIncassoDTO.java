@@ -25,9 +25,14 @@ import java.util.Date;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Operatore;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
+import it.govpay.core.exceptions.IncassiException;
+import it.govpay.core.exceptions.IncassiException.FaultType;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.IncassoUtils;
+import it.govpay.model.Incasso.StatoIncasso;
 
 public class RichiestaIncassoDTO extends BasicFindRequestDTO {
 	
@@ -52,6 +57,7 @@ public class RichiestaIncassoDTO extends BasicFindRequestDTO {
 	private String idFlusso;
 	private String sct;
 	private boolean ricercaIdFlussoCaseInsensitive = false;
+	private String idRiconciliazione;
 	
 	public String getTrn() {
 		return this.trn;
@@ -136,5 +142,64 @@ public class RichiestaIncassoDTO extends BasicFindRequestDTO {
 	}
 	public void setRicercaIdFlussoCaseInsensitive(boolean ricercaIdFlussoCaseInsensitive) {
 		this.ricercaIdFlussoCaseInsensitive = ricercaIdFlussoCaseInsensitive;
+	}
+	public String getIdRiconciliazione() {
+		return idRiconciliazione;
+	}
+	public void setIdRiconciliazione(String idRiconciliazione) {
+		this.idRiconciliazione = idRiconciliazione;
+	}
+	
+	public Incasso toIncassoModel() throws IncassiException {
+		// Validazione della causale
+		boolean iuvIdFlussoSet = this.getIuv() != null || this.getIdFlusso() != null;
+		String causale = this.getCausale();
+		String iuv = null;
+		String idf = null;
+		
+		// Se non mi e' stato passato uno IUV o un idFlusso, lo cerco nella causale
+		if(!iuvIdFlussoSet) {
+			try {
+				if(causale != null) {
+					iuv = IncassoUtils.getRiferimentoIncassoSingolo(causale);
+					idf = IncassoUtils.getRiferimentoIncassoCumulativo(causale);
+				} 
+			} catch (Throwable e) {
+				throw new IncassiException(FaultType.CAUSALE_NON_VALIDA,"Riscontrato errore durante il parsing della causale: " + causale);
+			} finally {
+				if(iuv == null && idf==null) {
+					throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
+				}
+			} 
+		} else {
+			iuv = this.getIuv();
+			idf = this.getIdFlusso();
+			// causale puo' essere null
+		//	causale = iuv != null ? iuv : idf;
+		//	this.setCausale(causale);
+		}
+		
+		// OVERRIDE TRN NUOVA GESTIONE
+		this.setTrn(iuv != null ? iuv : idf);
+		
+		Incasso incasso = new Incasso();
+		incasso.setCausale(this.getCausale());
+		incasso.setCodDominio(this.getCodDominio());
+		incasso.setDataIncasso(new Date());
+		incasso.setDataValuta(this.getDataValuta());
+		incasso.setDataContabile(this.getDataContabile());
+		incasso.setDispositivo(this.getDispositivo());
+		incasso.setImporto(this.getImporto());
+		incasso.setTrn(this.getTrn());
+		incasso.setIbanAccredito(this.getIbanAccredito());
+		incasso.setApplicazione(this.getApplicazione());
+		incasso.setOperatore(this.getOperatore());
+		incasso.setSct(this.getSct());
+		incasso.setIuv(iuv);
+		incasso.setIdFlussoRendicontazione(idf);
+		incasso.setIdRiconciliazione(this.getIdRiconciliazione());
+		incasso.setStato(StatoIncasso.NUOVO);
+		
+		return incasso;
 	}
 }

@@ -1,9 +1,11 @@
 package it.govpay.backoffice.v1.beans.converter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
@@ -32,7 +34,7 @@ public class IncassiConverter {
 	}
 	
 	
-	public static Incasso toRsModel(it.govpay.bd.model.Incasso i) throws ServiceException {
+	public static Incasso toRsModel(it.govpay.bd.model.Incasso i) throws ServiceException, IOException, ValidationException {
 		Incasso rsModel = new Incasso();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		
@@ -45,9 +47,9 @@ public class IncassiConverter {
 		rsModel.setData(i.getDataIncasso());
 		
 		rsModel.setIbanAccredito(i.getIbanAccredito());
-		if(i.getPagamenti(null)!= null) {
+		if(i.getPagamenti()!= null) {
 			List<Riscossione> riscossioni = new ArrayList<>();
-			for (Pagamento pagamento : i.getPagamenti(null)) {
+			for (Pagamento pagamento : i.getPagamenti()) {
 				riscossioni.add(RiscossioniConverter.toRsModel(pagamento));
 			}
 			
@@ -55,6 +57,8 @@ public class IncassiConverter {
 		}
 		
 		rsModel.setSct(i.getSct());
+		rsModel.setIuv(i.getIuv());
+		rsModel.setIdFlusso(i.getIdFlussoRendicontazione());
 		
 		return rsModel;
 	}
@@ -72,6 +76,8 @@ public class IncassiConverter {
 		rsModel.setData(i.getDataIncasso());
 		rsModel.setIbanAccredito(i.getIbanAccredito());
 		rsModel.setSct(i.getSct());
+		rsModel.setIuv(i.getIuv());
+		rsModel.setIdFlusso(i.getIdFlussoRendicontazione());
 		
 		return rsModel;
 	}

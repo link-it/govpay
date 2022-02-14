@@ -173,6 +173,8 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 			fields.add(Dominio.model().COD_CONNETTORE_MY_PIVOT);
 			fields.add(Dominio.model().COD_CONNETTORE_SECIM);
 			fields.add(Dominio.model().COD_CONNETTORE_GOV_PAY);
+			fields.add(Dominio.model().COD_CONNETTORE_HYPER_SIC_APK);
+			fields.add(Dominio.model().INTERMEDIATO);
 			
 			fields.add(new CustomField("id_stazione", Long.class, "id_stazione", this.getDominioFieldConverter().toTable(Dominio.model())));
 			fields.add(new CustomField("id_applicazione_default", Long.class, "id_applicazione_default", this.getDominioFieldConverter().toTable(Dominio.model())));
@@ -180,7 +182,11 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
-				Long id_stazione = (Long) map.remove("id_stazione");
+				Long id_stazione = null;
+				Object id_applicazioneOBJ = map.remove("id_stazione");
+				if(id_applicazioneOBJ instanceof Long) {
+					id_stazione = (Long) id_applicazioneOBJ;
+				}
 				
 				Object id_applicazione_defaultOBJ = map.remove("id_applicazione_default");
 				
@@ -190,10 +196,12 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 				}
 				
 				Dominio dominio = (Dominio)this.getDominioFetch().fetch(jdbcProperties.getDatabase(), Dominio.model(), map);
-				
-				it.govpay.orm.IdStazione id_dominio_stazione = new it.govpay.orm.IdStazione();
-				id_dominio_stazione.setId(id_stazione);
-				dominio.setIdStazione(id_dominio_stazione);
+			
+				if(id_stazione != null) {
+					it.govpay.orm.IdStazione id_dominio_stazione = new it.govpay.orm.IdStazione();
+					id_dominio_stazione.setId(id_stazione);
+					dominio.setIdStazione(id_dominio_stazione);
+				}
 
 				if(id_applicazione_default != null) {
 					it.govpay.orm.IdApplicazione id_dominio_applicazione = new it.govpay.orm.IdApplicazione();

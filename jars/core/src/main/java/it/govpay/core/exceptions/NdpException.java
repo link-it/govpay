@@ -81,12 +81,14 @@ public class NdpException extends Exception {
 		PAA_PAGAMENTO_SCONOSCIUTO("Pagamento in attesa risulta sconosciuto all’Ente Creditore."),
 		PAA_RPT_SCONOSCIUTA("La RPT risulta sconosciuta."),
 		PAA_RT_DUPLICATA("La RT \u00E8 gi\u00E0 stata accettata."),
+		PAA_RECEIPT_DUPLICATA("La CtReceipt \u00E8 gi\u00E0 stata accettata."),
 		PAA_SEMANTICA("Errore semantico."),
 		PAA_SINTASSI_EXTRAXSD("Errore di sintassi extra XSD."),
 		PAA_SINTASSI_XSD("Errore di sintassi XSD."),
 		PAA_STAZIONE_INT_ERRATA("Stazione intermediario non corrispondente."),
 		PAA_SYSTEM_ERROR("Errore generico."),
-		PAA_TIPOFIRMA_SCONOSCIUTO("Il campo tipoFirma non corrisponde ad alcun valore previsto.");
+		PAA_TIPOFIRMA_SCONOSCIUTO("Il campo tipoFirma non corrisponde ad alcun valore previsto."),
+		PAA_PAGAMENTO_MULTIBENEFICIARIO_NON_CONSENTITO("Pagamento multibeneficiario non consentito con le specifiche SANP-SPC 2.3.0.");
 		
 		private String fault;
 		

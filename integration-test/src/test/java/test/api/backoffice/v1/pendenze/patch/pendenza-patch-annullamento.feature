@@ -49,3 +49,53 @@ And request
 """
 When method patch
 Then status 200
+
+Scenario: Annullamento di una pendenza annullata
+
+* def backofficeBasicBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
+
+Given url backofficeBasicBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers operatoreSpid2AutenticationHeader
+And request
+"""
+[
+  { "op":"REPLACE","path":"/stato","value":"ANNULLATA"},
+  {"op":"REPLACE","path":"/descrizioneStato","value":"Test annullamento"}
+]
+"""
+When method patch
+Then status 200
+
+Given url backofficeBasicBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers operatoreSpid2AutenticationHeader
+When method get
+Then status 200
+And match response.stato == 'ANNULLATA'
+And match response.descrizioneStato == 'Test annullamento'
+
+
+Given url backofficeBasicBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers operatoreSpid2AutenticationHeader
+And request
+"""
+[
+  { "op":"REPLACE","path":"/stato","value":"ANNULLATA"},
+  {"op":"REPLACE","path":"/descrizioneStato","value":"Test annullamento 2"}
+]
+"""
+When method patch
+Then status 200
+
+Given url backofficeBasicBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers operatoreSpid2AutenticationHeader
+When method get
+Then status 200
+And match response.stato == 'ANNULLATA'
+And match response.descrizioneStato == 'Test annullamento 2'
+
+
+

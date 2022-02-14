@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -19,6 +20,8 @@ import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.model.IdUnitaOperativa;
+import it.govpay.model.Fr;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.orm.VistaRendicontazione;
@@ -27,6 +30,8 @@ import it.govpay.orm.model.VistaRendicontazioneModel;
 
 public class RendicontazioneFilter extends AbstractFilter {
 	
+	private Date dataAcquisizioneFlussoDa;
+	private Date dataAcquisizioneFlussoA;
 	private Date dataFlussoDa;
 	private Date dataFlussoA;
 	private Date dataRendicontazioneDa;
@@ -56,20 +61,29 @@ public class RendicontazioneFilter extends AbstractFilter {
 	private Long idApplicazione; // versamenti
 	private String codUnivocoDebitore;
 	private String codVersamento = null;
-	private List<Long> idDomini;
 	private List<Long> idVersamento= null;
-	private List<Long> idUo;
 	private List<Long> idTipiVersamento = null;
+	
+	private boolean ricercaIdFlussoCaseInsensitive = false;
+	
+	private Boolean incassato;
+	private Fr.StatoFr statoFlusso;
+	private boolean ricercaFR = true;
+	private boolean searchModeEquals = true; 
+	private List<IdUnitaOperativa> dominiUOAutorizzati;
+	
+	private VistaRendicontazioneFieldConverter converter = null;
 
-	public RendicontazioneFilter(IExpressionConstructor expressionConstructor) {
+	public RendicontazioneFilter(IExpressionConstructor expressionConstructor) throws ServiceException {
 		this(expressionConstructor,false);
 	}
 	
-	public RendicontazioneFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+	public RendicontazioneFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) throws ServiceException {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(VistaRendicontazione.model().RND_IUV);
 		this.listaFieldSimpleSearch.add(VistaRendicontazione.model().RND_IUR);
 		this.listaFieldSimpleSearch.add(VistaRendicontazione.model().FR_COD_DOMINIO);
+		this.converter = new VistaRendicontazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 	}
 	
 	@Override
@@ -83,13 +97,6 @@ public class RendicontazioneFilter extends AbstractFilter {
 				CustomField idFrField = new CustomField("id_fr", Long.class, "id_fr", this.getRootTable());
 				newExpressionFr.equals(idFrField, this.idFr);
 				newExpression.and(newExpressionFr);
-			}
-			
-			if(this.idDomini != null){
-				IExpression newExpressionDomini = this.newExpression();
-				this.idDomini.removeAll(Collections.singleton(null));
-				newExpressionDomini.in(VistaRendicontazione.model().FR_COD_DOMINIO, this.idDomini);
-				newExpression.and(newExpressionDomini);
 			}
 
 			return newExpression;
@@ -203,13 +210,50 @@ public class RendicontazioneFilter extends AbstractFilter {
 			}
 			
 			// FR
+			if(this.getStatoFlusso() != null){
+				newExpression.equals(VistaRendicontazione.model().FR_STATO, this.getStatoFlusso().toString());
+				addAnd = true;
+			}
 			
-			if(this.codFlusso != null) {
+			if(this.dataAcquisizioneFlussoDa != null) {
 				if(addAnd)
 					newExpression.and();
 				
-//				newExpression.ilike(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
-				newExpression.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso);
+				newExpression.greaterEquals(VistaRendicontazione.model().FR_DATA_ACQUISIZIONE, this.dataAcquisizioneFlussoDa);
+				addAnd = true;
+			}
+			
+			if(this.dataAcquisizioneFlussoA != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.lessEquals(VistaRendicontazione.model().FR_DATA_ACQUISIZIONE, this.dataAcquisizioneFlussoA);
+				addAnd = true;
+			}
+			
+			if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
+				if(addAnd)
+					newExpression.and();
+				
+				if(!this.searchModeEquals) {
+					if(this.ricercaIdFlussoCaseInsensitive) {
+						newExpression.ilike(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
+					} else {
+						newExpression.like(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
+					}
+				}else {
+					if(this.ricercaIdFlussoCaseInsensitive) {
+						IExpression newExpressionIngnoreCase = this.newExpression();
+						
+						newExpressionIngnoreCase.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso).or()
+						.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso.toUpperCase()).or()
+						.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso.toLowerCase());
+						
+						newExpression.and(newExpressionIngnoreCase);
+					} else {
+						newExpression.equals(VistaRendicontazione.model().FR_COD_FLUSSO, this.codFlusso);
+					}
+				}
 				addAnd = true;
 			}
 			
@@ -279,22 +323,30 @@ public class RendicontazioneFilter extends AbstractFilter {
 			
 			// VERSAMENTI
 			
-			if(this.idDomini != null && !this.idDomini.isEmpty()){
-				this.idDomini.removeAll(Collections.singleton(null));
+			if(this.dominiUOAutorizzati != null && this.dominiUOAutorizzati.size() > 0) {
 				if(addAnd)
 					newExpression.and();
 				
-				CustomField cf = new CustomField("vrs_id_dominio", Long.class, "vrs_id_dominio", converter.toTable(VistaRendicontazione.model()));
-				newExpression.in(cf, this.idDomini);
-				addAnd = true;
-			}
-			
-			if(this.idUo != null && !this.idUo.isEmpty()){
-				this.idUo.removeAll(Collections.singleton(null));
-				if(addAnd)
-					newExpression.and();
-				CustomField cf = new CustomField("vrs_id_uo", Long.class, "vrs_id_uo", converter.toTable(VistaRendicontazione.model()));
-				newExpression.in(cf, this.idUo);
+				IExpression newExpressionUO = this.newExpression();
+				List<IExpression> listExpressionSingolaUO = new ArrayList<>();
+				
+				for (IdUnitaOperativa idUnita : this.dominiUOAutorizzati) {
+					if(idUnita.getCodDominio() != null) {
+						IExpression newExpressionSingolaUO = this.newExpression();
+						
+						newExpressionSingolaUO.equals(VistaRendicontazione.model().FR_COD_DOMINIO, idUnita.getCodDominio());
+						
+						if(idUnita.getIdUnita() != null ) {
+							CustomField iduoCustomField = new CustomField("vrs_id_uo", Long.class, "vrs_id_uo", converter.toTable(VistaRendicontazione.model()));
+							newExpressionSingolaUO.and().equals(iduoCustomField, idUnita.getIdUnita());
+						}
+						
+						listExpressionSingolaUO.add(newExpressionSingolaUO);
+					}
+				}
+				
+				newExpressionUO.or(listExpressionSingolaUO.toArray(new IExpression[listExpressionSingolaUO.size()]));
+				newExpression.and(newExpressionUO);
 				addAnd = true;
 			}
 			
@@ -405,7 +457,7 @@ public class RendicontazioneFilter extends AbstractFilter {
 			}
 			
 			if(this.idRendicontazione != null && this.idRendicontazione.size() >0){ 
-				String [] idsRendicontazione = this.idUo.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idUo.size()]);
+				String [] idsRendicontazione = this.idRendicontazione.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idRendicontazione.size()]);
 				sqlQueryObject.addWhereINCondition(converter.toTable(model.RND_IUV, true) + ".id", false, idsRendicontazione );
 			}
 			
@@ -423,9 +475,32 @@ public class RendicontazioneFilter extends AbstractFilter {
 			}
 			
 			// FR
+			if(this.getStatoFlusso() != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_STATO, true) + " = ? ");
+			}
 			
-			if(this.codFlusso != null) {
-				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ");
+			if(this.dataAcquisizioneFlussoDa != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_DATA_ACQUISIZIONE, true) + " >= ? ");
+			}
+			
+			if(this.dataAcquisizioneFlussoA != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_DATA_ACQUISIZIONE, true) + " <= ? ");
+			}
+			
+			if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
+				if(!this.searchModeEquals) {
+					if(this.ricercaIdFlussoCaseInsensitive) {
+						sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.FR_COD_FLUSSO, true), this.codFlusso, true, true);
+					} else {
+						sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.FR_COD_FLUSSO, true), this.codFlusso, true, false);
+					}
+				}else {
+					if(this.ricercaIdFlussoCaseInsensitive) {
+						sqlQueryObject.addWhereCondition(false,converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ",converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ",converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ");
+					} else {
+						sqlQueryObject.addWhereCondition(true,converter.toColumn(model.FR_COD_FLUSSO, true) + " = ? ");
+					}
+				}
 			}
 			
 			if(this.idFr != null) {
@@ -466,18 +541,25 @@ public class RendicontazioneFilter extends AbstractFilter {
 			
 			// VERSAMENTI
 			
-			if(this.idDomini != null && !this.idDomini.isEmpty()){
-				this.idDomini.removeAll(Collections.singleton(null));
-				
-				String [] idsDominio = this.idDomini.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idDomini.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toTable(model.RND_IUV, true) + ".vrs_id_dominio", false, idsDominio );
-			}
-			
-			if(this.idUo != null && !this.idUo.isEmpty()){
-				this.idUo.removeAll(Collections.singleton(null));
-				
-				String [] idsUo = this.idUo.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.idUo.size()]);
-				sqlQueryObject.addWhereINCondition(converter.toTable(model.RND_IUV, true) + ".vrs_id_uo", false, idsUo );
+			if(this.dominiUOAutorizzati != null && this.dominiUOAutorizzati.size() > 0) {
+				List<String> uoConditions = new ArrayList<>();
+				for (IdUnitaOperativa idUnita : this.dominiUOAutorizzati) {
+					if(idUnita.getIdDominio() != null) {
+						
+						StringBuilder sb = new StringBuilder();
+						sb.append(converter.toColumn(model.FR_COD_DOMINIO, true) + " = ? ");
+						
+						if(idUnita.getIdUnita() != null ) {
+							sb.append(" and ");
+							sb.append(converter.toTable(model.RND_IUV, true) + ".vrs_id_uo = ? ");
+						}
+						
+						uoConditions.add(sb.toString());
+					}
+				}
+				if(!uoConditions.isEmpty()) {
+					sqlQueryObject.addWhereCondition(false, uoConditions.toArray(new String[uoConditions.size()]));
+				}
 			}
 			
 			if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
@@ -578,9 +660,28 @@ public class RendicontazioneFilter extends AbstractFilter {
 		}
 		
 		// FR
+		if(this.getStatoFlusso() != null){
+			lst.add(this.getStatoFlusso().toString());
+		}
 		
-		if(this.codFlusso != null) {
-			lst.add(this.codFlusso);
+		if(this.dataAcquisizioneFlussoDa != null) {
+			lst.add(this.dataAcquisizioneFlussoDa);
+		}
+		
+		if(this.dataAcquisizioneFlussoA != null) {
+			lst.add(this.dataAcquisizioneFlussoA);
+		}
+		
+		if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
+			if(this.searchModeEquals) {
+				if(this.ricercaIdFlussoCaseInsensitive) {
+					lst.add(this.codFlusso);
+					lst.add(this.codFlusso.toUpperCase());
+					lst.add(this.codFlusso.toLowerCase());
+				}else {
+					lst.add(this.codFlusso);
+				}
+			}
 		}
 		
 		if(this.idFr != null) {
@@ -609,7 +710,11 @@ public class RendicontazioneFilter extends AbstractFilter {
 		}
 		
 		if(this.frObsoleto != null) {
-			lst.add(this.frObsoleto);
+			try {
+				lst = this.setValoreFiltroBoolean(lst, converter, this.frObsoleto);
+			} catch (ExpressionException e) {
+				throw new ServiceException(e);
+			}
 		}
 		
 		
@@ -621,12 +726,15 @@ public class RendicontazioneFilter extends AbstractFilter {
 		
 		// VERSAMENTI
 		
-		if(this.idDomini != null && !this.idDomini.isEmpty()){
-			// donothing
-		}
-		
-		if(this.idUo != null && !this.idUo.isEmpty()){
-			// donothing
+		if(this.dominiUOAutorizzati != null && this.dominiUOAutorizzati.size() > 0) {
+			for (IdUnitaOperativa idUnita : this.dominiUOAutorizzati) {
+				if(idUnita.getCodDominio() != null) {
+					lst.add(idUnita.getCodDominio());
+					if(idUnita.getIdUnita() != null ) {
+						lst.add(idUnita.getIdUnita());
+					}
+				}
+			}
 		}
 		
 		if(this.idTipiVersamento != null && !this.idTipiVersamento.isEmpty()){
@@ -836,28 +944,12 @@ public class RendicontazioneFilter extends AbstractFilter {
 		this.codVersamento = codVersamento;
 	}
 
-	public List<Long> getIdDomini() {
-		return idDomini;
-	}
-
-	public void setIdDomini(List<Long> idDomini) {
-		this.idDomini = idDomini;
-	}
-
 	public List<Long> getIdVersamento() {
 		return idVersamento;
 	}
 
 	public void setIdVersamento(List<Long> idVersamento) {
 		this.idVersamento = idVersamento;
-	}
-
-	public List<Long> getIdUo() {
-		return idUo;
-	}
-
-	public void setIdUo(List<Long> idUo) {
-		this.idUo = idUo;
 	}
 
 	public List<Long> getIdTipiVersamento() {
@@ -875,6 +967,68 @@ public class RendicontazioneFilter extends AbstractFilter {
 	public void setFrObsoleto(Boolean frObsoleto) {
 		this.frObsoleto = frObsoleto;
 	}
+
+	public boolean isRicercaIdFlussoCaseInsensitive() {
+		return ricercaIdFlussoCaseInsensitive;
+	}
+
+	public void setRicercaIdFlussoCaseInsensitive(boolean ricercaIdFlussoCaseInsensitive) {
+		this.ricercaIdFlussoCaseInsensitive = ricercaIdFlussoCaseInsensitive;
+	}
+
+	public Date getDataAcquisizioneFlussoDa() {
+		return dataAcquisizioneFlussoDa;
+	}
+
+	public void setDataAcquisizioneFlussoDa(Date dataAcquisizioneFlussoDa) {
+		this.dataAcquisizioneFlussoDa = dataAcquisizioneFlussoDa;
+	}
+
+	public Date getDataAcquisizioneFlussoA() {
+		return dataAcquisizioneFlussoA;
+	}
+
+	public void setDataAcquisizioneFlussoA(Date dataAcquisizioneFlussoA) {
+		this.dataAcquisizioneFlussoA = dataAcquisizioneFlussoA;
+	}
+
+	public Boolean getIncassato() {
+		return incassato;
+	}
+
+	public void setIncassato(Boolean incassato) {
+		this.incassato = incassato;
+	}
+
+	public Fr.StatoFr getStatoFlusso() {
+		return statoFlusso;
+	}
+
+	public void setStatoFlusso(Fr.StatoFr statoFlusso) {
+		this.statoFlusso = statoFlusso;
+	}
+
+	public boolean isRicercaFR() {
+		return ricercaFR;
+	}
+
+	public void setRicercaFR(boolean ricercaFR) {
+		this.ricercaFR = ricercaFR;
+	}
 	
-	
+	public boolean isSearchModeEquals() {
+		return this.searchModeEquals;
+	}
+
+	public void setSearchModeEquals(boolean searchModeEquals) {
+		this.searchModeEquals = searchModeEquals;
+	}
+
+	public List<IdUnitaOperativa> getDominiUOAutorizzati() {
+		return dominiUOAutorizzati;
+	}
+
+	public void setDominiUOAutorizzati(List<IdUnitaOperativa> dominiUOAutorizzati) {
+		this.dominiUOAutorizzati = dominiUOAutorizzati;
+	}
 }

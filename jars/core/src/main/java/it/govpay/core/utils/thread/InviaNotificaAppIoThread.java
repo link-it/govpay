@@ -13,13 +13,17 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.model.AppIOBatch;
 import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
 import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.PromemoriaAvvisoBase;
+import it.govpay.bd.configurazione.model.PromemoriaRicevutaBase;
 import it.govpay.bd.configurazione.model.PromemoriaScadenza;
 import it.govpay.bd.model.Configurazione;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.NotificaAppIo;
+import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
@@ -34,7 +38,7 @@ import it.govpay.core.utils.appio.model.LimitedProfile;
 import it.govpay.core.utils.appio.model.MessageCreated;
 import it.govpay.core.utils.appio.model.NewMessage;
 import it.govpay.core.utils.client.AppIoClient;
-import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.NotificaAppIo.TipoNotifica;
@@ -45,6 +49,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 	public static final String SWAGGER_OPERATION_GET_PROFILE = "getProfile";
 	public static final String SWAGGER_OPERATION_POST_MESSAGE_AVVISO_PAGAMENTO = "submitMessageforUserWithFiscalCodeInBody";
 	public static final String SWAGGER_OPERATION_POST_MESSAGE_SCADENZA_PAGAMENTO = "submitMessageforUserWithFiscalCodeInBodyScadenza";
+	public static final String SWAGGER_OPERATION_POST_MESSAGE_RICEVUTA_PAGAMENTO = "submitMessageforUserWithFiscalCodeInBodyRicevuta";
 	
 
 	private IContext ctx = null;
@@ -84,6 +89,8 @@ public class InviaNotificaAppIoThread implements Runnable{
 		AppIoClient clientPostMessage = null;
 		boolean postMessage = false;
 		Versamento versamento = null;
+		Rpt rpt = null;
+		Dominio dominio = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		NotificheAppIoBD notificheBD = null;
 		try {
@@ -117,6 +124,8 @@ public class InviaNotificaAppIoThread implements Runnable{
 				if(profile.isSenderAllowed()) { // spedizione abilitata procedo
 					postMessage = true;
 					versamento = this.notifica.getVersamento(configWrapper); 
+					rpt = this.notifica.getRpt(configWrapper);
+					dominio = AnagraficaManager.getDominio(configWrapper, this.notifica.getCodDominio());
 				} else { // termino il processo indicando che la notifica non verra' spedita 
 					clientGetProfile.getEventoCtx().setDescrizioneEsito("Utente non abilitato alla spedizione della notifica");
 					this.aggiornaNotificaAnnullata(notificheBD, "Utente non abilitato alla spedizione della notifica");
@@ -193,6 +202,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 						azione = SWAGGER_OPERATION_POST_MESSAGE_SCADENZA_PAGAMENTO;
 						break;
 					case RICEVUTA:
+						azione = SWAGGER_OPERATION_POST_MESSAGE_RICEVUTA_PAGAMENTO;
 						break;
 					}
 					
@@ -218,13 +228,15 @@ public class InviaNotificaAppIoThread implements Runnable{
 					switch (this.tipo) {
 					case AVVISO:
 						PromemoriaAvvisoBase promemoriaAvviso = this.avvisaturaViaAppIo.getPromemoriaAvviso() != null ? this.avvisaturaViaAppIo.getPromemoriaAvviso() : new PromemoriaAvvisoBase();
-						messageWithCF = AppIOUtils.creaNuovoMessaggioAvvisoPagamento(log, versamento, this.tipoVersamentoDominio, promemoriaAvviso, this.appIo.getTimeToLive());
+						messageWithCF = AppIOUtils.creaNuovoMessaggioAvvisoPagamento(log, versamento, dominio, this.tipoVersamentoDominio, promemoriaAvviso, this.appIo.getTimeToLive());
 						break;
 					case SCADENZA:
 						PromemoriaScadenza promemoriaScadenza = this.avvisaturaViaAppIo.getPromemoriaScadenza() != null ? this.avvisaturaViaAppIo.getPromemoriaScadenza() : new PromemoriaScadenza();
-						messageWithCF = AppIOUtils.creaNuovoMessaggioScadenzaPagamento(log, versamento, this.tipoVersamentoDominio, promemoriaScadenza, this.appIo.getTimeToLive());
+						messageWithCF = AppIOUtils.creaNuovoMessaggioScadenzaPagamento(log, versamento, dominio, this.tipoVersamentoDominio, promemoriaScadenza, this.appIo.getTimeToLive());
 						break;
 					case RICEVUTA:
+						PromemoriaRicevutaBase promemoriaRicevuta = this.avvisaturaViaAppIo.getPromemoriaRicevuta() != null ? this.avvisaturaViaAppIo.getPromemoriaRicevuta() : new PromemoriaRicevutaBase(); 
+						messageWithCF = AppIOUtils.creaNuovoMessaggioRicevutaPagamento(log, versamento, rpt, dominio, this.tipoVersamentoDominio, promemoriaRicevuta, this.appIo.getTimeToLive());
 						break;
 					}
 

@@ -27,8 +27,8 @@ import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.RendicontazioniDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiFrDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiFrDTOResponse;
-import it.govpay.core.dao.pagamenti.dto.ListaFrDTO;
-import it.govpay.core.dao.pagamenti.dto.ListaFrDTOResponse;
+import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTO;
+import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -47,12 +47,6 @@ public class FlussiRendicontazioneController extends BaseController {
 		
 	}
 
-	public Response getFlussoRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso) {
-		return	this.getFlussoRendicontazione(user, uriInfo, httpHeaders, idFlusso, null);
-	}
-
-
-
 	public Response findFlussiRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean incassato, String idFlusso, String stato, String iuv, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findFlussiRendicontazione";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
@@ -70,7 +64,7 @@ public class FlussiRendicontazioneController extends BaseController {
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 
-			ListaFrDTO findRendicontazioniDTO = new ListaFrDTO(user);
+			ListaRendicontazioniDTO findRendicontazioniDTO = new ListaRendicontazioniDTO(user);
 			findRendicontazioniDTO.setIdDominio(idDominio);
 			findRendicontazioniDTO.setLimit(risultatiPerPagina);
 			findRendicontazioniDTO.setPagina(pagina);
@@ -79,16 +73,16 @@ public class FlussiRendicontazioneController extends BaseController {
 			findRendicontazioniDTO.setEseguiCountConLimit(maxRisultati);
 			if(dataDa != null) {
 				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
-				findRendicontazioniDTO.setDataDa(dataDaDate);
+				findRendicontazioniDTO.setDataAcquisizioneFlussoDa(dataDaDate);
 			}
 			if(dataA != null) {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
-				findRendicontazioniDTO.setDataA(dataADate);
+				findRendicontazioniDTO.setDataAcquisizioneFlussoA(dataADate);
 			}
 			if(incassato != null) {
 				findRendicontazioniDTO.setIncassato(incassato);
 			}
-			findRendicontazioniDTO.setIdFlusso(idFlusso);
+			findRendicontazioniDTO.setCodFlusso(idFlusso);
 			if(stato != null) {
 				StatoFlussoRendicontazione sfr = StatoFlussoRendicontazione.fromValue(stato);
 
@@ -112,13 +106,14 @@ public class FlussiRendicontazioneController extends BaseController {
 			findRendicontazioniDTO.setUnitaOperative(uo);
 			//findRendicontazioniDTO.setObsoleto(false);
 			findRendicontazioniDTO.setIuv(iuv);
+			findRendicontazioniDTO.setRicercaFR(true);
 
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
 
 			// CHIAMATA AL DAO
 
-			ListaFrDTOResponse findRendicontazioniDTOResponse = uo != null ? rendicontazioniDAO.listaFlussiRendicontazioni(findRendicontazioniDTO)
-					: new ListaFrDTOResponse(0L, new ArrayList<>());
+			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = uo != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO)
+					: new ListaRendicontazioniDTOResponse(0L, new ArrayList<>());
 
 			// CONVERT TO JSON DELLA RISPOSTA
 
@@ -137,7 +132,7 @@ public class FlussiRendicontazioneController extends BaseController {
 
 
 
-	public Response getFlussoRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idFlusso, String dataOraFlusso) {
+	public Response getFlussoRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idFlusso, String dataOraFlusso) {
 		String methodName = "getFlussoRendicontazione";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -152,6 +147,7 @@ public class FlussiRendicontazioneController extends BaseController {
 
 			// Parametri - > DTO Input
 			LeggiFrDTO leggiRendicontazioneDTO = new LeggiFrDTO(user, idFlusso);
+			leggiRendicontazioneDTO.setIdDominio(idDominio);
 			leggiRendicontazioneDTO.setAccept(accept);
 			if(dataOraFlusso != null) {
 				Date dataOraFlussoDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataOraFlusso, "dataOraFlusso");
@@ -189,7 +185,7 @@ public class FlussiRendicontazioneController extends BaseController {
 				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).entity(new String(response)).type(MediaType.APPLICATION_XML),transactionId).build();
 			} else {
-				FlussoRendicontazione response = FlussiRendicontazioneConverter.toRsModel(leggiRendicontazioneDTOResponse.getFr()); 
+				FlussoRendicontazione response = FlussiRendicontazioneConverter.toRsModel(leggiRendicontazioneDTOResponse.getFr(), leggiRendicontazioneDTOResponse.getRendicontazioni()); 
 				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)).type(MediaType.APPLICATION_JSON),transactionId).build();
 			}

@@ -157,7 +157,7 @@ public class AvvisoPagamento {
 		byte[] pdfBytes = null;
 		if(linguaSelezionata != null) {
 			log.debug(logPrefix + " PDF Avviso Pagamento Multilingua [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Creazione input...");
-			it.govpay.stampe.model.v2.AvvisoPagamentoInput input = AvvisoPagamentoV2Utils.fromVersamento(printAvviso.getVersamento(), linguaSelezionata);
+			it.govpay.stampe.model.v2.AvvisoPagamentoInput input = AvvisoPagamentoV2Utils.fromVersamento(printAvviso, linguaSelezionata);
 			log.debug(logPrefix + " PDF Avviso Pagamento Multilingua [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Creazione input completata.");
 
 			log.debug(logPrefix + " PDF Avviso Pagamento Multilingua [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generazione pdf...");
@@ -165,7 +165,7 @@ public class AvvisoPagamento {
 			log.debug(logPrefix + " PDF Avviso Pagamento Multilingua [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generazione pdf completata.");
 		} else {
 			log.debug(logPrefix + " PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Creazione input...");
-			AvvisoPagamentoInput input = AvvisoPagamentoUtils.fromVersamento(printAvviso.getVersamento());
+			AvvisoPagamentoInput input = AvvisoPagamentoUtils.fromVersamento(printAvviso);
 			log.debug(logPrefix + " PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Creazione input completata.");
 
 			log.debug(logPrefix + " PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Generazione pdf...");
@@ -361,7 +361,7 @@ public class AvvisoPagamento {
 		byte[] pdfBytes = null;
 		if(linguaSelezionata != null) {
 			log.debug(logPrefix + " PDF Avviso Documento Multilingua [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Creazione input...");
-			it.govpay.stampe.model.v2.AvvisoPagamentoInput input = AvvisoPagamentoV2Utils.fromDocumento(printAvviso.getDocumento(), versamenti, linguaSelezionata, log);
+			it.govpay.stampe.model.v2.AvvisoPagamentoInput input = AvvisoPagamentoV2Utils.fromDocumento(printAvviso, versamenti, linguaSelezionata, log);
 			log.debug(logPrefix + " PDF Avviso Documento Multilingua [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Creazione input completata.");
 
 			log.debug(logPrefix + " PDF Avviso Documento Multilingua [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione pdf...");
@@ -369,7 +369,7 @@ public class AvvisoPagamento {
 			log.debug(logPrefix + " PDF Avviso Documento Multilingua [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione pdf completata.");
 		} else {
 			log.debug(logPrefix + " PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Creazione input...");
-			AvvisoPagamentoInput input = AvvisoPagamentoUtils.fromDocumento(printAvviso.getDocumento(), versamenti, log);
+			AvvisoPagamentoInput input = AvvisoPagamentoUtils.fromDocumento(printAvviso, versamenti, log);
 			log.debug(logPrefix + " PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Creazione input completata.");
 
 			log.debug(logPrefix + " PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Generazione pdf...");

@@ -3,12 +3,12 @@ package it.govpay.backoffice.v1.beans;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * Tipologia della voce riscossa  * ENTRATA: Entrata in tesoreria  * MBT: Marca da bollo telematica 
+ * Tipologia della voce riscossa  * ENTRATA: Entrata in tesoreria  * MBT: Marca da bollo telematica  * ALTRO_INTERMEDIARIO: Entrata relativa a un intermediario esterno  * ENTRATA_PA_NON_INTERMEDIATA: Entrata relativa ad un ente creditore non intermediato da GovPay 
  **/
 
 
 /**
- * Tipologia della voce riscossa  * ENTRATA: Entrata in tesoreria  * MBT: Marca da bollo telematica 
+ * Tipologia della voce riscossa  * ENTRATA: Entrata in tesoreria  * MBT: Marca da bollo telematica  * ALTRO_INTERMEDIARIO: Entrata relativa a un intermediario esterno  * ENTRATA_PA_NON_INTERMEDIATA: Entrata relativa ad un ente creditore non intermediato da GovPay 
  */
 public enum TipoRiscossione {
   
@@ -18,7 +18,13 @@ public enum TipoRiscossione {
   ENTRATA("ENTRATA"),
   
   
-  MBT("MBT");
+  MBT("MBT"),
+  
+  
+  ALTRO_INTERMEDIARIO("ALTRO_INTERMEDIARIO"),
+  
+  
+  ENTRATA_PA_NON_INTERMEDIATA("ENTRATA_PA_NON_INTERMEDIATA");
   
   
   
@@ -32,7 +38,7 @@ public enum TipoRiscossione {
   @Override
   @JsonValue
   public String toString() {
-    return String.valueOf(this.value);
+    return String.valueOf(value);
   }
 
   public static TipoRiscossione fromValue(String text) {

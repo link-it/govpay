@@ -47,14 +47,18 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Promemoria;
+import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.NotificheAppIoBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PromemoriaBD;
+import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
@@ -67,8 +71,10 @@ import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
+import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
+import it.govpay.model.Rpt.Versione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
@@ -246,6 +252,13 @@ public class RtUtils extends NdpValidationUtils {
 				rpt = rptBD.getRpt(codDominio, iuv, ccp, true);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, codDominio);
+			}
+			
+			// se provo ad acquisire un RT da cruscotto deve essere solo ti vecchio tipo
+			if(acquisizioneDaCruscotto) {
+				if(!rpt.getVersione().equals(Versione.SANP_230)) {
+					throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, "Aggiornamento di RT versione "+rpt.getVersione()+" non supportata tramite cruscotto.", rpt.getCodDominio());
+				}
 			}
 			
 			// Faccio adesso la select for update, altrimenti in caso di 
@@ -548,6 +561,10 @@ public class RtUtils extends NdpValidationUtils {
 					ctx.getApplicationLogger().log("rt.acquisizionePagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte(), singoloVersamento.getStatoSingoloVersamento().toString());
 					versamentiBD.updateStatoSingoloVersamento(singoloVersamento.getId(), singoloVersamento.getStatoSingoloVersamento());
 					pagamentiBD.insertPagamento(pagamento);
+					
+					if(!irregolare) {
+						checkEsistenzaRendicontazioneAnomalaPerIlPagamento(pagamentiBD, pagamento);
+					}
 				}
 				else {
 					ctx.getApplicationLogger().log("rt.aggiornamentoPagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte());
@@ -660,6 +677,17 @@ public class RtUtils extends NdpValidationUtils {
 				}
 			}
 			
+			//schedulo l'invio della notifica APPIO
+			if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaAbilitato()) {
+				log.debug("Creo notifica avvisatura ricevuta tramite App IO..."); 
+				NotificaAppIo notificaAppIo = new NotificaAppIo(rpt, versamento, it.govpay.model.NotificaAppIo.TipoNotifica.RICEVUTA, configWrapper);
+				log.debug("Creazione notifica avvisatura ricevuta tramite App IO completata.");
+				NotificheAppIoBD notificheAppIoBD = new NotificheAppIoBD(versamentiBD);
+				notificheAppIoBD.setAtomica(false); // riuso connessione
+				notificheAppIoBD.insertNotifica(notificaAppIo);
+				log.debug("Inserimento su DB notifica avvisatura ricevuta tramite App IO completata.");
+			}
+			
 			// Aggiornamento dello stato del pagamento portale associato all'RPT
 		//	Long idPagamentoPortale = rpt.getIdPagamentoPortale();
 			if(idPagamentoPortale != null) {
@@ -695,6 +723,30 @@ public class RtUtils extends NdpValidationUtils {
 		} finally {
 			if(rptBD != null)
 				rptBD.closeConnection();
+		}
+	}
+
+	public static void checkEsistenzaRendicontazioneAnomalaPerIlPagamento(PagamentiBD pagamentiBD, Pagamento pagamento) throws ServiceException {
+		RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(pagamentiBD);
+		rendicontazioniBD.setAtomica(false);
+		
+		try {
+			// cerco una eventuale rendicontazione per gli estremi del pagamento, in stato anomala ma non collegata a nessun pagamento
+//			rendicontazioniBD.enableSelectForUpdate();
+
+			Rendicontazione rendicontazioneAnomala = rendicontazioniBD.getRendicontazione(pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur(), pagamento.getIndiceDati(), StatoRendicontazione.ANOMALA, true);
+			
+			// aggiorno la rendicontazione e la metto in stato OK
+			rendicontazioneAnomala.setStato(StatoRendicontazione.OK);
+			rendicontazioneAnomala.setAnomalie(new ArrayList<>());
+			rendicontazioneAnomala.setIdPagamento(pagamento.getId());
+			
+			rendicontazioniBD.updateRendicontazione(rendicontazioneAnomala);
+			
+		} catch (NotFoundException e) {
+			// se non esiste una rendicontazione in stato anomala con i riferimenti del pagamento  non faccio niente.
+		} finally {
+//			rendicontazioniBD.disableSelectForUpdate();
 		}
 	}
 	

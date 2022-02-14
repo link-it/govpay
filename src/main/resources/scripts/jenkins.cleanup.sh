@@ -11,3 +11,4 @@ sudo -u postgres dropdb --if-exists govpay
 sudo rm -rf /opt/wildfly/standalone_govpay/deployments/govpay.ear
 sudo rm -rf /var/log/govpay/*
 sudo rm -rf /opt/standalone_govpay/log/
+sudo rm -rf /var/log/govpay-ndp-sym/*

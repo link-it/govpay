@@ -10,17 +10,28 @@ Creditore. Nella tabella seguente sono indicati sia gli indirizzi di
 base di erogazione di ciascun servizio, sia il riferimento alla
 definizione OpenAPI per la documentazione di dettaglio.
 
-+-------------------------+-----------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| API Pagamento           | base url: /govpay/frontend/api/pagamento      | `Interfaccia <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pagamento/src/main/webapp/v2/govpay-api-pagamento-v2.yaml>`_   |
-+-------------------------+-----------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| API Pendenze            | base url: /govpay/backend/api/pendenze        | `Interfaccia <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml>`_     |
-+-------------------------+-----------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| API Riconciliazione     | base url: /govpay/backend/api/riconciliazione | `Interfaccia <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-ragioneria/src/main/webapp/v2/govpay-api-ragioneria-v2.yaml>`_ |
-+-------------------------+-----------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| API Backoffice          | base url: /govpay/backend/api/backoffice      | `Interfaccia <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml>`_ |
-+-------------------------+-----------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| API Verifica e notifica | base url: definita dall'ente creditore        | `Interfaccia <https://generator.swagger.io/?url=https://raw.githubusercontent.com/link-it/govpay/master/jars/client-api-ente/src/main/resources/govpay-api-ec-v1.yaml>`_        |
-+-------------------------+-----------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+.. list-table:: 
+   :widths: 25 50 25
+   :header-rows: 1
+
+   * - API
+     - Base path
+     - OpenAPI
+   * - Pagamento
+     - /govpay/frontend/api/pagamento
+     - `v1 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pagamento/src/main/webapp/v1/govpay-api-pagamento-v1.yaml>`_ `v2 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pagamento/src/main/webapp/v2/govpay-api-pagamento-v2.yaml>`_
+   * - Pendenze
+     - /govpay/backend/api/pendenze 
+     - `v1 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pendenze/src/main/webapp/v1/govpay-api-pendenze-v1.yaml>`_ `v2 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml>`_ 
+   * - Riconciliazione
+     - /govpay/backend/api/riconciliazione
+     - `v1 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-ragioneria/src/main/webapp/v1/govpay-api-ragioneria-v1.yaml>`_ `v2 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-ragioneria/src/main/webapp/v2/govpay-api-ragioneria-v2.yaml>`_ `v3 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-ragioneria/src/main/webapp/v3/govpay-api-ragioneria.yaml>`_
+   * - Backoffice
+     - /govpay/backend/api/backoffice
+     - `v1 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-backoffice/src/main/webapp/v1/govpay-api-backoffice-v1.yaml>`_
+   * - Ente Creditore
+     - definita dall'ente creditore
+     - `v1 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/jars/client-api-ente/src/main/resources/govpay-api-ec-v1.yaml>`_ `v2 <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/jars/client-api-ente/src/main/resources/v2/govpay-api-ec.yaml>`_
 
 .. toctree::
         :maxdepth: 2

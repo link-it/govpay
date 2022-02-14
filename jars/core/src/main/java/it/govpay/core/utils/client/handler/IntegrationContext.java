@@ -1,7 +1,7 @@
 package it.govpay.core.utils.client.handler;
 
-import it.govpay.core.utils.client.BasicClient.TipoConnettore;
-import it.govpay.core.utils.client.BasicClient.TipoDestinatario;
+import it.govpay.core.utils.client.beans.TipoConnettore;
+import it.govpay.core.utils.client.beans.TipoDestinatario;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Intermediario;
 

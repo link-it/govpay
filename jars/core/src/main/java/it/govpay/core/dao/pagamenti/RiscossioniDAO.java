@@ -50,7 +50,7 @@ public class RiscossioniDAO extends BaseDAO{
 			filter.setIdDomini(listaRiscossioniDTO.getCodDomini());
 			filter.setDataInizio(listaRiscossioniDTO.getDataRiscossioneDa());
 			filter.setDataFine(listaRiscossioniDTO.getDataRiscossioneA());
-			filter.setTipo(listaRiscossioniDTO.getTipo());
+			filter.setTipo(listaRiscossioniDTO.getTipo()); 
 			filter.setIdA2A(listaRiscossioniDTO.getIdA2A());
 			filter.setCodVersamentoEnte(listaRiscossioniDTO.getIdPendenza());
 			if(listaRiscossioniDTO.getStato() != null)
@@ -62,6 +62,7 @@ public class RiscossioniDAO extends BaseDAO{
 			filter.setTassonomia(listaRiscossioniDTO.getTassonomia());
 			filter.setIdTipoPendenza(listaRiscossioniDTO.getIdTipoPendenza());
 			filter.setIdUnita(listaRiscossioniDTO.getIdUnita());
+			filter.setIur(listaRiscossioniDTO.getIur());
 
 			Long count = null;
 			
@@ -122,7 +123,7 @@ public class RiscossioniDAO extends BaseDAO{
 			throws ServiceException, NotFoundException {
 		
 		SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
-		Versamento versamento = singoloVersamento.getVersamento(bd);
+		Versamento versamento = singoloVersamento.getVersamentoBD(bd);
 		versamento.getApplicazione(configWrapper);
 		versamento.getUo(configWrapper);
 		versamento.getDominio(configWrapper);
@@ -145,7 +146,7 @@ public class RiscossioniDAO extends BaseDAO{
 		Pagamento pagamento = dto.getPagamento();
 			
 		SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
-		Versamento versamento = singoloVersamento.getVersamento(bd);
+		Versamento versamento = singoloVersamento.getVersamentoBD(bd);
 		versamento.getApplicazione(configWrapper);
 		versamento.getUo(configWrapper);
 		versamento.getDominio(configWrapper);

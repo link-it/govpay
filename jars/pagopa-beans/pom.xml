@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.4.3-SNAPSHOT</version>
+		<version>3.5.0</version>
 	</parent>
 
 	<artifactId>pagopa-beans</artifactId>
@@ -141,11 +141,7 @@
 			<plugin>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-codegen-plugin</artifactId>
-				<version>3.1.5</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
+				<version>3.4.4</version>
 				<executions>
 					<execution>
 						<id>generate-sources</id>
@@ -165,28 +161,13 @@
 								</wsdlOption>
 								<wsdlOption>
 									<frontEnd>jaxws21</frontEnd>
-									<wsdl>${basedir}/src/main/resources/wsdl/NodoPerPaAvvisiDigitali.wsdl</wsdl>
-									<wsdlLocation>classpath:wsdl/NodoPerPaAvvisiDigitali.wsdl</wsdlLocation>
-								</wsdlOption>
-								<wsdlOption>
-									<frontEnd>jaxws21</frontEnd>
 									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodo.wsdl</wsdl>
 									<wsdlLocation>classpath:wsdl/PaPerNodo.wsdl</wsdlLocation>
 								</wsdlOption>
 								<wsdlOption>
 									<frontEnd>jaxws21</frontEnd>
-									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodoChiediElencoAvvisiDigitali.wsdl</wsdl>
-									<wsdlLocation>classpath:wsdl/PaPerNodoChiediElencoAvvisiDigitali.wsdl</wsdlLocation>
-								</wsdlOption>
-								<wsdlOption>
-									<frontEnd>jaxws21</frontEnd>
 									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodoPagamentoPsp.wsdl</wsdl>
 									<wsdlLocation>classpath:wsdl/PaPerNodoPagamentoPsp.wsdl</wsdlLocation>
-								</wsdlOption>
-								<wsdlOption>
-									<frontEnd>jaxws21</frontEnd>
-									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodoRichiestaAvvisi.wsdl</wsdl>
-									<wsdlLocation>classpath:wsdl/PaPerNodoRichiestaAvvisi.wsdl</wsdlLocation>
 								</wsdlOption>
 							</wsdlOptions>
 						</configuration>

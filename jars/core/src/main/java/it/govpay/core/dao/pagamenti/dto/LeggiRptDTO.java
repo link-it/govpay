@@ -25,6 +25,7 @@ public class LeggiRptDTO extends BasicCreateRequestDTO {
 	private String idDominio;
 	private String iuv;
 	private String ccp;
+	private boolean deepRiscossioni = false;
 
 	public String getCodA2A() {
 		return this.codA2A;
@@ -55,6 +56,12 @@ public class LeggiRptDTO extends BasicCreateRequestDTO {
 	}
 	public void setCcp(String ccp) {
 		this.ccp = ccp;
+	}
+	public boolean isDeepRiscossioni() {
+		return deepRiscossioni;
+	}
+	public void setDeepRiscossioni(boolean deepRiscossioni) {
+		this.deepRiscossioni = deepRiscossioni;
 	}
 	
 }

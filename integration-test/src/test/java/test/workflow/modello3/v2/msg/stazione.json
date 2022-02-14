@@ -1,0 +1,14 @@
+{
+  "password": "GovPayTest",
+  "urlRT": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciRTservice",
+  "urlCCP": "http://localhost:8080/govpay/frontend/api/pagopa/PagamentiTelematiciCCPservice",
+  "subject": "ndpsym",
+  "httpUsername": "ndpsym",
+  "httpPassword": "password",
+  "sftpInUser": "ndpsym",
+  "sftpInPassword": "password",
+  "sftpInHost": "localhost",
+  "sftpOutUser": "ndpsym",
+  "sftpOutPassword": "password",
+  "sftpOutHost": "localhost"
+}

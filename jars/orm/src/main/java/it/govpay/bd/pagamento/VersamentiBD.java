@@ -896,7 +896,7 @@ public class VersamentiBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			Versamento versamento = pagamento.getSingoloVersamento(this).getVersamento(this);
+			Versamento versamento = pagamento.getSingoloVersamento(this).getVersamentoBD(this);
 			BigDecimal importoIncassato = versamento.getImportoIncassato() != null ? versamento.getImportoIncassato() : BigDecimal.ZERO;
 			if(pagamento.getImportoPagato() != null)
 				importoIncassato = importoIncassato.add(pagamento.getImportoPagato());
@@ -1086,7 +1086,7 @@ public class VersamentiBD extends BasicBD {
 			VersamentoModel model = it.govpay.orm.Versamento.model();
 			IExpression exp = this.getVersamentoService().newExpression();
 //			exp.and().isNotNull(model.NUMERO_AVVISO);
-			exp.and().equals(model.STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+//			exp.and().equals(model.STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
 			exp.and().equals(model.ID_OPERAZIONE.STATO, StatoOperazioneType.ESEGUITO_OK.toString());
 			exp.and().equals(new CustomField("id_tracciato", Long.class, "id_tracciato", converter.toTable(model.ID_OPERAZIONE)), idTracciato);
 			
@@ -1097,7 +1097,7 @@ public class VersamentiBD extends BasicBD {
 			if(limit != null)
 				pagExpr.limit(limit);
 			
-			pagExpr.addOrder(it.govpay.orm.Versamento.model().DATA_CREAZIONE, SortOrder.DESC);
+			pagExpr.addOrder(it.govpay.orm.Versamento.model().NUMERO_AVVISO, SortOrder.ASC);
 
 			List<it.govpay.orm.Versamento> versamentiVO = this.getVersamentoService().findAll(pagExpr);
 			ret = VersamentoConverter.toDTOList(versamentiVO);

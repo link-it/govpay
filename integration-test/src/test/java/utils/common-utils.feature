@@ -161,3 +161,23 @@ Scenario:
 	}
 	"""
 	
+	* def estraiIuvDallaCausale = 
+	"""
+	function(string){ 
+		var IncassoUtils = Java.type('utils.java.IncassoUtils');
+		var String = Java.type('java.lang.String');
+		var s = new String(string);
+		return IncassoUtils.getRiferimentoIncassoSingolo(s);
+	}
+	"""
+	
+	* def formattaCausaleRFS = 
+	"""
+	function(string){ 
+		var IncassoUtils = Java.type('utils.java.IncassoUtils');
+		var String = Java.type('java.lang.String');
+		var s = new String(string);
+		return IncassoUtils.formattaCausaleRFS(s);
+	}
+	"""
+	

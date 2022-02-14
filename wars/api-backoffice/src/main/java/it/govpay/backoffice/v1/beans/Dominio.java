@@ -32,6 +32,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "servizioMyPivot",
 "servizioSecim",
 "servizioGovPay",
+"servizioHyperSicAPKappa",
+"intermediato",
 "idDominio",
 "unitaOperative",
 "contiAccredito",
@@ -114,6 +116,12 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("servizioGovPay")
   private ConnettoreNotificaPagamentiGovPay servizioGovPay = null;
+  
+  @JsonProperty("servizioHyperSicAPKappa")
+  private ConnettoreNotificaPagamentiHyperSicAPKappa servizioHyperSicAPKappa = null;
+  
+  @JsonProperty("intermediato")
+  private Boolean intermediato = null;
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -528,6 +536,37 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   **/
+  public Dominio servizioHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappa servizioHyperSicAPKappa) {
+    this.servizioHyperSicAPKappa = servizioHyperSicAPKappa;
+    return this;
+  }
+
+  @JsonProperty("servizioHyperSicAPKappa")
+  public ConnettoreNotificaPagamentiHyperSicAPKappa getServizioHyperSicAPKappa() {
+    return servizioHyperSicAPKappa;
+  }
+  public void setServizioHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappa servizioHyperSicAPKappa) {
+    this.servizioHyperSicAPKappa = servizioHyperSicAPKappa;
+  }
+
+  /**
+   * Indica se il creditore viene configurato per utilizzare una  stazione di intermediazione
+   **/
+  public Dominio intermediato(Boolean intermediato) {
+    this.intermediato = intermediato;
+    return this;
+  }
+
+  @JsonProperty("intermediato")
+  public Boolean Intermediato() {
+    return intermediato;
+  }
+  public void setIntermediato(Boolean intermediato) {
+    this.intermediato = intermediato;
+  }
+
+  /**
    * Codice fiscale del beneficiario
    **/
   public Dominio idDominio(String idDominio) {
@@ -637,6 +676,8 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(servizioMyPivot, dominio.servizioMyPivot) &&
         Objects.equals(servizioSecim, dominio.servizioSecim) &&
         Objects.equals(servizioGovPay, dominio.servizioGovPay) &&
+        Objects.equals(servizioHyperSicAPKappa, dominio.servizioHyperSicAPKappa) &&
+        Objects.equals(intermediato, dominio.intermediato) &&
         Objects.equals(idDominio, dominio.idDominio) &&
         Objects.equals(unitaOperative, dominio.unitaOperative) &&
         Objects.equals(contiAccredito, dominio.contiAccredito) &&
@@ -646,7 +687,7 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, idDominio, unitaOperative, contiAccredito, entrate, tipiPendenza);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa, intermediato, idDominio, unitaOperative, contiAccredito, entrate, tipiPendenza);
   }
 
   public static Dominio parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -688,6 +729,8 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
     sb.append("    servizioMyPivot: ").append(toIndentedString(servizioMyPivot)).append("\n");
     sb.append("    servizioSecim: ").append(toIndentedString(servizioSecim)).append("\n");
     sb.append("    servizioGovPay: ").append(toIndentedString(servizioGovPay)).append("\n");
+    sb.append("    servizioHyperSicAPKappa: ").append(toIndentedString(servizioHyperSicAPKappa)).append("\n");
+    sb.append("    intermediato: ").append(toIndentedString(intermediato)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    unitaOperative: ").append(toIndentedString(unitaOperative)).append("\n");
     sb.append("    contiAccredito: ").append(toIndentedString(contiAccredito)).append("\n");

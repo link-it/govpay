@@ -4,8 +4,11 @@
 package it.govpay.core.dao.pagamenti.dto;
 
 
+import java.util.List;
+
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
+import it.govpay.bd.viste.model.Rendicontazione;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -18,6 +21,7 @@ public class LeggiFrDTOResponse {
 	private Fr fr;
 	private Dominio dominio;
 	private boolean authorized;
+	private List<Rendicontazione> rendicontazioni;
 
 	public Fr getFr() {
 		return this.fr;
@@ -41,5 +45,13 @@ public class LeggiFrDTOResponse {
 
 	public void setAuthorized(boolean authorized) {
 		this.authorized = authorized;
+	}
+
+	public List<Rendicontazione> getRendicontazioni() {
+		return rendicontazioni;
+	}
+
+	public void setRendicontazioni(List<Rendicontazione> rendicontazioni) {
+		this.rendicontazioni = rendicontazioni;
 	}
 }

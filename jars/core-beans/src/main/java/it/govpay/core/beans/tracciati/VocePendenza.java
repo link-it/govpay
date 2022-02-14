@@ -12,6 +12,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	"stato",
 	"datiAllegati",
 	"descrizioneCausaleRPT",
+	"contabilita",
+	"idDominio",
 	"hashDocumento",
 	"tipoBollo",
 	"provinciaResidenza",
@@ -87,6 +89,12 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("descrizioneCausaleRPT")
   private String descrizioneCausaleRPT = null;
+  
+  @JsonProperty("contabilita")
+  private Contabilita contabilita = null;
+  
+  @JsonProperty("idDominio")
+  private String idDominio = null;
   
   @JsonProperty("hashDocumento")
   private String hashDocumento= null;
@@ -223,10 +231,41 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
   public void setDescrizioneCausaleRPT(String descrizioneCausaleRPT) {
     this.descrizioneCausaleRPT = descrizioneCausaleRPT;
   }
+  
+  /**
+   **/
+  public VocePendenza contabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
+    return this;
+  }
+
+  @JsonProperty("contabilita")
+  public Contabilita getContabilita() {
+    return contabilita;
+  }
+  public void setContabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
+  }
 
   public VocePendenza hashDocumento(String hashDocumento) {
     this.hashDocumento = hashDocumento;
     return this;
+  }
+  
+  /**
+   * Identificativo del dominio creditore
+   **/
+  public VocePendenza idDominio(String idDominio) {
+    this.idDominio = idDominio;
+    return this;
+  }
+
+  @JsonProperty("idDominio")
+  public String getIdDominio() {
+    return idDominio;
+  }
+  public void setIdDominio(String idDominio) {
+    this.idDominio = idDominio;
   }
 
   @JsonProperty("hashDocumento")
@@ -344,7 +383,9 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(this.descrizione, vocePendenza.descrizione) &&
         Objects.equals(this.stato, vocePendenza.stato) &&
         Objects.equals(this.datiAllegati, vocePendenza.datiAllegati) &&
-	Objects.equals(descrizioneCausaleRPT, vocePendenza.descrizioneCausaleRPT) &&
+        Objects.equals(descrizioneCausaleRPT, vocePendenza.descrizioneCausaleRPT) &&
+        Objects.equals(contabilita, vocePendenza.contabilita) &&
+        Objects.equals(idDominio, vocePendenza.idDominio) &&
         Objects.equals(this.hashDocumento, vocePendenza.hashDocumento) &&
         Objects.equals(this.tipoBollo, vocePendenza.tipoBollo) &&
         Objects.equals(this.provinciaResidenza, vocePendenza.provinciaResidenza) &&
@@ -356,7 +397,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, this.stato, this.datiAllegati, descrizioneCausaleRPT, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita);
+    return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, this.stato, this.datiAllegati, descrizioneCausaleRPT, contabilita, idDominio, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita);
   }
 
   public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
@@ -380,6 +421,8 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
     sb.append("    datiAllegati: ").append(this.toIndentedString(this.datiAllegati)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
+    sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    hashDocumento: ").append(this.toIndentedString(this.hashDocumento)).append("\n");
     sb.append("    tipoBollo: ").append(this.toIndentedString(this.tipoBollo)).append("\n");
     sb.append("    provinciaResidenza: ").append(this.toIndentedString(this.provinciaResidenza)).append("\n");

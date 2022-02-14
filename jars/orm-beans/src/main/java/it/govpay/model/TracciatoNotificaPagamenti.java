@@ -17,7 +17,7 @@ public class TracciatoNotificaPagamenti extends BasicModel {
 	
 	public enum FORMATO_TRACCIATO { CSV };
 	
-	public enum TIPO_TRACCIATO { MYPIVOT, SECIM, GOVPAY };
+	public enum TIPO_TRACCIATO { MYPIVOT, SECIM, GOVPAY, HYPERSIC_APK };
 	
 	public static List<STATO_ELABORAZIONE> statiNonTerminaliWS = new ArrayList<TracciatoNotificaPagamenti.STATO_ELABORAZIONE>();
 	
@@ -39,6 +39,12 @@ public class TracciatoNotificaPagamenti extends BasicModel {
 		statiNonTerminaliFileSystem.add(STATO_ELABORAZIONE.FILE_NUOVO);
 	}
 	
+	public static List<STATO_ELABORAZIONE> statiNonTerminaliREST = new ArrayList<TracciatoNotificaPagamenti.STATO_ELABORAZIONE>();
+	
+	static {
+		statiNonTerminaliREST.add(STATO_ELABORAZIONE.FILE_NUOVO);
+	}
+	
 	private String nomeFile;
 	private STATO_ELABORAZIONE stato;
 	private Date dataCreazione;
@@ -55,6 +61,7 @@ public class TracciatoNotificaPagamenti extends BasicModel {
 	private byte[] rawContenuto;	
 	private String versione;
 	private TIPO_TRACCIATO tipo;
+	private String identificativo;
 	
 	public String getNomeFile() {
 		return nomeFile;
@@ -151,5 +158,11 @@ public class TracciatoNotificaPagamenti extends BasicModel {
 	}
 	public void setTipo(TIPO_TRACCIATO tipo) {
 		this.tipo = tipo;
+	}
+	public String getIdentificativo() {
+		return identificativo;
+	}
+	public void setIdentificativo(String identificativo) {
+		this.identificativo = identificativo;
 	}
 }

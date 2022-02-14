@@ -94,10 +94,11 @@ Examples:
 | auxDigit | '0' |
 | segregationCode | '49' |
 | segregationCode | '01' |
-| logo | 'iVBORw0KGgoAAAANSUhEUgAAAqkAAAD1CAYAAABz9WxiAAAAG' |
+| logo | '#("/domini/"+ idDominio +"/logo")' |
 | logo | null |
 | autStampaPosteItaliane | 'test' |
 | autStampaPosteItaliane | null |
+| intermediato | true |
 
 Scenario: Modifica di un dominio (segregation code)
 

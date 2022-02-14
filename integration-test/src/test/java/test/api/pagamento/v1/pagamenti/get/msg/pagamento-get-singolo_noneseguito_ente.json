@@ -172,6 +172,7 @@
                      "causaleVersamento":"#notnull",
                      "datiSpecificiRiscossione":"#notnull",
                      "commissioniApplicatePSP":null,
+	            	 "commissioniApplicatePA": null,
                      "allegatoRicevuta":null
                   }
                ]

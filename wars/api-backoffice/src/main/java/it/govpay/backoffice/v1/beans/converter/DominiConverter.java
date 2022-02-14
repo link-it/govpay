@@ -199,10 +199,16 @@ public class DominiConverter {
 		
 		if(dominioPost.getServizioGovPay() != null)
 			dominio.setConnettoreGovPay(ConnettoreNotificaPagamentiGovPayConverter.getConnettoreDTO(dominioPost.getServizioGovPay(), user, Tipo.GOVPAY));
-
+		
+		if(dominioPost.getServizioHyperSicAPKappa() != null)
+			dominio.setConnettoreHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappaConverter.getConnettoreDTO(dominioPost.getServizioHyperSicAPKappa(), user, Tipo.HYPER_SIC_APKAPPA));
+		
+		dominio.setIntermediato(dominioPost.Intermediato() != null ? dominioPost.Intermediato() : true);
+		
 		dominioDTO.setDominio(dominio);
 		dominioDTO.setIdDominio(idDominio);
 		dominioDTO.setCodStazione(dominioPost.getStazione());
+		
 
 		return dominioDTO;		
 	}
@@ -225,23 +231,29 @@ public class DominiConverter {
 		rsModel.setTel(dominio.getAnagrafica().getTelefono());
 		rsModel.setFax(dominio.getAnagrafica().getFax());
 		rsModel.setArea(dominio.getAnagrafica().getArea());
-		rsModel.setGln(dominio.getGln());
-		rsModel.setCbill(dominio.getCbill());
-		rsModel.setAuxDigit("" + dominio.getAuxDigit());
-		if(dominio.getSegregationCode() != null)
-			rsModel.setSegregationCode(String.format("%02d", dominio.getSegregationCode()));
-
 		if(dominio.getLogo() != null) {
 			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
 		}
-		rsModel.setIuvPrefix(dominio.getIuvPrefix());
-		rsModel.setStazione(dominio.getStazione().getCodStazione());
-		rsModel.setContiAccredito(UriBuilderUtils.getContiAccreditoByDominio(dominio.getCodDominio()));
+		rsModel.setAbilitato(dominio.isAbilitato());
+		rsModel.setIntermediato(dominio.isIntermediato());
+		
+		if(dominio.isIntermediato()) {
+			rsModel.setGln(dominio.getGln());
+			rsModel.setCbill(dominio.getCbill());
+			rsModel.setAuxDigit("" + dominio.getAuxDigit());
+			if(dominio.getSegregationCode() != null)
+				rsModel.setSegregationCode(String.format("%02d", dominio.getSegregationCode()));
+			rsModel.setIuvPrefix(dominio.getIuvPrefix());
+			if(dominio.getStazione() != null)
+				rsModel.setStazione(dominio.getStazione().getCodStazione());
+			
+			rsModel.setAutStampaPosteItaliane(dominio.getAutStampaPoste());
+		}
+		
 		rsModel.setUnitaOperative(UriBuilderUtils.getListUoByDominio(dominio.getCodDominio()));
+		rsModel.setContiAccredito(UriBuilderUtils.getContiAccreditoByDominio(dominio.getCodDominio()));
 		rsModel.setEntrate(UriBuilderUtils.getEntrateByDominio(dominio.getCodDominio()));
 		rsModel.setTipiPendenza(UriBuilderUtils.getTipiPendenzaByDominio(dominio.getCodDominio()));
-		rsModel.setAbilitato(dominio.isAbilitato());
-		rsModel.setAutStampaPosteItaliane(dominio.getAutStampaPoste());
 
 		return rsModel;
 	}
@@ -307,18 +319,32 @@ public class DominiConverter {
 		rsModel.setTel(dominio.getAnagrafica().getTelefono());
 		rsModel.setFax(dominio.getAnagrafica().getFax());
 		rsModel.setArea(dominio.getAnagrafica().getArea());
-		rsModel.setGln(dominio.getGln());
-		rsModel.setCbill(dominio.getCbill());
-		rsModel.setAuxDigit("" + dominio.getAuxDigit());
-		if(dominio.getSegregationCode() != null)
-			rsModel.setSegregationCode(String.format("%02d", dominio.getSegregationCode()));
-
+		
+		rsModel.setAbilitato(dominio.isAbilitato());
+		rsModel.setIntermediato(dominio.isIntermediato());
+		
 		if(dominio.getLogo() != null) {
-			rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
+			rsModel.setLogo(new String(dominio.getLogo(), StandardCharsets.UTF_8));  
 		}
-		rsModel.setIuvPrefix(dominio.getIuvPrefix());
-		rsModel.setStazione(dominio.getStazione().getCodStazione());
-
+		
+		if(dominio.isIntermediato()) {
+		
+			rsModel.setGln(dominio.getGln());
+			rsModel.setCbill(dominio.getCbill());
+			rsModel.setAuxDigit("" + dominio.getAuxDigit());
+			if(dominio.getSegregationCode() != null)
+				rsModel.setSegregationCode(String.format("%02d", dominio.getSegregationCode()));
+	
+			if(dominio.getLogo() != null) {
+				rsModel.setLogo(UriBuilderUtils.getLogoDominio(dominio.getCodDominio()));
+			}
+			rsModel.setIuvPrefix(dominio.getIuvPrefix());
+			if(dominio.getStazione() != null)
+				rsModel.setStazione(dominio.getStazione().getCodStazione());
+	
+			rsModel.setAutStampaPosteItaliane(dominio.getAutStampaPoste());
+		}
+		
 		if(uoLst != null) {
 			List<UnitaOperativa> unitaOperative = new ArrayList<>();
 
@@ -354,13 +380,6 @@ public class DominiConverter {
 			}
 			rsModel.setTipiPendenza(tipiPendenzaDominio);
 		}
-
-		rsModel.setAbilitato(dominio.isAbilitato());
-		rsModel.setAutStampaPosteItaliane(dominio.getAutStampaPoste());
-
-		if(dominio.getLogo() != null) {
-			rsModel.setLogo(new String(dominio.getLogo(), StandardCharsets.UTF_8));  
-		}
 		
 		if(dominio.getConnettoreMyPivot()!=null)
 			rsModel.setServizioMyPivot(ConnettoreNotificaPagamentiMyPivotConverter.toRsModel(dominio.getConnettoreMyPivot()));
@@ -370,7 +389,10 @@ public class DominiConverter {
 		
 		if(dominio.getConnettoreGovPay()!=null)
 			rsModel.setServizioGovPay(ConnettoreNotificaPagamentiGovPayConverter.toRsModel(dominio.getConnettoreGovPay()));
-
+		
+		if(dominio.getConnettoreHyperSicAPKappa()!=null)
+			rsModel.setServizioHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappaConverter.toRsModel(dominio.getConnettoreHyperSicAPKappa()));
+		
 		return rsModel;
 	}
 

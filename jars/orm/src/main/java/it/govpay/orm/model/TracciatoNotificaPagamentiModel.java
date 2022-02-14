@@ -53,6 +53,7 @@ public class TracciatoNotificaPagamentiModel extends AbstractModel<TracciatoNoti
 		this.DATA_COMPLETAMENTO = new Field("dataCompletamento",java.util.Date.class,"TracciatoNotificaPagamenti",TracciatoNotificaPagamenti.class);
 		this.RAW_CONTENUTO = new Field("rawContenuto",byte[].class,"TracciatoNotificaPagamenti",TracciatoNotificaPagamenti.class);
 		this.BEAN_DATI = new Field("beanDati",java.lang.String.class,"TracciatoNotificaPagamenti",TracciatoNotificaPagamenti.class);
+		this.IDENTIFICATIVO = new Field("identificativo",java.lang.String.class,"TracciatoNotificaPagamenti",TracciatoNotificaPagamenti.class);
 	
 	}
 	
@@ -72,6 +73,7 @@ public class TracciatoNotificaPagamentiModel extends AbstractModel<TracciatoNoti
 		this.DATA_COMPLETAMENTO = new ComplexField(father,"dataCompletamento",java.util.Date.class,"TracciatoNotificaPagamenti",TracciatoNotificaPagamenti.class);
 		this.RAW_CONTENUTO = new ComplexField(father,"rawContenuto",byte[].class,"TracciatoNotificaPagamenti",TracciatoNotificaPagamenti.class);
 		this.BEAN_DATI = new ComplexField(father,"beanDati",java.lang.String.class,"TracciatoNotificaPagamenti",TracciatoNotificaPagamenti.class);
+		this.IDENTIFICATIVO = new ComplexField(father,"identificativo",java.lang.String.class,"TracciatoNotificaPagamenti",TracciatoNotificaPagamenti.class);
 	
 	}
 	
@@ -100,6 +102,8 @@ public class TracciatoNotificaPagamentiModel extends AbstractModel<TracciatoNoti
 	public IField RAW_CONTENUTO = null;
 	 
 	public IField BEAN_DATI = null;
+	 
+	public IField IDENTIFICATIVO = null;
 	 
 
 	@Override

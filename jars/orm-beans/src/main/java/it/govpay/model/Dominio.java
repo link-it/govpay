@@ -26,7 +26,7 @@ public class Dominio extends BasicModel {
 	public static final String EC = "EC"; 
 
 	private Long id; 
-	private long idStazione; 
+	private Long idStazione; 
 	private Long idApplicazioneDefault; 
 	private String codDominio;
 	private String ragioneSociale;
@@ -42,6 +42,8 @@ public class Dominio extends BasicModel {
 	private ConnettoreNotificaPagamenti connettoreMyPivot;
 	private ConnettoreNotificaPagamenti connettoreSecim;
 	private ConnettoreNotificaPagamenti connettoreGovPay;
+	private ConnettoreNotificaPagamenti connettoreHyperSicAPKappa;
+	private boolean intermediato;
 
 	@Override
 	public Long getId() {
@@ -84,11 +86,11 @@ public class Dominio extends BasicModel {
 		this.abilitato = abilitato;
 	}
 
-	public long getIdStazione() {
+	public Long getIdStazione() {
 		return this.idStazione;
 	}
 
-	public void setIdStazione(long idStazione) {
+	public void setIdStazione(Long idStazione) {
 		this.idStazione = idStazione;
 	}
 
@@ -170,6 +172,22 @@ public class Dominio extends BasicModel {
 
 	public void setConnettoreGovPay(ConnettoreNotificaPagamenti connettoreGovPay) {
 		this.connettoreGovPay = connettoreGovPay;
+	}
+
+	public ConnettoreNotificaPagamenti getConnettoreHyperSicAPKappa() {
+		return connettoreHyperSicAPKappa;
+	}
+
+	public void setConnettoreHyperSicAPKappa(ConnettoreNotificaPagamenti connettoreHyperSicAPKappa) {
+		this.connettoreHyperSicAPKappa = connettoreHyperSicAPKappa;
+	}
+
+	public boolean isIntermediato() {
+		return intermediato;
+	}
+
+	public void setIntermediato(boolean intermediato) {
+		this.intermediato = intermediato;
 	}
 	
 }

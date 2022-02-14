@@ -43,6 +43,7 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 	private transient IbanAccredito ibanAppoggio;
 	private transient List<Pagamento> pagamenti;
 	private transient List<Rendicontazione> rendicontazioni;
+	private transient Dominio dominio;
 
 	
 	public Tributo getTributo(BDConfigWrapper configWrapper) throws ServiceException {
@@ -70,9 +71,18 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 			this.setIdVersamento(versamento.getId());
 	}
 	
-	public Versamento getVersamento(BasicBD bd) throws ServiceException {
+	public Versamento getVersamentoBD(BasicBD bd) throws ServiceException {
 		if(this.versamento == null && bd != null) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			versamentiBD.setAtomica(false); // connessione condivisa
+			this.versamento = versamentiBD.getVersamento(this.getIdVersamento());
+		}
+		return this.versamento;
+	}
+	
+	public Versamento getVersamento(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.versamento == null) {
+			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			versamentiBD.setAtomica(false); // connessione condivisa
 			this.versamento = versamentiBD.getVersamento(this.getIdVersamento());
 		}
@@ -159,6 +169,23 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 
 	public void setRendicontazioni(List<Rendicontazione> rendicontazioni) {
 		this.rendicontazioni = rendicontazioni;
+	}
+	
+	public Dominio getDominio(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.dominio == null && this.getIdDominio() != null) {
+			try {
+				this.dominio = AnagraficaManager.getDominio(configWrapper, this.getIdDominio());
+			} catch (NotFoundException e) {
+			}
+		} 
+		return this.dominio;
+	}
+	
+	public void setDominio(Dominio dominio) {
+		this.dominio = dominio;
+		if(this.dominio != null) {
+			this.setIdDominio(this.dominio.getId());
+		}
 	}
 }
 

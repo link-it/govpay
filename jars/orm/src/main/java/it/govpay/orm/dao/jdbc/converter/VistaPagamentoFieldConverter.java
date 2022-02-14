@@ -382,11 +382,11 @@ public class VistaPagamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_msg_revoca";
 			}
 		}
-		if(field.equals(VistaPagamento.model().ID_INCASSO.TRN)){
+		if(field.equals(VistaPagamento.model().ID_INCASSO.IDENTIFICATIVO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".trn";
+				return this.toAliasTable(field)+".identificativo";
 			}else{
-				return "trn";
+				return "identificativo";
 			}
 		}
 		if(field.equals(VistaPagamento.model().ID_INCASSO.COD_DOMINIO)){
@@ -471,6 +471,13 @@ public class VistaPagamentoFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".cod_applicazione";
 			}else{
 				return "cod_applicazione";
+			}
+		}
+		if(field.equals(VistaPagamento.model().VRS_ID_DOCUMENTO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
 			}
 		}
 		if(field.equals(VistaPagamento.model().VRS_TASSONOMIA)){
@@ -670,7 +677,7 @@ public class VistaPagamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(VistaPagamento.model().ID_RR.COD_MSG_REVOCA)){
 			return this.toTable(VistaPagamento.model().ID_RR, returnAlias);
 		}
-		if(field.equals(VistaPagamento.model().ID_INCASSO.TRN)){
+		if(field.equals(VistaPagamento.model().ID_INCASSO.IDENTIFICATIVO)){
 			return this.toTable(VistaPagamento.model().ID_INCASSO, returnAlias);
 		}
 		if(field.equals(VistaPagamento.model().ID_INCASSO.COD_DOMINIO)){
@@ -708,6 +715,9 @@ public class VistaPagamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(VistaPagamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(VistaPagamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(VistaPagamento.model().VRS_ID_DOCUMENTO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(VistaPagamento.model().VRS_ID_DOCUMENTO.ID_DOMINIO, returnAlias);
 		}
 		if(field.equals(VistaPagamento.model().VRS_TASSONOMIA)){
 			return this.toTable(VistaPagamento.model(), returnAlias);
@@ -811,6 +821,9 @@ public class VistaPagamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(VistaPagamento.model().VRS_ID_DOCUMENTO.ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(VistaPagamento.model().VRS_ID_DOCUMENTO.ID_DOMINIO)){
+			return "domini";
 		}
 
 

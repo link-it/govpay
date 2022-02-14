@@ -19,9 +19,11 @@
  */
 package it.govpay.core.dao.pagamenti;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.openspcoop2.utils.service.context.IContext;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -34,6 +36,7 @@ import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.business.Operazioni;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
@@ -44,16 +47,18 @@ import it.govpay.core.dao.anagrafica.dto.GetDocumentoAvvisiDTOResponse;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.exception.DocumentoNonTrovatoException;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class AvvisiDAO extends BaseDAO{
 
-	public GetAvvisoDTOResponse getAvviso(GetAvvisoDTO getAvvisoDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException {
+	public GetAvvisoDTOResponse getAvviso(GetAvvisoDTO getAvvisoDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, GovPayException {
 		VersamentiBD versamentiBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -65,12 +70,56 @@ public class AvvisiDAO extends BaseDAO{
 		}
 	}
 	
-	public GetAvvisoDTOResponse getAvviso(GetAvvisoDTO getAvvisoDTO, VersamentiBD versamentiBD, BDConfigWrapper configWrapper) throws ServiceException, PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException {
+	public GetAvvisoDTOResponse getAvviso(GetAvvisoDTO getAvvisoDTO, VersamentiBD versamentiBD, BDConfigWrapper configWrapper) throws ServiceException, PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, GovPayException {
 		Versamento versamento = null;
 		try {
 			if(ContextThreadLocal.get() != null) {
 				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(getAvvisoDTO.getCodDominio());
 				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIuv(getAvvisoDTO.getIuv());
+			}
+			
+			// se il versamento utilizzare per creare l'avviso e' in sessione e non e' presente nel db allora lo inserisco 
+			if(getAvvisoDTO.getVersamentoFromSession() != null) {
+				IContext ctx = ContextThreadLocal.get();
+				Versamento versamentoFromSession = getAvvisoDTO.getVersamentoFromSession();
+				
+				versamentiBD.setupConnection(configWrapper.getTransactionID());
+				
+				versamentiBD.setAtomica(false);
+				
+				versamentiBD.setAutoCommit(false);
+				
+				boolean doCommit = true;
+				
+				try {
+					try {
+						it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(versamentoFromSession.getIdApplicazione(), versamentoFromSession.getCodVersamentoEnte(), true);
+					
+						versamentiBD.updateVersamento(versamentoFromSession, true);
+						
+						if(versamentoFromSession.getId()==null)
+							versamentoFromSession.setId(versamentoLetto.getId());
+		
+						ctx.getApplicationLogger().log("versamento.aggioramentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
+					} catch (NotFoundException e) {
+						versamentiBD.insertVersamento(versamentoFromSession);
+						ctx.getApplicationLogger().log("versamento.inserimentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
+						log.info("Versamento (" + versamentoFromSession.getCodVersamentoEnte() + ") dell'applicazione (" + versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione() + ") inserito");
+		
+						// avvio il batch di gestione dei promemoria
+						Operazioni.setEseguiGestionePromemoria();
+					}
+					if(doCommit) versamentiBD.commit();
+				} catch (Exception e) {
+					if(doCommit) {
+						if(versamentiBD != null)
+							versamentiBD.rollback();
+					}
+					if(e instanceof GovPayException)
+						throw (GovPayException) e;
+					else 
+						throw new GovPayException(e);
+				}
 			}
 			
 			if(getAvvisoDTO.getNumeroAvviso() != null)
@@ -111,6 +160,7 @@ public class AvvisiDAO extends BaseDAO{
 				printAvvisoDTO.setVersamento(versamento); 
 				printAvvisoDTO.setSalvaSuDB(false);
 				printAvvisoDTO.setLinguaSecondaria(getAvvisoDTO.getLinguaSecondaria());
+				printAvvisoDTO.setSdfDataScadenza(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA());
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 				response.setApplicazione(versamento.getApplicazione(configWrapper));
 				response.setVersamento(versamento);
@@ -161,6 +211,7 @@ public class AvvisiDAO extends BaseDAO{
 				printAvvisoDTO.setSalvaSuDB(false);
 				printAvvisoDTO.setLinguaSecondaria(getAvvisoDTO.getLinguaSecondaria()); 
 				printAvvisoDTO.setNumeriAvviso(getAvvisoDTO.getNumeriAvviso());
+				printAvvisoDTO.setSdfDataScadenza(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA());
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printAvvisoDTO);
 				response.setDocumento(documento);
 				response.setDominio(dominio);

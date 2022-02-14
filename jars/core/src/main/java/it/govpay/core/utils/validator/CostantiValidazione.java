@@ -19,11 +19,13 @@ public class CostantiValidazione {
 	public static final String PATTERN_ID_VOCE_PENDENZA = "(^[a-zA-Z0-9\\-_]{1,35}$)";
 	public static final String PATTERN_PROVINCIA = "(^[A-Z]{2,2}$)";
 	public static final String PATTERN_COD_CONTABILITA = "(^\\S{3,138}$)";
+	public static final String PATTERN_CODICE_TASSONOMICO_PAGOPA = "(^[0129]\\/\\S{3,138}$)";
 	public static final String PATTERN_ID_DIREZIONE = "(^[a-zA-Z0-9\\-_]{1,35}$)";
 	public static final String PATTERN_ID_DIVISIONE = "(^[a-zA-Z0-9\\-_]{1,35}$)";
 	public static final String PATTERN_ANNO_RIFERIMENTO = "(^[0-9]{4}$)";
 	public static final String PATTERN_NUMERO_AVVISO = "(^[0-9]{18}$)";
 	public static final String PATTERN_ID_DOCUMENTO = "(^[a-zA-Z0-9\\-_]{1,35}$)";
+	public static final String PATTERN_ID_RICONCILIAZIONE = "(^[a-zA-Z0-9\\-_]{1,35}$)";
 	
 	public static final String PATTERN_NAZIONE = "(^[A-Z]{2,2}$)";
 	public static final String PATTERN_EMAIL = "(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$)";

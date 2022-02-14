@@ -5,7 +5,9 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
@@ -24,6 +26,7 @@ import org.springframework.security.core.Authentication;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -89,20 +92,24 @@ public class PendenzeController extends BaseController {
 			}
 			
 			// controllo che i parametri passati siano abilitati per l'utenza che prova a fare l'aggiornamento
+			boolean usaDB = true;
+			boolean isUpdate = false;
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
-			if((idA2A != null && idPendenza != null)) {
-				if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+				usaDB = false;
+				if((idA2A != null && idPendenza != null)) {
 					 HttpSession session = this.request.getSession(false);
 					 if(session!= null) {
 						 @SuppressWarnings("unchecked")
-						 List<String> listaIdentificativi = (List<String>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
+						 Map<String, Versamento> listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
 						 
-						 if(listaIdentificativi == null || listaIdentificativi.size() == 0 || !listaIdentificativi.contains((idA2A+idPendenza)) ) {
+						 if(listaIdentificativi == null || listaIdentificativi.size() == 0 || !listaIdentificativi.containsKey((idA2A+idPendenza)) ) {
 							 throw new UnprocessableEntityException("Impossibile effettuare l'operazione di aggiornamento, i paramentri 'idA2A' e 'idPendenza' non corrispondono a nessuna pendenza disponibile per l'utenza.");
 						 }
 					 } else {
 						 throw new UnprocessableEntityException("Impossibile effettuare l'operazione di aggiornamento, nessuna pendenza disponibile per l'utenza.");
 					 }
+					 isUpdate = true;
 				}
 			}
 			
@@ -119,6 +126,7 @@ public class PendenzeController extends BaseController {
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
 			PutPendenzaDTO putVersamentoDTO = new PutPendenzaDTO(user);
+			putVersamentoDTO.setInserimentoDB(usaDB);
 			putVersamentoDTO.setTipo(TipologiaTipoVersamento.SPONTANEO);
 			putVersamentoDTO.setCustomReq(jsonRequest);
 			putVersamentoDTO.setCodDominio(idDominio);
@@ -133,29 +141,67 @@ public class PendenzeController extends BaseController {
 
 			PendenzaCreata pc = PendenzeConverter.toRsPendenzaCreataModel(createOrUpdate.getDominio(), createOrUpdate.getVersamento(), createOrUpdate.getUo(), createOrUpdate.getPdf(), user);
 			
+			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
+			
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 				HttpSession session = this.request.getSession();
 				if(session != null) {
 					log.debug("Inserimento della pendenza [idA2A:"+pc.getIdA2A()+", idPendenza: "+pc.getIdPendenza()+"] nella sessione con id ["+session.getId()+"]");
 					@SuppressWarnings("unchecked")
-					List<String> listaIdentificativi = (List<String>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
-					log.debug("Letta lista identificativi pendenze: ["+(listaIdentificativi!= null ? (StringUtils.join(listaIdentificativi, ",")): "non presente")+"]");
+					Map<String, Versamento> listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
+					log.debug("Letta lista identificativi pendenze: ["+(listaIdentificativi!= null ? (StringUtils.join(listaIdentificativi.keySet(), ",")): "non presente")+"]");
 					
 					if(listaIdentificativi == null)
-						listaIdentificativi = new ArrayList<>();
+						listaIdentificativi = new HashMap<>();
 					
-					if(!listaIdentificativi.contains((pc.getIdA2A()+pc.getIdPendenza())))
-						listaIdentificativi.add((pc.getIdA2A()+pc.getIdPendenza()));
+//					if(!listaIdentificativi.containsKey((pc.getIdA2A()+pc.getIdPendenza())))
+					// inserisco sempre nella mappa sia in caso di insert che di update
+					String chiavePendenza = pc.getIdA2A()+pc.getIdPendenza();
+					listaIdentificativi.put(chiavePendenza, createOrUpdate.getVersamento());
+					
+					// in questo caso forzo lo stato a OK perche' il check sul db da sempre esito negativo
+					if(isUpdate) {
+						responseStatus =  Status.OK;
+					}
 					
 					log.debug("Id Pendenza [idA2A:"+pc.getIdA2A()+", idPendenza: "+pc.getIdPendenza()+"] aggiunto alla lista identificativi.");
 					session.setAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE, listaIdentificativi);
 					log.debug("Lista identificativi pendenze salvata nella sessione con id ["+session.getId()+"]");
+					
+					// salvo anche gli identificativi avviso per eventuali letture dell'avviso
+					if(pc.getNumeroAvviso() != null) {
+						@SuppressWarnings("unchecked")
+						Map<String, String> listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE);
+						if(listaAvvisi == null)
+							listaAvvisi = new HashMap<>();
+						
+						String chiaveAvviso = createOrUpdate.getDominio().getCodDominio() + pc.getNumeroAvviso();
+						listaAvvisi.put(chiaveAvviso, chiavePendenza);
+						
+						log.debug("Avviso [idDominio:"+createOrUpdate.getDominio().getCodDominio()+", numero: "+pc.getNumeroAvviso()+"] aggiunto alla lista avvisi.");
+						session.setAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE, listaAvvisi);
+					}
+					
+					// salvo anche gli iuv avviso 
+					if(createOrUpdate.getVersamento().getIuvVersamento() != null) {
+						
+						@SuppressWarnings("unchecked")
+						Map<String, String> listaIuv = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
+						if(listaIuv == null)
+							listaIuv = new HashMap<>();
+						
+						String chiaveIuv = createOrUpdate.getDominio().getCodDominio() + createOrUpdate.getVersamento().getIuvVersamento();
+						listaIuv.put(chiaveIuv, chiavePendenza);
+						
+						log.debug("Iuv [idDominio:"+createOrUpdate.getDominio().getCodDominio()+", iuv: "+ createOrUpdate.getVersamento().getIuvVersamento()+"] aggiunto alla lista avvisi.");
+						session.setAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE, listaIuv);
+					}
+					
 				} else {
 					log.debug("Inserimento della pendenza [idA2A:"+pc.getIdA2A()+", idPendenza: "+pc.getIdPendenza()+"] nella sessione non effettuato, perche' la sessione e' null");
 				}
 			}
 			
-			Status responseStatus = createOrUpdate.isCreated() ?  Status.CREATED : Status.OK;
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(responseStatus).entity(pc.toJSON(null)),transactionId).build();
 
@@ -224,7 +270,7 @@ public class PendenzeController extends BaseController {
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
 
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);

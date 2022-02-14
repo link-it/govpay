@@ -10,6 +10,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiGovPay.TipoConnettoreEnum;
+import it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiGovPay.VersioneApiEnum;
 import it.govpay.backoffice.v1.beans.TipoPendenzaProfiloIndex;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.BDConfigWrapper;
@@ -19,6 +20,9 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.ConnettoreNotificaPagamenti.Tipo;
 import it.govpay.model.ConnettoreNotificaPagamenti.TipoConnettore;
 import it.govpay.model.TipoVersamento;
+import it.govpay.model.Versionabile;
+import it.govpay.model.Connettore.EnumAuthType;
+import it.govpay.model.Connettore.EnumSslType;
 
 public class ConnettoreNotificaPagamentiGovPayConverter {
 	
@@ -29,7 +33,6 @@ public class ConnettoreNotificaPagamentiGovPayConverter {
 		
 		if(connector.Abilitato()) {
 			connettore.setTipoTracciato(tipo.name());
-			connettore.setVersioneCsv(connector.getVersioneCsv());
 			
 //			boolean appAuthTipiPendenzaAll = false;
 			if(connector.getTipiPendenza() != null) {
@@ -107,13 +110,57 @@ public class ConnettoreNotificaPagamentiGovPayConverter {
 			
 			switch (connector.getTipoConnettore()) {
 			case EMAIL:
+				connettore.setVersioneCsv(connector.getVersioneZip());
 				connettore.setTipoConnettore(TipoConnettore.EMAIL);
 				connettore.setEmailIndirizzi(connector.getEmailIndirizzi());
 				connettore.setEmailSubject(connector.getEmailSubject());
+				connettore.setEmailAllegato(connector.EmailAllegato());
+				connettore.setDownloadBaseURL(connector.getDownloadBaseUrl());
 				break;
 			case FILESYSTEM:
+				connettore.setVersioneCsv(connector.getVersioneZip());
 				connettore.setTipoConnettore(TipoConnettore.FILE_SYSTEM);
 				connettore.setFileSystemPath(connector.getFileSystemPath());
+				break;
+			case REST:
+				connettore.setTipoConnettore(TipoConnettore.REST);
+				if(connector.getAuth() != null) {
+					connettore.setHttpUser(connector.getAuth().getUsername());
+					connettore.setHttpPassw(connector.getAuth().getPassword());
+					connettore.setSslKsLocation(connector.getAuth().getKsLocation());
+					connettore.setSslTsLocation(connector.getAuth().getTsLocation());
+					connettore.setSslKsPasswd(connector.getAuth().getKsPassword());
+					connettore.setSslTsPasswd(connector.getAuth().getTsPassword());
+					connettore.setSslTsType(connector.getAuth().getTsType());
+					connettore.setSslType(connector.getAuth().getSslType());
+					connettore.setSslKsType(connector.getAuth().getKsType());
+					connettore.setSslPKeyPasswd(connector.getAuth().getKsPKeyPasswd());
+					
+					if(connector.getAuth().getTipo() != null) {
+						connettore.setTipoAutenticazione(EnumAuthType.SSL);
+						if(connector.getAuth().getTipo() != null) {
+							switch (connector.getAuth().getTipo()) {
+							case CLIENT:
+								connettore.setTipoSsl(EnumSslType.CLIENT);
+								break;
+							case SERVER:
+							default:
+								connettore.setTipoSsl(EnumSslType.SERVER);
+								break;
+							}
+						}
+					} else {
+						connettore.setTipoAutenticazione(EnumAuthType.HTTPBasic);
+					}
+				} else {
+					connettore.setTipoAutenticazione(EnumAuthType.NONE);
+				}	
+				
+				connettore.setUrl(connector.getUrl());
+				if(connector.getVersioneApi() != null)
+					connettore.setVersione(Versionabile.Versione.toEnum(VersioneApiEnum.fromValue(connector.getVersioneApi()).toNameString()));
+				
+				connettore.setContenuti(connector.getContenuti());
 				break;
 			}
 		}
@@ -127,19 +174,31 @@ public class ConnettoreNotificaPagamentiGovPayConverter {
 		
 		rsModel.setAbilitato(connettore.isAbilitato());
 		if(connettore.isAbilitato()) {
-			rsModel.setVersioneCsv(connettore.getVersioneCsv());
-			
 			switch (connettore.getTipoConnettore()) {
 			case EMAIL:
+				rsModel.setVersioneZip(connettore.getVersioneCsv());
 				rsModel.setTipoConnettore(TipoConnettoreEnum.EMAIL);
 				rsModel.setEmailIndirizzi(connettore.getEmailIndirizzi());
 				rsModel.setEmailSubject(connettore.getEmailSubject());
+				rsModel.setEmailAllegato(connettore.isEmailAllegato());
+				rsModel.setDownloadBaseUrl(connettore.getDownloadBaseURL());
 				break;
 			case FILE_SYSTEM:
+				rsModel.setVersioneZip(connettore.getVersioneCsv());
 				rsModel.setTipoConnettore(TipoConnettoreEnum.FILESYSTEM);
 				rsModel.setFileSystemPath(connettore.getFileSystemPath());
 				break;
 			case WEB_SERVICE:
+				break;
+			case REST:
+				rsModel.setTipoConnettore(TipoConnettoreEnum.REST);
+				if(connettore.getTipoAutenticazione()!=null && !connettore.getTipoAutenticazione().equals(EnumAuthType.NONE))
+					rsModel.setAuth(ConnettoriConverter.toTipoAutenticazioneRsModel(connettore));
+				rsModel.setUrl(connettore.getUrl());
+				if(connettore.getVersione() != null)
+					rsModel.setVersioneApi(VersioneApiEnum.fromName(connettore.getVersione().getApiLabel()).toString());
+				
+				rsModel.setContenuti(connettore.getContenuti());
 				break;
 			}
 			

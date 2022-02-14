@@ -375,11 +375,11 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "stato";
 			}
 		}
-		if(field.equals(Pagamento.model().ID_INCASSO.TRN)){
+		if(field.equals(Pagamento.model().ID_INCASSO.IDENTIFICATIVO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".trn";
+				return this.toAliasTable(field)+".identificativo";
 			}else{
-				return "trn";
+				return "identificativo";
 			}
 		}
 		if(field.equals(Pagamento.model().ID_INCASSO.COD_DOMINIO)){
@@ -541,7 +541,7 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Pagamento.model().STATO)){
 			return this.toTable(Pagamento.model(), returnAlias);
 		}
-		if(field.equals(Pagamento.model().ID_INCASSO.TRN)){
+		if(field.equals(Pagamento.model().ID_INCASSO.IDENTIFICATIVO)){
 			return this.toTable(Pagamento.model().ID_INCASSO, returnAlias);
 		}
 		if(field.equals(Pagamento.model().ID_INCASSO.COD_DOMINIO)){

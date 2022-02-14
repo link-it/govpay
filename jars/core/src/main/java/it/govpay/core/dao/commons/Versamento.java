@@ -6,7 +6,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
+
 import it.govpay.core.beans.tracciati.ProprietaPendenza;
+import it.govpay.model.Tributo.TipoContabilita;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
@@ -353,6 +358,30 @@ public class Versamento {
     private List<Versamento.SingoloVersamento> singoloVersamento;
 
     public static class SingoloVersamento {
+    	
+    	public enum TipoContabilita {
+    	    CAPITOLO("0"),
+    	    SPECIALE("1"),
+    	    SIOPE("2"),
+    	    ALTRO("9");
+    	    
+    		private String codifica;
+
+    		TipoContabilita(String codifica) {
+    			this.codifica = codifica;
+    		}
+    		public String getCodifica() {
+    			return this.codifica;
+    		}
+    		
+    		public static TipoContabilita toEnum(String codifica) throws ValidationException {
+    			for(TipoContabilita p : TipoContabilita.values()){
+    				if(p.getCodifica().equals(codifica))
+    					return p;
+    			}
+    			throw new ValidationException("Codifica inesistente per TipoContabilta. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
+    		}
+    	}
 
         private String codSingoloVersamentoEnte;
         public String getCodSingoloVersamentoEnte() {
@@ -419,6 +448,22 @@ public class Versamento {
 			this.descrizioneCausaleRPT = descrizioneCausaleRPT;
 		}
 
+		public String getContabilita() {
+			return contabilita;
+		}
+
+		public void setContabilita(String contabilita) {
+			this.contabilita = contabilita;
+		}
+
+		public String getCodDominio() {
+			return codDominio;
+		}
+
+		public void setCodDominio(String codDominio) {
+			this.codDominio = codDominio;
+		}
+
 		private BigDecimal importo;
 		private String datiAllegati;
         private String descrizione;
@@ -426,11 +471,17 @@ public class Versamento {
         private String codTributo;
         private Versamento.SingoloVersamento.BolloTelematico bolloTelematico;
         private Versamento.SingoloVersamento.Tributo tributo;
+        private String contabilita;
+        private String codDominio;
 
         public static class BolloTelematico {
 
             private String tipo;
             private String hash;
+            private String provincia;
+			private TipoContabilita tipoContabilita;
+			private String codContabilita;
+			
             public String getTipo() {
 				return this.tipo;
 			}
@@ -449,28 +500,23 @@ public class Versamento {
 			public void setProvincia(String provincia) {
 				this.provincia = provincia;
 			}
-			private String provincia;
+			
+	        public TipoContabilita getTipoContabilita() {
+				return tipoContabilita;
+			}
+			public void setTipoContabilita(TipoContabilita tipoContabilita) {
+				this.tipoContabilita = tipoContabilita;
+			}
+			public String getCodContabilita() {
+				return codContabilita;
+			}
+			public void setCodContabilita(String codContabilita) {
+				this.codContabilita = codContabilita;
+			}
 
         }
 
         public static class Tributo {
-
-        	public enum TipoContabilita {
-
-        	    CAPITOLO,
-        	    SPECIALE,
-        	    SIOPE,
-        	    ALTRO;
-
-        	    public String value() {
-        	        return this.name();
-        	    }
-
-        	    public static TipoContabilita fromValue(String v) {
-        	        return valueOf(v);
-        	    }
-
-        	}
 
             private String ibanAccredito;
             private String ibanAppoggio;

@@ -57,6 +57,8 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 		this.DATI_ALLEGATI = new Field("datiAllegati",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.INDICE_DATI = new Field("indiceDati",java.lang.Integer.class,"SingoloVersamento",SingoloVersamento.class);
 		this.DESCRIZIONE_CAUSALE_RPT = new Field("descrizioneCausaleRPT",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
+		this.CONTABILITA = new Field("contabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"SingoloVersamento",SingoloVersamento.class));
 	
 	}
 	
@@ -80,6 +82,8 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 		this.DATI_ALLEGATI = new ComplexField(father,"datiAllegati",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
 		this.INDICE_DATI = new ComplexField(father,"indiceDati",java.lang.Integer.class,"SingoloVersamento",SingoloVersamento.class);
 		this.DESCRIZIONE_CAUSALE_RPT = new ComplexField(father,"descrizioneCausaleRPT",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
+		this.CONTABILITA = new ComplexField(father,"contabilita",java.lang.String.class,"SingoloVersamento",SingoloVersamento.class);
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"SingoloVersamento",SingoloVersamento.class));
 	
 	}
 	
@@ -116,6 +120,10 @@ public class SingoloVersamentoModel extends AbstractModel<SingoloVersamento> {
 	public IField INDICE_DATI = null;
 	 
 	public IField DESCRIZIONE_CAUSALE_RPT = null;
+	 
+	public IField CONTABILITA = null;
+	 
+	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 
 
 	@Override

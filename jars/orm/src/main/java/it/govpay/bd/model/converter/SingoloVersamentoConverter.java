@@ -29,6 +29,7 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Tributo.TipoContabilita;
+import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdIbanAccredito;
 import it.govpay.orm.IdTributo;
 import it.govpay.orm.IdVersamento;
@@ -69,6 +70,10 @@ public class SingoloVersamentoConverter {
 		dto.setDescrizione(vo.getDescrizione());
 		dto.setIndiceDati(vo.getIndiceDati()); 
 		dto.setDescrizioneCausaleRPT(vo.getDescrizioneCausaleRPT());
+		dto.setContabilita(vo.getContabilita());
+		if(vo.getIdDominio() != null)
+			dto.setIdDominio(vo.getIdDominio().getId());
+		
 		return dto;
 	}
 
@@ -112,6 +117,14 @@ public class SingoloVersamentoConverter {
 		vo.setDescrizione(dto.getDescrizione());
 		vo.setIndiceDati(dto.getIndiceDati());
 		vo.setDescrizioneCausaleRPT(dto.getDescrizioneCausaleRPT());
+		vo.setContabilita(dto.getContabilita());
+		
+		if(dto.getIdDominio() != null) {
+			IdDominio idDominio = new IdDominio();
+			idDominio.setId(dto.getIdDominio());
+			vo.setIdDominio(idDominio);
+		}
+		
 		return vo;
 	}
 }

@@ -49,12 +49,14 @@ export class Voce {
   public static CODICE_INTERBANCARIO: string = 'Codice interbancario';
   public static CODICE_IPA: string = 'Codice IPA';
   public static CODICE_CLIENTE: string = 'Codice cliente';
+  public static CODICE_ENTRATA: string = 'Codice entrata';
   public static CODICE_ISTITUTO: string = 'Codice istituto';
   public static COMMISSIONI: string = 'Commissioni';
   public static CONFIGURAZIONE_SSL: string = 'Configurazione SSL';
   public static CONTABILITA: string = 'Contabilità';
   public static COMUNICAZIONI_EMAIL: string = 'Comunicazioni via email';
   public static COMUNICAZIONI_APP_IO: string = 'Comunicazioni via App IO';
+  public static CONTENUTI: string = 'Contenuti';
   public static CONTENUTO_ALLEGATO: string = 'Contenuto allegato';
   public static CONTO_ACCREDITO: string = 'Conto accredito';
 
@@ -64,6 +66,7 @@ export class Voce {
   public static DATA_CONTABILE: string = 'Data contabile';
   public static DATA_ESITO: string = 'Data esito';
   public static DATA_ESECUZIONE_RISCOSSIONE: string = 'Data esecuzione riscossione';
+  public static DATA_FLUSSO: string = 'Data flusso';
   public static DATA_REGOLAMENTO: string = 'Data regolamento';
   public static DATA_RICEVUTA: string = 'Data ricevuta';
   public static DATA_RICHIESTA: string = 'Data richiesta';
@@ -82,9 +85,11 @@ export class Voce {
   public static DETTAGLIO_ESITO: string = 'Dettaglio esito';
   public static DETTAGLIO_PENDENZA_CUSTOM: string = 'Personalizzazione dettaglio pendenza';
   public static DIREZIONE: string = 'Direzione';
+  public static DISABILITATO: string = 'Disabilitato';
   public static DIVISIONE: string = 'Divisione';
   public static DOMINIO: string = 'Dominio';
   public static DOMINI: string = 'Domini';
+  public static DOWNLOAD_BASE_URL: string = 'Base URL link download';
   public static DURATA: string = 'Durata';
 
   public static ELABORAZIONE: string = 'Elaborazione';
@@ -107,13 +112,14 @@ export class Voce {
 
   public static IBAN_ACCREDITO: string = 'Iban accredito';
   public static IBAN_POSTALE: string = 'Iban postale';
+  public static ID: string = 'ID';
   public static ID_A2A: string = 'Id A2A';
   public static ID_BOLLO: string = 'Id bollo';
   public static ID_CANALE: string = 'Id canale';
   public static ID_CONTABILE: string = 'Identificativo contabile';
   public static ID_DOMINIO: string = 'Id dominio';
   public static ID_ENTRATA: string = 'Id entrata';
-  public static ID_FLUSSO: string = 'Id rendicontazione';
+  public static ID_FLUSSO: string = 'Id flusso rendicontazione';
   public static ID_INCASSO: string = 'Id incasso';
   public static ID_INTERMEDIARIO: string = 'Id intermediario';
   public static ID_INTERMEDIARIO_PSP: string = 'Id intermediario Psp';
@@ -128,6 +134,7 @@ export class Voce {
   public static ID_VOCE_PENDENZA: string = 'Id voce pendenza';
   public static IDENTIFICATIVO: string = 'Identificativo';
   public static IDF_IUV: string = 'Flusso/IUV';
+  public static IDF: string = 'IDF';
   public static IMPAGINAZIONE: string = 'Impaginazione';
   public static IMPORTO: string = 'Importo';
   public static INCASSO: string = 'Incasso';
@@ -137,8 +144,10 @@ export class Voce {
   public static INDICE_VOCE: string = 'Indice voce';
   public static INDIRIZZO: string = 'Indirizzo';
   public static INSERIMENTO_DATI: string = 'Form inserimento dati';
+  public static INTERMEDIATO: string = 'Intermediato';
   public static INTESTATARIO: string = 'Intestatario del conto';
   public static INTESTAZIONE_ESITO: string = 'Linea intestazione esito';
+  public static INVIO_TRACCIATO_ALLEGATO: string = 'Invia tracciato come allegato';
   public static ISTITUTO: string = 'Istituto';
   public static IUR: string = 'Riscossione (IUR)';
   public static IUR_SIGLA: string = 'IUR';
@@ -171,6 +180,7 @@ export class Voce {
   public static NO_PSP: string = 'PSP non pervenuto';
   public static NUMERO_PAY: string = 'Numero di pagamenti';
   public static NOME: string = 'Nome';
+  public static NON_INTERMEDIATO: string = 'Non intermediato';
   public static NON_PRESENTE: string = 'Non presente';
   public static NOTIFICA_AVVISO_PAGAMENTO: string = 'Notifica avviso pagamento';
   public static NOTIFICA_RICEVUTA_PAGAMENTO: string = 'Notifica ricevuta pagamento';
@@ -207,6 +217,8 @@ export class Voce {
   public static PROMEMORIA_SCADENZA_PAGAMENTO: string = 'Promemoria scadenza pagamento';
   public static PROVINCIA: string = 'Provincia';
   public static PSP: string = 'Psp';
+
+  public static QUOTE: string = 'Quote';
 
   public static RAGIONE_SOCIALE: string = 'Ragione sociale';
   public static RICHIESTA_STAMPA_AVVISI: string = 'Richiesta stampa avvisi';
@@ -281,6 +293,7 @@ export class Voce {
   public static VERSIONE_API: string = 'Versione API';
   public static VERIFICATORE_HOSTNAME: string = 'Verificatore hostname';
   public static VERSIONE_CSV: string = 'Versione CSV';
+  public static VERSIONE_ZIP: string = 'Versione ZIP';
   public static VISUALIZZAZIONE: string = 'Visualizzazione';
   public static VISTA_COMPLETA: string = 'Vista completa';
 

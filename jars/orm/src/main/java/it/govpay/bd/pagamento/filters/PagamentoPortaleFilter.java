@@ -41,7 +41,6 @@ import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.PagamentoPortale.STATO;
-import it.govpay.orm.Versamento;
 import it.govpay.orm.dao.jdbc.converter.VistaPagamentoPortaleFieldConverter;
 import it.govpay.orm.model.VistaPagamentoPortaleModel;
 
@@ -71,16 +70,19 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 	private String iuv;
 	private String codVersamento = null;
 	
+	private VistaPagamentoPortaleFieldConverter converter = null;
+	
 	public enum SortFields {
 		DATA
 	}
 
-	public PagamentoPortaleFilter(IExpressionConstructor expressionConstructor) {
+	public PagamentoPortaleFilter(IExpressionConstructor expressionConstructor) throws ServiceException {
 		this(expressionConstructor,false);
 	}
 
-	public PagamentoPortaleFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+	public PagamentoPortaleFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) throws ServiceException {
 		super(expressionConstructor, simpleSearch);
+		this.converter = new VistaPagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 	}
 
 	@Override
@@ -88,8 +90,6 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
-			
-			VistaPagamentoPortaleFieldConverter converter = new VistaPagamentoPortaleFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			
 			if(this.dataInizio != null) {
 				newExpression.greaterEquals(it.govpay.orm.VistaPagamentoPortale.model().DATA_RICHIESTA, this.dataInizio);
@@ -676,7 +676,11 @@ public class PagamentoPortaleFilter extends AbstractFilter {
 		}
 		
 		if(this.ack!=null) {
-			lst.add(this.ack);
+			try {
+				lst = this.setValoreFiltroBoolean(lst, converter, this.ack);
+			} catch (ExpressionException e) {
+				throw new ServiceException(e);
+			}
 		}
 		
 		if(this.cfCittadino!= null) {

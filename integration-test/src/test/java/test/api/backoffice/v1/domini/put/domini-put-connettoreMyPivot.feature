@@ -47,8 +47,7 @@ Examples:
 | emailSubject | '[Govpay] Export pagamenti Secim tipo pendenza #(codEntrataSegreteria)' | '[Govpay] Export pagamenti Secim tipo pendenza #(codEntrataSegreteria)' |
 | tipiPendenza | [ '#(codEntrataSegreteria)' ] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
 | tipiPendenza | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
-
-
+| emailAllegato | false | false |
 
 
 Scenario Outline: Modifica di un connettore mypivot di un dominio con connettore di tipo file system (<field>)
@@ -104,6 +103,29 @@ Examples:
 | emailIndirizzi | emailIndirizzi | ['mail@errata@it'] | 'emailIndirizzi' |
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
 | tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
+| emailAllegato | emailAllegato | null | 'emailAllegato' |
+
+
+Scenario Outline: Modifica di un servizio mypivot di un dominio con connettore di tipo email <field> non valida
+
+* set dominio.servizioMyPivot.emailAllegato = false
+* set dominio.servizioMyPivot.<fieldRequest> = <fieldValue>
+
+Given url backofficeBaseurl
+And path 'domini', idDominio
+And headers basicAutenticationHeader
+And request dominio
+When method put
+Then status 400
+
+* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+* match response.dettaglio contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| downloadBaseUrl | downloadBaseUrl | null | 'downloadBaseUrl' |
+| downloadBaseUrl | downloadBaseUrl | 'xxxx' | 'downloadBaseUrl' |
+
 
 Scenario Outline: Modifica di un servizio mypivot di un dominio con connettore di tipo file system <field> non valida
 

@@ -291,6 +291,27 @@ public class NotificaAppIOFieldConverter extends AbstractSQLFieldConverter {
 				return "stato_messaggio";
 			}
 		}
+		if(field.equals(NotificaAppIO.model().ID_RPT.COD_MSG_RICHIESTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_msg_richiesta";
+			}else{
+				return "cod_msg_richiesta";
+			}
+		}
+		if(field.equals(NotificaAppIO.model().ID_RPT.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(NotificaAppIO.model().ID_RPT.IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv";
+			}else{
+				return "iuv";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -400,6 +421,15 @@ public class NotificaAppIOFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(NotificaAppIO.model().STATO_MESSAGGIO)){
 			return this.toTable(NotificaAppIO.model(), returnAlias);
 		}
+		if(field.equals(NotificaAppIO.model().ID_RPT.COD_MSG_RICHIESTA)){
+			return this.toTable(NotificaAppIO.model().ID_RPT, returnAlias);
+		}
+		if(field.equals(NotificaAppIO.model().ID_RPT.COD_DOMINIO)){
+			return this.toTable(NotificaAppIO.model().ID_RPT, returnAlias);
+		}
+		if(field.equals(NotificaAppIO.model().ID_RPT.IUV)){
+			return this.toTable(NotificaAppIO.model().ID_RPT, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -439,6 +469,9 @@ public class NotificaAppIOFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(NotificaAppIO.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO)){
 			return "tipi_versamento";
+		}
+		if(model.equals(NotificaAppIO.model().ID_RPT)){
+			return "rpt";
 		}
 
 

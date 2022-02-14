@@ -40,7 +40,7 @@ export class RendicontazioniViewComponent implements IModalDialog, IExport, Afte
   }
 
   protected dettaglioEvento() {
-    let _url = UtilService.URL_RENDICONTAZIONI+'/'+UtilService.EncodeURIComponent(this.json.idFlusso)+'/'+this.json.dataFlusso;
+    let _url = UtilService.URL_RENDICONTAZIONI+'/'+UtilService.EncodeURIComponent(this.json.idDominio)+'/'+UtilService.EncodeURIComponent(this.json.idFlusso)+'/'+this.json.dataFlusso;
     this.gps.getDataService(_url).subscribe(
       function (_response) {
         this.json = _response.body;
@@ -56,12 +56,14 @@ export class RendicontazioniViewComponent implements IModalDialog, IExport, Afte
   protected mapJsonDetail() {
     //Riepilogo
     let _dr = this.json.dataRegolamento?moment(this.json.dataRegolamento).format('DD/MM/YYYY'):Voce.NON_PRESENTE;
+    let _df = this.json.dataFlusso?moment(this.json.dataFlusso).format('DD/MM/YYYY [ore] HH:mm:ss'):Voce.NON_PRESENTE;
     this.info = new Riepilogo({
       titolo: new Dato({ label: Voce.ISTITUTO, value: this.json.ragioneSocialePsp + ' (' + this.json.idPsp + ')' }),
       sottotitolo: new Dato({ label: Voce.ENTE_CREDITORE, value: this.json.ragioneSocialeDominio?(this.json.ragioneSocialeDominio + ' (' + this.json.idDominio + ')'):this.json.idDominio }),
       importo: this.us.currencyFormat(this.json.importoTotale),
       extraInfo: [
         { label: Voce.ID_CONTABILE+': ', value: this.json.trn },
+        { label: Voce.DATA_FLUSSO+': ', value: _df },
         { label: Voce.DATA_REGOLAMENTO+': ', value: _dr },
         { label: Voce.NUMERO_PAY+': ', value: this.json.numeroPagamenti }
       ]
@@ -115,7 +117,7 @@ export class RendicontazioniViewComponent implements IModalDialog, IExport, Afte
     let folders: string[] = [];
     let names: string[] = [];
 
-    urls.push(UtilService.URL_RENDICONTAZIONI+'/'+this.json.idFlusso+'/'+this.json.dataFlusso);
+    urls.push(UtilService.URL_RENDICONTAZIONI+'/'+this.json.idDominio+'/'+this.json.idFlusso+'/'+this.json.dataFlusso);
     names.push('Flusso_' + this.json.idFlusso.toString() + '.xml');
     contents.push('application/xml');
     types.push('text');

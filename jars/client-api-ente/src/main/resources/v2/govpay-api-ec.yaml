@@ -1,0 +1,173 @@
+openapi: 3.0.0
+info:
+  description: >-
+   API di integrazione a GovPay esposte dagli applicativi gestori delle Posizioni Debitorie dell'Ente Creditore per:
+    - Notificare i pagamenti effettuati sulla piattaforma pagoPA
+    - Verificare i dati delle pendenze oggetto di pagamento
+    
+   ## Notifica Pagamenti
+    La piattaforma GovPay prevede l'invio di una notifica alla conclusione con successo di una transazione di pagamento pagoPA, ovvero a fronte dell'acquisizione di una RT positiva, indipendentemente dal modello di pagamento utilizzato per gestire la transazione.
+    
+   ## Verifica Pendenze
+    In sede di pagamento, la piattaforma GovPay potrebbe aver necessità di richiedere all'applicativo gestore i dati aggiornati della pendenza oggetto del pagamento. Questo può accadere in due scenari:
+    - La pendenza associata al pagamento non è disponibile in GovPay
+    - La data di validità presente nella pendenza oggetto del pagamento è decorsa.
+    
+    Le informazioni restituite dal servizio vanno ad aggiornare la pendenza negli archivi di GovPay ed utilizzate per perfezionare il pagamento. 
+  version: "2.0.0"
+  title: "GovPay - API Notifica e Verifica"
+  contact:
+    name: GitHub Project Page
+    url: 'https://github.com/link-it/GovPay/'
+  license:
+    name: GPL
+    url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
+servers:
+  - description: Base url servizio
+    url: https://host/baseurl
+tags:
+  - name: Verifica pendenze
+  - name: Notifica ricevute
+paths:
+  '/avvisi/{idDomino}/{numeroAvviso}':
+    get:
+      operationId: getAvviso
+      summary: Verifica di una pendenza da avviso
+      tags:
+        - Verifica pendenze
+      parameters:
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdDominio'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathNumeroAvviso'
+      responses:
+        '201':
+          description: Pendenza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PendenzaVerificata'
+        '400':
+          $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'                
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'govpay-api-responses.yaml#/components/responses/404NotFound'          
+        '500':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'
+  '/pendenze/{idA2A}/{idPendenza}':
+    get:
+      operationId: verifyPendenza
+      summary: Verifica di una pendenza da identificativo
+      tags:
+        - Verifica pendenze
+      parameters:
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdA2A'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdPendenza'
+      responses:
+        '201':
+          description: Pendenza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PendenzaVerificata'
+        '400':
+          $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'govpay-api-responses.yaml#/components/responses/404NotFound'          
+        '500':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable' 
+  '/pendenze/{idDomino}/{idTipoPendenza}':
+    post:
+      operationId: verifyPendenzaMod4
+      summary: Acquisizione di una pendenza con dati custom
+      tags:
+        - Verifica pendenze
+      parameters:
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdDominio'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdTipoPendenza'
+      requestBody:
+        description: Pendenza nel formato custom
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Pendenza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PendenzaVerificata'
+        '400':
+          $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'govpay-api-responses.yaml#/components/responses/404NotFound'          
+        '500':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable' 
+  '/ricevute/{idDominio}/{iuv}/{idRicevuta}':
+    put:
+      operationId: notificaRicevuta
+      summary: Notifica di una ricevuta di avvenuto pagamento pagoPA
+      description: >-
+        La notifica di un pagamento corrisponde ad una ricevuta pagoPA, sia questa veicolata nella forma di `RT` o di `recepit`, di esito positivo. 
+        Le notifiche sono inviate contestualmente all'evento che le genera. In caso di errori di consegna (ovvero senza risposta HTTP 2xx), le notifiche sono rispedite in tempi successivi. Se la ricevuta risulta gia' stata acquisita, puo' essere ignorata ed esitata con successo per interromperne la rispedizione.
+      tags:
+        - Notifica ricevute
+      parameters:
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdDominio'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIuv'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdRicevuta'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/QueryIdSession'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/QueryIdSessionePortale'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/QueryIdCarrello'
+      requestBody:
+        description: Notifica di una ricevuta di pagamento
+        content:
+          application/json:
+            schema:
+              $ref: 'govpay-api-schemas.yaml#/components/schemas/Ricevuta'
+            examples:
+              Pagamento standard: 
+                $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaEntrata'
+              Marca da bollo: 
+                $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaMBT'
+      responses:
+        '201':
+          description: ricevuta di pagamento acquisita
+        '400':
+          $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'govpay-api-responses.yaml#/components/responses/404NotFound'          
+        '500':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable' 
+components:
+  schemas:
+    PendenzaVerificata:
+      type: object
+      allOf:
+        - $ref: 'govpay-api-schemas.yaml#/components/schemas/NuovaPendenza'
+        - type: object
+          properties: 
+            stato:
+              $ref: '#/components/schemas/StatoPendenzaVerificata'   
+    StatoPendenzaVerificata:
+      example: NON_ESEGUITA
+      type: string
+      enum:
+        - NON_ESEGUITA
+        - ANNULLATA
+        - SCADUTA
+        - SCONOSCIUTA

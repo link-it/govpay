@@ -34,3 +34,7 @@ Examples:
 | idPagamentoVerdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 200 | pagamento-get-singolo_eseguito_ente.json |
 | idPagamentoRossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 200 | pagamento-get-singolo_eseguito_ente.json |
 | idPagamentoRossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A | 200 | pagamento-get-singolo_noneseguito_ente.json |
+
+
+
+

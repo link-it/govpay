@@ -1,0 +1,92 @@
+{
+   "idA2A":"#(idA2A)",
+   "idPendenza":"#(idPendenza + '')",
+   "rpt":{
+         "creditorReferenceId":"#(iuv)",
+         "paymentAmount":"#(pendenzaPut.importo + '')",
+         "dueDate":"#ignore",
+         "retentionDate":null,
+         "lastPayment": true,
+         "description":"#notnull",
+         "companyName":"#(dominio.ragioneSociale)",
+         "officeName":null,
+         "debtor":{
+            "uniqueIdentifier":{
+               "entityUniqueIdentifierType":"#(pendenzaPut.soggettoPagatore.tipo)",
+               "entityUniqueIdentifierValue":"#(pendenzaPut.soggettoPagatore.identificativo)"
+            },
+            "fullName":"#(pendenzaPut.soggettoPagatore.anagrafica)",
+            "streetName":"#(pendenzaPut.soggettoPagatore.indirizzo)",
+            "civicNumber":"#(pendenzaPut.soggettoPagatore.civico)",
+            "postalCode":"#(pendenzaPut.soggettoPagatore.cap)",
+            "city":"#(pendenzaPut.soggettoPagatore.localita)",
+            "stateProvinceRegion":"#(pendenzaPut.soggettoPagatore.provincia)",
+            "country":"#(pendenzaPut.soggettoPagatore.nazione)",
+            "e-mail":"#(pendenzaPut.soggettoPagatore.email)"
+         },
+         "transferList":{
+            "transfer":[
+               {
+                  "idTransfer":1,
+                  "transferAmount":"#(pendenzaPut.voci[0].importo + '')",
+                  "fiscalCodePA":"#(idDominio)",
+                  "IBAN":"#(ibanAccredito)",
+                  "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Diritti e segreteria')",
+                  "transferCategory":"9/SEGRETERIA"
+               }
+            ]
+         },
+         "metadata":null
+   },
+   "rt": {
+         "receiptId":"#notnull",
+         "noticeNumber":"#notnull",
+         "fiscalCode":"#(idDominio)",
+         "outcome":"KO",
+         "creditorReferenceId":"#(iuv)",
+         "paymentAmount":"0.00",
+         "description":"#notnull",
+         "companyName":"#(dominio.ragioneSociale)",
+         "officeName":null,
+         "debtor":{
+            "uniqueIdentifier":{
+               "entityUniqueIdentifierType":"#(pendenzaPut.soggettoPagatore.tipo)",
+               "entityUniqueIdentifierValue":"#(pendenzaPut.soggettoPagatore.identificativo)"
+            },
+            "fullName":"#(pendenzaPut.soggettoPagatore.anagrafica)",
+            "streetName":"#(pendenzaPut.soggettoPagatore.indirizzo)",
+            "civicNumber":"#(pendenzaPut.soggettoPagatore.civico)",
+            "postalCode":"#(pendenzaPut.soggettoPagatore.cap)",
+            "city":"#(pendenzaPut.soggettoPagatore.localita)",
+            "stateProvinceRegion":"#(pendenzaPut.soggettoPagatore.provincia)",
+            "country":"#(pendenzaPut.soggettoPagatore.nazione)",
+            "e-mail":"#(pendenzaPut.soggettoPagatore.email)"
+         },
+         "transferList":{
+            "transfer":[
+               {
+                  "idTransfer":1,
+                  "transferAmount":"0.00",
+                  "fiscalCodePA":"#(idDominio)",
+                  "IBAN":"#(ibanAccredito)",
+                  "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Diritti e segreteria')",
+                  "transferCategory":"9/SEGRETERIA"
+               }
+            ]
+         },
+         "idPSP":"#notnull",
+         "pspFiscalCode":"#notnull",
+         "pspPartitaIVA":null,
+         "PSPCompanyName":"#notnull",
+         "idChannel":"#notnull",
+         "channelDescription":"#notnull",
+         "payer":null,
+         "paymentMethod": "##string",
+         "fee":"1.00",
+         "paymentDateTime":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d",
+         "applicationDate":"#ignore",
+         "transferDate":"#notnull",
+         "metadata":null
+   },
+	"riscossioni":null
+}

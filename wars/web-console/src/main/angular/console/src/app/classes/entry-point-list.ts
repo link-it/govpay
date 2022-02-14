@@ -7,6 +7,7 @@ import { StandardViewComponent } from '../elements/item-view/views/standard-view
 import { CronoViewComponent } from '../elements/item-view/views/crono-view/crono-view.component';
 import { CronoCodeViewComponent } from '../elements/item-view/views/crono-code-view/crono-code-view.component';
 import { KeyValueViewComponent } from '../elements/item-view/views/key-value-view/key-value-view.component';
+import { KeyJsonViewComponent } from '../elements/item-view/views/key-json-view/key-json-view.component';
 import { TwoColsViewComponent } from '../elements/item-view/views/two-cols-view/two-cols-view.component';
 import { TwoColsCollapseViewComponent } from '../elements/item-view/views/two-cols-collapse-view/two-cols-collapse-view.component';
 
@@ -44,8 +45,8 @@ import { RiscossioniViewComponent } from '../elements/detail-view/views/riscossi
 import { RendicontazioniViewComponent } from '../elements/detail-view/views/rendicontazioni-view/rendicontazioni-view.component';
 import { IncassiViewComponent } from '../elements/detail-view/views/incassi-view/incassi-view.component';
 import { IncassoViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/incasso-view/incasso-view.component';
-import { RppsViewComponent } from '../elements/detail-view/views/rpps-view/rpps-view.component';
 import { StandardCollapseViewComponent } from '../elements/item-view/views/standard-collapse-view/standard-collapse-view.component';
+import { NewStandardCollapseViewComponent } from '../elements/item-view/views/new-standard-collapse-view/new-standard-collapse-view.component';
 import { RuoloViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/ruolo-view/ruolo-view.component';
 import { TracciatiViewComponent } from '../elements/detail-view/views/tracciati-view/tracciati-view.component';
 import { TracciatoViewComponent } from '../elements/detail-view/views/dialog-view/dialog-views/tracciato-view/tracciato-view.component';
@@ -59,6 +60,7 @@ import { ProfiloUtenteViewComponent } from '../elements/detail-view/views/dialog
 import { ConnettoreMypivotComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-mypivot/connettore-mypivot.component';
 import { ConnettoreSecimComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-secim/connettore-secim.component';
 import { ConnettoreGovpayComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-govpay/connettore-govpay.component';
+import { ConnettoreHypersicComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-hypersic/connettore-hypersic.component';
 
 export class EntryPointList {
 
@@ -68,7 +70,6 @@ export class EntryPointList {
     RegistroIntermediariViewComponent,
     TipiPendenzeViewComponent,
     ApplicazioniViewComponent,
-    RppsViewComponent,
     GiornaleEventiViewComponent,
     RiscossioniViewComponent,
     RendicontazioniViewComponent,
@@ -84,6 +85,7 @@ export class EntryPointList {
     OperatoriViewComponent,
     StandardViewComponent,
     StandardCollapseViewComponent,
+    NewStandardCollapseViewComponent,
     RiepilogoViewComponent,
     StazioneViewComponent,
     IncassoViewComponent,
@@ -106,6 +108,7 @@ export class EntryPointList {
     CronoViewComponent,
     CronoCodeViewComponent,
     KeyValueViewComponent,
+    KeyJsonViewComponent,
     TwoColsViewComponent,
     TwoColsCollapseViewComponent,
     InputViewComponent,
@@ -117,7 +120,8 @@ export class EntryPointList {
     ProfiloUtenteViewComponent,
     ConnettoreMypivotComponent,
     ConnettoreSecimComponent,
-    ConnettoreGovpayComponent
+    ConnettoreGovpayComponent,
+    ConnettoreHypersicComponent
   ];
 
   public static getComponentByName(name: string):Type<any> {
@@ -180,6 +184,9 @@ export class EntryPointList {
       case UtilService.STANDARD_COLLAPSE:
         _type = StandardCollapseViewComponent;
         break;
+      case UtilService.NEW_STANDARD_COLLAPSE:
+        _type = NewStandardCollapseViewComponent;
+        break;
       case UtilService.TWO_COLS:
         _type = TwoColsViewComponent;
         break;
@@ -188,6 +195,9 @@ export class EntryPointList {
         break;
       case UtilService.KEY_VALUE:
         _type = KeyValueViewComponent;
+        break;
+      case UtilService.KEY_JSON:
+        _type = KeyJsonViewComponent;
         break;
       //Dialog views
       case UtilService.SCHEDA_PENDENZA:
@@ -204,9 +214,6 @@ export class EntryPointList {
         break;
       case UtilService.APPLICAZIONE:
         _type = ApplicazioneViewComponent;
-        break;
-      case UtilService.RPPS:
-        _type = RppsViewComponent;
         break;
       case UtilService.OPERATORE:
         _type = OperatoreViewComponent;
@@ -271,6 +278,9 @@ export class EntryPointList {
       case UtilService.CONNETTORE_GOVPAY:
         _type = ConnettoreGovpayComponent;
         break;
+      case UtilService.CONNETTORE_HYPERSIC:
+        _type = ConnettoreHypersicComponent;
+        break;
       //Material Lib
       case UtilService.INPUT:
         _type = InputViewComponent;
@@ -317,9 +327,6 @@ export class EntryPointList {
       case 'ApplicazioniViewComponent':
         _name = UtilService.APPLICAZIONI;
         break;
-      case 'RppsViewComponent':
-        _name = UtilService.RPPS;
-        break;
       case 'GiornaleEventiViewComponent':
         _name = UtilService.GIORNALE_EVENTI;
         break;
@@ -360,6 +367,9 @@ export class EntryPointList {
       case 'StandardCollapseViewComponent':
         _name = UtilService.STANDARD_COLLAPSE;
         break;
+      case 'NewStandardCollapseViewComponent':
+        _name = UtilService.NEW_STANDARD_COLLAPSE;
+        break;
       case 'TwoColsViewComponent':
         _name = UtilService.TWO_COLS;
         break;
@@ -368,6 +378,9 @@ export class EntryPointList {
         break;
       case 'KeyValueViewComponent':
         _name = UtilService.KEY_VALUE;
+        break;
+      case 'KeyJsonViewComponent':
+        _name = UtilService.KEY_JSON;
         break;
       //Dialog views
       case 'StazioneViewComponent':
@@ -447,6 +460,9 @@ export class EntryPointList {
         break;
       case 'ConnettoreGovpayComponent':
         _name = UtilService.CONNETTORE_GOVPAY;
+        break;
+      case 'ConnettoreHypersicComponent':
+        _name = UtilService.CONNETTORE_HYPERSIC;
         break;
       //Material Lib
       case 'InputViewComponent':

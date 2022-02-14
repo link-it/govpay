@@ -117,6 +117,8 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "sng_indice_dati", VistaRendicontazione.model().SNG_INDICE_DATI.getFieldType(), JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				setParameter(object, "setSngDescrizioneCausaleRPT", VistaRendicontazione.model().SNG_DESCRIZIONE_CAUSALE_RPT.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "sng_descrizione_causale_rpt", VistaRendicontazione.model().SNG_DESCRIZIONE_CAUSALE_RPT.getFieldType()));
+				setParameter(object, "setSngContabilita", VistaRendicontazione.model().SNG_CONTABILITA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "sng_contabilita", VistaRendicontazione.model().SNG_CONTABILITA.getFieldType()));
 				setParameter(object, "setVrsId", VistaRendicontazione.model().VRS_ID.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "vrs_id", VistaRendicontazione.model().VRS_ID.getFieldType()));
 				setParameter(object, "setVrsCodVersamentoEnte", VistaRendicontazione.model().VRS_COD_VERSAMENTO_ENTE.getFieldType(),
@@ -215,6 +217,48 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "vrs_tipo", VistaRendicontazione.model().VRS_TIPO.getFieldType()));
 				setParameter(object, "setVrsProprieta", VistaRendicontazione.model().VRS_PROPRIETA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "vrs_proprieta", VistaRendicontazione.model().VRS_PROPRIETA.getFieldType()));
+				setParameter(object, "setPagCodDominio", VistaRendicontazione.model().PAG_COD_DOMINIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_cod_dominio", VistaRendicontazione.model().PAG_COD_DOMINIO.getFieldType()));
+				setParameter(object, "setPagIuv", VistaRendicontazione.model().PAG_IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_iuv", VistaRendicontazione.model().PAG_IUV.getFieldType()));
+				setParameter(object, "setPagIndiceDati", VistaRendicontazione.model().PAG_INDICE_DATI.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_indice_dati", VistaRendicontazione.model().PAG_INDICE_DATI.getFieldType()));
+				setParameter(object, "setPagImportoPagato", VistaRendicontazione.model().PAG_IMPORTO_PAGATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_importo_pagato", VistaRendicontazione.model().PAG_IMPORTO_PAGATO.getFieldType()));
+				setParameter(object, "setPagDataAcquisizione", VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_data_acquisizione", VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE.getFieldType()));
+				setParameter(object, "setPagIur", VistaRendicontazione.model().PAG_IUR.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_iur", VistaRendicontazione.model().PAG_IUR.getFieldType()));
+				setParameter(object, "setPagDataPagamento", VistaRendicontazione.model().PAG_DATA_PAGAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_data_pagamento", VistaRendicontazione.model().PAG_DATA_PAGAMENTO.getFieldType()));
+				setParameter(object, "setPagCommissioniPsp", VistaRendicontazione.model().PAG_COMMISSIONI_PSP.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_commissioni_psp", VistaRendicontazione.model().PAG_COMMISSIONI_PSP.getFieldType()));
+				setParameter(object, "setPagTipoAllegato", VistaRendicontazione.model().PAG_TIPO_ALLEGATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_tipo_allegato", VistaRendicontazione.model().PAG_TIPO_ALLEGATO.getFieldType()));
+				setParameter(object, "setPagAllegato", VistaRendicontazione.model().PAG_ALLEGATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_allegato", VistaRendicontazione.model().PAG_ALLEGATO.getFieldType()));
+				setParameter(object, "setPagDataAcquisizioneRevoca", VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE_REVOCA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_data_acquisizione_revoca", VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE_REVOCA.getFieldType()));
+				setParameter(object, "setPagCausaleRevoca", VistaRendicontazione.model().PAG_CAUSALE_REVOCA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_causale_revoca", VistaRendicontazione.model().PAG_CAUSALE_REVOCA.getFieldType()));
+				setParameter(object, "setPagDatiRevoca", VistaRendicontazione.model().PAG_DATI_REVOCA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_dati_revoca", VistaRendicontazione.model().PAG_DATI_REVOCA.getFieldType()));
+				setParameter(object, "setPagImportoRevocato", VistaRendicontazione.model().PAG_IMPORTO_REVOCATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_importo_revocato", VistaRendicontazione.model().PAG_IMPORTO_REVOCATO.getFieldType()));
+				setParameter(object, "setPagEsitoRevoca", VistaRendicontazione.model().PAG_ESITO_REVOCA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_esito_revoca", VistaRendicontazione.model().PAG_ESITO_REVOCA.getFieldType()));
+				setParameter(object, "setPagDatiEsitoRevoca", VistaRendicontazione.model().PAG_DATI_ESITO_REVOCA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_dati_esito_revoca", VistaRendicontazione.model().PAG_DATI_ESITO_REVOCA.getFieldType()));
+				setParameter(object, "setPagStato", VistaRendicontazione.model().PAG_STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_stato", VistaRendicontazione.model().PAG_STATO.getFieldType()));
+				setParameter(object, "setPagTipo", VistaRendicontazione.model().PAG_TIPO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "pag_tipo", VistaRendicontazione.model().PAG_TIPO.getFieldType()));
+				setParameter(object, "setRptIuv", VistaRendicontazione.model().RPT_IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "rpt_iuv", VistaRendicontazione.model().RPT_IUV.getFieldType()));
+				setParameter(object, "setRptCcp", VistaRendicontazione.model().RPT_CCP.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "rpt_ccp", VistaRendicontazione.model().RPT_CCP.getFieldType()));
+				setParameter(object, "setRncTrn", VistaRendicontazione.model().RNC_TRN.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "rnc_trn", VistaRendicontazione.model().RNC_TRN.getFieldType()));
 				return object;
 			}
 			
@@ -299,6 +343,8 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"sngIndiceDati"));
 				setParameter(object, "setSngDescrizioneCausaleRPT", VistaRendicontazione.model().SNG_DESCRIZIONE_CAUSALE_RPT.getFieldType(),
 					this.getObjectFromMap(map,"sngDescrizioneCausaleRPT"));
+				setParameter(object, "setSngContabilita", VistaRendicontazione.model().SNG_CONTABILITA.getFieldType(),
+					this.getObjectFromMap(map,"sngContabilita"));
 				setParameter(object, "setVrsId", VistaRendicontazione.model().VRS_ID.getFieldType(),
 					this.getObjectFromMap(map,"vrsId"));
 				setParameter(object, "setVrsCodVersamentoEnte", VistaRendicontazione.model().VRS_COD_VERSAMENTO_ENTE.getFieldType(),
@@ -397,6 +443,48 @@ public class VistaRendicontazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"vrsTipo"));
 				setParameter(object, "setVrsProprieta", VistaRendicontazione.model().VRS_PROPRIETA.getFieldType(),
 					this.getObjectFromMap(map,"vrsProprieta"));
+				setParameter(object, "setPagCodDominio", VistaRendicontazione.model().PAG_COD_DOMINIO.getFieldType(),
+					this.getObjectFromMap(map,"pagCodDominio"));
+				setParameter(object, "setPagIuv", VistaRendicontazione.model().PAG_IUV.getFieldType(),
+					this.getObjectFromMap(map,"pagIuv"));
+				setParameter(object, "setPagIndiceDati", VistaRendicontazione.model().PAG_INDICE_DATI.getFieldType(),
+					this.getObjectFromMap(map,"pagIndiceDati"));
+				setParameter(object, "setPagImportoPagato", VistaRendicontazione.model().PAG_IMPORTO_PAGATO.getFieldType(),
+					this.getObjectFromMap(map,"pagImportoPagato"));
+				setParameter(object, "setPagDataAcquisizione", VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE.getFieldType(),
+					this.getObjectFromMap(map,"pagDataAcquisizione"));
+				setParameter(object, "setPagIur", VistaRendicontazione.model().PAG_IUR.getFieldType(),
+					this.getObjectFromMap(map,"pagIur"));
+				setParameter(object, "setPagDataPagamento", VistaRendicontazione.model().PAG_DATA_PAGAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"pagDataPagamento"));
+				setParameter(object, "setPagCommissioniPsp", VistaRendicontazione.model().PAG_COMMISSIONI_PSP.getFieldType(),
+					this.getObjectFromMap(map,"pagCommissioniPsp"));
+				setParameter(object, "setPagTipoAllegato", VistaRendicontazione.model().PAG_TIPO_ALLEGATO.getFieldType(),
+					this.getObjectFromMap(map,"pagTipoAllegato"));
+				setParameter(object, "setPagAllegato", VistaRendicontazione.model().PAG_ALLEGATO.getFieldType(),
+					this.getObjectFromMap(map,"pagAllegato"));
+				setParameter(object, "setPagDataAcquisizioneRevoca", VistaRendicontazione.model().PAG_DATA_ACQUISIZIONE_REVOCA.getFieldType(),
+					this.getObjectFromMap(map,"pagDataAcquisizioneRevoca"));
+				setParameter(object, "setPagCausaleRevoca", VistaRendicontazione.model().PAG_CAUSALE_REVOCA.getFieldType(),
+					this.getObjectFromMap(map,"pagCausaleRevoca"));
+				setParameter(object, "setPagDatiRevoca", VistaRendicontazione.model().PAG_DATI_REVOCA.getFieldType(),
+					this.getObjectFromMap(map,"pagDatiRevoca"));
+				setParameter(object, "setPagImportoRevocato", VistaRendicontazione.model().PAG_IMPORTO_REVOCATO.getFieldType(),
+					this.getObjectFromMap(map,"pagImportoRevocato"));
+				setParameter(object, "setPagEsitoRevoca", VistaRendicontazione.model().PAG_ESITO_REVOCA.getFieldType(),
+					this.getObjectFromMap(map,"pagEsitoRevoca"));
+				setParameter(object, "setPagDatiEsitoRevoca", VistaRendicontazione.model().PAG_DATI_ESITO_REVOCA.getFieldType(),
+					this.getObjectFromMap(map,"pagDatiEsitoRevoca"));
+				setParameter(object, "setPagStato", VistaRendicontazione.model().PAG_STATO.getFieldType(),
+					this.getObjectFromMap(map,"pagStato"));
+				setParameter(object, "setPagTipo", VistaRendicontazione.model().PAG_TIPO.getFieldType(),
+					this.getObjectFromMap(map,"pagTipo"));
+				setParameter(object, "setRptIuv", VistaRendicontazione.model().RPT_IUV.getFieldType(),
+					this.getObjectFromMap(map,"rptIuv"));
+				setParameter(object, "setRptCcp", VistaRendicontazione.model().RPT_CCP.getFieldType(),
+					this.getObjectFromMap(map,"rptCcp"));
+				setParameter(object, "setRncTrn", VistaRendicontazione.model().RNC_TRN.getFieldType(),
+					this.getObjectFromMap(map,"rncTrn"));
 				return object;
 			}
 			

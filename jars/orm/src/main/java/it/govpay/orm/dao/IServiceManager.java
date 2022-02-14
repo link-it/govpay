@@ -1252,5 +1252,23 @@ public interface IServiceManager {
 	
 	
 	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:VistaVersamentoNonRendicontato type:VistaVersamentoNonRendicontato
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.VistaVersamentoNonRendicontato}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.VistaVersamentoNonRendicontato}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IVistaVersamentoNonRendicontatoServiceSearch getVistaVersamentoNonRendicontatoServiceSearch() throws ServiceException,NotImplementedException;
+	
+	
+	
+	
 	
 }

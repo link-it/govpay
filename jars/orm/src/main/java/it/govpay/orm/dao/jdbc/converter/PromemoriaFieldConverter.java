@@ -305,6 +305,13 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
+		if(field.equals(Promemoria.model().ID_DOCUMENTO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -420,6 +427,9 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Promemoria.model().ID_DOCUMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(Promemoria.model().ID_DOCUMENTO.ID_APPLICAZIONE, returnAlias);
 		}
+		if(field.equals(Promemoria.model().ID_DOCUMENTO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(Promemoria.model().ID_DOCUMENTO.ID_DOMINIO, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -459,6 +469,9 @@ public class PromemoriaFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Promemoria.model().ID_DOCUMENTO.ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(Promemoria.model().ID_DOCUMENTO.ID_DOMINIO)){
+			return "domini";
 		}
 
 

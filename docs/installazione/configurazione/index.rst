@@ -23,7 +23,7 @@ La compilazione dei sorgenti richiede:
 
 L'installer può essere prodotto con la seguente procedura:
 
-1. Scaricare i sorgenti dal sito GitHub del progetto: https://github.com/link-it/govpay/
+1. Clonare il repository git di GovPay: `git clone https://github.com/link-it/govpay.git`
 2. Compilare con il comando `mvn -Denv=installer_template clean install`
 3. Spostarsi nella cartella **src/main/resources/setup/** ed eseguire lo script **prepareSetup.sh**
 

@@ -125,11 +125,17 @@ public class Rpt extends it.govpay.model.Rpt{
 	}
 
 	public Stazione getStazione(BDConfigWrapper configWrapper) throws ServiceException {
-		return this.getDominio(configWrapper).getStazione();
+		if(this.getDominio(configWrapper).getStazione() != null)
+			return this.getDominio(configWrapper).getStazione();
+		
+		return null;
 	}
 
 	public Intermediario getIntermediario(BDConfigWrapper configWrapper) throws ServiceException {
-		return this.getDominio(configWrapper).getStazione().getIntermediario(configWrapper);
+		if(this.getDominio(configWrapper).getStazione() != null)
+			return this.getDominio(configWrapper).getStazione().getIntermediario(configWrapper);
+		
+		return null;
 	}
 
 	public PagamentoPortale getPagamentoPortale()  {

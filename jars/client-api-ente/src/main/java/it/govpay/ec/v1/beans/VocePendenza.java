@@ -47,6 +47,10 @@ public class VocePendenza extends DatiEntrata {
   **/
   private String descrizioneCausaleRPT = null;
   
+  private Contabilita contabilita = null;
+  
+  private String idDominio = null;
+  
  /**
    * indice di voce all&#x27;interno della pendenza
    * @return indice
@@ -164,6 +168,37 @@ public class VocePendenza extends DatiEntrata {
     this.descrizioneCausaleRPT = descrizioneCausaleRPT;
     return this;
   }
+  
+  /**
+   **/
+  public VocePendenza contabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
+    return this;
+  }
+
+  @JsonProperty("contabilita")
+  public Contabilita getContabilita() {
+    return contabilita;
+  }
+  public void setContabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
+  }
+  
+  /**
+   * Identificativo del dominio creditore
+   **/
+  public VocePendenza idDominio(String idDominio) {
+    this.idDominio = idDominio;
+    return this;
+  }
+
+  @JsonProperty("idDominio")
+  public String getIdDominio() {
+    return idDominio;
+  }
+  public void setIdDominio(String idDominio) {
+    this.idDominio = idDominio;
+  }
 
 
   @Override
@@ -177,6 +212,8 @@ public class VocePendenza extends DatiEntrata {
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
+    sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("}");
     return sb.toString();
   }

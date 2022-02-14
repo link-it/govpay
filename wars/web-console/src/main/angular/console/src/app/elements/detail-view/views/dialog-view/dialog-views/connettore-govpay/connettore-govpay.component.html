@@ -10,21 +10,23 @@
       </div>
       <div class="row">
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
-          <mat-select [placeholder]="_Voce.VERSIONE_CSV" formControlName="versioneCsv_ctrl" [required]="!!govpayAbilitato?.value">
+          <mat-select [placeholder]="_Voce.VERSIONE_ZIP" formControlName="versioneZip_ctrl"
+                      [required]="(govpayAbilitato && (tipoConnettore.value === Util.CONNETTORE_MODALITA_EMAIL || tipoConnettore.value === Util.CONNETTORE_MODALITA_FILESYSTEM))">
+            <mat-option value="" *ngIf="tipoConnettore.value === Util.CONNETTORE_MODALITA_REST">Nessuna</mat-option>
             <mat-option value="1.0">1.0</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
           <mat-select [placeholder]="_Voce.MODALITA_CONNETTORE" formControlName="tipoConnettore_ctrl" (selectionChange)="_onChangeGovpay($event, 'tipoConnettore_ctrl')"
-                      [required]="!!govpayAbilitato?.value">
+                       [required]="govpayAbilitato">
             <mat-option *ngFor="let o of Util.MODALITA_GOVPAY" [value]="o.value">{{o.label}}</mat-option>
           </mat-select>
-      </mat-form-field>
+        </mat-form-field>
       </div>
       <div class="row">
         <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
           <mat-select [placeholder]="_Voce.TIPI_PENDENZA" formControlName="tipiPendenza_ctrl" [compareWith]="_pendenzaCmpFn"
-                      (selectionChange)="_tipoChange($event)" multiple [required]="!!govpayAbilitato?.value">
+                      (selectionChange)="_tipoChange($event)" multiple [required]="govpayAbilitato">
             <mat-option [value]="_all" [disabled]="_option.hasOption">{{_all.descrizione}}</mat-option>
             <mat-option *ngFor="let item of _tipiPendenza" [disabled]="_option.hasAllOption" [value]="item">{{item.idTipoPendenza}}</mat-option>
           </mat-select>
@@ -33,7 +35,7 @@
       <div class="row mb-4" *ngIf="tipoConnettore.value === Util.CONNETTORE_MODALITA_EMAIL">
         <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
           <input matInput [placeholder]="_Voce.EMAIL" formControlName="emailIndirizzi_ctrl" autocomplete="off"
-                 [required]="govpayAbilitato?.value && govpayModalita === Util.CONNETTORE_MODALITA_EMAIL">
+                 [required]="(govpayAbilitato && tipoConnettore.value === Util.CONNETTORE_MODALITA_EMAIL)">
           <mat-hint>In caso di indirizzi multipli indicare i valori separati da una virgola e lo spazio (Es. ‘address@hostname.com, address@hostname.com‘)</mat-hint>
         </mat-form-field>
       </div>
@@ -42,11 +44,43 @@
           <input matInput [placeholder]="_Voce.OGGETTO" formControlName="emailSubject_ctrl" autocomplete="off">
         </mat-form-field>
       </div>
+      <div class="row align-items-center" *ngIf="tipoConnettore.value === Util.CONNETTORE_MODALITA_EMAIL">
+        <div class="col-12 col-md-5 col-lg-4" [formGroup]="fGroup">
+          <mat-slide-toggle color="accent" formControlName="emailAllegato_ctrl" (change)="_allegatoChange($event)">
+            {{ _Voce.INVIO_TRACCIATO_ALLEGATO }}
+          </mat-slide-toggle>
+        </div>
+        <mat-form-field class="col" color="accent" [formGroup]="fGroup" *ngIf="!_isAllegatoEmail && tipoConnettore.value === Util.CONNETTORE_MODALITA_EMAIL">
+          <input matInput [placeholder]="_Voce.DOWNLOAD_BASE_URL" formControlName="downloadBaseUrl_ctrl" autocomplete="off"
+                 [required]="(govpayAbilitato && !_isAllegatoEmail && tipoConnettore.value === Util.CONNETTORE_MODALITA_EMAIL)">
+          <mat-hint>Indicare la base URL dalla quale sarà possibile scaricare il tracciato</mat-hint>
+        </mat-form-field>
+      </div>
       <div class="row" *ngIf="tipoConnettore.value === Util.CONNETTORE_MODALITA_FILESYSTEM">
         <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
           <input matInput [placeholder]="_Voce.PATH" formControlName="fileSystemPath_ctrl" autocomplete="off"
-                 [required]="govpayAbilitato?.value && govpayModalita === Util.CONNETTORE_MODALITA_FILESYSTEM">
+                 [required]="(govpayAbilitato && tipoConnettore.value === Util.CONNETTORE_MODALITA_FILESYSTEM)">
         </mat-form-field>
+      </div>
+      <div class="row" *ngIf="tipoConnettore.value === Util.CONNETTORE_MODALITA_REST">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_Voce.CONTENUTI" formControlName="contenuti_ctrl" multiple
+                      [required]="govpayAbilitato && tipoConnettore.value === Util.CONNETTORE_MODALITA_REST">
+            <mat-option *ngFor="let item of _contenuti" [value]="item.value">{{item.label}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <input #urlCtrl matInput placeholder="URL" formControlName="url_ctrl" autocomplete="off"
+                 [required]="govpayAbilitato && tipoConnettore.value === Util.CONNETTORE_MODALITA_REST">
+        </mat-form-field>
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <mat-select placeholder="Versione API" formControlName="versioneApi_ctrl" [required]="govpayAbilitato">
+            <mat-option *ngFor="let ver of versioni" [value]="ver">{{ver}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- SSL Config -->
+        <link-ssl-config #sslConfig class="col-12" [fGroup]="fGroup" [json]="json?.auth" [disabled]="!urlCtrl.value"
+                         [required]="govpayAbilitato && !!urlCtrl.value && tipoConnettore.value === Util.CONNETTORE_MODALITA_REST"></link-ssl-config>
       </div>
     </mat-card>
   </div>

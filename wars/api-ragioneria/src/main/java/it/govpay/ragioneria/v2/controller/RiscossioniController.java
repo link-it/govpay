@@ -17,7 +17,6 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
 import it.govpay.bd.viste.model.Pagamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
@@ -33,6 +32,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Pagamento.Stato;
+import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.ragioneria.v2.beans.Riscossione;
 import it.govpay.ragioneria.v2.beans.RiscossioneIndex;
@@ -95,7 +95,7 @@ public class RiscossioniController extends BaseController {
 
 
 
-    public Response findRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, String dataRiscossioneDa, String dataRiscossioneA, String tipo, Boolean metadatiPaginazione, Boolean maxRisultati) {
+    public Response findRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String stato, String dataRiscossioneDa, String dataRiscossioneA, List<String> tipo, Boolean metadatiPaginazione, Boolean maxRisultati, String iur) {
     	String methodName = "findRiscossioni";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -146,16 +146,25 @@ public class RiscossioniController extends BaseController {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRiscossioneA, "dataA");
 				findRiscossioniDTO.setDataRiscossioneA(dataADate);
 			}
+			
+			List<TipoPagamento> tipoEnum = new ArrayList<>();
+			if(tipo == null || tipo.isEmpty()) { // valori di default
+				tipoEnum.add(TipoPagamento.ENTRATA);
+				tipoEnum.add(TipoPagamento.MBT);
+			}
 
 			if(tipo!=null) {
-				TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipo);
-				if(tipoRiscossione != null) {
-					findRiscossioniDTO.setTipo(TIPO_PAGAMENTO.valueOf(tipoRiscossione.toString()));
-				} else {
-					throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + tipo
-							+ "] valori possibili " + ArrayUtils.toString(TipoRiscossione.values()));
+				for (String tipoS : tipo) {
+					TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipoS);
+					if(tipoRiscossione != null) {
+						tipoEnum.add(TipoPagamento.valueOf(tipoRiscossione.toString()));
+					} else {
+						throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + tipo + "] valori possibili " + ArrayUtils.toString(TipoRiscossione.values()));
+					}
 				}
 			}
+			
+			findRiscossioniDTO.setTipo(tipoEnum);
 			
 			// Autorizzazione sui domini
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
@@ -164,6 +173,7 @@ public class RiscossioniController extends BaseController {
 			findRiscossioniDTO.setEseguiCount(metadatiPaginazione);
 			findRiscossioniDTO.setEseguiCountConLimit(maxRisultati);
 			findRiscossioniDTO.setDeep(true);
+			findRiscossioniDTO.setIur(iur);
 						
 			RiscossioniDAO riscossioniDAO = new RiscossioniDAO();
 			

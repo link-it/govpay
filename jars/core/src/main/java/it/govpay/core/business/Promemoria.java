@@ -49,8 +49,10 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.PromemoriaException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.ExceptionUtils;
 import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.trasformazioni.Costanti;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
@@ -183,9 +185,18 @@ public class Promemoria {
 
 	public void setRicevutaDestinatari(it.govpay.bd.model.Rpt rpt, Versamento versamento, it.govpay.bd.model.Promemoria promemoria) throws JAXBException, SAXException {
 		String debitore = versamento.getAnagraficaDebitore().getEmail();
-		CtRichiestaPagamentoTelematico rptCtRichiestaPagamentoTelematico = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
-		String versante = rptCtRichiestaPagamentoTelematico.getSoggettoVersante() != null ? rptCtRichiestaPagamentoTelematico.getSoggettoVersante().getEMailVersante() : null;
-
+		String versante = null;
+		
+		switch(rpt.getVersione()) {
+			case SANP_230:
+				CtRichiestaPagamentoTelematico rptCtRichiestaPagamentoTelematico = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
+				versante = rptCtRichiestaPagamentoTelematico.getSoggettoVersante() != null ? rptCtRichiestaPagamentoTelematico.getSoggettoVersante().getEMailVersante() : null;
+				break;
+			case SANP_240:
+			default:
+				break;
+			}
+		
 		if(versante != null && debitore != null) {
 			promemoria.setDestinatarioTo(versante);
 			promemoria.setDestinatarioCc(debitore);
@@ -384,6 +395,7 @@ public class Promemoria {
 				printAvviso.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 				printAvviso.setIuv(versamento.getIuvVersamento());
 				printAvviso.setSalvaSuDB(false);
+				printAvviso.setSdfDataScadenza(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA());
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoPagamento.printAvvisoVersamento(printAvviso);
 
 				String attachmentName = versamento.getDominio(configWrapper).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";
@@ -678,6 +690,7 @@ public class Promemoria {
 				printAvviso.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
 				printAvviso.setIuv(versamento.getIuvVersamento());
 				printAvviso.setSalvaSuDB(false);
+				printAvviso.setSdfDataScadenza(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA());
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoPagamento.printAvvisoVersamento(printAvviso);
 
 				String attachmentName = versamento.getDominio(configWrapper).getCodDominio() + "_" + versamento.getNumeroAvviso() + ".pdf";

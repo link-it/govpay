@@ -24,8 +24,8 @@ import org.slf4j.Logger;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
@@ -34,7 +34,6 @@ import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
-import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.PagamentoPortaleFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
@@ -74,7 +73,7 @@ import it.govpay.core.utils.SeveritaProperties;
 import it.govpay.core.utils.TracciatiConverter;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.core.utils.validator.PendenzaPostValidator;
+import it.govpay.core.utils.tracciati.validator.PendenzaPostValidator;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.PatchOp;
 import it.govpay.model.TipoVersamento;
@@ -174,7 +173,42 @@ public class PagamentiPortaleDAO extends BaseDAO {
 						throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio non disponibile [Dominio:"+idDominio+"].", EsitoOperazione.DOM_000, idDominio);
 					}
 				}  else if(v instanceof RefVersamentoPendenza) {
-					versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoPendenza)v);
+					// controllo se le pendenze richieste siano a disposizione in sessione altrimenti assumo che siano dei dovuti gia' caricati
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+						String idA2A = ((RefVersamentoPendenza)v).getIdA2A();
+						String idPendenza = ((RefVersamentoPendenza)v).getIdPendenza();
+						
+						if(pagamentiPortaleDTO.getListaPendenzeDaSessione() != null && pagamentiPortaleDTO.getListaPendenzeDaSessione().containsKey((idA2A+idPendenza))) {
+							ctx.getApplicationLogger().log("rpt.acquisizioneVersamento", idA2A, idPendenza);
+							versamentoModel = pagamentiPortaleDTO.getListaPendenzeDaSessione().get((idA2A+idPendenza));
+							versamentoModel.setTipo(TipologiaTipoVersamento.SPONTANEO);
+							
+							// se l'utenza che ha caricato la pendenza inline e' un cittadino sono necessari dei controlli supplementari.
+							if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+								// controllo che il tipo pendenza sia pagabile spontaneamente
+//								if(!versamentoModel.getTipoVersamentoDominio(bd).getTipo().equals(Tipo.SPONTANEO)) {
+//									throw new GovPayException(EsitoOperazione.CIT_002, userDetails.getIdentificativo(),versamentoModel.getApplicazione(configWrapper).getCodApplicazione(), 
+//											versamentoModel.getCodVersamentoEnte(),versamentoModel.getTipoVersamentoDominio(bd).getCodTipoVersamento());
+//								}
+
+								// se il tributo non puo' essere pagato da terzi allora debitore e versante (se presente) devono coincidere con chi sta effettuando il pagamento.
+								if(!versamentoModel.getTipoVersamentoDominio(configWrapper).isPagaTerzi()) {
+									if(!versamentoModel.getAnagraficaDebitore().getCodUnivoco().equals(userDetails.getIdentificativo()))
+										throw new GovPayException(EsitoOperazione.CIT_003, userDetails.getIdentificativo(),versamentoModel.getApplicazione(configWrapper).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(),versamentoModel.getAnagraficaDebitore().getCodUnivoco());
+
+									if(versanteModel != null && !versanteModel.getCodUnivoco().equals(userDetails.getIdentificativo()))
+										throw new GovPayException(EsitoOperazione.CIT_004, userDetails.getIdentificativo(),versamentoModel.getApplicazione(configWrapper).getCodApplicazione(), versamentoModel.getCodVersamentoEnte(),versanteModel.getCodUnivoco());
+								}
+
+							}
+							log.debug("RefVersamentoPendenza [idA2A:"+idA2A+", idPendenza: "+idPendenza+"] letto dalla lista identificativi in sessione");
+						} else {
+							versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoPendenza)v);
+						}
+					} else {
+						// applicazioni
+						versamentoModel = versamentoBusiness.chiediVersamento((RefVersamentoPendenza)v);
+					}
 				} else if(v instanceof RefVersamentoModello4) {
 					String idDominio = ((RefVersamentoModello4)v).getIdDominio();
 					String idTipoVersamento = ((RefVersamentoModello4)v).getIdTipoPendenza();
@@ -355,7 +389,14 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			stato = STATO.IN_CORSO;
 
 			try {
-				rpts = rptBD.avviaTransazione(versamenti, pagamentiPortaleDTO.getUser(), null, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(), pagamentiPortaleDTO.getUrlRitorno(), true, pagamentoPortale);
+				Canale canale = Canale.canaleUniversale;
+				
+				if(pagamentiPortaleDTO.getIdentificativoPSP() != null && pagamentiPortaleDTO.getIdentificativoIntermediarioPSP() != null && pagamentiPortaleDTO.getIdentificativoCanale() != null) {
+					canale = new Canale(pagamentiPortaleDTO.getIdentificativoIntermediarioPSP(), pagamentiPortaleDTO.getIdentificativoPSP(), pagamentiPortaleDTO.getIdentificativoCanale(), pagamentiPortaleDTO.getTipoVersamento(), null);
+				}
+				
+				rpts = rptBD.avviaTransazione(versamenti, pagamentiPortaleDTO.getUser(), canale, pagamentiPortaleDTO.getIbanAddebito(), versanteModel, pagamentiPortaleDTO.getAutenticazioneSoggetto(),
+						pagamentiPortaleDTO.getUrlRitorno(), true, pagamentoPortale, pagamentiPortaleDTO.getCodiceConvenzione());
 				Rpt rpt = rpts.get(0);
 
 				GpAvviaTransazionePagamentoResponse.RifTransazione rifTransazione = new GpAvviaTransazionePagamentoResponse.RifTransazione();

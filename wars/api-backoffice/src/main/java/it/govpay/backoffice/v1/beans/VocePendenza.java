@@ -4,14 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import it.govpay.core.utils.validator.IValidable;
-import it.govpay.core.utils.validator.ValidatorFactory;
-import it.govpay.core.utils.validator.ValidatoreIdentificativi;
-import it.govpay.core.utils.validator.ValidatoreUtils;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "indice",
 "idVocePendenza",
@@ -19,6 +12,8 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "descrizione",
 "stato",
 "descrizioneCausaleRPT",
+"contabilita",
+"dominio",
 "datiAllegati",
 "hashDocumento",
 "tipoBollo",
@@ -31,16 +26,8 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "riscossioni",
 "rendicontazioni",
 })
-public class VocePendenza extends it.govpay.core.beans.JSONSerializable implements IValidable{
+public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
 	
-	private static final String FIELD_TIPO_BOLLO = "tipoBollo";
-	private static final String FIELD_HASH_DOCUMENTO = "hashDocumento";
-	private static final String FIELD_PROVINCIA_RESIDENZA = "provinciaResidenza";
-	private static final String FIELD_IBAN_ACCREDITO = "ibanAccredito";
-	private static final String FIELD_IBAN_APPOGGIO = "ibanAppoggio";
-	private static final String FIELD_TIPO_CONTABILITA = "tipoContabilita";
-	private static final String FIELD_CODICE_CONTABILITA = "codiceContabilita";
-  
   @JsonProperty("indice")
   private BigDecimal indice = null;
   
@@ -58,6 +45,12 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
   
   @JsonProperty("descrizioneCausaleRPT")
   private String descrizioneCausaleRPT = null;
+  
+  @JsonProperty("contabilita")
+  private Contabilita contabilita = null;
+  
+  @JsonProperty("dominio")
+  private DominioIndex dominio = null;
   
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
@@ -185,6 +178,36 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
   }
   public void setDescrizioneCausaleRPT(String descrizioneCausaleRPT) {
     this.descrizioneCausaleRPT = descrizioneCausaleRPT;
+  }
+
+  /**
+   **/
+  public VocePendenza contabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
+    return this;
+  }
+
+  @JsonProperty("contabilita")
+  public Contabilita getContabilita() {
+    return contabilita;
+  }
+  public void setContabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
+  }
+
+  /**
+   **/
+  public VocePendenza dominio(DominioIndex dominio) {
+    this.dominio = dominio;
+    return this;
+  }
+
+  @JsonProperty("dominio")
+  public DominioIndex getDominio() {
+    return dominio;
+  }
+  public void setDominio(DominioIndex dominio) {
+    this.dominio = dominio;
   }
 
   /**
@@ -342,7 +365,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     VocePendenza vocePendenza = (VocePendenza) o;
@@ -352,6 +375,8 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
         Objects.equals(this.descrizione, vocePendenza.descrizione) &&
         Objects.equals(this.stato, vocePendenza.stato) &&
         Objects.equals(descrizioneCausaleRPT, vocePendenza.descrizioneCausaleRPT) &&
+        Objects.equals(contabilita, vocePendenza.contabilita) &&
+        Objects.equals(dominio, vocePendenza.dominio) &&
         Objects.equals(this.datiAllegati, vocePendenza.datiAllegati) &&
         Objects.equals(this.hashDocumento, vocePendenza.hashDocumento) &&
         Objects.equals(this.tipoBollo, vocePendenza.tipoBollo) &&
@@ -366,7 +391,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, this.stato, descrizioneCausaleRPT, this.datiAllegati, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita,riscossioni, rendicontazioni);
+    return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, this.stato, descrizioneCausaleRPT, contabilita, dominio, datiAllegati, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita,riscossioni, rendicontazioni);
   }
 
   public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
@@ -389,7 +414,9 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
     sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
-    sb.append("    datiAllegati: ").append(this.toIndentedString(this.datiAllegati)).append("\n");
+    sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
+    sb.append("    datiAllegati: ").append(toIndentedString(datiAllegati)).append("\n");
     sb.append("    hashDocumento: ").append(this.toIndentedString(this.hashDocumento)).append("\n");
     sb.append("    tipoBollo: ").append(this.toIndentedString(this.tipoBollo)).append("\n");
     sb.append("    provinciaResidenza: ").append(this.toIndentedString(this.provinciaResidenza)).append("\n");
@@ -413,69 +440,6 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable implemen
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
-  @Override
-	public void validate() throws ValidationException {
-		ValidatorFactory vf = ValidatorFactory.newInstance();
-		ValidatoreIdentificativi vi = ValidatoreIdentificativi.newInstance();
-		
-		vi.validaIdVocePendenza("idVocePendenza", this.idVocePendenza);
-		ValidatoreUtils.validaImporto(vf, "importo", this.importo);
-		ValidatoreUtils.validaDescrizione(vf, "descrizione", this.descrizione);
-		ValidatoreUtils.validaDescrizioneCausaleRPT(vf, "descrizioneCausaleRPT", this.descrizioneCausaleRPT);
-		
-		if(this.codEntrata != null) {
-			vi.validaIdEntrata("codEntrata", this.codEntrata);
-			try {
-				vf.getValidator(FIELD_TIPO_BOLLO, this.tipoBollo).isNull();
-				vf.getValidator(FIELD_HASH_DOCUMENTO, this.hashDocumento).isNull();
-				vf.getValidator(FIELD_PROVINCIA_RESIDENZA, this.provinciaResidenza).isNull();
-				vf.getValidator(FIELD_IBAN_ACCREDITO, this.ibanAccredito).isNull();
-				vf.getValidator(FIELD_IBAN_APPOGGIO, this.ibanAppoggio).isNull();
-				vf.getValidator(FIELD_TIPO_CONTABILITA, this.tipoContabilita).isNull();
-				vf.getValidator(FIELD_CODICE_CONTABILITA, this.codiceContabilita).isNull();
-			} catch (ValidationException ve) {
-				throw new ValidationException("Valorizzato codEntrata. " + ve.getMessage());
-			}
-
-			return;
-		}
-
-		else if(this.tipoBollo != null) {
-			ValidatoreUtils.validaTipoBollo(vf, "tipoBollo", this.tipoBollo);
-			ValidatoreUtils.validaHashDocumento(vf, "hashDocumento", this.hashDocumento);
-			ValidatoreUtils.validaProvinciaResidenza(vf, "provinciaResidenza", this.provinciaResidenza);
-
-			try {
-				vf.getValidator(FIELD_IBAN_ACCREDITO, this.ibanAccredito).isNull();
-				vf.getValidator(FIELD_IBAN_APPOGGIO, this.ibanAppoggio).isNull();
-				vf.getValidator(FIELD_TIPO_CONTABILITA, this.tipoContabilita).isNull();
-				vf.getValidator(FIELD_CODICE_CONTABILITA, this.codiceContabilita).isNull();
-			} catch (ValidationException ve) {
-				throw new ValidationException("Valorizzato tipoBollo. " + ve.getMessage());
-			}
-
-			return;
-		} else if(this.ibanAccredito != null) {
-			vi.validaIdIbanAccredito("ibanAccredito", this.ibanAccredito, true);
-			vi.validaIdIbanAccredito("ibanAppoggio", this.ibanAppoggio);
-
-			ValidatoreUtils.validaTipoContabilita(vf, "tipoContabilita", this.tipoContabilita);
-			ValidatoreUtils.validaCodiceContabilita(vf, "codiceContabilita", this.codiceContabilita);
-
-			try {
-				vf.getValidator(FIELD_HASH_DOCUMENTO, this.hashDocumento).isNull();
-				vf.getValidator(FIELD_PROVINCIA_RESIDENZA, this.provinciaResidenza).isNull();
-			} catch (ValidationException ve) {
-				throw new ValidationException("Valorizzato ibanAccredito. " + ve.getMessage());
-			}
-		}
-		
-		else {
-			throw new ValidationException("Uno dei campi tra ibanAccredito, tipoBollo o codEntrata deve essere valorizzato");
-		}
-
-	}
 }
 
 

@@ -338,37 +338,6 @@ And match response ==
 }
 """
 
-Scenario: Caricamento conto accredito di altro dominio
-
-* set pendenzaPutMono.voci = 
-"""
-[
-	{
-		idVocePendenza: '1',
-		importo: 100.99,
-		descrizione: 'Diritti e segreteria',
-		ibanAccredito: '#(ibanAccredito_2)',
-		tipoContabilita: 'ALTRO',
-		codiceContabilita: 'XXXXX'
-	}
-]
-"""
-
-Given url pendenzeBaseurl
-And path '/pendenze', idA2A, idPendenza
-And headers idA2ABasicAutenticationHeader
-And request pendenzaPutMono
-When method put
-Then status 422
-And match response == 
-"""
-{ 
-	categoria: 'RICHIESTA',
-	codice: 'VER_020',
-	descrizione: 'Richiesta non valida',
-	dettaglio: '#("Iban di accredito (" + ibanAccredito_2 + ") non censito per il dominio (" + pendenzaPutMono.idDominio + ")")'
-}
-"""
 
 Scenario: Caricamento con iuv non univoco
 

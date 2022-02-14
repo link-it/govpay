@@ -8,6 +8,7 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
 import it.govpay.core.dao.commons.Anagrafica;
 
@@ -34,6 +35,12 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	private Map<String, String> headers;
 	private String identificativoCreazionePendenza;
 	private String reCaptcha;
+	private Map<String,Versamento> listaPendenzeDaSessione = null;
+	private String codiceConvenzione = null;
+	private String identificativoPSP = null;
+	private String identificativoIntermediarioPSP = null;
+	private String identificativoCanale = null;
+	private String tipoVersamento = null;
 
 	public String getJsonRichiesta() {
 		return this.jsonRichiesta;
@@ -144,6 +151,51 @@ public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 	public void setReCaptcha(String reCaptcha) {
 		this.reCaptcha = reCaptcha;
 	}
+
+	public Map<String, Versamento> getListaPendenzeDaSessione() {
+		return listaPendenzeDaSessione;
+	}
+	public void setListaPendenzeDaSessione(Map<String, Versamento> listaPendenzeDaSessione) {
+		this.listaPendenzeDaSessione = listaPendenzeDaSessione;
+	}
+
+
+	public String getCodiceConvenzione() {
+		return codiceConvenzione;
+	}
+	public void setCodiceConvenzione(String codiceConvenzione) {
+		this.codiceConvenzione = codiceConvenzione;
+	}
+	
+	public String getIdentificativoPSP() {
+		return identificativoPSP;
+	}
+	public void setIdentificativoPSP(String identificativoPSP) {
+		this.identificativoPSP = identificativoPSP;
+	}
+	
+	public String getIdentificativoIntermediarioPSP() {
+		return identificativoIntermediarioPSP;
+	}
+	public void setIdentificativoIntermediarioPSP(String identificativoIntermediarioPSP) {
+		this.identificativoIntermediarioPSP = identificativoIntermediarioPSP;
+	}
+	
+	public String getIdentificativoCanale() {
+		return identificativoCanale;
+	}
+	public void setIdentificativoCanale(String identificativoCanale) {
+		this.identificativoCanale = identificativoCanale;
+	}
+
+
+	public String getTipoVersamento() {
+		return tipoVersamento;
+	}
+	public void setTipoVersamento(String tipoVersamento) {
+		this.tipoVersamento = tipoVersamento;
+	}
+
 
 	public class RefVersamentoAvviso {
 

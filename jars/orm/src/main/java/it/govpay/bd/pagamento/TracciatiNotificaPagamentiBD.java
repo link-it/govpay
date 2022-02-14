@@ -477,9 +477,9 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 	 * @throws MultipleResultException in caso di duplicati.
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public TracciatoNotificaPagamenti getTracciato(Long idTracciato, boolean includiRawContenuto) throws NotFoundException, ServiceException, MultipleResultException {
-		if(idTracciato == null) {
-			throw new ServiceException("Parameter 'id' cannot be NULL");
+	public TracciatoNotificaPagamenti getTracciato(Long idTracciato, String identificativo, boolean includiRawContenuto) throws NotFoundException, ServiceException, MultipleResultException {
+		if(idTracciato == null && identificativo == null) {
+			throw new ServiceException("Parameter 'id' o 'identificativo' cannot be NULL");
 		}
 		
 		List<it.govpay.orm.TracciatoNotificaPagamenti> list = new ArrayList<>();
@@ -496,7 +496,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 
 			List<IField> fields = getListaFieldsRicerca(includiRawContenuto, converter, model);
 
-			IPaginatedExpression pagExpr = getFiltriRicerca(idTracciato, converter, model);
+			IPaginatedExpression pagExpr = getFiltriRicerca(idTracciato, identificativo, converter, model);
 
 			eseguiRicerca(model, tracciatoFetch, idMappingResolutionBehaviour, list, fields, pagExpr);
 
@@ -550,11 +550,23 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		} catch(NotFoundException e) {}
 	}
 
-	private IPaginatedExpression getFiltriRicerca(Long idTracciato, TracciatoNotificaPagamentiFieldConverter converter, TracciatoNotificaPagamentiModel model)
+	private IPaginatedExpression getFiltriRicerca(Long idTracciato, String identificativo, TracciatoNotificaPagamentiFieldConverter converter, TracciatoNotificaPagamentiModel model)
 			throws ServiceException, NotImplementedException, ExpressionException, ExpressionNotImplementedException {
 		IExpression expr = this.getTracciatoNotificaPagamentiService().newExpression();
-		CustomField idTracciatoCustomField = new CustomField("id", Long.class, "id", converter.toTable(model));
-		expr.equals(idTracciatoCustomField, idTracciato);
+		boolean addAnd = false;
+		
+		if(idTracciato != null) {
+			CustomField idTracciatoCustomField = new CustomField("id", Long.class, "id", converter.toTable(model));
+			expr.equals(idTracciatoCustomField, idTracciato);
+			addAnd = true;
+		}
+		
+		if(identificativo != null) {
+			if(addAnd)
+				expr.and();
+			
+			expr.equals(model.IDENTIFICATIVO, identificativo);
+		}
 
 		IPaginatedExpression pagExpr = this.getTracciatoNotificaPagamentiService().toPaginatedExpression(expr);
 		return pagExpr;
@@ -577,6 +589,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 //		fields.add(model.UPLOAD_URL);
 		fields.add(model.TIPO);
 		fields.add(model.VERSIONE);
+		fields.add(model.IDENTIFICATIVO);
 		if(includiRawContenuto) {
 			fields.add(model.RAW_CONTENUTO);	
 		}
@@ -598,6 +611,9 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 			break;
 		case WEB_SERVICE:
 			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliWS);
+			break;
+		case REST:
+			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliREST);
 			break;
 		}
 		
@@ -623,6 +639,9 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		case WEB_SERVICE:
 			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliWS);
 			break;
+		case REST:
+			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliREST);
+			break;
 		}
 		
 		filter.setTipo(tipo);
@@ -645,6 +664,9 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 			break;
 		case WEB_SERVICE:
 			filter.setStato(STATO_ELABORAZIONE.IMPORT_ESEGUITO);
+			break;
+		case REST:
+			filter.setStato(STATO_ELABORAZIONE.FILE_CARICATO);
 			break;
 		}
 		
@@ -731,7 +753,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 
 		PreparedStatement prepareStatement = null;
 		ResultSet resultSet = null;
-		try {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();){
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
@@ -752,7 +774,7 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 			sqlQueryObject.addWhereCondition(true, converter.toTable(model.STATO, true) + ".id" + " = ? ");
 
 			String sql = sqlQueryObject.createSQLQuery();
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			
 			
 			prepareStatement = this.getConnection().prepareStatement(sql);
 			prepareStatement.setLong(1, idTracciato);

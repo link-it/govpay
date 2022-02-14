@@ -6,9 +6,9 @@ import java.util.List;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.bd.pagamento.filters.PagamentoFilter.TIPO_PAGAMENTO;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.model.Pagamento.Stato;
+import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.orm.VistaPagamento;
 
 public class ListaRiscossioniDTO extends BasicFindRequestDTO{
@@ -19,11 +19,16 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 		this.addSortField("stato", VistaPagamento.model().STATO);
 		this.addSortField("iuv", VistaPagamento.model().IUV);
 		this.addDefaultSort(VistaPagamento.model().DATA_PAGAMENTO,SortOrder.DESC);
+		// ordinamento per chiave logica crescente
+		this.addDefaultSort(VistaPagamento.model().COD_DOMINIO,SortOrder.ASC);
+		this.addDefaultSort(VistaPagamento.model().IUV,SortOrder.ASC);
+		this.addDefaultSort(VistaPagamento.model().IUR,SortOrder.ASC);
+		this.addDefaultSort(VistaPagamento.model().INDICE_DATI,SortOrder.ASC);
 	}
 	
 	private Date dataRiscossioneDa;
 	private Date dataRiscossioneA;
-	private TIPO_PAGAMENTO tipo;
+	private List<TipoPagamento> tipo;
 	private String idPendenza;
 	private String idA2A;
 	private String idDominio;
@@ -35,6 +40,7 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 	private List<String> divisione;
 	private List<String> tassonomia;
 	private boolean deep = false;
+	private String iur;
 	
 
 	public Date getDataRiscossioneDa() {
@@ -53,11 +59,11 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 		this.dataRiscossioneA = dataRiscossioneA;
 	}
 
-	public TIPO_PAGAMENTO getTipo() {
+	public List<TipoPagamento> getTipo() {
 		return this.tipo;
 	}
 
-	public void setTipo(TIPO_PAGAMENTO tipo) {
+	public void setTipo(List<TipoPagamento> tipo) {
 		this.tipo = tipo;
 	}
 
@@ -147,6 +153,14 @@ public class ListaRiscossioniDTO extends BasicFindRequestDTO{
 
 	public void setDeep(boolean deep) {
 		this.deep = deep;
+	}
+
+	public String getIur() {
+		return iur;
+	}
+
+	public void setIur(String iur) {
+		this.iur = iur;
 	}
 	
 }

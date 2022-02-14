@@ -36,7 +36,7 @@ Background:
 
 * def recaptchaPath = '/recaptcha'
 * def appIoPath = '/appio'
-
+* def enteRendicontazioniPath = '/enteRendicontazioni'
 
 # Servizi per il caricamento dati
 Scenario: pathMatches(pagamentiPath+'/v1/avvisi/{idDominio}/{iuv}') && methodIs('post')
@@ -55,7 +55,8 @@ Scenario: pathMatches(pagamentiPath+'/v1/avvisi/{idDominio}/{iuv}') && methodIs(
   * def response = pendenza
   
 Scenario: pathMatches(pagamentiPath+'/v2/avvisi/{idDominio}/{numeroAvviso}') && methodIs('get')
-  * eval versamenti[pathParams.idDominio + pathParams.numeroAvviso] = request
+  * eval pendenza = versamenti[pathParams.idDominio + pathParams.numeroAvviso] == null ? pendenzaSconosciuta : versamenti[pathParams.idDominio + pathParams.numeroAvviso] 
+  * def response = pendenza
 
 # API Verifica per numero Pendenza
 
@@ -130,6 +131,26 @@ Scenario: pathMatches(pagamentiPath+'/v1/pagamenti/{idDominio}/{iuv}') && method
   * def responseStatus = repo[idDominio+iuv+ccp] == null ? 200: 201
   * eval repo[idDominio+iuv+ccp] = request    
   * eval repoByIdSession[paramValue('idSession')] = request   
+  
+Scenario: pathMatches(pagamentiPath+'/v1/ricevute/{idDominio}/{iuv}/{idRicevuta}') && methodIs('put')
+  * def idDominio = pathParams.idDominio
+  * def iuv = pathParams.iuv
+  * def ccp = pathParams.idRicevuta
+  * def repo = notificheTerminazione
+  * def repoByIdSession = notificheTerminazioneByIdSession
+  * def responseStatus = repo[idDominio+iuv+ccp] == null ? 200: 201
+  * eval repo[idDominio+iuv+ccp] = request    
+  * eval repoByIdSession[paramValue('idSession')] = request
+  
+Scenario: pathMatches(pagamentiPath+'/v2/pagamenti/{idDominio}/{iuv}') && methodIs('post')
+  * def idDominio = pathParams.idDominio
+  * def iuv = pathParams.iuv
+  * def ccp = 'n_a'
+  * def repo = request.rt == null ? notificheAttivazione : notificheTerminazione
+  * def repoByIdSession = request.rt == null ? notificheAttivazioneByIdSession : notificheTerminazioneByIdSession
+  * def responseStatus = repo[idDominio+iuv+ccp] == null ? 200: 201
+  * eval repo[idDominio+iuv+ccp] = request    
+  * eval repoByIdSession[paramValue('idSession')] = request 
     
 Scenario: pathMatches(pagamentiPath+'/notificaAttivazione/{idDominio}/{iuv}/{ccp}') && methodIs('get')
   * def responseStatus = notificheAttivazione[pathParams.idDominio+pathParams.iuv+pathParams.ccp] == null ? 404: 200
@@ -291,8 +312,23 @@ Scenario: pathMatches(appIoPath+'/resetCacheAppIO') && methodIs('get')
 	* def responseStatus = 200
 	* eval cacheInvocazioniAppIO = {}
 
+# servizio rendicontazioni ente accetta le richieste ricevute
+Scenario: pathMatches(enteRendicontazioniPath+'/rpp/{idDominio}/{iuv}/{ccp}') && methodIs('post')
+	* def responseStatus = 200
+	
+Scenario: pathMatches(enteRendicontazioniPath+'/rpp/{idDominio}/{idTracciato}') && methodIs('post')
+	* def responseStatus = 200
+	
+Scenario: pathMatches(enteRendicontazioniPath+'/flussiRendicontazione/{idDominio}/{idFlusso}') && methodIs('post') && typeContains('xml')
+	* def responseStatus = 200
+	
+Scenario: pathMatches(enteRendicontazioniPath+'/flussiRendicontazione/{idDominio}/{idTracciato}') && methodIs('post') && typeContains('csv')
+	* def responseStatus = 200
+
 Scenario:
 	* def responseStatus = 404
   * def response = "PATH NON PREVISTO DAL MOCK"
+
+
 
 

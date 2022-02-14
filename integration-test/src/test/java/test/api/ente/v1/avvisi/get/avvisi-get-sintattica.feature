@@ -102,6 +102,54 @@ Examples:
 | voci.descrizioneCausaleRPT | pendenzaPut.voci[0].descrizioneCausaleRPT | '' | 'descrizioneCausaleRPT' |
 | voci.descrizioneCausaleRPT | pendenzaPut.voci[0].descrizioneCausaleRPT | loremIpsum | 'descrizioneCausaleRPT' |
 
+Scenario Outline: <field> non valida
+
+* def pendenzaPut = read('classpath:test/api/backoffice/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento_contabilita.json')
+
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* call read('classpath:utils/pa-prepara-avviso.feature')
+* def ccp = getCurrentTimeMillis()
+* def importo = 100.99
+
+* set pendenza.idA2A = idA2A
+* set pendenza.idPendenza = idPendenza
+* set pendenza.numeroAvviso = numeroAvviso
+* set pendenza.stato = 'NON_ESEGUITA'
+
+* set <fieldRequest> = <fieldValue>
+
+Given url ente_api_url
+And path '/v1/avvisi', idDominio, iuv
+And request pendenza
+When method post
+Then status 200
+
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-attiva-rpt.feature')
+* match response contains { dati: '##null'}
+* match response.faultBean == esitoAttivaRPT
+* match response.faultBean.description contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| importo | pendenzaPut.voci[0].contabilita.quote[0].importo | null | 'importo' |
+| importo | pendenzaPut.voci[0].contabilita.quote[0].importo | '10.001' | 'importo' |
+| importo | pendenzaPut.voci[0].contabilita.quote[0].importo | '10,000' | 'importo' |
+| importo | pendenzaPut.voci[0].contabilita.quote[0].importo | '10,00.0' | 'importo' |
+| importo | pendenzaPut.voci[0].contabilita.quote[0].importo | 'aaaa' | 'importo' |
+| importo | pendenzaPut.voci[0].contabilita.quote[0].importo | '12345678901234567,89' | 'importo' |
+| capitolo | pendenzaPut.voci[0].contabilita.quote[0].capitolo | loremIpsum | 'capitolo' |
+| capitolo | pendenzaPut.voci[0].contabilita.quote[0].capitolo | null | 'capitolo' |
+| accertamento | pendenzaPut.voci[0].contabilita.quote[0].accertamento | loremIpsum | 'accertamento' |
+| annoEsercizio | pendenzaPut.voci[0].contabilita.quote[0].annoEsercizio | 12345 | 'annoEsercizio' |
+| annoEsercizio | pendenzaPut.voci[0].contabilita.quote[0].annoEsercizio | loremIpsum | 'annoEsercizio' |
+| annoEsercizio | pendenzaPut.voci[0].contabilita.quote[0].annoEsercizio | null | 'annoEsercizio' |
+| titolo | pendenzaPut.voci[0].contabilita.quote[0].titolo | loremIpsum | 'titolo' |
+| tipologia | pendenzaPut.voci[0].contabilita.quote[0].tipologia | loremIpsum | 'tipologia' |
+| categoria | pendenzaPut.voci[0].contabilita.quote[0].categoria | loremIpsum | 'categoria' |
+| articolo | pendenzaPut.voci[0].contabilita.quote[0].articolo | loremIpsum | 'articolo' |
+
 Scenario Outline: <field> non valida 
 
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_definito.json')

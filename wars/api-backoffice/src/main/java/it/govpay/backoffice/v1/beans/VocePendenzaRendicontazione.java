@@ -17,6 +17,8 @@ import it.govpay.core.beans.JSONSerializable;
 "descrizione",
 "stato",
 "descrizioneCausaleRPT",
+"contabilita",
+"dominio",
 "pendenza",
 })
 public class VocePendenzaRendicontazione extends JSONSerializable {
@@ -38,6 +40,12 @@ public class VocePendenzaRendicontazione extends JSONSerializable {
   
   @JsonProperty("descrizioneCausaleRPT")
   private String descrizioneCausaleRPT = null;
+  
+  @JsonProperty("contabilita")
+  private Contabilita contabilita = null;
+  
+  @JsonProperty("dominio")
+  private DominioIndex dominio = null;
   
   @JsonProperty("pendenza")
   private PendenzaIndex pendenza = null;
@@ -139,6 +147,36 @@ public class VocePendenzaRendicontazione extends JSONSerializable {
 
   /**
    **/
+  public VocePendenzaRendicontazione contabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
+    return this;
+  }
+
+  @JsonProperty("contabilita")
+  public Contabilita getContabilita() {
+    return contabilita;
+  }
+  public void setContabilita(Contabilita contabilita) {
+    this.contabilita = contabilita;
+  }
+
+  /**
+   **/
+  public VocePendenzaRendicontazione dominio(DominioIndex dominio) {
+    this.dominio = dominio;
+    return this;
+  }
+
+  @JsonProperty("dominio")
+  public DominioIndex getDominio() {
+    return dominio;
+  }
+  public void setDominio(DominioIndex dominio) {
+    this.dominio = dominio;
+  }
+
+  /**
+   **/
   public VocePendenzaRendicontazione pendenza(PendenzaIndex pendenza) {
     this.pendenza = pendenza;
     return this;
@@ -167,12 +205,14 @@ public class VocePendenzaRendicontazione extends JSONSerializable {
         Objects.equals(descrizione, vocePendenzaRendicontazione.descrizione) &&
         Objects.equals(stato, vocePendenzaRendicontazione.stato) &&
         Objects.equals(descrizioneCausaleRPT, vocePendenzaRendicontazione.descrizioneCausaleRPT) &&
+        Objects.equals(contabilita, vocePendenzaRendicontazione.contabilita) &&
+        Objects.equals(dominio, vocePendenzaRendicontazione.dominio) &&
         Objects.equals(pendenza, vocePendenzaRendicontazione.pendenza);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, pendenza);
+    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, dominio, pendenza);
   }
 
   public static VocePendenzaRendicontazione parse(String json) throws ServiceException, ValidationException {
@@ -195,6 +235,8 @@ public class VocePendenzaRendicontazione extends JSONSerializable {
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    descrizioneCausaleRPT: ").append(toIndentedString(descrizioneCausaleRPT)).append("\n");
+    sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
+    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -50,6 +50,7 @@ public class FrFilter extends AbstractFilter {
 	
 	//select distinct id from fr join rendicontazioni on rendicontazioni.id_fr = fr.id join pagamenti on rendicontazioni.id_pagamento = pagamenti.id join singoli_versamenti on pagamenti.id_singolo_versamento = singoli_versamenti.id join versamenti on singoli_versamenti.id_versamento = versamenti.id and versamenti.id_applicazione = 5;
 	private Long idApplicazione;
+	private Long idIncasso;
 	private List<String> codDominio;
 	private String codDominioFiltro;
 	private String codPsp;
@@ -66,16 +67,19 @@ public class FrFilter extends AbstractFilter {
 	private boolean searchModeEquals = false; 
 	private Boolean obsoleto;
 	private boolean ricercaIdFlussoCaseInsensitive = false;
+	
+	FRFieldConverter converter = null;
 
-	public FrFilter(IExpressionConstructor expressionConstructor) {
+	public FrFilter(IExpressionConstructor expressionConstructor) throws ServiceException {
 		this(expressionConstructor,false);
 	}
 	
-	public FrFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+	public FrFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) throws ServiceException {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(FR.model().COD_FLUSSO);
 		this.listaFieldSimpleSearch.add(FR.model().IUR);
 		this.listaFieldSimpleSearch.add(Rendicontazione.model().ID_PAGAMENTO.IUV);
+		this.converter = new FRFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 	}
 
 //	public List<Object> getFields(boolean count) throws ServiceException {
@@ -175,6 +179,16 @@ public class FrFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.idIncasso != null){
+				if(addAnd)
+					newExpression.and();
+				
+				CustomField idIncassoField = new CustomField("id_incasso", Long.class, "id_incasso", this.getTable(FR.model()));
+				newExpression.equals(idIncassoField, idIncasso);
+
+				addAnd = true;
+			}
+			
 			if(this.codDominio != null && this.codDominio.size() > 0){
 				if(addAnd)
 					newExpression.and();
@@ -227,13 +241,13 @@ public class FrFilter extends AbstractFilter {
 					}
 				}else {
 					if(this.ricercaIdFlussoCaseInsensitive) {
-						IExpression newExpressionIngnoreCase = this.newExpression();
+						IExpression newExpressionIgnoreCase = this.newExpression();
 						
-						newExpressionIngnoreCase.equals(FR.model().COD_FLUSSO, this.codFlusso).or()
+						newExpressionIgnoreCase.equals(FR.model().COD_FLUSSO, this.codFlusso).or()
 						.equals(FR.model().COD_FLUSSO, this.codFlusso.toUpperCase()).or()
 						.equals(FR.model().COD_FLUSSO, this.codFlusso.toLowerCase());
 						
-						newExpression.and(newExpressionIngnoreCase);
+						newExpression.and(newExpressionIgnoreCase);
 					} else {
 						newExpression.equals(FR.model().COD_FLUSSO, this.codFlusso);
 					}
@@ -528,7 +542,12 @@ public class FrFilter extends AbstractFilter {
 		}
 		
 		if(this.obsoleto != null) {
-			lst.add(this.obsoleto);
+			try {
+				lst = this.setValoreFiltroBoolean(lst, converter, this.obsoleto);
+			} catch (ExpressionException e) {
+				throw new ServiceException(e);
+			}
+			
 		}
 		
 		if(this.iuv != null) {
@@ -672,5 +691,13 @@ public class FrFilter extends AbstractFilter {
 
 	public void setRicercaIdFlussoCaseInsensitive(boolean ricercaIdFlussoCaseInsensitive) {
 		this.ricercaIdFlussoCaseInsensitive = ricercaIdFlussoCaseInsensitive;
+	}
+
+	public Long getIdIncasso() {
+		return idIncasso;
+	}
+
+	public void setIdIncasso(Long idIncasso) {
+		this.idIncasso = idIncasso;
 	}
 }

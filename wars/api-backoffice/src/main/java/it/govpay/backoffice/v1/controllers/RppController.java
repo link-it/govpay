@@ -25,6 +25,8 @@ import org.springframework.security.core.Authentication;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.govpay.backoffice.v1.beans.EsitoRpt;
 import it.govpay.backoffice.v1.beans.ListaRpp;
 import it.govpay.backoffice.v1.beans.PatchOp;
@@ -359,6 +361,15 @@ public class RppController extends BaseController {
 			}
 
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
+				switch (leggiRptDTOResponse.getRpt().getVersione()) {
+				case SANP_230:
+					CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
+					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rpt),transactionId).build();
+				case SANP_240:
+					PaGetPaymentRes paGetPaymentRes = JaxbUtils.toPaGetPaymentRes_RPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
+					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paGetPaymentRes.getData()),transactionId).build();
+				}
+				
 				CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
 				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rpt),transactionId).build();
 			}else {
@@ -440,6 +451,17 @@ public class RppController extends BaseController {
 						throw AuthorizationManager.toNotAuthorizedException(user, ricevutaDTOResponse.getDominio().getCodDominio(), null);
 					}
 					
+					switch (ricevutaDTOResponse.getRpt().getVersione()) {
+						case SANP_230:
+							CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
+							this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+							return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rt),transactionId).build();
+						case SANP_240:
+							PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReq_RT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
+							this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+							return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paSendRTReq.getReceipt()),transactionId).build();
+					}
+					
 					CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
 					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rt),transactionId).build();
@@ -463,5 +485,3 @@ public class RppController extends BaseController {
 		}    
 	}
 }
-
-

@@ -69,7 +69,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.RtUtils.EsitoValidazione;
-import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
@@ -360,7 +360,7 @@ public class RrUtils extends NdpValidationUtils {
 			PagamentiBD pagamentiBD = new PagamentiBD(rrBD);
 			VersamentiBD versamentiBD = new VersamentiBD(rrBD);
 			
-			Versamento v = pagamenti.get(0).getSingoloVersamento(rrBD).getVersamento(rrBD);
+			Versamento v = pagamenti.get(0).getSingoloVersamento(rrBD).getVersamentoBD(rrBD);
 			if(rr.getImportoTotaleRevocato().compareTo(BigDecimal.ZERO) == 0) {
 				
 			} else {

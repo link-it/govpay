@@ -7,12 +7,11 @@ Una piattaforma completa per l'integrazione di Enti Pubblici, Intermediari e Par
 
 ## Documentazione
 
-- [Read the docs](https://govpay.readthedocs.io/it/latest/) ([download](https://readthedocs.org/projects/govpay/downloads/htmlzip/latest/))
+- [Read the docs](https://govpay.readthedocs.io/it/latest/) ([download](https://readthedocs.org/projects/govpay/downloads/htmlzip/master/))
 
 ## Contatti
 
 - Segnalazioni: [GitHub Issues](https://github.com/link-it/GovPay/issues)
-- Mailing list: [Utenti GovPay](http://www.gov4j.it/mailman/listinfo/utenti-govpay)
 
 ## Principali funzionalità
 

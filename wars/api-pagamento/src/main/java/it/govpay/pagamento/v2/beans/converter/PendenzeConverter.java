@@ -304,6 +304,9 @@ public class PendenzeConverter {
 			}
 			rsModel.setTipoContabilita(TipoContabilita.fromValue(singoloVersamento.getTipoContabilita().name()));
 		}
+		if(singoloVersamento.getDominio(configWrapper) != null) {
+			rsModel.setDominio(DominiConverter.toRsModel(singoloVersamento.getDominio(configWrapper)));
+		}
 		
 		
 		return rsModel;
@@ -529,6 +532,7 @@ public class PendenzeConverter {
 					break;
 				}				
 			}
+			dto.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
 		}
 		
 		return dto;
@@ -575,6 +579,7 @@ public class PendenzeConverter {
 				if(rsModel.getLinguaSecondariaEnum() != null)
 					rsModel.setLinguaSecondaria(rsModel.getLinguaSecondariaEnum().toString());
 			}
+			rsModel.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
 		}
 		
 		return rsModel;

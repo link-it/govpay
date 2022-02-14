@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.25.0"
+  version: "1.27.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -9,7 +9,7 @@ info:
     name: GPL
     url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
 servers:
-  - url: ${it.govpay.apiurl}/govpay/backend/api/backoffice/rs/basic/v1/
+  - url: /govpay/backend/api/backoffice/rs/basic/v1/
 tags:
   - name: Enti Creditori
     description: Anagrafica degli Enti Creditori
@@ -268,7 +268,7 @@ paths:
         - in: query
           name: stampaAvvisi
           description: >- 
-                indica se effettuare la stampa degli avvisi associati alle pendenze caricate col tracciato
+            indica se effettuare la stampa degli avvisi associati alle pendenze caricate col tracciato
           schema:
             type: boolean
             default: true
@@ -767,6 +767,41 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+  '/tracciatiNotificaPagamenti/{id}':
+    get:
+      tags:
+        - Tracciati
+      summary: Tracciato Notifica Pagamenti in formato zip
+      operationId: getTracciatoNotificaPagamenti
+      parameters:
+        - in: path
+          name: id
+          description: identificativo di un tracciato
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          name: secID
+          description: chiave di accesso al tracciato
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Zip contenente i dati del tracciato 
+          content:
+            application/zip:
+              schema:
+               type: object
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
   '/intermediari':
     get:
       tags:
@@ -1018,6 +1053,7 @@ paths:
         - $ref: '#/components/parameters/ragioneSociale'
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
+        - $ref: '#/components/parameters/intermediato'
       responses:
         '200':
           description: Lista paginata dei domini ricercati
@@ -3077,13 +3113,14 @@ paths:
         - $ref: '#/components/parameters/statoRiscossione'
         - $ref: '#/components/parameters/dataDa'
         - $ref: '#/components/parameters/dataA'
-        - $ref: '#/components/parameters/tipoRiscossione'
+        - $ref: '#/components/parameters/tipiRiscossione'
         - $ref: '#/components/parameters/iuv'
         - $ref: '#/components/parameters/direzioni'
         - $ref: '#/components/parameters/divisioni'
         - $ref: '#/components/parameters/tassonomie'
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
+        - $ref: '#/components/parameters/iur'
       responses:
         '201':
           description: Dettaglio della riscossione
@@ -3278,6 +3315,51 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
+  '/flussiRendicontazione/{idDominio}/{idFlusso}/{dataOraFlusso}':
+    get:
+      summary: Acquisizione di un flusso di rendicontazione
+      operationId: getFlussoRendicontazioneByDominioIdEData
+      tags:
+        - Rendicontazioni
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo dominio 
+          required: true
+          schema:
+            type: string      
+        - in: path
+          name: idFlusso
+          description: Identificativo del flusso di rendicontazione
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: dataOraFlusso
+          description: Data di emissione del flusso
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '201':
+          description: Dettaglio della rendicontazione
+          content:
+            application/xml:
+              schema:
+                type: string
+                example: xml del flusso di rendicontazione
+            application/json:
+              schema:
+                $ref: '#/components/schemas/flussoRendicontazione'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'          
   '/rendicontazioni':
     get:
       tags:
@@ -3357,6 +3439,8 @@ paths:
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
         - $ref: '#/components/parameters/sct'
+        - $ref: '#/components/parameters/idFlusso'
+        - $ref: '#/components/parameters/iuv'
       responses:
         '201':
           description: Dettaglio dell'incasso
@@ -3434,6 +3518,7 @@ paths:
           required: true
           schema:
             type: string
+        - $ref: '#/components/parameters/tipiRiscossioneRiconciliazione'
       responses:
         '201':
           description: Dettaglio dell'incasso
@@ -4158,6 +4243,20 @@ components:
       required: false
       schema:
         type: boolean
+    intermediato:
+      name: intermediato
+      in: query
+      description: filtro sui domini intermediati
+      required: false
+      schema:
+        type: boolean
+    iur:
+      name: iur
+      in: query
+      description: Identificativo univoco riscossione
+      required: false
+      schema:
+        type: string
     iuv:
       name: iuv
       in: query
@@ -4388,10 +4487,19 @@ components:
         type: array
         items:
           type: string
+    tipiRiscossioneRiconciliazione:
+      in: query
+      name: riscossioni.tipo
+      description: Tipologia della riscossione (default [ENTRATA, MBT] )
+      required: false
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/tipoRiscossione'
     tipiRiscossione:
       in: query
       name: tipo
-      description: Tipologia della riscossione
+      description: Tipologia della riscossione (default [ENTRATA, MBT] )
       required: false
       schema:
         type: array
@@ -5189,6 +5297,12 @@ components:
           $ref: '#/components/schemas/connettoreNotificaPagamentiSecim'
         servizioGovPay:
           $ref: '#/components/schemas/connettoreNotificaPagamentiGovPay'
+        servizioHyperSicAPKappa:
+          $ref: '#/components/schemas/connettoreNotificaPagamentiHyperSicAPKappa'
+        intermediato:
+          type: boolean
+          description: Indica se il creditore viene configurato per utilizzare una  stazione di intermediazione
+          example: true
     dominioIndex:
       type: object
       allOf:
@@ -6485,7 +6599,7 @@ components:
               minItems: 1
               maxItems: 5
               items:
-                $ref: '#/components/schemas/vocePendenza'
+                $ref: '#/components/schemas/NuovaVocePendenza'
     pendenzaPost:
       allOf:
         - type: object
@@ -6700,11 +6814,15 @@ components:
           description: Testo libero per la causale versamento
           example: Sanzione CdS n. abc00000
           maxLength: 140
+        contabilita:
+          $ref: '#/components/schemas/contabilita'
     vocePendenza:
       allOf:
         - $ref: '#/components/schemas/vocePendenzaBase'
         - type: object
           properties:
+            dominio:
+              $ref: '#/components/schemas/dominioIndex'
             datiAllegati:
               type: object
               description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
@@ -6767,6 +6885,8 @@ components:
         - $ref: '#/components/schemas/vocePendenzaBase'
         - type: object
           properties:
+            dominio:
+              $ref: '#/components/schemas/dominioIndex'
             pendenza:
               $ref: '#/components/schemas/pendenzaIndex'
     vocePendenzaRiscossione:
@@ -6774,8 +6894,132 @@ components:
         - $ref: '#/components/schemas/vocePendenzaBase'
         - type: object
           properties:
+            dominio:
+              $ref: '#/components/schemas/dominioIndex'
             pendenza:
               $ref: '#/components/schemas/pendenzaIndex'
+    NuovaVocePendenza:
+      allOf:
+        - $ref: '#/components/schemas/vocePendenzaBase'
+        - type: object
+          properties:
+            idDominio:
+              type: string
+              description: Identificativo del dominio creditore
+              example: 1234567890
+            datiAllegati:
+              type: object
+              description: Dati applicativi allegati dal gestionale secondo un formato proprietario.
+            riscossioni:
+              type: array
+              items:
+                $ref: '#/components/schemas/riscossione'
+            rendicontazioni:
+              type: array
+              items:
+                $ref: '#/components/schemas/rendicontazione'
+        - oneOf:
+            - description: Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
+              type: object
+              required:
+                - codEntrata
+              properties:
+                codEntrata:
+                  type: string
+                  pattern: '(^[a-zA-Z0-9\-_\.]{1,35}$)'
+            - description: Definisce i dettagli di incasso.
+              type: object
+              required:
+                - ibanAccredito
+                - tipoContabilita
+                - codiceContabilita
+              properties:
+                ibanAccredito:
+                  type: string
+                  example: IT60X0542811101000000123456
+                ibanAppoggio:
+                  type: string
+                  example: IT60X0542811101000000123456
+                tipoContabilita:
+                  $ref: '#/components/schemas/tipoContabilita'
+                codiceContabilita:
+                  description: Codifica del capitolo di bilancio
+                  type: string
+                  example: 3321
+            - description: Definisce i dati di un bollo telematico
+              type: object
+              required:
+                - tipoBollo
+                - hashDocumento
+                - provinciaResidenza
+              properties:
+                tipoBollo:
+                  description: Tipologia di Bollo digitale
+                  type: string
+                  enum:
+                    - Imposta di bollo
+                hashDocumento:
+                  description: Digest in base64 del documento informatico associato alla marca da bollo
+                  type: string
+                provinciaResidenza:
+                  description: Sigla automobilistica della provincia di residenza del soggetto pagatore
+                  type: string
+    contabilita:
+      type: object
+      properties:
+        quote:
+          type: array
+          items: 
+            $ref: '#/components/schemas/quotaContabilita'
+        proprietaCustom:
+          type: object
+          description: Dati specifici del gestionale di contabilità
+    quotaContabilita:
+      type: object
+      required:
+        - capitolo
+        - annoEsercizio
+        - importo
+      properties:
+        capitolo:
+          type: string
+          description: Codice del capitolo
+          maxLength: 64
+        annoEsercizio:
+          type: number
+          description: Anno di esercizio
+          example: 2020
+        importo:
+          type: number
+          description: Importo della voce di contabilita'
+          example: 10.01
+        accertamento:
+          type: string
+          description: Codice dell’accertamento
+          maxLength: 64        
+        proprietaCustom:
+          type: object
+          description: Dati specifici del gestionale di contabilità
+        titolo:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'titolo'
+        tipologia:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'tipologia'
+        categoria:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'categoria'
+        articolo:
+          type: string
+          description: Classificazione delle entrate in bilancio
+          maxLength: 64
+          example: 'articolo'
     pendenzaCreata:
       type: object
       required:
@@ -6878,9 +7122,6 @@ components:
         - iuv
         - iur
         - indice
-        - pendenza
-        - idVocePendenza
-        - stato
         - tipo
         - importo
         - data
@@ -6946,9 +7187,6 @@ components:
         - iuv
         - iur
         - indice
-        - pendenza
-        - vocePendenza
-        - stato
         - tipo
         - importo
         - data
@@ -7266,97 +7504,133 @@ components:
                 type: string
                 example: 2017-11-21GovPAYPsp1-10:27:27.903
     incassoIndex:
-      type: object
-      required:
-        - dominio
-        - idIncasso
-        - causale
-        - importo
-      properties:
-        dominio:
-          $ref: '#/components/schemas/dominioIndex'
-        idIncasso:
-          type: string
-          description: Identificativo dell'incasso
-          example: '12345'
-        causale:
-          type: string
-          example: /PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234
-          description: Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera.
-        importo:
-          type: number
-          example: 100.01
-        data:
-          type: string
-          format: date-time
-          description: Data incasso
-          example: '2020-12-31 12:34'
-        dataValuta:
-          type: string
-          format: date
-          description: Data di valuta dell'incasso
-          example: '2020-12-31'
-        dataContabile:
-          type: string
-          format: date
-          description: Data di contabile dell'incasso
-          example: '2020-12-31'
-        ibanAccredito:
-          type: string
-          description: Identificativo del conto di tesoreria su cui sono stati incassati i fondi
-          example: IT60X0542811101000000123456
-        sct:
-          type: string
-          description: Identificativo Sepa Credit Transfer
-          example: 2017-01-01ABI00000011234
+      allOf:
+      - type: object
+        required:
+          - dominio
+          - idIncasso
+          - causale
+          - importo
+        properties:
+          dominio:
+            $ref: '#/components/schemas/dominioIndex'
+          idIncasso:
+            type: string
+            description: Identificativo dell'incasso
+            example: '12345'
+          causale:
+            type: string
+            example: /PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234
+            description: Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera.
+          importo:
+            type: number
+            example: 100.01
+          data:
+            type: string
+            format: date-time
+            description: Data incasso
+            example: '2020-12-31 12:34'
+          dataValuta:
+            type: string
+            format: date
+            description: Data di valuta dell'incasso
+            example: '2020-12-31'
+          dataContabile:
+            type: string
+            format: date
+            description: Data di contabile dell'incasso
+            example: '2020-12-31'
+          ibanAccredito:
+            type: string
+            description: Identificativo del conto di tesoreria su cui sono stati incassati i fondi
+            example: IT60X0542811101000000123456
+          sct:
+            type: string
+            description: Identificativo Sepa Credit Transfer
+            example: 2017-01-01ABI00000011234
+      - oneOf:
+        - description: Identificativo univoco di riscossione.
+          type: object
+          required:
+            - iuv
+          properties:
+            iuv:
+              type: string
+              example: RF23567483937849450550875
+        - description: Identificativo del flusso di rendicontazione.
+          type: object
+          required:
+            - idFlusso
+          properties:
+            idFlusso:
+              type: string
+              example: 2017-11-21GovPAYPsp1-10:27:27.903
     incasso:
-      type: object
-      required:
-        - dominio
-        - idIncasso
-        - causale
-        - importo
-      properties:
-        dominio:
-          $ref: '#/components/schemas/dominioIndex'
-        idIncasso:
-          type: string
-          description: Identificativo dell'incasso
-          example: '12345'
-        causale:
-          type: string
-          example: /PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234
-          description: Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera.
-        importo:
-          type: number
-          example: 100.01
-        data:
-          type: string
-          format: date-time
-          description: Data incasso
-          example: '2020-12-31 12:34'
-        dataValuta:
-          type: string
-          format: date
-          description: Data di valuta dell'incasso
-          example: '2020-12-31'
-        dataContabile:
-          type: string
-          format: date
-          description: Data di contabile dell'incasso
-          example: '2020-12-31'
-        ibanAccredito:
-          type: string
-          description: Identificativo del conto di tesoreria su cui sono stati incassati i fondi
-          example: IT60X0542811101000000123456
-        sct:
-          type: string
-          description: Identificativo Sepa Credit Transfer
-          example: 2017-01-01ABI00000011234
-        riscossioni:
-          type: array
-          items:
-            $ref: '#/components/schemas/riscossione'
+      allOf:
+        - type: object
+          required:
+            - dominio
+            - idIncasso
+            - causale
+            - importo
+          properties:
+            dominio:
+              $ref: '#/components/schemas/dominioIndex'
+            idIncasso:
+              type: string
+              description: Identificativo dell'incasso
+              example: '12345'
+            causale:
+              type: string
+              example: /PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234
+              description: Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera.
+            importo:
+              type: number
+              example: 100.01
+            data:
+              type: string
+              format: date-time
+              description: Data incasso
+              example: '2020-12-31 12:34'
+            dataValuta:
+              type: string
+              format: date
+              description: Data di valuta dell'incasso
+              example: '2020-12-31'
+            dataContabile:
+              type: string
+              format: date
+              description: Data di contabile dell'incasso
+              example: '2020-12-31'
+            ibanAccredito:
+              type: string
+              description: Identificativo del conto di tesoreria su cui sono stati incassati i fondi
+              example: IT60X0542811101000000123456
+            sct:
+              type: string
+              description: Identificativo Sepa Credit Transfer
+              example: 2017-01-01ABI00000011234
+            riscossioni:
+              type: array
+              items:
+                $ref: '#/components/schemas/riscossione'
+        - oneOf:
+          - description: Identificativo univoco di riscossione.
+            type: object
+            required:
+              - iuv
+            properties:
+              iuv:
+                type: string
+                example: RF23567483937849450550875
+          - description: Identificativo del flusso di rendicontazione.
+            type: object
+            required:
+              - idFlusso
+            properties:
+              idFlusso:
+                type: string
+                example: 2017-11-21GovPAYPsp1-10:27:27.903
     tipoAutenticazioneBasic:
       type: object
       required:
@@ -7420,6 +7694,7 @@ components:
           type: string
           enum:
             - 'REST v1'
+            - 'REST v2'
           description: Versione delle API di integrazione utilizzate.
         auth:
           $ref: '#/components/schemas/tipoAutenticazione'
@@ -7475,6 +7750,12 @@ components:
         emailSubject:
           type: string
           description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato
@@ -7521,6 +7802,12 @@ components:
         emailSubject:
           type: string
           description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato
@@ -7570,6 +7857,60 @@ components:
         emailSubject:
           type: string
           description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
+        fileSystemPath:
+          type: string
+          description: Path nel quale verra' salvato il tracciato
+        tipiPendenza:
+          type: array
+          description: tipi pendenza da includere nel tracciato
+          items:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+              - type: string
+                description: identificativo tipo pendenza
+                example:
+                  SEGRETERIA
+    connettoreNotificaPagamentiHyperSicAPKappa:
+      type: object
+      required:
+        - abilitato
+        - tipoConnettore
+        - versioneCsv
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se il connettore e' abilitato
+          example: true
+        tipoConnettore:
+          type: string
+          enum:
+            - 'EMAIL'
+            - 'FILESYSTEM'
+        versioneCsv:
+          type: string
+          example: '2.0'
+          description: Versione del CSV prodotto.
+        emailIndirizzi:
+          type: array
+          items:
+            type: string
+          description: Indirizzi Email al quale verra' spedito il tracciato
+        emailSubject:
+          type: string
+          description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato
@@ -7589,7 +7930,6 @@ components:
       required:
         - abilitato
         - tipoConnettore
-        - versioneCsv
       properties:
         abilitato:
           type: boolean
@@ -7600,10 +7940,11 @@ components:
           enum:
             - 'EMAIL'
             - 'FILESYSTEM'
-        versioneCsv:
+            - 'REST'
+        versioneZip:
           type: string
           example: '7.0'
-          description: Versione del CSV prodotto.
+          description: Versione del file zip prodotto.
         emailIndirizzi:
           type: array
           items:
@@ -7612,6 +7953,12 @@ components:
         emailSubject:
           type: string
           description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
         fileSystemPath:
           type: string
           description: Path nel quale verra' salvato il tracciato
@@ -7626,6 +7973,29 @@ components:
                 description: identificativo tipo pendenza
                 example:
                   SEGRETERIA
+        url:
+          type: string
+          description: URL Base del servizio rest di ricezione dei dati
+        versioneApi:
+          type: string
+          enum:
+            - 'REST v1'
+          description: Versione delle API di integrazione utilizzate.
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
+        contenuti:
+          type: array
+          description: Lista dei contenuti da inviare al servizio REST
+          items:
+            $ref: '#/components/schemas/contenutoNotificaPagamentiGovpay'
+    contenutoNotificaPagamentiGovpay:
+      example: SINTESI_PAGAMENTI
+      type: string
+      enum:
+        - SINTESI_PAGAMENTI
+        - SINTESI_FLUSSI_RENDICONTAZIONE
+        - RPP
+        - FLUSSI_RENDICONTAZIONE
     soggetto:
       description: dati anagrafici di un versante o pagatore.
       type: object
@@ -7756,10 +8126,14 @@ components:
         Tipologia della voce riscossa
          * ENTRATA: Entrata in tesoreria
          * MBT: Marca da bollo telematica
+         * ALTRO_INTERMEDIARIO: Entrata relativa a un intermediario esterno
+         * ENTRATA_PA_NON_INTERMEDIATA: Entrata relativa ad un ente creditore non intermediato da GovPay
       type: string
       enum:
         - ENTRATA
         - MBT
+        - ALTRO_INTERMEDIARIO
+        - ENTRATA_PA_NON_INTERMEDIATA
     listaPaginata:
       type: object
       properties:
@@ -8839,6 +9213,10 @@ components:
         lineaTestoRicevuta2:
           type: string
           description: stringa personalizzata da inserire nella ricevuta
+        linguaSecondariaCausale:
+          type: string
+          description: >-
+              causale della pendenza nella lingua secondaria da inserire nell'avviso
     RisultatiPerPagina:
       type: integer
       default: 25

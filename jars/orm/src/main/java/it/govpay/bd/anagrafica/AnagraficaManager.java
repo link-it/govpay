@@ -580,8 +580,7 @@ public class AnagraficaManager {
 		} finally {
 		}
 	}
-
-
+	
 	public static Intermediario getIntermediario(BDConfigWrapper configWrapper, long id) throws ServiceException, NotFoundException  {
 		try {
 			String method = CACHE_KEY_GET_INTERMEDIARIO;

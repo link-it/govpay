@@ -13,7 +13,7 @@ import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
-import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.Evento.RuoloEvento;
@@ -37,12 +37,16 @@ public class EventoContext {
 	
 	public static final String APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOEMAIL = "govpayInviaTracciatoEmail";
 	public static final String APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOFILESYSTEM = "govpayInviaTracciatoFileSystem";
+	public static final String APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOREST = "govpayInviaTracciatoRest";
+	
+	public static final String APIHYPERSICAPKAPPA_TIPOEVENTO_HYPERSIC_APKINVIATRACCIATOEMAIL = "hyperSicAPKappaInviaTracciatoEmail";
+	public static final String APIHYPERSICAPKAPPA_TIPOEVENTO_HYPERSIC_APKINVIATRACCIATOFILESYSTEM = "hyperSicAPKappaInviaTracciatoFileSystem";
 	
 	public static final String APIPAGOPA_SOTTOTIPOEVENTO_FLUSSO_RENDICONTAZIONE_DUPLICATO = "FlussoRendicontazioneDuplicato";
 
 	public static final String SOTTOTIPO_EVENTO_NOTA = "nota";
 	
-	public enum Componente {API_ENTE, API_PAGAMENTO, API_RAGIONERIA, API_BACKOFFICE, API_PAGOPA, API_PENDENZE, API_WC, API_USER, API_BACKEND_IO, API_MYPIVOT, API_SECIM, API_GOVPAY };
+	public enum Componente {API_ENTE, API_PAGAMENTO, API_RAGIONERIA, API_BACKOFFICE, API_PAGOPA, API_PENDENZE, API_WC, API_USER, API_BACKEND_IO, API_MYPIVOT, API_SECIM, API_GOVPAY, API_HYPERSIC_APK };
 	public enum Esito {OK, KO, FAIL};
 	public enum Categoria { INTERFACCIA, INTERNO, UTENTE };
 

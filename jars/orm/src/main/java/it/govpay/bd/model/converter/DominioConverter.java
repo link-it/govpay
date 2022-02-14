@@ -41,8 +41,12 @@ public class DominioConverter {
 //	}
 
 	public static Dominio toDTO(it.govpay.orm.Dominio vo, BDConfigWrapper configWrapper, ConnettoreNotificaPagamenti connettoreMyPivot, 
-			ConnettoreNotificaPagamenti connettoreSecim, ConnettoreNotificaPagamenti connettoreGovPay) throws ServiceException {
-		Dominio dto = new Dominio(configWrapper, vo.getId(), vo.getIdStazione().getId());
+			ConnettoreNotificaPagamenti connettoreSecim, ConnettoreNotificaPagamenti connettoreGovPay, ConnettoreNotificaPagamenti connettoreHyperSicAPKappa) throws ServiceException {
+		
+		
+		IdStazione idStazione = vo.getIdStazione(); 
+		Long idStazioneLong = idStazione != null ? idStazione.getId() : null;
+		Dominio dto = new Dominio(configWrapper, vo.getId(), idStazioneLong);
 		if(vo.getIdApplicazioneDefault() != null) {
 			dto.setIdApplicazioneDefault(vo.getIdApplicazioneDefault().getId());
 		}
@@ -59,6 +63,8 @@ public class DominioConverter {
 		dto.setConnettoreMyPivot(connettoreMyPivot);
 		dto.setConnettoreSecim(connettoreSecim);
 		dto.setConnettoreGovPay(connettoreGovPay);
+		dto.setConnettoreHyperSicAPKappa(connettoreHyperSicAPKappa);
+		dto.setIntermediato(vo.isIntermediato());
 		return dto;
 	}
 
@@ -76,9 +82,13 @@ public class DominioConverter {
 		vo.setAbilitato(dto.isAbilitato());
 		vo.setAuxDigit(dto.getAuxDigit());
 		vo.setIuvPrefix(dto.getIuvPrefix());
-		IdStazione idStazione = new IdStazione();
-		idStazione.setId(dto.getIdStazione());
-		vo.setIdStazione(idStazione);
+		
+		if(dto.getIdStazione() != null) {
+			IdStazione idStazione = new IdStazione();
+			idStazione.setId(dto.getIdStazione());
+			vo.setIdStazione(idStazione);
+		}
+		
 		vo.setSegregationCode(dto.getSegregationCode());
 		vo.setLogo(dto.getLogo());
 		vo.setCbill(dto.getCbill());
@@ -98,6 +108,13 @@ public class DominioConverter {
 			dto.getConnettoreGovPay().setIdConnettore(DominiBD.getIDConnettoreGovPay(dto.getCodDominio()));
 			vo.setCodConnettoreGovPay(dto.getConnettoreGovPay().getIdConnettore());
 		}
+		
+		if(dto.getConnettoreHyperSicAPKappa()!= null) {
+			dto.getConnettoreHyperSicAPKappa().setIdConnettore(DominiBD.getIDConnettoreHyperSicAPKappa(dto.getCodDominio()));
+			vo.setCodConnettoreHyperSicAPK(dto.getConnettoreHyperSicAPKappa().getIdConnettore());
+		}
+		
+		vo.setIntermediato(dto.isIntermediato());
 		
 		return vo;
 	}

@@ -126,7 +126,7 @@ public abstract class BaseRsService {
 	
 	protected IContext getContext() {
 		IContext context = ContextThreadLocal.get();
-		System.out.println("SYNC:   " + Thread.currentThread().getId() + " " + context.getTransactionId() + " " + context.toString() );
+		//System.out.println("SYNC:   " + Thread.currentThread().getId() + " " + context.getTransactionId() + " " + context.toString() );
 		if(context instanceof org.openspcoop2.utils.service.context.Context) {
 			((org.openspcoop2.utils.service.context.Context)context).update(this.request, this.response, this.uriInfo, 2, this.log);
 			((org.openspcoop2.utils.service.context.Context)context).setRestPath(this.getPathFromRestMethod(context.getMethodName()));
@@ -259,6 +259,11 @@ public abstract class BaseRsService {
 			String servicePathwithParameters = requestUri.substring(idxOfBaseUri);
 			ctx.getEventoCtx().setUrl(servicePathwithParameters);
 			
+			String idSessione = null;
+			if(this.request.getSession() != null) {
+				idSessione = this.request.getSession().getId();
+			}
+			
 			StringBuilder sb = new StringBuilder();
 			sb.append("Ricevuta una richiesta:");
 			sb.append("\n");
@@ -272,6 +277,10 @@ public abstract class BaseRsService {
 				Utenza utenza = authenticationDetails.getUtenza();
 				sb.append("Profilo: \n");
 				sb.append("\t[\n\t").append("TipoUtenza: [").append(authenticationDetails.getTipoUtenza()).append("], Abilitato: [").append(utenza.isAbilitato()).append("]");
+				if(idSessione != null) {
+					sb.append("\n");
+					sb.append("\t").append("Id Sessione: [").append(idSessione).append("]");
+				}
 				sb.append("\n");
 				sb.append("\t").append("Id Transazione Autenticazione: [").append(authenticationDetails.getIdTransazioneAutenticazione()).append("]");
 				sb.append("\n");

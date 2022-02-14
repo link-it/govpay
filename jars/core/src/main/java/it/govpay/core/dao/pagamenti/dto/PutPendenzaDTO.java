@@ -29,6 +29,7 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	private String codApplicazione;
 	private String codVersamentoEnte;
 	private TipologiaTipoVersamento tipo;
+	private boolean inserimentoDB = true;
 
 	public PutPendenzaDTO(Authentication user) {
 		super(user);
@@ -146,4 +147,13 @@ public class PutPendenzaDTO extends BasicCreateRequestDTO  {
 	public void setTipo(TipologiaTipoVersamento tipo) {
 		this.tipo = tipo;
 	}
+
+	public boolean isInserimentoDB() {
+		return inserimentoDB;
+	}
+
+	public void setInserimentoDB(boolean inserimentoDB) {
+		this.inserimentoDB = inserimentoDB;
+	}
+	
 }

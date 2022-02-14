@@ -9,10 +9,10 @@ Background:
 * def idUnitaOperativa = '12345678901_01'
 * def idA2A = 'IDA2A01'
 * def idA2A2 = 'IDA2A02'
-* def ibanAccredito = 'IT02L1234512345123456789012'
+* def ibanAccredito = 'IT02L1234512345123451111111'
 * def bicAccredito = 'DABAIE2D'
 * def ibanAccreditoDescrizione = 'IBAN Accredito'
-* def ibanAccreditoPostale = 'IT02L0760112345123456789012'
+* def ibanAccreditoPostale = 'IT02L0760112345123452222222'
 * def bicAccreditoPostale = 'DABAIE2C'
 * def ibanAccreditoPostaleDescrizione = 'IBAN Accredito Postale'
 * def ibanAccreditoErrato = 'IT00X9999900000000000000000'
@@ -345,6 +345,31 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 #### resetCache
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+#### Confiugrazione simulatore
+
+* def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
+* call read('classpath:utils/nodo-config-stazione-put.feature')
+
+
+* def ndpsym_config_url = ndpsym_url + '/config/rs/'
+
+Given url ndpsym_config_url 
+And path 'domini', idDominio
+And request 
+"""
+{
+  "urlEC": "http://localhost:8080/govpay/frontend/web/connector/ecsp/psp",
+  "auxDigit": 0,
+  "versione": 1,
+  "segregationCode": null,
+  "ragioneSociale": "Ente Creditore Test",
+  "idStazione": "11111111113_01",
+  "idIntermediario": "11111111113"
+}
+"""
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
 
 #### reset simulatore
 

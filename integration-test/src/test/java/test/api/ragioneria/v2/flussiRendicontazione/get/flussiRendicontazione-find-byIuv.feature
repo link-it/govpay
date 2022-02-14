@@ -1,4 +1,4 @@
-Feature: Ricerca per filtri sui metadati di paginazione
+Feature: Ricerca per filtri su iuv
 
 Background: 
 

@@ -1,15 +1,19 @@
 (function (global) {
 
+  function addScript(file) {
+    document.write('<script src="' + file + '"></script>');
+  }
+
   function hostname() {
     return this.location.protocol + '//' + this.location.host;
   }
 
   function httpRootService() {
-    return '/govpay/backend/api/backoffice/rs/form/v1'; // Root URL servizi pubblici
+    return '${it.govpay.backoffice.gui.apiBaseUrl}'; // Root URL servizi pubblici
   }
 
   function httpLogOutService() {
-    return '/govpay/backend/api/backoffice/rs/form/v1/logout'; // URL per il servizio di 'logout' pubblico
+    return '${it.govpay.backoffice.gui.apiBaseUrl}/logout'; // URL per il servizio di 'logout' pubblico
   }
 
   function httpDocumentsRoot() {
@@ -108,5 +112,7 @@
       POLLING_TRACCIATI: ${it.govpay.backoffice.gui.export.polling}   // Timeout per tracciati NN(millisec)|false
     }
   };
+
+  addScript('assets/config/app-config.govpay');
 
 })(window);

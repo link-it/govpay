@@ -41,7 +41,10 @@ public class Evento extends it.govpay.model.Evento{
 		paaAttivaRPT,
 		nodoInviaRichiestaStorno,
 		paaInviaEsitoStorno,
-		nodoInviaAvvisoDigitale;
+		nodoInviaAvvisoDigitale,
+		paVerifyPaymentNotice,
+		paGetPayment,
+		paSendRT;
 	}
 
 	public static final String COMPONENTE_COOPERAZIONE = "FESP";

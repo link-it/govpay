@@ -29,6 +29,7 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
@@ -40,6 +41,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.converter.RendicontazioneConverter;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
+import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.orm.IdRendicontazione;
 import it.govpay.orm.dao.jdbc.JDBCRendicontazioneServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.RendicontazioneFieldConverter;
@@ -271,4 +273,42 @@ public class RendicontazioniBD extends BasicBD {
 		}
 	}
 	
+	
+	public Rendicontazione getRendicontazione(String codDominio, String iuv, String iur, Integer indiceDati, StatoRendicontazione stato, boolean pagamentoNull) throws ServiceException, NotFoundException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getRendicontazioneService().newExpression();
+			
+			RendicontazioneFieldConverter fieldConverter = new RendicontazioneFieldConverter(this.getJdbcProperties().getDatabaseType());
+			RendicontazioneModel model = it.govpay.orm.Rendicontazione.model();
+			
+			exp.equals(model.ID_FR.COD_DOMINIO, codDominio);
+			exp.and();
+			exp.equals(model.IUV, iuv);
+			exp.equals(model.IUR, iur);
+			exp.equals(model.INDICE_DATI, indiceDati);
+			exp.equals(model.STATO, stato.toString());
+			
+			CustomField cf = new  CustomField("id_pagamento", Long.class, "id_pagamento",fieldConverter.toTable(it.govpay.orm.Rendicontazione.model()));
+			if(pagamentoNull) {
+				exp.isNull(cf);
+			} else {
+				exp.isNotNull(cf);
+			}
+			
+			it.govpay.orm.Rendicontazione rendicontazione = this.getRendicontazioneService().find(exp);
+			return RendicontazioneConverter.toDTO(rendicontazione);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
 }

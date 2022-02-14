@@ -10,10 +10,13 @@ import { Riepilogo } from '../../../../classes/view/riepilogo';
 import { Parameters } from '../../../../classes/parameters';
 import { Standard } from '../../../../classes/view/standard';
 import { StandardCollapse } from '../../../../classes/view/standard-collapse';
+import { NewStandardCollapse } from '../../../../classes/view/new-standard-collapse';
 import { IExport } from '../../../../classes/interfaces/IExport';
 import { isNullOrUndefined } from 'util';
 
 import * as moment from 'moment';
+
+declare let GovRiconciliazioniConfig: any;
 
 @Component({
   selector: 'link-incassi-view',
@@ -31,7 +34,42 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
 
   protected info: Riepilogo;
 
-  constructor(public gps: GovpayService, public us: UtilService) { }
+  _quoteExport = ['titolo', 'tipologia', 'categoria', 'capitolo', 'articolo', 'accertamento', 'annoEsercizio', 'importo'];
+  _quoteLabel = {
+    capitolo: 'Capitolo',
+    annoEsercizio: 'Anno esercizio',
+    importo: 'Importo',
+    titolo: 'Titolo',
+    accertamento: 'Accertamento',
+    tipologia: 'Tipologia',
+    categoria: 'Categoria',
+    articolo: 'Articolo',
+    proprietaCustom: 'Proprieta custom'
+  };
+  _exportLabel = {
+    idDominio: 'Dominio',
+    idFlusso: 'Id Flusso',
+    iuv: 'IUV',
+    importo: 'Importo',
+    data: 'Data',
+    idPendenza: 'Id Pendenze',
+    tipoPendenza: 'Tipo pendenza',
+    idVocePendenza: 'Id voce pendenza',
+    datiAllegatiPendenza: 'Dati allegati pendenza',
+    datiAllegatiVocePendenza: 'Dati allegati voce pendenza'
+  };
+
+  _quoteCount = 10;
+
+  constructor(public gps: GovpayService, public us: UtilService) {
+    if (GovRiconciliazioniConfig && GovRiconciliazioniConfig.quoteExport && GovRiconciliazioniConfig.quoteLabel && GovRiconciliazioniConfig.exportLabel) {
+      this._quoteExport = GovRiconciliazioniConfig.quoteExport;
+      this._quoteLabel = GovRiconciliazioniConfig.quoteLabel;
+      this._exportLabel = GovRiconciliazioniConfig.exportLabel;
+      this._exportLabel = GovRiconciliazioniConfig.exportLabel;
+      this._quoteCount = GovRiconciliazioniConfig.quoteCount || 10;
+    }
+  }
 
   ngAfterViewInit() {
     setTimeout(() => {
@@ -71,8 +109,14 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
     if (_data) {
       this.info.extraInfo.push({ label: Voce.DATA+': ', value: _data });
     }
-    if (this.json.idIncasso) {
-      this.info.extraInfo.push({ label: Voce.RICONCILIAZIONE+': ', value: this.json.idIncasso });
+    // if (this.json.idIncasso) {
+    //   this.info.extraInfo.push({ label: Voce.RICONCILIAZIONE+': ', value: this.json.idIncasso });
+    // }
+    if (this.json.idFlusso) {
+      this.info.extraInfo.push({ label: Voce.ID_FLUSSO + ': ', value: this.json.idFlusso });
+    }
+    if (this.json.iuv) {
+      this.info.extraInfo.push({ label: Voce.IUV + ': ', value: this.json.iuv });
     }
 
     //Riscossioni
@@ -80,18 +124,19 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
       let p = new Parameters();
       p.jsonP = item;
       p.model = this._mapNewItemByType(item, UtilService.URL_RISCOSSIONI);
-      p.type = UtilService.STANDARD_COLLAPSE;
+      p.type = UtilService.NEW_STANDARD_COLLAPSE;
       return p;
     }, this);
   }
 
   protected _mapNewItemByType(item: any, type: string): Standard {
-    let _stdC = new StandardCollapse();
+    let _stdC = new NewStandardCollapse();
     switch(type) {
       case UtilService.URL_RISCOSSIONI:
         _stdC.titolo = new Dato({ value: item.vocePendenza.pendenza.causale });
         _stdC.sottotitolo = new Dato({ label: Voce.IUV+': ', value: item.iuv });
         _stdC.importo = this.us.currencyFormat(item.importo);
+        _stdC.item = item;
         _stdC.elenco = [];
         if (item.vocePendenza && item.vocePendenza.idVocePendenza) {
           _stdC.elenco.push({ label: Voce.ID_VOCE_PENDENZA, value: item.vocePendenza.idVocePendenza });
@@ -146,6 +191,43 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
   }
 
   exportData(data?: any) {
+    const _json: any = JSON.parse(JSON.stringify(this.json));
+    const _riscossioni: any[] = [];
+    this.json.riscossioni.forEach(risc => {
+      const quote = (risc.vocePendenza && risc.vocePendenza.contabilita) ? risc.vocePendenza.contabilita.quote : [];
+      const riscossione: any = {};
+      riscossione[this._exportLabel['idDominio']] = _json.dominio.idDominio;
+      riscossione[this._exportLabel['idFlusso']] = _json.idFlusso ? _json.idFlusso : '';
+      riscossione[this._exportLabel['iuv']] = risc.iuv || '';
+      riscossione[this._exportLabel['importo']] = risc.importo || 0;
+      riscossione[this._exportLabel['data']] = risc.data || '';
+      riscossione[this._exportLabel['idPendenza']] = risc.vocePendenza.pendenza.idPendenza || '';
+      riscossione[this._exportLabel['tipoPendenza']] = risc.vocePendenza.pendenza.idTipoPendenza || '';
+      riscossione[this._exportLabel['idVocePendenza']] = risc.vocePendenza.idVocePendenza || '';
+      riscossione[this._exportLabel['datiAllegatiPendenza']] = risc.vocePendenza.pendenza.datiAllegati || '';
+      riscossione[this._exportLabel['datiAllegatiVocePendenza']] = risc.vocePendenza.datiAllegati || '';
+
+      for (let i = 0; i < this._quoteCount; i++) {
+        this._quoteExport.forEach(key => {
+          const label = `${this._quoteLabel[key]} ${i + 1}`;
+          riscossione[label] = (this.us.hasValue(quote[i])) ? quote[i][key] : '';
+        });
+      }
+
+      _riscossioni.push(riscossione);
+    });
+
+    this.us.updateProgress(true, 'Export in corso...', 'determinate', 0);
+    const fileName = _json.idFlusso ? _json.idFlusso : _json.iuv;
+    const zip: any = this.us.initZip();
+    const csvData: string = this.us.jsonToCsv('PagamentiRiconciliati.csv', _riscossioni);
+    this.us.addDataToZip(csvData, fileName + '.csv', zip);
+    this.us.updateProgress(true, 'Export in corso...', 'determinate', 100);
+    this.us.updateProgress(false, '', 'indeterminate', 0, 0);
+    this.us.saveZip(zip, fileName);
+  }
+
+  exportData_(data?: any) {
     const _json: any = JSON.parse(JSON.stringify(this.json));
     delete _json['riscossioni'];
     const structure: any = {

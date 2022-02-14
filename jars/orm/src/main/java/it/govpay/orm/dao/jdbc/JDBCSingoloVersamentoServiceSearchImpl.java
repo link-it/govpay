@@ -186,11 +186,13 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			fields.add(SingoloVersamento.model().DATI_ALLEGATI);
 			fields.add(SingoloVersamento.model().INDICE_DATI);
 			fields.add(SingoloVersamento.model().DESCRIZIONE_CAUSALE_RPT);
+			fields.add(SingoloVersamento.model().CONTABILITA);
 			
 			fields.add(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(new CustomField("id_iban_appoggio", Long.class, "id_iban_appoggio", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(new CustomField("id_tributo", Long.class, "id_tributo", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
+			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
         
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
@@ -214,49 +216,46 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 					idIbanAppoggio = (Long) idIbanAppoggioObj;
 				}
 				
+				Object idDominioObj = map.remove("id_dominio");
+				Long idDominio = null;
+				if(idDominioObj instanceof Long) {
+					idDominio = (Long) idDominioObj;
+				}
+				
 				Long idVersamento = (Long)map.remove("id_versamento");
 
 				SingoloVersamento singoloVersamento = (SingoloVersamento)this.getSingoloVersamentoFetch().fetch(jdbcProperties.getDatabase(), SingoloVersamento.model(), map);
 
 				if(idTributo != null) {
 					it.govpay.orm.IdTributo id_singoloVersamento_tributo = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_singoloVersamento_tributo = ((JDBCTributoServiceSearch)(this.getServiceManager().getTributoServiceSearch())).findId(idTributo, false);
-					}else{
-						id_singoloVersamento_tributo = new it.govpay.orm.IdTributo();
-					}
+					id_singoloVersamento_tributo = new it.govpay.orm.IdTributo();
 					id_singoloVersamento_tributo.setId(idTributo);
 					singoloVersamento.setIdTributo(id_singoloVersamento_tributo);
 				}
 
 				if(idIbanAccredito != null) {
 					it.govpay.orm.IdIbanAccredito id_singoloVersamento_ibanAccredito = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_singoloVersamento_ibanAccredito = ((JDBCIbanAccreditoServiceSearch)(this.getServiceManager().getIbanAccreditoServiceSearch())).findId(idIbanAccredito, false);
-					}else{
-						id_singoloVersamento_ibanAccredito = new it.govpay.orm.IdIbanAccredito();
-					}
+					id_singoloVersamento_ibanAccredito = new it.govpay.orm.IdIbanAccredito();
 					id_singoloVersamento_ibanAccredito.setId(idIbanAccredito);
 					singoloVersamento.setIdIbanAccredito(id_singoloVersamento_ibanAccredito);
 				}
 
 				if(idIbanAppoggio != null) {
 					it.govpay.orm.IdIbanAccredito id_singoloVersamento_ibanAccredito = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_singoloVersamento_ibanAccredito = ((JDBCIbanAccreditoServiceSearch)(this.getServiceManager().getIbanAccreditoServiceSearch())).findId(idIbanAppoggio, false);
-					}else{
-						id_singoloVersamento_ibanAccredito = new it.govpay.orm.IdIbanAccredito();
-					}
+					id_singoloVersamento_ibanAccredito = new it.govpay.orm.IdIbanAccredito();
 					id_singoloVersamento_ibanAccredito.setId(idIbanAppoggio);
 					singoloVersamento.setIdIbanAppoggio(id_singoloVersamento_ibanAccredito);
 				}
+				
+				if(idDominio != null) {
+					it.govpay.orm.IdDominio id_singoloVersamento_dominio = null;
+					id_singoloVersamento_dominio = new it.govpay.orm.IdDominio();
+					id_singoloVersamento_dominio.setId(idDominio);
+					singoloVersamento.setIdDominio(id_singoloVersamento_dominio);
+				}
 
 				it.govpay.orm.IdVersamento id_singoloVersamento_versamento = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_singoloVersamento_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idVersamento, false);
-				}else{
-					id_singoloVersamento_versamento = new it.govpay.orm.IdVersamento();
-				}
+				id_singoloVersamento_versamento = new it.govpay.orm.IdVersamento();
 				id_singoloVersamento_versamento.setId(idVersamento);
 				singoloVersamento.setIdVersamento(id_singoloVersamento_versamento);
 				
@@ -555,6 +554,18 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 					imgSaved.getIdVersamento().getIdApplicazione()!=null){
 				obj.getIdVersamento().getIdApplicazione().setId(imgSaved.getIdVersamento().getIdApplicazione().getId());
 			}
+			if(obj.getIdVersamento().getIdUo()!=null && 
+					imgSaved.getIdVersamento().getIdUo()!=null){
+				obj.getIdVersamento().getIdUo().setId(imgSaved.getIdVersamento().getIdUo().getId());
+				if(obj.getIdVersamento().getIdUo().getIdDominio()!=null && 
+						imgSaved.getIdVersamento().getIdUo().getIdDominio()!=null){
+					obj.getIdVersamento().getIdUo().getIdDominio().setId(imgSaved.getIdVersamento().getIdUo().getIdDominio().getId());
+				}
+			}
+			if(obj.getIdVersamento().getIdTipoVersamento()!=null && 
+					imgSaved.getIdVersamento().getIdTipoVersamento()!=null){
+				obj.getIdVersamento().getIdTipoVersamento().setId(imgSaved.getIdVersamento().getIdTipoVersamento().getId());
+			}
 		}
 		if(obj.getIdTributo()!=null && 
 				imgSaved.getIdTributo()!=null){
@@ -584,6 +595,11 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 				obj.getIdIbanAppoggio().getIdDominio().setId(imgSaved.getIdIbanAppoggio().getIdDominio().getId());
 			}
 		}
+		if(obj.getIdDominio()!=null && 
+				imgSaved.getIdDominio()!=null){
+			obj.getIdDominio().setId(imgSaved.getIdDominio().getId());
+		}
+
 	}
 	
 	@Override
@@ -640,6 +656,12 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
+		
+		if(expression.inUseModel(SingoloVersamento.model().ID_DOMINIO,false)){
+			String tableName1 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
+			String tableName2 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model().ID_DOMINIO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
+		}
 		
 		if(expression.inUseModel(SingoloVersamento.model().ID_TRIBUTO,false)){
 			String tableName1 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
@@ -804,7 +826,13 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_IBAN_APPOGGIO.ID_DOMINIO))
 			));
-   
+
+		// SingoloVersamento.model().ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_DOMINIO))
+			));
+
         return mapTableToPKColumn;		
 	}
 	

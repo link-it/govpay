@@ -65,6 +65,9 @@ Examples:
 | servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { username: 'usr', password: 'pwd' } } |
 | servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2' , ksType: 'JKS', ksPKeyPasswd: 'ksPKeyPasswd'	} } | 
 | servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { tipo: 'Server', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} } | 
+| servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { username: 'usr', password: 'pwd' } } |
+| servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { tipo: 'Client', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2' , ksType: 'JKS', ksPKeyPasswd: 'ksPKeyPasswd'	} } | 
+| servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { tipo: 'Server', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'TLSv1.2'	} } |
 | abilitato | false | 
 | abilitato | true |
 | apiPagamenti | false | 
@@ -192,3 +195,40 @@ Examples:
 | domini | [ '*' ] |
 | tipiPendenza | [ '*' ] |
 | tipiPendenza | [ 'autodeterminazione' ] |
+
+
+
+Scenario: Modifica del principal di una applicazione non deve modificare le autorizzazione sulle API
+
+* def applicazione = read('classpath:test/api/backoffice/v1/applicazioni/put/msg/applicazione.json')
+* def idComune = getCurrentTimeMillis()
+* def idAppl1 = 'PROVA_' + idComune
+
+* set applicazione.principal = idAppl1
+
+Given url backofficeBaseurl
+And path 'applicazioni', idAppl1
+And headers basicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* set applicazione.principal = 'PR_MOD_' + idComune
+
+Given url backofficeBaseurl
+And path 'applicazioni', idAppl1
+And headers basicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'applicazioni', idAppl1
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.apiPagamenti == true
+And match response.apiPendenze == true
+And match response.apiRagioneria == true
+
+

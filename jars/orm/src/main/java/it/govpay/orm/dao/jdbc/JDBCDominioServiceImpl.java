@@ -21,29 +21,24 @@ package it.govpay.orm.dao.jdbc;
 
 import java.sql.Connection;
 
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-
-import org.slf4j.Logger;
-
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
-import it.govpay.orm.IdDominio;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
-
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.slf4j.Logger;
 
 import it.govpay.orm.Dominio;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
+import it.govpay.orm.IdDominio;
 
 /**     
  * JDBCDominioServiceImpl
@@ -120,6 +115,8 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_MY_PIVOT,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_SECIM,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_GOV_PAY,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_HYPER_SIC_APK,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().INTERMEDIATO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_stazione","?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione_default","?");
 
@@ -139,6 +136,8 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCodConnettoreMyPivot(),Dominio.model().COD_CONNETTORE_MY_PIVOT.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCodConnettoreSecim(),Dominio.model().COD_CONNETTORE_SECIM.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCodConnettoreGovPay(),Dominio.model().COD_CONNETTORE_GOV_PAY.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCodConnettoreHyperSicAPK(),Dominio.model().COD_CONNETTORE_HYPER_SIC_APK.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getIntermediato(),Dominio.model().INTERMEDIATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_stazione,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
 		);
@@ -254,6 +253,10 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		lstObjects_dominio.add(new JDBCObject(dominio.getCodConnettoreSecim(), Dominio.model().COD_CONNETTORE_SECIM.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_GOV_PAY,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getCodConnettoreGovPay(), Dominio.model().COD_CONNETTORE_GOV_PAY.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_HYPER_SIC_APK,false), "?");
+		lstObjects_dominio.add(new JDBCObject(dominio.getCodConnettoreHyperSicAPK(), Dominio.model().COD_CONNETTORE_HYPER_SIC_APK.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().INTERMEDIATO,false), "?");
+		lstObjects_dominio.add(new JDBCObject(dominio.getIntermediato(), Dominio.model().INTERMEDIATO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_stazione","?");
 		}

@@ -2,6 +2,9 @@ package it.govpay.core.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,6 +28,7 @@ public class SimpleDateFormatUtils {
 	private static final String PATTERN_DATA_DD_MM_YYYY_HH_MM_SS_SSS = "ddMMyyyyHHmmSSsss";
 	private static final String PATTERN_DATA_YYYY = "yyyy";
 	private static final String PATTERN_DATA_YYYY_MM_DD_SENZA_SPAZI = "yyyyMMdd";
+	private static final String PATTERN_DATA_GG_MM_AAAA = "dd/MM/yyyy";
 	
 	public static List<String> datePatterns = null;
 	static {
@@ -82,6 +86,11 @@ public class SimpleDateFormatUtils {
 	
 	public static SimpleDateFormat newSimpleDateFormatSoloAnno() {
 		SimpleDateFormat sdf = new SimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_YYYY);
+		return sdf;
+	}
+	
+	public static SimpleDateFormat newSimpleDateFormatGGMMAAAA() {
+		SimpleDateFormat sdf = new SimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_GG_MM_AAAA);
 		return sdf;
 	}
 	
@@ -181,5 +190,25 @@ public class SimpleDateFormatUtils {
 		} finally {
 			
 		}
+	}
+	
+	public static LocalDate toLocalDate(Date dateToConvert) {
+		if(dateToConvert == null)
+			return null;
+		
+		Calendar c = Calendar.getInstance();
+		c.setTime(dateToConvert);
+		return LocalDate.of(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE));
+	}
+	
+	public static LocalDateTime toLocalDatetime(Date dateToConvert) {
+		if(dateToConvert == null)
+			return null;
+		
+		Calendar c = Calendar.getInstance();
+		c.setTime(dateToConvert);
+		LocalDate date = LocalDate.of(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE));
+        LocalTime time = LocalTime.of(c.get(Calendar.HOUR), c.get(Calendar.MINUTE), c.get(Calendar.SECOND), c.get(Calendar.MILLISECOND));
+		return LocalDateTime.of(date, time);
 	}
 }

@@ -19,12 +19,14 @@
  */
 package it.govpay.core.dao.pagamenti.dto;
 
+import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
 import it.govpay.core.dao.anagrafica.dto.BasicCreateResponseDTO;
 
 public class RichiestaIncassoDTOResponse extends BasicCreateResponseDTO{
 
 	private Incasso incasso;
+	private Fr fr;
 
 	public Incasso getIncasso() {
 		return this.incasso;
@@ -32,5 +34,13 @@ public class RichiestaIncassoDTOResponse extends BasicCreateResponseDTO{
 
 	public void setIncasso(Incasso incasso) {
 		this.incasso = incasso;
+	}
+
+	public Fr getFr() {
+		return fr;
+	}
+
+	public void setFr(Fr fr) {
+		this.fr = fr;
 	}
 }

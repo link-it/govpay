@@ -160,6 +160,7 @@ public class JDBCNotificaAppIOServiceSearchImpl implements IJDBCServiceSearchWit
 			fields.add(new CustomField("id", Long.class, "id", this.getNotificaAppIOFieldConverter().toTable(NotificaAppIO.model())));
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getNotificaAppIOFieldConverter().toTable(NotificaAppIO.model())));
 			fields.add(new CustomField("id_tipo_versamento_dominio", Long.class, "id_tipo_versamento_dominio", this.getNotificaAppIOFieldConverter().toTable(NotificaAppIO.model())));
+			fields.add(new CustomField("id_rpt", Long.class, "id_rpt", this.getNotificaAppIOFieldConverter().toTable(NotificaAppIO.model())));
 			fields.add(NotificaAppIO.model().TIPO_ESITO);
 			fields.add(NotificaAppIO.model().DATA_CREAZIONE);
 			fields.add(NotificaAppIO.model().STATO);
@@ -180,6 +181,10 @@ public class JDBCNotificaAppIOServiceSearchImpl implements IJDBCServiceSearchWit
 			for(Map<String, Object> map: returnMap) {
 				Long id_versamento = (Long) map.remove("id_versamento");
 				Long id_tipoVersamentoDominio = (Long)  map.remove("id_tipo_versamento_dominio");
+				Object id_rptObj = map.remove("id_rpt");
+				Long id_rpt = null;
+				if(id_rptObj instanceof Long)
+					id_rpt = (Long) id_rptObj; 
 				
 				NotificaAppIO notifica = (NotificaAppIO)this.getNotificaAppIOFetch().fetch(jdbcProperties.getDatabase(), NotificaAppIO.model(), map);
 				
@@ -190,6 +195,13 @@ public class JDBCNotificaAppIOServiceSearchImpl implements IJDBCServiceSearchWit
 				it.govpay.orm.IdTipoVersamentoDominio id_notificaAppIo_tipoVersamentoDominio = new it.govpay.orm.IdTipoVersamentoDominio();
 				id_notificaAppIo_tipoVersamentoDominio.setId(id_tipoVersamentoDominio);
 				notifica.setIdTipoVersamentoDominio(id_notificaAppIo_tipoVersamentoDominio);
+				
+				if(id_rpt != null) {
+					// Object _notifica_rpt (recupero id)
+					it.govpay.orm.IdRpt id_notifica_rpt = new it.govpay.orm.IdRpt();
+					id_notifica_rpt.setId(id_rpt);
+					notifica.setIdRpt(id_notifica_rpt);
+				}
 
 				list.add(notifica);
 	        }
@@ -511,6 +523,10 @@ public class JDBCNotificaAppIOServiceSearchImpl implements IJDBCServiceSearchWit
 				obj.getIdTipoVersamentoDominio().getIdTipoVersamento().setId(imgSaved.getIdTipoVersamentoDominio().getIdTipoVersamento().getId());
 			}
 		}
+		if(obj.getIdRpt()!=null && 
+				imgSaved.getIdRpt()!=null){
+			obj.getIdRpt().setId(imgSaved.getIdRpt().getId());
+		}
 
 	}
 	
@@ -619,6 +635,12 @@ public class JDBCNotificaAppIOServiceSearchImpl implements IJDBCServiceSearchWit
 			String tableName2 = this.getNotificaAppIOFieldConverter().toAliasTable(NotificaAppIO.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_versamento="+tableName2+".id");
 		}
+		
+		if(expression.inUseModel(NotificaAppIO.model().ID_RPT,false)){
+			String tableName1 = this.getNotificaAppIOFieldConverter().toAliasTable(NotificaAppIO.model());
+			String tableName2 = this.getNotificaAppIOFieldConverter().toAliasTable(NotificaAppIO.model().ID_RPT);
+			sqlQueryObject.addWhereCondition(tableName1+".id_rpt="+tableName2+".id");
+		}
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdNotifica id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -688,6 +710,14 @@ public class JDBCNotificaAppIOServiceSearchImpl implements IJDBCServiceSearchWit
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(NotificaAppIO.model().ID_TIPO_VERSAMENTO_DOMINIO.ID_TIPO_VERSAMENTO))
 			));
+
+		// NotificaAppIO.model().ID_RPT
+		mapTableToPKColumn.put(converter.toTable(NotificaAppIO.model().ID_RPT),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(NotificaAppIO.model().ID_RPT))
+			));
+
+
         return mapTableToPKColumn;		
 	}
 	

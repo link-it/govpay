@@ -644,6 +644,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link VistaVersamentoNonRendicontato }
+     */
+    public VistaVersamentoNonRendicontato createVistaVersamentoNonRendicontato() {
+        return new VistaVersamentoNonRendicontato();
+    }
+
+    /**
      * Create an instance of {@link Promemoria }
      */
     public Promemoria createPromemoria() {

@@ -75,6 +75,8 @@ public class RptFilter extends AbstractFilter {
 	private List<String> divisione;
 	private String tassonomia;
 	private String anagraficaDebitore;
+	private String versione;
+	private String modelloPagamento;
 
 	public RptFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -312,6 +314,22 @@ public class RptFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.ilike(RPT.model().ID_VERSAMENTO.DEBITORE_ANAGRAFICA, this.anagraficaDebitore, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.versione != null){
+				if(addAnd)
+					newExpression.and();
+ 
+				newExpression.equals(RPT.model().VERSIONE, this.versione);
+				addAnd = true;
+			}
+			
+			if(this.modelloPagamento != null){
+				if(addAnd)
+					newExpression.and();
+ 
+				newExpression.equals(RPT.model().MODELLO_PAGAMENTO, this.modelloPagamento);
 				addAnd = true;
 			}
 
@@ -640,6 +658,14 @@ public class RptFilter extends AbstractFilter {
 				
 				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.ID_VERSAMENTO.DEBITORE_ANAGRAFICA, true), this.anagraficaDebitore, true, true);
 			}
+			
+			if(this.versione != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.VERSIONE, true) + " = ? ");
+			}
+			
+			if(this.modelloPagamento != null){
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.MODELLO_PAGAMENTO, true) + " = ? ");
+			}
 
 			return sqlQueryObject;
 		} catch (ExpressionException e) {
@@ -759,6 +785,14 @@ public class RptFilter extends AbstractFilter {
 		
 		if(this.anagraficaDebitore != null) {
 			// donothing
+		}
+		
+		if(this.versione != null){
+			lst.add(this.versione);
+		}
+		
+		if(this.modelloPagamento != null){
+			lst.add(this.modelloPagamento);
 		}
 		
 		return lst.toArray(new Object[lst.size()]);
@@ -981,4 +1015,19 @@ public class RptFilter extends AbstractFilter {
 		this.anagraficaDebitore = anagraficaDebitore;
 	}
 
+	public String getVersione() {
+		return versione;
+	}
+
+	public void setVersione(String versione) {
+		this.versione = versione;
+	}
+
+	public String getModelloPagamento() {
+		return modelloPagamento;
+	}
+
+	public void setModelloPagamento(String modelloPagamento) {
+		this.modelloPagamento = modelloPagamento;
+	}
 }

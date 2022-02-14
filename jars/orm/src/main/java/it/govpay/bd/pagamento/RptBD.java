@@ -20,11 +20,13 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -46,6 +48,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.converter.RptConverter;
 import it.govpay.bd.pagamento.filters.RptFilter;
+import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.orm.IdRpt;
@@ -150,6 +153,50 @@ public class RptBD extends BasicBD {
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public Rpt getRpt(String codDominio, String iuv, ModelloPagamento modelloPagamento, it.govpay.model.Rpt.Versione versione, boolean deep) throws NotFoundException, ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getRptService().newExpression();
+			exp.equals(RPT.model().COD_DOMINIO, codDominio);
+			exp.and();
+			exp.equals(RPT.model().IUV, iuv);
+			exp.and();
+			exp.equals(RPT.model().MODELLO_PAGAMENTO, modelloPagamento.getCodifica()+"");
+			exp.and();
+			exp.equals(RPT.model().VERSIONE, versione.toString());
+			
+			RPTFieldConverter converter = new RPTFieldConverter(this.getJdbcProperties().getDatabase());
+			CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(RPT.model()));
+			IPaginatedExpression pagExpr = this.getRptService().toPaginatedExpression(exp);
+			pagExpr.addOrder(RPT.model().DATA_MSG_RICHIESTA, SortOrder.DESC);
+			List<Object> select = this.getRptService().select(pagExpr , cf);
+			
+			if(select != null && select.size() > 0) {
+				Object idObj = select.get(0); // prendo l'ultimo id
+				if(idObj instanceof Long) {
+					Long id = (Long) idObj;
+					return this.getRpt(id,deep);
+				}
+			} 
+
+			throw new NotFoundException("Nessuna RPT Dominio: ["+codDominio+"], Iuv: ["+iuv+"], ModelloPagamento: ["+modelloPagamento.name()
+				+"], Versione: ["+versione.name()+"] corrisponde ai parametri indicati.");
+		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
@@ -321,8 +368,65 @@ public class RptBD extends BasicBD {
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
 			
+			// questa procedura di recupero e' disponibile solo per le RPT SANP 2.3
+			exp.and();
+			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.Versione.SANP_230.toString());
+			
 			List<RPT> findAll = this.getRptService().findAll(exp);
 			return RptConverter.toDTOList(findAll);
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public List<Rpt> getRptScadute(String codDominio, Integer minutiSogliaScadenza, Integer offset, Integer limit) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IPaginatedExpression exp = this.getRptService().newPaginatedExpression();
+			exp.equals(RPT.model().COD_DOMINIO, codDominio);
+			exp.and();
+			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.Versione.SANP_240.toString());
+			
+			Date now = new Date();
+			Calendar c = Calendar.getInstance();
+			c.setTime(now);
+			c.add(Calendar.MINUTE, -minutiSogliaScadenza);
+			Date dataSoglia = c.getTime();
+			exp.lessThan(RPT.model().DATA_MSG_RICHIESTA, dataSoglia);
+			
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_NODO.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
+			
+			exp.offset(offset).limit(limit);
+			exp.addOrder(RPT.model().DATA_MSG_RICEVUTA, SortOrder.ASC);
+			
+			List<Rpt> rptLst = new ArrayList<>();
+			List<it.govpay.orm.RPT> rptVOLst = this.getRptService().findAll(exp);
+			for(it.govpay.orm.RPT rptVO: rptVOLst) {
+				Rpt rpt = RptConverter.toDTO(rptVO);
+				
+				try {
+					popolaRpt(true, rpt);
+				}catch (NotFoundException e) {} // pagamentoportale puo' non esserci
+				
+				rptLst.add(rpt);
+			}
+			
+			return rptLst;
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {

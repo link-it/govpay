@@ -109,32 +109,6 @@ Then status 201
 And match response == pendenzaCreataMSG
 And match response.idPendenza contains '' + idPendenza
 
-* copy pendenzaCreata = response
-
-* def dataEnd = getDateTime()
-
-Given url backofficeBaseurl
-And path '/pendenze'
-And param dataDa = dataStart	
-And param dataA = dataEnd
-And param mostraSpontaneiNonPagati = true		
-And headers gpAdminBasicAutenticationHeader
-When method get
-Then status 200
-And match response.risultati[0].idPendenza == pendenzaCreata.idPendenza
-And match response.risultati[0].numeroAvviso == pendenzaCreata.numeroAvviso
-And match response == 
-"""
-{
-	numRisultati: 1,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[1]'
-}
-"""
-
 Scenario: Aggiornamento di una pendenza di tipo spontaneo con utenza anonima
 
 * def dataStart = getDateTime()
@@ -168,31 +142,6 @@ And match response.idPendenza contains '' + idPendenza
 
 * copy pendenzaCreata = response
 
-* def dataEnd = getDateTime()
-
-Given url backofficeBaseurl
-And path '/pendenze'
-And param dataDa = dataStart	
-And param dataA = dataEnd
-And param mostraSpontaneiNonPagati = true		
-And headers gpAdminBasicAutenticationHeader
-When method get
-Then status 200
-And match response.risultati[0].idPendenza == pendenzaCreata.idPendenza
-And match response.risultati[0].numeroAvviso == pendenzaCreata.numeroAvviso
-And match response.risultati[0].importo == requestPendenza.importo
-And match response == 
-"""
-{
-	numRisultati: 1,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[1]'
-}
-"""
-
 * set requestPendenza.importo = 200.02
 
 Given url pagamentiBaseurl
@@ -204,34 +153,6 @@ When method post
 Then status 200
 And match response == pendenzaCreataMSG
 And match response.idPendenza contains '' + idPendenza
-
-* copy pendenzaAggiornata = response
-
-And match pendenzaCreata.idPendenza == pendenzaAggiornata.idPendenza
-And match pendenzaCreata.numeroAvviso == pendenzaAggiornata.numeroAvviso
-
-Given url backofficeBaseurl
-And path '/pendenze'
-And param dataDa = dataStart	
-And param dataA = dataEnd
-And param mostraSpontaneiNonPagati = true		
-And headers gpAdminBasicAutenticationHeader
-When method get
-Then status 200
-And match response.risultati[0].idPendenza == pendenzaAggiornata.idPendenza
-And match response.risultati[0].numeroAvviso == pendenzaAggiornata.numeroAvviso
-And match response.risultati[0].importo == requestPendenza.importo
-And match response == 
-"""
-{
-	numRisultati: 1,
-	numPagine: 1,
-	risultatiPerPagina: 25,
-	pagina: 1,
-	prossimiRisultati: '##null',
-	risultati: '#[1]'
-}
-"""
 
 Scenario: Aggiornamento di una pendenza di tipo spontaneo con utenza anonima, parametri update non validi
 
@@ -263,6 +184,8 @@ When method post
 Then status 201
 And match response == pendenzaCreataMSG
 And match response.idPendenza contains '' + idPendenza
+
+* copy pendenzaCreata = response
 
 Given url pagamentiBaseurl
 And path '/pendenze', idDominio, idTipoPendenzaCOSAP

@@ -33,6 +33,8 @@
    "importo":"#(importo)",
    "data":"#notnull",
    "sct":"#notnull",
+   "iuv":"##string",
+   "idFlusso":"##string",
    "riscossioni":[
       {
          "idDominio":"#(idDominio)",

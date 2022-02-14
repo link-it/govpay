@@ -1,24 +1,27 @@
 package it.govpay.backoffice.v1.beans.converter;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.backoffice.v1.beans.RendicontazioneConFlussoEVocePendenza;
 import it.govpay.backoffice.v1.beans.Segnalazione;
+import it.govpay.bd.BDConfigWrapper;
 import it.govpay.model.Rendicontazione.Anomalia;
 
 public class RendicontazioniConverter {
 
-	public static RendicontazioneConFlussoEVocePendenza toRsModel(it.govpay.bd.viste.model.Rendicontazione rendicontazione) throws ServiceException {
+	public static RendicontazioneConFlussoEVocePendenza toRsModel(it.govpay.bd.viste.model.Rendicontazione rendicontazione, BDConfigWrapper configWrapper) throws ServiceException, IOException, ValidationException {
 		
 		RendicontazioneConFlussoEVocePendenza rsModel = new RendicontazioneConFlussoEVocePendenza();
 		
 		rsModel.setFlussoRendicontazione(FlussiRendicontazioneConverter.toRsIndexModel(rendicontazione.getFr()));
 		
-		rsModel.setVocePendenza(PendenzeConverter.toVocePendenzaRendicontazioneRsModel(rendicontazione.getSingoloVersamento(), rendicontazione.getVersamento()));
+		rsModel.setVocePendenza(PendenzeConverter.toVocePendenzaRendicontazioneRsModel(rendicontazione.getSingoloVersamento(), rendicontazione.getVersamento(), configWrapper));
 		
 		rsModel.setData(rendicontazione.getRendicontazione().getData());
 		if(rendicontazione.getRendicontazione().getEsito() != null)

@@ -1,10 +1,12 @@
 package it.govpay.ragioneria.v2.beans.converter;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
@@ -56,7 +58,8 @@ public class PendenzeConverter {
 		return rsModel;
 	}
 
-	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice) throws ServiceException {
+	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice) throws ServiceException, IOException, ValidationException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		VocePendenza rsModel = new VocePendenza();
 		
 		if(singoloVersamento.getDatiAllegati() != null)
@@ -67,7 +70,11 @@ public class PendenzeConverter {
 		rsModel.setIdVocePendenza(singoloVersamento.getCodSingoloVersamentoEnte());
 		rsModel.setImporto(singoloVersamento.getImportoSingoloVersamento());
 		rsModel.setIndice(new BigDecimal(indice));
-		rsModel.setPendenza(toRsModel(singoloVersamento.getVersamento(null)));
+		rsModel.setPendenza(toRsModel(singoloVersamento.getVersamentoBD(null)));
+		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
+		if(singoloVersamento.getDominio(configWrapper) != null) {
+			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
+		}
 		return rsModel;
 	}
 

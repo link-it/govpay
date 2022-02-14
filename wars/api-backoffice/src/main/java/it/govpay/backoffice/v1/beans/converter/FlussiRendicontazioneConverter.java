@@ -1,10 +1,12 @@
 package it.govpay.backoffice.v1.beans.converter;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.backoffice.v1.beans.FlussoRendicontazione;
 import it.govpay.backoffice.v1.beans.FlussoRendicontazioneIndex;
@@ -16,7 +18,7 @@ import it.govpay.model.Fr.StatoFr;
 
 public class FlussiRendicontazioneConverter {
 
-	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr) throws ServiceException {
+	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr, List<it.govpay.bd.viste.model.Rendicontazione> listaRendicontazioni) throws ServiceException, IOException, ValidationException {
 		FlussoRendicontazione rsModel = new FlussoRendicontazione();
 		rsModel.setIdFlusso(fr.getCodFlusso());
 		rsModel.setDataFlusso(fr.getDataFlusso());
@@ -40,8 +42,10 @@ public class FlussiRendicontazioneConverter {
 		rsModel.setRagioneSocialePsp(fr.getRagioneSocialePsp());
 
 		List<it.govpay.backoffice.v1.beans.Rendicontazione> rendicontazioniLst = new ArrayList<>();
-		for(Rendicontazione rendicontazione: fr.getRendicontazioni(null)) {
-			rendicontazioniLst.add(toRendicontazioneRsModel(rendicontazione));
+		if(listaRendicontazioni != null) {
+			for(it.govpay.bd.viste.model.Rendicontazione rendicontazione: listaRendicontazioni) {
+				rendicontazioniLst.add(toRendicontazioneRsModel(rendicontazione));
+			}
 		}
 		rsModel.setRendicontazioni(rendicontazioniLst);
 		
@@ -102,8 +106,36 @@ public class FlussiRendicontazioneConverter {
 
 		return rsModel;
 	}
+	
+	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(it.govpay.bd.viste.model.Rendicontazione dto) throws ServiceException, IOException, ValidationException {
+		it.govpay.backoffice.v1.beans.Rendicontazione rsModel = new it.govpay.backoffice.v1.beans.Rendicontazione();
+		
+		Rendicontazione rendicontazione = dto.getRendicontazione();
+		
+		rsModel.setIuv(rendicontazione.getIuv());
+		rsModel.setIur(rendicontazione.getIur());
+		if(rendicontazione.getIndiceDati()!=null)
+			rsModel.setIndice(new BigDecimal(rendicontazione.getIndiceDati()));
+		
+		rsModel.setImporto(rendicontazione.getImporto());
+		
+		if(rendicontazione.getEsito() != null)
+			rsModel.setEsito(new BigDecimal(rendicontazione.getEsito().getCodifica()));
+		rsModel.setData(rendicontazione.getData());
+		if(rendicontazione.getAnomalie() != null) {
+			List<Segnalazione> segnalazioni = new ArrayList<>();
+			for(it.govpay.model.Rendicontazione.Anomalia anomalia: rendicontazione.getAnomalie()) {
+				segnalazioni.add(new Segnalazione().codice(anomalia.getCodice()).descrizione(anomalia.getDescrizione()));
+			}
+			rsModel.setSegnalazioni(segnalazioni);
+		}
+		
+		if(dto.getPagamento() != null)
+			rsModel.setRiscossione(RiscossioniConverter.toRsModel(dto.getPagamento()));
+		return rsModel;
+	}
 
-	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione) throws ServiceException {
+	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione) throws ServiceException, IOException, ValidationException {
 		it.govpay.backoffice.v1.beans.Rendicontazione rsModel = new it.govpay.backoffice.v1.beans.Rendicontazione();
 		rsModel.setIuv(rendicontazione.getIuv());
 		rsModel.setIur(rendicontazione.getIur());

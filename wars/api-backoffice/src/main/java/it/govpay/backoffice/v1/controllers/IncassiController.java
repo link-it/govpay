@@ -13,6 +13,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -20,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.Incasso;
 import it.govpay.backoffice.v1.beans.IncassoPost;
 import it.govpay.backoffice.v1.beans.ListaIncassiIndex;
+import it.govpay.backoffice.v1.beans.TipoRiscossione;
 import it.govpay.backoffice.v1.beans.converter.IncassiConverter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
@@ -31,12 +34,14 @@ import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
+import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 
@@ -47,7 +52,7 @@ public class IncassiController extends BaseController {
 	}
 
 
-	public Response findRiconciliazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean metadatiPaginazione, Boolean maxRisultati, String sct) {
+	public Response findRiconciliazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean metadatiPaginazione, Boolean maxRisultati, String sct, String idFlusso, String iuv) {
 		String methodName = "findRiconciliazioni";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -66,6 +71,17 @@ public class IncassiController extends BaseController {
 			listaIncassoDTO.setEseguiCount(metadatiPaginazione);
 			listaIncassoDTO.setEseguiCountConLimit(maxRisultati);
 			listaIncassoDTO.setSct(sct);
+			
+			if(iuv != null) {
+				// se ho ricevuto un numero avviso lo converto in iuv
+				if(iuv.length() == 18) {
+					iuv = IuvUtils.toIuv(iuv);
+				}
+				
+				listaIncassoDTO.setIuv(iuv);
+			}
+			
+			listaIncassoDTO.setCodFlusso(idFlusso);
 			
 			if(dataDa != null) {
 				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
@@ -102,7 +118,7 @@ public class IncassiController extends BaseController {
 	}
 
 
-	public Response getRiconciliazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
+	public Response getRiconciliazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso, List<String> riscossioniTipo) {
 		String methodName = "getRiconciliazione";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -117,11 +133,30 @@ public class IncassiController extends BaseController {
 
 			LeggiIncassoDTO leggiIncassoDTO = new LeggiIncassoDTO(user);
 			leggiIncassoDTO.setIdDominio(idDominio);
-			leggiIncassoDTO.setIdIncasso(idIncasso);
+			leggiIncassoDTO.setIdRiconciliazione(idIncasso);
 
 			if(!AuthorizationManager.isDominioAuthorized(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio(), null);
 			}
+			
+			List<TipoPagamento> tipoEnum = new ArrayList<>();
+			if(riscossioniTipo == null || riscossioniTipo.isEmpty()) { // valori di default
+				tipoEnum.add(TipoPagamento.ENTRATA);
+				tipoEnum.add(TipoPagamento.MBT);
+			}
+
+			if(riscossioniTipo!=null) {
+				for (String tipoS : riscossioniTipo) {
+					TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipoS);
+					if(tipoRiscossione != null) {
+						tipoEnum.add(TipoPagamento.valueOf(tipoRiscossione.toString()));
+					} else {
+						throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" + riscossioniTipo + "] valori possibili " + ArrayUtils.toString(TipoRiscossione.values()));
+					}
+				}
+			}
+			
+			leggiIncassoDTO.setTipoRiscossioni(tipoEnum);
 
 			IncassiDAO incassiDAO = new IncassiDAO();
 

@@ -51,6 +51,7 @@ import java.io.Serializable;
  * 			&lt;element name="tentativiSpedizione" type="{http://www.w3.org/2001/XMLSchema}unsignedLong" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idMessaggio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="statoMessaggio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idRpt" type="{http://www.govpay.it/orm}id-rpt" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -80,7 +81,8 @@ import java.io.Serializable;
   	"dataProssimaSpedizione",
   	"tentativiSpedizione",
   	"idMessaggio",
-  	"statoMessaggio"
+  	"statoMessaggio",
+  	"idRpt"
   }
 )
 
@@ -232,6 +234,14 @@ public class NotificaAppIO extends org.openspcoop2.utils.beans.BaseBean implemen
     this.statoMessaggio = statoMessaggio;
   }
 
+  public IdRpt getIdRpt() {
+    return this.idRpt;
+  }
+
+  public void setIdRpt(IdRpt idRpt) {
+    this.idRpt = idRpt;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -315,5 +325,8 @@ public class NotificaAppIO extends org.openspcoop2.utils.beans.BaseBean implemen
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="statoMessaggio",required=false,nillable=false)
   protected java.lang.String statoMessaggio;
+
+  @XmlElement(name="idRpt",required=false,nillable=false)
+  protected IdRpt idRpt;
 
 }

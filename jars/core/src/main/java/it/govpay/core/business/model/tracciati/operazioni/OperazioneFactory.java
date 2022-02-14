@@ -55,7 +55,7 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.core.utils.tracciati.TracciatiUtils;
-import it.govpay.core.utils.validator.PendenzaPostValidator;
+import it.govpay.core.utils.tracciati.validator.PendenzaPostValidator;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
@@ -81,7 +81,7 @@ public class OperazioneFactory {
 
 			Versamento versamento = new Versamento();
 			
-			boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
+			boolean generaIuv = VersamentoUtils.generaIUV(versamentoModel, configWrapper);
 			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, null, null, null);
 			Dominio dominio = versamentoModel.getDominio(configWrapper);
 			it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel,versamentoModel.getApplicazione(configWrapper), dominio);
@@ -195,7 +195,7 @@ public class OperazioneFactory {
 
 			Versamento versamento = new Versamento();
 
-			boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
+			boolean generaIuv = VersamentoUtils.generaIUV(versamentoModel, configWrapper);
 			Boolean avvisatura = trasformazioneResponse.getAvvisatura();
 			Date dataAvvisatura = trasformazioneResponse.getDataAvvisatura();
 			versamentoModel = versamento.caricaVersamento(versamentoModel, generaIuv, true, avvisatura,dataAvvisatura, null);
@@ -462,7 +462,7 @@ public class OperazioneFactory {
 				//inserisco il tipo
 				versamentoModel.setTipo(TipologiaTipoVersamento.DOVUTO);
 
-				boolean generaIuv = versamentoModel.getNumeroAvviso() == null && versamentoModel.getSingoliVersamenti(basicBD).size() == 1;
+				boolean generaIuv = VersamentoUtils.generaIUV(versamentoModel, configWrapper);
 				Boolean avvisatura = trasformazioneResponse.getAvvisatura();
 				Date dataAvvisatura = trasformazioneResponse.getDataAvvisatura();
 					

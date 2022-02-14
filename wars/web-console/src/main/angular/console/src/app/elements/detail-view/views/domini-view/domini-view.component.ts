@@ -35,6 +35,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   protected logo: any = null;
   protected logoError: boolean = false;
   protected _hasAssociazioniPendenza: boolean = false;
+  protected _isIntermediato: boolean = false;
 
   protected _IBAN = UtilService.IBAN_ACCREDITO;
   protected _ENTRATA_DOMINIO = UtilService.ENTRATA_DOMINIO;
@@ -42,23 +43,26 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   protected _CONNETTORE_MY_PIVOT = UtilService.CONNETTORE_MY_PIVOT;
   protected _CONNETTORE_SECIM = UtilService.CONNETTORE_SECIM;
   protected _CONNETTORE_GOVPAY = UtilService.CONNETTORE_GOVPAY;
+  protected _CONNETTORE_HYPERSIC = UtilService.CONNETTORE_HYPERSIC;
   protected _UNITA = UtilService.UNITA_OPERATIVA;
   protected _PLUS_CREDIT = UtilService.USER_ACL.hasCreditore;
 
   protected _paginatorOptions: any = {
-    unita: { page: 0, pages: 1, risultati: [], url: '', search: '', refresh: false },
-    iban: { page: 0, pages: 1, risultati: [], url: '', search: '', refresh: false },
-    entrate: { page: 0, pages: 1, risultati: [], url: '', search: '', refresh: false },
-    pendenze: { page: 0, pages: 1, risultati: [], url: '', search: '', refresh: false }
+    unita: { page: 0, pages: 1, risultati: [], base: '', url: '', search: '', refresh: false },
+    iban: { page: 0, pages: 1, risultati: [], base: '', url: '', search: '', refresh: false },
+    entrate: { page: 0, pages: 1, risultati: [], base: '', url: '', search: '', refresh: false },
+    pendenze: { page: 0, pages: 1, risultati: [], base: '', url: '', search: '', refresh: false }
   };
   protected _availableConnectors: SimpleListItem[] = [];
 
   constructor(private _sanitizer: DomSanitizer, public gps: GovpayService, public us: UtilService) { }
 
   ngOnInit() {
+    this._paginatorOptions.iban.base = this.json.contiAccredito;
+    this._paginatorOptions.unita.base = this.json.unitaOperative;
+    this._paginatorOptions.entrate.base = this.json.entrate;
+    this._paginatorOptions.pendenze.base = this.json.tipiPendenza;
     this.dettaglioDominio();
-    this.associazioniDisponibili();
-    this.elencoMultiplo();
   }
 
   ngAfterViewInit() {
@@ -94,21 +98,24 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       });
   }
 
-  protected elencoMultiplo() {
-    this._paginatorOptions.unita.url = this.json.unitaOperative+'?risultatiPerPagina=5&ordinamento=ragioneSociale';
-    this._paginatorOptions.iban.url = this.json.contiAccredito+'?risultatiPerPagina=5&ordinamento=ibanAccredito';
-    this._paginatorOptions.entrate.url = this.json.entrate+'?risultatiPerPagina=5&ordinamento=descrizione';
-    this._paginatorOptions.pendenze.url = this.json.tipiPendenza+'?risultatiPerPagina=5&ordinamento=descrizione';
+  protected elencoMultiplo(isIntermediato: boolean) {
+    this._paginatorOptions.iban.url = this._paginatorOptions.iban.base+'?risultatiPerPagina=5&ordinamento=ibanAccredito';
+    this._paginatorOptions.unita.url = this._paginatorOptions.unita.base+'?risultatiPerPagina=5&ordinamento=ragioneSociale';
+    this._paginatorOptions.entrate.url = this._paginatorOptions.entrate.base+'?risultatiPerPagina=5&ordinamento=descrizione';
+    this._paginatorOptions.pendenze.url = this._paginatorOptions.pendenze.base+'?risultatiPerPagina=5&ordinamento=descrizione';
+    const reqs: string[] = [ this._paginatorOptions.iban.url ];
+    if (isIntermediato) {
+      reqs.push(this._paginatorOptions.unita.url, this._paginatorOptions.entrate.url, this._paginatorOptions.pendenze.url);
+    }
     this.gps.updateSpinner(true);
-    this.gps.forkService([ this._paginatorOptions.unita.url, this._paginatorOptions.iban.url,
-      this._paginatorOptions.entrate.url, this._paginatorOptions.pendenze.url ]).subscribe(
+    this.gps.forkService(reqs).subscribe(
     (_responses :any) => {
       this.gps.updateSpinner(false);
       const _options: any = {
-        unita: _responses[0].body,
-        iban: _responses[1].body,
-        entrate: _responses[2].body,
-        pendenze: _responses[3].body
+        iban: _responses[0].body,
+        unita: (isIntermediato)?_responses[1].body:null,
+        entrate: (isIntermediato)?_responses[2].body:null,
+        pendenze: (isIntermediato)?_responses[3].body:null
       };
       this.updateOptions(_options);
     },
@@ -119,22 +126,22 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
   }
 
   protected updateOptions(options: any, type: string = 'all') {
-    if (type === this._UNITA || type === 'all') {
-      this._paginatorOptions.unita.pages = options.unita.numPagine || 1;
-      this._paginatorOptions.unita.page = options.unita.pagina || 1;
-      this.elencoUnitaOperative(options.unita.risultati);
-    }
     if (type === this._IBAN || type === 'all') {
       this._paginatorOptions.iban.pages = options.iban.numPagine || 1;
       this._paginatorOptions.iban.page = options.iban.pagina || 1;
       this.elencoAccreditiIban(options.iban.risultati);
     }
-    if (type === this._ENTRATA_DOMINIO || type === 'all') {
+    if (options.unita && (type === this._UNITA || type === 'all')) {
+      this._paginatorOptions.unita.pages = options.unita.numPagine || 1;
+      this._paginatorOptions.unita.page = options.unita.pagina || 1;
+      this.elencoUnitaOperative(options.unita.risultati);
+    }
+    if (options.entrate && (type === this._ENTRATA_DOMINIO || type === 'all')) {
       this._paginatorOptions.entrate.pages = options.entrate.numPagine || 1;
       this._paginatorOptions.entrate.page = options.entrate.pagina || 1;
       this.elencoEntrateDominio(options.entrate.risultati);
     }
-    if (type === this._TIPI_PENDENZA_DOMINIO || type === 'all') {
+    if (options.pendenze && (type === this._TIPI_PENDENZA_DOMINIO || type === 'all')) {
       this._paginatorOptions.pendenze.pages = options.pendenze.numPagine || 1;
       this._paginatorOptions.pendenze.page = options.pendenze.pagina || 1;
       this.elencoTipiPendenzaDominio(options.pendenze.risultati);
@@ -189,6 +196,9 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
 
   protected mapJsonDetail(json: any) {
     let _dettaglio = { info: [], infoPA: [], infoExtra: [], iban: [], entrate: [], unita: [] };
+    if (json.intermediato === undefined || json.intermediato === null) {
+      json.intermediato = true;
+    }
     if (json.ragioneSociale) {
       _dettaglio.info.push(new Dato({ label: Voce.RAGIONE_SOCIALE, value: json.ragioneSociale }));
     }
@@ -232,34 +242,42 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       _dettaglio.info.push(new Dato({ label: Voce.WEB_SITE, value: json.web }));
     }
     _dettaglio.info.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[json.abilitato.toString()] }));
+    _dettaglio.info.push(new Dato({ label: Voce.INTERMEDIATO, value: UtilService.ABILITA[json.intermediato.toString()] }));
 
-    if (json.stazione) {
-      _dettaglio.infoPA.push(new Dato({ label: Voce.ID_STAZIONE, value: json.stazione }));
-    }
-    if (json.cbill) {
-      _dettaglio.infoPA.push(new Dato({ label: Voce.CODICE_INTERBANCARIO, value: json.cbill }));
-    }
-    if (json.auxDigit) {
-      _dettaglio.infoPA.push(new Dato({ label: Voce.AUX_DIGIT, value: json.auxDigit }));
-    }
-    if (json.segregationCode) {
-      _dettaglio.infoPA.push(new Dato({ label: Voce.SECRET_CODE, value: json.segregationCode }));
-    }
-    if (json.autStampaPosteItaliane) {
-      _dettaglio.infoExtra.push(new Dato({ label: Voce.AUT_PT, value: json.autStampaPosteItaliane }));
-    }
-    if (json.iuvPrefix) {
-      _dettaglio.infoExtra.push(new Dato({ label: Voce.IUV_SINTAX, value: json.iuvPrefix }));
+    if (json.intermediato) {
+      if (json.stazione) {
+        _dettaglio.infoPA.push(new Dato({ label: Voce.ID_STAZIONE, value: json.stazione }));
+      }
+      if (json.cbill) {
+        _dettaglio.infoPA.push(new Dato({ label: Voce.CODICE_INTERBANCARIO, value: json.cbill }));
+      }
+      if (json.auxDigit) {
+        _dettaglio.infoPA.push(new Dato({ label: Voce.AUX_DIGIT, value: json.auxDigit }));
+      }
+      if (json.segregationCode) {
+        _dettaglio.infoPA.push(new Dato({ label: Voce.SECRET_CODE, value: json.segregationCode }));
+      }
+      if (json.autStampaPosteItaliane) {
+        _dettaglio.infoExtra.push(new Dato({ label: Voce.AUT_PT, value: json.autStampaPosteItaliane }));
+      }
+      if (json.iuvPrefix) {
+        _dettaglio.infoExtra.push(new Dato({ label: Voce.IUV_SINTAX, value: json.iuvPrefix }));
+      }
     }
 
     this.logoError = false;
-    this.logo = json.logo?this._sanitizer.bypassSecurityTrustUrl(json.logo):this.NO_LOGO;
+    if (json.logo) {
+      this.__asyncLoadingLogo(json.logo);
+    } else {
+      this.logo = this.NO_LOGO;
+    }
 
     this.informazioni = _dettaglio.info.slice(0);
     this.informazioniPA = _dettaglio.infoPA.slice(0);
     this.informazioniExtra = _dettaglio.infoExtra.slice(0);
 
     const _connettori: any[] = [];
+
     // MyPivot
     if (json.servizioMyPivot && json.servizioMyPivot.abilitato) {
       const p = new Parameters();
@@ -284,8 +302,33 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       p.model = this._mapNewItemByType(json.servizioGovPay, this._CONNETTORE_GOVPAY);
       _connettori.push(p);
     }
+    // HyperSicAPKappa
+    if (json.servizioHyperSicAPKappa && json.servizioHyperSicAPKappa.abilitato) {
+      const p = new Parameters();
+      p.id = this._CONNETTORE_HYPERSIC;
+      p.jsonP = json.servizioHyperSicAPKappa;
+      p.model = this._mapNewItemByType(json.servizioHyperSicAPKappa, this._CONNETTORE_HYPERSIC);
+      _connettori.push(p);
+    }
     this.connettori = [].concat(_connettori);
     this.filtroConnettori();
+
+    this.associazioniDisponibili();
+
+    this.elencoMultiplo(json.intermediato);
+    this._isIntermediato = json.intermediato;
+  }
+
+  protected __asyncLoadingLogo(uri: string) {
+    this.gps.multiExportService([uri], ['application/*'], ['text']).subscribe(
+      (responses: any) => {
+        const bin: string = responses[0].body || '';
+        this.logo = this._sanitizer.bypassSecurityTrustUrl(bin);
+      },
+      (error: any) => {
+        this.logoError = true;
+        console.log('Logo Error', error);
+      });
   }
 
   protected elencoUnitaOperative(jsonList: any[]) {
@@ -370,6 +413,9 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         if (type === this._CONNETTORE_GOVPAY) {
           delete this.json.servizioGovPay;
         }
+        if (type === this._CONNETTORE_HYPERSIC) {
+          delete this.json.servizioHyperSicAPKappa;
+        }
         delete this.json.entrate;
         delete this.json.unitaOperative;
         delete this.json.contiAccredito;
@@ -447,6 +493,10 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         _std.titolo = new Dato({ value: 'GovPay' });
         _std.sottotitolo = new Dato({ label: Voce.MODALITA_CONNETTORE+': ', value: item.tipoConnettore });
       break;
+      case this._CONNETTORE_HYPERSIC:
+        _std.titolo = new Dato({ value: 'Suite HyperSIC - APKappa' });
+        _std.sottotitolo = new Dato({ label: Voce.MODALITA_CONNETTORE+': ', value: item.tipoConnettore });
+      break;
     }
     return _std;
   }
@@ -504,6 +554,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       case this._CONNETTORE_MY_PIVOT:
       case this._CONNETTORE_SECIM:
       case this._CONNETTORE_GOVPAY:
+      case this._CONNETTORE_HYPERSIC:
         _mb.info = {
           viewModel: _viewModel,
           parent: this,
@@ -517,6 +568,10 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         if (type === this._CONNETTORE_GOVPAY) {
           _mb.info.dialogTitle = (!mode)?'Nuovo connettore GovPay':'Modifica connettore GovPay';
           _mb.info.templateName = this._CONNETTORE_GOVPAY;
+        }
+        if (type === this._CONNETTORE_HYPERSIC) {
+          _mb.info.dialogTitle = (!mode)?'Nuovo connettore Suite HyperSIC - APKappa':'Modifica connettore Suite HyperSIC - APKappa';
+          _mb.info.templateName = this._CONNETTORE_HYPERSIC;
         }
         UtilService.blueDialogBehavior.next(_mb);
         break;
@@ -545,6 +600,9 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
           if (this.json.servizioGovPay) {
             _json.servizioGovPay = this.json.servizioGovPay;
           }
+          if (this.json.servizioHyperSicAPKappa) {
+            _json.servizioHyperSicAPKappa = this.json.servizioHyperSicAPKappa;
+          }
         }
         delete _json.idDominio;
       break;
@@ -571,6 +629,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       case this._CONNETTORE_MY_PIVOT:
       case this._CONNETTORE_SECIM:
       case this._CONNETTORE_GOVPAY:
+      case this._CONNETTORE_HYPERSIC:
         _json = JSON.parse(JSON.stringify(this.json));
         if (mb.info.templateName === this._CONNETTORE_MY_PIVOT) {
           _json.servizioMyPivot = JSON.parse(JSON.stringify(mb.info.viewModel));
@@ -580,6 +639,9 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         }
         if (mb.info.templateName === this._CONNETTORE_GOVPAY) {
           _json.servizioGovPay = JSON.parse(JSON.stringify(mb.info.viewModel));
+        }
+        if (mb.info.templateName === this._CONNETTORE_HYPERSIC) {
+          _json.servizioHyperSicAPKappa = JSON.parse(JSON.stringify(mb.info.viewModel));
         }
         delete _json.idDominio;
         delete _json.entrate;
@@ -695,6 +757,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
         case this._CONNETTORE_MY_PIVOT:
         case this._CONNETTORE_SECIM:
         case this._CONNETTORE_GOVPAY:
+        case this._CONNETTORE_HYPERSIC:
           this.dettaglioDominio();
         break;
       }

@@ -30,3 +30,11 @@ Nel caso di aggiornamento di una minor version, ad esempio per aggiornare la ver
 
 Si consiglia di effettuare le operazioni di aggiornamento con l'Application Server spento
 e di eseguire un backup del DB prima di applicare le patch.
+
+Aggiornamento da versioni precedenti alla v3.5.0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Il nuovo client HTTP utilizzato da GovPay ignora la configurazione del keystore e trustore della JVM. 
+Risulta quindi necessario verificare che i parametri per l'autenticazione SSL, ove prevista, siano
+specificati tramite Cruscotto di Backoffice nella configurazione delle Applicazioni e degli Intermediari.
+

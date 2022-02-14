@@ -200,6 +200,13 @@ public class VistaEventiRptFieldConverter extends AbstractSQLFieldConverter {
 				return "id_sessione";
 			}
 		}
+		if(field.equals(Evento.model().SEVERITA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".severita";
+			}else{
+				return "severita";
+			}
+		}
 		if(field.equals(Evento.model().ID_FR.COD_FLUSSO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_flusso";
@@ -305,11 +312,11 @@ public class VistaEventiRptFieldConverter extends AbstractSQLFieldConverter {
 				return "obsoleto";
 			}
 		}
-		if(field.equals(Evento.model().ID_INCASSO.TRN)){
+		if(field.equals(Evento.model().ID_INCASSO.IDENTIFICATIVO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".trn";
+				return this.toAliasTable(field)+".identificativo";
 			}else{
-				return "trn";
+				return "identificativo";
 			}
 		}
 		if(field.equals(Evento.model().ID_INCASSO.COD_DOMINIO)){
@@ -396,6 +403,9 @@ public class VistaEventiRptFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Evento.model().ID_SESSIONE)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
+		if(field.equals(Evento.model().SEVERITA)){
+			return this.toTable(Evento.model(), returnAlias);
+		}
 		if(field.equals(Evento.model().ID_FR.COD_FLUSSO)){
 			return this.toTable(Evento.model().ID_FR, returnAlias);
 		}
@@ -441,7 +451,7 @@ public class VistaEventiRptFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Evento.model().ID_FR.OBSOLETO)){
 			return this.toTable(Evento.model().ID_FR, returnAlias);
 		}
-		if(field.equals(Evento.model().ID_INCASSO.TRN)){
+		if(field.equals(Evento.model().ID_INCASSO.IDENTIFICATIVO)){
 			return this.toTable(Evento.model().ID_INCASSO, returnAlias);
 		}
 		if(field.equals(Evento.model().ID_INCASSO.COD_DOMINIO)){

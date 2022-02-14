@@ -34,7 +34,8 @@ public class LoginController extends BaseController {
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
 			if(urlID == null) {
-				throw new NonTrovataException("URL-ID non specificato.");
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+				return this.handleResponseOk(Response.ok(),transactionId).build();
 			} else {
 				Properties props = GovpayConfig.getInstance().getApiUserLoginRedirectURLs();
 				
@@ -73,8 +74,6 @@ public class LoginController extends BaseController {
 			this.log(this.context);
 		}
     }
-
-
 }
 
 

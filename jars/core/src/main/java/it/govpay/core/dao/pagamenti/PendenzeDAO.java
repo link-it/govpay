@@ -34,6 +34,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -41,6 +42,7 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 //import it.govpay.bd.model.Evento;
@@ -90,9 +92,10 @@ import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.TracciatiConverter;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.core.utils.validator.PendenzaPostValidator;
+import it.govpay.core.utils.tracciati.validator.PendenzaPostValidator;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
 import it.govpay.model.StatoPendenza;
@@ -493,6 +496,8 @@ public class PendenzeDAO extends BaseDAO{
 			RptFilter newFilter2 = rptBD.newFilter();
 			newFilter2.setIdPendenza(versamento.getCodVersamentoEnte());
 			newFilter2.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
+			FilterSortWrapper ordinamentoRPT = new FilterSortWrapper(it.govpay.orm.RPT.model().DATA_MSG_RICHIESTA,SortOrder.ASC);
+			newFilter2.addFilterSort(ordinamentoRPT);
 			long count = rptBD.count(newFilter2);
 
 			if(count > 0) {
@@ -763,14 +768,15 @@ public class PendenzeDAO extends BaseDAO{
 
 		switch (nuovoStato) {
 		case ANNULLATO:
-			if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
+			if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)
+					|| versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
 				versamentoLetto.setStatoVersamento(StatoVersamento.ANNULLATO);
 				versamentoLetto.setAvvisoNotificato(null);
 				versamentoLetto.setAvvAppIOPromemoriaScadenzaNotificato(null); 
 				versamentoLetto.setAvvMailPromemoriaScadenzaNotificato(null);
 				//				eventoUtente.setDettaglioEsito("Pendenza annullata");
 			} else {
-				throw new ValidationException("Non e' consentito aggiornare lo stato di una pendenza ad ANNULLATO da uno stato diverso da NON_ESEGUITO");
+				throw new ValidationException("Non e' consentito aggiornare lo stato di una pendenza ad ANNULLATO da uno stato diverso da NON_ESEGUITO o ANNULLATO");
 			}
 			break;
 		case NON_ESEGUITO:
@@ -863,7 +869,7 @@ public class PendenzeDAO extends BaseDAO{
 				applicazioniBD.autorizzaApplicazione(putVersamentoDTO.getVersamento().getCodApplicazione(), applicazioneAutenticata, configWrapper);
 
 
-			boolean generaIuv = versamento.getNumeroAvviso() == null && versamento.getSingoliVersamenti().size() == 1;
+			boolean generaIuv = VersamentoUtils.generaIUV(versamento, configWrapper);
 			versamento = versamentoBusiness.caricaVersamento(versamento, generaIuv, true, putVersamentoDTO.getAvvisatura(), putVersamentoDTO.getDataAvvisatura(),null);
 			createOrUpdatePendenzaResponse.setCreated(versamento.isCreated());
 			createOrUpdatePendenzaResponse.setVersamento(versamento);
@@ -883,6 +889,7 @@ public class PendenzeDAO extends BaseDAO{
 				printAvvisoDTO.setIuv(iuv.getIuv());
 				printAvvisoDTO.setVersamento(versamento); 
 				printAvvisoDTO.setSalvaSuDB(false);
+				printAvvisoDTO.setSdfDataScadenza(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA());
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 				createOrUpdatePendenzaResponse.setPdf(Base64.getEncoder().encodeToString(printAvvisoDTOResponse.getAvviso().getPdf()));
 			} else { // non devo fare la stampa.
@@ -1015,8 +1022,8 @@ public class PendenzeDAO extends BaseDAO{
 			chiediVersamento.setTipo(putVersamentoDTO.getTipo());
 
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
-			boolean generaIuv = chiediVersamento.getNumeroAvviso() == null && chiediVersamento.getSingoliVersamenti().size() == 1;
-			versamentoBusiness.caricaVersamento(chiediVersamento, generaIuv, true, putVersamentoDTO.getAvvisatura(), putVersamentoDTO.getDataAvvisatura(),null);
+			boolean generaIuv = VersamentoUtils.generaIUV(chiediVersamento, configWrapper);
+			versamentoBusiness.caricaVersamento(chiediVersamento, generaIuv, true, putVersamentoDTO.getAvvisatura(), putVersamentoDTO.getDataAvvisatura(),null, putVersamentoDTO.isInserimentoDB());
 
 			// restituisco il versamento creato
 			createOrUpdatePendenzaResponse.setVersamento(chiediVersamento);
@@ -1036,6 +1043,7 @@ public class PendenzeDAO extends BaseDAO{
 				printAvvisoDTO.setIuv(iuv.getIuv());
 				printAvvisoDTO.setVersamento(chiediVersamento); 
 				printAvvisoDTO.setSalvaSuDB(false);
+				printAvvisoDTO.setSdfDataScadenza(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA());
 				PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 				createOrUpdatePendenzaResponse.setPdf(Base64.getEncoder().encodeToString(printAvvisoDTOResponse.getAvviso().getPdf()));
 			} else { // non devo fare la stampa.
@@ -1079,6 +1087,7 @@ public class PendenzeDAO extends BaseDAO{
 			printAvvisoDTO.setIuv(versamento.getIuvVersamento());
 			printAvvisoDTO.setVersamento(versamento); 
 			printAvvisoDTO.setSalvaSuDB(false);
+			printAvvisoDTO.setSdfDataScadenza(SimpleDateFormatUtils.newSimpleDateFormatGGMMAAAA());
 			PrintAvvisoDTOResponse printAvvisoDTOResponse = avvisoBD.printAvvisoVersamento(printAvvisoDTO);
 			response.setAvvisoPdf(printAvvisoDTOResponse.getAvviso().getPdf());
 		} catch (NotFoundException e) {

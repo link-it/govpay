@@ -32,6 +32,7 @@ public class OperazioniDAO extends BaseDAO{
 	public final static String GESTIONE_PROMEMORIA = "gestionePromemoria";
 	public final static String ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "elaborazioneTracciatiNotificaPagamenti";
 	public final static String SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "spedizioneTracciatiNotificaPagamenti";
+	public final static String ELABORAZIONE_RICONCILIAZIONI = "elaborazioneRiconciliazioni";
 
 	public LeggiOperazioneDTOResponse eseguiOperazione(LeggiOperazioneDTO leggiOperazioneDTO) throws ServiceException, OperazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiOperazioneDTOResponse response = new LeggiOperazioneDTOResponse();
@@ -68,6 +69,9 @@ public class OperazioniDAO extends BaseDAO{
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI)){
 				it.govpay.core.business.Operazioni.setEseguiInvioTracciatiNotificaPagamenti();
 				esitoOperazione = "Spedizione Tacciati Notifica Pagamenti schedulata";
+			} else if(leggiOperazioneDTO.getIdOperazione().equals(ELABORAZIONE_RICONCILIAZIONI)){
+				it.govpay.core.business.Operazioni.setEseguiElaborazioneRiconciliazioni();
+				esitoOperazione = "Elaborazione Riconciliazioni schedulata";
 			} else {
 				throw new NotFoundException("Operazione "+leggiOperazioneDTO.getIdOperazione()+" sconosciuta");
 			}
@@ -100,6 +104,7 @@ public class OperazioniDAO extends BaseDAO{
 			results.add(new LeggiOperazioneDTOResponse(ELABORAZIONE_TRACCIATI_PENDENZE));
 			results.add(new LeggiOperazioneDTOResponse(ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI));
 			results.add(new LeggiOperazioneDTOResponse(SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI));
+			results.add(new LeggiOperazioneDTOResponse(ELABORAZIONE_RICONCILIAZIONI));
 			
 			return new ListaOperazioniDTOResponse((long) results.size(), results);
 		}finally {

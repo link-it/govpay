@@ -40,8 +40,9 @@
       // Begin Swagger UI call region
       const ui = SwaggerUIBundle({
         urls: [
-        	{url: "${it.govpay.apiurl}/govpay/backend/api/ragioneria/v2/govpay-api-ragioneria-v2.yaml", name: "API Ragioneria v2"},
-        	{url: "${it.govpay.apiurl}/govpay/backend/api/ragioneria/v1/govpay-api-ragioneria-v1.yaml", name: "API Ragioneria v1"},
+        	{url: "/govpay/backend/api/ragioneria/v3/govpay-api-ragioneria.yaml", name: "API Ragioneria v3"},
+        	{url: "/govpay/backend/api/ragioneria/v2/govpay-api-ragioneria-v2.yaml", name: "API Ragioneria v2"},
+        	{url: "/govpay/backend/api/ragioneria/v1/govpay-api-ragioneria-v1.yaml", name: "API Ragioneria v1"},
         	],
         dom_id: '#swagger-ui',
         deepLinking: true,

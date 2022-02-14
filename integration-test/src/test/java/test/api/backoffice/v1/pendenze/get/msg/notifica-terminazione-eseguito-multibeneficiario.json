@@ -1,0 +1,139 @@
+{
+   "idA2A":"#(idA2A)",
+   "idPendenza":"#(idPendenza + '')",
+   "rpt":{
+         "creditorReferenceId":"#(iuv)",
+         "paymentAmount":"#(pendenzaPut.importo + '')",
+         "dueDate":"#ignore",
+         "retentionDate":null,
+         "lastPayment": true,
+         "description":"#notnull",
+         "companyName":"#(dominio.ragioneSociale)",
+         "officeName":null,
+         "debtor":{
+            "uniqueIdentifier":{
+               "entityUniqueIdentifierType":"#(pendenzaPut.soggettoPagatore.tipo)",
+               "entityUniqueIdentifierValue":"#(pendenzaPut.soggettoPagatore.identificativo)"
+            },
+            "fullName":"#(pendenzaPut.soggettoPagatore.anagrafica)",
+            "streetName":"#(pendenzaPut.soggettoPagatore.indirizzo)",
+            "civicNumber":"#(pendenzaPut.soggettoPagatore.civico)",
+            "postalCode":"#(pendenzaPut.soggettoPagatore.cap)",
+            "city":"#(pendenzaPut.soggettoPagatore.localita)",
+            "stateProvinceRegion":"#(pendenzaPut.soggettoPagatore.provincia)",
+            "country":"#(pendenzaPut.soggettoPagatore.nazione)",
+            "e-mail":"#(pendenzaPut.soggettoPagatore.email)"
+         },
+         "transferList":{
+            "transfer":[
+               {
+                  "idTransfer":1,
+                  "transferAmount":"#? _ == pendenzaPut.voci[0].importo || _ == pendenzaPut.voci[0].importo.toString()",
+                  "fiscalCodePA":"#(idDominio)",
+                  "IBAN":"#(ibanAccredito)",
+                  "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Pagamento TARI n.' + idPendenza + '')",
+                  "transferCategory":"9/SEGRETERIA"
+               },
+               {
+                  "idTransfer":2,
+                  "transferAmount":"#? _ == pendenzaPut.voci[1].importo || _ == pendenzaPut.voci[0].importo.toString()",
+                  "fiscalCodePA":"#(idDominio_2)",
+                  "IBAN":"#(ibanAccreditoEnteNonIntermediato)",
+                  "remittanceInformation":"#('/RFB/' + iuv + '/10.00/TXT/Pagamento TEFA n.' + idPendenza + '')",
+                  "transferCategory":"9/CodiceContabilita"
+               }
+            ]
+         },
+         "metadata":null
+   },
+   "rt": {
+         "receiptId":"#notnull",
+         "noticeNumber":"#notnull",
+         "fiscalCode":"#(idDominio)",
+         "outcome":"OK",
+         "creditorReferenceId":"#(iuv)",
+         "paymentAmount":"#(pendenzaPut.importo + '')",
+         "description":"#notnull",
+         "companyName":"#(dominio.ragioneSociale)",
+         "officeName":null,
+         "debtor":{
+            "uniqueIdentifier":{
+               "entityUniqueIdentifierType":"#(pendenzaPut.soggettoPagatore.tipo)",
+               "entityUniqueIdentifierValue":"#(pendenzaPut.soggettoPagatore.identificativo)"
+            },
+            "fullName":"#(pendenzaPut.soggettoPagatore.anagrafica)",
+            "streetName":"#(pendenzaPut.soggettoPagatore.indirizzo)",
+            "civicNumber":"#(pendenzaPut.soggettoPagatore.civico)",
+            "postalCode":"#(pendenzaPut.soggettoPagatore.cap)",
+            "city":"#(pendenzaPut.soggettoPagatore.localita)",
+            "stateProvinceRegion":"#(pendenzaPut.soggettoPagatore.provincia)",
+            "country":"#(pendenzaPut.soggettoPagatore.nazione)",
+            "e-mail":"#(pendenzaPut.soggettoPagatore.email)"
+         },
+         "transferList":{
+            "transfer":[
+               {
+                  "idTransfer":1,
+                  "transferAmount":"#? _ == pendenzaPut.voci[0].importo || _ == pendenzaPut.voci[0].importo.toString()",
+                  "fiscalCodePA":"#(idDominio)",
+                  "IBAN":"#(ibanAccredito)",
+                  "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Pagamento TARI n.' + idPendenza + '')",
+                  "transferCategory":"9/SEGRETERIA"
+               },
+               {
+                  "idTransfer":2,
+                  "transferAmount":"#? _ == pendenzaPut.voci[1].importo || _ == pendenzaPut.voci[0].importo.toString()",
+                  "fiscalCodePA":"#(idDominio_2)",
+                  "IBAN":"#(ibanAccreditoEnteNonIntermediato)",
+                  "remittanceInformation":"#('/RFB/' + iuv + '/10.00/TXT/Pagamento TEFA n.' + idPendenza + '')",
+                  "transferCategory":"9/CodiceContabilita"
+               }
+            ]
+         },
+         "idPSP":"#notnull",
+         "pspFiscalCode":"#notnull",
+         "pspPartitaIVA":null,
+         "PSPCompanyName":"#notnull",
+         "idChannel":"#notnull",
+         "channelDescription":"#notnull",
+         "payer":null,
+         "paymentMethod": "##string",
+         "fee":"1.00",
+         "paymentDateTime":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d",
+         "applicationDate":"#ignore",
+         "transferDate":"#notnull",
+         "metadata":null
+   },
+	"riscossioni":[
+	   {
+	      "idDominio":"#(idDominio)",
+	      "iuv":"#(iuv)",
+	      "iur":"#notnull",
+	      "indice":1,
+	      "pendenza":"#('/pendenze/' + idA2A + '/' + idPendenza)",
+	      "idVocePendenza":"#(pendenzaPut.voci[0].idVocePendenza)",
+	      "rpp":"#notnull",
+	      "stato":"RISCOSSA",
+	      "tipo":"ENTRATA",
+	      "importo": "#(pendenzaPut.voci[0].importo)",
+	      "data":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\d",
+	      "commissioni":null,
+	      "allegato":null
+	   },
+	   {
+	      "idDominio":"#(idDominio_2)",
+	      "iuv":"#(iuv)",
+	      "iur":"#notnull",
+	      "indice":2,
+	      "pendenza":"#('/pendenze/' + idA2A + '/' + idPendenza)",
+	      "idVocePendenza":"#(pendenzaPut.voci[1].idVocePendenza)",
+	      "rpp":"#notnull",
+	      "stato":"RISCOSSA",
+	      "tipo":"ENTRATA_PA_NON_INTERMEDIATA",
+	      "importo": "#(pendenzaPut.voci[1].importo)",
+	      "data":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\d",
+	      "commissioni":null,
+	      "allegato":null
+	   }
+	]
+}

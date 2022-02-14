@@ -30,6 +30,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "area",
 "servizioMyPivot",
 "servizioSecim",
+"servizioGovPay",
+"servizioHyperSicAPKappa",
+"intermediato",
 "idDominio",
 "unitaOperative",
 "contiAccredito",
@@ -109,6 +112,15 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("servizioSecim")
   private ConnettoreNotificaPagamentiSecim servizioSecim = null;
+  
+  @JsonProperty("servizioGovPay")
+  private ConnettoreNotificaPagamentiGovPay servizioGovPay = null;
+  
+  @JsonProperty("servizioHyperSicAPKappa")
+  private ConnettoreNotificaPagamentiHyperSicAPKappa servizioHyperSicAPKappa = null;
+  
+  @JsonProperty("intermediato")
+  private Boolean intermediato = null;
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -508,6 +520,52 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   **/
+  public DominioIndex servizioGovPay(ConnettoreNotificaPagamentiGovPay servizioGovPay) {
+    this.servizioGovPay = servizioGovPay;
+    return this;
+  }
+
+  @JsonProperty("servizioGovPay")
+  public ConnettoreNotificaPagamentiGovPay getServizioGovPay() {
+    return servizioGovPay;
+  }
+  public void setServizioGovPay(ConnettoreNotificaPagamentiGovPay servizioGovPay) {
+    this.servizioGovPay = servizioGovPay;
+  }
+
+  /**
+   **/
+  public DominioIndex servizioHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappa servizioHyperSicAPKappa) {
+    this.servizioHyperSicAPKappa = servizioHyperSicAPKappa;
+    return this;
+  }
+
+  @JsonProperty("servizioHyperSicAPKappa")
+  public ConnettoreNotificaPagamentiHyperSicAPKappa getServizioHyperSicAPKappa() {
+    return servizioHyperSicAPKappa;
+  }
+  public void setServizioHyperSicAPKappa(ConnettoreNotificaPagamentiHyperSicAPKappa servizioHyperSicAPKappa) {
+    this.servizioHyperSicAPKappa = servizioHyperSicAPKappa;
+  }
+
+  /**
+   * Indica se il creditore viene configurato per utilizzare una  stazione di intermediazione
+   **/
+  public DominioIndex intermediato(Boolean intermediato) {
+    this.intermediato = intermediato;
+    return this;
+  }
+
+  @JsonProperty("intermediato")
+  public Boolean Intermediato() {
+    return intermediato;
+  }
+  public void setIntermediato(Boolean intermediato) {
+    this.intermediato = intermediato;
+  }
+
+  /**
    * Codice fiscale del beneficiario
    **/
   public DominioIndex idDominio(String idDominio) {
@@ -620,6 +678,9 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(area, dominioIndex.area) &&
         Objects.equals(servizioMyPivot, dominioIndex.servizioMyPivot) &&
         Objects.equals(servizioSecim, dominioIndex.servizioSecim) &&
+        Objects.equals(servizioGovPay, dominioIndex.servizioGovPay) &&
+        Objects.equals(servizioHyperSicAPKappa, dominioIndex.servizioHyperSicAPKappa) &&
+        Objects.equals(intermediato, dominioIndex.intermediato) &&
         Objects.equals(idDominio, dominioIndex.idDominio) &&
         Objects.equals(unitaOperative, dominioIndex.unitaOperative) &&
         Objects.equals(contiAccredito, dominioIndex.contiAccredito) &&
@@ -629,7 +690,7 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, idDominio, unitaOperative, contiAccredito, entrate, tipiPendenza);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa, intermediato, idDominio, unitaOperative, contiAccredito, entrate, tipiPendenza);
   }
 
   public static DominioIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -670,6 +731,9 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
     sb.append("    area: ").append(toIndentedString(area)).append("\n");
     sb.append("    servizioMyPivot: ").append(toIndentedString(servizioMyPivot)).append("\n");
     sb.append("    servizioSecim: ").append(toIndentedString(servizioSecim)).append("\n");
+    sb.append("    servizioGovPay: ").append(toIndentedString(servizioGovPay)).append("\n");
+    sb.append("    servizioHyperSicAPKappa: ").append(toIndentedString(servizioHyperSicAPKappa)).append("\n");
+    sb.append("    intermediato: ").append(toIndentedString(intermediato)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    unitaOperative: ").append(toIndentedString(unitaOperative)).append("\n");
     sb.append("    contiAccredito: ").append(toIndentedString(contiAccredito)).append("\n");

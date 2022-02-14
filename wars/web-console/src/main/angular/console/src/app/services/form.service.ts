@@ -39,7 +39,9 @@ export class FormService {
   //Domini
   public static FORM_RAGIONE_SOCIALE: string = 'Ragione sociale';
   public static FORM_STAZIONE: string = 'Identificativo stazione';
+  public static FORM_INTERMEDIATO: string = 'Intermediato';
   public static FORM_PH_STAZIONE: string = '';
+  public static FORM_PH_ABILITAZIONE: string = 'Stato abilitazione';
 
   //RPPS
   public static FORM_IUV: string = 'Codice IUV';
@@ -51,6 +53,8 @@ export class FormService {
   public static FORM_PENDENZA: string = 'Identificativo pendenza';
   public static FORM_PH_PENDENZA: string = '';
   public static FORM_ESITO: string = 'Esito pagamento';
+  public static FORM_IUR: string = 'Identificativo riscossione';
+  public static FORM_PH_IUR: string = '';
 
   //Ruoli
   public static FORM_RUOLO: string = 'Ruolo';
@@ -64,8 +68,12 @@ export class FormService {
 
   //Rendicontazioni
   public static FORM_IDENTIFICATIVO_FLUSSO: string = 'Identificativo flusso';
+  public static FORM_DATA_REG_INIZIO: string = 'Data regolamento';
+  public static FORM_DATA_REG_FINE: string = 'Data regolamento';
   public static FORM_DATA_RISC_INIZIO: string = 'Data riscossione';
   public static FORM_DATA_RISC_FINE: string = 'Data riscossione';
+  public static FORM_PH_DATA_REG_INIZIO: string = '(Inzio)';
+  public static FORM_PH_DATA_REG_FINE: string = '(Fine)';
   public static FORM_PH_DATA_RISC_INIZIO: string = '(Inzio)';
   public static FORM_PH_DATA_RISC_FINE: string = '(Fine)';
 

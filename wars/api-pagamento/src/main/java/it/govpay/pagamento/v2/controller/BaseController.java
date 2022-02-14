@@ -36,8 +36,8 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
-import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.GpContext;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -59,6 +59,8 @@ public abstract class BaseController {
 	public final static String SUFFIX_FILENAME = "\"";
 	
 	public final static String PENDENZE_CITTADINO_ATTRIBUTE = "pendenzeCittadino";
+	public final static String AVVISI_CITTADINO_ATTRIBUTE = "avvisiCittadino";
+	public final static String IUV_CITTADINO_ATTRIBUTE = "iuvCittadino";
 
 	private static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean"; 
 	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = "Esecuzione {0} completata.";
@@ -208,7 +210,7 @@ public abstract class BaseController {
 	}
 
 	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
-		this.log.error("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage(), e);
+		this.logMessageGovPayException(methodName, e);
 		FaultBean respKo = new FaultBean();
 		int statusCode = e.getStatusCode();
 		if(e.getFaultBean()!=null) {
@@ -232,6 +234,17 @@ public abstract class BaseController {
 			this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
 		
 		return handleResponseKo(responseBuilder, transactionId).build();
+	}
+
+	private void logMessageGovPayException(String methodName, GovPayException e) {
+		switch (e.getCodEsito()) {
+		case PAG_014:
+			this.log.info("Rilevata GovPayException durante l'esecuzione del metodo: "+methodName+", causa: "+ e.getCausa() + ", messaggio: " + e.getMessageV3());
+			break;
+		default:
+			this.log.error("Rilevata GovPayException durante l'esecuzione del metodo: "+methodName+", causa: "+ e.getCausa() + ", messaggio: " + e.getMessageV3(), e);
+			break;
+		}
 	}
 	
 	private Response handleValidationException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, ValidationException e, String transactionId) {

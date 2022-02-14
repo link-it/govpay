@@ -80,6 +80,10 @@ public class DominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_secim", Dominio.model().COD_CONNETTORE_SECIM.getFieldType()));
 				setParameter(object, "setCodConnettoreGovPay", Dominio.model().COD_CONNETTORE_GOV_PAY.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_gov_pay", Dominio.model().COD_CONNETTORE_GOV_PAY.getFieldType()));
+				setParameter(object, "setCodConnettoreHyperSicAPK", Dominio.model().COD_CONNETTORE_HYPER_SIC_APK.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_connettore_hyper_sic_apk", Dominio.model().COD_CONNETTORE_HYPER_SIC_APK.getFieldType()));
+				setParameter(object, "setIntermediato", Dominio.model().INTERMEDIATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "intermediato", Dominio.model().INTERMEDIATO.getFieldType()));
 				return object;
 			}
 			
@@ -128,6 +132,10 @@ public class DominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codConnettoreSecim"));
 				setParameter(object, "setCodConnettoreGovPay", Dominio.model().COD_CONNETTORE_GOV_PAY.getFieldType(),
 					this.getObjectFromMap(map,"codConnettoreGovPay"));
+				setParameter(object, "setCodConnettoreHyperSicAPK", Dominio.model().COD_CONNETTORE_HYPER_SIC_APK.getFieldType(),
+					this.getObjectFromMap(map,"codConnettoreHyperSicAPK"));
+				setParameter(object, "setIntermediato", Dominio.model().INTERMEDIATO.getFieldType(),
+					this.getObjectFromMap(map,"intermediato"));
 				return object;
 			}
 			

@@ -151,6 +151,13 @@ public class TracciatoNotificaPagamentiFieldConverter extends AbstractSQLFieldCo
 				return "bean_dati";
 			}
 		}
+		if(field.equals(TracciatoNotificaPagamenti.model().IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".identificativo";
+			}else{
+				return "identificativo";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -198,6 +205,9 @@ public class TracciatoNotificaPagamentiFieldConverter extends AbstractSQLFieldCo
 			return this.toTable(TracciatoNotificaPagamenti.model(), returnAlias);
 		}
 		if(field.equals(TracciatoNotificaPagamenti.model().BEAN_DATI)){
+			return this.toTable(TracciatoNotificaPagamenti.model(), returnAlias);
+		}
+		if(field.equals(TracciatoNotificaPagamenti.model().IDENTIFICATIVO)){
 			return this.toTable(TracciatoNotificaPagamenti.model(), returnAlias);
 		}
 

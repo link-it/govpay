@@ -1,22 +1,29 @@
 package it.govpay.pagamento.v2.beans.converter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
+import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.UtenzaCittadino;
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
@@ -29,6 +36,7 @@ import it.govpay.pagamento.v2.beans.NuovoPagamento;
 import it.govpay.pagamento.v2.beans.Pagamento;
 import it.govpay.pagamento.v2.beans.PagamentoCreato;
 import it.govpay.pagamento.v2.beans.PagamentoIndex;
+import it.govpay.pagamento.v2.beans.QuotaContabilita;
 import it.govpay.pagamento.v2.beans.Soggetto;
 import it.govpay.pagamento.v2.beans.StatoPagamento;
 import it.govpay.pagamento.v2.beans.TassonomiaAvviso;
@@ -56,9 +64,12 @@ public class PagamentiPortaleConverter {
 		return json;
 	}
 
-	public static PagamentiPortaleDTO getPagamentiPortaleDTO(NuovoPagamento pagamentiPortaleRequest, String jsonRichiesta, Authentication user, String idSessione, String idSessionePortale) throws Exception {
+	public static PagamentiPortaleDTO getPagamentiPortaleDTO(NuovoPagamento pagamentiPortaleRequest, String jsonRichiesta, Authentication user, String idSessione, 
+			String idSessionePortale, Map<String, Versamento> listaIdentificativi, Logger log) throws Exception {
 
+		Map<String, Versamento> listaPendenzeDaSessione = null;
 		PagamentiPortaleDTO pagamentiPortaleDTO = new PagamentiPortaleDTO(user);
+		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
 
 		pagamentiPortaleDTO.setIdSessione(idSessione);
 		pagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
@@ -108,6 +119,19 @@ public class PagamentiPortaleConverter {
 					ref.setIdA2A(pendenza.getIdA2A());
 					ref.setIdPendenza(pendenza.getIdPendenza());
 					listRefs.add(ref);
+					
+					// controllo se ci sono pendenze a disposizione in sessione
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+						if(listaIdentificativi != null && listaIdentificativi.size() > 0 && listaIdentificativi.containsKey((pendenza.getIdA2A()+pendenza.getIdPendenza()))) {
+							if(listaPendenzeDaSessione == null) {
+								listaPendenzeDaSessione = new HashMap<String,Versamento>(); 
+							}
+	
+							// aggiungo la pendenza da pagare
+							listaPendenzeDaSessione.put((pendenza.getIdA2A()+pendenza.getIdPendenza()), listaIdentificativi.get((pendenza.getIdA2A()+pendenza.getIdPendenza())));
+							log.debug("Letta pendenza [idA2A:"+pendenza.getIdA2A()+", idPendenza: "+pendenza.getIdPendenza()+"] dalla sessione");
+						}
+					}
 
 				}else if(pendenza.getIdA2A() != null && pendenza.getIdPendenza() != null && pendenza.getIdDominio() != null) {
 					it.govpay.core.dao.commons.Versamento versamento = getVersamentoFromPendenza(pendenza);
@@ -125,11 +149,13 @@ public class PagamentiPortaleConverter {
 		// Salvataggio del messaggio di richiesta sul db
 		//		pagamentiPortaleDTO.setJsonRichiesta(jsonRichiesta);
 		pagamentiPortaleDTO.setJsonRichiesta(pagamentiPortaleRequest.toJSON(null));
+		
+		pagamentiPortaleDTO.setListaPendenzeDaSessione(listaPendenzeDaSessione);
 
 		return pagamentiPortaleDTO;
 	}
 
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(NuovaPendenza pendenza, String ida2a, String idPendenza) throws ValidationException, ServiceException {
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(NuovaPendenza pendenza, String ida2a, String idPendenza) throws ValidationException, ServiceException, GovPayException {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -186,7 +212,7 @@ public class PagamentiPortaleConverter {
 		return versamento;
 	}
 
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(NuovaPendenza pendenza) throws ValidationException, ServiceException {
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(NuovaPendenza pendenza) throws ValidationException, ServiceException, GovPayException {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
@@ -241,7 +267,7 @@ public class PagamentiPortaleConverter {
 	}
 
 
-	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws ServiceException {
+	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws ServiceException, GovPayException {
 
 		if(voci != null && voci.size() > 0) {
 			for (NuovaVocePendenza vocePendenza : voci) {
@@ -256,6 +282,7 @@ public class PagamentiPortaleConverter {
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				sv.setImporto(vocePendenza.getImporto());
+				sv.setCodDominio(vocePendenza.getIdDominio());
 
 				// Definisce i dati di un bollo telematico
 				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
@@ -272,8 +299,23 @@ public class PagamentiPortaleConverter {
 					tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
 					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
 					tributo.setIbanAppoggio(vocePendenza.getIbanAppoggio());
-					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
+					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
 					sv.setTributo(tributo);
+				}
+				sv.setContabilita(ContabilitaConverter.toStringDTO(vocePendenza.getContabilita()));
+				
+				if(vocePendenza.getContabilita() != null) {
+					if(vocePendenza.getContabilita().getQuote() != null) {
+						BigDecimal somma = BigDecimal.ZERO;
+						for (QuotaContabilita voceContabilita : vocePendenza.getContabilita().getQuote()) {
+							somma = somma.add(voceContabilita.getImporto());
+						}
+						
+						if(somma.compareTo(vocePendenza.getImporto()) != 0) {
+							throw new GovPayException(EsitoOperazione.VER_035, vocePendenza.getIdVocePendenza(),  versamento.getCodApplicazione(), versamento.getCodVersamentoEnte(),
+								Double.toString(sv.getImporto().doubleValue()), Double.toString(somma.doubleValue()));
+						}
+					}
 				}
 
 				versamento.getSingoloVersamento().add(sv);

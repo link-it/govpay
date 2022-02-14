@@ -42,11 +42,13 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.BatchBD;
 import it.govpay.bd.configurazione.model.AppIOBatch;
 import it.govpay.bd.configurazione.model.MailBatch;
+import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
@@ -54,6 +56,7 @@ import it.govpay.core.business.Rendicontazioni.DownloadRendicontazioniResponse;
 import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.client.BasicClient;
+import it.govpay.core.utils.client.BasicClientCORE;
 import it.govpay.core.utils.thread.InviaNotificaAppIoThread;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.SpedizioneTracciatoNotificaPagamentiThread;
@@ -88,6 +91,12 @@ public class Operazioni{
 	
 	public static final String BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "spedizione-trac-notif-pag";
 	public static final String CHECK_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "check-spedizione-trac-notif-pag";
+	
+	public static final String BATCH_RICONCILIAZIONI = "riconciliazioni";
+	public static final String CHECK_RICONCILIAZIONI = "check-riconciliazioni";
+	
+	public static final String BATCH_CHIUSURA_RPT_SCADUTE = "rpt-scadute";
+	public static final String CHECK_CHIUSURA_RPT_SCADUTE = "check-rpt-scadute";
 
 	private static boolean eseguiGestionePromemoria;
 	private static boolean eseguiInvioPromemoria;
@@ -98,6 +107,9 @@ public class Operazioni{
 	
 	private static boolean eseguiElaborazioneTracciatiNotificaPagamenti;
 	private static boolean eseguiInvioTracciatiNotificaPagamenti;
+	
+	private static boolean eseguiElaborazioneRiconciliazioni;
+	private static boolean eseguiElaborazioneChiusuraRptScadute;
 
 	public static synchronized void setEseguiGestionePromemoria() {
 		eseguiGestionePromemoria = true;
@@ -194,12 +206,36 @@ public class Operazioni{
 	public static synchronized boolean getEseguiInvioTracciatiNotificaPagamenti() {
 		return eseguiInvioTracciatiNotificaPagamenti;
 	}
+	
+	public static synchronized void setEseguiElaborazioneRiconciliazioni() {
+		eseguiElaborazioneRiconciliazioni = true;
+	}
+
+	public static synchronized void resetEseguiElaborazioneRiconciliazioni() {
+		eseguiElaborazioneRiconciliazioni = false;
+	}
+
+	public static synchronized boolean getEseguiElaborazioneRiconciliazioni() {
+		return eseguiElaborazioneRiconciliazioni;
+	}
+	
+	public static synchronized void setEseguiElaborazioneChiusuraRptScadute() {
+		eseguiElaborazioneChiusuraRptScadute = true;
+	}
+
+	public static synchronized void resetEseguiElaborazioneChiusuraRptScadute() {
+		eseguiElaborazioneChiusuraRptScadute = false;
+	}
+
+	public static synchronized boolean getEseguiElaborazioneChiusuraRptScadute() {
+		return eseguiElaborazioneChiusuraRptScadute;
+	}
 
 	public static String acquisizioneRendicontazioni(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		try {
 			if(BatchManager.startEsecuzione(configWrapper, RND)) {
-				DownloadRendicontazioniResponse downloadRendicontazioni = new Rendicontazioni().downloadRendicontazioni(ctx, false);
+				DownloadRendicontazioniResponse downloadRendicontazioni = new Rendicontazioni().downloadRendicontazioni(ctx);
 				aggiornaSondaOK(configWrapper, RND);
 				return downloadRendicontazioni.getDescrizioneEsito();
 			} else {
@@ -230,6 +266,25 @@ public class Operazioni{
 			return "Acquisizione fallita#" + e;
 		} finally {
 			BatchManager.stopEsecuzione(configWrapper, PND);
+		}
+	}
+	
+	public static String chiusuraRptScadute(IContext ctx){
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		try {
+			if(BatchManager.startEsecuzione(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE)) {
+				String chiusuraRPTScadute = new Pagamento().chiusuraRPTScadute(ctx);
+				aggiornaSondaOK(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE);
+				return chiusuraRPTScadute;
+			} else {
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			log.error("Chiusura RPT scadute fallita", e);
+			aggiornaSondaKO(configWrapper, PND, e);
+			return "Chiusura RPT scadute fallita#" + e;
+		} finally {
+			BatchManager.stopEsecuzione(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE);
 		}
 	}
 
@@ -413,6 +468,7 @@ public class Operazioni{
 			batchBD.update(batch);
 			AnagraficaManager.cleanCache();
 			BasicClient.cleanCache();
+			BasicClientCORE.cleanCache();
 			log.info("Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.");	
 			return "Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.";
 		} catch (Exception e) {
@@ -442,6 +498,7 @@ public class Operazioni{
 				log.info("Nodo ["+clusterId+"]: Reset della cache anagrafica locale in corso...");	
 				AnagraficaManager.cleanCache();
 				BasicClient.cleanCache();
+				BasicClientCORE.cleanCache();
 				log.info("Nodo ["+clusterId+"]: Reset della cache anagrafica locale completato.");
 			}
 
@@ -751,6 +808,15 @@ public class Operazioni{
 					} else {
 						log.debug("Connettore GovPay non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
 					}
+					
+					if(dominio.getConnettoreHyperSicAPKappa() != null && dominio.getConnettoreHyperSicAPKappa().isAbilitato()) {
+						log.debug("Elaborazione Tracciato HyperSicAPKappa per il Dominio ["+codDominio+"]...");
+						TracciatiNotificaPagamenti tracciatiGovpay = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.HYPERSIC_APK);
+						tracciatiGovpay.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreHyperSicAPKappa(), ctx);
+						log.debug("Elaborazione Tracciato HyperSicAPKappa per il Dominio ["+codDominio+"] completata.");
+					} else {
+						log.debug("Connettore HyperSicAPKappa non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
+					}
 				}
 				
 				aggiornaSondaOK(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
@@ -953,6 +1019,60 @@ public class Operazioni{
 					} else {
 						log.debug("Connettore GovPay non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
 					}
+					
+					if(dominio.getConnettoreHyperSicAPKappa() != null && dominio.getConnettoreHyperSicAPKappa().isAbilitato()) {
+						log.debug("Scheduling spedizione Tracciati HyperSicAPKappa per il Dominio ["+codDominio+"]...");
+						TracciatiNotificaPagamenti tracciatiGovPay = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.HYPERSIC_APK);
+						
+						int offset = 0;
+						int limit = (2 * threadNotificaPoolSize);
+						List<SpedizioneTracciatoNotificaPagamentiThread> threads = new ArrayList<>();
+						List<TracciatoNotificaPagamenti> tracciatiInStatoNonTerminalePerDominio = tracciatiGovPay.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, dominio.getConnettoreHyperSicAPKappa(), ctx);
+						
+						log.debug("Trovati ["+tracciatiInStatoNonTerminalePerDominio.size()+"] Tracciati HyperSicAPKappa da spedire per il Dominio ["+codDominio+"]...");
+
+						if(tracciatiInStatoNonTerminalePerDominio.size() > 0) {
+							for(TracciatoNotificaPagamenti tracciatoHyperSicAPKappa: tracciatiInStatoNonTerminalePerDominio) {
+								SpedizioneTracciatoNotificaPagamentiThread sender = new SpedizioneTracciatoNotificaPagamentiThread(tracciatoHyperSicAPKappa, dominio.getConnettoreHyperSicAPKappa(), ctx);
+								ThreadExecutorManager.getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti().execute(sender);
+								threads.add(sender);
+							}
+
+							log.debug("Processi di spedizione Tracciati HyperSicAPKappa avviati.");
+							aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+
+							// Aspetto che abbiano finito tutti
+							int numeroErrori = 0;
+							while(true){
+								try {
+									Thread.sleep(2000);
+								} catch (InterruptedException e) {
+
+								}
+								boolean completed = true;
+								for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
+									if(!sender.isCompleted()) 
+										completed = false;
+								}
+
+								if(completed) { 
+									for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
+										if(sender.isErrore()) 
+											numeroErrori ++;
+									}
+									int numOk = threads.size() - numeroErrori;
+									log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, OK ["+numOk+"], Errore ["+numeroErrori+"]");
+									break; // esco
+								}
+							}
+							
+							log.info("Spedizione Tracciati HyperSicAPKappa per il Dominio ["+codDominio+"] completata.");
+							//Hanno finito tutti, aggiorno stato esecuzione
+							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+						}
+					} else {
+						log.debug("Connettore HyperSicAPKappa non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
+					}
 				}
 				
 				aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
@@ -972,6 +1092,50 @@ public class Operazioni{
 				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
 			}
 			return "Non è stato possibile avviare la spedizione dei tracciati notifica pagamenti: " + e;
+		} finally {
+		}
+	}
+	
+	public static String elaborazioneRiconciliazioni(IContext ctx){
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		try {
+			if(BatchManager.startEsecuzione(configWrapper, BATCH_RICONCILIAZIONI)) {
+				
+				int offset = 0;
+				int limit = 25;
+				IncassiBD incassiBD = new IncassiBD(configWrapper);
+				
+				log.debug("Ricerca nuove riconciliazioni da elaborare...");
+				
+				List<Incasso> findRiconciliazioniDaAcquisire = incassiBD.findRiconciliazioniDaAcquisire(configWrapper, offset, limit, true);
+				
+				log.debug("Trovate ["+findRiconciliazioniDaAcquisire.size()+"] riconciliazioni.");
+				
+				if(findRiconciliazioniDaAcquisire.size() > 0) {
+					Incassi incassi = new Incassi();
+					
+					for (Incasso incasso : findRiconciliazioniDaAcquisire) {
+						incassi.elaboraRiconciliazione(incasso.getCodDominio(), incasso.getIdRiconciliazione(), ctx);
+					}
+				}
+				
+				aggiornaSondaOK(configWrapper, BATCH_RICONCILIAZIONI);
+				BatchManager.stopEsecuzione(configWrapper, BATCH_RICONCILIAZIONI);
+			
+				log.debug("Elaborazione riconciliazioni terminata.");
+				return "Elaborazione riconciliazioni terminata.";
+			} else {
+				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			log.error("Non è stato possibile avviare l'elaborazione delle riconciliazioni", e);
+			try {
+				aggiornaSondaKO(configWrapper, BATCH_RICONCILIAZIONI, e); 
+			} catch (Throwable e1) {
+				log.error("Aggiornamento sonda fallito: " + e1.getMessage(),e1);
+			}
+			return "Non è stato possibile avviare l'elaborazione delle riconciliazioni: " + e;
 		} finally {
 		}
 	}

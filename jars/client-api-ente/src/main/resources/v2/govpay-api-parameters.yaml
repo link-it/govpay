@@ -1,0 +1,270 @@
+components:
+  parameters:
+    PathNumeroAvviso:
+      name: numeroAvviso
+      in: path
+      description: "Numero identificativo dell'avviso pagoPA"
+      required: true
+      schema: 
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/NumeroAvviso'
+    PathIdA2A:
+      name: idA2A
+      in: path
+      description: Identificativo del gestionale ente
+      required: true
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/IdA2A'           
+    PathIdDominio:
+      name: idDominio
+      in: path
+      description: "Identificativo dell'Ente Creditore in pagoPA. Corrisponde al codice fiscale."
+      required: true
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/IdDominio'
+    PathIdPendenza:
+      name: idPendenza
+      in: path
+      description: Identificativo della pendenza nel gestionale ente
+      required: true
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/IdPendenza'    
+    PathIdRicevuta:
+      name: idRicevuta
+      in: path
+      description: Identificativo della ricevuta di pagamento. Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento utilizzato
+      required: true
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/IdRicevuta' 
+    PathIdTipoPendenza:
+      name: idPendenza
+      in: path
+      description: Identificativo della tipologia di pendenza
+      required: true
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/IdTipoPendenza'  
+    PathIuv:
+      name: iuv
+      in: path
+      description: Identificativo univoco di versamento
+      required: true
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/Iuv'         
+    QueryIdSession:
+      name: idSession
+      in: query
+      description: "Identificativo della sessione di pagamento in pagoPA"
+      required: false
+      schema:
+        type: string   
+    QueryIdSessionePortale:
+      name: idSessionePortale
+      in: query
+      description: "Identificativo della sessione di pagamento per il portale richiedente"
+      required: false
+      schema:
+        type: string 
+    QueryIdCarrello:
+      name: idCarrello
+      in: query
+      description: "Identificativo del carrello di pagamento"
+      required: false
+      schema:
+        type: string
+    ccp:
+      name: ccp
+      in: query
+      description: Codice contesto pagamento
+      required: false
+      schema:
+        type: string
+        pattern: '(^([0-9A-Za-z]){1,35}$)'
+    dataDa:
+      name: dataDa
+      in: query
+      description: Inizio della finestra temporale di osservazione
+      required: false
+      schema:
+        type: string  
+        format: date-time     
+    dataA:
+      name: dataA
+      in: query
+      description: Fine della finestra temporale di osservazione
+      required: false
+      schema:
+        type: string  
+        format: date-time     
+    direzione:
+      name: direzione
+      in: query
+      description: Identificativo della direzione interna all'ente creditore
+      required: false
+      schema:
+        type: string
+        example: Direzione ABC
+        pattern: '(^([0-9A-Za-z]){1,35}$)'
+    divisione:
+      name: divisione
+      in: query
+      description: Identificativo della divisione interna all'ente creditore
+      required: false
+      schema:
+        type: string
+        example: Divisione001      
+        pattern: '(^([0-9A-Za-z]){1,35}$)'
+    campi:
+      name: campi
+      in: query
+      description: Fields to retrieve
+      required: false
+      schema:
+        type: string
+    idA2A:
+      name: idA2A
+      in: query
+      description: Identificativo del gestionale ente
+      required: false
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/IdA2A'   
+    idDominio:
+      name: idDominio
+      in: query
+      description: "Identificativo dell'Ente Creditore in pagoPA. Corrisponde al codice fiscale."
+      required: false
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/IdDominio'
+    idFlusso:
+      in: query
+      name: idFlusso
+      description: Identificativo flusso
+      required: false
+      schema:
+        type: string
+    idFlussoCaseInsensitive:
+      in: query
+      name: idFlussoCaseInsensitive
+      description: "Indica se effettuare la ricerca per Identificativo flusso in modalita' case insensitive"
+      required: false
+      schema:
+        type: boolean             
+    idPendenza:
+      name: idPendenza
+      in: query
+      description: Identificativo della pendenza nel gestionale ente
+      required: false
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/IdPendenza'
+    idPagamento:
+      name: idPagamento
+      in: query
+      description: Identificativo della richiesta di pagamento
+      required: false
+      schema:
+        type: string
+        pattern: '(^([0-9A-Za-z]){1,35}$)'
+      example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'  
+    idRicevuta:
+      name: iuv
+      in: query
+      description: Identificativo del versamento
+      required: false
+      schema:
+        type: string    
+        pattern: '(^([0-9A-Za-z]){1,35}$)'
+    iur:
+      name: iur
+      in: query
+      description: Identificativo univoco riscossione
+      required: false
+      schema:
+        type: string
+        pattern: '(^([0-9A-Za-z]){1,35}$)'      
+    iuv:
+      name: iuv
+      in: query
+      description: Identificativo del versamento
+      required: false
+      schema:
+        type: string
+        pattern: '(^([0-9A-Za-z]){1,35}$)'      
+    maxRisultati:
+      name: maxRisultati
+      in: query
+      description: >-
+            Indica se il servizio deve impostare o meno il limite sul calcolo del numero di risultati
+      required: false
+      schema:
+        type: boolean
+        default: true
+      example: true
+    metadatiPaginazione:
+      name: metadatiPaginazione
+      in: query
+      description: >- 
+              Indica se il servizio calcola e valorizza i dati di paginazione o meno
+      required: false
+      schema:
+        type: boolean
+        default: true
+      example: true
+   
+    ordinamento:
+      name: ordinamento
+      in: query
+      description: Sorting order
+      required: false
+      schema:
+        type: string
+    pagina:
+      name: pagina
+      in: query
+      description: Numero di pagina di risultato
+      required: false
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/Pagina'        
+    risultatiPerPagina:
+      name: risultatiPerPagina
+      in: query
+      description: How many items to return at one time
+      required: false
+      schema:
+        type: integer
+        default: 25
+        maximum: 200
+    statoFlussoRendicontazione:
+      name: stato
+      in: query
+      description: Stato del flusso di rendicontazione
+      required: false
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/StatoFlussoRendicontazione'
+    statoRiscossione:
+      name: stato
+      in: query
+      description: Stato della riscossione
+      required: false
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/StatoRiscossione'
+    tipiRiscossione:
+      in: query
+      name: tipo
+      description: Tipologia della riscossione (default [ENTRATA, MBT] )
+      required: false
+      schema:
+        type: array
+        items:
+          $ref: 'govpay-api-schemas.yaml#/components/schemas/TipoRiscossione'
+    tipoRiscossione:
+      name: tipoRiscossione
+      in: query
+      description: Tipo di riscossione
+      required: false
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/TipoRiscossione'
+    sct:
+      name: sct
+      in: query
+      description: Identificativo del Sepa Credit Transfert di riversamento da PSP a conto di accredito
+      required: false
+      schema:
+        type: string
