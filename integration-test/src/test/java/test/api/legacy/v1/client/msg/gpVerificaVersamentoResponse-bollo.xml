@@ -1,0 +1,31 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+   <soap:Body>
+      <ns2:paVerificaVersamentoResponse xmlns:ns2="http://www.govpay.it/servizi/pa/" xmlns:ns3="http://www.govpay.it/servizi/commons/">
+         <codEsito>OK</codEsito>
+         <versamento>
+            <codApplicazione>#(idA2A)</codApplicazione>
+            <codVersamentoEnte>#(idPendenza)</codVersamentoEnte>
+            <iuv>#(iuv)</iuv>
+            <codDominio>#(idDominio)</codDominio>
+            <debitore>
+               <codUnivoco>RSSMRA30A01H501I</codUnivoco>
+               <ragioneSociale>Mario Rossi</ragioneSociale>
+            </debitore>
+            <importoTotale>16.00</importoTotale>
+            <dataScadenza>2999-12-31T00:00:00.000Z</dataScadenza>
+            <aggiornabile>true</aggiornabile>
+            <annoTributario>2022</annoTributario>
+            <causale>#("Pagamento dovuto n." + idPendenza)</causale>
+            <singoloVersamento>
+               <codSingoloVersamentoEnte>1</codSingoloVersamentoEnte>
+               <importo>16.00</importo>
+               <bolloTelematico>
+                  <tipo>01</tipo>
+                  <hash>a/CWqtFtCEyA/ymBySahGSaqKMiak5mlX3BoX0jupy8=</hash>
+                  <provincia>RO</provincia>
+               </bolloTelematico>
+            </singoloVersamento>
+         </versamento>
+      </ns2:paVerificaVersamentoResponse>
+   </soap:Body>
+</soap:Envelope>

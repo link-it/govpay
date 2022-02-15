@@ -121,12 +121,73 @@ Scenario Outline: <field> non valida
 
 Examples:
 | field | fieldRequest | fieldValue | fieldResponse |
-| codSingoloVersamentoEnte | codSingoloVersamentoEnte | loremIpsum | 'is not facet-valid with respect to pattern \'[^ ]*\' for type \'cod35\'.' |
-| importo | importo | '10.001' | 'Value \'10.001\' has 3 fraction digits, but the number of fraction digits has been limited to 2.' |
-| importo | importo | '10,000' | 'java.lang.NumberFormatException' |
-| importo | importo | '10,00.0' | 'java.lang.NumberFormatException' |
-| importo | importo | 'aaaa' | 'java.lang.NumberFormatException' |
-| codTributo | codTributo | 'xxxxx' | 'xxxxx' |
+| singoloVersamento.codSingoloVersamentoEnte | codSingoloVersamentoEnte | loremIpsum | 'is not facet-valid with respect to pattern \'[^ ]*\' for type \'cod35\'.' |
+| singoloVersamento.importo | importo | '10.001' | 'Value \'10.001\' has 3 fraction digits, but the number of fraction digits has been limited to 2.' |
+| singoloVersamento.importo | importo | '10,000' | 'java.lang.NumberFormatException' |
+| singoloVersamento.importo | importo | '10,00.0' | 'java.lang.NumberFormatException' |
+| singoloVersamento.importo | importo | 'aaaa' | 'java.lang.NumberFormatException' |
+| singoloVersamento.codTributo | codTributo | 'xxxxx' | 'xxxxx' |
+
+
+Scenario Outline: <field> non valida
+
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def generaIuv = false
+* def idPendenza = getCurrentTimeMillis()
+* def idA2A = idA2A_ESSE3
+* def pendenzaPut = read('classpath:test/api/legacy/v1/client/msg/gpVerificaVersamentoResponse-definito.xml')
+* def ccp = getCurrentTimeMillis()
+* def importo = 100.99
+
+* xml pendenzaVerificata = pendenzaPut
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento/tributo/<fieldRequest> = <fieldValue>
+
+* call read('classpath:utils/pa-prepara-avviso-soap.feature')
+
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-attiva-rpt.feature')
+* match response contains { dati: '##null'}
+* match response.faultBean == esitoAttivaRPT
+* match response.faultBean.description contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| singoloVersamento.ibanAccredito | ibanAccredito | 'ASC402002040500330560600203' | 'ibanAccredito' |
+| singoloVersamento.tipoContabilita | tipoContabilita | 'xxx' | 'Value \'xxx\' is not facet-valid with respect to enumeration \'[CAPITOLO, SPECIALE, SIOPE, ALTRO]\'. It must be a value from the enumeration.' |
+| singoloVersamento.codContabilita | codContabilita | '' | 'codContabilita' |
+
+
+Scenario Outline: <field> non valida
+
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def generaIuv = false
+* def idPendenza = getCurrentTimeMillis()
+* def idA2A = idA2A_ESSE3
+* def pendenzaPut = read('classpath:test/api/legacy/v1/client/msg/gpVerificaVersamentoResponse-bollo.xml')
+* def ccp = getCurrentTimeMillis()
+* def importo = 100.99
+
+* xml pendenzaVerificata = pendenzaPut
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento/bolloTelematico/<fieldRequest> = <fieldValue>
+
+* call read('classpath:utils/pa-prepara-avviso-soap.feature')
+
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-attiva-rpt.feature')
+* match response contains { dati: '##null'}
+* match response.faultBean == esitoAttivaRPT
+* match response.faultBean.description contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| singoloVersamento.tipo | tipo | "09" | 'Value \'09\' is not facet-valid with respect to enumeration \'[01]\'. It must be a value from the enumeration.' |
+| singoloVersamento.hash | hash | loremIpsum | 'with length = \'730\' is not facet-valid with respect to maxLength \'70\' for type \'string70\'.' |
+| singoloVersamento.provincia | provincia | "xxx" | 'Value \'xxx\' is not facet-valid with respect to pattern \'[A-Z]{2,2}\' for type \'string2\'.' |
+
+
+
 
 
 
