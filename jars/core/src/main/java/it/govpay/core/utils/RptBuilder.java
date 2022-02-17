@@ -311,7 +311,7 @@ public class RptBuilder {
 		} else {
 			CtDatiMarcaBolloDigitale marcaBollo = new CtDatiMarcaBolloDigitale();
 			if(singoloVersamento.getHashDocumento() != null)
-				marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento().getBytes());
+				marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento());
 			marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
 			if(singoloVersamento.getTipoBollo() != null)
 				marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());

@@ -524,14 +524,24 @@ public class VersamentoUtils {
 		model.setImportoTotale(versamento.getImportoTotale());
 		model.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
 
-		// in un versamento multivoce non si puo' passare il numero avviso
-		if(versamento.getSingoloVersamento().size() > 1 && StringUtils.isNotEmpty(versamento.getNumeroAvviso())) {
-			throw new GovPayException(EsitoOperazione.VER_031);
-		}
-
 		int index = 1;
+		boolean hasBollo = false;
 		for(it.govpay.core.dao.commons.Versamento.SingoloVersamento singoloVersamento : versamento.getSingoloVersamento()) {
 			model.addSingoloVersamento(toSingoloVersamentoModel(model, singoloVersamento, index++ , configWrapper));
+			
+			if(!hasBollo) {
+				if(singoloVersamento.getBolloTelematico() != null) {
+					hasBollo = true;
+				}
+			}
+		}
+		
+		// in un versamento multivoce non si puo' passare il numero avviso
+		// #364 / #448 2022/02/03 rilassato vincolo di caricamento pendenza multivoce con numero avviso solo non esiste una voce di tipo MBT
+		if(hasBollo) {
+			if(versamento.getSingoloVersamento().size() > 1 && StringUtils.isNotEmpty(versamento.getNumeroAvviso())) {
+				throw new GovPayException(EsitoOperazione.VER_031);
+			}			
 		}
 
 		model.setTassonomia(versamento.getTassonomia());

@@ -21,6 +21,7 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 	private String simpleSearch;
 	private List<FilterSortWrapper> fieldsSort;
 	private Map<String, IField> fieldMap;
+	private List<String> fieldList;
 	private Integer offset;
 	private List<FilterSortWrapper> defaultSort = null;
 	
@@ -38,14 +39,17 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 		this.fieldsSort = new ArrayList<>();
 		this.defaultSort = new ArrayList<>();
 		this.fieldMap = new HashMap<>();
+		this.fieldList = new ArrayList<>();
 	}
 
 	public void addSortField(String key, IField value) {
 		this.fieldMap.put(key, value);
+		this.fieldList.add(key);
 	}
 	
 	public void clearFieldMap() {
 		this.fieldMap.clear();
+		this.fieldList.clear();
 	}
 	
 	public int getOffset() {
@@ -193,6 +197,10 @@ public abstract class BasicFindRequestDTO extends BasicRequestDTO {
 
 	public void setEseguiFindAll(boolean eseguiFindAll) {
 		this.eseguiFindAll = eseguiFindAll;
+	}
+
+	public List<String> getFieldList() {
+		return fieldList;
 	}
 	
 }

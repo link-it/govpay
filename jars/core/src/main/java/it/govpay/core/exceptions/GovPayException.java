@@ -214,7 +214,7 @@ public class GovPayException extends Exception {
 		case UAN_001: return "Non e' possibile effettuare il pagamento della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") in maniera anonima senza specificare l'entrata da pagare.";
 		case UAN_002: return "Non e' possibile effettuare il pagamento della pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") in maniera anonima poiche' il tipo pendenza ("+ this.params[2] +") non e' abilitato ai pagamenti spontanei.";
 		case TRB_001: return "Tributo (" + this.params[1] + ") disabilitato per il dominio (" + this.params[0] + ")";
-		case VER_031: return "Non e' possibile indicare il numero avviso per una pendenza di tipo multivoce.";
+		case VER_031: return "Non e' possibile indicare il numero avviso per una pendenza di tipo multivoce se una delle voci e' una Marca da Bollo Telematica.";
 		case VER_032: return "Iban di accredito (" + this.params[1] + ") disabilitato per il dominio (" + this.params[0] + ")";
 		case VER_033: return "Iban di appoggio (" + this.params[1] + ") non censito per il dominio (" + this.params[0] + ")";
 		case VER_034: return "Iban di appoggio (" + this.params[1] + ") disabilitato per il dominio (" + this.params[0] + ")";

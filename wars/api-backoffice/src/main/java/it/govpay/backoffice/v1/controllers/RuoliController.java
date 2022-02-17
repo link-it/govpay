@@ -53,10 +53,11 @@ public class RuoliController extends BaseController {
  		super(nomeServizio,log);
      }
 
-    public Response findRuoli(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, Boolean metadatiPaginazione) {
+    public Response findRuoli(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, Boolean metadatiPaginazione, Boolean maxRisultati) {
 		String methodName = "findRuoli";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);  
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.LETTURA));
@@ -71,6 +72,7 @@ public class RuoliController extends BaseController {
 			listaRptDTO.setPagina(pagina);
 			
 			listaRptDTO.setEseguiCount(metadatiPaginazione);
+			listaRptDTO.setEseguiCountConLimit(maxRisultati);
 
 			// INIT DAO
 
@@ -85,7 +87,7 @@ public class RuoliController extends BaseController {
 			for(String leggiRuoloDtoResponse: listaRptDTOResponse.getResults()) {
 				results.add(RuoliConverter.toRsModelIndex(leggiRuoloDtoResponse));
 			}
-			ListaRuoli response = new ListaRuoli(results, this.getServicePath(uriInfo), listaRptDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+			ListaRuoli response = new ListaRuoli(results, this.getServicePath(uriInfo), listaRptDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();

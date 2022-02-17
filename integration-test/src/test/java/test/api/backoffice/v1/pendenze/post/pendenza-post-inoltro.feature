@@ -559,7 +559,7 @@ And match response ==
 	categoria: 'EC',
 	codice: '502000',
 	descrizione: 'Errore ente creditore',
-	dettaglio: '#("L\'inoltro del versamento [Dominio: " + idDominio +" TipoVersamento:" + tipoPendenzaRinnovo +"] all\'applicazione competente [Applicazione:" + idA2A +"] e\' fallito con errore: Non e\' possibile indicare il numero avviso per una pendenza di tipo multivoce.")'
+	dettaglio: '#("L\'inoltro del versamento [Dominio: " + idDominio +" TipoVersamento:" + tipoPendenzaRinnovo +"] all\'applicazione competente [Applicazione:" + idA2A +"] e\' fallito con errore: Non e\' possibile indicare il numero avviso per una pendenza di tipo multivoce se una delle voci e\' una Marca da Bollo Telematica.")'
 }
 """
 

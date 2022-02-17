@@ -727,7 +727,7 @@ public abstract class BasicClientCORE {
 
 					List<String> list = null;
 					if(dumpResponse.getHeaders().containsKey(key)) {
-						list = Arrays.asList(StringUtils.split(dumpResponse.getHeaders().remove(key),","));
+						list =  new ArrayList<String>(Arrays.asList(StringUtils.split(dumpResponse.getHeaders().remove(key),",")));
 					}
 					if(list==null) {
 						list = new ArrayList<String>();

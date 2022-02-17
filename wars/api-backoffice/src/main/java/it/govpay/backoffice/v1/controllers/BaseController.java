@@ -3,6 +3,7 @@
  */
 package it.govpay.backoffice.v1.controllers;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.FaultBean;
 import it.govpay.backoffice.v1.beans.FaultBean.CategoriaEnum;
+import it.govpay.bd.GovpayConfig;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.EsitoOperazione;
@@ -70,6 +72,7 @@ public abstract class BaseController {
 	protected HttpServletRequest request;
 	protected HttpServletResponse response;
 	protected String transactionIdHeaderName = Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID;
+	protected BigDecimal maxRisultatiBigDecimal;
 	
 	public BaseController(String nomeServizio, Logger log) {
 		this.log = log;
@@ -386,5 +389,27 @@ public abstract class BaseController {
 	protected void setSottotipoEvento(String sottotipoEvento) {
 		GpContext ctx = (GpContext) ContextThreadLocal.get().getApplicationContext();
 		ctx.getEventoCtx().setSottotipoEvento(sottotipoEvento);
+	}
+	
+	protected void setMaxRisultati(Boolean maxRisultati) {
+		this.setMaxRisultati(maxRisultati, null, false);
+	}
+	
+	protected void setMaxRisultati(Boolean maxRisultati, Boolean metadatiPaginazione, boolean anagrafica) {
+		if (maxRisultati == null) {
+			maxRisultati = true;
+		}
+		
+		if (metadatiPaginazione == null) {
+			metadatiPaginazione = true;
+		}
+		
+		Integer maxRisultatiInt = GovpayConfig.getInstance().getMaxRisultati();
+		this.maxRisultatiBigDecimal = maxRisultati ? new BigDecimal(maxRisultatiInt.intValue()) : null;
+		
+		if(anagrafica) {
+			if(!metadatiPaginazione)
+				this.maxRisultatiBigDecimal = null;
+		}
 	}
 }

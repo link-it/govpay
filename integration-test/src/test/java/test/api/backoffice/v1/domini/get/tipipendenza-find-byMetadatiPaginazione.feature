@@ -18,6 +18,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati : '#ignore',
 	numRisultati: '#notnull',
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
@@ -38,6 +39,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati : '#ignore',
 	numRisultati: '#notnull',
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
@@ -58,6 +60,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati : '#notpresent',
 	numRisultati: '#notnull',
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
@@ -79,6 +82,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati : '#notnull',
 	numRisultati: '#notnull',
 	numPagine: '#notpresent',
 	risultatiPerPagina: 0,
@@ -99,6 +103,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati : '#notnull',
 	numRisultati: '#notnull',
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
@@ -119,6 +124,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati : '#notpresent',
 	numRisultati: '#notnull',
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
@@ -127,5 +133,3 @@ And match response ==
 	risultati: '#[]'
 }
 """
-
-
