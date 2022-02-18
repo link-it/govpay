@@ -186,8 +186,87 @@ Examples:
 | singoloVersamento.hash | hash | loremIpsum | 'with length = \'730\' is not facet-valid with respect to maxLength \'70\' for type \'string70\'.' |
 | singoloVersamento.provincia | provincia | "xxx" | 'Value \'xxx\' is not facet-valid with respect to pattern \'[A-Z]{2,2}\' for type \'string2\'.' |
 
+Scenario: Numero voci eccessivo
 
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def generaIuv = false
+* def idPendenza = getCurrentTimeMillis()
+* def idA2A = idA2A_ESSE3
+* def pendenzaPut = read('classpath:test/api/legacy/v1/client/msg/gpVerificaVersamentoResponse-riferimento.xml')
+* def ccp = getCurrentTimeMillis()
+* xml pendenzaVerificata = pendenzaPut
 
+* def importoSV = $pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[1]/importo
+* def codTributoSV = $pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[1]/codTributo
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[2]/codSingoloVersamentoEnte = '2'
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[2]/importo = importoSV
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[2]/codTributo = codTributoSV
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[3]/codSingoloVersamentoEnte = '3'
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[3]/importo = importoSV
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[3]/codTributo = codTributoSV
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[4]/codSingoloVersamentoEnte = '4'
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[4]/importo = importoSV
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[4]/codTributo = codTributoSV
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[5]/codSingoloVersamentoEnte = '5'
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[5]/importo = importoSV
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[5]/codTributo = codTributoSV
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[6]/codSingoloVersamentoEnte = '6'
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[6]/importo = importoSV
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/singoloVersamento[6]/codTributo = codTributoSV
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/importoTotale = 60.00
+* def importo = $pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/importoTotale
+* call read('classpath:utils/pa-prepara-avviso-soap.feature')
+
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-attiva-rpt.feature')
+* match response contains { dati: '##null'}
+* match response.faultBean == esitoAttivaRPT
+* match response.faultBean.description contains '\'singoloVersamento\' can occur a maximum of \'5\' times in the current sequence. This limit was exceeded. No child element is expected at this point.'
+
+Scenario: Dominio diverso
+
+* def idDominio_2 = '12345678902'
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def generaIuv = false
+* def idPendenza = getCurrentTimeMillis()
+* def idA2A = idA2A_ESSE3
+* def pendenzaPut = read('classpath:test/api/legacy/v1/client/msg/gpVerificaVersamentoResponse-riferimento.xml')
+* def ccp = getCurrentTimeMillis()
+* xml pendenzaVerificata = pendenzaPut
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/codDominio = idDominio_2
+* def importo = $pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/importoTotale
+* call read('classpath:utils/pa-prepara-avviso-soap.feature')
+
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-attiva-rpt.feature')
+* match response contains { dati: '##null'}
+* match response.faultBean == esitoAttivaRPT
+* match response.faultBean.description contains 'I campi IdDominio e Iuv della pendenza ricevuta dal servizio di verifica non corrispondono ai parametri di input.'
+
+@importo
+Scenario: Importo diverso
+
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def generaIuv = false
+* def idPendenza = getCurrentTimeMillis()
+* def idA2A = idA2A_ESSE3
+* def pendenzaPut = read('classpath:test/api/legacy/v1/client/msg/gpVerificaVersamentoResponse-riferimento.xml')
+* def ccp = getCurrentTimeMillis()
+* xml pendenzaVerificata = pendenzaPut
+* def importo = $pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/importoTotale
+
+* set pendenzaVerificata /Envelope/Body/paVerificaVersamentoResponse/versamento/importoTotale = 0.01
+
+* call read('classpath:utils/pa-prepara-avviso-soap.feature')
+
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-attiva-rpt.feature')
+* match response contains { dati: '##null'}
+* match response.faultBean == esitoAttivaRPT
+* match response.faultBean.description contains 'ha un importo totale (0.01) diverso dalla somma dei singoli importi (10.0)'
 
 
 
