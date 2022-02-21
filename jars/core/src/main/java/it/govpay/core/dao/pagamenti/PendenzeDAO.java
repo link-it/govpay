@@ -983,6 +983,12 @@ public class PendenzeDAO extends BaseDAO{
 				chiediVersamento =  VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUo, codApplicazione, json);
 			} else {
 				PendenzaPost pendenzaPost = PendenzaPost.parse(json);
+				
+				// imposto i dati idDominio, idTipoVersamento e idUnitaOperativa fornite nella URL di richiesta, sovrascrivendo eventuali valori impostati dalla trasformazione.
+				pendenzaPost.setIdDominio(codDominio);
+				pendenzaPost.setIdTipoPendenza(codTipoVersamento);
+				pendenzaPost.setIdUnitaOperativa(codUo);
+				
 				new PendenzaPostValidator(pendenzaPost).validate();
 
 				it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);

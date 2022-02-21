@@ -255,6 +255,12 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					} else {
 						try {
 							PendenzaPost pendenzaPost = PendenzaPost.parse(dati);
+							
+							// imposto i dati idDominio, idTipoVersamento e idUnitaOperativa fornite nella URL di richiesta, sovrascrivendo eventuali valori impostati dalla trasformazione.
+							pendenzaPost.setIdDominio(idDominio);
+							pendenzaPost.setIdTipoPendenza(idTipoVersamento);
+							pendenzaPost.setIdUnitaOperativa(idUO);
+							
 							new PendenzaPostValidator(pendenzaPost).validate();
 							it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 							((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(versamentoCommons.getCodVersamentoEnte());
