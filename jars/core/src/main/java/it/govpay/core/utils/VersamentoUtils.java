@@ -901,6 +901,12 @@ public class VersamentoUtils {
 			return _inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4, codApplicazioneInoltro);
 		} else {
 			PendenzaPost pendenzaPost = PendenzaPost.parse(inputModello4);
+			
+			// imposto i dati idDominio, idTipoVersamento e idUnitaOperativa fornite nella URL di richiesta, sovrascrivendo eventuali valori impostati dalla trasformazione.
+			pendenzaPost.setIdDominio(codDominio);
+			pendenzaPost.setIdTipoPendenza(codTipoVersamento);
+			pendenzaPost.setIdUnitaOperativa(codUnitaOperativa);
+			
 			new PendenzaPostValidator(pendenzaPost).validate();
 			
 			it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);

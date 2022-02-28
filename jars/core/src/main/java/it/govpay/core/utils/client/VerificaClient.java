@@ -448,6 +448,11 @@ public class VerificaClient extends BasicClientCORE {
 					if(pendenzaVerificata.getIdTipoPendenza() != null)
 						if(!(codTipoVersamento.equals(pendenzaVerificata.getIdTipoPendenza())))
 							throw new ValidationException("Il campo IdTipoPendenza della pendenza ricevuta dal servizio di verifica non corrisponde ai parametri di input.");
+					
+					if(pendenzaVerificata.getIdUnitaOperativa() != null)
+						if(!(codUnitaOperativa.equals(pendenzaVerificata.getIdUnitaOperativa())))
+							throw new ValidationException("Il campo IdUnitaOperativa della pendenza ricevuta dal servizio di verifica non corrisponde ai parametri di input.");
+					
 					return VersamentoUtils.toVersamentoModel(VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata));
 				} catch (GovPayException e) {
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, "[" + e.getCodEsito() + "] " + e.getMessage());
@@ -556,6 +561,11 @@ public class VerificaClient extends BasicClientCORE {
 					if(pendenzaVerificata.getIdTipoPendenza() != null)
 						if(!(codTipoVersamento.equals(pendenzaVerificata.getIdTipoPendenza())))
 							throw new ValidationException("Il campo IdTipoPendenza della pendenza ricevuta dal servizio di verifica non corrisponde ai parametri di input.");
+					
+					if(pendenzaVerificata.getIdUnitaOperativa() != null)
+						if(!(codUnitaOperativa.equals(pendenzaVerificata.getIdUnitaOperativa())))
+							throw new ValidationException("Il campo IdUnitaOperativa della pendenza ricevuta dal servizio di verifica non corrisponde ai parametri di input.");
+					
 					return VersamentoUtils.toVersamentoModel(it.govpay.core.ec.v2.converter.VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata));
 				} catch (GovPayException e) {
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, "[" + e.getCodEsito() + "] " + e.getMessage());
