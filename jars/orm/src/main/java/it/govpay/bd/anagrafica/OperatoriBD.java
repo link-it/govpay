@@ -381,6 +381,7 @@ public class OperatoriBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.NOME));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.NOME), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.NOME, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
