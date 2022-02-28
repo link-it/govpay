@@ -257,6 +257,7 @@ public class TipiVersamentoBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_TIPO_VERSAMENTO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_TIPO_VERSAMENTO), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_TIPO_VERSAMENTO, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni

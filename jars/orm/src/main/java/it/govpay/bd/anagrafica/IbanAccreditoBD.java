@@ -287,6 +287,7 @@ public class IbanAccreditoBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_IBAN));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_IBAN), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_IBAN, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni

@@ -237,6 +237,7 @@ public class UnitaOperativeBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_UO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_UO), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_UO, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni
