@@ -57,6 +57,7 @@ import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.client.BasicClient;
 import it.govpay.core.utils.client.BasicClientCORE;
+import it.govpay.core.utils.logger.Log4JUtils;
 import it.govpay.core.utils.thread.InviaNotificaAppIoThread;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.SpedizioneTracciatoNotificaPagamentiThread;
@@ -470,6 +471,10 @@ public class Operazioni{
 			BasicClient.cleanCache();
 			BasicClientCORE.cleanCache();
 			log.info("Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.");	
+			
+			Log4JUtils.reloadLog4j();
+			log.info("Reload Log4J completato.");
+			
 			return "Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.";
 		} catch (Exception e) {
 			log.error("Aggiornamento della data di reset cache anagrafica del sistema fallita", e);
@@ -500,6 +505,10 @@ public class Operazioni{
 				BasicClient.cleanCache();
 				BasicClientCORE.cleanCache();
 				log.info("Nodo ["+clusterId+"]: Reset della cache anagrafica locale completato.");
+				
+				log.info("Nodo ["+clusterId+"]: Reload Log4J in corso...");	
+				Log4JUtils.reloadLog4j();
+				log.info("Nodo ["+clusterId+"]: Reload Log4J completato.");
 			}
 
 			log.debug("Check reset della cache anagrafica locale completato con successo.");	
