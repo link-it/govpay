@@ -296,6 +296,7 @@ public class Incassi {
 		String iuv = null;
 		String idf = null;
 		log.debug("Elaborazione riconciliazione [Dominio:"+codDomino+", Id: "+idRiconciliazione+"] ...");
+		List<Evento> listaEventi = new ArrayList<>();
 		
 		try {
 			if(gpContext.getEventoCtx().getDatiPagoPA() == null) {
@@ -347,7 +348,7 @@ public class Incassi {
 				idf = incasso.getIdFlussoRendicontazione();
 			}
 			
-			return eseguiAcquisizioneRiconciliazione(richiestaIncassoResponse, codDomino, idRiconciliazione, ctx, configWrapper, incassiBD, incasso, causale, iuv, idf, false, true);
+			return eseguiAcquisizioneRiconciliazione(richiestaIncassoResponse, codDomino, idRiconciliazione, ctx, configWrapper, incassiBD, incasso, causale, iuv, idf, false, true, listaEventi);
 		} catch (ServiceException e) {
 			throw new GovPayException(e);
 		} catch (UtilsException e) {
@@ -385,12 +386,32 @@ public class Incassi {
 			
 			if(incassiBD != null)
 				incassiBD.closeConnection();
+			
+			if(listaEventi.size() >0) {
+				EventiBD eventiBD = null;
+				
+				try {
+					eventiBD = new EventiBD(configWrapper);
+					eventiBD.setupConnection(configWrapper.getTransactionID());
+					eventiBD.setAtomica(false);
+					
+					for (Evento evento : listaEventi) {
+						eventiBD.insertEvento(evento);	
+					}
+				} catch (ServiceException e) {
+					throw new GovPayException(e);
+				} finally {
+					if(eventiBD != null) {
+						eventiBD.closeConnection();
+					}
+				}
+			}
 		}
 	}
 
 
 	private RichiestaIncassoDTOResponse eseguiAcquisizioneRiconciliazione(RichiestaIncassoDTOResponse richiestaIncassoResponse, String codDomino, String idRiconciliazione, IContext ctx, BDConfigWrapper configWrapper,
-			IncassiBD incassiBD, Incasso incasso, String causale, String iuv, String idf, boolean ricercaIdFlussoCaseInsensitive, boolean salvaConUpdate)
+			IncassiBD incassiBD, Incasso incasso, String causale, String iuv, String idf, boolean ricercaIdFlussoCaseInsensitive, boolean salvaConUpdate, List<Evento> listaEventi)
 			throws ServiceException, IncassiException, UtilsException, GovPayException {
 		GpContext gpContext = (GpContext) ctx.getApplicationContext();
 		
@@ -453,7 +474,7 @@ public class Incassi {
 				}
 				
 				Versamento versamentoBusiness = new Versamento();
-				EventiBD eventiBD = new EventiBD(configWrapper);
+				
 				
 				for(Rendicontazione rendicontazione : fr.getRendicontazioni(incassiBD)) {
 					
@@ -519,6 +540,7 @@ public class Incassi {
 							
 							versamentiBD.updateVersamento(versamento);
 							
+							// salvo l'evento in una lista, effettuo l'inserimento di tutti gli eventi insieme al termine della procedura perche' quando veniva impostato l'id_fr il DB andava in deadlock perche' il flusso e' in lock dalla select precedente.
 							Evento eventoNota = new Evento();
 							eventoNota.setCategoriaEvento(CategoriaEvento.INTERNO);
 							eventoNota.setRuoloEvento(RuoloEvento.CLIENT);
@@ -527,7 +549,10 @@ public class Incassi {
 							eventoNota.setEsitoEvento(EsitoEvento.OK);
 							eventoNota.setDettaglioEsito("Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "].");
 							eventoNota.setTipoEvento("Pagamento eseguito senza RPT");
-							eventiBD.insertEvento(eventoNota);
+							eventoNota.setIuv(rendicontazione.getIuv());
+							eventoNota.setCodDominio(fr.getCodDominio());
+							listaEventi.add(eventoNota);
+								
 						} catch (MultipleResultException e) {
 							ctx.getApplicationLogger().log("incasso.frAnomala", idf);
 							throw new IncassiException(FaultType.FR_ANOMALA, "La rendicontazione [Dominio:"+fr.getCodDominio()+" Iuv:" + rendicontazione.getIuv()+ " Iur:" + rendicontazione.getIur() + " Indice:" + rendicontazione.getIndiceDati() + "] non identifica univocamente un pagamento");
@@ -584,6 +609,11 @@ public class Incassi {
 			incassiBD.commit();
 			gpContext.getEventoCtx().setIdIncasso(incasso.getId()); 
 			
+			for (Evento evento : listaEventi) {
+				evento.setIdIncasso(incasso.getId());
+				evento.setIdFr(fr.getId());
+			}
+			
 			log.debug("Riconciliazione [Dominio:"+codDomino+", Id: "+idRiconciliazione+"] Iuv ["+iuv+"], IdFlusso ["+idf+"], Causale ["+causale+"] completata con esito OK.");
 		} catch(Exception e) {
 			incassiBD.rollback();
@@ -604,6 +634,7 @@ public class Incassi {
 		boolean ricercaIdFlussoCaseInsensitive = richiestaIncasso.isRicercaIdFlussoCaseInsensitive();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		IncassiBD incassiBD = null;
+		List<Evento> listaEventi = new ArrayList<>();
 		try {
 			IContext ctx = ContextThreadLocal.get();
 			ctx.getApplicationLogger().log("incasso.richiesta");
@@ -786,7 +817,7 @@ public class Incassi {
 			
 			incassiBD.setAutoCommit(false);
 			
-			return eseguiAcquisizioneRiconciliazione(richiestaIncassoResponse, incasso.getCodDominio(), incasso.getIdRiconciliazione(), ctx, configWrapper, incassiBD, incasso, causale, iuv, idf, ricercaIdFlussoCaseInsensitive, false);
+			return eseguiAcquisizioneRiconciliazione(richiestaIncassoResponse, incasso.getCodDominio(), incasso.getIdRiconciliazione(), ctx, configWrapper, incassiBD, incasso, causale, iuv, idf, ricercaIdFlussoCaseInsensitive, false, listaEventi);
 		} catch (ServiceException e) {
 			throw new GovPayException(e);
 		} catch (UtilsException e) {
@@ -799,6 +830,26 @@ public class Incassi {
 			
 			if(incassiBD != null)
 				incassiBD.closeConnection();
+			
+			if(listaEventi.size() >0) {
+				EventiBD eventiBD = null;
+				
+				try {
+					eventiBD = new EventiBD(configWrapper);
+					eventiBD.setupConnection(configWrapper.getTransactionID());
+					eventiBD.setAtomica(false);
+					
+					for (Evento evento : listaEventi) {
+						eventiBD.insertEvento(evento);	
+					}
+				} catch (ServiceException e) {
+					throw new GovPayException(e);
+				} finally {
+					if(eventiBD != null) {
+						eventiBD.closeConnection();
+					}
+				}
+			}
 		}
 	}
 }

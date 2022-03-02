@@ -52,7 +52,6 @@ When method get
 Then status 403
 
 
-
 Scenario: Verifica avviso generato dopo il caricamento di uno spontaneo anonimo
 
 * def idPendenza = getCurrentTimeMillis()
@@ -154,11 +153,16 @@ Then status 201
 And match response == pendenzaCreataMSG
 And match response.idPendenza contains '' + idPendenza
 
+* def cookie1 = responseHeaders["Set-Cookie"][0]
+
 * def numeroAvviso = response.numeroAvviso
+
+* configure cookies = null
 
 Given url pagamentiBaseurl
 And path '/avvisi', idDominio, numeroAvviso
 And header Accept = 'application/json'
+And header cookie = cookie1
 When method get
 Then status 200
 And match response == 
@@ -180,6 +184,7 @@ And match response ==
 Given url pagamentiBaseurl
 And path '/avvisi', idDominio, numeroAvviso
 And header Accept = 'application/pdf'
+And header cookie = cookie1
 When method get
 Then status 200
 
