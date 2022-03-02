@@ -21,3 +21,17 @@ Then status 201
 # TODO VALIDAZIONE RISPOSTA
 
 
+@test1
+Scenario: Caricamento pendenza multivoce definita
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('msg/pendenza-put_multivoce.json')
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+
