@@ -55,6 +55,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.model.Versamento.StatoVersamento;
 
 public class AvvisiDAO extends BaseDAO{
 
@@ -95,12 +96,15 @@ public class AvvisiDAO extends BaseDAO{
 					try {
 						it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(versamentoFromSession.getIdApplicazione(), versamentoFromSession.getCodVersamentoEnte(), true);
 					
-						versamentiBD.updateVersamento(versamentoFromSession, true);
-						
-						if(versamentoFromSession.getId()==null)
-							versamentoFromSession.setId(versamentoLetto.getId());
-		
-						ctx.getApplicationLogger().log("versamento.aggioramentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
+						// il versamento viene aggiornato solo se e' in stato aggiornabile
+						if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
+							versamentiBD.updateVersamento(versamentoFromSession, true);
+							
+							if(versamentoFromSession.getId()==null)
+								versamentoFromSession.setId(versamentoLetto.getId());
+			
+							ctx.getApplicationLogger().log("versamento.aggioramentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
+						}
 					} catch (NotFoundException e) {
 						versamentiBD.insertVersamento(versamentoFromSession);
 						ctx.getApplicationLogger().log("versamento.inserimentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
