@@ -153,9 +153,9 @@ UPDATE portali set id_utenza = (SELECT id FROM utenze WHERE principal = portali.
 ALTER TABLE acl ADD id_utenza NUMBER;
 ALTER TABLE acl ADD CONSTRAINT fk_acl_id_utenza FOREIGN KEY (id_utenza) REFERENCES utenze(id);
 
-UPDATE acl SET id_utenza = (SELECT id_utenza FROM applicazioni WHERE acl.id_applicazione = applicazioni.id);
-UPDATE acl SET id_utenza = (SELECT id_utenza FROM portali WHERE acl.id_portale = portali.id);
-UPDATE acl SET id_utenza = (SELECT id_utenza FROM operatori WHERE acl.id_operatore = operatori.id);
+UPDATE acl SET id_utenza = (SELECT id_utenza FROM applicazioni WHERE acl.id_applicazione = applicazioni.id) WHERE acl.id_applicazione IS NOT NULL;
+UPDATE acl SET id_utenza = (SELECT id_utenza FROM portali WHERE acl.id_portale = portali.id) WHERE acl.id_portale IS NOT NULL;
+UPDATE acl SET id_utenza = (SELECT id_utenza FROM operatori WHERE acl.id_operatore = operatori.id) WHERE acl.id_operatore IS NOT NULL;
 
 ALTER TABLE acl DROP CONSTRAINT fk_acl_id_applicazione;
 ALTER TABLE acl DROP CONSTRAINT fk_acl_id_portale;
@@ -172,6 +172,10 @@ ALTER TABLE acl ADD diritti_tmp VARCHAR2(255 CHAR);
 UPDATE acl SET diritti_tmp = 'RW' WHERE diritti = 2;
 -- diritti 1 -> R
 UPDATE acl SET diritti_tmp = 'R' WHERE diritti = 1;
+-- diritti 0 -> RW sono le acl che venivano controllate come presenti senza il check del livello
+UPDATE acl SET diritti_tmp = 'RW' WHERE diritti = 0;
+-- diritti null -> R
+UPDATE acl SET diritti_tmp = 'R' WHERE diritti IS NULL;
 
 -- rinomino colonna servizio
 ALTER TABLE acl RENAME COLUMN cod_servizio TO servizio;
@@ -179,25 +183,25 @@ ALTER TABLE acl RENAME COLUMN cod_servizio TO servizio;
 -- Conversione servizio per i ruoli
 
 -- A_PPA -> Anagrafica PagoPA Domini, Intermediari, Stazioni, UO
-UPDATE acl SET servizio = 'Anagrafica PagoPA' WHERE servizio = 'A_PPA' AND ruolo IS NOT NULL;
+UPDATE acl SET servizio = 'Anagrafica PagoPA' WHERE servizio = 'A_PPA';
 
 -- A_CON -> Anagrafica Creditore Iban, TipiTributo, Tributi
-UPDATE acl SET servizio = 'Anagrafica Creditore' WHERE servizio = 'A_CON' AND ruolo IS NOT NULL;
+UPDATE acl SET servizio = 'Anagrafica Creditore' WHERE servizio = 'A_CON';
 
 -- A_APP -> Anagrafica Applicazioni  Applicazioni, Portali
-UPDATE acl SET servizio = 'Anagrafica Applicazioni' WHERE servizio = 'A_APP' AND ruolo IS NOT NULL;
+UPDATE acl SET servizio = 'Anagrafica Applicazioni' WHERE servizio = 'A_APP';
 
 -- A_USR -> Anagrafica Ruoli   Ruoli, Operatori
-UPDATE acl SET servizio = 'Anagrafica Ruoli' WHERE servizio = 'A_USR' AND ruolo IS NOT NULL;
+UPDATE acl SET servizio = 'Anagrafica Ruoli' WHERE servizio = 'A_USR';
 
 -- GDE -> Giornale degli Eventi
-UPDATE acl SET servizio = 'Giornale degli Eventi' WHERE servizio = 'GDE' AND ruolo IS NOT NULL;
+UPDATE acl SET servizio = 'Giornale degli Eventi' WHERE servizio = 'GDE';
 
 -- MAN -> Configurazione e manutenzione
-UPDATE acl SET servizio = 'Configurazione e manutenzione' WHERE servizio = 'MAN' AND ruolo IS NOT NULL;
+UPDATE acl SET servizio = 'Configurazione e manutenzione' WHERE servizio = 'MAN';
 
 -- R -> Rendicontazioni e Incassi
-UPDATE acl SET servizio = 'Rendicontazioni e Incassi' WHERE servizio = 'R' AND ruolo IS NOT NULL;
+UPDATE acl SET servizio = 'Rendicontazioni e Incassi' WHERE servizio = 'R';
 
 -- I -> Rendicontazioni e Incassi 
 -- insert into acl (ruolo,servizio,diritti,id_utenza,id_dominio,id_tipo_tributo,cod_tipo) select acl.ruolo as ruolo, 'Rendicontazioni e Incassi' as servizio, acl.diritti as diritti, acl.id_utenza as id_utenza , acl.id_dominio as id_dominio, acl.id_tipo_tributo as id_tipo_tributo, acl.cod_tipo as cod_tipo from acl where acl.servizio = 'I' AND acl.ruolo IS NOT NULL AND NOT EXISTS (SELECT ruolo FROM acl WHERE ruolo IS NOT NULL AND servizio = 'Rendicontazioni e Incassi');
@@ -231,9 +235,6 @@ DELETE FROM acl WHERE id_dominio IS NOT NULL and cod_tipo = 'D';
 INSERT INTO utenze_tributi (id_utenza, id_tipo_tributo) SELECT id_utenza,id_tipo_tributo FROM acl WHERE id_tipo_tributo IS NOT NULL and cod_tipo = 'T';
 DELETE FROM acl WHERE id_tipo_tributo IS NOT NULL and cod_tipo = 'T';
 
--- Eliminare eventuali duplicati
-
-
 -- ripristino nome colonna diritti
 ALTER TABLE acl DROP COLUMN diritti;
 ALTER TABLE acl RENAME COLUMN diritti_tmp TO diritti;
@@ -245,13 +246,20 @@ ALTER TABLE acl DROP COLUMN id_tipo_tributo;
 ALTER TABLE acl DROP COLUMN cod_tipo;
 ALTER TABLE acl DROP COLUMN amministratore;
 
+-- Eliminare eventuali duplicati per id_utenza
+DELETE FROM acl WHERE ruolo IS NULL AND rowid NOT IN (SELECT MIN(rowid) FROM acl WHERE id_utenza IS NOT NULL GROUP BY servizio, diritti, id_utenza, ruolo);
+
 -- Imposto colonna principal ed elimino riferimento id_utenza
 ALTER TABLE acl ADD principal VARCHAR2(255 CHAR);
 UPDATE acl SET principal = (SELECT principal FROM utenze WHERE acl.id_utenza = utenze.id);
 ALTER TABLE acl DROP COLUMN id_utenza;
 
 -- Copio i portali non censiti anche come applicazioni nella tabella applicazioni
-INSERT INTO applicazioni (cod_applicazione, id_utenza, principal, trusted, abilitato, versione, cod_connettore_esito, cod_connettore_verifica) SELECT portali.cod_portale, portali.id_utenza, portali.principal, portali.trusted, portali.abilitato, portali.versione, CONCAT(portali.cod_portale,'_ESITO'), CONCAT(portali.cod_portale,'_VERIFICA') FROM portali WHERE portali.id_utenza NOT IN (SELECT id_utenza FROM applicazioni);
+-- questa applicazione ha il principal non coincidente con il cod_applicazione
+UPDATE applicazioni SET principal = 'UNICA-PICA' WHERE cod_applicazione = 'UNICA-PICA';
+UPDATE applicazioni SET id_utenza = (SELECT id FROM utenze WHERE principal = 'UNICA-PICA') WHERE cod_applicazione = 'UNICA-PICA';
+
+INSERT INTO applicazioni (cod_applicazione, id_utenza, principal, trusted, abilitato, versione, cod_connettore_esito, cod_connettore_verifica, firma_ricevuta) SELECT portali.cod_portale, portali.id_utenza, portali.principal, portali.trusted, portali.abilitato, portali.versione, CONCAT(portali.cod_portale,'_ESITO'), CONCAT(portali.cod_portale,'_VERIFICA'), 0 FROM portali WHERE portali.id_utenza NOT IN (SELECT id_utenza FROM applicazioni);
 
 CREATE SEQUENCE seq_pagamenti_portale MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
@@ -328,6 +336,8 @@ begin
    END IF;
 end;
 /
+
+-- PROSEGUIRE DA QUI
 
 ALTER TABLE rpt ADD id_pagamento_portale NUMBER;
 ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id);
