@@ -19,5 +19,7 @@
    "rpp":"#[]",
    "pagamenti":"#[]",
    "tipo":"#string",
-	"UUID":"#string"
+   "UUID":"#string",
+   "iuvAvviso":"##string", 
+   "iuvPagamento":"##string"
 }
