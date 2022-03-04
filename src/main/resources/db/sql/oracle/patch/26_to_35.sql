@@ -337,8 +337,6 @@ begin
 end;
 /
 
--- PROSEGUIRE DA QUI
-
 ALTER TABLE rpt ADD id_pagamento_portale NUMBER;
 ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id);
 
@@ -361,7 +359,9 @@ ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_applicazione FOREIGN KEY (id_applicazio
 UPDATE rpt SET id_applicazione = (SELECT applicazioni.id FROM applicazioni, portali WHERE applicazioni.id_utenza = portali.id_utenza AND rpt.id_portale = portali.id);
 
 -- Le RPT sono associate tutte ad un'applicazione posso cancellare i portali
+-- SEMBRA NON ESSERCI
 ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_portale;
+
 ALTER TABLE rpt DROP COLUMN id_portale;
 
 -- Collegare versamenti pagati e rpt a pagamenti portale
@@ -384,6 +384,7 @@ INSERT INTO pagamenti_portale (id_rpt_tmp, id_applicazione,cod_canale,data_richi
 	FROM rpt, versamenti WHERE rpt.id_versamento = versamenti.id AND rpt.cod_carrello IS NOT NULL AND rpt.cod_carrello NOT IN (SELECT id_sessione FROM pagamenti_portale);
 
 -- aggiorno stati pagamento portale
+-- PROSEGUIRE DA QUI
 UPDATE pagamenti_portale SET stato = (SELECT 'ANNULLATO' FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RPT_ANNULLATA');
 UPDATE pagamenti_portale SET codice_stato = (SELECT 'PAGAMENTO_IN_ATTESA_DI_ESITO' FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RPT_ANNULLATA');
 
