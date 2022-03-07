@@ -362,6 +362,7 @@ UPDATE rpt SET id_applicazione = (SELECT applicazioni.id FROM applicazioni, port
 -- SEMBRA NON ESSERCI
 ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_portale;
 
+-- prima di fare questa delete controllare che id_applicazione sia stato valorizzato per tutte le rpt
 ALTER TABLE rpt DROP COLUMN id_portale;
 
 -- Collegare versamenti pagati e rpt a pagamenti portale
@@ -384,22 +385,23 @@ INSERT INTO pagamenti_portale (id_rpt_tmp, id_applicazione,cod_canale,data_richi
 	FROM rpt, versamenti WHERE rpt.id_versamento = versamenti.id AND rpt.cod_carrello IS NOT NULL AND rpt.cod_carrello NOT IN (SELECT id_sessione FROM pagamenti_portale);
 
 -- aggiorno stati pagamento portale
--- PROSEGUIRE DA QUI
-UPDATE pagamenti_portale SET stato = (SELECT 'ANNULLATO' FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RPT_ANNULLATA');
-UPDATE pagamenti_portale SET codice_stato = (SELECT 'PAGAMENTO_IN_ATTESA_DI_ESITO' FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RPT_ANNULLATA');
+UPDATE pagamenti_portale SET stato = 'ANNULLATO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RPT_ANNULLATA');
+UPDATE pagamenti_portale SET codice_stato = 'PAGAMENTO_IN_ATTESA_DI_ESITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RPT_ANNULLATA');
 
-UPDATE pagamenti_portale SET stato = (SELECT 'ESEGUITO' FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RT_ACCETTATA_PA' AND rpt.cod_esito_pagamento = 0);
-UPDATE pagamenti_portale SET codice_stato = (SELECT 'PAGAMENTO_ESEGUITO' FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RT_ACCETTATA_PA' AND rpt.cod_esito_pagamento = 0);
+UPDATE pagamenti_portale SET stato = 'ESEGUITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RT_ACCETTATA_PA' AND rpt.cod_esito_pagamento = 0);
+UPDATE pagamenti_portale SET codice_stato = 'PAGAMENTO_ESEGUITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RT_ACCETTATA_PA' AND rpt.cod_esito_pagamento = 0);
 
-UPDATE pagamenti_portale SET stato = (SELECT 'FALLITO' FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND (rpt.stato = 'RPT_RIFIUTATA_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_PSP' OR rpt.stato = 'RPT_RIFIUTATA_PSP'));
-UPDATE pagamenti_portale SET codice_stato = (SELECT 'PAGAMENTO_FALLITO' FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND (rpt.stato = 'RPT_RIFIUTATA_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_PSP' OR rpt.stato = 'RPT_RIFIUTATA_PSP'));
-UPDATE pagamenti_portale SET descrizione_stato = (SELECT 'Errore nella spedizione della richiesta di pagamento a pagoPA' FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND (rpt.stato = 'RPT_ERRORE_INVIO_A_NODO'));
+UPDATE pagamenti_portale SET stato = 'FALLITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND (rpt.stato = 'RPT_RIFIUTATA_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_PSP' OR rpt.stato = 'RPT_RIFIUTATA_PSP'));
+UPDATE pagamenti_portale SET codice_stato = 'PAGAMENTO_FALLITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND (rpt.stato = 'RPT_RIFIUTATA_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_PSP' OR rpt.stato = 'RPT_RIFIUTATA_PSP'));
+UPDATE pagamenti_portale SET descrizione_stato = 'Errore nella spedizione della richiesta di pagamento a pagoPA' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND (rpt.stato = 'RPT_ERRORE_INVIO_A_NODO'));
 
-UPDATE pagamenti_portale SET stato = (SELECT 'IN_CORSO' FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato IN ('RPT_PARCHEGGIATA_NODO' , 'RPT_ATTIVATA', 'RPT_RICEVUTA_NODO', 'RPT_ACCETTATA_NODO', 'RPT_INVIATA_A_PSP', 'RPT_ACCETTATA_PSP', 'RT_RICEVUTA_NODO', 'RT_RIFIUTATA_NODO', 'RT_ACCETTATA_NODO', 'RT_RIFIUTATA_PA', 'RT_ESITO_SCONOSCIUTO_PA', 'RT_ERRORE_INVIO_A_PA', 'INTERNO_NODO'));
-UPDATE pagamenti_portale SET codice_stato = (SELECT 'PAGAMENTO_IN_ATTESA_DI_ESITO' FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato IN ('RPT_PARCHEGGIATA_NODO' , 'RPT_ATTIVATA', 'RPT_RICEVUTA_NODO', 'RPT_ACCETTATA_NODO', 'RPT_INVIATA_A_PSP', 'RPT_ACCETTATA_PSP', 'RT_RICEVUTA_NODO', 'RT_RIFIUTATA_NODO', 'RT_ACCETTATA_NODO', 'RT_RIFIUTATA_PA', 'RT_ESITO_SCONOSCIUTO_PA', 'RT_ERRORE_INVIO_A_PA', 'INTERNO_NODO'));
+UPDATE pagamenti_portale SET stato = 'IN_CORSO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato IN ('RPT_PARCHEGGIATA_NODO' , 'RPT_ATTIVATA', 'RPT_RICEVUTA_NODO', 'RPT_ACCETTATA_NODO', 'RPT_INVIATA_A_PSP', 'RPT_ACCETTATA_PSP', 'RT_RICEVUTA_NODO', 'RT_RIFIUTATA_NODO', 'RT_ACCETTATA_NODO', 'RT_RIFIUTATA_PA', 'RT_ESITO_SCONOSCIUTO_PA', 'RT_ERRORE_INVIO_A_PA', 'INTERNO_NODO'));
+UPDATE pagamenti_portale SET codice_stato = 'PAGAMENTO_IN_ATTESA_DI_ESITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato IN ('RPT_PARCHEGGIATA_NODO' , 'RPT_ATTIVATA', 'RPT_RICEVUTA_NODO', 'RPT_ACCETTATA_NODO', 'RPT_INVIATA_A_PSP', 'RPT_ACCETTATA_PSP', 'RT_RICEVUTA_NODO', 'RT_RIFIUTATA_NODO', 'RT_ACCETTATA_NODO', 'RT_RIFIUTATA_PA', 'RT_ESITO_SCONOSCIUTO_PA', 'RT_ERRORE_INVIO_A_PA', 'INTERNO_NODO'));
 
 -- aggiorno i riferimenti ai pagamenti portale per i carrelli
-UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_sessione = rpt.cod_carrello AND rpt.cod_carrello IS NOT NULL);
+-- UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_sessione = rpt.cod_carrello AND rpt.cod_carrello IS NOT NULL);
+-- sembra non ci siano carrelli con pendenze
+UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
 
 -- elimino colonna id_rpt
 ALTER TABLE pagamenti_portale DROP COLUMN id_rpt_tmp;
@@ -607,8 +609,9 @@ begin
 end;
 /
 
-insert into sonde(nome, classe, soglia_warn, soglia_error) values ('caricamento-tracciati', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);
-insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-tracciati', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
+-- controllare se sono presenti
+-- insert into sonde(nome, classe, soglia_warn, soglia_error) values ('caricamento-tracciati', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);
+-- insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-tracciati', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
 
 ALTER TABLE versamenti ADD ack NUMBER;
 UPDATE versamenti set ack = 0;
@@ -622,7 +625,22 @@ ALTER TABLE versamenti MODIFY anomalo DEFAULT 0;
 
 alter table singoli_versamenti add indice_dati NUMBER;
 -- update singoli_versamenti sv set indice_dati = (select sb1.indice_dati from (select sv1.id as id , sv1.id_versamento as id_versamento, row_number() over (partition by sv1.id_versamento) as indice_dati from singoli_versamenti sv1) as sb1 where sb1.id = sv.id);
-update singoli_versamenti sv set indice_dati = (select row_number() over (order by sv1.id_versamento) as indice_dati from singoli_versamenti sv1 where sv1.id = sv.id);
+-- update singoli_versamenti sv set indice_dati = (select row_number() over (order by sv1.id_versamento) as indice_dati from singoli_versamenti sv1 where sv1.id = sv.id);
+-- update singoli_versamenti sv set indice_dati = ( select sb1.indice_dati from ( select sv1.id as id , sv1.id_versamento as id_versamento, row_number() over (partition by sv1.id_versamento order by sv1.id) as indice_dati from singoli_versamenti sv1 ) sb1 where sb1.id = sv.id );
+-- update singoli_versamenti sv set sv.indice_dati = ( with t1 as (select sv1.id as id, row_number() over (partition by sv1.id_versamento order by sv1.id) as indice_dati from singoli_versamenti sv1 ) select indice_dati from t1 where t1.id = sv.id);
+
+CREATE TABLE sv_tmp (
+	id NUMBER NOT NULL,
+	indice_dati NUMBER NOT NULL
+);
+CREATE INDEX idx_sv_tmp_1 ON sv_tmp (id);
+INSERT INTO sv_tmp (id, indice_dati) select sv1.id as id, row_number() over (partition by sv1.id_versamento order by sv1.id) as indice_dati from singoli_versamenti sv1;
+
+UPDATE singoli_versamenti set indice_dati = (SELECT sv_tmp.indice_dati FROM sv_tmp WHERE sv_tmp.indice_dati > 1 AND singoli_versamenti.id = sv_tmp.id);
+
+DROP INDEX idx_sv_tmp_1;
+DROP TABLE sv_tmp;
+
 alter table singoli_versamenti MODIFY (indice_dati NOT NULL);
 
 alter table singoli_versamenti drop constraint unique_singoli_versamenti_1;
@@ -633,7 +651,7 @@ alter table rendicontazioni add CONSTRAINT fk_rnd_id_singolo_versamento FOREIGN 
 -- aggiorno entries prendendo l'id singolo_versamento dal pagamento
 -- update rendicontazioni set id_singolo_versamento = (select p.id_singolo_versamento from (select r1.id as id, pagamenti.id_singolo_versamento as id_singolo_versamento from pagamenti , rendicontazioni r1 where r1.id_pagamento = pagamenti.id) as p where p.id = rendicontazioni.id) ;
 update rendicontazioni set id_singolo_versamento = (select pagamenti.id_singolo_versamento from pagamenti WHERE rendicontazioni.id_pagamento = pagamenti.id);
--- Sezione Viste
+
 
 -- Funzione per calcolare il numero di millisecondi dal 1/1/1970
 CREATE OR REPLACE FUNCTION date_to_unix_for_smart_order (p_date date, in_src_tz in varchar2 default 'Europe/Rome') return number is
@@ -813,7 +831,7 @@ INSERT INTO utenze_tipo_vers (id_utenza, id_tipo_versamento) SELECT utenze_tribu
 
 ALTER TABLE versamenti ADD id_tipo_versamento NUMBER;
 
-UPDATE versamenti SET id_tipo_versamento = (SELECT tipi_versamento.id FROM singoli_versamenti JOIN tributi ON singoli_versamenti.id_tributo = tributi.id JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id JOIN tipi_versamento ON tipi_versamento.cod_tipo_versamento = tipi_tributo.cod_tributo WHERE singoli_versamenti.indice_dati=1 AND versamenti.id = singoli_versamenti.id_versamento);
+UPDATE versamenti SET id_tipo_versamento = (SELECT DISTINCT tipi_versamento.id FROM singoli_versamenti JOIN tributi ON singoli_versamenti.id_tributo = tributi.id JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id JOIN tipi_versamento ON tipi_versamento.cod_tipo_versamento = tipi_tributo.cod_tributo WHERE singoli_versamenti.indice_dati=1 AND versamenti.id = singoli_versamenti.id_versamento);
 
 UPDATE versamenti SET id_tipo_versamento = (SELECT id FROM tipi_versamento WHERE cod_tipo_versamento = 'LIBERO') WHERE id_tipo_versamento IS NULL;
 
@@ -911,8 +929,8 @@ UPDATE tipi_versamento SET abilitato = 1;
 ALTER TABLE tipi_versamento MODIFY (abilitato NOT NULL);
 
 ALTER TABLE tipi_vers_domini ADD abilitato NUMBER;
-UPDATE tipi_vers_domini SET abilitato = (SELECT tributi.abilitato FROM tributi, tipi_tributo, tipi_versamento WHERE tributi.id_tipo_tributo = tipi_tributo.id AND tipi_tributo.cod_tributo = tipi_versamento.cod_tipo_versamento AND tipi_versamento.id = tipi_vers_domini.id_tipo_versamento);
-UPDATE tipi_vers_domini SET abilitato = (SELECT 1 FROM tipi_versamento WHERE tipi_versamento.id = tipi_vers_domini.id_tipo_versamento AND tipi_versamento.cod_tipo_versamento = 'LIBERO');
+UPDATE tipi_vers_domini SET abilitato = (SELECT tributi.abilitato FROM tributi, tipi_tributo, tipi_versamento WHERE tributi.id_tipo_tributo = tipi_tributo.id AND tipi_tributo.cod_tributo = tipi_versamento.cod_tipo_versamento AND tipi_versamento.id = tipi_vers_domini.id_tipo_versamento AND tipi_vers_domini.id_dominio = tributi.id_dominio);
+UPDATE tipi_vers_domini SET abilitato = 1 WHERE tipi_vers_domini.id_tipo_versamento = (SELECT tipi_versamento.id FROM tipi_versamento WHERE tipi_versamento.cod_tipo_versamento = 'LIBERO');
 ALTER TABLE tipi_vers_domini MODIFY (abilitato NOT NULL);
 
 
@@ -929,10 +947,10 @@ DELETE FROM acl WHERE servizio = 'Statistiche';
 
 -- 09/04/2019 Unificazione del connettore di verifica e notifica
 
-UPDATE applicazioni SET cod_connettore_esito = CONCAT(SUBSTR(cod_connettore_esito, '_', 1),'_INTEGRAZIONE');
+UPDATE applicazioni SET cod_connettore_esito = CONCAT(SUBSTR(cod_connettore_esito, 0, INSTR(cod_connettore_esito, '_')-1),'_INTEGRAZIONE');
 ALTER TABLE applicazioni RENAME COLUMN cod_connettore_esito TO cod_connettore_integrazione;
 
-UPDATE connettori SET cod_connettore = CONCAT(SUBSTR(cod_connettore, '_', 1),'_INTEGRAZIONE') WHERE cod_connettore LIKE '%_ESITO';
+UPDATE connettori SET cod_connettore = CONCAT(SUBSTR(cod_connettore, 0, INSTR(cod_connettore, '_')-1),'_INTEGRAZIONE') WHERE cod_connettore LIKE '%_ESITO';
 DELETE FROM connettori WHERE cod_connettore LIKE '%_VERIFICA';
 
 ALTER TABLE applicazioni DROP COLUMN cod_connettore_verifica;
@@ -1026,15 +1044,7 @@ begin
 end;
 /
 
--- 22/05/2019 Configurazione Giornale Eventi
-INSERT INTO configurazione (giornale_eventi) VALUES ('{"apiEnte":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiPagamento":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiRagioneria":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiBackoffice":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiPagoPA":{"letture":{"log":"SEMPRE","dump":"SOLO_ERRORE"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}}}');
-
-
-
 -- 3.1-RC2
-
--- 22/05/2019 Configurazione Giornale Eventi
-UPDATE configurazione SET giornale_eventi = '{"apiEnte":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiPagamento":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiRagioneria":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiBackoffice":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}},"apiPagoPA":{"letture":{"log":"SEMPRE","dump":"SOLO_ERRORE"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiPendenze":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SOLO_ERRORE","dump":"SOLO_ERRORE"}}}';
 
 -- 24/05/2019 nuova tabella eventi
 DROP TABLE eventi;
@@ -1210,9 +1220,6 @@ ALTER TABLE tipi_vers_domini ADD trac_csv_header_risposta CLOB;
 ALTER TABLE tipi_vers_domini ADD trac_csv_template_richiesta CLOB;
 ALTER TABLE tipi_vers_domini ADD trac_csv_template_risposta CLOB;
 
--- 19/09/2019 Perfezionamento configurazione standard
-UPDATE configurazione set valore = '{"apiEnte":{"letture":{"log":"SEMPRE","dump":"SOLO_ERRORE"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiPagamento":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiRagioneria":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}},"apiBackoffice":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SEMPRE"}},"apiPagoPA":{"letture":{"log":"SEMPRE","dump":"SEMPRE"},"scritture":{"log":"SEMPRE","dump":"SEMPRE"}},"apiPendenze":{"letture":{"log":"MAI","dump":"MAI"},"scritture":{"log":"SEMPRE","dump":"SOLO_ERRORE"}}}' where nome='giornale_eventi';
-
 -- 3.1.1
 
 -- 3.1.2
@@ -1227,16 +1234,22 @@ UPDATE versamenti SET data_pagamento = (SELECT MAX(pagamenti.data_pagamento) FRO
 ALTER TABLE versamenti ADD importo_pagato BINARY_DOUBLE;
 UPDATE versamenti SET importo_pagato = 0;
 UPDATE versamenti SET importo_pagato = (SELECT SUM(CASE WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato ELSE 0 END) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id) WHERE versamenti.stato_versamento = 'ESEGUITO';
+-- situazione in cui non c'e' il pagamento per il versamento eseguito
+UPDATE versamenti SET importo_pagato = 0 WHERE importo_pagato is null;
 ALTER TABLE versamenti MODIFY (importo_pagato NOT NULL);
 
 ALTER TABLE versamenti ADD importo_incassato BINARY_DOUBLE;
 UPDATE versamenti SET importo_incassato = 0;
 UPDATE versamenti SET importo_incassato = (SELECT SUM(CASE WHEN pagamenti.stato = 'INCASSATO' THEN pagamenti.importo_pagato ELSE 0 END) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id) WHERE versamenti.stato_versamento = 'ESEGUITO';
+-- situazione in cui non c'e' il pagamento per il versamento eseguito
+UPDATE versamenti SET importo_incassato = 0 WHERE importo_incassato is null;
 ALTER TABLE versamenti MODIFY (importo_incassato NOT NULL);
 
 ALTER TABLE versamenti ADD stato_pagamento VARCHAR2(35 CHAR);
 UPDATE versamenti SET stato_pagamento = 'NON_PAGATO';
 UPDATE versamenti SET stato_pagamento= (SELECT MAX(CASE  WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id) WHERE versamenti.stato_versamento = 'ESEGUITO';
+-- situazione in cui non c'e' il pagamento per il versamento eseguito
+UPDATE versamenti SET stato_pagamento = 'NON_PAGATO' WHERE stato_pagamento is null;
 ALTER TABLE versamenti MODIFY (stato_pagamento NOT NULL);
 
 ALTER TABLE versamenti ADD iuv_pagamento VARCHAR2(35 CHAR);
@@ -1283,20 +1296,24 @@ CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
 ALTER TABLE versamenti DROP CONSTRAINT unique_versamenti_1;
 CREATE INDEX idx_vrs_id_pendenza ON versamenti (cod_versamento_ente,id_applicazione);
 
-ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_applicazione;
+-- Controllare
+-- ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_applicazione;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_dominio;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento_dominio;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tracciato;
-ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
+-- Controllare
+-- ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
 
 ALTER TABLE singoli_versamenti DROP CONSTRAINT unique_singoli_versamenti_1;
 CREATE INDEX idx_sng_id_voce ON singoli_versamenti (id_versamento,cod_singolo_versamento_ente,indice_dati);
 
-ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
+-- Controllare
+-- ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_appoggio;
-ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_tributo;
-ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_versamento;
+-- Controllare
+-- ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_tributo;
+-- ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_versamento;
 
 ALTER TABLE rpt DROP CONSTRAINT unique_rpt_1;
 ALTER TABLE rpt DROP CONSTRAINT unique_rpt_2;
@@ -1304,7 +1321,8 @@ CREATE INDEX idx_rpt_cod_msg_richiesta ON rpt (cod_msg_richiesta);
 CREATE INDEX idx_rpt_id_transazione ON rpt (iuv,ccp,cod_dominio);
 
 ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_pagamento_portale;
-ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_versamento;
+-- Controllare
+-- ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_versamento;
 
 ALTER TABLE pagamenti DROP CONSTRAINT unique_pagamenti_1;
 CREATE INDEX idx_pag_id_riscossione ON pagamenti (cod_dominio,iuv,iur,indice_dati);
@@ -1352,9 +1370,6 @@ ALTER TABLE utenze_domini MODIFY (id_dominio NULL);
 -- 26/09/2019 Identificativo univoco di creazione del versamento
 ALTER TABLE versamenti ADD id_sessione VARCHAR2(35 CHAR);
 
--- 01/10/2019 Configurazione Regole di Hardening API Public
-INSERT INTO configurazione (NOME,VALORE) values ('hardening', '{"abilitato": true, "googleCatpcha": {"serverURL":"https://www.google.com/recaptcha/api/siteverify","siteKey":"CHANGE_ME","secretKey":"CHANGE_ME","soglia":1.0,"responseParameter":"gRecaptchaResponse","denyOnFail":true,"readTimeout":5000,"connectionTimeout":5000}}');
-
 -- 07/11/2019 Abilitazione dei promemoria per tipo pendenza
 ALTER TABLE tipi_versamento MODIFY promemoria_avviso_pdf NULL;
 ALTER TABLE tipi_versamento MODIFY promemoria_avviso_pdf DEFAULT NULL;
@@ -1378,15 +1393,6 @@ ALTER TABLE tipi_versamento ADD trac_csv_tipo VARCHAR2(35 CHAR);
 ALTER TABLE tipi_vers_domini ADD promemoria_avviso_abilitato NUMBER;
 ALTER TABLE tipi_vers_domini ADD promemoria_ricevuta_abilitato NUMBER;
 ALTER TABLE tipi_vers_domini ADD trac_csv_tipo VARCHAR2(35 CHAR);
-
--- 07/11/2019 Configurazione Regole di sistema per la Spedizione Promemoria 
-INSERT INTO configurazione (NOME,VALORE) values ('tracciato_csv', 
-to_clob('{"tipo":"freemarker","intestazione":"idA2A,idPendenza,idDominio,tipoPendenza,numeroAvviso,pdfAvviso,tipoSoggettoPagatore,identificativoPagatore,anagraficaPagatore,indirizzoPagatore,civicoPagatore,capPagatore,localitaPagatore,provinciaPagatore,nazionePagatore,emailPagatore,cellularePagatore,errore","richiesta":"\"PCNhc3NpZ24gY3N2VXRpbHMgPSBjbGFzc1siaXQuZ292cGF5LmNvcmUudXRpbHMuQ1NWVXRpbHMiXS5nZXRJbnN0YW5jZSgpPgo8I2Fzc2lnbiBjc3ZSZWNvcmQgPSBjc3ZVdGlscy5nZXRDU1ZSZWNvcmQobGluZWFDc3ZSaWNoaWVzdGEpPgp7CgkiaWRBMkEiOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgMCl9LAoJImlkUGVuZGVuemEiOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgMSl9LAoJImlkRG9taW5pbyI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCAyKX0sCgkiaWRUaXBvUGVuZGVuemEiOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgMyl9LAoJImlkVW5pdGFPcGVyYXRpdmEiOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgNCl9LAogCSJjYXVzYWxlIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDUpfSwKIAkiYW5ub1JpZmVyaW1lbnRvIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDYpfSwKIAkiY2FydGVsbGFQYWdhbWVudG8iOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgNyl9LAogCSJkYXRpQWxsZWdhdGkiIDogewogCQkidGVzdEFjY2VudGkiOiAiw7LDoMOhw6LDo8Okw6XDpsOnw6jDqcOqw6vDrMOtw67DryIsCiAJCSJ0ZXN0Q2FyYXR0ZXJpIiA6ICIhIyQlJicoKSorLC0uLyIsCiAJCTwjaWYgIWNzdlV0aWxzLmlzRW1wdHkoY3N2UmVjb3JkLCA4KT4iZGF0aUFsbGVnYXRpQ1NWIjogJHtjc3ZSZWNvcmQuZ2V0KDgpfTwvI2lmPgogCX0sCiAJCiAJImRpcmV6aW9uZSI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCA5KX0sCiAJImRpdmlzaW9uZSI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCAxMCl9LAogCSJpbXBvcnRvIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDExKX0sCgkiZGF0YVZhbGlkaXRhIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDEyKX0sCgkiZGF0YVNjYWRlbnphIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDEzKX0sCgkidGFzc29ub21pYUF2dmlzbyI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCAxNCl9LAoJInNvZ2dldHRvUGFnYXRvcmUiOiB7CgkJInRpcG8iOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgMTUpfSwKCQkiaWRlbnRpZmljYXRpdm8iOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgMTYpfSwKCQkiYW5hZ3JhZmljYSI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCAxNyl9LAoJCSJpbmRpcml6em8iOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgMTgpfSwKCQkiY2l2aWNvIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDE5KX0sCgkJImNhcCI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCAyMCl9LAoJCSJsb2NhbGl0YSI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCAyMSl9LAoJCSJwcm92aW5jaWEiOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgMjIpfSwKCQkibmF6aW9uZSI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCAyMyl9LAoJCSJlbWFpbCI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCAyNCl9LAoJCSJjZWxsdWxhcmUiOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgMjUpfQoJfSwKCSJ2b2NpIjogWwoJCXsKCQkJImlkVm9jZVBlbmRlbnphIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDI2KX0sCgkJCSJpbXBvcnRvIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDI3KX0sCgkJCSJkZXNjcml6aW9uZSI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCAyOCl9LAoJCQk8I2lmICFjc3ZVdGlscy5pc0VtcHR5KGNzdlJlY29yZCwgMzMpPgoJCQkidGlwb0VudHJhdGEiOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgMzMpfQoJCQk8I2Vsc2U+CgkJCSJpYmFuQWNjcmVkaXRvIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDI5KX0sCgkJCSJpYmFuQXBwb2dnaW8iOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgMzApfSwKCQkJInRpcG9Db250YWJpbGl0YSI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCAzMSl9LAoJCQkiY29kaWNlQ29udGFiaWxpdGEiOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgMzIpfQoJCQk8LyNpZj4KCQl9CgkJPCNpZiAhY3N2VXRpbHMuaXNFbXB0eShjc3ZSZWNvcmQsIDM0KT4KCQksewoJCQkiaWRWb2NlUGVuZGVuemEiOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgMzQpfSwKCQkJImltcG9ydG8iOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgMzUpfSwKCQkJImRlc2NyaXppb25lIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDM2KX0sCgkJCTwjaWYgIWNzdlV0aWxzLmlzRW1wdHkoY3N2UmVjb3JkLCA0MSk+CgkJCSJ0aXBvRW50cmF0YSI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCA0MSl9CgkJCTwjZWxzZT4KCQkJImliYW5BY2NyZWRpdG8iOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgMzcpfSwKCQkJImliYW5BcHBvZ2dpbyI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCAzO') ||
-to_clob('Cl9LAoJCQkidGlwb0NvbnRhYmlsaXRhIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDM5KX0sCgkJCSJjb2RpY2VDb250YWJpbGl0YSI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCA0MCl9CgkJCTwvI2lmPgoJCX0KCQk8LyNpZj4KCQk8I2lmICFjc3ZVdGlscy5pc0VtcHR5KGNzdlJlY29yZCwgNDIpPgkJCgkJLHsKCQkJImlkVm9jZVBlbmRlbnphIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDQyKX0sCgkJCSJpbXBvcnRvIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDQzKX0sCgkJCSJkZXNjcml6aW9uZSI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCA0NCl9LAoJCQk8I2lmICFjc3ZVdGlscy5pc0VtcHR5KGNzdlJlY29yZCwgNDkpPgoJCQkidGlwb0VudHJhdGEiOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgNDkpfQoJCQk8I2Vsc2U+CgkJCSJpYmFuQWNjcmVkaXRvIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDQ1KX0sCgkJCSJpYmFuQXBwb2dnaW8iOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgNDYpfSwKCQkJInRpcG9Db250YWJpbGl0YSI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCA0Nyl9LAoJCQkiY29kaWNlQ29udGFiaWxpdGEiOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgNDgpfQoJCQk8LyNpZj4KCQl9CgkJPC8jaWY+CgkJPCNpZiAhY3N2VXRpbHMuaXNFbXB0eShjc3ZSZWNvcmQsIDUwKT4KCQksewoJCQkiaWRWb2NlUGVuZGVuemEiOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgNTApfSwKCQkJImltcG9ydG8iOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgNTEpfSwKCQkJImRlc2NyaXppb25lIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDUyKX0sCgkJCTwjaWYgIWNzdlV0aWxzLmlzRW1wdHkoY3N2UmVjb3JkLCA1Nyk+CgkJCSJ0aXBvRW50cmF0YSI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCA1Nyl9CgkJCTwjZWxzZT4KCQkJImliYW5BY2NyZWRpdG8iOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgNTMpfSwKCQkJImliYW5BcHBvZ2dpbyI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCA1NCl9LAoJCQkidGlwb0NvbnRhYmlsaXRhIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDU1KX0sCgkJCSJjb2RpY2VDb250YWJpbGl0YSI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCA1Nil9CgkJCTwvI2lmPgoJCX0KCQk8LyNpZj4KCQk8I2lmICFjc3ZVdGlscy5pc0VtcHR5KGNzdlJlY29yZCwgNTgpPgoJCSx7CgkJCSJpZFZvY2VQZW5kZW56YSI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCA1OCl9LAoJCQkiaW1wb3J0byI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCA1OSl9LAoJCQkiZGVzY3JpemlvbmUiOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgNjApfSwKCQkJPCNpZiAhY3N2VXRpbHMuaXNFbXB0eShjc3ZSZWNvcmQsIDg1KT4KCQkJInRpcG9FbnRyYXRhIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDY1KX0KCQkJPCNlbHNlPgoJCQkiaWJhbkFjY3JlZGl0byI6ICR7Y3N2VXRpbHMudG9Kc29uVmFsdWUoY3N2UmVjb3JkLCA2MSl9LAoJCQkiaWJhbkFwcG9nZ2lvIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDYyKX0sCgkJCSJ0aXBvQ29udGFiaWxpdGEiOiAke2NzdlV0aWxzLnRvSnNvblZhbHVlKGNzdlJlY29yZCwgNjMpfSwKCQkJImNvZGljZUNvbnRhYmlsaXRhIjogJHtjc3ZVdGlscy50b0pzb25WYWx1ZShjc3ZSZWNvcmQsIDY0KX0KCQkJPC8jaWY+CgkJfQoJCTwvI2lmPgoJXQp9\"","risposta":"\"PCNhc3NpZ24gY3N2VXRpbHMgPSBjbGFzc1siaXQuZ292cGF5LmNvcmUudXRpbHMuQ1NWVXRpbHMiXS5nZXRJbnN0YW5jZSgpIC8+CjwjaWYgZXNpdG9PcGVyYXppb25lID09ICJFU0VHVUlUT19PSyI+CjwjYXNzaWduIGlkQTJBID0gYXBwbGljYXppb25lLmdldENvZEFwcGxpY2F6aW9uZSgpIC8+CjwjYXNzaWduIGlkUGVuZGVuemEgPSB2ZXJzYW1lbnRvLmdldENvZFZlcnNhbWVudG9FbnRlKCkgLz4KPCNhc3NpZ24gaWREb21pbmlvID0gZG9taW5pby5nZXRDb2REb21pbmlvKCkgLz4KPCNhc3NpZ24gdGlwb1BlbmRlbnphID0gaWRUaXBvVmVyc2FtZW50byAvPgo8I2Fzc2lnbiBudW1lcm9BdnZpc28gPSB2ZXJzYW1lbnRvLmdldE51bWVyb0F2dmlzbygpISAvPgo8I2lmIG51bWVyb0F2dmlzbz9oYXNfY29udGVudD4KCTwjYXNzaWduIHBkZkF2dmlzbyA9IGlkRG9taW5pbyArICJfIiArIG51bWVyb0F2dmlzbyArICIucGRmIiAvPgo8LyNpZj4KPCNhc3NpZ24gdGlwbyA9IHZlcnNhbWVudG8uZ2V0QW5hZ3JhZmljYURlYml0b3JlKCkuZ2V0VGlwbygpLnRvU3RyaW5nKCkgLz4KPCNhc3NpZ24gaWRlbnRpZmljYXRpdm8gPSB2ZXJzYW1lbnRvLmdldEFuYWdyYWZpY2FEZWJpdG9yZSgpLmdldENvZFVuaXZvY28oKSEgLz4KPCNhc3NpZ24gYW5hZ3JhZmljYSA9IHZlcnNhbWVudG8uZ2V0QW5hZ3JhZmljYURlYml0b3JlKCkuZ2V0UmFnaW9uZVNvY2lhbGUoKSEgLz4KPCNhc3NpZ24gaW5kaXJpenpvID0gdmVyc2FtZW50by5nZXRBbmFncmFmaWNhRGViaXRvcmUoKS5nZXRJbmRpcml6em8oKSEgLz4KPCNhc3NpZ24gY2l2aWNvID0gdmVyc2FtZW50by5nZXRBbmFncmFmaWNhRGViaXRvcmUoKS5nZXRDaXZpY28oKSEgLz4KPCNhc3NpZ24gY2FwID0gdmVyc2FtZW50by5nZXRBbmFncmFmaWNhRGViaXRvcmUoKS5nZXRDYXAoKSEgLz4KPCNhc3NpZ24gbG9jYWxpdGEgPSB2ZXJzYW1lbnRvLmdldEFuYWdyYWZpY2FEZWJpdG9yZSgpLmdldExvY2FsaXRhKCkhIC8+CjwjYXNzaWduIHByb3ZpbmNpYSA9IHZlcnNhbW') ||
-to_clob('VudG8uZ2V0QW5hZ3JhZmljYURlYml0b3JlKCkuZ2V0UHJvdmluY2lhKCkhIC8+CjwjYXNzaWduIG5hemlvbmUgPSB2ZXJzYW1lbnRvLmdldEFuYWdyYWZpY2FEZWJpdG9yZSgpLmdldE5hemlvbmUoKSEgLz4KPCNhc3NpZ24gZW1haWwgPSB2ZXJzYW1lbnRvLmdldEFuYWdyYWZpY2FEZWJpdG9yZSgpLmdldEVtYWlsKCkhIC8+CjwjYXNzaWduIGNlbGx1bGFyZSA9IHZlcnNhbWVudG8uZ2V0QW5hZ3JhZmljYURlYml0b3JlKCkuZ2V0Q2VsbHVsYXJlKCkhIC8+CjwjYXNzaWduIGNzdlJlY29yZCA9IGNzdlV0aWxzLnRvQ3N2KGlkQTJBLCBpZFBlbmRlbnphLCBpZERvbWluaW8sIHRpcG9QZW5kZW56YSwgbnVtZXJvQXZ2aXNvLCBwZGZBdnZpc28sIHRpcG8sIGlkZW50aWZpY2F0aXZvLCBhbmFncmFmaWNhLCBpbmRpcml6em8sIGNpdmljbywgY2FwLCBsb2NhbGl0YSwgcHJvdmluY2lhLCBuYXppb25lLCBlbWFpbCwgY2VsbHVsYXJlKSAvPgoke2NzdlJlY29yZH0KPCNlbHNlPgosLCwsLCwsLCwsLCwsLCwsLCR7ZGVzY3JpemlvbmVFc2l0b09wZXJhemlvbmV9CjwvI2lmPg==\""}'));
-INSERT INTO configurazione (NOME,VALORE) values ('mail_batch', '{"abilitato": false, "mailserver": {"host": null, "port": null, "username": null, "password": null, "from": null, "readTimeout": 120000, "connectionTimeout": 10000 }}');
-INSERT INTO configurazione (NOME,VALORE) values ('mail_promemoria', '{ "tipo": "freemarker", "oggetto": "\"UHJvbWVtb3JpYSBwYWdhbWVudG86ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQ==\"", "messaggio": "\"R2VudGlsZSAke3ZlcnNhbWVudG8uZ2V0QW5hZ3JhZmljYURlYml0b3JlKCkuZ2V0UmFnaW9uZVNvY2lhbGUoKX0sCgpsZSBub3RpZmljaGlhbW8gY2hlIMOoIHN0YXRhIGVtZXNzYSB1bmEgcmljaGllc3RhIGRpIHBhZ2FtZW50byBhIHN1byBjYXJpY286ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQoKPCNpZiB2ZXJzYW1lbnRvLmdldE51bWVyb0F2dmlzbygpP2hhc19jb250ZW50PgpQdcOyIGVmZmV0dHVhcmUgaWwgcGFnYW1lbnRvIHRyYW1pdGUgbCdhcHAgbW9iaWxlIElPIG9wcHVyZSBwcmVzc28gdW5vIGRlaSBwcmVzdGF0b3JpIGRpIHNlcnZpemkgZGkgcGFnYW1lbnRvIGFkZXJlbnRpIGFsIGNpcmN1aXRvIHBhZ29QQSB1dGlsaXp6YW5kbyBsJ2F2dmlzbyBkaSBwYWdhbWVudG8gYWxsZWdhdG8uCjwjZWxzZT4KUHVvJyBlZmZldHR1YXJlIGlsIHBhZ2FtZW50byBvbi1saW5lIHByZXNzbyBpbCBwb3J0YWxlIGRlbGwnZW50ZSBjcmVkaXRvcmU6ICR7ZG9taW5pby5nZXRSYWdpb25lU29jaWFsZSgpfSAKPC8jaWY+CgpEaXN0aW50aSBzYWx1dGku\"", "allegaPdf": true }');
-INSERT INTO configurazione (NOME,VALORE) values ('mail_ricevuta', '{ "tipo": "freemarker", "oggetto": "\"PCNpZiBycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5nZXRDb2RpZmljYSgpID0gMD4KTm90aWZpY2EgcGFnYW1lbnRvIGVzZWd1aXRvOiAke3JwdC5nZXRDb2REb21pbmlvKCl9LyR7cnB0LmdldEl1digpfS8ke3JwdC5nZXRDY3AoKX0KPCNlbHNlaWYgcnB0LmdldEVzaXRvUGFnYW1lbnRvKCkuZ2V0Q29kaWZpY2EoKSA9IDE+Ck5vdGlmaWNhIHBhZ2FtZW50byBub24gZXNlZ3VpdG86ICR7cnB0LmdldENvZERvbWluaW8oKX0vJHtycHQuZ2V0SXV2KCl9LyR7cnB0LmdldENjcCgpfQo8I2Vsc2VpZiBycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5nZXRDb2RpZmljYSgpID0gMj4KTm90aWZpY2EgcGFnYW1lbnRvIGVzZWd1aXRvIHBhcnppYWxtZW50ZTogJHtycHQuZ2V0Q29kRG9taW5pbygpfS8ke3JwdC5nZXRJdXYoKX0vJHtycHQuZ2V0Q2NwKCl9CjwjZWxzZWlmIHJwdC5nZXRFc2l0b1BhZ2FtZW50bygpLmdldENvZGlmaWNhKCkgPSAzPgpOb3RpZmljYSBkZWNvcnJlbnphIHRlcm1pbmkgcGFnYW1lbnRvOiAke3JwdC5nZXRDb2REb21pbmlvKCl9LyR7cnB0LmdldEl1digpfS8ke3JwdC5nZXRDY3AoKX0KPCNlbHNlaWYgcnB0LmdldEVzaXRvUGFnYW1lbnRvKCkuZ2V0Q29kaWZpY2EoKSA9IDQ+Ck5vdGlmaWNhIGRlY29ycmVuemEgdGVybWluaSBwYWdhbWVudG86ICR7cnB0LmdldENvZERvbWluaW8oKX0vJHtycHQuZ2V0SXV2KCl9LyR7cnB0LmdldENjcCgpfQo8LyNpZj4=\"", "messaggio": "\"PCNhc3NpZ24gZGF0YVJpY2hpZXN0YSA9IHJwdC5nZXREYXRhTXNnUmljaGllc3RhKCk/c3RyaW5nKCJ5eXl5LU1NLWRkIEhIOm1tOnNzIik+CklsIHBhZ2FtZW50byBkaSAiJHt2ZXJzYW1lbnRvLmdldENhdXNhbGVWZXJzYW1lbnRvKCkuZ2V0U2ltcGxlKCl9IiBlZmZldHR1YXRvIGlsICR7ZGF0YVJpY2hpZXN0YX0gcmlzdWx0YSBjb25jbHVzbyBjb24gZXNpdG8gJHtycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5uYW1lKCl9OgoKRW50ZSBjcmVkaXRvcmU6ICR7ZG9taW5pby5nZXRSYWdpb25lU29jaWFsZSgpfSAoJHtkb21pbmlvLmdldENvZERvbWluaW8oKX0pCklzdGl0dXRvIGF0dGVzdGFudGU6ICR7cnB0LmdldERlbm9taW5hemlvbmVBdHRlc3RhbnRlKCl9ICgke3JwdC5nZXRJZGVudGlmaWNhdGl2b0F0dGVzdGFudGUoKX0pCklkZW50aWZpY2F0aXZvIHVuaXZvY28gdmVyc2FtZW50byAoSVVWKTogJHtycHQuZ2V0SXV2KCl9CkNvZGljZSBjb250ZXN0byBwYWdhbWVudG8gKENDUCk6ICR7cnB0LmdldENjcCgpfQpJbXBvcnRvIHBhZ2F0bzogJHtycHQuZ2V0SW1wb3J0b1RvdGFsZVBhZ2F0bygpfQoKRGlzdGludGkgc2FsdXRpLg==\"", "allegaPdf": true }');
 
 -- 27/11/2019 Aggiunti riferimenti Incasso, Fr e Tracciato alla tabella eventi
 ALTER TABLE eventi ADD id_fr NUMBER;
