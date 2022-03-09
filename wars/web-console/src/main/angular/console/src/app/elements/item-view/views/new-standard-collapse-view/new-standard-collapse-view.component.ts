@@ -6,6 +6,8 @@ import { NewStandardCollapse } from '../../../../classes/view/new-standard-colla
 import { Voce } from '../../../../services/voce.service';
 import { Dato } from '../../../../classes/view/dato';
 
+import * as moment from 'moment';
+
 @Component({
   selector: 'link-new-standard-collapse-view',
   templateUrl: './new-standard-collapse-view.component.html',
@@ -42,6 +44,7 @@ export class NewStandardCollapseViewComponent implements OnInit, AfterViewInit {
   createElenco() {
     const item = this.info.item;
     if (item) {
+      this.info.stato = this.info.item.data ? moment(this.info.item.data).format('DD/MM/YYYY') : '';
       if (item.vocePendenza) { // Riconciliazioni/Pagamenti
         const vocePendenza = item.vocePendenza;
         const pendenza = vocePendenza.pendenza;

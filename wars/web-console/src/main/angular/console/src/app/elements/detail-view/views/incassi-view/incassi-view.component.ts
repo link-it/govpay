@@ -107,7 +107,7 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
     this.info.sottotitolo = _st || null;
     const _data: string = this.json.data?moment(this.json.data).format('DD/MM/YYYY'):null;
     if (_data) {
-      this.info.extraInfo.push({ label: Voce.DATA+': ', value: _data });
+      this.info.extraInfo.push({ label: Voce.DATA_REGISTRAZIONE + ': ', value: _data });
     }
     // if (this.json.idIncasso) {
     //   this.info.extraInfo.push({ label: Voce.RICONCILIAZIONE+': ', value: this.json.idIncasso });
