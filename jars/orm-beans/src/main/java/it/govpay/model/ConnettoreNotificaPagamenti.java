@@ -41,6 +41,7 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	
 	public static final String P_EMAIL_ALLEGATO = "EMAIL_ALLEGATO";
 	public static final String P_DOWNLOAD_BASE_URL = "DOWNLOAD_BASE_URL";
+	public static final String P_INTERVALLO_CREAZIONE_TRACCIATO = "INTERV_CREAZ_TRAC";
 	
 	
 	
@@ -71,8 +72,11 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	private List<String> contenuti;
 	private boolean emailAllegato;
 	private String downloadBaseURL;
+	private Integer intervalloCreazioneTracciato;
 	
 	public ConnettoreNotificaPagamenti() {
+		// default value per intervallo creazione = 24 ore
+		this.intervalloCreazioneTracciato = 24;
 	}
 		
 	public String getIdConnettore() {
@@ -197,5 +201,13 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 
 	public void setEmailAllegato(boolean emailAllegato) {
 		this.emailAllegato = emailAllegato;
+	}
+
+	public Integer getIntervalloCreazioneTracciato() {
+		return intervalloCreazioneTracciato;
+	}
+
+	public void setIntervalloCreazioneTracciato(Integer intervalloCreazioneTracciato) {
+		this.intervalloCreazioneTracciato = intervalloCreazioneTracciato;
 	}
 }
