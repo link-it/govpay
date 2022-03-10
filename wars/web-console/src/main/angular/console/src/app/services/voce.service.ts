@@ -134,6 +134,8 @@ export class Voce {
   public static ID_UNITA: string = 'Id unità';
   public static ID_VOCE_PENDENZA: string = 'Id voce pendenza';
   public static IDENTIFICATIVO: string = 'Identificativo';
+  public static IDENTIFICATIVO_FLUSSO: string = 'Identificativo flusso';
+  public static IDENTIFICATIVO_PSP_RIVERSAMENTO: string = 'Identificativo PSP del riversamento';
   public static IDF_IUV: string = 'Flusso/IUV';
   public static IDF: string = 'IDF';
   public static IMPAGINAZIONE: string = 'Impaginazione';

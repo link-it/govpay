@@ -51,7 +51,7 @@ export class NewStandardCollapseViewComponent implements OnInit, AfterViewInit {
         this._elenco.push({ label: Voce.ENTE_CREDITORE, value: `${pendenza.dominio.ragioneSociale} (${pendenza.dominio.idDominio})`, type: 'string' });
         this._elenco.push({ label: Voce.DEBITORE, value: `${pendenza.soggettoPagatore.anagrafica} (${pendenza.soggettoPagatore.identificativo})`, type: 'string' });
         this._elenco.push({ label: Voce.TIPI_PENDENZA, value: `${pendenza.causale}`, type: 'string' });
-        if (vocePendenza.contabilita.quote) {
+        if (vocePendenza.contabilita && vocePendenza.contabilita.quote) {
           this._elenco.push({ label: Voce.QUOTE, value: vocePendenza.contabilita.quote, type: 'quote' });
         }
         if (pendenza.datiAllegati) {

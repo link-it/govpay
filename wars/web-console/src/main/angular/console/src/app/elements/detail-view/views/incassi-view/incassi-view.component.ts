@@ -100,7 +100,7 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
     this.info = new Riepilogo({
       importo: this.us.currencyFormat(this.json.importo),
       extraInfo: [
-        { label: Voce.SCT+': ', value: this.json.sct }
+        { label: Voce.IDENTIFICATIVO_PSP_RIVERSAMENTO+': ', value: this.json.sct }
       ]
     });
     this.info.titolo = null;
