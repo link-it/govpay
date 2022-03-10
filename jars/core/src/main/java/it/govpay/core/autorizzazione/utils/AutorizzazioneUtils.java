@@ -62,7 +62,7 @@ public class AutorizzazioneUtils {
 	}
 
 	public static GovpayLdapUserDetails getUserDetailFromUtenzaRegistrata(String username, boolean checkPassword, boolean checkSubject, 
-			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, List<String>> headerValues, BDConfigWrapper configWrapper) throws UsernameNotFoundException , ServiceException {
+			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, List<String>> headerValues, BDConfigWrapper configWrapper, String apiName, String authType) throws UsernameNotFoundException , ServiceException {
 
 		Utenza utenza = null;
 		Applicazione applicazione = null;
@@ -104,6 +104,9 @@ public class AutorizzazioneUtils {
 
 		utenza.setCheckSubject(checkSubject);
 		
+		utenza.setAutenticazione(authType);
+		utenza.setApiName(apiName);
+		
 		String password = StringUtils.isNotBlank(utenza.getPassword()) ? utenza.getPassword() : PASSWORD_DEFAULT_VALUE;
 
 		GovpayLdapUserDetails userDetails = getUserDetail(username, password, username, authorities);
@@ -116,7 +119,7 @@ public class AutorizzazioneUtils {
 	}
 	
 	public static GovpayLdapUserDetails getUserDetailFromUtenzaRegistrataInSessione(String username, boolean checkPassword, boolean checkSubject, 
-			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, Object> attributeValues, GovpayLdapUserDetails userDetailFromSession, BDConfigWrapper configWrapper) throws UsernameNotFoundException , ServiceException {
+			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, Object> attributeValues, GovpayLdapUserDetails userDetailFromSession, BDConfigWrapper configWrapper, String apiName, String authType) throws UsernameNotFoundException , ServiceException {
 
 		List<Acl> aclsRuolo = new ArrayList<>();
 		List<GrantedAuthority> authorities = new ArrayList<>();
@@ -155,6 +158,9 @@ public class AutorizzazioneUtils {
 				throw new UsernameNotFoundException("Utenza non trovata.",ex);				
 			} 
 		}
+		
+		utenza.setAutenticazione(authType);
+		utenza.setApiName(apiName);
 
 		GovpayLdapUserDetails userDetails = getUserDetail(userDetailFromSession, authorities);
 		userDetails.setApplicazione(applicazione);
@@ -202,7 +208,7 @@ public class AutorizzazioneUtils {
 	}
 
 	public static GovpayLdapUserDetails getUserDetailFromUtenzaCittadino(String username, boolean checkPassword, boolean checkSubject, 
-			Collection<? extends GrantedAuthority> authFromPreauth,Map<String, List<String>> headerValues, BDConfigWrapper configWrapper) throws UsernameNotFoundException , ServiceException {
+			Collection<? extends GrantedAuthority> authFromPreauth,Map<String, List<String>> headerValues, BDConfigWrapper configWrapper, String apiName, String authType) throws UsernameNotFoundException , ServiceException {
 
 		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.CITTADINO;
 		List<Acl> aclsRuolo = new ArrayList<>();
@@ -234,6 +240,8 @@ public class AutorizzazioneUtils {
 		utenza.setPrincipalOriginale(username);
 		utenza.setPrincipal(username);
 		utenza.setCheckSubject(checkSubject);
+		utenza.setAutenticazione(authType);
+		utenza.setApiName(apiName);
 
 		GovpayLdapUserDetails userDetails = getUserDetail(username, PASSWORD_DEFAULT_VALUE, username, authorities);
 		userDetails.setUtenza(utenza);
@@ -244,7 +252,7 @@ public class AutorizzazioneUtils {
 	}
 	
 	public static GovpayLdapUserDetails getUserDetailFromUtenzaInSessione(String username, boolean checkPassword, boolean checkSubject, 
-			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, Object> attributeValues, GovpayLdapUserDetails userDetailFromSession, BDConfigWrapper configWrapper) throws UsernameNotFoundException , ServiceException {
+			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, Object> attributeValues, GovpayLdapUserDetails userDetailFromSession, BDConfigWrapper configWrapper, String apiName, String authType) throws UsernameNotFoundException , ServiceException {
 
 		List<Acl> aclsRuolo = new ArrayList<>();
 		List<GrantedAuthority> authorities = new ArrayList<>();
@@ -274,7 +282,7 @@ public class AutorizzazioneUtils {
 //	}
 
 	public static GovpayLdapUserDetails getUserDetailFromUtenzaAnonima(String username, boolean checkPassword, boolean checkSubject, 
-			Collection<? extends GrantedAuthority> authFromPreauth, BDConfigWrapper configWrapper) throws UsernameNotFoundException , ServiceException {
+			Collection<? extends GrantedAuthority> authFromPreauth, BDConfigWrapper configWrapper, String apiName, String authType) throws UsernameNotFoundException , ServiceException {
 
 		TIPO_UTENZA tipoUtenza = TIPO_UTENZA.ANONIMO;
 		List<Acl> aclsRuolo = new ArrayList<>();
@@ -307,6 +315,8 @@ public class AutorizzazioneUtils {
 		utenza.setPrincipalOriginale(username);
 		utenza.setPrincipal(username);
 		utenza.setCheckSubject(checkSubject);
+		utenza.setAutenticazione(authType);
+		utenza.setApiName(apiName);
 
 		GovpayLdapUserDetails userDetails = getUserDetail(username, PASSWORD_DEFAULT_VALUE, username, authorities);
 		userDetails.setUtenza(utenza);
