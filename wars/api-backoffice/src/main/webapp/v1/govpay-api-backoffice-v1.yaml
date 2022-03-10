@@ -8582,6 +8582,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/aclPost'
+        autenticazione:
+          type: string
+          description: tipo autenticazione utilizzata per loggarsi nel sistema
     esitoOperazione:
       type: object
       required:
