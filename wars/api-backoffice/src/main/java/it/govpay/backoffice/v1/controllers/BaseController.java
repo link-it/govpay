@@ -317,6 +317,12 @@ public abstract class BaseController {
 		}
 	}
 	
+	protected void isAuthorized(Authentication authentication, List<TIPO_UTENZA> tipoUtenza) throws NotAuthorizedException {
+		if(!AuthorizationManager.isAuthorized(authentication, tipoUtenza)) {
+			throw AuthorizationManager.toNotAuthorizedException(authentication);
+		}
+	}
+	
 	protected void isAuthorized(Authentication authentication, List<TIPO_UTENZA> tipoUtenza, List<Servizio> servizi, List<Diritti> listaDiritti) throws NotAuthorizedException {
 		if(!AuthorizationManager.isAuthorized(authentication, tipoUtenza, servizi, listaDiritti)) {
 			throw AuthorizationManager.toNotAuthorizedException(authentication);

@@ -27,6 +27,9 @@ public class Utenza extends it.govpay.model.Utenza {
 	protected transient List<Acl> aclRuoliUtenza;
 	protected transient Map<String,List<Acl>> ruoliUtenza;
 	protected transient Map<String, List<String>> headers;
+	
+	private String autenticazione;
+	private String apiName;
 
 	public TIPO_UTENZA getTipoUtenza() { 
 		return TIPO_UTENZA.ANONIMO;
@@ -260,5 +263,17 @@ public class Utenza extends it.govpay.model.Utenza {
 	}
 	public void setHeaders(Map<String, List<String>> headers) {
 		this.headers = headers;
+	}
+	public String getAutenticazione() {
+		return autenticazione;
+	}
+	public void setAutenticazione(String autenticazione) {
+		this.autenticazione = autenticazione;
+	}
+	public String getApiName() {
+		return apiName;
+	}
+	public void setApiName(String apiName) {
+		this.apiName = apiName;
 	}
 }

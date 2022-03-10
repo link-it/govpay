@@ -57,6 +57,8 @@ public class ProfiloConverter {
 			break;
 		}
 		
+		profilo.setAutenticazione(user.getAutenticazione());
+		
 		if(user.isAutorizzazioneDominiStar()) {
 			List<DominioProfiloIndex> dominiLst = new ArrayList<>();
 			DominioProfiloIndex dominioStar = new DominioProfiloIndex();
