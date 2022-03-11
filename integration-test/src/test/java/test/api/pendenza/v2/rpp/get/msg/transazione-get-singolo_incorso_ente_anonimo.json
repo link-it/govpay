@@ -83,6 +83,8 @@
 		"stato": "NON_ESEGUITA",
 		"rpp": "#notnull",
         "tipo":"#string",
-   		"UUID":"#string"
+   		"UUID":"#string",
+   		 "iuvAvviso":"##string", 
+   	 	 "iuvPagamento":"##string"
 	}
 }

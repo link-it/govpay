@@ -28,6 +28,7 @@ import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
 import it.govpay.core.dao.pagamenti.exception.RendicontazioneNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.RequestParamException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 
 public class RendicontazioniDAO extends BaseDAO{
@@ -218,8 +219,72 @@ public class RendicontazioniDAO extends BaseDAO{
 //		pagamento.getIncasso(bd);
 //	}
 
+	public ListaRendicontazioniDTOResponse listaFr(ListaRendicontazioniDTO listaRendicontazioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException, RequestParamException{
+		FrBD rendicontazioniBD = null;
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		
+		try {
+			rendicontazioniBD = new FrBD(configWrapper);
+			FrFilter filter = rendicontazioniBD.newFilter();
 
-	public ListaRendicontazioniDTOResponse listaRendicontazioni(ListaRendicontazioniDTO listaRendicontazioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException{
+			filter.setOffset(listaRendicontazioniDTO.getOffset());
+			filter.setLimit(listaRendicontazioniDTO.getLimit());
+			if(listaRendicontazioniDTO.getIdDominio() != null) {
+				filter.setCodDominioFiltro(listaRendicontazioniDTO.getIdDominio());
+			}
+			filter.setCodDominio(listaRendicontazioniDTO.getCodDomini());
+			// richiesto ordinamento
+			ListaFrDTO frDTO = new ListaFrDTO(listaRendicontazioniDTO.getUser());
+			if(listaRendicontazioniDTO.isOrderEnabled()) {
+				for (String nomeImpostato : listaRendicontazioniDTO.getFieldList()) {
+					frDTO.setOrderBy(nomeImpostato);
+				}
+			} else { // default
+				filter.setFilterSortList(frDTO.getFieldSortList());
+			}
+			filter.setDatainizio(listaRendicontazioniDTO.getDataAcquisizioneFlussoDa());
+			filter.setDataFine(listaRendicontazioniDTO.getDataAcquisizioneFlussoA()); 
+			filter.setIncassato(listaRendicontazioniDTO.getIncassato());
+			filter.setCodFlusso(listaRendicontazioniDTO.getCodFlusso());
+			filter.setRicercaIdFlussoCaseInsensitive(listaRendicontazioniDTO.isRicercaIdFlussoCaseInsensitive());
+			filter.setDominiUOAutorizzati(listaRendicontazioniDTO.getUnitaOperative());
+			filter.setStato(listaRendicontazioniDTO.getStato());
+			filter.setEseguiCountConLimit(listaRendicontazioniDTO.isEseguiCountConLimit());
+			filter.setObsoleto(listaRendicontazioniDTO.getFrObsoleto()); 
+			filter.setIuv(listaRendicontazioniDTO.getIuv());
+			filter.setRicercaIdFlussoCaseInsensitive(listaRendicontazioniDTO.isRicercaIdFlussoCaseInsensitive());
+
+			Long count = null;
+			
+			if(listaRendicontazioniDTO.isEseguiCount()) {
+				 count = rendicontazioniBD.count(filter);
+			}
+
+			List<it.govpay.bd.viste.model.Rendicontazione> resList = new ArrayList<>();
+			if(listaRendicontazioniDTO.isEseguiFindAll()) {
+				List<Fr> findAll = rendicontazioniBD.findAllNoXml(filter);
+
+				for (Fr fr : findAll) {
+					it.govpay.bd.viste.model.Rendicontazione elem = new it.govpay.bd.viste.model.Rendicontazione();
+					fr.getDominio(configWrapper);
+					elem.setFr(fr);
+					resList.add(elem);
+				}
+			} 
+
+			return new ListaRendicontazioniDTOResponse(count, resList);
+		}finally {
+			if(rendicontazioniBD != null)
+				rendicontazioniBD.closeConnection();
+		}
+	}
+
+	public ListaRendicontazioniDTOResponse listaRendicontazioni(ListaRendicontazioniDTO listaRendicontazioniDTO) throws ServiceException, NotAuthorizedException, NotAuthenticatedException, NotFoundException, RequestParamException{
+		// la ricerca dei flussi deve utilizzare la tabella se non viene impostato il filtro per iuv.
+		if(listaRendicontazioniDTO.isRicercaFR() && listaRendicontazioniDTO.getIuv() == null) {
+			return this.listaFr(listaRendicontazioniDTO);
+		}
+		
 		RendicontazioniBD rendicontazioniBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		

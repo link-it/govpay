@@ -356,6 +356,7 @@ public class IntermediariBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_INTERMEDIARIO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_INTERMEDIARIO), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_INTERMEDIARIO, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni

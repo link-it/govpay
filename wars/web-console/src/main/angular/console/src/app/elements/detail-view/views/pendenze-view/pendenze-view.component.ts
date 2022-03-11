@@ -89,8 +89,8 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     if(_json.dominio.ragioneSociale && _json.dominio.idDominio) {
       this.info.extraInfo.push({label: Voce.ENTE_CREDITORE + ': ', value: Dato.concatStrings([_json.dominio.ragioneSociale, _json.dominio.idDominio], ', ')});
     }
-    if(_json.unitaOperativa && _json.unitaOperativa.ragionesociale && _json.unitaOperativa.idUnita) {
-      const _uo: string = Dato.concatStrings([_json.unitaOperativa.ragionesociale, _json.unitaOperativa.idUnita], ', ');
+    if(_json.unitaOperativa && _json.unitaOperativa.ragioneSociale && _json.unitaOperativa.idUnita) {
+      const _uo: string = Dato.concatStrings([_json.unitaOperativa.idUnita, _json.unitaOperativa.ragioneSociale], ' - ');
       this.info.extraInfo.push({label: Voce.UNITA_OPERATIVA + ': ', value: _uo});
     }
     if(_json.direzione) {
@@ -102,9 +102,10 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     if(_json.tipoPendenza && _json.tipoPendenza.descrizione) {
       this.info.extraInfo.push({label: Voce.TIPO_PENDENZA + ': ', value: _json.tipoPendenza.descrizione});
     }
-    if(_json.tassonomiaAvviso) {
-      this.info.extraInfo.push({ label: Voce.TASSONOMIA_AVVISO+': ', value: _json.tassonomiaAvviso });
-    }
+    // DEPRECATED
+    // if(_json.tassonomiaAvviso) {
+    //   this.info.extraInfo.push({ label: Voce.TASSONOMIA_AVVISO+': ', value: _json.tassonomiaAvviso });
+    // }
     if(_json.tassonomia) {
       this.info.extraInfo.push({ label: Voce.TASSONOMIA_ENTE+': ', value: _json.tassonomia });
     }

@@ -39,6 +39,7 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
@@ -409,7 +410,8 @@ public class FrBD extends BasicBD {
 			fields.add(model.COD_PSP);
 			fields.add(model.COD_DOMINIO);
 			fields.add(model.STATO);
-			fields.add(model.DESCRIZIONE_STATO);
+			if(!this.getJdbcProperties().getDatabase().equals(TipiDatabase.ORACLE))
+				fields.add(model.DESCRIZIONE_STATO);
 			fields.add(model.DATA_ACQUISIZIONE);
 			fields.add(model.DATA_ORA_FLUSSO);
 			fields.add(model.DATA_REGOLAMENTO);

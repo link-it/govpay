@@ -57,8 +57,8 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     let _dashboard_link_query = UtilService.DASHBOARD_LINKS_PARAMS.params.map((item) => {
       return item.controller + '=' + item.value;
     }).join('&');
-    this.loadMetadati(_service, _dashboard_link_query);
     this.getList(_service, _dashboard_link_query);
+    this.loadMetadati(_service, _dashboard_link_query);
   }
 
   ngOnDestroy() {
@@ -202,7 +202,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
    */
   loadMetadati(service: string = '', query: string = '') {
     service = (service || this.rsc.fullPath); // ROUTING - fullPath
-    // this.__waitForMeta();
+    this.__waitForMeta();
     let _query: string = this.__setupQueryForMeta(service, query);
     if(!this._isLoadingMeta) {
       this._isLoadingMeta = true;
@@ -361,13 +361,13 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   }
 
   protected _risultati(_lastResponse: any) {
-    let txt: string = (!_lastResponse && this._isLoadingMeta)?'Caricamento in corso...':'Nessun risultato.';
+    let txt: string = (!_lastResponse && this._isLoadingMeta) ? 'Caricamento in corso...' : 'Numero di risultati sconosciuto.';
     if (_lastResponse) {
       const _value = (_lastResponse.numRisultati || 0);
-      txt = (_value !== 1)?`Trovati ${_value} risultati`:`Trovato ${_value} risultato`;
-      // ROUTING - fullPath
-      if (this.rsc.fullPath === UtilService.URL_PAGAMENTI && _lastResponse.maxRisultati && _lastResponse.numRisultati === _lastResponse.maxRisultati) {
-        txt = `Trovati più di ${(_lastResponse.maxRisultati - 1)} `;
+      txt = (_value !== 1) ? `Trovati ${_value} risultati` : `Trovato ${_value} risultato`;
+
+      if (_lastResponse.maxRisultati && _lastResponse.numRisultati === _lastResponse.maxRisultati) {
+        txt = `Trovati oltre ${(_lastResponse.maxRisultati - 1)} risultati`;
       }
     }
     return txt;
@@ -654,8 +654,8 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       case UtilService.URL_INCASSI:
         _stdTC = new TwoCols();
         _stdTC.generalTemplate = true;
-        _stdTC.gtTextUL = item.idFlusso ? `${Voce.IDF}: ${item.idFlusso}` : `${Voce.IUV}: ${item.iuv}`;
-        _stdTC.gtTextBL = `${Voce.SCT}: ${item.sct}`;
+        _stdTC.gtTextUL = item.idFlusso ? `${item.idFlusso}` : `${item.iuv}`;
+        _stdTC.gtTextBL = '';
         _stdTC.gtTextUR = this.us.currencyFormat(item.importo);
         _stdTC.gtTextBR = item.data?moment(item.data).format('DD/MM/YYYY'):'';
         _std = _stdTC;

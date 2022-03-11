@@ -1,0 +1,31 @@
+{
+	"idTipoPendenza" : 'LIBERO',
+	"idDominio": '#(idDominio)',
+	"causale": '#("Test " + idPendenza)',
+	"soggettoPagatore": {
+		"tipo": "F",
+		"identificativo": "RSSMRO00X00X000X",
+		"anagrafica": "Mario Rossi",
+		"email": null
+	},
+	"importo": 0.03,
+	"dataScadenza": "2030-12-31",
+	"voci": [
+		{
+			"idVocePendenza": "1",
+			"importo": 0.01,
+			"descrizione": "Importo 1",
+			"ibanAccredito": "#(ibanAccredito)",
+			"tipoContabilita": "ALTRO",
+			"codiceContabilita": "TEST"
+		},
+		{
+			"idVocePendenza": "2",
+			"importo": 0.02,
+			"descrizione": "Importo 2",
+			"ibanAccredito": "#(ibanAccredito)",
+			"tipoContabilita": "ALTRO",
+			"codiceContabilita": "TEST"
+		}
+	]
+}

@@ -45,6 +45,7 @@ public class NotificheController extends BaseController {
     public Response findNotifiche(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String dataDa, String dataA, String stato, String tipo, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findNotifiche";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
+		this.setMaxRisultati(maxRisultati); 
 		try{
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 			// autorizzazione sulla API
@@ -135,7 +136,7 @@ public class NotificheController extends BaseController {
 			}
 
 			ListaNotifiche response = new ListaNotifiche(results, this.getServicePath(uriInfo),
-					listaNotificheDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					listaNotificheDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();

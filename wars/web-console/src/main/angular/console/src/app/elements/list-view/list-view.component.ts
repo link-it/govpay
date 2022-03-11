@@ -36,8 +36,8 @@ export class ListViewComponent implements OnInit, AfterContentChecked {
     if(this.sideList) {
       let _query:string = this._formQuery(event);
 
-      this.sideList.loadMetadati(null, _query);
       this.sideList.getList(null, _query);
+      this.sideList.loadMetadati(null, _query);
     }
   }
 

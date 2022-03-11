@@ -153,6 +153,7 @@ public class IntermediariController extends BaseController {
     	String methodName = "findIntermediari";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);  
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_PAGOPA), Arrays.asList(Diritti.LETTURA));
@@ -188,7 +189,7 @@ public class IntermediariController extends BaseController {
 			}
 			
 			ListaIntermediari response = new ListaIntermediari(results, this.getServicePath(uriInfo),
-					listaIntermediariDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					listaIntermediariDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
@@ -242,6 +243,7 @@ public class IntermediariController extends BaseController {
     	String methodName = "findStazioni";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);  
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_PAGOPA), Arrays.asList(Diritti.LETTURA));
@@ -281,7 +283,7 @@ public class IntermediariController extends BaseController {
 			}
 			
 			ListaStazioni response = new ListaStazioni(results, this.getServicePath(uriInfo),
-					listaStazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					listaStazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
