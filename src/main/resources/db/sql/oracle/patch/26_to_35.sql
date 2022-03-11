@@ -1,35 +1,3 @@
---GP-557
-
-CREATE SEQUENCE seq_avvisi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE avvisi
-(
-       cod_dominio VARCHAR2(35 CHAR) NOT NULL,
-       iuv VARCHAR(35) NOT NULL,
-       data_creazione TIMESTAMP NOT NULL,
-       stato VARCHAR2(255 CHAR) NOT NULL,
-       pdf BLOB,
-       -- fk/pk columns
-       id NUMBER NOT NULL,
-       -- fk/pk keys constraints
-       CONSTRAINT pk_avvisi PRIMARY KEY (id)
-);
-
--- index
-CREATE INDEX index_avvisi_1 ON avvisi (cod_dominio,iuv);
-CREATE TRIGGER trg_avvisi
-BEFORE
-insert on avvisi
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_avvisi.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-insert into sonde(nome, classe, soglia_warn, soglia_error) values ('generazione-avvisi', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);
-
 CREATE SEQUENCE seq_utenze MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE utenze
@@ -129,10 +97,6 @@ alter table incassi add CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore
 -- Eliminazione tabella ruoli e salvataggio come ACL
 ALTER TABLE acl ADD ruolo VARCHAR2(255 CHAR);
 UPDATE acl SET ruolo = (SELECT cod_ruolo FROM ruoli WHERE ruoli.id = acl.id_ruolo AND acl.id_ruolo IS NOT NULL);
-ALTER TABLE acl DROP COLUMN id_ruolo;
-DROP TRIGGER trg_ruoli;
-DROP TABLE ruoli;
-DROP SEQUENCE seq_ruoli;
 
 
 -- copio i principal di applicazioni portali e operatori nella tabella utenze
@@ -156,14 +120,6 @@ ALTER TABLE acl ADD CONSTRAINT fk_acl_id_utenza FOREIGN KEY (id_utenza) REFERENC
 UPDATE acl SET id_utenza = (SELECT id_utenza FROM applicazioni WHERE acl.id_applicazione = applicazioni.id) WHERE acl.id_applicazione IS NOT NULL;
 UPDATE acl SET id_utenza = (SELECT id_utenza FROM portali WHERE acl.id_portale = portali.id) WHERE acl.id_portale IS NOT NULL;
 UPDATE acl SET id_utenza = (SELECT id_utenza FROM operatori WHERE acl.id_operatore = operatori.id) WHERE acl.id_operatore IS NOT NULL;
-
-ALTER TABLE acl DROP CONSTRAINT fk_acl_id_applicazione;
-ALTER TABLE acl DROP CONSTRAINT fk_acl_id_portale;
-ALTER TABLE acl DROP CONSTRAINT fk_acl_id_operatore;
-
-ALTER TABLE acl DROP COLUMN id_applicazione;
-ALTER TABLE acl DROP COLUMN id_portale;
-ALTER TABLE acl DROP COLUMN id_operatore;
 
 -- trasformo la colonna diritti in stringa 
 ALTER TABLE acl ADD diritti_tmp VARCHAR2(255 CHAR);
@@ -241,6 +197,14 @@ ALTER TABLE acl RENAME COLUMN diritti_tmp TO diritti;
 ALTER TABLE acl MODIFY (diritti VARCHAR2(255 CHAR) NOT NULL);
 
 -- drop colonne non piu' usate
+ALTER TABLE acl DROP CONSTRAINT fk_acl_id_applicazione;
+ALTER TABLE acl DROP CONSTRAINT fk_acl_id_portale;
+ALTER TABLE acl DROP CONSTRAINT fk_acl_id_operatore;
+
+ALTER TABLE acl DROP COLUMN id_applicazione;
+ALTER TABLE acl DROP COLUMN id_portale;
+ALTER TABLE acl DROP COLUMN id_operatore;
+ALTER TABLE acl DROP COLUMN id_ruolo;
 ALTER TABLE acl DROP COLUMN id_dominio;
 ALTER TABLE acl DROP COLUMN id_tipo_tributo;
 ALTER TABLE acl DROP COLUMN cod_tipo;
@@ -294,7 +258,8 @@ CREATE TABLE pagamenti_portale
        -- unique constraints
        CONSTRAINT unique_pagamenti_portale_1 UNIQUE (id_sessione),
        -- fk/pk keys constraints
-       CONSTRAINT pk_pagamenti_portale PRIMARY KEY (id)
+       CONSTRAINT pk_pagamenti_portale PRIMARY KEY (id),
+       CONSTRAINT fk_ppt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id)
 );
 
 CREATE TRIGGER trg_pagamenti_portale
@@ -360,7 +325,7 @@ UPDATE rpt SET id_applicazione = (SELECT applicazioni.id FROM applicazioni, port
 
 -- Le RPT sono associate tutte ad un'applicazione posso cancellare i portali
 -- SEMBRA NON ESSERCI
-ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_portale;
+-- ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_portale;
 
 -- prima di fare questa delete controllare che id_applicazione sia stato valorizzato per tutte le rpt
 ALTER TABLE rpt DROP COLUMN id_portale;
@@ -374,9 +339,12 @@ INSERT INTO pagamenti_portale (id_rpt_tmp, id_applicazione,cod_canale,data_richi
 	SELECT rpt.id, rpt.id_applicazione, rpt.cod_canale, rpt.data_msg_richiesta, rpt.cod_psp, rpt.cod_dominio, CONCAT('Pagamento Pendenza ', versamenti.cod_versamento_ente), versamenti.importo_totale, versamenti.debitore_identificativo,
 	regexp_replace(rawtohex(sys_guid()), '([A-F0-9]{8})([A-F0-9]{4})([A-F0-9]{4})([A-F0-9]{4})([A-F0-9]{12})', '\1\2\3\4\5'), 'NON_ESEGUITO', 'PAGAMENTO_NON_ESEGUITO', 3 
 	FROM rpt, versamenti WHERE rpt.id_versamento = versamenti.id AND rpt.cod_carrello IS NULL;
-
+	
 -- aggiorno riferimenti ai pagamenti portale nella tabella rpt
 UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
+
+UPDATE pagamenti_portale SET id_applicazione = (SELECT versamenti.id_applicazione FROM versamenti,rpt 
+	WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.id_versamento = versamenti.id) WHERE pagamenti_portale.id_applicazione IS NULL;
 
 -- inserisco i pagamenti di tipo 1 tutti in stato non eseguito, aggiorno lo stato in seguito
 INSERT INTO pagamenti_portale (id_rpt_tmp, id_applicazione,cod_canale,data_richiesta,cod_psp,multi_beneficiario, nome, importo, versante_identificativo, id_sessione, stato, codice_stato, tipo, id_sessione_portale) 
@@ -416,6 +384,11 @@ ALTER TABLE applicazioni DROP COLUMN abilitato;
 -- elimino tabella portali
 DROP TABLE portali;
 DROP SEQUENCE seq_portali;
+
+-- elimino tabella ruoli
+DROP TRIGGER trg_ruoli;
+DROP TABLE ruoli;
+DROP SEQUENCE seq_ruoli;
 
 ALTER TABLE applicazioni ADD auto_iuv NUMBER;
 UPDATE applicazioni SET auto_iuv = 1;
@@ -636,7 +609,7 @@ CREATE TABLE sv_tmp (
 CREATE INDEX idx_sv_tmp_1 ON sv_tmp (id);
 INSERT INTO sv_tmp (id, indice_dati) select sv1.id as id, row_number() over (partition by sv1.id_versamento order by sv1.id) as indice_dati from singoli_versamenti sv1;
 
-UPDATE singoli_versamenti set indice_dati = (SELECT sv_tmp.indice_dati FROM sv_tmp WHERE sv_tmp.indice_dati > 1 AND singoli_versamenti.id = sv_tmp.id);
+UPDATE singoli_versamenti set indice_dati = (SELECT sv_tmp.indice_dati FROM sv_tmp WHERE singoli_versamenti.id = sv_tmp.id);
 
 DROP INDEX idx_sv_tmp_1;
 DROP TABLE sv_tmp;
@@ -690,8 +663,6 @@ ALTER TABLE pagamenti_portale add tipo_utenza VARCHAR2(35 CHAR);
 UPDATE pagamenti_portale SET tipo_utenza = 'APPLICAZIONE';
 ALTER TABLE pagamenti_portale MODIFY (tipo_utenza not null);
 
-ALTER TABLE pagamenti_portale DROP COLUMN id_applicazione;
-
 -- Principal Intermediario
 ALTER TABLE intermediari ADD principal VARCHAR(4000);
 UPDATE intermediari SET principal = (SELECT valore FROM connettori WHERE connettori.cod_proprieta = 'PRINCIPAL' AND connettori.cod_connettore = intermediari.cod_connettore_pdd);
@@ -702,34 +673,6 @@ UPDATE intermediari SET principal_originale = (SELECT valore FROM connettori WHE
 ALTER TABLE intermediari MODIFY (principal_originale NOT NULL);
 
 DELETE FROM connettori WHERE cod_proprieta = 'PRINCIPAL';
-
--- Eventi
-DROP TABLE eventi;
-DROP sequence seq_eventi;
-
-CREATE SEQUENCE seq_eventi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE eventi
-(
-        cod_dominio VARCHAR2(35 CHAR),
-        iuv VARCHAR2(35 CHAR),
-        ccp VARCHAR2(35 CHAR),
-        categoria_evento VARCHAR2(1 CHAR),
-        tipo_evento VARCHAR2(35 CHAR),
-        sottotipo_evento VARCHAR2(35 CHAR),
-        data TIMESTAMP,
-        intervallo NUMBER,
-        dettaglio CLOB,
-        -- fk/pk columns
-        id NUMBER NOT NULL,
-        id_versamento NUMBER,
-        id_pagamento_portale NUMBER,
-        -- fk/pk keys constraints
-        CONSTRAINT fk_evt_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-        CONSTRAINT fk_evt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
-        CONSTRAINT pk_eventi PRIMARY KEY (id)
-);
-
 
 -- 3.1-RC1
 
@@ -896,7 +839,7 @@ INSERT INTO tipi_vers_domini (id_tipo_versamento,codifica_iuv,tipo,paga_terzi,id
 INSERT INTO tipi_vers_domini (id_tipo_versamento,codifica_iuv,tipo,paga_terzi,id_dominio) SELECT tv.id AS id_tipo_versamento, t.cod_tributo_iuv AS codifica_iuv, NULL AS tipo, t.paga_terzi AS paga_terzi , t.id_dominio AS id_dominio FROM tributi t, tipi_tributo tt, tipi_versamento tv WHERE t.id_tipo_tributo = tt.id AND tt.cod_tributo = tv.cod_tipo_versamento AND t.on_line IS NULL;
 
 -- genero le entries per il tipo pendenza libero
-INSERT INTO tipi_vers_domini (id_dominio, id_tipo_versamento) SELECT id , (SELECT id FROM tipi_versamento WHERE cod_tipo_versamento = 'LIBERO') FROM domini;
+-- INSERT INTO tipi_vers_domini (id_dominio, id_tipo_versamento) SELECT id , (SELECT id FROM tipi_versamento WHERE cod_tipo_versamento = 'LIBERO') FROM domini;
 
 -- eliminazione colonne non piu' significative
 ALTER TABLE tributi DROP COLUMN paga_terzi;
@@ -933,11 +876,6 @@ UPDATE tipi_vers_domini SET abilitato = (SELECT tributi.abilitato FROM tributi, 
 UPDATE tipi_vers_domini SET abilitato = 1 WHERE tipi_vers_domini.id_tipo_versamento = (SELECT tipi_versamento.id FROM tipi_versamento WHERE tipi_versamento.cod_tipo_versamento = 'LIBERO');
 ALTER TABLE tipi_vers_domini MODIFY (abilitato NOT NULL);
 
-
--- 02/04/2019 Aggiunto riferimento all'applicazione nella tabella pagamenti portale
-
-ALTER TABLE pagamenti_portale ADD id_applicazione NUMBER;
-ALTER TABLE pagamenti_portale ADD CONSTRAINT fk_ppt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
 
 -- 02/04/2019 Divisione dei diritti sul servizio 'Pagamenti e Pendenze' in 'Pagamenti' e 'Pendenze'
 INSERT INTO acl (ruolo,servizio,diritti,id_utenza) SELECT acl.ruolo AS ruolo, 'Pagamenti' AS servizio, acl.diritti AS diritti, acl.id_utenza AS id_utenza FROM acl WHERE acl.servizio = 'Pagamenti e Pendenze';
@@ -983,11 +921,6 @@ ALTER TABLE fr ADD CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENC
 -- 13/05/2019 aggiunto sct alla tabella incassi
 
 ALTER TABLE incassi ADD sct VARCHAR2(35 CHAR);
-
--- 13/05/2019 nuova tabella gestione delle stampe
-
-DROP TABLE avvisi;
-DROP SEQUENCE seq_avvisi;
 
 CREATE SEQUENCE seq_stampe MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
@@ -1047,8 +980,10 @@ end;
 -- 3.1-RC2
 
 -- 24/05/2019 nuova tabella eventi
+DROP sequence seq_eventi;
 DROP TABLE eventi;
 
+CREATE SEQUENCE seq_eventi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 CREATE TABLE eventi
 (
 	componente VARCHAR2(35 CHAR),
@@ -1402,29 +1337,6 @@ ALTER TABLE eventi ADD CONSTRAINT fk_evt_id_fr FOREIGN KEY (id_fr) REFERENCES fr
 ALTER TABLE eventi ADD CONSTRAINT fk_evt_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id);
 ALTER TABLE eventi ADD CONSTRAINT fk_evt_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id);
 
--- 19/12/2019 Miglioramento performance accesso alla lista pendenze
-
--- ALTER TABLE versamenti ADD data_pagamento TIMESTAMP;
-UPDATE versamenti SET data_pagamento = (SELECT MAX(pagamenti.data_pagamento) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id);
-
--- ALTER TABLE versamenti ADD importo_pagato BINARY_DOUBLE;
-UPDATE versamenti SET importo_pagato = 0;
-UPDATE versamenti SET importo_pagato = (SELECT SUM(CASE WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato ELSE 0 END) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id) WHERE versamenti.stato_versamento = 'ESEGUITO';
--- ALTER TABLE versamenti MODIFY (importo_pagato NOT NULL);
-
--- ALTER TABLE versamenti ADD importo_incassato BINARY_DOUBLE;
-UPDATE versamenti SET importo_incassato = 0;
-UPDATE versamenti SET importo_incassato = (SELECT SUM(CASE WHEN pagamenti.stato = 'INCASSATO' THEN pagamenti.importo_pagato ELSE 0 END) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id) WHERE versamenti.stato_versamento = 'ESEGUITO';
--- ALTER TABLE versamenti MODIFY (importo_incassato NOT NULL);
-
--- ALTER TABLE versamenti ADD stato_pagamento VARCHAR2(35 CHAR);
-UPDATE versamenti SET stato_pagamento = 'NON_PAGATO';
-UPDATE versamenti SET stato_pagamento= (SELECT MAX(CASE  WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id) WHERE versamenti.stato_versamento = 'ESEGUITO';
--- ALTER TABLE versamenti MODIFY (stato_pagamento NOT NULL);
-
--- ALTER TABLE versamenti ADD iuv_pagamento VARCHAR2(35 CHAR);
-UPDATE versamenti SET iuv_pagamento = (SELECT MAX(pagamenti.iuv) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id);
-
 -- 23/01/2020 Configurazioni servizio di reset cache anagrafica
 
 INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('reset-cache', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
@@ -1650,13 +1562,6 @@ end;
 INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('update-ntfy-appio', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('check-ntfy-appio', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
 
--- 08/04/2020 Nuovi valori configurazione generale
-INSERT INTO configurazione (NOME,VALORE) VALUES ('app_io_batch', '{"abilitato": false, "url": null, "timeToLive": 3600 }');
-INSERT INTO configurazione (NOME,VALORE) VALUES ('avvisatura_mail', '{"promemoriaAvviso": { "tipo": "freemarker", "oggetto": "\"UHJvbWVtb3JpYSBwYWdhbWVudG86ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQ==\"", "messaggio": "\"R2VudGlsZSAke3ZlcnNhbWVudG8uZ2V0QW5hZ3JhZmljYURlYml0b3JlKCkuZ2V0UmFnaW9uZVNvY2lhbGUoKX0sCgpsZSBub3RpZmljaGlhbW8gY2hlIMOoIHN0YXRhIGVtZXNzYSB1bmEgcmljaGllc3RhIGRpIHBhZ2FtZW50byBhIHN1byBjYXJpY286ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQoKPCNpZiB2ZXJzYW1lbnRvLmdldE51bWVyb0F2dmlzbygpP2hhc19jb250ZW50PgpQdcOyIGVmZmV0dHVhcmUgaWwgcGFnYW1lbnRvIHRyYW1pdGUgbCdhcHAgbW9iaWxlIElPIG9wcHVyZSBwcmVzc28gdW5vIGRlaSBwcmVzdGF0b3JpIGRpIHNlcnZpemkgZGkgcGFnYW1lbnRvIGFkZXJlbnRpIGFsIGNpcmN1aXRvIHBhZ29QQSB1dGlsaXp6YW5kbyBsJ2F2dmlzbyBkaSBwYWdhbWVudG8gYWxsZWdhdG8uCjwjZWxzZT4KUHVvJyBlZmZldHR1YXJlIGlsIHBhZ2FtZW50byBvbi1saW5lIHByZXNzbyBpbCBwb3J0YWxlIGRlbGwnZW50ZSBjcmVkaXRvcmU6ICR7ZG9taW5pby5nZXRSYWdpb25lU29jaWFsZSgpfSAKPC8jaWY+CgpEaXN0aW50aSBzYWx1dGku\"", "allegaPdf": true }, "promemoriaRicevuta": { "tipo": "freemarker", "oggetto": "\"PCNpZiBycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5nZXRDb2RpZmljYSgpID0gMD4KTm90aWZpY2EgcGFnYW1lbnRvIGVzZWd1aXRvOiAke3JwdC5nZXRDb2REb21pbmlvKCl9LyR7cnB0LmdldEl1digpfS8ke3JwdC5nZXRDY3AoKX0KPCNlbHNlaWYgcnB0LmdldEVzaXRvUGFnYW1lbnRvKCkuZ2V0Q29kaWZpY2EoKSA9IDE+Ck5vdGlmaWNhIHBhZ2FtZW50byBub24gZXNlZ3VpdG86ICR7cnB0LmdldENvZERvbWluaW8oKX0vJHtycHQuZ2V0SXV2KCl9LyR7cnB0LmdldENjcCgpfQo8I2Vsc2VpZiBycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5nZXRDb2RpZmljYSgpID0gMj4KTm90aWZpY2EgcGFnYW1lbnRvIGVzZWd1aXRvIHBhcnppYWxtZW50ZTogJHtycHQuZ2V0Q29kRG9taW5pbygpfS8ke3JwdC5nZXRJdXYoKX0vJHtycHQuZ2V0Q2NwKCl9CjwjZWxzZWlmIHJwdC5nZXRFc2l0b1BhZ2FtZW50bygpLmdldENvZGlmaWNhKCkgPSAzPgpOb3RpZmljYSBkZWNvcnJlbnphIHRlcm1pbmkgcGFnYW1lbnRvOiAke3JwdC5nZXRDb2REb21pbmlvKCl9LyR7cnB0LmdldEl1digpfS8ke3JwdC5nZXRDY3AoKX0KPCNlbHNlaWYgcnB0LmdldEVzaXRvUGFnYW1lbnRvKCkuZ2V0Q29kaWZpY2EoKSA9IDQ+Ck5vdGlmaWNhIGRlY29ycmVuemEgdGVybWluaSBwYWdhbWVudG86ICR7cnB0LmdldENvZERvbWluaW8oKX0vJHtycHQuZ2V0SXV2KCl9LyR7cnB0LmdldENjcCgpfQo8LyNpZj4=\"", "messaggio": "\"PCNhc3NpZ24gZGF0YVJpY2hpZXN0YSA9IHJwdC5nZXREYXRhTXNnUmljaGllc3RhKCk/c3RyaW5nKCJ5eXl5LU1NLWRkIEhIOm1tOnNzIik+CklsIHBhZ2FtZW50byBkaSAiJHt2ZXJzYW1lbnRvLmdldENhdXNhbGVWZXJzYW1lbnRvKCkuZ2V0U2ltcGxlKCl9IiBlZmZldHR1YXRvIGlsICR7ZGF0YVJpY2hpZXN0YX0gcmlzdWx0YSBjb25jbHVzbyBjb24gZXNpdG8gJHtycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5uYW1lKCl9OgoKRW50ZSBjcmVkaXRvcmU6ICR7ZG9taW5pby5nZXRSYWdpb25lU29jaWFsZSgpfSAoJHtkb21pbmlvLmdldENvZERvbWluaW8oKX0pCklzdGl0dXRvIGF0dGVzdGFudGU6ICR7cnB0LmdldERlbm9taW5hemlvbmVBdHRlc3RhbnRlKCl9ICgke3JwdC5nZXRJZGVudGlmaWNhdGl2b0F0dGVzdGFudGUoKX0pCklkZW50aWZpY2F0aXZvIHVuaXZvY28gdmVyc2FtZW50byAoSVVWKTogJHtycHQuZ2V0SXV2KCl9CkNvZGljZSBjb250ZXN0byBwYWdhbWVudG8gKENDUCk6ICR7cnB0LmdldENjcCgpfQpJbXBvcnRvIHBhZ2F0bzogJHtycHQuZ2V0SW1wb3J0b1RvdGFsZVBhZ2F0bygpfQoKRGlzdGludGkgc2FsdXRpLg==\"", "allegaPdf": true , "soloEseguiti": true }, "promemoriaScadenza": { "tipo": "freemarker", "oggetto": "\"UHJvbWVtb3JpYSBwYWdhbWVudG86ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQ==\"", "messaggio": "\"R2VudGlsZSAke3ZlcnNhbWVudG8uZ2V0QW5hZ3JhZmljYURlYml0b3JlKCkuZ2V0UmFnaW9uZVNvY2lhbGUoKX0sCgpsZSBub3RpZmljaGlhbW8gY2hlIMOoIHN0YXRhIGVtZXNzYSB1bmEgcmljaGllc3RhIGRpIHBhZ2FtZW50byBhIHN1byBjYXJpY286ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQoKPCNpZiB2ZXJzYW1lbnRvLmdldE51bWVyb0F2dmlzbygpP2hhc19jb250ZW50PgpQdcOyIGVmZmV0dHVhcmUgaWwgcGFnYW1lbnRvIHRyYW1pdGUgbCdhcHAgbW9iaWxlIElPIG9wcHVyZSBwcmVzc28gdW5vIGRlaSBwcmVzdGF0b3JpIGRpIHNlcnZpemkgZGkgcGFnYW1lbnRvIGFkZXJlbnRpIGFsIGNpcmN1aXRvIHBhZ29QQSB1dGlsaXp6YW5kbyBsJ2F2dmlzbyBkaSBwYWdhbWVudG8gYWxsZWdhdG8uCjwjZWxzZT4KUHVvJyBlZmZldHR1YXJlIGlsIHBhZ2FtZW50byBvbi1saW5lIHByZXNzbyBpbCBwb3J0YWxlIGRlbGwnZW50ZSBjcmVkaXRvcmU6ICR7ZG9taW5pby5nZXRSYWdpb25lU29jaWFsZSgpfSAKPC8jaWY+CgpEaXN0aW50aSBzYWx1dGku\"", "preavviso": 10 } }' );
-INSERT INTO configurazione (NOME,VALORE) VALUES ('avvisatura_app_io', '{"promemoriaAvviso": { "tipo": "freemarker", "oggetto": "\"UHJvbWVtb3JpYSBwYWdhbWVudG86ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQ==\"", "messaggio": "\"R2VudGlsZSAke3ZlcnNhbWVudG8uZ2V0QW5hZ3JhZmljYURlYml0b3JlKCkuZ2V0UmFnaW9uZVNvY2lhbGUoKX0sCgpsZSBub3RpZmljaGlhbW8gY2hlIMOoIHN0YXRhIGVtZXNzYSB1bmEgcmljaGllc3RhIGRpIHBhZ2FtZW50byBhIHN1byBjYXJpY286ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQoKPCNpZiB2ZXJzYW1lbnRvLmdldE51bWVyb0F2dmlzbygpP2hhc19jb250ZW50PgpQdcOyIGVmZmV0dHVhcmUgaWwgcGFnYW1lbnRvIHRyYW1pdGUgbCdhcHAgbW9iaWxlIElPIG9wcHVyZSBwcmVzc28gdW5vIGRlaSBwcmVzdGF0b3JpIGRpIHNlcnZpemkgZGkgcGFnYW1lbnRvIGFkZXJlbnRpIGFsIGNpcmN1aXRvIHBhZ29QQSB1dGlsaXp6YW5kbyBsJ2F2dmlzbyBkaSBwYWdhbWVudG8gYWxsZWdhdG8uCjwjZWxzZT4KUHVvJyBlZmZldHR1YXJlIGlsIHBhZ2FtZW50byBvbi1saW5lIHByZXNzbyBpbCBwb3J0YWxlIGRlbGwnZW50ZSBjcmVkaXRvcmU6ICR7ZG9taW5pby5nZXRSYWdpb25lU29jaWFsZSgpfSAKPC8jaWY+CgpEaXN0aW50aSBzYWx1dGku\"" }, "promemoriaRicevuta": { "tipo": "freemarker", "oggetto": "\"PCNpZiBycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5nZXRDb2RpZmljYSgpID0gMD4KTm90aWZpY2EgcGFnYW1lbnRvIGVzZWd1aXRvOiAke3JwdC5nZXRDb2REb21pbmlvKCl9LyR7cnB0LmdldEl1digpfS8ke3JwdC5nZXRDY3AoKX0KPCNlbHNlaWYgcnB0LmdldEVzaXRvUGFnYW1lbnRvKCkuZ2V0Q29kaWZpY2EoKSA9IDE+Ck5vdGlmaWNhIHBhZ2FtZW50byBub24gZXNlZ3VpdG86ICR7cnB0LmdldENvZERvbWluaW8oKX0vJHtycHQuZ2V0SXV2KCl9LyR7cnB0LmdldENjcCgpfQo8I2Vsc2VpZiBycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5nZXRDb2RpZmljYSgpID0gMj4KTm90aWZpY2EgcGFnYW1lbnRvIGVzZWd1aXRvIHBhcnppYWxtZW50ZTogJHtycHQuZ2V0Q29kRG9taW5pbygpfS8ke3JwdC5nZXRJdXYoKX0vJHtycHQuZ2V0Q2NwKCl9CjwjZWxzZWlmIHJwdC5nZXRFc2l0b1BhZ2FtZW50bygpLmdldENvZGlmaWNhKCkgPSAzPgpOb3RpZmljYSBkZWNvcnJlbnphIHRlcm1pbmkgcGFnYW1lbnRvOiAke3JwdC5nZXRDb2REb21pbmlvKCl9LyR7cnB0LmdldEl1digpfS8ke3JwdC5nZXRDY3AoKX0KPCNlbHNlaWYgcnB0LmdldEVzaXRvUGFnYW1lbnRvKCkuZ2V0Q29kaWZpY2EoKSA9IDQ+Ck5vdGlmaWNhIGRlY29ycmVuemEgdGVybWluaSBwYWdhbWVudG86ICR7cnB0LmdldENvZERvbWluaW8oKX0vJHtycHQuZ2V0SXV2KCl9LyR7cnB0LmdldENjcCgpfQo8LyNpZj4=\"", "messaggio": "\"PCNhc3NpZ24gZGF0YVJpY2hpZXN0YSA9IHJwdC5nZXREYXRhTXNnUmljaGllc3RhKCk/c3RyaW5nKCJ5eXl5LU1NLWRkIEhIOm1tOnNzIik+CklsIHBhZ2FtZW50byBkaSAiJHt2ZXJzYW1lbnRvLmdldENhdXNhbGVWZXJzYW1lbnRvKCkuZ2V0U2ltcGxlKCl9IiBlZmZldHR1YXRvIGlsICR7ZGF0YVJpY2hpZXN0YX0gcmlzdWx0YSBjb25jbHVzbyBjb24gZXNpdG8gJHtycHQuZ2V0RXNpdG9QYWdhbWVudG8oKS5uYW1lKCl9OgoKRW50ZSBjcmVkaXRvcmU6ICR7ZG9taW5pby5nZXRSYWdpb25lU29jaWFsZSgpfSAoJHtkb21pbmlvLmdldENvZERvbWluaW8oKX0pCklzdGl0dXRvIGF0dGVzdGFudGU6ICR7cnB0LmdldERlbm9taW5hemlvbmVBdHRlc3RhbnRlKCl9ICgke3JwdC5nZXRJZGVudGlmaWNhdGl2b0F0dGVzdGFudGUoKX0pCklkZW50aWZpY2F0aXZvIHVuaXZvY28gdmVyc2FtZW50byAoSVVWKTogJHtycHQuZ2V0SXV2KCl9CkNvZGljZSBjb250ZXN0byBwYWdhbWVudG8gKENDUCk6ICR7cnB0LmdldENjcCgpfQpJbXBvcnRvIHBhZ2F0bzogJHtycHQuZ2V0SW1wb3J0b1RvdGFsZVBhZ2F0bygpfQoKRGlzdGludGkgc2FsdXRpLg==\"", "soloEseguiti": true }, "promemoriaScadenza": { "tipo": "freemarker", "oggetto": "\"UHJvbWVtb3JpYSBwYWdhbWVudG86ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQ==\"", "messaggio": "\"R2VudGlsZSAke3ZlcnNhbWVudG8uZ2V0QW5hZ3JhZmljYURlYml0b3JlKCkuZ2V0UmFnaW9uZVNvY2lhbGUoKX0sCgpsZSBub3RpZmljaGlhbW8gY2hlIMOoIHN0YXRhIGVtZXNzYSB1bmEgcmljaGllc3RhIGRpIHBhZ2FtZW50byBhIHN1byBjYXJpY286ICR7dmVyc2FtZW50by5nZXRDYXVzYWxlVmVyc2FtZW50bygpLmdldFNpbXBsZSgpfQoKPCNpZiB2ZXJzYW1lbnRvLmdldE51bWVyb0F2dmlzbygpP2hhc19jb250ZW50PgpQdcOyIGVmZmV0dHVhcmUgaWwgcGFnYW1lbnRvIHRyYW1pdGUgbCdhcHAgbW9iaWxlIElPIG9wcHVyZSBwcmVzc28gdW5vIGRlaSBwcmVzdGF0b3JpIGRpIHNlcnZpemkgZGkgcGFnYW1lbnRvIGFkZXJlbnRpIGFsIGNpcmN1aXRvIHBhZ29QQSB1dGlsaXp6YW5kbyBsJ2F2dmlzbyBkaSBwYWdhbWVudG8gYWxsZWdhdG8uCjwjZWxzZT4KUHVvJyBlZmZldHR1YXJlIGlsIHBhZ2FtZW50byBvbi1saW5lIHByZXNzbyBpbCBwb3J0YWxlIGRlbGwnZW50ZSBjcmVkaXRvcmU6ICR7ZG9taW5pby5nZXRSYWdpb25lU29jaWFsZSgpfSAKPC8jaWY+CgpEaXN0aW50aSBzYWx1dGku\"", "preavviso": 10 } }' );
-
-
-
 -- 21/04/2020 Gestione rateizzazione pagamenti
 
 CREATE SEQUENCE seq_documenti MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
@@ -1844,15 +1749,6 @@ begin
 end;
 /
 
-ALTER TABLE rpt ADD id_tracciato_mypivot NUMBER;
-ALTER TABLE rpt ADD id_tracciato_secim NUMBER;
-ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_tracciato_mypivot FOREIGN KEY (id_tracciato_mypivot) REFERENCES trac_notif_pag(id);
-ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_tracciato_secim FOREIGN KEY (id_tracciato_secim) REFERENCES trac_notif_pag(id);
-
-ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_tracciato_mypivot ;
-ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_tracciato_secim;
-ALTER TABLE rpt DROP COLUMN id_tracciato_mypivot ;
-ALTER TABLE rpt DROP COLUMN id_tracciato_secim ;
 
 ALTER TABLE domini ADD cod_connettore_my_pivot VARCHAR2(255 CHAR);
 ALTER TABLE domini ADD cod_connettore_secim VARCHAR2(255 CHAR);
