@@ -163,7 +163,7 @@ public class CSVUtils {
 		if(collage.trim().isEmpty())
 			return "null";
 		else
-			return getCodDominioFromIbanAccredito(collage.trim());
+			return "\"" + getCodDominioFromIbanAccredito(collage.trim()) +  "\"";
 	}
 	public String getCodDominioFromIbanAccredito(String codIban) throws ServiceException, NotFoundException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
