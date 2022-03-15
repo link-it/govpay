@@ -717,11 +717,14 @@ public class Tracciati {
 			boolean completed = true;
 			for(CaricamentoTracciatoThread sender : threads) {
 				if(!sender.isCompleted()) {
+					log.trace("Thread ["+sender.getNomeThread()+"] non completato.");
 					completed = false;
 				} else {
 					if(!sender.isCommit()) {
+						log.trace("Thread ["+sender.getNomeThread()+"] completato, acquisizione risultati.");
 						sender.setCommit(true); 
 						synchronized (this) {
+							log.debug("Completata Esecuzione del Thread ["+sender.getNomeThread()+"], ADDOK ["+sender.getNumeroAddElaborateOk()+"], ADDKO ["+sender.getNumeroAddElaborateKo()+"] DELOK ["+sender.getNumeroDelElaborateOk()+"], DELKO ["+sender.getNumeroDelElaborateKo()+"]");
 							lineeElaborate.addAll(sender.getLineeElaborate());
 							sommaAddOk += sender.getNumeroAddElaborateOk();
 							sommaAddKo += sender.getNumeroAddElaborateKo();
@@ -745,11 +748,14 @@ public class Tracciati {
 							beanDati.setDescrizioneStepElaborazione(descrizioneEsito);
 							beanDati.setDataUltimoAggiornamento(new Date());
 
+							log.debug("Aggiornamento metadati tracciato dopo il completamento del Thread ["+sender.getNomeThread()+"] in corso...");
 							tracciatiBD.setAutoCommit(false);
 							tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
 							tracciatiBD.commit();
+							log.debug("Aggiornati metadati tracciato dopo il completamento del Thread ["+sender.getNomeThread()+"]");
 							
 							BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI);
+							log.debug("Aggiornata esecuzione del batch dopo il completamento del Thread ["+sender.getNomeThread()+"]");
 						}
 					}
 				}
@@ -929,9 +935,11 @@ public class Tracciati {
 						boolean completed = true;
 						for(CreaStampeTracciatoThread sender : threadsStampe) {
 							if(!sender.isCompleted()) { 
+								log.trace("Thread ["+sender.getNomeThread()+"] non completato.");
 								completed = false;
 							} else {
 								if(!sender.isCommit()) {
+									log.trace("Thread ["+sender.getNomeThread()+"] completato, acquisizione risultati.");
 									sender.setCommit(true);
 									synchronized (this) {
 										

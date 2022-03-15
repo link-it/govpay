@@ -63,13 +63,13 @@ public class CSVUtils {
 
 
 	public CSVRecord getCSVRecord(String csvEntry) throws IOException {
-		log.debug("Parsing del record CSV: [" + csvEntry + "] [Delimiter: " + csvFormat.getDelimiter() +" Escape:"+csvFormat.getEscapeCharacter()+"]");
+		log.trace("Parsing del record CSV: [" + csvEntry + "] [Delimiter: " + csvFormat.getDelimiter() +" Escape:"+csvFormat.getEscapeCharacter()+"]");
 		CSVParser p = CSVParser.parse(csvEntry, csvFormat);
 		CSVRecord r = p.getRecords().get(0);
-		if(log.isDebugEnabled()) {
-			log.debug("Parsing completed:" );
+		if(log.isTraceEnabled()) {
+			log.trace("Parsing completed:" );
 			for(int i=0; i < r.size(); i++) {
-				log.debug(i + ": [" + r.get(i) + "]");
+				log.trace(i + ": [" + r.get(i) + "]");
 			}
 		}
 		return r ;

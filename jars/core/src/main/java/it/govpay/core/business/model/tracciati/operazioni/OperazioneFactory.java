@@ -428,7 +428,7 @@ public class OperazioneFactory {
 			
 			TrasformazioneDTOResponse trasformazioneResponse = TracciatiUtils.trasformazioneInputCSV(log, request.getCodDominio(), request.getCodTipoVersamento(), new String(request.getDati()), request.getTipoTemplateTrasformazioneRichiesta() , request.getTemplateTrasformazioneRichiesta() );
 
-			log.debug("Response della trasformazione: " + trasformazioneResponse.getOutput());
+			log.trace(threadName + ": Response della trasformazione: " + trasformazioneResponse.getOutput());
 			
 			operazioneResponse.setJsonRichiesta(trasformazioneResponse.getOutput());
 			
