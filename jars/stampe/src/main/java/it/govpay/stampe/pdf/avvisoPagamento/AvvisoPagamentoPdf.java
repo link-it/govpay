@@ -172,7 +172,7 @@ public class AvvisoPagamentoPdf {
 			JAXBElement<AvvisoPagamentoInput> jaxbElement = new JAXBElement<AvvisoPagamentoInput>(new QName("", AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME), AvvisoPagamentoInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);
 			byte[] byteArray = baos.toByteArray();
-			log.debug("AvvisoPagamentoInput: " + new String(byteArray));
+			log.trace("AvvisoPagamentoInput: " + new String(byteArray));
 			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);){
 
 				JRDataSource dataSource = new JRXmlDataSource(defaultJasperReportsContext, byteArrayInputStream,AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME);
@@ -242,7 +242,7 @@ public class AvvisoPagamentoPdf {
 			JAXBElement<it.govpay.stampe.model.v2.AvvisoPagamentoInput> jaxbElement = new JAXBElement<it.govpay.stampe.model.v2.AvvisoPagamentoInput>(new QName("", AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME), it.govpay.stampe.model.v2.AvvisoPagamentoInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);
 			byte[] byteArray = baos.toByteArray();
-			log.debug("AvvisoPagamentoInput: " + new String(byteArray));
+			log.trace("AvvisoPagamentoInput: " + new String(byteArray));
 			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);){
 
 				JRDataSource dataSource = new JRXmlDataSource(defaultJasperReportsContext, byteArrayInputStream,AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME);
