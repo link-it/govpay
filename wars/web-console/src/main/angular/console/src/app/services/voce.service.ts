@@ -257,7 +257,7 @@ export class Voce {
   public static TEMPLATE_RISPOSTA: string = 'Template risposta';
   public static TEMPLATE_SCHEMA: string = 'Template schema';
   public static TERZI: string = 'Pagabile da terzi';
-  public static TIPO_PENDENZA: string = 'Tipo pendenza';
+  public static TIPI_PENDENZA: string = 'Tipi pendenza';
   public static TIPO: string = 'Tipo';
   public static TIPO_ALLEGATO: string = 'Tipo allegato';
   public static TIPO_AUTH: string = 'Tipo autenticazione';
