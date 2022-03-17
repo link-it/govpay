@@ -264,4 +264,21 @@ export class GovpayService {
       });
   }
 
+  pdf(path: string) {
+    this.updateSpinner(true);
+    const url = UtilService.RootByTOA() + path;
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/pdf');
+    headers = headers.set('Accept', 'application/pdf');
+    let method: any;
+    if (UtilService.TIMEOUT === false) {
+      method = this.http.get(url, { headers: headers, observe: 'response', responseType: 'blob' });
+    } else {
+      method = this.http.get(url, { headers: headers, observe: 'response', responseType: 'blob' }).timeout(UtilService.TIMEOUT);
+    }
+
+    return method.map((response) => {
+        return response;
+      });
+  }
 }
