@@ -154,3 +154,25 @@ And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18
 	}
 """
 
+Scenario: Caricamento pendenza multibeneficiario e pagamento a iniziativa psp con api SANP-SPC 2.3.0.
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('msg/pendenza-put_multibeneficiario.json')
+* set pendenzaPut.idTipoPendenza = codLibero
+* def versionePagamento = 2
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', UUID: '#notnull' }
+
+* def numeroAvviso = response.numeroAvviso
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def ccp = getCurrentTimeMillis()
+* def importo = pendenzaPut.importo
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-paGetPayment.feature')
+
