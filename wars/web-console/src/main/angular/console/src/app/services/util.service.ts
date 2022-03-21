@@ -547,6 +547,8 @@ export class UtilService {
   public static EXPORT_TRACCIATO_AVVISI: string = 'esporta_tracciato_avvisi';
   public static ESCLUDI_NOTIFICA: string = 'escludi_notifica';
   public static VISTA_COMPLETA_EVENTO_JSON: string = 'vista_completa_evento_json';
+  public static SCARICA_AVVISO: string = 'scarica_avviso';
+  public static STAMPA_RICEVUTA: string = 'stampa_ricevuta';
 
   // CONNETTORI
   public static CONNETTORI: SimpleListItem[] = [
@@ -1406,7 +1408,7 @@ export class UtilService {
   }
 
   filterEmptyFolders(zip: any) {
-    const folders = Object.values((zip.files || {})).reduce((files, element) => {
+    const folders = Object.values((zip.files || {})).reduce((files: any, element: any) => {
       if (element.dir && !files[element.name]) {
         files[element.name] = 0;
       }
@@ -1438,6 +1440,17 @@ export class UtilService {
       this.setCsv({});
     }.bind(this));
   }
+
+  /**
+   * Save Pdf
+   * @param {blob} pdfData
+   * @param {string} pdfName
+   */
+  savePdf(pdfData: any, pdfName: string) {
+    const blob = new Blob([pdfData], { type: 'application/pdf' });
+    FileSaver(blob, pdfName + '.pdf');
+  }
+
   // Fine export
 
   /**
@@ -1477,7 +1490,6 @@ export class UtilService {
       }, 500);
     }
   }
-
 
   protected __loopFilesStructure(data: any, structure: any, folderIndex: number, index: number, zip: any) {
     const folders = structure['folders'];
@@ -1802,7 +1814,7 @@ export class UtilService {
     return UtilService.MAP_ACL(acl);
   }
 
- public static MAP_ACL(acl: string): string {
+  public static MAP_ACL(acl: string): string {
     let map = acl;
     switch(acl) {
       case 'Anagrafica Creditore':

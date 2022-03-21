@@ -654,8 +654,8 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       case UtilService.URL_INCASSI:
         _stdTC = new TwoCols();
         _stdTC.generalTemplate = true;
-        _stdTC.gtTextUL = item.idFlusso ? `${Voce.IDF}: ${item.idFlusso}` : `${Voce.IUV}: ${item.iuv}`;
-        _stdTC.gtTextBL = `${Voce.SCT}: ${item.sct}`;
+        _stdTC.gtTextUL = item.idFlusso ? `${item.idFlusso}` : `${item.iuv}`;
+        _stdTC.gtTextBL = '';
         _stdTC.gtTextUR = this.us.currencyFormat(item.importo);
         _stdTC.gtTextBR = item.data?moment(item.data).format('DD/MM/YYYY'):'';
         _std = _stdTC;
@@ -879,7 +879,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       }, []);
     }
     _preloadedData['numPagine'] = Math.ceil(_preloadedMeta['numRisultati']/_preloadedData['risultatiPerPagina']);
-    if(_preloadedData['pagina'] == _preloadedData['numPagine']) {
+    if(_preloadedData['pagina'] >= _preloadedData['numPagine']) {
       const cachedCalls: any[] = this.listResults.map((result) => {
         return result.jsonP;
       });
@@ -953,8 +953,15 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         this.us.filteredJson(_properties, _jsonData);
         break;
       case UtilService.EXPORT_GIORNALE_EVENTI:
-      case UtilService.EXPORT_INCASSI:
         this.us.fullJson(_jsonData);
+        break;
+      case UtilService.EXPORT_INCASSI:
+        let _cloneJsondData = JSON.parse(JSON.stringify(_jsonData));
+        _cloneJsondData = _cloneJsondData.map((item) => {
+          item.dominio = item.dominio.idDominio;
+          return item;
+        });
+        this.us.fullJson(_cloneJsondData);
         break;
       case UtilService.EXPORT_RENDICONTAZIONI:
         _jsonData = _jsonData.map((item) => {

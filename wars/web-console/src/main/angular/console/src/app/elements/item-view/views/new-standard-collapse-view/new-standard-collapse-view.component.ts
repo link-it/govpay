@@ -50,8 +50,8 @@ export class NewStandardCollapseViewComponent implements OnInit, AfterViewInit {
         const pendenza = vocePendenza.pendenza;
         this._elenco.push({ label: Voce.ENTE_CREDITORE, value: `${pendenza.dominio.ragioneSociale} (${pendenza.dominio.idDominio})`, type: 'string' });
         this._elenco.push({ label: Voce.DEBITORE, value: `${pendenza.soggettoPagatore.anagrafica} (${pendenza.soggettoPagatore.identificativo})`, type: 'string' });
-        this._elenco.push({ label: Voce.TIPI_PENDENZA, value: `${pendenza.causale}`, type: 'string' });
-        if (vocePendenza.contabilita.quote) {
+        this._elenco.push({ label: Voce.TIPO_PENDENZA, value: `${pendenza.tipoPendenza.idTipoPendenza} - ${pendenza.tipoPendenza.descrizione}`, type: 'string' });
+        if (vocePendenza.contabilita && vocePendenza.contabilita.quote) {
           this._elenco.push({ label: Voce.QUOTE, value: vocePendenza.contabilita.quote, type: 'quote' });
         }
         if (pendenza.datiAllegati) {
