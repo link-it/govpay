@@ -16,6 +16,8 @@ declare let GovPayConfig: any;
 declare let JSZip: any;
 declare let FileSaver: any;
 
+declare let GovRiconciliazioniConfig: any;
+
 @Injectable()
 export class UtilService {
 
@@ -1790,7 +1792,7 @@ export class UtilService {
       case UtilService.INCASSI:
         _list = [
           new FormInput({ id: 'idFlusso', label: FormService.FORM_IDENTIFICATIVO_FLUSSO, type: UtilService.INPUT }),
-          new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
+          new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_IUV, type: UtilService.INPUT }),
           new FormInput({ id: 'sct', label: FormService.FORM_SCT, type: UtilService.INPUT }),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
@@ -1993,4 +1995,47 @@ export class UtilService {
     UtilService.DASHBOARD_LINKS_PARAMS = { method: null, params: [] };
   }
 
+  // Config Riconciliazioni
+
+  getConfigRiconciliazioni() {
+    let _quoteExport = ['titolo', 'tipologia', 'categoria', 'capitolo', 'articolo', 'accertamento', 'annoEsercizio', 'importo'];
+    let _quoteLabel = {
+      capitolo: 'Capitolo',
+      annoEsercizio: 'Anno esercizio',
+      importo: 'Importo',
+      titolo: 'Titolo',
+      accertamento: 'Accertamento',
+      tipologia: 'Tipologia',
+      categoria: 'Categoria',
+      articolo: 'Articolo',
+      proprietaCustom: 'Proprieta custom'
+    };
+    let _exportLabel = {
+      idDominio: 'Dominio',
+      idFlusso: 'Id Flusso',
+      iuv: 'IUV',
+      importo: 'Importo',
+      data: 'Data',
+      idPendenza: 'Id Pendenze',
+      tipoPendenza: 'Tipo pendenza',
+      idVocePendenza: 'Id voce pendenza',
+      datiAllegatiPendenza: 'Dati allegati pendenza',
+      datiAllegatiVocePendenza: 'Dati allegati voce pendenza'
+    };
+    let _quoteCount = 10;
+
+    if (GovRiconciliazioniConfig && GovRiconciliazioniConfig.quoteExport && GovRiconciliazioniConfig.quoteLabel && GovRiconciliazioniConfig.exportLabel) {
+      _quoteExport = GovRiconciliazioniConfig.quoteExport;
+      _quoteLabel = GovRiconciliazioniConfig.quoteLabel;
+      _exportLabel = GovRiconciliazioniConfig.exportLabel;
+      _quoteCount = GovRiconciliazioniConfig.quoteCount || 10;
+    }
+
+    return {
+      quoteExport: _quoteExport,
+      quoteLabel : _quoteLabel,
+      exportLabel: _exportLabel,
+      quoteCount : _quoteCount
+    };
+  }
 }
