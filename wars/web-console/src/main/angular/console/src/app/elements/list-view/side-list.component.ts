@@ -879,7 +879,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       }, []);
     }
     _preloadedData['numPagine'] = Math.ceil(_preloadedMeta['numRisultati']/_preloadedData['risultatiPerPagina']);
-    if(_preloadedData['pagina'] == _preloadedData['numPagine']) {
+    if(_preloadedData['pagina'] >= _preloadedData['numPagine']) {
       const cachedCalls: any[] = this.listResults.map((result) => {
         return result.jsonP;
       });
@@ -953,8 +953,15 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         this.us.filteredJson(_properties, _jsonData);
         break;
       case UtilService.EXPORT_GIORNALE_EVENTI:
-      case UtilService.EXPORT_INCASSI:
         this.us.fullJson(_jsonData);
+        break;
+      case UtilService.EXPORT_INCASSI:
+        let _cloneJsondData = JSON.parse(JSON.stringify(_jsonData));
+        _cloneJsondData = _cloneJsondData.map((item) => {
+          item.dominio = item.dominio.idDominio;
+          return item;
+        });
+        this.us.fullJson(_cloneJsondData);
         break;
       case UtilService.EXPORT_RENDICONTAZIONI:
         _jsonData = _jsonData.map((item) => {
