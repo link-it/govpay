@@ -1793,7 +1793,7 @@ ALTER TABLE domini ADD cod_connettore_hyper_sic_apk VARCHAR2(255 CHAR);
 
 -- 07/06/2021 Aggiunta colonna con la versione dell'RPT
 ALTER TABLE rpt ADD versione VARCHAR2(35 CHAR);
-UPDATE rpt SET versione = 'SANP_230';
+UPDATE rpt SET versione = 'SANP_230' WHERE versione IS NULL;
 ALTER TABLE rpt MODIFY (versione NOT NULL);
 
 -- 07/06/2021 Aggiunta colonna intermediato alla tabella domini
