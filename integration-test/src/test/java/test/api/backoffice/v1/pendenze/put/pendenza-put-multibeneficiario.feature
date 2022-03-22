@@ -154,7 +154,7 @@ And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18
 	}
 """
 
-Scenario: Caricamento pendenza multibeneficiario e pagamento a iniziativa psp con api SANP-SPC 2.3.0.
+Scenario: Caricamento pendenza multibeneficiario e pagamento a iniziativa psp con api SANP-SPC 2.4.0.
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('msg/pendenza-put_multibeneficiario.json')
@@ -168,6 +168,38 @@ And request pendenzaPut
 When method put
 Then status 201
 And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', UUID: '#notnull' }
+
+* def numeroAvviso = response.numeroAvviso
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def ccp = getCurrentTimeMillis()
+* def importo = pendenzaPut.importo
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-paGetPayment.feature')
+
+
+Scenario: Caricamento pendenza multibeneficiario e pagamento a iniziativa psp con api SANP-SPC 2.4.0 e numero avviso definito
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('msg/pendenza-put_multibeneficiario.json')
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* set pendenzaPut.numeroAvviso = numeroAvviso
+* set pendenzaPut.idTipoPendenza = codLibero
+* def versionePagamento = 2
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', UUID: '#notnull' }
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+Then match response.numeroAvviso == numeroAvviso
 
 * def numeroAvviso = response.numeroAvviso
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
