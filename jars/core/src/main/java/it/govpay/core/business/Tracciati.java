@@ -709,52 +709,59 @@ public class Tracciati {
 		String descrizioneEsito = null;
 		List<Long> lineeElaborate = new ArrayList<Long>();
 		while(true){
+			log.debug("Check stato elaborazione thread...");
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
-
+				e.printStackTrace();
 			}
 			boolean completed = true;
+			int completati = 0; 
 			for(CaricamentoTracciatoThread sender : threads) {
 				if(!sender.isCompleted()) {
+					log.debug("Thread ["+sender.getNomeThread()+"] non completato.");
 					completed = false;
 				} else {
+					completati++;
 					if(!sender.isCommit()) {
+						log.debug("Thread ["+sender.getNomeThread()+"] completato, acquisizione risultati.");
 						sender.setCommit(true); 
-						synchronized (this) {
-							lineeElaborate.addAll(sender.getLineeElaborate());
-							sommaAddOk += sender.getNumeroAddElaborateOk();
-							sommaAddKo += sender.getNumeroAddElaborateKo();
-							sommaDelOk += sender.getNumeroDelElaborateOk();
-							sommaDelKo += sender.getNumeroDelElaborateKo();
+						log.debug("Completata Esecuzione del Thread ["+sender.getNomeThread()+"], ADDOK ["+sender.getNumeroAddElaborateOk()+"], ADDKO ["+sender.getNumeroAddElaborateKo()+"] DELOK ["+sender.getNumeroDelElaborateOk()+"], DELKO ["+sender.getNumeroDelElaborateKo()+"]");
+						lineeElaborate.addAll(sender.getLineeElaborate());
+						sommaAddOk += sender.getNumeroAddElaborateOk();
+						sommaAddKo += sender.getNumeroAddElaborateKo();
+						sommaDelOk += sender.getNumeroDelElaborateOk();
+						sommaDelKo += sender.getNumeroDelElaborateKo();
 
-							if(sender.getDescrizioneEsito() != null)
-								descrizioneEsito = sender.getDescrizioneEsito();
-							
-							// ordino al contrario cosi l'ultima elaborata e' in cima
-							Collections.sort(lineeElaborate, Collections.reverseOrder());
-							if(lineeElaborate.size() > 0) {
-								beanDati.setLineaElaborazioneAdd(lineeElaborate.get(0));
-							} else {
-								beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);
-							}
-							beanDati.setNumAddOk(sommaAddOk);
-							beanDati.setNumAddKo(sommaAddKo);
-							beanDati.setNumDelOk(sommaDelOk);
-							beanDati.setNumDelKo(sommaDelKo);
-							beanDati.setDescrizioneStepElaborazione(descrizioneEsito);
-							beanDati.setDataUltimoAggiornamento(new Date());
-
-							tracciatiBD.setAutoCommit(false);
-							tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
-							tracciatiBD.commit();
-							
-							BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI);
+						if(sender.getDescrizioneEsito() != null)
+							descrizioneEsito = sender.getDescrizioneEsito();
+						
+						// ordino al contrario cosi l'ultima elaborata e' in cima
+						Collections.sort(lineeElaborate, Collections.reverseOrder());
+						if(lineeElaborate.size() > 0) {
+							beanDati.setLineaElaborazioneAdd(lineeElaborate.get(0));
+						} else {
+							beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);
 						}
+						beanDati.setNumAddOk(sommaAddOk);
+						beanDati.setNumAddKo(sommaAddKo);
+						beanDati.setNumDelOk(sommaDelOk);
+						beanDati.setNumDelKo(sommaDelKo);
+						beanDati.setDescrizioneStepElaborazione(descrizioneEsito);
+						beanDati.setDataUltimoAggiornamento(new Date());
+
+						log.debug("Aggiornamento metadati tracciato dopo il completamento del Thread ["+sender.getNomeThread()+"] in corso...");
+						tracciatiBD.setAutoCommit(false);
+						tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
+						tracciatiBD.commit();
+						log.debug("Aggiornati metadati tracciato dopo il completamento del Thread ["+sender.getNomeThread()+"]");
+						
+						BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI);
+						log.debug("Aggiornata esecuzione del batch dopo il completamento del Thread ["+sender.getNomeThread()+"]");
 					}
 				}
 			}
-
+			log.debug("Check stato elaborazione thread: completati " + completati + "/" + threads.size());
 			if(completed) { 
 				log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, ADDOK ["+sommaAddOk+"], ADDKO ["+sommaAddKo+"] DELOK ["+sommaDelOk+"], DELKO ["+sommaDelKo+"]");
 				break; // esco
@@ -929,9 +936,11 @@ public class Tracciati {
 						boolean completed = true;
 						for(CreaStampeTracciatoThread sender : threadsStampe) {
 							if(!sender.isCompleted()) { 
+								log.trace("Thread ["+sender.getNomeThread()+"] non completato.");
 								completed = false;
 							} else {
 								if(!sender.isCommit()) {
+									log.trace("Thread ["+sender.getNomeThread()+"] completato, acquisizione risultati.");
 									sender.setCommit(true);
 									synchronized (this) {
 										
@@ -1076,6 +1085,8 @@ public class Tracciati {
 	}
 
 	public String getEsitoElaborazioneTracciatoCSV(Tracciato tracciato, OperazioniBD operazioniBD, Dominio dominio, String codTipoVersamento, String headerRisposta, String tipoTemplate, String trasformazioneRisposta) throws ServiceException, ValidationException, java.io.IOException {
+		
+		log.info("Elaboro il CSV di risposta.");
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		OperazioneFilter filter = operazioniBD.newFilter();
 		filter.setIdTracciato(tracciato.getId());
@@ -1093,6 +1104,7 @@ public class Tracciati {
 		BufferedWriter bw = new BufferedWriter(pw);
 
 		bw.write(headerRisposta);//.getBytes());
+		log.debug("Inserita testata");
 		if(!headerRisposta.endsWith("\n"))
 			bw.newLine();//("\n".getBytes());
 
@@ -1107,7 +1119,9 @@ public class Tracciati {
 		VersamentiBD versamentiBD = new VersamentiBD(operazioniBD);
 		while(true) {
 			// Ciclo finche' non mi ritorna meno record del limit. Altrimenti esco perche' ho finito
+			
 			List<Operazione> findAll = operazioniBD.findAll(filter);
+			log.debug("Acquisiti " + findAll.size() + " con offset " + filter.getOffset());
 			for(Operazione operazione : findAll) {
 				switch (operazione.getTipoOperazione()) {
 				case ADD:
