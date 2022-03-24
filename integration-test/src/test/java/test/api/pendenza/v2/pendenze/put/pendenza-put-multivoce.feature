@@ -34,4 +34,26 @@ And request pendenzaPut
 When method put
 Then status 201
 
+@test2
+Scenario: Caricamento pendenza multivoce definita con numero avviso
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('msg/pendenza-put_multivoce.json')
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* set pendenzaPut.numeroAvviso = numeroAvviso
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+When method get
+Then status 200
+Then match response.numeroAvviso == numeroAvviso
+
 
