@@ -754,7 +754,7 @@ public class Tracciati {
 							tracciatiBD.commit();
 							log.debug("Aggiornati metadati tracciato dopo il completamento del Thread ["+sender.getNomeThread()+"]");
 							
-							BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI);
+							BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI, ("Completamento del Thread["+sender.getNomeThread() +"]"));
 							log.debug("Aggiornata esecuzione del batch dopo il completamento del Thread ["+sender.getNomeThread()+"]");
 						}
 					}
