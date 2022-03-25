@@ -30,7 +30,8 @@ And match response ==
 	"nome":"Mario Rossi",
 	"domini":"#[]",
 	"tipiPendenza":"#[]",
-	"acl":"#[]"
+	"acl":"#[]",
+	"autenticazione":"SPID"
 }
 """
 
@@ -50,7 +51,8 @@ And match response ==
    "nome":"IDA2A01",
    "domini": "#[1]",
    "tipiPendenza":"#[1]",
-   "acl":"#[]"
+   "acl":"#[]",
+   "autenticazione":"BASIC"
 }
 """
 # And match response.domini[*].idDominio contains ['12345678901','12345678902']
