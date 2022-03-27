@@ -745,6 +745,7 @@ export class UtilService {
   }
 
   public static ExportMapLoopCfg(item: any): any {
+    console.log('ExportMapLoopCfg', item);
     const ref: any = { idd: '', iuv: '', ccp: '', iddRT: '', iuvRT: '', ccpRT: '' };
     const versione620: boolean = !!(item.rpt && item.rpt.versioneOggetto && item.rpt.versioneOggetto === '6.2.0');
     if (versione620) {
@@ -794,6 +795,19 @@ export class UtilService {
             ref.ccpRT = item.rt.receipt.receiptId;
             ref.ccp = item.rt.receipt.receiptId;
           }
+        }
+        // API pagoPA v2
+        if (item.rt.fiscalCode) {
+          ref.idd = item.rt.fiscalCode;
+          ref.iddRT = item.rt.fiscalCode;
+        }
+        if (item.rt.creditorReferenceId) {
+          ref.iuv = item.rt.creditorReferenceId;
+          ref.iuvRT = item.rt.creditorReferenceId;
+        }
+        if (item.rt.receiptId) {
+          ref.ccp = item.rt.receiptId;
+          ref.ccpRT = item.rt.receiptId;
         }
       }
     }

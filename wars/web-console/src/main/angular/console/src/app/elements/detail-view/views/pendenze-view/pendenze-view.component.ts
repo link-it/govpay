@@ -227,8 +227,8 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
                 stStrings.push(Voce.IUV+': '+item.rpt.data.creditorReferenceId);
               }
             }
-            if (item.rt && item.rt.receipt) {
-              _istituto = (item.rt.receipt.PSPCompanyName || '');
+            if (item.rt) {
+              _istituto = (item.rt.PSPCompanyName || '');
             }
             stStrings.push(Voce.DATA+': '+item.dataRichiestaPagamento?moment(item.dataRichiestaPagamento).format('DD/MM/YYYY [ore] HH:mm:ss'):Voce.NON_PRESENTE);
           }
