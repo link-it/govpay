@@ -1,6 +1,7 @@
 package it.govpay.backoffice.v1.beans;
 
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "versioneApi",
 "auth",
 "contenuti",
+"intervalloCreazioneTracciato",
 })
 public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implements IValidable{
   
@@ -176,6 +178,9 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
   private List<String> contenuti = null;
   
   private List<ContenutoNotificaPagamentiGovpay> contenutiEnum = null;
+
+  @JsonProperty("intervalloCreazioneTracciato")
+  private BigDecimal intervalloCreazioneTracciato = null;
   
   /**
    * Indica se il connettore e' abilitato
@@ -408,6 +413,22 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
 	    this.contenutiEnum = contenuti;
 	  }
 
+  /**
+   * intervallo di creazione del tracciato in ore
+   **/
+  public ConnettoreNotificaPagamentiGovPay intervalloCreazioneTracciato(BigDecimal intervalloCreazioneTracciato) {
+    this.intervalloCreazioneTracciato = intervalloCreazioneTracciato;
+    return this;
+  }
+
+  @JsonProperty("intervalloCreazioneTracciato")
+  public BigDecimal getIntervalloCreazioneTracciato() {
+    return intervalloCreazioneTracciato;
+  }
+  public void setIntervalloCreazioneTracciato(BigDecimal intervalloCreazioneTracciato) {
+    this.intervalloCreazioneTracciato = intervalloCreazioneTracciato;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -429,12 +450,13 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
         Objects.equals(url, connettoreNotificaPagamentiGovPay.url) &&
         Objects.equals(versioneApi, connettoreNotificaPagamentiGovPay.versioneApi) &&
         Objects.equals(auth, connettoreNotificaPagamentiGovPay.auth) &&
-        Objects.equals(contenuti, connettoreNotificaPagamentiGovPay.contenuti);
+        Objects.equals(contenuti, connettoreNotificaPagamentiGovPay.contenuti) &&
+        Objects.equals(intervalloCreazioneTracciato, connettoreNotificaPagamentiGovPay.intervalloCreazioneTracciato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(abilitato, tipoConnettore, versioneZip, emailIndirizzi, emailSubject, emailAllegato, downloadBaseUrl, fileSystemPath, tipiPendenza, url, versioneApi, auth, contenuti);
+    return Objects.hash(abilitato, tipoConnettore, versioneZip, emailIndirizzi, emailSubject, emailAllegato, downloadBaseUrl, fileSystemPath, tipiPendenza, url, versioneApi, auth, contenuti, intervalloCreazioneTracciato);
   }
 
   public static ConnettoreNotificaPagamentiGovPay parse(String json) throws ServiceException, ValidationException {
@@ -464,6 +486,7 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
     sb.append("    versioneApi: ").append(toIndentedString(versioneApi)).append("\n");
     sb.append("    auth: ").append(toIndentedString(auth)).append("\n");
     sb.append("    contenuti: ").append(toIndentedString(contenuti)).append("\n");
+    sb.append("    intervalloCreazioneTracciato: ").append(toIndentedString(intervalloCreazioneTracciato)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -486,6 +509,7 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
 		
 		if(this.abilitato) {
 			vf.getValidator("tipoConnettore", this.tipoConnettore).notNull();
+			vf.getValidator("intervalloCreazioneTracciato", this.intervalloCreazioneTracciato).notNull().min(BigDecimal.ONE);
 			
 			switch (this.tipoConnettore) {
 			case EMAIL:

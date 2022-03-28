@@ -148,6 +148,8 @@ export class Voce {
   public static INDIRIZZO: string = 'Indirizzo';
   public static INSERIMENTO_DATI: string = 'Form inserimento dati';
   public static INTERMEDIATO: string = 'Intermediato';
+  public static INTERVALLO_CREAZIONE: string = 'Intervallo creazione';
+  public static INTERVALLO_CREAZIONE_HINT: string = 'Indicare l\'intervallo di creazione del tracciato in giorni';
   public static INTESTATARIO: string = 'Intestatario del conto';
   public static INTESTAZIONE_ESITO: string = 'Linea intestazione esito';
   public static INVIO_TRACCIATO_ALLEGATO: string = 'Invia tracciato come allegato';
