@@ -719,45 +719,47 @@ public class Tracciati {
 			int completati = 0; 
 			for(CaricamentoTracciatoThread sender : threads) {
 				if(!sender.isCompleted()) {
-					log.debug("Thread ["+sender.getNomeThread()+"] non completato.");
+					log.trace("Thread ["+sender.getNomeThread()+"] non completato.");
 					completed = false;
 				} else {
 					completati++;
 					if(!sender.isCommit()) {
 						log.debug("Thread ["+sender.getNomeThread()+"] completato, acquisizione risultati.");
 						sender.setCommit(true); 
-						log.debug("Completata Esecuzione del Thread ["+sender.getNomeThread()+"], ADDOK ["+sender.getNumeroAddElaborateOk()+"], ADDKO ["+sender.getNumeroAddElaborateKo()+"] DELOK ["+sender.getNumeroDelElaborateOk()+"], DELKO ["+sender.getNumeroDelElaborateKo()+"]");
-						lineeElaborate.addAll(sender.getLineeElaborate());
-						sommaAddOk += sender.getNumeroAddElaborateOk();
-						sommaAddKo += sender.getNumeroAddElaborateKo();
-						sommaDelOk += sender.getNumeroDelElaborateOk();
-						sommaDelKo += sender.getNumeroDelElaborateKo();
+						synchronized (this) {
+							log.debug("Completata Esecuzione del Thread ["+sender.getNomeThread()+"], ADDOK ["+sender.getNumeroAddElaborateOk()+"], ADDKO ["+sender.getNumeroAddElaborateKo()+"] DELOK ["+sender.getNumeroDelElaborateOk()+"], DELKO ["+sender.getNumeroDelElaborateKo()+"]");
+							lineeElaborate.addAll(sender.getLineeElaborate());
+							sommaAddOk += sender.getNumeroAddElaborateOk();
+							sommaAddKo += sender.getNumeroAddElaborateKo();
+							sommaDelOk += sender.getNumeroDelElaborateOk();
+							sommaDelKo += sender.getNumeroDelElaborateKo();
 
-						if(sender.getDescrizioneEsito() != null)
-							descrizioneEsito = sender.getDescrizioneEsito();
-						
-						// ordino al contrario cosi l'ultima elaborata e' in cima
-						Collections.sort(lineeElaborate, Collections.reverseOrder());
-						if(lineeElaborate.size() > 0) {
-							beanDati.setLineaElaborazioneAdd(lineeElaborate.get(0));
-						} else {
-							beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);
+							if(sender.getDescrizioneEsito() != null)
+								descrizioneEsito = sender.getDescrizioneEsito();
+							
+							// ordino al contrario cosi l'ultima elaborata e' in cima
+							Collections.sort(lineeElaborate, Collections.reverseOrder());
+							if(lineeElaborate.size() > 0) {
+								beanDati.setLineaElaborazioneAdd(lineeElaborate.get(0));
+							} else {
+								beanDati.setLineaElaborazioneAdd(beanDati.getLineaElaborazioneAdd()+1);
+							}
+							beanDati.setNumAddOk(sommaAddOk);
+							beanDati.setNumAddKo(sommaAddKo);
+							beanDati.setNumDelOk(sommaDelOk);
+							beanDati.setNumDelKo(sommaDelKo);
+							beanDati.setDescrizioneStepElaborazione(descrizioneEsito);
+							beanDati.setDataUltimoAggiornamento(new Date());
+
+							log.debug("Aggiornamento metadati tracciato dopo il completamento del Thread ["+sender.getNomeThread()+"] in corso...");
+							tracciatiBD.setAutoCommit(false);
+							tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
+							tracciatiBD.commit();
+							log.debug("Aggiornati metadati tracciato dopo il completamento del Thread ["+sender.getNomeThread()+"]");
+							
+							BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI, ("Completamento del Thread["+sender.getNomeThread() +"]"));
+							log.debug("Aggiornata esecuzione del batch dopo il completamento del Thread ["+sender.getNomeThread()+"]");
 						}
-						beanDati.setNumAddOk(sommaAddOk);
-						beanDati.setNumAddKo(sommaAddKo);
-						beanDati.setNumDelOk(sommaDelOk);
-						beanDati.setNumDelKo(sommaDelKo);
-						beanDati.setDescrizioneStepElaborazione(descrizioneEsito);
-						beanDati.setDataUltimoAggiornamento(new Date());
-
-						log.debug("Aggiornamento metadati tracciato dopo il completamento del Thread ["+sender.getNomeThread()+"] in corso...");
-						tracciatiBD.setAutoCommit(false);
-						tracciatiBD.updateBeanDati(tracciato, serializer.getObject(beanDati));
-						tracciatiBD.commit();
-						log.debug("Aggiornati metadati tracciato dopo il completamento del Thread ["+sender.getNomeThread()+"]");
-						
-						BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.BATCH_TRACCIATI);
-						log.debug("Aggiornata esecuzione del batch dopo il completamento del Thread ["+sender.getNomeThread()+"]");
 					}
 				}
 			}
