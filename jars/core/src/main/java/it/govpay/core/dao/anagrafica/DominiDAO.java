@@ -735,9 +735,9 @@ public class DominiDAO extends BaseDAO{
 				dominio = AnagraficaManager.getDominio(configWrapper, putEntrataDominioDTO.getIdDominio()); 
 				putEntrataDominioDTO.getTributo().setIdDominio(dominio.getId());
 				
-				if(!AnagraficaManager.getDominio(configWrapper, putEntrataDominioDTO.getIdDominio()).isIntermediato()) {
-					throw new UnprocessableEntityException("La risorsa richiesta non e' disponibile per il dominio " + putEntrataDominioDTO.getIdDominio() + " non intermediato.");
-				}
+//				if(!AnagraficaManager.getDominio(configWrapper, putEntrataDominioDTO.getIdDominio()).isIntermediato()) {
+//					throw new UnprocessableEntityException("La risorsa richiesta non e' disponibile per il dominio " + putEntrataDominioDTO.getIdDominio() + " non intermediato.");
+//				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new UnprocessableEntityException("Il dominio "+putEntrataDominioDTO.getIdDominio()+" indicato non esiste.");
 			}
