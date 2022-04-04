@@ -664,9 +664,9 @@ public class DominiDAO extends BaseDAO{
 			try {
 				filter.setIdDominio(AnagraficaManager.getDominio(configWrapper, findTributiDTO.getCodDominio()).getId());
 				
-				if(!AnagraficaManager.getDominio(configWrapper, findTributiDTO.getCodDominio()).isIntermediato()) {
-					return new FindTributiDTOResponse(0L, new ArrayList<>());
-				}
+//				if(!AnagraficaManager.getDominio(configWrapper, findTributiDTO.getCodDominio()).isIntermediato()) {
+//					return new FindTributiDTOResponse(0L, new ArrayList<>());
+//				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + findTributiDTO.getCodDominio() + " non censito in Anagrafica");
 			}
@@ -708,9 +708,9 @@ public class DominiDAO extends BaseDAO{
 			try {
 				dominio = AnagraficaManager.getDominio(configWrapper, getTributoDTO.getCodDominio());
 				
-				if(!AnagraficaManager.getDominio(configWrapper, getTributoDTO.getCodDominio()).isIntermediato()) {
-					throw new TributoNonTrovatoException("Entrata " + getTributoDTO.getCodTributo() + " non censita in Anagrafica per il Dominio " + getTributoDTO.getCodDominio());
-				}
+//				if(!AnagraficaManager.getDominio(configWrapper, getTributoDTO.getCodDominio()).isIntermediato()) {
+//					throw new TributoNonTrovatoException("Entrata " + getTributoDTO.getCodTributo() + " non censita in Anagrafica per il Dominio " + getTributoDTO.getCodDominio());
+//				}
 			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 				throw new DominioNonTrovatoException("Dominio " + getTributoDTO.getCodDominio() + " non censito in Anagrafica");
 			}

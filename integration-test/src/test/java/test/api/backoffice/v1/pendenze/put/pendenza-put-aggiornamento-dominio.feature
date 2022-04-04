@@ -174,29 +174,6 @@ And path '/pagamenti'
 And headers basicAutenticationHeader
 And request pagamentoPost
 When method post
-Then status 201
-And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
-
-Given url pagamentiBaseurl
-And path '/pagamenti/byIdSession/', response.idSession
-And headers basicAutenticationHeader
-When method get
-Then status 200
-And match response.rpp[0].rpt.soggettoVersante == 
-"""
-{
-	"identificativoUnivocoVersante": {
-		"tipoIdentificativoUnivoco":"#(pagamentoPost.soggettoVersante.tipo)",
-		"codiceIdentificativoUnivoco":"#(pagamentoPost.soggettoVersante.identificativo)"
-	},
-	"anagraficaVersante":"#(pagamentoPost.soggettoVersante.anagrafica)",
-	"indirizzoVersante":"#(pagamentoPost.soggettoVersante.indirizzo)",
-	"civicoVersante":"#(pagamentoPost.soggettoVersante.civico)",
-	"capVersante":"#(pagamentoPost.soggettoVersante.cap + '')",
-	"localitaVersante":"#(pagamentoPost.soggettoVersante.localita)",
-	"provinciaVersante":"#(pagamentoPost.soggettoVersante.provincia)",
-	"nazioneVersante":"#(pagamentoPost.soggettoVersante.nazione)",
-	"e-mailVersante":"#(pagamentoPost.soggettoVersante.email)"
-}
-"""
+Then status 422
+And match response contains { categoria: 'RICHIESTA', codice: 'DOM_001', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 
