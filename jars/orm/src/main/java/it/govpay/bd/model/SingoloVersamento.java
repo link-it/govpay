@@ -61,8 +61,15 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 	}
 
 	public void setTributo(String codTributo, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException {
-		this.tributo = AnagraficaManager.getTributo(configWrapper, this.versamento.getIdDominio(), codTributo);
-		this.setIdTributo(this.tributo.getId());
+		// se viene definito il dominio per la singola voce allora cerco tra i tributi associati ad esso
+		if(this.getIdDominio() != null) {
+			this.tributo = AnagraficaManager.getTributo(configWrapper, this.getIdDominio(), codTributo);
+			this.setIdTributo(this.tributo.getId());
+		} else {
+			// caso monobeneficiario
+			this.tributo = AnagraficaManager.getTributo(configWrapper, this.versamento.getIdDominio(), codTributo);
+			this.setIdTributo(this.tributo.getId());
+		}
 	}
 	
 	public void setVersamento(Versamento versamento) {
