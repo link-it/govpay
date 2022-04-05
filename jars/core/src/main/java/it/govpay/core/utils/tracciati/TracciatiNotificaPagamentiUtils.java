@@ -49,7 +49,6 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Contabilita;
 import it.govpay.model.QuotaContabilita;
-import it.govpay.model.Rpt.Versione;
 import it.govpay.model.TipoVersamento;
 
 public class TracciatiNotificaPagamentiUtils {

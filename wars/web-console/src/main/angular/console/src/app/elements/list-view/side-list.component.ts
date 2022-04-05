@@ -879,7 +879,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       }, []);
     }
     _preloadedData['numPagine'] = Math.ceil(_preloadedMeta['numRisultati']/_preloadedData['risultatiPerPagina']);
-    if(_preloadedData['pagina'] == _preloadedData['numPagine']) {
+    if(_preloadedData['pagina'] >= _preloadedData['numPagine']) {
       const cachedCalls: any[] = this.listResults.map((result) => {
         return result.jsonP;
       });
@@ -953,8 +953,20 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         this.us.filteredJson(_properties, _jsonData);
         break;
       case UtilService.EXPORT_GIORNALE_EVENTI:
-      case UtilService.EXPORT_INCASSI:
         this.us.fullJson(_jsonData);
+        break;
+      case UtilService.EXPORT_INCASSI:
+        const _newExport = true;
+        if (_newExport) {
+          this._exportIncassi(_jsonData);
+        } else {
+          let _cloneJsondData = JSON.parse(JSON.stringify(_jsonData));
+          _cloneJsondData = _cloneJsondData.map((item) => {
+            item.dominio = item.dominio.idDominio;
+            return item;
+          });
+          this.us.fullJson(_cloneJsondData);
+        }
         break;
       case UtilService.EXPORT_RENDICONTAZIONI:
         _jsonData = _jsonData.map((item) => {
@@ -967,5 +979,101 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         this.us.fullJson(_jsonData);
         break;
     }
+  }
+
+  _exportIncassi(data: any) {
+    const name = UtilService.TXT_INCASSI;
+    const zip: any = this.us.initZip();
+    const structure: any = {
+      names: [],
+      filenames: [],
+      json: []
+    };
+
+    this.us.updateProgress(true, 'Elaborazione in corso...', 'indeterminate', 0);
+
+    let _cloneJsondData = JSON.parse(JSON.stringify(data));
+    _cloneJsondData = _cloneJsondData.map((item) => {
+      item.dominio = item.dominio.idDominio;
+      return item;
+    });
+
+    structure.names.push('PagamentiRiconciliati.csv');
+    structure.filenames.push(name + '.csv');
+    structure.json.push(_cloneJsondData);
+
+    const chunk: any[] = [];
+    data.forEach(item => {
+      const _url = UtilService.URL_INCASSI + '/' + item.dominio.idDominio + '/' + item.idIncasso;
+      const chunkData: any = {
+        url: _url,
+        content: 'application/json',
+        type: 'json'
+      };
+      chunk.push(chunkData);
+    });
+
+    const _configRic = this.us.getConfigRiconciliazioni();
+    const urls = chunk.map(chk => chk.url);
+    const contents = chunk.map(chk => chk.content);
+    const types = chunk.map(chk => chk.type);
+    this.gps.multiExportService(urls, contents, types).subscribe(function (_responses) {
+      _responses.forEach((response, index) => {
+        const _json: any = JSON.parse(JSON.stringify(response.body));
+        const _riscossioni: any[] = [];
+        _json.riscossioni.forEach(risc => {
+          const quote = (risc.vocePendenza && risc.vocePendenza.contabilita) ? risc.vocePendenza.contabilita.quote : [];
+          const riscossione: any = {};
+          riscossione[_configRic.exportLabel['idDominio']] = _json.dominio.idDominio;
+          riscossione[_configRic.exportLabel['idFlusso']] = _json.idFlusso ? _json.idFlusso : '';
+          riscossione[_configRic.exportLabel['iuv']] = risc.iuv || '';
+          riscossione[_configRic.exportLabel['importo']] = risc.importo || 0;
+          riscossione[_configRic.exportLabel['data']] = risc.data || '';
+          riscossione[_configRic.exportLabel['idPendenza']] = risc.vocePendenza.pendenza.idPendenza || '';
+          riscossione[_configRic.exportLabel['tipoPendenza']] = risc.vocePendenza.pendenza.idTipoPendenza || '';
+          riscossione[_configRic.exportLabel['idVocePendenza']] = risc.vocePendenza.idVocePendenza || '';
+          riscossione[_configRic.exportLabel['datiAllegatiPendenza']] = risc.vocePendenza.pendenza.datiAllegati || '';
+          riscossione[_configRic.exportLabel['datiAllegatiVocePendenza']] = risc.vocePendenza.datiAllegati || '';
+
+          for (let i = 0; i < _configRic.quoteCount; i++) {
+            _configRic.quoteExport.forEach(key => {
+              const label = `${_configRic.quoteLabel[key]} ${i + 1}`;
+              riscossione[label] = (this.us.hasValue(quote[i])) ? quote[i][key] : '';
+            });
+          }
+
+          _riscossioni.push(riscossione);
+        });
+
+        const _fileName = _json.idFlusso ? _json.idFlusso : _json.iuv;
+        structure.names.push('PagamentiRiconciliati.csv');
+        structure.filenames.push(_fileName + '.csv');
+        structure.json.push(_riscossioni);
+      });
+
+      this.__loopElaborate(zip, structure, name);
+    }.bind(this),
+    (error) => {
+      this.us.updateProgress(false);
+      this.gps.updateSpinner(false);
+      this.us.onError(error);
+    });
+  }
+
+  __loopElaborate(zip: any, structure: any, name: string) {
+    setTimeout(() => {
+      if (structure.names.length !== 0) {
+        const data: any = this.us.jsonToCsv(structure.names[0], structure.json[0]);
+        this.us.addDataToZip(data, structure.filenames[0], zip);
+        this.us.updateProgress(true, 'Export in corso...', 'determinate', Math.trunc(100 / structure.names.length));
+        structure.names.shift();
+        structure.filenames.shift();
+        structure.json.shift();
+        this.__loopElaborate(zip, structure, name);
+      } else {
+        this.us.updateProgress(true, 'Export in corso...', 'determinate', 100);
+        this.us.saveZip(zip, name);
+      }
+    }, 200);
   }
 }

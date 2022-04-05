@@ -7723,6 +7723,7 @@ components:
       required:
         - abilitato
         - tipoConnettore
+        - intervalloCreazioneTracciato
       properties:
         abilitato:
           type: boolean
@@ -7775,6 +7776,11 @@ components:
                 description: identificativo tipo pendenza
                 example:
                   SEGRETERIA
+        intervalloCreazioneTracciato:
+          type: number
+          format: integer
+          example: 24
+          description: intervallo di creazione del tracciato in ore
     connettoreNotificaPagamentiMyPivot:
       type: object
       required:
@@ -7782,6 +7788,7 @@ components:
         - tipoConnettore
         - versioneCsv
         - codiceIPA
+        - intervalloCreazioneTracciato
       properties:
         abilitato:
           type: boolean
@@ -7827,6 +7834,11 @@ components:
                 description: identificativo tipo pendenza
                 example:
                   SEGRETERIA
+        intervalloCreazioneTracciato:
+          type: number
+          format: integer
+          example: 24
+          description: intervallo di creazione del tracciato in ore
     connettoreNotificaPagamentiSecim:
       type: object
       required:
@@ -7834,6 +7846,7 @@ components:
         - tipoConnettore
         - codiceCliente
         - versioneCsv
+        - intervalloCreazioneTracciato
       properties:
         abilitato:
           type: boolean
@@ -7882,12 +7895,18 @@ components:
                 description: identificativo tipo pendenza
                 example:
                   SEGRETERIA
+        intervalloCreazioneTracciato:
+          type: number
+          format: integer
+          example: 24
+          description: intervallo di creazione del tracciato in ore
     connettoreNotificaPagamentiHyperSicAPKappa:
       type: object
       required:
         - abilitato
         - tipoConnettore
         - versioneCsv
+        - intervalloCreazioneTracciato
       properties:
         abilitato:
           type: boolean
@@ -7930,11 +7949,17 @@ components:
                 description: identificativo tipo pendenza
                 example:
                   SEGRETERIA
+        intervalloCreazioneTracciato:
+          type: number
+          format: integer
+          example: 24
+          description: intervallo di creazione del tracciato in ore
     connettoreNotificaPagamentiGovPay:
       type: object
       required:
         - abilitato
         - tipoConnettore
+        - intervalloCreazioneTracciato
       properties:
         abilitato:
           type: boolean
@@ -7993,6 +8018,11 @@ components:
           description: Lista dei contenuti da inviare al servizio REST
           items:
             $ref: '#/components/schemas/contenutoNotificaPagamentiGovpay'
+        intervalloCreazioneTracciato:
+          type: number
+          format: integer
+          example: 24
+          description: intervallo di creazione del tracciato in ore
     contenutoNotificaPagamentiGovpay:
       example: SINTESI_PAGAMENTI
       type: string

@@ -90,20 +90,6 @@ public class BatchManager {
 			}
 		} finally {
 			if(batchBD != null) {
-				try {
-					// disabilito selectforupdate
-					batchBD.disableSelectForUpdate();
-				} catch (ServiceException e) {
-					log.error("Errore " +e.getMessage() , e);
-				}
-
-				try {
-					// reset autocommit
-					batchBD.setAutoCommit(true);
-				} catch (ServiceException e) {
-					log.error("Errore " +e.getMessage() , e);
-				}
-
 				// chiusura connessione
 				batchBD.closeConnection();
 			}
@@ -118,16 +104,21 @@ public class BatchManager {
 			return null;
 
 		try{
+			log.trace("lettura batch " + codBatch + " in corso...");
 			batch = batchBD.get(codBatch);
+			log.trace("lettura batch " + codBatch + " completata");
 		} catch(NotFoundException nfe) {
 			// Non c'e' un blocco, quindi non e' in esecuzione
+			log.trace("lettura batch " + codBatch + " completata, blocco non trovato, batch non in esecuzione");
 			return null;
 		}
 
 		if(batch.getNodo() == null) {
 			// Non c'e' un blocco, quindi non e' in esecuzione	
+			log.trace("lettura batch " + codBatch + " blocco non trovato, batch non in esecuzione");
 			return null;
 		} else {
+			log.trace("lettura batch " + codBatch + " blocco presente, verifica timeout esecuzione");
 			// C'e' un blocco.
 			// Verifico se e' scaduto
 			long inizio = batch.getInizio().getTime();
@@ -147,6 +138,7 @@ public class BatchManager {
 
 	public static void stopEsecuzione(BDConfigWrapper configWrapper, String codBatch) {
 		BatchBD batchBD = null;
+		log.debug("Stop esecuzione batch " + codBatch);
 		try {		
 			// Se non ho configurato l'id del cluster, non gestisco i blocchi.
 			if(GovpayConfig.getInstance().getClusterId() == null) {
@@ -186,10 +178,12 @@ public class BatchManager {
 				} else {
 					// blocco non mio. lo lascio fare
 					log.warn("Errore nella rimozione del semaforo di concorrenza per il batch " + codBatch + ": semaforo di altro nodo");
+					batchBD.commit();
 					return;
 				}
 			} catch (NotFoundException nfe) {
 				// strano... vabeh...
+				log.debug("stop esecuzione batch " + codBatch + " errore nella rimozione del semaforo di concorrenza: semaforo non presente.");
 				log.warn("Errore nella rimozione del semaforo di concorrenza per il batch " + codBatch + ": semaforo non presente");
 				return;
 			}
@@ -197,29 +191,22 @@ public class BatchManager {
 			log.error("Errore nella rimozione del semaforo di concorrenza per il batch " + codBatch, se);
 		} finally {
 			if(batchBD != null) {
-				try {
-					// disabilito selectforupdate
-					batchBD.disableSelectForUpdate();
-				} catch (ServiceException e) {
-					log.error("Errore " +e.getMessage() , e);
-				}
-
-				try {
-					// reset autocommit
-					batchBD.setAutoCommit(true);
-				} catch (ServiceException e) {
-					log.error("Errore " +e.getMessage() , e);
-				}
-
 				// chiusura connessione
 				batchBD.closeConnection();
 			}
 		}
 	}
 
-
 	public static void aggiornaEsecuzione(BDConfigWrapper configWrapper, String codBatch) throws ServiceException {
-		log.debug("Aggiorno il batch " + codBatch);
+		aggiornaEsecuzione(configWrapper, codBatch, null);
+	}
+
+	public static void aggiornaEsecuzione(BDConfigWrapper configWrapper, String codBatch, String msg) throws ServiceException {
+		if(msg == null) {
+			log.trace("aggiorna esecuzione batch " + codBatch);
+		} else {
+			log.trace("aggiorna esecuzione batch " + codBatch + ": " + msg);
+		}
 
 		// Se non ho configurato l'id del cluster, non gestisco i blocchi.
 		if(GovpayConfig.getInstance().getClusterId() == null) {
@@ -246,32 +233,22 @@ public class BatchManager {
 
 			Batch batch = getRunningBatch(batchBD, codBatch);
 
-			if(batch != null && GovpayConfig.getInstance().getClusterId() == batch.getNodo()) {
+			if(batch != null && GovpayConfig.getInstance().getClusterId().equals(batch.getNodo())) {
+				log.trace("aggiorna esecuzione batch " + codBatch + " aggiornamento in corso...");
 				batch.setAggiornamento(new Date()); 
 				batchBD.update(batch);
 				batchBD.commit();
 				log.debug("Aggiornato semaforo rosso per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
 				return;
+			} else {
+				log.trace("aggiorna esecuzione batch " + codBatch + ": non trovato eseguo solo il commit.");
+				batchBD.commit();
 			}
 		} catch (NotFoundException e) {
 			log.error("Errore nell'aggiornamento del semaforo di concorrenza per il batch " + codBatch, e);
 			return;
 		}  finally {
 			if(batchBD != null) {
-				try {
-					// disabilito selectforupdate
-					batchBD.disableSelectForUpdate();
-				} catch (ServiceException e) {
-					log.error("Errore " +e.getMessage() , e);
-				}
-
-				try {
-					// reset autocommit
-					batchBD.setAutoCommit(true);
-				} catch (ServiceException e) {
-					log.error("Errore " +e.getMessage() , e);
-				}
-
 				// chiusura connessione
 				batchBD.closeConnection();
 			}
