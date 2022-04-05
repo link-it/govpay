@@ -136,7 +136,7 @@ When method get
 Then assert responseStatus == 404
 
 
-# Entrate nessuna azione consentita
+# Entrate tutte le azioni consentite
 * def codEntrataSiope = 'SIOPE_IMU'
 
 * def entrata = 
@@ -155,24 +155,23 @@ And path 'domini', idDominio, 'entrate', codEntrataSiope
 And headers basicAutenticationHeader
 And request entrata
 When method put
-Then status 422
-* match response == { categoria: 'RICHIESTA', codice: 'SEMANTICA', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains '#("La risorsa richiesta non e\' disponibile per il dominio " + idDominio + " non intermediato.")' 
+Then assert responseStatus == 200 || responseStatus == 201
 
 Given url backofficeBaseurl
 And path 'domini', idDominio, 'entrate'
 And headers basicAutenticationHeader
 When method get
-Then assert responseStatus == 200 || responseStatus == 201
+Then status 200
 And match response == 
 """
 {
-	numRisultati: 0,
-	numPagine: 1,
-	risultatiPerPagina: 0,
-	pagina: 1,
+	maxRisultati : '#ignore',
+	numRisultati: '#notnull',
+	numPagine: '#notnull',
+	risultatiPerPagina: '#notnull',
+	pagina: '#notnull',
 	prossimiRisultati: '##null',
-	risultati: '#[0]'
+	risultati: '#[]'
 }
 """
 
@@ -180,7 +179,7 @@ Given url backofficeBaseurl
 And path 'domini', idDominio, 'entrate', codEntrataSiope
 And headers basicAutenticationHeader
 When method get
-Then assert responseStatus == 404
+Then assert responseStatus == 200
 
 
 # Tipi pendenza nessuna azione consentita
