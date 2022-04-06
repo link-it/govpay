@@ -28,6 +28,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.orm.dao.IACLService;
 import it.govpay.orm.dao.IACLServiceSearch;
+import it.govpay.orm.dao.IAllegatoService;
+import it.govpay.orm.dao.IAllegatoServiceSearch;
 import it.govpay.orm.dao.IApplicazioneService;
 import it.govpay.orm.dao.IApplicazioneServiceSearch;
 import it.govpay.orm.dao.IAuditService;
@@ -1669,6 +1671,38 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 		return new JDBCVistaVersamentoNonRendicontatoServiceSearch(this.unlimitedJdbcServiceManager);
 	}
 	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Allegato type:Allegato
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Allegato}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Allegato}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IAllegatoServiceSearch getAllegatoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCAllegatoServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Allegato}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Allegato}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IAllegatoService getAllegatoService() throws ServiceException,NotImplementedException{
+		return new JDBCAllegatoService(this.unlimitedJdbcServiceManager);
+	}
 	
 	
 	

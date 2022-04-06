@@ -386,6 +386,10 @@
     <structure name="idDocumento" field="idDocumento" usage="optional" map-as="_IdDocumento_Type"/>
     <value name="tipo" field="tipo" usage="required"/>
   </mapping>
+  <mapping name="id-allegato" class="it.govpay.orm.IdAllegato">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="idAllegato" field="idAllegato" usage="required"/>
+  </mapping>
   <mapping name="Configurazione" class="it.govpay.orm.Configurazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="nome" field="nome" usage="required"/>
@@ -1630,5 +1634,13 @@
     <value name="rptIuv" field="rptIuv" usage="required"/>
     <value name="rptCcp" field="rptCcp" usage="required"/>
     <value name="rncTrn" field="rncTrn" usage="required"/>
+  </mapping>
+  <mapping name="Allegato" class="it.govpay.orm.Allegato">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <structure name="idVersamento" field="idVersamento" usage="required" map-as="_IdVersamento_Type"/>
+    <value name="nome" field="nome" usage="required"/>
+    <value name="tipo" field="tipo" usage="optional"/>
+    <value name="dataCreazione" field="dataCreazione" usage="required"/>
+    <value name="rawContenuto" field="rawContenuto" usage="required"/>
   </mapping>
 </binding>
