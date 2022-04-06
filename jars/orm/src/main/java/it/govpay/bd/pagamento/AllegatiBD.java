@@ -46,7 +46,7 @@ public class AllegatiBD extends BasicBD {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 
-	public Allegato getAllegato(long id) throws ServiceException, NotFoundException {
+	public Allegato getAllegato(long id, boolean includiRawContenuto) throws ServiceException, NotFoundException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());

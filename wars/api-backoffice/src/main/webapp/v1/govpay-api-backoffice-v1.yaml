@@ -3082,6 +3082,40 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+  '/allegati/{id}':
+    get:
+      summary: Allegato di una pendenza
+      operationId: getAllegatoPendenza
+      description:      Fornisce l'allegato di una pendenza
+      tags:
+        - Pendenze
+      parameters:
+        - in: path
+          name: id
+          description: Identificativo dell'allegato
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Contenuto dell'allegato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/avviso'
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
   '/riscossioni':
     get:
       summary: Elenco dei pagamenti riscossi
@@ -6574,6 +6608,10 @@ components:
           example: '2020-12-31'
         proprieta:
           $ref: '#/components/schemas/ProprietaPendenza'
+        allegati:
+          type: array
+          items:
+            $ref: '#/components/schemas/AllegatoPendenza'
     pendenzaPut:
       type: object
       allOf:
@@ -9288,6 +9326,26 @@ components:
           type: string
           description: Identificativo della divisione interna all'ente creditore
           example: Divisione001
+    AllegatoPendenza:
+      type: object
+      required: 
+        - nome
+        - contenuto
+      properties:
+        nome:
+          type: string
+          description: nome del file
+        tipo:
+          type: string
+          description: mime type del file
+          default: "application/octet-stream"
+        contenuto: 
+          oneOf:
+          - type: string
+            format: byte
+            description: contenuto del file
+          - type: string
+            description: path per accedere al file, nella forma /allegati/{id}
     LinguaSecondaria:
       example: 'false'
       type: string
