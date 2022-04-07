@@ -20,6 +20,7 @@
 -- DROP INDEX index_stazioni_1 ON stazioni ;
 -- DROP INDEX index_intermediari_1 ON intermediari ;
 -- DROP INDEX index_configurazione_1 ON configurazione ;
+-- DROP INDEX idx_evt_iuv ON eventi ;
 -- DROP INDEX idx_evt_id_sessione ON eventi ;
 -- DROP INDEX idx_evt_fk_vrs ON eventi ;
 -- DROP INDEX idx_evt_data ON eventi ;
@@ -62,6 +63,7 @@ DROP VIEW v_rendicontazioni_ext;
 DROP VIEW v_rpt_versamenti;
 DROP VIEW v_pagamenti;
 DROP VIEW v_versamenti;
+DROP TABLE allegati;
 DROP TABLE ID_MESSAGGIO_RELATIVO;
 DROP TABLE gp_audit;
 DROP TABLE operazioni;

@@ -509,6 +509,8 @@ public class PendenzeDAO extends BaseDAO{
 
 				response.setRpts(findAll);
 			}
+			
+			versamento.getAllegati(versamentiBD);
 
 			return response;
 		} finally {
@@ -583,6 +585,8 @@ public class PendenzeDAO extends BaseDAO{
 
 				response.setRpts(findAll);
 			}
+			
+			versamento.getAllegati(versamentiBD);
 
 		} catch (NotFoundException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);

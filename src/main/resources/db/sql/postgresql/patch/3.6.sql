@@ -155,8 +155,29 @@ CREATE VIEW v_eventi_vers AS (
 );
 
 
+-- 07/04/2022 Allegati di una pendenza
 
--- Indici mancanti per la ricerca degli eventi 
--- NOTA: DA AGGIUNGERE ALLE ALTRE PATCH E ALLA CREAZIONE DI BASE
-create index idx_evt_fk_fr on eventi (id_fr);
+CREATE SEQUENCE seq_allegati start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE allegati
+(
+	nome VARCHAR(255) NOT NULL,
+	tipo VARCHAR(255),
+	data_creazione TIMESTAMP NOT NULL,
+	raw_contenuto OID NOT NULL,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_allegati') NOT NULL,
+	id_versamento BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_all_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_allegati PRIMARY KEY (id)
+);
+
+ALTER TABLE allegati DROP CONSTRAINT fk_all_id_versamento;
+
+
+
+
+
+
 

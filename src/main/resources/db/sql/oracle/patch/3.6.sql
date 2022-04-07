@@ -100,5 +100,37 @@ CREATE VIEW v_eventi_vers AS (
          );  
 
 
+-- 07/04/2022 Allegati di una pendenza
+
+CREATE SEQUENCE seq_allegati MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE allegati
+(
+	nome VARCHAR(255) NOT NULL,
+	tipo VARCHAR(255),
+	data_creazione TIMESTAMP NOT NULL,
+	raw_contenuto BLOB NOT NULL,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_versamento NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_all_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_allegati PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_allegati
+BEFORE
+insert on allegati
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_allegati.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+ALTER TABLE allegati DROP CONSTRAINT fk_all_id_versamento;
+
 
 

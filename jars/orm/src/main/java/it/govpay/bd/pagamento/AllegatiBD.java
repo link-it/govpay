@@ -20,6 +20,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Allegato;
+import it.govpay.bd.model.converter.AclConverter;
 import it.govpay.bd.model.converter.AllegatoConverter;
 import it.govpay.bd.pagamento.filters.AllegatoFilter;
 import it.govpay.orm.dao.jdbc.JDBCAllegatoServiceSearch;
@@ -180,6 +181,12 @@ public class AllegatiBD extends BasicBD {
 		}
 	}
 	
+	public List<Allegato> getAllegati(Long idVersamento) throws ServiceException {
+		AllegatoFilter allegatoFilter = this.newFilter();
+		allegatoFilter.setIdVersamento(idVersamento);
+		return this.findAll(allegatoFilter);
+	}
+	
 	public List<Allegato> findAll(AllegatoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
@@ -257,6 +264,23 @@ public class AllegatiBD extends BasicBD {
 				list.add(allegato);
 			}
 		} catch(NotFoundException e) {}
+	}
+
+	public void deleteAllegato(Allegato allegato) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			it.govpay.orm.Allegato vo = AllegatoConverter.toVO(allegato);
+			this.getAllegatoService().delete(vo);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 
 }
