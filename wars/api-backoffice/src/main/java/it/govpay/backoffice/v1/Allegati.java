@@ -21,6 +21,7 @@ import it.govpay.rs.v1.BaseRsServiceV1;
 
 public class Allegati extends BaseRsServiceV1 {
 
+	public static final String DETTAGLIO_PATH_PATTERN = "/allegati/{0}";
 
 	private AllegatiController controller = null;
 

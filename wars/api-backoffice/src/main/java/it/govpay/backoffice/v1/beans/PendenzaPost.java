@@ -38,8 +38,8 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "dataNotificaAvviso",
 "dataPromemoriaScadenza",
 "proprieta",
-"allegati",
 "voci",
+"allegati",
 "idA2A",
 "idPendenza",
 "idDebitore",
@@ -113,11 +113,11 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
   @JsonProperty("proprieta")
   private ProprietaPendenza proprieta = null;
   
-  @JsonProperty("allegati")
-  private List<AllegatoPendenza> allegati = null;
-  
   @JsonProperty("voci")
   private List<NuovaVocePendenza> voci = new ArrayList<NuovaVocePendenza>();
+  
+  @JsonProperty("allegati")
+  private List<NuovoAllegatoPendenza> allegati = null;
   
   @JsonProperty("idA2A")
   private String idA2A = null;
@@ -493,21 +493,6 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
 
   /**
    **/
-  public PendenzaPost allegati(List<AllegatoPendenza> allegati) {
-    this.allegati = allegati;
-    return this;
-  }
-
-  @JsonProperty("allegati")
-  public List<AllegatoPendenza> getAllegati() {
-    return allegati;
-  }
-  public void setAllegati(List<AllegatoPendenza> allegati) {
-    this.allegati = allegati;
-  }
-
-  /**
-   **/
   public PendenzaPost voci(List<NuovaVocePendenza> voci) {
     this.voci = voci;
     return this;
@@ -519,6 +504,21 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
   }
   public void setVoci(List<NuovaVocePendenza> voci) {
     this.voci = voci;
+  }
+
+  /**
+   **/
+  public PendenzaPost allegati(List<NuovoAllegatoPendenza> allegati) {
+    this.allegati = allegati;
+    return this;
+  }
+
+  @JsonProperty("allegati")
+  public List<NuovoAllegatoPendenza> getAllegati() {
+    return allegati;
+  }
+  public void setAllegati(List<NuovoAllegatoPendenza> allegati) {
+    this.allegati = allegati;
   }
 
   /**
@@ -616,8 +616,8 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
         Objects.equals(dataNotificaAvviso, pendenzaPost.dataNotificaAvviso) &&
         Objects.equals(dataPromemoriaScadenza, pendenzaPost.dataPromemoriaScadenza) &&
         Objects.equals(proprieta, pendenzaPost.proprieta) &&
-        Objects.equals(allegati, pendenzaPost.allegati) &&
         Objects.equals(voci, pendenzaPost.voci) &&
+        Objects.equals(allegati, pendenzaPost.allegati) &&
         Objects.equals(idA2A, pendenzaPost.idA2A) &&
         Objects.equals(idPendenza, pendenzaPost.idPendenza) &&
         Objects.equals(idDebitore, pendenzaPost.idDebitore) &&
@@ -626,7 +626,7 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
 
   @Override
   public int hashCode() {
-    return Objects.hash(idDominio, idUnitaOperativa, idTipoPendenza, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, allegati, voci, idA2A, idPendenza, idDebitore, dati);
+    return Objects.hash(idDominio, idUnitaOperativa, idTipoPendenza, nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, voci, allegati, idA2A, idPendenza, idDebitore, dati);
   }
 
   public static PendenzaPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -665,8 +665,8 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
     sb.append("    dataNotificaAvviso: ").append(toIndentedString(dataNotificaAvviso)).append("\n");
     sb.append("    dataPromemoriaScadenza: ").append(toIndentedString(dataPromemoriaScadenza)).append("\n");
     sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
-    sb.append("    allegati: ").append(toIndentedString(allegati)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
+    sb.append("    allegati: ").append(toIndentedString(allegati)).append("\n");
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
     sb.append("    idDebitore: ").append(toIndentedString(idDebitore)).append("\n");

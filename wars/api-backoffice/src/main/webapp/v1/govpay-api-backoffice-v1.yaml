@@ -6608,10 +6608,6 @@ components:
           example: '2020-12-31'
         proprieta:
           $ref: '#/components/schemas/ProprietaPendenza'
-        allegati:
-          type: array
-          items:
-            $ref: '#/components/schemas/AllegatoPendenza'
     pendenzaPut:
       type: object
       allOf:
@@ -6643,6 +6639,10 @@ components:
               maxItems: 5
               items:
                 $ref: '#/components/schemas/NuovaVocePendenza'
+            allegati:
+              type: array
+              items:
+                $ref: '#/components/schemas/NuovoAllegatoPendenza'
     pendenzaPost:
       allOf:
         - type: object
@@ -6826,6 +6826,10 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/pagamento'
+            allegati:
+              type: array
+              items:
+                $ref: '#/components/schemas/AllegatoPendenza'
     vocePendenzaBase:
       type: object
       required:
@@ -9340,12 +9344,8 @@ components:
           description: mime type del file
           default: "application/octet-stream"
         contenuto: 
-          oneOf:
-          - type: string
-            format: byte
-            description: contenuto del file
-          - type: string
-            description: path per accedere al file, nella forma /allegati/{id}
+          type: string
+          description: path per accedere al file, nella forma /allegati/{id}
     LinguaSecondaria:
       example: 'false'
       type: string
@@ -9355,6 +9355,23 @@ components:
         - 'en'
         - 'fr'
         - 'sl'
+    NuovoAllegatoPendenza:
+      type: object
+      required: 
+        - nome
+        - contenuto
+      properties:
+        nome:
+          type: string
+          description: nome del file
+        tipo:
+          type: string
+          description: mime type del file
+          default: "application/octet-stream"
+        contenuto: 
+          type: string
+          format: byte
+          description: contenuto del file
     Pagina:
       type: integer
       default: 1

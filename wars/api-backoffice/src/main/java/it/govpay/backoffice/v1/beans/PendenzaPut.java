@@ -35,11 +35,11 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "dataNotificaAvviso",
 "dataPromemoriaScadenza",
 "proprieta",
-"allegati",
 "idDominio",
 "idUnitaOperativa",
 "idTipoPendenza",
 "voci",
+"allegati",
 })
 public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implements IValidable {
   
@@ -103,9 +103,6 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
   @JsonProperty("proprieta")
   private ProprietaPendenza proprieta = null;
   
-  @JsonProperty("allegati")
-  private List<AllegatoPendenza> allegati = null;
-  
   @JsonProperty("idDominio")
   private String idDominio = null;
   
@@ -117,6 +114,9 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
   
   @JsonProperty("voci")
   private List<NuovaVocePendenza> voci = new ArrayList<NuovaVocePendenza>();
+  
+  @JsonProperty("allegati")
+  private List<NuovoAllegatoPendenza> allegati = null;
   
   /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
@@ -425,21 +425,6 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
   }
 
   /**
-   **/
-  public PendenzaPut allegati(List<AllegatoPendenza> allegati) {
-    this.allegati = allegati;
-    return this;
-  }
-
-  @JsonProperty("allegati")
-  public List<AllegatoPendenza> getAllegati() {
-    return allegati;
-  }
-  public void setAllegati(List<AllegatoPendenza> allegati) {
-    this.allegati = allegati;
-  }
-
-  /**
    * Identificativo del dominio creditore
    **/
   public PendenzaPut idDominio(String idDominio) {
@@ -502,6 +487,21 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
     this.voci = voci;
   }
 
+  /**
+   **/
+  public PendenzaPut allegati(List<NuovoAllegatoPendenza> allegati) {
+    this.allegati = allegati;
+    return this;
+  }
+
+  @JsonProperty("allegati")
+  public List<NuovoAllegatoPendenza> getAllegati() {
+    return allegati;
+  }
+  public void setAllegati(List<NuovoAllegatoPendenza> allegati) {
+    this.allegati = allegati;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -530,16 +530,16 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
         Objects.equals(dataNotificaAvviso, pendenzaPut.dataNotificaAvviso) &&
         Objects.equals(dataPromemoriaScadenza, pendenzaPut.dataPromemoriaScadenza) &&
         Objects.equals(proprieta, pendenzaPut.proprieta) &&
-        Objects.equals(allegati, pendenzaPut.allegati) &&
         Objects.equals(idDominio, pendenzaPut.idDominio) &&
         Objects.equals(idUnitaOperativa, pendenzaPut.idUnitaOperativa) &&
         Objects.equals(idTipoPendenza, pendenzaPut.idTipoPendenza) &&
-        Objects.equals(voci, pendenzaPut.voci);
+        Objects.equals(voci, pendenzaPut.voci) &&
+        Objects.equals(allegati, pendenzaPut.allegati);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, allegati, idDominio, idUnitaOperativa, idTipoPendenza, voci);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, idDominio, idUnitaOperativa, idTipoPendenza, voci, allegati);
   }
 
   public static PendenzaPut parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -575,11 +575,11 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
     sb.append("    dataNotificaAvviso: ").append(toIndentedString(dataNotificaAvviso)).append("\n");
     sb.append("    dataPromemoriaScadenza: ").append(toIndentedString(dataPromemoriaScadenza)).append("\n");
     sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
-    sb.append("    allegati: ").append(toIndentedString(allegati)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    idUnitaOperativa: ").append(toIndentedString(idUnitaOperativa)).append("\n");
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
+    sb.append("    allegati: ").append(toIndentedString(allegati)).append("\n");
     sb.append("}");
     return sb.toString();
   }

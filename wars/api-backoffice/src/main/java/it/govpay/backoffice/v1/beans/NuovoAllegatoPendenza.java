@@ -9,13 +9,14 @@ import org.openspcoop2.utils.json.ValidationException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
-
+import it.govpay.core.utils.validator.IValidable;
+import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "nome",
 "tipo",
 "contenuto",
 })
-public class AllegatoPendenza extends JSONSerializable {
+public class NuovoAllegatoPendenza extends JSONSerializable  implements IValidable{
   
   @JsonProperty("nome")
   private String nome = null;
@@ -24,12 +25,12 @@ public class AllegatoPendenza extends JSONSerializable {
   private String tipo = "application/octet-stream";
   
   @JsonProperty("contenuto")
-  private String contenuto = null;
+  private byte[] contenuto = null;
   
   /**
    * nome del file
    **/
-  public AllegatoPendenza nome(String nome) {
+  public NuovoAllegatoPendenza nome(String nome) {
     this.nome = nome;
     return this;
   }
@@ -45,7 +46,7 @@ public class AllegatoPendenza extends JSONSerializable {
   /**
    * mime type del file
    **/
-  public AllegatoPendenza tipo(String tipo) {
+  public NuovoAllegatoPendenza tipo(String tipo) {
     this.tipo = tipo;
     return this;
   }
@@ -59,18 +60,18 @@ public class AllegatoPendenza extends JSONSerializable {
   }
 
   /**
-   * path per accedere al file, nella forma /allegati/{id}
+   * contenuto del file
    **/
-  public AllegatoPendenza contenuto(String contenuto) {
+  public NuovoAllegatoPendenza contenuto(byte[] contenuto) {
     this.contenuto = contenuto;
     return this;
   }
 
   @JsonProperty("contenuto")
-  public String getContenuto() {
+  public byte[] getContenuto() {
     return contenuto;
   }
-  public void setContenuto(String contenuto) {
+  public void setContenuto(byte[] contenuto) {
     this.contenuto = contenuto;
   }
 
@@ -82,10 +83,10 @@ public class AllegatoPendenza extends JSONSerializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    AllegatoPendenza allegatoPendenza = (AllegatoPendenza) o;
-    return Objects.equals(nome, allegatoPendenza.nome) &&
-        Objects.equals(tipo, allegatoPendenza.tipo) &&
-        Objects.equals(contenuto, allegatoPendenza.contenuto);
+    NuovoAllegatoPendenza nuovoAllegatoPendenza = (NuovoAllegatoPendenza) o;
+    return Objects.equals(nome, nuovoAllegatoPendenza.nome) &&
+        Objects.equals(tipo, nuovoAllegatoPendenza.tipo) &&
+        Objects.equals(contenuto, nuovoAllegatoPendenza.contenuto);
   }
 
   @Override
@@ -93,19 +94,19 @@ public class AllegatoPendenza extends JSONSerializable {
     return Objects.hash(nome, tipo, contenuto);
   }
 
-  public static AllegatoPendenza parse(String json) throws ServiceException, ValidationException {
-    return (AllegatoPendenza) parse(json, AllegatoPendenza.class);
+  public static NuovoAllegatoPendenza parse(String json) throws ServiceException, ValidationException {
+    return (NuovoAllegatoPendenza) parse(json, NuovoAllegatoPendenza.class);
   }
 
   @Override
   public String getJsonIdFilter() {
-    return "allegatoPendenza";
+    return "nuovoAllegatoPendenza";
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class AllegatoPendenza {\n");
+    sb.append("class NuovoAllegatoPendenza {\n");
     
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
@@ -124,6 +125,16 @@ public class AllegatoPendenza extends JSONSerializable {
     }
     return o.toString().replace("\n", "\n    ");
   }
+  
+  @Override
+	public void validate() throws ValidationException {
+		ValidatorFactory vf = ValidatorFactory.newInstance();
+		vf.getValidator("nome", this.nome).notNull().minLength(1).maxLength(255);
+		vf.getValidator("tipo", this.tipo).minLength(1).maxLength(255);
+		
+		if(this.contenuto == null)
+			throw new ValidationException("Il campo " + "contenuto" + " non deve essere vuoto.");
+	}
 }
 
 
