@@ -1641,6 +1641,6 @@
     <value name="nome" field="nome" usage="required"/>
     <value name="tipo" field="tipo" usage="optional"/>
     <value name="dataCreazione" field="dataCreazione" usage="required"/>
-    <value name="rawContenuto" field="rawContenuto" usage="required"/>
+    <value name="rawContenuto" field="rawContenuto" usage="optional"/>
   </mapping>
 </binding>

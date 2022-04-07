@@ -5137,7 +5137,7 @@
 			<xsd:element name="nome" type="String255"/>
 			<xsd:element name="tipo" type="String255" minOccurs="0"/>
 			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
-			<xsd:element name="rawContenuto" type="xsd:base64Binary"/>
+			<xsd:element name="rawContenuto" type="xsd:base64Binary" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 			

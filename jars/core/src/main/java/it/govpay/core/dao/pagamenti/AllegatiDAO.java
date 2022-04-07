@@ -10,7 +10,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.IOUtils;
-import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -30,7 +29,6 @@ import it.govpay.bd.pagamento.AllegatiBD;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiAllegatoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiAllegatoDTOResponse;
-import it.govpay.core.dao.pagamenti.exception.AllegatoNonTrovatoException;
 import it.govpay.core.dao.pagamenti.exception.AllegatoNonTrovatoException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;

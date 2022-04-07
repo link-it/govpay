@@ -1289,7 +1289,7 @@ CREATE TABLE allegati
 	tipo VARCHAR(255) COMMENT 'content-type allegato',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'data creazione allegato',
-	raw_contenuto MEDIUMBLOB NOT NULL COMMENT 'contenuto allegato',
+	raw_contenuto MEDIUMBLOB COMMENT 'contenuto allegato',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_versamento BIGINT NOT NULL,

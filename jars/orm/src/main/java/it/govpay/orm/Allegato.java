@@ -39,7 +39,7 @@ import java.io.Serializable;
  * 			&lt;element name="nome" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="rawContenuto" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="rawContenuto" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -158,7 +158,7 @@ public class Allegato extends org.openspcoop2.utils.beans.BaseBean implements Se
   protected java.util.Date dataCreazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
-  @XmlElement(name="rawContenuto",required=true,nillable=false)
+  @XmlElement(name="rawContenuto",required=false,nillable=false)
   protected byte[] rawContenuto;
 
 }

@@ -1,26 +1,39 @@
 package it.govpay.bd.pagamento;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBC_SQLObjectFactory;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
+import org.postgresql.largeobject.LargeObject;
+import org.postgresql.largeobject.LargeObjectManager;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Allegato;
-import it.govpay.bd.model.converter.AclConverter;
 import it.govpay.bd.model.converter.AllegatoConverter;
 import it.govpay.bd.pagamento.filters.AllegatoFilter;
 import it.govpay.orm.dao.jdbc.JDBCAllegatoServiceSearch;
@@ -73,7 +86,156 @@ public class AllegatiBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
+			// la insert deve essere fatta in due parti, prima la entry senza contenuto e poi in streaming
+			// N.B. la create non inserisce il contenuto
 			this.getAllegatoService().create(vo);
+			
+			// inserimento della colonna contenuto in streaming
+			OutputStream oututStreamDestinazione = null;
+			Long oid = null;
+			Blob blobContenuto = null;
+			
+			TipiDatabase tipoDatabase = ConnectionManager.getJDBCServiceManagerProperties().getDatabase();
+			
+			switch (tipoDatabase) {
+			case MYSQL:
+				try {
+					blobContenuto = this.getConnection().createBlob();
+					oututStreamDestinazione = blobContenuto.setBinaryStream(1);
+				} catch (SQLException e) {
+					log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
+					throw new ServiceException(e);
+				}
+				break;
+			case ORACLE:
+				try {
+					blobContenuto = this.getConnection().createBlob();
+					oututStreamDestinazione = blobContenuto.setBinaryStream(1);
+				} catch (SQLException e) {
+					log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
+					throw new ServiceException(e);
+				}
+				break;
+			case SQLSERVER:
+				try {
+					blobContenuto = this.getConnection().createBlob();
+					oututStreamDestinazione = blobContenuto.setBinaryStream(1);
+				} catch (SQLException e) {
+					log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
+					throw new ServiceException(e);
+				}
+				break;
+			case POSTGRESQL:
+				org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) this.getConnection();
+				Connection wrappedConnection = wrappedConn.getWrappedConnection();
+	
+				Connection underlyingConnection = null;
+				try {
+					Method method = wrappedConnection.getClass().getMethod("getUnderlyingConnection");
+	
+					Object invoke = method.invoke(wrappedConnection);
+	
+					underlyingConnection = (Connection) invoke;
+				} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					log.error("Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
+					throw new ServiceException(e);
+				}
+	
+				org.postgresql.PGConnection pgConnection = null;
+				try {
+					if(underlyingConnection.isWrapperFor(org.postgresql.PGConnection.class)) {
+						pgConnection = underlyingConnection.unwrap(org.postgresql.PGConnection.class);
+					} else {
+						pgConnection = (org.postgresql.PGConnection) underlyingConnection;				
+					}
+	
+					// Get the Large Object Manager to perform operations with
+					LargeObjectManager lobj = pgConnection.getLargeObjectAPI();
+	
+					// Create a new large object
+					oid = lobj.createLO(LargeObjectManager.WRITE);
+	
+					// Open the large object for writing
+					LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
+	
+					oututStreamDestinazione = obj.getOutputStream();
+				} catch (SQLException e) {
+					log.error("Errore durante la creazione dell'outputstream: " + e.getMessage(), e);
+					throw new ServiceException(e);
+				}
+				break;
+			case DB2:
+			case DEFAULT:
+			case DERBY:
+			case HSQL:
+			default:
+				throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
+			}
+			
+			ByteArrayInputStream bais = new ByteArrayInputStream(dto.getRawContenuto());
+			
+			
+			try {
+				IOUtils.copy(bais, oututStreamDestinazione);
+				
+				oututStreamDestinazione.flush();
+				oututStreamDestinazione.close();
+			} catch (IOException e) {
+				throw new ServiceException(e);
+			}
+			
+			PreparedStatement prepareStatement = null;
+			try {
+				JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
+				ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+	
+				AllegatoFieldConverter converter = new AllegatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				AllegatoModel model = it.govpay.orm.Allegato.model();
+				
+				sqlQueryObject.addUpdateTable(converter.toTable(model.NOME));
+				sqlQueryObject.addUpdateField(converter.toColumn(model.RAW_CONTENUTO, false), "?");
+				sqlQueryObject.addWhereCondition(true, converter.toTable(model.NOME, true) + ".id" + " = ? ");
+				
+				String sql = sqlQueryObject.createSQLUpdate();
+	
+				prepareStatement = this.getConnection().prepareStatement(sql);
+				int idx = 1;
+				
+				switch (tipoDatabase) {
+				case MYSQL:
+				case ORACLE:
+				case SQLSERVER:
+					prepareStatement.setBlob(idx ++, blobContenuto);
+					break;
+				case POSTGRESQL:
+					prepareStatement.setLong(idx ++, oid);
+					break;
+				case DB2:
+				case DEFAULT:
+				case DERBY:
+				case HSQL:
+				default:
+					throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
+				}
+				
+				// id allegato
+				prepareStatement.setLong(idx ++, vo.getId());
+				
+				prepareStatement.executeUpdate();
+				
+			} catch (SQLException e) {
+				throw new ServiceException(e);
+			} catch (SQLQueryObjectException e) {
+				throw new ServiceException(e);
+			} catch (ExpressionException e) {
+				throw new ServiceException(e);
+			} finally {
+				try {
+					if(prepareStatement != null)
+						prepareStatement.close();
+				} catch (SQLException e) { }
+			}
+			
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} finally {
@@ -229,9 +391,9 @@ public class AllegatiBD extends BasicBD {
 		fields.add(model.NOME);
 		fields.add(model.TIPO);
 		fields.add(model.DATA_CREAZIONE);
-		if(includiRawContenuto) {
-			fields.add(model.RAW_CONTENUTO);
-		}
+//		if(includiRawContenuto) {
+//			fields.add(model.RAW_CONTENUTO);
+//		}
 		fields.add(new CustomField("id_versamento", Long.class, "id_versamento", converter.toTable(model)));
 		return fields;
 	}

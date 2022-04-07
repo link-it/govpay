@@ -88,7 +88,7 @@ public class JDBCAllegatoServiceImpl extends JDBCAllegatoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getAllegatoFieldConverter().toColumn(Allegato.model().NOME,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getAllegatoFieldConverter().toColumn(Allegato.model().TIPO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getAllegatoFieldConverter().toColumn(Allegato.model().DATA_CREAZIONE,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getAllegatoFieldConverter().toColumn(Allegato.model().RAW_CONTENUTO,false),"?");
+//		sqlQueryObjectInsert.addInsertField(this.getAllegatoFieldConverter().toColumn(Allegato.model().RAW_CONTENUTO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_versamento","?");
 
 		// Insert allegato
@@ -97,7 +97,7 @@ public class JDBCAllegatoServiceImpl extends JDBCAllegatoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(allegato.getNome(),Allegato.model().NOME.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(allegato.getTipo(),Allegato.model().TIPO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(allegato.getDataCreazione(),Allegato.model().DATA_CREAZIONE.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(allegato.getRawContenuto(),Allegato.model().RAW_CONTENUTO.getFieldType()),
+//			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(allegato.getRawContenuto(),Allegato.model().RAW_CONTENUTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class)
 		);
 		allegato.setId(id);
@@ -174,8 +174,8 @@ public class JDBCAllegatoServiceImpl extends JDBCAllegatoServiceSearchImpl
 		lstObjects_allegato.add(new JDBCObject(allegato.getTipo(), Allegato.model().TIPO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getAllegatoFieldConverter().toColumn(Allegato.model().DATA_CREAZIONE,false), "?");
 		lstObjects_allegato.add(new JDBCObject(allegato.getDataCreazione(), Allegato.model().DATA_CREAZIONE.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getAllegatoFieldConverter().toColumn(Allegato.model().RAW_CONTENUTO,false), "?");
-		lstObjects_allegato.add(new JDBCObject(allegato.getRawContenuto(), Allegato.model().RAW_CONTENUTO.getFieldType()));
+//		sqlQueryObjectUpdate.addUpdateField(this.getAllegatoFieldConverter().toColumn(Allegato.model().RAW_CONTENUTO,false), "?");
+//		lstObjects_allegato.add(new JDBCObject(allegato.getRawContenuto(), Allegato.model().RAW_CONTENUTO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_versamento","?");
 		}

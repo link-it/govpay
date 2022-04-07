@@ -164,7 +164,7 @@ CREATE TABLE allegati
 	nome VARCHAR(255) NOT NULL,
 	tipo VARCHAR(255),
 	data_creazione TIMESTAMP NOT NULL,
-	raw_contenuto OID NOT NULL,
+	raw_contenuto OID,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_allegati') NOT NULL,
 	id_versamento BIGINT NOT NULL,

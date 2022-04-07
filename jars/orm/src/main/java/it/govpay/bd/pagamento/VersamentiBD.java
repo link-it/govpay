@@ -52,7 +52,6 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.converter.AllegatoConverter;
 import it.govpay.bd.model.converter.DocumentoConverter;
 import it.govpay.bd.model.converter.NotificaAppIoConverter;
 import it.govpay.bd.model.converter.PromemoriaConverter;
@@ -381,11 +380,12 @@ public class VersamentiBD extends BasicBD {
 			
 			// allegati
 			if(versamento.getAllegati() != null && versamento.getAllegati().size() > 0) {
+				AllegatiBD allegatiBD  = new AllegatiBD(this);
+				allegatiBD.setAtomica(false);
+				
 				for (Allegato allegato : versamento.getAllegati()) {
 					allegato.setIdVersamento(vo.getId());
-					it.govpay.orm.Allegato allegatoVo = AllegatoConverter.toVO(allegato);
-					this.getAllegatoService().create(allegatoVo);
-					allegato.setId(allegatoVo.getId());
+					allegatiBD.insertAllegato(allegato);
 				}
 			}
 			
@@ -520,9 +520,7 @@ public class VersamentiBD extends BasicBD {
 				if(versamento.getAllegati() != null && versamento.getAllegati().size() > 0) {
 					for (Allegato allegato : versamento.getAllegati()) {
 						allegato.setIdVersamento(versamento.getId());
-						it.govpay.orm.Allegato allegatoVo = AllegatoConverter.toVO(allegato);
-						this.getAllegatoService().create(allegatoVo);
-						allegato.setId(allegatoVo.getId());
+						allegatiBD.insertAllegato(allegato);
 					}
 				}
 			}

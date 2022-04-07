@@ -109,7 +109,7 @@ CREATE TABLE allegati
 	nome VARCHAR(255) NOT NULL,
 	tipo VARCHAR(255),
 	data_creazione TIMESTAMP NOT NULL,
-	raw_contenuto BLOB NOT NULL,
+	raw_contenuto BLOB,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
