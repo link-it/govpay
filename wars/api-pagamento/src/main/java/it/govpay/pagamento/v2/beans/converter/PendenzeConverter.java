@@ -2,6 +2,7 @@ package it.govpay.pagamento.v2.beans.converter;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
@@ -23,8 +25,11 @@ import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.pagamento.v2.Allegati;
+import it.govpay.pagamento.v2.beans.AllegatoPendenza;
 import it.govpay.pagamento.v2.beans.Avviso;
 import it.govpay.pagamento.v2.beans.LinguaSecondaria;
+import it.govpay.pagamento.v2.beans.NuovoAllegatoPendenza;
 import it.govpay.pagamento.v2.beans.PagamentoIndex;
 import it.govpay.pagamento.v2.beans.Pendenza;
 import it.govpay.pagamento.v2.beans.PendenzaCreata;
@@ -45,10 +50,10 @@ import it.govpay.pagamento.v2.beans.VocePendenza.TipoBolloEnum;
 public class PendenzeConverter {
 	
 	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto, Authentication user) throws ServiceException {
-		return toRsModel(dto.getVersamento(), dto.getPagamenti(), dto.getRpts(),user);
+		return toRsModel(dto.getVersamento(), dto.getPagamenti(), dto.getRpts(),user, dto.getAllegati());
 	}
 	
-	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento,List<PagamentoPortale> pagamenti, List<Rpt> rpts, Authentication user) throws ServiceException {
+	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento,List<PagamentoPortale> pagamenti, List<Rpt> rpts, Authentication user, List<Allegato> allegati) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Pendenza rsModel = new Pendenza();
 		
@@ -153,6 +158,8 @@ public class PendenzeConverter {
 		rsModel.setUUID(versamento.getIdSessione());
 		
 		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
+		
+		rsModel.setAllegati(toAllegatiRsModel(allegati));
 		
 		return rsModel;
 	}
@@ -587,5 +594,45 @@ public class PendenzeConverter {
 		}
 		
 		return rsModel;
+	}
+	
+	public static List<AllegatoPendenza> toAllegatiRsModel(List<Allegato> allegati) { 
+		List<AllegatoPendenza> rsModel = null;
+		
+		if(allegati != null && allegati.size() > 0) {
+			rsModel = new ArrayList<>();
+			
+			for (Allegato allegato : allegati) {
+				AllegatoPendenza allegatoRsModel = new AllegatoPendenza();
+				
+				allegatoRsModel.setNome(allegato.getNome());
+				allegatoRsModel.setTipo(allegato.getTipo());
+				allegatoRsModel.setContenuto(MessageFormat.format(Allegati.DETTAGLIO_PATH_PATTERN, allegato.getId()));
+				
+				rsModel.add(allegatoRsModel);
+			}
+		}
+		
+		return rsModel;
+	}
+	
+	public static List<it.govpay.core.dao.commons.Versamento.AllegatoPendenza> toAllegatiPendenzaDTO(List<NuovoAllegatoPendenza> allegati) {
+		List<it.govpay.core.dao.commons.Versamento.AllegatoPendenza> allegatiDTO = null;
+		
+		if(allegati != null && allegati.size() > 0) {
+			allegatiDTO = new ArrayList<>();
+			
+			for (NuovoAllegatoPendenza allegato : allegati) {
+				it.govpay.core.dao.commons.Versamento.AllegatoPendenza allegatoDTO = new it.govpay.core.dao.commons.Versamento.AllegatoPendenza();
+				
+				allegatoDTO.setNome(allegato.getNome());
+				allegatoDTO.setTipo(allegato.getTipo());
+				allegatoDTO.setContenuto(allegato.getContenuto());
+				
+				allegatiDTO.add(allegatoDTO);
+			}
+		}
+		
+		return allegatiDTO;
 	}
 }
