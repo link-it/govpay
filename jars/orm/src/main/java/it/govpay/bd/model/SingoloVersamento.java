@@ -90,7 +90,6 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 	public Versamento getVersamento(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.versamento == null) {
 			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
-			versamentiBD.setAtomica(false); // connessione condivisa
 			this.versamento = versamentiBD.getVersamento(this.getIdVersamento());
 		}
 		return this.versamento;
