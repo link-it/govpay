@@ -1,4 +1,4 @@
-package it.govpay.backoffice.v1;
+package it.govpay.pendenze.v2;
 
 
 import javax.ws.rs.GET;
@@ -12,14 +12,13 @@ import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.backoffice.v1.controllers.AllegatiController;
-import it.govpay.rs.v1.BaseRsServiceV1;
-
+import it.govpay.pendenze.v2.controller.AllegatiController;
+import it.govpay.rs.v2.BaseRsServiceV2;
 
 
 @Path("/allegati")
 
-public class Allegati extends BaseRsServiceV1 {
+public class Allegati extends BaseRsServiceV2{
 
 	public static final String DETTAGLIO_PATH_PATTERN = "/allegati/{0}";
 

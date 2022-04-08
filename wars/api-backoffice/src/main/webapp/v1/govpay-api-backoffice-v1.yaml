@@ -3101,10 +3101,7 @@ paths:
         '200':
           description: Contenuto dell'allegato
           content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/avviso'
-            application/pdf:
+            '*/*':
               schema:
                 type: string
                 format: binary
