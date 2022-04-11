@@ -1,5 +1,6 @@
 package it.govpay.core.ec.v2.converter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -13,9 +14,13 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.dao.pagamenti.AllegatiDAO;
+import it.govpay.core.dao.pagamenti.exception.AllegatoNonTrovatoException;
+import it.govpay.ec.v2.beans.AllegatoPendenza;
 import it.govpay.ec.v2.beans.Documento;
 import it.govpay.ec.v2.beans.LinguaSecondaria;
 import it.govpay.ec.v2.beans.Pendenza;
@@ -72,6 +77,7 @@ public class PendenzeConverter {
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setDataValidita(versamento.getDataValidita());
 		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
+		rsModel.setAllegati(toAllegatiRsModel(versamento.getAllegati(configWrapper)));
 		return rsModel;
 	}
 
@@ -240,6 +246,36 @@ public class PendenzeConverter {
 					rsModel.setLinguaSecondaria(rsModel.getLinguaSecondariaEnum().toString());
 			}
 			rsModel.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
+		}
+		
+		return rsModel;
+	}
+	
+	
+	private static List<AllegatoPendenza> toAllegatiRsModel(List<Allegato> allegati) throws ServiceException { 
+		List<AllegatoPendenza> rsModel = null;
+		
+		if(allegati != null && allegati.size() > 0) {
+			rsModel = new ArrayList<>();
+			
+			AllegatiDAO allegatiDAO = new AllegatiDAO();
+			
+			for (Allegato allegato : allegati) {
+				AllegatoPendenza allegatoRsModel = new AllegatoPendenza();
+				
+				allegatoRsModel.setNome(allegato.getNome());
+				allegatoRsModel.setTipo(allegato.getTipo());
+				
+				try {
+					ByteArrayOutputStream baos = allegatiDAO.copiaBlobContenuto(allegato.getId());
+					allegatoRsModel.setContenuto(baos.toByteArray());
+				} catch (AllegatoNonTrovatoException e) {
+					// non dovrebbe accadere, ma...
+					throw new ServiceException(e);
+				}
+				
+				rsModel.add(allegatoRsModel);
+			}
 		}
 		
 		return rsModel;

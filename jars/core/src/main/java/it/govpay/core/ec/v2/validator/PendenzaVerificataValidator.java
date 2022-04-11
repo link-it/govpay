@@ -2,6 +2,7 @@ package it.govpay.core.ec.v2.validator;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.utils.json.ValidationException;
@@ -11,6 +12,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.ec.v2.beans.NuovaVocePendenza;
+import it.govpay.ec.v2.beans.NuovoAllegatoPendenza;
 import it.govpay.ec.v2.beans.NuovoDocumento;
 import it.govpay.ec.v2.beans.PendenzaVerificata;
 import it.govpay.ec.v2.beans.Soggetto;
@@ -79,6 +81,8 @@ public class PendenzaVerificataValidator  implements IValidable{
 				vocePendenzaValidator.validate();
 				vocePendenzaValidator.validazioneSemanticaContabilita(vf, this.pendenzaVerificata.getIdA2A(), this.pendenzaVerificata.getIdPendenza());
 			}
+			
+			validaAllegati(this.pendenzaVerificata.getAllegati());
 		}
 	}
 
@@ -161,5 +165,17 @@ public class PendenzaVerificataValidator  implements IValidable{
 		}
 		if(pCheck == null)
 			throw new ValidationException("Codifica inesistente per '"+nomeCampo+"'. Valore fornito [" + tipo + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
+	}
+	
+	public void validaAllegati(List<NuovoAllegatoPendenza> allegati) throws ValidationException {
+		if(allegati != null && allegati.size() >0 ) {
+			for(NuovoAllegatoPendenza allegato: allegati) {
+				this.vf.getValidator("nome", allegato.getNome()).notNull().minLength(1).maxLength(255);
+				this.vf.getValidator("tipo", allegato.getTipo()).minLength(1).maxLength(255);
+				
+				if(allegato.getContenuto() == null)
+					throw new ValidationException("Il campo " + "contenuto" + " non deve essere vuoto.");
+			}
+		}
 	}
 }

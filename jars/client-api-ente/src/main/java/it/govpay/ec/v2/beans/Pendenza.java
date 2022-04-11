@@ -2,6 +2,7 @@ package it.govpay.ec.v2.beans;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
@@ -124,6 +125,9 @@ public class Pendenza   {
   
   @Schema(description = "")
   private ProprietaPendenza proprieta = null;
+  
+  @Schema(description = "")
+  private List<AllegatoPendenza> allegati = null;
  /**
    * Identificativo del gestionale responsabile della pendenza
    * @return idA2A
@@ -490,6 +494,29 @@ public class Pendenza   {
     return this;
   }
 
+ /**
+   * Get allegati
+   * @return allegati
+  **/
+  @JsonProperty("allegati")
+  public List<AllegatoPendenza> getAllegati() {
+    return allegati;
+  }
+
+  public void setAllegati(List<AllegatoPendenza> allegati) {
+    this.allegati = allegati;
+  }
+
+  public Pendenza allegati(List<AllegatoPendenza> allegati) {
+    this.allegati = allegati;
+    return this;
+  }
+
+  public Pendenza addAllegatiItem(AllegatoPendenza allegatiItem) {
+    this.allegati.add(allegatiItem);
+    return this;
+  }
+
 
   @Override
   public String toString() {
@@ -516,6 +543,7 @@ public class Pendenza   {
     sb.append("    documento: ").append(toIndentedString(documento)).append("\n");
     sb.append("    UUID: ").append(toIndentedString(UUID)).append("\n");
     sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
+    sb.append("    allegati: ").append(toIndentedString(allegati)).append("\n");
     sb.append("}");
     return sb.toString();
   }

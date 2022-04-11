@@ -3,6 +3,9 @@ package it.govpay.ragioneria.v2.beans.converter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
@@ -10,8 +13,11 @@ import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.ragioneria.v2.Allegati;
+import it.govpay.ragioneria.v2.beans.AllegatoPendenza;
 import it.govpay.ragioneria.v2.beans.Pendenza;
 import it.govpay.ragioneria.v2.beans.TassonomiaAvviso;
 import it.govpay.ragioneria.v2.beans.VocePendenza;
@@ -54,6 +60,7 @@ public class PendenzeConverter {
 		rsModel.setDivisione(versamento.getDivisione());
 		rsModel.setTassonomia(versamento.getTassonomia()); 
 		rsModel.setUUID(versamento.getIdSessione());
+		rsModel.setAllegati(toAllegatiRsModel(versamento.getAllegati()));
 		
 		return rsModel;
 	}
@@ -78,4 +85,23 @@ public class PendenzeConverter {
 		return rsModel;
 	}
 
+	private static List<AllegatoPendenza> toAllegatiRsModel(List<Allegato> allegati) { 
+		List<AllegatoPendenza> rsModel = null;
+		
+		if(allegati != null && allegati.size() > 0) {
+			rsModel = new ArrayList<>();
+			
+			for (Allegato allegato : allegati) {
+				AllegatoPendenza allegatoRsModel = new AllegatoPendenza();
+				
+				allegatoRsModel.setNome(allegato.getNome());
+				allegatoRsModel.setTipo(allegato.getTipo());
+				allegatoRsModel.setContenuto(MessageFormat.format(Allegati.DETTAGLIO_PATH_PATTERN, allegato.getId()));
+				
+				rsModel.add(allegatoRsModel);
+			}
+		}
+		
+		return rsModel;
+	}
 }

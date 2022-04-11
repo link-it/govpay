@@ -1,5 +1,6 @@
 package it.govpay.core.dao.pagamenti;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.PreparedStatement;
@@ -38,7 +39,7 @@ import it.govpay.orm.model.AllegatoModel;
 
 public class AllegatiDAO  extends BaseDAO {
 
-	
+
 	public LeggiAllegatoDTOResponse leggiAllegato(LeggiAllegatoDTO leggiAllegatoDTO) throws ServiceException,AllegatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		AllegatiBD allegatoBD = null;
@@ -51,7 +52,7 @@ public class AllegatiDAO  extends BaseDAO {
 			Dominio dominio = versamento.getDominio(configWrapper);
 			TipoVersamento tipoVersamento = versamento.getTipoVersamento(configWrapper);
 			versamento.getTipoVersamentoDominio(configWrapper);
-			
+
 			response.setAllegato(allegato);
 			response.setVersamento(versamento);
 			response.setApplicazione(versamento.getApplicazione(configWrapper));
@@ -67,8 +68,8 @@ public class AllegatiDAO  extends BaseDAO {
 				allegatoBD.closeConnection();
 		}
 	}
-	
-	public StreamingOutput leggiBlobContenuto(Long idAllegato) throws ServiceException,AllegatoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
+
+	public StreamingOutput leggiBlobContenuto(Long idAllegato) throws ServiceException, AllegatoNonTrovatoException{
 
 		try {
 			BlobJDBCAdapter jdbcAdapter = new BlobJDBCAdapter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
@@ -94,11 +95,11 @@ public class AllegatiDAO  extends BaseDAO {
 					BasicBD bd = null;
 					try {
 						bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
-						
+
 						bd.setupConnection(ContextThreadLocal.get().getTransactionId());
-						
+
 						bd.setAutoCommit(false);
-						
+
 						prepareStatement = bd.getConnection().prepareStatement(sql);
 						prepareStatement.setLong(1, idAllegato);
 
@@ -113,7 +114,7 @@ public class AllegatiDAO  extends BaseDAO {
 						} else {
 							throw new AllegatoNonTrovatoException("Allegato ["+idAllegato+"] non trovato.");
 						}
-						
+
 						bd.commit();
 					} catch(Exception e) {
 						bd.rollback();
@@ -128,7 +129,7 @@ public class AllegatiDAO  extends BaseDAO {
 							if(prepareStatement != null)
 								prepareStatement.close();
 						} catch (SQLException e) { }
-						
+
 						if(bd != null) {
 							try {
 								bd.setAutoCommit(true);
@@ -140,6 +141,84 @@ public class AllegatiDAO  extends BaseDAO {
 				}
 			};
 			return zipStream;
+
+		} catch (SQLQueryObjectException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+		}
+	}
+
+	public ByteArrayOutputStream copiaBlobContenuto(Long idAllegato) throws ServiceException, AllegatoNonTrovatoException{
+
+		try {
+			BlobJDBCAdapter jdbcAdapter = new BlobJDBCAdapter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+			JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
+			ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+
+			AllegatoFieldConverter converter = new AllegatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			AllegatoModel model = it.govpay.orm.Allegato.model();
+
+			String columnName = converter.toColumn(model.RAW_CONTENUTO, false);
+			sqlQueryObject.addFromTable(converter.toTable(model.NOME));
+			sqlQueryObject.addSelectField(converter.toTable(model.NOME), columnName);
+
+			sqlQueryObject.addWhereCondition(true, converter.toTable(model.NOME, true) + ".id" + " = ? ");
+
+			String sql = sqlQueryObject.createSQLQuery();
+
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+			PreparedStatement prepareStatement = null;
+			ResultSet resultSet = null;
+			BasicBD bd = null;
+			try {
+				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
+
+				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
+
+				bd.setAutoCommit(false);
+
+				prepareStatement = bd.getConnection().prepareStatement(sql);
+				prepareStatement.setLong(1, idAllegato);
+
+				resultSet = prepareStatement.executeQuery();
+				if(resultSet.next()){
+					InputStream isRead = jdbcAdapter.getBinaryStream(resultSet, columnName);
+					if(isRead != null) {
+						IOUtils.copy(isRead, baos);
+					} else {
+						baos.write("".getBytes());
+					}
+				} else {
+					throw new AllegatoNonTrovatoException("Allegato ["+idAllegato+"] non trovato.");
+				}
+
+				bd.commit();
+			} catch(Exception e) {
+				bd.rollback();
+				log.error("Errore durante la lettura dei bytes: " + e.getMessage(), e);
+				throw new WebApplicationException("Errore durante la lettura del contenuto dell'allegato.");
+			} finally {
+				try {
+					if(resultSet != null)
+						resultSet.close(); 
+				} catch (SQLException e) { }
+				try {
+					if(prepareStatement != null)
+						prepareStatement.close();
+				} catch (SQLException e) { }
+
+				if(bd != null) {
+					try {
+						bd.setAutoCommit(true);
+					} catch (ServiceException e) {
+					}
+					bd.closeConnection();
+				}
+			}
+			return baos;
 
 		} catch (SQLQueryObjectException e) {
 			throw new ServiceException(e);

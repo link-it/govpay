@@ -425,6 +425,10 @@ components:
           $ref: '#/components/schemas/ProprietaPendenza'
         documento:
           $ref: '#/components/schemas/documento'
+        allegati:
+          type: array
+          items:
+            $ref: '#/components/schemas/NuovoAllegatoPendenza'
     documento:
       allOf:
         - type: object
@@ -851,6 +855,23 @@ components:
         - 'en'
         - 'fr'
         - 'sl'
+    NuovoAllegatoPendenza:
+      type: object
+      required: 
+        - nome
+        - contenuto
+      properties:
+        nome:
+          type: string
+          description: nome del file
+        tipo:
+          type: string
+          description: mime type del file
+          default: "application/octet-stream"
+        contenuto: 
+          type: string
+          format: byte
+          description: contenuto del file
     ProprietaPendenza:
       type: object
       description: Dati supporto per la gestione del ciclo di vita della pendenza.

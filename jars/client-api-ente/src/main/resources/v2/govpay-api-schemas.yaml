@@ -33,6 +33,22 @@ components:
         testo:
           description: allegato codificato in base64
           type: string         
+    AllegatoPendenza:
+      type: object
+      required: 
+        - nome
+        - contenuto
+      properties:
+        nome:
+          type: string
+          description: nome del file
+        tipo:
+          type: string
+          description: mime type del file
+          default: "application/octet-stream"
+        contenuto: 
+          type: string
+          description: path per accedere al file, nella forma /allegati/{id}
     Bollo:
       description: Definisce i dati di un bollo telematico
       type: object
@@ -378,7 +394,11 @@ components:
           minItems: 1
           maxItems: 5
           items:
-            $ref: '#/components/schemas/NuovaVocePendenza'                
+            $ref: '#/components/schemas/NuovaVocePendenza'     
+        allegati:
+          type: array
+          items:
+            $ref: '#/components/schemas/NuovoAllegatoPendenza'
     NuovaVocePendenza:
       type: object
       allOf:
@@ -420,6 +440,23 @@ components:
               maxLength: 140
             contabilita:
                 $ref: '#/components/schemas/Contabilita'
+    NuovoAllegatoPendenza:
+      type: object
+      required: 
+        - nome
+        - contenuto
+      properties:
+        nome:
+          type: string
+          description: nome del file
+        tipo:
+          type: string
+          description: mime type del file
+          default: "application/octet-stream"
+        contenuto: 
+          type: string
+          format: byte
+          description: contenuto del file
     NuovoDocumento:
       allOf:
         - $ref: "#/components/schemas/TipoRiferimentoDocumento" 
@@ -520,6 +557,10 @@ components:
           description: Parametro di randomizzazione delle URL di pagamento statiche
         proprieta:
           $ref: '#/components/schemas/ProprietaPendenza'
+        allegati:
+          type: array
+          items:
+            $ref: '#/components/schemas/AllegatoPendenza'
     Profilo:
       type: object
       required: 

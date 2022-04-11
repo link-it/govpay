@@ -31,6 +31,7 @@ import org.openspcoop2.utils.serialization.SerializationConfig;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.ec.v1.beans.Contabilita;
+import it.govpay.ec.v1.beans.NuovoAllegatoPendenza;
 import it.govpay.ec.v1.beans.PendenzaVerificata;
 import it.govpay.ec.v1.beans.ProprietaPendenza;
 import it.govpay.ec.v1.beans.QuotaContabilita;
@@ -96,6 +97,8 @@ public class VerificaConverter {
 		}
 		
 		versamento.setProprieta(toProprietaPendenzaDTO(pendenzaVerificata.getProprieta()));
+		
+		versamento.setAllegati(toAllegatiPendenzaDTO(pendenzaVerificata.getAllegati()));
 		
 		return versamento;
 	}
@@ -259,5 +262,25 @@ public class VerificaConverter {
 			return ConverterUtils.toJSON(obj, null, serializationConfig);
 		}
 		return null;
+	}
+	
+	private static List<it.govpay.core.dao.commons.Versamento.AllegatoPendenza> toAllegatiPendenzaDTO(List<NuovoAllegatoPendenza> allegati) {
+		List<it.govpay.core.dao.commons.Versamento.AllegatoPendenza> allegatiDTO = null;
+		
+		if(allegati != null && allegati.size() > 0) {
+			allegatiDTO = new ArrayList<>();
+			
+			for (NuovoAllegatoPendenza allegato : allegati) {
+				it.govpay.core.dao.commons.Versamento.AllegatoPendenza allegatoDTO = new it.govpay.core.dao.commons.Versamento.AllegatoPendenza();
+				
+				allegatoDTO.setNome(allegato.getNome());
+				allegatoDTO.setTipo(allegato.getTipo());
+				allegatoDTO.setContenuto(allegato.getContenuto());
+				
+				allegatiDTO.add(allegatoDTO);
+			}
+		}
+		
+		return allegatiDTO;
 	}
 }
