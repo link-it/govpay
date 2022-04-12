@@ -152,6 +152,8 @@ public class GovpayConfig {
 	private Integer numeroMassimoConnessioniPerPool;
 	private Integer numeroMassimoConnessioniPerRouteDefault;
 	
+	private Integer numeroMassimoGiorniRPTPendenti;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -226,6 +228,8 @@ public class GovpayConfig {
 		this.numeroMassimoConnessioniPerPool = 200;
 		
 		this.aggiornamentoValiditaMandatorio = false;
+		
+		this.numeroMassimoGiorniRPTPendenti = 30;
 		
 		try {
 
@@ -726,6 +730,15 @@ public class GovpayConfig {
 				this.timeoutInvioRPTModello3Millis = 100;
 			}
 			
+			
+			String numeroMassimoGiorniRPTPendentiString = getProperty("it.govpay.batch.recuperoRptPendenti.limiteTemporaleRecupero", this.props, false, log);
+			try{
+				this.numeroMassimoGiorniRPTPendenti = Integer.parseInt(numeroMassimoGiorniRPTPendentiString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.batch.recuperoRptPendenti.limiteTemporaleRecupero\" impostata con valore di default 30");
+				this.numeroMassimoGiorniRPTPendenti = 30;
+			}
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -1110,5 +1123,9 @@ public class GovpayConfig {
 	
 	public Integer getTimeoutInvioRPTModello3Millis() {
 		return timeoutInvioRPTModello3Millis;
+	}
+	
+	public Integer getNumeroMassimoGiorniRPTPendenti() {
+		return numeroMassimoGiorniRPTPendenti;
 	}
 }
