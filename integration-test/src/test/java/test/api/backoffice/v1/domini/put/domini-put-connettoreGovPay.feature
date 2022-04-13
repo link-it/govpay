@@ -47,6 +47,8 @@ Examples:
 | tipiPendenza | [ '#(codEntrataSegreteria)' ] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
 | tipiPendenza | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
 | emailAllegato | false | false |
+| intervalloCreazioneTracciato | 1 | 1 |
+| intervalloCreazioneTracciato | 12 | 12 |
 
 
 Scenario Outline: Modifica di un connettore govpay di un dominio con connettore di tipo file system (<field>)
@@ -77,6 +79,8 @@ Examples:
 | fileSystemPath | '/var/' | '/var/' |
 | tipiPendenza | [ '#(codEntrataSegreteria)' ] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
 | tipiPendenza | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
+| intervalloCreazioneTracciato | 1 | 1 |
+| intervalloCreazioneTracciato | 12 | 12 |
 
 
 Scenario Outline: Modifica di un connettore govpay di un dominio con connettore di tipo rest (<field>)
@@ -142,6 +146,8 @@ Examples:
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
 | tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
 | emailAllegato | emailAllegato | null | 'emailAllegato' |
+| intervalloCreazioneTracciato | intervalloCreazioneTracciato | null | 'intervalloCreazioneTracciato' |
+| intervalloCreazioneTracciato | intervalloCreazioneTracciato | 0 | 'intervalloCreazioneTracciato' |
 
 
 Scenario Outline: Modifica di un servizio govpay di un dominio con connettore di tipo email <field> non valida
@@ -187,6 +193,8 @@ Examples:
 | fileSystemPath | fileSystemPath | null | 'fileSystemPath' |
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
 | tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
+| intervalloCreazioneTracciato | intervalloCreazioneTracciato | null | 'intervalloCreazioneTracciato' |
+| intervalloCreazioneTracciato | intervalloCreazioneTracciato | 0 | 'intervalloCreazioneTracciato' |
 
 
 Scenario Outline: Modifica di un servizio govpay di un dominio con connettore di tipo rest <field> non valida
@@ -238,7 +246,8 @@ Examples:
 | auth.ksLocation | auth | { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'XXX', sslType: 'TLSv1.2'	} |  'tsType' |
 | auth.ksLocation | auth | { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: null	} |  'sslType' |
 | auth.ksLocation | auth | { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'XXX'	} |  'sslType' |
-
+| intervalloCreazioneTracciato | intervalloCreazioneTracciato | null | 'intervalloCreazioneTracciato' |
+| intervalloCreazioneTracciato | intervalloCreazioneTracciato | 0 | 'intervalloCreazioneTracciato' |
 
 
 

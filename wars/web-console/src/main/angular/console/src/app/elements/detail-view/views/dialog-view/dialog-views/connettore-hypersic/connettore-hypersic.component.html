@@ -30,6 +30,13 @@
           </mat-select>
         </mat-form-field>
       </div>
+      <div class="row">
+        <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
+          <input matInput [placeholder]="_Voce.INTERVALLO_CREAZIONE" formControlName="intervalloCreazioneTracciato_ctrl" autocomplete="off"
+            [required]="myPivotAbilitato?.value">
+          <mat-hint>{{ _Voce.INTERVALLO_CREAZIONE_HINT }}</mat-hint>
+        </mat-form-field>
+      </div>
       <div class="row mb-4" *ngIf="tipoConnettore.value === Util.CONNETTORE_MODALITA_EMAIL">
         <mat-form-field class="col-12" color="accent" [formGroup]="fGroup">
           <input matInput [placeholder]="_Voce.EMAIL" formControlName="emailIndirizzi_ctrl" autocomplete="off"

@@ -687,6 +687,45 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		return null;
 	}
 	
+	
+	public TracciatoNotificaPagamenti getUltimoTracciatoCreatoPerTipo(String codDominio, String tipo, ConnettoreNotificaPagamenti connettore) throws ServiceException {
+		
+		TracciatoNotificaPagamentiFilter filter = this.newFilter();
+		
+		filter.setCodDominio(codDominio);
+		
+		switch (connettore.getTipoConnettore()) {
+		case EMAIL:
+			filter.setStato(STATO_ELABORAZIONE.FILE_CARICATO);
+			break;
+		case FILE_SYSTEM:
+			filter.setStato(STATO_ELABORAZIONE.FILE_CARICATO);
+			break;
+		case WEB_SERVICE:
+			filter.setStato(STATO_ELABORAZIONE.IMPORT_ESEGUITO);
+			break;
+		case REST:
+			filter.setStato(STATO_ELABORAZIONE.FILE_CARICATO);
+			break;
+		}
+		
+		
+		filter.setDataCompletamentoA(new Date());
+		FilterSortWrapper fsw = new FilterSortWrapper(it.govpay.orm.TracciatoNotificaPagamenti.model().DATA_COMPLETAMENTO, SortOrder.DESC);
+		filter.addFilterSort(fsw );
+		filter.setOffset(0);
+		filter.setLimit(1);
+		filter.setTipo(tipo);
+		
+		List<TracciatoNotificaPagamenti> findAll = this.findAll(filter);
+		
+		if(findAll.size() >0) {
+			return findAll.get(0);
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * Crea un nuovo IUV a meno dell'iuv stesso.
 	 * Il prg deve essere un progressivo all'interno del DominioEnte fornito

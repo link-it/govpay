@@ -25,9 +25,11 @@ public class SimpleDateFormatUtils {
 	private static final String PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM = "yyyy-MM-dd'T'HH:mm";
 	private static final String PATTERN_DATA_JSON_YYYY_MM_DD_T_HH_MM_SS = "yyyy-MM-dd'T'HH:mm:ss";
 	private static final String PATTERN_DATA_JSON_YYYY_MM_DD = "yyyy-MM-dd";
+	private static final String PATTERN_DATA_JSON_YYYY_MM_DD_HH_MM = "yyyy-MM-dd HH:mm";
 	private static final String PATTERN_DATA_DD_MM_YYYY_HH_MM_SS_SSS = "ddMMyyyyHHmmSSsss";
 	private static final String PATTERN_DATA_YYYY = "yyyy";
 	private static final String PATTERN_DATA_YYYY_MM_DD_SENZA_SPAZI = "yyyyMMdd";
+	private static final String PATTERN_DATA_YYYY_MM_DD_HH_MM_SENZA_SPAZI = "yyyyMMdd_HHmm";
 	private static final String PATTERN_DATA_GG_MM_AAAA = "dd/MM/yyyy";
 	
 	public static List<String> datePatterns = null;
@@ -75,8 +77,16 @@ public class SimpleDateFormatUtils {
 		return newSimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_JSON_YYYY_MM_DD);
 	}
 	
+	public static SimpleDateFormat newSimpleDateFormatDataOra() {
+		return newSimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_JSON_YYYY_MM_DD_HH_MM);
+	}
+	
 	public static SimpleDateFormat newSimpleDateFormatSoloDataSenzaSpazi() {
 		return newSimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_YYYY_MM_DD_SENZA_SPAZI);
+	}
+	
+	public static SimpleDateFormat newSimpleDateFormatDataOraMinutiSenzaSpazi() {
+		return newSimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_YYYY_MM_DD_HH_MM_SENZA_SPAZI);
 	}
 	
 	public static SimpleDateFormat newSimpleDateFormatIuvUtils() {

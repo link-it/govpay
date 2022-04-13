@@ -138,8 +138,8 @@ public class CaricamentoTracciatoThread implements Runnable {
 					
 					this.lineeElaborate.add(request.getLinea());
 					this.risposte.add(operazioneResponse);
-					log.debug(this.nomeThread + " Inserimento Pendenza Numero ["+ (request.getLinea() -1) + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + new String(request.getDati()) + "]");
 					operazioniBD.commit();
+					log.debug(this.nomeThread + " Inserimento Pendenza Numero ["+ (request.getLinea() -1) + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + new String(request.getDati()) + "]");
 				}catch(ServiceException e) {
 					log.error(this.nomeThread + " Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
 				} finally {

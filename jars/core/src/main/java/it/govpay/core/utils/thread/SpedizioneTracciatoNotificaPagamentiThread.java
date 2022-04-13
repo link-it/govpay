@@ -756,8 +756,8 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			org.openspcoop2.utils.mail.Mail mail) {
 		
 		String tipoTracciatoString = null;
-		String dataInizio = SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(tracciato.getDataRtDa());
-		String dataFine = SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(tracciato.getDataRtA());
+		String dataInizio = SimpleDateFormatUtils.newSimpleDateFormatDataOra().format(tracciato.getDataRtDa());
+		String dataFine = SimpleDateFormatUtils.newSimpleDateFormatDataOra().format(tracciato.getDataRtA());
 		switch (this.tipoTracciato) {
 		case MYPIVOT:
 			tipoTracciatoString = " per l'importazione in MyPivot"; 

@@ -709,19 +709,22 @@ public class Tracciati {
 		String descrizioneEsito = null;
 		List<Long> lineeElaborate = new ArrayList<Long>();
 		while(true){
+			log.debug("Check stato elaborazione thread...");
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
-
+				e.printStackTrace();
 			}
 			boolean completed = true;
+			int completati = 0; 
 			for(CaricamentoTracciatoThread sender : threads) {
 				if(!sender.isCompleted()) {
 					log.trace("Thread ["+sender.getNomeThread()+"] non completato.");
 					completed = false;
 				} else {
+					completati++;
 					if(!sender.isCommit()) {
-						log.trace("Thread ["+sender.getNomeThread()+"] completato, acquisizione risultati.");
+						log.debug("Thread ["+sender.getNomeThread()+"] completato, acquisizione risultati.");
 						sender.setCommit(true); 
 						synchronized (this) {
 							log.debug("Completata Esecuzione del Thread ["+sender.getNomeThread()+"], ADDOK ["+sender.getNumeroAddElaborateOk()+"], ADDKO ["+sender.getNumeroAddElaborateKo()+"] DELOK ["+sender.getNumeroDelElaborateOk()+"], DELKO ["+sender.getNumeroDelElaborateKo()+"]");
@@ -760,7 +763,7 @@ public class Tracciati {
 					}
 				}
 			}
-
+			log.debug("Check stato elaborazione thread: completati " + completati + "/" + threads.size());
 			if(completed) { 
 				log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, ADDOK ["+sommaAddOk+"], ADDKO ["+sommaAddKo+"] DELOK ["+sommaDelOk+"], DELKO ["+sommaDelKo+"]");
 				break; // esco
@@ -1084,6 +1087,8 @@ public class Tracciati {
 	}
 
 	public String getEsitoElaborazioneTracciatoCSV(Tracciato tracciato, OperazioniBD operazioniBD, Dominio dominio, String codTipoVersamento, String headerRisposta, String tipoTemplate, String trasformazioneRisposta) throws ServiceException, ValidationException, java.io.IOException {
+		
+		log.info("Elaboro il CSV di risposta.");
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		OperazioneFilter filter = operazioniBD.newFilter();
 		filter.setIdTracciato(tracciato.getId());
@@ -1101,6 +1106,7 @@ public class Tracciati {
 		BufferedWriter bw = new BufferedWriter(pw);
 
 		bw.write(headerRisposta);//.getBytes());
+		log.debug("Inserita testata");
 		if(!headerRisposta.endsWith("\n"))
 			bw.newLine();//("\n".getBytes());
 
@@ -1115,7 +1121,9 @@ public class Tracciati {
 		VersamentiBD versamentiBD = new VersamentiBD(operazioniBD);
 		while(true) {
 			// Ciclo finche' non mi ritorna meno record del limit. Altrimenti esco perche' ho finito
+			
 			List<Operazione> findAll = operazioniBD.findAll(filter);
+			log.debug("Acquisiti " + findAll.size() + " con offset " + filter.getOffset());
 			for(Operazione operazione : findAll) {
 				switch (operazione.getTipoOperazione()) {
 				case ADD:

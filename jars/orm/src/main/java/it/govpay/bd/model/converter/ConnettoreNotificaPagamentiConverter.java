@@ -110,6 +110,10 @@ public class ConnettoreNotificaPagamentiConverter {
 				if(ConnettoreNotificaPagamenti.P_DOWNLOAD_BASE_URL.equals(connettore.getCodProprieta())) {
 					dto.setDownloadBaseURL(connettore.getValore());
 				}
+				
+				if(ConnettoreNotificaPagamenti.P_INTERVALLO_CREAZIONE_TRACCIATO.equals(connettore.getCodProprieta())) {
+					dto.setIntervalloCreazioneTracciato(Integer.parseInt(connettore.getValore()));
+				}
 
 
 				// ereditato da connettore
@@ -274,6 +278,14 @@ public class ConnettoreNotificaPagamentiConverter {
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_DOWNLOAD_BASE_URL);
 			vo.setValore(connettore.getDownloadBaseURL());
+			voList.add(vo);
+		}
+		
+		if(connettore.getIntervalloCreazioneTracciato() != null) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_INTERVALLO_CREAZIONE_TRACCIATO);
+			vo.setValore("" + connettore.getIntervalloCreazioneTracciato());
 			voList.add(vo);
 		}
 
