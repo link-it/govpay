@@ -53,49 +53,8 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
   @JsonProperty("importo")
   private BigDecimal importo = null;
   
-    
-  /**
-   * Modello di pagamento
-   */
-  public enum ModelloEnum {
-    
-    
-        
-            
-    ENTE("Pagamento ad iniziativa Ente"),
-    
-            
-    PSP("Pagamento ad iniziativa PSP");
-            
-        
-    
-
-    private String value;
-
-    ModelloEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @com.fasterxml.jackson.annotation.JsonValue
-    public String toString() {
-      return String.valueOf(this.value);
-    }
-
-    public static ModelloEnum fromValue(String text) {
-      for (ModelloEnum b : ModelloEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
   @JsonProperty("modello")
-  private ModelloEnum modello = null;
+  private ModelloPagamento modello = null;
   
   @JsonProperty("stato")
   private StatoPagamento stato = null;
@@ -332,16 +291,16 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
   /**
    * Modello di pagamento
    **/
-  public Pagamento modello(ModelloEnum modello) {
+  public Pagamento modello(ModelloPagamento modello) {
     this.modello = modello;
     return this;
   }
 
   @JsonProperty("modello")
-  public ModelloEnum getModello() {
-    return this.modello;
+  public ModelloPagamento getModello() {
+    return modello;
   }
-  public void setModello(ModelloEnum modello) {
+  public void setModello(ModelloPagamento modello) {
     this.modello = modello;
   }
 

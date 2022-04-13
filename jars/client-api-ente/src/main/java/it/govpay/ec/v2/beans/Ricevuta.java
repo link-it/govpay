@@ -69,6 +69,9 @@ public class Ricevuta   {
   
   @Schema(required = true, description = "")
   private RicevutaRt rt = null;
+  
+  @Schema(required = true, description = "")
+  private ModelloPagamento modello = null;
  /**
    * Get dominio
    * @return dominio
@@ -318,6 +321,24 @@ public class Ricevuta   {
     return this;
   }
 
+ /**
+   * Get modello
+   * @return modello
+  **/
+  @JsonProperty("modello")
+  public ModelloPagamento getModello() {
+    return modello;
+  }
+
+  public void setModello(ModelloPagamento modello) {
+    this.modello = modello;
+  }
+
+  public Ricevuta modello(ModelloPagamento modello) {
+    this.modello = modello;
+    return this;
+  }
+
 
   @Override
   public String toString() {
@@ -337,6 +358,7 @@ public class Ricevuta   {
     sb.append("    dataPagamento: ").append(toIndentedString(dataPagamento)).append("\n");
     sb.append("    rpt: ").append(toIndentedString(rpt)).append("\n");
     sb.append("    rt: ").append(toIndentedString(rt)).append("\n");
+    sb.append("    modello: ").append(toIndentedString(modello)).append("\n");
     sb.append("}");
     return sb.toString();
   }

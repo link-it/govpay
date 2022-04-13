@@ -294,6 +294,13 @@ components:
           type: number
           format: integer
           example: '100'
+    ModelloPagamento:
+      type: string
+      description: Modello di pagamento
+      example: 'Pagamento ad iniziativa PSP'
+      enum:
+        - 'Pagamento ad iniziativa Ente'
+        - 'Pagamento ad iniziativa PSP'
     NumeroAvviso:
       type: string
       description: Identificativo univoco versamento, assegnato se pagabile da psp
@@ -735,6 +742,7 @@ components:
         - istitutoAttestante
         - rpt
         - rt
+        - modello
       properties:
         dominio:
           $ref: '#/components/schemas/Dominio'
@@ -826,6 +834,8 @@ components:
             json:
               description: ricevuta in formato JSON
               type: object  
+        modello:
+          $ref: '#/components/schemas/ModelloPagamento'
       example: 
           dominio: 
             idDominio: '01234567890'
@@ -958,7 +968,8 @@ components:
             data: '2020-12-31T12:55:12'
             tipo: 'ctReceipt'
             xml: '...[XML originale codificato Base64]...'
-            json: '...[XML originale convertito in json]...'                          
+            json: '...[XML originale convertito in json]...'  
+          modello: 'Pagamento ad iniziativa PSP'
     Ricevute:
       type: object
       allOf:
