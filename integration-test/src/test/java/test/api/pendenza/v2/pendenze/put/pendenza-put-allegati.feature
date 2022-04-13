@@ -14,6 +14,7 @@ Scenario: Caricamento di una pendenza con allegato
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.allegati[0].nome = 'tipoPendenza-promemoria-oggetto-freemarker.ftl'
 * set pendenzaPut.allegati[0].tipo = 'application/json'
+* set pendenzaPut.allegati[0].descrizione = 'test allegato'
 * set pendenzaPut.allegati[0].contenuto = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/pendenze/put/msg/tipoPendenza-promemoria-oggetto-freemarker.ftl'))
 
 Given url pendenzeBaseurl
@@ -40,7 +41,7 @@ And match response == pendenzaGet
 * match response.voci[0].stato == 'Non eseguito'
 * match response.allegati[0].nome == pendenzaPut.allegati[0].nome
 * match response.allegati[0].tipo == pendenzaPut.allegati[0].tipo
-
+* match response.allegati[0].descrizione == pendenzaPut.allegati[0].descrizione
 
 
 Scenario: Aggiornamento di una pendenza con allegato
@@ -49,6 +50,7 @@ Scenario: Aggiornamento di una pendenza con allegato
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.allegati[0].nome = 'tipoPendenza-promemoria-oggetto-freemarker.ftl'
 * set pendenzaPut.allegati[0].tipo = 'application/json'
+* set pendenzaPut.allegati[0].descrizione = 'test allegato'
 * set pendenzaPut.allegati[0].contenuto = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/pendenze/put/msg/tipoPendenza-promemoria-oggetto-freemarker.ftl'))
 
 Given url pendenzeBaseurl
@@ -75,6 +77,7 @@ And match response == pendenzaGet
 * match response.voci[0].stato == 'Non eseguito'
 * match response.allegati[0].nome == pendenzaPut.allegati[0].nome
 * match response.allegati[0].tipo == pendenzaPut.allegati[0].tipo
+* match response.allegati[0].descrizione == pendenzaPut.allegati[0].descrizione
 
 * set pendenzaPut.allegati[0].nome = 'updated-tipoPendenza-promemoria-oggetto-freemarker.ftl'
 
@@ -116,6 +119,7 @@ And match response == pendenzaGet
 
 * set pendenzaPut.allegati[0].nome = 'tipoPendenza-promemoria-oggetto-freemarker.ftl'
 * set pendenzaPut.allegati[0].tipo = 'application/json'
+* set pendenzaPut.allegati[0].descrizione = 'test allegato'
 * set pendenzaPut.allegati[0].contenuto = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/pendenze/put/msg/tipoPendenza-promemoria-oggetto-freemarker.ftl'))
 
 Given url pendenzeBaseurl
@@ -135,6 +139,7 @@ And match response == pendenzaGet
 
 * match response.allegati[0].nome == pendenzaPut.allegati[0].nome
 * match response.allegati[0].tipo == pendenzaPut.allegati[0].tipo
+* match response.allegati[0].descrizione == pendenzaPut.allegati[0].descrizione
 
 * def allegatoPath = response.allegati[0].contenuto
 
@@ -153,6 +158,7 @@ Scenario Outline: <field> non valida
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
 * set pendenzaPut.allegati[0].nome = 'tipoPendenza-promemoria-oggetto-freemarker.ftl'
 * set pendenzaPut.allegati[0].tipo = 'application/json'
+* set pendenzaPut.allegati[0].descrizione = 'test allegato'
 * set pendenzaPut.allegati[0].contenuto = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/pendenze/put/msg/tipoPendenza-promemoria-oggetto-freemarker.ftl'))
 
 * set <fieldRequest> = <fieldValue>
@@ -172,5 +178,6 @@ Examples:
 | allegati.nome | pendenzaPut.allegati[0].nome | null | 'nome' |
 | allegati.nome | pendenzaPut.allegati[0].nome | loremIpsum | 'nome' |
 | allegati.tipo | pendenzaPut.allegati[0].tipo | loremIpsum | 'tipo' |
+| allegati.descrizione | pendenzaPut.allegati[0].descrizione | loremIpsum | 'descrizione' |
 | allegati.contenuto | pendenzaPut.allegati[0].contenuto | null | 'contenuto' |
 

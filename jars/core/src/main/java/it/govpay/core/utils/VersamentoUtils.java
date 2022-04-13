@@ -696,6 +696,7 @@ public class VersamentoUtils {
 				
 				allegatoModel.setNome(allegato.getNome());
 				allegatoModel.setTipo(allegato.getTipo());
+				allegatoModel.setDescrizione(allegato.getDescrizione());
 				allegatoModel.setRawContenuto(allegato.getContenuto());
 				allegatoModel.setDataCreazione(new Date());
 				

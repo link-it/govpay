@@ -38,6 +38,7 @@ import java.io.Serializable;
  * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="nome" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="descrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="rawContenuto" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -57,6 +58,7 @@ import java.io.Serializable;
   	"idVersamento",
   	"nome",
   	"tipo",
+  	"descrizione",
   	"dataCreazione",
   	"rawContenuto"
   }
@@ -106,6 +108,14 @@ public class Allegato extends org.openspcoop2.utils.beans.BaseBean implements Se
     this.tipo = tipo;
   }
 
+  public java.lang.String getDescrizione() {
+    return this.descrizione;
+  }
+
+  public void setDescrizione(java.lang.String descrizione) {
+    this.descrizione = descrizione;
+  }
+
   public java.util.Date getDataCreazione() {
     return this.dataCreazione;
   }
@@ -151,6 +161,10 @@ public class Allegato extends org.openspcoop2.utils.beans.BaseBean implements Se
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipo",required=false,nillable=false)
   protected java.lang.String tipo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="descrizione",required=false,nillable=false)
+  protected java.lang.String descrizione;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")

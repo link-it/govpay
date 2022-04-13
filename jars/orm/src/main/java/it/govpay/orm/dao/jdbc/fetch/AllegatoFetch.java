@@ -58,6 +58,8 @@ public class AllegatoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "nome", Allegato.model().NOME.getFieldType()));
 				setParameter(object, "setTipo", Allegato.model().TIPO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "tipo", Allegato.model().TIPO.getFieldType()));
+				setParameter(object, "setDescrizione", Allegato.model().DESCRIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descrizione", Allegato.model().DESCRIZIONE.getFieldType()));
 				setParameter(object, "setDataCreazione", Allegato.model().DATA_CREAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_creazione", Allegato.model().DATA_CREAZIONE.getFieldType()));
 				setParameter(object, "setRawContenuto", Allegato.model().RAW_CONTENUTO.getFieldType(),
@@ -88,6 +90,8 @@ public class AllegatoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"nome"));
 				setParameter(object, "setTipo", Allegato.model().TIPO.getFieldType(),
 					this.getObjectFromMap(map,"tipo"));
+				setParameter(object, "setDescrizione", Allegato.model().DESCRIZIONE.getFieldType(),
+					this.getObjectFromMap(map,"descrizione"));
 				setParameter(object, "setDataCreazione", Allegato.model().DATA_CREAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"dataCreazione"));
 				setParameter(object, "setRawContenuto", Allegato.model().RAW_CONTENUTO.getFieldType(),

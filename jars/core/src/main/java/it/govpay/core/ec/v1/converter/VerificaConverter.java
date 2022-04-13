@@ -276,6 +276,7 @@ public class VerificaConverter {
 				allegatoDTO.setNome(allegato.getNome());
 				allegatoDTO.setTipo(allegato.getTipo());
 				allegatoDTO.setContenuto(allegato.getContenuto());
+				allegatoDTO.setDescrizione(allegato.getDescrizione());
 				
 				allegatiDTO.add(allegatoDTO);
 			}

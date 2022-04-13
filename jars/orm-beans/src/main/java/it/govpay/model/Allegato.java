@@ -14,6 +14,7 @@ public class Allegato extends BasicModel {
 	private Date dataCreazione;
 	private String nome;
 	private String tipo;
+	private String descrizione;
 	private byte[] rawContenuto;
 	
 	public Long getId() {
@@ -51,5 +52,11 @@ public class Allegato extends BasicModel {
 	}
 	public void setRawContenuto(byte[] rawContenuto) {
 		this.rawContenuto = rawContenuto;
+	}
+	public String getDescrizione() {
+		return descrizione;
+	}
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
 	}	
 }

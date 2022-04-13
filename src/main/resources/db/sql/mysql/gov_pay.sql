@@ -1287,6 +1287,7 @@ CREATE TABLE allegati
 (
 	nome VARCHAR(255) NOT NULL COMMENT 'Identificativo allegato',
 	tipo VARCHAR(255) COMMENT 'content-type allegato',
+	descrizione VARCHAR(255) COMMENT 'descrizione allegato',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'data creazione allegato',
 	raw_contenuto MEDIUMBLOB COMMENT 'contenuto allegato',

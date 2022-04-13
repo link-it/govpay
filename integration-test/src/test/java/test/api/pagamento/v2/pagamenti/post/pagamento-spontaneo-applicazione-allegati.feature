@@ -32,6 +32,7 @@ Scenario: Caricamento di una pendenza con allegato
 """
 * set pagamentoPost.pendenze[0].allegati[0].nome = 'tipoPendenza-promemoria-oggetto-freemarker.ftl'
 * set pagamentoPost.pendenze[0].allegati[0].tipo = 'application/json'
+* set pagamentoPost.pendenze[0].allegati[0].descrizione = 'test allegato'
 * set pagamentoPost.pendenze[0].allegati[0].contenuto = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/pendenze/put/msg/tipoPendenza-promemoria-oggetto-freemarker.ftl'))
 
 Given url pagamentiBaseurl
@@ -50,6 +51,7 @@ Then status 200
 
 * match response.allegati[0].nome == pagamentoPost.pendenze[0].allegati[0].nome
 * match response.allegati[0].tipo == pagamentoPost.pendenze[0].allegati[0].tipo
+* match response.allegati[0].descrizione == pagamentoPost.pendenze[0].allegati[0].descrizione
 
 Scenario Outline: <field> non valida
 
@@ -76,6 +78,7 @@ Scenario Outline: <field> non valida
 
 * set pagamentoPost.pendenze[0].allegati[0].nome = 'tipoPendenza-promemoria-oggetto-freemarker.ftl'
 * set pagamentoPost.pendenze[0].allegati[0].tipo = 'application/json'
+* set pagamentoPost.pendenze[0].allegati[0].descrizione = 'test allegato'
 * set pagamentoPost.pendenze[0].allegati[0].contenuto = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/pendenze/put/msg/tipoPendenza-promemoria-oggetto-freemarker.ftl'))
 
 * set <fieldRequest> = <fieldValue>
@@ -95,5 +98,6 @@ Examples:
 | allegati.nome | pagamentoPost.pendenze[0].allegati[0].nome | null | 'nome' |
 | allegati.nome | pagamentoPost.pendenze[0].allegati[0].nome | loremIpsum | 'nome' |
 | allegati.tipo | pagamentoPost.pendenze[0].allegati[0].tipo | loremIpsum | 'tipo' |
+| allegati.descrizione | pagamentoPost.pendenze[0].allegati[0].descrizione | loremIpsum | 'descrizione' |
 | allegati.contenuto | pagamentoPost.pendenze[0].allegati[0].contenuto | null | 'contenuto' |
 

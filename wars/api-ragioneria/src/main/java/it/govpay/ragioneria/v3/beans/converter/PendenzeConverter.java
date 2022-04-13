@@ -207,6 +207,7 @@ public class PendenzeConverter {
 				
 				allegatoRsModel.setNome(allegato.getNome());
 				allegatoRsModel.setTipo(allegato.getTipo());
+				allegatoRsModel.setDescrizione(allegato.getDescrizione());
 				allegatoRsModel.setContenuto(MessageFormat.format(PendenzeApiServiceImpl.DETTAGLIO_PATH_PATTERN, allegato.getId()));
 				
 				rsModel.add(allegatoRsModel);

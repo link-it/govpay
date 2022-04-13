@@ -624,6 +624,7 @@ public class Versamento {
     	
     	private String nome;
     	private String tipo;
+    	private String descrizione;
     	private byte[] contenuto;
 		public String getNome() {
 			return nome;
@@ -642,6 +643,12 @@ public class Versamento {
 		}
 		public void setContenuto(byte[] contenuto) {
 			this.contenuto = contenuto;
+		}
+		public String getDescrizione() {
+			return descrizione;
+		}
+		public void setDescrizione(String descrizione) {
+			this.descrizione = descrizione;
 		}
     }
 }

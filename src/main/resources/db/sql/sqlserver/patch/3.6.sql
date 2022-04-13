@@ -160,6 +160,7 @@ CREATE TABLE allegati
 (
 	nome VARCHAR(255) NOT NULL,
 	tipo VARCHAR(255),
+	descrizione VARCHAR(255),
 	data_creazione DATETIME2 NOT NULL,
 	raw_contenuto VARBINARY(MAX),
 	-- fk/pk columns

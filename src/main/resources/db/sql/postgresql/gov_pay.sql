@@ -1267,6 +1267,7 @@ CREATE TABLE allegati
 (
 	nome VARCHAR(255) NOT NULL,
 	tipo VARCHAR(255),
+	descrizione VARCHAR(255),
 	data_creazione TIMESTAMP NOT NULL,
 	raw_contenuto OID,
 	-- fk/pk columns

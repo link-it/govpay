@@ -156,6 +156,7 @@ public class JDBCAllegatoServiceSearchImpl implements IJDBCServiceSearchWithId<A
 			fields.add(Allegato.model().NOME);
 //			fields.add(Allegato.model().RAW_CONTENUTO);
 			fields.add(Allegato.model().TIPO);
+			fields.add(Allegato.model().DESCRIZIONE);
 			
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 

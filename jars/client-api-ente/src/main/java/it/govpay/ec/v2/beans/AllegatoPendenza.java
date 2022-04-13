@@ -19,6 +19,12 @@ public class AllegatoPendenza   {
   **/
   private String tipo = "application/octet-stream";
   
+  @Schema(description = "descrizione del file")
+ /**
+   * descrizione del file  
+  **/
+  private String descrizione = null;
+  
   @Schema(required = true, description = "path per accedere al file, nella forma /allegati/{id}")
  /**
    * path per accedere al file, nella forma /allegati/{id}  
@@ -61,6 +67,24 @@ public class AllegatoPendenza   {
   }
 
  /**
+   * descrizione del file
+   * @return descrizione
+  **/
+  @JsonProperty("descrizione")
+  public String getDescrizione() {
+    return descrizione;
+  }
+
+  public void setDescrizione(String descrizione) {
+    this.descrizione = descrizione;
+  }
+
+  public AllegatoPendenza descrizione(String descrizione) {
+    this.descrizione = descrizione;
+    return this;
+  }
+
+ /**
    * path per accedere al file, nella forma /allegati/{id}
    * @return contenuto
   **/
@@ -86,6 +110,7 @@ public class AllegatoPendenza   {
     
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
+    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    contenuto: ").append(toIndentedString(contenuto)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -14,6 +14,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "nome",
 "tipo",
+"descrizione",
 "contenuto",
 })
 public class NuovoAllegatoPendenza extends JSONSerializable  implements IValidable{
@@ -23,6 +24,9 @@ public class NuovoAllegatoPendenza extends JSONSerializable  implements IValidab
   
   @JsonProperty("tipo")
   private String tipo = "application/octet-stream";
+  
+  @JsonProperty("descrizione")
+  private String descrizione = null;
   
   @JsonProperty("contenuto")
   private byte[] contenuto = null;
@@ -60,6 +64,22 @@ public class NuovoAllegatoPendenza extends JSONSerializable  implements IValidab
   }
 
   /**
+   * descrizione del file
+   **/
+  public NuovoAllegatoPendenza descrizione(String descrizione) {
+    this.descrizione = descrizione;
+    return this;
+  }
+
+  @JsonProperty("descrizione")
+  public String getDescrizione() {
+    return descrizione;
+  }
+  public void setDescrizione(String descrizione) {
+    this.descrizione = descrizione;
+  }
+
+  /**
    * contenuto del file
    **/
   public NuovoAllegatoPendenza contenuto(byte[] contenuto) {
@@ -86,12 +106,13 @@ public class NuovoAllegatoPendenza extends JSONSerializable  implements IValidab
     NuovoAllegatoPendenza nuovoAllegatoPendenza = (NuovoAllegatoPendenza) o;
     return Objects.equals(nome, nuovoAllegatoPendenza.nome) &&
         Objects.equals(tipo, nuovoAllegatoPendenza.tipo) &&
+        Objects.equals(descrizione, nuovoAllegatoPendenza.descrizione) &&
         Objects.equals(contenuto, nuovoAllegatoPendenza.contenuto);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, tipo, contenuto);
+    return Objects.hash(nome, tipo, descrizione, contenuto);
   }
 
   public static NuovoAllegatoPendenza parse(String json) throws ServiceException, ValidationException {
@@ -110,6 +131,7 @@ public class NuovoAllegatoPendenza extends JSONSerializable  implements IValidab
     
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
+    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    contenuto: ").append(toIndentedString(contenuto)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -131,6 +153,7 @@ public class NuovoAllegatoPendenza extends JSONSerializable  implements IValidab
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		vf.getValidator("nome", this.nome).notNull().minLength(1).maxLength(255);
 		vf.getValidator("tipo", this.tipo).minLength(1).maxLength(255);
+		vf.getValidator("descrizione", this.descrizione).minLength(1).maxLength(255);
 		
 		if(this.contenuto == null)
 			throw new ValidationException("Il campo " + "contenuto" + " non deve essere vuoto.");

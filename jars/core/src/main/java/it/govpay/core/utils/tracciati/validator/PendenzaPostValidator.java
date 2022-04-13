@@ -316,6 +316,7 @@ public class PendenzaPostValidator  implements IValidable{
 			for(NuovoAllegatoPendenza allegato: allegati) {
 				this.vf.getValidator("nome", allegato.getNome()).notNull().minLength(1).maxLength(255);
 				this.vf.getValidator("tipo", allegato.getTipo()).minLength(1).maxLength(255);
+				this.vf.getValidator("descrizione", allegato.getDescrizione()).minLength(1).maxLength(255);
 				
 				if(allegato.getContenuto() == null)
 					throw new ValidationException("Il campo " + "contenuto" + " non deve essere vuoto.");

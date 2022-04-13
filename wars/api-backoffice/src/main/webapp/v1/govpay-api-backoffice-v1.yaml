@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.28.0"
+  version: "1.29.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -9332,10 +9332,19 @@ components:
         nome:
           type: string
           description: nome del file
+          minLength: 1
+          maxLength: 255
         tipo:
           type: string
           description: mime type del file
           default: "application/octet-stream"
+          minLength: 1
+          maxLength: 255
+        descrizione:
+          type: string
+          description: descrizione del file
+          minLength: 1
+          maxLength: 255
         contenuto: 
           type: string
           description: path per accedere al file, nella forma /allegati/{id}
@@ -9364,10 +9373,19 @@ components:
         nome:
           type: string
           description: nome del file
+          minLength: 1
+          maxLength: 255
         tipo:
           type: string
           description: mime type del file
           default: "application/octet-stream"
+          minLength: 1
+          maxLength: 255
+        descrizione:
+          type: string
+          description: descrizione del file
+          minLength: 1
+          maxLength: 255
         contenuto: 
           type: string
           format: byte

@@ -391,6 +391,7 @@ public class AllegatiBD extends BasicBD {
 		fields.add(model.NOME);
 		fields.add(model.TIPO);
 		fields.add(model.DATA_CREAZIONE);
+		fields.add(model.DESCRIZIONE);
 //		if(includiRawContenuto) {
 //			fields.add(model.RAW_CONTENUTO);
 //		}

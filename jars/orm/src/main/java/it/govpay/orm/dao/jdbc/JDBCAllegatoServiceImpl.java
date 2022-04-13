@@ -87,6 +87,7 @@ public class JDBCAllegatoServiceImpl extends JDBCAllegatoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertTable(this.getAllegatoFieldConverter().toTable(Allegato.model()));
 		sqlQueryObjectInsert.addInsertField(this.getAllegatoFieldConverter().toColumn(Allegato.model().NOME,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getAllegatoFieldConverter().toColumn(Allegato.model().TIPO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getAllegatoFieldConverter().toColumn(Allegato.model().DESCRIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getAllegatoFieldConverter().toColumn(Allegato.model().DATA_CREAZIONE,false),"?");
 //		sqlQueryObjectInsert.addInsertField(this.getAllegatoFieldConverter().toColumn(Allegato.model().RAW_CONTENUTO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_versamento","?");
@@ -96,6 +97,7 @@ public class JDBCAllegatoServiceImpl extends JDBCAllegatoServiceSearchImpl
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(allegato.getNome(),Allegato.model().NOME.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(allegato.getTipo(),Allegato.model().TIPO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(allegato.getDescrizione(),Allegato.model().DESCRIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(allegato.getDataCreazione(),Allegato.model().DATA_CREAZIONE.getFieldType()),
 //			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(allegato.getRawContenuto(),Allegato.model().RAW_CONTENUTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class)
@@ -172,6 +174,8 @@ public class JDBCAllegatoServiceImpl extends JDBCAllegatoServiceSearchImpl
 		lstObjects_allegato.add(new JDBCObject(allegato.getNome(), Allegato.model().NOME.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getAllegatoFieldConverter().toColumn(Allegato.model().TIPO,false), "?");
 		lstObjects_allegato.add(new JDBCObject(allegato.getTipo(), Allegato.model().TIPO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getAllegatoFieldConverter().toColumn(Allegato.model().DESCRIZIONE,false), "?");
+		lstObjects_allegato.add(new JDBCObject(allegato.getDescrizione(), Allegato.model().DESCRIZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getAllegatoFieldConverter().toColumn(Allegato.model().DATA_CREAZIONE,false), "?");
 		lstObjects_allegato.add(new JDBCObject(allegato.getDataCreazione(), Allegato.model().DATA_CREAZIONE.getFieldType()));
 //		sqlQueryObjectUpdate.addUpdateField(this.getAllegatoFieldConverter().toColumn(Allegato.model().RAW_CONTENUTO,false), "?");

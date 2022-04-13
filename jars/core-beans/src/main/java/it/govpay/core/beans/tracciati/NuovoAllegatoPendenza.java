@@ -3,7 +3,7 @@ package it.govpay.core.beans.tracciati;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class NuovoAllegatoPendenza   {
+public class NuovoAllegatoPendenza   { 
   
  /**
    * nome del file  
@@ -14,6 +14,11 @@ public class NuovoAllegatoPendenza   {
    * mime type del file  
   **/
   private String tipo = "application/octet-stream";
+  
+ /**
+   * descrizione del file  
+  **/
+  private String descrizione = null;
   
  /**
    * contenuto del file  
@@ -56,6 +61,24 @@ public class NuovoAllegatoPendenza   {
   }
 
  /**
+   * descrizione del file
+   * @return descrizione
+  **/
+  @JsonProperty("descrizione")
+  public String getDescrizione() {
+    return descrizione;
+  }
+
+  public void setDescrizione(String descrizione) {
+    this.descrizione = descrizione;
+  }
+
+  public NuovoAllegatoPendenza descrizione(String descrizione) {
+    this.descrizione = descrizione;
+    return this;
+  }
+
+ /**
    * contenuto del file
    * @return contenuto
   **/
@@ -81,6 +104,7 @@ public class NuovoAllegatoPendenza   {
     
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
+    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    contenuto: ").append(toIndentedString(contenuto)).append("\n");
     sb.append("}");
     return sb.toString();

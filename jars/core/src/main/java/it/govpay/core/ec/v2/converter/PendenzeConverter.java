@@ -265,6 +265,7 @@ public class PendenzeConverter {
 				
 				allegatoRsModel.setNome(allegato.getNome());
 				allegatoRsModel.setTipo(allegato.getTipo());
+				allegatoRsModel.setDescrizione(allegato.getDescrizione());
 				
 				try {
 					ByteArrayOutputStream baos = allegatiDAO.copiaBlobContenuto(allegato.getId());

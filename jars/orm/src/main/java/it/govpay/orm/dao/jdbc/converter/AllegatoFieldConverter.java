@@ -193,6 +193,13 @@ public class AllegatoFieldConverter extends AbstractSQLFieldConverter {
 				return "tipo";
 			}
 		}
+		if(field.equals(Allegato.model().DESCRIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".descrizione";
+			}else{
+				return "descrizione";
+			}
+		}
 		if(field.equals(Allegato.model().DATA_CREAZIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_creazione";
@@ -272,6 +279,9 @@ public class AllegatoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Allegato.model(), returnAlias);
 		}
 		if(field.equals(Allegato.model().TIPO)){
+			return this.toTable(Allegato.model(), returnAlias);
+		}
+		if(field.equals(Allegato.model().DESCRIZIONE)){
 			return this.toTable(Allegato.model(), returnAlias);
 		}
 		if(field.equals(Allegato.model().DATA_CREAZIONE)){

@@ -16,6 +16,7 @@ public class AllegatoConverter {
 			dto.setIdVersamento(vo.getIdVersamento().getId());
 		}
 		dto.setRawContenuto(vo.getRawContenuto());
+		dto.setDescrizione(vo.getDescrizione());
 
 		return dto;
 	}
@@ -33,6 +34,7 @@ public class AllegatoConverter {
 			vo.setIdVersamento(idVersamento);
 		}
 		vo.setRawContenuto(dto.getRawContenuto());
+		vo.setDescrizione(dto.getDescrizione());
 		
 		return vo;
 	}

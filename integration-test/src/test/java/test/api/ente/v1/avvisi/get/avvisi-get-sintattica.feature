@@ -242,6 +242,7 @@ Scenario Outline: <field> non valida
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_definito.json')
 * set pendenzaPut.allegati[0].nome = 'tipoPendenza-promemoria-oggetto-freemarker.ftl'
 * set pendenzaPut.allegati[0].tipo = 'application/json'
+* set pendenzaPut.allegati[0].descrizione = 'test allegato'
 * set pendenzaPut.allegati[0].contenuto = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/pendenze/put/msg/tipoPendenza-promemoria-oggetto-freemarker.ftl'))
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
@@ -274,6 +275,7 @@ Examples:
 | allegati.nome | pendenzaPut.allegati[0].nome | null | 'nome' |
 | allegati.nome | pendenzaPut.allegati[0].nome | loremIpsum | 'nome' |
 | allegati.tipo | pendenzaPut.allegati[0].tipo | loremIpsum | 'tipo' |
+| allegati.descrizione | pendenzaPut.allegati[0].descrizione | loremIpsum | 'descrizione' |
 | allegati.contenuto | pendenzaPut.allegati[0].contenuto | null | 'contenuto' |
 
 

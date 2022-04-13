@@ -106,8 +106,9 @@ CREATE SEQUENCE seq_allegati MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 
 
 CREATE TABLE allegati
 (
-	nome VARCHAR(255) NOT NULL,
-	tipo VARCHAR(255),
+	nome VARCHAR2(255 CHAR) NOT NULL,
+	tipo VARCHAR2(255 CHAR),
+	descrizione VARCHAR2(255 CHAR),
 	data_creazione TIMESTAMP NOT NULL,
 	raw_contenuto BLOB,
 	-- fk/pk columns

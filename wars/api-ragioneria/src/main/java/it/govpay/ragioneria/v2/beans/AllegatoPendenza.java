@@ -12,6 +12,7 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "nome",
 "tipo",
+"descrizione",
 "contenuto",
 })
 public class AllegatoPendenza extends JSONSerializable {
@@ -21,6 +22,9 @@ public class AllegatoPendenza extends JSONSerializable {
   
   @JsonProperty("tipo")
   private String tipo = "application/octet-stream";
+  
+  @JsonProperty("descrizione")
+  private String descrizione = null;
   
   @JsonProperty("contenuto")
   private String contenuto = null;
@@ -58,6 +62,22 @@ public class AllegatoPendenza extends JSONSerializable {
   }
 
   /**
+   * descrizione del file
+   **/
+  public AllegatoPendenza descrizione(String descrizione) {
+    this.descrizione = descrizione;
+    return this;
+  }
+
+  @JsonProperty("descrizione")
+  public String getDescrizione() {
+    return descrizione;
+  }
+  public void setDescrizione(String descrizione) {
+    this.descrizione = descrizione;
+  }
+
+  /**
    * path per accedere al file, nella forma /allegati/{id}
    **/
   public AllegatoPendenza contenuto(String contenuto) {
@@ -84,12 +104,13 @@ public class AllegatoPendenza extends JSONSerializable {
     AllegatoPendenza allegatoPendenza = (AllegatoPendenza) o;
     return Objects.equals(nome, allegatoPendenza.nome) &&
         Objects.equals(tipo, allegatoPendenza.tipo) &&
+        Objects.equals(descrizione, allegatoPendenza.descrizione) &&
         Objects.equals(contenuto, allegatoPendenza.contenuto);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, tipo, contenuto);
+    return Objects.hash(nome, tipo, descrizione, contenuto);
   }
 
   public static AllegatoPendenza parse(String json) throws ServiceException, ValidationException {
@@ -108,6 +129,7 @@ public class AllegatoPendenza extends JSONSerializable {
     
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
+    sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    contenuto: ").append(toIndentedString(contenuto)).append("\n");
     sb.append("}");
     return sb.toString();

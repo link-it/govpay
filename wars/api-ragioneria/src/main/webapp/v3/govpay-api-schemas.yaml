@@ -42,10 +42,19 @@ components:
         nome:
           type: string
           description: nome del file
+          minLength: 1
+          maxLength: 255
         tipo:
           type: string
           description: mime type del file
           default: "application/octet-stream"
+          minLength: 1
+          maxLength: 255
+        descrizione:
+          type: string
+          description: descrizione del file
+          minLength: 1
+          maxLength: 255
         contenuto: 
           type: string
           description: path per accedere al file, nella forma /allegati/{id}
@@ -456,10 +465,19 @@ components:
         nome:
           type: string
           description: nome del file
+          minLength: 1
+          maxLength: 255
         tipo:
           type: string
           description: mime type del file
           default: "application/octet-stream"
+          minLength: 1
+          maxLength: 255
+        descrizione:
+          type: string
+          description: descrizione del file
+          minLength: 1
+          maxLength: 255
         contenuto: 
           type: string
           format: byte

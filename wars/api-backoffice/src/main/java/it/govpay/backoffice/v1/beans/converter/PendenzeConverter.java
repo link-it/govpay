@@ -829,6 +829,7 @@ public class PendenzeConverter {
 				
 				allegatoRsModel.setNome(allegato.getNome());
 				allegatoRsModel.setTipo(allegato.getTipo());
+				allegatoRsModel.setDescrizione(allegato.getDescrizione());
 				allegatoRsModel.setContenuto(MessageFormat.format(Allegati.DETTAGLIO_PATH_PATTERN, allegato.getId()));
 				
 				rsModel.add(allegatoRsModel);
@@ -849,6 +850,7 @@ public class PendenzeConverter {
 				
 				allegatoDTO.setNome(allegato.getNome());
 				allegatoDTO.setTipo(allegato.getTipo());
+				allegatoDTO.setDescrizione(allegato.getDescrizione());
 				allegatoDTO.setContenuto(allegato.getContenuto());
 				
 				allegatiDTO.add(allegatoDTO);
