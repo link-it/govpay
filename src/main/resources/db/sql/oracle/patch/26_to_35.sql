@@ -112,6 +112,7 @@ ALTER TABLE operatori MODIFY (id_utenza NOT NULL);
 
 ALTER TABLE portali ADD id_utenza NUMBER;
 UPDATE portali set id_utenza = (SELECT id FROM utenze WHERE principal = portali.principal);
+ALTER TABLE portali MODIFY (id_utenza NOT NULL);
 
 -- collego provvisoriamente portali applicazioni e operatori alle acl tramite l'id utenza
 ALTER TABLE acl ADD id_utenza NUMBER;
@@ -220,8 +221,11 @@ ALTER TABLE acl DROP COLUMN id_utenza;
 
 -- Copio i portali non censiti anche come applicazioni nella tabella applicazioni
 -- questa applicazione ha il principal non coincidente con il cod_applicazione
-UPDATE applicazioni SET principal = 'UNICA-PICA' WHERE cod_applicazione = 'UNICA-PICA';
-UPDATE applicazioni SET id_utenza = (SELECT id FROM utenze WHERE principal = 'UNICA-PICA') WHERE cod_applicazione = 'UNICA-PICA';
+-- ricercare anomalie nella tabella applicazioni prima di fare la seguente operazione.
+
+-- nel db di prod questo errore non era presente
+-- UPDATE applicazioni SET principal = 'UNICA-PICA' WHERE cod_applicazione = 'UNICA-PICA';
+-- UPDATE applicazioni SET id_utenza = (SELECT id FROM utenze WHERE principal = 'UNICA-PICA') WHERE cod_applicazione = 'UNICA-PICA';
 
 INSERT INTO applicazioni (cod_applicazione, id_utenza, principal, trusted, abilitato, versione, cod_connettore_esito, cod_connettore_verifica, firma_ricevuta) SELECT portali.cod_portale, portali.id_utenza, portali.principal, portali.trusted, portali.abilitato, portali.versione, CONCAT(portali.cod_portale,'_ESITO'), CONCAT(portali.cod_portale,'_VERIFICA'), 0 FROM portali WHERE portali.id_utenza NOT IN (SELECT id_utenza FROM applicazioni);
 
@@ -303,7 +307,6 @@ end;
 /
 
 ALTER TABLE rpt ADD id_pagamento_portale NUMBER;
-ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id);
 
 ALTER TABLE versamenti ADD data_validita TIMESTAMP(3);
 ALTER TABLE versamenti ADD nome VARCHAR(35);
@@ -323,7 +326,7 @@ ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_applicazione FOREIGN KEY (id_applicazio
 -- Imposto id_applicazione in base al portale
 UPDATE rpt SET id_applicazione = (SELECT applicazioni.id FROM applicazioni, portali WHERE applicazioni.id_utenza = portali.id_utenza AND rpt.id_portale = portali.id);
 
--- Le RPT sono associate tutte ad un'applicazione posso cancellare i portali
+-- Le RPT che erano associate ai portali ora sono associate tutte ad un'applicazione posso cancellare i portali
 -- SEMBRA NON ESSERCI
 -- ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_portale;
 
@@ -341,7 +344,7 @@ INSERT INTO pagamenti_portale (id_rpt_tmp, id_applicazione,cod_canale,data_richi
 	FROM rpt, versamenti WHERE rpt.id_versamento = versamenti.id AND rpt.cod_carrello IS NULL;
 	
 -- aggiorno riferimenti ai pagamenti portale nella tabella rpt
-UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
+-- UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
 
 UPDATE pagamenti_portale SET id_applicazione = (SELECT versamenti.id_applicazione FROM versamenti,rpt 
 	WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.id_versamento = versamenti.id) WHERE pagamenti_portale.id_applicazione IS NULL;
@@ -369,10 +372,17 @@ UPDATE pagamenti_portale SET codice_stato = 'PAGAMENTO_IN_ATTESA_DI_ESITO' WHERE
 -- aggiorno i riferimenti ai pagamenti portale per i carrelli
 -- UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_sessione = rpt.cod_carrello AND rpt.cod_carrello IS NOT NULL);
 -- sembra non ci siano carrelli con pendenze
+
+-- creo indice sulla colonna id_rpt_tmp
+ALTER TABLE pagamenti_portale ADD CONSTRAINT fk_pp_id_rpt_tmp FOREIGN KEY (id_rpt_tmp) REFERENCES rpt(id);
+
 UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
 
 -- elimino colonna id_rpt
+ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_pp_id_rpt_tmp;
 ALTER TABLE pagamenti_portale DROP COLUMN id_rpt_tmp;
+
+ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id);
 
 -- Inserimento entries nella tabella pag_port_versamenti leggendo dalla tabella rpt
 INSERT INTO pag_port_versamenti (id_pagamento_portale,id_versamento) SELECT id_pagamento_portale,id_versamento FROM rpt;
@@ -657,7 +667,9 @@ ALTER TABLE tributi ADD paga_terzi NUMBER;
 
 ALTER TABLE pagamenti_portale ADD principal VARCHAR2(4000 CHAR);
 UPDATE pagamenti_portale pp SET principal = (SELECT u.principal FROM utenze u, applicazioni a WHERE u.id = a.id_utenza AND a.id = pp.id_applicazione);
-ALTER TABLE pagamenti_portale MODIFY (principal NOT NULL);
+
+-- non tutte le rpt avevano portali e quindi applicazione non tutti i pagamenti avranno un principal
+-- ALTER TABLE pagamenti_portale MODIFY (principal NOT NULL);
 
 ALTER TABLE pagamenti_portale add tipo_utenza VARCHAR2(35 CHAR);
 UPDATE pagamenti_portale SET tipo_utenza = 'APPLICAZIONE';
