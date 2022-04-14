@@ -72,3 +72,44 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 * match response.voci[0].indice == 1
 * match response.voci[0].stato == 'Non eseguito'
 
+
+Scenario: Caricamento avviso senza numeroAvviso con voce riferita e voce con idDominio
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
+* set pendenzaPut.voci[0].idDominio = idDominio
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+And match response == { idDominio: '#(idDominio)', numeroAvviso: '#regex[0-9]{18}', UUID: '#notnull' }
+
+* def responsePut = response
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pendenza-get-dettaglio.json')
+
+* match response.numeroAvviso == responsePut.numeroAvviso
+* match response.stato == 'NON_ESEGUITA'
+* match response.voci == '#[1]'
+* match response.voci[0].indice == 1
+* match response.voci[0].stato == 'Non eseguito'
+
+* def numeroAvviso = responsePut.numeroAvviso
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* def ccp = getCurrentTimeMillis()
+* def importo = pendenzaPut.importo
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-attiva-rpt.feature')
+
+
+
+
+

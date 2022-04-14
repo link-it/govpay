@@ -1005,7 +1005,16 @@ public class VersamentoUtils {
 		for(SingoloVersamento singoloVersamento : versamento.getSingoliVersamenti(configWrapper)) {
 			// appena trovo un singolo versamento con un id dominio definito sono in modalita' multibeneficiario
 			if(singoloVersamento.getIdDominio() != null) {
-				return true;
+				try {
+					Dominio dominioSV = AnagraficaManager.getDominio(configWrapper, singoloVersamento.getIdDominio());
+					Dominio dominioV = versamento.getDominio(configWrapper);
+					
+					if(!dominioSV.getCodDominio().equals(dominioV.getCodDominio()))
+						return true;
+				} catch (NotFoundException e) {
+					// se passo qui ho fallito la validazione della pendenza !
+					throw new ServiceException("Dominio ["+singoloVersamento.getIdDominio()+"] non censito in base dati.");
+				}
 			}
 		}
 		return false;
@@ -1069,7 +1078,12 @@ public class VersamentoUtils {
 		// appena trovo un singolo versamento con un id dominio definito sono in modalita' multibeneficiario
 		if(singoloVersamento.getIdDominio() != null) {
 			try {
-				return AnagraficaManager.getDominio(configWrapper, singoloVersamento.getIdDominio());
+				Dominio dominioSV = AnagraficaManager.getDominio(configWrapper, singoloVersamento.getIdDominio());
+				
+				if(!dominioSV.getCodDominio().equals(dominio.getCodDominio()))
+					return dominioSV;
+				
+//				return AnagraficaManager.getDominio(configWrapper, singoloVersamento.getIdDominio());
 			} catch (NotFoundException e) {
 				// se passo qui ho fallito la validazione della pendenza !
 				throw new ServiceException("Dominio ["+singoloVersamento.getIdDominio()+"] non censito in base dati.");
