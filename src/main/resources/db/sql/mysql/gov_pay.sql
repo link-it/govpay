@@ -1141,13 +1141,13 @@ CREATE TABLE eventi
 	ruolo VARCHAR(1) COMMENT 'Ruolo (Client/Server)',
 	categoria_evento VARCHAR(1) COMMENT 'Categoria dell\'evento',
 	tipo_evento VARCHAR(255) COMMENT 'Tipologia dell\'evento',
-	sottotipo_evento VARCHAR(35) COMMENT 'Sotto tipologia dell\'evento',
+	sottotipo_evento VARCHAR(255) COMMENT 'Sotto tipologia dell\'evento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	-- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
 	data TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di emissione dell\'evento',
 	intervallo BIGINT COMMENT 'Intervallo tra l\'evento di richiesta e risposta',
 	esito VARCHAR(4) COMMENT 'Esito operazione registrata',
-	sottotipo_esito VARCHAR(35) COMMENT 'Descrizione esito operazione',
+	sottotipo_esito VARCHAR(255) COMMENT 'Descrizione esito operazione',
 	dettaglio_esito LONGTEXT COMMENT 'Dettaglio esito in forma estesa',
 	parametri_richiesta MEDIUMBLOB COMMENT 'Dettagli della richiesta',
 	parametri_risposta MEDIUMBLOB COMMENT 'Dettagli della risposta',

@@ -2226,11 +2226,11 @@
 			<xsd:element name="ruolo" type="String1" minOccurs="0"/>
 			<xsd:element name="categoriaEvento" type="String1" minOccurs="0"/>
 			<xsd:element name="tipoEvento" type="String255" minOccurs="0"/>
-			<xsd:element name="sottotipoEvento" type="String35" minOccurs="0" />
+			<xsd:element name="sottotipoEvento" type="String255" minOccurs="0" />
 			<xsd:element name="data" type="xsd:dateTime" minOccurs="0" />
 			<xsd:element name="intervallo" type="xsd:long" minOccurs="0" />
 			<xsd:element name="esito" type="String4" minOccurs="0"/>
-			<xsd:element name="sottotipoEsito" type="String35" minOccurs="0"/>
+			<xsd:element name="sottotipoEsito" type="String255" minOccurs="0"/>
 			<xsd:element name="dettaglioEsito" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
