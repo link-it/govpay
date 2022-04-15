@@ -256,7 +256,7 @@ public class RicevutaTelematica {
 		CtTransferListPA transferList = datiPagamento.getTransferList();
 		List<CtTransferPA> datiSingoloPagamento = transferList.getTransfer();
 
-		// input.setCCP(datiPagamento.getCodiceContestoPagamento()); non esiste
+		input.setCCP(datiPagamento.getReceiptId()); 
 		input.setIUV(datiPagamento.getCreditorReferenceId());
 
 		StringBuilder sbIstitutoAttestante = new StringBuilder();
@@ -305,7 +305,7 @@ public class RicevutaTelematica {
 			VoceRicevutaTelematicaInput voce = new VoceRicevutaTelematicaInput();
 
 			voce.setDescrizione(ctDatiSingoloPagamentoRT.getRemittanceInformation());
-			voce.setIdRiscossione(rt.getReceiptId() + ctDatiSingoloPagamentoRT.getIdTransfer());
+			voce.setIdRiscossione(rt.getReceiptId());
 			voce.setImporto(ctDatiSingoloPagamentoRT.getTransferAmount().doubleValue());
 			voce.setStato(ctDatiSingoloPagamentoRT.getTransferAmount().compareTo(BigDecimal.ZERO) == 0 ? RicevutaTelematicaCostanti.PAGAMENTO_NON_ESEGUITO : RicevutaTelematicaCostanti.PAGAMENTO_ESEGUITO);
 
