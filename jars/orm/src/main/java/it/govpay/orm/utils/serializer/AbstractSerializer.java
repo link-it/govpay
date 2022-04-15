@@ -32,6 +32,7 @@ import org.openspcoop2.utils.beans.WriteToSerializerType;
 import org.openspcoop2.utils.xml.JaxbUtils;
 
 import it.govpay.orm.ACL;
+import it.govpay.orm.Allegato;
 import it.govpay.orm.Applicazione;
 import it.govpay.orm.Audit;
 import it.govpay.orm.Batch;
@@ -44,6 +45,7 @@ import it.govpay.orm.FR;
 import it.govpay.orm.IUV;
 import it.govpay.orm.IbanAccredito;
 import it.govpay.orm.IdAcl;
+import it.govpay.orm.IdAllegato;
 import it.govpay.orm.IdAnagrafica;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdBatch;
@@ -3033,6 +3035,124 @@ public abstract class AbstractSerializer {
 	 */
 	public String toString(PagamentoPortaleVersamento pagamentoPortaleVersamento,boolean prettyPrint) throws SerializerException {
 		return this.objToXml(PagamentoPortaleVersamento.class, pagamentoPortaleVersamento, prettyPrint).toString();
+	}
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: Allegato
+	 =================================================================================
+	*/
+	
+	/**
+	 * Serialize to file system in <var>fileName</var> the object <var>allegato</var> of type {@link it.govpay.orm.Allegato}
+	 * 
+	 * @param fileName Xml file to serialize the object <var>allegato</var>
+	 * @param allegato Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(String fileName,Allegato allegato) throws SerializerException {
+		this.objToXml(fileName, Allegato.class, allegato, false);
+	}
+	/**
+	 * Serialize to file system in <var>fileName</var> the object <var>allegato</var> of type {@link it.govpay.orm.Allegato}
+	 * 
+	 * @param fileName Xml file to serialize the object <var>allegato</var>
+	 * @param allegato Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(String fileName,Allegato allegato,boolean prettyPrint) throws SerializerException {
+		this.objToXml(fileName, Allegato.class, allegato, prettyPrint);
+	}
+	
+	/**
+	 * Serialize to file system in <var>file</var> the object <var>allegato</var> of type {@link it.govpay.orm.Allegato}
+	 * 
+	 * @param file Xml file to serialize the object <var>allegato</var>
+	 * @param allegato Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(File file,Allegato allegato) throws SerializerException {
+		this.objToXml(file, Allegato.class, allegato, false);
+	}
+	/**
+	 * Serialize to file system in <var>file</var> the object <var>allegato</var> of type {@link it.govpay.orm.Allegato}
+	 * 
+	 * @param file Xml file to serialize the object <var>allegato</var>
+	 * @param allegato Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(File file,Allegato allegato,boolean prettyPrint) throws SerializerException {
+		this.objToXml(file, Allegato.class, allegato, prettyPrint);
+	}
+	
+	/**
+	 * Serialize to output stream <var>out</var> the object <var>allegato</var> of type {@link it.govpay.orm.Allegato}
+	 * 
+	 * @param out OutputStream to serialize the object <var>allegato</var>
+	 * @param allegato Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(OutputStream out,Allegato allegato) throws SerializerException {
+		this.objToXml(out, Allegato.class, allegato, false);
+	}
+	/**
+	 * Serialize to output stream <var>out</var> the object <var>allegato</var> of type {@link it.govpay.orm.Allegato}
+	 * 
+	 * @param out OutputStream to serialize the object <var>allegato</var>
+	 * @param allegato Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(OutputStream out,Allegato allegato,boolean prettyPrint) throws SerializerException {
+		this.objToXml(out, Allegato.class, allegato, prettyPrint);
+	}
+			
+	/**
+	 * Serialize to byte array the object <var>allegato</var> of type {@link it.govpay.orm.Allegato}
+	 * 
+	 * @param allegato Object to be serialized
+	 * @return Object to be serialized in byte array
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public byte[] toByteArray(Allegato allegato) throws SerializerException {
+		return this.objToXml(Allegato.class, allegato, false).toByteArray();
+	}
+	/**
+	 * Serialize to byte array the object <var>allegato</var> of type {@link it.govpay.orm.Allegato}
+	 * 
+	 * @param allegato Object to be serialized
+	 * @param prettyPrint if true output the XML with indenting
+	 * @return Object to be serialized in byte array
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public byte[] toByteArray(Allegato allegato,boolean prettyPrint) throws SerializerException {
+		return this.objToXml(Allegato.class, allegato, prettyPrint).toByteArray();
+	}
+	
+	/**
+	 * Serialize to String the object <var>allegato</var> of type {@link it.govpay.orm.Allegato}
+	 * 
+	 * @param allegato Object to be serialized
+	 * @return Object to be serialized as String
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public String toString(Allegato allegato) throws SerializerException {
+		return this.objToXml(Allegato.class, allegato, false).toString();
+	}
+	/**
+	 * Serialize to String the object <var>allegato</var> of type {@link it.govpay.orm.Allegato}
+	 * 
+	 * @param allegato Object to be serialized
+	 * @param prettyPrint if true output the XML with indenting
+	 * @return Object to be serialized as String
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public String toString(Allegato allegato,boolean prettyPrint) throws SerializerException {
+		return this.objToXml(Allegato.class, allegato, prettyPrint).toString();
 	}
 	
 	
@@ -7281,6 +7401,124 @@ public abstract class AbstractSerializer {
 	 */
 	public String toString(VistaRiscossioni vistaRiscossioni,boolean prettyPrint) throws SerializerException {
 		return this.objToXml(VistaRiscossioni.class, vistaRiscossioni, prettyPrint).toString();
+	}
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: id-allegato
+	 =================================================================================
+	*/
+	
+	/**
+	 * Serialize to file system in <var>fileName</var> the object <var>idAllegato</var> of type {@link it.govpay.orm.IdAllegato}
+	 * 
+	 * @param fileName Xml file to serialize the object <var>idAllegato</var>
+	 * @param idAllegato Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(String fileName,IdAllegato idAllegato) throws SerializerException {
+		this.objToXml(fileName, IdAllegato.class, idAllegato, false);
+	}
+	/**
+	 * Serialize to file system in <var>fileName</var> the object <var>idAllegato</var> of type {@link it.govpay.orm.IdAllegato}
+	 * 
+	 * @param fileName Xml file to serialize the object <var>idAllegato</var>
+	 * @param idAllegato Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(String fileName,IdAllegato idAllegato,boolean prettyPrint) throws SerializerException {
+		this.objToXml(fileName, IdAllegato.class, idAllegato, prettyPrint);
+	}
+	
+	/**
+	 * Serialize to file system in <var>file</var> the object <var>idAllegato</var> of type {@link it.govpay.orm.IdAllegato}
+	 * 
+	 * @param file Xml file to serialize the object <var>idAllegato</var>
+	 * @param idAllegato Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(File file,IdAllegato idAllegato) throws SerializerException {
+		this.objToXml(file, IdAllegato.class, idAllegato, false);
+	}
+	/**
+	 * Serialize to file system in <var>file</var> the object <var>idAllegato</var> of type {@link it.govpay.orm.IdAllegato}
+	 * 
+	 * @param file Xml file to serialize the object <var>idAllegato</var>
+	 * @param idAllegato Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(File file,IdAllegato idAllegato,boolean prettyPrint) throws SerializerException {
+		this.objToXml(file, IdAllegato.class, idAllegato, prettyPrint);
+	}
+	
+	/**
+	 * Serialize to output stream <var>out</var> the object <var>idAllegato</var> of type {@link it.govpay.orm.IdAllegato}
+	 * 
+	 * @param out OutputStream to serialize the object <var>idAllegato</var>
+	 * @param idAllegato Object to be serialized in xml file <var>fileName</var>
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(OutputStream out,IdAllegato idAllegato) throws SerializerException {
+		this.objToXml(out, IdAllegato.class, idAllegato, false);
+	}
+	/**
+	 * Serialize to output stream <var>out</var> the object <var>idAllegato</var> of type {@link it.govpay.orm.IdAllegato}
+	 * 
+	 * @param out OutputStream to serialize the object <var>idAllegato</var>
+	 * @param idAllegato Object to be serialized in xml file <var>fileName</var>
+	 * @param prettyPrint if true output the XML with indenting
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public void write(OutputStream out,IdAllegato idAllegato,boolean prettyPrint) throws SerializerException {
+		this.objToXml(out, IdAllegato.class, idAllegato, prettyPrint);
+	}
+			
+	/**
+	 * Serialize to byte array the object <var>idAllegato</var> of type {@link it.govpay.orm.IdAllegato}
+	 * 
+	 * @param idAllegato Object to be serialized
+	 * @return Object to be serialized in byte array
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public byte[] toByteArray(IdAllegato idAllegato) throws SerializerException {
+		return this.objToXml(IdAllegato.class, idAllegato, false).toByteArray();
+	}
+	/**
+	 * Serialize to byte array the object <var>idAllegato</var> of type {@link it.govpay.orm.IdAllegato}
+	 * 
+	 * @param idAllegato Object to be serialized
+	 * @param prettyPrint if true output the XML with indenting
+	 * @return Object to be serialized in byte array
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public byte[] toByteArray(IdAllegato idAllegato,boolean prettyPrint) throws SerializerException {
+		return this.objToXml(IdAllegato.class, idAllegato, prettyPrint).toByteArray();
+	}
+	
+	/**
+	 * Serialize to String the object <var>idAllegato</var> of type {@link it.govpay.orm.IdAllegato}
+	 * 
+	 * @param idAllegato Object to be serialized
+	 * @return Object to be serialized as String
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public String toString(IdAllegato idAllegato) throws SerializerException {
+		return this.objToXml(IdAllegato.class, idAllegato, false).toString();
+	}
+	/**
+	 * Serialize to String the object <var>idAllegato</var> of type {@link it.govpay.orm.IdAllegato}
+	 * 
+	 * @param idAllegato Object to be serialized
+	 * @param prettyPrint if true output the XML with indenting
+	 * @return Object to be serialized as String
+	 * @throws SerializerException The exception that is thrown when an error occurs during serialization
+	 */
+	public String toString(IdAllegato idAllegato,boolean prettyPrint) throws SerializerException {
+		return this.objToXml(IdAllegato.class, idAllegato, prettyPrint).toString();
 	}
 	
 	

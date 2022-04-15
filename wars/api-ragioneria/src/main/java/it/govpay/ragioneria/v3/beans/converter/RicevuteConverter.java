@@ -18,6 +18,7 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.utils.JaxbUtils;
+import it.govpay.ragioneria.v3.beans.ModelloPagamento;
 import it.govpay.ragioneria.v3.beans.Ricevuta;
 import it.govpay.ragioneria.v3.beans.RicevutaIstitutoAttestante;
 import it.govpay.ragioneria.v3.beans.RicevutaRpt;
@@ -134,6 +135,14 @@ public class RicevuteConverter {
 			}
 			rsModel.setRt(ricevutaRt);
 
+		}
+		
+		if(rpt.getPagamentoPortale() != null) {
+			if(rpt.getPagamentoPortale().getTipo() == 1) {
+				rsModel.setModello(ModelloPagamento.ENTE);	
+			} else if(rpt.getPagamentoPortale().getTipo() == 3) {
+				rsModel.setModello(ModelloPagamento.PSP);
+			}
 		}
 
 		return rsModel;

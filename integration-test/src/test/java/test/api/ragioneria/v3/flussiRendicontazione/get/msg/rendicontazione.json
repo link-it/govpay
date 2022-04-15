@@ -43,7 +43,8 @@
 			"direzione":"##string",
 			"divisione":"##string",
 			"UUID":"#string",
-			"soggettoPagatore":"#notnull"
+			"soggettoPagatore":"#notnull",
+   			"allegati": "##[]"
 		}
 	}
   }

@@ -110,5 +110,6 @@
 			}
 		}
 	},
-	"rt": "##null"
+	"rt": "##null",
+   	"modello" : "#notnull"
 }

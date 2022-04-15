@@ -392,6 +392,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Allegato }
+     */
+    public Allegato createAllegato() {
+        return new Allegato();
+    }
+
+    /**
      * Create an instance of {@link IdUtenza }
      */
     public IdUtenza createIdUtenza() {
@@ -494,6 +501,13 @@ public class ObjectFactory {
      */
     public IuvSearch createIuvSearch() {
         return new IuvSearch();
+    }
+
+    /**
+     * Create an instance of {@link IdAllegato }
+     */
+    public IdAllegato createIdAllegato() {
+        return new IdAllegato();
     }
 
     /**

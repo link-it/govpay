@@ -38,6 +38,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "dataPromemoriaScadenza",
 "proprieta",
 "voci",
+"allegati",
 })
 public class NuovaPendenza extends JSONSerializable implements IValidable {
   
@@ -106,6 +107,9 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
   
   @JsonProperty("voci")
   private List<NuovaVocePendenza> voci = new ArrayList<>();
+  
+  @JsonProperty("allegati")
+  private List<NuovoAllegatoPendenza> allegati = null;
   
   /**
    * Identificativo della tipologia pendenza
@@ -452,6 +456,21 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     this.voci = voci;
   }
 
+  /**
+   **/
+  public NuovaPendenza allegati(List<NuovoAllegatoPendenza> allegati) {
+    this.allegati = allegati;
+    return this;
+  }
+
+  @JsonProperty("allegati")
+  public List<NuovoAllegatoPendenza> getAllegati() {
+    return allegati;
+  }
+  public void setAllegati(List<NuovoAllegatoPendenza> allegati) {
+    this.allegati = allegati;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -481,12 +500,13 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
         Objects.equals(dataNotificaAvviso, nuovaPendenza.dataNotificaAvviso) &&
         Objects.equals(dataPromemoriaScadenza, nuovaPendenza.dataPromemoriaScadenza) &&
         Objects.equals(proprieta, nuovaPendenza.proprieta) &&
-        Objects.equals(voci, nuovaPendenza.voci);
+        Objects.equals(voci, nuovaPendenza.voci) &&
+        Objects.equals(allegati, nuovaPendenza.allegati);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idTipoPendenza, idDominio, idUnitaOperativa, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, direzione, divisione, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, voci);
+    return Objects.hash(idTipoPendenza, idDominio, idUnitaOperativa, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, direzione, divisione, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, voci, allegati);
   }
 
   public static NuovaPendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -524,6 +544,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     sb.append("    dataPromemoriaScadenza: ").append(toIndentedString(dataPromemoriaScadenza)).append("\n");
     sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
+    sb.append("    allegati: ").append(toIndentedString(allegati)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -572,7 +593,8 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 		ValidatoreUtils.validaData(vf, "dataPromemoriaScadenza", this.dataPromemoriaScadenza);
 		
 		vf.getValidator("proprieta", this.proprieta).validateFields();
-
+		
+		vf.getValidator("allegati", this.allegati).validateObjects();
 	}
 }
 

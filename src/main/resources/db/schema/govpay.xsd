@@ -64,6 +64,7 @@
 								<linkit:sql-table object-name="Audit" object-type="Audit"/>
 								<linkit:sql-table object-name="id-messaggio"
 									object-type="id-messaggio"/>
+								<linkit:sql-table object-name="Allegato" object-type="Allegato"/>
 							</linkit:sql-table-list>
 						</linkit:sql-script>
 						<linkit:sql-mapping single-table-mapping="false" on-delete-cascade="false"
@@ -531,6 +532,12 @@
 			<xsd:element name="idVersamento" type="id-versamento" minOccurs="0" />
 			<xsd:element name="idDocumento" type="id-documento" minOccurs="0" />
 			<xsd:element name="tipo" type="String16"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="id-allegato">
+		<xsd:sequence>
+			<xsd:element name="idAllegato" type="xsd:long"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -2219,11 +2226,11 @@
 			<xsd:element name="ruolo" type="String1" minOccurs="0"/>
 			<xsd:element name="categoriaEvento" type="String1" minOccurs="0"/>
 			<xsd:element name="tipoEvento" type="String255" minOccurs="0"/>
-			<xsd:element name="sottotipoEvento" type="String35" minOccurs="0" />
+			<xsd:element name="sottotipoEvento" type="String255" minOccurs="0" />
 			<xsd:element name="data" type="xsd:dateTime" minOccurs="0" />
 			<xsd:element name="intervallo" type="xsd:long" minOccurs="0" />
 			<xsd:element name="esito" type="String4" minOccurs="0"/>
-			<xsd:element name="sottotipoEsito" type="String35" minOccurs="0"/>
+			<xsd:element name="sottotipoEsito" type="String255" minOccurs="0"/>
 			<xsd:element name="dettaglioEsito" type="xsd:string" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -5102,4 +5109,37 @@
 			
 		</xsd:sequence>
 	</xsd:complexType>
+	
+	<xsd:element name="Allegato" type="Allegato"/>
+	<xsd:complexType name="Allegato">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" id="id-allegato"/>
+					<linkit:sql-table-mapping generate-sql="true" name="allegati"
+						on-delete-cascade="false">
+						<linkit:sql-table-constraint foreign-key="fk_all"/>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="idVersamento" type="id-versamento">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Versamento" object-type="Versamento"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="nome" type="String255"/>
+			<xsd:element name="tipo" type="String255" minOccurs="0"/>
+			<xsd:element name="descrizione" type="String255" minOccurs="0"/>
+			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
+			<xsd:element name="rawContenuto" type="xsd:base64Binary" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+			
 </xsd:schema>

@@ -142,7 +142,11 @@ public class Pagamento   {
 				for(Dominio d : lstDomini) {
 					codDomini.add(d.getCodDominio());
 				}
-				List<Rpt> rpts = rptBD.getRptPendenti(codDomini);
+				
+				Integer numeroMassimoGiorniRPTPendenti = GovpayConfig.getInstance().getNumeroMassimoGiorniRPTPendenti();
+				log.info("Ricerca su GovPay delle transazioni pendenti da massimo " + numeroMassimoGiorniRPTPendenti + " giorni...");
+				
+				List<Rpt> rpts = rptBD.getRptPendenti(codDomini , numeroMassimoGiorniRPTPendenti);
 
 				log.info("Identificate su GovPay " + rpts.size() + " transazioni pendenti");
 				ctx.getApplicationLogger().log("pendenti.listaPendentiGovPayOk", rpts.size() + "");

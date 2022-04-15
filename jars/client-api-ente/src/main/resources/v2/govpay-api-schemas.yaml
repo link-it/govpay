@@ -33,6 +33,31 @@ components:
         testo:
           description: allegato codificato in base64
           type: string         
+    AllegatoPendenza:
+      type: object
+      required: 
+        - nome
+        - contenuto
+      properties:
+        nome:
+          type: string
+          description: nome del file
+          minLength: 1
+          maxLength: 255
+        tipo:
+          type: string
+          description: mime type del file
+          default: "application/octet-stream"
+          minLength: 1
+          maxLength: 255
+        descrizione:
+          type: string
+          description: descrizione del file
+          minLength: 1
+          maxLength: 255
+        contenuto: 
+          type: string
+          description: path per accedere al file, nella forma /allegati/{id}
     Bollo:
       description: Definisce i dati di un bollo telematico
       type: object
@@ -278,6 +303,13 @@ components:
           type: number
           format: integer
           example: '100'
+    ModelloPagamento:
+      type: string
+      description: Modello di pagamento
+      example: 'Pagamento ad iniziativa PSP'
+      enum:
+        - 'Pagamento ad iniziativa Ente'
+        - 'Pagamento ad iniziativa PSP'
     NumeroAvviso:
       type: string
       description: Identificativo univoco versamento, assegnato se pagabile da psp
@@ -378,7 +410,11 @@ components:
           minItems: 1
           maxItems: 5
           items:
-            $ref: '#/components/schemas/NuovaVocePendenza'                
+            $ref: '#/components/schemas/NuovaVocePendenza'     
+        allegati:
+          type: array
+          items:
+            $ref: '#/components/schemas/NuovoAllegatoPendenza'
     NuovaVocePendenza:
       type: object
       allOf:
@@ -420,6 +456,32 @@ components:
               maxLength: 140
             contabilita:
                 $ref: '#/components/schemas/Contabilita'
+    NuovoAllegatoPendenza:
+      type: object
+      required: 
+        - nome
+        - contenuto
+      properties:
+        nome:
+          type: string
+          description: nome del file
+          minLength: 1
+          maxLength: 255
+        tipo:
+          type: string
+          description: mime type del file
+          default: "application/octet-stream"
+          minLength: 1
+          maxLength: 255
+        descrizione:
+          type: string
+          description: descrizione del file
+          minLength: 1
+          maxLength: 255
+        contenuto: 
+          type: string
+          format: byte
+          description: contenuto del file
     NuovoDocumento:
       allOf:
         - $ref: "#/components/schemas/TipoRiferimentoDocumento" 
@@ -520,6 +582,10 @@ components:
           description: Parametro di randomizzazione delle URL di pagamento statiche
         proprieta:
           $ref: '#/components/schemas/ProprietaPendenza'
+        allegati:
+          type: array
+          items:
+            $ref: '#/components/schemas/AllegatoPendenza'
     Profilo:
       type: object
       required: 
@@ -694,6 +760,7 @@ components:
         - istitutoAttestante
         - rpt
         - rt
+        - modello
       properties:
         dominio:
           $ref: '#/components/schemas/Dominio'
@@ -785,6 +852,8 @@ components:
             json:
               description: ricevuta in formato JSON
               type: object  
+        modello:
+          $ref: '#/components/schemas/ModelloPagamento'
       example: 
           dominio: 
             idDominio: '01234567890'
@@ -917,7 +986,8 @@ components:
             data: '2020-12-31T12:55:12'
             tipo: 'ctReceipt'
             xml: '...[XML originale codificato Base64]...'
-            json: '...[XML originale convertito in json]...'                          
+            json: '...[XML originale convertito in json]...'  
+          modello: 'Pagamento ad iniziativa PSP'
     Ricevute:
       type: object
       allOf:

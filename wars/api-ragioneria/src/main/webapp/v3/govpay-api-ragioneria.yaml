@@ -11,6 +11,7 @@ info:
 servers:
   - url: /govpay/backend/api/ragioneria/rs/basic/v3/
 tags:
+  - name: Pendenze
   - name: Rendicontazioni
   - name: Ricevute
   - name: Riconciliazioni
@@ -20,6 +21,37 @@ tags:
 security:
   - basicAuth: []    
 paths:
+  '/allegati/{id}':
+    get:
+      summary: Allegato di una pendenza
+      operationId: getAllegatoPendenza
+      description:      Fornisce l'allegato di una pendenza
+      tags:
+        - Pendenze
+      parameters:
+        - in: path
+          name: id
+          description: Identificativo dell'allegato
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Contenuto dell'allegato
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'govpay-api-responses.yaml#/components/responses/404NotFound'
+        '500':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'
   '/flussiRendicontazione':
     get:
       summary: Elenco dei flussi di rendicontazione acquisite da pagoPa

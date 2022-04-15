@@ -53,6 +53,7 @@
    	<!-- JAX-RS Service Impl -->
 
    	<b:bean id="applicazioni" class="it.govpay.backoffice.v1.Applicazioni"/>
+   	<b:bean id="allegati" class="it.govpay.backoffice.v1.Allegati"/>
    	<b:bean id="avvisi" class="it.govpay.backoffice.v1.Avvisi"/>
    	<b:bean id="check" class="it.govpay.backoffice.v1.Check"/>
    	<b:bean id="configurazioni" class="it.govpay.backoffice.v1.Configurazioni"/>
@@ -90,6 +91,7 @@
     <jaxrs:server id="apiBackofficeBasicV1" address="/basic/v1/">
         <jaxrs:serviceBeans>
                 <ref bean="applicazioni" />
+                <ref bean="allegati" />
 			   	<ref bean="avvisi" />
 			   	<ref bean="check" />
 			   	<ref bean="configurazioni" />
@@ -137,6 +139,7 @@
     <jaxrs:server id="apiBackofficeSSLV1" address="/ssl/v1/">
         <jaxrs:serviceBeans>
                 <ref bean="applicazioni" />
+                <ref bean="allegati" />
 			   	<ref bean="avvisi" />
 			   	<ref bean="check" />
 			   	<ref bean="configurazioni" />
@@ -184,6 +187,7 @@
     <jaxrs:server id="apiBackofficeSSLHeaderV1" address="/sslheader/v1/">
         <jaxrs:serviceBeans>
                 <ref bean="applicazioni" />
+                <ref bean="allegati" />
 			   	<ref bean="avvisi" />
 			   	<ref bean="check" />
 			   	<ref bean="configurazioni" />
@@ -230,6 +234,7 @@
     <jaxrs:server id="apiBackofficeFormV1" address="/form/v1/">
         <jaxrs:serviceBeans>
                 <ref bean="applicazioni" />
+                <ref bean="allegati" />
 			   	<ref bean="avvisi" />
 			   	<ref bean="check" />
 			   	<ref bean="configurazioni" />
@@ -277,6 +282,7 @@
     <jaxrs:server id="apiBackofficeHeaderV1" address="/header/v1/">
         <jaxrs:serviceBeans>
                 <ref bean="applicazioni" />
+                <ref bean="allegati" />
 			   	<ref bean="avvisi" />
 			   	<ref bean="check" />
 			   	<ref bean="configurazioni" />
@@ -324,6 +330,7 @@
     <jaxrs:server id="apiBackofficeSpidV1" address="/spid/v1/">
         <jaxrs:serviceBeans>
                 <ref bean="applicazioni" />
+                <ref bean="allegati" />
 			   	<ref bean="avvisi" />
 			   	<ref bean="check" />
 			   	<ref bean="configurazioni" />
@@ -371,6 +378,7 @@
     <jaxrs:server id="apiBackofficeSessionV1" address="/session/v1/">
         <jaxrs:serviceBeans>
                 <ref bean="applicazioni" />
+                <ref bean="allegati" />
 			   	<ref bean="avvisi" />
 			   	<ref bean="check" />
 			   	<ref bean="configurazioni" />
@@ -440,6 +448,7 @@
     <jaxrs:server id="apiBackofficeDefaultV1" address="/v1/">
         <jaxrs:serviceBeans>
                 <ref bean="applicazioni" />
+                <ref bean="allegati" />
 			   	<ref bean="avvisi" />
 			   	<ref bean="check" />
 			   	<ref bean="configurazioni" />

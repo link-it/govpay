@@ -36,6 +36,7 @@ import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TY
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.pagamento.AllegatiBD;
 import it.govpay.bd.pagamento.DocumentiBD;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.RptBD;
@@ -62,6 +63,7 @@ public class Versamento extends it.govpay.model.Versamento {
 	private transient TipoVersamentoDominio tipoVersamentoDominio;
 	private transient Documento documento;
 	private transient ProprietaPendenza proprietaPendenza;
+	private transient List<Allegato> allegati;
 	
 	// Indica se il versamento e' stato creato o aggiornato. Utile per individuare il codice di ritorno nelle api rest.
 	private transient boolean created;
@@ -289,5 +291,32 @@ public class Versamento extends it.govpay.model.Versamento {
 		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
 		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
 		return serializer.getObject(objToSerialize); 
+	}
+	
+	public List<Allegato> getAllegati()  {
+		return this.allegati;
+	}
+	
+	public List<Allegato> getAllegati(BDConfigWrapper configWrapper) throws ServiceException {
+		if(this.allegati == null && this.getId() != null) {
+			AllegatiBD allegatiBD = new AllegatiBD(configWrapper);
+			this.allegati = allegatiBD.getAllegati(this.getId());
+		}
+		
+		return this.allegati;
+	}
+	
+	public List<Allegato> getAllegati(BasicBD bd) throws ServiceException {
+		if(this.allegati == null && this.getId() != null) {
+			AllegatiBD allegatiBD = new AllegatiBD(bd);
+			allegatiBD.setAtomica(false); // connessione deve essere gia' aperta
+			this.allegati = allegatiBD.getAllegati(this.getId());
+		}
+		
+		return this.allegati;
+	}
+	
+	public void setAllegati(List<Allegato> allegati) {
+		this.allegati = allegati;
 	}
 }

@@ -46,6 +46,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.exception.VersamentoException;
+import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Promemoria;
@@ -56,6 +57,7 @@ import it.govpay.bd.model.converter.NotificaAppIoConverter;
 import it.govpay.bd.model.converter.PromemoriaConverter;
 import it.govpay.bd.model.converter.SingoloVersamentoConverter;
 import it.govpay.bd.model.converter.VersamentoConverter;
+import it.govpay.bd.pagamento.filters.AllegatoFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.pagamento.util.CountPerDominio;
 import it.govpay.model.Pagamento.Stato;
@@ -376,6 +378,17 @@ public class VersamentiBD extends BasicBD {
 				notificaAppIo.setId(notificaAppIOVo.getId());
 			}
 			
+			// allegati
+			if(versamento.getAllegati() != null && versamento.getAllegati().size() > 0) {
+				AllegatiBD allegatiBD  = new AllegatiBD(this);
+				allegatiBD.setAtomica(false);
+				
+				for (Allegato allegato : versamento.getAllegati()) {
+					allegato.setIdVersamento(vo.getId());
+					allegatiBD.insertAllegato(allegato);
+				}
+			}
+			
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} finally {
@@ -485,6 +498,30 @@ public class VersamentiBD extends BasicBD {
 					
 					versamento.setIdDocumento(idDocumentoLong);
 					versamento.getDocumento(this).setId(idDocumentoLong);
+				}
+				
+				// aggiornamento allegati
+				AllegatiBD allegatiBD = new AllegatiBD(this);
+				allegatiBD.setAtomica(false);
+				AllegatoFilter allegatoFilter = allegatiBD.newFilter();
+				allegatoFilter.setIdVersamento(versamento.getId());
+				
+				long count = allegatiBD.count(allegatoFilter);
+				
+				if(count > 0) {
+					// cancello le vecchi allegati
+					List<Allegato> lst = allegatiBD.findAll(allegatoFilter); 
+					for(Allegato allegato: lst) {
+						allegatiBD.deleteAllegato(allegato);
+					}
+				}
+				
+				// allegati
+				if(versamento.getAllegati() != null && versamento.getAllegati().size() > 0) {
+					for (Allegato allegato : versamento.getAllegati()) {
+						allegato.setIdVersamento(versamento.getId());
+						allegatiBD.insertAllegato(allegato);
+					}
 				}
 			}
 			// spostato sotto perche' posso sostituire il documento

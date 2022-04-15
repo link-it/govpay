@@ -32,7 +32,8 @@
 		"numeroAvviso":"#notnull",
 		"dataValidita":"##string",
 		"documento": "##object",
-		"proprieta": "##object"
+		"proprieta": "##object",
+		"allegati": "##[]"
 	},
 	"riscossioni" : [
 		{
@@ -200,5 +201,6 @@
 				]
 			}
 		}
-	}
+	},
+   	"modello" : "#notnull"
 }
