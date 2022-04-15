@@ -376,7 +376,10 @@ UPDATE pagamenti_portale SET codice_stato = 'PAGAMENTO_IN_ATTESA_DI_ESITO' WHERE
 -- creo indice sulla colonna id_rpt_tmp
 ALTER TABLE pagamenti_portale ADD CONSTRAINT fk_pp_id_rpt_tmp FOREIGN KEY (id_rpt_tmp) REFERENCES rpt(id);
 
-UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
+UPDATE (SELECT rpt.id_pagamento_portale AS rpt_id_pp, pagamenti_portale.id AS id_pp FROM rpt, pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id) SET rpt_id_pp = id_pp;
+
+-- ci mette troppo tempo, la query non e' ottimizzata
+-- UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
 
 -- elimino colonna id_rpt
 ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_pp_id_rpt_tmp;
@@ -619,7 +622,11 @@ CREATE TABLE sv_tmp (
 CREATE INDEX idx_sv_tmp_1 ON sv_tmp (id);
 INSERT INTO sv_tmp (id, indice_dati) select sv1.id as id, row_number() over (partition by sv1.id_versamento order by sv1.id) as indice_dati from singoli_versamenti sv1;
 
-UPDATE singoli_versamenti set indice_dati = (SELECT sv_tmp.indice_dati FROM sv_tmp WHERE singoli_versamenti.id = sv_tmp.id);
+UPDATE (SELECT singoli_versamenti.indice_dati AS idx_dest, sv_tmp.indice_dati AS idx_src FROM singoli_versamenti, sv_tmp WHERE singoli_versamenti.id = sv_tmp.id) 
+	SET idx_dest = idx_src;
+	
+-- esecuzione ottimizzata sopra
+-- UPDATE singoli_versamenti set indice_dati = (SELECT sv_tmp.indice_dati FROM sv_tmp WHERE singoli_versamenti.id = sv_tmp.id);
 
 DROP INDEX idx_sv_tmp_1;
 DROP TABLE sv_tmp;
@@ -633,8 +640,11 @@ alter table rendicontazioni add id_singolo_versamento NUMBER;
 alter table rendicontazioni add CONSTRAINT fk_rnd_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id);
 -- aggiorno entries prendendo l'id singolo_versamento dal pagamento
 -- update rendicontazioni set id_singolo_versamento = (select p.id_singolo_versamento from (select r1.id as id, pagamenti.id_singolo_versamento as id_singolo_versamento from pagamenti , rendicontazioni r1 where r1.id_pagamento = pagamenti.id) as p where p.id = rendicontazioni.id) ;
-update rendicontazioni set id_singolo_versamento = (select pagamenti.id_singolo_versamento from pagamenti WHERE rendicontazioni.id_pagamento = pagamenti.id);
+-- update rendicontazioni set id_singolo_versamento = (select pagamenti.id_singolo_versamento from pagamenti WHERE rendicontazioni.id_pagamento = pagamenti.id);
 
+UPDATE (SELECT rendicontazioni.id_singolo_versamento AS idx_dest, pagamenti.id_singolo_versamento AS idx_src 
+	FROM rendicontazioni, pagamenti WHERE rendicontazioni.id_pagamento = pagamenti.id) 
+	SET idx_dest = idx_src;
 
 -- Funzione per calcolare il numero di millisecondi dal 1/1/1970
 CREATE OR REPLACE FUNCTION date_to_unix_for_smart_order (p_date date, in_src_tz in varchar2 default 'Europe/Rome') return number is
@@ -666,7 +676,7 @@ ALTER TABLE tributi ADD on_line NUMBER;
 ALTER TABLE tributi ADD paga_terzi NUMBER;
 
 ALTER TABLE pagamenti_portale ADD principal VARCHAR2(4000 CHAR);
-UPDATE pagamenti_portale pp SET principal = (SELECT u.principal FROM utenze u, applicazioni a WHERE u.id = a.id_utenza AND a.id = pp.id_applicazione);
+UPDATE pagamenti_portale pp SET principal = (SELECT u.principal FROM utenze u, applicazioni a WHERE u.id = a.id_utenza AND a.id = pp.id_applicazione) WHERE pp.id_applicazione IS NOT NULL;
 
 -- non tutte le rpt avevano portali e quindi applicazione non tutti i pagamenti avranno un principal
 -- ALTER TABLE pagamenti_portale MODIFY (principal NOT NULL);
