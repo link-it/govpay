@@ -32,6 +32,7 @@ import org.openspcoop2.utils.serialization.SerializationConfig;
 
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.tracciati.Contabilita;
+import it.govpay.core.beans.tracciati.NuovoAllegatoPendenza;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.QuotaContabilita;
 import it.govpay.core.beans.tracciati.Soggetto;
@@ -110,6 +111,8 @@ public class TracciatiConverter {
 		}
 		
 		versamento.setProprieta(pendenza.getProprieta());
+		
+		versamento.setAllegati(toAllegatiPendenzaDTO(pendenza.getAllegati()));
 
 		return versamento;
 		
@@ -256,5 +259,26 @@ public class TracciatiConverter {
 			return ConverterUtils.toJSON(obj, null, serializationConfig);
 		}
 		return null;
+	}
+	
+	private static List<it.govpay.core.dao.commons.Versamento.AllegatoPendenza> toAllegatiPendenzaDTO(List<NuovoAllegatoPendenza> allegati) {
+		List<it.govpay.core.dao.commons.Versamento.AllegatoPendenza> allegatiDTO = null;
+		
+		if(allegati != null && allegati.size() > 0) {
+			allegatiDTO = new ArrayList<>();
+			
+			for (NuovoAllegatoPendenza allegato : allegati) {
+				it.govpay.core.dao.commons.Versamento.AllegatoPendenza allegatoDTO = new it.govpay.core.dao.commons.Versamento.AllegatoPendenza();
+				
+				allegatoDTO.setNome(allegato.getNome());
+				allegatoDTO.setTipo(allegato.getTipo());
+				allegatoDTO.setDescrizione(allegato.getDescrizione());
+				allegatoDTO.setContenuto(allegato.getContenuto());
+				
+				allegatiDTO.add(allegatoDTO);
+			}
+		}
+		
+		return allegatiDTO;
 	}
 }
