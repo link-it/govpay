@@ -21,7 +21,7 @@
 
 	<wsdl:types>
 		<xsd:schema version="2.1.2" targetNamespace="http://ws.pagamenti.telematici.gov/ppthead">
-			<xsd:import schemaLocation="http://schemas.xmlsoap.org/soap/envelope/" namespace="http://schemas.xmlsoap.org/soap/envelope/" />
+			<xsd:import schemaLocation="envelope.xsd" namespace="http://schemas.xmlsoap.org/soap/envelope/" />
 			<xsd:simpleType name="stText35">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />

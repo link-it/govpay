@@ -69,10 +69,12 @@ public class Gp23Utils {
 			Rendicontazione.Pagamento pagamento = new Rendicontazione.Pagamento();
 			pagamento.setCodApplicazione(rend.getVersamento(bd).getApplicazione(bd).getCodApplicazione());
 			pagamento.setCodVersamentoEnte(rend.getVersamento(bd).getCodVersamentoEnte());
-			if(rend.getEsito().equals(it.govpay.model.Rendicontazione.EsitoRendicontazione.ESEGUITO_SENZA_RPT))
+			if(rend.getEsito().equals(it.govpay.model.Rendicontazione.EsitoRendicontazione.ESEGUITO_SENZA_RPT) || rend.getPagamento(bd) == null) 
 				pagamento.setCodSingoloVersamentoEnte(rend.getVersamento(bd).getSingoliVersamenti(bd).get(0).getCodSingoloVersamentoEnte());
-			else
+			else {
 				pagamento.setCodSingoloVersamentoEnte(rend.getPagamento(bd).getSingoloVersamento(bd).getCodSingoloVersamentoEnte());
+			}
+				
 			rendicontazione.setPagamento(pagamento);
 		}
 		return rendicontazione;

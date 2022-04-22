@@ -77,11 +77,6 @@
   <xsd:simpleType name="stCodiceEsitoPagamento">
     <xsd:restriction base="xsd:string">
       <xsd:pattern value="[0-9]{1,1}" />
-      <xsd:enumeration value="0" /> <!-- Pagamento eseguito -->
-      <xsd:enumeration value="1" /> <!-- Pagamento non eseguito -->
-      <xsd:enumeration value="2" /> <!-- Pagamento parzialmente eseguito -->
-      <xsd:enumeration value="3" /> <!-- Decorrenza termini -->
-      <xsd:enumeration value="4" /> <!-- Decorrenza termini parziale -->
     </xsd:restriction>
   </xsd:simpleType>
 
