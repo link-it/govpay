@@ -15,15 +15,17 @@
   // Map key generators
   function _mkg() {
     return {
-      ANGULAR2_JSON_SCHEMA_FORM: 'angular2-json-schema-form'
-    }
+      ANGULAR2_JSON_SCHEMA_FORM: 'angular2-json-schema-form',
+      SURVEYJS_FORM: 'surveyjs'
+    };
   }
 
   // JSON Schema form generators list selection
   function generatori() {
     return [
-      { label: 'Angular Json schema form', value: _mkg().ANGULAR2_JSON_SCHEMA_FORM }
-    ]
+      { label: 'Angular Json schema form', value: _mkg().ANGULAR2_JSON_SCHEMA_FORM },
+      { label: 'SurveyJS', value: _mkg().SURVEYJS_FORM }
+    ];
   }
 
   // Default application name/title
