@@ -47,10 +47,7 @@ public class Ricevuta   {
   private Soggetto versante = null;
   
   @Schema(description = "")
-  private Pendenza pendenza = null;
-  
-  @Schema(description = "")
-  private List<Riscossione> riscossioni = null;
+  private PendenzaPagata pendenza = null;
   
   @Schema(description = "Data di acquisizione della ricevuta")
  /**
@@ -213,35 +210,12 @@ public class Ricevuta   {
     return pendenza;
   }
 
-  public void setPendenza(Pendenza pendenza) {
+  public void setPendenza(PendenzaPagata pendenza) {
     this.pendenza = pendenza;
   }
 
-  public Ricevuta pendenza(Pendenza pendenza) {
+  public Ricevuta pendenza(PendenzaPagata pendenza) {
     this.pendenza = pendenza;
-    return this;
-  }
-
- /**
-   * Get riscossioni
-   * @return riscossioni
-  **/
-  @JsonProperty("riscossioni")
-  public List<Riscossione> getRiscossioni() {
-    return riscossioni;
-  }
-
-  public void setRiscossioni(List<Riscossione> riscossioni) {
-    this.riscossioni = riscossioni;
-  }
-
-  public Ricevuta riscossioni(List<Riscossione> riscossioni) {
-    this.riscossioni = riscossioni;
-    return this;
-  }
-
-  public Ricevuta addRiscossioniItem(Riscossione riscossioniItem) {
-    this.riscossioni.add(riscossioniItem);
     return this;
   }
 
@@ -353,7 +327,6 @@ public class Ricevuta   {
     sb.append("    istitutoAttestante: ").append(toIndentedString(istitutoAttestante)).append("\n");
     sb.append("    versante: ").append(toIndentedString(versante)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
-    sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("    dataPagamento: ").append(toIndentedString(dataPagamento)).append("\n");
     sb.append("    rpt: ").append(toIndentedString(rpt)).append("\n");

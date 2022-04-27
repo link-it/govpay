@@ -586,6 +586,19 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AllegatoPendenza'
+    PendenzaPagata:
+      type: object
+      description: Dati della pendenza con voci
+      allOf:
+        - $ref: '#/components/schemas/Pendenza'
+        - type: object
+          properties: 
+            voci:
+              type: array
+              minItems: 1
+              maxItems: 5
+              items:
+                $ref: '#/components/schemas/VocePendenzaPagata'       
     Profilo:
       type: object
       required: 
@@ -756,11 +769,9 @@ components:
         - idRicevuta
         - importo
         - stato
-        - soggettoPagatore
         - istitutoAttestante
-        - rpt
-        - rt
         - modello
+        - pendenza
       properties:
         dominio:
           $ref: '#/components/schemas/Dominio'
@@ -803,7 +814,7 @@ components:
         riscossioni:
           type: array
           items:
-            $ref: '#/components/schemas/Riscossione' 
+            $ref: '#/components/schemas/RiscossioneVocePagata'            
         data:
           type: string
           format: date-time
@@ -1168,6 +1179,42 @@ components:
           $ref: '#/components/schemas/Allegato'
         vocePendenza:
           $ref: '#/components/schemas/VocePendenza'    
+    RiscossioneVocePagata:          
+      type: object
+      required:
+        - iuv
+        - iur
+        - indice
+        - tipo
+        - importo
+        - data
+      properties:
+        idDominio:
+          type: string
+          description: Identificativo Ente Creditore
+          example: 01234567890       
+        iuv:
+          type: string
+          description: Identificativo univoco di versamento
+          example: RF23567483937849450550875        
+        iur:
+          type: string
+          description: Identificativo univoco di riscossione.
+          example: '1234acdc'
+        indice:
+          type: number
+          description: indice posizionale della voce pendenza riscossa
+          example: 1
+        tipo:
+          $ref: '#/components/schemas/TipoRiscossione'
+        importo:
+          type: number
+          description: Importo riscosso. 
+          example: 10.01
+        data: 
+          type: string
+          format: date-time
+          description: Data di esecuzione della riscossione              
     Riscossioni:
       type: object
       allOf:
@@ -1451,3 +1498,7 @@ components:
               $ref: '#/components/schemas/Contabilita'          
             pendenza:
               $ref: '#/components/schemas/Pendenza'  
+    VocePendenzaPagata:
+      allOf:
+        - $ref: "#/components/schemas/VocePendenza"
+        - $ref: "#/components/schemas/RiscossioneVocePagata"

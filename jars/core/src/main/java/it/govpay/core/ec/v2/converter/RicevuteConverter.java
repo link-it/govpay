@@ -1,6 +1,5 @@
 package it.govpay.core.ec.v2.converter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -26,7 +25,6 @@ import it.govpay.ec.v2.beans.RicevutaIstitutoAttestante;
 import it.govpay.ec.v2.beans.RicevutaRpt;
 import it.govpay.ec.v2.beans.RicevutaRt;
 import it.govpay.ec.v2.beans.RicevutaRt.TipoEnum;
-import it.govpay.ec.v2.beans.Riscossione;
 
 public class RicevuteConverter {
 
@@ -49,20 +47,9 @@ public class RicevuteConverter {
 		if(rpt.getStato() != null)
 			rsModel.setStato(rpt.getStato().toString());
 
-		rsModel.setPendenza(PendenzeConverter.toRsModel(rpt.getVersamento()));
+		rsModel.setPendenza(PendenzePagateConverter.toRsModel(rpt));
 		
-//		if(rpt.getPagamenti() != null && rpt.getPagamenti().size() > 0) {
-		if(pagamenti != null && pagamenti.size() > 0) {
-			List<Riscossione> riscossioni = new ArrayList<>();
-			for (Pagamento pagamento : pagamenti) {
-				riscossioni.add(RiscossioniConverter.toRsModel(pagamento, versamento));				
-			}
-			rsModel.setRiscossioni(riscossioni);
-			
-			rsModel.setDataPagamento(pagamenti.get(0).getDataPagamento());
-		} else {
-			rsModel.setDataPagamento(rpt.getDataMsgRicevuta());
-		}
+		rsModel.setDataPagamento(rpt.getDataMsgRicevuta());
 		
 		RicevutaRpt ricevutaRpt = new RicevutaRpt();
 
