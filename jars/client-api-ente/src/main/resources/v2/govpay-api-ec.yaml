@@ -136,10 +136,8 @@ paths:
             schema:
               $ref: 'govpay-api-schemas.yaml#/components/schemas/Ricevuta'
             examples:
-              Pagamento standard: 
-                $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaEntrata'
-              Marca da bollo: 
-                $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaMBT'
+              standard:
+                $ref: '#/components/examples/RicevutaEntrata'
       responses:
         '201':
           description: ricevuta di pagamento acquisita
