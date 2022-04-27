@@ -137,7 +137,7 @@ paths:
               $ref: 'govpay-api-schemas.yaml#/components/schemas/Ricevuta'
             examples:
               standard:
-                $ref: '#/components/examples/RicevutaEntrata'
+                $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaEntrata'
       responses:
         '201':
           description: ricevuta di pagamento acquisita
