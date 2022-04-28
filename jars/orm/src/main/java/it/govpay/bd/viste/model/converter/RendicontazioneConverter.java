@@ -203,6 +203,14 @@ public class RendicontazioneConverter {
 					versamento.setTipoSoglia(TipoSogliaVersamento.OLTRE);
 					String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.OLTRE.toString())+ TipoSogliaVersamento.OLTRE.toString().length());
 					versamento.setGiorniSoglia(Integer.parseInt(gg));
+				} else if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.CDSRI.toString())) {
+					versamento.setTipoSoglia(TipoSogliaVersamento.CDSRI);
+					String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.CDSRI.toString())+ TipoSogliaVersamento.CDSRI.toString().length());
+					versamento.setGiorniSoglia(Integer.parseInt(gg));
+				} else if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.CDSSC.toString())) {
+					versamento.setTipoSoglia(TipoSogliaVersamento.CDSSC);
+					String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.CDSSC.toString())+ TipoSogliaVersamento.CDSSC.toString().length());
+					versamento.setGiorniSoglia(Integer.parseInt(gg));
 				} else {
 					versamento.setNumeroRata(Integer.parseInt(vo.getVrsCodRata()));
 				}

@@ -9,7 +9,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum TipoSogliaVincoloPagamento {
   ENTRO("ENTRO"),
   
-  OLTRE("OLTRE");
+  OLTRE("OLTRE"), 
+  
+  CDSSC ("CDSSC"), 
+  
+  CDSRI ("CDSRI");
 
   private String value;
 

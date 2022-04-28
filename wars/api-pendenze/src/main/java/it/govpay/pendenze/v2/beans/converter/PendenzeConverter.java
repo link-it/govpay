@@ -191,6 +191,12 @@ public class PendenzeConverter {
 			case OLTRE:
 				soglia.setTipo(TipoSogliaVincoloPagamento.OLTRE.toString());
 				break;
+			case CDSRI:
+				soglia.setTipo(TipoSogliaVincoloPagamento.CDSRI.toString());
+				break;
+			case CDSSC:
+				soglia.setTipo(TipoSogliaVincoloPagamento.CDSSC.toString());
+				break;
 			}
 			
 			rsModel.setSoglia(soglia );

@@ -143,6 +143,14 @@ public class VersamentoConverter {
 					dto.setTipoSoglia(TipoSogliaVersamento.OLTRE);
 					String gg = vo.getCodRata().substring(vo.getCodRata().indexOf(TipoSogliaVersamento.OLTRE.toString())+ TipoSogliaVersamento.OLTRE.toString().length());
 					dto.setGiorniSoglia(Integer.parseInt(gg));
+				} else if(vo.getCodRata().startsWith(TipoSogliaVersamento.CDSRI.toString())) {
+					dto.setTipoSoglia(TipoSogliaVersamento.CDSRI);
+					String gg = vo.getCodRata().substring(vo.getCodRata().indexOf(TipoSogliaVersamento.CDSRI.toString())+ TipoSogliaVersamento.CDSRI.toString().length());
+					dto.setGiorniSoglia(Integer.parseInt(gg));
+				} else if(vo.getCodRata().startsWith(TipoSogliaVersamento.CDSSC.toString())) {
+					dto.setTipoSoglia(TipoSogliaVersamento.CDSSC);
+					String gg = vo.getCodRata().substring(vo.getCodRata().indexOf(TipoSogliaVersamento.CDSSC.toString())+ TipoSogliaVersamento.CDSSC.toString().length());
+					dto.setGiorniSoglia(Integer.parseInt(gg));
 				} else {
 					dto.setNumeroRata(Integer.parseInt(vo.getCodRata()));
 				}

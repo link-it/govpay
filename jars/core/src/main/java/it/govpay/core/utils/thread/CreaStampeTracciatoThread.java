@@ -96,7 +96,7 @@ public class CreaStampeTracciatoThread implements Runnable {
 					}
 					stampeOk ++;
 				} catch(Exception e) {
-					log.error("Errore durante la creazione dell'avviso: " + e.getMessage());
+					log.error("Errore durante la creazione dell'avviso: " + e.getMessage(), e);
 					stampeKo ++;
 				}
 			}

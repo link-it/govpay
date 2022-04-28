@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
  
+<!--  	<xsd:element name="ViolazioneCdsInput" type="ViolazioneCdsInput" /> -->
 	<xsd:element name="AvvisoPagamentoInput" type="AvvisoPagamentoInput" />
     <xsd:element name="RicevutaTelematicaInput" type="RicevutaTelematicaInput" />
     <xsd:element name="ProspettoRiscossioniInput" type="ProspettoRiscossioniInput" />
@@ -22,6 +23,8 @@
 			<xsd:element name="di_poste" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="cbill" type="xsd:string"/>
 			<xsd:element name="intestatario_conto_corrente_postale" type="xsd:string"/>
+			<xsd:element name="scadenza_scontato" type="xsd:string"/>
+			<xsd:element name="scadenza_ridotto" type="xsd:string"/>
 			<xsd:element name="pagine" type="PagineAvviso" />
 		</xsd:sequence>
 	</xsd:complexType>
@@ -66,6 +69,10 @@
 			<xsd:element name="numero_cc_postale" type="xsd:string"/>
 			<xsd:element name="data_matrix" type="xsd:string"/>
 			<xsd:element name="autorizzazione" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="importo_ridotto" type="xsd:double" minOccurs="0"/>
+			<xsd:element name="importo_scontato" type="xsd:double" minOccurs="0"/>
+			<xsd:element name="qr_code_2" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="codice_avviso_2" type="xsd:string" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>    
 	    
@@ -176,5 +183,28 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
+	
+<!-- 	 <xsd:complexType name="ViolazioneCdsInput"> -->
+<!-- 	 	<xsd:sequence> -->
+<!-- 			<xsd:element name="logo_ente" type="xsd:string"/> -->
+<!-- 			<xsd:element name="logo_ente_secondario" type="xsd:string"/> -->
+<!-- 			<xsd:element name="oggetto_del_pagamento" type="xsd:string"/> -->
+<!-- 			<xsd:element name="cf_ente" type="xsd:string"/> -->
+<!-- 			<xsd:element name="cf_destinatario" type="xsd:string"/> -->
+<!-- 			<xsd:element name="nome_cognome_destinatario" type="xsd:string"/> -->
+<!-- 			<xsd:element name="ente_creditore" type="xsd:string"/> -->
+<!-- 			<xsd:element name="settore_ente" type="xsd:string"/> -->
+<!-- 			<xsd:element name="indirizzo_destinatario_1" type="xsd:string"/> -->
+<!-- 			<xsd:element name="indirizzo_destinatario_2" type="xsd:string"/> -->
+<!-- 			<xsd:element name="info_ente" type="xsd:string"/> -->
+<!-- 			<xsd:element name="del_tuo_ente" type="xsd:string" minOccurs="0"/> -->
+<!-- 			<xsd:element name="di_poste" type="xsd:string" minOccurs="0"/> -->
+<!-- 			<xsd:element name="cbill" type="xsd:string"/> -->
+<!-- 			<xsd:element name="intestatario_conto_corrente_postale" type="xsd:string"/> -->
+<!-- 			<xsd:element name="scadenza_scontato" type="xsd:string"/> -->
+<!-- 			<xsd:element name="scadenza_ridotto" type="xsd:string"/> -->
+<!-- 			<xsd:element name="pagine" type="PagineAvviso" /> -->
+<!-- 		</xsd:sequence> -->
+<!-- 	 </xsd:complexType> -->
 	
 </xsd:schema>

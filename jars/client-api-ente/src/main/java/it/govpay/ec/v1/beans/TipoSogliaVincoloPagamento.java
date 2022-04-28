@@ -19,7 +19,13 @@ public enum TipoSogliaVincoloPagamento {
   ENTRO("ENTRO"),
   
   
-  OLTRE("OLTRE");
+  OLTRE("OLTRE"), 
+  
+  
+  CDSSC ("CDSSC"), 
+  
+  
+  CDSRI ("CDSRI");
   
   
   

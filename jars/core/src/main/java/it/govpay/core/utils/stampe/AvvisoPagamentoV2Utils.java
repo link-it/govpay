@@ -367,6 +367,10 @@ public class AvvisoPagamentoV2Utils {
 			rata.setScadenza(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_RATA_ENTRO_IL, versamento.getNumeroRata()));
 			if(secondaLinguaScelta != null)
 				rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_RATA_ENTRO_IL, versamento.getNumeroRata()));
+			
+			rata.setScadenzaUnica(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_RATA_UNICA_ENTRO_IL));
+			if(secondaLinguaScelta != null)
+				rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_RATA_UNICA_ENTRO_IL));
 		}
 
 		boolean addDataValidita = true;
@@ -375,13 +379,19 @@ public class AvvisoPagamentoV2Utils {
 			switch (versamento.getTipoSoglia()) {
 			case ENTRO:
 				rata.setScadenza(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_ENTRO, versamento.getGiorniSoglia()));
-				if(secondaLinguaScelta != null)
-					rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_ENTRO, versamento.getGiorniSoglia()));
+				rata.setScadenzaUnica(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_RATA_UNICA_ENTRO_GIORNI, versamento.getGiorniSoglia()));
+				if(secondaLinguaScelta != null) {
+					rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_RATA_UNICA_ENTRO_GIORNI, versamento.getGiorniSoglia()));
+					rata.setScadenzaUnicaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_RATA_UNICA_ENTRO_GIORNI, versamento.getGiorniSoglia()));
+				}
 				break;
 			case OLTRE:
 				rata.setScadenza(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_OLTRE, versamento.getGiorniSoglia()));
-				if(secondaLinguaScelta != null)
+				rata.setScadenzaUnica(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_SOLUZIONE_UNICA_OLTRE_GIORNI, versamento.getGiorniSoglia()));
+				if(secondaLinguaScelta != null) {
 					rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_OLTRE, versamento.getGiorniSoglia()));
+					rata.setScadenzaUnicaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_SOLUZIONE_UNICA_OLTRE_GIORNI, versamento.getGiorniSoglia()));
+				}
 				break;
 			}
 			
@@ -602,6 +612,7 @@ public class AvvisoPagamentoV2Utils {
 		etichette.setCodiceCbill(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_CODICE_CBILL));
 		etichette.setCodiceFiscaleEnte(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_CODICE_FISCALE_ENTE));
 		etichette.setCome(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_COME));
+		etichette.setDove(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_DOVE));
 		etichette.setDescrizione(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_DESCRIZIONE));
 		etichette.setDestinatario(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_DESTINATARIO));
 		etichette.setDestinatarioAvviso(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_DESTINATARIO_AVVISO));
@@ -638,6 +649,7 @@ public class AvvisoPagamentoV2Utils {
 		etichette.setCodiceCbill(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_CODICE_CBILL));
 		etichette.setCodiceFiscaleEnte(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_CODICE_FISCALE_ENTE));
 		etichette.setCome(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_COME));
+		etichette.setDove(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_DOVE));
 		etichette.setDescrizione(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_DESCRIZIONE));
 		etichette.setDestinatario(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_DESTINATARIO));
 		etichette.setDestinatarioAvviso(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_DESTINATARIO_AVVISO));
