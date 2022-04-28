@@ -19,6 +19,7 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.ec.v2.beans.EsitoRpp;
 import it.govpay.ec.v2.beans.ModelloPagamento;
 import it.govpay.ec.v2.beans.Ricevuta;
 import it.govpay.ec.v2.beans.RicevutaIstitutoAttestante;
@@ -44,9 +45,14 @@ public class RicevuteConverter {
 		rsModel.setDominio(DominiConverter.toRsModelIndex(rpt.getDominio(configWrapper)));
 		rsModel.setIdRicevuta(rpt.getCcp());
 		rsModel.setIuv(rpt.getIuv());
-		if(rpt.getStato() != null)
-			rsModel.setStato(rpt.getStato().toString());
-
+		if(rpt.getEsitoPagamento() != null)
+			rsModel.setEsito(EsitoRpp.fromRptEsitoPagamento(rpt.getEsitoPagamento().name()));
+		
+		if(rpt.getPagamentoPortale(configWrapper) != null) {
+			rsModel.setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
+			rsModel.setIdSessionePsp(rpt.getPagamentoPortale(configWrapper).getIdSessionePsp());
+		}
+		
 		rsModel.setPendenza(PendenzePagateConverter.toRsModel(rpt));
 		
 		rsModel.setDataPagamento(rpt.getDataMsgRicevuta());

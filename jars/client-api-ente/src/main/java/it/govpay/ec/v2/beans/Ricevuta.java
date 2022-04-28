@@ -2,7 +2,6 @@ package it.govpay.ec.v2.beans;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -38,7 +37,11 @@ public class Ricevuta   {
  /**
    * Stato della richiesta di pagamento sulla piattaforma PagoPA.  
   **/
-  private String stato = null;
+  private EsitoRpp esito = null;
+  
+  private String idPagamento = null;
+  
+  private String idSessionePsp = null;
   
   @Schema(required = true, description = "")
   private RicevutaIstitutoAttestante istitutoAttestante = null;
@@ -149,21 +152,50 @@ public class Ricevuta   {
    * Stato della richiesta di pagamento sulla piattaforma PagoPA.
    * @return stato
   **/
-  @JsonProperty("stato")
+  @JsonProperty("esito")
   @NotNull
-  public String getStato() {
-    return stato;
+  public EsitoRpp getEsito() {
+    return esito;
   }
 
-  public void setStato(String stato) {
-    this.stato = stato;
+  public void setEsito(EsitoRpp esito) {
+    this.esito = esito;
   }
 
-  public Ricevuta stato(String stato) {
-    this.stato = stato;
+  public Ricevuta esito(EsitoRpp esito) {
+    this.esito = esito;
     return this;
   }
 
+  
+  @JsonProperty("idPagamento")
+  public String getIdPagamento() {
+    return idPagamento;
+  }
+
+  public void setIdPagamento(String idPagamento) {
+    this.idPagamento = idPagamento;
+  }
+
+  public Ricevuta idPagamento(String idPagamento) {
+    this.idPagamento = idPagamento;
+    return this;
+  }
+  
+  @JsonProperty("idSessionePsp")
+  public String getIdSessionePsp() {
+    return idSessionePsp;
+  }
+
+  public void setIdSessionePsp(String idSessionePsp) {
+    this.idSessionePsp = idSessionePsp;
+  }
+
+  public Ricevuta idSessionePsp(String idSessionePsp) {
+    this.idSessionePsp = idSessionePsp;
+    return this;
+  }
+  
  /**
    * Get istitutoAttestante
    * @return istitutoAttestante
@@ -224,7 +256,7 @@ public class Ricevuta   {
    * @return data
   **/
   @JsonProperty("data")
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
   public Date getData() {
     return data;
   }
@@ -243,7 +275,7 @@ public class Ricevuta   {
    * @return dataPagamento
   **/
   @JsonProperty("dataPagamento")
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
   public Date getDataPagamento() {
     return dataPagamento;
   }
@@ -323,7 +355,7 @@ public class Ricevuta   {
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    idRicevuta: ").append(toIndentedString(idRicevuta)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    esito: ").append(toIndentedString(esito)).append("\n");
     sb.append("    istitutoAttestante: ").append(toIndentedString(istitutoAttestante)).append("\n");
     sb.append("    versante: ").append(toIndentedString(versante)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");

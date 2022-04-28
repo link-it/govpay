@@ -80,14 +80,19 @@ public class PendenzePagateConverter {
 		rsModel.setDataValidita(versamento.getDataValidita());
 		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
 		
-		
+		// Ciclo i singoli versamenti per inserire le voci
 		for(SingoloVersamento sv : versamento.getSingoliVersamenti()) {
+			
+			// Di ogni voce cerco, se esiste, la riscossione associata
 			int indiceDati = sv.getIndiceDati() == null ? 0 : sv.getIndiceDati().intValue();
+			Pagamento pagamento = null;
 			for(Pagamento p : rpt.getPagamenti()) {
 				if(p.getIndiceDati() == indiceDati) {
-					rsModel.addVociItem(toRsModelVocePendenzaPagata(sv, p));
+					pagamento = p;
+					break;
 				}
 			}
+			rsModel.addVociItem(toRsModelVocePendenzaPagata(sv, pagamento));
 		}
 		return rsModel;
 	}
@@ -122,7 +127,7 @@ public class PendenzePagateConverter {
 		return null;
 	}
 
-	public static VocePendenzaPagata toRsModelVocePendenzaPagata(SingoloVersamento singoloVersamento, Pagamento p) throws ServiceException, ValidationException {
+	public static VocePendenzaPagata toRsModelVocePendenzaPagata(SingoloVersamento singoloVersamento, Pagamento pagamento) throws ServiceException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		VocePendenzaPagata rsModel = new VocePendenzaPagata();
 
@@ -164,8 +169,10 @@ public class PendenzePagateConverter {
 				rsModel.setCodiceTassonomicoPagoPA(singoloVersamento.getTipoContabilita().getCodifica() + "/"+ singoloVersamento.getCodContabilita());
 		}
 		
-		RiscossioneVocePagata riscossione = toRsModel(p);
-		rsModel.setRiscossione(riscossione );
+		if(pagamento != null) {
+			RiscossioneVocePagata riscossione = toRsModel(pagamento);
+			rsModel.setRiscossione(riscossione );
+		}
 		
 		return rsModel;
 	}

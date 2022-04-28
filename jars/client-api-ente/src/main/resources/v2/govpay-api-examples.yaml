@@ -14,7 +14,6 @@ components:
           idPSP: '99999'
           denominazione: Banco di Ponzi S.p.A.
           idCanale: GovPAYPsp1_PO
-        versante:
         pendenza:
           idA2A: IDA2A01
           idPendenza: '1651054555047'
@@ -40,19 +39,15 @@ components:
             idVocePendenza: '1'
             descrizione: Diritti e segreteria
             riscossione:
-              idDominio: '12345678901'
               iuv: '340105455507221'
-              idRicevuta:
               iur: '3401054555072216481'
               indice: 1
               stato: RISCOSSA
               tipo: ENTRATA
               importo: 100.99
               data: '2022-04-26'
-              allegato:
           UUID: 4fd5641f769a4e65b910670dece4a547
         data: '2022-04-27'
-        dataPagamento: '2022-04-27'
         rpt:
           tipo: ctRichiestaPagamentoTelematico
           xml: PFJQVCB4bWxucz0iaHR0cDovL3d3dy5kaWdpdHBhLmdvdi5pdC9zY2hlbWFzLzIwMTEvUGFnYW1lbnRpLyI+PHZlcnNpb25lT2dnZXR0bz42LjIuMDwvdmVyc2lvbmVPZ2dldHRvPjxkb21pbmlvPjxpZGVudGlmaWNhdGl2b0RvbWluaW8+MTIzNDU2Nzg5MDE8L2lkZW50aWZpY2F0aXZvRG9taW5pbz48aWRlbnRpZmljYXRpdm9TdGF6aW9uZVJpY2hpZWRlbnRlPjExMTExMTExMTEzXzAxPC9pZGVudGlmaWNhdGl2b1N0YXppb25lUmljaGllZGVudGU+PC9kb21pbmlvPjxpZGVudGlmaWNhdGl2b01lc3NhZ2dpb1JpY2hpZXN0YT40ODVhZmQyZGQ2OGY0NjE4OTJmNWFhNGMxMDE5ZTk3YjwvaWRlbnRpZmljYXRpdm9NZXNzYWdnaW9SaWNoaWVzdGE+PGRhdGFPcmFNZXNzYWdnaW9SaWNoaWVzdGE+MjAyMi0wNC0yN1QxMjoxNTo1NjwvZGF0YU9yYU1lc3NhZ2dpb1JpY2hpZXN0YT48YXV0ZW50aWNhemlvbmVTb2dnZXR0bz5OL0E8L2F1dGVudGljYXppb25lU29nZ2V0dG8+PHNvZ2dldHRvUGFnYXRvcmU+PGlkZW50aWZpY2F0aXZvVW5pdm9jb1BhZ2F0b3JlPjx0aXBvSWRlbnRpZmljYXRpdm9Vbml2b2NvPkY8L3RpcG9JZGVudGlmaWNhdGl2b1VuaXZvY28+PGNvZGljZUlkZW50aWZpY2F0aXZvVW5pdm9jbz5SU1NNUkEzMEEwMUg1MDFJPC9jb2RpY2VJZGVudGlmaWNhdGl2b1VuaXZvY28+PC9pZGVudGlmaWNhdGl2b1VuaXZvY29QYWdhdG9yZT48YW5hZ3JhZmljYVBhZ2F0b3JlPk1hcmlvIFJvc3NpPC9hbmFncmFmaWNhUGFnYXRvcmU+PGUtbWFpbFBhZ2F0b3JlPm1hcmlvLnJvc3NpQHRlc3RtYWlsLml0PC9lLW1haWxQYWdhdG9yZT48L3NvZ2dldHRvUGFnYXRvcmU+PGVudGVCZW5lZmljaWFyaW8+PGlkZW50aWZpY2F0aXZvVW5pdm9jb0JlbmVmaWNpYXJpbz48dGlwb0lkZW50aWZpY2F0aXZvVW5pdm9jbz5HPC90aXBvSWRlbnRpZmljYXRpdm9Vbml2b2NvPjxjb2RpY2VJZGVudGlmaWNhdGl2b1VuaXZvY28+MTIzNDU2Nzg5MDE8L2NvZGljZUlkZW50aWZpY2F0aXZvVW5pdm9jbz48L2lkZW50aWZpY2F0aXZvVW5pdm9jb0JlbmVmaWNpYXJpbz48ZGVub21pbmF6aW9uZUJlbmVmaWNpYXJpbz5FbnRlIENyZWRpdG9yZSBUZXN0PC9kZW5vbWluYXppb25lQmVuZWZpY2lhcmlvPjxpbmRpcml6em9CZW5lZmljaWFyaW8+UGlhenphbGUgUGFvbGlubyBQYXBlcmlubzwvaW5kaXJpenpvQmVuZWZpY2lhcmlvPjxjaXZpY29CZW5lZmljaWFyaW8+MTwvY2l2aWNvQmVuZWZpY2lhcmlvPjxjYXBCZW5lZmljaWFyaW8+MDAwMDA8L2NhcEJlbmVmaWNpYXJpbz48bG9jYWxpdGFCZW5lZmljaWFyaW8+Um9tYTwvbG9jYWxpdGFCZW5lZmljaWFyaW8+PHByb3ZpbmNpYUJlbmVmaWNpYXJpbz5STzwvcHJvdmluY2lhQmVuZWZpY2lhcmlvPjxuYXppb25lQmVuZWZpY2lhcmlvPklUPC9uYXppb25lQmVuZWZpY2lhcmlvPjwvZW50ZUJlbmVmaWNpYXJpbz48ZGF0aVZlcnNhbWVudG8+PGRhdGFFc2VjdXppb25lUGFnYW1lbnRvPjIwMjItMDQtMjc8L2RhdGFFc2VjdXppb25lUGFnYW1lbnRvPjxpbXBvcnRvVG90YWxlRGFWZXJzYXJlPjEwMC45OTwvaW1wb3J0b1RvdGFsZURhVmVyc2FyZT48dGlwb1ZlcnNhbWVudG8+UE88L3RpcG9WZXJzYW1lbnRvPjxpZGVudGlmaWNhdGl2b1VuaXZvY29WZXJzYW1lbnRvPjM0MDEwNTQ1NTUwNzIyMTwvaWRlbnRpZmljYXRpdm9Vbml2b2NvVmVyc2FtZW50bz48Y29kaWNlQ29udGVzdG9QYWdhbWVudG8+ODQwNTk2Mjc0PC9jb2RpY2VDb250ZXN0b1BhZ2FtZW50bz48ZmlybWFSaWNldnV0YT4wPC9maXJtYVJpY2V2dXRhPjxkYXRpU2luZ29sb1ZlcnNhbWVudG8+PGltcG9ydG9TaW5nb2xvVmVyc2FtZW50bz4xMDAuOTk8L2ltcG9ydG9TaW5nb2xvVmVyc2FtZW50bz48aWJhbkFjY3JlZGl0bz5JVDAyTDEyMzQ1MTIzNDUxMjM0NTExMTExMTE8L2liYW5BY2NyZWRpdG8+PGJpY0FjY3JlZGl0bz5EQUJBSUUyRDwvYmljQWNjcmVkaXRvPjxpYmFuQXBwb2dnaW8+SVQwMkwwNzYwMTEyMzQ1MTIzNDUyMjIyMjIyPC9pYmFuQXBwb2dnaW8+PGJpY0FwcG9nZ2lvPkRBQkFJRTJDPC9iaWNBcHBvZ2dpbz48Y2F1c2FsZVZlcnNhbWVudG8+L1JGQi8zNDAxMDU0NTU1MDcyMjEvMTAwLjk5L1RYVC9EaXJpdHRpIGUgc2VncmV0ZXJpYTwvY2F1c2FsZVZlcnNhbWVudG8+PGRhdGlTcGVjaWZpY2lSaXNjb3NzaW9uZT45L1NFR1JFVEVSSUE8L2RhdGlTcGVjaWZpY2lSaXNjb3NzaW9uZT48L2RhdGlTaW5nb2xvVmVyc2FtZW50bz48L2RhdGlWZXJzYW1lbnRvPjwvUlBUPg==

@@ -151,7 +151,18 @@ components:
           type: string
           example: "9/3321"
           minLength: 1
-          maxLength: 140          
+          maxLength: 140   
+    EsitoRpp:
+      example: ESEGUITO
+      type: string
+      enum:
+        - IN_CORSO
+        - RIFIUTATO
+        - ESEGUITO
+        - NON_ESEGUITO
+        - ESEGUITO_PARZIALE
+        - DECORRENZA
+        - DECORRENZA_PARZIALE       
     FlussiRendicontazione:
       type: object
       allOf:
@@ -787,10 +798,14 @@ components:
           type: number
           description: Importo della transazione di pagamento. 
           example: 10.01
-        stato:
+        esito:
+          $ref: "#/components/schemas/EsitoRpp"
+        idPagamento:
           type: string
-          description: Stato della richiesta di pagamento sulla piattaforma PagoPA.
-          example: PAGAMENTO_ESEGUITO
+          description: Identificativo GovPay della sessione di pagamento 
+        idSessionePsp:
+          type: string
+          description: Identificativo pagoPA della sessione di pagamento 
         istitutoAttestante:
           type: object
           description: PSP che ha gestito la transazione di pagamento ed emesso la ricevuta
