@@ -57,7 +57,7 @@ public class RicevutaTelematica {
 			ricevuta.setCcp(leggiRicevutaDTO.getCcp());
 
 			RicevutaTelematicaProperties rtProperties = RicevutaTelematicaProperties.getInstance();
-			RicevutaTelematicaInput input = this.fromRpt(rpt, leggiRicevutaDTO.isVisualizzaSoggettoDebitore());
+			RicevutaTelematicaInput input = this.fromRpt(rpt);
 			ricevuta = RicevutaTelematicaPdf.getInstance().creaRicevuta(log, input, ricevuta, rtProperties );
 			response.setPdf(ricevuta.getPdf()); 
 		}catch(ServiceException e) {
@@ -68,18 +68,18 @@ public class RicevutaTelematica {
 		return response;
 	}
 
-	public RicevutaTelematicaInput fromRpt(it.govpay.bd.model.Rpt rpt, boolean visualizzaSoggettoDebitore) throws Exception{
+	public RicevutaTelematicaInput fromRpt(it.govpay.bd.model.Rpt rpt) throws Exception{
 		switch (rpt.getVersione()) {
 		case SANP_230:
-			return this._fromRpt(rpt, visualizzaSoggettoDebitore);
+			return this._fromRpt(rpt);
 		case SANP_240:
-			return this._fromRptVersione240(rpt, visualizzaSoggettoDebitore);
+			return this._fromRptVersione240(rpt);
 		}
 		
-		return this._fromRpt(rpt, visualizzaSoggettoDebitore);
+		return this._fromRpt(rpt);
 	}
 	
-	public RicevutaTelematicaInput _fromRpt(it.govpay.bd.model.Rpt rpt, boolean visualizzaSoggettoDebitore) throws Exception{
+	public RicevutaTelematicaInput _fromRpt(it.govpay.bd.model.Rpt rpt) throws Exception{
 		RicevutaTelematicaInput input = new RicevutaTelematicaInput();
 
 		this.impostaAnagraficaEnteCreditore(rpt, input);
@@ -137,7 +137,7 @@ public class RicevutaTelematica {
 
 
 		CtSoggettoPagatore soggettoPagatore = rt.getSoggettoPagatore();
-		if(visualizzaSoggettoDebitore && soggettoPagatore != null) {
+		if(soggettoPagatore != null) {
 			this.impostaIndirizzoSoggettoPagatore(input, soggettoPagatore);
 		}
 
@@ -243,7 +243,7 @@ public class RicevutaTelematica {
 		}
 	}
 	
-	public RicevutaTelematicaInput _fromRptVersione240(it.govpay.bd.model.Rpt rpt, boolean visualizzaSoggettoDebitore) throws Exception{
+	public RicevutaTelematicaInput _fromRptVersione240(it.govpay.bd.model.Rpt rpt) throws Exception{
 		RicevutaTelematicaInput input = new RicevutaTelematicaInput();
 
 		this.impostaAnagraficaEnteCreditore(rpt, input);
@@ -291,7 +291,7 @@ public class RicevutaTelematica {
 
 
 		CtSubject soggettoPagatore = datiPagamento.getDebtor();
-		if(visualizzaSoggettoDebitore && soggettoPagatore != null) {
+		if(soggettoPagatore != null) {
 			this.impostaIndirizzoSoggettoPagatore(input, soggettoPagatore);
 		}
 

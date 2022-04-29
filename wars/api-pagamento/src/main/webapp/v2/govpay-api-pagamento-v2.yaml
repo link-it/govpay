@@ -446,11 +446,6 @@ paths:
           required: true
           schema:
             type: string
-        - in: query
-          name: visualizzaSoggettoDebitore
-          description: Indica se inserire il soggetto debitore nel pdf della ricevuta
-          schema:
-            type: boolean
       responses:
         '200':
           description: Ricevuta di pagamento
