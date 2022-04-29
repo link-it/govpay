@@ -1,3 +1,7 @@
+-- Rimozione delle FK delle tabelle da modificare
+
+
+
 CREATE SEQUENCE seq_utenze MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE utenze
