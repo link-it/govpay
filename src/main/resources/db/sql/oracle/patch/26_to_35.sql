@@ -1,5 +1,33 @@
--- Rimozione delle FK delle tabelle da modificare
+-- Eliminazione Tabelle Eventi, Tracciati e Operazioni
+DROP SEQUENCE seq_tracciati;
+DROP SEQUENCE seq_operazioni;
+DROP SEQUENCE seq_eventi;
 
+DROP TABLE operazioni;
+DROP TABLE tracciati;
+DROP TABLE eventi;
+
+-- Rimozione delle FK delle tabelle da modificare
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
+ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_applicazione;
+
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_appoggio;
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_tributo;
+ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_versamento;
+
+ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_versamento;
+ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_portale;
+
+ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_incasso;
+ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rpt;
+ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rr;
+ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_singolo_versamento;
+
+ALTER TABLE incassi DROP CONSTRAINT fk_inc_id_applicazione;
+
+ALTER TABLE rendicontazioni DROP CONSTRAINT fk_rnd_id_fr;
+ALTER TABLE rendicontazioni DROP CONSTRAINT fk_rnd_id_pagamento;
 
 
 CREATE SEQUENCE seq_utenze MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
@@ -30,8 +58,6 @@ begin
 end;
 /
 
-
-
 CREATE SEQUENCE seq_utenze_domini MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE utenze_domini
@@ -57,8 +83,6 @@ begin
    END IF;
 end;
 /
-
-
 
 CREATE SEQUENCE seq_utenze_tributi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
@@ -95,8 +119,8 @@ ALTER TABLE uo ADD uo_area VARCHAR2(255 CHAR);
 ALTER TABLE uo ADD uo_url_sito_web VARCHAR2(255 CHAR);
 ALTER TABLE uo ADD uo_email VARCHAR2(255 CHAR);
 ALTER TABLE uo ADD uo_pec VARCHAR2(255 CHAR);
-alter table incassi add id_operatore NUMBER;
-alter table incassi add CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id);
+ALTER TABLE incassi ADD id_operatore NUMBER;
+
 
 -- Eliminazione tabella ruoli e salvataggio come ACL
 ALTER TABLE acl ADD ruolo VARCHAR2(255 CHAR);
@@ -251,10 +275,6 @@ CREATE TABLE pagamenti_portale
        psp_redirect_url VARCHAR2(1024 CHAR),
        psp_esito VARCHAR2(255 CHAR),
        json_request CLOB,
-       wisp_id_dominio VARCHAR2(255 CHAR),
-       wisp_key_pa VARCHAR2(255 CHAR),
-       wisp_key_wisp VARCHAR2(255 CHAR),
-       wisp_html CLOB,
        data_richiesta TIMESTAMP,
        url_ritorno VARCHAR2(1024 CHAR),
        cod_psp VARCHAR2(35 CHAR),
@@ -266,8 +286,7 @@ CREATE TABLE pagamenti_portale
        -- unique constraints
        CONSTRAINT unique_pagamenti_portale_1 UNIQUE (id_sessione),
        -- fk/pk keys constraints
-       CONSTRAINT pk_pagamenti_portale PRIMARY KEY (id),
-       CONSTRAINT fk_ppt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id)
+       CONSTRAINT pk_pagamenti_portale PRIMARY KEY (id)
 );
 
 CREATE TRIGGER trg_pagamenti_portale
@@ -282,8 +301,6 @@ begin
 end;
 /
 
-
-
 CREATE SEQUENCE seq_pag_port_versamenti MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE pag_port_versamenti
@@ -293,8 +310,6 @@ CREATE TABLE pag_port_versamenti
        id_pagamento_portale NUMBER NOT NULL,
        id_versamento NUMBER NOT NULL,
        -- fk/pk keys constraints
-       CONSTRAINT fk_ppv_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id),
-       CONSTRAINT fk_ppv_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
        CONSTRAINT pk_pag_port_versamenti PRIMARY KEY (id)
 );
 
@@ -325,16 +340,11 @@ ALTER TABLE versamenti ADD debitore_tipo VARCHAR2(1 CHAR);
 
 -- Collegare versamenti rpt da portali a applicazioni
 ALTER TABLE rpt ADD id_applicazione NUMBER;
-ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id);
 
 -- Imposto id_applicazione in base al portale
 UPDATE rpt SET id_applicazione = (SELECT applicazioni.id FROM applicazioni, portali WHERE applicazioni.id_utenza = portali.id_utenza AND rpt.id_portale = portali.id);
 
 -- Le RPT che erano associate ai portali ora sono associate tutte ad un'applicazione posso cancellare i portali
--- SEMBRA NON ESSERCI
--- ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_portale;
-
--- prima di fare questa delete controllare che id_applicazione sia stato valorizzato per tutte le rpt
 ALTER TABLE rpt DROP COLUMN id_portale;
 
 -- Collegare versamenti pagati e rpt a pagamenti portale
@@ -346,18 +356,22 @@ INSERT INTO pagamenti_portale (id_rpt_tmp, id_applicazione,cod_canale,data_richi
 	SELECT rpt.id, rpt.id_applicazione, rpt.cod_canale, rpt.data_msg_richiesta, rpt.cod_psp, rpt.cod_dominio, CONCAT('Pagamento Pendenza ', versamenti.cod_versamento_ente), versamenti.importo_totale, versamenti.debitore_identificativo,
 	regexp_replace(rawtohex(sys_guid()), '([A-F0-9]{8})([A-F0-9]{4})([A-F0-9]{4})([A-F0-9]{4})([A-F0-9]{12})', '\1\2\3\4\5'), 'NON_ESEGUITO', 'PAGAMENTO_NON_ESEGUITO', 3 
 	FROM rpt, versamenti WHERE rpt.id_versamento = versamenti.id AND rpt.cod_carrello IS NULL;
-	
--- aggiorno riferimenti ai pagamenti portale nella tabella rpt
--- UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
-
-UPDATE pagamenti_portale SET id_applicazione = (SELECT versamenti.id_applicazione FROM versamenti,rpt 
-	WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.id_versamento = versamenti.id) WHERE pagamenti_portale.id_applicazione IS NULL;
 
 -- inserisco i pagamenti di tipo 1 tutti in stato non eseguito, aggiorno lo stato in seguito
 INSERT INTO pagamenti_portale (id_rpt_tmp, id_applicazione,cod_canale,data_richiesta,cod_psp,multi_beneficiario, nome, importo, versante_identificativo, id_sessione, stato, codice_stato, tipo, id_sessione_portale) 
 	SELECT rpt.id, rpt.id_applicazione, rpt.cod_canale, rpt.data_msg_richiesta, rpt.cod_psp, rpt.cod_dominio, CONCAT('Pagamento Pendenza ', versamenti.cod_versamento_ente), versamenti.importo_totale, versamenti.debitore_identificativo,
 	rpt.cod_carrello, 'NON_ESEGUITO', 'PAGAMENTO_NON_ESEGUITO', 1, rpt.cod_sessione_portale 
 	FROM rpt, versamenti WHERE rpt.id_versamento = versamenti.id AND rpt.cod_carrello IS NOT NULL AND rpt.cod_carrello NOT IN (SELECT id_sessione FROM pagamenti_portale);
+	
+-- aggiorno i riferimenti ai pagamenti portale
+UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM rpt WHERE pagamenti_portale.id_rpt_tmp = rpt.id) WHERE EXISTS (SELECT 1 FROM rpt WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
+-- elimino colonna id_rpt
+ALTER TABLE pagamenti_portale DROP COLUMN id_rpt_tmp;
+
+-- Per le RPT dove non era stato inserito un portale assegno i pagamenti portale all'applicazione, mi servira' per poter salvare il principal
+UPDATE pagamenti_portale SET pagamenti_portale.id_applicazione = (SELECT versamenti.id_applicazione
+ FROM versamenti, rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.id_versamento = versamenti.id)
+ WHERE pagamenti_portale.id_applicazione IS NULL AND EXISTS( SELECT 1 FROM versamenti, rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.id_versamento = versamenti.id)
 
 -- aggiorno stati pagamento portale
 UPDATE pagamenti_portale SET stato = 'ANNULLATO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RPT_ANNULLATA');
@@ -372,24 +386,6 @@ UPDATE pagamenti_portale SET descrizione_stato = 'Errore nella spedizione della 
 
 UPDATE pagamenti_portale SET stato = 'IN_CORSO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato IN ('RPT_PARCHEGGIATA_NODO' , 'RPT_ATTIVATA', 'RPT_RICEVUTA_NODO', 'RPT_ACCETTATA_NODO', 'RPT_INVIATA_A_PSP', 'RPT_ACCETTATA_PSP', 'RT_RICEVUTA_NODO', 'RT_RIFIUTATA_NODO', 'RT_ACCETTATA_NODO', 'RT_RIFIUTATA_PA', 'RT_ESITO_SCONOSCIUTO_PA', 'RT_ERRORE_INVIO_A_PA', 'INTERNO_NODO'));
 UPDATE pagamenti_portale SET codice_stato = 'PAGAMENTO_IN_ATTESA_DI_ESITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato IN ('RPT_PARCHEGGIATA_NODO' , 'RPT_ATTIVATA', 'RPT_RICEVUTA_NODO', 'RPT_ACCETTATA_NODO', 'RPT_INVIATA_A_PSP', 'RPT_ACCETTATA_PSP', 'RT_RICEVUTA_NODO', 'RT_RIFIUTATA_NODO', 'RT_ACCETTATA_NODO', 'RT_RIFIUTATA_PA', 'RT_ESITO_SCONOSCIUTO_PA', 'RT_ERRORE_INVIO_A_PA', 'INTERNO_NODO'));
-
--- aggiorno i riferimenti ai pagamenti portale per i carrelli
--- UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_sessione = rpt.cod_carrello AND rpt.cod_carrello IS NOT NULL);
--- sembra non ci siano carrelli con pendenze
-
--- creo indice sulla colonna id_rpt_tmp
-ALTER TABLE pagamenti_portale ADD CONSTRAINT fk_pp_id_rpt_tmp FOREIGN KEY (id_rpt_tmp) REFERENCES rpt(id);
-
-UPDATE (SELECT rpt.id_pagamento_portale AS rpt_id_pp, pagamenti_portale.id AS id_pp FROM rpt, pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id) SET rpt_id_pp = id_pp;
-
--- ci mette troppo tempo, la query non e' ottimizzata
--- UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
-
--- elimino colonna id_rpt
-ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_pp_id_rpt_tmp;
-ALTER TABLE pagamenti_portale DROP COLUMN id_rpt_tmp;
-
-ALTER TABLE rpt ADD CONSTRAINT fk_rpt_id_pagamento_portale FOREIGN KEY (id_pagamento_portale) REFERENCES pagamenti_portale(id);
 
 -- Inserimento entries nella tabella pag_port_versamenti leggendo dalla tabella rpt
 INSERT INTO pag_port_versamenti (id_pagamento_portale,id_versamento) SELECT id_pagamento_portale,id_versamento FROM rpt;
@@ -429,9 +425,6 @@ ALTER TABLE iban_accredito DROP COLUMN bic_appoggio;
 
 ALTER TABLE tributi RENAME COLUMN id_iban_accredito_postale TO id_iban_appoggio;
 
--- ALTER TABLE singoli_versamenti add id_iban_appoggio NUMBER;
--- ALTER TABLE singoli_versamenti add CONSTRAINT fk_sng_id_iban_appoggio FOREIGN KEY (id_iban_appoggio) REFERENCES iban_accredito(id);
-
 ALTER TABLE incassi add iban_accredito VARCHAR2(35 CHAR);
 ALTER TABLE incassi ADD CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,trn);
 
@@ -446,7 +439,6 @@ ALTER TABLE versamenti ADD anomalie CLOB;
 ALTER TABLE versamenti ADD iuv_versamento VARCHAR2(35 CHAR);
 ALTER TABLE versamenti ADD numero_avviso VARCHAR2(35 CHAR);
 ALTER TABLE versamenti ADD avvisatura VARCHAR2(1 CHAR);
-ALTER TABLE versamenti ADD tipo_pagamento NUMBER;
 
 ALTER TABLE utenze MODIFY principal VARCHAR2(4000 CHAR);
 ALTER TABLE utenze ADD principal_originale VARCHAR2(4000 CHAR);
@@ -458,148 +450,16 @@ ALTER TABLE utenze MODIFY (principal_originale NOT NULL);
 delete from pag_port_versamenti where id_pagamento_portale in (select pagamenti_portale.id from  pagamenti_portale left join rpt on rpt.id_pagamento_portale = pagamenti_portale.id where rpt.id is null);
 delete from pagamenti_portale where id in (select pagamenti_portale.id from  pagamenti_portale left join rpt on rpt.id_pagamento_portale = pagamenti_portale.id where rpt.id is null);
 
--- fine patch dati
--- e' gia' nullable
--- ALTER TABLE versamenti MODIFY (tassonomia_avviso NULL);
-
 ALTER TABLE pagamenti_portale ADD ack NUMBER DEFAULT 0;
 ALTER TABLE pagamenti_portale MODIFY (ack NOT NULL);
 
 ALTER TABLE pagamenti_portale ADD note CLOB;
--- ALTER TABLE pagamenti_portale ADD tipo NUMBER;
--- update pagamenti_portale set tipo = 1;
 
 ALTER TABLE pagamenti_portale MODIFY (tipo NOT NULL);
 
--- e' gia' nullable
--- ALTER TABLE pagamenti_portale MODIFY (url_ritorno NULL);
-
-
-
 ALTER TABLE intermediari ADD cod_connettore_ftp VARCHAR2(35 CHAR);
 
--- Eliminazione vecchi tracciati
-DROP TABLE operazioni;
-DROP SEQUENCE seq_operazioni;
-DROP TABLE tracciati;
-DROP SEQUENCE seq_tracciati;
-
-CREATE SEQUENCE seq_tracciati MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE tracciati
-(
-	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
-        tipo VARCHAR2(10 CHAR) NOT NULL,
-        stato VARCHAR2(12 CHAR) NOT NULL,
-        descrizione_stato VARCHAR2(256 CHAR),
-        data_caricamento TIMESTAMP NOT NULL,
-        data_completamento TIMESTAMP NOT NULL,
-        bean_dati CLOB,
-        file_name_richiesta VARCHAR2(256 CHAR),
-        raw_richiesta BLOB NOT NULL,
-        file_name_esito VARCHAR2(256 CHAR),
-        raw_esito BLOB NOT NULL,
-        -- fk/pk columns
-        id NUMBER NOT NULL,
-	id_operatore NUMBER,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
-        CONSTRAINT pk_tracciati PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_tracciati
-BEFORE
-insert on tracciati
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_tracciati.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-ALTER TABLE versamenti ADD da_avvisare NUMBER;
-UPDATE versamenti set da_avvisare = 0;
-ALTER TABLE versamenti MODIFY (da_avvisare NOT NULL);
-ALTER TABLE versamenti MODIFY da_avvisare DEFAULT 0;
-ALTER TABLE versamenti ADD cod_avvisatura VARCHAR2(20 CHAR);
-ALTER TABLE versamenti ADD id_tracciato NUMBER;
-ALTER TABLE versamenti ADD CONSTRAINT fk_vrs_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id);
-
-
-CREATE SEQUENCE seq_esiti_avvisatura MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE esiti_avvisatura
-(
-        cod_dominio VARCHAR2(35 CHAR) NOT NULL,
-        identificativo_avvisatura VARCHAR2(20 CHAR) NOT NULL,
-        tipo_canale NUMBER NOT NULL,
-        cod_canale VARCHAR2(35 CHAR),
-        data TIMESTAMP NOT NULL,
-        cod_esito NUMBER NOT NULL,
-        descrizione_esito VARCHAR2(140 CHAR) NOT NULL,
-        -- fk/pk columns
-        id NUMBER NOT NULL,
-        id_tracciato NUMBER NOT NULL,
-        -- fk/pk keys constraints
-        CONSTRAINT fk_sta_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
-        CONSTRAINT pk_esiti_avvisatura PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_esiti_avvisatura
-BEFORE
-insert on esiti_avvisatura
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_esiti_avvisatura.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-insert into sonde(nome, classe, soglia_warn, soglia_error) values ('avvisatura-digitale', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);
-insert into sonde(nome, classe, soglia_warn, soglia_error) values ('esito-avvisatura-digitale', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);
-
-CREATE SEQUENCE seq_operazioni MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE operazioni
-(
-        tipo_operazione VARCHAR2(16 CHAR) NOT NULL,
-        linea_elaborazione NUMBER NOT NULL,
-        stato VARCHAR2(16 CHAR) NOT NULL,
-        dati_richiesta BLOB NOT NULL,
-        dati_risposta BLOB,
-        dettaglio_esito VARCHAR2(255 CHAR),
-        cod_versamento_ente VARCHAR2(255 CHAR),
-        cod_dominio VARCHAR2(35 CHAR),
-        iuv VARCHAR2(35 CHAR),
-        trn VARCHAR2(35 CHAR),
-        -- fk/pk columns
-        id NUMBER NOT NULL,
-        id_tracciato NUMBER NOT NULL,
-        id_applicazione NUMBER,
-        -- fk/pk keys constraints
-        CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
-        CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
-        CONSTRAINT pk_operazioni PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_operazioni
-BEFORE
-insert on operazioni
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_operazioni.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
--- controllare se sono presenti
+-- sono gia' presenti 
 -- insert into sonde(nome, classe, soglia_warn, soglia_error) values ('caricamento-tracciati', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);
 -- insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-tracciati', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
 
@@ -609,46 +469,33 @@ ALTER TABLE versamenti MODIFY (ack NOT NULL);
 ALTER TABLE versamenti MODIFY ack DEFAULT 0;
 ALTER TABLE versamenti ADD note CLOB;
 ALTER TABLE versamenti ADD anomalo NUMBER DEFAULT 0;
-UPDATE versamenti set anomalo = 0;
+UPDATE versamenti SET anomalo = 0;
 ALTER TABLE versamenti MODIFY (anomalo NOT NULL);
 ALTER TABLE versamenti MODIFY anomalo DEFAULT 0;
 
-alter table singoli_versamenti add indice_dati NUMBER;
--- update singoli_versamenti sv set indice_dati = (select sb1.indice_dati from (select sv1.id as id , sv1.id_versamento as id_versamento, row_number() over (partition by sv1.id_versamento) as indice_dati from singoli_versamenti sv1) as sb1 where sb1.id = sv.id);
--- update singoli_versamenti sv set indice_dati = (select row_number() over (order by sv1.id_versamento) as indice_dati from singoli_versamenti sv1 where sv1.id = sv.id);
--- update singoli_versamenti sv set indice_dati = ( select sb1.indice_dati from ( select sv1.id as id , sv1.id_versamento as id_versamento, row_number() over (partition by sv1.id_versamento order by sv1.id) as indice_dati from singoli_versamenti sv1 ) sb1 where sb1.id = sv.id );
--- update singoli_versamenti sv set sv.indice_dati = ( with t1 as (select sv1.id as id, row_number() over (partition by sv1.id_versamento order by sv1.id) as indice_dati from singoli_versamenti sv1 ) select indice_dati from t1 where t1.id = sv.id);
+ALTER TABLE singoli_versamenti ADD indice_dati NUMBER;
 
 CREATE TABLE sv_tmp (
 	id NUMBER NOT NULL,
 	indice_dati NUMBER NOT NULL
 );
-CREATE INDEX idx_sv_tmp_1 ON sv_tmp (id);
-INSERT INTO sv_tmp (id, indice_dati) select sv1.id as id, row_number() over (partition by sv1.id_versamento order by sv1.id) as indice_dati from singoli_versamenti sv1;
+INSERT INTO sv_tmp (id, indice_dati) SELECT sv1.id AS id, row_number() over (partition BY sv1.id_versamento ORDER BY sv1.id) AS indice_dati FROM singoli_versamenti sv1;
 
-UPDATE (SELECT singoli_versamenti.indice_dati AS idx_dest, sv_tmp.indice_dati AS idx_src FROM singoli_versamenti, sv_tmp WHERE singoli_versamenti.id = sv_tmp.id) 
-	SET idx_dest = idx_src;
-	
--- esecuzione ottimizzata sopra
--- UPDATE singoli_versamenti set indice_dati = (SELECT sv_tmp.indice_dati FROM sv_tmp WHERE singoli_versamenti.id = sv_tmp.id);
+UPDATE singoli_versamenti SET indice_dati = (SELECT sv_tmp.indice_dati FROM sv_tmp WHERE singoli_versamenti.id = sv_tmp.id) 
+	WHERE EXISTS ( SELECT 1 FROM sv_tmp WHERE singoli_versamenti.id = sv_tmp.id );
 
-DROP INDEX idx_sv_tmp_1;
 DROP TABLE sv_tmp;
 
-alter table singoli_versamenti MODIFY (indice_dati NOT NULL);
+ALTER TABLE singoli_versamenti MODIFY (indice_dati NOT NULL);
 
-alter table singoli_versamenti drop constraint unique_singoli_versamenti_1;
-alter table singoli_versamenti add CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente,indice_dati);
+ALTER TABLE singoli_versamenti DROP CONSTRAINT unique_singoli_versamenti_1;
+ALTER TABLE singoli_versamenti ADD CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente,indice_dati);
 
-alter table rendicontazioni add id_singolo_versamento NUMBER;
-alter table rendicontazioni add CONSTRAINT fk_rnd_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id);
--- aggiorno entries prendendo l'id singolo_versamento dal pagamento
--- update rendicontazioni set id_singolo_versamento = (select p.id_singolo_versamento from (select r1.id as id, pagamenti.id_singolo_versamento as id_singolo_versamento from pagamenti , rendicontazioni r1 where r1.id_pagamento = pagamenti.id) as p where p.id = rendicontazioni.id) ;
--- update rendicontazioni set id_singolo_versamento = (select pagamenti.id_singolo_versamento from pagamenti WHERE rendicontazioni.id_pagamento = pagamenti.id);
+ALTER TABLE rendicontazioni ADD id_singolo_versamento NUMBER;
 
-UPDATE (SELECT rendicontazioni.id_singolo_versamento AS idx_dest, pagamenti.id_singolo_versamento AS idx_src 
-	FROM rendicontazioni, pagamenti WHERE rendicontazioni.id_pagamento = pagamenti.id) 
-	SET idx_dest = idx_src;
+UPDATE rendicontazioni SET id_singolo_versamento = 
+	(SELECT pagamenti.id_singolo_versamento FROM pagamenti WHERE rendicontazioni.id_pagamento = pagamenti.id)
+	WHERE EXISTS (SELECT 1 FROM pagamenti WHERE rendicontazioni.id_pagamento = pagamenti.id);
 
 -- Funzione per calcolare il numero di millisecondi dal 1/1/1970
 CREATE OR REPLACE FUNCTION date_to_unix_for_smart_order (p_date date, in_src_tz in varchar2 default 'Europe/Rome') return number is
@@ -715,17 +562,6 @@ ALTER TABLE utenze MODIFY (autorizzazione_domini_star NOT NULL);
 ALTER TABLE utenze ADD autorizzazione_tributi_star NUMBER;
 UPDATE utenze SET autorizzazione_tributi_star = 0;
 ALTER TABLE utenze MODIFY (autorizzazione_tributi_star NOT NULL);
-
-
-
--- 11/03/2019 (Correzione bug autorizzazione utenze_tributi)
--- 23/02/2022 Gia' inserita nella crazione della tabella per migrare le ACL nella patch tra 2.6 e 3.0
--- ALTER TABLE utenze_tributi ADD id_tipo_tributo NUMBER;
--- UPDATE ut SET ut.id_tipo_tributo = t.id_tipo_tributo FROM utenze_tributi ut, tributi t WHERE ut.id_tributo = t.id;
--- ALTER TABLE utenze_tributi MODIFY (id_tipo_tributo NOT NULL);
--- ALTER TABLE utenze_tributi DROP CONSTRAINT fk_nzt_id_tributo;
--- ALTER TABLE utenze_tributi DROP COLUMN id_tributo;
--- ALTER TABLE utenze_tributi ADD CONSTRAINT fk_nzt_id_tipo_tributo FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id);
 
 -- 13/03/2019 (Eliminazione colonna principal dalla tabella Acl e sostituzione con la foreign key verso l'utenza)
 ALTER TABLE acl ADD id_utenza NUMBER;
@@ -883,14 +719,6 @@ UPDATE versamenti SET id_tipo_versamento_dominio = (SELECT tipi_vers_domini.id F
 ALTER TABLE versamenti MODIFY (id_tipo_versamento_dominio NOT NULL);
 ALTER TABLE versamenti ADD CONSTRAINT fk_vrs_id_tipo_versamento_dominio FOREIGN KEY (id_tipo_versamento_dominio) REFERENCES tipi_vers_domini(id);
 
--- modifica nomi colonne avvisatura
-ALTER TABLE versamenti RENAME COLUMN cod_avvisatura TO avvisatura_cod_avvisatura;
-ALTER TABLE versamenti RENAME COLUMN tipo_pagamento TO avvisatura_tipo_pagamento;
-ALTER TABLE versamenti RENAME COLUMN da_avvisare TO avvisatura_da_inviare;
-ALTER TABLE versamenti ADD avvisatura_abilitata NUMBER;
-ALTER TABLE versamenti ADD avvisatura_operazione VARCHAR2(35 CHAR);
-ALTER TABLE versamenti ADD avvisatura_modalita VARCHAR2(35 CHAR);
-
 -- 27/03/2019 Tipo Pendenza Abilitato
 
 ALTER TABLE tipi_versamento ADD abilitato NUMBER;
@@ -936,118 +764,17 @@ ALTER TABLE tipi_vers_domini MODIFY (abilitato NULL);
 
 
 -- 30/04/2019 eliminazione foreign key id_applicazione dalla tabella RPT
-
-ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_applicazione;
 ALTER TABLE rpt DROP COLUMN id_applicazione;
 
 -- 08/05/2019 aggiunto idincasso ai flussi di rendicontazione
 ALTER TABLE fr ADD id_incasso NUMBER;
-ALTER TABLE fr ADD CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id);
 
 -- 13/05/2019 aggiunto sct alla tabella incassi
-
 ALTER TABLE incassi ADD sct VARCHAR2(35 CHAR);
-
-CREATE SEQUENCE seq_stampe MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE stampe
-(
-	data_creazione TIMESTAMP NOT NULL,
-	tipo VARCHAR2(16 CHAR) NOT NULL,
-	pdf BLOB,
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_versamento NUMBER NOT NULL,
-	-- unique constraints
-	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,tipo),
-	-- fk/pk keys constraints
-	CONSTRAINT fk_stm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT pk_stampe PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_stampe
-BEFORE
-insert on stampe
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_stampe.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
--- 21/05/2019 Aggiunta tabella per memorizzare la configurazione
-
-CREATE SEQUENCE seq_configurazione MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE configurazione
-(
-	giornale_eventi CLOB,
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT pk_configurazione PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_configurazione
-BEFORE
-insert on configurazione
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_configurazione.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
 
 -- 3.1-RC2
 
--- 24/05/2019 nuova tabella eventi
-DROP sequence seq_eventi;
-DROP TABLE eventi;
 
-CREATE SEQUENCE seq_eventi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-CREATE TABLE eventi
-(
-	componente VARCHAR2(35 CHAR),
-	ruolo VARCHAR2(1 CHAR),
-	categoria_evento VARCHAR2(1 CHAR),
-	tipo_evento VARCHAR2(70 CHAR),
-	sottotipo_evento VARCHAR2(35 CHAR),
-	data TIMESTAMP,
-	intervallo NUMBER,
-	esito VARCHAR2(4 CHAR),
-	sottotipo_esito VARCHAR2(35 CHAR),
-	dettaglio_esito CLOB,
-	parametri_richiesta BLOB,
-	parametri_risposta BLOB,
-	dati_pago_pa CLOB,
-	cod_versamento_ente VARCHAR2(35 CHAR),
-	cod_applicazione VARCHAR2(35 CHAR),
-	iuv VARCHAR2(35 CHAR),
-	ccp VARCHAR2(35 CHAR),
-	cod_dominio VARCHAR2(35 CHAR),
-	id_sessione VARCHAR2(35 CHAR),
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT pk_eventi PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_eventi
-BEFORE
-insert on eventi
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_eventi.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
 
 -- 18/06/2019 Configurazione avanzata dei tipi pendenza
 ALTER TABLE tipi_versamento DROP COLUMN json_schema;
@@ -1091,51 +818,6 @@ ALTER TABLE tipi_vers_domini ADD promemoria_ricevuta_oggetto CLOB;
 ALTER TABLE tipi_vers_domini ADD promemoria_ricevuta_messaggio CLOB;
 
 
--- 24/06/2019 Tabella per la spedizione dei promemoria via mail
-CREATE SEQUENCE seq_promemoria MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE promemoria
-(
-	tipo VARCHAR2(16 CHAR) NOT NULL,
-	data_creazione TIMESTAMP NOT NULL,
-	stato VARCHAR2(16 CHAR) NOT NULL,
-	descrizione_stato VARCHAR2(1024 CHAR),
-	destinatario_to VARCHAR2(256 CHAR) NOT NULL,
-	destinatario_cc VARCHAR2(256 CHAR),
-	messaggio_content_type VARCHAR2(256 CHAR),
-	oggetto VARCHAR2(512 CHAR),
-	messaggio CLOB,
-	allega_pdf NUMBER NOT NULL,
-	data_aggiornamento_stato TIMESTAMP NOT NULL,
-	data_prossima_spedizione TIMESTAMP NOT NULL,
-	tentativi_spedizione NUMBER,
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_versamento NUMBER NOT NULL,
-	id_rpt NUMBER,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_prm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT fk_prm_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
-	CONSTRAINT pk_promemoria PRIMARY KEY (id)
-);
-
-
-ALTER TABLE promemoria MODIFY allega_pdf DEFAULT 0;
-
-CREATE TRIGGER trg_promemoria
-BEFORE
-insert on promemoria
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_promemoria.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('spedizione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
-
 -- 05/07/2019 Aggiunti ruoli utenza
 ALTER TABLE utenze ADD ruoli VARCHAR2(512 CHAR);
 
@@ -1151,26 +833,9 @@ ALTER TABLE operatori DROP COLUMN abilitato;
 ALTER TABLE versamenti ADD divisione VARCHAR2(35 CHAR);
 ALTER TABLE versamenti ADD direzione VARCHAR2(35 CHAR);
 
--- 16/07/2019 Dimensione della colonna descrizione stato della tabella promemoria;
-ALTER TABLE promemoria MODIFY descrizione_stato VARCHAR2(1024 CHAR);
-
 -- 26/07/2019 Aggiunti campi per definire la visualizzazione di un tipo pendenza
 ALTER TABLE tipi_versamento ADD visualizzazione_definizione CLOB;
 ALTER TABLE tipi_vers_domini ADD visualizzazione_definizione CLOB;
-
--- 05/08/2019 modifica alla struttura della tabella delle configurazioni
-ALTER TABLE configurazione ADD nome VARCHAR2(255 CHAR);
-ALTER TABLE configurazione RENAME COLUMN giornale_eventi TO valore;
-UPDATE configurazione SET nome = 'giornale_eventi';
-ALTER TABLE configurazione MODIFY (nome NOT NULL);
-ALTER TABLE configurazione ADD CONSTRAINT unique_configurazione_1 UNIQUE (nome);
-
--- 05/08/2019 aggiunti nuovi campi alla tabella tracciati per gestire il formato csv
-ALTER TABLE tracciati ADD cod_tipo_versamento VARCHAR2(35 CHAR);
-ALTER TABLE tracciati ADD formato VARCHAR2(10 CHAR);
-UPDATE tracciati SET formato = 'JSON';
-ALTER TABLE tracciati MODIFY (formato NOT NULL);
-
 
 -- 06/08/2019 aggiunte colonne per la trasformazione del tracciato csv alla tabella tipo versamento
 ALTER TABLE tipi_versamento ADD trac_csv_header_risposta CLOB;
@@ -1249,58 +914,28 @@ CREATE INDEX idx_iuv_rifversamento ON iuv (cod_versamento_ente,id_applicazione,t
 -- CREATE INDEX idx_pag_fk_rpt ON pagamenti (id_rpt);
 CREATE INDEX idx_pag_fk_sng ON pagamenti (id_singolo_versamento);
 
-CREATE INDEX idx_evt_data ON eventi (data);
-CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
-CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
-
 -- 24/01/2020
 ALTER TABLE versamenti DROP CONSTRAINT unique_versamenti_1;
 CREATE INDEX idx_vrs_id_pendenza ON versamenti (cod_versamento_ente,id_applicazione);
 
 -- Controllare
--- ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_applicazione;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_dominio;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento_dominio;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento;
-ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tracciato;
--- Controllare
--- ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
 
 ALTER TABLE singoli_versamenti DROP CONSTRAINT unique_singoli_versamenti_1;
 CREATE INDEX idx_sng_id_voce ON singoli_versamenti (id_versamento,cod_singolo_versamento_ente,indice_dati);
-
--- Controllare
--- ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
-ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_appoggio;
--- Controllare
--- ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_tributo;
--- ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_versamento;
 
 ALTER TABLE rpt DROP CONSTRAINT unique_rpt_1;
 ALTER TABLE rpt DROP CONSTRAINT unique_rpt_2;
 CREATE INDEX idx_rpt_cod_msg_richiesta ON rpt (cod_msg_richiesta);
 CREATE INDEX idx_rpt_id_transazione ON rpt (iuv,ccp,cod_dominio);
 
-ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_pagamento_portale;
--- Controllare
--- ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_versamento;
-
 ALTER TABLE pagamenti DROP CONSTRAINT unique_pagamenti_1;
 CREATE INDEX idx_pag_id_riscossione ON pagamenti (cod_dominio,iuv,iur,indice_dati);
 
-ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_incasso;
-ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rpt;
-ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rr;
-ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_singolo_versamento;
-
-ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
-
-ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_pagamento_portale;
-ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_versamento;
-
 -- 24/01/2020 Personalizzazione testo libero della causaleVersamento
 ALTER TABLE singoli_versamenti ADD descrizione_causale_rpt VARCHAR2(140 CHAR);
-
 
 -- 10/02/2020 Nuovi vincoli unique versamenti, rpt, riscossioni e singoliversamenti
 ALTER TABLE versamenti ADD CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione);
@@ -1355,19 +990,6 @@ ALTER TABLE tipi_vers_domini ADD promemoria_avviso_abilitato NUMBER;
 ALTER TABLE tipi_vers_domini ADD promemoria_ricevuta_abilitato NUMBER;
 ALTER TABLE tipi_vers_domini ADD trac_csv_tipo VARCHAR2(35 CHAR);
 
--- 27/11/2019 Aggiunti riferimenti Incasso, Fr e Tracciato alla tabella eventi
-ALTER TABLE eventi ADD id_fr NUMBER;
-ALTER TABLE eventi ADD id_incasso NUMBER;
-ALTER TABLE eventi ADD id_tracciato NUMBER;
-ALTER TABLE eventi ADD CONSTRAINT fk_evt_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id);
-ALTER TABLE eventi ADD CONSTRAINT fk_evt_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id);
-ALTER TABLE eventi ADD CONSTRAINT fk_evt_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id);
-
--- 23/01/2020 Configurazioni servizio di reset cache anagrafica
-
-INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('reset-cache', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
-INSERT INTO batch(cod_batch) VALUES ('cache-anagrafica');
-
 -- 30/01/2020 Gestione password utenze interna
 ALTER TABLE utenze ADD password VARCHAR2(255 CHAR);
 
@@ -1375,9 +997,6 @@ ALTER TABLE utenze ADD password VARCHAR2(255 CHAR);
 -- Personalizzare il valore del principal per impostare la password dell'utente amministratore con il quale 
 -- impostare le altre utenze da cruscotto di gestione.
 -- UPDATE utenze SET password = '$1$jil82b4n$GRX4A2H91f7L7dJ3kL2Vc.' where principal='gpadmin';
-
--- 03/02/2020 Rilasciato vincolo not null per i dati richiesta di un'operazione di un tracciato
-ALTER TABLE operazioni MODIFY (dati_richiesta NULL);
 
 -- 05/02/2020 Eliminata colonna AnnoRiferimento dalla tabella SingoliVersamenti
 ALTER TABLE singoli_versamenti DROP COLUMN anno_riferimento;
@@ -1405,12 +1024,6 @@ CREATE INDEX idx_prt_id_sessione_psp ON pagamenti_portale (id_sessione_psp);
 CREATE INDEX idx_prt_versante_identif ON pagamenti_portale (src_versante_identificativo);
 
 -- 3.3
-
--- 18/12/2019 Eliminate colonne dati WISP dalla tabella PagamentiPortale.
-ALTER TABLE pagamenti_portale DROP COLUMN wisp_id_dominio;
-ALTER TABLE pagamenti_portale DROP COLUMN wisp_key_pa;
-ALTER TABLE pagamenti_portale DROP COLUMN wisp_key_wisp;
-ALTER TABLE pagamenti_portale DROP COLUMN wisp_html;
 
 -- 03/03/2020 Modifiche alla tabelle TipiVersamento e TipiVersamentoDominio
 -- 1) Aggiunte Colonne per la configurazione dell'avvisatura con AppIO
@@ -1541,53 +1154,6 @@ ALTER TABLE tipi_vers_domini ADD avv_mail_prom_scad_tipo VARCHAR2(35 CHAR);
 ALTER TABLE tipi_vers_domini ADD avv_mail_prom_scad_oggetto CLOB;
 ALTER TABLE tipi_vers_domini ADD avv_mail_prom_scad_messaggio CLOB;
 
-
--- 12/02/2020 Tabella Notifiche AppIO
-CREATE SEQUENCE seq_notifiche_app_io MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE notifiche_app_io
-(
-	debitore_identificativo VARCHAR2(35 CHAR) NOT NULL,
-	cod_versamento_ente VARCHAR2(35 CHAR) NOT NULL,
-	cod_applicazione VARCHAR2(35 CHAR) NOT NULL,
-	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
-	iuv VARCHAR2(35 CHAR) NOT NULL,
-	tipo_esito VARCHAR2(16 CHAR) NOT NULL,
-	data_creazione TIMESTAMP NOT NULL,
-	stato VARCHAR2(16 CHAR) NOT NULL,
-	descrizione_stato VARCHAR2(255 CHAR),
-	data_aggiornamento_stato TIMESTAMP NOT NULL,
-	data_prossima_spedizione TIMESTAMP NOT NULL,
-	tentativi_spedizione NUMBER,
-	id_messaggio VARCHAR2(255 CHAR),
-	stato_messaggio VARCHAR2(16 CHAR),
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_versamento NUMBER NOT NULL,
-	id_tipo_versamento_dominio NUMBER NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_nai_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
-	CONSTRAINT fk_nai_id_tipo_versamento_dominio FOREIGN KEY (id_tipo_versamento_dominio) REFERENCES tipi_vers_domini(id),
-	CONSTRAINT pk_notifiche_app_io PRIMARY KEY (id)
-);
-
--- index
-CREATE INDEX idx_nai_da_spedire ON notifiche_app_io (stato,data_prossima_spedizione);
-CREATE TRIGGER trg_notifiche_app_io
-BEFORE
-insert on notifiche_app_io
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_notifiche_app_io.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('update-ntfy-appio', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
-INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('check-ntfy-appio', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
-
 -- 21/04/2020 Gestione rateizzazione pagamenti
 
 CREATE SEQUENCE seq_documenti MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
@@ -1622,22 +1188,6 @@ end;
 
 ALTER TABLE versamenti ADD cod_rata NUMBER;
 ALTER TABLE versamenti ADD id_documento NUMBER;
--- N.B. -> nello script generale questa constraint viene eliminata
--- ALTER TABLE versamenti ADD CONSTRAINT fk_vrs_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id);
-
--- 21/04/2020 Gestione spedizione promemoria per i documenti
-
-ALTER TABLE promemoria MODIFY (id_versamento NULL);
-ALTER TABLE promemoria ADD id_documento NUMBER;
-ALTER TABLE promemoria ADD CONSTRAINT fk_prm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id);
-
--- 21/04/2020 Gestione spedizione stampe per i documenti
-
-ALTER TABLE stampe DROP CONSTRAINT unique_stampe_1;
-ALTER TABLE stampe MODIFY (id_versamento NULL);
-ALTER TABLE stampe ADD id_documento NUMBER;
-ALTER TABLE stampe ADD CONSTRAINT fk_stm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id);
-ALTER TABLE stampe ADD CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,id_documento,tipo);
 
 -- 28/04/2020 Aggiunte colonne RagioneSocialeDominio e RagioneSocialePsp alla tabella FR
 
@@ -1683,39 +1233,8 @@ CREATE INDEX idx_vrs_prom_avviso ON versamenti (avviso_notificato,data_notifica_
 CREATE INDEX idx_vrs_avv_mail_prom_scad ON versamenti (avv_mail_prom_scad_notificato,avv_mail_data_prom_scadenza DESC);
 CREATE INDEX idx_vrs_avv_io_prom_scad ON versamenti (avv_app_io_prom_scad_notificat,avv_app_io_data_prom_scadenza DESC);
 
-insert into sonde(nome, classe, soglia_warn, soglia_error) values ('gestione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
-
--- 02/06/2020 Batch check promemoria
-insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
-insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-gestione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
-
 -- 15/06/2020 Modificato tipo della colonna cod rata per supportare pagamenti con soglia
 ALTER TABLE versamenti MODIFY cod_rata VARCHAR2(35 CHAR); 
-
--- 07/07/2020 Operazione di un tracciato riferisce l'eventuale stampa dell'avviso
-ALTER TABLE operazioni ADD id_stampa NUMBER;
-ALTER TABLE operazioni ADD CONSTRAINT fk_ope_id_stampa FOREIGN KEY (id_stampa) REFERENCES stampe(id);
-
--- 08/07/2020 Zip delle stampe di un tracciato salvato su db
-ALTER TABLE tracciati ADD zip_stampe BLOB;
-
--- 16/07/2020 Eliminata gestione avvisatura al nodo
-
-ALTER TABLE versamenti DROP COLUMN avvisatura_abilitata;
-ALTER TABLE versamenti DROP COLUMN avvisatura_da_inviare;
-ALTER TABLE versamenti DROP COLUMN avvisatura_operazione;
-ALTER TABLE versamenti DROP COLUMN avvisatura_modalita;
-ALTER TABLE versamenti DROP COLUMN avvisatura_tipo_pagamento;
-ALTER TABLE versamenti DROP COLUMN avvisatura_cod_avvisatura;
--- ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tracciato;
-ALTER TABLE versamenti DROP COLUMN id_tracciato;
-
-DROP TRIGGER trg_esiti_avvisatura;
-DROP TABLE esiti_avvisatura;
-DROP SEQUENCE seq_esiti_avvisatura;
-
-ALTER TABLE operazioni ADD id_versamento NUMBER;
-ALTER TABLE operazioni ADD CONSTRAINT fk_ope_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id);
 
 -- 06/08/2020 Aggiunto Intestatario Conto Accredito
 ALTER TABLE iban_accredito ADD intestatario VARCHAR2(255 CHAR);
@@ -1735,46 +1254,6 @@ ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,data_ora_flusso);
 
 -- 07/12/2020 Livello di severita errori
 ALTER TABLE pagamenti_portale ADD severita NUMBER;
-
-ALTER TABLE eventi ADD severita NUMBER;
-
- -- 01/02/2021 Gestione dei tracciati notifiche mypivot  
-   
-CREATE SEQUENCE seq_trac_notif_pag MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE trac_notif_pag
-(
-	nome_file VARCHAR2(255 CHAR) NOT NULL,
-	tipo VARCHAR2(20 CHAR) NOT NULL,
-	versione VARCHAR2(20 CHAR) NOT NULL,
-	stato VARCHAR2(20 CHAR) NOT NULL,
-	data_creazione TIMESTAMP NOT NULL,
-	data_rt_da TIMESTAMP NOT NULL,
-	data_rt_a TIMESTAMP NOT NULL,
-	data_caricamento TIMESTAMP,
-	data_completamento TIMESTAMP,
-	raw_contenuto BLOB,
-	bean_dati CLOB,
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_dominio NUMBER NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_tnp_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
-	CONSTRAINT pk_trac_notif_pag PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_trac_notif_pag
-BEFORE
-insert on trac_notif_pag
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_trac_notif_pag.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
 
 ALTER TABLE domini ADD cod_connettore_my_pivot VARCHAR2(255 CHAR);
 ALTER TABLE domini ADD cod_connettore_secim VARCHAR2(255 CHAR);
@@ -1803,16 +1282,6 @@ ALTER TABLE iban_accredito ADD aut_stampa_poste VARCHAR2(255 CHAR);
 
 -- 27/04/2021 Aggiunta colonna contabilita alla tabella singoli versamenti
 ALTER TABLE singoli_versamenti ADD contabilita CLOB;
-
-
--- 11/05/2021 Aggiunto identificativo tracciato notifica pagamenti
-ALTER TABLE trac_notif_pag ADD identificativo VARCHAR2(255 CHAR);
-UPDATE trac_notif_pag SET identificativo = nome_file;
-ALTER TABLE trac_notif_pag MODIFY (identificativo NOT NULL);
-
-
--- 17/05/2021 Indice sulla colonna iuv della tabella eventi
-CREATE INDEX idx_evt_iuv ON eventi (iuv);
 
 -- 20/05/2021 Aggiunta colonna connettore hyper_sic_apk alla tabella domini
 ALTER TABLE domini ADD cod_connettore_hyper_sic_apk VARCHAR2(255 CHAR);
@@ -1850,14 +1319,6 @@ ALTER TABLE incassi ADD CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,identifi
 
 ALTER TABLE incassi MODIFY (causale NULL);
 
-insert into sonde(nome, classe, soglia_warn, soglia_error) values ('riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
-insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
-
-
--- 14/07/2021 Batch per la chiusura delle RPT scadute
-insert into sonde(nome, classe, soglia_warn, soglia_error) values ('rpt-scadute', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
-insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-rpt-scadute', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
-
 -- 20/07/2021 Fix anomalie per rendicontazione senza RT
 
 update rendicontazioni set stato='OK', anomalie=null where dbms_lob.compare(anomalie, '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.') = 0 and esito=9;
@@ -1868,21 +1329,12 @@ update fr set stato='ACCETTATA', descrizione_stato = null where stato='ANOMALA' 
 ALTER TABLE singoli_versamenti ADD id_dominio NUMBER;
 ALTER TABLE singoli_versamenti ADD CONSTRAINT fk_sng_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
 
--- 15/10/2021 Identificativo RPT nella tabella notificheAppIo per gestire l'invio delle ricevute di pagamento
-ALTER TABLE notifiche_app_io ADD id_rpt NUMBER;
-ALTER TABLE notifiche_app_io ADD CONSTRAINT fk_nai_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id);
-
 -- 20/12/2021 Patch per gestione delle rendicontazioni che non venivano messe in stato anomala quando non viene trovato il versamento corrispondente.
 UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS null;
 
 -- 21/12/2021 Patch per la gestione del riferimento al pagamento di una rendicontazione che arriva prima della ricevuta.
-UPDATE rendicontazioni SET id_pagamento = (SELECT pagamenti.id 
-	FROM fr, pagamenti 
-	WHERE fr.id=rendicontazioni.id_fr 
-	AND pagamenti.cod_dominio=fr.cod_dominio 
-	AND rendicontazioni.iuv=pagamenti.iuv 
-	AND rendicontazioni.iur=pagamenti.iur 
-	AND rendicontazioni.id_pagamento IS NULL);
+UPDATE rendicontazioni SET id_pagamento = (SELECT pagamenti.id FROM fr, pagamenti WHERE fr.id=rendicontazioni.id_fr AND pagamenti.cod_dominio=fr.cod_dominio AND rendicontazioni.iuv=pagamenti.iuv AND rendicontazioni.iur=pagamenti.iur) WHERE rendicontazioni.id_pagamento IS NULL 
+	AND EXISTS (SELECT 1 FROM fr, pagamenti WHERE fr.id=rendicontazioni.id_fr AND pagamenti.cod_dominio=fr.cod_dominio AND rendicontazioni.iuv=pagamenti.iuv AND rendicontazioni.iur=pagamenti.iur);
 
 UPDATE rendicontazioni SET stato='OK', anomalie=null where dbms_lob.compare(anomalie, to_clob('007111#Il versamento risulta sconosciuto')) = 0 AND id_singolo_versamento IS NOT null;
 
@@ -1891,25 +1343,375 @@ UPDATE rendicontazioni SET stato='OK', anomalie=null where dbms_lob.compare(anom
 update rendicontazioni set id_singolo_versamento = 
 	(SELECT pagamenti.id_singolo_versamento from pagamenti where rendicontazioni.id_pagamento=pagamenti.id and rendicontazioni.id_singolo_versamento is null);
 
-UPDATE rendicontazioni SET stato='OK', anomalie=null where stato='ANOMALA' and dbms_lob.compare(anomalie, to_clob('007111#Il versamento risulta sconosciuto')) = 0 AND id_singolo_versamento IS not null;
+UPDATE rendicontazioni SET stato='OK', anomalie=null where stato='ANOMALA' and dbms_lob.compare(anomalie, to_clob('007111#Il versamento risulta sconosciuto')) = 0 AND id_singolo_versamento IS NOT NULL;
 
-update rendicontazioni set id_singolo_versamento= (SELECT singoli_versamenti.id
+UPDATE rendicontazioni SET id_singolo_versamento= (SELECT singoli_versamenti.id
         FROM fr, versamenti, domini, singoli_versamenti
         WHERE fr.id=rendicontazioni.id_fr
         AND fr.cod_dominio=domini.cod_dominio
-        AND domini.id=versamenti.id_dominio AND rendicontazioni.iuv=versamenti.iuv_versamento and singoli_versamenti.id_versamento=versamenti.id and rendicontazioni.id_singolo_versamento is null);
-
-update rendicontazioni set stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' where id_pagamento is null and esito=0;
+        AND domini.id=versamenti.id_dominio AND rendicontazioni.iuv=versamenti.iuv_versamento and singoli_versamenti.id_versamento=versamenti.id) WHERE rendicontazioni.id_singolo_versamento IS NULL AND
+        EXISTS (SELECT 1
+        FROM fr, versamenti, domini, singoli_versamenti
+        WHERE fr.id=rendicontazioni.id_fr
+        AND fr.cod_dominio=domini.cod_dominio
+        AND domini.id=versamenti.id_dominio AND rendicontazioni.iuv=versamenti.iuv_versamento and singoli_versamenti.id_versamento=versamenti.id);
+        
+UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' WHERE id_pagamento IS NULL AND esito=0;
 
 
 -- 25/01/2022 Flusso Rendicontazione univoco per dominio
 ALTER TABLE fr DROP CONSTRAINT unique_fr_1;
 ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,data_ora_flusso);
 
+-- 29/04/2022 Tabella configurazione nella versione definitiva
+CREATE SEQUENCE seq_configurazione MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
--- 27/01/2022 Indice su id_fr nella tabella eventi
+CREATE TABLE configurazione
+(
+	nome VARCHAR2(255 CHAR) NOT NULL,
+	valore CLOB,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_configurazione_1 UNIQUE (nome),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_configurazione PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_configurazione
+BEFORE
+insert on configurazione
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_configurazione.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+-- 29/04/2022 Tabella tracciati nella versione definitiva
+CREATE SEQUENCE seq_tracciati MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE tracciati
+(
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
+	cod_tipo_versamento VARCHAR2(35 CHAR),
+	formato VARCHAR2(10 CHAR) NOT NULL,
+	tipo VARCHAR2(10 CHAR) NOT NULL,
+	stato VARCHAR2(12 CHAR) NOT NULL,
+	descrizione_stato VARCHAR2(256 CHAR),
+	data_caricamento TIMESTAMP NOT NULL,
+	data_completamento TIMESTAMP,
+	bean_dati CLOB,
+	file_name_richiesta VARCHAR2(256 CHAR),
+	raw_richiesta BLOB,
+	file_name_esito VARCHAR2(256 CHAR),
+	raw_esito BLOB,
+	zip_stampe BLOB,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_operatore NUMBER,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_trc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT pk_tracciati PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_tracciati
+BEFORE
+insert on tracciati
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_tracciati.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+-- 29/04/2022 Tabella trac_notif_pag nella versione definitiva
+CREATE SEQUENCE seq_trac_notif_pag MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE trac_notif_pag
+(
+	nome_file VARCHAR2(255 CHAR) NOT NULL,
+	tipo VARCHAR2(20 CHAR) NOT NULL,
+	versione VARCHAR2(20 CHAR) NOT NULL,
+	stato VARCHAR2(20 CHAR) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	data_rt_da TIMESTAMP NOT NULL,
+	data_rt_a TIMESTAMP NOT NULL,
+	data_caricamento TIMESTAMP,
+	data_completamento TIMESTAMP,
+	raw_contenuto BLOB,
+	bean_dati CLOB,
+	identificativo VARCHAR2(255 CHAR) NOT NULL,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_dominio NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_tnp_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT pk_trac_notif_pag PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_trac_notif_pag
+BEFORE
+insert on trac_notif_pag
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_trac_notif_pag.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+-- 29/04/2022  Tabella Notifiche AppIO definitiva
+CREATE SEQUENCE seq_notifiche_app_io MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE notifiche_app_io
+(
+	debitore_identificativo VARCHAR2(35 CHAR) NOT NULL,
+	cod_versamento_ente VARCHAR2(35 CHAR) NOT NULL,
+	cod_applicazione VARCHAR2(35 CHAR) NOT NULL,
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
+	iuv VARCHAR2(35 CHAR) NOT NULL,
+	tipo_esito VARCHAR2(16 CHAR) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	stato VARCHAR2(16 CHAR) NOT NULL,
+	descrizione_stato VARCHAR2(255 CHAR),
+	data_aggiornamento_stato TIMESTAMP NOT NULL,
+	data_prossima_spedizione TIMESTAMP NOT NULL,
+	tentativi_spedizione NUMBER,
+	id_messaggio VARCHAR2(255 CHAR),
+	stato_messaggio VARCHAR2(16 CHAR),
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_versamento NUMBER NOT NULL,
+	id_tipo_versamento_dominio NUMBER NOT NULL,
+	id_rpt NUMBER,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_nai_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_nai_id_tipo_versamento_dominio FOREIGN KEY (id_tipo_versamento_dominio) REFERENCES tipi_vers_domini(id),
+	CONSTRAINT fk_nai_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT pk_notifiche_app_io PRIMARY KEY (id)
+);
+
+-- index
+CREATE INDEX idx_nai_da_spedire ON notifiche_app_io (stato,data_prossima_spedizione);
+CREATE TRIGGER trg_notifiche_app_io
+BEFORE
+insert on notifiche_app_io
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_notifiche_app_io.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+-- 29/04/2022  Tabella promemoria definitiva
+CREATE SEQUENCE seq_promemoria MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE promemoria
+(
+	tipo VARCHAR2(16 CHAR) NOT NULL,
+	data_creazione TIMESTAMP NOT NULL,
+	stato VARCHAR2(16 CHAR) NOT NULL,
+	descrizione_stato VARCHAR2(1024 CHAR),
+	destinatario_to VARCHAR2(256 CHAR) NOT NULL,
+	destinatario_cc VARCHAR2(256 CHAR),
+	messaggio_content_type VARCHAR2(256 CHAR),
+	oggetto VARCHAR2(512 CHAR),
+	messaggio CLOB,
+	allega_pdf NUMBER NOT NULL,
+	data_aggiornamento_stato TIMESTAMP NOT NULL,
+	data_prossima_spedizione TIMESTAMP NOT NULL,
+	tentativi_spedizione NUMBER,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_versamento NUMBER,
+	id_rpt NUMBER,
+	id_documento NUMBER,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_prm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_prm_id_rpt FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT fk_prm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
+	CONSTRAINT pk_promemoria PRIMARY KEY (id)
+);
+
+
+ALTER TABLE promemoria MODIFY allega_pdf DEFAULT 0;
+
+CREATE TRIGGER trg_promemoria
+BEFORE
+insert on promemoria
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_promemoria.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+-- 29/04/2022 Tabella degli eventi nella versione definitiva
+CREATE SEQUENCE seq_eventi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE eventi
+(
+	componente VARCHAR2(35 CHAR),
+	ruolo VARCHAR2(1 CHAR),
+	categoria_evento VARCHAR2(1 CHAR),
+	tipo_evento VARCHAR2(70 CHAR),
+	sottotipo_evento VARCHAR2(35 CHAR),
+	data TIMESTAMP,
+	intervallo NUMBER,
+	esito VARCHAR2(4 CHAR),
+	sottotipo_esito VARCHAR2(35 CHAR),
+	dettaglio_esito CLOB,
+	parametri_richiesta BLOB,
+	parametri_risposta BLOB,
+	dati_pago_pa CLOB,
+	cod_versamento_ente VARCHAR2(35 CHAR),
+	cod_applicazione VARCHAR2(35 CHAR),
+	iuv VARCHAR2(35 CHAR),
+	ccp VARCHAR2(35 CHAR),
+	cod_dominio VARCHAR2(35 CHAR),
+	id_sessione VARCHAR2(35 CHAR),
+	severita NUMBER,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_fr NUMBER,
+	id_incasso NUMBER,
+	id_tracciato NUMBER,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_evt_id_fr FOREIGN KEY (id_fr) REFERENCES fr(id),
+	CONSTRAINT fk_evt_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
+	CONSTRAINT fk_evt_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
+	CONSTRAINT pk_eventi PRIMARY KEY (id)
+);
+
+-- index
+CREATE INDEX idx_evt_data ON eventi (data);
+CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
+CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
+CREATE INDEX idx_evt_iuv ON eventi (iuv);
 CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
+CREATE TRIGGER trg_eventi
+BEFORE
+insert on eventi
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_eventi.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
 
+-- 29/04/2022 Tabella stampe nella versione definitiva
+CREATE SEQUENCE seq_stampe MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE stampe
+(
+	data_creazione TIMESTAMP NOT NULL,
+	tipo VARCHAR2(16 CHAR) NOT NULL,
+	pdf BLOB,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_versamento NUMBER,
+	id_documento NUMBER,
+	-- unique constraints
+	CONSTRAINT unique_stampe_1 UNIQUE (id_versamento,id_documento,tipo),
+	-- fk/pk keys constraints
+	CONSTRAINT fk_stm_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT fk_stm_id_documento FOREIGN KEY (id_documento) REFERENCES documenti(id),
+	CONSTRAINT pk_stampe PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_stampe
+BEFORE
+insert on stampe
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_stampe.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+-- 29/04/2022 Tabella operazioni nella versione definitiva
+CREATE SEQUENCE seq_operazioni MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE operazioni
+(
+	tipo_operazione VARCHAR2(16 CHAR) NOT NULL,
+	linea_elaborazione NUMBER NOT NULL,
+	stato VARCHAR2(16 CHAR) NOT NULL,
+	dati_richiesta BLOB,
+	dati_risposta BLOB,
+	dettaglio_esito VARCHAR2(255 CHAR),
+	cod_versamento_ente VARCHAR2(255 CHAR),
+	cod_dominio VARCHAR2(35 CHAR),
+	iuv VARCHAR2(35 CHAR),
+	trn VARCHAR2(35 CHAR),
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_tracciato NUMBER NOT NULL,
+	id_applicazione NUMBER,
+	id_stampa NUMBER,
+	id_versamento NUMBER,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_ope_id_tracciato FOREIGN KEY (id_tracciato) REFERENCES tracciati(id),
+	CONSTRAINT fk_ope_id_applicazione FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_ope_id_stampa FOREIGN KEY (id_stampa) REFERENCES stampe(id),
+	CONSTRAINT fk_ope_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_operazioni PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_operazioni
+BEFORE
+insert on operazioni
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_operazioni.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+-- INSERIMENTO ENTRIES TABELLA SONDE
+INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('update-ntfy-appio', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('check-ntfy-appio', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
+
+INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('spedizione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('gestione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+
+INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('check-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
+INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('check-gestione-promemoria', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
+
+INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('check-riconciliazioni', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
+
+INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('rpt-scadute', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('check-rpt-scadute', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
+
+-- 23/01/2020 Configurazioni servizio di reset cache anagrafica
+
+INSERT INTO sonde(nome, classe, soglia_warn, soglia_error) VALUES ('reset-cache', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
+INSERT INTO batch(cod_batch) VALUES ('cache-anagrafica');
+
+
+-- CREAZIONE CONSTRAINT
+ALTER TABLE incassi ADD CONSTRAINT fk_inc_id_operatore FOREIGN KEY (id_operatore) REFERENCES operatori(id);
+
+ALTER TABLE rendicontazioni ADD CONSTRAINT fk_rnd_id_singolo_versamento FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id);
+
+ALTER TABLE fr ADD CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id);
 
 -- CREAZIONE VISTE NELLA VERSIONE FINALE 3.5
 
