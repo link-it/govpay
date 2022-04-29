@@ -70,7 +70,7 @@ public class CaricamentoTracciatoThread implements Runnable {
 			
 			operazioniBD.setAutoCommit(false);
 			
-			log.debug("Elaborazione di " + this.richieste.size() + " operazioni...");
+			log.debug(this.nomeThread + ": Elaborazione di " + this.richieste.size() + " operazioni...");
 			
 			for (CaricamentoRequest request : this.richieste) {
 				try {
@@ -109,9 +109,13 @@ public class CaricamentoTracciatoThread implements Runnable {
 					}
 					
 					if(created) {
+						log.debug(this.nomeThread + " Inserimento operazione ["+ (operazione.getLineaElaborazione()) + "] nel DB in corso...");
 						operazioniBD.insertOperazione(operazione);
+						log.debug(this.nomeThread + " Inserimento operazione ["+ (operazione.getLineaElaborazione()) + "] nel DB completato.");
 					} else {
+						log.debug(this.nomeThread + " Update operazione ["+ (operazione.getLineaElaborazione()) + "] nel DB in corso...");
 						operazioniBD.updateOperazione(operazione);
+						log.debug(this.nomeThread + " Update operazione ["+ (operazione.getLineaElaborazione()) + "] nel DB completato.");
 					}
 					
 					if(operazione.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
@@ -134,23 +138,23 @@ public class CaricamentoTracciatoThread implements Runnable {
 					
 					this.lineeElaborate.add(request.getLinea());
 					this.risposte.add(operazioneResponse);
-					log.debug("Inserimento Pendenza Numero ["+ (request.getLinea() -1) + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + new String(request.getDati()) + "]");
 					operazioniBD.commit();
+					log.debug(this.nomeThread + " Inserimento Pendenza Numero ["+ (request.getLinea() -1) + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + new String(request.getDati()) + "]");
 				}catch(ServiceException e) {
-					log.error("Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
+					log.error(this.nomeThread + " Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
 				} finally {
 					
 				}
 			}
 		}catch(ServiceException e) {
-			log.error("Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
+			log.error(this.nomeThread + " Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
 			
 		} finally {
 			this.completed = true;
 			if(operazioniBD != null) operazioniBD.closeConnection(); 
 			
-			log.debug("Linee elaborate: " + this.lineeElaborate.size());
-			log.debug("Risposte prodotte: " + this.risposte.size());
+			log.debug(this.nomeThread + " Linee elaborate: " + this.lineeElaborate.size());
+			log.debug(this.nomeThread + " Risposte prodotte: " + this.risposte.size());
 			ContextThreadLocal.unset();
 		}
 		

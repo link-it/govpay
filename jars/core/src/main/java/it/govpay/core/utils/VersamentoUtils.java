@@ -108,9 +108,9 @@ public class VersamentoUtils {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		
 		// solo se non e' multibeneficiario
-		if(generaIuv && !VersamentoUtils.isPendenzaMultibeneficiario(versamento, configWrapper) && versamento.getSingoliVersamenti().size() != 1) {
-			throw new GovPayException(EsitoOperazione.VER_000, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
-		}
+//		if(generaIuv && !VersamentoUtils.isPendenzaMultibeneficiario(versamento, configWrapper) && versamento.getSingoliVersamenti().size() != 1) {
+//			throw new GovPayException(EsitoOperazione.VER_000, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
+//		}
 
 		BigDecimal somma = BigDecimal.ZERO;
 		List<String> codSingoliVersamenti = new ArrayList<>();
@@ -1005,20 +1005,39 @@ public class VersamentoUtils {
 		for(SingoloVersamento singoloVersamento : versamento.getSingoliVersamenti(configWrapper)) {
 			// appena trovo un singolo versamento con un id dominio definito sono in modalita' multibeneficiario
 			if(singoloVersamento.getIdDominio() != null) {
-				return true;
+				try {
+					Dominio dominioSV = AnagraficaManager.getDominio(configWrapper, singoloVersamento.getIdDominio());
+					Dominio dominioV = versamento.getDominio(configWrapper);
+					
+					if(!dominioSV.getCodDominio().equals(dominioV.getCodDominio()))
+						return true;
+				} catch (NotFoundException e) {
+					// se passo qui ho fallito la validazione della pendenza !
+					throw new ServiceException("Dominio ["+singoloVersamento.getIdDominio()+"] non censito in base dati.");
+				}
 			}
 		}
 		return false;
 	}
 	
 	public static boolean generaIUV(Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException {
-		if(isPendenzaMultibeneficiario(versamento, configWrapper)) {
-			return versamento.getNumeroAvviso() == null;
+		
+		boolean hasBollo = false;
+		for(SingoloVersamento singoloVersamento : versamento.getSingoliVersamenti()) {
+			if(!hasBollo) {
+				if(singoloVersamento.getTipoBollo() != null && singoloVersamento.getHashDocumento() != null && singoloVersamento.getProvinciaResidenza() != null) {
+					hasBollo = true;
+				}
+			}
 		}
 		
-		boolean generaIuv = versamento.getNumeroAvviso() == null && versamento.getSingoliVersamenti(configWrapper).size() == 1;
-				
-		return generaIuv;
+		// se non c'e' una voce con il bollo devo semplicemente controllare che non me lo passino
+		if(!hasBollo) {
+			return versamento.getNumeroAvviso() == null;
+		} else {
+		// altrimenti non si genera
+			return false;
+		}
 	}
 	
 	public static boolean isAllIBANPostali(Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException {
@@ -1059,7 +1078,12 @@ public class VersamentoUtils {
 		// appena trovo un singolo versamento con un id dominio definito sono in modalita' multibeneficiario
 		if(singoloVersamento.getIdDominio() != null) {
 			try {
-				return AnagraficaManager.getDominio(configWrapper, singoloVersamento.getIdDominio());
+				Dominio dominioSV = AnagraficaManager.getDominio(configWrapper, singoloVersamento.getIdDominio());
+				
+				if(!dominioSV.getCodDominio().equals(dominio.getCodDominio()))
+					return dominioSV;
+				
+//				return AnagraficaManager.getDominio(configWrapper, singoloVersamento.getIdDominio());
 			} catch (NotFoundException e) {
 				// se passo qui ho fallito la validazione della pendenza !
 				throw new ServiceException("Dominio ["+singoloVersamento.getIdDominio()+"] non censito in base dati.");

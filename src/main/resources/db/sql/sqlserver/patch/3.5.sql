@@ -327,7 +327,7 @@ CREATE VIEW v_rendicontazioni_ext AS
 DROP VIEW IF EXISTS v_rpt_versamenti;
 
 ALTER TABLE rpt ADD versione VARCHAR(35);
-UPDATE rpt SET versione = 'SANP_230';
+UPDATE rpt SET versione = 'SANP_230' WHERE versione IS NULL;
 ALTER TABLE rpt ALTER COLUMN versione VARCHAR(35) NOT NULL;
 
 CREATE VIEW v_rpt_versamenti AS

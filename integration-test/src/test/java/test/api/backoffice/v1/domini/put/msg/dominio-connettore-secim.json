@@ -29,7 +29,8 @@
   		"downloadBaseUrl" : "http://localhost:8080/servizioDownloadTracciati",
   		"versioneCsv" : "1.0",
   		"codiceCliente" : "1234567",
-  		"tipiPendenza" : [ "*" ]
+  		"tipiPendenza" : [ "*" ],
+  		"intervalloCreazioneTracciato": 24
   },
   "intermediato": "true"
 }

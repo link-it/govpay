@@ -226,12 +226,17 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
         a.push({ label: 'Scarica resoconto', type: UtilService.EXPORT_INCASSO });
         break;
       case UtilService.URL_PENDENZE+UtilService.URL_DETTAGLIO:
-        if(rsc.data.info && UtilService.USER_ACL.hasPendenze) {
-          if(rsc.data.info['stato'] == this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.NON_ESEGUITA)) {
+        if (rsc.data.info && UtilService.USER_ACL.hasPendenze) {
+          if (rsc.data.info['stato'] === this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.NON_ESEGUITA)) {
             a.push({ label: 'Annulla pendenza', type: UtilService.PENDENZA });
+            a.push({ label: 'Scarica avviso', type: UtilService.SCARICA_AVVISO });
           }
-          if(rsc.data.info['stato'] == this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ANNULLATA)) {
+          if (rsc.data.info['stato'] === this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ANNULLATA)) {
             a.push({ label: 'Ripristina pendenza', type: UtilService.PENDENZA });
+          }
+          if ((rsc.data.info['stato'] === this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ESEGUITA)) ||
+              (rsc.data.info['stato'] === this.us.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.INCASSATA))) {
+            a.push({ label: 'Stampa ricevuta', type: UtilService.STAMPA_RICEVUTA });
           }
         }
         a.push({ label: 'Scarica resoconto', type: UtilService.EXPORT_PENDENZA });
@@ -355,7 +360,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
         case 'Rendicontazioni e Incassi':
           UtilService.USER_ACL.hasRendiIncassi = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
           this._sideNavSetup.terMenu.push({ link: UtilService.URL_RENDICONTAZIONI, name: UtilService.TXT_RENDICONTAZIONI, xhttp: false, icon: false, sort: 0 });
-//          this._sideNavSetup.terMenu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false, sort: 1 });
+          // this._sideNavSetup.terMenu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false, sort: 1 });
           this._sideNavSetup.menu.push({ link: UtilService.URL_INCASSI, name: UtilService.TXT_INCASSI, xhttp: false, icon: false, sort: 3 });
           this._sideNavSetup.terMenu.push({ link: UtilService.URL_RISCOSSIONI, name: UtilService.TXT_RISCOSSIONI, xhttp: false, icon: false, sort: 1 });
           break;
@@ -494,6 +499,12 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
         case UtilService.EXPORT_TRACCIATO_AVVISI:
         case UtilService.EXPORT_TRACCIATO_ESITO:
           (_componentRef)?_componentRef.instance.exportData(event.target.type):null;
+          break;
+        case UtilService.SCARICA_AVVISO:
+          (_componentRef) ? _componentRef.instance.scaricaAvviso(event.target.type) : null;
+          break;
+        case UtilService.STAMPA_RICEVUTA:
+          (_componentRef) ? _componentRef.instance.stampaRicevuta(event.target.type) : null;
           break;
         case UtilService.ESCLUDI_NOTIFICA:
           (_componentRef)?_componentRef.instance.esclusioneNotifiche():null;

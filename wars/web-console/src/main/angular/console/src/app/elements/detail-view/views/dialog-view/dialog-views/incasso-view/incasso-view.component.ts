@@ -85,7 +85,7 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
     this._reset();
     if(event.value) {
       this.fGroup.controls['idfIuv_ctrl'].enable();
-      this.elencoIdfIuv('');
+      this.elencoIdf('');
     }
   }
 
@@ -108,6 +108,7 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
 
   protected _reset() {
     this.fGroup.controls['idfIuv_ctrl'].setValue('');
+    this.fGroup.controls['sct_ctrl'].setValue('');
     this.fGroup.controls['importo_ctrl'].setValue('');
   }
 
@@ -120,7 +121,7 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
         if(this._asyncIdfIuv.isOpen()) {
           this._asyncIdfIuv.close();
         }
-        this.elencoIdfIuv(event.target.value);
+        this.elencoIdf(event.target.value);
       }.bind(this);
       this._asyncIdfIuv.asyncOptions.setTimeout(_delayFct, 800);
     } else {
@@ -169,6 +170,44 @@ export class IncassoViewComponent implements IFormComponent, OnDestroy,  OnInit,
           });
           this._idfIuv = _riscos.concat(_rendis);
           if(!this._asyncIdfIuv.isOpen()) {
+            this._asyncIdfIuv.open();
+          }
+          this._asyncIdfIuv.focusInput();
+        }
+      }, (error) => {
+        this._asyncIdfIuv.asyncOptions.clearAllTimeout();
+        this._searching = false;
+        this.fGroup.controls['idfIuv_ctrl'].enable();
+        this._idfIuv = [];
+      });
+  }
+
+  protected elencoIdf(value) {
+    const _services: any[] = [];
+    const _selection = this.fGroup.controls['dominio_ctrl'].value;
+    const _queryRendi = '?stato=Acquisito&incassato=false&idDominio=' + _selection.idDominio + '&idFlusso=' + value;
+    const _rendi = UtilService.URL_RENDICONTAZIONI + _queryRendi;
+    _services.push(_rendi);
+    this._searching = true;
+    this.fGroup.controls['idfIuv_ctrl'].disable();
+    this.gps.forkService(_services).subscribe(
+      (_responses) => {
+        this._asyncIdfIuv.asyncOptions.clearAllTimeout();
+        if (_responses) {
+          this._searching = false;
+          this.fGroup.controls['idfIuv_ctrl'].enable();
+          const _rendis = _responses[0]['body'].risultati.map(_rend => {
+            return {
+              flusso: _rend.idFlusso,
+              trn: _rend.trn,
+              importo: _rend.importoTotale,
+              data: moment(_rend.dataFlusso).format('DD/MM/YYYY'),
+              iuv: '',
+              label: _rend.idFlusso
+            }
+          });
+          this._idfIuv = _rendis;
+          if (!this._asyncIdfIuv.isOpen()) {
             this._asyncIdfIuv.open();
           }
           this._asyncIdfIuv.focusInput();

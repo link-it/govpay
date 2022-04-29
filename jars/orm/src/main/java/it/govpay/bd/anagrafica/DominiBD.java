@@ -498,6 +498,7 @@ public class DominiBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_DOMINIO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_DOMINIO), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_DOMINIO, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni

@@ -175,6 +175,25 @@ public class AuthorizationManager {
 		sb.append(details.getMessaggioUtenzaNonAutorizzata()).append(" per nessun Tipo Pendenza.");
 		return new NotAuthorizedException(sb.toString());
 	}
+	
+	public static boolean isAuthorized(Authentication authentication, List<TIPO_UTENZA> tipoUtenza) {
+		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
+		return isAuthorized(details.getUtenza(), tipoUtenza);
+	}
+
+	public static boolean isAuthorized(Utenza utenza, List<TIPO_UTENZA> tipoUtenza) {
+
+		// controllo che l'utenza sia di tipo consentito
+		if(!tipoUtenza.contains(utenza.getTipoUtenza()))
+			return false;
+
+		// controllo abilitazione
+		if(!utenza.isAbilitato())
+			return false;
+
+		return true;
+	}
+	
 
 	public static boolean isAuthorized(Authentication authentication, List<TIPO_UTENZA> tipoUtenza, List<Servizio> servizi, List<Diritti> listaDiritti) {
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);

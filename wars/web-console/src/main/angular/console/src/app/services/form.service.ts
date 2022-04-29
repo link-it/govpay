@@ -89,5 +89,5 @@ export class FormService {
   public static FORM_TIPO_PENDENZA: string = 'Tipo pendenza';
 
   //Incassi
-  public static FORM_SCT: string = 'SCT';
+  public static FORM_SCT: string = 'Identificativo PSP del riversamento';
 }

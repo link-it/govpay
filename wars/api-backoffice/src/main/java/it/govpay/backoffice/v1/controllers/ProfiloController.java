@@ -3,6 +3,7 @@ package it.govpay.backoffice.v1.controllers;
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -18,14 +19,15 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.PatchOp;
-import it.govpay.backoffice.v1.beans.Profilo;
 import it.govpay.backoffice.v1.beans.PatchOp.OpEnum;
+import it.govpay.backoffice.v1.beans.Profilo;
 import it.govpay.backoffice.v1.beans.converter.PatchOpConverter;
 import it.govpay.backoffice.v1.beans.converter.ProfiloConverter;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ProfiloPatchDTO;
+import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class ProfiloController extends BaseController {
 
@@ -38,6 +40,9 @@ public class ProfiloController extends BaseController {
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 		try{
+			// autorizzazione sulla API
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE));
+			
 			UtentiDAO utentiDAO = new UtentiDAO();
 			
 			LeggiProfiloDTOResponse leggiProfilo = utentiDAO.getProfilo(user);
@@ -63,6 +68,9 @@ public class ProfiloController extends BaseController {
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
+			
+			// autorizzazione sulla API
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE));
 			
 			// autorizzazione sulla API
 //			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.SCRITTURA));

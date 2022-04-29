@@ -1,6 +1,7 @@
 package it.govpay.backoffice.v1.beans;
 
 
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
@@ -28,6 +29,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "downloadBaseUrl",
 "fileSystemPath",
 "tipiPendenza",
+"intervalloCreazioneTracciato",
 })
 public class ConnettoreNotificaPagamentiMyPivot extends JSONSerializable implements IValidable {
   
@@ -101,6 +103,9 @@ public class ConnettoreNotificaPagamentiMyPivot extends JSONSerializable impleme
   
   @JsonProperty("tipiPendenza")
   private List<Object> tipiPendenza = null;
+  
+  @JsonProperty("intervalloCreazioneTracciato")
+  private BigDecimal intervalloCreazioneTracciato = null;
   
   /**
    * Indica se il connettore e' abilitato
@@ -261,6 +266,22 @@ public class ConnettoreNotificaPagamentiMyPivot extends JSONSerializable impleme
     this.tipiPendenza = tipiPendenza;
   }
 
+  /**
+   * intervallo di creazione del tracciato in ore
+   **/
+  public ConnettoreNotificaPagamentiMyPivot intervalloCreazioneTracciato(BigDecimal intervalloCreazioneTracciato) {
+    this.intervalloCreazioneTracciato = intervalloCreazioneTracciato;
+    return this;
+  }
+
+  @JsonProperty("intervalloCreazioneTracciato")
+  public BigDecimal getIntervalloCreazioneTracciato() {
+    return intervalloCreazioneTracciato;
+  }
+  public void setIntervalloCreazioneTracciato(BigDecimal intervalloCreazioneTracciato) {
+    this.intervalloCreazioneTracciato = intervalloCreazioneTracciato;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -279,12 +300,13 @@ public class ConnettoreNotificaPagamentiMyPivot extends JSONSerializable impleme
         Objects.equals(emailAllegato, connettoreNotificaPagamentiMyPivot.emailAllegato) &&
         Objects.equals(downloadBaseUrl, connettoreNotificaPagamentiMyPivot.downloadBaseUrl) &&
         Objects.equals(fileSystemPath, connettoreNotificaPagamentiMyPivot.fileSystemPath) &&
-        Objects.equals(tipiPendenza, connettoreNotificaPagamentiMyPivot.tipiPendenza);
+        Objects.equals(tipiPendenza, connettoreNotificaPagamentiMyPivot.tipiPendenza) &&
+        Objects.equals(intervalloCreazioneTracciato, connettoreNotificaPagamentiMyPivot.intervalloCreazioneTracciato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(abilitato, codiceIPA, tipoConnettore, versioneCsv, emailIndirizzi, emailSubject, emailAllegato, downloadBaseUrl, fileSystemPath, tipiPendenza);
+    return Objects.hash(abilitato, codiceIPA, tipoConnettore, versioneCsv, emailIndirizzi, emailSubject, emailAllegato, downloadBaseUrl, fileSystemPath, tipiPendenza, intervalloCreazioneTracciato);
   }
 
   public static ConnettoreNotificaPagamentiMyPivot parse(String json) throws ServiceException, ValidationException {
@@ -311,6 +333,7 @@ public class ConnettoreNotificaPagamentiMyPivot extends JSONSerializable impleme
     sb.append("    downloadBaseUrl: ").append(toIndentedString(downloadBaseUrl)).append("\n");
     sb.append("    fileSystemPath: ").append(toIndentedString(fileSystemPath)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
+    sb.append("    intervalloCreazioneTracciato: ").append(toIndentedString(intervalloCreazioneTracciato)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -335,6 +358,7 @@ public class ConnettoreNotificaPagamentiMyPivot extends JSONSerializable impleme
 			vf.getValidator("tipoConnettore", this.tipoConnettore).notNull();
 			vf.getValidator("versioneCsv", this.versioneCsv).notNull().minLength(1).maxLength(255);
 			vf.getValidator("codiceIPA", this.codiceIPA).notNull().minLength(1).maxLength(4000);
+			vf.getValidator("intervalloCreazioneTracciato", this.intervalloCreazioneTracciato).notNull().min(BigDecimal.ONE);
 			
 			switch (this.tipoConnettore) {
 			case EMAIL:

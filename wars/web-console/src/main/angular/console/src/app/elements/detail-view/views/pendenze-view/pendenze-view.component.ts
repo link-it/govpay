@@ -19,9 +19,6 @@ import { NewStandardCollapse } from '../../../../classes/view/new-standard-colla
 import { TwoColsCollapse } from '../../../../classes/view/two-cols-collapse';
 import { HttpResponse } from '@angular/common/http';
 
-declare let JSZip: any;
-declare let FileSaver: any;
-
 @Component({
   selector: 'link-pendenze',
   templateUrl: './pendenze-view.component.html',
@@ -230,8 +227,8 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
                 stStrings.push(Voce.IUV+': '+item.rpt.data.creditorReferenceId);
               }
             }
-            if (item.rt && item.rt.receipt) {
-              _istituto = (item.rt.receipt.PSPCompanyName || '');
+            if (item.rt) {
+              _istituto = (item.rt.PSPCompanyName || '');
             }
             stStrings.push(Voce.DATA+': '+item.dataRichiestaPagamento?moment(item.dataRichiestaPagamento).format('DD/MM/YYYY [ore] HH:mm:ss'):Voce.NON_PRESENTE);
           }
@@ -576,5 +573,45 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     setTimeout(() => {
       this.us.generateStructuredZip(dataCalls, structure, 'Pendenza_' + this.json.idA2A + '_' + this.json.idPendenza);
     }, 500);
+  }
+
+  scaricaAvviso() {
+    const url = UtilService.URL_AVVISI + '/' + UtilService.EncodeURIComponent(this.json.dominio.idDominio) + '/' + UtilService.EncodeURIComponent(this.json.numeroAvviso);
+    const name = this.json.dominio.idDominio + '_' + this.json.numeroAvviso;
+
+    this.gps.pdf(url).subscribe(
+      (response) => {
+        this.gps.updateSpinner(false);
+        this.us.savePdf(response.body, name);
+      },
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      }
+    );
+  }
+
+  stampaRicevuta() {
+    const item = this.tentativi.find((el) => {
+      return el.jsonP.stato === 'RT_ACCETTATA_PA';
+    });
+    if (item) {
+      const ref: any = UtilService.ExportMapLoopCfg(item.jsonP);
+      const url = '/rpp/' + UtilService.EncodeURIComponent(ref.iddRT) + '/' + UtilService.EncodeURIComponent(ref.iuvRT) + '/' + UtilService.EncodeURIComponent(ref.ccpRT) + '/rt';
+      const name = `Rt_${ref.iuvRT}_${ref.ccpRT}`;
+
+      this.gps.pdf(url).subscribe(
+        (response) => {
+          this.gps.updateSpinner(false);
+          this.us.savePdf(response.body, name);
+        },
+        (error) => {
+          this.gps.updateSpinner(false);
+          this.us.onError(error);
+        }
+      );
+    } else {
+      this.us.alert('Nessuan ricevuta trovata');
+    }
   }
 }

@@ -351,6 +351,11 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
 * call read('classpath:utils/nodo-config-stazione-put.feature')
 
+* def stazioneNdpSymPut = read('classpath:test/workflow/modello3/v2/msg/stazione.json')
+* def idStazione = '11111111113_02'
+* call read('classpath:utils/nodo-config-stazione-put.feature')
+
+* def idStazione = '11111111113_01'
 
 * def ndpsym_config_url = ndpsym_url + '/config/rs/'
 

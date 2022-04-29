@@ -66,6 +66,8 @@
         
         <!-- Check tracciati notifica pagamenti da elaborare viene eseguito tutti i giorni ogni 5 secondi -->
         <task:scheduled ref="batchElaborazioneTracciatiNotificaPagamentiCheck" method="exec" cron="0/5 * * * * ?" />
+        <!-- Elaborazione tracciati notifica pagamenti viene eseguito tutti i giorni un minuto dopo ogni ora -->
+<!--         <task:scheduled ref="batchElaborazioneTracciatiNotificaPagamenti" method="exec" cron="0 1 * * * ?" /> -->
         <!-- Elaborazione tracciati notifica pagamenti viene eseguito tutti i giorni alle 3 del mattino -->
         <task:scheduled ref="batchElaborazioneTracciatiNotificaPagamenti" method="exec" cron="0 0 3 * * ?" />
         <!-- Check tracciati notifica pagamenti da spedire viene eseguito tutti i giorni ogni 5 secondi -->

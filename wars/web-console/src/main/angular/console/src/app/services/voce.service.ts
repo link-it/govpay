@@ -67,6 +67,7 @@ export class Voce {
   public static DATA_ESITO: string = 'Data esito';
   public static DATA_ESECUZIONE_RISCOSSIONE: string = 'Data esecuzione riscossione';
   public static DATA_FLUSSO: string = 'Data flusso';
+  public static DATA_REGISTRAZIONE: string = 'Data registrazione';
   public static DATA_REGOLAMENTO: string = 'Data regolamento';
   public static DATA_RICEVUTA: string = 'Data ricevuta';
   public static DATA_RICHIESTA: string = 'Data richiesta';
@@ -133,6 +134,8 @@ export class Voce {
   public static ID_UNITA: string = 'Id unità';
   public static ID_VOCE_PENDENZA: string = 'Id voce pendenza';
   public static IDENTIFICATIVO: string = 'Identificativo';
+  public static IDENTIFICATIVO_FLUSSO: string = 'Identificativo flusso';
+  public static IDENTIFICATIVO_PSP_RIVERSAMENTO: string = 'Identificativo PSP del riversamento';
   public static IDF_IUV: string = 'Flusso/IUV';
   public static IDF: string = 'IDF';
   public static IMPAGINAZIONE: string = 'Impaginazione';
@@ -145,6 +148,8 @@ export class Voce {
   public static INDIRIZZO: string = 'Indirizzo';
   public static INSERIMENTO_DATI: string = 'Form inserimento dati';
   public static INTERMEDIATO: string = 'Intermediato';
+  public static INTERVALLO_CREAZIONE: string = 'Intervallo creazione';
+  public static INTERVALLO_CREAZIONE_HINT: string = 'Indicare l\'intervallo di creazione del tracciato in giorni';
   public static INTESTATARIO: string = 'Intestatario del conto';
   public static INTESTAZIONE_ESITO: string = 'Linea intestazione esito';
   public static INVIO_TRACCIATO_ALLEGATO: string = 'Invia tracciato come allegato';

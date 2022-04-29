@@ -1,5 +1,6 @@
 package it.govpay.backoffice.v1.beans.converter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 			connettore.setVersioneCsv(connector.getVersioneCsv());
 			connettore.setCodiceCliente(connector.getCodiceCliente());
 			connettore.setCodiceIstituto(connector.getCodiceIstituto());
+			connettore.setIntervalloCreazioneTracciato(connector.getIntervalloCreazioneTracciato().intValue());
 			
 //			boolean appAuthTipiPendenzaAll = false;
 			if(connector.getTipiPendenza() != null) {
@@ -134,6 +136,7 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 			rsModel.setVersioneCsv(connettore.getVersioneCsv());
 			rsModel.setCodiceCliente(connettore.getCodiceCliente());
 			rsModel.setCodiceIstituto(connettore.getCodiceIstituto());
+			rsModel.setIntervalloCreazioneTracciato(new BigDecimal(connettore.getIntervalloCreazioneTracciato()));
 			
 			switch (connettore.getTipoConnettore()) {
 			case EMAIL:
