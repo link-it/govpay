@@ -132,6 +132,15 @@ public void validate() throws ValidationException {
 		if(this.codificaIuv != null)
 			vf.getValidator("codificaIuv", this.codificaIuv).minLength(1).maxLength(15); //.pattern("[0-9]{1,15}");
 		
+		vf.getValidator("generazioneIuvInterna", this.generazioneIuvInterna).notNull();
+		
+		if(this.generazioneIuvInterna.booleanValue()) {
+			
+			// regExpIuv obbligatoria se generazioneIuvInterna e' selezionato
+			if(this.regExpIuv == null)
+				throw new ValidationException("Il campo regExpIuv non puo' essere vuoto quando e' selezionato il campo generazioneIuvInterna.");
+		}
+		
 		if(this.regExpIuv != null)
 			vf.getValidator("regExpIuv", this.regExpIuv).minLength(1).maxLength(1024);
 //			try {
@@ -140,7 +149,7 @@ public void validate() throws ValidationException {
 //			    throw new ValidationException("Il valore [" + this.regExpIuv + "] del campo regExpIuv non e' una espressione regolare valida.");
 //			}
 		
-		vf.getValidator("generazioneIuvInterna", this.generazioneIuvInterna).notNull();
+		
 	}
 }
 

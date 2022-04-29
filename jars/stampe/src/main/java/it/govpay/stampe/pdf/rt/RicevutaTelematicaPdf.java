@@ -111,7 +111,7 @@ public class RicevutaTelematicaPdf{
 			JAXBElement<RicevutaTelematicaInput> jaxbElement = new JAXBElement<RicevutaTelematicaInput>(new QName("", "root"), RicevutaTelematicaInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);
 			byte[] byteArray = baos.toByteArray();
-			
+			log.trace("RicevutaTelematicaInput: " + new String(byteArray));
 			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);){
 				
 				JRDataSource dataSource = new JRXmlDataSource(defaultJasperReportsContext, byteArrayInputStream, RicevutaTelematicaCostanti.RICEVUTA_TELEMATICA_ROOT_ELEMENT_NAME);
