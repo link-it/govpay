@@ -241,6 +241,7 @@ public class TipiTributoBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_TRIBUTO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_TRIBUTO), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_TRIBUTO, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni

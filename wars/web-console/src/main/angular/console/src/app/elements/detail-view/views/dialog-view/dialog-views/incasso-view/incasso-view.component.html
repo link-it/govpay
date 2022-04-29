@@ -15,7 +15,7 @@
     </mat-form-field>
   </div>
   <div class="row">
-    <link-async-filterable-select #asyncIdfIuv class="col-12" [placeholder]="_voce.IDF_IUV" [form-group]="fGroup" form-ctrl-name="idfIuv_ctrl"
+    <link-async-filterable-select #asyncIdfIuv class="col-12" [placeholder]="_voce.IDENTIFICATIVO_FLUSSO" [form-group]="fGroup" form-ctrl-name="idfIuv_ctrl"
                                   [searching]="_searching" [required]="true" [input-hint]="_mapRisultati" (async-keyup)="_keyUp($event)"
                                   (option-click)="_codeSelection($event)" [options]="_idfIuv">
       <ng-template let-item>
@@ -26,14 +26,20 @@
       </ng-template>
     </link-async-filterable-select>
   </div>
-  <div class="row">
-    <mat-form-field class="col-12 pt-2" color="accent" [formGroup]="fGroup">
-      <input matInput placeholder="SCT" formControlName="sct_ctrl" autocomplete="off" required>
-    </mat-form-field>
+  <div class="row mt-4" *ngIf="fGroup?.controls['sct_ctrl']?.value">
+    <div class="col-12">
+      <label class="w-100 color-gray">Identificativo PSP del riversamento</label>
+    </div>
+    <div class="col-12">
+      <label class="w-100 text-break">{{fGroup?.controls['sct_ctrl']?.value}}</label>
+    </div>
   </div>
-  <div class="row">
-    <div class="col-12" *ngIf="fGroup?.controls['importo_ctrl']?.value">
-      <label class="w-100">Importo {{us.currencyFormat(fGroup?.controls['importo_ctrl']?.value)}}</label>
+  <div class="row" *ngIf="fGroup?.controls['importo_ctrl']?.value">
+    <div class="col-12">
+      <label class="w-100 color-gray">Importo</label>
+    </div>
+    <div class="col-12">
+      <label class="w-100 text-break">{{us.currencyFormat(fGroup?.controls['importo_ctrl']?.value)}}</label>
     </div>
   </div>
   <!--<div class="row">

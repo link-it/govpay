@@ -16,6 +16,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati : '#ignore',
 	numRisultati: '#notnull',
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
@@ -36,6 +37,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati : '#ignore',
 	numRisultati: '#notnull',
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
@@ -56,6 +58,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati : '#notpresent',
 	numRisultati: '#notnull',
 	numPagine: '#notnull',
 	risultatiPerPagina: '#notnull',
@@ -77,12 +80,55 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati : '#notnull',
 	numRisultati: '#notnull',
 	numPagine: '#notpresent',
 	risultatiPerPagina: 0,
 	pagina: '#notnull',
 	prossimiRisultati: '#notpresent',
 	risultati: '#[0]'
+}
+"""
+
+Scenario: Ricerca ruoli con maxRisultati true
+
+Given url backofficeBaseurl
+And path pathServizio
+And param maxRisultati = true
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	maxRisultati : '#notnull',
+	numRisultati: '#notnull',
+	numPagine: '#notnull',
+	risultatiPerPagina: '#notnull',
+	pagina: '#notnull',
+	prossimiRisultati: '##null',
+	risultati: '#[]'
+}
+"""
+
+Scenario: Ricerca ruoli con maxRisultati false
+
+Given url backofficeBaseurl
+And path pathServizio
+And param maxRisultati = false
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	maxRisultati : '#notpresent',
+	numRisultati: '#notnull',
+	numPagine: '#notnull',
+	risultatiPerPagina: '#notnull',
+	pagina: '#notnull',
+	prossimiRisultati: '##null',
+	risultati: '#[]'
 }
 """
 

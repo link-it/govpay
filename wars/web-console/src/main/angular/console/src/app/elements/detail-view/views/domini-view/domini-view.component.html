@@ -34,7 +34,7 @@
                     [data-list]="entrate" [show-actions]="_PLUS_CREDIT" [show-over-icons]="_PLUS_CREDIT" [next-page]="_paginatorOptions.entrate.next"
                     [previous-page]="_paginatorOptions.entrate.previous" [page]="_paginatorOptions.entrate.page" [target]="_ENTRATA_DOMINIO"
                     [pages]="_paginatorOptions.entrate.pages" (page-event)="paginatorLoader($event, _ENTRATA_DOMINIO)" [tooltip-action]="'Tipi entrata'"
-                    [search]="_paginatorOptions.entrate.search" [refresh]="_paginatorOptions.entrate.refresh" *ngIf="_isIntermediato"></link-filter-card>
+                    [search]="_paginatorOptions.entrate.search" [refresh]="_paginatorOptions.entrate.refresh"></link-filter-card>
   <link-filter-card (over-icon-click)="_iconCardClick(_TIPI_PENDENZA_DOMINIO, $event)" (add-icon-click)="_addEdit(_TIPI_PENDENZA_DOMINIO)" [card-title]="'Tipi pendenza'"
                     [data-list]="tipiPendenza" [show-actions]="_PLUS_CREDIT" [disable-action]="!_hasAssociazioniPendenza" [show-over-icons]="_PLUS_CREDIT"
                     [tooltip-action]="!_hasAssociazioniPendenza?'Non ci sono pendenze disponibili':'Tipi pendenza'"

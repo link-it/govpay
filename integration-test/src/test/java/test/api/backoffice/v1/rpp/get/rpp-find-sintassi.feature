@@ -19,6 +19,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -41,6 +42,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -61,6 +63,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -81,6 +84,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -100,7 +104,8 @@ When method get
 Then status 200
 And match response == 
 """
-{
+{	
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -121,6 +126,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -141,6 +147,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -193,6 +200,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -213,6 +221,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -233,6 +242,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -253,6 +263,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -273,6 +284,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,
@@ -293,6 +305,7 @@ Then status 200
 And match response == 
 """
 {
+	maxRisultati: '#number',
 	numRisultati: '#number',
 	numPagine: '#number',
 	risultatiPerPagina: 25,

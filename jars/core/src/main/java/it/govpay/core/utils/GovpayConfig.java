@@ -716,6 +716,29 @@ public class GovpayConfig {
 		}
 	}
 	
+	public synchronized void leggiFileEsternoLog4j2() {
+		// Recupero la configurazione della working dir Se e' configurata, la uso come prioritaria
+		try {
+			if(this.resourceDir != null) {
+				File resourceDirFile = new File(escape(this.resourceDir));
+				if(!resourceDirFile.isDirectory())
+					throw new Exception("Il path indicato nella property \"it.govpay.resource.path\" (" + this.resourceDir + ") non esiste o non e' un folder.");
+
+				File log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
+
+				if(log4j2ConfigFile.exists()) {
+					this.log4j2Config = log4j2ConfigFile.toURI();
+					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Individuata configurazione log4j: " + this.log4j2Config);
+				} else {
+					this.log4j2Config = null;
+					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Individuata configurazione log4j interna.");
+				}
+			}
+		} catch (Exception e) {
+			LoggerWrapperFactory.getLogger(GovpayConfig.class).warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
+		}
+	}
+	
 	private static Map<String,String> getProperties(String baseName, Properties[] props, boolean required, Logger log) throws Exception {
 		Map<String, String> valori = new HashMap<>();
 		

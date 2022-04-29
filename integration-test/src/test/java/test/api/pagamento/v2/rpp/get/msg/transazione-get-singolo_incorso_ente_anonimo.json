@@ -84,6 +84,8 @@
 		"pagamenti": "#notnull",
 		"idTipoPendenza": "#string",
 		"tipo":"#string",
-		"UUID":"#string"
+		"UUID":"#string",
+   		 "iuvAvviso":"##string", 
+   	 	 "iuvPagamento":"##string"
 	}
 }

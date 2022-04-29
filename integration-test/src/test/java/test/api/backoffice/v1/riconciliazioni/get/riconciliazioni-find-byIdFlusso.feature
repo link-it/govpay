@@ -87,6 +87,7 @@ And match response.risultati[0].idFlusso == riconciliazioneCum_DOM1_A2A.idFlusso
 And match response ==
 """
 {
+	maxRisultati: '#number',
 	numRisultati: 1,
 	numPagine: 1,
 	risultatiPerPagina: 25,
@@ -109,6 +110,7 @@ Then status 200
 And match response ==
 """
 {
+	maxRisultati: '#number',
 	numRisultati: 0,
 	numPagine: 1,
 	risultatiPerPagina: 25,

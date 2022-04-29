@@ -66,7 +66,7 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 			String transactionId = UUID.randomUUID().toString();
 			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
 			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] in corso...");
-			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaCittadino(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth,headerValues, configWrapper);
+			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaCittadino(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth,headerValues, configWrapper, this.getApiName(), this.getAuthType());
 			userDetailFromUtenzaCittadino.setIdTransazioneAutenticazione(transactionId);
 			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] completato.");
 			return userDetailFromUtenzaCittadino;
@@ -89,7 +89,7 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 			String transactionId = UUID.randomUUID().toString();
 			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
 			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] in corso...");
-			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaInSessione(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, attributeValues, userDetailFromSession, configWrapper);
+			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaInSessione(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, attributeValues, userDetailFromSession, configWrapper, this.getApiName(), this.getAuthType());
 			userDetailFromUtenzaCittadino.setIdTransazioneAutenticazione(transactionId);
 			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] completato.");
 			return userDetailFromUtenzaCittadino;

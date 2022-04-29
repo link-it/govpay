@@ -13,7 +13,14 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.openspcoop2.utils.service.context.ContextThreadLocal;
+
+import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.IbanAccredito;
 
 public class CSVUtils {
 
@@ -56,13 +63,13 @@ public class CSVUtils {
 
 
 	public CSVRecord getCSVRecord(String csvEntry) throws IOException {
-		log.debug("Parsing del record CSV: [" + csvEntry + "] [Delimiter: " + csvFormat.getDelimiter() +" Escape:"+csvFormat.getEscapeCharacter()+"]");
+		log.trace("Parsing del record CSV: [" + csvEntry + "] [Delimiter: " + csvFormat.getDelimiter() +" Escape:"+csvFormat.getEscapeCharacter()+"]");
 		CSVParser p = CSVParser.parse(csvEntry, csvFormat);
 		CSVRecord r = p.getRecords().get(0);
-		if(log.isDebugEnabled()) {
-			log.debug("Parsing completed:" );
+		if(log.isTraceEnabled()) {
+			log.trace("Parsing completed:" );
 			for(int i=0; i < r.size(); i++) {
-				log.debug(i + ": [" + r.get(i) + "]");
+				log.trace(i + ": [" + r.get(i) + "]");
 			}
 		}
 		return r ;
@@ -142,5 +149,25 @@ public class CSVUtils {
 	
 	public String getDelimiter() {
 		return String.valueOf(this.csvFormat.getDelimiter());
+	}
+	
+	public String getCodDominioFromIbanAccredito(CSVRecord record, int ... positions) throws ServiceException, NotFoundException {
+		String collage = "";
+
+		for(int position : positions) {
+			if(!isEmpty(record, position)) {
+				collage += record.get(position) + " ";
+			}
+		}
+		
+		if(collage.trim().isEmpty())
+			return "null";
+		else
+			return "\"" + getCodDominioFromIbanAccredito(collage.trim()) +  "\"";
+	}
+	public String getCodDominioFromIbanAccredito(String codIban) throws ServiceException, NotFoundException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		IbanAccredito ibanAccredito = AnagraficaManager.getIbanAccredito(configWrapper, codIban);
+		return ibanAccredito.getDominio(configWrapper).getCodDominio();
 	}
 }

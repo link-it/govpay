@@ -62,6 +62,7 @@ public class AvvisiController extends BaseController {
 			getAvvisoDTO.setCfDebitore(idDebitore);
 			getAvvisoDTO.setIdentificativoCreazionePendenza(UUID);
 			getAvvisoDTO.setRecaptcha(gRecaptchaResponse);
+			getAvvisoDTO.setVerificaAvviso(true);
 
 			String accept = MediaType.APPLICATION_JSON;
 			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {

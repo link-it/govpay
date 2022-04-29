@@ -1,5 +1,6 @@
 package it.govpay.backoffice.v1.beans.converter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,6 +31,7 @@ public class ConnettoreNotificaPagamentiHyperSicAPKappaConverter {
 		if(connector.Abilitato()) {
 			connettore.setTipoTracciato(tipo.name());
 			connettore.setVersioneCsv(connector.getVersioneCsv());
+			connettore.setIntervalloCreazioneTracciato(connector.getIntervalloCreazioneTracciato().intValue());
 			
 //			boolean appAuthTipiPendenzaAll = false;
 			if(connector.getTipiPendenza() != null) {
@@ -130,6 +132,7 @@ public class ConnettoreNotificaPagamentiHyperSicAPKappaConverter {
 		rsModel.setAbilitato(connettore.isAbilitato());
 		if(connettore.isAbilitato()) {
 			rsModel.setVersioneCsv(connettore.getVersioneCsv());
+			rsModel.setIntervalloCreazioneTracciato(new BigDecimal(connettore.getIntervalloCreazioneTracciato()));
 			
 			switch (connettore.getTipoConnettore()) {
 			case EMAIL:

@@ -37,6 +37,7 @@ export class ConnettoreHypersicComponent implements IFormComponent, OnInit, Afte
     this.fGroup.addControl('versioneCsv_ctrl', new FormControl(''));
     this.fGroup.addControl('tipoConnettore_ctrl', this.tipoConnettore);
     this.fGroup.addControl('tipiPendenza_ctrl', new FormControl(''));
+    this.fGroup.addControl('intervalloCreazioneTracciato_ctrl', new FormControl(''));
     this.fGroup.addControl('emailIndirizzi_ctrl', new FormControl(''));
     this.fGroup.addControl('emailAllegato_ctrl', new FormControl(false));
     this.fGroup.addControl('downloadBaseUrl_ctrl', new FormControl('', Validators.required));
@@ -56,6 +57,7 @@ export class ConnettoreHypersicComponent implements IFormComponent, OnInit, Afte
         this.fGroup.controls['versioneCsv_ctrl'].setValue(this.json.versioneCsv || '');
         this.fGroup.controls['tipoConnettore_ctrl'].setValue(this.json.tipoConnettore || '');
         this.fGroup.controls['tipiPendenza_ctrl'].setValue(this.json.tipiPendenza || '');
+        this.fGroup.controls['intervalloCreazioneTracciato_ctrl'].setValue((this.json.intervalloCreazioneTracciato || 24) / 24);
         if (this.json.emailIndirizzi) {
           this.fGroup.controls['emailIndirizzi_ctrl'].setValue(this.json.emailIndirizzi.join(SEPARATORE) || '');
         }
@@ -69,6 +71,9 @@ export class ConnettoreHypersicComponent implements IFormComponent, OnInit, Afte
         this._allegatoChange({ checked: this.json.emailAllegato });
         this._onChangeHypersic({ checked: this.json.abilitato }, 'hypersicAbilitato_ctrl');
         this._onChangeHypersic({ value: this.json.tipoConnettore }, 'tipoConnettore_ctrl');
+      } else {
+        // Default
+        this.fGroup.controls['intervalloCreazioneTracciato_ctrl'].setValue(1);
       }
     });
   }
@@ -96,9 +101,11 @@ export class ConnettoreHypersicComponent implements IFormComponent, OnInit, Afte
       (event.checked)?this.fGroup.controls['versioneCsv_ctrl'].setValidators(Validators.required):this.fGroup.controls['versioneCsv_ctrl'].clearValidators();
       (event.checked)?this.fGroup.controls['tipoConnettore_ctrl'].setValidators(Validators.required):this.fGroup.controls['tipoConnettore_ctrl'].clearValidators();
       (event.checked)?this.fGroup.controls['tipiPendenza_ctrl'].setValidators(Validators.required):this.fGroup.controls['tipiPendenza_ctrl'].clearValidators();
+      (event.checked) ? this.fGroup.controls['intervalloCreazioneTracciato_ctrl'].setValidators(Validators.required) : this.fGroup.controls['intervalloCreazioneTracciato_ctrl'].clearValidators();
       this.fGroup.controls['versioneCsv_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
       this.fGroup.controls['tipoConnettore_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
       this.fGroup.controls['tipiPendenza_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+      this.fGroup.controls['intervalloCreazioneTracciato_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
       if (!event.checked) {
         this.fGroup.controls['emailIndirizzi_ctrl'].clearValidators();
         this.fGroup.controls['downloadBaseUrl_ctrl'].clearValidators();
@@ -142,6 +149,7 @@ export class ConnettoreHypersicComponent implements IFormComponent, OnInit, Afte
       }):null;
       _json.versioneCsv = _info['versioneCsv_ctrl'] || null;
       _json.tipoConnettore = _info['tipoConnettore_ctrl'] || null;
+      _json.intervalloCreazioneTracciato = (_info['intervalloCreazioneTracciato_ctrl'] || 1) * 24;
       if (_json.tipoConnettore === UtilService.CONNETTORE_MODALITA_EMAIL) {
         _json.emailIndirizzi = _info['emailIndirizzi_ctrl']?_info['emailIndirizzi_ctrl'].split(SEPARATORE):null;
         _json.emailSubject = _info['emailSubject_ctrl'] || null;

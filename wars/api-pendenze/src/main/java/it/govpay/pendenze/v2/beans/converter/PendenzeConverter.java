@@ -71,6 +71,8 @@ public class PendenzeConverter {
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		rsModel.setImporto(versamento.getImportoTotale());
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
+		rsModel.setIuvPagamento(versamento.getIuvPagamento());
+		rsModel.setIuvAvviso(versamento.getIuvVersamento());
 		rsModel.setSoggettoPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()));
 		if(versamento.getDatiAllegati() != null)
 			rsModel.setDatiAllegati(new RawObject(versamento.getDatiAllegati()));
@@ -215,6 +217,8 @@ public class PendenzeConverter {
 		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
 		rsModel.setImporto(versamento.getImportoTotale());
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
+		rsModel.setIuvPagamento(versamento.getIuvPagamento());
+		rsModel.setIuvAvviso(versamento.getIuvVersamento());
 		rsModel.setSoggettoPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()));
 		if(versamento.getDatiAllegati() != null)
 			rsModel.setDatiAllegati(new RawObject(versamento.getDatiAllegati())); 

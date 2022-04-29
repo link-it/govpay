@@ -46,7 +46,7 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseAutenticazioneDAO implem
 			String transactionId = UUID.randomUUID().toString();
 			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
 			this.debug(transactionId, "Caricamento informazioni dell'utenza ["+username+"] in corso...");
-			GovpayLdapUserDetails userDetailFromUtenzaAnonima = AutorizzazioneUtils.getUserDetailFromUtenzaAnonima(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, configWrapper);
+			GovpayLdapUserDetails userDetailFromUtenzaAnonima = AutorizzazioneUtils.getUserDetailFromUtenzaAnonima(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, configWrapper, this.getApiName(), this.getAuthType());
 			userDetailFromUtenzaAnonima.setIdTransazioneAutenticazione(transactionId);
 			this.debug(transactionId, "Caricamento informazioni dell'utenza ["+username+"] completato.");
 			return userDetailFromUtenzaAnonima;

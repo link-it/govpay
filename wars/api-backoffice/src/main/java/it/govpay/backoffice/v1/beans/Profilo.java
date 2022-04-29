@@ -14,6 +14,7 @@ import it.govpay.core.beans.JSONSerializable;
 "domini",
 "tipiPendenza",
 "acl",
+"autenticazione",
 })
 public class Profilo extends JSONSerializable {
   
@@ -28,6 +29,9 @@ public class Profilo extends JSONSerializable {
   
   @JsonProperty("acl")
   private List<AclPost> acl = new ArrayList<>();
+  
+  @JsonProperty("autenticazione")
+  private String autenticazione = null;
   
   /**
    * Nome dell'utenza
@@ -92,6 +96,22 @@ public class Profilo extends JSONSerializable {
     this.acl = acl;
   }
 
+  /**
+   * tipo autenticazione utilizzata per loggarsi nel sistema
+   **/
+  public Profilo autenticazione(String autenticazione) {
+    this.autenticazione = autenticazione;
+    return this;
+  }
+
+  @JsonProperty("autenticazione")
+  public String getAutenticazione() {
+    return autenticazione;
+  }
+  public void setAutenticazione(String autenticazione) {
+    this.autenticazione = autenticazione;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -104,12 +124,13 @@ public class Profilo extends JSONSerializable {
     return Objects.equals(nome, profilo.nome) &&
         Objects.equals(domini, profilo.domini) &&
         Objects.equals(tipiPendenza, profilo.tipiPendenza) &&
-        Objects.equals(acl, profilo.acl);
+        Objects.equals(acl, profilo.acl) &&
+        Objects.equals(autenticazione, profilo.autenticazione);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, domini, tipiPendenza, acl);
+    return Objects.hash(nome, domini, tipiPendenza, acl, autenticazione);
   }
 
   public static Profilo parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -130,6 +151,7 @@ public class Profilo extends JSONSerializable {
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");
     sb.append("    acl: ").append(toIndentedString(acl)).append("\n");
+    sb.append("    autenticazione: ").append(toIndentedString(autenticazione)).append("\n");
     sb.append("}");
     return sb.toString();
   }

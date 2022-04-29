@@ -91,6 +91,7 @@ public class DominiController extends BaseController {
 		String methodName = "findDomini";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);  
 		try{
 			// autorizzazione sulla API
 			try {
@@ -149,7 +150,7 @@ public class DominiController extends BaseController {
 			}
 
 			ListaDomini response = new ListaDomini(results, this.getServicePath(uriInfo),
-					listaDominiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					listaDominiDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
@@ -168,6 +169,7 @@ public class DominiController extends BaseController {
 		String methodName = "findContiAccredito";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);  
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
@@ -217,7 +219,7 @@ public class DominiController extends BaseController {
 			}
 
 			ListaContiAccredito response = new ListaContiAccredito(results, this.getServicePath(uriInfo),
-					listaDominiIbanDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					listaDominiIbanDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
@@ -327,6 +329,7 @@ public class DominiController extends BaseController {
 		String methodName = "findEntrate";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);  
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
@@ -376,7 +379,7 @@ public class DominiController extends BaseController {
 			}
 
 			ListaEntrate response = new ListaEntrate(results, this.getServicePath(uriInfo),
-					listaDominiEntrateDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					listaDominiEntrateDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
@@ -574,6 +577,7 @@ public class DominiController extends BaseController {
 		String methodName = "findTipiPendenza";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);  
 		try{
 			try {
 				// autorizzazione sulla API
@@ -636,7 +640,7 @@ public class DominiController extends BaseController {
 			}
 
 			ListaTipiPendenzaDominio response = new ListaTipiPendenzaDominio(results, this.getServicePath(uriInfo),
-					findTipiPendenzaDominioDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					findTipiPendenzaDominioDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
@@ -767,6 +771,7 @@ public class DominiController extends BaseController {
 		String methodName = "findUnitaOperative";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);  
 		try{
 			try {
 				// autorizzazione sulla API
@@ -828,7 +833,7 @@ public class DominiController extends BaseController {
 			}
 
 			ListaUnitaOperative response = new ListaUnitaOperative(results, this.getServicePath(uriInfo),
-					listaDominiUoDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
+					listaDominiUoDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();

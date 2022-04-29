@@ -102,6 +102,63 @@ public class TracciatiNotificaPagamenti {
 		TracciatiNotificaPagamentiBD tracciatiNotificaPagamentiBD = null;
 		String codDominio = dominio.getCodDominio();
 		it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati = null;
+		Integer numeroOreIntervallo = connettore.getIntervalloCreazioneTracciato();
+		
+		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], controllo intervallo elaborazione...");
+		TracciatoNotificaPagamenti ultimoTracciatoCreatoPerTipo = null;
+		try {
+			tracciatiNotificaPagamentiBD = new TracciatiNotificaPagamentiBD(configWrapper);
+			
+			// cerco l'ultimo tracciato creato per il tipo
+			ultimoTracciatoCreatoPerTipo = tracciatiNotificaPagamentiBD.getUltimoTracciatoCreatoPerTipo(codDominio, this.tipoTracciato.toString(), connettore);
+		
+			if(ultimoTracciatoCreatoPerTipo != null) {
+				log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], dataA dell'ultimo tracciato ["
+						+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(ultimoTracciatoCreatoPerTipo.getDataRtA())+"] calcolo nuova finestra temporale di ["+numeroOreIntervallo+"] ore.");
+				
+				Calendar c = Calendar.getInstance();
+				c.setTime(ultimoTracciatoCreatoPerTipo.getDataRtA());
+				c.add(Calendar.MILLISECOND, 1);
+				Date dataRtDa = c.getTime();
+				
+				// dataRTA ultima dataRTA + intervallo
+				Calendar c2 = Calendar.getInstance();
+				c2.setTime(ultimoTracciatoCreatoPerTipo.getDataRtA());
+				c2.add(Calendar.HOUR_OF_DAY, numeroOreIntervallo);
+				Date dataRtA = c2.getTime();
+				
+				log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], nuovo intervallo ricerca RT: Da ["
+						+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
+				
+				Calendar c3 = Calendar.getInstance();
+				c3.setTime(new Date());
+				c3.set(Calendar.MINUTE, 0);
+				c3.set(Calendar.SECOND, 0);
+				c3.set(Calendar.MILLISECOND, 0);
+				c3.add(Calendar.MILLISECOND, -1);
+				Date now = c3.getTime();
+				
+				// se l'estremo dell'intervallo di ricerca e' nel futuro allora non devo eseguire l'elaborazione
+				if(dataRtA.getTime() > now.getTime()) {
+					log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], dataA ["
+							+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"] successiva a NOW  ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now)+"], non devo generare il tracciato");
+					return;
+				}
+				
+				log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], controllo intervallo elaborazione completato, proseguo con la ricerca delle entries da inserire.");
+			} else {
+				// se non ho ancora elaborato un tracciato allora proseguo
+				log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], nessun tracciato trovato in base dati, proseguo con la ricerca delle entries da inserire.");
+			}
+		} catch(Throwable e) {
+			log.error("Errore durante il controllo intervallo elaborazione per i tracciati "+this.tipoTracciato+" per il dominio ["+codDominio+"]: " + e.getMessage(), e);
+			return;
+		} finally {
+			if(tracciatiNotificaPagamentiBD != null) {
+				tracciatiNotificaPagamentiBD.closeConnection();
+			}
+		}
+		
 
 		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], ricerca tracciati in stato non terminale...");
 		long countTracciatiInStatoNonTerminalePerDominio = 0;
@@ -130,14 +187,44 @@ public class TracciatiNotificaPagamenti {
 
 				tracciatiNotificaPagamentiBD.setAtomica(false);
 
+				// cerco l'ultimo tracciato creato per il tipo
+				//TracciatoNotificaPagamenti ultimoTracciatoCreatoPerTipo = tracciatiNotificaPagamentiBD.getUltimoTracciatoCreatoPerTipo(codDominio, this.tipoTracciato.toString(), connettore);
 				// cerco la data di partenza delle RT da considerare
-				Date dataRtDa = tracciatiNotificaPagamentiBD.getDataPartenzaIntervalloRT(codDominio, this.tipoTracciato.toString(), connettore);
+				//Date dataRtDa = tracciatiNotificaPagamentiBD.getDataPartenzaIntervalloRT(codDominio, this.tipoTracciato.toString(), connettore);
 
-				if(dataRtDa != null) { // se questa data esiste e' la dataRtA del tracciato precedente in ordine temporale ci aggiungo 1 millisecondo per portarla alle 00:00
+				// calcolo estremo superiore in base al numero di ore impostate
+				Date dataRtDa = null;
+				Date dataRtA = null;
+				if(ultimoTracciatoCreatoPerTipo != null) { // se esiste gia' una entry di questo tipo allora prendo la dataRtA del tracciato precedente in ordine temporale ci aggiungo 1 millisecondo per portarla a XX:00:00.000
 					Calendar c = Calendar.getInstance();
-					c.setTime(dataRtDa);
+					c.setTime(ultimoTracciatoCreatoPerTipo.getDataRtA());
 					c.add(Calendar.MILLISECOND, 1);
 					dataRtDa = c.getTime();
+					 
+					// dataRTA ultima dataRTA + intervallo
+					Calendar c2 = Calendar.getInstance();
+					c2.setTime(ultimoTracciatoCreatoPerTipo.getDataRtA());
+					c2.add(Calendar.HOUR_OF_DAY, numeroOreIntervallo);
+					dataRtA = c2.getTime();
+					
+					// se e' stato modificato l'intervallo o il connettore e' stato disabilitato la dataRTA puo' essere precedente ad adesso molto vecchia porto la dataRT ad adesso
+					Calendar c3 = Calendar.getInstance();
+					c3.setTime(new Date());
+					c3.set(Calendar.MINUTE, 0);
+					c3.set(Calendar.SECOND, 0);
+					c3.set(Calendar.MILLISECOND, 0);
+					c3.add(Calendar.MILLISECOND, -1);
+					Date now = c3.getTime();
+					
+					log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], intervallo ricerca RT: Da ["
+							+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
+					
+					if(dataRtA.getTime() < now.getTime()) {
+						log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], DataRTA ["
+								+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"] precedente a NOW  ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now)+"], modifico con la dataOra corrente.");
+						dataRtA = now;
+					} 
+					
 				} else { // prima esecuzione del batch, imposto una data molto vecchia.
 					Calendar c = Calendar.getInstance();
 					c.setTime(new Date());
@@ -149,17 +236,16 @@ public class TracciatiNotificaPagamenti {
 					c.set(Calendar.MONTH, 0);
 					c.set(Calendar.YEAR, 1970);
 					dataRtDa = c.getTime();
+					
+					// dataRTA adesso
+					Calendar c2 = Calendar.getInstance();
+					c2.setTime(new Date());
+					c2.set(Calendar.MINUTE, 0);
+					c2.set(Calendar.SECOND, 0);
+					c2.set(Calendar.MILLISECOND, 0);
+					c2.add(Calendar.MILLISECOND, -1);
+					dataRtA = c2.getTime();
 				}
-
-				// calcolo estremo superiore 23:59:59.999 di ieri
-				Calendar c = Calendar.getInstance();
-				c.setTime(new Date());
-				c.set(Calendar.HOUR_OF_DAY, 0);
-				c.set(Calendar.MINUTE, 0);
-				c.set(Calendar.SECOND, 0);
-				c.set(Calendar.MILLISECOND, 0);
-				c.add(Calendar.MILLISECOND, -1);
-				Date dataRtA = c.getTime();
 
 				// ricerca delle RT per dominio arrivate tra DataRtDa e DataRtA
 				RptBD rptBD = new RptBD(tracciatiNotificaPagamentiBD);
@@ -366,7 +452,7 @@ public class TracciatiNotificaPagamenti {
 			break;
 		case HYPERSIC_APK:
 			progressivo = 1;
-			String dataCreazioneFlusso = SimpleDateFormatUtils.newSimpleDateFormatSoloDataSenzaSpazi().format(tracciato.getDataCreazione());
+			String dataCreazioneFlusso = SimpleDateFormatUtils.newSimpleDateFormatDataOraMinutiSenzaSpazi().format(tracciato.getDataCreazione());
 			tracciato.setNomeFile("GOVPAY_" + codDominio + "_"+ dataCreazioneFlusso + "_"+progressivo+".zip");
 			break;
 		}

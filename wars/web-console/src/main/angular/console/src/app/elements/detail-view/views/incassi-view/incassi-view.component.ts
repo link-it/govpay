@@ -34,41 +34,17 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
 
   protected info: Riepilogo;
 
-  _quoteExport = ['titolo', 'tipologia', 'categoria', 'capitolo', 'articolo', 'accertamento', 'annoEsercizio', 'importo'];
-  _quoteLabel = {
-    capitolo: 'Capitolo',
-    annoEsercizio: 'Anno esercizio',
-    importo: 'Importo',
-    titolo: 'Titolo',
-    accertamento: 'Accertamento',
-    tipologia: 'Tipologia',
-    categoria: 'Categoria',
-    articolo: 'Articolo',
-    proprietaCustom: 'Proprieta custom'
-  };
-  _exportLabel = {
-    idDominio: 'Dominio',
-    idFlusso: 'Id Flusso',
-    iuv: 'IUV',
-    importo: 'Importo',
-    data: 'Data',
-    idPendenza: 'Id Pendenze',
-    tipoPendenza: 'Tipo pendenza',
-    idVocePendenza: 'Id voce pendenza',
-    datiAllegatiPendenza: 'Dati allegati pendenza',
-    datiAllegatiVocePendenza: 'Dati allegati voce pendenza'
-  };
-
+  _quoteExport = [];
+  _quoteLabel = null;
+  _exportLabel = null;
   _quoteCount = 10;
 
   constructor(public gps: GovpayService, public us: UtilService) {
-    if (GovRiconciliazioniConfig && GovRiconciliazioniConfig.quoteExport && GovRiconciliazioniConfig.quoteLabel && GovRiconciliazioniConfig.exportLabel) {
-      this._quoteExport = GovRiconciliazioniConfig.quoteExport;
-      this._quoteLabel = GovRiconciliazioniConfig.quoteLabel;
-      this._exportLabel = GovRiconciliazioniConfig.exportLabel;
-      this._exportLabel = GovRiconciliazioniConfig.exportLabel;
-      this._quoteCount = GovRiconciliazioniConfig.quoteCount || 10;
-    }
+    const _configRic: any = this.us.getConfigRiconciliazioni();
+    this._quoteExport = _configRic.quoteExport;
+    this._quoteLabel = _configRic.quoteLabel;
+    this._exportLabel = _configRic.exportLabel;
+    this._quoteCount = _configRic.quoteCount || 10;
   }
 
   ngAfterViewInit() {
@@ -100,14 +76,14 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
     this.info = new Riepilogo({
       importo: this.us.currencyFormat(this.json.importo),
       extraInfo: [
-        { label: Voce.SCT+': ', value: this.json.sct }
+        { label: Voce.IDENTIFICATIVO_PSP_RIVERSAMENTO+': ', value: this.json.sct }
       ]
     });
     this.info.titolo = null;
     this.info.sottotitolo = _st || null;
     const _data: string = this.json.data?moment(this.json.data).format('DD/MM/YYYY'):null;
     if (_data) {
-      this.info.extraInfo.push({ label: Voce.DATA+': ', value: _data });
+      this.info.extraInfo.push({ label: Voce.DATA_REGISTRAZIONE + ': ', value: _data });
     }
     // if (this.json.idIncasso) {
     //   this.info.extraInfo.push({ label: Voce.RICONCILIAZIONE+': ', value: this.json.idIncasso });

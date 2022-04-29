@@ -7,8 +7,8 @@ import it.govpay.core.beans.Lista;
 
 public class ListaEntratePreviste extends Lista<EntrataPrevistaIndex> {
 	
-	public ListaEntratePreviste(List<EntrataPrevistaIndex> pagamentiPortale, URI requestUri, Long count, Integer pagina, Integer limit) {
-		super(pagamentiPortale, requestUri, count, pagina, limit);
+	public ListaEntratePreviste(List<EntrataPrevistaIndex> risultati, URI requestUri, Long count, Integer pagina, Integer limit) {
+		super(risultati, requestUri, count, pagina, limit);
 	}
 	
 }

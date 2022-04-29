@@ -21,6 +21,7 @@ package it.govpay.core.dao.pagamenti;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -47,6 +48,7 @@ import it.govpay.core.dao.anagrafica.dto.GetDocumentoAvvisiDTOResponse;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.exception.DocumentoNonTrovatoException;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
+import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
@@ -55,10 +57,12 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
 public class AvvisiDAO extends BaseDAO{
 
-	public GetAvvisoDTOResponse getAvviso(GetAvvisoDTO getAvvisoDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, GovPayException {
+	public GetAvvisoDTOResponse getAvviso(GetAvvisoDTO getAvvisoDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, GovPayException, UtilsException {
 		VersamentiBD versamentiBD = null;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		try {
@@ -70,7 +74,7 @@ public class AvvisiDAO extends BaseDAO{
 		}
 	}
 	
-	public GetAvvisoDTOResponse getAvviso(GetAvvisoDTO getAvvisoDTO, VersamentiBD versamentiBD, BDConfigWrapper configWrapper) throws ServiceException, PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, GovPayException {
+	public GetAvvisoDTOResponse getAvviso(GetAvvisoDTO getAvvisoDTO, VersamentiBD versamentiBD, BDConfigWrapper configWrapper) throws ServiceException, PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, GovPayException, UtilsException {
 		Versamento versamento = null;
 		try {
 			if(ContextThreadLocal.get() != null) {
@@ -95,12 +99,15 @@ public class AvvisiDAO extends BaseDAO{
 					try {
 						it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(versamentoFromSession.getIdApplicazione(), versamentoFromSession.getCodVersamentoEnte(), true);
 					
-						versamentiBD.updateVersamento(versamentoFromSession, true);
-						
-						if(versamentoFromSession.getId()==null)
-							versamentoFromSession.setId(versamentoLetto.getId());
-		
-						ctx.getApplicationLogger().log("versamento.aggioramentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
+						// il versamento viene aggiornato solo se e' in stato aggiornabile
+						if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
+							versamentiBD.updateVersamento(versamentoFromSession, true);
+							
+							if(versamentoFromSession.getId()==null)
+								versamentoFromSession.setId(versamentoLetto.getId());
+			
+							ctx.getApplicationLogger().log("versamento.aggioramentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
+						}
 					} catch (NotFoundException e) {
 						versamentiBD.insertVersamento(versamentoFromSession);
 						ctx.getApplicationLogger().log("versamento.inserimentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
@@ -122,12 +129,31 @@ public class AvvisiDAO extends BaseDAO{
 				}
 			}
 			
-			if(getAvvisoDTO.getNumeroAvviso() != null)
-				versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(configWrapper, getAvvisoDTO.getCodDominio()).getId(), IuvUtils.toIuv(getAvvisoDTO.getNumeroAvviso()));
-			else if(getAvvisoDTO.getIuv() != null)
-				versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(configWrapper, getAvvisoDTO.getCodDominio()).getId(), getAvvisoDTO.getIuv());
-			else 
-				throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
+			try {
+				if(getAvvisoDTO.getNumeroAvviso() != null)
+					versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(configWrapper, getAvvisoDTO.getCodDominio()).getId(), IuvUtils.toIuv(getAvvisoDTO.getNumeroAvviso()));
+				else if(getAvvisoDTO.getIuv() != null)
+					versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(configWrapper, getAvvisoDTO.getCodDominio()).getId(), getAvvisoDTO.getIuv());
+				else {
+					throw new PendenzaNonTrovataException("Nessuna pendenza trovata");
+				}
+			} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
+				if(getAvvisoDTO.isVerificaAvviso()) {
+					it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
+					
+					String codDominio = getAvvisoDTO.getCodDominio();
+					String iuv = getAvvisoDTO.getIuv() != null ? getAvvisoDTO.getIuv() : (IuvUtils.toIuv(getAvvisoDTO.getNumeroAvviso()));
+					
+					try {
+						versamento = versamentoBusiness.chiediVersamento(null, null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO);
+					} catch (EcException | GovPayException e1) {
+						log.warn("Pendenza non trovata nella base dati interna, verifica con l'applicazione competente fallita con errore: " + e1.getMessage(), e1);
+						throw new PendenzaNonTrovataException("Pendenza non trovata nella base dati interna, verifica con l'applicazione competente fallita con errore: " + e1.getMessage());
+					}
+				} else {
+					throw e;
+				}
+			}
 
 			Dominio dominio = versamento.getDominio(configWrapper);
 
