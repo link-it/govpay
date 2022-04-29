@@ -23,6 +23,8 @@ public class GetAvvisoDTO extends BasicRequestDTO {
 	
 	private Versamento versamentoFromSession = null;
 	
+	private boolean verificaAvviso = false;
+	
 	public GetAvvisoDTO(Authentication user, String codDominio) throws ValidationException {
 		this(user, codDominio, null);
 	}
@@ -96,6 +98,12 @@ public class GetAvvisoDTO extends BasicRequestDTO {
 	}
 	public void setVersamentoFromSession(Versamento versamentoFromSession) {
 		this.versamentoFromSession = versamentoFromSession;
+	}
+	public boolean isVerificaAvviso() {
+		return verificaAvviso;
+	}
+	public void setVerificaAvviso(boolean verificaAvviso) {
+		this.verificaAvviso = verificaAvviso;
 	}
 	
 }

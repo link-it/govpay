@@ -81,3 +81,19 @@ Examples:
 | domini | [ { idDominio: '#(idDominio)', unitaOperative: 'xxx' } ] | 'unitaOperative' |
 | domini | [ { idDominio: '#(idDominio)', unitaOperative: ['#(loremIpsum)'] } ] | 'unitaOperative' |
 
+
+Scenario: Validazione regExpIuv in base al valore di generazioneIuvInterna
+
+* def applicazione = read('classpath:test/api/backoffice/v1/applicazioni/put/msg/applicazione.json')
+* set applicazione.codificaAvvisi.generazioneIuvInterna = true
+* set applicazione.codificaAvvisi.regExpIuv = null
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers basicAutenticationHeader
+And request applicazione
+When method put
+Then status 400
+And match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+And match response.dettaglio contains 'Il campo regExpIuv non puo\' essere vuoto quando e\' selezionato il campo generazioneIuvInterna.'
+
