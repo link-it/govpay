@@ -1,5 +1,7 @@
 package it.govpay.ec.v2.beans;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -35,7 +37,8 @@ public class AllegatoPendenza   {
    * @return nome
   **/
   @JsonProperty("nome")
-  public String getNome() {
+  @NotNull
+ @Size(min=1,max=255)  public String getNome() {
     return nome;
   }
 
@@ -53,7 +56,7 @@ public class AllegatoPendenza   {
    * @return tipo
   **/
   @JsonProperty("tipo")
-  public String getTipo() {
+ @Size(min=1,max=255)  public String getTipo() {
     return tipo;
   }
 
@@ -71,7 +74,7 @@ public class AllegatoPendenza   {
    * @return descrizione
   **/
   @JsonProperty("descrizione")
-  public String getDescrizione() {
+ @Size(min=1,max=255)  public String getDescrizione() {
     return descrizione;
   }
 
@@ -89,6 +92,7 @@ public class AllegatoPendenza   {
    * @return contenuto
   **/
   @JsonProperty("contenuto")
+  @NotNull
   public Object getContenuto() {
     return contenuto;
   }

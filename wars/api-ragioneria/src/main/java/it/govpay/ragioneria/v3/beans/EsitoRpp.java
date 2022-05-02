@@ -1,4 +1,4 @@
-package it.govpay.ec.v2.beans;
+package it.govpay.ragioneria.v3.beans;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

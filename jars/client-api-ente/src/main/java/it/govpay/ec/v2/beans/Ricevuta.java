@@ -2,6 +2,7 @@ package it.govpay.ec.v2.beans;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -33,14 +34,19 @@ public class Ricevuta   {
   **/
   private BigDecimal importo = null;
   
-  @Schema(example = "PAGAMENTO_ESEGUITO", required = true, description = "Stato della richiesta di pagamento sulla piattaforma PagoPA.")
- /**
-   * Stato della richiesta di pagamento sulla piattaforma PagoPA.  
-  **/
+  @Schema(description = "")
   private EsitoRpp esito = null;
   
+  @Schema(description = "Identificativo GovPay della sessione di pagamento")
+ /**
+   * Identificativo GovPay della sessione di pagamento  
+  **/
   private String idPagamento = null;
   
+  @Schema(description = "Identificativo pagoPA della sessione di pagamento")
+ /**
+   * Identificativo pagoPA della sessione di pagamento  
+  **/
   private String idSessionePsp = null;
   
   @Schema(required = true, description = "")
@@ -49,7 +55,7 @@ public class Ricevuta   {
   @Schema(description = "")
   private Soggetto versante = null;
   
-  @Schema(description = "")
+  @Schema(required = true, description = "")
   private PendenzaPagata pendenza = null;
   
   @Schema(description = "Data di acquisizione della ricevuta")
@@ -64,10 +70,10 @@ public class Ricevuta   {
   **/
   private Date dataPagamento = null;
   
-  @Schema(required = true, description = "")
+  @Schema(description = "")
   private RicevutaRpt rpt = null;
   
-  @Schema(required = true, description = "")
+  @Schema(description = "")
   private RicevutaRt rt = null;
   
   @Schema(required = true, description = "")
@@ -149,11 +155,10 @@ public class Ricevuta   {
   }
 
  /**
-   * Stato della richiesta di pagamento sulla piattaforma PagoPA.
-   * @return stato
+   * Get esito
+   * @return esito
   **/
   @JsonProperty("esito")
-  @NotNull
   public EsitoRpp getEsito() {
     return esito;
   }
@@ -167,7 +172,10 @@ public class Ricevuta   {
     return this;
   }
 
-  
+ /**
+   * Identificativo GovPay della sessione di pagamento
+   * @return idPagamento
+  **/
   @JsonProperty("idPagamento")
   public String getIdPagamento() {
     return idPagamento;
@@ -181,7 +189,11 @@ public class Ricevuta   {
     this.idPagamento = idPagamento;
     return this;
   }
-  
+
+ /**
+   * Identificativo pagoPA della sessione di pagamento
+   * @return idSessionePsp
+  **/
   @JsonProperty("idSessionePsp")
   public String getIdSessionePsp() {
     return idSessionePsp;
@@ -195,7 +207,7 @@ public class Ricevuta   {
     this.idSessionePsp = idSessionePsp;
     return this;
   }
-  
+
  /**
    * Get istitutoAttestante
    * @return istitutoAttestante
@@ -238,7 +250,8 @@ public class Ricevuta   {
    * @return pendenza
   **/
   @JsonProperty("pendenza")
-  public Pendenza getPendenza() {
+  @NotNull
+  public PendenzaPagata getPendenza() {
     return pendenza;
   }
 
@@ -294,7 +307,6 @@ public class Ricevuta   {
    * @return rpt
   **/
   @JsonProperty("rpt")
-  @NotNull
   public RicevutaRpt getRpt() {
     return rpt;
   }
@@ -313,7 +325,6 @@ public class Ricevuta   {
    * @return rt
   **/
   @JsonProperty("rt")
-  @NotNull
   public RicevutaRt getRt() {
     return rt;
   }
@@ -332,6 +343,7 @@ public class Ricevuta   {
    * @return modello
   **/
   @JsonProperty("modello")
+  @NotNull
   public ModelloPagamento getModello() {
     return modello;
   }
@@ -356,6 +368,8 @@ public class Ricevuta   {
     sb.append("    idRicevuta: ").append(toIndentedString(idRicevuta)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    esito: ").append(toIndentedString(esito)).append("\n");
+    sb.append("    idPagamento: ").append(toIndentedString(idPagamento)).append("\n");
+    sb.append("    idSessionePsp: ").append(toIndentedString(idSessionePsp)).append("\n");
     sb.append("    istitutoAttestante: ").append(toIndentedString(istitutoAttestante)).append("\n");
     sb.append("    versante: ").append(toIndentedString(versante)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");

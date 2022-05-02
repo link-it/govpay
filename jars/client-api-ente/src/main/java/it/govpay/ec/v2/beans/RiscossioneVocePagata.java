@@ -10,9 +10,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class RiscossioneVocePagata {
+public class RiscossioneVocePagata   {
   
   @Schema(example = "01234567890", required = true, description = "Identificativo Ente creditore")
+ /**
+   * Identificativo Ente Creditore  
+  **/
   private String idDominio = null;
   
   @Schema(example = "RF23567483937849450550875", required = true, description = "Identificativo univoco di versamento")
@@ -20,12 +23,6 @@ public class RiscossioneVocePagata {
    * Identificativo univoco di versamento  
   **/
   private String iuv = null;
-  
-  @Schema(example = "ab12345", required = true, description = "Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento")
- /**
-   * Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento  
-  **/
-  private String idRicevuta = null;
   
   @Schema(example = "1234acdc", required = true, description = "Identificativo univoco di riscossione.")
  /**
@@ -38,9 +35,6 @@ public class RiscossioneVocePagata {
    * indice posizionale della voce pendenza riscossa  
   **/
   private BigDecimal indice = null;
-  
-  @Schema(description = "")
-  private StatoRiscossione stato = null;
   
   @Schema(required = true, description = "")
   private TipoRiscossione tipo = null;
@@ -59,10 +53,9 @@ public class RiscossioneVocePagata {
   
   @Schema(description = "")
   private Allegato allegato = null;
-  
  /**
-   * Get dominio
-   * @return dominio
+   * Identificativo Ente Creditore
+   * @return idDominio
   **/
   @JsonProperty("idDominio")
   public String getIdDominio() {
@@ -94,25 +87,6 @@ public class RiscossioneVocePagata {
 
   public RiscossioneVocePagata iuv(String iuv) {
     this.iuv = iuv;
-    return this;
-  }
-
- /**
-   * Corrisponde al &#x60;receiptId&#x60; oppure al &#x60;ccp&#x60; a seconda del modello di pagamento
-   * @return idRicevuta
-  **/
-  @JsonProperty("idRicevuta")
-  @NotNull
-  public String getIdRicevuta() {
-    return idRicevuta;
-  }
-
-  public void setIdRicevuta(String idRicevuta) {
-    this.idRicevuta = idRicevuta;
-  }
-
-  public RiscossioneVocePagata idRicevuta(String idRicevuta) {
-    this.idRicevuta = idRicevuta;
     return this;
   }
 
@@ -151,24 +125,6 @@ public class RiscossioneVocePagata {
 
   public RiscossioneVocePagata indice(BigDecimal indice) {
     this.indice = indice;
-    return this;
-  }
-
- /**
-   * Get stato
-   * @return stato
-  **/
-  @JsonProperty("stato")
-  public StatoRiscossione getStato() {
-    return stato;
-  }
-
-  public void setStato(StatoRiscossione stato) {
-    this.stato = stato;
-  }
-
-  public RiscossioneVocePagata stato(StatoRiscossione stato) {
-    this.stato = stato;
     return this;
   }
 
@@ -215,8 +171,8 @@ public class RiscossioneVocePagata {
    * @return data
   **/
   @JsonProperty("data")
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
   @NotNull
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
   public Date getData() {
     return data;
   }
@@ -252,14 +208,12 @@ public class RiscossioneVocePagata {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Riscossione {\n");
+    sb.append("class RiscossioneVocePagata {\n");
     
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
-    sb.append("    idRicevuta: ").append(toIndentedString(idRicevuta)).append("\n");
     sb.append("    iur: ").append(toIndentedString(iur)).append("\n");
     sb.append("    indice: ").append(toIndentedString(indice)).append("\n");
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    data: ").append(toIndentedString(data)).append("\n");

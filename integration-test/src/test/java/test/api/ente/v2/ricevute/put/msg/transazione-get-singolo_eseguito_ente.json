@@ -6,9 +6,11 @@
 	"iuv" : "#notnull",
 	"idRicevuta" : "#notnull",
 	"importo":"#? isImportoConDueDecimali(_)",
-   	"stato":"RT_ACCETTATA_PA",
+   	"esito":"ESEGUITO",
    	"istitutoAttestante" : "#notnull",
 	"versante" : "#ignore",
+	"idPagamento" : "#string",
+	"idSessionePsp" : "##string",
 	"pendenza": {
 		"idA2A":"#string",
 		"idPendenza":"#string",
@@ -36,8 +38,8 @@
 		"allegati": "##[]",
 		"voci" : "#notnull"
 	},
-	"data": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
-	"dataPagamento": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
+	"data": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d",
+	"dataPagamento": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d",
 	"rpt" : {
 		"tipo": "#notnull",
 		"xml": "#notnull",

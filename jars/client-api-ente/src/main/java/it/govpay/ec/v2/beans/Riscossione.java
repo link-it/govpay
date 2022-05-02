@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class Riscossione   {
   
-  @Schema(description = "")
+  @Schema(required = true, description = "")
   private Dominio dominio = null;
   
   @Schema(example = "RF23567483937849450550875", required = true, description = "Identificativo univoco di versamento")
@@ -67,6 +67,7 @@ public class Riscossione   {
    * @return dominio
   **/
   @JsonProperty("dominio")
+  @NotNull
   public Dominio getDominio() {
     return dominio;
   }

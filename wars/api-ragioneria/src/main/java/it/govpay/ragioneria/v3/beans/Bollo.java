@@ -60,7 +60,7 @@ public class Bollo  implements OneOfTipoRiferimentoVocePendenza  {
   **/
   private String provinciaResidenza = null;
   
-  @Schema(example = "9/3321", description = "Tassonomia pagoPA")
+  @Schema(example = "9/3321", required = true, description = "Tassonomia pagoPA")
  /**
    * Tassonomia pagoPA  
   **/
@@ -130,6 +130,7 @@ public class Bollo  implements OneOfTipoRiferimentoVocePendenza  {
    * @return codiceTassonomicoPagoPA
   **/
   @JsonProperty("codiceTassonomicoPagoPA")
+  @NotNull
  @Size(min=1,max=140)  public String getCodiceTassonomicoPagoPA() {
     return codiceTassonomicoPagoPA;
   }

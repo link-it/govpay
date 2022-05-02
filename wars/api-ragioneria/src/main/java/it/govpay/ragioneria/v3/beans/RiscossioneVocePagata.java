@@ -10,22 +10,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class Riscossione   {
+public class RiscossioneVocePagata   {
   
-  @Schema(required = true, description = "")
-  private Dominio dominio = null;
+  @Schema(example = "01234567890", required = true, description = "Identificativo Ente creditore")
+ /**
+   * Identificativo Ente Creditore  
+  **/
+  private String idDominio = null;
   
   @Schema(example = "RF23567483937849450550875", required = true, description = "Identificativo univoco di versamento")
  /**
    * Identificativo univoco di versamento  
   **/
   private String iuv = null;
-  
-  @Schema(example = "ab12345", required = true, description = "Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento")
- /**
-   * Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento  
-  **/
-  private String idRicevuta = null;
   
   @Schema(example = "1234acdc", required = true, description = "Identificativo univoco di riscossione.")
  /**
@@ -38,9 +35,6 @@ public class Riscossione   {
    * indice posizionale della voce pendenza riscossa  
   **/
   private BigDecimal indice = null;
-  
-  @Schema(description = "")
-  private StatoRiscossione stato = null;
   
   @Schema(required = true, description = "")
   private TipoRiscossione tipo = null;
@@ -59,25 +53,21 @@ public class Riscossione   {
   
   @Schema(description = "")
   private Allegato allegato = null;
-  
-  @Schema(description = "")
-  private VocePendenza vocePendenza = null;
  /**
-   * Get dominio
-   * @return dominio
+   * Identificativo Ente Creditore
+   * @return idDominio
   **/
-  @JsonProperty("dominio")
-  @NotNull
-  public Dominio getDominio() {
-    return dominio;
+  @JsonProperty("idDominio")
+  public String getIdDominio() {
+    return idDominio;
   }
 
-  public void setDominio(Dominio dominio) {
-    this.dominio = dominio;
+  public void setIdDominio(String idDominio) {
+    this.idDominio = idDominio;
   }
 
-  public Riscossione dominio(Dominio dominio) {
-    this.dominio = dominio;
+  public RiscossioneVocePagata idDominio(String idDominio) {
+    this.idDominio = idDominio;
     return this;
   }
 
@@ -95,27 +85,8 @@ public class Riscossione   {
     this.iuv = iuv;
   }
 
-  public Riscossione iuv(String iuv) {
+  public RiscossioneVocePagata iuv(String iuv) {
     this.iuv = iuv;
-    return this;
-  }
-
- /**
-   * Corrisponde al &#x60;receiptId&#x60; oppure al &#x60;ccp&#x60; a seconda del modello di pagamento
-   * @return idRicevuta
-  **/
-  @JsonProperty("idRicevuta")
-  @NotNull
-  public String getIdRicevuta() {
-    return idRicevuta;
-  }
-
-  public void setIdRicevuta(String idRicevuta) {
-    this.idRicevuta = idRicevuta;
-  }
-
-  public Riscossione idRicevuta(String idRicevuta) {
-    this.idRicevuta = idRicevuta;
     return this;
   }
 
@@ -133,7 +104,7 @@ public class Riscossione   {
     this.iur = iur;
   }
 
-  public Riscossione iur(String iur) {
+  public RiscossioneVocePagata iur(String iur) {
     this.iur = iur;
     return this;
   }
@@ -152,26 +123,8 @@ public class Riscossione   {
     this.indice = indice;
   }
 
-  public Riscossione indice(BigDecimal indice) {
+  public RiscossioneVocePagata indice(BigDecimal indice) {
     this.indice = indice;
-    return this;
-  }
-
- /**
-   * Get stato
-   * @return stato
-  **/
-  @JsonProperty("stato")
-  public StatoRiscossione getStato() {
-    return stato;
-  }
-
-  public void setStato(StatoRiscossione stato) {
-    this.stato = stato;
-  }
-
-  public Riscossione stato(StatoRiscossione stato) {
-    this.stato = stato;
     return this;
   }
 
@@ -189,7 +142,7 @@ public class Riscossione   {
     this.tipo = tipo;
   }
 
-  public Riscossione tipo(TipoRiscossione tipo) {
+  public RiscossioneVocePagata tipo(TipoRiscossione tipo) {
     this.tipo = tipo;
     return this;
   }
@@ -208,7 +161,7 @@ public class Riscossione   {
     this.importo = importo;
   }
 
-  public Riscossione importo(BigDecimal importo) {
+  public RiscossioneVocePagata importo(BigDecimal importo) {
     this.importo = importo;
     return this;
   }
@@ -218,8 +171,8 @@ public class Riscossione   {
    * @return data
   **/
   @JsonProperty("data")
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
   @NotNull
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
   public Date getData() {
     return data;
   }
@@ -228,7 +181,7 @@ public class Riscossione   {
     this.data = data;
   }
 
-  public Riscossione data(Date data) {
+  public RiscossioneVocePagata data(Date data) {
     this.data = data;
     return this;
   }
@@ -246,26 +199,8 @@ public class Riscossione   {
     this.allegato = allegato;
   }
 
-  public Riscossione allegato(Allegato allegato) {
+  public RiscossioneVocePagata allegato(Allegato allegato) {
     this.allegato = allegato;
-    return this;
-  }
-
- /**
-   * Get vocePendenza
-   * @return vocePendenza
-  **/
-  @JsonProperty("vocePendenza")
-  public VocePendenza getVocePendenza() {
-    return vocePendenza;
-  }
-
-  public void setVocePendenza(VocePendenza vocePendenza) {
-    this.vocePendenza = vocePendenza;
-  }
-
-  public Riscossione vocePendenza(VocePendenza vocePendenza) {
-    this.vocePendenza = vocePendenza;
     return this;
   }
 
@@ -273,19 +208,16 @@ public class Riscossione   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Riscossione {\n");
+    sb.append("class RiscossioneVocePagata {\n");
     
-    sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
+    sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
-    sb.append("    idRicevuta: ").append(toIndentedString(idRicevuta)).append("\n");
     sb.append("    iur: ").append(toIndentedString(iur)).append("\n");
     sb.append("    indice: ").append(toIndentedString(indice)).append("\n");
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("    allegato: ").append(toIndentedString(allegato)).append("\n");
-    sb.append("    vocePendenza: ").append(toIndentedString(vocePendenza)).append("\n");
     sb.append("}");
     return sb.toString();
   }

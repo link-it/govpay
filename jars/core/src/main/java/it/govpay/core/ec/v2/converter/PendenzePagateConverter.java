@@ -22,11 +22,8 @@ import it.govpay.ec.v2.beans.PendenzaPagata;
 import it.govpay.ec.v2.beans.ProprietaPendenza;
 import it.govpay.ec.v2.beans.RiscossioneVocePagata;
 import it.govpay.ec.v2.beans.Soggetto;
-import it.govpay.ec.v2.beans.StatoRiscossione;
-import it.govpay.ec.v2.beans.TipoRiscossione;
 import it.govpay.ec.v2.beans.TipoRiferimentoVocePendenza.TipoBolloEnum;
-import it.govpay.model.Pagamento.Stato;
-import it.govpay.model.Pagamento.TipoPagamento;
+import it.govpay.ec.v2.beans.TipoRiscossione;
 import it.govpay.ec.v2.beans.TipoSoggetto;
 import it.govpay.ec.v2.beans.TipoSogliaVincoloPagamento;
 import it.govpay.ec.v2.beans.VincoloPagamento;
@@ -200,24 +197,6 @@ public class PendenzePagateConverter {
 			rsModel.setTipo(TipoRiscossione.ENTRATA_PA_NON_INTERMEDIATA);
 			break;
 		} 
-
-		// solo per i pagamenti interni
-		if(!input.getTipo().equals(TipoPagamento.ALTRO_INTERMEDIARIO)) {
-			Stato stato = input.getStato();
-			if(stato != null) {
-				switch(stato) {
-				case INCASSATO: rsModel.setStato(StatoRiscossione.INCASSATA);
-				break;
-				case PAGATO: rsModel.setStato(StatoRiscossione.RISCOSSA);
-				break;
-				case PAGATO_SENZA_RPT: rsModel.setStato(StatoRiscossione.RISCOSSA);
-				break;
-				default:
-					break;
-				}
-			}
-			
-		}
 
 		return rsModel;
 	}

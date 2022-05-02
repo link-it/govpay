@@ -1,4 +1,4 @@
-package it.govpay.ec.v2.beans;
+package it.govpay.ragioneria.v3.beans;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +15,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description="Dati della pendenza con voci")
 public class PendenzaPagata extends Pendenza  {
   
-  @Schema(required = true, description = "")
+  @Schema(description = "")
   private List<VocePendenzaPagata> voci = new ArrayList<>();
-
-  /**
+ /**
    * Get voci
    * @return voci
   **/
