@@ -206,7 +206,7 @@ public class Pendenza   {
    * Get unitaOperativa
    * @return unitaOperativa
   **/
-  @JsonProperty("UnitaOperativa")
+  @JsonProperty("unitaOperativa")
   public UnitaOperativa getUnitaOperativa() {
     return unitaOperativa;
   }
