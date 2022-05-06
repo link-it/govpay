@@ -234,7 +234,8 @@ in formati e modalità compatibili con applicativi terzi. Di seguito i connettor
    :widths: 40,60
    
    "GovPay",":ref:`govpay_configurazione_connettori_govpay`"
-   "HyperSIC (APKAPPA)",":ref:`govpay_configurazione_connettori_hypersic`"
+   "APKAPPA (HiperSIC)",":ref:`govpay_configurazione_connettori_hypersic`"
+   "Maggioli (JPPA)",":ref:`govpay_configurazione_connettori_jppa`"
    "MyPivot",":ref:`govpay_configurazione_connettori_mypivot`"
    "SECIM",":ref:`govpay_configurazione_connettori_secim`"
 
@@ -251,3 +252,4 @@ in formati e modalità compatibili con applicativi terzi. Di seguito i connettor
    ./connettore_govpay
    ./connettore_mypivot  
    ./connettore_hypersic
+   ./connettore_jppa
