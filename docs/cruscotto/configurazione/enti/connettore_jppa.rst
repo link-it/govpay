@@ -3,4 +3,4 @@
 Connettore per l'esportazione dei pagamenti verso Maggioli (JPPA)
 -----------------------------------------------------------------
 
-TBD
+Il servizio e' al momento rilasciato in versione beta.
