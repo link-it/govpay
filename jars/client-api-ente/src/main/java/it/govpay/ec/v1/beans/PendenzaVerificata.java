@@ -11,6 +11,8 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 //import io.swagger.v3.oas.annotations.media.Schema;
 
 public class PendenzaVerificata  {
@@ -138,6 +140,9 @@ public class PendenzaVerificata  {
    * Dati supporto per la gestione del ciclo di vita della pendenza.
    **/
   private ProprietaPendenza proprieta = null;
+  
+  @Schema(description = "")
+  private List<NuovoAllegatoPendenza> allegati = null;
   
  /**
    * Identificativo del gestionale responsabile della pendenza
@@ -593,6 +598,29 @@ public class PendenzaVerificata  {
   public void setProprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
   }
+  
+  /**
+   * Get allegati
+   * @return allegati
+  **/
+  @JsonProperty("allegati")
+  public List<NuovoAllegatoPendenza> getAllegati() {
+    return allegati;
+  }
+
+  public void setAllegati(List<NuovoAllegatoPendenza> allegati) {
+    this.allegati = allegati;
+  }
+
+  public PendenzaVerificata allegati(List<NuovoAllegatoPendenza> allegati) {
+    this.allegati = allegati;
+    return this;
+  }
+
+  public PendenzaVerificata addAllegatiItem(NuovoAllegatoPendenza allegatiItem) {
+    this.allegati.add(allegatiItem);
+    return this;
+  }
 
 
   @Override
@@ -622,6 +650,7 @@ public class PendenzaVerificata  {
     sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
     sb.append("    documento: ").append(toIndentedString(documento)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
+    sb.append("    allegati: ").append(toIndentedString(allegati)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -1,0 +1,99 @@
+input[type="file"]::file-selector-button {
+  // box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%);
+  background-color: #a4d1f9;
+  box-sizing: border-box;
+  position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+  display: inline-block;
+  white-space: nowrap;
+  text-decoration: none;
+  vertical-align: baseline;
+  text-align: center;
+  margin: 0;
+  min-width: 64px;
+  line-height: 36px;
+  padding: 0 16px;
+  border-radius: 0;
+  overflow: visible;
+  transform: translate3d(0, 0, 0);
+  transition: background 400ms cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 1.5rem 0 .5rem;
+}
+
+/*  fallback for older/other browsers */
+
+input[type="file"]::-ms-browse,
+input[type="file"]::-webkit-file-upload-button {
+  // box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%);
+  background-color: #a4d1f9;
+  box-sizing: border-box;
+  position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+  display: inline-block;
+  white-space: nowrap;
+  text-decoration: none;
+  vertical-align: baseline;
+  text-align: center;
+  margin: 0;
+  min-width: 64px;
+  line-height: 36px;
+  padding: 0 16px;
+  border-radius: 0;
+  overflow: visible;
+  transform: translate3d(0, 0, 0);
+  transition: background 400ms cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 1.5rem 0 .5rem;
+  font-weight: 500;
+}
+
+// Custom sd
+
+.sd-context-btn {
+  background-color: #F5F5F5 !important;
+  border-radius: 0;
+
+  // &:focus use,
+  // &:hover use {
+  //   fill: #a4d1f9;
+  // }
+
+  &.sd-file__choose-btn--icon {
+    right: 10px;
+    background-color: transparent !important;
+  }
+}
+
+.sd-file__decorator {
+  border: 1px solid var(--border, #d6d6d6);
+}
+
+.sd-file__decorator--error {
+  background-color: transparent !important;
+}
+
+.sd-action.sd-action {
+  // color: #2962ff;
+  color: #343a40;
+  font-weight: 400;
+  background-color: #ebebeb;
+}
+
+.sd-action.sd-action:not(:disabled):not(.sd-action--disabled):focus,
+.sd-action.sd-action:not(:disabled):not(.sd-action--disabled):hover {
+  background-color: #a4d1f9;
+  color: #343a40;
+}

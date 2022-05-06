@@ -43,6 +43,8 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	public static final String P_DOWNLOAD_BASE_URL = "DOWNLOAD_BASE_URL";
 	public static final String P_INTERVALLO_CREAZIONE_TRACCIATO = "INTERV_CREAZ_TRAC";
 	
+	public static final String P_PRINCIPAL_MAGGIOLI = "PRINCIPAL_MAGGIOLI";
+	
 	
 	
 	public enum TipoConnettore {
@@ -50,7 +52,7 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	}
 	
 	public enum Tipo {
-		MYPIVOT, SECIM, GOVPAY, HYPER_SIC_APKAPPA;
+		MYPIVOT, SECIM, GOVPAY, HYPER_SIC_APKAPPA, MAGGIOLI_JPPA;
 	}
 	
 	public enum Contenuti {
@@ -72,6 +74,7 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	private List<String> contenuti;
 	private boolean emailAllegato;
 	private String downloadBaseURL;
+	private String principalMaggioli;
 	private Integer intervalloCreazioneTracciato;
 	
 	public ConnettoreNotificaPagamenti() {
@@ -203,6 +206,14 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 		this.emailAllegato = emailAllegato;
 	}
 
+	public String getPrincipalMaggioli() {
+		return principalMaggioli;
+	}
+
+	public void setPrincipalMaggioli(String principalMaggioli) {
+		this.principalMaggioli = principalMaggioli;
+	}
+	
 	public Integer getIntervalloCreazioneTracciato() {
 		return intervalloCreazioneTracciato;
 	}

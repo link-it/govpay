@@ -60,6 +60,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test1_tracciato_valido' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -144,6 +145,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test2_tracciato_valido_pendenze_duplicate' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -224,6 +226,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test3_tracciato_valido_con_linee_vuote' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -293,6 +296,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test4_tracciato_vuoto' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -362,6 +366,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test5_tracciato_valido_solo_intestazione' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -441,6 +446,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test6_tracciato_valido_pendenze_errori_sintassi' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -523,6 +529,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test7_tracciato_valido_pendenze_errori_validazione' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -611,6 +618,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test8_tracciato_valido_2pendenze' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -702,6 +710,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test9_tracciato_valido_pendenze_errori_sintassi' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -779,6 +788,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test10_tracciato_valido_template_richiesta_non_valido' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -859,6 +869,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test11_tracciato_valido_template_risposta_non_valido' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -946,6 +957,7 @@ Then status 200
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
+And headers { 'X-GOVPAY-FILENAME' : 'test12_tracciato_non_valido_content_type_errato' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -991,6 +1003,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test13_tracciato_non_valido_separatore_non_valido' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -1071,6 +1084,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test14_tracciato_valido_68_pendenze' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -1153,6 +1167,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test15_caricamento_stesso_tracciato' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -1211,6 +1226,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test15_caricamento_stesso_tracciato2' }
 And headers basicAutenticationHeader
 And request tracciato2
 When method post
@@ -1293,6 +1309,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test16_tracciato_con_soglie_temporali' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -1375,6 +1392,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test17_tracciato_per_cancellazione' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -1428,6 +1446,7 @@ Then status 200
 
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
+And headers { 'X-GOVPAY-FILENAME' : 'test17_tracciato_di_annullamento_test17' }
 And headers { 'Content-Type' : 'text/csv' }
 And headers basicAutenticationHeader
 And request tracciato
@@ -1505,6 +1524,7 @@ Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And param stampaAvvisi = false
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test18_tracciato_no_stampa_avvisi' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -1591,6 +1611,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test19_tracciato_con_soglie_temporali' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -1674,6 +1695,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test20_tracciato_con_sole_rate' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -1757,6 +1779,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test21_tracciato_con_lingua_secondaria' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -1840,6 +1863,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test22_tracciato-v8' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -1925,6 +1949,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test23_versamento_soglia_60giorni' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -2010,6 +2035,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test24_tracciato_valido_applicazione' }
 And headers idA2ABasicAutenticationHeader
 And request tracciato
 When method post
@@ -2055,5 +2081,86 @@ When method get
 Then status 200
 
 
+@test25
+Scenario: Caricamento di un tracciato in formato CSV valido con pagamenti con sole rate no bollettino
 
+* set patchValue.richiesta = encodeBase64InputStream(read('msg/freemarker-request.ftl'))
+* set patchValue.risposta = encodeBase64InputStream(read('msg/freemarker-response.ftl'))
+
+Given url backofficeBaseurl
+And path '/configurazioni' 
+And headers basicAutenticationHeader
+And request 
+"""
+[
+	{
+		op: "REPLACE",
+		path: "/tracciatoCsv",
+		value: #(patchValue)
+	}
+]
+"""
+When method patch
+Then status 200
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* def idPendenza = getCurrentTimeMillis()
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def tracciato = karate.readAsString('classpath:test/api/backoffice/v1/tracciati/post/msg/tracciato-pendenze-v5.csv')
+* def tracciato = replace(tracciato,"{idA2A}", idA2A);
+* def tracciato = replace(tracciato,"{idPendenza}", idPendenza);
+* def tracciato = replace(tracciato,"{idDominio}", idDominio);
+* def tracciato = replace(tracciato,"{numeroAvviso}", numeroAvviso);
+* def tracciato = replace(tracciato,"{ibanAccredito}", ibanAccredito);
+* def tracciato = replace(tracciato,"{ibanAppoggio}", '');
+* def tracciato = replace(tracciato,"{tipoPendenza}", codEntrataSegreteria);
+* def tracciato = replace(tracciato,"{importo}", importo);
+* def tracciato = replace(tracciato,"{importo_voce}", importo_voce);
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
+And headers { 'Content-Type' : 'text/csv' }
+And headers { 'X-GOVPAY-FILENAME' : 'test25_tracciato_solo_rate_no_bollettino' }
+And headers basicAutenticationHeader
+And request tracciato
+When method post
+Then status 201
+
+* def idTracciato = response.id
+
+Given url backofficeBaseurl
+And path 'operazioni', 'elaborazioneTracciatiPendenze'
+And headers basicAutenticationHeader
+When method get
+
+
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato
+And headers basicAutenticationHeader
+And retry until response.stato == 'ESEGUITO'
+When method get
+Then match response contains { descrizioneStato: '##null' } 
+Then match response.numeroOperazioniTotali == 7
+Then match response.numeroOperazioniEseguite == 7
+Then match response.numeroOperazioniFallite == 0
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'stampe'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'richiesta'
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+Given url backofficeBaseurl
+And path 'pendenze', 'tracciati', idTracciato, 'esito'
+And headers basicAutenticationHeader
+When method get
+Then status 200
 

@@ -137,10 +137,10 @@ outputTypes:
   - application/pdf
 platforms:
   - web
-releaseDate: '2022-04-29'
+releaseDate: '2022-05-09'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
-softwareVersion: '3.5.1'
+softwareVersion: '3.6.0'
 url: 'https://github.com/link-it/govpay'
 usedBy:
   - CNR - Consiglio Nazionale delle Ricerche  

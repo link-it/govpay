@@ -5,6 +5,7 @@ package it.govpay.core.dao.pagamenti.dto;
 
 import java.util.List;
 
+import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
@@ -31,6 +32,7 @@ public class LeggiPendenzaDTOResponse {
 	private List<PagamentoPortale> pagamenti;
 	private List<Rpt> rpts;
 	private TipoVersamento tipoVersamento;
+	private List<Allegato> allegati;
 
 	public Applicazione getApplicazione() {
 		return this.applicazione;
@@ -102,6 +104,14 @@ public class LeggiPendenzaDTOResponse {
 
 	public void setTipoVersamento(TipoVersamento tipoVersamento) {
 		this.tipoVersamento = tipoVersamento;
+	}
+
+	public List<Allegato> getAllegati() {
+		return allegati;
+	}
+
+	public void setAllegati(List<Allegato> allegati) {
+		this.allegati = allegati;
 	}
 	
 }

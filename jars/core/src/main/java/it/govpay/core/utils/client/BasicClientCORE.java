@@ -143,6 +143,7 @@ public abstract class BasicClientCORE {
 	protected Componente componente;
 	private Giornale giornale;
 	protected EventoContext eventoCtx;
+	private String tipoEventoCustom;
 
 	protected IntegrationContext integrationCtx;
 
@@ -434,11 +435,7 @@ public abstract class BasicClientCORE {
 		int responseCode = 0;
 		byte [] msg = null;
 
-		if(soap) {
-			this.getEventoCtx().setTipoEvento(azione);
-		} else {
-			this.getEventoCtx().setTipoEvento(swaggerOperationId);
-		}
+		setTipoEvento(soap, azione, swaggerOperationId);
 
 		try{
 
@@ -831,6 +828,18 @@ public abstract class BasicClientCORE {
 
 	}
 
+	private void setTipoEvento(boolean soap, String azione, String swaggerOperationId) {
+		if(this.tipoEventoCustom != null) {
+			this.getEventoCtx().setTipoEvento(this.tipoEventoCustom);
+		} else {
+			if(soap) {
+				this.getEventoCtx().setTipoEvento(azione);
+			} else {
+				this.getEventoCtx().setTipoEvento(swaggerOperationId);
+			}
+		}
+	}
+
 
 	//	@Override
 	public void disconnect() throws ClientException{
@@ -901,7 +910,7 @@ public abstract class BasicClientCORE {
 			boolean dumpEvento = false;
 			GdeInterfaccia configurazioneInterfaccia = GiornaleEventi.getConfigurazioneComponente(this.componente, this.getGiornale());
 
-			log.debug("Log Evento Client: ["+this.componente +"] Method ["+httpMethod+"], Url ["+this.url.toExternalForm()+"], StatusCode ["+responseCode+"]");
+			log.debug("Log Evento Client: ["+this.componente +"], Operazione ["+this.getEventoCtx().getTipoEvento()+"], Method ["+httpMethod+"], Url ["+this.url.toExternalForm()+"], StatusCode ["+responseCode+"]");
 
 			if(configurazioneInterfaccia != null) {
 				try {
@@ -1034,6 +1043,14 @@ public abstract class BasicClientCORE {
 
 	public void setGiornale(Giornale giornale) {
 		this.giornale = giornale;
+	}
+
+	public String getTipoEventoCustom() {
+		return tipoEventoCustom;
+	}
+
+	public void setTipoEventoCustom(String tipoEventoCustom) {
+		this.tipoEventoCustom = tipoEventoCustom;
 	}
 
 	class CustomHttpEntity extends HttpEntityEnclosingRequestBase{

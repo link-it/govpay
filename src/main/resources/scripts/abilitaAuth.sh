@@ -16,6 +16,7 @@ PENDENZE=basic,ssl
 RAGIONERIA=basic,ssl
 USER=
 PAGOPA=ssl
+JPPAPDP=ssl
 APIDEFAULT=none
 GOVPAY_SRC_DIR="ear/target/"
 GOVPAY_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
@@ -55,6 +56,11 @@ case $key in
     shift # past argument
     shift # past value
     ;;
+    -jppa|--jppapdp)
+    JPPAPDP="$2"
+    shift # past argument
+    shift # past value
+    ;;
     -src|--sourcedir)
     GOVPAY_SRC_DIR="$2"
     shift # past argument
@@ -79,6 +85,7 @@ case $key in
     echo "   -rag <args> : lista di autenticazioni da abilitare sulle api di ragioneria (basic,ssl). Default: basic,basic-gp,ssl,hdrcert"
     echo "   -usr <args> : lista di autenticazioni da abilitare sulle api di user (spid). Default: spid"
     echo "   -pp <args> : autenticazione da abilitare sulle api di pagopa (basic,basic-gp,ssl). Default: ssl,hdrcert"
+    echo "   -jppa <args> : autenticazione da abilitare sulle api di jppapdp (basic,basic-gp,ssl). Default: ssl,hdrcert"
     echo "   -d <args> : autenticazione da abilitare sui contesti senza autenticazione per retro-compatibilita (basic,ssl,hdrcert). Default: none"
     exit 2;
     ;;
@@ -128,6 +135,9 @@ RAGIONERIA_BASIC_GP=false
 
 [[ $PAGOPA == *"basic"* ]] && PAGOPA_BASIC=true || PAGOPA_BASIC=false
 [[ $PAGOPA == *"hdrcert"* ]] && PAGOPA_SSL_HEADER=true || PAGOPA_SSL_HEADER=false
+
+[[ $JPPAPDP == *"basic"* ]] && JPPAPDP_BASIC=true || JPPAPDP_BASIC=false
+[[ $JPPAPDP == *"hdrcert"* ]] && JPPAPDP_SSL_HEADER=true || JPPAPDP_SSL_HEADER=false
 
 DEFAULT_BASIC=false
 DEFAULT_SSL=false
@@ -512,6 +522,56 @@ then
   rm -rf $APP_CONTEXT_BASE_DIR
 
   echo "API-PagoPA abilitazione hdrcert completata.";
+fi
+
+# API-Maggioli JPPA
+
+if $JPPAPDP_BASIC
+then
+  echo "API-Maggioli JPPA abilitazione HTTP Basic-auth...";
+
+  API_PREFIX="api-jppapdp-"
+  unzip -q $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # accendo la modalita' basic
+  sed -i -e "s#BASIC_START#BASIC_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#BASIC_END#<!-- BASIC_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # spengo modalita ssl
+  sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # ripristino file
+  zip -qr $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # eliminazione dei file temporanei
+  rm -rf $APP_CONTEXT_BASE_DIR
+
+  echo "API-Maggioli JPPA abilitazione HTTP Basic-auth completata.";
+fi
+
+if $JPPAPDP_SSL_HEADER
+then
+  echo "API-Maggioli JPPA abilitazione hdrcert...";
+
+  API_PREFIX="api-jppapdp-"
+  unzip -q $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # spengo modalita ssl
+  sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # accendo modalita hdrcert
+  sed -i -e "s#SSL_HDR_START#SSL_HDR_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#SSL_HDR_END#<!-- SSL_HDR_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # ripristino file
+  zip -qr $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # eliminazione dei file temporanei
+  rm -rf $APP_CONTEXT_BASE_DIR
+
+  echo "API-Maggioli JPPA abilitazione hdrcert completata.";
 fi
 
 

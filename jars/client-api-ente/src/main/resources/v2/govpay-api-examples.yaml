@@ -1,127 +1,143 @@
 components:
   examples:
     RicevutaEntrata:
-      dominio: 
-        idDominio: '01234567890'
-        ragioneSociale: 'Comune Dimostrativo'
-      iuv: '01000000202012345'
-      receiptId: '1234acdc'
-      dataPagamento: '2020-12-31T12:55:12'              
-      attestante:
-        idPSP: 'BPPONZI'
-        denominazione: 'Banco Popolare Ponzi'
-        idCanale: 'POS'
-        descrizione: 'Pagamento con carta c/o sportello'
-      versante:
-        tipo: F
-        identificativo: ANONIMO
-        anagrafica: ANONIMO
-      riscossioni:
-        - iur: 1234acdc
-          indice: 1
-          tipo: ENTRATA
-          importo: 250.50
-          vocePendenza:
-            idVocePendenza: TARI
-            descrizione: Importo TARI 
-            contabilita:
-              quote:
-                - capitolo: '0000'
-                  annoEsercizio: 2020
-                  importo: 210.00
-            ibanAccredito: 'IT60X0542811101000000123456'
-            codiceTassonomicoPagoPA: '9/0101100IM/'
-            pendenza:
-              idA2A: A2A-12345
-              idPendenza: abcdef12345
-              idTipoPendenza: TARI
-              dominio: 
-                idDominio: '01234567890'
-                ragioneSociale: 'Comune Dimostrativo'                
-              causale: 'TARI/TEFA 2021'
-              soggettoPagatore:
-                tipo: F
-                identificativo: RSSMRA30A01H501I
-                anagrafica: Mario Rossi
-                indirizzo: Piazza della Vittoria
-                civico: 10/A
-                cap: '00000'
-                localita: Roma
-                provincia: Roma
-                nazione: IT
-                email: mario.rossi@host.eu
-                cellulare: +39 000 1234567
-              importo: 250.50
-              numeroAvviso: '301000000202012345'
-              dataScadenza: '2021-12-31'
-      rpt:
-        data: '2020-12-31T12:53:49'
-        tipo: 'ctPaymentPA'
-        xml: '...[XML originale codificato Base64]...'
-        json: '...[XML originale convertito in json]...'
-      rt:
-        data: '2020-12-31T12:55:12'
-        tipo: 'ctReceipt'
-        xml: '...[XML originale codificato Base64]...'
-        json: '...[XML originale convertito in json]...'     
-    RicevutaMBT:
-      dominio: 
-        idDominio: '01234567890'
-        ragioneSociale: 'Comune Dimostrativo'
-      iuv: '01000000202012345'
-      receiptId: '1234acdc'
-      dataPagamento: '2020-12-31T12:55:12'              
-      attestante:
-        idPSP: 'BPPONZI'
-        denominazione: 'Banco Popolare Ponzi'
-        idCanale: 'POS'
-        descrizione: 'Pagamento con carta c/o sportello'
-      versante:
-        tipo: F
-        identificativo: ANONIMO
-        anagrafica: ANONIMO
-      riscossioni:
-        - iur: "1234acdc"
-          indice: 1
-          tipo: "MBT"
-          importo: 16.00
-          allegato:
-            tipo: "Marca da bollo"
-            testo: "[XML della Marca da bollo in base64]"
-          vocePendenza:
-            idVocePendenza: BOLLO
-            descrizione: Imposta di bollo
-            codiceTassonomicoPagoPA: '9/0201102IM/'
-            pendenza:
-              idA2A: A2A-12345
-              idPendenza: abcdef12345
-              idTipoPendenza: TARI
-              dominio: 
-                idDominio: '01234567890'
-                ragioneSociale: 'Comune Dimostrativo'                
-              causale: 'TARI/TEFA 2021'
-              soggettoPagatore:
-                tipo: F
-                identificativo: RSSMRA30A01H501I
-                anagrafica: Mario Rossi
-                indirizzo: Piazza della Vittoria
-                civico: 10/A
-                cap: '00000'
-                localita: Roma
-                provincia: Roma
-                nazione: IT
-                email: mario.rossi@host.eu
-                cellulare: +39 000 1234567
-              importo: 16.00
-              numeroAvviso: '301000000202012345'
-              dataScadenza: '2021-12-31'                            
-      rpt:
-        data: '2020-12-31T12:53:49'
-        tipo: 'ctPaymentPA'
-        xml: '...[XML originale codificato Base64]...'
-        json: '...[XML originale convertito in json]...'
-      rt:
-        data: '2020-12-31T12:55:12'
-        tipo: 'ctReceipt'
-        xml: '...[XML originale codificato Base64]...'
-        json: '...[XML originale convertito in json]...'             
+      summary: "Pagamento standard"
+      value:
+        dominio:
+          idDominio: '12345678901'
+          ragioneSociale: Ente Creditore Test
+        iuv: '340105455507221'
+        idRicevuta: '840596274'
+        importo: 100.99
+        stato: RT_ACCETTATA_PA
+        istitutoAttestante:
+          idPSP: '99999'
+          denominazione: Banco di Ponzi S.p.A.
+          idCanale: GovPAYPsp1_PO
+        pendenza:
+          idA2A: IDA2A01
+          idPendenza: '1651054555047'
+          idTipoPendenza: SEGRETERIA
+          dominio:
+            idDominio: '12345678901'
+            ragioneSociale: Ente Creditore Test
+          unitaOperativa:
+          causale: Pagamento dovuto n.1651054555047
+          soggettoPagatore:
+            tipo: F
+            identificativo: RSSMRA30A01H501I
+            anagrafica: Mario Rossi
+            email: mario.rossi@testmail.it
+            cellulare: "+39 000-0000000"
+          importo: 100.99
+          numeroAvviso: '001340105455507221'
+          dataValidita: '2900-12-30'
+          dataScadenza: '2999-12-30'
+          tassonomia: Servizi erogati dal comune
+          voci:
+          - codEntrata: SEGRETERIA
+            idVocePendenza: '1'
+            descrizione: Diritti e segreteria
+            riscossione:
+              iuv: '340105455507221'
+              iur: '3401054555072216481'
+              indice: 1
+              stato: RISCOSSA
+              tipo: ENTRATA
+              importo: 100.99
+              data: '2022-04-26'
+          UUID: 4fd5641f769a4e65b910670dece4a547
+        data: '2022-04-27'
+        rpt:
+          tipo: ctRichiestaPagamentoTelematico
+          xml: PFJQVCB4bWxucz0iaHR0cDovL3d3dy5kaWdpdHBhLmdvdi5pdC9zY2hlbWFzLzIwMTEvUGFnYW1lbnRpLyI+PHZlcnNpb25lT2dnZXR0bz42LjIuMDwvdmVyc2lvbmVPZ2dldHRvPjxkb21pbmlvPjxpZGVudGlmaWNhdGl2b0RvbWluaW8+MTIzNDU2Nzg5MDE8L2lkZW50aWZpY2F0aXZvRG9taW5pbz48aWRlbnRpZmljYXRpdm9TdGF6aW9uZVJpY2hpZWRlbnRlPjExMTExMTExMTEzXzAxPC9pZGVudGlmaWNhdGl2b1N0YXppb25lUmljaGllZGVudGU+PC9kb21pbmlvPjxpZGVudGlmaWNhdGl2b01lc3NhZ2dpb1JpY2hpZXN0YT40ODVhZmQyZGQ2OGY0NjE4OTJmNWFhNGMxMDE5ZTk3YjwvaWRlbnRpZmljYXRpdm9NZXNzYWdnaW9SaWNoaWVzdGE+PGRhdGFPcmFNZXNzYWdnaW9SaWNoaWVzdGE+MjAyMi0wNC0yN1QxMjoxNTo1NjwvZGF0YU9yYU1lc3NhZ2dpb1JpY2hpZXN0YT48YXV0ZW50aWNhemlvbmVTb2dnZXR0bz5OL0E8L2F1dGVudGljYXppb25lU29nZ2V0dG8+PHNvZ2dldHRvUGFnYXRvcmU+PGlkZW50aWZpY2F0aXZvVW5pdm9jb1BhZ2F0b3JlPjx0aXBvSWRlbnRpZmljYXRpdm9Vbml2b2NvPkY8L3RpcG9JZGVudGlmaWNhdGl2b1VuaXZvY28+PGNvZGljZUlkZW50aWZpY2F0aXZvVW5pdm9jbz5SU1NNUkEzMEEwMUg1MDFJPC9jb2RpY2VJZGVudGlmaWNhdGl2b1VuaXZvY28+PC9pZGVudGlmaWNhdGl2b1VuaXZvY29QYWdhdG9yZT48YW5hZ3JhZmljYVBhZ2F0b3JlPk1hcmlvIFJvc3NpPC9hbmFncmFmaWNhUGFnYXRvcmU+PGUtbWFpbFBhZ2F0b3JlPm1hcmlvLnJvc3NpQHRlc3RtYWlsLml0PC9lLW1haWxQYWdhdG9yZT48L3NvZ2dldHRvUGFnYXRvcmU+PGVudGVCZW5lZmljaWFyaW8+PGlkZW50aWZpY2F0aXZvVW5pdm9jb0JlbmVmaWNpYXJpbz48dGlwb0lkZW50aWZpY2F0aXZvVW5pdm9jbz5HPC90aXBvSWRlbnRpZmljYXRpdm9Vbml2b2NvPjxjb2RpY2VJZGVudGlmaWNhdGl2b1VuaXZvY28+MTIzNDU2Nzg5MDE8L2NvZGljZUlkZW50aWZpY2F0aXZvVW5pdm9jbz48L2lkZW50aWZpY2F0aXZvVW5pdm9jb0JlbmVmaWNpYXJpbz48ZGVub21pbmF6aW9uZUJlbmVmaWNpYXJpbz5FbnRlIENyZWRpdG9yZSBUZXN0PC9kZW5vbWluYXppb25lQmVuZWZpY2lhcmlvPjxpbmRpcml6em9CZW5lZmljaWFyaW8+UGlhenphbGUgUGFvbGlubyBQYXBlcmlubzwvaW5kaXJpenpvQmVuZWZpY2lhcmlvPjxjaXZpY29CZW5lZmljaWFyaW8+MTwvY2l2aWNvQmVuZWZpY2lhcmlvPjxjYXBCZW5lZmljaWFyaW8+MDAwMDA8L2NhcEJlbmVmaWNpYXJpbz48bG9jYWxpdGFCZW5lZmljaWFyaW8+Um9tYTwvbG9jYWxpdGFCZW5lZmljaWFyaW8+PHByb3ZpbmNpYUJlbmVmaWNpYXJpbz5STzwvcHJvdmluY2lhQmVuZWZpY2lhcmlvPjxuYXppb25lQmVuZWZpY2lhcmlvPklUPC9uYXppb25lQmVuZWZpY2lhcmlvPjwvZW50ZUJlbmVmaWNpYXJpbz48ZGF0aVZlcnNhbWVudG8+PGRhdGFFc2VjdXppb25lUGFnYW1lbnRvPjIwMjItMDQtMjc8L2RhdGFFc2VjdXppb25lUGFnYW1lbnRvPjxpbXBvcnRvVG90YWxlRGFWZXJzYXJlPjEwMC45OTwvaW1wb3J0b1RvdGFsZURhVmVyc2FyZT48dGlwb1ZlcnNhbWVudG8+UE88L3RpcG9WZXJzYW1lbnRvPjxpZGVudGlmaWNhdGl2b1VuaXZvY29WZXJzYW1lbnRvPjM0MDEwNTQ1NTUwNzIyMTwvaWRlbnRpZmljYXRpdm9Vbml2b2NvVmVyc2FtZW50bz48Y29kaWNlQ29udGVzdG9QYWdhbWVudG8+ODQwNTk2Mjc0PC9jb2RpY2VDb250ZXN0b1BhZ2FtZW50bz48ZmlybWFSaWNldnV0YT4wPC9maXJtYVJpY2V2dXRhPjxkYXRpU2luZ29sb1ZlcnNhbWVudG8+PGltcG9ydG9TaW5nb2xvVmVyc2FtZW50bz4xMDAuOTk8L2ltcG9ydG9TaW5nb2xvVmVyc2FtZW50bz48aWJhbkFjY3JlZGl0bz5JVDAyTDEyMzQ1MTIzNDUxMjM0NTExMTExMTE8L2liYW5BY2NyZWRpdG8+PGJpY0FjY3JlZGl0bz5EQUJBSUUyRDwvYmljQWNjcmVkaXRvPjxpYmFuQXBwb2dnaW8+SVQwMkwwNzYwMTEyMzQ1MTIzNDUyMjIyMjIyPC9pYmFuQXBwb2dnaW8+PGJpY0FwcG9nZ2lvPkRBQkFJRTJDPC9iaWNBcHBvZ2dpbz48Y2F1c2FsZVZlcnNhbWVudG8+L1JGQi8zNDAxMDU0NTU1MDcyMjEvMTAwLjk5L1RYVC9EaXJpdHRpIGUgc2VncmV0ZXJpYTwvY2F1c2FsZVZlcnNhbWVudG8+PGRhdGlTcGVjaWZpY2lSaXNjb3NzaW9uZT45L1NFR1JFVEVSSUE8L2RhdGlTcGVjaWZpY2lSaXNjb3NzaW9uZT48L2RhdGlTaW5nb2xvVmVyc2FtZW50bz48L2RhdGlWZXJzYW1lbnRvPjwvUlBUPg==
+          json:
+            versioneOggetto: 6.2.0
+            dominio:
+              identificativoDominio: '12345678901'
+              identificativoStazioneRichiedente: '11111111113_01'
+            identificativoMessaggioRichiesta: 485afd2dd68f461892f5aa4c1019e97b
+            dataOraMessaggioRichiesta: '2022-04-27T12:15:56'
+            autenticazioneSoggetto: N/A
+            soggettoPagatore:
+              identificativoUnivocoPagatore:
+                tipoIdentificativoUnivoco: F
+                codiceIdentificativoUnivoco: RSSMRA30A01H501I
+              anagraficaPagatore: Mario Rossi
+              e-mailPagatore: mario.rossi@testmail.it
+            enteBeneficiario:
+              identificativoUnivocoBeneficiario:
+                tipoIdentificativoUnivoco: G
+                codiceIdentificativoUnivoco: '12345678901'
+              denominazioneBeneficiario: Ente Creditore Test
+              indirizzoBeneficiario: Piazzale Paolino Paperino
+              civicoBeneficiario: '1'
+              capBeneficiario: '00000'
+              localitaBeneficiario: Roma
+              provinciaBeneficiario: RO
+              nazioneBeneficiario: IT
+            datiVersamento:
+              dataEsecuzionePagamento: '2022-04-27'
+              importoTotaleDaVersare: '100.99'
+              tipoVersamento: PO
+              identificativoUnivocoVersamento: '340105455507221'
+              codiceContestoPagamento: '840596274'
+              firmaRicevuta: '0'
+              datiSingoloVersamento:
+              - importoSingoloVersamento: '100.99'
+                commissioneCaricoPA:
+                ibanAccredito: IT02L1234512345123451111111
+                bicAccredito: DABAIE2D
+                ibanAppoggio: IT02L0760112345123452222222
+                bicAppoggio: DABAIE2C
+                credenzialiPagatore:
+                causaleVersamento: "/RFB/340105455507221/100.99/TXT/Diritti e segreteria"
+                datiSpecificiRiscossione: 9/SEGRETERIA
+                datiMarcaBolloDigitale:
+        rt:
+          tipo: ctRicevutaTelematica
+          xml: PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxuczI6UlQgeG1sbnM6bnMyPSJodHRwOi8vd3d3LmRpZ2l0cGEuZ292Lml0L3NjaGVtYXMvMjAxMS9QYWdhbWVudGkvIiB4bWxuczpuczM9Imh0dHA6Ly93d3cuZGlnaXRwYS5nb3YuaXQvc2NoZW1hcy8yMDExL1BhZ2FtZW50aS9SZXZvY2hlLyIgeG1sbnM6bnM0PSJodHRwOi8vd3MucGFnYW1lbnRpLnRlbGVtYXRpY2kuZ292LyIgeG1sbnM6bnM1PSJodHRwOi8vcGFnb3BhLWFwaS5wYWdvcGEuZ292Lml0L3BhL3BhRm9yTm9kZS54c2QiPjxuczI6dmVyc2lvbmVPZ2dldHRvPjYuMi4wPC9uczI6dmVyc2lvbmVPZ2dldHRvPjxuczI6ZG9taW5pbz48bnMyOmlkZW50aWZpY2F0aXZvRG9taW5pbz4xMjM0NTY3ODkwMTwvbnMyOmlkZW50aWZpY2F0aXZvRG9taW5pbz48bnMyOmlkZW50aWZpY2F0aXZvU3RhemlvbmVSaWNoaWVkZW50ZT4xMTExMTExMTExM18wMTwvbnMyOmlkZW50aWZpY2F0aXZvU3RhemlvbmVSaWNoaWVkZW50ZT48L25zMjpkb21pbmlvPjxuczI6aWRlbnRpZmljYXRpdm9NZXNzYWdnaW9SaWNldnV0YT40ODVhZmQyZGQ2OGY0NjE4OTJmNWFhNGMxMDE5ZTk3YjwvbnMyOmlkZW50aWZpY2F0aXZvTWVzc2FnZ2lvUmljZXZ1dGE+PG5zMjpkYXRhT3JhTWVzc2FnZ2lvUmljZXZ1dGE+MjAyMi0wNC0yN1QxMjoxNTo1NiswMjowMDwvbnMyOmRhdGFPcmFNZXNzYWdnaW9SaWNldnV0YT48bnMyOnJpZmVyaW1lbnRvTWVzc2FnZ2lvUmljaGllc3RhPjQ4NWFmZDJkZDY4ZjQ2MTg5MmY1YWE0YzEwMTllOTdiPC9uczI6cmlmZXJpbWVudG9NZXNzYWdnaW9SaWNoaWVzdGE+PG5zMjpyaWZlcmltZW50b0RhdGFSaWNoaWVzdGE+MjAyMi0wNC0yNyswMjowMDwvbnMyOnJpZmVyaW1lbnRvRGF0YVJpY2hpZXN0YT48bnMyOmlzdGl0dXRvQXR0ZXN0YW50ZT48bnMyOmlkZW50aWZpY2F0aXZvVW5pdm9jb0F0dGVzdGFudGU+PG5zMjp0aXBvSWRlbnRpZmljYXRpdm9Vbml2b2NvPkE8L25zMjp0aXBvSWRlbnRpZmljYXRpdm9Vbml2b2NvPjxuczI6Y29kaWNlSWRlbnRpZmljYXRpdm9Vbml2b2NvPjk5OTk5PC9uczI6Y29kaWNlSWRlbnRpZmljYXRpdm9Vbml2b2NvPjwvbnMyOmlkZW50aWZpY2F0aXZvVW5pdm9jb0F0dGVzdGFudGU+PG5zMjpkZW5vbWluYXppb25lQXR0ZXN0YW50ZT5CYW5jbyBkaSBQb256aSBTLnAuQS48L25zMjpkZW5vbWluYXppb25lQXR0ZXN0YW50ZT48L25zMjppc3RpdHV0b0F0dGVzdGFudGU+PG5zMjplbnRlQmVuZWZpY2lhcmlvPjxuczI6aWRlbnRpZmljYXRpdm9Vbml2b2NvQmVuZWZpY2lhcmlvPjxuczI6dGlwb0lkZW50aWZpY2F0aXZvVW5pdm9jbz5HPC9uczI6dGlwb0lkZW50aWZpY2F0aXZvVW5pdm9jbz48bnMyOmNvZGljZUlkZW50aWZpY2F0aXZvVW5pdm9jbz4xMjM0NTY3ODkwMTwvbnMyOmNvZGljZUlkZW50aWZpY2F0aXZvVW5pdm9jbz48L25zMjppZGVudGlmaWNhdGl2b1VuaXZvY29CZW5lZmljaWFyaW8+PG5zMjpkZW5vbWluYXppb25lQmVuZWZpY2lhcmlvPkVudGUgQ3JlZGl0b3JlIFRlc3Q8L25zMjpkZW5vbWluYXppb25lQmVuZWZpY2lhcmlvPjxuczI6aW5kaXJpenpvQmVuZWZpY2lhcmlvPlBpYXp6YWxlIFBhb2xpbm8gUGFwZXJpbm88L25zMjppbmRpcml6em9CZW5lZmljaWFyaW8+PG5zMjpjaXZpY29CZW5lZmljaWFyaW8+MTwvbnMyOmNpdmljb0JlbmVmaWNpYXJpbz48bnMyOmNhcEJlbmVmaWNpYXJpbz4wMDAwMDwvbnMyOmNhcEJlbmVmaWNpYXJpbz48bnMyOmxvY2FsaXRhQmVuZWZpY2lhcmlvPlJvbWE8L25zMjpsb2NhbGl0YUJlbmVmaWNpYXJpbz48bnMyOnByb3ZpbmNpYUJlbmVmaWNpYXJpbz5STzwvbnMyOnByb3ZpbmNpYUJlbmVmaWNpYXJpbz48bnMyOm5hemlvbmVCZW5lZmljaWFyaW8+SVQ8L25zMjpuYXppb25lQmVuZWZpY2lhcmlvPjwvbnMyOmVudGVCZW5lZmljaWFyaW8+PG5zMjpzb2dnZXR0b1BhZ2F0b3JlPjxuczI6aWRlbnRpZmljYXRpdm9Vbml2b2NvUGFnYXRvcmU+PG5zMjp0aXBvSWRlbnRpZmljYXRpdm9Vbml2b2NvPkY8L25zMjp0aXBvSWRlbnRpZmljYXRpdm9Vbml2b2NvPjxuczI6Y29kaWNlSWRlbnRpZmljYXRpdm9Vbml2b2NvPlJTU01SQTMwQTAxSDUwMUk8L25zMjpjb2RpY2VJZGVudGlmaWNhdGl2b1VuaXZvY28+PC9uczI6aWRlbnRpZmljYXRpdm9Vbml2b2NvUGFnYXRvcmU+PG5zMjphbmFncmFmaWNhUGFnYXRvcmU+TWFyaW8gUm9zc2k8L25zMjphbmFncmFmaWNhUGFnYXRvcmU+PG5zMjplLW1haWxQYWdhdG9yZT5tYXJpby5yb3NzaUB0ZXN0bWFpbC5pdDwvbnMyOmUtbWFpbFBhZ2F0b3JlPjwvbnMyOnNvZ2dldHRvUGFnYXRvcmU+PG5zMjpkYXRpUGFnYW1lbnRvPjxuczI6Y29kaWNlRXNpdG9QYWdhbWVudG8+MDwvbnMyOmNvZGljZUVzaXRvUGFnYW1lbnRvPjxuczI6aW1wb3J0b1RvdGFsZVBhZ2F0bz4xMDAuOTk8L25zMjppbXBvcnRvVG90YWxlUGFnYXRvPjxuczI6aWRlbnRpZmljYXRpdm9Vbml2b2NvVmVyc2FtZW50bz4zNDAxMDU0NTU1MDcyMjE8L25zMjppZGVudGlmaWNhdGl2b1VuaXZvY29WZXJzYW1lbnRvPjxuczI6Q29kaWNlQ29udGVzdG9QYWdhbWVudG8+ODQwNTk2Mjc0PC9uczI6Q29kaWNlQ29udGVzdG9QYWdhbWVudG8+PG5zMjpkYXRpU2luZ29sb1BhZ2FtZW50bz48bnMyOnNpbmdvbG9JbXBvcnRvUGFnYXRvPjEwMC45OTwvbnMyOnNpbmdvbG9JbXBvcnRvUGFnYXRvPjxuczI6ZGF0YUVzaXRvU2luZ29sb1BhZ2FtZW50bz4yMDIyLTA0LTI3KzAyOjAwPC9uczI6ZGF0YUVzaXRvU2luZ29sb1BhZ2FtZW50bz48bnMyOmlkZW50aWZpY2F0aXZvVW5pdm9jb1Jpc2Nvc3Npb25lPjM0MDEwNTQ1NTUwNzIyMTY0ODE8L25zMjppZGVudGlmaWNhdGl2b1VuaXZvY29SaXNjb3NzaW9uZT48bnMyOmNhdXNhbGVWZXJzYW1lbnRvPi9SRkIvMzQwMTA1NDU1NTA3MjIxLzEwMC45OS9UWFQvRGlyaXR0aSBlIHNlZ3JldGVyaWE8L25zMjpjYXVzYWxlVmVyc2FtZW50bz48bnMyOmRhdGlTcGVjaWZpY2lSaXNjb3NzaW9uZT45L1NFR1JFVEVSSUE8L25zMjpkYXRpU3BlY2lmaWNpUmlzY29zc2lvbmU+PC9uczI6ZGF0aVNpbmdvbG9QYWdhbWVudG8+PC9uczI6ZGF0aVBhZ2FtZW50bz48L25zMjpSVD4=
+          json:
+            versioneOggetto: 6.2.0
+            dominio:
+              identificativoDominio: '12345678901'
+              identificativoStazioneRichiedente: '11111111113_01'
+            identificativoMessaggioRicevuta: 485afd2dd68f461892f5aa4c1019e97b
+            dataOraMessaggioRicevuta: '2022-04-27T12:15:56'
+            riferimentoMessaggioRichiesta: 485afd2dd68f461892f5aa4c1019e97b
+            riferimentoDataRichiesta: '2022-04-27'
+            istitutoAttestante:
+              identificativoUnivocoAttestante:
+                tipoIdentificativoUnivoco: A
+                codiceIdentificativoUnivoco: '99999'
+              denominazioneAttestante: Banco di Ponzi S.p.A.
+            enteBeneficiario:
+              identificativoUnivocoBeneficiario:
+                tipoIdentificativoUnivoco: G
+                codiceIdentificativoUnivoco: '12345678901'
+              denominazioneBeneficiario: Ente Creditore Test
+              indirizzoBeneficiario: Piazzale Paolino Paperino
+              civicoBeneficiario: '1'
+              capBeneficiario: '00000'
+              localitaBeneficiario: Roma
+              provinciaBeneficiario: RO
+              nazioneBeneficiario: IT
+            soggettoVersante:
+            soggettoPagatore:
+              identificativoUnivocoPagatore:
+                tipoIdentificativoUnivoco: F
+                codiceIdentificativoUnivoco: RSSMRA30A01H501I
+              anagraficaPagatore: Mario Rossi
+              e-mailPagatore: mario.rossi@testmail.it
+            datiPagamento:
+              codiceEsitoPagamento: '0'
+              importoTotalePagato: '100.99'
+              identificativoUnivocoVersamento: '340105455507221'
+              CodiceContestoPagamento: '840596274'
+              datiSingoloPagamento:
+              - singoloImportoPagato: '100.99'
+                dataEsitoSingoloPagamento: '2022-04-27'
+                identificativoUnivocoRiscossione: '3401054555072216481'
+                causaleVersamento: "/RFB/340105455507221/100.99/TXT/Diritti e segreteria"
+                datiSpecificiRiscossione: 9/SEGRETERIA
+        modello: PSP             

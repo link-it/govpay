@@ -362,6 +362,7 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
     return this;
   }
 
+  @JsonIgnore
   public VersioneApiEnum getVersioneApiEnum() {
     return versioneApiEnum;
   }

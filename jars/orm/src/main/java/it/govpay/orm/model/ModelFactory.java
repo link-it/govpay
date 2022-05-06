@@ -123,5 +123,7 @@ public class ModelFactory {
 	
 	public static VistaVersamentoNonRendicontatoModel VISTA_VERSAMENTO_NON_RENDICONTATO = new VistaVersamentoNonRendicontatoModel();
 	
+	public static AllegatoModel ALLEGATO = new AllegatoModel();
+	
 
 }

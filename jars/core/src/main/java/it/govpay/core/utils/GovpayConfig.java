@@ -78,6 +78,7 @@ public class GovpayConfig {
 	private int dimensionePoolThreadCaricamentoTracciati;
 	private int dimensionePoolThreadCaricamentoTracciatiStampaAvvisi;
 	private int dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
+	private int dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli;
 	private String ksLocation, ksPassword, ksAlias;
 	private String mLogClass, mLogDS;
 	private Severity mLogLevel;
@@ -151,6 +152,8 @@ public class GovpayConfig {
 	private Integer numeroMassimoConnessioniPerPool;
 	private Integer numeroMassimoConnessioniPerRouteDefault;
 	
+	private Integer numeroMassimoGiorniRPTPendenti;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -160,6 +163,7 @@ public class GovpayConfig {
 		this.dimensionePoolThreadCaricamentoTracciatiStampaAvvisi = 10;
 		this.dimensionePoolThreadRPT = 10;
 		this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
+		this.dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli = 10;
 		this.log4j2Config = null;
 		this.ksAlias = null;
 		this.ksLocation = null;
@@ -224,6 +228,8 @@ public class GovpayConfig {
 		this.numeroMassimoConnessioniPerPool = 200;
 		
 		this.aggiornamentoValiditaMandatorio = false;
+		
+		this.numeroMassimoGiorniRPTPendenti = 30;
 		
 		try {
 
@@ -370,6 +376,20 @@ public class GovpayConfig {
 			} catch (Exception e) {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
 				this.dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti = 10;
+			}
+			
+			try {
+				String dimensionePoolProperty = getProperty("it.govpay.thread.pool.spedizioneNotificaPagamentoMaggioliJPPA", this.props, false, log);
+				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
+					try {
+						this.dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli = Integer.parseInt(dimensionePoolProperty.trim());
+					} catch (Exception e) {
+						throw new Exception("Valore della property \"it.govpay.thread.pool.spedizioneNotificaPagamentoMaggioliJPPA\" non e' un numero intero");
+					}
+				}
+			} catch (Exception e) {
+				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
+				this.dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli = 10;
 			}
 
 
@@ -710,6 +730,15 @@ public class GovpayConfig {
 				this.timeoutInvioRPTModello3Millis = 100;
 			}
 			
+			
+			String numeroMassimoGiorniRPTPendentiString = getProperty("it.govpay.batch.recuperoRptPendenti.limiteTemporaleRecupero", this.props, false, log);
+			try{
+				this.numeroMassimoGiorniRPTPendenti = Integer.parseInt(numeroMassimoGiorniRPTPendentiString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.batch.recuperoRptPendenti.limiteTemporaleRecupero\" impostata con valore di default 30");
+				this.numeroMassimoGiorniRPTPendenti = 30;
+			}
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -850,6 +879,10 @@ public class GovpayConfig {
 	
 	public int getDimensionePoolThreadSpedizioneTracciatiNotificaPagamenti() {
 		return dimensionePoolThreadSpedizioneTracciatiNotificaPagamenti;
+	}
+	
+	public int getDimensionePoolThreadSpedizioneNotificaPagamentoMaggioli() {
+		return dimensionePoolThreadSpedizioneNotificaPagamentoMaggioli;
 	}
 
 	public String getKsLocation() {
@@ -1090,5 +1123,9 @@ public class GovpayConfig {
 	
 	public Integer getTimeoutInvioRPTModello3Millis() {
 		return timeoutInvioRPTModello3Millis;
+	}
+	
+	public Integer getNumeroMassimoGiorniRPTPendenti() {
+		return numeroMassimoGiorniRPTPendenti;
 	}
 }

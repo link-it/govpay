@@ -18,5 +18,6 @@
    "voci": "#[]",
    "rpp":"#ignore",
    "pagamenti":"#ignore",
-   "UUID":"#string"
+   "UUID":"#string",
+   "allegati": "##[]"
 }

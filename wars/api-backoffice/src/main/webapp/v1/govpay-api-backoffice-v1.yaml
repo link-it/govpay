@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.27.0"
+  version: "1.29.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -2961,11 +2961,6 @@ paths:
           required: true
           schema:
             type: string
-        - in: query
-          name: visualizzaSoggettoDebitore
-          description: Indica se inserire il soggetto debitore nel pdf della ricevuta
-          schema:
-            type: boolean
       responses:
         '200':
           description: Ricevuta di pagamento
@@ -3071,6 +3066,37 @@ paths:
           description: Avviso di pagamento
           content:
             application/pdf:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+  '/allegati/{id}':
+    get:
+      summary: Allegato di una pendenza
+      operationId: getAllegatoPendenza
+      description:      Fornisce l'allegato di una pendenza
+      tags:
+        - Pendenze
+      parameters:
+        - in: path
+          name: id
+          description: Identificativo dell'allegato
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Contenuto dell'allegato
+          content:
+            '*/*':
               schema:
                 type: string
                 format: binary
@@ -4965,6 +4991,7 @@ components:
         - apiPagoPA
         - apiPendenze
         - apiBackendIO
+        - apiMaggioliJPPA
       properties:
         apiEnte:
           $ref: '#/components/schemas/gdeInterfaccia'
@@ -4979,6 +5006,8 @@ components:
         apiPendenze:
           $ref: '#/components/schemas/gdeInterfaccia'
         apiBackendIO:
+          $ref: '#/components/schemas/gdeInterfaccia'
+        apiMaggioliJPPA:
           $ref: '#/components/schemas/gdeInterfaccia'
     gdeInterfaccia:
       type: object
@@ -5299,6 +5328,8 @@ components:
           $ref: '#/components/schemas/connettoreNotificaPagamentiGovPay'
         servizioHyperSicAPKappa:
           $ref: '#/components/schemas/connettoreNotificaPagamentiHyperSicAPKappa'
+        servizioMaggioliJPPA:
+          $ref: '#/components/schemas/connettoreNotificaPagamentiMaggioliJPPA'  
         intermediato:
           type: boolean
           description: Indica se il creditore viene configurato per utilizzare una  stazione di intermediazione
@@ -6249,11 +6280,7 @@ components:
           example: 'Pagamento Eseguito Correttamente'
           description: Descrizione estesa dello stato del pagamento
         modello:
-          type: string
-          description: Modello di pagamento
-          enum:
-            - Pagamento ad iniziativa Ente
-            - Pagamento ad iniziativa PSP
+          $ref: '#/components/schemas/ModelloPagamento'
         pspRedirectUrl:
           type: string
           example: 'https://www.psp.it/payment?sessionId=7f905970-cfe9-4ee5-a9a7-81fe14e7437e'
@@ -6343,11 +6370,7 @@ components:
           description: >-
             Importo del pagamento. Corrisponde alla somma degli importi delle pendenze al momento della richiesta
         modello:
-          type: string
-          description: Modello di pagamento
-          enum:
-            - Pagamento ad iniziativa Ente
-            - Pagamento ad iniziativa PSP
+          $ref: '#/components/schemas/ModelloPagamento'
         stato:
           $ref: '#/components/schemas/statoPagamento'
         descrizioneStato:
@@ -6600,6 +6623,10 @@ components:
               maxItems: 5
               items:
                 $ref: '#/components/schemas/NuovaVocePendenza'
+            allegati:
+              type: array
+              items:
+                $ref: '#/components/schemas/NuovoAllegatoPendenza'
     pendenzaPost:
       allOf:
         - type: object
@@ -6783,6 +6810,10 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/pagamento'
+            allegati:
+              type: array
+              items:
+                $ref: '#/components/schemas/AllegatoPendenza'
     vocePendenzaBase:
       type: object
       required:
@@ -7084,6 +7115,8 @@ components:
           description: "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica"
         pendenza:
           $ref: '#/components/schemas/pendenzaIndex'
+        modello:
+          $ref: '#/components/schemas/ModelloPagamento'
     rpp:
       type: object
       required:
@@ -7115,6 +7148,8 @@ components:
           description: "Rt inviata da PagoPa. {http://www.digitpa.gov.it/schemas/2011/Pagamenti/} ctRicevutaTelematica"
         pendenza:
           $ref: '#/components/schemas/pendenzaIndex'
+        modello:
+          $ref: '#/components/schemas/ModelloPagamento'
     riscossioneIndex:
       type: object
       required:
@@ -8026,6 +8061,68 @@ components:
         - SINTESI_FLUSSI_RENDICONTAZIONE
         - RPP
         - FLUSSI_RENDICONTAZIONE
+    connettoreNotificaPagamentiMaggioliJPPA:
+      type: object
+      required:
+        - abilitato
+        - tipoConnettore
+        - principal
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se il connettore e' abilitato
+          example: true
+        tipoConnettore:
+          type: string
+          enum:
+            - 'EMAIL'
+        versione:
+          type: string
+          example: '1.0'
+          description: Versione del servizio.
+        principal:
+          type: string
+          description: principal autenticato dalla chiamata di Maggioli
+        emailIndirizzi:
+          type: array
+          items:
+            type: string
+          description: Indirizzi Email al quale verra' spedito il tracciato
+        emailSubject:
+          type: string
+          description: Subject da inserire nella mail
+        emailAllegato:
+          type: boolean
+          description: Indica se inviare il tracciato come allegato all'email oppure se inserire nel messaggio il link al download
+        downloadBaseUrl:
+          type: string
+          description: URL base del link dove scaricare il tracciato
+        tipiPendenza:
+          type: array
+          description: tipi pendenza da includere nel tracciato
+          items:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/tipoPendenzaProfiloIndex'
+              - type: string
+                description: identificativo tipo pendenza
+                example:
+                  SEGRETERIA
+        url:
+          type: string
+          description: URL Base del servizio rest di ricezione dei dati
+        versioneApi:
+          type: string
+          enum:
+            - 'SOAP v1'
+          description: Versione delle API di integrazione utilizzate.
+        auth:
+          $ref: '#/components/schemas/tipoAutenticazione'
+        contenuti:
+          type: array
+          description: Lista dei contenuti da inviare al servizio REST
+          items:
+            $ref: '#/components/schemas/contenutoNotificaPagamentiGovpay'
     soggetto:
       description: dati anagrafici di un versante o pagatore.
       type: object
@@ -8445,6 +8542,10 @@ components:
         - API_BACKEND_IO
         - API_SECIM
         - API_MYPIVOT
+        - API_MAGGIOLI_JPPA
+        - API_GOVPAY
+        - API_HYPERSIC_APK
+        - API_USER
       example: 'API_PAGOPA'
     categoriaEvento:
       type: string
@@ -9217,6 +9318,31 @@ components:
           type: string
           description: Identificativo della divisione interna all'ente creditore
           example: Divisione001
+    AllegatoPendenza:
+      type: object
+      required: 
+        - nome
+        - contenuto
+      properties:
+        nome:
+          type: string
+          description: nome del file
+          minLength: 1
+          maxLength: 255
+        tipo:
+          type: string
+          description: mime type del file
+          default: "application/octet-stream"
+          minLength: 1
+          maxLength: 255
+        descrizione:
+          type: string
+          description: descrizione del file
+          minLength: 1
+          maxLength: 255
+        contenuto: 
+          type: string
+          description: path per accedere al file, nella forma /allegati/{id}
     LinguaSecondaria:
       example: 'false'
       type: string
@@ -9226,6 +9352,39 @@ components:
         - 'en'
         - 'fr'
         - 'sl'
+    ModelloPagamento:
+      type: string
+      description: Modello di pagamento
+      example: 'Pagamento ad iniziativa PSP'
+      enum:
+        - 'Pagamento ad iniziativa Ente'
+        - 'Pagamento ad iniziativa PSP'
+    NuovoAllegatoPendenza:
+      type: object
+      required: 
+        - nome
+        - contenuto
+      properties:
+        nome:
+          type: string
+          description: nome del file
+          minLength: 1
+          maxLength: 255
+        tipo:
+          type: string
+          description: mime type del file
+          default: "application/octet-stream"
+          minLength: 1
+          maxLength: 255
+        descrizione:
+          type: string
+          description: descrizione del file
+          minLength: 1
+          maxLength: 255
+        contenuto: 
+          type: string
+          format: byte
+          description: contenuto del file
     Pagina:
       type: integer
       default: 1

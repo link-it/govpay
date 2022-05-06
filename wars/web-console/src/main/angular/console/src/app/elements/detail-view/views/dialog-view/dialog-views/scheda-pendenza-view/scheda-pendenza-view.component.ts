@@ -1,20 +1,21 @@
-import { AfterContentChecked, Component, ComponentFactoryResolver, ComponentRef, Input, OnInit, Type, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterContentChecked, Component, ComponentFactoryResolver, ComponentRef, Input, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UtilService } from '../../../../../../services/util.service';
 import { IFormComponent } from '../../../../../../classes/interfaces/IFormComponent';
-import { IModalDialog } from "../../../../../../classes/interfaces/IModalDialog";
+import { IModalDialog } from '../../../../../../classes/interfaces/IModalDialog';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ModalBehavior } from '../../../../../../classes/modal-behavior';
 import { GovpayService } from '../../../../../../services/govpay.service';
 import { GeneratorsEntryPointList } from '../../../../../../classes/generators-entry-point-list';
 import { Voce } from '../../../../../../services/voce.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'link-scheda-pendenza-view',
   templateUrl: './scheda-pendenza-view.component.html',
   styleUrls: ['./scheda-pendenza-view.component.scss']
 })
-export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent, OnInit, AfterContentChecked {
+export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent, OnInit, AfterContentChecked, OnDestroy {
   @ViewChild('jsContainer', {read: ViewContainerRef}) _jsContainer: ViewContainerRef;
 
   @Input() fGroup: FormGroup;
@@ -38,6 +39,8 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
   protected jsonLayout;
   protected jsonData;
 
+  _submitSurveySubscription: Subscription;
+
   constructor(public gps: GovpayService, public us:UtilService, private cFR: ComponentFactoryResolver) {
   }
 
@@ -52,6 +55,12 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
   }
 
   ngAfterContentChecked() {
+  }
+
+  ngOnDestroy() {
+    if (this._submitSurveySubscription) {
+      this._submitSurveySubscription.unsubscribe();
+    }
   }
 
   protected _checkChange(event) {
@@ -146,13 +155,22 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
         this._componentRefType = event.value.portaleBackoffice.form.tipo || '';
       }
     }
-    if(_jsonDecoded.schema) {
-      this.jsonSchema = _jsonDecoded.schema;
-      if(_jsonDecoded.layout) {
-        this.jsonLayout = _jsonDecoded.layout;
-      }
-      this._createJsForm();
-      this._showAutomaticForm = true;
+    switch (this._componentRefType) {
+      case UtilService.A2_JSON_SCHEMA_FORM:
+        if (_jsonDecoded.schema) {
+          this.jsonSchema = _jsonDecoded.schema;
+          if (_jsonDecoded.layout) {
+            this.jsonLayout = _jsonDecoded.layout;
+          }
+          this._createJsForm();
+          this._showAutomaticForm = true;
+        }
+        break;
+      case UtilService.SURVEYJS_FORM:
+        this.jsonSchema = _jsonDecoded;
+        this._createJsForm();
+        this._showAutomaticForm = true;
+        break;
     }
   }
 
@@ -216,18 +234,30 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
   protected _mapByComponentType(cType: Type<any>) {
     const componentFact = this.cFR.resolveComponentFactory(cType);
     this._componentRef = this._jsContainer.createComponent(componentFact);
-    if(this._componentRefType === UtilService.A2_JSON_SCHEMA_FORM) {
-      this._componentRef.instance.schema = this.jsonSchema;
-      this._componentRef.instance.layout = this.jsonLayout;
-      // this._componentRef.instance.data = this.jsonData; // DEBUG ONLY
-      this._componentRef.instance.options = this._formOptions;
-      this._componentRef.instance.framework = 'material-design';
-      this._componentRef.instance.isValid.subscribe((data: any) => {
-        // console.log(data);
-        this.validFn(data);
-      });
-    } else {
-      this.us.alert('Auto generatore non definito.');
+    switch (this._componentRefType) {
+      case UtilService.A2_JSON_SCHEMA_FORM:
+        UtilService.dialogBlueFatActionBehavior.next(true);
+        this._componentRef.instance.schema = this.jsonSchema;
+        this._componentRef.instance.layout = this.jsonLayout;
+        // this._componentRef.instance.data = this.jsonData; // DEBUG ONLY
+        this._componentRef.instance.options = this._formOptions;
+        this._componentRef.instance.framework = 'material-design';
+        this._componentRef.instance.isValid.subscribe((data: any) => {
+          this.validFn(data);
+        });
+        break;
+      case UtilService.SURVEYJS_FORM:
+        UtilService.dialogBlueFatActionBehavior.next(false);
+        // <survey [lang]="_surveyLang" [json]="..." [data]="..." [edit]="..." [theme]="..." (submitSurvey)="_onSubmitSurvey($event)"></survey>
+        this._componentRef.instance.json = this.jsonSchema;
+        this._componentRef.instance.theme = 'bootstrapmaterial';
+        this._submitSurveySubscription = this._componentRef.instance.submitSurvey.subscribe((data: any) => {
+          UtilService.dialogBlueCloseBehavior.next(data);
+        });
+        break;
+      default:
+        this.us.alert('Auto generatore non definito.');
+        break;
     }
   }
 
@@ -237,6 +267,7 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
    * @param {ModalBehavior} mb
    */
   save(responseService: BehaviorSubject<any>, mb: ModalBehavior) {
+    console.log('save pendenza', responseService, mb);
     const body = JSON.parse(JSON.stringify(mb.info.viewModel));
     const _url = UtilService.URL_PENDENZE + '/' + UtilService.EncodeURIComponent(body.idDominio) + '/' + UtilService.EncodeURIComponent(body.idTipoPendenza);
     const _query = mb.info.viewModel.idUnitaOperativa?'idUnitaOperativa=' + mb.info.viewModel.idUnitaOperativa:null;
@@ -244,14 +275,22 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
     delete body.idTipoPendenza;
     delete body.idUnitaOperativa;
     this.gps.saveData(_url, body, _query, UtilService.METHODS.POST).subscribe(
-    () => {
-      this.gps.updateSpinner(false);
-      responseService.next(true);
-    },
-    (error) => {
-      this.gps.updateSpinner(false);
-      this.us.onError(error);
-    });
+      () => {
+        this.gps.updateSpinner(false);
+        responseService.next(true);
+      },
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+        responseService.next(null);
+        // console.log('error resetSurvey', this._componentRefType);
+      }
+    );
+    // this.gps.updateSpinner(true);
+    // setTimeout(() => {
+    //     this.gps.updateSpinner(false);
+    //     responseService.next(true);
+    // }, 2000);
   }
 
   refresh(mb: ModalBehavior) {}
@@ -263,11 +302,19 @@ export class SchedaPendenzaViewComponent implements IModalDialog, IFormComponent
   mapToJson(): any {
     let _json: any = {};
 
-    if(this._componentRefType === UtilService.A2_JSON_SCHEMA_FORM) {
-      _json = this._componentRef.instance.jsf.data;
-      _json.idDominio = this.fGroup.controls['domini_ctrl'].value.idDominio;
-      _json.idTipoPendenza = this.fGroup.controls['tipiPendenzaDominio_ctrl'].value.idTipoPendenza;
-      _json.idUnitaOperativa = this.fGroup.controls['unitaOperative_ctrl'].value.idUnita;
+    switch (this._componentRefType) {
+      case UtilService.A2_JSON_SCHEMA_FORM:
+        _json = this._componentRef.instance.jsf.data;
+        _json.idDominio = this.fGroup.controls['domini_ctrl'].value.idDominio;
+        _json.idTipoPendenza = this.fGroup.controls['tipiPendenzaDominio_ctrl'].value.idTipoPendenza;
+        _json.idUnitaOperativa = this.fGroup.controls['unitaOperative_ctrl'].value.idUnita;
+        break;
+      case UtilService.SURVEYJS_FORM:
+        _json = this._componentRef.instance.surveyModel.data;
+        _json.idDominio = this.fGroup.controls['domini_ctrl'].value.idDominio;
+        _json.idTipoPendenza = this.fGroup.controls['tipiPendenzaDominio_ctrl'].value.idTipoPendenza;
+        _json.idUnitaOperativa = this.fGroup.controls['unitaOperative_ctrl'].value.idUnita;
+        break;
     }
 
     return _json;

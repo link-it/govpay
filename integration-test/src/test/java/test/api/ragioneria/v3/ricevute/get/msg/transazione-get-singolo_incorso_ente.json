@@ -6,8 +6,10 @@
 	"iuv" : "#notnull",
 	"idRicevuta" : "#notnull",
 	"importo":"#? isImportoConDueDecimali(_)",
-   	"stato":"#notnull",
+   	"esito":"#notnull",
 	"versante" : "#notnull",
+	"idPagamento" : "#string",
+	"idSessionePsp" : "##string",
 	"pendenza": {
 		"idA2A":"#string",
 		"idPendenza":"#string",
@@ -26,7 +28,8 @@
 		"direzione":"##string",
 		"divisione":"##string",
 		"UUID":"#string",
-		"soggettoPagatore":"#notnull"
+		"soggettoPagatore":"#notnull",
+		"voci":"#[]"
 	},
 	"rpt" : {
 		"tipo": "#notnull",
@@ -108,6 +111,7 @@
 				]
 			}
 		}
-	}
+	},
+   	"modello" : "#notnull"
 }
 

@@ -17,6 +17,7 @@ import it.govpay.core.beans.JSONSerializable;
 "rpt",
 "rt",
 "pendenza",
+"modello",
 })
 public class RppIndex extends JSONSerializable {
   
@@ -42,6 +43,9 @@ public class RppIndex extends JSONSerializable {
   
   @JsonProperty("pendenza")
   private PendenzaIndex pendenza = null;
+  
+  @JsonProperty("modello")
+  private ModelloPagamento modello = null;
   
   /**
    * Stato della richiesta di pagamento sulla piattaforma PagoPA.
@@ -155,6 +159,21 @@ public class RppIndex extends JSONSerializable {
     this.pendenza = pendenza;
   }
 
+  /**
+   **/
+  public RppIndex modello(ModelloPagamento modello) {
+    this.modello = modello;
+    return this;
+  }
+
+  @JsonProperty("modello")
+  public ModelloPagamento getModello() {
+    return modello;
+  }
+  public void setModello(ModelloPagamento modello) {
+    this.modello = modello;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -167,15 +186,16 @@ public class RppIndex extends JSONSerializable {
     return Objects.equals(this.stato, rppIndex.stato) &&
         Objects.equals(this.dettaglioStato, rppIndex.dettaglioStato) &&
         Objects.equals(bloccante, rppIndex.bloccante) &&
-        Objects.equals(this.segnalazioni, rppIndex.segnalazioni) &&
-        Objects.equals(this.rpt, rppIndex.rpt) &&
-        Objects.equals(this.rt, rppIndex.rt) &&
-        Objects.equals(this.pendenza, rppIndex.pendenza);
+        Objects.equals(segnalazioni, rppIndex.segnalazioni) &&
+        Objects.equals(rpt, rppIndex.rpt) &&
+        Objects.equals(rt, rppIndex.rt) &&
+        Objects.equals(pendenza, rppIndex.pendenza) &&
+        Objects.equals(modello, rppIndex.modello);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.stato, this.dettaglioStato, this.bloccante, this.segnalazioni, this.rpt, this.rt, this.pendenza);
+    return Objects.hash(this.stato, this.dettaglioStato, this.bloccante, this.segnalazioni, this.rpt, this.rt, this.pendenza, modello);
   }
 
   public static RppIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -195,10 +215,11 @@ public class RppIndex extends JSONSerializable {
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
     sb.append("    dettaglioStato: ").append(this.toIndentedString(this.dettaglioStato)).append("\n");
     sb.append("    bloccante: ").append(toIndentedString(bloccante)).append("\n");
-    sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");
-    sb.append("    rpt: ").append(this.toIndentedString(this.rpt)).append("\n");
-    sb.append("    rt: ").append(this.toIndentedString(this.rt)).append("\n");
-    sb.append("    pendenza: ").append(this.toIndentedString(this.pendenza)).append("\n");
+    sb.append("    segnalazioni: ").append(toIndentedString(segnalazioni)).append("\n");
+    sb.append("    rpt: ").append(toIndentedString(rpt)).append("\n");
+    sb.append("    rt: ").append(toIndentedString(rt)).append("\n");
+    sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
+    sb.append("    modello: ").append(toIndentedString(modello)).append("\n");
     sb.append("}");
     return sb.toString();
   }

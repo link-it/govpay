@@ -52,6 +52,7 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.TipiVersamentoBD;
 import it.govpay.bd.anagrafica.TipiVersamentoDominiBD;
+import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
@@ -64,6 +65,7 @@ import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Iuv;
+import it.govpay.core.dao.commons.Versamento.AllegatoPendenza;
 import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
@@ -677,10 +679,33 @@ public class VersamentoUtils {
 		model.setAvvMailDataPromemoriaScadenza(versamento.getDataPromemoriaScadenza());
 		
 		model.setProprietaPendenza(versamento.getProprieta()); 
+		
+		model.setAllegati(toAllegatiModel(versamento.getAllegati()));
 
 		return model;
 	}
 
+	private static List<Allegato> toAllegatiModel(List<AllegatoPendenza> allegati) {
+		List<Allegato> allegatiModel = null;
+		
+		if(allegati != null && allegati.size() > 0) {
+			allegatiModel = new ArrayList<>();
+			
+			for (AllegatoPendenza allegato : allegati) {
+				Allegato allegatoModel = new Allegato();
+				
+				allegatoModel.setNome(allegato.getNome());
+				allegatoModel.setTipo(allegato.getTipo());
+				allegatoModel.setDescrizione(allegato.getDescrizione());
+				allegatoModel.setRawContenuto(allegato.getContenuto());
+				allegatoModel.setDataCreazione(new Date());
+				
+				allegatiModel.add(allegatoModel);
+			}
+		}
+		
+		return allegatiModel;
+	}
 
 	public static SingoloVersamento toSingoloVersamentoModel(Versamento versamento, it.govpay.core.dao.commons.Versamento.SingoloVersamento singoloVersamento, int index, BDConfigWrapper configWrapper) throws ServiceException, GovPayException, ValidationException {
 		SingoloVersamento model = new SingoloVersamento();

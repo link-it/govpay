@@ -181,3 +181,13 @@ Scenario:
 	}
 	"""
 	
+	* def getDateTimeRispostaMaggioli =
+		"""
+		function(pattern) {
+		  var SimpleDateFormat = Java.type('java.text.SimpleDateFormat');
+		  var sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		  var date = new java.util.Date();
+		  return sdf.format(date);
+		} 
+		"""	
+	

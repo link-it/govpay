@@ -1,3 +1,4 @@
+
 -- Censimento dell'utenza amministratore
 
 INSERT INTO utenze (principal,principal_originale,autorizzazione_domini_star,autorizzazione_tipi_vers_star,ruoli,password) VALUES ('gpadmin','gpadmin',TRUE, TRUE, 'Amministratore','$1$jil82b4n$GRX4A2H91f7L7dJ3kL2Vc.');

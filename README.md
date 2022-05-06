@@ -58,14 +58,14 @@ quale si rimanda per una descrizione piu' estesa.
 * Alimentazione APA via CSV: possibilità di alimentare l'archivio dei pagamenti in attesa tramite tracciati CSV dalla struttura configurabile
 * Servizio di notifica email: oltre alla possibilità di notificare gli avvisi di pagamento via email, la piattaforma consente di configurare la notifica delle ricevute di pagamento e dei promemoria di scadenza
 * Pagamenti spontanei: supporto alla gestione di pagamenti spontanei
-* Integrazione nativa ad applicativi terzi, come MyPIVOT, SECIM ed altri
+* Integrazione nativa ad applicativi terzi, come Maggioli, APKappa, SECIM ed altri
 
 ## Licenza
 
 GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
 http://www.gov4j.it/govpay
 
-Copyright (c) 2014-2020 Link.it srl (http://www.link.it).
+Copyright (c) 2014-2022 Link.it srl (http://www.link.it).
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

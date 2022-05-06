@@ -30,9 +30,9 @@ public class ProprietaPendenza   {
   **/
   private String lineaTestoRicevuta2 = null;
   
-  @Schema(description = "causale della pendenza nella lingua secondaria da inserire nell'avviso                  ")
+  @Schema(description = "causale della pendenza nella lingua secondaria da inserire nell'avviso")
  /**
-   * causale della pendenza nella lingua secondaria da inserire nell'avviso                    
+   * causale della pendenza nella lingua secondaria da inserire nell'avviso  
   **/
   private String linguaSecondariaCausale = null;
  /**
@@ -113,7 +113,7 @@ public class ProprietaPendenza   {
   }
 
  /**
-   * causale della pendenza nella lingua secondaria da inserire nell&#x27;avviso                  
+   * causale della pendenza nella lingua secondaria da inserire nell&#x27;avviso
    * @return linguaSecondariaCausale
   **/
   @JsonProperty("linguaSecondariaCausale")
