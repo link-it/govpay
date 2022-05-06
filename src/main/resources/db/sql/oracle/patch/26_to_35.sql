@@ -8,16 +8,16 @@ DROP TABLE tracciati;
 DROP TABLE eventi;
 
 -- Rimozione delle FK delle tabelle da modificare
-ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
-ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_applicazione;
+-- ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_uo;
+-- ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_applicazione;
 
-ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
+-- ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_accredito;
 ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_iban_appoggio;
-ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_tributo;
-ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_versamento;
+-- ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_tributo;
+-- ALTER TABLE singoli_versamenti DROP CONSTRAINT fk_sng_id_versamento;
 
-ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_versamento;
-ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_portale;
+-- ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_versamento;
+-- ALTER TABLE rpt DROP CONSTRAINT fk_rpt_id_portale;
 
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_incasso;
 ALTER TABLE pagamenti DROP CONSTRAINT fk_pag_id_rpt;
@@ -212,6 +212,9 @@ UPDATE acl SET servizio = 'Pagamenti e Pendenze' WHERE servizio = 'O';
 -- V -> Pendenze
 UPDATE acl SET servizio = 'Pagamenti e Pendenze' WHERE servizio = 'V';
 
+-- C non utilizzate in 3.x
+DELETE FROM acl WHERE servizio = 'C';
+
 -- copio autorizzazzioni su id_dominio nella tabella utenze_domini
 INSERT INTO utenze_domini (id_utenza, id_dominio) SELECT id_utenza,id_dominio FROM acl WHERE id_dominio IS NOT NULL and cod_tipo = 'D';
 DELETE FROM acl WHERE id_dominio IS NOT NULL and cod_tipo = 'D';
@@ -332,19 +335,23 @@ ALTER TABLE versamenti ADD nome VARCHAR(35);
 ALTER TABLE versamenti ADD tassonomia_avviso VARCHAR(35);
 ALTER TABLE versamenti ADD tassonomia VARCHAR(35);
 ALTER TABLE versamenti ADD id_dominio NUMBER;
-UPDATE versamenti SET id_dominio = (SELECT id_dominio FROM uo WHERE id = versamenti.id_uo);
+-- 230 secondi
+UPDATE versamenti SET id_dominio = (SELECT id_dominio FROM uo WHERE id = versamenti.id_uo) WHERE EXISTS (SELECT 1 FROM uo WHERE id = versamenti.id_uo);
 ALTER TABLE versamenti MODIFY (id_dominio NOT NULL);
 ALTER TABLE versamenti MODIFY (id_uo NULL);
-ALTER TABLE versamenti ADD CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
+-- ALTER TABLE versamenti ADD CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
 ALTER TABLE versamenti ADD debitore_tipo VARCHAR2(1 CHAR);
 
 -- Collegare versamenti rpt da portali a applicazioni
 ALTER TABLE rpt ADD id_applicazione NUMBER;
 
 -- Imposto id_applicazione in base al portale
-UPDATE rpt SET id_applicazione = (SELECT applicazioni.id FROM applicazioni, portali WHERE applicazioni.id_utenza = portali.id_utenza AND rpt.id_portale = portali.id);
+-- 620 secondi
+UPDATE rpt SET id_applicazione = (SELECT applicazioni.id FROM applicazioni, portali WHERE applicazioni.id_utenza = portali.id_utenza AND rpt.id_portale = portali.id)
+ WHERE EXISTS (SELECT 1 FROM applicazioni, portali WHERE applicazioni.id_utenza = portali.id_utenza AND rpt.id_portale = portali.id);
 
--- Le RPT che erano associate ai portali ora sono associate tutte ad un'applicazione posso cancellare i portali
+-- Le RPT che erano associate ai portali ora sono associate tutte ad un'applicazione posso cancellare i portali 
+-- 670 secondi
 ALTER TABLE rpt DROP COLUMN id_portale;
 
 -- Collegare versamenti pagati e rpt a pagamenti portale
@@ -352,19 +359,22 @@ ALTER TABLE rpt DROP COLUMN id_portale;
 ALTER TABLE pagamenti_portale ADD id_rpt_tmp NUMBER;
 
 -- inserisco i pagamenti di tipo 3 tutti in stato non eseguito, aggiorno lo stato in seguito
+-- 1180 secondi
 INSERT INTO pagamenti_portale (id_rpt_tmp, id_applicazione,cod_canale,data_richiesta,cod_psp,multi_beneficiario, nome, importo, versante_identificativo, id_sessione, stato, codice_stato, tipo) 
 	SELECT rpt.id, rpt.id_applicazione, rpt.cod_canale, rpt.data_msg_richiesta, rpt.cod_psp, rpt.cod_dominio, CONCAT('Pagamento Pendenza ', versamenti.cod_versamento_ente), versamenti.importo_totale, versamenti.debitore_identificativo,
 	regexp_replace(rawtohex(sys_guid()), '([A-F0-9]{8})([A-F0-9]{4})([A-F0-9]{4})([A-F0-9]{4})([A-F0-9]{12})', '\1\2\3\4\5'), 'NON_ESEGUITO', 'PAGAMENTO_NON_ESEGUITO', 3 
 	FROM rpt, versamenti WHERE rpt.id_versamento = versamenti.id AND rpt.cod_carrello IS NULL;
 
 -- inserisco i pagamenti di tipo 1 tutti in stato non eseguito, aggiorno lo stato in seguito
+-- 980 secondi
 INSERT INTO pagamenti_portale (id_rpt_tmp, id_applicazione,cod_canale,data_richiesta,cod_psp,multi_beneficiario, nome, importo, versante_identificativo, id_sessione, stato, codice_stato, tipo, id_sessione_portale) 
 	SELECT rpt.id, rpt.id_applicazione, rpt.cod_canale, rpt.data_msg_richiesta, rpt.cod_psp, rpt.cod_dominio, CONCAT('Pagamento Pendenza ', versamenti.cod_versamento_ente), versamenti.importo_totale, versamenti.debitore_identificativo,
 	rpt.cod_carrello, 'NON_ESEGUITO', 'PAGAMENTO_NON_ESEGUITO', 1, rpt.cod_sessione_portale 
 	FROM rpt, versamenti WHERE rpt.id_versamento = versamenti.id AND rpt.cod_carrello IS NOT NULL AND rpt.cod_carrello NOT IN (SELECT id_sessione FROM pagamenti_portale);
 	
 -- aggiorno i riferimenti ai pagamenti portale
-UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM rpt WHERE pagamenti_portale.id_rpt_tmp = rpt.id) WHERE EXISTS (SELECT 1 FROM rpt WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
+UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id) WHERE EXISTS (SELECT 1 FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
+
 -- elimino colonna id_rpt
 ALTER TABLE pagamenti_portale DROP COLUMN id_rpt_tmp;
 
