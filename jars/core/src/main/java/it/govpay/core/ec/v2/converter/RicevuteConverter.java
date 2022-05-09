@@ -1,6 +1,5 @@
 package it.govpay.core.ec.v2.converter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -20,13 +19,13 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.ec.v2.beans.EsitoRpp;
 import it.govpay.ec.v2.beans.ModelloPagamento;
 import it.govpay.ec.v2.beans.Ricevuta;
 import it.govpay.ec.v2.beans.RicevutaIstitutoAttestante;
 import it.govpay.ec.v2.beans.RicevutaRpt;
 import it.govpay.ec.v2.beans.RicevutaRt;
 import it.govpay.ec.v2.beans.RicevutaRt.TipoEnum;
-import it.govpay.ec.v2.beans.Riscossione;
 
 public class RicevuteConverter {
 
@@ -46,23 +45,17 @@ public class RicevuteConverter {
 		rsModel.setDominio(DominiConverter.toRsModelIndex(rpt.getDominio(configWrapper)));
 		rsModel.setIdRicevuta(rpt.getCcp());
 		rsModel.setIuv(rpt.getIuv());
-		if(rpt.getStato() != null)
-			rsModel.setStato(rpt.getStato().toString());
-
-		rsModel.setPendenza(PendenzeConverter.toRsModel(rpt.getVersamento()));
+		if(rpt.getEsitoPagamento() != null)
+			rsModel.setEsito(EsitoRpp.fromRptEsitoPagamento(rpt.getEsitoPagamento().name()));
 		
-//		if(rpt.getPagamenti() != null && rpt.getPagamenti().size() > 0) {
-		if(pagamenti != null && pagamenti.size() > 0) {
-			List<Riscossione> riscossioni = new ArrayList<>();
-			for (Pagamento pagamento : pagamenti) {
-				riscossioni.add(RiscossioniConverter.toRsModel(pagamento, versamento));				
-			}
-			rsModel.setRiscossioni(riscossioni);
-			
-			rsModel.setDataPagamento(pagamenti.get(0).getDataPagamento());
-		} else {
-			rsModel.setDataPagamento(rpt.getDataMsgRicevuta());
+		if(rpt.getPagamentoPortale(configWrapper) != null) {
+			rsModel.setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
+			rsModel.setIdSessionePsp(rpt.getPagamentoPortale(configWrapper).getIdSessionePsp());
 		}
+		
+		rsModel.setPendenza(PendenzePagateConverter.toRsModel(rpt));
+		
+		rsModel.setDataPagamento(rpt.getDataMsgRicevuta());
 		
 		RicevutaRpt ricevutaRpt = new RicevutaRpt();
 

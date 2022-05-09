@@ -1,6 +1,7 @@
 package it.govpay.ec.v2.beans;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 
 /**
@@ -18,10 +19,12 @@ public enum ModelloPagamento {
   }
 
   @Override
+  @JsonValue
   public String toString() {
     return String.valueOf(value);
   }
 
+  @JsonCreator
   public static ModelloPagamento fromValue(String text) {
     for (ModelloPagamento b : ModelloPagamento.values()) {
       if (String.valueOf(b.value).equals(text)) {

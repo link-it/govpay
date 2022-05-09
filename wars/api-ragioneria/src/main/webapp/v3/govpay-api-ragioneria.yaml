@@ -187,11 +187,11 @@ paths:
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/idRicevuta'
       responses:
         '200':
-          description: Lista dei flussi rendicontazione
+          description: Lista delle ricevute di pagamento
           content:
             application/json:
               schema:
-                $ref: 'govpay-api-schemas.yaml#/components/schemas/FlussiRendicontazione'
+                $ref: 'govpay-api-schemas.yaml#/components/schemas/Ricevute'
         '400':
           $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'                
         '401':

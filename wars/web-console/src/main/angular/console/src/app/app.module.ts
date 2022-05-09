@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { MediaMatcher } from "@angular/cdk/layout";
+import { MediaMatcher } from '@angular/cdk/layout';
 import { HttpClientModule } from '@angular/common/http';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -55,7 +55,7 @@ import { NotaViewComponent } from './elements/detail-view/views/dialog-view/dial
 import { TwoColsViewComponent } from './elements/item-view/views/two-cols-view/two-cols-view.component';
 import { IamLoginCardComponent } from './elements/login-card/iam-login-card.component';
 import { JsonSchemaFormModule, MaterialDesignFrameworkModule } from 'angular2-json-schema-form';
-import { GeneratorsEntryListComponents } from "./classes/generators-entry-point-list";
+import { GeneratorsEntryListComponents } from './classes/generators-entry-point-list';
 import { TipoPendenzaViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/tipo-pendenza-view/tipo-pendenza-view.component';
 import { FileSelectorViewComponent } from './elements/file-selector-view/file-selector-view.component';
 import { FabGroupComponent } from './elements/fab-group/fab-group.component';
@@ -69,6 +69,7 @@ import { AsyncAutocompleteSelectComponent } from './elements/async-autocomplete-
 import { ProfiloUtenteViewComponent } from './elements/detail-view/views/dialog-view/dialog-views/profilo-utente-view/profilo-utente-view.component';
 import { ScrollerContainerComponent } from './elements/list-view/scroller-container/scroller-container.component';
 import { SslConfigComponent } from './elements/detail-view/views/ssl-config/ssl-config.component';
+import { SurveyComponent } from './elements/survey/survey.component';
 
 @NgModule({
   declarations: [
@@ -109,7 +110,8 @@ import { SslConfigComponent } from './elements/detail-view/views/ssl-config/ssl-
     ProfiloUtenteViewComponent,
     ScrollerContainerComponent,
     IamLoginCardComponent,
-    SslConfigComponent
+    SslConfigComponent,
+    SurveyComponent
   ],
   imports: [
     BrowserModule,

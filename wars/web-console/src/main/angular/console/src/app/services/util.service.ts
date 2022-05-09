@@ -470,6 +470,7 @@ export class UtilService {
   public static CRONO_CODE: string = 'crono_code';
   public static KEY_VALUE: string = 'key_value';
   public static KEY_JSON: string = 'key_json';
+  public static ALLEGATO: string = 'allegato';
   //Dialog view ref
   public static AUTORIZZAZIONE_ENTE_UO: string = 'autorizazione_ente_uo';
   public static INTERMEDIARIO: string = 'intermediario';
@@ -509,6 +510,7 @@ export class UtilService {
   //Json schema generators
   public static GENERATORI: any[] = GovPayConfig.GENERATORI;
   public static A2_JSON_SCHEMA_FORM: string = GovPayConfig.MGK.ANGULAR2_JSON_SCHEMA_FORM;
+  public static SURVEYJS_FORM: string = GovPayConfig.MGK.SURVEYJS_FORM;
   //Material standard ref
   public static INPUT: string = 'input';
   public static FILTERABLE: string = 'filterable';
@@ -528,6 +530,8 @@ export class UtilService {
   public static headBehavior: BehaviorSubject<any> = new BehaviorSubject(null);
   public static exportBehavior: BehaviorSubject<string> = new BehaviorSubject(null);
   public static exportSubscription: Subscription;
+  public static dialogBlueFatActionBehavior: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  public static dialogBlueCloseBehavior: BehaviorSubject<any> = new BehaviorSubject(null);
 
   //Active detail state
   public static ActiveDetailState: ComponentRef<any>;
