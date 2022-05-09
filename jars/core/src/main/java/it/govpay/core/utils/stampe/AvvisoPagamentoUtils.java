@@ -257,7 +257,7 @@ public class AvvisoPagamentoUtils {
 			rata.setQrCode(new String(iuvGenerato.getQrCode()));
 		
 		// controllo se sono nel caso violazioneCDS allora devo impostare correttamente importo. numero avviso e qr
-		if(versamento.getGiorniSoglia() != null && versamento.getTipoSoglia() != null) {
+		if(versamento.getTipoSoglia() != null) {
 			if(versamento.getTipoSoglia().equals(TipoSogliaVersamento.RIDOTTO)
 					|| versamento.getTipoSoglia().equals(TipoSogliaVersamento.SCONTATO)) {
 				
