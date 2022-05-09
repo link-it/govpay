@@ -428,9 +428,11 @@ public class PendenzeConverter {
 		rsModel.setIdentificativo(documento.getCodDocumento());
 		if(versamento.getNumeroRata() != null)
 			rsModel.setRata(new BigDecimal(versamento.getNumeroRata()));
-		if(versamento.getTipoSoglia() != null && versamento.getGiorniSoglia() != null) {
+		if(versamento.getTipoSoglia() != null) {
 			VincoloPagamento soglia = new VincoloPagamento();
-			soglia.setGiorni(new BigDecimal(versamento.getGiorniSoglia()));
+			
+			if(versamento.getGiorniSoglia() != null)
+				soglia.setGiorni(new BigDecimal(versamento.getGiorniSoglia()));
 			
 			switch(versamento.getTipoSoglia()) {
 			case ENTRO:
@@ -633,7 +635,8 @@ public class PendenzeConverter {
 								+ pendenza.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
 				}
 				
-				documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
+				if(pendenza.getDocumento().getSoglia().getGiorni() != null)
+					documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
 				documento.setTipoSoglia(pendenza.getDocumento().getSoglia().getTipo());
 			}
 			documento.setDescrizione(pendenza.getDocumento().getDescrizione());

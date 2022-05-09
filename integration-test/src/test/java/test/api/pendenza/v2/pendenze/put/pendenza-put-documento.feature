@@ -54,6 +54,8 @@ Examples:
 | rata | null |
 | soglia | { tipo: "ENTRO", giorni: 5 } |
 | soglia | { tipo: "OLTRE", giorni: 5 } |
+| soglia | { tipo: "RIDOTTO" } |
+| soglia | { tipo: "SCONTATO" } |
 | soglia | null |
 
 Scenario Outline: <field> non valida
@@ -104,5 +106,28 @@ Examples:
 | documento.soglia | documento.soglia.giorni | null | 'giorni' |
 | documento.soglia | documento.soglia.giorni | 0 | 'giorni' |
 | documento.soglia | documento.soglia.giorni | 'xxx' | 'giorni' |
+
+
+Scenario Outline: <field> non valida
+
+* set pendenzaPut.documento = documento
+* set pendenzaPut.documento.soglia = soglia
+
+* set <fieldRequest> = <fieldValue>
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 400
+
+* match response contains { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida' }
+* match response.dettaglio contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| documento.soglia | documento.soglia.tipo | 'RIDOTTO' | 'giorni' |
+| documento.soglia | documento.soglia.tipo | 'SCONTATO' | 'giorni' |
 
 
