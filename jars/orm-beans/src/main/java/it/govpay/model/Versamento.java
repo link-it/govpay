@@ -105,7 +105,7 @@ public class Versamento extends BasicModel {
 	
 	public enum TipoSogliaVersamento { 
 		
-		ENTRO ("ENTRO"), OLTRE ("OLTRE"), CDSSC ("CDSSC"), CDSRI ("CDSRI");
+		ENTRO ("ENTRO"), OLTRE ("OLTRE"), SCONTATO ("SCONTATO"), RIDOTTO ("RIDOTTO");
 		
 		private String codifica;
 

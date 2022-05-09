@@ -22,10 +22,10 @@ public enum TipoSogliaVincoloPagamento {
   OLTRE("OLTRE"), 
   
   
-  CDSSC ("CDSSC"), 
+  SCONTATO ("SCONTATO"), 
   
   
-  CDSRI ("CDSRI");
+  RIDOTTO ("RIDOTTO");
   
   
   

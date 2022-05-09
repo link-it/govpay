@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.core.utils.validator.IValidable;
@@ -15,6 +16,7 @@ import it.govpay.ec.v1.beans.NuovoAllegatoPendenza;
 import it.govpay.ec.v1.beans.PendenzaVerificata;
 import it.govpay.ec.v1.beans.Soggetto;
 import it.govpay.ec.v1.beans.VocePendenza;
+import it.govpay.model.Versamento.TipoSogliaVersamento;
 
 public class PendenzaVerificataValidator  implements IValidable{
 
@@ -39,13 +41,13 @@ public class PendenzaVerificataValidator  implements IValidable{
 			validaIdTipoPendenza(this.pendenzaVerificata.getIdTipoPendenza());
 			validaNomePendenza(this.pendenzaVerificata.getNome());
 			validaCausale( this.pendenzaVerificata.getCausale());
-			
+
 			Soggetto soggetto = this.pendenzaVerificata.getSoggettoPagatore();
 			if(soggetto == null)
 				throw new ValidationException("Il campo soggettoPagatore non deve essere vuoto.");
-			
+
 			SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
-			
+
 			soggettoPagatoreValidator.validaTipo("tipo", soggetto.getTipo() != null ? soggetto.getTipo().toString() : null);
 			soggettoPagatoreValidator.validaIdentificativo("identificativo", soggetto.getIdentificativo());
 			soggettoPagatoreValidator.validaAnagrafica("anagrafica", soggetto.getAnagrafica());
@@ -57,7 +59,7 @@ public class PendenzaVerificataValidator  implements IValidable{
 			soggettoPagatoreValidator.validaNazione("nazione", soggetto.getNazione());
 			soggettoPagatoreValidator.validaEmail("email", soggetto.getEmail());
 			soggettoPagatoreValidator.validaCellulare("cellulare", soggetto.getCellulare());
-			
+
 			validaImporto(this.pendenzaVerificata.getImporto());
 			validaNumeroAvviso(this.pendenzaVerificata.getNumeroAvviso());
 			validaDataValidita(this.pendenzaVerificata.getDataValidita()); 
@@ -80,7 +82,7 @@ public class PendenzaVerificataValidator  implements IValidable{
 				vocePendenzaValidator.validate();
 				vocePendenzaValidator.validazioneSemanticaContabilita(vf, this.pendenzaVerificata.getIdA2A(), this.pendenzaVerificata.getIdPendenza());
 			}
-			
+
 			validaAllegati(this.pendenzaVerificata.getAllegati());
 		}
 	}
@@ -96,7 +98,7 @@ public class PendenzaVerificataValidator  implements IValidable{
 	public void validaIdUnitaOperativa(String idUnitaOperativa) throws ValidationException {
 		this.validatoreId.validaIdUO("idUnitaOperativa", idUnitaOperativa, false);
 	}
-	
+
 	public void validaIdTipoPendenza(String idTipoPendenza) throws ValidationException {
 		this.validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza, false);
 	}
@@ -136,7 +138,7 @@ public class PendenzaVerificataValidator  implements IValidable{
 	public void validaIdPendenza(String idPendenza) throws ValidationException {
 		this.validatoreId.validaIdPendenza("idPendenza", idPendenza);
 	}
-	
+
 	public void validaDocumento(Documento documento) throws ValidationException {
 		if(documento != null) {
 			this.validatoreId.validaIdDocumento("identificativo", documento.getIdentificativo());
@@ -144,21 +146,39 @@ public class PendenzaVerificataValidator  implements IValidable{
 			if(documento.getRata() != null) {
 				ValidatoreUtils.validaRata(vf, "rata", documento.getRata());
 			} else if(documento.getSoglia() != null) {
-				
-			  	ValidatoreUtils.validaSogliaGiorni(vf, "giorni", documento.getSoglia().getGiorni());
-			  	ValidatoreUtils.validaSogliaTipo(vf, "tipo", documento.getSoglia().getTipo());
-			  	
+				ValidatoreUtils.validaSogliaTipo(vf, "tipo", documento.getSoglia().getTipo());
+
+				try {
+					TipoSogliaVersamento tipoSoglia = TipoSogliaVersamento.toEnum(documento.getSoglia().getTipo());
+
+					switch(tipoSoglia) {
+					case ENTRO:
+					case OLTRE:
+						ValidatoreUtils.validaSogliaGiorni(vf, "giorni", documento.getSoglia().getGiorni());
+						break;
+					case RIDOTTO:
+					case SCONTATO:
+						try {
+						this.vf.getValidator("giorni", documento.getSoglia().getGiorni()).isNull();
+						} catch (Exception e) {
+							throw new ValidationException("Il campo giorni deve essere vuoto quando il campo tipo assume valore 'RIDOTTO' o 'SCONTATO'.");
+						}
+						break;
+					}
+				}catch (ServiceException e) {
+					throw new ValidationException(e);
+				}
 			}
 		}
 	}
-	
+
 	public void validaAllegati(List<NuovoAllegatoPendenza> allegati) throws ValidationException {
 		if(allegati != null && allegati.size() >0 ) {
 			for(NuovoAllegatoPendenza allegato: allegati) {
 				this.vf.getValidator("nome", allegato.getNome()).notNull().minLength(1).maxLength(255);
 				this.vf.getValidator("tipo", allegato.getTipo()).minLength(1).maxLength(255);
 				this.vf.getValidator("descrizione", allegato.getDescrizione()).minLength(1).maxLength(255);
-				
+
 				if(allegato.getContenuto() == null)
 					throw new ValidationException("Il campo " + "contenuto" + " non deve essere vuoto.");
 			}

@@ -82,8 +82,8 @@ public class AvvisoPagamentoUtils {
 		
 		for (Versamento versamento : versamenti) {
 			if(versamento.getTipoSoglia() != null && 
-					(versamento.getTipoSoglia().equals(TipoSogliaVersamento.CDSRI)
-					|| versamento.getTipoSoglia().equals(TipoSogliaVersamento.CDSSC))) {
+					(versamento.getTipoSoglia().equals(TipoSogliaVersamento.RIDOTTO)
+					|| versamento.getTipoSoglia().equals(TipoSogliaVersamento.SCONTATO))) {
 				numeroViolazioneCDS ++;
 			}
 		}
@@ -104,19 +104,19 @@ public class AvvisoPagamentoUtils {
 			if(input.getDiPoste() == null) { // pagina singola
 				RataAvviso rataScontato = null, rataRidotto = null ;
 				
-				if(rata1.getTipo().equals(TipoSogliaVersamento.CDSRI.toString().toLowerCase())) {
+				if(rata1.getTipo().equals(TipoSogliaVersamento.RIDOTTO.toString().toLowerCase())) {
 					rataRidotto = rata1;
 				}
 				
-				if(rata1.getTipo().equals(TipoSogliaVersamento.CDSSC.toString().toLowerCase())) {
+				if(rata1.getTipo().equals(TipoSogliaVersamento.SCONTATO.toString().toLowerCase())) {
 					rataScontato = rata1;
 				}
 				
-				if(rata2.getTipo().equals(TipoSogliaVersamento.CDSRI.toString().toLowerCase())) {
+				if(rata2.getTipo().equals(TipoSogliaVersamento.RIDOTTO.toString().toLowerCase())) {
 					rataRidotto = rata2;
 				}
 				
-				if(rata2.getTipo().equals(TipoSogliaVersamento.CDSSC.toString().toLowerCase())) {
+				if(rata2.getTipo().equals(TipoSogliaVersamento.SCONTATO.toString().toLowerCase())) {
 					rataScontato = rata2;
 				}
 				
@@ -189,9 +189,13 @@ public class AvvisoPagamentoUtils {
 		if(versamento.getNumeroRata() != null)
 			rata.setNumeroRata(BigInteger.valueOf(versamento.getNumeroRata()));
 
-		if(versamento.getGiorniSoglia() != null && versamento.getTipoSoglia() != null) {
-			rata.setGiorni(BigInteger.valueOf(versamento.getGiorniSoglia()));
+		
+		if(versamento.getTipoSoglia() != null) {
 			rata.setTipo(versamento.getTipoSoglia().toString().toLowerCase());
+		}
+		
+		if(versamento.getGiorniSoglia() != null) {
+			rata.setGiorni(BigInteger.valueOf(versamento.getGiorniSoglia()));
 		}
 
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
@@ -254,15 +258,15 @@ public class AvvisoPagamentoUtils {
 		
 		// controllo se sono nel caso violazioneCDS allora devo impostare correttamente importo. numero avviso e qr
 		if(versamento.getGiorniSoglia() != null && versamento.getTipoSoglia() != null) {
-			if(versamento.getTipoSoglia().equals(TipoSogliaVersamento.CDSRI)
-					|| versamento.getTipoSoglia().equals(TipoSogliaVersamento.CDSSC)) {
+			if(versamento.getTipoSoglia().equals(TipoSogliaVersamento.RIDOTTO)
+					|| versamento.getTipoSoglia().equals(TipoSogliaVersamento.SCONTATO)) {
 				
 				Properties labelsLingua = LabelAvvisiProperties.getInstance().getLabelsLingua(LabelAvvisiProperties.DEFAULT_PROPS);
 				
 				input.setScadenzaRidotto(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_VIOLAZIONE_CDS_SCADENZA_RIDOTTO));
 				input.setScadenzaScontato(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_VIOLAZIONE_CDS_SCADENZA_SCONTATO));
 				
-				if(versamento.getTipoSoglia().equals(TipoSogliaVersamento.CDSRI)) {
+				if(versamento.getTipoSoglia().equals(TipoSogliaVersamento.RIDOTTO)) {
 					if(versamento.getImportoTotale() != null)
 						rata.setImportoRidotto(versamento.getImportoTotale().doubleValue());
 					
@@ -272,7 +276,7 @@ public class AvvisoPagamentoUtils {
 					rata.setCodiceAvviso2(rata.getCodiceAvviso());
 				}
 				
-				if(versamento.getTipoSoglia().equals(TipoSogliaVersamento.CDSSC)) {
+				if(versamento.getTipoSoglia().equals(TipoSogliaVersamento.SCONTATO)) {
 					if(versamento.getImportoTotale() != null)
 						rata.setImportoScontato(versamento.getImportoTotale().doubleValue());
 				}

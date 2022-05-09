@@ -191,11 +191,11 @@ public class PendenzeConverter {
 			case OLTRE:
 				soglia.setTipo(TipoSogliaVincoloPagamento.OLTRE.toString());
 				break;
-			case CDSRI:
-				soglia.setTipo(TipoSogliaVincoloPagamento.CDSRI.toString());
+			case RIDOTTO:
+				soglia.setTipo(TipoSogliaVincoloPagamento.RIDOTTO.toString());
 				break;
-			case CDSSC:
-				soglia.setTipo(TipoSogliaVincoloPagamento.CDSSC.toString());
+			case SCONTATO:
+				soglia.setTipo(TipoSogliaVincoloPagamento.SCONTATO.toString());
 				break;
 			}
 			
@@ -393,7 +393,8 @@ public class PendenzeConverter {
 								+ pendenza.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
 				}
 				
-				documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
+				if(pendenza.getDocumento().getSoglia().getGiorni() != null)
+					documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
 				documento.setTipoSoglia(pendenza.getDocumento().getSoglia().getTipo());
 			}
 			

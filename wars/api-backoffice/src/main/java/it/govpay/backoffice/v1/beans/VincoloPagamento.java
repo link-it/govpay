@@ -13,6 +13,7 @@ import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreUtils;
+import it.govpay.model.Versamento.TipoSogliaVersamento;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "giorni",
 "tipo",
@@ -125,9 +126,29 @@ public class VincoloPagamento extends JSONSerializable implements IValidable{
   @Override
 	public void validate() throws ValidationException {
 	  	ValidatorFactory vf = ValidatorFactory.newInstance();
-
-	  	ValidatoreUtils.validaSogliaGiorni(vf, "giorni", this.giorni);
+	  	
 	  	ValidatoreUtils.validaSogliaTipo(vf, "tipo", this.tipo);
+
+		try {
+			TipoSogliaVersamento tipoSoglia = TipoSogliaVersamento.toEnum(this.tipo);
+
+			switch(tipoSoglia) {
+			case ENTRO:
+			case OLTRE:
+				ValidatoreUtils.validaSogliaGiorni(vf, "giorni", this.giorni);
+				break;
+			case RIDOTTO:
+			case SCONTATO:
+				try {
+				vf.getValidator("giorni", this.giorni).isNull();
+				} catch (Exception e) {
+					throw new ValidationException("Il campo giorni deve essere vuoto quando il campo tipo assume valore 'RIDOTTO' o 'SCONTATO'.");
+				}
+				break;
+			}
+		}catch (ServiceException e) {
+			throw new ValidationException(e);
+		}
 	}
 }
 
