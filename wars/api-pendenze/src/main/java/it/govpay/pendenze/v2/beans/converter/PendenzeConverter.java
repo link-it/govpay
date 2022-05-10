@@ -63,6 +63,7 @@ public class PendenzeConverter {
 			}
 
 		rsModel.setDataCaricamento(versamento.getDataCreazione());
+		rsModel.setDataPagamento(versamento.getDataPagamento());
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
 		rsModel.setDominio(DominiConverter.toRsModel(versamento.getDominio(configWrapper)));
@@ -209,6 +210,7 @@ public class PendenzeConverter {
 			}
 
 		rsModel.setDataCaricamento(versamento.getDataCreazione());
+		rsModel.setDataPagamento(versamento.getDataPagamento());
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
 		rsModel.setDominio(DominiConverter.toRsModel(versamento.getDominio(configWrapper)));
