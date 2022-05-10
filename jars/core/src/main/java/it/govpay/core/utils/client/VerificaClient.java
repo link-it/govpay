@@ -281,6 +281,7 @@ public class VerificaClient extends BasicClientCORE {
 					ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, logErrorMessage);
 					throw e;
 				} catch (ValidationException e) {
+					log.error(e.getMessage(),e);
 					ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
 					throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
 				} catch(ServiceException e) {
@@ -291,13 +292,14 @@ public class VerificaClient extends BasicClientCORE {
 			
 			it.govpay.ec.v2.beans.StatoPendenzaVerificata stato = pendenzaVerificata.getStato();
 			
-			if(stato == null)
+			if(stato == null) {
+				log.error("STATO non trovato");
 				throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "Stato pendenza non gestito: null");
-			
+			}
 			it.govpay.ec.v2.beans.NuovaPendenza pendenza = pendenzaVerificata.getPendenza();
 			
 			// se ho richiesto la pendenza con la coppia idDominio/iuv salvo il numero pendenza
-			if(iuv != null) 
+			if(iuv != null && pendenza != null) 
 				this.getEventoCtx().setIdPendenza(pendenza.getIdPendenza());
 			
 			switch (stato) {
@@ -318,9 +320,11 @@ public class VerificaClient extends BasicClientCORE {
 					}
 					return VersamentoUtils.toVersamentoModel(it.govpay.core.ec.v2.converter.VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata));
 				} catch (GovPayException e) {
+					log.error(e.getMessage(),e);
 					ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[" + e.getCodEsito() + "] " + e.getMessage());
 					throw e;
 				} catch (ValidationException e) {
+					log.error(e.getMessage(),e);
 					ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
 					throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
 				}
