@@ -11,6 +11,7 @@ import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
+import it.govpay.ec.v2.beans.NuovaPendenza;
 import it.govpay.ec.v2.beans.NuovaVocePendenza;
 import it.govpay.ec.v2.beans.NuovoAllegatoPendenza;
 import it.govpay.ec.v2.beans.NuovoDocumento;
@@ -20,28 +21,30 @@ import it.govpay.ec.v2.beans.TipoSogliaVincoloPagamento;
 
 public class PendenzaVerificataValidator  implements IValidable{
 
-	private PendenzaVerificata pendenzaVerificata= null;
+	private PendenzaVerificata pendenzaVerificata = null;
+	private NuovaPendenza pendenza= null;
 	private ValidatorFactory vf = null; 
 	private ValidatoreIdentificativi validatoreId = null;
 
 	public PendenzaVerificataValidator(PendenzaVerificata pendenzaVerificata){
 		this.pendenzaVerificata = pendenzaVerificata;
+		this.pendenza = this.pendenzaVerificata.getPendenza();
 		this.vf = ValidatorFactory.newInstance();
 		this.validatoreId = ValidatoreIdentificativi.newInstance();
 	}
 
 	@Override
 	public void validate() throws ValidationException {
-		if(this.pendenzaVerificata != null) {
+		if(this.pendenza != null) {
 
-			validaIdPendenza(this.pendenzaVerificata.getIdPendenza());
-			validaIdA2A(this.pendenzaVerificata.getIdA2A());
-			validaIdDominio(this.pendenzaVerificata.getIdDominio());
-			validaIdUnitaOperativa(this.pendenzaVerificata.getIdUnitaOperativa());
-			validaIdTipoPendenza(this.pendenzaVerificata.getIdTipoPendenza());
-			validaCausale( this.pendenzaVerificata.getCausale());
+			validaIdPendenza(this.pendenza.getIdPendenza());
+			validaIdA2A(this.pendenza.getIdA2A());
+			validaIdDominio(this.pendenza.getIdDominio());
+			validaIdUnitaOperativa(this.pendenza.getIdUnitaOperativa());
+			validaIdTipoPendenza(this.pendenza.getIdTipoPendenza());
+			validaCausale( this.pendenza.getCausale());
 			
-			Soggetto soggetto = this.pendenzaVerificata.getSoggettoPagatore();
+			Soggetto soggetto = this.pendenza.getSoggettoPagatore();
 			if(soggetto == null)
 				throw new ValidationException("Il campo soggettoPagatore non deve essere vuoto.");
 			
@@ -59,30 +62,30 @@ public class PendenzaVerificataValidator  implements IValidable{
 			soggettoPagatoreValidator.validaEmail("email", soggetto.getEmail());
 			soggettoPagatoreValidator.validaCellulare("cellulare", soggetto.getCellulare());
 			
-			validaImporto(this.pendenzaVerificata.getImporto());
-			validaNumeroAvviso(this.pendenzaVerificata.getNumeroAvviso());
-			validaDataValidita(this.pendenzaVerificata.getDataValidita()); 
-			validaDataScadenza(this.pendenzaVerificata.getDataScadenza());
-			validaAnnoRiferimento(this.pendenzaVerificata.getAnnoRiferimento());
-			validaCartellaPagamento(this.pendenzaVerificata.getCartellaPagamento());
-			validaDocumento(this.pendenzaVerificata.getDocumento());
+			validaImporto(this.pendenza.getImporto());
+			validaNumeroAvviso(this.pendenza.getNumeroAvviso());
+			validaDataValidita(this.pendenza.getDataValidita()); 
+			validaDataScadenza(this.pendenza.getDataScadenza());
+			validaAnnoRiferimento(this.pendenza.getAnnoRiferimento());
+			validaCartellaPagamento(this.pendenza.getCartellaPagamento());
+			validaDocumento(this.pendenza.getDocumento());
 
-			if(this.pendenzaVerificata.getVoci() == null || this.pendenzaVerificata.getVoci().isEmpty())
+			if(this.pendenza.getVoci() == null || this.pendenza.getVoci().isEmpty())
 				throw new ValidationException("Il campo voci non deve essere vuoto.");
 
-			if(this.pendenzaVerificata.getVoci().size() < 1)
+			if(this.pendenza.getVoci().size() < 1)
 				throw new ValidationException("Il campo voci deve avere almeno 1 elemento.");
 
-			if(this.pendenzaVerificata.getVoci().size() > 5)
+			if(this.pendenza.getVoci().size() > 5)
 				throw new ValidationException("Il campo voci deve avere massimo 5 elemento.");
 
-			for (NuovaVocePendenza vocePendenza : this.pendenzaVerificata.getVoci()) {
+			for (NuovaVocePendenza vocePendenza : this.pendenza.getVoci()) {
 				VocePendenzaValidator vocePendenzaValidator = new VocePendenzaValidator(vocePendenza);
 				vocePendenzaValidator.validate();
-				vocePendenzaValidator.validazioneSemanticaContabilita(vf, this.pendenzaVerificata.getIdA2A(), this.pendenzaVerificata.getIdPendenza());
+				vocePendenzaValidator.validazioneSemanticaContabilita(vf, this.pendenza.getIdA2A(), this.pendenza.getIdPendenza());
 			}
 			
-			validaAllegati(this.pendenzaVerificata.getAllegati());
+			validaAllegati(this.pendenza.getAllegati());
 		}
 	}
 

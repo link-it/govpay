@@ -160,7 +160,7 @@ public class VerificaClient extends BasicClientCORE {
 					throw e;
 				} catch (ValidationException e) {
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
-					throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnte, e.getMessage());
+					throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
 				} catch(ServiceException e) {
 					String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, logErrorMessage);
@@ -198,20 +198,20 @@ public class VerificaClient extends BasicClientCORE {
 					throw e;
 				} catch (ValidationException e) {
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
-					throw new VersamentoNonValidoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), e.getMessage());
+					throw new VersamentoNonValidoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
 				}
 			case ANNULLATA:
 				ctx.getApplicationLogger().log("verifica.verificaAnnullato", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
-				throw new VersamentoAnnullatoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(),pendenzaVerificata.getDescrizioneStato());
+				throw new VersamentoAnnullatoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), bundlekeyD, debitoreD, codDominioD, iuvD,pendenzaVerificata.getDescrizioneStato());
 			case DUPLICATA:
 				ctx.getApplicationLogger().log("verifica.verificaDuplicato", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
-				throw new VersamentoDuplicatoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), pendenzaVerificata.getDescrizioneStato());
+				throw new VersamentoDuplicatoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), bundlekeyD, debitoreD, codDominioD, iuvD, pendenzaVerificata.getDescrizioneStato());
 			case SCADUTA:
 				ctx.getApplicationLogger().log("verifica.verificaScaduto", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
 				if(StringUtils.isNotEmpty(pendenzaVerificata.getDescrizioneStato()))
-					throw new VersamentoScadutoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), pendenzaVerificata.getDescrizioneStato());
+					throw new VersamentoScadutoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), bundlekeyD, debitoreD, codDominioD, iuvD, pendenzaVerificata.getDescrizioneStato());
 				else 
-					throw new VersamentoScadutoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), pendenzaVerificata.getDataScadenza() != null ? pendenzaVerificata.getDataScadenza() : null);
+					throw new VersamentoScadutoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), bundlekeyD, debitoreD, codDominioD, iuvD, pendenzaVerificata.getDataScadenza() != null ? pendenzaVerificata.getDataScadenza() : null);
 			case SCONOSCIUTA:
 				ctx.getApplicationLogger().log("verifica.verificaSconosciuto", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
 				
@@ -222,9 +222,9 @@ public class VerificaClient extends BasicClientCORE {
 					message = "La pendenza identificata da IdA2A:"+this.codApplicazione+" IdPendenza:"+codVersamentoEnteD+" risulta sconosciuta presso l'applicativo gestore.";
 				}
 				
-				throw new VersamentoSconosciutoException(this.codApplicazione, pendenzaVerificata.getIdPendenza(), message);
+				throw new VersamentoSconosciutoException(this.codApplicazione, pendenzaVerificata.getIdPendenza(), bundlekeyD, debitoreD, codDominioD, iuvD, message);
 			default:
-				throw new VersamentoNonValidoException(this.codApplicazione, pendenzaVerificata.getIdPendenza(), "Stato pendenza non gestito: " + stato.name());
+				throw new VersamentoNonValidoException(this.codApplicazione, pendenzaVerificata.getIdPendenza(), bundlekeyD, debitoreD, codDominioD, iuvD, "Stato pendenza non gestito: " + stato.name());
 			}
 		} catch (ServiceException e) {
 			ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, codDominioD, iuvD, e.getMessage());
@@ -282,7 +282,7 @@ public class VerificaClient extends BasicClientCORE {
 					throw e;
 				} catch (ValidationException e) {
 					ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
-					throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnte, e.getMessage());
+					throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
 				} catch(ServiceException e) {
 					String logErrorMessage = MessageFormat.format(VerificaClient.ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
 					ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, logErrorMessage);
@@ -292,11 +292,13 @@ public class VerificaClient extends BasicClientCORE {
 			it.govpay.ec.v2.beans.StatoPendenzaVerificata stato = pendenzaVerificata.getStato();
 			
 			if(stato == null)
-				throw new ServiceException("Stato pendenza non gestito: null");
+				throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "Stato pendenza non gestito: null");
+			
+			it.govpay.ec.v2.beans.NuovaPendenza pendenza = pendenzaVerificata.getPendenza();
 			
 			// se ho richiesto la pendenza con la coppia idDominio/iuv salvo il numero pendenza
 			if(iuv != null) 
-				this.getEventoCtx().setIdPendenza(pendenzaVerificata.getIdPendenza());
+				this.getEventoCtx().setIdPendenza(pendenza.getIdPendenza());
 			
 			switch (stato) {
 			case NON_ESEGUITA: // CASO OK su
@@ -306,12 +308,12 @@ public class VerificaClient extends BasicClientCORE {
 	
 					// Verificare che parametri idA2A e idPendenza, oppure idDominio, iuv corrispondano nella Risposta.
 					if(iuv == null) {
-						if(!(this.codApplicazione.equals(pendenzaVerificata.getIdA2A()) && codVersamentoEnte.equals(pendenzaVerificata.getIdPendenza())))
+						if(!(this.codApplicazione.equals(pendenza.getIdA2A()) && codVersamentoEnte.equals(pendenza.getIdPendenza())))
 							throw new ValidationException("I campi IdA2A e IdPendenza della pendenza ricevuta dal servizio di verifica non corrispondono ai parametri di input.");
 					} else {
-						String iuvRicevuto = IuvUtils.toIuv(pendenzaVerificata.getNumeroAvviso());
+						String iuvRicevuto = IuvUtils.toIuv(pendenza.getNumeroAvviso());
 						
-						if(!(codDominio.equals(pendenzaVerificata.getIdDominio()) && iuv.equals(iuvRicevuto)))
+						if(!(codDominio.equals(pendenza.getIdDominio()) && iuv.equals(iuvRicevuto)))
 							throw new ValidationException("I campi IdDominio e NumeroAvviso della pendenza ricevuta dal servizio di verifica non corrispondono ai parametri di input.");
 					}
 					return VersamentoUtils.toVersamentoModel(it.govpay.core.ec.v2.converter.VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata));
@@ -320,33 +322,37 @@ public class VerificaClient extends BasicClientCORE {
 					throw e;
 				} catch (ValidationException e) {
 					ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
-					throw new VersamentoNonValidoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), e.getMessage());
+					throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
 				}
 			case ANNULLATA:
 				ctx.getApplicationLogger().log("verifica.verificaAnnullato", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
-				throw new VersamentoAnnullatoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), null);
+				throw new VersamentoAnnullatoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, pendenzaVerificata.getDescrizioneStato());
 //			case DUPLICATA:
 //				ctx.getApplicationLogger().log("verifica.verificaDuplicato", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
-//				throw new VersamentoDuplicatoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), null);
+//				throw new VersamentoDuplicatoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), pendenzaVerificata.getDescrizioneStato());
 			case SCADUTA:
 				ctx.getApplicationLogger().log("verifica.verificaScaduto", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
-//				if(StringUtils.isNotEmpty(pendenzaVerificata.getDescrizioneStato()))
-//					throw new VersamentoScadutoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), pendenzaVerificata.getDescrizioneStato());
-//				else 
-				throw new VersamentoScadutoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), pendenzaVerificata.getDataScadenza() != null ? pendenzaVerificata.getDataScadenza() : null);
+				if(StringUtils.isNotEmpty(pendenzaVerificata.getDescrizioneStato()))
+					throw new VersamentoScadutoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, pendenzaVerificata.getDescrizioneStato());
+				else 
+					throw new VersamentoScadutoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, pendenza.getDataScadenza() != null ? pendenza.getDataScadenza() : null);
 			case SCONOSCIUTA:
 				ctx.getApplicationLogger().log("verifica.verificaSconosciuto", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
 				
 				String message = null;
-				if(iuv != null) {
-					message = "La pendenza identificata da Dominio:"+codDominioD+" Iuv:"+iuvD+" risulta sconosciuta presso l'applicativo gestore.";
+				if(StringUtils.isNotEmpty(pendenzaVerificata.getDescrizioneStato())) {
+					message = pendenzaVerificata.getDescrizioneStato();
 				} else {
-					message = "La pendenza identificata da IdA2A:"+this.codApplicazione+" IdPendenza:"+codVersamentoEnteD+" risulta sconosciuta presso l'applicativo gestore.";
+					if(iuv != null) {
+						message = "La pendenza identificata da Dominio:"+codDominioD+" Iuv:"+iuvD+" risulta sconosciuta presso l'applicativo gestore.";
+					} else {
+						message = "La pendenza identificata da IdA2A:"+this.codApplicazione+" IdPendenza:"+codVersamentoEnteD+" risulta sconosciuta presso l'applicativo gestore.";
+					}
 				}
 				
-				throw new VersamentoSconosciutoException(this.codApplicazione, pendenzaVerificata.getIdPendenza(), message);
+				throw new VersamentoSconosciutoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, message);
 			default:
-				throw new VersamentoNonValidoException(this.codApplicazione, pendenzaVerificata.getIdPendenza(), "Stato pendenza non gestito: " + stato.name());
+				throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "Stato pendenza non gestito: " + stato.name());
 			}
 		} catch (ServiceException e) {
 			ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, codDominioD, iuvD, e.getMessage());
@@ -416,7 +422,7 @@ public class VerificaClient extends BasicClientCORE {
 					throw e;
 				} catch (ValidationException e) {
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, "[SINTASSI] " + e.getMessage());
-					throw new VersamentoNonValidoException(this.codApplicazione, "-", e.getMessage());
+					throw new VersamentoNonValidoException(this.codApplicazione, "-", "-", "-", "-", "-", e.getMessage());
 				} catch(ServiceException e) {
 					String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, logErrorMessage);
@@ -459,28 +465,28 @@ public class VerificaClient extends BasicClientCORE {
 					throw e;
 				} catch (ValidationException e) {
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, "[SINTASSI] " + e.getMessage());
-					throw new VersamentoNonValidoException(pendenzaVerificata.getIdA2A(), idPendenza, e.getMessage());
+					throw new VersamentoNonValidoException(pendenzaVerificata.getIdA2A(), idPendenza, "-", "-", "-", "-", e.getMessage());
 				}
 			case ANNULLATA:
 				ctx.getApplicationLogger().log("verifica.modello4verificaAnnullato", this.codApplicazione, codDominio, codTipoVersamento, idPendenza);
-				throw new VersamentoAnnullatoException(pendenzaVerificata.getIdA2A(), idPendenza,pendenzaVerificata.getDescrizioneStato());
+				throw new VersamentoAnnullatoException(pendenzaVerificata.getIdA2A(), idPendenza, "-", "-", "-", "-", pendenzaVerificata.getDescrizioneStato());
 			case DUPLICATA:
 				ctx.getApplicationLogger().log("verifica.modello4verificaDuplicato", this.codApplicazione, codDominio, codTipoVersamento, idPendenza);
-				throw new VersamentoDuplicatoException(pendenzaVerificata.getIdA2A(), idPendenza, pendenzaVerificata.getDescrizioneStato());
+				throw new VersamentoDuplicatoException(pendenzaVerificata.getIdA2A(), idPendenza, "-", "-", "-", "-", pendenzaVerificata.getDescrizioneStato());
 			case SCADUTA:
 				ctx.getApplicationLogger().log("verifica.modello4verificaScaduto", this.codApplicazione, codDominio, codTipoVersamento, idPendenza);
 				if(StringUtils.isNotEmpty(pendenzaVerificata.getDescrizioneStato()))
-					throw new VersamentoScadutoException(pendenzaVerificata.getIdA2A(), idPendenza, pendenzaVerificata.getDescrizioneStato());
+					throw new VersamentoScadutoException(pendenzaVerificata.getIdA2A(), idPendenza, "-", "-", "-", "-", pendenzaVerificata.getDescrizioneStato());
 				else 
-					throw new VersamentoScadutoException(pendenzaVerificata.getIdA2A(), idPendenza, pendenzaVerificata.getDataScadenza() != null ? pendenzaVerificata.getDataScadenza() : null);
+					throw new VersamentoScadutoException(pendenzaVerificata.getIdA2A(), idPendenza, "-", "-", "-", "-", pendenzaVerificata.getDataScadenza() != null ? pendenzaVerificata.getDataScadenza() : null);
 			case SCONOSCIUTA:
 				ctx.getApplicationLogger().log("verifica.modello4verificaSconosciuto", this.codApplicazione, codDominio, codTipoVersamento, idPendenza);
 				
 				String message = "La pendenza identificata da Dominio:"+codDominio+" TipoVersamento:"+codTipoVersamento+" risulta sconosciuta presso l'applicativo gestore.";
 				
-				throw new VersamentoSconosciutoException(this.codApplicazione, idPendenza, message);
+				throw new VersamentoSconosciutoException(this.codApplicazione, idPendenza, "-", "-", "-", "-", message);
 			default:
-				throw new VersamentoNonValidoException(this.codApplicazione, idPendenza, "Stato pendenza non gestito: " + stato.name());
+				throw new VersamentoNonValidoException(this.codApplicazione, idPendenza, "-", "-", "-", "-", "Stato pendenza non gestito: " + stato.name());
 			}
 		} catch (ServiceException  e) {
 			ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, e.getMessage());
@@ -529,7 +535,7 @@ public class VerificaClient extends BasicClientCORE {
 					throw e;
 				} catch (ValidationException e) {
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, "[SINTASSI] " + e.getMessage());
-					throw new VersamentoNonValidoException(this.codApplicazione, "-", e.getMessage());
+					throw new VersamentoNonValidoException(this.codApplicazione, "-", "-", "-", "-", "-", e.getMessage());
 				} catch(ServiceException e) {
 					String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, logErrorMessage);
@@ -539,12 +545,14 @@ public class VerificaClient extends BasicClientCORE {
 			it.govpay.ec.v2.beans.StatoPendenzaVerificata stato = pendenzaVerificata.getStato();
 			
 			if(stato == null)
-				throw new ServiceException("Stato pendenza non gestito: null");
+				throw new VersamentoNonValidoException(this.codApplicazione, idPendenza, "-", "-", codDominio, "-", "Stato pendenza non gestito: null");
+			
+			it.govpay.ec.v2.beans.NuovaPendenza pendenza = pendenzaVerificata.getPendenza();
 			
 			// se ho richiesto la pendenza con la coppia idDominio/iuv salvo il numero pendenza
 			
-			if(pendenzaVerificata != null) 
-				idPendenza = pendenzaVerificata.getIdPendenza(); 
+			if(pendenza != null) 
+				idPendenza = pendenza.getIdPendenza(); 
 				
 			this.getEventoCtx().setIdPendenza(idPendenza);
 			
@@ -555,15 +563,15 @@ public class VerificaClient extends BasicClientCORE {
 					new it.govpay.core.ec.v2.validator.PendenzaVerificataValidator(pendenzaVerificata).validate();
 	
 					// Verificare che parametri idDominio e idTipoPendenza corrispondano nella Risposta.
-					if(!(codDominio.equals(pendenzaVerificata.getIdDominio())))
+					if(!(codDominio.equals(pendenza.getIdDominio())))
 						throw new ValidationException("Il campo IdDominio della pendenza ricevuta dal servizio di verifica non corrisponde ai parametri di input.");
 					
-					if(pendenzaVerificata.getIdTipoPendenza() != null)
-						if(!(codTipoVersamento.equals(pendenzaVerificata.getIdTipoPendenza())))
+					if(pendenza.getIdTipoPendenza() != null)
+						if(!(codTipoVersamento.equals(pendenza.getIdTipoPendenza())))
 							throw new ValidationException("Il campo IdTipoPendenza della pendenza ricevuta dal servizio di verifica non corrisponde ai parametri di input.");
 					
-					if(pendenzaVerificata.getIdUnitaOperativa() != null)
-						if(!(codUnitaOperativa.equals(pendenzaVerificata.getIdUnitaOperativa())))
+					if(pendenza.getIdUnitaOperativa() != null)
+						if(!(codUnitaOperativa.equals(pendenza.getIdUnitaOperativa())))
 							throw new ValidationException("Il campo IdUnitaOperativa della pendenza ricevuta dal servizio di verifica non corrisponde ai parametri di input.");
 					
 					return VersamentoUtils.toVersamentoModel(it.govpay.core.ec.v2.converter.VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata));
@@ -572,28 +580,31 @@ public class VerificaClient extends BasicClientCORE {
 					throw e;
 				} catch (ValidationException e) {
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, "[SINTASSI] " + e.getMessage());
-					throw new VersamentoNonValidoException(pendenzaVerificata.getIdA2A(), idPendenza, e.getMessage());
+					throw new VersamentoNonValidoException(this.codApplicazione, idPendenza, "-", "-", codDominio, "-", e.getMessage());
 				}
 			case ANNULLATA:
 				ctx.getApplicationLogger().log("verifica.modello4verificaAnnullato", this.codApplicazione, codDominio, codTipoVersamento, idPendenza);
-				throw new VersamentoAnnullatoException(pendenzaVerificata.getIdA2A(), idPendenza, null);
+				throw new VersamentoAnnullatoException(this.codApplicazione, idPendenza, "-", "-", codDominio, "-", pendenzaVerificata.getDescrizioneStato());
 //			case DUPLICATA:
 //				ctx.getApplicationLogger().log("verifica.modello4verificaDuplicato", this.codApplicazione, codDominio, codTipoVersamento, idPendenza);
 //				throw new VersamentoDuplicatoException(pendenzaVerificata.getIdA2A(), idPendenza, pendenzaVerificata.getDescrizioneStato());
 			case SCADUTA:
 				ctx.getApplicationLogger().log("verifica.modello4verificaScaduto", this.codApplicazione, codDominio, codTipoVersamento, idPendenza);
-//				if(StringUtils.isNotEmpty(pendenzaVerificata.getDescrizioneStato()))
-//					throw new VersamentoScadutoException(pendenzaVerificata.getIdA2A(), idPendenza, pendenzaVerificata.getDescrizioneStato());
-//				else 
-				throw new VersamentoScadutoException(pendenzaVerificata.getIdA2A(), idPendenza, pendenzaVerificata.getDataScadenza() != null ? pendenzaVerificata.getDataScadenza() : null);
+				if(StringUtils.isNotEmpty(pendenzaVerificata.getDescrizioneStato()))
+					throw new VersamentoScadutoException(this.codApplicazione, idPendenza, "-", "-", codDominio, "-", pendenzaVerificata.getDescrizioneStato());
+				else 
+				throw new VersamentoScadutoException(this.codApplicazione, idPendenza, "-", "-", codDominio, "-", pendenza.getDataScadenza() != null ? pendenza.getDataScadenza() : null);
 			case SCONOSCIUTA:
 				ctx.getApplicationLogger().log("verifica.modello4verificaSconosciuto", this.codApplicazione, codDominio, codTipoVersamento, idPendenza);
 				
 				String message = "La pendenza identificata da Dominio:"+codDominio+" TipoVersamento:"+codTipoVersamento+" risulta sconosciuta presso l'applicativo gestore.";
 				
-				throw new VersamentoSconosciutoException(this.codApplicazione, idPendenza, message);
+				if(StringUtils.isNotEmpty(pendenzaVerificata.getDescrizioneStato()))
+					message = pendenzaVerificata.getDescrizioneStato();
+				
+				throw new VersamentoSconosciutoException(this.codApplicazione, idPendenza, "-", "-", codDominio, "-", message);
 			default:
-				throw new VersamentoNonValidoException(this.codApplicazione, idPendenza, "Stato pendenza non gestito: " + stato.name());
+				throw new VersamentoNonValidoException(this.codApplicazione, idPendenza, "-", "-", codDominio, "-", "Stato pendenza non gestito: " + stato.name());
 			}
 		} catch (ServiceException  e) {
 			ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, e.getMessage());
