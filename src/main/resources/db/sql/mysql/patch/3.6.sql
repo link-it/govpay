@@ -32,6 +32,7 @@ CREATE VIEW v_eventi_vers_rendicontazioni AS (
                eventi.cod_dominio,
                eventi.ccp,
                eventi.id_sessione,
+               eventi.severita,
                eventi.id
         FROM eventi 
         JOIN rendicontazioni ON rendicontazioni.id_fr = eventi.id_fr
@@ -251,7 +252,7 @@ CREATE TABLE allegati
 	CONSTRAINT pk_allegati PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
-ALTER TABLE allegati DROP CONSTRAINT fk_all_id_versamento;
+ALTER TABLE allegati DROP FOREIGN KEY fk_all_id_versamento;
 
 
 -- 14/04/2022 estesa dimensione campo sottotipo_evento e sottotipo_esito
@@ -285,6 +286,7 @@ CREATE VIEW v_eventi_vers_rendicontazioni AS (
                eventi.cod_dominio,
                eventi.ccp,
                eventi.id_sessione,
+               eventi.severita,
                eventi.id
         FROM eventi 
         JOIN rendicontazioni ON rendicontazioni.id_fr = eventi.id_fr
@@ -485,7 +487,6 @@ CREATE VIEW v_eventi_vers AS
                id_sessione,
 	       severita,
                id FROM v_eventi_vers_tracciati;
-
 
 
 
