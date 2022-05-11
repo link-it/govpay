@@ -1,7 +1,57 @@
 components:
   examples:
+    PendenzaVerificata:
+      summary: 'Pendenza verificata'
+      value:
+        stato: 'NON_ESEGUITA'
+        pendenza: 
+          idA2A: A2A-12345
+          idPendenza: abcdef12345
+          idTipoPendenza: TARI
+          idDominio: '01234567890'
+          causale: 'TARI/TEFA 2021'
+          soggettoPagatore:
+            tipo: F
+            identificativo: RSSMRA30A01H501I
+            anagrafica: Mario Rossi
+            indirizzo: Piazza della Vittoria
+            civico: 10/A
+            cap: '00000'
+            localita: Roma
+            provincia: Roma
+            nazione: IT
+            email: mario.rossi@host.eu
+            cellulare: +39 000 1234567
+          importo: 250.50
+          numeroAvviso: '301000000202012345'
+          dataScadenza: '2021-12-31'
+          tassonomia: 'Sanzioni'
+          voci: 
+            - idVocePendenza: TARI
+              importo: 194.00
+              descrizione: Importo TARI 
+              contabilita:
+                quote:
+                  - capitolo: '0000'
+                    annoEsercizio: 2020
+                    importo: 194.00
+              ibanAccredito: 'IT60X0542811101000000123456'
+              codiceTassonomicoPagoPA: '9/0101100IM/'
+            - idDominio: '999999999999'
+              idVocePendenza: TEFA
+              importo: 40.50
+              descrizione: Importo TEFA 
+              ibanAccredito: 'IT60X0542811101000000987654'
+              codiceTassonomicoPagoPA: '9/0201102IM/'
+            - idVocePendenza: BOLLO
+              importo: 16.00
+              descrizione: Imposta di bollo
+              tipoBollo: '01'
+              hashDocumento: '--- base64 ---'
+              provinciaResidenza: 'PI'
+              codiceTassonomicoPagoPA: '9/02011021M/'
     RicevutaEntrata:
-      summary: "Pagamento standard"
+      summary: 'Pagamento standard SANP 2.3'
       value:
         dominio:
           idDominio: '12345678901'
@@ -140,4 +190,133 @@ components:
                 identificativoUnivocoRiscossione: '3401054555072216481'
                 causaleVersamento: "/RFB/340105455507221/100.99/TXT/Diritti e segreteria"
                 datiSpecificiRiscossione: 9/SEGRETERIA
-        modello: PSP             
+        modello: PSP   
+    RicevutaEntrata_SANP24:
+      summary: 'Pagamento standard SANP 2.4'
+      value:
+        dominio: 
+          idDominio: '01234567890'
+          ragioneSociale: 'Comune Dimostrativo'
+        iuv: '01000000202012345'
+        receiptId: '1234acdc'
+        dataPagamento: '2020-12-31T12:55:12'              
+        attestante:
+          idPSP: 'BPPONZI'
+          denominazione: 'Banco Popolare Ponzi'
+          idCanale: 'POS'
+          descrizione: 'Pagamento con carta c/o sportello'
+        versante:
+          tipo: F
+          identificativo: ANONIMO
+          anagrafica: ANONIMO
+        riscossioni:
+          - iur: 1234acdc
+            indice: 1
+            tipo: ENTRATA
+            importo: 250.50
+            vocePendenza:
+              idVocePendenza: TARI
+              descrizione: Importo TARI 
+              contabilita:
+                quote:
+                  - capitolo: '0000'
+                    annoEsercizio: 2020
+                    importo: 210.00
+              ibanAccredito: 'IT60X0542811101000000123456'
+              codiceTassonomicoPagoPA: '9/0101100IM/'
+              pendenza:
+                idA2A: A2A-12345
+                idPendenza: abcdef12345
+                idTipoPendenza: TARI
+                dominio: 
+                  idDominio: '01234567890'
+                  ragioneSociale: 'Comune Dimostrativo'                
+                causale: 'TARI/TEFA 2021'
+                soggettoPagatore:
+                  tipo: F
+                  identificativo: RSSMRA30A01H501I
+                  anagrafica: Mario Rossi
+                  indirizzo: Piazza della Vittoria
+                  civico: 10/A
+                  cap: '00000'
+                  localita: Roma
+                  provincia: Roma
+                  nazione: IT
+                  email: mario.rossi@host.eu
+                  cellulare: +39 000 1234567
+                importo: 250.50
+                numeroAvviso: '301000000202012345'
+                dataScadenza: '2021-12-31'
+        rpt:
+          data: '2020-12-31T12:53:49'
+          tipo: 'ctPaymentPA'
+          xml: '...[XML originale codificato Base64]...'
+          json: '...[XML originale convertito in json]...'
+        rt:
+          data: '2020-12-31T12:55:12'
+          tipo: 'ctReceipt'
+          xml: '...[XML originale codificato Base64]...'
+          json: '...[XML originale convertito in json]...'     
+    RicevutaMBT:
+      summary: 'Ricevuta MBT SANP 2.4'
+      value:
+        dominio: 
+          idDominio: '01234567890'
+          ragioneSociale: 'Comune Dimostrativo'
+        iuv: '01000000202012345'
+        receiptId: '1234acdc'
+        dataPagamento: '2020-12-31T12:55:12'              
+        attestante:
+          idPSP: 'BPPONZI'
+          denominazione: 'Banco Popolare Ponzi'
+          idCanale: 'POS'
+          descrizione: 'Pagamento con carta c/o sportello'
+        versante:
+          tipo: F
+          identificativo: ANONIMO
+          anagrafica: ANONIMO
+        riscossioni:
+          - iur: "1234acdc"
+            indice: 1
+            tipo: "MBT"
+            importo: 16.00
+            allegato:
+              tipo: "Marca da bollo"
+              testo: "[XML della Marca da bollo in base64]"
+            vocePendenza:
+              idVocePendenza: BOLLO
+              descrizione: Imposta di bollo
+              codiceTassonomicoPagoPA: '9/0201102IM/'
+              pendenza:
+                idA2A: A2A-12345
+                idPendenza: abcdef12345
+                idTipoPendenza: TARI
+                dominio: 
+                  idDominio: '01234567890'
+                  ragioneSociale: 'Comune Dimostrativo'                
+                causale: 'TARI/TEFA 2021'
+                soggettoPagatore:
+                  tipo: F
+                  identificativo: RSSMRA30A01H501I
+                  anagrafica: Mario Rossi
+                  indirizzo: Piazza della Vittoria
+                  civico: 10/A
+                  cap: '00000'
+                  localita: Roma
+                  provincia: Roma
+                  nazione: IT
+                  email: mario.rossi@host.eu
+                  cellulare: +39 000 1234567
+                importo: 16.00
+                numeroAvviso: '301000000202012345'
+                dataScadenza: '2021-12-31'                            
+        rpt:
+          data: '2020-12-31T12:53:49'
+          tipo: 'ctPaymentPA'
+          xml: '...[XML originale codificato Base64]...'
+          json: '...[XML originale convertito in json]...'
+        rt:
+          data: '2020-12-31T12:55:12'
+          tipo: 'ctReceipt'
+          xml: '...[XML originale codificato Base64]...'
+          json: '...[XML originale convertito in json]...'  

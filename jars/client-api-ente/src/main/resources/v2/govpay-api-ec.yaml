@@ -6,7 +6,7 @@ info:
     - Verificare i dati delle pendenze oggetto di pagamento
     
    ## Notifica Pagamenti
-    La piattaforma GovPay prevede l'invio di una notifica alla conclusione con successo di una transazione di pagamento pagoPA, ovvero a fronte dell'acquisizione di una RT positiva, indipendentemente dal modello di pagamento utilizzato per gestire la transazione.
+    La piattaforma GovPay prevede l'invio di una notifica alla conclusione con successo di una transazione di pagamento pagoPA, ovvero a fronte dell'acquisizione di una RT, indipendentemente dalla modalità di pagamento o dall'esito.
     
    ## Verifica Pendenze
     In sede di pagamento, la piattaforma GovPay potrebbe aver necessità di richiedere all'applicativo gestore i dati aggiornati della pendenza oggetto del pagamento. Questo può accadere in due scenari:
@@ -45,6 +45,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PendenzaVerificata'
+              examples:
+                'Pendenza non eseguita':
+                  value:
+                    - $ref: 'govpay-api-examples.yaml#/components/examples/PendenzaVerificata'
+                'Pendenza annullata':
+                  value:
+                    stato: 'ANNULLATA'
+                    descrizioneStato: 'Pendenza annullata'
+                'Pendenza scaduta':
+                  value:
+                    stato: 'SCADUTA'
+                    descrizioneStato: 'Pendenza scaduta'
+                'Pendenza sconosciuta':
+                  value:
+                    stato: 'SCONOSCIUTA'
+                    descrizioneStato: 'Pendenza sconosciuta'
         '400':
           $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'                
         '401':
@@ -71,6 +87,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PendenzaVerificata'
+              examples:
+                'Pendenza non eseguita':
+                  value:
+                    - $ref: 'govpay-api-examples.yaml#/components/examples/PendenzaVerificata'
+                'Pendenza annullata':
+                  value:
+                    stato: 'ANNULLATA'
+                    descrizioneStato: 'Pendenza annullata'
+                'Pendenza scaduta':
+                  value:
+                    stato: 'SCADUTA'
+                    descrizioneStato: 'Pendenza scaduta'
+                'Pendenza sconosciuta':
+                  value:
+                    stato: 'SCONOSCIUTA'
+                    descrizioneStato: 'Pendenza sconosciuta'
         '400':
           $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'
         '401':
@@ -103,6 +135,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PendenzaVerificata'
+              examples:
+                'Pendenza non eseguita':
+                  value:
+                    - $ref: 'govpay-api-examples.yaml#/components/examples/PendenzaVerificata'
+                'Pendenza annullata':
+                  value:
+                    stato: 'ANNULLATA'
+                    descrizioneStato: 'Pendenza annullata'
+                'Pendenza scaduta':
+                  value:
+                    stato: 'SCADUTA'
+                    descrizioneStato: 'Pendenza scaduta'
+                'Pendenza sconosciuta':
+                  value:
+                    stato: 'SCONOSCIUTA'
+                    descrizioneStato: 'Pendenza sconosciuta'
         '400':
           $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'
         '401':
