@@ -39,7 +39,7 @@ paths:
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdDominio'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathNumeroAvviso'
       responses:
-        '201':
+        '200':
           description: Pendenza
           content:
             application/json:
@@ -65,7 +65,7 @@ paths:
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdA2A'
         - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdPendenza'
       responses:
-        '201':
+        '200':
           description: Pendenza
           content:
             application/json:
@@ -97,7 +97,7 @@ paths:
             schema:
               type: object
       responses:
-        '201':
+        '200':
           description: Pendenza
           content:
             application/json:
@@ -154,13 +154,19 @@ paths:
 components:
   schemas:
     PendenzaVerificata:
+      description: >- 
+        Il campo 'pendenza' e' obbligatorio quando il valore del campo 'stato' e' uguale a 'NON_ESEGUITA'. Valorizzare il campo 'descrizioneStato' con una descrizione estesa dello stato della pendenza quando il valore del campo 'stato' e' diverso da 'NON_ESEGUITA'.
       type: object
-      allOf:
-        - $ref: 'govpay-api-schemas.yaml#/components/schemas/NuovaPendenza'
-        - type: object
-          properties: 
-            stato:
-              $ref: '#/components/schemas/StatoPendenzaVerificata'   
+      required: 
+        - stato
+      properties:
+        stato:
+          $ref: '#/components/schemas/StatoPendenzaVerificata'   
+        descrizioneStato:
+          type: string
+          description: Descrizione in dettaglio dello stato della pendenza.
+        pendenza:
+          $ref: 'govpay-api-schemas.yaml#/components/schemas/NuovaPendenza'
     StatoPendenzaVerificata:
       example: NON_ESEGUITA
       type: string

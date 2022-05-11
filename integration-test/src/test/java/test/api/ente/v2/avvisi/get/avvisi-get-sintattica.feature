@@ -26,6 +26,14 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 Scenario Outline: <field> non valida
 
+* def pendenzaVerificataV2 = 
+"""
+{
+	"stato" : null,
+	"pendenza" : null
+}
+"""
+
 * def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_definito.json')
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
@@ -34,16 +42,19 @@ Scenario Outline: <field> non valida
 * def ccp = getCurrentTimeMillis()
 * def importo = 100.99
 
-* set pendenza.idA2A = idA2A
-* set pendenza.idPendenza = idPendenza
-* set pendenza.numeroAvviso = numeroAvviso
-* set pendenza.stato = 'NON_ESEGUITA'
+* set pendenzaPut.idA2A = idA2A
+* set pendenzaPut.idPendenza = idPendenza
+* set pendenzaPut.numeroAvviso = numeroAvviso
+* remove pendenzaPut.stato
 
 * set <fieldRequest> = <fieldValue>
 
+* set pendenzaVerificataV2.pendenza = pendenzaPut
+* set pendenzaVerificataV2.stato = 'NON_ESEGUITA'
+
 Given url ente_api_url
 And path '/v2/avvisi', idDominio, numeroAvviso
-And request pendenza
+And request pendenzaVerificataV2
 When method post
 Then status 200
 
@@ -128,16 +139,19 @@ Scenario Outline: <field> non valida
 * def ccp = getCurrentTimeMillis()
 * def importo = 100.99
 
-* set pendenza.idA2A = idA2A
-* set pendenza.idPendenza = idPendenza
-* set pendenza.numeroAvviso = numeroAvviso
-* set pendenza.stato = 'NON_ESEGUITA'
+* set pendenzaPut.idA2A = idA2A
+* set pendenzaPut.idPendenza = idPendenza
+* set pendenzaPut.numeroAvviso = numeroAvviso
+* remove pendenzaPut.stato
 
 * set <fieldRequest> = <fieldValue>
 
+* set pendenzaVerificataV2.pendenza = pendenzaPut
+* set pendenzaVerificataV2.stato = 'NON_ESEGUITA'
+
 Given url ente_api_url
 And path '/v2/avvisi', idDominio, numeroAvviso
-And request pendenza
+And request pendenzaVerificataV2
 When method post
 Then status 200
 
@@ -267,16 +281,19 @@ Scenario Outline: <field> non valida
 * def ccp = getCurrentTimeMillis()
 * def importo = 100.99
 
-* set pendenza.idA2A = idA2A
-* set pendenza.idPendenza = idPendenza
-* set pendenza.numeroAvviso = numeroAvviso
-* set pendenza.stato = 'NON_ESEGUITA'
+* set pendenzaPut.idA2A = idA2A
+* set pendenzaPut.idPendenza = idPendenza
+* set pendenzaPut.numeroAvviso = numeroAvviso
+* remove pendenzaPut.stato
 
 * set <fieldRequest> = <fieldValue>
 
+* set pendenzaVerificataV2.pendenza = pendenzaPut
+* set pendenzaVerificataV2.stato = 'NON_ESEGUITA'
+
 Given url ente_api_url
 And path '/v2/avvisi', idDominio, numeroAvviso
-And request pendenza
+And request pendenzaVerificataV2
 When method post
 Then status 200
 
