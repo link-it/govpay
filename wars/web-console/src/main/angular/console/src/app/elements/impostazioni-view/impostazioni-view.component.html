@@ -7,7 +7,7 @@
           <div class="card-header" id="headGde">
             <span class="mb-0">
               <button class="trigger-collapse" type="button" data-toggle="collapse" data-target="#gde" aria-expanded="true" aria-controls="gde">
-               Giornale degli Eventi
+                Giornale degli Eventi
               </button>
             </span>
           </div>
@@ -72,6 +72,14 @@
                         <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
                       </mat-radio-group>
                     </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Maggioli JPPA</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="apiMJPPARL_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
                   </mat-tab>
                   <mat-tab label="Registrazione Scritture">
                     <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
@@ -125,6 +133,14 @@
                     <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
                       <p class="m-0 mb-3 mb-md-0">API Backend IO</p>
                       <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="apiBEIORS_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Maggioli JPPA</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="apiMJPPARS_ctrl">
                         <mat-radio-button value="sempre">Sempre</mat-radio-button>
                         <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
                         <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
@@ -188,6 +204,14 @@
                         <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
                       </mat-radio-group>
                     </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Maggioli JPPA</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="apiMJPPADL_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
                   </mat-tab>
                   <mat-tab label="Dump Scritture">
                     <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
@@ -241,6 +265,14 @@
                     <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
                       <p class="m-0 mb-3 mb-md-0">API Backend IO</p>
                       <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="apiBEIODS_ctrl">
+                        <mat-radio-button value="sempre">Sempre</mat-radio-button>
+                        <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
+                        <mat-radio-button value="solo errore">Solo errore</mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                    <div class="d-flex flex-column flex-md-row align-items-start radio-item-group">
+                      <p class="m-0 mb-3 mb-md-0">API Maggioli JPPA</p>
+                      <mat-radio-group class="d-block ml-md-auto mat-radio-group" formControlName="apiMJPPADS_ctrl">
                         <mat-radio-button value="sempre">Sempre</mat-radio-button>
                         <mat-radio-button value="mai" class="mx-1">Mai</mat-radio-button>
                         <mat-radio-button value="solo errore">Solo errore</mat-radio-button>

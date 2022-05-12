@@ -52,6 +52,7 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
       backofficeRL_ctrl: new FormControl('mai'),
       enteRL_ctrl: new FormControl('mai'),
       apiBEIORL_ctrl: new FormControl('mai'),
+      apiMJPPARL_ctrl: new FormControl('mai'),
 
       pagoPARS_ctrl: new FormControl('mai'),
       payRS_ctrl: new FormControl('mai'),
@@ -60,6 +61,7 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
       backofficeRS_ctrl: new FormControl('mai'),
       enteRS_ctrl: new FormControl('mai'),
       apiBEIORS_ctrl: new FormControl('mai'),
+      apiMJPPARS_ctrl: new FormControl('mai'),
 
       pagoPADL_ctrl: new FormControl('mai'),
       payDL_ctrl: new FormControl('mai'),
@@ -68,6 +70,7 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
       backofficeDL_ctrl: new FormControl('mai'),
       enteDL_ctrl: new FormControl('mai'),
       apiBEIODL_ctrl: new FormControl('mai'),
+      apiMJPPADL_ctrl: new FormControl('mai'),
 
       pagoPADS_ctrl: new FormControl('mai'),
       payDS_ctrl: new FormControl('mai'),
@@ -75,7 +78,8 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
       ragioneriaDS_ctrl: new FormControl('mai'),
       backofficeDS_ctrl: new FormControl('mai'),
       enteDS_ctrl: new FormControl('mai'),
-      apiBEIODS_ctrl: new FormControl('mai')
+      apiBEIODS_ctrl: new FormControl('mai'),
+      apiMJPPADS_ctrl: new FormControl('mai')
     });
     this.serverForm = new FormGroup({
       serverAbilitato_ctrl: this._serverAbilitato,
@@ -239,6 +243,12 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
         this.gdeForm.controls[ 'apiBEIODL_ctrl' ].setValue(this.json.giornaleEventi.interfacce.apiBackendIO.letture.dump);
         this.gdeForm.controls[ 'apiBEIORS_ctrl' ].setValue(this.json.giornaleEventi.interfacce.apiBackendIO.scritture.log);
         this.gdeForm.controls[ 'apiBEIODS_ctrl' ].setValue(this.json.giornaleEventi.interfacce.apiBackendIO.scritture.dump);
+      }
+      if (this.json.giornaleEventi && this.json.giornaleEventi.interfacce.apiMaggioliJPPA) {
+        this.gdeForm.controls[ 'apiMJPPARL_ctrl' ].setValue(this.json.giornaleEventi.interfacce.apiMaggioliJPPA.letture.log);
+        this.gdeForm.controls[ 'apiMJPPADL_ctrl' ].setValue(this.json.giornaleEventi.interfacce.apiMaggioliJPPA.letture.dump);
+        this.gdeForm.controls[ 'apiMJPPARS_ctrl' ].setValue(this.json.giornaleEventi.interfacce.apiMaggioliJPPA.scritture.log);
+        this.gdeForm.controls[ 'apiMJPPADS_ctrl' ].setValue(this.json.giornaleEventi.interfacce.apiMaggioliJPPA.scritture.dump);
       }
     }
 
@@ -605,6 +615,16 @@ export class ImpostazioniViewComponent implements OnInit, AfterViewInit, AfterCo
                 scritture: {
                   log: values.apiBEIORS_ctrl,
                   dump: values.apiBEIODS_ctrl
+                }
+              },
+              apiMaggioliJPPA: {
+                letture: {
+                  log: values.apiMJPPARL_ctrl,
+                  dump: values.apiMJPPADL_ctrl
+                },
+                scritture: {
+                  log: values.apiMJPPARS_ctrl,
+                  dump: values.apiMJPPADS_ctrl
                 }
               }
             }
