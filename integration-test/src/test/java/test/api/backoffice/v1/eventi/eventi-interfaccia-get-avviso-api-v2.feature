@@ -7,8 +7,19 @@ Background:
 
 Scenario: Evento verifica pendenza annullata
 
+* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
+* set applicazione.servizioIntegrazione.versioneApi = 'REST v2'
+* set applicazione.servizioIntegrazione.url = ente_api_url + '/v2'
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers gpAdminBasicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
 * def descrizioneStato = 'Test annullamento'
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
@@ -64,7 +75,7 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#('http://localhost:8888/paServiceImpl/v1/avvisi/' + idDominio + '/' + iuv)",
+		"url": "#('http://localhost:8888/paServiceImpl/v2/avvisi/' + idDominio + '/' + numeroAvviso)",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
@@ -81,8 +92,19 @@ And match response.risultati[0].dettaglioEsito == descrizioneStato
 
 Scenario: Evento verifica pendenza scaduta
 
+* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
+* set applicazione.servizioIntegrazione.versioneApi = 'REST v2'
+* set applicazione.servizioIntegrazione.url = ente_api_url + '/v2'
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers gpAdminBasicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
 * def descrizioneStato = 'Test scadenza'
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
@@ -137,7 +159,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "##null",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#('http://localhost:8888/paServiceImpl/v1/avvisi/' + idDominio + '/' + iuv)",
+		"url": "#('http://localhost:8888/paServiceImpl/v2/avvisi/' + idDominio + '/' + numeroAvviso)",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
@@ -152,7 +174,19 @@ And match response.risultati[0] ==
 """
 And match response.risultati[0].dettaglioEsito == descrizioneStato
 
+@testSC
 Scenario: Evento verifica pendenza sconosciuta
+
+* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
+* set applicazione.servizioIntegrazione.versioneApi = 'REST v2'
+* set applicazione.servizioIntegrazione.url = ente_api_url + '/v2'
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers gpAdminBasicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
@@ -204,7 +238,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "##null",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#('http://localhost:8888/paServiceImpl/v1/avvisi/' + idDominio + '/' + iuv)",
+		"url": "#('http://localhost:8888/paServiceImpl/v2/avvisi/' + idDominio + '/' + numeroAvviso)",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
@@ -220,8 +254,19 @@ And match response.risultati[0] ==
 
 Scenario: Evento verifica pendenza 
 
+* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
+* set applicazione.servizioIntegrazione.versioneApi = 'REST v2'
+* set applicazione.servizioIntegrazione.url = ente_api_url + '/v2'
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers gpAdminBasicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
@@ -274,7 +319,7 @@ And match response.risultati[0] ==
 	"parametriRichiesta": {
 		"principal": "##null",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#('http://localhost:8888/paServiceImpl/v1/avvisi/' + idDominio + '/' + iuv)",
+		"url": "#('http://localhost:8888/paServiceImpl/v2/avvisi/' + idDominio + '/' + numeroAvviso)",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
@@ -291,8 +336,19 @@ And match response.risultati[0] ==
 @debug
 Scenario: Evento verifica pendenza applicazione non disponibile
 
+* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
+* set applicazione.servizioIntegrazione.versioneApi = 'REST v2'
+* set applicazione.servizioIntegrazione.url = ente_api_url + '/v2'
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers gpAdminBasicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
@@ -353,7 +409,7 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(applicazione.servizioIntegrazione.url + '/avvisi/' + idDominio + '/' + iuv)",
+		"url": "#(applicazione.servizioIntegrazione.url + '/avvisi/' + idDominio + '/' + numeroAvviso)",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
@@ -371,8 +427,19 @@ And match response.risultati[0] ==
 
 Scenario: Evento verifica pendenza applicazione risposta errata
 
+* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
+* set applicazione.servizioIntegrazione.versioneApi = 'REST v2'
+* set applicazione.servizioIntegrazione.url = ente_api_url + '/v2'
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers gpAdminBasicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
 * def idPendenza = getCurrentTimeMillis()
-* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
@@ -433,7 +500,7 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(applicazione.servizioIntegrazione.url + '/avvisi/' + idDominio + '/' + iuv)",
+		"url": "#(applicazione.servizioIntegrazione.url + '/avvisi/' + idDominio + '/' + numeroAvviso)",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
@@ -463,9 +530,28 @@ And match response.risultati[0] ==
 
 Scenario: Evento verifica pendenza applicazione risposta con errori di sintassi
 
+* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
+* set applicazione.servizioIntegrazione.versioneApi = 'REST v2'
+* set applicazione.servizioIntegrazione.url = ente_api_url + '/v2'
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers gpAdminBasicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
 * def idPendenza = getCurrentTimeMillis()
 
-* def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_definito.json')
+* def pendenzaVerificataV2 = 
+"""
+{
+	"stato" : null,
+	"pendenza" : null
+}
+"""
+
+* def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_definito.json')
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
@@ -473,16 +559,19 @@ Scenario: Evento verifica pendenza applicazione risposta con errori di sintassi
 * def ccp = getCurrentTimeMillis()
 * def importo = 100.99
 
-* set pendenza.idA2A = idA2A
-* set pendenza.idPendenza = idPendenza
-* set pendenza.numeroAvviso = numeroAvviso
-* set pendenza.stato = 'NON_ESEGUITA'
+* set pendenzaPut.soggettoPagatore = null
 
-* set pendenza.soggettoPagatore = null
+* set pendenzaPut.idA2A = idA2A
+* set pendenzaPut.idPendenza = idPendenza
+* set pendenzaPut.numeroAvviso = numeroAvviso
+* remove pendenzaPut.stato
+
+* set pendenzaVerificataV2.pendenza = pendenzaPut
+* set pendenzaVerificataV2.stato = 'NON_ESEGUITA'
 
 Given url ente_api_url
-And path '/v1/avvisi', idDominio, iuv
-And request pendenza
+And path '/v2/avvisi', idDominio, numeroAvviso
+And request pendenzaVerificataV2
 When method post
 Then status 200
 
@@ -531,7 +620,7 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "##null",
 	"parametriRichiesta": {
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "#(applicazione.servizioIntegrazione.url + '/avvisi/' + idDominio + '/' + iuv)",
+		"url": "#(applicazione.servizioIntegrazione.url + '/avvisi/' + idDominio + '/' + numeroAvviso)",
 		"method": "GET",
 		"headers": "#array",
 		"payload": "##null"
