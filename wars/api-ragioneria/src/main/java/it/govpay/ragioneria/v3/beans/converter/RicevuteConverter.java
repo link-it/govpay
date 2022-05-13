@@ -1,8 +1,6 @@
 package it.govpay.ragioneria.v3.beans.converter;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
@@ -14,17 +12,17 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.utils.JaxbUtils;
+import it.govpay.ragioneria.v3.beans.EsitoRpp;
+import it.govpay.ragioneria.v3.beans.ModelloPagamento;
 import it.govpay.ragioneria.v3.beans.Ricevuta;
 import it.govpay.ragioneria.v3.beans.RicevutaIstitutoAttestante;
 import it.govpay.ragioneria.v3.beans.RicevutaRpt;
 import it.govpay.ragioneria.v3.beans.RicevutaRt;
-import it.govpay.ragioneria.v3.beans.RicevuteRisultati;
-import it.govpay.ragioneria.v3.beans.Riscossione;
 import it.govpay.ragioneria.v3.beans.RicevutaRt.TipoEnum;
+import it.govpay.ragioneria.v3.beans.RicevuteRisultati;
 import it.govpay.rs.v1.ConverterUtils;
 
 public class RicevuteConverter {
@@ -64,22 +62,17 @@ public class RicevuteConverter {
 		rsModel.setDominio(DominiConverter.toRsModelIndex(rpt.getDominio(configWrapper)));
 		rsModel.setIdRicevuta(rpt.getCcp());
 		rsModel.setIuv(rpt.getIuv());
-		if(rpt.getStato() != null)
-			rsModel.setStato(rpt.getStato().toString());
-
-		rsModel.setPendenza(PendenzeConverter.toRsModel(rpt.getVersamento()));
+		if(rpt.getEsitoPagamento() != null)
+			rsModel.setEsito(EsitoRpp.fromRptEsitoPagamento(rpt.getEsitoPagamento().name()));
 		
-		if(rpt.getPagamenti() != null && rpt.getPagamenti().size() > 0) {
-			List<Riscossione> riscossioni = new ArrayList<>();
-			for (Pagamento pagamento : rpt.getPagamenti()) {
-				riscossioni.add(RiscossioniConverter.toRsModel(pagamento, versamento));				
-			}
-			rsModel.setRiscossioni(riscossioni);
-			
-			rsModel.setDataPagamento(rpt.getPagamenti().get(0).getDataPagamento());
-		} else {
-			rsModel.setDataPagamento(rpt.getDataMsgRicevuta());
+		if(rpt.getPagamentoPortale(configWrapper) != null) {
+			rsModel.setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
+			rsModel.setIdSessionePsp(rpt.getPagamentoPortale(configWrapper).getIdSessionePsp());
 		}
+
+		rsModel.setPendenza(PendenzeConverter.toPendenzaPagataRsModel(rpt));
+		
+		rsModel.setDataPagamento(rpt.getDataMsgRicevuta());
 		
 		RicevutaRpt ricevutaRpt = new RicevutaRpt();
 
@@ -134,6 +127,14 @@ public class RicevuteConverter {
 			}
 			rsModel.setRt(ricevutaRt);
 
+		}
+		
+		if(rpt.getPagamentoPortale() != null) {
+			if(rpt.getPagamentoPortale().getTipo() == 1) {
+				rsModel.setModello(ModelloPagamento.ENTE);	
+			} else if(rpt.getPagamentoPortale().getTipo() == 3) {
+				rsModel.setModello(ModelloPagamento.PSP);
+			}
 		}
 
 		return rsModel;

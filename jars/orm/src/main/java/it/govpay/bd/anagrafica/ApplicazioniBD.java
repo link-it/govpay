@@ -477,6 +477,7 @@ public class ApplicazioniBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_APPLICAZIONE));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_APPLICAZIONE), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_APPLICAZIONE, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni

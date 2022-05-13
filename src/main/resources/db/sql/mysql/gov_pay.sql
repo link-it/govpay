@@ -810,7 +810,7 @@ CREATE TABLE rpt
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_conservazione TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Data di gestione del processo di conservazione a norma della RT',
 	bloccante BOOLEAN NOT NULL DEFAULT true COMMENT 'Indicazione se la RPT risulta bloccante per ulteriori transazioni di pagamento',
-	versione VARCHAR(35) NOT NULL COMMENT 'Versione dell'api PagoPA utilizzata per la transazione.',
+	versione VARCHAR(35) NOT NULL COMMENT 'Versione dell\'api PagoPA utilizzata per la transazione.',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_versamento BIGINT NOT NULL COMMENT 'Riferimento alla pendenza oggetto della richeista di pagmaento',
@@ -1141,13 +1141,13 @@ CREATE TABLE eventi
 	ruolo VARCHAR(1) COMMENT 'Ruolo (Client/Server)',
 	categoria_evento VARCHAR(1) COMMENT 'Categoria dell\'evento',
 	tipo_evento VARCHAR(255) COMMENT 'Tipologia dell\'evento',
-	sottotipo_evento VARCHAR(35) COMMENT 'Sotto tipologia dell\'evento',
+	sottotipo_evento VARCHAR(255) COMMENT 'Sotto tipologia dell\'evento',
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	-- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
 	data TIMESTAMP(3) DEFAULT 0 COMMENT 'Data di emissione dell\'evento',
 	intervallo BIGINT COMMENT 'Intervallo tra l\'evento di richiesta e risposta',
 	esito VARCHAR(4) COMMENT 'Esito operazione registrata',
-	sottotipo_esito VARCHAR(35) COMMENT 'Descrizione esito operazione',
+	sottotipo_esito VARCHAR(255) COMMENT 'Descrizione esito operazione',
 	dettaglio_esito LONGTEXT COMMENT 'Dettaglio esito in forma estesa',
 	parametri_richiesta MEDIUMBLOB COMMENT 'Dettagli della richiesta',
 	parametri_risposta MEDIUMBLOB COMMENT 'Dettagli della risposta',
@@ -1282,6 +1282,24 @@ CREATE TABLE ID_MESSAGGIO_RELATIVO
 	CONSTRAINT pk_ID_MESSAGGIO_RELATIVO PRIMARY KEY (PROTOCOLLO,INFO_ASSOCIATA)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Generatore di progressivi';
 
+
+CREATE TABLE allegati
+(
+	nome VARCHAR(255) NOT NULL COMMENT 'Identificativo allegato',
+	tipo VARCHAR(255) COMMENT 'content-type allegato',
+	descrizione VARCHAR(255) COMMENT 'descrizione allegato',
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'data creazione allegato',
+	raw_contenuto MEDIUMBLOB COMMENT 'contenuto allegato',
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	id_versamento BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_all_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_allegati PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'allegati di una pendenza';
+
+
 CREATE TABLE sonde
 (
 	nome VARCHAR(35) NOT NULL COMMENT 'Nome della sonda',
@@ -1328,6 +1346,8 @@ ALTER TABLE pagamenti_portale DROP FOREIGN KEY fk_ppt_id_applicazione;
 
 ALTER TABLE pag_port_versamenti DROP FOREIGN KEY fk_ppv_id_pagamento_portale;
 ALTER TABLE pag_port_versamenti DROP FOREIGN KEY fk_ppv_id_versamento;
+
+ALTER TABLE allegati DROP CONSTRAINT fk_all_id_versamento;
 
 -- Sezione Viste
 
@@ -1538,6 +1558,7 @@ CREATE VIEW v_eventi_vers_rendicontazioni AS (
                eventi.cod_dominio,
                eventi.ccp,
                eventi.id_sessione,
+			   eventi.severita,
                eventi.id
         FROM eventi 
         JOIN rendicontazioni ON rendicontazioni.id_fr = eventi.id_fr
@@ -1595,7 +1616,7 @@ CREATE VIEW v_eventi_vers_riconciliazioni AS (
                eventi.cod_dominio,
                eventi.ccp,
                eventi.id_sessione,
-	       eventi.severita,
+	           eventi.severita,
                eventi.id
         FROM eventi
         JOIN pagamenti ON pagamenti.id_incasso = eventi.id_incasso
@@ -1624,7 +1645,7 @@ CREATE VIEW v_eventi_vers_tracciati AS (
                eventi.cod_dominio,
                eventi.ccp,
                eventi.id_sessione,
-	       eventi.severita,
+	           eventi.severita,
                eventi.id
         FROM eventi
         JOIN operazioni ON operazioni.id_tracciato = eventi.id_tracciato

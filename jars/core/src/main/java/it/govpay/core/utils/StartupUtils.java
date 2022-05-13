@@ -46,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.core.utils.logger.Log4JUtils;
 import it.govpay.core.utils.service.context.GpContextFactory;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.stampe.utils.GovpayStampe;
@@ -95,6 +96,9 @@ public class StartupUtils {
 			} catch (Exception e) {
 				throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita: " + e, e);
 			}
+			
+			// inizializzo utilities di logging
+			Log4JUtils.initialize(log4j2XmlFile);
 			
 			// Configurazione del logger Diagnostici/Tracce/Dump
 			try {

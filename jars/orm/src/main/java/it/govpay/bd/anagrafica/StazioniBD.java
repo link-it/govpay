@@ -215,6 +215,7 @@ public class StazioniBD extends BasicBD {
 			
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_STAZIONE));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_STAZIONE), "id");
+			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_STAZIONE, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 			
 			// creo condizioni

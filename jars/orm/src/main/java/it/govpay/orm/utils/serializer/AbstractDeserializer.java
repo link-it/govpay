@@ -27,6 +27,7 @@ import java.io.InputStream;
 import org.openspcoop2.generic_project.exception.DeserializerException;
 
 import it.govpay.orm.ACL;
+import it.govpay.orm.Allegato;
 import it.govpay.orm.Applicazione;
 import it.govpay.orm.Audit;
 import it.govpay.orm.Batch;
@@ -39,6 +40,7 @@ import it.govpay.orm.FR;
 import it.govpay.orm.IUV;
 import it.govpay.orm.IbanAccredito;
 import it.govpay.orm.IdAcl;
+import it.govpay.orm.IdAllegato;
 import it.govpay.orm.IdAnagrafica;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdBatch;
@@ -1687,6 +1689,69 @@ public abstract class AbstractDeserializer {
 	 */
 	public PagamentoPortaleVersamento readPagamentoPortaleVersamentoFromString(String in) throws DeserializerException {
 		return (PagamentoPortaleVersamento) this.xmlToObj(in.getBytes(), PagamentoPortaleVersamento.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: Allegato
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.Allegato}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.Allegato}
+	 * @return Object type {@link it.govpay.orm.Allegato}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Allegato readAllegato(String fileName) throws DeserializerException {
+		return (Allegato) this.xmlToObj(fileName, Allegato.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.Allegato}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.Allegato}
+	 * @return Object type {@link it.govpay.orm.Allegato}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Allegato readAllegato(File file) throws DeserializerException {
+		return (Allegato) this.xmlToObj(file, Allegato.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.Allegato}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.Allegato}
+	 * @return Object type {@link it.govpay.orm.Allegato}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Allegato readAllegato(InputStream in) throws DeserializerException {
+		return (Allegato) this.xmlToObj(in, Allegato.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.Allegato}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.Allegato}
+	 * @return Object type {@link it.govpay.orm.Allegato}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Allegato readAllegato(byte[] in) throws DeserializerException {
+		return (Allegato) this.xmlToObj(in, Allegato.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.Allegato}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.Allegato}
+	 * @return Object type {@link it.govpay.orm.Allegato}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Allegato readAllegatoFromString(String in) throws DeserializerException {
+		return (Allegato) this.xmlToObj(in.getBytes(), Allegato.class);
 	}	
 	
 	
@@ -3955,6 +4020,69 @@ public abstract class AbstractDeserializer {
 	 */
 	public VistaRiscossioni readVistaRiscossioniFromString(String in) throws DeserializerException {
 		return (VistaRiscossioni) this.xmlToObj(in.getBytes(), VistaRiscossioni.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: id-allegato
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.IdAllegato}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdAllegato}
+	 * @return Object type {@link it.govpay.orm.IdAllegato}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdAllegato readIdAllegato(String fileName) throws DeserializerException {
+		return (IdAllegato) this.xmlToObj(fileName, IdAllegato.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.IdAllegato}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdAllegato}
+	 * @return Object type {@link it.govpay.orm.IdAllegato}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdAllegato readIdAllegato(File file) throws DeserializerException {
+		return (IdAllegato) this.xmlToObj(file, IdAllegato.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.IdAllegato}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.IdAllegato}
+	 * @return Object type {@link it.govpay.orm.IdAllegato}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdAllegato readIdAllegato(InputStream in) throws DeserializerException {
+		return (IdAllegato) this.xmlToObj(in, IdAllegato.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.IdAllegato}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.IdAllegato}
+	 * @return Object type {@link it.govpay.orm.IdAllegato}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdAllegato readIdAllegato(byte[] in) throws DeserializerException {
+		return (IdAllegato) this.xmlToObj(in, IdAllegato.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.IdAllegato}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.IdAllegato}
+	 * @return Object type {@link it.govpay.orm.IdAllegato}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdAllegato readIdAllegatoFromString(String in) throws DeserializerException {
+		return (IdAllegato) this.xmlToObj(in.getBytes(), IdAllegato.class);
 	}	
 	
 	

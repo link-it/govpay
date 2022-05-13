@@ -354,7 +354,7 @@ public class RptBD extends BasicBD {
 		}
 	}
 
-	public List<Rpt> getRptPendenti(List<String> codDomini) throws ServiceException {
+	public List<Rpt> getRptPendenti(List<String> codDomini, Integer numeroMassimoGiorniRPTPendenti) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -367,6 +367,15 @@ public class RptBD extends BasicBD {
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
+			
+			// filtro temporale sui giorni
+			Date now = new Date();
+			Calendar c = Calendar.getInstance();
+			c.setTime(now);
+			c.add(Calendar.DATE, -numeroMassimoGiorniRPTPendenti);
+			
+			exp.and();
+			exp.greaterThan(RPT.model().DATA_MSG_RICHIESTA, c.getTime());
 			
 			// questa procedura di recupero e' disponibile solo per le RPT SANP 2.3
 			exp.and();

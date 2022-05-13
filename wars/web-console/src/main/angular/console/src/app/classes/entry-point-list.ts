@@ -10,6 +10,7 @@ import { KeyValueViewComponent } from '../elements/item-view/views/key-value-vie
 import { KeyJsonViewComponent } from '../elements/item-view/views/key-json-view/key-json-view.component';
 import { TwoColsViewComponent } from '../elements/item-view/views/two-cols-view/two-cols-view.component';
 import { TwoColsCollapseViewComponent } from '../elements/item-view/views/two-cols-collapse-view/two-cols-collapse-view.component';
+import { AllegatoViewComponent } from '../elements/item-view/views/allegato-view/allegato-view.component';
 
 import { InputViewComponent } from '../elements/item-view/views/input-view/input-view.component';
 import { FilterableViewComponent } from '../elements/item-view/views/filterable-view/filterable-view.component';
@@ -112,6 +113,7 @@ export class EntryPointList {
     KeyJsonViewComponent,
     TwoColsViewComponent,
     TwoColsCollapseViewComponent,
+    AllegatoViewComponent,
     InputViewComponent,
     FilterableViewComponent,
     DatePickerViewComponent, TimePickerDialogComponent,
@@ -191,6 +193,9 @@ export class EntryPointList {
         break;
       case UtilService.TWO_COLS:
         _type = TwoColsViewComponent;
+        break;
+      case UtilService.ALLEGATO:
+        _type = AllegatoViewComponent;
         break;
       case UtilService.TWO_COLS_COLLAPSE:
         _type = TwoColsCollapseViewComponent;
@@ -377,6 +382,9 @@ export class EntryPointList {
         break;
       case 'TwoColsViewComponent':
         _name = UtilService.TWO_COLS;
+        break;
+      case 'AllegatoViewComponent':
+        _name = UtilService.ALLEGATO;
         break;
       case 'TwoColsCollapseViewComponent':
         _name = UtilService.TWO_COLS_COLLAPSE;

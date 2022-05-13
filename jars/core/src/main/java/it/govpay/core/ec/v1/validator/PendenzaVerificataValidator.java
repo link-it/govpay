@@ -2,6 +2,7 @@ package it.govpay.core.ec.v1.validator;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import org.openspcoop2.utils.json.ValidationException;
 
@@ -10,6 +11,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.ec.v1.beans.Documento;
+import it.govpay.ec.v1.beans.NuovoAllegatoPendenza;
 import it.govpay.ec.v1.beans.PendenzaVerificata;
 import it.govpay.ec.v1.beans.Soggetto;
 import it.govpay.ec.v1.beans.VocePendenza;
@@ -78,6 +80,8 @@ public class PendenzaVerificataValidator  implements IValidable{
 				vocePendenzaValidator.validate();
 				vocePendenzaValidator.validazioneSemanticaContabilita(vf, this.pendenzaVerificata.getIdA2A(), this.pendenzaVerificata.getIdPendenza());
 			}
+			
+			validaAllegati(this.pendenzaVerificata.getAllegati());
 		}
 	}
 
@@ -144,6 +148,19 @@ public class PendenzaVerificataValidator  implements IValidable{
 			  	ValidatoreUtils.validaSogliaGiorni(vf, "giorni", documento.getSoglia().getGiorni());
 			  	ValidatoreUtils.validaSogliaTipo(vf, "tipo", documento.getSoglia().getTipo());
 			  	
+			}
+		}
+	}
+	
+	public void validaAllegati(List<NuovoAllegatoPendenza> allegati) throws ValidationException {
+		if(allegati != null && allegati.size() >0 ) {
+			for(NuovoAllegatoPendenza allegato: allegati) {
+				this.vf.getValidator("nome", allegato.getNome()).notNull().minLength(1).maxLength(255);
+				this.vf.getValidator("tipo", allegato.getTipo()).minLength(1).maxLength(255);
+				this.vf.getValidator("descrizione", allegato.getDescrizione()).minLength(1).maxLength(255);
+				
+				if(allegato.getContenuto() == null)
+					throw new ValidationException("Il campo " + "contenuto" + " non deve essere vuoto.");
 			}
 		}
 	}

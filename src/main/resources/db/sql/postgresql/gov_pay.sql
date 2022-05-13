@@ -1122,11 +1122,11 @@ CREATE TABLE eventi
 	ruolo VARCHAR(1),
 	categoria_evento VARCHAR(1),
 	tipo_evento VARCHAR(255),
-	sottotipo_evento VARCHAR(35),
+	sottotipo_evento VARCHAR(255),
 	data TIMESTAMP,
 	intervallo BIGINT,
 	esito VARCHAR(4),
-	sottotipo_esito VARCHAR(35),
+	sottotipo_esito VARCHAR(255),
 	dettaglio_esito TEXT,
 	parametri_richiesta BYTEA,
 	parametri_risposta BYTEA,
@@ -1260,6 +1260,25 @@ CREATE TABLE ID_MESSAGGIO_RELATIVO
 	CONSTRAINT pk_ID_MESSAGGIO_RELATIVO PRIMARY KEY (PROTOCOLLO,INFO_ASSOCIATA)
 );
 
+
+CREATE SEQUENCE seq_allegati start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE allegati
+(
+	nome VARCHAR(255) NOT NULL,
+	tipo VARCHAR(255),
+	descrizione VARCHAR(255),
+	data_creazione TIMESTAMP NOT NULL,
+	raw_contenuto OID,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_allegati') NOT NULL,
+	id_versamento BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_all_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_allegati PRIMARY KEY (id)
+);
+
+
 CREATE TABLE sonde
 (
 	nome VARCHAR(35) NOT NULL,
@@ -1302,6 +1321,8 @@ ALTER TABLE pagamenti_portale DROP CONSTRAINT fk_ppt_id_applicazione;
 
 ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_pagamento_portale;
 ALTER TABLE pag_port_versamenti DROP CONSTRAINT fk_ppv_id_versamento;
+
+ALTER TABLE allegati DROP CONSTRAINT fk_all_id_versamento;
 
 -- Sezione Viste
 

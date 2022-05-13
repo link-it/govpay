@@ -642,7 +642,7 @@ public enum EsitoOperazione {
      */
     TRB_001,
     /**
-     * Versamento multivoce non puo' essere caricato fornendo il numero avviso
+     * Versamento multivoce non puo' essere caricato fornendo il numero avviso se una delle voci e' un bollo
      * 
      */
     VER_031,

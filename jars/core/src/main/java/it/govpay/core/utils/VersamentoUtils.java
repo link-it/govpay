@@ -52,6 +52,7 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.TipiVersamentoBD;
 import it.govpay.bd.anagrafica.TipiVersamentoDominiBD;
+import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
@@ -64,6 +65,7 @@ import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Iuv;
+import it.govpay.core.dao.commons.Versamento.AllegatoPendenza;
 import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
@@ -108,9 +110,9 @@ public class VersamentoUtils {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		
 		// solo se non e' multibeneficiario
-		if(generaIuv && !VersamentoUtils.isPendenzaMultibeneficiario(versamento, configWrapper) && versamento.getSingoliVersamenti().size() != 1) {
-			throw new GovPayException(EsitoOperazione.VER_000, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
-		}
+//		if(generaIuv && !VersamentoUtils.isPendenzaMultibeneficiario(versamento, configWrapper) && versamento.getSingoliVersamenti().size() != 1) {
+//			throw new GovPayException(EsitoOperazione.VER_000, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
+//		}
 
 		BigDecimal somma = BigDecimal.ZERO;
 		List<String> codSingoliVersamenti = new ArrayList<>();
@@ -200,7 +202,7 @@ public class VersamentoUtils {
 
 		// Controllo se la data di scadenza e' indicata ed e' decorsa
 		if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza())) {
-			throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDataScadenza());
+			throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), "-", "-", "-", "-", versamento.getDataScadenza());
 		}else {
 			if(versamento.getDataValidita() != null && DateUtils.isDataDecorsa(versamento.getDataValidita())) {
 				IContext ctx = ContextThreadLocal.get();
@@ -224,11 +226,11 @@ public class VersamentoUtils {
 					} catch (ClientException e) {
 						// Errore nella chiamata all'ente. Controllo se e' mandatoria o uso quel che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
-							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
+							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
 					} catch (VersamentoSconosciutoException e) {
 						// Versamento sconosciuto all'ente (bug dell'ente?). Controllo se e' mandatoria o uso quel che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
-							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
+							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
 					} catch (VersamentoNonValidoException e) {
 						// Versamento non valido per errori di validazione, se e' mandatorio l'aggiornamento rilancio l'eccezione altrimenti uso quello che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio())
@@ -236,7 +238,7 @@ public class VersamentoUtils {
 					}
 				} else if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
 					// connettore verifica non definito, versamento non aggiornabile
-					throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
+					throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
 			} else {
 				// versamento valido
 			} 
@@ -524,14 +526,24 @@ public class VersamentoUtils {
 		model.setImportoTotale(versamento.getImportoTotale());
 		model.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
 
-		// in un versamento multivoce non si puo' passare il numero avviso
-		if(versamento.getSingoloVersamento().size() > 1 && StringUtils.isNotEmpty(versamento.getNumeroAvviso())) {
-			throw new GovPayException(EsitoOperazione.VER_031);
-		}
-
 		int index = 1;
+		boolean hasBollo = false;
 		for(it.govpay.core.dao.commons.Versamento.SingoloVersamento singoloVersamento : versamento.getSingoloVersamento()) {
 			model.addSingoloVersamento(toSingoloVersamentoModel(model, singoloVersamento, index++ , configWrapper));
+			
+			if(!hasBollo) {
+				if(singoloVersamento.getBolloTelematico() != null) {
+					hasBollo = true;
+				}
+			}
+		}
+		
+		// in un versamento multivoce non si puo' passare il numero avviso
+		// #364 / #448 2022/02/03 rilassato vincolo di caricamento pendenza multivoce con numero avviso solo non esiste una voce di tipo MBT
+		if(hasBollo) {
+			if(versamento.getSingoloVersamento().size() > 1 && StringUtils.isNotEmpty(versamento.getNumeroAvviso())) {
+				throw new GovPayException(EsitoOperazione.VER_031);
+			}			
 		}
 
 		model.setTassonomia(versamento.getTassonomia());
@@ -667,10 +679,33 @@ public class VersamentoUtils {
 		model.setAvvMailDataPromemoriaScadenza(versamento.getDataPromemoriaScadenza());
 		
 		model.setProprietaPendenza(versamento.getProprieta()); 
+		
+		model.setAllegati(toAllegatiModel(versamento.getAllegati()));
 
 		return model;
 	}
 
+	private static List<Allegato> toAllegatiModel(List<AllegatoPendenza> allegati) {
+		List<Allegato> allegatiModel = null;
+		
+		if(allegati != null && allegati.size() > 0) {
+			allegatiModel = new ArrayList<>();
+			
+			for (AllegatoPendenza allegato : allegati) {
+				Allegato allegatoModel = new Allegato();
+				
+				allegatoModel.setNome(allegato.getNome());
+				allegatoModel.setTipo(allegato.getTipo());
+				allegatoModel.setDescrizione(allegato.getDescrizione());
+				allegatoModel.setRawContenuto(allegato.getContenuto());
+				allegatoModel.setDataCreazione(new Date());
+				
+				allegatiModel.add(allegatoModel);
+			}
+		}
+		
+		return allegatiModel;
+	}
 
 	public static SingoloVersamento toSingoloVersamentoModel(Versamento versamento, it.govpay.core.dao.commons.Versamento.SingoloVersamento singoloVersamento, int index, BDConfigWrapper configWrapper) throws ServiceException, GovPayException, ValidationException {
 		SingoloVersamento model = new SingoloVersamento();
@@ -891,6 +926,12 @@ public class VersamentoUtils {
 			return _inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4, codApplicazioneInoltro);
 		} else {
 			PendenzaPost pendenzaPost = PendenzaPost.parse(inputModello4);
+			
+			// imposto i dati idDominio, idTipoVersamento e idUnitaOperativa fornite nella URL di richiesta, sovrascrivendo eventuali valori impostati dalla trasformazione.
+			pendenzaPost.setIdDominio(codDominio);
+			pendenzaPost.setIdTipoPendenza(codTipoVersamento);
+			pendenzaPost.setIdUnitaOperativa(codUnitaOperativa);
+			
 			new PendenzaPostValidator(pendenzaPost).validate();
 			
 			it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
@@ -989,20 +1030,39 @@ public class VersamentoUtils {
 		for(SingoloVersamento singoloVersamento : versamento.getSingoliVersamenti(configWrapper)) {
 			// appena trovo un singolo versamento con un id dominio definito sono in modalita' multibeneficiario
 			if(singoloVersamento.getIdDominio() != null) {
-				return true;
+				try {
+					Dominio dominioSV = AnagraficaManager.getDominio(configWrapper, singoloVersamento.getIdDominio());
+					Dominio dominioV = versamento.getDominio(configWrapper);
+					
+					if(!dominioSV.getCodDominio().equals(dominioV.getCodDominio()))
+						return true;
+				} catch (NotFoundException e) {
+					// se passo qui ho fallito la validazione della pendenza !
+					throw new ServiceException("Dominio ["+singoloVersamento.getIdDominio()+"] non censito in base dati.");
+				}
 			}
 		}
 		return false;
 	}
 	
 	public static boolean generaIUV(Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException {
-		if(isPendenzaMultibeneficiario(versamento, configWrapper)) {
-			return versamento.getNumeroAvviso() == null;
+		
+		boolean hasBollo = false;
+		for(SingoloVersamento singoloVersamento : versamento.getSingoliVersamenti()) {
+			if(!hasBollo) {
+				if(singoloVersamento.getTipoBollo() != null && singoloVersamento.getHashDocumento() != null && singoloVersamento.getProvinciaResidenza() != null) {
+					hasBollo = true;
+				}
+			}
 		}
 		
-		boolean generaIuv = versamento.getNumeroAvviso() == null && versamento.getSingoliVersamenti(configWrapper).size() == 1;
-				
-		return generaIuv;
+		// se non c'e' una voce con il bollo devo semplicemente controllare che non me lo passino
+		if(!hasBollo) {
+			return versamento.getNumeroAvviso() == null;
+		} else {
+		// altrimenti non si genera
+			return false;
+		}
 	}
 	
 	public static boolean isAllIBANPostali(Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException {
@@ -1043,7 +1103,12 @@ public class VersamentoUtils {
 		// appena trovo un singolo versamento con un id dominio definito sono in modalita' multibeneficiario
 		if(singoloVersamento.getIdDominio() != null) {
 			try {
-				return AnagraficaManager.getDominio(configWrapper, singoloVersamento.getIdDominio());
+				Dominio dominioSV = AnagraficaManager.getDominio(configWrapper, singoloVersamento.getIdDominio());
+				
+				if(!dominioSV.getCodDominio().equals(dominio.getCodDominio()))
+					return dominioSV;
+				
+//				return AnagraficaManager.getDominio(configWrapper, singoloVersamento.getIdDominio());
 			} catch (NotFoundException e) {
 				// se passo qui ho fallito la validazione della pendenza !
 				throw new ServiceException("Dominio ["+singoloVersamento.getIdDominio()+"] non censito in base dati.");

@@ -19,9 +19,6 @@ import { NewStandardCollapse } from '../../../../classes/view/new-standard-colla
 import { TwoColsCollapse } from '../../../../classes/view/two-cols-collapse';
 import { HttpResponse } from '@angular/common/http';
 
-declare let JSZip: any;
-declare let FileSaver: any;
-
 @Component({
   selector: 'link-pendenze',
   templateUrl: './pendenze-view.component.html',
@@ -42,6 +39,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
   protected NOTA = UtilService.NOTA;
   protected ADD = UtilService.PATCH_METHODS.ADD;
   protected info: Riepilogo;
+  protected allegati = [];
   protected infoVisualizzazione: any = { visible: false, titolo: '', campi: [] };
   protected _paymentsSum: number = 0;
   protected _importiOverIcons: string[] = ['file_download'];
@@ -89,8 +87,8 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     if(_json.dominio.ragioneSociale && _json.dominio.idDominio) {
       this.info.extraInfo.push({label: Voce.ENTE_CREDITORE + ': ', value: Dato.concatStrings([_json.dominio.ragioneSociale, _json.dominio.idDominio], ', ')});
     }
-    if(_json.unitaOperativa && _json.unitaOperativa.ragionesociale && _json.unitaOperativa.idUnita) {
-      const _uo: string = Dato.concatStrings([_json.unitaOperativa.ragionesociale, _json.unitaOperativa.idUnita], ', ');
+    if(_json.unitaOperativa && _json.unitaOperativa.ragioneSociale && _json.unitaOperativa.idUnita) {
+      const _uo: string = Dato.concatStrings([_json.unitaOperativa.idUnita, _json.unitaOperativa.ragioneSociale], ' - ');
       this.info.extraInfo.push({label: Voce.UNITA_OPERATIVA + ': ', value: _uo});
     }
     if(_json.direzione) {
@@ -102,9 +100,10 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     if(_json.tipoPendenza && _json.tipoPendenza.descrizione) {
       this.info.extraInfo.push({label: Voce.TIPO_PENDENZA + ': ', value: _json.tipoPendenza.descrizione});
     }
-    if(_json.tassonomiaAvviso) {
-      this.info.extraInfo.push({ label: Voce.TASSONOMIA_AVVISO+': ', value: _json.tassonomiaAvviso });
-    }
+    // DEPRECATED
+    // if(_json.tassonomiaAvviso) {
+    //   this.info.extraInfo.push({ label: Voce.TASSONOMIA_AVVISO+': ', value: _json.tassonomiaAvviso });
+    // }
     if(_json.tassonomia) {
       this.info.extraInfo.push({ label: Voce.TASSONOMIA_ENTE+': ', value: _json.tassonomia });
     }
@@ -208,6 +207,19 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
         return p;
       }, this);
     }
+    if(_json.allegati) {
+      this.allegati = _json.allegati.map(function(_allegato) {
+        const _std = new NewStandardCollapse();
+        _std.titolo = new Dato({ value: _allegato.descrizione });
+        _std.sottotitolo = new Dato({ value: _allegato.nome });
+        _std.item = _allegato;
+        const p = new Parameters();
+        p.jsonP = _allegato;
+        p.model = _std;
+        p.type = UtilService.ALLEGATO;
+        return p;
+      }, this);
+    }
   }
 
   protected elencoTentativi() {
@@ -229,8 +241,8 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
                 stStrings.push(Voce.IUV+': '+item.rpt.data.creditorReferenceId);
               }
             }
-            if (item.rt && item.rt.receipt) {
-              _istituto = (item.rt.receipt.PSPCompanyName || '');
+            if (item.rt) {
+              _istituto = (item.rt.PSPCompanyName || '');
             }
             stStrings.push(Voce.DATA+': '+item.dataRichiestaPagamento?moment(item.dataRichiestaPagamento).format('DD/MM/YYYY [ore] HH:mm:ss'):Voce.NON_PRESENTE);
           }
@@ -575,5 +587,45 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
     setTimeout(() => {
       this.us.generateStructuredZip(dataCalls, structure, 'Pendenza_' + this.json.idA2A + '_' + this.json.idPendenza);
     }, 500);
+  }
+
+  scaricaAvviso() {
+    const url = UtilService.URL_AVVISI + '/' + UtilService.EncodeURIComponent(this.json.dominio.idDominio) + '/' + UtilService.EncodeURIComponent(this.json.numeroAvviso);
+    const name = this.json.dominio.idDominio + '_' + this.json.numeroAvviso;
+
+    this.gps.pdf(url).subscribe(
+      (response) => {
+        this.gps.updateSpinner(false);
+        this.us.savePdf(response.body, name);
+      },
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      }
+    );
+  }
+
+  stampaRicevuta() {
+    const item = this.tentativi.find((el) => {
+      return el.jsonP.stato === 'RT_ACCETTATA_PA';
+    });
+    if (item) {
+      const ref: any = UtilService.ExportMapLoopCfg(item.jsonP);
+      const url = '/rpp/' + UtilService.EncodeURIComponent(ref.iddRT) + '/' + UtilService.EncodeURIComponent(ref.iuvRT) + '/' + UtilService.EncodeURIComponent(ref.ccpRT) + '/rt';
+      const name = `Rt_${ref.iuvRT}_${ref.ccpRT}`;
+
+      this.gps.pdf(url).subscribe(
+        (response) => {
+          this.gps.updateSpinner(false);
+          this.us.savePdf(response.body, name);
+        },
+        (error) => {
+          this.gps.updateSpinner(false);
+          this.us.onError(error);
+        }
+      );
+    } else {
+      this.us.alert('Nessuan ricevuta trovata');
+    }
   }
 }

@@ -1,5 +1,6 @@
 package it.govpay.backoffice.v1.beans;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 
@@ -11,8 +12,8 @@ public class ListaEntrate extends Lista<Entrata> {
 		super();
 	}
 	
-	public ListaEntrate(List<Entrata> flussiRendicontazione, URI requestUri, Long count, Integer pagina, Integer limit) {
-		super(flussiRendicontazione, requestUri, count, pagina, limit);
+	public ListaEntrate(List<Entrata> risultati, URI requestUri, Long count, Integer pagina, Integer limit, BigDecimal maxRisultati) {
+		super(risultati, requestUri, count, pagina, limit, maxRisultati);
 	}
 	
 }

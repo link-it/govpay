@@ -30,7 +30,9 @@ import org.openspcoop2.utils.serialization.SerializationConfig;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.ec.v2.beans.Contabilita;
+import it.govpay.ec.v2.beans.NuovaPendenza;
 import it.govpay.ec.v2.beans.NuovaVocePendenza;
+import it.govpay.ec.v2.beans.NuovoAllegatoPendenza;
 import it.govpay.ec.v2.beans.PendenzaVerificata;
 import it.govpay.ec.v2.beans.ProprietaPendenza;
 import it.govpay.ec.v2.beans.QuotaContabilita;
@@ -43,48 +45,52 @@ public class VerificaConverter {
 	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) throws ValidationException, ServiceException {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 		
-		if(pendenzaVerificata.getAnnoRiferimento() != null)
-			versamento.setAnnoTributario(pendenzaVerificata.getAnnoRiferimento().intValue());
-
-		versamento.setCausale(pendenzaVerificata.getCausale());
-		versamento.setCodApplicazione(pendenzaVerificata.getIdA2A());
-
-		versamento.setCodDominio(pendenzaVerificata.getIdDominio());
-		versamento.setCodUnitaOperativa(pendenzaVerificata.getIdUnitaOperativa());
-		versamento.setCodVersamentoEnte(pendenzaVerificata.getIdPendenza());
-		versamento.setDataScadenza(pendenzaVerificata.getDataScadenza()); 
-		versamento.setDataValidita(pendenzaVerificata.getDataValidita());
-		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));;
-		versamento.setImportoTotale(pendenzaVerificata.getImporto());
-		versamento.setCodVersamentoLotto(pendenzaVerificata.getCartellaPagamento());
+		NuovaPendenza pendenza = pendenzaVerificata.getPendenza();
 		
-		if(pendenzaVerificata.getDatiAllegati() != null)
-			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenzaVerificata.getDatiAllegati(),null));
+		if(pendenza.getAnnoRiferimento() != null)
+			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
+
+		versamento.setCausale(pendenza.getCausale());
+		versamento.setCodApplicazione(pendenza.getIdA2A());
+
+		versamento.setCodDominio(pendenza.getIdDominio());
+		versamento.setCodUnitaOperativa(pendenza.getIdUnitaOperativa());
+		versamento.setCodVersamentoEnte(pendenza.getIdPendenza());
+		versamento.setDataScadenza(pendenza.getDataScadenza()); 
+		versamento.setDataValidita(pendenza.getDataValidita());
+		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));;
+		versamento.setImportoTotale(pendenza.getImporto());
+		versamento.setCodVersamentoLotto(pendenza.getCartellaPagamento());
 		
-		versamento.setTassonomia(pendenzaVerificata.getTassonomia());
+		if(pendenza.getDatiAllegati() != null)
+			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati(),null));
+		
+		versamento.setTassonomia(pendenza.getTassonomia());
 		
 		versamento.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
-		versamento.setNumeroAvviso(pendenzaVerificata.getNumeroAvviso());
+		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 		
 		// voci pagamento
-		fillSingoliVersamentiFromVociPendenzaBase(versamento, pendenzaVerificata.getVoci());
+		fillSingoliVersamentiFromVociPendenzaBase(versamento, pendenza.getVoci());
 		
 		// tipo Pendenza
-		versamento.setCodTipoVersamento(pendenzaVerificata.getIdTipoPendenza());
+		versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
 		
 		// documento
-		if(pendenzaVerificata.getDocumento() != null) {
+		if(pendenza.getDocumento() != null) {
 			it.govpay.core.dao.commons.Versamento.Documento documento = new it.govpay.core.dao.commons.Versamento.Documento();
 			
-			documento.setCodDocumento(pendenzaVerificata.getDocumento().getIdentificativo());
-			if(pendenzaVerificata.getDocumento().getRata() != null)
-			documento.setCodRata(pendenzaVerificata.getDocumento().getRata().intValue());
-			documento.setDescrizione(pendenzaVerificata.getDocumento().getDescrizione());
+			documento.setCodDocumento(pendenza.getDocumento().getIdentificativo());
+			if(pendenza.getDocumento().getRata() != null)
+			documento.setCodRata(pendenza.getDocumento().getRata().intValue());
+			documento.setDescrizione(pendenza.getDocumento().getDescrizione());
 
 			versamento.setDocumento(documento );
 		}
 		
-		versamento.setProprieta(toProprietaPendenzaDTO(pendenzaVerificata.getProprieta()));
+		versamento.setProprieta(toProprietaPendenzaDTO(pendenza.getProprieta()));
+		
+		versamento.setAllegati(toAllegatiPendenzaDTO(pendenza.getAllegati()));
 		
 		return versamento;
 	}
@@ -258,5 +264,26 @@ public class VerificaConverter {
 			return ConverterUtils.toJSON(obj, null, serializationConfig);
 		}
 		return null;
+	}
+	
+	private static List<it.govpay.core.dao.commons.Versamento.AllegatoPendenza> toAllegatiPendenzaDTO(List<NuovoAllegatoPendenza> allegati) {
+		List<it.govpay.core.dao.commons.Versamento.AllegatoPendenza> allegatiDTO = null;
+		
+		if(allegati != null && allegati.size() > 0) {
+			allegatiDTO = new ArrayList<>();
+			
+			for (NuovoAllegatoPendenza allegato : allegati) {
+				it.govpay.core.dao.commons.Versamento.AllegatoPendenza allegatoDTO = new it.govpay.core.dao.commons.Versamento.AllegatoPendenza();
+				
+				allegatoDTO.setNome(allegato.getNome());
+				allegatoDTO.setTipo(allegato.getTipo());
+				allegatoDTO.setContenuto(allegato.getContenuto());
+				allegatoDTO.setDescrizione(allegato.getDescrizione());
+				
+				allegatiDTO.add(allegatoDTO);
+			}
+		}
+		
+		return allegatiDTO;
 	}
 }

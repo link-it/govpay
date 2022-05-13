@@ -2,11 +2,13 @@ package it.govpay.core.utils.tracciati.validator;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.core.beans.tracciati.Contabilita;
 import it.govpay.core.beans.tracciati.Documento;
+import it.govpay.core.beans.tracciati.NuovoAllegatoPendenza;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.QuotaContabilita;
 import it.govpay.core.beans.tracciati.Soggetto;
@@ -83,6 +85,8 @@ public class PendenzaPostValidator  implements IValidable{
 			for (VocePendenza vocePendenza : this.pendenzaVerificata.getVoci()) {
 				new VocePendenzaValidator(vocePendenza).validate();
 			}
+			
+			validaAllegati(this.pendenzaVerificata.getAllegati());
 		}
 	}
 
@@ -306,4 +310,17 @@ public class PendenzaPostValidator  implements IValidable{
 			  	}
 		 }
 	}	
+	
+	public void validaAllegati(List<NuovoAllegatoPendenza> allegati) throws ValidationException {
+		if(allegati != null && allegati.size() >0 ) {
+			for(NuovoAllegatoPendenza allegato: allegati) {
+				this.vf.getValidator("nome", allegato.getNome()).notNull().minLength(1).maxLength(255);
+				this.vf.getValidator("tipo", allegato.getTipo()).minLength(1).maxLength(255);
+				this.vf.getValidator("descrizione", allegato.getDescrizione()).minLength(1).maxLength(255);
+				
+				if(allegato.getContenuto() == null)
+					throw new ValidationException("Il campo " + "contenuto" + " non deve essere vuoto.");
+			}
+		}
+	}
 }

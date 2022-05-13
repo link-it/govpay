@@ -2,6 +2,7 @@ package it.govpay.backoffice.v1.beans.converter;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,11 +14,14 @@ import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.govpay.backoffice.v1.Allegati;
+import it.govpay.backoffice.v1.beans.AllegatoPendenza;
 import it.govpay.backoffice.v1.beans.Avviso;
 import it.govpay.backoffice.v1.beans.Avviso.StatoEnum;
 import it.govpay.backoffice.v1.beans.Documento;
 import it.govpay.backoffice.v1.beans.LinguaSecondaria;
 import it.govpay.backoffice.v1.beans.NuovaVocePendenza;
+import it.govpay.backoffice.v1.beans.NuovoAllegatoPendenza;
 import it.govpay.backoffice.v1.beans.Pendenza;
 import it.govpay.backoffice.v1.beans.PendenzaIndex;
 import it.govpay.backoffice.v1.beans.PendenzaPost;
@@ -38,6 +42,7 @@ import it.govpay.backoffice.v1.beans.VocePendenza;
 import it.govpay.backoffice.v1.beans.VocePendenzaRendicontazione;
 import it.govpay.backoffice.v1.beans.VocePendenzaRiscossione;
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Pagamento;
@@ -58,11 +63,11 @@ public class PendenzeConverter {
 	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto) throws ServiceException, IOException, java.io.IOException, ValidationException {
 		return toRsModel(dto.getVersamento(),
 				dto.getUnitaOperativa(), dto.getApplicazione(), dto.getDominio(), dto.getLstSingoliVersamenti(), 
-				dto.getPagamenti(), dto.getRpts(),true);
+				dto.getPagamenti(), dto.getRpts(), true, dto.getAllegati());
 	}
 
 	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.UnitaOperativa unitaOperativa, it.govpay.bd.model.Applicazione applicazione, 
-			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti,List<PagamentoPortale> pagamenti, List<Rpt> rpts , boolean addInfoIncasso) throws ServiceException, IOException, java.io.IOException, ValidationException {
+			it.govpay.bd.model.Dominio dominio, List<SingoloVersamento> singoliVersamenti,List<PagamentoPortale> pagamenti, List<Rpt> rpts , boolean addInfoIncasso, List<Allegato> allegati) throws ServiceException, IOException, java.io.IOException, ValidationException {
 		Pendenza rsModel = new Pendenza();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		if(versamento.getCodAnnoTributario()!= null)
@@ -177,6 +182,8 @@ public class PendenzeConverter {
 		rsModel.setUUID(versamento.getIdSessione());
 		
 		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
+		
+		rsModel.setAllegati(toAllegatiRsModel(allegati));
 
 		return rsModel;
 	}
@@ -554,6 +561,8 @@ public class PendenzeConverter {
 		versamento.setDataPromemoriaScadenza(pendenza.getDataPromemoriaScadenza());
 		
 		versamento.setProprieta(toProprietaPendenzaDTO(pendenza.getProprieta()));
+		
+		versamento.setAllegati(toAllegatiPendenzaDTO(pendenza.getAllegati()));
 
 		return versamento;
 	}
@@ -629,6 +638,8 @@ public class PendenzeConverter {
 		versamento.setDataPromemoriaScadenza(pendenza.getDataPromemoriaScadenza());
 		
 		versamento.setProprieta(toProprietaPendenzaDTO(pendenza.getProprieta()));
+		
+		versamento.setAllegati(toAllegatiPendenzaDTO(pendenza.getAllegati()));
 
 		return versamento;
 	}
@@ -805,5 +816,47 @@ public class PendenzeConverter {
 		}
 		
 		return rsModel;
+	}
+	
+	private static List<AllegatoPendenza> toAllegatiRsModel(List<Allegato> allegati) { 
+		List<AllegatoPendenza> rsModel = null;
+		
+		if(allegati != null && allegati.size() > 0) {
+			rsModel = new ArrayList<>();
+			
+			for (Allegato allegato : allegati) {
+				AllegatoPendenza allegatoRsModel = new AllegatoPendenza();
+				
+				allegatoRsModel.setNome(allegato.getNome());
+				allegatoRsModel.setTipo(allegato.getTipo());
+				allegatoRsModel.setDescrizione(allegato.getDescrizione());
+				allegatoRsModel.setContenuto(MessageFormat.format(Allegati.DETTAGLIO_PATH_PATTERN, allegato.getId()));
+				
+				rsModel.add(allegatoRsModel);
+			}
+		}
+		
+		return rsModel;
+	}
+	
+	private static List<it.govpay.core.dao.commons.Versamento.AllegatoPendenza> toAllegatiPendenzaDTO(List<NuovoAllegatoPendenza> allegati) {
+		List<it.govpay.core.dao.commons.Versamento.AllegatoPendenza> allegatiDTO = null;
+		
+		if(allegati != null && allegati.size() > 0) {
+			allegatiDTO = new ArrayList<>();
+			
+			for (NuovoAllegatoPendenza allegato : allegati) {
+				it.govpay.core.dao.commons.Versamento.AllegatoPendenza allegatoDTO = new it.govpay.core.dao.commons.Versamento.AllegatoPendenza();
+				
+				allegatoDTO.setNome(allegato.getNome());
+				allegatoDTO.setTipo(allegato.getTipo());
+				allegatoDTO.setDescrizione(allegato.getDescrizione());
+				allegatoDTO.setContenuto(allegato.getContenuto());
+				
+				allegatiDTO.add(allegatoDTO);
+			}
+		}
+		
+		return allegatiDTO;
 	}
 }

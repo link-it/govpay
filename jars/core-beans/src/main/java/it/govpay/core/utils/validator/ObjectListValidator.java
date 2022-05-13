@@ -51,7 +51,11 @@ public class ObjectListValidator {
 	
 	public ObjectListValidator validateObjects() throws ValidationException {
 		if(this.fieldValue != null) {
-			for(IValidable v : this.fieldValue) {
+			for (int i = 0; i < this.fieldValue.size(); i++) {
+				IValidable v = this.fieldValue.get(i);
+				if(v == null)
+					throw new ValidationException("L'elemento in posizione "+(i)+" del campo " + this.fieldName + " e' vuoto.");
+					
 				v.validate();
 			}
 		}

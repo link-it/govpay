@@ -118,6 +118,11 @@ button[mat-button] {
   word-break: break-all !important;
 }
 
+.text-break {
+    word-break: break-word!important;
+    word-wrap: break-word!important;
+}
+
 .fab-action {
   position: fixed !important;
   bottom: 24px;
@@ -238,3 +243,5 @@ mat-slide-toggle .mat-slide-toggle-content {
   margin: auto !important;
   background-color: #323232 !important;
 }
+
+@import 'survey_custom';

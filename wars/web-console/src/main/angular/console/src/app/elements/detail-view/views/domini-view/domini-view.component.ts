@@ -104,9 +104,9 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     this._paginatorOptions.unita.url = this._paginatorOptions.unita.base+'?risultatiPerPagina=5&ordinamento=ragioneSociale';
     this._paginatorOptions.entrate.url = this._paginatorOptions.entrate.base+'?risultatiPerPagina=5&ordinamento=descrizione';
     this._paginatorOptions.pendenze.url = this._paginatorOptions.pendenze.base+'?risultatiPerPagina=5&ordinamento=descrizione';
-    const reqs: string[] = [ this._paginatorOptions.iban.url ];
+    const reqs: string[] = [ this._paginatorOptions.iban.url, this._paginatorOptions.entrate.url ];
     if (isIntermediato) {
-      reqs.push(this._paginatorOptions.unita.url, this._paginatorOptions.entrate.url, this._paginatorOptions.pendenze.url);
+      reqs.push(this._paginatorOptions.unita.url, this._paginatorOptions.pendenze.url);
     }
     this.gps.updateSpinner(true);
     this.gps.forkService(reqs).subscribe(
@@ -114,8 +114,8 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       this.gps.updateSpinner(false);
       const _options: any = {
         iban: _responses[0].body,
-        unita: (isIntermediato)?_responses[1].body:null,
-        entrate: (isIntermediato)?_responses[2].body:null,
+        entrate: _responses[1].body,
+        unita: (isIntermediato)?_responses[2].body:null,
         pendenze: (isIntermediato)?_responses[3].body:null
       };
       this.updateOptions(_options);

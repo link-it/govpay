@@ -74,7 +74,7 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 			}
 
 			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio in corso...");
-			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrata(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, headerValues, configWrapper);
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrata(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, headerValues, configWrapper, this.getApiName(), this.getAuthType());
 			userDetails.setIdTransazioneAutenticazione(transactionId);
 			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio completata.");
 			return userDetails;
@@ -113,7 +113,7 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 				throw new NotFoundException("Utenza "+username+" non trovata.");
 			
 			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio in corso...");
-			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrataInSessione(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, attributeValues, userDetailFromSession, configWrapper);
+			GovpayLdapUserDetails userDetailFromUtenzaCittadino = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrataInSessione(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, attributeValues, userDetailFromSession, configWrapper, this.getApiName(), this.getAuthType());
 			userDetailFromUtenzaCittadino.setIdTransazioneAutenticazione(transactionId);
 			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio completata.");
 			return userDetailFromUtenzaCittadino;

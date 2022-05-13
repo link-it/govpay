@@ -349,7 +349,7 @@
 					<xsd:documentation>Contiene la tipologia di Bollo Digitale.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="hashDocumento" type="pay_i:stBase64Binary70" minOccurs="1">
+			<xsd:element name="hashDocumento" type="pay_i:stText70" minOccurs="1">
 				<xsd:annotation>
 					<xsd:documentation>Contiene l’impronta informatica (digest), rappresentata in "base 64 binary", del documento informatico o della segnatura di protocollo cui è associata la marca da bollo digitale</xsd:documentation>
 				</xsd:annotation>

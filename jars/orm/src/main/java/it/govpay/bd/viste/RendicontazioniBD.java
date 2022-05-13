@@ -17,6 +17,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
@@ -216,7 +217,8 @@ public class RendicontazioniBD extends BasicBD {
 			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_DATA_ACQUISIZIONE, true));
 			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_DATA_ORA_FLUSSO, true));
 			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_DATA_REGOLAMENTO, true));
-			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_DESCRIZIONE_STATO, true));
+			if(!this.getJdbcProperties().getDatabase().equals(TipiDatabase.ORACLE))
+				sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_DESCRIZIONE_STATO, true));
 			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_IMPORTO_TOTALE_PAGAMENTI, true));
 			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_IUR, true));
 			sqlQueryObjectInterno.addSelectField(converter.toColumn(model.FR_NUMERO_PAGAMENTI, true));
@@ -249,7 +251,8 @@ public class RendicontazioniBD extends BasicBD {
 			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_DATA_ACQUISIZIONE, false));
 			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_DATA_ORA_FLUSSO, false));
 			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_DATA_REGOLAMENTO, false));
-			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_DESCRIZIONE_STATO, false));
+			if(!this.getJdbcProperties().getDatabase().equals(TipiDatabase.ORACLE))
+				sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_DESCRIZIONE_STATO, false));
 			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_IMPORTO_TOTALE_PAGAMENTI, false));
 			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_IUR, false));
 			sqlQueryObjectDistinctID.addSelectField(converter.toColumn(model.FR_NUMERO_PAGAMENTI, false));
@@ -277,7 +280,8 @@ public class RendicontazioniBD extends BasicBD {
 			returnTypes.add(model.FR_DATA_ACQUISIZIONE.getFieldType());
 			returnTypes.add(model.FR_DATA_ORA_FLUSSO.getFieldType());
 			returnTypes.add(model.FR_DATA_REGOLAMENTO.getFieldType());
-			returnTypes.add(model.FR_DESCRIZIONE_STATO.getFieldType());
+			if(!this.getJdbcProperties().getDatabase().equals(TipiDatabase.ORACLE))
+				returnTypes.add(model.FR_DESCRIZIONE_STATO.getFieldType());
 			returnTypes.add(model.FR_IMPORTO_TOTALE_PAGAMENTI.getFieldType());
 			returnTypes.add(model.FR_IUR.getFieldType());
 			returnTypes.add(model.FR_NUMERO_PAGAMENTI.getFieldType());
@@ -303,7 +307,8 @@ public class RendicontazioniBD extends BasicBD {
 				vo.setFrDataAcquisizione(BasicBD.getValueOrNull(row.get(pos++), Date.class));
 				vo.setFrDataOraFlusso(BasicBD.getValueOrNull(row.get(pos++), Date.class));
 				vo.setFrDataRegolamento(BasicBD.getValueOrNull(row.get(pos++), Date.class));
-				vo.setFrDescrizioneStato(BasicBD.getValueOrNull(row.get(pos++), String.class));
+				if(!this.getJdbcProperties().getDatabase().equals(TipiDatabase.ORACLE))
+					vo.setFrDescrizioneStato(BasicBD.getValueOrNull(row.get(pos++), String.class));
 				vo.setFrImportoTotalePagamenti(BasicBD.getValueOrNull(row.get(pos++), Double.class));
 				vo.setFrIur(BasicBD.getValueOrNull(row.get(pos++), String.class));
 				vo.setFrNumeroPagamenti(BasicBD.getValueOrNull(row.get(pos++), Long.class));

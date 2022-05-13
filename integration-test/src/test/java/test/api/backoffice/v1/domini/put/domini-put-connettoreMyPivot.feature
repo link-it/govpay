@@ -48,6 +48,8 @@ Examples:
 | tipiPendenza | [ '#(codEntrataSegreteria)' ] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
 | tipiPendenza | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
 | emailAllegato | false | false |
+| intervalloCreazioneTracciato | 1 | 1 |
+| intervalloCreazioneTracciato | 12 | 12 |
 
 
 Scenario Outline: Modifica di un connettore mypivot di un dominio con connettore di tipo file system (<field>)
@@ -79,6 +81,8 @@ Examples:
 | fileSystemPath | '/var/' | '/var/' |
 | tipiPendenza | [ '#(codEntrataSegreteria)' ] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
 | tipiPendenza | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] | [{ 'idTipoPendenza' : '#(codEntrataSegreteria)' , 'descrizione' : 'Diritti e segreteria'}] |
+| intervalloCreazioneTracciato | 1 | 1 |
+| intervalloCreazioneTracciato | 12 | 12 |
 
 
 Scenario Outline: Modifica di un servizio mypivot di un dominio con connettore di tipo email <field> non valida
@@ -104,6 +108,8 @@ Examples:
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
 | tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
 | emailAllegato | emailAllegato | null | 'emailAllegato' |
+| intervalloCreazioneTracciato | intervalloCreazioneTracciato | null | 'intervalloCreazioneTracciato' |
+| intervalloCreazioneTracciato | intervalloCreazioneTracciato | 0 | 'intervalloCreazioneTracciato' |
 
 
 Scenario Outline: Modifica di un servizio mypivot di un dominio con connettore di tipo email <field> non valida
@@ -150,4 +156,7 @@ Examples:
 | fileSystemPath | fileSystemPath | null | 'fileSystemPath' |
 | tipiPendenza | tipiPendenza | null | 'tipiPendenza' |
 | tipiPendenza | tipiPendenza | [ '#(loremIpsum)' ] | 'idTipoPendenza' |
+| intervalloCreazioneTracciato | intervalloCreazioneTracciato | null | 'intervalloCreazioneTracciato' |
+| intervalloCreazioneTracciato | intervalloCreazioneTracciato | 0 | 'intervalloCreazioneTracciato' |
+
 

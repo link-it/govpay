@@ -26,6 +26,14 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 Scenario Outline: <field> non valida
 
+* def pendenzaVerificataV2 = 
+"""
+{
+	"stato" : null,
+	"pendenza" : null
+}
+"""
+
 * def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_definito.json')
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
@@ -34,16 +42,19 @@ Scenario Outline: <field> non valida
 * def ccp = getCurrentTimeMillis()
 * def importo = 100.99
 
-* set pendenza.idA2A = idA2A
-* set pendenza.idPendenza = idPendenza
-* set pendenza.numeroAvviso = numeroAvviso
-* set pendenza.stato = 'NON_ESEGUITA'
+* set pendenzaPut.idA2A = idA2A
+* set pendenzaPut.idPendenza = idPendenza
+* set pendenzaPut.numeroAvviso = numeroAvviso
+* remove pendenzaPut.stato
 
 * set <fieldRequest> = <fieldValue>
 
+* set pendenzaVerificataV2.pendenza = pendenzaPut
+* set pendenzaVerificataV2.stato = 'NON_ESEGUITA'
+
 Given url ente_api_url
 And path '/v2/avvisi', idDominio, numeroAvviso
-And request pendenza
+And request pendenzaVerificataV2
 When method post
 Then status 200
 
@@ -128,16 +139,19 @@ Scenario Outline: <field> non valida
 * def ccp = getCurrentTimeMillis()
 * def importo = 100.99
 
-* set pendenza.idA2A = idA2A
-* set pendenza.idPendenza = idPendenza
-* set pendenza.numeroAvviso = numeroAvviso
-* set pendenza.stato = 'NON_ESEGUITA'
+* set pendenzaPut.idA2A = idA2A
+* set pendenzaPut.idPendenza = idPendenza
+* set pendenzaPut.numeroAvviso = numeroAvviso
+* remove pendenzaPut.stato
 
 * set <fieldRequest> = <fieldValue>
 
+* set pendenzaVerificataV2.pendenza = pendenzaPut
+* set pendenzaVerificataV2.stato = 'NON_ESEGUITA'
+
 Given url ente_api_url
 And path '/v2/avvisi', idDominio, numeroAvviso
-And request pendenza
+And request pendenzaVerificataV2
 When method post
 Then status 200
 
@@ -251,3 +265,50 @@ Scenario: Numero voci eccessivo
 * match response contains { dati: '##null'}
 * match response.faultBean == esitoAttivaRPT
 * match response.faultBean.description contains 'voci'
+
+
+Scenario Outline: <field> non valida
+
+* def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_definito.json')
+* set pendenzaPut.allegati[0].nome = 'tipoPendenza-promemoria-oggetto-freemarker.ftl'
+* set pendenzaPut.allegati[0].tipo = 'application/json'
+* set pendenzaPut.allegati[0].descrizione = 'test allegato'
+* set pendenzaPut.allegati[0].contenuto = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/pendenze/put/msg/tipoPendenza-promemoria-oggetto-freemarker.ftl'))
+
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* call read('classpath:utils/pa-prepara-avviso.feature')
+* def ccp = getCurrentTimeMillis()
+* def importo = 100.99
+
+* set pendenzaPut.idA2A = idA2A
+* set pendenzaPut.idPendenza = idPendenza
+* set pendenzaPut.numeroAvviso = numeroAvviso
+* remove pendenzaPut.stato
+
+* set <fieldRequest> = <fieldValue>
+
+* set pendenzaVerificataV2.pendenza = pendenzaPut
+* set pendenzaVerificataV2.stato = 'NON_ESEGUITA'
+
+Given url ente_api_url
+And path '/v2/avvisi', idDominio, numeroAvviso
+And request pendenzaVerificataV2
+When method post
+Then status 200
+
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-attiva-rpt.feature')
+* match response contains { dati: '##null'}
+* match response.faultBean == esitoAttivaRPT
+* match response.faultBean.description contains <fieldResponse>
+
+Examples:
+| field | fieldRequest | fieldValue | fieldResponse |
+| allegati.nome | pendenzaPut.allegati[0].nome | null | 'nome' |
+| allegati.nome | pendenzaPut.allegati[0].nome | loremIpsum | 'nome' |
+| allegati.tipo | pendenzaPut.allegati[0].tipo | loremIpsum | 'tipo' |
+| allegati.descrizione | pendenzaPut.allegati[0].descrizione | loremIpsum | 'descrizione' |
+| allegati.contenuto | pendenzaPut.allegati[0].contenuto | null | 'contenuto' |
+
+

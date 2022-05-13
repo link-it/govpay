@@ -22,7 +22,7 @@ Scenario:
   * def getGovPayApiBaseUrl =
     """
 		function(param) {
-			if (param.api == 'pagamento')
+			if (param.api == 'pagamento' || param.api == 'user')
 				return govpay_url + '/govpay/frontend/api/' + param.api + '/rs/' + param.autenticazione + '/' + param.versione;
 			else
 				return govpay_url + '/govpay/backend/api/' + param.api + '/rs/' + param.autenticazione + '/' + param.versione;

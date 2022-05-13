@@ -44,6 +44,7 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.Dominio;
 //import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Pagamento;
@@ -509,6 +510,9 @@ public class PendenzeDAO extends BaseDAO{
 
 				response.setRpts(findAll);
 			}
+			
+			List<Allegato> allegati = versamento.getAllegati(versamentiBD);
+			response.setAllegati(allegati);
 
 			return response;
 		} finally {
@@ -583,6 +587,9 @@ public class PendenzeDAO extends BaseDAO{
 
 				response.setRpts(findAll);
 			}
+			
+			List<Allegato> allegati = versamento.getAllegati(versamentiBD);
+			response.setAllegati(allegati);
 
 		} catch (NotFoundException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);
@@ -982,6 +989,12 @@ public class PendenzeDAO extends BaseDAO{
 				chiediVersamento =  VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUo, codApplicazione, json);
 			} else {
 				PendenzaPost pendenzaPost = PendenzaPost.parse(json);
+				
+				// imposto i dati idDominio, idTipoVersamento e idUnitaOperativa fornite nella URL di richiesta, sovrascrivendo eventuali valori impostati dalla trasformazione.
+				pendenzaPost.setIdDominio(codDominio);
+				pendenzaPost.setIdTipoPendenza(codTipoVersamento);
+				pendenzaPost.setIdUnitaOperativa(codUo);
+				
 				new PendenzaPostValidator(pendenzaPost).validate();
 
 				it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);

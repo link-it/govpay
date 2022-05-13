@@ -649,43 +649,43 @@ public class RtUtils extends NdpValidationUtils {
 				
 				// aggiornamento informazioni pagamento
 				versamentiBD.updateVersamentoInformazioniPagamento(versamento.getId(), dataPagamento, totalePagato, BigDecimal.ZERO, iuvPagamento, StatoPagamento.PAGATO);
+				
+				// schedulo l'invio del promemoria ricevuta
+				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
+				Promemoria promemoria = null;
+				if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaAbilitato()) {
+					log.debug("Schedulazione invio ricevuta di pagamento in corso...");
+					it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria();
+					try {
+						promemoria = promemoriaBD.creaPromemoriaRicevuta(rpt, versamento, versamento.getTipoVersamentoDominio(configWrapper));
+						String msg = "non e' stato trovato un destinatario valido, l'invio non verra' schedulato.";
+						if(promemoria.getDestinatarioTo() != null) {
+							msg = "e' stato trovato un destinatario valido, l'invio e' stato schedulato con successo.";
+							PromemoriaBD promemoriaBD2 = new PromemoriaBD(rptBD);
+							promemoriaBD2.setAtomica(false); // condivisione della connessione;
+							promemoriaBD2.insertPromemoria(promemoria);
+							log.debug("Inserimento promemoria Pendenza["+ versamento.getCodVersamentoEnte() +"] effettuato.");
+						}
+						log.debug("Creazione promemoria completata: "+msg);
+					} catch (JAXBException | SAXException e) {
+						log.error("Errore durante la lettura dei dati della RT: ", e.getMessage(),e);
+					}
+				}
+				
+				//schedulo l'invio della notifica APPIO
+				if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaAbilitato()) {
+					log.debug("Creo notifica avvisatura ricevuta tramite App IO..."); 
+					NotificaAppIo notificaAppIo = new NotificaAppIo(rpt, versamento, it.govpay.model.NotificaAppIo.TipoNotifica.RICEVUTA, configWrapper);
+					log.debug("Creazione notifica avvisatura ricevuta tramite App IO completata.");
+					NotificheAppIoBD notificheAppIoBD = new NotificheAppIoBD(versamentiBD);
+					notificheAppIoBD.setAtomica(false); // riuso connessione
+					notificheAppIoBD.insertNotifica(notificaAppIo);
+					log.debug("Inserimento su DB notifica avvisatura ricevuta tramite App IO completata.");
+				}
 				break;
 			default:
 				// do nothing
 				break;
-			}
-			
-			// schedulo l'invio del promemoria ricevuta
-			TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
-			Promemoria promemoria = null;
-			if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaAbilitato()) {
-				log.debug("Schedulazione invio ricevuta di pagamento in corso...");
-				it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria();
-				try {
-					promemoria = promemoriaBD.creaPromemoriaRicevuta(rpt, versamento, versamento.getTipoVersamentoDominio(configWrapper));
-					String msg = "non e' stato trovato un destinatario valido, l'invio non verra' schedulato.";
-					if(promemoria.getDestinatarioTo() != null) {
-						msg = "e' stato trovato un destinatario valido, l'invio e' stato schedulato con successo.";
-						PromemoriaBD promemoriaBD2 = new PromemoriaBD(rptBD);
-						promemoriaBD2.setAtomica(false); // condivisione della connessione;
-						promemoriaBD2.insertPromemoria(promemoria);
-						log.debug("Inserimento promemoria Pendenza["+ versamento.getCodVersamentoEnte() +"] effettuato.");
-					}
-					log.debug("Creazione promemoria completata: "+msg);
-				} catch (JAXBException | SAXException e) {
-					log.error("Errore durante la lettura dei dati della RT: ", e.getMessage(),e);
-				}
-			}
-			
-			//schedulo l'invio della notifica APPIO
-			if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaAbilitato()) {
-				log.debug("Creo notifica avvisatura ricevuta tramite App IO..."); 
-				NotificaAppIo notificaAppIo = new NotificaAppIo(rpt, versamento, it.govpay.model.NotificaAppIo.TipoNotifica.RICEVUTA, configWrapper);
-				log.debug("Creazione notifica avvisatura ricevuta tramite App IO completata.");
-				NotificheAppIoBD notificheAppIoBD = new NotificheAppIoBD(versamentiBD);
-				notificheAppIoBD.setAtomica(false); // riuso connessione
-				notificheAppIoBD.insertNotifica(notificaAppIo);
-				log.debug("Inserimento su DB notifica avvisatura ricevuta tramite App IO completata.");
 			}
 			
 			// Aggiornamento dello stato del pagamento portale associato all'RPT

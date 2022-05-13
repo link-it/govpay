@@ -1,23 +1,18 @@
 <div class="container p-0 regular-16 normal-color" *ngIf="info">
   <div class="row px-3">
-    <div class="col-12 col-sm-8 px-0 px-0">
+    <div class="col-12 col-sm-12 px-0 px-0">
       <div class="row lh-130 mb-2 break-all" *ngIf="info.titolo">
-        <div class="col-5 color-gray">{{info.titolo?.label}}:</div>
-        <div class="col-7"><p class="m-0 word-break-all">{{info.titolo?.value}}</p></div>
+        <div class="col-lg-3 col-sm-4 color-gray">{{info.titolo?.label}}:</div>
+        <div class="col-lg-9 col-sm-8"><p class="m-0 word-break-all">{{info.titolo?.value}}</p></div>
       </div>
       <div class="row lh-130 mb-2 break-all" *ngIf="info.sottotitolo">
-        <div class="col-5 color-gray">{{info.sottotitolo?.label}}:</div>
-        <div class="col-7"><p class="m-0 word-break-all">{{info.sottotitolo?.value}}</p></div>
+        <div class="col-lg-3 col-sm-4 color-gray">{{info.sottotitolo?.label}}:</div>
+        <div class="col-lg-9 col-sm-8"><p class="m-0 word-break-all">{{info.sottotitolo?.value}}</p></div>
       </div>
       <div class="row lh-130 mb-2 break-all" *ngFor="let extra of info.extraInfo">
-        <div class="col-5 color-gray">{{extra.label}}</div>
-        <div class="col-7"><p class="m-0 word-break-all">{{extra.value}}</p></div>
+        <div class="col-lg-3 col-sm-4 color-gray">{{extra.label}}</div>
+        <div class="col-lg-9 col-sm-8"><p class="m-0 word-break-all">{{extra.value}}</p></div>
       </div>
-    </div>
-    <div class="col-12 col-sm-4 px-0 pt-3 pt-sm-0 text-right">
-      <p class="text-truncate medium-24 lh-90 mb-1" *ngIf="info.importo">{{info.importo}}</p>
-      <p class="text-truncate color-gray medium-18">{{info.stato}}</p>
-      <p class="text-truncate color-gray regular-14" *ngIf="info.socketNotification">{{info.avanzamento || ''}}</p>
     </div>
   </div>
 </div>

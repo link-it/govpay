@@ -104,3 +104,71 @@ When method get
 Then status 200
 And match response.rpp[0].rpt.soggettoVersante == null
 
+
+@test1
+Scenario: Pagamento avviso precaricato autenticato multivoce
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
+* def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_multivoce.json')
+
+Given url pendenzeBaseurl
+And path 'pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+And request pendenza
+When method put
+Then status 201
+
+* def numeroAvviso = response.numeroAvviso
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
+
+Given url pagamentiBaseurl
+And path '/pagamenti'
+And headers basicAutenticationHeader
+And request pagamentoPost
+When method post
+Then status 201
+And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
+
+Given url pagamentiBaseurl
+And path '/pagamenti/byIdSession/', response.idSession
+And headers basicAutenticationHeader
+When method get
+Then status 200
+
+
+@test2
+Scenario: Pagamento avviso precaricato autenticato multivoce multibeneficiario
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
+* def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_multivoce.json')
+* def idDominio_2 = '12345678902'
+* set pendenza.voci[1].idDominio = idDominio_2
+
+Given url pendenzeBaseurl
+And path 'pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+And request pendenza
+When method put
+Then status 201
+
+* def numeroAvviso = response.numeroAvviso
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'basic'})
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_riferimento_avviso.json')
+
+Given url pagamentiBaseurl
+And path '/pagamenti'
+And headers basicAutenticationHeader
+And request pagamentoPost
+When method post
+Then status 422
+And match response == { categoria: 'RICHIESTA', codice: '#notnull', descrizione: 'Richiesta non valida', dettaglio: '#notnull' , id: '#notnull', location: '#notnull' }
+And match response.codice == 'VER_038'
+And match response.dettaglio == '#("La pendenza (IdA2A:"+ idA2A +" Id:"+ idPendenza +") e\' di tipo multibeneficiario non consentito per pagamenti spontanei.")'
+
+
+

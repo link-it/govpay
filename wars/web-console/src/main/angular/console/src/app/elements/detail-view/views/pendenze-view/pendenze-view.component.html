@@ -2,7 +2,16 @@
   <mat-tab label="DATI PENDENZA">
     <div class="container my-4 card-container">
       <mat-card class="shadow no-border-radius mb-3" *ngIf="info">
-        <p class="d-block matcard-title pb-3 color-gray regular-24">Riepilogo</p>
+        <div class="row px-3">
+          <div class="col-sm-8 px-0 pt-3 pt-sm-0">
+            <p class="d-block matcard-title pb-3 color-gray regular-24">Riepilogo</p>
+          </div>
+          <div class="col-sm-4 px-0 pt-3 pt-sm-0 text-right">
+            <p class="text-truncate medium-24 lh-90 mb-1" *ngIf="info.importo">{{info.importo}}</p>
+            <p class="text-truncate color-gray medium-18 mb-0">{{info.stato}}</p>
+            <p class="text-truncate color-gray regular-14 mb-0" *ngIf="info.socketNotification">{{info.avanzamento || ''}}</p>
+          </div>
+        </div>
         <link-riepilogo-view [info]="info"></link-riepilogo-view>
       </mat-card>
       <mat-card class="shadow no-border-radius mb-3" *ngIf="infoVisualizzazione.visible">
@@ -25,6 +34,17 @@
             <p class="text-truncate mb-1">{{us.currencyFormat(_paymentsSum)}}</p>
           </div>
         </div>
+      </mat-card>
+      <mat-card class="shadow no-border-radius mb-3">
+        <div class="d-flex flex-row">
+          <p class="w-100 mr-3 matcard-title color-gray regular-24 lh-100 mb-3">Allegati</p>
+        </div>
+        <mat-card-content>
+          <p class="d-block matcard-title regular-16 normal-color" *ngIf="allegati.length == 0">Nessun allegato presente.</p>
+          <link-item-view *ngFor="let item of allegati" [component-data]="item" [use-item-view-directive]="true"
+                          [show-over-icons]="false" [over-icons]="_importiOverIcons" class="link-item-view-fill">
+          </link-item-view>
+        </mat-card-content>
       </mat-card>
       <mat-card class="shadow no-border-radius mb-3">
         <div class="d-flex flex-row">

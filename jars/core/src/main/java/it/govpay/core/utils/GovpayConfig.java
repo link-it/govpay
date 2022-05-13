@@ -152,6 +152,8 @@ public class GovpayConfig {
 	private Integer numeroMassimoConnessioniPerPool;
 	private Integer numeroMassimoConnessioniPerRouteDefault;
 	
+	private Integer numeroMassimoGiorniRPTPendenti;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -226,6 +228,8 @@ public class GovpayConfig {
 		this.numeroMassimoConnessioniPerPool = 200;
 		
 		this.aggiornamentoValiditaMandatorio = false;
+		
+		this.numeroMassimoGiorniRPTPendenti = 30;
 		
 		try {
 
@@ -726,9 +730,41 @@ public class GovpayConfig {
 				this.timeoutInvioRPTModello3Millis = 100;
 			}
 			
+			
+			String numeroMassimoGiorniRPTPendentiString = getProperty("it.govpay.batch.recuperoRptPendenti.limiteTemporaleRecupero", this.props, false, log);
+			try{
+				this.numeroMassimoGiorniRPTPendenti = Integer.parseInt(numeroMassimoGiorniRPTPendentiString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.batch.recuperoRptPendenti.limiteTemporaleRecupero\" impostata con valore di default 30");
+				this.numeroMassimoGiorniRPTPendenti = 30;
+			}
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
+		}
+	}
+	
+	public synchronized void leggiFileEsternoLog4j2() {
+		// Recupero la configurazione della working dir Se e' configurata, la uso come prioritaria
+		try {
+			if(this.resourceDir != null) {
+				File resourceDirFile = new File(escape(this.resourceDir));
+				if(!resourceDirFile.isDirectory())
+					throw new Exception("Il path indicato nella property \"it.govpay.resource.path\" (" + this.resourceDir + ") non esiste o non e' un folder.");
+
+				File log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + LOG4J2_XML_FILE_NAME);
+
+				if(log4j2ConfigFile.exists()) {
+					this.log4j2Config = log4j2ConfigFile.toURI();
+					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Individuata configurazione log4j: " + this.log4j2Config);
+				} else {
+					this.log4j2Config = null;
+					LoggerWrapperFactory.getLogger(GovpayConfig.class).info("Individuata configurazione log4j interna.");
+				}
+			}
+		} catch (Exception e) {
+			LoggerWrapperFactory.getLogger(GovpayConfig.class).warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
 		}
 	}
 	
@@ -1087,5 +1123,9 @@ public class GovpayConfig {
 	
 	public Integer getTimeoutInvioRPTModello3Millis() {
 		return timeoutInvioRPTModello3Millis;
+	}
+	
+	public Integer getNumeroMassimoGiorniRPTPendenti() {
+		return numeroMassimoGiorniRPTPendenti;
 	}
 }

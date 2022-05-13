@@ -1,5 +1,6 @@
 package it.govpay.backoffice.v1.beans;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 
@@ -11,8 +12,8 @@ public class ListaRpp extends Lista<RppIndex> {
 		super();
 	}
 	
-	public ListaRpp(List<RppIndex> rpt, URI requestUri, Long count, Integer pagina, Integer limit) {
-		super(rpt, requestUri, count, pagina, limit);
+	public ListaRpp(List<RppIndex> risultati, URI requestUri, Long count, Integer pagina, Integer limit, BigDecimal maxRisultati) {
+		super(risultati, requestUri, count, pagina, limit, maxRisultati);
 	}
 	
 }
