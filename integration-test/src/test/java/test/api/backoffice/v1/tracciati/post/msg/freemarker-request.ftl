@@ -46,10 +46,16 @@
 			<#if rataString?matches('[0-9]*')>
 				"rata": ${csvUtils.toJsonValue(csvRecord, 85)},	
 			<#else>
-				"soglia": {
-					"tipo": "${rataString[0..4]}",
-					"giorni": ${rataString[5..]} 
-				},	  
+				<#if rataString?matches('RIDOTTO|SCONTATO')>
+					"soglia": {
+						"tipo": ${csvUtils.toJsonValue(csvRecord, 85)}
+					},
+				<#else>
+					"soglia": {
+						"tipo": "${rataString[0..4]}",
+						"giorni": ${rataString[5..]} 
+					},	 
+				</#if> 
 			</#if>
 		</#if>
 		"descrizione": ${csvUtils.toJsonValue(csvRecord, 84)}

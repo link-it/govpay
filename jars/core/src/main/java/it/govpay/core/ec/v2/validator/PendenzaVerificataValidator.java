@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.core.utils.validator.IValidable;
@@ -18,6 +19,7 @@ import it.govpay.ec.v2.beans.NuovoDocumento;
 import it.govpay.ec.v2.beans.PendenzaVerificata;
 import it.govpay.ec.v2.beans.Soggetto;
 import it.govpay.ec.v2.beans.TipoSogliaVincoloPagamento;
+import it.govpay.model.Versamento.TipoSogliaVersamento;
 
 public class PendenzaVerificataValidator  implements IValidable{
 
@@ -148,10 +150,28 @@ public class PendenzaVerificataValidator  implements IValidable{
 			if(nuovoDocumento.getRata() != null) {
 				ValidatoreUtils.validaRata(vf, "rata", nuovoDocumento.getRata());
 			} else if(nuovoDocumento.getSoglia() != null) {
-				
-			  	ValidatoreUtils.validaSogliaGiorni(vf, "giorni", nuovoDocumento.getSoglia().getGiorni());
-			  	validaSogliaTipo(vf, "tipo", nuovoDocumento.getSoglia().getTipo());
-			  	
+				ValidatoreUtils.validaSogliaTipo(vf, "tipo", nuovoDocumento.getSoglia().getTipo());
+
+				try {
+					TipoSogliaVersamento tipoSoglia = TipoSogliaVersamento.toEnum(nuovoDocumento.getSoglia().getTipo());
+
+					switch(tipoSoglia) {
+					case ENTRO:
+					case OLTRE:
+						ValidatoreUtils.validaSogliaGiorni(vf, "giorni", nuovoDocumento.getSoglia().getGiorni());
+						break;
+					case RIDOTTO:
+					case SCONTATO:
+						try {
+						this.vf.getValidator("giorni", nuovoDocumento.getSoglia().getGiorni()).isNull();
+						} catch (Exception e) {
+							throw new ValidationException("Il campo giorni deve essere vuoto quando il campo tipo assume valore 'RIDOTTO' o 'SCONTATO'.");
+						}
+						break;
+					}
+				}catch (ServiceException e) {
+					throw new ValidationException(e);
+				}
 			}
 		}
 	}

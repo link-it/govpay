@@ -6,9 +6,11 @@ import java.text.MessageFormat;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
@@ -22,9 +24,11 @@ import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.LabelAvvisiProperties;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.IbanAccredito;
+import it.govpay.model.Versamento.TipoSogliaVersamento;
 import it.govpay.stampe.model.AvvisoPagamentoInput;
 import it.govpay.stampe.model.PaginaAvvisoDoppia;
 import it.govpay.stampe.model.PaginaAvvisoSingola;
@@ -35,7 +39,7 @@ import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 
 public class AvvisoPagamentoUtils {
 	
-	public static AvvisoPagamentoInput fromVersamento(PrintAvvisoVersamentoDTO printAvviso) throws ServiceException {
+	public static AvvisoPagamentoInput fromVersamento(PrintAvvisoVersamentoDTO printAvviso) throws ServiceException, UtilsException {
 		it.govpay.bd.model.Versamento versamento = printAvviso.getVersamento();
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -63,7 +67,7 @@ public class AvvisoPagamentoUtils {
 		return input;
 	}
 
-	public static AvvisoPagamentoInput fromDocumento(PrintAvvisoDocumentoDTO printAvviso, List<Versamento> versamenti, Logger log) throws ServiceException, UnprocessableEntityException { 
+	public static AvvisoPagamentoInput fromDocumento(PrintAvvisoDocumentoDTO printAvviso, List<Versamento> versamenti, Logger log) throws ServiceException, UnprocessableEntityException, UtilsException { 
 		Documento documento = printAvviso.getDocumento();
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -73,6 +77,66 @@ public class AvvisoPagamentoUtils {
 
 		if(input.getPagine() == null)
 			input.setPagine(new PagineAvviso());
+		
+		int numeroViolazioneCDS = 0; 
+		
+		for (Versamento versamento : versamenti) {
+			if(versamento.getTipoSoglia() != null && 
+					(versamento.getTipoSoglia().equals(TipoSogliaVersamento.RIDOTTO)
+					|| versamento.getTipoSoglia().equals(TipoSogliaVersamento.SCONTATO))) {
+				numeroViolazioneCDS ++;
+			}
+		}
+		
+		boolean violazioneCDS = numeroViolazioneCDS == versamenti.size();
+		
+		// caso speciale Violazione CDS
+		if(violazioneCDS && versamenti.size() == 2) {
+			Versamento v1 = versamenti.remove(0);
+			Versamento v2 = versamenti.remove(0);
+			
+			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v2, documento.getDominio(configWrapper), v2.getUo(configWrapper), input);
+			AvvisoPagamentoUtils.impostaAnagraficaDebitore(v2.getAnagraficaDebitore(), input);
+			
+			RataAvviso rata1 = getRata(v1, input, sdfDataScadenza);
+			RataAvviso rata2 = getRata(v2, input, sdfDataScadenza);
+			
+			if(input.getDiPoste() == null) { // pagina singola
+				RataAvviso rataScontato = null, rataRidotto = null ;
+				
+				if(rata1.getTipo().equals(TipoSogliaVersamento.RIDOTTO.toString().toLowerCase())) {
+					rataRidotto = rata1;
+				}
+				
+				if(rata1.getTipo().equals(TipoSogliaVersamento.SCONTATO.toString().toLowerCase())) {
+					rataScontato = rata1;
+				}
+				
+				if(rata2.getTipo().equals(TipoSogliaVersamento.RIDOTTO.toString().toLowerCase())) {
+					rataRidotto = rata2;
+				}
+				
+				if(rata2.getTipo().equals(TipoSogliaVersamento.SCONTATO.toString().toLowerCase())) {
+					rataScontato = rata2;
+				}
+				
+				// riporto gli unici campi che sono differenti tra le due rate e creo la pagina unica
+				rataScontato.setCodiceAvviso2(rataRidotto.getCodiceAvviso2());
+				rataScontato.setQrCode2(rataRidotto.getQrCode2());
+				rataScontato.setImportoRidotto(rataRidotto.getImportoRidotto());
+				
+				PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
+				pagina.setRata(rataScontato);
+				input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+			} else { // due pagine
+				PaginaAvvisoSingola pagina1 = new PaginaAvvisoSingola();
+				pagina1.setRata(rata1);
+				PaginaAvvisoSingola pagina2 = new PaginaAvvisoSingola();
+				pagina2.setRata(rata2);
+				input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina1);
+				input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina2);
+			}
+		}
 
 		while(versamenti.size() > 0 && versamenti.get(0).getNumeroRata() == null && versamenti.get(0).getTipoSoglia() == null) {
 			Versamento versamento = versamenti.remove(0);
@@ -115,19 +179,23 @@ public class AvvisoPagamentoUtils {
 			pagina.setRata(getRata(versamento, input, sdfDataScadenza));
 			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 		}
-
+		
 		return input;
 	}
 
-	public static RataAvviso getRata(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input, SimpleDateFormat sdfDataScadenza) throws ServiceException {
+	public static RataAvviso getRata(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input, SimpleDateFormat sdfDataScadenza) throws ServiceException, UtilsException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		RataAvviso rata = new RataAvviso();
 		if(versamento.getNumeroRata() != null)
 			rata.setNumeroRata(BigInteger.valueOf(versamento.getNumeroRata()));
 
-		if(versamento.getGiorniSoglia() != null && versamento.getTipoSoglia() != null) {
-			rata.setGiorni(BigInteger.valueOf(versamento.getGiorniSoglia()));
+		
+		if(versamento.getTipoSoglia() != null) {
 			rata.setTipo(versamento.getTipoSoglia().toString().toLowerCase());
+		}
+		
+		if(versamento.getGiorniSoglia() != null) {
+			rata.setGiorni(BigInteger.valueOf(versamento.getGiorniSoglia()));
 		}
 
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
@@ -187,6 +255,33 @@ public class AvvisoPagamentoUtils {
 		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));
 		if(iuvGenerato.getQrCode() != null)
 			rata.setQrCode(new String(iuvGenerato.getQrCode()));
+		
+		// controllo se sono nel caso violazioneCDS allora devo impostare correttamente importo. numero avviso e qr
+		if(versamento.getTipoSoglia() != null) {
+			if(versamento.getTipoSoglia().equals(TipoSogliaVersamento.RIDOTTO)
+					|| versamento.getTipoSoglia().equals(TipoSogliaVersamento.SCONTATO)) {
+				
+				Properties labelsLingua = LabelAvvisiProperties.getInstance().getLabelsLingua(LabelAvvisiProperties.DEFAULT_PROPS);
+				
+				input.setScadenzaRidotto(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_VIOLAZIONE_CDS_SCADENZA_RIDOTTO));
+				input.setScadenzaScontato(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_VIOLAZIONE_CDS_SCADENZA_SCONTATO));
+				
+				if(versamento.getTipoSoglia().equals(TipoSogliaVersamento.RIDOTTO)) {
+					if(versamento.getImportoTotale() != null)
+						rata.setImportoRidotto(versamento.getImportoTotale().doubleValue());
+					
+					if(iuvGenerato.getQrCode() != null)
+						rata.setQrCode2(new String(iuvGenerato.getQrCode()));
+					
+					rata.setCodiceAvviso2(rata.getCodiceAvviso());
+				}
+				
+				if(versamento.getTipoSoglia().equals(TipoSogliaVersamento.SCONTATO)) {
+					if(versamento.getImportoTotale() != null)
+						rata.setImportoScontato(versamento.getImportoTotale().doubleValue());
+				}
+			}
+		}
 
 		return rata;
 	}

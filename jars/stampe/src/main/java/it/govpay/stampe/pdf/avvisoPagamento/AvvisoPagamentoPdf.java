@@ -43,11 +43,18 @@ public class AvvisoPagamentoPdf {
 	private static byte[] templateTriBand = null;
 	private static byte[] templateRataUnica = null;
 	private static byte[] templateDoppiaRata = null;
+	private static byte[] templateDoppiaRataPostale = null;
 	private static byte[] templateTriplaRata = null;
+	private static byte[] templateTriplaRataPostale = null;
 	private static byte[] templateDoppioFormato = null;
 	private static byte[] templateBollettinoRata = null;
 	private static byte[] templateTriploFormato = null;
 	private static byte[] templateBollettinoTriRata = null;
+	
+	private static byte[] templateViolazioneCDS = null;
+	private static byte[] templateRidottoScontato = null;
+	private static byte[] templateSanzione = null;
+	private static byte[] templateFormato = null;
 	
 	private static JAXBContext jaxbContextV2 = null;
 	private static byte[] templateAvvisoV2 = null;
@@ -102,15 +109,22 @@ public class AvvisoPagamentoPdf {
 		
 		try {
 			templateAvviso = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_TEMPLATE_JASPER));
-			templateMonoBand = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.MONOBAND_TEMPLATE_JASPER));
-			templateTriBand = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.TRIBAND_TEMPLATE_JASPER));
-			templateRataUnica = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RATAUNICA_TEMPLATE_JASPER));
-			templateDoppiaRata = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RATADOPPIA_TEMPLATE_JASPER));
-			templateTriplaRata = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RATATRIPLA_TEMPLATE_JASPER));
-			templateDoppioFormato = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.DOPPIOFORMATO_TEMPLATE_JASPER));
 			templateBollettinoRata = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.BOLLETTINORATA_TEMPLATE_JASPER));
-			templateTriploFormato = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.TRIPLOFORMATO_TEMPLATE_JASPER));
 			templateBollettinoTriRata = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.BOLLETTINOTRIRATA_TEMPLATE_JASPER));
+			templateDoppiaRata = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RATADOPPIA_TEMPLATE_JASPER));
+			templateDoppiaRataPostale = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RATADOPPIAPOSTALE_TEMPLATE_JASPER));
+			templateDoppioFormato = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.DOPPIOFORMATO_TEMPLATE_JASPER));
+			templateMonoBand = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.MONOBAND_TEMPLATE_JASPER));
+			templateRataUnica = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RATAUNICA_TEMPLATE_JASPER));
+			templateTriBand = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.TRIBAND_TEMPLATE_JASPER));
+			templateTriplaRata = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RATATRIPLA_TEMPLATE_JASPER));
+			templateTriplaRataPostale = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RATATRIPLAPOSTALE_TEMPLATE_JASPER));
+			templateTriploFormato = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.TRIPLOFORMATO_TEMPLATE_JASPER));
+			
+			templateViolazioneCDS = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.VIOLAZIONE_CDS_TEMPLATE_JASPER));
+			templateRidottoScontato = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RIDOTTOSCONTATO_TEMPLATE_JASPER));
+			templateSanzione = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.SANZIONE_TEMPLATE_JASPER));
+			templateFormato = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.FORMATO_TEMPLATE_JASPER));
 		} catch (IOException e) {
 			LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class).error("Errore durante la lettura del template jasper dell'Avviso di Pagamento", e); 
 		}
@@ -138,6 +152,14 @@ public class AvvisoPagamentoPdf {
 	}
 
 	public byte[] creaAvviso(Logger log, AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, UtilsException {
+		if(input.getScadenzaScontato() != null) {
+			return _creaAvvisoViolazioneCDS(log, input, codDominio, avProperties);
+		} else {
+			return _creaAvviso(log, input, codDominio, avProperties);
+		}
+	}
+	
+	public byte[] _creaAvviso(Logger log, AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, UtilsException {
 		// cerco file di properties esterni per configurazioni specifiche per dominio
 		Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
 
@@ -149,7 +171,9 @@ public class AvvisoPagamentoPdf {
 		parameters.put("TriBand", new ByteArrayInputStream(templateTriBand));
 		parameters.put("RataUnica", new ByteArrayInputStream(templateRataUnica));
 		parameters.put("DoppiaRata", new ByteArrayInputStream(templateDoppiaRata));
+		parameters.put("DoppiaRataPostale", new ByteArrayInputStream(templateDoppiaRataPostale));
 		parameters.put("TriplaRata", new ByteArrayInputStream(templateTriplaRata));
+		parameters.put("TriplaRataPostale", new ByteArrayInputStream(templateTriplaRataPostale));
 		parameters.put("DoppioFormato", new ByteArrayInputStream(templateDoppioFormato));
 		parameters.put("BollettinoRata", new ByteArrayInputStream(templateBollettinoRata));
 		parameters.put("TriploFormato", new ByteArrayInputStream(templateTriploFormato));
@@ -176,6 +200,52 @@ public class AvvisoPagamentoPdf {
 			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);){
 
 				JRDataSource dataSource = new JRXmlDataSource(defaultJasperReportsContext, byteArrayInputStream,AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME);
+//			JRDataSource dataSource = this.creaXmlDataSource(log,input);
+				JasperReport jasperReport = (JasperReport) JRLoader.loadObject(defaultJasperReportsContext,templateIS);
+				JasperPrint jasperPrint = JasperFillManager.getInstance(defaultJasperReportsContext).fill(jasperReport, parameters, dataSource);
+				
+				return JasperExportManager.getInstance(defaultJasperReportsContext).exportToPdf(jasperPrint);
+			}finally {
+				
+			}
+		}finally {
+			
+		}
+	}
+	
+	public byte[] _creaAvvisoViolazioneCDS(Logger log, AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, UtilsException {
+		// cerco file di properties esterni per configurazioni specifiche per dominio
+		Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
+
+		this.caricaLoghiAvviso(input, propertiesAvvisoPerDominio);
+
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		
+		parameters.put("RidottoScontato", new ByteArrayInputStream(templateRidottoScontato));
+		parameters.put("Sanzione", new ByteArrayInputStream(templateSanzione));
+		parameters.put("Formato", new ByteArrayInputStream(templateFormato));
+		
+		JRGzipVirtualizer virtualizer = new JRGzipVirtualizer(50);
+		parameters.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
+		
+		try (ByteArrayInputStream templateIS = new ByteArrayInputStream(templateViolazioneCDS);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();){
+			
+			DefaultJasperReportsContext defaultJasperReportsContext = DefaultJasperReportsContext.getInstance();
+			
+			JRPropertiesUtil.getInstance(defaultJasperReportsContext).setProperty("net.sf.jasperreports.xpath.executer.factory",
+                    "net.sf.jasperreports.engine.util.xml.JaxenXPathExecuterFactory");
+			
+			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+			jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+			
+			JAXBElement<AvvisoPagamentoInput> jaxbElement = new JAXBElement<AvvisoPagamentoInput>(new QName("", AvvisoPagamentoCostanti.VIOLAZIONE_CDS_ROOT_ELEMENT_NAME), AvvisoPagamentoInput.class, null, input);
+			jaxbMarshaller.marshal(jaxbElement, baos);
+			byte[] byteArray = baos.toByteArray();
+			log.trace("AvvisoPagamentoInput: " + new String(byteArray));
+			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);){
+
+				JRDataSource dataSource = new JRXmlDataSource(defaultJasperReportsContext, byteArrayInputStream,AvvisoPagamentoCostanti.VIOLAZIONE_CDS_ROOT_ELEMENT_NAME);
 //			JRDataSource dataSource = this.creaXmlDataSource(log,input);
 				JasperReport jasperReport = (JasperReport) JRLoader.loadObject(defaultJasperReportsContext,templateIS);
 				JasperPrint jasperPrint = JasperFillManager.getInstance(defaultJasperReportsContext).fill(jasperReport, parameters, dataSource);

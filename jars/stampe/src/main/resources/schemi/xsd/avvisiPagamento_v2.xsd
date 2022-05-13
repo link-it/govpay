@@ -37,6 +37,7 @@
 			<xsd:element name="destinatario_avviso" type="xsd:string"/>
 			<xsd:element name="quanto_quando" type="xsd:string"/>
 			<xsd:element name="come" type="xsd:string"/>
+			<xsd:element name="dove" type="xsd:string"/>
 			<xsd:element name="paga_app" type="xsd:string"/>
 			<xsd:element name="paga_app2" type="xsd:string"/>
 			<xsd:element name="paga_territorio" type="xsd:string"/>
@@ -96,6 +97,8 @@
 			<xsd:element name="elenco_rate" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="elenco_rate_tra" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="autorizzazione" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="scadenza_unica" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="scadenza_unica_tra" type="xsd:string" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>    
 </xsd:schema>

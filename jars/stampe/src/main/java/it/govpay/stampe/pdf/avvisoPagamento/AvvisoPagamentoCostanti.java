@@ -4,6 +4,7 @@ public class AvvisoPagamentoCostanti {
 	
 	// root element elemento di input
 	public static final String AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME= "AvvisoPagamentoInput";
+	public static final String VIOLAZIONE_CDS_ROOT_ELEMENT_NAME= "ViolazioneInput";
 	
 	// nomi properties loghi
 	public static final String LOGO_ENTE = "avvisoPagamento.logo.ente";
@@ -15,15 +16,24 @@ public class AvvisoPagamentoCostanti {
 	public static final String LOGO_EURO = "avvisoPagamento.logo.euro";
 	
 	public static final String AVVISO_PAGAMENTO_TEMPLATE_JASPER = "/AvvisoPagamento.jasper";
-	public static final String MONOBAND_TEMPLATE_JASPER = "/MonoBand.jasper";
-	public static final String TRIBAND_TEMPLATE_JASPER = "/TriBand.jasper";
-	public static final String RATAUNICA_TEMPLATE_JASPER = "/RataUnica.jasper";
-	public static final String RATADOPPIA_TEMPLATE_JASPER = "/DoppiaRata.jasper";
-	public static final String RATATRIPLA_TEMPLATE_JASPER = "/TriplaRata.jasper";
-	public static final String DOPPIOFORMATO_TEMPLATE_JASPER = "/DoppioFormato.jasper";
 	public static final String BOLLETTINORATA_TEMPLATE_JASPER = "/BollettinoRata.jasper";
-	public static final String TRIPLOFORMATO_TEMPLATE_JASPER = "/TriploFormato.jasper";
 	public static final String BOLLETTINOTRIRATA_TEMPLATE_JASPER = "/BollettinoTriRata.jasper";
+	public static final String RATADOPPIA_TEMPLATE_JASPER = "/DoppiaRata.jasper";
+	public static final String RATADOPPIAPOSTALE_TEMPLATE_JASPER = "/DoppiaRataPostale.jasper";
+	public static final String DOPPIOFORMATO_TEMPLATE_JASPER = "/DoppioFormato.jasper";
+	public static final String MONOBAND_TEMPLATE_JASPER = "/MonoBand.jasper";
+	public static final String RATAUNICA_TEMPLATE_JASPER = "/RataUnica.jasper";
+	public static final String TRIBAND_TEMPLATE_JASPER = "/TriBand.jasper";
+	public static final String RATATRIPLA_TEMPLATE_JASPER = "/TriplaRata.jasper";
+	public static final String RATATRIPLAPOSTALE_TEMPLATE_JASPER = "/TriplaRataPostale.jasper";
+	public static final String TRIPLOFORMATO_TEMPLATE_JASPER = "/TriploFormato.jasper";
+	
+	public static final String VIOLAZIONE_CDS_DIR = "/violazioneCDS";
+	
+	public static final String VIOLAZIONE_CDS_TEMPLATE_JASPER = "/ViolazioneCDS.jasper";
+	public static final String RIDOTTOSCONTATO_TEMPLATE_JASPER = "/RidottoScontato.jasper";
+	public static final String SANZIONE_TEMPLATE_JASPER = "/Sanzione.jasper";
+	public static final String FORMATO_TEMPLATE_JASPER = "/Formato.jasper";
 	
 	public static final String AVVISO_PAGAMENTO_TEMPLATE_JASPER_V2 = "/AvvisoPagamentoV2.jasper";
 	public static final String MONOBAND_TEMPLATE_JASPER_V2 = "/MonoBandV2.jasper";
@@ -35,6 +45,17 @@ public class AvvisoPagamentoCostanti {
 	public static final String DUALBAND_TEMPLATE_JASPER_V2 = "/DualBandV2.jasper";
 	
 	public static final String AVVISO_PAGAMENTO_V2_DIR = "/avvisoPagamentoV2";
+	
+	public static final String AVVISO_PAGAMENTO_TEMPLATE_JASPER_V3 = "/AvvisoPagamentoV3.jasper";
+	public static final String BOLLETTINORATA_TEMPLATE_JASPER_V3 = "/BollettinoRataV3.jasper";
+	public static final String RATADOPPIAPOSTALE_TEMPLATE_JASPER_V3 = "/DoppiaRataPostaleV3.jasper";
+	public static final String RATADOPPIA_TEMPLATE_JASPER_V3 = "/DoppiaRataV3.jasper";
+	public static final String DOPPIOFORMATO_TEMPLATE_JASPER_V3 = "/DoppioFormatoV3.jasper";
+	public static final String DUALBAND_TEMPLATE_JASPER_V3 = "/DualBandV3.jasper";
+	public static final String MONOBAND_TEMPLATE_JASPER_V3 = "/MonoBandV3.jasper";
+	public static final String RATAUNICA_TEMPLATE_JASPER_V3 = "/RataUnicaV3.jasper";
+	
+	public static final String AVVISO_PAGAMENTO_V3_DIR = "/avvisoPagamentoV3";
 
 	public static final String DEL_TUO_ENTE_CREDITORE = "del tuo Ente Creditore";
 	public static final String DI_POSTE = "di Poste Italiane";
