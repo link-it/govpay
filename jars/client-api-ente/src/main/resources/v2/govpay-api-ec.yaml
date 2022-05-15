@@ -48,7 +48,7 @@ paths:
               examples:
                 'Pendenza non eseguita':
                   value:
-                    - $ref: 'govpay-api-examples.yaml#/components/examples/PendenzaVerificata'
+                    $ref: 'govpay-api-examples.yaml#/components/examples/PendenzaVerificata'
                 'Pendenza annullata':
                   value:
                     stato: 'ANNULLATA'
@@ -90,7 +90,7 @@ paths:
               examples:
                 'Pendenza non eseguita':
                   value:
-                    - $ref: 'govpay-api-examples.yaml#/components/examples/PendenzaVerificata'
+                    $ref: 'govpay-api-examples.yaml#/components/examples/PendenzaVerificata'
                 'Pendenza annullata':
                   value:
                     stato: 'ANNULLATA'
@@ -138,7 +138,7 @@ paths:
               examples:
                 'Pendenza non eseguita':
                   value:
-                    - $ref: 'govpay-api-examples.yaml#/components/examples/PendenzaVerificata'
+                    $ref: 'govpay-api-examples.yaml#/components/examples/PendenzaVerificata'
                 'Pendenza annullata':
                   value:
                     stato: 'ANNULLATA'
