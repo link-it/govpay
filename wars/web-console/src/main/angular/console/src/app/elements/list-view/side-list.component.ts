@@ -664,7 +664,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _stdTC = new TwoCols();
         const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
         const _riferimento = this.us.mapRiferimentoGiornale(item);
-        _stdTC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
+        _stdTC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.componente, item.tipoEvento) });
         _stdTC.sottotitolo = new Dato({ label: _riferimento });
         _stdTC.stato = item.esito;
         _stdTC.data = _dataOraEventi;
