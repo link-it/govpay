@@ -24,6 +24,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +50,8 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.bd.model.converter.TracciatoConverter;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
+import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
+import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.orm.IdTracciato;
 import it.govpay.orm.dao.jdbc.JDBCOperatoreServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.TracciatoFieldConverter;
@@ -603,5 +606,15 @@ public class TracciatiBD extends BasicBD {
 		fields.add(new CustomField("id_operatore", Long.class, "id_operatore", converter.toTable(model)));
 		return fields;
 	}
+	
+	
+	public long countTracciatiDaElaborare() throws ServiceException {
+		TracciatoFilter filter = this.newFilter();
+		filter.setTipo(Arrays.asList(TIPO_TRACCIATO.PENDENZA));
+		filter.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
+		
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
 }
 

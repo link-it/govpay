@@ -69,8 +69,8 @@ import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 public class Operazioni{
 
 	private static Logger log = LoggerWrapperFactory.getLogger(Operazioni.class);
+	public static final String CHECK_DB = "check-db";
 	public static final String RND = "update-rnd";
-	public static final String PSP = "update-psp";
 	public static final String PND = "update-pnd";
 	public static final String NTFY = "update-ntfy";
 	public static final String NTFY_APP_IO = "update-ntfy-appio";
@@ -78,11 +78,8 @@ public class Operazioni{
 	public static final String CHECK_NTFY_APP_IO = "check-ntfy-appio";
 	public static final String BATCH_TRACCIATI = "caricamento-tracciati";
 	public static final String CHECK_TRACCIATI = "check-tracciati";
-	public static final String BATCH_GENERAZIONE_AVVISI = "generazione-avvisi";
 	public static final String CHECK_PROMEMORIA = "check-promemoria";
 	public static final String BATCH_SPEDIZIONE_PROMEMORIA = "spedizione-promemoria";
-	public static final String CHECK_RESET_CACHE = "check-reset-cache";
-	public static final String BATCH_RESET_CACHE = "reset-cache";
 	public static final String CACHE_ANAGRAFICA_GOVPAY = "cache-anagrafica";
 	public static final String BATCH_GESTIONE_PROMEMORIA = "gestione-promemoria";
 	public static final String CHECK_GESTIONE_PROMEMORIA = "check-gestione-promemoria";

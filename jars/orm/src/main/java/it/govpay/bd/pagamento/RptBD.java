@@ -449,6 +449,55 @@ public class RptBD extends BasicBD {
 		}
 	}
 	
+	public Long countRptScadute(String codDominio, Integer minutiSogliaScadenza) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getRptService().newExpression();
+			boolean addAnd = true;
+			if(codDominio != null) {
+				exp.equals(RPT.model().COD_DOMINIO, codDominio);
+				exp.and();
+				addAnd = false;
+			}
+			
+			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.Versione.SANP_240.toString());
+			if(addAnd) {
+				exp.and();
+				addAnd = false;
+			}
+			
+			Date now = new Date();
+			Calendar c = Calendar.getInstance();
+			c.setTime(now);
+			c.add(Calendar.MINUTE, -minutiSogliaScadenza);
+			Date dataSoglia = c.getTime();
+			exp.lessThan(RPT.model().DATA_MSG_RICHIESTA, dataSoglia);
+			
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_NODO.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
+			
+			NonNegativeNumber count = this.getRptService().count(exp);
+			
+			return count!= null ? count.longValue() : 0l;
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
 	public RptFilter newFilter() throws ServiceException {
 		return new RptFilter(this.getRptService());
 	}
