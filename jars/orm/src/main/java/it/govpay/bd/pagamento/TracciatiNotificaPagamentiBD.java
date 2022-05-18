@@ -859,5 +859,15 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 			}
 		}
 	}
+	
+	
+	public long countTracciatiInStatoNonTerminale(String codDominio, String tipo, ConnettoreNotificaPagamenti connettore) throws ServiceException {
+		TracciatoNotificaPagamentiFilter filter = this.newFilter();
+		
+		filter.setCodDominio(codDominio);
+		filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliREST);
+		
+		return this.count(filter);
+	}
 }
 
