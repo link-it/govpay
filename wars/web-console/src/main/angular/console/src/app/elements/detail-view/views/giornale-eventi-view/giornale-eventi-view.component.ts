@@ -36,8 +36,8 @@ export class GiornaleEventiViewComponent implements IModalDialog, OnInit, IExpor
     this.infoPACompletaUrl = '';
     let _date = this.json.dataEvento?moment(this.json.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
     _dettaglio.push(new Dato({ label: Voce.CATEGORIA_EVENTO, value: UtilService.TIPI_CATEGORIA_EVENTO[this.json.categoriaEvento] }));
-    _dettaglio.push(new Dato({ label: Voce.MODULO, value: this.json.componente }));
-    _dettaglio.push(new Dato({ label: Voce.TIPO_EVENTO, value: this.us.mappaturaTipoEvento(this.json.tipoEvento) }));
+    _dettaglio.push(new Dato({ label: Voce.MODULO, value: this.us.mappaturaComponente(this.json.componente) }));
+    _dettaglio.push(new Dato({ label: Voce.TIPO_EVENTO, value: this.us.mappaturaTipoEvento(this.json.componente, this.json.tipoEvento) }));
     _dettaglio.push(new Dato({ label: Voce.RUOLO, value: this.json.ruolo }));
     _dettaglio.push(new Dato({ label: Voce.DATA, value: _date }));
     _dettaglio.push(new Dato({ label: Voce.DURATA, value: this.json.durataEvento + 'ms' }));

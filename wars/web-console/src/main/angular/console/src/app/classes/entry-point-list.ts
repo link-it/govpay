@@ -15,6 +15,7 @@ import { AllegatoViewComponent } from '../elements/item-view/views/allegato-view
 import { InputViewComponent } from '../elements/item-view/views/input-view/input-view.component';
 import { FilterableViewComponent } from '../elements/item-view/views/filterable-view/filterable-view.component';
 import { SelectViewComponent } from '../elements/item-view/views/select-view/select-view.component';
+import { SelectDependencyViewComponent } from '../elements/item-view/views/select-dependency-view/select-dependency-view.component';
 import { BooleanViewComponent } from '../elements/item-view/views/boolean-view/boolean-view.component';
 import { LabelViewComponent } from '../elements/item-view/views/label-view/label-view.component';
 import { DatePickerViewComponent, TimePickerDialogComponent } from '../elements/item-view/views/date-picker-view/date-picker-view.component';
@@ -118,6 +119,7 @@ export class EntryPointList {
     FilterableViewComponent,
     DatePickerViewComponent, TimePickerDialogComponent,
     SelectViewComponent,
+    SelectDependencyViewComponent,
     BooleanViewComponent,
     LabelViewComponent,
     ProfiloUtenteViewComponent,
@@ -303,6 +305,9 @@ export class EntryPointList {
         break;
       case UtilService.SELECT:
         _type = SelectViewComponent;
+        break;
+      case UtilService.SELECT_DEPENDENCY:
+        _type = SelectDependencyViewComponent;
         break;
       case UtilService.SLIDE_TOGGLE:
         _type = BooleanViewComponent;
@@ -492,6 +497,9 @@ export class EntryPointList {
         break;
       case 'SelectViewComponent':
         _name = UtilService.SELECT;
+        break;
+      case 'SelectDependencyViewComponent':
+        _name = UtilService.SELECT_DEPENDENCY;
         break;
       case 'LabelViewComponent':
         _name = UtilService.LABEL;
