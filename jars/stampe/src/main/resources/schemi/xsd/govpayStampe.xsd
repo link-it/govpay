@@ -34,18 +34,25 @@
 			<xsd:element name="singola" type="PaginaAvvisoSingola" />
 			<xsd:element name="doppia" type="PaginaAvvisoDoppia"/>
 			<xsd:element name="tripla" type="PaginaAvvisoTripla"/>
+			<xsd:element name="multipla" type="PaginaAvvisoMultipla"/>
 		</xsd:choice>
 	</xsd:complexType>
 
 	<xsd:complexType name="PaginaAvvisoTripla">
-		<xsd:sequence minOccurs="3" maxOccurs="3">
-			<xsd:element name="rata" type="RataAvviso"/>
+		<xsd:sequence>
+			<xsd:element name="unica" type="RataAvviso"/>
+			<xsd:sequence minOccurs="3" maxOccurs="3">
+				<xsd:element name="rata" type="RataAvviso"/>
+			</xsd:sequence>
 		</xsd:sequence>
 	</xsd:complexType>
 	
 	<xsd:complexType name="PaginaAvvisoDoppia">
-		<xsd:sequence minOccurs="2" maxOccurs="2">
-			<xsd:element name="rata" type="RataAvviso"/>
+		<xsd:sequence>
+			<xsd:element name="unica" type="RataAvviso"/>
+			<xsd:sequence minOccurs="2" maxOccurs="2">
+				<xsd:element name="rata" type="RataAvviso"/>
+			</xsd:sequence>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -53,6 +60,13 @@
 		<xsd:sequence>
 			<xsd:element name="rata" type="RataAvviso"/>
 		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="PaginaAvvisoMultipla">
+		<xsd:sequence minOccurs="2" maxOccurs="9">
+			<xsd:element name="rata" type="RataAvviso"/>
+		</xsd:sequence>
+		<xsd:attribute name="colonne" use="required" type="xsd:integer"/>
 	</xsd:complexType>
 	
 	<xsd:complexType name="RataAvviso">

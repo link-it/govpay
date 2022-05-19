@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -31,6 +32,7 @@ import it.govpay.model.IbanAccredito;
 import it.govpay.model.Versamento.TipoSogliaVersamento;
 import it.govpay.stampe.model.AvvisoPagamentoInput;
 import it.govpay.stampe.model.PaginaAvvisoDoppia;
+import it.govpay.stampe.model.PaginaAvvisoMultipla;
 import it.govpay.stampe.model.PaginaAvvisoSingola;
 import it.govpay.stampe.model.PaginaAvvisoTripla;
 import it.govpay.stampe.model.PagineAvviso;
@@ -78,19 +80,249 @@ public class AvvisoPagamentoUtils {
 		if(input.getPagine() == null)
 			input.setPagine(new PagineAvviso());
 		
-		int numeroViolazioneCDS = 0; 
+		AvvisoPagamentoInputConf configurazioneStampa = AvvisoPagamentoInputConf.getConfigurazioneFromVersamenti(documento, versamenti, log);
 		
-		for (Versamento versamento : versamenti) {
-			if(versamento.getTipoSoglia() != null && 
-					(versamento.getTipoSoglia().equals(TipoSogliaVersamento.RIDOTTO)
-					|| versamento.getTipoSoglia().equals(TipoSogliaVersamento.SCONTATO))) {
-				numeroViolazioneCDS ++;
+		if(configurazioneStampa.isPostale())
+			return getAvvisoPostalefromDocumento(printAvviso, versamenti, configurazioneStampa, input, log);
+		
+		
+		boolean violazioneCDS = configurazioneStampa.isViolazioneCDS();
+		
+		// caso speciale Violazione CDS senza bollettino postale
+		if(violazioneCDS && versamenti.size() == 2) {
+			creaAvvisoViolazioneCDSSenzaBollettinoPostale(versamenti, documento, input, configWrapper, sdfDataScadenza);
+		}
+		
+		// solo rata unica creo n pagine con i versamenti
+		if(configurazioneStampa.isSoloRataUnica()) {
+			while(versamenti.size() > 0 && versamenti.get(0).getNumeroRata() == null && versamenti.get(0).getTipoSoglia() == null) {
+				Versamento versamento = versamenti.remove(0);
+				AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
+				AvvisoPagamentoUtils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
+				PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
+				pagina.setRata(getRata(versamento, input, sdfDataScadenza));
+				input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 			}
 		}
 		
-		boolean violazioneCDS = numeroViolazioneCDS == versamenti.size();
+		// rimuovo e salvo i versamenti di tipo rata unica
+		List<Versamento> versamentiRataUnica = new ArrayList<>();
+		for (int i = 0; i < configurazioneStampa.getNumeroRataUnica(); i++) {
+			Versamento versamento = versamenti.remove(i);
+			versamentiRataUnica.add(versamento);
+		}
 		
-		// caso speciale Violazione CDS
+		// se ho rate o soglie controllo se devo abilitare la pagina multipla
+		if(configurazioneStampa.isMultipla()) {
+			// pagina 1 con due rate se (#rate - 4 ) mod 9 ==0 || (#rate -8) mod 9 == 0
+			if(((versamenti.size() - 4) %9 ==0) ||((versamenti.size() - 8) %9 == 0)) {
+				creaPaginaPrincipaleDoppia(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica);
+			} else {
+				creaPaginaPrincipaleTripla(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica);
+			}
+			
+			// a questo punto creo tutte le pagine con 9 rate 
+			while(versamenti.size() > 1 && versamenti.size() %9 == 0) {
+				Versamento v1 = versamenti.remove(0);
+				Versamento v2 = versamenti.remove(0);
+				Versamento v3 = versamenti.remove(0);
+				Versamento v4 = versamenti.remove(0);
+				Versamento v5 = versamenti.remove(0);
+				Versamento v6 = versamenti.remove(0);
+				Versamento v7 = versamenti.remove(0);
+				Versamento v8 = versamenti.remove(0);
+				Versamento v9 = versamenti.remove(0);
+				
+				AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v1, documento.getDominio(configWrapper), v1.getUo(configWrapper), input);
+				AvvisoPagamentoUtils.impostaAnagraficaDebitore(v1.getAnagraficaDebitore(), input);
+				
+				PaginaAvvisoMultipla pagina = new PaginaAvvisoMultipla();
+				// layout a 3 colonne
+				pagina.setColonne(BigInteger.valueOf(3l));
+				
+				pagina.getRata().add(getRata(v1, input, sdfDataScadenza));
+				pagina.getRata().add(getRata(v2, input, sdfDataScadenza));
+				pagina.getRata().add(getRata(v3, input, sdfDataScadenza));
+				pagina.getRata().add(getRata(v4, input, sdfDataScadenza));
+				pagina.getRata().add(getRata(v5, input, sdfDataScadenza));
+				pagina.getRata().add(getRata(v6, input, sdfDataScadenza));
+				pagina.getRata().add(getRata(v7, input, sdfDataScadenza));
+				pagina.getRata().add(getRata(v8, input, sdfDataScadenza));
+				pagina.getRata().add(getRata(v9, input, sdfDataScadenza));
+				input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+			}
+			
+			// qui creo l'ultima pagina multipla sono rimasti un numero di pendenze da 2 a 8
+			// quando ho 4/5/7 metto il layout a 2 colonne altrimenti a 3
+			if(versamenti.size() > 1) {
+				PaginaAvvisoMultipla pagina = new PaginaAvvisoMultipla();
+				if((versamenti.size() % 4 ==0) || (versamenti.size() % 5 == 0) || (versamenti.size() % 7 == 0)) {
+					// layout a 3 colonne
+					pagina.setColonne(BigInteger.valueOf(2l));
+				} else {
+					// layout a 3 colonne
+					pagina.setColonne(BigInteger.valueOf(3l));
+				}
+				
+				while(versamenti.size() > 1) {
+					Versamento v1 = versamenti.remove(0);
+					
+					AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v1, documento.getDominio(configWrapper), v1.getUo(configWrapper), input);
+					AvvisoPagamentoUtils.impostaAnagraficaDebitore(v1.getAnagraficaDebitore(), input);
+					
+					pagina.getRata().add(getRata(v1, input, sdfDataScadenza));
+				}
+				
+				input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+			}
+			
+		} else {
+			// 2/3 rate in una sola pagina
+			if(versamenti.size()%3 != 0) { // 2 rate
+				creaPaginaPrincipaleDoppia(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica);
+			} else { // 3 rate
+				creaPaginaPrincipaleTripla(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica);
+			}
+		}
+		
+
+//		while(versamenti.size() > 0 && versamenti.get(0).getNumeroRata() == null && versamenti.get(0).getTipoSoglia() == null) {
+//			Versamento versamento = versamenti.remove(0);
+//			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
+//			AvvisoPagamentoUtils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
+//			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
+//			pagina.setRata(getRata(versamento, input, sdfDataScadenza));
+//			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+//		}
+//
+//		while(versamenti.size() > 1 && versamenti.size()%3 != 0) {
+//			Versamento v1 = versamenti.remove(0);
+//			Versamento v2 = versamenti.remove(0);
+//			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v2, documento.getDominio(configWrapper), v2.getUo(configWrapper), input);
+//			AvvisoPagamentoUtils.impostaAnagraficaDebitore(v2.getAnagraficaDebitore(), input);
+//			PaginaAvvisoDoppia pagina = new PaginaAvvisoDoppia();
+//			pagina.getRata().add(getRata(v1, input, sdfDataScadenza));
+//			pagina.getRata().add(getRata(v2, input, sdfDataScadenza));
+//			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+//		}
+//
+//		while(versamenti.size() > 1) {
+//			Versamento v1 = versamenti.remove(0);
+//			Versamento v2 = versamenti.remove(0);
+//			Versamento v3 = versamenti.remove(0);
+//			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v3, documento.getDominio(configWrapper), v3.getUo(configWrapper), input);
+//			AvvisoPagamentoUtils.impostaAnagraficaDebitore(v3.getAnagraficaDebitore(), input);
+//			PaginaAvvisoTripla pagina = new PaginaAvvisoTripla();
+//			pagina.getRata().add(getRata(v1, input, sdfDataScadenza));
+//			pagina.getRata().add(getRata(v2, input, sdfDataScadenza));
+//			pagina.getRata().add(getRata(v3, input, sdfDataScadenza));
+//			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+//		}
+//
+//		if(versamenti.size() == 1) {
+//			Versamento versamento = versamenti.remove(0);
+//			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
+//			AvvisoPagamentoUtils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
+//			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
+//			pagina.setRata(getRata(versamento, input, sdfDataScadenza));
+//			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+//		}
+		
+		return input;
+	}
+
+	private static void creaPaginaPrincipaleTripla(List<Versamento> versamenti, Documento documento, AvvisoPagamentoInput input,
+			BDConfigWrapper configWrapper, SimpleDateFormat sdfDataScadenza,
+			AvvisoPagamentoInputConf configurazioneStampa, List<Versamento> versamentiRataUnica)
+			throws ServiceException, UtilsException {
+		Versamento v1 = versamenti.remove(0);
+		Versamento v2 = versamenti.remove(0);
+		Versamento v3 = versamenti.remove(0);
+		AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v3, documento.getDominio(configWrapper), v3.getUo(configWrapper), input);
+		AvvisoPagamentoUtils.impostaAnagraficaDebitore(v3.getAnagraficaDebitore(), input);
+		PaginaAvvisoTripla pagina = new PaginaAvvisoTripla();
+		pagina.getRata().add(getRata(v1, input, sdfDataScadenza));
+		pagina.getRata().add(getRata(v2, input, sdfDataScadenza));
+		pagina.getRata().add(getRata(v3, input, sdfDataScadenza));
+		
+		if(configurazioneStampa.isAlmenoUnaRataUnica()) {
+			pagina.setUnica(getRata(versamentiRataUnica.get(0), input, sdfDataScadenza));
+		}
+		
+		input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+	}
+
+	private static void creaPaginaPrincipaleDoppia(List<Versamento> versamenti, Documento documento, AvvisoPagamentoInput input,
+			BDConfigWrapper configWrapper, SimpleDateFormat sdfDataScadenza,
+			AvvisoPagamentoInputConf configurazioneStampa, List<Versamento> versamentiRataUnica)
+			throws ServiceException, UtilsException {
+		Versamento v1 = versamenti.remove(0);
+		Versamento v2 = versamenti.remove(0);
+		AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v2, documento.getDominio(configWrapper), v2.getUo(configWrapper), input);
+		AvvisoPagamentoUtils.impostaAnagraficaDebitore(v2.getAnagraficaDebitore(), input);
+		PaginaAvvisoDoppia pagina = new PaginaAvvisoDoppia();
+		pagina.getRata().add(getRata(v1, input, sdfDataScadenza));
+		pagina.getRata().add(getRata(v2, input, sdfDataScadenza));
+		
+		if(configurazioneStampa.isAlmenoUnaRataUnica()) {
+			pagina.setUnica(getRata(versamentiRataUnica.get(0), input, sdfDataScadenza));
+		}
+		
+		input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+	}
+
+	private static void creaAvvisoViolazioneCDSSenzaBollettinoPostale(List<Versamento> versamenti, Documento documento, AvvisoPagamentoInput input,
+			BDConfigWrapper configWrapper, SimpleDateFormat sdfDataScadenza) throws ServiceException, UtilsException {
+		Versamento v1 = versamenti.remove(0);
+		Versamento v2 = versamenti.remove(0);
+		
+		AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v2, documento.getDominio(configWrapper), v2.getUo(configWrapper), input);
+		AvvisoPagamentoUtils.impostaAnagraficaDebitore(v2.getAnagraficaDebitore(), input);
+		
+		RataAvviso rata1 = getRata(v1, input, sdfDataScadenza);
+		RataAvviso rata2 = getRata(v2, input, sdfDataScadenza);
+		
+		RataAvviso rataScontato = null, rataRidotto = null ;
+		
+		if(rata1.getTipo().equals(TipoSogliaVersamento.RIDOTTO.toString().toLowerCase())) {
+			rataRidotto = rata1;
+		}
+		
+		if(rata1.getTipo().equals(TipoSogliaVersamento.SCONTATO.toString().toLowerCase())) {
+			rataScontato = rata1;
+		}
+		
+		if(rata2.getTipo().equals(TipoSogliaVersamento.RIDOTTO.toString().toLowerCase())) {
+			rataRidotto = rata2;
+		}
+		
+		if(rata2.getTipo().equals(TipoSogliaVersamento.SCONTATO.toString().toLowerCase())) {
+			rataScontato = rata2;
+		}
+		
+		// riporto gli unici campi che sono differenti tra le due rate e creo la pagina unica
+		rataScontato.setCodiceAvviso2(rataRidotto.getCodiceAvviso2());
+		rataScontato.setQrCode2(rataRidotto.getQrCode2());
+		rataScontato.setImportoRidotto(rataRidotto.getImportoRidotto());
+		
+		PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
+		pagina.setRata(rataScontato);
+		input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+	}
+	
+	public static AvvisoPagamentoInput getAvvisoPostalefromDocumento(PrintAvvisoDocumentoDTO printAvviso, List<Versamento> versamenti, AvvisoPagamentoInputConf configurazioneStampa, AvvisoPagamentoInput input, Logger log) throws ServiceException, UnprocessableEntityException, UtilsException { 
+		Documento documento = printAvviso.getDocumento();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		SimpleDateFormat sdfDataScadenza = printAvviso.getSdfDataScadenza();
+		
+		input.setOggettoDelPagamento(documento.getDescrizione());
+
+		if(input.getPagine() == null)
+			input.setPagine(new PagineAvviso());
+		
+		boolean violazioneCDS = configurazioneStampa.isViolazioneCDS();
+		
+		// caso speciale Violazione CDS con bollettino postale
 		if(violazioneCDS && versamenti.size() == 2) {
 			Versamento v1 = versamenti.remove(0);
 			Versamento v2 = versamenti.remove(0);
@@ -98,44 +330,13 @@ public class AvvisoPagamentoUtils {
 			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v2, documento.getDominio(configWrapper), v2.getUo(configWrapper), input);
 			AvvisoPagamentoUtils.impostaAnagraficaDebitore(v2.getAnagraficaDebitore(), input);
 			
-			RataAvviso rata1 = getRata(v1, input, sdfDataScadenza);
-			RataAvviso rata2 = getRata(v2, input, sdfDataScadenza);
+			PaginaAvvisoSingola pagina1 = new PaginaAvvisoSingola();
+			pagina1.setRata(getRata(v1, input, sdfDataScadenza));
+			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina1);
 			
-			if(input.getDiPoste() == null) { // pagina singola
-				RataAvviso rataScontato = null, rataRidotto = null ;
-				
-				if(rata1.getTipo().equals(TipoSogliaVersamento.RIDOTTO.toString().toLowerCase())) {
-					rataRidotto = rata1;
-				}
-				
-				if(rata1.getTipo().equals(TipoSogliaVersamento.SCONTATO.toString().toLowerCase())) {
-					rataScontato = rata1;
-				}
-				
-				if(rata2.getTipo().equals(TipoSogliaVersamento.RIDOTTO.toString().toLowerCase())) {
-					rataRidotto = rata2;
-				}
-				
-				if(rata2.getTipo().equals(TipoSogliaVersamento.SCONTATO.toString().toLowerCase())) {
-					rataScontato = rata2;
-				}
-				
-				// riporto gli unici campi che sono differenti tra le due rate e creo la pagina unica
-				rataScontato.setCodiceAvviso2(rataRidotto.getCodiceAvviso2());
-				rataScontato.setQrCode2(rataRidotto.getQrCode2());
-				rataScontato.setImportoRidotto(rataRidotto.getImportoRidotto());
-				
-				PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
-				pagina.setRata(rataScontato);
-				input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
-			} else { // due pagine
-				PaginaAvvisoSingola pagina1 = new PaginaAvvisoSingola();
-				pagina1.setRata(rata1);
-				PaginaAvvisoSingola pagina2 = new PaginaAvvisoSingola();
-				pagina2.setRata(rata2);
-				input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina1);
-				input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina2);
-			}
+			PaginaAvvisoSingola pagina2 = new PaginaAvvisoSingola();
+			pagina2.setRata(getRata(v2, input, sdfDataScadenza));
+			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina2);
 		}
 
 		while(versamenti.size() > 0 && versamenti.get(0).getNumeroRata() == null && versamenti.get(0).getTipoSoglia() == null) {
