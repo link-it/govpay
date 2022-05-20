@@ -34,9 +34,9 @@ public class RicevuteConverter {
 		rsModel.setDominio(DominiConverter.toRsModelIndex(dto.getDominio(configWrapper)));
 		rsModel.setIdRicevuta(dto.getCcp());
 		rsModel.setIuv(dto.getIuv());
-		if(dto.getStato() != null)
-			rsModel.setStato(dto.getStato().toString());
-
+		if(dto.getEsitoPagamento() != null)
+			rsModel.setStato(EsitoRpp.fromRptEsitoPagamento(dto.getEsitoPagamento().name()).toString());
+		
 		return rsModel;
 	}
 

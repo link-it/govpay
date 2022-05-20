@@ -94,7 +94,7 @@ public class RicevuteRisultati   {
    * @return data
   **/
   @JsonProperty("data")
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
   public Date getData() {
     return data;
   }
