@@ -16,7 +16,6 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
@@ -35,7 +34,6 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.ragioneria.v3.api.RicevuteApi;
 import it.govpay.ragioneria.v3.beans.Ricevuta;
@@ -81,57 +79,15 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 			listaRptDTO.setEseguiCount(metadatiPaginazione);
 			listaRptDTO.setEseguiCountConLimit(maxRisultati);
 
-//			if(esito != null) {
-//				EsitoRpt esitoRPT = EsitoRpt.fromValue(esito);
-//				
-//				if (esitoRPT != null) {
-					EsitoPagamento esitoPagamento = null;;
-//					switch(esitoRPT) {
-//					case DECORENNZA_PARZIALE:
-//						esitoPagamento = EsitoPagamento.DECORRENZA_TERMINI_PARZIALE;
-//						break;
-//					case DECORRENZA:
-//						esitoPagamento = EsitoPagamento.DECORRENZA_TERMINI;
-//						break;
-//					case ESEGUITO:
-//						esitoPagamento = EsitoPagamento.PAGAMENTO_ESEGUITO;
-//						break;
-//					case ESEGUITO_PARZIALE:
-//						esitoPagamento = EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO;
-//						break;
-//					case IN_CORSO:
-//						esitoPagamento = EsitoPagamento.IN_CORSO;
-//						break;
-//					case NON_ESEGUITO:
-//						esitoPagamento = EsitoPagamento.PAGAMENTO_NON_ESEGUITO; 
-//						break;
-//					case RIFIUTATO:
-//						esitoPagamento = EsitoPagamento.RIFIUTATO;
-//						break;
-//					}
-					listaRptDTO.setEsitoPagamento(esitoPagamento);
-//				} else {
-//					throw new ValidationException("Codifica inesistente per esito. Valore fornito [" + esito
-//							+ "] valori possibili " + ArrayUtils.toString(EsitoRpt.values()));
-//				}
-//			}
+
+			listaRptDTO.setEsitoPagamento(null);
+			
 			if(idDominio != null)
 				listaRptDTO.setIdDominio(idDominio);
 			if(iuv != null)
 				listaRptDTO.setIuv(iuv);
 			if(ordinamento != null)
 				listaRptDTO.setOrderBy(ordinamento);
-			
-			// dat RPT
-//			if(dataRptDa!=null) {
-//				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRptDa, "dataRptDa");
-//				listaRptDTO.setDataDa(dataDaDate);
-//			}
-//			
-//			if(dataRptA!=null) {
-//				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRptA, "dataRptA");
-//				listaRptDTO.setDataA(dataADate);
-//			}
 			
 			// data RT
 			if(dataDa!=null) {
@@ -150,18 +106,18 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 			RptDAO rptDAO = new RptDAO();
 
 			// Autorizzazione sui domini
-//			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
-//			if(domini == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-//			}
-//			listaRptDTO.setCodDomini(domini);
+			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
+			if(domini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
+			listaRptDTO.setCodDomini(domini);
 			
 			// Autorizzazione sulle uo
-			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
-			if(uo == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
-			}
-			listaRptDTO.setUnitaOperative(uo);
+//			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
+//			if(uo == null) {
+//				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
+//			}
+//			listaRptDTO.setUnitaOperative(uo);
 
 			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
 

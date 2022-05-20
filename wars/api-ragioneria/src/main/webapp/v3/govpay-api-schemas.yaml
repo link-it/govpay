@@ -990,10 +990,8 @@ components:
                     format: date-time
                     description: Data di acquisizione della ricevuta
                     example: '2020-12-31'
-                  stato:
-                    type: string
-                    description: Stato della richiesta di pagamento sulla piattaforma PagoPA.
-                    example: PAGAMENTO_ESEGUITO
+                  esito:
+                    $ref: "#/components/schemas/EsitoRpp"
     Riconciliazione:
       type: object
       allOf:

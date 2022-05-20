@@ -28,6 +28,7 @@ import java.util.Map;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.Function;
 import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -1038,6 +1039,32 @@ public class VersamentiBD extends BasicBD {
 		}
 		return ret;
 	}
+	
+	public long countVersamentiConAvvisoDiPagamentoDaSpedire() throws ServiceException {
+		
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			//Notifica Avviso: tutte le pendenze con dataNotificaAvviso != null, dataNotificaAvviso <= oggi, isAvvisoNotificato == false, stato = DA_PAGARE
+			IExpression exp = this.getVersamentoService().newExpression();
+			exp.equals(it.govpay.orm.Versamento.model().AVVISO_NOTIFICATO, false);
+			exp.and().isNotNull(it.govpay.orm.Versamento.model().DATA_NOTIFICA_AVVISO).and()
+				.lessEquals(it.govpay.orm.Versamento.model().DATA_NOTIFICA_AVVISO, new Date());
+			exp.and().equals(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+			
+			NonNegativeNumber count = this.getVersamentoService().count(exp);
+
+			return count != null ? count.longValue() : 0l;
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
 
 	public List<Versamento> findVersamentiConAvvisoDiScadenzaDaSpedireViaMail(Integer offset, Integer limit) throws ServiceException{
 		List<Versamento> ret = new ArrayList<Versamento>();
@@ -1074,6 +1101,31 @@ public class VersamentiBD extends BasicBD {
 		}
 		return ret;
 	}
+	
+	public long countVersamentiConAvvisoDiScadenzaDaSpedireViaMail() throws ServiceException{
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			//Notifica Promemoria: tutte le pendenze con dataNotificaPromemoria != null, dataNotificaPromemoria <= oggi, isPromemoriaNotificato == false, stato = DA_PAGARE
+			IExpression exp = this.getVersamentoService().newExpression();
+			exp.equals(it.govpay.orm.Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO, false);
+			exp.and().isNotNull(it.govpay.orm.Versamento.model().AVV_MAIL_DATA_PROM_SCADENZA).and()
+				.lessEquals(it.govpay.orm.Versamento.model().AVV_MAIL_DATA_PROM_SCADENZA, new Date());
+			exp.and().equals(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+			
+			NonNegativeNumber count = this.getVersamentoService().count(exp);
+
+			return count != null ? count.longValue() : 0l;
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
 
 	public List<Versamento> findVersamentiConAvvisoDiScadenzaDaSpedireViaAppIO(Integer offset, Integer limit) throws ServiceException{
 		List<Versamento> ret = new ArrayList<Versamento>();
@@ -1109,6 +1161,31 @@ public class VersamentiBD extends BasicBD {
 			}
 		}
 		return ret;
+	}
+	
+	public long countVersamentiConAvvisoDiScadenzaDaSpedireViaAppIO() throws ServiceException{
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			//Notifica Promemoria: tutte le pendenze con dataNotificaPromemoria != null, dataNotificaPromemoria <= oggi, isPromemoriaNotificato == false, stato = DA_PAGARE
+			IExpression exp = this.getVersamentoService().newExpression();
+			exp.equals(it.govpay.orm.Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO, false);
+			exp.and().isNotNull(it.govpay.orm.Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA).and()
+				.lessEquals(it.govpay.orm.Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA, new Date());
+			exp.and().equals(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+			
+			NonNegativeNumber count = this.getVersamentoService().count(exp);
+
+			return count != null ? count.longValue() : 0l;
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 	
 	public List<Versamento> findVersamentiDiUnTracciato(Long idTracciato, Integer offset, Integer limit) throws ServiceException{

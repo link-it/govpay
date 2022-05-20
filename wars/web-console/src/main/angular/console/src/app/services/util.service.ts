@@ -17,6 +17,8 @@ declare let JSZip: any;
 declare let FileSaver: any;
 
 declare let GovRiconciliazioniConfig: any;
+declare let GovApiComponenti: any;
+declare let GovApiTipiEvento: any;
 
 @Injectable()
 export class UtilService {
@@ -402,8 +404,6 @@ export class UtilService {
   //ROOT URL SHARED SERVICES
   public static URL_SERVIZIACL: string = '/enumerazioni/serviziACL';
   public static URL_TIPI_VERSIONE_API: string = '/enumerazioni/versioneConnettore';
-  public static URL_LABEL_TIPI_EVENTO: string = '/enumerazioni/labelTipiEvento';
-  public static URL_COMPONENTI_EVENTO: string = '/enumerazioni/componentiEvento';
 
   //LABEL
   public static TXT_DASHBOARD: string = 'Cruscotto';
@@ -516,6 +516,7 @@ export class UtilService {
   public static FILTERABLE: string = 'filterable';
   public static DATE_PICKER: string = 'date_picker';
   public static SELECT: string = 'select';
+  public static SELECT_DEPENDENCY: string = 'select_dependency';
   public static SLIDE_TOGGLE: string = 'slide_toggle';
   public static LABEL: string = 'label';
   //Sidelist item view
@@ -966,11 +967,16 @@ export class UtilService {
     return '€ 0,00';
   }
 
-  mappaturaTipoEvento(value: string): string {
-    if(UtilService.DIRECT_MAP_TIPI_EVENTO[value]) {
-      return UtilService.DIRECT_MAP_TIPI_EVENTO[value];
+  mappaturaComponente(componente: string): string {
+    return GovApiComponenti[componente] || componente;
+  }
+
+  mappaturaTipoEvento(componente: string, evento: string): string {
+    let mappedValue = evento;
+    if (GovApiTipiEvento[componente]) {
+      mappedValue = GovApiTipiEvento[componente][evento] || evento;
     }
-    return value;
+    return mappedValue;
   }
 
   mapRiferimentoGiornale(_item : any): string {
@@ -1132,7 +1138,7 @@ export class UtilService {
    */
   getKeyByValue(object, value) {
     return Object.keys(object).filter(function(key) {
-      return object[key] === value
+      return object[key] === value;
     })[0];
   }
 
@@ -1767,8 +1773,10 @@ export class UtilService {
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
           //   promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
           //     eventType: 'idDominio-async-load' } }, this.http),
-          new FormInput({ id: 'tipoEvento', label: FormService.FORM_TIPI_EVENTO, type: UtilService.FILTERABLE, values: UtilService._MAP_TIPI_EVENTO,
-            optionControlValue: true, showTooltip: false }),
+          new FormInput({ id: 'componente', label: FormService.FORM_COMPONENTE, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT,
+            type: UtilService.SELECT, showTooltip: false, values: this.listaComponenti() }),
+          new FormInput({ id: 'tipoEvento', label: FormService.FORM_TIPI_EVENTO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT,
+            type: UtilService.SELECT_DEPENDENCY, showTooltip: false, values: [], dependency: 'componente', target: GovApiTipiEvento }),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load' } }, this.http),
@@ -1782,9 +1790,6 @@ export class UtilService {
             showTooltip: false, values: this.ruoliGdE() }),
           new FormInput({ id: 'esito', label: FormService.FORM_ESITO_GDE, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
             showTooltip: false, values: this.esitiGdE() }),
-          new FormInput({ id: 'componente', label: FormService.FORM_COMPONENTE, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_COMPONENTI_EVENTO, mapFct: this.asyncComponentiGdE.bind(this),
-              eventType: 'componente-async-load' }, showTooltip: false }, this.http),
         ];
       break;
       case UtilService.RISCOSSIONI:
@@ -2018,6 +2023,21 @@ export class UtilService {
 
   resetDashboardLinksParams() {
     UtilService.DASHBOARD_LINKS_PARAMS = { method: null, params: [] };
+  }
+
+  listaComponenti(): any[] {
+    return Object.keys(GovApiComponenti).map((key) => {
+      return { label: GovApiComponenti[key], value: key };
+    });
+  }
+
+  tipiEventi(component): any[] {
+    if (!component) {
+      return [];
+    }
+    return Object.keys(GovApiTipiEvento[component]).map((key) => {
+      return { label: GovApiTipiEvento[component][key], value: key };
+    });
   }
 
   // Config Riconciliazioni

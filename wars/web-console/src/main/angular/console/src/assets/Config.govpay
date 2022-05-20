@@ -108,5 +108,6 @@
   };
 
   addScript('assets/config/app-config.govpay');
+  addScript('assets/config/mappingTipiEvento.govpay');
 
 })(window);

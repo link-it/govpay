@@ -331,6 +331,9 @@ CREATE VIEW v_eventi_vers AS (
 
 
 
-
+--16/05/2022 Pulizia della tabella sonde
+DELETE FROM sonde WHERE nome = 'update-psp'; 
+DELETE FROM sonde WHERE nome = 'generazione-avvisi';
+DELETE FROM sonde WHERE nome = 'reset-cache';
 
 
