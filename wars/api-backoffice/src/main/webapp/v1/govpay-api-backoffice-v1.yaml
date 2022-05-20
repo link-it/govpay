@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.29.0"
+  version: "1.30.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -3880,6 +3880,7 @@ paths:
     get:
       tags:
         - Enumerazioni
+      deprecated: true
       summary: Lista dei componenti che possono emettere eventi in GovPay
       operationId: findEnumerazioniComponentiEvento
       responses:
@@ -3897,6 +3898,7 @@ paths:
     get:
       tags:
         - Enumerazioni
+      deprecated: true
       summary: Lista di mapping tipoEvento / Label corrispondente
       operationId: findEnumerazioniLabelTipiEvento
       responses:

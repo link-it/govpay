@@ -18,11 +18,12 @@ export class FormInput {
   defaultTime: string = null; //HH:MM
   pattern: RegExp = null;
   required: boolean = false;
-  promise: any = { async: false,
-                     url: '',
-                  mapFct: Function,
-                  loaded: true,
-               eventType: null
+  promise: any = {
+    async: false,
+    url: '',
+    mapFct: Function,
+    loaded: true,
+    eventType: null
   };
 
   dependency: string = null;
