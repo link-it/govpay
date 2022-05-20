@@ -57,7 +57,6 @@ public class CreaStampeTracciatoThread implements Runnable {
 			it.govpay.core.business.AvvisoPagamento avvisoBD = new it.govpay.core.business.AvvisoPagamento();
 			
 			for (Versamento versamento : versamenti) {
-				log.debug(this.getNomeThread() + ": stampa in corso [Doc:" + versamento.getCodBundlekey() + " NAV:" + versamento.getNumeroAvviso());
 
 				PrintAvvisoDTOResponse printAvvisoDTOResponse =  null;
 				try {
@@ -66,6 +65,7 @@ public class CreaStampeTracciatoThread implements Runnable {
 						Documento documento = versamento.getDocumento(configWrapper);
 						
 						if(documento != null) {
+							log.debug(this.getNomeThread() + ": stampa in corso [Doc:" + documento.getCodDocumento() + " NumeroAvviso:" + versamento.getNumeroAvviso());
 							PrintAvvisoDocumentoDTO printDocumentoDTO = new PrintAvvisoDocumentoDTO();
 							printDocumentoDTO.setDocumento(documento);
 							printDocumentoDTO.setUpdate(true);
@@ -75,6 +75,7 @@ public class CreaStampeTracciatoThread implements Runnable {
 							printAvvisoDTOResponse = avvisoBD.printAvvisoDocumento(printDocumentoDTO);
 							printAvvisoDTOResponse.setCodDocumento(documento.getCodDocumento());
 						} else {
+							log.debug(this.getNomeThread() + ": stampa in corso [Pendenza:" + versamento.getCodVersamentoEnte() + " NumeroAvviso:" + versamento.getNumeroAvviso());
 							PrintAvvisoVersamentoDTO printAvvisoDTO = new PrintAvvisoVersamentoDTO();
 							printAvvisoDTO.setUpdate(true);
 							printAvvisoDTO.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
@@ -88,8 +89,12 @@ public class CreaStampeTracciatoThread implements Runnable {
 						printAvvisoDTOResponse.setCodDominio(versamento.getDominio(configWrapper).getCodDominio()); 
 						printAvvisoDTOResponse.setNumeroAvviso(versamento.getNumeroAvviso());
 						this.stampe.add(printAvvisoDTOResponse);
-						log.debug(this.getNomeThread() + ": stampa eseguita [Doc:" + versamento.getCodBundlekey() + " NAV:" + versamento.getNumeroAvviso());
-
+						
+						if(documento != null) {
+							log.debug(this.getNomeThread() + ": stampa eseguita [Doc:" + documento.getCodDocumento() + " NumeroAvviso:" + versamento.getNumeroAvviso());
+						} else {
+							log.debug(this.getNomeThread() + ": stampa eseguita [Pendenza:" + versamento.getCodVersamentoEnte() + " NumeroAvviso:" + versamento.getNumeroAvviso());
+						}
 					} else {
 						log.debug("Pendenza [IDA2A: " + versamento.getApplicazione(configWrapper).getCodApplicazione()	
 								+" | IdPendenza: " + versamento.getCodVersamentoEnte() + "] non ha numero avviso, procedura di stampa non eseguita.");

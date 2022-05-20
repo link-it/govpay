@@ -351,5 +351,3 @@ And path 'pendenze', 'tracciati', idTracciato, 'esito'
 And headers basicAutenticationHeader
 When method get
 Then status 200
-
-
