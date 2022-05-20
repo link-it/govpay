@@ -30,11 +30,8 @@ public class RicevuteRisultati   {
   **/
   private Date data = null;
   
-  @Schema(example = "PAGAMENTO_ESEGUITO", description = "Stato della richiesta di pagamento sulla piattaforma PagoPA.")
- /**
-   * Stato della richiesta di pagamento sulla piattaforma PagoPA.  
-  **/
-  private String stato = null;
+  @Schema(description = "")
+  private EsitoRpp esito = null;
  /**
    * Get dominio
    * @return dominio
@@ -108,21 +105,21 @@ public class RicevuteRisultati   {
     return this;
   }
 
- /**
-   * Stato della richiesta di pagamento sulla piattaforma PagoPA.
-   * @return stato
+  /**
+   * Get esito
+   * @return esito
   **/
-  @JsonProperty("stato")
-  public String getStato() {
-    return stato;
+  @JsonProperty("esito")
+  public EsitoRpp getEsito() {
+    return esito;
   }
 
-  public void setStato(String stato) {
-    this.stato = stato;
+  public void setEsito(EsitoRpp esito) {
+    this.esito = esito;
   }
 
-  public RicevuteRisultati stato(String stato) {
-    this.stato = stato;
+  public RicevuteRisultati esito(EsitoRpp esito) {
+    this.esito = esito;
     return this;
   }
 
@@ -136,7 +133,7 @@ public class RicevuteRisultati   {
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    idRicevuta: ").append(toIndentedString(idRicevuta)).append("\n");
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    esito: ").append(toIndentedString(esito)).append("\n");
     sb.append("}");
     return sb.toString();
   }
