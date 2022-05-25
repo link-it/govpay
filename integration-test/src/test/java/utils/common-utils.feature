@@ -90,6 +90,13 @@ Scenario:
 		}
     """
     
+  * def createString = 
+	"""
+	function(encodedString){ 
+		var String = Java.type('java.lang.String');
+		return new String(encodedString);
+	}
+	"""  
     
 	* def decodeBase64 = 
 	"""
