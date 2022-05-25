@@ -120,6 +120,7 @@ public class PendenzeController extends BaseController {
 
 			leggiPendenzaDTO.setIdDominio(idDominio);
 			leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
+			leggiPendenzaDTO.setVerificaAvviso(true);
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
