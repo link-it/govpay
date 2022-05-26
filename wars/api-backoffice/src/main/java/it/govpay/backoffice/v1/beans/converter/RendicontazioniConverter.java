@@ -21,7 +21,9 @@ public class RendicontazioniConverter {
 		
 		rsModel.setFlussoRendicontazione(FlussiRendicontazioneConverter.toRsIndexModel(rendicontazione.getFr()));
 		
-		rsModel.setVocePendenza(PendenzeConverter.toVocePendenzaRendicontazioneRsModel(rendicontazione.getSingoloVersamento(), rendicontazione.getVersamento(), configWrapper));
+		if(rendicontazione.getSingoloVersamento() != null) {
+			rsModel.setVocePendenza(PendenzeConverter.toVocePendenzaRendicontazioneRsModel(rendicontazione.getSingoloVersamento(), rendicontazione.getVersamento(), configWrapper));
+		}
 		
 		rsModel.setData(rendicontazione.getRendicontazione().getData());
 		if(rendicontazione.getRendicontazione().getEsito() != null)
