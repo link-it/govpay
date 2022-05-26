@@ -139,7 +139,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
-And headers { 'X-GOVPAY-FILENAME' : 'test1_avvisi_solo_rate' }
+And headers { 'X-GOVPAY-FILENAME' : 'test2_avvisi_solo_rate' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -223,7 +223,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
-And headers { 'X-GOVPAY-FILENAME' : 'test1_avvisi_con_rata_unica_no_bollettino' }
+And headers { 'X-GOVPAY-FILENAME' : 'test3_avvisi_con_rata_unica_no_bollettino' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
@@ -307,7 +307,7 @@ Then status 200
 Given url backofficeBaseurl
 And path 'pendenze', 'tracciati', idDominio, codEntrataSegreteria
 And headers { 'Content-Type' : 'text/csv' }
-And headers { 'X-GOVPAY-FILENAME' : 'test1_avvisi_solo_rate_no_bollettino' }
+And headers { 'X-GOVPAY-FILENAME' : 'test4_avvisi_solo_rate_no_bollettino' }
 And headers basicAutenticationHeader
 And request tracciato
 When method post
