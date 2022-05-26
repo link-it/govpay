@@ -83,10 +83,12 @@ public class RiscossioniConverter {
 					}
 				}
 
-				if(versamento == null)
-					versamento = singoloVersamento.getVersamento(configWrapper);
+				if(singoloVersamento != null) {
+					if(versamento == null)
+						versamento = singoloVersamento.getVersamento(configWrapper);
 
-				rsModel.setVocePendenza(PendenzeConverter.toRsModelVocePendenza(singoloVersamento, input.getIndiceDati(), versamento));
+					rsModel.setVocePendenza(PendenzeConverter.toRsModelVocePendenza(singoloVersamento, input.getIndiceDati(), versamento));
+				}
 			}
 
 		} catch(ServiceException e) {

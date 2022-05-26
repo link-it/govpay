@@ -1132,6 +1132,8 @@ CREATE TABLE rendicontazioni
 	CONSTRAINT pk_rendicontazioni PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Rendicontazioni';
 
+-- index
+CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
 
 
 

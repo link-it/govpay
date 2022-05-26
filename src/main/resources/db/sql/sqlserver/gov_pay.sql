@@ -1084,6 +1084,8 @@ CREATE TABLE rendicontazioni
 	CONSTRAINT pk_rendicontazioni PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
 
 
 
