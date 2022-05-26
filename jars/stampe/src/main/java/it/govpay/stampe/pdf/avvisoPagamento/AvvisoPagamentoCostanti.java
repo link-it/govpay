@@ -16,17 +16,24 @@ public class AvvisoPagamentoCostanti {
 	public static final String LOGO_EURO = "avvisoPagamento.logo.euro";
 	
 	public static final String AVVISO_PAGAMENTO_TEMPLATE_JASPER = "/AvvisoPagamento.jasper";
-	public static final String BOLLETTINORATA_TEMPLATE_JASPER = "/BollettinoRata.jasper";
-	public static final String BOLLETTINOTRIRATA_TEMPLATE_JASPER = "/BollettinoTriRata.jasper";
-	public static final String RATADOPPIA_TEMPLATE_JASPER = "/DoppiaRata.jasper";
-	public static final String RATADOPPIAPOSTALE_TEMPLATE_JASPER = "/DoppiaRataPostale.jasper";
-	public static final String DOPPIOFORMATO_TEMPLATE_JASPER = "/DoppioFormato.jasper";
-	public static final String MONOBAND_TEMPLATE_JASPER = "/MonoBand.jasper";
-	public static final String RATAUNICA_TEMPLATE_JASPER = "/RataUnica.jasper";
-	public static final String TRIBAND_TEMPLATE_JASPER = "/TriBand.jasper";
-	public static final String RATATRIPLA_TEMPLATE_JASPER = "/TriplaRata.jasper";
-	public static final String RATATRIPLAPOSTALE_TEMPLATE_JASPER = "/TriplaRataPostale.jasper";
-	public static final String TRIPLOFORMATO_TEMPLATE_JASPER = "/TriploFormato.jasper";
+	public static final String RATA_DOPPIA_TEMPLATE_JASPER = "/DoppiaRata.jasper";
+	public static final String DOPPIO_FORMATO_TEMPLATE_JASPER = "/DoppioFormato.jasper";
+	public static final String RATA_MULTIPLA_TEMPLATE_JASPER = "/RataMultipla.jasper";
+	public static final String RATA_UNICA_TEMPLATE_JASPER = "/RataUnica.jasper";
+	public static final String RATA_TRIPLA_TEMPLATE_JASPER = "/TriplaRata.jasper";
+	public static final String TRIPLO_FORMATO_TEMPLATE_JASPER = "/TriploFormato.jasper";
+	
+	public static final String AVVISO_PAGAMENTO_POSTALE_TEMPLATE_JASPER = "/AvvisoPagamentoPostale.jasper";
+	public static final String BOLLETTINO_RATA_TEMPLATE_JASPER = "/BollettinoRata.jasper";
+	public static final String BOLLETTINO_TRIRATA_TEMPLATE_JASPER = "/BollettinoTriRata.jasper";
+	public static final String RATA_DOPPIA_POSTALE_TEMPLATE_JASPER = "/DoppiaRataPostale.jasper";
+	public static final String DOPPIO_FORMATO_POSTALE_TEMPLATE_JASPER = "/DoppioFormatoPostale.jasper";
+	public static final String RATA_UNICA_POSTALE_TEMPLATE_JASPER = "/RataUnicaPostale.jasper";
+	public static final String RATA_TRIPLA_POSTALE_TEMPLATE_JASPER = "/TriplaRataPostale.jasper";
+	public static final String TRIPLO_FORMATO_POSTALE_TEMPLATE_JASPER = "/TriploFormatoPostale.jasper";
+	
+//	public static final String MONOBAND_TEMPLATE_JASPER = "/MonoBand.jasper";
+//	public static final String TRIBAND_TEMPLATE_JASPER = "/TriBand.jasper";
 	
 	public static final String VIOLAZIONE_CDS_DIR = "/violazioneCDS";
 	
@@ -34,6 +41,7 @@ public class AvvisoPagamentoCostanti {
 	public static final String RIDOTTOSCONTATO_TEMPLATE_JASPER = "/RidottoScontato.jasper";
 	public static final String SANZIONE_TEMPLATE_JASPER = "/Sanzione.jasper";
 	public static final String FORMATO_TEMPLATE_JASPER = "/Formato.jasper";
+	
 	
 	public static final String AVVISO_PAGAMENTO_TEMPLATE_JASPER_V2 = "/AvvisoPagamentoV2.jasper";
 	public static final String MONOBAND_TEMPLATE_JASPER_V2 = "/MonoBandV2.jasper";

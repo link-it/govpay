@@ -131,7 +131,8 @@ public class AvvisoPagamentoUtils {
 				}
 
 				// a questo punto creo tutte le pagine con 9 rate 
-				while(versamenti.size() > 1 && versamenti.size() %9 == 0) {
+//				while(versamenti.size() > 1 && versamenti.size() %9 == 0) {
+				while(versamenti.size() > 8) {
 					log.debug("Documento ["+documento.getCodDocumento()+"] inserisco una pagina con 9 rate");
 					Versamento v1 = versamenti.remove(0);
 					Versamento v2 = versamenti.remove(0);
@@ -164,7 +165,7 @@ public class AvvisoPagamentoUtils {
 
 				// qui creo l'ultima pagina multipla sono rimasti un numero di pendenze da 2 a 8
 				// quando ho 2 o 4 metto il layout a 2 colonne altrimenti a 3
-				if(versamenti.size() > 1) {
+				if(versamenti.size() > 0) {
 					log.debug("Documento ["+documento.getCodDocumento()+"] inserisco pagina finale con " + versamenti.size()+ " rate");
 					PaginaAvvisoMultipla pagina = new PaginaAvvisoMultipla();
 					if(versamenti.size() < 6 && versamenti.size() %3 != 0) {
@@ -201,48 +202,6 @@ public class AvvisoPagamentoUtils {
 				}
 			}
 		}
-
-		//		while(versamenti.size() > 0 && versamenti.get(0).getNumeroRata() == null && versamenti.get(0).getTipoSoglia() == null) {
-		//			Versamento versamento = versamenti.remove(0);
-		//			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
-		//			AvvisoPagamentoUtils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
-		//			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
-		//			pagina.setRata(getRata(versamento, input, sdfDataScadenza));
-		//			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
-		//		}
-		//
-		//		while(versamenti.size() > 1 && versamenti.size()%3 != 0) {
-		//			Versamento v1 = versamenti.remove(0);
-		//			Versamento v2 = versamenti.remove(0);
-		//			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v2, documento.getDominio(configWrapper), v2.getUo(configWrapper), input);
-		//			AvvisoPagamentoUtils.impostaAnagraficaDebitore(v2.getAnagraficaDebitore(), input);
-		//			PaginaAvvisoDoppia pagina = new PaginaAvvisoDoppia();
-		//			pagina.getRata().add(getRata(v1, input, sdfDataScadenza));
-		//			pagina.getRata().add(getRata(v2, input, sdfDataScadenza));
-		//			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
-		//		}
-		//
-		//		while(versamenti.size() > 1) {
-		//			Versamento v1 = versamenti.remove(0);
-		//			Versamento v2 = versamenti.remove(0);
-		//			Versamento v3 = versamenti.remove(0);
-		//			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v3, documento.getDominio(configWrapper), v3.getUo(configWrapper), input);
-		//			AvvisoPagamentoUtils.impostaAnagraficaDebitore(v3.getAnagraficaDebitore(), input);
-		//			PaginaAvvisoTripla pagina = new PaginaAvvisoTripla();
-		//			pagina.getRata().add(getRata(v1, input, sdfDataScadenza));
-		//			pagina.getRata().add(getRata(v2, input, sdfDataScadenza));
-		//			pagina.getRata().add(getRata(v3, input, sdfDataScadenza));
-		//			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
-		//		}
-		//
-		//		if(versamenti.size() == 1) {
-		//			Versamento versamento = versamenti.remove(0);
-		//			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
-		//			AvvisoPagamentoUtils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
-		//			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
-		//			pagina.setRata(getRata(versamento, input, sdfDataScadenza));
-		//			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
-		//		}
 
 		return input;
 	}
@@ -363,19 +322,8 @@ public class AvvisoPagamentoUtils {
 			pagina.setRata(getRata(versamento, input, sdfDataScadenza));
 			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 		}
-
-		while(versamenti.size() > 1 && versamenti.size()%3 != 0) {
-			Versamento v1 = versamenti.remove(0);
-			Versamento v2 = versamenti.remove(0);
-			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v2, documento.getDominio(configWrapper), v2.getUo(configWrapper), input);
-			AvvisoPagamentoUtils.impostaAnagraficaDebitore(v2.getAnagraficaDebitore(), input);
-			PaginaAvvisoDoppia pagina = new PaginaAvvisoDoppia();
-			pagina.getRata().add(getRata(v1, input, sdfDataScadenza));
-			pagina.getRata().add(getRata(v2, input, sdfDataScadenza));
-			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
-		}
-
-		while(versamenti.size() > 1) {
+		
+		while(versamenti.size() > 2) {
 			Versamento v1 = versamenti.remove(0);
 			Versamento v2 = versamenti.remove(0);
 			Versamento v3 = versamenti.remove(0);
@@ -387,15 +335,56 @@ public class AvvisoPagamentoUtils {
 			pagina.getRata().add(getRata(v3, input, sdfDataScadenza));
 			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 		}
+		
+		// sono rimasti 2/1 rate
+		if(versamenti.size() > 0) {
+			PaginaAvvisoTripla pagina = new PaginaAvvisoTripla();
+			
+			while(versamenti.size() > 0) {
+				Versamento v1 = versamenti.remove(0);
 
-		if(versamenti.size() == 1) {
-			Versamento versamento = versamenti.remove(0);
-			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
-			AvvisoPagamentoUtils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
-			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
-			pagina.setRata(getRata(versamento, input, sdfDataScadenza));
+				AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v1, documento.getDominio(configWrapper), v1.getUo(configWrapper), input);
+				AvvisoPagamentoUtils.impostaAnagraficaDebitore(v1.getAnagraficaDebitore(), input);
+
+				pagina.getRata().add(getRata(v1, input, sdfDataScadenza));
+			}
+
 			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 		}
+		
+
+//		while(versamenti.size() > 1 && versamenti.size()%3 != 0) {
+//			Versamento v1 = versamenti.remove(0);
+//			Versamento v2 = versamenti.remove(0);
+//			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v2, documento.getDominio(configWrapper), v2.getUo(configWrapper), input);
+//			AvvisoPagamentoUtils.impostaAnagraficaDebitore(v2.getAnagraficaDebitore(), input);
+//			PaginaAvvisoDoppia pagina = new PaginaAvvisoDoppia();
+//			pagina.getRata().add(getRata(v1, input, sdfDataScadenza));
+//			pagina.getRata().add(getRata(v2, input, sdfDataScadenza));
+//			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+//		}
+//
+//		while(versamenti.size() > 1) {
+//			Versamento v1 = versamenti.remove(0);
+//			Versamento v2 = versamenti.remove(0);
+//			Versamento v3 = versamenti.remove(0);
+//			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(v3, documento.getDominio(configWrapper), v3.getUo(configWrapper), input);
+//			AvvisoPagamentoUtils.impostaAnagraficaDebitore(v3.getAnagraficaDebitore(), input);
+//			PaginaAvvisoTripla pagina = new PaginaAvvisoTripla();
+//			pagina.getRata().add(getRata(v1, input, sdfDataScadenza));
+//			pagina.getRata().add(getRata(v2, input, sdfDataScadenza));
+//			pagina.getRata().add(getRata(v3, input, sdfDataScadenza));
+//			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+//		}
+//
+//		if(versamenti.size() == 1) {
+//			Versamento versamento = versamenti.remove(0);
+//			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
+//			AvvisoPagamentoUtils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
+//			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
+//			pagina.setRata(getRata(versamento, input, sdfDataScadenza));
+//			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+//		}
 
 		return input;
 	}

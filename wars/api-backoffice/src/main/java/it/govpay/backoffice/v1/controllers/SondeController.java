@@ -34,6 +34,9 @@ import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.TracciatiNotificaPagamentiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
+import it.govpay.core.dao.configurazione.dto.LeggiConfigurazioneDTO;
+import it.govpay.core.dao.configurazione.dto.LeggiConfigurazioneDTOResponse;
 import it.govpay.core.utils.GovpayConfig;
 
 public class SondeController extends BaseController{
@@ -62,6 +65,10 @@ public class SondeController extends BaseController{
 				sondaCheckDB.setDataUltimoCheck(new Date());
 				risultati.add(sondaCheckDB);
 				
+				LeggiConfigurazioneDTO leggiConfigurazioneDTO = new LeggiConfigurazioneDTO(user);
+				ConfigurazioneDAO configurazioneDAO = new ConfigurazioneDAO(false);
+				LeggiConfigurazioneDTOResponse configurazioneDTOResponse = configurazioneDAO.getConfigurazione(leggiConfigurazioneDTO);
+				
 				List<Sonda> sonde = SondaFactory.findAll(bd.getConnection(), bd.getJdbcProperties().getDatabase());
 
 				for(Sonda sonda: sonde) {
@@ -71,7 +78,7 @@ public class SondeController extends BaseController{
 					sonda = this.updateStatoSonda(bd, parametri.getNome(), sonda);
 					parametri = sonda.getParam();
 					
-					it.govpay.backoffice.v1.beans.Sonda rsModel = SondeConverter.toRsModel(sonda, parametri);
+					it.govpay.backoffice.v1.beans.Sonda rsModel = SondeConverter.toRsModel(sonda, parametri, configurazioneDTOResponse.getConfigurazione());
 
 					risultati.add(rsModel);
 				}
@@ -128,11 +135,15 @@ public class SondeController extends BaseController{
 				} else {
 					bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), true);
 					bd.setupConnection(ContextThreadLocal.get().getTransactionId());
+					
+					LeggiConfigurazioneDTO leggiConfigurazioneDTO = new LeggiConfigurazioneDTO(user);
+					ConfigurazioneDAO configurazioneDAO = new ConfigurazioneDAO(false);
+					LeggiConfigurazioneDTOResponse configurazioneDTOResponse = configurazioneDAO.getConfigurazione(leggiConfigurazioneDTO);
 	
 					try {
 						Sonda sonda = this.getSonda(bd, id);
 						ParametriSonda param = sonda.getParam();
-						response = SondeConverter.toRsModel(sonda, param); 
+						response = SondeConverter.toRsModel(sonda, param, configurazioneDTOResponse.getConfigurazione()); 
 					} catch (NotFoundException t){
 						return Response.status(404).entity(MessageFormat.format(Costanti.SONDA_CON_ID_NON_CONFIGURATA, id)).build();
 					} catch (Throwable t){
