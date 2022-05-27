@@ -48,8 +48,8 @@ public class AvvisoPagamentoPdf {
 	private static byte[] templateTriploFormato = null;
 	
 	private static byte[] templateAvvisoPostale = null;
-	private static byte[] templateBollettinoRata = null;
-	private static byte[] templateBollettinoTriRata = null;
+	private static byte[] templateBollettinoRataPostale = null;
+	private static byte[] templateBollettinoTriRataPostale = null;
 	private static byte[] templateDoppiaRataPostale = null;
 	private static byte[] templateDoppioFormatoPostale = null;
 	private static byte[] templateRataUnicaPostale = null;
@@ -125,8 +125,8 @@ public class AvvisoPagamentoPdf {
 			templateTriploFormato = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.TRIPLO_FORMATO_TEMPLATE_JASPER));
 			
 			templateAvvisoPostale = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.AVVISO_PAGAMENTO_POSTALE_TEMPLATE_JASPER)); 
-			templateBollettinoRata = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.BOLLETTINO_RATA_TEMPLATE_JASPER));
-			templateBollettinoTriRata = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.BOLLETTINO_TRIRATA_TEMPLATE_JASPER));
+			templateBollettinoRataPostale = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.BOLLETTINO_RATA_TEMPLATE_JASPER));
+			templateBollettinoTriRataPostale = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.BOLLETTINO_TRIRATA_TEMPLATE_JASPER));
 			templateDoppiaRataPostale = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RATA_DOPPIA_POSTALE_TEMPLATE_JASPER));
 			templateDoppioFormatoPostale = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.DOPPIO_FORMATO_POSTALE_TEMPLATE_JASPER));
 			templateRataUnicaPostale = IOUtils.toByteArray(AvvisoPagamentoPdf.class.getResourceAsStream(AvvisoPagamentoCostanti.RATA_UNICA_POSTALE_TEMPLATE_JASPER));
@@ -235,13 +235,13 @@ public class AvvisoPagamentoPdf {
 
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		
-		parameters.put("BollettinoRata", new ByteArrayInputStream(templateBollettinoRata));
-		parameters.put("BollettinoTriRata", new ByteArrayInputStream(templateBollettinoTriRata));
-		parameters.put("DoppiaRataPostale", new ByteArrayInputStream(templateDoppiaRataPostale));
-		parameters.put("DoppioFormato", new ByteArrayInputStream(templateDoppioFormatoPostale));
-		parameters.put("RataUnicaPostale", new ByteArrayInputStream(templateRataUnicaPostale));
-		parameters.put("TriplaRataPostale", new ByteArrayInputStream(templateTriplaRataPostale));
-		parameters.put("TriploFormato", new ByteArrayInputStream(templateTriploFormatoPostale));
+		parameters.put("BollettinoRataPostale", new ByteArrayInputStream(templateBollettinoRataPostale));
+		parameters.put("BollettinoTriRataPostale", new ByteArrayInputStream(templateBollettinoTriRataPostale));
+		parameters.put("DoppiaRataPostalePostale", new ByteArrayInputStream(templateDoppiaRataPostale));
+		parameters.put("DoppioFormatoPostale", new ByteArrayInputStream(templateDoppioFormatoPostale));
+		parameters.put("RataUnicaPostalePostale", new ByteArrayInputStream(templateRataUnicaPostale));
+		parameters.put("TriplaRataPostalePostale", new ByteArrayInputStream(templateTriplaRataPostale));
+		parameters.put("TriploFormatoPostale", new ByteArrayInputStream(templateTriploFormatoPostale));
 		
 		JRGzipVirtualizer virtualizer = new JRGzipVirtualizer(50);
 		parameters.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);

@@ -24,8 +24,8 @@ public class AvvisoPagamentoCostanti {
 	public static final String TRIPLO_FORMATO_TEMPLATE_JASPER = "/TriploFormato.jasper";
 	
 	public static final String AVVISO_PAGAMENTO_POSTALE_TEMPLATE_JASPER = "/AvvisoPagamentoPostale.jasper";
-	public static final String BOLLETTINO_RATA_TEMPLATE_JASPER = "/BollettinoRata.jasper";
-	public static final String BOLLETTINO_TRIRATA_TEMPLATE_JASPER = "/BollettinoTriRata.jasper";
+	public static final String BOLLETTINO_RATA_TEMPLATE_JASPER = "/BollettinoRataPostale.jasper";
+	public static final String BOLLETTINO_TRIRATA_TEMPLATE_JASPER = "/BollettinoTriRataPostale.jasper";
 	public static final String RATA_DOPPIA_POSTALE_TEMPLATE_JASPER = "/DoppiaRataPostale.jasper";
 	public static final String DOPPIO_FORMATO_POSTALE_TEMPLATE_JASPER = "/DoppioFormatoPostale.jasper";
 	public static final String RATA_UNICA_POSTALE_TEMPLATE_JASPER = "/RataUnicaPostale.jasper";
