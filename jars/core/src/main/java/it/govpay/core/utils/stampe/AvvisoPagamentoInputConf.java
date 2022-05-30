@@ -23,15 +23,17 @@ public class AvvisoPagamentoInputConf {
 		// postale da https://github.com/pagopa/pagopa-api/issues/333
 		// si controlla l'IBAN della prima voce
 		toRet.postale = false;
+		int numPendenzePostali = 0;
 		for (Versamento versamento : versamenti) {
 			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 			SingoloVersamento sv = singoliVersamenti.get(0);
 			if(sv.getIbanAccredito(configWrapper) != null && sv.getIbanAccredito(configWrapper).isPostale())
-				toRet.postale = true;
+				numPendenzePostali ++;
 			else if(sv.getIbanAppoggio(configWrapper) != null && sv.getIbanAppoggio(configWrapper).isPostale())
-				toRet.postale = true;
+				numPendenzePostali ++;
 		}
 		
+		toRet.postale = numPendenzePostali == versamenti.size();
 		log.debug("Documento ["+documento.getCodDocumento()+"] Postale: ["+toRet.postale+"]");
 		
 		// rata unica
