@@ -1294,6 +1294,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			CtPaymentOptionsDescriptionListPA paymentList = new CtPaymentOptionsDescriptionListPA();
 
 			// Inserisco come opzione di pagamento solo quella con importo esatto del versamento
+			// 30/05/2022 come indicato in https://github.com/pagopa/pagopa-api/issues/216 il supporto alle opzioni multiple e' stato sospeso
 			// TODO capire come proporre eventuali altre soluzioni (es. rate o pagamenti con soglie.)
 			CtPaymentOptionDescriptionPA ctPaymentOptionDescriptionPA = new CtPaymentOptionDescriptionPA();
 			StAmountOption stAmountOption = StAmountOption.EQ;
@@ -1302,7 +1303,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			ctPaymentOptionDescriptionPA.setDetailDescription(versamento.getCausaleVersamento().getSimple());
 			ctPaymentOptionDescriptionPA.setDueDate(versamento.getDataValidita());
 			ctPaymentOptionDescriptionPA.setAllCCP(VersamentoUtils.isAllIBANPostali(versamento, configWrapper));
-			paymentList.getPaymentOptionDescription().add(ctPaymentOptionDescriptionPA );
+//			paymentList.getPaymentOptionDescription().add(ctPaymentOptionDescriptionPA);
+			paymentList.setPaymentOptionDescription(ctPaymentOptionDescriptionPA);
 
 			response.setPaymentList(paymentList);
 			ctx.getApplicationLogger().log("ccp.ricezioneVerificaOk", versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
@@ -1443,6 +1445,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			it.govpay.bd.model.Applicazione applicazioneGestisceIuv = null;
 			try {
 				// TODO 
+				// 30/05/2022 come indicato in https://github.com/pagopa/pagopa-api/issues/216 il supporto alle opzioni multiple e' stato sospeso
 				// Aggiungere la ricerca del versamento corretto, utilizzando anche amount e due date
 				// perche' la verify potrebbe aver restituito tra le opzioni di pagamento una rata o un pagamento con soglia.
 				versamento = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv, true);
