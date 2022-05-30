@@ -20,21 +20,18 @@ public class AvvisoPagamentoInputConf {
 		
 		log.debug("Documento ["+documento.getCodDocumento()+"] Numero totale di versamenti da inserire: " + versamenti.size());
 		
-		// postale
-		int numeroPostaliSV = 0;
-		int numeroSV = 0;
+		// postale da https://github.com/pagopa/pagopa-api/issues/333
+		// si controlla l'IBAN della prima voce
+		toRet.postale = false;
 		for (Versamento versamento : versamenti) {
 			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
-			numeroSV += singoliVersamenti.size();
-			for (SingoloVersamento sv : singoliVersamenti) {
-				if(sv.getIbanAccredito(configWrapper) != null && sv.getIbanAccredito(configWrapper).isPostale())
-					numeroPostaliSV++;
-				else if(sv.getIbanAppoggio(configWrapper) != null && sv.getIbanAppoggio(configWrapper).isPostale())
-					numeroPostaliSV++;
-			}
+			SingoloVersamento sv = singoliVersamenti.get(0);
+			if(sv.getIbanAccredito(configWrapper) != null && sv.getIbanAccredito(configWrapper).isPostale())
+				toRet.postale = true;
+			else if(sv.getIbanAppoggio(configWrapper) != null && sv.getIbanAppoggio(configWrapper).isPostale())
+				toRet.postale = true;
 		}
 		
-		toRet.postale = numeroSV == numeroPostaliSV;
 		log.debug("Documento ["+documento.getCodDocumento()+"] Postale: ["+toRet.postale+"]");
 		
 		// rata unica
