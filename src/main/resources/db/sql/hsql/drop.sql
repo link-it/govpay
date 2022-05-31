@@ -62,6 +62,7 @@ DROP VIEW v_rendicontazioni_ext;
 DROP VIEW v_rpt_versamenti;
 DROP VIEW v_pagamenti;
 DROP VIEW v_versamenti;
+DROP TABLE sonde;
 DROP TABLE allegati_init_seq;
 DROP TABLE allegati;
 DROP TABLE ID_MESSAGGIO_RELATIVO;
