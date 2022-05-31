@@ -336,7 +336,7 @@ ALTER TABLE versamenti ADD tassonomia_avviso VARCHAR(35);
 ALTER TABLE versamenti ADD tassonomia VARCHAR(35);
 ALTER TABLE versamenti ADD id_dominio NUMBER;
 -- 230 secondi
-UPDATE versamenti SET id_dominio = (SELECT id_dominio FROM uo WHERE id = versamenti.id_uo) WHERE EXISTS (SELECT 1 FROM uo WHERE id = versamenti.id_uo);
+UPDATE versamenti SET id_dominio = (SELECT id_dominio FROM uo WHERE id = versamenti.id_uo);
 ALTER TABLE versamenti MODIFY (id_dominio NOT NULL);
 ALTER TABLE versamenti MODIFY (id_uo NULL);
 -- ALTER TABLE versamenti ADD CONSTRAINT fk_vrs_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
@@ -347,8 +347,7 @@ ALTER TABLE rpt ADD id_applicazione NUMBER;
 
 -- Imposto id_applicazione in base al portale
 -- 620 secondi
-UPDATE rpt SET id_applicazione = (SELECT applicazioni.id FROM applicazioni, portali WHERE applicazioni.id_utenza = portali.id_utenza AND rpt.id_portale = portali.id)
- WHERE EXISTS (SELECT 1 FROM applicazioni, portali WHERE applicazioni.id_utenza = portali.id_utenza AND rpt.id_portale = portali.id);
+UPDATE rpt SET id_applicazione = (SELECT applicazioni.id FROM applicazioni, portali WHERE applicazioni.id_utenza = portali.id_utenza AND rpt.id_portale = portali.id);
 
 -- Le RPT che erano associate ai portali ora sono associate tutte ad un'applicazione posso cancellare i portali 
 -- 670 secondi
@@ -372,16 +371,27 @@ INSERT INTO pagamenti_portale (id_rpt_tmp, id_applicazione,cod_canale,data_richi
 	rpt.cod_carrello, 'NON_ESEGUITO', 'PAGAMENTO_NON_ESEGUITO', 1, rpt.cod_sessione_portale 
 	FROM rpt, versamenti WHERE rpt.id_versamento = versamenti.id AND rpt.cod_carrello IS NOT NULL AND rpt.cod_carrello NOT IN (SELECT id_sessione FROM pagamenti_portale);
 	
--- aggiorno i riferimenti ai pagamenti portale
-UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id) WHERE EXISTS (SELECT 1 FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
+-- 20 secondi
+CREATE INDEX idx_pp_fk_rpt_tmp ON pagamenti_portale (id_rpt_tmp);
 
+-- aggiorno i riferimenti ai pagamenti portale
+-- 1400 secondi
+UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
+
+DROP INDEX idx_pp_fk_rpt_tmp;
 -- elimino colonna id_rpt
+-- 86 secondi
 ALTER TABLE pagamenti_portale DROP COLUMN id_rpt_tmp;
+
+-- indici che aiutano nelle join per la tabella rpt.
+CREATE INDEX idx_rpt_fk_pp ON rpt (id_pagamento_portale);
+CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
+CREATE INDEX idx_vrs_fk_app ON versamenti (id_applicazione);
 
 -- Per le RPT dove non era stato inserito un portale assegno i pagamenti portale all'applicazione, mi servira' per poter salvare il principal
 UPDATE pagamenti_portale SET pagamenti_portale.id_applicazione = (SELECT versamenti.id_applicazione
  FROM versamenti, rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.id_versamento = versamenti.id)
- WHERE pagamenti_portale.id_applicazione IS NULL AND EXISTS( SELECT 1 FROM versamenti, rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.id_versamento = versamenti.id)
+ WHERE pagamenti_portale.id_applicazione IS NULL; 
 
 -- aggiorno stati pagamento portale
 UPDATE pagamenti_portale SET stato = 'ANNULLATO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RPT_ANNULLATA');
@@ -457,8 +467,8 @@ ALTER TABLE utenze MODIFY (principal_originale NOT NULL);
 
 -- patch dati pagamenti_portale malformati non gestiti dal cruscotto
 
-delete from pag_port_versamenti where id_pagamento_portale in (select pagamenti_portale.id from  pagamenti_portale left join rpt on rpt.id_pagamento_portale = pagamenti_portale.id where rpt.id is null);
-delete from pagamenti_portale where id in (select pagamenti_portale.id from  pagamenti_portale left join rpt on rpt.id_pagamento_portale = pagamenti_portale.id where rpt.id is null);
+DELETE from pag_port_versamenti where id_pagamento_portale in (select pagamenti_portale.id from pagamenti_portale left join rpt on rpt.id_pagamento_portale = pagamenti_portale.id where rpt.id is null);
+DELETE from pagamenti_portale where id in (select pagamenti_portale.id from  pagamenti_portale left join rpt on rpt.id_pagamento_portale = pagamenti_portale.id where rpt.id is null);
 
 ALTER TABLE pagamenti_portale ADD ack NUMBER DEFAULT 0;
 ALTER TABLE pagamenti_portale MODIFY (ack NOT NULL);
@@ -491,9 +501,11 @@ CREATE TABLE sv_tmp (
 );
 INSERT INTO sv_tmp (id, indice_dati) SELECT sv1.id AS id, row_number() over (partition BY sv1.id_versamento ORDER BY sv1.id) AS indice_dati FROM singoli_versamenti sv1;
 
-UPDATE singoli_versamenti SET indice_dati = (SELECT sv_tmp.indice_dati FROM sv_tmp WHERE singoli_versamenti.id = sv_tmp.id) 
-	WHERE EXISTS ( SELECT 1 FROM sv_tmp WHERE singoli_versamenti.id = sv_tmp.id );
+CREATE INDEX idx_svtmp_fk_sv ON sv_tmp (id);
 
+UPDATE singoli_versamenti SET indice_dati = (SELECT sv_tmp.indice_dati FROM sv_tmp WHERE singoli_versamenti.id = sv_tmp.id);
+
+DROP INDEX idx_svtmp_fk_sv;
 DROP TABLE sv_tmp;
 
 ALTER TABLE singoli_versamenti MODIFY (indice_dati NOT NULL);
@@ -503,9 +515,11 @@ ALTER TABLE singoli_versamenti ADD CONSTRAINT unique_singoli_versamenti_1 UNIQUE
 
 ALTER TABLE rendicontazioni ADD id_singolo_versamento NUMBER;
 
-UPDATE rendicontazioni SET id_singolo_versamento = 
-	(SELECT pagamenti.id_singolo_versamento FROM pagamenti WHERE rendicontazioni.id_pagamento = pagamenti.id)
-	WHERE EXISTS (SELECT 1 FROM pagamenti WHERE rendicontazioni.id_pagamento = pagamenti.id);
+CREATE INDEX idx_rnd_fk_pag ON rendicontazioni (id_pagamento);
+
+UPDATE rendicontazioni SET id_singolo_versamento = (SELECT pagamenti.id_singolo_versamento FROM pagamenti WHERE rendicontazioni.id_pagamento = pagamenti.id);
+
+DROP INDEX idx_rnd_fk_pag;
 
 -- Funzione per calcolare il numero di millisecondi dal 1/1/1970
 CREATE OR REPLACE FUNCTION date_to_unix_for_smart_order (p_date date, in_src_tz in varchar2 default 'Europe/Rome') return number is
@@ -1372,6 +1386,11 @@ UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007101#Il pagamento riferi
 -- 25/01/2022 Flusso Rendicontazione univoco per dominio
 ALTER TABLE fr DROP CONSTRAINT unique_fr_1;
 ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,data_ora_flusso);
+
+-- Indici sulla tabella RPT
+DROP INDEX idx_rpt_fk_pp;
+DROP INDEX idx_rpt_fk_vrs;
+DROP INDEX idx_vrs_fk_app;
 
 -- 29/04/2022 Tabella configurazione nella versione definitiva
 CREATE SEQUENCE seq_configurazione MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
