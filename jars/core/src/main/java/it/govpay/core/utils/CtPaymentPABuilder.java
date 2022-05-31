@@ -42,6 +42,7 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentReq;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StEntityUniqueIdentifierType;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StOutcome;
+import it.gov.pagopa.pagopa_api.pa.pafornode.StTransferType;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
@@ -60,9 +61,9 @@ import it.govpay.model.Rpt.Versione;
 import it.govpay.model.Versamento.CausaleSemplice;
 
 public class CtPaymentPABuilder {
-	
+
 	public Rpt buildRptAttivata (PaGetPaymentReq requestBody, Versamento versamento, String iuv, String ccp, String numeroavviso) throws ServiceException {
-		
+
 		return this.buildRpt(requestBody,
 				null,
 				versamento,
@@ -75,7 +76,7 @@ public class CtPaymentPABuilder {
 				null
 				);
 	}
-	
+
 	private Rpt buildRpt(PaGetPaymentReq requestBody,
 			String codCarrello, 
 			Versamento versamento, 
@@ -86,12 +87,12 @@ public class CtPaymentPABuilder {
 			ModelloPagamento modelloPagamento,
 			String autenticazione, 
 			String redirect) throws ServiceException {
-		
+
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		
+
 		Dominio dominio = versamento.getDominio(configWrapper); 
 		UnitaOperativa uo = versamento.getUo(configWrapper);
-		
+
 		Rpt rpt = new Rpt();
 		rpt.setVersione(Versione.SANP_240);
 		rpt.setCallbackURL(redirect);
@@ -115,13 +116,13 @@ public class CtPaymentPABuilder {
 		rpt.setIdTransazioneRpt(ContextThreadLocal.get().getTransactionId());
 		rpt.setBloccante(true);
 		rpt.setEsitoPagamento(EsitoPagamento.IN_CORSO);
-		
+
 		PaGetPaymentRes paGetPaymentRes = new PaGetPaymentRes();
 		CtPaymentPA ctRpt = new CtPaymentPA();
-		
+
 		/*
 			Its contains all payment information :
-		
+
 			- `creditorReferenceId` : its equal to **IUV** _Identificativo Univoco Versamento_ 
 			- `paymentAmount` : amount, it must be equal to the sums of `transferAmount` present in the `transferList`
 			- `dueDate` : indicates the expiration payment date according to the ISO 8601 format `[YYYY]-[MM]-[DD]`.
@@ -133,17 +134,17 @@ public class CtPaymentPABuilder {
 			- `debtor` : identifies the debtor to whom the debt position refers
 			- `transferList` : the list of all available transfer information (_see below to details_)
 			- `metadata` : (_see below to details_)
-		*/
-		
+		 */
+
 		ctRpt.setCreditorReferenceId(iuv);
-		
+
 		// L'amount con il dueDate mi deve far scegliere tra le opzioni di pagamento
 		// da attivare. Al momento viene gestita una sola opzione di pagamento
 		// pertanto ignoro l'importo comunicato e rispondo sempre con il dovuto.
 		// https://github.com/pagopa/pagopa-api/issues/194
-		
+
 		ctRpt.setPaymentAmount(versamento.getImportoTotale());
-		
+
 		if(versamento.getDataValidita() != null) {
 			ctRpt.setDueDate(versamento.getDataValidita()); // indicates the expiration payment date
 		} else if(versamento.getDataScadenza() != null) {
@@ -151,12 +152,12 @@ public class CtPaymentPABuilder {
 		} else {
 			ctRpt.setDueDate(new Date(32503590000000l)); //31.12.2999
 		}                             
-		
+
 		// Capire se il numero avviso utilizzato e' relativo alla rata di un documento, 
 		// nel caso sia l'ultima valorizzare true altrimenti e' sempre false
 		// se non e' una rata o rata unica e' sempre true. 
 		ctRpt.setLastPayment(true); 
-		
+
 		if(versamento.getCausaleVersamento() != null) {
 			if(versamento.getCausaleVersamento() instanceof CausaleSemplice) {
 				ctRpt.setDescription(((CausaleSemplice) versamento.getCausaleVersamento()).getCausale());
@@ -164,32 +165,38 @@ public class CtPaymentPABuilder {
 		} else {
 			ctRpt.setDescription(" ");
 		}
-		
+
 		ctRpt.setCompanyName(dominio.getRagioneSociale());
-		
+
 		if(uo != null && !uo.getCodUo().equals(it.govpay.model.Dominio.EC) && uo.getAnagrafica() != null) {
 			ctRpt.setOfficeName(versamento.getUo(configWrapper).getAnagrafica().getRagioneSociale());
 		}
-		
+
 		CtSubject debtor = this.buildSoggettoPagatore(versamento.getAnagraficaDebitore());
 		ctRpt.setDebtor(debtor);
 		ctRpt.setMetadata(null);
-		
+
 		CtTransferListPA transferList = new CtTransferListPA();
 		ctRpt.setTransferList(transferList );
-		
+
+		boolean utilizzaIBANPostali = false;
+		StTransferType transferType = requestBody.getTransferType();
+		if(transferType != null && transferType.equals(StTransferType.POSTAL)) {
+			utilizzaIBANPostali = true;
+		}
+
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		int i=1;
 		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 			CtTransferPA transferEl = new CtTransferPA();
-			
+
 			/*
 			Structure containing the details of possible tranfer payments.
-		
+
 			Currently set at 5 eligible payments per single position.
-			
+
 			Where each `transfer` items contains :
-			
+
 			- `idTransfer` : index of the list (from `1` to `5`) 
 			- `transferAmount` : amount 
 			- `fiscalCodePA` : Tax code of the public administration
@@ -202,73 +209,72 @@ public class CtPaymentPABuilder {
 			|Progressivo macro area       | `\d{2}`                     | 01     |
 			|Codice tipologia servizio    | `\d{2}`                     | 002    |
 			|Motivo Giuridico             | `\w{2}`                     | IM     |
-			
+
 			 */
-			
+
 			transferEl.setIdTransfer(i);
 			transferEl.setTransferAmount(singoloVersamento.getImportoSingoloVersamento());
-			
-			
+
+
 			// Imposto IBAN e codice fiscale ente proprietario dell'iban
-			
+
 			// sv con tributo definito
 			it.govpay.bd.model.Tributo tributo = singoloVersamento.getTributo(configWrapper);
+			IbanAccredito ibanScelto = null;
+			IbanAccredito ibanAccredito = null;
+			IbanAccredito ibanAppoggio = null;
 			if(tributo != null) {
-				IbanAccredito ibanAccredito = tributo.getIbanAccredito();
-				if(ibanAccredito != null) {
-					transferEl.setIBAN(ibanAccredito.getCodIban());
-					try {
-						Dominio dominio2 = AnagraficaManager.getDominio(configWrapper, ibanAccredito.getIdDominio());
-						transferEl.setFiscalCodePA(dominio2.getCodDominio());
-					} catch (NotFoundException e) {
-						// se passo qui ho fallito la validazione della pendenza !
-						throw new ServiceException("Dominio ["+ibanAccredito.getIdDominio()+"] non censito in base dati.");
-					}
-				} else {
-					IbanAccredito ibanAppoggio = tributo.getIbanAppoggio();
-					if(ibanAppoggio != null) {
-						transferEl.setIBAN(ibanAppoggio.getCodIban());
-						try {
-							Dominio dominio2 = AnagraficaManager.getDominio(configWrapper, ibanAppoggio.getIdDominio());
-							transferEl.setFiscalCodePA(dominio2.getCodDominio());
-						} catch (NotFoundException e) {
-							// se passo qui ho fallito la validazione della pendenza !
-							throw new ServiceException("Dominio ["+ibanAppoggio.getIdDominio()+"] non censito in base dati.");
-						}
-					}
-				}
+				ibanAccredito = tributo.getIbanAccredito();
+				ibanAppoggio = tributo.getIbanAppoggio();
 			} else { // sv con le informazioni tributo direttamente nei dati 
-				IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(configWrapper);
+				ibanAccredito = singoloVersamento.getIbanAccredito(configWrapper);
+				ibanAppoggio = singoloVersamento.getIbanAppoggio(configWrapper);
+			}
+			
+			// solo il transfer 1 e' vincolato ad essere postale se richiesto
+			if(i == 1) {
 				if(ibanAccredito != null) {
-					transferEl.setIBAN(ibanAccredito.getCodIban());
-					try {
-						Dominio dominio2 = AnagraficaManager.getDominio(configWrapper, ibanAccredito.getIdDominio());
-						transferEl.setFiscalCodePA(dominio2.getCodDominio());
-					} catch (NotFoundException e) {
-						// se passo qui ho fallito la validazione della pendenza !
-						throw new ServiceException("Dominio ["+ibanAccredito.getIdDominio()+"] non censito in base dati.");
+					ibanScelto = ibanAccredito;
+
+					// devo utilizzare iban postale
+					if(utilizzaIBANPostali) {
+						if(!ibanAccredito.isPostale()) {
+							// provo a verificare se l'iban appoggio e' postale
+							if(ibanAppoggio != null && ibanAppoggio.isPostale()) {
+								ibanScelto = ibanAppoggio;
+							}
+						} 
 					}
-				} else {
-					IbanAccredito ibanAppoggio = singoloVersamento.getIbanAppoggio(configWrapper);
-					if(ibanAppoggio != null) {
-						transferEl.setIBAN(ibanAppoggio.getCodIban());
-						try {
-							Dominio dominio2 = AnagraficaManager.getDominio(configWrapper, ibanAppoggio.getIdDominio());
-							transferEl.setFiscalCodePA(dominio2.getCodDominio());
-						} catch (NotFoundException e) {
-							// se passo qui ho fallito la validazione della pendenza !
-							throw new ServiceException("Dominio ["+ibanAppoggio.getIdDominio()+"] non censito in base dati.");
-						}
-					}
+				}  else if(ibanAppoggio != null) {
+					// se capito qua dentro ho solo l'iban di appoggio, quindi devo utilizzarlo sia che sia postale o meno 
+					ibanScelto = ibanAppoggio;
+				}
+			} else {
+				// altri transfer
+				if(ibanAccredito != null) {
+					ibanScelto = ibanAccredito;
+				} else if(ibanAppoggio != null) {
+					ibanScelto = ibanAppoggio;
 				}
 			}
-		
+			
+			if(ibanScelto != null) {
+				transferEl.setIBAN(ibanScelto.getCodIban());
+				try {
+					Dominio dominio2 = AnagraficaManager.getDominio(configWrapper, ibanScelto.getIdDominio());
+					transferEl.setFiscalCodePA(dominio2.getCodDominio());
+				} catch (NotFoundException e) {
+					// se passo qui ho fallito la validazione della pendenza !
+					throw new ServiceException("Dominio ["+ibanScelto.getIdDominio()+"] non censito in base dati.");
+				}
+			}
+
 			transferEl.setRemittanceInformation(this.buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT()));
-		
+
 			// TODO come generare la stringa indicata nell'xsd
-			
+
 			transferEl.setTransferCategory(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
-			
+
 			transferList.getTransfer().add(transferEl );
 			i++;
 		}
@@ -324,7 +330,7 @@ public class CtPaymentPABuilder {
 		}else { 
 			sb.append("/RFB/");
 		}
-		
+
 		sb.append(iuv);
 		sb.append("/");
 		sb.append(nFormatter.format(importoTotale));
@@ -335,10 +341,10 @@ public class CtPaymentPABuilder {
 				sb.append("/TXT/").append(descrizione);
 			}
 		}
-		
+
 		if(sb.toString().length() > 140)
 			return sb.toString().substring(0, 140);
-		
+
 		return sb.toString();
 	}
 }

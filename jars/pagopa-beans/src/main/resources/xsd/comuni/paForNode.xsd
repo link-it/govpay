@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://pagopa-api.pagopa.gov.it/pa/paForNode.xsd" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" targetNamespace="http://pagopa-api.pagopa.gov.it/pa/paForNode.xsd">
 
-  <!--Simple type-->
   <xsd:simpleType name="stText16">
     <xsd:restriction base="xsd:string">
       <xsd:minLength value="1" />
@@ -45,6 +44,11 @@
   </xsd:simpleType>
 
   <xsd:simpleType name="stEMail">
+    <xsd:annotation>
+      <xsd:documentation>
+Email address
+      </xsd:documentation>
+    </xsd:annotation>    
     <xsd:restriction base="xsd:string">
       <xsd:pattern value="[a-zA-Z0-9_\.\+\-]+@[a-zA-Z0-9\-]+(\.[a-zA-Z0-9\-]+)*" />
       <xsd:maxLength value="256" />
@@ -336,7 +340,7 @@ Where each `paymentOptionDescription` items contains :
     </xsd:annotation>
 
     <xsd:sequence>
-      <xsd:element name="paymentOptionDescription" type="tns:ctPaymentOptionDescriptionPA" maxOccurs="5" />
+      <xsd:element name="paymentOptionDescription" type="tns:ctPaymentOptionDescriptionPA" maxOccurs="1" />
     </xsd:sequence>
   </xsd:complexType>
 
@@ -550,7 +554,7 @@ Its contains all payment information :
       <xsd:element name="pspFiscalCode" type="tns:stText70" minOccurs="0" /> <!-- CF_PA ITA : max 11 chars -->
       <xsd:element name="pspPartitaIVA" type="tns:stText20" minOccurs="0" /> <!-- now empty : da definire sul DB lato LMI -->
       <!-- ABI optional al momento non sara' presente nella ricevuta -->
-      <xsd:element name="PSPCompanyName" type="tns:stText35" />
+      <xsd:element name="PSPCompanyName" type="tns:stText70" />
       <xsd:element name="idChannel" type="tns:stText35" />
       <xsd:element name="channelDescription" type="tns:stText35" />
 
