@@ -106,7 +106,6 @@ CREATE VIEW v_riscossioni AS
 -- 28/05/2021
 DROP VIEW IF EXISTS v_rendicontazioni_ext;
 
-
 CREATE VIEW v_rendicontazioni_ext AS
  SELECT fr.cod_psp AS fr_cod_psp,
     fr.cod_dominio AS fr_cod_dominio,
@@ -228,7 +227,7 @@ CREATE VIEW v_rendicontazioni_ext AS
      LEFT JOIN rpt on pagamenti.id_rpt = rpt.id
      LEFT JOIN incassi on pagamenti.id_incasso = incassi.id;
 
-
+     
 -- 07/06/2021 Aggiunta colonna con la versione dell'RPT
 DROP VIEW IF EXISTS v_rpt_versamenti;
 
@@ -272,7 +271,7 @@ rpt.stato_conservazione as stato_conservazione,
 rpt.descrizione_stato_cons as descrizione_stato_cons,         
 rpt.data_conservazione as data_conservazione,             
 rpt.bloccante as bloccante,                      
-rpt.versione as versione,
+rpt.versione as versione, 
 rpt.id as id,                             
 rpt.id_pagamento_portale as id_pagamento_portale, 
     versamenti.cod_versamento_ente AS vrs_cod_versamento_ente,
@@ -339,11 +338,11 @@ ALTER TABLE domini ADD COLUMN intermediato BOOLEAN;
 UPDATE domini SET intermediato = true;
 ALTER TABLE domini MODIFY COLUMN intermediato BOOLEAN NOT NULL;
 
-
 -- 08/06/2021 Stazione di un dominio opzionale
 ALTER TABLE domini MODIFY COLUMN id_stazione BIGINT NULL;
 
 
+     
 
 -- 22/06/2021 API-Rendicontazione V3, nuovi campi tabella incassi
 
@@ -372,10 +371,11 @@ insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-riconc
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('rpt-scadute', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 86400000, 172800000);
 insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-rpt-scadute', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 10, 100);
 
+
 -- 20/07/2021 Fix anomalie per rendicontazione senza RT
 
 update rendicontazioni set stato='OK', anomalie=null where anomalie = '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' and esito=9;
---update fr set stato='ACCETTATA', descrizione_stato = null where stato='ANOMALA' and id not in (select fr.id from fr join rendicontazioni on rendicontazioni.id_fr=fr.id where fr.stato='ANOMALA' and rendicontazioni.stato='ANOMALA');
+update fr set stato='ACCETTATA', descrizione_stato = null where stato='ANOMALA' and id not in (select fr.id from fr join rendicontazioni on rendicontazioni.id_fr=fr.id where fr.stato='ANOMALA' and rendicontazioni.stato='ANOMALA');
 
 
 -- 21/07/2021 Identificativo dominio nel singolo versamento per gestire le pendenze multibeneficiario
@@ -485,18 +485,40 @@ CREATE VIEW v_vrs_non_rnd AS
      LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id
   WHERE rendicontazioni.id IS NULL;
   
-
--- 20/12/2021 Patch per gestione delle rendicontazioni che non venivano messe in stato anomala quando non viene trovato il versamento corrispondente.
-UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS null;
-
-
+  
 -- 21/12/2021 Patch per la gestione del riferimento al pagamento di una rendicontazione che arriva prima della ricevuta.
-UPDATE rendicontazioni, fr, pagamenti SET id_pagamento = pagamenti.id 
+UPDATE rendicontazioni SET id_pagamento = pagamenti.id 
+	FROM fr, pagamenti 
 	WHERE fr.id=rendicontazioni.id_fr 
 	AND pagamenti.cod_dominio=fr.cod_dominio 
 	AND rendicontazioni.iuv=pagamenti.iuv 
 	AND rendicontazioni.iur=pagamenti.iur 
 	AND rendicontazioni.id_pagamento IS NULL;
+
+-- 30/12/2021 Patch rendicontazioni con riferimenti assenti
+-- Imposto il riferimento al versamento
+update rendicontazioni set id_singolo_versamento=singoli_versamenti.id
+        FROM fr, versamenti, domini, singoli_versamenti 
+        WHERE fr.id=rendicontazioni.id_fr 
+        AND fr.cod_dominio=domini.cod_dominio 
+        AND domini.id=versamenti.id_dominio 
+        AND rendicontazioni.iuv=versamenti.iuv_versamento
+        AND singoli_versamenti.id_versamento=versamenti.id
+        AND rendicontazioni.id_singolo_versamento is null;
+
+UPDATE rendicontazioni set stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' where id_pagamento is null and esito=0;
+UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS null;
+-- ALTRO INTERMEDIARIO Tutti gli spontanei non riferiti a miei pagamenti o pendenze
+UPDATE rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null where stato='ANOMALA' and char_length(iuv) not in (15,17) and id_pagamento is null and id_singolo_versamento is null ;
+-- ALTRO INTERMEDIARIO Tutti gli IUV con aux 3 che non hanno il giusto codice segregazione
+UPDATE rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null from fr, domini where fr.id=rendicontazioni.id_fr and domini.cod_dominio=fr.cod_dominio and rendicontazioni.stato = 'ANOMALA' and (aux_digit='3' and length(iuv) = 17 and ( (iuv not like ('0' || segregation_code || '%') and length(segregation_code::char) = 1 ) OR (iuv not like (segregation_code || '%') and  length(segregation_code::char) = 2 )));
+-- ALTRO INTERMEDIARIO Tutti gli IUV con aux 3 che non sono lunghi 17 e non sono spontanei
+UPDATE rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null from fr, domini where fr.id=rendicontazioni.id_fr and domini.cod_dominio=fr.cod_dominio and rendicontazioni.stato = 'ANOMALA' and aux_digit='3' and length(iuv) <> 17 and id_pagamento is null and id_singolo_versamento is null;
+-- ALTRO INTERMEDIARIO Tutti gli IUV con aux 0 che non sono lunghi 15 e non sono spontanei
+UPDATE rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null from fr, domini where fr.id=rendicontazioni.id_fr and domini.cod_dominio=fr.cod_dominio and rendicontazioni.stato = 'ANOMALA' and aux_digit='0' and length(iuv) <> 15 and id_pagamento is null and id_singolo_versamento is null ;
+
+-- Aggiornamento di rendicontazioni che risultano corrette da approfondire con ulteriori verifiche.
+-- UPDATE rendicontazioni set stato='OK', anomalie=null where id in (select rendicontazioni.id from versamenti join singoli_versamenti on versamenti.id=singoli_versamenti.id_versamento join rendicontazioni on singoli_versamenti.id=rendicontazioni.id_singolo_versamento where stato='ANOMALA' and rendicontazioni.id_pagamento is not null and rendicontazioni.id_singolo_versamento is not null and stato_versamento='ESEGUITO');
 
 
 -- 25/01/2022 Flusso Rendicontazione univoco per dominio
@@ -507,6 +529,5 @@ CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
 
 -- 27/01/2022 Indice su id_fr nella tabella eventi
 CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
-
 
 
