@@ -408,6 +408,15 @@ public class Tracciati {
 					throw new ServiceException(e);
 				}
 				break;
+			case HSQL:
+				try {
+					blobStampe = tracciatiBD.getConnection().createBlob();
+					oututStreamDestinazione = blobStampe.setBinaryStream(1);
+				} catch (SQLException e) {
+					log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
+					throw new ServiceException(e);
+				}
+				break;
 			case POSTGRESQL:
 				org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) tracciatiBD.getConnection();
 				Connection wrappedConnection = wrappedConn.getWrappedConnection();
@@ -450,7 +459,6 @@ public class Tracciati {
 			case DB2:
 			case DEFAULT:
 			case DERBY:
-			case HSQL:
 			default:
 				throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 			}
@@ -835,6 +843,15 @@ public class Tracciati {
 					throw new ServiceException(e);
 				}
 				break;
+			case HSQL:
+				try {
+					blobStampe = tracciatiBD.getConnection().createBlob();
+					oututStreamDestinazione = blobStampe.setBinaryStream(1);
+				} catch (SQLException e) {
+					log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
+					throw new ServiceException(e);
+				}
+				break;
 			case POSTGRESQL:
 				org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) tracciatiBD.getConnection();
 				Connection wrappedConnection = wrappedConn.getWrappedConnection();
@@ -877,7 +894,6 @@ public class Tracciati {
 			case DB2:
 			case DEFAULT:
 			case DERBY:
-			case HSQL:
 			default:
 				throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 			}
@@ -1023,6 +1039,7 @@ public class Tracciati {
 		case MYSQL:
 		case ORACLE:
 		case SQLSERVER:
+		case HSQL:
 			tracciatiBD.updateFineElaborazioneStampeBlob(tracciato,blobStampe);
 			break;
 		case POSTGRESQL:
@@ -1031,7 +1048,6 @@ public class Tracciati {
 		case DB2:
 		case DEFAULT:
 		case DERBY:
-		case HSQL:
 		default:
 			throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 		}

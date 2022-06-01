@@ -125,6 +125,15 @@ public class AllegatiBD extends BasicBD {
 					throw new ServiceException(e);
 				}
 				break;
+			case HSQL:
+				try {
+					blobContenuto = this.getConnection().createBlob();
+					oututStreamDestinazione = blobContenuto.setBinaryStream(1);
+				} catch (SQLException e) {
+					log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
+					throw new ServiceException(e);
+				}
+				break;
 			case POSTGRESQL:
 				org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) this.getConnection();
 				Connection wrappedConnection = wrappedConn.getWrappedConnection();
@@ -167,7 +176,6 @@ public class AllegatiBD extends BasicBD {
 			case DB2:
 			case DEFAULT:
 			case DERBY:
-			case HSQL:
 			default:
 				throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 			}
