@@ -12,7 +12,11 @@ import it.govpay.backoffice.v1.beans.FlussoRendicontazione;
 import it.govpay.backoffice.v1.beans.FlussoRendicontazioneIndex;
 import it.govpay.backoffice.v1.beans.Segnalazione;
 import it.govpay.backoffice.v1.beans.StatoFlussoRendicontazione;
+import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.model.Fr.Anomalia;
 import it.govpay.model.Fr.StatoFr;
 
@@ -29,7 +33,7 @@ public class FlussiRendicontazioneConverter {
 		rsModel.setIdDominio(fr.getCodDominio());
 		rsModel.setNumeroPagamenti(BigDecimal.valueOf(fr.getNumeroPagamenti()));
 		rsModel.setImportoTotale(fr.getImportoTotalePagamenti().doubleValue());
-		
+
 		if(fr.getAnomalie() != null) {
 			List<Segnalazione> segnalazioni = new ArrayList<>();
 			for(Anomalia anomalia: fr.getAnomalie()) {
@@ -37,7 +41,7 @@ public class FlussiRendicontazioneConverter {
 			}
 			rsModel.setSegnalazioni(segnalazioni);
 		}
-		
+
 		rsModel.setRagioneSocialeDominio(fr.getRagioneSocialeDominio());
 		rsModel.setRagioneSocialePsp(fr.getRagioneSocialePsp());
 
@@ -48,7 +52,7 @@ public class FlussiRendicontazioneConverter {
 			}
 		}
 		rsModel.setRendicontazioni(rendicontazioniLst);
-		
+
 		StatoFr stato = fr.getStato();
 		if(stato != null) {
 			switch (stato) {
@@ -88,7 +92,7 @@ public class FlussiRendicontazioneConverter {
 
 		rsModel.setRagioneSocialeDominio(fr.getRagioneSocialeDominio());
 		rsModel.setRagioneSocialePsp(fr.getRagioneSocialePsp());
-		
+
 		StatoFr stato = fr.getStato();
 		if(stato != null) {
 			switch (stato) {
@@ -106,19 +110,19 @@ public class FlussiRendicontazioneConverter {
 
 		return rsModel;
 	}
-	
+
 	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(it.govpay.bd.viste.model.Rendicontazione dto) throws ServiceException, IOException, ValidationException {
 		it.govpay.backoffice.v1.beans.Rendicontazione rsModel = new it.govpay.backoffice.v1.beans.Rendicontazione();
-		
+
 		Rendicontazione rendicontazione = dto.getRendicontazione();
-		
+
 		rsModel.setIuv(rendicontazione.getIuv());
 		rsModel.setIur(rendicontazione.getIur());
 		if(rendicontazione.getIndiceDati()!=null)
 			rsModel.setIndice(new BigDecimal(rendicontazione.getIndiceDati()));
-		
+
 		rsModel.setImporto(rendicontazione.getImporto());
-		
+
 		if(rendicontazione.getEsito() != null)
 			rsModel.setEsito(new BigDecimal(rendicontazione.getEsito().getCodifica()));
 		rsModel.setData(rendicontazione.getData());
@@ -129,9 +133,8 @@ public class FlussiRendicontazioneConverter {
 			}
 			rsModel.setSegnalazioni(segnalazioni);
 		}
-		
-		if(dto.getPagamento() != null)
-			rsModel.setRiscossione(RiscossioniConverter.toRsModel(dto.getPagamento()));
+
+		rsModel.setRiscossione(RiscossioniConverter.toRsModel(dto.getPagamento(), dto.getSingoloVersamento(), dto.getVersamento(), dto.getRpt(), dto.getIncasso()));
 		return rsModel;
 	}
 
@@ -141,9 +144,9 @@ public class FlussiRendicontazioneConverter {
 		rsModel.setIur(rendicontazione.getIur());
 		if(rendicontazione.getIndiceDati()!=null)
 			rsModel.setIndice(new BigDecimal(rendicontazione.getIndiceDati()));
-		
+
 		rsModel.setImporto(rendicontazione.getImporto());
-		
+
 		if(rendicontazione.getEsito() != null)
 			rsModel.setEsito(new BigDecimal(rendicontazione.getEsito().getCodifica()));
 		rsModel.setData(rendicontazione.getData());
@@ -154,9 +157,20 @@ public class FlussiRendicontazioneConverter {
 			}
 			rsModel.setSegnalazioni(segnalazioni);
 		}
-		
-		if(rendicontazione.getPagamento(null) != null)
-			rsModel.setRiscossione(RiscossioniConverter.toRsModel(rendicontazione.getPagamento(null)));
+
+		SingoloVersamento singoloVersamento = null;
+		Rpt rpt = null;
+		Incasso incasso = null;
+		if(rendicontazione.getPagamento(null) != null) {
+			singoloVersamento = rendicontazione.getPagamento(null).getSingoloVersamento(null);
+			rpt = rendicontazione.getPagamento(null).getRpt(null);
+			incasso = rendicontazione.getPagamento(null).getIncasso(null);
+		} else {
+			singoloVersamento = rendicontazione.getSingoloVersamento(null);
+		}
+		Versamento versamento = singoloVersamento.getVersamentoBD(null);
+
+		rsModel.setRiscossione(RiscossioniConverter.toRsModel(rendicontazione.getPagamento(null), singoloVersamento, versamento, rpt, incasso));
 		return rsModel;
 	}
 }
