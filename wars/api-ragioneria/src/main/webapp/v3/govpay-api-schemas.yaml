@@ -1098,15 +1098,8 @@ components:
           example: RF23567483937849450550875
     Riscossione:          
       type: object
-      required:
-        - dominio
-        - iuv
-        - idRicevuta
-        - iur
-        - indice
-        - tipo
-        - importo
-        - data
+      description: 
+        I campi dominio, iuv, idRicevuta, iur, indice, tipo, importo e data sono opzionali se e solo se la riscossione e' all'interno di una rendicontazione con esito uguale a 9.
       properties:
         dominio:
           $ref: '#/components/schemas/Dominio'

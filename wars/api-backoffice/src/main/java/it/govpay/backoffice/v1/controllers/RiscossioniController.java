@@ -23,6 +23,10 @@ import it.govpay.backoffice.v1.beans.Riscossione;
 import it.govpay.backoffice.v1.beans.StatoRiscossione;
 import it.govpay.backoffice.v1.beans.TipoRiscossione;
 import it.govpay.backoffice.v1.beans.converter.RiscossioniConverter;
+import it.govpay.bd.model.Incasso;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.pagamenti.RiscossioniDAO;
@@ -79,7 +83,11 @@ public class RiscossioniController extends BaseController {
 			}
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Riscossione response = RiscossioniConverter.toRsModel(getRiscossioneDTOResponse.getPagamento());
+			SingoloVersamento singoloVersamento = getRiscossioneDTOResponse.getPagamento().getSingoloVersamento(null);
+			Versamento versamento = singoloVersamento.getVersamentoBD(null);
+			Rpt rpt = getRiscossioneDTOResponse.getPagamento().getRpt(null);
+			Incasso incasso = getRiscossioneDTOResponse.getPagamento().getIncasso(null);
+			Riscossione response = RiscossioniConverter.toRsModel(getRiscossioneDTOResponse.getPagamento(), singoloVersamento, versamento, rpt, incasso);
 			
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
