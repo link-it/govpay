@@ -327,6 +327,15 @@ public class TracciatiNotificaPagamenti {
 								throw new ServiceException(e);
 							}
 							break;
+						case HSQL:
+							try {
+								blobCsv = tracciatiNotificaPagamentiBD.getConnection().createBlob();
+								oututStreamDestinazione = blobCsv.setBinaryStream(1);
+							} catch (SQLException e) {
+								log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
+								throw new ServiceException(e);
+							}
+							break;
 						case POSTGRESQL:
 							org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) tracciatiNotificaPagamentiBD.getConnection();
 							Connection wrappedConnection = wrappedConn.getWrappedConnection();
@@ -369,7 +378,6 @@ public class TracciatiNotificaPagamenti {
 						case DB2:
 						case DEFAULT:
 						case DERBY:
-						case HSQL:
 						default:
 							throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 						}
@@ -461,6 +469,9 @@ public class TracciatiNotificaPagamenti {
 			progressivo = 1;
 			String dataCreazioneFlusso = SimpleDateFormatUtils.newSimpleDateFormatDataOraMinutiSenzaSpazi().format(tracciato.getDataCreazione());
 			tracciato.setNomeFile("GOVPAY_" + codDominio + "_"+ dataCreazioneFlusso + "_"+progressivo+".zip");
+			break;
+		case MAGGIOLI_JPPA:
+			// donothing
 			break;
 		}
 		
