@@ -81,6 +81,18 @@ Examples:
 
 Scenario: Lettura di un flusso contenente un pagamento senza RPT
 
+* def applicazione = read('msg/applicazione_star.json')
+* def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers gpAdminBasicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
 * def tipoRicevuta = "R00"
 * def riversamentoCumulativo = "true"
 
