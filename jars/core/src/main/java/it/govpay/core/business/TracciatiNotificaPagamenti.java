@@ -417,6 +417,7 @@ public class TracciatiNotificaPagamenti {
 							case MYSQL:
 							case ORACLE:
 							case SQLSERVER:
+							case HSQL:
 								tracciatiNotificaPagamentiBD.updateFineElaborazioneCsvBlob(tracciato,blobCsv);
 								break;
 							case POSTGRESQL:
@@ -425,7 +426,6 @@ public class TracciatiNotificaPagamenti {
 							case DB2:
 							case DEFAULT:
 							case DERBY:
-							case HSQL:
 							default:
 								throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 							}
