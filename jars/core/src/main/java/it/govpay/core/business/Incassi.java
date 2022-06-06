@@ -527,9 +527,7 @@ public class Incassi {
 									versamentiBD.updateStatoSingoloVersamento(singoliVersamenti.get(0).getId(), StatoSingoloVersamento.ESEGUITO);
 									versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Eseguito senza RPT");
 									// Aggiornamento stato promemoria
-									versamentiBD.updateStatoPromemoriaAvvisoVersamento(versamento.getId(), true, null);
-									versamentiBD.updateStatoPromemoriaScadenzaAppIOVersamento(versamento.getId(), true, null);
-									versamentiBD.updateStatoPromemoriaScadenzaMailVersamento(versamento.getId(), true, null);
+									versamentiBD.updateVersamentoInformazioniAvvisatura(versamento.getId(), true, null, true, null, true, null);
 									
 									break;
 								case ESEGUITO:
