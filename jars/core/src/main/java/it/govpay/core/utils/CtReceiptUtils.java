@@ -529,13 +529,9 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			switch (versamento.getStatoVersamento()) {
 			case PARZIALMENTE_ESEGUITO:
 			case ESEGUITO:
-				// Aggiornamento stato promemoria
-				versamentiBD.updateStatoPromemoriaAvvisoVersamento(versamento.getId(), true, null);
-				versamentiBD.updateStatoPromemoriaScadenzaAppIOVersamento(versamento.getId(), true, null);
-				versamentiBD.updateStatoPromemoriaScadenzaMailVersamento(versamento.getId(), true, null);
-
-				// aggiornamento informazioni pagamento
-				versamentiBD.updateVersamentoInformazioniPagamento(versamento.getId(), dataPagamento, totalePagato, BigDecimal.ZERO, iuvPagamento, StatoPagamento.PAGATO);
+				// aggiornamento informazioni pagamento, stato promemoria e avvisatura
+				versamentiBD.updateVersamentoInformazioniPagamento(versamento.getId(), dataPagamento, totalePagato, BigDecimal.ZERO, iuvPagamento, StatoPagamento.PAGATO
+						, true, null, true, null, true, null);
 				
 				// schedulo l'invio del promemoria ricevuta
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);

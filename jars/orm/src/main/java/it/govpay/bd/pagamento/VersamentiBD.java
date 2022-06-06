@@ -637,6 +637,7 @@ public class VersamentiBD extends BasicBD {
 	}
 	
 	public void updateStatoPromemoriaScadenzaAppIOVersamento(long idVersamento, boolean updatePromemoriaScadenzaNotificato, Boolean promemoriaScadenzaNotificato) throws ServiceException {
+		this.updateVersamentoInformazioniAvvisatura(idVersamento, false, null, false, null, updatePromemoriaScadenzaNotificato, promemoriaScadenzaNotificato);
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -648,6 +649,39 @@ public class VersamentiBD extends BasicBD {
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(updatePromemoriaScadenzaNotificato)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO, promemoriaScadenzaNotificato));
+
+			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public void updateVersamentoInformazioniAvvisatura(Long idVersamento,
+			boolean updateAvvisoNotificato, Boolean avvisoNotificato,
+			boolean updatePromemoriaScadenzaAppIONotificato, Boolean promemoriaScadenzaAppIONotificato, 
+			boolean updatePromemoriaScadenzaNotificato, Boolean promemoriaScadenzaNotificato) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IdVersamento idVO = new IdVersamento();
+			idVO.setId(idVersamento);
+
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+
+			if(updateAvvisoNotificato)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVVISO_NOTIFICATO, avvisoNotificato));
+			if(updatePromemoriaScadenzaAppIONotificato)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO, promemoriaScadenzaAppIONotificato));
+			if(updatePromemoriaScadenzaNotificato)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO, promemoriaScadenzaNotificato));
 
 			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
@@ -893,7 +927,11 @@ public class VersamentiBD extends BasicBD {
 		}
 	}
 	
-	public void updateVersamentoInformazioniPagamento(Long idVersamento, Date dataPagamento, BigDecimal totalePagato, BigDecimal totaleIncassato, String iuvPagamento, StatoPagamento statoPagamento) throws ServiceException {
+	public void updateVersamentoInformazioniPagamento(Long idVersamento, Date dataPagamento,
+			BigDecimal totalePagato, BigDecimal totaleIncassato, String iuvPagamento, StatoPagamento statoPagamento,
+			boolean updateAvvisoNotificato, Boolean avvisoNotificato,
+			boolean updatePromemoriaScadenzaAppIONotificato, Boolean promemoriaScadenzaAppIONotificato, 
+			boolean updatePromemoriaScadenzaNotificato, Boolean promemoriaScadenzaNotificato) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -915,6 +953,13 @@ public class VersamentiBD extends BasicBD {
 			}
 			if(statoPagamento != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().STATO_PAGAMENTO, statoPagamento.toString()));
+			
+			if(updateAvvisoNotificato)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVVISO_NOTIFICATO, avvisoNotificato));
+			if(updatePromemoriaScadenzaAppIONotificato)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO, promemoriaScadenzaAppIONotificato));
+			if(updatePromemoriaScadenzaNotificato)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO, promemoriaScadenzaNotificato));
 
 			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
