@@ -2,7 +2,6 @@ package it.govpay.ragioneria.v3.api;
 
 import java.io.InputStream;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Pattern;
 import javax.ws.rs.Consumes;
@@ -21,7 +20,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import it.govpay.ragioneria.v3.beans.FaultBean;
-import it.govpay.ragioneria.v3.beans.NuovaRiconciliazione;
 import it.govpay.ragioneria.v3.beans.Riconciliazione;
 import it.govpay.ragioneria.v3.beans.Riconciliazioni;
 

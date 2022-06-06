@@ -4,7 +4,12 @@ import java.util.ArrayList;
 
 public class TipoAutorizzazione extends ArrayList<String>  {
 
-  @Override
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+@Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoAutorizzazione {\n");

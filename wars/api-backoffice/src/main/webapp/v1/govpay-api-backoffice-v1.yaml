@@ -7219,6 +7219,8 @@ components:
           example: "2017-01-01ABI00000011234"
     riscossione:
       type: object
+      description: 
+        I campi idDominio, iuv, iur, indice, tipo, importo e data sono opzionali se e solo se la riscossione e' all'interno di una rendicontazione con esito uguale a 9.
       required:
         - idDominio
         - iuv

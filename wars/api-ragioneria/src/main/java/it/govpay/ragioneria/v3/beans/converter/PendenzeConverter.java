@@ -7,7 +7,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.json.ValidationException;
@@ -20,8 +19,6 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
-import it.govpay.model.Pagamento.Stato;
-import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.ragioneria.v3.api.impl.PendenzeApiServiceImpl;
 import it.govpay.ragioneria.v3.beans.AllegatoPendenza;
 import it.govpay.ragioneria.v3.beans.Documento;
@@ -31,16 +28,13 @@ import it.govpay.ragioneria.v3.beans.PendenzaPagata;
 import it.govpay.ragioneria.v3.beans.ProprietaPendenza;
 import it.govpay.ragioneria.v3.beans.RiscossioneVocePagata;
 import it.govpay.ragioneria.v3.beans.Soggetto;
-import it.govpay.ragioneria.v3.beans.StatoRiscossione;
 import it.govpay.ragioneria.v3.beans.TipoRiferimentoVocePendenza.TipoBolloEnum;
-import it.govpay.ragioneria.v3.beans.TipoRiscossione;
 import it.govpay.ragioneria.v3.beans.TipoSoggetto;
 import it.govpay.ragioneria.v3.beans.TipoSogliaVincoloPagamento;
 import it.govpay.ragioneria.v3.beans.VincoloPagamento;
 import it.govpay.ragioneria.v3.beans.VoceDescrizioneImporto;
 import it.govpay.ragioneria.v3.beans.VocePendenza;
 import it.govpay.ragioneria.v3.beans.VocePendenzaPagata;
-import it.govpay.ragioneria.v3.beans.Allegato.TipoEnum;
 
 public class PendenzeConverter {
 
@@ -119,12 +113,12 @@ public class PendenzeConverter {
 		return null;
 	}
 
-	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice) throws ServiceException, IOException, ValidationException {
+	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento) throws ServiceException, IOException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		return toRsModelVocePendenza(singoloVersamento, indice, singoloVersamento.getVersamento(configWrapper));
+		return toRsModelVocePendenza(singoloVersamento, singoloVersamento.getVersamento(configWrapper));
 	}
 
-	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice, Versamento versamento) throws ServiceException, IOException, ValidationException {
+	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, Versamento versamento) throws ServiceException, IOException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		VocePendenza rsModel = new VocePendenza();
 

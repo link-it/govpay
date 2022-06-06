@@ -12,6 +12,8 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.model.Fr.Anomalia;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.ragioneria.v3.beans.FlussoRendicontazione;
@@ -132,8 +134,8 @@ public class FlussiRendicontazioneConverter {
 			rsModel.setSegnalazioni(segnalazioni);
 		}
 		
-		if(rendicontazione.getPagamento(null) != null)
-			rsModel.setRiscossione(RiscossioniConverter.toRsModel(rendicontazione.getPagamento(null)));
+		rsModel.setRiscossione(RiscossioniConverter.toRsModel(dto.getPagamento(), dto.getSingoloVersamento(), dto.getVersamento()));
+		
 		return rsModel;
 	}
 	
@@ -157,8 +159,16 @@ public class FlussiRendicontazioneConverter {
 			rsModel.setSegnalazioni(segnalazioni);
 		}
 		
-		if(rendicontazione.getPagamento(null) != null)
-			rsModel.setRiscossione(RiscossioniConverter.toRsModel(rendicontazione.getPagamento(null)));
+		SingoloVersamento singoloVersamento = null;
+		if(rendicontazione.getPagamento(null) != null) {
+			singoloVersamento = rendicontazione.getPagamento(null).getSingoloVersamento(null);
+		} else {
+			singoloVersamento = rendicontazione.getSingoloVersamento(null);
+		}
+		Versamento versamento = singoloVersamento.getVersamentoBD(null);
+		
+		rsModel.setRiscossione(RiscossioniConverter.toRsModel(rendicontazione.getPagamento(null), singoloVersamento, versamento));
+		
 		return rsModel;
 	}
 }
