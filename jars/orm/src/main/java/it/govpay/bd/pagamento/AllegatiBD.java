@@ -213,6 +213,7 @@ public class AllegatiBD extends BasicBD {
 				case MYSQL:
 				case ORACLE:
 				case SQLSERVER:
+				case HSQL:
 					prepareStatement.setBlob(idx ++, blobContenuto);
 					break;
 				case POSTGRESQL:
@@ -221,7 +222,6 @@ public class AllegatiBD extends BasicBD {
 				case DB2:
 				case DEFAULT:
 				case DERBY:
-				case HSQL:
 				default:
 					throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 				}

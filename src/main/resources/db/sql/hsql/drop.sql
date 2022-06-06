@@ -48,6 +48,7 @@
 -- DROP INDEX idx_vrs_stato_vrs;
 -- DROP INDEX idx_vrs_data_creaz;
 -- DROP INDEX idx_vrs_id_pendenza;
+DROP VIEW v_vrs_non_rnd;
 DROP VIEW versamenti_incassi;
 DROP VIEW v_eventi_vers;
 DROP VIEW v_eventi_vers_pagamenti;       

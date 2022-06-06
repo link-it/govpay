@@ -101,9 +101,10 @@ public class GovpayConfig {
 		case "mysql":
 		case "postgresql":
 		case "sqlserver":
+		case "hsql":
 			break;
 		default:
-			LoggerWrapperFactory.getLogger("boot").warn("Database [" + this.databaseType + "] non supportato. Database validi: postgresql, oracle, mysql, sqlserver.");
+			LoggerWrapperFactory.getLogger("boot").warn("Database [" + this.databaseType + "] non supportato. Database validi: postgresql, oracle, mysql, sqlserver, hsql.");
 			break;
 		}
 		String databaseShowSqlString = this.getProperty("it.govpay.orm.showSql", this.props, true);
