@@ -162,7 +162,10 @@
       paaInviaEsitoStorno: 'Ricevuta ER da pagoPA',
       paaInviaRichiestaRevoca: 'Ricevuta ER da pagoPA',
       paaInviaRT: 'Ricevuta RT da pagoPA',
-      paaVerificaRPT: 'Ricevuta verifica RPT da pagoPA'
+      paaVerificaRPT: 'Ricevuta verifica RPT da pagoPA',
+      paSendRT: 'Ricevuta RT da pagoPA tramite API SANP 2.4',
+      paVerifyPaymentNotice: 'Ricevuta verifica RPT da pagoPA tramite API SANP 2.4',
+      paGetPayment: 'Ricevuta attivazione RPT da pagoPA tramite API SANP 2.4'
     },
     API_PENDENZE: {
       addPendenza: 'Ricevuta nuova pendenza dall\'Ente',
@@ -198,8 +201,8 @@
     API_BACKEND_IO: {
       getProfile: 'Leggi profilo utente da backend AppIO',
       submitMessageforUserWithFiscalCodeInBody: 'Inviata avvisatura a backend AppIO',
-      submitMessageforUserWithFiscalCodeInBodyRicevuta: 'Inviato promemoria scadenza a backend AppIO',
-      submitMessageforUserWithFiscalCodeInBodyScadenza: 'Inviata ricevuta di pagamento a backend AppIO'
+      submitMessageforUserWithFiscalCodeInBodyScadenza: 'Inviato promemoria scadenza a backend AppIO',
+      submitMessageforUserWithFiscalCodeInBodyRicevuta: 'Inviata ricevuta di pagamento a backend AppIO'
     },
     API_GOVPAY: {
       govpayInviaTracciatoEmail: 'Spedito tracciato di rendicontazione pagamenti GovPay via Email',

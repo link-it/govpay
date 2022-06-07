@@ -81,7 +81,7 @@ Examples:
 
 Scenario: Lettura di un flusso contenente un pagamento senza RPT
 
-* def applicazione = read('msg/applicazione_star.json')
+* def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'basic'})
 
 Given url backofficeBaseurl

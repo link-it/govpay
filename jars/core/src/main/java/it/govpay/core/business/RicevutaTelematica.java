@@ -260,13 +260,18 @@ public class RicevutaTelematica {
 		input.setIUV(datiPagamento.getCreditorReferenceId());
 
 		StringBuilder sbIstitutoAttestante = new StringBuilder();
+		if(datiPagamento.getPSPCompanyName() != null){
+			sbIstitutoAttestante.append(datiPagamento.getPSPCompanyName());
+			
+		}
+		
 		if(datiPagamento.getPspFiscalCode() != null){
-			if(datiPagamento.getPSPCompanyName() != null){
-				sbIstitutoAttestante.append(datiPagamento.getPSPCompanyName());
+			if(sbIstitutoAttestante.length() > 0) {
 				sbIstitutoAttestante.append(", ");
 			}
 			sbIstitutoAttestante.append(datiPagamento.getPspFiscalCode());
 		}
+		
 		input.setIstituto(sbIstitutoAttestante.toString());
 
 
