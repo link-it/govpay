@@ -18,5 +18,8 @@
    "voci": "#[]",
    "rpp":"#ignore",
    "pagamenti":"#ignore",
-   "UUID":"#string"
+   "tipo":"#string",
+   "UUID":"#string",
+   "iuvAvviso":"##string", 
+   "iuvPagamento":"##string"
 }
