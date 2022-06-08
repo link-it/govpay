@@ -384,30 +384,40 @@ DROP INDEX idx_pp_fk_rpt_tmp;
 ALTER TABLE pagamenti_portale DROP COLUMN id_rpt_tmp;
 
 -- indici che aiutano nelle join per la tabella rpt.
+-- 244 secondi
 CREATE INDEX idx_rpt_fk_pp ON rpt (id_pagamento_portale);
-CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
+-- gia' esistente
+-- CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
+-- 12 secondi
 CREATE INDEX idx_vrs_fk_app ON versamenti (id_applicazione);
 
+-- 16 secondi
+CREATE INDEX idx_pp_fk_app ON pagamenti_portale (id_applicazione);
+
+-- 4000 secondi
 -- Per le RPT dove non era stato inserito un portale assegno i pagamenti portale all'applicazione, mi servira' per poter salvare il principal
 UPDATE pagamenti_portale SET pagamenti_portale.id_applicazione = (SELECT versamenti.id_applicazione
  FROM versamenti, rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.id_versamento = versamenti.id)
  WHERE pagamenti_portale.id_applicazione IS NULL; 
+ 
+-- indice sulla colonna esito rpt
+CREATE INDEX idx_rpt_esito ON rpt (cod_esito_pagamento);
 
 -- aggiorno stati pagamento portale
-UPDATE pagamenti_portale SET stato = 'ANNULLATO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RPT_ANNULLATA');
-UPDATE pagamenti_portale SET codice_stato = 'PAGAMENTO_IN_ATTESA_DI_ESITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RPT_ANNULLATA');
+UPDATE pagamenti_portale SET stato = 'ANNULLATO', codice_stato = 'PAGAMENTO_IN_ATTESA_DI_ESITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RPT_ANNULLATA');
 
-UPDATE pagamenti_portale SET stato = 'ESEGUITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RT_ACCETTATA_PA' AND rpt.cod_esito_pagamento = 0);
-UPDATE pagamenti_portale SET codice_stato = 'PAGAMENTO_ESEGUITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RT_ACCETTATA_PA' AND rpt.cod_esito_pagamento = 0);
+-- 555 secondi
+UPDATE pagamenti_portale SET stato = 'ESEGUITO', codice_stato = 'PAGAMENTO_ESEGUITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RT_ACCETTATA_PA' AND rpt.cod_esito_pagamento = 0);
 
-UPDATE pagamenti_portale SET stato = 'FALLITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND (rpt.stato = 'RPT_RIFIUTATA_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_PSP' OR rpt.stato = 'RPT_RIFIUTATA_PSP'));
-UPDATE pagamenti_portale SET codice_stato = 'PAGAMENTO_FALLITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND (rpt.stato = 'RPT_RIFIUTATA_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_PSP' OR rpt.stato = 'RPT_RIFIUTATA_PSP'));
-UPDATE pagamenti_portale SET descrizione_stato = 'Errore nella spedizione della richiesta di pagamento a pagoPA' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND (rpt.stato = 'RPT_ERRORE_INVIO_A_NODO'));
+-- 220 secondi
+UPDATE pagamenti_portale SET stato = 'FALLITO', codice_stato = 'PAGAMENTO_FALLITO', descrizione_stato = 'Errore nella spedizione della richiesta di pagamento a pagoPA' 
+ WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND (rpt.stato = 'RPT_RIFIUTATA_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_PSP' OR rpt.stato = 'RPT_RIFIUTATA_PSP'));
 
-UPDATE pagamenti_portale SET stato = 'IN_CORSO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato IN ('RPT_PARCHEGGIATA_NODO' , 'RPT_ATTIVATA', 'RPT_RICEVUTA_NODO', 'RPT_ACCETTATA_NODO', 'RPT_INVIATA_A_PSP', 'RPT_ACCETTATA_PSP', 'RT_RICEVUTA_NODO', 'RT_RIFIUTATA_NODO', 'RT_ACCETTATA_NODO', 'RT_RIFIUTATA_PA', 'RT_ESITO_SCONOSCIUTO_PA', 'RT_ERRORE_INVIO_A_PA', 'INTERNO_NODO'));
-UPDATE pagamenti_portale SET codice_stato = 'PAGAMENTO_IN_ATTESA_DI_ESITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato IN ('RPT_PARCHEGGIATA_NODO' , 'RPT_ATTIVATA', 'RPT_RICEVUTA_NODO', 'RPT_ACCETTATA_NODO', 'RPT_INVIATA_A_PSP', 'RPT_ACCETTATA_PSP', 'RT_RICEVUTA_NODO', 'RT_RIFIUTATA_NODO', 'RT_ACCETTATA_NODO', 'RT_RIFIUTATA_PA', 'RT_ESITO_SCONOSCIUTO_PA', 'RT_ERRORE_INVIO_A_PA', 'INTERNO_NODO'));
+UPDATE pagamenti_portale SET stato = 'IN_CORSO', codice_stato = 'PAGAMENTO_IN_ATTESA_DI_ESITO' 
+ WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato IN ('RPT_PARCHEGGIATA_NODO' , 'RPT_ATTIVATA', 'RPT_RICEVUTA_NODO', 'RPT_ACCETTATA_NODO', 'RPT_INVIATA_A_PSP', 'RPT_ACCETTATA_PSP', 'RT_RICEVUTA_NODO', 'RT_RIFIUTATA_NODO', 'RT_ACCETTATA_NODO', 'RT_RIFIUTATA_PA', 'RT_ESITO_SCONOSCIUTO_PA', 'RT_ERRORE_INVIO_A_PA', 'INTERNO_NODO'));
 
 -- Inserimento entries nella tabella pag_port_versamenti leggendo dalla tabella rpt
+-- 950 secondi
 INSERT INTO pag_port_versamenti (id_pagamento_portale,id_versamento) SELECT id_pagamento_portale,id_versamento FROM rpt;
 
 -- elimino colonne inutili dalle tabelle applicazioni e operatori
@@ -466,9 +476,9 @@ update utenze set principal_originale = principal;
 ALTER TABLE utenze MODIFY (principal_originale NOT NULL);
 
 -- patch dati pagamenti_portale malformati non gestiti dal cruscotto
-
-DELETE from pag_port_versamenti where id_pagamento_portale in (select pagamenti_portale.id from pagamenti_portale left join rpt on rpt.id_pagamento_portale = pagamenti_portale.id where rpt.id is null);
-DELETE from pagamenti_portale where id in (select pagamenti_portale.id from  pagamenti_portale left join rpt on rpt.id_pagamento_portale = pagamenti_portale.id where rpt.id is null);
+-- non necessaria perche' i pagamenti portali sono stati creati a partire dalle RPT presenti nel db
+-- DELETE from pag_port_versamenti where id_pagamento_portale in (select pagamenti_portale.id from pagamenti_portale left join rpt on rpt.id_pagamento_portale = pagamenti_portale.id where rpt.id is null);
+-- DELETE from pagamenti_portale where id in (select pagamenti_portale.id from  pagamenti_portale left join rpt on rpt.id_pagamento_portale = pagamenti_portale.id where rpt.id is null);
 
 ALTER TABLE pagamenti_portale ADD ack NUMBER DEFAULT 0;
 ALTER TABLE pagamenti_portale MODIFY (ack NOT NULL);
@@ -478,10 +488,6 @@ ALTER TABLE pagamenti_portale ADD note CLOB;
 ALTER TABLE pagamenti_portale MODIFY (tipo NOT NULL);
 
 ALTER TABLE intermediari ADD cod_connettore_ftp VARCHAR2(35 CHAR);
-
--- sono gia' presenti 
--- insert into sonde(nome, classe, soglia_warn, soglia_error) values ('caricamento-tracciati', 'org.openspcoop2.utils.sonde.impl.SondaBatch', 3600000, 21600000);
--- insert into sonde(nome, classe, soglia_warn, soglia_error) values ('check-tracciati', 'org.openspcoop2.utils.sonde.impl.SondaCoda', 1, 1);
 
 ALTER TABLE versamenti ADD ack NUMBER;
 UPDATE versamenti set ack = 0;
@@ -493,16 +499,20 @@ UPDATE versamenti SET anomalo = 0;
 ALTER TABLE versamenti MODIFY (anomalo NOT NULL);
 ALTER TABLE versamenti MODIFY anomalo DEFAULT 0;
 
+CREATE INDEX idx_sv_fk_vrs ON singoli_versamenti (id_versamento);
+
 ALTER TABLE singoli_versamenti ADD indice_dati NUMBER;
 
 CREATE TABLE sv_tmp (
 	id NUMBER NOT NULL,
 	indice_dati NUMBER NOT NULL
 );
+
+-- 10 secondi
 INSERT INTO sv_tmp (id, indice_dati) SELECT sv1.id AS id, row_number() over (partition BY sv1.id_versamento ORDER BY sv1.id) AS indice_dati FROM singoli_versamenti sv1;
 
 CREATE INDEX idx_svtmp_fk_sv ON sv_tmp (id);
-
+-- 130 secondi
 UPDATE singoli_versamenti SET indice_dati = (SELECT sv_tmp.indice_dati FROM sv_tmp WHERE singoli_versamenti.id = sv_tmp.id);
 
 DROP INDEX idx_svtmp_fk_sv;
@@ -516,10 +526,10 @@ ALTER TABLE singoli_versamenti ADD CONSTRAINT unique_singoli_versamenti_1 UNIQUE
 ALTER TABLE rendicontazioni ADD id_singolo_versamento NUMBER;
 
 CREATE INDEX idx_rnd_fk_pag ON rendicontazioni (id_pagamento);
-
+-- 246 secondi
 UPDATE rendicontazioni SET id_singolo_versamento = (SELECT pagamenti.id_singolo_versamento FROM pagamenti WHERE rendicontazioni.id_pagamento = pagamenti.id);
 
-DROP INDEX idx_rnd_fk_pag;
+-- DROP INDEX idx_rnd_fk_pag;
 
 -- Funzione per calcolare il numero di millisecondi dal 1/1/1970
 CREATE OR REPLACE FUNCTION date_to_unix_for_smart_order (p_date date, in_src_tz in varchar2 default 'Europe/Rome') return number is
@@ -529,6 +539,7 @@ end;
 /
 
 -- FIX bug che non valorizzava il tipo debitore
+-- 297 secondi
 UPDATE versamenti SET debitore_tipo = 'F';
 
 ALTER TABLE domini ADD aut_stampa_poste VARCHAR2(255 CHAR);
@@ -551,12 +562,14 @@ ALTER TABLE tributi ADD on_line NUMBER;
 ALTER TABLE tributi ADD paga_terzi NUMBER;
 
 ALTER TABLE pagamenti_portale ADD principal VARCHAR2(4000 CHAR);
+-- 185 secondi
 UPDATE pagamenti_portale pp SET principal = (SELECT u.principal FROM utenze u, applicazioni a WHERE u.id = a.id_utenza AND a.id = pp.id_applicazione) WHERE pp.id_applicazione IS NOT NULL;
 
 -- non tutte le rpt avevano portali e quindi applicazione non tutti i pagamenti avranno un principal
 -- ALTER TABLE pagamenti_portale MODIFY (principal NOT NULL);
 
 ALTER TABLE pagamenti_portale add tipo_utenza VARCHAR2(35 CHAR);
+-- 211 secondi
 UPDATE pagamenti_portale SET tipo_utenza = 'APPLICAZIONE';
 ALTER TABLE pagamenti_portale MODIFY (tipo_utenza not null);
 
@@ -575,6 +588,7 @@ DELETE FROM connettori WHERE cod_proprieta = 'PRINCIPAL';
 
 -- GP-677 (3.1.x_blocco_portale)
 ALTER TABLE rpt ADD bloccante NUMBER;
+-- 617 secondi
 UPDATE rpt SET bloccante = 1;
 ALTER TABLE rpt MODIFY (bloccante NOT NULL);
 
@@ -659,9 +673,9 @@ INSERT INTO utenze_tipo_vers (id_utenza, id_tipo_versamento) SELECT utenze_tribu
  tipi_versamento.id FROM utenze_tributi JOIN tipi_tributo ON utenze_tributi.id_tipo_tributo=tipi_tributo.id JOIN tipi_versamento ON tipi_tributo.cod_tributo = tipi_versamento.cod_tipo_versamento;
 
 ALTER TABLE versamenti ADD id_tipo_versamento NUMBER;
-
+-- 279 secondi
 UPDATE versamenti SET id_tipo_versamento = (SELECT DISTINCT tipi_versamento.id FROM singoli_versamenti JOIN tributi ON singoli_versamenti.id_tributo = tributi.id JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id JOIN tipi_versamento ON tipi_versamento.cod_tipo_versamento = tipi_tributo.cod_tributo WHERE singoli_versamenti.indice_dati=1 AND versamenti.id = singoli_versamenti.id_versamento);
-
+-- 168 secondi
 UPDATE versamenti SET id_tipo_versamento = (SELECT id FROM tipi_versamento WHERE cod_tipo_versamento = 'LIBERO') WHERE id_tipo_versamento IS NULL;
 
 ALTER TABLE versamenti MODIFY (id_tipo_versamento NOT NULL);
@@ -725,7 +739,7 @@ INSERT INTO tipi_vers_domini (id_tipo_versamento,codifica_iuv,tipo,paga_terzi,id
 INSERT INTO tipi_vers_domini (id_tipo_versamento,codifica_iuv,tipo,paga_terzi,id_dominio) SELECT tv.id AS id_tipo_versamento, t.cod_tributo_iuv AS codifica_iuv, NULL AS tipo, t.paga_terzi AS paga_terzi , t.id_dominio AS id_dominio FROM tributi t, tipi_tributo tt, tipi_versamento tv WHERE t.id_tipo_tributo = tt.id AND tt.cod_tributo = tv.cod_tipo_versamento AND t.on_line IS NULL;
 
 -- genero le entries per il tipo pendenza libero
--- INSERT INTO tipi_vers_domini (id_dominio, id_tipo_versamento) SELECT id , (SELECT id FROM tipi_versamento WHERE cod_tipo_versamento = 'LIBERO') FROM domini;
+INSERT INTO tipi_vers_domini (id_dominio, id_tipo_versamento) SELECT id , (SELECT id FROM tipi_versamento WHERE cod_tipo_versamento = 'LIBERO') FROM domini;
 
 -- eliminazione colonne non piu' significative
 ALTER TABLE tributi DROP COLUMN paga_terzi;
@@ -738,6 +752,11 @@ ALTER TABLE tipi_tributo DROP COLUMN cod_tributo_iuv;
 
 -- aggiunta id_tipo_versamento_dominio alla tabella versamenti
 ALTER TABLE versamenti ADD id_tipo_versamento_dominio NUMBER;
+
+CREATE INDEX idx_vrs_fk_dom ON versamenti (id_dominio);
+CREATE INDEX idx_vrs_fk_tv ON versamenti (id_tipo_versamento);
+
+-- 245 secondi
 UPDATE versamenti SET id_tipo_versamento_dominio = (SELECT tipi_vers_domini.id FROM tipi_vers_domini WHERE versamenti.id_dominio = tipi_vers_domini.id_dominio AND versamenti.id_tipo_versamento = tipi_vers_domini.id_tipo_versamento );
 
 ALTER TABLE versamenti MODIFY (id_tipo_versamento_dominio NOT NULL);
@@ -878,6 +897,13 @@ ALTER TABLE batch MODIFY (nodo VARCHAR2(255));
 
 -- 19/12/2019 Miglioramento performance accesso alla lista pendenze
 
+-- Indici sulle colonne della tabella pagamenti
+CREATE INDEX idx_pag_fk_sng ON pagamenti (id_singolo_versamento);
+CREATE INDEX idx_pag_data_pag_desc ON pagamenti (data_pagamento DESC);
+CREATE INDEX idx_pag_stato ON pagamenti (stato);
+CREATE INDEX idx_pag_iuv ON pagamenti (iuv);
+CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
+
 ALTER TABLE versamenti ADD data_pagamento TIMESTAMP;
 UPDATE versamenti SET data_pagamento = (SELECT MAX(pagamenti.data_pagamento) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id);
 
@@ -909,7 +935,7 @@ UPDATE versamenti SET iuv_pagamento = (SELECT MAX(pagamenti.iuv) FROM pagamenti 
 CREATE INDEX idx_tipi_versamento_tipo ON tipi_versamento (tipo);
 
 CREATE INDEX idx_vrs_data_creaz ON versamenti (data_creazione DESC);
-CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
+
 CREATE INDEX idx_vrs_deb_identificativo ON versamenti (debitore_identificativo);
 
 -- 15/01/2020 Indici sulla tabella delle notifiche
@@ -936,7 +962,7 @@ DROP INDEX index_iuv_1;
 CREATE INDEX idx_iuv_rifversamento ON iuv (cod_versamento_ente,id_applicazione,tipo_iuv);
 
 -- CREATE INDEX idx_pag_fk_rpt ON pagamenti (id_rpt);
-CREATE INDEX idx_pag_fk_sng ON pagamenti (id_singolo_versamento);
+-- CREATE INDEX idx_pag_fk_sng ON pagamenti (id_singolo_versamento);
 
 -- 24/01/2020
 ALTER TABLE versamenti DROP CONSTRAINT unique_versamenti_1;
@@ -1345,52 +1371,60 @@ ALTER TABLE incassi MODIFY (causale NULL);
 
 -- 20/07/2021 Fix anomalie per rendicontazione senza RT
 
-update rendicontazioni set stato='OK', anomalie=null where dbms_lob.compare(anomalie, '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.') = 0 and esito=9;
-update fr set stato='ACCETTATA', descrizione_stato = null where stato='ANOMALA' and id not in (select fr.id from fr join rendicontazioni on rendicontazioni.id_fr=fr.id where fr.stato='ANOMALA' and rendicontazioni.stato='ANOMALA');
-
+UPDATE rendicontazioni SET stato='OK', anomalie=null WHERE dbms_lob.compare(anomalie, '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.') = 0 AND esito=9;
+UPDATE fr SET stato='ACCETTATA', descrizione_stato = null WHERE stato='ANOMALA' AND id NOT IN (SELECT fr.id FROM fr JOIN rendicontazioni ON rendicontazioni.id_fr=fr.id WHERE fr.stato='ANOMALA' AND rendicontazioni.stato='ANOMALA');
 
 -- 21/07/2021 Identificativo dominio nel singolo versamento per gestire le pendenze multibeneficiario
 ALTER TABLE singoli_versamenti ADD id_dominio NUMBER;
 ALTER TABLE singoli_versamenti ADD CONSTRAINT fk_sng_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
 
--- 20/12/2021 Patch per gestione delle rendicontazioni che non venivano messe in stato anomala quando non viene trovato il versamento corrispondente.
-UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS null;
-
 -- 21/12/2021 Patch per la gestione del riferimento al pagamento di una rendicontazione che arriva prima della ricevuta.
-UPDATE rendicontazioni SET id_pagamento = (SELECT pagamenti.id FROM fr, pagamenti WHERE fr.id=rendicontazioni.id_fr AND pagamenti.cod_dominio=fr.cod_dominio AND rendicontazioni.iuv=pagamenti.iuv AND rendicontazioni.iur=pagamenti.iur) WHERE rendicontazioni.id_pagamento IS NULL 
-	AND EXISTS (SELECT 1 FROM fr, pagamenti WHERE fr.id=rendicontazioni.id_fr AND pagamenti.cod_dominio=fr.cod_dominio AND rendicontazioni.iuv=pagamenti.iuv AND rendicontazioni.iur=pagamenti.iur);
-
-UPDATE rendicontazioni SET stato='OK', anomalie=null where dbms_lob.compare(anomalie, to_clob('007111#Il versamento risulta sconosciuto')) = 0 AND id_singolo_versamento IS NOT null;
+UPDATE rendicontazioni SET id_pagamento = 
+	(SELECT pagamenti.id FROM fr, pagamenti WHERE fr.id=rendicontazioni.id_fr 
+		AND pagamenti.cod_dominio=fr.cod_dominio 
+		AND rendicontazioni.iuv=pagamenti.iuv 
+		AND rendicontazioni.iur=pagamenti.iur) WHERE rendicontazioni.id_pagamento IS NULL;
 
 -- 30/12/2021 Patch rendicontazioni con riferimenti assenti
-
-update rendicontazioni set id_singolo_versamento = 
-	(SELECT pagamenti.id_singolo_versamento from pagamenti where rendicontazioni.id_pagamento=pagamenti.id and rendicontazioni.id_singolo_versamento is null);
-
-UPDATE rendicontazioni SET stato='OK', anomalie=null where stato='ANOMALA' and dbms_lob.compare(anomalie, to_clob('007111#Il versamento risulta sconosciuto')) = 0 AND id_singolo_versamento IS NOT NULL;
-
-UPDATE rendicontazioni SET id_singolo_versamento= (SELECT singoli_versamenti.id
-        FROM fr, versamenti, domini, singoli_versamenti
-        WHERE fr.id=rendicontazioni.id_fr
-        AND fr.cod_dominio=domini.cod_dominio
-        AND domini.id=versamenti.id_dominio AND rendicontazioni.iuv=versamenti.iuv_versamento and singoli_versamenti.id_versamento=versamenti.id) WHERE rendicontazioni.id_singolo_versamento IS NULL AND
-        EXISTS (SELECT 1
-        FROM fr, versamenti, domini, singoli_versamenti
-        WHERE fr.id=rendicontazioni.id_fr
-        AND fr.cod_dominio=domini.cod_dominio
-        AND domini.id=versamenti.id_dominio AND rendicontazioni.iuv=versamenti.iuv_versamento and singoli_versamenti.id_versamento=versamenti.id);
-        
+-- Imposto il riferimento al versamento
+UPDATE rendicontazioni SET id_singolo_versamento = 
+	(SELECT singoli_versamenti.id FROM fr, versamenti, domini, singoli_versamenti 
+        WHERE fr.id=rendicontazioni.id_fr 
+        AND fr.cod_dominio=domini.cod_dominio 
+        AND domini.id=versamenti.id_dominio 
+        AND rendicontazioni.iuv=versamenti.iuv_versamento
+        AND singoli_versamenti.id_versamento=versamenti.id) WHERE rendicontazioni.id_singolo_versamento IS NULL 
+		
 UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' WHERE id_pagamento IS NULL AND esito=0;
+UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS NULL;
+	
+-- ALTRO INTERMEDIARIO Tutti gli spontanei non riferiti a miei pagamenti o pendenze
+UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE stato='ANOMALA' AND char_length(iuv) NOT IN (15,17) AND id_pagamento IS NULL AND id_singolo_versamento IS NULL ;
+-- ALTRO INTERMEDIARIO Tutti gli IUV con aux 3 che non hanno il giusto codice segregazione
+UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rendicontazioni.stato = 'ANOMALA' AND rendicontazioni.id_fr = (
+	SELECT fr.id FROM fr, domini WHERE domini.cod_dominio=fr.cod_dominio AND ( domini.aux_digit='3' AND length(rendicontazioni.iuv) = 17 AND (
+		( rendicontazioni.iuv NOT LIKE ('0' || domini.segregation_code || '%') AND length(domini.segregation_code) = 1 ) 
+		OR ( rendicontazioni.iuv NOT LIKE (domini.segregation_code || '%')  AND length(domini.segregation_code) = 2 )
+		)	
+	)
+);
 
+-- ALTRO INTERMEDIARIO Tutti gli IUV con aux 3 che non sono lunghi 17 e non sono spontanei
+UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rendicontazioni.stato = 'ANOMALA' AND rendicontazioni.id_pagamento IS NULL AND rendicontazioni.id_singolo_versamento IS NULL 
+	AND length(rendicontazioni.iuv) <> 17 AND rendicontazioni.id_fr = (
+		SELECT fr.id FROM fr, domini WHERE domini.cod_dominio=fr.cod_dominio AND domini.aux_digit='3'
+	);
+
+-- ALTRO INTERMEDIARIO Tutti gli IUV con aux 0 che non sono lunghi 15 e non sono spontanei
+UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rendicontazioni.stato = 'ANOMALA' AND rendicontazioni.id_pagamento IS NULL AND rendicontazioni.id_singolo_versamento IS NULL 
+	AND length(rendicontazioni.iuv) <> 15 AND rendicontazioni.id_fr = (
+		SELECT fr.id FROM fr, domini WHERE domini.cod_dominio=fr.cod_dominio AND domini.aux_digit='0'
+	);
+	
 
 -- 25/01/2022 Flusso Rendicontazione univoco per dominio
 ALTER TABLE fr DROP CONSTRAINT unique_fr_1;
 ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,data_ora_flusso);
-
--- Indici sulla tabella RPT
-DROP INDEX idx_rpt_fk_pp;
-DROP INDEX idx_rpt_fk_vrs;
-DROP INDEX idx_vrs_fk_app;
 
 -- 29/04/2022 Tabella configurazione nella versione definitiva
 CREATE SEQUENCE seq_configurazione MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
