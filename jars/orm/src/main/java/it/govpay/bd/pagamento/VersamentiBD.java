@@ -931,7 +931,9 @@ public class VersamentiBD extends BasicBD {
 			BigDecimal totalePagato, BigDecimal totaleIncassato, String iuvPagamento, StatoPagamento statoPagamento,
 			boolean updateAvvisoNotificato, Boolean avvisoNotificato,
 			boolean updatePromemoriaScadenzaAppIONotificato, Boolean promemoriaScadenzaAppIONotificato, 
-			boolean updatePromemoriaScadenzaNotificato, Boolean promemoriaScadenzaNotificato) throws ServiceException {
+			boolean updatePromemoriaScadenzaNotificato, Boolean promemoriaScadenzaNotificato, 
+			StatoVersamento statoVersamento, String descrizioneStato,
+			boolean updateAnomalo, boolean anomalo) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -960,6 +962,13 @@ public class VersamentiBD extends BasicBD {
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO, promemoriaScadenzaAppIONotificato));
 			if(updatePromemoriaScadenzaNotificato)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO, promemoriaScadenzaNotificato));
+			
+			if(statoVersamento != null)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, statoVersamento.toString()));
+			if(descrizioneStato != null)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().DESCRIZIONE_STATO, descrizioneStato));
+			if(updateAnomalo)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().ANOMALO, anomalo));
 
 			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
