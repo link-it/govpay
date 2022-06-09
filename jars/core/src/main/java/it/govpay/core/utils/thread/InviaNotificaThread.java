@@ -91,7 +91,7 @@ public class InviaNotificaThread implements Runnable {
 		
 		this.giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
 		this.rptKey = this.notifica.getRptKey();
-		this.pagamentoPortale = this.rpt.getPagamentoPortale();
+		this.pagamentoPortale = this.rpt.getPagamentoPortale() != null ? this.rpt.getPagamentoPortale() : this.rpt.getPagamentoPortale(configWrapper);;
 		
 //		if(this.notifica.getTipo().equals(TipoNotifica.RICEVUTA)) {
 //			if(pagamenti == null || pagamenti.size() ==0)
