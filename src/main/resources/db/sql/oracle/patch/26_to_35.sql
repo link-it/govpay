@@ -903,12 +903,15 @@ CREATE INDEX idx_pag_data_pag_desc ON pagamenti (data_pagamento DESC);
 CREATE INDEX idx_pag_stato ON pagamenti (stato);
 CREATE INDEX idx_pag_iuv ON pagamenti (iuv);
 CREATE INDEX idx_vrs_stato_vrs ON versamenti (stato_versamento);
+CREATE INDEX idx_pag_imp_pag ON pagamenti (importo_pagato);
 
 ALTER TABLE versamenti ADD data_pagamento TIMESTAMP;
+-- 955 secondi
 UPDATE versamenti SET data_pagamento = (SELECT MAX(pagamenti.data_pagamento) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id);
 
 ALTER TABLE versamenti ADD importo_pagato BINARY_DOUBLE;
 UPDATE versamenti SET importo_pagato = 0;
+-- 835 secondi
 UPDATE versamenti SET importo_pagato = (SELECT SUM(CASE WHEN pagamenti.importo_pagato IS NOT NULL THEN pagamenti.importo_pagato ELSE 0 END) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id) WHERE versamenti.stato_versamento = 'ESEGUITO';
 -- situazione in cui non c'e' il pagamento per il versamento eseguito
 UPDATE versamenti SET importo_pagato = 0 WHERE importo_pagato is null;
@@ -916,6 +919,7 @@ ALTER TABLE versamenti MODIFY (importo_pagato NOT NULL);
 
 ALTER TABLE versamenti ADD importo_incassato BINARY_DOUBLE;
 UPDATE versamenti SET importo_incassato = 0;
+-- 976 secondi
 UPDATE versamenti SET importo_incassato = (SELECT SUM(CASE WHEN pagamenti.stato = 'INCASSATO' THEN pagamenti.importo_pagato ELSE 0 END) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id) WHERE versamenti.stato_versamento = 'ESEGUITO';
 -- situazione in cui non c'e' il pagamento per il versamento eseguito
 UPDATE versamenti SET importo_incassato = 0 WHERE importo_incassato is null;
@@ -923,12 +927,14 @@ ALTER TABLE versamenti MODIFY (importo_incassato NOT NULL);
 
 ALTER TABLE versamenti ADD stato_pagamento VARCHAR2(35 CHAR);
 UPDATE versamenti SET stato_pagamento = 'NON_PAGATO';
+-- 1045 secondi
 UPDATE versamenti SET stato_pagamento= (SELECT MAX(CASE  WHEN pagamenti.stato IS NULL THEN 'NON_PAGATO' WHEN pagamenti.stato = 'INCASSATO' THEN 'INCASSATO' ELSE 'PAGATO' END) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id) WHERE versamenti.stato_versamento = 'ESEGUITO';
 -- situazione in cui non c'e' il pagamento per il versamento eseguito
 UPDATE versamenti SET stato_pagamento = 'NON_PAGATO' WHERE stato_pagamento is null;
 ALTER TABLE versamenti MODIFY (stato_pagamento NOT NULL);
 
 ALTER TABLE versamenti ADD iuv_pagamento VARCHAR2(35 CHAR);
+-- 1355 secondi
 UPDATE versamenti SET iuv_pagamento = (SELECT MAX(pagamenti.iuv) FROM pagamenti JOIN singoli_versamenti ON pagamenti.id_singolo_versamento = singoli_versamenti.id WHERE singoli_versamenti.id_versamento = versamenti.id);
 
 -- 14/01/2020 Indici sulla tabella dei versamenti
@@ -939,10 +945,6 @@ CREATE INDEX idx_vrs_data_creaz ON versamenti (data_creazione DESC);
 CREATE INDEX idx_vrs_deb_identificativo ON versamenti (debitore_identificativo);
 
 -- 15/01/2020 Indici sulla tabella delle notifiche
-CREATE INDEX idx_ntf_da_spedire ON notifiche (stato,data_prossima_spedizione DESC);
-
--- 22/01/2020 Aggiornamento indice tabella notifiche;
-DROP INDEX idx_ntf_da_spedire;
 CREATE INDEX idx_ntf_da_spedire ON notifiche (id_applicazione,stato,data_prossima_spedizione);
 
 -- 22/01/2020 Nuovi indici tabelle monitoraggio
@@ -956,7 +958,7 @@ CREATE INDEX idx_prt_id_sessione ON pagamenti_portale (id_sessione);
 CREATE INDEX idx_ppv_fk_prt ON pag_port_versamenti (id_pagamento_portale);
 CREATE INDEX idx_ppv_fk_vrs ON pag_port_versamenti (id_versamento);
 
-CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
+-- CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
 
 DROP INDEX index_iuv_1;
 CREATE INDEX idx_iuv_rifversamento ON iuv (cod_versamento_ente,id_applicazione,tipo_iuv);
@@ -969,7 +971,7 @@ ALTER TABLE versamenti DROP CONSTRAINT unique_versamenti_1;
 CREATE INDEX idx_vrs_id_pendenza ON versamenti (cod_versamento_ente,id_applicazione);
 
 -- Controllare
-ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_dominio;
+-- ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_dominio;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento_dominio;
 ALTER TABLE versamenti DROP CONSTRAINT fk_vrs_id_tipo_versamento;
 
@@ -1056,9 +1058,11 @@ ALTER TABLE singoli_versamenti DROP COLUMN anno_riferimento;
 -- 30/03/2020 Colonne di ricerca upper case per versamenti e pagamenti portale
 
 ALTER TABLE versamenti ADD src_iuv VARCHAR2(35 CHAR);
+-- 240 secondi
 UPDATE versamenti SET src_iuv = UPPER(COALESCE(iuv_pagamento, iuv_versamento));
 
 ALTER TABLE versamenti ADD src_debitore_identificativo VARCHAR2(35 CHAR);
+-- 220 secondi
 UPDATE versamenti SET src_debitore_identificativo = UPPER(debitore_identificativo);
 ALTER TABLE versamenti MODIFY (src_debitore_identificativo NOT NULL);
 
@@ -1338,6 +1342,7 @@ ALTER TABLE domini ADD cod_connettore_hyper_sic_apk VARCHAR2(255 CHAR);
 
 -- 07/06/2021 Aggiunta colonna con la versione dell'RPT
 ALTER TABLE rpt ADD versione VARCHAR2(35 CHAR);
+-- 1450 secondi
 UPDATE rpt SET versione = 'SANP_230' WHERE versione IS NULL;
 ALTER TABLE rpt MODIFY (versione NOT NULL);
 
@@ -1369,14 +1374,21 @@ ALTER TABLE incassi ADD CONSTRAINT unique_incassi_1 UNIQUE (cod_dominio,identifi
 
 ALTER TABLE incassi MODIFY (causale NULL);
 
--- 20/07/2021 Fix anomalie per rendicontazione senza RT
-
-UPDATE rendicontazioni SET stato='OK', anomalie=null WHERE dbms_lob.compare(anomalie, '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.') = 0 AND esito=9;
-UPDATE fr SET stato='ACCETTATA', descrizione_stato = null WHERE stato='ANOMALA' AND id NOT IN (SELECT fr.id FROM fr JOIN rendicontazioni ON rendicontazioni.id_fr=fr.id WHERE fr.stato='ANOMALA' AND rendicontazioni.stato='ANOMALA');
-
 -- 21/07/2021 Identificativo dominio nel singolo versamento per gestire le pendenze multibeneficiario
 ALTER TABLE singoli_versamenti ADD id_dominio NUMBER;
 ALTER TABLE singoli_versamenti ADD CONSTRAINT fk_sng_id_dominio FOREIGN KEY (id_dominio) REFERENCES domini(id);
+
+-- 25/01/2022 Flusso Rendicontazione univoco per dominio
+ALTER TABLE fr DROP CONSTRAINT unique_fr_1;
+ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,data_ora_flusso);
+
+-- 20/07/2021 Fix anomalie per rendicontazione senza RT
+CREATE INDEX idx_rnd_esito ON rendicontazioni (esito);
+CREATE INDEX idx_rnd_stato ON rendicontazioni (stato);
+CREATE INDEX idx_fr_stato ON fr (stato);
+
+UPDATE rendicontazioni SET stato='OK', anomalie=null WHERE dbms_lob.compare(anomalie, '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.') = 0 AND esito=9;
+UPDATE fr SET stato='ACCETTATA', descrizione_stato = null WHERE stato='ANOMALA' AND id NOT IN (SELECT fr.id FROM fr JOIN rendicontazioni ON rendicontazioni.id_fr=fr.id WHERE fr.stato='ANOMALA' AND rendicontazioni.stato='ANOMALA');
 
 -- 21/12/2021 Patch per la gestione del riferimento al pagamento di una rendicontazione che arriva prima della ricevuta.
 UPDATE rendicontazioni SET id_pagamento = 
@@ -1387,21 +1399,24 @@ UPDATE rendicontazioni SET id_pagamento =
 
 -- 30/12/2021 Patch rendicontazioni con riferimenti assenti
 -- Imposto il riferimento al versamento
+CREATE INDEX idx_rnd_iuv ON rendicontazioni (iuv);
+CREATE INDEX idx_vrs_iuv_vrs ON versamenti (iuv_versamento);
+		
 UPDATE rendicontazioni SET id_singolo_versamento = 
 	(SELECT singoli_versamenti.id FROM fr, versamenti, domini, singoli_versamenti 
         WHERE fr.id=rendicontazioni.id_fr 
         AND fr.cod_dominio=domini.cod_dominio 
         AND domini.id=versamenti.id_dominio 
         AND rendicontazioni.iuv=versamenti.iuv_versamento
-        AND singoli_versamenti.id_versamento=versamenti.id) WHERE rendicontazioni.id_singolo_versamento IS NULL 
+        AND singoli_versamenti.id_versamento=versamenti.id) WHERE rendicontazioni.id_singolo_versamento IS NULL ;
 		
 UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' WHERE id_pagamento IS NULL AND esito=0;
 UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS NULL;
 	
 -- ALTRO INTERMEDIARIO Tutti gli spontanei non riferiti a miei pagamenti o pendenze
-UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE stato='ANOMALA' AND char_length(iuv) NOT IN (15,17) AND id_pagamento IS NULL AND id_singolo_versamento IS NULL ;
+UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE stato='ANOMALA' AND length(iuv) NOT IN (15,17) AND id_pagamento IS NULL AND id_singolo_versamento IS NULL ;
 -- ALTRO INTERMEDIARIO Tutti gli IUV con aux 3 che non hanno il giusto codice segregazione
-UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rendicontazioni.stato = 'ANOMALA' AND rendicontazioni.id_fr = (
+UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rendicontazioni.stato = 'ANOMALA' AND rendicontazioni.id_fr IN (
 	SELECT fr.id FROM fr, domini WHERE domini.cod_dominio=fr.cod_dominio AND ( domini.aux_digit='3' AND length(rendicontazioni.iuv) = 17 AND (
 		( rendicontazioni.iuv NOT LIKE ('0' || domini.segregation_code || '%') AND length(domini.segregation_code) = 1 ) 
 		OR ( rendicontazioni.iuv NOT LIKE (domini.segregation_code || '%')  AND length(domini.segregation_code) = 2 )
@@ -1411,21 +1426,16 @@ UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rend
 
 -- ALTRO INTERMEDIARIO Tutti gli IUV con aux 3 che non sono lunghi 17 e non sono spontanei
 UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rendicontazioni.stato = 'ANOMALA' AND rendicontazioni.id_pagamento IS NULL AND rendicontazioni.id_singolo_versamento IS NULL 
-	AND length(rendicontazioni.iuv) <> 17 AND rendicontazioni.id_fr = (
+	AND length(rendicontazioni.iuv) <> 17 AND rendicontazioni.id_fr IN (
 		SELECT fr.id FROM fr, domini WHERE domini.cod_dominio=fr.cod_dominio AND domini.aux_digit='3'
 	);
 
 -- ALTRO INTERMEDIARIO Tutti gli IUV con aux 0 che non sono lunghi 15 e non sono spontanei
 UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rendicontazioni.stato = 'ANOMALA' AND rendicontazioni.id_pagamento IS NULL AND rendicontazioni.id_singolo_versamento IS NULL 
-	AND length(rendicontazioni.iuv) <> 15 AND rendicontazioni.id_fr = (
+	AND length(rendicontazioni.iuv) <> 15 AND rendicontazioni.id_fr IN (
 		SELECT fr.id FROM fr, domini WHERE domini.cod_dominio=fr.cod_dominio AND domini.aux_digit='0'
 	);
 	
-
--- 25/01/2022 Flusso Rendicontazione univoco per dominio
-ALTER TABLE fr DROP CONSTRAINT unique_fr_1;
-ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,data_ora_flusso);
-
 -- 29/04/2022 Tabella configurazione nella versione definitiva
 CREATE SEQUENCE seq_configurazione MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
