@@ -127,6 +127,7 @@ CREATE TABLE domini
 	cod_connettore_hyper_sic_apk VARCHAR(255),
 	cod_connettore_maggioli_jppa VARCHAR(255),
 	intermediato BIT NOT NULL,
+	tassonomia_pago_pa VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_stazione BIGINT,

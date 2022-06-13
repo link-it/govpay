@@ -67,6 +67,7 @@ public class DominioConverter {
 		dto.setConnettoreHyperSicAPKappa(connettoreHyperSicAPKappa);
 		dto.setConnettoreMaggioliJPPA(connettoreMaggioliJPPA);
 		dto.setIntermediato(vo.isIntermediato());
+		dto.setTassonomiaPagoPA(vo.getTassonomiaPagoPA());
 		return dto;
 	}
 
@@ -122,6 +123,7 @@ public class DominioConverter {
 		}
 		
 		vo.setIntermediato(dto.isIntermediato());
+		vo.setTassonomiaPagoPA(dto.getTassonomiaPagoPA());
 		
 		return vo;
 	}

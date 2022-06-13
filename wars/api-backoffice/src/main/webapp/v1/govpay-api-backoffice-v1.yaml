@@ -5336,6 +5336,8 @@ components:
           type: boolean
           description: Indica se il creditore viene configurato per utilizzare una  stazione di intermediazione
           example: true
+        tassonomiaPagoPA:
+          $ref: '#/components/schemas/tassonomiaPagoPADominio'
     dominioIndex:
       type: object
       allOf:
@@ -5437,6 +5439,34 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/tipoPendenzaDominio'
+    tassonomiaPagoPADominio:
+      type: string
+      example: '07'
+      enum:
+        - '01'
+        - '02'
+        - '03'
+        - '04'
+        - '05'
+        - '06'
+        - '07'
+        - '08'
+        - '09'
+        - '11'
+        - '12'
+      description: >
+        Classificazione ente della tassonomia pagoPA
+         * 01: COMUNE / UNIONE DI COMUNI / CONSORZI
+         * 02: PROVINCIA / CITTA' METROPOLITANA
+         * 03: REGIONE
+         * 04: ORDINI PROFESSIONALI
+         * 05: SERVIZIO SANITARIO NAZIONALE
+         * 06: UNIVERSITÀ / SCUOLA STATALE
+         * 07: PUBBLICHE AMMINISTRAZIONI CENTRALI
+         * 08: ALTRE AMMINISTRAZIONI
+         * 09: GESTORI PUBBLICI SERVIZI
+         * 11: ENTI DI NATURA PRIVATISTICA
+         * 12: AGENZIE FISCALI
     codificaAvvisi:
       type: object
       description: informazioni sulla codifica e decodifica degli iuv

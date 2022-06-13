@@ -53,6 +53,7 @@ import java.io.Serializable;
  * 			&lt;element name="codConnettoreHyperSicAPK" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreMaggioliJPPA" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="intermediato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="tassonomiaPagoPA" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -84,7 +85,8 @@ import java.io.Serializable;
   	"codConnettoreGovPay",
   	"codConnettoreHyperSicAPK",
   	"codConnettoreMaggioliJPPA",
-  	"intermediato"
+  	"intermediato",
+  	"tassonomiaPagoPA"
   }
 )
 
@@ -266,6 +268,14 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.intermediato = intermediato;
   }
 
+  public java.lang.String getTassonomiaPagoPA() {
+    return this.tassonomiaPagoPA;
+  }
+
+  public void setTassonomiaPagoPA(java.lang.String tassonomiaPagoPA) {
+    this.tassonomiaPagoPA = tassonomiaPagoPA;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -362,5 +372,9 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="intermediato",required=true,nillable=false)
   protected boolean intermediato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tassonomiaPagoPA",required=false,nillable=false)
+  protected java.lang.String tassonomiaPagoPA;
 
 }

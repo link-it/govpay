@@ -118,6 +118,7 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_HYPER_SIC_APK,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_CONNETTORE_MAGGIOLI_JPPA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().INTERMEDIATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().TASSONOMIA_PAGO_PA,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_stazione","?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione_default","?");
 
@@ -140,6 +141,7 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCodConnettoreHyperSicAPK(),Dominio.model().COD_CONNETTORE_HYPER_SIC_APK.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCodConnettoreMaggioliJPPA(),Dominio.model().COD_CONNETTORE_MAGGIOLI_JPPA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getIntermediato(),Dominio.model().INTERMEDIATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getTassonomiaPagoPA(),Dominio.model().TASSONOMIA_PAGO_PA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_stazione,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
 		);
@@ -261,6 +263,8 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		lstObjects_dominio.add(new JDBCObject(dominio.getCodConnettoreMaggioliJPPA(), Dominio.model().COD_CONNETTORE_MAGGIOLI_JPPA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().INTERMEDIATO,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getIntermediato(), Dominio.model().INTERMEDIATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().TASSONOMIA_PAGO_PA,false), "?");
+		lstObjects_dominio.add(new JDBCObject(dominio.getTassonomiaPagoPA(), Dominio.model().TASSONOMIA_PAGO_PA.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_stazione","?");
 		}

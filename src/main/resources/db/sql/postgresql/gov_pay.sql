@@ -125,6 +125,7 @@ CREATE TABLE domini
 	cod_connettore_hyper_sic_apk VARCHAR(255),
 	cod_connettore_maggioli_jppa VARCHAR(255),
 	intermediato BOOLEAN NOT NULL,
+	tassonomia_pago_pa VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_domini') NOT NULL,
 	id_stazione BIGINT,
