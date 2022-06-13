@@ -348,6 +348,21 @@ export class UtilService {
     'false': 'Non verificato'
   };
 
+  // TASSONOMIE PAGOPA
+  public static TASSONOMIE_PAGOPA: any = {
+    '01': 'Comune / Unione di Comuni / Consorzi',
+    '02': 'Provincia / Città Metropolitana',
+    '03': 'Regione',
+    '04': 'Ordini Professionali',
+    '05': 'Servizio Sanitario Nazionale',
+    '06': 'Università / Scuola Statale',
+    '07': 'Pubbliche Amministrazioni Centrali',
+    '08': 'Altre Amministrazioni',
+    '09': 'Gestori Pubblici Servizi',
+    '11': 'Enti di Natura Privatistica',
+    '12': 'Agenzie Fiscali'
+  };
+
   public static COOKIE_RIFIUTATI: string = 'GovPay_Dashboard_Rifiutati';
   public static COOKIE_SOSPESI: string = 'GovPay_Dashboard_Sospesi';
   public static COOKIE_SESSION: string = null;
@@ -2037,6 +2052,12 @@ export class UtilService {
     }
     return Object.keys(GovApiTipiEvento[component]).map((key) => {
       return { label: GovApiTipiEvento[component][key], value: key };
+    });
+  }
+
+  tassonomiePagoPA(): any[] {
+    return Object.keys(UtilService.TASSONOMIE_PAGOPA).map((key) => {
+      return { label: UtilService.TASSONOMIE_PAGOPA[key], value: key };
     });
   }
 
