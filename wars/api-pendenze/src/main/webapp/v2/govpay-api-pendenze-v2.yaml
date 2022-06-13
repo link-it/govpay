@@ -1980,6 +1980,7 @@ components:
         - ANNULLATA
         - SCADUTA
         - ANOMALA
+        - INCASSATA
     StatoVocePendenza:
       type: string
       description: Stato della voce di pagamento
