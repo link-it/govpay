@@ -2058,6 +2058,14 @@ export class UtilService {
   tassonomiePagoPA(): any[] {
     return Object.keys(UtilService.TASSONOMIE_PAGOPA).map((key) => {
       return { label: UtilService.TASSONOMIE_PAGOPA[key], value: key };
+    }).sort((a, b) => {
+      if (a.label > b.label) {
+        return 1;
+      }
+      if (a.label < b.label) {
+        return -1;
+      }
+      return 0;
     });
   }
 
