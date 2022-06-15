@@ -62,4 +62,9 @@ Examples:
 | autStampaPosteItaliane | dominio.autStampaPosteItaliane | loremIpsum | 'autStampaPosteItaliane' |
 | area | dominio.area | loremIpsum | 'area' |
 | intermediato | dominio.intermediato | 'boh' |  'intermediato' |
+| tassonomiaPagoPA | dominio.tassonomiaPagoPA | 'boh' |  'tassonomiaPagoPA' |
+| tassonomiaPagoPA | dominio.tassonomiaPagoPA | '10' |  'tassonomiaPagoPA' |
+| tassonomiaPagoPA | dominio.tassonomiaPagoPA | '00' |  'tassonomiaPagoPA' |
+| tassonomiaPagoPA | dominio.tassonomiaPagoPA | '13' |  'tassonomiaPagoPA' |
+| tassonomiaPagoPA | dominio.tassonomiaPagoPA | loremIpsum |  'tassonomiaPagoPA' |
 

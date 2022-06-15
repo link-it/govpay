@@ -12,6 +12,8 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
@@ -59,7 +61,9 @@ public class RiconciliazioniConverter {
 		if(i.getPagamenti()!= null) {
 			List<Riscossione> riscossioni = new ArrayList<>();
 			for (Pagamento pagamento : i.getPagamenti()) {
-				riscossioni.add(RiscossioniConverter.toRsModel(pagamento));
+				SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento();
+				Versamento versamento = singoloVersamento.getVersamento(null);
+				riscossioni.add(RiscossioniConverter.toRsModel(pagamento, singoloVersamento, versamento));
 			} 
 			
 			rsModel.setRiscossioni(riscossioni);

@@ -86,6 +86,8 @@ public class DominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_connettore_maggioli_jppa", Dominio.model().COD_CONNETTORE_MAGGIOLI_JPPA.getFieldType()));
 				setParameter(object, "setIntermediato", Dominio.model().INTERMEDIATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "intermediato", Dominio.model().INTERMEDIATO.getFieldType()));
+				setParameter(object, "setTassonomiaPagoPA", Dominio.model().TASSONOMIA_PAGO_PA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tassonomia_pago_pa", Dominio.model().TASSONOMIA_PAGO_PA.getFieldType()));
 				return object;
 			}
 			
@@ -140,6 +142,8 @@ public class DominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codConnettoreMaggioliJPPA"));
 				setParameter(object, "setIntermediato", Dominio.model().INTERMEDIATO.getFieldType(),
 					this.getObjectFromMap(map,"intermediato"));
+				setParameter(object, "setTassonomiaPagoPA", Dominio.model().TASSONOMIA_PAGO_PA.getFieldType(),
+					this.getObjectFromMap(map,"tassonomiaPagoPA"));
 				return object;
 			}
 			

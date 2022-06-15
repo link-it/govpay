@@ -128,6 +128,7 @@ CREATE TABLE domini
 	cod_connettore_hyper_sic_apk VARCHAR(255) COMMENT 'Identificativo connettore hypersic_apk',
 	cod_connettore_maggioli_jppa VARCHAR(255) COMMENT 'Identificativo connettore maggioli jppa',
 	intermediato BOOLEAN NOT NULL COMMENT 'Indica se l\'ente e\' intermediato',
+	tassonomia_pago_pa VARCHAR(35) COMMENT 'Tassonomia PagoPA ente creditore',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_stazione BIGINT COMMENT 'Riferimento alla stazione',
@@ -1132,6 +1133,8 @@ CREATE TABLE rendicontazioni
 	CONSTRAINT pk_rendicontazioni PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Rendicontazioni';
 
+-- index
+CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
 
 
 

@@ -99,6 +99,18 @@ Examples:
 | autStampaPosteItaliane | 'test' |
 | autStampaPosteItaliane | null |
 | intermediato | true |
+| tassonomiaPagoPA | null |
+| tassonomiaPagoPA | '01' |
+| tassonomiaPagoPA | '02' |
+| tassonomiaPagoPA | '03' |
+| tassonomiaPagoPA | '04' |
+| tassonomiaPagoPA | '05' |
+| tassonomiaPagoPA | '06' |
+| tassonomiaPagoPA | '07' |
+| tassonomiaPagoPA | '08' |
+| tassonomiaPagoPA | '09' |
+| tassonomiaPagoPA | '11' |
+| tassonomiaPagoPA | '12' |
 
 Scenario: Modifica di un dominio (segregation code)
 

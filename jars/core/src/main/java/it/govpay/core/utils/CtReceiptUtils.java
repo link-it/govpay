@@ -157,6 +157,8 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 	public static Rpt acquisisciRT(String codDominio, String iuv, PaSendRTReq ctRt, boolean recupero, boolean acquisizioneDaCruscotto) throws ServiceException, NdpException, UtilsException, GovPayException {
 
+		String receiptId = (ctRt !=null && ctRt.getReceipt() != null) ? ctRt.getReceipt().getReceiptId() : "--";
+		log.info("Acquisizione RT Dominio[" + codDominio + "], IUV["+iuv+"], ReceiptID ["+receiptId+"] in corso");
 		RptBD rptBD = null; 
 		try {
 			IContext ctx = ContextThreadLocal.get();
@@ -177,7 +179,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 			Rpt rpt = null;
 			try { 
-				rpt = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, it.govpay.model.Rpt.Versione.SANP_240, true);
+				rpt = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, it.govpay.model.Rpt.Versione.SANP_240, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv, pagamenti e pagamenti_portale
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, e.getMessage(), codDominio);
 			}
@@ -202,7 +204,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			// infatti in caso di RT concorrente, non viene gestito bene l'errore.
 
 			try {
-				rpt = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, it.govpay.model.Rpt.Versione.SANP_240, true);
+				rpt = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, it.govpay.model.Rpt.Versione.SANP_240, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv, pagamenti e pagamenti_portale
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, e.getMessage(), codDominio);
 			}
@@ -317,13 +319,13 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			// Aggiorno l'RPT con i dati dell'RT
 			rptBD.updateRpt(rpt.getId(), rpt);
 
-			Versamento versamento = rpt.getVersamento();
+			Versamento versamento = rpt.getVersamento(rptBD);
 
 			//			VersamentiBD versamentiBD = new VersamentiBD(rptBD);
 			//			versamentiBD.setAtomica(false); // condivisione della connessione
 
 			List<CtTransferPA> datiSingoliPagamenti = ctReceipt.getTransferList().getTransfer();
-			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti();
+			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(rptBD);
 
 			PagamentiBD pagamentiBD = new PagamentiBD(rptBD);
 			pagamentiBD.setAtomica(false); // condivisione della connessione
@@ -463,58 +465,49 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 			rpt.setPagamenti(pagamenti);
 
+			boolean updateAnomalo = false;
 			switch (rpt.getEsitoPagamento()) {
 			case PAGAMENTO_ESEGUITO:
 				switch (versamento.getStatoVersamento()) {
-				case ANNULLATO:
-				case NON_ESEGUITO:
-					versamento.setStatoVersamento(StatoVersamento.ESEGUITO);
-					if(irregolare) {
+					case ANNULLATO:
+					case NON_ESEGUITO:
+						versamento.setStatoVersamento(StatoVersamento.ESEGUITO);
+						if(irregolare) {
+							versamento.setAnomalo(true);
+							versamento.setDescrizioneStato(irregolarita);
+							updateAnomalo = true;
+						}
+						break;
+					default:
+						versamento.setStatoVersamento(StatoVersamento.ESEGUITO);
+						if(irregolare) {
+							versamento.setDescrizioneStato(irregolarita);
+						}
 						versamento.setAnomalo(true);
-						versamento.setDescrizioneStato(irregolarita);
-					}
-					break;
-				default:
-					versamento.setStatoVersamento(StatoVersamento.ESEGUITO);
-					if(irregolare) {
-						versamento.setDescrizioneStato(irregolarita);
-					}
-					versamento.setAnomalo(true);
-				}
-
-				try { 
-					versamentiBD.updateVersamento(versamento);
-				} catch (NotFoundException nfe) {
-					// Impossibile, l'ho trovato prima
+						updateAnomalo = true;
 				}
 				break;
-
 			case PAGAMENTO_PARZIALMENTE_ESEGUITO:
 			case DECORRENZA_TERMINI_PARZIALE:
 				switch (versamento.getStatoVersamento()) {
-				case ANNULLATO:
-				case NON_ESEGUITO:
-					versamento.setStatoVersamento(StatoVersamento.PARZIALMENTE_ESEGUITO);
-					if(irregolare) {
+					case ANNULLATO:
+					case NON_ESEGUITO:
+						versamento.setStatoVersamento(StatoVersamento.PARZIALMENTE_ESEGUITO);
+						if(irregolare) {
+							versamento.setAnomalo(true);
+							versamento.setDescrizioneStato(irregolarita);
+							updateAnomalo = true;
+						}
+						break;
+					default:
+						versamento.setStatoVersamento(StatoVersamento.PARZIALMENTE_ESEGUITO);
+						if(irregolare) {
+							versamento.setDescrizioneStato(irregolarita);
+						}
 						versamento.setAnomalo(true);
-						versamento.setDescrizioneStato(irregolarita);
-					}
-					break;
-				default:
-					versamento.setStatoVersamento(StatoVersamento.PARZIALMENTE_ESEGUITO);
-					if(irregolare) {
-						versamento.setDescrizioneStato(irregolarita);
-					}
-					versamento.setAnomalo(true);
-				}
-
-				try { 
-					versamentiBD.updateVersamento(versamento);
-				} catch (NotFoundException nfe) {
-					// Impossibile, l'ho trovato prima
+						updateAnomalo = true;						
 				}
 				break;
-
 			case DECORRENZA_TERMINI:
 			case PAGAMENTO_NON_ESEGUITO:
 				break;
@@ -525,17 +518,22 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			default:
 				break;
 			}	
+			
+			// aggiorno stato versamento
+//			if(updateVersamento) {
+//				try { 
+//					versamentiBD.updateVersamento(versamento);
+//				} catch (NotFoundException nfe) {
+//					// Impossibile, l'ho trovato prima
+//				}
+//			}	
 
 			switch (versamento.getStatoVersamento()) {
 			case PARZIALMENTE_ESEGUITO:
 			case ESEGUITO:
-				// Aggiornamento stato promemoria
-				versamentiBD.updateStatoPromemoriaAvvisoVersamento(versamento.getId(), true, null);
-				versamentiBD.updateStatoPromemoriaScadenzaAppIOVersamento(versamento.getId(), true, null);
-				versamentiBD.updateStatoPromemoriaScadenzaMailVersamento(versamento.getId(), true, null);
-
-				// aggiornamento informazioni pagamento
-				versamentiBD.updateVersamentoInformazioniPagamento(versamento.getId(), dataPagamento, totalePagato, BigDecimal.ZERO, iuvPagamento, StatoPagamento.PAGATO);
+				// aggiornamento informazioni pagamento, stato promemoria e avvisatura
+				versamentiBD.updateVersamentoInformazioniPagamento(versamento.getId(), dataPagamento, totalePagato, BigDecimal.ZERO, iuvPagamento, StatoPagamento.PAGATO
+						, true, null, true, null, true, null, versamento.getStatoVersamento(), versamento.getDescrizioneStato(), updateAnomalo, versamento.isAnomalo());
 				
 				// schedulo l'invio del promemoria ricevuta
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
@@ -564,7 +562,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 					log.debug("Creo notifica avvisatura ricevuta tramite App IO..."); 
 					NotificaAppIo notificaAppIo = new NotificaAppIo(rpt, versamento, it.govpay.model.NotificaAppIo.TipoNotifica.RICEVUTA, configWrapper);
 					log.debug("Creazione notifica avvisatura ricevuta tramite App IO completata.");
-					NotificheAppIoBD notificheAppIoBD = new NotificheAppIoBD(versamentiBD);
+					NotificheAppIoBD notificheAppIoBD = new NotificheAppIoBD(rptBD);
 					notificheAppIoBD.setAtomica(false); // riuso connessione
 					notificheAppIoBD.insertNotifica(notificaAppIo);
 					log.debug("Inserimento su DB notifica avvisatura ricevuta tramite App IO completata.");
@@ -595,7 +593,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			}
 
 			ctx.getApplicationLogger().log("rt.acquisizioneOk", versamento.getCodVersamentoEnte(), versamento.getStatoVersamento().toString());
-			log.info("RT acquisita con successo.");
+			log.info("RT Dominio[" + codDominio + "], IUV["+iuv+"], ReceiptID ["+receiptId+"] acquisita con successo.");
 
 			return rpt;
 		}  catch (JAXBException e) {

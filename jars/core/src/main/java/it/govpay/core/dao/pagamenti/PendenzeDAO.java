@@ -35,9 +35,11 @@ import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.openspcoop2.utils.service.context.IContext;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BDConfigWrapper;
@@ -68,6 +70,7 @@ import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Applicazione;
+import it.govpay.core.business.Operazioni;
 import it.govpay.core.business.model.Iuv;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
@@ -103,6 +106,7 @@ import it.govpay.model.StatoPendenza;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.orm.PagamentoPortaleVersamento;
 
 public class PendenzeDAO extends BaseDAO{
@@ -287,11 +291,11 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setMostraSpontaneiNonPagati(listaPendenzaDTO.getMostraSpontaneiNonPagati());
 
 		Long count = null;
-		
+
 		if(listaPendenzaDTO.isEseguiCount()) {
-			 count = versamentiBD.count(filter);
+			count = versamentiBD.count(filter);
 		}
-		
+
 		List<LeggiPendenzaDTOResponse> resList = new ArrayList<>();
 
 		if(listaPendenzaDTO.isEseguiFindAll()) {
@@ -390,9 +394,9 @@ public class PendenzeDAO extends BaseDAO{
 			filter.setMostraSpontaneiNonPagati(listaPendenzaDTO.getMostraSpontaneiNonPagati());
 
 			Long count = null;
-			
+
 			if(listaPendenzaDTO.isEseguiCount()) {
-				 count = versamentiBD.count(filter);
+				count = versamentiBD.count(filter);
 			}
 
 			List<LeggiPendenzaDTOResponse> resList = new ArrayList<>();
@@ -510,7 +514,7 @@ public class PendenzeDAO extends BaseDAO{
 
 				response.setRpts(findAll);
 			}
-			
+
 			List<Allegato> allegati = versamento.getAllegati(versamentiBD);
 			response.setAllegati(allegati);
 
@@ -519,21 +523,89 @@ public class PendenzeDAO extends BaseDAO{
 		}
 	}
 
-	public LeggiPendenzaDTOResponse leggiPendenzaByRiferimentoAvviso(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiPendenzaDTOResponse leggiPendenzaByRiferimentoAvviso(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, GovPayException, UtilsException{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
 		Versamento versamento;
 		VersamentiBD versamentiBD = null;
 
 		try {
-			versamentiBD = new VersamentiBD(configWrapper);
-			
-			versamentiBD.setupConnection(configWrapper.getTransactionID());
-			
-			versamentiBD.setAtomica(false);
-			
-			versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(configWrapper, leggiPendenzaDTO.getIdDominio()).getId(), IuvUtils.toIuv(leggiPendenzaDTO.getNumeroAvviso())); 
+			// se il versamento utilizzare per creare l'avviso e' in sessione e non e' presente nel db allora lo inserisco 
+			if(leggiPendenzaDTO.getVersamentoFromSession() != null) {
+				boolean doCommit = true;
+				
+				IContext ctx = ContextThreadLocal.get();
+				Versamento versamentoFromSession = leggiPendenzaDTO.getVersamentoFromSession();
+				try {
+					versamentiBD = new VersamentiBD(configWrapper);
+					
+					versamentiBD.setupConnection(configWrapper.getTransactionID());
 
+					versamentiBD.setAtomica(false);
+
+					versamentiBD.setAutoCommit(false);
+
+					try {
+						it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(versamentoFromSession.getIdApplicazione(), versamentoFromSession.getCodVersamentoEnte(), true);
+
+						// il versamento viene aggiornato solo se e' in stato aggiornabile
+						if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
+							versamentiBD.updateVersamento(versamentoFromSession, true);
+
+							if(versamentoFromSession.getId()==null)
+								versamentoFromSession.setId(versamentoLetto.getId());
+
+							ctx.getApplicationLogger().log("versamento.aggioramentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
+						}
+					} catch (NotFoundException e) {
+						versamentiBD.insertVersamento(versamentoFromSession);
+						ctx.getApplicationLogger().log("versamento.inserimentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
+						log.info("Versamento (" + versamentoFromSession.getCodVersamentoEnte() + ") dell'applicazione (" + versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione() + ") inserito");
+
+						// avvio il batch di gestione dei promemoria
+						Operazioni.setEseguiGestionePromemoria();
+					}
+					if(doCommit) versamentiBD.commit();
+				} catch (Exception e) {
+					if(doCommit) {
+						if(versamentiBD != null)
+							versamentiBD.rollback();
+					}
+					if(e instanceof GovPayException)
+						throw (GovPayException) e;
+					else 
+						throw new GovPayException(e);
+				} finally {
+					if(versamentiBD != null)
+						versamentiBD.closeConnection();
+				}
+			}
+
+			versamentiBD = new VersamentiBD(configWrapper);
+
+			versamentiBD.setupConnection(configWrapper.getTransactionID());
+
+			versamentiBD.setAtomica(false);
+			try {
+				versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(configWrapper, leggiPendenzaDTO.getIdDominio()).getId(), IuvUtils.toIuv(leggiPendenzaDTO.getNumeroAvviso())); 
+			} catch (NotFoundException e) {
+				if(leggiPendenzaDTO.isVerificaAvviso()) {
+					it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
+					
+					String codDominio = leggiPendenzaDTO.getIdDominio();
+					String iuv = IuvUtils.toIuv(leggiPendenzaDTO.getNumeroAvviso());
+					
+					try {
+						versamento = versamentoBusiness.chiediVersamento(null, null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO);
+					} catch (EcException | GovPayException e1) {
+						log.info("La pendenza ricercata tramite avviso [Dominio: "+codDominio+", NumeroAvviso: "+iuv+"] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: " + e1.getMessage());
+						throw new PendenzaNonTrovataException("La pendenza ricercata tramite avviso [Dominio: "+codDominio+", NumeroAvviso: "+iuv+"] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: " + e1.getMessage());
+					}
+				} else {
+					throw new PendenzaNonTrovataException(e.getMessage(), e);
+				}
+			}	
+			
 			Dominio dominio = versamento.getDominio(configWrapper);
 			TipoVersamento tipoVersamento = versamento.getTipoVersamento(configWrapper);
 			versamento.getTipoVersamentoDominio(configWrapper);
@@ -587,12 +659,11 @@ public class PendenzeDAO extends BaseDAO{
 
 				response.setRpts(findAll);
 			}
-			
+
 			List<Allegato> allegati = versamento.getAllegati(versamentiBD);
 			response.setAllegati(allegati);
 
-		} catch (NotFoundException e) {
-			throw new PendenzaNonTrovataException(e.getMessage(), e);
+		
 		} catch (ValidationException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);
 		}  finally {
@@ -602,7 +673,7 @@ public class PendenzeDAO extends BaseDAO{
 		return response;
 	}
 
-	private void populateSingoloVersamento(BasicBD bd, BDConfigWrapper configWrapper, SingoloVersamento singoloVersamento, Versamento versamento) throws ServiceException, NotFoundException {
+	private void populateSingoloVersamento(BasicBD bd, BDConfigWrapper configWrapper, SingoloVersamento singoloVersamento, Versamento versamento) throws ServiceException {
 		singoloVersamento.getCodContabilita(configWrapper);
 		singoloVersamento.getIbanAccredito(configWrapper);
 		singoloVersamento.getTipoContabilita(configWrapper);
@@ -627,7 +698,7 @@ public class PendenzeDAO extends BaseDAO{
 		}
 	}
 
-	private void populatePagamento(Pagamento pagamento, SingoloVersamento singoloVersamento, BasicBD bd, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException {
+	private void populatePagamento(Pagamento pagamento, SingoloVersamento singoloVersamento, BasicBD bd, BDConfigWrapper configWrapper) throws ServiceException {
 		pagamento.setSingoloVersamento(singoloVersamento);
 		pagamento.getRpt(bd);
 		pagamento.getDominio(configWrapper);
@@ -982,19 +1053,19 @@ public class PendenzeDAO extends BaseDAO{
 				json = VersamentoUtils.trasformazioneInputVersamentoModello4(log, dominio, codTipoVersamento, trasformazioneTipo, uo, json, queryParameters, pathParameters, headers, trasformazioneDefinizione);
 			}
 			Versamento chiediVersamento = null;
-			
+
 			log.debug("Json di input dopo validazione e trasformazione: ["+json+"]");
 
 			if(codApplicazione != null) {
 				chiediVersamento =  VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUo, codApplicazione, json);
 			} else {
 				PendenzaPost pendenzaPost = PendenzaPost.parse(json);
-				
+
 				// imposto i dati idDominio, idTipoVersamento e idUnitaOperativa fornite nella URL di richiesta, sovrascrivendo eventuali valori impostati dalla trasformazione.
 				pendenzaPost.setIdDominio(codDominio);
 				pendenzaPost.setIdTipoPendenza(codTipoVersamento);
 				pendenzaPost.setIdUnitaOperativa(codUo);
-				
+
 				new PendenzaPostValidator(pendenzaPost).validate();
 
 				it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);

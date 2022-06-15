@@ -193,6 +193,13 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "intermediato";
 			}
 		}
+		if(field.equals(Dominio.model().TASSONOMIA_PAGO_PA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tassonomia_pago_pa";
+			}else{
+				return "tassonomia_pago_pa";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -258,6 +265,9 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().INTERMEDIATO)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().TASSONOMIA_PAGO_PA)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 

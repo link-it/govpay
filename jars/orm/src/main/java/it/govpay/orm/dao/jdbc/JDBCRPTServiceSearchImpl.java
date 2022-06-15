@@ -102,6 +102,9 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 	
 		IdRpt idRPT = new IdRpt();
 		idRPT.setCodMsgRichiesta(rpt.getCodMsgRichiesta());
+		idRPT.setCodDominio(rpt.getCodDominio());
+		idRPT.setIuv(rpt.getIuv());
+		idRPT.setId(rpt.getId());
 	
 		return idRPT;
 	}

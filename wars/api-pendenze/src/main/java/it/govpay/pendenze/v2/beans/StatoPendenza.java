@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 
 /**
- * Stato della pendenza:   * ESEGUITA: Pagata  * NON_ESEGUITA: Da pagare  * ESEGUITA_PARZIALE: Pagata parzialmente  * ANNULLATA: Annullata  * SCADUTA: Scaduta
+ * Stato della pendenza:   * ESEGUITA: Pagata  * NON_ESEGUITA: Da pagare  * ESEGUITA_PARZIALE: Pagata parzialmente  * ANNULLATA: Annullata  * SCADUTA: Scaduta * INCASSATA: Incassata
  */
 public enum StatoPendenza {
   
@@ -27,7 +27,10 @@ public enum StatoPendenza {
   SCADUTA("SCADUTA"),
   
   
-  ANOMALA("ANOMALA");
+  ANOMALA("ANOMALA"),
+  
+  
+  INCASSATA("INCASSATA");
   
   
   
@@ -41,7 +44,7 @@ public enum StatoPendenza {
   @Override
   @JsonValue
   public String toString() {
-    return String.valueOf(this.value);
+    return String.valueOf(value);
   }
 
   @JsonCreator

@@ -14,6 +14,8 @@ import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.viste.model.Pagamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
@@ -147,7 +149,10 @@ public class RiscossioniApiServiceImpl extends BaseApiServiceImpl  implements Ri
 			List<Riscossione> lst = new ArrayList<>();
 			
 			for(Pagamento result: findRiscossioniDTOResponse.getResults()) {
-				lst.add(RiscossioniConverter.toRsModel(result));
+				SingoloVersamento singoloVersamento = result.getSingoloVersamento();
+				Versamento versamento = result.getVersamento();
+				it.govpay.bd.model.Pagamento pagamento = result.getPagamento();
+				lst.add(RiscossioniConverter.toRsModel(pagamento, singoloVersamento, versamento));
 			}
 			
 
@@ -199,7 +204,10 @@ public class RiscossioniApiServiceImpl extends BaseApiServiceImpl  implements Ri
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 			
-			Riscossione response = RiscossioniConverter.toRsModel(getRiscossioneDTOResponse.getPagamento());
+			it.govpay.bd.model.Pagamento pagamento = getRiscossioneDTOResponse.getPagamento();
+			SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento();
+			Versamento versamento = singoloVersamento.getVersamento(null);
+			Riscossione response = RiscossioniConverter.toRsModel(pagamento, singoloVersamento, versamento);
 			
 			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();

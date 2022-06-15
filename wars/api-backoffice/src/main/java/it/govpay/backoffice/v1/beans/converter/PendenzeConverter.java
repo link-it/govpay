@@ -352,7 +352,7 @@ public class PendenzeConverter {
 			if(riscossioni != null && !riscossioni.isEmpty()) {
 				List<it.govpay.backoffice.v1.beans.Riscossione> riscossioniRsModel = new ArrayList<>();
 				for (Pagamento pagamento : riscossioni) {
-					Riscossione riscossioneRsModel = RiscossioniConverter.toRsModel(pagamento);
+					Riscossione riscossioneRsModel = RiscossioniConverter.toRsModel(pagamento, singoloVersamento, singoloVersamento.getVersamento(configWrapper), pagamento.getRpt(null), pagamento.getIncasso(null));
 					riscossioniRsModel.add(riscossioneRsModel);
 				}
 				rsModel.setRiscossioni(riscossioniRsModel);
@@ -384,7 +384,9 @@ public class PendenzeConverter {
 			default: break;
 		}
 
-		rsModel.setPendenza(toRsModelIndex(versamento));
+		if(versamento != null) {
+			rsModel.setPendenza(toRsModelIndex(versamento));
+		}
 		
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
 		if(singoloVersamento.getDominio(configWrapper) != null) {

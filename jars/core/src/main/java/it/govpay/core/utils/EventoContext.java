@@ -25,6 +25,9 @@ public class EventoContext {
 	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIAESITOSTORNO = "paaInviaEsitoStorno";
 	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIARICHIESTAREVOCA = "paaInviaRichiestaRevoca";
 	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIART = "paaInviaRT";
+	public static final String APIPAGOPA_TIPOEVENTO_PASENDRT = "paSendRT";
+	public static final String APIPAGOPA_TIPOEVENTO_PAVERIFYPAYMENTNOTICE = "paVerifyPaymentNotice";
+	public static final String APIPAGOPA_TIPOEVENTO_PAGETPAYMENT = "paGetPayment";
 	
 	public static final String APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOEMAIL = "pivotInviaTracciatoEmail";
 	public static final String APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOFILESYSTEM = "pivotInviaTracciatoFileSystem";

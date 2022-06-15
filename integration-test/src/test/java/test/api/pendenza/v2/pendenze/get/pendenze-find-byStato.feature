@@ -17,3 +17,26 @@ When method get
 Then status 400
 And match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 And match response.dettaglio contains 'STATO_NON_VALIDO'
+
+
+
+Scenario: Controllo di sintassi sul valore del filtro per stato
+
+Given url pendenzeBaseurl
+And path '/pendenze'
+And param stato = 'INCASSATA' 
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: '#notnull',
+	numPagine: '#notnull',
+	risultatiPerPagina: '#notnull',
+	pagina: '#notnull',
+	prossimiRisultati: '#notnull',
+	risultati: '#[]'
+}
+"""
+And match response.risultati[*].stato contains 'INCASSATA'

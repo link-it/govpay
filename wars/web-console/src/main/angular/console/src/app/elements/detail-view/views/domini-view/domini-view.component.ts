@@ -242,6 +242,9 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
     if (json.web) {
       _dettaglio.info.push(new Dato({ label: Voce.WEB_SITE, value: json.web }));
     }
+    if (json.tassonomiaPagoPA) {
+      _dettaglio.info.push(new Dato({ label: Voce.TASSONOMIA_PAGO_PA, value: UtilService.TASSONOMIE_PAGOPA[json.tassonomiaPagoPA] }));
+    }
     _dettaglio.info.push(new Dato({ label: Voce.ABILITATO, value: UtilService.ABILITA[json.abilitato.toString()] }));
     _dettaglio.info.push(new Dato({ label: Voce.INTERMEDIATO, value: UtilService.ABILITA[json.intermediato.toString()] }));
 
@@ -319,7 +322,7 @@ export class DominiViewComponent implements IModalDialog, OnInit, AfterViewInit 
       p.model = this._mapNewItemByType(json.servizioMaggioliJPPA, this._CONNETTORE_MAGGIOLI);
       _connettori.push(p);
     }
-    
+
     this.connettori = [].concat(_connettori);
     this.filtroConnettori();
 
