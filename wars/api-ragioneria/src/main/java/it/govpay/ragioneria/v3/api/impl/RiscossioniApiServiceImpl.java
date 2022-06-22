@@ -58,6 +58,7 @@ public class RiscossioniApiServiceImpl extends BaseApiServiceImpl  implements Ri
      *
      */
     public Response findRiscossioni(Integer pagina, Integer risultatiPerPagina, String campi, String ordinamento, String idDominio, String dataDa, String dataA, String stato, List<String> tipo, Boolean metadatiPaginazione, Boolean maxRisultati, String iur) {
+    	this.buildContext();
     	Authentication user = this.getUser();
     	String methodName = "findRiscossioni";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
@@ -174,6 +175,7 @@ public class RiscossioniApiServiceImpl extends BaseApiServiceImpl  implements Ri
      *
      */
     public Response getRiscossione(String idDominio, String iuv, String iur, Integer indice) {
+    	this.buildContext();
     	Authentication user = this.getUser();
     	String methodName = "getRiscossione";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();

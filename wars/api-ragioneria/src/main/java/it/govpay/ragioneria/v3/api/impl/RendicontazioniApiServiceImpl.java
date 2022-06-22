@@ -55,6 +55,7 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
      *
      */
     public Response findFlussiRendicontazione(Integer pagina, Integer risultatiPerPagina, String ordinamento, String idDominio, String dataDa, String dataA, String stato, Boolean metadatiPaginazione, Boolean maxRisultati, String iuv, String idFlusso) {
+    	this.buildContext();
     	Authentication user = this.getUser();
     	String methodName = "findFlussiRendicontazione";  
     	String transactionId = ContextThreadLocal.get().getTransactionId();
@@ -152,6 +153,7 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
      *
      */
     public Response getFlussoRendicontazione(String idDominio, String idFlusso, String dataOraFlusso) {
+    	this.buildContext();
     	Authentication user = this.getUser();
     	String methodName = "getFlussoRendicontazione";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
