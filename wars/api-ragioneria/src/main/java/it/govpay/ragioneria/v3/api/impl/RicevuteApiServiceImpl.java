@@ -60,7 +60,8 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
      *
      */
     public Response findRicevute(Integer pagina, Integer risultatiPerPagina, String ordinamento, String idDominio, String dataDa, String dataA, Boolean metadatiPaginazione, Boolean maxRisultati, String iuv) {
-        Authentication user = this.getUser();
+    	this.buildContext();
+    	Authentication user = this.getUser();
         String methodName = "findRicevute";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -146,6 +147,7 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
      *
      */
     public Response getRicevuta(String idDominio, String iuv, String idRicevuta) {
+    	this.buildContext();
         Authentication user = this.getUser();
         String methodName = "getRicevuta";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();		

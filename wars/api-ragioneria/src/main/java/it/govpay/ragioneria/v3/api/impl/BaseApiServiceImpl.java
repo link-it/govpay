@@ -353,29 +353,29 @@ public class BaseApiServiceImpl {
         try {
         	Class<?> c = this.getClass();
         	// la versione V1 non implementa interfacce
-//        	Class<?> [] interfaces = c.getInterfaces();
-//        	if(interfaces==null || interfaces.length<=0) {
-//        		return null;
-//        	}
-//        	Class<?> cInterface = null;
-//        	for (int i = 0; i < interfaces.length; i++) {
-//        		if (interfaces[i] != null && interfaces[i].isAnnotationPresent(Path.class)) {
-//        			cInterface = interfaces[i];
-//        			break;
-//        		}
-//			}
-//        	if(cInterface==null) {
-//        		return null;
-//        	}
-//        	Method [] methods = cInterface.getMethods();
+        	Class<?> [] interfaces = c.getInterfaces();
+        	if(interfaces==null || interfaces.length<=0) {
+        		return null;
+        	}
+        	Class<?> cInterface = null;
+        	for (int i = 0; i < interfaces.length; i++) {
+        		if (interfaces[i] != null && interfaces[i].isAnnotationPresent(Path.class)) {
+        			cInterface = interfaces[i];
+        			break;
+        		}
+			}
+        	if(cInterface==null) {
+        		return null;
+        	}
+        	Method [] methods = cInterface.getMethods();
         	
         	String rsBasePathValue = "";
-        	Path rsBasePath = c.getAnnotation(Path.class);
-        	if(rsBasePath !=null) {
-        		rsBasePathValue = rsBasePath.value();
-        	}
+//        	Path rsBasePath = c.getAnnotation(Path.class);
+//        	if(rsBasePath !=null) {
+//        		rsBasePathValue = rsBasePath.value();
+//        	}
         	
-        	Method [] methods = c.getMethods();
+//        	Method [] methods = c.getMethods();
         	if(methods==null || methods.length<=0) {
         		return null;
         	}
