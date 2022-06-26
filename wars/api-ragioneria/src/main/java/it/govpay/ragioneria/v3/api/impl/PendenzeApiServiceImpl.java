@@ -44,6 +44,7 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
      *
      */
     public Response getAllegatoPendenza(Long id) {
+    	this.buildContext();
     	Authentication user = this.getUser();
     	String methodName = "getAllegatoPendenza";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
