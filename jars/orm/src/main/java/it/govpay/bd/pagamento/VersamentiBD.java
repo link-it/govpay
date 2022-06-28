@@ -549,7 +549,7 @@ public class VersamentiBD extends BasicBD {
 		}
 	}
 	public void updateStatoVersamento(Versamento versamento) throws ServiceException, NotFoundException {
-		this._updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), versamento.getDescrizioneStato());
+		this._updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), versamento.getDescrizioneStato(), false, null);
 	}
 	
 
@@ -559,7 +559,7 @@ public class VersamentiBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			this._updateStatoVersamento(idVersamento, statoVersamento, descrizioneStato);
+			this._updateStatoVersamento(idVersamento, statoVersamento, descrizioneStato, false, null);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
@@ -569,7 +569,23 @@ public class VersamentiBD extends BasicBD {
 		}
 	}
 	
-	private void _updateStatoVersamento(long idVersamento, StatoVersamento statoVersamento, String descrizioneStato) throws ServiceException, NotFoundException {
+	public void updateStatoVersamentoAnomalo(long idVersamento, StatoVersamento statoVersamento, String descrizioneStato, boolean anomalo) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			this._updateStatoVersamento(idVersamento, statoVersamento, descrizioneStato, true, anomalo);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	private void _updateStatoVersamento(long idVersamento, StatoVersamento statoVersamento, String descrizioneStato, boolean updateAnomalo, Boolean anomalo) throws ServiceException, NotFoundException {
 		try {
 			IdVersamento idVO = new IdVersamento();
 			idVO.setId(idVersamento);
@@ -577,6 +593,9 @@ public class VersamentiBD extends BasicBD {
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, statoVersamento.toString()));
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().DESCRIZIONE_STATO, descrizioneStato));
+			
+			if(updateAnomalo)
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().ANOMALO, anomalo));
 
 			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
@@ -637,7 +656,7 @@ public class VersamentiBD extends BasicBD {
 	}
 	
 	public void updateStatoPromemoriaScadenzaAppIOVersamento(long idVersamento, boolean updatePromemoriaScadenzaNotificato, Boolean promemoriaScadenzaNotificato) throws ServiceException {
-		this.updateVersamentoInformazioniAvvisatura(idVersamento, false, null, false, null, updatePromemoriaScadenzaNotificato, promemoriaScadenzaNotificato);
+//		this.updateVersamentoInformazioniAvvisatura(idVersamento, false, null, false, null, updatePromemoriaScadenzaNotificato, promemoriaScadenzaNotificato);
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
