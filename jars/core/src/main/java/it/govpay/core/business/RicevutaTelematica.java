@@ -105,7 +105,7 @@ public class RicevutaTelematica {
 		input.setIstituto(sbIstitutoAttestante.toString());
 
 
-		input.setElencoVoci(this.getElencoVoci(rt,datiSingoloPagamento,input,rpt.getDataMsgRichiesta()));
+		input.setElencoVoci(this.getElencoVoci(rt,datiSingoloPagamento,input, rt.getRiferimentoDataRichiesta(), rt.getDataOraMessaggioRicevuta()));
 		input.setImporto(datiPagamento.getImportoTotalePagato().doubleValue());
 		input.setOggettoDelPagamento(versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().getSimple() : "");
 
@@ -144,7 +144,7 @@ public class RicevutaTelematica {
 		return input;
 	}
 
-	private ElencoVoci getElencoVoci(CtRicevutaTelematica rt, List<CtDatiSingoloPagamentoRT> datiSingoloPagamento, RicevutaTelematicaInput input, Date dataRpt) {
+	private ElencoVoci getElencoVoci(CtRicevutaTelematica rt, List<CtDatiSingoloPagamentoRT> datiSingoloPagamento, RicevutaTelematicaInput input, Date dataRpt, Date dataRt) {
 		ElencoVoci elencoVoci = new ElencoVoci();
 
 		for (CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT : datiSingoloPagamento) {
@@ -158,7 +158,8 @@ public class RicevutaTelematica {
 			elencoVoci.getVoce().add(voce);
 			
 		}
-		input.setData( this.sdfDataPagamento.format(dataRpt));
+		input.setDataOperazione( this.sdfDataPagamento.format(dataRpt));
+		input.setDataApplicativa( this.sdfDataPagamento.format(dataRt));
 
 		return elencoVoci;
 	}
@@ -275,7 +276,7 @@ public class RicevutaTelematica {
 		input.setIstituto(sbIstitutoAttestante.toString());
 
 
-		input.setElencoVoci(this.getElencoVoci(datiPagamento,datiSingoloPagamento,input,rpt.getDataMsgRichiesta()));
+		input.setElencoVoci(this.getElencoVoci(datiPagamento,datiSingoloPagamento,input,datiPagamento.getPaymentDateTime(), datiPagamento.getApplicationDate()));
 		input.setImporto(datiPagamento.getPaymentAmount().doubleValue());
 		input.setOggettoDelPagamento(versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().getSimple() : "");
 
@@ -303,7 +304,7 @@ public class RicevutaTelematica {
 		return input;
 	}
 	
-	private ElencoVoci getElencoVoci(CtReceipt rt, List<CtTransferPA> datiSingoloPagamento, RicevutaTelematicaInput input, Date dataRpt) {
+	private ElencoVoci getElencoVoci(CtReceipt rt, List<CtTransferPA> datiSingoloPagamento, RicevutaTelematicaInput input, Date dataRpt, Date dataRt) {
 		ElencoVoci elencoVoci = new ElencoVoci();
 
 		for (CtTransferPA ctDatiSingoloPagamentoRT : datiSingoloPagamento) {
@@ -317,7 +318,8 @@ public class RicevutaTelematica {
 			elencoVoci.getVoce().add(voce);
 			
 		}
-		input.setData( this.sdfDataPagamento.format(dataRpt));
+		input.setDataOperazione( this.sdfDataPagamento.format(dataRpt));
+		input.setDataApplicativa( this.sdfDataPagamento.format(dataRt));
 
 		return elencoVoci;
 	}

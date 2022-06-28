@@ -84,7 +84,8 @@
 			<xsd:element name="cf_soggetto" type="xsd:string"/>
 			<xsd:element name="istituto" type="xsd:string"/>
 			<xsd:element name="importo" type="xsd:double"/>
-			<xsd:element name="data" type="xsd:string"/>
+			<xsd:element name="dataOperazione" type="xsd:string"/>
+			<xsd:element name="dataApplicativa" type="xsd:string"/>
 			<xsd:element name="stato" type="xsd:string"/>
 			<xsd:element name="IUV" type="xsd:string"/>
 			<xsd:element name="CCP" type="xsd:string"/>
