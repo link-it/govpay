@@ -532,11 +532,9 @@ public class Incassi {
 									break;
 								case ESEGUITO:
 									versamento.setAnomalo(true);
-									versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Pagamento duplicato");
+									versamentiBD.updateStatoVersamentoAnomalo(versamento.getId(), StatoVersamento.ESEGUITO, "Pagamento duplicato", versamento.isAnomalo());
 									break;
 							}
-							
-							versamentiBD.updateVersamento(versamento);
 							
 							// salvo l'evento in una lista, effettuo l'inserimento di tutti gli eventi insieme al termine della procedura perche' quando veniva impostato l'id_fr il DB andava in deadlock perche' il flusso e' in lock dalla select precedente.
 							Evento eventoNota = new Evento();
