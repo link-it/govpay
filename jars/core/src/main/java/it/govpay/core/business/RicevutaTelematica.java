@@ -41,7 +41,8 @@ import it.govpay.stampe.pdf.rt.utils.RicevutaTelematicaProperties;
 public class RicevutaTelematica {
 
 	private static Logger log = LoggerWrapperFactory.getLogger(RicevutaTelematica.class);
-	private SimpleDateFormat sdfDataPagamento = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	private SimpleDateFormat sdfDataOperazione = new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat sdfDataApplicativa = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 	public RicevutaTelematica() {
 	}
@@ -81,6 +82,7 @@ public class RicevutaTelematica {
 	
 	public RicevutaTelematicaInput _fromRpt(it.govpay.bd.model.Rpt rpt) throws Exception{
 		RicevutaTelematicaInput input = new RicevutaTelematicaInput();
+		input.setVersioneOggetto(rpt.getVersione().name());
 
 		this.impostaAnagraficaEnteCreditore(rpt, input);
 		Versamento versamento = rpt.getVersamento();
@@ -158,8 +160,8 @@ public class RicevutaTelematica {
 			elencoVoci.getVoce().add(voce);
 			
 		}
-		input.setDataOperazione( this.sdfDataPagamento.format(dataRpt));
-		input.setDataApplicativa( this.sdfDataPagamento.format(dataRt));
+		input.setDataOperazione( this.sdfDataOperazione.format(dataRpt));
+		input.setDataApplicativa( this.sdfDataApplicativa.format(dataRt));
 
 		return elencoVoci;
 	}
@@ -246,6 +248,7 @@ public class RicevutaTelematica {
 	
 	public RicevutaTelematicaInput _fromRptVersione240(it.govpay.bd.model.Rpt rpt) throws Exception{
 		RicevutaTelematicaInput input = new RicevutaTelematicaInput();
+		input.setVersioneOggetto(rpt.getVersione().name());
 
 		this.impostaAnagraficaEnteCreditore(rpt, input);
 		Versamento versamento = rpt.getVersamento();
@@ -318,8 +321,8 @@ public class RicevutaTelematica {
 			elencoVoci.getVoce().add(voce);
 			
 		}
-		input.setDataOperazione( this.sdfDataPagamento.format(dataRpt));
-		input.setDataApplicativa( this.sdfDataPagamento.format(dataRt));
+		input.setDataOperazione( this.sdfDataOperazione.format(dataRpt));
+		input.setDataApplicativa( this.sdfDataApplicativa.format(dataRt));
 
 		return elencoVoci;
 	}

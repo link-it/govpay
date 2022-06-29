@@ -89,6 +89,7 @@
 			<xsd:element name="stato" type="xsd:string"/>
 			<xsd:element name="IUV" type="xsd:string"/>
 			<xsd:element name="CCP" type="xsd:string"/>
+			<xsd:element name="versione_oggetto" type="xsd:string"/>
 			<xsd:element name="elenco_voci">
 				<xsd:complexType>
 					<xsd:sequence>
