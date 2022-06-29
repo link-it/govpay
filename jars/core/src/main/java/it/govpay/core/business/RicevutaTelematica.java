@@ -2,6 +2,9 @@ package it.govpay.core.business;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -41,8 +44,8 @@ import it.govpay.stampe.pdf.rt.utils.RicevutaTelematicaProperties;
 public class RicevutaTelematica {
 
 	private static Logger log = LoggerWrapperFactory.getLogger(RicevutaTelematica.class);
-	private SimpleDateFormat sdfDataOperazione = new SimpleDateFormat("dd/MM/yyyy");
-	private SimpleDateFormat sdfDataApplicativa = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	private SimpleDateFormat sdfSoloData = new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat sdfDataOraMinuti = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 	public RicevutaTelematica() {
 	}
@@ -160,9 +163,10 @@ public class RicevutaTelematica {
 			elencoVoci.getVoce().add(voce);
 			
 		}
-		input.setDataOperazione( this.sdfDataOperazione.format(dataRpt));
-		input.setDataApplicativa( this.sdfDataApplicativa.format(dataRt));
-
+		
+		setDataOperazione(input, dataRpt);
+		setDataApplicativa(input, dataRt);
+		
 		return elencoVoci;
 	}
 
@@ -321,10 +325,33 @@ public class RicevutaTelematica {
 			elencoVoci.getVoce().add(voce);
 			
 		}
-		input.setDataOperazione( this.sdfDataOperazione.format(dataRpt));
-		input.setDataApplicativa( this.sdfDataApplicativa.format(dataRt));
+		
+		setDataOperazione(input, dataRpt);
+		setDataApplicativa(input, dataRt);
 
 		return elencoVoci;
+	}
+
+
+	private void setDataApplicativa(RicevutaTelematicaInput input, Date dataRt) {
+		Calendar cRt = Calendar.getInstance();
+		cRt.setTime(dataRt);
+		if((cRt.get(Calendar.HOUR_OF_DAY) + cRt.get(Calendar.MINUTE) + cRt.get(Calendar.SECOND)) == 0) {
+			input.setDataApplicativa( this.sdfSoloData.format(dataRt));
+		} else {
+			input.setDataApplicativa( this.sdfDataOraMinuti.format(dataRt));
+		}
+	}
+
+
+	private void setDataOperazione(RicevutaTelematicaInput input, Date dataRpt) {
+		Calendar cRpt = Calendar.getInstance();
+		cRpt.setTime(dataRpt);
+		if((cRpt.get(Calendar.HOUR_OF_DAY) + cRpt.get(Calendar.MINUTE) + cRpt.get(Calendar.SECOND)) == 0) {
+			input.setDataOperazione( this.sdfSoloData.format(dataRpt));
+		} else {
+			input.setDataOperazione( this.sdfDataOraMinuti.format(dataRpt));
+		}
 	}
 	
 	private void impostaIndirizzoSoggettoPagatore(RicevutaTelematicaInput input, CtSubject soggettoPagatore) throws ServiceException {
