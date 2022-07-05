@@ -32,6 +32,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
   protected _base64File: any = null;
   protected _intermediariStazione: any[] = [];
   protected _stazioniDominio: string[] = [];
+  protected _tassonomiePagoPA: any[] = [];
 
   constructor(private _sanitizer: DomSanitizer, public us: UtilService, public gps: GovpayService, protected askDialog: MatDialog) {
     String.prototype.multiReplace = function(find: string[], replace: string[]): string {
@@ -41,6 +42,8 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
       }
       return replaceString;
     };
+
+    this._tassonomiePagoPA = us.tassonomiePagoPA();
   }
 
   ngOnInit() {
@@ -67,6 +70,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
       this.fGroup.addControl('tel_ctrl', new FormControl(''));
       this.fGroup.addControl('fax_ctrl', new FormControl(''));
       this.fGroup.addControl('web_ctrl', new FormControl(''));
+      this.fGroup.addControl('tassonomiaPagoPA_ctrl', new FormControl(''));
       this.fGroup.addControl('cbill_ctrl', new FormControl(''));
       this.fGroup.addControl('iuvPrefix_ctrl', new FormControl(''));
       this.fGroup.addControl('auxDigit_ctrl', new FormControl(''));
@@ -102,6 +106,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
           this.fGroup.controls['tel_ctrl'].setValue((this.json.tel)?this.json.tel:'');
           this.fGroup.controls['fax_ctrl'].setValue((this.json.fax)?this.json.fax:'');
           this.fGroup.controls['web_ctrl'].setValue((this.json.web)?this.json.web:'');
+          this.fGroup.controls['tassonomiaPagoPA_ctrl'].setValue((this.json.tassonomiaPagoPA?this.json.tassonomiaPagoPA:''));
           this.fGroup.controls['cbill_ctrl'].setValue((this.json.cbill)?this.json.cbill:'');
           this.fGroup.controls['iuvPrefix_ctrl'].setValue((this.json.iuvPrefix)?this.json.iuvPrefix:'');
           this.fGroup.controls['auxDigit_ctrl'].setValue((this.json.auxDigit)?this.json.auxDigit:'');
@@ -302,6 +307,7 @@ export class DominioViewComponent implements IFormComponent, OnInit, AfterViewIn
       _json.tel = (_info['tel_ctrl'])?_info['tel_ctrl']:null;
       _json.fax = (_info['fax_ctrl'])?_info['fax_ctrl']:null;
       _json.web = (_info['web_ctrl'])?_info['web_ctrl']:null;
+      _json.tassonomiaPagoPA = (_info['tassonomiaPagoPA_ctrl'])?_info['tassonomiaPagoPA_ctrl']:null;
       _json.cbill = (_info['cbill_ctrl'] && _info['intermediato_ctrl'])?_info['cbill_ctrl']:null;
       _json.iuvPrefix = (_info['iuvPrefix_ctrl'] && _info['intermediato_ctrl'])?_info['iuvPrefix_ctrl']:null;
       _json.auxDigit = (_info['auxDigit_ctrl'] && _info['intermediato_ctrl'])?_info['auxDigit_ctrl']:null;

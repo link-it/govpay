@@ -19,6 +19,7 @@ import it.govpay.backoffice.v1.beans.DominioProfiloIndex;
 import it.govpay.backoffice.v1.beans.DominioProfiloPost;
 import it.govpay.backoffice.v1.beans.Entrata;
 import it.govpay.backoffice.v1.beans.EntrataPost;
+import it.govpay.backoffice.v1.beans.TassonomiaPagoPADominio;
 import it.govpay.backoffice.v1.beans.TipoContabilita;
 import it.govpay.backoffice.v1.beans.TipoPendenzaAvvisaturaAppIO;
 import it.govpay.backoffice.v1.beans.TipoPendenzaAvvisaturaMail;
@@ -152,7 +153,7 @@ public class DominiConverter {
 		return uoDTO;		
 	}
 
-	public static PutDominioDTO getPutDominioDTO(DominioPost dominioPost, String idDominio, Authentication user) throws NotAuthorizedException, ServiceException {
+	public static PutDominioDTO getPutDominioDTO(DominioPost dominioPost, String idDominio, Authentication user) throws NotAuthorizedException, ServiceException, ValidationException {
 		PutDominioDTO dominioDTO = new PutDominioDTO(user);
 
 		it.govpay.bd.model.Dominio dominio = new it.govpay.bd.model.Dominio();
@@ -212,7 +213,17 @@ public class DominiConverter {
 		dominioDTO.setIdDominio(idDominio);
 		dominioDTO.setCodStazione(dominioPost.getStazione());
 		
-
+		if(dominioPost.getTassonomiaPagoPA() != null) {
+			// valore tipo contabilita non valido
+			if(TassonomiaPagoPADominio.fromValue(dominioPost.getTassonomiaPagoPA()) == null) {
+				throw new ValidationException("Codifica inesistente per tassonomiaPagoPA. Valore fornito [" + dominioPost.getTassonomiaPagoPA() + "] valori possibili " + ArrayUtils.toString(TassonomiaPagoPADominio.values()));
+			}
+			
+			dominioPost.setTassonomiaPagoPAEnum(TassonomiaPagoPADominio.fromValue(dominioPost.getTassonomiaPagoPA()));
+			
+			dominio.setTassonomiaPagoPA(dominioPost.getTassonomiaPagoPAEnum().toString());
+		}
+		
 		return dominioDTO;		
 	}
 
@@ -257,6 +268,10 @@ public class DominiConverter {
 		rsModel.setContiAccredito(UriBuilderUtils.getContiAccreditoByDominio(dominio.getCodDominio()));
 		rsModel.setEntrate(UriBuilderUtils.getEntrateByDominio(dominio.getCodDominio()));
 		rsModel.setTipiPendenza(UriBuilderUtils.getTipiPendenzaByDominio(dominio.getCodDominio()));
+		
+		if(dominio.getTassonomiaPagoPA() != null) {
+			rsModel.setTassonomiaPagoPA(TassonomiaPagoPADominio.fromValue(dominio.getTassonomiaPagoPA()));
+		}
 
 		return rsModel;
 	}
@@ -398,6 +413,10 @@ public class DominiConverter {
 		
 		if(dominio.getConnettoreMaggioliJPPA()!=null)
 			rsModel.setServizioMaggioliJPPA(ConnettoreNotificaPagamentiMaggioliJPPAConverter.toRsModel(dominio.getConnettoreMaggioliJPPA()));
+		
+		if(dominio.getTassonomiaPagoPA() != null) {
+			rsModel.setTassonomiaPagoPA(TassonomiaPagoPADominio.fromValue(dominio.getTassonomiaPagoPA()));
+		}
 		
 		return rsModel;
 	}

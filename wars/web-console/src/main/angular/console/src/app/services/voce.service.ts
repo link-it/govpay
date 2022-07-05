@@ -251,6 +251,7 @@ export class Voce {
   public static TASSONOMIA: string = 'Tipo (ente)';
   public static TASSONOMIA_AVVISO: string = 'Tassonomia avviso';
   public static TASSONOMIA_ENTE: string = 'Tassonomia ente';
+  public static TASSONOMIA_PAGO_PA: string = 'Tipo ente';
   public static TELEFONO: string = 'Telefono';
   public static TEMPLATE: string = 'Template';
   public static TEMPLATE_OGGETTO: string = 'Template oggetto';
@@ -304,7 +305,6 @@ export class Voce {
 
   public static WEB: string = 'Sito web';
   public static WEB_SITE: string = 'Indirizzo web';
-
 
   //Validation Error Messages
   public static VALIDATION_IT_MESSAGES: any = {

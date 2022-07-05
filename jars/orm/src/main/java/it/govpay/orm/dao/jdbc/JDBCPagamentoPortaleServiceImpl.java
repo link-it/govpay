@@ -232,6 +232,7 @@ public class JDBCPagamentoPortaleServiceImpl extends JDBCPagamentoPortaleService
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getStato(), PagamentoPortale.model().STATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().CODICE_STATO,false), "?");
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getCodiceStato(), PagamentoPortale.model().CODICE_STATO.getFieldType()));
+		log.debug("update tableId ["+tableId+"], VOid ["+pagamentoPortale.getId()+"]: imposto i valori: Stato ["+pagamentoPortale.getStato()+"], CodiceStato ["+pagamentoPortale.getCodiceStato()+"]");
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().DESCRIZIONE_STATO,false), "?");
 		lstObjects_pagamentoPortale.add(new JDBCObject(pagamentoPortale.getDescrizioneStato(), PagamentoPortale.model().DESCRIZIONE_STATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoPortaleFieldConverter().toColumn(PagamentoPortale.model().PSP_REDIRECT_URL,false), "?");

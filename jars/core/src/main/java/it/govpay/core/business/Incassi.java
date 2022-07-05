@@ -527,18 +527,14 @@ public class Incassi {
 									versamentiBD.updateStatoSingoloVersamento(singoliVersamenti.get(0).getId(), StatoSingoloVersamento.ESEGUITO);
 									versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Eseguito senza RPT");
 									// Aggiornamento stato promemoria
-									versamentiBD.updateStatoPromemoriaAvvisoVersamento(versamento.getId(), true, null);
-									versamentiBD.updateStatoPromemoriaScadenzaAppIOVersamento(versamento.getId(), true, null);
-									versamentiBD.updateStatoPromemoriaScadenzaMailVersamento(versamento.getId(), true, null);
+									versamentiBD.updateVersamentoInformazioniAvvisatura(versamento.getId(), true, null, true, null, true, null);
 									
 									break;
 								case ESEGUITO:
 									versamento.setAnomalo(true);
-									versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Pagamento duplicato");
+									versamentiBD.updateStatoVersamentoAnomalo(versamento.getId(), StatoVersamento.ESEGUITO, "Pagamento duplicato", versamento.isAnomalo());
 									break;
 							}
-							
-							versamentiBD.updateVersamento(versamento);
 							
 							// salvo l'evento in una lista, effettuo l'inserimento di tutti gli eventi insieme al termine della procedura perche' quando veniva impostato l'id_fr il DB andava in deadlock perche' il flusso e' in lock dalla select precedente.
 							Evento eventoNota = new Evento();

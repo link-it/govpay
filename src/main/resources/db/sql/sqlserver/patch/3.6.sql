@@ -338,5 +338,9 @@ DELETE FROM sonde WHERE nome = 'reset-cache';
 CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
 
 
+-- 13/06/2022 Aggiunta colonna tassonomiaPagoPA alla tabella domini
+ALTER TABLE domini ADD tassonomia_pago_pa VARCHAR(35);
+
+
 
 

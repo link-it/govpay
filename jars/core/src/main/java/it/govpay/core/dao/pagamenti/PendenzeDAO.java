@@ -598,8 +598,8 @@ public class PendenzeDAO extends BaseDAO{
 					try {
 						versamento = versamentoBusiness.chiediVersamento(null, null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO);
 					} catch (EcException | GovPayException e1) {
-						log.warn("Pendenza non trovata nella base dati interna, verifica con l'applicazione competente fallita con errore: " + e1.getMessage(), e1);
-						throw new PendenzaNonTrovataException("Pendenza non trovata nella base dati interna, verifica con l'applicazione competente fallita con errore: " + e1.getMessage());
+						log.info("La pendenza ricercata tramite avviso [Dominio: "+codDominio+", NumeroAvviso: "+iuv+"] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: " + e1.getMessage());
+						throw new PendenzaNonTrovataException("La pendenza ricercata tramite avviso [Dominio: "+codDominio+", NumeroAvviso: "+iuv+"] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: " + e1.getMessage());
 					}
 				} else {
 					throw new PendenzaNonTrovataException(e.getMessage(), e);

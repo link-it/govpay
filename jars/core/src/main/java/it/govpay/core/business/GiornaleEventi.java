@@ -259,6 +259,9 @@ public class GiornaleEventi {
 			paaInviaEsitoStorno
 			paaInviaRichiestaRevoca
 			paaInviaRT
+			paSendRT
+			paVerifyPaymentNotice
+			paGetPayment
 		Letture
 			tutto il resto
 	 * */
@@ -274,6 +277,9 @@ public class GiornaleEventi {
 				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAINVIAESITOSTORNO.equals(operazione)
 				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAINVIARICHIESTAREVOCA.equals(operazione)
 				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAINVIART.equals(operazione)
+				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAVERIFYPAYMENTNOTICE.equals(operazione)
+				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAGETPAYMENT.equals(operazione)
+				|| EventoContext.APIPAGOPA_TIPOEVENTO_PASENDRT.equals(operazione)
 				) {
 			return true;
 		}

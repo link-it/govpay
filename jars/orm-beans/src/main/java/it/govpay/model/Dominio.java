@@ -44,8 +44,10 @@ public class Dominio extends BasicModel {
 	private ConnettoreNotificaPagamenti connettoreGovPay;
 	private ConnettoreNotificaPagamenti connettoreHyperSicAPKappa;
 	private ConnettoreNotificaPagamenti connettoreMaggioliJPPA;
-	
+		
 	private boolean intermediato;
+	
+	private String tassonomiaPagoPA;
 
 	@Override
 	public Long getId() {
@@ -198,6 +200,14 @@ public class Dominio extends BasicModel {
 
 	public void setConnettoreMaggioliJPPA(ConnettoreNotificaPagamenti connettoreMaggioliJPPA) {
 		this.connettoreMaggioliJPPA = connettoreMaggioliJPPA;
+	}
+
+	public String getTassonomiaPagoPA() {
+		return tassonomiaPagoPA;
+	}
+
+	public void setTassonomiaPagoPA(String tassonomiaPagoPA) {
+		this.tassonomiaPagoPA = tassonomiaPagoPA;
 	}
 	
 }

@@ -580,35 +580,48 @@ CREATE VIEW v_vrs_non_rnd AS
   WHERE rendicontazioni.id IS NULL;
   
 
--- 20/12/2021 Patch per gestione delle rendicontazioni che non venivano messe in stato anomala quando non viene trovato il versamento corrispondente.
-UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS null;
-
-
 -- 21/12/2021 Patch per la gestione del riferimento al pagamento di una rendicontazione che arriva prima della ricevuta.
-UPDATE rendicontazioni SET id_pagamento = pagamenti.id 
-	FROM fr, pagamenti 
-	WHERE fr.id=rendicontazioni.id_fr 
-	AND pagamenti.cod_dominio=fr.cod_dominio 
-	AND rendicontazioni.iuv=pagamenti.iuv 
-	AND rendicontazioni.iur=pagamenti.iur 
-	AND rendicontazioni.id_pagamento IS NULL;
-
-UPDATE rendicontazioni SET stato='OK', anomalie=null where anomalie='007111#Il versamento risulta sconosciuto' AND id_singolo_versamento IS NOT null;
+UPDATE rendicontazioni SET id_pagamento = 
+	(SELECT pagamenti.id FROM fr, pagamenti WHERE fr.id=rendicontazioni.id_fr 
+		AND pagamenti.cod_dominio=fr.cod_dominio 
+		AND rendicontazioni.iuv=pagamenti.iuv 
+		AND rendicontazioni.iur=pagamenti.iur) WHERE rendicontazioni.id_pagamento IS NULL;
 
 -- 30/12/2021 Patch rendicontazioni con riferimenti assenti
+-- Imposto il riferimento al versamento
+UPDATE rendicontazioni SET id_singolo_versamento = 
+	(SELECT singoli_versamenti.id FROM fr, versamenti, domini, singoli_versamenti 
+        WHERE fr.id=rendicontazioni.id_fr 
+        AND fr.cod_dominio=domini.cod_dominio 
+        AND domini.id=versamenti.id_dominio 
+        AND rendicontazioni.iuv=versamenti.iuv_versamento
+        AND singoli_versamenti.id_versamento=versamenti.id) WHERE rendicontazioni.id_singolo_versamento IS NULL 
 
-update rendicontazioni set id_singolo_versamento = pagamenti.id_singolo_versamento from pagamenti where rendicontazioni.id_pagamento=pagamenti.id and rendicontazioni.id_singolo_versamento is null;
+UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' WHERE id_pagamento IS NULL AND esito=0;
+UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS NULL;
 
-UPDATE rendicontazioni SET stato='OK', anomalie=null where stato='ANOMALA' and anomalie='007111#Il versamento risulta sconosciuto' AND id_singolo_versamento IS not null;
+-- ALTRO INTERMEDIARIO Tutti gli spontanei non riferiti a miei pagamenti o pendenze
+UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE stato='ANOMALA' AND char_length(iuv) NOT IN (15,17) AND id_pagamento IS NULL AND id_singolo_versamento IS NULL ;
+-- ALTRO INTERMEDIARIO Tutti gli IUV con aux 3 che non hanno il giusto codice segregazione
+UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rendicontazioni.stato = 'ANOMALA' AND rendicontazioni.id_fr = (
+	SELECT fr.id FROM fr, domini WHERE domini.cod_dominio=fr.cod_dominio AND ( domini.aux_digit='3' AND length(rendicontazioni.iuv) = 17 AND (
+		( rendicontazioni.iuv NOT LIKE ('0' || domini.segregation_code || '%') AND length(domini.segregation_code) = 1 ) 
+		OR ( rendicontazioni.iuv NOT LIKE (domini.segregation_code || '%')  AND length(domini.segregation_code) = 2 )
+		)	
+	)
+);
 
-update rendicontazioni set id_singolo_versamento=singoli_versamenti.id
-        FROM fr, versamenti, domini, singoli_versamenti
-        WHERE fr.id=rendicontazioni.id_fr
-        AND fr.cod_dominio=domini.cod_dominio
-        AND domini.id=versamenti.id_dominio AND rendicontazioni.iuv=versamenti.iuv_versamento and singoli_versamenti.id_versamento=versamenti.id and rendicontazioni.id_singolo_versamento is null;
+-- ALTRO INTERMEDIARIO Tutti gli IUV con aux 3 che non sono lunghi 17 e non sono spontanei
+UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rendicontazioni.stato = 'ANOMALA' AND rendicontazioni.id_pagamento IS NULL AND rendicontazioni.id_singolo_versamento IS NULL 
+	AND length(rendicontazioni.iuv) <> 17 AND rendicontazioni.id_fr = (
+		SELECT fr.id FROM fr, domini WHERE domini.cod_dominio=fr.cod_dominio AND domini.aux_digit='3'
+	);
 
-update rendicontazioni set stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' where id_pagamento is null and esito=0;
-
+-- ALTRO INTERMEDIARIO Tutti gli IUV con aux 0 che non sono lunghi 15 e non sono spontanei
+UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rendicontazioni.stato = 'ANOMALA' AND rendicontazioni.id_pagamento IS NULL AND rendicontazioni.id_singolo_versamento IS NULL 
+	AND length(rendicontazioni.iuv) <> 15 AND rendicontazioni.id_fr = (
+		SELECT fr.id FROM fr, domini WHERE domini.cod_dominio=fr.cod_dominio AND domini.aux_digit='0'
+	);
 
 -- 25/01/2022 Flusso Rendicontazione univoco per dominio
 ALTER TABLE fr DROP CONSTRAINT unique_fr_1;

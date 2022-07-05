@@ -102,6 +102,7 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 
 		IdPagamentoPortale idPagamentoPortale = new IdPagamentoPortale();
 		idPagamentoPortale.setIdSessione(pagamentoPortale.getIdSessione());
+		idPagamentoPortale.setId(pagamentoPortale.getId());
 
 		return idPagamentoPortale;
 	}

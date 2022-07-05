@@ -30,6 +30,7 @@
 			<option value="mysql" text="MySQL" />
 			<option value="oracle" text="Oracle" />
 			<option value="sqlserver" text="SQL Server" />
+			<option value="hsql" text="HyperSQL" />
 		</large-select>
 		<comment displayText="" />
 		<directory defaultValue="/etc/govpay" defaultValueWin="C:\govpay" displayText="Work Folder" checkExists="false" property="antinstaller_work_folder" />
@@ -70,6 +71,13 @@
 			<hidden property="TABLESPACE" value="govpay" />
 			<hidden property="antinstaller_driver_jdbc" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
 			<hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.SQLServerDialect" />
+		</conditional>
+		<conditional ifProperty="${antinstaller_tipo_database}=hsql">
+			<hidden property="antinstaller_modulo_postgres" value="" />
+			<hidden property="porta-db" value="9001" />
+			<hidden property="TABLESPACE" value="govpay" />
+			<hidden property="antinstaller_driver_jdbc" value="org.hsqldb.jdbcDriver" />
+			<hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.HSQLDialect" />
 		</conditional>
 
 		<validated defaultValue="${porta-db}" regex="^[0-9]{1,5}$" property="antinstaller_dbport" displayText="Porta" />

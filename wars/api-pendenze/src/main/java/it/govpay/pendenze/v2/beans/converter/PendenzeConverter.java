@@ -88,7 +88,20 @@ public class PendenzeConverter {
 		switch(versamento.getStatoVersamento()) {
 		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
 		break;
+		case ESEGUITO_SENZA_RPT:
 		case ESEGUITO: statoPendenza = StatoPendenza.ESEGUITA;
+			statoPendenza = StatoPendenza.ESEGUITA;
+			if(versamento.getStatoPagamento() != null) {
+				switch (versamento.getStatoPagamento()) {
+				case INCASSATO:
+					statoPendenza = StatoPendenza.INCASSATA;
+					break;
+				case NON_PAGATO:
+				case PAGATO:
+				default:
+					break;
+				}
+			}
 		break;
 		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoPendenza.ESEGUITA;
 		break;
@@ -98,7 +111,6 @@ public class PendenzeConverter {
 		break;
 		default:
 			break;
-
 		}
 		
 		if(versamento.isAnomalo())
@@ -243,18 +255,29 @@ public class PendenzeConverter {
 
 		switch(versamento.getStatoVersamento()) {
 		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
-		break;
+			break;
+		case ESEGUITO_SENZA_RPT:
 		case ESEGUITO: statoPendenza = StatoPendenza.ESEGUITA;
-		break;
+			if(versamento.getStatoPagamento() != null) {
+				switch (versamento.getStatoPagamento()) {
+				case INCASSATO:
+					statoPendenza = StatoPendenza.INCASSATA;
+					break;
+				case NON_PAGATO:
+				case PAGATO:
+				default:
+					break;
+				}
+			}
+			break;
 		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoPendenza.ESEGUITA;
-		break;
+			break;
 		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
-		break;
+			break;
 		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
-		break;
+			break;
 		default:
 			break;
-
 		}
 		
 		if(versamento.isAnomalo())

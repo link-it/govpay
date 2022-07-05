@@ -253,6 +253,7 @@ public class OperatoriBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
+			
 			try {
 				UtenzeBD utenzeBD = new UtenzeBD(this);
 				// autocommit false		
@@ -283,6 +284,9 @@ public class OperatoriBD extends BasicBD {
 			} catch (NotImplementedException | MultipleResultException | UtilsException e) {
 				this.rollback();
 				throw new ServiceException(e);
+			} catch (ServiceException e) {
+				this.rollback();
+				throw e;
 			} finally {
 				// ripristino l'autocommit.
 				this.setAutoCommit(true); 
@@ -307,20 +311,27 @@ public class OperatoriBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 
-			UtenzeBD utenzeBD = new UtenzeBD(this);
-			// autocommit false		
-			this.setAutoCommit(false); 
-			utenzeBD.insertUtenza(operatore.getUtenza());
-			operatore.setIdUtenza(operatore.getUtenza().getId());
-			it.govpay.orm.Operatore vo = OperatoreConverter.toVO(operatore);
-			this.getOperatoreService().create(vo);
-			operatore.setId(vo.getId());
-			this.commit();
-			// ripristino l'autocommit.
-			this.setAutoCommit(true); 
-			this.emitAudit(operatore);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
+			try {
+				UtenzeBD utenzeBD = new UtenzeBD(this);
+				// autocommit false		
+				this.setAutoCommit(false); 
+				utenzeBD.insertUtenza(operatore.getUtenza());
+				operatore.setIdUtenza(operatore.getUtenza().getId());
+				it.govpay.orm.Operatore vo = OperatoreConverter.toVO(operatore);
+				this.getOperatoreService().create(vo);
+				operatore.setId(vo.getId());
+				this.emitAudit(operatore);
+				this.commit();
+			} catch (NotImplementedException e) {
+				this.rollback();
+				throw new ServiceException(e);
+			} catch (ServiceException e) {
+				this.rollback();
+				throw e;
+			} finally {
+				// ripristino l'autocommit.
+				this.setAutoCommit(true); 
+			} 
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
