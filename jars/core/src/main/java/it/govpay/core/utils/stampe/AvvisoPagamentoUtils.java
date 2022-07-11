@@ -184,7 +184,7 @@ public class AvvisoPagamentoUtils {
 			rata.setData(null); 
 		}
 
-		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));
+		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuvFromNumeroAvviso(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));
 		if(iuvGenerato.getQrCode() != null)
 			rata.setQrCode(new String(iuvGenerato.getQrCode()));
 

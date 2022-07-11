@@ -469,7 +469,12 @@ public class VersamentoUtils {
 		}
 	}
 
-	public static Versamento toVersamentoModel(it.govpay.core.dao.commons.Versamento versamento) throws ServiceException, GovPayException, ValidationException { 
+	public static Versamento toVersamentoModel(it.govpay.core.dao.commons.Versamento versamento) throws ServiceException, GovPayException, ValidationException {
+		return toVersamentoModel(versamento, true);
+	}
+
+	public static Versamento toVersamentoModel(it.govpay.core.dao.commons.Versamento versamento, boolean controlloNumeroAvvisoDominioApplicazione) throws ServiceException, GovPayException, ValidationException { 
+	
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Versamento model = new Versamento();
 		model.setAggiornabile(versamento.isAggiornabile() == null ? true : versamento.isAggiornabile());
@@ -555,9 +560,11 @@ public class VersamentoUtils {
 
 		if(versamento.getNumeroAvviso() != null) {
 			String iuvFromNumeroAvviso = it.govpay.core.utils.VersamentoUtils.getIuvFromNumeroAvviso(versamento.getNumeroAvviso());
-			it.govpay.core.utils.VersamentoUtils.verifyNumeroAvviso(versamento.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),
-					dominio.getStazione().getApplicationCode(), dominio.getSegregationCode());
-
+			
+			if(controlloNumeroAvvisoDominioApplicazione) {
+				it.govpay.core.utils.VersamentoUtils.verifyNumeroAvviso(versamento.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),
+						dominio.getStazione().getApplicationCode(), dominio.getSegregationCode());
+			}
 			// check sulla validita' dello iuv
 			Iuv iuvBD  = new Iuv();
 			TipoIUV tipo = iuvBD.getTipoIUV(iuvFromNumeroAvviso);
