@@ -167,7 +167,7 @@ public class RptBD extends BasicBD {
 		}
 	}
 
-	public List<Rpt> getRptPendenti(List<String> codDomini) throws ServiceException {
+	public List<Rpt> getRptPendenti(List<String> codDomini, Date soglia) throws ServiceException {
 		try {
 			IPaginatedExpression exp = this.getRptService().newPaginatedExpression();
 			exp.in(RPT.model().COD_DOMINIO, codDomini);
@@ -176,7 +176,7 @@ public class RptBD extends BasicBD {
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
-			
+			if(soglia != null) exp.greaterThan(RPT.model().DATA_MSG_RICHIESTA, soglia);
 			List<RPT> findAll = this.getRptService().findAll(exp);
 			return RptConverter.toDTOList(findAll);
 		} catch(NotImplementedException e) {

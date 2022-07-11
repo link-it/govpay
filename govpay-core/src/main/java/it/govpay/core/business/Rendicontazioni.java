@@ -44,6 +44,7 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.AclEngine;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.VersamentoUtils;
@@ -63,17 +64,22 @@ import it.govpay.model.Fr.StatoFr;
 import it.govpay.servizi.commons.EsitoOperazione;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.activation.DataHandler;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -128,6 +134,39 @@ public class Rendicontazioni extends BasicBD {
 					flussiDaAcquisire.addAll(chiediListaFr(nodoClient, stazione, null));
 				}
 
+				// Aggiungo alla lista quelli su FileSystem
+				Map<String, byte[]> frOnFs = new HashMap<String, byte[]>();
+				File dir = new File(GovpayConfig.getInstance().getResourceDir() + File.separatorChar + "input" + File.separatorChar + "fr");
+				if(dir.exists() && dir.isDirectory()) {
+					File [] files = dir.listFiles(new FilenameFilter() {
+					    @Override
+					    public boolean accept(File dir, String name) {
+					        return name.endsWith(".xml");
+					    }
+					});
+	
+					if(files.length == 0) 
+						log.debug("Cartella di acquisizione FR vuota");
+					for (File xmlfile : files) {
+						log.info("Trovato Flusso di Rendicontazione da acquisisre su FileSystem: " + xmlfile.getAbsolutePath());
+						CtFlussoRiversamento flussoRendicontazione = null;
+						try {
+							byte[] readFileToByteArray = FileUtils.readFileToByteArray(xmlfile);
+							flussoRendicontazione = JaxbUtils.toFR(readFileToByteArray);
+							TipoIdRendicontazione idRendicontazione = new TipoIdRendicontazione();
+							idRendicontazione.setDataOraFlusso(flussoRendicontazione.getDataOraFlusso());
+							idRendicontazione.setIdentificativoFlusso(flussoRendicontazione.getIdentificativoFlusso());
+							flussiDaAcquisire.add(idRendicontazione);
+							frOnFs.put(flussoRendicontazione.getIdentificativoFlusso(), readFileToByteArray);
+							xmlfile.delete();
+						} catch (Exception e) {
+							log.error("Impossibile acquisire il flusso di rendicontazione da file: " + xmlfile.getAbsolutePath(), e);
+						}
+					}
+				} else {
+					log.debug("Cartella di acquisizione FR non presente: " + GovpayConfig.getInstance().getResourceDir() + File.separatorChar + "input" + File.separatorChar + "fr");
+				}
+				
 				setupConnection(GpThreadLocal.get().getTransactionId());
 				// Scarto i flussi gia acquisiti ed eventuali doppioni scaricati
 				FrBD frBD = new FrBD(this);
@@ -140,7 +179,7 @@ public class Rendicontazioni extends BasicBD {
 				closeConnection();
 
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
-					log.debug("Acquisizione flusso di rendicontazione " + idRendicontazione.getIdentificativoFlusso());
+					log.info("Acquisizione flusso di rendicontazione " + idRendicontazione.getIdentificativoFlusso());
 					boolean hasFrAnomalia = false;
 					String idTransaction2 = null;
 					try {
@@ -165,28 +204,34 @@ public class Rendicontazioni extends BasicBD {
 							errori = true;
 							continue;
 						} 
-
-						if(risposta.getFault() != null) {
+						
+						byte[] tracciato = null;
+						
+						if(risposta.getFault() != null && !frOnFs.containsKey(idRendicontazione.getIdentificativoFlusso())) {
 							// Errore nella richiesta. Loggo e continuo con il prossimo flusso
 							response.add(idRendicontazione.getIdentificativoFlusso() + "#Richiesta al nodo fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString() + ".");
 							log.error("Richiesta flusso rendicontazione [" + idRendicontazione.getIdentificativoFlusso() + "] fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
 							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoKo", risposta.getFault().getFaultCode(), risposta.getFault().getFaultString(), risposta.getFault().getDescription());
 						} else {
-							byte[] tracciato = null;
-							try {
-								ByteArrayOutputStream output = new ByteArrayOutputStream();
-								DataHandler dh = risposta.getXmlRendicontazione();
-								dh.writeTo(output);
-								tracciato = output.toByteArray();
-							} catch (IOException e) {
-								response.add(idRendicontazione.getIdentificativoFlusso() + "#Lettura del flusso fallita: " + e + ".");
-								log.error("Errore durante la lettura del flusso di rendicontazione", e);
-								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", "Lettura del flusso fallita: " + e);
-								errori = true;
-								continue;
-							}
-
 							CtFlussoRiversamento flussoRendicontazione = null;
+							if(frOnFs.containsKey(idRendicontazione.getIdentificativoFlusso())) {
+								tracciato = frOnFs.get(idRendicontazione.getIdentificativoFlusso());
+							} else {
+								try {
+									ByteArrayOutputStream output = new ByteArrayOutputStream();
+									DataHandler dh = risposta.getXmlRendicontazione();
+									dh.writeTo(output);
+									tracciato = output.toByteArray();
+								} catch (IOException e) {
+									response.add(idRendicontazione.getIdentificativoFlusso() + "#Lettura del flusso fallita: " + e + ".");
+									log.error("Errore durante la lettura del flusso di rendicontazione", e);
+									GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", "Lettura del flusso fallita: " + e);
+									errori = true;
+									continue;
+								}
+							}
+	
+								
 							try {
 								flussoRendicontazione = JaxbUtils.toFR(tracciato);
 							} catch (Exception e) {

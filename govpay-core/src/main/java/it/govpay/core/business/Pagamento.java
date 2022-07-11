@@ -593,7 +593,7 @@ public class Pagamento extends BasicBD {
 				for(Dominio d : lstDomini) {
 					codDomini.add(d.getCodDominio());
 				}
-				List<Rpt> rpts = rptBD.getRptPendenti(codDomini);
+				List<Rpt> rpts = rptBD.getRptPendenti(codDomini, inizioFinestra.getTime());
 
 				log.info("Identificate su GovPay " + rpts.size() + " transazioni pendenti");
 				ctx.log("pendenti.listaPendentiGovPayOk", rpts.size() + "");
