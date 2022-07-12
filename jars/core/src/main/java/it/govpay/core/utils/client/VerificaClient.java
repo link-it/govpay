@@ -192,7 +192,7 @@ public class VerificaClient extends BasicClientCORE {
 						if(!(codDominio.equals(pendenzaVerificata.getIdDominio()) && iuv.equals(iuvRicevuto)))
 							throw new ValidationException("I campi IdDominio e NumeroAvviso della pendenza ricevuta dal servizio di verifica non corrispondono ai parametri di input.");
 					}
-					return VersamentoUtils.toVersamentoModel(VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata));
+					return VersamentoUtils.toVersamentoModel(VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata), false);
 				} catch (GovPayException e) {
 					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[" + e.getCodEsito() + "] " + e.getMessage());
 					throw e;
@@ -318,7 +318,7 @@ public class VerificaClient extends BasicClientCORE {
 						if(!(codDominio.equals(pendenza.getIdDominio()) && iuv.equals(iuvRicevuto)))
 							throw new ValidationException("I campi IdDominio e NumeroAvviso della pendenza ricevuta dal servizio di verifica non corrispondono ai parametri di input.");
 					}
-					return VersamentoUtils.toVersamentoModel(it.govpay.core.ec.v2.converter.VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata));
+					return VersamentoUtils.toVersamentoModel(it.govpay.core.ec.v2.converter.VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata), false);
 				} catch (GovPayException e) {
 					log.error(e.getMessage(),e);
 					ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[" + e.getCodEsito() + "] " + e.getMessage());

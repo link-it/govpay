@@ -194,7 +194,7 @@ public class AvvisiDAO extends BaseDAO{
 				break;
 			case JSON:
 			default:
-				it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(configWrapper), dominio);
+				it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuvFromNumeroAvviso(versamento, versamento.getApplicazione(configWrapper), dominio);
 
 				response.setApplicazione(versamento.getApplicazione(configWrapper));
 				response.setVersamento(versamento);
