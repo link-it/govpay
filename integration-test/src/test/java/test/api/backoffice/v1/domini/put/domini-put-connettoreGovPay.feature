@@ -86,7 +86,7 @@ Examples:
 Scenario Outline: Modifica di un connettore govpay di un dominio con connettore di tipo rest (<field>)
 
 * set dominio.servizioGovPay.tipoConnettore = 'REST'
-* set dominio.servizioGovPay.url = 'http://localhost:8080/servizioRendicontazioniEnte'
+* set dominio.servizioGovPay.url = '' + govpay_url + '/servizioRendicontazioniEnte'
 * set dominio.servizioGovPay.versioneApi = 'REST v1'
 * set dominio.servizioGovPay.contenuti = ['RPP']
 * set dominio.servizioGovPay.<field> = <value>
@@ -200,7 +200,7 @@ Examples:
 Scenario Outline: Modifica di un servizio govpay di un dominio con connettore di tipo rest <field> non valida
 
 * set dominio.servizioGovPay.tipoConnettore = 'REST'
-* set dominio.servizioGovPay.url = 'http://localhost:8080/servizioRendicontazioniEnte'
+* set dominio.servizioGovPay.url = '' + govpay_url + '/servizioRendicontazioniEnte'
 * set dominio.servizioGovPay.versioneApi = 'REST v1'
 * set dominio.servizioGovPay.contenuti = ['RPP']
 * set dominio.servizioGovPay.<fieldRequest> = <fieldValue>
