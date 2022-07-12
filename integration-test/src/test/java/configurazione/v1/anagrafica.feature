@@ -323,6 +323,20 @@ And request { codificaIUV: null, pagaTerzi: false }
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+Given url backofficeBaseurl
+And path 'tipiPendenza', tipoPendenzaRinnovo
+And headers basicAutenticationHeader
+And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, pagaTerzi: true}
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
+And headers basicAutenticationHeader
+And request { codificaIUV: null, pagaTerzi: false }
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
 #### creazione applicazione
 * def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
 
@@ -364,7 +378,7 @@ And path 'domini', idDominio
 And request 
 """
 {
-  "urlEC": "http://localhost:8080/govpay/frontend/web/connector/ecsp/psp",
+  "urlEC": "#(govpay_url +'/govpay/frontend/web/connector/ecsp/psp')",
   "auxDigit": 0,
   "versione": 1,
   "segregationCode": null,
