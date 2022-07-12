@@ -364,7 +364,7 @@ And path 'domini', idDominio
 And request 
 """
 {
-  "urlEC": "http://localhost:8080/govpay/frontend/web/connector/ecsp/psp",
+  "urlEC": "#(govpay_url +'/govpay/frontend/web/connector/ecsp/psp')",
   "auxDigit": 0,
   "versione": 1,
   "segregationCode": null,
