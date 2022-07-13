@@ -12,7 +12,8 @@
     API_HYPERSIC_APK: 'API HyperSIC APK',
     API_MAGGIOLI_JPPA: 'API Maggioli',
     API_MYPIVOT: 'API MyPivot',
-    API_SECIM: 'API Secim'
+    API_SECIM: 'API Secim',
+    GOVPAY: 'Core GovPay'
   };
 
   global.GovApiTipiEvento = {
@@ -230,6 +231,9 @@
     API_SECIM: {
       secimInviaTracciatoEmail: 'Spedito flusso Secim via Email',
       secimInviaTracciatoFileSystem: 'Salvato flusso Secim su file system'
+    },
+    GOVPAY: {
+      govpayPagamentoEseguitoSenzaRPT: 'Pagamento eseguito senza RPT'
     }
   };
 

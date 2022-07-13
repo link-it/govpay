@@ -59,6 +59,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.IncassiException.FaultType;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IncassoUtils;
 import it.govpay.model.Evento.CategoriaEvento;
@@ -550,9 +551,11 @@ public class Incassi {
 							eventoNota.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
 							eventoNota.setEsitoEvento(EsitoEvento.OK);
 							eventoNota.setDettaglioEsito("Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "].");
-							eventoNota.setTipoEvento("Pagamento eseguito senza RPT");
+							eventoNota.setTipoEvento(EventoContext.GOVPAY_TIPOEVENTO_GOVPAYPAGAMENTOESEGUITOSENZARPT);
 							eventoNota.setIuv(rendicontazione.getIuv());
 							eventoNota.setCodDominio(fr.getCodDominio());
+							eventoNota.setCcp(rendicontazione.getIur());
+							eventoNota.setComponente(EventoContext.Componente.GOVPAY.toString());
 							listaEventi.add(eventoNota);
 							
 							TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
