@@ -71,6 +71,27 @@ public class AppIOUtils {
 		return messageWithCF;
 	}
 	
+	public static NewMessage creaNuovoMessaggioRicevutaPagamentoSenzaRPT(Logger log, Versamento versamento, Rpt rpt, Dominio dominio, TipoVersamentoDominio tipoVersamentoDominio, PromemoriaRicevutaBase configurazionePromemoriaRicevuta, BigDecimal timeToLive) throws GovPayException {
+		String appIOMessaggio = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaMessaggio();
+		String appIOOggetto = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaOggetto();
+		String appIOTipo = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaTipo();
+		
+		boolean usaConfigurazioneSistema = true;
+		
+		if(appIOMessaggio != null && appIOOggetto != null && appIOTipo != null) {
+			usaConfigurazioneSistema = false;
+		}
+		
+		if(usaConfigurazioneSistema) {
+			appIOMessaggio = configurazionePromemoriaRicevuta.getMessaggio();
+			appIOOggetto = configurazionePromemoriaRicevuta.getOggetto();
+			appIOTipo = configurazionePromemoriaRicevuta.getTipo();
+		}
+		
+		NewMessage messageWithCF = AppIOUtils.getPostMessage(log, appIOTipo, appIOOggetto, appIOMessaggio, timeToLive, versamento, rpt, dominio, false);
+		return messageWithCF;
+	}
+	
 	public static NewMessage creaNuovoMessaggioRicevutaPagamento(Logger log, Versamento versamento, Rpt rpt, Dominio dominio, TipoVersamentoDominio tipoVersamentoDominio, PromemoriaRicevutaBase configurazionePromemoriaRicevuta, BigDecimal timeToLive) throws GovPayException {
 		String appIOMessaggio = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaMessaggio();
 		String appIOOggetto = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaOggetto();

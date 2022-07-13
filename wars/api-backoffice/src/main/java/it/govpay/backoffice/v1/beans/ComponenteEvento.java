@@ -52,7 +52,10 @@ public enum ComponenteEvento {
   HYPERSIC_APK("API_HYPERSIC_APK"),
   
   
-  USER("API_USER");
+  USER("API_USER"),
+  
+  
+  GOVPAY_INTERNO("GOVPAY");
   
   
   
