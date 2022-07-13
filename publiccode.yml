@@ -20,7 +20,7 @@ description:
     documentation: 'https://govpay.readthedocs.io/it/latest/'
     features:
       - PNRR
-      - PNRR/Misura/1.1.4
+      - PNRR/Misura/1.4.3
       - PNRR/Beneficiari/Comuni
       - PNRR/Beneficiari/Scuole
       - PNRR/Beneficiari/ASL
