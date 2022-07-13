@@ -272,11 +272,15 @@ When method post
 Then status 201
 And match response == read('classpath:test/api/backoffice/v1/riconciliazioni/post/msg/riconciliazione-singola-senza-rpt.json')
 
+* def idFlusso = response.idFlusso
+
 Given url backofficeBaseurl
-And path '/flussiRendicontazione', response.idFlusso
+And path '/flussiRendicontazione', idFlusso
 And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
+
+* def iurRendicontazione = response.rendicontazioni[0].iur
 
 # aspetto spedizione notifica 
 
@@ -411,5 +415,52 @@ And match response.risultati[0] ==
 }
 """
 And match response.risultati[0].parametriRichiesta.url == appio_api_url + '/messages'
+
+
+Given url backofficeBaseurl
+And path '/eventi'
+And param idA2A = idA2A
+And param idPendenza = idPendenza
+And param tipoEvento = 'govpayPagamentoEseguitoSenzaRPT'
+And param messaggi = true
+And headers gpAdminBasicAutenticationHeader
+When method get
+Then status 200
+And match response == 
+"""
+{
+	numRisultati: '#number',
+	numPagine: '#number',
+	risultatiPerPagina: 25,
+	pagina: 1,
+	prossimiRisultati: '#ignore',
+	risultati: '#array'
+}
+"""
+And match response.risultati[0] ==
+"""
+{  
+	"id": "#notnull",
+	"idDominio":"#(idDominio)",
+	"iuv":"#notnull",
+	"ccp":"#notnull",
+	"idA2A": "#(idA2A)",
+	"idPendenza": "#(''+idPendenza)",
+	"componente": "GOVPAY",
+	"categoriaEvento": "INTERNO",
+	"ruolo": "CLIENT",
+	"tipoEvento": "govpayPagamentoEseguitoSenzaRPT",
+	"sottotipoEvento": "##null",
+	"esito": "OK",
+	"sottotipoEsito": "##null",
+	"dettaglioEsito": "#notnull",
+	"dataEvento": "#notnull",
+	"durataEvento": "#notnull",
+	"datiPagoPA" : "##null",
+	"parametriRichiesta": "##null",
+	"parametriRisposta": "##null"
+}
+"""
+And match response.risultati[0].dettaglioEsito == 'Riconciliato flusso '+ idFlusso +' con Pagamento senza RPT [IUV: '+iuv+' IUR:'+iurRendicontazione+'].'
 
 

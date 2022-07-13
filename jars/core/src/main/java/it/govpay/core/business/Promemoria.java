@@ -92,6 +92,10 @@ public class Promemoria {
 			MailBatch batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
 			MailServer mailserver = batchSpedizioneEmail.getMailserver();
 			
+			if(mailserver == null) { // si sta provando ad 
+				throw new ServiceException("MailServer non configurato!");
+			}
+			
 			AvvisaturaViaMail avvisaturaViaMail = configurazione.getAvvisaturaViaMail();
 			this.configurazionePromemoriaAvvisoMail = avvisaturaViaMail.getPromemoriaAvviso();
 			this.configurazionePromemoriaRicevutaMail = avvisaturaViaMail.getPromemoriaRicevuta();
