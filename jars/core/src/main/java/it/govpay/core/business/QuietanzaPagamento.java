@@ -1,5 +1,6 @@
 package it.govpay.core.business;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,6 +21,7 @@ import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.RptBuilder;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Rpt.EsitoPagamento;
@@ -48,7 +50,13 @@ public class QuietanzaPagamento {
 			Dominio dominio = versamento.getDominio(configWrapper);
 			String codDominio = dominio.getCodDominio();
 			QuietanzaPagamentoInput input = fromRendicontazione(dominio, rendicontazione, pagamento, singoloVersamento, versamento, fr, configWrapper);
-			return QuietanzaPagamentoPdf.getInstance().creaQuietanzaPagamento(log, input, codDominio, quietanzaPagamentoProperties);
+			
+			File jasperFile = null; 
+			if(GovpayConfig.getInstance().getTemplateQuietanzaPagamento() != null) {
+				jasperFile = new File(GovpayConfig.escape(GovpayConfig.getInstance().getTemplateQuietanzaPagamento()));
+			}
+			
+			return QuietanzaPagamentoPdf.getInstance().creaQuietanzaPagamento(log, input, codDominio, quietanzaPagamentoProperties, jasperFile);
 		}catch(ServiceException e) {
 			throw e;
 		} catch(Exception e) {

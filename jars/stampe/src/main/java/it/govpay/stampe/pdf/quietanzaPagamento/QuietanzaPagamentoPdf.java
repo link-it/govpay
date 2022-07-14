@@ -2,6 +2,8 @@ package it.govpay.stampe.pdf.quietanzaPagamento;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -74,7 +76,7 @@ public class QuietanzaPagamentoPdf {
 //		return jasperPrint;
 //	}
 	
-	public byte[] creaQuietanzaPagamento(Logger log, QuietanzaPagamentoInput input, String codDominio, QuietanzaPagamentoProperties quietanzaPagamentoProperties) throws Exception {
+	public byte[] creaQuietanzaPagamento(Logger log, QuietanzaPagamentoInput input, String codDominio, QuietanzaPagamentoProperties quietanzaPagamentoProperties, File jasperFile) throws Exception {
 	
 		// cerco file di properties esterni per configurazioni specifiche per dominio
 		Properties propertiesRicevutaPerDominio = quietanzaPagamentoProperties.getPropertiesPerDominio(codDominio, log);
@@ -87,13 +89,29 @@ public class QuietanzaPagamentoPdf {
 		if(!jasperTemplateFilename.startsWith("/"))
 			jasperTemplateFilename = "/" + jasperTemplateFilename; 
 		
+		InputStream isTemplate = null;
 		Map<String, Object> parameters = new HashMap<>();
-		
 		JRGzipVirtualizer virtualizer = new JRGzipVirtualizer(50);
 		parameters.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
 		
-		try (InputStream is = QuietanzaPagamentoPdf.class.getResourceAsStream(jasperTemplateFilename);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();){
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();){
+			
+			// leggo il template file jasper da inizializzare 
+			if(jasperFile != null && jasperFile.exists()) { // se non l'ho ricevuto dall'esterno carico quello di default
+				LoggerWrapperFactory.getLogger(QuietanzaPagamentoPdf.class).debug("Utilizzo il template esterno: ["+jasperFile.getAbsolutePath()+"].");
+				isTemplate = new FileInputStream(jasperFile);
+				parameters.put("SUBREPORT_DIR", jasperFile.getParent() + File.separatorChar);
+				parameters.put("report_base_path", jasperFile.getParent() + File.separatorChar);
+			} else {
+				
+				if(jasperFile != null) 
+					LoggerWrapperFactory.getLogger(QuietanzaPagamentoPdf.class).error("Errore di configurazione: il template configurato " + jasperFile.getAbsolutePath() + " non esiste. Verra utilizzato il template di default.");
+				
+				if(!jasperTemplateFilename.startsWith("/"))
+					jasperTemplateFilename = "/" + jasperTemplateFilename; 
+				
+				isTemplate = QuietanzaPagamentoPdf.class.getResourceAsStream(jasperTemplateFilename);
+			}
 			
 			DefaultJasperReportsContext defaultJasperReportsContext = DefaultJasperReportsContext.getInstance();
 			
@@ -103,7 +121,7 @@ public class QuietanzaPagamentoPdf {
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 			jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 			
-			JAXBElement<QuietanzaPagamentoInput> jaxbElement = new JAXBElement<QuietanzaPagamentoInput>(new QName("", "root"), QuietanzaPagamentoInput.class, null, input);
+			JAXBElement<QuietanzaPagamentoInput> jaxbElement = new JAXBElement<QuietanzaPagamentoInput>(new QName("", QuietanzaPagamentoCostanti.QUIETANZA_PAGAMENTO_ROOT_ELEMENT_NAME), QuietanzaPagamentoInput.class, null, input);
 			jaxbMarshaller.marshal(jaxbElement, baos);
 			byte[] byteArray = baos.toByteArray();
 			log.trace("QuietanzaPagamentoInput: " + new String(byteArray));
@@ -111,7 +129,7 @@ public class QuietanzaPagamentoPdf {
 				
 				JRDataSource dataSource = new JRXmlDataSource(defaultJasperReportsContext, byteArrayInputStream, QuietanzaPagamentoCostanti.QUIETANZA_PAGAMENTO_ROOT_ELEMENT_NAME);
 	
-				JasperReport jasperReport = (JasperReport) JRLoader.loadObject(defaultJasperReportsContext,is);
+				JasperReport jasperReport = (JasperReport) JRLoader.loadObject(defaultJasperReportsContext,isTemplate);
 				JasperPrint jasperPrint = JasperFillManager.getInstance(defaultJasperReportsContext).fill(jasperReport, parameters, dataSource);
 				
 				return JasperExportManager.getInstance(defaultJasperReportsContext).exportToPdf(jasperPrint);
@@ -119,7 +137,8 @@ public class QuietanzaPagamentoPdf {
 				
 			}
 		}finally {
-			
+			if(isTemplate != null)
+				isTemplate.close();
 		}
 	}
 	
