@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration status="WARN" monitorInterval="30">
+
+	<Property name="LOG_PATTERN" value="%d{ISO8601} %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable" />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>${LOG_PATTERN}</Pattern>
+		</encoder>
+	</appender>
+
+	<springProfile name="!dev">
+
+		<springProperty scope="context" name="APP_LOG_ROOT" source="logging.directoryPath"/>
+		<springProperty scope="context" name="APP_LOG_PREFIX" source="logging.filePrefix"/>
+
+		<appender name="root" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${APP_LOG_ROOT}/${APP_LOG_PREFIX}_root.log</file>
+			<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+				<Pattern>${LOG_PATTERN}</Pattern>
+			</encoder>
+
+			<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+				<!-- rollover daily and when the file reaches 10 MegaBytes -->
+				<fileNamePattern>${APP_LOG_ROOT}/archived/${APP_LOG_PREFIX}_root-%d{yyyy-MM-dd}.%i.log
+				</fileNamePattern>
+				<timeBasedFileNamingAndTriggeringPolicy
+					class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+					<maxFileSize>10MB</maxFileSize>
+				</timeBasedFileNamingAndTriggeringPolicy>
+			</rollingPolicy>
+		</appender>
+
+		<appender name="hibernate" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${APP_LOG_ROOT}/${APP_LOG_PREFIX}_hibernate.log</file>
+			<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+				<Pattern>${LOG_PATTERN}</Pattern>
+			</encoder>
+
+			<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+				<!-- rollover daily and when the file reaches 10 MegaBytes -->
+				<fileNamePattern>${APP_LOG_ROOT}/archived/${APP_LOG_PREFIX}_hibernate-%d{yyyy-MM-dd}.%i.log </fileNamePattern>
+				<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+					<maxFileSize>10MB</maxFileSize>
+				</timeBasedFileNamingAndTriggeringPolicy>
+			</rollingPolicy>
+		</appender>
+
+		<appender name="core" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${APP_LOG_ROOT}/${APP_LOG_PREFIX}.log</file>
+			<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+				<Pattern>${LOG_PATTERN}</Pattern>
+			</encoder>
+
+			<rollingPolicy	class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+				<!-- rollover daily and when the file reaches 10 MegaBytes -->
+				<fileNamePattern>${APP_LOG_ROOT}/archived/${APP_LOG_PREFIX}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+				<timeBasedFileNamingAndTriggeringPolicy	class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+					<maxFileSize>10MB</maxFileSize>
+				</timeBasedFileNamingAndTriggeringPolicy>
+			</rollingPolicy>
+		</appender>
+
+		<logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
+			<appender-ref ref="hibernate" />
+		</logger>
+
+		<logger name="org.hibernate" level="ERROR" additivity="false">
+			<appender-ref ref="hibernate" />
+		</logger>
+
+		<logger name="org.springframework.transaction" level="ERROR" additivity="false">
+			<appender-ref ref="hibernate" />
+		</logger>
+
+		<logger name="org.springframework.orm" level="ERROR" additivity="false">
+			<appender-ref ref="hibernate" />
+		</logger>
+
+		<logger name="org.springframework.data" level="ERROR"	additivity="false">
+			<appender-ref ref="hibernate" />
+		</logger>
+
+		<logger name="org.springframework" level="ERROR" additivity="false">
+			<appender-ref ref="root" />
+		</logger>
+
+		<root level="DEBUG">
+			<appender-ref ref="root" />
+		</root>
+	</springProfile>
+
+	<springProfile name="dev">
+		<root level="INFO">
+			<appender-ref ref="STDOUT" />
+		</root>
+	</springProfile>
+
+</configuration>
