@@ -179,4 +179,32 @@
 	</xsd:complexType>
 	
 	
+	<xsd:complexType name="QuietanzaPagamentoInput">
+		<xsd:sequence>
+			<xsd:element name="logo_ente" type="xsd:string"/>
+			<xsd:element name="logo_pagopa" type="xsd:string"/>
+			<xsd:element name="oggetto_del_pagamento" type="xsd:string"/>
+			<xsd:element name="ente_denominazione" type="xsd:string"/>
+			<xsd:element name="indirizzo_ente" type="xsd:string"/>
+			<xsd:element name="luogo_ente" type="xsd:string"/>
+			<xsd:element name="cf_ente" type="xsd:string"/>
+			<xsd:element name="soggetto" type="xsd:string"/>
+			<xsd:element name="indirizzo_soggetto" type="xsd:string"/>
+			<xsd:element name="luogo_soggetto" type="xsd:string"/>
+			<xsd:element name="cf_soggetto" type="xsd:string"/>
+			<xsd:element name="istituto" type="xsd:string"/>
+			<xsd:element name="importo" type="xsd:double"/>
+			<xsd:element name="dataOperazione" type="xsd:string"/>
+			<xsd:element name="stato" type="xsd:string"/>
+			<xsd:element name="IUV" type="xsd:string"/>
+			<xsd:element name="elenco_voci">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="voce" type="VoceRicevutaTelematicaInput" minOccurs="1" maxOccurs="unbounded"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element> 
+		</xsd:sequence>
+	</xsd:complexType>
+	
 </xsd:schema>
