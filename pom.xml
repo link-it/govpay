@@ -46,7 +46,7 @@
 		<openspcoop2.version>3.2.1</openspcoop2.version>
 		
 		<!-- log -->
-		<slf4j.version>1.7.25</slf4j.version>
+		<slf4j.version>1.7.36</slf4j.version>
 		<logger.version>2.17.1</logger.version>
 		
 		<!-- swagger -->
@@ -73,13 +73,13 @@
 		<jersey.version>2.25.1</jersey.version>
 		
 		<!-- Spring -->
-		<spring.version>5.1.6.RELEASE</spring.version>
+		<spring.version>5.3.22</spring.version>
 		
 		<!-- Spring Security -->
-		<spring.security.version>5.1.5.RELEASE</spring.security.version>
+		<spring.security.version>5.7.2</spring.security.version>
 		
 		<!-- Spring Security Ldap plugin -->
-		<spring.ldap.version>2.3.2.RELEASE</spring.ldap.version>
+		<spring.ldap.version>2.4.1</spring.ldap.version>
 		
 		<!-- joda time -->
 		<joda-time.version>2.10</joda-time.version>
