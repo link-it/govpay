@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.6.1</version>
+		<version>4.0.0</version>
 	</parent>
 
 	<artifactId>appio-beans</artifactId>
@@ -65,6 +65,8 @@
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-joda</artifactId>
 		</dependency>
+		
+		
 	</dependencies>
 
 	<build>
@@ -78,6 +80,13 @@
 				<groupId>io.swagger.codegen.v3</groupId>
 				<artifactId>swagger-codegen-maven-plugin</artifactId>
 				<version>${swagger-codegen-maven-plugin.version}</version>
+				<dependencies>
+				    <dependency>
+        <groupId>com.github.jknack</groupId>
+        <artifactId>handlebars</artifactId>
+        <version>4.3.0</version>
+    </dependency>
+				</dependencies>
 				<executions>
 					<execution>
 						<goals>
