@@ -11,6 +11,7 @@
 		<exclude-subsystems>
 			<subsystem name="jaxrs" />
 			<subsystem name="webservices" />
+			<subsystem name="logging" />
 		</exclude-subsystems>
 		<exclusions>
 			<module name="org.apache.cxf" />

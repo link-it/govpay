@@ -169,7 +169,7 @@
         <!-- com.google.zxing.javase -->
         <com.google.zxing.javase.version>2.2</com.google.zxing.javase.version>
         <!-- dynamicreports-core -->
-        <dynamicreports-core.version>4.1.1</dynamicreports-core.version>
+        <dynamicreports-core.version>6.12.1</dynamicreports-core.version>
         
         <!-- jakarta xml bind JAXB-->
         <jakarta.jaxws.version>2.3.3</jakarta.jaxws.version>
