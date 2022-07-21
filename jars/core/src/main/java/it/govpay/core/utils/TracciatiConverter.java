@@ -101,7 +101,8 @@ public class TracciatiConverter {
 								+ pendenza.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
 				}
 				
-				documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
+				if(pendenza.getDocumento().getSoglia().getGiorni() != null)
+					documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
 				documento.setTipoSoglia(pendenza.getDocumento().getSoglia().getTipo());
 			}
 			

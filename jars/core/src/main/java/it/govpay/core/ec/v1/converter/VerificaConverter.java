@@ -37,6 +37,7 @@ import it.govpay.ec.v1.beans.ProprietaPendenza;
 import it.govpay.ec.v1.beans.QuotaContabilita;
 import it.govpay.ec.v1.beans.Soggetto;
 import it.govpay.ec.v1.beans.TassonomiaAvviso;
+import it.govpay.ec.v1.beans.TipoSogliaVincoloPagamento;
 import it.govpay.ec.v1.beans.VoceDescrizioneImporto;
 import it.govpay.ec.v1.beans.VocePendenza;
 import it.govpay.model.Versamento.StatoVersamento;
@@ -92,6 +93,17 @@ public class VerificaConverter {
 			if(pendenzaVerificata.getDocumento().getRata() != null)
 			documento.setCodRata(pendenzaVerificata.getDocumento().getRata().intValue());
 			documento.setDescrizione(pendenzaVerificata.getDocumento().getDescrizione());
+			if(pendenzaVerificata.getDocumento().getSoglia() != null) {
+				// valore tassonomia avviso non valido
+				if(TipoSogliaVincoloPagamento.fromValue(pendenzaVerificata.getDocumento().getSoglia().getTipo()) == null) {
+					throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" 
+								+ pendenzaVerificata.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
+				}
+				
+				if(pendenzaVerificata.getDocumento().getSoglia().getGiorni() != null)
+					documento.setGiorniSoglia(pendenzaVerificata.getDocumento().getSoglia().getGiorni().intValue());
+				documento.setTipoSoglia(pendenzaVerificata.getDocumento().getSoglia().getTipo());
+			}
 
 			versamento.setDocumento(documento );
 		}

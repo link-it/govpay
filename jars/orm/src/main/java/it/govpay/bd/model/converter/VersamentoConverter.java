@@ -159,6 +159,14 @@ public class VersamentoConverter {
 					dto.setTipoSoglia(TipoSogliaVersamento.OLTRE);
 					String gg = vo.getCodRata().substring(vo.getCodRata().indexOf(TipoSogliaVersamento.OLTRE.toString())+ TipoSogliaVersamento.OLTRE.toString().length());
 					dto.setGiorniSoglia(Integer.parseInt(gg));
+				} else if(vo.getCodRata().startsWith(TipoSogliaVersamento.RIDOTTO.toString())) {
+					dto.setTipoSoglia(TipoSogliaVersamento.RIDOTTO);
+//					String gg = vo.getCodRata().substring(vo.getCodRata().indexOf(TipoSogliaVersamento.RIDOTTO.toString())+ TipoSogliaVersamento.RIDOTTO.toString().length());
+//					dto.setGiorniSoglia(Integer.parseInt(gg));
+				} else if(vo.getCodRata().startsWith(TipoSogliaVersamento.SCONTATO.toString())) {
+					dto.setTipoSoglia(TipoSogliaVersamento.SCONTATO);
+//					String gg = vo.getCodRata().substring(vo.getCodRata().indexOf(TipoSogliaVersamento.SCONTATO.toString())+ TipoSogliaVersamento.SCONTATO.toString().length());
+//					dto.setGiorniSoglia(Integer.parseInt(gg));
 				} else {
 					dto.setNumeroRata(Integer.parseInt(vo.getCodRata()));
 				}
@@ -293,8 +301,13 @@ public class VersamentoConverter {
 			
 			if(dto.getNumeroRata() != null)
 				vo.setCodRata(dto.getNumeroRata().toString());
-			if(dto.getTipoSoglia() != null && dto.getGiorniSoglia() != null)
-				vo.setCodRata(dto.getTipoSoglia().toString() + dto.getGiorniSoglia());
+			if(dto.getTipoSoglia() != null) {
+				if(dto.getGiorniSoglia() != null) {
+					vo.setCodRata(dto.getTipoSoglia().toString() + dto.getGiorniSoglia());
+				} else {
+					vo.setCodRata(dto.getTipoSoglia().toString());
+				}
+			}
 			
 			if(dto.getTipo() != null)
 				vo.setTipo(dto.getTipo().getCodifica());

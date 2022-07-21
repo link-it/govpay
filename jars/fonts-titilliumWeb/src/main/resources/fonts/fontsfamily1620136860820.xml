@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fontFamilies>
 
+	<fontFamily name="Roboto">
+       <normal><![CDATA[fonts/Roboto-Regular.ttf]]></normal>
+       <pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>
+       <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+   </fontFamily>
+
+	<fontFamily name="Roboto-Bold">
+       <normal><![CDATA[fonts/Roboto-Bold.ttf]]></normal>
+       <pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>
+       <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+   </fontFamily>
+
+	<fontFamily name="RobotoMono">
+       <normal><![CDATA[fonts/RobotoMono-Regular.ttf]]></normal>
+       <bold><![CDATA[fonts/RobotoMono-Bold.ttf]]></bold>
+       <italic><![CDATA[fonts/RobotoMono-Italic.ttf]]></italic>
+       <boldItalic><![CDATA[fonts/RobotoMono-BoldItalic.ttf]]></boldItalic>
+       <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+   </fontFamily>
+   
+
    <fontFamily name="TitilliumWeb">
        <normal><![CDATA[fonts/TitilliumWeb-Regular.ttf]]></normal>
        <bold><![CDATA[fonts/TitilliumWeb-SemiBold.ttf]]></bold>
