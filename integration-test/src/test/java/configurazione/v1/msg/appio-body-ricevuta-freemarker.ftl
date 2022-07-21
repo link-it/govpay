@@ -10,7 +10,11 @@ Istituto attestante: ${rpt.getDenominazioneAttestante()} (${rpt.getIdentificativ
 Istituto attestante: ${rpt.getDenominazioneAttestante()}
 </#if>
 Identificativo univoco versamento (IUV): ${rpt.getIuv()}
+<#if rpt.getVersione() == "SANP_230">
 Codice contesto pagamento (CCP): ${rpt.getCcp()}
+<#else>
+Id Ricevuta: ${rpt.getCcp()}
+</#if>
 Importo pagato: ${rpt.getImportoTotalePagato()}
 
 Distinti saluti.

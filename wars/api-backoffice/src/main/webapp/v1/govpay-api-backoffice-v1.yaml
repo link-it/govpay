@@ -8580,6 +8580,7 @@ components:
         - API_GOVPAY
         - API_HYPERSIC_APK
         - API_USER
+        - GOVPAY
       example: 'API_PAGOPA'
     categoriaEvento:
       type: string

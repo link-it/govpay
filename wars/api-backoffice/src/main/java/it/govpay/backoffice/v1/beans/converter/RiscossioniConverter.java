@@ -237,8 +237,10 @@ public class RiscossioniConverter {
 					rsModel.setAllegato(allegato);
 				}
 			} else {
-				rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte()));
-				rsModel.setVocePendenza(PendenzeConverter.toVocePendenzaRiscossioneRsModel(singoloVersamento, versamento, configWrapper));
+				if(versamento != null)
+					rsModel.setPendenza(UriBuilderUtils.getPendenzaByIdA2AIdPendenza(versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte()));
+				if(singoloVersamento != null)
+					rsModel.setVocePendenza(PendenzeConverter.toVocePendenzaRiscossioneRsModel(singoloVersamento, versamento, configWrapper));
 				if(rpt!= null)
 					rsModel.setRpp(UriBuilderUtils.getRppByDominioIuvCcp(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp()));
 			}
