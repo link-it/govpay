@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.6.1</version>
+		<version>3.6.2</version>
 	</parent>
 
 	<artifactId>pagopa-beans</artifactId>

@@ -20,7 +20,7 @@ description:
     documentation: 'https://govpay.readthedocs.io/it/latest/'
     features:
       - PNRR
-      - PNRR/Misura/1.1.4
+      - PNRR/Misura/1.4.3
       - PNRR/Beneficiari/Comuni
       - PNRR/Beneficiari/Scuole
       - PNRR/Beneficiari/ASL
@@ -207,10 +207,10 @@ outputTypes:
   - application/pdf
 platforms:
   - web
-releaseDate: '2022-07-08'
+releaseDate: '2022-07-21'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
-softwareVersion: 3.6.1
+softwareVersion: 3.6.2
 url: 'https://github.com/link-it/govpay'
 usedBy:
   - CNR - Consiglio Nazionale delle Ricerche
