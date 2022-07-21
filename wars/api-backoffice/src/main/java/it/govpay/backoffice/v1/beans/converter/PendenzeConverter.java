@@ -413,7 +413,9 @@ public class PendenzeConverter {
 			default: break;
 		}
 
-		rsModel.setPendenza(toRsModelIndex(versamento));
+		if(versamento != null) {
+			rsModel.setPendenza(toRsModelIndex(versamento));
+		}
 		
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
 		if(singoloVersamento.getDominio(configWrapper) != null) {
