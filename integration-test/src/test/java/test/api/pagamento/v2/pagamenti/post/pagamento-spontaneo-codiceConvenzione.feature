@@ -22,10 +22,58 @@ And param codiceConvenzione = codiceConvenzione
 And headers spidHeaders
 And request pagamentoPost
 When method post
-Then status 403
-And match response == { categoria : 'AUTORIZZAZIONE', codice : '403000', descrizione: '#notnull', dettaglio: '#notnull' }
-And match response.descrizione == 'Operazione non autorizzata'
-And match response.dettaglio == 'Il richiedente non è autorizzato ad indicare un codice convenzione per il pagamento'
+Then status 201
+And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
+
+* def idPagamento = response.id
+
+* configure followRedirects = false
+* def idSession = response.idSession
+* def idPagamento = response.id
+* def tipoRicevuta = "R01"
+* def cumulativo = "0"
+
+Given url ndpsym_url + '/psp'
+And path '/eseguiPagamento'
+And param idSession = idSession
+And param idDominio = idDominio
+And param codice = tipoRicevuta
+And param riversamento = cumulativo
+When method get
+Then status 302
+And match responseHeaders.Location == '#notnull'
+
+# Verifico la notifica di terminazione
+
+* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+
+* def rptToCheck = rptNotificaTerminazione
+
+
+Given url pagamentiBaseurl
+And path '/pagamenti/', idPagamento
+And headers spidHeaders
+When method get
+Then status 200
+And match response.rpp[0].rpt.soggettoVersante == 
+"""
+{
+	"identificativoUnivocoVersante": {
+		"tipoIdentificativoUnivoco":"F",
+		"codiceIdentificativoUnivoco":"RSSMRA30A01H501I"
+	},
+	"anagraficaVersante":"Mario Rossi",
+	"indirizzoVersante":"#ignore",
+	"civicoVersante":"#ignore",
+	"capVersante":"#ignore",
+	"localitaVersante":"#ignore",
+	"provinciaVersante":"#ignore",
+	"nazioneVersante":"#ignore",
+	"e-mailVersante":"mrossi@mailserver.host.it"
+}
+"""
+And match response.rpp[0].stato == 'RT_ACCETTATA_PA' 
+And match response.rpp[0].rt.datiPagamento.datiSingoloPagamento[0].commissioniApplicatePA == '1.00'
 
 @convenzione @convenzione-2
 Scenario: Pagamento spontaneo basic con entrata riferita, versante specificato e codiceConvenzione = CCOK-REDIRECT
@@ -333,9 +381,55 @@ And path '/pagamenti'
 And param codiceConvenzione = codiceConvenzione
 And request pagamentoPost
 When method post
-Then status 403
-And match response == { categoria : 'AUTORIZZAZIONE', codice : '403000', descrizione: '#notnull', dettaglio: '#notnull' }
-And match response.descrizione == 'Operazione non autorizzata'
-And match response.dettaglio == 'Il richiedente non è autorizzato ad indicare un codice convenzione per il pagamento'
+Then status 201
+And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnull', idSession: '#notnull' }
+
+* def idPagamento = response.id
+
+* configure followRedirects = false
+* def idSession = response.idSession
+* def idPagamento = response.id
+* def tipoRicevuta = "R01"
+* def cumulativo = "0"
+
+Given url ndpsym_url + '/psp'
+And path '/eseguiPagamento'
+And param idSession = idSession
+And param idDominio = idDominio
+And param codice = tipoRicevuta
+And param riversamento = cumulativo
+When method get
+Then status 302
+And match responseHeaders.Location == '#notnull'
+
+# Verifico la notifica di terminazione
+
+* call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
+
+* def rptToCheck = rptNotificaTerminazione
+
+Given url pagamentiBaseurl
+And path '/pagamenti/', idPagamento
+When method get
+Then status 200
+And match response.rpp[0].rpt.soggettoVersante == 
+"""
+{
+	"identificativoUnivocoVersante": {
+		"tipoIdentificativoUnivoco":"F",
+		"codiceIdentificativoUnivoco":"ANONIMO"
+	},
+	"anagraficaVersante":"ANONIMO",
+	"indirizzoVersante":"#ignore",
+	"civicoVersante":"#ignore",
+	"capVersante":"#ignore",
+	"localitaVersante":"#ignore",
+	"provinciaVersante":"#ignore",
+	"nazioneVersante":"#ignore",
+	"e-mailVersante":"#(pagamentoPost.soggettoVersante.email)"
+}
+"""
+And match response.rpp[0].stato == 'RT_ACCETTATA_PA' 
+And match response.rpp[0].rt.datiPagamento.datiSingoloPagamento[0].commissioniApplicatePA == '1.00'
 
 

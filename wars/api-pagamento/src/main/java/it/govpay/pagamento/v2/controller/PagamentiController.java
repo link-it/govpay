@@ -130,9 +130,9 @@ public class PagamentiController extends BaseController {
 			pagamentiPortaleDTO.setReCaptcha(gRecaptchaResponse);
 			
 			if(codiceConvenzione != null) {
-				if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
-					throw new NotAuthorizedException("Il richiedente non è autorizzato ad indicare un codice convenzione per il pagamento");
-				}
+//				if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+//					throw new NotAuthorizedException("Il richiedente non è autorizzato ad indicare un codice convenzione per il pagamento");
+//				}
 				
 				ValidatorFactory vf = ValidatorFactory.newInstance();
 				ValidatoreUtils.validaCodiceConvenzione(vf, "codiceConvenzione", codiceConvenzione);

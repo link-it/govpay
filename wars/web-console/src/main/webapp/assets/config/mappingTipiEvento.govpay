@@ -12,7 +12,8 @@
     API_HYPERSIC_APK: 'API HyperSIC APK',
     API_MAGGIOLI_JPPA: 'API Maggioli',
     API_MYPIVOT: 'API MyPivot',
-    API_SECIM: 'API Secim'
+    API_SECIM: 'API Secim',
+    GOVPAY: 'Core GovPay'
   };
 
   global.GovApiTipiEvento = {
@@ -202,7 +203,8 @@
       getProfile: 'Leggi profilo utente da backend AppIO',
       submitMessageforUserWithFiscalCodeInBody: 'Inviata avvisatura a backend AppIO',
       submitMessageforUserWithFiscalCodeInBodyScadenza: 'Inviato promemoria scadenza a backend AppIO',
-      submitMessageforUserWithFiscalCodeInBodyRicevuta: 'Inviata ricevuta di pagamento a backend AppIO'
+      submitMessageforUserWithFiscalCodeInBodyRicevuta: 'Inviata ricevuta di pagamento a backend AppIO',
+      submitMessageforUserWithFiscalCodeInBodyRicevutaPagamentoSenzaRPT: 'Inviata quietanza di pagamento a backend AppIO'
     },
     API_GOVPAY: {
       govpayInviaTracciatoEmail: 'Spedito tracciato di rendicontazione pagamenti GovPay via Email',
@@ -229,6 +231,9 @@
     API_SECIM: {
       secimInviaTracciatoEmail: 'Spedito flusso Secim via Email',
       secimInviaTracciatoFileSystem: 'Salvato flusso Secim su file system'
+    },
+    GOVPAY: {
+      govpayPagamentoEseguitoSenzaRPT: 'Pagamento eseguito senza RPT'
     }
   };
 

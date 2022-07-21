@@ -97,7 +97,9 @@ public class Promemoria extends it.govpay.model.Promemoria {
 	
 	public void setRpt(Rpt rpt) {
 		this.rpt = rpt;
-		this.setIdRpt(rpt.getId());
+		if(rpt != null) {
+			this.setIdRpt(rpt.getId());
+		}
 	}
 	
 	public Rpt getRpt() {
