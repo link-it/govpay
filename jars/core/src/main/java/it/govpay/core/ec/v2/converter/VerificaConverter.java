@@ -23,12 +23,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.ec.v2.beans.TipoSogliaVincoloPagamento;
 import it.govpay.ec.v2.beans.Contabilita;
 import it.govpay.ec.v2.beans.NuovaPendenza;
 import it.govpay.ec.v2.beans.NuovaVocePendenza;
@@ -80,10 +82,22 @@ public class VerificaConverter {
 		if(pendenza.getDocumento() != null) {
 			it.govpay.core.dao.commons.Versamento.Documento documento = new it.govpay.core.dao.commons.Versamento.Documento();
 			
+
 			documento.setCodDocumento(pendenza.getDocumento().getIdentificativo());
 			if(pendenza.getDocumento().getRata() != null)
-			documento.setCodRata(pendenza.getDocumento().getRata().intValue());
+				documento.setCodRata(pendenza.getDocumento().getRata().intValue());
 			documento.setDescrizione(pendenza.getDocumento().getDescrizione());
+			if(pendenza.getDocumento().getSoglia() != null) {
+				// valore tassonomia avviso non valido
+				if(TipoSogliaVincoloPagamento.fromValue(pendenza.getDocumento().getSoglia().getTipo()) == null) {
+					throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" 
+								+ pendenza.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
+				}
+				
+				if(pendenza.getDocumento().getSoglia().getGiorni() != null)
+					documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
+				documento.setTipoSoglia(pendenza.getDocumento().getSoglia().getTipo());
+			}
 
 			versamento.setDocumento(documento );
 		}

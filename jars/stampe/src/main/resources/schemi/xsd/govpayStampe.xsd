@@ -22,6 +22,8 @@
 			<xsd:element name="di_poste" type="xsd:string" minOccurs="0"/>
 			<xsd:element name="cbill" type="xsd:string"/>
 			<xsd:element name="intestatario_conto_corrente_postale" type="xsd:string"/>
+			<xsd:element name="scadenza_scontato" type="xsd:string"/>
+			<xsd:element name="scadenza_ridotto" type="xsd:string"/>
 			<xsd:element name="pagine" type="PagineAvviso" />
 		</xsd:sequence>
 	</xsd:complexType>
@@ -31,18 +33,25 @@
 			<xsd:element name="singola" type="PaginaAvvisoSingola" />
 			<xsd:element name="doppia" type="PaginaAvvisoDoppia"/>
 			<xsd:element name="tripla" type="PaginaAvvisoTripla"/>
+			<xsd:element name="multipla" type="PaginaAvvisoMultipla"/>
 		</xsd:choice>
 	</xsd:complexType>
 
 	<xsd:complexType name="PaginaAvvisoTripla">
-		<xsd:sequence minOccurs="3" maxOccurs="3">
-			<xsd:element name="rata" type="RataAvviso"/>
+		<xsd:sequence>
+			<xsd:element name="unica" type="RataAvviso"/>
+			<xsd:sequence minOccurs="3" maxOccurs="3">
+				<xsd:element name="rata" type="RataAvviso"/>
+			</xsd:sequence>
 		</xsd:sequence>
 	</xsd:complexType>
 	
 	<xsd:complexType name="PaginaAvvisoDoppia">
-		<xsd:sequence minOccurs="2" maxOccurs="2">
-			<xsd:element name="rata" type="RataAvviso"/>
+		<xsd:sequence>
+			<xsd:element name="unica" type="RataAvviso"/>
+			<xsd:sequence minOccurs="2" maxOccurs="2">
+				<xsd:element name="rata" type="RataAvviso"/>
+			</xsd:sequence>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -50,6 +59,13 @@
 		<xsd:sequence>
 			<xsd:element name="rata" type="RataAvviso"/>
 		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="PaginaAvvisoMultipla">
+		<xsd:sequence minOccurs="2" maxOccurs="9">
+			<xsd:element name="rata" type="RataAvviso"/>
+		</xsd:sequence>
+		<xsd:attribute name="colonne" use="required" type="xsd:integer"/>
 	</xsd:complexType>
 	
 	<xsd:complexType name="RataAvviso">
@@ -66,6 +82,10 @@
 			<xsd:element name="numero_cc_postale" type="xsd:string"/>
 			<xsd:element name="data_matrix" type="xsd:string"/>
 			<xsd:element name="autorizzazione" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="importo_ridotto" type="xsd:double" minOccurs="0"/>
+			<xsd:element name="importo_scontato" type="xsd:double" minOccurs="0"/>
+			<xsd:element name="qr_code_2" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="codice_avviso_2" type="xsd:string" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>    
 	    
@@ -177,7 +197,6 @@
 			<xsd:element name="data" type="xsd:string" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
 	
 	<xsd:complexType name="QuietanzaPagamentoInput">
 		<xsd:sequence>
