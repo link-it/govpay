@@ -18,8 +18,8 @@ Produzione dell'installer dai sorgenti
 
 La compilazione dei sorgenti richiede:
 
-- Maven 3.5 o successivo
-- Java 1.8 o successivo
+- Maven 3.6 o successivo
+- Java 17 o successivo
 
 L'installer può essere prodotto con la seguente procedura:
 
