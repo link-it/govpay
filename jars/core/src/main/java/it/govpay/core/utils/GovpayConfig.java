@@ -156,6 +156,12 @@ public class GovpayConfig {
 	
 	private String templateQuietanzaPagamento;
 	
+	private String giornaleEventiUrl;
+	private String giornaleEventiUsername;
+	private String giornaleEventiPassword;
+	private Integer giornaleEventiConnectionTimeout;
+	private Integer giornaleEventiDimensionePool;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -234,6 +240,12 @@ public class GovpayConfig {
 		this.numeroMassimoGiorniRPTPendenti = 30;
 		
 		this.templateProspettoRiscossioni = null;
+		
+		this.giornaleEventiUrl = null;
+		this.giornaleEventiUsername = null;
+		this.giornaleEventiPassword = null;
+		this.giornaleEventiConnectionTimeout = 10000;
+		this.giornaleEventiDimensionePool = 15;
 		
 		try {
 
@@ -746,6 +758,26 @@ public class GovpayConfig {
 			
 			this.templateQuietanzaPagamento = getProperty("it.govpay.reportistica.quietanzaPagamento.templateJasper", this.props, false, log);
 			
+			this.giornaleEventiUrl = getProperty("it.govpay.giornaleEventi.url", this.props, false, log);
+			this.giornaleEventiUsername = getProperty("it.govpay.giornaleEventi.username", this.props, false, log);
+			this.giornaleEventiPassword = getProperty("it.govpay.giornaleEventi.password", this.props, false, log);
+			
+			String giornaleEventiConnectionTimeoutString = getProperty("it.govpay.giornaleEventi.connectionTimeout", this.props, false, log);
+			try{
+				this.giornaleEventiConnectionTimeout = Integer.parseInt(giornaleEventiConnectionTimeoutString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.giornaleEventi.connectionTimeout\" impostata con valore di default 180000");
+				this.giornaleEventiConnectionTimeout = 10000;
+			}
+			
+			String giornaleEventiDimensionePoolString = getProperty("it.govpay.giornaleEventi.dimensionePool", this.props, false, log);
+			try{
+				this.giornaleEventiDimensionePool = Integer.parseInt(giornaleEventiDimensionePoolString);
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.giornaleEventi.dimensionePool\" impostata con valore di default 15");
+				this.giornaleEventiDimensionePool = 15;
+			}
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -1138,5 +1170,25 @@ public class GovpayConfig {
 	
 	public Integer getNumeroMassimoGiorniRPTPendenti() {
 		return numeroMassimoGiorniRPTPendenti;
+	}
+
+	public String getGiornaleEventiUrl() {
+		return giornaleEventiUrl;
+	}
+
+	public String getGiornaleEventiUsername() {
+		return giornaleEventiUsername;
+	}
+
+	public String getGiornaleEventiPassword() {
+		return giornaleEventiPassword;
+	}
+
+	public Integer getGiornaleEventiConnectionTimeout() {
+		return giornaleEventiConnectionTimeout;
+	}
+
+	public Integer getGiornaleEventiDimensionePool() {
+		return giornaleEventiDimensionePool;
 	}
 }

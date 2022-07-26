@@ -29,4 +29,6 @@
 	</sub-deployment>
 	<sub-deployment	name="web-console-${project.version}.war">
 	</sub-deployment>
+	<sub-deployment name="api-gde-${project.version}.war">
+	</sub-deployment>
 </jboss-deployment-structure>

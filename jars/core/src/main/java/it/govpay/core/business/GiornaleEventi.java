@@ -86,9 +86,26 @@ public class GiornaleEventi {
 		case API_GOVPAY:
 		case API_HYPERSIC_APK:
 			return getConfigurazioneTracciatiNotificaPagamenti();
+		case GOVPAY:
+			return getConfigurazioneGovPayEventiInterni();
 		}
 		
 		return null;
+	}
+	
+	private static GdeInterfaccia getConfigurazioneGovPayEventiInterni() {
+		
+		GdeInterfaccia eventiInterni = new GdeInterfaccia();
+		GdeEvento letture = new GdeEvento();
+		letture.setDump(DumpEnum.SEMPRE);
+		letture.setLog(LogEnum.SEMPRE);
+		eventiInterni.setLetture(letture);
+		GdeEvento scritture = new GdeEvento();
+		scritture.setDump(DumpEnum.SEMPRE);
+		scritture.setLog(LogEnum.SEMPRE);
+		eventiInterni.setScritture(scritture);
+		
+		return eventiInterni;
 	}
 	
 	private static GdeInterfaccia getConfigurazioneTracciatiNotificaPagamenti() {

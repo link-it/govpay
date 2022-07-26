@@ -5,11 +5,11 @@ public class ClientException extends Exception {
 	private Integer responseCode = null;
 	private byte[] responseContent = null;
 
-	public ClientException(String message, Exception e, Integer responseCode) {
+	public ClientException(String message, Throwable e, Integer responseCode) {
 		this(message, e, responseCode, null);
 	}
 
-	public ClientException(Exception e, Integer responseCode) {
+	public ClientException(Throwable e, Integer responseCode) {
 		this(e, responseCode, null);
 	}
 
@@ -21,7 +21,7 @@ public class ClientException extends Exception {
 		super(message, e);
 	}
 
-	public ClientException(Exception e) {
+	public ClientException(Throwable e) {
 		super(e);
 	}
 
@@ -29,7 +29,7 @@ public class ClientException extends Exception {
 		super(string);
 	}
 
-	public ClientException(Exception e, Integer responseCode, byte[] responseContent) {
+	public ClientException(Throwable e, Integer responseCode, byte[] responseContent) {
 		super(e);
 		this.responseCode = responseCode;
 		this.responseContent = responseContent;
@@ -41,7 +41,7 @@ public class ClientException extends Exception {
 		this.responseContent = responseContent;
 	}
 
-	public ClientException(String message, Exception e, Integer responseCode, byte[] responseContent) {
+	public ClientException(String message, Throwable e, Integer responseCode, byte[] responseContent) {
 		super(message, e);
 		this.responseCode = responseCode;
 		this.responseContent = responseContent;

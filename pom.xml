@@ -52,7 +52,7 @@
 		<!-- swagger -->
 		<swagger-codegen-maven-plugin.version>3.0.18-gov4j-3</swagger-codegen-maven-plugin.version>
 		<swagger.version>1.5.21</swagger.version>
-		<swagger.v3.version>2.0.3</swagger.v3.version>
+		<swagger.v3.version>2.1.12</swagger.v3.version>
 		<swagger.parser.version>2.0.2</swagger.parser.version>
 		<swagger.parser.v3.version>2.0.2</swagger.parser.v3.version>
 		
@@ -346,6 +346,14 @@
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>api-user</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>api-gde</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 				<scope>compile</scope>
