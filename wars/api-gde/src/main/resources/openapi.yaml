@@ -1,0 +1,623 @@
+openapi: 3.0.0
+info:
+  version: "1.0.0"
+  title: GovPay - API Giornale degli eventi
+  contact:
+    name: GitHub Project Page
+    url: 'https://github.com/link-it/GovPay/'
+  license:
+    name: GPL
+    url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
+servers:
+  - url: /govpay/backend/api/gde/rs/basic/v1/
+tags:
+  - name: Giornale degli Eventi
+    description: Consultazione del Giornale degli Eventi
+security:
+  - basicAuth: []
+paths:
+  '/eventi':
+    get:
+      summary: Giornale degli eventi
+      operationId: findEventi
+      tags:
+        - Giornale degli Eventi
+      parameters:
+        - $ref: '#/components/parameters/pagina'
+        - $ref: '#/components/parameters/risultatiPerPagina'
+        - $ref: '#/components/parameters/idDominio'
+        - $ref: '#/components/parameters/iuv'
+        - $ref: '#/components/parameters/ccp'
+        - $ref: '#/components/parameters/idA2A'
+        - $ref: '#/components/parameters/idPendenza'
+        - $ref: '#/components/parameters/idPagamentoRpp'
+        - $ref: '#/components/parameters/esitoEvento'
+        - $ref: '#/components/parameters/dataDa'
+        - $ref: '#/components/parameters/dataA'
+        - $ref: '#/components/parameters/categoriaEvento'
+        - $ref: '#/components/parameters/tipoEvento'
+        - $ref: '#/components/parameters/sottotipoEvento'
+        - $ref: '#/components/parameters/componenteEvento'
+        - $ref: '#/components/parameters/ruoloEvento'
+        - $ref: '#/components/parameters/messaggiEvento'
+        - $ref: '#/components/parameters/metadatiPaginazione'
+        - $ref: '#/components/parameters/maxRisultati'
+        - $ref: '#/components/parameters/severitaDa'
+        - $ref: '#/components/parameters/severitaA'
+      responses:
+        '200':
+          description: Elenco degli eventi
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ListaPaginata'
+                  - type: object
+                    required:
+                      - risultati
+                    properties:
+                      risultati:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Evento'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '500':
+          $ref: '#/components/responses/500'
+    put:
+      summary: Giornale degli eventi
+      operationId: addEvento
+      tags:
+        - Giornale degli Eventi
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NuovoEvento'
+      responses:
+        '200': 
+          description: Evento registrato con successo
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '422':
+          $ref: '#/components/responses/422'
+        '500':
+          $ref: '#/components/responses/500'
+  '/eventi/{id}':
+    get:
+      summary: Dettaglio di un evento
+      operationId: getEvento
+      tags:
+        - Giornale degli Eventi
+      parameters:
+        - in: path
+          name: id
+          description: Identificativo Evento
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Dettaglio di un evento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evento'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+components:
+  parameters:
+    campi:
+      name: campi
+      in: query
+      description: >-
+            csv dei campi da includere nella risposta (default tutti)
+      required: false
+      schema:
+        type: string
+    categoriaEvento:
+      name: categoriaEvento
+      in: query
+      description: Filtro per categoria evento
+      required: false
+      schema:
+        $ref: '#/components/schemas/CategoriaEvento'
+    ccp:
+      name: ccp
+      in: query
+      description: Codice contesto pagamento
+      required: false
+      schema:
+        type: string
+    componenteEvento:
+      name: componente
+      in: query
+      description: Filtro per componente evento
+      required: false
+      schema:
+        $ref: '#/components/schemas/ComponenteEvento'
+    dataDa:
+      name: dataDa
+      in: query
+      description: Inizio della finestra temporale di osservazione
+      required: false
+      schema:
+        type: string
+        format: date-time
+    dataA:
+      name: dataA
+      in: query
+      description: Fine della finestra temporale di osservazione
+      required: false
+      schema:
+        type: string
+        format: date-time
+    esitoEvento:
+      name: esito
+      in: query
+      description: Filtro per esito evento
+      required: false
+      schema:
+        $ref: '#/components/schemas/EsitoEvento'
+    idA2A:
+      name: idA2A
+      in: query
+      description: Identificativo del gestionale proprietario della pendenza
+      required: false
+      schema:
+        type: string
+    idDominio:
+      name: idDominio
+      in: query
+      description: Identificativo del dominio beneficiario
+      required: false
+      schema:
+        type: string
+        pattern: '(^([0-9]){11}$)'
+    idPagamentoRpp:
+      name: idPagamento
+      in: query
+      description: Identificativo della richiesta di pagamento
+      required: false
+      schema:
+        type: string
+      example: 'c8be909b-2feb-4ffa-8f98-704462abbd1d'
+    idPendenza:
+      name: idPendenza
+      in: query
+      description: Identificativo della pendenza nel gestionale proprietario
+      required: false
+      schema:
+        type: string
+    iuv:
+      name: iuv
+      in: query
+      description: Identificativo univoco di versamento
+      required: false
+      schema:
+        type: string
+    maxRisultati:
+      name: maxRisultati
+      in: query
+      description: >-
+            Indica se il servizio deve impostare o meno il limite sul calcolo del numero di risultati
+      required: false
+      schema:
+        type: boolean
+        default: true
+      example: true
+    messaggiEvento:
+      name: messaggi
+      in: query
+      description: Include nella risposta le informazioni sui messaggi scambiati
+      required: false
+      schema:
+        type: boolean
+    metadatiPaginazione:
+      name: metadatiPaginazione
+      in: query
+      description: >- 
+              Indica se il servizio calcola e valorizza i dati di paginazione o meno
+      required: false
+      schema:
+        type: boolean
+        default: true
+      example: true
+    ordinamento:
+      name: ordinamento
+      in: query
+      description: >-
+            Csv dei campi su cui ordinare i risultati, preceduti da + o - per ascendente o discendente (default ascendente)
+             * dataRichiestaPagamento
+             * stato
+      required: false
+      schema:
+        type: string
+        example: +name
+    pagina:
+      name: pagina
+      in: query
+      description: Numero di pagina dei risultati
+      required: false
+      schema:
+        $ref: '#/components/schemas/Pagina'
+    risultatiPerPagina:
+      name: risultatiPerPagina
+      in: query
+      description: Numero di risultati richiesti (max 5000)
+      required: false
+      schema:
+        $ref: '#/components/schemas/RisultatiPerPagina'
+    ruoloEvento:
+      name: ruolo
+      in: query
+      description: filtro per ruolo evento
+      required: false
+      schema:
+        $ref: '#/components/schemas/RuoloEvento'
+    severitaDa:
+      name: severitaDa
+      in: query
+      description: filtro per severita errore
+      required: false
+      schema:
+        type: integer
+        format: int32
+    severitaA:
+      name: severitaA
+      in: query
+      description: filtro per severita errore
+      required: false
+      schema:
+        type: integer
+        format: int32
+    sottotipoEvento:
+      name: sottotipoEvento
+      in: query
+      description: filtro per sottotipo evento
+      required: false
+      schema:
+        type: string
+    tipoEvento: 
+      name: tipoEvento
+      in: query
+      description: filtro per tipologia evento
+      required: false
+      schema:
+        type: string
+  responses:
+    '400':
+      description: Richiesta non correttamente formata
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FaultBean'
+          example:
+            categoria: RICHIESTA
+            codice: INTERNO
+            descrizione: Servizio non disponibile
+    '401':
+      description: Richiesta non autenticata
+    '403':
+      description: Richiesta non autorizzata
+    '404':
+      description: Risorsa inesistente
+    '415':
+      description: Formato del messaggio non valido
+    '422':
+      description: Richiesta non processabile
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FaultBean'
+          example:
+            categoria: RICHIESTA
+            codice: INTERNO
+            descrizione: Richiesta non processabile
+    '500':
+      description: Servizio non disponibile
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FaultBean'
+          example:
+            categoria: INTERNO
+            codice: INTERNO
+            descrizione: Servizio non disponibile
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    CategoriaEvento:
+      type: string
+      enum:
+        - INTERNO
+        - INTERFACCIA
+        - UTENTE
+      example: 'INTERFACCIA'
+    ComponenteEvento:
+      type: string
+      description: Modulo interno che ha emesso l'evento
+      enum:
+        - API_BACKOFFICE
+        - API_ENTE
+        - API_PAGOPA
+        - API_PAGAMENTO
+        - API_PENDENZE
+        - API_RAGIONERIA
+        - API_BACKEND_IO
+        - API_SECIM
+        - API_MYPIVOT
+        - API_MAGGIOLI_JPPA
+        - API_GOVPAY
+        - API_HYPERSIC_APK
+        - API_USER
+        - GOVPAY
+      example: 'API_PAGOPA'
+    DatiPagoPA:
+      type: object
+      properties:
+        idPsp:
+          type: string
+          description: Identificativo del PSP
+          example: 'ABI12345'
+        idCanale:
+          type: string
+          example: 'ABI12345_01'
+        idIntermediarioPsp:
+          type: string
+          example: 'ABI12345_01'
+        tipoVersamento:
+          type: string
+          description: Tipologia di versamento realizzato
+          example: 'CP'
+        modelloPagamento:
+          type: string
+          description: Modello di pagamento utilizzato
+          example: '0'
+        idDominio:
+          type: string
+          example: '99999999999'
+        idIntermediario:
+          type: string
+          example: '99999999999'
+        idStazione:
+          type: string
+          example: '99999999999_01'
+        idRiconciliazione:
+          type: string
+          description: Identificativo dell'incasso
+          example: '12345'
+        sct:
+          type: string
+          description: Identificativo Sepa Credit Transfer
+          example: 2017-01-01ABI00000011234
+        idFlusso:
+          type: string
+          description: identificativo del flusso di rendicontazione
+          example: 2017-11-21GovPAYPsp1-10:27:27.903
+        dataFlusso:
+          type: string
+          format: date-time
+          description: data flusso di rendicontazione
+          example: '2017-07-21T17:32:28Z'
+        idTracciato:
+          type: number
+          description: Identificativo numerico del tracciato
+          example:
+            123456
+    EsitoEvento:
+      type: string
+      enum:
+        - OK
+        - KO
+        - FAIL
+      example: 'OK'
+    Evento:
+      allOf:
+        - $ref: '#/components/schemas/EventoIndex'
+        - type: object
+          required:
+            - parametriRichiesta
+            - parametriRisposta
+          properties:
+            parametriRichiesta:
+              type: object
+              description: 'Dettaglio del messaggio di richiesta'
+            parametriRisposta:
+              type: object
+              description: 'Dettaglio del messaggio di risposta'
+    EventoIndex:
+      type: object
+      required:
+        - id
+        - componente
+        - categoriaEvento
+        - ruolo
+        - tipoEvento
+        - esito
+        - dataEvento
+        - durataEvento
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Identificativo evento
+          example: 1201122131
+        componente:
+          $ref: '#/components/schemas/ComponenteEvento'
+        categoriaEvento:
+          $ref: '#/components/schemas/CategoriaEvento'
+        ruolo:
+          $ref: '#/components/schemas/RuoloEvento'
+        tipoEvento:
+          type: string
+          example: 'nodoInviaRPT'
+          maxLength: 255
+        esito:
+          $ref: '#/components/schemas/EsitoEvento'
+        dataEvento:
+          type: string
+          format: date-time
+          description: Data emissione evento
+          example: '2017-07-21T17:32:28Z'
+        durataEvento:
+          type: integer
+          format: int64
+          description: Durata evento (in millisecondi)
+          example: 120
+        sottotipoEvento:
+          type: string
+          example: 'richiesta verso il nodo'
+          maxLength: 255
+        sottotipoEsito:
+          type: string
+          description: Descrizione dell'esito
+          example: '200'
+          maxLength: 255
+        dettaglioEsito:
+          type: string
+          example: 'Operazione completata con successo'
+        idDominio:
+          type: string
+          description: Identificativo ente creditore
+          example: 01234567890
+          pattern: '(^([0-9]){11}$)'
+        iuv:
+          type: string
+          description: Identificativo univoco di versamento
+          example: RF23567483937849450550875
+          maxLength: 35
+        ccp:
+          type: string
+          description: Codice contesto di pagamento
+          example: '1234acdc'
+          maxLength: 35
+        idA2A:
+          type: string
+          description: Identificativo del gestionale responsabile della pendenza
+          example: 'A2A-12345'
+          pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
+        idPendenza:
+          type: string
+          description: Identificativo della pendenza nel gestionale responsabile
+          example: 'abcdef12345'
+          pattern: '(^[a-zA-Z0-9\-_]{1,35}$)'
+        idPagamento:
+          type: string
+          description: Identificativo del pagamento assegnato da GovPay
+          example: 'f9866575-e255-4d10-9845-57ba88bec136'
+          maxLength: 35
+        datiPagoPA:
+          $ref: '#/components/schemas/DatiPagoPA'
+        severita:
+          type: integer
+          format: int32
+          description: indica il livello di severita nel caso di evento con esito KO/FAIL
+          example: 0
+    FaultBean:
+      type: object
+      required:
+        - categoria
+        - codice
+        - descrizione
+      properties:
+        categoria:
+          type: string
+          description: >-
+            Categoria dell'errore riscontrato:
+             * `AUTORIZZAZIONE` - Operazione non autorizzata
+             * `RICHIESTA` - Richiesta non valida
+             * `OPERAZIONE` - Operazione non eseguibile
+             * `PAGOPA` - Errore da PagoPA
+             * `EC` - Errore da Ente Creditore
+             * `INTERNO` - Errore interno
+          enum:
+            - AUTORIZZAZIONE
+            - RICHIESTA
+            - OPERAZIONE
+            - PAGOPA
+            - EC
+            - INTERNO
+        codice:
+          type: string
+          description: Codice di errore
+        descrizione:
+          type: string
+          description: Descrizione dell'errore
+        dettaglio:
+          type: string
+          description: Descrizione aggiuntiva
+      example:
+        categoria: INTERNO
+        codice: INTERNO
+        descrizione: Servizio non disponibile
+    ListaPaginata:
+      type: object
+      properties:
+        numRisultati:
+          type: number
+          format: integer
+          example: '100'
+        numPagine:
+          type: number
+          format: integer
+          example: '4'
+        risultatiPerPagina:
+          type: number
+          format: integer
+          example: '25'
+        pagina:
+          type: number
+          format: integer
+          example: '1'
+        prossimiRisultati:
+          type: string
+          format: integer
+          example: '/risorsa?pagina=2'
+        maxRisultati:
+          type: number
+          format: integer
+          example: '100'
+    NuovoEvento:
+      allOf:
+        - $ref: '#/components/schemas/EventoIndex'
+        - type: object
+          required:
+            - parametriRichiesta
+            - parametriRisposta
+          properties:
+            parametriRichiesta:
+              type: object
+              description: 'Dettaglio del messaggio di richiesta'
+            parametriRisposta:
+              type: object
+              description: 'Dettaglio del messaggio di risposta'
+    Pagina:
+      type: integer
+      default: 1
+      minimum: 1
+    RisultatiPerPagina:
+      type: integer
+      default: 25
+      minimum: 0
+      maximum: 200
+    RuoloEvento:
+      type: string
+      enum:
+        - CLIENT
+        - SERVER
+      example: 'SERVER'

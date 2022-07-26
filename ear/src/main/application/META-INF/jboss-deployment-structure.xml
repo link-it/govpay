@@ -169,4 +169,6 @@
 			<module name="org.jboss.resteasy.resteasy-jackson2-provider" />
 		</exclusions>
 	</sub-deployment>
+	<sub-deployment name="api-gde-${project.version}.war">
+	</sub-deployment>
 </jboss-deployment-structure>

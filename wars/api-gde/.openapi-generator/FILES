@@ -1,0 +1,13 @@
+target/generated-sources/java/it/govpay/gde/api/ApiUtil.java
+target/generated-sources/java/it/govpay/gde/api/EventiApi.java
+target/generated-sources/java/it/govpay/gde/api/model/CategoriaEvento.java
+target/generated-sources/java/it/govpay/gde/api/model/ComponenteEvento.java
+target/generated-sources/java/it/govpay/gde/api/model/DatiPagoPA.java
+target/generated-sources/java/it/govpay/gde/api/model/EsitoEvento.java
+target/generated-sources/java/it/govpay/gde/api/model/Evento.java
+target/generated-sources/java/it/govpay/gde/api/model/EventoAllOf.java
+target/generated-sources/java/it/govpay/gde/api/model/EventoIndex.java
+target/generated-sources/java/it/govpay/gde/api/model/FaultBean.java
+target/generated-sources/java/it/govpay/gde/api/model/ListaPaginata.java
+target/generated-sources/java/it/govpay/gde/api/model/NuovoEvento.java
+target/generated-sources/java/it/govpay/gde/api/model/RuoloEvento.java

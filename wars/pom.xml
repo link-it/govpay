@@ -18,6 +18,7 @@
 		<module>api-pagamento</module>
 		<module>api-ragioneria</module>
 		<module>api-pendenze</module>
+		<module>api-gde</module>
 		<module>api-pagopa</module>
 		<module>api-jppapdp</module>
 		<module>web-connector</module>
