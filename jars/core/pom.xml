@@ -62,6 +62,12 @@
 			<artifactId>jppapdp-beans</artifactId>
 			<type>jar</type>
 		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>client-api-gde</artifactId>
+			<type>jar</type>
+		</dependency>
 
 		<dependency>
 			<groupId>commons-codec</groupId>

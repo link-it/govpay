@@ -30,6 +30,7 @@ import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.NotificheAppIoBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.QuietanzaPagamento;
+import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
@@ -187,8 +188,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 				this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 			} finally {
 				if(clientGetProfile != null && clientGetProfile.getEventoCtx().isRegistraEvento()) {
-					EventiBD eventiBD = new EventiBD(configWrapper);
-					eventiBD.insertEvento(clientGetProfile.getEventoCtx().toEventoDTO());
+					GdeUtils.salvaEvento(clientGetProfile.getEventoCtx());
 				}
 				
 				if(notificheBD != null) notificheBD.closeConnection(); 
@@ -321,8 +321,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 					this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 				} finally {
 					if(clientPostMessage != null && clientPostMessage.getEventoCtx().isRegistraEvento()) {
-						EventiBD eventiBD = new EventiBD(configWrapper);
-						eventiBD.insertEvento(clientPostMessage.getEventoCtx().toEventoDTO());
+						GdeUtils.salvaEvento(clientPostMessage.getEventoCtx());
 					}
 					
 					if(notificheBD != null) notificheBD.closeConnection(); 

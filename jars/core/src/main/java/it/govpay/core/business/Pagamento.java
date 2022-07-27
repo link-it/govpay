@@ -52,11 +52,10 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Stazione;
-import it.govpay.bd.model.PagamentoPortale.STATO;
-import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
@@ -65,6 +64,7 @@ import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTO;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTOResponse;
 import it.govpay.core.business.model.Risposta;
+import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.utils.EventoContext.Esito;
@@ -72,9 +72,9 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.RrUtils;
-import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Canale.ModelloPagamento;
@@ -242,7 +242,6 @@ public class Pagamento   {
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		Map<String, String> statiRptPendenti = new HashMap<>();
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 
 		// Ciclo sui domini, ma ciclo veramente solo se perDominio == true,
 		// Altrimenti ci giro una sola volta 
@@ -373,8 +372,7 @@ public class Pagamento   {
 				}
 			} finally {
 				if(chiediListaPendentiClient != null && chiediListaPendentiClient.getEventoCtx().isRegistraEvento()) {
-					EventiBD eventiBD = new EventiBD(configWrapper);
-					eventiBD.insertEvento(chiediListaPendentiClient.getEventoCtx().toEventoDTO());
+					GdeUtils.salvaEvento(chiediListaPendentiClient.getEventoCtx());
 				}
 			}
 		}
@@ -534,8 +532,7 @@ public class Pagamento   {
 			throw new GovPayException(EsitoOperazione.NDP_000, e);
 		} finally {
 			if(nodoInviaRRClient != null && nodoInviaRRClient.getEventoCtx().isRegistraEvento()) {
-				EventiBD eventiBD = new EventiBD(configWrapper);
-				eventiBD.insertEvento(nodoInviaRRClient.getEventoCtx().toEventoDTO());
+				GdeUtils.salvaEvento(nodoInviaRRClient.getEventoCtx());
 			}
 		}
 	}

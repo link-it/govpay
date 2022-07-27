@@ -43,18 +43,18 @@ import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.model.Risposta;
+import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RptUtils;
-import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.StatoRpt;
@@ -236,13 +236,7 @@ public class InviaRptThread implements Runnable {
 				rptBD.closeConnection();
 
 			if(client != null && client.getEventoCtx().isRegistraEvento()) {
-				try {
-					EventiBD eventiBD = new EventiBD(configWrapper);
-					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO());
-
-				} catch (ServiceException e) {
-					log.error("Errore: " + e.getMessage(), e);
-				}
+				GdeUtils.salvaEvento(client.getEventoCtx());
 			}
 			ContextThreadLocal.unset();
 		}

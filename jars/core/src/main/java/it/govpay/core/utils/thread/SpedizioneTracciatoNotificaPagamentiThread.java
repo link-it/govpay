@@ -70,11 +70,11 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.model.eventi.DettaglioRisposta;
-import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.TracciatiNotificaPagamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.TracciatiNotificaPagamenti;
+import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Categoria;
@@ -84,8 +84,8 @@ import it.govpay.core.utils.ExceptionUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.EnteRendicontazioniClient;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
 import it.govpay.ec.rendicontazioni.v1.beans.Rpp;
@@ -276,14 +276,8 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		} finally {
 			this.popolaContextEvento(connettore.getTipoConnettore(), url, dumpRequest, dumpResponse, this.eventoCtx);
 			
-			
-			EventiBD eventiBD = new EventiBD(configWrapper);
-			try {
-				eventiBD.insertEvento(this.eventoCtx.toEventoDTO());
-			} catch (ServiceException e) {
-				log.error("Errore durante il salvataggio dell'evento: ", e);
-			}
-			
+			GdeUtils.salvaEvento(this.eventoCtx);
+
 			if(tracciatiMyPivotBD != null) {
 				tracciatiMyPivotBD.closeConnection();
 			}
@@ -474,12 +468,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
         			}
         		} finally {
         			if(client != null && client.getEventoCtx().isRegistraEvento()) {
-        				EventiBD eventiBD = new EventiBD(configWrapper);
-        				try {
-        					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO());
-        				} catch (ServiceException e) {
-        					log.error("Errore durante il salvataggio dell'evento: ", e);
-        				}
+        				GdeUtils.salvaEvento(client.getEventoCtx());
         			}
 				}
             }
@@ -521,12 +510,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
             			}
             		} finally {
             			if(client != null && client.getEventoCtx().isRegistraEvento()) {
-            				EventiBD eventiBD = new EventiBD(configWrapper);
-            				try {
-            					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO());
-            				} catch (ServiceException e) {
-            					log.error("Errore durante il salvataggio dell'evento: ", e);
-            				}
+            				GdeUtils.salvaEvento(client.getEventoCtx());
             			}
     				}
 				}

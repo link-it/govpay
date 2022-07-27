@@ -65,12 +65,12 @@ import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.eventi.DatiPagoPA;
-import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
@@ -82,9 +82,9 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
@@ -635,6 +635,7 @@ public class Rendicontazioni {
 							frAcquisiti++;
 							
 							if(chiediFlussoRendicontazioneClient != null) {
+								chiediFlussoRendicontazioneClient.getEventoCtx().setDataFlusso(fr.getDataFlusso());
 								chiediFlussoRendicontazioneClient.getEventoCtx().setIdFr(fr.getId());
 							}
 							if(!hasFrAnomalia) {
@@ -659,12 +660,10 @@ public class Rendicontazioni {
 						frNonAcquisiti++;
 					} finally {
 						if(chiediFlussoRendicontazioneClient != null && chiediFlussoRendicontazioneClient.getEventoCtx().isRegistraEvento()) {
-							EventiBD eventiBD = new EventiBD(configWrapper);
-							Evento eventoDTO = chiediFlussoRendicontazioneClient.getEventoCtx().toEventoDTO();
 							if(isAggiornamento)
-								eventoDTO.setSottotipoEvento(EventoContext.APIPAGOPA_SOTTOTIPOEVENTO_FLUSSO_RENDICONTAZIONE_DUPLICATO);
-							eventiBD.insertEvento(eventoDTO);
+								chiediFlussoRendicontazioneClient.getEventoCtx().setSottotipoEvento(EventoContext.APIPAGOPA_SOTTOTIPOEVENTO_FLUSSO_RENDICONTAZIONE_DUPLICATO);
 							
+							GdeUtils.salvaEvento(chiediFlussoRendicontazioneClient.getEventoCtx());
 						}
 					}
 				}
@@ -811,13 +810,7 @@ public class Rendicontazioni {
 			return flussiDaAcquisire;
 		}  finally {
 			if(chiediFlussoRendicontazioniClient != null && chiediFlussoRendicontazioniClient.getEventoCtx().isRegistraEvento()) {
-				try {
-					EventiBD eventiBD = new EventiBD(configWrapper);
-					eventiBD.insertEvento(chiediFlussoRendicontazioniClient.getEventoCtx().toEventoDTO());
-				}catch (ServiceException e) {
-					log.error("Errore durante l'acquisizione dei flussi di rendicontazione", e);
-				}finally {
-				}
+				GdeUtils.salvaEvento(chiediFlussoRendicontazioniClient.getEventoCtx());
 			}
 		}
 

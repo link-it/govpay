@@ -44,7 +44,6 @@ import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.eventi.DatiPagoPA;
-import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.NotificheAppIoBD;
@@ -52,6 +51,7 @@ import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PromemoriaBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.exceptions.EcException;
@@ -394,22 +394,8 @@ public class Incassi {
 				incassiBD.closeConnection();
 			
 			if(listaEventi.size() >0) {
-				EventiBD eventiBD = null;
-				
-				try {
-					eventiBD = new EventiBD(configWrapper);
-					eventiBD.setupConnection(configWrapper.getTransactionID());
-					eventiBD.setAtomica(false);
-					
-					for (Evento evento : listaEventi) {
-						eventiBD.insertEvento(evento);	
-					}
-				} catch (ServiceException e) {
-					throw new GovPayException(e);
-				} finally {
-					if(eventiBD != null) {
-						eventiBD.closeConnection();
-					}
+				for (Evento evento : listaEventi) {
+					GdeUtils.salvaEvento(evento);
 				}
 			}
 		}
@@ -865,22 +851,8 @@ public class Incassi {
 				incassiBD.closeConnection();
 			
 			if(listaEventi.size() >0) {
-				EventiBD eventiBD = null;
-				
-				try {
-					eventiBD = new EventiBD(configWrapper);
-					eventiBD.setupConnection(configWrapper.getTransactionID());
-					eventiBD.setAtomica(false);
-					
-					for (Evento evento : listaEventi) {
-						eventiBD.insertEvento(evento);	
-					}
-				} catch (ServiceException e) {
-					throw new GovPayException(e);
-				} finally {
-					if(eventiBD != null) {
-						eventiBD.closeConnection();
-					}
+				for (Evento evento : listaEventi) {
+					GdeUtils.salvaEvento(evento);
 				}
 			}
 		}
