@@ -94,6 +94,7 @@ public class EventoContext {
 	private String idTransazione;
 	private Long id;
 	
+	private Date dataFlusso;
 	private Long idFr;
 	private Long idIncasso;
 	private Long idTracciato;
@@ -487,6 +488,14 @@ public class EventoContext {
 
 	public void setSeverita(Integer severita) {
 		this.severita = severita;
+	}
+
+	public Date getDataFlusso() {
+		return dataFlusso;
+	}
+
+	public void setDataFlusso(Date dataFlusso) {
+		this.dataFlusso = dataFlusso;
 	}
 
 }

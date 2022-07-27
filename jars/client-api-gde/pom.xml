@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+		<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.2</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+
+	<groupId>it.govpay</groupId>
+	<artifactId>client-api-gde</artifactId>
+	<packaging>jar</packaging>
+	<name>GovPay - jars - Client REST API Giornale degli Eventi</name>
+	<version>4.0.0</version>
+	
+	<properties>
+		<java.version>17</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<maven.compiler.release>${java.version}</maven.compiler.release>
+
+		<!-- Versioni plugin maven -->
+		<maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
+		<maven.war.plugin.version>3.2.3</maven.war.plugin.version>
+
+		<rel-to-parent>../..</rel-to-parent>
+		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
+
+		<!-- Swagger-codegen -->
+		<openapi.tool.codegen.version>6.0.0</openapi.tool.codegen.version>
+
+		<!-- Mpastruct -->
+		<mapstruct.version>1.5.1.Final</mapstruct.version>
+		
+		<!-- Lombok version -->		
+		<org.projectlombok.version>1.18.24</org.projectlombok.version>
+		
+		<!-- Swagger-annotations -->
+		<swagger.version>2.1.2</swagger.version>
+		<swagger-annotations.version>1.6.2</swagger-annotations.version>
+		
+		<!-- jackson-databind-nullable -->
+		<jackson.databind.nullable.version>0.2.1</jackson.databind.nullable.version>
+		
+		<!-- annotazione bean generati notnull -->
+		<jsr305.version>3.0.2</jsr305.version>
+		
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${mapstruct.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>${swagger-annotations.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>${jackson.databind.nullable.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<version>${jsr305.version}</version>
+		</dependency>
+		
+	</dependencies>
+	
+	<build>
+		<filters>
+			<filter>${filter-file}</filter>
+		</filters>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+	                <target>${java.version}</target>
+					<annotationProcessorPaths>
+						<path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${org.projectlombok.version}</version>
+                        </path>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${mapstruct.version}</version>
+						</path>
+					</annotationProcessorPaths>
+					<compilerArgs>
+                        <arg>-Amapstruct.suppressGeneratorTimestamp=true</arg>
+                        <arg>-Amapstruct.defaultComponentModel=spring</arg>
+                    </compilerArgs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>${openapi.tool.codegen.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<id>generate-sources-client-govpay-gde-v1</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
+							<generatorName>java</generatorName>
+							<configOptions>
+								<booleanGetterPrefix>is</booleanGetterPrefix>
+								<dateLibrary>java8</dateLibrary>
+								<library>webclient</library>
+								<serializationLibrary>jackson</serializationLibrary>
+								<sourceFolder>target/generated-sources/java/</sourceFolder>
+								<apiPackage>it.govpay.gde.v1.api</apiPackage>
+								<invokerPackage>it.govpay.gde.v1.api.impl</invokerPackage>
+								<modelPackage>it.govpay.gde.v1.model</modelPackage>
+								<useAnnotatedBasePath>true</useAnnotatedBasePath>
+								<useBeanValidation>false</useBeanValidation>
+							</configOptions>
+							<output>${project.basedir}/target</output>
+							<interfaceOnly>true</interfaceOnly>
+							<generateApiTests>false</generateApiTests>
+							<generateModelTests>false</generateModelTests>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+	
+</project>

@@ -41,14 +41,14 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NotificaClient;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Connettore;
 import it.govpay.model.Notifica.StatoSpedizione;
 import it.govpay.model.Notifica.TipoNotifica;
@@ -276,12 +276,7 @@ public class InviaNotificaThread implements Runnable {
 			}
 		} finally {
 			if(client != null && client.getEventoCtx().isRegistraEvento()) {
-				EventiBD eventiBD = new EventiBD(configWrapper);
-				try {
-					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO());
-				} catch (ServiceException e) {
-					log.error("Errore durante il salvataggio dell'evento: ", e);
-				}
+				GdeUtils.salvaEvento(client.getEventoCtx());
 			}
 			
 			this.completed = true;

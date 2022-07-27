@@ -60,12 +60,12 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Iuv;
 import it.govpay.core.dao.commons.Versamento.AllegatoPendenza;
+import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
@@ -328,9 +328,7 @@ public class VersamentoUtils {
 			EventoContext eventoCtx = verificaClient.getEventoCtx();
 
 			if(eventoCtx.isRegistraEvento()) {
-				// log evento
-				EventiBD eventiBD = new EventiBD(configWrapper);
-				eventiBD.insertEvento(eventoCtx.toEventoDTO());
+				GdeUtils.salvaEvento(eventoCtx);
 			}
 		}
 		return versamento;
@@ -414,9 +412,7 @@ public class VersamentoUtils {
 			EventoContext eventoCtx = verificaClient.getEventoCtx();
 
 			if(eventoCtx.isRegistraEvento()) {
-				// log evento
-				EventiBD eventiBD = new EventiBD(configWrapper);
-				eventiBD.insertEvento(eventoCtx.toEventoDTO());
+				GdeUtils.salvaEvento(eventoCtx);
 			}
 		}
 		return versamento;

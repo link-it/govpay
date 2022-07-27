@@ -23,15 +23,15 @@ import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.PagamentoPortale.STATO;
-import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.model.Risposta;
+import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
@@ -468,14 +468,12 @@ public class Rpt {
 					}
 				} finally {
 					if(chiediStatoRptClient != null && chiediStatoRptClient.getEventoCtx().isRegistraEvento()) {
-						EventiBD eventiBD = new EventiBD(configWrapper);
-						eventiBD.insertEvento(chiediStatoRptClient.getEventoCtx().toEventoDTO());
+						GdeUtils.salvaEvento(chiediStatoRptClient.getEventoCtx());
 					}
 				}
 			}  finally {
 
 				if(clientInviaCarrelloRPT != null && clientInviaCarrelloRPT.getEventoCtx().isRegistraEvento()) {
-					EventiBD eventiBD = new EventiBD(configWrapper);
 					for(it.govpay.bd.model.Rpt rpt : rpts) {
 						// salvataggio id Rpt/ versamento/ pagamento
 						clientInviaCarrelloRPT.getEventoCtx().setCodDominio(rpt.getCodDominio());
@@ -494,7 +492,7 @@ public class Rpt {
 							clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(rpt.getDescrizioneStato());
 						}
 
-						eventiBD.insertEvento(clientInviaCarrelloRPT.getEventoCtx().toEventoDTO());
+						GdeUtils.salvaEvento(clientInviaCarrelloRPT.getEventoCtx());
 					}
 				}
 			}

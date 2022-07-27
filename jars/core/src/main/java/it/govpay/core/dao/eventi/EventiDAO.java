@@ -19,9 +19,9 @@ import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
 import it.govpay.core.dao.eventi.dto.PutEventoDTO;
 import it.govpay.core.dao.eventi.dto.PutEventoDTOResponse;
 import it.govpay.core.dao.eventi.exception.EventoNonTrovatoException;
+import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.EventoContext;
 
 public class EventiDAO extends BaseDAO {
 
@@ -100,19 +100,12 @@ public class EventiDAO extends BaseDAO {
 
 	public PutEventoDTOResponse inserisciEvento(PutEventoDTO putEventoDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
 		PutEventoDTOResponse putEventoDTOResponse = new PutEventoDTOResponse();
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
-		EventiBD eventiBD = null;
+		
 		try {
-			eventiBD = new EventiBD(configWrapper);
-
-			EventoContext eventoGenerico = putEventoDTO.getEvento();
-
-			Evento evento = eventoGenerico.toEventoDTO();
-			eventiBD.insertEvento(evento);
+			GdeUtils.salvaEvento(putEventoDTO.getEvento());
 			return putEventoDTOResponse;
 		} finally {
-			if(eventiBD != null)
-				eventiBD.closeConnection();
+			
 		}
 	}
 

@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import javax.validation.constraints.Positive;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +47,8 @@ import it.govpay.gde.repository.EventoRepository;
 @RestController
 @Validated
 public class GdeController {
+	
+	private Logger logger = LoggerFactory.getLogger(GdeController.class);
 
 	@Autowired
 	private EventoIndexRepository eventoIndexRepository;
@@ -179,13 +183,16 @@ public class GdeController {
 
 	@PostMapping(path = "/eventi", consumes = { MediaType.APPLICATION_JSON_VALUE} , name = "addEvento")
 	public ResponseEntity<?> addEvento(@RequestBody NuovoEventoModel evento){
+		this.logger.debug("AAAAAA Salvataggio evento: " + evento.toString());
 		try {
 			EventoEntity entity = this.nuovoEventoMapper.nuovoEventoModelToEventoEntity(evento);
 			
 			this.eventoRepository.save(entity);
 
+			this.logger.debug("AAAAAA Salvataggio evento completato.");
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		}catch (Exception e) {
+			this.logger.error("AAAAAA Salvataggio evento completato con errore: " +e.getMessage(), e);
 			throw new InternalException(e);
 		}
 	}

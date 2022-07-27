@@ -67,7 +67,7 @@
 		<cxf-codegen-plugin.version>3.4.4</cxf-codegen-plugin.version>
 		
 		<!-- jackson -->
-		<jackson.version>2.9.10</jackson.version>
+		<jackson.version>2.13.3</jackson.version>
 		
 		<!-- Jersey -->
 		<jersey.version>2.25.1</jersey.version>
@@ -292,14 +292,6 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>api-gestione</artifactId>
-				<version>${project.version}</version>
-				<type>war</type>
-				<scope>compile</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>it.govpay</groupId>
 				<artifactId>pagopa-beans</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
@@ -356,6 +348,14 @@
 				<artifactId>api-gde</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>client-api-gde</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
 

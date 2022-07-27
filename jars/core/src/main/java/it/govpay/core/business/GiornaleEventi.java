@@ -22,20 +22,14 @@ package it.govpay.core.business;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.context.core.Role;
 import org.openspcoop2.utils.service.beans.HttpMethodEnum;
-import org.openspcoop2.utils.service.context.ContextThreadLocal;
-import org.slf4j.Logger;
 
-import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.configurazione.model.GdeEvento;
-import it.govpay.bd.configurazione.model.GdeInterfaccia;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.configurazione.model.GdeEvento.DumpEnum;
 import it.govpay.bd.configurazione.model.GdeEvento.LogEnum;
-import it.govpay.bd.model.Evento;
-import it.govpay.bd.pagamento.EventiBD;
+import it.govpay.bd.configurazione.model.GdeInterfaccia;
+import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Categoria;
 import it.govpay.core.utils.EventoContext.Componente;
@@ -45,21 +39,9 @@ import it.govpay.core.utils.client.NodoClient;
 
 public class GiornaleEventi {
 	
-	private static Logger log = LoggerWrapperFactory.getLogger(GiornaleEventi.class	);
-	
 	public GiornaleEventi() {
 	}
 
-	public void registraEvento(Evento evento) {
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		try {
-			EventiBD eventiBD = new EventiBD(configWrapper);
-			eventiBD.insertEvento(evento);
-		} catch (Exception e) {
-			log.error("Errore nella registrazione degli eventi", e);
-		}
-	}
-	
 	public static GdeInterfaccia getConfigurazioneComponente(Componente componente, Giornale giornale) {
 		switch(componente) {
 		case API_BACKOFFICE:
