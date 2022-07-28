@@ -38,7 +38,8 @@ public abstract class NuovoEventoMapper {
 		 @Mapping(source = "idDominio", target = "codDominio"),
 		 @Mapping(source = "idA2A", target = "codApplicazione"),
 		 @Mapping(source = "idPendenza", target = "codVersamentoEnte"),
-		 @Mapping(source = "idPagamento", target = "idSessione")
+		 @Mapping(source = "idPagamento", target = "idSessione"),
+		 @Mapping(source = "idRiconciliazione", target = "idIncasso")
 	})
 	public abstract EventoEntity nuovoEventoModelToEventoEntity(NuovoEventoModel model);
 	

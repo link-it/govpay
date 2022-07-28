@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import it.govpay.gde.controller.GdeController;
 import it.govpay.gde.entity.DatiPagoPAEntity;
+import it.govpay.gde.entity.EventoBaseEntity;
 import it.govpay.gde.entity.EventoIndexEntity;
 import it.govpay.gde.entity.converter.DatiPagoPAConverter;
 import it.govpay.gde.model.CategoriaEvento;
@@ -21,7 +22,7 @@ public class EventoIndexModelAssembler extends RepresentationModelAssemblerSuppo
 	
 	@Autowired
 	private DatiPagoPAModelAssembler pagoPAModelAssembler;
-
+	
 	public EventoIndexModelAssembler() {
 		super(GdeController.class, EventoIndexModel.class);
 	}
@@ -38,6 +39,12 @@ public class EventoIndexModelAssembler extends RepresentationModelAssemblerSuppo
 	public EventoIndexModel toModel(EventoIndexEntity entity) {
 		EventoIndexModel model = instantiateModel(entity);
 		
+		toModel(entity, model);
+		
+		return model;
+	}
+
+	public void toModel(EventoBaseEntity entity, EventoIndexModel model) {
 		model.setId(entity.getId());
 
 		if(StringUtils.isNotBlank(entity.getComponente())) {
@@ -104,8 +111,6 @@ public class EventoIndexModelAssembler extends RepresentationModelAssemblerSuppo
 			model.setDatiPagoPA(this.pagoPAModelAssembler.toModel(datiPagoPAEntity));
 		}
 		model.setSeverita(entity.getSeverita());
-		
-		return model;
 	}
 	
 }
