@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
 import org.slf4j.Logger;
@@ -26,6 +27,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.govpay.gde.assemblers.EventoIndexModelAssembler;
 import it.govpay.gde.assemblers.EventoModelAssembler;
 import it.govpay.gde.entity.EventoEntity;
@@ -39,6 +46,7 @@ import it.govpay.gde.model.EsitoEvento;
 import it.govpay.gde.model.EventoIndexModel;
 import it.govpay.gde.model.EventoModel;
 import it.govpay.gde.model.NuovoEventoModel;
+import it.govpay.gde.model.ProblemModel;
 import it.govpay.gde.model.RuoloEvento;
 import it.govpay.gde.repository.EventoIndexRepository;
 import it.govpay.gde.repository.EventoIndexRepositoryImpl.SearchParam;
@@ -68,25 +76,50 @@ public class GdeController {
 	@Autowired
 	private NuovoEventoMapper nuovoEventoMapper;
 
+	@Operation(summary = "Ricerca eventi", description = "Ricerca eventi", tags = { "eventi" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "Lista eventi", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PagedModel.class, subTypes = {EventoIndexModel.class}))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemModel.class))),
+			@ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemModel.class))),
+			@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemModel.class))),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemModel.class)))
+	})
 	@GetMapping(path = "/eventi", produces = { MediaType.APPLICATION_JSON_VALUE} , name = "findEventi")
-	public ResponseEntity<PagedModel<EventoIndexModel>> findEventi(Pageable pageable,
+	public ResponseEntity<PagedModel<EventoIndexModel>> findEventi(
+			@Parameter(description="informazioni di paginazione e ordinamento") 
+			Pageable pageable,
+			@Parameter(description="Inizio della finestra temporale di osservazione", name="dataDa") 
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  Optional<LocalDateTime> dataDa,
+			@Parameter(description="Fine della finestra temporale di osservazione", name="dataA") 
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  Optional<LocalDateTime> dataA,
+			@Parameter(description="Identificativo del dominio beneficiario", name="idDominio") 
 			@RequestParam(required = false) Optional<String> idDominio,
+			@Parameter(description="Identificativo univoco di versamento", name="iuv") 
 			@RequestParam(required = false) Optional<String> iuv,
+			@Parameter(description="Codice contesto pagamento/ID ricevuta", name="ccp") 
 			@RequestParam(required = false) Optional<String> ccp,
+			@Parameter(description="Identificativo del gestionale proprietario della pendenza", name="idA2A") 
 			@RequestParam(required = false) Optional<String> idA2A,
+			@Parameter(description="Identificativo della pendenza nel gestionale proprietario", name="idPendenza") 
 			@RequestParam(required = false) Optional<String> idPendenza,
+			@Parameter(description="Identificativo della richiesta di pagamento", name="idPagamento") 
 			@RequestParam(required = false) Optional<String> idPagamento,
+			@Parameter(description="Filtro per categoria evento", name="categoria") 
 			@RequestParam(required = false) Optional<CategoriaEvento> categoriaEvento,
+			@Parameter(description="Filtro per esito evento", name="esito") 
 			@RequestParam(required = false) Optional<EsitoEvento> esitoEvento,
+			@Parameter(description="Filtro per ruolo evento", name="ruolo") 
 			@RequestParam(required = false) Optional<RuoloEvento> ruoloEvento,
+			@Parameter(description="Filtro per sottotipo evento", name="sottotipo") 
 			@RequestParam(required = false) Optional<String> sottotipoEvento,
+			@Parameter(description="Filtro per tipo evento", name="tipo") 
 			@RequestParam(required = false) Optional<String> tipoEvento,
+			@Parameter(description="Filtro per componente evento", name="componente") 
 			@RequestParam(required = false) Optional<ComponenteEvento> componenteEvento,
+			@Parameter(description="Filtro per severita' errore", name="severitaDa") 
 			@RequestParam(required = false) Optional<Integer> severitaDa,
+			@Parameter(description="Filtro per severita' errore", name="severitaA") 
 			@RequestParam(required = false) Optional<Integer> severitaA
-
 			){
 		Map<SearchParam, Object> filters = new HashMap<>();
 
@@ -173,16 +206,39 @@ public class GdeController {
 		return new ResponseEntity<>(collModel,HttpStatus.OK);
 	}
 
+	@Operation(summary = "Dettaglio di un evento", description = "Dettaglio di un evento", tags = { "eventi" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "200", description = "Dettaglio Evento", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = EventoModel.class))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemModel.class))),
+			@ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemModel.class))),
+			@ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemModel.class))),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemModel.class)))
+	})
 	@GetMapping(path = "/eventi/{id}", produces = { MediaType.APPLICATION_JSON_VALUE} , name = "getEvento")
-	public ResponseEntity<EventoModel> getEventoById(@PathVariable("id")	@Positive Long id) {
+	public ResponseEntity<EventoModel> getEventoById(
+			@Parameter(description="Id dell'evento da leggere.", required=true)
+			@PathVariable("id") @Positive Long id
+			) {
 		return this.eventoRepository.findById(id)
 				.map(this.eventoAssembler::toModel)
 				.map(ResponseEntity::ok) 
 				.orElseThrow(() -> new ResourceNotFoundException());
 	}
 
+	@Operation(summary = "Salvataggio di un nuovo evento", description = "Salvataggio di un nuovo evento", tags = { "eventi" })
+	@ApiResponses(value = { 
+			@ApiResponse(responseCode = "201", description = "Evento salvato con successo"),
+			@ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemModel.class))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemModel.class))),
+			@ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemModel.class))),
+			@ApiResponse(responseCode = "422", description = "Unprocessable Entity", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemModel.class))),
+			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemModel.class)))
+	})
 	@PostMapping(path = "/eventi", consumes = { MediaType.APPLICATION_JSON_VALUE} , name = "addEvento")
-	public ResponseEntity<?> addEvento(@RequestBody NuovoEventoModel evento){
+	public ResponseEntity<?> addEvento(
+			@Parameter(description="Evento da salvare.", required=true, schema=@Schema(implementation = NuovoEventoModel.class))
+			@Valid
+			@RequestBody NuovoEventoModel evento){
 		this.logger.debug("AAAAAA Salvataggio evento: " + evento.toString());
 		try {
 			EventoEntity entity = this.nuovoEventoMapper.nuovoEventoModelToEventoEntity(evento);
