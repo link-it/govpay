@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import it.govpay.gde.v1.api.GdeControllerApi;
+import it.govpay.gde.v1.api.EventiApi;
 import it.govpay.gde.v1.api.impl.ApiClient;
 import it.govpay.gde.v1.model.NuovoEvento;
 
@@ -12,12 +12,12 @@ public class GdeInvoker {
 	
 	private static Logger logger = LoggerFactory.getLogger(GdeInvoker.class);
 
-	private GdeControllerApi gdeApi;
+	private EventiApi gdeApi;
 	
 	public GdeInvoker(String gdeUrl){
 		ApiClient apiClient = new ApiClient();
 		apiClient.setBasePath(gdeUrl);
-		gdeApi = new GdeControllerApi(apiClient );
+		gdeApi = new EventiApi(apiClient );
 	}
 
 	public void salvaEvento(NuovoEvento nuovoEvento) {
