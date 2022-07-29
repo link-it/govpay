@@ -1,5 +1,7 @@
 package it.govpay.gde.model;
 
+import javax.validation.constraints.Positive;
+
 import org.springframework.hateoas.server.core.Relation;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -19,10 +21,13 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class NuovoEventoModel extends EventoModel  {
 
+	@Positive(message = "Il campo idTracciato deve contenere un valore >= 0.")
 	private Long idTracciato;
 	
+	@Positive(message = "Il campo idFr deve contenere un valore >= 0.")
 	private Long idFr;
 	
+	@Positive(message = "Il campo idRiconciliazione deve contenere un valore >= 0.")
 	private Long idRiconciliazione;
 }
 
