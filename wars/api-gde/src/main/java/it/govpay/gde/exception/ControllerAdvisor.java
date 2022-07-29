@@ -1,12 +1,18 @@
 package it.govpay.gde.exception;
 
-import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import it.govpay.gde.model.ProblemModel;
@@ -24,11 +30,29 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 				
 	}
 
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ProblemModel handleConstraintViolation(ConstraintViolationException ex) {
-        return buildProblem(ex, HttpStatus.UNPROCESSABLE_ENTITY) ;
-    }
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		
+		//Get all errors
+        List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(x -> x.getDefaultMessage())
+                .collect(Collectors.toList());
+        ProblemModel buildProblem = buildProblem(ex, HttpStatus.BAD_REQUEST);
+        buildProblem.setDetail(StringUtils.join(errors, ", "));
+
+        return new ResponseEntity<>(buildProblem, headers, status);
+//		// TODO Auto-generated method stub
+//		return super.handleMethodArgumentNotValid(ex, headers, status, request);
+	}
+	
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ProblemModel handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+//        return buildProblem(ex, HttpStatus.BAD_REQUEST) ;
+//    }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -40,5 +64,12 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
     @ExceptionHandler( {IllegalArgumentException.class, InternalException.class })
     public ProblemModel handleErroreInterno(IllegalArgumentException ex) {
         return buildProblem(ex, HttpStatus.INTERNAL_SERVER_ERROR) ;
+    }
+    
+    
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler( {javax.validation.ConstraintViolationException.class })
+    public ProblemModel handleConstraintViolation(javax.validation.ConstraintViolationException ex) {
+        return buildProblem(ex, HttpStatus.BAD_REQUEST) ;
     }
 }

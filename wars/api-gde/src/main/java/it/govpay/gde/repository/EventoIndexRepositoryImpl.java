@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -15,6 +16,7 @@ import javax.persistence.criteria.Root;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.query.QueryUtils;
 
 import it.govpay.gde.entity.EventoIndexEntity;
 import it.govpay.gde.entity.EventoIndexEntity_;
@@ -113,11 +115,16 @@ public class EventoIndexRepositoryImpl implements CustomSearchRepository<EventoI
 		// Aggiunta dei predicati come clausola where
 		cq.select(evento).where(predicates.toArray(new Predicate[]{}));
 		
-		// order by id desc
-//		cq.orderBy(qb.desc(evento.get(EventoIndexEntity_.id)));
+		// order by
+		cq.orderBy(QueryUtils.toOrders(pageable.getSort(), evento, qb));
+		
+		// limit e offset
+		TypedQuery<EventoIndexEntity> query = entityManager.createQuery(cq);
+	    query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+	    query.setMaxResults(pageable.getPageSize());
 
 		// Esecuzione della query
-		List<EventoIndexEntity> result = entityManager.createQuery(cq).getResultList();
+		List<EventoIndexEntity> result = query.getResultList();
 
 		// Creazione della query count per la paginazione
 		CriteriaQuery<Long> countQuery = qb.createQuery(Long.class);

@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.PagedModel;
@@ -87,6 +89,7 @@ public class GdeController {
 	@GetMapping(path = "/eventi", produces = { MediaType.APPLICATION_JSON_VALUE} , name = "findEventi")
 	public ResponseEntity<PagedModel<EventoIndexModel>> findEventi(
 			@Parameter(description="informazioni di paginazione e ordinamento") 
+			@PageableDefault(size = 25, sort = { "data"}, direction = Direction.DESC)
 			Pageable pageable,
 			@Parameter(description="Inizio della finestra temporale di osservazione", name="dataDa") 
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  Optional<LocalDateTime> dataDa,
@@ -217,7 +220,7 @@ public class GdeController {
 	@GetMapping(path = "/eventi/{id}", produces = { MediaType.APPLICATION_JSON_VALUE} , name = "getEvento")
 	public ResponseEntity<EventoModel> getEventoById(
 			@Parameter(description="Id dell'evento da leggere.", required=true)
-			@PathVariable("id") @Positive Long id
+			@PathVariable("id") @Positive(message = "Id dell'evento deve essere un valore > 0") Long id
 			) {
 		return this.eventoRepository.findById(id)
 				.map(this.eventoAssembler::toModel)
