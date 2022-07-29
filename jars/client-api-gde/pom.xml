@@ -192,6 +192,12 @@
 							<interfaceOnly>true</interfaceOnly>
 							<generateApiTests>false</generateApiTests>
 							<generateModelTests>false</generateModelTests>
+							  <typeMappings>
+							    <typeMapping>OffsetDateTime=java.time.LocalDateTime</typeMapping>
+							  </typeMappings>
+							  <importMappings>                
+							    <importMapping>java.time.OffsetDateTime=java.time.LocalDateTime</importMapping>
+							  </importMappings>
 						</configuration>
 					</execution>
 				</executions>

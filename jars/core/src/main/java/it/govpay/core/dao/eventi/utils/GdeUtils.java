@@ -1,6 +1,7 @@
 package it.govpay.core.dao.eventi.utils;
 
 import java.math.BigDecimal;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Date;
 
@@ -53,7 +54,8 @@ public class GdeUtils {
 		}
 		
 		if(context.getData() != null) {
-			dto.setDataEvento(context.getData().toInstant().atOffset(ZoneOffset.UTC));
+			dto.setDataEvento(context.getData().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+//			dto.setDataEvento(context.getData().toInstant().atOffset(ZoneOffset.UTC));
 		}
 		
 		dto.setDatiPagoPA(getDatiPagoPA(context)); 
@@ -110,14 +112,7 @@ public class GdeUtils {
 	
 	private static it.govpay.gde.v1.model.DatiPagoPA getDatiPagoPA(Evento evento) {
 		DatiPagoPA datiPagoPA = evento.getPagoPA();
-		Date dataFlusso = null; // evento.getDataFlusso();
-		Long idTracciato = evento.getIdTracciato();
 		
-		it.govpay.gde.v1.model.DatiPagoPA datiPagoPAModel = getDatiPagoPA(datiPagoPA, dataFlusso, idTracciato);
-		return datiPagoPAModel;
-	}
-
-	private static it.govpay.gde.v1.model.DatiPagoPA getDatiPagoPA(DatiPagoPA datiPagoPA, Date dataFlusso, Long idTracciato) {
 		it.govpay.gde.v1.model.DatiPagoPA datiPagoPAModel = null;
 		if(datiPagoPA != null) {
 			datiPagoPAModel = new it.govpay.gde.v1.model.DatiPagoPA();
@@ -140,14 +135,8 @@ public class GdeUtils {
 			datiPagoPAModel.setIdRiconciliazione(datiPagoPA.getTrn());
 			datiPagoPAModel.setSct(datiPagoPA.getSct());
 			
-			
-			if(dataFlusso != null) {
-				datiPagoPAModel.setDataFlusso(dataFlusso.toInstant().atOffset(ZoneOffset.UTC));
-			}
-			
-			
-			if(idTracciato != null)
-				datiPagoPAModel.setIdTracciato(new BigDecimal(idTracciato));
+			if(datiPagoPA.getIdTracciato() != null)
+				datiPagoPAModel.setIdTracciato(new BigDecimal(datiPagoPA.getIdTracciato()));
 			
 		}
 		return datiPagoPAModel;

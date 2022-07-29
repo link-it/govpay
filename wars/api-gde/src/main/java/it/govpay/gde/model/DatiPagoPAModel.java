@@ -1,7 +1,6 @@
 package it.govpay.gde.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 import org.springframework.hateoas.RepresentationModel;
 
@@ -44,9 +43,6 @@ public class DatiPagoPAModel extends RepresentationModel<DatiPagoPAModel>  {
   private String sct;
 
   private String idFlusso;
-
-  @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME)
-  private LocalDateTime dataFlusso;
 
   private BigDecimal idTracciato;
 
