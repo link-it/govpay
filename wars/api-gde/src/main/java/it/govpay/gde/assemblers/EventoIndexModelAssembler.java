@@ -17,6 +17,9 @@ import it.govpay.gde.model.EsitoEvento;
 import it.govpay.gde.model.EventoIndexModel;
 import it.govpay.gde.model.RuoloEvento;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @Component
 public class EventoIndexModelAssembler extends RepresentationModelAssemblerSupport<EventoIndexEntity, EventoIndexModel>  {
 	
@@ -40,6 +43,8 @@ public class EventoIndexModelAssembler extends RepresentationModelAssemblerSuppo
 		EventoIndexModel model = instantiateModel(entity);
 		
 		toModel(entity, model);
+		
+		model.add(linkTo(methodOn(GdeController.class).getEventoById(entity.getId())).withSelfRel());
 		
 		return model;
 	}

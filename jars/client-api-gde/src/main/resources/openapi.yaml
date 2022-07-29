@@ -9,58 +9,70 @@ paths:
   /eventi:
     get:
       tags:
-      - gde-controller
+      - eventi
+      summary: Ricerca eventi
+      description: Ricerca eventi
       operationId: findEventi
       parameters:
       - name: pageable
         in: query
+        description: informazioni di paginazione e ordinamento
         required: true
         schema:
           $ref: '#/components/schemas/Pageable'
       - name: dataDa
         in: query
+        description: Inizio della finestra temporale di osservazione
         required: false
         schema:
           type: string
           format: date-time
       - name: dataA
         in: query
+        description: Fine della finestra temporale di osservazione
         required: false
         schema:
           type: string
           format: date-time
       - name: idDominio
         in: query
+        description: Identificativo del dominio beneficiario
         required: false
         schema:
           type: string
       - name: iuv
         in: query
+        description: Identificativo univoco di versamento
         required: false
         schema:
           type: string
       - name: ccp
         in: query
+        description: Codice contesto pagamento/ID ricevuta
         required: false
         schema:
           type: string
       - name: idA2A
         in: query
+        description: Identificativo del gestionale proprietario della pendenza
         required: false
         schema:
           type: string
       - name: idPendenza
         in: query
+        description: Identificativo della pendenza nel gestionale proprietario
         required: false
         schema:
           type: string
       - name: idPagamento
         in: query
+        description: Identificativo della richiesta di pagamento
         required: false
         schema:
           type: string
-      - name: categoriaEvento
+      - name: categoria
         in: query
+        description: Filtro per categoria evento
         required: false
         schema:
           type: string
@@ -68,8 +80,9 @@ paths:
           - INTERNO
           - INTERFACCIA
           - UTENTE
-      - name: esitoEvento
+      - name: esito
         in: query
+        description: Filtro per esito evento
         required: false
         schema:
           type: string
@@ -77,26 +90,30 @@ paths:
           - OK
           - KO
           - FAIL
-      - name: ruoloEvento
+      - name: ruolo
         in: query
+        description: Filtro per ruolo evento
         required: false
         schema:
           type: string
           enum:
           - CLIENT
           - SERVER
-      - name: sottotipoEvento
+      - name: sottotipo
         in: query
+        description: Filtro per sottotipo evento
         required: false
         schema:
           type: string
-      - name: tipoEvento
+      - name: tipo
         in: query
+        description: Filtro per tipo evento
         required: false
         schema:
           type: string
-      - name: componenteEvento
+      - name: componente
         in: query
+        description: Filtro per componente evento
         required: false
         schema:
           type: string
@@ -117,44 +134,60 @@ paths:
           - GOVPAY
       - name: severitaDa
         in: query
+        description: Filtro per severita' errore
         required: false
         schema:
           type: integer
           format: int32
       - name: severitaA
         in: query
+        description: Filtro per severita' errore
         required: false
         schema:
           type: integer
           format: int32
       responses:
-        "404":
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/problem'
-        "500":
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/problem'
         "422":
           description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/problem'
-        "200":
-          description: OK
+        "404":
+          description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedModelEventoIndexModel'
+                $ref: '#/components/schemas/problem'
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        "200":
+          description: Lista eventi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedModel'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
     post:
       tags:
-      - gde-controller
+      - eventi
+      summary: Salvataggio di un nuovo evento
+      description: Salvataggio di un nuovo evento
       operationId: addEvento
       requestBody:
         content:
@@ -163,6 +196,12 @@ paths:
               $ref: '#/components/schemas/nuovoEvento'
         required: true
       responses:
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
         "404":
           description: Not Found
           content:
@@ -172,58 +211,85 @@ paths:
         "500":
           description: Internal Server Error
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/problem'
-        "422":
-          description: Unprocessable Entity
+        "400":
+          description: Bad Request
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/problem'
-        "200":
-          description: OK
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        "201":
+          description: Evento salvato con successo
           content:
             '*/*':
               schema:
                 type: object
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
   /eventi/{id}:
     get:
       tags:
-      - gde-controller
+      - eventi
+      summary: Dettaglio di un evento
+      description: Dettaglio di un evento
       operationId: getEventoById
       parameters:
       - name: id
         in: path
+        description: Id dell'evento da leggere.
         required: true
         schema:
           type: integer
           format: int64
       responses:
-        "404":
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/problem'
-        "500":
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/problem'
         "422":
           description: Unprocessable Entity
           content:
             '*/*':
               schema:
                 $ref: '#/components/schemas/problem'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
         "200":
-          description: OK
+          description: Dettaglio Evento
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/evento'
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
 components:
   schemas:
     problem:
@@ -353,6 +419,18 @@ components:
           type: object
         parametriRisposta:
           type: object
+        idTracciato:
+          type: integer
+          format: int64
+        idFr:
+          type: integer
+          format: int64
+        idRiconciliazione:
+          type: integer
+          format: int64
+        _links:
+          $ref: '#/components/schemas/Links'
+      description: Evento da salvare.
     Pageable:
       type: object
       properties:
@@ -383,16 +461,16 @@ components:
         number:
           type: integer
           format: int64
-    PagedModelEventoIndexModel:
+    PagedModel:
       type: object
       properties:
         _embedded:
           type: object
           properties:
-            eventi:
+            objects:
               type: array
               items:
-                $ref: '#/components/schemas/evento'
+                type: object
         _links:
           $ref: '#/components/schemas/Links'
         page:
@@ -468,6 +546,10 @@ components:
         severita:
           type: integer
           format: int32
+        parametriRichiesta:
+          type: object
+        parametriRisposta:
+          type: object
         _links:
           $ref: '#/components/schemas/Links'
     Link:

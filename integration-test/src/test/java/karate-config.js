@@ -21,7 +21,7 @@ function() {
 			govpay_url: 'http://localhost:8080',
 			govpay_backoffice_user: 'gpadmin',
 			govpay_backoffice_password: 'Password1!',
-			ndpsym_url: 'http://localhost:8180/govpay-ndpsym',
+			ndpsym_url: 'http://localhost:8080/govpay-ndpsym',
 			ndpsym_user: 'ndpsym',
 			ente_api_url: 'http://localhost:8888/paServiceImpl',
 			ente_api_rendicontazioni_url: 'http://localhost:8888/enteRendicontazioni',
