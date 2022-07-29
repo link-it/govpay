@@ -165,12 +165,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/problem'
-        "200":
-          description: Lista eventi
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PagedModel'
         "401":
           description: Unauthorized
           content:
@@ -183,6 +177,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/problem'
+        "200":
+          description: Lista eventi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedModel'
     post:
       tags:
       - eventi
@@ -214,26 +214,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/problem'
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/problem'
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/problem'
         "201":
           description: Evento salvato con successo
           content:
             '*/*':
               schema:
                 type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
         "403":
           description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        "400":
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -278,18 +278,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/problem'
-        "200":
-          description: Dettaglio Evento
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/evento'
         "403":
           description: Forbidden
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/problem'
+        "200":
+          description: Dettaglio Evento
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/evento'
 components:
   schemas:
     problem:
@@ -337,9 +337,6 @@ components:
           type: string
         idFlusso:
           type: string
-        dataFlusso:
-          type: string
-          format: date-time
         idTracciato:
           type: number
         _links:
