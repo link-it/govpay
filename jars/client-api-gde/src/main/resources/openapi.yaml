@@ -147,12 +147,6 @@ paths:
           type: integer
           format: int32
       responses:
-        "422":
-          description: Unprocessable Entity
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/problem'
         "404":
           description: Not Found
           content:
@@ -165,10 +159,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/problem'
-        "401":
-          description: Unauthorized
+        "400":
+          description: Bad Request
           content:
-            application/json:
+            '*/*':
               schema:
                 $ref: '#/components/schemas/problem'
         "403":
@@ -183,6 +177,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PagedModel'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
     post:
       tags:
       - eventi
@@ -196,12 +196,6 @@ paths:
               $ref: '#/components/schemas/nuovoEvento'
         required: true
       responses:
-        "422":
-          description: Unprocessable Entity
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/problem'
         "404":
           description: Not Found
           content:
@@ -214,14 +208,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/problem'
-        "201":
-          description: Evento salvato con successo
-          content:
-            '*/*':
-              schema:
-                type: object
-        "401":
-          description: Unauthorized
+        "400":
+          description: Bad Request
           content:
             application/json:
               schema:
@@ -232,8 +220,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/problem'
-        "400":
-          description: Bad Request
+        "201":
+          description: Evento salvato con successo
+          content:
+            '*/*':
+              schema:
+                type: object
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        "401":
+          description: Unauthorized
           content:
             application/json:
               schema:
@@ -254,12 +254,6 @@ paths:
           type: integer
           format: int64
       responses:
-        "422":
-          description: Unprocessable Entity
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/problem'
         "404":
           description: Not Found
           content:
@@ -272,10 +266,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/problem'
-        "401":
-          description: Unauthorized
+        "400":
+          description: Bad Request
           content:
-            application/json:
+            '*/*':
               schema:
                 $ref: '#/components/schemas/problem'
         "403":
@@ -290,6 +284,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/evento'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
 components:
   schemas:
     problem:
@@ -376,6 +376,8 @@ components:
           - CLIENT
           - SERVER
         tipoEvento:
+          maxLength: 255
+          minLength: 0
           type: string
         esito:
           type: string
@@ -390,26 +392,41 @@ components:
           type: integer
           format: int64
         sottotipoEvento:
+          maxLength: 255
+          minLength: 0
           type: string
         sottotipoEsito:
+          maxLength: 255
+          minLength: 0
           type: string
         dettaglioEsito:
           type: string
         idDominio:
+          pattern: "(^([0-9]){11}$)"
           type: string
         iuv:
+          maxLength: 35
+          minLength: 0
           type: string
         ccp:
+          maxLength: 35
+          minLength: 0
           type: string
         idA2A:
+          pattern: "(^[a-zA-Z0-9\\-_]{1,35}$)"
           type: string
         idPendenza:
+          pattern: "(^[a-zA-Z0-9\\-_]{1,35}$)"
           type: string
         idPagamento:
+          maxLength: 35
+          minLength: 0
           type: string
         datiPagoPA:
           $ref: '#/components/schemas/datiPagoPA'
         severita:
+          maximum: 5
+          minimum: 0
           type: integer
           format: int32
         parametriRichiesta:
@@ -425,8 +442,6 @@ components:
         idRiconciliazione:
           type: integer
           format: int64
-        _links:
-          $ref: '#/components/schemas/Links'
       description: Evento da salvare.
     Pageable:
       type: object
@@ -507,6 +522,8 @@ components:
           - CLIENT
           - SERVER
         tipoEvento:
+          maxLength: 255
+          minLength: 0
           type: string
         esito:
           type: string
@@ -521,26 +538,41 @@ components:
           type: integer
           format: int64
         sottotipoEvento:
+          maxLength: 255
+          minLength: 0
           type: string
         sottotipoEsito:
+          maxLength: 255
+          minLength: 0
           type: string
         dettaglioEsito:
           type: string
         idDominio:
+          pattern: "(^([0-9]){11}$)"
           type: string
         iuv:
+          maxLength: 35
+          minLength: 0
           type: string
         ccp:
+          maxLength: 35
+          minLength: 0
           type: string
         idA2A:
+          pattern: "(^[a-zA-Z0-9\\-_]{1,35}$)"
           type: string
         idPendenza:
+          pattern: "(^[a-zA-Z0-9\\-_]{1,35}$)"
           type: string
         idPagamento:
+          maxLength: 35
+          minLength: 0
           type: string
         datiPagoPA:
           $ref: '#/components/schemas/datiPagoPA'
         severita:
+          maximum: 5
+          minimum: 0
           type: integer
           format: int32
         parametriRichiesta:

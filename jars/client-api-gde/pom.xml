@@ -31,12 +31,6 @@
 		<!-- Swagger-codegen -->
 		<openapi.tool.codegen.version>6.0.0</openapi.tool.codegen.version>
 
-		<!-- Mpastruct -->
-		<mapstruct.version>1.5.1.Final</mapstruct.version>
-		
-		<!-- Lombok version -->		
-		<org.projectlombok.version>1.18.24</org.projectlombok.version>
-		
 		<!-- Swagger-annotations -->
 		<swagger.version>2.1.2</swagger.version>
 		<swagger-annotations.version>1.6.2</swagger-annotations.version>
@@ -92,18 +86,6 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-	
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-			<version>${mapstruct.version}</version>
-		</dependency>
-		
-		<dependency>
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-annotations</artifactId>
 			<version>${swagger-annotations.version}</version>
@@ -144,22 +126,6 @@
 				<configuration>
 					<source>${java.version}</source>
 	                <target>${java.version}</target>
-					<annotationProcessorPaths>
-						<path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${org.projectlombok.version}</version>
-                        </path>
-						<path>
-							<groupId>org.mapstruct</groupId>
-							<artifactId>mapstruct-processor</artifactId>
-							<version>${mapstruct.version}</version>
-						</path>
-					</annotationProcessorPaths>
-					<compilerArgs>
-                        <arg>-Amapstruct.suppressGeneratorTimestamp=true</arg>
-                        <arg>-Amapstruct.defaultComponentModel=spring</arg>
-                    </compilerArgs>
 				</configuration>
 			</plugin>
 			<plugin>

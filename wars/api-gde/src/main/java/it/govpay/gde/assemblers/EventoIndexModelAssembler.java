@@ -1,7 +1,11 @@
 package it.govpay.gde.assemblers;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.math.BigDecimal;
+
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
@@ -13,18 +17,13 @@ import it.govpay.gde.entity.EventoIndexEntity;
 import it.govpay.gde.entity.converter.DatiPagoPAConverter;
 import it.govpay.gde.model.CategoriaEvento;
 import it.govpay.gde.model.ComponenteEvento;
+import it.govpay.gde.model.DatiPagoPAModel;
 import it.govpay.gde.model.EsitoEvento;
 import it.govpay.gde.model.EventoIndexModel;
 import it.govpay.gde.model.RuoloEvento;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 @Component
 public class EventoIndexModelAssembler extends RepresentationModelAssemblerSupport<EventoIndexEntity, EventoIndexModel>  {
-	
-	@Autowired
-	private DatiPagoPAModelAssembler pagoPAModelAssembler;
 	
 	public EventoIndexModelAssembler() {
 		super(GdeController.class, EventoIndexModel.class);
@@ -113,9 +112,30 @@ public class EventoIndexModelAssembler extends RepresentationModelAssemblerSuppo
 		if(entity.getDatiPagoPA() != null) {
 			DatiPagoPAConverter converter = new DatiPagoPAConverter();
 			DatiPagoPAEntity datiPagoPAEntity = converter.convertToEntityAttribute(entity.getDatiPagoPA());
-			model.setDatiPagoPA(this.pagoPAModelAssembler.toModel(datiPagoPAEntity));
+			model.setDatiPagoPA(this.toModel(datiPagoPAEntity));
 		}
 		model.setSeverita(entity.getSeverita());
+	}
+	
+	public DatiPagoPAModel toModel(DatiPagoPAEntity entity) {
+		DatiPagoPAModel model = new DatiPagoPAModel();
+		
+		model.setIdCanale(entity.getCodCanale());
+		model.setIdPsp(entity.getCodPsp());
+		model.setIdIntermediarioPsp(entity.getCodIntermediarioPsp());
+		model.setIdIntermediario(entity.getCodIntermediario());
+		model.setIdStazione(entity.getCodStazione());
+		model.setIdDominio(entity.getCodDominio());
+		model.setTipoVersamento(entity.getTipoVersamento());
+		model.setModelloPagamento(entity.getModelloPagamento());
+		
+		model.setIdFlusso(entity.getCodFlusso());
+		if(entity.getIdTracciato() != null)
+			model.setIdTracciato(new BigDecimal(entity.getIdTracciato()));
+		model.setIdRiconciliazione(entity.getTrn());
+		model.setSct(entity.getSct());
+		
+		return model;
 	}
 	
 }
