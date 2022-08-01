@@ -12,7 +12,7 @@ public class ResourceNotFoundException extends RuntimeException {
 
 	public ResourceNotFoundException() {
 		super("La risorsa "+((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-				.getRequest()+" non esiste.");
+				.getRequest().getPathInfo()+" non esiste.");
 	}
 }
 

@@ -220,7 +220,7 @@ public class GdeController {
 	@GetMapping(path = "/eventi/{id}", produces = { MediaType.APPLICATION_JSON_VALUE} , name = "getEvento")
 	public ResponseEntity<EventoModel> getEventoById(
 			@Parameter(description="Id dell'evento da leggere.", required=true)
-			@PathVariable("id") @Positive(message = "Id dell'evento deve essere un valore > 0") Long id
+			@PathVariable("id") @Positive(message = "Id dell'evento deve essere un valore > 0.") Long id
 			) {
 		return this.eventoRepository.findById(id)
 				.map(this.eventoAssembler::toModel)
@@ -242,16 +242,16 @@ public class GdeController {
 			@Parameter(description="Evento da salvare.", required=true, schema=@Schema(implementation = NuovoEventoModel.class))
 			@Valid
 			@RequestBody NuovoEventoModel evento){
-		this.logger.debug("AAAAAA Salvataggio evento: " + evento.toString());
+		this.logger.debug("Salvataggio evento: " + evento.toString());
 		try {
 			EventoEntity entity = this.nuovoEventoMapper.nuovoEventoModelToEventoEntity(evento);
 			
 			this.eventoRepository.save(entity);
 
-			this.logger.debug("AAAAAA Salvataggio evento completato.");
+			this.logger.debug("Salvataggio evento completato.");
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		}catch (Exception e) {
-			this.logger.error("AAAAAA Salvataggio evento completato con errore: " +e.getMessage(), e);
+			this.logger.error("Salvataggio evento completato con errore: " +e.getMessage(), e);
 			throw new InternalException(e);
 		}
 	}
