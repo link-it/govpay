@@ -8,6 +8,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.SequenceGenerator;
 
@@ -67,6 +68,7 @@ public class EventoBaseEntity {
 	@Column(name = "dettaglio_esito")
 	private String dettaglioEsito;
 	
+	@Lob
 	@Column(name = "dati_pago_pa")
 	private String datiPagoPA;
 	
