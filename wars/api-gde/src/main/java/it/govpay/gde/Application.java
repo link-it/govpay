@@ -1,10 +1,13 @@
 package it.govpay.gde;
 
+import javax.persistence.EntityManagerFactory;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.groovy.template.GroovyTemplateAutoConfiguration;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.filter.ForwardedHeaderFilter;
 
@@ -23,5 +26,11 @@ public class Application extends SpringBootServletInitializer {
 	public MethodValidationPostProcessor methodValidationPostProcessor() {
 	     return new MethodValidationPostProcessor();
 	}
-	
+
+	@Bean(name ="transactionManager") 
+	public JpaTransactionManager jpaTransactionManager(EntityManagerFactory entityManagerFactory) {
+		JpaTransactionManager transactionManager = new JpaTransactionManager();
+		transactionManager.setEntityManagerFactory(entityManagerFactory);
+		return transactionManager;		  
+	}
 }

@@ -3,7 +3,10 @@ package it.govpay.gde.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
+import javax.persistence.Lob;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,9 +32,13 @@ import lombok.ToString;
 )
 public class EventoEntity extends EventoBaseEntity {
 	
+	@Lob
+	@Type(type="org.hibernate.type.BinaryType")
 	@Column(name = "parametri_richiesta")
 	private byte[] parametriRichiesta;
 	
+	@Lob
+	@Type(type="org.hibernate.type.BinaryType")
 	@Column(name = "parametri_risposta")
 	private byte[] parametriRisposta;
 	

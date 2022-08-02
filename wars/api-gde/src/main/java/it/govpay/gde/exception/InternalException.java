@@ -8,7 +8,7 @@ public class InternalException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public InternalException(Exception e) {
+	public InternalException(Throwable e) {
 		super("Errore durante l'esecuzione dell'operazione: " + e.getLocalizedMessage() , e);
 	}
 }

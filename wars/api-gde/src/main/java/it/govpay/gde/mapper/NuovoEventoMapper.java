@@ -7,9 +7,9 @@ import org.mapstruct.Named;
 import org.mapstruct.ValueMapping;
 import org.mapstruct.ValueMappings;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import it.govpay.gde.entity.DatiPagoPAEntity;
 import it.govpay.gde.entity.EventoEntity;
 import it.govpay.gde.entity.converter.DatiPagoPAConverter;
@@ -23,6 +23,10 @@ import it.govpay.gde.model.RuoloEvento;
 public abstract class NuovoEventoMapper {
 
 	private final static ObjectMapper objectMapper = new ObjectMapper();
+
+	static {
+		objectMapper.setSerializationInclusion(Include.NON_NULL);
+	}
 	
 	@Mappings({
 		// Mapping tra oggetto e byte[]/String gestiti tramite metodo custom

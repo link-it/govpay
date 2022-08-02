@@ -71,10 +71,10 @@ public class PostApiGdeTest extends BaseApiGdeTest {
 		.andExpect(jsonPath("$._embedded.eventi[0].datiPagoPA.idPsp", is(nuovoEvento.getDatiPagoPA().getIdPsp())))
 		.andExpect(jsonPath("$._embedded.eventi[0].datiPagoPA.idRiconciliazione", is(nuovoEvento.getDatiPagoPA().getIdRiconciliazione())))
 		.andExpect(jsonPath("$._embedded.eventi[0].datiPagoPA.idStazione", is(nuovoEvento.getDatiPagoPA().getIdStazione())))
-		.andExpect(jsonPath("$._embedded.eventi[0].datiPagoPA.idTracciato", is(nuovoEvento.getDatiPagoPA().getIdTracciato()), long.class))
-		.andExpect(jsonPath("$._embedded.eventi[0].datiPagoPA.idModelloPagamento", is(nuovoEvento.getDatiPagoPA().getModelloPagamento())))
-		.andExpect(jsonPath("$._embedded.eventi[0].datiPagoPA.idSct", is(nuovoEvento.getDatiPagoPA().getSct())))
-		.andExpect(jsonPath("$._embedded.eventi[0].datiPagoPA.idTipoVersamento", is(nuovoEvento.getDatiPagoPA().getTipoVersamento())))
+		.andExpect(jsonPath("$._embedded.eventi[0].datiPagoPA.idTracciato", is(nuovoEvento.getDatiPagoPA().getIdTracciato().longValue()), long.class))
+		.andExpect(jsonPath("$._embedded.eventi[0].datiPagoPA.modelloPagamento", is(nuovoEvento.getDatiPagoPA().getModelloPagamento())))
+		.andExpect(jsonPath("$._embedded.eventi[0].datiPagoPA.sct", is(nuovoEvento.getDatiPagoPA().getSct())))
+		.andExpect(jsonPath("$._embedded.eventi[0].datiPagoPA.tipoVersamento", is(nuovoEvento.getDatiPagoPA().getTipoVersamento())))
 		
 		;
 		
