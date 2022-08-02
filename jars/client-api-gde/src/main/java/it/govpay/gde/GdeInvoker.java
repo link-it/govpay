@@ -23,13 +23,13 @@ public class GdeInvoker {
 	public void salvaEvento(NuovoEvento nuovoEvento) {
 
 		try {
-			logger.debug("AAAAAA Spedizione Evento in modalita' asincrona");
+			logger.debug("Spedizione Evento in modalita' asincrona");
 			this.gdeApi.addEvento(nuovoEvento )
-			.subscribe(response -> logger.debug("AAAAAA Response: " + response));
+			.subscribe(response -> logger.debug("Spedizione Evento response: " + response));
 			
-			logger.debug("AAAAAA Spedizione Evento in modalita' asincrona, ok");
+			logger.debug("Spedizione Evento in modalita' asincrona, ok");
 		}catch (WebClientResponseException e) {
-			logger.error("AAAAAA Errore durante l'invocazione GDE: " + e.getMessage(),e);
+			logger.error("Errore durante l'invocazione GDE: " + e.getMessage(),e);
 		}
 	}
 }

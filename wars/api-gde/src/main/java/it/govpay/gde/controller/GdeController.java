@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
@@ -21,6 +23,9 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -78,6 +83,9 @@ public class GdeController {
 	@Autowired
 	private NuovoEventoMapper nuovoEventoMapper;
 
+	@Autowired
+	private JpaTransactionManager txManager;
+
 	@Operation(summary = "Ricerca eventi", description = "Ricerca eventi", tags = { "eventi" })
 	@ApiResponses(value = { 
 			@ApiResponse(responseCode = "200", description = "Lista eventi", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = PagedModel.class, subTypes = {EventoIndexModel.class}))),
@@ -92,37 +100,37 @@ public class GdeController {
 			@PageableDefault(size = 25, sort = { "data"}, direction = Direction.DESC)
 			Pageable pageable,
 			@Parameter(description="Inizio della finestra temporale di osservazione", name="dataDa") 
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  Optional<LocalDateTime> dataDa,
+			@RequestParam(required = false, name = "dataDa") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  Optional<LocalDateTime> dataDa,
 			@Parameter(description="Fine della finestra temporale di osservazione", name="dataA") 
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  Optional<LocalDateTime> dataA,
+			@RequestParam(required = false, name = "dataA") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  Optional<LocalDateTime> dataA,
 			@Parameter(description="Identificativo del dominio beneficiario", name="idDominio") 
-			@RequestParam(required = false) Optional<String> idDominio,
+			@RequestParam(required = false, name = "idDominio") Optional<String> idDominio,
 			@Parameter(description="Identificativo univoco di versamento", name="iuv") 
-			@RequestParam(required = false) Optional<String> iuv,
+			@RequestParam(required = false, name = "iuv") Optional<String> iuv,
 			@Parameter(description="Codice contesto pagamento/ID ricevuta", name="ccp") 
-			@RequestParam(required = false) Optional<String> ccp,
+			@RequestParam(required = false, name = "ccp") Optional<String> ccp,
 			@Parameter(description="Identificativo del gestionale proprietario della pendenza", name="idA2A") 
-			@RequestParam(required = false) Optional<String> idA2A,
+			@RequestParam(required = false, name = "idA2A") Optional<String> idA2A,
 			@Parameter(description="Identificativo della pendenza nel gestionale proprietario", name="idPendenza") 
-			@RequestParam(required = false) Optional<String> idPendenza,
+			@RequestParam(required = false, name = "idPendenza") Optional<String> idPendenza,
 			@Parameter(description="Identificativo della richiesta di pagamento", name="idPagamento") 
-			@RequestParam(required = false) Optional<String> idPagamento,
-			@Parameter(description="Filtro per categoria evento", name="categoria") 
-			@RequestParam(required = false) Optional<CategoriaEvento> categoriaEvento,
+			@RequestParam(required = false, name = "idPagamento") Optional<String> idPagamento,
+			@Parameter(description="Filtro per categoria evento", name="categoriaEvento") 
+			@RequestParam(required = false, name = "categoriaEvento") Optional<CategoriaEvento> categoriaEvento,
 			@Parameter(description="Filtro per esito evento", name="esito") 
-			@RequestParam(required = false) Optional<EsitoEvento> esitoEvento,
+			@RequestParam(required = false, name = "esito") Optional<EsitoEvento> esitoEvento,
 			@Parameter(description="Filtro per ruolo evento", name="ruolo") 
-			@RequestParam(required = false) Optional<RuoloEvento> ruoloEvento,
-			@Parameter(description="Filtro per sottotipo evento", name="sottotipo") 
-			@RequestParam(required = false) Optional<String> sottotipoEvento,
-			@Parameter(description="Filtro per tipo evento", name="tipo") 
-			@RequestParam(required = false) Optional<String> tipoEvento,
+			@RequestParam(required = false, name = "ruolo") Optional<RuoloEvento> ruoloEvento,
+			@Parameter(description="Filtro per sottotipo evento", name="sottotipoEvento") 
+			@RequestParam(required = false, name = "sottotipoEvento") Optional<String> sottotipoEvento,
+			@Parameter(description="Filtro per tipo evento", name="tipoEvento") 
+			@RequestParam(required = false, name = "tipoEvento") Optional<String> tipoEvento,
 			@Parameter(description="Filtro per componente evento", name="componente") 
-			@RequestParam(required = false) Optional<ComponenteEvento> componenteEvento,
+			@RequestParam(required = false, name = "componente") Optional<ComponenteEvento> componenteEvento,
 			@Parameter(description="Filtro per severita' errore", name="severitaDa") 
-			@RequestParam(required = false) Optional<Integer> severitaDa,
+			@RequestParam(required = false, name = "severitaDa") Optional<Integer> severitaDa,
 			@Parameter(description="Filtro per severita' errore", name="severitaA") 
-			@RequestParam(required = false) Optional<Integer> severitaA
+			@RequestParam(required = false, name = "severitaA") Optional<Integer> severitaA
 			){
 		Map<SearchParam, Object> filters = new HashMap<>();
 
@@ -163,7 +171,8 @@ public class GdeController {
 			filters.put(SearchParam.sottotipoEvento, sottotipoEvento.get());
 		}
 		if(componenteEvento.isPresent()) {
-			filters.put(SearchParam.componenteEvento, componenteEvento.get());
+			this.logger.debug("Filtro Componente evento: " + componenteEvento.get());
+			filters.put(SearchParam.componenteEvento, componenteEvento.get().toString());
 		}
 		if(categoriaEvento.isPresent()) {
 			switch (categoriaEvento.get()) {
@@ -202,11 +211,23 @@ public class GdeController {
 			}
 		}
 
-		Page<EventoIndexEntity> findAll = this.eventoIndexRepository.findAll(pageable, filters);
+		this.logger.debug("Lettura eventi...");
+		try {
 
-		PagedModel<EventoIndexModel> collModel = this.pagedEventoAssembler.toModel(findAll, this.eventoIndexAssembler);
+			return this.runTransaction(() -> {
+				Page<EventoIndexEntity> findAll = this.eventoIndexRepository.findAll(pageable, filters);
 
-		return new ResponseEntity<>(collModel,HttpStatus.OK);
+				PagedModel<EventoIndexModel> collModel = this.pagedEventoAssembler.toModel(findAll, this.eventoIndexAssembler);
+
+				return new ResponseEntity<>(collModel,HttpStatus.OK);
+			});
+		}catch (RuntimeException e) {
+			this.logger.error("Lettura eventi completata con errore: " +e.getMessage(), e);
+			throw e;
+		}catch (Throwable e) {
+			this.logger.error("Lettura eventi completata con errore: " +e.getMessage(), e);
+			throw new InternalException(e);
+		}
 	}
 
 	@Operation(summary = "Dettaglio di un evento", description = "Dettaglio di un evento", tags = { "eventi" })
@@ -222,10 +243,22 @@ public class GdeController {
 			@Parameter(description="Id dell'evento da leggere.", required=true)
 			@PathVariable("id") @Positive(message = "Id dell'evento deve essere un valore > 0.") Long id
 			) {
-		return this.eventoRepository.findById(id)
-				.map(this.eventoAssembler::toModel)
-				.map(ResponseEntity::ok) 
-				.orElseThrow(() -> new ResourceNotFoundException());
+		this.logger.debug("Lettura evento: " + id);
+		try {
+
+			return this.runTransaction(() -> {
+				return this.eventoRepository.findById(id)
+						.map(this.eventoAssembler::toModel)
+						.map(ResponseEntity::ok) 
+						.orElseThrow(() -> new ResourceNotFoundException());
+			});
+		}catch (RuntimeException e) {
+			this.logger.error("Lettura evento completata con errore: " +e.getMessage(), e);
+			throw e;
+		}catch (Throwable e) {
+			this.logger.error("Lettura evento completata con errore: " +e.getMessage(), e);
+			throw new InternalException(e);
+		}
 	}
 
 	@Operation(summary = "Salvataggio di un nuovo evento", description = "Salvataggio di un nuovo evento", tags = { "eventi" })
@@ -238,7 +271,7 @@ public class GdeController {
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ProblemModel.class)))
 	})
 	@PostMapping(path = "/eventi", consumes = { MediaType.APPLICATION_JSON_VALUE} , name = "addEvento")
-	public ResponseEntity<?> addEvento(
+	public ResponseEntity<Void> addEvento(
 			@Parameter(description="Evento da salvare.", required=true, schema=@Schema(implementation = NuovoEventoModel.class))
 			@Valid
 			@RequestBody NuovoEventoModel evento){
@@ -246,13 +279,53 @@ public class GdeController {
 		try {
 			EventoEntity entity = this.nuovoEventoMapper.nuovoEventoModelToEventoEntity(evento);
 			
-			this.eventoRepository.save(entity);
+			this.runTransaction(() -> {
+				this.eventoRepository.save(entity);
+				this.logger.debug("Salvataggio evento completato.");
+			});
 
-			this.logger.debug("Salvataggio evento completato.");
-			return new ResponseEntity<>(HttpStatus.CREATED);
-		}catch (Exception e) {
+			return new ResponseEntity<Void>(HttpStatus.CREATED);
+		}catch (RuntimeException e) {
+			this.logger.error("Salvataggio evento completato con errore: " +e.getMessage(), e);
+			throw e;
+		}catch (Throwable e) {
 			this.logger.error("Salvataggio evento completato con errore: " +e.getMessage(), e);
 			throw new InternalException(e);
 		}
 	}
+
+	public void runTransaction(Runnable runnable) {
+
+		TransactionStatus transaction = null;
+		try {
+			TransactionTemplate template = new TransactionTemplate(this.txManager);
+			transaction = this.txManager.getTransaction(template);
+			runnable.run();
+			this.txManager.commit(transaction);
+		} catch (Exception e) {
+			if (transaction != null && !transaction.isCompleted()) {
+				this.txManager.rollback(transaction);
+			}
+			throw new RuntimeException(e);
+		}
+	}
+
+	public <T> T runTransaction(Supplier<T> supplier) {
+
+		TransactionStatus transaction = null;
+		try {
+			TransactionTemplate template = new TransactionTemplate(this.txManager);
+			transaction = this.txManager.getTransaction(template);
+			T ret = supplier.get();
+			this.txManager.commit(transaction);
+			return ret;
+
+		} catch (Exception e) {
+			if (transaction != null && !transaction.isCompleted()) {
+				this.txManager.rollback(transaction);
+			}
+			throw new RuntimeException(e);
+		}
+	}
+
 }
