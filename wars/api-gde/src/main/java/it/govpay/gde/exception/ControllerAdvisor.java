@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import it.govpay.gde.model.ProblemModel;
@@ -44,15 +45,13 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
         buildProblem.setDetail(StringUtils.join(errors, ", "));
 
         return new ResponseEntity<>(buildProblem, headers, status);
-//		// TODO Auto-generated method stub
-//		return super.handleMethodArgumentNotValid(ex, headers, status, request);
 	}
 	
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ProblemModel handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-//        return buildProblem(ex, HttpStatus.BAD_REQUEST) ;
-//    }
+   @ResponseStatus(HttpStatus.BAD_REQUEST)
+   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+   public ProblemModel handleNoSuchFieldException(MethodArgumentTypeMismatchException ex) {
+       return buildProblem(ex, HttpStatus.BAD_REQUEST) ;
+   }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException.class)
