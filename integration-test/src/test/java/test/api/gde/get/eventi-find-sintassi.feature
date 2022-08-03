@@ -38,20 +38,16 @@ And path nomeAPI
 And param dataDa = '2020-01-01'
 And headers gpAdminBasicAutenticationHeader
 When method get
-Then status 200
+Then status 400
 And match response == 
 """
 {
-	_embedded: '#ignore',
-	_links: '#ignore',
-	page: {
-		size: 25,
-		totalElements: '#number',
-		totalPages: '#number',
-		number: 0
-	}
+	title: 'Bad Request',
+	status: 400,
+	detail: '#notnull'
 }
 """
+* match response.detail contains 'Parse attempt failed for value [2020-01-01]'
 
 # Filtro DataA formato Date
 
@@ -60,20 +56,16 @@ And path nomeAPI
 And param dataA = '2020-01-01'
 And headers gpAdminBasicAutenticationHeader
 When method get
-Then status 200
+Then status 400
 And match response == 
 """
 {
-	_embedded: '#ignore',
-	_links: '#ignore',
-	page: {
-		size: 25,
-		totalElements: '#number',
-		totalPages: '#number',
-		number: 0
-	}
+	title: 'Bad Request',
+	status: 400,
+	detail: '#notnull'
 }
 """
+* match response.detail contains 'Parse attempt failed for value [2020-01-01]'
 
 # Filtro DataDa formato DateTime
 
@@ -126,20 +118,16 @@ And path nomeAPI
 And param dataDa = '2020-01-01T25:00:00.000'
 And headers gpAdminBasicAutenticationHeader
 When method get
-Then status 200
+Then status 400
 And match response == 
 """
 {
-	_embedded: '#ignore',
-	_links: '#ignore',
-	page: {
-		size: 25,
-		totalElements: '#number',
-		totalPages: '#number',
-		number: 0
-	}
+	title: 'Bad Request',
+	status: 400,
+	detail: '#notnull'
 }
 """
+* match response.detail contains 'Parse attempt failed for value [2020-01-01T25:00:00.000]'
 
 # Filtro DataA formato DateTime
 
@@ -148,20 +136,16 @@ And path nomeAPI
 And param dataA = '2020-01-01T25:59:59.999'
 And headers gpAdminBasicAutenticationHeader
 When method get
-Then status 200
+Then status 400
 And match response == 
 """
 {
-	_embedded: '#ignore',
-	_links: '#ignore',
-	page: {
-		size: 25,
-		totalElements: '#number',
-		totalPages: '#number',
-		number: 0
-	}
+	title: 'Bad Request',
+	status: 400,
+	detail: '#notnull'
 }
 """
+* match response.detail contains 'Parse attempt failed for value [2020-01-01T25:59:59.999]'
 
 # Filtro DataDa formato non valido
 
@@ -174,9 +158,15 @@ And param dataDa = dataDaNonValida
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 400
-
-* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains 'Il formato della data indicata [' + dataDaNonValida + '] per il parametro [' + dataDaParamName + '] non e\' valido.'
+And match response == 
+"""
+{
+	title: 'Bad Request',
+	status: 400,
+	detail: '#notnull'
+}
+"""
+* match response.detail contains 'Parse attempt failed for value [2020-01-01TTT:00:00.000]'
 
 # Filtro DataA formato DateTime
 
@@ -189,9 +179,15 @@ And param dataA = dataANonValida
 And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 400
-
-* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains 'Il formato della data indicata [' + dataANonValida + '] per il parametro [' + dataAParamName + '] non e\' valido.'
+And match response == 
+"""
+{
+	title: 'Bad Request',
+	status: 400,
+	detail: '#notnull'
+}
+"""
+* match response.detail contains 'Parse attempt failed for value [2020-01-01TTT:59:59.999]'
 
 Scenario: Validazione sintattica filtri per severita
 
@@ -297,8 +293,15 @@ And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 400
 
-* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains 'Il valore indicato per il parametro [severitaDa] non e\' valido: il valore fornito [' + severitaDa + '] non e\' un intero.'
+* match response == 
+"""
+{
+	title: 'Bad Request',
+	status: 400,
+	detail: '#notnull'
+}
+"""
+* match response.detail contains 'java.lang.NumberFormatException: For input string: "'+severitaDa+'"'
 
 # Filtro SeveritaA formato non valido
 
@@ -309,8 +312,15 @@ And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 400
 
-* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains 'Il valore indicato per il parametro [severitaA] non e\' valido: il valore fornito [' + severitaA + '] non e\' un intero.'
+* match response == 
+"""
+{
+	title: 'Bad Request',
+	status: 400,
+	detail: '#notnull'
+}
+"""
+* match response.detail contains 'java.lang.NumberFormatException: For input string: "'+severitaA+'"'
 
 
 # Filtro SeveritaDa formato non valido
@@ -325,8 +335,15 @@ And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 400
 
-* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains 'Il campo severitaDa deve essere superiore a 0.'
+* match response == 
+"""
+{
+	title: 'Bad Request',
+	status: 400,
+	detail: '#notnull'
+}
+"""
+* match response.detail contains 'findEventi.severitaDa: Il parametro severitaDa deve contenere un valore >= 0.'
 
 # Filtro SeveritaA formato non valido
 
@@ -337,7 +354,14 @@ And headers gpAdminBasicAutenticationHeader
 When method get
 Then status 400
 
-* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
-* match response.dettaglio contains 'Il campo severitaA deve essere superiore a 0.'
+* match response == 
+"""
+{
+	title: 'Bad Request',
+	status: 400,
+	detail: '#notnull'
+}
+"""
+* match response.detail contains 'findEventi.severitaA: Il parametro severitaA deve contenere un valore >= 0.'
 
 

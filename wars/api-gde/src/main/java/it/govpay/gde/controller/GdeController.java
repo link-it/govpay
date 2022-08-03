@@ -1,5 +1,6 @@
 package it.govpay.gde.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +9,8 @@ import java.util.function.Supplier;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 
 import org.slf4j.Logger;
@@ -62,7 +65,7 @@ import it.govpay.gde.repository.EventoRepository;
 @RestController
 @Validated
 public class GdeController {
-	
+
 	private Logger logger = LoggerFactory.getLogger(GdeController.class);
 
 	@Autowired
@@ -100,9 +103,9 @@ public class GdeController {
 			@PageableDefault(size = 25, sort = { "data"}, direction = Direction.DESC)
 			Pageable pageable,
 			@Parameter(description="Inizio della finestra temporale di osservazione", name="dataDa") 
-			@RequestParam(required = false, name = "dataDa") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  Optional<LocalDateTime> dataDa,
+			@RequestParam(required = false, name = "dataDa") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)  Optional<LocalDateTime> dataDa,
 			@Parameter(description="Fine della finestra temporale di osservazione", name="dataA") 
-			@RequestParam(required = false, name = "dataA") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  Optional<LocalDateTime> dataA,
+			@RequestParam(required = false, name = "dataA") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)  Optional<LocalDateTime> dataA,
 			@Parameter(description="Identificativo del dominio beneficiario", name="idDominio") 
 			@RequestParam(required = false, name = "idDominio") Optional<String> idDominio,
 			@Parameter(description="Identificativo univoco di versamento", name="iuv") 
@@ -128,9 +131,13 @@ public class GdeController {
 			@Parameter(description="Filtro per componente evento", name="componente") 
 			@RequestParam(required = false, name = "componente") Optional<ComponenteEvento> componenteEvento,
 			@Parameter(description="Filtro per severita' errore", name="severitaDa") 
-			@RequestParam(required = false, name = "severitaDa") Optional<Integer> severitaDa,
+			@RequestParam(required = false, name = "severitaDa") Optional<
+			@Min(value = 0, message = "Il parametro severitaDa deve contenere un valore >= 0.") 
+			@Max(value = 5, message = "Il parametro severitaDa deve contenere un valore <= 5.") Integer> severitaDa,
 			@Parameter(description="Filtro per severita' errore", name="severitaA") 
-			@RequestParam(required = false, name = "severitaA") Optional<Integer> severitaA
+			@RequestParam(required = false, name = "severitaA") Optional<
+			@Min(value = 0, message = "Il parametro severitaA deve contenere un valore >= 0.") 
+			@Max(value = 5, message = "Il parametro severitaA deve contenere un valore <= 5.") Integer> severitaA
 			){
 		Map<SearchParam, Object> filters = new HashMap<>();
 
