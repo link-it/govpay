@@ -70,7 +70,7 @@ paths:
         required: false
         schema:
           type: string
-      - name: categoria
+      - name: categoriaEvento
         in: query
         description: Filtro per categoria evento
         required: false
@@ -99,13 +99,13 @@ paths:
           enum:
           - CLIENT
           - SERVER
-      - name: sottotipo
+      - name: sottotipoEvento
         in: query
         description: Filtro per sottotipo evento
         required: false
         schema:
           type: string
-      - name: tipo
+      - name: tipoEvento
         in: query
         description: Filtro per tipo evento
         required: false
@@ -147,6 +147,12 @@ paths:
           type: integer
           format: int32
       responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/problem'
         "404":
           description: Not Found
           content:
@@ -159,18 +165,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/problem'
-        "400":
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/problem'
-        "403":
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/problem'
         "200":
           description: Lista eventi
           content:
@@ -179,6 +173,12 @@ paths:
                 $ref: '#/components/schemas/PagedModel'
         "401":
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        "403":
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -196,6 +196,12 @@ paths:
               $ref: '#/components/schemas/nuovoEvento'
         required: true
       responses:
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
         "404":
           description: Not Found
           content:
@@ -208,32 +214,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/problem'
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/problem'
-        "403":
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/problem'
-        "201":
-          description: Evento salvato con successo
-          content:
-            '*/*':
-              schema:
-                type: object
         "422":
           description: Unprocessable Entity
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/problem'
+        "201":
+          description: Evento salvato con successo
         "401":
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/problem'
+        "403":
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -254,6 +250,12 @@ paths:
           type: integer
           format: int64
       responses:
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/problem'
         "404":
           description: Not Found
           content:
@@ -266,10 +268,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/problem'
-        "400":
-          description: Bad Request
+        "401":
+          description: Unauthorized
           content:
-            '*/*':
+            application/json:
               schema:
                 $ref: '#/components/schemas/problem'
         "403":
@@ -284,12 +286,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/evento'
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/problem'
 components:
   schemas:
     problem:
@@ -308,10 +304,6 @@ components:
         instance:
           type: string
           format: uri
-    Links:
-      type: object
-      additionalProperties:
-        $ref: '#/components/schemas/Link'
     datiPagoPA:
       type: object
       properties:
@@ -339,8 +331,6 @@ components:
           type: string
         idTracciato:
           type: number
-        _links:
-          $ref: '#/components/schemas/Links'
     nuovoEvento:
       type: object
       properties:
@@ -458,6 +448,10 @@ components:
           type: array
           items:
             type: string
+    Links:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/Link'
     PageMetadata:
       type: object
       properties:
