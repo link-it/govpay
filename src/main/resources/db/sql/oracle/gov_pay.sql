@@ -74,6 +74,7 @@ CREATE TABLE stazioni
 	password VARCHAR2(35 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
 	application_code NUMBER NOT NULL,
+	versione VARCHAR2(35 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_intermediario NUMBER NOT NULL,

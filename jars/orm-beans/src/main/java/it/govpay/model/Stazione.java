@@ -29,7 +29,22 @@ public class Stazione extends BasicModel {
 	private String password;
 	private boolean abilitato;
 	private int applicationCode;
-	
+	private Versione versione;
+
+	public enum Versione {
+
+		V2,
+		V1;
+
+		public static Versione toEnum(String s) {
+			try {
+				return Versione.valueOf(s);
+			} catch (IllegalArgumentException e) {
+				return V1;
+			}
+		}
+	}
+
 	public Stazione() {
 	}
 
@@ -82,6 +97,14 @@ public class Stazione extends BasicModel {
 	public void setApplicationCode(int applicationCode) {
 		this.applicationCode = applicationCode;
 	}
-	
+
+	public Versione getVersione() {
+		return versione;
+	}
+
+	public void setVersione(Versione versione) {
+		this.versione = versione;
+	}
+
 }
 

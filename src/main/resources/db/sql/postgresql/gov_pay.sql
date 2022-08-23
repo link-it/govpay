@@ -45,6 +45,7 @@ CREATE TABLE stazioni
 	password VARCHAR(35) NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	application_code INT NOT NULL,
+	versione VARCHAR(35) NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_stazioni') NOT NULL,
 	id_intermediario BIGINT NOT NULL,

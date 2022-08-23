@@ -460,6 +460,7 @@
     <value name="password" field="password" usage="required"/>
     <value name="abilitato" field="abilitato" usage="required"/>
     <value name="applicationCode" field="applicationCode" usage="required"/>
+    <value name="versione" field="versione" usage="required"/>
   </mapping>
   <mapping name="Applicazione" class="it.govpay.orm.Applicazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

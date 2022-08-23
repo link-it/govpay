@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.utils.validator.IValidable;
@@ -11,6 +12,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "password",
 "abilitato",
+"versione",
 })
 public class StazionePost extends it.govpay.core.beans.JSONSerializable implements IValidable{
   
@@ -19,6 +21,12 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
+  
+  @JsonIgnore
+  private VersioneStazione versioneEnum = null;
+  
+  @JsonProperty("versione")
+  private String versione = null;
   
   /**
    * Ragione sociale dell'intermediario PagoPA
@@ -52,6 +60,36 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
     this.abilitato = abilitato;
   }
 
+  /**
+   **/
+  public StazionePost versioneEnum(VersioneStazione versione) {
+    this.versioneEnum = versione;
+    return this;
+  }
+
+  @JsonIgnore
+  public VersioneStazione getVersioneEnum() {
+    return versioneEnum;
+  }
+  public void setVersioneEnum(VersioneStazione versione) {
+    this.versioneEnum = versione;
+  }
+  
+  /**
+   **/
+  public StazionePost versione(String versione) {
+    this.versione = versione;
+    return this;
+  }
+
+  @JsonProperty("versione")
+  public String getVersione() {
+    return versione;
+  }
+  public void setVersione(String versione) {
+    this.versione = versione;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -61,13 +99,14 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
       return false;
     }
     StazionePost stazionePost = (StazionePost) o;
-    return Objects.equals(this.password, stazionePost.password) &&
-        Objects.equals(this.abilitato, stazionePost.abilitato);
+    return Objects.equals(password, stazionePost.password) &&
+        Objects.equals(abilitato, stazionePost.abilitato) &&
+        Objects.equals(versione, stazionePost.versione);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.password, this.abilitato);
+    return Objects.hash(password, abilitato, versione);
   }
 
   public static StazionePost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -84,8 +123,9 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
     StringBuilder sb = new StringBuilder();
     sb.append("class StazionePost {\n");
     
-    sb.append("    password: ").append(this.toIndentedString(this.password)).append("\n");
-    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
+    sb.append("    password: ").append(toIndentedString(password)).append("\n");
+    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    versione: ").append(toIndentedString(versione)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -107,6 +147,7 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		vf.getValidator("password", this.password).notNull().minLength(1).maxLength(35);
 		vf.getValidator("abilitato", this.abilitato).notNull();
+		vf.getValidator("versione", this.versione).notNull();
 	}
 }
 

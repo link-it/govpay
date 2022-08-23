@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>GovPay-EC Checkout AutoSubmit</title>
+</head>
+<body onload="document.forms[0].submit();">
+	<form action="@URL_CHECKOUT@" method="post">@LISTA_INPUT@<noscript><center><input type="submit" value="Submit richiesta Checkout" /></center></noscript></form>
+</body>
+</html>

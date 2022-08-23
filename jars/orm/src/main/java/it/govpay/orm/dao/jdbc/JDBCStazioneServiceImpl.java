@@ -94,6 +94,7 @@ public class JDBCStazioneServiceImpl extends JDBCStazioneServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getStazioneFieldConverter().toColumn(Stazione.model().PASSWORD,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getStazioneFieldConverter().toColumn(Stazione.model().ABILITATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getStazioneFieldConverter().toColumn(Stazione.model().APPLICATION_CODE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getStazioneFieldConverter().toColumn(Stazione.model().VERSIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_intermediario","?");
 
 		// Insert stazione
@@ -103,6 +104,7 @@ public class JDBCStazioneServiceImpl extends JDBCStazioneServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(stazione.getPassword(),Stazione.model().PASSWORD.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(stazione.getAbilitato(),Stazione.model().ABILITATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(stazione.getApplicationCode(),Stazione.model().APPLICATION_CODE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(stazione.getVersione(),Stazione.model().VERSIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_intermediario,Long.class)
 		);
 		stazione.setId(id);
@@ -181,6 +183,8 @@ public class JDBCStazioneServiceImpl extends JDBCStazioneServiceSearchImpl
 		lstObjects_stazione.add(new JDBCObject(stazione.getAbilitato(), Stazione.model().ABILITATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getStazioneFieldConverter().toColumn(Stazione.model().APPLICATION_CODE,false), "?");
 		lstObjects_stazione.add(new JDBCObject(stazione.getApplicationCode(), Stazione.model().APPLICATION_CODE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getStazioneFieldConverter().toColumn(Stazione.model().VERSIONE,false), "?");
+		lstObjects_stazione.add(new JDBCObject(stazione.getVersione(), Stazione.model().VERSIONE.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_intermediario","?");
 		}

@@ -46,6 +46,7 @@ CREATE TABLE stazioni
 	password VARCHAR(35) NOT NULL,
 	abilitato BIT NOT NULL,
 	application_code INT NOT NULL,
+	versione VARCHAR(35) NOT NULL,
 	-- fk/pk columns
 	id BIGINT IDENTITY,
 	id_intermediario BIGINT NOT NULL,

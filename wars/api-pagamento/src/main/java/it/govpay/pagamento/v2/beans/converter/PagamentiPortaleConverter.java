@@ -87,7 +87,9 @@ public class PagamentiPortaleConverter {
 		}
 
 		pagamentiPortaleDTO.setUrlRitorno(pagamentiPortaleRequest.getUrlRitorno());
-
+		
+		if(pagamentiPortaleRequest.getLingua() != null)
+			pagamentiPortaleDTO.setLingua(pagamentiPortaleRequest.getLingua().toString());
 
 		PagamentiPortaleConverter.controlloUtenzaVersante(pagamentiPortaleRequest, user);
 		pagamentiPortaleDTO.setVersante(toAnagraficaCommons(pagamentiPortaleRequest.getSoggettoVersante()));

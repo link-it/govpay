@@ -5171,6 +5171,7 @@ components:
       required:
         - password
         - abilitato
+        - versione
       properties:
         password:
           type: string
@@ -5179,6 +5180,8 @@ components:
         abilitato:
           type: boolean
           description: Indica lo stato di abilitazione
+        versione:
+          $ref: '#/components/schemas/VersioneStazione'
     stazioneIndex:
       type: object
       allOf:
@@ -9449,6 +9452,13 @@ components:
       default: 25
       minimum: 0
       maximum: 200
+    VersioneStazione:
+      type: string
+      description: Versione della stazione
+      example: 'V1'
+      enum:
+        - 'V1'
+        - 'V2'
     VoceDescrizioneImporto:
       type: object
       properties:

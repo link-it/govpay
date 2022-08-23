@@ -160,11 +160,16 @@ public class PagamentiController extends BaseController {
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
 			
 			PagamentiPortaleDTOResponse pagamentiPortaleDTOResponse = pagamentiPortaleDAO.inserisciPagamenti(pagamentiPortaleDTO);
-						
-			PagamentoCreato responseOk = PagamentiPortaleConverter.getPagamentiPortaleResponseOk(pagamentiPortaleDTOResponse);
 			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.CREATED).entity(responseOk.toJSON(null)),transactionId).build();
+			if(!pagamentiPortaleDTOResponse.isRedirect()) {
+				PagamentoCreato responseOk = PagamentiPortaleConverter.getPagamentiPortaleResponseOk(pagamentiPortaleDTOResponse);
+				
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				return this.handleResponseOk(Response.status(Status.CREATED).entity(responseOk.toJSON(null)),transactionId).build();
+			} else {
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				return this.handleResponseOk(Response.status(Status.OK).entity(pagamentiPortaleDTOResponse.getHtmlRedirectCheckout()),transactionId).build();
+			}
 		} catch (Exception e) {
 			Response response = this.handleException(uriInfo, httpHeaders, methodName, e,transactionId);
 			if(e instanceof GovPayException && (PagamentoPortale) ((GovPayException) e).getParam() != null) {

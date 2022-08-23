@@ -156,6 +156,8 @@ public class GovpayConfig {
 	
 	private String templateQuietanzaPagamento;
 	
+	private String checkoutURL;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -234,6 +236,8 @@ public class GovpayConfig {
 		this.numeroMassimoGiorniRPTPendenti = 30;
 		
 		this.templateProspettoRiscossioni = null;
+		
+		this.checkoutURL = null;
 		
 		try {
 
@@ -746,6 +750,8 @@ public class GovpayConfig {
 			
 			this.templateQuietanzaPagamento = getProperty("it.govpay.reportistica.quietanzaPagamento.templateJasper", this.props, false, log);
 			
+			this.checkoutURL = getProperty("it.govpay.checkout.url", this.props, true, log);
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -1138,5 +1144,8 @@ public class GovpayConfig {
 	
 	public Integer getNumeroMassimoGiorniRPTPendenti() {
 		return numeroMassimoGiorniRPTPendenti;
+	}
+	public String getCheckoutURL() {
+		return checkoutURL;
 	}
 }

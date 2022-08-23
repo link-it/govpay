@@ -34,6 +34,10 @@ Examples:
 | password | stazione.password | loremIpsum |  'password' |
 | abilitato | stazione.abilitato | null |  'abilitato' |
 | abilitato | stazione.abilitato | 'zzz' |  'abilitato' |
+| versione | stazione.versione | null |  'versione' |
+| versione | stazione.versione | loremIpsum |  'versione' |
+| versione | stazione.versione | 'zzz' |  'versione' |
+| versione | stazione.versione | '' |  'versione' |
 
 Scenario: Identificativo stazione errato
 

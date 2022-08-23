@@ -163,6 +163,7 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
 			fields.add(Stazione.model().PASSWORD);
 			fields.add(Stazione.model().ABILITATO);
 			fields.add(Stazione.model().APPLICATION_CODE);
+			fields.add(Stazione.model().VERSIONE);
 
 			fields.add(new CustomField("id_intermediario", Long.class, "id_intermediario", this.getStazioneFieldConverter().toTable(Stazione.model())));
 

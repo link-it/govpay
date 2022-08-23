@@ -47,6 +47,7 @@ CREATE TABLE stazioni
 	password VARCHAR(35) NOT NULL COMMENT 'Password assegnata da pagopa',
 	abilitato BOOLEAN NOT NULL COMMENT 'Indicazione se e\' abilitato ad operare',
 	application_code INT NOT NULL COMMENT 'Application code estratto della stazione',
+	versione VARCHAR(35) NOT NULL COMMENT 'Versione della stazione',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_intermediario BIGINT NOT NULL COMMENT 'Riferimento all\'intermediario',

@@ -10,6 +10,7 @@ import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "password",
 "abilitato",
+"versione",
 "idStazione",
 "domini",
 })
@@ -20,6 +21,9 @@ public class StazioneIndex extends JSONSerializable {
   
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
+  
+  @JsonProperty("versione")
+  private VersioneStazione versione = null;
   
   @JsonProperty("idStazione")
   private String idStazione = null;
@@ -57,6 +61,21 @@ public class StazioneIndex extends JSONSerializable {
   }
   public void setAbilitato(Boolean abilitato) {
     this.abilitato = abilitato;
+  }
+
+  /**
+   **/
+  public StazioneIndex versione(VersioneStazione versione) {
+    this.versione = versione;
+    return this;
+  }
+
+  @JsonProperty("versione")
+  public VersioneStazione getVersione() {
+    return versione;
+  }
+  public void setVersione(VersioneStazione versione) {
+    this.versione = versione;
   }
 
   /**
@@ -100,15 +119,16 @@ public class StazioneIndex extends JSONSerializable {
       return false;
     }
     StazioneIndex stazioneIndex = (StazioneIndex) o;
-    return Objects.equals(this.password, stazioneIndex.password) &&
-        Objects.equals(this.abilitato, stazioneIndex.abilitato) &&
-        Objects.equals(this.idStazione, stazioneIndex.idStazione) &&
-        Objects.equals(this.domini, stazioneIndex.domini);
+    return Objects.equals(password, stazioneIndex.password) &&
+        Objects.equals(abilitato, stazioneIndex.abilitato) &&
+        Objects.equals(versione, stazioneIndex.versione) &&
+        Objects.equals(idStazione, stazioneIndex.idStazione) &&
+        Objects.equals(domini, stazioneIndex.domini);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.password, this.abilitato, this.idStazione, this.domini);
+    return Objects.hash(password, abilitato, versione, idStazione, domini);
   }
 
   public static StazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -125,10 +145,11 @@ public class StazioneIndex extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class StazioneIndex {\n");
     
-    sb.append("    password: ").append(this.toIndentedString(this.password)).append("\n");
-    sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
-    sb.append("    idStazione: ").append(this.toIndentedString(this.idStazione)).append("\n");
-    sb.append("    domini: ").append(this.toIndentedString(this.domini)).append("\n");
+    sb.append("    password: ").append(toIndentedString(password)).append("\n");
+    sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
+    sb.append("    versione: ").append(toIndentedString(versione)).append("\n");
+    sb.append("    idStazione: ").append(toIndentedString(idStazione)).append("\n");
+    sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
     sb.append("}");
     return sb.toString();
   }

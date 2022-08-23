@@ -30,6 +30,7 @@ import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
 import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
@@ -67,6 +68,8 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.utils.CheckoutUtils;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.SeveritaProperties;
@@ -76,6 +79,7 @@ import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.tracciati.validator.PendenzaPostValidator;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.PatchOp;
+import it.govpay.model.Stazione.Versione;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
@@ -117,6 +121,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			StringBuilder sbNomeVersamenti = new StringBuilder();
 			List<String> listaMultibeneficiari = new ArrayList<>();
 			Anagrafica versanteModel = VersamentoUtils.toAnagraficaModel(pagamentiPortaleDTO.getVersante());
+			int numeroRifAvvisi = 0;
 			// 1. Lista Id_versamento
 			for(int i = 0; i < pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size(); i++) {
 				Object v = pagamentiPortaleDTO.getPendenzeOrPendenzeRef().get(i);
@@ -172,6 +177,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					}catch(NotFoundException e) {
 						throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio non disponibile [Dominio:"+idDominio+"].", EsitoOperazione.DOM_000, idDominio);
 					}
+					numeroRifAvvisi ++;
 				}  else if(v instanceof RefVersamentoPendenza) {
 					// controllo se le pendenze richieste siano a disposizione in sessione altrimenti assumo che siano dei dovuti gia' caricati
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
@@ -335,6 +341,48 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					// colleziono i domini inserendo solo se non presente in lista
 					if(!listaMultibeneficiari.contains(dominio.getCodDominio()))
 						listaMultibeneficiari.add(dominio.getCodDominio());
+				}
+			}
+			
+			// Controllo se sono nel caso d'uso Pagamento Modello 1 SANP 3.1.0 cioe' se la stazione impostata per il dominio e' V2
+			Stazione stazione = null;
+			Dominio dominio = null;
+			for (Versamento vTmp : versamenti) {
+				Dominio dominioTmp = vTmp.getDominio(configWrapper);
+				if(dominio == null)	{
+					dominio = dominioTmp;
+				}
+				
+				if(stazione == null) {
+					stazione = dominioTmp.getStazione();
+				} else {
+					if(stazione.getId().compareTo(dominioTmp.getStazione().getId()) != 0) {
+						throw new GovPayException(EsitoOperazione.PAG_000);
+					}
+				}
+			}
+			
+			if(stazione != null ) {
+				// check versione
+				if(stazione.getVersione().equals(Versione.V2)) {
+					
+					// la richiesta deve essere formata solo da riferimenti avviso
+					if(numeroRifAvvisi < versamenti.size()) {
+						throw new ValidationException("Il pagamento presso frontend dell'EC si puo' effettuare solo indicando i riferimenti avviso.");
+					}
+					
+					// urlritorno obbligatoria
+					if(StringUtils.isEmpty(pagamentiPortaleDTO.getUrlRitorno())) {
+						throw new ValidationException("Il campo urlRitorno non deve essere vuoto.");
+					}
+					
+					response.setId("0");
+					response.setRedirect(true); 
+					
+					response.setHtmlRedirectCheckout(CheckoutUtils.getCheckoutHtml(log, GovpayConfig.getInstance().getCheckoutURL(), CheckoutUtils.readTemplate(), 
+							configWrapper, pagamentiPortaleDTO.getUrlRitorno(), pagamentiPortaleDTO.getLingua(), dominio.getCodDominio(), versamenti, pagamentiPortaleDTO.getCodiceConvenzione()));
+
+					return response;
 				}
 			}
 

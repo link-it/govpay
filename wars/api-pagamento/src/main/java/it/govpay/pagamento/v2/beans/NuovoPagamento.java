@@ -21,6 +21,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "credenzialiPagatore",
 "soggettoVersante",
 "autenticazioneSoggetto",
+"lingua",
 "pendenze",
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -43,6 +44,9 @@ public class NuovoPagamento extends JSONSerializable implements IValidable {
   
   @JsonProperty("autenticazioneSoggetto")
   private TipoAutenticazioneSoggetto autenticazioneSoggetto = TipoAutenticazioneSoggetto.N_A;
+  
+  @JsonProperty("lingua")
+  private LinguaPagamento lingua = null;
   
   @JsonProperty("pendenze")
   private List<NuovaPendenza> pendenze = new ArrayList<>();
@@ -148,7 +152,30 @@ public class NuovoPagamento extends JSONSerializable implements IValidable {
         throw new ValidationException("valore ["+autenticazioneSoggetto+"] non ammesso per la property autenticazioneSoggetto");
     }
   }
-  
+
+  /**
+   **/
+  public NuovoPagamento lingua(LinguaPagamento lingua) {
+    this.lingua = lingua;
+    return this;
+  }
+
+  @JsonProperty("lingua")
+  public String getLingua() {
+	  if(this.lingua != null) {
+	      return this.lingua.toString();
+	    } else {
+	      return null;
+	    }
+  }
+  public void setLingua(String lingua) throws ValidationException {
+	  if(lingua != null) {
+	      this.lingua = LinguaPagamento.fromValue(lingua);
+	      if(this.lingua == null)
+	        throw new ValidationException("valore ["+lingua+"] non ammesso per la property lingua");
+	}
+  }
+
   /**
    * pendenze o riferimenti alle pendenze oggetto del pagamento
    **/
@@ -180,6 +207,7 @@ public class NuovoPagamento extends JSONSerializable implements IValidable {
         Objects.equals(credenzialiPagatore, nuovoPagamento.credenzialiPagatore) &&
         Objects.equals(soggettoVersante, nuovoPagamento.soggettoVersante) &&
         Objects.equals(autenticazioneSoggetto, nuovoPagamento.autenticazioneSoggetto) &&
+        Objects.equals(lingua, nuovoPagamento.lingua) &&
         Objects.equals(pendenze, nuovoPagamento.pendenze);
   }
 
@@ -208,6 +236,7 @@ public class NuovoPagamento extends JSONSerializable implements IValidable {
     sb.append("    credenzialiPagatore: ").append(toIndentedString(credenzialiPagatore)).append("\n");
     sb.append("    soggettoVersante: ").append(toIndentedString(soggettoVersante)).append("\n");
     sb.append("    autenticazioneSoggetto: ").append(toIndentedString(autenticazioneSoggetto)).append("\n");
+    sb.append("    lingua: ").append(toIndentedString(lingua)).append("\n");
     sb.append("    pendenze: ").append(toIndentedString(pendenze)).append("\n");
     sb.append("}");
     return sb.toString();
