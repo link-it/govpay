@@ -341,7 +341,7 @@ public class PendenzeConverter {
 			if(rendicontazioni != null && !rendicontazioni.isEmpty()) {
 				List<it.govpay.backoffice.v1.beans.Rendicontazione> rendicontazioniRsModel = new ArrayList<>();
 				for (Rendicontazione rendicontazione : rendicontazioni) {
-					it.govpay.backoffice.v1.beans.Rendicontazione rendicontazioneRsModel = FlussiRendicontazioneConverter.toRendicontazioneRsModel(rendicontazione);
+					it.govpay.backoffice.v1.beans.Rendicontazione rendicontazioneRsModel = FlussiRendicontazioneConverter.toRendicontazioneRsModel(rendicontazione, singoloVersamento);
 					rendicontazioniRsModel.add(rendicontazioneRsModel);
 				}
 				rsModel.setRendicontazioni(rendicontazioniRsModel);
