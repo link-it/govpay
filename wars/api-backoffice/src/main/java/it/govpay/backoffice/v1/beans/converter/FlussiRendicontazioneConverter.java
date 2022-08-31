@@ -138,7 +138,7 @@ public class FlussiRendicontazioneConverter {
 		return rsModel;
 	}
 
-	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione) throws ServiceException, IOException, ValidationException {
+	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione, SingoloVersamento singoloVersamento) throws ServiceException, IOException, ValidationException {
 		it.govpay.backoffice.v1.beans.Rendicontazione rsModel = new it.govpay.backoffice.v1.beans.Rendicontazione();
 		rsModel.setIuv(rendicontazione.getIuv());
 		rsModel.setIur(rendicontazione.getIur());
@@ -158,15 +158,16 @@ public class FlussiRendicontazioneConverter {
 			rsModel.setSegnalazioni(segnalazioni);
 		}
 
-		SingoloVersamento singoloVersamento = null;
 		Rpt rpt = null;
 		Incasso incasso = null;
 		if(rendicontazione.getPagamento(null) != null) {
-			singoloVersamento = rendicontazione.getPagamento(null).getSingoloVersamento(null);
+			if(singoloVersamento == null)
+				singoloVersamento = rendicontazione.getPagamento(null).getSingoloVersamento(null);
 			rpt = rendicontazione.getPagamento(null).getRpt(null);
 			incasso = rendicontazione.getPagamento(null).getIncasso(null);
 		} else {
-			singoloVersamento = rendicontazione.getSingoloVersamento(null);
+			if(singoloVersamento == null)
+				singoloVersamento = rendicontazione.getSingoloVersamento(null);
 		}
 		Versamento versamento = singoloVersamento.getVersamentoBD(null);
 
