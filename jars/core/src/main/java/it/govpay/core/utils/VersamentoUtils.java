@@ -192,7 +192,7 @@ public class VersamentoUtils {
 		}
 	}
 
-	public static Versamento aggiornaVersamento(Versamento versamento) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
+	public static Versamento aggiornaVersamento(Versamento versamento, Logger log) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
 	VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
 		// Se il versamento non e' in attesa, non aggiorno un bel niente
 		if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO))
@@ -225,16 +225,35 @@ public class VersamentoUtils {
 						versamento = acquisisciVersamento(versamento.getApplicazione(configWrapper), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, tipo);
 					} catch (ClientException e) {
 						// Errore nella chiamata all'ente. Controllo se e' mandatoria o uso quel che ho
-						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
+						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) { 
+							log.error("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == true aggiornamento terminato con errore: " + e.getMessage(),e);
 							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
+						}
+						
+						log.debug("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == false quindi verra' utilizzata la pendenza originale. Errore: " + e.getMessage(),e);
 					} catch (VersamentoSconosciutoException e) {
 						// Versamento sconosciuto all'ente (bug dell'ente?). Controllo se e' mandatoria o uso quel che ho
-						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
+						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) { 
+							log.error("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == true aggiornamento terminato con errore: " + e.getMessage(),e);
 							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
+						}						
+						log.debug("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == false quindi verra' utilizzata la pendenza originale. Errore: " + e.getMessage(),e);
 					} catch (VersamentoNonValidoException e) {
 						// Versamento non valido per errori di validazione, se e' mandatorio l'aggiornamento rilancio l'eccezione altrimenti uso quello che ho
-						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio())
+						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) {
+							log.error("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == true aggiornamento terminato con errore: " + e.getMessage(),e);
 							throw e;
+						}
+						
+						log.debug("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == false quindi verra' utilizzata la pendenza originale. Errore: " + e.getMessage(),e);
+					} catch (GovPayException | UtilsException | ServiceException e) {
+						// Versamento non aggiornato per errori interni, se e' mandatorio l'aggiornamento rilancio l'eccezione altrimenti uso quello che ho
+						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) {
+							log.error("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == true aggiornamento terminato con errore: " + e.getMessage(),e);
+							throw e;
+						}
+						
+						log.debug("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == false quindi verra' utilizzata la pendenza originale. Errore: " + e.getMessage(),e);
 					}
 				} else if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
 					// connettore verifica non definito, versamento non aggiornabile
