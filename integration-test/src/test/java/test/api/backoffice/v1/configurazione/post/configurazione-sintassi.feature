@@ -75,6 +75,12 @@ Examples:
 | giornaleEventi.interfacce.apiMaggioliJPPA.scritture.log | log | 'xxxx' |
 | giornaleEventi.interfacce.apiMaggioliJPPA.scritture.dump | dump | 'xxxx' |
 | giornaleEventi.interfacce.apiMaggioliJPPA.scritture | scritture | null |
+| giornaleEventi.interfacce.apiNetPay.letture.log | log | 'xxxx' |
+| giornaleEventi.interfacce.apiNetPay.letture.dump | dump | 'xxxx' |
+| giornaleEventi.interfacce.apiNetPay.letture | letture | null |
+| giornaleEventi.interfacce.apiNetPay.scritture.log | log | 'xxxx' |
+| giornaleEventi.interfacce.apiNetPay.scritture.dump | dump | 'xxxx' |
+| giornaleEventi.interfacce.apiNetPay.scritture | scritture | null |
 | giornaleEventi.interfacce.prova | prova | 'xxxx' |
 | hardening | hardening | null |
 | hardening.abilitato | abilitato | 'xxx' |

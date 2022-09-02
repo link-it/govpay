@@ -14,6 +14,7 @@ public class Giornale implements Serializable{
 	private GdeInterfaccia apiPendenze;
 	private GdeInterfaccia apiBackendIO;
 	private GdeInterfaccia apiMaggioliJPPA;
+	private GdeInterfaccia apiNetPay;
 	
 	public GdeInterfaccia getApiEnte() {
 		return apiEnte;
@@ -62,6 +63,12 @@ public class Giornale implements Serializable{
 	}
 	public void setApiMaggioliJPPA(GdeInterfaccia apiMaggioliJPPA) {
 		this.apiMaggioliJPPA = apiMaggioliJPPA;
+	}
+	public GdeInterfaccia getApiNetPay() {
+		return apiNetPay;
+	}
+	public void setApiNetPay(GdeInterfaccia apiNetPay) {
+		this.apiNetPay = apiNetPay;
 	}
 
 }

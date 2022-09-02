@@ -416,6 +416,7 @@
     <value name="codConnettoreMaggioliJPPA" field="codConnettoreMaggioliJPPA" usage="optional"/>
     <value name="intermediato" field="intermediato" usage="required"/>
     <value name="tassonomiaPagoPA" field="tassonomiaPagoPA" usage="optional"/>
+    <value name="codConnettoreNetPay" field="codConnettoreNetPay" usage="optional"/>
   </mapping>
   <mapping name="Uo" class="it.govpay.orm.Uo">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

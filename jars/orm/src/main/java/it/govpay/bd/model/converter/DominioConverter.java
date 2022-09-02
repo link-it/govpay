@@ -19,6 +19,10 @@
  */
 package it.govpay.bd.model.converter;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BDConfigWrapper;
@@ -40,9 +44,7 @@ public class DominioConverter {
 //		return lstDTO;
 //	}
 
-	public static Dominio toDTO(it.govpay.orm.Dominio vo, BDConfigWrapper configWrapper, ConnettoreNotificaPagamenti connettoreMyPivot, 
-			ConnettoreNotificaPagamenti connettoreSecim, ConnettoreNotificaPagamenti connettoreGovPay, 
-			ConnettoreNotificaPagamenti connettoreHyperSicAPKappa, ConnettoreNotificaPagamenti connettoreMaggioliJPPA) throws ServiceException {
+	public static Dominio toDTO(it.govpay.orm.Dominio vo, BDConfigWrapper configWrapper, Map<ConnettoreNotificaPagamenti.Tipo, ConnettoreNotificaPagamenti> connettori) throws ServiceException {
 		
 		
 		IdStazione idStazione = vo.getIdStazione(); 
@@ -61,13 +63,39 @@ public class DominioConverter {
 		dto.setLogo(vo.getLogo());
 		dto.setCbill(vo.getCbill());
 		dto.setAutStampaPoste(vo.getAutStampaPoste());
-		dto.setConnettoreMyPivot(connettoreMyPivot);
-		dto.setConnettoreSecim(connettoreSecim);
-		dto.setConnettoreGovPay(connettoreGovPay);
-		dto.setConnettoreHyperSicAPKappa(connettoreHyperSicAPKappa);
-		dto.setConnettoreMaggioliJPPA(connettoreMaggioliJPPA);
 		dto.setIntermediato(vo.isIntermediato());
 		dto.setTassonomiaPagoPA(vo.getTassonomiaPagoPA());
+		
+		if(connettori != null) {
+			Set<ConnettoreNotificaPagamenti.Tipo> keySet = connettori.keySet();
+			
+			for (Iterator<ConnettoreNotificaPagamenti.Tipo> it = keySet.iterator(); it.hasNext();) {
+				ConnettoreNotificaPagamenti.Tipo tipoConnettore = it.next();
+				ConnettoreNotificaPagamenti connettoreNotificaPagamenti = connettori.get(tipoConnettore);
+				
+				switch (tipoConnettore) {
+				case GOVPAY:
+					dto.setConnettoreGovPay(connettoreNotificaPagamenti);
+					break;
+				case HYPER_SIC_APKAPPA:
+					dto.setConnettoreHyperSicAPKappa(connettoreNotificaPagamenti);
+					break;
+				case MAGGIOLI_JPPA:
+					dto.setConnettoreMaggioliJPPA(connettoreNotificaPagamenti);
+					break;
+				case MYPIVOT:
+					dto.setConnettoreMyPivot(connettoreNotificaPagamenti);
+					break;
+				case NETPAY:
+					dto.setConnettoreNetPay(connettoreNotificaPagamenti);
+					break;
+				case SECIM:
+					dto.setConnettoreSecim(connettoreNotificaPagamenti);
+					break;
+				}
+			}
+		}
+		
 		return dto;
 	}
 
@@ -120,6 +148,11 @@ public class DominioConverter {
 		if(dto.getConnettoreMaggioliJPPA()!= null) {
 			dto.getConnettoreMaggioliJPPA().setIdConnettore(DominiBD.getIDConnettoreMaggioliJPPA(dto.getCodDominio()));
 			vo.setCodConnettoreMaggioliJPPA(dto.getConnettoreMaggioliJPPA().getIdConnettore());
+		}
+		
+		if(dto.getConnettoreNetPay()!= null) {
+			dto.getConnettoreNetPay().setIdConnettore(DominiBD.getIDConnettoreNetPay(dto.getCodDominio()));
+			vo.setCodConnettoreNetPay(dto.getConnettoreNetPay().getIdConnettore());
 		}
 		
 		vo.setIntermediato(dto.isIntermediato());

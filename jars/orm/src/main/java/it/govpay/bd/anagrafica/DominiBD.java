@@ -20,7 +20,9 @@
 package it.govpay.bd.anagrafica;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -43,6 +45,7 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.converter.ConnettoreNotificaPagamentiConverter;
 import it.govpay.bd.model.converter.DominioConverter;
 import it.govpay.model.ConnettoreNotificaPagamenti;
+import it.govpay.model.ConnettoreNotificaPagamenti.Tipo;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.dao.jdbc.JDBCDominioServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
@@ -68,24 +71,32 @@ public class DominiBD extends BasicBD {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
 	
+	private static String getIDConnettore(String codDominio, ConnettoreNotificaPagamenti.Tipo tipo) {
+		return "DOM_" + codDominio + "_"+ tipo.toString();
+	}
+	
 	public static String getIDConnettoreMyPivot(String codDominio) {
-		return "DOM_" + codDominio + "_"+ ConnettoreNotificaPagamenti.Tipo.MYPIVOT.toString();
+		return getIDConnettore(codDominio, Tipo.MYPIVOT);
 	}
 	
 	public static String getIDConnettoreSecim(String codDominio) {
-		return "DOM_" + codDominio + "_"+ ConnettoreNotificaPagamenti.Tipo.SECIM.toString();
+		return getIDConnettore(codDominio, Tipo.SECIM);
 	}
 	
 	public static String getIDConnettoreGovPay(String codDominio) {
-		return "DOM_" + codDominio + "_"+ ConnettoreNotificaPagamenti.Tipo.GOVPAY.toString();
+		return getIDConnettore(codDominio, Tipo.GOVPAY);
 	}
 	
 	public static String getIDConnettoreHyperSicAPKappa(String codDominio) {
-		return "DOM_" + codDominio + "_"+ ConnettoreNotificaPagamenti.Tipo.HYPER_SIC_APKAPPA.toString();
+		return getIDConnettore(codDominio, Tipo.HYPER_SIC_APKAPPA);
 	}
 	
 	public static String getIDConnettoreMaggioliJPPA(String codDominio) {
-		return "DOM_" + codDominio + "_"+ ConnettoreNotificaPagamenti.Tipo.MAGGIOLI_JPPA.toString();
+		return getIDConnettore(codDominio, Tipo.MAGGIOLI_JPPA);
+	}
+	
+	public static String getIDConnettoreNetPay(String codDominio) {
+		return getIDConnettore(codDominio, Tipo.NETPAY);
 	}
 
 	/**
@@ -106,8 +117,7 @@ public class DominiBD extends BasicBD {
 			expr.equals(it.govpay.orm.Dominio.model().COD_DOMINIO, codDominio);
 			it.govpay.orm.Dominio dominioVO = this.getDominioService().find(expr);
 			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
-			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO),
-					this.getConnettoreGovPay(dominioVO), this.getConnettoreHyperSicAPKappa(dominioVO), this.getConnettoreMaggioliJPPA(dominioVO));
+			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettori(dominioVO));
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -123,93 +133,42 @@ public class DominiBD extends BasicBD {
 			}
 		}
 	}
-
-	private ConnettoreNotificaPagamenti getConnettoreMyPivot(it.govpay.orm.Dominio dominioVO) throws ServiceException {
-		try {
-			ConnettoreNotificaPagamenti connettoreMyPivot = null;
-			
-			if(dominioVO.getCodConnettoreMyPivot()!= null) {
-				IPaginatedExpression expIntegrazione = this.getConnettoreService().newPaginatedExpression();
-				expIntegrazione.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominioVO.getCodConnettoreMyPivot());
-				connettoreMyPivot = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
-			}
-			return connettoreMyPivot;
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} 
+	
+	private Map<Tipo, ConnettoreNotificaPagamenti> getConnettori(it.govpay.orm.Dominio dominioVO) throws ServiceException {
+		Map<Tipo, ConnettoreNotificaPagamenti> connettori = new HashMap<>();
+		
+		if(dominioVO.getCodConnettoreGovPay()!= null) {
+			connettori.put(Tipo.GOVPAY, getConnettore(dominioVO.getCodConnettoreGovPay()));
+		}
+		if(dominioVO.getCodConnettoreHyperSicAPK()!= null) {
+			connettori.put(Tipo.HYPER_SIC_APKAPPA, getConnettore(dominioVO.getCodConnettoreHyperSicAPK()));
+		}
+		if(dominioVO.getCodConnettoreMaggioliJPPA()!= null) {
+			connettori.put(Tipo.MAGGIOLI_JPPA, getConnettore(dominioVO.getCodConnettoreMaggioliJPPA()));
+		}
+		if(dominioVO.getCodConnettoreMyPivot()!= null) {
+			connettori.put(Tipo.MYPIVOT, getConnettore(dominioVO.getCodConnettoreMyPivot()));
+		}
+		if(dominioVO.getCodConnettoreNetPay()!= null) {
+			connettori.put(Tipo.NETPAY, getConnettore(dominioVO.getCodConnettoreNetPay()));
+		}
+		if(dominioVO.getCodConnettoreSecim()!= null) {
+			connettori.put(Tipo.SECIM, getConnettore(dominioVO.getCodConnettoreSecim()));
+		}
+		
+		return connettori;
 	}
 	
-	private ConnettoreNotificaPagamenti getConnettoreSecim(it.govpay.orm.Dominio dominioVO) throws ServiceException {
+	private ConnettoreNotificaPagamenti getConnettore(String codConnettore) throws ServiceException {
 		try {
-			ConnettoreNotificaPagamenti connettoreSecim = null;
+			ConnettoreNotificaPagamenti connettore = null;
 			
-			if(dominioVO.getCodConnettoreSecim()!= null) {
+			if(codConnettore != null) {
 				IPaginatedExpression expIntegrazione = this.getConnettoreService().newPaginatedExpression();
-				expIntegrazione.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominioVO.getCodConnettoreSecim());
-				connettoreSecim = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
+				expIntegrazione.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, codConnettore);
+				connettore = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
 			}
-			return connettoreSecim;
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} 
-	}
-	
-	private ConnettoreNotificaPagamenti getConnettoreGovPay(it.govpay.orm.Dominio dominioVO) throws ServiceException {
-		try {
-			ConnettoreNotificaPagamenti connettoreGovpay = null;
-			
-			if(dominioVO.getCodConnettoreGovPay()!= null) {
-				IPaginatedExpression expIntegrazione = this.getConnettoreService().newPaginatedExpression();
-				expIntegrazione.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominioVO.getCodConnettoreGovPay());
-				connettoreGovpay = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
-			}
-			return connettoreGovpay;
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} 
-	}
-	
-	private ConnettoreNotificaPagamenti getConnettoreHyperSicAPKappa(it.govpay.orm.Dominio dominioVO) throws ServiceException {
-		try {
-			ConnettoreNotificaPagamenti connettoreGovpay = null;
-			
-			if(dominioVO.getCodConnettoreHyperSicAPK()!= null) {
-				IPaginatedExpression expIntegrazione = this.getConnettoreService().newPaginatedExpression();
-				expIntegrazione.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominioVO.getCodConnettoreHyperSicAPK());
-				connettoreGovpay = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
-			}
-			return connettoreGovpay;
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} 
-	}
-	
-	private ConnettoreNotificaPagamenti getConnettoreMaggioliJPPA(it.govpay.orm.Dominio dominioVO) throws ServiceException {
-		try {
-			ConnettoreNotificaPagamenti connettoreMaggioliJPPA = null;
-			
-			if(dominioVO.getCodConnettoreMaggioliJPPA()!= null) {
-				IPaginatedExpression expIntegrazione = this.getConnettoreService().newPaginatedExpression();
-				expIntegrazione.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominioVO.getCodConnettoreMaggioliJPPA());
-				connettoreMaggioliJPPA = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiDTO(this.getConnettoreService().findAll(expIntegrazione));
-			}
-			return connettoreMaggioliJPPA;
+			return connettore;
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
@@ -241,8 +200,7 @@ public class DominiBD extends BasicBD {
 			}
 			it.govpay.orm.Dominio dominioVO = ((JDBCDominioServiceSearch)this.getDominioService()).get(id);
 			BDConfigWrapper configWrapper = new BDConfigWrapper(this.getIdTransaction(), this.isUseCache());
-			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO),
-					this.getConnettoreGovPay(dominioVO), this.getConnettoreHyperSicAPKappa(dominioVO), this.getConnettoreMaggioliJPPA(dominioVO));
+			Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettori(dominioVO));
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -276,63 +234,27 @@ public class DominiBD extends BasicBD {
 			dominio.setId(vo.getId());
 			
 			if(dominio.getConnettoreMyPivot() != null) {
-				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreMyPivot());
-
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreMyPivot().getIdConnettore());
-				this.getConnettoreService().deleteAll(expDelete);
-
-				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
-					this.getConnettoreService().create(connettore);
-				}
+				this.insertConnettore(dominio.getConnettoreMyPivot(), dominio.getConnettoreMyPivot().getIdConnettore()); 
 			} 
 			
 			if(dominio.getConnettoreSecim() != null) {
-				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreSecim());
-
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreSecim().getIdConnettore());
-				this.getConnettoreService().deleteAll(expDelete);
-
-				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
-					this.getConnettoreService().create(connettore);
-				}
+				this.insertConnettore(dominio.getConnettoreSecim(), dominio.getConnettoreSecim().getIdConnettore()); 
 			}
 			
 			if(dominio.getConnettoreGovPay() != null) {
-				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreGovPay());
-
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreGovPay().getIdConnettore());
-				this.getConnettoreService().deleteAll(expDelete);
-
-				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
-					this.getConnettoreService().create(connettore);
-				}
+				this.insertConnettore(dominio.getConnettoreGovPay(), dominio.getConnettoreGovPay().getIdConnettore()); 
 			}
 			
 			if(dominio.getConnettoreHyperSicAPKappa() != null) {
-				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreHyperSicAPKappa());
-
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreHyperSicAPKappa().getIdConnettore());
-				this.getConnettoreService().deleteAll(expDelete);
-
-				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
-					this.getConnettoreService().create(connettore);
-				}
+				this.insertConnettore(dominio.getConnettoreHyperSicAPKappa(), dominio.getConnettoreHyperSicAPKappa().getIdConnettore()); 
 			}
 			
 			if(dominio.getConnettoreMaggioliJPPA() != null) {
-				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreMaggioliJPPA());
-
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreMaggioliJPPA().getIdConnettore());
-				this.getConnettoreService().deleteAll(expDelete);
-
-				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
-					this.getConnettoreService().create(connettore);
-				}
+				this.insertConnettore(dominio.getConnettoreMaggioliJPPA(), dominio.getConnettoreMaggioliJPPA().getIdConnettore()); 
+			}
+			
+			if(dominio.getConnettoreNetPay() != null) {
+				this.insertConnettore(dominio.getConnettoreNetPay(), dominio.getConnettoreNetPay().getIdConnettore()); 
 			}
 			
 			this.emitAudit(dominio);
@@ -362,6 +284,18 @@ public class DominiBD extends BasicBD {
 			}
 		}
 	}
+	
+	private void insertConnettore(ConnettoreNotificaPagamenti connettoreDTO, String codConnettore) throws ServiceException, NotImplementedException, ExpressionNotImplementedException, ExpressionException {
+		List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(connettoreDTO);
+
+		IExpression expDelete = this.getConnettoreService().newExpression();
+		expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, codConnettore);
+		this.getConnettoreService().deleteAll(expDelete);
+
+		for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
+			this.getConnettoreService().create(connettore);
+		}
+	}
 
 	/**
 	 * Aggiorna il dominio con i dati forniti
@@ -388,85 +322,17 @@ public class DominiBD extends BasicBD {
 			this.getDominioService().update(id, vo);
 			dominio.setId(vo.getId());
 			
-			if(dominio.getConnettoreMyPivot() != null) {
-				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreMyPivot());
-
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreMyPivot().getIdConnettore());
-				this.getConnettoreService().deleteAll(expDelete);
-
-				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
-					this.getConnettoreService().create(connettore);
-				}
-			} else {
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, getIDConnettoreMyPivot(dominio.getCodDominio()));
-				this.getConnettoreService().deleteAll(expDelete);
-			}
+			this.updateConnettore(dominio.getConnettoreGovPay(), dominio.getCodDominio(), Tipo.GOVPAY);
 			
-			if(dominio.getConnettoreSecim() != null) {
-				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreSecim());
-
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreSecim().getIdConnettore());
-				this.getConnettoreService().deleteAll(expDelete);
-
-				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
-					this.getConnettoreService().create(connettore);
-				}
-			} else {
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, getIDConnettoreSecim(dominio.getCodDominio()));
-				this.getConnettoreService().deleteAll(expDelete);
-			}
+			this.updateConnettore(dominio.getConnettoreHyperSicAPKappa(), dominio.getCodDominio(), Tipo.HYPER_SIC_APKAPPA);
 			
-			if(dominio.getConnettoreGovPay() != null) {
-				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreGovPay());
-
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreGovPay().getIdConnettore());
-				this.getConnettoreService().deleteAll(expDelete);
-
-				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
-					this.getConnettoreService().create(connettore);
-				}
-			} else {
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, getIDConnettoreGovPay(dominio.getCodDominio()));
-				this.getConnettoreService().deleteAll(expDelete);
-			}
+			this.updateConnettore(dominio.getConnettoreMaggioliJPPA(), dominio.getCodDominio(), Tipo.MAGGIOLI_JPPA);
 			
-			if(dominio.getConnettoreHyperSicAPKappa() != null) {
-				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreHyperSicAPKappa());
-
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreHyperSicAPKappa().getIdConnettore());
-				this.getConnettoreService().deleteAll(expDelete);
-
-				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
-					this.getConnettoreService().create(connettore);
-				}
-			} else {
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, getIDConnettoreHyperSicAPKappa(dominio.getCodDominio()));
-				this.getConnettoreService().deleteAll(expDelete);
-			}
+			this.updateConnettore(dominio.getConnettoreMyPivot(), dominio.getCodDominio(), Tipo.MYPIVOT);
 			
-			if(dominio.getConnettoreMaggioliJPPA() != null) {
-				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(dominio.getConnettoreMaggioliJPPA());
-
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, dominio.getConnettoreMaggioliJPPA().getIdConnettore());
-				this.getConnettoreService().deleteAll(expDelete);
-
-				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
-					this.getConnettoreService().create(connettore);
-				}
-			} else {
-				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, getIDConnettoreMaggioliJPPA(dominio.getCodDominio()));
-				this.getConnettoreService().deleteAll(expDelete);
-			}
+			this.updateConnettore(dominio.getConnettoreNetPay(), dominio.getCodDominio(), Tipo.NETPAY);
+			
+			this.updateConnettore(dominio.getConnettoreSecim(), dominio.getCodDominio(), Tipo.SECIM);
 			
 			this.emitAudit(dominio);
 			if(this.isAtomica()) {
@@ -493,6 +359,24 @@ public class DominiBD extends BasicBD {
 			}
 		}
 
+	}
+	
+	private void updateConnettore(ConnettoreNotificaPagamenti connettoreDTO, String codDominio, Tipo tipo) throws ExpressionNotImplementedException, ExpressionException, ServiceException, NotImplementedException {
+		if(connettoreDTO != null) {
+			List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreNotificaPagamentiConverter.toConnettoreNotificaPagamentiVOList(connettoreDTO);
+
+			IExpression expDelete = this.getConnettoreService().newExpression();
+			expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, connettoreDTO.getIdConnettore());
+			this.getConnettoreService().deleteAll(expDelete);
+
+			for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
+				this.getConnettoreService().create(connettore);
+			}
+		} else {
+			IExpression expDelete = this.getConnettoreService().newExpression();
+			expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, getIDConnettore(codDominio, tipo));
+			this.getConnettoreService().deleteAll(expDelete);
+		}
 	}
 
 	public DominioFilter newFilter() throws ServiceException {
@@ -595,8 +479,7 @@ public class DominiBD extends BasicBD {
 			
 			List<Dominio> dtoList = new ArrayList<>();
 			for(it.govpay.orm.Dominio dominioVO: this.getDominioService().findAll(filter.toPaginatedExpression())) {
-				Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettoreMyPivot(dominioVO), this.getConnettoreSecim(dominioVO),
-						this.getConnettoreGovPay(dominioVO), this.getConnettoreHyperSicAPKappa(dominioVO), this.getConnettoreMaggioliJPPA(dominioVO));
+				Dominio dominio = DominioConverter.toDTO(dominioVO, configWrapper, this.getConnettori(dominioVO));
 				dtoList.add(dominio);
 			}
 			return dtoList;

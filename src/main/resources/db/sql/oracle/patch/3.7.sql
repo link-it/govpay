@@ -91,3 +91,7 @@ CREATE VIEW v_eventi_vers AS (
                eventi.id
                FROM v_eventi_vers_base JOIN eventi ON v_eventi_vers_base.id = eventi.id
          ); 
+
+
+-- 02/09/2022 Connettore Net@Pay
+ALTER TABLE domini ADD cod_connettore_net_pay VARCHAR2(255 CHAR);

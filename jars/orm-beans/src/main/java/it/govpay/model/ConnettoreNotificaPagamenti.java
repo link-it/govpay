@@ -45,6 +45,12 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	
 	public static final String P_PRINCIPAL_MAGGIOLI = "PRINCIPAL_MAGGIOLI";
 	
+	public static final String P_NETPAY_PRINCIPAL = "NETPAY_PRINCIPAL";
+	public static final String P_NETPAY_URL = "NETPAY_URL";
+	public static final String P_NETPAY_USERNAME = "NETPAY_USERNAME";
+	public static final String P_NETPAY_PASSWORD = "NETPAY_PASSWORD";
+	public static final String P_NETPAY_RUOLO = "NETPAY_RUOLO";
+	public static final String P_NETPAY_COMPANY = "NETPAY_COMPANY";
 	
 	
 	public enum TipoConnettore {
@@ -52,7 +58,7 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	}
 	
 	public enum Tipo {
-		MYPIVOT, SECIM, GOVPAY, HYPER_SIC_APKAPPA, MAGGIOLI_JPPA;
+		MYPIVOT, SECIM, GOVPAY, HYPER_SIC_APKAPPA, MAGGIOLI_JPPA, NETPAY;
 	}
 	
 	public enum Contenuti {
@@ -76,6 +82,13 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	private String downloadBaseURL;
 	private String principalMaggioli;
 	private Integer intervalloCreazioneTracciato;
+	
+	private String netPayPrincipal;
+	private String netPayURL;
+	private String netPayUsername;
+	private String netPayPassword;
+	private String netPayRuolo;
+	private String netPayCompany;
 	
 	public ConnettoreNotificaPagamenti() {
 		// default value per intervallo creazione = 24 ore
@@ -220,5 +233,53 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 
 	public void setIntervalloCreazioneTracciato(Integer intervalloCreazioneTracciato) {
 		this.intervalloCreazioneTracciato = intervalloCreazioneTracciato;
+	}
+
+	public String getNetPayPrincipal() {
+		return netPayPrincipal;
+	}
+
+	public void setNetPayPrincipal(String netPayPrincipal) {
+		this.netPayPrincipal = netPayPrincipal;
+	}
+
+	public String getNetPayURL() {
+		return netPayURL;
+	}
+
+	public void setNetPayURL(String netPayURL) {
+		this.netPayURL = netPayURL;
+	}
+
+	public String getNetPayUsername() {
+		return netPayUsername;
+	}
+
+	public void setNetPayUsername(String netPayUsername) {
+		this.netPayUsername = netPayUsername;
+	}
+
+	public String getNetPayPassword() {
+		return netPayPassword;
+	}
+
+	public void setNetPayPassword(String netPayPassword) {
+		this.netPayPassword = netPayPassword;
+	}
+
+	public String getNetPayRuolo() {
+		return netPayRuolo;
+	}
+
+	public void setNetPayRuolo(String netPayRuolo) {
+		this.netPayRuolo = netPayRuolo;
+	}
+
+	public String getNetPayCompany() {
+		return netPayCompany;
+	}
+
+	public void setNetPayCompany(String netPayCompany) {
+		this.netPayCompany = netPayCompany;
 	}
 }

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.30.0"
+  version: "1.31.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -4994,6 +4994,7 @@ components:
         - apiPendenze
         - apiBackendIO
         - apiMaggioliJPPA
+        - apiNetPay
       properties:
         apiEnte:
           $ref: '#/components/schemas/gdeInterfaccia'
@@ -5010,6 +5011,8 @@ components:
         apiBackendIO:
           $ref: '#/components/schemas/gdeInterfaccia'
         apiMaggioliJPPA:
+          $ref: '#/components/schemas/gdeInterfaccia'
+        apiNetPay:
           $ref: '#/components/schemas/gdeInterfaccia'
     gdeInterfaccia:
       type: object
@@ -5332,6 +5335,8 @@ components:
           $ref: '#/components/schemas/connettoreNotificaPagamentiHyperSicAPKappa'
         servizioMaggioliJPPA:
           $ref: '#/components/schemas/connettoreNotificaPagamentiMaggioliJPPA'  
+        servizioNetPay:
+          $ref: '#/components/schemas/connettoreNetPay'
         intermediato:
           type: boolean
           description: Indica se il creditore viene configurato per utilizzare una  stazione di intermediazione
@@ -8157,6 +8162,45 @@ components:
           description: Lista dei contenuti da inviare al servizio REST
           items:
             $ref: '#/components/schemas/contenutoNotificaPagamentiGovpay'
+    connettoreNetPay:
+      type: object
+      required:
+        - abilitato
+        - principal
+        - url
+        - username
+        - password
+        - ruolo
+        - company
+        - versioneApi
+      properties:
+        abilitato:
+          type: boolean
+          description: Indica se il connettore e' abilitato
+          example: true
+        versioneApi:
+          type: string
+          enum:
+            - 'SOAP v1'
+          description: Versione delle API di integrazione utilizzate.
+        principal:
+          type: string
+          description: principal autenticato dalla chiamata di Net@Pay
+        url:
+          type: string
+          description: endpoint del servizio Net@Pay per la Notifica dei pagamenti avvenuti
+        username:
+          type: string
+          description: username per l'autenticazione HTTP-Basic del servizio Net@Pay per la Notifica dei pagamenti avvenuti
+        password:
+          type: string
+          description: password per l'autenticazione HTTP-Basic del servizio Net@Pay per la Notifica dei pagamenti avvenuti
+        ruolo:
+          type: string
+          description: Identificativo del ruolo su Net@Pay, inviato all'interno di un header HTTP
+        company:
+          type: string
+          description: Identificativo dell'Ente Creditore su Net@Pay, inviato all'interno di un header HTTP
     soggetto:
       description: dati anagrafici di un versante o pagatore.
       type: object

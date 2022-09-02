@@ -19,6 +19,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "apiPendenze",
 "apiBackendIO",
 "apiMaggioliJPPA",
+"apiNetPay",
 })
 public class GdeInterfacce extends JSONSerializable implements IValidable {
   
@@ -45,6 +46,9 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
   
   @JsonProperty("apiMaggioliJPPA")
   private GdeInterfaccia apiMaggioliJPPA = null;
+  
+  @JsonProperty("apiNetPay")
+  private GdeInterfaccia apiNetPay = null;
   
   /**
    **/
@@ -166,6 +170,21 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
     this.apiMaggioliJPPA = apiMaggioliJPPA;
   }
 
+  /**
+   **/
+  public GdeInterfacce apiNetPay(GdeInterfaccia apiNetPay) {
+    this.apiNetPay = apiNetPay;
+    return this;
+  }
+
+  @JsonProperty("apiNetPay")
+  public GdeInterfaccia getApiNetPay() {
+    return apiNetPay;
+  }
+  public void setApiNetPay(GdeInterfaccia apiNetPay) {
+    this.apiNetPay = apiNetPay;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -182,12 +201,13 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
         Objects.equals(apiPagoPA, gdeInterfacce.apiPagoPA) &&
         Objects.equals(apiPendenze, gdeInterfacce.apiPendenze) &&
         Objects.equals(apiBackendIO, gdeInterfacce.apiBackendIO) &&
-        Objects.equals(apiMaggioliJPPA, gdeInterfacce.apiMaggioliJPPA);
+        Objects.equals(apiMaggioliJPPA, gdeInterfacce.apiMaggioliJPPA) &&
+        Objects.equals(apiNetPay, gdeInterfacce.apiNetPay);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(apiEnte, apiPagamento, apiRagioneria, apiBackoffice, apiPagoPA, apiPendenze, apiBackendIO, apiMaggioliJPPA);
+    return Objects.hash(apiEnte, apiPagamento, apiRagioneria, apiBackoffice, apiPagoPA, apiPendenze, apiBackendIO, apiMaggioliJPPA, apiNetPay);
   }
   
   public static GdeInterfacce parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -212,6 +232,7 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
     sb.append("    apiPendenze: ").append(toIndentedString(apiPendenze)).append("\n");
     sb.append("    apiBackendIO: ").append(toIndentedString(apiBackendIO)).append("\n");
     sb.append("    apiMaggioliJPPA: ").append(toIndentedString(apiMaggioliJPPA)).append("\n");
+    sb.append("    apiNetPay: ").append(toIndentedString(apiNetPay)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -238,6 +259,7 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
 		vf.getValidator("apiPendenze", this.apiPendenze).notNull().validateFields();
 		vf.getValidator("apiBackendIO", this.apiBackendIO).notNull().validateFields();
 		vf.getValidator("apiMaggioliJPPA", this.apiMaggioliJPPA).notNull().validateFields();
+		vf.getValidator("apiNetPay", this.apiNetPay).notNull().validateFields();
  	}
 }
 

@@ -93,6 +93,16 @@ Background:
 						"log": "sempre",
 						"dump": "sempre"
 					}
+				},
+				"apiNetPay": {
+					"letture": {
+						"log": "sempre",
+						"dump": "sempre"
+					},
+					"scritture": {
+						"log": "sempre",
+						"dump": "sempre"
+					}
 				}
 			}
 		}
@@ -206,6 +216,18 @@ Examples:
 | interfacce.apiMaggioliJPPA.scritture.dump | "sempre" |
 | interfacce.apiMaggioliJPPA.scritture.dump | "mai" |
 | interfacce.apiMaggioliJPPA.scritture.dump | "solo errore" |
+| interfacce.apiNetPay.letture.log | "sempre" |
+| interfacce.apiNetPay.letture.log | "mai" |
+| interfacce.apiNetPay.letture.log | "solo errore" |
+| interfacce.apiNetPay.letture.dump | "sempre" |
+| interfacce.apiNetPay.letture.dump | "mai" |
+| interfacce.apiNetPay.letture.dump | "solo errore" |
+| interfacce.apiNetPay.scritture.log | "sempre" |
+| interfacce.apiNetPay.scritture.log | "mai" |
+| interfacce.apiNetPay.scritture.log | "solo errore" |
+| interfacce.apiNetPay.scritture.dump | "sempre" |
+| interfacce.apiNetPay.scritture.dump | "mai" |
+| interfacce.apiNetPay.scritture.dump | "solo errore" |
 
 
 Scenario Outline: Errore sintassi della configurazione giornaleEventi (<field>)
@@ -272,6 +294,12 @@ Examples:
 | interfacce.apiMaggioliJPPA.scritture.log | log | 'xxxx' |
 | interfacce.apiMaggioliJPPA.scritture.dump | dump | 'xxxx' |
 | interfacce.apiMaggioliJPPA.scritture | scritture | null |
+| interfacce.apiNetPay.letture.log | log | 'xxxx' |
+| interfacce.apiNetPay.letture.dump | dump | 'xxxx' |
+| interfacce.apiNetPay.letture | letture | null |
+| interfacce.apiNetPay.scritture.log | log | 'xxxx' |
+| interfacce.apiNetPay.scritture.dump | dump | 'xxxx' |
+| interfacce.apiNetPay.scritture | scritture | null |
 | interfacce.prova | prova | 'xxxx' |
 
 
