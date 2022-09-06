@@ -62,6 +62,10 @@ Scenario: Attivazione RPT pendenza precaricata con data validita decorsa e aggio
 * def ccp = getCurrentTimeMillis()
 * def importo = pendenzaPut.importo
 
+# Ripristino gli importi originali per il check finale dell'esitoAttiva che restituira' la pendenza con gli importi non aggiornati.
+* set pendenzaPut.importo = pendenzaPut.importo - 10
+* set pendenzaPut.voci[0].importo = pendenzaPut.voci[0].importo - 10
+
 # modifica diritti applicazione gestore
 
 * def applicazione = read('classpath:test/api/pendenza/v1/pendenze/get/msg/applicazione_auth.json')
