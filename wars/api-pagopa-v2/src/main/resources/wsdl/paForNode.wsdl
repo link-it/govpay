@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="paForNode" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:pafn="http://pagopa-api.pagopa.gov.it/pa/paForNode.xsd" xmlns:tns="http://pagopa-api.pagopa.gov.it/pa/paForNode.wsdl" targetNamespace="http://pagopa-api.pagopa.gov.it/pa/paForNode.wsdl">
+
+  <wsdl:types>
+    <xsd:schema version="1.0.0">
+      <xsd:import schemaLocation="paForNode.xsd" namespace="http://pagopa-api.pagopa.gov.it/pa/paForNode.xsd" />
+    </xsd:schema>
+  </wsdl:types>
+
+  <wsdl:message name="paVerifyPaymentNoticeReq">
+    <wsdl:part name="requestBody" element="pafn:paVerifyPaymentNoticeReq" />
+  </wsdl:message>
+  <wsdl:message name="paVerifyPaymentNoticeRes">
+    <wsdl:part name="responseBody" element="pafn:paVerifyPaymentNoticeRes" />
+  </wsdl:message>
+  <wsdl:message name="paGetPaymentReq">
+    <wsdl:part name="requestBody" element="pafn:paGetPaymentReq" />
+  </wsdl:message>
+  <wsdl:message name="paGetPaymentRes">
+    <wsdl:part name="responseBody" element="pafn:paGetPaymentRes" />
+  </wsdl:message>
+  <wsdl:message name="paSendRTReq">
+    <wsdl:part name="requestBody" element="pafn:paSendRTReq" />
+  </wsdl:message>
+  <wsdl:message name="paSendRTRes">
+    <wsdl:part name="responseBody" element="pafn:paSendRTRes" />
+  </wsdl:message>
+
+  <wsdl:portType name="paForNode_PortType">
+    <wsdl:operation name="paVerifyPaymentNotice">
+      <wsdl:documentation>
+Through the primitive `paVerifyPaymentNotice` the PA is interrogated to verify which are the options available to the citizen at the same time.
+
+All available options will then be proposed until one of the following events occurs:
+
+- a payment receipt is notified, therefore the debt position is closed and no payment option will be available anymore.
+- the PA becomes in possession of the notification data, therefore it can update the payment options by entering the correct expiry data for each of the options.
+
+    </wsdl:documentation>
+      <wsdl:input message="tns:paVerifyPaymentNoticeReq" wsam:Action="http://pagopa-api.pagopa.gov.it/service/pa/paForNode/paVerifyPaymentNoticeReq" />
+      <wsdl:output message="tns:paVerifyPaymentNoticeRes" wsam:Action="http://pagopa-api.pagopa.gov.it/service/pa/paForNode/paVerifyPaymentNoticeRes" />
+    </wsdl:operation>
+    <wsdl:operation name="paGetPayment">
+      <wsdl:documentation>
+A PA connected to the pagoPA Platform must offer a service that returns a payment linked to a debt position through the
+primitive `paGetPayment`.
+
+Each request is specified through the parameters `amount` and `due_date`, which are returned by the `paVerifyPayment`.
+
+If these parameters are not present, the PA will set the real amount.
+In response, the PA returns all the data necessary for the payment.
+
+In addition, the PA can define a validity date for the information sent. If present, the platform will be authorized to manage
+autonomously similar requests without necessarily contacting the PA.  
+    </wsdl:documentation>
+      <wsdl:input message="tns:paGetPaymentReq" wsam:Action="http://pagopa-api.pagopa.gov.it/service/pa/paForNode/paGetPaymentReq" />
+      <wsdl:output message="tns:paGetPaymentRes" wsam:Action="http://pagopa-api.pagopa.gov.it/service/pa/paForNode/paGetPaymentRes" />
+    </wsdl:operation>
+    <wsdl:operation name="paSendRT">
+      <wsdl:documentation>
+Following any payment made on the pagoPA, the system'll generate a receipt, and promptly notified it. 
+A receipt certifying the payment made with references to the debt position and related details.
+
+Receipts are sent:
+
+- in the case of online payment to the station requesting the payment
+- in the case of payment by payment notification at the station indicated in the notice
+- to all stations identified as `broadcast` if the entity beneficiary, contained within the payment, is not associated to the stations described above.
+
+In order to receive such receipts, the EC shall implement `paSendRT` service.
+
+The pagoPA Platform will make a maximum of 5 sending attempts of the receipt to PA. 
+
+**Note**: receipts cannot be refused, the existence of the the receipt itself certifies the payment according to the processes
+described and notify future accreditation operations. Any cancellations must be managed directly by the EC.
+    </wsdl:documentation>
+      <wsdl:input message="tns:paSendRTReq" wsam:Action="http://pagopa-api.pagopa.gov.it/service/pa/paForNode/paSendRTReq" />
+      <wsdl:output message="tns:paSendRTRes" wsam:Action="http://pagopa-api.pagopa.gov.it/service/pa/paForNode/paSendRTRes" />
+    </wsdl:operation>
+  </wsdl:portType>
+
+  <wsdl:binding name="paForNode_Binding" type="tns:paForNode_PortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+
+    <wsdl:operation name="paVerifyPaymentNotice">
+      <soap:operation soapAction="paVerifyPaymentNotice" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="paGetPayment">
+      <soap:operation soapAction="paGetPayment" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="paSendRT">
+      <soap:operation soapAction="paSendRT" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+
+  <wsdl:service name="paForNode_Service">
+    <wsdl:port name="paForNode_Port" binding="tns:paForNode_Binding">
+      <soap:address location="http://pagopa-api.pagopa.gov.it/service/pa/paForNode" />
+    </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>

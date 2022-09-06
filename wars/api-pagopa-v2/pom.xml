@@ -12,9 +12,9 @@
 	</parent>
 
 	<groupId>it.govpay</groupId>
-	<artifactId>api-gde</artifactId>
+	<artifactId>api-pagopa-v2</artifactId>
 	<packaging>war</packaging>
-	<name>GovPay - wars - REST API Giornale degli Eventi</name>
+	<name>GovPay - wars - SOAP API pagoPA V2</name>
 	<version>3.7.0</version>
 
 	<properties>
@@ -88,29 +88,22 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-hateoas</artifactId>
+			<artifactId>spring-boot-starter-web-services</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-
-		<!-- SpringDoc per generazione OpenAPI e SwaggerUI -->
+		
 		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.6.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-data-rest</artifactId>
-			<version>1.6.4</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
 		</dependency>
 
-		<!-- SpringDoc fine -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -120,6 +113,11 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
+		</dependency>
+		
+		<dependency>
+			<groupId>wsdl4j</groupId>
+			<artifactId>wsdl4j</artifactId>
 		</dependency>
 
 
@@ -162,6 +160,59 @@
 			</resource>
 		</resources>
 		<plugins>
+			<plugin>
+				<!-- Needed to run the plugin xjc en Java 8 or superior -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<id>set-additional-system-properties</id>
+						<goals>
+							<goal>set-system-properties</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<properties>
+						<property>
+							<name>javax.xml.accessExternalSchema</name>
+							<value>all</value>
+						</property>
+						<property>
+							<name>javax.xml.accessExternalDTD</name>
+							<value>all</value>
+						</property>
+					</properties>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxb2-maven-plugin</artifactId>
+				<version>2.5.0</version>
+				<executions>
+					<execution>
+						<id>xjc0</id>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${basedir}/src/main/resources/xsd/paForNode.xsd</source>
+							</sources>
+							<packageName>it.gov.pagopa.pagopa_api.pa.pafornode</packageName>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- <xjbSources> -->
+					<!-- <xjbSource>${basedir}/src/main/resources/xsd/global.xjb</xjbSource> -->
+					<!-- </xjbSources> -->
+					<clearOutputDir>false</clearOutputDir>
+					<generateEpisode>false</generateEpisode>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -264,6 +315,8 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+			
+			
 		</plugins>
 		<pluginManagement>
 			<plugins>

@@ -23,10 +23,10 @@
 		<module>orm</module>
 		<module>core-beans</module>
 		<module>stampe</module>
+		<module>client-api-gde</module>		
 		<module>core</module>
 		<module>api-commons</module>
 		<module>client-api-ente</module>
-		<module>client-api-gde</module>
 	</modules>
 </project>
 

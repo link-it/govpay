@@ -153,6 +153,18 @@
 		
 		<dependency>
 			<groupId>it.govpay</groupId>
+			<artifactId>api-pagopa-v2</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-pagopa-v2</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
 			<artifactId>fonts-TitilliumWeb</artifactId>
 		</dependency>
 
@@ -231,6 +243,11 @@
 							<groupId>it.govpay</groupId>
 							<artifactId>api-gde</artifactId>
 							<contextRoot>/${war-base-name}/backend/api/gde</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>api-pagopa-v2</artifactId>
+							<contextRoot>/${war-base-name}/frontend/api/pagopa-v2</contextRoot>
 						</webModule>
 					</modules>
 					<version>6</version>

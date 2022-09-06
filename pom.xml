@@ -58,13 +58,13 @@
 		<jersey.version>2.25.1</jersey.version>
 		
 		<!-- Spring -->
-		<spring.version>5.1.6.RELEASE</spring.version>
+		<spring.version>5.3.22</spring.version>
 		
 		<!-- Spring Security -->
-		<spring.security.version>5.1.5.RELEASE</spring.security.version>
+		<spring.security.version>5.7.3</spring.security.version>
 		
 		<!-- Spring Security Ldap plugin -->
-		<spring.ldap.version>2.3.2.RELEASE</spring.ldap.version>
+		<spring.ldap.version>2.4.1</spring.ldap.version>
 		
 		<!-- joda time -->
 		<joda-time.version>2.10</joda-time.version>
@@ -336,6 +336,14 @@
 				<artifactId>client-api-gde</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>api-pagopa-v2</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
 

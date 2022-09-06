@@ -166,9 +166,11 @@
 			<module name="com.fasterxml.jackson.core.jackson-databind" />
 			<module
 				name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" />
-			<module name="org.jboss.resteasy.resteasy-jackson2-provider" />
+			<module name="org.jboss.resteasy.resteasy-jackson2-	provider" />
 		</exclusions>
 	</sub-deployment>
 	<sub-deployment name="api-gde-${project.version}.war">
+	</sub-deployment>
+	<sub-deployment name="api-pagopa-v2-${project.version}.war">
 	</sub-deployment>
 </jboss-deployment-structure>
