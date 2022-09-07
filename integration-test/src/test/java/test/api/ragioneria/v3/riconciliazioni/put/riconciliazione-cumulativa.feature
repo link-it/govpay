@@ -147,3 +147,72 @@ When method get
 Then status 200
 And match response == read('msg/riconciliazione-cumulativa-idflusso-response.json')
 
+@test_reiterazione
+Scenario: Riconciliazione cumulativa effettuata prima dell'acquisizione dei flussi di rendicontazione
+
+* def tipoRicevuta = "R01"
+* def riversamentoCumulativo = "true"
+
+* call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
+* def iuv1 = iuv
+* def importo1 = importo
+
+* call read('classpath:utils/workflow/modello3/v2/modello3-pagamento.feature')
+* def iuv2 = iuv
+* def importo2 = importo
+
+* call read('classpath:utils/nodo-genera-rendicontazioni.feature')
+* def importo = response.response.rh[0].importo
+* def causale = response.response.rh[0].causale
+
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
+
+* def idRiconciliazione = getCurrentTimeMillis()
+* def idFlussoRendicontazione = estraiIdFlussoDallaCausale(causale)
+
+Given url ragioneriaBaseurl
+And path '/riconciliazioni', idDominio, idRiconciliazione
+And headers basicAutenticationHeader
+And request { idFlussoRendicontazione: '#(idFlussoRendicontazione)', importo: '#(importo)' , sct : 'SCT0123456789'}
+When method put
+Then status 202
+
+* def riconciliazioneLocation = responseHeaders['Location'][0]
+
+# Attesa batch elaborazione rendicontazioni
+* call sleep(10000)
+
+Given url ragioneriaBaseurl
+And path riconciliazioneLocation
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response == read('msg/riconciliazione-cumulativa-idflusso-errore-response.json')
+And match response.descrizioneStato == '#("Flusso rendicontazione non trovato.: L\'identificativo "+ idFlussoRendicontazione +" estratto dalla causale di incasso non identifica alcun flusso di rendicontazione")'
+
+# Attesa batch elaborazione rendicontazioni
+* call sleep(10000)
+
+* call read('classpath:utils/govpay-op-acquisisci-rendicontazioni.feature')
+
+* def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
+
+Given url ragioneriaBaseurl
+And path '/riconciliazioni', idDominio, idRiconciliazione
+And headers basicAutenticationHeader
+And request { idFlussoRendicontazione: '#(idFlussoRendicontazione)', importo: '#(importo)' , sct : 'SCT0123456789'}
+When method put
+Then status 202
+
+* def riconciliazioneLocation = responseHeaders['Location'][0]
+
+# Attesa batch elaborazione rendicontazioni
+* call sleep(10000)
+
+Given url ragioneriaBaseurl
+And path riconciliazioneLocation
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response == read('msg/riconciliazione-cumulativa-idflusso-response.json')
+

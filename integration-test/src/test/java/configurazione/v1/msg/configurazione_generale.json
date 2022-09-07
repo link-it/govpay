@@ -70,6 +70,16 @@
 					"log": "sempre",
 					"dump": "sempre"
 				}
+			},
+			"apiMaggioliJPPA": {
+				"letture": {
+					"log": "sempre",
+					"dump": "sempre"
+				},
+				"scritture": {
+					"log": "sempre",
+					"dump": "sempre"
+				}
 			}
 		}
 	},

@@ -574,14 +574,6 @@ CREATE VIEW v_vrs_non_rnd AS
   WHERE rendicontazioni.id IS NULL;
   
 
--- 20/07/2021 Fix anomalie per rendicontazione senza RT
-CREATE INDEX idx_rnd_esito ON rendicontazioni (esito);
-CREATE INDEX idx_rnd_stato ON rendicontazioni (stato);
-CREATE INDEX idx_fr_stato ON fr (stato);
-
-UPDATE rendicontazioni SET stato='OK', anomalie=null WHERE dbms_lob.compare(anomalie, '007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.') = 0 AND esito=9;
-UPDATE fr SET stato='ACCETTATA', descrizione_stato = null WHERE stato='ANOMALA' AND id NOT IN (SELECT fr.id FROM fr JOIN rendicontazioni ON rendicontazioni.id_fr=fr.id WHERE fr.stato='ANOMALA' AND rendicontazioni.stato='ANOMALA');
-
 -- 21/12/2021 Patch per la gestione del riferimento al pagamento di una rendicontazione che arriva prima della ricevuta.
 UPDATE rendicontazioni SET id_pagamento = 
 	(SELECT pagamenti.id FROM fr, pagamenti WHERE fr.id=rendicontazioni.id_fr 
@@ -591,24 +583,21 @@ UPDATE rendicontazioni SET id_pagamento =
 
 -- 30/12/2021 Patch rendicontazioni con riferimenti assenti
 -- Imposto il riferimento al versamento
-CREATE INDEX idx_rnd_iuv ON rendicontazioni (iuv);
-CREATE INDEX idx_vrs_iuv_vrs ON versamenti (iuv_versamento);
-		
 UPDATE rendicontazioni SET id_singolo_versamento = 
 	(SELECT singoli_versamenti.id FROM fr, versamenti, domini, singoli_versamenti 
         WHERE fr.id=rendicontazioni.id_fr 
         AND fr.cod_dominio=domini.cod_dominio 
         AND domini.id=versamenti.id_dominio 
         AND rendicontazioni.iuv=versamenti.iuv_versamento
-        AND singoli_versamenti.id_versamento=versamenti.id) WHERE rendicontazioni.id_singolo_versamento IS NULL ;
-		
+        AND singoli_versamenti.id_versamento=versamenti.id) WHERE rendicontazioni.id_singolo_versamento IS NULL 
+
 UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' WHERE id_pagamento IS NULL AND esito=0;
 UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS NULL;
-	
+
 -- ALTRO INTERMEDIARIO Tutti gli spontanei non riferiti a miei pagamenti o pendenze
-UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE stato='ANOMALA' AND length(iuv) NOT IN (15,17) AND id_pagamento IS NULL AND id_singolo_versamento IS NULL ;
+UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE stato='ANOMALA' AND char_length(iuv) NOT IN (15,17) AND id_pagamento IS NULL AND id_singolo_versamento IS NULL ;
 -- ALTRO INTERMEDIARIO Tutti gli IUV con aux 3 che non hanno il giusto codice segregazione
-UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rendicontazioni.stato = 'ANOMALA' AND rendicontazioni.id_fr IN (
+UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rendicontazioni.stato = 'ANOMALA' AND rendicontazioni.id_fr = (
 	SELECT fr.id FROM fr, domini WHERE domini.cod_dominio=fr.cod_dominio AND ( domini.aux_digit='3' AND length(rendicontazioni.iuv) = 17 AND (
 		( rendicontazioni.iuv NOT LIKE ('0' || domini.segregation_code || '%') AND length(domini.segregation_code) = 1 ) 
 		OR ( rendicontazioni.iuv NOT LIKE (domini.segregation_code || '%')  AND length(domini.segregation_code) = 2 )
@@ -618,16 +607,15 @@ UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rend
 
 -- ALTRO INTERMEDIARIO Tutti gli IUV con aux 3 che non sono lunghi 17 e non sono spontanei
 UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rendicontazioni.stato = 'ANOMALA' AND rendicontazioni.id_pagamento IS NULL AND rendicontazioni.id_singolo_versamento IS NULL 
-	AND length(rendicontazioni.iuv) <> 17 AND rendicontazioni.id_fr IN (
+	AND length(rendicontazioni.iuv) <> 17 AND rendicontazioni.id_fr = (
 		SELECT fr.id FROM fr, domini WHERE domini.cod_dominio=fr.cod_dominio AND domini.aux_digit='3'
 	);
 
 -- ALTRO INTERMEDIARIO Tutti gli IUV con aux 0 che non sono lunghi 15 e non sono spontanei
 UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rendicontazioni.stato = 'ANOMALA' AND rendicontazioni.id_pagamento IS NULL AND rendicontazioni.id_singolo_versamento IS NULL 
-	AND length(rendicontazioni.iuv) <> 15 AND rendicontazioni.id_fr IN (
+	AND length(rendicontazioni.iuv) <> 15 AND rendicontazioni.id_fr = (
 		SELECT fr.id FROM fr, domini WHERE domini.cod_dominio=fr.cod_dominio AND domini.aux_digit='0'
 	);
-
 
 -- 25/01/2022 Flusso Rendicontazione univoco per dominio
 ALTER TABLE fr DROP CONSTRAINT unique_fr_1;

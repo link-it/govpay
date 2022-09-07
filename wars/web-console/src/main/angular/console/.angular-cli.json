@@ -20,11 +20,16 @@
       "prefix": "link",
       "styles": [
         "../node_modules/bootstrap/dist/css/bootstrap.min.css",
+        "../node_modules/bootstrap-material-design/dist/css/bootstrap-material-design.min.css",
         "styles/styles.scss",
-        "styles/theme.scss"
+        "styles/theme.scss",
+        "../node_modules/survey-angular/survey.min.css",
+        "../node_modules/survey-angular/modern.min.css",
+        "../node_modules/survey-angular/defaultV2.min.css"
       ],
       "scripts": [
-        "../node_modules/jquery/dist/jquery.slim.min.js",
+        "../node_modules/jquery/dist/jquery.min.js",
+        "../node_modules/survey-angular/survey.angular.min.js",
         "../node_modules/popper.js/dist/umd/popper.min.js",
         "../node_modules/bootstrap/dist/js/bootstrap.min.js",
         "../node_modules/moment/min/moment.min.js",

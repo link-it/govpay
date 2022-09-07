@@ -29,6 +29,8 @@ public class RiscossioniConverter {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Riscossione rsModel = new Riscossione();
 		try {
+			SingoloVersamento singoloVersamento = input.getSingoloVersamento();
+			
 			rsModel.setDominio(DominiConverter.toRsModelIndex(input.getDominio(configWrapper)));
 			rsModel.setIuv(input.getIuv());
 			rsModel.setIur(input.getIur());
@@ -68,10 +70,11 @@ public class RiscossioniConverter {
 				}
 
 
-
-				rsModel.setVocePendenza(PendenzeConverter.toRsModelVocePendenza(input.getSingoloVersamento(null), input.getIndiceDati()));
-				if(input.getRpt(null) != null)
-					rsModel.setRt(ConverterUtils.getRtJson(input.getRpt(null)));
+				if(singoloVersamento != null) {
+					rsModel.setVocePendenza(PendenzeConverter.toRsModelVocePendenza(singoloVersamento, input.getIndiceDati()));
+					if(input.getRpt(null) != null)
+						rsModel.setRt(ConverterUtils.getRtJson(input.getRpt(null)));
+				}
 			}
 			
 			if(input.getIncasso(null)!=null)
@@ -158,6 +161,9 @@ public class RiscossioniConverter {
 				break;
 			case MBT:
 				rsModel.setTipo(TipoRiscossione.MBT);
+				break;
+			case ENTRATA_PA_NON_INTERMEDIATA:
+				rsModel.setTipo(TipoRiscossione.ENTRATA_PA_NON_INTERMEDIATA);
 				break;
 			} 
 

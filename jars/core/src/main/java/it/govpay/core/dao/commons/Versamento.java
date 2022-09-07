@@ -315,6 +315,14 @@ public class Versamento {
 		this.proprieta = proprieta;
 	}
 
+	public List<AllegatoPendenza> getAllegati() {
+		return allegati;
+	}
+
+	public void setAllegati(List<AllegatoPendenza> allegati) {
+		this.allegati = allegati;
+	}
+
 
 	private StatoVersamento statoVersamento;
     private String codApplicazione;
@@ -354,6 +362,8 @@ public class Versamento {
     private List<String> spezzoneCausale;
     private List<Versamento.SpezzoneCausaleStrutturata> spezzoneCausaleStrutturata;
     private List<Versamento.SingoloVersamento> singoloVersamento;
+    
+    private List<AllegatoPendenza> allegati;
 
     public static class SingoloVersamento {
     	
@@ -605,6 +615,38 @@ public class Versamento {
 		}
 		public void setGiorniSoglia(Integer giorniSoglia) {
 			this.giorniSoglia = giorniSoglia;
+		}
+    }
+    
+    public static class AllegatoPendenza {
+    	
+    	private String nome;
+    	private String tipo;
+    	private String descrizione;
+    	private byte[] contenuto;
+		public String getNome() {
+			return nome;
+		}
+		public void setNome(String nome) {
+			this.nome = nome;
+		}
+		public String getTipo() {
+			return tipo;
+		}
+		public void setTipo(String tipo) {
+			this.tipo = tipo;
+		}
+		public byte[] getContenuto() {
+			return contenuto;
+		}
+		public void setContenuto(byte[] contenuto) {
+			this.contenuto = contenuto;
+		}
+		public String getDescrizione() {
+			return descrizione;
+		}
+		public void setDescrizione(String descrizione) {
+			this.descrizione = descrizione;
 		}
     }
 }

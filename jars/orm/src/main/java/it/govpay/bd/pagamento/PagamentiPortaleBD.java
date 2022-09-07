@@ -447,11 +447,16 @@ public class PagamentiPortaleBD extends BasicBD{
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction()); 
 			}
+			log.debug("updatePagamento id ["+pagamento.getId()+"]: atomica ["+this.isAtomica()+"], updateVersamenti ["+updateVersamenti+"], transazioneGestitaNelModuloChiamante ["+commitParent+"]"); 
 			
 			if(!commitParent)
 				this.setAutoCommit(false);
+			
+			log.debug("updatePagamento id ["+pagamento.getId()+"] DTO: Stato ["+pagamento.getStato()+"], CodiceStato ["+pagamento.getCodiceStato()+"]"); 
 	
 			it.govpay.orm.PagamentoPortale vo = PagamentoPortaleConverter.toVO(pagamento);
+			
+			log.debug("updatePagamento id ["+vo.getId()+"] VO: Stato ["+vo.getStato()+"], CodiceStato ["+vo.getCodiceStato()+"]");
 			try {
 				this.getPagamentoPortaleService().update(this.getPagamentoPortaleService().convertToId(vo), vo);
 				if(updateVersamenti) {

@@ -18,7 +18,7 @@ public class RiconciliazioneIndex extends TipoRiferimentoRiconciliazione  {
   **/
   private String id = null;
   
-  @Schema(description = "")
+  @Schema(required = true, description = "")
   private Dominio dominio = null;
   
   @Schema(required = true, description = "")
@@ -101,6 +101,7 @@ public class RiconciliazioneIndex extends TipoRiferimentoRiconciliazione  {
    * @return dominio
   **/
   @JsonProperty("dominio")
+  @NotNull
   public Dominio getDominio() {
     return dominio;
   }

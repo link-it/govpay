@@ -104,7 +104,8 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		secimInviaTracciatoEmail, pivotInviaTracciatoEmail,
 		secimInviaTracciatoFileSystem, pivotInviaTracciatoFileSystem, 
 		govpayInviaTracciatoFileSystem, govpayInviaTracciatoEmail, govpayInviaTracciatoRest,
-		hyperSicAPKappaInviaTracciatoEmail, hyperSicAPKappaInviaTracciatoFileSystem
+		hyperSicAPKappaInviaTracciatoEmail, hyperSicAPKappaInviaTracciatoFileSystem,
+		maggioliJppaInviaTracciatoEmail
 	} 
 	
 	public static final String CONNETTORE_NOTIFICA_DISABILITATO = "Connettore Notifica non configurato";
@@ -154,6 +155,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			break;
 		case HYPERSIC_APK:
 			this.componente = Componente.API_HYPERSIC_APK;
+			break;
+		case MAGGIOLI_JPPA:
+			this.componente = Componente.API_MAGGIOLI_JPPA;
 			break;
 		}
 		this.eventoCtx.setComponente(this.componente);
@@ -614,6 +618,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		case HYPERSIC_APK:
 			this.eventoCtx.setTipoEvento(Operazione.hyperSicAPKappaInviaTracciatoEmail.name());
 			break;
+		case MAGGIOLI_JPPA:
+			this.eventoCtx.setTipoEvento(Operazione.maggioliJppaInviaTracciatoEmail.name());
+			break;
 		}
 		
 		dumpRequest.setContentType("text/plain");
@@ -771,6 +778,9 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		case HYPERSIC_APK:
 			tipoTracciatoString = " per l'importazione in APKappa"; 
 			break;
+		case MAGGIOLI_JPPA:
+			tipoTracciatoString = " inviati al servizio Maggioli JPPA"; 
+			break;
 		}
 		
 		if(connettore.getEmailSubject() != null && !connettore.getEmailSubject().isEmpty()) {
@@ -828,6 +838,8 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			case HYPERSIC_APK:
 				this.eventoCtx.setTipoEvento(Operazione.hyperSicAPKappaInviaTracciatoFileSystem.name());
 				break;
+			case MAGGIOLI_JPPA:
+				throw new ServiceException("Modalita' di spedizione non valida");
 			}
 			
 			dumpRequest.setContentType("application/zip");

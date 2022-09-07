@@ -50,12 +50,12 @@ Scenario: configurazione anagrafica base
 * set configurazione_generale.avvisaturaMail.promemoriaRicevuta.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/notifica-messaggio-freemarker.ftl'))
 * set configurazione_generale.avvisaturaMail.promemoriaScadenza.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-oggetto-freemarker.ftl'))
 * set configurazione_generale.avvisaturaMail.promemoriaScadenza.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-messaggio-freemarker.ftl'))
-* set configurazione_generale.avvisaturaAppIO.promemoriaAvviso.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-oggetto-freemarker.ftl'))
-* set configurazione_generale.avvisaturaAppIO.promemoriaAvviso.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-messaggio-freemarker.ftl'))
-* set configurazione_generale.avvisaturaAppIO.promemoriaRicevuta.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/notifica-oggetto-freemarker.ftl'))
-* set configurazione_generale.avvisaturaAppIO.promemoriaRicevuta.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/notifica-messaggio-freemarker.ftl'))
-* set configurazione_generale.avvisaturaAppIO.promemoriaScadenza.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-oggetto-freemarker.ftl'))
-* set configurazione_generale.avvisaturaAppIO.promemoriaScadenza.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/promemoria-messaggio-freemarker.ftl'))
+* set configurazione_generale.avvisaturaAppIO.promemoriaAvviso.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/appio-subject-freemarker.ftl'))
+* set configurazione_generale.avvisaturaAppIO.promemoriaAvviso.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/appio-body-freemarker.ftl'))
+* set configurazione_generale.avvisaturaAppIO.promemoriaRicevuta.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/appio-subject-ricevuta-freemarker.ftl'))
+* set configurazione_generale.avvisaturaAppIO.promemoriaRicevuta.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/appio-body-ricevuta-freemarker.ftl'))
+* set configurazione_generale.avvisaturaAppIO.promemoriaScadenza.oggetto = encodeBase64InputStream(read('classpath:configurazione/v1/msg/appio-subject-freemarker.ftl'))
+* set configurazione_generale.avvisaturaAppIO.promemoriaScadenza.messaggio = encodeBase64InputStream(read('classpath:configurazione/v1/msg/appio-body-freemarker.ftl'))
 
 #### configurazione del giornale degli eventi
 Given url backofficeBaseurl
@@ -323,6 +323,20 @@ And request { codificaIUV: null, pagaTerzi: false }
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
+Given url backofficeBaseurl
+And path 'tipiPendenza', tipoPendenzaRinnovo
+And headers basicAutenticationHeader
+And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, pagaTerzi: true}
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
+And headers basicAutenticationHeader
+And request { codificaIUV: null, pagaTerzi: false }
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
 #### creazione applicazione
 * def applicazione = read('classpath:configurazione/v1/msg/applicazione.json')
 
@@ -364,7 +378,7 @@ And path 'domini', idDominio
 And request 
 """
 {
-  "urlEC": "http://localhost:8080/govpay/frontend/web/connector/ecsp/psp",
+  "urlEC": "#(govpay_url +'/govpay/frontend/web/connector/ecsp/psp')",
   "auxDigit": 0,
   "versione": 1,
   "segregationCode": null,

@@ -41,7 +41,9 @@
 		</b:bean>
 		
 		<!-- handlers -->
-		<b:bean id="messageLoggingHandlerV1" class="it.govpay.web.legacy.handler.MessageLoggingHandlerGPWS_020100"></b:bean>
+		<b:bean id="messageLoggingHandlerV1" class="it.govpay.web.legacy.handler.MessageLoggingHandlerGPWS_020100">
+			<b:property name="apiName" value="API_LEGACY" />
+		</b:bean>
 		
 		<jaxws:endpoint id="apiLegacyGPRndV1" address="/PagamentiTelematiciGPRndService" implementorClass="it.govpay.web.legacy.ws.PagamentiTelematiciGPRndImpl">
 			<jaxws:handlers>

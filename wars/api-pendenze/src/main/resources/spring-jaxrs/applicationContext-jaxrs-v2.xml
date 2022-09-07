@@ -51,6 +51,7 @@
         
    	<!-- JAX-RS Service Impl -->
 
+	<b:bean id="allegatiV2" class="it.govpay.pendenze.v2.Allegati"/>
 	<b:bean id="avvisiV2" class="it.govpay.pendenze.v2.Avvisi"/>
 	<b:bean id="documentiV2" class="it.govpay.pendenze.v2.Documenti"/>
    	<b:bean id="dominiV2" class="it.govpay.pendenze.v2.Domini"/>
@@ -65,6 +66,7 @@
 	<!-- BASIC_START -->
     <jaxrs:server id="apiPendenzeBasicV2" address="/basic/v2/">
         <jaxrs:serviceBeans>
+        		<ref bean="allegatiV2" />
         		<ref bean="avvisiV2" />
         		<ref bean="documentiV2" />
                 <ref bean="dominiV2" />
@@ -89,6 +91,7 @@
     <!-- SSL_START -->
     <jaxrs:server id="apiPendenzeSSLV2" address="/ssl/v2/">
         <jaxrs:serviceBeans>
+        		<ref bean="allegatiV2" />
         		<ref bean="avvisiV2" />
         		<ref bean="documentiV2" />
                 <ref bean="dominiV2" />
@@ -113,6 +116,7 @@
     <!-- SSL_HEADER_START -->    
     <jaxrs:server id="apiPendenzeSSLHeaderV2" address="/sslheader/v2/">
         <jaxrs:serviceBeans>
+        		<ref bean="allegatiV2" />
         		<ref bean="avvisiV2" />
         		<ref bean="documentiV2" />
                 <ref bean="dominiV2" />
@@ -137,6 +141,7 @@
     <!-- HEADER_START -->    
     <jaxrs:server id="apiPendenzeHeaderV2" address="/header/v2/">
         <jaxrs:serviceBeans>
+        		<ref bean="allegatiV2" />
         		<ref bean="avvisiV2" />
         		<ref bean="documentiV2" />
                 <ref bean="dominiV2" />
@@ -160,6 +165,7 @@
     <!-- DEFAULT_START -->
     <jaxrs:server id="apiPendenzeDEFAULTV2" address="/v2/">
         <jaxrs:serviceBeans>
+        		<ref bean="allegatiV2" />
         		<ref bean="avvisiV2" />
         		<ref bean="documentiV2" />
                 <ref bean="dominiV2" />

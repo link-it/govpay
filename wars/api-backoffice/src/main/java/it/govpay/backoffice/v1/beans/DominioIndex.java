@@ -32,7 +32,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "servizioSecim",
 "servizioGovPay",
 "servizioHyperSicAPKappa",
+"servizioMaggioliJPPA",
 "intermediato",
+"tassonomiaPagoPA",
 "idDominio",
 "unitaOperative",
 "contiAccredito",
@@ -119,8 +121,14 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
   @JsonProperty("servizioHyperSicAPKappa")
   private ConnettoreNotificaPagamentiHyperSicAPKappa servizioHyperSicAPKappa = null;
   
+  @JsonProperty("servizioMaggioliJPPA")
+  private ConnettoreNotificaPagamentiMaggioliJPPA servizioMaggioliJPPA = null;
+  
   @JsonProperty("intermediato")
   private Boolean intermediato = null;
+  
+  @JsonProperty("tassonomiaPagoPA")
+  private TassonomiaPagoPADominio tassonomiaPagoPA = null;
   
   @JsonProperty("idDominio")
   private String idDominio = null;
@@ -550,6 +558,21 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   **/
+  public DominioIndex servizioMaggioliJPPA(ConnettoreNotificaPagamentiMaggioliJPPA servizioMaggioliJPPA) {
+    this.servizioMaggioliJPPA = servizioMaggioliJPPA;
+    return this;
+  }
+
+  @JsonProperty("servizioMaggioliJPPA")
+  public ConnettoreNotificaPagamentiMaggioliJPPA getServizioMaggioliJPPA() {
+    return servizioMaggioliJPPA;
+  }
+  public void setServizioMaggioliJPPA(ConnettoreNotificaPagamentiMaggioliJPPA servizioMaggioliJPPA) {
+    this.servizioMaggioliJPPA = servizioMaggioliJPPA;
+  }
+
+  /**
    * Indica se il creditore viene configurato per utilizzare una  stazione di intermediazione
    **/
   public DominioIndex intermediato(Boolean intermediato) {
@@ -563,6 +586,21 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
   }
   public void setIntermediato(Boolean intermediato) {
     this.intermediato = intermediato;
+  }
+
+  /**
+   **/
+  public DominioIndex tassonomiaPagoPA(TassonomiaPagoPADominio tassonomiaPagoPA) {
+    this.tassonomiaPagoPA = tassonomiaPagoPA;
+    return this;
+  }
+
+  @JsonProperty("tassonomiaPagoPA")
+  public TassonomiaPagoPADominio getTassonomiaPagoPA() {
+    return tassonomiaPagoPA;
+  }
+  public void setTassonomiaPagoPA(TassonomiaPagoPADominio tassonomiaPagoPA) {
+    this.tassonomiaPagoPA = tassonomiaPagoPA;
   }
 
   /**
@@ -680,7 +718,9 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(servizioSecim, dominioIndex.servizioSecim) &&
         Objects.equals(servizioGovPay, dominioIndex.servizioGovPay) &&
         Objects.equals(servizioHyperSicAPKappa, dominioIndex.servizioHyperSicAPKappa) &&
+        Objects.equals(servizioMaggioliJPPA, dominioIndex.servizioMaggioliJPPA) &&
         Objects.equals(intermediato, dominioIndex.intermediato) &&
+        Objects.equals(tassonomiaPagoPA, dominioIndex.tassonomiaPagoPA) &&
         Objects.equals(idDominio, dominioIndex.idDominio) &&
         Objects.equals(unitaOperative, dominioIndex.unitaOperative) &&
         Objects.equals(contiAccredito, dominioIndex.contiAccredito) &&
@@ -690,7 +730,7 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa, intermediato, idDominio, unitaOperative, contiAccredito, entrate, tipiPendenza);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa, servizioMaggioliJPPA, intermediato, tassonomiaPagoPA, idDominio, unitaOperative, contiAccredito, entrate, tipiPendenza);
   }
 
   public static DominioIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -733,7 +773,9 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
     sb.append("    servizioSecim: ").append(toIndentedString(servizioSecim)).append("\n");
     sb.append("    servizioGovPay: ").append(toIndentedString(servizioGovPay)).append("\n");
     sb.append("    servizioHyperSicAPKappa: ").append(toIndentedString(servizioHyperSicAPKappa)).append("\n");
+    sb.append("    servizioMaggioliJPPA: ").append(toIndentedString(servizioMaggioliJPPA)).append("\n");
     sb.append("    intermediato: ").append(toIndentedString(intermediato)).append("\n");
+    sb.append("    tassonomiaPagoPA: ").append(toIndentedString(tassonomiaPagoPA)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    unitaOperative: ").append(toIndentedString(unitaOperative)).append("\n");
     sb.append("    contiAccredito: ").append(toIndentedString(contiAccredito)).append("\n");

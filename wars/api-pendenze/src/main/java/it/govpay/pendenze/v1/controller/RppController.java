@@ -188,7 +188,7 @@ public class RppController extends BaseController {
 
 
 
-	public Response rppIdDominioIuvCcpRtGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp, Boolean visualizzaSoggettoDebitore) {
+	public Response rppIdDominioIuvCcpRtGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
 		String methodName = "rppIdDominioIuvCcpRtGET";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -210,9 +210,6 @@ public class RppController extends BaseController {
 			leggiPagamentoPortaleDTO.setIuv(iuv);
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
 			leggiPagamentoPortaleDTO.setCcp(ccp);
-			
-			if(visualizzaSoggettoDebitore != null)
-				leggiPagamentoPortaleDTO.setVisualizzaSoggettoDebitore(visualizzaSoggettoDebitore.booleanValue()); 
 			
 			// controllo che il dominio sia autorizzato
 //			if(!AuthorizationManager.isDominioAuthorized(leggiPagamentoPortaleDTO.getUser(), idDominio)) {

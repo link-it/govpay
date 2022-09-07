@@ -35,30 +35,38 @@ import it.govpay.core.business.model.Iuv;
 
 public class IuvUtils {
 
-	private static byte[] buildQrCode002(String codDominio, int auxDigit, int applicationCode, String iuv, BigDecimal importoTotale) {
+	private static byte[] buildQrCode002(String codDominio, int auxDigit, int applicationCode, String iuv, BigDecimal importoTotale, String numeroAvviso) {
 		// Da "L’Avviso di pagamento analogico nel sistema pagoPA" par. 2.1
 		String qrCode = null; 
-		if(auxDigit == 0)
-			qrCode = "PAGOPA|002|0" + String.format("%02d", applicationCode) + iuv + "|" + codDominio + "|" + (nFormatter.format(importoTotale).replace(".", ""));
-		else 
-			qrCode = "PAGOPA|002|" + auxDigit + iuv + "|" + codDominio + "|" + (nFormatter.format(importoTotale).replace(".", ""));
+		if(numeroAvviso == null) {
+			if(auxDigit == 0)
+				qrCode = "PAGOPA|002|0" + String.format("%02d", applicationCode) + iuv + "|" + codDominio + "|" + (nFormatter.format(importoTotale).replace(".", ""));
+			else 
+				qrCode = "PAGOPA|002|" + auxDigit + iuv + "|" + codDominio + "|" + (nFormatter.format(importoTotale).replace(".", ""));
+		} else {
+				qrCode = "PAGOPA|002|" + numeroAvviso + "|" + codDominio + "|" + (nFormatter.format(importoTotale).replace(".", ""));
+		}
 
 		return qrCode.getBytes();
 	}
 
 	private static final DecimalFormat nFormatter = new DecimalFormat("00.00", new DecimalFormatSymbols(Locale.ENGLISH));
 
-	private static String buildBarCode(String gln, int auxDigit, int applicationCode, String iuv, BigDecimal importoTotale) {
+	private static String buildBarCode(String gln, int auxDigit, int applicationCode, String iuv, BigDecimal importoTotale, String numeroAvviso) {
 		// Da Guida Tecnica di Adesione PA 3.8 pag 25 
 		String payToLoc = "415";
 		String refNo = "8020";
 		String amount = "3902";
 		String importo = nFormatter.format(importoTotale).replace(".", "");
 
+		if(numeroAvviso == null) {
 		if(auxDigit == 3)
 			return payToLoc + gln + refNo + "3" + iuv + amount + importo;
 		else 
 			return payToLoc + gln + refNo + "0" + String.format("%02d", applicationCode) + iuv + amount + importo;
+		} else {
+			return payToLoc + gln + refNo + numeroAvviso + amount + importo;
+		}
 	}
 
 	public static Iuv toIuv(Applicazione applicazione, Dominio dominio, it.govpay.model.Iuv iuv, BigDecimal importoTotale) throws ServiceException {
@@ -71,8 +79,8 @@ public class IuvUtils {
 			iuvGenerato.setNumeroAvviso(iuv.getAuxDigit() + String.format("%02d", iuv.getApplicationCode()) + iuv.getIuv());
 		else
 			iuvGenerato.setNumeroAvviso(iuv.getAuxDigit() + iuv.getIuv());
-		iuvGenerato.setBarCode(buildBarCode(dominio.getGln(), dominio.getAuxDigit(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale).getBytes());
-		iuvGenerato.setQrCode(buildQrCode002(dominio.getCodDominio(), dominio.getAuxDigit(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale));
+		iuvGenerato.setBarCode(buildBarCode(dominio.getGln(), dominio.getAuxDigit(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale, null).getBytes());
+		iuvGenerato.setQrCode(buildQrCode002(dominio.getCodDominio(), dominio.getAuxDigit(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale, null));
 
 		return iuvGenerato;
 	}
@@ -97,18 +105,30 @@ public class IuvUtils {
 	}
 
 	public static Iuv toIuv(Versamento versamento, Applicazione applicazione, Dominio dominio) throws ServiceException {
+		return toIuv(versamento, applicazione, dominio, true);
+	}
+	
+	public static Iuv toIuvFromNumeroAvviso(Versamento versamento, Applicazione applicazione, Dominio dominio) throws ServiceException {
+		return toIuv(versamento, applicazione, dominio, false);
+	}
+
+	private static Iuv toIuv(Versamento versamento, Applicazione applicazione, Dominio dominio, boolean generaNumeroAvviso) throws ServiceException {
 		Iuv iuvGenerato = new Iuv();
 		iuvGenerato.setCodApplicazione(applicazione.getCodApplicazione());
 		iuvGenerato.setCodDominio(dominio.getCodDominio());
 		iuvGenerato.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
 		iuvGenerato.setIuv(versamento.getIuvVersamento());
-
-		if(dominio.getAuxDigit() == 0)
-			iuvGenerato.setNumeroAvviso(dominio.getAuxDigit() + String.format("%02d", dominio.getStazione().getApplicationCode()) + versamento.getIuvVersamento());
-		else
-			iuvGenerato.setNumeroAvviso(dominio.getAuxDigit() + versamento.getIuvVersamento());
-		iuvGenerato.setBarCode(buildBarCode(dominio.getGln(), dominio.getAuxDigit(), dominio.getStazione().getApplicationCode(), versamento.getIuvVersamento(), versamento.getImportoTotale()).getBytes());
-		iuvGenerato.setQrCode(buildQrCode002(dominio.getCodDominio(), dominio.getAuxDigit(), dominio.getStazione().getApplicationCode(), versamento.getIuvVersamento(), versamento.getImportoTotale()));
+		
+		String numeroAvviso = null;
+		
+		if(!generaNumeroAvviso) {
+			numeroAvviso = versamento.getNumeroAvviso();
+			iuvGenerato.setNumeroAvviso(numeroAvviso);
+		} else {
+			iuvGenerato.setNumeroAvviso(toNumeroAvviso(versamento.getIuvVersamento(), dominio));
+		}
+		iuvGenerato.setBarCode(buildBarCode(dominio.getGln(), dominio.getAuxDigit(), dominio.getStazione().getApplicationCode(), versamento.getIuvVersamento(), versamento.getImportoTotale(), numeroAvviso).getBytes());
+		iuvGenerato.setQrCode(buildQrCode002(dominio.getCodDominio(), dominio.getAuxDigit(), dominio.getStazione().getApplicationCode(), versamento.getIuvVersamento(), versamento.getImportoTotale(), numeroAvviso));
 
 		return iuvGenerato;
 	}

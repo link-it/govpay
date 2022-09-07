@@ -112,6 +112,9 @@ public class NuovaPendenza   {
   
   @Schema(required = true, description = "")
   private List<NuovaVocePendenza> voci = new ArrayList<>();
+  
+  @Schema(description = "")
+  private List<NuovoAllegatoPendenza> allegati = null;
  /**
    * Get idA2A
    * @return idA2A
@@ -515,6 +518,29 @@ public class NuovaPendenza   {
     return this;
   }
 
+ /**
+   * Get allegati
+   * @return allegati
+  **/
+  @JsonProperty("allegati")
+  public List<NuovoAllegatoPendenza> getAllegati() {
+    return allegati;
+  }
+
+  public void setAllegati(List<NuovoAllegatoPendenza> allegati) {
+    this.allegati = allegati;
+  }
+
+  public NuovaPendenza allegati(List<NuovoAllegatoPendenza> allegati) {
+    this.allegati = allegati;
+    return this;
+  }
+
+  public NuovaPendenza addAllegatiItem(NuovoAllegatoPendenza allegatiItem) {
+    this.allegati.add(allegatiItem);
+    return this;
+  }
+
 
   @Override
   public String toString() {
@@ -543,6 +569,7 @@ public class NuovaPendenza   {
     sb.append("    dataPromemoriaScadenza: ").append(toIndentedString(dataPromemoriaScadenza)).append("\n");
     sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
+    sb.append("    allegati: ").append(toIndentedString(allegati)).append("\n");
     sb.append("}");
     return sb.toString();
   }

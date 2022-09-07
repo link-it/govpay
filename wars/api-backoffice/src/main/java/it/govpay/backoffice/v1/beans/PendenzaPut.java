@@ -39,6 +39,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "idUnitaOperativa",
 "idTipoPendenza",
 "voci",
+"allegati",
 })
 public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implements IValidable {
   
@@ -113,6 +114,9 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
   
   @JsonProperty("voci")
   private List<NuovaVocePendenza> voci = new ArrayList<NuovaVocePendenza>();
+  
+  @JsonProperty("allegati")
+  private List<NuovoAllegatoPendenza> allegati = null;
   
   /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
@@ -483,6 +487,21 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
     this.voci = voci;
   }
 
+  /**
+   **/
+  public PendenzaPut allegati(List<NuovoAllegatoPendenza> allegati) {
+    this.allegati = allegati;
+    return this;
+  }
+
+  @JsonProperty("allegati")
+  public List<NuovoAllegatoPendenza> getAllegati() {
+    return allegati;
+  }
+  public void setAllegati(List<NuovoAllegatoPendenza> allegati) {
+    this.allegati = allegati;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -514,12 +533,13 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
         Objects.equals(idDominio, pendenzaPut.idDominio) &&
         Objects.equals(idUnitaOperativa, pendenzaPut.idUnitaOperativa) &&
         Objects.equals(idTipoPendenza, pendenzaPut.idTipoPendenza) &&
-        Objects.equals(voci, pendenzaPut.voci);
+        Objects.equals(voci, pendenzaPut.voci) &&
+        Objects.equals(allegati, pendenzaPut.allegati);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, idDominio, idUnitaOperativa, idTipoPendenza, voci);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, idDominio, idUnitaOperativa, idTipoPendenza, voci, allegati);
   }
 
   public static PendenzaPut parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -559,6 +579,7 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
     sb.append("    idUnitaOperativa: ").append(toIndentedString(idUnitaOperativa)).append("\n");
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
+    sb.append("    allegati: ").append(toIndentedString(allegati)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -608,6 +629,7 @@ public class PendenzaPut extends it.govpay.core.beans.JSONSerializable implement
 		ValidatoreUtils.validaData(vf, "dataPromemoriaScadenza", this.dataPromemoriaScadenza);
 		
 		vf.getValidator("proprieta", this.proprieta).validateFields();
+		vf.getValidator("allegati", this.allegati).validateObjects();
 	}
 }
 

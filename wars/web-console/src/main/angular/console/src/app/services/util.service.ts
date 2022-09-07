@@ -17,6 +17,8 @@ declare let JSZip: any;
 declare let FileSaver: any;
 
 declare let GovRiconciliazioniConfig: any;
+declare let GovApiComponenti: any;
+declare let GovApiTipiEvento: any;
 
 @Injectable()
 export class UtilService {
@@ -346,6 +348,21 @@ export class UtilService {
     'false': 'Non verificato'
   };
 
+  // TASSONOMIE PAGOPA
+  public static TASSONOMIE_PAGOPA: any = {
+    '01': 'Comune / Unione di Comuni / Consorzi',
+    '02': 'Provincia / Città Metropolitana',
+    '03': 'Regione',
+    '04': 'Ordini Professionali',
+    '05': 'Servizio Sanitario Nazionale',
+    '06': 'Università / Scuola Statale',
+    '07': 'Pubbliche Amministrazioni Centrali',
+    '08': 'Altre Amministrazioni',
+    '09': 'Gestori Pubblici Servizi',
+    '11': 'Enti di Natura Privatistica',
+    '12': 'Agenzie Fiscali'
+  };
+
   public static COOKIE_RIFIUTATI: string = 'GovPay_Dashboard_Rifiutati';
   public static COOKIE_SOSPESI: string = 'GovPay_Dashboard_Sospesi';
   public static COOKIE_SESSION: string = null;
@@ -402,8 +419,6 @@ export class UtilService {
   //ROOT URL SHARED SERVICES
   public static URL_SERVIZIACL: string = '/enumerazioni/serviziACL';
   public static URL_TIPI_VERSIONE_API: string = '/enumerazioni/versioneConnettore';
-  public static URL_LABEL_TIPI_EVENTO: string = '/enumerazioni/labelTipiEvento';
-  public static URL_COMPONENTI_EVENTO: string = '/enumerazioni/componentiEvento';
 
   //LABEL
   public static TXT_DASHBOARD: string = 'Cruscotto';
@@ -470,6 +485,7 @@ export class UtilService {
   public static CRONO_CODE: string = 'crono_code';
   public static KEY_VALUE: string = 'key_value';
   public static KEY_JSON: string = 'key_json';
+  public static ALLEGATO: string = 'allegato';
   //Dialog view ref
   public static AUTORIZZAZIONE_ENTE_UO: string = 'autorizazione_ente_uo';
   public static INTERMEDIARIO: string = 'intermediario';
@@ -494,6 +510,7 @@ export class UtilService {
   public static CONNETTORE_SECIM: string = 'connettore_secim';
   public static CONNETTORE_GOVPAY: string = 'connettore_govpay';
   public static CONNETTORE_HYPERSIC: string = 'connettore_hypersic';
+  public static CONNETTORE_MAGGIOLI: string = 'connettore_maggioli';
   public static CONNETTORE_MODALITA_EMAIL: string = 'EMAIL';
   public static CONNETTORE_MODALITA_FILESYSTEM: string = 'FILESYSTEM';
   public static CONNETTORE_MODALITA_REST: string = 'REST';
@@ -508,11 +525,13 @@ export class UtilService {
   //Json schema generators
   public static GENERATORI: any[] = GovPayConfig.GENERATORI;
   public static A2_JSON_SCHEMA_FORM: string = GovPayConfig.MGK.ANGULAR2_JSON_SCHEMA_FORM;
+  public static SURVEYJS_FORM: string = GovPayConfig.MGK.SURVEYJS_FORM;
   //Material standard ref
   public static INPUT: string = 'input';
   public static FILTERABLE: string = 'filterable';
   public static DATE_PICKER: string = 'date_picker';
   public static SELECT: string = 'select';
+  public static SELECT_DEPENDENCY: string = 'select_dependency';
   public static SLIDE_TOGGLE: string = 'slide_toggle';
   public static LABEL: string = 'label';
   //Sidelist item view
@@ -527,6 +546,8 @@ export class UtilService {
   public static headBehavior: BehaviorSubject<any> = new BehaviorSubject(null);
   public static exportBehavior: BehaviorSubject<string> = new BehaviorSubject(null);
   public static exportSubscription: Subscription;
+  public static dialogBlueFatActionBehavior: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  public static dialogBlueCloseBehavior: BehaviorSubject<any> = new BehaviorSubject(null);
 
   //Active detail state
   public static ActiveDetailState: ComponentRef<any>;
@@ -557,7 +578,8 @@ export class UtilService {
     { label: 'MyPivot', value: UtilService.CONNETTORE_MY_PIVOT },
     { label: 'SECIM', value: UtilService.CONNETTORE_SECIM },
     { label: 'GovPay', value: UtilService.CONNETTORE_GOVPAY },
-    { label: 'Suite HyperSIC - APKappa', value: UtilService.CONNETTORE_HYPERSIC }
+    { label: 'Suite HyperSIC - APKappa', value: UtilService.CONNETTORE_HYPERSIC },
+    { label: 'Maggioli JPPA', value: UtilService.CONNETTORE_MAGGIOLI }
   ];
 
   public static MODALITA_MYPIVOT: SimpleListItem[] = [
@@ -581,10 +603,15 @@ export class UtilService {
     { label: 'File System', value: UtilService.CONNETTORE_MODALITA_FILESYSTEM }
   ];
 
+  public static MODALITA_MAGGIOLI: SimpleListItem[] = [
+    { label: 'Email', value: UtilService.CONNETTORE_MODALITA_EMAIL }
+  ];
+
   public static API_CONNETTORI: SimpleListItem[] = [
     { label: 'API MyPivot', value: 'API_MYPIVOT' },
     { label: 'API SECIM', value: 'API_SECIM' },
-    { label: 'API GovPay', value: 'API_GOVPAY' }
+    { label: 'API GovPay', value: 'API_GOVPAY' },
+    { label: 'API Maggioli', value: 'API_MAGGIOLI' }
   ];
 
   public static CONTENUTI_NOTIFICA_CONNETTORE: SimpleListItem[] = [
@@ -955,11 +982,16 @@ export class UtilService {
     return '€ 0,00';
   }
 
-  mappaturaTipoEvento(value: string): string {
-    if(UtilService.DIRECT_MAP_TIPI_EVENTO[value]) {
-      return UtilService.DIRECT_MAP_TIPI_EVENTO[value];
+  mappaturaComponente(componente: string): string {
+    return GovApiComponenti[componente] || componente;
+  }
+
+  mappaturaTipoEvento(componente: string, evento: string): string {
+    let mappedValue = evento;
+    if (GovApiTipiEvento[componente]) {
+      mappedValue = GovApiTipiEvento[componente][evento] || evento;
     }
-    return value;
+    return mappedValue;
   }
 
   mapRiferimentoGiornale(_item : any): string {
@@ -1121,7 +1153,7 @@ export class UtilService {
    */
   getKeyByValue(object, value) {
     return Object.keys(object).filter(function(key) {
-      return object[key] === value
+      return object[key] === value;
     })[0];
   }
 
@@ -1756,8 +1788,10 @@ export class UtilService {
           // new FormInput({ id: 'idDominio', label: FormService.FORM_DOMINIO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
           //   promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
           //     eventType: 'idDominio-async-load' } }, this.http),
-          new FormInput({ id: 'tipoEvento', label: FormService.FORM_TIPI_EVENTO, type: UtilService.FILTERABLE, values: UtilService._MAP_TIPI_EVENTO,
-            optionControlValue: true, showTooltip: false }),
+          new FormInput({ id: 'componente', label: FormService.FORM_COMPONENTE, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT,
+            type: UtilService.SELECT, showTooltip: false, values: this.listaComponenti() }),
+          new FormInput({ id: 'tipoEvento', label: FormService.FORM_TIPI_EVENTO, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT,
+            type: UtilService.SELECT_DEPENDENCY, showTooltip: false, values: [], dependency: 'componente', target: GovApiTipiEvento }),
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load' } }, this.http),
@@ -1771,9 +1805,6 @@ export class UtilService {
             showTooltip: false, values: this.ruoliGdE() }),
           new FormInput({ id: 'esito', label: FormService.FORM_ESITO_GDE, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
             showTooltip: false, values: this.esitiGdE() }),
-          new FormInput({ id: 'componente', label: FormService.FORM_COMPONENTE, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT, type: UtilService.SELECT,
-            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_COMPONENTI_EVENTO, mapFct: this.asyncComponentiGdE.bind(this),
-              eventType: 'componente-async-load' }, showTooltip: false }, this.http),
         ];
       break;
       case UtilService.RISCOSSIONI:
@@ -2007,6 +2038,35 @@ export class UtilService {
 
   resetDashboardLinksParams() {
     UtilService.DASHBOARD_LINKS_PARAMS = { method: null, params: [] };
+  }
+
+  listaComponenti(): any[] {
+    return Object.keys(GovApiComponenti).map((key) => {
+      return { label: GovApiComponenti[key], value: key };
+    });
+  }
+
+  tipiEventi(component): any[] {
+    if (!component) {
+      return [];
+    }
+    return Object.keys(GovApiTipiEvento[component]).map((key) => {
+      return { label: GovApiTipiEvento[component][key], value: key };
+    });
+  }
+
+  tassonomiePagoPA(): any[] {
+    return Object.keys(UtilService.TASSONOMIE_PAGOPA).map((key) => {
+      return { label: UtilService.TASSONOMIE_PAGOPA[key], value: key };
+    }).sort((a, b) => {
+      if (a.label > b.label) {
+        return 1;
+      }
+      if (a.label < b.label) {
+        return -1;
+      }
+      return 0;
+    });
   }
 
   // Config Riconciliazioni

@@ -28,6 +28,7 @@ import java.util.Map;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.Function;
 import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -46,6 +47,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.exception.VersamentoException;
+import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.NotificaAppIo;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Promemoria;
@@ -56,6 +58,7 @@ import it.govpay.bd.model.converter.NotificaAppIoConverter;
 import it.govpay.bd.model.converter.PromemoriaConverter;
 import it.govpay.bd.model.converter.SingoloVersamentoConverter;
 import it.govpay.bd.model.converter.VersamentoConverter;
+import it.govpay.bd.pagamento.filters.AllegatoFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.bd.pagamento.util.CountPerDominio;
 import it.govpay.model.Pagamento.Stato;
@@ -376,6 +379,17 @@ public class VersamentiBD extends BasicBD {
 				notificaAppIo.setId(notificaAppIOVo.getId());
 			}
 			
+			// allegati
+			if(versamento.getAllegati() != null && versamento.getAllegati().size() > 0) {
+				AllegatiBD allegatiBD  = new AllegatiBD(this);
+				allegatiBD.setAtomica(false);
+				
+				for (Allegato allegato : versamento.getAllegati()) {
+					allegato.setIdVersamento(vo.getId());
+					allegatiBD.insertAllegato(allegato);
+				}
+			}
+			
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} finally {
@@ -486,6 +500,30 @@ public class VersamentiBD extends BasicBD {
 					versamento.setIdDocumento(idDocumentoLong);
 					versamento.getDocumento(this).setId(idDocumentoLong);
 				}
+				
+				// aggiornamento allegati
+				AllegatiBD allegatiBD = new AllegatiBD(this);
+				allegatiBD.setAtomica(false);
+				AllegatoFilter allegatoFilter = allegatiBD.newFilter();
+				allegatoFilter.setIdVersamento(versamento.getId());
+				
+				long count = allegatiBD.count(allegatoFilter);
+				
+				if(count > 0) {
+					// cancello le vecchi allegati
+					List<Allegato> lst = allegatiBD.findAll(allegatoFilter); 
+					for(Allegato allegato: lst) {
+						allegatiBD.deleteAllegato(allegato);
+					}
+				}
+				
+				// allegati
+				if(versamento.getAllegati() != null && versamento.getAllegati().size() > 0) {
+					for (Allegato allegato : versamento.getAllegati()) {
+						allegato.setIdVersamento(versamento.getId());
+						allegatiBD.insertAllegato(allegato);
+					}
+				}
 			}
 			// spostato sotto perche' posso sostituire il documento
 			this._updateVersamento(versamento);
@@ -511,7 +549,7 @@ public class VersamentiBD extends BasicBD {
 		}
 	}
 	public void updateStatoVersamento(Versamento versamento) throws ServiceException, NotFoundException {
-		this._updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), versamento.getDescrizioneStato());
+		this._updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), versamento.getDescrizioneStato(), false, null);
 	}
 	
 
@@ -521,7 +559,7 @@ public class VersamentiBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 			}
 			
-			this._updateStatoVersamento(idVersamento, statoVersamento, descrizioneStato);
+			this._updateStatoVersamento(idVersamento, statoVersamento, descrizioneStato, false, null);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
@@ -531,7 +569,23 @@ public class VersamentiBD extends BasicBD {
 		}
 	}
 	
-	private void _updateStatoVersamento(long idVersamento, StatoVersamento statoVersamento, String descrizioneStato) throws ServiceException, NotFoundException {
+	public void updateStatoVersamentoAnomalo(long idVersamento, StatoVersamento statoVersamento, String descrizioneStato, boolean anomalo) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			this._updateStatoVersamento(idVersamento, statoVersamento, descrizioneStato, true, anomalo);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	private void _updateStatoVersamento(long idVersamento, StatoVersamento statoVersamento, String descrizioneStato, boolean updateAnomalo, Boolean anomalo) throws ServiceException, NotFoundException {
 		try {
 			IdVersamento idVO = new IdVersamento();
 			idVO.setId(idVersamento);
@@ -539,6 +593,9 @@ public class VersamentiBD extends BasicBD {
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, statoVersamento.toString()));
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().DESCRIZIONE_STATO, descrizioneStato));
+			
+			if(updateAnomalo)
+			lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().ANOMALO, anomalo));
 
 			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
@@ -599,6 +656,7 @@ public class VersamentiBD extends BasicBD {
 	}
 	
 	public void updateStatoPromemoriaScadenzaAppIOVersamento(long idVersamento, boolean updatePromemoriaScadenzaNotificato, Boolean promemoriaScadenzaNotificato) throws ServiceException {
+//		this.updateVersamentoInformazioniAvvisatura(idVersamento, false, null, false, null, updatePromemoriaScadenzaNotificato, promemoriaScadenzaNotificato);
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -610,6 +668,39 @@ public class VersamentiBD extends BasicBD {
 			List<UpdateField> lstUpdateFields = new ArrayList<>();
 			if(updatePromemoriaScadenzaNotificato)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO, promemoriaScadenzaNotificato));
+
+			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public void updateVersamentoInformazioniAvvisatura(Long idVersamento,
+			boolean updateAvvisoNotificato, Boolean avvisoNotificato,
+			boolean updatePromemoriaScadenzaAppIONotificato, Boolean promemoriaScadenzaAppIONotificato, 
+			boolean updatePromemoriaScadenzaNotificato, Boolean promemoriaScadenzaNotificato) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IdVersamento idVO = new IdVersamento();
+			idVO.setId(idVersamento);
+
+			List<UpdateField> lstUpdateFields = new ArrayList<>();
+
+			if(updateAvvisoNotificato)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVVISO_NOTIFICATO, avvisoNotificato));
+			if(updatePromemoriaScadenzaAppIONotificato)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO, promemoriaScadenzaAppIONotificato));
+			if(updatePromemoriaScadenzaNotificato)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO, promemoriaScadenzaNotificato));
 
 			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
@@ -855,7 +946,13 @@ public class VersamentiBD extends BasicBD {
 		}
 	}
 	
-	public void updateVersamentoInformazioniPagamento(Long idVersamento, Date dataPagamento, BigDecimal totalePagato, BigDecimal totaleIncassato, String iuvPagamento, StatoPagamento statoPagamento) throws ServiceException {
+	public void updateVersamentoInformazioniPagamento(Long idVersamento, Date dataPagamento,
+			BigDecimal totalePagato, BigDecimal totaleIncassato, String iuvPagamento, StatoPagamento statoPagamento,
+			boolean updateAvvisoNotificato, Boolean avvisoNotificato,
+			boolean updatePromemoriaScadenzaAppIONotificato, Boolean promemoriaScadenzaAppIONotificato, 
+			boolean updatePromemoriaScadenzaNotificato, Boolean promemoriaScadenzaNotificato, 
+			StatoVersamento statoVersamento, String descrizioneStato,
+			boolean updateAnomalo, boolean anomalo) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -877,6 +974,20 @@ public class VersamentiBD extends BasicBD {
 			}
 			if(statoPagamento != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().STATO_PAGAMENTO, statoPagamento.toString()));
+			
+			if(updateAvvisoNotificato)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVVISO_NOTIFICATO, avvisoNotificato));
+			if(updatePromemoriaScadenzaAppIONotificato)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO, promemoriaScadenzaAppIONotificato));
+			if(updatePromemoriaScadenzaNotificato)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO, promemoriaScadenzaNotificato));
+			
+			if(statoVersamento != null)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, statoVersamento.toString()));
+			if(descrizioneStato != null)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().DESCRIZIONE_STATO, descrizioneStato));
+			if(updateAnomalo)
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Versamento.model().ANOMALO, anomalo));
 
 			this.getVersamentoService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
@@ -1001,6 +1112,32 @@ public class VersamentiBD extends BasicBD {
 		}
 		return ret;
 	}
+	
+	public long countVersamentiConAvvisoDiPagamentoDaSpedire() throws ServiceException {
+		
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			//Notifica Avviso: tutte le pendenze con dataNotificaAvviso != null, dataNotificaAvviso <= oggi, isAvvisoNotificato == false, stato = DA_PAGARE
+			IExpression exp = this.getVersamentoService().newExpression();
+			exp.equals(it.govpay.orm.Versamento.model().AVVISO_NOTIFICATO, false);
+			exp.and().isNotNull(it.govpay.orm.Versamento.model().DATA_NOTIFICA_AVVISO).and()
+				.lessEquals(it.govpay.orm.Versamento.model().DATA_NOTIFICA_AVVISO, new Date());
+			exp.and().equals(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+			
+			NonNegativeNumber count = this.getVersamentoService().count(exp);
+
+			return count != null ? count.longValue() : 0l;
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
 
 	public List<Versamento> findVersamentiConAvvisoDiScadenzaDaSpedireViaMail(Integer offset, Integer limit) throws ServiceException{
 		List<Versamento> ret = new ArrayList<Versamento>();
@@ -1037,6 +1174,31 @@ public class VersamentiBD extends BasicBD {
 		}
 		return ret;
 	}
+	
+	public long countVersamentiConAvvisoDiScadenzaDaSpedireViaMail() throws ServiceException{
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			//Notifica Promemoria: tutte le pendenze con dataNotificaPromemoria != null, dataNotificaPromemoria <= oggi, isPromemoriaNotificato == false, stato = DA_PAGARE
+			IExpression exp = this.getVersamentoService().newExpression();
+			exp.equals(it.govpay.orm.Versamento.model().AVV_MAIL_PROM_SCAD_NOTIFICATO, false);
+			exp.and().isNotNull(it.govpay.orm.Versamento.model().AVV_MAIL_DATA_PROM_SCADENZA).and()
+				.lessEquals(it.govpay.orm.Versamento.model().AVV_MAIL_DATA_PROM_SCADENZA, new Date());
+			exp.and().equals(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+			
+			NonNegativeNumber count = this.getVersamentoService().count(exp);
+
+			return count != null ? count.longValue() : 0l;
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
 
 	public List<Versamento> findVersamentiConAvvisoDiScadenzaDaSpedireViaAppIO(Integer offset, Integer limit) throws ServiceException{
 		List<Versamento> ret = new ArrayList<Versamento>();
@@ -1072,6 +1234,31 @@ public class VersamentiBD extends BasicBD {
 			}
 		}
 		return ret;
+	}
+	
+	public long countVersamentiConAvvisoDiScadenzaDaSpedireViaAppIO() throws ServiceException{
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			//Notifica Promemoria: tutte le pendenze con dataNotificaPromemoria != null, dataNotificaPromemoria <= oggi, isPromemoriaNotificato == false, stato = DA_PAGARE
+			IExpression exp = this.getVersamentoService().newExpression();
+			exp.equals(it.govpay.orm.Versamento.model().AVV_APP_IO_PROM_SCAD_NOTIFICATO, false);
+			exp.and().isNotNull(it.govpay.orm.Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA).and()
+				.lessEquals(it.govpay.orm.Versamento.model().AVV_APP_IO_DATA_PROM_SCADENZA, new Date());
+			exp.and().equals(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.toString());
+			
+			NonNegativeNumber count = this.getVersamentoService().count(exp);
+
+			return count != null ? count.longValue() : 0l;
+		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
 	}
 	
 	public List<Versamento> findVersamentiDiUnTracciato(Long idTracciato, Integer offset, Integer limit) throws ServiceException{

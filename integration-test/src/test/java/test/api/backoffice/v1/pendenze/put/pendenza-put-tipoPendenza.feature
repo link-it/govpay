@@ -90,16 +90,6 @@ And request { descrizione: 'Rinnovo autorizzazione' , codificaIUV: null, pagaTer
 When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
-
-# * set tipoPendenzaDominio.abilitato = false
-
-#Given url backofficeBasicBaseurl
-#And path 'domini', idDominio, 'tipiPendenza', tipoPendenzaRinnovo
-#And headers gpAdminBasicAutenticationHeader
-#And request tipoPendenzaDominio
-#When method put
-#Then assert responseStatus == 200 || responseStatus == 201
-
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
 * def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')

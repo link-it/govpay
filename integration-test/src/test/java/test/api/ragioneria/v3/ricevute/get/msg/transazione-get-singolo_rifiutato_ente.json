@@ -6,9 +6,11 @@
 	"iuv" : "#notnull",
 	"idRicevuta" : "#notnull",
 	"importo":"#? isImportoConDueDecimali(_)",
-   	"stato":"RPT_RIFIUTATA_NODO",
+   	"esito":"RIFIUTATO",
    	"istitutoAttestante" : "##null",
 	"versante" : "#notnull",
+	"idPagamento" : "#string",
+	"idSessionePsp" : "##string",
 	"pendenza": {
 		"idA2A":"#string",
 		"idPendenza":"#string",
@@ -27,7 +29,8 @@
 		"direzione":"##string",
 		"divisione":"##string",
 		"UUID":"#string",
-		"soggettoPagatore":"#notnull"
+		"soggettoPagatore":"#notnull",
+		"voci":"#[]"
 	},
 	"rpt": {
 		"tipo": "#notnull",
@@ -110,5 +113,6 @@
 			}
 		}
 	},
-	"rt": "##null"
+	"rt": "##null",
+   	"modello" : "#notnull"
 }

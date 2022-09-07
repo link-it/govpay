@@ -38,13 +38,18 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
+import it.govpay.bd.model.NotificaAppIo;
+import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
+import it.govpay.bd.pagamento.NotificheAppIoBD;
 import it.govpay.bd.pagamento.PagamentiBD;
+import it.govpay.bd.pagamento.PromemoriaBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
@@ -54,6 +59,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.IncassiException.FaultType;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IncassoUtils;
 import it.govpay.model.Evento.CategoriaEvento;
@@ -516,29 +522,26 @@ public class Incassi {
 							pagamento.setIuv(rendicontazione.getIuv());
 							pagamento.setIndiceDati(rendicontazione.getIndiceDati() == null ? 1 : rendicontazione.getIndiceDati());
 							
-							pagamento.setSingoloVersamento(singoliVersamenti.get(0));
+							SingoloVersamento singoloVersamento = singoliVersamenti.get(0); 
+							pagamento.setSingoloVersamento(singoloVersamento);
 							rendicontazione.setPagamento(pagamento);
 							pagamentiBD.insertPagamento(pagamento);
 							rendicontazione.setIdPagamento(pagamento.getId());
 								
 							//Aggiorno lo stato del versamento:
-							switch (singoliVersamenti.get(0).getStatoSingoloVersamento()) {
+							switch (singoloVersamento.getStatoSingoloVersamento()) {
 								case NON_ESEGUITO:
-									versamentiBD.updateStatoSingoloVersamento(singoliVersamenti.get(0).getId(), StatoSingoloVersamento.ESEGUITO);
+									versamentiBD.updateStatoSingoloVersamento(singoloVersamento.getId(), StatoSingoloVersamento.ESEGUITO);
 									versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Eseguito senza RPT");
 									// Aggiornamento stato promemoria
-									versamentiBD.updateStatoPromemoriaAvvisoVersamento(versamento.getId(), true, null);
-									versamentiBD.updateStatoPromemoriaScadenzaAppIOVersamento(versamento.getId(), true, null);
-									versamentiBD.updateStatoPromemoriaScadenzaMailVersamento(versamento.getId(), true, null);
+									versamentiBD.updateVersamentoInformazioniAvvisatura(versamento.getId(), true, null, true, null, true, null);
 									
 									break;
 								case ESEGUITO:
 									versamento.setAnomalo(true);
-									versamentiBD.updateStatoVersamento(versamento.getId(), StatoVersamento.ESEGUITO, "Pagamento duplicato");
+									versamentiBD.updateStatoVersamentoAnomalo(versamento.getId(), StatoVersamento.ESEGUITO, "Pagamento duplicato", versamento.isAnomalo());
 									break;
 							}
-							
-							versamentiBD.updateVersamento(versamento);
 							
 							// salvo l'evento in una lista, effettuo l'inserimento di tutti gli eventi insieme al termine della procedura perche' quando veniva impostato l'id_fr il DB andava in deadlock perche' il flusso e' in lock dalla select precedente.
 							Evento eventoNota = new Evento();
@@ -548,11 +551,41 @@ public class Incassi {
 							eventoNota.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
 							eventoNota.setEsitoEvento(EsitoEvento.OK);
 							eventoNota.setDettaglioEsito("Riconciliato flusso " + fr.getCodFlusso() + " con Pagamento senza RPT [IUV: " + rendicontazione.getIuv() + " IUR:" + rendicontazione.getIur() + "].");
-							eventoNota.setTipoEvento("Pagamento eseguito senza RPT");
+							eventoNota.setTipoEvento(EventoContext.GOVPAY_TIPOEVENTO_GOVPAYPAGAMENTOESEGUITOSENZARPT);
 							eventoNota.setIuv(rendicontazione.getIuv());
 							eventoNota.setCodDominio(fr.getCodDominio());
+							eventoNota.setCcp(rendicontazione.getIur());
+							eventoNota.setComponente(EventoContext.Componente.GOVPAY.toString());
 							listaEventi.add(eventoNota);
-								
+							
+							TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
+							// Se e' prevista la spedizione della ricevuta allora procedo a spedirla
+							Promemoria promemoria = null;
+							if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaRicevutaAbilitato()) {
+								log.debug("Schedulazione invio ricevuta di pagamento senza RPT in corso...");
+								it.govpay.core.business.Promemoria promemoriaBD = new it.govpay.core.business.Promemoria();
+								promemoria = promemoriaBD.creaPromemoriaRicevutaEseguitoSenzaRPT(versamento, versamento.getTipoVersamentoDominio(configWrapper));
+								String msg = "non e' stato trovato un destinatario valido, l'invio non verra' schedulato.";
+								if(promemoria.getDestinatarioTo() != null) {
+									msg = "e' stato trovato un destinatario valido, l'invio e' stato schedulato con successo.";
+									PromemoriaBD promemoriaBD2 = new PromemoriaBD(versamentiBD);
+									promemoriaBD2.setAtomica(false); // condivisione della connessione;
+									promemoriaBD2.insertPromemoria(promemoria);
+									log.debug("Inserimento promemoria ricevuta di pagamento senza RPT per la Pendenza["+ versamento.getCodVersamentoEnte() +"] effettuato.");
+								}
+								log.debug("Creazione promemoria completata: "+msg);
+							}
+							
+							//schedulo l'invio della notifica APPIO
+							if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaAbilitato()) {
+								log.debug("Creo notifica avvisatura ricevuta di pagamento senza RPT tramite App IO..."); 
+								NotificaAppIo notificaAppIo = new NotificaAppIo(versamento, it.govpay.model.NotificaAppIo.TipoNotifica.RICEVUTA_NO_RPT, configWrapper);
+								log.debug("Creazione notifica avvisatura ricevuta tramite App IO completata.");
+								NotificheAppIoBD notificheAppIoBD = new NotificheAppIoBD(versamentiBD);
+								notificheAppIoBD.setAtomica(false); // riuso connessione
+								notificheAppIoBD.insertNotifica(notificaAppIo);
+								log.debug("Inserimento su DB notifica avvisatura ricevuta di pagamento senza RPT tramite App IO completata.");
+							}
 						} catch (MultipleResultException e) {
 							ctx.getApplicationLogger().log("incasso.frAnomala", idf);
 							throw new IncassiException(FaultType.FR_ANOMALA, "La rendicontazione [Dominio:"+fr.getCodDominio()+" Iuv:" + rendicontazione.getIuv()+ " Iur:" + rendicontazione.getIur() + " Indice:" + rendicontazione.getIndiceDati() + "] non identifica univocamente un pagamento");

@@ -9,7 +9,7 @@ import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.backoffice.v1.beans.ContoAddebito;
 import it.govpay.backoffice.v1.beans.Pagamento;
-import it.govpay.backoffice.v1.beans.Pagamento.ModelloEnum;
+import it.govpay.backoffice.v1.beans.ModelloPagamento;
 import it.govpay.backoffice.v1.beans.PagamentoIndex;
 import it.govpay.backoffice.v1.beans.PagamentoPost;
 import it.govpay.backoffice.v1.beans.Rpp;
@@ -94,9 +94,9 @@ public class PagamentiPortaleConverter {
 		rsModel.setVerificato(pagamentoPortale.isAck());
 
 		if(pagamentoPortale.getTipo() == 1) {
-			rsModel.setModello(ModelloEnum.ENTE);	
+			rsModel.setModello(ModelloPagamento.ENTE);	
 		} else if(pagamentoPortale.getTipo() == 3) {
-			rsModel.setModello(ModelloEnum.PSP);
+			rsModel.setModello(ModelloPagamento.PSP);
 		}
 		
 		rsModel.setSeverita(pagamentoPortale.getSeverita());
@@ -158,9 +158,9 @@ public class PagamentiPortaleConverter {
 		rsModel.setVerificato(pagamentoPortale.isAck());
 
 		if(pagamentoPortale.getTipo() == 1) {
-			rsModel.setModello(it.govpay.backoffice.v1.beans.PagamentoIndex.ModelloEnum.ENTE);	
+			rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.ENTE);	
 		} else if(pagamentoPortale.getTipo() == 3) {
-			rsModel.setModello(it.govpay.backoffice.v1.beans.PagamentoIndex.ModelloEnum.PSP);
+			rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.PSP);
 		}
 		
 		rsModel.setSeverita(pagamentoPortale.getSeverita());

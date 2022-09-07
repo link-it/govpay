@@ -59,49 +59,8 @@ public class PagamentoIndex extends JSONSerializable {
   @JsonProperty("descrizioneStato")
   private String descrizioneStato = null;
   
-    
-  /**
-   * Modello di pagamento
-   */
-  public enum ModelloEnum {
-    
-    
-        
-            
-    ENTE("Pagamento ad iniziativa Ente"),
-    
-            
-    PSP("Pagamento ad iniziativa PSP");
-            
-        
-    
-
-    private String value;
-
-    ModelloEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @com.fasterxml.jackson.annotation.JsonValue
-    public String toString() {
-      return String.valueOf(this.value);
-    }
-
-    public static ModelloEnum fromValue(String text) {
-      for (ModelloEnum b : ModelloEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
   @JsonProperty("modello")
-  private ModelloEnum modello = null;
+  private ModelloPagamento modello = null;
   
   @JsonProperty("pspRedirectUrl")
   private String pspRedirectUrl = null;
@@ -363,16 +322,16 @@ public class PagamentoIndex extends JSONSerializable {
   /**
    * Modello di pagamento
    **/
-  public PagamentoIndex modello(ModelloEnum modello) {
+  public PagamentoIndex modello(ModelloPagamento modello) {
     this.modello = modello;
     return this;
   }
 
   @JsonProperty("modello")
-  public ModelloEnum getModello() {
-    return this.modello;
+  public ModelloPagamento getModello() {
+    return modello;
   }
-  public void setModello(ModelloEnum modello) {
+  public void setModello(ModelloPagamento modello) {
     this.modello = modello;
   }
 

@@ -1,6 +1,7 @@
 package it.govpay.ec.v2.beans;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,7 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class Dominio   {
   
-  @Schema(example = "1.23456789E+9", required = true, description = "Codice fiscale")
+  @Schema(example = "12345678901", required = true, description = "Codice fiscale")
  /**
    * Codice fiscale  
   **/
@@ -26,7 +27,7 @@ public class Dominio   {
   **/
   @JsonProperty("idDominio")
   @NotNull
- @Size(min=1,max=35)  public String getIdDominio() {
+ @Pattern(regexp="^([0-9]){11}$")  public String getIdDominio() {
     return idDominio;
   }
 

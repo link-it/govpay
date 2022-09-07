@@ -69,8 +69,8 @@ import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 public class Operazioni{
 
 	private static Logger log = LoggerWrapperFactory.getLogger(Operazioni.class);
+	public static final String CHECK_DB = "check-db";
 	public static final String RND = "update-rnd";
-	public static final String PSP = "update-psp";
 	public static final String PND = "update-pnd";
 	public static final String NTFY = "update-ntfy";
 	public static final String NTFY_APP_IO = "update-ntfy-appio";
@@ -78,11 +78,8 @@ public class Operazioni{
 	public static final String CHECK_NTFY_APP_IO = "check-ntfy-appio";
 	public static final String BATCH_TRACCIATI = "caricamento-tracciati";
 	public static final String CHECK_TRACCIATI = "check-tracciati";
-	public static final String BATCH_GENERAZIONE_AVVISI = "generazione-avvisi";
 	public static final String CHECK_PROMEMORIA = "check-promemoria";
 	public static final String BATCH_SPEDIZIONE_PROMEMORIA = "spedizione-promemoria";
-	public static final String CHECK_RESET_CACHE = "check-reset-cache";
-	public static final String BATCH_RESET_CACHE = "reset-cache";
 	public static final String CACHE_ANAGRAFICA_GOVPAY = "cache-anagrafica";
 	public static final String BATCH_GESTIONE_PROMEMORIA = "gestione-promemoria";
 	public static final String CHECK_GESTIONE_PROMEMORIA = "check-gestione-promemoria";
@@ -826,6 +823,15 @@ public class Operazioni{
 					} else {
 						log.debug("Connettore HyperSicAPKappa non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
 					}
+					
+					if(dominio.getConnettoreMaggioliJPPA() != null && dominio.getConnettoreMaggioliJPPA().isAbilitato()) {
+						log.debug("Elaborazione Tracciato Maggioli JPPA per il Dominio ["+codDominio+"]...");
+						TracciatiNotificaPagamenti tracciatiGovpay = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MAGGIOLI_JPPA);
+						tracciatiGovpay.elaboraTracciatoNotificaPagamenti(dominio, dominio.getConnettoreMaggioliJPPA(), ctx);
+						log.debug("Elaborazione Tracciato Maggioli JPPA per il Dominio ["+codDominio+"] completata.");
+					} else {
+						log.debug("Connettore Maggioli JPPA non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da elaborare.");
+					}
 				}
 				
 				aggiornaSondaOK(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
@@ -1081,6 +1087,60 @@ public class Operazioni{
 						}
 					} else {
 						log.debug("Connettore HyperSicAPKappa non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
+					}
+					
+					if(dominio.getConnettoreMaggioliJPPA() != null && dominio.getConnettoreMaggioliJPPA().isAbilitato()) {
+						log.debug("Scheduling spedizione Tracciati Maggioli JPPA per il Dominio ["+codDominio+"]...");
+						TracciatiNotificaPagamenti tracciatiGovPay = new TracciatiNotificaPagamenti(it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO.MAGGIOLI_JPPA);
+						
+						int offset = 0;
+						int limit = (2 * threadNotificaPoolSize);
+						List<SpedizioneTracciatoNotificaPagamentiThread> threads = new ArrayList<>();
+						List<TracciatoNotificaPagamenti> tracciatiInStatoNonTerminalePerDominio = tracciatiGovPay.findTracciatiInStatoNonTerminalePerDominio(codDominio, offset, limit, dominio.getConnettoreMaggioliJPPA(), ctx);
+						
+						log.debug("Trovati ["+tracciatiInStatoNonTerminalePerDominio.size()+"] Tracciati Maggioli JPPA da spedire per il Dominio ["+codDominio+"]...");
+
+						if(tracciatiInStatoNonTerminalePerDominio.size() > 0) {
+							for(TracciatoNotificaPagamenti tracciatoHyperSicAPKappa: tracciatiInStatoNonTerminalePerDominio) {
+								SpedizioneTracciatoNotificaPagamentiThread sender = new SpedizioneTracciatoNotificaPagamentiThread(tracciatoHyperSicAPKappa, dominio.getConnettoreMaggioliJPPA(), ctx);
+								ThreadExecutorManager.getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti().execute(sender);
+								threads.add(sender);
+							}
+
+							log.debug("Processi di spedizione Tracciati Maggioli JPPA avviati.");
+							aggiornaSondaOK(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+
+							// Aspetto che abbiano finito tutti
+							int numeroErrori = 0;
+							while(true){
+								try {
+									Thread.sleep(2000);
+								} catch (InterruptedException e) {
+
+								}
+								boolean completed = true;
+								for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
+									if(!sender.isCompleted()) 
+										completed = false;
+								}
+
+								if(completed) { 
+									for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
+										if(sender.isErrore()) 
+											numeroErrori ++;
+									}
+									int numOk = threads.size() - numeroErrori;
+									log.debug("Completata Esecuzione dei ["+threads.size()+"] Threads, OK ["+numOk+"], Errore ["+numeroErrori+"]");
+									break; // esco
+								}
+							}
+							
+							log.info("Spedizione Tracciati Maggioli JPPA per il Dominio ["+codDominio+"] completata.");
+							//Hanno finito tutti, aggiorno stato esecuzione
+							BatchManager.aggiornaEsecuzione(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI);
+						}
+					} else {
+						log.debug("Connettore Maggioli JPPA non configurato per il Dominio ["+codDominio+"], non ricerco tracciati da spedire.");
 					}
 				}
 				

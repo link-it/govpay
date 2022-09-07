@@ -23,8 +23,9 @@ public class VersamentoDuplicatoException extends VersamentoException {
 
 	private static final long serialVersionUID = 1L;
 	
-	public VersamentoDuplicatoException(String codApplicazione, String codVersamentoEnte, String message) {
-		super(codApplicazione, codVersamentoEnte, message);
+	public VersamentoDuplicatoException(String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore,
+			String codDominio, String iuv, String message) {
+		super(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv, message);
 	}
 
 

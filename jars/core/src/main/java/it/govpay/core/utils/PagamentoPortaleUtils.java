@@ -68,6 +68,7 @@ public class PagamentoPortaleUtils {
 				log.debug("RPT corrente ["+rpt.getId()+"] Stato ["+rpt.getStato()+ "] EsitoPagamento ["+rpt.getEsitoPagamento()+"]");
 				StatoRpt stato = rpt.getStato();
 				if(it.govpay.model.Rpt.stati_pendenti.contains(stato)) {
+					log.debug("RPT corrente ["+rpt.getId()+"] e' in uno stato pendente ["+rpt.getStato()+ "], il nuovo stato del pagamento sara' 'IN_CORSO'.");
 //						rpt.getEsitoPagamento() == null) {
 					updateStato = false;
 					break;
@@ -91,6 +92,7 @@ public class PagamentoPortaleUtils {
 							numeroNonEseguiti ++;
 						}  
 					} else {
+						log.debug("RPT corrente ["+rpt.getId()+"] in stato non pendente ["+rpt.getStato()+ "] ma esito pagamento null, il nuovo stato del pagamento sara' 'IN_CORSO'.");
 						 // in corso aspetto che terminino tutte
 						updateStato = false;
 						break;
@@ -121,7 +123,7 @@ public class PagamentoPortaleUtils {
 				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
 			}
 			
-			log.debug("Nuovo Stato ["+pagamentoPortale.getStato()+"]"); 
+			log.debug("Update pagamento portale id ["+idPagamentoPortale+"] nuovo Stato ["+pagamentoPortale.getStato()+"], nuovo CodiceStato ["+pagamentoPortale.getCodiceStato()+"]"); 
 			
 			pagamentiPortaleBD.updatePagamento(pagamentoPortale, false, true);
 			

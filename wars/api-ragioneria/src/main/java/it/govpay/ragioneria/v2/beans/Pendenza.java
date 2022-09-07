@@ -2,6 +2,7 @@ package it.govpay.ragioneria.v2.beans;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import org.openspcoop2.utils.json.ValidationException;
@@ -27,6 +28,7 @@ import it.govpay.core.beans.JSONSerializable;
 "direzione",
 "divisione",
 "UUID",
+"allegati",
 })
 public class Pendenza extends JSONSerializable {
   
@@ -80,6 +82,9 @@ public class Pendenza extends JSONSerializable {
   
   @JsonProperty("UUID")
   private String UUID = null;
+  
+  @JsonProperty("allegati")
+  private List<AllegatoPendenza> allegati = null;
   
   /**
    * Identificativo del gestionale responsabile della pendenza
@@ -352,6 +357,21 @@ public class Pendenza extends JSONSerializable {
     this.UUID = UUID;
   }
 
+  /**
+   **/
+  public Pendenza allegati(List<AllegatoPendenza> allegati) {
+    this.allegati = allegati;
+    return this;
+  }
+
+  @JsonProperty("allegati")
+  public List<AllegatoPendenza> getAllegati() {
+    return allegati;
+  }
+  public void setAllegati(List<AllegatoPendenza> allegati) {
+    this.allegati = allegati;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -377,12 +397,13 @@ public class Pendenza extends JSONSerializable {
         Objects.equals(tassonomiaAvviso, pendenza.tassonomiaAvviso) &&
         Objects.equals(direzione, pendenza.direzione) &&
         Objects.equals(divisione, pendenza.divisione) &&
-        Objects.equals(UUID, pendenza.UUID);
+        Objects.equals(UUID, pendenza.UUID) &&
+        Objects.equals(allegati, pendenza.allegati);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(idA2A, idPendenza, idDominio, idUnitaOperativa, idTipoPendenza, causale, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, UUID);
+    return Objects.hash(idA2A, idPendenza, idDominio, idUnitaOperativa, idTipoPendenza, causale, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, UUID, allegati);
   }
 
   public static Pendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
@@ -416,6 +437,7 @@ public class Pendenza extends JSONSerializable {
     sb.append("    direzione: ").append(toIndentedString(direzione)).append("\n");
     sb.append("    divisione: ").append(toIndentedString(divisione)).append("\n");
     sb.append("    UUID: ").append(toIndentedString(UUID)).append("\n");
+    sb.append("    allegati: ").append(toIndentedString(allegati)).append("\n");
     sb.append("}");
     return sb.toString();
   }

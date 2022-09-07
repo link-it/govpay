@@ -62,7 +62,7 @@ public class BaseApiServiceImpl {
 	public final static String PREFIX_FILENAME = "filename=\"";
 	public final static String SUFFIX_FILENAME = "\"";
 
-	private static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean"; 
+	public static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean"; 
 	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = "Esecuzione {0} completata.";
 	public static final String LOG_MSG_ESECUZIONE_METODO_IN_CORSO = "Esecuzione {0} in corso...";
 
@@ -353,29 +353,29 @@ public class BaseApiServiceImpl {
         try {
         	Class<?> c = this.getClass();
         	// la versione V1 non implementa interfacce
-//        	Class<?> [] interfaces = c.getInterfaces();
-//        	if(interfaces==null || interfaces.length<=0) {
-//        		return null;
-//        	}
-//        	Class<?> cInterface = null;
-//        	for (int i = 0; i < interfaces.length; i++) {
-//        		if (interfaces[i] != null && interfaces[i].isAnnotationPresent(Path.class)) {
-//        			cInterface = interfaces[i];
-//        			break;
-//        		}
-//			}
-//        	if(cInterface==null) {
-//        		return null;
-//        	}
-//        	Method [] methods = cInterface.getMethods();
+        	Class<?> [] interfaces = c.getInterfaces();
+        	if(interfaces==null || interfaces.length<=0) {
+        		return null;
+        	}
+        	Class<?> cInterface = null;
+        	for (int i = 0; i < interfaces.length; i++) {
+        		if (interfaces[i] != null && interfaces[i].isAnnotationPresent(Path.class)) {
+        			cInterface = interfaces[i];
+        			break;
+        		}
+			}
+        	if(cInterface==null) {
+        		return null;
+        	}
+        	Method [] methods = cInterface.getMethods();
         	
         	String rsBasePathValue = "";
-        	Path rsBasePath = c.getAnnotation(Path.class);
-        	if(rsBasePath !=null) {
-        		rsBasePathValue = rsBasePath.value();
-        	}
+//        	Path rsBasePath = c.getAnnotation(Path.class);
+//        	if(rsBasePath !=null) {
+//        		rsBasePathValue = rsBasePath.value();
+//        	}
         	
-        	Method [] methods = c.getMethods();
+//        	Method [] methods = c.getMethods();
         	if(methods==null || methods.length<=0) {
         		return null;
         	}

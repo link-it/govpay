@@ -20,6 +20,7 @@
    "pagamenti":"#ignore",
    "tipo":"#string",
    "UUID":"#string",
+   "allegati": "##[]",
    "iuvAvviso":"##string", 
    "iuvPagamento":"##string"
 }

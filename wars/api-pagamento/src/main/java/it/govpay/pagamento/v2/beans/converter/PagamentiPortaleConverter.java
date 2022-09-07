@@ -262,6 +262,8 @@ public class PagamentiPortaleConverter {
 		versamento.setTipo(TipologiaTipoVersamento.SPONTANEO);
 		
 		versamento.setProprieta(PendenzeConverter.toProprietaPendenzaDTO(pendenza.getProprieta()));
+		
+		versamento.setAllegati(PendenzeConverter.toAllegatiPendenzaDTO(pendenza.getAllegati()));
 			
 		return versamento;
 	}

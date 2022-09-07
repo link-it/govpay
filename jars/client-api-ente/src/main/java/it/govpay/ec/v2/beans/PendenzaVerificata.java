@@ -4,10 +4,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class PendenzaVerificata extends NuovaPendenza  {
+/**
+  * Il campo 'pendenza' e' obbligatorio quando il valore del campo 'stato' e' uguale a 'NON_ESEGUITA'. Valorizzare il campo 'descrizioneStato' con una descrizione estesa dello stato della pendenza quando il valore del campo 'stato' e' diverso da 'NON_ESEGUITA'.
+ **/
+@Schema(description="Il campo 'pendenza' e' obbligatorio quando il valore del campo 'stato' e' uguale a 'NON_ESEGUITA'. Valorizzare il campo 'descrizioneStato' con una descrizione estesa dello stato della pendenza quando il valore del campo 'stato' e' diverso da 'NON_ESEGUITA'.")
+public class PendenzaVerificata   {
+  
+  @Schema(required = true, description = "")
+  private StatoPendenzaVerificata stato = null;
+  
+  @Schema(description = "Descrizione in dettaglio dello stato della pendenza.")
+ /**
+   * Descrizione in dettaglio dello stato della pendenza.  
+  **/
+  private String descrizioneStato = null;
   
   @Schema(description = "")
-  private StatoPendenzaVerificata stato = null;
+  private NuovaPendenza pendenza = null;
  /**
    * Get stato
    * @return stato
@@ -26,13 +39,51 @@ public class PendenzaVerificata extends NuovaPendenza  {
     return this;
   }
 
+ /**
+   * Descrizione in dettaglio dello stato della pendenza.
+   * @return descrizioneStato
+  **/
+  @JsonProperty("descrizioneStato")
+  public String getDescrizioneStato() {
+    return descrizioneStato;
+  }
+
+  public void setDescrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+  }
+
+  public PendenzaVerificata descrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+    return this;
+  }
+
+ /**
+   * Get pendenza
+   * @return pendenza
+  **/
+  @JsonProperty("pendenza")
+  public NuovaPendenza getPendenza() {
+    return pendenza;
+  }
+
+  public void setPendenza(NuovaPendenza pendenza) {
+    this.pendenza = pendenza;
+  }
+
+  public PendenzaVerificata pendenza(NuovaPendenza pendenza) {
+    this.pendenza = pendenza;
+    return this;
+  }
+
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class PendenzaVerificata {\n");
-    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");
+    sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
     sb.append("}");
     return sb.toString();
   }

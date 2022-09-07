@@ -36,6 +36,17 @@ public class Allegato   {
       }
       return null;
     }
+    
+    public static TipoEnum fromCodifica(String codifica) {
+		switch (codifica) {
+		case "BD":
+			return MARCA_DA_BOLLO;
+		case "ES":
+			return ESITO_PAGAMENTO;
+
+		}
+		return null;
+	}
   }  
   @Schema(required = true, description = "Tipologia di allegato")
  /**

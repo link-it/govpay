@@ -92,6 +92,13 @@ Scenario:
 		}
     """
     
+  * def createString = 
+	"""
+	function(encodedString){ 
+		var String = Java.type('java.lang.String');
+		return new String(encodedString);
+	}
+	"""  
     
 	* def decodeBase64 = 
 	"""
@@ -182,4 +189,14 @@ Scenario:
 		return IncassoUtils.formattaCausaleRFS(s);
 	}
 	"""
+	
+	* def getDateTimeRispostaMaggioli =
+		"""
+		function(pattern) {
+		  var SimpleDateFormat = Java.type('java.text.SimpleDateFormat');
+		  var sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		  var date = new java.util.Date();
+		  return sdf.format(date);
+		} 
+		"""	
 	

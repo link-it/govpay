@@ -52,6 +52,7 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.TipiVersamentoBD;
 import it.govpay.bd.anagrafica.TipiVersamentoDominiBD;
+import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
@@ -64,6 +65,7 @@ import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Iuv;
+import it.govpay.core.dao.commons.Versamento.AllegatoPendenza;
 import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
@@ -190,7 +192,7 @@ public class VersamentoUtils {
 		}
 	}
 
-	public static Versamento aggiornaVersamento(Versamento versamento) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
+	public static Versamento aggiornaVersamento(Versamento versamento, Logger log) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
 	VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
 		// Se il versamento non e' in attesa, non aggiorno un bel niente
 		if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO))
@@ -200,7 +202,7 @@ public class VersamentoUtils {
 
 		// Controllo se la data di scadenza e' indicata ed e' decorsa
 		if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza())) {
-			throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDataScadenza());
+			throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), "-", "-", "-", "-", versamento.getDataScadenza());
 		}else {
 			if(versamento.getDataValidita() != null && DateUtils.isDataDecorsa(versamento.getDataValidita())) {
 				IContext ctx = ContextThreadLocal.get();
@@ -223,20 +225,39 @@ public class VersamentoUtils {
 						versamento = acquisisciVersamento(versamento.getApplicazione(configWrapper), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, tipo);
 					} catch (ClientException e) {
 						// Errore nella chiamata all'ente. Controllo se e' mandatoria o uso quel che ho
-						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
-							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
+						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) { 
+							log.error("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == true aggiornamento terminato con errore: " + e.getMessage(),e);
+							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
+						}
+						
+						log.debug("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == false quindi verra' utilizzata la pendenza originale. Errore: " + e.getMessage(),e);
 					} catch (VersamentoSconosciutoException e) {
 						// Versamento sconosciuto all'ente (bug dell'ente?). Controllo se e' mandatoria o uso quel che ho
-						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
-							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
+						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) { 
+							log.error("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == true aggiornamento terminato con errore: " + e.getMessage(),e);
+							throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
+						}						
+						log.debug("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == false quindi verra' utilizzata la pendenza originale. Errore: " + e.getMessage(),e);
 					} catch (VersamentoNonValidoException e) {
 						// Versamento non valido per errori di validazione, se e' mandatorio l'aggiornamento rilancio l'eccezione altrimenti uso quello che ho
-						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio())
+						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) {
+							log.error("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == true aggiornamento terminato con errore: " + e.getMessage(),e);
 							throw e;
+						}
+						
+						log.debug("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == false quindi verra' utilizzata la pendenza originale. Errore: " + e.getMessage(),e);
+					} catch (GovPayException | UtilsException | ServiceException e) {
+						// Versamento non aggiornato per errori interni, se e' mandatorio l'aggiornamento rilancio l'eccezione altrimenti uso quello che ho
+						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) {
+							log.error("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == true aggiornamento terminato con errore: " + e.getMessage(),e);
+							throw e;
+						}
+						
+						log.debug("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == false quindi verra' utilizzata la pendenza originale. Errore: " + e.getMessage(),e);
 					}
 				} else if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) 
 					// connettore verifica non definito, versamento non aggiornabile
-					throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, versamento.getDataScadenza());
+					throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
 			} else {
 				// versamento valido
 			} 
@@ -467,7 +488,12 @@ public class VersamentoUtils {
 		}
 	}
 
-	public static Versamento toVersamentoModel(it.govpay.core.dao.commons.Versamento versamento) throws ServiceException, GovPayException, ValidationException { 
+	public static Versamento toVersamentoModel(it.govpay.core.dao.commons.Versamento versamento) throws ServiceException, GovPayException, ValidationException {
+		return toVersamentoModel(versamento, true);
+	}
+
+	public static Versamento toVersamentoModel(it.govpay.core.dao.commons.Versamento versamento, boolean controlloNumeroAvvisoDominioApplicazione) throws ServiceException, GovPayException, ValidationException { 
+	
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Versamento model = new Versamento();
 		model.setAggiornabile(versamento.isAggiornabile() == null ? true : versamento.isAggiornabile());
@@ -553,9 +579,11 @@ public class VersamentoUtils {
 
 		if(versamento.getNumeroAvviso() != null) {
 			String iuvFromNumeroAvviso = it.govpay.core.utils.VersamentoUtils.getIuvFromNumeroAvviso(versamento.getNumeroAvviso());
-			it.govpay.core.utils.VersamentoUtils.verifyNumeroAvviso(versamento.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),
-					dominio.getStazione().getApplicationCode(), dominio.getSegregationCode());
-
+			
+			if(controlloNumeroAvvisoDominioApplicazione) {
+				it.govpay.core.utils.VersamentoUtils.verifyNumeroAvviso(versamento.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),
+						dominio.getStazione().getApplicationCode(), dominio.getSegregationCode());
+			}
 			// check sulla validita' dello iuv
 			Iuv iuvBD  = new Iuv();
 			TipoIUV tipo = iuvBD.getTipoIUV(iuvFromNumeroAvviso);
@@ -677,10 +705,33 @@ public class VersamentoUtils {
 		model.setAvvMailDataPromemoriaScadenza(versamento.getDataPromemoriaScadenza());
 		
 		model.setProprietaPendenza(versamento.getProprieta()); 
+		
+		model.setAllegati(toAllegatiModel(versamento.getAllegati()));
 
 		return model;
 	}
 
+	private static List<Allegato> toAllegatiModel(List<AllegatoPendenza> allegati) {
+		List<Allegato> allegatiModel = null;
+		
+		if(allegati != null && allegati.size() > 0) {
+			allegatiModel = new ArrayList<>();
+			
+			for (AllegatoPendenza allegato : allegati) {
+				Allegato allegatoModel = new Allegato();
+				
+				allegatoModel.setNome(allegato.getNome());
+				allegatoModel.setTipo(allegato.getTipo());
+				allegatoModel.setDescrizione(allegato.getDescrizione());
+				allegatoModel.setRawContenuto(allegato.getContenuto());
+				allegatoModel.setDataCreazione(new Date());
+				
+				allegatiModel.add(allegatoModel);
+			}
+		}
+		
+		return allegatiModel;
+	}
 
 	public static SingoloVersamento toSingoloVersamentoModel(Versamento versamento, it.govpay.core.dao.commons.Versamento.SingoloVersamento singoloVersamento, int index, BDConfigWrapper configWrapper) throws ServiceException, GovPayException, ValidationException {
 		SingoloVersamento model = new SingoloVersamento();

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+				  xmlns:apachesoap="http://xml.apache.org/xml-soap" 
+				  xmlns:tns="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/external" 
+				  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+				  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" 
+				  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+				  xmlns:ns="http://schemas.xmlsoap.org/soap/encoding/" 
+				  targetNamespace="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/external">
+	<wsdl:types>
+		<xs:schema targetNamespace="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/external" elementFormDefault="qualified">
+			<xs:element name="InviaCarrelloRPTRichiesta" type="tns:ctRichiestaStandard"/>
+			<xs:element name="InviaCarrelloRPTRisposta" type="tns:ctRispostaStandard"/>
+			<xs:element name="ChiediStatoRPTRichiesta" type="tns:ctRichiestaStandard"/>
+			<xs:element name="ChiediStatoRPTRisposta" type="tns:ctRispostaStandard"/>
+			<xs:element name="RecuperaRTRichiesta" type="tns:ctRichiestaStandard"/>
+			<xs:element name="RecuperaRTRisposta" type="tns:ctRispostaStandard"/>
+			<xs:simpleType name="stOperazione">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="InviaCarrelloRPT"/>
+					<xs:enumeration value="ChiediStatoRPT"/>
+					<xs:enumeration value="RecuperaRT"/>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType name="stEsito">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="OK"/>
+					<xs:enumeration value="ERROR"/>
+				</xs:restriction>
+			</xs:simpleType>		
+			<xs:complexType name="ctMessaggi">
+				<xs:sequence>
+					<xs:element name="messaggio" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="codice" type="xs:string">
+									<xs:annotation>
+										<xs:documentation>Codice Messaggio di errore</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="descrizione" type="xs:string">
+									<xs:annotation>
+										<xs:documentation>Descrizione Messaggio di errore</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:complexType>				
+			<xs:complexType name="ctRichiestaStandard">
+				<xs:sequence>
+					<xs:element name="operazione" type="tns:stOperazione" minOccurs="1" nillable="false">
+						<xs:annotation>
+							<xs:documentation>Codice identificativo della richiesta: corrisponde al tipo enumeratore stOperazione</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="identificativoDominio"
+						minOccurs="1" nillable="false">
+						<xs:annotation>
+							<xs:documentation>
+								Codice SPC ente: corrisponde al codice fiscale
+							</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:minLength value="1"></xs:minLength>
+								<xs:maxLength value="35"></xs:maxLength>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="dataOperazione" type="xs:dateTime" minOccurs="1" nillable="false">
+						<xs:annotation>
+							<xs:documentation>La Data e ora in cui è avvenuta la richiesta (esempio: 2006-12-31T20:45:06Z)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="version" type="xs:string" minOccurs="1" nillable="false">
+						<xs:annotation>
+							<xs:documentation>Versione della richiesta: gestione delle versioni dell'xsd</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="xmlDettaglioRichiesta" type="xs:string" minOccurs="1" nillable="false">
+						<xs:annotation>
+							<xs:documentation>Un campo stringa contenente XML con i dati relativi allo specifico servizio invocato</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="ctRispostaStandard">
+				<xs:sequence>
+					<xs:element name="operazione" type="tns:stOperazione" minOccurs="1" nillable="false">
+						<xs:annotation>
+							<xs:documentation>Codice identificativo della risposta</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="dataOperazione" type="xs:dateTime" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>La Data e ora in cui è stata fornita la risposta (esempio: 2006-12-31T20:45:06Z)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="esito" minOccurs="1" type="tns:stEsito">
+						<xs:annotation>
+							<xs:documentation>Restituisce l'esito dell'elaborazione, i valori restituiti possono essere OK o ERROR</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="messaggi" minOccurs="0" type="tns:ctMessaggi">
+						<xs:annotation>
+							<xs:documentation>Lista di eventuali messaggi da riportare nella risposta</xs:documentation>
+						</xs:annotation>					
+					</xs:element>
+					<xs:element name="xmlDettaglioRisposta" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Oggetto di risposta</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="InviaCarrelloRPTRichiesta">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<wsdl:part name="InviaCarrelloRPTRichiesta" element="tns:InviaCarrelloRPTRichiesta"/>
+	</wsdl:message>
+	<wsdl:message name="InviaCarrelloRPTRisposta">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<wsdl:part name="InviaCarrelloRPTRisposta" element="tns:InviaCarrelloRPTRisposta"/>
+	</wsdl:message>
+	<wsdl:message name="ChiediStatoRPTRichiesta">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<wsdl:part name="ChiediStatoRPTRichiesta" element="tns:ChiediStatoRPTRichiesta"/>
+	</wsdl:message>
+	<wsdl:message name="ChiediStatoRPTRisposta">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<wsdl:part name="ChiediStatoRPTRisposta" element="tns:ChiediStatoRPTRisposta"/>
+	</wsdl:message>
+	<wsdl:message name="RecuperaRTRichiesta">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<wsdl:part name="RecuperaRTRichiesta" element="tns:RecuperaRTRichiesta"/>
+	</wsdl:message>
+	<wsdl:message name="RecuperaRTRisposta">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<wsdl:part name="RecuperaRTRisposta" element="tns:RecuperaRTRisposta"/>
+	</wsdl:message>
+	<wsdl:portType name="JppaPdpExternalServicesEndpoint">
+		<wsdl:operation name="InviaCarrelloRPT">
+			<wsdl:input name="InviaCarrelloRPTRichiesta" message="tns:InviaCarrelloRPTRichiesta"/>
+			<wsdl:output name="InviaCarrelloRPTRisposta" message="tns:InviaCarrelloRPTRisposta"/>
+		</wsdl:operation>
+		<wsdl:operation name="ChiediStatoRPT">
+			<wsdl:input name="ChiediStatoRPTRichiesta" message="tns:ChiediStatoRPTRichiesta"/>
+			<wsdl:output name="ChiediStatoRPTRisposta" message="tns:ChiediStatoRPTRisposta"/>
+		</wsdl:operation>
+		<wsdl:operation name="RecuperaRT">
+			<wsdl:input name="RecuperaRTRichiesta" message="tns:RecuperaRTRichiesta"/>
+			<wsdl:output name="RecuperaRTRisposta" message="tns:RecuperaRTRisposta"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="JppaPdpExternalServicesBinding" type="tns:JppaPdpExternalServicesEndpoint">
+		<wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="InviaCarrelloRPT">
+			<wsdlsoap:operation soapAction="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/external/InviaCarrelloRPT"/>
+			<wsdl:input name="InviaCarrelloRPTRichiesta">
+				<wsdlsoap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="InviaCarrelloRPTRisposta">
+				<wsdlsoap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="ChiediStatoRPT">
+			<wsdlsoap:operation soapAction="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/external/ChiediStatoRPT"/>
+			<wsdl:input name="ChiediStatoRPTRichiesta">
+				<wsdlsoap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="ChiediStatoRPTRisposta">
+				<wsdlsoap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="RecuperaRT">
+			<wsdlsoap:operation soapAction="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/external/RecuperaRT"/>
+			<wsdl:input name="RecuperaRTRichiesta">
+				<wsdlsoap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="RecuperaRTRisposta">
+				<wsdlsoap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="JppaPdpExternalFacetService">
+		<wsdl:port name="JppaPdpExternalServicesPort" binding="tns:JppaPdpExternalServicesBinding">
+			<wsdlsoap:address location="http://localhost:9862/MybridgeService/JppaPdpExternalServicesPort"/>
+		</wsdl:port>
+	</wsdl:service>
+	<xs:annotation>
+		<xs:documentation>
+			WSLD per interfacciare il connettore JPPAPDP: viene utilizzato "external" per indicare che sono metodi esterni che saranno consumati da JPPA
+		</xs:documentation>
+	</xs:annotation>
+</wsdl:definitions>
+

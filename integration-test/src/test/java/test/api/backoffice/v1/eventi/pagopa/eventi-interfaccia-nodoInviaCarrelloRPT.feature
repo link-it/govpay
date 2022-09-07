@@ -65,7 +65,7 @@ And match response.risultati[0] ==
 	"datiPagoPA" : "#notnull",
 	"parametriRichiesta": {
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
-		"url": "http://localhost:8080/govpay-ndpsym/pagopa/PagamentiTelematiciRPTservice",
+		"url": "#(ndpsym_url +'/pagopa/PagamentiTelematiciRPTservice')",
 		"method": "POST",
 		"headers": "#array",
 		"payload": "#notnull"

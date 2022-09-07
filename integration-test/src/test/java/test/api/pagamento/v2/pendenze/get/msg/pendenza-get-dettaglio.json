@@ -21,5 +21,6 @@
    "tipo":"#string",
    "UUID":"#string",
    "iuvAvviso":"##string", 
-   "iuvPagamento":"##string"
+   "iuvPagamento":"##string",
+   "allegati": "##[]"
 }

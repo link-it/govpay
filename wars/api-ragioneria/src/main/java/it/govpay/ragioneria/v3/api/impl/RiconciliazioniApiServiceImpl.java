@@ -60,6 +60,7 @@ public class RiconciliazioniApiServiceImpl extends BaseApiServiceImpl  implement
      *
      */
     public Response addRiconciliazione(String idDominio, String id, InputStream is) {
+    	this.buildContext();
         Authentication user = this.getUser();
         String methodName = "addRiconciliazione"; 
 		String transactionId = ContextThreadLocal.get().getTransactionId();
@@ -114,7 +115,8 @@ public class RiconciliazioniApiServiceImpl extends BaseApiServiceImpl  implement
      *
      */
     public Response findRiconciliazioni(Integer pagina, Integer risultatiPerPagina, String idDominio, String dataDa, String dataA, Boolean metadatiPaginazione, Boolean maxRisultati, String sct) {
-        Authentication user = this.getUser();
+    	this.buildContext();
+    	Authentication user = this.getUser();
         String methodName = "findRiconciliazioni";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -178,6 +180,7 @@ public class RiconciliazioniApiServiceImpl extends BaseApiServiceImpl  implement
      *
      */
     public Response getRiconciliazione(String idDominio, String id) {
+    	this.buildContext();
         Authentication user = this.getUser();
         String methodName = "getRiconciliazione";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();

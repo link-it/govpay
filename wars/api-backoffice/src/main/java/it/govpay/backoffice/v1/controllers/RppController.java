@@ -176,18 +176,18 @@ public class RppController extends BaseController {
 			RptDAO rptDAO = new RptDAO();
 
 			// Autorizzazione sui domini
-//			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
-//			if(domini == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-//			}
-//			listaRptDTO.setCodDomini(domini);
+			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
+			if(domini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+			}
+			listaRptDTO.setCodDomini(domini);
 			
 			// Autorizzazione sulle uo
-			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
-			if(uo == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
-			}
-			listaRptDTO.setUnitaOperative(uo);
+//			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
+//			if(uo == null) {
+//				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
+//			}
+//			listaRptDTO.setUnitaOperative(uo);
 
 			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
 
@@ -383,7 +383,7 @@ public class RppController extends BaseController {
 		} 
 	}
 
-	public Response getRt(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp, Boolean visualizzaSoggettoDebitore) {
+	public Response getRt(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
 		String methodName = "getRt";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -405,9 +405,6 @@ public class RppController extends BaseController {
 			leggiPagamentoPortaleDTO.setIuv(iuv);
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
 			leggiPagamentoPortaleDTO.setCcp(ccp);
-
-			if(visualizzaSoggettoDebitore != null)
-				leggiPagamentoPortaleDTO.setVisualizzaSoggettoDebitore(visualizzaSoggettoDebitore.booleanValue()); 
 
 			// controllo che il dominio sia autorizzato
 			if(!AuthorizationManager.isDominioAuthorized(user, idDominio)) {

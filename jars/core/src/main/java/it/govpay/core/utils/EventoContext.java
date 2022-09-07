@@ -25,9 +25,9 @@ public class EventoContext {
 	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIAESITOSTORNO = "paaInviaEsitoStorno";
 	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIARICHIESTAREVOCA = "paaInviaRichiestaRevoca";
 	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIART = "paaInviaRT";
+	public static final String APIPAGOPA_TIPOEVENTO_PASENDRT = "paSendRT";
 	public static final String APIPAGOPA_TIPOEVENTO_PAVERIFYPAYMENTNOTICE = "paVerifyPaymentNotice";
 	public static final String APIPAGOPA_TIPOEVENTO_PAGETPAYMENT = "paGetPayment";
-	public static final String APIPAGOPA_TIPOEVENTO_PASENDRT = "paSendRT";
 	
 	public static final String APILEGACY_TIPOEVENTO_GPAPP_GPGENERAIUV = "gpGeneraIuv";
 	public static final String APILEGACY_TIPOEVENTO_GPAPP_GPCARICAIUV = "gpCaricaIuv";
@@ -47,8 +47,6 @@ public class EventoContext {
 	public static final String APILEGACY_TIPOEVENTO_GPRND_GPCHIEDILISTAFLUSSIRENDICONTAZIONE = "gpChiediListaFlussiRendicontazione";
 	public static final String APILEGACY_TIPOEVENTO_GPRND_GPCHIEDIFLUSSORENDICONTAZIONE = "gpChiediFlussoRendicontazione";
 	
-	
-	
 	public static final String APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOEMAIL = "pivotInviaTracciatoEmail";
 	public static final String APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOFILESYSTEM = "pivotInviaTracciatoFileSystem";
 	public static final String APIMYPIVOT_TIPOEVENTO_PIVOTSILAUTORIZZAIMPORTFLUSSO = "pivotSILAutorizzaImportFlusso";
@@ -66,10 +64,16 @@ public class EventoContext {
 	public static final String APIHYPERSICAPKAPPA_TIPOEVENTO_HYPERSIC_APKINVIATRACCIATOFILESYSTEM = "hyperSicAPKappaInviaTracciatoFileSystem";
 	
 	public static final String APIPAGOPA_SOTTOTIPOEVENTO_FLUSSO_RENDICONTAZIONE_DUPLICATO = "FlussoRendicontazioneDuplicato";
+	
+	public static final String APIMAGGIOLI_JPPA_TIPOEVENTO_INVIAESITOPAGAMENTO = "maggioliInviaEsitoPagamento";
+	public static final String APIMAGGIOLI_JPPA_TIPOEVENTO_RECUPERART = "maggioliRecuperaRT";
+	public static final String APIMAGGIOLI_JPPA_TIPOEVENTO_INVIATRACCIATOEMAIL = "maggioliJppaInviaTracciatoEmail";
+	
+	public static final String GOVPAY_TIPOEVENTO_GOVPAYPAGAMENTOESEGUITOSENZARPT = "govpayPagamentoEseguitoSenzaRPT";
 
 	public static final String SOTTOTIPO_EVENTO_NOTA = "nota";
 	
-	public enum Componente {API_ENTE, API_PAGAMENTO, API_RAGIONERIA, API_BACKOFFICE, API_PAGOPA, API_LEGACY, API_PENDENZE, API_WC, API_USER, API_BACKEND_IO, API_MYPIVOT, API_SECIM, API_GOVPAY, API_HYPERSIC_APK };
+	public enum Componente {API_ENTE, API_PAGAMENTO, API_RAGIONERIA, API_BACKOFFICE, API_PAGOPA, API_LEGACY, API_PENDENZE, API_WC, API_USER, API_BACKEND_IO, API_MYPIVOT, API_SECIM, API_GOVPAY, API_HYPERSIC_APK, API_MAGGIOLI_JPPA, GOVPAY };
 	public enum Esito {OK, KO, FAIL};
 	public enum Categoria { INTERFACCIA, INTERNO, UTENTE };
 

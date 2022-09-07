@@ -86,7 +86,7 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
           const _stdTCC: TwoColsCollapse = new TwoColsCollapse();
           const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
           const _riferimento = this.us.mapRiferimentoGiornale(item);
-          _stdTCC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
+          _stdTCC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.componente, item.tipoEvento) });
           _stdTCC.sottotitolo = new Dato({ label: _riferimento });
           _stdTCC.stato = item.esito;
           _stdTCC.data = _dataOraEventi;

@@ -46,3 +46,8 @@ When method post
 Then status 201
 And match response == read('msg/riconciliazione-singola-senza-rpt.json')
 
+Given url backofficeBaseurl
+And path '/flussiRendicontazione', response.idFlusso
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200

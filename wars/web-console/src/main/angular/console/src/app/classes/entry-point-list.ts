@@ -10,10 +10,12 @@ import { KeyValueViewComponent } from '../elements/item-view/views/key-value-vie
 import { KeyJsonViewComponent } from '../elements/item-view/views/key-json-view/key-json-view.component';
 import { TwoColsViewComponent } from '../elements/item-view/views/two-cols-view/two-cols-view.component';
 import { TwoColsCollapseViewComponent } from '../elements/item-view/views/two-cols-collapse-view/two-cols-collapse-view.component';
+import { AllegatoViewComponent } from '../elements/item-view/views/allegato-view/allegato-view.component';
 
 import { InputViewComponent } from '../elements/item-view/views/input-view/input-view.component';
 import { FilterableViewComponent } from '../elements/item-view/views/filterable-view/filterable-view.component';
 import { SelectViewComponent } from '../elements/item-view/views/select-view/select-view.component';
+import { SelectDependencyViewComponent } from '../elements/item-view/views/select-dependency-view/select-dependency-view.component';
 import { BooleanViewComponent } from '../elements/item-view/views/boolean-view/boolean-view.component';
 import { LabelViewComponent } from '../elements/item-view/views/label-view/label-view.component';
 import { DatePickerViewComponent, TimePickerDialogComponent } from '../elements/item-view/views/date-picker-view/date-picker-view.component';
@@ -61,6 +63,7 @@ import { ConnettoreMypivotComponent } from '../elements/detail-view/views/dialog
 import { ConnettoreSecimComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-secim/connettore-secim.component';
 import { ConnettoreGovpayComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-govpay/connettore-govpay.component';
 import { ConnettoreHypersicComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-hypersic/connettore-hypersic.component';
+import { ConnettoreMaggioliComponent } from '../elements/detail-view/views/dialog-view/dialog-views/connettore-maggioli/connettore-maggioli.component';
 
 export class EntryPointList {
 
@@ -111,17 +114,20 @@ export class EntryPointList {
     KeyJsonViewComponent,
     TwoColsViewComponent,
     TwoColsCollapseViewComponent,
+    AllegatoViewComponent,
     InputViewComponent,
     FilterableViewComponent,
     DatePickerViewComponent, TimePickerDialogComponent,
     SelectViewComponent,
+    SelectDependencyViewComponent,
     BooleanViewComponent,
     LabelViewComponent,
     ProfiloUtenteViewComponent,
     ConnettoreMypivotComponent,
     ConnettoreSecimComponent,
     ConnettoreGovpayComponent,
-    ConnettoreHypersicComponent
+    ConnettoreHypersicComponent,
+    ConnettoreMaggioliComponent
   ];
 
   public static getComponentByName(name: string):Type<any> {
@@ -189,6 +195,9 @@ export class EntryPointList {
         break;
       case UtilService.TWO_COLS:
         _type = TwoColsViewComponent;
+        break;
+      case UtilService.ALLEGATO:
+        _type = AllegatoViewComponent;
         break;
       case UtilService.TWO_COLS_COLLAPSE:
         _type = TwoColsCollapseViewComponent;
@@ -281,6 +290,9 @@ export class EntryPointList {
       case UtilService.CONNETTORE_HYPERSIC:
         _type = ConnettoreHypersicComponent;
         break;
+      case UtilService.CONNETTORE_MAGGIOLI:
+        _type = ConnettoreMaggioliComponent;
+        break;
       //Material Lib
       case UtilService.INPUT:
         _type = InputViewComponent;
@@ -293,6 +305,9 @@ export class EntryPointList {
         break;
       case UtilService.SELECT:
         _type = SelectViewComponent;
+        break;
+      case UtilService.SELECT_DEPENDENCY:
+        _type = SelectDependencyViewComponent;
         break;
       case UtilService.SLIDE_TOGGLE:
         _type = BooleanViewComponent;
@@ -372,6 +387,9 @@ export class EntryPointList {
         break;
       case 'TwoColsViewComponent':
         _name = UtilService.TWO_COLS;
+        break;
+      case 'AllegatoViewComponent':
+        _name = UtilService.ALLEGATO;
         break;
       case 'TwoColsCollapseViewComponent':
         _name = UtilService.TWO_COLS_COLLAPSE;
@@ -464,6 +482,9 @@ export class EntryPointList {
       case 'ConnettoreHypersicComponent':
         _name = UtilService.CONNETTORE_HYPERSIC;
         break;
+      case 'ConnettoreMaggioliComponent':
+        _name = UtilService.CONNETTORE_MAGGIOLI;
+        break;
       //Material Lib
       case 'InputViewComponent':
         _name = UtilService.INPUT;
@@ -476,6 +497,9 @@ export class EntryPointList {
         break;
       case 'SelectViewComponent':
         _name = UtilService.SELECT;
+        break;
+      case 'SelectDependencyViewComponent':
+        _name = UtilService.SELECT_DEPENDENCY;
         break;
       case 'LabelViewComponent':
         _name = UtilService.LABEL;

@@ -29,6 +29,7 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.NotificheAppIoBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.business.QuietanzaPagamento;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
@@ -50,6 +51,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 	public static final String SWAGGER_OPERATION_POST_MESSAGE_AVVISO_PAGAMENTO = "submitMessageforUserWithFiscalCodeInBody";
 	public static final String SWAGGER_OPERATION_POST_MESSAGE_SCADENZA_PAGAMENTO = "submitMessageforUserWithFiscalCodeInBodyScadenza";
 	public static final String SWAGGER_OPERATION_POST_MESSAGE_RICEVUTA_PAGAMENTO = "submitMessageforUserWithFiscalCodeInBodyRicevuta";
+	public static final String SWAGGER_OPERATION_POST_MESSAGE_RICEVUTA_PAGAMENTO_SENZA_RPT = "submitMessageforUserWithFiscalCodeInBodyRicevutaPagamentoSenzaRPT";
 	
 
 	private IContext ctx = null;
@@ -205,6 +207,9 @@ public class InviaNotificaAppIoThread implements Runnable{
 					case RICEVUTA:
 						azione = SWAGGER_OPERATION_POST_MESSAGE_RICEVUTA_PAGAMENTO;
 						break;
+					case RICEVUTA_NO_RPT:
+						azione = SWAGGER_OPERATION_POST_MESSAGE_RICEVUTA_PAGAMENTO_SENZA_RPT;
+						break;
 					}
 					
 					
@@ -238,6 +243,12 @@ public class InviaNotificaAppIoThread implements Runnable{
 					case RICEVUTA:
 						PromemoriaRicevutaBase promemoriaRicevuta = this.avvisaturaViaAppIo.getPromemoriaRicevuta() != null ? this.avvisaturaViaAppIo.getPromemoriaRicevuta() : new PromemoriaRicevutaBase(); 
 						messageWithCF = AppIOUtils.creaNuovoMessaggioRicevutaPagamento(log, versamento, rpt, dominio, this.tipoVersamentoDominio, promemoriaRicevuta, this.appIo.getTimeToLive());
+						break;
+					case RICEVUTA_NO_RPT:
+						PromemoriaRicevutaBase promemoriaRicevutaNoRPT = this.avvisaturaViaAppIo.getPromemoriaRicevuta() != null ? this.avvisaturaViaAppIo.getPromemoriaRicevuta() : new PromemoriaRicevutaBase();
+						QuietanzaPagamento quietanzaPagamento = new QuietanzaPagamento(); 
+						rpt = quietanzaPagamento.creaRPTFromVersamento(versamento, configWrapper);
+						messageWithCF = AppIOUtils.creaNuovoMessaggioRicevutaPagamentoSenzaRPT(log, versamento, rpt, dominio, this.tipoVersamentoDominio, promemoriaRicevutaNoRPT, this.appIo.getTimeToLive());
 						break;
 					}
 

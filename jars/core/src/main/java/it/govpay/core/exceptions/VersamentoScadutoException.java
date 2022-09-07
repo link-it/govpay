@@ -27,12 +27,14 @@ public class VersamentoScadutoException extends VersamentoException {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public VersamentoScadutoException(String codApplicazione, String codVersamentoEnte, Date dataScadenza) {
-		super(codApplicazione, codVersamentoEnte, dataScadenza != null ? "Versamento scaduto in data " + SimpleDateFormatUtils.newSimpleDateFormat("dd/MM/yyyy").format(dataScadenza) : null);
+	public VersamentoScadutoException(String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore,
+			String codDominio, String iuv, Date dataScadenza) {
+		super(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv, dataScadenza != null ? "Versamento scaduto in data " + SimpleDateFormatUtils.newSimpleDateFormat("dd/MM/yyyy").format(dataScadenza) : null);
 	}
 	
-	public VersamentoScadutoException(String codApplicazione, String codVersamentoEnte, String message) {
-		super(codApplicazione, codVersamentoEnte, message);
+	public VersamentoScadutoException(String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore,
+			String codDominio, String iuv, String message) {
+		super(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv, message);
 	}
 
 }

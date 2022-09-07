@@ -27,7 +27,8 @@ public class VersamentoSconosciutoException extends VersamentoException {
 		super();
 	}
 	
-	public VersamentoSconosciutoException(String codApplicazione, String codVersamentoEnte, String message) {
-		super(codApplicazione, codVersamentoEnte, message);
+	public VersamentoSconosciutoException(String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore,
+			String codDominio, String iuv, String message) {
+		super(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv, message);
 	}
 }

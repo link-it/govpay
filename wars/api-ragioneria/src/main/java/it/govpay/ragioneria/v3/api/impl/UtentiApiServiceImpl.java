@@ -33,6 +33,7 @@ public class UtentiApiServiceImpl extends BaseApiServiceImpl  implements UtentiA
 	 *
 	 */
 	public Response getProfilo() {
+		this.buildContext();
 		Authentication user = this.getUser();
 		String methodName = "getProfilo";  
  		String transactionId = ContextThreadLocal.get().getTransactionId();

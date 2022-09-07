@@ -19,74 +19,143 @@ description:
     apiDocumentation: 'https://govpay.readthedocs.io/it/latest/integrazione/api/index.html'
     documentation: 'https://govpay.readthedocs.io/it/latest/'
     features:
-      - "Implementazione delle specifiche di interconnessione a pagoPA"
-      - "Supporto completo dei modelli di pagamento ad iniziativa Ente o PSP"
-      - "Stampa degli Avvisi di Pagamento pagoPA anche per pagamenti rateizzati o in forma ridotta"
-      - "Notifica email per Avvisi di Pagamento pagoPA, Ricevute di Pagamento e promemoria di scadenza"
-      - "Integrazione al Backend IO per l'avvisatura digitale"
-      - "Cruscotto di monitoraggio (Tavolo Operativo) conforme ai requisiti pagoPA"
-      - "Servizi REST di pagamento e consultazione della posizione debitoria"
-      - "Servizi REST di gestione pendenze per l'integrazione di gestionali posizioni debitorie"
-      - "Servizi REST di riconciliazione pagamenti per l'integrazione di verticali di contabilità"
-      - "Profilazione degli operatori di cruscotto"
-      - "Plugin di integrazione ad applicativi di terze parti"
+      - PNRR
+      - PNRR/Misura/1.4.3
+      - PNRR/Beneficiari/Comuni
+      - PNRR/Beneficiari/Scuole
+      - PNRR/Beneficiari/ASL
+      - PNRR/Beneficiari/Enti Regionali
+      - PNRR/Beneficiari/Università
+      - PNRR/Beneficiari/PA Centrali
+      - PNRR/Beneficiari/Province
+      - PNRR/Beneficiari/Istituti di ricerca e AFAM
+      - PNRR/Beneficiari/Altri enti
+      - Implementazione delle specifiche di interconnessione a pagoPA
+      - Supporto completo dei modelli di pagamento ad iniziativa Ente o PSP
+      - |-
+        Stampa degli Avvisi di Pagamento pagoPA anche per pagamenti rateizzati o
+        in forma ridotta
+      - |-
+        Notifica email per Avvisi di Pagamento pagoPA, Ricevute di Pagamento e
+        promemoria di scadenza
+      - Integrazione al Backend IO per l'avvisatura digitale
+      - |-
+        Cruscotto di monitoraggio (Tavolo Operativo) conforme ai requisiti
+        pagoPA
+      - Servizi REST di pagamento e consultazione della posizione debitoria
+      - |-
+        Servizi REST di gestione pendenze per l'integrazione di gestionali
+        posizioni debitorie
+      - |-
+        Servizi REST di riconciliazione pagamenti per l'integrazione di
+        verticali di contabilità
+      - Profilazione degli operatori di cruscotto
+      - Plugin di integrazione ad applicativi di terze parti
     genericName: Gateway di integrazione a pagoPA
-    longDescription: >
+    longDescription: |
       La piattaforma GovPay soddisfa i requisiti richiesti dalla normativa per
       l'adesione a pagoPA necessari alla realizzazione di pagamenti, dovuti o
-      spontanei, sia ad iniziativa Ente (modelli 1 e 2) che ad iniziativa PSP
-      (modello 3) nonché alla loro riconciliazione in tesoreria. Fornisce un
-      cruscotto di gestione che implementa i servizi di "Tavolo Operativo" descritti
-      dalle specifiche AgID utilizzabile dagli operatori per monitorare il
-      corretto funzionamento della piattaforma e degli applicativi ad essa
-      collegati oltre a fornire i report necessari ai servizi di supporto di
-      primo e secondo livello.
-      GovPay mette a disposizione una suite completa di API REST per l'integrazione degli
+      spontanei, sia ad iniziativa Ente che ad iniziativa PSP nonché alla loro
+      riconciliazione in tesoreria. 
+
+
+      Fornisce un cruscotto di gestione che implementa i servizi di "Tavolo
+      Operativo" descritti dalle specifiche PagoPA utilizzabile dagli operatori
+      per monitorare il corretto funzionamento della piattaforma e degli
+      applicativi ad essa collegati oltre a fornire i report necessari ai
+      servizi di supporto di primo e secondo livello. GovPay mette a
+      disposizione una suite completa di API REST per l'integrazione degli
       applicativi esistenti (portali di pagamento, gestionali di posizioni
-      debitorie, applicativi di contabilità, ...). Le API coprono tutte le funzionalità del prodotto,
-      permettendo di automatizzare l'intero ciclo
-      di vita del pagamento, dall'alimentazione dell'archivio dei pagamenti in
+      debitorie, applicativi di contabilità, ...). Le API coprono tutte le
+      funzionalità del prodotto, permettendo di automatizzare l'intero ciclo di
+      vita del pagamento, dall'alimentazione dell'archivio dei pagamenti in
       attesa (APA) ed emissione dell'avviso di pagamento, fino alla
       riconciliazione contabile in tesoreria delle riscossioni effettuate. Le
-      stesse operazioni sono comunque disponibili anche sul cruscotto di gestione
-      per gli operatori, tramite compilazione di form o file upload di
-      tracciati record.
-      Di seguito le funzionalita fornite dal prodotto ed individuate dal [quadro sinottico dei servizi](https://www.pagopa.gov.it/it/pubbliche-amministrazioni/quadro-sinottico/) al
-      quale si rimanda per una descrizione piu' estesa.
-      ### Servizi minimi
+      stesse operazioni sono comunque disponibili anche sul cruscotto di
+      gestione per gli operatori, tramite compilazione di form o file upload di
+      tracciati record. 
+
+
+      Di seguito le funzionalita fornite dal prodotto ed individuate dal [quadro
+      sinottico dei
+      servizi](https://www.pagopa.gov.it/it/pubbliche-amministrazioni/quadro-sinottico/)
+      al quale si rimanda per una descrizione più estesa. 
+
+
+      **Servizi minimi**
+
+
       - Gestione Archivio Pagamenti in Attesa
+
       - Integrazione con e@bollo
+
       - Modelli di pagamento
-      ### Servizi base
+
+
+      **Servizi base** 
+
+
       - Profilazione personale EC con diversi ruoli e permessi
+
       - Rateizzazione
+
       - Attualizzazione del debito
+
       - Disponibilità della ricevuta telematica
+
       - Gestione Carrello multi beneficiario multi pagatore
+
       - Gestione del giornale degli eventi
-      ### Servizi distintivi
+
+
+      **Servizi distintivi**
+
+
       - Servizi di quadratura del flusso di pagamenti
+
       - Integrazione con piattaforma App IO
+
       - Riconciliazione
-      ### Servizi a valore aggiunto
-      - Messa a disposizione dei documenti scambiati con pagoPA (RT,RPT, flussi di rendicontazione)
+
+
+      **Servizi a valore aggiunto** 
+
+
+      - Messa a disposizione dei documenti scambiati con pagoPA (RT,RPT, flussi
+      di rendicontazione)
+
       - Scarico flussi di rendicontazione
+
       - Invio esito pagamento
+
       - Possibilità invio PEC
+
       - Avvisatura massiva
+
       - Avvisatura singola
+
       - Codifica dati per analisi pagamenti
+
       - Fascicolo del cittadino
+
       - Interoperabilità con contabilità
+
       - Interoperabilità con gestionali
+
       - Integrabilità con altri front-end
-      ### Servizi a valore aggiunto non individuati dal quadro sinottico
-      - Possibilità di alimentare l'archivio dei pagamenti in attesa e ottenere i corrispondenti avvisi di pagamento tramite tracciati CSV
+
+
+      **Servizi a valore aggiunto non individuati dal quadro sinottico**
+
+
+      - Possibilità di alimentare l'archivio dei pagamenti in attesa e ottenere
+      i corrispondenti avvisi di pagamento tramite tracciati CSV
+
       - Servizio di notifica email degli avvisi di pagamento e delle ricevute
-      - Supporto alla gestione di pagamenti spontanei
-      - Integrazione nativa ad applicativi terzi: MyPIVOT, SECIM, HyperSIC (APKappa)
-    shortDescription: >-
-      Gateway di integrazione alla piattaforma di pagamento pagoPA.
+
+      - Integrazione nativa ad applicativi terzi: MyPIVOT, SECIM, HyperSIC
+      (APKappa)
+    shortDescription: Gateway di integrazione alla piattaforma di pagamento pagoPA.
 developmentStatus: stable
 inputTypes:
   - text/xml
@@ -112,11 +181,12 @@ legal:
   license: GPL-3.0-or-later
   mainCopyrightOwner: Link.it s.r.l.
   repoOwner: Link.it s.r.l.
-logo: docs/_images/gpay_logo_catalogoriuso.png 
 localisation:
   availableLanguages:
     - it
   localisationReady: true
+logo: |-
+  https://raw.githubusercontent.com/link-it/govpay/master/docs/_images/gpay_logo_catalogoriuso.png
 maintenance:
   contacts:
     - affiliation: Link.it
@@ -137,13 +207,13 @@ outputTypes:
   - application/pdf
 platforms:
   - web
-releaseDate: '2022-01-19'
+releaseDate: '2022-07-21'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
-softwareVersion: '3.5.0'
+softwareVersion: 3.6.2
 url: 'https://github.com/link-it/govpay'
 usedBy:
-  - CNR - Consiglio Nazionale delle Ricerche  
+  - CNR - Consiglio Nazionale delle Ricerche
   - ISS - Istituto Superiore della Sanità
-  - MIC - Ministero della Cultura    
+  - MIC - Ministero della Cultura
   - MISE - Ministero dello Sviluppo Economico
