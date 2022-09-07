@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2022 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -17,25 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.pagopa.v2.beans;
+package it.govpay.pagopa.v2.exception;
 
-import java.io.Serializable;
+public class VersamentoAnnullatoException extends VersamentoException {
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
-@Setter
-@Getter	
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
-public class IdUnitaOperativa implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private Long idUnita; 
-	private Long idDominio;
-	private Long id;
+	public VersamentoAnnullatoException(String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore,
+			String codDominio, String iuv, String message) {
+		super(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv, message);
+	}
+
 }

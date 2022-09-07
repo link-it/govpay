@@ -47,43 +47,43 @@ public class UoEntity {
 	private String uoCodiceIdentificativo;
 	
 	@Column(name = "uo_denominazione")
-	private String uo_denominazione;
+	private String uoDenominazione;
 	
 	@Column(name = "uo_indirizzo")
-	private String uo_indirizzo;
+	private String uoIndirizzo;
 	
 	@Column(name = "uo_civico")
-	private String uo_civico;
+	private String uoCivico;
 	
 	@Column(name = "uo_cap")
-	private String uo_cap;
+	private String uoCap;
 	
 	@Column(name = "uo_localita")
-	private String uo_localita;
+	private String uoLocalita;
 	
 	@Column(name = "uo_provincia")
-	private String uo_provincia;
+	private String uoProvincia;
 	
 	@Column(name = "uo_nazione")
-	private String uo_nazione;
+	private String uoNazione;
 	
 	@Column(name = "uo_area")
-	private String uo_area;
+	private String uoArea;
 	
 	@Column(name = "uo_url_sito_web")
-	private String uo_url_sito_web;
+	private String uoUrlSitoWeb;
 	
 	@Column(name = "uo_email")
-	private String uo_email;
+	private String uoEmail;
 	
 	@Column(name = "uo_pec")
-	private String uo_pec;
+	private String uoPec;
 	
 	@Column(name = "uo_tel")
-	private String uo_tel;
+	private String uoTel;
 	
 	@Column(name = "uo_fax")
-	private String uo_fax;
+	private String uoFax;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_dominio", nullable = false)

@@ -12,7 +12,7 @@ public interface ApplicazioneRepository extends JpaRepositoryImplementation<Appl
 
 	
 	@Query("SELECT codApplicazione FROM ApplicazioneEntity applicazioni")
-	List<String> findListaCodApplicazioni();
+	public List<String> findListaCodApplicazioni();
 	
-	Optional<ApplicazioneEntity> findOneByCodApplicazione(String codApplicazione);
+	public Optional<ApplicazioneEntity> findOneByCodApplicazione(String codApplicazione);
 }

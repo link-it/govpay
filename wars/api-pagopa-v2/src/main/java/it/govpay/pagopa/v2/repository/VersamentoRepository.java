@@ -8,5 +8,5 @@ import it.govpay.pagopa.v2.entity.VersamentoEntity;
 
 public interface VersamentoRepository extends JpaRepositoryImplementation<VersamentoEntity, Long> {
 
-	Optional<VersamentoEntity> findOneByCodDominioAndIuv(String codDominio, String iuv);
+	public Optional<VersamentoEntity> findOneByCodDominioAndIuv(String codDominio, String iuv);
 }

@@ -8,5 +8,5 @@ import it.govpay.pagopa.v2.entity.IntermediarioEntity;
 
 public interface IntermediarioRepository extends JpaRepositoryImplementation<IntermediarioEntity, Long> {
 
-	Optional<IntermediarioEntity> findOneByCodIntermediario(String codIntermediario);
+	public Optional<IntermediarioEntity> findOneByCodIntermediario(String codIntermediario);
 }

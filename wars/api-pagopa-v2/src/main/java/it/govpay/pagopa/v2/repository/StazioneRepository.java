@@ -8,5 +8,5 @@ import it.govpay.pagopa.v2.entity.StazioneEntity;
 
 public interface StazioneRepository extends JpaRepositoryImplementation<StazioneEntity, Long> {
 
-	Optional<StazioneEntity> findOneByCodStazione(String codStazione);
+	public Optional<StazioneEntity> findOneByCodStazione(String codStazione);
 }

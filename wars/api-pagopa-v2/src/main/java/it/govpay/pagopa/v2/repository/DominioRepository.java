@@ -8,5 +8,5 @@ import it.govpay.pagopa.v2.entity.DominioEntity;
 
 public interface DominioRepository extends JpaRepositoryImplementation<DominioEntity, Long> {
 
-	Optional<DominioEntity> findOneByCodDominio(String codDominio);
+	public Optional<DominioEntity> findOneByCodDominio(String codDominio);
 }

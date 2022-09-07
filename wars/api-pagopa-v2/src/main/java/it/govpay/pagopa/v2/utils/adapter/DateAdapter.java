@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2022 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -17,25 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.pagopa.v2.beans;
 
-import java.io.Serializable;
+package it.govpay.pagopa.v2.utils.adapter;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.util.Date;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-@Setter
-@Getter	
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
-public class IdUnitaOperativa implements Serializable {
-	private static final long serialVersionUID = 1L;
-	
-	private Long idUnita; 
-	private Long idDominio;
-	private Long id;
+public class DateAdapter extends XmlAdapter<String, Date>
+{
+    @Override
+	public Date unmarshal(String value) {
+        return (it.govpay.pagopa.v2.utils.adapter.DataTypeAdapter.parseDate(value));
+    }
+
+    @Override
+	public String marshal(Date value) {
+        return (it.govpay.pagopa.v2.utils.adapter.DataTypeAdapter.printDate(value));
+    }
 }

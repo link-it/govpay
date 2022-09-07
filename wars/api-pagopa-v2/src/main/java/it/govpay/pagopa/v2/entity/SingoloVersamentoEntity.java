@@ -101,6 +101,10 @@ public class SingoloVersamentoEntity {
 	private TributoEntity tributo;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_iban_accredito")
+	private IbanAccreditoEntity ibanAccredito;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_iban_appoggio")
 	private IbanAccreditoEntity ibanAppoggio;
 }

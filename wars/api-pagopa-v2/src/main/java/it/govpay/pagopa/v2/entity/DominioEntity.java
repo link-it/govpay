@@ -35,6 +35,8 @@ import lombok.ToString;
 )
 public class DominioEntity {
 	
+	public static final String EC = "EC"; 
+	
 	@Id
 	@SequenceGenerator(name="seq_domini",sequenceName="seq_domini", initialValue=1, allocationSize=1)
 	@GeneratedValue(strategy= GenerationType.SEQUENCE, generator="seq_domini")

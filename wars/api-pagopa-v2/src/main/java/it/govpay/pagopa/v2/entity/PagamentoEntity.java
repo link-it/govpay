@@ -17,7 +17,6 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Type;
 
-import it.govpay.pagopa.v2.entity.SingoloVersamentoEntity.StatoSingoloVersamento;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
