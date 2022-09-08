@@ -36,7 +36,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package it.govpay.pagopa.v2.utils.adapter;
+package it.govpay.core.utils.adapter;
 
 import java.util.Calendar;
 import java.util.Date;

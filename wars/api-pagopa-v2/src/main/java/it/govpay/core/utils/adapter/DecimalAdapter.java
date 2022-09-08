@@ -18,20 +18,21 @@
  *
  */
 
-package it.govpay.pagopa.v2.utils.adapter;
+package it.govpay.core.utils.adapter;
 
-import java.util.Date;
+import java.math.BigDecimal;
+
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-public class DateAdapter extends XmlAdapter<String, Date>
-{
+public class DecimalAdapter extends XmlAdapter<String, BigDecimal> {
+
     @Override
-	public Date unmarshal(String value) {
-        return (it.govpay.pagopa.v2.utils.adapter.DataTypeAdapter.parseDate(value));
+	public BigDecimal unmarshal(String value) {
+        return (it.govpay.core.utils.adapter.DataTypeAdapter.parseImporto(value));
     }
 
     @Override
-	public String marshal(Date value) {
-        return (it.govpay.pagopa.v2.utils.adapter.DataTypeAdapter.printDate(value));
+	public String marshal(BigDecimal value) {
+        return (it.govpay.core.utils.adapter.DataTypeAdapter.printImporto(value));
     }
 }

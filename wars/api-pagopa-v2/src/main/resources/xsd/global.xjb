@@ -3,11 +3,11 @@
 
 	<jaxb:globalBindings>
 		<xjc:simple />
-		<xjc:javaType name="java.util.Date" xmlType="xs:time" adapter="it.govpay.pagopa.v2.utils.adapter.TimeAdapter" />
-		<xjc:javaType name="java.util.Date" xmlType="xs:dateTime" adapter="it.govpay.pagopa.v2.utils.adapter.DateTimeAdapter" />
-		<xjc:javaType name="java.util.Date" xmlType="xs:date" adapter="it.govpay.pagopa.v2.utils.adapter.DateAdapter" />
-		<xjc:javaType name="java.lang.Integer" xmlType="xs:gYear" adapter="it.govpay.pagopa.v2.utils.adapter.YearAdapter" />
-		<xjc:javaType name="java.math.BigDecimal" xmlType="xs:decimal" adapter="it.govpay.pagopa.v2.utils.adapter.DecimalAdapter" />
+		<xjc:javaType name="java.util.Date" xmlType="xs:time" adapter="it.govpay.core.utils.adapter.TimeAdapter" />
+		<xjc:javaType name="java.util.Date" xmlType="xs:dateTime" adapter="it.govpay.core.utils.adapter.DateTimeAdapter" />
+		<xjc:javaType name="java.util.Date" xmlType="xs:date" adapter="it.govpay.core.utils.adapter.DateAdapter" />
+		<xjc:javaType name="java.lang.Integer" xmlType="xs:gYear" adapter="it.govpay.core.utils.adapter.YearAdapter" />
+		<xjc:javaType name="java.math.BigDecimal" xmlType="xs:decimal" adapter="it.govpay.core.utils.adapter.DecimalAdapter" />
 	</jaxb:globalBindings>
 
 </jaxb:bindings>

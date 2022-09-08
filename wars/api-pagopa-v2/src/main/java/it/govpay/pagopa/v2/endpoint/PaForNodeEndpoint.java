@@ -37,7 +37,6 @@ import it.govpay.gde.GdeInvoker;
 import it.govpay.gde.v1.model.DatiPagoPA;
 import it.govpay.gde.v1.model.NuovoEvento;
 import it.govpay.gde.v1.model.NuovoEvento.EsitoEnum;
-import it.govpay.pagopa.v2.authorization.AuthorizationManager;
 import it.govpay.pagopa.v2.business.Applicazione;
 import it.govpay.pagopa.v2.business.Versamento;
 import it.govpay.pagopa.v2.causale.Causale;

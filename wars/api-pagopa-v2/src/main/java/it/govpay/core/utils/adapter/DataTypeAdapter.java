@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.pagopa.v2.utils.adapter;
+package it.govpay.core.utils.adapter;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;

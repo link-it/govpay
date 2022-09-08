@@ -38,6 +38,9 @@
 
 		<!-- Lombok version -->
 		<org.projectlombok.version>1.18.24</org.projectlombok.version>
+		
+		<!-- CXF codegen plugin-->
+		<cxf-codegen-plugin.version>3.4.4</cxf-codegen-plugin.version>
 
 	</properties>
 
@@ -196,33 +199,63 @@
 					</properties>
 				</configuration>
 			</plugin>
-
+			
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>2.5.0</version>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-codegen-plugin</artifactId>
+				<version>${cxf-codegen-plugin.version}</version>
 				<executions>
 					<execution>
-						<id>xjc0</id>
-						<goals>
-							<goal>xjc</goal>
-						</goals>
+						<id>generate-sources</id>
+						<phase>generate-sources</phase>
 						<configuration>
-							<sources>
-								<source>${basedir}/src/main/resources/xsd/paForNode.xsd</source>
-							</sources>
-							<packageName>it.gov.pagopa.pagopa_api.pa.pafornode</packageName>
+							<defaultOptions>
+								<bindingFiles>
+									<bindingFile>${basedir}/src/main/resources/wsdl/binding.xml</bindingFile>
+								</bindingFiles>
+							</defaultOptions>
+							<sourceRoot>${project.build.directory}/generated-sources/jaxb</sourceRoot>
+							<wsdlOptions>
+								<wsdlOption>
+									<frontEnd>jaxws21</frontEnd>
+									<wsdl>${basedir}/src/main/resources/wsdl/paForNode.wsdl</wsdl>
+									<wsdlLocation>classpath:wsdl/paForNode.wsdl</wsdlLocation>
+								</wsdlOption>
+							</wsdlOptions>
 						</configuration>
+						<goals>
+							<goal>wsdl2java</goal>
+						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<!-- <xjbSources> -->
-					<!-- <xjbSource>${basedir}/src/main/resources/xsd/global.xjb</xjbSource> -->
-					<!-- </xjbSources> -->
-					<clearOutputDir>false</clearOutputDir>
-					<generateEpisode>false</generateEpisode>
-				</configuration>
 			</plugin>
+
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.codehaus.mojo</groupId> -->
+<!-- 				<artifactId>jaxb2-maven-plugin</artifactId> -->
+<!-- 				<version>2.5.0</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<id>xjc0</id> -->
+<!-- 						<goals> -->
+<!-- 							<goal>xjc</goal> -->
+<!-- 						</goals> -->
+<!-- 						<configuration> -->
+<!-- 							<sources> -->
+<!-- 								<source>${basedir}/src/main/resources/xsd/paForNode.xsd</source> -->
+<!-- 							</sources> -->
+<!-- 							<packageName>it.gov.pagopa.pagopa_api.pa.pafornode</packageName> -->
+<!-- 						</configuration> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 				<configuration> -->
+<!-- 					<xjbSources> -->
+<!-- 					<xjbSource>${basedir}/src/main/resources/xsd/global.xjb</xjbSource> -->
+<!-- 					</xjbSources> -->
+<!-- 					<clearOutputDir>false</clearOutputDir> -->
+<!-- 					<generateEpisode>false</generateEpisode> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

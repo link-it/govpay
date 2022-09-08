@@ -18,21 +18,19 @@
  *
  */
 
-package it.govpay.pagopa.v2.utils.adapter;
-
-import java.util.Date;
+package it.govpay.core.utils.adapter;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-public class DateTimeAdapter extends XmlAdapter<String, Date>
-{
-	@Override
-	public Date unmarshal(String value) {
-		return (it.govpay.pagopa.v2.utils.adapter.DataTypeAdapterCXF.parseDateTime(value));
-	}
+public class YearAdapter extends XmlAdapter<String, Integer> {
 
-	@Override
-	public String marshal(Date value) {
-		return (it.govpay.pagopa.v2.utils.adapter.DataTypeAdapterCXF.printDateTime(value));
-	}
+    @Override
+	public Integer unmarshal(String value) {
+        return (it.govpay.core.utils.adapter.DataTypeAdapter.parseYear(value));
+    }
+
+    @Override
+	public String marshal(Integer value) {
+        return (it.govpay.core.utils.adapter.DataTypeAdapter.printYear(value));
+    }
 }

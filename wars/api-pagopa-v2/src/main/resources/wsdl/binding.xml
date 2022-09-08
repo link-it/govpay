@@ -1,0 +1,28 @@
+<!DOCTYPE xml>
+<jxb:bindings xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:jxb="http://java.sun.com/xml/ns/jaxb" 
+	version="2.1">
+
+	<jxb:globalBindings>
+		<jxb:javaType name="java.util.Date" xmlType="xs:time"
+			parseMethod="it.govpay.core.utils.adapter.DataTypeAdapterCXF.parseTime"
+			printMethod="it.govpay.core.utils.adapter.DataTypeAdapterCXF.printTime" />
+			
+		<jxb:javaType name="java.util.Date" xmlType="xs:dateTime"
+			parseMethod="it.govpay.core.utils.adapter.DataTypeAdapter.parseDateTime"
+			printMethod="it.govpay.core.utils.adapter.DataTypeAdapter.printDateTime" />
+			
+		<jxb:javaType name="java.util.Date" xmlType="xs:date"
+			parseMethod="it.govpay.core.utils.adapter.DataTypeAdapter.parseDate"
+			printMethod="it.govpay.core.utils.adapter.DataTypeAdapter.printDate" />
+
+		<jxb:javaType name="java.lang.Integer" xmlType="xs:gYear"
+			parseMethod="it.govpay.core.utils.adapter.DataTypeAdapter.parseYear"
+			printMethod="it.govpay.core.utils.adapter.DataTypeAdapter.printYear" />
+					
+		<jxb:javaType name="java.math.BigDecimal" xmlType="xs:decimal"
+			parseMethod="it.govpay.core.utils.adapter.DataTypeAdapter.parseImporto"
+			printMethod="it.govpay.core.utils.adapter.DataTypeAdapter.printImporto" />
+	</jxb:globalBindings>
+	
+</jxb:bindings>
