@@ -68,6 +68,7 @@ import it.govpay.pagopa.v2.repository.IntermediarioRepository;
 import it.govpay.pagopa.v2.repository.PagamentoRepository;
 import it.govpay.pagopa.v2.repository.StazioneRepository;
 import it.govpay.pagopa.v2.repository.VersamentoRepository;
+import it.govpay.pagopa.v2.utils.DateUtils;
 import it.govpay.pagopa.v2.utils.IuvUtils;
 import it.govpay.pagopa.v2.utils.VersamentoUtils;
 
@@ -324,7 +325,7 @@ public class PaForNodeEndpoint {
 			ctPaymentOptionDescriptionPA.setOptions(stAmountOption );
 			ctPaymentOptionDescriptionPA.setAmount(new BigDecimal(versamento.getImportoTotale()));
 			ctPaymentOptionDescriptionPA.setDetailDescription(causaleString);
-//			ctPaymentOptionDescriptionPA.setDueDate(versamento.getDataValidita()); TODO
+			ctPaymentOptionDescriptionPA.setDueDate(DateUtils.fromLocalDateTime(versamento.getDataValidita())); 
 			ctPaymentOptionDescriptionPA.setAllCCP(VersamentoUtils.isAllIBANPostali(versamento));
 //			paymentList.getPaymentOptionDescription().add(ctPaymentOptionDescriptionPA);
 			paymentList.setPaymentOptionDescription(ctPaymentOptionDescriptionPA);

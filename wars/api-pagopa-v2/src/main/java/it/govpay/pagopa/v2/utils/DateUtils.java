@@ -20,8 +20,10 @@
 package it.govpay.pagopa.v2.utils;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
@@ -49,5 +51,23 @@ public class DateUtils {
 		sdf.setTimeZone(TimeZone.getTimeZone("Europe/Rome"));
 		sdf.setLenient(false);
 		return sdf;
+	}
+	
+	public static Date fromLocalDateTime(LocalDateTime ldt) {
+		if(ldt == null) return null;
+		
+		Calendar c = Calendar.getInstance();
+		Instant instant = ldt.atZone(c.getTimeZone().toZoneId()).toInstant();
+		Date dt = Date.from(instant);
+		return dt;
+	}
+	
+	public static LocalDateTime toLocalDateTime(Date dt) {
+		if(dt == null) return null;
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dt);
+        LocalDateTime ldt = LocalDateTime.ofInstant(cal.toInstant(), cal.getTimeZone().toZoneId());
+		return ldt;
 	}
 }
