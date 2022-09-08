@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
 import javax.xml.bind.JAXBElement;
 
 import org.slf4j.Logger;
@@ -71,7 +72,7 @@ import it.govpay.pagopa.v2.repository.VersamentoRepository;
 import it.govpay.pagopa.v2.utils.IuvUtils;
 import it.govpay.pagopa.v2.utils.VersamentoUtils;
 
-
+// URL DEPLOY: http://HOST:PORT/WAR_NAME/ws/service/pa/paForNode
 @Endpoint
 public class PaForNodeEndpoint {
 
@@ -106,12 +107,13 @@ public class PaForNodeEndpoint {
 	@Autowired
 	private Versamento versamentoBusiness;
 	
-	@Autowired
+//	@Autowired
 	private GdeInvoker gdeInvoker;
 	
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart = "paVerifyPaymentNoticeReq")
 	@ResponsePayload
+	@Transactional
 	public JAXBElement<PaVerifyPaymentNoticeRes> paVerifyPaymentNotice(@RequestPayload JAXBElement<PaVerifyPaymentNoticeReq> request) {
 		PaVerifyPaymentNoticeReq requestBody = request.getValue();
 		
@@ -129,7 +131,7 @@ public class PaForNodeEndpoint {
 		try {
 			String iuv = IuvUtils.toIuv(numeroAvviso);
 			
-			log.info("Ricevuta richiesta di verifica del pagamento [Dominio:{0} NumeroAvviso:{1}] dal Nodo dei Pagamenti.", codDominio, numeroAvviso);
+			log.info("Ricevuta richiesta di verifica del pagamento [Dominio:{} NumeroAvviso:{}] dal Nodo dei Pagamenti.", codDominio, numeroAvviso);
 			
 			DatiPagoPA datiPagoPA = new DatiPagoPA();
 			datiPagoPA.setIdStazione(codStazione);
@@ -163,7 +165,7 @@ public class PaForNodeEndpoint {
 //				if(!authOk) {
 //					GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 //					String principal = details.getIdentificativo(); 
-//					log.error("Il principal fornito non e' corretto {0}.", principal);
+//					log.error("Il principal fornito non e' corretto {}.", principal);
 //					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per l'intermediario (" + codIntermediario + ").");
 //				}
 			}
@@ -187,7 +189,7 @@ public class PaForNodeEndpoint {
 			DominioEntity dominio = findDominio.get();
 			
 			// lettura del versamento
-			Optional<VersamentoEntity> findVersamento = this.versamentoRepository.findOneByCodDominioAndIuv(codDominio, iuv);
+			Optional<VersamentoEntity> findVersamento = this.versamentoRepository.findOneByDominioAndIuvVersamento(dominio, iuv);
 			
 			VersamentoEntity versamento = null;
 			ApplicazioneEntity applicazioneGestisceIuv = null;
@@ -200,10 +202,10 @@ public class PaForNodeEndpoint {
 					log.error("Iuv non censito su GovPay ma nessuna applicazione censita puo' gestirlo.");
 					throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
 				}
-				log.debug("Iuv non censito su GovPay. Applicazione selezionata per la verifica: {0}.", applicazioneGestisceIuv.getCodApplicazione());
+				log.debug("Iuv non censito su GovPay. Applicazione selezionata per la verifica: {}.", applicazioneGestisceIuv.getCodApplicazione());
 			} else {
 				versamento = findVersamento.get();
-				log.debug("Iuv censito su GovPay ed associato al versamento {0}.", versamento.getCodVersamentoEnte());
+				log.debug("Iuv censito su GovPay ed associato al versamento {}.", versamento.getCodVersamentoEnte());
 				eventoCtx.setIdA2A(versamento.getApplicazione().getCodApplicazione());
 				eventoCtx.setIdPendenza(versamento.getCodVersamentoEnte());
 			}
@@ -217,7 +219,7 @@ public class PaForNodeEndpoint {
 					}
 					
 					// Versamento non trovato, devo interrogare l'applicazione.
-					log.debug("Versamento non associato ad uno iuv censito e non disponibile nel repository interno.\nAcquisizione dall'applicazione [Applicazione:{0} Dominio:{1} Iuv:{2}] in corso...", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+					log.debug("Versamento non associato ad uno iuv censito e non disponibile nel repository interno.\nAcquisizione dall'applicazione [Applicazione:{} Dominio:{} Iuv:{}] in corso...", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 					versamento = versamentoBusiness.acquisisciVersamento(applicazioneGestisceIuv, null, null, null, codDominio, iuv,  TipologiaTipoVersamento.DOVUTO);
 					
 					eventoCtx.setIdA2A(versamento.getApplicazione().getCodApplicazione());
@@ -233,7 +235,7 @@ public class PaForNodeEndpoint {
 						
 						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO) || versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_ALTRO_CANALE)) {
 							List<SingoloVersamentoEntity> singoliVersamenti = new ArrayList<SingoloVersamentoEntity>(versamento.getSingoliVersamenti());
-							List<PagamentoEntity> pagamenti = this.pagamentoRepository.findAllByIdSingoloVersamento(singoliVersamenti.get(0).getId());
+							List<PagamentoEntity> pagamenti = this.pagamentoRepository.findAllBySingoloVersamento(singoliVersamenti.get(0).getId());
 							if(pagamenti.isEmpty())
 								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
 							else {
@@ -243,7 +245,7 @@ public class PaForNodeEndpoint {
 								
 						}
 					}
-					log.info("Versamento non associato ad uno iuv censito e non disponibile nel repository interno.\nAcquisizione dall'applicazione [Applicazione:{0} Dominio:{1} Iuv:{2}] eseguita con successo.",applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+					log.info("Versamento non associato ad uno iuv censito e non disponibile nel repository interno.\nAcquisizione dall'applicazione [Applicazione:{} Dominio:{} Iuv:{}] eseguita con successo.",applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 				} else {
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = versamentoBusiness.aggiornaVersamento(versamento);
@@ -255,7 +257,7 @@ public class PaForNodeEndpoint {
 						
 						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO) || versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_ALTRO_CANALE)) {
 							List<SingoloVersamentoEntity> singoliVersamenti = new ArrayList<SingoloVersamentoEntity>(versamento.getSingoliVersamenti());
-							List<PagamentoEntity> pagamenti = this.pagamentoRepository.findAllByIdSingoloVersamento(singoliVersamenti.get(0).getId());
+							List<PagamentoEntity> pagamenti = this.pagamentoRepository.findAllBySingoloVersamento(singoliVersamenti.get(0).getId());
 							if(pagamenti.isEmpty())
 								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
 							else {
@@ -329,12 +331,12 @@ public class PaForNodeEndpoint {
 			paymentList.setPaymentOptionDescription(ctPaymentOptionDescriptionPA);
 
 			response.setPaymentList(paymentList);
-			log.info("Verifica completata con successo. Inviato esito OK al Nodo dei Pagamenti [Importo:{0}\u20AC Iban:{1} Causale:'{2}'].", versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
+			log.info("Verifica completata con successo. Inviato esito OK al Nodo dei Pagamenti [Importo:{}\u20AC Iban:{} Causale:'{}'].", versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
 			eventoCtx.setEsito(EsitoEnum.OK);
 		} catch (NdpException e) {
 			response = this.buildRisposta(e, response);
 			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
-			log.error("Verifica rifiutata con esito KO. Inviato codice di errore {0}: {1}. Dettaglio errore: {2}.", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
+			log.error("Verifica rifiutata con esito KO. Inviato codice di errore {}: {}. Dettaglio errore: {}.", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 			eventoCtx.setDettaglioEsito(faultDescription);
 			eventoCtx.setSottotipoEsito(e.getFaultCode());
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()))
@@ -344,20 +346,20 @@ public class PaForNodeEndpoint {
 		} catch (IllegalArgumentException e) {
 			response = this.buildRisposta(e, codDominio, response);
 			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
-			log.error("Verifica rifiutata con esito KO. Inviato codice di errore {0}: {1}. Dettaglio errore: {2}.", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
+			log.error("Verifica rifiutata con esito KO. Inviato codice di errore {}: {}. Dettaglio errore: {}.", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 			eventoCtx.setDettaglioEsito(faultDescription);
 			eventoCtx.setSottotipoEsito(response.getFault().getFaultCode());
 			eventoCtx.setEsito(EsitoEnum.FAIL);
 		} catch (Exception e) {
 			response = this.buildRisposta(e, codDominio, response);
 			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
-			log.error("Verifica rifiutata con esito KO. Inviato codice di errore {0}: {1}. Dettaglio errore: {2}.", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
+			log.error("Verifica rifiutata con esito KO. Inviato codice di errore {}: {}. Dettaglio errore: {}.", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 			eventoCtx.setDettaglioEsito(faultDescription);
 			eventoCtx.setSottotipoEsito(response.getFault().getFaultCode());
 			eventoCtx.setEsito(EsitoEnum.FAIL);
 		} finally {
 //			GpContext.setResult(appContext.getTransaction(), response.getFault() == null ? null : response.getFault().getFaultCode());
-			this.gdeInvoker.salvaEvento(eventoCtx);
+//			this.gdeInvoker.salvaEvento(eventoCtx);
 		}
 
 		ObjectFactory objectFactory = new ObjectFactory();

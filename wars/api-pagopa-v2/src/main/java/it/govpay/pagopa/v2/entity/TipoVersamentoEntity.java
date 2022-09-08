@@ -53,7 +53,7 @@ public class TipoVersamentoEntity {
 	@Column(name = "abilitato", nullable = false)
 	private Boolean abilitato;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tipoVersamentoDominio")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tipoVersamento")
 	private Set<TipoVersamentoDominioEntity> tipiVersamentoDominio;
 }
 

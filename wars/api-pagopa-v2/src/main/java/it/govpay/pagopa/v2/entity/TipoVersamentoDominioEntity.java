@@ -27,7 +27,7 @@ import lombok.ToString;
 @Table(
 		name = "tipi_vers_domini", 
 		uniqueConstraints = {
-				@UniqueConstraint(name="unique_tipi_vers_domini_1", columnNames = "id_dominio,id_tipo_versamento")
+				@UniqueConstraint(name="unique_tipi_vers_domini_1", columnNames = {"id_dominio", "id_tipo_versamento"})
 		}
 )
 public class TipoVersamentoDominioEntity {

@@ -92,9 +92,9 @@ public class SingoloVersamentoEntity {
 	@JoinColumn(name = "id_dominio")
 	private DominioEntity dominio;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_tipo_tributo")
-	private TipoTributoEntity tipoTributo;
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "id_tipo_tributo")
+//	private TipoTributoEntity tipoTributo;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_tributo")

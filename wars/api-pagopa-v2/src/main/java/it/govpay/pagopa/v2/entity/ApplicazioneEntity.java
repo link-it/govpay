@@ -59,7 +59,7 @@ public class ApplicazioneEntity {
 	@Column(name = "reg_exp")
 	private String regExp;
 	
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "utenza", optional = false)
+	@OneToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "id_utenza", nullable = false)
 	private UtenzaEntity utenza;
 }

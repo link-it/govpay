@@ -170,7 +170,31 @@
 		</exclusions>
 	</sub-deployment>
 	<sub-deployment name="api-gde-${project.version}.war">
+		<exclusions>
+			<module name="org.apache.cxf" />
+			<module name="org.springframework.spring" />
+			<module name="org.slf4j" />
+			<module name="org.apache.log4j" />
+			<module name="org.apache.commons.logging" />
+			<module name="com.fasterxml.jackson.core.jackson-core" />
+			<module name="com.fasterxml.jackson.core.jackson-databind" />
+			<module
+				name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" />
+			<module name="org.jboss.resteasy.resteasy-jackson2-	provider" />
+		</exclusions>
 	</sub-deployment>
 	<sub-deployment name="api-pagopa-v2-${project.version}.war">
+		<exclusions>
+			<module name="org.apache.cxf" />
+			<module name="org.springframework.spring" />
+			<module name="org.slf4j" />
+			<module name="org.apache.log4j" />
+			<module name="org.apache.commons.logging" />
+			<module name="com.fasterxml.jackson.core.jackson-core" />
+			<module name="com.fasterxml.jackson.core.jackson-databind" />
+			<module
+				name="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider" />
+			<module name="org.jboss.resteasy.resteasy-jackson2-	provider" />
+		</exclusions>
 	</sub-deployment>
 </jboss-deployment-structure>

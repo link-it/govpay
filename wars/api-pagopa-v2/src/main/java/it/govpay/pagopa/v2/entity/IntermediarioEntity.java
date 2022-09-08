@@ -59,7 +59,7 @@ public class IntermediarioEntity {
 	@Column(name = "abilitato", nullable = false)
 	private Boolean abilitato;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "stazione")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "intermediario")
 	private Set<StazioneEntity> stazioni;
 
 }

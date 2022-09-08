@@ -98,7 +98,7 @@ public class DominioEntity {
 	@JoinColumn(name = "id_applicazione_default")
 	private ApplicazioneEntity applicazioneDefault;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tipoVersamentoDominio")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dominio")
 	private Set<TipoVersamentoDominioEntity> tipiVersamentoDominio;
 }
 

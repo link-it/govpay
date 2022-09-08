@@ -27,7 +27,7 @@ import lombok.ToString;
 @Table(
 		name = "documenti", 
 		uniqueConstraints = {
-				@UniqueConstraint(name="unique_documenti_1", columnNames = "cod_documento,id_applicazione,id_dominio")
+				@UniqueConstraint(name="unique_documenti_1", columnNames = {"cod_documento","id_applicazione","id_dominio"})
 		}
 )
 public class DocumentoEntity {

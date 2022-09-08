@@ -54,7 +54,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>2.4</version>
+				<version>${jaxb2-maven-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>xjc0</id>
@@ -141,7 +141,7 @@
 			<plugin>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-codegen-plugin</artifactId>
-				<version>3.4.4</version>
+				<version>${cxf-codegen-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>generate-sources</id>

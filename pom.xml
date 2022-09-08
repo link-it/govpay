@@ -37,11 +37,11 @@
 		<openspcoop2.version>3.2.1</openspcoop2.version>
 		
 		<!-- log -->
-		<slf4j.version>1.7.25</slf4j.version>
-		<logger.version>2.17.1</logger.version>
+		<slf4j.version>1.7.36</slf4j.version>
+		<logger.version>2.17.2</logger.version>
 		
 		<!-- swagger -->
-		<swagger-codegen-maven-plugin.version>3.0.4-gov4j-3</swagger-codegen-maven-plugin.version>
+		<swagger-codegen-maven-plugin.version>3.0.18-gov4j-3</swagger-codegen-maven-plugin.version>
 		<swagger.version>1.5.21</swagger.version>
 		<swagger.v3.version>2.1.12</swagger.v3.version>
 		<swagger.parser.version>2.0.2</swagger.parser.version>
@@ -49,7 +49,13 @@
 		
 		<!-- cxf -->
 		<cxf.version>3.2.6</cxf.version>
-		<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
+		<cxf.xjc.runtime.version>3.3.2</cxf.xjc.runtime.version>
+		
+		<!-- JAXB plugin generator -->
+		<jaxb2-maven-plugin.version>2.5.0</jaxb2-maven-plugin.version>
+		
+		<!-- CXF codegen plugin-->
+		<cxf-codegen-plugin.version>3.4.4</cxf-codegen-plugin.version>
 		
 		<!-- jackson -->
 		<jackson.version>2.13.3</jackson.version>
@@ -121,12 +127,12 @@
 		<jaxws-api.version>2.2.1</jaxws-api.version>
 		
 		<!-- webjars- swagger ui api -->
-		<webjars-swaggerui.version>3.20.3</webjars-swaggerui.version>
+		<webjars-swaggerui.version>4.1.3</webjars-swaggerui.version>
 		
 		<!-- Json Path -->
-		<json-path.version>2.4.0</json-path.version>
-		<json-smart.version>2.3</json-smart.version>
-		<accessors-smart.version>1.2</accessors-smart.version>
+		<json-path.version>2.7.0</json-path.version>
+		<json-smart.version>2.4.8</json-smart.version>
+		<accessors-smart.version>2.4.8</accessors-smart.version>
 		<networknt_json-schema-validator.gov4j.version>0.1.23-gov4j-1</networknt_json-schema-validator.gov4j.version>
 		
 		<!-- Base64 java8 migration class. -->

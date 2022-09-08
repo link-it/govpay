@@ -14,8 +14,6 @@ import org.springframework.ws.wsdl.wsdl11.Wsdl11Definition;
 import org.springframework.xml.xsd.SimpleXsdSchema;
 import org.springframework.xml.xsd.XsdSchema;
 
-import it.govpay.gde.GdeInvoker;
-
 @EnableWs
 @Configuration
 public class WsConfig extends WsConfigurerAdapter{
@@ -45,8 +43,8 @@ public class WsConfig extends WsConfigurerAdapter{
 		return new SimpleXsdSchema(new ClassPathResource("xsd/paForNode.xsd"));
 	}
 
-	@Bean
-	public GdeInvoker gdeInvoker() {
-		return new GdeInvoker(this.urlGde);
-	}
+//	@Bean
+//	public GdeInvoker gdeInvoker() {
+//		return new GdeInvoker(this.urlGde);
+//	}
 }
