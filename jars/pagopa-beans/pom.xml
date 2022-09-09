@@ -17,6 +17,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>xml-adapters</artifactId>
+		</dependency>
+	
+		<dependency>
 			<groupId>org.apache.cxf.xjc-utils</groupId>
 			<artifactId>cxf-xjc-runtime</artifactId>
 			<scope>provided</scope>
