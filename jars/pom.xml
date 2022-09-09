@@ -16,6 +16,7 @@
 	</properties>
 	<modules>
 		<module>fonts-titilliumWeb</module>
+		<module>xml-adapters</module>
 		<module>pagopa-beans</module>
 		<module>jppapdp-beans</module>
 		<module>appio-beans</module>

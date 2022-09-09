@@ -19,6 +19,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>xml-adapters</artifactId>
+		</dependency>
+	
+		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 		</dependency>
