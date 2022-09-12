@@ -17,7 +17,8 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "abilitato",
 "versioneApi",
-"principal",
+"usernameGovPay",
+"passwordGovPay",
 "url",
 "username",
 "password",
@@ -38,7 +39,7 @@ public class ConnettoreNetPay extends JSONSerializable implements IValidable{
     
         
             
-    V1("SOAP v1");
+    V1("REST v1");
             
         
     
@@ -87,8 +88,11 @@ public class ConnettoreNetPay extends JSONSerializable implements IValidable{
   @JsonProperty("versioneApi")
   private String versioneApi = null;
   
-  @JsonProperty("principal")
-  private String principal = null;
+  @JsonProperty("usernameGovPay")
+  private String usernameGovPay = null;
+  
+  @JsonProperty("passwordGovPay")
+  private String passwordGovPay = null;
   
   @JsonProperty("url")
   private String url = null;
@@ -151,23 +155,39 @@ public class ConnettoreNetPay extends JSONSerializable implements IValidable{
   }
   
   /**
-   * principal autenticato dalla chiamata di Net@Pay
+   * username per l'autenticazione HTTP-Basic dalla chiamata di Net@Pay
    **/
-  public ConnettoreNetPay principal(String principal) {
-    this.principal = principal;
+  public ConnettoreNetPay usernameGovPay(String usernameGovPay) {
+    this.usernameGovPay = usernameGovPay;
     return this;
   }
 
-  @JsonProperty("principal")
-  public String getPrincipal() {
-    return principal;
+  @JsonProperty("usernameGovPay")
+  public String getUsernameGovPay() {
+    return usernameGovPay;
   }
-  public void setPrincipal(String principal) {
-    this.principal = principal;
+  public void setUsernameGovPay(String usernameGovPay) {
+    this.usernameGovPay = usernameGovPay;
   }
 
   /**
-   * endpoint del servizio Net@Pay per la Notifica dei pagamenti avvenuti
+   * password per l'autenticazione HTTP-Basic dalla chiamata di Net@Pay
+   **/
+  public ConnettoreNetPay passwordGovPay(String passwordGovPay) {
+    this.passwordGovPay = passwordGovPay;
+    return this;
+  }
+
+  @JsonProperty("passwordGovPay")
+  public String getPasswordGovPay() {
+    return passwordGovPay;
+  }
+  public void setPasswordGovPay(String passwordGovPay) {
+    this.passwordGovPay = passwordGovPay;
+  }
+
+  /**
+   * endpoint del servizio Net@Pay per la notifica dei pagamenti avvenuti e per la verifica delle pendenze
    **/
   public ConnettoreNetPay url(String url) {
     this.url = url;
@@ -183,7 +203,7 @@ public class ConnettoreNetPay extends JSONSerializable implements IValidable{
   }
 
   /**
-   * username per l'autenticazione HTTP-Basic del servizio Net@Pay per la Notifica dei pagamenti avvenuti
+   * username per l'autenticazione HTTP-Basic del servizio Net@Pay per la notifica dei pagamenti avvenuti e per la verifica delle pendenze
    **/
   public ConnettoreNetPay username(String username) {
     this.username = username;
@@ -199,7 +219,7 @@ public class ConnettoreNetPay extends JSONSerializable implements IValidable{
   }
 
   /**
-   * password per l'autenticazione HTTP-Basic del servizio Net@Pay per la Notifica dei pagamenti avvenuti
+   * password per l'autenticazione HTTP-Basic del servizio Net@Pay per la notifica dei pagamenti avvenuti e per la verifica delle pendenze
    **/
   public ConnettoreNetPay password(String password) {
     this.password = password;
@@ -257,7 +277,8 @@ public class ConnettoreNetPay extends JSONSerializable implements IValidable{
     ConnettoreNetPay connettoreNetPay = (ConnettoreNetPay) o;
     return Objects.equals(abilitato, connettoreNetPay.abilitato) &&
         Objects.equals(versioneApi, connettoreNetPay.versioneApi) &&
-        Objects.equals(principal, connettoreNetPay.principal) &&
+        Objects.equals(usernameGovPay, connettoreNetPay.usernameGovPay) &&
+        Objects.equals(passwordGovPay, connettoreNetPay.passwordGovPay) &&
         Objects.equals(url, connettoreNetPay.url) &&
         Objects.equals(username, connettoreNetPay.username) &&
         Objects.equals(password, connettoreNetPay.password) &&
@@ -267,7 +288,7 @@ public class ConnettoreNetPay extends JSONSerializable implements IValidable{
 
   @Override
   public int hashCode() {
-    return Objects.hash(abilitato, versioneApi, principal, url, username, password, ruolo, company);
+    return Objects.hash(abilitato, versioneApi, usernameGovPay, passwordGovPay, url, username, password, ruolo, company);
   }
 
   public static ConnettoreNetPay parse(String json) throws ServiceException, ValidationException {
@@ -286,7 +307,8 @@ public class ConnettoreNetPay extends JSONSerializable implements IValidable{
     
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    versioneApi: ").append(toIndentedString(versioneApi)).append("\n");
-    sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
+    sb.append("    usernameGovPay: ").append(toIndentedString(usernameGovPay)).append("\n");
+    sb.append("    passwordGovPay: ").append(toIndentedString(passwordGovPay)).append("\n");
     sb.append("    url: ").append(toIndentedString(url)).append("\n");
     sb.append("    username: ").append(toIndentedString(username)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
@@ -313,7 +335,8 @@ public class ConnettoreNetPay extends JSONSerializable implements IValidable{
 		vf.getValidator("abilitato", this.abilitato).notNull();
 		
 		if(this.abilitato) {
-			vf.getValidator("principal", this.principal).notNull().minLength(1).maxLength(255).pattern(CostantiValidazione.PATTERN_USERNAME);
+			vf.getValidator("usernameGovPay", this.usernameGovPay).notNull().minLength(1).maxLength(255).pattern(CostantiValidazione.PATTERN_USERNAME);
+			vf.getValidator("passwordGovPay", this.passwordGovPay).notNull().minLength(1).maxLength(255).pattern(CostantiValidazione.PATTERN_PASSWORD_DEFAULT);
 			vf.getValidator("url", this.url).notNull().pattern("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
 			vf.getValidator("username", this.username).notNull().minLength(1).maxLength(255).pattern(CostantiValidazione.PATTERN_USERNAME);
 			vf.getValidator("password", this.password).notNull().minLength(1).maxLength(255).pattern(CostantiValidazione.PATTERN_PASSWORD_DEFAULT);

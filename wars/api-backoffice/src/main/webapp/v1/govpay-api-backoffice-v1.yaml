@@ -8166,7 +8166,8 @@ components:
       type: object
       required:
         - abilitato
-        - principal
+        - usernameGovPay
+        - passwordGovPay
         - url
         - username
         - password
@@ -8181,20 +8182,23 @@ components:
         versioneApi:
           type: string
           enum:
-            - 'SOAP v1'
+            - 'REST v1'
           description: Versione delle API di integrazione utilizzate.
-        principal:
+        usernameGovPay:
           type: string
-          description: principal autenticato dalla chiamata di Net@Pay
+          description: username per l'autenticazione HTTP-Basic dalla chiamata di Net@Pay
+        passwordGovPay:
+          type: string
+          description: password per l'autenticazione HTTP-Basic dalla chiamata di Net@Pay
         url:
           type: string
-          description: endpoint del servizio Net@Pay per la Notifica dei pagamenti avvenuti
+          description: endpoint del servizio Net@Pay per la notifica dei pagamenti avvenuti e per la verifica delle pendenze
         username:
           type: string
-          description: username per l'autenticazione HTTP-Basic del servizio Net@Pay per la Notifica dei pagamenti avvenuti
+          description: username per l'autenticazione HTTP-Basic del servizio Net@Pay per la notifica dei pagamenti avvenuti e per la verifica delle pendenze
         password:
           type: string
-          description: password per l'autenticazione HTTP-Basic del servizio Net@Pay per la Notifica dei pagamenti avvenuti
+          description: password per l'autenticazione HTTP-Basic del servizio Net@Pay per la notifica dei pagamenti avvenuti e per la verifica delle pendenze
         ruolo:
           type: string
           description: Identificativo del ruolo su Net@Pay, inviato all'interno di un header HTTP

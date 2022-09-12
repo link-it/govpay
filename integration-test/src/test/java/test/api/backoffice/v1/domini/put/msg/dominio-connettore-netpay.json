@@ -27,9 +27,10 @@
   		"password" : "password",
   		"ruolo" :  "ruolo",
   		"company" : "company",
-  		"principal" : "netpay",
+  		"usernameGovPay" : "netpay",
+  		"passwordGovPay" : "password",
   		"url" : "http://netpay.it",
-  		"versioneApi" : "SOAP v1"
+  		"versioneApi" : "REST v1"
   },
   "intermediato": "true"
 }

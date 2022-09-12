@@ -17,7 +17,8 @@ public class ConnettoreNetPayConverter {
 		
 		if(connector.Abilitato()) {
 			connettore.setTipoTracciato(tipo.name());
-			connettore.setNetPayPrincipal(connector.getPrincipal());
+			connettore.setNetPayGpUsername(connector.getUsernameGovPay()); 
+			connettore.setNetPayGpPassword(connector.getPasswordGovPay());
 			connettore.setNetPayURL(connector.getUrl());
 			if(connector.getVersioneApi() != null)
 				connettore.setVersione(Versionabile.Versione.toEnum(VersioneApiEnum.fromValue(connector.getVersioneApi()).toNameString()));
@@ -35,7 +36,8 @@ public class ConnettoreNetPayConverter {
 		
 		rsModel.setAbilitato(connettore.isAbilitato());
 		if(connettore.isAbilitato()) {
-			rsModel.setPrincipal(connettore.getNetPayPrincipal());
+			rsModel.setUsernameGovPay(connettore.getNetPayGpUsername());
+			rsModel.setPasswordGovPay(connettore.getNetPayGpPassword());
 			rsModel.setUrl(connettore.getNetPayURL());
 			if(connettore.getVersione() != null)
 				rsModel.setVersioneApi(VersioneApiEnum.fromName(connettore.getVersione().getApiLabel()).toString());

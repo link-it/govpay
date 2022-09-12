@@ -127,8 +127,12 @@ public class ConnettoreNotificaPagamentiConverter {
 					dto.setNetPayPassword(connettore.getValore());
 				}
 				
-				if(ConnettoreNotificaPagamenti.P_NETPAY_PRINCIPAL.equals(connettore.getCodProprieta())) {
-					dto.setNetPayPrincipal(connettore.getValore());
+				if(ConnettoreNotificaPagamenti.P_NETPAY_GP_USERNAME.equals(connettore.getCodProprieta())) {
+					dto.setNetPayGpUsername(connettore.getValore());
+				}
+				
+				if(ConnettoreNotificaPagamenti.P_NETPAY_GP_PASSWORD.equals(connettore.getCodProprieta())) {
+					dto.setNetPayGpPassword(connettore.getValore());
 				}
 				
 				if(ConnettoreNotificaPagamenti.P_NETPAY_RUOLO.equals(connettore.getCodProprieta())) {
@@ -339,8 +343,12 @@ public class ConnettoreNotificaPagamentiConverter {
 			voList.add(getConnettoreVO(connettore.getIdConnettore(), ConnettoreNotificaPagamenti.P_NETPAY_PASSWORD, connettore.getNetPayPassword()));
 		}
 		
-		if(connettore.getNetPayPrincipal() != null && !connettore.getNetPayPrincipal().trim().isEmpty()) {
-			voList.add(getConnettoreVO(connettore.getIdConnettore(), ConnettoreNotificaPagamenti.P_NETPAY_PRINCIPAL, connettore.getNetPayPrincipal()));
+		if(connettore.getNetPayGpUsername() != null && !connettore.getNetPayGpUsername().trim().isEmpty()) {
+			voList.add(getConnettoreVO(connettore.getIdConnettore(), ConnettoreNotificaPagamenti.P_NETPAY_GP_USERNAME, connettore.getNetPayGpUsername()));
+		}
+		
+		if(connettore.getNetPayGpPassword() != null && !connettore.getNetPayGpPassword().trim().isEmpty()) {
+			voList.add(getConnettoreVO(connettore.getIdConnettore(), ConnettoreNotificaPagamenti.P_NETPAY_GP_PASSWORD, connettore.getNetPayGpPassword()));
 		}
 		
 		if(connettore.getNetPayRuolo() != null && !connettore.getNetPayRuolo().trim().isEmpty()) {

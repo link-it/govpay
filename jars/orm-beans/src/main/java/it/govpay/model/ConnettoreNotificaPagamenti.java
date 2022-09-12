@@ -45,7 +45,9 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	
 	public static final String P_PRINCIPAL_MAGGIOLI = "PRINCIPAL_MAGGIOLI";
 	
-	public static final String P_NETPAY_PRINCIPAL = "NETPAY_PRINCIPAL";
+	public static final String P_NETPAY_GP_USERNAME = "NETPAY_GP_PRINCIPAL";
+	public static final String P_NETPAY_GP_PASSWORD = "NETPAY_GP_PASSWORD";
+	
 	public static final String P_NETPAY_URL = "NETPAY_URL";
 	public static final String P_NETPAY_USERNAME = "NETPAY_USERNAME";
 	public static final String P_NETPAY_PASSWORD = "NETPAY_PASSWORD";
@@ -83,7 +85,8 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	private String principalMaggioli;
 	private Integer intervalloCreazioneTracciato;
 	
-	private String netPayPrincipal;
+	private String netPayGpUsername;
+	private String netPayGpPassword;
 	private String netPayURL;
 	private String netPayUsername;
 	private String netPayPassword;
@@ -235,12 +238,20 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 		this.intervalloCreazioneTracciato = intervalloCreazioneTracciato;
 	}
 
-	public String getNetPayPrincipal() {
-		return netPayPrincipal;
+	public String getNetPayGpUsername() {
+		return netPayGpUsername;
 	}
 
-	public void setNetPayPrincipal(String netPayPrincipal) {
-		this.netPayPrincipal = netPayPrincipal;
+	public void setNetPayGpUsername(String netPayGpUsername) {
+		this.netPayGpUsername = netPayGpUsername;
+	}
+
+	public String getNetPayGpPassword() {
+		return netPayGpPassword;
+	}
+
+	public void setNetPayGpPassword(String netPayGpPassword) {
+		this.netPayGpPassword = netPayGpPassword;
 	}
 
 	public String getNetPayURL() {

@@ -41,9 +41,10 @@ Examples:
 | field | value | retValue | 
 | abilitato | false | false |
 | url | 'http://prova.it' | 'http://prova.it' |
-| versioneApi | 'SOAP v1' | 'SOAP v1' |
+| versioneApi | 'REST v1' | 'REST v1' |
 | url | 'http://prova.it' | 'http://prova.it' |
-| principal | 'username' | 'username' |
+| usernameGovPay | 'username' | 'username' |
+| passwordGovPay | 'username' | 'username' |
 | username | 'username' | 'username' |
 | password | 'username' | 'username' |
 | ruolo | 'username' | 'username' |
@@ -69,8 +70,10 @@ Examples:
 | versioneApi | versioneApi | 'xxxx' | 'versioneApi' |
 | url | url | null | 'url' |
 | url | url | 'xxxx' | 'url' |
-| principal | principal | null | 'principal' |
-| principal | principal | [ '#(loremIpsum)' ] | 'principal' |
+| usernameGovPay | usernameGovPay | null | 'usernameGovPay' |
+| usernameGovPay | usernameGovPay | [ '#(loremIpsum)' ] | 'usernameGovPay' |
+| passwordGovPay | passwordGovPay | null | 'passwordGovPay' |
+| passwordGovPay | passwordGovPay | [ '#(loremIpsum)' ] | 'passwordGovPay' |
 | username | username | null | 'username' |
 | username | username | [ '#(loremIpsum)' ] | 'username' |
 | password | password | null | 'password' |
