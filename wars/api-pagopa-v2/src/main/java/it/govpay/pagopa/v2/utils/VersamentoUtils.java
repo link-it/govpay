@@ -64,4 +64,24 @@ public class VersamentoUtils {
 		}
 		return dominio;
 	}
+	
+	public static boolean generaIUV(VersamentoEntity versamento) {
+		
+		boolean hasBollo = false;
+		for(SingoloVersamentoEntity singoloVersamento : versamento.getSingoliVersamenti()) {
+			if(!hasBollo) {
+				if(singoloVersamento.getTipoBollo() != null && singoloVersamento.getHashDocumento() != null && singoloVersamento.getProvinciaResidenza() != null) {
+					hasBollo = true;
+				}
+			}
+		}
+		
+		// se non c'e' una voce con il bollo devo semplicemente controllare che non me lo passino
+		if(!hasBollo) {
+			return versamento.getNumeroAvviso() == null;
+		} else {
+		// altrimenti non si genera
+			return false;
+		}
+	}
 }

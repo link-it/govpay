@@ -17,15 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.pagopa.v2.exception;
+package it.govpay.core.exception;
 
-public class VersamentoAnnullatoException extends VersamentoException {
+public class VersamentoSconosciutoException extends VersamentoException {
 
 	private static final long serialVersionUID = 1L;
+
+	public VersamentoSconosciutoException() {
+		super();
+	}
 	
-	public VersamentoAnnullatoException(String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore,
+	public VersamentoSconosciutoException(String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore,
 			String codDominio, String iuv, String message) {
 		super(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv, message);
 	}
-
 }

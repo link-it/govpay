@@ -17,16 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.pagopa.v2.exception;
+package it.govpay.core.exception;
 
-public class VersamentoDuplicatoException extends VersamentoException {
+import java.time.LocalDateTime;
 
+import it.govpay.pagopa.v2.utils.DateUtils;
+
+public class VersamentoScadutoException extends VersamentoException {
+	
 	private static final long serialVersionUID = 1L;
 	
-	public VersamentoDuplicatoException(String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore,
+	public VersamentoScadutoException(String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore,
+			String codDominio, String iuv, LocalDateTime dataScadenza) {
+		super(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv, dataScadenza != null ? "Versamento scaduto in data " + DateUtils.newSimpleDateFormat("dd/MM/yyyy").format(dataScadenza) : null);
+	}
+	
+	public VersamentoScadutoException(String codApplicazione, String codVersamentoEnte, String bundlekey, String codUnivocoDebitore,
 			String codDominio, String iuv, String message) {
 		super(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv, message);
 	}
-
 
 }

@@ -7,13 +7,13 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import it.govpay.core.exception.GovPayException;
 import it.govpay.pagopa.v2.beans.Connettore;
 import it.govpay.pagopa.v2.beans.mapper.ConnettoreMapper;
 import it.govpay.pagopa.v2.entity.ApplicazioneEntity;
 import it.govpay.pagopa.v2.entity.ConnettoreEntity;
 import it.govpay.pagopa.v2.entity.DominioEntity;
 import it.govpay.pagopa.v2.enumeration.EsitoOperazione;
-import it.govpay.pagopa.v2.exception.GovPayException;
 import it.govpay.pagopa.v2.repository.ApplicazioneRepository;
 import it.govpay.pagopa.v2.repository.ConnettoreRepository;
 import it.govpay.pagopa.v2.utils.UtenzaUtils;

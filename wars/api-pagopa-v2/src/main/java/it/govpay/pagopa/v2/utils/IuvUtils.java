@@ -19,7 +19,7 @@
  */
 package it.govpay.pagopa.v2.utils;
 
-import it.govpay.pagopa.v2.exception.ValidationException;
+import it.govpay.core.exception.ValidationException;
 
 public class IuvUtils {
 	

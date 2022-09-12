@@ -1,4 +1,4 @@
-package it.govpay.pagopa.v2.exception;
+package it.govpay.core.exception;
 
 public class VersamentoException extends Exception {
 

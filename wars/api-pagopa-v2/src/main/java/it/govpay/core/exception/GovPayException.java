@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.pagopa.v2.exception;
+package it.govpay.core.exception;
 
 import org.slf4j.Logger;
 
