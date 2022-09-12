@@ -1,0 +1,377 @@
+openapi: 3.0.0
+info:
+  description: >-
+   API di integrazione a Net@Pay esposte da Net@Pay per:
+    - Notificare i pagamenti effettuati sulla piattaforma pagoPA
+    - Verificare i dati delle pendenze oggetto di pagamento
+    
+   ## Notifica Pagamenti
+    La piattaforma GovPay prevede l'invio di una notifica verso Net@Pay alla conclusione con successo di una transazione di pagamento pagoPA, ovvero a fronte dell'acquisizione di una RT, indipendentemente dalla modalità di pagamento per le transazioni concluse con esito positivo.
+    
+   ## Verifica Pendenze
+    In sede di pagamento, la piattaforma GovPay richiede a Net@Pay i dati aggiornati della pendenza oggetto del pagamento. 
+    Le informazioni restituite dal servizio vanno ad aggiornare la pendenza negli archivi di GovPay ed utilizzate per perfezionare il pagamento. 
+  version: "1.0.0"
+  title: "GovPay - Net@Pay API Notifica e Verifica"
+  contact:
+    name: GitHub Project Page
+    url: 'https://github.com/link-it/GovPay/'
+  license:
+    name: GPL
+    url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
+servers:
+  - description: Base url servizio
+    url: https://host/baseurl
+tags:
+  - name: Verifica pendenze
+  - name: Notifica ricevute
+security:
+  - basicAuth: []
+paths:
+  '/check_payment':
+    post:
+      operationId: checkPayment
+      summary: Verifica di una pendenza all'interno del sistema Net@Pay
+      tags:
+        - Verifica pendenze
+      parameters: 
+        - $ref: '#/components/parameters/Company'
+        - $ref: '#/components/parameters/Ruolo'
+      requestBody:
+        description: Verifica di una pendenza
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckPaymentNotify'
+      responses:
+        '200':
+          description: Oggetto CheckPaymentResponse contenente i dati della pendenza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckPaymentResponse'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '500':
+          $ref: '#/components/responses/500ServiceUnavailable'
+  '/register_payment':
+    post:
+      operationId: registerPayment
+      summary: Notifica di una ricevuta di avvenuto pagamento pagoPA verso Net@Pay
+      description: >-
+        La notifica di un pagamento corrisponde ad una ricevuta pagoPA, sia questa veicolata nella forma di `RT` o di `recepit`, di esito positivo. 
+        Le notifiche sono inviate contestualmente all'evento che le genera. In caso di errori di consegna (ovvero senza risposta HTTP 2xx), le notifiche sono rispedite in tempi successivi. Se la ricevuta risulta gia' stata acquisita, puo' essere ignorata ed esitata con successo per interromperne la rispedizione.
+      tags:
+        - Notifica ricevute
+      parameters: 
+        - $ref: '#/components/parameters/Company'
+        - $ref: '#/components/parameters/Ruolo'
+      requestBody:
+        description: Notifica di una ricevuta di pagamento
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterPaymentNotify'
+      responses:
+        '200':
+          description: Oggetto RegisterPaymentResponse contenente il risultato della presa in carico della notifica
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterPaymentResponse'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '500':
+          $ref: '#/components/responses/500ServiceUnavailable' 
+components:
+  responses:
+    '401Unauthorized':
+      description: Richiesta non autenticata
+    '403Forbidden':
+      description: Richiesta non autorizzata
+    '500ServiceUnavailable':
+      description: Servizio non disponibile
+  parameters:
+    Company:
+      name: x-company
+      in: header
+      description: "Identificativo dell'Ente Creditore fornito da Net@PAY"
+      required: true
+      schema:
+        type: string
+    Ruolo:
+      name: x-role
+      in: header
+      description: "Identificativo del ruolo fornito da Net@PAY"
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    CheckPaymentItem:
+      type: object
+      required: 
+        - paymentId
+        - totAmount
+        - dueDate
+        - invoiceID
+        - invoiceType
+        - additionalRemittanceInfo
+        - creditorIBAN
+        - clientType
+        - clientDescription
+        - clientFiscalID
+      properties:
+        paymentId:
+          description: Progressivo da 1 a 5 del singolo pagamento afferente allo IUV.
+          type: number
+          minimum: 1
+          maximum: 5
+        totAmount:
+          description: Importo da pagare espresso in centesimi di Euro
+          type: number
+          format: int64
+          example: 1000
+        dueDate:
+          description: Data di scadenza del pagamento
+          type: string
+          format: date-time
+          example: '2022-12-31 10:27:27'
+        invoiceID:
+          description: Identificativo unico della posizione debitoria nel sistema Net@Pay
+          type: string
+          maxLength: 50
+          example: 'abcdef12345'
+        invoiceType:
+          description: Descrizione della causale, si tratta della parte descrittiva da inserire alla fine della causale al momento della creazione della RPT.
+          type: string
+          maxLength: 50
+          example: 'Bolletta GAS'
+        additionalRemittanceInfo:
+          description: >-
+           Indicazione dell'imputazione della specifica entrata nella forma\: <tipo contabilità>”/”<codice contabilità>
+          type: string
+          maxLength: 140
+          example: 'ALTRO/3321'
+        creditorIBAN:
+          description: IBAN di accredito dell'Ente Creditore
+          type: string
+          maxLength: 35
+          example: 'IT60X0542811101000000123456'
+        clientType:
+          description: Tipologia Soggetto Debitore, se persona fisica (F) o giuridica
+            (G).
+          type: string
+          maxLength: 1
+          enum:
+            - G
+            - F
+          example: 'F'
+        clientDescription:
+          description: Anagrafica del Soggetto Debitore (Indica il nominativo o la ragione sociale del pagatore).
+          type: string
+          maxLength: 70
+          example: 'Mario Rossi'
+        clientFiscalID:
+          description: Codice fiscale o Partita IVA del Soggetto Debitore.
+          type: string
+          maxLength: 35
+          example: 'RSSMRA30A01H501I'
+    CheckPaymentNotify:
+      type: object
+      required: 
+        - domainId
+        - creditorTxId
+        - pspId
+        - contextId
+        - checkPaymentType
+      properties:
+        domainId:
+          description: Identificativo dell'Ente Creditore per il quale si fa il pagamento
+          type: string
+          maxLength: 35
+          pattern: '^([0-9]){35}$'
+          example: '12345678901'
+        creditorTxId:
+          description: IUV della richiesta di pagamento
+          type: string
+          maxLength: 35
+          pattern: '^([\w]){1,35}$'
+          example: '01000000000012345'
+        pspId:
+          description: Identificativo del PSP scelto dall'utente per il pagamento
+          type: string
+          maxLength: 50
+          example: 'BPPIITRRXXX'
+        contextId:
+          description: Token con cui il Nodo dei Pagamenti identifica la transazione
+          type: string
+          maxLength: 35
+          example: '1234acdc'
+        checkPaymentType:
+          description: Identificativo del tipo di chiamata effettuato dal PSP/Nodo SPC
+          example: chkpAttiva
+          type: string
+          enum:
+            - chkpVerifica
+            - chkpAttiva
+        amountToPay:
+          description: Importo della transazione espresso in centesimi di Euro
+          type: number
+          format: int64
+          example: 1000
+    CheckPaymentResponse:
+      type: object
+      required: 
+        - result
+      properties:
+        result:
+          description: Esito della presa in carico della richiesta
+          type: string
+          example: OK
+          enum:
+            - OK
+            - KO
+        errorReason:
+          $ref: '#/components/schemas/ErrorReason'
+        errorReasonAgID:
+          $ref: '#/components/schemas/ErrorReasonAgID'
+        errorMessage:
+          description: Eventuale ulteriore dettaglio testuale sul problema riscontrato
+          type: string
+        checkPaymentList:
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/CheckPaymentItem'
+    ErrorReason:
+      description: Enumeration con i possibili casi di errore.
+      type: string
+      enum:
+        - INVALID_REQUEST
+        - DOMAIN_ID_NOT_VALID
+        - PAY_TX_NOT_FOUND
+        - PAY_TX_NOT_PAYABLE1
+        - PAY_TX_NOT_PAYABLE2
+        - PAY_AMOUNT_NOT_VALID
+        - PSP_NOT_MANAGED
+        - INTERNAL_ERROR
+        - PAY_TX_IN_PROGRESS
+        - PAY_TX_PROCESSED
+        - PAY_TX_CANCELED
+        - PAY_TX_EXPIRED
+        - PAY_STATUS_NOT_VALID
+      example: INVALID_REQUEST
+    ErrorReasonAgID:
+      description: Enumeration con i possibili casi di errore secondo la codifica standard AgID
+      type: string
+      enum:
+        - PAA_SYSTEM_ERROR
+        - PAA_ID_DOMINIO_ERRATO
+        - PAA_PAGAMENTO_SCONOSCIUTO
+        - PAA_PAGAMENTO_ANNULLATO
+        - PAA_PAGAMENTO_DUPLICATO
+        - PAA_ATTIVA_RPT_IMPORTO_NON_VALIDO
+        - PAA_PAGAMENTO_IN_CORSO
+      example: PAA_SYSTEM_ERROR
+    RegisterPaymentNotify:
+      type: object
+      required:
+        - domainId
+        - creditorTxId
+        - payStatus
+        - pspId
+        - contextId
+        - receipt
+      properties:
+        domainId:
+          description: Identificativo dell'Ente Creditore per il quale si fa il pagamento
+          type: string
+          maxLength: 35
+          pattern: '^([0-9]){35}$'
+          example: '12345678901'
+        creditorTxId:
+          description: IUV della richiesta di pagamento
+          type: string
+          maxLength: 35
+          pattern: '^([\w]){1,35}$'
+          example: '01000000000012345'
+        payStatus:
+          description: Stato della Transazione di pagamento
+          type: string
+          enum:
+            - EXECUTED
+            - PARTIAL_EXECUTED
+            - NOT_EXECUTED
+            - CANCELED
+        pspId:
+          description: Identificativo del PSP scelto dall'utente per il pagamento
+          type: string
+          maxLength: 50
+          example: 'BPPIITRRXXX'
+        contextId:
+          description: Token con cui il Nodo dei Pagamenti identifica la transazione
+          type: string
+          maxLength: 35
+          example: '1234acdc'
+        receipt:
+          $ref: '#/components/schemas/RegisterPaymentReceipt'
+        receiptXML:
+          description: Ricevuta telematica in formato XML.
+          type: string
+          format: base64
+    RegisterPaymentReceipt:
+      type: object
+      required: 
+        - amountPaid
+        - bankTXRefNum
+        - bankExecDate
+      properties:
+        amountPaid:
+          description: Valore effettivamente pagato in centesimi di Euro.
+          type: number
+          format: int64
+          example: 1000
+        bankTXRefNum:
+          description: Identificativo univoco della transazione di pagamento sul sistema del PSP
+          type: string
+        bankExecDate:
+          description: Data-Ora di esecuzione del pagamento sul sistema del PSP
+          type: string
+          format: date-time
+          example: '2022-12-31 10:27:27'
+        bankResultCode:
+          description: Eventuale codice di errore ritornato dal PSP.
+          type: string
+          maxLength: 50
+        bankResultMessage:
+          description: Eventuale messaggio di errore ritornato dal PSP.
+          type: string
+          maxLength: 120
+    RegisterPaymentResponse:
+      type: object
+      required: 
+        - result
+      properties:
+        result:
+          description: Esito della presa in carico della richiesta
+          type: string
+          example: OK
+          enum:
+            - OK
+            - KO
+        errorReason:
+          $ref: '#/components/schemas/ErrorReason'
+        errorReasonAgID:
+          $ref: '#/components/schemas/ErrorReasonAgID'
+        errorMessage:
+          description: Eventuale ulteriore dettaglio testuale sul problema riscontrato
+          type: string

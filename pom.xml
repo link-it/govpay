@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
 	<artifactId>bom</artifactId>
@@ -32,40 +34,46 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<rel-to-parent>.</rel-to-parent>
 		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
-		
+
 		<!-- op2 -->
 		<openspcoop2.version>3.2.1</openspcoop2.version>
-		
+
 		<!-- log -->
-		<slf4j.version>1.7.25</slf4j.version>
-		<logger.version>2.17.1</logger.version>
-		
+		<slf4j.version>1.7.36</slf4j.version>
+		<logger.version>2.17.2</logger.version>
+
+		<!-- Swagger-codegen -->
+		<openapi.tool.codegen.version>6.0.0</openapi.tool.codegen.version>
+
 		<!-- swagger -->
-		<swagger-codegen-maven-plugin.version>3.0.4-gov4j-3</swagger-codegen-maven-plugin.version>
+		<swagger-codegen-maven-plugin.version>3.0.18-gov4j-3</swagger-codegen-maven-plugin.version>
 		<swagger.version>1.5.21</swagger.version>
-		<swagger.v3.version>2.0.3</swagger.v3.version>
+		<swagger.v3.version>2.1.12</swagger.v3.version>
 		<swagger.parser.version>2.0.2</swagger.parser.version>
 		<swagger.parser.v3.version>2.0.2</swagger.parser.v3.version>
-		
+
+		<!-- Swagger-annotations -->
+		<swagger-annotations.version>1.6.2</swagger-annotations.version>
+
 		<!-- cxf -->
 		<cxf.version>3.2.6</cxf.version>
-		<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
-		
+		<cxf.xjc.runtime.version>3.3.2</cxf.xjc.runtime.version>
+
 		<!-- jackson -->
-		<jackson.version>2.9.10</jackson.version>
-		
+		<jackson.version>2.13.3</jackson.version>
+
 		<!-- Jersey -->
 		<jersey.version>2.25.1</jersey.version>
-		
+
 		<!-- Spring -->
-		<spring.version>5.1.6.RELEASE</spring.version>
-		
+		<spring.version>5.3.22</spring.version>
+
 		<!-- Spring Security -->
-		<spring.security.version>5.1.5.RELEASE</spring.security.version>
-		
+		<spring.security.version>5.7.3</spring.security.version>
+
 		<!-- Spring Security Ldap plugin -->
-		<spring.ldap.version>2.3.2.RELEASE</spring.ldap.version>
-		
+		<spring.ldap.version>2.4.1</spring.ldap.version>
+
 		<!-- joda time -->
 		<joda-time.version>2.10</joda-time.version>
 
@@ -77,89 +85,99 @@
 		<commons.lang.version>2.6</commons.lang.version>
 		<commons.pool2.version>2.6.0</commons.pool2.version>
 		<commons.email.version>1.5</commons.email.version>
-		
+
 		<!-- soap -->
 		<soap.version>2.3.1</soap.version>
-		
+
 		<!-- xmlsec -->
 		<xmlsec.version>2.1.4</xmlsec.version>
-		
+
 		<!-- freemarker -->
 		<freemarker.version>2.3.28</freemarker.version>
-		
+
 		<!-- http client -->
 		<httpclient.version>4.5.6</httpclient.version>
-		
+
 		<!-- concurrent -->
 		<concurrent.version>1.3.4</concurrent.version>
-		
+
 		<!-- jsch -->
 		<jsch.version>0.1.54</jsch.version>
-		
+
 		<!-- fge_json-schema-validator -->
 		<fge_json-schema-validator.version>2.2.10</fge_json-schema-validator.version>
-		
+
 		<!-- networknt_json-schema-validator -->
 		<networknt_json-schema-validator.version>0.1.21</networknt_json-schema-validator.version>
-		
+
 		<!-- org.json -->
 		<org.json.json.version>20180813</org.json.json.version>
-		
+
 		<!-- xercesImpl -->
 		<xercesImpl.version>2.12.0</xercesImpl.version>
-		
+
 		<!-- mime-util -->
 		<mime-util.version>2.1.1</mime-util.version>
-		
+
 		<!-- xml-security-impl -->
 		<xml-security-impl.version>1.0</xml-security-impl.version>
-		
+
 		<!-- servlet api -->
 		<javax.servlet.api3.version>3.1.0</javax.servlet.api3.version>
-		
+
 		<!-- JaxWS-API -->
 		<jaxws-api.version>2.2.1</jaxws-api.version>
-		
+
 		<!-- webjars- swagger ui api -->
-		<webjars-swaggerui.version>3.20.3</webjars-swaggerui.version>
-		
+		<webjars-swaggerui.version>4.1.3</webjars-swaggerui.version>
+
 		<!-- Json Path -->
-		<json-path.version>2.4.0</json-path.version>
-		<json-smart.version>2.3</json-smart.version>
-		<accessors-smart.version>1.2</accessors-smart.version>
+		<json-path.version>2.7.0</json-path.version>
+		<json-smart.version>2.4.8</json-smart.version>
+		<accessors-smart.version>2.4.8</accessors-smart.version>
 		<networknt_json-schema-validator.gov4j.version>0.1.23-gov4j-1</networknt_json-schema-validator.gov4j.version>
-		
+
 		<!-- Base64 java8 migration class. -->
-        <!-- Questo artefatto antico deve essere incluso nel pom perchè i progetti client generati
-	        da swagger-generator utilizzando la libreria jersey2 fanno uso di questo package
-	        che però è presente nativamente in java8.
-	        Una volta aggiornato il generatore, all'ultima versione, si suppone che i client generati con jersey2 utilizzino
-	        la classe nativa di java8. E quindi questa dipendenza diventerà inutile. -->
-        <migbase64.version>2.2</migbase64.version>
-        
-        <!-- Postgres driver -->
-        <postgresql.driver.version>42.2.5</postgresql.driver.version>
-        
-        <!-- Stampe -->
-        <!-- xalan -->
-        <xalan.version>2.7.1</xalan.version>
-        <!-- Jaxen -->
-        <jaxen.version>1.2.0</jaxen.version>
-        <!-- barbecue -->
-        <barbecue.version>1.5-beta1</barbecue.version>
-        <!-- Groovy -->
-        <groovy.version>2.4.5</groovy.version>
-        <!-- xmlgraphics-commons -->
-        <xmlgraphics.commons.version>2.1</xmlgraphics.commons.version>
-        <!-- com.google.zxing.javase -->
-        <com.google.zxing.javase.version>2.2</com.google.zxing.javase.version>
-        <!-- dynamicreports-core -->
-        <dynamicreports-core.version>4.1.1</dynamicreports-core.version>
+		<!-- Questo artefatto antico deve essere incluso nel pom perchè i progetti 
+			client generati da swagger-generator utilizzando la libreria jersey2 fanno 
+			uso di questo package che però è presente nativamente in java8. Una volta 
+			aggiornato il generatore, all'ultima versione, si suppone che i client generati 
+			con jersey2 utilizzino la classe nativa di java8. E quindi questa dipendenza 
+			diventerà inutile. -->
+		<migbase64.version>2.2</migbase64.version>
+
+		<!-- Postgres driver -->
+		<postgresql.driver.version>42.2.5</postgresql.driver.version>
+
+		<!-- Stampe -->
+		<!-- xalan -->
+		<xalan.version>2.7.1</xalan.version>
+		<!-- Jaxen -->
+		<jaxen.version>1.2.0</jaxen.version>
+		<!-- barbecue -->
+		<barbecue.version>1.5-beta1</barbecue.version>
+		<!-- Groovy -->
+		<groovy.version>2.4.5</groovy.version>
+		<!-- xmlgraphics-commons -->
+		<xmlgraphics.commons.version>2.1</xmlgraphics.commons.version>
+		<!-- com.google.zxing.javase -->
+		<com.google.zxing.javase.version>2.2</com.google.zxing.javase.version>
+		<!-- dynamicreports-core -->
+		<dynamicreports-core.version>4.1.1</dynamicreports-core.version>
+
+		<!-- jackson-databind-nullable -->
+		<jackson.databind.nullable.version>0.2.3</jackson.databind.nullable.version>
+
+		<!-- annotazione bean generati notnull -->
+		<jsr305.version>3.0.2</jsr305.version>
+
+		<!-- javax.annotation-api.version -->
+		<javax.annotation-api.version>1.3.2</javax.annotation-api.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-		
+
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
@@ -205,7 +223,7 @@
 				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>api-jppapdp</artifactId>
@@ -213,7 +231,7 @@
 				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>orm-beans</artifactId>
@@ -256,6 +274,14 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
+				<artifactId>client-api-netpay</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>it.govpay</groupId>
 				<artifactId>api-pagamento</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
@@ -284,20 +310,20 @@
 				<version>${project.version}</version>
 				<type>jar</type>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>appio-beans</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
-			</dependency>	
-			
+			</dependency>
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>jppapdp-beans</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
-			</dependency>		
+			</dependency>
 
 			<dependency>
 				<groupId>it.govpay</groupId>
@@ -322,7 +348,7 @@
 				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>api-user</artifactId>
@@ -398,7 +424,9 @@
 				<version>${openspcoop2.version}</version>
 			</dependency>
 
-			<!-- pacchetti utils inclusi: core beans json serialization jaxb cache sql jdbc datasource xml id logger transport csv sonde rest openapi xml2json date resources jmx mime jaxrs io service -->
+			<!-- pacchetti utils inclusi: core beans json serialization jaxb cache 
+				sql jdbc datasource xml id logger transport csv sonde rest openapi xml2json 
+				date resources jmx mime jaxrs io service -->
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-core</artifactId>
@@ -530,43 +558,43 @@
 				<artifactId>openspcoop2_utils-mime</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-jaxrs</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-io</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-service</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-certificate</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-regexp</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-mail</artifactId>
 				<version>${openspcoop2.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.openspcoop2.utils</groupId>
 				<artifactId>openspcoop2_utils-crypt</artifactId>
@@ -580,9 +608,9 @@
 			</dependency>
 
 			<dependency>
-			    <groupId>org.apache.commons</groupId>
-			    <artifactId>commons-jcs-core</artifactId>
-			    <version>${commons-jcs-core.version}</version>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-jcs-core</artifactId>
+				<version>${commons-jcs-core.version}</version>
 			</dependency>
 
 			<dependency>
@@ -598,19 +626,19 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			
+
 			<dependency>
-			    <groupId>com.github.fge</groupId>
-			    <artifactId>json-schema-validator</artifactId>
-			   <version>${fge_json-schema-validator.version}</version>
+				<groupId>com.github.fge</groupId>
+				<artifactId>json-schema-validator</artifactId>
+				<version>${fge_json-schema-validator.version}</version>
 			</dependency>
 
 			<dependency>
-			    <groupId>javax.servlet</groupId>
-			    <artifactId>javax.servlet-api</artifactId>
-			    <version>${javax.servlet.api3.version}</version>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${javax.servlet.api3.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>javax.xml.ws</groupId>
 				<artifactId>jaxws-api</artifactId>
@@ -641,9 +669,9 @@
 				<version>${mime-util.version}</version>
 				<exclusions>
 					<exclusion>
-			          <groupId>*</groupId>
-			          <artifactId>*</artifactId>
-			        </exclusion>
+						<groupId>*</groupId>
+						<artifactId>*</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 
@@ -686,9 +714,9 @@
 
 			<!-- REST LIB -->
 			<dependency>
-			    <groupId>io.swagger.core.v3</groupId>
-			    <artifactId>swagger-models</artifactId>
-			    <version>${swagger.v3.version}</version>
+				<groupId>io.swagger.core.v3</groupId>
+				<artifactId>swagger-models</artifactId>
+				<version>${swagger.v3.version}</version>
 			</dependency>
 
 			<dependency>
@@ -698,11 +726,11 @@
 			</dependency>
 
 			<dependency>
-			    <groupId>io.swagger.parser.v3</groupId>
-			    <artifactId>swagger-parser</artifactId>
-			    <version>${swagger.parser.version}</version>
+				<groupId>io.swagger.parser.v3</groupId>
+				<artifactId>swagger-parser</artifactId>
+				<version>${swagger.parser.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>io.swagger.parser.v3</groupId>
 				<artifactId>swagger-parser-core</artifactId>
@@ -714,7 +742,7 @@
 				<artifactId>swagger-parser-v3</artifactId>
 				<version>${swagger.parser.v3.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>io.swagger.codegen.v3</groupId>
 				<artifactId>swagger-codegen-maven-plugin</artifactId>
@@ -745,7 +773,7 @@
 				<artifactId>cxf-xjc-runtime</artifactId>
 				<version>${cxf.xjc.runtime.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-rs-client</artifactId>
@@ -753,52 +781,52 @@
 			</dependency>
 
 			<dependency>
-	            <groupId>org.apache.cxf</groupId>
-	            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-	            <version>${cxf.version}</version>
-	        </dependency>
-	        
-	        <dependency>
-	            <groupId>org.apache.cxf</groupId>
-	            <artifactId>cxf-rt-frontend-jaxws</artifactId>
-	            <version>${cxf.version}</version>
-	        </dependency>
-
-			<dependency>
-	            <groupId>org.apache.cxf</groupId>
-	            <artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
-	            <version>${cxf.version}</version>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+				<version>${cxf.version}</version>
 			</dependency>
 
-            <dependency>
-	            <groupId>org.apache.cxf</groupId>
-	            <artifactId>cxf-rt-transports-http-jetty</artifactId>
-	            <version>${cxf.version}</version>
-            </dependency>
-            
-            <dependency>
-	            <groupId>org.apache.cxf</groupId>
-	            <artifactId>cxf-rt-ws-policy</artifactId>
-	            <version>${cxf.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-frontend-jaxws</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
 
 			<dependency>
-	            <groupId>org.apache.cxf</groupId>
-	            <artifactId>cxf-rt-wsdl</artifactId>
-	            <version>${cxf.version}</version>
-            </dependency>
-            
-            <dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-rs-service-description-openapi-v3</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-transports-http-jetty</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-ws-policy</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-wsdl</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+
+			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-features-logging</artifactId>
 				<version>${cxf.version}</version>
 			</dependency>
-			
+
 			<dependency>
-		        <groupId>org.apache.cxf</groupId>
-		        <artifactId>cxf-rt-rs-extension-providers</artifactId>
-		        <version>${cxf.version}</version>
-		    </dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-rs-extension-providers</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
 
 			<!-- Jackson -->
 			<dependency>
@@ -824,13 +852,13 @@
 				<artifactId>jackson-annotations</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>com.fasterxml.jackson.jaxrs</groupId>
 				<artifactId>jackson-jaxrs-json-provider</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>com.fasterxml.jackson.jaxrs</groupId>
 				<artifactId>jackson-jaxrs-xml-provider</artifactId>
@@ -842,107 +870,131 @@
 				<artifactId>jackson-datatype-joda</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>com.fasterxml.jackson.datatype</groupId>
 				<artifactId>jackson-datatype-jsr310</artifactId>
 				<version>${jackson.version}</version>
-	        </dependency> 
-			
+			</dependency>
+
+			<dependency>
+				<groupId>org.openapitools</groupId>
+				<artifactId>jackson-databind-nullable</artifactId>
+				<version>${jackson.databind.nullable.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.annotation</groupId>
+				<artifactId>javax.annotation-api</artifactId>
+				<version>${javax.annotation-api.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.google.code.findbugs</groupId>
+				<artifactId>jsr305</artifactId>
+				<version>${jsr305.version}</version>
+			</dependency>
+
 			<!-- Jersey -->
 			<dependency>
-	            <groupId>org.glassfish.jersey.core</groupId>
-	            <artifactId>jersey-client</artifactId>
-	            <version>${jersey.version}</version>
-	             <exclusions>
-				<exclusion>
-		        	<groupId>javax.ws.rs</groupId>
-            		<artifactId>javax.ws.rs-api</artifactId>
-		        </exclusion>
-			</exclusions>
-	        </dependency>
-	        <dependency>
+				<groupId>org.glassfish.jersey.core</groupId>
+				<artifactId>jersey-client</artifactId>
+				<version>${jersey.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>javax.ws.rs</groupId>
+						<artifactId>javax.ws.rs-api</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
 				<groupId>org.glassfish.jersey.media</groupId>
 				<artifactId>jersey-media-multipart</artifactId>
 				<version>${jersey.version}</version>
-	        </dependency>
-	        <dependency>
+			</dependency>
+			<dependency>
 				<groupId>org.glassfish.jersey.media</groupId>
 				<artifactId>jersey-media-json-jackson</artifactId>
 				<version>${jersey.version}</version>
-	        </dependency> 
-			
+			</dependency>
+
 			<!-- Spring -->
-            <dependency>
-            	<groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            
-            <!-- Spring Security -->
-            <dependency>
-            	<groupId>org.springframework.security</groupId>
-            	<artifactId>spring-security-web</artifactId>
-            	<version>${spring.security.version}</version>
-            </dependency>
-            
-            <dependency>
-            	<groupId>org.springframework.security</groupId>
-            	<artifactId>spring-security-core</artifactId>
-            	<version>${spring.security.version}</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-config</artifactId>
-      	    	<version>${spring.security.version}</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-ldap</artifactId>
-                <version>${spring.security.version}</version>
-            </dependency>
-            
-            <!-- Spring Security Ldap Plugin -->
-        	<dependency>
-    	        <groupId>org.springframework.ldap</groupId>
-	            <artifactId>spring-ldap-core</artifactId>
-           		<version>${spring.ldap.version}</version>
-        	</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webflux</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+
+			<!-- Spring Security -->
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-core</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-ldap</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
+
+			<!-- Spring Security Ldap Plugin -->
+			<dependency>
+				<groupId>org.springframework.ldap</groupId>
+				<artifactId>spring-ldap-core</artifactId>
+				<version>${spring.ldap.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>joda-time</groupId>
 				<artifactId>joda-time</artifactId>
 				<version>${joda-time.version}</version>
 			</dependency>
-			
+
 			<!-- webjar-swagger ui -->
 			<dependency>
 				<groupId>org.webjars</groupId>
 				<artifactId>swagger-ui</artifactId>
 				<version>${webjars-swaggerui.version}</version>
 			</dependency>
-			
-			<!-- Json Path -->			
-            <dependency>
-	            <groupId>com.jayway.jsonpath</groupId>
-	            <artifactId>json-path</artifactId>
-	            <version>${json-path.version}</version>
-	            <exclusions>
+
+			<!-- Json Path -->
+			<dependency>
+				<groupId>com.jayway.jsonpath</groupId>
+				<artifactId>json-path</artifactId>
+				<version>${json-path.version}</version>
+				<exclusions>
 					<exclusion>
 						<groupId>*</groupId>
 						<artifactId>*</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>net.minidev</groupId>
 				<artifactId>json-smart</artifactId>
@@ -954,89 +1006,89 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			
+
 			<dependency>
-	            <groupId>net.minidev</groupId>
-	            <artifactId>accessors-smart</artifactId>
-	            <version>${accessors-smart.version}</version>
-	            <exclusions>
-	                    <exclusion>
-	                            <groupId>*</groupId>
-	                            <artifactId>*</artifactId>
-	                    </exclusion>
-	            </exclusions>
-           </dependency>
-           
-           <dependency>
-	            <groupId>com.networknt</groupId>
-	            <artifactId>networknt_json-schema-validator</artifactId>
-	            <version>${networknt_json-schema-validator.gov4j.version}</version>
-	            <exclusions>
-	                    <exclusion>
-	                            <groupId>*</groupId>
-	                            <artifactId>*</artifactId>
-	                    </exclusion>
-	            </exclusions>
-           </dependency>
-           
-           <dependency>
-	            <groupId>org.apache.commons</groupId>
-	            <artifactId>commons-email</artifactId>
-	            <version>${commons.email.version}</version>
-           </dependency>
-           
-           <!-- Base64 Java8 migration -->
-           <dependency>
-	           <groupId>com.brsanthu</groupId>
-	           <artifactId>migbase64</artifactId>
-	           <version>${migbase64.version}</version>
-           </dependency>
+				<groupId>net.minidev</groupId>
+				<artifactId>accessors-smart</artifactId>
+				<version>${accessors-smart.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>*</groupId>
+						<artifactId>*</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<dependency>
+				<groupId>com.networknt</groupId>
+				<artifactId>networknt_json-schema-validator</artifactId>
+				<version>${networknt_json-schema-validator.gov4j.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>*</groupId>
+						<artifactId>*</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-email</artifactId>
+				<version>${commons.email.version}</version>
+			</dependency>
+
+			<!-- Base64 Java8 migration -->
+			<dependency>
+				<groupId>com.brsanthu</groupId>
+				<artifactId>migbase64</artifactId>
+				<version>${migbase64.version}</version>
+			</dependency>
 
 			<!-- Postgres -->
 			<dependency>
-			    <groupId>org.postgresql</groupId>
-			    <artifactId>postgresql</artifactId>
-			    <version>${postgresql.driver.version}</version>
-			    <scope>provided</scope>
+				<groupId>org.postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${postgresql.driver.version}</version>
+				<scope>provided</scope>
 			</dependency>
-			
+
 			<!-- stampe -->
 			<dependency>
 				<groupId>com.google.zxing</groupId>
 				<artifactId>javase</artifactId>
 				<version>${com.google.zxing.javase.version}</version>
 			</dependency>
-	
+
 			<dependency>
 				<groupId>org.apache.xmlgraphics</groupId>
 				<artifactId>xmlgraphics-commons</artifactId>
 				<version>${xmlgraphics.commons.version}</version>
 			</dependency>
-	
+
 			<dependency>
 				<groupId>org.codehaus.groovy</groupId>
 				<artifactId>groovy-all</artifactId>
 				<version>${groovy.version}</version>
 			</dependency>
-	
+
 			<dependency>
 				<groupId>net.sourceforge.barbecue</groupId>
 				<artifactId>barbecue</artifactId>
 				<version>${barbecue.version}</version>
 			</dependency>
-	
+
 			<dependency>
 				<groupId>xalan</groupId>
 				<artifactId>xalan</artifactId>
 				<version>${xalan.version}</version>
 			</dependency>
-			
+
 			<dependency>
-			    <groupId>jaxen</groupId>
-			    <artifactId>jaxen</artifactId>
-			    <version>${jaxen.version}</version>
+				<groupId>jaxen</groupId>
+				<artifactId>jaxen</artifactId>
+				<version>${jaxen.version}</version>
 			</dependency>
-			
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -1094,30 +1146,30 @@
 	</build>
 	<repositories>
 		<repository>
-            <id>linkit-releases</id>
-            <url>https://maven.link.it/content/repositories/public/</url>
-        </repository>
-        <repository>
-            <id>linkit-snapshot</id>
-            <url>https://maven.link.it/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-            <id>linkit-thirdparty</id>
-            <url>https://maven.link.it/content/repositories/thirdparty-releases/</url>
-        </repository>
+			<id>linkit-releases</id>
+			<url>https://maven.link.it/content/repositories/public/</url>
+		</repository>
+		<repository>
+			<id>linkit-snapshot</id>
+			<url>https://maven.link.it/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
+			<id>linkit-thirdparty</id>
+			<url>https://maven.link.it/content/repositories/thirdparty-releases/</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
-            <id>linkit-releases</id>
-            <url>https://maven.link.it/content/repositories/public/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>linkit-snapshot</id>
-            <url>https://maven.link.it/content/repositories/snapshots/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>linkit-thirdparty</id>
-            <url>https://maven.link.it/content/repositories/thirdparty-releases/</url>
-        </pluginRepository>
+			<id>linkit-releases</id>
+			<url>https://maven.link.it/content/repositories/public/</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>linkit-snapshot</id>
+			<url>https://maven.link.it/content/repositories/snapshots/</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>linkit-thirdparty</id>
+			<url>https://maven.link.it/content/repositories/thirdparty-releases/</url>
+		</pluginRepository>
 	</pluginRepositories>
 </project>

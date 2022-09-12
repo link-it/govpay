@@ -26,6 +26,7 @@
 		<module>core</module>
 		<module>api-commons</module>
 		<module>client-api-ente</module>
+		<module>client-api-netpay</module>
 	</modules>
 </project>
 
