@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import it.govpay.core.beans.tracciati.Contabilita;
 import it.govpay.core.beans.tracciati.Documento;

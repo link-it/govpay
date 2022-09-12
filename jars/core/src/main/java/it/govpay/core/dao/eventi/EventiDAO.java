@@ -107,7 +107,7 @@ public class EventiDAO extends BaseDAO {
 
 			EventoContext eventoGenerico = putEventoDTO.getEvento();
 
-			Evento evento = eventoGenerico.toEventoDTO();
+			Evento evento = eventoGenerico.toEventoDTO(log);
 			eventiBD.insertEvento(evento);
 			return putEventoDTOResponse;
 		} finally {

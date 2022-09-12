@@ -6,10 +6,10 @@ import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;

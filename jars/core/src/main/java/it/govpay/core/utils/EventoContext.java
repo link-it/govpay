@@ -2,14 +2,10 @@ package it.govpay.core.utils;
 
 import java.util.Date;
 
-import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.json.ValidationException;
-import org.openspcoop2.utils.logger.beans.context.core.Role;
+import it.govpay.core.exceptions.ValidationException;
+import org.slf4j.Logger;
 
 import it.govpay.bd.model.Evento;
-import it.govpay.bd.model.eventi.DatiPagoPA;
-import it.govpay.bd.model.eventi.DettaglioRichiesta;
-import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
@@ -17,6 +13,9 @@ import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.Evento.RuoloEvento;
+import it.govpay.model.eventi.DatiPagoPA;
+import it.govpay.model.eventi.DettaglioRichiesta;
+import it.govpay.model.eventi.DettaglioRisposta;
 
 public class EventoContext {
 	
@@ -61,7 +60,7 @@ public class EventoContext {
 
 	private boolean registraEvento = false;
 	private Componente componente;
-	private Role role;
+	private RuoloEvento role;
 	private Categoria categoriaEvento;
 	private String tipoEvento;
 	private String sottotipoEvento;
@@ -113,11 +112,11 @@ public class EventoContext {
 		this.componente = componente;
 	}
 
-	public Role getRole() {
+	public RuoloEvento getRole() {
 		return role;
 	}
 
-	public void setRole(Role role) {
+	public void setRole(RuoloEvento role) {
 		this.role = role;
 	}
 
@@ -293,7 +292,7 @@ public class EventoContext {
 		this.datiPagoPA = datiPagoPA;
 	}
 
-	public Evento toEventoDTO() {
+	public Evento toEventoDTO(Logger log) {
 		Evento dto = new Evento();
 
 		if(this.getCategoriaEvento() != null) {
@@ -339,16 +338,7 @@ public class EventoContext {
 		}
 		dto.setDettaglioRichiesta(this.getDettaglioRichiesta());
 		dto.setDettaglioRisposta(this.getDettaglioRisposta());
-		if(this.getRole() != null) {
-			switch(this.getRole()) {
-			case CLIENT:
-				dto.setRuoloEvento(RuoloEvento.CLIENT);
-				break;
-			case SERVER:
-				dto.setRuoloEvento(RuoloEvento.SERVER);
-				break;
-			}
-		}
+		dto.setRuoloEvento(this.getRole());
 		dto.setSottotipoEsito(this.getSottotipoEsito());
 		dto.setSottotipoEvento(this.getSottotipoEvento());
 		dto.setTipoEvento(this.getTipoEvento());
@@ -366,13 +356,13 @@ public class EventoContext {
 			dto.setSeverita(this.severita);
 		} else {
 			if(this.exception != null) {
-				LoggerWrapperFactory.getLogger(EventoContext.class).debug("Classe exception: " + this.exception.getClass());
+				log.debug("Classe exception: " + this.exception.getClass());
 				
 				if(this.exception instanceof GovPayException) {
 					try {
 						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(((GovPayException) this.exception).getCodEsito()));
 					} catch (Exception e) {
-						LoggerWrapperFactory.getLogger(EventoContext.class).error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
+						log.error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
 					}
 				}
 				
@@ -380,7 +370,7 @@ public class EventoContext {
 					try {
 						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(((BaseExceptionV1) this.exception).getCategoria()));
 					} catch (Exception e) {
-						LoggerWrapperFactory.getLogger(EventoContext.class).error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
+						log.error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
 					}
 				}
 				
@@ -388,7 +378,7 @@ public class EventoContext {
 					try {
 						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(((UnprocessableEntityException) this.exception).getCategoria()));
 					} catch (Exception e) {
-						LoggerWrapperFactory.getLogger(EventoContext.class).error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
+						log.error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
 					}
 				}
 				
@@ -396,7 +386,7 @@ public class EventoContext {
 					try {
 						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(it.govpay.core.exceptions.BaseExceptionV1.CategoriaEnum.RICHIESTA));
 					} catch (Exception e) {
-						LoggerWrapperFactory.getLogger(EventoContext.class).error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
+						log.error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
 					}
 				}
 				

@@ -18,7 +18,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.resources.Charset;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;

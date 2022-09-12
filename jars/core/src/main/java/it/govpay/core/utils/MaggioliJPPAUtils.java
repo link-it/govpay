@@ -21,7 +21,7 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.io.IOUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.xml.sax.SAXException;
 
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceipt;

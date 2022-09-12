@@ -1,14 +1,16 @@
-package it.govpay.bd.configurazione.model;
+package it.govpay.model.configurazione;
 
 import java.io.Serializable;
 
-public class PromemoriaAvvisoBase implements Serializable{
+public class PromemoriaRicevutaBase implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
 	private String tipo;
 	private String oggetto;
 	private String messaggio;
+	private boolean soloEseguiti;
+	
 	public String getTipo() {
 		return tipo;
 	}
@@ -26,6 +28,12 @@ public class PromemoriaAvvisoBase implements Serializable{
 	}
 	public void setMessaggio(String messaggio) {
 		this.messaggio = messaggio;
+	}
+	public boolean isSoloEseguiti() {
+		return soloEseguiti;
+	}
+	public void setSoloEseguiti(boolean soloEseguiti) {
+		this.soloEseguiti = soloEseguiti;
 	}
 	
 }

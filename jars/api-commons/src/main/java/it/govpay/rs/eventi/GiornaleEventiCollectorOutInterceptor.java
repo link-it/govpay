@@ -21,13 +21,13 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
-import it.govpay.bd.configurazione.model.GdeInterfaccia;
-import it.govpay.bd.model.eventi.DettaglioRichiesta;
-import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
 import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.model.configurazione.GdeInterfaccia;
+import it.govpay.model.eventi.DettaglioRichiesta;
+import it.govpay.model.eventi.DettaglioRisposta;
 import it.govpay.core.utils.GpContext;
 
 public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.logging.LoggingOutInterceptor  {

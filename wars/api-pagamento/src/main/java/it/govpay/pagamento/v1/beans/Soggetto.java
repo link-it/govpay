@@ -2,7 +2,7 @@ package it.govpay.pagamento.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -296,7 +296,7 @@ import it.govpay.core.utils.validator.IValidable;
 		 return Objects.hash(this.tipo, this.identificativo, this.anagrafica, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.cellulare);
 	 }
 
-	 public static Soggetto parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
+	 public static Soggetto parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, it.govpay.core.exceptions.ValidationException {
 		 return parse(json, Soggetto.class);
 	 }
 

@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAmount;
 import java.util.Date;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 public class DateValidator {
 

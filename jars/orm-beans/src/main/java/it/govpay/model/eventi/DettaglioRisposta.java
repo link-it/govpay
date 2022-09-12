@@ -1,4 +1,4 @@
-package it.govpay.bd.model.eventi;
+package it.govpay.model.eventi;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,40 +9,33 @@ import java.util.Map.Entry;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class DettaglioRichiesta implements Serializable {
+public class DettaglioRisposta implements Serializable{
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L; 
-	private String principal;
-	private String utente;
+	private static final long serialVersionUID = 1L;
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS", locale = "it_IT", timezone = "Europe/Rome")
-	private Date dataOraRichiesta;
-	private String url;
+	private Date dataOraRisposta;
+	private Integer status;
 //	private Map<String, String> headers;
 	private List<Header> headers;
-	private String payload; 
-	private String method;
+//	private List<Entry<String, String>> headers;
 	
-	public String getPrincipal() {
-		return principal;
+	private String payload;
+	
+	public Date getDataOraRisposta() {
+		return dataOraRisposta;
 	}
-	public void setPrincipal(String principal) {
-		this.principal = principal;
+	public void setDataOraRisposta(Date dataOraRisposta) {
+		this.dataOraRisposta = dataOraRisposta;
 	}
-	public Date getDataOraRichiesta() {
-		return dataOraRichiesta;
+	public Integer getStatus() {
+		return status;
 	}
-	public void setDataOraRichiesta(Date dataOraRichiesta) {
-		this.dataOraRichiesta = dataOraRichiesta;
-	}
-	public String getUrl() {
-		return url;
-	}
-	public void setUrl(String url) {
-		this.url = url;
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 	public List<Header> getHeaders() {
 		return headers;
@@ -65,17 +58,4 @@ public class DettaglioRichiesta implements Serializable {
 	public void setPayload(String payload) {
 		this.payload = payload;
 	}
-	public String getUtente() {
-		return utente;
-	}
-	public void setUtente(String utente) {
-		this.utente = utente;
-	}
-	public String getMethod() {
-		return method;
-	}
-	public void setMethod(String method) {
-		this.method = method;
-	}
-
 }

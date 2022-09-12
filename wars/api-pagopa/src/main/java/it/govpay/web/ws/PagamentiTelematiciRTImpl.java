@@ -51,7 +51,6 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -63,6 +62,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RrUtils;
 import it.govpay.core.utils.RtUtils;
 import it.govpay.model.Intermediario;
+import it.govpay.model.eventi.DatiPagoPA;
 
 @WebService(serviceName = "PagamentiTelematiciRTservice",
 endpointInterface = "it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirt.PagamentiTelematiciRT",

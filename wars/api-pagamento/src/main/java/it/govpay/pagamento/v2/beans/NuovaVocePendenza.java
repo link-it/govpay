@@ -3,7 +3,7 @@ package it.govpay.pagamento.v2.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -390,7 +390,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
     return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, idDominio, tipoBollo, hashDocumento, provinciaResidenza, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita);
   }
 
-  public static NuovaVocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
+  public static NuovaVocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, it.govpay.core.exceptions.ValidationException {
     return parse(json, NuovaVocePendenza.class);
   }
 

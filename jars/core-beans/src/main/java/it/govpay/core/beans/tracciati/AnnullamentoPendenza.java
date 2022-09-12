@@ -3,7 +3,7 @@ package it.govpay.core.beans.tracciati;
 import java.util.Objects;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -126,7 +126,7 @@ public class AnnullamentoPendenza extends JSONSerializable implements IValidable
   }
   
   @Override
-	public void validate() throws org.openspcoop2.utils.json.ValidationException {
+	public void validate() throws it.govpay.core.exceptions.ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		
 		vf.getValidator("idA2A", this.idA2A).notNull().minLength(1).maxLength(35);

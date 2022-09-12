@@ -1,4 +1,4 @@
-package it.govpay.bd.configurazione.model;
+package it.govpay.model.configurazione;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

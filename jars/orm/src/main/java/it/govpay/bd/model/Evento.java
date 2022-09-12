@@ -15,13 +15,13 @@ import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.eventi.DatiPagoPA;
-import it.govpay.bd.model.eventi.DettaglioRichiesta;
-import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.model.eventi.DatiPagoPA;
+import it.govpay.model.eventi.DettaglioRichiesta;
+import it.govpay.model.eventi.DettaglioRisposta;
 
 public class Evento extends it.govpay.model.Evento{
 
@@ -29,28 +29,6 @@ public class Evento extends it.govpay.model.Evento{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-
-	public enum TipoEventoCooperazione {
-		nodoInviaRPT,
-		nodoInviaCarrelloRPT, 
-		nodoChiediStatoRPT, 
-		paaInviaRT, 
-		nodoChiediCopiaRT, 
-		paaVerificaRPT, 
-		paaAttivaRPT,
-		nodoInviaRichiestaStorno,
-		paaInviaEsitoStorno,
-		nodoInviaAvvisoDigitale,
-		paVerifyPaymentNotice,
-		paGetPayment,
-		paSendRT;
-	}
-
-	public static final String COMPONENTE_COOPERAZIONE = "FESP";
-	public static final String NDP = "NodoDeiPagamentiSPC";
-	
-	
 
 	public Evento() {
 		super();

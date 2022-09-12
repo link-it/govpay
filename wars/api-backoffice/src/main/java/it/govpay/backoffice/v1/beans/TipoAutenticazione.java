@@ -3,7 +3,7 @@ package it.govpay.backoffice.v1.beans;
 import java.util.Objects;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -348,7 +348,7 @@ public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable im
 		return Objects.hash(this.username, this.password, this.tipo, this.ksLocation, this.ksPassword, ksType, ksPKeyPasswd, this.tsLocation, this.tsPassword, tsType, sslType);
 	}
 
-	public static TipoAutenticazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
+	public static TipoAutenticazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, it.govpay.core.exceptions.ValidationException {
 		return parse(json, TipoAutenticazione.class);
 	}
 

@@ -2,7 +2,7 @@ package it.govpay.pagamento.v2.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -74,7 +74,7 @@ public class Conto extends JSONSerializable implements IValidable {
     return Objects.hash(iban, bic);
   }
 
-  public static Conto parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
+  public static Conto parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, it.govpay.core.exceptions.ValidationException {
     return parse(json, Conto.class);
   }
 

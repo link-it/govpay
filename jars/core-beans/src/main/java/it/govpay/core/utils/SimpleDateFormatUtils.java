@@ -13,7 +13,7 @@ import java.util.TimeZone;
 
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 public class SimpleDateFormatUtils {
 	

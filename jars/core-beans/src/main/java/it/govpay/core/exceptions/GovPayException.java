@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2022 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -19,15 +19,7 @@
  */
 package it.govpay.core.exceptions;
 
-import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.service.context.ContextThreadLocal;
-import org.slf4j.Logger;
-
-import gov.telematici.pagamenti.ws.rpt.FaultBean;
 import it.govpay.core.beans.EsitoOperazione;
-import it.govpay.core.beans.GpResponse;
-import it.govpay.core.beans.Mittente;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Evento.EsitoEvento;
 
@@ -40,6 +32,7 @@ public class GovPayException extends Exception {
 	private FaultBean faultBean;
 	private Object param;
 		
+	private GovPayException() {}
 	
 	public GovPayException(FaultBean faultBean) {
 		super();
@@ -101,18 +94,16 @@ public class GovPayException extends Exception {
 		this.codEsito = codEsito;
 	}
 	
-	public void log(Logger log){
-		switch (this.codEsito) {
-		case INTERNAL:
-			log.error("[" + this.codEsito + "] " + this.getMessage() + (this.getCausa() != null ? "\n" + this.getCausa() : ""), this);
-		break;
-		default:
-			log.warn("[" + this.codEsito + "] " + this.getMessage() +  (this.getCausa() != null ? "\n" + this.getCausa() : ""));
-			break;
-		}
-	}
-	
-	
+//	public void log(Logger log){
+//		switch (this.codEsito) {
+//		case INTERNAL:
+//			log.error("[" + this.codEsito + "] " + this.getMessage() + (this.getCausa() != null ? "\n" + this.getCausa() : ""), this);
+//		break;
+//		default:
+//			log.warn("[" + this.codEsito + "] " + this.getMessage() +  (this.getCausa() != null ? "\n" + this.getCausa() : ""));
+//			break;
+//		}
+//	}
 	
 	@Override
 	public String getMessage() {
@@ -571,31 +562,6 @@ public class GovPayException extends Exception {
 		}
 	}
 
-	public GpResponse getWsResponse(GpResponse response, String codMsgDiagnostico, Logger log) {
-		if(this.getFaultBean() == null) {
-			response.setMittente(Mittente.GOV_PAY);
-			response.setCodEsito(this.getCodEsito() != null ? this.getCodEsito().toString() : "");
-			response.setDescrizioneEsito(this.getDescrizioneEsito() != null ? this.getDescrizioneEsito() : "");
-			response.setDettaglioEsito(this.getMessage());
-			this.log(log);
-			try {
-				ContextThreadLocal.get().getApplicationLogger().log(codMsgDiagnostico, response.getCodEsito().toString(), response.getDescrizioneEsito(), response.getDettaglioEsito());
-			} catch (UtilsException e) {
-				LoggerWrapperFactory.getLogger(getClass()).error("Errore durante la scrittura dell'esito operazione: "+ e.getMessage(),e);
-			}
-			
-		} else {
-			if(this.faultBean.getId().contains("NodoDeiPagamentiSPC")) 
-				response.setMittente(Mittente.NODO_DEI_PAGAMENTI_SPC);
-			else 
-				response.setMittente(Mittente.PSP);
-			response.setCodEsito(this.faultBean.getFaultCode() != null ? this.faultBean.getFaultCode() : "");
-			response.setDescrizioneEsito(this.faultBean.getFaultString() != null ? this.faultBean.getFaultString() : "");
-			response.setDettaglioEsito(this.faultBean.getDescription());
-		}
-		return response;
-	}
-
 	public Object getParam() {
 		return this.param;
 	}
@@ -603,5 +569,69 @@ public class GovPayException extends Exception {
 	public void setParam(Object param) {
 		this.param = param;
 	}
+	
+	public static FaultBean createFaultBean() {
+		return new GovPayException().new FaultBean();
+	}
 
+	public class FaultBean {
+
+	    private String faultCode;
+	    private String faultString;
+	    private String id;
+	    private String description;
+	    private Integer serial;
+	    private String originalFaultCode;
+	    private String originalFaultString;
+	    private String originalDescription;
+	    
+		public String getFaultCode() {
+			return faultCode;
+		}
+		public void setFaultCode(String faultCode) {
+			this.faultCode = faultCode;
+		}
+		public String getFaultString() {
+			return faultString;
+		}
+		public void setFaultString(String faultString) {
+			this.faultString = faultString;
+		}
+		public String getId() {
+			return id;
+		}
+		public void setId(String id) {
+			this.id = id;
+		}
+		public String getDescription() {
+			return description;
+		}
+		public void setDescription(String description) {
+			this.description = description;
+		}
+		public Integer getSerial() {
+			return serial;
+		}
+		public void setSerial(Integer serial) {
+			this.serial = serial;
+		}
+		public String getOriginalFaultCode() {
+			return originalFaultCode;
+		}
+		public void setOriginalFaultCode(String originalFaultCode) {
+			this.originalFaultCode = originalFaultCode;
+		}
+		public String getOriginalFaultString() {
+			return originalFaultString;
+		}
+		public void setOriginalFaultString(String originalFaultString) {
+			this.originalFaultString = originalFaultString;
+		}
+		public String getOriginalDescription() {
+			return originalDescription;
+		}
+		public void setOriginalDescription(String originalDescription) {
+			this.originalDescription = originalDescription;
+		}
+	}
 }

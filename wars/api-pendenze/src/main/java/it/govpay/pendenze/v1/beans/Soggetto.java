@@ -2,7 +2,7 @@ package it.govpay.pendenze.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -336,7 +336,7 @@ import it.govpay.core.utils.validator.IValidable;
 	 }
 
 	 @Override
-	 public void validate() throws org.openspcoop2.utils.json.ValidationException {
+	 public void validate() throws it.govpay.core.exceptions.ValidationException {
 		SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
 		
 		soggettoPagatoreValidator.validaTipo("tipo", this.getTipo() != null ? this.getTipo().toString() : null);

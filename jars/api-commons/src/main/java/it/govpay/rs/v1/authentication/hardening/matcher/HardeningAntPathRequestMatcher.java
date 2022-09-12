@@ -17,8 +17,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.configurazione.model.Hardening;
 import it.govpay.bd.model.Configurazione;
+import it.govpay.model.configurazione.Hardening;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaConfigurazioneNonValidaException;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaInvalidException;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaParametroResponseInvalidException;

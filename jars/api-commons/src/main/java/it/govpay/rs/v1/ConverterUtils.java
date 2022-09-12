@@ -13,9 +13,9 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.eventi.DettaglioRichiesta;
-import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.core.utils.JaxbUtils;
+import it.govpay.model.eventi.DettaglioRichiesta;
+import it.govpay.model.eventi.DettaglioRisposta;
 
 public class ConverterUtils {
 

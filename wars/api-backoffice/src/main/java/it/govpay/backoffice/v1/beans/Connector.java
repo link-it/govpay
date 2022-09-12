@@ -3,7 +3,7 @@ package it.govpay.backoffice.v1.beans;
 import java.util.Arrays;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -168,7 +168,7 @@ public Connector versioneApiEnum(VersioneApiEnum versioneApiEnum) {
     return Objects.hash(this.url, this.versioneApi, this.auth);
   }
 
-  public static Connector parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
+  public static Connector parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, it.govpay.core.exceptions.ValidationException {
     return parse(json, Connector.class);
   }
 

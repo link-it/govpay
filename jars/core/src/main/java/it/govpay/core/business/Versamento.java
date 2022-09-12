@@ -28,7 +28,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -528,7 +528,7 @@ public class Versamento  {
 		// Se ancora non ho trovato il versamento, lo chiedo all'applicazione
 		if(versamentoModel == null) {
 			try {
-				versamentoModel = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, codApplicazione), codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv, tipo);
+				versamentoModel = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, codApplicazione), codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv, tipo, log);
 			} catch (ClientException e){
 				throw new EcException("La verifica del versamento [Versamento: " + codVersamentoEnte != null ? codVersamentoEnte : "-" + " BundleKey:" + bundlekey != null ? bundlekey : "-" + " Debitore:" + codUnivocoDebitore != null ? codUnivocoDebitore : "-" + " Dominio:" + codDominio != null ? codDominio : "-" + " Iuv:" + iuv != null ? iuv : "-" + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallita con errore: " + e.getMessage());
 			} catch (VersamentoScadutoException e) {

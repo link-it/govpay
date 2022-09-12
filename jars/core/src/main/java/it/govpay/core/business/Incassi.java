@@ -43,7 +43,6 @@ import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TipoVersamentoDominio;
-import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
@@ -73,6 +72,7 @@ import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
+import it.govpay.model.eventi.DatiPagoPA;
 
 
 public class Incassi {

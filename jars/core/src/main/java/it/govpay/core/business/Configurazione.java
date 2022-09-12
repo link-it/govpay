@@ -10,19 +10,19 @@ import org.slf4j.Logger;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.ConfigurazioneBD;
-import it.govpay.bd.configurazione.model.AppIOBatch;
-import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
-import it.govpay.bd.configurazione.model.AvvisaturaViaMail;
-import it.govpay.bd.configurazione.model.GdeEvento;
-import it.govpay.bd.configurazione.model.GdeEvento.DumpEnum;
-import it.govpay.bd.configurazione.model.GdeEvento.LogEnum;
-import it.govpay.bd.configurazione.model.GdeInterfaccia;
-import it.govpay.bd.configurazione.model.Giornale;
-import it.govpay.bd.configurazione.model.GoogleCaptcha;
-import it.govpay.bd.configurazione.model.Hardening;
-import it.govpay.bd.configurazione.model.MailBatch;
-import it.govpay.bd.configurazione.model.MailServer;
-import it.govpay.bd.configurazione.model.TracciatoCsv;
+import it.govpay.model.configurazione.AppIOBatch;
+import it.govpay.model.configurazione.AvvisaturaViaAppIo;
+import it.govpay.model.configurazione.AvvisaturaViaMail;
+import it.govpay.model.configurazione.GdeEvento;
+import it.govpay.model.configurazione.GdeInterfaccia;
+import it.govpay.model.configurazione.Giornale;
+import it.govpay.model.configurazione.GoogleCaptcha;
+import it.govpay.model.configurazione.Hardening;
+import it.govpay.model.configurazione.MailBatch;
+import it.govpay.model.configurazione.MailServer;
+import it.govpay.model.configurazione.TracciatoCsv;
+import it.govpay.model.configurazione.GdeEvento.DumpEnum;
+import it.govpay.model.configurazione.GdeEvento.LogEnum;
 
 public class Configurazione {
 

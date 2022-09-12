@@ -21,8 +21,6 @@ import org.openspcoop2.utils.service.context.server.ServerInfoResponse;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 
-import it.govpay.bd.configurazione.model.AppIOBatch;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.appio.client.AppIoAPIClient;
 import it.govpay.core.utils.appio.impl.ApiException;
@@ -36,6 +34,8 @@ import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
+import it.govpay.model.configurazione.AppIOBatch;
+import it.govpay.model.configurazione.Giornale;
 
 public class AppIoClient extends BasicClientCORE {
 

@@ -36,7 +36,6 @@ import org.slf4j.MDC;
 import gov.telematici.pagamenti.ws.rpt.FaultBean;
 import gov.telematici.pagamenti.ws.rpt.NodoInviaRPT;
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.PagamentoPortale;
@@ -58,6 +57,7 @@ import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.configurazione.Giornale;
 
 public class InviaRptThread implements Runnable {
 
@@ -238,7 +238,7 @@ public class InviaRptThread implements Runnable {
 			if(client != null && client.getEventoCtx().isRegistraEvento()) {
 				try {
 					EventiBD eventiBD = new EventiBD(configWrapper);
-					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO());
+					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO(log));
 
 				} catch (ServiceException e) {
 					log.error("Errore: " + e.getMessage(), e);

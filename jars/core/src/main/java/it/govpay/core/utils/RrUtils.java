@@ -60,7 +60,6 @@ import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -78,6 +77,7 @@ import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rr.StatoRr;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.eventi.DatiPagoPA;
 
 public class RrUtils extends NdpValidationUtils {
 

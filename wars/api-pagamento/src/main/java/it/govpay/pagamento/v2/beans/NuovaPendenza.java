@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -532,7 +532,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     return Objects.hash(idA2A, idPendenza, idDominio, idUnitaOperativa, idTipoPendenza, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, direzione, divisione, proprieta, voci, allegati, idDebitore, dati);
   }
 
-  public static NuovaPendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
+  public static NuovaPendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, it.govpay.core.exceptions.ValidationException {
     return parse(json, NuovaPendenza.class);
   }
 

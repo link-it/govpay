@@ -1,4 +1,4 @@
-package it.govpay.bd.configurazione.model;
+package it.govpay.model.configurazione;
 
 public class PromemoriaRicevuta extends PromemoriaRicevutaBase {
 

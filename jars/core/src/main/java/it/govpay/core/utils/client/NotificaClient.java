@@ -32,14 +32,13 @@ import javax.xml.bind.JAXBException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.resources.Charset;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
@@ -56,6 +55,7 @@ import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Versionabile.Versione;
+import it.govpay.model.configurazione.Giornale;
 
 public class NotificaClient extends BasicClientCORE {
 

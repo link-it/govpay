@@ -6,9 +6,9 @@ import it.govpay.backoffice.v1.beans.Sonda;
 import it.govpay.backoffice.v1.beans.Sonda.StatoSonda;
 import it.govpay.backoffice.v1.beans.Sonda.TipoSonda;
 import it.govpay.backoffice.v1.sonde.Costanti;
-import it.govpay.bd.configurazione.model.AppIOBatch;
-import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.model.configurazione.AppIOBatch;
+import it.govpay.model.configurazione.MailBatch;
 
 public class SondeConverter {
 

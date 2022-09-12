@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -106,7 +106,7 @@ public class DominioProfiloPost extends JSONSerializable  implements IValidable{
   }
   
   @Override
- 	public void validate() throws org.openspcoop2.utils.json.ValidationException {
+ 	public void validate() throws it.govpay.core.exceptions.ValidationException {
 		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 		validatoreId.validaIdDominio("idDominio", this.idDominio);
 		

@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
@@ -53,6 +52,7 @@ import it.govpay.model.Connettore;
 import it.govpay.model.Notifica.StatoSpedizione;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Versionabile.Versione;
+import it.govpay.model.configurazione.Giornale;
 
 public class InviaNotificaThread implements Runnable {
 
@@ -278,7 +278,7 @@ public class InviaNotificaThread implements Runnable {
 			if(client != null && client.getEventoCtx().isRegistraEvento()) {
 				EventiBD eventiBD = new EventiBD(configWrapper);
 				try {
-					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO());
+					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO(log));
 				} catch (ServiceException e) {
 					log.error("Errore durante il salvataggio dell'evento: ", e);
 				}

@@ -56,7 +56,6 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Evento;
@@ -64,7 +63,6 @@ import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
-import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -90,6 +88,8 @@ import it.govpay.model.Intermediario;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
+import it.govpay.model.configurazione.Giornale;
+import it.govpay.model.eventi.DatiPagoPA;
 
 
 public class Rendicontazioni {
@@ -499,7 +499,7 @@ public class Rendicontazioni {
 											Applicazione applicazioneDominio = new it.govpay.core.business.Applicazione().getApplicazioneDominio(configWrapper, dominio, iuv,false);
 											if(applicazioneDominio != null) {
 												codApplicazione = applicazioneDominio.getCodApplicazione();
-												versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, codApplicazione), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO);
+												versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, codApplicazione), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, log);
 											}
 										}
 									} catch (VersamentoScadutoException e1) {
@@ -660,7 +660,7 @@ public class Rendicontazioni {
 					} finally {
 						if(chiediFlussoRendicontazioneClient != null && chiediFlussoRendicontazioneClient.getEventoCtx().isRegistraEvento()) {
 							EventiBD eventiBD = new EventiBD(configWrapper);
-							Evento eventoDTO = chiediFlussoRendicontazioneClient.getEventoCtx().toEventoDTO();
+							Evento eventoDTO = chiediFlussoRendicontazioneClient.getEventoCtx().toEventoDTO(log);
 							if(isAggiornamento)
 								eventoDTO.setSottotipoEvento(EventoContext.APIPAGOPA_SOTTOTIPOEVENTO_FLUSSO_RENDICONTAZIONE_DUPLICATO);
 							eventiBD.insertEvento(eventoDTO);
@@ -813,7 +813,7 @@ public class Rendicontazioni {
 			if(chiediFlussoRendicontazioniClient != null && chiediFlussoRendicontazioniClient.getEventoCtx().isRegistraEvento()) {
 				try {
 					EventiBD eventiBD = new EventiBD(configWrapper);
-					eventiBD.insertEvento(chiediFlussoRendicontazioniClient.getEventoCtx().toEventoDTO());
+					eventiBD.insertEvento(chiediFlussoRendicontazioniClient.getEventoCtx().toEventoDTO(log));
 				}catch (ServiceException e) {
 					log.error("Errore durante l'acquisizione dei flussi di rendicontazione", e);
 				}finally {

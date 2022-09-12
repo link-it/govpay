@@ -15,7 +15,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -40,6 +40,7 @@ import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.GpAvviaTransazionePagamentoResponse;
+import it.govpay.core.beans.GpResponse;
 import it.govpay.core.beans.Mittente;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
@@ -64,6 +65,7 @@ import it.govpay.core.dao.pagamenti.dto.PagamentoPatchDTO;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.GovPayException.FaultBean;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
@@ -439,7 +441,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 				response.setIdCarrelloRpt(rpt.getIdTransazioneRpt());
 			}catch(GovPayException e) {
-				transazioneResponse = (GpAvviaTransazionePagamentoResponse) e.getWsResponse(transazioneResponse, "ws.ricevutaRichiestaKo", log);
+				transazioneResponse = (GpAvviaTransazionePagamentoResponse) this.getWsResponse(e, transazioneResponse, "ws.ricevutaRichiestaKo", log);
 				for(Versamento versamentoModel: versamenti) {
 					if(versamentoModel.getId() != null) {
 						IdVersamento idV = new IdVersamento();
@@ -461,7 +463,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				e.setParam(pagamentoPortale);
 				throw e;
 			} catch (Exception e) {
-				transazioneResponse = (GpAvviaTransazionePagamentoResponse) new GovPayException(e).getWsResponse(transazioneResponse, "ws.ricevutaRichiestaKo", log);
+				transazioneResponse = (GpAvviaTransazionePagamentoResponse) this.getWsResponse(new GovPayException(e), transazioneResponse, "ws.ricevutaRichiestaKo", log);
 				for(Versamento versamentoModel: versamenti) {
 					if(versamentoModel.getId() != null) {
 						IdVersamento idV = new IdVersamento();
@@ -801,5 +803,39 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(pagamentiPortaleBD != null)
 				pagamentiPortaleBD.closeConnection();
 		}
+	}
+	
+	public GpResponse getWsResponse(GovPayException e, GpResponse response, String codMsgDiagnostico, Logger log) {
+		FaultBean faultBean = e.getFaultBean();
+		if(faultBean == null) {
+			response.setMittente(Mittente.GOV_PAY);
+			response.setCodEsito(e.getCodEsito() != null ? e.getCodEsito().toString() : "");
+			response.setDescrizioneEsito(e.getDescrizioneEsito() != null ? e.getDescrizioneEsito() : "");
+			response.setDettaglioEsito(e.getMessage());
+			switch (e.getCodEsito()) {
+			case INTERNAL:
+				log.error("[" + e.getCodEsito() + "] " + e.getMessage() + (e.getCausa() != null ? "\n" + e.getCausa() : ""), this);
+			break;
+			default:
+				log.warn("[" + e.getCodEsito() + "] " + e.getMessage() +  (e.getCausa() != null ? "\n" + e.getCausa() : ""));
+				break;
+			}
+			
+			try {
+				ContextThreadLocal.get().getApplicationLogger().log(codMsgDiagnostico, response.getCodEsito().toString(), response.getDescrizioneEsito(), response.getDettaglioEsito());
+			} catch (UtilsException e1) {
+				LoggerWrapperFactory.getLogger(getClass()).error("Errore durante la scrittura dell'esito operazione: "+ e1.getMessage(),e1);
+			}
+			
+		} else {
+			if(faultBean.getId().contains("NodoDeiPagamentiSPC")) 
+				response.setMittente(Mittente.NODO_DEI_PAGAMENTI_SPC);
+			else 
+				response.setMittente(Mittente.PSP);
+			response.setCodEsito(faultBean.getFaultCode() != null ? faultBean.getFaultCode() : "");
+			response.setDescrizioneEsito(faultBean.getFaultString() != null ? faultBean.getFaultString() : "");
+			response.setDettaglioEsito(faultBean.getDescription());
+		}
+		return response;
 	}
 }

@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -687,11 +687,11 @@ public class PendenzaPost extends it.govpay.core.beans.JSONSerializable implemen
   }
   
   @Override
-  public void validate() throws org.openspcoop2.utils.json.ValidationException {
+  public void validate() throws it.govpay.core.exceptions.ValidationException {
 		validazione(true);
 	}
   
-  public void validaPendenzaTracciato() throws org.openspcoop2.utils.json.ValidationException {
+  public void validaPendenzaTracciato() throws it.govpay.core.exceptions.ValidationException {
 		validazione(false);
 	}
 

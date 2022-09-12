@@ -1,6 +1,6 @@
 package it.govpay.core.dao.anagrafica.dto;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Versamento;

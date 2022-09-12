@@ -2,7 +2,7 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -710,7 +710,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
   }
   
   @Override
-	public void validate() throws org.openspcoop2.utils.json.ValidationException {
+	public void validate() throws it.govpay.core.exceptions.ValidationException {
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 	
 			vf.getValidator("ragioneSociale", this.ragioneSociale).notNull().minLength(1).maxLength(70);

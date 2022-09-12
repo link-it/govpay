@@ -3,7 +3,7 @@ package it.govpay.backoffice.v1.beans;
 import java.util.Objects;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;

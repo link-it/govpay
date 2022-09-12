@@ -1,4 +1,4 @@
-package it.govpay.bd.model.eventi;
+package it.govpay.model.eventi;
 
 import java.io.Serializable;
 

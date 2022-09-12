@@ -2,7 +2,7 @@ package it.govpay.backoffice.v1.beans.converter;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import it.govpay.backoffice.v1.beans.GdeEvento;
 import it.govpay.backoffice.v1.beans.GdeEvento.DumpEnum;
@@ -14,8 +14,8 @@ import it.govpay.backoffice.v1.beans.Giornale;
 public class GiornaleConverter {
 
 	
-	public static it.govpay.bd.configurazione.model.Giornale getGiornaleDTO(Giornale giornalePost) throws ServiceException, ValidationException {
-		it.govpay.bd.configurazione.model.Giornale giornale = new it.govpay.bd.configurazione.model.Giornale();
+	public static it.govpay.model.configurazione.Giornale getGiornaleDTO(Giornale giornalePost) throws ServiceException, ValidationException {
+		it.govpay.model.configurazione.Giornale giornale = new it.govpay.model.configurazione.Giornale();
 		
 		GdeInterfacce interfacce = giornalePost.getInterfacce();
 		
@@ -33,9 +33,9 @@ public class GiornaleConverter {
 	
 	
 	
-	private static it.govpay.bd.configurazione.model.GdeInterfaccia getGdeInterfaccia(GdeInterfaccia gdeInterfaccia) throws ValidationException {
+	private static it.govpay.model.configurazione.GdeInterfaccia getGdeInterfaccia(GdeInterfaccia gdeInterfaccia) throws ValidationException {
 		
-		it.govpay.bd.configurazione.model.GdeInterfaccia interfaccia = new it.govpay.bd.configurazione.model.GdeInterfaccia();
+		it.govpay.model.configurazione.GdeInterfaccia interfaccia = new it.govpay.model.configurazione.GdeInterfaccia();
 		
 		interfaccia.setLetture(getGdeEvento(gdeInterfaccia.getLetture()));
 		interfaccia.setScritture(getGdeEvento(gdeInterfaccia.getScritture()));
@@ -43,9 +43,9 @@ public class GiornaleConverter {
 		return interfaccia;
 	}
 
-	private static it.govpay.bd.configurazione.model.GdeEvento getGdeEvento(GdeEvento gdeEvento) throws ValidationException {
+	private static it.govpay.model.configurazione.GdeEvento getGdeEvento(GdeEvento gdeEvento) throws ValidationException {
 		 
-		it.govpay.bd.configurazione.model.GdeEvento evento = new it.govpay.bd.configurazione.model.GdeEvento();
+		it.govpay.model.configurazione.GdeEvento evento = new it.govpay.model.configurazione.GdeEvento();
 		
 		if(gdeEvento.getLog() != null) {
 			
@@ -58,13 +58,13 @@ public class GiornaleConverter {
 			
 			switch(gdeEvento.getLogEnum()) {
 			case MAI:
-				evento.setLog(it.govpay.bd.configurazione.model.GdeEvento.LogEnum.MAI);
+				evento.setLog(it.govpay.model.configurazione.GdeEvento.LogEnum.MAI);
 				break;
 			case SEMPRE:
-				evento.setLog(it.govpay.bd.configurazione.model.GdeEvento.LogEnum.SEMPRE);
+				evento.setLog(it.govpay.model.configurazione.GdeEvento.LogEnum.SEMPRE);
 				break;
 			case SOLO_ERRORE:
-				evento.setLog(it.govpay.bd.configurazione.model.GdeEvento.LogEnum.SOLO_ERRORE);
+				evento.setLog(it.govpay.model.configurazione.GdeEvento.LogEnum.SOLO_ERRORE);
 				break;
 			}
 		}
@@ -80,13 +80,13 @@ public class GiornaleConverter {
 			
 			switch(gdeEvento.getDumpEnum()) {
 			case MAI:
-				evento.setDump(it.govpay.bd.configurazione.model.GdeEvento.DumpEnum.MAI);
+				evento.setDump(it.govpay.model.configurazione.GdeEvento.DumpEnum.MAI);
 				break;
 			case SEMPRE:
-				evento.setDump(it.govpay.bd.configurazione.model.GdeEvento.DumpEnum.SEMPRE);
+				evento.setDump(it.govpay.model.configurazione.GdeEvento.DumpEnum.SEMPRE);
 				break;
 			case SOLO_ERRORE:
-				evento.setDump(it.govpay.bd.configurazione.model.GdeEvento.DumpEnum.SOLO_ERRORE);
+				evento.setDump(it.govpay.model.configurazione.GdeEvento.DumpEnum.SOLO_ERRORE);
 				break;
 			}
 		}
@@ -94,7 +94,7 @@ public class GiornaleConverter {
 		return evento;
 	}
 
-	public static Giornale toRsModel(it.govpay.bd.configurazione.model.Giornale giornale) throws ServiceException {
+	public static Giornale toRsModel(it.govpay.model.configurazione.Giornale giornale) throws ServiceException {
 		Giornale rsModel = new Giornale();
 
 		GdeInterfacce interfacce = new GdeInterfacce();
@@ -113,7 +113,7 @@ public class GiornaleConverter {
 		return rsModel;
 	}
 
-	private static GdeInterfaccia toInterfacciaRsModel(it.govpay.bd.configurazione.model.GdeInterfaccia interaccia) {
+	private static GdeInterfaccia toInterfacciaRsModel(it.govpay.model.configurazione.GdeInterfaccia interaccia) {
 		GdeInterfaccia rsModel = new GdeInterfaccia();
 		
 		rsModel.setLetture(toEventoRsModel(interaccia.getLetture()));
@@ -122,7 +122,7 @@ public class GiornaleConverter {
 		return rsModel;
 	}
 
-	private static GdeEvento toEventoRsModel(it.govpay.bd.configurazione.model.GdeEvento evento) {
+	private static GdeEvento toEventoRsModel(it.govpay.model.configurazione.GdeEvento evento) {
 		GdeEvento rsModel = new GdeEvento();
 		
 		switch(evento.getLog()) {

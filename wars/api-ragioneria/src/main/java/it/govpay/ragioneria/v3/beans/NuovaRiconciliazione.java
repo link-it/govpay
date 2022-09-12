@@ -5,7 +5,7 @@ import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

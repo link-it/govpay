@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
@@ -32,6 +31,7 @@ import it.govpay.core.utils.client.MaggioliJPPAClient;
 import it.govpay.core.utils.client.MaggioliJPPAClient.Azione;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.ConnettoreNotificaPagamenti;
+import it.govpay.model.configurazione.Giornale;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.internal.CtRichiestaStandard;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.internal.CtRispostaStandard;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.internal.StEsito;
@@ -187,7 +187,7 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 			if(client != null && client.getEventoCtx().isRegistraEvento()) {
 				try {
 					EventiBD eventiBD = new EventiBD(configWrapper);
-					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO());
+					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO(log));
 
 				} catch (ServiceException e) {
 					log.error("Errore: " + e.getMessage(), e);

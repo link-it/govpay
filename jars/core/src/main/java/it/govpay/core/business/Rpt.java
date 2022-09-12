@@ -19,7 +19,6 @@ import gov.telematici.pagamenti.ws.rpt.FaultBean;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediStatoRPTRisposta;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.PagamentoPortale;
@@ -40,6 +39,7 @@ import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.FaultBeanUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
@@ -61,6 +61,7 @@ import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.configurazione.Giornale;
 
 public class Rpt {
 
@@ -364,7 +365,7 @@ public class Rpt {
 						clientInviaCarrelloRPT.getEventoCtx().setEsito(Esito.KO);
 						//						clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(risposta.toString());
 					}
-					throw new GovPayException(risposta.getFaultBean());
+					throw new GovPayException(FaultBeanUtils.toFaultBean(risposta.getFaultBean()));
 				} else {
 					log.info("Rpt accettata dal Nodo dei Pagamenti");
 					// RPT accettata dal Nodo
@@ -469,7 +470,7 @@ public class Rpt {
 				} finally {
 					if(chiediStatoRptClient != null && chiediStatoRptClient.getEventoCtx().isRegistraEvento()) {
 						EventiBD eventiBD = new EventiBD(configWrapper);
-						eventiBD.insertEvento(chiediStatoRptClient.getEventoCtx().toEventoDTO());
+						eventiBD.insertEvento(chiediStatoRptClient.getEventoCtx().toEventoDTO(log));
 					}
 				}
 			}  finally {
@@ -494,7 +495,7 @@ public class Rpt {
 							clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(rpt.getDescrizioneStato());
 						}
 
-						eventiBD.insertEvento(clientInviaCarrelloRPT.getEventoCtx().toEventoDTO());
+						eventiBD.insertEvento(clientInviaCarrelloRPT.getEventoCtx().toEventoDTO(log));
 					}
 				}
 			}

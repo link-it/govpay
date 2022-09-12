@@ -23,17 +23,11 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.logger.beans.context.core.Role;
 import org.openspcoop2.utils.service.beans.HttpMethodEnum;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.configurazione.model.GdeEvento;
-import it.govpay.bd.configurazione.model.GdeInterfaccia;
-import it.govpay.bd.configurazione.model.Giornale;
-import it.govpay.bd.configurazione.model.GdeEvento.DumpEnum;
-import it.govpay.bd.configurazione.model.GdeEvento.LogEnum;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.core.utils.EventoContext;
@@ -42,6 +36,12 @@ import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.client.EnteRendicontazioniClient;
 import it.govpay.core.utils.client.NodoClient;
+import it.govpay.model.Evento.RuoloEvento;
+import it.govpay.model.configurazione.GdeEvento;
+import it.govpay.model.configurazione.GdeInterfaccia;
+import it.govpay.model.configurazione.Giornale;
+import it.govpay.model.configurazione.GdeEvento.DumpEnum;
+import it.govpay.model.configurazione.GdeEvento.LogEnum;
 
 public class GiornaleEventi {
 	
@@ -315,7 +315,7 @@ public class GiornaleEventi {
 		return false;
 	}
 	
-	public static EventoContext creaEventoContext(Categoria categoriaEvento, Role role) {
+	public static EventoContext creaEventoContext(Categoria categoriaEvento, RuoloEvento role) {
 		EventoContext eventoCtx = new EventoContext();
 		eventoCtx.setCategoriaEvento(categoriaEvento);
 		eventoCtx.setRole(role);

@@ -321,7 +321,7 @@ public class PagamentoPost extends JSONSerializable {
 		return Objects.hash(this.pendenze, this.urlRitorno, this.contoAddebito, this.dataEsecuzionePagamento, this.credenzialiPagatore, this.soggettoVersante, this.autenticazioneSoggetto, this.lingua);
 	}
 
-	public static PagamentoPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
+	public static PagamentoPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, it.govpay.core.exceptions.ValidationException {
 		return parse(json, PagamentoPost.class);
 	}
 

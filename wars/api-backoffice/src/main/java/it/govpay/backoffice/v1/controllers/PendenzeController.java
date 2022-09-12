@@ -20,7 +20,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.mime.MimeMultipart;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -56,7 +56,6 @@ import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operazione;
 import it.govpay.bd.model.Tracciato;
 import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -93,6 +92,7 @@ import it.govpay.model.Tracciato.FORMATO_TRACCIATO;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.model.eventi.DatiPagoPA;
 
 public class PendenzeController extends BaseController {
 

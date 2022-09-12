@@ -17,12 +17,12 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
-import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.eventi.EventiDAO;
 import it.govpay.core.dao.eventi.dto.PutEventoDTO;
 import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Componente;
+import it.govpay.model.eventi.DettaglioRisposta;
 import it.govpay.core.utils.GpContext;
 
 public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Message>  {

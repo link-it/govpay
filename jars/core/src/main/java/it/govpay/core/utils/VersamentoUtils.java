@@ -40,7 +40,7 @@ import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.json.IJsonSchemaValidator;
 import org.openspcoop2.utils.json.JsonSchemaValidatorConfig;
 import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.json.ValidationResponse;
 import org.openspcoop2.utils.json.ValidationResponse.ESITO;
 import org.openspcoop2.utils.json.ValidatorFactory;
@@ -222,7 +222,7 @@ public class VersamentoUtils {
 				if(versamento.getApplicazione(configWrapper).getConnettoreIntegrazione() != null) {
 					TipologiaTipoVersamento tipo = versamento.getTipo();
 					try {
-						versamento = acquisisciVersamento(versamento.getApplicazione(configWrapper), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, tipo);
+						versamento = acquisisciVersamento(versamento.getApplicazione(configWrapper), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, tipo, log);
 					} catch (ClientException e) {
 						// Errore nella chiamata all'ente. Controllo se e' mandatoria o uso quel che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) { 
@@ -266,7 +266,7 @@ public class VersamentoUtils {
 	}
 
 
-	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String debitore, String dominio, String iuv, TipologiaTipoVersamento tipo) 
+	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String debitore, String dominio, String iuv, TipologiaTipoVersamento tipo, Logger log) 
 			throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
 
 		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
@@ -349,14 +349,14 @@ public class VersamentoUtils {
 			if(eventoCtx.isRegistraEvento()) {
 				// log evento
 				EventiBD eventiBD = new EventiBD(configWrapper);
-				eventiBD.insertEvento(eventoCtx.toEventoDTO());
+				eventiBD.insertEvento(eventoCtx.toEventoDTO(log));
 			}
 		}
 		return versamento;
 	}
 
 
-	public static Versamento inoltroPendenza(Applicazione applicazione, String codDominio, String codTipoVersamento, String codUnitaOperativa, String jsonBody) 
+	public static Versamento inoltroPendenza(Applicazione applicazione, String codDominio, String codTipoVersamento, String codUnitaOperativa, String jsonBody, Logger log) 
 			throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
 
 		IContext ctx = ContextThreadLocal.get();
@@ -435,7 +435,7 @@ public class VersamentoUtils {
 			if(eventoCtx.isRegistraEvento()) {
 				// log evento
 				EventiBD eventiBD = new EventiBD(configWrapper);
-				eventiBD.insertEvento(eventoCtx.toEventoDTO());
+				eventiBD.insertEvento(eventoCtx.toEventoDTO(log));
 			}
 		}
 		return versamento;
@@ -889,14 +889,14 @@ public class VersamentoUtils {
 			} catch (IllegalArgumentException e) {
 				log.error("JSON schema non codificato correttamente: " + e.getMessage(), e);
 				throw new GovPayException(EsitoOperazione.VAL_001, e, "non e' stato possibile decodificare il jsonschema di validazione ("+e.getMessage()+").");
-			} catch (ValidationException e) {
+			} catch (org.openspcoop2.utils.json.ValidationException e) {
 				log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 				throw new GovPayException(EsitoOperazione.VAL_001, e , e.getMessage());
 			} 	
 			ValidationResponse validate = null;
 			try {
 				validate = validator.validate(inputModello4.getBytes());
-			} catch (ValidationException e) {
+			} catch (org.openspcoop2.utils.json.ValidationException e) {
 				log.debug("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 				throw new GovPayException(EsitoOperazione.VAL_002, e, e.getMessage());
 			} 
@@ -985,7 +985,7 @@ public class VersamentoUtils {
 			throw new GovPayException(EsitoOperazione.APP_001, applicazione.getCodApplicazione());
 		
 		try {
-			chiediVersamento = VersamentoUtils.inoltroPendenza(applicazione, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4);
+			chiediVersamento = VersamentoUtils.inoltroPendenza(applicazione, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4, log);
 			VersamentoUtils.validazioneSemantica(chiediVersamento, chiediVersamento.getNumeroAvviso() == null && chiediVersamento.getSingoliVersamenti().size() == 1);
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(chiediVersamento.getCodVersamentoEnte());
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(chiediVersamento.getApplicazione(configWrapper).getCodApplicazione());

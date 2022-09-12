@@ -404,7 +404,7 @@ public class VocePendenza extends JSONSerializable {
     return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, indice, stato, dominio, tipoBollo, hashDocumento, provinciaResidenza, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita);
   }
 
-  public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
+  public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, it.govpay.core.exceptions.ValidationException {
     return parse(json, VocePendenza.class);
   }
 

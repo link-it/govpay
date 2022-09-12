@@ -28,6 +28,25 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 public class Evento extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	
+	public enum TipoEventoCooperazione {
+		nodoInviaRPT,
+		nodoInviaCarrelloRPT, 
+		nodoChiediStatoRPT, 
+		paaInviaRT, 
+		nodoChiediCopiaRT, 
+		paaVerificaRPT, 
+		paaAttivaRPT,
+		nodoInviaRichiestaStorno,
+		paaInviaEsitoStorno,
+		nodoInviaAvvisoDigitale,
+		paVerifyPaymentNotice,
+		paGetPayment,
+		paSendRT;
+	}
+
+	public static final String COMPONENTE_COOPERAZIONE = "FESP";
+	public static final String NDP = "NodoDeiPagamentiSPC";
+	
 	private Long id;
 	private String componente;
 	private CategoriaEvento categoriaEvento;

@@ -2,7 +2,7 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -94,7 +94,7 @@ public class CodificaAvvisi extends it.govpay.core.beans.JSONSerializable implem
     return Objects.hash(this.codificaIuv, this.regExpIuv, this.generazioneIuvInterna);
   }
 
-  public static CodificaAvvisi parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
+  public static CodificaAvvisi parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, it.govpay.core.exceptions.ValidationException {
     return parse(json, CodificaAvvisi.class);
   }
 

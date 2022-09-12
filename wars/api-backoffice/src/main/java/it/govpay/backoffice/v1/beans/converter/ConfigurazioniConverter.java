@@ -9,7 +9,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.AppIOBatch;
@@ -29,13 +29,13 @@ import it.govpay.backoffice.v1.beans.TemplatePromemoriaRicevutaBase;
 import it.govpay.backoffice.v1.beans.TemplatePromemoriaScadenza;
 import it.govpay.backoffice.v1.beans.TipoTemplateTrasformazione;
 import it.govpay.backoffice.v1.beans.TracciatoCsv;
-import it.govpay.bd.configurazione.model.KeyStore;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
 import it.govpay.core.dao.configurazione.dto.PutConfigurazioneDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.PatchOp;
+import it.govpay.model.configurazione.KeyStore;
 
 public class ConfigurazioniConverter {
 
@@ -104,8 +104,8 @@ public class ConfigurazioniConverter {
 		return rsModel;
 	}
 
-	private static it.govpay.bd.configurazione.model.TracciatoCsv getTracciatoCsvDTO(TracciatoCsv tracciatoCsv) throws ServiceException, ValidationException {
-		it.govpay.bd.configurazione.model.TracciatoCsv dto = new it.govpay.bd.configurazione.model.TracciatoCsv();
+	private static it.govpay.model.configurazione.TracciatoCsv getTracciatoCsvDTO(TracciatoCsv tracciatoCsv) throws ServiceException, ValidationException {
+		it.govpay.model.configurazione.TracciatoCsv dto = new it.govpay.model.configurazione.TracciatoCsv();
 
 		dto.setTipo(tracciatoCsv.getTipo());
 
@@ -123,8 +123,8 @@ public class ConfigurazioniConverter {
 		return dto;
 	}
 
-	private static it.govpay.bd.configurazione.model.TracciatoCsv getTracciatoCsvDTOPatch(TracciatoCsv tracciatoCsv) throws ServiceException, ValidationException {
-		it.govpay.bd.configurazione.model.TracciatoCsv dto = new it.govpay.bd.configurazione.model.TracciatoCsv();
+	private static it.govpay.model.configurazione.TracciatoCsv getTracciatoCsvDTOPatch(TracciatoCsv tracciatoCsv) throws ServiceException, ValidationException {
+		it.govpay.model.configurazione.TracciatoCsv dto = new it.govpay.model.configurazione.TracciatoCsv();
 
 		dto.setTipo(tracciatoCsv.getTipo());
 
@@ -142,7 +142,7 @@ public class ConfigurazioniConverter {
 		return dto;
 	}
 
-	private static TracciatoCsv toTracciatoRsModel(it.govpay.bd.configurazione.model.TracciatoCsv tracciatoCsv) { 
+	private static TracciatoCsv toTracciatoRsModel(it.govpay.model.configurazione.TracciatoCsv tracciatoCsv) { 
 		TracciatoCsv rsModel = new TracciatoCsv();
 
 		rsModel.setTipo(tracciatoCsv.getTipo());
@@ -197,12 +197,12 @@ public class ConfigurazioniConverter {
 		return list;
 	}
 
-	private static it.govpay.bd.configurazione.model.Hardening getConfigurazioneHardeningDTO(Hardening configurazioneHardening) {
-		it.govpay.bd.configurazione.model.Hardening dto = new it.govpay.bd.configurazione.model.Hardening();
+	private static it.govpay.model.configurazione.Hardening getConfigurazioneHardeningDTO(Hardening configurazioneHardening) {
+		it.govpay.model.configurazione.Hardening dto = new it.govpay.model.configurazione.Hardening();
 
 		dto.setAbilitato(configurazioneHardening.Abilitato());
 		if(configurazioneHardening.getCaptcha() != null) {
-			dto.setGoogleCatpcha(new it.govpay.bd.configurazione.model.GoogleCaptcha());
+			dto.setGoogleCatpcha(new it.govpay.model.configurazione.GoogleCaptcha());
 			dto.getGoogleCatpcha().setResponseParameter(configurazioneHardening.getCaptcha().getParametro());
 			dto.getGoogleCatpcha().setSecretKey(configurazioneHardening.getCaptcha().getSecretKey());
 			dto.getGoogleCatpcha().setServerURL(configurazioneHardening.getCaptcha().getServerURL());
@@ -216,7 +216,7 @@ public class ConfigurazioniConverter {
 		return dto;
 	}
 
-	private static Hardening toConfigurazioneHardeningRsModel(it.govpay.bd.configurazione.model.Hardening configurazioneHardening) {
+	private static Hardening toConfigurazioneHardeningRsModel(it.govpay.model.configurazione.Hardening configurazioneHardening) {
 		Hardening rsModel = new Hardening();
 		rsModel.setAbilitato(configurazioneHardening.isAbilitato());
 		ConfigurazioneReCaptcha captchaRsModel = null;;
@@ -238,11 +238,11 @@ public class ConfigurazioniConverter {
 		return rsModel;
 	}
 
-	private static it.govpay.bd.configurazione.model.AvvisaturaViaMail getConfigurazioneAvvisaturaMailDTO(ConfigurazioneAvvisaturaMail avvisaturaMail) throws ServiceException, ValidationException{
-		it.govpay.bd.configurazione.model.AvvisaturaViaMail dto = new it.govpay.bd.configurazione.model.AvvisaturaViaMail();
+	private static it.govpay.model.configurazione.AvvisaturaViaMail getConfigurazioneAvvisaturaMailDTO(ConfigurazioneAvvisaturaMail avvisaturaMail) throws ServiceException, ValidationException{
+		it.govpay.model.configurazione.AvvisaturaViaMail dto = new it.govpay.model.configurazione.AvvisaturaViaMail();
 
 		if(avvisaturaMail.getPromemoriaAvviso() != null) {
-			it.govpay.bd.configurazione.model.PromemoriaAvviso promemoriaAvviso = new it.govpay.bd.configurazione.model.PromemoriaAvviso();
+			it.govpay.model.configurazione.PromemoriaAvviso promemoriaAvviso = new it.govpay.model.configurazione.PromemoriaAvviso();
 
 			promemoriaAvviso.setAllegaPdf(avvisaturaMail.getPromemoriaAvviso().AllegaPdf());
 			promemoriaAvviso.setTipo(avvisaturaMail.getPromemoriaAvviso().getTipo());
@@ -260,7 +260,7 @@ public class ConfigurazioniConverter {
 		}
 
 		if(avvisaturaMail.getPromemoriaRicevuta() != null) {
-			it.govpay.bd.configurazione.model.PromemoriaRicevuta promemoriaRicevuta = new it.govpay.bd.configurazione.model.PromemoriaRicevuta();
+			it.govpay.model.configurazione.PromemoriaRicevuta promemoriaRicevuta = new it.govpay.model.configurazione.PromemoriaRicevuta();
 			
 			promemoriaRicevuta.setSoloEseguiti(avvisaturaMail.getPromemoriaRicevuta().SoloEseguiti());
 			promemoriaRicevuta.setAllegaPdf(avvisaturaMail.getPromemoriaRicevuta().AllegaPdf());
@@ -279,7 +279,7 @@ public class ConfigurazioniConverter {
 		}
 
 		if(avvisaturaMail.getPromemoriaScadenza() != null) {
-			it.govpay.bd.configurazione.model.PromemoriaScadenza promemoriaScadenza = new it.govpay.bd.configurazione.model.PromemoriaScadenza();
+			it.govpay.model.configurazione.PromemoriaScadenza promemoriaScadenza = new it.govpay.model.configurazione.PromemoriaScadenza();
 			
 			if(avvisaturaMail.getPromemoriaScadenza().getPreavviso() != null)
 			promemoriaScadenza.setPreavviso(avvisaturaMail.getPromemoriaScadenza().getPreavviso().intValue());
@@ -302,11 +302,11 @@ public class ConfigurazioniConverter {
 	}
 	
 	
-	private static it.govpay.bd.configurazione.model.AvvisaturaViaAppIo getConfigurazioneAvvisaturaAppIoDTO(ConfigurazioneAvvisaturaAppIO avvisaturaAppIo) throws ServiceException, ValidationException{
-		it.govpay.bd.configurazione.model.AvvisaturaViaAppIo dto = new it.govpay.bd.configurazione.model.AvvisaturaViaAppIo();
+	private static it.govpay.model.configurazione.AvvisaturaViaAppIo getConfigurazioneAvvisaturaAppIoDTO(ConfigurazioneAvvisaturaAppIO avvisaturaAppIo) throws ServiceException, ValidationException{
+		it.govpay.model.configurazione.AvvisaturaViaAppIo dto = new it.govpay.model.configurazione.AvvisaturaViaAppIo();
 
 		if(avvisaturaAppIo.getPromemoriaAvviso() != null) {
-			it.govpay.bd.configurazione.model.PromemoriaAvvisoBase promemoriaAvviso = new it.govpay.bd.configurazione.model.PromemoriaAvvisoBase();
+			it.govpay.model.configurazione.PromemoriaAvvisoBase promemoriaAvviso = new it.govpay.model.configurazione.PromemoriaAvvisoBase();
 
 			promemoriaAvviso.setTipo(avvisaturaAppIo.getPromemoriaAvviso().getTipo());
 			if(avvisaturaAppIo.getPromemoriaAvviso().getTipo() != null) {
@@ -323,7 +323,7 @@ public class ConfigurazioniConverter {
 		}
 
 		if(avvisaturaAppIo.getPromemoriaRicevuta() != null) {
-			it.govpay.bd.configurazione.model.PromemoriaRicevutaBase promemoriaRicevuta = new it.govpay.bd.configurazione.model.PromemoriaRicevutaBase();
+			it.govpay.model.configurazione.PromemoriaRicevutaBase promemoriaRicevuta = new it.govpay.model.configurazione.PromemoriaRicevutaBase();
 			
 			promemoriaRicevuta.setSoloEseguiti(avvisaturaAppIo.getPromemoriaRicevuta().SoloEseguiti());
 			promemoriaRicevuta.setTipo(avvisaturaAppIo.getPromemoriaRicevuta().getTipo());
@@ -341,7 +341,7 @@ public class ConfigurazioniConverter {
 		}
 
 		if(avvisaturaAppIo.getPromemoriaScadenza() != null) {
-			it.govpay.bd.configurazione.model.PromemoriaScadenza promemoriaScadenza = new it.govpay.bd.configurazione.model.PromemoriaScadenza();
+			it.govpay.model.configurazione.PromemoriaScadenza promemoriaScadenza = new it.govpay.model.configurazione.PromemoriaScadenza();
 			
 			if(avvisaturaAppIo.getPromemoriaScadenza().getPreavviso() != null)
 			promemoriaScadenza.setPreavviso(avvisaturaAppIo.getPromemoriaScadenza().getPreavviso().intValue());
@@ -363,7 +363,7 @@ public class ConfigurazioniConverter {
 		return dto;
 	}
 
-	private static ConfigurazioneAvvisaturaMail toConfigurazioneAvvisaturaMailRsModel(it.govpay.bd.configurazione.model.AvvisaturaViaMail avvisaturaMail) {
+	private static ConfigurazioneAvvisaturaMail toConfigurazioneAvvisaturaMailRsModel(it.govpay.model.configurazione.AvvisaturaViaMail avvisaturaMail) {
 		ConfigurazioneAvvisaturaMail rsModel = new ConfigurazioneAvvisaturaMail();
 		
 		if(avvisaturaMail.getPromemoriaAvviso() != null) {
@@ -404,7 +404,7 @@ public class ConfigurazioniConverter {
 		return rsModel;
 	}
 	
-	private static ConfigurazioneAvvisaturaAppIO toConfigurazioneAvvisaturaAppIoRsModel(it.govpay.bd.configurazione.model.AvvisaturaViaAppIo avvisaturaMail) {
+	private static ConfigurazioneAvvisaturaAppIO toConfigurazioneAvvisaturaAppIoRsModel(it.govpay.model.configurazione.AvvisaturaViaAppIo avvisaturaMail) {
 		ConfigurazioneAvvisaturaAppIO rsModel = new ConfigurazioneAvvisaturaAppIO();
 		
 		if(avvisaturaMail.getPromemoriaAvviso() != null) {
@@ -444,14 +444,14 @@ public class ConfigurazioniConverter {
 	}
 
 
-	private static it.govpay.bd.configurazione.model.MailBatch getConfigurazioneMailBatchDTO(MailBatch mailBatch) {
-		it.govpay.bd.configurazione.model.MailBatch dto = new it.govpay.bd.configurazione.model.MailBatch();
+	private static it.govpay.model.configurazione.MailBatch getConfigurazioneMailBatchDTO(MailBatch mailBatch) {
+		it.govpay.model.configurazione.MailBatch dto = new it.govpay.model.configurazione.MailBatch();
 
 		dto.setAbilitato(mailBatch.Abilitato());
-		it.govpay.bd.configurazione.model.MailServer mailServerDTO = null;
+		it.govpay.model.configurazione.MailServer mailServerDTO = null;
 
 		if(mailBatch.getMailserver() != null) {
-			mailServerDTO = new it.govpay.bd.configurazione.model.MailServer();
+			mailServerDTO = new it.govpay.model.configurazione.MailServer();
 
 			mailServerDTO.setHost(mailBatch.getMailserver().getHost());
 			mailServerDTO.setPort(mailBatch.getMailserver().getPort().intValue());
@@ -470,8 +470,8 @@ public class ConfigurazioniConverter {
 		return dto;
 	}
 	
-	private static it.govpay.bd.configurazione.model.SslConfig getConfigurazioneSslConfigDTO(SslConfig sslConfig) {
-		it.govpay.bd.configurazione.model.SslConfig dto = new it.govpay.bd.configurazione.model.SslConfig();
+	private static it.govpay.model.configurazione.SslConfig getConfigurazioneSslConfigDTO(SslConfig sslConfig) {
+		it.govpay.model.configurazione.SslConfig dto = new it.govpay.model.configurazione.SslConfig();
 		
 		dto.setAbilitato(sslConfig.Abilitato());
 		dto.setHostnameVerifier(false);
@@ -484,14 +484,14 @@ public class ConfigurazioniConverter {
 		return dto;	
 	}
 
-	private static it.govpay.bd.configurazione.model.KeyStore getConfigurazioneKeyStoreDTO(Keystore keystore) {
+	private static it.govpay.model.configurazione.KeyStore getConfigurazioneKeyStoreDTO(Keystore keystore) {
 		
-		it.govpay.bd.configurazione.model.KeyStore dto = null;
+		it.govpay.model.configurazione.KeyStore dto = null;
 		
 		if(keystore != null && 
 			(StringUtils.isNotEmpty(keystore.getType()) || StringUtils.isNotEmpty(keystore.getLocation()) || StringUtils.isNotEmpty(keystore.getPassword()) || StringUtils.isNotEmpty(keystore.getManagementAlgorithm()))	
 				) {
-			dto = new it.govpay.bd.configurazione.model.KeyStore();
+			dto = new it.govpay.model.configurazione.KeyStore();
 			
 			dto.setLocation(keystore.getLocation());
 			dto.setManagementAlgorithm(keystore.getManagementAlgorithm());
@@ -501,7 +501,7 @@ public class ConfigurazioniConverter {
 		
 		return dto;	
 	}
-	private static MailBatch toConfigurazioneMailBatchRsModel(it.govpay.bd.configurazione.model.MailBatch batchSpedizioneEmail) {
+	private static MailBatch toConfigurazioneMailBatchRsModel(it.govpay.model.configurazione.MailBatch batchSpedizioneEmail) {
 		MailBatch rsModel = new MailBatch();
 
 		rsModel.setAbilitato(batchSpedizioneEmail.isAbilitato());
@@ -528,7 +528,7 @@ public class ConfigurazioniConverter {
 		return rsModel;
 	}
 
-	private static SslConfig toConfigurazioneMailSslConfigRsModel(it.govpay.bd.configurazione.model.SslConfig sslConfig) {
+	private static SslConfig toConfigurazioneMailSslConfigRsModel(it.govpay.model.configurazione.SslConfig sslConfig) {
 		SslConfig rsModel = new SslConfig();
 		
 		rsModel.setAbilitato(sslConfig.isAbilitato());
@@ -553,8 +553,8 @@ public class ConfigurazioniConverter {
 		
 		return rsModel;
 	}
-	private static it.govpay.bd.configurazione.model.AppIOBatch getConfigurazioneAppIOBatchDTO(AppIOBatch appIoBatch) {
-		it.govpay.bd.configurazione.model.AppIOBatch dto = new it.govpay.bd.configurazione.model.AppIOBatch();
+	private static it.govpay.model.configurazione.AppIOBatch getConfigurazioneAppIOBatchDTO(AppIOBatch appIoBatch) {
+		it.govpay.model.configurazione.AppIOBatch dto = new it.govpay.model.configurazione.AppIOBatch();
 
 		dto.setAbilitato(appIoBatch.Abilitato());
 		dto.setUrl(appIoBatch.getUrl());
@@ -563,7 +563,7 @@ public class ConfigurazioniConverter {
 		return dto;
 	}
 
-	private static AppIOBatch toConfigurazioneAppIOBatchRsModel(it.govpay.bd.configurazione.model.AppIOBatch batchSpedizioneAppIo) {
+	private static AppIOBatch toConfigurazioneAppIOBatchRsModel(it.govpay.model.configurazione.AppIOBatch batchSpedizioneAppIo) {
 		AppIOBatch rsModel = new AppIOBatch();
 
 		rsModel.setAbilitato(batchSpedizioneAppIo.isAbilitato());

@@ -11,14 +11,14 @@ import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
-import it.govpay.bd.configurazione.model.AppIOBatch;
-import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
-import it.govpay.bd.configurazione.model.AvvisaturaViaMail;
-import it.govpay.bd.configurazione.model.Giornale;
-import it.govpay.bd.configurazione.model.Hardening;
-import it.govpay.bd.configurazione.model.MailBatch;
-import it.govpay.bd.configurazione.model.TracciatoCsv;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.model.configurazione.AppIOBatch;
+import it.govpay.model.configurazione.AvvisaturaViaAppIo;
+import it.govpay.model.configurazione.AvvisaturaViaMail;
+import it.govpay.model.configurazione.Giornale;
+import it.govpay.model.configurazione.Hardening;
+import it.govpay.model.configurazione.MailBatch;
+import it.govpay.model.configurazione.TracciatoCsv;
 
 public class Configurazione extends it.govpay.model.Configurazione {
 

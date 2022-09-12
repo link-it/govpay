@@ -2,7 +2,7 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -337,7 +337,7 @@ public class Soggetto extends it.govpay.core.beans.JSONSerializable implements I
   }
   
   @Override
-  public void validate() throws org.openspcoop2.utils.json.ValidationException {
+  public void validate() throws it.govpay.core.exceptions.ValidationException {
 	  
 		SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
 		
