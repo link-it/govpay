@@ -2,8 +2,6 @@ package it.govpay.pendenze.v2.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -14,19 +12,19 @@ import it.govpay.core.beans.JSONSerializable;
 "pdf",
 })
 public class PendenzaCreata extends JSONSerializable {
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
-  
+
   @JsonProperty("UUID")
   private String UUID = null;
-  
+
   @JsonProperty("pdf")
   private String pdf = null;
-  
+
   /**
    * Identificativo del creditore dell'avviso
    **/
@@ -111,7 +109,7 @@ public class PendenzaCreata extends JSONSerializable {
     return Objects.hash(idDominio, numeroAvviso, UUID, pdf);
   }
 
-  public static PendenzaCreata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static PendenzaCreata parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, PendenzaCreata.class);
   }
 
@@ -124,7 +122,7 @@ public class PendenzaCreata extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class PendenzaCreata {\n");
-    
+
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    numeroAvviso: ").append(toIndentedString(numeroAvviso)).append("\n");
     sb.append("    UUID: ").append(toIndentedString(UUID)).append("\n");

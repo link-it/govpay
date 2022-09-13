@@ -6,8 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -46,103 +44,103 @@ import it.govpay.core.beans.JSONSerializable;
 "allegati",
 })
 public class Pendenza extends JSONSerializable {
-  
+
   @JsonProperty("idA2A")
   private String idA2A = null;
-  
+
   @JsonProperty("idPendenza")
   private String idPendenza = null;
-  
+
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
-  
+
   @JsonProperty("dominio")
   private Dominio dominio = null;
-  
+
   @JsonProperty("unitaOperativa")
   private UnitaOperativa unitaOperativa = null;
-  
+
   @JsonProperty("stato")
   private StatoPendenza stato = null;
-  
+
   @JsonProperty("descrizioneStato")
   private String descrizioneStato = null;
-  
+
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
-  
+
   @JsonProperty("iuvAvviso")
   private String iuvAvviso = null;
-  
+
   @JsonProperty("iuvPagamento")
   private String iuvPagamento = null;
-  
+
   @JsonProperty("dataPagamento")
   private Date dataPagamento = null;
-  
+
   @JsonProperty("causale")
   private String causale = null;
-  
+
   @JsonProperty("soggettoPagatore")
   private Soggetto soggettoPagatore = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
-  
+
   @JsonProperty("dataCaricamento")
   private Date dataCaricamento = null;
-  
+
   @JsonProperty("dataValidita")
   private Date dataValidita = null;
-  
+
   @JsonProperty("dataScadenza")
   private Date dataScadenza = null;
-  
+
   @JsonProperty("annoRiferimento")
   private BigDecimal annoRiferimento = null;
-  
+
   @JsonProperty("cartellaPagamento")
   private String cartellaPagamento = null;
-  
+
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
-  
+
   @JsonProperty("tassonomia")
   private String tassonomia = null;
-  
+
   @JsonProperty("tassonomiaAvviso")
   private TassonomiaAvviso tassonomiaAvviso = null;
-  
+
   @JsonProperty("direzione")
   private String direzione = null;
-  
+
   @JsonProperty("divisione")
   private String divisione = null;
-  
+
   @JsonProperty("documento")
   private Documento documento = null;
-  
+
   @JsonProperty("tipo")
   private TipoPendenzaTipologia tipo = null;
-  
+
   @JsonProperty("UUID")
   private String UUID = null;
-  
+
   @JsonProperty("proprieta")
   private ProprietaPendenza proprieta = null;
-  
+
   @JsonProperty("voci")
   private List<VocePendenza> voci = new ArrayList<>();
-  
+
   @JsonProperty("rpp")
   private List<RppIndex> rpp = new ArrayList<>();
-  
+
   @JsonProperty("allegati")
   private List<AllegatoPendenza> allegati = null;
-  
+
   /**
    * Identificativo del gestionale responsabile della pendenza
    **/
@@ -691,7 +689,7 @@ public class Pendenza extends JSONSerializable {
     return Objects.hash(idA2A, idPendenza, idTipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, tipo, UUID, proprieta, voci, rpp, allegati);
   }
 
-  public static Pendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Pendenza parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, Pendenza.class);
   }
 

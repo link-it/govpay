@@ -108,7 +108,7 @@ public class Segnalazione extends JSONSerializable {
     return Objects.hash(data, codice, descrizione, dettaglio);
   }
 
-  public static Segnalazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Segnalazione parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, Segnalazione.class);
   }
 

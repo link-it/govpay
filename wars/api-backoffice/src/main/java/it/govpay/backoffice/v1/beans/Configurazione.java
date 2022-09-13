@@ -3,12 +3,11 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -21,28 +20,28 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "appIOBatch",
 })
 public class Configurazione extends JSONSerializable implements IValidable{
-  
+
   @JsonProperty("giornaleEventi")
   private Giornale giornaleEventi = null;
-  
+
   @JsonProperty("tracciatoCsv")
   private TracciatoCsv tracciatoCsv = null;
-  
+
   @JsonProperty("hardening")
   private Hardening hardening = null;
-  
+
   @JsonProperty("mailBatch")
   private MailBatch mailBatch = null;
-  
+
   @JsonProperty("avvisaturaMail")
   private ConfigurazioneAvvisaturaMail avvisaturaMail = null;
-  
+
   @JsonProperty("avvisaturaAppIO")
   private ConfigurazioneAvvisaturaAppIO avvisaturaAppIO = null;
-  
+
   @JsonProperty("appIOBatch")
   private AppIOBatch appIOBatch = null;
-  
+
   /**
    **/
   public Configurazione giornaleEventi(Giornale giornaleEventi) {
@@ -171,7 +170,7 @@ public class Configurazione extends JSONSerializable implements IValidable{
     return Objects.hash(giornaleEventi, tracciatoCsv, hardening, mailBatch, avvisaturaMail, avvisaturaAppIO, appIOBatch);
   }
 
-  public static Configurazione parse(String json) throws ServiceException, ValidationException {
+  public static Configurazione parse(String json) throws IOException {
     return parse(json, Configurazione.class);
   }
 
@@ -184,7 +183,7 @@ public class Configurazione extends JSONSerializable implements IValidable{
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Configurazione {\n");
-    
+
     sb.append("    giornaleEventi: ").append(toIndentedString(giornaleEventi)).append("\n");
     sb.append("    tracciatoCsv: ").append(toIndentedString(tracciatoCsv)).append("\n");
     sb.append("    hardening: ").append(toIndentedString(hardening)).append("\n");
@@ -215,8 +214,8 @@ public class Configurazione extends JSONSerializable implements IValidable{
 	vf.getValidator("hardening", this.hardening).notNull().validateFields();
 	vf.getValidator("mailBatch", this.mailBatch).notNull().validateFields();
 	vf.getValidator("avvisaturaMail", this.avvisaturaMail).notNull().validateFields();
-	vf.getValidator("avvisaturaAppIO", this.avvisaturaAppIO).notNull().validateFields();	
-	vf.getValidator("appIOBatch", this.appIOBatch).notNull().validateFields();	
+	vf.getValidator("avvisaturaAppIO", this.avvisaturaAppIO).notNull().validateFields();
+	vf.getValidator("appIOBatch", this.appIOBatch).notNull().validateFields();
   }
 }
 

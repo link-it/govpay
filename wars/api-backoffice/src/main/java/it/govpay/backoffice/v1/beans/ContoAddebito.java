@@ -2,11 +2,10 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 
 /**
  * Dati necessari alla realizzazione dei pagamenti per Addebito Diretto, se previsto dal profilo del versante.
@@ -15,13 +14,13 @@ import it.govpay.core.beans.JSONSerializable;
 "bic",
 })
 public class ContoAddebito extends JSONSerializable {
-  
+
   @JsonProperty("iban")
   private String iban = null;
-  
+
   @JsonProperty("bic")
   private String bic = null;
-  
+
   /**
    * Iban di addebito del pagatore.
    **/
@@ -72,7 +71,7 @@ public class ContoAddebito extends JSONSerializable {
     return Objects.hash(this.iban, this.bic);
   }
 
-  public static ContoAddebito parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static ContoAddebito parse(String json) throws IOException {
     return parse(json, ContoAddebito.class);
   }
 
@@ -85,7 +84,7 @@ public class ContoAddebito extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ContoAddebito {\n");
-    
+
     sb.append("    iban: ").append(this.toIndentedString(this.iban)).append("\n");
     sb.append("    bic: ").append(this.toIndentedString(this.bic)).append("\n");
     sb.append("}");

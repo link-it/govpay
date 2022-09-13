@@ -4,11 +4,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -22,28 +22,28 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "abilitato",
 })
 public class OperatorePost extends it.govpay.core.beans.JSONSerializable implements IValidable{
-  
+
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
-  
+
   @JsonProperty("password")
   private String password = null;
-  
+
   @JsonProperty("domini")
   private List<Object> domini = null;
-  
+
   @JsonProperty("tipiPendenza")
   private List<String> tipiPendenza = null;
-  
+
   @JsonProperty("acl")
   private List<AclPost> acl = null;
-  
+
   @JsonProperty("ruoli")
   private List<String> ruoli = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   /**
    * Nome e cognome dell'operatore
    **/
@@ -179,7 +179,7 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
     return Objects.hash(ragioneSociale, password, domini, tipiPendenza, acl, ruoli, abilitato);
   }
 
-  public static OperatorePost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static OperatorePost parse(String json) throws IOException {
     return parse(json, OperatorePost.class);
   }
 
@@ -192,7 +192,7 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class OperatorePost {\n");
-    
+
     sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
@@ -214,18 +214,18 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
 	@Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-		
+
 		vf.getValidator("ragioneSociale", this.ragioneSociale).notNull().minLength(1).maxLength(35);
 		validatoreId.validaPassword("password", this.password);
 		vf.getValidator("acl", this.acl).validateObjects();
-		
+
 		if(this.domini != null && !this.domini.isEmpty()) {
-			
+
 			for (Object object : this.domini) {
 				if(object instanceof String) {
 					String idDominio = (String) object;
@@ -237,17 +237,17 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
 						dominioProfiloPost.validate();
 				}  else if(object instanceof java.util.LinkedHashMap) {
 					java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) object;
-					
+
 					DominioProfiloPost dominioProfiloPost = new DominioProfiloPost();
 					if(map.containsKey("idDominio"))
 						dominioProfiloPost.setIdDominio((String) map.get("idDominio"));
 					if(map.containsKey("unitaOperative")) {
 						Object objectUnita = map.get("unitaOperative");
-						
+
 						dominioProfiloPost.setUnitaOperative(null);
 						if(objectUnita != null) {
 							if(objectUnita instanceof List) {
-								
+
 								List<?> unitaOperativeTmp = (List<?>) objectUnita;
 								if (unitaOperativeTmp.stream().allMatch(String.class::isInstance)) {
 									@SuppressWarnings("unchecked")
@@ -261,10 +261,10 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
 							}
 						}
 					}
-					
+
 					if(dominioProfiloPost.getIdDominio() == null)
 						validatoreId.validaIdDominio("idDominio", dominioProfiloPost.getIdDominio());
-					
+
 //					DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
 					if(!dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
 						dominioProfiloPost.validate();
@@ -273,20 +273,20 @@ public class OperatorePost extends it.govpay.core.beans.JSONSerializable impleme
 				}
 			}
 		}
-		
+
 		if(this.tipiPendenza != null && !this.tipiPendenza.isEmpty()) {
 			for (String idTipoPendenza : this.tipiPendenza) {
 				if(!idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR))
 					validatoreId.validaIdTipoVersamento("tipiPendenza", idTipoPendenza);
 			}
 		}
-		
+
 		if(this.ruoli != null && !this.ruoli.isEmpty()) {
 			for (String idRuolo : this.ruoli) {
 				validatoreId.validaIdRuolo("ruoli", idRuolo);
 			}
 		}
-		
+
 		vf.getValidator("abilitato", this.abilitato).notNull();
 	}
 }

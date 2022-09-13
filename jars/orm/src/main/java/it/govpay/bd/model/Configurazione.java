@@ -3,14 +3,13 @@ package it.govpay.bd.model;
 import java.util.Arrays;
 import java.util.Properties;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.serialization.IDeserializer;
-import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.configurazione.AppIOBatch;
 import it.govpay.model.configurazione.AvvisaturaViaAppIo;
@@ -29,7 +28,7 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	public static final String APP_IO_BATCH = "app_io_batch";
 	public static final String AVVISATURA_MAIL = "avvisatura_mail";
 	public static final String AVVISATURA_APP_IO = "avvisatura_app_io";
-	
+
 
 	private Properties properties = new Properties();
 
@@ -46,13 +45,9 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	private AvvisaturaViaAppIo avvisaturaViaAppIo;
 	private AppIOBatch batchSpedizioneAppIo;
 
-	public Giornale getGiornale() throws ServiceException {
+	public Giornale getGiornale() throws IOException {
 		if(this.giornale == null) {
-			try {
-				this.giornale = this._getFromJson(this.getGiornaleEventi(), Giornale.class);
-			} catch (IOException e) {
-				throw new ServiceException(e);
-			}
+			this.giornale = this._getFromJson(this.getGiornaleEventi(), Giornale.class);
 		}
 
 		return giornale;
@@ -62,17 +57,13 @@ public class Configurazione extends it.govpay.model.Configurazione {
 		this.giornale = giornale;
 	}
 
-	public String getGiornaleJson() throws IOException, ServiceException {
+	public String getGiornaleJson() throws IOException {
 		return this._getJson(this.getGiornale());
 	}
 
-	public TracciatoCsv getTracciatoCsv() throws ServiceException {
+	public TracciatoCsv getTracciatoCsv() throws IOException {
 		if(this.tracciatoCsv == null) {
-			try {
-				this.tracciatoCsv = this._getFromJson(this.getTracciatoCSV(), TracciatoCsv.class);
-			} catch (IOException e) {
-				throw new ServiceException(e);
-			}
+			this.tracciatoCsv = this._getFromJson(this.getTracciatoCSV(), TracciatoCsv.class);
 		}
 		return tracciatoCsv;
 	}
@@ -81,17 +72,13 @@ public class Configurazione extends it.govpay.model.Configurazione {
 		this.tracciatoCsv = tracciatoCsv;
 	}
 
-	public String getTracciatoCsvJson() throws IOException, ServiceException {
+	public String getTracciatoCsvJson() throws IOException {
 		return this._getJson(this.getTracciatoCsv());
 	}
 
-	public Hardening getHardening() throws ServiceException {
+	public Hardening getHardening() throws IOException {
 		if(this.hardening == null) {
-			try {
-				this.hardening = this._getFromJson(this.getConfHardening(), Hardening.class);
-			} catch (IOException e) {
-				throw new ServiceException(e);
-			}
+			this.hardening = this._getFromJson(this.getConfHardening(), Hardening.class);
 		}
 		return hardening;
 	}
@@ -100,28 +87,36 @@ public class Configurazione extends it.govpay.model.Configurazione {
 		this.hardening = hardening;
 	}
 
-	public String getHardeningJson() throws IOException, ServiceException {
+	public String getHardeningJson() throws IOException {
 		return this._getJson(this.getHardening());
 	}
 
 	private <T> T _getFromJson(String jsonString, Class<T> tClass) throws IOException {
 		if(jsonString != null) {
-			SerializationConfig serializationConfig = new SerializationConfig();
-			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
-			serializationConfig.setIgnoreNullValues(true);
-			IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
-			return tClass.cast(deserializer.getObject(jsonString, tClass));
+			try {
+				SerializationConfig serializationConfig = new SerializationConfig();
+				serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+				serializationConfig.setIgnoreNullValues(true);
+				IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+				return tClass.cast(deserializer.getObject(jsonString, tClass));
+			} catch(org.openspcoop2.utils.serialization.IOException e) {
+				throw new IOException(e.getMessage(), e);
+			}
 		}
 
 		return null;
 	}
 
 	private String _getJson(Object objToSerialize) throws IOException {
-		SerializationConfig serializationConfig = new SerializationConfig();
-		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
-		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
-		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
-		return serializer.getObject(objToSerialize); 
+		try {
+			SerializationConfig serializationConfig = new SerializationConfig();
+			serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+			return serializer.getObject(objToSerialize); 
+		} catch(org.openspcoop2.utils.serialization.IOException e) {
+			throw new IOException(e.getMessage(), e);
+		}
 	}
 
 	public Properties getProperties() {
@@ -132,12 +127,12 @@ public class Configurazione extends it.govpay.model.Configurazione {
 		this.properties = properties;
 	}
 
-	public MailBatch getBatchSpedizioneEmail() throws ServiceException {
+	public MailBatch getBatchSpedizioneEmail() throws it.govpay.core.exceptions.IOException {
 		if(this.batchSpedizioneMail == null) {
 			try {
 				this.batchSpedizioneMail = this._getFromJson(this.getMailBatch(), MailBatch.class);
 			} catch (IOException e) {
-				throw new ServiceException(e);
+				throw new it.govpay.core.exceptions.IOException(e);
 			}
 
 		}
@@ -149,19 +144,15 @@ public class Configurazione extends it.govpay.model.Configurazione {
 		this.batchSpedizioneMail = batchSpedizioneMail;
 	}
 
-	public String getBatchSpedizioneEmailJson() throws IOException, ServiceException {
+	public String getBatchSpedizioneEmailJson() throws IOException {
 		return this._getJson(this.getBatchSpedizioneEmail());
 	}
-	
-	public AppIOBatch getBatchSpedizioneAppIo() throws ServiceException {
+
+	public AppIOBatch getBatchSpedizioneAppIo() throws IOException {
 		if(this.batchSpedizioneAppIo == null) {
-			try {
-				this.batchSpedizioneAppIo = this._getFromJson(this.getAppIOBatch(), AppIOBatch.class);
-			} catch (IOException e) {
-				throw new ServiceException(e);
-			}
+			this.batchSpedizioneAppIo = this._getFromJson(this.getAppIOBatch(), AppIOBatch.class);
 		}
-		
+
 		return batchSpedizioneAppIo;
 	}
 
@@ -169,17 +160,13 @@ public class Configurazione extends it.govpay.model.Configurazione {
 		this.batchSpedizioneAppIo = batchSpedizioneAppIo;
 	}
 
-	public String getBatchSpedizioneAppIoJson() throws IOException, ServiceException {
+	public String getBatchSpedizioneAppIoJson() throws IOException {
 		return this._getJson(this.getBatchSpedizioneAppIo());
 	}
 
-	public AvvisaturaViaMail getAvvisaturaViaMail()  throws ServiceException {
+	public AvvisaturaViaMail getAvvisaturaViaMail()  throws IOException {
 		if(this.avvisaturaViaMail == null) {
-			try {
-				this.avvisaturaViaMail = this._getFromJson(this.getAvvisaturaMail(), AvvisaturaViaMail.class);
-			} catch (IOException e) {
-				throw new ServiceException(e);
-			}
+			this.avvisaturaViaMail = this._getFromJson(this.getAvvisaturaMail(), AvvisaturaViaMail.class);
 		}
 		return avvisaturaViaMail;
 	}
@@ -187,18 +174,14 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	public void setAvvisaturaViaMail(AvvisaturaViaMail avvisaturaViaMail) {
 		this.avvisaturaViaMail = avvisaturaViaMail;
 	}
-	
-	public String getAvvisaturaViaMailJson() throws IOException, ServiceException {
+
+	public String getAvvisaturaViaMailJson() throws IOException {
 		return this._getJson(this.getAvvisaturaViaMail());
 	}
 
-	public AvvisaturaViaAppIo getAvvisaturaViaAppIo() throws ServiceException {
+	public AvvisaturaViaAppIo getAvvisaturaViaAppIo() throws IOException {
 		if(this.avvisaturaViaAppIo == null) {
-			try {
-				this.avvisaturaViaAppIo = this._getFromJson(this.getAvvisaturaAppIo(), AvvisaturaViaAppIo.class);
-			} catch (IOException e) {
-				throw new ServiceException(e);
-			}
+			this.avvisaturaViaAppIo = this._getFromJson(this.getAvvisaturaAppIo(), AvvisaturaViaAppIo.class);
 		}
 		return avvisaturaViaAppIo;
 	}
@@ -206,8 +189,8 @@ public class Configurazione extends it.govpay.model.Configurazione {
 	public void setAvvisaturaViaAppIo(AvvisaturaViaAppIo avvisaturaViaAppIo) {
 		this.avvisaturaViaAppIo = avvisaturaViaAppIo;
 	}
-	
-	public String getAvvisaturaViaAppIoJson() throws IOException, ServiceException {
+
+	public String getAvvisaturaViaAppIoJson() throws IOException {
 		return this._getJson(this.getAvvisaturaViaAppIo());
 	}
 }

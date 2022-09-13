@@ -2,13 +2,13 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -16,26 +16,26 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "dump",
 })
 public class GdeEvento extends JSONSerializable implements IValidable{
-  
-    
+
+
   /**
    * Gets or Sets log
    */
   public enum LogEnum {
-    
-    
-        
-            
+
+
+
+
     SEMPRE("sempre"),
-    
-            
+
+
     MAI("mai"),
-    
-            
+
+
     SOLO_ERRORE("solo errore");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -59,32 +59,32 @@ public class GdeEvento extends JSONSerializable implements IValidable{
     }
   }
 
-    
-    
+
+
   @JsonProperty("log")
   private String log = null;
-  
+
   private LogEnum logEnum = null;
-  
-    
+
+
   /**
    * Gets or Sets dump
    */
   public enum DumpEnum {
-    
-    
-        
-            
+
+
+
+
     SEMPRE("sempre"),
-    
-            
+
+
     MAI("mai"),
-    
-            
+
+
     SOLO_ERRORE("solo errore");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -108,13 +108,13 @@ public class GdeEvento extends JSONSerializable implements IValidable{
     }
   }
 
-    
-    
+
+
   @JsonProperty("dump")
   private String dump = null;
-  
+
   private DumpEnum dumpEnum = null;
-  
+
   /**
    **/
   public GdeEvento logEnum(LogEnum logEnum) {
@@ -128,11 +128,11 @@ public class GdeEvento extends JSONSerializable implements IValidable{
   }
   public void setLog(LogEnum logEnum) {
     this.logEnum = logEnum;
-    
+
     if(this.logEnum != null)
     	this.log = this.logEnum.value;
   }
-  
+
   /**
    **/
   public GdeEvento log(String log) {
@@ -161,11 +161,11 @@ public class GdeEvento extends JSONSerializable implements IValidable{
   }
   public void setDump(DumpEnum dumpEnum) {
     this.dumpEnum = dumpEnum;
-    
+
     if(this.dumpEnum != null)
     	this.dump = this.dumpEnum.value;
   }
-  
+
   /**
    **/
   public GdeEvento dump(String dump) {
@@ -199,7 +199,7 @@ public class GdeEvento extends JSONSerializable implements IValidable{
     return Objects.hash(log, dump);
   }
 
-  public static GdeEvento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static GdeEvento parse(String json) throws IOException {
 	    return parse(json, GdeEvento.class);
 	  }
 
@@ -212,7 +212,7 @@ public class GdeEvento extends JSONSerializable implements IValidable{
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class GdeEvento {\n");
-    
+
     sb.append("    log: ").append(toIndentedString(log)).append("\n");
     sb.append("    dump: ").append(toIndentedString(dump)).append("\n");
     sb.append("}");
@@ -229,7 +229,7 @@ public class GdeEvento extends JSONSerializable implements IValidable{
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 	  ValidatorFactory vf = ValidatorFactory.newInstance();

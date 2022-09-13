@@ -44,7 +44,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.TipiDatabase;
-import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
@@ -79,9 +78,9 @@ import it.govpay.core.beans.tracciati.AnnullamentoPendenza;
 import it.govpay.core.beans.tracciati.DettaglioTracciatoPendenzeEsito;
 import it.govpay.core.beans.tracciati.EsitoOperazionePendenza;
 import it.govpay.core.beans.tracciati.FaultBean;
+import it.govpay.core.beans.tracciati.FaultBean.CategoriaEnum;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.TracciatoPendenzePost;
-import it.govpay.core.beans.tracciati.FaultBean.CategoriaEnum;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.tracciati.operazioni.AnnullamentoRequest;
 import it.govpay.core.business.model.tracciati.operazioni.AnnullamentoResponse;
@@ -91,6 +90,7 @@ import it.govpay.core.business.model.tracciati.operazioni.OperazioneFactory;
 import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiOperazioneDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -184,7 +184,7 @@ public class Tracciati {
 	}
 
 	private void _elaboraTracciatoJSON(TracciatiBD tracciatiBD, Tracciato tracciato, it.govpay.core.beans.tracciati.TracciatoPendenza beanDati, ISerializer serializer, IContext ctx)
-			throws ServiceException, ValidationException, IOException, java.io.IOException {
+			throws ServiceException, ValidationException, IOException, java.io.IOException, it.govpay.core.exceptions.IOException {
 		String codDominio = tracciato.getCodDominio();
 		FORMATO_TRACCIATO formato = tracciato.getFormato();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -597,7 +597,7 @@ public class Tracciati {
 	}
 
 	private void _elaboraTracciatoCSV(TracciatiBD tracciatiBD, Tracciato tracciato, it.govpay.core.beans.tracciati.TracciatoPendenza beanDati, ISerializer serializer, IContext ctx)
-			throws ServiceException, ValidationException, IOException, java.io.IOException {
+			throws ServiceException, ValidationException, IOException, java.io.IOException, it.govpay.core.exceptions.IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		String codDominio = tracciato.getCodDominio();
 		String codTipoVersamento = tracciato.getCodTipoVersamento();
@@ -1056,7 +1056,7 @@ public class Tracciati {
 	}
 
 	public DettaglioTracciatoPendenzeEsito getEsitoElaborazioneTracciato(Tracciato tracciato, OperazioniBD operazioniBD)
-			throws ServiceException, ValidationException {
+			throws ServiceException, it.govpay.core.exceptions.IOException {
 		OperazioneFilter filter = operazioniBD.newFilter();
 		filter.setIdTracciato(tracciato.getId());
 		filter.setLimit(500);
@@ -1231,7 +1231,7 @@ public class Tracciati {
 					operazioneAnnullamento.getDominio(configWrapper);
 				} catch (NotFoundException e1) {
 				}
-			}catch(ValidationException e){
+			}catch(it.govpay.core.exceptions.IOException e){
 
 			}
 			leggiOperazioneDTOResponse.setOperazione(operazioneAnnullamento);

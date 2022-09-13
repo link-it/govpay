@@ -532,7 +532,7 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
     return Objects.hash(idA2A, idPendenza, idDominio, idUnitaOperativa, idTipoPendenza, causale, soggettoPagatore, importo, numeroAvviso, tassonomia, tassonomiaAvviso, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, direzione, divisione, proprieta, voci, allegati, idDebitore, dati);
   }
 
-  public static NuovaPendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, it.govpay.core.exceptions.ValidationException {
+  public static NuovaPendenza parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, NuovaPendenza.class);
   }
 

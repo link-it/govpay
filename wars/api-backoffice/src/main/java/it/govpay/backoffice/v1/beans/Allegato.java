@@ -2,10 +2,10 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 	"tipo",
 	"testo",
@@ -52,7 +52,7 @@ public class Allegato extends it.govpay.core.beans.JSONSerializable {
 			}
 			return null;
 		}
-		
+
 		public static TipoEnum fromValue(String text) {
 			for (TipoEnum b : TipoEnum.values()) {
 				if (String.valueOf(b.value).equals(text)) {
@@ -138,7 +138,7 @@ public class Allegato extends it.govpay.core.beans.JSONSerializable {
 		return Objects.hash(this.tipo, this.testo, this.contenuto);
 	}
 
-	public static Allegato parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+	public static Allegato parse(String json) throws IOException {
 		return parse(json, Allegato.class);
 	}
 

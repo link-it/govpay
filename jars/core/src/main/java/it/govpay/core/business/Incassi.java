@@ -58,6 +58,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.IncassiException.FaultType;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.NotificaException;
 import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IncassoUtils;
@@ -357,6 +358,8 @@ public class Incassi {
 			return eseguiAcquisizioneRiconciliazione(richiestaIncassoResponse, codDomino, idRiconciliazione, ctx, configWrapper, incassiBD, incasso, causale, iuv, idf, false, true, listaEventi);
 		} catch (ServiceException e) {
 			throw new GovPayException(e);
+		} catch (NotificaException e) {
+			throw new GovPayException(e);
 		} catch (UtilsException e) {
 			throw new GovPayException(e);
 		} catch (IncassiException e) {
@@ -418,7 +421,7 @@ public class Incassi {
 
 	private RichiestaIncassoDTOResponse eseguiAcquisizioneRiconciliazione(RichiestaIncassoDTOResponse richiestaIncassoResponse, String codDomino, String idRiconciliazione, IContext ctx, BDConfigWrapper configWrapper,
 			IncassiBD incassiBD, Incasso incasso, String causale, String iuv, String idf, boolean ricercaIdFlussoCaseInsensitive, boolean salvaConUpdate, List<Evento> listaEventi)
-			throws ServiceException, IncassiException, UtilsException, GovPayException {
+			throws ServiceException, IncassiException, UtilsException, GovPayException, NotificaException {
 		GpContext gpContext = (GpContext) ctx.getApplicationContext();
 		
 		log.debug("Riconciliazione [Dominio:"+codDomino+", Id: "+idRiconciliazione+"] Iuv ["+iuv+"], IdFlusso ["+idf+"], Causale ["+causale+"] in corso...");
@@ -852,6 +855,8 @@ public class Incassi {
 			
 			return eseguiAcquisizioneRiconciliazione(richiestaIncassoResponse, incasso.getCodDominio(), incasso.getIdRiconciliazione(), ctx, configWrapper, incassiBD, incasso, causale, iuv, idf, ricercaIdFlussoCaseInsensitive, false, listaEventi);
 		} catch (ServiceException e) {
+			throw new GovPayException(e);
+		} catch (NotificaException e) {
 			throw new GovPayException(e);
 		} catch (UtilsException e) {
 			throw new GovPayException(e);

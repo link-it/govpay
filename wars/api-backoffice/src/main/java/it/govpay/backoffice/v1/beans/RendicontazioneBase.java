@@ -6,12 +6,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "iuv",
 "iur",
@@ -22,28 +20,28 @@ import it.govpay.core.beans.JSONSerializable;
 "segnalazioni",
 })
 public class RendicontazioneBase extends JSONSerializable {
-  
+
   @JsonProperty("iuv")
   private String iuv = null;
-  
+
   @JsonProperty("iur")
   private String iur = null;
-  
+
   @JsonProperty("indice")
   private BigDecimal indice = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("esito")
   private BigDecimal esito = null;
-  
+
   @JsonProperty("data")
   private Date data = null;
-  
+
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
-  
+
   /**
    * Identificativo univoco di versamento
    **/
@@ -109,7 +107,7 @@ public class RendicontazioneBase extends JSONSerializable {
   }
 
   /**
-   * Codice di esito dell'operazione rendicontata  * 0 = Pagamento eseguito  * 3 = Pagamento revocato  * 9 = Pagamento eseguito in assenza di RPT 
+   * Codice di esito dell'operazione rendicontata  * 0 = Pagamento eseguito  * 3 = Pagamento revocato  * 9 = Pagamento eseguito in assenza di RPT
    **/
   public RendicontazioneBase esito(BigDecimal esito) {
     this.esito = esito;
@@ -178,8 +176,8 @@ public class RendicontazioneBase extends JSONSerializable {
     return Objects.hash(iuv, iur, indice, importo, esito, data, segnalazioni);
   }
 
-  public static RendicontazioneBase parse(String json) throws ServiceException, ValidationException { 
-    return (RendicontazioneBase) parse(json, RendicontazioneBase.class);
+  public static RendicontazioneBase parse(String json) throws IOException {
+    return parse(json, RendicontazioneBase.class);
   }
 
   @Override
@@ -191,7 +189,7 @@ public class RendicontazioneBase extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RendicontazioneBase {\n");
-    
+
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    iur: ").append(toIndentedString(iur)).append("\n");
     sb.append("    indice: ").append(toIndentedString(indice)).append("\n");

@@ -45,6 +45,7 @@ import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.PromemoriaException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.ExceptionUtils;
@@ -136,6 +137,8 @@ public class Promemoria {
 			this.startTls = mailserver.isStartTls();
 			
 		} catch (ServiceException e) {
+			log.error("Errore durante l'inizializzazione del Promemoria: " + e.getMessage(),e);
+		} catch (IOException e) {
 			log.error("Errore durante l'inizializzazione del Promemoria: " + e.getMessage(),e);
 		}
 	}

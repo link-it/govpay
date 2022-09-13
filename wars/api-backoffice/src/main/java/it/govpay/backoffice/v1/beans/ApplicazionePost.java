@@ -4,11 +4,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -27,43 +27,43 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "abilitato",
 })
 public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  implements IValidable {
-  
+
   @JsonProperty("principal")
   private String principal = null;
-  
+
   @JsonProperty("password")
   private String password = null;
-  
+
   @JsonProperty("codificaAvvisi")
   private CodificaAvvisi codificaAvvisi = null;
-  
+
   @JsonProperty("domini")
   private List<Object> domini = null;
-  
+
   @JsonProperty("tipiPendenza")
   private List<String> tipiPendenza = null;
-  
+
   @JsonProperty("apiPagamenti")
   private Boolean apiPagamenti = false;
-  
+
   @JsonProperty("apiPendenze")
   private Boolean apiPendenze = false;
-  
+
   @JsonProperty("apiRagioneria")
   private Boolean apiRagioneria = false;
-  
+
   @JsonProperty("acl")
   private List<AclPost> acl = null;
-  
+
   @JsonProperty("ruoli")
   private List<String> ruoli = null;
-  
+
   @JsonProperty("servizioIntegrazione")
   private Connector servizioIntegrazione = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
-  
+
   /**
    * Identificativo di autenticazione
    **/
@@ -282,7 +282,7 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
     return Objects.hash(principal, password, codificaAvvisi, domini, tipiPendenza, apiPagamenti, apiPendenze, apiRagioneria, acl, ruoli, servizioIntegrazione, abilitato);
   }
 
-  public static ApplicazionePost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, it.govpay.core.exceptions.ValidationException {
+  public static ApplicazionePost parse(String json) throws IOException {
     return parse(json, ApplicazionePost.class);
   }
 
@@ -295,7 +295,7 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ApplicazionePost {\n");
-    
+
     sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    codificaAvvisi: ").append(toIndentedString(codificaAvvisi)).append("\n");
@@ -327,15 +327,15 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-		
+
 		vf.getValidator("principal", this.principal).notNull().minLength(1).maxLength(4000);
 		validatoreId.validaPassword("password", this.password);
 		vf.getValidator("codificaAvvisi", this.codificaAvvisi).validateFields();
 		vf.getValidator("servizioIntegrazione", this.servizioIntegrazione).validateFields();
 		vf.getValidator("acl", this.acl).validateObjects();
-		
+
 		if(this.domini != null && !this.domini.isEmpty()) {
-			
+
 			for (Object object : this.domini) {
 				if(object instanceof String) {
 					String idDominio = (String) object;
@@ -347,17 +347,17 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 						dominioProfiloPost.validate();
 				} else if(object instanceof java.util.LinkedHashMap) {
 					java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) object;
-					
+
 					DominioProfiloPost dominioProfiloPost = new DominioProfiloPost();
 					if(map.containsKey("idDominio"))
 						dominioProfiloPost.setIdDominio((String) map.get("idDominio"));
 					if(map.containsKey("unitaOperative")) {
 						Object objectUnita = map.get("unitaOperative");
-						
+
 						dominioProfiloPost.setUnitaOperative(null);
 						if(objectUnita != null) {
 							if(objectUnita instanceof List) {
-								
+
 								List<?> unitaOperativeTmp = (List<?>) objectUnita;
 								if (unitaOperativeTmp.stream().allMatch(String.class::isInstance)) {
 									@SuppressWarnings("unchecked")
@@ -371,10 +371,10 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 							}
 						}
 					}
-					
+
 					if(dominioProfiloPost.getIdDominio() == null)
 						validatoreId.validaIdDominio("idDominio", dominioProfiloPost.getIdDominio());
-					
+
 //					DominioProfiloPost dominioProfiloPost = (DominioProfiloPost) object;
 					if(!dominioProfiloPost.getIdDominio().equals(ApplicazioniController.AUTORIZZA_DOMINI_STAR))
 						dominioProfiloPost.validate();
@@ -383,21 +383,21 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
 				}
 			}
 		}
-		
+
 		if(this.tipiPendenza != null && !this.tipiPendenza.isEmpty()) {
 			for (String idTipoPendenza : this.tipiPendenza) {
-				if(!idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR) && 
+				if(!idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR) &&
 						!idTipoPendenza.equals(ApplicazioniController.AUTODETERMINAZIONE_TIPI_PENDENZA_VALUE))
 					validatoreId.validaIdTipoVersamento("tipiPendenza", idTipoPendenza);
 			}
 		}
-		
+
 		if(this.ruoli != null && !this.ruoli.isEmpty()) {
 			for (String idRuolo : this.ruoli) {
 				validatoreId.validaIdRuolo("ruoli", idRuolo);
 			}
 		}
-		
+
 		vf.getValidator("abilitato", this.abilitato).notNull();
 		vf.getValidator("apiPagamenti", this.apiPagamenti).notNull();
 		vf.getValidator("apiPendenze", this.apiPendenze).notNull();

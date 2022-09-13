@@ -8,11 +8,11 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersFG;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentPA;
-import it.gov.pagopa.pagopa_api.pa.pafornode.CtSubject;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
 import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -24,7 +24,7 @@ import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 public class RptConverter {
 
 
-	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione, Authentication user) throws ServiceException {
+	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione, Authentication user) throws ServiceException, IOException {
 		Rpp rsModel = new Rpp();
 
 		rsModel.setStato(rpt.getStato().toString());
@@ -111,22 +111,17 @@ public class RptConverter {
 				}
 			}
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 
-
-		try {
-			if(rpt.getXmlRt() != null) {
-				rsModel.setRt(ConverterUtils.getRtJson(rpt));
-			}
-		} catch (Exception e) {
-			throw new ServiceException(e);
+		if(rpt.getXmlRt() != null) {
+			rsModel.setRt(ConverterUtils.getRtJson(rpt));
 		}
 
 		return rsModel;
 	}
 
-	public static RppIndex toRsModelIndex(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione, Authentication user) throws ServiceException {
+	public static RppIndex toRsModelIndex(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione, Authentication user) throws ServiceException, IOException {
 		RppIndex rsModel = new RppIndex();
 
 		rsModel.setStato(rpt.getStato().toString());
@@ -214,16 +209,12 @@ public class RptConverter {
 				}
 			}
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 
 
-		try {
-			if(rpt.getXmlRt() != null) {
-				rsModel.setRt(ConverterUtils.getRtJson(rpt));
-			}
-		} catch (Exception e) {
-			throw new ServiceException(e);
+		if(rpt.getXmlRt() != null) {
+			rsModel.setRt(ConverterUtils.getRtJson(rpt));
 		}
 
 		return rsModel;

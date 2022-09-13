@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 	"pendenze",
 	"urlRitorno",
@@ -321,7 +322,7 @@ public class PagamentoPost extends JSONSerializable {
 		return Objects.hash(this.pendenze, this.urlRitorno, this.contoAddebito, this.dataEsecuzionePagamento, this.credenzialiPagatore, this.soggettoVersante, this.autenticazioneSoggetto, this.lingua);
 	}
 
-	public static PagamentoPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, it.govpay.core.exceptions.ValidationException {
+	public static PagamentoPost parse(String json) throws IOException {
 		return parse(json, PagamentoPost.class);
 	}
 

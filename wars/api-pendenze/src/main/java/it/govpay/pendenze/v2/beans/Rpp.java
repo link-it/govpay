@@ -3,8 +3,6 @@ package it.govpay.pendenze.v2.beans;
 import java.util.List;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -17,25 +15,25 @@ import it.govpay.core.beans.JSONSerializable;
 "pendenza",
 })
 public class Rpp extends JSONSerializable {
-  
+
   @JsonProperty("stato")
   private String stato = null;
-  
+
   @JsonProperty("dettaglioStato")
   private String dettaglioStato = null;
-  
+
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
-  
+
   @JsonProperty("rpt")
   private Object rpt = null;
-  
+
   @JsonProperty("rt")
   private Object rt = null;
-  
+
   @JsonProperty("pendenza")
   private PendenzaIndex pendenza = null;
-  
+
   /**
    * Stato della richiesta di pagamento sulla piattaforma PagoPA.
    **/
@@ -152,7 +150,7 @@ public class Rpp extends JSONSerializable {
     return Objects.hash(stato, dettaglioStato, segnalazioni, rpt, rt, pendenza);
   }
 
-  public static Rpp parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Rpp parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, Rpp.class);
   }
 

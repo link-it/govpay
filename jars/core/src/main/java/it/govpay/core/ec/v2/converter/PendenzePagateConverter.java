@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
-import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
@@ -16,6 +15,7 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.ec.v2.beans.Documento;
 import it.govpay.ec.v2.beans.LinguaSecondaria;
 import it.govpay.ec.v2.beans.PendenzaPagata;
@@ -32,7 +32,7 @@ import it.govpay.ec.v2.beans.VocePendenzaPagata;
 
 public class PendenzePagateConverter {
 
-	public static PendenzaPagata toRsModel(it.govpay.bd.model.Rpt rpt) throws ServiceException, ValidationException {
+	public static PendenzaPagata toRsModel(it.govpay.bd.model.Rpt rpt) throws ServiceException, IOException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		PendenzaPagata rsModel = new PendenzaPagata();
 		
@@ -44,11 +44,7 @@ public class PendenzePagateConverter {
 		rsModel.setCartellaPagamento(versamento.getCodLotto());
 
 		if(versamento.getCausaleVersamento()!= null)
-			try {
-				rsModel.setCausale(versamento.getCausaleVersamento().getSimple());
-			} catch (UnsupportedEncodingException e) {
-				throw new ServiceException(e); 
-			}
+			rsModel.setCausale(versamento.getCausaleVersamento().getSimple());
 
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 
@@ -132,7 +128,7 @@ public class PendenzePagateConverter {
 		return null;
 	}
 
-	public static VocePendenzaPagata toRsModelVocePendenzaPagata(SingoloVersamento singoloVersamento, Pagamento pagamento) throws ServiceException, ValidationException {
+	public static VocePendenzaPagata toRsModelVocePendenzaPagata(SingoloVersamento singoloVersamento, Pagamento pagamento) throws ServiceException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		VocePendenzaPagata rsModel = new VocePendenzaPagata();
 

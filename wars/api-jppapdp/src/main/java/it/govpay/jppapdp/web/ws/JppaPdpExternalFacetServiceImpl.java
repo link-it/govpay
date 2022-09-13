@@ -250,7 +250,7 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 			messaggio.setDescrizione(faultDescription); 
 			response.getMessaggi().getMessaggio().add(messaggio );
 		} catch (DatatypeConfigurationException | UtilsException | ServiceException | 
-				SAXException | JAXBException | ValidationException | XMLStreamException | IOException e) {
+				SAXException | JAXBException | ValidationException | XMLStreamException | IOException | it.govpay.core.exceptions.IOException e) {
 			log.error("Errore durante l'esecuzione della procedura di recupero RT: "+ e.getMessage(),e);
 			String faultDescription = e.getMessage() == null ? "<Nessuna descrizione>" : e.getMessage(); 
 			errore = FaultPa.PAA_SYSTEM_ERROR.name();

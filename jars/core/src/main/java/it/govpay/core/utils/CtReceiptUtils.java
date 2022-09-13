@@ -44,8 +44,10 @@ import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
+import it.govpay.core.exceptions.NotificaException;
 import it.govpay.core.utils.RtUtils.EsitoValidazione;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
@@ -599,6 +601,13 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		}  catch (JAXBException e) {
 			throw new ServiceException(e);
 		} catch (SAXException e) {
+			throw new ServiceException(e);
+		} catch (NotificaException | IOException e) {
+			log.error("Errore acquisizione RT: " + e.getMessage(),e);
+			
+			if(rptBD != null)
+				rptBD.rollback();
+			
 			throw new ServiceException(e);
 		} catch (ServiceException e) {
 			log.error("Errore acquisizione RT: " + e.getMessage(),e);

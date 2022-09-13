@@ -8,28 +8,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class RicevuteRisultati   {
-  
+
   @Schema(description = "")
   private Dominio dominio = null;
-  
+
   @Schema(example = "RF23567483937849450550875", description = "Identificativo univoco di versamento")
  /**
-   * Identificativo univoco di versamento  
+   * Identificativo univoco di versamento
   **/
   private String iuv = null;
-  
+
   @Schema(example = "ab12345", description = "Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento")
  /**
-   * Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento  
+   * Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento
   **/
   private String idRicevuta = null;
-  
+
   @Schema(description = "Data di acquisizione della ricevuta")
  /**
-   * Data di acquisizione della ricevuta  
+   * Data di acquisizione della ricevuta
   **/
   private Date data = null;
-  
+
   @Schema(description = "")
   private EsitoRpp esito = null;
  /**
@@ -128,7 +128,7 @@ public class RicevuteRisultati   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RicevuteRisultati {\n");
-    
+
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    idRicevuta: ").append(toIndentedString(idRicevuta)).append("\n");

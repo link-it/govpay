@@ -46,7 +46,6 @@ import org.openspcoop2.utils.mail.Sender;
 import org.openspcoop2.utils.mail.SenderFactory;
 import org.openspcoop2.utils.mail.SenderType;
 import org.openspcoop2.utils.serialization.IDeserializer;
-import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
@@ -70,6 +69,7 @@ import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.TracciatiNotificaPagamenti;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.EventoContext;
 import it.govpay.core.utils.EventoContext.Categoria;
 import it.govpay.core.utils.EventoContext.Componente;
@@ -122,7 +122,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	private Giornale giornale;
 	private EventoContext eventoCtx;
 
-	public SpedizioneTracciatoNotificaPagamentiThread(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, IContext ctx) throws ServiceException {
+	public SpedizioneTracciatoNotificaPagamentiThread(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, IContext ctx) throws ServiceException, IOException {
 		// Verifico che tutti i campi siano valorizzati
 		this.ctx = ctx;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
@@ -201,7 +201,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 				beanDati.setDescrizioneStepElaborazione("Connettore "+ this.tipoTracciato +" non configurato per il Dominio [Id: " + this.dominio.getCodDominio() + "]. Spedizione inibita.");
 				try {
 					this.tracciato.setBeanDati(serializer.getObject(beanDati));
-				} catch (IOException e1) {}
+				} catch (org.openspcoop2.utils.serialization.IOException e1) {}
 				
 				tracciatiMyPivotBD.updateFineElaborazione(this.tracciato);
 				return;
@@ -501,6 +501,24 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 						} catch (UtilsException e1) {
 							log.error(e1.getMessage(), e1);
 						}
+            		} catch (IOException e) {
+            			errore = "Errore durante la spedizione RPP "+rppKey+" del Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() 
+            			+ "], al destinatario ["+ this.connettore.getUrl()+"]:"+e.getMessage();
+            			log.error(errore, e);
+            			erroriSpedizione.add(errore);
+            			
+            			try {
+            				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.restContenutoKo");
+            			} catch (UtilsException e1) {
+            				log.error(e1.getMessage(), e1);
+            			}
+            			
+            			if(client != null) {
+//        					client.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
+            				client.getEventoCtx().setEsito(Esito.FAIL);
+            				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
+            				client.getEventoCtx().setException(e);
+            			}
             		} catch (ClientException e) {
             			errore = "Errore durante la spedizione RPP "+rppKey+" del Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() 
             			+ "], al destinatario ["+ this.connettore.getUrl()+"]:"+e.getMessage();
@@ -578,7 +596,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());
 			try {
 				tracciato.setBeanDati(serializer.getObject(beanDati));
-			} catch (IOException e1) {}
+			} catch (org.openspcoop2.utils.serialization.IOException e1) {}
 			
 			tracciatiMyPivotBD.updateFineElaborazione(tracciato);
 			
@@ -596,7 +614,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	}
 	
 	private void inviaTracciatoViaEmail(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, Dominio dominio, TracciatiNotificaPagamentiBD tracciatiMyPivotBD,
-			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, ISerializer serializer, IContext ctx, DumpRequest dumpRequest, DumpResponse dumpResponse  ) throws ServiceException {
+			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, ISerializer serializer, IContext ctx, DumpRequest dumpRequest, DumpResponse dumpResponse  ) throws ServiceException, IOException {
 		it.govpay.model.configurazione.MailServer mailserver = null;
 		
 		try {
@@ -751,7 +769,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());
 			try {
 				tracciato.setBeanDati(serializer.getObject(beanDati));
-			} catch (IOException e1) {}
+			} catch (org.openspcoop2.utils.serialization.IOException e1) {}
 			
 			tracciatiMyPivotBD.updateFineElaborazione(tracciato);
 			
@@ -922,7 +940,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());
 			try {
 				tracciato.setBeanDati(serializer.getObject(beanDati));
-			} catch (IOException e1) {}
+			} catch (org.openspcoop2.utils.serialization.IOException e1) {}
 			
 			tracciatiMyPivotBD.updateFineElaborazione(tracciato);
 			
@@ -942,7 +960,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			if(configurazioneInterfaccia != null) {
 				try {
 					log.debug("Configurazione Giornale Eventi API: ["+this.componente+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia,null));
-				} catch (ServiceException e) {
+				} catch (IOException e) {
 					log.error("Errore durante il log della configurazione giornale eventi: " +e.getMessage(), e);
 				}
 				

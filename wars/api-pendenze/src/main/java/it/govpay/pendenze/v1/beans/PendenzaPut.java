@@ -6,12 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -38,7 +37,7 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 
   @JsonProperty("nome")
   private String nome = null;
-  
+
   @JsonProperty("causale")
   private String causale = null;
 
@@ -386,7 +385,7 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 		return Objects.hash(this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.idDominio, this.idUnitaOperativa, this.voci);
 	}
 
-	public static PendenzaPut parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+	public static PendenzaPut parse(String json) throws it.govpay.core.exceptions.IOException {
 		return parse(json, PendenzaPut.class);
 	}
 
@@ -433,17 +432,17 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 	@Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		
+
 		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 
 		validatoreId.validaIdDominio("idDominio", this.idDominio);
 		validatoreId.validaIdUO("idUnitaOperativa", this.idUnitaOperativa, false);
-		
+
 		ValidatoreUtils.validaNomePendenza(vf, "nome", nome);
 		ValidatoreUtils.validaCausale(vf, "causale", causale);
-		
+
 		vf.getValidator("soggettoPagatore", this.soggettoPagatore).notNull().validateFields();
-		
+
 		ValidatoreUtils.validaImporto(vf, "importo", importo);
 		ValidatoreUtils.validaNumeroAvviso(vf, "numeroAvviso", numeroAvviso);
 		ValidatoreUtils.validaData(vf, "dataValidita", this.dataValidita);
@@ -451,9 +450,9 @@ public class PendenzaPut extends JSONSerializable implements IValidable {
 		ValidatoreUtils.validaAnnoRiferimento(vf, "annoRiferimento", annoRiferimento);
 		ValidatoreUtils.validaCartellaPagamento(vf, "cartellaPagamento", cartellaPagamento);
 		ValidatoreUtils.validaTassonomia(vf, "tassonomia", tassonomia);
-		
+
 		vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
-		
+
 	}
 }
 

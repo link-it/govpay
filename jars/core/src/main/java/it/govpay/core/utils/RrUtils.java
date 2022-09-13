@@ -65,8 +65,10 @@ import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
+import it.govpay.core.exceptions.NotificaException;
 import it.govpay.core.utils.RtUtils.EsitoValidazione;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
@@ -402,7 +404,11 @@ public class RrUtils extends NdpValidationUtils {
 			log.info("ER acquisita con successo.");
 			
 			return rr;
-		} catch (NdpException | ServiceException | UtilsException e) {
+		} catch (NotificaException | IOException e) {
+			if(rrBD != null)
+				rrBD.rollback();
+			throw new ServiceException(e);
+		}catch (NdpException | ServiceException | UtilsException e) {
 			if(rrBD != null)
 				rrBD.rollback();
 			throw e;

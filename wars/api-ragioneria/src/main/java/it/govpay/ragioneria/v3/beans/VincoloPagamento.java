@@ -10,13 +10,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class VincoloPagamento   {
-  
+
   @Schema(example = "5", required = true, description = "numero di giorni vincolo per il pagamento")
  /**
-   * numero di giorni vincolo per il pagamento  
+   * numero di giorni vincolo per il pagamento
   **/
   private BigDecimal giorni = null;
-  
+
   @Schema(required = true, description = "")
   private TipoSogliaVincoloPagamento tipo = null;
  /**
@@ -63,7 +63,7 @@ public class VincoloPagamento   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class VincoloPagamento {\n");
-    
+
     sb.append("    giorni: ").append(toIndentedString(giorni)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("}");

@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePendenza  {
-	
+
 	public enum TipoBolloEnum {
 	    _01("01");
 
@@ -38,28 +38,28 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	      }
 	      return null;
 	    }
-	  }  
+	  }
 	  @Schema(required = true, description = "Tipologia di Bollo digitale")
 	 /**
-	   * Tipologia di Bollo digitale  
+	   * Tipologia di Bollo digitale
 	  **/
 	  private TipoBolloEnum tipoBollo = null;
-	  
+
 	  @Schema(example = "--- base64 ---", required = true, description = "Digest in base64 del documento informatico associato alla marca da bollo")
 	 /**
-	   * Digest in base64 del documento informatico associato alla marca da bollo  
+	   * Digest in base64 del documento informatico associato alla marca da bollo
 	  **/
 	  private String hashDocumento = null;
-	  
+
 	  @Schema(example = "RO", required = true, description = "Sigla automobilistica della provincia di residenza del soggetto pagatore")
 	 /**
-	   * Sigla automobilistica della provincia di residenza del soggetto pagatore  
+	   * Sigla automobilistica della provincia di residenza del soggetto pagatore
 	  **/
 	  private String provinciaResidenza = null;
-	  
+
 	  @Schema(example = "9/3321", description = "Tassonomia pagoPA")
 	 /**
-	   * Tassonomia pagoPA  
+	   * Tassonomia pagoPA
 	  **/
 	  private String codiceTassonomicoPagoPA = null;
 	 /**
@@ -139,13 +139,13 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	    this.codiceTassonomicoPagoPA = codiceTassonomicoPagoPA;
 	    return this;
 	  }
-	  
+
 	  @Schema(example = "IT60X0542811101000000123456", required = true, description = "")
 	  private String ibanAccredito = null;
-	  
+
 	  @Schema(example = "IT60X0542811101000000123456", description = "")
 	  private String ibanAppoggio = null;
-	  
+
 	 /**
 	   * Get ibanAccredito
 	   * @return ibanAccredito
@@ -182,7 +182,7 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	    this.ibanAppoggio = ibanAppoggio;
 	    return this;
 	  }
-	  
+
 	  @Schema(example = "SRV-12345", required = true, description = "")
 	  private String codEntrata = null;
 	 /**
@@ -209,17 +209,17 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoRiferimentoVocePendenza {\n");
-    
+
     sb.append("    tipoBollo: ").append(toIndentedString(tipoBollo)).append("\n");
     sb.append("    hashDocumento: ").append(toIndentedString(hashDocumento)).append("\n");
     sb.append("    provinciaResidenza: ").append(toIndentedString(provinciaResidenza)).append("\n");
     sb.append("    codiceTassonomicoPagoPA: ").append(toIndentedString(codiceTassonomicoPagoPA)).append("\n");
-    
+
     sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
     sb.append("    ibanAppoggio: ").append(toIndentedString(ibanAppoggio)).append("\n");
-    
+
     sb.append("    codEntrata: ").append(toIndentedString(codEntrata)).append("\n");
-    
+
     sb.append("}");
     return sb.toString();
   }

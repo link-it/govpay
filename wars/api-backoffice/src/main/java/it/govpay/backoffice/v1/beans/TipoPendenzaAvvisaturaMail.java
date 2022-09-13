@@ -2,12 +2,11 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 
 /**
@@ -18,16 +17,16 @@ import it.govpay.core.utils.validator.IValidable;
 "promemoriaScadenza",
 })
 public class TipoPendenzaAvvisaturaMail extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("promemoriaAvviso")
   private TipoPendenzaAvvisaturaMailPromemoriaAvviso promemoriaAvviso = null;
-  
+
   @JsonProperty("promemoriaRicevuta")
   private TipoPendenzaAvvisaturaMailPromemoriaRicevuta promemoriaRicevuta = null;
-  
+
   @JsonProperty("promemoriaScadenza")
   private TipoPendenzaAvvisaturaPromemoriaScadenza promemoriaScadenza = null;
-  
+
   /**
    **/
   public TipoPendenzaAvvisaturaMail promemoriaAvviso(TipoPendenzaAvvisaturaMailPromemoriaAvviso promemoriaAvviso) {
@@ -92,8 +91,8 @@ public class TipoPendenzaAvvisaturaMail extends JSONSerializable implements IVal
     return Objects.hash(promemoriaAvviso, promemoriaRicevuta, promemoriaScadenza);
   }
 
-  public static TipoPendenzaAvvisaturaMail parse(String json) throws ServiceException, ValidationException {
-    return (TipoPendenzaAvvisaturaMail) parse(json, TipoPendenzaAvvisaturaMail.class);
+  public static TipoPendenzaAvvisaturaMail parse(String json) throws IOException {
+    return parse(json, TipoPendenzaAvvisaturaMail.class);
   }
 
   @Override
@@ -105,7 +104,7 @@ public class TipoPendenzaAvvisaturaMail extends JSONSerializable implements IVal
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoPendenzaAvvisaturaMail {\n");
-    
+
     sb.append("    promemoriaAvviso: ").append(toIndentedString(promemoriaAvviso)).append("\n");
     sb.append("    promemoriaRicevuta: ").append(toIndentedString(promemoriaRicevuta)).append("\n");
     sb.append("    promemoriaScadenza: ").append(toIndentedString(promemoriaScadenza)).append("\n");

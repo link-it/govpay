@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 	"indice",
 	"idVocePendenza",
@@ -400,7 +402,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
     return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, this.stato, this.datiAllegati, descrizioneCausaleRPT, contabilita, idDominio, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita);
   }
 
-  public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, it.govpay.core.exceptions.ValidationException {
+  public static VocePendenza parse(String json) throws IOException {
     return parse(json, VocePendenza.class);
   }
 

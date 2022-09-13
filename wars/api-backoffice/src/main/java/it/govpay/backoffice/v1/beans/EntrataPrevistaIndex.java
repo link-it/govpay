@@ -1,14 +1,13 @@
 package it.govpay.backoffice.v1.beans;
 
-import java.util.Objects;
-
-import it.govpay.core.exceptions.ValidationException;
-
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idDominio",
 "iuv",
@@ -30,61 +29,61 @@ import it.govpay.core.beans.JSONSerializable;
 "anno",
 })
 public class EntrataPrevistaIndex extends JSONSerializable {
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("iuv")
   private String iuv = null;
-  
+
   @JsonProperty("iur")
   private String iur = null;
-  
+
   @JsonProperty("idFlusso")
   private String idFlusso = null;
-  
+
   @JsonProperty("trn")
   private String trn = null;
-  
+
   @JsonProperty("dataRegolamento")
   private Date dataRegolamento = null;
-  
+
   @JsonProperty("numeroPagamenti")
   private BigDecimal numeroPagamenti = null;
-  
+
   @JsonProperty("importoTotale")
   private Double importoTotale = null;
-  
+
   @JsonProperty("importoPagato")
   private BigDecimal importoPagato = null;
-  
+
   @JsonProperty("dataPagamento")
   private Date dataPagamento = null;
-  
+
   @JsonProperty("idVocePendenza")
   private String idVocePendenza = null;
-  
+
   @JsonProperty("indice")
   private BigDecimal indice = null;
-  
+
   @JsonProperty("idPendenza")
   private String idPendenza = null;
-  
+
   @JsonProperty("idA2A")
   private String idA2A = null;
-  
+
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
-  
+
   @JsonProperty("idEntrata")
   private String idEntrata = null;
-  
+
   @JsonProperty("identificativoDebitore")
   private String identificativoDebitore = null;
-  
+
   @JsonProperty("anno")
   private BigDecimal anno = null;
-  
+
   /**
    * Codice fiscale del dominio beneficiario
    **/
@@ -407,7 +406,7 @@ public class EntrataPrevistaIndex extends JSONSerializable {
     return Objects.hash(idDominio, iuv, iur, idFlusso, trn, dataRegolamento, numeroPagamenti, importoTotale, importoPagato, dataPagamento, idVocePendenza, indice, idPendenza, idA2A, idTipoPendenza, idEntrata, identificativoDebitore, anno);
   }
 
-  public static EntrataPrevistaIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException{
+  public static EntrataPrevistaIndex parse(String json) throws IOException{
     return parse(json, EntrataPrevistaIndex.class);
   }
 
@@ -420,7 +419,7 @@ public class EntrataPrevistaIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class EntrataPrevistaIndex {\n");
-    
+
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    iur: ").append(toIndentedString(iur)).append("\n");

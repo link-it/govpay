@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
@@ -25,25 +25,25 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "linguaSecondariaCausale",
 })
 public class ProprietaPendenza extends JSONSerializable implements IValidable{
-  
+
   @JsonProperty("linguaSecondaria")
   private String linguaSecondaria = null;
-  
+
   @JsonIgnore
   private LinguaSecondaria linguaSecondariaEnum = null;
-  
+
   @JsonProperty("descrizioneImporto")
   private List<VoceDescrizioneImporto> descrizioneImporto = null;
-  
+
   @JsonProperty("lineaTestoRicevuta1")
   private String lineaTestoRicevuta1 = null;
-  
+
   @JsonProperty("lineaTestoRicevuta2")
   private String lineaTestoRicevuta2 = null;
-  
+
   @JsonProperty("linguaSecondariaCausale")
   private String linguaSecondariaCausale = null;
-  
+
   /**
    **/
   public ProprietaPendenza linguaSecondaria(String linguaSecondaria) {
@@ -58,7 +58,7 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable{
   public void setLinguaSecondaria(String linguaSecondaria) {
     this.linguaSecondaria = linguaSecondaria;
   }
-  
+
   public ProprietaPendenza linguaSecondariaEnum(LinguaSecondaria linguaSecondaria) {
     this.linguaSecondariaEnum = linguaSecondaria;
     return this;
@@ -156,8 +156,8 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable{
     return Objects.hash(linguaSecondaria, descrizioneImporto, lineaTestoRicevuta1, lineaTestoRicevuta2, linguaSecondariaCausale);
   }
 
-  public static ProprietaPendenza parse(String json) throws ServiceException, ValidationException { 
-    return (ProprietaPendenza) parse(json, ProprietaPendenza.class);
+  public static ProprietaPendenza parse(String json) throws IOException {
+    return parse(json, ProprietaPendenza.class);
   }
 
   @Override
@@ -169,7 +169,7 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable{
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ProprietaPendenza {\n");
-    
+
     sb.append("    linguaSecondaria: ").append(toIndentedString(linguaSecondaria)).append("\n");
     sb.append("    descrizioneImporto: ").append(toIndentedString(descrizioneImporto)).append("\n");
     sb.append("    lineaTestoRicevuta1: ").append(toIndentedString(lineaTestoRicevuta1)).append("\n");
@@ -189,7 +189,7 @@ public class ProprietaPendenza extends JSONSerializable implements IValidable{
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 	  ValidatorFactory vf = ValidatorFactory.newInstance();

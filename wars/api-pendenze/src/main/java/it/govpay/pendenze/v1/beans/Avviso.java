@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -23,29 +21,29 @@ import it.govpay.core.beans.JSONSerializable;
 "pdf",
 })
 public class Avviso extends JSONSerializable {
-  
-    
+
+
   /**
    * Stato dell'avviso
    */
   public enum StatoEnum {
-    
-    
-        
-            
+
+
+
+
     PAGATO("Pagato"),
-    
-            
+
+
     NON_PAGATO("Non pagato"),
-    
-            
+
+
     SCADUTO("Scaduto"),
-    
-            
+
+
     ANNULLATO("Annullato");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -69,41 +67,41 @@ public class Avviso extends JSONSerializable {
     }
   }
 
-    
-    
+
+
   @JsonProperty("stato")
   private StatoEnum stato = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
-  
+
   @JsonProperty("dataValidita")
   private Date dataValidita = null;
-  
+
   @JsonProperty("dataScadenza")
   private Date dataScadenza = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("tassonomiaAvviso")
   private TassonomiaAvviso tassonomiaAvviso = null;
-  
+
   @JsonProperty("qrcode")
   private String qrcode = null;
-  
+
   @JsonProperty("barcode")
   private String barcode = null;
-  
+
   @JsonProperty("pdf")
   private String pdf = null;
-  
+
   /**
    * Stato dell'avviso
    **/
@@ -306,7 +304,7 @@ public class Avviso extends JSONSerializable {
     return Objects.hash(this.stato, this.importo, this.idDominio, this.numeroAvviso, this.dataValidita, this.dataScadenza, this.descrizione, this.tassonomiaAvviso, this.qrcode, this.barcode, this.pdf);
   }
 
-  public static Avviso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Avviso parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, Avviso.class);
   }
 
@@ -319,7 +317,7 @@ public class Avviso extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Avviso {\n");
-    
+
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
     sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
     sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");

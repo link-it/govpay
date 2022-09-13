@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.ec.v2.beans.Contabilita;
@@ -16,7 +15,7 @@ import it.govpay.ec.v2.beans.QuotaContabilita;
 
 public class ContabilitaConverter {
 
-	public static Contabilita toRsModel(String contabilitaJson) throws ServiceException, ValidationException {
+	public static Contabilita toRsModel(String contabilitaJson) throws IOException {
 		if(contabilitaJson == null)
 			return null;
 		
@@ -65,7 +64,7 @@ public class ContabilitaConverter {
 	}
 	
 	
-	public static String toStringDTO(Contabilita contabilita) throws ServiceException {
+	public static String toStringDTO(Contabilita contabilita) throws IOException {
 		if(contabilita == null)
 			return null;
 		
@@ -75,7 +74,7 @@ public class ContabilitaConverter {
 	}
 	
 	
-	public static List<it.govpay.model.QuotaContabilita> toDTO(List<QuotaContabilita> dto) throws ServiceException {
+	public static List<it.govpay.model.QuotaContabilita> toDTO(List<QuotaContabilita> dto) {
 		if(dto != null) {
 			List<it.govpay.model.QuotaContabilita> rsModel = new ArrayList<it.govpay.model.QuotaContabilita>();
 			for (QuotaContabilita contabilita : dto) {
@@ -88,7 +87,7 @@ public class ContabilitaConverter {
 		return null;
 	}
 
-	public static it.govpay.model.Contabilita toDTO(Contabilita dto) throws ServiceException {
+	public static it.govpay.model.Contabilita toDTO(Contabilita dto) {
 		it.govpay.model.Contabilita rsModel = new it.govpay.model.Contabilita();
 		
 		rsModel.setQuote(toDTO(dto.getQuote()));
@@ -98,7 +97,7 @@ public class ContabilitaConverter {
 		return rsModel;
 	}
 	
-	public static it.govpay.model.QuotaContabilita toDTO(QuotaContabilita dto) throws ServiceException {
+	public static it.govpay.model.QuotaContabilita toDTO(QuotaContabilita dto) {
 		it.govpay.model.QuotaContabilita rsModel = new it.govpay.model.QuotaContabilita();
 		
 		rsModel.setAccertamento(dto.getAccertamento());
@@ -114,7 +113,7 @@ public class ContabilitaConverter {
 		return rsModel;
 	}
 	
-	private static String getDettaglioAsString(Object obj) throws ServiceException {
+	private static String getDettaglioAsString(Object obj) throws IOException {
 		if(obj != null) {
 			SerializationConfig serializationConfig = new SerializationConfig();
 			serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));

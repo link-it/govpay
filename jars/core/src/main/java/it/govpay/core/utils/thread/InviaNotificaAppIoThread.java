@@ -25,6 +25,7 @@ import it.govpay.bd.pagamento.NotificheAppIoBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.QuietanzaPagamento;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.appio.AppIOUtils;
@@ -66,7 +67,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 	private TipoVersamento tipoVersamento = null;
 	private TipoNotifica tipo;
 
-	public InviaNotificaAppIoThread(NotificaAppIo notifica, IContext ctx) throws ServiceException {
+	public InviaNotificaAppIoThread(NotificaAppIo notifica, IContext ctx) throws ServiceException, IOException {
 		this.ctx = ctx;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();

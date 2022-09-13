@@ -13,9 +13,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
-import it.govpay.bd.model.Rpt;
 import it.govpay.core.beans.Costanti;
 import it.govpay.pagamento.v2.controller.PagamentiController;
 import it.govpay.rs.v2.BaseRsServiceV2;
@@ -28,7 +25,7 @@ public class Pagamenti extends BaseRsServiceV2{
 
 	private PagamentiController controller = null;
 
-	public Pagamenti() throws ServiceException {
+	public Pagamenti() {
 		super("pagamenti");
 		this.controller = new PagamentiController(this.nomeServizio,this.log);
 	}
@@ -39,36 +36,36 @@ public class Pagamenti extends BaseRsServiceV2{
     @Path("/")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    public Response addPagamento(@Context UriInfo uriInfo, 
-    		@Context HttpHeaders httpHeaders, 
-    		java.io.InputStream is, 
-    		@QueryParam("idSessionePortale") String idSessionePortale, 
-    		@QueryParam("gRecaptchaResponse") String gRecaptchaResponse, 
+    public Response addPagamento(@Context UriInfo uriInfo,
+    		@Context HttpHeaders httpHeaders,
+    		java.io.InputStream is,
+    		@QueryParam("idSessionePortale") String idSessionePortale,
+    		@QueryParam("gRecaptchaResponse") String gRecaptchaResponse,
     		@QueryParam("codiceConvenzione") String codiceConvenzione,
-    		@QueryParam("identificativoPSP") String identificativoPSP, 
-    		@QueryParam("identificativoIntermediarioPSP") String identificativoIntermediarioPSP, 
+    		@QueryParam("identificativoPSP") String identificativoPSP,
+    		@QueryParam("identificativoIntermediarioPSP") String identificativoIntermediarioPSP,
     		@QueryParam("identificativoCanale") String identificativoCanale,
     		@QueryParam("tipoVersamento") @DefaultValue("BBT") String tipoVersamento){
         this.buildContext();
         this.controller.setRequestResponse(this.request, this.response);
-        
-        return this.controller.addPagamento(this.getUser(), 
-        		uriInfo, 
-        		httpHeaders, 
-        		is, 
-        		idSessionePortale, 
-        		gRecaptchaResponse, 
+
+        return this.controller.addPagamento(this.getUser(),
+        		uriInfo,
+        		httpHeaders,
+        		is,
+        		idSessionePortale,
+        		gRecaptchaResponse,
         		codiceConvenzione,
         		identificativoPSP,
         		identificativoIntermediarioPSP,
         		identificativoCanale,
         		tipoVersamento);
     }
-    
+
     @GET
     @Path("/")
     @Produces({ "application/json" })
-    public Response findPagamenti(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, 
+    public Response findPagamenti(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina,
     		@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento,
     		@QueryParam("campi") String campi, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA,
     		@QueryParam("stato") String stato, @QueryParam("idVersante") String idVersante, @QueryParam("idDebitore") String idDebitore,  @QueryParam("idSessionePortale") String idSessionePortale, @QueryParam("idSessione") String idSessionePsp,
@@ -76,7 +73,7 @@ public class Pagamenti extends BaseRsServiceV2{
         this.buildContext();
         return this.controller.pagamentiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, dataDa, dataA, stato, idVersante, idDebitore, idSessionePortale, idSessionePsp, id, metadatiPaginazione, maxRisultati);
     }
-    
+
     @GET
     @Path("/byIdSession/{idSession}")
     @Produces({ "application/json" })

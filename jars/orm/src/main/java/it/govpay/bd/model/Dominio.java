@@ -68,11 +68,11 @@ public class Dominio extends it.govpay.model.Dominio {
 	private transient List<Tributo> tributi;
 	private transient List<TipoVersamentoDominio> tipiVersamento;
 
-	public Stazione getStazione() throws ServiceException {
+	public Stazione getStazione() {
 		return this.stazione;
 	}
 
-	public Anagrafica getAnagrafica() throws ServiceException {
+	public Anagrafica getAnagrafica() {
 		return this.anagrafica;
 	}
 

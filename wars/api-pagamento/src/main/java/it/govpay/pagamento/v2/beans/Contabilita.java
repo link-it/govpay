@@ -73,7 +73,7 @@ public class Contabilita extends JSONSerializable implements IValidable {
     return Objects.hash(quote, proprietaCustom);
   }
 
-  public static Contabilita parse(String json) throws ServiceException, ValidationException {
+  public static Contabilita parse(String json) throws it.govpay.core.exceptions.IOException {
     return (Contabilita) parse(json, Contabilita.class);
   }
 

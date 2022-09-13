@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "password",
 "abilitato",
@@ -14,19 +14,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "domini",
 })
 public class Stazione extends it.govpay.core.beans.JSONSerializable {
-  
+
   @JsonProperty("password")
   private String password = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   @JsonProperty("idStazione")
   private String idStazione = null;
-  
+
   @JsonProperty("domini")
   private List<DominioIndex> domini = new ArrayList<>();
-  
+
   /**
    * Ragione sociale dell'intermediario PagoPA
    **/
@@ -110,7 +110,7 @@ public class Stazione extends it.govpay.core.beans.JSONSerializable {
     return Objects.hash(this.password, this.abilitato, this.idStazione, this.domini);
   }
 
-  public static Stazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Stazione parse(String json) throws IOException {
     return parse(json, Stazione.class);
   }
 
@@ -123,7 +123,7 @@ public class Stazione extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Stazione {\n");
-    
+
     sb.append("    password: ").append(this.toIndentedString(this.password)).append("\n");
     sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("    idStazione: ").append(this.toIndentedString(this.idStazione)).append("\n");

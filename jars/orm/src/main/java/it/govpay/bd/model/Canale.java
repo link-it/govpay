@@ -19,14 +19,14 @@
  */
 package it.govpay.bd.model;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class Canale extends it.govpay.model.Canale {
 	
 	private static final long serialVersionUID = 1L;
 	public static final Canale canaleUniversale = new Canale(Rpt.codIntermediarioPspWISP20, Rpt.codPspWISP20, Rpt.codCanaleWISP20,	Rpt.tipoVersamentoWISP20, null);
 
-	public Canale(Psp psp, String codCanale, String tipoVersamento) throws ServiceException {
+	public Canale(Psp psp, String codCanale, String tipoVersamento) throws CodificaInesistenteException {
 		this(psp, codCanale, TipoVersamento.toEnum(tipoVersamento));
 	}
 	
@@ -34,7 +34,7 @@ public class Canale extends it.govpay.model.Canale {
 		this(new Psp(codIntermediarioPsp, codPsp, ragioneSociale), codCanale, tipoVersamento);
 	}
 	
-	public Canale(String codIntermediarioPsp, String codPsp, String codCanale, String tipoVersamento, String ragioneSociale) throws ServiceException {
+	public Canale(String codIntermediarioPsp, String codPsp, String codCanale, String tipoVersamento, String ragioneSociale) throws CodificaInesistenteException {
 		this(new Psp(codIntermediarioPsp, codPsp, ragioneSociale), codCanale, tipoVersamento);
 	}
 	

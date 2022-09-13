@@ -4,14 +4,12 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @JsonPropertyOrder({
 "id",
 "codDominio",
@@ -25,38 +23,38 @@ import it.govpay.core.beans.JSONSerializable;
 "filenameEsito",
 })
 public class Tracciato extends JSONSerializable {
-  
+
   @JsonProperty("id")
   private BigDecimal id = null;
-  
+
   @JsonProperty("codDominio")
   private String codDominio = null;
-  
+
   @JsonProperty("tipo")
   private String tipo = null;
-  
+
   @JsonProperty("stato")
   private String stato = null;
-  
+
   @JsonProperty("descrizioneStato")
   private String descrizioneStato = null;
-  
+
   @JsonProperty("dataCaricamento")
   private Date dataCaricamento = null;
-  
+
   @JsonProperty("dataCompletamento")
   private Date dataCompletamento = null;
-  
+
   @JsonProperty("beanDati")
   @JsonRawValue
   private Object beanDati = null;
-  
+
   @JsonProperty("filenameRichiesta")
   private String filenameRichiesta = null;
-  
+
   @JsonProperty("filenameEsito")
   private String filenameEsito = null;
-  
+
   /**
    * Identificativo numerico del tracciato
    **/
@@ -244,7 +242,7 @@ public class Tracciato extends JSONSerializable {
     return Objects.hash(this.id, this.codDominio, this.tipo, this.stato, this.descrizioneStato, this.dataCaricamento, this.dataCompletamento, this.beanDati, this.filenameRichiesta, this.filenameEsito);
   }
 
-  public static Tracciato parse(String json) throws ServiceException, ValidationException {
+  public static Tracciato parse(String json) throws IOException {
     return parse(json, Tracciato.class);
   }
 
@@ -257,7 +255,7 @@ public class Tracciato extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Tracciato {\n");
-    
+
     sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
     sb.append("    codDominio: ").append(this.toIndentedString(this.codDominio)).append("\n");
     sb.append("    tipo: ").append(this.toIndentedString(this.tipo)).append("\n");

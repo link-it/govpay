@@ -2,8 +2,6 @@ package it.govpay.ragioneria.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -24,23 +22,23 @@ import it.govpay.core.beans.JSONSerializable;
 "cellulare",
 })
 public class Soggetto extends JSONSerializable {
-  
-    
+
+
   /**
    * tipologia di soggetto, se persona fisica (F) o giuridica (G)
    */
   public enum TipoEnum {
-    
-    
-        
-            
+
+
+
+
     G("G"),
-    
-            
+
+
     F("F");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -64,41 +62,41 @@ public class Soggetto extends JSONSerializable {
     }
   }
 
-    
-    
+
+
   @JsonProperty("tipo")
   private TipoEnum tipo = null;
-  
+
   @JsonProperty("identificativo")
   private String identificativo = null;
-  
+
   @JsonProperty("anagrafica")
   private String anagrafica = null;
-  
+
   @JsonProperty("indirizzo")
   private String indirizzo = null;
-  
+
   @JsonProperty("civico")
   private String civico = null;
-  
+
   @JsonProperty("cap")
   private String cap = null;
-  
+
   @JsonProperty("localita")
   private String localita = null;
-  
+
   @JsonProperty("provincia")
   private String provincia = null;
-  
+
   @JsonProperty("nazione")
   private String nazione = null;
-  
+
   @JsonProperty("email")
   private String email = null;
-  
+
   @JsonProperty("cellulare")
   private String cellulare = null;
-  
+
   /**
    * tipologia di soggetto, se persona fisica (F) o giuridica (G)
    **/
@@ -294,7 +292,7 @@ public class Soggetto extends JSONSerializable {
     return Objects.hash(this.tipo, this.identificativo, this.anagrafica, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.cellulare);
   }
 
-  public static Soggetto parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Soggetto parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, Soggetto.class);
   }
 
@@ -307,7 +305,7 @@ public class Soggetto extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Soggetto {\n");
-    
+
     sb.append("    tipo: ").append(this.toIndentedString(this.tipo)).append("\n");
     sb.append("    identificativo: ").append(this.toIndentedString(this.identificativo)).append("\n");
     sb.append("    anagrafica: ").append(this.toIndentedString(this.anagrafica)).append("\n");

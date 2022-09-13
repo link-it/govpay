@@ -15,9 +15,9 @@ public class NotificheConverter {
 
 	public static NotificaIndex toRsModelIndex(Notifica notifica) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		
+
 		NotificaIndex rsModel = new NotificaIndex();
-		
+
 		rsModel.setDataCreazione(notifica.getDataCreazione());
 		rsModel.setDataProssimaSpedizione(notifica.getDataProssimaSpedizione());
 		rsModel.setDataUltimoAggiornamento(notifica.getDataAggiornamento());
@@ -38,7 +38,7 @@ public class NotificheConverter {
 				break;
 			}
 		}
-		
+
 		if(notifica.getTipo() != null) {
 			switch (notifica.getTipo()) {
 			case ANNULLAMENTO:
@@ -55,9 +55,9 @@ public class NotificheConverter {
 				break;
 			}
 		}
-		
+
 		rsModel.setIdA2A(notifica.getApplicazione(configWrapper).getCodApplicazione());
-		
+
 		return rsModel;
 	}
 

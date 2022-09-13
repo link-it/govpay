@@ -2,11 +2,11 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreUtils;
@@ -16,19 +16,19 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "codiceContabilita",
 })
 public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable implements IValidable {
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonIgnore
   private TipoContabilita tipoContabilitaEnum = null;
-  
+
   @JsonProperty("tipoContabilita")
   private String tipoContabilita = null;
-  
+
   @JsonProperty("codiceContabilita")
   private String codiceContabilita = null;
-  
+
   /**
    **/
   public TipoEntrataPost descrizione(String descrizione) {
@@ -59,7 +59,7 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
   public void setTipoContabilitaEnum(TipoContabilita tipoContabilitaEnum) {
     this.tipoContabilitaEnum = tipoContabilitaEnum;
   }
-  
+
   /**
    * Tipologia di codifica del capitolo di bilancio
    **/
@@ -111,7 +111,7 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
     return Objects.hash(descrizione, tipoContabilita, codiceContabilita);
   }
 
-  public static TipoEntrataPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static TipoEntrataPost parse(String json) throws IOException {
     return parse(json, TipoEntrataPost.class);
   }
 
@@ -124,7 +124,7 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoEntrataPost {\n");
-    
+
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    tipoContabilita: ").append(toIndentedString(tipoContabilita)).append("\n");
     sb.append("    codiceContabilita: ").append(toIndentedString(codiceContabilita)).append("\n");
@@ -142,7 +142,7 @@ public class TipoEntrataPost extends it.govpay.core.beans.JSONSerializable imple
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();

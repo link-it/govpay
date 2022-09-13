@@ -34,7 +34,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -68,11 +67,11 @@ public abstract class BaseRsService {
 
 	protected String codOperazione;
 
-	public BaseRsService() throws ServiceException{
+	public BaseRsService() {
 		this.log = LoggerWrapperFactory.getLogger(BaseRsService.class);
 	}
 
-	public BaseRsService(String nomeServizio) throws ServiceException{
+	public BaseRsService(String nomeServizio) {
 		this();
 		this.nomeServizio = nomeServizio;
 

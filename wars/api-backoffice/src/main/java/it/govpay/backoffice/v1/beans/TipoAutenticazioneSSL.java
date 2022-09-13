@@ -2,11 +2,11 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "tipo",
 "ksLocation",
@@ -19,23 +19,23 @@ import com.fasterxml.jackson.annotation.JsonValue;
 "sslType",
 })
 public class TipoAutenticazioneSSL extends it.govpay.core.beans.JSONSerializable {
-  
-    
+
+
   /**
    * Gets or Sets tipo
    */
   public enum TipoEnum {
-    
-    
-        
-            
+
+
+
+
     CLIENT("Client"),
-    
-            
+
+
     SERVER("Server");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -59,37 +59,37 @@ public class TipoAutenticazioneSSL extends it.govpay.core.beans.JSONSerializable
     }
   }
 
-    
-    
+
+
   @JsonProperty("tipo")
   private TipoEnum tipo = null;
-  
+
   @JsonProperty("ksLocation")
   private String ksLocation = null;
-  
+
   @JsonProperty("ksPassword")
   private String ksPassword = null;
-  
+
   @JsonProperty("ksType")
   private KeystoreType ksType = null;
-  
+
   @JsonProperty("ksPKeyPasswd")
   private String ksPKeyPasswd = null;
-  
+
   @JsonProperty("tsLocation")
   private String tsLocation = null;
-  
+
   @JsonProperty("tsPassword")
   private String tsPassword = null;
-  
+
   @JsonProperty("tsType")
   private KeystoreType tsType = null;
-  
+
   private SslConfigType sslTypeEnum = null;
-  
+
   @JsonProperty("sslType")
   private String sslType = null;
-  
+
   /**
    **/
   public TipoAutenticazioneSSL tipo(TipoEnum tipo) {
@@ -229,7 +229,7 @@ public class TipoAutenticazioneSSL extends it.govpay.core.beans.JSONSerializable
   public void setSslTypeEnum(SslConfigType type) {
     this.sslTypeEnum = type;
   }
-  
+
   /**
    **/
   public TipoAutenticazioneSSL sslType(String sslType) {
@@ -270,7 +270,7 @@ public class TipoAutenticazioneSSL extends it.govpay.core.beans.JSONSerializable
     return Objects.hash(tipo, ksLocation, ksPassword, ksType, ksPKeyPasswd, tsLocation, tsPassword, tsType, sslType);
   }
 
-  public static TipoAutenticazioneSSL parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static TipoAutenticazioneSSL parse(String json) throws IOException {
     return parse(json, TipoAutenticazioneSSL.class);
   }
 
@@ -283,7 +283,7 @@ public class TipoAutenticazioneSSL extends it.govpay.core.beans.JSONSerializable
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoAutenticazioneSSL {\n");
-    
+
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    ksLocation: ").append(toIndentedString(ksLocation)).append("\n");
     sb.append("    ksPassword: ").append(toIndentedString(ksPassword)).append("\n");

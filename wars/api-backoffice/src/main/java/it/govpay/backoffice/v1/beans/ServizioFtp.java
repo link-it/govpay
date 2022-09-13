@@ -2,13 +2,12 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @JsonPropertyOrder({
@@ -16,13 +15,13 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "ftp_scrittura",
 })
 public class ServizioFtp extends JSONSerializable implements IValidable{
-  
+
   @JsonProperty("ftp_lettura")
   private ConnettoreFtp ftpLettura = null;
-  
+
   @JsonProperty("ftp_scrittura")
   private ConnettoreFtp ftpScrittura = null;
-  
+
   /**
    **/
   public ServizioFtp ftpLettura(ConnettoreFtp ftpLettura) {
@@ -71,7 +70,7 @@ public class ServizioFtp extends JSONSerializable implements IValidable{
     return Objects.hash(this.ftpLettura, this.ftpScrittura);
   }
 
-  public static ServizioFtp parse(String json) throws ServiceException, ValidationException {
+  public static ServizioFtp parse(String json) throws IOException {
     return parse(json, ServizioFtp.class);
   }
 
@@ -84,7 +83,7 @@ public class ServizioFtp extends JSONSerializable implements IValidable{
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ServizioFtp {\n");
-    
+
     sb.append("    ftpLettura: ").append(this.toIndentedString(this.ftpLettura)).append("\n");
     sb.append("    ftpScrittura: ").append(this.toIndentedString(this.ftpScrittura)).append("\n");
     sb.append("}");
@@ -101,7 +100,7 @@ public class ServizioFtp extends JSONSerializable implements IValidable{
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();

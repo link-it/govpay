@@ -2,12 +2,11 @@ package it.govpay.pagamento.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.ec.v1.validator.SoggettoPagatoreValidator;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 
 /**
@@ -296,7 +295,7 @@ import it.govpay.core.utils.validator.IValidable;
 		 return Objects.hash(this.tipo, this.identificativo, this.anagrafica, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.cellulare);
 	 }
 
-	 public static Soggetto parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, it.govpay.core.exceptions.ValidationException {
+	 public static Soggetto parse(String json) throws it.govpay.core.exceptions.IOException {
 		 return parse(json, Soggetto.class);
 	 }
 
@@ -339,7 +338,7 @@ import it.govpay.core.utils.validator.IValidable;
 	 @Override
 	public void validate() throws ValidationException {
 			SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
-			
+
 			soggettoPagatoreValidator.validaTipo("tipo", this.getTipo() != null ? this.getTipo().toString() : null);
 			soggettoPagatoreValidator.validaIdentificativo("identificativo", this.getIdentificativo());
 			soggettoPagatoreValidator.validaAnagrafica("anagrafica", this.getAnagrafica());

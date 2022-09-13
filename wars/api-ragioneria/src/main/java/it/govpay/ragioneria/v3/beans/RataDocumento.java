@@ -10,10 +10,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class RataDocumento  implements OneOfTipoRiferimentoDocumento  {
-  
+
   @Schema(example = "1", required = true, description = "Rata del documento")
  /**
-   * Rata del documento  
+   * Rata del documento
   **/
   private BigDecimal rata = null;
  /**
@@ -41,7 +41,7 @@ public class RataDocumento  implements OneOfTipoRiferimentoDocumento  {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RataDocumento {\n");
-    
+
     sb.append("    rata: ").append(toIndentedString(rata)).append("\n");
     sb.append("}");
     return sb.toString();

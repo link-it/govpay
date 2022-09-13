@@ -14,7 +14,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
-import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -72,6 +71,7 @@ import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTOResponse;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -88,10 +88,10 @@ public class DominiController extends BaseController {
 
 
 	public Response findDomini(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String campi, Boolean abilitato, String ordinamento, String idStazione, Boolean associati, Boolean form, String idDominio, String ragioneSociale, Boolean metadatiPaginazione, Boolean maxRisultati, Boolean intermediato) {
-		String methodName = "findDomini";  
+		String methodName = "findDomini";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);  
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);
 		try{
 			// autorizzazione sulla API
 			try {
@@ -99,17 +99,17 @@ public class DominiController extends BaseController {
 			}catch (NotAuthorizedException e) {
 				associati = true;
 			}
-			
+
 			if(associati == null)
 				associati = true;
-			
-			if(associati == false) {
+
+			if(!associati) {
 				throw new ValidationException("Il valore indicato per il parametro associati non e' valido.");
 			}
-			
+
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
-			
+
 			// Parametri - > DTO Input
 
 			FindDominiDTO listaDominiDTO = new FindDominiDTO(user);
@@ -129,7 +129,7 @@ public class DominiController extends BaseController {
 			listaDominiDTO.setFormBackoffice(form);
 			listaDominiDTO.setCodDominio(idDominio);
 			listaDominiDTO.setRagioneSociale(ragioneSociale);
-			
+
 			listaDominiDTO.setEseguiCount(metadatiPaginazione);
 			listaDominiDTO.setEseguiCountConLimit(maxRisultati);
 			listaDominiDTO.setIntermediato(intermediato);
@@ -152,7 +152,7 @@ public class DominiController extends BaseController {
 			ListaDomini response = new ListaDomini(results, this.getServicePath(uriInfo),
 					listaDominiDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 
 		}catch (Exception e) {
@@ -166,24 +166,24 @@ public class DominiController extends BaseController {
 
 
 	public Response findContiAccredito(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String iban, Boolean metadatiPaginazione, Boolean maxRisultati) {
-		String methodName = "findContiAccredito";  
+		String methodName = "findContiAccredito";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);  
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
-			
+
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
-			
+
 			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			
+
 			if(dominiAutorizzati.size() > 0) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
@@ -199,7 +199,7 @@ public class DominiController extends BaseController {
 			listaDominiIbanDTO.setOrderBy(ordinamento);
 			listaDominiIbanDTO.setAbilitato(abilitato);
 			listaDominiIbanDTO.setIban(iban);
-			
+
 			listaDominiIbanDTO.setEseguiCount(metadatiPaginazione);
 			listaDominiIbanDTO.setEseguiCountConLimit(maxRisultati);
 
@@ -221,7 +221,7 @@ public class DominiController extends BaseController {
 			ListaContiAccredito response = new ListaContiAccredito(results, this.getServicePath(uriInfo),
 					listaDominiIbanDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 
 		}catch (Exception e) {
@@ -232,9 +232,9 @@ public class DominiController extends BaseController {
 	}
 
 	public Response getContiAccredito(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito) {
-		String methodName = "getContiAccredito";  
+		String methodName = "getContiAccredito";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
@@ -242,11 +242,11 @@ public class DominiController extends BaseController {
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 			validatoreId.validaIdIbanAccredito("ibanAccredito", ibanAccredito);
-			
+
 			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			
+
 			if(dominiAutorizzati.size() > 0) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
@@ -269,7 +269,7 @@ public class DominiController extends BaseController {
 
 			ContiAccredito response = DominiConverter.toIbanRsModel(getDominiIbanDTOResponse.getIbanAccredito());
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {
@@ -280,9 +280,9 @@ public class DominiController extends BaseController {
 	}
 
 	public Response addContiAccredito(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String ibanAccredito, java.io.InputStream is) {
-		String methodName = "addContiAccredito";  
+		String methodName = "addContiAccredito";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
@@ -297,11 +297,11 @@ public class DominiController extends BaseController {
 			validatoreId.validaIdIbanAccredito("ibanAccredito", ibanAccredito);
 
 			ibanAccreditoRequest.validate();
-			
+
 			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			
+
 			if(dominiAutorizzati.size() > 0) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
@@ -316,7 +316,7 @@ public class DominiController extends BaseController {
 
 			Status responseStatus = putIbanAccreditoDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -326,24 +326,24 @@ public class DominiController extends BaseController {
 	}
 
 	public Response findEntrate(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String descrizione, Boolean metadatiPaginazione, Boolean maxRisultati) {
-		String methodName = "findEntrate";  
+		String methodName = "findEntrate";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);  
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
-			
+
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
-			
+
 			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			
+
 			if(dominiAutorizzati.size() > 0) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
@@ -359,7 +359,7 @@ public class DominiController extends BaseController {
 			listaDominiEntrateDTO.setOrderBy(ordinamento);
 			listaDominiEntrateDTO.setAbilitato(abilitato);
 			listaDominiEntrateDTO.setDescrizione(descrizione);
-			
+
 			listaDominiEntrateDTO.setEseguiCount(metadatiPaginazione);
 			listaDominiEntrateDTO.setEseguiCountConLimit(maxRisultati);
 
@@ -381,7 +381,7 @@ public class DominiController extends BaseController {
 			ListaEntrate response = new ListaEntrate(results, this.getServicePath(uriInfo),
 					listaDominiEntrateDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 
 		}catch (Exception e) {
@@ -392,9 +392,9 @@ public class DominiController extends BaseController {
 	}
 
 	public Response getEntrata(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata) {
-		String methodName = "getEntrata";  
+		String methodName = "getEntrata";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
@@ -406,13 +406,13 @@ public class DominiController extends BaseController {
 			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			
+
 			if(dominiAutorizzati.size() > 0) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
 				}
 			}
-			
+
 			// Parametri - > DTO Input
 
 			GetTributoDTO getDominioEntrataDTO = new GetTributoDTO(user, idDominio, idEntrata);
@@ -429,7 +429,7 @@ public class DominiController extends BaseController {
 
 			Entrata response = DominiConverter.toEntrataRsModel(listaDominiEntrateDTOResponse);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {
@@ -440,9 +440,9 @@ public class DominiController extends BaseController {
 	}
 
 	public Response addEntrata(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idEntrata, java.io.InputStream is) {
-		String methodName = "addEntrata";  
+		String methodName = "addEntrata";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
@@ -458,25 +458,25 @@ public class DominiController extends BaseController {
 			validatoreId.validaIdEntrata("idEntrata", idEntrata);
 
 			entrataRequest.validate();
-			
+
 			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			
+
 			if(dominiAutorizzati.size() > 0) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
 				}
 			}
 
-			PutEntrataDominioDTO putEntrataDTO = DominiConverter.getPutEntrataDominioDTO(entrataRequest, idDominio, idEntrata, user); 
+			PutEntrataDominioDTO putEntrataDTO = DominiConverter.getPutEntrataDominioDTO(entrataRequest, idDominio, idEntrata, user);
 
 			DominiDAO dominiDAO = new DominiDAO(false);
 			PutEntrataDominioDTOResponse putEntrataDTOResponse = dominiDAO.createOrUpdateEntrataDominio(putEntrataDTO);
 
 			Status responseStatus = putEntrataDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -486,9 +486,9 @@ public class DominiController extends BaseController {
 	}
 
 	public Response getDominio(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio) {
-		String methodName = "getDominio";  
+		String methodName = "getDominio";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
@@ -499,11 +499,11 @@ public class DominiController extends BaseController {
 			// Parametri - > DTO Input
 
 			GetDominioDTO getDominioDTO = new GetDominioDTO(user, idDominio);
-			
+
 			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			
+
 			if(dominiAutorizzati.size() > 0) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
@@ -522,7 +522,7 @@ public class DominiController extends BaseController {
 
 			it.govpay.backoffice.v1.beans.Dominio response = DominiConverter.toRsModel(listaDominiDTOResponse.getDominio(), listaDominiDTOResponse.getUo(), listaDominiDTOResponse.getTributi(), listaDominiDTOResponse.getIban(), listaDominiDTOResponse.getTipiVersamentoDominio());
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {
@@ -533,9 +533,9 @@ public class DominiController extends BaseController {
 	}
 
 	public Response addDominio(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
-		String methodName = "addDominio";  
+		String methodName = "addDominio";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
@@ -551,8 +551,8 @@ public class DominiController extends BaseController {
 
 			dominioRequest.validate();
 
-			PutDominioDTO putDominioDTO = DominiConverter.getPutDominioDTO(dominioRequest, idDominio, user); 
-			
+			PutDominioDTO putDominioDTO = DominiConverter.getPutDominioDTO(dominioRequest, idDominio, user);
+
 			putDominioDTO.setIdDomini(AuthorizationManager.getIdDominiAutorizzati(user));
 			putDominioDTO.setCodDomini(AuthorizationManager.getDominiAutorizzati(user));
 
@@ -564,7 +564,7 @@ public class DominiController extends BaseController {
 
 			Status responseStatus = putDominioDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -574,10 +574,10 @@ public class DominiController extends BaseController {
 	}
 
 	public Response findTipiPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String tipo, Boolean associati, Boolean form, Boolean trasformazione, String descrizione, Boolean metadatiPaginazione, Boolean maxRisultati) {
-		String methodName = "findTipiPendenza";  
+		String methodName = "findTipiPendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);  
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);
 		try{
 			try {
 				// autorizzazione sulla API
@@ -585,13 +585,13 @@ public class DominiController extends BaseController {
 			}catch (NotAuthorizedException e) {
 				associati = true;
 			}
-			
+
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
-			
+
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
-			
+
 			if(associati != null && associati) {
 				List<String> codDominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 				if(codDominiAutorizzati == null)
@@ -600,7 +600,7 @@ public class DominiController extends BaseController {
 					throw AuthorizationManager.toNotAuthorizedException(user, idDominio, null);
 				}
 			}
-			
+
 			// Parametri - > DTO Input
 
 			FindTipiPendenzaDominioDTO findTipiPendenzaDominioDTO = new FindTipiPendenzaDominioDTO(user);
@@ -610,13 +610,13 @@ public class DominiController extends BaseController {
 			findTipiPendenzaDominioDTO.setOrderBy(ordinamento);
 			findTipiPendenzaDominioDTO.setCodDominio(idDominio);
 			findTipiPendenzaDominioDTO.setAbilitato(abilitato);
-			findTipiPendenzaDominioDTO.setFormBackoffice(form); 
+			findTipiPendenzaDominioDTO.setFormBackoffice(form);
 			findTipiPendenzaDominioDTO.setTrasformazione(trasformazione);
 			findTipiPendenzaDominioDTO.setDescrizione(descrizione);
-			
+
 			findTipiPendenzaDominioDTO.setEseguiCount(metadatiPaginazione);
 			findTipiPendenzaDominioDTO.setEseguiCountConLimit(maxRisultati);
-			
+
 			if(associati != null && associati) {
 				List<Long> idTipiVersamentoAutorizzati = AuthorizationManager.getIdTipiVersamentoAutorizzati(user);
 				if(idTipiVersamentoAutorizzati == null)
@@ -642,7 +642,7 @@ public class DominiController extends BaseController {
 			ListaTipiPendenzaDominio response = new ListaTipiPendenzaDominio(results, this.getServicePath(uriInfo),
 					findTipiPendenzaDominioDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 
 		}catch (Exception e) {
@@ -653,9 +653,9 @@ public class DominiController extends BaseController {
 	}
 
 	public Response getTipoPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza) {
-		String methodName = "getTipoPendenza";  
+		String methodName = "getTipoPendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
@@ -663,11 +663,11 @@ public class DominiController extends BaseController {
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
-			
+
 			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			
+
 			if(dominiAutorizzati.size() > 0) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
@@ -677,12 +677,12 @@ public class DominiController extends BaseController {
 			// Parametri - > DTO Input
 
 			GetTipoPendenzaDominioDTO getTipoPendenzaDominioDTO = new GetTipoPendenzaDominioDTO(user, idDominio, idTipoPendenza);
-			
-			
+
+
 			List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
 			if(tipiVersamentoAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-			
+
 			if(tipiVersamentoAutorizzati.size() > 0) {
 				if(!tipiVersamentoAutorizzati.contains(idTipoPendenza)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "il tipo pendenza non e' tra quelli associati all'utenza");
@@ -695,13 +695,13 @@ public class DominiController extends BaseController {
 
 			// CHIAMATA AL DAO
 
-			GetTipoPendenzaDominioDTOResponse getTipoPendenzaDominioDTOResponse = dominiDAO.getTipoPendenza(getTipoPendenzaDominioDTO); 
+			GetTipoPendenzaDominioDTOResponse getTipoPendenzaDominioDTOResponse = dominiDAO.getTipoPendenza(getTipoPendenzaDominioDTO);
 
 			// CONVERT TO JSON DELLA RISPOSTA
 
 			TipoPendenzaDominio response = DominiConverter.toTipoPendenzaRsModel(getTipoPendenzaDominioDTOResponse);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {
@@ -712,9 +712,9 @@ public class DominiController extends BaseController {
 	}
 
 	public Response addTipoPendenza(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idTipoPendenza, java.io.InputStream is) {
-		String methodName = "addTipoPendenza";  
+		String methodName = "addTipoPendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
@@ -730,35 +730,35 @@ public class DominiController extends BaseController {
 			validatoreId.validaIdTipoVersamento("idTipoPendenza", idTipoPendenza);
 
 			tipoPendenzaRequest.validate();
-			
+
 			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			
+
 			if(dominiAutorizzati.size() > 0) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
 				}
 			}
-			
+
 			List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
 			if(tipiVersamentoAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-			
+
 			if(tipiVersamentoAutorizzati.size() > 0) {
 				if(!tipiVersamentoAutorizzati.contains(idTipoPendenza)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "il tipo pendenza non e' tra quelli associati all'utenza");
 				}
 			}
 
-			PutTipoPendenzaDominioDTO putTipoPendenzaDominioDTO = DominiConverter.getPutTipoPendenzaDominioDTO(tipoPendenzaRequest, idDominio, idTipoPendenza, user); 
+			PutTipoPendenzaDominioDTO putTipoPendenzaDominioDTO = DominiConverter.getPutTipoPendenzaDominioDTO(tipoPendenzaRequest, idDominio, idTipoPendenza, user);
 
 			DominiDAO dominiDAO = new DominiDAO(false);
 			PutTipoPendenzaDominioDTOResponse putTipoPendenzaDominioDTOResponse = dominiDAO.createOrUpdateTipoPendenzaDominio(putTipoPendenzaDominioDTO);
 
-			Status responseStatus = putTipoPendenzaDominioDTOResponse.isCreated() ?  Status.CREATED : Status.OK; 
+			Status responseStatus = putTipoPendenzaDominioDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -767,11 +767,11 @@ public class DominiController extends BaseController {
 		}
 	}
 
-	public Response findUnitaOperative(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, Boolean associati, String ragioneSociale, Boolean metadatiPaginazione, Boolean maxRisultati) {    	
-		String methodName = "findUnitaOperative";  
+	public Response findUnitaOperative(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, Boolean associati, String ragioneSociale, Boolean metadatiPaginazione, Boolean maxRisultati) {
+		String methodName = "findUnitaOperative";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);  
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);
 		try{
 			try {
 				// autorizzazione sulla API
@@ -782,14 +782,14 @@ public class DominiController extends BaseController {
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
-			
+
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
-			
+
 			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			
+
 			if(dominiAutorizzati.size() > 0) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
@@ -813,7 +813,7 @@ public class DominiController extends BaseController {
 				listaDominiUoDTO.setAssociati(associati);
 			}
 			listaDominiUoDTO.setRagioneSociale(ragioneSociale);
-			
+
 			listaDominiUoDTO.setEseguiCount(metadatiPaginazione);
 			listaDominiUoDTO.setEseguiCountConLimit(maxRisultati);
 
@@ -835,7 +835,7 @@ public class DominiController extends BaseController {
 			ListaUnitaOperative response = new ListaUnitaOperative(results, this.getServicePath(uriInfo),
 					listaDominiUoDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
 
 		}catch (Exception e) {
@@ -846,9 +846,9 @@ public class DominiController extends BaseController {
 	}
 
 	public Response getUnitaOperativa(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa) {
-		String methodName = "getUnitaOperativa";  
+		String methodName = "getUnitaOperativa";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
@@ -856,11 +856,11 @@ public class DominiController extends BaseController {
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 			validatoreId.validaIdUO("idUnitaOperativa", idUnitaOperativa);
-			
+
 			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			
+
 			if(dominiAutorizzati.size() > 0) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
@@ -883,7 +883,7 @@ public class DominiController extends BaseController {
 
 			UnitaOperativa response = DominiConverter.toUnitaOperativaRsModel(listaDominiUoDTOResponse.getUnitaOperativa());
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {
@@ -894,9 +894,9 @@ public class DominiController extends BaseController {
 	}
 
 	public Response addUnitaOperativa(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idUnitaOperativa, java.io.InputStream is) {
-		String methodName = "addUnitaOperativa";  
+		String methodName = "addUnitaOperativa";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
@@ -912,11 +912,11 @@ public class DominiController extends BaseController {
 			validatoreId.validaIdUO("idUnitaOperativa", idUnitaOperativa);
 
 			unitaOperativaRequest.validate();
-			
+
 			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			
+
 			if(dominiAutorizzati.size() > 0) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
@@ -931,7 +931,7 @@ public class DominiController extends BaseController {
 
 			Status responseStatus = putUnitaOperativaDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -941,20 +941,20 @@ public class DominiController extends BaseController {
 	}
 
 	public Response getLogo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String idDominio) {
-		String methodName = "getLogo";  
+		String methodName = "getLogo";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_CREDITORE), Arrays.asList(Diritti.LETTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
-			
+
 			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
 			if(dominiAutorizzati == null)
 				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-			
+
 			if(dominiAutorizzati.size() > 0) {
 				if(!dominiAutorizzati.contains(idDominio)) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "l'ente creditore non e' tra quelli associati all'utenza");
@@ -979,7 +979,7 @@ public class DominiController extends BaseController {
 
 			String mimeType = MimeUtil.getFirstMimeType(mimeTypes.toString()).toString();
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			ResponseBuilder entity = Response.status(Status.OK).entity(logo);
 			entity.header("CacheControl", "max-age: "+ GovpayConfig.getInstance().getCacheLogo().intValue());
 			entity.header("Content-Type", mimeType);

@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "nome",
 "domini",
@@ -17,22 +16,22 @@ import it.govpay.core.beans.JSONSerializable;
 "autenticazione",
 })
 public class Profilo extends JSONSerializable {
-  
+
   @JsonProperty("nome")
   private String nome = null;
-  
+
   @JsonProperty("domini")
   private List<DominioProfiloIndex> domini = new ArrayList<>();
-  
+
   @JsonProperty("tipiPendenza")
   private List<TipoPendenza> tipiPendenza = new ArrayList<>();
-  
+
   @JsonProperty("acl")
   private List<AclPost> acl = new ArrayList<>();
-  
+
   @JsonProperty("autenticazione")
   private String autenticazione = null;
-  
+
   /**
    * Nome dell'utenza
    **/
@@ -133,7 +132,7 @@ public class Profilo extends JSONSerializable {
     return Objects.hash(nome, domini, tipiPendenza, acl, autenticazione);
   }
 
-  public static Profilo parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Profilo parse(String json) throws IOException {
     return parse(json, Profilo.class);
   }
 
@@ -146,7 +145,7 @@ public class Profilo extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Profilo {\n");
-    
+
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
     sb.append("    tipiPendenza: ").append(toIndentedString(tipiPendenza)).append("\n");

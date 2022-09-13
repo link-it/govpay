@@ -15,8 +15,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.backoffice.v1.controllers.PendenzeController;
 import it.govpay.core.beans.Costanti;
@@ -30,11 +28,11 @@ public class Pendenze extends BaseRsServiceV1{
 
 	private PendenzeController controller = null;
 
-	public Pendenze() throws ServiceException {
+	public Pendenze() {
 		super("pendenze");
 		this.controller = new PendenzeController(this.nomeServizio,this.log);
 	}
-	
+
     @POST
     @Path("/tracciati")
     @Consumes({ "application/json", "multipart/form-data" })
@@ -54,7 +52,7 @@ public class Pendenze extends BaseRsServiceV1{
 
     @GET
     @Path("/byAvviso/{idDominio}/{numeroAvviso}")
-    
+
     @Produces({ "application/json" })
     public Response getPendenzaByAvviso(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("numeroAvviso") String numeroAvviso){
     	 this.buildContext();
@@ -76,7 +74,7 @@ public class Pendenze extends BaseRsServiceV1{
         this.buildContext();
         return this.controller.findTracciatiPendenze(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, idDominio, stato, metadatiPaginazione, maxRisultati);
     }
-    
+
     @PATCH
     @Path("/{idA2A}/{idPendenza}")
     @Consumes({ "application/json" })
@@ -131,7 +129,7 @@ public class Pendenze extends BaseRsServiceV1{
 
     @GET
     @Path("/tracciati/{id}/richiesta")
-    
+
     @Produces({ "application/json", "text/csv" })
     public Response getRichiestaTracciatoPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Integer id){
          this.buildContext();

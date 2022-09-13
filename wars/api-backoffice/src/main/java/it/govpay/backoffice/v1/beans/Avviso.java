@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import it.govpay.core.exceptions.IOException;
 
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "stato",
@@ -23,29 +23,29 @@ import com.fasterxml.jackson.annotation.JsonValue;
 "barcode",
 })
 public class Avviso extends it.govpay.core.beans.JSONSerializable {
-  
-    
+
+
   /**
    * Stato dell'avviso
    */
   public enum StatoEnum {
-    
-    
-        
-            
+
+
+
+
     PAGATO("Pagato"),
-    
-            
+
+
     NON_PAGATO("Non pagato"),
-    
-            
+
+
     SCADUTO("Scaduto"),
-    
-            
+
+
     ANNULLATO("Annullato");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -69,38 +69,38 @@ public class Avviso extends it.govpay.core.beans.JSONSerializable {
     }
   }
 
-    
-    
+
+
   @JsonProperty("stato")
   private StatoEnum stato = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
-  
+
   @JsonProperty("dataValidita")
   private Date dataValidita = null;
-  
+
   @JsonProperty("dataScadenza")
   private Date dataScadenza = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("tassonomiaAvviso")
   private String tassonomiaAvviso = null;
-  
+
   @JsonProperty("qrcode")
   private String qrcode = null;
-  
+
   @JsonProperty("barcode")
   private String barcode = null;
-  
+
   /**
    * Stato dell'avviso
    **/
@@ -116,7 +116,7 @@ public class Avviso extends it.govpay.core.beans.JSONSerializable {
   public void setStato(StatoEnum stato) {
     this.stato = stato;
   }
-  
+
   @JsonProperty("stato")
   public String getStato() {
 	  if(this.stato != null) {
@@ -124,7 +124,7 @@ public class Avviso extends it.govpay.core.beans.JSONSerializable {
 	  } else {
 		  return null;
 	  }
-    
+
   }
   public void setStato(String stato) throws Exception{
 	  if(stato != null) {
@@ -304,7 +304,7 @@ public class Avviso extends it.govpay.core.beans.JSONSerializable {
     return Objects.hash(this.stato, this.importo, this.idDominio, this.numeroAvviso, this.dataValidita, this.dataScadenza, this.descrizione, this.tassonomiaAvviso, this.qrcode, this.barcode);
   }
 
-  public static Avviso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Avviso parse(String json) throws IOException {
     return parse(json, Avviso.class);
   }
 
@@ -317,7 +317,7 @@ public class Avviso extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Avviso {\n");
-    
+
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
     sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");
     sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");

@@ -13,7 +13,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -27,6 +26,7 @@ import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ProfiloPatchDTO;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 
 public class ProfiloController extends BaseController {
@@ -36,20 +36,20 @@ public class ProfiloController extends BaseController {
      }
 
     public Response getProfilo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders) {
-    	String methodName = "getProfilo";  
+    	String methodName = "getProfilo";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE));
-			
+
 			UtentiDAO utentiDAO = new UtentiDAO();
-			
+
 			LeggiProfiloDTOResponse leggiProfilo = utentiDAO.getProfilo(user);
-			
+
 			Profilo profilo = ProfiloConverter.getProfilo(leggiProfilo);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(profilo.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -62,26 +62,26 @@ public class ProfiloController extends BaseController {
 
     @SuppressWarnings("unchecked")
 	public Response updateProfilo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is) {
-    	String methodName = "updateProfilo";  
+    	String methodName = "updateProfilo";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
-			
+
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE));
-			
+
 			// autorizzazione sulla API
 //			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE), Arrays.asList(Servizio.ANAGRAFICA_RUOLI), Arrays.asList(Diritti.SCRITTURA));
 			String jsonRequest = baos.toString();
 
 			UtentiDAO utentiDAO = new UtentiDAO(false);
-			
+
 			ProfiloPatchDTO profiloPatchDTO = new ProfiloPatchDTO(user);
-			
+
 			List<PatchOp> lstOp = new ArrayList<>();
-			
+
 			try {
 				List<java.util.LinkedHashMap<?,?>> lst = JSONSerializable.parse(jsonRequest, List.class);
 				for(java.util.LinkedHashMap<?,?> map: lst) {
@@ -101,13 +101,13 @@ public class ProfiloController extends BaseController {
 			} catch (Exception e) {
 				lstOp = JSONSerializable.parse(jsonRequest, List.class);
 			}
-			
+
 			profiloPatchDTO.setOp(PatchOpConverter.toModel(lstOp));
 			LeggiProfiloDTOResponse leggiProfilo = utentiDAO.patchProfilo(profiloPatchDTO);
-			
+
 			Profilo profilo = ProfiloConverter.getProfilo(leggiProfilo);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(profilo.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);

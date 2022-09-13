@@ -11,8 +11,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.controllers.TracciatiController;
 import it.govpay.core.beans.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -25,14 +23,14 @@ public class Tracciati extends BaseRsServiceV1{
 
 	private TracciatiController controller = null;
 
-	public Tracciati() throws ServiceException {
+	public Tracciati() {
 		super("tracciati");
 		this.controller = new TracciatiController(this.nomeServizio,this.log);
 	}
 
     @GET
     @Path("/{id}/risposta")
-    
+
     @Produces({ "application/octet-stream" })
     public Response getMessaggioRispostaTracciato(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Long id){
         this.buildContext();
@@ -41,7 +39,7 @@ public class Tracciati extends BaseRsServiceV1{
 
     @GET
     @Path("/")
-    
+
     @Produces({ "application/json" })
     public Response findTracciati(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina){
         this.buildContext();
@@ -50,7 +48,7 @@ public class Tracciati extends BaseRsServiceV1{
 
     @GET
     @Path("/{id}/richiesta")
-    
+
     @Produces({ "application/octet-stream" })
     public Response getMessaggioRichiestaTracciato(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Long id){
         this.buildContext();
@@ -59,7 +57,7 @@ public class Tracciati extends BaseRsServiceV1{
 
     @GET
     @Path("/{id}")
-    
+
     @Produces({ "application/json" })
     public Response getTracciato(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Long id){
         this.buildContext();

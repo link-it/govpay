@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import it.govpay.core.exceptions.IOException;
 
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "stato",
@@ -325,7 +325,7 @@ public class Avviso extends it.govpay.core.beans.JSONSerializable {
     return Objects.hash(this.stato, this.importo, this.idDominio, this.numeroAvviso, this.dataValidita, this.dataScadenza, this.descrizione, this.tassonomiaAvviso, this.qrcode, this.barcode, numeroDocumento);
   }
 
-  public static Avviso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Avviso parse(String json) throws IOException {
     return parse(json, Avviso.class);
   }
 

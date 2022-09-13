@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -26,49 +24,49 @@ import it.govpay.core.beans.JSONSerializable;
 "incasso",
 })
 public class RiscossioneIndex extends JSONSerializable {
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("iuv")
   private String iuv = null;
-  
+
   @JsonProperty("iur")
   private String iur = null;
-  
+
   @JsonProperty("indice")
   private BigDecimal indice = null;
-  
+
   @JsonProperty("pendenza")
   private String pendenza = null;
-  
+
   @JsonProperty("vocePendenza")
   private VocePendenza vocePendenza = null;
-  
+
   @JsonProperty("rpp")
   private String rpp = null;
-  
+
   @JsonProperty("stato")
   private StatoRiscossione stato = null;
-  
+
   @JsonProperty("tipo")
   private TipoRiscossione tipo = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("data")
   private Date data = null;
-  
+
   @JsonProperty("commissioni")
   private BigDecimal commissioni = null;
-  
+
   @JsonProperty("allegato")
   private Allegato allegato = null;
-  
+
   @JsonProperty("incasso")
   private String incasso = null;
-  
+
   /**
    **/
   public RiscossioneIndex idDominio(String idDominio) {
@@ -210,7 +208,7 @@ public class RiscossioneIndex extends JSONSerializable {
   }
 
   /**
-   * Importo riscosso. 
+   * Importo riscosso.
    **/
   public RiscossioneIndex importo(BigDecimal importo) {
     this.importo = importo;
@@ -318,7 +316,7 @@ public class RiscossioneIndex extends JSONSerializable {
     return Objects.hash(this.idDominio, this.iuv, this.iur, this.indice, this.pendenza, this.vocePendenza, this.rpp, this.stato, this.tipo, this.importo, this.data, this.commissioni, this.allegato, this.incasso);
   }
 
-  public static RiscossioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static RiscossioneIndex parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, RiscossioneIndex.class);
   }
 
@@ -331,7 +329,7 @@ public class RiscossioneIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RiscossioneIndex {\n");
-    
+
     sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
     sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
     sb.append("    iur: ").append(this.toIndentedString(this.iur)).append("\n");

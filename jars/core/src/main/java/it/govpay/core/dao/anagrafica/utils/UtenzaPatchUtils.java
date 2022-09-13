@@ -14,7 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.crypt.Password;
-import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
@@ -32,6 +31,7 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.dao.commons.Dominio;
 import it.govpay.core.dao.commons.Dominio.Uo;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
@@ -39,6 +39,7 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.IdUnitaOperativa;
 import it.govpay.model.PatchOp;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 /**
  * @author Bussu Giovanni (bussu@link.it)
@@ -428,7 +429,7 @@ public class UtenzaPatchUtils {
 				Diritti diritto = Diritti.toEnum((String)obj);
 				if(!listaDiritti.contains(diritto))
 					listaDiritti.add(diritto);
-			} catch (ServiceException se) {
+			} catch (CodificaInesistenteException se) {
 				throw new ValidationException(MessageFormat.format(ACL_NON_VALIDA_SERVIZIO_XX_NON_GESTITO, map.get(SERVIZIO_KEY)));
 			}
 		}
@@ -440,7 +441,7 @@ public class UtenzaPatchUtils {
 			if(map.get(SERVIZIO_KEY) == null) throw new ValidationException(ACL_NON_VALIDA_ATTESO_CAMPO_SERVIZIO);
 			if(!(map.get(SERVIZIO_KEY) instanceof String)) throw new ValidationException(ACL_NON_VALIDA_ATTESA_STRINGA_COME_VALORE_DI_SERVIZIO);
 			acl.setServizio(Servizio.toEnum((String) map.get(SERVIZIO_KEY)));
-		} catch (ServiceException se) {
+		} catch (CodificaInesistenteException se) {
 			throw new ValidationException(MessageFormat.format(ACL_NON_VALIDA_SERVIZIO_XX_NON_GESTITO, map.get(SERVIZIO_KEY)));
 		}
 		

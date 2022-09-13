@@ -2,10 +2,9 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -25,49 +24,49 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "abilitato",
 })
 public class UnitaOperativaPost extends it.govpay.core.beans.JSONSerializable implements IValidable {
-  
+
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
-  
+
   @JsonProperty("indirizzo")
   private String indirizzo = null;
-  
+
   @JsonProperty("civico")
   private String civico = null;
-  
+
   @JsonProperty("cap")
   private String cap = null;
-  
+
   @JsonProperty("localita")
   private String localita = null;
-  
+
   @JsonProperty("provincia")
   private String provincia = null;
-  
+
   @JsonProperty("nazione")
   private String nazione = null;
-  
+
   @JsonProperty("email")
   private String email = null;
-  
+
   @JsonProperty("pec")
   private String pec = null;
-  
+
   @JsonProperty("tel")
   private String tel = null;
-  
+
   @JsonProperty("fax")
   private String fax = null;
-  
+
   @JsonProperty("web")
   private String web = null;
-  
+
   @JsonProperty("area")
   private String area = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   /**
    * Ragione sociale dell'unita
    **/
@@ -322,7 +321,7 @@ public class UnitaOperativaPost extends it.govpay.core.beans.JSONSerializable im
     return Objects.hash(this.ragioneSociale, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.pec, this.tel, this.fax, this.web, this.area, this.abilitato);
   }
 
-  public static UnitaOperativaPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static UnitaOperativaPost parse(String json) throws IOException {
     return parse(json, UnitaOperativaPost.class);
   }
 
@@ -335,7 +334,7 @@ public class UnitaOperativaPost extends it.govpay.core.beans.JSONSerializable im
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class UnitaOperativaPost {\n");
-    
+
     sb.append("    ragioneSociale: ").append(this.toIndentedString(this.ragioneSociale)).append("\n");
     sb.append("    indirizzo: ").append(this.toIndentedString(this.indirizzo)).append("\n");
     sb.append("    civico: ").append(this.toIndentedString(this.civico)).append("\n");
@@ -364,11 +363,11 @@ public class UnitaOperativaPost extends it.govpay.core.beans.JSONSerializable im
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws it.govpay.core.exceptions.ValidationException {
 			ValidatorFactory vf = ValidatorFactory.newInstance();
-	
+
 			vf.getValidator("ragioneSociale", this.ragioneSociale).notNull().minLength(1).maxLength(70);
 			vf.getValidator("indirizzo", this.indirizzo).minLength(1).maxLength(70);
 			vf.getValidator("civico", this.civico).minLength(1).maxLength(16);

@@ -66,6 +66,7 @@ import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoExceptio
 import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.GovPayException.FaultBean;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
@@ -81,6 +82,7 @@ import it.govpay.model.PatchOp;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdVersamento;
 
 public class PagamentiPortaleDAO extends BaseDAO {
@@ -92,7 +94,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 	}
 
 	public PagamentiPortaleDTOResponse inserisciPagamenti(PagamentiPortaleDTO pagamentiPortaleDTO) 
-			throws GovPayException, NotAuthorizedException, ServiceException, NotAuthenticatedException, UtilsException, ValidationException, EcException, UnprocessableEntityException { 
+			throws IOException, CodificaInesistenteException, GovPayException, NotAuthorizedException, ServiceException, NotAuthenticatedException, UtilsException, ValidationException, EcException, UnprocessableEntityException { 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		PagamentiPortaleDTOResponse response  = new PagamentiPortaleDTOResponse();
 		GpAvviaTransazionePagamentoResponse transazioneResponse = new GpAvviaTransazionePagamentoResponse();
@@ -267,7 +269,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 							((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(versamentoCommons.getCodVersamentoEnte());
 							((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(versamentoCommons.getCodApplicazione());
 							versamentoModel = versamentoBusiness.chiediVersamento(versamentoCommons);
-						}catch(ValidationException e) {
+						}catch(ValidationException | IOException e) {
 							if(trasformazione) { // se la pendenza generata dalla trasformazione non e' valida restituisco errore interno
 								throw new GovPayException(EsitoOperazione.VAL_003, e.getMessage());
 							} else {

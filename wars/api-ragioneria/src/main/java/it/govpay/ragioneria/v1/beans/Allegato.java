@@ -2,8 +2,6 @@ package it.govpay.ragioneria.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -12,23 +10,23 @@ import it.govpay.core.beans.JSONSerializable;
 "testo",
 })
 public class Allegato extends JSONSerializable {
-  
-    
+
+
   /**
    * Tipologia di allegato
    */
   public enum TipoEnum {
-    
-    
-        
-            
+
+
+
+
     ESITO_PAGAMENTO("Esito pagamento"),
-    
-            
+
+
     MARCA_DA_BOLLO("Marca da bollo");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -52,14 +50,14 @@ public class Allegato extends JSONSerializable {
     }
   }
 
-    
-    
+
+
   @JsonProperty("tipo")
   private TipoEnum tipo = null;
-  
+
   @JsonProperty("testo")
   private String testo = null;
-  
+
   /**
    * Tipologia di allegato
    **/
@@ -110,7 +108,7 @@ public class Allegato extends JSONSerializable {
     return Objects.hash(this.tipo, this.testo);
   }
 
-  public static Allegato parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Allegato parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, Allegato.class);
   }
 
@@ -123,7 +121,7 @@ public class Allegato extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Allegato {\n");
-    
+
     sb.append("    tipo: ").append(this.toIndentedString(this.tipo)).append("\n");
     sb.append("    testo: ").append(this.toIndentedString(this.testo)).append("\n");
     sb.append("}");

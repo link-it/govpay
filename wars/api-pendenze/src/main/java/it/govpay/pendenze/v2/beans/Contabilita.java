@@ -4,12 +4,10 @@ package it.govpay.pendenze.v2.beans;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -17,13 +15,13 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "proprietaCustom",
 })
 public class Contabilita extends JSONSerializable implements IValidable{
-  
+
   @JsonProperty("quote")
   private List<QuotaContabilita> quote = null;
-  
+
   @JsonProperty("proprietaCustom")
   private Object proprietaCustom = null;
-  
+
   /**
    **/
   public Contabilita quote(List<QuotaContabilita> quote) {
@@ -73,8 +71,8 @@ public class Contabilita extends JSONSerializable implements IValidable{
     return Objects.hash(quote, proprietaCustom);
   }
 
-  public static Contabilita parse(String json) throws ServiceException, ValidationException {
-    return (Contabilita) parse(json, Contabilita.class);
+  public static Contabilita parse(String json) throws it.govpay.core.exceptions.IOException {
+    return parse(json, Contabilita.class);
   }
 
   @Override
@@ -86,7 +84,7 @@ public class Contabilita extends JSONSerializable implements IValidable{
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Contabilita {\n");
-    
+
     sb.append("    quote: ").append(toIndentedString(quote)).append("\n");
     sb.append("    proprietaCustom: ").append(toIndentedString(proprietaCustom)).append("\n");
     sb.append("}");
@@ -103,11 +101,11 @@ public class Contabilita extends JSONSerializable implements IValidable{
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
-	
+
 	vf.getValidator("quote", this.quote).validateObjects();
   }
 }

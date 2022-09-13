@@ -3,17 +3,19 @@ package it.govpay.core.business;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.ConfigurazioneBD;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.model.configurazione.AppIOBatch;
 import it.govpay.model.configurazione.AvvisaturaViaAppIo;
 import it.govpay.model.configurazione.AvvisaturaViaMail;
 import it.govpay.model.configurazione.GdeEvento;
+import it.govpay.model.configurazione.GdeEvento.DumpEnum;
+import it.govpay.model.configurazione.GdeEvento.LogEnum;
 import it.govpay.model.configurazione.GdeInterfaccia;
 import it.govpay.model.configurazione.Giornale;
 import it.govpay.model.configurazione.GoogleCaptcha;
@@ -21,8 +23,6 @@ import it.govpay.model.configurazione.Hardening;
 import it.govpay.model.configurazione.MailBatch;
 import it.govpay.model.configurazione.MailServer;
 import it.govpay.model.configurazione.TracciatoCsv;
-import it.govpay.model.configurazione.GdeEvento.DumpEnum;
-import it.govpay.model.configurazione.GdeEvento.LogEnum;
 
 public class Configurazione {
 
@@ -55,7 +55,7 @@ public class Configurazione {
 	}
 
 
-	public void validaConfigurazione(it.govpay.bd.model.Configurazione configurazione) throws IOException, ServiceException {
+	public void validaConfigurazione(it.govpay.bd.model.Configurazione configurazione) throws IOException {
 		it.govpay.bd.model.Configurazione configurazioneDefault = this.getConfigurazioneDefault();
 
 		validaConfigurazioneGiornaleEventi(configurazione, configurazioneDefault);
@@ -85,7 +85,7 @@ public class Configurazione {
 		}
 	}
 
-	private void validaConfigurazioneGiornaleEventi(it.govpay.bd.model.Configurazione configurazione, it.govpay.bd.model.Configurazione configurazioneDefault) throws ServiceException {
+	private void validaConfigurazioneGiornaleEventi(it.govpay.bd.model.Configurazione configurazione, it.govpay.bd.model.Configurazione configurazioneDefault) throws IOException {
 		if(configurazione.getGiornale() == null) {
 			configurazione.setGiornale(configurazioneDefault.getGiornale());
 		} 

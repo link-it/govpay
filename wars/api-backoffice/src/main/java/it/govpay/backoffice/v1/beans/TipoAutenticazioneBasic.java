@@ -2,21 +2,21 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "username",
 "password",
 })
 public class TipoAutenticazioneBasic extends it.govpay.core.beans.JSONSerializable {
-  
+
   @JsonProperty("username")
   private String username = null;
-  
+
   @JsonProperty("password")
   private String password = null;
-  
+
   /**
    **/
   public TipoAutenticazioneBasic username(String username) {
@@ -65,7 +65,7 @@ public class TipoAutenticazioneBasic extends it.govpay.core.beans.JSONSerializab
     return Objects.hash(this.username, this.password);
   }
 
-  public static TipoAutenticazioneBasic parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static TipoAutenticazioneBasic parse(String json) throws IOException {
     return parse(json, TipoAutenticazioneBasic.class);
   }
 
@@ -78,7 +78,7 @@ public class TipoAutenticazioneBasic extends it.govpay.core.beans.JSONSerializab
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoAutenticazioneBasic {\n");
-    
+
     sb.append("    username: ").append(this.toIndentedString(this.username)).append("\n");
     sb.append("    password: ").append(this.toIndentedString(this.password)).append("\n");
     sb.append("}");

@@ -2,8 +2,6 @@ package it.govpay.ragioneria.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -31,70 +29,70 @@ import it.govpay.core.beans.JSONSerializable;
 "idDominio",
 })
 public class DominioIndex extends JSONSerializable {
-  
+
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
-  
+
   @JsonProperty("indirizzo")
   private String indirizzo = null;
-  
+
   @JsonProperty("civico")
   private String civico = null;
-  
+
   @JsonProperty("cap")
   private String cap = null;
-  
+
   @JsonProperty("localita")
   private String localita = null;
-  
+
   @JsonProperty("provincia")
   private String provincia = null;
-  
+
   @JsonProperty("nazione")
   private String nazione = null;
-  
+
   @JsonProperty("email")
   private String email = null;
-  
+
   @JsonProperty("pec")
   private String pec = null;
-  
+
   @JsonProperty("tel")
   private String tel = null;
-  
+
   @JsonProperty("fax")
   private String fax = null;
-  
+
   @JsonProperty("web")
   private String web = null;
-  
+
   @JsonProperty("gln")
   private String gln = null;
-  
+
   @JsonProperty("cbill")
   private String cbill = null;
-  
+
   @JsonProperty("iuvPrefix")
   private String iuvPrefix = null;
-  
+
   @JsonProperty("stazione")
   private String stazione = null;
-  
+
   @JsonProperty("auxDigit")
   private String auxDigit = null;
-  
+
   @JsonProperty("segregationCode")
   private String segregationCode = null;
-  
+
   @JsonProperty("logo")
   private String logo = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   /**
    * Ragione sociale del beneficiario
    **/
@@ -468,7 +466,7 @@ public class DominioIndex extends JSONSerializable {
     return Objects.hash(this.ragioneSociale, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.pec, this.tel, this.fax, this.web, this.gln, this.cbill, this.iuvPrefix, this.stazione, this.auxDigit, this.segregationCode, this.logo, this.abilitato, this.idDominio);
   }
 
-  public static DominioIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static DominioIndex parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, DominioIndex.class);
   }
 
@@ -481,7 +479,7 @@ public class DominioIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class DominioIndex {\n");
-    
+
     sb.append("    ragioneSociale: ").append(this.toIndentedString(this.ragioneSociale)).append("\n");
     sb.append("    indirizzo: ").append(this.toIndentedString(this.indirizzo)).append("\n");
     sb.append("    civico: ").append(this.toIndentedString(this.civico)).append("\n");

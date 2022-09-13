@@ -2,11 +2,11 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
@@ -21,31 +21,31 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "apiMaggioliJPPA",
 })
 public class GdeInterfacce extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("apiEnte")
   private GdeInterfaccia apiEnte = null;
-  
+
   @JsonProperty("apiPagamento")
   private GdeInterfaccia apiPagamento = null;
-  
+
   @JsonProperty("apiRagioneria")
   private GdeInterfaccia apiRagioneria = null;
-  
+
   @JsonProperty("apiBackoffice")
   private GdeInterfaccia apiBackoffice = null;
-  
+
   @JsonProperty("apiPagoPA")
   private GdeInterfaccia apiPagoPA = null;
-  
+
   @JsonProperty("apiPendenze")
   private GdeInterfaccia apiPendenze = null;
-  
+
   @JsonProperty("apiBackendIO")
   private GdeInterfaccia apiBackendIO = null;
-  
+
   @JsonProperty("apiMaggioliJPPA")
   private GdeInterfaccia apiMaggioliJPPA = null;
-  
+
   /**
    **/
   public GdeInterfacce apiEnte(GdeInterfaccia apiEnte) {
@@ -189,8 +189,8 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
   public int hashCode() {
     return Objects.hash(apiEnte, apiPagamento, apiRagioneria, apiBackoffice, apiPagoPA, apiPendenze, apiBackendIO, apiMaggioliJPPA);
   }
-  
-  public static GdeInterfacce parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+
+  public static GdeInterfacce parse(String json) throws IOException {
 	    return parse(json, GdeInterfacce.class);
   }
 
@@ -203,7 +203,7 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class GdeInterfacce {\n");
-    
+
     sb.append("    apiEnte: ").append(toIndentedString(apiEnte)).append("\n");
     sb.append("    apiPagamento: ").append(toIndentedString(apiPagamento)).append("\n");
     sb.append("    apiRagioneria: ").append(toIndentedString(apiRagioneria)).append("\n");
@@ -226,7 +226,7 @@ public class GdeInterfacce extends JSONSerializable implements IValidable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
  	public void validate() throws ValidationException {
 	  ValidatorFactory vf = ValidatorFactory.newInstance();

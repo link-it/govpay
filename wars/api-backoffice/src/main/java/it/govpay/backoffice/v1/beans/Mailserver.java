@@ -3,12 +3,11 @@ package it.govpay.backoffice.v1.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
@@ -24,34 +23,34 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "startTls",
 })
 public class Mailserver extends JSONSerializable implements IValidable{
-  
+
   @JsonProperty("host")
   private String host = null;
-  
+
   @JsonProperty("port")
   private BigDecimal port = null;
-  
+
   @JsonProperty("username")
   private String username = null;
-  
+
   @JsonProperty("password")
   private String password = null;
-  
+
   @JsonProperty("from")
   private String from = null;
-  
+
   @JsonProperty("readTimeout")
   private BigDecimal readTimeout = null;
-  
+
   @JsonProperty("connectionTimeout")
   private BigDecimal connectionTimeout = null;
-  
+
   @JsonProperty("sslConfig")
   private SslConfig sslConfig = null;
-  
+
   @JsonProperty("startTls")
   private Boolean startTls = false;
-  
+
   /**
    * host del servizio di posta
    **/
@@ -220,8 +219,8 @@ public class Mailserver extends JSONSerializable implements IValidable{
     return Objects.hash(host, port, username, password, from, readTimeout, connectionTimeout, sslConfig, startTls);
   }
 
-  public static Mailserver parse(String json) throws ServiceException, ValidationException {
-    return (Mailserver) parse(json, Mailserver.class);
+  public static Mailserver parse(String json) throws IOException {
+    return parse(json, Mailserver.class);
   }
 
   @Override
@@ -233,7 +232,7 @@ public class Mailserver extends JSONSerializable implements IValidable{
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Mailserver {\n");
-    
+
     sb.append("    host: ").append(toIndentedString(host)).append("\n");
     sb.append("    port: ").append(toIndentedString(port)).append("\n");
     sb.append("    username: ").append(toIndentedString(username)).append("\n");
@@ -257,7 +256,7 @@ public class Mailserver extends JSONSerializable implements IValidable{
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();

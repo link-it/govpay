@@ -7,13 +7,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class Contabilita   {
-  
+
   @Schema(description = "")
   private List<QuotaContabilita> quote = null;
-  
+
   @Schema(description = "Dati specifici del gestionale di contabilità")
  /**
-   * Dati specifici del gestionale di contabilità  
+   * Dati specifici del gestionale di contabilità
   **/
   private Object proprietaCustom = null;
  /**
@@ -62,7 +62,7 @@ public class Contabilita   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Contabilita {\n");
-    
+
     sb.append("    quote: ").append(toIndentedString(quote)).append("\n");
     sb.append("    proprietaCustom: ").append(toIndentedString(proprietaCustom)).append("\n");
     sb.append("}");

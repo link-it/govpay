@@ -16,8 +16,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
@@ -29,9 +27,11 @@ import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
 import it.govpay.model.Acl.Diritti;
@@ -153,6 +153,10 @@ public abstract class BaseController {
 			return this.handleValidationException(uriInfo, httpHeaders, methodName, (ValidationException)e,transactionId);
 		}
 		
+		if(e instanceof IOException) {
+			return this.handleIOException(uriInfo, httpHeaders, methodName, (IOException)e,transactionId);
+		}
+		
 		this.log.error("Errore interno durante "+methodName+": " + e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.INTERNO);
@@ -171,7 +175,7 @@ public abstract class BaseController {
 		String respKoJson = null;
 		try {
 			respKoJson =respKo.toJSON(null);
-		} catch(ServiceException ex) {
+		} catch(IOException ex) {
 			this.log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
 			respKoJson = ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN;
 		}
@@ -240,6 +244,22 @@ public abstract class BaseController {
 		int statusCode = 400;
 		
 		String respJson = this.getRespJson(respKo);
+		ResponseBuilder responseBuilder = Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson);
+		this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
+		return handleResponseKo(responseBuilder, transactionId).build();
+	}
+	
+	private Response handleIOException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, IOException e, String transactionId) {
+		this.log.warn("Richiesta rifiutata per errori di validazione: " + e);
+		FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.RICHIESTA);
+			respKo.setCodice("SINTASSI");
+			respKo.setDescrizione("Richiesta non valida");
+			respKo.setDettaglio(e.getMessage());
+		
+		int statusCode = 400;
+		String respJson = this.getRespJson(respKo);
+		
 		ResponseBuilder responseBuilder = Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson);
 		this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
 		return handleResponseKo(responseBuilder, transactionId).build();

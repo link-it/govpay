@@ -2,10 +2,10 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
@@ -17,22 +17,22 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "abilitato",
 })
 public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable implements IValidable{
-  
+
   @JsonProperty("denominazione")
   private String denominazione = null;
-  
+
   @JsonProperty("principalPagoPa")
   private String principalPagoPa = null;
-  
+
   @JsonProperty("servizioPagoPa")
   private ConnettorePagopa servizioPagoPa = null;
-  
+
   @JsonProperty("servizioFtp")
   private ServizioFtp servizioFtp = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   /**
    * Ragione sociale dell'intermediario PagoPA
    **/
@@ -132,7 +132,7 @@ public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable imp
     return Objects.hash(this.denominazione, this.principalPagoPa, this.servizioPagoPa, this.servizioFtp, this.abilitato);
   }
 
-  public static IntermediarioPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static IntermediarioPost parse(String json) throws IOException {
     return parse(json, IntermediarioPost.class);
   }
 
@@ -145,7 +145,7 @@ public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable imp
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class IntermediarioPost {\n");
-    
+
     sb.append("    denominazione: ").append(this.toIndentedString(this.denominazione)).append("\n");
     sb.append("    principalPagoPa: ").append(this.toIndentedString(this.principalPagoPa)).append("\n");
     sb.append("    servizioPagoPa: ").append(this.toIndentedString(this.servizioPagoPa)).append("\n");
@@ -165,7 +165,7 @@ public class IntermediarioPost extends it.govpay.core.beans.JSONSerializable imp
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();

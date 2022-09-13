@@ -9,16 +9,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class Dominio   {
-  
+
   @Schema(example = "1.23456789E+9", required = true, description = "Codice fiscale")
  /**
-   * Codice fiscale  
+   * Codice fiscale
   **/
   private String idDominio = null;
-  
+
   @Schema(example = "Comune Dimostrativo", description = "Ragione sociale")
  /**
-   * Ragione sociale  
+   * Ragione sociale
   **/
   private String ragioneSociale = null;
  /**
@@ -63,7 +63,7 @@ public class Dominio   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Dominio {\n");
-    
+
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
     sb.append("}");

@@ -2,27 +2,26 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idIntermediario",
 "denominazione",
 "abilitato",
 })
 public class IntermediarioIndex extends JSONSerializable {
-  
+
   @JsonProperty("idIntermediario")
   private String idIntermediario = null;
-  
+
   @JsonProperty("denominazione")
   private String denominazione = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   /**
    * Identificativo dell'intermediario
    **/
@@ -90,7 +89,7 @@ public class IntermediarioIndex extends JSONSerializable {
     return Objects.hash(this.idIntermediario, this.denominazione, this.abilitato);
   }
 
-  public static IntermediarioIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static IntermediarioIndex parse(String json) throws IOException {
     return parse(json, IntermediarioIndex.class);
   }
 
@@ -103,7 +102,7 @@ public class IntermediarioIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class IntermediarioIndex {\n");
-    
+
     sb.append("    idIntermediario: ").append(this.toIndentedString(this.idIntermediario)).append("\n");
     sb.append("    denominazione: ").append(this.toIndentedString(this.denominazione)).append("\n");
     sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");

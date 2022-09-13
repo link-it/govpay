@@ -2,12 +2,11 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -16,13 +15,13 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "ragioneSociale",
 })
 public class UnitaOperativaIndex extends JSONSerializable implements IValidable{
-  
+
   @JsonProperty("idUnita")
   private String idUnita = null;
-  
+
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
-  
+
   /**
    * Codice fiscale dell'unita
    **/
@@ -70,10 +69,10 @@ public class UnitaOperativaIndex extends JSONSerializable implements IValidable{
 
   @Override
   public int hashCode() {
-    return Objects.hash(idUnita, ragioneSociale); 
+    return Objects.hash(idUnita, ragioneSociale);
   }
 
-  public static UnitaOperativaIndex parse(String json) throws ServiceException, ValidationException {
+  public static UnitaOperativaIndex parse(String json) throws IOException {
     return parse(json, UnitaOperativaIndex.class);
   }
 
@@ -86,7 +85,7 @@ public class UnitaOperativaIndex extends JSONSerializable implements IValidable{
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class UnitaOperativaIndex {\n");
-    
+
     sb.append("    idUnita: ").append(toIndentedString(idUnita)).append("\n");
     sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
     sb.append("}");

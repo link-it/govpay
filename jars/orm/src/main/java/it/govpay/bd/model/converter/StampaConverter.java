@@ -1,7 +1,5 @@
 package it.govpay.bd.model.converter;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.model.Stampa;
 import it.govpay.model.Stampa.TIPO;
 import it.govpay.orm.IdDocumento;
@@ -9,7 +7,7 @@ import it.govpay.orm.IdVersamento;
 
 public class StampaConverter {
 
-	public static Stampa toDTO(it.govpay.orm.Stampa vo) throws ServiceException {
+	public static Stampa toDTO(it.govpay.orm.Stampa vo) {
 		Stampa dto = new Stampa();
 		
 		dto.setId(vo.getId());
@@ -25,7 +23,7 @@ public class StampaConverter {
 	}
 	
 	
-	public static it.govpay.orm.Stampa toVO(Stampa dto) throws ServiceException {
+	public static it.govpay.orm.Stampa toVO(Stampa dto) {
 		it.govpay.orm.Stampa vo = new it.govpay.orm.Stampa();
 		
 		vo.setId(dto.getId());

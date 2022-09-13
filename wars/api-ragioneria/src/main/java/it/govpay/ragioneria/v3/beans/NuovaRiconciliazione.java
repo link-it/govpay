@@ -5,44 +5,43 @@ import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 
 public class NuovaRiconciliazione extends TipoRiferimentoNuovaRiconciliazione implements IValidable {
-  
+
   @Schema(example = "100.01", required = true, description = "Importo del riversamento. Se valorizzato, viene verificato che corrisponda a quello dei pagamenti riconciliati.")
  /**
-   * Importo del riversamento. Se valorizzato, viene verificato che corrisponda a quello dei pagamenti riconciliati.  
+   * Importo del riversamento. Se valorizzato, viene verificato che corrisponda a quello dei pagamenti riconciliati.
   **/
   private BigDecimal importo = null;
-  
+
   @Schema(example = "Thu Dec 31 01:00:00 CET 2020", description = "Data di valuta dell'incasso")
  /**
-   * Data di valuta dell'incasso  
+   * Data di valuta dell'incasso
   **/
   private Date dataValuta = null;
-  
+
   @Schema(example = "Thu Dec 31 01:00:00 CET 2020", description = "Data di contabile dell'incasso")
  /**
-   * Data di contabile dell'incasso  
+   * Data di contabile dell'incasso
   **/
   private Date dataContabile = null;
-  
+
   @Schema(example = "IT60X0542811101000000123456", description = "Identificativo del conto di tesoreria su cui sono stati incassati i fondi")
  /**
-   * Identificativo del conto di tesoreria su cui sono stati incassati i fondi  
+   * Identificativo del conto di tesoreria su cui sono stati incassati i fondi
   **/
   private String contoAccredito = null;
-  
+
   @Schema(example = "2017-01-01ABI00000011234", required = true, description = "Identificativo Sepa Credit Transfer")
  /**
-   * Identificativo Sepa Credit Transfer  
+   * Identificativo Sepa Credit Transfer
   **/
   private String sct = null;
  /**
@@ -162,13 +161,13 @@ public class NuovaRiconciliazione extends TipoRiferimentoNuovaRiconciliazione im
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
   public void validate() throws ValidationException {
 	  super.validate();
-	  
+
 	ValidatorFactory vf = ValidatorFactory.newInstance();
-	
+
 	vf.getValidator("importo", this.importo).notNull().checkDecimalDigits();
 	vf.getValidator("dataValuta", this.dataValuta);
 	vf.getValidator("dataContabile", this.dataContabile);

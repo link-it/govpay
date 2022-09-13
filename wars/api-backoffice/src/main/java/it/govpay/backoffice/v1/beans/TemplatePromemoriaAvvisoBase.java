@@ -2,13 +2,12 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
@@ -22,16 +21,16 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 public class TemplatePromemoriaAvvisoBase extends JSONSerializable implements IValidable {
 
   private TipoTemplateTrasformazione tipoEnum = null;
-  
+
   @JsonProperty("tipo")
   private String tipo = null;
-  
+
   @JsonProperty("oggetto")
   private Object oggetto = null;
-  
+
   @JsonProperty("messaggio")
   private Object messaggio = null;
-  
+
   /**
    **/
   public TemplatePromemoriaAvvisoBase tipo(TipoTemplateTrasformazione tipo) {
@@ -46,7 +45,7 @@ public class TemplatePromemoriaAvvisoBase extends JSONSerializable implements IV
   public void setTipo(TipoTemplateTrasformazione tipoEnum) {
     this.tipoEnum = tipoEnum;
   }
-  
+
   public TemplatePromemoriaAvvisoBase tipo(String tipo) {
     this.tipo = tipo;
     return this;
@@ -111,8 +110,8 @@ public class TemplatePromemoriaAvvisoBase extends JSONSerializable implements IV
     return Objects.hash(tipo, oggetto, messaggio);
   }
 
-  public static TemplatePromemoriaAvvisoBase parse(String json) throws ServiceException, ValidationException {
-    return (TemplatePromemoriaAvvisoBase) parse(json, TemplatePromemoriaAvvisoBase.class);
+  public static TemplatePromemoriaAvvisoBase parse(String json) throws IOException {
+    return parse(json, TemplatePromemoriaAvvisoBase.class);
   }
 
   @Override
@@ -124,7 +123,7 @@ public class TemplatePromemoriaAvvisoBase extends JSONSerializable implements IV
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TemplatePromemoriaAvvisoBase {\n");
-    
+
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    oggetto: ").append(toIndentedString(oggetto)).append("\n");
     sb.append("    messaggio: ").append(toIndentedString(messaggio)).append("\n");
@@ -150,16 +149,16 @@ public void validate() throws ValidationException {
 
 public void validate(String fieldName) throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
-	
+
 	int v = 0;
 	v = this.oggetto != null ? v+1 : v;
 	v = this.messaggio != null ? v+1 : v;
 	v = this.tipo != null ? v+1 : v;
-	
+
 	if(v != 3) {
 	  throw new ValidationException("I campi 'tipo', 'oggetto' e 'messaggio' devono essere tutti valorizzati per definire il field '"+fieldName+"'.");
 	}
-	
+
 	vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
 }
 }

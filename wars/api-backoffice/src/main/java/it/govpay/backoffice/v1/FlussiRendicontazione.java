@@ -12,11 +12,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import it.govpay.backoffice.v1.controllers.FlussiRendicontazioneController;
 import it.govpay.core.beans.Costanti;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.rs.v1.BaseRsServiceV1;
 
@@ -28,7 +26,7 @@ public class FlussiRendicontazione extends BaseRsServiceV1{
 
 	private FlussiRendicontazioneController controller = null;
 
-	public FlussiRendicontazione() throws ServiceException {
+	public FlussiRendicontazione() {
 		super("flussiRendicontazione");
 		this.controller = new FlussiRendicontazioneController(this.nomeServizio,this.log);
 	}
@@ -37,7 +35,7 @@ public class FlussiRendicontazione extends BaseRsServiceV1{
 
     @GET
     @Path("/{idFlusso}")
-    
+
     @Produces({ "application/json", MediaType.APPLICATION_XML })
     public Response getFlussoRendicontazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idFlusso") String idFlusso){
         this.buildContext();
@@ -46,7 +44,7 @@ public class FlussiRendicontazione extends BaseRsServiceV1{
 
     @GET
     @Path("/")
-    
+
     @Produces({ "application/json" })
     public Response findFlussiRendicontazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("idDominio") String idDominio, @QueryParam("incassato") Boolean incassato, @QueryParam("idFlusso") String idFlusso, @QueryParam("stato") String stato, @QueryParam("iuv") String iuv, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
         this.buildContext();
@@ -55,7 +53,7 @@ public class FlussiRendicontazione extends BaseRsServiceV1{
 
     @GET
     @Path("/{idDominio}/{idFlusso}")
-    
+
     @Produces({ "application/xml", "application/json" })
     public Response getFlussoRendicontazioneByIdEData(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idFlusso") String idFlusso){
         this.buildContext();
@@ -68,10 +66,10 @@ public class FlussiRendicontazione extends BaseRsServiceV1{
         	return this.controller.getFlussoRendicontazione(this.getUser(), uriInfo, httpHeaders, idDominio, idFlusso, null);
         }
     }
-    
+
     @GET
     @Path("/{idDominio}/{idFlusso}/{dataOraFlusso}")
-    
+
     @Produces({ "application/xml", "application/json" })
     public Response getFlussoRendicontazioneByDominioIdEData(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idFlusso") String idFlusso, @PathParam("dataOraFlusso") String dataOraFlusso){
         this.buildContext();

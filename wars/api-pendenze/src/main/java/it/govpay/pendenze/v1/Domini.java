@@ -9,8 +9,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.pendenze.v1.controller.DominiController;
 import it.govpay.rs.v1.BaseRsServiceV1;
 
@@ -22,7 +20,7 @@ public class Domini extends BaseRsServiceV1{
 
 	private DominiController controller = null;
 
-	public Domini() throws ServiceException {
+	public Domini() {
 		super("domini");
 		this.controller = new DominiController(this.nomeServizio, this.log);
 	}
@@ -30,7 +28,7 @@ public class Domini extends BaseRsServiceV1{
 
     @GET
     @Path("/{idDominio}/logo")
-    
+
     @Produces({ "application/json" })
     public Response getLogo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio){
         this.buildContext();

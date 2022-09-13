@@ -11,70 +11,70 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class Ricevuta   {
-  
+
   @Schema(required = true, description = "")
   private Dominio dominio = null;
-  
+
   @Schema(example = "RF23567483937849450550875", required = true, description = "Identificativo univoco di versamento")
  /**
-   * Identificativo univoco di versamento  
+   * Identificativo univoco di versamento
   **/
   private String iuv = null;
-  
+
   @Schema(example = "ab12345", required = true, description = "Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento")
  /**
-   * Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento  
+   * Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento
   **/
   private String idRicevuta = null;
-  
+
   @Schema(example = "10.01", required = true, description = "Importo della transazione di pagamento.")
  /**
-   * Importo della transazione di pagamento.  
+   * Importo della transazione di pagamento.
   **/
   private BigDecimal importo = null;
-  
+
   @Schema(description = "")
   private EsitoRpp esito = null;
-  
+
   @Schema(description = "Identificativo GovPay della sessione di pagamento")
  /**
-   * Identificativo GovPay della sessione di pagamento  
+   * Identificativo GovPay della sessione di pagamento
   **/
   private String idPagamento = null;
-  
+
   @Schema(description = "Identificativo pagoPA della sessione di pagamento")
  /**
-   * Identificativo pagoPA della sessione di pagamento  
+   * Identificativo pagoPA della sessione di pagamento
   **/
   private String idSessionePsp = null;
-  
+
   @Schema(required = true, description = "")
   private RicevutaIstitutoAttestante istitutoAttestante = null;
-  
+
   @Schema(description = "")
   private Soggetto versante = null;
-  
+
   @Schema(required = true, description = "")
   private PendenzaPagata pendenza = null;
-  
+
   @Schema(description = "Data di acquisizione della ricevuta")
  /**
-   * Data di acquisizione della ricevuta  
+   * Data di acquisizione della ricevuta
   **/
   private Date data = null;
-  
+
   @Schema(description = "Data di esecuzione della riscossione")
  /**
-   * Data di esecuzione della riscossione  
+   * Data di esecuzione della riscossione
   **/
   private Date dataPagamento = null;
-  
+
   @Schema(description = "")
   private RicevutaRpt rpt = null;
-  
+
   @Schema(description = "")
   private RicevutaRt rt = null;
-  
+
   @Schema(required = true, description = "")
   private ModelloPagamento modello = null;
  /**
@@ -361,7 +361,7 @@ public class Ricevuta   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Ricevuta {\n");
-    
+
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    idRicevuta: ").append(toIndentedString(idRicevuta)).append("\n");

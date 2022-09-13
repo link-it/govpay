@@ -111,7 +111,7 @@ public class TipoPendenza extends JSONSerializable {
     return Objects.hash(idTipoPendenza, descrizione, form, visualizzazione);
   }
 
-  public static TipoPendenza parse(String json) throws ServiceException, ValidationException  {
+  public static TipoPendenza parse(String json) throws it.govpay.core.exceptions.IOException  {
     return parse(json, TipoPendenza.class);
   }
 

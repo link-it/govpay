@@ -4,9 +4,6 @@ package it.govpay.ragioneria.v2.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -22,34 +19,34 @@ import it.govpay.core.beans.JSONSerializable;
 "articolo",
 })
 public class QuotaContabilita extends JSONSerializable {
-  
+
   @JsonProperty("capitolo")
   private String capitolo = null;
-  
+
   @JsonProperty("annoEsercizio")
   private BigDecimal annoEsercizio = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("accertamento")
   private String accertamento = null;
-  
+
   @JsonProperty("proprietaCustom")
   private Object proprietaCustom = null;
-  
+
   @JsonProperty("titolo")
   private String titolo = null;
-  
+
   @JsonProperty("tipologia")
   private String tipologia = null;
-  
+
   @JsonProperty("categoria")
   private String categoria = null;
-  
+
   @JsonProperty("articolo")
   private String articolo = null;
-  
+
   /**
    * Codice del capitolo
    **/
@@ -219,8 +216,8 @@ public class QuotaContabilita extends JSONSerializable {
     return Objects.hash(capitolo, annoEsercizio, importo, accertamento, proprietaCustom, titolo, tipologia, categoria, articolo);
   }
 
-  public static QuotaContabilita parse(String json) throws ServiceException, ValidationException {
-    return (QuotaContabilita) parse(json, QuotaContabilita.class);
+  public static QuotaContabilita parse(String json) throws it.govpay.core.exceptions.IOException {
+    return parse(json, QuotaContabilita.class);
   }
 
   @Override
@@ -232,7 +229,7 @@ public class QuotaContabilita extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class QuotaContabilita {\n");
-    
+
     sb.append("    capitolo: ").append(toIndentedString(capitolo)).append("\n");
     sb.append("    annoEsercizio: ").append(toIndentedString(annoEsercizio)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");

@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  **/
 @Schema(description="Identificativo del flusso di rendicontazione.")
 public class RiferimentoIdentificativoFlussoRendicontazione  implements OneOfTipoRiferimentoNuovaRiconciliazione, OneOfTipoRiferimentoRiconciliazione  {
-  
+
   @Schema(example = "2017-11-21GovPAYPsp1-10:27:27.903", required = true, description = "")
   private String idFlussoRendicontazione = null;
  /**
@@ -38,7 +38,7 @@ public class RiferimentoIdentificativoFlussoRendicontazione  implements OneOfTip
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RiferimentoIdentificativoFlussoRendicontazione {\n");
-    
+
     sb.append("    idFlussoRendicontazione: ").append(toIndentedString(idFlussoRendicontazione)).append("\n");
     sb.append("}");
     return sb.toString();

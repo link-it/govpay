@@ -42,6 +42,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.converter.TributoConverter;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdTributo;
 import it.govpay.orm.dao.jdbc.JDBCTributoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.TributoFieldConverter;
@@ -90,6 +91,8 @@ public class TributiBD extends BasicBD {
 			return TributoConverter.toDTO(((JDBCTributoServiceSearch)this.getTributoService()).get(id), configWrapper);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -134,6 +137,8 @@ public class TributiBD extends BasicBD {
 //			idTributo.setIdTipoTributo(idTipoTributo); 
 			return TributoConverter.toDTO(this.getTributoService().find(expr), configWrapper);
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) { 
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -308,6 +313,8 @@ public class TributiBD extends BasicBD {
 			
 			return TributoConverter.toDTOList(this.getTributoService().findAll(filter.toPaginatedExpression()), configWrapper);
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

@@ -6,12 +6,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "iuv",
 "iur",
@@ -24,34 +22,34 @@ import it.govpay.core.beans.JSONSerializable;
 "vocePendenza",
 })
 public class RendicontazioneConFlussoEVocePendenza extends JSONSerializable {
-  
+
   @JsonProperty("iuv")
   private String iuv = null;
-  
+
   @JsonProperty("iur")
   private String iur = null;
-  
+
   @JsonProperty("indice")
   private BigDecimal indice = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("esito")
   private BigDecimal esito = null;
-  
+
   @JsonProperty("data")
   private Date data = null;
-  
+
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
-  
+
   @JsonProperty("flussoRendicontazione")
   private FlussoRendicontazioneIndex flussoRendicontazione = null;
-  
+
   @JsonProperty("vocePendenza")
   private VocePendenzaRendicontazione vocePendenza = null;
-  
+
   /**
    * Identificativo univoco di versamento
    **/
@@ -117,7 +115,7 @@ public class RendicontazioneConFlussoEVocePendenza extends JSONSerializable {
   }
 
   /**
-   * Codice di esito dell'operazione rendicontata  * 0 = Pagamento eseguito  * 3 = Pagamento revocato  * 9 = Pagamento eseguito in assenza di RPT 
+   * Codice di esito dell'operazione rendicontata  * 0 = Pagamento eseguito  * 3 = Pagamento revocato  * 9 = Pagamento eseguito in assenza di RPT
    **/
   public RendicontazioneConFlussoEVocePendenza esito(BigDecimal esito) {
     this.esito = esito;
@@ -218,8 +216,8 @@ public class RendicontazioneConFlussoEVocePendenza extends JSONSerializable {
     return Objects.hash(iuv, iur, indice, importo, esito, data, segnalazioni, flussoRendicontazione, vocePendenza);
   }
 
-  public static RendicontazioneConFlussoEVocePendenza parse(String json) throws ServiceException, ValidationException {
-    return (RendicontazioneConFlussoEVocePendenza) parse(json, RendicontazioneConFlussoEVocePendenza.class);
+  public static RendicontazioneConFlussoEVocePendenza parse(String json) throws IOException {
+    return parse(json, RendicontazioneConFlussoEVocePendenza.class);
   }
 
   @Override

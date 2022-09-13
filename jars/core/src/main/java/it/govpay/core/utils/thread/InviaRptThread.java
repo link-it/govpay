@@ -47,6 +47,8 @@ import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.NotificaException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -71,7 +73,7 @@ public class InviaRptThread implements Runnable {
 	private PagamentoPortale pagamentoPortale = null;
 	private Versamento versamento = null;
 
-	public InviaRptThread(Rpt rpt, IContext ctx) throws ServiceException {
+	public InviaRptThread(Rpt rpt, IContext ctx) throws ServiceException, IOException {
 		this.ctx = ctx;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		this.rpt = rpt;
@@ -195,7 +197,7 @@ public class InviaRptThread implements Runnable {
 				log.info("RPT inviata correttamente al nodo");
 				ctx.getApplicationLogger().log("pagamento.invioRptAttivataOk");
 				client.getEventoCtx().setEsito(Esito.OK);
-			}
+			} 
 		} catch (ClientException e) {
 			log.error("Errore nella spedizione della RPT", e);
 			if(client != null) {
@@ -208,7 +210,7 @@ public class InviaRptThread implements Runnable {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
 			}
-		} catch (NotFoundException | ServiceException | GovPayException | UtilsException | InterruptedException e) {
+		} catch (NotFoundException | ServiceException | GovPayException | UtilsException | InterruptedException | NotificaException | IOException e) {
 			log.error("Errore nella spedizione della RPT", e);
 			if(client != null) {
 				if(e instanceof GovPayException) {

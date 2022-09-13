@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
@@ -34,32 +34,32 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "intervalloCreazioneTracciato",
 })
 public class ConnettoreNotificaPagamenti extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   @JsonProperty("codiceIPA")
   private String codiceIPA = null;
-  
-    
+
+
   /**
    * Gets or Sets tipoConnettore
    */
   public enum TipoConnettoreEnum {
-    
-    
-        
-            
+
+
+
+
     WEBSERVICE("WEBSERVICE"),
-    
-            
+
+
     EMAIL("EMAIL"),
-    
-            
+
+
     FILESYSTEM("FILESYSTEM");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -83,24 +83,24 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
     }
   }
 
-    
-    
+
+
   @JsonProperty("tipoConnettore")
   private TipoConnettoreEnum tipoConnettore = null;
-  
-    
+
+
   /**
    * Versione del CSV prodotto.
    */
   public enum VersioneCsvEnum {
-    
-    
-        
-            
+
+
+
+
     _0("1.0");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -124,38 +124,38 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
     }
   }
 
-    
-    
+
+
   @JsonProperty("versioneCsv")
   private VersioneCsvEnum versioneCsv = null;
-  
+
   @JsonProperty("webServiceUrl")
   private String webServiceUrl = null;
-  
+
   @JsonProperty("webServiceAuth")
   private TipoAutenticazione webServiceAuth = null;
-  
+
   @JsonProperty("emailIndirizzi")
   private List<String> emailIndirizzi = null;
-  
+
   @JsonProperty("emailSubject")
   private String emailSubject = null;
-  
+
   @JsonProperty("emailAllegato")
   private Boolean emailAllegato = null;
-  
+
   @JsonProperty("downloadBaseUrl")
   private String downloadBaseUrl = null;
-  
+
   @JsonProperty("fileSystemPath")
   private String fileSystemPath = null;
-  
+
   @JsonProperty("tipiPendenza")
   private List<Object> tipiPendenza = null;
-  
+
   @JsonProperty("intervalloCreazioneTracciato")
   private BigDecimal intervalloCreazioneTracciato = null;
-  
+
   /**
    * Indica se il connettore e' abilitato
    **/
@@ -391,8 +391,8 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
     return Objects.hash(abilitato, codiceIPA, tipoConnettore, versioneCsv, webServiceUrl, webServiceAuth, emailIndirizzi, emailSubject, emailAllegato, downloadBaseUrl, fileSystemPath, tipiPendenza, intervalloCreazioneTracciato);
   }
 
-  public static ConnettoreNotificaPagamenti parse(String json) throws ServiceException, ValidationException {
-    return (ConnettoreNotificaPagamenti) parse(json, ConnettoreNotificaPagamenti.class);
+  public static ConnettoreNotificaPagamenti parse(String json) throws IOException {
+    return parse(json, ConnettoreNotificaPagamenti.class);
   }
 
   @Override
@@ -404,7 +404,7 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ConnettoreNotificaPagamenti {\n");
-    
+
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    codiceIPA: ").append(toIndentedString(codiceIPA)).append("\n");
     sb.append("    tipoConnettore: ").append(toIndentedString(tipoConnettore)).append("\n");
@@ -432,18 +432,18 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		vf.getValidator("abilitato", this.abilitato).notNull();
-		
+
 		if(this.abilitato) {
 			vf.getValidator("tipoConnettore", this.tipoConnettore).notNull();
 			vf.getValidator("versioneCsv", this.versioneCsv).notNull();
 			vf.getValidator("codiceIPA", this.codiceIPA).notNull().minLength(1).maxLength(4000);
 			vf.getValidator("intervalloCreazioneTracciato", this.intervalloCreazioneTracciato).notNull().min(BigDecimal.ONE);
-			
+
 			switch (this.tipoConnettore) {
 			case EMAIL:
 				if(this.emailIndirizzi != null && !this.emailIndirizzi.isEmpty()) {
@@ -469,7 +469,7 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
 				vf.getValidator("webServiceAuth", this.webServiceAuth).validateFields();
 				break;
 			}
-			
+
 			if(this.tipiPendenza != null && !this.tipiPendenza.isEmpty()) {
 				ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 				for (Object object : this.tipiPendenza) {
@@ -483,14 +483,14 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
 							tipoPendenzaProfiloPost.validate();
 					} else if(object instanceof java.util.LinkedHashMap) {
 						java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) object;
-						
+
 						TipoPendenzaProfiloIndex tipoPendenzaProfiloPost = new TipoPendenzaProfiloIndex();
 						if(map.containsKey("idTipoPendenza"))
 							tipoPendenzaProfiloPost.setIdTipoPendenza((String) map.get("idTipoPendenza"));
 						if(map.containsKey("descrizione")) {
 							tipoPendenzaProfiloPost.setDescrizione((String) map.get("descrizione"));
 						}
-						
+
 						if(tipoPendenzaProfiloPost.getIdTipoPendenza() == null)
 							validatoreId.validaIdDominio("idTipoPendenza", tipoPendenzaProfiloPost.getIdTipoPendenza());
 						if(!tipoPendenzaProfiloPost.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR))

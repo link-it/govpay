@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -22,37 +20,37 @@ import it.govpay.core.beans.JSONSerializable;
 "riconciliazione",
 })
 public class RiscossioneIndex extends JSONSerializable {
-  
+
   @JsonProperty("dominio")
   private Dominio dominio = null;
-  
+
   @JsonProperty("iuv")
   private String iuv = null;
-  
+
   @JsonProperty("iur")
   private String iur = null;
-  
+
   @JsonProperty("indice")
   private BigDecimal indice = null;
-  
+
   @JsonProperty("stato")
   private StatoRiscossione stato = null;
-  
+
   @JsonProperty("tipo")
   private TipoRiscossione tipo = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("data")
   private Date data = null;
-  
+
   @JsonProperty("vocePendenza")
   private VocePendenza vocePendenza = null;
-  
+
   @JsonProperty("riconciliazione")
   private String riconciliazione = null;
-  
+
   /**
    **/
   public RiscossioneIndex dominio(Dominio dominio) {
@@ -147,7 +145,7 @@ public class RiscossioneIndex extends JSONSerializable {
   }
 
   /**
-   * Importo riscosso. 
+   * Importo riscosso.
    **/
   public RiscossioneIndex importo(BigDecimal importo) {
     this.importo = importo;
@@ -235,7 +233,7 @@ public class RiscossioneIndex extends JSONSerializable {
     return Objects.hash(dominio, iuv, iur, indice, stato, tipo, importo, data, vocePendenza, riconciliazione);
   }
 
-  public static RiscossioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static RiscossioneIndex parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, RiscossioneIndex.class);
   }
 
@@ -248,7 +246,7 @@ public class RiscossioneIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RiscossioneIndex {\n");
-    
+
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    iur: ").append(toIndentedString(iur)).append("\n");

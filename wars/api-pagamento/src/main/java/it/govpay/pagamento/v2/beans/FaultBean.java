@@ -164,7 +164,7 @@ public class FaultBean extends JSONSerializable {
     return Objects.hash(categoria, codice, descrizione, dettaglio);
   }
 
-  public static FaultBean parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static FaultBean parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, FaultBean.class);
   }
 

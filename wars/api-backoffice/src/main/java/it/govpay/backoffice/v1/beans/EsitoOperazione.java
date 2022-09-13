@@ -5,27 +5,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "percentuale",
 "descrizione",
 "stato",
 })
 public class EsitoOperazione extends JSONSerializable {
-  
+
   @JsonProperty("percentuale")
   private BigDecimal percentuale = null;
-  
+
   @JsonProperty("descrizione")
   private List<DominioIndex> descrizione = new ArrayList<>();
-  
+
   @JsonProperty("stato")
   private String stato = null;
-  
+
   /**
    * Percentuale di avanzamento
    **/
@@ -93,7 +92,7 @@ public class EsitoOperazione extends JSONSerializable {
     return Objects.hash(this.percentuale, this.descrizione, this.stato);
   }
 
-  public static EsitoOperazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static EsitoOperazione parse(String json) throws IOException {
     return parse(json, EsitoOperazione.class);
   }
 
@@ -106,7 +105,7 @@ public class EsitoOperazione extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class EsitoOperazione {\n");
-    
+
     sb.append("    percentuale: ").append(this.toIndentedString(this.percentuale)).append("\n");
     sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");

@@ -2,11 +2,11 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
@@ -20,28 +20,28 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "autStampaPosteItaliane",
 })
 public class ContiAccreditoPost extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("bic")
   private String bic = null;
-  
+
   @JsonProperty("postale")
   private Boolean postale = false;
-  
+
   @JsonProperty("mybank")
   private Boolean mybank = false;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("intestatario")
   private String intestatario = null;
-  
+
   @JsonProperty("autStampaPosteItaliane")
   private String autStampaPosteItaliane = null;
-  
+
   /**
    **/
   public ContiAccreditoPost bic(String bic) {
@@ -176,7 +176,7 @@ public class ContiAccreditoPost extends JSONSerializable implements IValidable {
     return Objects.hash(bic, postale, mybank, abilitato, descrizione, intestatario, autStampaPosteItaliane);
   }
 
-  public static ContiAccreditoPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static ContiAccreditoPost parse(String json) throws IOException {
     return parse(json, ContiAccreditoPost.class);
   }
 
@@ -189,7 +189,7 @@ public class ContiAccreditoPost extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ContiAccreditoPost {\n");
-    
+
     sb.append("    bic: ").append(toIndentedString(bic)).append("\n");
     sb.append("    postale: ").append(toIndentedString(postale)).append("\n");
     sb.append("    mybank: ").append(toIndentedString(mybank)).append("\n");
@@ -211,7 +211,7 @@ public class ContiAccreditoPost extends JSONSerializable implements IValidable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();

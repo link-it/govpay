@@ -44,6 +44,7 @@ import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.client.exception.ClientException;
@@ -73,7 +74,7 @@ public class InviaNotificaThread implements Runnable {
 	private List<Pagamento> pagamenti  = null;
 	private PagamentoPortale pagamentoPortale = null;
 
-	public InviaNotificaThread(Notifica notifica, IContext ctx) throws ServiceException {
+	public InviaNotificaThread(Notifica notifica, IContext ctx) throws ServiceException, IOException {
 		// Verifico che tutti i campi siano valorizzati
 		this.ctx = ctx;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);

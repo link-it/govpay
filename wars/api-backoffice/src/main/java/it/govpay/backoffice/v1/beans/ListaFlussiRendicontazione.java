@@ -7,13 +7,13 @@ import java.util.List;
 import it.govpay.core.beans.Lista;
 
 public class ListaFlussiRendicontazione extends Lista<FlussoRendicontazioneIndex> {
-	
+
 	public ListaFlussiRendicontazione() {
 		super();
 	}
-	
+
 	public ListaFlussiRendicontazione(List<FlussoRendicontazioneIndex> risultati, URI requestUri, Long count, Integer pagina, Integer limit, BigDecimal maxRisultati) {
 		super(risultati, requestUri, count, pagina, limit, maxRisultati);
 	}
-	
+
 }

@@ -2,11 +2,11 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreUtils;
@@ -18,25 +18,25 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "abilitato",
 })
 public class EntrataPost extends it.govpay.core.beans.JSONSerializable implements IValidable {
-  
+
   @JsonProperty("ibanAccredito")
   private String ibanAccredito = null;
-  
+
   @JsonProperty("ibanAppoggio")
   private String ibanAppoggio = null;
-  
+
   @JsonIgnore
   private TipoContabilita tipoContabilitaEnum = null;
-  
+
   @JsonProperty("tipoContabilita")
   private String tipoContabilita = null;
-  
+
   @JsonProperty("codiceContabilita")
   private String codiceContabilita = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
-  
+
   /**
    **/
   public EntrataPost ibanAccredito(String ibanAccredito) {
@@ -82,7 +82,7 @@ public class EntrataPost extends it.govpay.core.beans.JSONSerializable implement
   public void setTipoContabilitaEnum(TipoContabilita tipoContabilitaEnum) {
     this.tipoContabilitaEnum = tipoContabilitaEnum;
   }
-  
+
   /**
    * Tipologia di codifica del capitolo di bilancio
    **/
@@ -152,7 +152,7 @@ public class EntrataPost extends it.govpay.core.beans.JSONSerializable implement
     return Objects.hash(this.ibanAccredito, this.ibanAppoggio, this.tipoContabilita, this.codiceContabilita, this.abilitato);
   }
 
-  public static EntrataPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static EntrataPost parse(String json) throws IOException {
     return parse(json, EntrataPost.class);
   }
 
@@ -165,7 +165,7 @@ public class EntrataPost extends it.govpay.core.beans.JSONSerializable implement
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class EntrataPost {\n");
-    
+
     sb.append("    ibanAccredito: ").append(this.toIndentedString(this.ibanAccredito)).append("\n");
     sb.append("    ibanAppoggio: ").append(this.toIndentedString(this.ibanAppoggio)).append("\n");
     sb.append("    tipoContabilita: ").append(this.toIndentedString(this.tipoContabilita)).append("\n");
@@ -185,7 +185,7 @@ public class EntrataPost extends it.govpay.core.beans.JSONSerializable implement
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();

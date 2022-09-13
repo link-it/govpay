@@ -73,7 +73,7 @@ public class VoceDescrizioneImporto extends JSONSerializable implements IValidab
     return Objects.hash(voce, importo);
   }
 
-  public static VoceDescrizioneImporto parse(String json) throws ServiceException, ValidationException {
+  public static VoceDescrizioneImporto parse(String json) throws it.govpay.core.exceptions.IOException {
     return (VoceDescrizioneImporto) parse(json, VoceDescrizioneImporto.class);
   }
 

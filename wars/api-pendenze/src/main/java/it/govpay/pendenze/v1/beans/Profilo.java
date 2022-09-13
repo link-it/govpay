@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -16,19 +14,19 @@ import it.govpay.core.beans.JSONSerializable;
 "acl",
 })
 public class Profilo extends JSONSerializable {
-  
+
   @JsonProperty("nome")
   private String nome = null;
-  
+
   @JsonProperty("domini")
   private List<DominioIndex> domini = new ArrayList<>();
-  
+
   @JsonProperty("entrate")
   private List<TipoEntrata> entrate = new ArrayList<>();
-  
+
   @JsonProperty("acl")
   private List<AclPost> acl = new ArrayList<>();
-  
+
   /**
    * Nome dell'utenza
    **/
@@ -112,7 +110,7 @@ public class Profilo extends JSONSerializable {
     return Objects.hash(nome, domini, entrate, acl);
   }
 
-  public static Profilo parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Profilo parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, Profilo.class);
   }
 
@@ -125,7 +123,7 @@ public class Profilo extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Profilo {\n");
-    
+
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    domini: ").append(toIndentedString(domini)).append("\n");
     sb.append("    entrate: ").append(toIndentedString(entrate)).append("\n");

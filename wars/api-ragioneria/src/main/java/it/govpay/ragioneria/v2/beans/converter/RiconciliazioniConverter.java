@@ -1,13 +1,11 @@
 package it.govpay.ragioneria.v2.beans.converter;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Fr;
@@ -15,6 +13,7 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Rendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
@@ -26,7 +25,7 @@ import it.govpay.ragioneria.v2.beans.TipoRiscossione;
 
 public class RiconciliazioniConverter {
 
-	
+
 	public static RichiestaIncassoDTO toRichiestaIncassoDTO(NuovaRiconciliazione incassoPost, String idDominio, Authentication user) {
 		RichiestaIncassoDTO dto = new RichiestaIncassoDTO(user);
 		dto.setCausale(incassoPost.getCausale());
@@ -42,11 +41,11 @@ public class RiconciliazioniConverter {
 		dto.setIdFlusso(incassoPost.getIdFlusso());
 		return dto;
 	}
-	
-	
-	public static Riconciliazione toRsModel(it.govpay.bd.model.Incasso i, Fr fr, List<TipoPagamento> riscossioniTipo) throws ServiceException, NotFoundException, IOException, ValidationException {
+
+
+	public static Riconciliazione toRsModel(it.govpay.bd.model.Incasso i, Fr fr, List<TipoPagamento> riscossioniTipo) throws ServiceException, NotFoundException, IOException {
 		Riconciliazione rsModel = new Riconciliazione();
-		
+
 		rsModel.setCausale(i.getCausale());
 		rsModel.setDataContabile(i.getDataContabile());
 		rsModel.setDataValuta(i.getDataValuta());
@@ -59,9 +58,9 @@ public class RiconciliazioniConverter {
 		if(i.getPagamenti()!= null && riscossioniTipo.contains(TipoPagamento.ENTRATA)) {
 			for (Pagamento pagamento : i.getPagamenti()) {
 				riscossioni.add(RiscossioniConverter.toRsModelIndexOld(pagamento));
-			} 
+			}
 		}
-		
+
 		if(fr != null && riscossioniTipo.contains(TipoPagamento.ALTRO_INTERMEDIARIO)) {
 			for(Rendicontazione r : fr.getRendicontazioni()) {
 				if(r.getStato().equals(StatoRendicontazione.ALTRO_INTERMEDIARIO)) {
@@ -79,10 +78,10 @@ public class RiconciliazioniConverter {
 		rsModel.setRiscossioni(riscossioni);
 		return rsModel;
 	}
-	
-	public static RiconciliazioneIndex toRsIndexModel(it.govpay.bd.model.Incasso i) throws ServiceException {
+
+	public static RiconciliazioneIndex toRsIndexModel(it.govpay.bd.model.Incasso i) {
 		RiconciliazioneIndex rsModel = new RiconciliazioneIndex();
-		
+
 		rsModel.setCausale(i.getCausale());
 		rsModel.setDataContabile(i.getDataContabile());
 		rsModel.setDataValuta(i.getDataValuta());
@@ -91,7 +90,7 @@ public class RiconciliazioniConverter {
 		rsModel.setIdDominio(i.getCodDominio());
 		rsModel.setSct(i.getSct());
 		rsModel.setContoAccredito(i.getIbanAccredito());
-		
+
 		return rsModel;
 	}
 }

@@ -2,6 +2,7 @@ package it.govpay.core.beans.tracciati;
 
 import java.util.Objects;
 
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -296,7 +297,7 @@ public class Soggetto extends it.govpay.core.beans.JSONSerializable implements I
     return Objects.hash(this.tipo, this.identificativo, this.anagrafica, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.cellulare);
   }
 
-  public static Soggetto parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Soggetto parse(String json) throws IOException {
     return parse(json, Soggetto.class);
   }
 

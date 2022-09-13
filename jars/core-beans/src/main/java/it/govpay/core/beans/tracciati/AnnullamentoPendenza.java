@@ -2,12 +2,10 @@ package it.govpay.core.beans.tracciati;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -93,7 +91,7 @@ public class AnnullamentoPendenza extends JSONSerializable implements IValidable
     return Objects.hash(this.idA2A, this.idPendenza, this.motivoAnnullamento);
   }
 
-  public static AnnullamentoPendenza parse(String json) throws ServiceException, ValidationException {
+  public static AnnullamentoPendenza parse(String json) throws IOException {
     return parse(json, AnnullamentoPendenza.class);
   }
 

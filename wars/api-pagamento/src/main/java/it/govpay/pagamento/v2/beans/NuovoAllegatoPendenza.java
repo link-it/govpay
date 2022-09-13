@@ -115,7 +115,7 @@ public class NuovoAllegatoPendenza extends JSONSerializable  implements IValidab
     return Objects.hash(nome, tipo, descrizione, contenuto);
   }
 
-  public static NuovoAllegatoPendenza parse(String json) throws ServiceException, ValidationException {
+  public static NuovoAllegatoPendenza parse(String json) throws it.govpay.core.exceptions.IOException {
     return (NuovoAllegatoPendenza) parse(json, NuovoAllegatoPendenza.class);
   }
 

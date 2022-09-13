@@ -113,7 +113,7 @@ public class AllegatoPendenza extends JSONSerializable {
     return Objects.hash(nome, tipo, descrizione, contenuto);
   }
 
-  public static AllegatoPendenza parse(String json) throws ServiceException, ValidationException {
+  public static AllegatoPendenza parse(String json) throws it.govpay.core.exceptions.IOException {
     return (AllegatoPendenza) parse(json, AllegatoPendenza.class);
   }
 

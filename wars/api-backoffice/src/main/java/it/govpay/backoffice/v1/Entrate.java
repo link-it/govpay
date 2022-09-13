@@ -13,8 +13,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.controllers.EntrateController;
 import it.govpay.core.beans.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -27,7 +25,7 @@ public class Entrate extends BaseRsServiceV1{
 
 	private EntrateController controller = null;
 
-	public Entrate() throws ServiceException {
+	public Entrate() {
 		super("entrate");
 		this.controller = new EntrateController(this.nomeServizio,this.log);
 	}
@@ -37,7 +35,7 @@ public class Entrate extends BaseRsServiceV1{
     @PUT
     @Path("/{idEntrata}")
     @Consumes({ "application/json" })
-    
+
     public Response addEntrata(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idEntrata") String idEntrata, java.io.InputStream is){
         this.buildContext();
         return this.controller.addEntrata(this.getUser(), uriInfo, httpHeaders,  idEntrata, is);
@@ -45,7 +43,7 @@ public class Entrate extends BaseRsServiceV1{
 
     @GET
     @Path("/{idEntrata}")
-    
+
     @Produces({ "application/json" })
     public Response getEntrata(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idEntrata") String idEntrata){
         this.buildContext();
@@ -54,7 +52,7 @@ public class Entrate extends BaseRsServiceV1{
 
     @GET
     @Path("/")
-    
+
     @Produces({ "application/json" })
     public Response findEntrate(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
         this.buildContext();

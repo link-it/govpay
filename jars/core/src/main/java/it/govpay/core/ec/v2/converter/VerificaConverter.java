@@ -25,6 +25,8 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 
@@ -44,7 +46,7 @@ import it.govpay.model.Versamento.StatoVersamento;
 
 public class VerificaConverter {
 	
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) throws ValidationException, ServiceException {
+	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) throws ValidationException, ServiceException, IOException {
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 		
 		NuovaPendenza pendenza = pendenzaVerificata.getPendenza();
@@ -109,7 +111,7 @@ public class VerificaConverter {
 		return versamento;
 	}
 	
-	public static void fillSingoliVersamentiFromVociPendenzaBase(it.govpay.core.dao.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws ServiceException, ValidationException {
+	public static void fillSingoliVersamentiFromVociPendenzaBase(it.govpay.core.dao.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws ValidationException, IOException {
 
 		if(voci != null && voci.size() > 0) {
 			for (NuovaVocePendenza vocePendenza : voci) {
@@ -221,7 +223,7 @@ public class VerificaConverter {
 		return dto;
 	}
 	
-	public static String contabilitaToStringDTO(Contabilita contabilita) throws ServiceException {
+	public static String contabilitaToStringDTO(Contabilita contabilita) throws IOException {
 		if(contabilita == null)
 			return null;
 		
@@ -230,7 +232,7 @@ public class VerificaConverter {
 		return getDettaglioAsString(dto);
 	}
 	
-	public static List<it.govpay.model.QuotaContabilita> toDTO(List<QuotaContabilita> dto) throws ServiceException {
+	public static List<it.govpay.model.QuotaContabilita> toDTO(List<QuotaContabilita> dto) {
 		if(dto != null) {
 			List<it.govpay.model.QuotaContabilita> rsModel = new ArrayList<it.govpay.model.QuotaContabilita>();
 			for (QuotaContabilita contabilita : dto) {
@@ -243,7 +245,7 @@ public class VerificaConverter {
 		return null;
 	}
 
-	public static it.govpay.model.Contabilita toDTO(Contabilita dto) throws ServiceException {
+	public static it.govpay.model.Contabilita toDTO(Contabilita dto) {
 		it.govpay.model.Contabilita rsModel = new it.govpay.model.Contabilita();
 		
 		rsModel.setQuote(toDTO(dto.getQuote()));
@@ -253,7 +255,7 @@ public class VerificaConverter {
 		return rsModel;
 	}
 	
-	public static it.govpay.model.QuotaContabilita toDTO(QuotaContabilita dto) throws ServiceException {
+	public static it.govpay.model.QuotaContabilita toDTO(QuotaContabilita dto) {
 		it.govpay.model.QuotaContabilita rsModel = new it.govpay.model.QuotaContabilita();
 		
 		rsModel.setAccertamento(dto.getAccertamento());
@@ -269,7 +271,7 @@ public class VerificaConverter {
 		return rsModel;
 	}
 	
-	private static String getDettaglioAsString(Object obj) throws ServiceException {
+	private static String getDettaglioAsString(Object obj) throws IOException {
 		if(obj != null) {
 			SerializationConfig serializationConfig = new SerializationConfig();
 			serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));

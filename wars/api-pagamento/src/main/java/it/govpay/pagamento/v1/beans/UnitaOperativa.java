@@ -2,8 +2,6 @@ package it.govpay.pagamento.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -26,55 +24,55 @@ import it.govpay.core.beans.JSONSerializable;
 "idUnita",
 })
 public class UnitaOperativa extends JSONSerializable {
-  
+
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
-  
+
   @JsonProperty("indirizzo")
   private String indirizzo = null;
-  
+
   @JsonProperty("civico")
   private String civico = null;
-  
+
   @JsonProperty("cap")
   private String cap = null;
-  
+
   @JsonProperty("localita")
   private String localita = null;
-  
+
   @JsonProperty("provincia")
   private String provincia = null;
-  
+
   @JsonProperty("nazione")
   private String nazione = null;
-  
+
   @JsonProperty("email")
   private String email = null;
-  
+
   @JsonProperty("pec")
   private String pec = null;
-  
+
   @JsonProperty("tel")
   private String tel = null;
-  
+
   @JsonProperty("fax")
   private String fax = null;
-  
+
   @JsonProperty("gln")
   private String gln = null;
-  
+
   @JsonProperty("web")
   private String web = null;
-  
+
   @JsonProperty("area")
   private String area = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   @JsonProperty("idUnita")
   private String idUnita = null;
-  
+
   /**
    * Ragione sociale dell'unita
    **/
@@ -363,7 +361,7 @@ public class UnitaOperativa extends JSONSerializable {
     return Objects.hash(this.ragioneSociale, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.pec, this.tel, this.fax, this.gln, this.web, this.area, this.abilitato, this.idUnita);
   }
 
-  public static UnitaOperativa parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static UnitaOperativa parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, UnitaOperativa.class);
   }
 
@@ -376,7 +374,7 @@ public class UnitaOperativa extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class UnitaOperativa {\n");
-    
+
     sb.append("    ragioneSociale: ").append(this.toIndentedString(this.ragioneSociale)).append("\n");
     sb.append("    indirizzo: ").append(this.toIndentedString(this.indirizzo)).append("\n");
     sb.append("    civico: ").append(this.toIndentedString(this.civico)).append("\n");

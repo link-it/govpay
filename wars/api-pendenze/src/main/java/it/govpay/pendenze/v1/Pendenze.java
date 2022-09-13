@@ -15,8 +15,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.core.beans.Costanti;
 import it.govpay.pendenze.v1.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.pendenze.v1.controller.PendenzeController;
@@ -30,7 +28,7 @@ public class Pendenze extends BaseRsServiceV1{
 
 	private PendenzeController controller = null;
 
-	public Pendenze() throws ServiceException {
+	public Pendenze() {
 		super("pendenze");
 		this.controller = new PendenzeController(this.nomeServizio,this.log);
 	}
@@ -39,7 +37,7 @@ public class Pendenze extends BaseRsServiceV1{
 
     @GET
     @Path("/{idA2A}/{idPendenza}")
-    
+
     @Produces({ "application/json" })
     public Response getPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idA2A") String idA2A, @PathParam("idPendenza") String idPendenza){
         this.buildContext();
@@ -48,7 +46,7 @@ public class Pendenze extends BaseRsServiceV1{
 
     @GET
     @Path("/")
-    
+
     @Produces({ "application/json" })
     public Response findPendenze(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi,  @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("idDominio") String idDominio, @QueryParam("idA2A") String idA2A, @QueryParam("idDebitore") String idDebitore, @QueryParam("stato") String stato, @QueryParam("idPagamento") String idPagamento, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
         this.buildContext();
@@ -63,7 +61,7 @@ public class Pendenze extends BaseRsServiceV1{
         this.buildContext();
         return this.controller.pendenzeIdA2AIdPendenzaPATCH(this.getUser(), uriInfo, httpHeaders,  idA2A,  idPendenza, is);
     }
-    
+
     @POST
     @Path("/{idA2A}/{idPendenza}")
     @Consumes({ "application/json" })

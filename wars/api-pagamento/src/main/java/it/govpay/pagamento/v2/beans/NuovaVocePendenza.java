@@ -390,7 +390,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
     return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, idDominio, tipoBollo, hashDocumento, provinciaResidenza, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita);
   }
 
-  public static NuovaVocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, it.govpay.core.exceptions.ValidationException {
+  public static NuovaVocePendenza parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, NuovaVocePendenza.class);
   }
 

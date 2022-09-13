@@ -1,16 +1,14 @@
 package it.govpay.ragioneria.v2.beans.converter;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.ragioneria.v2.beans.Dominio;
 
 public class DominiConverter {
-	
-	
-	public static Dominio toRsModelIndex(it.govpay.bd.model.Dominio dominio) throws ServiceException {
+
+
+	public static Dominio toRsModelIndex(it.govpay.bd.model.Dominio dominio) {
 		Dominio rsModel = new Dominio();
 //		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb());
-		rsModel.setIdDominio(dominio.getCodDominio()); 
+		rsModel.setIdDominio(dominio.getCodDominio());
 		rsModel.setRagioneSociale(dominio.getRagioneSociale());
 //		rsModel.setIndirizzo(dominio.getAnagrafica().getIndirizzo());
 //		rsModel.setCivico(dominio.getAnagrafica().getCivico());
@@ -32,8 +30,8 @@ public class DominiConverter {
 //		rsModel.setIuvPrefix(dominio.getIuvPrefix());
 //		rsModel.setStazione(dominio.getStazione().getCodStazione());
 //		rsModel.setAbilitato(dominio.isAbilitato());
-		
+
 		return rsModel;
 	}
-	
+
 }

@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
@@ -33,32 +33,32 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "intervalloCreazioneTracciato",
 })
 public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   @JsonProperty("codiceCliente")
   private String codiceCliente = null;
-  
+
   @JsonProperty("codiceIstituto")
   private String codiceIstituto = null;
-  
-    
+
+
   /**
    * Gets or Sets tipoConnettore
    */
   public enum TipoConnettoreEnum {
-    
-    
-        
-            
+
+
+
+
     EMAIL("EMAIL"),
-    
-            
+
+
     FILESYSTEM("FILESYSTEM");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -82,35 +82,35 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
     }
   }
 
-    
-    
+
+
   @JsonProperty("tipoConnettore")
   private TipoConnettoreEnum tipoConnettore = null;
-  
+
   @JsonProperty("versioneCsv")
   private String versioneCsv = null;
-  
+
   @JsonProperty("emailIndirizzi")
   private List<String> emailIndirizzi = null;
-  
+
   @JsonProperty("emailSubject")
   private String emailSubject = null;
-  
+
   @JsonProperty("emailAllegato")
   private Boolean emailAllegato = null;
-  
+
   @JsonProperty("downloadBaseUrl")
   private String downloadBaseUrl = null;
-  
+
   @JsonProperty("fileSystemPath")
   private String fileSystemPath = null;
-  
+
   @JsonProperty("tipiPendenza")
   private List<Object> tipiPendenza = null;
-  
+
   @JsonProperty("intervalloCreazioneTracciato")
   private BigDecimal intervalloCreazioneTracciato = null;
-  
+
   /**
    * Indica se il connettore e' abilitato
    **/
@@ -330,8 +330,8 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
     return Objects.hash(abilitato, codiceCliente, codiceIstituto, tipoConnettore, versioneCsv, emailIndirizzi, emailSubject, emailAllegato, downloadBaseUrl, fileSystemPath, tipiPendenza, intervalloCreazioneTracciato);
   }
 
-  public static ConnettoreNotificaPagamentiSecim parse(String json) throws ServiceException, ValidationException {
-    return (ConnettoreNotificaPagamentiSecim) parse(json, ConnettoreNotificaPagamentiSecim.class);
+  public static ConnettoreNotificaPagamentiSecim parse(String json) throws IOException {
+    return parse(json, ConnettoreNotificaPagamentiSecim.class);
   }
 
   @Override
@@ -343,7 +343,7 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ConnettoreNotificaPagamentiSecim {\n");
-    
+
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    codiceCliente: ").append(toIndentedString(codiceCliente)).append("\n");
     sb.append("    codiceIstituto: ").append(toIndentedString(codiceIstituto)).append("\n");
@@ -370,19 +370,19 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		vf.getValidator("abilitato", this.abilitato).notNull();
-		
+
 		if(this.abilitato) {
 			vf.getValidator("tipoConnettore", this.tipoConnettore).notNull();
 			vf.getValidator("versioneCsv", this.versioneCsv).notNull().minLength(1).maxLength(255);
 			vf.getValidator("codiceCliente", this.codiceCliente).notNull().minLength(1).maxLength(7);
 			vf.getValidator("codiceIstituto", this.codiceIstituto).minLength(1).maxLength(5);
 			vf.getValidator("intervalloCreazioneTracciato", this.intervalloCreazioneTracciato).notNull().min(BigDecimal.ONE);
-			
+
 			switch (this.tipoConnettore) {
 			case EMAIL:
 				if(this.emailIndirizzi != null && !this.emailIndirizzi.isEmpty()) {
@@ -404,7 +404,7 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
 				vf.getValidator("fileSystemPath", this.fileSystemPath).notNull().minLength(1).maxLength(4000);
 				break;
 			}
-			
+
 			if(this.tipiPendenza != null && !this.tipiPendenza.isEmpty()) {
 				ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 				for (Object object : this.tipiPendenza) {
@@ -418,14 +418,14 @@ public class ConnettoreNotificaPagamentiSecim extends JSONSerializable implement
 							tipoPendenzaProfiloPost.validate();
 					} else if(object instanceof java.util.LinkedHashMap) {
 						java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) object;
-						
+
 						TipoPendenzaProfiloIndex tipoPendenzaProfiloPost = new TipoPendenzaProfiloIndex();
 						if(map.containsKey("idTipoPendenza"))
 							tipoPendenzaProfiloPost.setIdTipoPendenza((String) map.get("idTipoPendenza"));
 						if(map.containsKey("descrizione")) {
 							tipoPendenzaProfiloPost.setDescrizione((String) map.get("descrizione"));
 						}
-						
+
 						if(tipoPendenzaProfiloPost.getIdTipoPendenza() == null)
 							validatoreId.validaIdDominio("idTipoPendenza", tipoPendenzaProfiloPost.getIdTipoPendenza());
 						if(!tipoPendenzaProfiloPost.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR))

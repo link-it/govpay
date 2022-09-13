@@ -29,6 +29,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
+import it.govpay.core.exceptions.NotificaException;
 
 public class Notifica extends it.govpay.model.Notifica {
 	
@@ -36,9 +37,9 @@ public class Notifica extends it.govpay.model.Notifica {
 		
 	}
 	
-	public Notifica(Rpt rpt, TipoNotifica tipoNotifica, BDConfigWrapper configWrapper) throws ServiceException {
+	public Notifica(Rpt rpt, TipoNotifica tipoNotifica, BDConfigWrapper configWrapper) throws NotificaException, ServiceException {
 		if(rpt.getVersamento() == null)
-			throw new ServiceException("Il versamento associato all'RPT e' vuoto.");
+			throw new NotificaException("Il versamento associato all'RPT e' vuoto.");
 		
 		this.setApplicazione(rpt.getVersamento().getApplicazione(configWrapper));
 		long adesso = new Date().getTime();
@@ -52,13 +53,13 @@ public class Notifica extends it.govpay.model.Notifica {
 		this.setTipo(tipoNotifica);
 	}
 	
-	public Notifica(Rr rr, TipoNotifica tipoNotifica, BDConfigWrapper configWrapper) throws ServiceException {
+	public Notifica(Rr rr, TipoNotifica tipoNotifica, BDConfigWrapper configWrapper) throws NotificaException, ServiceException {
 		if(rr.getRpt() == null)
-			throw new ServiceException("RPT associata alla RR e' vuota.");
+			throw new NotificaException("RPT associata alla RR e' vuota.");
 		
 		
 		if(rr.getRpt().getVersamento() == null)
-			throw new ServiceException("Il versamento associato all'RPT e' vuoto.");
+			throw new NotificaException("Il versamento associato all'RPT e' vuoto.");
 		
 		this.setApplicazione(rr.getRpt().getVersamento().getApplicazione(configWrapper));
 		long adesso = new Date().getTime();

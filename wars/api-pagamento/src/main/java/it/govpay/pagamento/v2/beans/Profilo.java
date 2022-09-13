@@ -152,7 +152,7 @@ public class Profilo extends JSONSerializable {
     return Objects.hash(nome, domini, tipiPendenza, acl, anagrafica, identityData);
   }
 
-  public static Profilo parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Profilo parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, Profilo.class);
   }
 

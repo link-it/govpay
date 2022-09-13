@@ -3,12 +3,10 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "nome",
@@ -17,19 +15,19 @@ import it.govpay.core.beans.JSONSerializable;
 "contenuto",
 })
 public class AllegatoPendenza extends JSONSerializable {
-  
+
   @JsonProperty("nome")
   private String nome = null;
-  
+
   @JsonProperty("tipo")
   private String tipo = "application/octet-stream";
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("contenuto")
   private String contenuto = null;
-  
+
   /**
    * nome del file
    **/
@@ -114,8 +112,8 @@ public class AllegatoPendenza extends JSONSerializable {
     return Objects.hash(nome, tipo, descrizione, contenuto);
   }
 
-  public static AllegatoPendenza parse(String json) throws ServiceException, ValidationException {
-    return (AllegatoPendenza) parse(json, AllegatoPendenza.class);
+  public static AllegatoPendenza parse(String json) throws IOException {
+    return parse(json, AllegatoPendenza.class);
   }
 
   @Override
@@ -127,7 +125,7 @@ public class AllegatoPendenza extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class AllegatoPendenza {\n");
-    
+
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");

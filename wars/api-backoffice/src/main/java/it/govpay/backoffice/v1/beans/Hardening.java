@@ -2,12 +2,11 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -15,13 +14,13 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "captcha",
 })
 public class Hardening extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   @JsonProperty("captcha")
   private ConfigurazioneReCaptcha captcha = null;
-  
+
   /**
    * Indica lo stato di abilitazione
    **/
@@ -71,8 +70,8 @@ public class Hardening extends JSONSerializable implements IValidable {
     return Objects.hash(abilitato, captcha);
   }
 
-  public static Hardening parse(String json) throws ServiceException, ValidationException {
-    return (Hardening) parse(json, Hardening.class);
+  public static Hardening parse(String json) throws IOException {
+    return parse(json, Hardening.class);
   }
 
   @Override
@@ -84,7 +83,7 @@ public class Hardening extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Hardening {\n");
-    
+
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    captcha: ").append(toIndentedString(captcha)).append("\n");
     sb.append("}");
@@ -105,10 +104,10 @@ public class Hardening extends JSONSerializable implements IValidable {
   @Override
   public void validate() throws ValidationException {
 	  ValidatorFactory vf = ValidatorFactory.newInstance();
-	  
+
 	  vf.getValidator("abilitato", abilitato).notNull();
 	  vf.getValidator("captcha", captcha).validateFields();
-	
+
   }
 }
 

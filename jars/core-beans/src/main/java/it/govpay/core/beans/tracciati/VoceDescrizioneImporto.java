@@ -4,12 +4,10 @@ package it.govpay.core.beans.tracciati;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "voce",
 "importo",
@@ -72,7 +70,7 @@ public class VoceDescrizioneImporto extends JSONSerializable {
     return Objects.hash(voce, importo);
   }
 
-  public static VoceDescrizioneImporto parse(String json) throws ServiceException, ValidationException { 
+  public static VoceDescrizioneImporto parse(String json) throws IOException { 
     return (VoceDescrizioneImporto) parse(json, VoceDescrizioneImporto.class);
   }
 

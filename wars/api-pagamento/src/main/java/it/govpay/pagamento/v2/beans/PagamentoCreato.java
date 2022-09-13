@@ -113,7 +113,7 @@ public class PagamentoCreato extends JSONSerializable {
     return Objects.hash(id, location, redirect, idSession);
   }
 
-  public static PagamentoCreato parse(String json) throws ServiceException, ValidationException { 
+  public static PagamentoCreato parse(String json) throws it.govpay.core.exceptions.IOException { 
     return parse(json, PagamentoCreato.class);
   }
 

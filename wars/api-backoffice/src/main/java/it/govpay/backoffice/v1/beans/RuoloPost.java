@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "acl",
 })
 public class RuoloPost extends JSONSerializable  implements IValidable {
-  
+
   @JsonProperty("acl")
   private List<AclPost> acl = new ArrayList<>();
-  
+
   /**
    **/
   public RuoloPost acl(List<AclPost> acl) {
@@ -51,7 +51,7 @@ public class RuoloPost extends JSONSerializable  implements IValidable {
     return Objects.hash(this.acl);
   }
 
-  public static RuoloPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static RuoloPost parse(String json) throws IOException {
     return parse(json, RuoloPost.class);
   }
 
@@ -64,7 +64,7 @@ public class RuoloPost extends JSONSerializable  implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RuoloPost {\n");
-    
+
     sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -80,7 +80,7 @@ public class RuoloPost extends JSONSerializable  implements IValidable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();

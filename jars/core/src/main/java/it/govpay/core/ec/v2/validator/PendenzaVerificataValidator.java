@@ -5,9 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -20,6 +19,7 @@ import it.govpay.ec.v2.beans.PendenzaVerificata;
 import it.govpay.ec.v2.beans.Soggetto;
 import it.govpay.ec.v2.beans.TipoSogliaVincoloPagamento;
 import it.govpay.model.Versamento.TipoSogliaVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class PendenzaVerificataValidator  implements IValidable{
 
@@ -169,7 +169,7 @@ public class PendenzaVerificataValidator  implements IValidable{
 						}
 						break;
 					}
-				}catch (ServiceException e) {
+				}catch (CodificaInesistenteException e) {
 					throw new ValidationException(e);
 				}
 			}

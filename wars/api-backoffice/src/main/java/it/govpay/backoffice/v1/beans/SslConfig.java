@@ -3,13 +3,13 @@ package it.govpay.backoffice.v1.beans;
 import java.util.Objects;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -20,24 +20,24 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "keystore",
 })
 public class SslConfig extends JSONSerializable implements IValidable{
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = false;
-  
+
   private SslConfigType typeEnum = null;
-  
+
   @JsonProperty("type")
   private String type = null;
-  
+
   @JsonProperty("hostnameVerifier")
   private Boolean hostnameVerifier = false;
-  
+
   @JsonProperty("truststore")
   private Keystore truststore = null;
-  
+
   @JsonProperty("keystore")
   private Keystore keystore = null;
-  
+
   /**
    **/
   public SslConfig abilitato(Boolean abilitato) {
@@ -67,7 +67,7 @@ public class SslConfig extends JSONSerializable implements IValidable{
   public void setTypeEnum(SslConfigType type) {
     this.typeEnum = type;
   }
-  
+
   /**
    **/
   public SslConfig type(String type) {
@@ -149,8 +149,8 @@ public class SslConfig extends JSONSerializable implements IValidable{
     return Objects.hash(abilitato, type, hostnameVerifier, truststore, keystore);
   }
 
-  public static SslConfig parse(String json) throws ServiceException, ValidationException {
-    return (SslConfig) parse(json, SslConfig.class);
+  public static SslConfig parse(String json) throws IOException {
+    return parse(json, SslConfig.class);
   }
 
   @Override
@@ -162,7 +162,7 @@ public class SslConfig extends JSONSerializable implements IValidable{
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class SslConfig {\n");
-    
+
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("    hostnameVerifier: ").append(toIndentedString(hostnameVerifier)).append("\n");
@@ -182,19 +182,19 @@ public class SslConfig extends JSONSerializable implements IValidable{
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
-	
+
 	vf.getValidator("abilitato", this.abilitato).notNull();
-	
+
 	if(this.abilitato) {
 		vf.getValidator("type", this.type).notNull();
-		
+
 		if(SslConfigType.fromValue(this.type) == null)
 			throw new ValidationException("Codifica inesistente per type. Valore fornito [" + this.type + "] valori possibili " + ArrayUtils.toString(SslConfigType.values()));
-		
+
 		vf.getValidator("hostnameVerifier", this.hostnameVerifier).notNull();
 		vf.getValidator("truststore", this.truststore).validateFields();
 		vf.getValidator("keystore", this.keystore).validateFields();

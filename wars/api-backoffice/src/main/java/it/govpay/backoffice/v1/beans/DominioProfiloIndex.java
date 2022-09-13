@@ -4,28 +4,26 @@ package it.govpay.backoffice.v1.beans;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idDominio",
 "ragioneSociale",
 "unitaOperative",
 })
 public class DominioProfiloIndex extends JSONSerializable {
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
-  
+
   @JsonProperty("unitaOperative")
   private List<UnitaOperativaIndex> unitaOperative = null;
-  
+
   /**
    * Codice fiscale del beneficiario
    **/
@@ -92,8 +90,8 @@ public class DominioProfiloIndex extends JSONSerializable {
     return Objects.hash(idDominio, ragioneSociale, unitaOperative);
   }
 
-  public static DominioProfiloIndex parse(String json) throws ServiceException, ValidationException {
-    return (DominioProfiloIndex) parse(json, DominioProfiloIndex.class);
+  public static DominioProfiloIndex parse(String json) throws IOException {
+    return parse(json, DominioProfiloIndex.class);
   }
 
   @Override
@@ -105,7 +103,7 @@ public class DominioProfiloIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class DominioProfiloIndex {\n");
-    
+
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
     sb.append("    unitaOperative: ").append(toIndentedString(unitaOperative)).append("\n");

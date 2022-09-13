@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
@@ -22,12 +20,13 @@ import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipoSogliaVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.VistaVersamentoNonRendicontato;
 
 
 public class VersamentoNonRendicontatoConverter {
 
-	public static VersamentoNonRendicontato toDTO(it.govpay.orm.VistaVersamentoNonRendicontato vo) throws ServiceException {
+	public static VersamentoNonRendicontato toDTO(it.govpay.orm.VistaVersamentoNonRendicontato vo) throws CodificaInesistenteException, UnsupportedEncodingException {
 		VersamentoNonRendicontato dto = new VersamentoNonRendicontato();
 		dto.setId(vo.getId());
 
@@ -77,11 +76,7 @@ public class VersamentoNonRendicontatoConverter {
 			versamento.setDataValidita(vo.getVrsDataValidita());
 			versamento.setDataScadenza(vo.getVrsDataScadenza());
 			versamento.setDataUltimoAggiornamento(vo.getVrsDataOraUltimoAgg());
-			try {
-				versamento.setCausaleVersamento(vo.getVrsCausaleVersamento());
-			} catch (UnsupportedEncodingException e) {
-				throw new ServiceException(e);
-			}
+			versamento.setCausaleVersamento(vo.getVrsCausaleVersamento());
 			Anagrafica debitore = new Anagrafica();
 			if(vo.getVrsDebitoreTipo()!=null)
 				debitore.setTipo(TIPO.valueOf(vo.getVrsDebitoreTipo()));
@@ -254,7 +249,7 @@ public class VersamentoNonRendicontatoConverter {
 
 
 	public static List<VersamentoNonRendicontato> toDTO(
-			List<it.govpay.orm.VistaVersamentoNonRendicontato> rendicontazioneVOLst) throws ServiceException {
+			List<it.govpay.orm.VistaVersamentoNonRendicontato> rendicontazioneVOLst) throws CodificaInesistenteException, UnsupportedEncodingException {
 		List<VersamentoNonRendicontato> dto = new ArrayList<>();
 		for(VistaVersamentoNonRendicontato vo : rendicontazioneVOLst) {
 			dto.add(toDTO(vo));

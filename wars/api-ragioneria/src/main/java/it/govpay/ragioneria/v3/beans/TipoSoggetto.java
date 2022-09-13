@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum TipoSoggetto {
   G("G"),
-  
+
   F("F");
 
   private String value;
@@ -32,5 +32,5 @@ public enum TipoSoggetto {
     }
     return null;
   }
-  
+
 }

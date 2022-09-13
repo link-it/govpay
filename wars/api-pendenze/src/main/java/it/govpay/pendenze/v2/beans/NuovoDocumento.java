@@ -4,12 +4,10 @@ package it.govpay.pendenze.v2.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -21,16 +19,16 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "soglia",
 })
 public class NuovoDocumento extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("identificativo")
   private String identificativo = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("rata")
   private BigDecimal rata = null;
-  
+
   @JsonProperty("soglia")
   private VincoloPagamento soglia = null;
 
@@ -118,8 +116,8 @@ public class NuovoDocumento extends JSONSerializable implements IValidable {
     return Objects.hash(identificativo, descrizione, rata, soglia);
   }
 
-  public static NuovoDocumento parse(String json) throws ServiceException, ValidationException { 
-    return (NuovoDocumento) parse(json, NuovoDocumento.class);
+  public static NuovoDocumento parse(String json) throws it.govpay.core.exceptions.IOException {
+    return parse(json, NuovoDocumento.class);
   }
 
   @Override
@@ -131,7 +129,7 @@ public class NuovoDocumento extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class NuovoDocumento {\n");
-    
+
     sb.append("    identificativo: ").append(toIndentedString(identificativo)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    rata: ").append(toIndentedString(rata)).append("\n");
@@ -150,20 +148,20 @@ public class NuovoDocumento extends JSONSerializable implements IValidable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		
+
 		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-		
+
 		validatoreId.validaIdDocumento("identificativo", this.identificativo);
 		vf.getValidator("descrizione", this.descrizione).notNull().minLength(1).maxLength(255);
 		if(this.rata != null) {
 			ValidatoreUtils.validaRata(vf, "rata", this.rata);
 		} else if(this.soglia != null) {
 			vf.getValidator("soglia", this.soglia).validateFields();
-		} 
+		}
   }
 }
 

@@ -3,12 +3,10 @@ package it.govpay.backoffice.v1.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "tipoOperazione",
 "stato",
@@ -23,40 +21,40 @@ import it.govpay.core.beans.JSONSerializable;
 "risposta",
 })
 public class OperazionePendenza extends JSONSerializable {
-  
+
   @JsonProperty("tipoOperazione")
   private TipoOperazionePendenza tipoOperazione = null;
-  
+
   @JsonProperty("stato")
   private StatoOperazionePendenza stato = null;
-  
+
   @JsonProperty("descrizioneStato")
   private String descrizioneStato = null;
-  
+
   @JsonProperty("enteCreditore")
   private DominioIndex enteCreditore = null;
-  
+
   @JsonProperty("soggettoPagatore")
   private Soggetto soggettoPagatore = null;
-  
+
   @JsonProperty("applicazione")
   private String applicazione = null;
-  
+
   @JsonProperty("identificativoPendenza")
   private String identificativoPendenza = null;
-  
+
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
-  
+
   @JsonProperty("numero")
   private BigDecimal numero = null;
-  
+
   @JsonProperty("richiesta")
   private Object richiesta = null;
-  
+
   @JsonProperty("risposta")
   private EsitoOperazionePendenza risposta = null;
-  
+
   /**
    **/
   public OperazionePendenza tipoOperazione(TipoOperazionePendenza tipoOperazione) {
@@ -254,7 +252,7 @@ public class OperazionePendenza extends JSONSerializable {
     return Objects.hash(this.tipoOperazione, this.stato, this.descrizioneStato, this.enteCreditore, this.soggettoPagatore, this.applicazione, this.identificativoPendenza, this.numeroAvviso, this.numero, this.richiesta, this.risposta);
   }
 
-  public static OperazionePendenza parse(String json) throws ServiceException, ValidationException {
+  public static OperazionePendenza parse(String json) throws IOException {
     return parse(json, OperazionePendenza.class);
   }
 
@@ -267,7 +265,7 @@ public class OperazionePendenza extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class OperazionePendenza {\n");
-    
+
     sb.append("    tipoOperazione: ").append(this.toIndentedString(this.tipoOperazione)).append("\n");
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
     sb.append("    descrizioneStato: ").append(this.toIndentedString(this.descrizioneStato)).append("\n");

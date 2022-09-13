@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class TipoRiferimentoRiconciliazione  implements OneOfTipoRiferimentoRiconciliazione  {
-	
+
 	@Schema(example = "2017-11-21GovPAYPsp1-10:27:27.903", required = true, description = "")
 	  private String idFlussoRendicontazione = null;
 	 /**
@@ -28,7 +28,7 @@ public class TipoRiferimentoRiconciliazione  implements OneOfTipoRiferimentoRico
 	    this.idFlussoRendicontazione = idFlussoRendicontazione;
 	    return this;
 	  }
-	  
+
 	  @Schema(example = "RF23567483937849450550875", required = true, description = "")
 	  private String iuv = null;
 	 /**
@@ -54,7 +54,7 @@ public class TipoRiferimentoRiconciliazione  implements OneOfTipoRiferimentoRico
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoRiferimentoRiconciliazione {\n");
-    
+
     sb.append("    idFlussoRendicontazione: ").append(toIndentedString(idFlussoRendicontazione)).append("\n");
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("}");

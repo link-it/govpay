@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
@@ -37,29 +37,29 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "intervalloCreazioneTracciato",
 })
 public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implements IValidable{
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
-    
+
+
   /**
    * Gets or Sets tipoConnettore
    */
   public enum TipoConnettoreEnum {
-    
-    
-        
-            
+
+
+
+
     EMAIL("EMAIL"),
-    
-            
+
+
     FILESYSTEM("FILESYSTEM"),
-    
-            
+
+
     REST("REST");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -83,48 +83,48 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
     }
   }
 
-    
-    
+
+
   @JsonProperty("tipoConnettore")
   private TipoConnettoreEnum tipoConnettore = null;
-  
+
   @JsonProperty("versioneZip")
   private String versioneZip = null;
-  
+
   @JsonProperty("emailIndirizzi")
   private List<String> emailIndirizzi = null;
-  
+
   @JsonProperty("emailSubject")
   private String emailSubject = null;
-  
+
   @JsonProperty("emailAllegato")
   private Boolean emailAllegato = null;
-  
+
   @JsonProperty("downloadBaseUrl")
   private String downloadBaseUrl = null;
-  
+
   @JsonProperty("fileSystemPath")
   private String fileSystemPath = null;
-  
+
   @JsonProperty("tipiPendenza")
   private List<Object> tipiPendenza = null;
-  
+
   @JsonProperty("url")
   private String url = null;
-  
-    
+
+
   /**
    * Versione delle API di integrazione utilizzate.
    */
   public enum VersioneApiEnum {
-    
-    
-        
-            
+
+
+
+
     V1("REST v1");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -146,7 +146,7 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
       }
       return null;
     }
-    
+
     public static VersioneApiEnum fromName(String text) {
 		for (VersioneApiEnum b : VersioneApiEnum.values()) {
 			if (String.valueOf(b.toNameString()).equals(text)) {
@@ -155,7 +155,7 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
 		}
 		return null;
 	}
-    
+
     public String toNameString() {
 		switch(this) {
 		case V1: return "REST_1";
@@ -165,23 +165,23 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
 	}
   }
 
-    
+
   private VersioneApiEnum versioneApiEnum = null;
-  
+
   @JsonProperty("versioneApi")
   private String versioneApi = null;
-  
+
   @JsonProperty("auth")
   private TipoAutenticazione auth = null;
-  
+
   @JsonProperty("contenuti")
   private List<String> contenuti = null;
-  
+
   private List<ContenutoNotificaPagamentiGovpay> contenutiEnum = null;
 
   @JsonProperty("intervalloCreazioneTracciato")
   private BigDecimal intervalloCreazioneTracciato = null;
-  
+
   /**
    * Indica se il connettore e' abilitato
    **/
@@ -400,7 +400,7 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
   public void setContenuti(List<String> contenuti) {
     this.contenuti = contenuti;
   }
-  
+
   public ConnettoreNotificaPagamentiGovPay contenutiEnum(List<ContenutoNotificaPagamentiGovpay> contenuti) {
 	    this.contenutiEnum = contenuti;
 	    return this;
@@ -460,8 +460,8 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
     return Objects.hash(abilitato, tipoConnettore, versioneZip, emailIndirizzi, emailSubject, emailAllegato, downloadBaseUrl, fileSystemPath, tipiPendenza, url, versioneApi, auth, contenuti, intervalloCreazioneTracciato);
   }
 
-  public static ConnettoreNotificaPagamentiGovPay parse(String json) throws ServiceException, ValidationException {
-    return (ConnettoreNotificaPagamentiGovPay) parse(json, ConnettoreNotificaPagamentiGovPay.class);
+  public static ConnettoreNotificaPagamentiGovPay parse(String json) throws IOException {
+    return parse(json, ConnettoreNotificaPagamentiGovPay.class);
   }
 
   @Override
@@ -473,7 +473,7 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ConnettoreNotificaPagamentiGovPay {\n");
-    
+
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    tipoConnettore: ").append(toIndentedString(tipoConnettore)).append("\n");
     sb.append("    versioneZip: ").append(toIndentedString(versioneZip)).append("\n");
@@ -502,16 +502,16 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		vf.getValidator("abilitato", this.abilitato).notNull();
-		
+
 		if(this.abilitato) {
 			vf.getValidator("tipoConnettore", this.tipoConnettore).notNull();
 			vf.getValidator("intervalloCreazioneTracciato", this.intervalloCreazioneTracciato).notNull().min(BigDecimal.ONE);
-			
+
 			switch (this.tipoConnettore) {
 			case EMAIL:
 				vf.getValidator("versioneZip", this.versioneZip).notNull().minLength(1).maxLength(255);
@@ -543,9 +543,9 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
 				} catch (IllegalArgumentException e) {
 					throw new ValidationException("Il valore [" + this.versioneApi + "] del campo versioneApi non corrisponde con uno dei valori consentiti: " + Arrays.asList(VersioneApiEnum.values()));
 				}
-				
+
 				vf.getValidator("auth", this.auth).validateFields();
-				
+
 				if(this.contenuti == null || this.contenuti.isEmpty()) {
 					throw new ValidationException("Selezionare almento un valore per il campo contenuti");
 				}
@@ -559,7 +559,7 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
 				}
 				break;
 			}
-			
+
 			if(this.tipiPendenza != null && !this.tipiPendenza.isEmpty()) {
 				ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 				for (Object object : this.tipiPendenza) {
@@ -573,14 +573,14 @@ public class ConnettoreNotificaPagamentiGovPay extends JSONSerializable implemen
 							tipoPendenzaProfiloPost.validate();
 					} else if(object instanceof java.util.LinkedHashMap) {
 						java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) object;
-						
+
 						TipoPendenzaProfiloIndex tipoPendenzaProfiloPost = new TipoPendenzaProfiloIndex();
 						if(map.containsKey("idTipoPendenza"))
 							tipoPendenzaProfiloPost.setIdTipoPendenza((String) map.get("idTipoPendenza"));
 						if(map.containsKey("descrizione")) {
 							tipoPendenzaProfiloPost.setDescrizione((String) map.get("descrizione"));
 						}
-						
+
 						if(tipoPendenzaProfiloPost.getIdTipoPendenza() == null)
 							validatoreId.validaIdDominio("idTipoPendenza", tipoPendenzaProfiloPost.getIdTipoPendenza());
 						if(!tipoPendenzaProfiloPost.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR))

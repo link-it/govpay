@@ -3,12 +3,10 @@ package it.govpay.backoffice.v1.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idA2A",
 "idPendenza",
@@ -20,31 +18,31 @@ import it.govpay.core.beans.JSONSerializable;
 "dati",
 })
 public class EsitoOperazionePendenza extends JSONSerializable {
-  
+
   @JsonProperty("idA2A")
   private String idA2A = null;
-  
+
   @JsonProperty("idPendenza")
   private String idPendenza = null;
-  
+
   @JsonProperty("tipoOperazione")
   private TipoOperazionePendenza tipoOperazione = null;
-  
+
   @JsonProperty("stato")
   private StatoOperazionePendenza stato = null;
-  
+
   @JsonProperty("esito")
   private String esito = null;
-  
+
   @JsonProperty("descrizioneEsito")
   private String descrizioneEsito = null;
-  
+
   @JsonProperty("numero")
   private BigDecimal numero = null;
-  
+
   @JsonProperty("dati")
   private Object dati = null;
-  
+
   /**
    * Identificativo del gestionale responsabile della pendenza
    **/
@@ -194,7 +192,7 @@ public class EsitoOperazionePendenza extends JSONSerializable {
     return Objects.hash(this.idA2A, this.idPendenza, this.tipoOperazione, this.stato, this.esito, this.descrizioneEsito, this.numero, this.dati);
   }
 
-  public static EsitoOperazionePendenza parse(String json) throws ServiceException, ValidationException { 
+  public static EsitoOperazionePendenza parse(String json) throws IOException {
     return parse(json, EsitoOperazionePendenza.class);
   }
 
@@ -207,7 +205,7 @@ public class EsitoOperazionePendenza extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class EsitoOperazionePendenza {\n");
-    
+
     sb.append("    idA2A: ").append(this.toIndentedString(this.idA2A)).append("\n");
     sb.append("    idPendenza: ").append(this.toIndentedString(this.idPendenza)).append("\n");
     sb.append("    tipoOperazione: ").append(this.toIndentedString(this.tipoOperazione)).append("\n");

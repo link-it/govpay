@@ -24,6 +24,7 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.MaggioliJPPAUtils;
@@ -57,7 +58,7 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 	private Exception exception = null;
 	ObjectFactory objectFactory = null;
 
-	public InviaNotificaPagamentoMaggioliJPPAThread(Rpt rpt, Dominio dominio, String id, IContext ctx) throws ServiceException {
+	public InviaNotificaPagamentoMaggioliJPPAThread(Rpt rpt, Dominio dominio, String id, IContext ctx) throws ServiceException, IOException {
 		this.ctx = ctx;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		this.rpt = rpt;

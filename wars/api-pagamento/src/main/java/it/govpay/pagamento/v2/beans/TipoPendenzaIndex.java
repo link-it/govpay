@@ -69,7 +69,7 @@ public class TipoPendenzaIndex extends JSONSerializable {
     return Objects.hash(idTipoPendenza, descrizione);
   }
 
-  public static TipoPendenzaIndex parse(String json) throws ServiceException, ValidationException { 
+  public static TipoPendenzaIndex parse(String json) throws it.govpay.core.exceptions.IOException { 
     return parse(json, TipoPendenzaIndex.class);
   }
 

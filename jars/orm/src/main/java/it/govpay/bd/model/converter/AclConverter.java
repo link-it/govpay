@@ -19,18 +19,18 @@
  */
 package it.govpay.bd.model.converter;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.certificate.CertificateUtils;
 import org.openspcoop2.utils.certificate.PrincipalType;
 
 import it.govpay.bd.model.Acl;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.ACL;
 import it.govpay.orm.IdUtenza;
 
 public class AclConverter {
 
-	public static Acl toDTO(ACL vo) throws ServiceException {
+	public static Acl toDTO(ACL vo) throws CodificaInesistenteException {
 		Acl dto = new Acl();
 		dto.setDiritti(vo.getDiritti());
 		dto.setListaDiritti(vo.getDiritti());
@@ -42,7 +42,7 @@ public class AclConverter {
 		return dto;
 	}
 
-	public static it.govpay.orm.ACL toVO(Acl dto) throws ServiceException {
+	public static it.govpay.orm.ACL toVO(Acl dto) {
 		ACL vo = new ACL();
 		vo.setDiritti(dto.getListaDirittiString()); 
 		vo.setServizio(dto.getServizio().getCodifica());

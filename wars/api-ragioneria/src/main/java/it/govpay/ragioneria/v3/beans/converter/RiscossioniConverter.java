@@ -1,17 +1,17 @@
 package it.govpay.ragioneria.v3.beans.converter;
 
-import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 
 import org.apache.commons.codec.binary.Base64;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.ragioneria.v3.beans.Allegato;
@@ -24,7 +24,7 @@ import it.govpay.rs.BaseRsService;
 
 public class RiscossioniConverter {
 
-	public static Riscossione toRsModel(it.govpay.bd.model.Pagamento pagamento, SingoloVersamento singoloVersamento, Versamento versamento) throws IOException, ValidationException {
+	public static Riscossione toRsModel(it.govpay.bd.model.Pagamento pagamento, SingoloVersamento singoloVersamento, Versamento versamento) throws IOException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Riscossione rsModel = new Riscossione();
 		try {
@@ -48,7 +48,7 @@ public class RiscossioniConverter {
 				case ENTRATA_PA_NON_INTERMEDIATA:
 					rsModel.setTipo(TipoRiscossione.ENTRATA_PA_NON_INTERMEDIATA);
 					break;
-				} 
+				}
 
 				if(pagamento.getAllegato() != null) {
 					Allegato allegato = new Allegato();
@@ -96,7 +96,7 @@ public class RiscossioniConverter {
 		return rsModel;
 	}
 
-	public static RiscossioneVocePagata toRiscossioneVocePagataRsModel(it.govpay.bd.model.Pagamento input) throws IOException, ValidationException {
+	public static RiscossioneVocePagata toRiscossioneVocePagataRsModel(it.govpay.bd.model.Pagamento input) {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		RiscossioneVocePagata rsModel = new RiscossioneVocePagata();
 		try {
@@ -119,7 +119,7 @@ public class RiscossioniConverter {
 			case ENTRATA_PA_NON_INTERMEDIATA:
 				rsModel.setTipo(TipoRiscossione.ENTRATA_PA_NON_INTERMEDIATA);
 				break;
-			} 
+			}
 
 			if(input.getAllegato() != null) {
 				Allegato allegato = new Allegato();

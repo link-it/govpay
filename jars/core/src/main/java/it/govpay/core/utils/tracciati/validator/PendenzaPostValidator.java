@@ -4,9 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import it.govpay.core.beans.tracciati.Contabilita;
 import it.govpay.core.beans.tracciati.Documento;
 import it.govpay.core.beans.tracciati.NuovoAllegatoPendenza;
@@ -16,11 +13,13 @@ import it.govpay.core.beans.tracciati.Soggetto;
 import it.govpay.core.beans.tracciati.VincoloPagamento;
 import it.govpay.core.beans.tracciati.VocePendenza;
 import it.govpay.core.ec.v1.validator.SoggettoPagatoreValidator;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Versamento.TipoSogliaVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class PendenzaPostValidator  implements IValidable{
 
@@ -292,7 +291,7 @@ public class PendenzaPostValidator  implements IValidable{
 					}
 					break;
 				}
-			}catch (ServiceException e) {
+			}catch (CodificaInesistenteException e) {
 				throw new ValidationException(e);
 			}
 		}

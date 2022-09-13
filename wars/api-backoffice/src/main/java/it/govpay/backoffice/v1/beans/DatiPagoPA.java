@@ -4,12 +4,10 @@ package it.govpay.backoffice.v1.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idPsp",
 "idCanale",
@@ -25,43 +23,43 @@ import it.govpay.core.beans.JSONSerializable;
 "idTracciato",
 })
 public class DatiPagoPA extends JSONSerializable {
-  
+
   @JsonProperty("idPsp")
   private String idPsp = null;
-  
+
   @JsonProperty("idCanale")
   private String idCanale = null;
-  
+
   @JsonProperty("idIntermediarioPsp")
   private String idIntermediarioPsp = null;
-  
+
   @JsonProperty("tipoVersamento")
   private String tipoVersamento = null;
-  
+
   @JsonProperty("modelloPagamento")
   private String modelloPagamento = null;
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("idIntermediario")
   private String idIntermediario = null;
-  
+
   @JsonProperty("idStazione")
   private String idStazione = null;
-  
+
   @JsonProperty("idIncasso")
   private String idIncasso = null;
-  
+
   @JsonProperty("sct")
   private String sct = null;
-  
+
   @JsonProperty("idFlusso")
   private String idFlusso = null;
-  
+
   @JsonProperty("idTracciato")
   private BigDecimal idTracciato = null;
-  
+
   /**
    * Identificativo del PSP
    **/
@@ -277,8 +275,8 @@ public class DatiPagoPA extends JSONSerializable {
     return Objects.hash(idPsp, idCanale, idIntermediarioPsp, tipoVersamento, modelloPagamento, idDominio, idIntermediario, idStazione, idIncasso, sct, idFlusso, idTracciato);
   }
 
-  public static DatiPagoPA parse(String json) throws ServiceException, ValidationException {
-    return parse(json, DatiPagoPA.class); 
+  public static DatiPagoPA parse(String json) throws IOException {
+    return parse(json, DatiPagoPA.class);
   }
 
   @Override
@@ -290,7 +288,7 @@ public class DatiPagoPA extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class DatiPagoPA {\n");
-    
+
     sb.append("    idPsp: ").append(toIndentedString(idPsp)).append("\n");
     sb.append("    idCanale: ").append(toIndentedString(idCanale)).append("\n");
     sb.append("    idIntermediarioPsp: ").append(toIndentedString(idIntermediarioPsp)).append("\n");

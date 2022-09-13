@@ -12,10 +12,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import it.govpay.core.beans.Costanti;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.ragioneria.v2.controller.FlussiRendicontazioneController;
 import it.govpay.rs.v2.BaseRsServiceV2;
@@ -27,7 +25,7 @@ public class FlussiRendicontazione extends BaseRsServiceV2{
 
 	private FlussiRendicontazioneController controller = null;
 
-	public FlussiRendicontazione() throws ServiceException {
+	public FlussiRendicontazione() {
 		super("flussiRendicontazione");
 		this.controller = new FlussiRendicontazioneController(this.nomeServizio,this.log);
 	}
@@ -41,13 +39,13 @@ public class FlussiRendicontazione extends BaseRsServiceV2{
         this.buildContext();
         return this.controller.getFlussoRendicontazione(this.getUser(), uriInfo, httpHeaders, null, idFlusso, null);
     }
-    
+
     @GET
     @Path("/{idDominio}/{idFlusso}")
     @Produces({ "application/json", MediaType.APPLICATION_XML })
     public Response getFlussoRendicontazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idFlusso") String idFlusso){
         this.buildContext();
-        
+
         //Per retrocompatibilita, controllo se mi stanno invocando /{idFlusso}/{dataOraFlusso}
         try {
         	SimpleDateFormatUtils.getDataDaConTimestamp(idFlusso, "dataOraFlusso");
@@ -57,7 +55,7 @@ public class FlussiRendicontazione extends BaseRsServiceV2{
         	return this.controller.getFlussoRendicontazione(this.getUser(), uriInfo, httpHeaders, idDominio, idFlusso, null);
         }
     }
-    
+
     @GET
     @Path("/{idDominio}/{idFlusso}/{dataOraFlusso}")
     @Produces({ "application/xml", "application/json" })

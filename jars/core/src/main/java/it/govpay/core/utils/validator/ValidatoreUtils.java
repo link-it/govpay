@@ -6,14 +6,14 @@ import java.util.Date;
 
 import org.apache.commons.jcs.access.exception.InvalidArgumentException;
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 
 import it.govpay.core.dao.commons.Versamento.SingoloVersamento.TipoContabilita;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Versamento.TipoSogliaVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ValidatoreUtils {
 	
@@ -174,7 +174,7 @@ public class ValidatoreUtils {
 		
 		try {
 			TipoBollo.toEnum(tipoBollo);
-		} catch(ServiceException e) {
+		} catch(CodificaInesistenteException e) {
 			throw new ValidationException(e.getMessage());
 		}
 	}
@@ -184,7 +184,7 @@ public class ValidatoreUtils {
 		
 		try {
 			TipoBollo.toEnum(enumValue.toString());
-		} catch(ServiceException e) {
+		} catch(CodificaInesistenteException e) {
 			throw new ValidationException(e.getMessage());
 		}
 	}

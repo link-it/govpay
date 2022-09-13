@@ -4,24 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "acl",
 "id",
 })
 public class Ruolo extends JSONSerializable {
-  
+
   @JsonProperty("acl")
   private List<AclPost> acl = new ArrayList<>();
-  
+
   @JsonProperty("id")
   private String id = null;
-  
+
   /**
    **/
   public Ruolo acl(List<AclPost> acl) {
@@ -71,7 +70,7 @@ public class Ruolo extends JSONSerializable {
     return Objects.hash(this.acl, this.id);
   }
 
-  public static Ruolo parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Ruolo parse(String json) throws IOException {
     return parse(json, Ruolo.class);
   }
 
@@ -84,7 +83,7 @@ public class Ruolo extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Ruolo {\n");
-    
+
     sb.append("    acl: ").append(this.toIndentedString(this.acl)).append("\n");
     sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
     sb.append("}");

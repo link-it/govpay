@@ -2,8 +2,6 @@ package it.govpay.pagamento.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -16,31 +14,31 @@ import it.govpay.core.beans.JSONSerializable;
 "location",
 })
 public class FaultBeanEsteso extends JSONSerializable {
-  
+
 	  /**
 	   * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `INTERNO` - Errore interno
 	   */
 	  public enum CategoriaEnum {
-	    
-	    
-	        
-	            
+
+
+
+
 	    AUTORIZZAZIONE("AUTORIZZAZIONE"),
-	    
-	            
+
+
 	    RICHIESTA("RICHIESTA"),
-	    
-	            
+
+
 	    OPERAZIONE("OPERAZIONE"),
-	    
-	            
+
+
 	    PAGOPA("PAGOPA"),
-	    
-	            
+
+
 	    INTERNO("INTERNO");
-	            
-	        
-	    
+
+
+
 
 	    private String value;
 
@@ -64,26 +62,26 @@ public class FaultBeanEsteso extends JSONSerializable {
 	    }
 	  }
 
-	    
-	    
+
+
 	  @JsonProperty("categoria")
 	  private CategoriaEnum categoria = null;
-	  
+
   @JsonProperty("codice")
   private String codice = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("dettaglio")
   private String dettaglio = null;
-  
+
   @JsonProperty("id")
   private String id = null;
-  
+
   @JsonProperty("location")
   private String location = null;
-  
+
   /**
    * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `INTERNO` - Errore interno
    **/
@@ -201,7 +199,7 @@ public class FaultBeanEsteso extends JSONSerializable {
     return Objects.hash(this.codice, this.descrizione, this.dettaglio, this.id, this.location);
   }
 
-  public static FaultBeanEsteso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static FaultBeanEsteso parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, FaultBeanEsteso.class);
   }
 

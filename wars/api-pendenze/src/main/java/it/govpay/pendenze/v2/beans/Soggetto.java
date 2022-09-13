@@ -2,9 +2,6 @@ package it.govpay.pendenze.v2.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.ec.v1.validator.SoggettoPagatoreValidator;
@@ -26,40 +23,40 @@ import it.govpay.core.utils.validator.IValidable;
 "cellulare",
 })
 public class Soggetto extends it.govpay.core.beans.JSONSerializable implements IValidable {
-  
+
   @JsonProperty("tipo")
   private TipoSoggetto tipo = null;
-  
+
   @JsonProperty("identificativo")
   private String identificativo = null;
-  
+
   @JsonProperty("anagrafica")
   private String anagrafica = null;
-  
+
   @JsonProperty("indirizzo")
   private String indirizzo = null;
-  
+
   @JsonProperty("civico")
   private String civico = null;
-  
+
   @JsonProperty("cap")
   private String cap = null;
-  
+
   @JsonProperty("localita")
   private String localita = null;
-  
+
   @JsonProperty("provincia")
   private String provincia = null;
-  
+
   @JsonProperty("nazione")
   private String nazione = null;
-  
+
   @JsonProperty("email")
   private String email = null;
-  
+
   @JsonProperty("cellulare")
   private String cellulare = null;
-  
+
   /**
    **/
   public Soggetto tipo(TipoSoggetto tipo) {
@@ -254,7 +251,7 @@ public class Soggetto extends it.govpay.core.beans.JSONSerializable implements I
     return Objects.hash(tipo, identificativo, anagrafica, indirizzo, civico, cap, localita, provincia, nazione, email, cellulare);
   }
 
-  public static Soggetto parse(String json) throws ServiceException, ValidationException { 
+  public static Soggetto parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, Soggetto.class);
   }
 
@@ -267,7 +264,7 @@ public class Soggetto extends it.govpay.core.beans.JSONSerializable implements I
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Soggetto {\n");
-    
+
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    identificativo: ").append(toIndentedString(identificativo)).append("\n");
     sb.append("    anagrafica: ").append(toIndentedString(anagrafica)).append("\n");
@@ -297,7 +294,7 @@ public class Soggetto extends it.govpay.core.beans.JSONSerializable implements I
 	 @Override
 	 public void validate() throws it.govpay.core.exceptions.ValidationException {
 		SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
-		
+
 		soggettoPagatoreValidator.validaTipo("tipo", this.getTipo() != null ? this.getTipo().toString() : null);
 		soggettoPagatoreValidator.validaIdentificativo("identificativo", this.getIdentificativo());
 		soggettoPagatoreValidator.validaAnagrafica("anagrafica", this.getAnagrafica());

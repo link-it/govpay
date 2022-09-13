@@ -3,13 +3,12 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @JsonPropertyOrder({
@@ -24,34 +23,34 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "tracciatoCsv",
 })
 public class TipoPendenzaDominioPost extends JSONSerializable  implements IValidable {
-  
+
   @JsonProperty("codificaIUV")
   private String codificaIUV = null;
-  
+
   @JsonProperty("pagaTerzi")
   private Boolean pagaTerzi = false;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
-  
+
   @JsonProperty("portaleBackoffice")
   private TipoPendenzaPortaleBackofficeCaricamentoPendenze portaleBackoffice = null;
-  
+
   @JsonProperty("portalePagamento")
   private TipoPendenzaPortalePagamentiCaricamentoPendenze portalePagamento = null;
-  
+
   @JsonProperty("avvisaturaMail")
   private TipoPendenzaAvvisaturaMail avvisaturaMail = null;
-  
+
   @JsonProperty("avvisaturaAppIO")
   private TipoPendenzaDominioAvvisaturaAppIO avvisaturaAppIO = null;
-  
+
   @JsonProperty("visualizzazione")
   private Object visualizzazione = null;
-  
+
   @JsonProperty("tracciatoCsv")
   private TracciatoCsv tracciatoCsv = null;
-  
+
   /**
    * Cifra identificativa negli IUV
    **/
@@ -217,7 +216,7 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
     return Objects.hash(codificaIUV, pagaTerzi, abilitato, portaleBackoffice, portalePagamento, avvisaturaMail, avvisaturaAppIO, visualizzazione, tracciatoCsv);
   }
 
-  public static TipoPendenzaDominioPost parse(String json) throws ServiceException, ValidationException{
+  public static TipoPendenzaDominioPost parse(String json) throws IOException{
     return parse(json, TipoPendenzaDominioPost.class);
   }
 
@@ -230,7 +229,7 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoPendenzaDominioPost {\n");
-    
+
     sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
     sb.append("    pagaTerzi: ").append(toIndentedString(pagaTerzi)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
@@ -254,12 +253,12 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	vf.getValidator("codificaIUV", this.codificaIUV).minLength(1).maxLength(4).pattern("(^[0-9]{1,4}$)");
-	
+
 	try {
 		if(this.portaleBackoffice != null)
 			this.portaleBackoffice.validate(false);
@@ -284,7 +283,7 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
 	}catch(ValidationException e) {
 		throw new ValidationException("Field 'avvisaturaAppIO' non valido: " + e.getMessage());
 	}
-	
+
 	vf.getValidator("tracciatoCsv", this.tracciatoCsv).validateFields();
   }
 }

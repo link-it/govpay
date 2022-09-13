@@ -3,12 +3,10 @@ package it.govpay.backoffice.v1.beans;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idTracciato",
 "idDominio",
@@ -16,19 +14,19 @@ import it.govpay.core.beans.JSONSerializable;
 "annullamenti",
 })
 public class DettaglioTracciatoPendenzeEsito extends JSONSerializable {
-  
+
   @JsonProperty("idTracciato")
   private String idTracciato = null;
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("inserimenti")
   private List<EsitoOperazionePendenza> inserimenti = null;
-  
+
   @JsonProperty("annullamenti")
   private List<EsitoOperazionePendenza> annullamenti = null;
-  
+
   /**
    * Identificativo del tracciato
    **/
@@ -111,8 +109,8 @@ public class DettaglioTracciatoPendenzeEsito extends JSONSerializable {
     return Objects.hash(this.idTracciato, this.idDominio, this.inserimenti, this.annullamenti);
   }
 
-  public static DettaglioTracciatoPendenzeEsito parse(String json) throws ServiceException, ValidationException {
-    return parse(json, DettaglioTracciatoPendenzeEsito.class); 
+  public static DettaglioTracciatoPendenzeEsito parse(String json) throws IOException {
+    return parse(json, DettaglioTracciatoPendenzeEsito.class);
   }
 
   @Override
@@ -124,7 +122,7 @@ public class DettaglioTracciatoPendenzeEsito extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class DettaglioTracciatoPendenzeEsito {\n");
-    
+
     sb.append("    idTracciato: ").append(this.toIndentedString(this.idTracciato)).append("\n");
     sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
     sb.append("    inserimenti: ").append(this.toIndentedString(this.inserimenti)).append("\n");

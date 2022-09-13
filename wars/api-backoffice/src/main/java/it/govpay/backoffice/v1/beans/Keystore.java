@@ -4,13 +4,13 @@ import java.util.Objects;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -20,21 +20,21 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "managementAlgorithm",
 })
 public class Keystore extends JSONSerializable implements IValidable {
-  
+
   private KeystoreType typeEnum = null;
-  
+
   @JsonProperty("type")
   private String type = null;
-  
+
   @JsonProperty("location")
   private String location = null;
-  
+
   @JsonProperty("password")
   private String password = null;
-  
+
   @JsonProperty("managementAlgorithm")
   private String managementAlgorithm = null;
-  
+
   /**
    **/
   public Keystore typeEnum(KeystoreType type) {
@@ -49,7 +49,7 @@ public class Keystore extends JSONSerializable implements IValidable {
   public void setTypeEnum(KeystoreType type) {
     this.typeEnum = type;
   }
-  
+
   /**
    **/
   public Keystore type(String type) {
@@ -130,8 +130,8 @@ public class Keystore extends JSONSerializable implements IValidable {
     return Objects.hash(type, location, password, managementAlgorithm);
   }
 
-  public static Keystore parse(String json) throws ServiceException, ValidationException {
-    return (Keystore) parse(json, Keystore.class); 
+  public static Keystore parse(String json) throws IOException {
+    return parse(json, Keystore.class);
   }
 
   @Override
@@ -143,7 +143,7 @@ public class Keystore extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Keystore {\n");
-    
+
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("    location: ").append(toIndentedString(location)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
@@ -162,19 +162,19 @@ public class Keystore extends JSONSerializable implements IValidable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
-	
+
 	// se e' stato compilato almeno un campo valido tutta la form
 	if(StringUtils.isNotEmpty(this.type) || StringUtils.isNotEmpty(this.location) || StringUtils.isNotEmpty(this.password) || StringUtils.isNotEmpty(this.managementAlgorithm)) {
 		vf.getValidator("type", this.type).notNull();
-		
+
 		if(KeystoreType.fromValue(this.type) == null){
 			throw new ValidationException("Codifica inesistente per type. Valore fornito [" + this.type + "] valori possibili " + ArrayUtils.toString(KeystoreType.values()));
 		}
-		
+
 		vf.getValidator("location", this.location).notNull().minLength(1).maxLength(1024);
 		vf.getValidator("password", this.password).minLength(1).maxLength(255);
 		vf.getValidator("managementAlgorithm", this.managementAlgorithm).minLength(1).maxLength(255);

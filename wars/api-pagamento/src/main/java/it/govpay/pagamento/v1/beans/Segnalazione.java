@@ -2,8 +2,6 @@ package it.govpay.pagamento.v1.beans;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -12,13 +10,13 @@ import it.govpay.core.beans.JSONSerializable;
 "descrizione",
 })
 public class Segnalazione extends JSONSerializable {
-  
+
   @JsonProperty("codice")
   private String codice = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   /**
    **/
   public Segnalazione codice(String codice) {
@@ -67,7 +65,7 @@ public class Segnalazione extends JSONSerializable {
     return Objects.hash(this.codice, this.descrizione);
   }
 
-  public static Segnalazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Segnalazione parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, Segnalazione.class);
   }
 
@@ -80,7 +78,7 @@ public class Segnalazione extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Segnalazione {\n");
-    
+
     sb.append("    codice: ").append(this.toIndentedString(this.codice)).append("\n");
     sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
     sb.append("}");

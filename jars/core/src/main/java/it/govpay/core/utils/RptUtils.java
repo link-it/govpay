@@ -54,6 +54,7 @@ import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.client.NodoClient;
@@ -165,7 +166,7 @@ public class RptUtils {
 		client.getEventoCtx().setDatiPagoPA(datiPagoPA);
 	}
 
-	public static void inviaRPTAsync(Rpt rpt, IContext ctx) throws ServiceException {
+	public static void inviaRPTAsync(Rpt rpt, IContext ctx) throws ServiceException, IOException {
 		InviaRptThread t = new InviaRptThread(rpt, ctx);
 		ThreadExecutorManager.getClientPoolExecutorRPT().execute(t);
 	}
@@ -183,7 +184,7 @@ public class RptUtils {
 	}
 
 //, BasicBD bd
-	public static boolean aggiornaRptDaNpD(Intermediario intermediario, Rpt rpt) throws GovPayException, ServiceException, ClientException, NdpException, UtilsException {
+	public static boolean aggiornaRptDaNpD(Intermediario intermediario, Rpt rpt) throws GovPayException, ServiceException, ClientException, NdpException, UtilsException, IOException {
 		try {
 			String msg = ".";
 			StatoRpt stato_originale = rpt.getStato();
