@@ -69,13 +69,14 @@ import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.utils.EventoContext;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.JaxbUtils;
@@ -660,7 +661,7 @@ public class Rendicontazioni {
 					} finally {
 						if(chiediFlussoRendicontazioneClient != null && chiediFlussoRendicontazioneClient.getEventoCtx().isRegistraEvento()) {
 							EventiBD eventiBD = new EventiBD(configWrapper);
-							Evento eventoDTO = chiediFlussoRendicontazioneClient.getEventoCtx().toEventoDTO(log);
+							Evento eventoDTO = EventoUtils.toEventoDTO(chiediFlussoRendicontazioneClient.getEventoCtx(),log);
 							if(isAggiornamento)
 								eventoDTO.setSottotipoEvento(EventoContext.APIPAGOPA_SOTTOTIPOEVENTO_FLUSSO_RENDICONTAZIONE_DUPLICATO);
 							eventiBD.insertEvento(eventoDTO);
@@ -813,7 +814,7 @@ public class Rendicontazioni {
 			if(chiediFlussoRendicontazioniClient != null && chiediFlussoRendicontazioniClient.getEventoCtx().isRegistraEvento()) {
 				try {
 					EventiBD eventiBD = new EventiBD(configWrapper);
-					eventiBD.insertEvento(chiediFlussoRendicontazioniClient.getEventoCtx().toEventoDTO(log));
+					eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediFlussoRendicontazioniClient.getEventoCtx(),log));
 				}catch (ServiceException e) {
 					log.error("Errore durante l'acquisizione dei flussi di rendicontazione", e);
 				}finally {

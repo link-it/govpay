@@ -53,10 +53,10 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
-import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.client.exception.ClientException;
@@ -506,7 +506,7 @@ public class RptUtils {
 							}finally {
 								if(chiediCopiaRTClient != null && chiediCopiaRTClient.getEventoCtx().isRegistraEvento()) {
 									EventiBD eventiBD = new EventiBD(configWrapper);
-									eventiBD.insertEvento(chiediCopiaRTClient.getEventoCtx().toEventoDTO(log));
+									eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediCopiaRTClient.getEventoCtx(),log));
 								}
 							}
 
@@ -613,7 +613,7 @@ public class RptUtils {
 				}finally {
 					if(chiediStatoRptClient != null && chiediStatoRptClient.getEventoCtx().isRegistraEvento()) {
 						EventiBD eventiBD = new EventiBD(configWrapper);
-						eventiBD.insertEvento(chiediStatoRptClient.getEventoCtx().toEventoDTO(log));
+						eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediStatoRptClient.getEventoCtx(),log));
 					}
 				}
 			}

@@ -62,6 +62,8 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.beans.commons.Versamento.AllegatoPendenza;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Iuv;
@@ -75,7 +77,7 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.client.IVerificaClient;
 import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.tracciati.validator.PendenzaPostValidator;
@@ -284,7 +286,7 @@ public class VersamentoUtils {
 			ctx.getApplicationLogger().log("verifica.nonConfigurata");
 			throw new VersamentoSconosciutoException();
 		}
-		VerificaClient verificaClient = new VerificaClient(applicazione);
+		IVerificaClient verificaClient = new VerificaClient(applicazione);
 		// salvataggio id Rpt/ versamento/ pagamento
 		verificaClient.getEventoCtx().setCodDominio(dominio); 
 		verificaClient.getEventoCtx().setIuv(iuv);
@@ -366,7 +368,7 @@ public class VersamentoUtils {
 			if(eventoCtx.isRegistraEvento()) {
 				// log evento
 				EventiBD eventiBD = new EventiBD(configWrapper);
-				eventiBD.insertEvento(eventoCtx.toEventoDTO(log));
+				eventiBD.insertEvento(EventoUtils.toEventoDTO(eventoCtx,log));
 			}
 		}
 		return versamento;
@@ -383,7 +385,7 @@ public class VersamentoUtils {
 			ctx.getApplicationLogger().log("verifica.nonConfigurata");
 			throw new VersamentoSconosciutoException();
 		}
-		VerificaClient verificaClient = new VerificaClient(applicazione);
+		IVerificaClient verificaClient = new VerificaClient(applicazione);
 		// salvataggio id Rpt/ versamento/ pagamento
 		verificaClient.getEventoCtx().setCodDominio(codDominio); 
 		verificaClient.getEventoCtx().setIdA2A(applicazione.getCodApplicazione());
@@ -474,7 +476,7 @@ public class VersamentoUtils {
 			if(eventoCtx.isRegistraEvento()) {
 				// log evento
 				EventiBD eventiBD = new EventiBD(configWrapper);
-				eventiBD.insertEvento(eventoCtx.toEventoDTO(log));
+				eventiBD.insertEvento(EventoUtils.toEventoDTO(eventoCtx,log));
 			}
 		}
 		return versamento;

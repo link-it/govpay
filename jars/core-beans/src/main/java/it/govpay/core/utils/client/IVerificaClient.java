@@ -1,5 +1,6 @@
 package it.govpay.core.utils.client;
 
+import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.commons.Versamento;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
@@ -65,4 +66,12 @@ public interface IVerificaClient {
 	public Versamento inoltroPendenza(String codDominio, String codTipoVersamento, String codUnitaOperativa, String jsonBody) 
 			throws ClientException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoScadutoException,
 				VersamentoSconosciutoException, VersamentoNonValidoException, GovPayException; 
+	
+	
+	/**
+	 * Resistuisce le informazioni registrate per il giornale degli eventi
+	 * 
+	 * @return {@link EventoContext}
+	 */
+	public EventoContext getEventoCtx();
 }

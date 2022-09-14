@@ -43,9 +43,10 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NotificaClient;
@@ -279,7 +280,7 @@ public class InviaNotificaThread implements Runnable {
 			if(client != null && client.getEventoCtx().isRegistraEvento()) {
 				EventiBD eventiBD = new EventiBD(configWrapper);
 				try {
-					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO(log));
+					eventiBD.insertEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
 				} catch (ServiceException e) {
 					log.error("Errore durante il salvataggio dell'evento: ", e);
 				}

@@ -99,10 +99,10 @@ import org.slf4j.Logger;
 
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Categoria;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.business.GiornaleEventi;
-import it.govpay.core.utils.EventoContext;
-import it.govpay.core.utils.EventoContext.Categoria;
-import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.ExceptionUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.client.beans.TipoConnettore;

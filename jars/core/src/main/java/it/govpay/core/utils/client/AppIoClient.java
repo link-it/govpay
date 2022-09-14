@@ -21,8 +21,8 @@ import org.openspcoop2.utils.service.context.server.ServerInfoResponse;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.appio.client.AppIoAPIClient;
 import it.govpay.core.utils.appio.impl.ApiException;
 import it.govpay.core.utils.appio.impl.Pair;

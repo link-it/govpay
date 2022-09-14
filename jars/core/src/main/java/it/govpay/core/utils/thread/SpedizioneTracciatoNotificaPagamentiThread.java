@@ -66,14 +66,15 @@ import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.TracciatiNotificaPagamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Categoria;
+import it.govpay.core.beans.EventoContext.Componente;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.TracciatiNotificaPagamenti;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.utils.EventoContext;
-import it.govpay.core.utils.EventoContext.Categoria;
-import it.govpay.core.utils.EventoContext.Componente;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.ExceptionUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -279,7 +280,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			
 			EventiBD eventiBD = new EventiBD(configWrapper);
 			try {
-				eventiBD.insertEvento(this.eventoCtx.toEventoDTO(log));
+				eventiBD.insertEvento(EventoUtils.toEventoDTO(this.eventoCtx,log));
 			} catch (ServiceException e) {
 				log.error("Errore durante il salvataggio dell'evento: ", e);
 			}
@@ -476,7 +477,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
         			if(client != null && client.getEventoCtx().isRegistraEvento()) {
         				EventiBD eventiBD = new EventiBD(configWrapper);
         				try {
-        					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO(log));
+        					eventiBD.insertEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
         				} catch (ServiceException e) {
         					log.error("Errore durante il salvataggio dell'evento: ", e);
         				}
@@ -541,7 +542,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
             			if(client != null && client.getEventoCtx().isRegistraEvento()) {
             				EventiBD eventiBD = new EventiBD(configWrapper);
             				try {
-            					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO(log));
+            					eventiBD.insertEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
             				} catch (ServiceException e) {
             					log.error("Errore durante il salvataggio dell'evento: ", e);
             				}

@@ -1,24 +1,14 @@
-package it.govpay.core.utils;
+package it.govpay.core.beans;
 
 import java.util.Date;
 
-import it.govpay.core.exceptions.ValidationException;
-import org.slf4j.Logger;
-
-import it.govpay.bd.model.Evento;
-import it.govpay.core.exceptions.BaseExceptionV1;
-import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.exceptions.UnprocessableEntityException;
-import it.govpay.core.utils.client.exception.ClientException;
-import it.govpay.model.Evento.CategoriaEvento;
-import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.Evento.RuoloEvento;
 import it.govpay.model.eventi.DatiPagoPA;
 import it.govpay.model.eventi.DettaglioRichiesta;
 import it.govpay.model.eventi.DettaglioRisposta;
 
 public class EventoContext {
-	
+
 	public static final String APIPAGOPA_TIPOEVENTO_PAAVERIFICARPT = "paaVerificaRPT";
 	public static final String APIPAGOPA_TIPOEVENTO_PAAATTIVARPT = "paaAttivaRPT";
 	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIAESITOSTORNO = "paaInviaEsitoStorno";
@@ -27,33 +17,33 @@ public class EventoContext {
 	public static final String APIPAGOPA_TIPOEVENTO_PASENDRT = "paSendRT";
 	public static final String APIPAGOPA_TIPOEVENTO_PAVERIFYPAYMENTNOTICE = "paVerifyPaymentNotice";
 	public static final String APIPAGOPA_TIPOEVENTO_PAGETPAYMENT = "paGetPayment";
-	
+
 	public static final String APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOEMAIL = "pivotInviaTracciatoEmail";
 	public static final String APIMYPIVOT_TIPOEVENTO_MYPIVOTINVIATRACCIATOFILESYSTEM = "pivotInviaTracciatoFileSystem";
 	public static final String APIMYPIVOT_TIPOEVENTO_PIVOTSILAUTORIZZAIMPORTFLUSSO = "pivotSILAutorizzaImportFlusso";
 	public static final String APIMYPIVOT_TIPOEVENTO_PIVOTSILCHIEDISTATOIMPORTFLUSSO = "pivotSILChiediStatoImportFlusso";
 	public static final String APIMYPIVOT_TIPOEVENTO_PIVOTSILINVIAFLUSSO = "pivotSILInviaFlusso";
-	
+
 	public static final String APISECIM_TIPOEVENTO_SECIMINVIATRACCIATOEMAIL = "secimInviaTracciatoEmail";
 	public static final String APISECIM_TIPOEVENTO_SECIMINVIATRACCIATOFILESYSTEM = "secimInviaTracciatoFileSystem";
-	
+
 	public static final String APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOEMAIL = "govpayInviaTracciatoEmail";
 	public static final String APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOFILESYSTEM = "govpayInviaTracciatoFileSystem";
 	public static final String APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOREST = "govpayInviaTracciatoRest";
-	
+
 	public static final String APIHYPERSICAPKAPPA_TIPOEVENTO_HYPERSIC_APKINVIATRACCIATOEMAIL = "hyperSicAPKappaInviaTracciatoEmail";
 	public static final String APIHYPERSICAPKAPPA_TIPOEVENTO_HYPERSIC_APKINVIATRACCIATOFILESYSTEM = "hyperSicAPKappaInviaTracciatoFileSystem";
-	
+
 	public static final String APIPAGOPA_SOTTOTIPOEVENTO_FLUSSO_RENDICONTAZIONE_DUPLICATO = "FlussoRendicontazioneDuplicato";
-	
+
 	public static final String APIMAGGIOLI_JPPA_TIPOEVENTO_INVIAESITOPAGAMENTO = "maggioliInviaEsitoPagamento";
 	public static final String APIMAGGIOLI_JPPA_TIPOEVENTO_RECUPERART = "maggioliRecuperaRT";
 	public static final String APIMAGGIOLI_JPPA_TIPOEVENTO_INVIATRACCIATOEMAIL = "maggioliJppaInviaTracciatoEmail";
-	
+
 	public static final String GOVPAY_TIPOEVENTO_GOVPAYPAGAMENTOESEGUITOSENZARPT = "govpayPagamentoEseguitoSenzaRPT";
 
 	public static final String SOTTOTIPO_EVENTO_NOTA = "nota";
-	
+
 	public enum Componente {API_ENTE, API_PAGAMENTO, API_RAGIONERIA, API_BACKOFFICE, API_PAGOPA, API_PENDENZE, API_WC, API_USER, API_BACKEND_IO, API_MYPIVOT, API_SECIM, API_GOVPAY, API_HYPERSIC_APK, API_MAGGIOLI_JPPA, GOVPAY };
 	public enum Esito {OK, KO, FAIL};
 	public enum Categoria { INTERFACCIA, INTERNO, UTENTE };
@@ -89,17 +79,17 @@ public class EventoContext {
 	private String idPendenza;
 	private String idPagamento;
 
-	
+
 	private String idTransazione;
 	private Long id;
-	
+
 	private Long idFr;
 	private Long idIncasso;
 	private Long idTracciato;
-	
+
 	private Throwable exception;
 	private Integer severita;
-	
+
 	public EventoContext() {
 		this.dataRichiesta = new Date();
 	}
@@ -132,18 +122,18 @@ public class EventoContext {
 		return tipoEvento;
 	}
 
-//	public void setTipoEvento(String httpMethod, String nomeOperazione) {
-//		StringBuilder sb = new StringBuilder();
-//		if(httpMethod != null)
-//			sb.append(httpMethod.toUpperCase());
-//		if(sb.length() > 0 && nomeOperazione != null)
-//			sb.append("-");
-//
-//		if(nomeOperazione != null)
-//			sb.append(nomeOperazione.toUpperCase());
-//
-//		this.tipoEvento = sb.toString();
-//	}
+	//	public void setTipoEvento(String httpMethod, String nomeOperazione) {
+	//		StringBuilder sb = new StringBuilder();
+	//		if(httpMethod != null)
+	//			sb.append(httpMethod.toUpperCase());
+	//		if(sb.length() > 0 && nomeOperazione != null)
+	//			sb.append("-");
+	//
+	//		if(nomeOperazione != null)
+	//			sb.append(nomeOperazione.toUpperCase());
+	//
+	//		this.tipoEvento = sb.toString();
+	//	}
 
 	public void setTipoEvento(String tipoEvento) {
 		this.tipoEvento = tipoEvento;
@@ -290,113 +280,6 @@ public class EventoContext {
 
 	public void setDatiPagoPA(DatiPagoPA datiPagoPA) {
 		this.datiPagoPA = datiPagoPA;
-	}
-
-	public Evento toEventoDTO(Logger log) {
-		Evento dto = new Evento();
-
-		if(this.getCategoriaEvento() != null) {
-			switch (this.getCategoriaEvento()) {
-			case INTERFACCIA:
-				dto.setCategoriaEvento(CategoriaEvento.INTERFACCIA);
-				break;
-			case INTERNO:
-				dto.setCategoriaEvento(CategoriaEvento.INTERNO);
-				break;
-			case UTENTE:
-				dto.setCategoriaEvento(CategoriaEvento.UTENTE);
-				break;
-			}
-		}
-		if(this.getComponente() != null)
-			dto.setComponente(this.getComponente().toString());
-		dto.setData(this.getDataRichiesta());
-		dto.setDatiPagoPA(this.getDatiPagoPA());
-		dto.setDettaglioEsito(this.getDescrizioneEsito());
-		if(this.getEsito() != null) {
-			switch(this.getEsito()) {
-			case FAIL:
-				dto.setEsitoEvento(EsitoEvento.FAIL);
-				break;
-			case KO:
-				dto.setEsitoEvento(EsitoEvento.KO);
-				break;
-			case OK:
-				dto.setEsitoEvento(EsitoEvento.OK);
-				break;
-			}
-		}
-		//dto.setId(this.getId());
-		if(this.getDataRisposta() != null) {
-			if(this.getDataRichiesta() != null) {
-				dto.setIntervallo(this.getDataRisposta().getTime() - this.getDataRichiesta().getTime());
-			} else {
-				dto.setIntervallo(0l);
-			}
-		} else {
-			dto.setIntervallo(0l);
-		}
-		dto.setDettaglioRichiesta(this.getDettaglioRichiesta());
-		dto.setDettaglioRisposta(this.getDettaglioRisposta());
-		dto.setRuoloEvento(this.getRole());
-		dto.setSottotipoEsito(this.getSottotipoEsito());
-		dto.setSottotipoEvento(this.getSottotipoEvento());
-		dto.setTipoEvento(this.getTipoEvento());
-		dto.setCodApplicazione(this.idA2A);
-		dto.setCodVersamentoEnte(this.idPendenza);
-		dto.setCodDominio(this.codDominio);
-		dto.setIuv(this.iuv);
-		dto.setCcp(this.ccp);
-		dto.setIdSessione(this.idPagamento);
-		dto.setIdFr(this.idFr);
-		dto.setIdTracciato(this.idTracciato);
-		dto.setIdIncasso(this.idIncasso);
-		
-		if(this.severita != null) {
-			dto.setSeverita(this.severita);
-		} else {
-			if(this.exception != null) {
-				log.debug("Classe exception: " + this.exception.getClass());
-				
-				if(this.exception instanceof GovPayException) {
-					try {
-						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(((GovPayException) this.exception).getCodEsito()));
-					} catch (Exception e) {
-						log.error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
-					}
-				}
-				
-				if(this.exception instanceof BaseExceptionV1) {
-					try {
-						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(((BaseExceptionV1) this.exception).getCategoria()));
-					} catch (Exception e) {
-						log.error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
-					}
-				}
-				
-				if(this.exception instanceof UnprocessableEntityException) {
-					try {
-						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(((UnprocessableEntityException) this.exception).getCategoria()));
-					} catch (Exception e) {
-						log.error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
-					}
-				}
-				
-				if(this.exception instanceof ValidationException) {
-					try {
-						dto.setSeverita(SeveritaProperties.getInstance().getSeverita(it.govpay.core.exceptions.BaseExceptionV1.CategoriaEnum.RICHIESTA));
-					} catch (Exception e) {
-						log.error("Errore durante la decodifica del livello di severita': " + e.getMessage(),e);
-					}
-				}
-				
-				if(this.exception instanceof ClientException) {
-					dto.setSeverita(5);
-				}
-			}	
-		}
-
-		return dto;
 	}
 
 	public String getIdTransazione() {

@@ -23,9 +23,10 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.MaggioliJPPAUtils;
 import it.govpay.core.utils.client.MaggioliJPPAClient;
@@ -188,7 +189,7 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 			if(client != null && client.getEventoCtx().isRegistraEvento()) {
 				try {
 					EventiBD eventiBD = new EventiBD(configWrapper);
-					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO(log));
+					eventiBD.insertEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
 
 				} catch (ServiceException e) {
 					log.error("Errore: " + e.getMessage(), e);

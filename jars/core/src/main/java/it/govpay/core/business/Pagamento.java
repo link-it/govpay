@@ -61,6 +61,7 @@ import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTO;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTOResponse;
 import it.govpay.core.business.model.Risposta;
@@ -68,7 +69,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NotificaException;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.FaultBeanUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -377,7 +378,7 @@ public class Pagamento   {
 			} finally {
 				if(chiediListaPendentiClient != null && chiediListaPendentiClient.getEventoCtx().isRegistraEvento()) {
 					EventiBD eventiBD = new EventiBD(configWrapper);
-					eventiBD.insertEvento(chiediListaPendentiClient.getEventoCtx().toEventoDTO(log));
+					eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediListaPendentiClient.getEventoCtx(),log));
 				}
 			}
 		}
@@ -538,7 +539,7 @@ public class Pagamento   {
 		} finally {
 			if(nodoInviaRRClient != null && nodoInviaRRClient.getEventoCtx().isRegistraEvento()) {
 				EventiBD eventiBD = new EventiBD(configWrapper);
-				eventiBD.insertEvento(nodoInviaRRClient.getEventoCtx().toEventoDTO(log));
+				eventiBD.insertEvento(EventoUtils.toEventoDTO(nodoInviaRRClient.getEventoCtx(),log));
 			}
 		}
 	}

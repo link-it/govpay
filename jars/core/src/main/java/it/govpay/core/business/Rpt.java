@@ -30,6 +30,7 @@ import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
@@ -40,7 +41,7 @@ import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.DateUtils;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.FaultBeanUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -474,7 +475,7 @@ public class Rpt {
 				} finally {
 					if(chiediStatoRptClient != null && chiediStatoRptClient.getEventoCtx().isRegistraEvento()) {
 						EventiBD eventiBD = new EventiBD(configWrapper);
-						eventiBD.insertEvento(chiediStatoRptClient.getEventoCtx().toEventoDTO(log));
+						eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediStatoRptClient.getEventoCtx(),log));
 					}
 				}
 			} catch (NotificaException e) {
@@ -501,7 +502,7 @@ public class Rpt {
 							clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(rpt.getDescrizioneStato());
 						}
 
-						eventiBD.insertEvento(clientInviaCarrelloRPT.getEventoCtx().toEventoDTO(log));
+						eventiBD.insertEvento(EventoUtils.toEventoDTO(clientInviaCarrelloRPT.getEventoCtx(),log));
 					}
 				}
 			}
