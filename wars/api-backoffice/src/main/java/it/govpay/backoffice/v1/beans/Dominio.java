@@ -3,9 +3,9 @@ package it.govpay.backoffice.v1.beans;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "ragioneSociale",
 "indirizzo",
@@ -44,112 +44,112 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "tipiPendenza",
 })
 public class Dominio extends it.govpay.core.beans.JSONSerializable {
-  
+
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
-  
+
   @JsonProperty("indirizzo")
   private String indirizzo = null;
-  
+
   @JsonProperty("civico")
   private String civico = null;
-  
+
   @JsonProperty("cap")
   private String cap = null;
-  
+
   @JsonProperty("localita")
   private String localita = null;
-  
+
   @JsonProperty("provincia")
   private String provincia = null;
-  
+
   @JsonProperty("nazione")
   private String nazione = null;
-  
+
   @JsonProperty("email")
   private String email = null;
-  
+
   @JsonProperty("pec")
   private String pec = null;
-  
+
   @JsonProperty("tel")
   private String tel = null;
-  
+
   @JsonProperty("fax")
   private String fax = null;
-  
+
   @JsonProperty("web")
   private String web = null;
-  
+
   @JsonProperty("gln")
   private String gln = null;
-  
+
   @JsonProperty("cbill")
   private String cbill = null;
-  
+
   @JsonProperty("iuvPrefix")
   private String iuvPrefix = null;
-  
+
   @JsonProperty("stazione")
   private String stazione = null;
-  
+
   @JsonProperty("auxDigit")
   private String auxDigit = null;
-  
+
   @JsonProperty("segregationCode")
   private String segregationCode = null;
-  
+
   @JsonProperty("logo")
   private String logo = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   @JsonProperty("autStampaPosteItaliane")
   private String autStampaPosteItaliane = null;
-  
+
   @JsonProperty("area")
   private String area = null;
-  
+
   @JsonProperty("servizioMyPivot")
   private ConnettoreNotificaPagamentiMyPivot servizioMyPivot = null;
-  
+
   @JsonProperty("servizioSecim")
   private ConnettoreNotificaPagamentiSecim servizioSecim = null;
-  
+
   @JsonProperty("servizioGovPay")
   private ConnettoreNotificaPagamentiGovPay servizioGovPay = null;
-  
+
   @JsonProperty("servizioHyperSicAPKappa")
   private ConnettoreNotificaPagamentiHyperSicAPKappa servizioHyperSicAPKappa = null;
-  
+
   @JsonProperty("servizioMaggioliJPPA")
   private ConnettoreNotificaPagamentiMaggioliJPPA servizioMaggioliJPPA = null;
   
   @JsonProperty("servizioNetPay")
   private ConnettoreNetPay servizioNetPay = null;
-  
+
   @JsonProperty("intermediato")
   private Boolean intermediato = null;
-  
+
   @JsonProperty("tassonomiaPagoPA")
   private TassonomiaPagoPADominio tassonomiaPagoPA = null;
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("unitaOperative")
   private List<UnitaOperativa> unitaOperative = null;
-  
+
   @JsonProperty("contiAccredito")
   private List<ContiAccredito> contiAccredito = null;
-  
+
   @JsonProperty("entrate")
   private List<Entrata> entrate = null;
-  
+
   @JsonProperty("tipiPendenza")
   private List<TipoPendenzaDominio> tipiPendenza = null;
-  
+
   /**
    * Ragione sociale del beneficiario
    **/
@@ -750,7 +750,7 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
     return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa, servizioMaggioliJPPA, servizioNetPay, intermediato, tassonomiaPagoPA, idDominio, unitaOperative, contiAccredito, entrate, tipiPendenza);
   }
 
-  public static Dominio parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Dominio parse(String json) throws IOException {
     return parse(json, Dominio.class);
   }
 
@@ -763,7 +763,7 @@ public class Dominio extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Dominio {\n");
-    
+
     sb.append("    ragioneSociale: ").append(this.toIndentedString(this.ragioneSociale)).append("\n");
     sb.append("    indirizzo: ").append(this.toIndentedString(this.indirizzo)).append("\n");
     sb.append("    civico: ").append(this.toIndentedString(this.civico)).append("\n");

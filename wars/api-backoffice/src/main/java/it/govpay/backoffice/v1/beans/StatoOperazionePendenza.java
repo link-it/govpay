@@ -8,20 +8,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets statoOperazionePendenza
  */
 public enum StatoOperazionePendenza {
-  
-  
-  
-  
+
+
+
+
   ESEGUITO("ESEGUITO"),
-  
-  
+
+
   SCARTATO("SCARTATO"),
-  
-  
+
+
   NON_VALIDO("NON_VALIDO");
-  
-  
-  
+
+
+
 
   private String value;
 

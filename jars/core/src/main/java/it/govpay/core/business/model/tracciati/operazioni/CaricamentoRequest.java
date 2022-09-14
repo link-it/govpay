@@ -26,7 +26,7 @@ import it.govpay.model.Operazione.TipoOperazioneType;
 public class CaricamentoRequest extends AbstractOperazioneRequest {
 
 	private String motivoAnnullamento;
-	private it.govpay.core.dao.commons.Versamento versamento;
+	private it.govpay.core.beans.commons.Versamento versamento;
 	private String tipoTemplateTrasformazioneRichiesta;
 	private String templateTrasformazioneRichiesta;
 
@@ -42,11 +42,11 @@ public class CaricamentoRequest extends AbstractOperazioneRequest {
 		this.motivoAnnullamento = motivoAnnullamento;
 	}
 
-	public it.govpay.core.dao.commons.Versamento getVersamento() {
+	public it.govpay.core.beans.commons.Versamento getVersamento() {
 		return this.versamento;
 	}
 
-	public void setVersamento(it.govpay.core.dao.commons.Versamento versamento) {
+	public void setVersamento(it.govpay.core.beans.commons.Versamento versamento) {
 		this.versamento = versamento;
 	}
 

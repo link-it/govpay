@@ -4,12 +4,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "tipo",
@@ -22,31 +20,31 @@ import it.govpay.core.beans.JSONSerializable;
 "idA2A",
 })
 public class NotificaIndex extends JSONSerializable {
-  
+
   @JsonProperty("tipo")
   private TipoNotifica tipo = null;
-  
+
   @JsonProperty("dataCreazione")
   private Date dataCreazione = null;
-  
+
   @JsonProperty("stato")
   private StatoNotifica stato = null;
-  
+
   @JsonProperty("descrizioneStato")
   private String descrizioneStato = null;
-  
+
   @JsonProperty("dataUltimoAggiornamento")
   private Date dataUltimoAggiornamento = null;
-  
+
   @JsonProperty("dataProssimaSpedizione")
   private Date dataProssimaSpedizione = null;
-  
+
   @JsonProperty("numeroTentativi")
   private BigDecimal numeroTentativi = null;
-  
+
   @JsonProperty("idA2A")
   private String idA2A = null;
-  
+
   /**
    **/
   public NotificaIndex tipo(TipoNotifica tipo) {
@@ -197,7 +195,7 @@ public class NotificaIndex extends JSONSerializable {
     return Objects.hash(tipo, dataCreazione, stato, descrizioneStato, dataUltimoAggiornamento, dataProssimaSpedizione, numeroTentativi, idA2A);
   }
 
-  public static NotificaIndex parse(String json) throws ServiceException, ValidationException {
+  public static NotificaIndex parse(String json) throws IOException {
     return parse(json, NotificaIndex.class);
   }
 
@@ -210,7 +208,7 @@ public class NotificaIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class NotificaIndex {\n");
-    
+
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    dataCreazione: ").append(toIndentedString(dataCreazione)).append("\n");
     sb.append("    stato: ").append(toIndentedString(stato)).append("\n");

@@ -3,8 +3,6 @@ package it.govpay.rs.v1;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 
@@ -13,9 +11,10 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.eventi.DettaglioRichiesta;
-import it.govpay.bd.model.eventi.DettaglioRisposta;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.JaxbUtils;
+import it.govpay.model.eventi.DettaglioRichiesta;
+import it.govpay.model.eventi.DettaglioRisposta;
 
 public class ConverterUtils {
 
@@ -28,7 +27,7 @@ public class ConverterUtils {
 		mapper.registerModule(new JaxbAnnotationModule());
 	}
 
-	public static String getRptJson(Rpt rpt) throws ServiceException {
+	public static String getRptJson(Rpt rpt) throws IOException {
 		if(rpt.getXmlRpt() == null)
 			return null;
 
@@ -45,33 +44,33 @@ public class ConverterUtils {
 			CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
 			return mapper.writeValueAsString(ctRpt);
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 	}
 	
-	public static String getRptJson(CtRichiestaPagamentoTelematico ctRpt) throws ServiceException {
+	public static String getRptJson(CtRichiestaPagamentoTelematico ctRpt) throws IOException {
 		if(ctRpt == null)
 			return null;
 
 		try {
 			return mapper.writeValueAsString(ctRpt);
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 	}
 	
-	public static String getRptJson(PaGetPaymentRes paGetPaymentRes_RPT) throws ServiceException {
+	public static String getRptJson(PaGetPaymentRes paGetPaymentRes_RPT) throws IOException {
 		if(paGetPaymentRes_RPT == null)
 			return null;
 
 		try {
 			return mapper.writeValueAsString(paGetPaymentRes_RPT);
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 	}
 
-	public static String getRtJson(Rpt rpt) throws ServiceException {
+	public static String getRtJson(Rpt rpt) throws IOException {
 		if(rpt.getXmlRt() == null)
 			return null;
 
@@ -89,40 +88,40 @@ public class ConverterUtils {
 			CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
 			return mapper.writeValueAsString(ctRt);
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 	}
 	
-	public static String getRtJson(CtRicevutaTelematica ctRt ) throws ServiceException {
+	public static String getRtJson(CtRicevutaTelematica ctRt ) throws IOException {
 		if(ctRt == null)
 			return null;
 
 		try {
 			return mapper.writeValueAsString(ctRt);
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 	}
 	
-	public static String getParametriRichiestaEvento(DettaglioRichiesta dettaglioRichiesta) throws ServiceException {
+	public static String getParametriRichiestaEvento(DettaglioRichiesta dettaglioRichiesta) throws IOException {
 		if(dettaglioRichiesta == null)
 			return null;
 
 		try {
 			return mapper.writeValueAsString(dettaglioRichiesta);
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 	}
 	
-	public static String getParametriRispostaEvento(DettaglioRisposta dettaglioRisposta) throws ServiceException {
+	public static String getParametriRispostaEvento(DettaglioRisposta dettaglioRisposta) throws IOException {
 		if(dettaglioRisposta == null)
 			return null;
 
 		try {
 			return mapper.writeValueAsString(dettaglioRisposta);
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 	}
 	

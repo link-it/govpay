@@ -9,23 +9,23 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets contenutoNotificaPagamentiGovpay
  */
 public enum ContenutoNotificaPagamentiGovpay {
-  
-  
-  
-  
+
+
+
+
   SINTESI_PAGAMENTI("SINTESI_PAGAMENTI"),
-  
-  
+
+
   SINTESI_FLUSSI_RENDICONTAZIONE("SINTESI_FLUSSI_RENDICONTAZIONE"),
-  
-  
+
+
   RPP("RPP"),
-  
-  
+
+
   FLUSSI_RENDICONTAZIONE("FLUSSI_RENDICONTAZIONE");
-  
-  
-  
+
+
+
 
   private String value;
 

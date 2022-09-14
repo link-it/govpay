@@ -1,5 +1,6 @@
 package it.govpay.bd.viste;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.viste.filters.VersamentoFilter;
 import it.govpay.bd.viste.model.converter.VersamentoConverter;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.dao.jdbc.converter.VistaVersamentoFieldConverter;
 import it.govpay.orm.model.VistaVersamentoModel;
 
@@ -129,6 +131,10 @@ public class VersamentiBD  extends BasicBD {
 			}
 			return versamentoLst;
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

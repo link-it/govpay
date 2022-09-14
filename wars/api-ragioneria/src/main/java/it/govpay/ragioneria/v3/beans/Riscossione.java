@@ -11,55 +11,55 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class Riscossione   {
-  
+
   @Schema(required = true, description = "")
   private Dominio dominio = null;
-  
+
   @Schema(example = "RF23567483937849450550875", required = true, description = "Identificativo univoco di versamento")
  /**
-   * Identificativo univoco di versamento  
+   * Identificativo univoco di versamento
   **/
   private String iuv = null;
-  
+
   @Schema(example = "ab12345", required = true, description = "Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento")
  /**
-   * Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento  
+   * Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento
   **/
   private String idRicevuta = null;
-  
+
   @Schema(example = "1234acdc", required = true, description = "Identificativo univoco di riscossione.")
  /**
-   * Identificativo univoco di riscossione.  
+   * Identificativo univoco di riscossione.
   **/
   private String iur = null;
-  
+
   @Schema(example = "1", required = true, description = "indice posizionale della voce pendenza riscossa")
  /**
-   * indice posizionale della voce pendenza riscossa  
+   * indice posizionale della voce pendenza riscossa
   **/
   private BigDecimal indice = null;
-  
+
   @Schema(description = "")
   private StatoRiscossione stato = null;
-  
+
   @Schema(required = true, description = "")
   private TipoRiscossione tipo = null;
-  
+
   @Schema(example = "10.01", required = true, description = "Importo riscosso.")
  /**
-   * Importo riscosso.  
+   * Importo riscosso.
   **/
   private BigDecimal importo = null;
-  
+
   @Schema(required = true, description = "Data di esecuzione della riscossione")
  /**
-   * Data di esecuzione della riscossione  
+   * Data di esecuzione della riscossione
   **/
   private Date data = null;
-  
+
   @Schema(description = "")
   private Allegato allegato = null;
-  
+
   @Schema(description = "")
   private VocePendenza vocePendenza = null;
  /**
@@ -274,7 +274,7 @@ public class Riscossione   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Riscossione {\n");
-    
+
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    idRicevuta: ").append(toIndentedString(idRicevuta)).append("\n");

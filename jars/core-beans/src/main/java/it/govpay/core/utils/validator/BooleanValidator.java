@@ -1,6 +1,6 @@
 package it.govpay.core.utils.validator;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 public class BooleanValidator {
 

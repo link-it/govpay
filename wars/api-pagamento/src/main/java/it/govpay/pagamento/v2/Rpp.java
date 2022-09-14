@@ -11,8 +11,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.core.beans.Costanti;
 import it.govpay.pagamento.v2.controller.RppController;
 import it.govpay.rs.v2.BaseRsServiceV2;
@@ -25,7 +23,7 @@ public class Rpp extends BaseRsServiceV2{
 
 	private RppController controller = null;
 
-	public Rpp() throws ServiceException {
+	public Rpp() {
 		super("rpp");
 		this.controller = new RppController(this.nomeServizio,this.log);
 	}
@@ -39,7 +37,7 @@ public class Rpp extends BaseRsServiceV2{
         this.buildContext();
         return this.controller.rppGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, dataRptDa, dataRptA, dataRtDa, dataRtA, idDominio, iuv, ccp, idA2A, idPendenza, idDebitore, esitoPagamento, idPagamento, metadatiPaginazione, maxRisultati);
     }
-    
+
     @GET
     @Path("/{idDominio}/{iuv}/n/a")
     @Produces({ "application/json" })
@@ -47,7 +45,7 @@ public class Rpp extends BaseRsServiceV2{
         this.buildContext();
         return this.controller.rppIdDominioIuvCcpGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  "n/a");
     }
-    
+
     @GET
     @Path("/{idDominio}/{iuv}/{ccp}")
     @Produces({ "application/json" })
@@ -55,7 +53,7 @@ public class Rpp extends BaseRsServiceV2{
         this.buildContext();
         return this.controller.rppIdDominioIuvCcpGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
     }
-    
+
     @GET
     @Path("/{idDominio}/{iuv}/n/a/rt")
     @Produces({ "application/pdf", "application/xml", "application/json" })
@@ -71,7 +69,7 @@ public class Rpp extends BaseRsServiceV2{
         this.buildContext();
         return this.controller.rppIdDominioIuvCcpRtGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
     }
-    
+
     @GET
     @Path("/{idDominio}/{iuv}/n/a/rpt")
     @Produces({ "application/xml", "application/json" })
@@ -79,7 +77,7 @@ public class Rpp extends BaseRsServiceV2{
         this.buildContext();
         return this.controller.rppIdDominioIuvCcpRptGET(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  "n/a");
     }
-    
+
     @GET
     @Path("/{idDominio}/{iuv}/{ccp}/rpt")
     @Produces({ "application/xml", "application/json" })

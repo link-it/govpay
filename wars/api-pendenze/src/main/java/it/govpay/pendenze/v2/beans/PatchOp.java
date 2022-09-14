@@ -2,12 +2,10 @@ package it.govpay.pendenze.v2.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -16,26 +14,26 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 	"value",
 })
 public class PatchOp extends JSONSerializable implements IValidable {
-  
-    
+
+
   /**
    * Operazione da eseguire
    */
   public enum OpEnum {
-    
-    
-        
-            
+
+
+
+
     ADD("ADD"),
-    
-            
+
+
     DELETE("DELETE"),
-    
-            
+
+
     REPLACE("REPLACE");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -59,17 +57,17 @@ public class PatchOp extends JSONSerializable implements IValidable {
     }
   }
 
-    
-    
+
+
   @JsonProperty("op")
   private OpEnum op = null;
-  
+
   @JsonProperty("path")
   private String path = null;
-  
+
   @JsonProperty("value")
   private Object value = null;
-  
+
   /**
    * Operazione da eseguire
    **/
@@ -137,7 +135,7 @@ public class PatchOp extends JSONSerializable implements IValidable {
     return Objects.hash(op, path, value);
   }
 
-  public static PatchOp parse(String json) throws ServiceException, ValidationException { 
+  public static PatchOp parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, PatchOp.class);
   }
 
@@ -150,7 +148,7 @@ public class PatchOp extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class PatchOp {\n");
-    
+
     sb.append("    op: ").append(toIndentedString(op)).append("\n");
     sb.append("    path: ").append(toIndentedString(path)).append("\n");
     sb.append("    value: ").append(toIndentedString(value)).append("\n");

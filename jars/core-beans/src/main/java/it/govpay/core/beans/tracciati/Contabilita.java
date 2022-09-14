@@ -4,12 +4,10 @@ package it.govpay.core.beans.tracciati;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "quote",
 "proprietaCustom",
@@ -71,7 +69,7 @@ public class Contabilita extends JSONSerializable{
     return Objects.hash(quote, proprietaCustom);
   }
 
-  public static Contabilita parse(String json) throws ServiceException, ValidationException {
+  public static Contabilita parse(String json) throws IOException {
     return (Contabilita) parse(json, Contabilita.class);
   }
 

@@ -5,12 +5,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idDominio",
 "iuv",
@@ -28,49 +26,49 @@ import it.govpay.core.beans.JSONSerializable;
 "incasso",
 })
 public class RiscossioneIndex extends JSONSerializable {
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("iuv")
   private String iuv = null;
-  
+
   @JsonProperty("iur")
   private String iur = null;
-  
+
   @JsonProperty("indice")
   private BigDecimal indice = null;
-  
+
   @JsonProperty("pendenza")
   private String pendenza = null;
-  
+
   @JsonProperty("idVocePendenza")
   private String idVocePendenza = null;
-  
+
   @JsonProperty("rpp")
   private String rpp = null;
-  
+
   @JsonProperty("stato")
   private StatoRiscossione stato = null;
-  
+
   @JsonProperty("tipo")
   private TipoRiscossione tipo = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("data")
   private Date data = null;
-  
+
   @JsonProperty("commissioni")
   private BigDecimal commissioni = null;
-  
+
   @JsonProperty("allegato")
   private Allegato allegato = null;
-  
+
   @JsonProperty("incasso")
   private String incasso = null;
-  
+
   /**
    * Identificativo ente creditore
    **/
@@ -322,8 +320,8 @@ public class RiscossioneIndex extends JSONSerializable {
     return Objects.hash(idDominio, iuv, iur, indice, pendenza, idVocePendenza, rpp, stato, tipo, importo, data, commissioni, allegato, incasso);
   }
 
-  public static RiscossioneIndex parse(String json) throws ServiceException, ValidationException { 
-    return (RiscossioneIndex) parse(json, RiscossioneIndex.class);
+  public static RiscossioneIndex parse(String json) throws IOException {
+    return parse(json, RiscossioneIndex.class);
   }
 
   @Override
@@ -335,7 +333,7 @@ public class RiscossioneIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RiscossioneIndex {\n");
-    
+
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    iur: ").append(toIndentedString(iur)).append("\n");

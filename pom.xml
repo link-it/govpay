@@ -183,6 +183,14 @@
 				<artifactId>commons-codec</artifactId>
 				<version>${commons.codec.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>xml-adapters</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
 
 			<dependency>
 				<groupId>it.govpay</groupId>

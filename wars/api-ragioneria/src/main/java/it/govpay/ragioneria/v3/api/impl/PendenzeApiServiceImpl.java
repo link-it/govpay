@@ -30,25 +30,26 @@ import it.govpay.ragioneria.v3.api.PendenzeApi;
  *
  */
 public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements PendenzeApi {
-	
+
 	public static final String DETTAGLIO_PATH_PATTERN = "/allegati/{0}";
-	
+
 	public PendenzeApiServiceImpl() {
 		super("pendenze", PendenzeApiServiceImpl.class);
 	}
-	
+
     /**
      * Allegato di una pendenza
      *
      * Fornisce l&#x27;allegato di una pendenza
      *
      */
-    public Response getAllegatoPendenza(Long id) {
+    @Override
+	public Response getAllegatoPendenza(Long id) {
     	this.buildContext();
     	Authentication user = this.getUser();
-    	String methodName = "getAllegatoPendenza";  
+    	String methodName = "getAllegatoPendenza";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 
 		try{
 			// autorizzazione sulla API
@@ -74,7 +75,7 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 
 			StreamingOutput contenutoStream = allegatiDAO.leggiBlobContenuto(allegato.getId());
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).type(mediaType).entity(contenutoStream).header("content-disposition", "attachment; filename=\""+allegatoFileName+"\""),transactionId).build();
 
 		}catch (Exception e) {
@@ -83,6 +84,6 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 			this.log(ContextThreadLocal.get());
 		}
     }
-    
+
 }
 

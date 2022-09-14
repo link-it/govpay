@@ -47,7 +47,6 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
@@ -62,12 +61,16 @@ import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTO;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTOResponse;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.exceptions.NotificaException;
+import it.govpay.core.utils.EventoUtils;
+import it.govpay.core.utils.FaultBeanUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RptUtils;
@@ -82,6 +85,7 @@ import it.govpay.model.Intermediario;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rr.StatoRr;
+import it.govpay.model.configurazione.Giornale;
 
 public class Pagamento   {
 
@@ -374,14 +378,14 @@ public class Pagamento   {
 			} finally {
 				if(chiediListaPendentiClient != null && chiediListaPendentiClient.getEventoCtx().isRegistraEvento()) {
 					EventiBD eventiBD = new EventiBD(configWrapper);
-					eventiBD.insertEvento(chiediListaPendentiClient.getEventoCtx().toEventoDTO());
+					eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediListaPendentiClient.getEventoCtx(),log));
 				}
 			}
 		}
 		return statiRptPendenti;
 	}
 
-	public AvviaRichiestaStornoDTOResponse avviaStorno(AvviaRichiestaStornoDTO dto) throws ServiceException, GovPayException, UtilsException {
+	public AvviaRichiestaStornoDTOResponse avviaStorno(AvviaRichiestaStornoDTO dto) throws ServiceException, GovPayException, UtilsException, IOException, NotificaException {
 		IContext ctx = ContextThreadLocal.get();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
@@ -510,7 +514,7 @@ public class Pagamento   {
 				rrBD.updateRr(rr.getId(), StatoRr.RR_RIFIUTATA_NODO, descrizione);
 
 				log.warn(risposta.getLog());
-				throw new GovPayException(risposta.getFaultBean());
+				throw new GovPayException(FaultBeanUtils.toFaultBean(risposta.getFaultBean()));
 			} else {
 				ctx.getApplicationLogger().log("rr.invioRrOk");
 				// RPT accettata dal Nodo
@@ -535,7 +539,7 @@ public class Pagamento   {
 		} finally {
 			if(nodoInviaRRClient != null && nodoInviaRRClient.getEventoCtx().isRegistraEvento()) {
 				EventiBD eventiBD = new EventiBD(configWrapper);
-				eventiBD.insertEvento(nodoInviaRRClient.getEventoCtx().toEventoDTO());
+				eventiBD.insertEvento(EventoUtils.toEventoDTO(nodoInviaRRClient.getEventoCtx(),log));
 			}
 		}
 	}

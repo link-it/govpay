@@ -4,9 +4,6 @@ package it.govpay.pendenze.v2.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -17,19 +14,19 @@ import it.govpay.core.beans.JSONSerializable;
 "soglia",
 })
 public class Documento extends JSONSerializable {
-  
+
   @JsonProperty("identificativo")
   private String identificativo = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("rata")
   private BigDecimal rata = null;
 
   @JsonProperty("soglia")
   private VincoloPagamento soglia = null;
-  
+
   /**
    * Identificativo del documento
    **/
@@ -114,8 +111,8 @@ public class Documento extends JSONSerializable {
     return Objects.hash(identificativo, descrizione, rata, soglia);
   }
 
-  public static Documento parse(String json) throws ServiceException, ValidationException { 
-    return (Documento) parse(json, Documento.class);
+  public static Documento parse(String json) throws it.govpay.core.exceptions.IOException {
+    return parse(json, Documento.class);
   }
 
   @Override
@@ -127,7 +124,7 @@ public class Documento extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Documento {\n");
-    
+
     sb.append("    identificativo: ").append(toIndentedString(identificativo)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    rata: ").append(toIndentedString(rata)).append("\n");

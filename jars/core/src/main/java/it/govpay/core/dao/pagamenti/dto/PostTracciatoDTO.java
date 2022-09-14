@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Operatore;
+import it.govpay.core.beans.commons.Versamento;
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
-import it.govpay.core.dao.commons.Versamento;
 import it.govpay.model.Tracciato.FORMATO_TRACCIATO;
 
 public class PostTracciatoDTO extends BasicCreateRequestDTO  {

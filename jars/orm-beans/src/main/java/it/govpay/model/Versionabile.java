@@ -1,7 +1,8 @@
 package it.govpay.model;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public abstract class Versionabile extends BasicModel {
 	
@@ -54,31 +55,31 @@ public abstract class Versionabile extends BasicModel {
 			return 0;
 		} 
 		
-		public static Versione toEnum(String versione) throws ServiceException {
+		public static Versione toEnum(String versione) throws CodificaInesistenteException {
 			return toEnum(versione.split("_")[0],versione.split("_")[1]);
 		}
 		
-		public static Versione toEnum(String api, String label) throws ServiceException {
+		public static Versione toEnum(String api, String label) throws CodificaInesistenteException {
 			for(Versione p : Versione.values()){
 				if(p.getLabel().equals(label) && p.getApi().equals(api)) 
 					return p;
 			}
 				
-			throw new ServiceException("Codifica inesistente per Versione. Valore fornito [" + api + "-" + label + "] valori possibili " + ArrayUtils.toString(labels));
+			throw new CodificaInesistenteException("Codifica inesistente per Versione. Valore fornito [" + api + "-" + label + "] valori possibili " + ArrayUtils.toString(labels));
 		}
 		
 		public int compareVersione(Versione other) {
 			try {
 				return this.compareVersione(other, true);
-			} catch (ServiceException e) {
+			} catch (CodificaInesistenteException e) {
 				return 0;
 			}
 		}
 		
-		public int compareVersione(Versione other, boolean ignoreApi) throws ServiceException {
+		public int compareVersione(Versione other, boolean ignoreApi) throws CodificaInesistenteException {
 			// controllo tra API
 			if(!ignoreApi && !this.getApi().equals(other.getApi())) 
-				throw new ServiceException("Impossibile confrontare due Versioni con API diverse. Versione corrente [" + this.getApi() + "-" + this.getLabel() + "], Versione confrontata ["+ other.getApi() + "-" + other.getLabel() + "].");
+				throw new CodificaInesistenteException("Impossibile confrontare due Versioni con API diverse. Versione corrente [" + this.getApi() + "-" + this.getLabel() + "], Versione confrontata ["+ other.getApi() + "-" + other.getLabel() + "].");
 			// a questo punto sono sicuro di confrontare solo versioni delle stesse API.
 			
 			Double mineLabel = Double.parseDouble(this.getLabel());

@@ -10,8 +10,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.pendenze.v2.controller.AllegatiController;
 import it.govpay.rs.v2.BaseRsServiceV2;
 
@@ -24,7 +22,7 @@ public class Allegati extends BaseRsServiceV2{
 
 	private AllegatiController controller = null;
 
-	public Allegati() throws ServiceException {
+	public Allegati() {
 		super("allegati");
 		this.controller = new AllegatiController(this.nomeServizio,this.log);
 	}
@@ -33,7 +31,7 @@ public class Allegati extends BaseRsServiceV2{
 
     @GET
     @Path("/{id}")
-    
+
     @Produces({ "*/*" })
     public Response getAllegatoPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Long id){
         this.controller.setRequestResponse(this.request, this.response);

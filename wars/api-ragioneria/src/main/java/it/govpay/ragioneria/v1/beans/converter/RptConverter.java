@@ -1,13 +1,12 @@
 package it.govpay.ragioneria.v1.beans.converter;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
+import it.govpay.core.exceptions.IOException;
 import it.govpay.ragioneria.v1.beans.RppIndex;
 import it.govpay.rs.v1.ConverterUtils;
 
 public class RptConverter {
 
-	public static RppIndex toRsModelIndex(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione) throws ServiceException {
+	public static RppIndex toRsModelIndex(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione) throws IOException {
 		RppIndex rsModel = new RppIndex();
 
 		rsModel.setStato(rpt.getStato().toString());

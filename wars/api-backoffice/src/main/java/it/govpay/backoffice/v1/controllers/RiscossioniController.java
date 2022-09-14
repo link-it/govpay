@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -34,6 +33,7 @@ import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRiscossioneDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRiscossioniDTOResponse;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -55,41 +55,41 @@ public class RiscossioniController extends BaseController {
 
 
     public Response getRiscossione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String iur, Integer indice) {
-    	String methodName = "getRiscossione";  
+    	String methodName = "getRiscossione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
-			
+
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
-			
+
 			// Parametri - > DTO Input
-			
+
 			LeggiRiscossioneDTO getRiscossioneDTO = new LeggiRiscossioneDTO(user, idDominio, iuv, iur, Integer.valueOf(indice));
-			
+
 			// INIT DAO
-			
+
 			RiscossioniDAO applicazioniDAO = new RiscossioniDAO();
-			
+
 			// CHIAMATA AL DAO
-			
+
 			LeggiRiscossioneDTOResponse getRiscossioneDTOResponse = applicazioniDAO.leggiRiscossione(getRiscossioneDTO);
-			
+
 			// controllo che il dominio sia autorizzato
 			if(!AuthorizationManager.isDominioAuthorized(user, getRiscossioneDTOResponse.getDominio().getCodDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(user,getRiscossioneDTOResponse.getDominio().getCodDominio(), null);
 			}
 			// CONVERT TO JSON DELLA RISPOSTA
-			
+
 			SingoloVersamento singoloVersamento = getRiscossioneDTOResponse.getPagamento().getSingoloVersamento(null);
 			Versamento versamento = singoloVersamento.getVersamentoBD(null);
 			Rpt rpt = getRiscossioneDTOResponse.getPagamento().getRpt(null);
 			Incasso incasso = getRiscossioneDTOResponse.getPagamento().getIncasso(null);
 			Riscossione response = RiscossioniConverter.toRsModel(getRiscossioneDTOResponse.getPagamento(), singoloVersamento, versamento, rpt, incasso);
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -101,26 +101,26 @@ public class RiscossioniController extends BaseController {
 
 
     public Response findRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, String idDominio, String idA2A, String idPendenza, String idUnita, String idTipoPendenza, String stato, String dataDa, String dataA, List<String> tipo, String iuv, List<String> direzione, List<String> divisione, List<String> tassonomia, Boolean metadatiPaginazione, Boolean maxRisultati, String iur) {
-    	String methodName = "findRiscossioni";  
+    	String methodName = "findRiscossioni";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		this.setMaxRisultati(maxRisultati); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.setMaxRisultati(maxRisultati);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
-			
+
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
-			
+
 			// Parametri - > DTO Input
-			
+
 			ListaRiscossioniDTO findRiscossioniDTO = new ListaRiscossioniDTO(user);
 			findRiscossioniDTO.setIdDominio(idDominio);
 			findRiscossioniDTO.setLimit(risultatiPerPagina);
 			findRiscossioniDTO.setPagina(pagina);
 			findRiscossioniDTO.setEseguiCount(metadatiPaginazione);
 			findRiscossioniDTO.setEseguiCountConLimit(maxRisultati);
-			
+
 			if(dataDa != null) {
 				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				findRiscossioniDTO.setDataRiscossioneDa(dataDaDate);
@@ -129,7 +129,7 @@ public class RiscossioniController extends BaseController {
 				Date dataADate =  SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				findRiscossioniDTO.setDataRiscossioneA(dataADate);
 			}
-			
+
 			findRiscossioniDTO.setIdA2A(idA2A);
 			findRiscossioniDTO.setIdPendenza(idPendenza);
 			findRiscossioniDTO.setOrderBy(ordinamento);
@@ -143,13 +143,13 @@ public class RiscossioniController extends BaseController {
 						break;
 					default:
 						break;
-					}				
+					}
 				} else {
 					throw new ValidationException("Codifica inesistente per stato. Valore fornito [" + stato
 							+ "] valori possibili " + ArrayUtils.toString(StatoRiscossione.values()));
 				}
 			}
-			
+
 			List<TipoPagamento> tipoEnum = new ArrayList<>();
 			if(tipo == null || tipo.isEmpty()) { // valori di default
 				tipoEnum.add(TipoPagamento.ENTRATA);
@@ -166,7 +166,7 @@ public class RiscossioniController extends BaseController {
 					}
 				}
 			}
-			
+
 			findRiscossioniDTO.setTipo(tipoEnum);
 			findRiscossioniDTO.setIuv(iuv);
 			findRiscossioniDTO.setIdUnita(idUnita);
@@ -175,30 +175,30 @@ public class RiscossioniController extends BaseController {
 			findRiscossioniDTO.setDivisione(divisione);
 			findRiscossioniDTO.setTassonomia(tassonomia);
 			findRiscossioniDTO.setIur(iur);
-			
+
 			// Autorizzazione sui domini
 			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
 //			if(domini == null) {
 //				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 //			}
 			findRiscossioniDTO.setCodDomini(domini);
-			
+
 			// INIT DAO
-			
+
 			RiscossioniDAO rendicontazioniDAO = new RiscossioniDAO();
-			
+
 			// CHIAMATA AL DAO
-			
+
 			ListaRiscossioniDTOResponse findRiscossioniDTOResponse = domini != null ? rendicontazioniDAO.listaRiscossioni(findRiscossioniDTO) : new ListaRiscossioniDTOResponse(0L, new ArrayList<>());
-			
+
 			// CONVERT TO JSON DELLA RISPOSTA
-			
-			ListaRiscossioni response = new ListaRiscossioni(findRiscossioniDTOResponse.getResults().stream().map(t -> RiscossioniConverter.toRsModelIndex(t)).collect(Collectors.toList()), 
+
+			ListaRiscossioni response = new ListaRiscossioni(findRiscossioniDTOResponse.getResults().stream().map(t -> RiscossioniConverter.toRsModelIndex(t)).collect(Collectors.toList()),
 					 this.getServicePath(uriInfo), findRiscossioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
-			
+
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {

@@ -46,6 +46,7 @@ import it.govpay.bd.model.converter.ConnettoreNotificaPagamentiConverter;
 import it.govpay.bd.model.converter.DominioConverter;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.ConnettoreNotificaPagamenti.Tipo;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.dao.jdbc.JDBCDominioServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
@@ -174,6 +175,8 @@ public class DominiBD extends BasicBD {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} 
 	}

@@ -11,46 +11,46 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class RiscossioneVocePagata   {
-  
+
   @Schema(example = "01234567890", required = true, description = "Identificativo Ente creditore")
  /**
-   * Identificativo Ente Creditore  
+   * Identificativo Ente Creditore
   **/
   private String idDominio = null;
-  
+
   @Schema(example = "RF23567483937849450550875", required = true, description = "Identificativo univoco di versamento")
  /**
-   * Identificativo univoco di versamento  
+   * Identificativo univoco di versamento
   **/
   private String iuv = null;
-  
+
   @Schema(example = "1234acdc", required = true, description = "Identificativo univoco di riscossione.")
  /**
-   * Identificativo univoco di riscossione.  
+   * Identificativo univoco di riscossione.
   **/
   private String iur = null;
-  
+
   @Schema(example = "1", required = true, description = "indice posizionale della voce pendenza riscossa")
  /**
-   * indice posizionale della voce pendenza riscossa  
+   * indice posizionale della voce pendenza riscossa
   **/
   private BigDecimal indice = null;
-  
+
   @Schema(required = true, description = "")
   private TipoRiscossione tipo = null;
-  
+
   @Schema(example = "10.01", required = true, description = "Importo riscosso.")
  /**
-   * Importo riscosso.  
+   * Importo riscosso.
   **/
   private BigDecimal importo = null;
-  
+
   @Schema(required = true, description = "Data di esecuzione della riscossione")
  /**
-   * Data di esecuzione della riscossione  
+   * Data di esecuzione della riscossione
   **/
   private Date data = null;
-  
+
   @Schema(description = "")
   private Allegato allegato = null;
  /**
@@ -209,7 +209,7 @@ public class RiscossioneVocePagata   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RiscossioneVocePagata {\n");
-    
+
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    iur: ").append(toIndentedString(iur)).append("\n");

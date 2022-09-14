@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
@@ -25,6 +23,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.govpay.bd.model.Rpt;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 
@@ -43,7 +42,7 @@ public class ConverterUtils {
 		mapper.setDateFormat(DateFormatUtils.newSimpleDateFormatSoloData());
 	}
 
-	public static String getRptJson(Rpt rpt) throws ServiceException {
+	public static String getRptJson(Rpt rpt) throws IOException {
 		if(rpt.getXmlRpt() == null)
 			return null;
 
@@ -60,11 +59,11 @@ public class ConverterUtils {
 			CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
 			return mapper.writeValueAsString(ctRpt);
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 	}
 
-	public static String getRtJson(Rpt rpt) throws ServiceException {
+	public static String getRtJson(Rpt rpt) throws IOException {
 		if(rpt.getXmlRt() == null)
 			return null;
 
@@ -82,19 +81,19 @@ public class ConverterUtils {
 			CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
 			return mapper.writeValueAsString(ctRt);
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 	}
 	
-	public static String toJSON(Object obj, String fields) throws ServiceException {
+	public static String toJSON(Object obj, String fields) throws IOException {
 		try {
 			return mapper.writeValueAsString(obj);
 		} catch (JsonProcessingException e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 	}
 	
-	public static String toJSON(Object obj, String fields, SerializationConfig serializationConfig) throws ServiceException {
+	public static String toJSON(Object obj, String fields, SerializationConfig serializationConfig) throws IOException {
 		try {
 			if(fields != null && !fields.isEmpty()) {
 				serializationConfig.setIncludes(Arrays.asList(fields.split(",")));
@@ -103,18 +102,18 @@ public class ConverterUtils {
 			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
 			return serializer.getObject(obj);
 		} catch(org.openspcoop2.utils.serialization.IOException e) {
-			throw new ServiceException("Errore nella serializzazione della risposta.", e);
+			throw new IOException("Errore nella serializzazione della risposta.", e);
 		}
 	}
 	
-	public static <T> T parse(String jsonString, Class<T> t) throws ServiceException, ValidationException  {
+	public static <T> T parse(String jsonString, Class<T> t) throws IOException  {
 		SerializationConfig serializationConfig = new SerializationConfig();
 		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
 		serializationConfig.setIgnoreNullValues(true);
 		return parse(jsonString, t, serializationConfig);
 	}
 	
-	public static <T> T parse(String jsonString, Class<T> t, SerializationConfig serializationConfig) throws ServiceException, ValidationException  {
+	public static <T> T parse(String jsonString, Class<T> t, SerializationConfig serializationConfig) throws IOException  {
 		try {
 			IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
 			
@@ -122,7 +121,7 @@ public class ConverterUtils {
 			T object = (T) deserializer.getObject(jsonString, t);
 			return object;
 		} catch(org.openspcoop2.utils.serialization.IOException e) {
-			throw new ValidationException(e.getMessage(), e);
+			throw new IOException(e.getMessage(), e);
 		}
 	}
 	

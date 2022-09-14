@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "denominazione",
 "principalPagoPa",
@@ -17,28 +17,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "stazioni",
 })
 public class Intermediario extends it.govpay.core.beans.JSONSerializable {
-  
+
   @JsonProperty("denominazione")
   private String denominazione = null;
-  
+
   @JsonProperty("principalPagoPa")
   private String principalPagoPa = null;
-  
+
   @JsonProperty("servizioPagoPa")
   private ConnettorePagopa servizioPagoPa = null;
-  
+
   @JsonProperty("servizioFtp")
   private ServizioFtp servizioFtp = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   @JsonProperty("idIntermediario")
   private String idIntermediario = null;
-  
+
   @JsonProperty("stazioni")
   private List<StazioneIndex> stazioni = new ArrayList<>();
-  
+
   /**
    * Ragione sociale dell'intermediario PagoPA
    **/
@@ -172,7 +172,7 @@ public class Intermediario extends it.govpay.core.beans.JSONSerializable {
     return Objects.hash(this.denominazione, this.principalPagoPa, this.servizioPagoPa, this.servizioFtp, this.abilitato, this.idIntermediario, this.stazioni);
   }
 
-  public static Intermediario parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Intermediario parse(String json) throws IOException {
     return parse(json, Intermediario.class);
   }
 
@@ -185,7 +185,7 @@ public class Intermediario extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Intermediario {\n");
-    
+
     sb.append("    denominazione: ").append(this.toIndentedString(this.denominazione)).append("\n");
     sb.append("    principalPagoPa: ").append(this.toIndentedString(this.principalPagoPa)).append("\n");
     sb.append("    servizioPagoPa: ").append(this.toIndentedString(this.servizioPagoPa)).append("\n");

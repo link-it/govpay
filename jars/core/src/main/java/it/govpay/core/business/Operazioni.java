@@ -40,8 +40,6 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.BatchBD;
-import it.govpay.bd.configurazione.model.AppIOBatch;
-import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.NotificaAppIo;
@@ -65,6 +63,8 @@ import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Batch;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
+import it.govpay.model.configurazione.AppIOBatch;
+import it.govpay.model.configurazione.MailBatch;
 
 public class Operazioni{
 

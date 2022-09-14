@@ -60,14 +60,15 @@ import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
+import it.govpay.core.exceptions.NotificaException;
 import it.govpay.core.utils.RtUtils.EsitoValidazione;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
@@ -78,6 +79,7 @@ import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rr.StatoRr;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.eventi.DatiPagoPA;
 
 public class RrUtils extends NdpValidationUtils {
 
@@ -402,7 +404,11 @@ public class RrUtils extends NdpValidationUtils {
 			log.info("ER acquisita con successo.");
 			
 			return rr;
-		} catch (NdpException | ServiceException | UtilsException e) {
+		} catch (NotificaException | IOException e) {
+			if(rrBD != null)
+				rrBD.rollback();
+			throw new ServiceException(e);
+		}catch (NdpException | ServiceException | UtilsException e) {
 			if(rrBD != null)
 				rrBD.rollback();
 			throw e;

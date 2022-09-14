@@ -14,11 +14,11 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.Profilo;
 import it.govpay.backoffice.v1.beans.converter.ProfiloConverter;
 import it.govpay.core.beans.Costanti;
+import it.govpay.core.beans.EventoContext.Componente;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.LeggiProfiloDTOResponse;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.EventoContext.Componente;
-import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.service.context.GpContextFactory;
 import it.govpay.rs.v1.exception.CodiceEccezione;
 

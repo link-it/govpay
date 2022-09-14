@@ -2,7 +2,6 @@ package it.govpay.pagamento.v2.beans.converter;
 
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
 
 import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTOResponse;
@@ -14,7 +13,7 @@ import it.govpay.pagamento.v2.beans.UnitaOperativa;
 
 public class DominiConverter {
 	
-	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio) throws ServiceException {
+	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio) {
 		Dominio rsModel = new Dominio();
 		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb());
 		rsModel.setIdDominio(dominio.getCodDominio()); 
@@ -42,7 +41,7 @@ public class DominiConverter {
 //	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio) throws ServiceException {
 //		return toRsModel(dominio, null, null, null);
 //	}
-	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio, List<it.govpay.bd.model.UnitaOperativa> uoLst, List<it.govpay.bd.model.Tributo> tributoLst, List<it.govpay.bd.model.IbanAccredito> ibanAccreditoLst) throws ServiceException {
+	public static Dominio toRsModel(it.govpay.bd.model.Dominio dominio, List<it.govpay.bd.model.UnitaOperativa> uoLst, List<it.govpay.bd.model.Tributo> tributoLst, List<it.govpay.bd.model.IbanAccredito> ibanAccreditoLst) {
 		Dominio rsModel = new Dominio();
 		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb());
 		rsModel.setIdDominio(dominio.getCodDominio()); 
@@ -92,7 +91,7 @@ public class DominiConverter {
 		return rsModel;
 	}
 	
-	public static UnitaOperativa toUnitaOperativaRsModel(it.govpay.bd.model.UnitaOperativa uo) throws IllegalArgumentException, ServiceException {
+	public static UnitaOperativa toUnitaOperativaRsModel(it.govpay.bd.model.UnitaOperativa uo) {
 		UnitaOperativa rsModel = new UnitaOperativa();
 		
 		rsModel.setCap(uo.getAnagrafica().getRagioneSociale());
@@ -113,11 +112,11 @@ public class DominiConverter {
 		return rsModel;
 	}
 	
-	public static TipoPendenza toTipoPendenzaRsModel(GetTipoPendenzaDominioDTOResponse response) throws ServiceException {
+	public static TipoPendenza toTipoPendenzaRsModel(GetTipoPendenzaDominioDTOResponse response) {
 		return toTipoPendenzaRsModel(response.getTipoVersamento());
 	}
 	
-	public static TipoPendenza toTipoPendenzaRsModel(it.govpay.bd.model.TipoVersamentoDominio tipoVersamentoDominio) throws ServiceException {
+	public static TipoPendenza toTipoPendenzaRsModel(it.govpay.bd.model.TipoVersamentoDominio tipoVersamentoDominio) {
 		TipoPendenza rsModel = new TipoPendenza();
 		
 		rsModel.descrizione(tipoVersamentoDominio.getDescrizione())

@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class TipoRiferimentoDocumento  implements OneOfTipoRiferimentoDocumento  {
-	
+
 	@Schema(required = true, description = "")
 	  private VincoloPagamento soglia = null;
 	 /**
@@ -31,10 +31,10 @@ public class TipoRiferimentoDocumento  implements OneOfTipoRiferimentoDocumento 
 	    this.soglia = soglia;
 	    return this;
 	  }
-	  
+
 	  @Schema(example = "1", required = true, description = "Rata del documento")
 	  /**
-	    * Rata del documento  
+	    * Rata del documento
 	   **/
 	   private BigDecimal rata = null;
 	  /**
@@ -61,7 +61,7 @@ public class TipoRiferimentoDocumento  implements OneOfTipoRiferimentoDocumento 
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoRiferimentoDocumento {\n");
-    
+
     sb.append("    soglia: ").append(toIndentedString(soglia)).append("\n");
     sb.append("    rata: ").append(toIndentedString(rata)).append("\n");
     sb.append("}");

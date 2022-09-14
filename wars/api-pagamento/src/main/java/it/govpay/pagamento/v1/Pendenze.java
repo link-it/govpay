@@ -11,8 +11,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.core.beans.Costanti;
 import it.govpay.pagamento.v1.controller.PendenzeController;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -25,7 +23,7 @@ public class Pendenze extends BaseRsServiceV1{
 
 	private PendenzeController controller = null;
 
-	public Pendenze() throws ServiceException {
+	public Pendenze() {
 		super("pendenze");
 		this.controller = new PendenzeController(this.nomeServizio,this.log);
 	}

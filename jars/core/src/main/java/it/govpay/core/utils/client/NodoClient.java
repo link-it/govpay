@@ -51,9 +51,8 @@ import gov.telematici.pagamenti.ws.rpt.ObjectFactory;
 import gov.telematici.pagamenti.ws.rpt.Risposta;
 import gov.telematici.pagamenti.ws.rpt.ppthead.IntestazioneCarrelloPPT;
 import gov.telematici.pagamenti.ws.rpt.ppthead.IntestazionePPT;
-import it.govpay.bd.configurazione.model.Giornale;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.client.beans.TipoOperazioneNodo;
@@ -61,6 +60,7 @@ import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rpt;
 import it.govpay.model.Stazione;
+import it.govpay.model.configurazione.Giornale;
 
 public class NodoClient extends BasicClientCORE {
 

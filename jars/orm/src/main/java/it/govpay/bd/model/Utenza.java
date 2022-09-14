@@ -199,7 +199,7 @@ public class Utenza extends it.govpay.model.Utenza {
 		return this.tipiVersamento;
 	}
 	
-	public Map<String,List<Acl>> getRuoliUtenza() throws ServiceException {
+	public Map<String,List<Acl>> getRuoliUtenza() {
 		if(this.ruoliUtenza == null && this.getRuoli() != null) {
 			this.ruoliUtenza = new HashMap<>();
 			for(String idRuolo : this.getRuoli()) {

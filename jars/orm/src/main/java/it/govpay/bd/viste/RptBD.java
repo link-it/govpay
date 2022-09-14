@@ -1,5 +1,6 @@
 package it.govpay.bd.viste;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.viste.filters.RptFilter;
 import it.govpay.bd.viste.model.converter.RptConverter;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.dao.jdbc.converter.VistaRptVersamentoFieldConverter;
 import it.govpay.orm.model.VistaRptVersamentoModel;
 
@@ -148,6 +150,10 @@ public class RptBD extends BasicBD {
 			}
 			return rptLst;
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

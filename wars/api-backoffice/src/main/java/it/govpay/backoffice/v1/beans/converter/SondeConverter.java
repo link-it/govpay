@@ -1,19 +1,18 @@
 package it.govpay.backoffice.v1.beans.converter;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.beans.Sonda;
 import it.govpay.backoffice.v1.beans.Sonda.StatoSonda;
 import it.govpay.backoffice.v1.beans.Sonda.TipoSonda;
 import it.govpay.backoffice.v1.sonde.Costanti;
-import it.govpay.bd.configurazione.model.AppIOBatch;
-import it.govpay.bd.configurazione.model.MailBatch;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.GovpayConfig;
+import it.govpay.model.configurazione.AppIOBatch;
+import it.govpay.model.configurazione.MailBatch;
 
 public class SondeConverter {
 
 
-	public static Sonda toRsModel(org.openspcoop2.utils.sonde.Sonda sonda, org.openspcoop2.utils.sonde.ParametriSonda parametri, it.govpay.bd.model.Configurazione configurazione) throws ServiceException {
+	public static Sonda toRsModel(org.openspcoop2.utils.sonde.Sonda sonda, org.openspcoop2.utils.sonde.ParametriSonda parametri, it.govpay.bd.model.Configurazione configurazione) throws IOException {
 		Sonda rsModel = new Sonda(sonda.getClass());
 		rsModel.setId(parametri.getNome());
 		rsModel.setNome(SondeConverter.getNomeSonda(parametri.getNome()));
@@ -24,7 +23,7 @@ public class SondeConverter {
 		rsModel.setDataUltimoCheck(parametri.getDataUltimoCheck());
 
 		if(rsModel.getTipo().equals(TipoSonda.Batch)) {
-			// controllare che le funzionalita' di batch corrispondenti siano abilitate nel sistema 
+			// controllare che le funzionalita' di batch corrispondenti siano abilitate nel sistema
 			// altrimenti modificare la stringa di descrizione stato per indicare che il batch e' spento
 
 			impostaDescrizioneSondaBatch(parametri, rsModel, statoSonda, configurazione);
@@ -42,8 +41,8 @@ public class SondeConverter {
 		return rsModel;
 	}
 
-	private static void impostaDescrizioneSondaBatch(org.openspcoop2.utils.sonde.ParametriSonda parametri, Sonda rsModel, 
-			org.openspcoop2.utils.sonde.Sonda.StatoSonda statoSonda, it.govpay.bd.model.Configurazione configurazione) throws ServiceException {
+	private static void impostaDescrizioneSondaBatch(org.openspcoop2.utils.sonde.ParametriSonda parametri, Sonda rsModel,
+			org.openspcoop2.utils.sonde.Sonda.StatoSonda statoSonda, it.govpay.bd.model.Configurazione configurazione) throws IOException {
 
 		if(Costanti.NTFY.equals(rsModel.getId())) {
 			if(GovpayConfig.getInstance().isBatchOn()) {
@@ -61,7 +60,7 @@ public class SondeConverter {
 			}
 		} else if(Costanti.BATCH_SPEDIZIONE_PROMEMORIA.equals(rsModel.getId())) {
 			if(GovpayConfig.getInstance().isBatchOn()) {
-				
+
 				MailBatch batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
 				if(!batchSpedizioneEmail.isAbilitato()) {
 					// batch disabilitato nella configurazione
@@ -69,7 +68,7 @@ public class SondeConverter {
 					rsModel.setDescrizioneStato(Costanti.BATCH_SPEDIZIONE_PROMEMORIA_DISABILITATO_IMPOSTAZIONI);
 				} else {
 					rsModel.setDescrizioneStato(statoSonda.getDescrizione());
-	
+
 					if(statoSonda.getStato() == 0) rsModel.setDurataStato(parametri.getDataOk());
 					if(statoSonda.getStato() == 1) rsModel.setDurataStato(parametri.getDataWarn());
 					if(statoSonda.getStato() == 2) rsModel.setDurataStato(parametri.getDataError());
@@ -83,15 +82,15 @@ public class SondeConverter {
 			}
 		} else if(Costanti.NTFY_APP_IO.equals(rsModel.getId())) {
 			if(GovpayConfig.getInstance().isBatchOn()) {
-				
-				
+
+
 				if(!configurazione.getBatchSpedizioneAppIo().isAbilitato()) {
 					// batch disabilitato nella configurazione
 					rsModel.setStato(StatoSonda.ERROR);
 					rsModel.setDescrizioneStato(Costanti.NTFY_APP_IO_DISABILITATO_IMPOSTAZIONI);
 				}
-				
-				
+
+
 				rsModel.setDescrizioneStato(statoSonda.getDescrizione());
 
 				if(statoSonda.getStato() == 0) rsModel.setDurataStato(parametri.getDataOk());
@@ -115,8 +114,8 @@ public class SondeConverter {
 					rsModel.setStato(StatoSonda.ERROR);
 					rsModel.setDescrizioneStato(Costanti.BATCH_GESTIONE_PROMEMORIA_DISABILITATO_IMPOSTAZIONI);
 				}
-				
-				
+
+
 				rsModel.setDescrizioneStato(statoSonda.getDescrizione());
 
 				if(statoSonda.getStato() == 0) rsModel.setDurataStato(parametri.getDataOk());
@@ -252,7 +251,7 @@ public class SondeConverter {
 
 	public static String getNomeSonda(String id) {
 		if(id != null) {
-			switch (id) { 
+			switch (id) {
 			case Costanti.CHECK_DB:
 				return Costanti.CHECK_DB_NOME;
 			case Costanti.RND:

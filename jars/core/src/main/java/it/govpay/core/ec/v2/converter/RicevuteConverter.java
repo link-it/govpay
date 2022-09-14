@@ -1,10 +1,10 @@
 package it.govpay.core.ec.v2.converter;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
@@ -17,6 +17,7 @@ import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.ec.v2.beans.EsitoRpp;
@@ -29,7 +30,7 @@ import it.govpay.ec.v2.beans.RicevutaRt.TipoEnum;
 
 public class RicevuteConverter {
 
-	public static Ricevuta toRsModel(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, ValidationException {
+	public static Ricevuta toRsModel(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, IOException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Ricevuta rsModel = new Ricevuta();
 		

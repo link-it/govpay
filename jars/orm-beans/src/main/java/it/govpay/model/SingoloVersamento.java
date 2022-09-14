@@ -22,7 +22,8 @@ package it.govpay.model;
 import java.math.BigDecimal;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class SingoloVersamento extends BasicModel implements Comparable<SingoloVersamento> {
 	private static final long serialVersionUID = 1L;
@@ -47,12 +48,12 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 		public String getCodificaJson() {
 			return this.codificaJson;
 		}
-		public static TipoBollo toEnum(String codifica) throws ServiceException {
+		public static TipoBollo toEnum(String codifica) throws CodificaInesistenteException {
 			for(TipoBollo p : TipoBollo.values()){
 				if(p.getCodifica().equals(codifica) || p.getCodificaJson().equals(codifica))
 					return p;
 			}
-			throw new ServiceException("Codifica inesistente per tipoBollo. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(VALORI_POSSIBILI));
+			throw new CodificaInesistenteException("Codifica inesistente per tipoBollo. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(VALORI_POSSIBILI));
 		}
 	}
 	

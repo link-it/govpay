@@ -80,8 +80,6 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.Evento.TipoEventoCooperazione;
-import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
@@ -90,6 +88,7 @@ import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.Applicazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
@@ -99,7 +98,6 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.CtPaymentPABuilder;
 import it.govpay.core.utils.CtReceiptUtils;
 import it.govpay.core.utils.GovpayConfig;
@@ -114,16 +112,18 @@ import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
-import it.govpay.model.Notifica.TipoNotifica;
-import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.Evento.TipoEventoCooperazione;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
+import it.govpay.model.Notifica.TipoNotifica;
+import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.model.Versamento.CausaleSpezzoni;
 import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
+import it.govpay.model.eventi.DatiPagoPA;
 import it.govpay.orm.IdVersamento;
 
 
@@ -292,7 +292,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					}
 					
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
-					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, applicazioneGestisceIuv.getCodApplicazione()), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO);
+					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, applicazioneGestisceIuv.getCodApplicazione()), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, log);
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
 					
@@ -710,7 +710,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					
 					// Versamento non trovato, devo interrogare l'applicazione.
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
-					versamento = VersamentoUtils.acquisisciVersamento(applicazioneGestisceIuv, null, null, null, codDominio, iuv,  TipologiaTipoVersamento.DOVUTO);
+					versamento = VersamentoUtils.acquisisciVersamento(applicazioneGestisceIuv, null, null, null, codDominio, iuv,  TipologiaTipoVersamento.DOVUTO, log);
 					
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
@@ -1190,7 +1190,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					
 					// Versamento non trovato, devo interrogare l'applicazione.
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
-					versamento = VersamentoUtils.acquisisciVersamento(applicazioneGestisceIuv, null, null, null, codDominio, iuv,  TipologiaTipoVersamento.DOVUTO);
+					versamento = VersamentoUtils.acquisisciVersamento(applicazioneGestisceIuv, null, null, null, codDominio, iuv,  TipologiaTipoVersamento.DOVUTO, log);
 					
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
@@ -1493,7 +1493,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					}
 					
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
-					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, applicazioneGestisceIuv.getCodApplicazione()), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO);
+					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, applicazioneGestisceIuv.getCodApplicazione()), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, log);
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
 					
@@ -1727,10 +1727,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 	private <T> T buildRisposta(NdpException e, T risposta) {
 		if(risposta instanceof PaaAttivaRPTRisposta) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()) || e.getFaultCode().equals(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO.name())) {
 				log.warn("Errore in Attiva RPT: " + e);
 			} else {
-				log.warn("Rifiutata Attiva RPT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.info("Rifiutata Attiva RPT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
 			PaaAttivaRPTRisposta r = (PaaAttivaRPTRisposta) risposta;
 			EsitoAttivaRPT esito = new EsitoAttivaRPT();
@@ -1745,10 +1745,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		}
 
 		if(risposta instanceof PaaVerificaRPTRisposta) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()) || e.getFaultCode().equals(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO.name())) {
 				log.warn("Errore in Verifica RPT: " + e);
 			} else {
-				log.warn("Rifiutata Verifica RPT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.info("Rifiutata Verifica RPT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
 			PaaVerificaRPTRisposta r = (PaaVerificaRPTRisposta) risposta;
 			EsitoVerificaRPT esito = new EsitoVerificaRPT();
@@ -1763,10 +1763,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		}
 		
 		if(risposta instanceof PaVerifyPaymentNoticeRes) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()) || e.getFaultCode().equals(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO.name())) {
 				log.warn("Errore in PaVerifyPaymentNotice: " + e.getMessage(), e);
 			} else {
-				log.warn("Rifiutata PaVerifyPaymentNotice con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.info("Rifiutata PaVerifyPaymentNotice con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
 			PaVerifyPaymentNoticeRes r = (PaVerifyPaymentNoticeRes) risposta;
 			r.setOutcome(StOutcome.KO);
@@ -1779,10 +1779,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		}
 
 		if(risposta instanceof PaGetPaymentRes) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()) || e.getFaultCode().equals(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO.name())) {
 				log.warn("Errore in PaGetPayment: " + e.getMessage(), e);
 			} else {
-				log.warn("Rifiutata PaGetPayment con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.info("Rifiutata PaGetPayment con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
 			PaGetPaymentRes r = (PaGetPaymentRes) risposta;
 			r.setOutcome(StOutcome.KO);
@@ -1795,10 +1795,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		}
 		
 		if(risposta instanceof PaSendRTRes) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()) || e.getFaultCode().equals(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO.name())) {
 				log.warn("Errore in PaSendRT: " + e.getMessage(), e);
 			} else {
-				log.warn("Rifiutata PaSendRT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.info("Rifiutata PaSendRT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
 			PaSendRTRes r = (PaSendRTRes) risposta;
 			r.setOutcome(StOutcome.KO);

@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
@@ -17,7 +15,7 @@ import it.govpay.model.Pagamento.TipoPagamento;
 
 public class PagamentoConverter {
 
-	public static Pagamento toDTO(it.govpay.orm.VistaPagamento vo) throws ServiceException {
+	public static Pagamento toDTO(it.govpay.orm.VistaPagamento vo) {
 		Pagamento dto = new Pagamento();
 		dto.setId(vo.getId());
 
@@ -221,7 +219,7 @@ public class PagamentoConverter {
 
 
 	public static List<Pagamento> toDTO(
-			List<it.govpay.orm.VistaPagamento> pagamentoVOLst) throws ServiceException {
+			List<it.govpay.orm.VistaPagamento> pagamentoVOLst) {
 		List<Pagamento> dto = new ArrayList<>();
 		for(it.govpay.orm.VistaPagamento vo : pagamentoVOLst) {
 			dto.add(toDTO(vo));

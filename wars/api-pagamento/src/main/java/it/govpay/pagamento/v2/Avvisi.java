@@ -10,8 +10,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.pagamento.v2.controller.AvvisiController;
 import it.govpay.rs.v2.BaseRsServiceV2;
 
@@ -23,7 +21,7 @@ public class Avvisi extends BaseRsServiceV2{
 
 	private AvvisiController controller = null;
 
-	public Avvisi() throws ServiceException {
+	public Avvisi() {
 		super("avvisi");
 		this.controller = new AvvisiController(this.nomeServizio,this.log);
 	}
@@ -32,7 +30,7 @@ public class Avvisi extends BaseRsServiceV2{
 
     @GET
     @Path("/{idDominio}/{numeroAvviso}")
-    
+
     @Produces({ "application/json", "application/pdf" })
     public Response getAvviso(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("numeroAvviso") String numeroAvviso, @QueryParam("idDebitore") String idDebitore, @QueryParam("UUID") String UUID, @QueryParam("gRecaptchaResponse") String gRecaptchaResponse, @QueryParam("linguaSecondaria") String linguaSecondaria){
         this.controller.setRequestResponse(this.request, this.response);

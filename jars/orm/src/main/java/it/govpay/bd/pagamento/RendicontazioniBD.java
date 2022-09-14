@@ -42,6 +42,7 @@ import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.converter.RendicontazioneConverter;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdRendicontazione;
 import it.govpay.orm.dao.jdbc.JDBCRendicontazioneServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.RendicontazioneFieldConverter;
@@ -127,6 +128,8 @@ public class RendicontazioniBD extends BasicBD {
 							filter.toPaginatedExpression());
 			return RendicontazioneConverter.toDTO(rendicontazioneVOLst);
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -241,6 +244,8 @@ public class RendicontazioniBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -266,6 +271,8 @@ public class RendicontazioniBD extends BasicBD {
 			throw new ServiceException();
 		} catch (ExpressionException e) {
 			throw new ServiceException();
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -304,6 +311,8 @@ public class RendicontazioniBD extends BasicBD {
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

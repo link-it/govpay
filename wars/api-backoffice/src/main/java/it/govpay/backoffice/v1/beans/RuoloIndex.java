@@ -2,19 +2,18 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "id",
 })
 public class RuoloIndex extends JSONSerializable {
-  
+
   @JsonProperty("id")
   private String id = null;
-  
+
   /**
    * identificativo del ruolo
    **/
@@ -48,7 +47,7 @@ public class RuoloIndex extends JSONSerializable {
     return Objects.hash(this.id);
   }
 
-  public static RuoloIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static RuoloIndex parse(String json) throws IOException {
     return parse(json, RuoloIndex.class);
   }
 
@@ -61,7 +60,7 @@ public class RuoloIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RuoloIndex {\n");
-    
+
     sb.append("    id: ").append(this.toIndentedString(this.id)).append("\n");
     sb.append("}");
     return sb.toString();

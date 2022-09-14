@@ -2,7 +2,7 @@ package it.govpay.core.utils.validator;
 
 import java.math.BigInteger;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 
 public class BigIntegerValidator {

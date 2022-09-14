@@ -9,20 +9,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets esitoEvento
  */
 public enum EsitoEvento {
-  
-  
-  
-  
+
+
+
+
   OK("OK"),
-  
-  
+
+
   KO("KO"),
-  
-  
+
+
   FAIL("FAIL");
-  
-  
-  
+
+
+
 
   private String value;
 

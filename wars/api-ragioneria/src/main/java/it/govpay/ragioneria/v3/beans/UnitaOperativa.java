@@ -8,16 +8,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class UnitaOperativa   {
-  
+
   @Schema(example = "1.23456789E+9", description = "Codice fiscale")
  /**
-   * Codice fiscale  
+   * Codice fiscale
   **/
   private String idUnita = null;
-  
+
   @Schema(example = "Ufficio due", required = true, description = "Ragione sociale")
  /**
-   * Ragione sociale  
+   * Ragione sociale
   **/
   private String ragioneSociale = null;
  /**
@@ -62,7 +62,7 @@ public class UnitaOperativa   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class UnitaOperativa {\n");
-    
+
     sb.append("    idUnita: ").append(toIndentedString(idUnita)).append("\n");
     sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
     sb.append("}");

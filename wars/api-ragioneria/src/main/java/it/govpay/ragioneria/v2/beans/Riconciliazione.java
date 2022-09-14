@@ -6,8 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -25,37 +23,37 @@ import it.govpay.core.beans.JSONSerializable;
 "idFlusso",
 })
 public class Riconciliazione extends JSONSerializable {
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("dataValuta")
   private Date dataValuta = null;
-  
+
   @JsonProperty("dataContabile")
   private Date dataContabile = null;
-  
+
   @JsonProperty("contoAccredito")
   private String contoAccredito = null;
-  
+
   @JsonProperty("sct")
   private String sct = null;
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("idRiconciliazione")
   private String idRiconciliazione = null;
-  
+
   @JsonProperty("riscossioni")
   private List<RiscossioneIndex> riscossioni = new ArrayList<>();
-  
+
   @JsonProperty("causale")
   private String causale = null;
-  
+
   @JsonProperty("iuv")
   private String iuv = null;
-  
+
   @JsonProperty("idFlusso")
   private String idFlusso = null;
 
@@ -200,7 +198,7 @@ public class Riconciliazione extends JSONSerializable {
   public void setCausale(String causale) {
     this.causale = causale;
   }
-  
+
   /**
    * Identificativo univoco di riscossione.
    **/
@@ -260,7 +258,7 @@ public class Riconciliazione extends JSONSerializable {
     return Objects.hash(importo, dataValuta, dataContabile, contoAccredito, sct, idDominio, idRiconciliazione, riscossioni, causale, iuv, idFlusso);
   }
 
-  public static Riconciliazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Riconciliazione parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, Riconciliazione.class);
   }
 

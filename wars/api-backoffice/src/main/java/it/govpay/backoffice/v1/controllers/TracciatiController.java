@@ -23,9 +23,9 @@ public class TracciatiController extends BaseController {
 
 
     public Response findTracciati(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina) {
-		String methodName = "findTracciati";  
+		String methodName = "findTracciati";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			throw new NotAuthorizedException("Operazione non piu' disponibile");
 		}catch (Exception e) {
@@ -38,46 +38,46 @@ public class TracciatiController extends BaseController {
 
 
     public Response getTracciato(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
-		String methodName = "getTracciato";  
+		String methodName = "getTracciato";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			throw new NotAuthorizedException("Operazione non piu' disponibile");
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			this.log(ContextThreadLocal.get());
-		} 
+		}
     }
 
 
 
     public Response getMessaggioRichiestaTracciato(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
-		String methodName = "getMessaggioRichiestaTracciato";  
+		String methodName = "getMessaggioRichiestaTracciato";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			throw new NotAuthorizedException("Operazione non piu' disponibile");
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			this.log(ContextThreadLocal.get());
-		} 
+		}
     }
 
 
 
     public Response getMessaggioRispostaTracciato(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Long id) {
-		String methodName = "getMessaggioRispostaTracciato";  
+		String methodName = "getMessaggioRispostaTracciato";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			throw new NotAuthorizedException("Operazione non piu' disponibile");
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			this.log(ContextThreadLocal.get());
-		} 
+		}
     }
 
 

@@ -21,7 +21,7 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.io.IOUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.xml.sax.SAXException;
 
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceipt;
@@ -210,7 +210,7 @@ public class MaggioliJPPAUtils {
 		return dataOperazione;
 	}
 
-	public static RecuperaRTRisposta buildRTRisposta(it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.ObjectFactory objectFactory, Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, ValidationException, DatatypeConfigurationException, JAXBException, SAXException {
+	public static RecuperaRTRisposta buildRTRisposta(it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.ObjectFactory objectFactory, Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, ValidationException, DatatypeConfigurationException, JAXBException, SAXException, it.govpay.core.exceptions.IOException {
 		RecuperaRTRisposta recuperaRTRisposta = objectFactory.createRecuperaRTRisposta();
 		Versamento versamento = rpt.getVersamento(configWrapper);
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
@@ -241,7 +241,7 @@ public class MaggioliJPPAUtils {
 		return recuperaRTRisposta;
 	}
 
-	private static void popolaDettaglioImportoRT(RecuperaRTRisposta recuperaRTRisposta, List<SingoloVersamento> singoliVersamenti)	throws ServiceException, ValidationException {
+	private static void popolaDettaglioImportoRT(RecuperaRTRisposta recuperaRTRisposta, List<SingoloVersamento> singoliVersamenti)	throws it.govpay.core.exceptions.IOException, ValidationException {
 		CtDettagliImporto dettagliImporto = new CtDettagliImporto();
 		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 			if(singoloVersamento.getContabilita() != null) {

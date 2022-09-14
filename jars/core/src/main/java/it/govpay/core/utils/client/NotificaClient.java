@@ -32,30 +32,31 @@ import javax.xml.bind.JAXBException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.resources.Charset;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
 
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.ec.v1.converter.NotificaAttivazioneConverter;
 import it.govpay.core.ec.v1.converter.NotificaTerminazioneConverter;
 import it.govpay.core.ec.v2.converter.RicevuteConverter;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
-import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Versionabile.Versione;
+import it.govpay.model.configurazione.Giornale;
 
 public class NotificaClient extends BasicClientCORE {
 
@@ -96,9 +97,11 @@ public class NotificaClient extends BasicClientCORE {
 	 * @throws NdpException 
 	 * @throws UtilsException 
 	 * @throws ValidationException 
+	 * @throws IOException 
+	 * @throws UnsupportedEncodingException 
 	 */
 	public byte[] invoke(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti,
-			PagamentoPortale pagamentoPortale) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException, UtilsException, ValidationException {
+			PagamentoPortale pagamentoPortale) throws ClientException, ServiceException, GovPayException, JAXBException, SAXException, NdpException, UtilsException, ValidationException, IOException, UnsupportedEncodingException {
 		
 		switch (this.versione) {
 		case GP_REST_01:
@@ -112,7 +115,7 @@ public class NotificaClient extends BasicClientCORE {
 	}
 
 	private byte[] inviaNotificaConConnettoreV1(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento,
-			List<Pagamento> pagamenti) throws ServiceException, ClientException, JAXBException, SAXException {
+			List<Pagamento> pagamenti) throws ServiceException, ClientException, JAXBException, SAXException, IOException {
 		String codDominio = rpt.getCodDominio();
 		String iuv = rpt.getIuv();
 		String ccp = rpt.getCcp();
@@ -182,7 +185,7 @@ public class NotificaClient extends BasicClientCORE {
 		return swaggerOperationID;
 	}
 
-	private String getMessaggioRichiestaApiV1(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, JAXBException, SAXException {
+	private String getMessaggioRichiestaApiV1(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, JAXBException, SAXException, IOException {
 		String jsonBody = "";
 
 		switch (notifica.getTipo()) {
@@ -204,7 +207,7 @@ public class NotificaClient extends BasicClientCORE {
 	}
 	
 	private byte[] inviaNotificaConConnettoreV2(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento,
-			List<Pagamento> pagamenti) throws ServiceException, ClientException, JAXBException, SAXException, ValidationException {
+			List<Pagamento> pagamenti) throws ServiceException, ClientException, JAXBException, SAXException, ValidationException, IOException, UnsupportedEncodingException {
 		String codDominio = rpt.getCodDominio();
 		String iuv = rpt.getIuv();
 		String ccp = rpt.getCcp();
@@ -275,7 +278,7 @@ public class NotificaClient extends BasicClientCORE {
 		return swaggerOperationID;
 	}
 	
-	private String getMessaggioRichiestaApiV2(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, ValidationException {
+	private String getMessaggioRichiestaApiV2(Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, ValidationException, IOException, UnsupportedEncodingException {
 		String jsonBody = "";
 
 		switch (notifica.getTipo()) {

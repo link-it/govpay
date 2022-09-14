@@ -1,5 +1,6 @@
 package it.govpay.bd.viste;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -25,6 +26,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.viste.filters.VersamentoNonRendicontatoFilter;
 import it.govpay.bd.viste.model.VersamentoNonRendicontato;
 import it.govpay.bd.viste.model.converter.VersamentoNonRendicontatoConverter;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.VistaVersamentoNonRendicontato;
 import it.govpay.orm.dao.jdbc.JDBCVistaVersamentoNonRendicontatoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.VistaVersamentoNonRendicontatoFieldConverter;
@@ -66,6 +68,10 @@ public class VersamentiNonRendicontatiBD extends BasicBD {
 			List<it.govpay.orm.VistaVersamentoNonRendicontato> rendicontazioneVOLst = this.getVistaVersamentoNonRendicontatoServiceSearch().findAll(filter.toPaginatedExpression());
 			return VersamentoNonRendicontatoConverter.toDTO(rendicontazioneVOLst);
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -181,6 +187,10 @@ public class VersamentiNonRendicontatiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -222,6 +232,10 @@ public class VersamentiNonRendicontatiBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

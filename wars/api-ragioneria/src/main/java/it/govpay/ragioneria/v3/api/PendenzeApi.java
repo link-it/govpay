@@ -34,7 +34,7 @@ public interface PendenzeApi  {
     @Path("/allegati/{id}")
     @Produces({ "*/*", "application/json" })
     @Operation(summary = "Allegato di una pendenza", tags={ "Pendenze" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Contenuto dell'allegato", content = @Content(mediaType = "*/*", schema = @Schema(implementation = File.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
         @ApiResponse(responseCode = "403", description = "Richiesta non autorizzata"),

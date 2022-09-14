@@ -2,12 +2,10 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -16,16 +14,16 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "motivoAnnullamento",
 })
 public class AnnullamentoPendenza extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("idA2A")
   private String idA2A = null;
-  
+
   @JsonProperty("idPendenza")
   private String idPendenza = null;
-  
+
   @JsonProperty("motivoAnnullamento")
   private String motivoAnnullamento = null;
-  
+
   /**
    * Identificativo del gestionale responsabile della pendenza
    **/
@@ -93,7 +91,7 @@ public class AnnullamentoPendenza extends JSONSerializable implements IValidable
     return Objects.hash(this.idA2A, this.idPendenza, this.motivoAnnullamento);
   }
 
-  public static AnnullamentoPendenza parse(String json) throws ServiceException, ValidationException {
+  public static AnnullamentoPendenza parse(String json) throws IOException {
     return parse(json, AnnullamentoPendenza.class);
   }
 
@@ -106,7 +104,7 @@ public class AnnullamentoPendenza extends JSONSerializable implements IValidable
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class AnnullamentoPendenza {\n");
-    
+
     sb.append("    idA2A: ").append(this.toIndentedString(this.idA2A)).append("\n");
     sb.append("    idPendenza: ").append(this.toIndentedString(this.idPendenza)).append("\n");
     sb.append("    motivoAnnullamento: ").append(this.toIndentedString(this.motivoAnnullamento)).append("\n");
@@ -124,11 +122,11 @@ public class AnnullamentoPendenza extends JSONSerializable implements IValidable
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
-	public void validate() throws org.openspcoop2.utils.json.ValidationException {
+	public void validate() throws it.govpay.core.exceptions.ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		
+
 		vf.getValidator("idA2A", this.idA2A).notNull().minLength(1).maxLength(35);
 		vf.getValidator("idPendenza", this.idPendenza).notNull().minLength(1).maxLength(35);
 		vf.getValidator("motivoAnnullamento", this.motivoAnnullamento).notNull();

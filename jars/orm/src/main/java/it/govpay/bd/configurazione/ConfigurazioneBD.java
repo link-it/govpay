@@ -5,12 +5,12 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Configurazione;
 import it.govpay.bd.model.converter.ConfigurazioneConverter;
+import it.govpay.core.exceptions.IOException;
 
 public class ConfigurazioneBD extends BasicBD {
 

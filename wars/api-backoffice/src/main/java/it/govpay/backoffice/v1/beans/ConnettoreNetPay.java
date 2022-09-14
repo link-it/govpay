@@ -4,13 +4,12 @@ package it.govpay.backoffice.v1.beans;
 import java.util.Arrays;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
@@ -291,7 +290,7 @@ public class ConnettoreNetPay extends JSONSerializable implements IValidable{
     return Objects.hash(abilitato, versioneApi, usernameGovPay, passwordGovPay, url, username, password, ruolo, company);
   }
 
-  public static ConnettoreNetPay parse(String json) throws ServiceException, ValidationException {
+  public static ConnettoreNetPay parse(String json) throws IOException {
     return (ConnettoreNetPay) parse(json, ConnettoreNetPay.class);
   }
 

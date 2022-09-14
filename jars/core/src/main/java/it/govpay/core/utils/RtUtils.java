@@ -63,21 +63,25 @@ import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 //import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
+import it.govpay.core.exceptions.NotificaException;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
+import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.model.Rpt.Versione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class RtUtils extends NdpValidationUtils {
 	
@@ -417,21 +421,22 @@ public class RtUtils extends NdpValidationUtils {
 			
 			log.info("Acquisizione RT per un importo di " + ctRt.getDatiPagamento().getImportoTotalePagato());
 		
+			EsitoPagamento esitoPagamentoEnum = Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento());
 			if(recupero) {
 				appContext.getTransaction().getLastServer().addGenericProperty(new Property("codMessaggioRicevuta", ctRt.getIdentificativoMessaggioRicevuta()));
 				appContext.getTransaction().getLastServer().addGenericProperty(new Property("importo", ctRt.getDatiPagamento().getImportoTotalePagato().toString()));
-				appContext.getTransaction().getLastServer().addGenericProperty(new Property("codEsitoPagamento", Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento()).toString()));
+				appContext.getTransaction().getLastServer().addGenericProperty(new Property("codEsitoPagamento", esitoPagamentoEnum.toString()));
 				ctx.getApplicationLogger().log("rt.rtRecuperoAcquisizione");
 			} else {
 				appContext.getRequest().addGenericProperty(new Property("codMessaggioRicevuta", ctRt.getIdentificativoMessaggioRicevuta()));
 				appContext.getRequest().addGenericProperty(new Property("importo", ctRt.getDatiPagamento().getImportoTotalePagato().toString()));
-				appContext.getRequest().addGenericProperty(new Property("codEsitoPagamento", Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento()).toString()));
+				appContext.getRequest().addGenericProperty(new Property("codEsitoPagamento", esitoPagamentoEnum.toString()));
 				ctx.getApplicationLogger().log("rt.acquisizione");
 			}
 			
 			rpt.setCodMsgRicevuta(ctRt.getIdentificativoMessaggioRicevuta());
 			rpt.setDataMsgRicevuta(new Date());
-			rpt.setEsitoPagamento(Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento()));
+			rpt.setEsitoPagamento(esitoPagamentoEnum);
 			rpt.setImportoTotalePagato(ctRt.getDatiPagamento().getImportoTotalePagato());
 			rpt.setStato(StatoRpt.RT_ACCETTATA_PA);
 			rpt.setDescrizioneStato(null);
@@ -708,6 +713,13 @@ public class RtUtils extends NdpValidationUtils {
 		}  catch (JAXBException e) {
 			throw new ServiceException(e);
 		} catch (SAXException e) {
+			throw new ServiceException(e);
+		} catch (NotificaException | CodificaInesistenteException | IOException e) {
+			log.error("Errore acquisizione RT: " + e.getMessage(),e);
+			
+			if(rptBD != null) 
+				rptBD.rollback();
+			
 			throw new ServiceException(e);
 		} catch (ServiceException e) {
 			log.error("Errore acquisizione RT: " + e.getMessage(),e);

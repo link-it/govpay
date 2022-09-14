@@ -1,16 +1,15 @@
 package it.govpay.backoffice.v1.beans.converter;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.ConnettoreNetPay.VersioneApiEnum;
-import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.model.Versionabile;
 import it.govpay.model.ConnettoreNotificaPagamenti.Tipo;
+import it.govpay.model.Versionabile;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ConnettoreNetPayConverter {
 	
-	public static it.govpay.model.ConnettoreNotificaPagamenti getConnettoreDTO(it.govpay.backoffice.v1.beans.ConnettoreNetPay connector, Authentication user, Tipo tipo) throws ServiceException,NotAuthorizedException {
+	public static it.govpay.model.ConnettoreNotificaPagamenti getConnettoreDTO(it.govpay.backoffice.v1.beans.ConnettoreNetPay connector, Authentication user, Tipo tipo) throws CodificaInesistenteException {
 		it.govpay.model.ConnettoreNotificaPagamenti connettore = new it.govpay.model.ConnettoreNotificaPagamenti();
 		
 		connettore.setAbilitato(connector.Abilitato());
@@ -31,7 +30,7 @@ public class ConnettoreNetPayConverter {
 		return connettore;
 	}
 
-	public static it.govpay.backoffice.v1.beans.ConnettoreNetPay toRsModel(it.govpay.model.ConnettoreNotificaPagamenti connettore) throws ServiceException {
+	public static it.govpay.backoffice.v1.beans.ConnettoreNetPay toRsModel(it.govpay.model.ConnettoreNotificaPagamenti connettore) {
 		it.govpay.backoffice.v1.beans.ConnettoreNetPay rsModel = new it.govpay.backoffice.v1.beans.ConnettoreNetPay();
 		
 		rsModel.setAbilitato(connettore.isAbilitato());

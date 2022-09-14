@@ -2,9 +2,9 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idOperazione",
 "descrizione",
@@ -14,35 +14,35 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "dettaglio",
 })
 public class Operazione extends it.govpay.core.beans.JSONSerializable {
-  
+
   @JsonProperty("idOperazione")
   private String idOperazione = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("location")
   private String location = null;
-  
-    
+
+
   /**
    * Gets or Sets stato
    */
   public enum StatoEnum {
-    
-    
-        
-            
+
+
+
+
     _0("0"),
-    
-            
+
+
     _1("1"),
-    
-            
+
+
     _2("2");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -66,17 +66,17 @@ public class Operazione extends it.govpay.core.beans.JSONSerializable {
     }
   }
 
-    
-    
+
+
   @JsonProperty("stato")
   private StatoEnum stato = null;
-  
+
   @JsonProperty("esito")
   private String esito = null;
-  
+
   @JsonProperty("dettaglio")
   private String dettaglio = null;
-  
+
   /**
    **/
   public Operazione idOperazione(String idOperazione) {
@@ -190,7 +190,7 @@ public class Operazione extends it.govpay.core.beans.JSONSerializable {
     return Objects.hash(this.idOperazione, this.descrizione, this.location, this.stato, this.esito, this.dettaglio);
   }
 
-  public static Operazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Operazione parse(String json) throws IOException {
     return parse(json, Operazione.class);
   }
 

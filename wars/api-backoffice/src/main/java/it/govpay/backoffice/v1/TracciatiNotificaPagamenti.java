@@ -11,8 +11,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.controllers.TracciatiNotificaPagamentiController;
 import it.govpay.rs.v1.BaseRsServiceV1;
 
@@ -24,7 +22,7 @@ public class TracciatiNotificaPagamenti extends BaseRsServiceV1{
 
 	private TracciatiNotificaPagamentiController controller = null;
 
-	public TracciatiNotificaPagamenti() throws ServiceException {
+	public TracciatiNotificaPagamenti() {
 		super("tracciatiNotificaPagamenti");
 		this.controller = new TracciatiNotificaPagamentiController(this.nomeServizio,this.log);
 	}
@@ -33,7 +31,7 @@ public class TracciatiNotificaPagamenti extends BaseRsServiceV1{
 
     @GET
     @Path("/{id}")
-    
+
     @Produces({ "application/zip" })
     public Response getTracciatoNotificaPagamenti(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Long id, @QueryParam("secID") String secID){
         this.controller.setRequestResponse(this.request, this.response);

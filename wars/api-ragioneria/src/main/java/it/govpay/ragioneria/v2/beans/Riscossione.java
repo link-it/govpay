@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -23,40 +21,40 @@ import it.govpay.core.beans.JSONSerializable;
 "rt",
 })
 public class Riscossione extends JSONSerializable {
-  
+
   @JsonProperty("dominio")
   private Dominio dominio = null;
-  
+
   @JsonProperty("iuv")
   private String iuv = null;
-  
+
   @JsonProperty("iur")
   private String iur = null;
-  
+
   @JsonProperty("indice")
   private BigDecimal indice = null;
-  
+
   @JsonProperty("stato")
   private StatoRiscossione stato = null;
-  
+
   @JsonProperty("tipo")
   private TipoRiscossione tipo = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("data")
   private Date data = null;
-  
+
   @JsonProperty("vocePendenza")
   private VocePendenza vocePendenza = null;
-  
+
   @JsonProperty("riconciliazione")
   private String riconciliazione = null;
-  
+
   @JsonProperty("rt")
   private Object rt = null;
-  
+
   /**
    **/
   public Riscossione dominio(Dominio dominio) {
@@ -151,7 +149,7 @@ public class Riscossione extends JSONSerializable {
   }
 
   /**
-   * Importo riscosso. 
+   * Importo riscosso.
    **/
   public Riscossione importo(BigDecimal importo) {
     this.importo = importo;
@@ -256,7 +254,7 @@ public class Riscossione extends JSONSerializable {
     return Objects.hash(dominio, iuv, iur, indice, stato, tipo, importo, data, vocePendenza, riconciliazione, rt);
   }
 
-  public static Riscossione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Riscossione parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, Riscossione.class);
   }
 

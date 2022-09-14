@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package it.govpay.ragioneria.v3.beans.converter;
 
@@ -16,18 +16,18 @@ import it.govpay.ragioneria.v3.beans.Profilo;
  * @author Bussu Giovanni (bussu@link.it)
  * @author  $Author: bussu $
  * @version $ Rev: 12563 $, $Date: 12 giu 2018 $
- * 
+ *
  */
 public class ProfiloConverter {
 
 	/**
 	 * @param user
 	 * @return
-	 * @throws ServiceException 
+	 * @throws ServiceException
 	 */
 	public static Profilo getProfilo(LeggiProfiloDTOResponse leggiProfilo) throws ServiceException {
 		Profilo profilo = new Profilo();
-		
+
 		profilo.setNome(leggiProfilo.getNome());
 		if(leggiProfilo.getDomini()!=null) {
 			List<it.govpay.ragioneria.v3.beans.Dominio> dominiLst = new ArrayList<>();

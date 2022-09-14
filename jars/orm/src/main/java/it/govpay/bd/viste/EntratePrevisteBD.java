@@ -1,5 +1,6 @@
 package it.govpay.bd.viste;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -19,6 +20,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.viste.filters.EntrataPrevistaFilter;
 import it.govpay.bd.viste.model.EntrataPrevista;
 import it.govpay.bd.viste.model.converter.EntrataPrevistaConverter;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.model.VistaRiscossioniModel;
 
 public class EntratePrevisteBD extends BasicBD {
@@ -81,6 +83,8 @@ public class EntratePrevisteBD extends BasicBD {
 			return entratePrevisteLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -127,6 +131,8 @@ public class EntratePrevisteBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

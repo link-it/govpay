@@ -23,10 +23,30 @@ package it.govpay.model;
 import java.util.Date;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class Evento extends BasicModel {
 	private static final long serialVersionUID = 1L;
+	
+	public enum TipoEventoCooperazione {
+		nodoInviaRPT,
+		nodoInviaCarrelloRPT, 
+		nodoChiediStatoRPT, 
+		paaInviaRT, 
+		nodoChiediCopiaRT, 
+		paaVerificaRPT, 
+		paaAttivaRPT,
+		nodoInviaRichiestaStorno,
+		paaInviaEsitoStorno,
+		nodoInviaAvvisoDigitale,
+		paVerifyPaymentNotice,
+		paGetPayment,
+		paSendRT;
+	}
+
+	public static final String COMPONENTE_COOPERAZIONE = "FESP";
+	public static final String NDP = "NodoDeiPagamentiSPC";
 	
 	private Long id;
 	private String componente;
@@ -71,14 +91,14 @@ public class Evento extends BasicModel {
 			return this.codifica;
 		}
 		
-		public static CategoriaEvento toEnum(String codifica) throws ServiceException {
+		public static CategoriaEvento toEnum(String codifica) throws CodificaInesistenteException {
 			
 			for(CategoriaEvento p : CategoriaEvento.values()){
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
 			
-			throw new ServiceException("Codifica inesistente per CategoriaEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(CategoriaEvento.values()));
+			throw new CodificaInesistenteException("Codifica inesistente per CategoriaEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(CategoriaEvento.values()));
 		}
 		
 		@Override
@@ -99,14 +119,14 @@ public class Evento extends BasicModel {
 			return this.codifica;
 		}
 		
-		public static RuoloEvento toEnum(String codifica) throws ServiceException {
+		public static RuoloEvento toEnum(String codifica) throws CodificaInesistenteException {
 			
 			for(RuoloEvento p : RuoloEvento.values()){
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
 			
-			throw new ServiceException("Codifica inesistente per RuoloEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(RuoloEvento.values()));
+			throw new CodificaInesistenteException("Codifica inesistente per RuoloEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(RuoloEvento.values()));
 		}
 		
 		@Override
@@ -127,14 +147,14 @@ public class Evento extends BasicModel {
 			return this.codifica;
 		}
 		
-		public static EsitoEvento toEnum(String codifica) throws ServiceException {
+		public static EsitoEvento toEnum(String codifica) throws CodificaInesistenteException {
 			
 			for(EsitoEvento p : EsitoEvento.values()){
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
 			
-			throw new ServiceException("Codifica inesistente per EsitoEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoEvento.values()));
+			throw new CodificaInesistenteException("Codifica inesistente per EsitoEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoEvento.values()));
 		}
 		
 		@Override

@@ -19,19 +19,18 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.model.Iuv;
-import it.govpay.model.Iuv.TipoIUV;
-import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.IdDominio;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
+import it.govpay.model.Iuv;
+import it.govpay.model.Iuv.TipoIUV;
+import it.govpay.model.exception.CodificaInesistenteException;
+import it.govpay.orm.IdApplicazione;
+import it.govpay.orm.IdDominio;
 
 public class IuvConverter {
 
-	public static List<Iuv> toDTOList(List<it.govpay.orm.IUV> applicazioneLst) throws ServiceException {
+	public static List<Iuv> toDTOList(List<it.govpay.orm.IUV> applicazioneLst) throws CodificaInesistenteException {
 		List<Iuv> lstDTO = new ArrayList<>();
 		if(applicazioneLst != null && !applicazioneLst.isEmpty()) {
 			for(it.govpay.orm.IUV applicazione: applicazioneLst){
@@ -41,7 +40,7 @@ public class IuvConverter {
 		return lstDTO;
 	}
 
-	public static Iuv toDTO(it.govpay.orm.IUV vo) throws ServiceException {
+	public static Iuv toDTO(it.govpay.orm.IUV vo) throws CodificaInesistenteException {
 		Iuv dto = new Iuv();
 		dto.setId(vo.getId());
 		dto.setIdDominio(vo.getIdDominio().getId());

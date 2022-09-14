@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  **/
 @Schema(description="Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.")
 public class RiferimentoEntrata  implements OneOfTipoRiferimentoVocePendenza  {
-  
+
   @Schema(example = "SRV-12345", required = true, description = "")
   private String codEntrata = null;
  /**
@@ -39,7 +39,7 @@ public class RiferimentoEntrata  implements OneOfTipoRiferimentoVocePendenza  {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RiferimentoEntrata {\n");
-    
+
     sb.append("    codEntrata: ").append(toIndentedString(codEntrata)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -3,28 +3,26 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idTipoPendenza",
 "descrizione",
 "visualizzazione",
 })
 public class TipoPendenzaIndex extends JSONSerializable {
-  
+
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("visualizzazione")
   private Object visualizzazione = null;
-  
+
   /**
    **/
   public TipoPendenzaIndex idTipoPendenza(String idTipoPendenza) {
@@ -90,7 +88,7 @@ public class TipoPendenzaIndex extends JSONSerializable {
     return Objects.hash(idTipoPendenza, descrizione, visualizzazione);
   }
 
-  public static TipoPendenzaIndex parse(String json) throws ServiceException, ValidationException { 
+  public static TipoPendenzaIndex parse(String json) throws IOException {
     return parse(json, TipoPendenzaIndex.class);
   }
 
@@ -103,7 +101,7 @@ public class TipoPendenzaIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoPendenzaIndex {\n");
-    
+
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    visualizzazione: ").append(toIndentedString(visualizzazione)).append("\n");

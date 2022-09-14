@@ -21,9 +21,8 @@ import org.openspcoop2.utils.service.context.server.ServerInfoResponse;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 
-import it.govpay.bd.configurazione.model.AppIOBatch;
-import it.govpay.bd.configurazione.model.Giornale;
-import it.govpay.core.utils.EventoContext.Componente;
+import it.govpay.core.beans.EventoContext.Componente;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.appio.client.AppIoAPIClient;
 import it.govpay.core.utils.appio.impl.ApiException;
 import it.govpay.core.utils.appio.impl.Pair;
@@ -36,6 +35,8 @@ import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
+import it.govpay.model.configurazione.AppIOBatch;
+import it.govpay.model.configurazione.Giornale;
 
 public class AppIoClient extends BasicClientCORE {
 
@@ -143,7 +144,7 @@ public class AppIoClient extends BasicClientCORE {
 			try {
 				String msgRes = ConverterUtils.toJSON(limitedProfile, null);
 				msg = msgRes != null ? msgRes.getBytes() : new byte[]{};
-			} catch (ServiceException e) {
+			} catch (IOException e) {
 				log.warn("Errore durante la serializzazione del messaggio di risposta per il giornale eventi: " + e.getMessage(), e);
 			}
 
@@ -229,7 +230,7 @@ public class AppIoClient extends BasicClientCORE {
 			String jsonBody = null;
 			try {
 				jsonBody = ConverterUtils.toJSON(messageWithCF, null);
-			} catch (ServiceException e) {
+			} catch (IOException e) {
 				log.warn("Errore durante la serializzazione del messaggio di richiesta per il giornale eventi: " + e.getMessage(), e);
 			} 
 
@@ -272,7 +273,7 @@ public class AppIoClient extends BasicClientCORE {
 			try {
 				String msgRes = ConverterUtils.toJSON(createdMessage, null);
 				msg = msgRes != null ? msgRes.getBytes() : new byte[]{};
-			} catch (ServiceException e) {
+			} catch (IOException e) {
 				log.warn("Errore durante la serializzazione del messaggio di risposta per il giornale eventi: " + e.getMessage(), e);
 			}
 

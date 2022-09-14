@@ -49,6 +49,7 @@ import it.govpay.bd.pagamento.util.IuvUtils;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Iuv;
 import it.govpay.model.Iuv.TipoIUV;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IUV;
 import it.govpay.orm.dao.jdbc.JDBCIUVService;
 import it.govpay.orm.dao.jdbc.converter.IUVFieldConverter;
@@ -255,6 +256,8 @@ public class IuvBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -286,6 +289,8 @@ public class IuvBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -314,6 +319,8 @@ public class IuvBD extends BasicBD {
 		}  catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -359,6 +366,8 @@ public class IuvBD extends BasicBD {
 			}
 			return iuvLst;
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

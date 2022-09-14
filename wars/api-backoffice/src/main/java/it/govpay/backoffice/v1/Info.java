@@ -8,8 +8,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.controllers.InfoController;
 import it.govpay.core.utils.InitConstants;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -22,7 +20,7 @@ public class Info extends BaseRsServiceV1{
 
 	private InfoController controller = null;
 
-	public Info() throws ServiceException {
+	public Info() {
 		super("info");
 		this.controller = new InfoController(this.nomeServizio,this.log);
 		String commit = (InitConstants.GOVPAY_BUILD_NUMBER.length() > 7) ? InitConstants.GOVPAY_BUILD_NUMBER.substring(0, 7) : InitConstants.GOVPAY_BUILD_NUMBER;
