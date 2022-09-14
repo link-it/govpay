@@ -45,22 +45,12 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	
 	public static final String P_PRINCIPAL_MAGGIOLI = "PRINCIPAL_MAGGIOLI";
 	
-	public static final String P_NETPAY_GP_USERNAME = "NETPAY_GP_PRINCIPAL";
-	public static final String P_NETPAY_GP_PASSWORD = "NETPAY_GP_PASSWORD";
-	
-	public static final String P_NETPAY_URL = "NETPAY_URL";
-	public static final String P_NETPAY_USERNAME = "NETPAY_USERNAME";
-	public static final String P_NETPAY_PASSWORD = "NETPAY_PASSWORD";
-	public static final String P_NETPAY_RUOLO = "NETPAY_RUOLO";
-	public static final String P_NETPAY_COMPANY = "NETPAY_COMPANY";
-	
-	
 	public enum TipoConnettore {
 		WEB_SERVICE, EMAIL, FILE_SYSTEM, REST;
 	}
 	
 	public enum Tipo {
-		MYPIVOT, SECIM, GOVPAY, HYPER_SIC_APKAPPA, MAGGIOLI_JPPA, NETPAY;
+		MYPIVOT, SECIM, GOVPAY, HYPER_SIC_APKAPPA, MAGGIOLI_JPPA;
 	}
 	
 	public enum Contenuti {

@@ -44,7 +44,6 @@ public class Dominio extends BasicModel {
 	private ConnettoreNotificaPagamenti connettoreGovPay;
 	private ConnettoreNotificaPagamenti connettoreHyperSicAPKappa;
 	private ConnettoreNotificaPagamenti connettoreMaggioliJPPA;
-	private ConnettoreNotificaPagamenti connettoreNetPay;
 		
 	private boolean intermediato;
 	
@@ -209,14 +208,6 @@ public class Dominio extends BasicModel {
 
 	public void setTassonomiaPagoPA(String tassonomiaPagoPA) {
 		this.tassonomiaPagoPA = tassonomiaPagoPA;
-	}
-	
-	public void setConnettoreNetPay(ConnettoreNotificaPagamenti connettoreNetPay) {
-		this.connettoreNetPay = connettoreNetPay;
-	}
-	
-	public ConnettoreNotificaPagamenti getConnettoreNetPay() {
-		return connettoreNetPay;
 	}
 }
 

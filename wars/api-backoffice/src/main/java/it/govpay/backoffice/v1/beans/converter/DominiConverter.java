@@ -209,9 +209,6 @@ public class DominiConverter {
 		if(dominioPost.getServizioMaggioliJPPA() != null)
 			dominio.setConnettoreMaggioliJPPA(ConnettoreNotificaPagamentiMaggioliJPPAConverter.getConnettoreDTO(dominioPost.getServizioMaggioliJPPA(), user, Tipo.MAGGIOLI_JPPA));
 		
-		if(dominioPost.getServizioNetPay() != null)
-			dominio.setConnettoreNetPay(ConnettoreNetPayConverter.getConnettoreDTO(dominioPost.getServizioNetPay(), user, Tipo.NETPAY));
-		
 		dominio.setIntermediato(dominioPost.Intermediato() != null ? dominioPost.Intermediato() : true);
 
 		dominioDTO.setDominio(dominio);
@@ -418,9 +415,6 @@ public class DominiConverter {
 
 		if(dominio.getConnettoreMaggioliJPPA()!=null)
 			rsModel.setServizioMaggioliJPPA(ConnettoreNotificaPagamentiMaggioliJPPAConverter.toRsModel(dominio.getConnettoreMaggioliJPPA()));
-		
-		if(dominio.getConnettoreNetPay()!=null)
-			rsModel.setServizioNetPay(ConnettoreNetPayConverter.toRsModel(dominio.getConnettoreNetPay()));
 		
 		if(dominio.getTassonomiaPagoPA() != null) {
 			rsModel.setTassonomiaPagoPA(TassonomiaPagoPADominio.fromValue(dominio.getTassonomiaPagoPA()));

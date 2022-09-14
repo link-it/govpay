@@ -86,9 +86,6 @@ public class DominioConverter {
 				case MYPIVOT:
 					dto.setConnettoreMyPivot(connettoreNotificaPagamenti);
 					break;
-				case NETPAY:
-					dto.setConnettoreNetPay(connettoreNotificaPagamenti);
-					break;
 				case SECIM:
 					dto.setConnettoreSecim(connettoreNotificaPagamenti);
 					break;
@@ -148,11 +145,6 @@ public class DominioConverter {
 		if(dto.getConnettoreMaggioliJPPA()!= null) {
 			dto.getConnettoreMaggioliJPPA().setIdConnettore(DominiBD.getIDConnettoreMaggioliJPPA(dto.getCodDominio()));
 			vo.setCodConnettoreMaggioliJPPA(dto.getConnettoreMaggioliJPPA().getIdConnettore());
-		}
-		
-		if(dto.getConnettoreNetPay()!= null) {
-			dto.getConnettoreNetPay().setIdConnettore(DominiBD.getIDConnettoreNetPay(dto.getCodDominio()));
-			vo.setCodConnettoreNetPay(dto.getConnettoreNetPay().getIdConnettore());
 		}
 		
 		vo.setIntermediato(dto.isIntermediato());

@@ -95,10 +95,6 @@ public class DominiBD extends BasicBD {
 	public static String getIDConnettoreMaggioliJPPA(String codDominio) {
 		return getIDConnettore(codDominio, Tipo.MAGGIOLI_JPPA);
 	}
-	
-	public static String getIDConnettoreNetPay(String codDominio) {
-		return getIDConnettore(codDominio, Tipo.NETPAY);
-	}
 
 	/**
 	 * Recupera il Dominio tramite il codDominio
@@ -149,9 +145,6 @@ public class DominiBD extends BasicBD {
 		}
 		if(dominioVO.getCodConnettoreMyPivot()!= null) {
 			connettori.put(Tipo.MYPIVOT, getConnettore(dominioVO.getCodConnettoreMyPivot()));
-		}
-		if(dominioVO.getCodConnettoreNetPay()!= null) {
-			connettori.put(Tipo.NETPAY, getConnettore(dominioVO.getCodConnettoreNetPay()));
 		}
 		if(dominioVO.getCodConnettoreSecim()!= null) {
 			connettori.put(Tipo.SECIM, getConnettore(dominioVO.getCodConnettoreSecim()));
@@ -256,10 +249,6 @@ public class DominiBD extends BasicBD {
 				this.insertConnettore(dominio.getConnettoreMaggioliJPPA(), dominio.getConnettoreMaggioliJPPA().getIdConnettore()); 
 			}
 			
-			if(dominio.getConnettoreNetPay() != null) {
-				this.insertConnettore(dominio.getConnettoreNetPay(), dominio.getConnettoreNetPay().getIdConnettore()); 
-			}
-			
 			this.emitAudit(dominio);
 			
 			if(this.isAtomica()) {
@@ -332,8 +321,6 @@ public class DominiBD extends BasicBD {
 			this.updateConnettore(dominio.getConnettoreMaggioliJPPA(), dominio.getCodDominio(), Tipo.MAGGIOLI_JPPA);
 			
 			this.updateConnettore(dominio.getConnettoreMyPivot(), dominio.getCodDominio(), Tipo.MYPIVOT);
-			
-			this.updateConnettore(dominio.getConnettoreNetPay(), dominio.getCodDominio(), Tipo.NETPAY);
 			
 			this.updateConnettore(dominio.getConnettoreSecim(), dominio.getCodDominio(), Tipo.SECIM);
 			

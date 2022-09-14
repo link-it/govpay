@@ -227,5 +227,4 @@ CREATE VIEW v_eventi_vers AS
                id FROM v_eventi_vers_tracciati;
 
 
--- 02/09/2022 Connettore Net@Pay
-ALTER TABLE domini ADD COLUMN cod_connettore_net_pay VARCHAR(255);
+

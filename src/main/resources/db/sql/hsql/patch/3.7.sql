@@ -226,6 +226,5 @@ CREATE VIEW v_eventi_vers AS
 	       severita,
                id FROM v_eventi_vers_tracciati;
 
--- 02/09/2022 Connettore Net@Pay
+-- 02/09/2022 Colonna tassonomia_pago_pa mancante
 ALTER TABLE domini ADD COLUMN tassonomia_pago_pa VARCHAR(35);
-ALTER TABLE domini ADD COLUMN cod_connettore_net_pay VARCHAR(255);

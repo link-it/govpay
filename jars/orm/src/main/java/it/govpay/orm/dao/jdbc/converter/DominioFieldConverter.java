@@ -200,13 +200,6 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "tassonomia_pago_pa";
 			}
 		}
-		if(field.equals(Dominio.model().COD_CONNETTORE_NET_PAY)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_connettore_net_pay";
-			}else{
-				return "cod_connettore_net_pay";
-			}
-		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -275,9 +268,6 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().TASSONOMIA_PAGO_PA)){
-			return this.toTable(Dominio.model(), returnAlias);
-		}
-		if(field.equals(Dominio.model().COD_CONNETTORE_NET_PAY)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 

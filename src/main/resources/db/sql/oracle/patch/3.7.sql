@@ -93,5 +93,4 @@ CREATE VIEW v_eventi_vers AS (
          ); 
 
 
--- 02/09/2022 Connettore Net@Pay
-ALTER TABLE domini ADD cod_connettore_net_pay VARCHAR2(255 CHAR);
+
