@@ -125,8 +125,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			for(int i = 0; i < pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size(); i++) {
 				Object v = pagamentiPortaleDTO.getPendenzeOrPendenzeRef().get(i);
 				Versamento versamentoModel = null;
-				if(v instanceof it.govpay.core.dao.commons.Versamento) {
-					it.govpay.core.dao.commons.Versamento versamento = (it.govpay.core.dao.commons.Versamento) v;
+				if(v instanceof it.govpay.core.beans.commons.Versamento) {
+					it.govpay.core.beans.commons.Versamento versamento = (it.govpay.core.beans.commons.Versamento) v;
 					ctx.getApplicationLogger().log("rpt.acquisizioneVersamento", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
 					versamentoModel = versamentoBusiness.chiediVersamento(versamento);
 					versamentoModel.setTipo(TipologiaTipoVersamento.SPONTANEO);
@@ -265,7 +265,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 							pendenzaPost.setIdUnitaOperativa(idUO);
 							
 							new PendenzaPostValidator(pendenzaPost).validate();
-							it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+							it.govpay.core.beans.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 							((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(versamentoCommons.getCodVersamentoEnte());
 							((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(versamentoCommons.getCodApplicazione());
 							versamentoModel = versamentoBusiness.chiediVersamento(versamentoCommons);

@@ -48,8 +48,8 @@ import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.bd.model.UtenzaOperatore;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.commons.Dominio;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
-import it.govpay.core.dao.commons.Dominio;
 import it.govpay.core.utils.EventoContext.Categoria;
 import it.govpay.core.utils.GpContext;
 

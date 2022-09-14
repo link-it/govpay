@@ -38,6 +38,8 @@ import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.core.beans.commons.Dominio;
+import it.govpay.core.beans.commons.Dominio.Uo;
 import it.govpay.core.dao.anagrafica.dto.FindApplicazioniDTO;
 import it.govpay.core.dao.anagrafica.dto.FindApplicazioniDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTO;
@@ -51,8 +53,6 @@ import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException
 import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
-import it.govpay.core.dao.commons.Dominio;
-import it.govpay.core.dao.commons.Dominio.Uo;
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;

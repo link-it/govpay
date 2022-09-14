@@ -602,14 +602,14 @@ public class PendenzeConverter {
 		return rsModel;
 	}
 	
-	public static List<it.govpay.core.dao.commons.Versamento.AllegatoPendenza> toAllegatiPendenzaDTO(List<NuovoAllegatoPendenza> allegati) {
-		List<it.govpay.core.dao.commons.Versamento.AllegatoPendenza> allegatiDTO = null;
+	public static List<it.govpay.core.beans.commons.Versamento.AllegatoPendenza> toAllegatiPendenzaDTO(List<NuovoAllegatoPendenza> allegati) {
+		List<it.govpay.core.beans.commons.Versamento.AllegatoPendenza> allegatiDTO = null;
 		
 		if(allegati != null && allegati.size() > 0) {
 			allegatiDTO = new ArrayList<>();
 			
 			for (NuovoAllegatoPendenza allegato : allegati) {
-				it.govpay.core.dao.commons.Versamento.AllegatoPendenza allegatoDTO = new it.govpay.core.dao.commons.Versamento.AllegatoPendenza();
+				it.govpay.core.beans.commons.Versamento.AllegatoPendenza allegatoDTO = new it.govpay.core.beans.commons.Versamento.AllegatoPendenza();
 				
 				allegatoDTO.setNome(allegato.getNome());
 				allegatoDTO.setTipo(allegato.getTipo());

@@ -782,7 +782,7 @@ public abstract class BasicClientCORE {
 					} catch (IOException e) {
 						msg = ("Impossibile serializzare l'ErrorStream della risposta: " + e).getBytes() ;
 					} finally {
-						log.warn("Errore nell'invocazione del Nodo dei Pagamenti [HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
+						log.warn("Errore nell'esecuzione dell'operazione ["+this.errMsg+", HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
 					}
 
 					if(soap)

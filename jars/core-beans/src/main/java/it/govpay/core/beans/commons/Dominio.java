@@ -1,4 +1,4 @@
-package it.govpay.core.dao.commons;
+package it.govpay.core.beans.commons;
 
 import java.util.List;
 

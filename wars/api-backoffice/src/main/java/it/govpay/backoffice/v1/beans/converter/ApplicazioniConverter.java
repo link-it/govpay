@@ -81,7 +81,7 @@ public class ApplicazioniConverter {
 		applicazione.getUtenza().setAutorizzazioneTipiVersamentoStar(appAuthTipiPendenzaAll);
 
 		if(applicazionePost.getDomini() != null) {
-			List<it.govpay.core.dao.commons.Dominio> domini = new ArrayList<>();
+			List<it.govpay.core.beans.commons.Dominio> domini = new ArrayList<>();
 
 			if(applicazionePost.getDomini() != null && !applicazionePost.getDomini().isEmpty()) {
 				for (Object object : applicazionePost.getDomini()) {
@@ -241,9 +241,9 @@ public class ApplicazioniConverter {
 			tuttiDomini.setRagioneSociale(ApplicazioniController.AUTORIZZA_DOMINI_STAR_LABEL);
 			idDomini.add(tuttiDomini);
 		} else if(applicazione.getUtenza().getDominiUo() != null) {
-			List<it.govpay.core.dao.commons.Dominio> domini = UtentiDAO.convertIdUnitaOperativeToDomini(applicazione.getUtenza().getDominiUo());
+			List<it.govpay.core.beans.commons.Dominio> domini = UtentiDAO.convertIdUnitaOperativeToDomini(applicazione.getUtenza().getDominiUo());
 
-			for (it.govpay.core.dao.commons.Dominio dominio : domini) {
+			for (it.govpay.core.beans.commons.Dominio dominio : domini) {
 				idDomini.add(DominiConverter.toRsModelProfiloIndex(dominio));
 			}
 		}

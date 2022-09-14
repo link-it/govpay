@@ -98,7 +98,7 @@ public class InviaRptThread implements Runnable {
 		try {
 			String operationId = appContext.setupNodoClient(this.stazione.getCodStazione(), this.rpt.getCodDominio(), Azione.nodoInviaRPT);
 			log.info("Id Server: [" + operationId + "]");
-			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + "]");
+			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + ", CodDominio: "+this.rpt.getCodDominio()+",IUV: "+this.rpt.getIuv()+",CCP: "+this.rpt.getCcp()+"]");
 
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codDominio", this.rpt.getCodDominio()));
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("iuv", this.rpt.getIuv()));
@@ -169,7 +169,7 @@ public class InviaRptThread implements Runnable {
 					rptBD.updateRpt(this.rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null,null);
 				else
 					rptBD.updateRpt(this.rpt.getId(), null, descrizione, null, null,null);
-				log.warn("RPT rifiutata dal nodo con fault " + descrizione);
+				log.warn("RPT [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + ", CodDominio: "+this.rpt.getCodDominio()+",IUV: "+this.rpt.getIuv()+",CCP: "+this.rpt.getCcp()+"] rifiutata dal nodo con fault: " + descrizione);
 				ctx.getApplicationLogger().log("pagamento.invioRptAttivataKo", fb.getFaultCode(), fb.getFaultString(), fb.getDescription() != null ? fb.getDescription() : "[-- Nessuna descrizione --]");
 				if(client != null) {
 					client.getEventoCtx().setSottotipoEsito(fb.getFaultCode());
@@ -194,12 +194,12 @@ public class InviaRptThread implements Runnable {
 
 				if(schedulaThreadInvio)
 					ThreadExecutorManager.getClientPoolExecutorNotifica().execute(new InviaNotificaThread(notifica, ctx));
-				log.info("RPT inviata correttamente al nodo");
+				log.info("RPT [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + ", CodDominio: "+this.rpt.getCodDominio()+",IUV: "+this.rpt.getIuv()+",CCP: "+this.rpt.getCcp()+"] inviata correttamente al nodo");
 				ctx.getApplicationLogger().log("pagamento.invioRptAttivataOk");
 				client.getEventoCtx().setEsito(Esito.OK);
 			} 
 		} catch (ClientException e) {
-			log.error("Errore nella spedizione della RPT", e);
+			log.error("Errore nella spedizione della RPT [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + ", CodDominio: "+this.rpt.getCodDominio()+",IUV: "+this.rpt.getIuv()+",CCP: "+this.rpt.getCcp()+"]", e);
 			if(client != null) {
 				client.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
 				client.getEventoCtx().setEsito(Esito.FAIL);
@@ -211,7 +211,7 @@ public class InviaRptThread implements Runnable {
 				log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
 			}
 		} catch (NotFoundException | ServiceException | GovPayException | UtilsException | InterruptedException | NotificaException | IOException e) {
-			log.error("Errore nella spedizione della RPT", e);
+			log.error("Errore nella spedizione della RPT [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + ", CodDominio: "+this.rpt.getCodDominio()+",IUV: "+this.rpt.getIuv()+",CCP: "+this.rpt.getCcp()+"]", e);
 			if(client != null) {
 				if(e instanceof GovPayException) {
 					client.getEventoCtx().setSottotipoEsito(((GovPayException)e).getCodEsito().toString());

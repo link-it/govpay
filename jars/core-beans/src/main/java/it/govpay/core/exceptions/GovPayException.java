@@ -23,6 +23,13 @@ import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Evento.EsitoEvento;
 
+/**
+ * Eccezione lanciata in caso di errore durante i processi interni al sistema.
+ * Il dettaglio dell'errore rilevato viene specificato attraverso il field codEsito di tipo {@link EsitoOperazione}.  
+ * 
+ * @author Pintori Giuliano (pintori@link.it)
+ *
+ */
 public class GovPayException extends Exception {
 
 	private static final long serialVersionUID = 1L;

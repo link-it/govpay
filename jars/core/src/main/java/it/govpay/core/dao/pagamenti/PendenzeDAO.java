@@ -1068,7 +1068,7 @@ public class PendenzeDAO extends BaseDAO{
 
 				new PendenzaPostValidator(pendenzaPost).validate();
 
-				it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+				it.govpay.core.beans.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(versamentoCommons.getCodVersamentoEnte());
 				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(versamentoCommons.getCodApplicazione());
 				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();

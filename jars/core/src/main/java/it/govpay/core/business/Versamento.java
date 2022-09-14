@@ -445,7 +445,7 @@ public class Versamento  {
 		return this.chiediVersamento(ref.getIdA2A(), ref.getIdPendenza(), null, null, null, null, TipologiaTipoVersamento.DOVUTO);
 	}
 
-	public it.govpay.bd.model.Versamento chiediVersamento(it.govpay.core.dao.commons.Versamento versamento) throws ServiceException, GovPayException, ValidationException { 
+	public it.govpay.bd.model.Versamento chiediVersamento(it.govpay.core.beans.commons.Versamento versamento) throws ServiceException, GovPayException, ValidationException { 
 		return VersamentoUtils.toVersamentoModel(versamento);
 	}
 

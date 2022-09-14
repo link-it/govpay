@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2022 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -19,6 +19,12 @@
  */
 package it.govpay.core.exceptions;
 
+/**
+ * Contiene la definizione di una eccezione lanciata in caso di lettura di una Pendenza con stato = 'SCONOSCIUTA'
+ * 
+ *  @author Pintori Giuliano (pintori@link.it)
+ *
+ */
 public class VersamentoSconosciutoException extends VersamentoException {
 
 	private static final long serialVersionUID = 1L;

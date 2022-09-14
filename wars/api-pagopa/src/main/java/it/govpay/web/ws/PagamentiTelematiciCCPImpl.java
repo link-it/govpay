@@ -1727,10 +1727,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 	private <T> T buildRisposta(NdpException e, T risposta) {
 		if(risposta instanceof PaaAttivaRPTRisposta) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()) || e.getFaultCode().equals(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO.name())) {
 				log.warn("Errore in Attiva RPT: " + e);
 			} else {
-				log.warn("Rifiutata Attiva RPT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.info("Rifiutata Attiva RPT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
 			PaaAttivaRPTRisposta r = (PaaAttivaRPTRisposta) risposta;
 			EsitoAttivaRPT esito = new EsitoAttivaRPT();
@@ -1745,10 +1745,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		}
 
 		if(risposta instanceof PaaVerificaRPTRisposta) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()) || e.getFaultCode().equals(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO.name())) {
 				log.warn("Errore in Verifica RPT: " + e);
 			} else {
-				log.warn("Rifiutata Verifica RPT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.info("Rifiutata Verifica RPT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
 			PaaVerificaRPTRisposta r = (PaaVerificaRPTRisposta) risposta;
 			EsitoVerificaRPT esito = new EsitoVerificaRPT();
@@ -1763,10 +1763,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		}
 		
 		if(risposta instanceof PaVerifyPaymentNoticeRes) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()) || e.getFaultCode().equals(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO.name())) {
 				log.warn("Errore in PaVerifyPaymentNotice: " + e.getMessage(), e);
 			} else {
-				log.warn("Rifiutata PaVerifyPaymentNotice con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.info("Rifiutata PaVerifyPaymentNotice con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
 			PaVerifyPaymentNoticeRes r = (PaVerifyPaymentNoticeRes) risposta;
 			r.setOutcome(StOutcome.KO);
@@ -1779,10 +1779,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		}
 
 		if(risposta instanceof PaGetPaymentRes) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()) || e.getFaultCode().equals(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO.name())) {
 				log.warn("Errore in PaGetPayment: " + e.getMessage(), e);
 			} else {
-				log.warn("Rifiutata PaGetPayment con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.info("Rifiutata PaGetPayment con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
 			PaGetPaymentRes r = (PaGetPaymentRes) risposta;
 			r.setOutcome(StOutcome.KO);
@@ -1795,10 +1795,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		}
 		
 		if(risposta instanceof PaSendRTRes) {
-			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()) || e.getFaultCode().equals(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO.name())) {
 				log.warn("Errore in PaSendRT: " + e.getMessage(), e);
 			} else {
-				log.warn("Rifiutata PaSendRT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.info("Rifiutata PaSendRT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
 			PaSendRTRes r = (PaSendRTRes) risposta;
 			r.setOutcome(StOutcome.KO);

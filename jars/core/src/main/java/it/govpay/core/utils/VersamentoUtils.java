@@ -62,9 +62,9 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.commons.Versamento.AllegatoPendenza;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Iuv;
-import it.govpay.core.dao.commons.Versamento.AllegatoPendenza;
 import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
@@ -293,10 +293,17 @@ public class VersamentoUtils {
 		Versamento versamento = null;
 		try {
 			try {
-				versamento = verificaClient.invoke(codVersamentoEnte, bundlekey, debitore, dominio, iuv);
-				ctx.getApplicationLogger().log("verifica.Ok", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
-
-				verificaClient.getEventoCtx().setEsito(Esito.OK);
+				it.govpay.core.beans.commons.Versamento versamentoCommons = verificaClient.verificaPendenza(codVersamentoEnte, bundlekey, debitore, dominio, iuv);
+				
+				try {
+					versamento = VersamentoUtils.toVersamentoModel(versamentoCommons, false);
+					ctx.getApplicationLogger().log("verifica.Ok", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
+					verificaClient.getEventoCtx().setEsito(Esito.OK);
+				} catch (GovPayException e) {
+					log.error(e.getMessage(),e);
+					ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, "[" + e.getCodEsito() + "] " + e.getMessage());
+					throw e;
+				}
 			} catch (ClientException e){
 				ctx.getApplicationLogger().log("verifica.Fail", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, e.getMessage());
 				verificaClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
@@ -339,6 +346,14 @@ public class VersamentoUtils {
 				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				verificaClient.getEventoCtx().setException(e);
 				throw e;
+			} catch (ValidationException e) {
+				ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, "[SINTASSI] " + e.getMessage());
+				ctx.getApplicationLogger().log("verifica.Fail", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, e.getMessage());
+				verificaClient.getEventoCtx().setSottotipoEsito("Pendenza non valida");
+				verificaClient.getEventoCtx().setEsito(Esito.KO);
+				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+				verificaClient.getEventoCtx().setException(e);
+				throw new VersamentoNonValidoException(applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, e.getMessage());
 			} 
 
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
@@ -374,9 +389,22 @@ public class VersamentoUtils {
 		verificaClient.getEventoCtx().setIdA2A(applicazione.getCodApplicazione());
 		Versamento versamento = null;
 		try {
+			String codVersamentoEnte = "-"; 
 			try {
-				versamento = verificaClient.invokeInoltro(codDominio, codTipoVersamento, codUnitaOperativa, jsonBody);
-				String codVersamentoEnte = "-"; 
+				it.govpay.core.beans.commons.Versamento versamentoCommons = verificaClient.inoltroPendenza(codDominio, codTipoVersamento, codUnitaOperativa, jsonBody);
+				if(versamentoCommons != null) {
+					codVersamentoEnte = versamentoCommons.getCodVersamentoEnte(); 
+					verificaClient.getEventoCtx().setIuv(versamentoCommons.getIuv());
+					verificaClient.getEventoCtx().setIdPendenza(codVersamentoEnte);
+					
+					try {
+						versamento = VersamentoUtils.toVersamentoModel(versamentoCommons);
+					} catch (GovPayException e) {
+						ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, applicazione.getCodApplicazione(), codDominio, codTipoVersamento, codVersamentoEnte, "[" + e.getCodEsito() + "] " + e.getMessage());
+						throw e;
+					}
+				}
+				
 				if(versamento != null) {
 					codVersamentoEnte = versamento.getCodVersamentoEnte(); 
 					verificaClient.getEventoCtx().setIuv(versamento.getIuvVersamento());
@@ -384,6 +412,7 @@ public class VersamentoUtils {
 				}
 				ctx.getApplicationLogger().log("verifica.modello4Ok", applicazione.getCodApplicazione(), codDominio, codTipoVersamento, codVersamentoEnte);
 				verificaClient.getEventoCtx().setEsito(Esito.OK);
+
 			} catch (ClientException e){
 				ctx.getApplicationLogger().log("verifica.modello4Fail", applicazione.getCodApplicazione(), codDominio, codTipoVersamento, e.getMessage());
 				verificaClient.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
@@ -426,6 +455,14 @@ public class VersamentoUtils {
 				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
 				verificaClient.getEventoCtx().setException(e);
 				throw e;
+			} catch (ValidationException e) {
+				ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, applicazione.getCodApplicazione(), codDominio, codTipoVersamento, codVersamentoEnte, "[SINTASSI] " + e.getMessage());
+				ctx.getApplicationLogger().log("verifica.modello4Fail", applicazione.getCodApplicazione(), codDominio, codTipoVersamento, e.getMessage());
+				verificaClient.getEventoCtx().setSottotipoEsito("Pendenza non valida");
+				verificaClient.getEventoCtx().setEsito(Esito.KO);
+				verificaClient.getEventoCtx().setDescrizioneEsito(e.getMessage());
+				verificaClient.getEventoCtx().setException(e);
+				throw new VersamentoNonValidoException(applicazione.getCodApplicazione(), codVersamentoEnte, "-", "-", "-", "-", e.getMessage());
 			} 
 
 			//			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
@@ -490,11 +527,11 @@ public class VersamentoUtils {
 		}
 	}
 
-	public static Versamento toVersamentoModel(it.govpay.core.dao.commons.Versamento versamento) throws ServiceException, GovPayException, ValidationException {
+	public static Versamento toVersamentoModel(it.govpay.core.beans.commons.Versamento versamento) throws ServiceException, GovPayException, ValidationException {
 		return toVersamentoModel(versamento, true);
 	}
 
-	public static Versamento toVersamentoModel(it.govpay.core.dao.commons.Versamento versamento, boolean controlloNumeroAvvisoDominioApplicazione) throws ServiceException, GovPayException, ValidationException { 
+	public static Versamento toVersamentoModel(it.govpay.core.beans.commons.Versamento versamento, boolean controlloNumeroAvvisoDominioApplicazione) throws ServiceException, GovPayException, ValidationException { 
 	
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Versamento model = new Versamento();
@@ -554,7 +591,7 @@ public class VersamentoUtils {
 
 		int index = 1;
 		boolean hasBollo = false;
-		for(it.govpay.core.dao.commons.Versamento.SingoloVersamento singoloVersamento : versamento.getSingoloVersamento()) {
+		for(it.govpay.core.beans.commons.Versamento.SingoloVersamento singoloVersamento : versamento.getSingoloVersamento()) {
 			model.addSingoloVersamento(toSingoloVersamentoModel(model, singoloVersamento, index++ , configWrapper));
 			
 			if(!hasBollo) {
@@ -604,7 +641,7 @@ public class VersamentoUtils {
 		if(codTipoVersamento == null) {
 			utilizzaTipoPendenzaNonCensito = true;
 			if(versamento.getSingoloVersamento() != null && versamento.getSingoloVersamento().size() > 0) {
-				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
+				it.govpay.core.beans.commons.Versamento.SingoloVersamento sv = versamento.getSingoloVersamento().get(0);
 				if(sv.getBolloTelematico() != null) {
 					codTipoVersamento = Tributo.BOLLOT;
 				} else if(sv.getCodTributo() != null) {
@@ -735,7 +772,7 @@ public class VersamentoUtils {
 		return allegatiModel;
 	}
 
-	public static SingoloVersamento toSingoloVersamentoModel(Versamento versamento, it.govpay.core.dao.commons.Versamento.SingoloVersamento singoloVersamento, int index, BDConfigWrapper configWrapper) throws ServiceException, GovPayException, ValidationException {
+	public static SingoloVersamento toSingoloVersamentoModel(Versamento versamento, it.govpay.core.beans.commons.Versamento.SingoloVersamento singoloVersamento, int index, BDConfigWrapper configWrapper) throws ServiceException, GovPayException, ValidationException {
 		SingoloVersamento model = new SingoloVersamento();
 		model.setVersamento(versamento);
 		model.setCodSingoloVersamentoEnte(singoloVersamento.getCodSingoloVersamentoEnte());
@@ -844,7 +881,7 @@ public class VersamentoUtils {
 		return model;
 	}
 
-	public static it.govpay.model.Anagrafica toAnagraficaModel(it.govpay.core.dao.commons.Anagrafica anagrafica) {
+	public static it.govpay.model.Anagrafica toAnagraficaModel(it.govpay.core.beans.commons.Anagrafica anagrafica) {
 		if(anagrafica == null) return null;
 		it.govpay.model.Anagrafica anagraficaModel = new it.govpay.model.Anagrafica();
 
@@ -962,7 +999,7 @@ public class VersamentoUtils {
 			
 			new PendenzaPostValidator(pendenzaPost).validate();
 			
-			it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+			it.govpay.core.beans.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(versamentoCommons.getCodVersamentoEnte());
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(versamentoCommons.getCodApplicazione());
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();

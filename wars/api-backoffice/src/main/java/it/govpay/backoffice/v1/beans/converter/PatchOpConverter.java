@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.govpay.backoffice.v1.beans.DominioProfiloPost;
-import it.govpay.core.dao.commons.Dominio;
+import it.govpay.core.beans.commons.Dominio;
 import it.govpay.model.PatchOp;
 
 public class PatchOpConverter {

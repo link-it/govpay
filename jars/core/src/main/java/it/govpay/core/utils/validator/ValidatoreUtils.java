@@ -7,7 +7,7 @@ import java.util.Date;
 import org.apache.commons.jcs.access.exception.InvalidArgumentException;
 import org.apache.commons.lang.ArrayUtils;
 
-import it.govpay.core.dao.commons.Versamento.SingoloVersamento.TipoContabilita;
+import it.govpay.core.beans.commons.Versamento.SingoloVersamento.TipoContabilita;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.IuvUtils;

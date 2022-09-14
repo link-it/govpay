@@ -227,7 +227,7 @@ public class Tracciati {
 
 			String codVersamentoEnte = null;
 			try {
-				it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+				it.govpay.core.beans.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 				codVersamentoEnte = versamentoToAdd.getCodVersamentoEnte();
 
 				// inserisco l'identificativo del dominio

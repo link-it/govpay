@@ -181,7 +181,7 @@ public class OperazioneFactory {
 			
 			new PendenzaPostValidator(pendenzaPost).validate();
 			
-			it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+			it.govpay.core.beans.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 			
 			// 12/12/2019 codDominio e codTipoVersamento sono settati nella trasformazione
 			// inserisco l'identificativo del dominio 
@@ -450,7 +450,7 @@ public class OperazioneFactory {
 				
 				manager.addPendenza(threadName, pendenzaPost.getIdA2A(), pendenzaPost.getIdPendenza()); 
 				
-				it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+				it.govpay.core.beans.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 				
 				// 12/12/2019 codDominio e codTipoVersamento sono settati nella trasformazione
 				// inserisco l'identificativo del dominio 

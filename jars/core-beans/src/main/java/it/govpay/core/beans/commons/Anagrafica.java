@@ -1,5 +1,5 @@
 
-package it.govpay.core.dao.commons;
+package it.govpay.core.beans.commons;
 
 public class Anagrafica {
 

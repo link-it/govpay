@@ -59,7 +59,7 @@ import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.dao.commons.Versamento;
+import it.govpay.core.beans.commons.Versamento;
 import it.govpay.core.dao.commons.exception.NonTrovataException;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.TracciatiDAO;

@@ -43,6 +43,7 @@ import it.govpay.backoffice.v1.beans.UnitaOperativaPost;
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.Tributo;
+import it.govpay.core.beans.commons.Dominio.Uo;
 import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDominioDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetTributoDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.PutDominioDTO;
@@ -50,7 +51,6 @@ import it.govpay.core.dao.anagrafica.dto.PutEntrataDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutIbanAccreditoDTO;
 import it.govpay.core.dao.anagrafica.dto.PutTipoPendenzaDominioDTO;
 import it.govpay.core.dao.anagrafica.dto.PutUnitaOperativaDTO;
-import it.govpay.core.dao.commons.Dominio.Uo;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.ValidationException;
@@ -278,18 +278,18 @@ public class DominiConverter {
 		return rsModel;
 	}
 
-	public static DominioProfiloIndex toRsModelProfiloIndex(it.govpay.core.dao.commons.Dominio dominio) {
+	public static DominioProfiloIndex toRsModelProfiloIndex(it.govpay.core.beans.commons.Dominio dominio) {
 		return toRsModelProfiloIndex(dominio, dominio.getUo());
 
 	}
-	public static DominioProfiloIndex toRsModelProfiloIndex(it.govpay.core.dao.commons.Dominio dominio, List<it.govpay.core.dao.commons.Dominio.Uo> uoLst) {
+	public static DominioProfiloIndex toRsModelProfiloIndex(it.govpay.core.beans.commons.Dominio dominio, List<it.govpay.core.beans.commons.Dominio.Uo> uoLst) {
 		DominioProfiloIndex rsModel = new DominioProfiloIndex();
 		rsModel.setIdDominio(dominio.getCodDominio());
 		rsModel.setRagioneSociale(dominio.getRagioneSociale());
 		if(uoLst != null && !uoLst.isEmpty()) {
 			List<UnitaOperativaIndex> unitaOperative = new ArrayList<>();
 
-			for(it.govpay.core.dao.commons.Dominio.Uo uo: uoLst) {
+			for(it.govpay.core.beans.commons.Dominio.Uo uo: uoLst) {
 				if(uo.getCodUo() != null) {
 					unitaOperative.add(toUnitaOperativaRsModelIndex(uo));
 				} else {
@@ -436,7 +436,7 @@ public class DominiConverter {
 		return rsModel;
 	}
 
-	public static UnitaOperativaIndex toUnitaOperativaRsModelIndex(it.govpay.core.dao.commons.Dominio.Uo uo) {
+	public static UnitaOperativaIndex toUnitaOperativaRsModelIndex(it.govpay.core.beans.commons.Dominio.Uo uo) {
 		UnitaOperativaIndex rsModel = new UnitaOperativaIndex();
 
 		rsModel.setIdUnita(uo.getCodUo());
@@ -445,7 +445,7 @@ public class DominiConverter {
 		return rsModel;
 	}
 
-	public static UnitaOperativaIndex toUnitaOperativaStarRsModelIndex(it.govpay.core.dao.commons.Dominio.Uo uo) {
+	public static UnitaOperativaIndex toUnitaOperativaStarRsModelIndex(it.govpay.core.beans.commons.Dominio.Uo uo) {
 		UnitaOperativaIndex rsModel = new UnitaOperativaIndex();
 
 		rsModel.setIdUnita(ApplicazioniController.AUTORIZZA_DOMINI_STAR);
@@ -1198,8 +1198,8 @@ public class DominiConverter {
 
 		return tipoPendenzaDTO;
 	}
-	public static it.govpay.core.dao.commons.Dominio getDominioCommons(DominioProfiloPost dominio) {
-		it.govpay.core.dao.commons.Dominio dominioCommons = new it.govpay.core.dao.commons.Dominio();
+	public static it.govpay.core.beans.commons.Dominio getDominioCommons(DominioProfiloPost dominio) {
+		it.govpay.core.beans.commons.Dominio dominioCommons = new it.govpay.core.beans.commons.Dominio();
 
 		dominioCommons.setCodDominio(dominio.getIdDominio());
 		if(dominio.getUnitaOperative() != null) {
@@ -1222,8 +1222,8 @@ public class DominiConverter {
 		return dominioCommons;
 	}
 
-	public static it.govpay.core.dao.commons.Dominio getDominioCommons(String codDominio) {
-		it.govpay.core.dao.commons.Dominio dominioCommons = new it.govpay.core.dao.commons.Dominio();
+	public static it.govpay.core.beans.commons.Dominio getDominioCommons(String codDominio) {
+		it.govpay.core.beans.commons.Dominio dominioCommons = new it.govpay.core.beans.commons.Dominio();
 
 		dominioCommons.setCodDominio(codDominio);
 		return dominioCommons;
