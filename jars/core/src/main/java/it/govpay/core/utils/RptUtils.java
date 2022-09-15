@@ -53,12 +53,13 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Azione;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.utils.client.NodoClient;
-import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.thread.InviaRptThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
@@ -280,7 +281,7 @@ public class RptUtils {
 				try {
 					try {
 						Stazione stazione = rpt.getStazione(configWrapper);
-						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpt.getCodDominio(), Azione.nodoChiediStatoRPT);
+						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpt.getCodDominio(), EventoContext.Azione.nodoChiediStatoRPT);
 						NodoChiediStatoRPT richiesta = new NodoChiediStatoRPT();
 						richiesta.setIdentificativoDominio(rpt.getCodDominio());
 						richiesta.setIdentificativoIntermediarioPA(stazione.getIntermediario(configWrapper).getCodIntermediario());
@@ -415,7 +416,7 @@ public class RptUtils {
 							try { 
 								try {
 									Stazione stazione = rpt.getStazione(configWrapper);
-									operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpt.getCodDominio(), Azione.nodoChiediCopiaRT);
+									operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpt.getCodDominio(), EventoContext.Azione.nodoChiediCopiaRT);
 									NodoChiediCopiaRT nodoChiediCopiaRT = new NodoChiediCopiaRT();
 									nodoChiediCopiaRT.setIdentificativoDominio(rpt.getCodDominio());
 									nodoChiediCopiaRT.setIdentificativoIntermediarioPA(rpt.getIntermediario(configWrapper).getCodIntermediario());

@@ -32,10 +32,10 @@ import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTe
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.GpResponse;
+import it.govpay.core.beans.EventoContext.Azione;
 import it.govpay.core.beans.EventoContext.Categoria;
 import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.exceptions.NdpException.FaultPa;
-import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.model.Evento.RuoloEvento;
 import it.govpay.model.Rpt;
 import it.govpay.model.Versionabile.Versione;
@@ -235,7 +235,7 @@ public class GpContext extends ApplicationContext {
 		return context;
 	}
 
-	public String setupNodoClient(String codStazione, String codDominio, Azione azione) {
+	public String setupNodoClient(String codStazione, String codDominio, EventoContext.Azione azione) {
 		return this._setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
 	}
 

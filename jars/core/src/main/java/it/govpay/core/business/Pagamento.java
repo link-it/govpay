@@ -61,6 +61,8 @@ import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Azione;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTO;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTOResponse;
@@ -77,7 +79,6 @@ import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.RrUtils;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
-import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Canale.ModelloPagamento;
@@ -274,7 +275,7 @@ public class Pagamento   {
 			NodoClient chiediListaPendentiClient = null;
 			try {
 				try {
-					appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoChiediListaPendentiRPT);
+					appContext.setupNodoClient(stazione.getCodStazione(), null, EventoContext.Azione.nodoChiediListaPendentiRPT);
 					chiediListaPendentiClient = new NodoClient(intermediario, null, giornale);
 					risposta = chiediListaPendentiClient.nodoChiediListaPendentiRPT(richiesta, intermediario.getDenominazione());
 					chiediListaPendentiClient.getEventoCtx().setEsito(Esito.OK);
@@ -472,7 +473,7 @@ public class Pagamento   {
 		rrBD = null;
 		try {
 
-			String operationId = appContext.setupNodoClient(rpt.getStazione(configWrapper).getCodStazione(), rr.getCodDominio(), Azione.nodoInviaRichiestaStorno);
+			String operationId = appContext.setupNodoClient(rpt.getStazione(configWrapper).getCodStazione(), rr.getCodDominio(), EventoContext.Azione.nodoInviaRichiestaStorno);
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codMessaggioRevoca", rr.getCodMsgRevoca()));
 			ctx.getApplicationLogger().log("rr.invioRr");
 
