@@ -48,8 +48,9 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.INotificaClient;
 import it.govpay.core.utils.client.NotificaClient;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Connettore;
 import it.govpay.model.Notifica.StatoSpedizione;
 import it.govpay.model.Notifica.TipoNotifica;
@@ -111,7 +112,7 @@ public class InviaNotificaThread implements Runnable {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 //		BasicBD bd = null;
 		TipoNotifica tipoNotifica = this.notifica.getTipo();
-		NotificaClient client = null;
+		INotificaClient client = null;
 		try {
 			String url = this.connettoreNotifica!= null ? this.connettoreNotifica.getUrl() : GpContext.NOT_SET;
 			Versione versione = this.connettoreNotifica != null ? this.connettoreNotifica.getVersione() : Versione.GP_REST_01;
@@ -153,7 +154,7 @@ public class InviaNotificaThread implements Runnable {
 			
 			ctx.getApplicationLogger().log("notifica.spedizione");
 			
-			client = new NotificaClient(this.applicazione, operationId, this.giornale);
+			client = new NotificaClient(this.applicazione, this.rpt, this.versamento, this.pagamenti, operationId, this.giornale);
 			
 //			DatiPagoPA datiPagoPA = new DatiPagoPA();
 //			datiPagoPA.setErogatore(this.applicazione.getCodApplicazione());
@@ -170,7 +171,7 @@ public class InviaNotificaThread implements Runnable {
 				client.getEventoCtx().setIdPagamento(this.pagamentoPortale.getIdSessione());
 			
 			
-			client.invoke(this.notifica, this.rpt, this.applicazione, this.versamento, this.pagamenti, this.pagamentoPortale);
+			client.invoke(this.notifica);
 			
 			this.notifica.setStato(StatoSpedizione.SPEDITO);
 			this.notifica.setDescrizioneStato(null);

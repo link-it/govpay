@@ -13,7 +13,7 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Notifica;
+import it.govpay.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
