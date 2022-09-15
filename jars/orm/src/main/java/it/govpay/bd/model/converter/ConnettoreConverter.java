@@ -20,15 +20,40 @@
 package it.govpay.bd.model.converter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.openspcoop2.utils.serialization.ISerializer;
+import org.openspcoop2.utils.serialization.SerializationConfig;
+import org.openspcoop2.utils.serialization.SerializationFactory;
+import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
+
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Connettore;
 import it.govpay.model.Versionabile.Versione;
+import it.govpay.model.connettori.Header;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ConnettoreConverter {
 
-	public static Connettore toDTO(List<it.govpay.orm.Connettore> connettoreLst) throws CodificaInesistenteException {
+	private static ObjectMapper mapper;
+	static {
+		mapper = new ObjectMapper();
+		mapper.registerModule(new JaxbAnnotationModule());
+		mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
+	}
+
+	public static Connettore toDTO(List<it.govpay.orm.Connettore> connettoreLst) throws CodificaInesistenteException, IOException {
 		Connettore dto = new Connettore();
 		if(connettoreLst != null && !connettoreLst.isEmpty()) {
 			for(it.govpay.orm.Connettore connettore: connettoreLst){
@@ -45,7 +70,7 @@ public class ConnettoreConverter {
 				if(Connettore.P_URL_NAME.equals(connettore.getCodProprieta())) {
 					dto.setUrl(connettore.getValore());
 				}
-				
+
 				if(Connettore.P_URL_SERVIZI_AVVISATURA_NAME.equals(connettore.getCodProprieta())) {
 					dto.setUrlServiziAvvisatura(connettore.getValore());
 				}
@@ -93,18 +118,37 @@ public class ConnettoreConverter {
 				if(Connettore.P_AZIONEINURL_NAME.equals(connettore.getCodProprieta())) {
 					dto.setAzioneInUrl(Boolean.parseBoolean(connettore.getValore()));
 				}
-				
+
 				if(Connettore.P_VERSIONE.equals(connettore.getCodProprieta())) {
 					dto.setVersione(Versione.toEnum(connettore.getValore()));
+				}
+
+				if(Connettore.P_HEADERS.equals(connettore.getCodProprieta())) {
+					try {
+						SerializationConfig serializationConfig = new SerializationConfig();
+						serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi());
+						serializationConfig.setIgnoreNullValues(true);
+
+						mapper.setDateFormat(serializationConfig.getDf());
+						if(serializationConfig.isSerializeEnumAsString())
+							mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+
+						CollectionType var = mapper.getTypeFactory().constructCollectionType(List.class, Header.class);
+
+						dto.setHeaders(mapper.readerFor(var).readValue(connettore.getValore()));
+						dto.setVersione(Versione.toEnum(connettore.getValore()));
+					} catch (JsonProcessingException e) {
+						throw new IOException(e.getMessage(), e);
+					}
 				}
 			}
 		}
 		return dto;
 	}
 
-	public static List<it.govpay.orm.Connettore> toVOList(Connettore connettore) {
+	public static List<it.govpay.orm.Connettore> toVOList(Connettore connettore) throws IOException {
 		List<it.govpay.orm.Connettore> voList = new ArrayList<>();
-		
+
 		if(connettore.getHttpUser() != null && !connettore.getHttpUser().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
@@ -128,7 +172,7 @@ public class ConnettoreConverter {
 			vo.setValore(connettore.getUrl());
 			voList.add(vo);
 		}
-		
+
 		if(connettore.getUrlServiziAvvisatura() != null && !connettore.getUrlServiziAvvisatura().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
@@ -216,12 +260,29 @@ public class ConnettoreConverter {
 			vo.setValore(connettore.getSslType());
 			voList.add(vo);
 		}
-		
+
 		if(connettore.getVersione() != null) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_VERSIONE);
 			vo.setValore(connettore.getVersione().getApiLabel());
+			voList.add(vo);
+		}
+
+		if(connettore.getHeaders() != null && connettore.getHeaders().size() > 0) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_HEADERS);
+
+			try {
+				SerializationConfig serializationConfig = new SerializationConfig();
+				serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+				serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi());
+				ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+				vo.setValore(serializer.getObject(connettore.getHeaders()));
+			} catch(org.openspcoop2.utils.serialization.IOException e) {
+				throw new IOException(e.getMessage(), e);
+			}
 			voList.add(vo);
 		}
 

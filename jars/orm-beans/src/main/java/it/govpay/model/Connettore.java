@@ -19,6 +19,10 @@
  */
 package it.govpay.model;
 
+import java.util.List;
+
+import it.govpay.model.connettori.Header;
+
 public class Connettore extends Versionabile implements Cloneable{
 	
 	private static final long serialVersionUID = 1L;
@@ -38,6 +42,7 @@ public class Connettore extends Versionabile implements Cloneable{
 	public static final String P_URL_SERVIZI_AVVISATURA_NAME = "URLAVVISI";
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";
     public static final String P_VERSIONE = "VERSIONE";
+    public static final String P_HEADERS = "HEADERS";
 	
 	public enum EnumAuthType {
 		SSL, HTTPBasic, NONE
@@ -67,6 +72,7 @@ public class Connettore extends Versionabile implements Cloneable{
 	private String url;
 	private String urlServiziAvvisatura;
 	private boolean azioneInUrl;
+	private List<Header> headers;
 	
 	public Connettore() {
 	}
@@ -174,5 +180,13 @@ public class Connettore extends Versionabile implements Cloneable{
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
+	}
+
+	public List<Header> getHeaders() {
+		return headers;
+	}
+
+	public void setHeaders(List<Header> headers) {
+		this.headers = headers;
 	}
 }

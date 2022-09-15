@@ -53,6 +53,7 @@ import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.bd.model.converter.ApplicazioneConverter;
 import it.govpay.bd.model.converter.ConnettoreConverter;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.model.Connettore;
 import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdApplicazione;
@@ -346,6 +347,9 @@ public class ApplicazioniBD extends BasicBD {
 		} catch (NotImplementedException | MultipleResultException | ExpressionNotImplementedException | ExpressionException e) {
 			this.rollback();
 			throw new ServiceException(e);
+		} catch (IOException e) {
+			this.rollback();
+			throw new ServiceException(e);
 		} finally {
 			// ripristino l'autocommit.
 			this.setAutoCommit(true); 
@@ -409,6 +413,9 @@ public class ApplicazioniBD extends BasicBD {
 		} catch (ServiceException e) {
 			this.rollback();
 			throw e;
+		} catch (IOException e) {
+			this.rollback();
+			throw new ServiceException(e);
 		} finally {
 			// ripristino l'autocommit.
 			this.setAutoCommit(true); 
@@ -595,6 +602,8 @@ public class ApplicazioniBD extends BasicBD {
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (IOException e) {
 			throw new ServiceException(e);
 		} 
 	}

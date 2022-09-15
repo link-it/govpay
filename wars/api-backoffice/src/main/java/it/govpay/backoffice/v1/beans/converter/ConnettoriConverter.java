@@ -1,5 +1,8 @@
 package it.govpay.backoffice.v1.beans.converter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.govpay.backoffice.v1.beans.Connector;
 import it.govpay.backoffice.v1.beans.Connector.VersioneApiEnum;
 import it.govpay.backoffice.v1.beans.TipoAutenticazione.TipoEnum;
@@ -7,6 +10,7 @@ import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.model.Versionabile;
+import it.govpay.model.connettori.Header;
 import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ConnettoriConverter {
@@ -49,6 +53,8 @@ public class ConnettoriConverter {
 		connettore.setUrl(connector.getUrl());
 		if(connector.getVersioneApi() != null)
 			connettore.setVersione(Versionabile.Versione.toEnum(VersioneApiEnum.fromValue(connector.getVersioneApi()).toNameString()));
+		
+		connettore.setHeaders(getHeaders(connector.getHeaders()));
 
 		return connettore;
 	}
@@ -61,6 +67,8 @@ public class ConnettoriConverter {
 		if(connettore.getVersione() != null)
 			rsModel.setVersioneApi(VersioneApiEnum.fromName(connettore.getVersione().getApiLabel()).toString());
 
+		rsModel.setHeaders(toHeadersRsModel(connettore.getHeaders()));
+		
 		return rsModel;
 	}
 
@@ -94,5 +102,35 @@ public class ConnettoriConverter {
 //			rsModel.tipo(TipoEnum.fromValue(connettore.getSslType().toString()));
 
 		return rsModel;
+	}
+	
+	private static List<Header> getHeaders(List<it.govpay.backoffice.v1.beans.Header> headers) {
+		if(headers == null) return null;
+		
+		List<Header> headersToRet = new ArrayList<>();
+		
+		for (it.govpay.backoffice.v1.beans.Header header : headers) {
+			Header headerToAdd = new Header();
+			headerToAdd.setName(header.getName());
+			headerToAdd.setValue(header.getValue());
+			headersToRet.add(headerToAdd);
+		}
+
+		return headersToRet;
+	}
+
+	private static List<it.govpay.backoffice.v1.beans.Header> toHeadersRsModel(List<Header> headers) {
+		if(headers == null) return null;
+		
+		List<it.govpay.backoffice.v1.beans.Header> headersToRet = new ArrayList<>();
+		
+		for (Header header : headers) {
+			it.govpay.backoffice.v1.beans.Header headerToAdd = new it.govpay.backoffice.v1.beans.Header();
+			headerToAdd.setName(header.getName());
+			headerToAdd.setValue(header.getValue());
+			headersToRet.add(headerToAdd);
+		}
+
+		return headersToRet;
 	}
 }

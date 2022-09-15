@@ -75,14 +75,6 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 	private String principalMaggioli;
 	private Integer intervalloCreazioneTracciato;
 	
-	private String netPayGpUsername;
-	private String netPayGpPassword;
-	private String netPayURL;
-	private String netPayUsername;
-	private String netPayPassword;
-	private String netPayRuolo;
-	private String netPayCompany;
-	
 	public ConnettoreNotificaPagamenti() {
 		// default value per intervallo creazione = 24 ore
 		this.intervalloCreazioneTracciato = 24;
@@ -226,61 +218,5 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 
 	public void setIntervalloCreazioneTracciato(Integer intervalloCreazioneTracciato) {
 		this.intervalloCreazioneTracciato = intervalloCreazioneTracciato;
-	}
-
-	public String getNetPayGpUsername() {
-		return netPayGpUsername;
-	}
-
-	public void setNetPayGpUsername(String netPayGpUsername) {
-		this.netPayGpUsername = netPayGpUsername;
-	}
-
-	public String getNetPayGpPassword() {
-		return netPayGpPassword;
-	}
-
-	public void setNetPayGpPassword(String netPayGpPassword) {
-		this.netPayGpPassword = netPayGpPassword;
-	}
-
-	public String getNetPayURL() {
-		return netPayURL;
-	}
-
-	public void setNetPayURL(String netPayURL) {
-		this.netPayURL = netPayURL;
-	}
-
-	public String getNetPayUsername() {
-		return netPayUsername;
-	}
-
-	public void setNetPayUsername(String netPayUsername) {
-		this.netPayUsername = netPayUsername;
-	}
-
-	public String getNetPayPassword() {
-		return netPayPassword;
-	}
-
-	public void setNetPayPassword(String netPayPassword) {
-		this.netPayPassword = netPayPassword;
-	}
-
-	public String getNetPayRuolo() {
-		return netPayRuolo;
-	}
-
-	public void setNetPayRuolo(String netPayRuolo) {
-		this.netPayRuolo = netPayRuolo;
-	}
-
-	public String getNetPayCompany() {
-		return netPayCompany;
-	}
-
-	public void setNetPayCompany(String netPayCompany) {
-		this.netPayCompany = netPayCompany;
 	}
 }

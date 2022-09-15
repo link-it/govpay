@@ -19,6 +19,7 @@
  */
 package it.govpay.core.utils.client;
 
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +104,7 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 	 * @throws UtilsException
 	 * @throws ValidationException 
 	 */
-	public Versamento verificaPendenza(String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv) throws ClientException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
+	public Versamento verificaPendenza(String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv, String pspId, String ccp,  BigDecimal importo, Operazione operazione) throws ClientException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
 		VersamentoScadutoException, VersamentoSconosciutoException, GovPayException, VersamentoNonValidoException {
 		
 		switch (this.versione) {

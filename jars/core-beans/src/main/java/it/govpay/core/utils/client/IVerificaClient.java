@@ -1,5 +1,7 @@
 package it.govpay.core.utils.client;
 
+import java.math.BigDecimal;
+
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.commons.Versamento;
 import it.govpay.core.exceptions.GovPayException;
@@ -23,6 +25,8 @@ import it.govpay.core.utils.client.exception.ClientException;
  */
 public interface IVerificaClient {
 	
+	public enum Operazione {ATTIVA, VERIFICA};
+	
 	/**
 	 * Verifica della pendenza tramite le API configurate nel connettore integrazione dell'applicazione.
 	 * 
@@ -41,7 +45,7 @@ public interface IVerificaClient {
 	 * @throws VersamentoNonValidoException
 	 * @throws GovPayException
 	 */
-	public Versamento verificaPendenza(String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv) 
+	public Versamento verificaPendenza(String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv, String pspId, String ccp,  BigDecimal importo, Operazione operazione) 
 			throws ClientException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoScadutoException, 
 				VersamentoSconosciutoException, VersamentoNonValidoException, GovPayException;
 	

@@ -41,6 +41,7 @@ import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
 import it.govpay.bd.model.converter.ConnettoreConverter;
 import it.govpay.bd.model.converter.ConnettoreSftpConverter;
 import it.govpay.bd.model.converter.IntermediarioConverter;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.model.Connettore;
 import it.govpay.model.ConnettoreSftp;
 import it.govpay.model.Intermediario;
@@ -100,6 +101,8 @@ public class IntermediariBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
+		} catch (IOException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -136,6 +139,8 @@ public class IntermediariBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
+		} catch (IOException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -143,7 +148,7 @@ public class IntermediariBD extends BasicBD {
 		}
 	}
 
-	private Intermediario getIntermediario(it.govpay.orm.Intermediario intermediarioVO) throws ExpressionNotImplementedException, ExpressionException, ServiceException, NotImplementedException, CodificaInesistenteException {
+	private Intermediario getIntermediario(it.govpay.orm.Intermediario intermediarioVO) throws ExpressionNotImplementedException, ExpressionException, ServiceException, NotImplementedException, CodificaInesistenteException, IOException {
 		Intermediario intermediario = IntermediarioConverter.toDTO(intermediarioVO);
 
 		if(intermediarioVO.getCodConnettorePdd() != null) {
@@ -236,6 +241,8 @@ public class IntermediariBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (IOException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -294,6 +301,8 @@ public class IntermediariBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (IOException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -419,6 +428,8 @@ public class IntermediariBD extends BasicBD {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (IOException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

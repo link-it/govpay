@@ -7764,9 +7764,30 @@ components:
           enum:
             - 'REST v1'
             - 'REST v2'
+            - 'NETPAY v1'
           description: Versione delle API di integrazione utilizzate.
         auth:
           $ref: '#/components/schemas/tipoAutenticazione'
+        headers:
+          type: array
+          items:
+            $ref: '#/components/schemas/header'
+    header:
+      type: object
+      required: 
+        - name
+        - value
+      properties:
+        name:
+          type: string
+          pattern: '(^[a-zA-Z0-9\\-_]{1,255}$)'
+          minLength: 1
+          maxLength: 255
+          example: 'X-Custom-Header'
+        value:
+          type: string
+          minLength: 1
+          example: 'aaabbcc112233'
     connettorePagopa:
       type: object
       required:

@@ -25,13 +25,11 @@ import java.text.DecimalFormatSymbols;
 import java.util.Date;
 import java.util.Locale;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
-
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.business.model.Iuv;
+import it.govpay.core.exceptions.ValidationException;
 
 public class IuvUtils {
 
@@ -69,7 +67,7 @@ public class IuvUtils {
 		}
 	}
 
-	public static Iuv toIuv(Applicazione applicazione, Dominio dominio, it.govpay.model.Iuv iuv, BigDecimal importoTotale) throws ServiceException {
+	public static Iuv toIuv(Applicazione applicazione, Dominio dominio, it.govpay.model.Iuv iuv, BigDecimal importoTotale) {
 		Iuv iuvGenerato = new Iuv();
 		iuvGenerato.setCodApplicazione(applicazione.getCodApplicazione());
 		iuvGenerato.setCodDominio(dominio.getCodDominio());
@@ -104,15 +102,15 @@ public class IuvUtils {
 		}
 	}
 
-	public static Iuv toIuv(Versamento versamento, Applicazione applicazione, Dominio dominio) throws ServiceException {
+	public static Iuv toIuv(Versamento versamento, Applicazione applicazione, Dominio dominio) {
 		return toIuv(versamento, applicazione, dominio, true);
 	}
 	
-	public static Iuv toIuvFromNumeroAvviso(Versamento versamento, Applicazione applicazione, Dominio dominio) throws ServiceException {
+	public static Iuv toIuvFromNumeroAvviso(Versamento versamento, Applicazione applicazione, Dominio dominio) {
 		return toIuv(versamento, applicazione, dominio, false);
 	}
 
-	private static Iuv toIuv(Versamento versamento, Applicazione applicazione, Dominio dominio, boolean generaNumeroAvviso) throws ServiceException {
+	private static Iuv toIuv(Versamento versamento, Applicazione applicazione, Dominio dominio, boolean generaNumeroAvviso) {
 		Iuv iuvGenerato = new Iuv();
 		iuvGenerato.setCodApplicazione(applicazione.getCodApplicazione());
 		iuvGenerato.setCodDominio(dominio.getCodDominio());
@@ -133,38 +131,14 @@ public class IuvUtils {
 		return iuvGenerato;
 	}
 	
-	public static String toNumeroAvviso(String iuv, Dominio dominio) throws ServiceException { 
-		String iuvGenerato = iuv;
-		if(dominio.getAuxDigit() == 0)
-			iuvGenerato = dominio.getAuxDigit() + String.format("%02d", dominio.getStazione().getApplicationCode()) + iuv;
-		else
-			iuvGenerato = dominio.getAuxDigit() + iuv;
+	public static String toNumeroAvviso(String iuv, Dominio dominio) { 
+		int auxDigit = dominio.getAuxDigit();
+		int applicationCode = dominio.getStazione().getApplicationCode();
 		
-		return iuvGenerato;
+		return IuvNavUtils.toNumeroAvviso(iuv, auxDigit, applicationCode);
 	}
-
+	
 	public static String toIuv(String numeroAvviso) throws ValidationException {
-		if(numeroAvviso == null)
-			return null;
-
-		if(numeroAvviso.length() != 18)
-			throw new ValidationException("Numero Avviso [" + numeroAvviso + "] fornito non valido: Consentite 18 cifre trovate ["+numeroAvviso.length()+"].");
-
-		try {
-			Long.parseLong(numeroAvviso);
-		}catch(Exception e) {
-			throw new ValidationException("Numero Avviso [" + numeroAvviso + "] fornito non valido: non e' in formato numerico.");
-		}
-
-		if(numeroAvviso.startsWith("0")) // '0' + applicationCode(2) + ref(13) + check(2)
-			return numeroAvviso.substring(3);
-		else if(numeroAvviso.startsWith("1")) // '1' + reference(17)
-			return numeroAvviso.substring(1);
-		else if(numeroAvviso.startsWith("2")) // '2' + ref(15) + check(2)
-			return numeroAvviso.substring(1);
-		else if(numeroAvviso.startsWith("3")) // '3' + segregationCode(2) +  ref(13) + check(2) 
-			return numeroAvviso.substring(1);
-		else 
-			throw new ValidationException("Numero Avviso [" + numeroAvviso + "] fornito non valido: prima cifra non e' [0|1|2|3]");
+		return IuvNavUtils.toIuv(numeroAvviso);
 	}
 }

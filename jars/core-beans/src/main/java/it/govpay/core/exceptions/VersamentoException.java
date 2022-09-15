@@ -35,6 +35,7 @@ public class VersamentoException extends Exception {
 	private String codUnivocoDebitore;
 	private String codDominio;
 	private String iuv;
+	private String errorReasonAgID;
 
 	public VersamentoException() {
 		super();
@@ -120,6 +121,14 @@ public class VersamentoException extends Exception {
 
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
+	}
+
+	public String getErrorReasonAgID() {
+		return errorReasonAgID;
+	}
+
+	public void setErrorReasonAgID(String errorReasonAgID) {
+		this.errorReasonAgID = errorReasonAgID;
 	}
 
 }

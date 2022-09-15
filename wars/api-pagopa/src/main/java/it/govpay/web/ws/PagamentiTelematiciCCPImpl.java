@@ -20,6 +20,7 @@
 package it.govpay.web.ws;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -107,6 +108,7 @@ import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.RptBuilder;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.core.utils.client.IVerificaClient.Operazione;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
@@ -150,7 +152,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		String codDominio = header.getIdentificativoDominio();
 		String iuv = header.getIdentificativoUnivocoVersamento();
 		String ccp = header.getCodiceContestoPagamento();
-		
+
+		String psp = bodyrichiesta.getIdentificativoPSP();
+		BigDecimal importoRichiesta = bodyrichiesta.getDatiPagamentoPSP().getImportoSingoloVersamento();
+		Operazione operazione = Operazione.ATTIVA;
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		appContext.setCorrelationId(codDominio + iuv + ccp);
@@ -172,7 +177,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		appContext.getRequest().addGenericProperty(new Property("ccp", ccp));
 		appContext.getRequest().addGenericProperty(new Property("codDominio", codDominio));
 		appContext.getRequest().addGenericProperty(new Property("iuv", iuv));
-		appContext.getRequest().addGenericProperty(new Property("codPsp", bodyrichiesta.getIdentificativoPSP()));
+		appContext.getRequest().addGenericProperty(new Property("codPsp", psp));
 		appContext.getRequest().addGenericProperty(new Property("codCanale", bodyrichiesta.getIdentificativoCanalePSP()));
 		try {
 			ctx.getApplicationLogger().log("ccp.ricezioneAttiva");
@@ -190,9 +195,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		datiPagoPA.setErogatore(codIntermediario);
 		datiPagoPA.setCodIntermediario(codIntermediario);
 //		appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.paaAttivaRPT.name());
-		datiPagoPA.setCodPsp(bodyrichiesta.getIdentificativoPSP());
+		datiPagoPA.setCodPsp(psp);
 		datiPagoPA.setCodIntermediarioPsp(bodyrichiesta.getIdentificativoIntermediarioPSP());
-		datiPagoPA.setCodPsp(bodyrichiesta.getIdentificativoPSP());
 		datiPagoPA.setCodCanale(bodyrichiesta.getIdentificativoCanalePSP());
 		datiPagoPA.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 		datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP);
@@ -265,7 +269,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(versamento == null) throw new NotFoundException();
 					
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, psp, ccp, importoRichiesta, operazione, log);
 
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -292,12 +296,13 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					}
 					
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
-					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, applicazioneGestisceIuv.getCodApplicazione()), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, log);
+					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, applicazioneGestisceIuv.getCodApplicazione()), 
+							null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, psp, ccp, importoRichiesta, operazione, log);
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
 					
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, psp, ccp, importoRichiesta, operazione, log);
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -379,7 +384,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}
 
 			// Creazione dell'RPT
-			Rpt rpt = new RptBuilder().buildRptAttivata(bodyrichiesta.getIdentificativoIntermediarioPSP(), bodyrichiesta.getIdentificativoPSP(), bodyrichiesta.getIdentificativoCanalePSP(), versamento, iuv, ccp, bodyrichiesta.getDatiPagamentoPSP());
+			Rpt rpt = new RptBuilder().buildRptAttivata(bodyrichiesta.getIdentificativoIntermediarioPSP(), psp, bodyrichiesta.getIdentificativoCanalePSP(), versamento, iuv, ccp, bodyrichiesta.getDatiPagamentoPSP());
 
 			ctx.getApplicationLogger().log("ccp.attivazione", rpt.getCodMsgRichiesta());
 
@@ -569,6 +574,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		String iuv = header.getIdentificativoUnivocoVersamento();
 		String ccp = header.getCodiceContestoPagamento();
 		String psp = bodyrichiesta.getIdentificativoPSP();
+		BigDecimal importoRichiesta = null;
+		Operazione operazione = Operazione.VERIFICA;
 		
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
@@ -681,7 +688,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(versamento == null) throw new NotFoundException();
 					
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, psp, ccp, importoRichiesta, operazione,  log);
 
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -710,13 +717,13 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					
 					// Versamento non trovato, devo interrogare l'applicazione.
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
-					versamento = VersamentoUtils.acquisisciVersamento(applicazioneGestisceIuv, null, null, null, codDominio, iuv,  TipologiaTipoVersamento.DOVUTO, log);
+					versamento = VersamentoUtils.acquisisciVersamento(applicazioneGestisceIuv, null, null, null, codDominio, iuv,  TipologiaTipoVersamento.DOVUTO, psp, ccp, importoRichiesta, operazione, log);
 					
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
 					
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, psp, ccp, importoRichiesta, operazione, log);
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -1052,6 +1059,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		String numeroAvviso = qrCode.getNoticeNumber();
 		String codDominio = qrCode.getFiscalCode();
 		
+		String ccp = "0";
+		String psp = null; // TODO capire cosa mettere
+		BigDecimal importoRichiesta = null;
+		Operazione operazione = Operazione.VERIFICA;
+		
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		
@@ -1161,7 +1173,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(versamento == null) throw new NotFoundException();
 					
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, psp, ccp, importoRichiesta, operazione, log);
 
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -1190,13 +1202,13 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					
 					// Versamento non trovato, devo interrogare l'applicazione.
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
-					versamento = VersamentoUtils.acquisisciVersamento(applicazioneGestisceIuv, null, null, null, codDominio, iuv,  TipologiaTipoVersamento.DOVUTO, log);
+					versamento = VersamentoUtils.acquisisciVersamento(applicazioneGestisceIuv, null, null, null, codDominio, iuv,  TipologiaTipoVersamento.DOVUTO, psp, ccp, importoRichiesta, operazione, log);
 					
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
 					
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, psp, ccp, importoRichiesta, operazione, log);
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -1350,6 +1362,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		String numeroAvviso = qrCode.getNoticeNumber();
 		String codDominio = qrCode.getFiscalCode();
 		
+		String ccpId = "0";
+		String psp = "0"; // TODO???
+		BigDecimal importoRichiesta = requestBody.getAmount();
+		Operazione operazione = Operazione.ATTIVA;
+		
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
 		
@@ -1466,7 +1483,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(versamento == null) throw new NotFoundException();
 					
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, psp, ccpId, importoRichiesta, operazione, log);
 
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -1493,12 +1510,13 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					}
 					
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
-					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, applicazioneGestisceIuv.getCodApplicazione()), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, log);
+					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, applicazioneGestisceIuv.getCodApplicazione()), null, null, null, 
+							codDominio, iuv, TipologiaTipoVersamento.DOVUTO, psp, ccpId, importoRichiesta, operazione, log);
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
 					
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, psp, ccpId, importoRichiesta, operazione, log);
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);

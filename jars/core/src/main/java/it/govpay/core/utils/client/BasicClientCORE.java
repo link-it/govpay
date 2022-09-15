@@ -77,7 +77,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
@@ -117,11 +116,11 @@ import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Evento.RuoloEvento;
+import it.govpay.model.Intermediario;
 import it.govpay.model.configurazione.GdeInterfaccia;
 import it.govpay.model.configurazione.Giornale;
 import it.govpay.model.eventi.DettaglioRichiesta;
 import it.govpay.model.eventi.DettaglioRisposta;
-import it.govpay.model.Intermediario;
 
 public abstract class BasicClientCORE {
 

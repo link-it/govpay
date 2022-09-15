@@ -56,6 +56,7 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
@@ -63,6 +64,7 @@ import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.beans.commons.Versamento.AllegatoPendenza;
 import it.govpay.core.beans.tracciati.PendenzaPost;
@@ -78,6 +80,8 @@ import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.client.IVerificaClient;
+import it.govpay.core.utils.client.IVerificaClient.Operazione;
+import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.tracciati.validator.PendenzaPostValidator;
@@ -198,6 +202,11 @@ public class VersamentoUtils {
 
 	public static Versamento aggiornaVersamento(Versamento versamento, Logger log) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
 	VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException, IOException {
+		return aggiornaVersamento(versamento, null, null, null, null, log);
+	}
+
+	public static Versamento aggiornaVersamento(Versamento versamento, String pspId, String ccp, BigDecimal importo, Operazione operazione, Logger log) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
+	VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException, IOException {
 		// Se il versamento non e' in attesa, non aggiorno un bel niente
 		if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO))
 			return versamento;
@@ -226,7 +235,7 @@ public class VersamentoUtils {
 				if(versamento.getApplicazione(configWrapper).getConnettoreIntegrazione() != null) {
 					TipologiaTipoVersamento tipo = versamento.getTipo();
 					try {
-						versamento = acquisisciVersamento(versamento.getApplicazione(configWrapper), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, tipo, log);
+						versamento = acquisisciVersamento(versamento.getApplicazione(configWrapper), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, tipo, pspId, ccp, importo, operazione, log);
 					} catch (ClientException e) {
 						// Errore nella chiamata all'ente. Controllo se e' mandatoria o uso quel che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) { 
@@ -266,11 +275,17 @@ public class VersamentoUtils {
 				// versamento valido
 			} 
 		}
-		return versamento;
-	}
+		return versamento;}
 
 
 	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String debitore, String dominio, String iuv, TipologiaTipoVersamento tipo, Logger log) 
+			throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException, IOException {
+		return acquisisciVersamento(applicazione, codVersamentoEnte, bundlekey, debitore, dominio, iuv, tipo, null, null, null, null, log);
+	}
+
+
+	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String debitore, String dominio, String iuv, TipologiaTipoVersamento tipo,
+			String pspId, String ccp,  BigDecimal importo, Operazione operazione, Logger log) 
 			throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException, IOException {
 
 		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
@@ -286,7 +301,7 @@ public class VersamentoUtils {
 			ctx.getApplicationLogger().log("verifica.nonConfigurata");
 			throw new VersamentoSconosciutoException();
 		}
-		IVerificaClient verificaClient = new VerificaClient(applicazione);
+		IVerificaClient verificaClient = getVerificaClient(configWrapper, applicazione, dominio);
 		// salvataggio id Rpt/ versamento/ pagamento
 		verificaClient.getEventoCtx().setCodDominio(dominio); 
 		verificaClient.getEventoCtx().setIuv(iuv);
@@ -295,7 +310,7 @@ public class VersamentoUtils {
 		Versamento versamento = null;
 		try {
 			try {
-				it.govpay.core.beans.commons.Versamento versamentoCommons = verificaClient.verificaPendenza(codVersamentoEnte, bundlekey, debitore, dominio, iuv);
+				it.govpay.core.beans.commons.Versamento versamentoCommons = verificaClient.verificaPendenza(codVersamentoEnte, bundlekey, debitore, dominio, iuv, pspId, ccp, importo, operazione);
 				
 				try {
 					versamento = VersamentoUtils.toVersamentoModel(versamentoCommons, false);
@@ -374,6 +389,29 @@ public class VersamentoUtils {
 		return versamento;
 	}
 
+	private static IVerificaClient getVerificaClient(BDConfigWrapper configWrapper, Applicazione applicazione, String codDominio) throws ClientException, ServiceException, IOException {
+		switch (applicazione.getConnettoreIntegrazione().getVersione()) {
+		case NETPAY_REST_01:
+		{
+			try {
+				Dominio dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
+				Stazione stazione = dominio.getStazione();
+				return new it.govpay.netpay.v1.verifica.VerificaClient(applicazione.getCodApplicazione(), applicazione.getConnettoreIntegrazione(), 
+						TipoConnettore.VERIFICA.name(), Componente.API_ENTE, 
+						new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale(), dominio, stazione);
+			} catch (NotFoundException e) {
+				throw new ServiceException(e);
+			}
+		}
+		case GP_REST_01:
+		case GP_REST_02:
+		case GP_SOAP_01:
+		case GP_SOAP_03:
+		default:
+			return new VerificaClient(applicazione);
+		}
+	}
+
 
 	public static Versamento inoltroPendenza(Applicazione applicazione, String codDominio, String codTipoVersamento, String codUnitaOperativa, String jsonBody, Logger log) 
 			throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException, IOException {
@@ -385,7 +423,7 @@ public class VersamentoUtils {
 			ctx.getApplicationLogger().log("verifica.nonConfigurata");
 			throw new VersamentoSconosciutoException();
 		}
-		IVerificaClient verificaClient = new VerificaClient(applicazione);
+		IVerificaClient verificaClient = getVerificaClient(configWrapper, applicazione, codDominio);
 		// salvataggio id Rpt/ versamento/ pagamento
 		verificaClient.getEventoCtx().setCodDominio(codDominio); 
 		verificaClient.getEventoCtx().setIdA2A(applicazione.getCodApplicazione());

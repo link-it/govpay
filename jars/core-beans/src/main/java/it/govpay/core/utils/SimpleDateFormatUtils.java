@@ -21,6 +21,7 @@ package it.govpay.core.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -245,5 +246,15 @@ public class SimpleDateFormatUtils {
 		LocalDate date = LocalDate.of(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE));
         LocalTime time = LocalTime.of(c.get(Calendar.HOUR), c.get(Calendar.MINUTE), c.get(Calendar.SECOND), c.get(Calendar.MILLISECOND));
 		return LocalDateTime.of(date, time);
+	}
+	
+	public static Date toDate(LocalDateTime dateToConvert) {
+		if(dateToConvert == null)
+			return null;
+		
+		Calendar c = Calendar.getInstance();
+		Instant instant = dateToConvert.atZone(c.getTimeZone().toZoneId()).toInstant();
+		Date dt = Date.from(instant);
+		return dt;
 	}
 }

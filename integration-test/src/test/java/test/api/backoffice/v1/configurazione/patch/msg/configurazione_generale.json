@@ -80,16 +80,6 @@
 					"log": "sempre",
 					"dump": "sempre"
 				}
-			},
-			"apiNetPay": {
-				"letture": {
-					"log": "sempre",
-					"dump": "sempre"
-				},
-				"scritture": {
-					"log": "sempre",
-					"dump": "sempre"
-				}
 			}
 		}
 	},

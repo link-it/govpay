@@ -1,6 +1,7 @@
 package it.govpay.backoffice.v1.beans;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,6 +17,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "url",
 "versioneApi",
 "auth",
+"headers",
 })
 public class Connector extends JSONSerializable implements IValidable {
 
@@ -27,20 +29,23 @@ public class Connector extends JSONSerializable implements IValidable {
    * Versione delle API di integrazione utilizzate.
    */
   public enum VersioneApiEnum {
-
-
-
-
-    V1("REST v1"),
-
-
-    V2("REST v2");
+    
+    
+        
+            
+    REST_V1("REST v1"),
+    
+            
+    REST_V2("REST v2"),
+    
+            
+    NETPAY_V1("NETPAY v1");
 
 
 //SOAP_3("SOAP v3");
-
-
-
+            
+        
+    
 
     private String value;
 
@@ -74,8 +79,9 @@ public class Connector extends JSONSerializable implements IValidable {
 
 	public String toNameString() {
 		switch(this) {
-		case V1: return "REST_1";
-		case V2: return "REST_2";
+		case REST_V1: return "REST_1";
+		case REST_V2: return "REST_2";
+		case NETPAY_V1: return "NETPAY_V1";
 		//case SOAP_3: return "SOAP_3";
 		default:  return "";
 		}
@@ -89,7 +95,10 @@ public class Connector extends JSONSerializable implements IValidable {
 
   @JsonProperty("auth")
   private TipoAutenticazione auth = null;
-
+  
+  @JsonProperty("headers")
+  private List<Header> headers = null;
+  
   /**
    * Dati di integrazione ad un servizio web
    **/
@@ -149,23 +158,39 @@ public Connector versioneApiEnum(VersioneApiEnum versioneApiEnum) {
     this.auth = auth;
   }
 
+  /**
+   **/
+  public Connector headers(List<Header> headers) {
+    this.headers = headers;
+    return this;
+  }
+
+  @JsonProperty("headers")
+  public List<Header> getHeaders() {
+    return headers;
+  }
+  public void setHeaders(List<Header> headers) {
+    this.headers = headers;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
       return true;
     }
-    if (o == null || this.getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
     Connector connector = (Connector) o;
-    return Objects.equals(this.url, connector.url) &&
-        Objects.equals(this.versioneApi, connector.versioneApi) &&
-        Objects.equals(this.auth, connector.auth);
+    return Objects.equals(url, connector.url) &&
+        Objects.equals(versioneApi, connector.versioneApi) &&
+        Objects.equals(auth, connector.auth) &&
+        Objects.equals(headers, connector.headers);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.url, this.versioneApi, this.auth);
+    return Objects.hash(url, versioneApi, auth, headers);
   }
 
   public static Connector parse(String json) throws IOException {
@@ -181,10 +206,11 @@ public Connector versioneApiEnum(VersioneApiEnum versioneApiEnum) {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Connector {\n");
-
-    sb.append("    url: ").append(this.toIndentedString(this.url)).append("\n");
-    sb.append("    versioneApi: ").append(this.toIndentedString(this.versioneApi)).append("\n");
-    sb.append("    auth: ").append(this.toIndentedString(this.auth)).append("\n");
+    
+    sb.append("    url: ").append(toIndentedString(url)).append("\n");
+    sb.append("    versioneApi: ").append(toIndentedString(versioneApi)).append("\n");
+    sb.append("    auth: ").append(toIndentedString(auth)).append("\n");
+    sb.append("    headers: ").append(toIndentedString(headers)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -213,6 +239,7 @@ public void validate() throws ValidationException {
 		}
 
 		vf.getValidator("auth", this.auth).validateFields();
+		vf.getValidator("headers", this.headers).validateObjects();
 	}
 }
 
