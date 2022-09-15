@@ -37,7 +37,7 @@ import it.govpay.ec.v1.beans.Riscossione;
 public class NotificaTerminazioneConverter extends NotificaConverter {
 
 	@Override
-	public Notifica toRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws IOException {
+	public Notifica toRsModel(it.govpay.model.Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws IOException {
 		Notifica notificaRsModel = super.toRsModel(notifica, rpt, applicazione, versamento, pagamenti);	
 		// rt
 		if(rpt.getXmlRt() != null) {

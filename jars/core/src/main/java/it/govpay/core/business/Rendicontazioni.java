@@ -70,6 +70,7 @@ import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Azione;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
@@ -83,7 +84,6 @@ import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
-import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
@@ -290,7 +290,7 @@ public class Rendicontazioni {
 					try {
 						byte[] tracciato = null;
 						if(rnd.getFrFile() == null) {
-							appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoChiediFlussoRendicontazione);
+							appContext.setupNodoClient(stazione.getCodStazione(), null, EventoContext.Azione.nodoChiediFlussoRendicontazione);
 							appContext.getRequest().addGenericProperty(new Property("codStazione", stazione.getCodStazione()));
 							appContext.getRequest().addGenericProperty(new Property("idFlusso", idRendicontazione.getIdentificativoFlusso()));
 							
@@ -745,7 +745,7 @@ public class Rendicontazioni {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		NodoClient chiediFlussoRendicontazioniClient = null;
 		try {
-			appContext.setupNodoClient(stazione.getCodStazione(), dominio != null ? dominio.getCodDominio() : null, Azione.nodoChiediElencoFlussiRendicontazione);
+			appContext.setupNodoClient(stazione.getCodStazione(), dominio != null ? dominio.getCodDominio() : null, EventoContext.Azione.nodoChiediElencoFlussiRendicontazione);
 			appContext.getRequest().addGenericProperty(new Property("codDominio", dominio != null ? dominio.getCodDominio() : "-"));
 			ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussi");
 

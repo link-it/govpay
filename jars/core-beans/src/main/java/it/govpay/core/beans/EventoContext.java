@@ -48,6 +48,15 @@ public class EventoContext {
 	public enum Esito {OK, KO, FAIL};
 	public enum Categoria { INTERFACCIA, INTERNO, UTENTE };
 
+	public enum Azione {
+		nodoInviaRPT, nodoInviaCarrelloRPT, nodoChiediStatoRPT, nodoChiediCopiaRT, nodoChiediListaPendentiRPT, nodoInviaRichiestaStorno, nodoInviaRispostaRevoca, nodoChiediElencoFlussiRendicontazione, nodoChiediFlussoRendicontazione
+	}
+
+	public enum Azione_Ente_Rendicontazioni {
+		
+		inviaFlussoRendicontazione, inviaRpp, inviaSintesiFlussiRendicontazione, inviaSintesiPagamenti
+	}
+
 	private boolean registraEvento = false;
 	private Componente componente;
 	private RuoloEvento role;

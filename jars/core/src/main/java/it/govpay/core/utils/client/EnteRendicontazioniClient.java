@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 
 import gov.telematici.pagamenti.ws.rpt.ObjectFactory;
 import it.govpay.bd.model.Dominio;
+import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
@@ -38,11 +39,6 @@ import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.configurazione.Giornale;
 
 public class EnteRendicontazioniClient extends BasicClientCORE {
-
-	public enum Azione {
-		
-		inviaFlussoRendicontazione, inviaRpp, inviaSintesiFlussiRendicontazione, inviaSintesiPagamenti
-	}
 
 	private static ObjectFactory objectFactory;
 	private static Logger log = LoggerWrapperFactory.getLogger(EnteRendicontazioniClient.class);
@@ -77,16 +73,16 @@ public class EnteRendicontazioniClient extends BasicClientCORE {
 		
 		switch (contenuto) {
 		case FLUSSI_RENDICONTAZIONE:
-			swaggerOperationID = Azione.inviaFlussoRendicontazione.toString();
+			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.inviaFlussoRendicontazione.toString();
 			break;
 		case RPP:
-			swaggerOperationID = Azione.inviaRpp.toString();
+			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.inviaRpp.toString();
 			break;
 		case SINTESI_FLUSSI_RENDICONTAZIONE:
-			swaggerOperationID = Azione.inviaSintesiFlussiRendicontazione.toString();
+			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.inviaSintesiFlussiRendicontazione.toString();
 			break;
 		case SINTESI_PAGAMENTI:
-			swaggerOperationID = Azione.inviaSintesiPagamenti.toString();
+			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.inviaSintesiPagamenti.toString();
 			break;
 		}
 		

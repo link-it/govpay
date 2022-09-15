@@ -45,6 +45,8 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Azione;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
@@ -56,7 +58,6 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
-import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.StatoRpt;
@@ -97,7 +98,7 @@ public class InviaRptThread implements Runnable {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		RptBD rptBD = null;
 		try {
-			String operationId = appContext.setupNodoClient(this.stazione.getCodStazione(), this.rpt.getCodDominio(), Azione.nodoInviaRPT);
+			String operationId = appContext.setupNodoClient(this.stazione.getCodStazione(), this.rpt.getCodDominio(), EventoContext.Azione.nodoInviaRPT);
 			log.info("Id Server: [" + operationId + "]");
 			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + ", CodDominio: "+this.rpt.getCodDominio()+",IUV: "+this.rpt.getIuv()+",CCP: "+this.rpt.getCcp()+"]");
 

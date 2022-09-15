@@ -10,7 +10,6 @@ import javax.ws.rs.core.GenericType;
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.service.beans.HttpMethodEnum;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.service.context.dump.DumpRequest;
@@ -61,7 +60,7 @@ public class AppIoClient extends BasicClientCORE {
 
 		// Salvataggio Tipo Evento
 		this.getEventoCtx().setTipoEvento(swaggerOperationId);
-		HttpMethodEnum httpMethodEnum = fromHttpMethod(HttpRequestMethod.GET);
+		HttpMethod httpMethodEnum = fromHttpMethod(HttpRequestMethod.GET);
 
 		int responseCode = 0;
 		DumpRequest dumpRequest = new DumpRequest();
@@ -188,7 +187,7 @@ public class AppIoClient extends BasicClientCORE {
 
 		// Salvataggio Tipo Evento
 		this.getEventoCtx().setTipoEvento(swaggerOperationId);
-		HttpMethodEnum httpMethodEnum = fromHttpMethod(HttpRequestMethod.POST);
+		HttpMethod httpMethodEnum = fromHttpMethod(HttpRequestMethod.POST);
 
 		int responseCode = 0;
 		DumpRequest dumpRequest = new DumpRequest();

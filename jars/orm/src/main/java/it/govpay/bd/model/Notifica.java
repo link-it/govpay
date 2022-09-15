@@ -134,7 +134,7 @@ public class Notifica extends it.govpay.model.Notifica {
 		this.setIdRr(rr.getId());
 	}
 	
-	public String getRptKey() throws ServiceException {
+	public String getRptKey() {
 		if(this.getRpt() != null)
 			return rpt.getCodDominio() + "@" + rpt.getIuv() + "@" + rpt.getCcp();
 		return "";

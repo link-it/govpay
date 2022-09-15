@@ -70,7 +70,6 @@ import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.EventoContext.Categoria;
 import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.EventoContext.Esito;
-import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.business.TracciatiNotificaPagamenti;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
@@ -81,6 +80,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.client.EnteRendicontazioniClient;
 import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.eventi.EventiUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
 import it.govpay.ec.rendicontazioni.v1.beans.Rpp;
@@ -953,7 +953,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		if(GovpayConfig.getInstance().isGiornaleEventiEnabled()) {
 			boolean logEvento = false;
 			boolean dumpEvento = false;
-			GdeInterfaccia configurazioneInterfaccia = GiornaleEventi.getConfigurazioneComponente(this.componente, this.giornale);
+			GdeInterfaccia configurazioneInterfaccia = EventiUtils.getConfigurazioneComponente(this.componente, this.giornale);
 			
 			log.debug("Log Evento Client: ["+this.componente +"] Tipo Connettore ["+tipoConnettore
 						+"], Destinatario ["+ url +"], Esito ["+eventoContext.getEsito()+"]");
@@ -965,13 +965,13 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 					log.error("Errore durante il log della configurazione giornale eventi: " +e.getMessage(), e);
 				}
 				
-				if(GiornaleEventi.isRequestLettura(null, this.componente, eventoContext.getTipoEvento())) {
-					logEvento = GiornaleEventi.logEvento(configurazioneInterfaccia.getLetture(), eventoContext.getEsito());
-					dumpEvento = GiornaleEventi.dumpEvento(configurazioneInterfaccia.getLetture(), eventoContext.getEsito());
+				if(EventiUtils.isRequestLettura(null, this.componente, eventoContext.getTipoEvento())) {
+					logEvento = EventiUtils.logEvento(configurazioneInterfaccia.getLetture(), eventoContext.getEsito());
+					dumpEvento = EventiUtils.dumpEvento(configurazioneInterfaccia.getLetture(), eventoContext.getEsito());
 					log.debug("Tipo Operazione 'Lettura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
-				} else if(GiornaleEventi.isRequestScrittura(null, this.componente, eventoContext.getTipoEvento())) {
-					logEvento = GiornaleEventi.logEvento(configurazioneInterfaccia.getScritture(), eventoContext.getEsito());
-					dumpEvento = GiornaleEventi.dumpEvento(configurazioneInterfaccia.getScritture(), eventoContext.getEsito());
+				} else if(EventiUtils.isRequestScrittura(null, this.componente, eventoContext.getTipoEvento())) {
+					logEvento = EventiUtils.logEvento(configurazioneInterfaccia.getScritture(), eventoContext.getEsito());
+					dumpEvento = EventiUtils.dumpEvento(configurazioneInterfaccia.getScritture(), eventoContext.getEsito());
 					log.debug("Tipo Operazione 'Scrittura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
 				} else {
 					log.debug("Tipo Operazione non riconosciuta, l'evento non verra' salvato.");
