@@ -49,6 +49,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.utils.logger.Log4JUtils;
 import it.govpay.core.utils.service.context.GpContextFactory;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.stampe.utils.GovpayStampe;
 
 public class StartupUtils {
@@ -186,6 +187,7 @@ public class StartupUtils {
 			
 			AnagraficaManager.newInstance(dominioAnagraficaManager);
 			JaxbUtils.init();
+			it.govpay.jppapdp.beans.utils.JaxbUtils.init();
 			ThreadExecutorManager.setup();
 			GovpayStampe.init(log, gpConfig.getResourceDir());
 		} catch (Exception e) {

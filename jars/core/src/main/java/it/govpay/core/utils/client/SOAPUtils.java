@@ -34,7 +34,7 @@ import javax.xml.validation.Schema;
 import org.apache.commons.io.IOUtils;
 import org.xml.sax.SAXException;
 
-import it.govpay.core.utils.JaxbUtils;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class SOAPUtils {
 	

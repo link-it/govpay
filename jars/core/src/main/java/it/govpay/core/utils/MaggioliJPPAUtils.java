@@ -35,6 +35,7 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.jppapdp.beans.utils.JaxbUtils;
 import it.govpay.model.QuotaContabilita;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.CtDatiVersamentoRT;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.CtDettagliImporto;
@@ -265,7 +266,7 @@ public class MaggioliJPPAUtils {
 	}
 
 	private static void popolaRicevutaDaRPT23(CtRicevutaTelematica ricevutaTelematica, Rpt rpt, Versamento versamento, List<SingoloVersamento> singoliVersamenti, BDConfigWrapper configWrapper) throws DatatypeConfigurationException, JAXBException, SAXException, ServiceException {
-		it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt(), false);
+		it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica rt = it.govpay.pagopa.beans.utils.JaxbUtils.toRT(rpt.getXmlRt(), false);
 
 		ricevutaTelematica.setDataOraMessaggioRicevuta(impostaDataOperazione(rpt.getDataMsgRicevuta()));
 		popolaDatiVersamentoRT(ricevutaTelematica, rpt);
@@ -399,7 +400,7 @@ public class MaggioliJPPAUtils {
 	}
 
 	private static void popolaRicevutaDaRPT24(CtRicevutaTelematica ricevutaTelematica, Rpt rpt, Versamento versamento, List<SingoloVersamento> singoliVersamenti, BDConfigWrapper configWrapper) throws DatatypeConfigurationException, JAXBException, SAXException, ServiceException {
-		PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+		PaSendRTReq paSendRTReq_RT = it.govpay.pagopa.beans.utils.JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
 
 		ricevutaTelematica.setDataOraMessaggioRicevuta(impostaDataOperazione(rpt.getDataMsgRicevuta()));
 		popolaDatiVersamentoRT(ricevutaTelematica, rpt);

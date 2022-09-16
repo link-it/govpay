@@ -44,7 +44,6 @@ import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -58,6 +57,7 @@ import it.govpay.pagamento.v1.beans.ListaRppIndex;
 import it.govpay.pagamento.v1.beans.Rpp;
 import it.govpay.pagamento.v1.beans.RppIndex;
 import it.govpay.pagamento.v1.beans.converter.RptConverter;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class RppController extends BaseController {
 

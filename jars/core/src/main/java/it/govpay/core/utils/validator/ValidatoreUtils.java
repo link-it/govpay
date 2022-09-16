@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
-import org.apache.commons.jcs.access.exception.InvalidArgumentException;
 import org.apache.commons.lang.ArrayUtils;
 
 import it.govpay.core.beans.commons.Versamento.SingoloVersamento.TipoContabilita;
@@ -129,7 +128,7 @@ public class ValidatoreUtils {
 		
 		try {
 			TipoContabilita.valueOf(tipoContabilita);
-		} catch(InvalidArgumentException e) {
+		} catch(IllegalArgumentException e) {
 			throw new ValidationException("Codifica inesistente per tipoContabilita. Valore fornito [" + tipoContabilita + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
 		}
 		
@@ -140,7 +139,7 @@ public class ValidatoreUtils {
 		
 		try {
 			TipoContabilita.valueOf(enumValue.toString());
-		} catch(InvalidArgumentException e) {
+		} catch(IllegalArgumentException e) {
 			throw new ValidationException("Codifica inesistente per tipoContabilita. Valore fornito [" + enumValue + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
 		}
 	}

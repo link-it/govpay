@@ -49,7 +49,6 @@ import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.PromemoriaException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.ExceptionUtils;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.trasformazioni.Costanti;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
@@ -62,6 +61,7 @@ import it.govpay.model.configurazione.PromemoriaAvviso;
 import it.govpay.model.configurazione.PromemoriaRicevuta;
 import it.govpay.model.configurazione.PromemoriaScadenza;
 import it.govpay.model.configurazione.SslConfig;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class Promemoria {
 

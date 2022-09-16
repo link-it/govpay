@@ -7,7 +7,7 @@ import it.govpay.backoffice.v1.beans.Rpp;
 import it.govpay.backoffice.v1.beans.RppIndex;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.rs.v1.ConverterUtils;
+import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class RptConverter {
 

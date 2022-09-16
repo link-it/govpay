@@ -103,7 +103,6 @@ import it.govpay.core.utils.CtReceiptUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.RptBuilder;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.VersamentoUtils;
@@ -125,6 +124,7 @@ import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.model.eventi.DatiPagoPA;
 import it.govpay.orm.IdVersamento;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 
 @WebService(serviceName = "PagamentiTelematiciCCPservice",

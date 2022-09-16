@@ -46,12 +46,12 @@ import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.business.TracciatiNotificaPagamenti;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Contabilita;
 import it.govpay.model.QuotaContabilita;
 import it.govpay.model.TipoVersamento;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class TracciatiNotificaPagamentiUtils {
 	

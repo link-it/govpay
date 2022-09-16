@@ -5,9 +5,9 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
 
 import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.pendenze.v2.beans.Rpp;
 import it.govpay.pendenze.v2.beans.RppIndex;
-import it.govpay.rs.v1.ConverterUtils;
 
 public class RptConverter {
 

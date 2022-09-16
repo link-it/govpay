@@ -1,9 +1,7 @@
 package it.govpay.core.utils.rawutils;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.ISerializer;
@@ -22,18 +20,15 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
-import it.govpay.bd.model.Rpt;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.model.Rpt;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class ConverterUtils {
 
-	private static Map<String, String> map;
 	private static ObjectMapper mapper;
 	static {
-		map = new HashMap<>();
-		map.put("http://www.digitpa.gov.it/schemas/2011/Pagamenti/", "");
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JaxbAnnotationModule());
 		mapper.registerModule(new DateModule());
@@ -62,7 +57,29 @@ public class ConverterUtils {
 			throw new IOException(e);
 		}
 	}
+	
+	public static String getRptJson(CtRichiestaPagamentoTelematico ctRpt) throws IOException {
+		if(ctRpt == null)
+			return null;
 
+		try {
+			return mapper.writeValueAsString(ctRpt);
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+	
+	public static String getRptJson(PaGetPaymentRes paGetPaymentRes_RPT) throws IOException {
+		if(paGetPaymentRes_RPT == null)
+			return null;
+
+		try {
+			return mapper.writeValueAsString(paGetPaymentRes_RPT);
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+	
 	public static String getRtJson(Rpt rpt) throws IOException {
 		if(rpt.getXmlRt() == null)
 			return null;
@@ -79,6 +96,17 @@ public class ConverterUtils {
 			}
 			
 			CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
+			return mapper.writeValueAsString(ctRt);
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+	
+	public static String getRtJson(CtRicevutaTelematica ctRt ) throws IOException {
+		if(ctRt == null)
+			return null;
+
+		try {
 			return mapper.writeValueAsString(ctRt);
 		} catch (Exception e) {
 			throw new IOException(e);

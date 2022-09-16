@@ -13,6 +13,7 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.UriBuilderUtils;
+import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.ragioneria.v2.beans.Riscossione;
@@ -20,7 +21,6 @@ import it.govpay.ragioneria.v2.beans.RiscossioneIndex;
 import it.govpay.ragioneria.v2.beans.StatoRiscossione;
 import it.govpay.ragioneria.v2.beans.TipoRiscossione;
 import it.govpay.rs.BaseRsService;
-import it.govpay.rs.v1.ConverterUtils;
 
 public class RiscossioniConverter {
 

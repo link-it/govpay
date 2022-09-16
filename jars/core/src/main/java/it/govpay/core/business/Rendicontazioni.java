@@ -80,7 +80,6 @@ import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
@@ -91,6 +90,7 @@ import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.model.configurazione.Giornale;
 import it.govpay.model.eventi.DatiPagoPA;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 
 public class Rendicontazioni {
