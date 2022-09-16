@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
@@ -24,8 +23,8 @@ import com.fasterxml.jackson.databind.deser.DeserializerFactory;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.core.utils.rawutils.DateFormatUtils;
 import it.govpay.core.utils.rawutils.DateModule;
 
 public class JsonJacksonDeserializer implements IDeserializer{
@@ -88,7 +87,7 @@ public class JsonJacksonDeserializer implements IDeserializer{
 		mapper.registerModule(new DateModule());
 		mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-		mapper.setDateFormat(DateFormatUtils.newSimpleDateFormatSoloData());
+		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
 	}
 	

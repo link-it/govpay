@@ -34,7 +34,7 @@ public class ConverterUtils {
 		mapper.registerModule(new DateModule());
 		mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-		mapper.setDateFormat(DateFormatUtils.newSimpleDateFormatSoloData());
+		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
 	}
 
 	public static String getRptJson(Rpt rpt) throws IOException {
