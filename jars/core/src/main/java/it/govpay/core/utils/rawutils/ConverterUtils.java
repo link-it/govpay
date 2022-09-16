@@ -1,7 +1,6 @@
 package it.govpay.core.utils.rawutils;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.ISerializer;
@@ -10,7 +9,6 @@ import org.openspcoop2.utils.serialization.SerializationFactory;
 import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -45,39 +43,25 @@ public class ConverterUtils {
 			switch (rpt.getVersione()) {
 			case SANP_230:
 				CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
-				return mapper.writeValueAsString(ctRpt);
+				return toJSON(ctRpt);
 			case SANP_240:
 				PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
-				return mapper.writeValueAsString(paGetPaymentRes_RPT.getData());
+				return toJSON(paGetPaymentRes_RPT.getData());
 			}
 			
 			CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
-			return mapper.writeValueAsString(ctRpt);
+			return toJSON(ctRpt);
 		} catch (Exception e) {
 			throw new IOException(e);
 		}
 	}
 	
 	public static String getRptJson(CtRichiestaPagamentoTelematico ctRpt) throws IOException {
-		if(ctRpt == null)
-			return null;
-
-		try {
-			return mapper.writeValueAsString(ctRpt);
-		} catch (Exception e) {
-			throw new IOException(e);
-		}
+		return toJSON(ctRpt);
 	}
 	
 	public static String getRptJson(PaGetPaymentRes paGetPaymentRes_RPT) throws IOException {
-		if(paGetPaymentRes_RPT == null)
-			return null;
-
-		try {
-			return mapper.writeValueAsString(paGetPaymentRes_RPT);
-		} catch (Exception e) {
-			throw new IOException(e);
-		}
+		return toJSON(paGetPaymentRes_RPT);
 	}
 	
 	public static String getRtJson(Rpt rpt) throws IOException {
@@ -89,31 +73,27 @@ public class ConverterUtils {
 			switch (rpt.getVersione()) {
 			case SANP_230:
 				CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
-				return mapper.writeValueAsString(ctRt);
+				return toJSON(ctRt);
 			case SANP_240:
 				PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
-				return mapper.writeValueAsString(paSendRTReq_RT.getReceipt());
+				return toJSON(paSendRTReq_RT.getReceipt());
 			}
 			
 			CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
-			return mapper.writeValueAsString(ctRt);
+			return toJSON(ctRt);
 		} catch (Exception e) {
 			throw new IOException(e);
 		}
 	}
 	
 	public static String getRtJson(CtRicevutaTelematica ctRt ) throws IOException {
-		if(ctRt == null)
-			return null;
-
-		try {
-			return mapper.writeValueAsString(ctRt);
-		} catch (Exception e) {
-			throw new IOException(e);
-		}
+		return toJSON(ctRt);
 	}
 	
-	public static String toJSON(Object obj, String fields) throws IOException {
+	public static String toJSON(Object obj) throws IOException {
+		if(obj == null)
+			return null;
+		
 		try {
 			return mapper.writeValueAsString(obj);
 		} catch (JsonProcessingException e) {
@@ -152,31 +132,5 @@ public class ConverterUtils {
 			throw new IOException(e.getMessage(), e);
 		}
 	}
-	
-	public static <T> List<T> convertFromJsonToList(String json, TypeReference<List<T>> var)  throws java.io.IOException{
-		if(json != null && var != null) {
-			SerializationConfig serializationConfig = new SerializationConfig();
-			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi());
-			serializationConfig.setIgnoreNullValues(true);
-
-			mapper.setDateFormat(serializationConfig.getDf());
-			if(serializationConfig.isSerializeEnumAsString())
-				  mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
-			
-			return mapper.readerFor(var).readValue(json);
-		}
-
-		return null;
-	}
-	
-//	public static <T> T parse(String jsonString, Class<T> t) throws ServiceException, ValidationException  {
-//		try {
-//			return mapper.readValue(jsonString, t);
-//		} catch (JsonMappingException | JsonParseException e) {
-//			throw new ValidationException(e);
-//		} catch (Exception  e) {
-//			throw new ServiceException(e);
-//		}
-//	}
 	
 }

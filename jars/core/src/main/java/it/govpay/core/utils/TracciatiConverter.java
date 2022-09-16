@@ -76,7 +76,7 @@ public class TracciatiConverter {
 		
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 		if(pendenza.getDatiAllegati() != null)
-			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati(),null));
+			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati()));
  
 		BigDecimal importoVociPendenza = fillSingoliVersamentiFromVociPendenza(versamento, pendenza.getVoci());
 		
@@ -152,7 +152,7 @@ public class TracciatiConverter {
 
 				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
 				if(vocePendenza.getDatiAllegati() != null)
-					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati(),null));
+					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati()));
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setImporto(vocePendenza.getImporto());
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());

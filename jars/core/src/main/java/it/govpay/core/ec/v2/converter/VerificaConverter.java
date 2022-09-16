@@ -67,7 +67,7 @@ public class VerificaConverter {
 		versamento.setCodVersamentoLotto(pendenza.getCartellaPagamento());
 		
 		if(pendenza.getDatiAllegati() != null)
-			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati(),null));
+			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati()));
 		
 		versamento.setTassonomia(pendenza.getTassonomia());
 		
@@ -119,7 +119,7 @@ public class VerificaConverter {
 
 				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
 				if(vocePendenza.getDatiAllegati() != null)
-					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati(),null));
+					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati()));
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setImporto(vocePendenza.getImporto());
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
