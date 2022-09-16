@@ -14,7 +14,8 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.ragioneria.v3.beans.EsitoRpp;
 import it.govpay.ragioneria.v3.beans.ModelloPagamento;
 import it.govpay.ragioneria.v3.beans.Ricevuta;
@@ -23,7 +24,6 @@ import it.govpay.ragioneria.v3.beans.RicevutaRpt;
 import it.govpay.ragioneria.v3.beans.RicevutaRt;
 import it.govpay.ragioneria.v3.beans.RicevutaRt.TipoEnum;
 import it.govpay.ragioneria.v3.beans.RicevuteRisultati;
-import it.govpay.rs.v1.ConverterUtils;
 
 public class RicevuteConverter {
 

@@ -1,8 +1,8 @@
 package it.govpay.ragioneria.v1.beans.converter;
 
 import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.ragioneria.v1.beans.RppIndex;
-import it.govpay.rs.v1.ConverterUtils;
 
 public class RptConverter {
 

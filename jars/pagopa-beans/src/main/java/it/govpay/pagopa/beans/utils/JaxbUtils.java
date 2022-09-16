@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2022 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.core.utils;
+package it.govpay.pagopa.beans.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -36,7 +36,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import gov.telematici.pagamenti.ws.rpt.ppthead.IntestazioneCarrelloPPT;
@@ -50,9 +50,15 @@ import it.gov.digitpa.schemas._2011.pagamenti.riversamento.FlussoRiversamento;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 
+/**
+ * Utilities di conversione JAXB per gli elementi XML delle API PagoPA.
+ * 
+ * @author Pintori Giuliano (pintori@link.it)
+ * 
+ */
 public class JaxbUtils {
 
-	private static JAXBContext jaxbBolloContext, jaxbRptRtContext, jaxbRrErContext, jaxbFrContext, jaxbWsRptContext, jaxbPaForNodeContext, jaxbWsJPPAPdPInternalContext, jaxbWsJPPAPdPExternalContext;
+	private static JAXBContext jaxbBolloContext, jaxbRptRtContext, jaxbRrErContext, jaxbFrContext, jaxbWsRptContext, jaxbPaForNodeContext;
 	private static Schema RPT_RT_schema, RR_ER_schema, FR_schema, PAForNode_Schema;
 	private static boolean initialized = false;
 
@@ -70,8 +76,6 @@ public class JaxbUtils {
 			jaxbRrErContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti.revoche");
 			jaxbFrContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti.riversamento");
 			jaxbPaForNodeContext = JAXBContext.newInstance("it.gov.pagopa.pagopa_api.pa.pafornode");
-			jaxbWsJPPAPdPInternalContext = JAXBContext.newInstance("it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.internal:it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.internal.schema._1_0");
-			jaxbWsJPPAPdPExternalContext = JAXBContext.newInstance("it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external:it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0");
 			initialized = true;
 		}
 	}
@@ -191,79 +195,11 @@ public class JaxbUtils {
 		return jaxbUnmarshaller.unmarshal(xsr);
 	}
 	
-	public static void marshalJPPAPdPInternalService(Object jaxb, OutputStream os) throws JAXBException, SAXException {
-		if(jaxb == null) return;
-		init();
-		Marshaller jaxbMarshaller = jaxbWsJPPAPdPInternalContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
-		jaxbMarshaller.marshal(jaxb, os);
-	}
-	
-	public static String marshalJPPAPdPInternalService(Object jaxb) throws JAXBException, SAXException {
-		if(jaxb == null) return null;
-		init();
-		Marshaller jaxbMarshaller = jaxbWsJPPAPdPInternalContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		jaxbMarshaller.marshal(jaxb, baos);
-		return new String(baos.toByteArray());
-	}
-	
-	public static Object unmarshalJPPAPdPInternalService(XMLStreamReader xsr) throws JAXBException, SAXException {
-		init();
-		Unmarshaller jaxbUnmarshaller = jaxbWsJPPAPdPInternalContext.createUnmarshaller();
-		return jaxbUnmarshaller.unmarshal(xsr);
-	}
-	
-	public static Object unmarshalJPPAPdPInternalService(XMLStreamReader xsr, Schema schema) throws JAXBException, SAXException {
-		if(schema == null) return unmarshalJPPAPdPInternalService(xsr);
-		
-		init();
-		Unmarshaller jaxbUnmarshaller = jaxbWsJPPAPdPInternalContext.createUnmarshaller();
-		jaxbUnmarshaller.setSchema(schema);
-		jaxbUnmarshaller.setEventHandler(new JaxbUtils().new GpEventHandler());
-		return jaxbUnmarshaller.unmarshal(xsr);
-	}
-	
-	public static void marshalJPPAPdPExternalService(Object jaxb, OutputStream os) throws JAXBException, SAXException {
-		if(jaxb == null) return;
-		init();
-		Marshaller jaxbMarshaller = jaxbWsJPPAPdPExternalContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
-		jaxbMarshaller.marshal(jaxb, os);
-	}
-	
-	public static String marshalJPPAPdPExternalService(Object jaxb) throws JAXBException, SAXException {
-		if(jaxb == null) return null;
-		init();
-		Marshaller jaxbMarshaller = jaxbWsJPPAPdPExternalContext.createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		jaxbMarshaller.marshal(jaxb, baos);
-		return new String(baos.toByteArray());
-	}
-	
-	public static Object unmarshalJPPAPdPExternalService(XMLStreamReader xsr) throws JAXBException, SAXException {
-		init();
-		Unmarshaller jaxbUnmarshaller = jaxbWsJPPAPdPExternalContext.createUnmarshaller();
-		return jaxbUnmarshaller.unmarshal(xsr);
-	}
-	
-	public static Object unmarshalJPPAPdPExternalService(XMLStreamReader xsr, Schema schema) throws JAXBException, SAXException {
-		if(schema == null) return unmarshalJPPAPdPExternalService(xsr);
-		
-		init();
-		Unmarshaller jaxbUnmarshaller = jaxbWsJPPAPdPExternalContext.createUnmarshaller();
-		jaxbUnmarshaller.setSchema(schema);
-		jaxbUnmarshaller.setEventHandler(new JaxbUtils().new GpEventHandler());
-		return jaxbUnmarshaller.unmarshal(xsr);
-	}
-	
 	public class GpEventHandler implements ValidationEventHandler {
 		@Override
 		public boolean handleEvent(ValidationEvent ve) {
 			if(ve.getSeverity() == 0) {
-				LoggerWrapperFactory.getLogger(JaxbUtils.class).warn("Ricevuto warning di validazione durante il marshalling del messaggio: " + ve.getMessage());
+				LoggerFactory.getLogger(JaxbUtils.class).warn("Ricevuto warning di validazione durante il marshalling del messaggio: " + ve.getMessage());
 				return true;
 			} else {
 				return false;

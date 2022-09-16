@@ -103,7 +103,7 @@ public class PagamentiPortaleConverter {
 					PagamentiPortaleDTO.RefVersamentoModello4 ref = pagamentiPortaleDTO. new RefVersamentoModello4();
 					ref.setIdDominio(pendenza.getIdDominio());
 					ref.setIdTipoPendenza(pendenza.getIdTipoPendenza());
-					ref.setDati(ConverterUtils.toJSON(pendenza.getDati(),null));
+					ref.setDati(ConverterUtils.toJSON(pendenza.getDati()));
 					listRefs.add(ref);
 					
 				} else if((pendenza.getIdDominio() != null && pendenza.getNumeroAvviso() != null) && (pendenza.getIdA2A() == null && pendenza.getIdPendenza() == null)) {
@@ -187,7 +187,7 @@ public class PagamentiPortaleConverter {
 		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 
 		if(pendenza.getDatiAllegati() != null)
-			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati(),null));
+			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati()));
 
 		//		versamento.setAnomalie(marshall(pendenza.getSegnalazioni())); //TODO
 
@@ -246,7 +246,7 @@ public class PagamentiPortaleConverter {
 		versamento.setCartellaPagamento(pendenza.getCartellaPagamento());
 
 		if(pendenza.getDatiAllegati() != null)
-			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati(),null));
+			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati()));
 
 		//		versamento.setIncasso(pendenza.getIncasso()); //TODO
 		//		versamento.setAnomalie(pendenza.getAnomalie()); 
@@ -280,7 +280,7 @@ public class PagamentiPortaleConverter {
 
 				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
 				if(vocePendenza.getDatiAllegati() != null)
-					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati(),null));
+					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati()));
 
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());

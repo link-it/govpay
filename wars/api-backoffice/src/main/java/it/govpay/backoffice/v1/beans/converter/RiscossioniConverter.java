@@ -24,10 +24,10 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoPagamento;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.rs.BaseRsService;
 
 public class RiscossioniConverter {

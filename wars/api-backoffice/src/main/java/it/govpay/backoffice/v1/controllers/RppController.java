@@ -50,7 +50,6 @@ import it.govpay.core.dao.pagamenti.dto.PatchRptDTO;
 import it.govpay.core.dao.pagamenti.dto.PatchRptDTOResponse;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.ValidationException;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -59,6 +58,7 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class RppController extends BaseController {
 

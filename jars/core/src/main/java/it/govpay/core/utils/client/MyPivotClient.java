@@ -37,11 +37,11 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.configurazione.Giornale;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class MyPivotClient extends BasicClientCORE {
 

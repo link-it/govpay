@@ -188,11 +188,11 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		switch (notifica.getTipo()) {
 		case ATTIVAZIONE:
 			it.govpay.ec.v1.beans.Notifica notificaAttivazioneRsModel = new NotificaAttivazioneConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti);
-			jsonBody = ConverterUtils.toJSON(notificaAttivazioneRsModel, null);
+			jsonBody = ConverterUtils.toJSON(notificaAttivazioneRsModel);
 			break;
 		case RICEVUTA:
 			it.govpay.ec.v1.beans.Notifica notificaTerminazioneRsModel = new NotificaTerminazioneConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti);
-			jsonBody = ConverterUtils.toJSON(notificaTerminazioneRsModel, null);
+			jsonBody = ConverterUtils.toJSON(notificaTerminazioneRsModel);
 			break;
 		case FALLIMENTO:
 		case ANNULLAMENTO:
@@ -288,7 +288,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		switch (notifica.getTipo()) {
 		case RICEVUTA:
 			it.govpay.ec.v2.beans.Ricevuta notificaRicevutaRsModel = RicevuteConverter.toRsModel(notifica, rpt, applicazione, versamento, pagamenti);
-			jsonBody = ConverterUtils.toJSON(notificaRicevutaRsModel, null);
+			jsonBody = ConverterUtils.toJSON(notificaRicevutaRsModel);
 			break;
 		case ATTIVAZIONE:
 		case FALLIMENTO:

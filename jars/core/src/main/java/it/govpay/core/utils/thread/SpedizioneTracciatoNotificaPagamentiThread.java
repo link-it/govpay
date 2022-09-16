@@ -494,7 +494,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 						appContext.getServerByOperationId(operationId).addGenericProperty(new Property("contenuto", ConnettoreNotificaPagamenti.Contenuti.RPP.toString()));
 						
 						client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale);
-						client.inviaFile(ConverterUtils.toJSON(rpp, null).getBytes(), null, ConnettoreNotificaPagamenti.Contenuti.RPP, rppKey);
+						client.inviaFile(ConverterUtils.toJSON(rpp).getBytes(), null, ConnettoreNotificaPagamenti.Contenuti.RPP, rppKey);
 						client.getEventoCtx().setEsito(Esito.OK);
 						log.debug("Spedizione RPP: " + rppKey + " completata.");
 						try {
@@ -960,7 +960,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 
 			if(configurazioneInterfaccia != null) {
 				try {
-					log.debug("Configurazione Giornale Eventi API: ["+this.componente+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia,null));
+					log.debug("Configurazione Giornale Eventi API: ["+this.componente+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia));
 				} catch (IOException e) {
 					log.error("Errore durante il log della configurazione giornale eventi: " +e.getMessage(), e);
 				}

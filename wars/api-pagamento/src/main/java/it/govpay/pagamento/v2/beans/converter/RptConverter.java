@@ -16,11 +16,11 @@ import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v2.beans.Rpp;
 import it.govpay.pagamento.v2.beans.RppIndex;
-import it.govpay.rs.v1.ConverterUtils;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 
 public class RptConverter {

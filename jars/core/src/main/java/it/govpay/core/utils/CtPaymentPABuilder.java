@@ -59,6 +59,7 @@ import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.Versione;
 import it.govpay.model.Versamento.CausaleSemplice;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class CtPaymentPABuilder {
 

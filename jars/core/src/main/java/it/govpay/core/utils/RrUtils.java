@@ -80,6 +80,7 @@ import it.govpay.model.Rr.StatoRr;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.eventi.DatiPagoPA;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class RrUtils extends NdpValidationUtils {
 

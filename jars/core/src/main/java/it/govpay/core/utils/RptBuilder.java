@@ -63,6 +63,7 @@ import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.Versione;
 import it.govpay.model.SingoloVersamento.TipoBollo;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class RptBuilder {
 	

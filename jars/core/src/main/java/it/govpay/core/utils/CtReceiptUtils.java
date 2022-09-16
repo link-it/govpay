@@ -60,6 +60,7 @@ import it.govpay.model.Rpt.TipoIdentificativoAttestante;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class CtReceiptUtils  extends NdpValidationUtils {
 

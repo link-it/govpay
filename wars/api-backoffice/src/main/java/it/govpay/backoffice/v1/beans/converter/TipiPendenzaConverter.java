@@ -52,7 +52,7 @@ public class TipiPendenzaConverter {
 			if(tipoVersamento.isCaricamentoPendenzePortaleBackofficeAbilitatoDefault()) {
 				if(entrataPost.getPortaleBackoffice().getForm() != null && entrataPost.getPortaleBackoffice().getForm().getDefinizione() != null && entrataPost.getPortaleBackoffice().getForm().getTipo() != null) {
 					Object definizione = entrataPost.getPortaleBackoffice().getForm().getDefinizione();
-					tipoVersamento.setCaricamentoPendenzePortaleBackofficeFormDefinizioneDefault(ConverterUtils.toJSON(definizione,null));
+					tipoVersamento.setCaricamentoPendenzePortaleBackofficeFormDefinizioneDefault(ConverterUtils.toJSON(definizione));
 					tipoVersamento.setCaricamentoPendenzePortaleBackofficeFormTipoDefault(entrataPost.getPortaleBackoffice().getForm().getTipo());
 				}
 
@@ -65,11 +65,11 @@ public class TipiPendenzaConverter {
 					}
 
 					Object definizione = entrataPost.getPortaleBackoffice().getTrasformazione().getDefinizione();
-					tipoVersamento.setCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneDefault(ConverterUtils.toJSON(definizione,null));
+					tipoVersamento.setCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizioneDefault(ConverterUtils.toJSON(definizione));
 					tipoVersamento.setCaricamentoPendenzePortaleBackofficeTrasformazioneTipoDefault(entrataPost.getPortaleBackoffice().getTrasformazione().getTipo());
 				}
 				if(entrataPost.getPortaleBackoffice().getValidazione() != null)
-					tipoVersamento.setCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getPortaleBackoffice().getValidazione(),null));
+					tipoVersamento.setCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getPortaleBackoffice().getValidazione()));
 
 				if(entrataPost.getPortaleBackoffice().getInoltro() != null)
 					tipoVersamento.setCaricamentoPendenzePortaleBackofficeCodApplicazioneDefault(entrataPost.getPortaleBackoffice().getInoltro());
@@ -84,10 +84,10 @@ public class TipiPendenzaConverter {
 			if(tipoVersamento.isCaricamentoPendenzePortalePagamentoAbilitatoDefault()) {
 				if(entrataPost.getPortalePagamento().getForm() != null && entrataPost.getPortalePagamento().getForm().getDefinizione() != null && entrataPost.getPortalePagamento().getForm().getTipo() != null) {
 					Object definizione = entrataPost.getPortalePagamento().getForm().getDefinizione();
-					tipoVersamento.setCaricamentoPendenzePortalePagamentoFormDefinizioneDefault(ConverterUtils.toJSON(definizione,null));
+					tipoVersamento.setCaricamentoPendenzePortalePagamentoFormDefinizioneDefault(ConverterUtils.toJSON(definizione));
 					tipoVersamento.setCaricamentoPendenzePortalePagamentoFormTipoDefault(entrataPost.getPortalePagamento().getForm().getTipo());
 					Object impaginazione = entrataPost.getPortalePagamento().getForm().getImpaginazione();
-					tipoVersamento.setCaricamentoPendenzePortalePagamentoFormImpaginazioneDefault(ConverterUtils.toJSON(impaginazione,null));
+					tipoVersamento.setCaricamentoPendenzePortalePagamentoFormImpaginazioneDefault(ConverterUtils.toJSON(impaginazione));
 				}
 
 				if(entrataPost.getPortalePagamento().getTrasformazione() != null  && entrataPost.getPortalePagamento().getTrasformazione().getDefinizione() != null && entrataPost.getPortalePagamento().getTrasformazione().getTipo() != null) {
@@ -99,11 +99,11 @@ public class TipiPendenzaConverter {
 					}
 
 					Object definizione = entrataPost.getPortalePagamento().getTrasformazione().getDefinizione();
-					tipoVersamento.setCaricamentoPendenzePortalePagamentoTrasformazioneDefinizioneDefault(ConverterUtils.toJSON(definizione,null));
+					tipoVersamento.setCaricamentoPendenzePortalePagamentoTrasformazioneDefinizioneDefault(ConverterUtils.toJSON(definizione));
 					tipoVersamento.setCaricamentoPendenzePortalePagamentoTrasformazioneTipoDefault(entrataPost.getPortalePagamento().getTrasformazione().getTipo());
 				}
 				if(entrataPost.getPortalePagamento().getValidazione() != null)
-					tipoVersamento.setCaricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getPortalePagamento().getValidazione(),null));
+					tipoVersamento.setCaricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getPortalePagamento().getValidazione()));
 
 				if(entrataPost.getPortalePagamento().getInoltro() != null)
 					tipoVersamento.setCaricamentoPendenzePortalePagamentoCodApplicazioneDefault(entrataPost.getPortalePagamento().getInoltro());
@@ -124,12 +124,12 @@ public class TipiPendenzaConverter {
 				}
 
 				if(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().getMessaggio() != null) {
-					tipoVersamento.setAvvisaturaMailPromemoriaAvvisoMessaggioDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().getMessaggio(),null));
+					tipoVersamento.setAvvisaturaMailPromemoriaAvvisoMessaggioDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().getMessaggio()));
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaAvvisoMessaggioDefault(null);
 				}
 				if(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().getOggetto() != null) {
-					tipoVersamento.setAvvisaturaMailPromemoriaAvvisoOggettoDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().getOggetto(),null));
+					tipoVersamento.setAvvisaturaMailPromemoriaAvvisoOggettoDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().getOggetto()));
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaAvvisoOggettoDefault(null);
 				}
@@ -162,12 +162,12 @@ public class TipiPendenzaConverter {
 				}
 
 				if(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getMessaggio() != null) {
-					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaMessaggioDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getMessaggio(),null));
+					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaMessaggioDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getMessaggio()));
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaMessaggioDefault(null);
 				}
 				if(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getOggetto() != null) {
-					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaOggettoDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getOggetto(),null));
+					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaOggettoDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getOggetto()));
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaOggettoDefault(null);
 				}
@@ -205,12 +205,12 @@ public class TipiPendenzaConverter {
 				}
 
 				if(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getMessaggio() != null) {
-					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaMessaggioDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getMessaggio(),null));
+					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaMessaggioDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getMessaggio()));
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaMessaggioDefault(null);
 				}
 				if(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getOggetto() != null) {
-					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaOggettoDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getOggetto(),null));
+					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaOggettoDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getOggetto()));
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaOggettoDefault(null);
 				}
@@ -238,7 +238,7 @@ public class TipiPendenzaConverter {
 
 		// Visualizzazione custom del dettaglio pendenza
 		if(entrataPost.getVisualizzazione() != null)
-			tipoVersamento.setVisualizzazioneDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getVisualizzazione(),null));
+			tipoVersamento.setVisualizzazioneDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getVisualizzazione()));
 
 		// trasformazione csv pendenze
 		if(entrataPost.getTracciatoCsv() != null
@@ -255,8 +255,8 @@ public class TipiPendenzaConverter {
 			}
 
 			tipoVersamento.setTracciatoCsvIntestazioneDefault(entrataPost.getTracciatoCsv().getIntestazione());
-			tipoVersamento.setTracciatoCsvRichiestaDefault(ConverterUtils.toJSON(entrataPost.getTracciatoCsv().getRichiesta(),null));
-			tipoVersamento.setTracciatoCsvRispostaDefault(ConverterUtils.toJSON(entrataPost.getTracciatoCsv().getRisposta(),null));
+			tipoVersamento.setTracciatoCsvRichiestaDefault(ConverterUtils.toJSON(entrataPost.getTracciatoCsv().getRichiesta()));
+			tipoVersamento.setTracciatoCsvRispostaDefault(ConverterUtils.toJSON(entrataPost.getTracciatoCsv().getRisposta()));
 		}
 
 		// Avvisatura Via AppIO
@@ -273,12 +273,12 @@ public class TipiPendenzaConverter {
 				}
 
 				if(entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso().getMessaggio() != null) {
-					tipoVersamento.setAvvisaturaAppIoPromemoriaAvvisoMessaggioDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso().getMessaggio(),null));
+					tipoVersamento.setAvvisaturaAppIoPromemoriaAvvisoMessaggioDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso().getMessaggio()));
 				}else {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaAvvisoMessaggioDefault(null);
 				}
 				if(entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso().getOggetto() != null) {
-					tipoVersamento.setAvvisaturaAppIoPromemoriaAvvisoOggettoDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso().getOggetto(),null));
+					tipoVersamento.setAvvisaturaAppIoPromemoriaAvvisoOggettoDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso().getOggetto()));
 				}else {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaAvvisoOggettoDefault(null);
 				}
@@ -306,12 +306,12 @@ public class TipiPendenzaConverter {
 				}
 
 				if(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().getMessaggio() != null) {
-					tipoVersamento.setAvvisaturaAppIoPromemoriaRicevutaMessaggioDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().getMessaggio(),null));
+					tipoVersamento.setAvvisaturaAppIoPromemoriaRicevutaMessaggioDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().getMessaggio()));
 				}else {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaRicevutaMessaggioDefault(null);
 				}
 				if(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().getOggetto() != null) {
-					tipoVersamento.setAvvisaturaAppIoPromemoriaRicevutaOggettoDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().getOggetto(),null));
+					tipoVersamento.setAvvisaturaAppIoPromemoriaRicevutaOggettoDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().getOggetto()));
 				}else {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaRicevutaOggettoDefault(null);
 				}
@@ -344,12 +344,12 @@ public class TipiPendenzaConverter {
 				}
 
 				if(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getMessaggio() != null) {
-					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaMessaggioDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getMessaggio(),null));
+					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaMessaggioDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getMessaggio()));
 				}else {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaMessaggioDefault(null);
 				}
 				if(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getOggetto() != null) {
-					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaOggettoDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getOggetto(),null));
+					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaOggettoDefault(ConverterUtils.toJSON(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getOggetto()));
 				}else {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaOggettoDefault(null);
 				}

@@ -82,6 +82,7 @@ import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.exception.CodificaInesistenteException;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class RtUtils extends NdpValidationUtils {
 	

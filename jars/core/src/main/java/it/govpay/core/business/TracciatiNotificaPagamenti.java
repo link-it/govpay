@@ -64,7 +64,6 @@ import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.thread.InviaNotificaPagamentoMaggioliJPPAThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
@@ -76,6 +75,7 @@ import it.govpay.model.Rpt.Versione;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
 import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class TracciatiNotificaPagamenti {
 
