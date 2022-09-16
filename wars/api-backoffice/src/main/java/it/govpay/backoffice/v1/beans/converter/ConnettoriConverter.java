@@ -3,19 +3,21 @@ package it.govpay.backoffice.v1.beans.converter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import it.govpay.backoffice.v1.beans.Connector;
 import it.govpay.backoffice.v1.beans.Connector.VersioneApiEnum;
 import it.govpay.backoffice.v1.beans.TipoAutenticazione.TipoEnum;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.model.Versionabile;
 import it.govpay.model.connettori.Header;
-import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ConnettoriConverter {
 
-	public static Connettore getConnettore(it.govpay.backoffice.v1.beans.Connector connector) throws CodificaInesistenteException {
+	public static Connettore getConnettore(it.govpay.backoffice.v1.beans.Connector connector) throws ValidationException {
 		Connettore connettore = new Connettore();
 
 		if(connector.getAuth() != null) {
@@ -51,8 +53,22 @@ public class ConnettoriConverter {
 		}
 
 		connettore.setUrl(connector.getUrl());
-		if(connector.getVersioneApi() != null)
-			connettore.setVersione(Versionabile.Versione.toEnum(VersioneApiEnum.fromValue(connector.getVersioneApi()).toNameString()));
+		if(connector.getVersioneApi() != null) {
+			switch(VersioneApiEnum.fromValue(connector.getVersioneApi())) {
+			case NETPAY_V1:
+				connettore.setVersione(Versionabile.Versione.NETPAY_REST_01);
+				break;
+			case REST_V1:
+				connettore.setVersione(Versionabile.Versione.GP_REST_01);
+				break;
+			case REST_V2:
+				connettore.setVersione(Versionabile.Versione.GP_REST_02);
+				break;
+			default:
+				throw new ValidationException("Codifica inesistente per Servizio. Valore fornito [" + connector.getVersioneApi() + "] valori possibili " + ArrayUtils.toString(VersioneApiEnum.values()));
+			
+			}
+		}
 		
 		connettore.setHeaders(getHeaders(connector.getHeaders()));
 
@@ -64,8 +80,21 @@ public class ConnettoriConverter {
 		if(connettore.getTipoAutenticazione()!=null && !connettore.getTipoAutenticazione().equals(EnumAuthType.NONE))
 			rsModel.setAuth(toTipoAutenticazioneRsModel(connettore));
 		rsModel.setUrl(connettore.getUrl());
-		if(connettore.getVersione() != null)
-			rsModel.setVersioneApi(VersioneApiEnum.fromName(connettore.getVersione().getApiLabel()).toString());
+		if(connettore.getVersione() != null) {
+			switch (connettore.getVersione()) {
+			case GP_REST_01:
+				rsModel.setVersioneApi(VersioneApiEnum.REST_V1.toString());
+				break;
+			case GP_REST_02:
+				rsModel.setVersioneApi(VersioneApiEnum.REST_V2.toString());
+				break;
+			case NETPAY_REST_01:
+				rsModel.setVersioneApi(VersioneApiEnum.NETPAY_V1.toString());
+				break;
+			default:
+				break;
+			}
+		}
 
 		rsModel.setHeaders(toHeadersRsModel(connettore.getHeaders()));
 		

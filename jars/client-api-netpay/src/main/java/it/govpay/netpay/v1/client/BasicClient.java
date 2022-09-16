@@ -15,6 +15,7 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.EventoContext.Componente;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.client.HttpMethod;
 import it.govpay.core.utils.eventi.EventiUtils;
@@ -142,5 +143,16 @@ public class BasicClient {
 			log.error("Errore durante la serializzazione della response per il giornale degli eventi: " +e.getMessage(), e);
 		}
 		return null;
+	}
+	
+	public static String toJSON(Object obj) throws IOException {
+		if(obj == null)
+			return null;
+		
+		try {
+			return mapper.writeValueAsString(obj);
+		} catch (JsonProcessingException e) {
+			throw new IOException(e);
+		}
 	}
 }

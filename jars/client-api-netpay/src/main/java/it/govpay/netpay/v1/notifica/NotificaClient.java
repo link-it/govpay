@@ -3,14 +3,21 @@ package it.govpay.netpay.v1.notifica;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import javax.xml.bind.JAXBException;
+
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.xml.sax.SAXException;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.EventoContext.Categoria;
 import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.client.INotificaClient;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Connettore;
@@ -28,6 +35,7 @@ import it.govpay.netpay.v1.model.RegisterPaymentNotify.PayStatusEnum;
 import it.govpay.netpay.v1.model.RegisterPaymentReceipt;
 import it.govpay.netpay.v1.model.RegisterPaymentResponse;
 import it.govpay.netpay.v1.model.RegisterPaymentResponse.ResultEnum;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class NotificaClient extends BasicClient implements INotificaClient {
 
@@ -90,17 +98,11 @@ public class NotificaClient extends BasicClient implements INotificaClient {
 		registerPaymentNotify.setCreditorTxId(iuv);
 		registerPaymentNotify.setDomainId(codDominio);
 		registerPaymentNotify.setPayStatus(PayStatusEnum.EXECUTED);
-		
+
 		registerPaymentNotify.setPspId(this.rpt.getCodPsp());
 		RegisterPaymentReceipt recepit = new RegisterPaymentReceipt();
-		recepit.setAmountPaid(null);
-		recepit.setBankExecDate(null);
-		recepit.setBankResultCode(ccp);
-		recepit.setBankResultMessage(ccp);
-		recepit.setBankTXRefNum(ccp);
-		
+
 		registerPaymentNotify.setReceipt(recepit);
-//		registerPaymentNotify.setReceiptXML(receiptXml);
 
 		byte[] dumpRequest = getDumpRequest(registerPaymentNotify);
 		byte[] dumpResponse = null;
@@ -108,6 +110,27 @@ public class NotificaClient extends BasicClient implements INotificaClient {
 		HttpHeaders requestHeaders = new HttpHeaders();
 
 		try {
+			registerPaymentNotify.setReceiptXML(Base64.encodeBase64String(rpt.getXmlRt()));
+			switch (this.rpt.getVersione()) {
+			case SANP_230:
+				CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
+				recepit.setAmountPaid(ctRt.getDatiPagamento().getImportoTotalePagato());
+				recepit.setBankExecDate(SimpleDateFormatUtils.toLocalDatetime(ctRt.getDataOraMessaggioRicevuta()));
+				recepit.setBankResultCode(rpt.getEsitoPagamento().getCodifica() + "");
+				recepit.setBankResultMessage(rpt.getDescrizioneStato());
+				recepit.setBankTXRefNum(rpt.getCodMsgRicevuta());
+				break;
+			case SANP_240:
+			default:
+				PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+				recepit.setAmountPaid(paSendRTReq_RT.getReceipt().getPaymentAmount());
+				recepit.setBankExecDate(SimpleDateFormatUtils.toLocalDatetime(paSendRTReq_RT.getReceipt().getPaymentDateTime()));
+				recepit.setBankResultCode(rpt.getEsitoPagamento().getCodifica() + "");
+				recepit.setBankResultMessage(rpt.getDescrizioneStato());
+				recepit.setBankTXRefNum(rpt.getCodMsgRicevuta());
+				break;
+			}
+
 			requestHeaders.add("x-company", this.valoreHeaderXCompany);
 			requestHeaders.add("x-role", this.valoreHeaderXCompany);
 			requestHeaders.add("Accept", "application/json");
@@ -133,7 +156,7 @@ public class NotificaClient extends BasicClient implements INotificaClient {
 				ErrorReasonAgID errorReasonAgID = registerPaymentResponse.getErrorReasonAgID();
 				String errorMessage = registerPaymentResponse.getErrorMessage();
 				log.warn("Spedizione della notifica di " + notifica.getTipo() + " PAGAMENTO della transazione (" + codDominio + ")(" + iuv + ")(" + ccp + ") conclusa con esito KO: [ErrorRease: "+errorReason+", ErrorReasonAgID: "+errorReasonAgID+", ErrorMessage: "+errorMessage+"]");
-				
+
 				throw new ClientException(errorMessage, responseCode, dumpResponse);
 			}
 			}
@@ -145,6 +168,10 @@ public class NotificaClient extends BasicClient implements INotificaClient {
 
 			log.warn("Spedizione della notifica di " + notifica.getTipo() + " PAGAMENTO della transazione (" + codDominio + ")(" + iuv + ")(" + ccp + ") conclusa con errore: ", e.getMessage(),e);
 			throw new ClientException(e);
+		} catch (JAXBException | SAXException e) {
+			responseCode = 500;
+			log.error("Spedizione della notifica di " + notifica.getTipo() + " PAGAMENTO della transazione (" + codDominio + ")(" + iuv + ")(" + ccp + ") conclusa con errore: ", e.getMessage(),e);
+			throw new GovPayException(e);
 		} finally {
 			this.popolaContextEvento(responseCode, dumpRequest, dumpResponse, requestHeaders, responseHeaders);
 		}

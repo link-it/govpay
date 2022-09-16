@@ -136,7 +136,6 @@ public class ConnettoreConverter {
 						CollectionType var = mapper.getTypeFactory().constructCollectionType(List.class, Header.class);
 
 						dto.setHeaders(mapper.readerFor(var).readValue(connettore.getValore()));
-						dto.setVersione(Versione.toEnum(connettore.getValore()));
 					} catch (JsonProcessingException e) {
 						throw new IOException(e.getMessage(), e);
 					}

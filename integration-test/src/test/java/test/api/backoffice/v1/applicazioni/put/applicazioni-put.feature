@@ -232,3 +232,27 @@ And match response.apiPendenze == true
 And match response.apiRagioneria == true
 
 
+Scenario Outline: Modifica di una applicazione (<field>)
+
+* def applicazione = read('classpath:test/api/backoffice/v1/applicazioni/put/msg/applicazione.json')
+* set applicazione.<field> = <value>
+* def checkValue = <value> != null ? <value> : '#notpresent'
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers basicAutenticationHeader
+And request applicazione
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response.<field> == checkValue
+
+Examples:
+| field | value | 
+| servizioIntegrazione | { versioneApi: 'NETPAY v1', url: 'http://prova.it', auth: { username: 'usr', password: 'pwd' }, headers: [ {name: 'name' , value: 'value'}] } |
+

@@ -26,6 +26,7 @@ import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.dao.anagrafica.dto.PutApplicazioneDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.TipoVersamento;
@@ -33,7 +34,7 @@ import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ApplicazioniConverter {
 
-	public static PutApplicazioneDTO getPutApplicazioneDTO(ApplicazionePost applicazionePost, String idA2A, Authentication user) throws NotAuthorizedException, CodificaInesistenteException {
+	public static PutApplicazioneDTO getPutApplicazioneDTO(ApplicazionePost applicazionePost, String idA2A, Authentication user) throws NotAuthorizedException, CodificaInesistenteException, ValidationException {
 		PutApplicazioneDTO applicazioneDTO = new PutApplicazioneDTO(user);
 		it.govpay.bd.model.Applicazione applicazione = new it.govpay.bd.model.Applicazione();
 		it.govpay.bd.model.Utenza utenza = new it.govpay.bd.model.Utenza();

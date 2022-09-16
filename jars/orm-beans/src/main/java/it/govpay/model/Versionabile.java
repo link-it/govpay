@@ -14,7 +14,7 @@ public abstract class Versionabile extends BasicModel {
 		// Se aggiunta una nuova versione, ricordarsi di aggiornare
 		// il metodo getUltimaVersione.
 		
-		NETPAY_REST_01("NETPAY_REST","1"),
+		NETPAY_REST_01("NETPAY","1"),
 		GP_SOAP_01("SOAP","1"),
 		GP_SOAP_03("SOAP","3"),
 		GP_REST_01("REST","1"),
@@ -22,7 +22,7 @@ public abstract class Versionabile extends BasicModel {
 		
 		private String api;
 		private String label;
-		public static String[] labels = {"NETPAY_REST_1", "SOAP_1","SOAP_3","REST_1","REST_2"};
+		public static String[] labels = {"NETPAY_1", "SOAP_1","SOAP_3","REST_1","REST_2"};
 		
 		Versione(String api, String label){
 			this.label = label;

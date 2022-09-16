@@ -97,3 +97,23 @@ Then status 400
 And match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
 And match response.dettaglio contains 'Il campo regExpIuv non puo\' essere vuoto quando e\' selezionato il campo generazioneIuvInterna.'
 
+Scenario Outline: Modifica di una applicazione (<field>)
+
+* def applicazione = read('classpath:test/api/backoffice/v1/applicazioni/put/msg/applicazione.json')
+* set applicazione.<field> = <value>
+
+Given url backofficeBaseurl
+And path 'applicazioni', idA2A
+And headers basicAutenticationHeader
+And request applicazione
+When method put
+Then status 400
+And match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: '#notnull' }
+And match response.dettaglio contains <fieldName>
+
+Examples:
+| field | value | fieldName |
+| servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { username: 'usr', password: 'pwd' } , headers: [ {name: null , value: 'value'}] } | 'name' | 
+| servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { username: 'usr', password: 'pwd' } , headers: [ {name: '#(loremIpsum)' , value: 'value'}] } | 'name' |
+| servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { username: 'usr', password: 'pwd' } , headers: [ {name: 'name' , value: null}] } | 'value' |
+
