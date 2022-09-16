@@ -398,7 +398,7 @@ public class VersamentoUtils {
 				Stazione stazione = dominio.getStazione();
 				return new it.govpay.netpay.v1.verifica.VerificaClient(applicazione.getCodApplicazione(), applicazione.getConnettoreIntegrazione(), 
 						TipoConnettore.VERIFICA.name(), Componente.API_ENTE, 
-						new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale(), dominio, stazione);
+						new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale(), dominio, stazione,GovpayConfig.getInstance().isGiornaleEventiEnabled());
 			} catch (NotFoundException e) {
 				throw new ServiceException(e);
 			}

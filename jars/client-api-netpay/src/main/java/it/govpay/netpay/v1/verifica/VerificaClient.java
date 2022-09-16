@@ -2,10 +2,10 @@ package it.govpay.netpay.v1.verifica;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.NotImplementedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -23,12 +23,12 @@ import it.govpay.core.utils.client.IVerificaClient;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Connettore;
 import it.govpay.model.Dominio;
-import it.govpay.model.Stazione;
 import it.govpay.model.Evento.RuoloEvento;
-import it.govpay.model.Versionabile.Versione;
+import it.govpay.model.Stazione;
 import it.govpay.model.configurazione.Giornale;
 import it.govpay.netpay.v1.api.VerificaPendenzeApi;
 import it.govpay.netpay.v1.api.impl.ApiClient;
+import it.govpay.netpay.v1.client.BasicClient;
 import it.govpay.netpay.v1.model.CheckPaymentNotify;
 import it.govpay.netpay.v1.model.CheckPaymentNotify.CheckPaymentTypeEnum;
 import it.govpay.netpay.v1.model.CheckPaymentResponse;
@@ -37,31 +37,26 @@ import it.govpay.netpay.v1.model.ErrorReason;
 import it.govpay.netpay.v1.model.ErrorReasonAgID;
 import it.govpay.netpay.v1.verifica.converter.VersamentoConverter;
 
-public class VerificaClient implements IVerificaClient {
-
+public class VerificaClient extends BasicClient implements IVerificaClient {
+	
 	private static final String VERIFICA_PENDENZE_NETPAY_VERIFY_PENDENZA_OPERATION_ID = "checkPayment";
 
-	private Logger log = LoggerFactory.getLogger(VerificaClient.class);
-	private Connettore connettore;
 	private ApiClient apiClient;
 	private VerificaPendenzeApi verificaPendenzeApi;
-	private EventoContext eventoCtx;
+	
 	private String valoreHeaderXCompany;
 	private String valoreHeaderXRole;
-	private Versione versione;
-	private String codApplicazione;
-	protected Componente componente;
-	private Giornale giornale;
-	private String tipoConnettore;
 	private Stazione stazione;
 	private Dominio dominio;
+	
 
-	public VerificaClient(String codApplicazione, Connettore connettore, String tipoConnettore, Componente componente, Giornale giornale, Dominio dominio, Stazione stazione) {
+	public VerificaClient(String codApplicazione, Connettore connettore, String tipoConnettore, Componente componente, Giornale giornale, Dominio dominio, Stazione stazione, boolean logEvento) {
 		this.codApplicazione = codApplicazione;
 		this.connettore = connettore;
 		this.tipoConnettore = tipoConnettore;
 		this.giornale = giornale;
 		this.componente = componente;
+		this.logEvento = logEvento;
 
 		this.eventoCtx = new EventoContext();
 		this.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
@@ -74,6 +69,9 @@ public class VerificaClient implements IVerificaClient {
 
 		this.dominio = dominio;
 		this.stazione = stazione;
+		
+		this.valoreHeaderXCompany = this.connettore.getHeaders().stream().filter(e -> e.getName().equalsIgnoreCase("X-COMPANY")).collect(Collectors.toList()).get(0).getValue();
+		this.valoreHeaderXRole = this.connettore.getHeaders().stream().filter(e -> e.getName().equalsIgnoreCase("X-ROLE")).collect(Collectors.toList()).get(0).getValue();
 
 		// configurazione del client verso Net@Pay
 		this.apiClient = new ApiClient();
@@ -85,10 +83,10 @@ public class VerificaClient implements IVerificaClient {
 	}
 
 	@Override
-	public Versamento verificaPendenza(String codVersamentoEnte, String bundlekey, String codUnivocoDebitore,
-			String codDominio, String iuv, String pspId, String ccp,  BigDecimal importo, Operazione operazione)
-					throws ClientException, VersamentoAnnullatoException, VersamentoDuplicatoException,
-					VersamentoScadutoException, VersamentoSconosciutoException, VersamentoNonValidoException, GovPayException {
+	public Versamento verificaPendenza(String codVersamentoEnte, String bundlekey, String codUnivocoDebitore, String codDominio, String iuv, String pspId, String ccp,  BigDecimal importo, Operazione operazione)
+					throws ClientException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoScadutoException, VersamentoSconosciutoException, VersamentoNonValidoException, GovPayException {
+		int responseCode = 0;
+		
 		String importoD = importo != null ? importo.toString() : "-";
 
 		log.info("Richiedo la verifica per la pendenza [Applicazione:" + this.codApplicazione + " Dominio:" + codDominio + " IUV:" + iuv + " CCP:" + ccp + " PSP:" + pspId + " Amount:" + importoD + " Operazione:" + operazione + "] in versione (" + this.versione.toString() + ") alla URL ("+this.connettore.getUrl()+")");
@@ -116,20 +114,33 @@ public class VerificaClient implements IVerificaClient {
 		checkPaymentNotify.setDomainId(codDominio);
 		checkPaymentNotify.setPspId(pspId);
 
+		byte[] dumpRequest = getDumpRequest(checkPaymentNotify);
+		byte[] dumpResponse = null;
+		HttpHeaders responseHeaders = new HttpHeaders();
+		HttpHeaders requestHeaders = new HttpHeaders();
 		try {
+			requestHeaders.add("x-company", this.valoreHeaderXCompany);
+			requestHeaders.add("x-role", this.valoreHeaderXCompany);
+			requestHeaders.add("Accept", "application/json");
+			requestHeaders.add("Content-Type", "application/json");
+			
 			ResponseEntity<CheckPaymentResponse> responseEntity = this.verificaPendenzeApi.checkPaymentWithHttpInfo(this.valoreHeaderXCompany, this.valoreHeaderXRole, checkPaymentNotify).block();
 
 			CheckPaymentResponse checkPaymentResponse = responseEntity.getBody();
+			responseCode = responseEntity.getStatusCodeValue();
+			responseHeaders = responseEntity.getHeaders();
 
 			ResultEnum result = checkPaymentResponse.getResult();
 
+			dumpResponse = getDumpResponse(checkPaymentResponse);
+			
 			switch (result) {
 			case OK:
 				Versamento versamento =  VersamentoConverter.getVersamentoFromCheckPaymentResponse(checkPaymentResponse, this.codApplicazione, codDominio, iuv, this.dominio.getAuxDigit(), this.stazione.getApplicationCode());
 
 				this.getEventoCtx().setIdA2A(versamento.getCodApplicazione());
 				this.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
-				
+
 				log.info("Verifica per la pendenza [Applicazione:" + this.codApplicazione + " Dominio:" + codDominio + " IUV:" + iuv + " CCP:" + ccp + " PSP:" + pspId + " Amount:" + importoD + " Operazione:" + operazione + "] conclusa con esito OK");
 
 				return versamento;
@@ -141,7 +152,7 @@ public class VerificaClient implements IVerificaClient {
 				String errorMessage = checkPaymentResponse.getErrorMessage();
 				log.warn("Verifica per la pendenza [Applicazione:" + this.codApplicazione + " Dominio:" + codDominio + " IUV:" + iuv + " CCP:" + ccp + " PSP:" + pspId + " Amount:" + importoD + " Operazione:" + operazione 
 						+ "] conclusa con esito KO: [ErrorRease: "+errorReason+", ErrorReasonAgID: "+errorReasonAgID+", ErrorMessage: "+errorMessage+"]");
-				
+
 				switch (errorReason) {
 				case PAY_TX_NOT_PAYABLE1:
 				case PAY_TX_CANCELED:{
@@ -179,14 +190,17 @@ public class VerificaClient implements IVerificaClient {
 				}
 			}
 			}
-
-
 		}catch (WebClientResponseException e) {
+			// dump risposta per log nel giornale degli eventi
+			dumpResponse = e.getResponseBodyAsByteArray();
+			responseCode = e.getRawStatusCode();
+			responseHeaders = e.getHeaders();
+			
 			log.warn("Verifica per la pendenza [Applicazione:" + this.codApplicazione + " Dominio:" + codDominio + " IUV:" + iuv + " CCP:" + ccp + " PSP:" + pspId + " Amount:" + importoD + " Operazione:" + operazione 
 					+ "] conclusa con errore: ", e.getMessage(),e);
 			throw new ClientException(e);
 		} finally {
-			this.popolaContextEvento();
+			this.popolaContextEvento(responseCode, dumpRequest, dumpResponse, requestHeaders, responseHeaders);
 		}
 	}
 
@@ -200,79 +214,7 @@ public class VerificaClient implements IVerificaClient {
 
 	@Override
 	public EventoContext getEventoCtx() {
-		return this.eventoCtx;
+		return super.getEventoCtx();
 	}
 
-	protected void popolaContextEvento() {
-	//		if(GovpayConfig.getInstance().isGiornaleEventiEnabled()) {
-	//			boolean logEvento = false;
-	//			boolean dumpEvento = false;
-	//			GdeInterfaccia configurazioneInterfaccia = giornale.getApiEnte();
-	//
-	//			log.debug("Log Evento Client: ["+this.componente +"], Operazione ["+this.getEventoCtx().getTipoEvento()+"], Method ["+httpMethod+"], Url ["+this.url.toExternalForm()+"], StatusCode ["+responseCode+"]");
-	//
-	//			if(configurazioneInterfaccia != null) {
-	//				try {
-	//					log.debug("Configurazione Giornale Eventi API: ["+this.componente+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia,null));
-	//				} catch (it.govpay.core.exceptions.IOException e) {
-	//					log.error("Errore durante il log della configurazione giornale eventi: " +e.getMessage(), e);
-	//				}
-	//
-	//				if(GiornaleEventi.isRequestLettura(httpMethod, this.componente, this.getEventoCtx().getTipoEvento())) {
-	//					logEvento = GiornaleEventi.logEvento(configurazioneInterfaccia.getLetture(), responseCode);
-	//					dumpEvento = GiornaleEventi.dumpEvento(configurazioneInterfaccia.getLetture(), responseCode);
-	//					log.debug("Tipo Operazione 'Lettura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
-	//				} else if(GiornaleEventi.isRequestScrittura(httpMethod, this.componente, this.getEventoCtx().getTipoEvento())) {
-	//					logEvento = GiornaleEventi.logEvento(configurazioneInterfaccia.getScritture(), responseCode);
-	//					dumpEvento = GiornaleEventi.dumpEvento(configurazioneInterfaccia.getScritture(), responseCode);
-	//					log.debug("Tipo Operazione 'Scrittura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
-	//				} else {
-	//					log.debug("Tipo Operazione non riconosciuta, l'evento non verra' salvato.");
-	//				}
-	//
-	//				this.getEventoCtx().setRegistraEvento(logEvento);
-	//
-	//				if(logEvento) {
-	//					Date dataIngresso = this.getEventoCtx().getDataRichiesta();
-	//					Date dataUscita = new Date();
-	//					// lettura informazioni dalla richiesta
-	//					DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
-	//
-	//					dettaglioRichiesta.setPrincipal(this.getEventoCtx().getPrincipal());
-	//					dettaglioRichiesta.setUtente(this.getEventoCtx().getUtente());
-	//					dettaglioRichiesta.setUrl(this.getEventoCtx().getUrl());
-	//					dettaglioRichiesta.setMethod(httpMethod.toString());
-	//					dettaglioRichiesta.setDataOraRichiesta(dataIngresso);
-	//					dettaglioRichiesta.setHeadersFromMap(dumpRequest.getHeaders());
-	//
-	//
-	//					// lettura informazioni dalla response
-	//					DettaglioRisposta dettaglioRisposta = new DettaglioRisposta();
-	//					dettaglioRisposta.setHeadersFromMap(dumpResponse.getHeaders());
-	//					dettaglioRisposta.setStatus(responseCode);
-	//					dettaglioRisposta.setDataOraRisposta(dataUscita);
-	//
-	//					this.getEventoCtx().setDataRisposta(dataUscita);
-	//					this.getEventoCtx().setStatus(responseCode);
-	//					this.getEventoCtx().setSottotipoEsito(responseCode + "");
-	//
-	//					if(dumpEvento) {
-	//						Base64 base = new Base64();
-	//						// dump richiesta
-	//						if(dumpRequest.getPayload() != null && dumpRequest.getPayload().length > 0)
-	//							dettaglioRichiesta.setPayload(base.encodeToString(dumpRequest.getPayload()));
-	//
-	//						// dump risposta
-	//						if(dumpResponse.getPayload() != null && dumpResponse.getPayload().length > 0)
-	//							dettaglioRisposta.setPayload(base.encodeToString(dumpResponse.getPayload()));
-	//					} 
-	//
-	//					this.getEventoCtx().setDettaglioRichiesta(dettaglioRichiesta);
-	//					this.getEventoCtx().setDettaglioRisposta(dettaglioRisposta);
-	//				}
-	//			} else {
-	//				log.warn("La configurazione per l'API ["+this.componente+"] non e' corretta, salvataggio evento non eseguito."); 
-	//			}
-	//		}
-		}
 }

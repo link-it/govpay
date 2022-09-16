@@ -43,13 +43,16 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.EventoUtils;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.client.INotificaClient;
 import it.govpay.core.utils.client.NotificaClient;
+import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Connettore;
 import it.govpay.model.Notifica.StatoSpedizione;
@@ -154,7 +157,7 @@ public class InviaNotificaThread implements Runnable {
 			
 			ctx.getApplicationLogger().log("notifica.spedizione");
 			
-			client = new NotificaClient(this.applicazione, this.rpt, this.versamento, this.pagamenti, operationId, this.giornale);
+			client = getNotificaClient(operationId);
 			
 //			DatiPagoPA datiPagoPA = new DatiPagoPA();
 //			datiPagoPA.setErogatore(this.applicazione.getCodApplicazione());
@@ -289,6 +292,21 @@ public class InviaNotificaThread implements Runnable {
 			
 			this.completed = true;
 			ContextThreadLocal.unset();
+		}
+	}
+
+	private INotificaClient getNotificaClient(String operationId) throws ClientException, ServiceException {
+		switch (applicazione.getConnettoreIntegrazione().getVersione()) {
+		case NETPAY_REST_01:
+		{
+			return new it.govpay.netpay.v1.notifica.NotificaClient(applicazione.getCodApplicazione(), this.rpt, applicazione.getConnettoreIntegrazione(), TipoConnettore.NOTIFICA.name(), Componente.API_ENTE, giornale, GovpayConfig.getInstance().isGiornaleEventiEnabled());
+		}
+		case GP_REST_01:
+		case GP_REST_02:
+		case GP_SOAP_01:
+		case GP_SOAP_03:
+		default:
+			return new NotificaClient(this.applicazione, this.rpt, this.versamento, this.pagamenti, operationId, this.giornale);
 		}
 	}
 
