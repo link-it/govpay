@@ -75,7 +75,7 @@
 		<spring.ldap.version>2.4.1</spring.ldap.version>
 
 		<!-- joda time -->
-		<joda-time.version>2.10</joda-time.version>
+		<joda-time.version>2.10.8</joda-time.version>
 
 		<!-- Commons -->
 		<commons-jcs-core.version>2.2</commons-jcs-core.version>
@@ -360,6 +360,14 @@
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>api-user</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>api-netpay</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 				<scope>compile</scope>

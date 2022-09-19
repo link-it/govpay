@@ -141,6 +141,18 @@
 		
 		<dependency>
 			<groupId>it.govpay</groupId>
+			<artifactId>api-netpay</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-netpay</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
 			<artifactId>fonts-TitilliumWeb</artifactId>
 		</dependency>
 
@@ -214,6 +226,11 @@
 							<groupId>it.govpay</groupId>
 							<artifactId>api-jppapdp</artifactId>
 							<contextRoot>/${war-base-name}/backend/api/jppapdp</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>api-netpay</artifactId>
+							<contextRoot>/${war-base-name}/backend/api/netpay</contextRoot>
 						</webModule>
 					</modules>
 					<version>6</version>

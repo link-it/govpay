@@ -223,13 +223,26 @@ public class RptBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			
+			RPT rptVO = null;
 			IExpression exp = this.getRptService().newExpression();
 			exp.equals(RPT.model().COD_DOMINIO, codDominio);
 			exp.equals(RPT.model().IUV, iuv);
-			exp.equals(RPT.model().CCP, ccp);
-			RPT rptVO = this.getRptService().find(exp);
+			
+			if(StringUtils.isNotBlank(ccp)) {
+				exp.equals(RPT.model().CCP, ccp);
+				rptVO = this.getRptService().find(exp);
+			} else {
+				IPaginatedExpression pagExp = this.getRptService().toPaginatedExpression(exp);
+				pagExp.limit(1);
+				pagExp.addOrder(RPT.model().DATA_MSG_RICHIESTA, SortOrder.DESC);
+				List<RPT> findAll = this.getRptService().findAll(pagExp);
+				if(findAll.size() == 0)
+					throw new NotFoundException("RPT non trovata.");
+				
+				rptVO = findAll.get(0);
+			}
 			Rpt dto = RptConverter.toDTO(rptVO);
+			
 			
 			popolaRpt(deep, dto);
 			

@@ -1,0 +1,359 @@
+openapi: 3.0.0
+info:
+  description: >-
+   API di integrazione a Net@Pay esposte da GovPay per:
+    - Consultare le ricevute di pagamento
+    - Avvio di un pagamento di pendenze
+    
+   ## Ricevute Telematiche
+    La piattaforma mette a disposizione un servizio per la lettura delle ricevute per i pagamenti andati a buon fine.
+    
+   ## Attivazione Pagamenti
+    L'operazione consente di avviare una sessione di pagamento per una pendenza.
+  version: "1.0.0"
+  title: "GovPay - Net@Pay API RT e Attiva Pagamento"
+  contact:
+    name: GitHub Project Page
+    url: 'https://github.com/link-it/GovPay/'
+  license:
+    name: GPL
+    url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
+servers:
+  - description: Base url servizio
+    url: https://host/baseurl
+tags:
+  - name: Pagamenti
+  - name: Ricevute
+security:
+  - basicAuth: []
+paths:
+  '/active_payment':
+    post:
+      operationId: activePayment
+      summary: Attivzione di un pagamento verso il WISP 2.0
+      tags:
+        - Pagamenti
+      requestBody:
+        description: Attivazione di un pagamento
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivePaymentRequest'
+      responses:
+        '200':
+          description: Oggetto CheckPaymentResponse contenente i dati della pendenza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivePaymentResponse'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '500':
+          $ref: '#/components/responses/500ServiceUnavailable'
+  '/get_rt':
+    post:
+      operationId: getRt
+      summary: Consultazione di una ricevuta di pagamento
+      tags:
+        - Ricevute
+      requestBody:
+        description: Consultazione di una ricevuta di pagamento
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetRTRequest'
+      responses:
+        '200':
+          description: Oggetto RegisterPaymentResponse contenente il risultato della presa in carico della notifica
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetRTResponse'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '500':
+          $ref: '#/components/responses/500ServiceUnavailable' 
+components:
+  responses:
+    '401Unauthorized':
+      description: Richiesta non autenticata
+    '403Forbidden':
+      description: Richiesta non autorizzata
+    '500ServiceUnavailable':
+      description: Servizio non disponibile
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    ActivePaymentItem:
+      type: object
+      required: 
+        - paymentId
+        - totAmount
+        - dueDate
+        - invoiceID
+        - invoiceType
+        - additionalRemittanceInfo
+        - creditorIBAN
+        - clientType
+        - clientDescription
+        - clientFiscalID
+      properties:
+        paymentId:
+          description: Progressivo da 1 a 5 del singolo pagamento afferente allo IUV.
+          type: number
+          minimum: 1
+          maximum: 5
+        totAmount:
+          description: Importo da pagare espresso in centesimi di Euro
+          type: number
+          format: int64
+          example: 1000
+        dueDate:
+          description: Data di scadenza del pagamento
+          type: string
+          format: date-time
+          example: '2022-12-31 10:27:27'
+        invoiceID:
+          description: Identificativo unico della posizione debitoria nel sistema Net@Pay
+          type: string
+          maxLength: 50
+          example: 'abcdef12345'
+        invoiceType:
+          description: Descrizione della causale, si tratta della parte descrittiva da inserire alla fine della causale al momento della creazione della RPT.
+          type: string
+          maxLength: 50
+          example: 'Bolletta GAS'
+        additionalRemittanceInfo:
+          description: >-
+           Indicazione dell'imputazione della specifica entrata nella forma\: <tipo contabilità>”/”<codice contabilità>
+          type: string
+          maxLength: 140
+          example: 'ALTRO/3321'
+        creditorIBAN:
+          description: IBAN di accredito dell'Ente Creditore
+          type: string
+          maxLength: 35
+          example: 'IT60X0542811101000000123456'
+        clientType:
+          description: Tipologia Soggetto Debitore, se persona fisica (F) o giuridica
+            (G).
+          type: string
+          maxLength: 1
+          enum:
+            - G
+            - F
+          example: 'F'
+        clientDescription:
+          description: Anagrafica del Soggetto Debitore (Indica il nominativo o la ragione sociale del pagatore).
+          type: string
+          maxLength: 70
+          example: 'Mario Rossi'
+        clientFiscalID:
+          description: Codice fiscale o Partita IVA del Soggetto Debitore.
+          type: string
+          maxLength: 35
+          example: 'RSSMRA30A01H501I'
+    ActivePaymentRequest:
+      type: object
+      required: 
+        - callbackURL
+        - sessionID
+        - domainId
+        - creditorTxId
+        - activePaymentList
+      properties:
+        callbackURL:
+          description: Url di Net@PayWeb a cui reindirizzare la risposta al termine del pagamento della posizione debitoria sul portale del PSP
+          type: string
+        sessionID:
+          description: Id della sessione interna definito da Net@PAYWeb
+          type: string
+          maxLength: 36
+        domainId:
+          description: Identificativo dell'Ente Creditore per il quale si fa il pagamento
+          type: string
+          maxLength: 35
+          pattern: '^([0-9]){35}$'
+          example: '12345678901'
+        creditorTxId:
+          description: IUV della richiesta di pagamento
+          type: string
+          maxLength: 35
+          pattern: '^([\w]){1,35}$'
+          example: '01000000000012345'
+        activePaymentList:
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/ActivePaymentItem'
+    ActivePaymentResponse:
+      type: object
+      required: 
+        - result
+      properties:
+        result:
+          description: Esito della presa in carico della richiesta
+          type: string
+          example: OK
+          enum:
+            - OK
+            - KO
+        errorReason:
+          $ref: '#/components/schemas/ErrorReason'
+        errorReasonAgID:
+          $ref: '#/components/schemas/ErrorReasonAgID'
+        errorMessage:
+          description: Eventuale ulteriore dettaglio testuale sul problema riscontrato
+          type: string
+        redirectURL:
+          description: >-
+            URL a cui Net@PAYWeb deve fare la redirect per far effettuare il pagamento su WISP 2.0 all’utente
+          type: string
+        sessionID:
+          description: Id della sessione interna definito da Net@PAYWeb
+          type: string
+        creditorTxId:
+          description: Identificativo Univoco della transazione di pagamento.
+          type: string
+    GetRTReceipt:
+      type: object
+      required: 
+        - receiptXML
+      properties:
+        receiptXML:
+          description: Ricevuta telematica in formato XML
+          type: string
+          format: base64
+        receiptPDF:
+          description: Ricevuta telematica in formato PDF
+          type: string
+          format: base64
+        pspId:
+          description: Identificativo del PSP
+          type: string
+          minLength: 1
+          maxLength: 35
+        channelId:
+          description: Identificativo del canale del PSP
+          type: string
+          minLength: 1
+          maxLength: 35
+        paymentType:
+          $ref: '#/components/schemas/PaymentType'
+        paymentCausal:
+          description: >-
+            Descrizione della pendenza, che viene visualizzata nella sezione causale dell'avviso di pagamento
+          type: string
+          minLength: 1
+          maxLength: 140
+        idRT:
+          description: Identificativo unico della RT
+          type: string
+          minLength: 1
+          maxLength: 35
+        paymentResultCode:
+          $ref: '#/components/schemas/PaymentResultCode'
+        amountPaid:
+          description: Valore effettivamente pagato espresso in centesimi di Euro
+          type: number
+          format: int64
+          example: 1000
+        paymentContextCode:
+          description: Codice identificativo del contesto di pagamento
+          type: string
+          minLength: 1
+          maxLength: 35
+        dateRT:
+          description: Data di creazione dell'RT da parte del PSP
+          type: string
+          format: date-time
+          example: '2022-12-31 10:27:27'
+    GetRTRequest:
+      type: object
+      required: 
+        - domainId
+        - creditorTxId
+      properties:
+        domainId:
+          description: Identificativo dell'Ente Creditore per il quale si fa il pagamento
+          type: string
+          maxLength: 35
+          pattern: '^([0-9]){35}$'
+          example: '12345678901'
+        creditorTxId:
+          description: IUV della richiesta di pagamento
+          type: string
+          maxLength: 35
+          pattern: '^([\w]){1,35}$'
+          example: '01000000000012345'
+    GetRTResponse:
+      type: object
+      required: 
+        - result
+      properties:
+        result:
+          description: Esito della presa in carico della richiesta
+          type: string
+          example: OK
+          enum:
+            - OK
+            - KO
+        errorReason:
+          $ref: '#/components/schemas/ErrorReason'
+        errorReasonAgID:
+          $ref: '#/components/schemas/ErrorReasonAgID'
+        errorMessage:
+          description: Eventuale ulteriore dettaglio testuale sul problema riscontrato
+          type: string
+        receipt:
+          $ref: '#/components/schemas/GetRTReceipt'
+    ErrorReason:
+      description: Enumeration con i possibili casi di errore.
+      type: string
+      enum:
+        - INVALID_REQUEST
+        - DOMAIN_ID_NOT_VALID
+        - PDP_RPT_RT_NON_TROVATA
+        - WS_DOMINIO_UB_MANCANTE
+        - WS_PARAMETRI_MANCANTI
+        - WS_ERRORE_INTERNO
+        - WS_GENERIC_ERROR
+        - IBAN_NON_CENSITO
+      example: INVALID_REQUEST
+    ErrorReasonAgID:
+      description: Enumeration con i possibili casi di errore secondo la codifica standard AgID
+      type: string
+      enum:
+        - PPT_SYSTEM_ERROR
+        - PPT_RT_SCONOSCIUTA
+        - PPT_DOMINIO_SCONOSCIUTO
+        - PPT_IBAN_NON_CENSITO
+      example: PPT_SYSTEM_ERROR
+    PaymentResultCode:
+      description: Tipo versamento verso PSP
+      type: string
+      enum:
+        - '0'
+        - '1'
+        - '2'
+        - '3'
+        - '4'
+      example: '0'
+    PaymentType:
+      description: Esito del pagamento
+      type: string
+      enum:
+        - BBT
+        - BP
+        - AD
+        - CP
+        - PO
+        - OBEP
+      example: CP
