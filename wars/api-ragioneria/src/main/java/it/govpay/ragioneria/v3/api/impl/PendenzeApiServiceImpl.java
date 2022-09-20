@@ -26,6 +26,7 @@ import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.ragioneria.v3.beans.Pendenza;
+import it.govpay.ragioneria.v3.beans.PendenzaPagata;
 import it.govpay.ragioneria.v3.beans.converter.PendenzeConverter;
 import it.govpay.ragioneria.v3.api.PendenzeApi;
 
@@ -130,7 +131,7 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 				throw AuthorizationManager.toNotAuthorizedException(user);
 			}
 			
-			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamento());
+			PendenzaPagata pendenza = PendenzeConverter.toPendenzaPagataRsModel(leggiPendenzaDTOResponse.getVersamento(), leggiPendenzaDTOResponse.getRpts());
 			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza),transactionId).build();
 		}catch (Exception e) {
