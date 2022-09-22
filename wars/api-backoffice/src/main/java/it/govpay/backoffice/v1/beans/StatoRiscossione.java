@@ -11,17 +11,17 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Stato della riscossione
  */
 public enum StatoRiscossione {
-  
-  
-  
-  
+
+
+
+
   RISCOSSA("RISCOSSA"),
-  
-  
+
+
   INCASSATA("INCASSATA");
-  
-  
-  
+
+
+
 
   private String value;
 

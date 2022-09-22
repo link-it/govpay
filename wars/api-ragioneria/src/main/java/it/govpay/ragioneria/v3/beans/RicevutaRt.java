@@ -38,22 +38,22 @@ public class RicevutaRt   {
       }
       return null;
     }
-  }  
+  }
   @Schema(description = "Tipo XML della ricevuta")
  /**
-   * Tipo XML della ricevuta  
+   * Tipo XML della ricevuta
   **/
   private TipoEnum tipo = null;
-  
+
   @Schema(description = "ricevuta in formato XML originale codificata in base64")
  /**
-   * ricevuta in formato XML originale codificata in base64  
+   * ricevuta in formato XML originale codificata in base64
   **/
   private byte[] xml = null;
-  
+
   @Schema(description = "ricevuta in formato JSON")
  /**
-   * ricevuta in formato JSON  
+   * ricevuta in formato JSON
   **/
   private Object json = null;
  /**
@@ -118,7 +118,7 @@ public class RicevutaRt   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RicevutaRt {\n");
-    
+
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    xml: ").append(toIndentedString(xml)).append("\n");
     sb.append("    json: ").append(toIndentedString(json)).append("\n");

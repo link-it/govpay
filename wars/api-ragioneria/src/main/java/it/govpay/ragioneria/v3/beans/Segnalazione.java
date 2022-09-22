@@ -9,16 +9,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class Segnalazione   {
-  
+
   @Schema(description = "")
   private Date data = null;
-  
+
   @Schema(example = "0013", required = true, description = "")
   private String codice = null;
-  
+
   @Schema(example = "Pagamento rendicontato senza RPT", required = true, description = "")
   private String descrizione = null;
-  
+
   @Schema(example = "Acquisita rendicontazione senza RPT nel flusso ABC-1234-DEFG", description = "")
   private String dettaglio = null;
  /**
@@ -100,7 +100,7 @@ public class Segnalazione   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Segnalazione {\n");
-    
+
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("    codice: ").append(toIndentedString(codice)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");

@@ -11,7 +11,7 @@ import it.govpay.orm.IdOperatore;
 
 public class IncassoConverter {
 
-	public static Incasso toDTO(it.govpay.orm.Incasso vo)throws ServiceException {
+	public static Incasso toDTO(it.govpay.orm.Incasso vo) {
 			Incasso dto = new Incasso();
 			dto.setCausale(vo.getCausale());
 			dto.setCodDominio(vo.getCodDominio());
@@ -37,7 +37,7 @@ public class IncassoConverter {
 			return dto;
 	}
 
-	public static it.govpay.orm.Incasso toVO(Incasso dto)throws ServiceException {
+	public static it.govpay.orm.Incasso toVO(Incasso dto) {
 		it.govpay.orm.Incasso vo = new it.govpay.orm.Incasso();
 		vo.setCausale(dto.getCausale());
 		vo.setCodDominio(dto.getCodDominio());

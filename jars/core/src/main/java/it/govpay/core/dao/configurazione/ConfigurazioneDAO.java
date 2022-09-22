@@ -3,16 +3,9 @@ package it.govpay.core.dao.configurazione;
 import java.text.MessageFormat;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.configurazione.model.AppIOBatch;
-import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
-import it.govpay.bd.configurazione.model.AvvisaturaViaMail;
-import it.govpay.bd.configurazione.model.Giornale;
-import it.govpay.bd.configurazione.model.Hardening;
-import it.govpay.bd.configurazione.model.MailBatch;
-import it.govpay.bd.configurazione.model.TracciatoCsv;
 import it.govpay.bd.model.Configurazione;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -26,6 +19,13 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.model.PatchOp;
+import it.govpay.model.configurazione.AppIOBatch;
+import it.govpay.model.configurazione.AvvisaturaViaAppIo;
+import it.govpay.model.configurazione.AvvisaturaViaMail;
+import it.govpay.model.configurazione.Giornale;
+import it.govpay.model.configurazione.Hardening;
+import it.govpay.model.configurazione.MailBatch;
+import it.govpay.model.configurazione.TracciatoCsv;
 
 public class ConfigurazioneDAO extends BaseDAO{
 	

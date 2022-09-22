@@ -12,26 +12,26 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Stato dell'avviso
  */
 public enum StatoAvviso {
-  
-  
-  
-  
+
+
+
+
   DUPLICATA("DUPLICATA"),
-  
-  
+
+
   NON_ESEGUITA("NON_ESEGUITA"),
-  
-  
+
+
   ANNULLATA("ANNULLATA"),
-  
-  
+
+
   SCONOSCIUTA("SCONOSCIUTA"),
-  
-  
+
+
   SCADUTA("SCADUTA");
-  
-  
-  
+
+
+
 
   private String value;
 

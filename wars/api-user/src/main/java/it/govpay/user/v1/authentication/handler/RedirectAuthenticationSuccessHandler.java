@@ -16,8 +16,8 @@ import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.core.beans.Costanti;
-import it.govpay.core.utils.EventoContext.Componente;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.beans.EventoContext.Componente;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.service.context.GpContextFactory;
 import it.govpay.rs.v1.authentication.preauth.filter.SessionPrincipalExtractorPreAuthFilter;

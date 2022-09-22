@@ -4,11 +4,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -23,31 +22,31 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "idFlusso",
 })
 public class NuovaRiconciliazione extends JSONSerializable  implements IValidable {
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("dataValuta")
   private Date dataValuta = null;
-  
+
   @JsonProperty("dataContabile")
   private Date dataContabile = null;
-  
+
   @JsonProperty("contoAccredito")
   private String contoAccredito = null;
-  
+
   @JsonProperty("sct")
   private String sct = null;
 
   @JsonProperty("causale")
   private String causale = null;
-  
+
   @JsonProperty("iuv")
   private String iuv = null;
-  
+
   @JsonProperty("idFlusso")
   private String idFlusso = null;
-  
+
   /**
    **/
   public NuovaRiconciliazione importo(BigDecimal importo) {
@@ -142,7 +141,7 @@ public class NuovaRiconciliazione extends JSONSerializable  implements IValidabl
   public void setCausale(String causale) {
     this.causale = causale;
   }
-  
+
   /**
    * Identificativo univoco di riscossione.
    **/
@@ -199,7 +198,7 @@ public class NuovaRiconciliazione extends JSONSerializable  implements IValidabl
     return Objects.hash(importo, dataValuta, dataContabile, contoAccredito, sct, causale, iuv, idFlusso);
   }
 
-  public static NuovaRiconciliazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static NuovaRiconciliazione parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, NuovaRiconciliazione.class);
   }
 
@@ -212,7 +211,7 @@ public class NuovaRiconciliazione extends JSONSerializable  implements IValidabl
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class NuovaRiconciliazione {\n");
-    
+
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    dataValuta: ").append(toIndentedString(dataValuta)).append("\n");
     sb.append("    dataContabile: ").append(toIndentedString(dataContabile)).append("\n");
@@ -235,11 +234,11 @@ public class NuovaRiconciliazione extends JSONSerializable  implements IValidabl
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
-	
+
 	if(this.causale != null) {
 		vf.getValidator("causale", this.causale).notNull().minLength(1).maxLength(512);
 	} else if(this.iuv != null) {
@@ -249,7 +248,7 @@ public class NuovaRiconciliazione extends JSONSerializable  implements IValidabl
 	} else {
 		throw new ValidationException("Uno dei campi tra causale, iuv o idFlusso deve essere valorizzato");
 	}
-	
+
 	vf.getValidator("importo", this.importo).notNull().checkDecimalDigits();
 	vf.getValidator("dataValuta", this.dataValuta);
 	vf.getValidator("dataContabile", this.dataContabile);
@@ -259,7 +258,7 @@ public class NuovaRiconciliazione extends JSONSerializable  implements IValidabl
 	}
 	vf.getValidator("sct", this.sct).notNull().minLength(1).maxLength(35);
   }
-  
+
 }
 
 

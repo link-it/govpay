@@ -8,8 +8,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.user.v1.controller.LoginController;
 
@@ -21,7 +19,7 @@ public class Login extends BaseRsServiceV1{
 
 	private LoginController controller = null;
 
-	public Login() throws ServiceException {
+	public Login() {
 		super("login");
 		this.controller = new LoginController(this.nomeServizio,this.log);
 	}

@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Anagrafica;
@@ -21,10 +19,11 @@ import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipoSogliaVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class RptConverter {
 
-	public static Rpt toDTO(it.govpay.orm.VistaRptVersamento vo) throws ServiceException {
+	public static Rpt toDTO(it.govpay.orm.VistaRptVersamento vo) throws CodificaInesistenteException, UnsupportedEncodingException {
 		Rpt dto = new Rpt();
 		dto.setId(vo.getId());
 		
@@ -103,11 +102,7 @@ public class RptConverter {
 		versamento.setDataValidita(vo.getVrsDataValidita());
 		versamento.setDataScadenza(vo.getVrsDataScadenza());
 		versamento.setDataUltimoAggiornamento(vo.getVrsDataOraUltimoAgg());
-		try {
 			versamento.setCausaleVersamento(vo.getVrsCausaleVersamento());
-		} catch (UnsupportedEncodingException e) {
-			throw new ServiceException(e);
-		}
 		Anagrafica debitore = new Anagrafica();
 		if(vo.getVrsDebitoreTipo()!=null)
 			debitore.setTipo(TIPO.valueOf(vo.getVrsDebitoreTipo()));
@@ -210,7 +205,7 @@ public class RptConverter {
 		
 	
 	public static List<Rpt> toDTO(
-			List<it.govpay.orm.VistaRptVersamento> rptVOLst) throws ServiceException {
+			List<it.govpay.orm.VistaRptVersamento> rptVOLst) throws UnsupportedEncodingException, CodificaInesistenteException {
 		List<Rpt> dto = new ArrayList<>();
 		for(it.govpay.orm.VistaRptVersamento vo : rptVOLst) {
 			dto.add(toDTO(vo));

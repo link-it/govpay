@@ -2,12 +2,13 @@ package it.govpay.core.dao.eventi.utils;
 
 import java.math.BigDecimal;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.util.Date;
+
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
 
 import it.govpay.bd.model.Evento;
-import it.govpay.bd.model.eventi.DatiPagoPA;
-import it.govpay.core.utils.EventoContext;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.gde.GdeInvoker;
 import it.govpay.gde.v1.model.NuovoEvento;
@@ -15,12 +16,15 @@ import it.govpay.gde.v1.model.NuovoEvento.CategoriaEventoEnum;
 import it.govpay.gde.v1.model.NuovoEvento.ComponenteEnum;
 import it.govpay.gde.v1.model.NuovoEvento.EsitoEnum;
 import it.govpay.gde.v1.model.NuovoEvento.RuoloEnum;
+import it.govpay.model.eventi.DatiPagoPA;
 
 public class GdeUtils {
 	
+	private static Logger log = LoggerWrapperFactory.getLogger(GdeUtils.class);
+	
 	public static void salvaEvento(EventoContext context) {
 		GdeInvoker gdeInvoker = new GdeInvoker(GovpayConfig.getInstance().getGiornaleEventiUrl());
-		Evento eventoDTO = context.toEventoDTO();
+		Evento eventoDTO = EventoUtils.toEventoDTO(context, log);
 		gdeInvoker.salvaEvento(GdeUtils.toEventoModel(eventoDTO));
 	}
 	

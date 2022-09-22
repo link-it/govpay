@@ -3,8 +3,6 @@ package it.govpay.ragioneria.v2.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -20,34 +18,34 @@ import it.govpay.core.beans.JSONSerializable;
 "dominio",
 })
 public class VocePendenza extends JSONSerializable {
-  
+
   @JsonProperty("indice")
   private BigDecimal indice = null;
-  
+
   @JsonProperty("idVocePendenza")
   private String idVocePendenza = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
-  
+
   @JsonProperty("descrizioneCausaleRPT")
   private String descrizioneCausaleRPT = null;
-  
+
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
-  
+
   @JsonProperty("pendenza")
   private Pendenza pendenza = null;
-  
+
   @JsonProperty("dominio")
   private Dominio dominio = null;
-  
+
   /**
    * indice di voce all'interno della pendenza
    **/
@@ -214,7 +212,7 @@ public class VocePendenza extends JSONSerializable {
     return Objects.hash(indice, idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, pendenza, dominio);
   }
 
-  public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static VocePendenza parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, VocePendenza.class);
   }
 
@@ -227,7 +225,7 @@ public class VocePendenza extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class VocePendenza {\n");
-    
+
     sb.append("    indice: ").append(toIndentedString(indice)).append("\n");
     sb.append("    idVocePendenza: ").append(toIndentedString(idVocePendenza)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");

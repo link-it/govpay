@@ -1,14 +1,12 @@
 package it.govpay.core.ec.v2.converter;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.ec.v2.beans.Dominio;
 import it.govpay.ec.v2.beans.UnitaOperativa;
 
 public class DominiConverter {
 	
 	
-	public static Dominio toRsModelIndex(it.govpay.bd.model.Dominio dominio) throws ServiceException {
+	public static Dominio toRsModelIndex(it.govpay.bd.model.Dominio dominio) {
 		if(dominio == null)
 			return null;
 		
@@ -18,7 +16,7 @@ public class DominiConverter {
 		return rsModel;
 	}
 
-	public static UnitaOperativa toRsModelIndex(it.govpay.bd.model.UnitaOperativa uo) throws ServiceException {
+	public static UnitaOperativa toRsModelIndex(it.govpay.bd.model.UnitaOperativa uo) {
 		if(uo == null)
 			return null;
 		

@@ -30,7 +30,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.crypt.Password;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
@@ -49,6 +49,7 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.commons.Dominio.Uo;
 import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTO;
 import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTO;
@@ -62,7 +63,6 @@ import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException
 import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
-import it.govpay.core.dao.commons.Dominio.Uo;
 import it.govpay.core.dao.pagamenti.dto.OperatorePatchDTO;
 import it.govpay.core.dao.pagamenti.dto.ProfiloPatchDTO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
@@ -176,8 +176,8 @@ public class UtentiDAO extends BaseDAO{
 		return domini;
 	}
 
-	public static List<it.govpay.core.dao.commons.Dominio> convertIdUnitaOperativeToDomini(List<it.govpay.bd.model.IdUnitaOperativa> dominiUo) {
-		List<it.govpay.core.dao.commons.Dominio> domini = new ArrayList<>();
+	public static List<it.govpay.core.beans.commons.Dominio> convertIdUnitaOperativeToDomini(List<it.govpay.bd.model.IdUnitaOperativa> dominiUo) {
+		List<it.govpay.core.beans.commons.Dominio> domini = new ArrayList<>();
 
 		Map<String, List<it.govpay.bd.model.IdUnitaOperativa>> mapUO = new HashMap<String, List<it.govpay.bd.model.IdUnitaOperativa>>();
 		for (it.govpay.bd.model.IdUnitaOperativa idUnita : dominiUo) {
@@ -194,7 +194,7 @@ public class UtentiDAO extends BaseDAO{
 		}
 
 		for (String codDominio : mapUO.keySet()) {
-			it.govpay.core.dao.commons.Dominio dominioCommons = new it.govpay.core.dao.commons.Dominio();
+			it.govpay.core.beans.commons.Dominio dominioCommons = new it.govpay.core.beans.commons.Dominio();
 			if(!"_NULL_".equals(codDominio)) {
 				List<Uo> uoList = new ArrayList<>();
 
@@ -223,7 +223,7 @@ public class UtentiDAO extends BaseDAO{
 		return domini;
 	}
 
-	public static it.govpay.core.dao.commons.Dominio convertIdUnitaOperativeToDomini(List<it.govpay.bd.model.IdUnitaOperativa> dominiUo, String codDominio) {
+	public static it.govpay.core.beans.commons.Dominio convertIdUnitaOperativeToDomini(List<it.govpay.bd.model.IdUnitaOperativa> dominiUo, String codDominio) {
 		Map<String, List<it.govpay.bd.model.IdUnitaOperativa>> mapUO = new HashMap<String, List<it.govpay.bd.model.IdUnitaOperativa>>();
 		for (it.govpay.bd.model.IdUnitaOperativa idUnita : dominiUo) {
 			String key = idUnita.getCodDominio() != null ? idUnita.getCodDominio() : "_NULL_";
@@ -240,10 +240,10 @@ public class UtentiDAO extends BaseDAO{
 
 		String key = codDominio != null ? codDominio : "_NULL_";
 
-		it.govpay.core.dao.commons.Dominio dominioCommons = new it.govpay.core.dao.commons.Dominio();
+		it.govpay.core.beans.commons.Dominio dominioCommons = new it.govpay.core.beans.commons.Dominio();
 
 		if(mapUO.containsKey(key)) {
-			dominioCommons = new it.govpay.core.dao.commons.Dominio();
+			dominioCommons = new it.govpay.core.beans.commons.Dominio();
 
 			if(!"_NULL_".equals(key)) {
 				List<Uo> uoList = new ArrayList<>();
@@ -353,7 +353,7 @@ public class UtentiDAO extends BaseDAO{
 
 			if(putOperatoreDTO.getDomini() != null) {
 				List<IdUnitaOperativa> idDomini = new ArrayList<>();
-				for (it.govpay.core.dao.commons.Dominio dominioCommons : putOperatoreDTO.getDomini()) {
+				for (it.govpay.core.beans.commons.Dominio dominioCommons : putOperatoreDTO.getDomini()) {
 
 
 					String codDominio = dominioCommons.getCodDominio();

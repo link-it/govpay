@@ -24,8 +24,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Anagrafica.TIPO;
@@ -33,11 +31,12 @@ import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipoSogliaVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class VersamentoIncassoConverter {
 
 	
-	public static List<Versamento> toDTOList(List<it.govpay.orm.VersamentoIncasso> versamenti) throws ServiceException {
+	public static List<Versamento> toDTOList(List<it.govpay.orm.VersamentoIncasso> versamenti) throws CodificaInesistenteException, UnsupportedEncodingException {
 		List<Versamento> lstDTO = new ArrayList<>();
 		if(versamenti != null && !versamenti.isEmpty()) {
 			for(it.govpay.orm.VersamentoIncasso versamento: versamenti){
@@ -47,8 +46,7 @@ public class VersamentoIncassoConverter {
 		return lstDTO;
 	}
 
-	public static Versamento toDTO(it.govpay.orm.VersamentoIncasso vo) throws ServiceException {
-		try {
+	public static Versamento toDTO(it.govpay.orm.VersamentoIncasso vo) throws CodificaInesistenteException, UnsupportedEncodingException {
 			Versamento dto = new Versamento();
 			dto.setId(vo.getId());
 			dto.setIdApplicazione(vo.getIdApplicazione().getId());
@@ -155,8 +153,5 @@ public class VersamentoIncassoConverter {
 			dto.setProprieta(vo.getProprieta());
 			
 			return dto;
-		} catch (UnsupportedEncodingException e) {
-			throw new ServiceException(e);
-		}
 	}
 }

@@ -13,8 +13,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.core.beans.Costanti;
 import it.govpay.pagamento.v1.beans.ModalitaAvvisaturaDigitale;
 import it.govpay.pagamento.v1.controller.PagamentiController;
@@ -28,7 +26,7 @@ public class Pagamenti extends BaseRsServiceV1{
 
 	private PagamentiController controller = null;
 
-	public Pagamenti() throws ServiceException {
+	public Pagamenti() {
 		super("pagamenti");
 		this.controller = new PagamentiController(this.nomeServizio,this.log);
 	}
@@ -44,11 +42,11 @@ public class Pagamenti extends BaseRsServiceV1{
         this.controller.setRequestResponse(this.request, this.response);
         return this.controller.pagamentiPOST(this.getUser(), uriInfo, httpHeaders, is, idSessionePortale, avvisaturaDigitale, modalitaAvvisaturaDigitale, gRecaptchaResponse);
     }
-    
+
     @GET
     @Path("/")
     @Produces({ "application/json" })
-    public Response findPagamenti(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, 
+    public Response findPagamenti(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina,
     		@QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento,
     		@QueryParam("campi") String campi, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA,
     		@QueryParam("stato") String stato, @QueryParam("versante") String versante, @QueryParam("idSessionePortale") String idSessionePortale, @QueryParam("idSessione") String idSessionePsp,
@@ -56,7 +54,7 @@ public class Pagamenti extends BaseRsServiceV1{
         this.buildContext();
         return this.controller.pagamentiGET(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, dataDa, dataA, stato, versante, idSessionePortale, idSessionePsp, id, metadatiPaginazione, maxRisultati);
     }
-    
+
     @GET
     @Path("/byIdSession/{idSession}")
     @Produces({ "application/json" })

@@ -40,22 +40,22 @@ public class RicevutaRpt   {
       }
       return null;
     }
-  }  
+  }
   @Schema(required = true, description = "Tipo XML della richiesta")
  /**
-   * Tipo XML della richiesta  
+   * Tipo XML della richiesta
   **/
   private TipoEnum tipo = null;
-  
+
   @Schema(required = true, description = "Richiesta in formato XML originale codificata in base64")
  /**
-   * Richiesta in formato XML originale codificata in base64  
+   * Richiesta in formato XML originale codificata in base64
   **/
   private byte[] xml = null;
-  
+
   @Schema(required = true, description = "Richiesta in formato JSON")
  /**
-   * Richiesta in formato JSON  
+   * Richiesta in formato JSON
   **/
   private Object json = null;
  /**
@@ -123,7 +123,7 @@ public class RicevutaRpt   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RicevutaRpt {\n");
-    
+
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    xml: ").append(toIndentedString(xml)).append("\n");
     sb.append("    json: ").append(toIndentedString(json)).append("\n");

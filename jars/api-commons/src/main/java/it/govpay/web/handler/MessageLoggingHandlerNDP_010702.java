@@ -39,9 +39,9 @@ import org.slf4j.MDC;
 
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.Costanti;
+import it.govpay.core.beans.EventoContext.Categoria;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.EventoContext.Categoria;
-import it.govpay.core.utils.EventoContext.Componente;
 
 public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageContext> {
 

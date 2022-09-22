@@ -36,7 +36,6 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -94,6 +93,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -108,6 +108,7 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.orm.PagamentoPortaleVersamento;
+import it.govpay.orm.RPT;
 
 public class PendenzeDAO extends BaseDAO{
 
@@ -643,18 +644,24 @@ public class PendenzeDAO extends BaseDAO{
 			RptFilter newFilter2 = rptBD.newFilter();
 			newFilter2.setIdPendenza(versamento.getCodVersamentoEnte());
 			newFilter2.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
+			newFilter2.setFilterSortList(Arrays.asList(new FilterSortWrapper(RPT.model().DATA_MSG_RICHIESTA,SortOrder.DESC)));
 			long count = rptBD.count(newFilter2);
 
 			if(count > 0) {
 				List<Rpt> findAll = rptBD.findAll(newFilter2);
 
 				for (Rpt rpt : findAll) {
-					Versamento versamento2 = rpt.getVersamento(versamentiBD);
-					versamento2.getDominio(configWrapper);
-					versamento2.getUo(configWrapper);
-					versamento2.getApplicazione(configWrapper);
-					versamento2.getTipoVersamento(configWrapper);
-					versamento2.getTipoVersamentoDominio(configWrapper);
+					if(rpt.getIdVersamento() != versamento.getId().longValue()) { // leggo il versamento solo se non e' quello letto attualmente
+						Versamento versamento2 = rpt.getVersamento(versamentiBD);
+						versamento2.getDominio(configWrapper);
+						versamento2.getUo(configWrapper);
+						versamento2.getApplicazione(configWrapper);
+						versamento2.getTipoVersamento(configWrapper);
+						versamento2.getTipoVersamentoDominio(configWrapper);
+					} else {
+						rpt.setVersamento(versamento);
+					}
+				
 				}
 
 				response.setRpts(findAll);
@@ -1068,7 +1075,7 @@ public class PendenzeDAO extends BaseDAO{
 
 				new PendenzaPostValidator(pendenzaPost).validate();
 
-				it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+				it.govpay.core.beans.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(versamentoCommons.getCodVersamentoEnte());
 				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(versamentoCommons.getCodApplicazione());
 				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
@@ -1139,6 +1146,8 @@ public class PendenzeDAO extends BaseDAO{
 			}
 
 		} catch (ServiceException e) {
+			throw new GovPayException(e);
+		} catch (it.govpay.core.exceptions.IOException e) {
 			throw new GovPayException(e);
 		}  finally {
 			if(versamentiBD != null)

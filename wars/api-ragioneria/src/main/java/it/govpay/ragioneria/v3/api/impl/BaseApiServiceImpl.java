@@ -19,7 +19,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
@@ -36,17 +35,19 @@ import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext.Categoria;
+import it.govpay.core.beans.EventoContext.Esito;
+import it.govpay.core.beans.commons.Dominio;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
-import it.govpay.core.dao.commons.Dominio;
 import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
-import it.govpay.core.utils.EventoContext.Categoria;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -62,12 +63,12 @@ public class BaseApiServiceImpl {
 	public final static String PREFIX_FILENAME = "filename=\"";
 	public final static String SUFFIX_FILENAME = "\"";
 
-	public static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean"; 
+	public static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean";
 	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = "Esecuzione {0} completata.";
 	public static final String LOG_MSG_ESECUZIONE_METODO_IN_CORSO = "Esecuzione {0} in corso...";
 
 	protected String transactionIdHeaderName = Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID;
-	
+
 	public static final String ERRORE_INTERNO = "Errore Interno";
 
 	@Context protected HttpServletRequest request;
@@ -79,17 +80,17 @@ public class BaseApiServiceImpl {
 	protected Logger log;
 
 	protected String codOperazione;
-	
+
 	public BaseApiServiceImpl(String nomeServizio, Class<?> clazz) {
 		this.log = LoggerWrapperFactory.getLogger(clazz);
 		this.nomeServizio = nomeServizio;
 	}
-	
+
 	public void setRequestResponse(HttpServletRequest request,HttpServletResponse response) {
 		this.response = response;
 		this.request = request;
 	}
-	
+
 	public HttpServletRequest getRequest() {
 		return this.request;
 	}
@@ -109,7 +110,7 @@ public class BaseApiServiceImpl {
 	public int getVersione() {
 		return 3;
 	}
-	
+
 	protected Authentication getUser() {
 		return SecurityContextHolder.getContext().getAuthentication();
 	}
@@ -156,7 +157,7 @@ public class BaseApiServiceImpl {
 		if(context instanceof org.openspcoop2.utils.service.context.Context) {
 			((org.openspcoop2.utils.service.context.Context)context).update(this.request, this.response, this.uriInfo, 2, this.log);
 			((org.openspcoop2.utils.service.context.Context)context).setRestPath(this.getPathFromRestMethod(context.getMethodName()));
-			
+
 			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			ctx.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
 			ctx.getEventoCtx().setMethod(this.request.getMethod());
@@ -181,11 +182,11 @@ public class BaseApiServiceImpl {
 			String baseUri = request.getRequestURI(); // uriInfo.getBaseUri().toString();
 			String requestUri = uriInfo.getRequestUri().toString();
 			int idxOfBaseUri = requestUri.indexOf(baseUri);
-			
+
 //			String servicePathwithParameters = requestUri.substring((idxOfBaseUri + baseUri.length()) - 1);
 			String servicePathwithParameters = requestUri.substring(idxOfBaseUri);
 			ctx.getEventoCtx().setUrl(servicePathwithParameters);
-			
+
 			StringBuilder sb = new StringBuilder();
 			sb.append("Ricevuta una richiesta:");
 			sb.append("\n");
@@ -203,9 +204,9 @@ public class BaseApiServiceImpl {
 				sb.append("\t").append("Id Transazione Autenticazione: [").append(authenticationDetails.getIdTransazioneAutenticazione()).append("]");
 				sb.append("\n");
 				sb.append("\t").append("ACL:").append("\n").append("\t\t[\n");
-				
+
 				List<Acl> aclsProfilo = utenza.getAclsProfilo();
-				
+
 				for (Acl acl : aclsProfilo) {
 					sb.append("\t").append("\t");
 					sb.append("Ruolo[").append(acl.getRuolo()).append("], IdUtenza: [").append(acl.getIdUtenza())
@@ -219,11 +220,11 @@ public class BaseApiServiceImpl {
 				else {
 					List<IdUnitaOperativa> dominiUo = utenza.getDominiUo();
 					if(dominiUo != null) {
-						List<Dominio> domini = UtentiDAO.convertIdUnitaOperativeToDomini(dominiUo); 
+						List<Dominio> domini = UtentiDAO.convertIdUnitaOperativeToDomini(dominiUo);
 						sb.append("Domini: [");
 						for (Dominio dominio : domini) {
 							sb.append("\t\t");
-							
+
 							sb.append(dominio.getCodDominio()).append(", UO: [").append((dominio.getUo() != null ? (
 									dominio.getUo().stream().map(d -> d.getCodUo()).collect(Collectors.toList())
 									) : "Tutte")).append("]");
@@ -237,7 +238,7 @@ public class BaseApiServiceImpl {
 				sb.append("\n").append("\t");
 				if(utenza.isAutorizzazioneTipiVersamentoStar())
 					sb.append("TipiPendenza: [Tutti]");
-				else 
+				else
 					sb.append("TipiPendenza: [").append(utenza.getIdTipoVersamento()).append("]");
 				sb.append("\n");
 				sb.append("\t]\n");
@@ -249,13 +250,13 @@ public class BaseApiServiceImpl {
 		}
 		return context;
 	}
-	
+
 	protected void buildContext() {
-		IContext context = ContextThreadLocal.get(); 
+		IContext context = ContextThreadLocal.get();
 		if(context instanceof org.openspcoop2.utils.service.context.Context) {
 			((org.openspcoop2.utils.service.context.Context)context).update(this.request, this.response, this.uriInfo, 2, this.log);
 			((org.openspcoop2.utils.service.context.Context)context).setRestPath(this.getPathFromRestMethod(context.getMethodName()));
-			
+
 			GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 			ctx.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
 			ctx.getEventoCtx().setMethod(this.request.getMethod());
@@ -280,11 +281,11 @@ public class BaseApiServiceImpl {
 			String baseUri = request.getRequestURI(); // uriInfo.getBaseUri().toString();
 			String requestUri = uriInfo.getRequestUri().toString();
 			int idxOfBaseUri = requestUri.indexOf(baseUri);
-			
+
 //			String servicePathwithParameters = requestUri.substring((idxOfBaseUri + baseUri.length()) - 1);
 			String servicePathwithParameters = requestUri.substring(idxOfBaseUri);
 			ctx.getEventoCtx().setUrl(servicePathwithParameters);
-			
+
 			StringBuilder sb = new StringBuilder();
 			sb.append("Ricevuta una richiesta:");
 			sb.append("\n");
@@ -302,9 +303,9 @@ public class BaseApiServiceImpl {
 				sb.append("\t").append("Id Transazione Autenticazione: [").append(authenticationDetails.getIdTransazioneAutenticazione()).append("]");
 				sb.append("\n");
 				sb.append("\t").append("ACL:").append("\n").append("\t\t[\n");
-				
+
 				List<Acl> aclsProfilo = utenza.getAclsProfilo();
-				
+
 				for (Acl acl : aclsProfilo) {
 					sb.append("\t").append("\t");
 					sb.append("Ruolo[").append(acl.getRuolo()).append("], IdUtenza: [").append(acl.getIdUtenza())
@@ -318,11 +319,11 @@ public class BaseApiServiceImpl {
 				else {
 					List<IdUnitaOperativa> dominiUo = utenza.getDominiUo();
 					if(dominiUo != null) {
-						List<Dominio> domini = UtentiDAO.convertIdUnitaOperativeToDomini(dominiUo); 
+						List<Dominio> domini = UtentiDAO.convertIdUnitaOperativeToDomini(dominiUo);
 						sb.append("Domini: [");
 						for (Dominio dominio : domini) {
 							sb.append("\t\t");
-							
+
 							sb.append(dominio.getCodDominio()).append(", UO: [").append((dominio.getUo() != null ? (
 									dominio.getUo().stream().map(d -> d.getCodUo()).collect(Collectors.toList())
 									) : "Tutte")).append("]");
@@ -336,7 +337,7 @@ public class BaseApiServiceImpl {
 				sb.append("\n").append("\t");
 				if(utenza.isAutorizzazioneTipiVersamentoStar())
 					sb.append("TipiPendenza: [Tutti]");
-				else 
+				else
 					sb.append("TipiPendenza: [").append(utenza.getIdTipoVersamento()).append("]");
 				sb.append("\n");
 				sb.append("\t]\n");
@@ -347,7 +348,7 @@ public class BaseApiServiceImpl {
 			this.log.debug(sb.toString());
 		}
 	}
-	
+
 	private String getPathFromRestMethod(String methodName) {
 
         try {
@@ -358,9 +359,9 @@ public class BaseApiServiceImpl {
         		return null;
         	}
         	Class<?> cInterface = null;
-        	for (int i = 0; i < interfaces.length; i++) {
-        		if (interfaces[i] != null && interfaces[i].isAnnotationPresent(Path.class)) {
-        			cInterface = interfaces[i];
+        	for (Class<?> element : interfaces) {
+        		if (element != null && element.isAnnotationPresent(Path.class)) {
+        			cInterface = element;
         			break;
         		}
 			}
@@ -368,21 +369,21 @@ public class BaseApiServiceImpl {
         		return null;
         	}
         	Method [] methods = cInterface.getMethods();
-        	
+
         	String rsBasePathValue = "";
 //        	Path rsBasePath = c.getAnnotation(Path.class);
 //        	if(rsBasePath !=null) {
 //        		rsBasePathValue = rsBasePath.value();
 //        	}
-        	
+
 //        	Method [] methods = c.getMethods();
         	if(methods==null || methods.length<=0) {
         		return null;
         	}
         	Method method = null;
-        	for (int i = 0; i < methods.length; i++) {
-        		if (methods[i] != null && methods[i].getName().equals(methodName) && methods[i].isAnnotationPresent(Path.class)) {
-        			method = methods[i];
+        	for (Method method2 : methods) {
+        		if (method2 != null && method2.getName().equals(methodName) && method2.isAnnotationPresent(Path.class)) {
+        			method = method2;
         			break;
         		}
 			}
@@ -400,17 +401,17 @@ public class BaseApiServiceImpl {
 
         return null;
     }
-	
+
 	public URI getServicePath(UriInfo uriInfo) throws URISyntaxException {
 		String baseUri = uriInfo.getBaseUri().toString();
 		String requestUri = uriInfo.getRequestUri().toString();
 		int idxOfBaseUri = requestUri.indexOf(baseUri);
-		
+
 		String servicePathwithParameters = requestUri.substring((idxOfBaseUri + baseUri.length()) - 1);
-		
+
 		return new URI(servicePathwithParameters);
 	}
-	
+
 	public URI getServicePathWithoutParameters(UriInfo uriInfo) throws URISyntaxException {
 
 		URI servicePathwithParameters = this.getServicePath(uriInfo);
@@ -423,56 +424,60 @@ public class BaseApiServiceImpl {
 			return new URI(baseUri);
 		}
 	}
-	
+
 	protected ResponseBuilder handleResponseOk(ResponseBuilder responseBuilder, String transactionId) {
 		this.handleEventoOk(responseBuilder, transactionId);
 		if(transactionId != null)
 			return responseBuilder.header(this.transactionIdHeaderName, transactionId);
-		else 
+		else
 			return responseBuilder;
 	}
-	
+
 	protected ResponseBuilder handleResponseKo(ResponseBuilder responseBuilder, String transactionId) {
 		if(transactionId != null)
 			return responseBuilder.header(this.transactionIdHeaderName, transactionId);
-		else 
+		else
 			return responseBuilder;
 	}
-	
+
 	protected Response handleException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, Exception e, String transactionId) {
-		
+
 		if(e instanceof UnprocessableEntityException) {
 			return this.handleUnprocessableEntityException(uriInfo, httpHeaders, methodName, (UnprocessableEntityException)e,transactionId);
 		}
-		
+
 		if(e instanceof IncassiException) {
 			return this.handleIncassiException(uriInfo, httpHeaders, methodName, (IncassiException)e,transactionId);
 		}
-		
+
 		if(e instanceof BaseExceptionV1) {
 			return this.handleBaseException(uriInfo, httpHeaders, methodName, (BaseExceptionV1)e,transactionId);
 		}
-		
+
 		if(e instanceof RedirectException) {
 			return this.handleRedirectException(uriInfo, httpHeaders, methodName, (RedirectException)e,transactionId);
 		}
-		
+
 		if(e instanceof GovPayException) {
 			return this.handleGovpayException(uriInfo, httpHeaders, methodName, (GovPayException)e,transactionId);
 		}
-		
+
 		if(e instanceof ValidationException) {
 			return this.handleValidationException(uriInfo, httpHeaders, methodName, (ValidationException)e,transactionId);
 		}
-		
+
+		if(e instanceof IOException) {
+			return this.handleIOException(uriInfo, httpHeaders, methodName, (IOException)e,transactionId);
+		}
+
 		this.log.error("Errore interno durante "+methodName+": " + e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.INTERNO);
 		respKo.setCodice(EsitoOperazione.INTERNAL.toString());
 		respKo.setDescrizione("Errore interno");
 		respKo.setDettaglio(e.getMessage());
-		
-		ResponseBuilder responseBuilder = Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.APPLICATION_JSON).entity(respKo); 
+
+		ResponseBuilder responseBuilder = Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.APPLICATION_JSON).entity(respKo);
 		this.handleEventoFail(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
@@ -483,7 +488,7 @@ public class BaseApiServiceImpl {
 		respKo.setCodice(e.getCode());
 		respKo.setDescrizione(e.getMessage());
 		respKo.setDettaglio(e.getDetails());
-		
+
 		String sottotipoEsito = respKo.getCodice();
 		if(e instanceof NotAuthenticatedException || e instanceof NotAuthorizedException) {
 			this.log.info("Accesso alla risorsa "+methodName+" non consentito: "+ e.getMessage() + ", " + e.getDetails());
@@ -496,9 +501,9 @@ public class BaseApiServiceImpl {
 		ResponseBuilder responseBuilder = Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respKo);
 		if(e.getTransportErrorCode() > 499)
 			this.handleEventoFail(responseBuilder, transactionId, sottotipoEsito, respKo.getDettaglio(), e);
-		else 
+		else
 			this.handleEventoKo(responseBuilder, transactionId, sottotipoEsito, respKo.getDettaglio(), e);
-		return handleResponseKo(responseBuilder, transactionId).build(); 
+		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
 	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
@@ -517,19 +522,19 @@ public class BaseApiServiceImpl {
 			respKo.setDescrizione(e.getDescrizioneEsito());
 			respKo.setDettaglio(e.getMessageV3());
 		}
-		
+
 		ResponseBuilder responseBuilder = Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respKo);
 		if(statusCode > 499)
 			this.handleEventoFail(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
-		else 
+		else
 			this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
-		
+
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
-	
+
 	private Response handleUnprocessableEntityException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, UnprocessableEntityException e, String transactionId) {
 		this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
-		
+
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.RICHIESTA);
 		respKo.setCodice("SEMANTICA");
@@ -539,12 +544,12 @@ public class BaseApiServiceImpl {
 		ResponseBuilder responseBuilder = Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respKo);
 		if(e.getTransportErrorCode() > 499)
 			this.handleEventoFail(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
-		else 
+		else
 			this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
-		
+
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
-	
+
 	private Response handleValidationException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, ValidationException e, String transactionId) {
 		this.log.warn("Richiesta rifiutata per errori di validazione: " + e);
 		FaultBean respKo = new FaultBean();
@@ -552,17 +557,32 @@ public class BaseApiServiceImpl {
 			respKo.setCodice("SINTASSI");
 			respKo.setDescrizione("Richiesta non valida");
 			respKo.setDettaglio(e.getMessage());
-		
+
 		int statusCode = 400;
-		
+
 		ResponseBuilder responseBuilder = Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respKo);
 		this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
-	
+
+	private Response handleIOException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, IOException e, String transactionId) {
+		this.log.warn("Richiesta rifiutata per errori di validazione: " + e);
+		FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.RICHIESTA);
+			respKo.setCodice("SINTASSI");
+			respKo.setDescrizione("Richiesta non valida");
+			respKo.setDettaglio(e.getMessage());
+
+		int statusCode = 400;
+
+		ResponseBuilder responseBuilder = Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respKo);
+		this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
+		return handleResponseKo(responseBuilder, transactionId).build();
+	}
+
 	private Response handleIncassiException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, IncassiException e, String transactionId) {
 		this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage() + ": " + e.getDetails());
-		
+
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.RICHIESTA);
 		respKo.setCodice(e.getCode());
@@ -572,7 +592,7 @@ public class BaseApiServiceImpl {
 		ResponseBuilder responseBuilder = Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respKo);
 		if(e.getTransportErrorCode() > 499)
 			this.handleEventoFail(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
-		else 
+		else
 			this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
@@ -593,7 +613,7 @@ public class BaseApiServiceImpl {
 //				String transactionId = ctx.getTransactionId();
 //				this.response.setHeader(this.transactionIdHeaderName, transactionId);
 //			}
-			
+
 //			try {
 //				ctx.getApplicationLogger().log();
 //			} catch (UtilsException e) {
@@ -601,49 +621,49 @@ public class BaseApiServiceImpl {
 //			}
 		}
 	}
-	
+
 	protected void isAuthorized(Authentication authentication, List<TIPO_UTENZA> tipoUtenza, List<Servizio> servizi, List<Diritti> listaDiritti) throws NotAuthorizedException {
 		if(!AuthorizationManager.isAuthorized(authentication, tipoUtenza, servizi, listaDiritti)) {
 			throw AuthorizationManager.toNotAuthorizedException(authentication);
 		}
 	}
-	
+
 	protected ResponseBuilder handleEventoOk(ResponseBuilder responseBuilder, String transactionId) {
 		GpContext ctx = (GpContext) ContextThreadLocal.get().getApplicationContext();
 		ctx.getEventoCtx().setEsito(Esito.OK);
 		if(transactionId != null)
 			ctx.getEventoCtx().setIdTransazione(transactionId);
-		
+
 		return responseBuilder;
 	}
-	
+
 	protected ResponseBuilder handleEventoKo(ResponseBuilder responseBuilder, String transactionId, String sottotipoEsito, String dettaglioEsito, Exception exception) {
 		GpContext ctx = (GpContext) ContextThreadLocal.get().getApplicationContext();
 		ctx.getEventoCtx().setEsito(Esito.KO);
 		if(transactionId != null)
 			ctx.getEventoCtx().setIdTransazione(transactionId);
 		ctx.getEventoCtx().setDescrizioneEsito(dettaglioEsito);
-		
+
 		if(sottotipoEsito != null)
 			ctx.getEventoCtx().setSottotipoEsito(sottotipoEsito);
-		
+
 		ctx.getEventoCtx().setException(exception);
-		
+
 		return responseBuilder;
 	}
-	
+
 	protected ResponseBuilder handleEventoFail(ResponseBuilder responseBuilder, String transactionId, String sottotipoEsito, String dettaglioEsito, Exception exception) {
 		GpContext ctx = (GpContext) ContextThreadLocal.get().getApplicationContext();
 		ctx.getEventoCtx().setEsito(Esito.FAIL);
 		if(transactionId != null)
 			ctx.getEventoCtx().setIdTransazione(transactionId);
 		ctx.getEventoCtx().setDescrizioneEsito(dettaglioEsito);
-		
+
 		if(sottotipoEsito != null)
 			ctx.getEventoCtx().setSottotipoEsito(sottotipoEsito);
-		
+
 		ctx.getEventoCtx().setException(exception);
-		
+
 		return responseBuilder;
 	}
 }

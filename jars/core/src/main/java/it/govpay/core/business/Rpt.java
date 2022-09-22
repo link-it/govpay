@@ -19,7 +19,6 @@ import gov.telematici.pagamenti.ws.rpt.FaultBean;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediStatoRPTRisposta;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.PagamentoPortale;
@@ -30,16 +29,21 @@ import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.NotificaException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.DateUtils;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.EventoUtils;
+import it.govpay.core.utils.FaultBeanUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
@@ -49,7 +53,6 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.NodoClient;
-import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
@@ -61,6 +64,7 @@ import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.configurazione.Giornale;
 
 public class Rpt {
 
@@ -310,7 +314,7 @@ public class Rpt {
 			rptBD = null;
 			try {
 				Risposta risposta = null;
-				String operationId = appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoInviaCarrelloRPT);
+				String operationId = appContext.setupNodoClient(stazione.getCodStazione(), null, EventoContext.Azione.nodoInviaCarrelloRPT);
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
 				ctx.getApplicationLogger().log("rpt.invioCarrelloRpt");
 				clientInviaCarrelloRPT = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale);
@@ -364,7 +368,7 @@ public class Rpt {
 						clientInviaCarrelloRPT.getEventoCtx().setEsito(Esito.KO);
 						//						clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(risposta.toString());
 					}
-					throw new GovPayException(risposta.getFaultBean());
+					throw new GovPayException(FaultBeanUtils.toFaultBean(risposta.getFaultBean()));
 				} else {
 					log.info("Rpt accettata dal Nodo dei Pagamenti");
 					// RPT accettata dal Nodo
@@ -399,7 +403,7 @@ public class Rpt {
 
 				try {
 					try {
-						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), Azione.nodoChiediStatoRPT);
+						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), EventoContext.Azione.nodoChiediStatoRPT);
 						appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
 
 						chiediStatoRptClient = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale);
@@ -466,11 +470,15 @@ public class Rpt {
 						}
 						return this.updateStatoRpt(rpts, statoRpt, risposta.getEsito().getUrl(), pagamentoPortale, e);
 					}
+				} catch (NotificaException e1) {
+					throw new GovPayException(e);
 				} finally {
 					if(chiediStatoRptClient != null && chiediStatoRptClient.getEventoCtx().isRegistraEvento()) {
-						GdeUtils.salvaEvento(chiediStatoRptClient.getEventoCtx());
+						GdeUtils.salvaEvento(EventoUtils.toEventoDTO(chiediStatoRptClient.getEventoCtx(),log));
 					}
 				}
+			} catch (NotificaException e) {
+				throw new GovPayException(e);
 			}  finally {
 
 				if(clientInviaCarrelloRPT != null && clientInviaCarrelloRPT.getEventoCtx().isRegistraEvento()) {
@@ -492,16 +500,18 @@ public class Rpt {
 							clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(rpt.getDescrizioneStato());
 						}
 
-						GdeUtils.salvaEvento(clientInviaCarrelloRPT.getEventoCtx());
+						GdeUtils.salvaEvento(EventoUtils.toEventoDTO(clientInviaCarrelloRPT.getEventoCtx(),log));
 					}
 				}
 			}
 		} catch (ServiceException e) {
 			throw new GovPayException(e);
+		} catch (IOException e) {
+			throw new GovPayException(e);
 		} 
 	}
 
-	private List<it.govpay.bd.model.Rpt> updateStatoRpt(List<it.govpay.bd.model.Rpt> rpts, StatoRpt statoRpt, String url, PagamentoPortale pagamentoPortale, Exception e) throws ServiceException, GovPayException, UtilsException { 
+	private List<it.govpay.bd.model.Rpt> updateStatoRpt(List<it.govpay.bd.model.Rpt> rpts, StatoRpt statoRpt, String url, PagamentoPortale pagamentoPortale, Exception e) throws ServiceException, GovPayException, UtilsException, NotificaException { 
 		IContext ctx = ContextThreadLocal.get();
 		ApplicationContext appContext = (ApplicationContext) ctx.getApplicationContext();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);

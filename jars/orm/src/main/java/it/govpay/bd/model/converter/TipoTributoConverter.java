@@ -22,14 +22,13 @@ package it.govpay.bd.model.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Tributo.TipoContabilita;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class TipoTributoConverter {
 
-	public static List<TipoTributo> toDTOList(List<it.govpay.orm.TipoTributo> lstVO) throws ServiceException {
+	public static List<TipoTributo> toDTOList(List<it.govpay.orm.TipoTributo> lstVO) throws CodificaInesistenteException {
 		List<TipoTributo> lst = new ArrayList<>();
 		if(lstVO != null && !lstVO.isEmpty()) {
 			for(it.govpay.orm.TipoTributo vo: lstVO) {
@@ -39,7 +38,7 @@ public class TipoTributoConverter {
 		return lst;
 	}
 
-	public static TipoTributo toDTO(it.govpay.orm.TipoTributo vo) throws ServiceException {
+	public static TipoTributo toDTO(it.govpay.orm.TipoTributo vo) throws CodificaInesistenteException {
 		TipoTributo dto = new TipoTributo();
 		dto.setId(vo.getId());
 		dto.setCodTributo(vo.getCodTributo());

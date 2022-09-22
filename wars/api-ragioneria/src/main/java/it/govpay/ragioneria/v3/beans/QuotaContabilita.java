@@ -10,58 +10,58 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class QuotaContabilita   {
-  
+
   @Schema(example = "0101", required = true, description = "Codice del capitolo")
  /**
-   * Codice del capitolo  
+   * Codice del capitolo
   **/
   private String capitolo = null;
-  
+
   @Schema(example = "2020", required = true, description = "Anno di esercizio")
  /**
-   * Anno di esercizio  
+   * Anno di esercizio
   **/
   private BigDecimal annoEsercizio = null;
-  
+
   @Schema(example = "10.01", required = true, description = "Importo della voce di contabilita'")
  /**
-   * Importo della voce di contabilita'  
+   * Importo della voce di contabilita'
   **/
   private BigDecimal importo = null;
-  
+
   @Schema(example = "22", description = "Codice dell’accertamento")
  /**
-   * Codice dell’accertamento  
+   * Codice dell’accertamento
   **/
   private String accertamento = null;
-  
+
   @Schema(description = "Dati specifici del gestionale di contabilità")
  /**
-   * Dati specifici del gestionale di contabilità  
+   * Dati specifici del gestionale di contabilità
   **/
   private Object proprietaCustom = null;
-  
+
   @Schema(example = "titolo", description = "Classificazione delle entrate in bilancio")
  /**
-   * Classificazione delle entrate in bilancio  
+   * Classificazione delle entrate in bilancio
   **/
   private String titolo = null;
-  
+
   @Schema(example = "tipologia", description = "Classificazione delle entrate in bilancio")
  /**
-   * Classificazione delle entrate in bilancio  
+   * Classificazione delle entrate in bilancio
   **/
   private String tipologia = null;
-  
+
   @Schema(example = "categoria", description = "Classificazione delle entrate in bilancio")
  /**
-   * Classificazione delle entrate in bilancio  
+   * Classificazione delle entrate in bilancio
   **/
   private String categoria = null;
-  
+
   @Schema(example = "articolo", description = "Classificazione delle entrate in bilancio")
  /**
-   * Classificazione delle entrate in bilancio  
+   * Classificazione delle entrate in bilancio
   **/
   private String articolo = null;
  /**
@@ -234,7 +234,7 @@ public class QuotaContabilita   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class QuotaContabilita {\n");
-    
+
     sb.append("    capitolo: ").append(toIndentedString(capitolo)).append("\n");
     sb.append("    annoEsercizio: ").append(toIndentedString(annoEsercizio)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");

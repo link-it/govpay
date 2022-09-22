@@ -8,23 +8,23 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets tipoNotifica
  */
 public enum TipoNotifica {
-  
-  
-  
-  
+
+
+
+
   ATTIVAZIONE("ATTIVAZIONE"),
-  
-  
+
+
   RICEVUTA("RICEVUTA"),
-  
-  
+
+
   ANNULLAMENTO("ANNULLAMENTO"),
-  
-  
+
+
   FALLIMENTO("FALLIMENTO");
-  
-  
-  
+
+
+
 
   private String value;
 

@@ -16,19 +16,19 @@ import org.apache.cxf.io.CachedOutputStreamCallback;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.service.beans.HttpMethodEnum;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
 
-import it.govpay.bd.configurazione.model.GdeInterfaccia;
-import it.govpay.bd.model.eventi.DettaglioRichiesta;
-import it.govpay.bd.model.eventi.DettaglioRisposta;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
-import it.govpay.core.utils.EventoContext;
-import it.govpay.core.utils.EventoContext.Esito;
-import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.client.HttpMethod;
+import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.model.configurazione.GdeInterfaccia;
+import it.govpay.model.eventi.DettaglioRichiesta;
+import it.govpay.model.eventi.DettaglioRisposta;
 
 public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.logging.LoggingOutInterceptor  {
 
@@ -64,14 +64,14 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 				httpMethodS = eventoCtx.getMethod() != null ? eventoCtx.getMethod() : eventRequest.getHttpMethod();
 				principal = eventoCtx.getPrincipal()!= null ? eventoCtx.getPrincipal() : eventRequest.getPrincipal();
 				
-				HttpMethodEnum httpMethod = GiornaleEventiUtilities.getHttpMethod(httpMethodS);
+				HttpMethod httpMethod = GiornaleEventiUtilities.getHttpMethod(httpMethodS);
 				esito = eventoCtx.getEsito() != null ? eventoCtx.getEsito() : Esito.KO;
 				this.log.debug("Log Evento API: ["+this.giornaleEventiConfig.getApiName()+"] Method ["+httpMethodS+"], Url ["+url+"], Esito ["+esito+"]");
 
 				GdeInterfaccia configurazioneInterfaccia = GiornaleEventiUtilities.getConfigurazioneGiornaleEventi(context, this.configurazioneDAO, this.giornaleEventiConfig);
 
 				if(configurazioneInterfaccia != null) {
-					this.log.debug("Configurazione Giornale Eventi API: ["+this.giornaleEventiConfig.getApiName()+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia,null));
+					this.log.debug("Configurazione Giornale Eventi API: ["+this.giornaleEventiConfig.getApiName()+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia));
 					
 					if(GiornaleEventiUtilities.isRequestLettura(httpMethod, this.giornaleEventiConfig.getApiNameEnum(), eventoCtx.getTipoEvento())) {
 						logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getLetture(), esito);

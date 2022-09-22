@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
@@ -35,7 +34,7 @@ import it.govpay.orm.IdApplicazione;
 
 public class PagamentoPortaleConverter {
 
-	public static List<PagamentoPortale> toDTO(List<it.govpay.orm.PagamentoPortale> singoliPagamenti) throws ServiceException {
+	public static List<PagamentoPortale> toDTO(List<it.govpay.orm.PagamentoPortale> singoliPagamenti) {
 		List<PagamentoPortale> dto = new ArrayList<>();
 		for(it.govpay.orm.PagamentoPortale vo : singoliPagamenti) {
 			dto.add(toDTO(vo));
@@ -43,7 +42,7 @@ public class PagamentoPortaleConverter {
 		return dto;
 	}
 	
-	public static PagamentoPortale toDTO(it.govpay.orm.VistaPagamentoPortale vo) throws ServiceException {
+	public static PagamentoPortale toDTO(it.govpay.orm.VistaPagamentoPortale vo) {
 		PagamentoPortale dto = new PagamentoPortale();
 
 		dto.setId(vo.getId());
@@ -75,7 +74,7 @@ public class PagamentoPortaleConverter {
 		return dto;
 	}
 
-	public static PagamentoPortale toDTO(it.govpay.orm.PagamentoPortale vo) throws ServiceException {
+	public static PagamentoPortale toDTO(it.govpay.orm.PagamentoPortale vo) {
 		PagamentoPortale dto = new PagamentoPortale();
 
 		dto.setId(vo.getId());
@@ -110,7 +109,7 @@ public class PagamentoPortaleConverter {
 		return dto;
 	}
 
-	public static it.govpay.orm.PagamentoPortale toVO(PagamentoPortale dto) throws ServiceException {
+	public static it.govpay.orm.PagamentoPortale toVO(PagamentoPortale dto) {
 		it.govpay.orm.PagamentoPortale vo = new it.govpay.orm.PagamentoPortale();
 
 		vo.setId(dto.getId());

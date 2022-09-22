@@ -45,21 +45,20 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
 import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
-import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.client.NodoClient;
-import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.thread.InviaRptThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
@@ -68,6 +67,8 @@ import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.configurazione.Giornale;
+import it.govpay.model.eventi.DatiPagoPA;
 
 public class RptUtils {
 
@@ -165,7 +166,7 @@ public class RptUtils {
 		client.getEventoCtx().setDatiPagoPA(datiPagoPA);
 	}
 
-	public static void inviaRPTAsync(Rpt rpt, IContext ctx) throws ServiceException {
+	public static void inviaRPTAsync(Rpt rpt, IContext ctx) throws ServiceException, IOException {
 		InviaRptThread t = new InviaRptThread(rpt, ctx);
 		ThreadExecutorManager.getClientPoolExecutorRPT().execute(t);
 	}
@@ -183,7 +184,7 @@ public class RptUtils {
 	}
 
 //, BasicBD bd
-	public static boolean aggiornaRptDaNpD(Intermediario intermediario, Rpt rpt) throws GovPayException, ServiceException, ClientException, NdpException, UtilsException {
+	public static boolean aggiornaRptDaNpD(Intermediario intermediario, Rpt rpt) throws GovPayException, ServiceException, ClientException, NdpException, UtilsException, IOException {
 		try {
 			String msg = ".";
 			StatoRpt stato_originale = rpt.getStato();
@@ -279,7 +280,7 @@ public class RptUtils {
 				try {
 					try {
 						Stazione stazione = rpt.getStazione(configWrapper);
-						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpt.getCodDominio(), Azione.nodoChiediStatoRPT);
+						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpt.getCodDominio(), EventoContext.Azione.nodoChiediStatoRPT);
 						NodoChiediStatoRPT richiesta = new NodoChiediStatoRPT();
 						richiesta.setIdentificativoDominio(rpt.getCodDominio());
 						richiesta.setIdentificativoIntermediarioPA(stazione.getIntermediario(configWrapper).getCodIntermediario());
@@ -391,7 +392,7 @@ public class RptUtils {
 							
 							return true;
 						}
-						throw new GovPayException(risposta.getFault());
+						throw new GovPayException(FaultBeanUtils.toFaultBean(risposta.getFault()));
 					} else {
 						StatoRpt nuovoStato = Rpt.StatoRpt.toEnum(risposta.getEsito().getStato());
 						EsitoPagamento esitoPagamento = nuovoStato.equals(Rpt.StatoRpt.RPT_RIFIUTATA_NODO) ? EsitoPagamento.RIFIUTATO: null;
@@ -414,7 +415,7 @@ public class RptUtils {
 							try { 
 								try {
 									Stazione stazione = rpt.getStazione(configWrapper);
-									operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpt.getCodDominio(), Azione.nodoChiediCopiaRT);
+									operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpt.getCodDominio(), EventoContext.Azione.nodoChiediCopiaRT);
 									NodoChiediCopiaRT nodoChiediCopiaRT = new NodoChiediCopiaRT();
 									nodoChiediCopiaRT.setIdentificativoDominio(rpt.getCodDominio());
 									nodoChiediCopiaRT.setIdentificativoIntermediarioPA(rpt.getIntermediario(configWrapper).getCodIntermediario());
@@ -504,7 +505,7 @@ public class RptUtils {
 								ctx.getApplicationLogger().log("pagamento.acquisizioneRtOk");
 							}finally {
 								if(chiediCopiaRTClient != null && chiediCopiaRTClient.getEventoCtx().isRegistraEvento()) {
-									GdeUtils.salvaEvento(chiediCopiaRTClient.getEventoCtx());
+									GdeUtils.salvaEvento(EventoUtils.toEventoDTO(chiediCopiaRTClient.getEventoCtx(),log));
 								}
 							}
 
@@ -610,7 +611,7 @@ public class RptUtils {
 					}
 				}finally {
 					if(chiediStatoRptClient != null && chiediStatoRptClient.getEventoCtx().isRegistraEvento()) {
-						GdeUtils.salvaEvento(chiediStatoRptClient.getEventoCtx());
+						GdeUtils.salvaEvento(EventoUtils.toEventoDTO(chiediStatoRptClient.getEventoCtx(),log));
 					}
 				}
 			}

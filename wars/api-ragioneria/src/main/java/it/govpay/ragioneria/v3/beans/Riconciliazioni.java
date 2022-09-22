@@ -12,11 +12,11 @@ public class Riconciliazioni extends Lista  {
 	public Riconciliazioni() {
 		super();
 	}
-	
+
 	public Riconciliazioni(URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(requestUri, count, pagina, limit);
 	}
-  
+
   @Schema(description = "")
   private List<RiconciliazioneIndex> risultati = null;
  /**

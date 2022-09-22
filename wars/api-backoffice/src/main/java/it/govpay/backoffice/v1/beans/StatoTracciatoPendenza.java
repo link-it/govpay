@@ -8,29 +8,29 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets statoTracciatoPendenza
  */
 public enum StatoTracciatoPendenza {
-  
-  
-  
-  
+
+
+
+
   IN_ATTESA("IN_ATTESA"),
-  
-  
+
+
   IN_ELABORAZIONE("IN_ELABORAZIONE"),
-  
-  
+
+
   ESEGUITO("ESEGUITO"),
-  
-  
+
+
   ESEGUITO_CON_ERRORI("ESEGUITO_CON_ERRORI"),
-  
-  
+
+
   SCARTATO("SCARTATO"),
-  
-  
+
+
   ELABORAZIONE_STAMPA("ELABORAZIONE_STAMPA");
-  
-  
-  
+
+
+
 
   private String value;
 

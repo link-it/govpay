@@ -13,16 +13,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
  **/
 @Schema(description="Definisce i dettagli di una entrata.")
 public class Entrata  implements OneOfTipoRiferimentoVocePendenza  {
-  
+
   @Schema(example = "IT60X0542811101000000123456", required = true, description = "")
   private String ibanAccredito = null;
-  
+
   @Schema(example = "IT60X0542811101000000123456", description = "")
   private String ibanAppoggio = null;
-  
+
   @Schema(example = "9/3321", required = true, description = "Tassonomia pagoPA")
  /**
-   * Tassonomia pagoPA  
+   * Tassonomia pagoPA
   **/
   private String codiceTassonomicoPagoPA = null;
  /**
@@ -86,7 +86,7 @@ public class Entrata  implements OneOfTipoRiferimentoVocePendenza  {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Entrata {\n");
-    
+
     sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
     sb.append("    ibanAppoggio: ").append(toIndentedString(ibanAppoggio)).append("\n");
     sb.append("    codiceTassonomicoPagoPA: ").append(toIndentedString(codiceTassonomicoPagoPA)).append("\n");

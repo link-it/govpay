@@ -13,7 +13,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import it.govpay.bd.configurazione.model.Hardening;
+import it.govpay.model.configurazione.Hardening;
 import it.govpay.rs.v1.authentication.recaptcha.beans.CaptchaCostanti;
 import it.govpay.rs.v1.authentication.recaptcha.beans.CaptchaResponse;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaConfigurazioneNonValidaException;

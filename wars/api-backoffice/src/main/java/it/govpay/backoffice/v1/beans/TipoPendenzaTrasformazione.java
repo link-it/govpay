@@ -2,13 +2,12 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -18,13 +17,13 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 public class TipoPendenzaTrasformazione extends JSONSerializable implements IValidable {
 
   private TipoTemplateTrasformazione tipoEnum = null;
-  
+
   @JsonProperty("tipo")
   private String tipo = null;
-  
+
   @JsonProperty("definizione")
   private Object definizione = null;
-  
+
   /**
    **/
   public TipoPendenzaTrasformazione tipo(TipoTemplateTrasformazione tipo) {
@@ -39,7 +38,7 @@ public class TipoPendenzaTrasformazione extends JSONSerializable implements IVal
   public void setTipo(TipoTemplateTrasformazione tipoEnum) {
     this.tipoEnum = tipoEnum;
   }
-  
+
   public TipoPendenzaTrasformazione tipo(String tipo) {
     this.tipo = tipo;
     return this;
@@ -87,7 +86,7 @@ public class TipoPendenzaTrasformazione extends JSONSerializable implements IVal
     return Objects.hash(tipo, definizione);
   }
 
-  public static TipoPendenzaTrasformazione parse(String json) throws ServiceException, ValidationException { 
+  public static TipoPendenzaTrasformazione parse(String json) throws IOException {
     return parse(json, TipoPendenzaTrasformazione.class);
   }
 
@@ -100,7 +99,7 @@ public class TipoPendenzaTrasformazione extends JSONSerializable implements IVal
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoPendenzaTrasformazione {\n");
-    
+
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    definizione: ").append(toIndentedString(definizione)).append("\n");
     sb.append("}");
@@ -117,13 +116,13 @@ public class TipoPendenzaTrasformazione extends JSONSerializable implements IVal
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 	  ValidatorFactory vf = ValidatorFactory.newInstance();
-		
+
 	  vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
-	  
+
 	  if((this.tipo != null && this.definizione == null) || (this.tipo == null && this.definizione != null)) {
 		  throw new ValidationException("I campi 'tipo' e 'definizione' devono essere entrambi valorizzati per definire il field 'trasformazione'.");
 	  }

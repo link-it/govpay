@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -14,12 +14,6 @@ import org.slf4j.MDC;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.configurazione.model.AppIOBatch;
-import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
-import it.govpay.bd.configurazione.model.Giornale;
-import it.govpay.bd.configurazione.model.PromemoriaAvvisoBase;
-import it.govpay.bd.configurazione.model.PromemoriaRicevutaBase;
-import it.govpay.bd.configurazione.model.PromemoriaScadenza;
 import it.govpay.bd.model.Configurazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.NotificaAppIo;
@@ -29,10 +23,12 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.NotificheAppIoBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.QuietanzaPagamento;
 import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.appio.AppIOUtils;
 import it.govpay.core.utils.appio.impl.ApiException;
@@ -44,6 +40,12 @@ import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.NotificaAppIo.TipoNotifica;
+import it.govpay.model.configurazione.AppIOBatch;
+import it.govpay.model.configurazione.AvvisaturaViaAppIo;
+import it.govpay.model.configurazione.Giornale;
+import it.govpay.model.configurazione.PromemoriaAvvisoBase;
+import it.govpay.model.configurazione.PromemoriaRicevutaBase;
+import it.govpay.model.configurazione.PromemoriaScadenza;
 import it.govpay.model.TipoVersamento;
 
 public class InviaNotificaAppIoThread implements Runnable{
@@ -67,7 +69,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 	private TipoVersamento tipoVersamento = null;
 	private TipoNotifica tipo;
 
-	public InviaNotificaAppIoThread(NotificaAppIo notifica, IContext ctx) throws ServiceException {
+	public InviaNotificaAppIoThread(NotificaAppIo notifica, IContext ctx) throws ServiceException, IOException {
 		this.ctx = ctx;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
@@ -188,7 +190,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 				this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 			} finally {
 				if(clientGetProfile != null && clientGetProfile.getEventoCtx().isRegistraEvento()) {
-					GdeUtils.salvaEvento(clientGetProfile.getEventoCtx());
+					GdeUtils.salvaEvento(EventoUtils.toEventoDTO(clientGetProfile.getEventoCtx(),log));
 				}
 				
 				if(notificheBD != null) notificheBD.closeConnection(); 
@@ -321,7 +323,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 					this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 				} finally {
 					if(clientPostMessage != null && clientPostMessage.getEventoCtx().isRegistraEvento()) {
-						GdeUtils.salvaEvento(clientPostMessage.getEventoCtx());
+						GdeUtils.salvaEvento(EventoUtils.toEventoDTO(clientPostMessage.getEventoCtx(),log));
 					}
 					
 					if(notificheBD != null) notificheBD.closeConnection(); 

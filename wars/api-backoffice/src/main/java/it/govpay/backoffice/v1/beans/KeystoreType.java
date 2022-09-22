@@ -8,14 +8,14 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets keystoreType
  */
 public enum KeystoreType {
-  
-  
-  
-  
+
+
+
+
   JKS("JKS");
-  
-  
-  
+
+
+
 
   private String value;
 

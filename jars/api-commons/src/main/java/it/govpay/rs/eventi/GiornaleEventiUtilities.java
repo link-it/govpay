@@ -10,30 +10,30 @@ import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.io.CachedWriter;
 import org.apache.cxf.message.Message;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.service.beans.HttpMethodEnum;
 import org.openspcoop2.utils.service.context.IContext;
 
-import it.govpay.bd.configurazione.model.GdeEvento;
-import it.govpay.bd.configurazione.model.GdeInterfaccia;
-import it.govpay.bd.configurazione.model.Giornale;
-import it.govpay.core.business.GiornaleEventi;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
 import it.govpay.core.dao.configurazione.dto.LeggiConfigurazioneDTO;
 import it.govpay.core.dao.configurazione.dto.LeggiConfigurazioneDTOResponse;
 import it.govpay.core.dao.configurazione.exception.ConfigurazioneNonTrovataException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.EventoContext;
-import it.govpay.core.utils.EventoContext.Componente;
+import it.govpay.core.utils.client.HttpMethod;
+import it.govpay.core.utils.eventi.EventiUtils;
+import it.govpay.model.configurazione.GdeEvento;
+import it.govpay.model.configurazione.GdeInterfaccia;
+import it.govpay.model.configurazione.Giornale;
 
 public class GiornaleEventiUtilities {
 	
-	public static GdeInterfaccia getConfigurazioneGiornaleEventi (IContext context, ConfigurazioneDAO configurazioneDAO, GiornaleEventiConfig giornaleEventiConfig) throws ConfigurazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ServiceException {
+	public static GdeInterfaccia getConfigurazioneGiornaleEventi (IContext context, ConfigurazioneDAO configurazioneDAO, GiornaleEventiConfig giornaleEventiConfig) throws ConfigurazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ServiceException, it.govpay.core.exceptions.IOException {
 		LeggiConfigurazioneDTO leggiConfigurazioneDTO = new LeggiConfigurazioneDTO(context.getAuthentication());
 		LeggiConfigurazioneDTOResponse configurazione = configurazioneDAO.getConfigurazione(leggiConfigurazioneDTO);
 		Giornale giornale = configurazione.getConfigurazione().getGiornale();
 		
-		return GiornaleEventi.getConfigurazioneComponente(giornaleEventiConfig.getApiNameEnum(), giornale);
+		return EventiUtils.getConfigurazioneComponente(giornaleEventiConfig.getApiNameEnum(), giornale);
 	}
 	
     public static String safeGet(Message message, String key) {
@@ -45,31 +45,31 @@ public class GiornaleEventiUtilities {
     }
 
 	public static boolean dumpEvento(GdeEvento evento, Integer responseCode) {
-		return GiornaleEventi.dumpEvento(evento, responseCode);
+		return EventiUtils.dumpEvento(evento, responseCode);
 	}
 	
 	public static boolean logEvento(GdeEvento evento, Integer responseCode) {
-		return GiornaleEventi.logEvento(evento, responseCode);
+		return EventiUtils.logEvento(evento, responseCode);
 	}
 	
 	public static boolean dumpEvento(GdeEvento evento, EventoContext.Esito esito) {
-		return GiornaleEventi.dumpEvento(evento, esito);
+		return EventiUtils.dumpEvento(evento, esito);
 	}
 	
 	public static boolean logEvento(GdeEvento evento, EventoContext.Esito esito) {
-		return GiornaleEventi.logEvento(evento, esito);
+		return EventiUtils.logEvento(evento, esito);
 	}
 	
-	public static HttpMethodEnum getHttpMethod(String httpMethod) {
-		return GiornaleEventi.getHttpMethod(httpMethod);
+	public static HttpMethod getHttpMethod(String httpMethod) {
+		return EventiUtils.getHttpMethod(httpMethod);
 	}
 	
-	public static boolean isRequestLettura(HttpMethodEnum httpMethod, Componente componente, String operazione) {
-		return GiornaleEventi.isRequestLettura(httpMethod,componente,operazione);
+	public static boolean isRequestLettura(HttpMethod httpMethod, Componente componente, String operazione) {
+		return EventiUtils.isRequestLettura(httpMethod,componente,operazione);
 	}
 	
-	public static boolean isRequestScrittura(HttpMethodEnum httpMethod, Componente componente, String operazione) {
-		return GiornaleEventi.isRequestScrittura(httpMethod,componente,operazione);
+	public static boolean isRequestScrittura(HttpMethod httpMethod, Componente componente, String operazione) {
+		return EventiUtils.isRequestScrittura(httpMethod,componente,operazione);
 	}
 	
 	

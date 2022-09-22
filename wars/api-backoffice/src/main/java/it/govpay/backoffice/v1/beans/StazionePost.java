@@ -2,10 +2,10 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -13,13 +13,13 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "abilitato",
 })
 public class StazionePost extends it.govpay.core.beans.JSONSerializable implements IValidable{
-  
+
   @JsonProperty("password")
   private String password = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   /**
    * Ragione sociale dell'intermediario PagoPA
    **/
@@ -70,7 +70,7 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
     return Objects.hash(this.password, this.abilitato);
   }
 
-  public static StazionePost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static StazionePost parse(String json) throws IOException {
     return parse(json, StazionePost.class);
   }
 
@@ -83,7 +83,7 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class StazionePost {\n");
-    
+
     sb.append("    password: ").append(this.toIndentedString(this.password)).append("\n");
     sb.append("    abilitato: ").append(this.toIndentedString(this.abilitato)).append("\n");
     sb.append("}");
@@ -100,8 +100,8 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
-  
+
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();

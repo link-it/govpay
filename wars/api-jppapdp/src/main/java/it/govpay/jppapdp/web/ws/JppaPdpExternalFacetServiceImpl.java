@@ -18,7 +18,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.context.core.Actor;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -36,15 +36,15 @@ import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.BaseExceptionV1.CategoriaEnum;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
-import it.govpay.core.utils.EventoContext;
-import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.MaggioliJPPAUtils;
+import it.govpay.jppapdp.beans.utils.JaxbUtils;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.CtMessaggi;
@@ -250,7 +250,7 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 			messaggio.setDescrizione(faultDescription); 
 			response.getMessaggi().getMessaggio().add(messaggio );
 		} catch (DatatypeConfigurationException | UtilsException | ServiceException | 
-				SAXException | JAXBException | ValidationException | XMLStreamException | IOException e) {
+				SAXException | JAXBException | ValidationException | XMLStreamException | IOException | it.govpay.core.exceptions.IOException e) {
 			log.error("Errore durante l'esecuzione della procedura di recupero RT: "+ e.getMessage(),e);
 			String faultDescription = e.getMessage() == null ? "<Nessuna descrizione>" : e.getMessage(); 
 			errore = FaultPa.PAA_SYSTEM_ERROR.name();

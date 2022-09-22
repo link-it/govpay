@@ -43,22 +43,22 @@ public class PromemoriaController extends BaseController {
     	String methodName = "findPromemoria";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		try{
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-			this.setMaxRisultati(maxRisultati); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+			this.setMaxRisultati(maxRisultati);
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.CONFIGURAZIONE_E_MANUTENZIONE), Arrays.asList(Diritti.LETTURA));
 
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
-			
+
 			// Parametri - > DTO Input
 			ListaPromemoriaDTO listaPromemoriaDTO = new ListaPromemoriaDTO(user);
-			
+
 			listaPromemoriaDTO.setLimit(risultatiPerPagina);
 			listaPromemoriaDTO.setPagina(pagina);
 			listaPromemoriaDTO.setEseguiCount(metadatiPaginazione);
 			listaPromemoriaDTO.setEseguiCountConLimit(maxRisultati);
-			
+
 			if(stato != null) {
 				StatoPromemoria statoPromemoria = StatoPromemoria.fromValue(stato);
 				if(statoPromemoria != null)
@@ -77,7 +77,7 @@ public class PromemoriaController extends BaseController {
 					break;
 				}
 			}
-			
+
 			if(tipo != null) {
 				TipoPromemoria tipoPromemoria = TipoPromemoria.fromValue(tipo);
 				if(tipoPromemoria != null)
@@ -98,12 +98,12 @@ public class PromemoriaController extends BaseController {
 				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				listaPromemoriaDTO.setDataDa(dataDaDate);
 			}
-			
+
 			if(dataA!=null) {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				listaPromemoriaDTO.setDataA(dataADate);
 			}
-			
+
 //			// Autorizzazione sui domini
 //			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
 //			if(idDomini == null) {
@@ -116,10 +116,10 @@ public class PromemoriaController extends BaseController {
 //				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
 //			}
 //			listaPromemoriaDTO.setIdTipiVersamento(idTipiVersamento);
-			
+
 			// INIT DAO
 
-			PromemoriaDAO notificheDAO = new PromemoriaDAO(); 
+			PromemoriaDAO notificheDAO = new PromemoriaDAO();
 
 			// CHIAMATA AL DAO
 
@@ -135,7 +135,7 @@ public class PromemoriaController extends BaseController {
 			ListaPromemoria response = new ListaPromemoria(results, this.getServicePath(uriInfo),
 					listaPromemoriaDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {

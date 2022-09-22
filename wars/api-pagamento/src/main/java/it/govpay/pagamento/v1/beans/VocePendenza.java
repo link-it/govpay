@@ -3,11 +3,10 @@ package it.govpay.pagamento.v1.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -122,11 +121,11 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 		public String getCodificaPagoPA() {
 			return this.codificaPagoPA;
 		}
-		
+
 		public String getCodificaJson() {
 			return this.codificaJson;
 		}
-		
+
 		public static TipoBolloEnum fromCodificaPagoPA(String codificaPagoPA) {
 			for (TipoBolloEnum b : TipoBolloEnum.values()) {
 				if (b.getCodificaPagoPA().equals(codificaPagoPA)) {
@@ -443,7 +442,7 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 		return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, this.stato, this.datiAllegati, descrizioneCausaleRPT, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.ibanAppoggio, this.tipoContabilita);
 	}
 
-	public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
+	public static VocePendenza parse(String json) throws it.govpay.core.exceptions.IOException {
 		return parse(json, VocePendenza.class);
 	}
 
@@ -490,7 +489,7 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		ValidatoreIdentificativi vi = ValidatoreIdentificativi.newInstance();
-		
+
 		vi.validaIdVocePendenza("idVocePendenza", this.idVocePendenza);
 		ValidatoreUtils.validaImporto(vf, "importo", this.importo);
 		ValidatoreUtils.validaDescrizione(vf, "descrizione", this.descrizione);
@@ -545,7 +544,7 @@ public class VocePendenza extends JSONSerializable implements IValidable {
 				throw new ValidationException("Valorizzato ibanAccredito. " + ve.getMessage());
 			}
 		}
-		
+
 		else {
 			throw new ValidationException("Nella voce di pendenza deve essere valorizzato uno tra codEntrata, tipoBollo o ibanAccredito.");
 		}

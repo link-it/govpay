@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class VincoloDocumento  implements OneOfTipoRiferimentoDocumento  {
-  
+
   @Schema(required = true, description = "")
   private VincoloPagamento soglia = null;
  /**
@@ -34,7 +34,7 @@ public class VincoloDocumento  implements OneOfTipoRiferimentoDocumento  {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class VincoloDocumento {\n");
-    
+
     sb.append("    soglia: ").append(toIndentedString(soglia)).append("\n");
     sb.append("}");
     return sb.toString();

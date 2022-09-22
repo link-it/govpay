@@ -17,69 +17,70 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.model.Connettore.EnumAuthType;
+import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.model.ConnettoreNotificaPagamenti.Tipo;
 import it.govpay.model.ConnettoreNotificaPagamenti.TipoConnettore;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Versionabile;
-import it.govpay.model.Connettore.EnumAuthType;
-import it.govpay.model.Connettore.EnumSslType;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
-	
-	public static it.govpay.model.ConnettoreNotificaPagamenti getConnettoreDTO(it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiMaggioliJPPA connector, Authentication user, Tipo tipo) throws ServiceException,NotAuthorizedException {
+
+	public static it.govpay.model.ConnettoreNotificaPagamenti getConnettoreDTO(it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiMaggioliJPPA connector, Authentication user, Tipo tipo) throws NotAuthorizedException, CodificaInesistenteException {
 		it.govpay.model.ConnettoreNotificaPagamenti connettore = new it.govpay.model.ConnettoreNotificaPagamenti();
-		
+
 		connettore.setAbilitato(connector.Abilitato());
-		
+
 		if(connector.Abilitato()) {
 			connettore.setTipoTracciato(tipo.name());
 			connettore.setPrincipalMaggioli(connector.getPrincipal());
-			
+
 //			boolean appAuthTipiPendenzaAll = false;
 			if(connector.getTipiPendenza() != null) {
 				List<String> idTipiVersamento = new ArrayList<>();
-				
+
 				for (Object object : connector.getTipiPendenza()) {
 					if(object instanceof String) {
 						String idTipoPendenza = (String) object;
-						
+
 						if(idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
 							List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
-							
+
 							if(tipiVersamentoAutorizzati == null)
 								throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-							
+
 							if(tipiVersamentoAutorizzati.size() > 0) {
 								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza");
 							}
-							
+
 //							appAuthTipiPendenzaAll = true;
 							idTipiVersamento.clear();
 							break;
 						}
-						
+
 						idTipiVersamento.add(idTipoPendenza);
-						
-						
+
+
 					} else if(object instanceof TipoPendenzaProfiloIndex) {
 						TipoPendenzaProfiloIndex tipoPendenzaPost = (TipoPendenzaProfiloIndex) object;
 						if(tipoPendenzaPost.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
 							List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
-							
+
 							if(tipiVersamentoAutorizzati == null)
 								throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-							
+
 							if(tipiVersamentoAutorizzati.size() > 0) {
 								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza");
 							}
-							
+
 //							appAuthTipiPendenzaAll = true;
 							idTipiVersamento.clear();
 							break;
 						}
-						
+
 						idTipiVersamento.add(tipoPendenzaPost.getIdTipoPendenza());
-						
+
 					} else if(object instanceof java.util.LinkedHashMap) {
 						java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) object;
 						TipoPendenzaProfiloIndex tipoPendenzaPost = new TipoPendenzaProfiloIndex();
@@ -88,27 +89,27 @@ public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
 						if(map.containsKey("descrizione")) {
 							tipoPendenzaPost.setDescrizione((String) map.get("descrizione"));
 						}
-						
+
 						if(tipoPendenzaPost.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
 							List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
-							
+
 							if(tipiVersamentoAutorizzati == null)
 								throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-							
+
 							if(tipiVersamentoAutorizzati.size() > 0) {
 								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza");
 							}
-							
+
 //							appAuthTipiPendenzaAll = true;
 							idTipiVersamento.clear();
 							break;
 						}
 						idTipiVersamento.add(tipoPendenzaPost.getIdTipoPendenza());
 					}
-				}	
+				}
 				connettore.setTipiPendenza(idTipiVersamento);
 			}
-			
+
 			switch (connector.getTipoConnettore()) {
 			case EMAIL:
 				connettore.setVersioneCsv(connector.getVersione());
@@ -128,7 +129,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
 					connettore.setSslType(connector.getAuth().getSslType());
 					connettore.setSslKsType(connector.getAuth().getKsType());
 					connettore.setSslPKeyPasswd(connector.getAuth().getKsPKeyPasswd());
-					
+
 					if(connector.getAuth().getTipo() != null) {
 						connettore.setTipoAutenticazione(EnumAuthType.SSL);
 						if(connector.getAuth().getTipo() != null) {
@@ -147,23 +148,23 @@ public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
 					}
 				} else {
 					connettore.setTipoAutenticazione(EnumAuthType.NONE);
-				}	
-				
+				}
+
 				connettore.setUrl(connector.getUrl());
 				if(connector.getVersioneApi() != null)
 					connettore.setVersione(Versionabile.Versione.toEnum(VersioneApiEnum.fromValue(connector.getVersioneApi()).toNameString()));
-				
+
 				break;
 			}
 		}
-		
+
 		return connettore;
 	}
 
 	public static it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiMaggioliJPPA toRsModel(it.govpay.model.ConnettoreNotificaPagamenti connettore) throws ServiceException {
 		it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiMaggioliJPPA rsModel = new it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiMaggioliJPPA();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		
+
 		rsModel.setAbilitato(connettore.isAbilitato());
 		if(connettore.isAbilitato()) {
 			switch (connettore.getTipoConnettore()) {
@@ -185,7 +186,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
 			case REST:
 				break;
 			}
-			
+
 			List<Object> idTipiPendenza = null;
 			List<String> tipiPendenza = connettore.getTipiPendenza();
 			if(tipiPendenza != null) {
@@ -208,7 +209,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
 					}
 				}
 			}
-			
+
 			rsModel.setTipiPendenza(idTipiPendenza);
 			rsModel.setPrincipal(connettore.getPrincipalMaggioli());
 		}

@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
@@ -24,14 +23,17 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.dao.eventi.utils.GdeUtils;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.MaggioliJPPAUtils;
 import it.govpay.core.utils.client.MaggioliJPPAClient;
 import it.govpay.core.utils.client.MaggioliJPPAClient.Azione;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.ConnettoreNotificaPagamenti;
+import it.govpay.model.configurazione.Giornale;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.internal.CtRichiestaStandard;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.internal.CtRispostaStandard;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.internal.StEsito;
@@ -57,7 +59,7 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 	private Exception exception = null;
 	ObjectFactory objectFactory = null;
 
-	public InviaNotificaPagamentoMaggioliJPPAThread(Rpt rpt, Dominio dominio, String id, IContext ctx) throws ServiceException {
+	public InviaNotificaPagamentoMaggioliJPPAThread(Rpt rpt, Dominio dominio, String id, IContext ctx) throws ServiceException, IOException {
 		this.ctx = ctx;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		this.rpt = rpt;
@@ -185,7 +187,7 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 			this.exception = e;
 		} finally {
 			if(client != null && client.getEventoCtx().isRegistraEvento()) {
-				GdeUtils.salvaEvento(client.getEventoCtx());
+				GdeUtils.salvaEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
 			}
 			ContextThreadLocal.unset();
 			this.completed = true;

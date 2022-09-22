@@ -23,13 +23,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.model.TipoVersamento;
 
 public class TipoVersamentoConverter {
 
-	public static List<TipoVersamento> toDTOList(List<it.govpay.orm.TipoVersamento> lstVO) throws ServiceException {
+	public static List<TipoVersamento> toDTOList(List<it.govpay.orm.TipoVersamento> lstVO) {
 		List<TipoVersamento> lst = new ArrayList<>();
 		if(lstVO != null && !lstVO.isEmpty()) {
 			for(it.govpay.orm.TipoVersamento vo: lstVO) {
@@ -39,7 +37,7 @@ public class TipoVersamentoConverter {
 		return lst;
 	}
 
-	public static TipoVersamento toDTO(it.govpay.orm.TipoVersamento vo) throws ServiceException {
+	public static TipoVersamento toDTO(it.govpay.orm.TipoVersamento vo) {
 		TipoVersamento dto = new TipoVersamento();
 		dto.setId(vo.getId());
 		dto.setCodTipoVersamento(vo.getCodTipoVersamento());

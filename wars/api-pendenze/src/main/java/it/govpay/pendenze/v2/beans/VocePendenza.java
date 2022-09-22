@@ -3,9 +3,6 @@ package it.govpay.pendenze.v2.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idVocePendenza",
@@ -27,34 +24,34 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "provinciaResidenza",
 })
 public class VocePendenza extends it.govpay.core.beans.JSONSerializable{
-  
+
   @JsonProperty("idVocePendenza")
   private String idVocePendenza = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
-  
+
   @JsonProperty("descrizioneCausaleRPT")
   private String descrizioneCausaleRPT = null;
-  
+
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
-  
+
   @JsonProperty("indice")
   private BigDecimal indice = null;
-  
+
   @JsonProperty("stato")
   private StatoVocePendenza stato = null;
-  
+
   @JsonProperty("dominio")
   private Dominio dominio = null;
-  
+
   /**
    * Identificativo della voce di pedenza nel gestionale proprietario
    **/
@@ -198,7 +195,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable{
 
  @JsonProperty("codEntrata")
   private String codEntrata = null;
-  
+
   /**
    **/
   public VocePendenza codEntrata(String codEntrata) {
@@ -216,16 +213,16 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable{
 
   @JsonProperty("ibanAccredito")
   private String ibanAccredito = null;
-  
+
   @JsonProperty("ibanAppoggio")
   private String ibanAppoggio = null;
-  
+
   @JsonProperty("tipoContabilita")
   private TipoContabilita tipoContabilita = null;
-  
+
   @JsonProperty("codiceContabilita")
   private String codiceContabilita = null;
-  
+
   /**
    **/
   public VocePendenza ibanAccredito(String ibanAccredito) {
@@ -287,20 +284,20 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable{
     this.codiceContabilita = codiceContabilita;
   }
 
-  
-    
+
+
   /**
    * Tipologia di Bollo digitale
    */
   public enum TipoBolloEnum {
-    
-    
-        
-            
+
+
+
+
     _01("01");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -324,17 +321,17 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable{
     }
   }
 
-    
-    
+
+
   @JsonProperty("tipoBollo")
   private TipoBolloEnum tipoBollo = null;
-  
+
   @JsonProperty("hashDocumento")
   private String hashDocumento = null;
-  
+
   @JsonProperty("provinciaResidenza")
   private String provinciaResidenza = null;
-  
+
   /**
    * Tipologia di Bollo digitale
    **/
@@ -416,9 +413,9 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable{
     return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, indice, stato, dominio, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita, tipoBollo, hashDocumento, provinciaResidenza);
   }
 
-  public static VocePendenza parse(String json) throws ServiceException, ValidationException {
+  public static VocePendenza parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, VocePendenza.class);
-  } 
+  }
 
   @Override
   public String getJsonIdFilter() {
@@ -447,7 +444,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable{
     sb.append("    tipoBollo: ").append(toIndentedString(tipoBollo)).append("\n");
     sb.append("    hashDocumento: ").append(toIndentedString(hashDocumento)).append("\n");
     sb.append("    provinciaResidenza: ").append(toIndentedString(provinciaResidenza)).append("\n");
-    
+
     sb.append("}");
     return sb.toString();
   }

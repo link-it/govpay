@@ -22,7 +22,8 @@ package it.govpay.model;
 import java.util.Date;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class Iuv extends BasicModel {
 	
@@ -40,12 +41,12 @@ public class Iuv extends BasicModel {
 			return this.codifica;
 		}
 		
-		public static TipoIUV toEnum(String codifica) throws ServiceException {
+		public static TipoIUV toEnum(String codifica) throws CodificaInesistenteException {
 			for(TipoIUV p : TipoIUV.values()){
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
-			throw new ServiceException("Codifica inesistente per TipoIUV. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoIUV.values()));
+			throw new CodificaInesistenteException("Codifica inesistente per TipoIUV. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoIUV.values()));
 		}
 		
 	}

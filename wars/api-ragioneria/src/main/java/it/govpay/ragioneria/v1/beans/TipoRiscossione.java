@@ -5,20 +5,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 
 /**
- * Tipologia della voce riscossa  * ENTRATA: Entrata in tesoreria  * MBT: Marca da bollo telematica 
+ * Tipologia della voce riscossa  * ENTRATA: Entrata in tesoreria  * MBT: Marca da bollo telematica
  */
 public enum TipoRiscossione {
-  
-  
-  
-  
+
+
+
+
   ENTRATA("ENTRATA"),
-  
-  
+
+
   MBT("MBT");
-  
-  
-  
+
+
+
 
   private String value;
 

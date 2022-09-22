@@ -56,7 +56,6 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Evento;
@@ -64,32 +63,33 @@ import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
-import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.utils.EventoContext;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.NodoClient;
-import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
+import it.govpay.model.configurazione.Giornale;
+import it.govpay.model.eventi.DatiPagoPA;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 
 public class Rendicontazioni {
@@ -289,7 +289,7 @@ public class Rendicontazioni {
 					try {
 						byte[] tracciato = null;
 						if(rnd.getFrFile() == null) {
-							appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoChiediFlussoRendicontazione);
+							appContext.setupNodoClient(stazione.getCodStazione(), null, EventoContext.Azione.nodoChiediFlussoRendicontazione);
 							appContext.getRequest().addGenericProperty(new Property("codStazione", stazione.getCodStazione()));
 							appContext.getRequest().addGenericProperty(new Property("idFlusso", idRendicontazione.getIdentificativoFlusso()));
 							
@@ -499,7 +499,7 @@ public class Rendicontazioni {
 											Applicazione applicazioneDominio = new it.govpay.core.business.Applicazione().getApplicazioneDominio(configWrapper, dominio, iuv,false);
 											if(applicazioneDominio != null) {
 												codApplicazione = applicazioneDominio.getCodApplicazione();
-												versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, codApplicazione), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO);
+												versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, codApplicazione), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, log);
 											}
 										}
 									} catch (VersamentoScadutoException e1) {
@@ -660,10 +660,11 @@ public class Rendicontazioni {
 						frNonAcquisiti++;
 					} finally {
 						if(chiediFlussoRendicontazioneClient != null && chiediFlussoRendicontazioneClient.getEventoCtx().isRegistraEvento()) {
+							Evento eventoDTO = EventoUtils.toEventoDTO(chiediFlussoRendicontazioneClient.getEventoCtx(),log);
 							if(isAggiornamento)
-								chiediFlussoRendicontazioneClient.getEventoCtx().setSottotipoEvento(EventoContext.APIPAGOPA_SOTTOTIPOEVENTO_FLUSSO_RENDICONTAZIONE_DUPLICATO);
+								eventoDTO.setSottotipoEvento(EventoContext.APIPAGOPA_SOTTOTIPOEVENTO_FLUSSO_RENDICONTAZIONE_DUPLICATO);
 							
-							GdeUtils.salvaEvento(chiediFlussoRendicontazioneClient.getEventoCtx());
+							GdeUtils.salvaEvento(eventoDTO);
 						}
 					}
 				}
@@ -743,7 +744,7 @@ public class Rendicontazioni {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		NodoClient chiediFlussoRendicontazioniClient = null;
 		try {
-			appContext.setupNodoClient(stazione.getCodStazione(), dominio != null ? dominio.getCodDominio() : null, Azione.nodoChiediElencoFlussiRendicontazione);
+			appContext.setupNodoClient(stazione.getCodStazione(), dominio != null ? dominio.getCodDominio() : null, EventoContext.Azione.nodoChiediElencoFlussiRendicontazione);
 			appContext.getRequest().addGenericProperty(new Property("codDominio", dominio != null ? dominio.getCodDominio() : "-"));
 			ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussi");
 
@@ -810,7 +811,7 @@ public class Rendicontazioni {
 			return flussiDaAcquisire;
 		}  finally {
 			if(chiediFlussoRendicontazioniClient != null && chiediFlussoRendicontazioniClient.getEventoCtx().isRegistraEvento()) {
-				GdeUtils.salvaEvento(chiediFlussoRendicontazioniClient.getEventoCtx());
+				GdeUtils.salvaEvento(EventoUtils.toEventoDTO(chiediFlussoRendicontazioniClient.getEventoCtx(),log));
 			}
 		}
 

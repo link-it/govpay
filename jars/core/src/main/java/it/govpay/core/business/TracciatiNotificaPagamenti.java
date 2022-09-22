@@ -2,6 +2,7 @@ package it.govpay.core.business;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -27,8 +28,6 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.TipiDatabase;
-import org.openspcoop2.utils.json.ValidationException;
-import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
@@ -61,9 +60,10 @@ import it.govpay.bd.viste.VersamentiNonRendicontatiBD;
 import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.bd.viste.model.VersamentoNonRendicontato;
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.thread.InviaNotificaPagamentoMaggioliJPPAThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
@@ -75,6 +75,7 @@ import it.govpay.model.Rpt.Versione;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
 import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class TracciatiNotificaPagamenti {
 
@@ -411,7 +412,7 @@ public class TracciatiNotificaPagamenti {
 							
 							try {
 								tracciato.setBeanDati(serializer.getObject(beanDati));
-							} catch (IOException e1) {}
+							} catch (org.openspcoop2.utils.serialization.IOException e1) {}
 							// update tracciato
 							switch (tipoDatabase) {
 							case MYSQL:
@@ -529,7 +530,7 @@ public class TracciatiNotificaPagamenti {
 	private void popolaTracciatoMyPivot(ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, String codDominio,
 			it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, Date dataRtDa, Date dataRtA,
 			RptBD rptBD, List<String> listaTipiPendenza, long progressivo, ZipOutputStream zos)
-			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException {
+			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException, IOException {
 		
 		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT.withDelimiter(';'));
 		
@@ -572,7 +573,7 @@ public class TracciatiNotificaPagamenti {
 	private void popolaTracciatoSecim(ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, String codDominio,
 			it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, Date dataRtDa, Date dataRtA,
 			RptBD rptBD, List<String> listaTipiPendenza, long progressivo, ZipOutputStream zos)
-			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException {
+			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException, IOException {
 		
 		ZipEntry tracciatoOutputEntry = new ZipEntry("GOVPAY_" + codDominio + "_"+progressivo+".txt");
 		zos.putNextEntry(tracciatoOutputEntry);
@@ -629,7 +630,7 @@ public class TracciatiNotificaPagamenti {
 	private void popolaTracciatoGovpay(ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, Dominio dominio,
 			it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, Date dataRtDa, Date dataRtA,
 			RptBD rptBD, List<String> listaTipiPendenza, long progressivo, ISerializer serializer, ZipOutputStream zos)
-			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException, IOException { 
+			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException, IOException, org.openspcoop2.utils.serialization.IOException { 
 		String codDominio = dominio.getCodDominio();
 		
 		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"] in corso...");
@@ -832,7 +833,7 @@ public class TracciatiNotificaPagamenti {
 	private void popolaTracciatoHyperSicAPK(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, String codDominio,
 			it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, Date dataRtDa, Date dataRtA,
 			RptBD rptBD, List<String> listaTipiPendenza, long progressivo, ZipOutputStream zos)
-			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException {
+			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException, IOException {
 		
 		/*
 		 Il naming del file deve essere composto dai seguenti elementi, separati da “_”:
@@ -1026,7 +1027,7 @@ public class TracciatiNotificaPagamenti {
 
 	private String creaFileMetadatiTracciatoGovPay(ConnettoreNotificaPagamenti connettore, BDConfigWrapper configWrapper, Dominio dominio,
 			it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, Date dataRtDa, Date dataRtA,
-			RptBD rptBD, List<String> listaTipiPendenza, ISerializer serializer) throws IOException { 
+			RptBD rptBD, List<String> listaTipiPendenza, ISerializer serializer) throws org.openspcoop2.utils.serialization.IOException { 
 		String metadati = "{}";
 		
 		Map<String, Object> json  = new HashMap<String, Object>();
@@ -1086,7 +1087,7 @@ public class TracciatiNotificaPagamenti {
 		}
 	}
 
-	private String [] creaLineaCsvMyPivot(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, ValidationException { 
+	private String [] creaLineaCsvMyPivot(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, IOException, JAXBException, SAXException, ValidationException { 
 		Versione versione = rpt.getVersione();
 		
 		switch (versione) {
@@ -1098,7 +1099,8 @@ public class TracciatiNotificaPagamenti {
 		}
 	}
 	
-	private void creaLineaCsvSecim(Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore, OutputStream secimOS, OutputStream noSecimOS) throws ServiceException, JAXBException, SAXException, ValidationException, java.io.IOException { 
+	private void creaLineaCsvSecim(Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore, OutputStream secimOS, OutputStream noSecimOS) 
+			throws ServiceException, IOException, JAXBException, SAXException, ValidationException, java.io.IOException { 
 		Versione versione = rpt.getVersione();
 		
 		switch (versione) {
@@ -1113,7 +1115,8 @@ public class TracciatiNotificaPagamenti {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private String[] creaLineaCsvHyperSicAPKappa(RendicontazioniBD pagamentiBD, Rendicontazione pagamento, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore, CSVUtils csvUtils) throws ServiceException, JAXBException, SAXException, ValidationException, java.io.IOException { 
+	private String[] creaLineaCsvHyperSicAPKappa(RendicontazioniBD pagamentiBD, Rendicontazione pagamento, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore, CSVUtils csvUtils) 
+			throws ServiceException, JAXBException, SAXException, ValidationException, IOException, UnsupportedEncodingException { 
 		List<String> linea = new ArrayList<String>();
 
 		Versamento versamento = pagamento.getVersamento();
@@ -1310,7 +1313,7 @@ public class TracciatiNotificaPagamenti {
 	@SuppressWarnings("unchecked")
 	private String[] creaLineaCsvHyperSicAPKappa(VersamentiNonRendicontatiBD pagamentiBD,
 			VersamentoNonRendicontato pagamento, BDConfigWrapper configWrapper, int totaleRt,
-			ConnettoreNotificaPagamenti connettore, CSVUtils csvUtils) throws ServiceException, JAXBException, SAXException, ValidationException, java.io.IOException { 
+			ConnettoreNotificaPagamenti connettore, CSVUtils csvUtils) throws ServiceException, JAXBException, SAXException, ValidationException, IOException, UnsupportedEncodingException { 
 		List<String> linea = new ArrayList<String>();
 
 		Versamento versamento = pagamento.getVersamento();

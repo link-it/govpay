@@ -2,8 +2,6 @@ package it.govpay.pendenze.v2.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -12,13 +10,13 @@ import it.govpay.core.beans.JSONSerializable;
 "ragioneSociale",
 })
 public class Dominio extends JSONSerializable {
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
-  
+
   /**
    * Codice fiscale
    **/
@@ -69,7 +67,7 @@ public class Dominio extends JSONSerializable {
     return Objects.hash(idDominio, ragioneSociale);
   }
 
-  public static Dominio parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Dominio parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, Dominio.class);
   }
 
@@ -82,7 +80,7 @@ public class Dominio extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Dominio {\n");
-    
+
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
     sb.append("}");

@@ -8,20 +8,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets tipoOperazionePendenza
  */
 public enum TipoOperazionePendenza {
-  
-  
-  
-  
+
+
+
+
   ADD("ADD"),
-  
-  
+
+
   DEL("DEL"),
-  
-  
+
+
   NON_VALIDA("NON_VALIDA");
-  
-  
-  
+
+
+
 
   private String value;
 

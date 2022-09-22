@@ -43,7 +43,6 @@ import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.TipoVersamentoDominio;
-import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.NotificheAppIoBD;
@@ -51,6 +50,7 @@ import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PromemoriaBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.core.beans.EventoContext;
 import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
@@ -59,7 +59,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.IncassiException.FaultType;
 import it.govpay.core.exceptions.NotAuthorizedException;
-import it.govpay.core.utils.EventoContext;
+import it.govpay.core.exceptions.NotificaException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IncassoUtils;
 import it.govpay.model.Evento.CategoriaEvento;
@@ -73,6 +73,7 @@ import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
+import it.govpay.model.eventi.DatiPagoPA;
 
 
 public class Incassi {
@@ -357,6 +358,8 @@ public class Incassi {
 			return eseguiAcquisizioneRiconciliazione(richiestaIncassoResponse, codDomino, idRiconciliazione, ctx, configWrapper, incassiBD, incasso, causale, iuv, idf, false, true, listaEventi);
 		} catch (ServiceException e) {
 			throw new GovPayException(e);
+		} catch (NotificaException e) {
+			throw new GovPayException(e);
 		} catch (UtilsException e) {
 			throw new GovPayException(e);
 		} catch (IncassiException e) {
@@ -404,7 +407,7 @@ public class Incassi {
 
 	private RichiestaIncassoDTOResponse eseguiAcquisizioneRiconciliazione(RichiestaIncassoDTOResponse richiestaIncassoResponse, String codDomino, String idRiconciliazione, IContext ctx, BDConfigWrapper configWrapper,
 			IncassiBD incassiBD, Incasso incasso, String causale, String iuv, String idf, boolean ricercaIdFlussoCaseInsensitive, boolean salvaConUpdate, List<Evento> listaEventi)
-			throws ServiceException, IncassiException, UtilsException, GovPayException {
+			throws ServiceException, IncassiException, UtilsException, GovPayException, NotificaException {
 		GpContext gpContext = (GpContext) ctx.getApplicationContext();
 		
 		log.debug("Riconciliazione [Dominio:"+codDomino+", Id: "+idRiconciliazione+"] Iuv ["+iuv+"], IdFlusso ["+idf+"], Causale ["+causale+"] in corso...");
@@ -838,6 +841,8 @@ public class Incassi {
 			
 			return eseguiAcquisizioneRiconciliazione(richiestaIncassoResponse, incasso.getCodDominio(), incasso.getIdRiconciliazione(), ctx, configWrapper, incassiBD, incasso, causale, iuv, idf, ricercaIdFlussoCaseInsensitive, false, listaEventi);
 		} catch (ServiceException e) {
+			throw new GovPayException(e);
+		} catch (NotificaException e) {
 			throw new GovPayException(e);
 		} catch (UtilsException e) {
 			throw new GovPayException(e);

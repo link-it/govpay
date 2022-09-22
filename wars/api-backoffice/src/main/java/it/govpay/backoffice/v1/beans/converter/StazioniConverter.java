@@ -3,7 +3,6 @@ package it.govpay.backoffice.v1.beans.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.backoffice.v1.beans.DominioIndex;
@@ -16,41 +15,41 @@ import it.govpay.core.utils.UriBuilderUtils;
 
 public class StazioniConverter {
 
-	public static PutStazioneDTO getPutStazioneDTO(StazionePost stazionePost, String idIntermediario, String idStazione, Authentication user) throws ServiceException, UnprocessableEntityException {
+	public static PutStazioneDTO getPutStazioneDTO(StazionePost stazionePost, String idIntermediario, String idStazione, Authentication user) throws UnprocessableEntityException {
 		PutStazioneDTO stazioneDTO = new PutStazioneDTO(user);
-		
+
 		it.govpay.bd.model.Stazione stazione = new it.govpay.bd.model.Stazione();
 
 		stazione.setAbilitato(stazionePost.isAbilitato());
 		int indexOfIdStazione = idStazione.indexOf("_");
-		
+
 		if(indexOfIdStazione == -1) {
 			throw new UnprocessableEntityException("Il formato dell'idStazione non e' valido, previsto idIntermediario_applicationCode.");
 		}
-		
+
 		String baseIdStazione = idStazione.substring(0, indexOfIdStazione);
-		
+
 		if(!baseIdStazione.equals(idIntermediario)) {
 			throw new UnprocessableEntityException("Il formato dell'idStazione non e' valido, idIntermediario non presente all'interno dell'idStazione.");
 		}
-		
+
 		String applicationCodeS = idStazione.substring(indexOfIdStazione+1);
 		int applicationCode = Integer.parseInt(applicationCodeS);
-		
+
 		if(applicationCode < 1 || applicationCode > 99)
 			throw new UnprocessableEntityException("idStazione deve avere un applicationCode compreso tra 01 e 99.");
-		
-		stazione.setApplicationCode(applicationCode); 
+
+		stazione.setApplicationCode(applicationCode);
 		stazione.setCodStazione(idStazione);
 		stazione.setPassword(stazionePost.getPassword());
-		
+
 		stazioneDTO.setStazione(stazione);
 		stazioneDTO.setIdIntermediario(idIntermediario);
 		stazioneDTO.setIdStazione(idStazione);
-		return stazioneDTO;		
+		return stazioneDTO;
 	}
-	
-	public static Stazione toRsModel(it.govpay.bd.model.Stazione stazione, List<it.govpay.bd.model.Dominio> dominiLst) throws ServiceException {
+
+	public static Stazione toRsModel(it.govpay.bd.model.Stazione stazione, List<it.govpay.bd.model.Dominio> dominiLst) {
 		Stazione rsModel = new Stazione();
 		rsModel.abilitato(stazione.isAbilitato())
 		.idStazione(stazione.getCodStazione())
@@ -65,8 +64,8 @@ public class StazioniConverter {
 		}
 		return rsModel;
 	}
-	
-	public static StazioneIndex toRsModelIndex(it.govpay.bd.model.Stazione stazione) throws ServiceException {
+
+	public static StazioneIndex toRsModelIndex(it.govpay.bd.model.Stazione stazione) {
 		StazioneIndex rsModel = new StazioneIndex();
 		rsModel.abilitato(stazione.isAbilitato())
 		.idStazione(stazione.getCodStazione())

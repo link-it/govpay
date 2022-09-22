@@ -11,7 +11,7 @@ public class PromemoriaConverter {
 
 	public static PromemoriaIndex toRsModelIndex(Promemoria promemoria) {
 		PromemoriaIndex rsModel = new PromemoriaIndex();
-		
+
 		rsModel.setDataCreazione(promemoria.getDataCreazione());
 		rsModel.setDataProssimaSpedizione(promemoria.getDataProssimaSpedizione());
 		rsModel.setDataUltimoAggiornamento(promemoria.getDataAggiornamento());
@@ -33,7 +33,7 @@ public class PromemoriaConverter {
 				break;
 			}
 		}
-		
+
 		if(promemoria.getTipo() != null) {
 			switch (promemoria.getTipo()) {
 			case AVVISO:
@@ -47,7 +47,7 @@ public class PromemoriaConverter {
 				break;
 			}
 		}
-		
+
 		return rsModel;
 	}
 

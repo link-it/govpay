@@ -51,22 +51,19 @@ import gov.telematici.pagamenti.ws.rpt.ObjectFactory;
 import gov.telematici.pagamenti.ws.rpt.Risposta;
 import gov.telematici.pagamenti.ws.rpt.ppthead.IntestazioneCarrelloPPT;
 import gov.telematici.pagamenti.ws.rpt.ppthead.IntestazionePPT;
-import it.govpay.bd.configurazione.model.Giornale;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.client.beans.TipoOperazioneNodo;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rpt;
 import it.govpay.model.Stazione;
+import it.govpay.model.configurazione.Giornale;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class NodoClient extends BasicClientCORE {
-
-	public enum Azione {
-		nodoInviaRPT, nodoInviaCarrelloRPT, nodoChiediStatoRPT, nodoChiediCopiaRT, nodoChiediListaPendentiRPT, nodoInviaRichiestaStorno, nodoInviaRispostaRevoca, nodoChiediElencoFlussiRendicontazione, nodoChiediFlussoRendicontazione
-	}
 
 	private static ObjectFactory objectFactory;
 	private boolean isAzioneInUrl;
@@ -148,7 +145,7 @@ public class NodoClient extends BasicClientCORE {
 		intestazione.setIdentificativoUnivocoVersamento(rpt.getIuv());
 
 		byte [] body = this.getBody(true,objectFactory.createNodoInviaRPT(inviaRPT), intestazione);
-		Risposta response = send(Azione.nodoInviaRPT.toString(), body);
+		Risposta response = send(EventoContext.Azione.nodoInviaRPT.toString(), body);
 		return (NodoInviaRPTRisposta) response;
 	}
 
@@ -158,43 +155,43 @@ public class NodoClient extends BasicClientCORE {
 		intestazione.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
 		intestazione.setIdentificativoCarrello(codCarrello);
 		byte [] body = this.getBody(true, objectFactory.createNodoInviaCarrelloRPT(inviaCarrelloRPT), intestazione);
-		Risposta response = this.send(Azione.nodoInviaCarrelloRPT.toString(), body);
+		Risposta response = this.send(EventoContext.Azione.nodoInviaCarrelloRPT.toString(), body);
 		return (NodoInviaCarrelloRPTRisposta) response;
 	}
 
 	public NodoChiediStatoRPTRisposta nodoChiediStatoRpt(NodoChiediStatoRPT nodoChiediStatoRPT, String nomeSoggetto) throws GovPayException, ClientException, UtilsException {
 		byte [] body = this.getBody(true,objectFactory.createNodoChiediStatoRPT(nodoChiediStatoRPT), null);
-		Risposta response = this.send(Azione.nodoChiediStatoRPT.toString(), body);
+		Risposta response = this.send(EventoContext.Azione.nodoChiediStatoRPT.toString(), body);
 		return (NodoChiediStatoRPTRisposta) response;
 	}
 
 	public NodoChiediCopiaRTRisposta nodoChiediCopiaRT(NodoChiediCopiaRT nodoChiediCopiaRT, String nomeSoggetto) throws GovPayException, ClientException, UtilsException {
 		byte [] body = this.getBody(true,objectFactory.createNodoChiediCopiaRT(nodoChiediCopiaRT), null);
-		Risposta response = this.send(Azione.nodoChiediCopiaRT.toString(), body);
+		Risposta response = this.send(EventoContext.Azione.nodoChiediCopiaRT.toString(), body);
 		return (NodoChiediCopiaRTRisposta) response;
 	}
 
 	public NodoChiediListaPendentiRPTRisposta nodoChiediListaPendentiRPT(NodoChiediListaPendentiRPT nodoChiediListaPendentiRPT, String nomeSoggetto) throws GovPayException, ClientException, UtilsException {
 		byte [] body = this.getBody(true,objectFactory.createNodoChiediListaPendentiRPT(nodoChiediListaPendentiRPT), null);
-		Risposta response = this.send(Azione.nodoChiediListaPendentiRPT.toString(), body);
+		Risposta response = this.send(EventoContext.Azione.nodoChiediListaPendentiRPT.toString(), body);
 		return (NodoChiediListaPendentiRPTRisposta) response;
 	}
 
 	public NodoInviaRichiestaStornoRisposta nodoInviaRichiestaStorno(NodoInviaRichiestaStorno nodoInviaRichiestaStorno) throws GovPayException, ClientException, UtilsException {
 		byte [] body = this.getBody(true,objectFactory.createNodoInviaRichiestaStorno(nodoInviaRichiestaStorno), null);
-		Risposta response = this.send(Azione.nodoInviaRichiestaStorno.toString(), body);
+		Risposta response = this.send(EventoContext.Azione.nodoInviaRichiestaStorno.toString(), body);
 		return (NodoInviaRichiestaStornoRisposta) response;
 	}
 
 	public NodoChiediElencoFlussiRendicontazioneRisposta nodoChiediElencoFlussiRendicontazione(NodoChiediElencoFlussiRendicontazione nodoChiediElencoFlussiRendicontazione, String nomeSoggetto) throws GovPayException, ClientException, UtilsException {
 		byte [] body = this.getBody(true,objectFactory.createNodoChiediElencoFlussiRendicontazione(nodoChiediElencoFlussiRendicontazione), null);
-		Risposta response = this.send(Azione.nodoChiediElencoFlussiRendicontazione.toString(), body);
+		Risposta response = this.send(EventoContext.Azione.nodoChiediElencoFlussiRendicontazione.toString(), body);
 		return (NodoChiediElencoFlussiRendicontazioneRisposta) response;
 	}
 
 	public NodoChiediFlussoRendicontazioneRisposta nodoChiediFlussoRendicontazione(NodoChiediFlussoRendicontazione nodoChiediFlussoRendicontazione, String nomeSoggetto) throws GovPayException, ClientException, UtilsException {
 		byte [] body = this.getBody(true, objectFactory.createNodoChiediFlussoRendicontazione(nodoChiediFlussoRendicontazione), null);
-		Risposta response = this.send(Azione.nodoChiediFlussoRendicontazione.toString(), body);
+		Risposta response = this.send(EventoContext.Azione.nodoChiediFlussoRendicontazione.toString(), body);
 		return (NodoChiediFlussoRendicontazioneRisposta) response;
 	}
 

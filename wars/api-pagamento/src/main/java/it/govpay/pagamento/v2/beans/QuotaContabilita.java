@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -222,7 +222,7 @@ public class QuotaContabilita extends JSONSerializable implements IValidable {
     return Objects.hash(capitolo, annoEsercizio, importo, accertamento, proprietaCustom, titolo, tipologia, categoria, articolo);
   }
 
-  public static QuotaContabilita parse(String json) throws ServiceException, ValidationException {
+  public static QuotaContabilita parse(String json) throws it.govpay.core.exceptions.IOException {
     return (QuotaContabilita) parse(json, QuotaContabilita.class);
   }
 

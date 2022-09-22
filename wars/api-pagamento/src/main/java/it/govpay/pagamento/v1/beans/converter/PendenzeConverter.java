@@ -20,6 +20,7 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v1.beans.Avviso;
@@ -38,11 +39,11 @@ import it.govpay.pagamento.v1.beans.VocePendenza.TipoContabilitaEnum;
 
 public class PendenzeConverter {
 	
-	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto, Authentication user) throws ServiceException {
+	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto, Authentication user) throws ServiceException, IOException {
 		return toRsModel(dto.getVersamento(), dto.getPagamenti(), dto.getRpts(),user);
 	}
 	
-	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento,List<PagamentoPortale> pagamenti, List<Rpt> rpts, Authentication user) throws ServiceException {
+	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento,List<PagamentoPortale> pagamenti, List<Rpt> rpts, Authentication user) throws ServiceException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Pendenza rsModel = new Pendenza();
 		
@@ -55,7 +56,7 @@ public class PendenzeConverter {
 			try {
 				rsModel.setCausale(versamento.getCausaleVersamento().getSimple());
 			} catch (UnsupportedEncodingException e) {
-				throw new ServiceException(e);
+				throw new IOException(e);
 			}
 		
 		rsModel.setDataCaricamento(versamento.getDataCreazione());
@@ -145,7 +146,7 @@ public class PendenzeConverter {
 		return list;
 	}
 	
-	public static PendenzaIndex toRsModelIndex(it.govpay.bd.model.Versamento versamento, Authentication user) throws ServiceException {
+	public static PendenzaIndex toRsModelIndex(it.govpay.bd.model.Versamento versamento, Authentication user) throws ServiceException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		PendenzaIndex rsModel = new PendenzaIndex();
 		
@@ -158,7 +159,7 @@ public class PendenzeConverter {
 			try {
 				rsModel.setCausale(versamento.getCausaleVersamento().getSimple());
 			} catch (UnsupportedEncodingException e) {
-				throw new ServiceException(e);
+				throw new IOException(e);
 			}
 		
 		rsModel.setDataCaricamento(versamento.getDataCreazione());
@@ -249,14 +250,14 @@ public class PendenzeConverter {
 	}
 	
 	
-	public static Avviso toAvvisoRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Dominio dominio, String barCode, String qrCode) throws ServiceException {
+	public static Avviso toAvvisoRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Dominio dominio, String barCode, String qrCode) throws ServiceException, IOException {
 		Avviso rsModel = new Avviso();
 		
 		if(versamento.getCausaleVersamento()!= null)
 			try {
 				rsModel.setDescrizione(versamento.getCausaleVersamento().getSimple());
 			} catch (UnsupportedEncodingException e) {
-				throw new ServiceException(e);
+				throw new IOException(e);
 			}
 		
 		rsModel.setDataScadenza(versamento.getDataScadenza());

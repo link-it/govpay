@@ -22,64 +22,64 @@ import it.govpay.model.ConnettoreNotificaPagamenti.TipoConnettore;
 import it.govpay.model.TipoVersamento;
 
 public class ConnettoreNotificaPagamentiSecimConverter {
-	
-	public static it.govpay.model.ConnettoreNotificaPagamenti getConnettoreDTO(it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiSecim connector, Authentication user, Tipo tipo) throws ServiceException,NotAuthorizedException {
+
+	public static it.govpay.model.ConnettoreNotificaPagamenti getConnettoreDTO(it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiSecim connector, Authentication user, Tipo tipo) throws NotAuthorizedException {
 		it.govpay.model.ConnettoreNotificaPagamenti connettore = new it.govpay.model.ConnettoreNotificaPagamenti();
-		
+
 		connettore.setAbilitato(connector.Abilitato());
-		
+
 		if(connector.Abilitato()) {
 			connettore.setTipoTracciato(tipo.name());
 			connettore.setVersioneCsv(connector.getVersioneCsv());
 			connettore.setCodiceCliente(connector.getCodiceCliente());
 			connettore.setCodiceIstituto(connector.getCodiceIstituto());
 			connettore.setIntervalloCreazioneTracciato(connector.getIntervalloCreazioneTracciato().intValue());
-			
+
 //			boolean appAuthTipiPendenzaAll = false;
 			if(connector.getTipiPendenza() != null) {
 				List<String> idTipiVersamento = new ArrayList<>();
-				
+
 				for (Object object : connector.getTipiPendenza()) {
 					if(object instanceof String) {
 						String idTipoPendenza = (String) object;
-						
+
 						if(idTipoPendenza.equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
 							List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
-							
+
 							if(tipiVersamentoAutorizzati == null)
 								throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-							
+
 							if(tipiVersamentoAutorizzati.size() > 0) {
 								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza");
 							}
-							
+
 //							appAuthTipiPendenzaAll = true;
 							idTipiVersamento.clear();
 							break;
 						}
-						
+
 						idTipiVersamento.add(idTipoPendenza);
-						
-						
+
+
 					} else if(object instanceof TipoPendenzaProfiloIndex) {
 						TipoPendenzaProfiloIndex tipoPendenzaPost = (TipoPendenzaProfiloIndex) object;
 						if(tipoPendenzaPost.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
 							List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
-							
+
 							if(tipiVersamentoAutorizzati == null)
 								throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-							
+
 							if(tipiVersamentoAutorizzati.size() > 0) {
 								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza");
 							}
-							
+
 //							appAuthTipiPendenzaAll = true;
 							idTipiVersamento.clear();
 							break;
 						}
-						
+
 						idTipiVersamento.add(tipoPendenzaPost.getIdTipoPendenza());
-						
+
 					} else if(object instanceof java.util.LinkedHashMap) {
 						java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) object;
 						TipoPendenzaProfiloIndex tipoPendenzaPost = new TipoPendenzaProfiloIndex();
@@ -88,27 +88,27 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 						if(map.containsKey("descrizione")) {
 							tipoPendenzaPost.setDescrizione((String) map.get("descrizione"));
 						}
-						
+
 						if(tipoPendenzaPost.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR)) {
 							List<String> tipiVersamentoAutorizzati = AuthorizationManager.getTipiVersamentoAutorizzati(user);
-							
+
 							if(tipiVersamentoAutorizzati == null)
 								throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
-							
+
 							if(tipiVersamentoAutorizzati.size() > 0) {
 								throw AuthorizationManager.toNotAuthorizedException(user, "l'utenza non e' associata a tutti i tipi pendenza, non puo' dunque autorizzare l'applicazione a tutti i tipi pendenza o abilitare l'autodeterminazione dei tipi pendenza");
 							}
-							
+
 //							appAuthTipiPendenzaAll = true;
 							idTipiVersamento.clear();
 							break;
 						}
 						idTipiVersamento.add(tipoPendenzaPost.getIdTipoPendenza());
 					}
-				}	
+				}
 				connettore.setTipiPendenza(idTipiVersamento);
 			}
-			
+
 			switch (connector.getTipoConnettore()) {
 			case EMAIL:
 				connettore.setTipoConnettore(TipoConnettore.EMAIL);
@@ -123,21 +123,21 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 				break;
 			}
 		}
-		
+
 		return connettore;
 	}
 
 	public static it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiSecim toRsModel(it.govpay.model.ConnettoreNotificaPagamenti connettore) throws ServiceException {
 		it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiSecim rsModel = new it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiSecim();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		
+
 		rsModel.setAbilitato(connettore.isAbilitato());
 		if(connettore.isAbilitato()) {
 			rsModel.setVersioneCsv(connettore.getVersioneCsv());
 			rsModel.setCodiceCliente(connettore.getCodiceCliente());
 			rsModel.setCodiceIstituto(connettore.getCodiceIstituto());
 			rsModel.setIntervalloCreazioneTracciato(new BigDecimal(connettore.getIntervalloCreazioneTracciato()));
-			
+
 			switch (connettore.getTipoConnettore()) {
 			case EMAIL:
 				rsModel.setTipoConnettore(TipoConnettoreEnum.EMAIL);
@@ -154,7 +154,7 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 			case REST:
 				break;
 			}
-			
+
 			List<Object> idTipiPendenza = null;
 			List<String> tipiPendenza = connettore.getTipiPendenza();
 			if(tipiPendenza != null) {
@@ -177,7 +177,7 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 					}
 				}
 			}
-			
+
 			rsModel.setTipiPendenza(idTipiPendenza);
 		}
 		return rsModel;

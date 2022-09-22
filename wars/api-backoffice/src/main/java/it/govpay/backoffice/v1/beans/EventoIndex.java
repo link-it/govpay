@@ -4,12 +4,10 @@ package it.govpay.backoffice.v1.beans;
 import java.util.Date;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "id",
 "componente",
@@ -32,64 +30,64 @@ import it.govpay.core.beans.JSONSerializable;
 "severita",
 })
 public class EventoIndex extends JSONSerializable {
-  
+
   @JsonProperty("id")
   private Long id = null;
-  
+
   @JsonProperty("componente")
   private ComponenteEvento componente = null;
-  
+
   @JsonProperty("categoriaEvento")
   private CategoriaEvento categoriaEvento = null;
-  
+
   @JsonProperty("ruolo")
   private RuoloEvento ruolo = null;
-  
+
   @JsonProperty("tipoEvento")
   private String tipoEvento = null;
-  
+
   @JsonProperty("esito")
   private EsitoEvento esito = null;
-  
+
   @JsonProperty("dataEvento")
   private Date dataEvento = null;
-  
+
   @JsonProperty("durataEvento")
   private Long durataEvento = null;
-  
+
   @JsonProperty("sottotipoEvento")
   private String sottotipoEvento = null;
-  
+
   @JsonProperty("sottotipoEsito")
   private String sottotipoEsito = null;
-  
+
   @JsonProperty("dettaglioEsito")
   private String dettaglioEsito = null;
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("iuv")
   private String iuv = null;
-  
+
   @JsonProperty("ccp")
   private String ccp = null;
-  
+
   @JsonProperty("idA2A")
   private String idA2A = null;
-  
+
   @JsonProperty("idPendenza")
   private String idPendenza = null;
-  
+
   @JsonProperty("idPagamento")
   private String idPagamento = null;
-  
+
   @JsonProperty("datiPagoPA")
   private DatiPagoPA datiPagoPA = null;
-  
+
   @JsonProperty("severita")
   private Integer severita = null;
-  
+
   /**
    * Identificativo evento
    **/
@@ -421,7 +419,7 @@ public class EventoIndex extends JSONSerializable {
     return Objects.hash(id, componente, categoriaEvento, ruolo, tipoEvento, esito, dataEvento, durataEvento, sottotipoEvento, sottotipoEsito, dettaglioEsito, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, datiPagoPA, severita);
   }
 
-  public static EventoIndex parse(String json) throws ServiceException, ValidationException { 
+  public static EventoIndex parse(String json) throws IOException {
     return parse(json, EventoIndex.class);
   }
 
@@ -434,7 +432,7 @@ public class EventoIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class EventoIndex {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    componente: ").append(toIndentedString(componente)).append("\n");
     sb.append("    categoriaEvento: ").append(toIndentedString(categoriaEvento)).append("\n");

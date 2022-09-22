@@ -35,7 +35,7 @@ public class UtenzaConverter {
 		return dto;
 	}
 
-	public static Utenza toDTO(it.govpay.orm.Utenza vo, List<IdUnitaOperativa> utenzaDominioLst, List<Long> utenzaTipiVersamentoLst, BasicBD bd) throws ServiceException {
+	public static Utenza toDTO(it.govpay.orm.Utenza vo, List<IdUnitaOperativa> utenzaDominioLst, List<Long> utenzaTipiVersamentoLst, BasicBD bd) {
 		Utenza dto = new Utenza();
 		dto.setPrincipal(vo.getPrincipal());
 		dto.setPrincipalOriginale(vo.getPrincipalOriginale());

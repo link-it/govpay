@@ -10,8 +10,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.controllers.ReportisticheController;
 import it.govpay.core.beans.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -24,7 +22,7 @@ public class Reportistiche extends BaseRsServiceV1{
 
 	private ReportisticheController controller = null;
 
-	public Reportistiche() throws ServiceException {
+	public Reportistiche() {
 		super("reportistiche");
 		this.controller = new ReportisticheController(this.nomeServizio,this.log);
 	}
@@ -33,7 +31,7 @@ public class Reportistiche extends BaseRsServiceV1{
 
     @GET
     @Path("/entrate-previste")
-    
+
     @Produces({ "application/json", "application/pdf" })
     public Response getReportEntratePreviste(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) Integer risultatiPerPagina, @QueryParam("idDominio") String idDominio, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA){
         this.buildContext();

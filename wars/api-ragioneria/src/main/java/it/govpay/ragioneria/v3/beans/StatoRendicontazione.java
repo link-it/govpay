@@ -8,9 +8,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum StatoRendicontazione {
   OK("OK"),
-  
+
   ANOMALA("ANOMALA"),
-  
+
   ALTRO_INTERMEDIARIO("ALTRO_INTERMEDIARIO");
 
   private String value;
@@ -34,5 +34,5 @@ public enum StatoRendicontazione {
     }
     return null;
   }
-  
+
 }

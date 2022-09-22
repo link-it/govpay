@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum StatoRiscossione {
   RISCOSSA("RISCOSSA"),
-  
+
   INCASSATA("INCASSATA");
 
   private String value;
@@ -32,5 +32,5 @@ public enum StatoRiscossione {
     }
     return null;
   }
-  
+
 }

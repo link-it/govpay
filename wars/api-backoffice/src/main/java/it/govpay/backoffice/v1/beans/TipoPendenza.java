@@ -3,13 +3,11 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @JsonPropertyOrder({
 "descrizione",
 "codificaIUV",
@@ -24,40 +22,40 @@ import it.govpay.core.beans.JSONSerializable;
 "idTipoPendenza",
 })
 public class TipoPendenza extends JSONSerializable {
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("codificaIUV")
   private String codificaIUV = null;
-  
+
   @JsonProperty("pagaTerzi")
   private Boolean pagaTerzi = false;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
-  
+
   @JsonProperty("portaleBackoffice")
   private TipoPendenzaPortaleBackofficeCaricamentoPendenze portaleBackoffice = null;
-  
+
   @JsonProperty("portalePagamento")
   private TipoPendenzaPortalePagamentiCaricamentoPendenze portalePagamento = null;
-  
+
   @JsonProperty("avvisaturaMail")
   private TipoPendenzaAvvisaturaMail avvisaturaMail = null;
-  
+
   @JsonProperty("avvisaturaAppIO")
   private TipoPendenzaAvvisaturaAppIO avvisaturaAppIO = null;
-  
+
   @JsonProperty("visualizzazione")
   private Object visualizzazione = null;
-  
+
   @JsonProperty("tracciatoCsv")
   private TracciatoCsv tracciatoCsv = null;
-  
+
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
-  
+
   /**
    **/
   public TipoPendenza descrizione(String descrizione) {
@@ -254,7 +252,7 @@ public class TipoPendenza extends JSONSerializable {
     return Objects.hash(descrizione, codificaIUV, pagaTerzi, abilitato, portaleBackoffice, portalePagamento, avvisaturaMail, avvisaturaAppIO, visualizzazione, tracciatoCsv, idTipoPendenza);
   }
 
-  public static TipoPendenza parse(String json) throws ServiceException, ValidationException  {
+  public static TipoPendenza parse(String json) throws IOException  {
     return parse(json, TipoPendenza.class);
   }
 
@@ -267,7 +265,7 @@ public class TipoPendenza extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoPendenza {\n");
-    
+
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");
     sb.append("    pagaTerzi: ").append(toIndentedString(pagaTerzi)).append("\n");

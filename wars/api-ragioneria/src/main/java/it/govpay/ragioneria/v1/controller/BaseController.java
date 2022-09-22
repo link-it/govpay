@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package it.govpay.ragioneria.v1.controller;
 
@@ -16,8 +16,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.slf4j.Logger;
@@ -26,15 +24,17 @@ import org.springframework.security.core.Authentication;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.dao.commons.exception.RedirectException;
 import it.govpay.core.exceptions.BaseExceptionV1;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
@@ -45,7 +45,7 @@ import it.govpay.ragioneria.v1.beans.FaultBean.CategoriaEnum;
  * @author Bussu Giovanni (bussu@link.it)
  * @author  $Author: bussu $
  * @version $ Rev: 12563 $, $Date: 22 feb 2018 $
- * 
+ *
  */
 public abstract class BaseController {
 
@@ -55,7 +55,7 @@ public abstract class BaseController {
 	public final static String PREFIX_FILENAME = "filename=\"";
 	public final static String SUFFIX_FILENAME = "\"";
 
-	private static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean"; 
+	private static final String ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN = "Errore durante la serializzazione del FaultBean";
 	public static final String LOG_MSG_ESECUZIONE_METODO_COMPLETATA = "Esecuzione {0} completata.";
 	public static final String LOG_MSG_ESECUZIONE_METODO_IN_CORSO = "Esecuzione {0} in corso...";
 	protected Logger log;
@@ -63,17 +63,17 @@ public abstract class BaseController {
 	protected HttpServletRequest request;
 	protected HttpServletResponse response;
 	protected String transactionIdHeaderName = Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID;
-	
+
 	public BaseController(String nomeServizio, Logger log) {
 		this.log = log;
 		this.nomeServizio = nomeServizio;
 	}
-	
+
 	public void setRequestResponse(HttpServletRequest request,HttpServletResponse response) {
 		this.response = response;
 		this.request = request;
 	}
-	
+
 	public HttpServletRequest getRequest() {
 		return this.request;
 	}
@@ -93,17 +93,17 @@ public abstract class BaseController {
 	public int getVersione() {
 		return 1;
 	}
-	
+
 	public URI getServicePath(UriInfo uriInfo) throws URISyntaxException {
 		String baseUri = uriInfo.getBaseUri().toString();
 		String requestUri = uriInfo.getRequestUri().toString();
 		int idxOfBaseUri = requestUri.indexOf(baseUri);
-		
+
 		String servicePathwithParameters = requestUri.substring((idxOfBaseUri + baseUri.length()) - 1);
-		
+
 		return new URI(servicePathwithParameters);
 	}
-	
+
 	public URI getServicePathWithoutParameters(UriInfo uriInfo) throws URISyntaxException {
 
 		URI servicePathwithParameters = this.getServicePath(uriInfo);
@@ -116,57 +116,61 @@ public abstract class BaseController {
 			return new URI(baseUri);
 		}
 	}
-	
+
 	protected ResponseBuilder handleResponseOk(ResponseBuilder responseBuilder, String transactionId) {
 		this.handleEventoOk(responseBuilder, transactionId);
 		if(transactionId != null)
 			return responseBuilder.header(this.transactionIdHeaderName, transactionId);
-		else 
+		else
 			return responseBuilder;
 	}
-	
+
 	protected ResponseBuilder handleResponseKo(ResponseBuilder responseBuilder, String transactionId) {
 		if(transactionId != null)
 			return responseBuilder.header(this.transactionIdHeaderName, transactionId);
-		else 
+		else
 			return responseBuilder;
 	}
-	
+
 	protected Response handleException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, Exception e, String transactionId) {
-		
+
 		if(e instanceof UnprocessableEntityException) {
 			return this.handleUnprocessableEntityException(uriInfo, httpHeaders, methodName, (UnprocessableEntityException)e,transactionId);
 		}
-		
+
 		if(e instanceof IncassiException) {
 			return this.handleIncassiException(uriInfo, httpHeaders, methodName, (IncassiException)e,transactionId);
 		}
-		
+
 		if(e instanceof BaseExceptionV1) {
 			return this.handleBaseException(uriInfo, httpHeaders, methodName, (BaseExceptionV1)e,transactionId);
 		}
-		
+
 		if(e instanceof RedirectException) {
 			return this.handleRedirectException(uriInfo, httpHeaders, methodName, (RedirectException)e,transactionId);
 		}
-		
+
 		if(e instanceof GovPayException) {
 			return this.handleGovpayException(uriInfo, httpHeaders, methodName, (GovPayException)e,transactionId);
 		}
-		
+
 		if(e instanceof ValidationException) {
 			return this.handleValidationException(uriInfo, httpHeaders, methodName, (ValidationException)e,transactionId);
 		}
-		
+
+		if(e instanceof IOException) {
+			return this.handleIOException(uriInfo, httpHeaders, methodName, (IOException)e,transactionId);
+		}
+
 		this.log.error("Errore interno durante "+methodName+": " + e.getMessage(), e);
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.INTERNO);
 		respKo.setCodice(EsitoOperazione.INTERNAL.toString());
 		respKo.setDescrizione("Errore interno");
 		respKo.setDettaglio(e.getMessage());
-		
+
 		String respKoJson = this.getRespJson(respKo);
-		ResponseBuilder responseBuilder = Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.APPLICATION_JSON).entity(respKoJson); 
+		ResponseBuilder responseBuilder = Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.APPLICATION_JSON).entity(respKoJson);
 		this.handleEventoFail(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
@@ -175,7 +179,7 @@ public abstract class BaseController {
 		String respKoJson = null;
 		try {
 			respKoJson =respKo.toJSON(null);
-		} catch(ServiceException ex) {
+		} catch(IOException ex) {
 			this.log.error(ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN, ex);
 			respKoJson = ERRORE_DURANTE_LA_SERIALIZZAZIONE_DEL_FAULT_BEAN;
 		}
@@ -188,7 +192,7 @@ public abstract class BaseController {
 		respKo.setCodice(e.getCode());
 		respKo.setDescrizione(e.getMessage());
 		respKo.setDettaglio(e.getDetails());
-		
+
 		String sottotipoEsito = respKo.getCodice();
 		if(e instanceof NotAuthenticatedException || e instanceof NotAuthorizedException) {
 			this.log.info("Accesso alla risorsa "+methodName+" non consentito: "+ e.getMessage() + ", " + e.getDetails());
@@ -201,9 +205,9 @@ public abstract class BaseController {
 		ResponseBuilder responseBuilder = Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson);
 		if(e.getTransportErrorCode() > 499)
 			this.handleEventoFail(responseBuilder, transactionId, sottotipoEsito, respKo.getDettaglio(), e);
-		else 
+		else
 			this.handleEventoKo(responseBuilder, transactionId, sottotipoEsito, respKo.getDettaglio(), e);
-		return handleResponseKo(responseBuilder, transactionId).build(); 
+		return handleResponseKo(responseBuilder, transactionId).build();
 	}
 
 	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
@@ -222,20 +226,20 @@ public abstract class BaseController {
 			respKo.setDescrizione(e.getDescrizioneEsito());
 			respKo.setDettaglio(e.getMessageV3());
 		}
-		
+
 		String respJson = this.getRespJson(respKo);
 		ResponseBuilder responseBuilder = Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson);
 		if(statusCode > 499)
 			this.handleEventoFail(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
-		else 
+		else
 			this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
-		
+
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
-	
+
 	private Response handleUnprocessableEntityException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, UnprocessableEntityException e, String transactionId) {
 		this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
-		
+
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.RICHIESTA);
 		respKo.setCodice("SEMANTICA");
@@ -246,12 +250,12 @@ public abstract class BaseController {
 		ResponseBuilder responseBuilder = Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson);
 		if(e.getTransportErrorCode() > 499)
 			this.handleEventoFail(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
-		else 
+		else
 			this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
-		
+
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
-	
+
 	private Response handleValidationException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, ValidationException e, String transactionId) {
 		this.log.warn("Richiesta rifiutata per errori di validazione: " + e);
 		FaultBean respKo = new FaultBean();
@@ -259,18 +263,34 @@ public abstract class BaseController {
 			respKo.setCodice("SINTASSI");
 			respKo.setDescrizione("Richiesta non valida");
 			respKo.setDettaglio(e.getMessage());
-		
+
 		int statusCode = 400;
-		
+
 		String respJson = this.getRespJson(respKo);
 		ResponseBuilder responseBuilder = Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson);
 		this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
-	
+
+	private Response handleIOException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, IOException e, String transactionId) {
+		this.log.warn("Richiesta rifiutata per errori di validazione: " + e);
+		FaultBean respKo = new FaultBean();
+			respKo.setCategoria(CategoriaEnum.RICHIESTA);
+			respKo.setCodice("SINTASSI");
+			respKo.setDescrizione("Richiesta non valida");
+			respKo.setDettaglio(e.getMessage());
+
+		int statusCode = 400;
+		String respJson = this.getRespJson(respKo);
+
+		ResponseBuilder responseBuilder = Response.status(statusCode).type(MediaType.APPLICATION_JSON).entity(respJson);
+		this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
+		return handleResponseKo(responseBuilder, transactionId).build();
+	}
+
 	private Response handleIncassiException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, IncassiException e, String transactionId) {
 		this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage() + ": " + e.getDetails());
-		
+
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.RICHIESTA);
 		respKo.setCodice(e.getCode());
@@ -281,7 +301,7 @@ public abstract class BaseController {
 		ResponseBuilder responseBuilder = Response.status(e.getTransportErrorCode()).type(MediaType.APPLICATION_JSON).entity(respJson);
 		if(e.getTransportErrorCode() > 499)
 			this.handleEventoFail(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
-		else 
+		else
 			this.handleEventoKo(responseBuilder, transactionId, respKo.getCodice(), respKo.getDettaglio(), e);
 		return handleResponseKo(responseBuilder, transactionId).build();
 	}
@@ -305,49 +325,49 @@ public abstract class BaseController {
 //			}
 		}
 	}
-	
+
 	protected void isAuthorized(Authentication authentication, List<TIPO_UTENZA> tipoUtenza, List<Servizio> servizi, List<Diritti> listaDiritti) throws NotAuthorizedException {
 		if(!AuthorizationManager.isAuthorized(authentication, tipoUtenza, servizi, listaDiritti)) {
 			throw AuthorizationManager.toNotAuthorizedException(authentication);
 		}
 	}
-	
+
 	protected ResponseBuilder handleEventoOk(ResponseBuilder responseBuilder, String transactionId) {
 		GpContext ctx = (GpContext) ContextThreadLocal.get().getApplicationContext();
 		ctx.getEventoCtx().setEsito(Esito.OK);
 		if(transactionId != null)
 			ctx.getEventoCtx().setIdTransazione(transactionId);
-		
+
 		return responseBuilder;
 	}
-	
+
 	protected ResponseBuilder handleEventoKo(ResponseBuilder responseBuilder, String transactionId, String sottotipoEsito, String dettaglioEsito, Exception exception) {
 		GpContext ctx = (GpContext) ContextThreadLocal.get().getApplicationContext();
 		ctx.getEventoCtx().setEsito(Esito.KO);
 		if(transactionId != null)
 			ctx.getEventoCtx().setIdTransazione(transactionId);
 		ctx.getEventoCtx().setDescrizioneEsito(dettaglioEsito);
-		
+
 		if(sottotipoEsito != null)
 			ctx.getEventoCtx().setSottotipoEsito(sottotipoEsito);
-		
+
 		ctx.getEventoCtx().setException(exception);
-		
+
 		return responseBuilder;
 	}
-	
+
 	protected ResponseBuilder handleEventoFail(ResponseBuilder responseBuilder, String transactionId, String sottotipoEsito, String dettaglioEsito, Exception exception) {
 		GpContext ctx = (GpContext) ContextThreadLocal.get().getApplicationContext();
 		ctx.getEventoCtx().setEsito(Esito.FAIL);
 		if(transactionId != null)
 			ctx.getEventoCtx().setIdTransazione(transactionId);
 		ctx.getEventoCtx().setDescrizioneEsito(dettaglioEsito);
-		
+
 		if(sottotipoEsito != null)
 			ctx.getEventoCtx().setSottotipoEsito(sottotipoEsito);
-		
+
 		ctx.getEventoCtx().setException(exception);
-		
+
 		return responseBuilder;
 	}
 }

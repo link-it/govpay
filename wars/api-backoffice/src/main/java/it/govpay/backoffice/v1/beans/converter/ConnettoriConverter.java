@@ -1,20 +1,19 @@
 package it.govpay.backoffice.v1.beans.converter;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.beans.Connector;
-import it.govpay.backoffice.v1.beans.TipoAutenticazione.TipoEnum;
 import it.govpay.backoffice.v1.beans.Connector.VersioneApiEnum;
+import it.govpay.backoffice.v1.beans.TipoAutenticazione.TipoEnum;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.model.Versionabile;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ConnettoriConverter {
-	
-	public static Connettore getConnettore(it.govpay.backoffice.v1.beans.Connector connector) throws ServiceException {
+
+	public static Connettore getConnettore(it.govpay.backoffice.v1.beans.Connector connector) throws CodificaInesistenteException {
 		Connettore connettore = new Connettore();
-		
+
 		if(connector.getAuth() != null) {
 			connettore.setHttpUser(connector.getAuth().getUsername());
 			connettore.setHttpPassw(connector.getAuth().getPassword());
@@ -26,7 +25,7 @@ public class ConnettoriConverter {
 			connettore.setSslType(connector.getAuth().getSslType());
 			connettore.setSslKsType(connector.getAuth().getKsType());
 			connettore.setSslPKeyPasswd(connector.getAuth().getKsPKeyPasswd());
-			
+
 			if(connector.getAuth().getTipo() != null) {
 				connettore.setTipoAutenticazione(EnumAuthType.SSL);
 				if(connector.getAuth().getTipo() != null) {
@@ -45,29 +44,29 @@ public class ConnettoriConverter {
 			}
 		} else {
 			connettore.setTipoAutenticazione(EnumAuthType.NONE);
-		}	
-		
+		}
+
 		connettore.setUrl(connector.getUrl());
 		if(connector.getVersioneApi() != null)
 			connettore.setVersione(Versionabile.Versione.toEnum(VersioneApiEnum.fromValue(connector.getVersioneApi()).toNameString()));
-		
+
 		return connettore;
 	}
 
-	public static Connector toRsModel(it.govpay.model.Connettore connettore) throws ServiceException {
+	public static Connector toRsModel(it.govpay.model.Connettore connettore) {
 		Connector rsModel = new Connector();
 		if(connettore.getTipoAutenticazione()!=null && !connettore.getTipoAutenticazione().equals(EnumAuthType.NONE))
 			rsModel.setAuth(toTipoAutenticazioneRsModel(connettore));
 		rsModel.setUrl(connettore.getUrl());
 		if(connettore.getVersione() != null)
 			rsModel.setVersioneApi(VersioneApiEnum.fromName(connettore.getVersione().getApiLabel()).toString());
-		
+
 		return rsModel;
 	}
-	
+
 	public static it.govpay.backoffice.v1.beans.TipoAutenticazione toTipoAutenticazioneRsModel(it.govpay.model.Connettore connettore) {
 		it.govpay.backoffice.v1.beans.TipoAutenticazione rsModel = new it.govpay.backoffice.v1.beans.TipoAutenticazione();
-		
+
 		rsModel.username(connettore.getHttpUser())
 		.password(connettore.getHttpPassw())
 		.ksLocation(connettore.getSslKsLocation())
@@ -78,7 +77,7 @@ public class ConnettoriConverter {
 		.sslType(connettore.getSslType())
 		.ksType(connettore.getSslKsType())
 		.ksPKeyPasswd(connettore.getSslPKeyPasswd());
-		
+
 		if(connettore.getTipoSsl() != null) {
 			switch (connettore.getTipoSsl() ) {
 			case CLIENT:
@@ -90,10 +89,10 @@ public class ConnettoriConverter {
 				break;
 			}
 		}
-		
+
 //		if(connettore.getSslType() != null)
 //			rsModel.tipo(TipoEnum.fromValue(connettore.getSslType().toString()));
-		
+
 		return rsModel;
 	}
 }
