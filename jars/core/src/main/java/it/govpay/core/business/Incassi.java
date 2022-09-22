@@ -51,7 +51,6 @@ import it.govpay.bd.pagamento.PromemoriaBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EventoContext;
-import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
 import it.govpay.core.exceptions.EcException;
@@ -60,6 +59,7 @@ import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.IncassiException.FaultType;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.NotificaException;
+import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IncassoUtils;
 import it.govpay.model.Evento.CategoriaEvento;
@@ -398,7 +398,7 @@ public class Incassi {
 			
 			if(listaEventi.size() >0) {
 				for (Evento evento : listaEventi) {
-					GdeUtils.salvaEvento(evento);
+					EventoUtils.salvaEvento(evento);
 				}
 			}
 		}
@@ -857,7 +857,7 @@ public class Incassi {
 			
 			if(listaEventi.size() >0) {
 				for (Evento evento : listaEventi) {
-					GdeUtils.salvaEvento(evento);
+					EventoUtils.salvaEvento(evento);
 				}
 			}
 		}

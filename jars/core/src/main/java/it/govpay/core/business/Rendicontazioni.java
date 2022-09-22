@@ -70,7 +70,6 @@ import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.EventoContext.Esito;
-import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
@@ -664,7 +663,7 @@ public class Rendicontazioni {
 							if(isAggiornamento)
 								eventoDTO.setSottotipoEvento(EventoContext.APIPAGOPA_SOTTOTIPOEVENTO_FLUSSO_RENDICONTAZIONE_DUPLICATO);
 							
-							GdeUtils.salvaEvento(eventoDTO);
+							EventoUtils.salvaEvento(eventoDTO);
 						}
 					}
 				}
@@ -811,7 +810,7 @@ public class Rendicontazioni {
 			return flussiDaAcquisire;
 		}  finally {
 			if(chiediFlussoRendicontazioniClient != null && chiediFlussoRendicontazioniClient.getEventoCtx().isRegistraEvento()) {
-				GdeUtils.salvaEvento(EventoUtils.toEventoDTO(chiediFlussoRendicontazioniClient.getEventoCtx(),log));
+				EventoUtils.salvaEvento(EventoUtils.toEventoDTO(chiediFlussoRendicontazioniClient.getEventoCtx(),log));
 			}
 		}
 

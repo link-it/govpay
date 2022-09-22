@@ -20,7 +20,6 @@ import it.govpay.core.dao.eventi.dto.ListaEventiDTOResponse;
 import it.govpay.core.dao.eventi.dto.PutEventoDTO;
 import it.govpay.core.dao.eventi.dto.PutEventoDTOResponse;
 import it.govpay.core.dao.eventi.exception.EventoNonTrovatoException;
-import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.EventoUtils;
@@ -106,7 +105,7 @@ public class EventiDAO extends BaseDAO {
 		try {
 			EventoContext eventoGenerico = putEventoDTO.getEvento();
 			Evento evento = EventoUtils.toEventoDTO(eventoGenerico,log);
-			GdeUtils.salvaEvento(evento);
+			EventoUtils.salvaEvento(evento);
 			return putEventoDTOResponse;
 		} finally {
 			

@@ -22,7 +22,6 @@ import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.EsitoOperazione;
-import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
@@ -187,7 +186,7 @@ public class InviaNotificaPagamentoMaggioliJPPAThread implements Runnable {
 			this.exception = e;
 		} finally {
 			if(client != null && client.getEventoCtx().isRegistraEvento()) {
-				GdeUtils.salvaEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
+				EventoUtils.salvaEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
 			}
 			ContextThreadLocal.unset();
 			this.completed = true;

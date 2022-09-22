@@ -54,7 +54,6 @@ import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.EventoContext.Esito;
-import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
@@ -505,7 +504,7 @@ public class RptUtils {
 								ctx.getApplicationLogger().log("pagamento.acquisizioneRtOk");
 							}finally {
 								if(chiediCopiaRTClient != null && chiediCopiaRTClient.getEventoCtx().isRegistraEvento()) {
-									GdeUtils.salvaEvento(EventoUtils.toEventoDTO(chiediCopiaRTClient.getEventoCtx(),log));
+									EventoUtils.salvaEvento(EventoUtils.toEventoDTO(chiediCopiaRTClient.getEventoCtx(),log));
 								}
 							}
 
@@ -611,7 +610,7 @@ public class RptUtils {
 					}
 				}finally {
 					if(chiediStatoRptClient != null && chiediStatoRptClient.getEventoCtx().isRegistraEvento()) {
-						GdeUtils.salvaEvento(EventoUtils.toEventoDTO(chiediStatoRptClient.getEventoCtx(),log));
+						EventoUtils.salvaEvento(EventoUtils.toEventoDTO(chiediStatoRptClient.getEventoCtx(),log));
 					}
 				}
 			}

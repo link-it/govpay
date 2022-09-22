@@ -66,7 +66,6 @@ import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.beans.commons.Versamento.AllegatoPendenza;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Iuv;
-import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
@@ -366,7 +365,7 @@ public class VersamentoUtils {
 			EventoContext eventoCtx = verificaClient.getEventoCtx();
 
 			if(eventoCtx.isRegistraEvento()) {
-				GdeUtils.salvaEvento(EventoUtils.toEventoDTO(eventoCtx,log));
+				EventoUtils.salvaEvento(EventoUtils.toEventoDTO(eventoCtx,log));
 			}
 		}
 		return versamento;
@@ -472,7 +471,7 @@ public class VersamentoUtils {
 			EventoContext eventoCtx = verificaClient.getEventoCtx();
 
 			if(eventoCtx.isRegistraEvento()) {
-				GdeUtils.salvaEvento(EventoUtils.toEventoDTO(eventoCtx,log));
+				EventoUtils.salvaEvento(EventoUtils.toEventoDTO(eventoCtx,log));
 			}
 		}
 		return versamento;

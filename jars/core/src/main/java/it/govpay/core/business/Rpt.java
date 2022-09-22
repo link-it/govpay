@@ -32,7 +32,6 @@ import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.model.Risposta;
-import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NotificaException;
@@ -474,7 +473,7 @@ public class Rpt {
 					throw new GovPayException(e);
 				} finally {
 					if(chiediStatoRptClient != null && chiediStatoRptClient.getEventoCtx().isRegistraEvento()) {
-						GdeUtils.salvaEvento(EventoUtils.toEventoDTO(chiediStatoRptClient.getEventoCtx(),log));
+						EventoUtils.salvaEvento(EventoUtils.toEventoDTO(chiediStatoRptClient.getEventoCtx(),log));
 					}
 				}
 			} catch (NotificaException e) {
@@ -500,7 +499,7 @@ public class Rpt {
 							clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(rpt.getDescrizioneStato());
 						}
 
-						GdeUtils.salvaEvento(EventoUtils.toEventoDTO(clientInviaCarrelloRPT.getEventoCtx(),log));
+						EventoUtils.salvaEvento(EventoUtils.toEventoDTO(clientInviaCarrelloRPT.getEventoCtx(),log));
 					}
 				}
 			}

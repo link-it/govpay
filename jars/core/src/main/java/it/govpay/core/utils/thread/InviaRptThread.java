@@ -47,7 +47,6 @@ import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.model.Risposta;
-import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NotificaException;
@@ -239,7 +238,7 @@ public class InviaRptThread implements Runnable {
 				rptBD.closeConnection();
 
 			if(client != null && client.getEventoCtx().isRegistraEvento()) {
-				GdeUtils.salvaEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
+				EventoUtils.salvaEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
 			}
 			ContextThreadLocal.unset();
 		}

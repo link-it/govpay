@@ -70,7 +70,6 @@ import it.govpay.core.beans.EventoContext.Categoria;
 import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.TracciatiNotificaPagamenti;
-import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.EventoUtils;
@@ -277,7 +276,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		} finally {
 			this.popolaContextEvento(connettore.getTipoConnettore(), url, dumpRequest, dumpResponse, this.eventoCtx);
 			
-			GdeUtils.salvaEvento(EventoUtils.toEventoDTO(this.eventoCtx,log));
+			EventoUtils.salvaEvento(EventoUtils.toEventoDTO(this.eventoCtx,log));
 
 			if(tracciatiMyPivotBD != null) {
 				tracciatiMyPivotBD.closeConnection();
@@ -469,7 +468,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
         			}
         		} finally {
         			if(client != null && client.getEventoCtx().isRegistraEvento()) {
-        				GdeUtils.salvaEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
+        				EventoUtils.salvaEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
         			}
 				}
             }
@@ -529,7 +528,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
             			}
             		} finally {
             			if(client != null && client.getEventoCtx().isRegistraEvento()) {
-            				GdeUtils.salvaEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
+            				EventoUtils.salvaEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
             			}
     				}
 				}

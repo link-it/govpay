@@ -65,7 +65,6 @@ import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTO;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTOResponse;
 import it.govpay.core.business.model.Risposta;
-import it.govpay.core.dao.eventi.utils.GdeUtils;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
@@ -376,7 +375,7 @@ public class Pagamento   {
 				}
 			} finally {
 				if(chiediListaPendentiClient != null && chiediListaPendentiClient.getEventoCtx().isRegistraEvento()) {
-					GdeUtils.salvaEvento(EventoUtils.toEventoDTO(chiediListaPendentiClient.getEventoCtx(),log));
+					EventoUtils.salvaEvento(EventoUtils.toEventoDTO(chiediListaPendentiClient.getEventoCtx(),log));
 				}
 			}
 		}
@@ -536,7 +535,7 @@ public class Pagamento   {
 			throw new GovPayException(EsitoOperazione.NDP_000, e);
 		} finally {
 			if(nodoInviaRRClient != null && nodoInviaRRClient.getEventoCtx().isRegistraEvento()) {
-				GdeUtils.salvaEvento(EventoUtils.toEventoDTO(nodoInviaRRClient.getEventoCtx(),log));
+				EventoUtils.salvaEvento(EventoUtils.toEventoDTO(nodoInviaRRClient.getEventoCtx(),log));
 			}
 		}
 	}
