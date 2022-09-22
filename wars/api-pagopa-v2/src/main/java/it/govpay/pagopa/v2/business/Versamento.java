@@ -12,12 +12,12 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.utils.client.IVerificaClient;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.gde.GdeInvoker;
 import it.govpay.gde.v1.model.NuovoEvento;
 import it.govpay.gde.v1.model.NuovoEvento.EsitoEnum;
 import it.govpay.pagopa.v2.beans.Connettore;
-import it.govpay.pagopa.v2.client.exception.ClientException;
-import it.govpay.pagopa.v2.client.verifica.IVerificaClient;
 import it.govpay.pagopa.v2.client.verifica.impl.VerificaClient;
 import it.govpay.pagopa.v2.entity.ApplicazioneEntity;
 import it.govpay.pagopa.v2.entity.VersamentoEntity;
@@ -138,10 +138,17 @@ public class Versamento {
 		VersamentoEntity versamento = null;
 		try {
 			try {
-				versamento = verificaClient.invoke(codVersamentoEnte, bundlekey, debitore, dominio, iuv);
-				log.info("Verificato versamento [Versamento:{} BundleKey:{} Debitore:{} Dominio:{} Iuv:{}] dall'applicativo gestore [Applicazione:{}]: versamento da pagare.", codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, applicazione.getCodApplicazione());
-
-				eventoCtx.setEsito(EsitoEnum.OK);
+				it.govpay.core.beans.commons.Versamento versamentoCommons = verificaClient.verificaPendenza(codVersamentoEnte, bundlekey, debitore, dominio, iuv);
+					
+				
+				try {
+					versamento = VersamentoUtils.toVersamentoModel(versamentoCommons, false);
+					log.info("Verificato versamento [Versamento:{} BundleKey:{} Debitore:{} Dominio:{} Iuv:{}] dall'applicativo gestore [Applicazione:{}]: versamento da pagare.", codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, applicazione.getCodApplicazione());
+					eventoCtx.setEsito(EsitoEnum.OK);
+				} catch (GovPayException e) {
+					log.error("Errore durante la verifica del versamento [Versamento:{} BundleKey:{} Debitore:{} Dominio:{} Iuv:{}] dall'applicativo gestore [Applicazione:{}]: {}", codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, applicazione.getCodApplicazione(), e.getMessage());
+					throw e;
+				}
 			} catch (ClientException e){
 				log.error("Errore durante la verifica del versamento [Versamento:{} BundleKey:{} Debitore:{} Dominio:{} Iuv:{}] dall'applicativo gestore [Applicazione:{}]: {}", codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, applicazione.getCodApplicazione(), e.getMessage());
 				eventoCtx.setSottotipoEsito(e.getResponseCode() + "");

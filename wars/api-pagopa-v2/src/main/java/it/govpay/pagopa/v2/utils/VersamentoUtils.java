@@ -1,5 +1,7 @@
 package it.govpay.pagopa.v2.utils;
 
+import it.govpay.core.beans.commons.Versamento;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.pagopa.v2.entity.DominioEntity;
 import it.govpay.pagopa.v2.entity.IbanAccreditoEntity;
 import it.govpay.pagopa.v2.entity.SingoloVersamentoEntity;
@@ -83,5 +85,10 @@ public class VersamentoUtils {
 		// altrimenti non si genera
 			return false;
 		}
+	}
+
+	public static VersamentoEntity toVersamentoModel(Versamento versamentoCommons, boolean b) throws GovPayException{ 
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
