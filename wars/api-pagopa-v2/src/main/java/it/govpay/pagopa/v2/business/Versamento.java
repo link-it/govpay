@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import it.govpay.core.exception.GovPayException;
-import it.govpay.core.exception.VersamentoAnnullatoException;
-import it.govpay.core.exception.VersamentoDuplicatoException;
-import it.govpay.core.exception.VersamentoNonValidoException;
-import it.govpay.core.exception.VersamentoScadutoException;
-import it.govpay.core.exception.VersamentoSconosciutoException;
+import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.VersamentoAnnullatoException;
+import it.govpay.core.exceptions.VersamentoDuplicatoException;
+import it.govpay.core.exceptions.VersamentoNonValidoException;
+import it.govpay.core.exceptions.VersamentoScadutoException;
+import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.gde.GdeInvoker;
 import it.govpay.gde.v1.model.NuovoEvento;
 import it.govpay.gde.v1.model.NuovoEvento.EsitoEnum;
@@ -49,7 +49,7 @@ public class Versamento {
 		ApplicazioneEntity applicazione = versamento.getApplicazione();
 		// Controllo se la data di scadenza e' indicata ed e' decorsa
 		if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza())) {
-			throw new VersamentoScadutoException(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte(), "-", "-", "-", "-", versamento.getDataScadenza());
+			throw new VersamentoScadutoException(applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte(), "-", "-", "-", "-", DateUtils.fromLocalDateTime(versamento.getDataScadenza()));
 		}else {
 			if(versamento.getDataValidita() != null && DateUtils.isDataDecorsa(versamento.getDataValidita())) {
 				String codVersamentoEnte = versamento.getCodVersamentoEnte();
@@ -76,7 +76,7 @@ public class Versamento {
 						// Errore nella chiamata all'ente. Controllo se e' mandatoria o uso quel che ho
 						if(this.aggiornamentoValiditaMandatorio) { 
 							log.error("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == true aggiornamento terminato con errore: " + e.getMessage(),e);
-							throw new VersamentoScadutoException(applicazione.getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
+							throw new VersamentoScadutoException(applicazione.getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, DateUtils.fromLocalDateTime(versamento.getDataScadenza()));
 						}
 
 						log.debug("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == false quindi verra' utilizzata la pendenza originale. Errore: " + e.getMessage(),e);
@@ -84,7 +84,7 @@ public class Versamento {
 						// Versamento sconosciuto all'ente (bug dell'ente?). Controllo se e' mandatoria o uso quel che ho
 						if(this.aggiornamentoValiditaMandatorio) { 
 							log.error("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == true aggiornamento terminato con errore: " + e.getMessage(),e);
-							throw new VersamentoScadutoException(applicazione.getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
+							throw new VersamentoScadutoException(applicazione.getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, DateUtils.fromLocalDateTime(versamento.getDataScadenza()));
 						}						
 						log.debug("Rilevata eccezione durante il processo di aggiornamento della pendenza, la proprieta' aggiornamentoValiditaMandatorio == false quindi verra' utilizzata la pendenza originale. Errore: " + e.getMessage(),e);
 					} catch (VersamentoNonValidoException e) {
@@ -106,7 +106,7 @@ public class Versamento {
 					}
 				} else if(this.aggiornamentoValiditaMandatorio) 
 					// connettore verifica non definito, versamento non aggiornabile
-					throw new VersamentoScadutoException(applicazione.getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, versamento.getDataScadenza());
+					throw new VersamentoScadutoException(applicazione.getCodApplicazione(), codVersamentoEnte, bundlekeyD, debitoreD, dominioD, iuvD, DateUtils.fromLocalDateTime(versamento.getDataScadenza()));
 			} else {
 				// versamento valido
 			} 

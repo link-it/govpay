@@ -47,6 +47,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>it.govpay</groupId>
+			<artifactId>core-beans</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
 			<artifactId>xml-adapters</artifactId>
 			<version>${project.version}</version>
 		</dependency>

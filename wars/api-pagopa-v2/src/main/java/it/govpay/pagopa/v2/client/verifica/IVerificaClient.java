@@ -1,11 +1,11 @@
 package it.govpay.pagopa.v2.client.verifica;
 
-import it.govpay.core.exception.GovPayException;
-import it.govpay.core.exception.VersamentoAnnullatoException;
-import it.govpay.core.exception.VersamentoDuplicatoException;
-import it.govpay.core.exception.VersamentoNonValidoException;
-import it.govpay.core.exception.VersamentoScadutoException;
-import it.govpay.core.exception.VersamentoSconosciutoException;
+import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.VersamentoAnnullatoException;
+import it.govpay.core.exceptions.VersamentoDuplicatoException;
+import it.govpay.core.exceptions.VersamentoNonValidoException;
+import it.govpay.core.exceptions.VersamentoScadutoException;
+import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.pagopa.v2.client.exception.ClientException;
 import it.govpay.pagopa.v2.entity.VersamentoEntity;
 
