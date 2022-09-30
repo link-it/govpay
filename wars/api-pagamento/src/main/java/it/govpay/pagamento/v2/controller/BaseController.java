@@ -237,8 +237,9 @@ public abstract class BaseController {
 	}
 
 	private void logMessageGovPayException(String methodName, GovPayException e) {
-		switch (e.getCodEsito()) {
-		case PAG_014:
+		switch (e.getStatusCode()) {
+		case 200: 
+		case 422: // richieste che non passano la validazione semantica
 			this.log.info("Rilevata GovPayException durante l'esecuzione del metodo: "+methodName+", causa: "+ e.getCausa() + ", messaggio: " + e.getMessageV3());
 			break;
 		default:
