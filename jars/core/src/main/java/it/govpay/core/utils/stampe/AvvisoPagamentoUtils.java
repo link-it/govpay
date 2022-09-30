@@ -201,6 +201,14 @@ public class AvvisoPagamentoUtils {
 					creaPaginaPrincipaleTripla(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica);
 				}
 			}
+		} else if (versamenti.size() == 1) { // caso speciale di un documento con una sola rata
+			Versamento versamento = versamenti.remove(0);
+			AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
+			AvvisoPagamentoUtils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
+			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
+			pagina.setRata(getRata(versamento, input, sdfDataScadenza));
+			input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
+			log.debug("Documento ["+documento.getCodDocumento()+"] aggiunta rata unica [idPendenza: "+versamento.getCodVersamentoEnte()+"]");	
 		}
 
 		return input;
