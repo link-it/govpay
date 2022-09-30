@@ -211,7 +211,15 @@ public abstract class BaseController {
 	}
 
 	private Response handleGovpayException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, GovPayException e, String transactionId) {
-		this.log.error("Rilevata GovPayException durante l'esecuzione del metodo: "+methodName+", causa: "+ e.getCausa() + ", messaggio: " + e.getMessageV3(), e);
+		switch (e.getStatusCode()) {
+		case 200: 
+		case 422: // richieste che non passano la validazione semantica
+			this.log.info("Rilevata GovPayException durante l'esecuzione del metodo: "+methodName+", causa: "+ e.getCausa() + ", messaggio: " + e.getMessageV3());
+			break;
+		default:
+			this.log.error("Rilevata GovPayException durante l'esecuzione del metodo: "+methodName+", causa: "+ e.getCausa() + ", messaggio: " + e.getMessageV3(), e);
+			break;
+		}
 		FaultBean respKo = new FaultBean();
 		int statusCode = e.getStatusCode();
 		if(e.getFaultBean()!=null) {
