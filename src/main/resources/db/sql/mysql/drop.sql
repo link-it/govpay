@@ -54,3 +54,4 @@ DROP TABLE utenze;
 DROP TABLE stazioni;
 DROP TABLE intermediari;
 DROP TABLE configurazione;
+DROP TABLE sonde;

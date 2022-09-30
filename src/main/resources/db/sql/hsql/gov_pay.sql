@@ -1189,6 +1189,7 @@ CREATE TABLE fr
 
 -- index
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
+CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
 CREATE TABLE fr_init_seq (id BIGINT);
 INSERT INTO fr_init_seq VALUES (NEXT VALUE FOR seq_fr);
 
@@ -1265,6 +1266,8 @@ CREATE TABLE rendicontazioni
 	CONSTRAINT pk_rendicontazioni PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
 CREATE TABLE rendicontazioni_init_seq (id BIGINT);
 INSERT INTO rendicontazioni_init_seq VALUES (NEXT VALUE FOR seq_rendicontazioni);
 
@@ -1312,6 +1315,7 @@ CREATE INDEX idx_evt_data ON eventi (data);
 CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
 CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
 CREATE INDEX idx_evt_iuv ON eventi (iuv);
+CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
 CREATE TABLE eventi_init_seq (id BIGINT);
 INSERT INTO eventi_init_seq VALUES (NEXT VALUE FOR seq_eventi);
 

@@ -146,3 +146,13 @@ CREATE VIEW v_eventi_vers AS (
         UNION SELECT * FROM v_eventi_vers_riconciliazioni
 	UNION SELECT * FROM v_eventi_vers_tracciati
 );
+
+
+-- 30/09/2022 indice sulla colonna id_fr della tabella eventi
+CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
+
+
+-- 30/09/2022 indice sulla colonna cod_flusso della tabella fr
+CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
+
+

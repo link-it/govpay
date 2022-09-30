@@ -1005,7 +1005,8 @@ CREATE TABLE fr
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Flussi di rendicontazione';
 
 -- index
-CREATE UNIQUE INDEX index_fr_1 ON fr (cod_flusso,data_ora_flusso);
+CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
+CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
 
 
 
@@ -1115,6 +1116,7 @@ CREATE INDEX idx_evt_data ON eventi (data);
 CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
 CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
 CREATE INDEX idx_evt_iuv ON eventi (iuv);
+CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
 
 
 

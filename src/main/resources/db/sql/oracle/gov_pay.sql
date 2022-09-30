@@ -1407,12 +1407,14 @@ CREATE TABLE fr
 	id NUMBER NOT NULL,
 	id_incasso NUMBER,
 	-- unique constraints
-	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,cod_flusso,data_ora_flusso),
+	CONSTRAINT unique_fr_1 UNIQUE (cod_dominio,cod_flusso,data_ora_flusso),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_fr PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
 CREATE TRIGGER trg_fr
 BEFORE
 insert on fr
@@ -1511,8 +1513,6 @@ CREATE TABLE rendicontazioni
 
 -- index
 CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
-
-
 CREATE TRIGGER trg_rendicontazioni
 BEFORE
 insert on rendicontazioni

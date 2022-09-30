@@ -91,3 +91,12 @@ CREATE VIEW v_eventi_vers AS (
                eventi.id
                FROM v_eventi_vers_base JOIN eventi ON v_eventi_vers_base.id = eventi.id
          ); 
+
+
+-- 30/09/2022 indice sulla colonna id_fr della tabella eventi
+CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
+
+
+-- 30/09/2022 indice sulla colonna cod_flusso della tabella fr
+CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
+

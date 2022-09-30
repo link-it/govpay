@@ -1014,7 +1014,8 @@ CREATE TABLE fr
 );
 
 -- index
-CREATE UNIQUE INDEX index_fr_1 ON fr (cod_flusso,data_ora_flusso);
+CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
+CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
 
 
 
@@ -1130,6 +1131,7 @@ CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
 CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
 CREATE INDEX idx_evt_iuv ON eventi (iuv);
 CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
+
 
 
 CREATE TABLE batch
