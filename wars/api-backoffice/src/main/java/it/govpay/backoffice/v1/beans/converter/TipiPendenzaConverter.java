@@ -70,7 +70,6 @@ public class TipiPendenzaConverter {
 				}
 				if(entrataPost.getPortaleBackoffice().getValidazione() != null)
 					tipoVersamento.setCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getPortaleBackoffice().getValidazione()));
-
 				if(entrataPost.getPortaleBackoffice().getInoltro() != null)
 					tipoVersamento.setCaricamentoPendenzePortaleBackofficeCodApplicazioneDefault(entrataPost.getPortaleBackoffice().getInoltro());
 			}
@@ -104,7 +103,6 @@ public class TipiPendenzaConverter {
 				}
 				if(entrataPost.getPortalePagamento().getValidazione() != null)
 					tipoVersamento.setCaricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getPortalePagamento().getValidazione()));
-
 				if(entrataPost.getPortalePagamento().getInoltro() != null)
 					tipoVersamento.setCaricamentoPendenzePortalePagamentoCodApplicazioneDefault(entrataPost.getPortalePagamento().getInoltro());
 			}
@@ -239,7 +237,6 @@ public class TipiPendenzaConverter {
 		// Visualizzazione custom del dettaglio pendenza
 		if(entrataPost.getVisualizzazione() != null)
 			tipoVersamento.setVisualizzazioneDefinizioneDefault(ConverterUtils.toJSON(entrataPost.getVisualizzazione()));
-
 		// trasformazione csv pendenze
 		if(entrataPost.getTracciatoCsv() != null
 				&& entrataPost.getTracciatoCsv().getTipo() != null

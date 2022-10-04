@@ -12,6 +12,7 @@ import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Pagamento.Stato;
@@ -71,8 +72,10 @@ public class RiscossioniConverter {
 
 				if(singoloVersamento != null) {
 					rsModel.setVocePendenza(PendenzeConverter.toRsModelVocePendenza(singoloVersamento, input.getIndiceDati()));
-					if(input.getRpt(null) != null)
-						rsModel.setRt(ConverterUtils.getRtJson(input.getRpt(null)));
+					if(input.getRpt(null) != null) {
+						boolean convertiMessaggioPagoPAV2InPagoPAV1 = GovpayConfig.getInstance().isConversioneMessaggiPagoPAV2NelFormatoV1();
+						rsModel.setRt(ConverterUtils.getRtJson(input.getRpt(null), convertiMessaggioPagoPAV2InPagoPAV1));
+					}
 				}
 			}
 

@@ -19,15 +19,10 @@
  */
 package it.govpay.core.utils;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -50,7 +45,6 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.pagamento.util.IuvUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
@@ -270,7 +264,7 @@ public class CtPaymentPABuilder {
 				}
 			}
 
-			transferEl.setRemittanceInformation(this.buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT()));
+			transferEl.setRemittanceInformation(RptBuilder.buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT()));
 
 			// TODO come generare la stringa indicata nell'xsd
 
@@ -319,33 +313,5 @@ public class CtPaymentPABuilder {
 			return null;
 		else
 			return text;
-	}
-
-	private static final DecimalFormat nFormatter = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.ENGLISH));
-
-	private String buildCausaleSingoloVersamento(String iuv, BigDecimal importoTotale, String descrizione, String descrizioneCausaleRPT) {
-		StringBuilder sb = new StringBuilder();
-		//Controllo se lo IUV che mi e' stato passato e' ISO11640:2011
-		if(IuvUtils.checkISO11640(iuv)) {
-			sb.append("/RFS/");
-		}else { 
-			sb.append("/RFB/");
-		}
-
-		sb.append(iuv);
-		sb.append("/");
-		sb.append(nFormatter.format(importoTotale));
-		if(StringUtils.isNotEmpty(descrizioneCausaleRPT)) {
-			sb.append("/TXT/").append(descrizioneCausaleRPT);
-		} else {
-			if(StringUtils.isNotEmpty(descrizione)) {
-				sb.append("/TXT/").append(descrizione);
-			}
-		}
-
-		if(sb.toString().length() > 140)
-			return sb.toString().substring(0, 140);
-
-		return sb.toString();
 	}
 }
