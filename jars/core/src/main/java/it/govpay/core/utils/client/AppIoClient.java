@@ -141,7 +141,7 @@ public class AppIoClient extends BasicClientCORE {
 			dumpResponse.getHeaders().put("Status-line", ""+responseCode);
 
 			try {
-				String msgRes = ConverterUtils.toJSON(limitedProfile, null);
+				String msgRes = ConverterUtils.toJSON(limitedProfile);
 				msg = msgRes != null ? msgRes.getBytes() : new byte[]{};
 			} catch (ServiceException e) {
 				log.warn("Errore durante la serializzazione del messaggio di risposta per il giornale eventi: " + e.getMessage(), e);
@@ -228,7 +228,7 @@ public class AppIoClient extends BasicClientCORE {
 
 			String jsonBody = null;
 			try {
-				jsonBody = ConverterUtils.toJSON(messageWithCF, null);
+				jsonBody = ConverterUtils.toJSON(messageWithCF);
 			} catch (ServiceException e) {
 				log.warn("Errore durante la serializzazione del messaggio di richiesta per il giornale eventi: " + e.getMessage(), e);
 			} 
@@ -270,7 +270,7 @@ public class AppIoClient extends BasicClientCORE {
 			dumpResponse.getHeaders().put("Status-line", ""+responseCode);
 
 			try {
-				String msgRes = ConverterUtils.toJSON(createdMessage, null);
+				String msgRes = ConverterUtils.toJSON(createdMessage);
 				msg = msgRes != null ? msgRes.getBytes() : new byte[]{};
 			} catch (ServiceException e) {
 				log.warn("Errore durante la serializzazione del messaggio di risposta per il giornale eventi: " + e.getMessage(), e);

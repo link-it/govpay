@@ -302,7 +302,7 @@ public class PendenzeConverter {
 		versamento.setImportoTotale(pendenza.getImporto());
 		versamento.setTassonomia(pendenza.getTassonomia());
 		if(pendenza.getDatiAllegati() != null)
-			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati(),null));
+			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati()));
 
 		if(pendenza.getTassonomiaAvviso() != null) {
 			// valore tassonomia avviso non valido
@@ -331,7 +331,7 @@ public class PendenzeConverter {
 
 				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
 				if(vocePendenza.getDatiAllegati() != null)
-					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati(),null));
+					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati()));
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				sv.setImporto(vocePendenza.getImporto());

@@ -117,8 +117,8 @@ public class ConfigurazioniConverter {
 		}
 
 		dto.setIntestazione(tracciatoCsv.getIntestazione());
-		dto.setRichiesta((ConverterUtils.toJSON(tracciatoCsv.getRichiesta(),null)));
-		dto.setRisposta(ConverterUtils.toJSON(tracciatoCsv.getRisposta(),null));
+		dto.setRichiesta((ConverterUtils.toJSON(tracciatoCsv.getRichiesta())));
+		dto.setRisposta(ConverterUtils.toJSON(tracciatoCsv.getRisposta()));
 
 		return dto;
 	}
@@ -136,8 +136,8 @@ public class ConfigurazioniConverter {
 		}
 
 		dto.setIntestazione(tracciatoCsv.getIntestazione());
-		dto.setRichiesta((ConverterUtils.toJSON(tracciatoCsv.getRichiesta(),null)));
-		dto.setRisposta(ConverterUtils.toJSON(tracciatoCsv.getRisposta(),null));
+		dto.setRichiesta((ConverterUtils.toJSON(tracciatoCsv.getRichiesta())));
+		dto.setRisposta(ConverterUtils.toJSON(tracciatoCsv.getRisposta()));
 
 		return dto;
 	}
@@ -161,31 +161,31 @@ public class ConfigurazioniConverter {
 			e.setPath(op.getPath());
 
 			if(PATH_GIORNALE_EVENTI.equals(op.getPath())) {
-				it.govpay.backoffice.v1.beans.Giornale giornalePost = it.govpay.backoffice.v1.beans.Giornale.parse(ConverterUtils.toJSON(op.getValue(),null));
+				it.govpay.backoffice.v1.beans.Giornale giornalePost = it.govpay.backoffice.v1.beans.Giornale.parse(ConverterUtils.toJSON(op.getValue()));
 				giornalePost.validate();
 				e.setValue(GiornaleConverter.getGiornaleDTO(giornalePost ));
 			} else if(PATH_TRACCIATO_CSV.equals(op.getPath())) {
-				TracciatoCsv tracciatoCsv = TracciatoCsv.parse(ConverterUtils.toJSON(op.getValue(),null));
+				TracciatoCsv tracciatoCsv = TracciatoCsv.parse(ConverterUtils.toJSON(op.getValue()));
 				tracciatoCsv.validate();
 				e.setValue(getTracciatoCsvDTOPatch(tracciatoCsv ));
 			} else if(PATH_HARDENING.equals(op.getPath())) {
-				Hardening configurazioneHardening = Hardening.parse(ConverterUtils.toJSON(op.getValue(),null));
+				Hardening configurazioneHardening = Hardening.parse(ConverterUtils.toJSON(op.getValue()));
 				configurazioneHardening.validate();
 				e.setValue(getConfigurazioneHardeningDTO(configurazioneHardening ));
 			} else if(PATH_MAIL_BATCH.equals(op.getPath())) {
-				MailBatch configurazioneMailBatch = MailBatch.parse(ConverterUtils.toJSON(op.getValue(),null));
+				MailBatch configurazioneMailBatch = MailBatch.parse(ConverterUtils.toJSON(op.getValue()));
 				configurazioneMailBatch.validate();
 				e.setValue(getConfigurazioneMailBatchDTO(configurazioneMailBatch));
 			} else if(PATH_AVVISATURA_MAIL.equals(op.getPath())) {
-				ConfigurazioneAvvisaturaMail configurazioneAvvisaturaMail = ConfigurazioneAvvisaturaMail.parse(ConverterUtils.toJSON(op.getValue(),null));
+				ConfigurazioneAvvisaturaMail configurazioneAvvisaturaMail = ConfigurazioneAvvisaturaMail.parse(ConverterUtils.toJSON(op.getValue()));
 				configurazioneAvvisaturaMail.validate();
 				e.setValue(getConfigurazioneAvvisaturaMailDTO(configurazioneAvvisaturaMail));
 			} else if(PATH_AVVISATURA_APP_IO.equals(op.getPath())) {
-				ConfigurazioneAvvisaturaAppIO configurazioneAvvisaturaAppIo = ConfigurazioneAvvisaturaAppIO.parse(ConverterUtils.toJSON(op.getValue(),null));
+				ConfigurazioneAvvisaturaAppIO configurazioneAvvisaturaAppIo = ConfigurazioneAvvisaturaAppIO.parse(ConverterUtils.toJSON(op.getValue()));
 				configurazioneAvvisaturaAppIo.validate();
 				e.setValue(getConfigurazioneAvvisaturaAppIoDTO(configurazioneAvvisaturaAppIo));
 			} else if(PATH_APP_IO_BATCH.equals(op.getPath())) {
-				AppIOBatch configurazioneAppIO = AppIOBatch.parse(ConverterUtils.toJSON(op.getValue(),null));
+				AppIOBatch configurazioneAppIO = AppIOBatch.parse(ConverterUtils.toJSON(op.getValue()));
 				configurazioneAppIO.validate();
 				e.setValue(getConfigurazioneAppIOBatchDTO(configurazioneAppIO	));
 			} else {
@@ -253,8 +253,8 @@ public class ConfigurazioniConverter {
 							avvisaturaMail.getPromemoriaAvviso().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
-			promemoriaAvviso.setMessaggio((ConverterUtils.toJSON(avvisaturaMail.getPromemoriaAvviso().getMessaggio(),null)));
-			promemoriaAvviso.setOggetto(ConverterUtils.toJSON(avvisaturaMail.getPromemoriaAvviso().getOggetto(),null));		
+			promemoriaAvviso.setMessaggio((ConverterUtils.toJSON(avvisaturaMail.getPromemoriaAvviso().getMessaggio())));
+			promemoriaAvviso.setOggetto(ConverterUtils.toJSON(avvisaturaMail.getPromemoriaAvviso().getOggetto()));		
 
 			dto.setPromemoriaAvviso(promemoriaAvviso);
 		}
@@ -272,8 +272,8 @@ public class ConfigurazioniConverter {
 							avvisaturaMail.getPromemoriaRicevuta().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
-			promemoriaRicevuta.setMessaggio((ConverterUtils.toJSON(avvisaturaMail.getPromemoriaRicevuta().getMessaggio(),null)));
-			promemoriaRicevuta.setOggetto(ConverterUtils.toJSON(avvisaturaMail.getPromemoriaRicevuta().getOggetto(),null));		
+			promemoriaRicevuta.setMessaggio((ConverterUtils.toJSON(avvisaturaMail.getPromemoriaRicevuta().getMessaggio())));
+			promemoriaRicevuta.setOggetto(ConverterUtils.toJSON(avvisaturaMail.getPromemoriaRicevuta().getOggetto()));		
 			
 			dto.setPromemoriaRicevuta(promemoriaRicevuta);
 		}
@@ -291,8 +291,8 @@ public class ConfigurazioniConverter {
 							avvisaturaMail.getPromemoriaScadenza().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
-			promemoriaScadenza.setMessaggio((ConverterUtils.toJSON(avvisaturaMail.getPromemoriaScadenza().getMessaggio(),null)));
-			promemoriaScadenza.setOggetto(ConverterUtils.toJSON(avvisaturaMail.getPromemoriaScadenza().getOggetto(),null));		
+			promemoriaScadenza.setMessaggio((ConverterUtils.toJSON(avvisaturaMail.getPromemoriaScadenza().getMessaggio())));
+			promemoriaScadenza.setOggetto(ConverterUtils.toJSON(avvisaturaMail.getPromemoriaScadenza().getOggetto()));		
 			
 			dto.setPromemoriaScadenza(promemoriaScadenza);
 		}
@@ -316,8 +316,8 @@ public class ConfigurazioniConverter {
 							avvisaturaAppIo.getPromemoriaAvviso().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
-			promemoriaAvviso.setMessaggio((ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaAvviso().getMessaggio(),null)));
-			promemoriaAvviso.setOggetto(ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaAvviso().getOggetto(),null));		
+			promemoriaAvviso.setMessaggio((ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaAvviso().getMessaggio())));
+			promemoriaAvviso.setOggetto(ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaAvviso().getOggetto()));		
 
 			dto.setPromemoriaAvviso(promemoriaAvviso);
 		}
@@ -334,8 +334,8 @@ public class ConfigurazioniConverter {
 							avvisaturaAppIo.getPromemoriaRicevuta().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
-			promemoriaRicevuta.setMessaggio((ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaRicevuta().getMessaggio(),null)));
-			promemoriaRicevuta.setOggetto(ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaRicevuta().getOggetto(),null));		
+			promemoriaRicevuta.setMessaggio((ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaRicevuta().getMessaggio())));
+			promemoriaRicevuta.setOggetto(ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaRicevuta().getOggetto()));		
 			
 			dto.setPromemoriaRicevuta(promemoriaRicevuta);
 		}
@@ -353,8 +353,8 @@ public class ConfigurazioniConverter {
 							avvisaturaAppIo.getPromemoriaScadenza().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoTemplateTrasformazione.values()));
 				}
 			}
-			promemoriaScadenza.setMessaggio((ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaScadenza().getMessaggio(),null)));
-			promemoriaScadenza.setOggetto(ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaScadenza().getOggetto(),null));		
+			promemoriaScadenza.setMessaggio((ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaScadenza().getMessaggio())));
+			promemoriaScadenza.setOggetto(ConverterUtils.toJSON(avvisaturaAppIo.getPromemoriaScadenza().getOggetto()));		
 			
 			dto.setPromemoriaScadenza(promemoriaScadenza);
 		}

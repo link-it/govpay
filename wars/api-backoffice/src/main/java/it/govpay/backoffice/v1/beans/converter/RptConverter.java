@@ -6,7 +6,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import it.govpay.backoffice.v1.beans.Rpp;
 import it.govpay.backoffice.v1.beans.RppIndex;
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.rs.v1.ConverterUtils;
+import it.govpay.core.utils.rawutils.ConverterUtils;
 
 public class RptConverter {
 
