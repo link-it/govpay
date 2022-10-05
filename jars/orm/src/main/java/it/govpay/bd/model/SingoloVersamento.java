@@ -51,6 +51,7 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 			try {
 				this.tributo = AnagraficaManager.getTributo(configWrapper, this.getIdTributo());
 			} catch (NotFoundException e) {
+				throw new ServiceException("Tributo con id ["+this.getIdTributo()+"] non trovato.");
 			}
 		}
 		return this.tributo;
@@ -100,10 +101,11 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 			try {
 				this.ibanAccredito = AnagraficaManager.getIbanAccredito(configWrapper, this.getIdIbanAccredito());
 			} catch (NotFoundException e) {
+				throw new ServiceException("Iban Accredito con id ["+this.getIdIbanAccredito()+"] non trovato.");
 			}
 		}
 		
-		if(this.ibanAccredito == null && this.getIdIbanAccredito() == null) {
+		if(this.ibanAccredito == null && this.getTributo(configWrapper) != null && this.getIdIbanAccredito() == null) {
 			this.ibanAccredito = this.getTributo(configWrapper).getIbanAccredito();
 		}
 		
@@ -121,6 +123,7 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 			try {
 				this.ibanAppoggio = AnagraficaManager.getIbanAccredito(configWrapper, this.getIdIbanAppoggio());
 			} catch (NotFoundException e) {
+				throw new ServiceException("Iban Appoggio con id ["+this.getIdIbanAppoggio()+"] non trovato.");
 			}
 		}
 		
