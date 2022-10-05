@@ -101,12 +101,12 @@ public class Rpt {
 				}
 
 				log.debug("Verifica scadenza del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "]...");
-				if(versamentoModel.getDataScadenza() != null && DateUtils.isDataDecorsa(versamentoModel.getDataScadenza())) {
+				if(versamentoModel.getDataScadenza() != null && DateUtils.isDataDecorsa(versamentoModel.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {
 					log.warn("Scadenza del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] decorsa.");
 					throw new GovPayException(EsitoOperazione.PAG_007, codApplicazione, codVersamentoEnte, SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(versamentoModel.getDataScadenza()));
 				} else { // versamento non scaduto, controllo data validita'
 					log.debug("Verifica validita' del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "]...");
-					if(versamentoModel.getDataValidita() != null && DateUtils.isDataDecorsa(versamentoModel.getDataValidita())) {
+					if(versamentoModel.getDataValidita() != null && DateUtils.isDataDecorsa(versamentoModel.getDataValidita(), DateUtils.CONTROLLO_VALIDITA)) {
 
 						if(versamentoModel.getId() == null) {
 							// Versamento fornito scaduto. Ritorno errore.
