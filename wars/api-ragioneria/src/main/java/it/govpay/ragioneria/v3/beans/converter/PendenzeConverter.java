@@ -157,7 +157,8 @@ public class PendenzeConverter {
 		} else if(singoloVersamento.getTributo(configWrapper) != null && singoloVersamento.getTributo(configWrapper).getCodTributo() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
 			rsModel.setCodEntrata(singoloVersamento.getTributo(configWrapper).getCodTributo());
 		} else { // Definisce i dettagli di incasso della singola entrata.
-			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(configWrapper).getCodIban());
+			if(singoloVersamento.getIbanAccredito(configWrapper) !=null)
+				rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(configWrapper).getCodIban());
 			if(singoloVersamento.getIbanAppoggio(configWrapper) !=null)
 				rsModel.setIbanAccredito(singoloVersamento.getIbanAppoggio(configWrapper).getCodIban());
 			if(singoloVersamento.getTipoContabilita() != null && singoloVersamento.getCodContabilita() != null)
