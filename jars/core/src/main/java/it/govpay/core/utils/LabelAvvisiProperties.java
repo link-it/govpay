@@ -26,6 +26,7 @@ public class LabelAvvisiProperties {
 	public static final String LABEL_DESTINATARIO_AVVISO = "destinatario_avviso";
 	public static final String LABEL_QUANTO_QUANDO = "quanto_quando";
 	public static final String LABEL_COME = "come";
+	public static final String LABEL_DOVE = "dove";
 	public static final String LABEL_PAGA_APP = "paga_app";
 	public static final String LABEL_PAGA_APP_STANDARD = "paga_app_standard";
 	public static final String LABEL_PAGA_APP_POSTE = "paga_app_poste";
@@ -58,6 +59,10 @@ public class LabelAvvisiProperties {
 	public static final String LABEL_CODICE_CBILL = "codice_cbill";
 	public static final String LABEL_CODICE_AVVISO = "codice_avviso";
 	public static final String LABEL_CODICE_FISCALE_ENTE = "codice_fiscale_ente";
+	public static final String LABEL_SOLUZIONE_UNICA_ENTRO_GIORNI = "soluzione_unica_entro_giorni";
+	public static final String LABEL_SOLUZIONE_UNICA_OLTRE_GIORNI = "soluzione_unica_oltre_giorni";
+	public static final String LABEL_VIOLAZIONE_CDS_SCADENZA_SCONTATO = "violazione_cds_scadenza_scontato";
+	public static final String LABEL_VIOLAZIONE_CDS_SCADENZA_RIDOTTO = "violazione_cds_scadenza_ridotto";
 
 	private static LabelAvvisiProperties instance;
 

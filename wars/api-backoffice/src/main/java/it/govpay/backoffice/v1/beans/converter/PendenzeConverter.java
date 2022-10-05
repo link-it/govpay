@@ -341,7 +341,7 @@ public class PendenzeConverter {
 			if(rendicontazioni != null && !rendicontazioni.isEmpty()) {
 				List<it.govpay.backoffice.v1.beans.Rendicontazione> rendicontazioniRsModel = new ArrayList<>();
 				for (Rendicontazione rendicontazione : rendicontazioni) {
-					it.govpay.backoffice.v1.beans.Rendicontazione rendicontazioneRsModel = FlussiRendicontazioneConverter.toRendicontazioneRsModel(rendicontazione);
+					it.govpay.backoffice.v1.beans.Rendicontazione rendicontazioneRsModel = FlussiRendicontazioneConverter.toRendicontazioneRsModel(rendicontazione, singoloVersamento);
 					rendicontazioniRsModel.add(rendicontazioneRsModel);
 				}
 				rsModel.setRendicontazioni(rendicontazioniRsModel);
@@ -432,9 +432,11 @@ public class PendenzeConverter {
 		rsModel.setIdentificativo(documento.getCodDocumento());
 		if(versamento.getNumeroRata() != null)
 			rsModel.setRata(new BigDecimal(versamento.getNumeroRata()));
-		if(versamento.getTipoSoglia() != null && versamento.getGiorniSoglia() != null) {
+		if(versamento.getTipoSoglia() != null) {
 			VincoloPagamento soglia = new VincoloPagamento();
-			soglia.setGiorni(new BigDecimal(versamento.getGiorniSoglia()));
+			
+			if(versamento.getGiorniSoglia() != null)
+				soglia.setGiorni(new BigDecimal(versamento.getGiorniSoglia()));
 			
 			switch(versamento.getTipoSoglia()) {
 			case ENTRO:
@@ -442,6 +444,12 @@ public class PendenzeConverter {
 				break;
 			case OLTRE:
 				soglia.setTipo(TipoSogliaVincoloPagamento.OLTRE.toString());
+				break;
+			case RIDOTTO:
+				soglia.setTipo(TipoSogliaVincoloPagamento.RIDOTTO.toString());
+				break;
+			case SCONTATO:
+				soglia.setTipo(TipoSogliaVincoloPagamento.SCONTATO.toString());
 				break;
 			}
 			
@@ -553,7 +561,8 @@ public class PendenzeConverter {
 								+ pendenza.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
 				}
 				
-				documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
+				if(pendenza.getDocumento().getSoglia().getGiorni() != null)
+					documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
 				documento.setTipoSoglia(pendenza.getDocumento().getSoglia().getTipo());
 			}
 			documento.setDescrizione(pendenza.getDocumento().getDescrizione());
@@ -630,7 +639,8 @@ public class PendenzeConverter {
 								+ pendenza.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
 				}
 				
-				documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
+				if(pendenza.getDocumento().getSoglia().getGiorni() != null)
+					documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
 				documento.setTipoSoglia(pendenza.getDocumento().getSoglia().getTipo());
 			}
 			documento.setDescrizione(pendenza.getDocumento().getDescrizione());

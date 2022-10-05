@@ -115,7 +115,7 @@ public class Rpt {
 							// Versammento in archivio scaduto. Ne chiedo un aggiornamento.
 							log.info("Validita del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] decorsa. Avvio richiesta di aggiornamento all'applicazione.");
 							try {
-								versamentoModel = VersamentoUtils.aggiornaVersamento(versamentoModel);
+								versamentoModel = VersamentoUtils.aggiornaVersamento(versamentoModel, log);
 								log.info("Versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] aggiornato tramite servizio di verifica.");
 							} catch (VersamentoAnnullatoException e){
 								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: versamento annullato");

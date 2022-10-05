@@ -265,7 +265,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(versamento == null) throw new NotFoundException();
 					
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
 
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -297,7 +297,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
 					
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -681,7 +681,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(versamento == null) throw new NotFoundException();
 					
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
 
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -716,7 +716,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
 					
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -1161,7 +1161,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(versamento == null) throw new NotFoundException();
 					
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
 
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -1196,7 +1196,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
 					
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -1466,7 +1466,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(versamento == null) throw new NotFoundException();
 					
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
 
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -1498,7 +1498,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
 					
 					// Versamento trovato, gestisco un'eventuale scadenza
-					versamento = VersamentoUtils.aggiornaVersamento(versamento);
+					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);

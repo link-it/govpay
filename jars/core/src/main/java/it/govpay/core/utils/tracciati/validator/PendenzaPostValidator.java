@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.core.beans.tracciati.Contabilita;
@@ -19,6 +20,7 @@ import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
+import it.govpay.model.Versamento.TipoSogliaVersamento;
 
 public class PendenzaPostValidator  implements IValidable{
 
@@ -271,8 +273,28 @@ public class PendenzaPostValidator  implements IValidable{
 		public void validate() throws ValidationException {
 		  	ValidatorFactory vf = ValidatorFactory.newInstance();
 		  	
-		  	ValidatoreUtils.validaSogliaGiorni(vf, "giorni", this.vincoloPagamento.getGiorni());
 		  	ValidatoreUtils.validaSogliaTipo(vf, "tipo", this.vincoloPagamento.getTipo());
+
+			try {
+				TipoSogliaVersamento tipoSoglia = TipoSogliaVersamento.toEnum(this.vincoloPagamento.getTipo());
+
+				switch(tipoSoglia) {
+				case ENTRO:
+				case OLTRE:
+					ValidatoreUtils.validaSogliaGiorni(vf, "giorni", this.vincoloPagamento.getGiorni());
+					break;
+				case RIDOTTO:
+				case SCONTATO:
+					try {
+					vf.getValidator("giorni", this.vincoloPagamento.getGiorni()).isNull();
+					} catch (Exception e) {
+						throw new ValidationException("Il campo giorni deve essere vuoto quando il campo tipo assume valore 'RIDOTTO' o 'SCONTATO'.");
+					}
+					break;
+				}
+			}catch (ServiceException e) {
+				throw new ValidationException(e);
+			}
 		}
 	  
 	}

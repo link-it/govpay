@@ -42,6 +42,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.model.Incasso.StatoIncasso;
 
 public class IncassiDAO extends BaseDAO{
 
@@ -231,42 +232,57 @@ public class IncassiDAO extends BaseDAO{
 			try {
 				Incasso incasso = incassiBD.getIncasso(richiestaIncassoDTO.getCodDominio(), richiestaIncassoDTO.getIdRiconciliazione());
 				
-				// informazioni sui pagamenti
-				PagamentiBD pagamentiBD = new PagamentiBD(incassiBD);
-				pagamentiBD.setAtomica(false);
-				PagamentoFilter filter = pagamentiBD.newFilter();
-				filter.setIdIncasso(incasso.getId());
-				List<Pagamento> pagamenti = pagamentiBD.findAll(filter);
-				
-				if(pagamenti != null) {
-					for(Pagamento pagamento: pagamenti) {
-						try {
-							this.populatePagamento(pagamento, incassiBD, configWrapper);
-							pagamento.setIncasso(incasso);
-						} catch (NotFoundException e) { 
+				StatoIncasso stato = incasso.getStato();
 
+				// Se l'incasso si trova in stato errore allora provo ad acquisirlo nuovamente.
+				if(!stato.equals(StatoIncasso.ERRORE)) {
+					// informazioni sui pagamenti
+					PagamentiBD pagamentiBD = new PagamentiBD(incassiBD);
+					pagamentiBD.setAtomica(false);
+					PagamentoFilter filter = pagamentiBD.newFilter();
+					filter.setIdIncasso(incasso.getId());
+					List<Pagamento> pagamenti = pagamentiBD.findAll(filter);
+					
+					if(pagamenti != null) {
+						for(Pagamento pagamento: pagamenti) {
+							try {
+								this.populatePagamento(pagamento, incassiBD, configWrapper);
+								pagamento.setIncasso(incasso);
+							} catch (NotFoundException e) { 
+	
+							}
 						}
 					}
+					
+					incasso.setPagamenti(pagamenti);
+	
+					richiestaIncassoDTOResponse.setIncasso(incasso);
+					richiestaIncassoDTOResponse.setCreated(false);
+					richiestaIncassoDTOResponse.getIncasso().getApplicazione(configWrapper);
+					richiestaIncassoDTOResponse.getIncasso().getOperatore(configWrapper);
+					richiestaIncassoDTOResponse.getIncasso().getDominio(configWrapper);
+					return richiestaIncassoDTOResponse;
 				}
-				
-				incasso.setPagamenti(pagamenti);
-
-				richiestaIncassoDTOResponse.setIncasso(incasso);
-				richiestaIncassoDTOResponse.setCreated(false);
-				richiestaIncassoDTOResponse.getIncasso().getApplicazione(configWrapper);
-				richiestaIncassoDTOResponse.getIncasso().getOperatore(configWrapper);
-				richiestaIncassoDTOResponse.getIncasso().getDominio(configWrapper);
-				return richiestaIncassoDTOResponse;
 			} catch (NotFoundException e) {
 				// Incasso non registrato.
 				richiestaIncassoDTOResponse.setCreated(true);
-			}  catch (MultipleResultException e) {
+			} catch (MultipleResultException e) {
 				throw new GovPayException(e);
 			}
 			
 			Incasso incasso = richiestaIncassoDTO.toIncassoModel();
-			incassiBD.insertIncasso(incasso);
-			
+			// incasso non registrato
+			if(richiestaIncassoDTOResponse.isCreated()) {
+				incassiBD.insertIncasso(incasso);
+			} else {
+				// incasso reiterato in caso di errore
+				try {
+					incassiBD.updateIncasso(incasso);
+				} catch (NotFoundException e) {
+				}
+			}
+			// Incasso non registrato o reiterato, devo aspettare l'esecuzione del batch.
+			richiestaIncassoDTOResponse.setCreated(true);
 			richiestaIncassoDTOResponse.setIncasso(incasso);
 			richiestaIncassoDTOResponse.getIncasso().getApplicazione(configWrapper);
 			richiestaIncassoDTOResponse.getIncasso().getOperatore(configWrapper);
