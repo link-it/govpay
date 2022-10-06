@@ -91,7 +91,8 @@ public class Rpt {
 			Stazione stazione = null;
 			Giornale giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
 
-			for(Versamento versamentoModel : versamenti) {
+			for (int i = 0; i < versamenti.size() ; i++) {
+				Versamento versamentoModel  = versamenti.get(i);
 
 				String codApplicazione = versamentoModel.getApplicazione(configWrapper).getCodApplicazione();
 				String codVersamentoEnte = versamentoModel.getCodVersamentoEnte(); 
@@ -121,6 +122,7 @@ public class Rpt {
 							log.info("Validita del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] decorsa. Avvio richiesta di aggiornamento all'applicazione.");
 							try {
 								versamentoModel = VersamentoUtils.aggiornaVersamento(versamentoModel, log);
+								versamenti.set(i, versamentoModel); // aggiorno il versamento all'interno della lista, l'oggetto restituito in caso di verifica e' nuovo le modifiche a versamentoModel vengono perse 
 								log.info("Versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] aggiornato tramite servizio di verifica.");
 							} catch (VersamentoAnnullatoException e){
 								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: versamento annullato");
@@ -184,7 +186,6 @@ public class Rpt {
 
 				for(Versamento versamento : versamenti) {
 					// Aggiorno tutti i versamenti che mi sono stati passati
-
 					if(versamento.getId() == null) {
 						versamentiBusiness.caricaVersamento(versamento, false, aggiornaSeEsiste, false, null, rptBD);
 					}
