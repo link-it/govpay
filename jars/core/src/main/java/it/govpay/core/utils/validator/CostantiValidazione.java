@@ -45,4 +45,6 @@ public class CostantiValidazione {
 	
 	
 	public static final String PATTERN_CF = "^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$";
+	
+	public static final String MASSIMALE_IMPORTO_PENDENZA_SANP_3 = "999999999.99";
 }

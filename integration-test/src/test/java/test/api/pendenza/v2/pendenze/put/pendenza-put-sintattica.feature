@@ -65,6 +65,7 @@ Examples:
 | importo | pendenzaPut.importo | '10,00.0' | 'importo' |
 | importo | pendenzaPut.importo | 'aaaa' | 'importo' |
 | importo | pendenzaPut.importo | '12345678901234567,89' | 'importo' |
+| importo | pendenzaPut.importo | '1000000000.00' | 'importo' |
 | tassonomia | pendenzaPut.tassonomia | loremIpsum | 'tassonomia' |
 | direzione | pendenzaPut.direzione | loremIpsum | 'direzione' |
 | divisione | pendenzaPut.divisione | loremIpsum | 'divisione' |
@@ -188,5 +189,4 @@ Examples:
 | importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 10000000.00 |
 | importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 100000000.00 |
 | importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 100000000.00 |
-| importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 1000000000.00 |
-| importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 10000000000.00 |
+| importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 999999999.99 |
