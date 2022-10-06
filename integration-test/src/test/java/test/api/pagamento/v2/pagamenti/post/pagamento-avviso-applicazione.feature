@@ -179,8 +179,8 @@ Scenario: Pagamento avviso precaricato autenticato basic con indicazione del ver
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 * def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
-* set pendenza.importo = 1000000000.00
-* set pendenza.voci[0].importo = 1000000000.00
+* set pendenza.importo = 999999999.99
+* set pendenza.voci[0].importo = 999999999.99
 
 Given url pendenzeBaseurl
 And path 'pendenze', idA2A, idPendenza
