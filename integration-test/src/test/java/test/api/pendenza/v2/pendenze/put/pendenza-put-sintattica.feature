@@ -65,6 +65,7 @@ Examples:
 | importo | pendenzaPut.importo | '10,00.0' | 'importo' |
 | importo | pendenzaPut.importo | 'aaaa' | 'importo' |
 | importo | pendenzaPut.importo | '12345678901234567,89' | 'importo' |
+| importo | pendenzaPut.importo | '1000000000.00' | 'importo' |
 | tassonomia | pendenzaPut.tassonomia | loremIpsum | 'tassonomia' |
 | direzione | pendenzaPut.direzione | loremIpsum | 'direzione' |
 | divisione | pendenzaPut.divisione | loremIpsum | 'divisione' |
@@ -161,4 +162,31 @@ Then status 400
 And match response contains { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida' }
 
 
+Scenario Outline: Validazione importi: <fieldValue> 
 
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('msg/pendenza-put_monovoce_riferimento.json')
+
+* set <fieldRequest> = <fieldValue>
+* set <fieldRequest2> = <fieldValue>
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+Examples:
+| field | fieldRequest | fieldRequest2 | fieldValue |
+| importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 10 |
+| importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 10.00 |
+| importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 100.00 |
+| importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 1000.00 |
+| importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 10000.00 |
+| importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 100000.00 |
+| importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 1000000.00 |
+| importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 10000000.00 |
+| importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 100000000.00 |
+| importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 100000000.00 |
+| importo | pendenzaPut.importo | pendenzaPut.voci[0].importo  | 999999999.99 |
