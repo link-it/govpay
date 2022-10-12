@@ -28,6 +28,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.TimeZone;
 
 import org.apache.commons.io.IOUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -196,6 +197,7 @@ public class StartupUtils {
 		}
 		log.info("Charset.defaultCharset(): " + Charset.defaultCharset() );
 		log.info("Locale.getDefault(): " + Locale.getDefault() );
+		log.info("TimeZone.getDefault(): " + TimeZone.getDefault() );
 		return ctx;
 	}
 	
