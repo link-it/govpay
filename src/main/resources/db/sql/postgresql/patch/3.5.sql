@@ -579,26 +579,24 @@ CREATE VIEW v_vrs_non_rnd AS
      LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id
   WHERE rendicontazioni.id IS NULL;
   
-  
 -- 21/12/2021 Patch per la gestione del riferimento al pagamento di una rendicontazione che arriva prima della ricevuta.
-UPDATE rendicontazioni SET id_pagamento = pagamenti.id 
-	FROM fr, pagamenti 
-	WHERE fr.id=rendicontazioni.id_fr 
-	AND pagamenti.cod_dominio=fr.cod_dominio 
-	AND rendicontazioni.iuv=pagamenti.iuv 
-	AND rendicontazioni.iur=pagamenti.iur 
-	AND rendicontazioni.id_pagamento IS NULL;
+UPDATE rendicontazioni
+INNER JOIN fr ON fr.id=rendicontazioni.id_fr
+INNER JOIN pagamenti ON pagamenti.cod_dominio=fr.cod_dominio
+  AND rendicontazioni.iuv=pagamenti.iuv
+  AND rendicontazioni.iur=pagamenti.iur
+  AND rendicontazioni.id_pagamento IS NULL
+SET id_pagamento = pagamenti.id;
 
 -- 30/12/2021 Patch rendicontazioni con riferimenti assenti
 -- Imposto il riferimento al versamento
-update rendicontazioni set id_singolo_versamento=singoli_versamenti.id
-        FROM fr, versamenti, domini, singoli_versamenti 
-        WHERE fr.id=rendicontazioni.id_fr 
-        AND fr.cod_dominio=domini.cod_dominio 
-        AND domini.id=versamenti.id_dominio 
-        AND rendicontazioni.iuv=versamenti.iuv_versamento
-        AND singoli_versamenti.id_versamento=versamenti.id
-        AND rendicontazioni.id_singolo_versamento is null;
+UPDATE rendicontazioni
+INNER JOIN fr ON fr.id=rendicontazioni.id_fr
+INNER JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento=singoli_versamenti.id
+INNER JOIN versamenti ON singoli_versamenti.id_versamento=versamenti.id
+INNER JOIN domini ON versamenti.id_dominio=somini.id
+SET id_singolo_versamento=singoli_versamenti.id
+WHERE rendicontazioni.id_singolo_versamento is null;
 
 UPDATE rendicontazioni set stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' where id_pagamento is null and esito=0;
 UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS null;
