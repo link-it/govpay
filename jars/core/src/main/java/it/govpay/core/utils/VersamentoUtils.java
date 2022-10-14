@@ -201,10 +201,10 @@ public class VersamentoUtils {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 
 		// Controllo se la data di scadenza e' indicata ed e' decorsa
-		if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza())) {
+		if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {
 			throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), "-", "-", "-", "-", versamento.getDataScadenza());
 		}else {
-			if(versamento.getDataValidita() != null && DateUtils.isDataDecorsa(versamento.getDataValidita())) {
+			if(versamento.getDataValidita() != null && DateUtils.isDataDecorsa(versamento.getDataValidita(), DateUtils.CONTROLLO_VALIDITA)) {
 				IContext ctx = ContextThreadLocal.get();
 				String codVersamentoEnte = versamento.getCodVersamentoEnte();
 				String bundlekey = versamento.getCodBundlekey();

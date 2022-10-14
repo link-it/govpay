@@ -23,6 +23,7 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
+import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v2.Allegati;
@@ -95,7 +96,7 @@ public class PendenzeConverter {
 			break;
 		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoPendenza.ESEGUITA;
 			break;
-		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
 			break;
 		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
 			break;
@@ -224,7 +225,7 @@ public class PendenzeConverter {
 			break;
 		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoPendenza.ESEGUITA;
 			break;
-		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
 			break;
 		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
 			break;
@@ -353,7 +354,7 @@ public class PendenzeConverter {
 			break;
 		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoAvviso.DUPLICATA;
 			break;
-		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoAvviso.SCADUTA;} else { statoPendenza = StatoAvviso.NON_ESEGUITA;}
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {statoPendenza = StatoAvviso.SCADUTA;} else { statoPendenza = StatoAvviso.NON_ESEGUITA;}
 			break;
 		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoAvviso.DUPLICATA;
 			break;
@@ -441,7 +442,7 @@ public class PendenzeConverter {
 			break;
 		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoPendenza.ESEGUITA;
 			break;
-		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
 			break;
 		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
 			break;

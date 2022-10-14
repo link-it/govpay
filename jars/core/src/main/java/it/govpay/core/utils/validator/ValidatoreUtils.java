@@ -90,7 +90,16 @@ public class ValidatoreUtils {
 		if(notnull)
 			bigDecimalValidator.notNull();
 		
-		bigDecimalValidator.minOrEquals(BigDecimal.ZERO).totalDigits(18).checkDecimalDigits();
+		/*
+		  <xsd:fractionDigits value="2"/>
+		  <xsd:totalDigits value="18"/>
+		  <xsd:pattern value="\d+\.\d{2}" />
+		  
+		  <xsd:maxInclusive value="999999999.99" />
+		  
+		 */
+		
+		bigDecimalValidator.minOrEquals(BigDecimal.ZERO).max(new BigDecimal(CostantiValidazione.MASSIMALE_IMPORTO_PENDENZA_SANP_3)).totalDigits(18).checkDecimalDigits();
 	}
 
 	

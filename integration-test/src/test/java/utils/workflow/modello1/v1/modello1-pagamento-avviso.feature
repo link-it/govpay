@@ -37,7 +37,7 @@ And match response ==  { id: '#notnull', location: '#notnull', redirect: '#notnu
 
 Given url ndpsym_psp_url
 And path '/eseguiPagamento'
-And param idSession = reponse.idSession
+And param idSession = response.idSession
 And param idDominio = idDominio
 And param codice = tipoRicevuta
 And param riversamentoCumulativo = riversamentoCumulativo
