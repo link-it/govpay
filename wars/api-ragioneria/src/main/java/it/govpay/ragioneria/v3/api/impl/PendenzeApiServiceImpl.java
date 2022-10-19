@@ -108,7 +108,7 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 		try{
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(idDominio);
 			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
