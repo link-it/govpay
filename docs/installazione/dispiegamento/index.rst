@@ -46,6 +46,7 @@ effettuati i seguenti passi:
 	
 	- **java.awt.headless=true**
 	- **file.encoding=UTF-8**
+	- **user.timezone="Europe/Rome"**
    
 12. Avviare l'application server (ad esempio su Linux con il comando
     **<JBOSS_HOME>/bin/standalone.sh** oppure utilizzando il relativo
