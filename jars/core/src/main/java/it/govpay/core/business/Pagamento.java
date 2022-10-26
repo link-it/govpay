@@ -562,7 +562,7 @@ public class Pagamento   {
 		}
 	}
 	
-	public String chiusuraRPTScadute(IContext ctx) throws GovPayException {
+	public String chiusuraRPTScadute(IContext ctx, Date dataUltimoCheck) throws GovPayException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		List<String> response = new ArrayList<>();
 		RptBD rptBD = null;
@@ -585,7 +585,7 @@ public class Pagamento   {
 			for (String codDominio : codDomini) {
 				int offset = 0;
 				int limit = 100;
-				List<Rpt> rtList = rptBD.getRptScadute(codDominio, GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins(), offset, limit);
+				List<Rpt> rtList = rptBD.getRptScadute(codDominio, GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins(), offset, limit, dataUltimoCheck);
 				log.trace("Identificate su GovPay per il Dominio ["+codDominio+"]: " + rtList.size() + " transazioni scadute da piu' di ["+GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()+"] minuti.");
 				do {
 					if(rtList.size() > 0) {
@@ -617,7 +617,7 @@ public class Pagamento   {
 					}
 
 					offset += limit;
-					rtList = rptBD.getRptScadute(codDominio, GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins(), offset, limit);
+					rtList = rptBD.getRptScadute(codDominio, GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins(), offset, limit, dataUltimoCheck);
 					log.trace("Identificate su GovPay per il Dominio ["+codDominio+"]: " + rtList.size() + " transazioni scadute da piu' di ["+GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()+"] minuti.");
 				}while(rtList.size() > 0);
 			}

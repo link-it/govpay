@@ -405,7 +405,7 @@ public class RptBD extends BasicBD {
 		}
 	}
 	
-	public List<Rpt> getRptScadute(String codDominio, Integer minutiSogliaScadenza, Integer offset, Integer limit) throws ServiceException {
+	public List<Rpt> getRptScadute(String codDominio, Integer minutiSogliaScadenza, Integer offset, Integer limit, Date limiteTemporaleInf) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -423,11 +423,21 @@ public class RptBD extends BasicBD {
 			Date dataSoglia = c.getTime();
 			exp.lessThan(RPT.model().DATA_MSG_RICHIESTA, dataSoglia);
 			
+			if(limiteTemporaleInf != null) {
+				Calendar cInf = Calendar.getInstance();
+				cInf.setTime(limiteTemporaleInf);
+				cInf.add(Calendar.MINUTE, -( 2 * minutiSogliaScadenza));
+				Date dataSogliaInf = cInf.getTime();
+				
+				exp.greaterEquals(RPT.model().DATA_MSG_RICHIESTA, dataSogliaInf);
+			}
+			
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_NODO.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_SCADUTA.toString());
 			
 			exp.offset(offset).limit(limit);
 			exp.addOrder(RPT.model().DATA_MSG_RICEVUTA, SortOrder.ASC);
@@ -492,6 +502,7 @@ public class RptBD extends BasicBD {
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_SCADUTA.toString());
 			
 			NonNegativeNumber count = this.getRptService().count(exp);
 			

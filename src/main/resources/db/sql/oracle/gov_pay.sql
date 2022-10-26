@@ -1103,8 +1103,8 @@ CREATE INDEX idx_rpt_cod_msg_richiesta ON rpt (cod_msg_richiesta);
 CREATE INDEX idx_rpt_stato ON rpt (stato);
 CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
 CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
+CREATE INDEX idx_rpt_data_msg_richiesta ON rpt (data_msg_richiesta);
 CREATE UNIQUE INDEX idx_rpt_id_transazione ON rpt (iuv, ccp, cod_dominio);
-
 
 ALTER TABLE rpt MODIFY bloccante DEFAULT 1;
 
@@ -1513,6 +1513,7 @@ CREATE TABLE rendicontazioni
 
 -- index
 CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
+CREATE INDEX idx_rnd_iuv ON rendicontazioni (iuv);
 CREATE TRIGGER trg_rendicontazioni
 BEFORE
 insert on rendicontazioni

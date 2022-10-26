@@ -790,6 +790,7 @@ CREATE INDEX idx_rpt_cod_msg_richiesta ON rpt (cod_msg_richiesta);
 CREATE INDEX idx_rpt_stato ON rpt (stato);
 CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
 CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
+CREATE INDEX idx_rpt_data_msg_richiesta ON rpt (data_msg_richiesta);
 ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE INDEX idx_rpt_id_transazione (iuv, ccp, cod_dominio);
 
 
@@ -1074,6 +1075,7 @@ CREATE TABLE rendicontazioni
 
 -- index
 CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
+CREATE INDEX idx_rnd_iuv ON rendicontazioni (iuv);
 
 
 

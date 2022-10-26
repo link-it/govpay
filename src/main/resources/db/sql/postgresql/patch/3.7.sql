@@ -156,3 +156,11 @@ CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
 CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
 
 
+-- 26/10/2022 indice sulla colonna iuv della tabella rendicontazioni
+CREATE INDEX idx_rnd_iuv ON rendicontazioni (iuv);
+
+
+-- 26/10/2022 indice sulla colonna data_msg_richiesta della tabella rpt
+CREATE INDEX idx_rpt_data_msg_richiesta ON rpt (data_msg_richiesta);
+
+
