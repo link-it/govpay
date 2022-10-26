@@ -89,7 +89,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 			IExpression exp = this.newExpression();
 			
 			if(this.iuv != null) {
-				exp.ilike(Rendicontazione.model().IUV, this.iuv,LikeMode.ANYWHERE);
+				exp.equals(Rendicontazione.model().IUV, this.iuv);
 			}
 
 			if(this.iur != null) {
@@ -170,11 +170,11 @@ public class RendicontazioneFilter extends AbstractFilter{
 			String tableNameVersamenti = converter.toAliasTable(model.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
 			
 			if(this.iuv != null) {
-				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.IUV, true), this.iuv, true, true);
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.IUV, true) + " = ? ");
 			}
 
 			if(this.iur != null) {
-				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.IUR, true), this.iur, true, true);
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.IUR, true) + " = ? ");
 			}
 			
 			if(this.indiceDati != null) {
@@ -261,11 +261,11 @@ public class RendicontazioneFilter extends AbstractFilter{
 		List<Object> lst = new ArrayList<Object>();
 		
 		if(this.iuv != null) {
-			// donothing
+			lst.add(this.iuv);
 		}
 
 		if(this.iur != null) {
-			// donothing
+			lst.add(this.iur);
 		}
 		
 		if(this.indiceDati != null) {
