@@ -33,6 +33,7 @@ public class OperazioniDAO extends BaseDAO{
 	public final static String ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "elaborazioneTracciatiNotificaPagamenti";
 	public final static String SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI = "spedizioneTracciatiNotificaPagamenti";
 	public final static String ELABORAZIONE_RICONCILIAZIONI = "elaborazioneRiconciliazioni";
+	public final static String CHIUSURA_RPT_SCADUTE = "chiusuraRptScadute";
 
 	public LeggiOperazioneDTOResponse eseguiOperazione(LeggiOperazioneDTO leggiOperazioneDTO) throws ServiceException, OperazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
 		LeggiOperazioneDTOResponse response = new LeggiOperazioneDTOResponse();
@@ -44,6 +45,8 @@ public class OperazioniDAO extends BaseDAO{
 				esitoOperazione = it.govpay.core.business.Operazioni.acquisizioneRendicontazioni(ctx);
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(RECUPERO_RPT_PENDENTI)){
 				esitoOperazione = it.govpay.core.business.Operazioni.recuperoRptPendenti(ctx);
+			} else if(leggiOperazioneDTO.getIdOperazione().equals(CHIUSURA_RPT_SCADUTE)){
+				esitoOperazione = it.govpay.core.business.Operazioni.chiusuraRptScadute(ctx);
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(RESET_CACHE_ANAGRAFICA)){
 				esitoOperazione = it.govpay.core.business.Operazioni.resetCacheAnagrafica(ctx);
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(SPEDIZIONE_NOTIFICHE)){
@@ -94,6 +97,7 @@ public class OperazioniDAO extends BaseDAO{
 			
 			results.add(new LeggiOperazioneDTOResponse(ACQUISIZIONE_RENDICONTAZIONI));
 			results.add(new LeggiOperazioneDTOResponse(RECUPERO_RPT_PENDENTI));
+			results.add(new LeggiOperazioneDTOResponse(CHIUSURA_RPT_SCADUTE));
 			results.add(new LeggiOperazioneDTOResponse(GESTIONE_PROMEMORIA));
 			results.add(new LeggiOperazioneDTOResponse(SPEDIZIONE_NOTIFICHE));
 			results.add(new LeggiOperazioneDTOResponse(SPEDIZIONE_NOTIFICHE_APP_IO));

@@ -107,7 +107,7 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 		try{
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(idDominio);
 			// autorizzazione sulla API
-			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PENDENZE), Arrays.asList(Diritti.LETTURA));
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
 			
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
@@ -125,9 +125,9 @@ public class PendenzeApiServiceImpl extends BaseApiServiceImpl implements Penden
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(leggiPendenzaDTOResponse.getVersamento().getCodVersamentoEnte());
 			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(leggiPendenzaDTOResponse.getApplicazione().getCodApplicazione());
 			
-			// filtro sull'applicazione			
-			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(leggiPendenzaDTOResponse.getApplicazione().getCodApplicazione())) {
-				throw AuthorizationManager.toNotAuthorizedException(user);
+			// controllo che il dominio sia autorizzato
+			if(!AuthorizationManager.isDominioAuthorized(user, leggiPendenzaDTOResponse.getDominio().getCodDominio())) {
+				throw AuthorizationManager.toNotAuthorizedException(user,leggiPendenzaDTOResponse.getDominio().getCodDominio(), null);
 			}
 			
 			PendenzaPagata pendenza = PendenzeConverter.toPendenzaPagataRsModel(leggiPendenzaDTOResponse.getVersamento(), leggiPendenzaDTOResponse.getRpts());
