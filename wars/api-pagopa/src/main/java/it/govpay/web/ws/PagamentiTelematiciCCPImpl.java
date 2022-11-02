@@ -200,17 +200,23 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
 		
+		log.debug("Impostati dati pagoPA nel contesto");
+
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-//			bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId());
 
+			log.debug("Autenticazione richiesta.");
+			
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
 			if(GovpayConfig.getInstance().isPddAuthEnable() && authentication == null) {
 				ctx.getApplicationLogger().log("ccp.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
-
+			
+			log.debug("Richiesta autenticata.");
+			
+			log.debug("Verifica intermediario.");
 			Intermediario intermediario = null;
 			try {
 				intermediario = AnagraficaManager.getIntermediario(configWrapper, codIntermediario);
@@ -229,6 +235,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
 			}
+			log.debug("Intermediario verificato: " + intermediario.getCodIntermediario());
 
 			try {
 				AnagraficaManager.getStazione(configWrapper, codStazione);
@@ -236,13 +243,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
+			log.debug("Verifica dominio.");
 			Dominio dominio;
 			try {
 				dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, codDominio);
 			}
-			
+			log.debug("Dominio verificato: " + dominio.getCodDominio());
+
+			log.debug("Verifica versamento.");
 			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			Versamento versamento = null;
 			it.govpay.bd.model.Applicazione applicazioneGestisceIuv = null;
@@ -258,15 +268,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				}
 				appContext.getEventoCtx().setIdA2A(applicazioneGestisceIuv.getCodApplicazione());
 			}
-
 			try {
 				try {
 					// Se non ho lo iuv, vado direttamente a chiedere all'applicazione di default
 					if(versamento == null) throw new NotFoundException();
 					
+					log.debug("Versamento acquisito");
+
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
-
+					log.debug("Verifica stato versamento dopo procedura di aggiornamento: " + versamento.getStatoVersamento());
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
 
@@ -284,6 +295,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						}
 					}
 				} catch (NotFoundException e) {
+					log.debug("Versamento non presente in base dati");
 					//Versamento non trovato, devo interrogare l'applicazione.
 					// prendo tutte le applicazioni che gestiscono il dominio, tra queste cerco la prima che match la regexpr dello iuv la utilizzo per far acquisire il versamento
 					if(applicazioneGestisceIuv == null) {
@@ -292,12 +304,15 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					}
 					
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+
+					log.debug("Versamento non presente in base dati. Procedo all'acquisizione [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
 					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, applicazioneGestisceIuv.getCodApplicazione()), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, log);
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
-					
+					log.debug("Versamento acquisito da Ente. Aggiorno per verifica scadenza [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
+					log.debug("Versamento aggiornato da Ente. Verifica stato " + versamento.getStatoVersamento());
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -315,7 +330,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 							}
 						}
 					}
-					
+					log.debug("Versamento pagabile.");
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresenteOk", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 				}
 			} catch (VersamentoScadutoException e1) {
@@ -350,6 +365,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_PAGAMENTO_MULTIBENEFICIARIO_NON_CONSENTITO, messaggio, codDominio);
 			}
 			
+			log.debug("Verifica pagamenti in corso.");
 			RptBD rptBD = new RptBD(configWrapper);
 			if(GovpayConfig.getInstance().isTimeoutPendentiModello3()) {
 				// Controllo che non ci sia un pagamento in corso
@@ -372,19 +388,21 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					}
 				}
 			}
-			
+			log.debug("Verifica pagamenti in corso completata.");
 			// Verifico che abbia un solo singolo versamento
 			if(versamento.getSingoliVersamenti().size() != 1) {
 				throw new NdpException(FaultPa.PAA_SEMANTICA, "Il versamento contiente piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.", codDominio);
 			}
 
+			log.debug("Costruzione della RPT.");
 			// Creazione dell'RPT
 			Rpt rpt = new RptBuilder().buildRptAttivata(bodyrichiesta.getIdentificativoIntermediarioPSP(), bodyrichiesta.getIdentificativoPSP(), bodyrichiesta.getIdentificativoCanalePSP(), versamento, iuv, ccp, bodyrichiesta.getDatiPagamentoPSP());
-
+			log.debug("RPT predisposta.");
 			ctx.getApplicationLogger().log("ccp.attivazione", rpt.getCodMsgRichiesta());
 
 			rptBD = null;
 			try {
+				log.debug("Transazione di avvio pagamento attivata");
 				rptBD = new RptBD(configWrapper);
 				
 				rptBD.setupConnection(configWrapper.getTransactionID());
@@ -397,13 +415,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	
 				// Controllo se gia' non esiste la RPT (lo devo fare solo adesso per essere in transazione con l'inserimento)
 				try {
+					log.debug("Verifica RPT precedente per eventuale transazione concorrente.");
 					Rpt oldrpt = rptBD.getRpt(codDominio, iuv, ccp, true);
 					if(oldrpt.getPagamentoPortale() != null)
 						appContext.getEventoCtx().setIdPagamento(oldrpt.getPagamentoPortale().getIdSessione());
 					throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, "RTP attivata in data " + oldrpt.getDataMsgRichiesta() + " [idMsgRichiesta: " + oldrpt.getCodMsgRichiesta() + "]" , codDominio);
 				} catch (NotFoundException e2) {
 	
-					
+					log.debug("Creazione PagamentoPortale.");
 					PagamentoPortale pagamentoPortale = new PagamentoPortale();
 					Versamento versamento2 = rpt.getVersamento();
 					it.govpay.bd.model.Applicazione applicazione = AnagraficaManager.getApplicazione(configWrapper, versamento2.getIdApplicazione());
@@ -451,7 +470,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					// imposto l'id pagamento all'rpt
 					rpt.setIdPagamentoPortale(pagamentoPortale.getId());
 					rpt.setPagamentoPortale(pagamentoPortale);
-					
+					log.debug("Creazione RPT.");
 					try {
 						// 	L'RPT non esiste, procedo
 						rptBD.insertRpt(rpt);
@@ -469,12 +488,13 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						ppbd.commit();
 						throw e;
 					}
-					
+					log.debug("Schedulazione nodoInviaRPT.");
 					RptUtils.inviaRPTAsync(rpt, ctx);
+					log.debug("Schedulazione nodoInviaRPT completata.");
 				} 
 	
 				rptBD.commit();
-				
+				log.debug("Transazione di avvio pagamento conclusa");
 				rptBD.disableSelectForUpdate();
 			} catch (NdpException | ServiceException e) {
 				if(rptBD != null && !rptBD.isAutoCommit()) {
@@ -487,6 +507,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				}
 			}
 
+			log.debug("Predisposizione esito");
 			EsitoAttivaRPT esito = new EsitoAttivaRPT();
 			esito.setEsito("OK");
 			PaaTipoDatiPagamentoPA datiPagamento =  new PaaTipoDatiPagamentoPA();
@@ -528,6 +549,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			response.setPaaAttivaRPTRisposta(esito);
 			ctx.getApplicationLogger().log("ccp.ricezioneAttivaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
 			appContext.getEventoCtx().setEsito(Esito.OK);
+			log.debug("Attivazione RPT completata con successo");
 		} catch (NdpException e) {
 			response = this.buildRisposta(e, response);
 			String faultDescription = response.getPaaAttivaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaAttivaRPTRisposta().getFault().getDescription(); 
@@ -542,6 +564,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				appContext.getEventoCtx().setEsito(Esito.FAIL);
 			else 
 				appContext.getEventoCtx().setEsito(Esito.KO);
+			
+			log.debug("Attivazione RPT completata con esito " + appContext.getEventoCtx().getEsito());
 		} catch (Exception e) {
 			response = this.buildRisposta(e, codDominio, response);
 			String faultDescription = response.getPaaAttivaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaAttivaRPTRisposta().getFault().getDescription(); 
@@ -553,6 +577,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			appContext.getEventoCtx().setSottotipoEsito(response.getPaaAttivaRPTRisposta().getFault().getFaultCode());
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setEsito(Esito.FAIL);
+			log.debug("Attivazione RPT completata con esito FAIL");
 		} finally {
 			GpContext.setResult(appContext.getTransaction(), response.getPaaAttivaRPTRisposta().getFault() == null ? null : response.getPaaAttivaRPTRisposta().getFault().getFaultCode());
 		}
@@ -616,6 +641,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		try {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+			log.debug("Autenticazione richiesta.");
 
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(authentication));
@@ -623,7 +649,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				ctx.getApplicationLogger().log("ccp.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
-
+			
+			log.debug("Richiesta autenticata.");
+			
+			log.debug("Verifica intermediario.");
 			Intermediario intermediario = null;
 			try {
 				intermediario = AnagraficaManager.getIntermediario(configWrapper, codIntermediario);
@@ -642,6 +671,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
 			}
+			log.debug("Intermediario verificato: " + intermediario.getCodIntermediario());
 
 			try {
 				AnagraficaManager.getStazione(configWrapper, codStazione);
@@ -649,13 +679,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
+			log.debug("Verifica dominio.");
 			Dominio dominio;
 			try {
 				dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, codDominio);
 			}
+			log.debug("Dominio verificato: " + dominio.getCodDominio());
 
+			log.debug("Verifica versamento.");
 			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			Versamento versamento = null;
 			it.govpay.bd.model.Applicazione applicazioneGestisceIuv = null;
@@ -680,9 +713,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					// Se non ho lo iuv, vado direttamente a chiedere all'applicazione di default
 					if(versamento == null) throw new NotFoundException();
 					
+					log.debug("Versamento acquisito");
+
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
-
+					log.debug("Verifica stato versamento dopo procedura di aggiornamento: " + versamento.getStatoVersamento());
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
 
@@ -700,8 +735,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 								
 						}
 					}
-
 				} catch (NotFoundException e) {
+					log.debug("Versamento non presente in base dati");
+					//Versamento non trovato, devo interrogare l'applicazione.
 					// prendo tutte le applicazioni che gestiscono il dominio, tra queste cerco la prima che match la regexpr dello iuv la utilizzo per far acquisire il versamento
 					if(applicazioneGestisceIuv == null) {
 						applicazioneGestisceIuv = new Applicazione().getApplicazioneDominio(configWrapper, dominio,iuv); 
@@ -710,13 +746,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					
 					// Versamento non trovato, devo interrogare l'applicazione.
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+
+					log.debug("Versamento non presente in base dati. Procedo all'acquisizione [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
 					versamento = VersamentoUtils.acquisisciVersamento(applicazioneGestisceIuv, null, null, null, codDominio, iuv,  TipologiaTipoVersamento.DOVUTO, log);
 					
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
-					
+					log.debug("Versamento acquisito da Ente. Aggiorno per verifica scadenza [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
+					log.debug("Versamento aggiornato da Ente. Verifica stato " + versamento.getStatoVersamento());
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -735,7 +774,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 								
 						}
 					}
-					
+					log.debug("Versamento pagabile.");
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresenteOk",applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 				}
 			} catch (VersamentoScadutoException e1) {
@@ -764,6 +803,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, "Riscontrato errore durante la verifica del versamento: " + e1, codDominio, e1);
 			}
 			
+			log.debug("Verifica pagamenti in corso.");
 			RptBD rptBD = new RptBD(configWrapper);
 			if(GovpayConfig.getInstance().isTimeoutPendentiModello3()) {
 				// Controllo che non ci sia un pagamento in corso
@@ -787,7 +827,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					}
 				}
 			}
-
+			log.debug("Verifica pagamenti in corso completata.");
 			// Verifico che abbia un solo singolo versamento
 			if(versamento.getSingoliVersamenti().size() != 1) {
 				throw new NdpException(FaultPa.PAA_SEMANTICA, "Il versamento contiene piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.", codDominio);
@@ -835,6 +875,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			response.setPaaVerificaRPTRisposta(esito);
 			ctx.getApplicationLogger().log("ccp.ricezioneVerificaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
 			appContext.getEventoCtx().setEsito(Esito.OK);
+			log.debug("Verifica RPT completata con successo");
 		} catch (NdpException e) {
 //			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, response);
@@ -850,6 +891,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				appContext.getEventoCtx().setEsito(Esito.FAIL);
 			else 
 				appContext.getEventoCtx().setEsito(Esito.KO);
+			log.debug("Verifica RPT completata con esito " + appContext.getEventoCtx().getEsito());			
 		} catch (Exception e) {
 //			if(bd != null) bd.rollback();
 			response = this.buildRisposta(e, codDominio, response);
@@ -1103,7 +1145,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				ctx.getApplicationLogger().log("ccp.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
-
+			
+			log.debug("Richiesta autenticata.");
+			
+			log.debug("Verifica intermediario.");
 			Intermediario intermediario = null;
 			try {
 				intermediario = AnagraficaManager.getIntermediario(configWrapper, codIntermediario);
@@ -1122,6 +1167,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
 			}
+			log.debug("Intermediario verificato: " + intermediario.getCodIntermediario());
 
 			try {
 				AnagraficaManager.getStazione(configWrapper, codStazione);
@@ -1129,13 +1175,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
+			log.debug("Verifica dominio.");
 			Dominio dominio;
 			try {
 				dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, codDominio);
 			}
+			log.debug("Dominio verificato: " + dominio.getCodDominio());
 
+			log.debug("Verifica versamento.");
 			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			Versamento versamento = null;
 			it.govpay.bd.model.Applicazione applicazioneGestisceIuv = null;
@@ -1160,9 +1209,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					// Se non ho lo iuv, vado direttamente a chiedere all'applicazione di default
 					if(versamento == null) throw new NotFoundException();
 					
+					log.debug("Versamento acquisito]");
+
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
-
+					log.debug("Verifica stato versamento dopo procedura di aggiornamento: " + versamento.getStatoVersamento());
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
 
@@ -1182,6 +1233,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					}
 
 				} catch (NotFoundException e) {
+					log.debug("Versamento non presente in base dati");
+					//Versamento non trovato, devo interrogare l'applicazione.
 					// prendo tutte le applicazioni che gestiscono il dominio, tra queste cerco la prima che match la regexpr dello iuv la utilizzo per far acquisire il versamento
 					if(applicazioneGestisceIuv == null) {
 						applicazioneGestisceIuv = new Applicazione().getApplicazioneDominio(configWrapper, dominio,iuv); 
@@ -1190,13 +1243,15 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					
 					// Versamento non trovato, devo interrogare l'applicazione.
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+					log.debug("Versamento non presente in base dati. Procedo all'acquisizione [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
 					versamento = VersamentoUtils.acquisisciVersamento(applicazioneGestisceIuv, null, null, null, codDominio, iuv,  TipologiaTipoVersamento.DOVUTO, log);
 					
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
-					
+					log.debug("Versamento acquisito da Ente. Aggiorno per verifica scadenza [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
+					log.debug("Versamento aggiornato da Ente. Verifica stato " + versamento.getStatoVersamento());
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -1215,8 +1270,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 								
 						}
 					}
-					
-					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresenteOk",applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+					log.debug("Versamento pagabile.");
+					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresenteOk", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 				}
 			} catch (VersamentoScadutoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
@@ -1243,36 +1298,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (GovPayException e1) {
 				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, "Riscontrato errore durante la verifica del versamento: " + e1, codDominio, e1);
 			}
-			
-		
-//			RptBD rptBD = new RptBD(configWrapper);
-//			if(GovpayConfig.getInstance().isTimeoutPendentiModello3()) {
-//				// Controllo che non ci sia un pagamento in corso
-//				// Prendo tutte le RPT pendenti
-//				RptFilter filter = rptBD.newFilter();
-//				filter.setStato(Rpt.stati_pendenti);
-//				filter.setIdVersamento(versamento.getId());
-//				List<Rpt> rpt_pendenti = rptBD.findAll(filter);
-//				
-//				// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
-//				// Altrimenti lancio il fault
-//				Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() * 60000);
-//				
-//				for(Rpt rpt_pendente : rpt_pendenti) {
-//					if(rpt_pendente.getPagamentoPortale() != null)
-//						appContext.getEventoCtx().setIdPagamento(rpt_pendente.getPagamentoPortale().getIdSessione());
-//					Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
-//					// se l'RPT e' bloccata allora controllo che il blocco sia indefinito oppure definito, altrimenti passo
-//					if(rpt_pendente.isBloccante() && (GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() == 0 || dataSoglia.before(dataMsgRichiesta))) {
-//						throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, "Pagamento in corso [CCP:" + rpt_pendente.getCcp() + "].", codDominio);
-//					}
-//				}
-//			}
-
-			// Verifico che abbia un solo singolo versamento N.B. controllo eliminato perche' e' consentito pagare pendenze multibeneficiario
-//			if(versamento.getSingoliVersamenti().size() != 1) {
-//				throw new NdpException(FaultPa.PAA_SEMANTICA, "Il versamento contiene piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.", codDominio);
-//			}
 			
 			response.setOutcome(StOutcome.OK);
 			response.setFiscalCodePA(versamento.getDominio(configWrapper).getCodDominio());
@@ -1309,6 +1334,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			response.setPaymentList(paymentList);
 			ctx.getApplicationLogger().log("ccp.ricezioneVerificaOk", versamento.getImportoTotale().toString(), "", versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
 			appContext.getEventoCtx().setEsito(Esito.OK);
+			log.debug("Verifica RPT completata con successo");
 		} catch (NdpException e) {
 			response = this.buildRisposta(e, response);
 			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
@@ -1323,6 +1349,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				appContext.getEventoCtx().setEsito(Esito.FAIL);
 			else 
 				appContext.getEventoCtx().setEsito(Esito.KO);
+			
+			log.debug("Verifica RPT completata con esito " + appContext.getEventoCtx().getEsito());
 		} catch (Exception e) {
 			response = this.buildRisposta(e, codDominio, response);
 			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
@@ -1407,7 +1435,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				ctx.getApplicationLogger().log("ccp.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
-
+			
+			log.debug("Richiesta autenticata.");
+			
+			log.debug("Verifica intermediario.");
 			Intermediario intermediario = null;
 			try {
 				intermediario = AnagraficaManager.getIntermediario(configWrapper, codIntermediario);
@@ -1426,6 +1457,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
 			}
+			log.debug("Intermediario verificato: " + intermediario.getCodIntermediario());
 
 			try {
 				AnagraficaManager.getStazione(configWrapper, codStazione);
@@ -1433,13 +1465,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
+			log.debug("Verifica dominio.");
 			Dominio dominio;
 			try {
 				dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, codDominio);
 			}
-			
+			log.debug("Dominio verificato: " + dominio.getCodDominio());
+
+			log.debug("Verifica versamento.");
 			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			Versamento versamento = null;
 			it.govpay.bd.model.Applicazione applicazioneGestisceIuv = null;
@@ -1465,9 +1500,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					// Se non ho lo iuv, vado direttamente a chiedere all'applicazione di default
 					if(versamento == null) throw new NotFoundException();
 					
+					log.debug("Versamento acquisito");
+
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
-
+					log.debug("Verifica stato versamento dopo procedura di aggiornamento: " + versamento.getStatoVersamento());
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
 
@@ -1485,6 +1522,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						}
 					}
 				} catch (NotFoundException e) {
+					log.debug("Versamento non presente in base dati");
 					//Versamento non trovato, devo interrogare l'applicazione.
 					// prendo tutte le applicazioni che gestiscono il dominio, tra queste cerco la prima che match la regexpr dello iuv la utilizzo per far acquisire il versamento
 					if(applicazioneGestisceIuv == null) {
@@ -1493,12 +1531,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					}
 					
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresente", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
+					log.debug("Versamento non presente in base dati. Procedo all'acquisizione [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
 					versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, applicazioneGestisceIuv.getCodApplicazione()), null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO, log);
 					appContext.getEventoCtx().setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
 					appContext.getEventoCtx().setIdPendenza(versamento.getCodVersamentoEnte());
-					
+					log.debug("Versamento acquisito da Ente. Aggiorno per verifica scadenza [CodApplicazione:" + applicazioneGestisceIuv.getCodApplicazione()+"]");
 					// Versamento trovato, gestisco un'eventuale scadenza
 					versamento = VersamentoUtils.aggiornaVersamento(versamento, log);
+					log.debug("Versamento aggiornato da Ente. Verifica stato " + versamento.getStatoVersamento());
 					
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
@@ -1516,7 +1556,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 							}
 						}
 					}
-					
+					log.debug("Versamento pagabile.");
 					ctx.getApplicationLogger().log("ccp.versamentoIuvNonPresenteOk", applicazioneGestisceIuv.getCodApplicazione(), dominio.getCodDominio(), iuv);
 				}
 			} catch (VersamentoScadutoException e1) {
@@ -1547,30 +1587,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			
 			
 			RptBD rptBD = new RptBD(configWrapper);
-			// controllo che non ci sia un pagamento modello 1 attivo per il versamento corrente.
-//			if(GovpayConfig.getInstance().isTimeoutPendentiModello1()) {
-//				// Controllo che non ci sia un pagamento in corso
-//				// Prendo tutte le RPT pendenti
-//				RptFilter filter = rptBD.newFilter();
-//				filter.setStato(Rpt.stati_pendenti);
-//				filter.setIdVersamento(versamento.getId());
-//				List<Rpt> rpt_pendenti = rptBD.findAll(filter);
-//				
-//				// Per tutte quelle in corso controllo se hanno passato la soglia di timeout
-//				// Altrimenti lancio il fault
-//				Date dataSoglia = new Date(new Date().getTime() - GovpayConfig.getInstance().getTimeoutPendentiModello3Mins() * 60000);
-//				
-//				for(Rpt rpt_pendente : rpt_pendenti) {
-//					Date dataMsgRichiesta = rpt_pendente.getDataMsgRichiesta();
-//					
-//					// se l'RPT e' bloccata allora controllo che il blocco sia indefinito oppure definito, altrimenti passo
-//					if(rpt_pendente.isBloccante() && (GovpayConfig.getInstance().getTimeoutPendentiModello1Mins() == 0 || dataSoglia.before(dataMsgRichiesta))) {
-//						throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, codDominio, "Pagamento in corso [CCP:" + rpt_pendente.getCcp() + "].");
-//					}
-//				}
-//			}
-			
+
 			// Creazione dell'RPT
+			log.debug("Costruzione della RPT.");
 			Rpt rpt = new CtPaymentPABuilder().buildRptAttivata(requestBody,versamento, iuv, ccp, numeroAvviso);
 
 			ctx.getApplicationLogger().log("ccp.attivazione", rpt.getCodMsgRichiesta());
@@ -1581,6 +1600,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			
 			rptBD = null;
 			try {
+				log.debug("Transazione di avvio pagamento attivata");
 				rptBD = new RptBD(configWrapper);
 				
 				rptBD.setupConnection(configWrapper.getTransactionID());
@@ -1668,7 +1688,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				ctx.getApplicationLogger().log("pagamento.invioRptAttivataOk");
 	
 				rptBD.commit();
-				
+				log.debug("Transazione di avvio pagamento conclusa");
 				rptBD.disableSelectForUpdate();
 			} catch (ServiceException e) {
 				if(rptBD != null && !rptBD.isAutoCommit()) {
