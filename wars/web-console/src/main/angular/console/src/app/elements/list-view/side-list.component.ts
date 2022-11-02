@@ -57,8 +57,10 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     let _dashboard_link_query = UtilService.DASHBOARD_LINKS_PARAMS.params.map((item) => {
       return item.controller + '=' + item.value;
     }).join('&');
-    this.getList(_service, _dashboard_link_query);
-    this.loadMetadati(_service, _dashboard_link_query);
+    // Il load dei dati è demandato alla form di ricerca (form-view.component)
+    // per poter gestire i filtri di default (attualemnte solo "Data da") configurabili
+    // this.getList(_service, _dashboard_link_query);
+    // this.loadMetadati(_service, _dashboard_link_query);
   }
 
   ngOnDestroy() {

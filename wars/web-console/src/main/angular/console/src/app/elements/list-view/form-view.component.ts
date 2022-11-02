@@ -55,6 +55,11 @@ export class FormViewComponent implements OnInit, AfterViewInit {
       field.dependency?_componentRef.instance.json['source'] = controls[field.dependency+'_ctrl']:null;
     }, this);
     this.changeDetector.detectChanges();
+
+    // Load iniziale dei dati per gestire i filtri di default (attualemnte solo "Data da") configurabili
+    setTimeout(() => {
+      this.onSubmit(this.basicForm);
+    }, 200);
   }
 
   protected onSubmit(_form) {
