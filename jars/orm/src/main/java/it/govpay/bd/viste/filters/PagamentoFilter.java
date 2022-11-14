@@ -137,13 +137,29 @@ public class PagamentoFilter extends AbstractFilter {
 				newExpression.equals(new CustomField("id_incasso", Long.class, "id_incasso", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdIncasso());
 				addAnd = true;
 			}
-
+			
 			if(this.dataInizio != null && this.dataFine != null) {
 				if(addAnd)
 					newExpression.and();
 
 				newExpression.between(VistaPagamento.model().DATA_ACQUISIZIONE, this.dataInizio,this.dataFine);
 				addAnd = true;
+			} else {
+				if(this.dataInizio != null) {
+					if(addAnd)
+						newExpression.and();
+	
+					newExpression.greaterEquals(VistaPagamento.model().DATA_ACQUISIZIONE, this.dataInizio);
+					addAnd = true;
+				} 
+				
+				if(this.dataFine != null) {
+					if(addAnd)
+						newExpression.and();
+	
+					newExpression.lessEquals(VistaPagamento.model().DATA_ACQUISIZIONE, this.dataFine);
+					addAnd = true;
+				}
 			}
 
 			if(this.idDomini != null  && !this.idDomini.isEmpty()){
