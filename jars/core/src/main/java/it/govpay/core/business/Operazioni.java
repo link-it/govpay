@@ -817,11 +817,14 @@ public class Operazioni{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		try {
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI)) {
+				
+				log.debug("Avvio elaborazione tracciati notifica pagamenti.");
 				// ricerca domini con connettore mypivot abilitato
 				List<String> domini = AnagraficaManager.getListaCodDomini(configWrapper);
 				
 				for (String codDominio : domini) {
 					it.govpay.bd.model.Dominio dominio = null;
+					log.debug("Elaborazione tracciati notifica pagamenti per il Dominio ["+codDominio+"].");
 					try {
 						dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 					}catch(NotFoundException e) {

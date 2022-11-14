@@ -498,7 +498,7 @@ public class TracciatiNotificaPagamenti {
 			RendicontazioniBD pagamentiBD = new RendicontazioniBD(rptBD);
 			pagamentiBD.setAtomica(false);
 			entriesDaInserireNelTracciato = pagamentiBD.countRiscossioniDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza);
-			log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+ codDominio +"], trovate ["+ entriesDaInserireNelTracciato +"] Riscossioni da inserire in un nuovo tracciato");
+			log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+ codDominio +"], trovate ["+ entriesDaInserireNelTracciato +"] Riscossioni da inserire in un nuovo tracciato");
 			if(entriesDaInserireNelTracciato == 0) { // se non ci sono nuove rendicontazioni da inserire controllo se ci sono pagamenti non rendicontati relativi a 5 giorni fa
 				// allinea gli intervalli di date
 				Calendar cDa = Calendar.getInstance();
@@ -516,7 +516,7 @@ public class TracciatiNotificaPagamenti {
 				VersamentiNonRendicontatiBD versamentiNonRendicontatiBD = new VersamentiNonRendicontatiBD(rptBD);
 				versamentiNonRendicontatiBD.setAtomica(false);
 				entriesDaInserireNelTracciato = versamentiNonRendicontatiBD.countRiscossioniDominio(codDominio, dateDa, dateA, listaTipiPendenza);
-				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+ codDominio +"], trovate ["+ entriesDaInserireNelTracciato +"] Riscossioni non rendicontate da inserire in un nuovo tracciato");
+				log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+ codDominio +"], trovate ["+ entriesDaInserireNelTracciato +"] Riscossioni non rendicontate da inserire in un nuovo tracciato");
 			}
 			
 			
