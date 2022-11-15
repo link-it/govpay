@@ -76,6 +76,9 @@ export class FormViewComponent implements OnInit, AfterViewInit {
           }
         }
       }
+      if (field.id == 'mostraSpontaneiNonPagati' && field.type == UtilService.SLIDE_TOGGLE) {
+        _formValues[field.id + '_ctrl'] = !_formValues[field.id + '_ctrl'];
+      }
     });
     this.onFormSubmit.emit({ value: _formValues })
   }
