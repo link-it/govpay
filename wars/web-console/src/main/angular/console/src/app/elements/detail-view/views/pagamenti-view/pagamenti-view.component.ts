@@ -208,13 +208,13 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
             }
           }
         } else {
-          if (item.rpt && item.rpt.data) {
-            if (item.rpt.data.creditorReferenceId) {
-              stStrings.push(Voce.IUV+': '+item.rpt.data.creditorReferenceId);
+          if (item.rpt) {
+            if (item.rpt.creditorReferenceId) {
+              stStrings.push(Voce.IUV+': '+item.rpt.creditorReferenceId);
             }
           }
-          if (item.rt && item.rt.receipt) {
-            importoRpp = item.rt.receipt.paymentAmount;
+          if (item.rt) {
+            importoRpp = item.rt.paymentAmount;
           }
         }
         let _st = new Dato({ value: Dato.concatStrings(stStrings, ', ') });
