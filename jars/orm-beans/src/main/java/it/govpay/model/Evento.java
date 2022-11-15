@@ -78,6 +78,8 @@ public class Evento extends BasicModel {
 	
 	private Integer severita;
 	
+	private String clusterId;
+	private String transactionId;
 	
 	public enum CategoriaEvento {
 		INTERNO ("B"), INTERFACCIA ("I"), UTENTE ("U");
@@ -367,6 +369,22 @@ public class Evento extends BasicModel {
 
 	public void setSeverita(Integer severita) {
 		this.severita = severita;
+	}
+
+	public String getClusterId() {
+		return clusterId;
+	}
+
+	public void setClusterId(String clusterId) {
+		this.clusterId = clusterId;
+	}
+
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
 	
 }

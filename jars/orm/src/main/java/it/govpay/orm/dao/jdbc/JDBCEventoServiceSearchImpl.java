@@ -136,6 +136,9 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<
 			fields.add(Evento.model().COD_DOMINIO);
 			fields.add(Evento.model().ID_SESSIONE);
 			fields.add(Evento.model().SEVERITA);
+			fields.add(Evento.model().CLUSTER_ID);
+			fields.add(Evento.model().TRANSACTION_ID);
+
 		
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 

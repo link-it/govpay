@@ -162,6 +162,14 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			break;
 		}
 		this.eventoCtx.setComponente(this.componente);
+		
+		this.eventoCtx.setTransactionId(ctx.getTransactionId());
+		
+		String clusterId = GovpayConfig.getInstance().getClusterId();
+		if(clusterId != null)
+			this.eventoCtx.setClusterId(clusterId);
+		else 
+			this.eventoCtx.setClusterId(GovpayConfig.getInstance().getAppName());
 	}
 
 	@Override

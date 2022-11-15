@@ -2302,6 +2302,9 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			
+			<xsd:element name="clusterId" type="String255" minOccurs="0"/>
+			<xsd:element name="transactionId" type="String255" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

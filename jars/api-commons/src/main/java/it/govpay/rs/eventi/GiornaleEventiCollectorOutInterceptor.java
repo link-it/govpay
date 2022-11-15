@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.dao.configurazione.ConfigurazioneDAO;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.client.HttpMethod;
 import it.govpay.core.utils.rawutils.ConverterUtils;
@@ -110,6 +111,14 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 						eventoCtx.setDataRisposta(dataUscita);
 						eventoCtx.setDettaglioRichiesta(dettaglioRichiesta);
 						eventoCtx.setDettaglioRisposta(dettaglioRisposta);
+						
+						eventoCtx.setTransactionId(context.getTransactionId());
+						
+						String clusterId = GovpayConfig.getInstance().getClusterId();
+						if(clusterId != null)
+							eventoCtx.setClusterId(clusterId);
+						else 
+							eventoCtx.setClusterId(GovpayConfig.getInstance().getAppName());
 
 						if(dumpEvento) {
 							// dump richiesta

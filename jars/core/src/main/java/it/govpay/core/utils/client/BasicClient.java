@@ -176,6 +176,14 @@ public abstract class BasicClient {
 		this.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
 		this.getEventoCtx().setRole(RuoloEvento.CLIENT);
 		this.getEventoCtx().setDataRichiesta(new Date());
+		IContext ctx = ContextThreadLocal.get();
+		this.getEventoCtx().setTransactionId(ctx.getTransactionId());
+		
+		String clusterId = GovpayConfig.getInstance().getClusterId();
+		if(clusterId != null)
+			this.getEventoCtx().setClusterId(clusterId);
+		else 
+			this.getEventoCtx().setClusterId(GovpayConfig.getInstance().getAppName());
 				
 		this.serverID = bundleKey;
 		if(connettore == null) {

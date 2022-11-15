@@ -1101,6 +1101,8 @@ CREATE TABLE eventi
 	cod_dominio VARCHAR(35) COMMENT 'Identificativo dell\'Ente creditore',
 	id_sessione VARCHAR(35) COMMENT 'Identificativo del pagamento portale',
 	severita INT COMMENT 'Livello severita errore',
+	cluster_id VARCHAR(255) COMMENT 'Identificativo del nodo dove e\' stato registrato l\'evento',
+	transaction_id VARCHAR(255) COMMENT 'Identificativo della transazione GovPay',
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT COMMENT 'Identificativo fisico',
 	id_fr BIGINT COMMENT 'Riferimento al flusso di rendicontazione',
@@ -1491,7 +1493,9 @@ CREATE VIEW v_eventi_vers_rendicontazioni AS (
                eventi.cod_dominio,
                eventi.ccp,
                eventi.id_sessione,
-			   eventi.severita,
+	       eventi.severita,
+               eventi.cluster_id,
+               eventi.transaction_id,
                eventi.id
         FROM eventi 
         JOIN rendicontazioni ON rendicontazioni.id_fr = eventi.id_fr
@@ -1521,6 +1525,8 @@ CREATE VIEW v_eventi_vers_pagamenti AS (
     eventi.ccp,
     eventi.id_sessione,
     eventi.severita,
+    eventi.cluster_id,
+    eventi.transaction_id,
     eventi.id
    FROM versamenti
      JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
@@ -1548,7 +1554,9 @@ CREATE VIEW v_eventi_vers_riconciliazioni AS (
                eventi.cod_dominio,
                eventi.ccp,
                eventi.id_sessione,
-	           eventi.severita,
+	       eventi.severita,
+               eventi.cluster_id,
+               eventi.transaction_id,
                eventi.id
         FROM eventi
         JOIN pagamenti ON pagamenti.id_incasso = eventi.id_incasso
@@ -1577,7 +1585,9 @@ CREATE VIEW v_eventi_vers_tracciati AS (
                eventi.cod_dominio,
                eventi.ccp,
                eventi.id_sessione,
-	           eventi.severita,
+	       eventi.severita,
+               eventi.cluster_id,
+               eventi.transaction_id,
                eventi.id
         FROM eventi
         JOIN operazioni ON operazioni.id_tracciato = eventi.id_tracciato
@@ -1606,6 +1616,8 @@ CREATE VIEW v_eventi_vers AS
                eventi.ccp,
                eventi.id_sessione,
 	       eventi.severita,
+               eventi.cluster_id,
+               eventi.transaction_id,
                eventi.id FROM eventi 
         UNION SELECT componente,
                ruolo,
@@ -1627,6 +1639,8 @@ CREATE VIEW v_eventi_vers AS
                ccp,
                id_sessione,
 	       severita,
+               cluster_id,
+               transaction_id,
                id FROM v_eventi_vers_pagamenti 
         UNION SELECT componente,
                ruolo,
@@ -1648,6 +1662,8 @@ CREATE VIEW v_eventi_vers AS
                ccp,
                id_sessione,
 	       severita,
+               cluster_id,
+               transaction_id,
                id FROM v_eventi_vers_rendicontazioni
         UNION SELECT componente,
                ruolo,
@@ -1669,6 +1685,8 @@ CREATE VIEW v_eventi_vers AS
                ccp,
                id_sessione,
 	       severita,
+               cluster_id,
+               transaction_id,
                id FROM v_eventi_vers_riconciliazioni
 	    UNION SELECT componente,
                ruolo,
@@ -1690,6 +1708,8 @@ CREATE VIEW v_eventi_vers AS
                ccp,
                id_sessione,
 	       severita,
+               cluster_id,
+               transaction_id,
                id FROM v_eventi_vers_tracciati;
 
 -- Vista Rendicontazioni

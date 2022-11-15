@@ -28,6 +28,8 @@ import it.govpay.core.exceptions.IOException;
 "idPagamento",
 "datiPagoPA",
 "severita",
+"clusterId",
+"transactionId",
 })
 public class EventoIndex extends JSONSerializable {
 
@@ -87,7 +89,13 @@ public class EventoIndex extends JSONSerializable {
 
   @JsonProperty("severita")
   private Integer severita = null;
-
+  
+  @JsonProperty("clusterId")
+  private String clusterId = null;
+  
+  @JsonProperty("transactionId")
+  private String transactionId = null;
+  
   /**
    * Identificativo evento
    **/
@@ -384,6 +392,38 @@ public class EventoIndex extends JSONSerializable {
     this.severita = severita;
   }
 
+  /**
+   * Identificativo del nodo dove viene registrata l'operazione
+   **/
+  public EventoIndex clusterId(String clusterId) {
+    this.clusterId = clusterId;
+    return this;
+  }
+
+  @JsonProperty("clusterId")
+  public String getClusterId() {
+    return clusterId;
+  }
+  public void setClusterId(String clusterId) {
+    this.clusterId = clusterId;
+  }
+
+  /**
+   * Identificativo della transazione registrata
+   **/
+  public EventoIndex transactionId(String transactionId) {
+    this.transactionId = transactionId;
+    return this;
+  }
+
+  @JsonProperty("transactionId")
+  public String getTransactionId() {
+    return transactionId;
+  }
+  public void setTransactionId(String transactionId) {
+    this.transactionId = transactionId;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -411,12 +451,14 @@ public class EventoIndex extends JSONSerializable {
         Objects.equals(idPendenza, eventoIndex.idPendenza) &&
         Objects.equals(idPagamento, eventoIndex.idPagamento) &&
         Objects.equals(datiPagoPA, eventoIndex.datiPagoPA) &&
-        Objects.equals(severita, eventoIndex.severita);
+        Objects.equals(severita, eventoIndex.severita) &&
+        Objects.equals(clusterId, eventoIndex.clusterId) &&
+        Objects.equals(transactionId, eventoIndex.transactionId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, componente, categoriaEvento, ruolo, tipoEvento, esito, dataEvento, durataEvento, sottotipoEvento, sottotipoEsito, dettaglioEsito, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, datiPagoPA, severita);
+    return Objects.hash(id, componente, categoriaEvento, ruolo, tipoEvento, esito, dataEvento, durataEvento, sottotipoEvento, sottotipoEsito, dettaglioEsito, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, datiPagoPA, severita, clusterId, transactionId);
   }
 
   public static EventoIndex parse(String json) throws IOException {
@@ -452,6 +494,8 @@ public class EventoIndex extends JSONSerializable {
     sb.append("    idPagamento: ").append(toIndentedString(idPagamento)).append("\n");
     sb.append("    datiPagoPA: ").append(toIndentedString(datiPagoPA)).append("\n");
     sb.append("    severita: ").append(toIndentedString(severita)).append("\n");
+    sb.append("    clusterId: ").append(toIndentedString(clusterId)).append("\n");
+    sb.append("    transactionId: ").append(toIndentedString(transactionId)).append("\n");
     sb.append("}");
     return sb.toString();
   }

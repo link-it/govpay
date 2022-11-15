@@ -86,6 +86,8 @@ public class EventoConverter {
 		}
 		
 		vo.setSeverita(dto.getSeverita());
+		vo.setClusterId(dto.getClusterId());
+		vo.setTransactionId(dto.getTransactionId());
 		
 		return vo;
 	}
@@ -126,6 +128,8 @@ public class EventoConverter {
 			dto.setIdTracciato(vo.getIdTracciato().getId());
 		
 		dto.setSeverita(vo.getSeverita());
+		dto.setClusterId(vo.getClusterId());
+		dto.setTransactionId(vo.getTransactionId());
 		
 		return dto;
 	}

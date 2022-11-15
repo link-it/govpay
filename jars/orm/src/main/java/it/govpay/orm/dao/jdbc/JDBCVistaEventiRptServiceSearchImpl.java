@@ -127,6 +127,8 @@ public class JDBCVistaEventiRptServiceSearchImpl implements IJDBCServiceSearchWi
 			fields.add(Evento.model().CCP);
 			fields.add(Evento.model().COD_DOMINIO);
 			fields.add(Evento.model().ID_SESSIONE);
+			fields.add(Evento.model().CLUSTER_ID);
+			fields.add(Evento.model().TRANSACTION_ID);
 		
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 

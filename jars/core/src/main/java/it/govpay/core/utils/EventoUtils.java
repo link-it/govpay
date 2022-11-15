@@ -117,6 +117,9 @@ public class EventoUtils {
 				}
 			}	
 		}
+		
+		dto.setClusterId(eventoCtx.getClusterId());
+		dto.setTransactionId(eventoCtx.getTransactionId());
 
 		return dto;
 	}

@@ -1552,6 +1552,8 @@ CREATE TABLE eventi
 	cod_dominio VARCHAR2(35 CHAR),
 	id_sessione VARCHAR2(35 CHAR),
 	severita NUMBER,
+	cluster_id VARCHAR2(255 CHAR),
+	transaction_id VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_fr NUMBER,
@@ -2179,6 +2181,8 @@ CREATE VIEW v_eventi_vers AS (
                eventi.ccp,
                eventi.id_sessione,
 	       eventi.severita,
+               eventi.cluster_id,
+               eventi.transaction_id,
                eventi.id
                FROM v_eventi_vers_base JOIN eventi ON v_eventi_vers_base.id = eventi.id
          );  

@@ -397,6 +397,9 @@ public class EventiBD extends BasicBD {
 			fields.add(it.govpay.orm.Evento.model().CCP);
 			fields.add(it.govpay.orm.Evento.model().COD_DOMINIO);
 			fields.add(it.govpay.orm.Evento.model().ID_SESSIONE);
+			fields.add(it.govpay.orm.Evento.model().SEVERITA);
+			fields.add(it.govpay.orm.Evento.model().CLUSTER_ID);
+			fields.add(it.govpay.orm.Evento.model().TRANSACTION_ID);
 
 			List<Map<String, Object>> select = new ArrayList<Map<String,Object>>();
 

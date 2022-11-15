@@ -1145,6 +1145,8 @@ CREATE TABLE eventi
 	cod_dominio VARCHAR(35),
 	id_sessione VARCHAR(35),
 	severita INT,
+	cluster_id VARCHAR(255),
+	transaction_id VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_eventi') NOT NULL,
 	id_fr BIGINT,
@@ -1638,6 +1640,8 @@ CREATE VIEW v_eventi_vers_rendicontazioni AS (
                eventi.ccp,
                eventi.id_sessione,
 	       eventi.severita,
+	       eventi.cluster_id,
+	       eventi.transaction_id,
                eventi.id
         FROM eventi 
         JOIN rendicontazioni ON rendicontazioni.id_fr = eventi.id_fr
@@ -1667,6 +1671,8 @@ CREATE VIEW v_eventi_vers_pagamenti AS (
     eventi.ccp,
     eventi.id_sessione,
     eventi.severita,
+    eventi.cluster_id,
+    eventi.transaction_id,
     eventi.id
    FROM versamenti
      JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
@@ -1695,6 +1701,8 @@ CREATE VIEW v_eventi_vers_riconciliazioni AS (
                eventi.ccp,
                eventi.id_sessione,
 	       eventi.severita,
+	       eventi.cluster_id,
+	       eventi.transaction_id,
                eventi.id
         FROM eventi
         JOIN pagamenti ON pagamenti.id_incasso = eventi.id_incasso
@@ -1724,6 +1732,8 @@ CREATE VIEW v_eventi_vers_tracciati AS (
                eventi.ccp,
                eventi.id_sessione,
 	       eventi.severita,
+	       eventi.cluster_id,
+	       eventi.transaction_id,
                eventi.id
         FROM eventi
         JOIN operazioni ON operazioni.id_tracciato = eventi.id_tracciato
@@ -1752,6 +1762,8 @@ CREATE VIEW v_eventi_vers AS (
                eventi.ccp,
                eventi.id_sessione,
 	       eventi.severita,
+	       eventi.cluster_id,
+	       eventi.transaction_id,
                eventi.id FROM eventi 
         UNION SELECT * FROM v_eventi_vers_pagamenti 
         UNION SELECT * FROM v_eventi_vers_rendicontazioni

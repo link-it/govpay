@@ -770,6 +770,8 @@
     <structure name="idFR" field="idFR" usage="optional" map-as="_IdFr_Type"/>
     <structure name="idIncasso" field="idIncasso" usage="optional" map-as="_IdIncasso_Type"/>
     <structure name="idTracciato" field="idTracciato" usage="optional" map-as="_IdTracciato_Type"/>
+    <value name="clusterId" field="clusterId" usage="optional"/>
+    <value name="transactionId" field="transactionId" usage="optional"/>
   </mapping>
   <mapping name="SingoloVersamento" class="it.govpay.orm.SingoloVersamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

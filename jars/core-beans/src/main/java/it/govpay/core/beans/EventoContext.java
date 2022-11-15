@@ -98,6 +98,9 @@ public class EventoContext {
 
 	private Throwable exception;
 	private Integer severita;
+	
+	private String clusterId;
+	private String transactionId;
 
 	public EventoContext() {
 		this.dataRichiesta = new Date();
@@ -369,6 +372,22 @@ public class EventoContext {
 
 	public void setSeverita(Integer severita) {
 		this.severita = severita;
+	}
+
+	public String getClusterId() {
+		return clusterId;
+	}
+
+	public void setClusterId(String clusterId) {
+		this.clusterId = clusterId;
+	}
+
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
 
 }

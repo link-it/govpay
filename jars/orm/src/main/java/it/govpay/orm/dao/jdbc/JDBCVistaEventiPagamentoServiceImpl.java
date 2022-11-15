@@ -91,7 +91,10 @@ public class JDBCVistaEventiPagamentoServiceImpl extends JDBCVistaEventiPagament
 		sqlQueryObjectInsert.addInsertField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().CCP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().COD_DOMINIO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().ID_SESSIONE,false),"?");
-
+		sqlQueryObjectInsert.addInsertField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().SEVERITA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().CLUSTER_ID,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().TRANSACTION_ID,false),"?");
+		
 		// Insert vistaEventiPagamento
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getVistaEventiPagamentoFetch().getKeyGeneratorObject(Evento.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
@@ -113,7 +116,10 @@ public class JDBCVistaEventiPagamentoServiceImpl extends JDBCVistaEventiPagament
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(vistaEventiPagamento.getIuv(),Evento.model().IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(vistaEventiPagamento.getCcp(),Evento.model().CCP.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(vistaEventiPagamento.getCodDominio(),Evento.model().COD_DOMINIO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(vistaEventiPagamento.getIdSessione(),Evento.model().ID_SESSIONE.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(vistaEventiPagamento.getIdSessione(),Evento.model().ID_SESSIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(vistaEventiPagamento.getSeverita(),Evento.model().SEVERITA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(vistaEventiPagamento.getClusterId(),Evento.model().CLUSTER_ID.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(vistaEventiPagamento.getTransactionId(),Evento.model().TRANSACTION_ID.getFieldType())
 		);
 		vistaEventiPagamento.setId(id);
 
@@ -196,6 +202,12 @@ public class JDBCVistaEventiPagamentoServiceImpl extends JDBCVistaEventiPagament
 		lstObjects_vistaEventiPagamento.add(new JDBCObject(vistaEventiPagamento.getCodDominio(), Evento.model().COD_DOMINIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().ID_SESSIONE,false), "?");
 		lstObjects_vistaEventiPagamento.add(new JDBCObject(vistaEventiPagamento.getIdSessione(), Evento.model().ID_SESSIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().SEVERITA,false), "?");
+		lstObjects_vistaEventiPagamento.add(new JDBCObject(vistaEventiPagamento.getSeverita(), Evento.model().SEVERITA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().CLUSTER_ID,false), "?");
+		lstObjects_vistaEventiPagamento.add(new JDBCObject(vistaEventiPagamento.getClusterId(), Evento.model().CLUSTER_ID.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVistaEventiPagamentoFieldConverter().toColumn(Evento.model().TRANSACTION_ID,false), "?");
+		lstObjects_vistaEventiPagamento.add(new JDBCObject(vistaEventiPagamento.getTransactionId(), Evento.model().TRANSACTION_ID.getFieldType()));
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_vistaEventiPagamento.add(new JDBCObject(tableId, Long.class));
 

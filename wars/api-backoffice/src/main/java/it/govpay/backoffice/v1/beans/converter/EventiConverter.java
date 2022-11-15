@@ -81,6 +81,9 @@ public class EventiConverter {
 
 		rsModel.setDatiPagoPA(getDatiPagoPA(evento));
 		rsModel.setSeverita(evento.getSeverita());
+		
+		rsModel.setClusterId(evento.getClusterId());
+		rsModel.setTransactionId(evento.getTransactionId());
 
 		return rsModel;
 	}
@@ -160,6 +163,8 @@ public class EventiConverter {
 		}
 
 		rsModel.setSeverita(evento.getSeverita());
+		rsModel.setClusterId(evento.getClusterId());
+		rsModel.setTransactionId(evento.getTransactionId());
 
 		return rsModel;
 	}

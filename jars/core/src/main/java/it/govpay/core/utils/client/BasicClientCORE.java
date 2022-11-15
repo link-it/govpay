@@ -232,6 +232,13 @@ public abstract class BasicClientCORE {
 		this.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
 		this.getEventoCtx().setRole(RuoloEvento.CLIENT);
 		this.getEventoCtx().setDataRichiesta(new Date());
+		this.getEventoCtx().setTransactionId(ctx.getTransactionId());
+		
+		String clusterId = GovpayConfig.getInstance().getClusterId();
+		if(clusterId != null)
+			this.getEventoCtx().setClusterId(clusterId);
+		else 
+			this.getEventoCtx().setClusterId(GovpayConfig.getInstance().getAppName());
 
 		this.serverID = bundleKey;
 		this.connettore = connettore;
