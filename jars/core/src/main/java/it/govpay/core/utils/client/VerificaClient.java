@@ -338,9 +338,9 @@ public class VerificaClient extends BasicClientCORE {
 				String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
 				ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, logErrorMessage);
 				throw e;
-			} catch (ValidationException e) {
-				ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
-				throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
+				//				} catch (ValidationException e) {
+				//					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
+				//					throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
 			} catch(ServiceException e) {
 				String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
 				ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, logErrorMessage);
@@ -460,10 +460,10 @@ public class VerificaClient extends BasicClientCORE {
 				String logErrorMessage = MessageFormat.format(VerificaClient.ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
 				ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, logErrorMessage);
 				throw e;
-			} catch (ValidationException e) {
-				log.error(e.getMessage(),e);
-				ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
-				throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
+				//				} catch (ValidationException e) {
+				//					log.error(e.getMessage(),e);
+				//					ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
+				//					throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
 			} catch(ServiceException e) {
 				String logErrorMessage = MessageFormat.format(VerificaClient.ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
 				ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, logErrorMessage);
@@ -603,9 +603,9 @@ public class VerificaClient extends BasicClientCORE {
 				String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
 				ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, logErrorMessage);
 				throw e;
-			} catch (ValidationException e) {
-				ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, "[SINTASSI] " + e.getMessage());
-				throw new VersamentoNonValidoException(this.codApplicazione, "-", "-", "-", "-", "-", e.getMessage());
+				//				} catch (ValidationException e) {
+				//					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, "[SINTASSI] " + e.getMessage());
+				//					throw new VersamentoNonValidoException(this.codApplicazione, "-", "-", "-", "-", "-", e.getMessage());
 			} catch(ServiceException e) {
 				String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
 				ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, logErrorMessage);
@@ -715,9 +715,9 @@ public class VerificaClient extends BasicClientCORE {
 				String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
 				ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, logErrorMessage);
 				throw e;
-			} catch (ValidationException e) {
-				ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, "[SINTASSI] " + e.getMessage());
-				throw new VersamentoNonValidoException(this.codApplicazione, "-", "-", "-", "-", "-", e.getMessage());
+				//				} catch (ValidationException e) {
+				//					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, "[SINTASSI] " + e.getMessage());
+				//					throw new VersamentoNonValidoException(this.codApplicazione, "-", "-", "-", "-", "-", e.getMessage());
 			} catch(ServiceException e) {
 				String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
 				ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, logErrorMessage);

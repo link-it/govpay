@@ -158,11 +158,11 @@ And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
 Then match response contains { descrizioneStato: '##null' } 
-Then match response.numeroOperazioniTotali == 119
-Then match response.numeroOperazioniEseguite == 119
+Then match response.numeroOperazioniTotali == 120
+Then match response.numeroOperazioniEseguite == 120
 Then match response.numeroOperazioniFallite == 0
-Then match response.numeroAvvisiTotali == 119
-Then match response.numeroAvvisiStampati == 119
+Then match response.numeroAvvisiTotali == 120
+Then match response.numeroAvvisiStampati == 120
 Then match response.numeroAvvisiFalliti == 0
 Then match response.stampaAvvisi == true
 
@@ -326,11 +326,11 @@ And headers basicAutenticationHeader
 And retry until response.stato == 'ESEGUITO'
 When method get
 Then match response contains { descrizioneStato: '##null' } 
-Then match response.numeroOperazioniTotali == 119
-Then match response.numeroOperazioniEseguite == 119
+Then match response.numeroOperazioniTotali == 120
+Then match response.numeroOperazioniEseguite == 120
 Then match response.numeroOperazioniFallite == 0
-Then match response.numeroAvvisiTotali == 119
-Then match response.numeroAvvisiStampati == 119
+Then match response.numeroAvvisiTotali == 120
+Then match response.numeroAvvisiStampati == 120
 Then match response.numeroAvvisiFalliti == 0
 Then match response.stampaAvvisi == true
 

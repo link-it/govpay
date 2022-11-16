@@ -108,6 +108,7 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.orm.PagamentoPortaleVersamento;
+import it.govpay.orm.RPT;
 
 public class PendenzeDAO extends BaseDAO{
 
@@ -643,18 +644,24 @@ public class PendenzeDAO extends BaseDAO{
 			RptFilter newFilter2 = rptBD.newFilter();
 			newFilter2.setIdPendenza(versamento.getCodVersamentoEnte());
 			newFilter2.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
+			newFilter2.setFilterSortList(Arrays.asList(new FilterSortWrapper(RPT.model().DATA_MSG_RICHIESTA,SortOrder.DESC)));
 			long count = rptBD.count(newFilter2);
 
 			if(count > 0) {
 				List<Rpt> findAll = rptBD.findAll(newFilter2);
 
 				for (Rpt rpt : findAll) {
-					Versamento versamento2 = rpt.getVersamento(versamentiBD);
-					versamento2.getDominio(configWrapper);
-					versamento2.getUo(configWrapper);
-					versamento2.getApplicazione(configWrapper);
-					versamento2.getTipoVersamento(configWrapper);
-					versamento2.getTipoVersamentoDominio(configWrapper);
+					if(rpt.getIdVersamento() != versamento.getId().longValue()) { // leggo il versamento solo se non e' quello letto attualmente
+						Versamento versamento2 = rpt.getVersamento(versamentiBD);
+						versamento2.getDominio(configWrapper);
+						versamento2.getUo(configWrapper);
+						versamento2.getApplicazione(configWrapper);
+						versamento2.getTipoVersamento(configWrapper);
+						versamento2.getTipoVersamentoDominio(configWrapper);
+					} else {
+						rpt.setVersamento(versamento);
+					}
+				
 				}
 
 				response.setRpts(findAll);

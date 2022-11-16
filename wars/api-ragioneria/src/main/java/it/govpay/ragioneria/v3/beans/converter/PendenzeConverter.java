@@ -162,7 +162,8 @@ public class PendenzeConverter {
 		} else if(singoloVersamento.getTributo(configWrapper) != null && singoloVersamento.getTributo(configWrapper).getCodTributo() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
 			rsModel.setCodEntrata(singoloVersamento.getTributo(configWrapper).getCodTributo());
 		} else { // Definisce i dettagli di incasso della singola entrata.
-			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(configWrapper).getCodIban());
+			if(singoloVersamento.getIbanAccredito(configWrapper) !=null)
+				rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(configWrapper).getCodIban());
 			if(singoloVersamento.getIbanAppoggio(configWrapper) !=null)
 				rsModel.setIbanAccredito(singoloVersamento.getIbanAppoggio(configWrapper).getCodIban());
 			if(singoloVersamento.getTipoContabilita() != null && singoloVersamento.getCodContabilita() != null)
@@ -237,9 +238,22 @@ public class PendenzeConverter {
 	
 	public static PendenzaPagata toPendenzaPagataRsModel(it.govpay.bd.model.Rpt rpt) throws ServiceException, ValidationException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		PendenzaPagata rsModel = new PendenzaPagata();
-		
 		Versamento versamento = rpt.getVersamento(configWrapper);
+		return toPendenzaPagataRsModel(rpt, versamento);
+	}
+	
+	public static PendenzaPagata toPendenzaPagataRsModel(Versamento versamento, List<it.govpay.bd.model.Rpt> listRpts) throws ServiceException, ValidationException, IOException {
+		it.govpay.bd.model.Rpt rpt = null;
+		
+		if(listRpts != null && listRpts.size() > 0)
+			rpt = listRpts.get(0); // sono ordinate per data decrescente
+		
+		return toPendenzaPagataRsModel(rpt , versamento);
+	}
+	
+	public static PendenzaPagata toPendenzaPagataRsModel(it.govpay.bd.model.Rpt rpt, Versamento versamento) throws ServiceException, ValidationException, IOException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		PendenzaPagata rsModel = new PendenzaPagata();
 
 		if(versamento.getCodAnnoTributario()!= null)
 			rsModel.setAnnoRiferimento(new BigDecimal(versamento.getCodAnnoTributario()));
@@ -286,12 +300,14 @@ public class PendenzeConverter {
 			// Di ogni voce cerco, se esiste, la riscossione associata
 			int indiceDati = sv.getIndiceDati() == null ? 0 : sv.getIndiceDati().intValue();
 			Pagamento pagamento = null;
-			for(Pagamento p : rpt.getPagamenti()) {
+			if(rpt != null) {
+			for(Pagamento p : rpt.getPagamenti(configWrapper)) {
 				if(p.getIndiceDati() == indiceDati) {
 					pagamento = p;
 					break;
 				}
 			}
+		}
 			rsModel.addVociItem(toRsModelVocePendenzaPagata(sv, pagamento));
 		}
 		return rsModel;

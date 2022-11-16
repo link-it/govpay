@@ -195,16 +195,20 @@ public class VersamentoUtils {
 	public static Versamento aggiornaVersamento(Versamento versamento, Logger log) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
 	VersamentoSconosciutoException, ServiceException, ClientException, GovPayException, UtilsException, VersamentoNonValidoException {
 		// Se il versamento non e' in attesa, non aggiorno un bel niente
-		if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO))
+		if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
+			log.debug("Versamento non richiede pagamento [StatoVersamento:"+versamento.getStatoVersamento()+"]. Aggiornamento non necessario.");
 			return versamento;
+		}
 		
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 
 		// Controllo se la data di scadenza e' indicata ed e' decorsa
-		if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza())) {
+		if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {
+			log.debug("Versamento scaduto il " + versamento.getDataScadenza());
 			throw new VersamentoScadutoException(versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), "-", "-", "-", "-", versamento.getDataScadenza());
 		}else {
-			if(versamento.getDataValidita() != null && DateUtils.isDataDecorsa(versamento.getDataValidita())) {
+			if(versamento.getDataValidita() != null && DateUtils.isDataDecorsa(versamento.getDataValidita(), DateUtils.CONTROLLO_VALIDITA)) {
+				log.debug("Versamento non valido dal " + versamento.getDataValidita());
 				IContext ctx = ContextThreadLocal.get();
 				String codVersamentoEnte = versamento.getCodVersamentoEnte();
 				String bundlekey = versamento.getCodBundlekey();
@@ -222,7 +226,9 @@ public class VersamentoUtils {
 				if(versamento.getApplicazione(configWrapper).getConnettoreIntegrazione() != null) {
 					TipologiaTipoVersamento tipo = versamento.getTipo();
 					try {
+						log.debug("Aggiorno dal servizio applicativo dell'Ente: " + versamento.getApplicazione(configWrapper));
 						versamento = acquisisciVersamento(versamento.getApplicazione(configWrapper), codVersamentoEnte, bundlekey, debitore, codDominio, iuv, tipo);
+						log.debug("Aggiornamento completato");
 					} catch (ClientException e) {
 						// Errore nella chiamata all'ente. Controllo se e' mandatoria o uso quel che ho
 						if(GovpayConfig.getInstance().isAggiornamentoValiditaMandatorio()) { 

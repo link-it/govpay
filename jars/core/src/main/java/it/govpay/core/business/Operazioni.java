@@ -271,7 +271,10 @@ public class Operazioni{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		try {
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE)) {
-				String chiusuraRPTScadute = new Pagamento().chiusuraRPTScadute(ctx);
+				
+				Sonda sonda = leggiSonda(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE);
+				Date dataUltimoCheck = (sonda != null && sonda.getParam() != null) ? sonda.getParam().getDataUltimoCheck() : null;
+				String chiusuraRPTScadute = new Pagamento().chiusuraRPTScadute(ctx, dataUltimoCheck);
 				aggiornaSondaOK(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE);
 				return chiusuraRPTScadute;
 			} else {
@@ -590,6 +593,44 @@ public class Operazioni{
 			}
 		}
 	}
+	
+	private static Sonda leggiSonda(BDConfigWrapper configWrapper, String nome) {
+		BasicBD bd = null;
+
+		try {
+			// costruttore
+			bd = BasicBD.newInstance(configWrapper.getTransactionID());
+
+			// apro la connessione
+			bd.setupConnection(configWrapper.getTransactionID());
+
+			// setto enableselectforupdate
+			bd.enableSelectForUpdate();
+
+			// prendo la connessione
+			Connection con = bd.getConnection();
+
+			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
+			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
+			//			Properties properties = new Properties();
+			//			((SondaBatch)sonda).aggiornaStatoSonda(true, properties, new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
+			return sonda;
+		} catch (Throwable t) {
+			log.warn("Errore nella lettura della sonda ["+nome+"]: "+ t.getMessage());
+			return null;
+		}
+		finally {
+			if(bd != null) {
+				try {
+					bd.disableSelectForUpdate();
+				} catch (ServiceException e) {
+					log.error("Errore " +e.getMessage() , e);
+				}
+
+				bd.closeConnection();
+			}
+		}
+	}
 
 	public static String elaborazioneTracciatiPendenze(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
@@ -776,11 +817,14 @@ public class Operazioni{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		try {
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI)) {
+				
+				log.debug("Avvio elaborazione tracciati notifica pagamenti.");
 				// ricerca domini con connettore mypivot abilitato
 				List<String> domini = AnagraficaManager.getListaCodDomini(configWrapper);
 				
 				for (String codDominio : domini) {
 					it.govpay.bd.model.Dominio dominio = null;
+					log.debug("Elaborazione tracciati notifica pagamenti per il Dominio ["+codDominio+"].");
 					try {
 						dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 					}catch(NotFoundException e) {

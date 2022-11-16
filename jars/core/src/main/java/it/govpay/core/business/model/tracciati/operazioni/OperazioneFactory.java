@@ -328,7 +328,7 @@ public class OperazioneFactory {
 			break;
 		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoEnum.PAGATO;
 			break;
-		case NON_ESEGUITO: if(versamentoModel.getDataScadenza() != null && DateUtils.isDataDecorsa(versamentoModel.getDataScadenza())) {statoPendenza = StatoEnum.SCADUTO;} else { statoPendenza = StatoEnum.NON_PAGATO;}
+		case NON_ESEGUITO: if(versamentoModel.getDataScadenza() != null && DateUtils.isDataDecorsa(versamentoModel.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {statoPendenza = StatoEnum.SCADUTO;} else { statoPendenza = StatoEnum.NON_PAGATO;}
 			break;
 		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoEnum.PAGATO;
 			break;

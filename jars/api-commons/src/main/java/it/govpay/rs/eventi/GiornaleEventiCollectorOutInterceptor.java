@@ -71,7 +71,7 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 				GdeInterfaccia configurazioneInterfaccia = GiornaleEventiUtilities.getConfigurazioneGiornaleEventi(context, eventoCtx, this.configurazioneDAO, this.giornaleEventiConfig);
 
 				if(configurazioneInterfaccia != null) {
-					this.log.debug("Configurazione Giornale Eventi API: ["+this.giornaleEventiConfig.getApiName()+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia,null));
+					this.log.debug("Configurazione Giornale Eventi API: ["+this.giornaleEventiConfig.getApiName()+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia));
 					
 					if(GiornaleEventiUtilities.isRequestLettura(httpMethod, this.giornaleEventiConfig.getApiNameEnum(), eventoCtx.getTipoEvento())) {
 						logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getLetture(), esito);
