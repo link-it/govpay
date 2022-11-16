@@ -65,6 +65,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "#notnull",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
@@ -155,6 +157,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "#notnull",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
@@ -239,6 +243,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "#notnull",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
@@ -327,6 +333,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "#notnull",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
@@ -422,6 +430,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "#notnull",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
@@ -518,6 +528,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "#notnull",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
@@ -618,6 +630,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "#notnull",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(ndpsym_user)",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",

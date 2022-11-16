@@ -60,6 +60,7 @@ import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.IncassiException.FaultType;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.NotificaException;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IncassoUtils;
 import it.govpay.model.Evento.CategoriaEvento;
@@ -559,6 +560,14 @@ public class Incassi {
 							eventoNota.setCodDominio(fr.getCodDominio());
 							eventoNota.setCcp(rendicontazione.getIur());
 							eventoNota.setComponente(EventoContext.Componente.GOVPAY.toString());
+							eventoNota.setTransactionId(ctx.getTransactionId());
+							
+							String clusterId = GovpayConfig.getInstance().getClusterId();
+							if(clusterId != null)
+								eventoNota.setClusterId(clusterId);
+							else 
+								eventoNota.setClusterId(GovpayConfig.getInstance().getAppName());
+							
 							listaEventi.add(eventoNota);
 							
 							TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
