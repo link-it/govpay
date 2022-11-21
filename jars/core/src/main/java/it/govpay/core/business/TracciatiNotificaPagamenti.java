@@ -131,8 +131,18 @@ public class TracciatiNotificaPagamenti {
 				c2.add(Calendar.HOUR_OF_DAY, numeroOreIntervallo);
 				Date dataRtA = c2.getTime();
 				
-				log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], nuovo intervallo ricerca RT: Da ["
-						+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
+				
+				switch (this.tipoTracciato) {
+				case MYPIVOT:
+				case SECIM:
+				case GOVPAY:
+				case MAGGIOLI_JPPA:
+					log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], nuovo intervallo ricerca RT: Da [" +SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
+					break;
+				case HYPERSIC_APK:
+					log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], nuovo intervallo ricerca rendicontazioni: Da [" +SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
+					break;
+				}
 				
 				Calendar c3 = Calendar.getInstance();
 				c3.setTime(new Date());
@@ -220,12 +230,30 @@ public class TracciatiNotificaPagamenti {
 					c3.add(Calendar.MILLISECOND, -1);
 					Date now = c3.getTime();
 					
-					log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], intervallo ricerca RT: Da ["
-							+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
+					switch (this.tipoTracciato) {
+					case MYPIVOT:
+					case SECIM:
+					case GOVPAY:
+					case MAGGIOLI_JPPA:
+						log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], intervallo ricerca RT: Da [" +SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
+						break;
+					case HYPERSIC_APK:
+						log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], intervallo ricerca rendicontazioni: Da [" +SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
+						break;
+					}
 					
 					if(dataRtA.getTime() < now.getTime()) {
-						log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], DataRTA ["
-								+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"] precedente a NOW  ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now)+"], modifico con la dataOra corrente.");
+						switch (this.tipoTracciato) {
+						case MYPIVOT:
+						case SECIM:
+						case GOVPAY:
+						case MAGGIOLI_JPPA:
+							log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], DataRTA [" +SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"] precedente a NOW  ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now)+"], modifico con la dataOra corrente.");
+							break;
+						case HYPERSIC_APK:
+							log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], DataRendicontazioniA [" +SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"] precedente a NOW  ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now)+"], modifico con la dataOra corrente.");
+							break;
+						}
 						dataRtA = now;
 					} 
 					
@@ -493,12 +521,13 @@ public class TracciatiNotificaPagamenti {
 			log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+ codDominio +"], trovate ["+ entriesDaInserireNelTracciato +"] RT da inserire in un nuovo tracciato");
 			break;
 		case HYPERSIC_APK:
-			log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], verranno ricercate Riscossioni da inserire in un nuovo tracciato da ["
-					+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
+			String tipiP = (listaTipiPendenza != null && listaTipiPendenza.size() > 0) ? (", tipiPendenza ["+StringUtils.join(listaTipiPendenza, ", ")+"]") : "";
+			log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], verranno ricercate rendicontazioni in stato 'OK' per gli FR in stato 'ACCETTATA' non obsoleti, da inserire in un nuovo tracciato da ["
+					+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]" + tipiP);
 			RendicontazioniBD pagamentiBD = new RendicontazioniBD(rptBD);
 			pagamentiBD.setAtomica(false);
-			entriesDaInserireNelTracciato = pagamentiBD.countRiscossioniDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza);
-			log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+ codDominio +"], trovate ["+ entriesDaInserireNelTracciato +"] Riscossioni da inserire in un nuovo tracciato");
+			entriesDaInserireNelTracciato = pagamentiBD.countRendicontazioniDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza);
+			log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+ codDominio +"], trovate ["+ entriesDaInserireNelTracciato +"] rendicontazioni da inserire in un nuovo tracciato");
 			if(entriesDaInserireNelTracciato == 0) { // se non ci sono nuove rendicontazioni da inserire controllo se ci sono pagamenti non rendicontati relativi a 5 giorni fa
 				// allinea gli intervalli di date
 				Calendar cDa = Calendar.getInstance();
@@ -861,41 +890,40 @@ public class TracciatiNotificaPagamenti {
 		RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(rptBD);
 		rendicontazioniBD.setAtomica(false);
 		
-		List<Rendicontazione> riscossioniList = rendicontazioniBD.ricercaRiscossioniDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
-//		List<EntrataPrevista> riscossioniList = entratePrevisteBD.ricercaRiscossioniDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, true, offset, limit);
-		log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+riscossioniList.size()+"] Riscossioni da inserire nel tracciato");
-		int totaleRt = riscossioniList.size();
+		List<Rendicontazione> rendicontazioniList = rendicontazioniBD.ricercaRendicontazioniDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+		log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rendicontazioniList.size()+"] rendicontazioni da inserire nel tracciato");
+		int totaleRendicontazioni = rendicontazioniList.size();
 		
 		// file rendicontazioni
-		if(totaleRt > 0) {
+		if(totaleRendicontazioni > 0) {
 			ZipEntry tracciatoOutputEntry = new ZipEntry("RENDICONTAZIONE_AV20_" + codDominio + "_"+ dataCreazioneFlusso + "_" + progressivoS+ ".csv");
 			zos.putNextEntry(tracciatoOutputEntry);
 			
 			zos.write(csvUtils.toCsv(HYPERSIC_APKAPPA_HEADER_FILE_CSV).getBytes());
 			
 			do {
-				if(riscossioniList.size() > 0) {
-					for (Rendicontazione pagamento : riscossioniList) {
+				if(rendicontazioniList.size() > 0) {
+					for (Rendicontazione pagamento : rendicontazioniList) {
 						lineaElaborazione ++;
 						beanDati.setLineaElaborazione(lineaElaborazione);
-						zos.write(csvUtils.toCsv(this.creaLineaCsvHyperSicAPKappa(rendicontazioniBD, pagamento, configWrapper, totaleRt, connettore, csvUtils)).getBytes());
+						zos.write(csvUtils.toCsv(this.creaLineaCsvHyperSicAPKappa(rendicontazioniBD, pagamento, configWrapper, totaleRendicontazioni, connettore, csvUtils)).getBytes());
 					}
-					log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+riscossioniList.size()+"] Riscossioni nel tracciato completato");
+					log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+rendicontazioniList.size()+"] rendicontazioni nel tracciato completato");
 				}
 	
 				offset += limit;
-				riscossioniList = rendicontazioniBD.ricercaRiscossioniDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
-				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+riscossioniList.size()+"] Riscossioni da inserire nel tracciato");
-				totaleRt += riscossioniList.size();
-			}while(riscossioniList.size() > 0);
+				rendicontazioniList = rendicontazioniBD.ricercaRendicontazioniDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
+				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+rendicontazioniList.size()+"] rendicontazioni da inserire nel tracciato");
+				totaleRendicontazioni += rendicontazioniList.size();
+			}while(rendicontazioniList.size() > 0);
 			
-			log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserite ["+totaleRt+"] Riscossioni nel tracciato");
+			log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserite ["+totaleRendicontazioni+"] rendicontazioni nel tracciato");
 	
 			// chiusa entry
 			zos.flush();
 			zos.closeEntry(); 
 			
-			beanDati.setNumRtTotali(totaleRt);
+			beanDati.setNumRtTotali(totaleRendicontazioni);
 		}
 		
 		/*
@@ -920,10 +948,10 @@ public class TracciatiNotificaPagamenti {
 		
 		List<VersamentoNonRendicontato> riscossioniNonRendicontateList = versamentiNonRendicontatiBD.ricercaRiscossioniDominio(codDominio, dateDa, dateA, listaTipiPendenza, offset, limit);
 		log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+riscossioniNonRendicontateList.size()+"] Riscossioni non rendicontate da inserire nel tracciato");
-		totaleRt = riscossioniNonRendicontateList.size();
+		int totaleRiscossioni = riscossioniNonRendicontateList.size();
 		
 		// file rendicontazioni
-		if(totaleRt > 0) {
+		if(totaleRiscossioni > 0) {
 			ZipEntry tracciatoNoSecimOutputEntry = new ZipEntry("RENDICONTAZIONE_AV20_" + codDominio + "_"+ dataCreazioneFlusso + "_" + "999"+ ".csv");
 			zos.putNextEntry(tracciatoNoSecimOutputEntry);
 			
@@ -934,7 +962,7 @@ public class TracciatiNotificaPagamenti {
 					for (VersamentoNonRendicontato pagamento : riscossioniNonRendicontateList) {
 						lineaElaborazione ++;
 						beanDati.setLineaElaborazione(lineaElaborazione);
-						zos.write(csvUtils.toCsv(this.creaLineaCsvHyperSicAPKappa(versamentiNonRendicontatiBD, pagamento, configWrapper, totaleRt, connettore, csvUtils)).getBytes());
+						zos.write(csvUtils.toCsv(this.creaLineaCsvHyperSicAPKappa(versamentiNonRendicontatiBD, pagamento, configWrapper, totaleRiscossioni, connettore, csvUtils)).getBytes());
 					}
 					log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserimento ["+riscossioniNonRendicontateList.size()+"] Riscossioni non rendicontate nel tracciato completato");
 				}
@@ -942,10 +970,10 @@ public class TracciatiNotificaPagamenti {
 				offset += limit;
 				riscossioniNonRendicontateList = versamentiNonRendicontatiBD.ricercaRiscossioniDominio(codDominio, dateDa, dateA, listaTipiPendenza, offset, limit);
 				log.trace("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], trovate ["+riscossioniNonRendicontateList.size()+"] Riscossioni non rendicontate da inserire nel tracciato");
-				totaleRt += riscossioniNonRendicontateList.size();
+				totaleRiscossioni += riscossioniNonRendicontateList.size();
 			}while(riscossioniNonRendicontateList.size() > 0);
 			
-			log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserite ["+totaleRt+"] Riscossioni non rendicontate nel tracciato");
+			log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], inserite ["+totaleRiscossioni+"] Riscossioni non rendicontate nel tracciato");
 	
 			// chiusa entry
 			zos.flush();
