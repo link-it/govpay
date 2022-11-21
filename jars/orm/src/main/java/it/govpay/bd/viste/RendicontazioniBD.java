@@ -29,6 +29,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.viste.filters.RendicontazioneFilter;
 import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.bd.viste.model.converter.RendicontazioneConverter;
+import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.FR;
@@ -463,7 +464,7 @@ public class RendicontazioniBD extends BasicBD {
 		}
 	}
 	
-	public List<it.govpay.bd.viste.model.Rendicontazione> ricercaRiscossioniDominio(String codDominio, Date dataRtDa, Date dataRtA, List<String> listaTipiPendenza, Integer offset, Integer limit) throws ServiceException{
+	public List<it.govpay.bd.viste.model.Rendicontazione> ricercaRendicontazioniDominio(String codDominio, Date dataRtDa, Date dataRtA, List<String> listaTipiPendenza, Integer offset, Integer limit) throws ServiceException{
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -472,6 +473,7 @@ public class RendicontazioniBD extends BasicBD {
 			VistaRendicontazioneModel model = it.govpay.orm.VistaRendicontazione.model();
 			IExpression exp = this.getVistaRendicontazioneServiceSearch().newExpression();
 			exp.equals(model.FR_COD_DOMINIO, codDominio).and();
+			exp.equals(model.FR_STATO, StatoFr.ACCETTATA.toString()).and();
 			exp.equals(model.FR_OBSOLETO, false).and();
 			if(dataRtDa != null) {
 				exp.greaterEquals(model.FR_DATA_ACQUISIZIONE, dataRtDa);
@@ -514,7 +516,7 @@ public class RendicontazioniBD extends BasicBD {
 		}
 	}
 	
-	public long countRiscossioniDominio(String codDominio, Date dataRtDa, Date dataRtA, List<String> listaTipiPendenza) throws ServiceException{
+	public long countRendicontazioniDominio(String codDominio, Date dataRtDa, Date dataRtA, List<String> listaTipiPendenza) throws ServiceException{
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -523,11 +525,12 @@ public class RendicontazioniBD extends BasicBD {
 			VistaRendicontazioneModel model = it.govpay.orm.VistaRendicontazione.model();
 			IExpression exp = this.getVistaRendicontazioneServiceSearch().newExpression();
 			exp.equals(model.FR_COD_DOMINIO, codDominio).and();
+			exp.equals(model.FR_STATO, StatoFr.ACCETTATA.toString()).and();
 			exp.equals(model.FR_OBSOLETO, false).and();
 			if(dataRtDa != null) {
-				exp.greaterEquals(model.RND_DATA, dataRtDa);
+				exp.greaterEquals(model.FR_DATA_ACQUISIZIONE, dataRtDa);
 			}
-			exp.lessEquals(model.RND_DATA, dataRtA);
+			exp.lessEquals(model.FR_DATA_ACQUISIZIONE, dataRtA);
 			exp.equals(model.RND_STATO, StatoRendicontazione.OK.toString());
 			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
 				listaTipiPendenza.removeAll(Collections.singleton(null));
