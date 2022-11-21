@@ -374,18 +374,23 @@ INSERT INTO pagamenti_portale (id_rpt_tmp, id_applicazione,cod_canale,data_richi
 -- 20 secondi
 CREATE INDEX idx_pp_fk_rpt_tmp ON pagamenti_portale (id_rpt_tmp);
 
+-- indici che aiutano nelle join per la tabella rpt.
+-- 368 secondi
+CREATE INDEX idx_rpt_fk_pp ON rpt (id_pagamento_portale);
+
 -- aggiorno i riferimenti ai pagamenti portale
--- 1400 secondi
-UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
+-- 11197 secondi
+UPDATE /*+ INDEX(rpt PK_RPT) */ rpt SET rpt.id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
+-- Fallita con errore ORA-01427: single-row subquery returns more than one row
+-- UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale, rpt WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
+-- Fallita con errore ORA-01652: unable to extend temp segment by 128 in tablespace TEMP || finisce lo spazio  
+-- MERGE INTO rpt r1 USING ( SELECT id, id_rpt_tmp FROM pagamenti_portale ) pp ON(pp.id_rpt_tmp = r1.id) WHEN MATCHED THEN UPDATE SET r1.id_pagamento_portale = pp.id;
 
 DROP INDEX idx_pp_fk_rpt_tmp;
 -- elimino colonna id_rpt
 -- 86 secondi
 ALTER TABLE pagamenti_portale DROP COLUMN id_rpt_tmp;
 
--- indici che aiutano nelle join per la tabella rpt.
--- 244 secondi
-CREATE INDEX idx_rpt_fk_pp ON rpt (id_pagamento_portale);
 -- gia' esistente
 -- CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
 -- 12 secondi
@@ -394,30 +399,31 @@ CREATE INDEX idx_vrs_fk_app ON versamenti (id_applicazione);
 -- 16 secondi
 CREATE INDEX idx_pp_fk_app ON pagamenti_portale (id_applicazione);
 
--- 4000 secondi
+-- indice sulla colonna esito rpt 
+-- 242 secondi
+CREATE INDEX idx_rpt_esito ON rpt (cod_esito_pagamento);
+
+-- 4837 secondi
 -- Per le RPT dove non era stato inserito un portale assegno i pagamenti portale all'applicazione, mi servira' per poter salvare il principal
 UPDATE pagamenti_portale SET pagamenti_portale.id_applicazione = (SELECT versamenti.id_applicazione
  FROM versamenti, rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.id_versamento = versamenti.id)
  WHERE pagamenti_portale.id_applicazione IS NULL; 
  
--- indice sulla colonna esito rpt
-CREATE INDEX idx_rpt_esito ON rpt (cod_esito_pagamento);
+-- aggiorno stati pagamento portale 282 secondi
+UPDATE pagamenti_portale SET stato = 'ANNULLATO', codice_stato = 'PAGAMENTO_IN_ATTESA_DI_ESITO' WHERE pagamenti_portale.id IN (SELECT /*+ INDEX(rpt INDEX_RPT_STATO) */ rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RPT_ANNULLATA');
 
--- aggiorno stati pagamento portale
-UPDATE pagamenti_portale SET stato = 'ANNULLATO', codice_stato = 'PAGAMENTO_IN_ATTESA_DI_ESITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RPT_ANNULLATA');
+-- 1000 secondi
+UPDATE pagamenti_portale SET stato = 'ESEGUITO', codice_stato = 'PAGAMENTO_ESEGUITO' WHERE pagamenti_portale.id IN (SELECT /*+ INDEX(rpt INDEX_RPT_STATO) */ rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RT_ACCETTATA_PA' AND rpt.cod_esito_pagamento = 0);
 
--- 555 secondi
-UPDATE pagamenti_portale SET stato = 'ESEGUITO', codice_stato = 'PAGAMENTO_ESEGUITO' WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato = 'RT_ACCETTATA_PA' AND rpt.cod_esito_pagamento = 0);
-
--- 220 secondi
+-- 69 secondi
 UPDATE pagamenti_portale SET stato = 'FALLITO', codice_stato = 'PAGAMENTO_FALLITO', descrizione_stato = 'Errore nella spedizione della richiesta di pagamento a pagoPA' 
- WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND (rpt.stato = 'RPT_RIFIUTATA_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_PSP' OR rpt.stato = 'RPT_RIFIUTATA_PSP'));
+ WHERE pagamenti_portale.id IN (SELECT /*+ INDEX(rpt INDEX_RPT_STATO) */ rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND (rpt.stato = 'RPT_RIFIUTATA_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_NODO' OR rpt.stato = 'RPT_ERRORE_INVIO_A_PSP' OR rpt.stato = 'RPT_RIFIUTATA_PSP'));
 
 UPDATE pagamenti_portale SET stato = 'IN_CORSO', codice_stato = 'PAGAMENTO_IN_ATTESA_DI_ESITO' 
- WHERE pagamenti_portale.id IN (SELECT rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato IN ('RPT_PARCHEGGIATA_NODO' , 'RPT_ATTIVATA', 'RPT_RICEVUTA_NODO', 'RPT_ACCETTATA_NODO', 'RPT_INVIATA_A_PSP', 'RPT_ACCETTATA_PSP', 'RT_RICEVUTA_NODO', 'RT_RIFIUTATA_NODO', 'RT_ACCETTATA_NODO', 'RT_RIFIUTATA_PA', 'RT_ESITO_SCONOSCIUTO_PA', 'RT_ERRORE_INVIO_A_PA', 'INTERNO_NODO'));
+ WHERE pagamenti_portale.id IN (SELECT /*+ INDEX(rpt INDEX_RPT_STATO) */ rpt.id_pagamento_portale FROM rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.stato IN ('RPT_PARCHEGGIATA_NODO' , 'RPT_ATTIVATA', 'RPT_RICEVUTA_NODO', 'RPT_ACCETTATA_NODO', 'RPT_INVIATA_A_PSP', 'RPT_ACCETTATA_PSP', 'RT_RICEVUTA_NODO', 'RT_RIFIUTATA_NODO', 'RT_ACCETTATA_NODO', 'RT_RIFIUTATA_PA', 'RT_ESITO_SCONOSCIUTO_PA', 'RT_ERRORE_INVIO_A_PA', 'INTERNO_NODO'));
 
 -- Inserimento entries nella tabella pag_port_versamenti leggendo dalla tabella rpt
--- 950 secondi
+-- 1042 secondi
 INSERT INTO pag_port_versamenti (id_pagamento_portale,id_versamento) SELECT id_pagamento_portale,id_versamento FROM rpt;
 
 -- elimino colonne inutili dalle tabelle applicazioni e operatori
@@ -512,7 +518,7 @@ CREATE TABLE sv_tmp (
 INSERT INTO sv_tmp (id, indice_dati) SELECT sv1.id AS id, row_number() over (partition BY sv1.id_versamento ORDER BY sv1.id) AS indice_dati FROM singoli_versamenti sv1;
 
 CREATE INDEX idx_svtmp_fk_sv ON sv_tmp (id);
--- 130 secondi
+-- 232 secondi
 UPDATE singoli_versamenti SET indice_dati = (SELECT sv_tmp.indice_dati FROM sv_tmp WHERE singoli_versamenti.id = sv_tmp.id);
 
 DROP INDEX idx_svtmp_fk_sv;
