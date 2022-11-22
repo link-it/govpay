@@ -967,7 +967,7 @@ CREATE INDEX idx_ppv_fk_vrs ON pag_port_versamenti (id_versamento);
 -- CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
 
 DROP INDEX index_iuv_1;
-CREATE INDEX idx_iuv_rifversamento ON iuv (cod_versamento_ente,id_applicazione,tipo_iuv);
+CREATE INDEX idx_iuv_riversamento ON iuv (cod_versamento_ente,id_applicazione,tipo_iuv);
 
 -- CREATE INDEX idx_pag_fk_rpt ON pagamenti (id_rpt);
 -- CREATE INDEX idx_pag_fk_sng ON pagamenti (id_singolo_versamento);
@@ -1407,14 +1407,18 @@ UPDATE rendicontazioni SET id_pagamento =
 -- Imposto il riferimento al versamento
 CREATE INDEX idx_rnd_iuv ON rendicontazioni (iuv);
 CREATE INDEX idx_vrs_iuv_vrs ON versamenti (iuv_versamento);
+CREATE INDEX idx_fr_dom ON fr (cod_dominio);
+CREATE INDEX idx_rnd_id_sv ON rendicontazioni (id_singolo_versamento);
+CREATE INDEX idx_vrs_iuv_pag ON versamenti (iuv_pagamento);
 		
-UPDATE rendicontazioni SET id_singolo_versamento = 
+UPDATE /*+ INDEX(rendicontazioni idx_rnd_id_sv) INDEX(fr IDX_FR_DOM) INDEX(domini UNIQUE_DOMINI) INDEX(rendicontazioni idx_rnd_iuv) INDEX(versamenti idx_vrs_iuv_pag) INDEX(singoli_versamenti IDX_SV_FK_VRS) INDEX(singoli_versamenti PK_SINGOLI_VERSAMENTI) */ rendicontazioni SET id_singolo_versamento = 
 	(SELECT singoli_versamenti.id FROM fr, versamenti, domini, singoli_versamenti 
         WHERE fr.id=rendicontazioni.id_fr 
         AND fr.cod_dominio=domini.cod_dominio 
         AND domini.id=versamenti.id_dominio 
-        AND rendicontazioni.iuv=versamenti.iuv_versamento
-        AND singoli_versamenti.id_versamento=versamenti.id) WHERE rendicontazioni.id_singolo_versamento IS NULL ;
+        AND rendicontazioni.iuv=versamenti.iuv_pagamento
+        AND singoli_versamenti.id_versamento=versamenti.id
+        AND rendicontazioni.id_singolo_versamento IS NULL AND  versamenti.iuv_pagamento IS NOT NULL) WHERE rendicontazioni.id_singolo_versamento IS NULL;
 		
 UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' WHERE id_pagamento IS NULL AND esito=0;
 UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS NULL;
@@ -1441,6 +1445,11 @@ UPDATE rendicontazioni SET stato='ALTRO_INTERMEDIARIO', anomalie=NULL WHERE rend
 	AND length(rendicontazioni.iuv) <> 15 AND rendicontazioni.id_fr IN (
 		SELECT fr.id FROM fr, domini WHERE domini.cod_dominio=fr.cod_dominio AND domini.aux_digit='0'
 	);
+	
+DROP INDEX idx_vrs_iuv_vrs;
+DROP INDEX idx_vrs_iuv_pag;
+DROP INDEX idx_fr_dom;
+DROP INDEX idx_rnd_iuv;
 	
 -- 29/04/2022 Tabella configurazione nella versione definitiva
 CREATE SEQUENCE seq_configurazione MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
@@ -1643,12 +1652,12 @@ CREATE TABLE eventi
 	componente VARCHAR2(35 CHAR),
 	ruolo VARCHAR2(1 CHAR),
 	categoria_evento VARCHAR2(1 CHAR),
-	tipo_evento VARCHAR2(70 CHAR),
-	sottotipo_evento VARCHAR2(35 CHAR),
+	tipo_evento VARCHAR2(255 CHAR),
+	sottotipo_evento VARCHAR2(255 CHAR),
 	data TIMESTAMP,
 	intervallo NUMBER,
 	esito VARCHAR2(4 CHAR),
-	sottotipo_esito VARCHAR2(35 CHAR),
+	sottotipo_esito VARCHAR2(255 CHAR),
 	dettaglio_esito CLOB,
 	parametri_richiesta BLOB,
 	parametri_risposta BLOB,
@@ -2627,7 +2636,55 @@ UPDATE utenze SET password = '$1$jil82b4n$GRX4A2H91f7L7dJ3kL2Vc.' where principa
 UPDATE utenze SET autorizzazione_domini_star = 1 where principal='gpadmin'; 
 UPDATE utenze SET autorizzazione_tipi_vers_star = 1 where principal='gpadmin';
 
+-- 3.6.x
 
+-- 30/08/2021 Aggiunta colonna connettore maggioli jppa alla tabella domini
+ALTER TABLE domini ADD cod_connettore_maggioli_jppa VARCHAR2(255 CHAR);
+
+-- 07/04/2022 Allegati di una pendenza
+
+CREATE SEQUENCE seq_allegati MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE allegati
+(
+	nome VARCHAR2(255 CHAR) NOT NULL,
+	tipo VARCHAR2(255 CHAR),
+	descrizione VARCHAR2(255 CHAR),
+	data_creazione TIMESTAMP NOT NULL,
+	raw_contenuto BLOB,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_versamento NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_all_id_versamento FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	CONSTRAINT pk_allegati PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_allegati
+BEFORE
+insert on allegati
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_allegati.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+ALTER TABLE allegati DROP CONSTRAINT fk_all_id_versamento;
+
+--16/05/2022 Pulizia della tabella sonde
+DELETE FROM sonde WHERE nome = 'update-psp'; 
+DELETE FROM sonde WHERE nome = 'generazione-avvisi';
+DELETE FROM sonde WHERE nome = 'reset-cache';
+
+-- 26/05/2022 Aggiunto indice sulla foreign key verso fr alla tabella rendicontazioni
+-- Gia' presente
+-- CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
+
+-- 13/06/2022 Aggiunta colonna tassonomiaPagoPA alla tabella domini
+ALTER TABLE domini ADD tassonomia_pago_pa VARCHAR2(35 CHAR);
 
 
 
