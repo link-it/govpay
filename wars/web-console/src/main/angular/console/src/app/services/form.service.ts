@@ -20,6 +20,7 @@ export class FormService {
   public static FORM_PH_DEBITORE: string = 'Cod. Fisc. o P. IVA';
   public static FORM_STATO: string = 'Stato';
   public static FORM_ENTE_CREDITORE: string = 'Ente creditore';
+  public static FORM_MOSTRA_SPONTANEI: string = 'Nascondi spontanei';
 
   //Pagamenti
   public static FORM_VERSANTE: string = 'Versante';
