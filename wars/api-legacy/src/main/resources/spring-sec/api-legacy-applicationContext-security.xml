@@ -12,6 +12,8 @@
                 secured-annotations="enabled">
         </global-method-security>
         
+        <!-- BASIC_GOVPAY_PROVIDER_START 
+        
         <b:bean id="basicAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
     		<b:property name="wwwAuthenticate" value="false"/>
         </b:bean>
@@ -20,9 +22,6 @@
         	<b:property name="apiName" value="API_LEGACY" />
         	<b:property name="authType" value="BASIC" />
         </b:bean>
-        
-        
-        <!-- BASIC_GOVPAY_PROVIDER_START 
         
         <b:bean id="govpayPasswordEncoder" class="it.govpay.rs.security.crypto.GovpayPasswordEncoder" />
         
