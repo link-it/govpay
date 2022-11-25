@@ -155,6 +155,9 @@
         <com.google.zxing.javase.version>2.2</com.google.zxing.javase.version>
         <!-- dynamicreports-core -->
         <dynamicreports-core.version>4.1.1</dynamicreports-core.version>
+        
+         <!-- dynamicreports-core -->
+         <govpay-custom-handler.version>1.0.3</govpay-custom-handler.version>
 	</properties>
 
 	<dependencyManagement>
@@ -1051,6 +1054,14 @@
 			    <groupId>jaxen</groupId>
 			    <artifactId>jaxen</artifactId>
 			    <version>${jaxen.version}</version>
+			</dependency>
+			
+			<!-- Customizzazioni -->
+		
+			<dependency>
+				<groupId>it.cineca</groupId>
+				<artifactId>govpay-custom</artifactId>
+				<version>${govpay-custom-handler.version}</version>
 			</dependency>
 			
 		</dependencies>

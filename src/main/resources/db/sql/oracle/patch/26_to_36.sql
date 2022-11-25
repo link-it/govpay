@@ -796,6 +796,9 @@ DELETE FROM connettori WHERE cod_connettore LIKE '%_VERIFICA';
 
 ALTER TABLE applicazioni DROP COLUMN cod_connettore_verifica;
 
+-- Versione del connettore integrazione impostata a SOAP_1
+INSERT into connettori (cod_connettore,cod_proprieta,valore) SELECT DISTINCT connettori.cod_connettore, 'VERSIONE' AS cod_proprieta, 'SOAP_1' AS valore FROM connettori WHERE connettori.cod_connettore like '%INTEGRAZIONE';
+
 -- 09/04/2019 ACL sulle API
 INSERT INTO acl (servizio,diritti,id_utenza) SELECT 'API Pagamenti' AS Servizio , 'RW' AS diritti, acl.id_utenza FROM acl JOIN applicazioni ON acl.id_utenza = applicazioni.id_utenza WHERE (acl.ruolo IS NULL AND acl.id_utenza IS NOT NULL AND acl.servizio  = 'Pagamenti');
 INSERT INTO acl (servizio,diritti,id_utenza) SELECT 'API Pendenze' AS Servizio , 'RW' AS diritti, acl.id_utenza FROM acl JOIN applicazioni ON acl.id_utenza = applicazioni.id_utenza WHERE (acl.ruolo IS NULL AND acl.id_utenza IS NOT NULL AND acl.servizio  = 'Pendenze');

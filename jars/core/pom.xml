@@ -289,7 +289,6 @@
 		<dependency>
 			<groupId>it.cineca</groupId>
 			<artifactId>govpay-custom</artifactId>
-			<version>1.0.3</version>
 		</dependency>
 		
 	</dependencies>
