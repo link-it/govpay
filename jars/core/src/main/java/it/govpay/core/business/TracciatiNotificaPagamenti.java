@@ -1092,9 +1092,12 @@ public class TracciatiNotificaPagamenti {
 		case SANP_240:
 			return TracciatiNotificaPagamentiUtils.creaLineaCsvGovPayRpt_SANP24(rpt,configWrapper);
 		case SANP_230:
-		default:
 			return TracciatiNotificaPagamentiUtils.creaLineaCsvGovPayRpt_SANP23(rpt,configWrapper);
+		case SANP_321_V2:
+			return TracciatiNotificaPagamentiUtils.creaLineaCsvGovPayRpt_SANP321_V2(rpt,configWrapper);
 		}
+		
+		return TracciatiNotificaPagamentiUtils.creaLineaCsvGovPayRpt_SANP23(rpt,configWrapper);
 	}
 
 	
@@ -1122,9 +1125,12 @@ public class TracciatiNotificaPagamenti {
 		case SANP_240:
 			return TracciatiNotificaPagamentiUtils.creaLineaCsvMyPivotRpt_SANP24(rpt,configWrapper);
 		case SANP_230:
-		default:
 			return TracciatiNotificaPagamentiUtils.creaLineaCsvMyPivotRpt_SANP23(rpt,configWrapper);
+		case SANP_321_V2:
+			return TracciatiNotificaPagamentiUtils.creaLineaCsvMyPivotRpt_SANP321_V2(rpt,configWrapper);
 		}
+		
+		return TracciatiNotificaPagamentiUtils.creaLineaCsvMyPivotRpt_SANP23(rpt,configWrapper);
 	}
 	
 	private void creaLineaCsvSecim(Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore, OutputStream secimOS, OutputStream noSecimOS) 
@@ -1136,8 +1142,10 @@ public class TracciatiNotificaPagamenti {
 			TracciatiNotificaPagamentiUtils.creaLineaCsvSecimRpt_SANP24(log, rpt, configWrapper, numeroLinea, connettore, secimOS, noSecimOS);
 			break;
 		case SANP_230:
-		default:
 			TracciatiNotificaPagamentiUtils.creaLineaCsvSecimRpt_SANP23(log, rpt, configWrapper, numeroLinea, connettore, secimOS, noSecimOS);
+			break;
+		case SANP_321_V2:
+			TracciatiNotificaPagamentiUtils.creaLineaCsvSecimRpt_SANP321_V2(log, rpt, configWrapper, numeroLinea, connettore, secimOS, noSecimOS);
 			break;
 		}
 	}

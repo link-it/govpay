@@ -25,8 +25,10 @@ import it.govpay.core.exceptions.ValidationException;
 import org.xml.sax.SAXException;
 
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceipt;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceiptV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtSubject;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
@@ -231,6 +233,11 @@ public class MaggioliJPPAUtils {
 		case SANP_240:
 		{
 			popolaRicevutaDaRPT24(ricevutaTelematica, rpt, versamento, singoliVersamenti, configWrapper);
+		}
+		break;
+		case SANP_321_V2:
+		{
+			popolaRicevutaDaRPT32(ricevutaTelematica, rpt, versamento, singoliVersamenti, configWrapper);
 		}
 		break;
 		}
@@ -472,6 +479,98 @@ public class MaggioliJPPAUtils {
 	}
 
 	private static void popolaIstitutoAttestanteRT24(CtRicevutaTelematica ricevutaTelematica, PaSendRTReq paSendRTReq_RT) {
+		CtIstitutoAttestante istitutoAttestante = new CtIstitutoAttestante();
+		istitutoAttestante.setDenominazioneAttestante(paSendRTReq_RT.getReceipt().getPSPCompanyName());
+		CtIdentificativoUnivoco identificativoUnivocoAttestante = new CtIdentificativoUnivoco();
+		identificativoUnivocoAttestante.setCodiceIdentificativoUnivoco(paSendRTReq_RT.getReceipt().getPspFiscalCode());
+		//		switch (rt.getIstitutoAttestante().getIdentificativoUnivocoAttestante().getTipoIdentificativoUnivoco()) {
+		//		case A:
+		//			identificativoUnivocoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.A);
+		//			break;
+		//		case B:
+		//			identificativoUnivocoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.B);
+		//			break;
+		//		case G:
+		identificativoUnivocoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.G);
+		//			break;
+		//		}
+		istitutoAttestante.setIdentificativoUnivocoAttestante(identificativoUnivocoAttestante );
+		ricevutaTelematica.setIstitutoAttestante(istitutoAttestante);
+	}
+	
+	private static void popolaRicevutaDaRPT32(CtRicevutaTelematica ricevutaTelematica, Rpt rpt, Versamento versamento, List<SingoloVersamento> singoliVersamenti, BDConfigWrapper configWrapper) throws DatatypeConfigurationException, JAXBException, SAXException, ServiceException {
+		PaSendRTV2Request paSendRTReq_RT = it.govpay.pagopa.beans.utils.JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+
+		ricevutaTelematica.setDataOraMessaggioRicevuta(impostaDataOperazione(rpt.getDataMsgRicevuta()));
+		popolaDatiVersamentoRT(ricevutaTelematica, rpt);
+		popolaEnteBeneficiarioRT(ricevutaTelematica, rpt, versamento, configWrapper);
+		ricevutaTelematica.setIdDominio(rpt.getCodDominio());
+		ricevutaTelematica.setIdentificativoMessaggioRicevuta(paSendRTReq_RT.getReceipt().getReceiptId());
+
+		popolaIstitutoAttestanteRT32(ricevutaTelematica, paSendRTReq_RT);
+		popoloaParametriPSP(ricevutaTelematica, rpt);
+		ricevutaTelematica.setRicevutaXML(new String(rpt.getXmlRt()));
+		ricevutaTelematica.setRiferimentoDataRichiesta(impostaDataOperazione(rpt.getDataMsgRichiesta()));
+		ricevutaTelematica.setRiferimentoMessaggioRichiesta(rpt.getCodMsgRichiesta());
+		popolaSoggettoPagatoreRT32(ricevutaTelematica, paSendRTReq_RT);
+		popolaSoggettoVersanteRT32(ricevutaTelematica, paSendRTReq_RT);
+	}
+
+	private static void popolaSoggettoPagatoreRT32(CtRicevutaTelematica ricevutaTelematica, PaSendRTV2Request paSendRTReq_RT) {
+		CtSoggettoPagatore soggettoPagatore = new CtSoggettoPagatore();
+		CtReceiptV2 receipt = paSendRTReq_RT.getReceipt();
+		CtSubject debtor = receipt.getDebtor();
+		soggettoPagatore.setAnagraficaPagatore(debtor.getFullName());
+		soggettoPagatore.setCapPagatore(debtor.getPostalCode());
+		soggettoPagatore.setCivicoPagatore(debtor.getCivicNumber());
+		soggettoPagatore.setEMailPagatore(debtor.getEMail());
+		CtIdentificativoUnivocoPersonaFG identificativoUnivocoPagatore = new CtIdentificativoUnivocoPersonaFG();
+		identificativoUnivocoPagatore.setCodiceIdentificativoUnivoco(debtor.getUniqueIdentifier().getEntityUniqueIdentifierValue());
+		switch (debtor.getUniqueIdentifier().getEntityUniqueIdentifierType()) {
+		case F:
+			identificativoUnivocoPagatore.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivocoPersFG.F);
+			break;
+		case G:
+			identificativoUnivocoPagatore.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivocoPersFG.G);
+			break;
+		}
+		soggettoPagatore.setIdentificativoUnivocoPagatore(identificativoUnivocoPagatore );
+		soggettoPagatore.setIndirizzoPagatore(debtor.getStreetName());
+		soggettoPagatore.setLocalitaPagatore(debtor.getCity());
+		soggettoPagatore.setNazionePagatore(debtor.getCountry());
+		soggettoPagatore.setProvinciaPagatore(debtor.getStateProvinceRegion());
+		ricevutaTelematica.setSoggettoPagatore(soggettoPagatore);
+	}
+
+	private static void popolaSoggettoVersanteRT32(CtRicevutaTelematica ricevutaTelematica, PaSendRTV2Request paSendRTReq_RT) {
+		CtReceiptV2 receipt = paSendRTReq_RT.getReceipt();
+		CtSubject payer = receipt.getPayer();
+		if(payer != null) {
+			CtSoggettoVersante soggettoVersante = new CtSoggettoVersante();
+			soggettoVersante.setAnagraficaVersante(payer.getFullName());
+			soggettoVersante.setCapVersante(payer.getPostalCode());
+			soggettoVersante.setCivicoVersante(payer.getCivicNumber());
+			soggettoVersante.setEMailVersante(payer.getEMail());
+			CtIdentificativoUnivocoPersonaFG identificativoUnivocoVersante = new CtIdentificativoUnivocoPersonaFG();
+			identificativoUnivocoVersante.setCodiceIdentificativoUnivoco(payer.getUniqueIdentifier().getEntityUniqueIdentifierValue());
+			switch (payer.getUniqueIdentifier().getEntityUniqueIdentifierType()) {
+			case F:
+				identificativoUnivocoVersante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivocoPersFG.F);
+				break;
+			case G:
+				identificativoUnivocoVersante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivocoPersFG.G);
+				break;
+			}
+			soggettoVersante.setIdentificativoUnivocoVersante(identificativoUnivocoVersante );
+			soggettoVersante.setIndirizzoVersante(payer.getStreetName());
+			soggettoVersante.setLocalitaVersante(payer.getCity());
+			soggettoVersante.setNazioneVersante(payer.getCountry());
+			soggettoVersante.setProvinciaVersante(payer.getStateProvinceRegion());
+			ricevutaTelematica.setSoggettoVersante(soggettoVersante);
+		}
+	}
+
+	private static void popolaIstitutoAttestanteRT32(CtRicevutaTelematica ricevutaTelematica, PaSendRTV2Request paSendRTReq_RT) {
 		CtIstitutoAttestante istitutoAttestante = new CtIstitutoAttestante();
 		istitutoAttestante.setDenominazioneAttestante(paSendRTReq_RT.getReceipt().getPSPCompanyName());
 		CtIdentificativoUnivoco identificativoUnivocoAttestante = new CtIdentificativoUnivoco();
