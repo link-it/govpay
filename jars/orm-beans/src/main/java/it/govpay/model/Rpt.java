@@ -173,6 +173,7 @@ public class Rpt extends BasicModel{
 	
 	public enum Versione {
 		
+		SANP_321_V2,
 		SANP_240,
 		SANP_230;
 		
