@@ -23,6 +23,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 	"tsPassword",
 	"tsType",
 	"sslType",
+"valore",
 })
 public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable implements IValidable {
 
@@ -105,6 +106,9 @@ public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable im
 		  
 	@JsonProperty("sslType")
 	private String sslType = null;
+
+  @JsonProperty("valore")
+  private String valore = null;
 
 	/**
 	 **/
@@ -321,6 +325,21 @@ public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable im
     this.sslType = sslType;
   }
 
+  /**
+   **/
+  public TipoAutenticazione valore(String valore) {
+    this.valore = valore;
+    return this;
+  }
+
+  @JsonProperty("valore")
+  public String getValore() {
+    return valore;
+  }
+  public void setValore(String valore) {
+    this.valore = valore;
+  }
+
 	@Override
 	public boolean equals(java.lang.Object o) {
 		if (this == o) {
@@ -340,12 +359,13 @@ public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable im
 				Objects.equals(this.tsLocation, tipoAutenticazione.tsLocation) &&
 				Objects.equals(this.tsPassword, tipoAutenticazione.tsPassword)&&
 		        Objects.equals(tsType, tipoAutenticazione.tsType) &&
-		        Objects.equals(sslType, tipoAutenticazione.sslType);
+		        Objects.equals(sslType, tipoAutenticazione.sslType) &&
+        Objects.equals(valore, tipoAutenticazione.valore);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.username, this.password, this.tipo, this.ksLocation, this.ksPassword, ksType, ksPKeyPasswd, this.tsLocation, this.tsPassword, tsType, sslType);
+		return Objects.hash(this.username, this.password, this.tipo, this.ksLocation, this.ksPassword, ksType, ksPKeyPasswd, this.tsLocation, this.tsPassword, tsType, sslType, valore);
 	}
 
 	public static TipoAutenticazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
@@ -373,6 +393,7 @@ public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable im
 		sb.append("    tsPassword: ").append(this.toIndentedString(this.tsPassword)).append("\n");
 		sb.append("    tsType: ").append(toIndentedString(tsType)).append("\n");
 		sb.append("    sslType: ").append(toIndentedString(sslType)).append("\n");
+    sb.append("    valore: ").append(toIndentedString(valore)).append("\n");
 		sb.append("}");
 		return sb.toString();
 	}
@@ -393,33 +414,38 @@ public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable im
 
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		
-		// validazione credenziali httpbasic
-		if(this.username != null || this.password != null) {
-			vf.getValidator("username", this.username).notNull().minLength(1).maxLength(255);
-			vf.getValidator("password", this.password).notNull().minLength(1).maxLength(255);
+		// validazione credenziali subscriptionKey
+		if(this.valore != null) {
+			vf.getValidator("valore", this.valore).notNull().minLength(1).maxLength(255);
 		} else {
-			vf.getValidator("tipo", this.tipo).notNull();
-			vf.getValidator("tsLocation", this.tsLocation).notNull().minLength(1).maxLength(255);
-			vf.getValidator("tsPassword", this.tsPassword).notNull().minLength(1).maxLength(255);
-		
-			vf.getValidator("tsType", this.tsType).notNull();
-			if(KeystoreType.fromValue(this.tsType) == null){
-				throw new ValidationException("Codifica inesistente per tsType. Valore fornito [" + this.tsType + "] valori possibili " + ArrayUtils.toString(KeystoreType.values()));
-			}
+			// validazione credenziali httpbasic
+			if(this.username != null || this.password != null) {
+				vf.getValidator("username", this.username).notNull().minLength(1).maxLength(255);
+				vf.getValidator("password", this.password).notNull().minLength(1).maxLength(255);
+			} else {
+				vf.getValidator("tipo", this.tipo).notNull();
+				vf.getValidator("tsLocation", this.tsLocation).notNull().minLength(1).maxLength(255);
+				vf.getValidator("tsPassword", this.tsPassword).notNull().minLength(1).maxLength(255);
 			
-			vf.getValidator("sslType", this.sslType).notNull();
-			if(SslConfigType.fromValue(this.sslType) == null)
-				throw new ValidationException("Codifica inesistente per sslType. Valore fornito [" + this.sslType + "] valori possibili " + ArrayUtils.toString(SslConfigType.values()));
-			
-			if(this.tipo.equals(TipoEnum.CLIENT)) {
-				vf.getValidator("ksLocation", this.ksLocation).notNull().minLength(1).maxLength(255);
-				vf.getValidator("ksPassword", this.ksPassword).notNull().minLength(1).maxLength(255);
-				vf.getValidator("ksType", this.ksType).notNull();
-				if(KeystoreType.fromValue(this.ksType) == null){
-					throw new ValidationException("Codifica inesistente per ksType. Valore fornito [" + this.ksType + "] valori possibili " + ArrayUtils.toString(KeystoreType.values()));
+				vf.getValidator("tsType", this.tsType).notNull();
+				if(KeystoreType.fromValue(this.tsType) == null){
+					throw new ValidationException("Codifica inesistente per tsType. Valore fornito [" + this.tsType + "] valori possibili " + ArrayUtils.toString(KeystoreType.values()));
 				}
 				
-				vf.getValidator("ksPKeyPasswd", this.ksPKeyPasswd).notNull().minLength(1).maxLength(255);
+				vf.getValidator("sslType", this.sslType).notNull();
+				if(SslConfigType.fromValue(this.sslType) == null)
+					throw new ValidationException("Codifica inesistente per sslType. Valore fornito [" + this.sslType + "] valori possibili " + ArrayUtils.toString(SslConfigType.values()));
+				
+				if(this.tipo.equals(TipoEnum.CLIENT)) {
+					vf.getValidator("ksLocation", this.ksLocation).notNull().minLength(1).maxLength(255);
+					vf.getValidator("ksPassword", this.ksPassword).notNull().minLength(1).maxLength(255);
+					vf.getValidator("ksType", this.ksType).notNull();
+					if(KeystoreType.fromValue(this.ksType) == null){
+						throw new ValidationException("Codifica inesistente per ksType. Valore fornito [" + this.ksType + "] valori possibili " + ArrayUtils.toString(KeystoreType.values()));
+					}
+					
+					vf.getValidator("ksPKeyPasswd", this.ksPKeyPasswd).notNull().minLength(1).maxLength(255);
+				}
 			}
 		}
 	}

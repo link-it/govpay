@@ -132,8 +132,9 @@ public abstract class BasicClientCORE {
 	//	protected static Map<String, SSLContext> sslContexts = new HashMap<>();
 	protected URL url = null;
 	//	protected SSLContext sslContext;
-	protected boolean ishttpBasicEnabled=false, isSslEnabled=false;
+	protected boolean ishttpBasicEnabled=false, isSslEnabled=false, isSubscriptionKeyEnabled=false;
 	protected String httpBasicUser, httpBasicPassword;
+	protected String subscriptionKeyHeaderName, subscriptionKeyHeaderValue;
 	protected String errMsg;
 	protected String destinatario;
 	protected String mittente;
@@ -307,6 +308,13 @@ public abstract class BasicClientCORE {
 			this.httpBasicPassword = connettore.getHttpPassw();
 
 			this.getEventoCtx().setPrincipal(this.httpBasicUser);
+		}
+		
+		if(connettore.getTipoAutenticazione().equals(EnumAuthType.SUBSCRIPTION_KEY)) {
+			this.getEventoCtx().setPrincipal("Subscription Key Auth");
+			this.isSubscriptionKeyEnabled = true;
+			this.subscriptionKeyHeaderName = GovpayConfig.getInstance().getNomeHeaderSubscriptionKeyPagoPA();
+			this.subscriptionKeyHeaderValue = connettore.getSubscriptionKeyValue();
 		}
 	}
 
@@ -603,7 +611,17 @@ public abstract class BasicClientCORE {
 				if(this.debug)
 					log.debug("Impostato Header Authorization [Basic "+encoding+"]");
 			}
-
+			
+			// Authentication Subscription Key
+			if(this.isSubscriptionKeyEnabled) {
+				if(this.debug)
+					log.debug("Impostazione autenticazione...");
+				
+				this.dumpRequest.getHeaders().put(this.subscriptionKeyHeaderName, this.subscriptionKeyHeaderValue);
+				this.httpRequest.addHeader(this.subscriptionKeyHeaderName, this.subscriptionKeyHeaderValue);
+				if(this.debug)
+					log.debug("Impostato Header Subscription Key ["+this.subscriptionKeyHeaderName+"]["+this.subscriptionKeyHeaderValue+"]");
+			}
 
 			// Impostazione Proprieta del trasporto
 			if(headerProperties!= null  && headerProperties.size() > 0) {

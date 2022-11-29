@@ -24,22 +24,27 @@ public class ConnettorePagopaConverter {
 			connettore.setSslType(connector.getAuth().getSslType());
 			connettore.setSslKsType(connector.getAuth().getKsType());
 			connettore.setSslPKeyPasswd(connector.getAuth().getKsPKeyPasswd());
+			connettore.setSubscriptionKeyValue(connector.getAuth().getValore());
 			
-			if(connector.getAuth().getTipo() != null) {
-				connettore.setTipoAutenticazione(EnumAuthType.SSL);
-				if(connector.getAuth().getTipo() != null) {
-					switch (connector.getAuth().getTipo()) {
-					case CLIENT:
-						connettore.setTipoSsl(EnumSslType.CLIENT);
-						break;
-					case SERVER:
-					default:
-						connettore.setTipoSsl(EnumSslType.SERVER);
-						break;
-					}
-				}
+			if(connector.getAuth().getValore() != null) {
+				connettore.setTipoAutenticazione(EnumAuthType.SUBSCRIPTION_KEY);
 			} else {
-				connettore.setTipoAutenticazione(EnumAuthType.HTTPBasic);
+				if(connector.getAuth().getTipo() != null) {
+					connettore.setTipoAutenticazione(EnumAuthType.SSL);
+					if(connector.getAuth().getTipo() != null) {
+						switch (connector.getAuth().getTipo()) {
+						case CLIENT:
+							connettore.setTipoSsl(EnumSslType.CLIENT);
+							break;
+						case SERVER:
+						default:
+							connettore.setTipoSsl(EnumSslType.SERVER);
+							break;
+						}
+					}
+				} else {
+					connettore.setTipoAutenticazione(EnumAuthType.HTTPBasic);
+				}
 			}
 		} else {
 			connettore.setTipoAutenticazione(EnumAuthType.NONE);
@@ -73,7 +78,8 @@ public class ConnettorePagopaConverter {
 		.tsType(connettore.getSslTsType())
 		.sslType(connettore.getSslType())
 		.ksType(connettore.getSslKsType())
-		.ksPKeyPasswd(connettore.getSslPKeyPasswd());
+		.ksPKeyPasswd(connettore.getSslPKeyPasswd())
+		.valore(connettore.getSubscriptionKeyValue());
 		
 		if(connettore.getTipoSsl() != null) {
 			switch (connettore.getTipoSsl() ) {
