@@ -27,7 +27,6 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
-import it.gov.digitpa.schemas._2011.pagamenti.CtDatiMarcaBolloDigitale;
 import it.gov.digitpa.schemas._2011.pagamenti.StAutenticazioneSoggetto;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtEntityUniqueIdentifier;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentPA;

@@ -70,7 +70,9 @@ public class JaxbUtils {
 			RPT_RT_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/comuni/PagInf_RPT_RT_6_2_0.xsd"))); 
 			FR_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/comuni/FlussoRiversamento_1_0_4.xsd"))); 
 			RR_ER_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/comuni/RR_ER_1_0_0.xsd")));
-			PAForNode_Schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/comuni/paForNode.xsd"))); 
+
+			javax.xml.transform.Source sources [] = {new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/comuni/sac-common-types-1.0.xsd")), new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/comuni/paForNode.xsd"))};
+			PAForNode_Schema = schemaFactory.newSchema(sources); 
 			
 			jaxbBolloContext = JAXBContext.newInstance("it.gov.agenziaentrate._2014.marcadabollo");
 			jaxbWsRptContext = JAXBContext.newInstance("gov.telematici.pagamenti.ws.rpt:gov.telematici.pagamenti.ws.rpt.ppthead");

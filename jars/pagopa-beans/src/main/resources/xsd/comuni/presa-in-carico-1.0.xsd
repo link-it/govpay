@@ -6,7 +6,7 @@
             xmlns:sac="http://ws.pagamenti.telematici.gov/"
             targetNamespace="http://ws.pagamenti.telematici.gov/">
 
-<!--     <xsd:include schemaLocation="sac-common-types-1.0.xsd"/> -->
+    <xsd:include schemaLocation="sac-common-types-1.0.xsd"/>
 
     <xsd:simpleType name="stCodiceEsitoPresaInCarico">
         <xsd:restriction base="xsd:integer">
@@ -19,20 +19,6 @@
             <xsd:enumeration value="6"/><!-- Altri errori -->
         </xsd:restriction>
     </xsd:simpleType>
-    
-    <xsd:simpleType name="stIdentificativoFlusso">
-	    <xsd:restriction base="xsd:string">
-	        <xsd:minLength value="1"/>
-	        <xsd:maxLength value="70"/>
-	    </xsd:restriction>
-	</xsd:simpleType>
-    
-    <xsd:simpleType name="stText140">
-        <xsd:restriction base="xsd:string">
-                <xsd:minLength value="1" />
-                <xsd:maxLength value="140" />
-        </xsd:restriction>
-	</xsd:simpleType>
 
     <xsd:complexType name="ctEsitoPresaInCarico">
         <xsd:sequence>
