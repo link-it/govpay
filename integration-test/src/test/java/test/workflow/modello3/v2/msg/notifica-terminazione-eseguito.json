@@ -32,7 +32,8 @@
                   "fiscalCodePA":"#(idDominio)",
                   "IBAN":"#(ibanAccredito)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Diritti e segreteria')",
-                  "transferCategory":"9/SEGRETERIA"
+                  "transferCategory":"9/SEGRETERIA",
+                  "metadata":null
                }
             ]
          },
@@ -70,7 +71,8 @@
                   "fiscalCodePA":"#(idDominio)",
                   "IBAN":"#(ibanAccredito)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Diritti e segreteria')",
-                  "transferCategory":"9/SEGRETERIA"
+                  "transferCategory":"9/SEGRETERIA",
+                  "metadata":null
                }
             ]
          },
@@ -101,7 +103,7 @@
 	      "tipo":"ENTRATA",
 	      "importo": "#(pendenzaPut.importo)",
 	      "data":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\d",
-	      "commissioni":null,
+	      "commissioni": 1.00,
 	      "allegato":null
 	   }
 	]
