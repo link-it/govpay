@@ -7751,6 +7751,15 @@ components:
       oneOf:
         - $ref: '#/components/schemas/tipoAutenticazioneBasic'
         - $ref: '#/components/schemas/tipoAutenticazioneSSL'
+        - $ref: '#/components/schemas/tipoAutenticazioneSubscriptionKey'
+    tipoAutenticazioneSubscriptionKey:
+      type: object
+      required:
+        - valore
+      properties:
+        valore:
+          type: string
+          example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
     connector:
       type: object
       required:

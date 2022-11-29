@@ -158,6 +158,8 @@ public class GovpayConfig {
 	
 	private boolean conversioneMessaggiPagoPAV2NelFormatoV1;
 	
+	private String nomeHeaderSubscriptionKeyPagoPA;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -238,6 +240,8 @@ public class GovpayConfig {
 		this.templateProspettoRiscossioni = null;
 		
 		this.conversioneMessaggiPagoPAV2NelFormatoV1 = false;
+		
+		this.nomeHeaderSubscriptionKeyPagoPA = null;
 		
 		try {
 
@@ -754,6 +758,8 @@ public class GovpayConfig {
 			if(conversioneMessaggiPagoPAV2NelFormatoV1String != null && Boolean.valueOf(conversioneMessaggiPagoPAV2NelFormatoV1String))
 				this.conversioneMessaggiPagoPAV2NelFormatoV1 = true;
 			
+			this.nomeHeaderSubscriptionKeyPagoPA = getProperty("it.govpay.client.pagopa.autenticazione.subscriptionkey.header.name", this.props, false, log);
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -1150,5 +1156,9 @@ public class GovpayConfig {
 	
 	public boolean isConversioneMessaggiPagoPAV2NelFormatoV1() {
 		return conversioneMessaggiPagoPAV2NelFormatoV1;
+	}
+	
+	public String getNomeHeaderSubscriptionKeyPagoPA() {
+		return nomeHeaderSubscriptionKeyPagoPA;
 	}
 }
