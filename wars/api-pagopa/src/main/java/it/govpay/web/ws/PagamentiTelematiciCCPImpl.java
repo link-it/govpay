@@ -95,6 +95,7 @@ import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.Applicazione;
 import it.govpay.core.exceptions.GovPayException;
@@ -2416,8 +2417,31 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 
 	@Override
-	public PaDemandPaymentNoticeResponse paDemandPaymentNotice(PaDemandPaymentNoticeRequest bodyrequest) {
-		// TODO Auto-generated method stub
-		return null;
+	public PaDemandPaymentNoticeResponse paDemandPaymentNotice(PaDemandPaymentNoticeRequest requestBody) {
+		String codDominio = requestBody.getIdPA();
+		
+		IContext ctx = ContextThreadLocal.get();
+		GpContext appContext = (GpContext) ctx.getApplicationContext();
+		
+		PaDemandPaymentNoticeResponse response = new PaDemandPaymentNoticeResponse();
+		
+		try {
+			throw new GovPayException("Operazione non disponibile.", EsitoOperazione.INTERNAL);
+		} catch (Exception e) {
+			response = this.buildRisposta(e, codDominio, response);
+			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
+			try {
+				ctx.getApplicationLogger().log("ccp.ricezioneAttivaKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
+			}
+			appContext.getEventoCtx().setSottotipoEsito(response.getFault().getFaultCode());
+			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
+		} finally {
+			GpContext.setResult(appContext.getTransaction(), response.getFault() == null ? null : response.getFault().getFaultCode());
+		}
+		
+		return response;
 	}
 }
