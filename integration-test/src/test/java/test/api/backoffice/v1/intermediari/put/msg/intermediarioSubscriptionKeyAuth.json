@@ -4,7 +4,7 @@
 	"servizioPagoPa": {
 		"urlRPT": '#(ndpsym_url + "/pagopa/PagamentiTelematiciRPTservice")',
 		"auth": {
-			"valore": "8daebdf9-558c-4203-aade-0dee45bfc08d"
+			"subscriptionKey": "8daebdf9-558c-4203-aade-0dee45bfc08d"
 		}
 	},
 	"abilitato": true

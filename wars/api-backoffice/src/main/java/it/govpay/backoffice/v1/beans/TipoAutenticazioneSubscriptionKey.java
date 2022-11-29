@@ -10,26 +10,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
-"valore",
+"subscriptionKey",
 })
 public class TipoAutenticazioneSubscriptionKey extends JSONSerializable {
   
-  @JsonProperty("valore")
-  private String valore = null;
+  @JsonProperty("subscriptionKey")
+  private String subscriptionKey = null;
   
   /**
    **/
-  public TipoAutenticazioneSubscriptionKey valore(String valore) {
-    this.valore = valore;
+  public TipoAutenticazioneSubscriptionKey subscriptionKey(String subscriptionKey) {
+    this.subscriptionKey = subscriptionKey;
     return this;
   }
 
-  @JsonProperty("valore")
-  public String getValore() {
-    return valore;
+  @JsonProperty("subscriptionKey")
+  public String getSubscriptionKey() {
+    return subscriptionKey;
   }
-  public void setValore(String valore) {
-    this.valore = valore;
+  public void setSubscriptionKey(String subscriptionKey) {
+    this.subscriptionKey = subscriptionKey;
   }
 
   @Override
@@ -41,12 +41,12 @@ public class TipoAutenticazioneSubscriptionKey extends JSONSerializable {
       return false;
     }
     TipoAutenticazioneSubscriptionKey tipoAutenticazioneSubscriptionKey = (TipoAutenticazioneSubscriptionKey) o;
-    return Objects.equals(valore, tipoAutenticazioneSubscriptionKey.valore);
+    return Objects.equals(subscriptionKey, tipoAutenticazioneSubscriptionKey.subscriptionKey);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(valore);
+    return Objects.hash(subscriptionKey);
   }
 
   public static TipoAutenticazioneSubscriptionKey parse(String json) throws ServiceException, ValidationException {
@@ -63,7 +63,7 @@ public class TipoAutenticazioneSubscriptionKey extends JSONSerializable {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoAutenticazioneSubscriptionKey {\n");
     
-    sb.append("    valore: ").append(toIndentedString(valore)).append("\n");
+    sb.append("    subscriptionKey: ").append(toIndentedString(subscriptionKey)).append("\n");
     sb.append("}");
     return sb.toString();
   }
