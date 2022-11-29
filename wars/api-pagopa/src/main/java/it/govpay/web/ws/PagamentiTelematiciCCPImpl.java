@@ -78,6 +78,7 @@ import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematiciccp.PagamentiTe
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Evento.TipoEventoCooperazione;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
@@ -87,7 +88,6 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.Evento.TipoEventoCooperazione;
 import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
@@ -97,6 +97,7 @@ import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.business.Applicazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
@@ -106,9 +107,9 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
-import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.CtPaymentPABuilder;
 import it.govpay.core.utils.CtReceiptUtils;
+import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
@@ -121,10 +122,10 @@ import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
-import it.govpay.model.Notifica.TipoNotifica;
-import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
+import it.govpay.model.Notifica.TipoNotifica;
+import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.model.Versamento.CausaleSpezzoni;
@@ -2414,8 +2415,31 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 
 	@Override
-	public PaDemandPaymentNoticeResponse paDemandPaymentNotice(PaDemandPaymentNoticeRequest bodyrequest) {
-		// TODO Auto-generated method stub
-		return null;
+	public PaDemandPaymentNoticeResponse paDemandPaymentNotice(PaDemandPaymentNoticeRequest requestBody) {
+		String codDominio = requestBody.getIdPA();
+		
+		IContext ctx = ContextThreadLocal.get();
+		GpContext appContext = (GpContext) ctx.getApplicationContext();
+		
+		PaDemandPaymentNoticeResponse response = new PaDemandPaymentNoticeResponse();
+		
+		try {
+			throw new GovPayException("Operazione non disponibile.", EsitoOperazione.INTERNAL);
+		} catch (Exception e) {
+			response = this.buildRisposta(e, codDominio, response);
+			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
+			try {
+				ctx.getApplicationLogger().log("ccp.ricezioneAttivaKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: " + e1.getMessage(),e1);
+			}
+			appContext.getEventoCtx().setSottotipoEsito(response.getFault().getFaultCode());
+			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
+			appContext.getEventoCtx().setEsito(Esito.FAIL);
+		} finally {
+			GpContext.setResult(appContext.getTransaction(), response.getFault() == null ? null : response.getFault().getFaultCode());
+		}
+		
+		return response;
 	}
 }
