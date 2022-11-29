@@ -24,7 +24,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 	"tsPassword",
 	"tsType",
 	"sslType",
-"valore",
+"subscriptionKey",
 })
 public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable implements IValidable {
 
@@ -108,8 +108,8 @@ public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable im
 	@JsonProperty("sslType")
 	private String sslType = null;
 
-  @JsonProperty("valore")
-  private String valore = null;
+  @JsonProperty("subscriptionKey")
+  private String subscriptionKey = null;
 
 	/**
 	 **/
@@ -328,17 +328,17 @@ public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable im
 
   /**
    **/
-  public TipoAutenticazione valore(String valore) {
-    this.valore = valore;
+  public TipoAutenticazione subscriptionKey(String subscriptionKey) {
+    this.subscriptionKey = subscriptionKey;
     return this;
   }
 
-  @JsonProperty("valore")
-  public String getValore() {
-    return valore;
+  @JsonProperty("subscriptionKey")
+  public String getSubscriptionKey() {
+    return subscriptionKey;
   }
-  public void setValore(String valore) {
-    this.valore = valore;
+  public void setSubscriptionKey(String subscriptionKey) {
+    this.subscriptionKey = subscriptionKey;
   }
 
 	@Override
@@ -361,12 +361,12 @@ public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable im
 				Objects.equals(this.tsPassword, tipoAutenticazione.tsPassword)&&
 		        Objects.equals(tsType, tipoAutenticazione.tsType) &&
 		        Objects.equals(sslType, tipoAutenticazione.sslType) &&
-        Objects.equals(valore, tipoAutenticazione.valore);
+        Objects.equals(subscriptionKey, tipoAutenticazione.subscriptionKey);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.username, this.password, this.tipo, this.ksLocation, this.ksPassword, ksType, ksPKeyPasswd, this.tsLocation, this.tsPassword, tsType, sslType, valore);
+		return Objects.hash(this.username, this.password, this.tipo, this.ksLocation, this.ksPassword, ksType, ksPKeyPasswd, this.tsLocation, this.tsPassword, tsType, sslType, subscriptionKey);
 	}
 
 	public static TipoAutenticazione parse(String json) throws IOException {
@@ -394,7 +394,7 @@ public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable im
 		sb.append("    tsPassword: ").append(this.toIndentedString(this.tsPassword)).append("\n");
 		sb.append("    tsType: ").append(toIndentedString(tsType)).append("\n");
 		sb.append("    sslType: ").append(toIndentedString(sslType)).append("\n");
-    sb.append("    valore: ").append(toIndentedString(valore)).append("\n");
+sb.append("    subscriptionKey: ").append(toIndentedString(subscriptionKey)).append("\n");
 		sb.append("}");
 		return sb.toString();
 	}
@@ -416,8 +416,8 @@ public class TipoAutenticazione extends it.govpay.core.beans.JSONSerializable im
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		
 		// validazione credenziali subscriptionKey
-		if(this.valore != null) {
-			vf.getValidator("valore", this.valore).notNull().minLength(1).maxLength(255);
+		if(this.subscriptionKey != null) {
+			vf.getValidator("subscriptionKey", this.subscriptionKey).notNull().minLength(1).maxLength(255);
 		} else {
 			// validazione credenziali httpbasic
 			if(this.username != null || this.password != null) {

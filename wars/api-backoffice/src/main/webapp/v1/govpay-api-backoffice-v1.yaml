@@ -7755,9 +7755,9 @@ components:
     tipoAutenticazioneSubscriptionKey:
       type: object
       required:
-        - valore
+        - subscriptionKey
       properties:
-        valore:
+        subscriptionKey:
           type: string
           example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
     connector:
