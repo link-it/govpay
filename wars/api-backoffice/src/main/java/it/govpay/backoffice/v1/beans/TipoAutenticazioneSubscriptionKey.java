@@ -3,12 +3,10 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "valore",
 })
@@ -49,7 +47,7 @@ public class TipoAutenticazioneSubscriptionKey extends JSONSerializable {
     return Objects.hash(valore);
   }
 
-  public static TipoAutenticazioneSubscriptionKey parse(String json) throws ServiceException, ValidationException {
+  public static TipoAutenticazioneSubscriptionKey parse(String json) throws IOException {
     return (TipoAutenticazioneSubscriptionKey) parse(json, TipoAutenticazioneSubscriptionKey.class);
   }
 
