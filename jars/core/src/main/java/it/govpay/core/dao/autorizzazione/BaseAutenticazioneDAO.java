@@ -13,6 +13,8 @@ public class BaseAutenticazioneDAO extends BaseDAO {
 	private String apiName;
 	private String authType;
 	protected boolean leggiUtenzaDaSessione = false;
+	private boolean userAutoSignup = false;
+	private String userAutoSignupDefaultRole = null;
 		
 	public BaseAutenticazioneDAO() {
 		super();
@@ -62,6 +64,22 @@ public class BaseAutenticazioneDAO extends BaseDAO {
 		this.leggiUtenzaDaSessione = leggiUtenzaDaSessione;
 	}
 
+	public boolean isUserAutoSignup() {
+		return userAutoSignup;
+	}
+
+	public void setUserAutoSignup(boolean userAutoSignup) {
+		this.userAutoSignup = userAutoSignup;
+	}
+
+	public String getUserAutoSignupDefaultRole() {
+		return userAutoSignupDefaultRole;
+	}
+
+	public void setUserAutoSignupDefaultRole(String userAutoSignupDefaultRole) {
+		this.userAutoSignupDefaultRole = userAutoSignupDefaultRole;
+	}
+
 	public void debug(String transactionId, String msg) {
 		StringBuilder sb = new StringBuilder();
 		
@@ -77,6 +95,15 @@ public class BaseAutenticazioneDAO extends BaseDAO {
 		}
 		if(this.apiName != null) {
 			sb.append(" | Leggi Utenza da Sessione: ").append(this.leggiUtenzaDaSessione);
+		}
+		
+		if(sb.length() > 0)
+			sb.append(" | ");
+		
+		if(this.userAutoSignup) {
+			sb.append("Autocensimento utenze attivo con ruolo default: " + this.userAutoSignupDefaultRole);
+		} else {
+			sb.append("Autocensimento utenze disabilitato");
 		}
 		
 		// Id transazione accesso DB
