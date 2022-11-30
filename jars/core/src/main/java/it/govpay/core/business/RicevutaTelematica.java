@@ -18,19 +18,23 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtIstitutoAttestante;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoPagatore;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceipt;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceiptV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtSubject;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferListPA;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferListPAReceiptV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPA;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPAReceiptV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
-import it.gov.pagopa.pagopa_api.pa.pafornode.StOutcome;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
+import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.StOutcome;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.RicevutaPagamento;
 import it.govpay.model.Rpt.EsitoPagamento;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.stampe.model.RicevutaTelematicaInput;
 import it.govpay.stampe.model.RicevutaTelematicaInput.ElencoVoci;
 import it.govpay.stampe.model.VoceRicevutaTelematicaInput;
@@ -76,6 +80,8 @@ public class RicevutaTelematica {
 			return this._fromRpt(rpt);
 		case SANP_240:
 			return this._fromRptVersione240(rpt);
+		case SANP_321_V2:
+			return this._fromRptVersione321_V2(rpt);
 		}
 		
 		return this._fromRpt(rpt);
@@ -384,5 +390,87 @@ public class RicevutaTelematica {
 			if(soggettoPagatore.getUniqueIdentifier() != null)
 				input.setCfSoggetto(StringUtils.isNotEmpty(soggettoPagatore.getUniqueIdentifier().getEntityUniqueIdentifierValue()) ? soggettoPagatore.getUniqueIdentifier().getEntityUniqueIdentifierValue() : "");
 		}
+	}
+	
+	public RicevutaTelematicaInput _fromRptVersione321_V2(it.govpay.bd.model.Rpt rpt) throws Exception{
+		RicevutaTelematicaInput input = new RicevutaTelematicaInput();
+		input.setVersioneOggetto(rpt.getVersione().name());
+
+		this.impostaAnagraficaEnteCreditore(rpt, input);
+		Versamento versamento = rpt.getVersamento();
+
+		PaSendRTV2Request rt = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+
+		CtReceiptV2 datiPagamento = rt.getReceipt();
+
+		CtTransferListPAReceiptV2 transferList = datiPagamento.getTransferList();
+		List<CtTransferPAReceiptV2> datiSingoloPagamento = transferList.getTransfer();
+
+		input.setCCP(datiPagamento.getReceiptId()); 
+		input.setIUV(datiPagamento.getCreditorReferenceId());
+
+		StringBuilder sbIstitutoAttestante = new StringBuilder();
+		if(datiPagamento.getPSPCompanyName() != null){
+			sbIstitutoAttestante.append(datiPagamento.getPSPCompanyName());
+			
+		}
+		
+		if(datiPagamento.getPspFiscalCode() != null){
+			if(sbIstitutoAttestante.length() > 0) {
+				sbIstitutoAttestante.append(", ");
+			}
+			sbIstitutoAttestante.append(datiPagamento.getPspFiscalCode());
+		}
+		
+		input.setIstituto(sbIstitutoAttestante.toString());
+
+
+		input.setElencoVoci(this.getElencoVoci(datiPagamento,datiSingoloPagamento,input,datiPagamento.getPaymentDateTime(), datiPagamento.getApplicationDate()));
+		input.setImporto(datiPagamento.getPaymentAmount().doubleValue());
+		input.setOggettoDelPagamento(versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().getSimple() : "");
+
+		StOutcome esitoPagamento = datiPagamento.getOutcome();
+
+		String stato = "";
+		switch(esitoPagamento) {
+		case KO:
+			stato = RicevutaTelematicaCostanti.PAGAMENTO_NON_ESEGUITO;
+			break;
+		case OK:
+			stato = RicevutaTelematicaCostanti.PAGAMENTO_ESEGUITO;
+			break;
+
+		}
+
+		input.setStato(stato);
+
+
+		CtSubject soggettoPagatore = datiPagamento.getDebtor();
+		if(soggettoPagatore != null) {
+			this.impostaIndirizzoSoggettoPagatore(input, soggettoPagatore);
+		}
+
+		return input;
+	}
+	
+	private ElencoVoci getElencoVoci(CtReceiptV2 rt, List<CtTransferPAReceiptV2> datiSingoloPagamento, RicevutaTelematicaInput input, Date dataRpt, Date dataRt) {
+		ElencoVoci elencoVoci = new ElencoVoci();
+
+		for (CtTransferPAReceiptV2 ctDatiSingoloPagamentoRT : datiSingoloPagamento) {
+			VoceRicevutaTelematicaInput voce = new VoceRicevutaTelematicaInput();
+
+			voce.setDescrizione(ctDatiSingoloPagamentoRT.getRemittanceInformation());
+			voce.setIdRiscossione(rt.getReceiptId());
+			voce.setImporto(ctDatiSingoloPagamentoRT.getTransferAmount().doubleValue());
+			voce.setStato(ctDatiSingoloPagamentoRT.getTransferAmount().compareTo(BigDecimal.ZERO) == 0 ? RicevutaTelematicaCostanti.PAGAMENTO_NON_ESEGUITO : RicevutaTelematicaCostanti.PAGAMENTO_ESEGUITO);
+
+			elencoVoci.getVoce().add(voce);
+			
+		}
+		
+		setDataOperazione(input, dataRpt);
+		setDataApplicativa(input, dataRt);
+
+		return elencoVoci;
 	}
 }

@@ -29,7 +29,7 @@ public class FlussiRendicontazioneConverter {
 		rsModel.setImportoTotale(fr.getImportoTotalePagamenti().doubleValue());
 		rsModel.setIdPsp(fr.getCodPsp());
 		rsModel.setIdDominio(fr.getCodDominio());
-		
+
 		if(fr.getAnomalie() != null) {
 			List<Segnalazione> segnalazioni = new ArrayList<>();
 			for(Anomalia anomalia: fr.getAnomalie()) {
@@ -45,7 +45,7 @@ public class FlussiRendicontazioneConverter {
 			}
 		}
 		rsModel.setRendicontazioni(rendicontazioniLst);
-		
+
 		StatoFr stato = fr.getStato();
 		if(stato != null) {
 			switch (stato) {
@@ -100,19 +100,19 @@ public class FlussiRendicontazioneConverter {
 
 		return rsModel;
 	}
-	
+
 	public static it.govpay.ragioneria.v1.beans.Rendicontazione toRendicontazioneRsModel(it.govpay.bd.viste.model.Rendicontazione dto) throws ServiceException, NotFoundException {
 		it.govpay.ragioneria.v1.beans.Rendicontazione rsModel = new it.govpay.ragioneria.v1.beans.Rendicontazione();
-		
+
 		Rendicontazione rendicontazione = dto.getRendicontazione();
-		
+
 		rsModel.setIuv(rendicontazione.getIuv());
 		rsModel.setIur(rendicontazione.getIur());
 		if(rendicontazione.getIndiceDati()!=null)
 			rsModel.setIndice(new BigDecimal(rendicontazione.getIndiceDati()));
-		
+
 		rsModel.setImporto(rendicontazione.getImporto());
-		
+
 		if(rendicontazione.getEsito() != null)
 			rsModel.setEsito(new BigDecimal(rendicontazione.getEsito().getCodifica()));
 		rsModel.setData(rendicontazione.getData());
@@ -123,7 +123,7 @@ public class FlussiRendicontazioneConverter {
 			}
 			rsModel.setSegnalazioni(segnalazioni);
 		}
-		
+
 		if(rendicontazione.getPagamento(null) != null)
 			rsModel.setRiscossione(RiscossioniConverter.toRsModelIndexOld(rendicontazione.getPagamento(null)));
 		return rsModel;
@@ -135,9 +135,9 @@ public class FlussiRendicontazioneConverter {
 		rsModel.setIur(rendicontazione.getIur());
 		if(rendicontazione.getIndiceDati()!=null)
 			rsModel.setIndice(new BigDecimal(rendicontazione.getIndiceDati()));
-		
+
 		rsModel.setImporto(rendicontazione.getImporto());
-		
+
 		if(rendicontazione.getEsito() != null)
 			rsModel.setEsito(new BigDecimal(rendicontazione.getEsito().getCodifica()));
 		rsModel.setData(rendicontazione.getData());
@@ -148,7 +148,7 @@ public class FlussiRendicontazioneConverter {
 			}
 			rsModel.setSegnalazioni(segnalazioni);
 		}
-		
+
 		if(rendicontazione.getPagamento(null) != null)
 			rsModel.setRiscossione(RiscossioniConverter.toRsModelIndexOld(rendicontazione.getPagamento(null)));
 		return rsModel;

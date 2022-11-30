@@ -815,6 +815,7 @@ CREATE INDEX idx_rpt_cod_msg_richiesta ON rpt (cod_msg_richiesta);
 CREATE INDEX idx_rpt_stato ON rpt (stato);
 CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
 CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
+CREATE INDEX idx_rpt_data_msg_richiesta ON rpt (data_msg_richiesta);
 CREATE UNIQUE INDEX idx_rpt_id_transazione ON rpt (iuv, ccp, cod_dominio);
 ALTER TABLE rpt ADD CONSTRAINT unique_rpt_id_transazione UNIQUE USING INDEX idx_rpt_id_transazione;
 -- L'esecuzione viene completata con esito: NOTICE:  ALTER TABLE / ADD CONSTRAINT USING INDEX will rename index "idx_rpt_id_transazione" to "unique_rpt_id_transazione"
@@ -1040,6 +1041,8 @@ CREATE TABLE fr
 	CONSTRAINT pk_fr PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
 
 
 
@@ -1115,6 +1118,7 @@ CREATE TABLE rendicontazioni
 
 -- index
 CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
+CREATE INDEX idx_rnd_iuv ON rendicontazioni (iuv);
 
 
 
@@ -1142,6 +1146,8 @@ CREATE TABLE eventi
 	cod_dominio VARCHAR(35),
 	id_sessione VARCHAR(35),
 	severita INT,
+	cluster_id VARCHAR(255),
+	transaction_id VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_eventi') NOT NULL,
 	id_fr BIGINT,
@@ -1160,6 +1166,7 @@ CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
 CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
 CREATE INDEX idx_evt_iuv ON eventi (iuv);
 CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
+
 
 
 CREATE SEQUENCE seq_batch start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
@@ -1634,11 +1641,12 @@ CREATE VIEW v_eventi_vers_rendicontazioni AS (
                eventi.ccp,
                eventi.id_sessione,
 	       eventi.severita,
+	       eventi.cluster_id,
+	       eventi.transaction_id,
                eventi.id
         FROM eventi 
         JOIN rendicontazioni ON rendicontazioni.id_fr = eventi.id_fr
-        JOIN pagamenti ON pagamenti.id = rendicontazioni.id_pagamento
-        JOIN singoli_versamenti ON pagamenti.id_singolo_versamento=singoli_versamenti.id
+        JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento=singoli_versamenti.id
         JOIN versamenti ON singoli_versamenti.id_versamento=versamenti.id
         JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
 );
@@ -1664,6 +1672,8 @@ CREATE VIEW v_eventi_vers_pagamenti AS (
     eventi.ccp,
     eventi.id_sessione,
     eventi.severita,
+    eventi.cluster_id,
+    eventi.transaction_id,
     eventi.id
    FROM versamenti
      JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
@@ -1692,6 +1702,8 @@ CREATE VIEW v_eventi_vers_riconciliazioni AS (
                eventi.ccp,
                eventi.id_sessione,
 	       eventi.severita,
+	       eventi.cluster_id,
+	       eventi.transaction_id,
                eventi.id
         FROM eventi
         JOIN pagamenti ON pagamenti.id_incasso = eventi.id_incasso
@@ -1721,6 +1733,8 @@ CREATE VIEW v_eventi_vers_tracciati AS (
                eventi.ccp,
                eventi.id_sessione,
 	       eventi.severita,
+	       eventi.cluster_id,
+	       eventi.transaction_id,
                eventi.id
         FROM eventi
         JOIN operazioni ON operazioni.id_tracciato = eventi.id_tracciato
@@ -1749,6 +1763,8 @@ CREATE VIEW v_eventi_vers AS (
                eventi.ccp,
                eventi.id_sessione,
 	       eventi.severita,
+	       eventi.cluster_id,
+	       eventi.transaction_id,
                eventi.id FROM eventi 
         UNION SELECT * FROM v_eventi_vers_pagamenti 
         UNION SELECT * FROM v_eventi_vers_rendicontazioni

@@ -40,14 +40,12 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.logger.beans.context.core.Role;
 import org.openspcoop2.utils.mail.MailAttach;
 import org.openspcoop2.utils.mail.MailBinaryAttach;
 import org.openspcoop2.utils.mail.Sender;
 import org.openspcoop2.utils.mail.SenderFactory;
 import org.openspcoop2.utils.mail.SenderType;
 import org.openspcoop2.utils.serialization.IDeserializer;
-import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
@@ -63,36 +61,39 @@ import org.slf4j.MDC;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.configurazione.model.GdeInterfaccia;
-import it.govpay.bd.configurazione.model.Giornale;
-import it.govpay.bd.configurazione.model.SslConfig;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.TracciatoNotificaPagamenti;
-import it.govpay.bd.model.eventi.DettaglioRichiesta;
-import it.govpay.bd.model.eventi.DettaglioRisposta;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.TracciatiNotificaPagamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
-import it.govpay.core.business.GiornaleEventi;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Categoria;
+import it.govpay.core.beans.EventoContext.Componente;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.TracciatiNotificaPagamenti;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.EventoContext;
-import it.govpay.core.utils.EventoContext.Categoria;
-import it.govpay.core.utils.EventoContext.Componente;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.ExceptionUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.EnteRendicontazioniClient;
+import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.eventi.EventiUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
 import it.govpay.ec.rendicontazioni.v1.beans.Rpp;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.ConnettoreNotificaPagamenti.TipoConnettore;
+import it.govpay.model.Evento.RuoloEvento;
 import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
 import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
+import it.govpay.model.configurazione.GdeInterfaccia;
+import it.govpay.model.configurazione.Giornale;
+import it.govpay.model.configurazione.SslConfig;
+import it.govpay.model.eventi.DettaglioRichiesta;
+import it.govpay.model.eventi.DettaglioRisposta;
 
 public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 
@@ -122,7 +123,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	private Giornale giornale;
 	private EventoContext eventoCtx;
 
-	public SpedizioneTracciatoNotificaPagamentiThread(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, IContext ctx) throws ServiceException {
+	public SpedizioneTracciatoNotificaPagamentiThread(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, IContext ctx) throws ServiceException, IOException {
 		// Verifico che tutti i campi siano valorizzati
 		this.ctx = ctx;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
@@ -139,7 +140,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		
 		this.eventoCtx = new EventoContext();
 		this.eventoCtx.setCategoriaEvento(Categoria.INTERFACCIA);
-		this.eventoCtx.setRole(Role.CLIENT);
+		this.eventoCtx.setRole(RuoloEvento.CLIENT);
 		this.eventoCtx.setDataRichiesta(new Date());
 		this.eventoCtx.setCodDominio(dominio.getCodDominio());
 		
@@ -161,6 +162,14 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			break;
 		}
 		this.eventoCtx.setComponente(this.componente);
+		
+		this.eventoCtx.setTransactionId(ctx.getTransactionId());
+		
+		String clusterId = GovpayConfig.getInstance().getClusterId();
+		if(clusterId != null)
+			this.eventoCtx.setClusterId(clusterId);
+		else 
+			this.eventoCtx.setClusterId(GovpayConfig.getInstance().getAppName());
 	}
 
 	@Override
@@ -201,7 +210,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 				beanDati.setDescrizioneStepElaborazione("Connettore "+ this.tipoTracciato +" non configurato per il Dominio [Id: " + this.dominio.getCodDominio() + "]. Spedizione inibita.");
 				try {
 					this.tracciato.setBeanDati(serializer.getObject(beanDati));
-				} catch (IOException e1) {}
+				} catch (org.openspcoop2.utils.serialization.IOException e1) {}
 				
 				tracciatiMyPivotBD.updateFineElaborazione(this.tracciato);
 				return;
@@ -279,7 +288,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			
 			EventiBD eventiBD = new EventiBD(configWrapper);
 			try {
-				eventiBD.insertEvento(this.eventoCtx.toEventoDTO());
+				eventiBD.insertEvento(EventoUtils.toEventoDTO(this.eventoCtx,log));
 			} catch (ServiceException e) {
 				log.error("Errore durante il salvataggio dell'evento: ", e);
 			}
@@ -476,7 +485,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
         			if(client != null && client.getEventoCtx().isRegistraEvento()) {
         				EventiBD eventiBD = new EventiBD(configWrapper);
         				try {
-        					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO());
+        					eventiBD.insertEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
         				} catch (ServiceException e) {
         					log.error("Errore durante il salvataggio dell'evento: ", e);
         				}
@@ -493,7 +502,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 						appContext.getServerByOperationId(operationId).addGenericProperty(new Property("contenuto", ConnettoreNotificaPagamenti.Contenuti.RPP.toString()));
 						
 						client = new EnteRendicontazioniClient(dominio, tracciato, connettore, operationId, giornale);
-						client.inviaFile(ConverterUtils.toJSON(rpp, null).getBytes(), null, ConnettoreNotificaPagamenti.Contenuti.RPP, rppKey);
+						client.inviaFile(ConverterUtils.toJSON(rpp).getBytes(), null, ConnettoreNotificaPagamenti.Contenuti.RPP, rppKey);
 						client.getEventoCtx().setEsito(Esito.OK);
 						log.debug("Spedizione RPP: " + rppKey + " completata.");
 						try {
@@ -501,6 +510,24 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 						} catch (UtilsException e1) {
 							log.error(e1.getMessage(), e1);
 						}
+            		} catch (IOException e) {
+            			errore = "Errore durante la spedizione RPP "+rppKey+" del Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() 
+            			+ "], al destinatario ["+ this.connettore.getUrl()+"]:"+e.getMessage();
+            			log.error(errore, e);
+            			erroriSpedizione.add(errore);
+            			
+            			try {
+            				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.restContenutoKo");
+            			} catch (UtilsException e1) {
+            				log.error(e1.getMessage(), e1);
+            			}
+            			
+            			if(client != null) {
+//        					client.getEventoCtx().setSottotipoEsito(e.getResponseCode() + "");
+            				client.getEventoCtx().setEsito(Esito.FAIL);
+            				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
+            				client.getEventoCtx().setException(e);
+            			}
             		} catch (ClientException e) {
             			errore = "Errore durante la spedizione RPP "+rppKey+" del Tracciato " + this.tipoTracciato + " [Nome: "+tracciato.getNomeFile() 
             			+ "], al destinatario ["+ this.connettore.getUrl()+"]:"+e.getMessage();
@@ -523,7 +550,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
             			if(client != null && client.getEventoCtx().isRegistraEvento()) {
             				EventiBD eventiBD = new EventiBD(configWrapper);
             				try {
-            					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO());
+            					eventiBD.insertEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
             				} catch (ServiceException e) {
             					log.error("Errore durante il salvataggio dell'evento: ", e);
             				}
@@ -578,7 +605,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());
 			try {
 				tracciato.setBeanDati(serializer.getObject(beanDati));
-			} catch (IOException e1) {}
+			} catch (org.openspcoop2.utils.serialization.IOException e1) {}
 			
 			tracciatiMyPivotBD.updateFineElaborazione(tracciato);
 			
@@ -596,8 +623,8 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 	}
 	
 	private void inviaTracciatoViaEmail(TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, Dominio dominio, TracciatiNotificaPagamentiBD tracciatiMyPivotBD,
-			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, ISerializer serializer, IContext ctx, DumpRequest dumpRequest, DumpResponse dumpResponse  ) throws ServiceException {
-		it.govpay.bd.configurazione.model.MailServer mailserver = null;
+			BDConfigWrapper configWrapper, it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, ISerializer serializer, IContext ctx, DumpRequest dumpRequest, DumpResponse dumpResponse  ) throws ServiceException, IOException {
+		it.govpay.model.configurazione.MailServer mailserver = null;
 		
 		try {
 			mailserver = AnagraficaManager.getConfigurazione(configWrapper).getBatchSpedizioneEmail().getMailserver();
@@ -751,7 +778,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());
 			try {
 				tracciato.setBeanDati(serializer.getObject(beanDati));
-			} catch (IOException e1) {}
+			} catch (org.openspcoop2.utils.serialization.IOException e1) {}
 			
 			tracciatiMyPivotBD.updateFineElaborazione(tracciato);
 			
@@ -922,7 +949,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			tracciatiMyPivotBD.setupConnection(configWrapper.getTransactionID());
 			try {
 				tracciato.setBeanDati(serializer.getObject(beanDati));
-			} catch (IOException e1) {}
+			} catch (org.openspcoop2.utils.serialization.IOException e1) {}
 			
 			tracciatiMyPivotBD.updateFineElaborazione(tracciato);
 			
@@ -934,25 +961,25 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 		if(GovpayConfig.getInstance().isGiornaleEventiEnabled()) {
 			boolean logEvento = false;
 			boolean dumpEvento = false;
-			GdeInterfaccia configurazioneInterfaccia = GiornaleEventi.getConfigurazioneComponente(this.componente, this.giornale);
+			GdeInterfaccia configurazioneInterfaccia = EventiUtils.getConfigurazioneComponente(this.componente, this.giornale);
 			
 			log.debug("Log Evento Client: ["+this.componente +"] Tipo Connettore ["+tipoConnettore
 						+"], Destinatario ["+ url +"], Esito ["+eventoContext.getEsito()+"]");
 
 			if(configurazioneInterfaccia != null) {
 				try {
-					log.debug("Configurazione Giornale Eventi API: ["+this.componente+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia,null));
-				} catch (ServiceException e) {
+					log.debug("Configurazione Giornale Eventi API: ["+this.componente+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia));
+				} catch (IOException e) {
 					log.error("Errore durante il log della configurazione giornale eventi: " +e.getMessage(), e);
 				}
 				
-				if(GiornaleEventi.isRequestLettura(null, this.componente, eventoContext.getTipoEvento())) {
-					logEvento = GiornaleEventi.logEvento(configurazioneInterfaccia.getLetture(), eventoContext.getEsito());
-					dumpEvento = GiornaleEventi.dumpEvento(configurazioneInterfaccia.getLetture(), eventoContext.getEsito());
+				if(EventiUtils.isRequestLettura(null, this.componente, eventoContext.getTipoEvento())) {
+					logEvento = EventiUtils.logEvento(configurazioneInterfaccia.getLetture(), eventoContext.getEsito());
+					dumpEvento = EventiUtils.dumpEvento(configurazioneInterfaccia.getLetture(), eventoContext.getEsito());
 					log.debug("Tipo Operazione 'Lettura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
-				} else if(GiornaleEventi.isRequestScrittura(null, this.componente, eventoContext.getTipoEvento())) {
-					logEvento = GiornaleEventi.logEvento(configurazioneInterfaccia.getScritture(), eventoContext.getEsito());
-					dumpEvento = GiornaleEventi.dumpEvento(configurazioneInterfaccia.getScritture(), eventoContext.getEsito());
+				} else if(EventiUtils.isRequestScrittura(null, this.componente, eventoContext.getTipoEvento())) {
+					logEvento = EventiUtils.logEvento(configurazioneInterfaccia.getScritture(), eventoContext.getEsito());
+					dumpEvento = EventiUtils.dumpEvento(configurazioneInterfaccia.getScritture(), eventoContext.getEsito());
 					log.debug("Tipo Operazione 'Scrittura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
 				} else {
 					log.debug("Tipo Operazione non riconosciuta, l'evento non verra' salvato.");

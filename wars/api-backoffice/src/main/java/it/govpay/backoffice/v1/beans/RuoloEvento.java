@@ -9,17 +9,17 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets ruoloEvento
  */
 public enum RuoloEvento {
-  
-  
-  
-  
+
+
+
+
   CLIENT("CLIENT"),
-  
-  
+
+
   SERVER("SERVER");
-  
-  
-  
+
+
+
 
   private String value;
 

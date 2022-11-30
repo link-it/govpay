@@ -24,15 +24,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.Connettore;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Versionabile.Versione;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ConnettoreNotificaPagamentiConverter {
 
-	public static ConnettoreNotificaPagamenti toConnettoreNotificaPagamentiDTO(List<it.govpay.orm.Connettore> connettoreLst) throws ServiceException {
+	public static ConnettoreNotificaPagamenti toConnettoreNotificaPagamentiDTO(List<it.govpay.orm.Connettore> connettoreLst) throws CodificaInesistenteException {
 		ConnettoreNotificaPagamenti dto = new ConnettoreNotificaPagamenti();
 		if(connettoreLst != null && !connettoreLst.isEmpty()) {
 			for(it.govpay.orm.Connettore connettore: connettoreLst){

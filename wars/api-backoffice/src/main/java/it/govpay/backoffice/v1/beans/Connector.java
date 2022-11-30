@@ -3,12 +3,12 @@ package it.govpay.backoffice.v1.beans;
 import java.util.Arrays;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
@@ -18,29 +18,29 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "auth",
 })
 public class Connector extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("url")
   private String url = null;
-  
-    
+
+
   /**
    * Versione delle API di integrazione utilizzate.
    */
   public enum VersioneApiEnum {
-    
-    
-        
-            
+
+
+
+
     V1("REST v1"),
-    
-            
+
+
     V2("REST v2");
 
 
 //SOAP_3("SOAP v3");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -62,7 +62,7 @@ public class Connector extends JSONSerializable implements IValidable {
       }
       return null;
     }
-    
+
 	public static VersioneApiEnum fromName(String text) {
 		for (VersioneApiEnum b : VersioneApiEnum.values()) {
 			if (String.valueOf(b.toNameString()).equals(text)) {
@@ -71,7 +71,7 @@ public class Connector extends JSONSerializable implements IValidable {
 		}
 		return null;
 	}
-	
+
 	public String toNameString() {
 		switch(this) {
 		case V1: return "REST_1";
@@ -83,13 +83,13 @@ public class Connector extends JSONSerializable implements IValidable {
   }
 
     private VersioneApiEnum versioneApiEnum = null;
-    
+
   @JsonProperty("versioneApi")
   private String versioneApi = null;
-  
+
   @JsonProperty("auth")
   private TipoAutenticazione auth = null;
-  
+
   /**
    * Dati di integrazione ad un servizio web
    **/
@@ -168,7 +168,7 @@ public Connector versioneApiEnum(VersioneApiEnum versioneApiEnum) {
     return Objects.hash(this.url, this.versioneApi, this.auth);
   }
 
-  public static Connector parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
+  public static Connector parse(String json) throws IOException {
     return parse(json, Connector.class);
   }
 
@@ -181,7 +181,7 @@ public Connector versioneApiEnum(VersioneApiEnum versioneApiEnum) {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Connector {\n");
-    
+
     sb.append("    url: ").append(this.toIndentedString(this.url)).append("\n");
     sb.append("    versioneApi: ").append(this.toIndentedString(this.versioneApi)).append("\n");
     sb.append("    auth: ").append(this.toIndentedString(this.auth)).append("\n");
@@ -199,7 +199,7 @@ public Connector versioneApiEnum(VersioneApiEnum versioneApiEnum) {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
@@ -211,7 +211,7 @@ public void validate() throws ValidationException {
 		} catch (IllegalArgumentException e) {
 			throw new ValidationException("Il valore [" + this.versioneApi + "] del campo versioneApi corrisponde con uno dei valori consentiti: " + Arrays.asList(VersioneApiEnum.values()));
 		}
-		
+
 		vf.getValidator("auth", this.auth).validateFields();
 	}
 }

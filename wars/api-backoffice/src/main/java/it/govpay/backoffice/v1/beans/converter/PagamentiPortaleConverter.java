@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.backoffice.v1.beans.ContoAddebito;
-import it.govpay.backoffice.v1.beans.Pagamento;
 import it.govpay.backoffice.v1.beans.ModelloPagamento;
+import it.govpay.backoffice.v1.beans.Pagamento;
 import it.govpay.backoffice.v1.beans.PagamentoIndex;
 import it.govpay.backoffice.v1.beans.PagamentoPost;
 import it.govpay.backoffice.v1.beans.Rpp;
@@ -18,6 +16,7 @@ import it.govpay.bd.model.Evento;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.dao.pagamenti.dto.LeggiPagamentoPortaleDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.LeggiRptDTOResponse;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.UriBuilderUtils;
 
 public class PagamentiPortaleConverter {
@@ -40,7 +39,7 @@ public class PagamentiPortaleConverter {
 		if(pagamentoPortale.getJsonRequest() != null) {
 			try {
 				pagamentiPortaleRequest = JSONSerializable.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class);
-			
+
 				if(pagamentiPortaleRequest.getContoAddebito()!=null) {
 					ContoAddebito contoAddebito = new ContoAddebito();
 					contoAddebito.setBic(pagamentiPortaleRequest.getContoAddebito().getBic());
@@ -51,8 +50,8 @@ public class PagamentiPortaleConverter {
 				rsModel.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
 				rsModel.setSoggettoVersante(AnagraficaConverter.toSoggettoRsModel(AnagraficaConverter.toAnagrafica(pagamentiPortaleRequest.getSoggettoVersante())));
 				rsModel.setAutenticazioneSoggetto(it.govpay.backoffice.v1.beans.Pagamento.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
-			} catch (ServiceException | ValidationException e) {
-				
+			} catch (IOException e) {
+
 			}
 		}
 
@@ -61,12 +60,12 @@ public class PagamentiPortaleConverter {
 		rsModel.setIdSessionePsp(pagamentoPortale.getIdSessionePsp());
 		rsModel.setNome(pagamentoPortale.getNome());
 		rsModel.setStato(StatoPagamento.valueOf(pagamentoPortale.getStato().toString()));
-		rsModel.setDescrizioneStato(pagamentoPortale.getDescrizioneStato()); 
+		rsModel.setDescrizioneStato(pagamentoPortale.getDescrizioneStato());
 		rsModel.setPspRedirectUrl(pagamentoPortale.getPspRedirectUrl());
 		rsModel.setUrlRitorno(pagamentoPortale.getUrlRitorno());
 		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
-		rsModel.setImporto(pagamentoPortale.getImporto()); 
-		
+		rsModel.setImporto(pagamentoPortale.getImporto());
+
 		if(listaRpp !=null) {
 			List<Rpp> rpp = new ArrayList<>();
 			for(LeggiRptDTOResponse leggiRptDtoResponse: listaRpp) {
@@ -74,11 +73,11 @@ public class PagamentiPortaleConverter {
 			}
 			rsModel.setRpp(rpp);
 		}
-		
+
 //		if(eventi !=null && !eventi.isEmpty()) { TODO togliere
 //			List<Nota> note = new ArrayList<>();
 //			for(Evento evento: eventi) {
-//				switch (evento.getCategoriaEvento()) { 
+//				switch (evento.getCategoriaEvento()) {
 //				case INTERFACCIA:
 //					break;
 //				case INTERNO:
@@ -94,21 +93,21 @@ public class PagamentiPortaleConverter {
 		rsModel.setVerificato(pagamentoPortale.isAck());
 
 		if(pagamentoPortale.getTipo() == 1) {
-			rsModel.setModello(ModelloPagamento.ENTE);	
+			rsModel.setModello(ModelloPagamento.ENTE);
 		} else if(pagamentoPortale.getTipo() == 3) {
 			rsModel.setModello(ModelloPagamento.PSP);
 		}
-		
+
 		rsModel.setSeverita(pagamentoPortale.getSeverita());
-		
+
 		return rsModel;
 	}
-	public static PagamentoIndex toRsModelIndex(LeggiPagamentoPortaleDTOResponse dto) throws ServiceException, IOException {
+	public static PagamentoIndex toRsModelIndex(LeggiPagamentoPortaleDTOResponse dto) {
 		it.govpay.bd.model.PagamentoPortale pagamentoPortale = dto.getPagamento();
 		PagamentoIndex rsModel = new PagamentoIndex();
 
 		PagamentoPost pagamentiPortaleRequest = null;
-		
+
 		if(pagamentoPortale.getJsonRequest() != null) {
 			try {
 				pagamentiPortaleRequest = JSONSerializable.parse(pagamentoPortale.getJsonRequest(), PagamentoPost.class);
@@ -122,8 +121,8 @@ public class PagamentiPortaleConverter {
 				rsModel.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
 				rsModel.setSoggettoVersante(AnagraficaConverter.toSoggettoRsModel(AnagraficaConverter.toAnagrafica(pagamentiPortaleRequest.getSoggettoVersante())));
 				rsModel.setAutenticazioneSoggetto(it.govpay.backoffice.v1.beans.PagamentoIndex.AutenticazioneSoggettoEnum.fromValue(pagamentiPortaleRequest.getAutenticazioneSoggetto()));
-			} catch (ServiceException | ValidationException e) {
-				
+			} catch (IOException e) {
+
 			}
 		}
 		rsModel.setId(pagamentoPortale.getIdSessione());
@@ -137,12 +136,12 @@ public class PagamentiPortaleConverter {
 		rsModel.setDataRichiestaPagamento(pagamentoPortale.getDataRichiesta());
 		rsModel.setRpp(UriBuilderUtils.getRptsByPagamento(pagamentoPortale.getIdSessione()));
 
-		rsModel.setImporto(pagamentoPortale.getImporto()); 
-		
+		rsModel.setImporto(pagamentoPortale.getImporto());
+
 //		if(dto.getEventi() !=null && !dto.getEventi() .isEmpty()) { TODO togliere
 //			List<Nota> note = new ArrayList<>();
 //			for(Evento evento: dto.getEventi()) {
-//				switch (evento.getCategoriaEvento()) { 
+//				switch (evento.getCategoriaEvento()) {
 //				case INTERFACCIA:
 //					break;
 //				case INTERNO:
@@ -158,11 +157,11 @@ public class PagamentiPortaleConverter {
 		rsModel.setVerificato(pagamentoPortale.isAck());
 
 		if(pagamentoPortale.getTipo() == 1) {
-			rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.ENTE);	
+			rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.ENTE);
 		} else if(pagamentoPortale.getTipo() == 3) {
 			rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.PSP);
 		}
-		
+
 		rsModel.setSeverita(pagamentoPortale.getSeverita());
 
 		return rsModel;

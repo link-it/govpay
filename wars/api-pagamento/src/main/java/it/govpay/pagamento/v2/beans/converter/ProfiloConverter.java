@@ -3,8 +3,6 @@ package it.govpay.pagamento.v2.beans.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Utenza;
 import it.govpay.bd.model.UtenzaCittadino;
@@ -18,9 +16,8 @@ public class ProfiloConverter {
 	/**
 	 * @param user
 	 * @return
-	 * @throws ServiceException 
 	 */
-	public static Profilo getProfilo(LeggiProfiloDTOResponse leggiProfilo) throws ServiceException {
+	public static Profilo getProfilo(LeggiProfiloDTOResponse leggiProfilo) {
 		Profilo profilo = new Profilo();
 		
 		Utenza user = leggiProfilo.getUtente();

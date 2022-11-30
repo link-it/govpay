@@ -2,11 +2,11 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -15,10 +15,10 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "versione",
 })
 public class StazionePost extends it.govpay.core.beans.JSONSerializable implements IValidable{
-  
+
   @JsonProperty("password")
   private String password = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
   
@@ -109,7 +109,7 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
     return Objects.hash(password, abilitato, versione);
   }
 
-  public static StazionePost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static StazionePost parse(String json) throws IOException {
     return parse(json, StazionePost.class);
   }
 
@@ -140,8 +140,8 @@ public class StazionePost extends it.govpay.core.beans.JSONSerializable implemen
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
-  
+
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();

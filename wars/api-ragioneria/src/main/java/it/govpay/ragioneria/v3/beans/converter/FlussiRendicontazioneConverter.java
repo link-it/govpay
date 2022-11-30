@@ -1,19 +1,19 @@
 package it.govpay.ragioneria.v3.beans.converter;
 
-import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.model.Fr.Anomalia;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.ragioneria.v3.beans.FlussoRendicontazione;
@@ -23,7 +23,7 @@ import it.govpay.ragioneria.v3.beans.StatoFlussoRendicontazione;
 
 public class FlussiRendicontazioneConverter {
 
-	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr, List<it.govpay.bd.viste.model.Rendicontazione> listaRendicontazioni) throws ServiceException, NotFoundException, IOException, ValidationException {
+	public static FlussoRendicontazione toRsModel(it.govpay.bd.model.Fr fr, List<it.govpay.bd.viste.model.Rendicontazione> listaRendicontazioni) throws ServiceException, NotFoundException, IOException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		FlussoRendicontazione rsModel = new FlussoRendicontazione();
 		rsModel.setIdFlusso(fr.getCodFlusso());
@@ -35,7 +35,7 @@ public class FlussiRendicontazioneConverter {
 		rsModel.setNumeroPagamenti(BigDecimal.valueOf(fr.getNumeroPagamenti()));
 		rsModel.setImportoTotale(fr.getImportoTotalePagamenti().doubleValue());
 		rsModel.setIdPsp(fr.getCodPsp());
-		
+
 		if(fr.getAnomalie() != null) {
 			List<Segnalazione> segnalazioni = new ArrayList<>();
 			for(Anomalia anomalia: fr.getAnomalie()) {
@@ -51,7 +51,7 @@ public class FlussiRendicontazioneConverter {
 			}
 		}
 		rsModel.setRendicontazioni(rendicontazioniLst);
-		
+
 		StatoFr stato = fr.getStato();
 		if(stato != null) {
 			switch (stato) {
@@ -64,9 +64,9 @@ public class FlussiRendicontazioneConverter {
 			case RIFIUTATA:
 				rsModel.setStato(StatoFlussoRendicontazione.RIFIUTATO);
 				break;
-			} 
+			}
 		}
-		
+
 		rsModel.setData(fr.getDataAcquisizione());
 		return rsModel;
 	}
@@ -105,26 +105,26 @@ public class FlussiRendicontazioneConverter {
 				break;
 			}
 		}
-		
+
 		rsModel.setData(fr.getDataAcquisizione());
 		return rsModel;
 	}
 
-	public static it.govpay.ragioneria.v3.beans.Rendicontazione toRendicontazioneRsModel(it.govpay.bd.viste.model.Rendicontazione dto) throws ServiceException, NotFoundException, IOException, ValidationException {
+	public static it.govpay.ragioneria.v3.beans.Rendicontazione toRendicontazioneRsModel(it.govpay.bd.viste.model.Rendicontazione dto) throws ServiceException, NotFoundException, IOException, UnsupportedEncodingException {
 		it.govpay.ragioneria.v3.beans.Rendicontazione rsModel = new it.govpay.ragioneria.v3.beans.Rendicontazione();
-		
+
 		Rendicontazione rendicontazione = dto.getRendicontazione();
-		
+
 		rsModel.setIuv(rendicontazione.getIuv());
 		rsModel.setIur(rendicontazione.getIur());
 		if(rendicontazione.getIndiceDati()!=null)
 			rsModel.setIndice(new BigDecimal(rendicontazione.getIndiceDati()));
-		
+
 		rsModel.setImporto(rendicontazione.getImporto());
-		
+
 		if(rendicontazione.getEsito() != null)
 			rsModel.setEsito(new BigDecimal(rendicontazione.getEsito().getCodifica()));
-		
+
 		rsModel.setData(rendicontazione.getData());
 		if(rendicontazione.getAnomalie() != null) {
 			List<Segnalazione> segnalazioni = new ArrayList<>();
@@ -133,21 +133,21 @@ public class FlussiRendicontazioneConverter {
 			}
 			rsModel.setSegnalazioni(segnalazioni);
 		}
-		
+
 		rsModel.setRiscossione(RiscossioniConverter.toRsModel(dto.getPagamento(), dto.getSingoloVersamento(), dto.getVersamento()));
-		
+
 		return rsModel;
 	}
-	
-	public static it.govpay.ragioneria.v3.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione) throws ServiceException, NotFoundException, IOException, ValidationException {
+
+	public static it.govpay.ragioneria.v3.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione) throws ServiceException, NotFoundException, IOException, UnsupportedEncodingException {
 		it.govpay.ragioneria.v3.beans.Rendicontazione rsModel = new it.govpay.ragioneria.v3.beans.Rendicontazione();
 		rsModel.setIuv(rendicontazione.getIuv());
 		rsModel.setIur(rendicontazione.getIur());
 		if(rendicontazione.getIndiceDati()!=null)
 			rsModel.setIndice(new BigDecimal(rendicontazione.getIndiceDati()));
-		
+
 		rsModel.setImporto(rendicontazione.getImporto());
-		
+
 		if(rendicontazione.getEsito() != null)
 			rsModel.setEsito(new BigDecimal(rendicontazione.getEsito().getCodifica()));
 		rsModel.setData(rendicontazione.getData());
@@ -158,7 +158,7 @@ public class FlussiRendicontazioneConverter {
 			}
 			rsModel.setSegnalazioni(segnalazioni);
 		}
-		
+
 		SingoloVersamento singoloVersamento = null;
 		if(rendicontazione.getPagamento(null) != null) {
 			singoloVersamento = rendicontazione.getPagamento(null).getSingoloVersamento(null);
@@ -166,9 +166,9 @@ public class FlussiRendicontazioneConverter {
 			singoloVersamento = rendicontazione.getSingoloVersamento(null);
 		}
 		Versamento versamento = singoloVersamento.getVersamentoBD(null);
-		
+
 		rsModel.setRiscossione(RiscossioniConverter.toRsModel(rendicontazione.getPagamento(null), singoloVersamento, versamento));
-		
+
 		return rsModel;
 	}
 }

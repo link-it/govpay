@@ -13,43 +13,43 @@ import io.swagger.v3.oas.annotations.media.Schema;
  **/
 @Schema(description="dati anagrafici di un versante o pagatore.")
 public class Soggetto   {
-  
+
   @Schema(required = true, description = "")
   private TipoSoggetto tipo = null;
-  
+
   @Schema(example = "RSSMRA30A01H501I", required = true, description = "codice fiscale o partita iva del soggetto")
  /**
-   * codice fiscale o partita iva del soggetto  
+   * codice fiscale o partita iva del soggetto
   **/
   private String identificativo = null;
-  
+
   @Schema(example = "Mario Rossi", description = "nome e cognome o altra ragione sociale del soggetto")
  /**
-   * nome e cognome o altra ragione sociale del soggetto  
+   * nome e cognome o altra ragione sociale del soggetto
   **/
   private String anagrafica = null;
-  
+
   @Schema(example = "Piazza della Vittoria", description = "")
   private String indirizzo = null;
-  
+
   @Schema(example = "10/A", description = "")
   private String civico = null;
-  
+
   @Schema(example = "0", description = "")
   private String cap = null;
-  
+
   @Schema(example = "Roma", description = "")
   private String localita = null;
-  
+
   @Schema(example = "Roma", description = "")
   private String provincia = null;
-  
+
   @Schema(example = "IT", description = "")
   private String nazione = null;
-  
+
   @Schema(example = "mario.rossi@host.eu", description = "")
   private String email = null;
-  
+
   @Schema(example = "+39 000 1234567", description = "")
   private String cellulare = null;
  /**
@@ -257,7 +257,7 @@ public class Soggetto   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Soggetto {\n");
-    
+
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    identificativo: ").append(toIndentedString(identificativo)).append("\n");
     sb.append("    anagrafica: ").append(toIndentedString(anagrafica)).append("\n");

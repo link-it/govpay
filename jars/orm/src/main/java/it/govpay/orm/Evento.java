@@ -58,6 +58,8 @@ import java.io.Serializable;
  * 			&lt;element name="idFR" type="{http://www.govpay.it/orm}id-fr" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idIncasso" type="{http://www.govpay.it/orm}id-incasso" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idTracciato" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="clusterId" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="transactionId" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -94,7 +96,9 @@ import java.io.Serializable;
   	"severita",
   	"idFR",
   	"idIncasso",
-  	"idTracciato"
+  	"idTracciato",
+  	"clusterId",
+  	"transactionId"
   }
 )
 
@@ -302,6 +306,22 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.idTracciato = idTracciato;
   }
 
+  public java.lang.String getClusterId() {
+    return this.clusterId;
+  }
+
+  public void setClusterId(java.lang.String clusterId) {
+    this.clusterId = clusterId;
+  }
+
+  public java.lang.String getTransactionId() {
+    return this.transactionId;
+  }
+
+  public void setTransactionId(java.lang.String transactionId) {
+    this.transactionId = transactionId;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -410,5 +430,13 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
 
   @XmlElement(name="idTracciato",required=false,nillable=false)
   protected IdTracciato idTracciato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="clusterId",required=false,nillable=false)
+  protected java.lang.String clusterId;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="transactionId",required=false,nillable=false)
+  protected java.lang.String transactionId;
 
 }

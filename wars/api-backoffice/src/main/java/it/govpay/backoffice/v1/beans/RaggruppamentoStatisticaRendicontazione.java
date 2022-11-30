@@ -9,20 +9,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets raggruppamentoStatisticaRendicontazione
  */
 public enum RaggruppamentoStatisticaRendicontazione {
-  
-  
-  
-  
+
+
+
+
   FLUSSO_RENDICONTAZIONE("FLUSSO_RENDICONTAZIONE"),
-  
-  
+
+
   DIVISIONE("DIVISIONE"),
-  
-  
+
+
   DIREZIONE("DIREZIONE");
-  
-  
-  
+
+
+
 
   private String value;
 

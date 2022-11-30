@@ -2,7 +2,7 @@ package it.govpay.pagamento.v2.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -315,7 +315,7 @@ public class UnitaOperativa extends JSONSerializable {
     return Objects.hash(idUnitaOperativa, ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, area);
   }
 
-  public static UnitaOperativa parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static UnitaOperativa parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, UnitaOperativa.class);
   }
 

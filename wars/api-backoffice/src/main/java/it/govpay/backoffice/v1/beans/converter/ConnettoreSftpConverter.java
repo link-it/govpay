@@ -1,14 +1,12 @@
 package it.govpay.backoffice.v1.beans.converter;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.beans.ConnettoreFtp;
 import it.govpay.backoffice.v1.beans.ServizioFtp;
 import it.govpay.model.ConnettoreSftp;
 
 public class ConnettoreSftpConverter {
-	
-	public static ConnettoreSftp getConnettore(it.govpay.backoffice.v1.beans.ServizioFtp connector, String idIntermediario) throws ServiceException {
+
+	public static ConnettoreSftp getConnettore(it.govpay.backoffice.v1.beans.ServizioFtp connector, String idIntermediario) {
 		ConnettoreSftp connettoreSftp = new ConnettoreSftp();
 		connettoreSftp.setIdConnettore(idIntermediario + "_SFTP");
 		connettoreSftp.setHttpPasswIn(connector.getFtpLettura().getPassword());
@@ -19,11 +17,11 @@ public class ConnettoreSftpConverter {
 		connettoreSftp.setHttpUserOut(connector.getFtpScrittura().getUsername());
 		connettoreSftp.setHostOut(connector.getFtpScrittura().getHost());
 		connettoreSftp.setPortaOut(connector.getFtpScrittura().getPorta());
-		
+
 		return connettoreSftp;
 	}
 
-	public static ServizioFtp toRsModel(it.govpay.model.ConnettoreSftp connettore) throws ServiceException {
+	public static ServizioFtp toRsModel(it.govpay.model.ConnettoreSftp connettore) {
 		ServizioFtp rsModel = new ServizioFtp();
 		ConnettoreFtp ftpLettura = new ConnettoreFtp();
 		ftpLettura.setHost(connettore.getHostIn());
@@ -37,9 +35,9 @@ public class ConnettoreSftpConverter {
 		ftpScrittura.setUsername(connettore.getHttpUserOut());
 		ftpScrittura.setPassword(connettore.getHttpPasswOut());
 		rsModel.setFtpScrittura(ftpScrittura);
-		
-		
+
+
 		return rsModel;
 	}
-	
+
 }

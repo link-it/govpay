@@ -14,8 +14,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.core.beans.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -28,7 +26,7 @@ public class Applicazioni extends BaseRsServiceV1{
 
 	private ApplicazioniController controller = null;
 
-	public Applicazioni() throws ServiceException {
+	public Applicazioni() {
 		super("applicazioni");
 		this.controller = new ApplicazioniController(this.nomeServizio,this.log);
 	}
@@ -48,7 +46,7 @@ public class Applicazioni extends BaseRsServiceV1{
         this.buildContext();
         return this.controller.getApplicazione(this.getUser(), uriInfo, httpHeaders,  idA2A);
     }
-    
+
     @PUT
     @Path("/{idA2A}")
     @Consumes({ "application/json" })

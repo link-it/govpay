@@ -3,7 +3,7 @@ package it.govpay.core.ec.v2.validator;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;

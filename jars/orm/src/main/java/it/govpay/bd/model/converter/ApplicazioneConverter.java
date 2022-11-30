@@ -19,18 +19,18 @@
  */
 package it.govpay.bd.model.converter;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.certificate.CertificateUtils;
 import org.openspcoop2.utils.certificate.PrincipalType;
 
 import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Connettore;
 import it.govpay.model.Rpt.FirmaRichiesta;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdUtenza;
 
 public class ApplicazioneConverter {
 
-	public static Applicazione toDTO(it.govpay.orm.Applicazione vo, Connettore connettoreIntegrazione) throws ServiceException {
+	public static Applicazione toDTO(it.govpay.orm.Applicazione vo, Connettore connettoreIntegrazione) throws CodificaInesistenteException {
 		Applicazione dto = new Applicazione();
 		dto.setAutoIuv(vo.getAutoIUV());
 		dto.setCodApplicazione(vo.getCodApplicazione());

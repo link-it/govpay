@@ -3,10 +3,9 @@ package it.govpay.pendenze.v2.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -29,28 +28,28 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "provinciaResidenza",
 })
 public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable implements IValidable{
-  
+
   @JsonProperty("idVocePendenza")
   private String idVocePendenza = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
-  
+
   @JsonProperty("descrizioneCausaleRPT")
   private String descrizioneCausaleRPT = null;
-  
+
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   /**
    * Identificativo della voce di pedenza nel gestionale proprietario
    **/
@@ -164,7 +163,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 
  @JsonProperty("codEntrata")
   private String codEntrata = null;
-  
+
   /**
    **/
   public NuovaVocePendenza codEntrata(String codEntrata) {
@@ -182,16 +181,16 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 
   @JsonProperty("ibanAccredito")
   private String ibanAccredito = null;
-  
+
   @JsonProperty("ibanAppoggio")
   private String ibanAppoggio = null;
-  
+
   @JsonProperty("tipoContabilita")
   private TipoContabilita tipoContabilita = null;
-  
+
   @JsonProperty("codiceContabilita")
   private String codiceContabilita = null;
-  
+
   /**
    **/
   public NuovaVocePendenza ibanAccredito(String ibanAccredito) {
@@ -253,20 +252,20 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
     this.codiceContabilita = codiceContabilita;
   }
 
-  
-    
+
+
   /**
    * Tipologia di Bollo digitale
    */
   public enum TipoBolloEnum {
-    
-    
-        
-            
+
+
+
+
     _01("01");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -290,17 +289,17 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
     }
   }
 
-    
-    
+
+
   @JsonProperty("tipoBollo")
   private TipoBolloEnum tipoBollo = null;
-  
+
   @JsonProperty("hashDocumento")
   private String hashDocumento = null;
-  
+
   @JsonProperty("provinciaResidenza")
   private String provinciaResidenza = null;
-  
+
   /**
    * Tipologia di Bollo digitale
    **/
@@ -380,7 +379,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
     return Objects.hash(idVocePendenza, importo, descrizione, datiAllegati, descrizioneCausaleRPT, contabilita, idDominio, codEntrata, ibanAccredito, ibanAppoggio, tipoContabilita, codiceContabilita, tipoBollo, hashDocumento, provinciaResidenza);
   }
 
-  public static NuovaVocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static NuovaVocePendenza parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, NuovaVocePendenza.class);
   }
 
@@ -437,7 +436,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 		if(this.idDominio != null) {
 			vi.validaIdDominio("idDominio", this.idDominio);
 		}
-		
+
 		if(this.codEntrata != null) {
 			vi.validaIdEntrata("codEntrata", this.codEntrata);
 			try {
@@ -459,7 +458,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 			ValidatoreUtils.validaTipoBollo(vf, "tipoBollo", this.tipoBollo);
 			ValidatoreUtils.validaHashDocumento(vf, "hashDocumento", this.hashDocumento);
 			ValidatoreUtils.validaProvinciaResidenza(vf, "provinciaResidenza", this.provinciaResidenza);
-			
+
 			try {
 				vf.getValidator("ibanAccredito", this.ibanAccredito).isNull();
 				vf.getValidator("ibanAppoggio", this.ibanAppoggio).isNull();
@@ -487,7 +486,7 @@ public class NuovaVocePendenza extends it.govpay.core.beans.JSONSerializable imp
 				throw new ValidationException("Valorizzato ibanAccredito. " + ve.getMessage());
 			}
 		}
-		
+
 		else {
 			throw new ValidationException("Uno dei campi tra ibanAccredito, tipoBollo o codEntrata deve essere valorizzato");
 		}

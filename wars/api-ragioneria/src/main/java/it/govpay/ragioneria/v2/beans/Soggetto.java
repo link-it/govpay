@@ -2,8 +2,6 @@ package it.govpay.ragioneria.v2.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -24,40 +22,40 @@ import it.govpay.core.beans.JSONSerializable;
 "cellulare",
 })
 public class Soggetto extends JSONSerializable {
-  
+
   @JsonProperty("tipo")
   private TipoSoggetto tipo = null;
-  
+
   @JsonProperty("identificativo")
   private String identificativo = null;
-  
+
   @JsonProperty("anagrafica")
   private String anagrafica = null;
-  
+
   @JsonProperty("indirizzo")
   private String indirizzo = null;
-  
+
   @JsonProperty("civico")
   private String civico = null;
-  
+
   @JsonProperty("cap")
   private String cap = null;
-  
+
   @JsonProperty("localita")
   private String localita = null;
-  
+
   @JsonProperty("provincia")
   private String provincia = null;
-  
+
   @JsonProperty("nazione")
   private String nazione = null;
-  
+
   @JsonProperty("email")
   private String email = null;
-  
+
   @JsonProperty("cellulare")
   private String cellulare = null;
-  
+
   /**
    **/
   public Soggetto tipo(TipoSoggetto tipo) {
@@ -252,7 +250,7 @@ public class Soggetto extends JSONSerializable {
     return Objects.hash(tipo, identificativo, anagrafica, indirizzo, civico, cap, localita, provincia, nazione, email, cellulare);
   }
 
-  public static Soggetto parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Soggetto parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, Soggetto.class);
   }
 
@@ -265,7 +263,7 @@ public class Soggetto extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Soggetto {\n");
-    
+
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    identificativo: ").append(toIndentedString(identificativo)).append("\n");
     sb.append("    anagrafica: ").append(toIndentedString(anagrafica)).append("\n");

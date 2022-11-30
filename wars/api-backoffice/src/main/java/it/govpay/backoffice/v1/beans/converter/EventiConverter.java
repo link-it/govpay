@@ -3,9 +3,7 @@ package it.govpay.backoffice.v1.beans.converter;
 import java.math.BigDecimal;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
-import org.openspcoop2.utils.serialization.IOException;
 
 import it.govpay.backoffice.v1.beans.CategoriaEvento;
 import it.govpay.backoffice.v1.beans.ComponenteEvento;
@@ -14,12 +12,13 @@ import it.govpay.backoffice.v1.beans.EsitoEvento;
 import it.govpay.backoffice.v1.beans.Evento;
 import it.govpay.backoffice.v1.beans.EventoIndex;
 import it.govpay.backoffice.v1.beans.RuoloEvento;
+import it.govpay.core.exceptions.IOException;
 
 public class EventiConverter {
 
-	public static EventoIndex toRsModelIndex(it.govpay.bd.model.Evento evento) throws IOException, ServiceException {
+	public static EventoIndex toRsModelIndex(it.govpay.bd.model.Evento evento) throws IOException {
 		EventoIndex rsModel = new EventoIndex();
-		
+
 		rsModel.setId(evento.getId());
 
 		if(StringUtils.isNotBlank(evento.getComponente())) {
@@ -69,7 +68,7 @@ public class EventiConverter {
 
 		rsModel.setDataEvento(evento.getData());
 		rsModel.setDurataEvento(evento.getIntervallo() != null ? evento.getIntervallo().longValue() : 0l);
-		rsModel.setSottotipoEvento(evento.getSottotipoEvento()); 
+		rsModel.setSottotipoEvento(evento.getSottotipoEvento());
 		rsModel.setSottotipoEsito(evento.getSottotipoEsito());
 		rsModel.setDettaglioEsito(evento.getDettaglioEsito());
 
@@ -79,16 +78,19 @@ public class EventiConverter {
 		rsModel.setIdA2A(evento.getCodApplicazione());
 		rsModel.setIdPendenza(evento.getCodVersamentoEnte());
 		rsModel.setIdPagamento(evento.getIdSessione());
-		
+
 		rsModel.setDatiPagoPA(getDatiPagoPA(evento));
 		rsModel.setSeverita(evento.getSeverita());
+		
+		rsModel.setClusterId(evento.getClusterId());
+		rsModel.setTransactionId(evento.getTransactionId());
 
 		return rsModel;
 	}
 
-	public static Evento toRsModel(it.govpay.bd.model.Evento evento) throws IOException, ServiceException {
+	public static Evento toRsModel(it.govpay.bd.model.Evento evento) throws IOException {
 		Evento rsModel = new Evento();
-		
+
 		rsModel.setId(evento.getId());
 
 		if(StringUtils.isNotBlank(evento.getComponente())) {
@@ -113,7 +115,7 @@ public class EventiConverter {
 			switch (evento.getRuoloEvento()) {
 			case CLIENT:
 				rsModel.setRuolo(RuoloEvento.CLIENT);
-				break; 
+				break;
 			case SERVER:
 				rsModel.setRuolo(RuoloEvento.SERVER);
 				break;
@@ -138,8 +140,8 @@ public class EventiConverter {
 
 		rsModel.setDataEvento(evento.getData());
 		rsModel.setDurataEvento(evento.getIntervallo() != null ? evento.getIntervallo().longValue() : 0l);
-		rsModel.setSottotipoEvento(evento.getSottotipoEvento()); 
-		rsModel.setSottotipoEsito(evento.getSottotipoEsito()); 
+		rsModel.setSottotipoEvento(evento.getSottotipoEvento());
+		rsModel.setSottotipoEsito(evento.getSottotipoEsito());
 		rsModel.setDettaglioEsito(evento.getDettaglioEsito());
 
 		rsModel.setIdDominio(evento.getCodDominio());
@@ -150,7 +152,7 @@ public class EventiConverter {
 		rsModel.setIdPagamento(evento.getIdSessione());
 
 		rsModel.setDatiPagoPA(getDatiPagoPA(evento));
-		
+
 		if(evento.getDettaglioRichiesta() != null) {
 			rsModel.setParametriRichiesta(new RawObject(evento.getDettaglioAsString(evento.getDettaglioRichiesta())));
 //			rsModel.setParametriRichiesta(new RawObject(ConverterUtils.getParametriRichiestaEvento(evento.getDettaglioRichiesta())));
@@ -159,8 +161,10 @@ public class EventiConverter {
 			rsModel.setParametriRisposta(new RawObject(evento.getDettaglioAsString(evento.getDettaglioRisposta())));
 //			rsModel.setParametriRisposta(new RawObject(ConverterUtils.getParametriRispostaEvento(evento.getDettaglioRisposta())));
 		}
-		
+
 		rsModel.setSeverita(evento.getSeverita());
+		rsModel.setClusterId(evento.getClusterId());
+		rsModel.setTransactionId(evento.getTransactionId());
 
 		return rsModel;
 	}
@@ -183,13 +187,13 @@ public class EventiConverter {
 			if(evento.getPagoPA().getModelloPagamento() != null) {
 				datiPagoPA.setModelloPagamento(evento.getPagoPA().getModelloPagamento().getCodifica() +"");
 			}
-			
+
 			datiPagoPA.setIdFlusso(evento.getPagoPA().getCodFlusso());
 			if(evento.getPagoPA().getIdTracciato() != null)
 				datiPagoPA.setIdTracciato(new BigDecimal(evento.getPagoPA().getIdTracciato()));
 			datiPagoPA.setIdIncasso(evento.getPagoPA().getTrn());
 			datiPagoPA.setSct(evento.getPagoPA().getSct());
-			
+
 		}
 		return datiPagoPA;
 	}

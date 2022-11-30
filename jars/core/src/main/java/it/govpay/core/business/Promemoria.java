@@ -29,13 +29,6 @@ import org.xml.sax.SAXException;
 import freemarker.template.TemplateException;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.configurazione.model.AvvisaturaViaMail;
-import it.govpay.bd.configurazione.model.MailBatch;
-import it.govpay.bd.configurazione.model.MailServer;
-import it.govpay.bd.configurazione.model.PromemoriaAvviso;
-import it.govpay.bd.configurazione.model.PromemoriaRicevuta;
-import it.govpay.bd.configurazione.model.PromemoriaScadenza;
-import it.govpay.bd.configurazione.model.SslConfig;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
@@ -52,15 +45,23 @@ import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.PromemoriaException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.ExceptionUtils;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.trasformazioni.Costanti;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
 import it.govpay.model.Promemoria.TipoPromemoria;
+import it.govpay.model.configurazione.AvvisaturaViaMail;
+import it.govpay.model.configurazione.MailBatch;
+import it.govpay.model.configurazione.MailServer;
+import it.govpay.model.configurazione.PromemoriaAvviso;
+import it.govpay.model.configurazione.PromemoriaRicevuta;
+import it.govpay.model.configurazione.PromemoriaScadenza;
+import it.govpay.model.configurazione.SslConfig;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class Promemoria {
 
@@ -136,6 +137,8 @@ public class Promemoria {
 			this.startTls = mailserver.isStartTls();
 			
 		} catch (ServiceException e) {
+			log.error("Errore durante l'inizializzazione del Promemoria: " + e.getMessage(),e);
+		} catch (IOException e) {
 			log.error("Errore durante l'inizializzazione del Promemoria: " + e.getMessage(),e);
 		}
 	}
@@ -214,7 +217,7 @@ public class Promemoria {
 					versante = rptCtRichiestaPagamentoTelematico.getSoggettoVersante() != null ? rptCtRichiestaPagamentoTelematico.getSoggettoVersante().getEMailVersante() : null;
 					break;
 				case SANP_240:
-				default:
+				case SANP_321_V2:
 					break;
 			}
 		}

@@ -28,7 +28,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.IJsonSchemaValidator;
 import org.openspcoop2.utils.json.JsonSchemaValidatorConfig;
 import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.json.ValidatorFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
@@ -85,7 +85,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 	
 				try {
 					validator.setSchema(putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneDefault().getBytes(), config, this.log);
-				} catch (ValidationException e) {
+				} catch (org.openspcoop2.utils.json.ValidationException e) {
 					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali backoffice non e' valido.", e);
 				} 
@@ -104,7 +104,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 	
 				try {
 					validator.setSchema(putTipoPendenzaDTO.getTipoVersamento().getCaricamentoPendenzePortalePagamentoValidazioneDefinizioneDefault().getBytes(), config, this.log);
-				} catch (ValidationException e) {
+				} catch (org.openspcoop2.utils.json.ValidationException e) {
 					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali pagamento non e' valido.", e);
 				} 

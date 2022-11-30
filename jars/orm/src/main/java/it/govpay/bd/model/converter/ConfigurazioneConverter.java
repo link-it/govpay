@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.serialization.IOException;
-
 import it.govpay.bd.model.Configurazione;
+import it.govpay.core.exceptions.IOException;
 
 public class ConfigurazioneConverter {
 
@@ -41,7 +39,7 @@ public class ConfigurazioneConverter {
 		return dto;
 	}
 
-	public static List<it.govpay.orm.Configurazione> toVOList(Configurazione dto) throws IOException, ServiceException {
+	public static List<it.govpay.orm.Configurazione> toVOList(Configurazione dto) throws IOException {
 
 		List<it.govpay.orm.Configurazione> voList = new ArrayList<>();
 

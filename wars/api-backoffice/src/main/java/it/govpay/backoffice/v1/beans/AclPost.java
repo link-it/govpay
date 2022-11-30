@@ -1,61 +1,61 @@
 package it.govpay.backoffice.v1.beans;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "servizio",
 "autorizzazioni",
 })
 public class AclPost extends it.govpay.core.beans.JSONSerializable  implements IValidable{
-  
-    
+
+
   /**
    * Servizio oggetto dell'autorizzazione.
    */
   public enum ServizioEnum {
-    
-    
-        
-            
+
+
+
+
     ANAGRAFICA_PAGOPA("Anagrafica PagoPA"),
-    
-            
+
+
     ANAGRAFICA_CREDITORE("Anagrafica Creditore"),
-    
-            
+
+
     ANAGRAFICA_APPLICAZIONI("Anagrafica Applicazioni"),
-    
-            
+
+
     ANAGRAFICA_RUOLI("Anagrafica Ruoli"),
-    
-            
+
+
     PAGAMENTI("Pagamenti"),
-    
-            
+
+
     PENDENZE("Pendenze"),
-    
-            
+
+
     RENDICONTAZIONI_E_INCASSI("Rendicontazioni e Incassi"),
-    
-            
+
+
     GIORNALE_DEGLI_EVENTI("Giornale degli Eventi"),
-    
-            
+
+
     CONFIGURAZIONE_E_MANUTENZIONE("Configurazione e manutenzione");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -79,26 +79,26 @@ public class AclPost extends it.govpay.core.beans.JSONSerializable  implements I
     }
   }
 
-    
+
   private ServizioEnum servizioEnum = null;
-    
+
   @JsonProperty("servizio")
   private String servizio = null;
     /**
    * Gets or Sets autorizzazioni
    */
   public enum AutorizzazioniEnum {
-    
-    
-        
-            
+
+
+
+
     LETTURA("R"),
-    
-            
+
+
     SCRITTURA("W");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -122,10 +122,10 @@ public class AclPost extends it.govpay.core.beans.JSONSerializable  implements I
     }
   }
 
-      
+
   @JsonProperty("autorizzazioni")
   private List<String> autorizzazioni = new ArrayList<>();
-  
+
   /**
    * Servizio oggetto dell'autorizzazione.
    **/
@@ -187,7 +187,7 @@ public class AclPost extends it.govpay.core.beans.JSONSerializable  implements I
     return Objects.hash(this.servizio, this.autorizzazioni);
   }
 
-  public static AclPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static AclPost parse(String json) throws IOException {
     return parse(json, AclPost.class);
   }
 
@@ -200,7 +200,7 @@ public class AclPost extends it.govpay.core.beans.JSONSerializable  implements I
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class AclPost {\n");
-    
+
     sb.append("    servizio: ").append(this.toIndentedString(this.servizio)).append("\n");
     sb.append("    autorizzazioni: ").append(this.toIndentedString(this.autorizzazioni)).append("\n");
     sb.append("}");
@@ -217,24 +217,24 @@ public class AclPost extends it.govpay.core.beans.JSONSerializable  implements I
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		vf.getValidator("servizio", this.servizio).notNull();
-		
+
 		if(ServizioEnum.fromValue(this.servizio) == null)
 			throw new ValidationException("Codifica inesistente per servizio. Valore fornito [" + this.servizio + "] valori possibili " + ArrayUtils.toString(ServizioEnum.values()));
 
-		
+
 		if(this.autorizzazioni == null || this.autorizzazioni.isEmpty())
 			throw new ValidationException("Il campo " + "autorizzazioni" + " non deve essere vuoto.");
-		
+
 		for (String string : this.autorizzazioni) {
 			if(AutorizzazioniEnum.fromValue(string) == null)
 				throw new ValidationException("Codifica inesistente per autorizzazioni. Valore fornito [" + string + "] valori possibili " + ArrayUtils.toString(AutorizzazioniEnum.values()));
 		}
-		
+
 	}
 }
 

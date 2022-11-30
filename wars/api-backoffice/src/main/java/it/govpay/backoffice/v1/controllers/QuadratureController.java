@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -35,6 +34,7 @@ import it.govpay.core.dao.reportistica.dto.ListaRendicontazioniDTOResponse;
 import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTO;
 import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTO.GROUP_BY;
 import it.govpay.core.dao.reportistica.dto.ListaRiscossioniDTOResponse;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreUtils;
@@ -54,13 +54,13 @@ public class QuadratureController extends BaseController {
 
 
 
-    public Response getQuadratureRendicontazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , List<String> gruppi, Integer pagina, Integer risultatiPerPagina, 
+    public Response getQuadratureRendicontazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , List<String> gruppi, Integer pagina, Integer risultatiPerPagina,
     		String flussoRendicontazioneDataFlussoDa, String flussoRendicontazioneDataFlussoA, String dataRendicontazioneDa, String dataRendicontazioneA, String idFlusso, String iuv, List<String> direzione, List<String> divisione) {
     	String methodName = "getQuadratureRendicontazioni";
     	String transactionId = ContextThreadLocal.get().getTransactionId();
 
 		try{
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
@@ -70,11 +70,11 @@ public class QuadratureController extends BaseController {
 			ListaRendicontazioniDTO listaRendicontazioniDTO = new ListaRendicontazioniDTO(user);
 
 			FiltroRendicontazioni filtro = new FiltroRendicontazioni();
-			
+
 			if(risultatiPerPagina == null) {
 				risultatiPerPagina = BasicFindRequestDTO.DEFAULT_LIMIT;
 			}
-			
+
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 
@@ -97,7 +97,7 @@ public class QuadratureController extends BaseController {
 				dataFlussoADate = SimpleDateFormatUtils.getDataAConTimestamp(flussoRendicontazioneDataFlussoA, "flussoRendicontazione.dataFlussoA", true);
 				filtro.setDataFlussoA(dataFlussoADate);
 			}
-			
+
 			Date dataRendicontazioneDaDate = null;
 			if(dataRendicontazioneDa!=null) {
 				dataRendicontazioneDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRendicontazioneDa, "dataDa", true);
@@ -116,7 +116,7 @@ public class QuadratureController extends BaseController {
 			filtro.setDivisione(divisione);
 
 			if(gruppi != null && gruppi.size() >0) {
-				List<ListaRendicontazioniDTO.GROUP_BY> groupBy = new ArrayList<ListaRendicontazioniDTO.GROUP_BY>();
+				List<ListaRendicontazioniDTO.GROUP_BY> groupBy = new ArrayList<>();
 				for (String gruppoString : gruppi) {
 					RaggruppamentoStatisticaRendicontazione gruppo = RaggruppamentoStatisticaRendicontazione.fromValue(gruppoString);
 					if(gruppo != null) {
@@ -152,7 +152,7 @@ public class QuadratureController extends BaseController {
 
 			// INIT DAO
 
-			StatisticaRendicontazioniDAO statisticaRendicontazioniDAO = new StatisticaRendicontazioniDAO(); 
+			StatisticaRendicontazioniDAO statisticaRendicontazioniDAO = new StatisticaRendicontazioniDAO();
 
 			// CHIAMATA AL DAO
 
@@ -162,13 +162,13 @@ public class QuadratureController extends BaseController {
 
 			List<StatisticaQuadraturaRendicontazione> results = new ArrayList<>();
 			for(it.govpay.bd.reportistica.statistiche.model.StatisticaRendicontazione entrataPrevista: listaRendicontazioniDTOResponse.getResults()) {
-				StatisticaQuadraturaRendicontazione rsModel = StatisticaQuadraturaConverter.toRsModelIndex(entrataPrevista, uriInfo); 
+				StatisticaQuadraturaRendicontazione rsModel = StatisticaQuadraturaConverter.toRsModelIndex(entrataPrevista, uriInfo);
 				results.add(rsModel);
-			} 
+			}
 
 			ListaStatisticheQuadratureRendicontazioni response = new ListaStatisticheQuadratureRendicontazioni(results, this.getServicePath(uriInfo), listaRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
@@ -179,13 +179,13 @@ public class QuadratureController extends BaseController {
 
 
 
-	public Response getQuadratureRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, 
+	public Response getQuadratureRiscossioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina,
 			String dataDa, String dataA, List<String> idDominio, List<String> idUnita, List<String> idTipoPendenza, List<String> idA2A, List<String> direzione, List<String> divisione, List<String> tassonomia, List<String> tipo, List<String> gruppi) {
 		String methodName = "getQuadratureRiscossioni";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 
 		try{
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
@@ -199,7 +199,7 @@ public class QuadratureController extends BaseController {
 			if(risultatiPerPagina == null) {
 				risultatiPerPagina = BasicFindRequestDTO.DEFAULT_LIMIT;
 			}
-			
+
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 
@@ -218,7 +218,7 @@ public class QuadratureController extends BaseController {
 
 			Date dataADate = null;
 			if(dataA!=null) {
-				dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA"); 
+				dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				filtro.setDataA(dataADate);
 			}
 
@@ -229,23 +229,23 @@ public class QuadratureController extends BaseController {
 			filtro.setDivisione(divisione);
 			filtro.setTassonomia(tassonomia);
 			filtro.setCodApplicazione(idA2A);
-			
+
 			if(tipo!=null) {
-				List<TipoPagamento> tipi = new ArrayList<TipoPagamento>();
+				List<TipoPagamento> tipi = new ArrayList<>();
 				for (String tipoS : tipo) {
 					TipoRiscossione tipoRiscossione = TipoRiscossione.fromValue(tipoS);
 					if(tipoRiscossione != null) {
 						tipi.add(TipoPagamento.valueOf(tipoRiscossione.toString()));
 					}
 				}
-				
+
 				if(tipi.size()> 0) {
 					filtro.setTipo(tipi);
 				}
 			}
 
 			if(gruppi != null && gruppi.size() >0) {
-				List<GROUP_BY> groupBy = new ArrayList<ListaRiscossioniDTO.GROUP_BY>();
+				List<GROUP_BY> groupBy = new ArrayList<>();
 				for (String gruppoString : gruppi) {
 					RaggruppamentoStatistica gruppo = RaggruppamentoStatistica.fromValue(gruppoString);
 					if(gruppo != null) {
@@ -293,7 +293,7 @@ public class QuadratureController extends BaseController {
 
 			// INIT DAO
 
-			StatisticaRiscossioniDAO statisticaRiscossioniDAO = new StatisticaRiscossioniDAO(); 
+			StatisticaRiscossioniDAO statisticaRiscossioniDAO = new StatisticaRiscossioniDAO();
 
 			// CHIAMATA AL DAO
 
@@ -303,13 +303,13 @@ public class QuadratureController extends BaseController {
 
 			List<StatisticaQuadratura> results = new ArrayList<>();
 			for(StatisticaRiscossione entrataPrevista: listaRiscossioniDTOResponse.getResults()) {
-				StatisticaQuadratura rsModel = StatisticaQuadraturaConverter.toRsModelIndex(entrataPrevista); 
+				StatisticaQuadratura rsModel = StatisticaQuadraturaConverter.toRsModelIndex(entrataPrevista);
 				results.add(rsModel);
-			} 
+			}
 
 			ListaStatisticheQuadrature response = new ListaStatisticheQuadrature(results, this.getServicePath(uriInfo), listaRiscossioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);

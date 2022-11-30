@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.30.0"
+  version: "1.31.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -7754,6 +7754,15 @@ components:
       oneOf:
         - $ref: '#/components/schemas/tipoAutenticazioneBasic'
         - $ref: '#/components/schemas/tipoAutenticazioneSSL'
+        - $ref: '#/components/schemas/tipoAutenticazioneSubscriptionKey'
+    tipoAutenticazioneSubscriptionKey:
+      type: object
+      required:
+        - subscriptionKey
+      properties:
+        subscriptionKey:
+          type: string
+          example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
     connector:
       type: object
       required:
@@ -8498,6 +8507,14 @@ components:
           format: int32
           description: indica il livello di severita nel caso di evento con esito KO/FAIL
           example: 0
+        clusterId:
+          type: string
+          description: Identificativo del nodo dove viene registrata l'operazione
+          example: NODO_1
+        transactionId:
+          type: string
+          description: Identificativo della transazione registrata
+          example: 'f9866575-r5t8-4d10-awse-57ba88bec136'
     evento:
       allOf:
         - $ref: '#/components/schemas/eventoIndex'

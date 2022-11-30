@@ -30,7 +30,8 @@ import java.util.Objects;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class Versamento extends BasicModel {
 
@@ -49,12 +50,12 @@ public class Versamento extends BasicModel {
 			return this.codifica;
 		}
 
-		public static TipologiaTipoVersamento toEnum(String codifica) throws ServiceException {
+		public static TipologiaTipoVersamento toEnum(String codifica) throws CodificaInesistenteException {
 			for(TipologiaTipoVersamento p : TipologiaTipoVersamento.values()){
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
-			throw new ServiceException("Codifica inesistente per TipologiaTipoVersamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipologiaTipoVersamento.values()));
+			throw new CodificaInesistenteException("Codifica inesistente per TipologiaTipoVersamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipologiaTipoVersamento.values()));
 		}
 	}
 	
@@ -116,12 +117,12 @@ public class Versamento extends BasicModel {
 			return this.codifica;
 		}
 
-		public static TipoSogliaVersamento toEnum(String codifica) throws ServiceException {
+		public static TipoSogliaVersamento toEnum(String codifica) throws CodificaInesistenteException {
 			for(TipoSogliaVersamento p : TipoSogliaVersamento.values()){
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
-			throw new ServiceException("Codifica inesistente per TipoSogliaVersamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoSogliaVersamento.values()));
+			throw new CodificaInesistenteException("Codifica inesistente per TipoSogliaVersamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoSogliaVersamento.values()));
 		}
 	}
 

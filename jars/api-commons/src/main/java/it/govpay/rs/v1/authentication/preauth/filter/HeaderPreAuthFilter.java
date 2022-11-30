@@ -33,7 +33,7 @@ public class HeaderPreAuthFilter extends org.openspcoop2.utils.service.authentic
 		Object tmp = null;
 		for (String header : nomiHeaders) {
 			String headerValue = request.getHeader(header);
-			log.debug("Letto Header [:"+header+"] Valore: ["+headerValue+"]");
+			log.debug("Letto Header: ["+header+"] Valore: ["+headerValue+"]");
 			
 			if(headerValue != null) {
 				tmp = headerValue;

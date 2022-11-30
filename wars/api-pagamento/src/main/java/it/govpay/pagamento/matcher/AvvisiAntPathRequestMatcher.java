@@ -12,7 +12,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.configurazione.model.Hardening;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO;
@@ -20,6 +19,7 @@ import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
+import it.govpay.model.configurazione.Hardening;
 import it.govpay.pagamento.v2.controller.BaseController;
 import it.govpay.rs.v1.authentication.hardening.matcher.HardeningAntPathRequestMatcher;
 

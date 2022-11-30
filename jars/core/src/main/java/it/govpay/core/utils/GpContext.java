@@ -30,11 +30,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.GpResponse;
+import it.govpay.core.beans.EventoContext.Azione;
+import it.govpay.core.beans.EventoContext.Categoria;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.exceptions.NdpException.FaultPa;
-import it.govpay.core.utils.EventoContext.Categoria;
-import it.govpay.core.utils.EventoContext.Componente;
-import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.model.Evento.RuoloEvento;
 import it.govpay.model.Rpt;
 import it.govpay.model.Versionabile.Versione;
 
@@ -130,7 +132,7 @@ public class GpContext extends ApplicationContext {
 		transaction.setClient(client);
 
 		ctx.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
-		ctx.getEventoCtx().setRole(Role.SERVER);
+		ctx.getEventoCtx().setRole(RuoloEvento.SERVER);
 		ctx.getEventoCtx().setDataRichiesta(new Date());
 		ctx.getEventoCtx().setMethod((String) msgCtx.get(MessageContext.HTTP_REQUEST_METHOD));
 		ctx.getEventoCtx().setComponente(Componente.API_PAGOPA);
@@ -172,7 +174,7 @@ public class GpContext extends ApplicationContext {
 		transaction.addServer(server);
 		
 		this.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
-		this.getEventoCtx().setRole(Role.SERVER);
+		this.getEventoCtx().setRole(RuoloEvento.SERVER);
 		this.getEventoCtx().setDataRichiesta(new Date());
 		this.getEventoCtx().setMethod(httpMethod);
 		this.getEventoCtx().setComponente(componente);
@@ -201,7 +203,7 @@ public class GpContext extends ApplicationContext {
 		request.setDate(new Date());
 		
 		context.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
-		context.getEventoCtx().setRole(Role.SERVER);
+		context.getEventoCtx().setRole(RuoloEvento.SERVER);
 		context.getEventoCtx().setDataRichiesta(new Date());
 
 		return context;
@@ -227,13 +229,13 @@ public class GpContext extends ApplicationContext {
 		request.setDate(new Date());
 		
 		context.getEventoCtx().setCategoriaEvento(Categoria.INTERNO);
-		context.getEventoCtx().setRole(Role.CLIENT);
+		context.getEventoCtx().setRole(RuoloEvento.CLIENT);
 		context.getEventoCtx().setDataRichiesta(new Date());
 		
 		return context;
 	}
 
-	public String setupNodoClient(String codStazione, String codDominio, Azione azione) {
+	public String setupNodoClient(String codStazione, String codDominio, EventoContext.Azione azione) {
 		return this._setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
 	}
 

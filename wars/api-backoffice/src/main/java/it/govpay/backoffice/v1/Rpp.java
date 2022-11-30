@@ -16,8 +16,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.controllers.RppController;
 import it.govpay.core.beans.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -30,7 +28,7 @@ public class Rpp extends BaseRsServiceV1{
 
 	private RppController controller = null;
 
-	public Rpp() throws ServiceException {
+	public Rpp() {
 		super("rpp");
 		this.controller = new RppController(this.nomeServizio,this.log);
 	}
@@ -44,7 +42,7 @@ public class Rpp extends BaseRsServiceV1{
         this.buildContext();
         return this.controller.getRpp(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  "n/a");
     }
-    
+
     @GET
     @Path("/{idDominio}/{iuv}/{ccp}")
     @Produces({ "application/json" })
@@ -52,7 +50,7 @@ public class Rpp extends BaseRsServiceV1{
         this.buildContext();
         return this.controller.getRpp(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
     }
-    
+
     @GET
     @Path("/{idDominio}/{iuv}/n/a/rt")
     @Produces({ "application/pdf", "application/xml", "application/json" })
@@ -68,7 +66,7 @@ public class Rpp extends BaseRsServiceV1{
         this.buildContext();
         return this.controller.getRt(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
     }
-    
+
     @GET
     @Path("/{idDominio}/{iuv}/n/a/rpt")
     @Produces({ "application/xml", "application/json" })
@@ -76,16 +74,16 @@ public class Rpp extends BaseRsServiceV1{
         this.buildContext();
         return this.controller.getRpt(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  "n/a");
     }
-    
+
     @GET
     @Path("/{idDominio}/{iuv}/{ccp}/rpt")
-    
+
     @Produces({ "application/xml", "application/json" })
     public Response getRpt(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp){
         this.buildContext();
         return this.controller.getRpt(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
     }
-    
+
     @POST
     @Path("/{idDominio}/{iuv}/{ccp}")
     @Consumes({ "application/json" })
@@ -93,11 +91,11 @@ public class Rpp extends BaseRsServiceV1{
         this.buildContext();
         if(httpHeaders.getRequestHeader("X-HTTP-Method-Override") != null && !httpHeaders.getRequestHeader("X-HTTP-Method-Override").isEmpty() && httpHeaders.getRequestHeader("X-HTTP-Method-Override").get(0).equals("PATCH"))
         	return this.controller.updateRpp(this.getUser(), uriInfo, httpHeaders, is,  idDominio,  iuv,  ccp);
-       
+
         String transactionId = this.getContext().getTransactionId();
         return this.controller.handleEventoFail(Response.status(405), transactionId, null, "Operazione non consentita", null).build();
     }
-    
+
     @POST
     @Path("/{idDominio}/{iuv}/n/a")
     @Consumes({ "application/json" })
@@ -105,7 +103,7 @@ public class Rpp extends BaseRsServiceV1{
         this.buildContext();
         if(httpHeaders.getRequestHeader("X-HTTP-Method-Override") != null && !httpHeaders.getRequestHeader("X-HTTP-Method-Override").isEmpty() && httpHeaders.getRequestHeader("X-HTTP-Method-Override").get(0).equals("PATCH"))
         	return this.controller.updateRpp(this.getUser(), uriInfo, httpHeaders, is,  idDominio,  iuv,  "n/a");
-      
+
         String transactionId = this.getContext().getTransactionId();
         return this.controller.handleEventoFail(Response.status(405), transactionId, null, "Operazione non consentita", null).build();
     }
@@ -130,7 +128,7 @@ public class Rpp extends BaseRsServiceV1{
 
     @GET
     @Path("/")
-    
+
     @Produces({ "application/json" })
     public Response findRpps(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv, @QueryParam("ccp") String ccp, @QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza, @QueryParam("esito") String esito, @QueryParam("idPagamento") String idPagamento, @QueryParam("idDebitore") String idDebitore, @QueryParam("dataRptDa") String dataRptDa, @QueryParam("dataRptA") String dataRptA, @QueryParam("dataRtDa") String dataRtDa, @QueryParam("dataRtA") String dataRtA, @QueryParam("direzione") List<String> direzione, @QueryParam("divisione") List<String> divisione, @QueryParam("tassonomia") String tassonomia, @QueryParam("idUnita") String idUnita, @QueryParam("idTipoPendenza") String idTipoPendenza, @QueryParam("anagraficaDebitore") String anagraficaDebitore, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
     	this.buildContext();

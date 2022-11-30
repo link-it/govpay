@@ -9,6 +9,8 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 
+import it.govpay.core.utils.SimpleDateFormatUtils;
+
 public class LocalDateSerializer extends StdScalarSerializer<LocalDate> {
 
 	private static final long serialVersionUID = 1L;
@@ -21,7 +23,7 @@ public class LocalDateSerializer extends StdScalarSerializer<LocalDate> {
     public void serialize(LocalDate dateTime,
                           JsonGenerator jsonGenerator,
                           SerializerProvider provider) throws IOException, JsonGenerationException {
-        String dateTimeAsString = DateFormatUtils.newSimpleDateFormatSoloData().format(dateTime.toDate());
+        String dateTimeAsString = SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dateTime.toDate());
         jsonGenerator.writeString(dateTimeAsString);
     }
 }

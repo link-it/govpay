@@ -8,11 +8,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum TipoSogliaVincoloPagamento {
   ENTRO("ENTRO"),
-  
-  OLTRE("OLTRE"), 
-  
-  SCONTATO ("SCONTATO"), 
-  
+
+  OLTRE("OLTRE"),
+
+  SCONTATO ("SCONTATO"),
+
   RIDOTTO ("RIDOTTO");
 
   private String value;
@@ -36,5 +36,5 @@ public enum TipoSogliaVincoloPagamento {
     }
     return null;
   }
-  
+
 }

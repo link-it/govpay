@@ -6,8 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -23,34 +21,34 @@ import it.govpay.core.beans.JSONSerializable;
 "riscossioni",
 })
 public class Incasso extends JSONSerializable {
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("idIncasso")
   private String idIncasso = null;
-  
+
   @JsonProperty("causale")
   private String causale = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("dataValuta")
   private Date dataValuta = null;
-  
+
   @JsonProperty("dataContabile")
   private Date dataContabile = null;
-  
+
   @JsonProperty("ibanAccredito")
   private String ibanAccredito = null;
-  
+
   @JsonProperty("sct")
   private String sct = null;
-  
+
   @JsonProperty("riscossioni")
   private List<Riscossione> riscossioni = new ArrayList<>();
-  
+
   /**
    * Identificativo ente creditore
    **/
@@ -218,7 +216,7 @@ public class Incasso extends JSONSerializable {
     return Objects.hash(idDominio, idIncasso, causale, importo, dataValuta, dataContabile, ibanAccredito, sct, riscossioni);
   }
 
-  public static Incasso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Incasso parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, Incasso.class);
   }
 

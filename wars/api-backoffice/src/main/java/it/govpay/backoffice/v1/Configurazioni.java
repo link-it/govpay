@@ -11,8 +11,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.controllers.ConfigurazioniController;
 import it.govpay.rs.v1.BaseRsServiceV1;
 
@@ -23,7 +21,7 @@ public class Configurazioni extends BaseRsServiceV1{
 
 	private ConfigurazioniController controller = null;
 
-	public Configurazioni() throws ServiceException {
+	public Configurazioni() {
 		super("configurazioni");
 		this.controller = new ConfigurazioniController(this.nomeServizio,this.log);
 	}
@@ -32,7 +30,7 @@ public class Configurazioni extends BaseRsServiceV1{
 
     @GET
     @Path("/")
-    
+
     @Produces({ "application/json" })
     public Response getConfigurazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.buildContext();

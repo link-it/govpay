@@ -41,7 +41,7 @@ public interface RiconciliazioniApi  {
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
     @Operation(summary = "Riconciliazione di un movimento di cassa", tags={ "Riconciliazioni" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Riconciliazione", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Riconciliazione.class))),
         @ApiResponse(responseCode = "202", description = "Richiesta accettata"),
         @ApiResponse(responseCode = "400", description = "Richiesta non correttamente formata", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))),
@@ -58,7 +58,7 @@ public interface RiconciliazioniApi  {
     @Path("/riconciliazioni")
     @Produces({ "application/json" })
     @Operation(summary = "Elenco dei movimenti di cassa riconciliati", tags={ "Riconciliazioni" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Dettaglio dell'incasso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Riconciliazioni.class))),
         @ApiResponse(responseCode = "400", description = "Richiesta non correttamente formata", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
@@ -74,7 +74,7 @@ public interface RiconciliazioniApi  {
     @Path("/riconciliazioni/{idDominio}/{id}")
     @Produces({ "application/json" })
     @Operation(summary = "Dettaglio di un movimento di cassa riconciliato", tags={ "Riconciliazioni" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Riconciliazione", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Riconciliazione.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
         @ApiResponse(responseCode = "403", description = "Richiesta non autorizzata"),

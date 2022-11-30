@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>it.govpay</groupId>
 		<artifactId>bom</artifactId>
-		<version>3.6.2</version>
+		<version>3.7.0</version>
 		<relativePath>../</relativePath>
 	</parent>
 	<properties>
@@ -16,6 +16,7 @@
 	</properties>
 	<modules>
 		<module>fonts-titilliumWeb</module>
+		<module>xml-adapters</module>
 		<module>pagopa-beans</module>
 		<module>jppapdp-beans</module>
 		<module>appio-beans</module>

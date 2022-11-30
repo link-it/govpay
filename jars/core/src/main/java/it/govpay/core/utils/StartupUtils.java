@@ -26,7 +26,9 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Locale;
 import java.util.Properties;
+import java.util.TimeZone;
 
 import org.apache.commons.io.IOUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -49,6 +51,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.utils.logger.Log4JUtils;
 import it.govpay.core.utils.service.context.GpContextFactory;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.stampe.utils.GovpayStampe;
 
 public class StartupUtils {
@@ -186,12 +189,15 @@ public class StartupUtils {
 			
 			AnagraficaManager.newInstance(dominioAnagraficaManager);
 			JaxbUtils.init();
+			it.govpay.jppapdp.beans.utils.JaxbUtils.init();
 			ThreadExecutorManager.setup();
 			GovpayStampe.init(log, gpConfig.getResourceDir());
 		} catch (Exception e) {
 			throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita.", e);
 		}
 		log.info("Charset.defaultCharset(): " + Charset.defaultCharset() );
+		log.info("Locale.getDefault(): " + Locale.getDefault() );
+		log.info("TimeZone.getDefault(): " + TimeZone.getDefault() );
 		return ctx;
 	}
 	

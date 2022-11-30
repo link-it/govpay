@@ -9,23 +9,23 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets statoPromemoria
  */
 public enum StatoPromemoria {
-  
-  
-  
-  
+
+
+
+
   SPEDITO("SPEDITO"),
-  
-  
+
+
   DA_SPEDIRE("DA_SPEDIRE"),
-  
-  
+
+
   ANNULLATO("ANNULLATO"),
-  
-  
+
+
   FALLITO("FALLITO");
-  
-  
-  
+
+
+
 
   private String value;
 

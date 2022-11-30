@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.pagamento;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,6 +66,7 @@ import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.Documento;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdDocumento;
@@ -125,6 +127,10 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) { 
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -167,6 +173,10 @@ public class VersamentiBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -218,6 +228,10 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -257,6 +271,10 @@ public class VersamentiBD extends BasicBD {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -391,6 +409,8 @@ public class VersamentiBD extends BasicBD {
 			}
 			
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -545,6 +565,8 @@ public class VersamentiBD extends BasicBD {
 			this.getVersamentoService().update(idVersamento, vo);
 			
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -865,6 +887,10 @@ public class VersamentiBD extends BasicBD {
 			return versamentoLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -885,6 +911,8 @@ public class VersamentiBD extends BasicBD {
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -918,6 +946,8 @@ public class VersamentiBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -1105,6 +1135,10 @@ public class VersamentiBD extends BasicBD {
 			ret = VersamentoConverter.toDTOList(versamentiVO);
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -1167,6 +1201,10 @@ public class VersamentiBD extends BasicBD {
 			ret = VersamentoConverter.toDTOList(versamentiVO);
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -1227,6 +1265,10 @@ public class VersamentiBD extends BasicBD {
 			List<it.govpay.orm.Versamento> versamentiVO = this.getVersamentoService().findAll(pagExpr);
 			ret = VersamentoConverter.toDTOList(versamentiVO);
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -1289,6 +1331,10 @@ public class VersamentiBD extends BasicBD {
 			List<it.govpay.orm.Versamento> versamentiVO = this.getVersamentoService().findAll(pagExpr);
 			ret = VersamentoConverter.toDTOList(versamentiVO);
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

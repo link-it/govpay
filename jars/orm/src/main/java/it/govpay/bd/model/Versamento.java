@@ -27,7 +27,6 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.serialization.IDeserializer;
-import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.serialization.SerializationFactory;
@@ -43,16 +42,17 @@ import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.beans.tracciati.ProprietaPendenza;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Iuv;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.TipoVersamento;
 
 public class Versamento extends it.govpay.model.Versamento {
-	
+
 	private static final long serialVersionUID = 1L;
 	// BUSINESS
-	
+
 	private transient List<SingoloVersamento> singoliVersamenti;
 	private transient List<Rpt> rpts;
 	private transient Applicazione applicazione;
@@ -64,54 +64,54 @@ public class Versamento extends it.govpay.model.Versamento {
 	private transient Documento documento;
 	private transient ProprietaPendenza proprietaPendenza;
 	private transient List<Allegato> allegati;
-	
+
 	// Indica se il versamento e' stato creato o aggiornato. Utile per individuare il codice di ritorno nelle api rest.
 	private transient boolean created;
-	
+
 	public void addSingoloVersamento(it.govpay.bd.model.SingoloVersamento singoloVersamento) throws ServiceException {
 		if(this.singoliVersamenti == null) {
 			this.singoliVersamenti = new ArrayList<>();
 		}
-		
+
 		this.singoliVersamenti.add(singoloVersamento);
-		
+
 		if(singoloVersamento.getTipoBollo() != null) {
 			this.setBolloTelematico(true);
 		}
 	}
-	
+
 	public List<it.govpay.bd.model.SingoloVersamento> getSingoliVersamenti()  {
 		if(this.singoliVersamenti != null)
 			Collections.sort(this.singoliVersamenti);
-		
+
 		return this.singoliVersamenti;
 	}
-	
+
 	public List<it.govpay.bd.model.SingoloVersamento> getSingoliVersamenti(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.singoliVersamenti == null && this.getId() != null) {
 			VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 			this.singoliVersamenti = versamentiBD.getSingoliVersamenti(this.getId());
 		}
-		
+
 		if(this.singoliVersamenti != null)
 			Collections.sort(this.singoliVersamenti);
-		
+
 		return this.singoliVersamenti;
 	}
-	
+
 	public List<it.govpay.bd.model.SingoloVersamento> getSingoliVersamenti(BasicBD bd) throws ServiceException {
 		if(this.singoliVersamenti == null && this.getId() != null) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			versamentiBD.setAtomica(false); // connessione deve essere gia' aperta
 			this.singoliVersamenti = versamentiBD.getSingoliVersamenti(this.getId());
 		}
-		
+
 		if(this.singoliVersamenti != null)
 			Collections.sort(this.singoliVersamenti);
-		
+
 		return this.singoliVersamenti;
 	}
-	
+
 	public Applicazione getApplicazione(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.applicazione == null) {
 			try {
@@ -121,7 +121,7 @@ public class Versamento extends it.govpay.model.Versamento {
 		} 
 		return this.applicazione;
 	}
-	
+
 	public void setApplicazione(String codApplicazione, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException {
 		this.applicazione = AnagraficaManager.getApplicazione(configWrapper, codApplicazione);
 		this.setIdApplicazione(this.applicazione.getId());
@@ -146,13 +146,13 @@ public class Versamento extends it.govpay.model.Versamento {
 		} 
 		return this.dominio;
 	}
-	
+
 	public UnitaOperativa setUo(long idDominio, String codUo, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException {
 		this.uo = AnagraficaManager.getUnitaOperativa(configWrapper, idDominio, codUo);
 		this.setIdUo(this.uo.getId());
 		return this.uo;
 	}
-	
+
 	public List<Rpt> getRpt(BasicBD bd) throws ServiceException {
 		if(this.rpts == null && bd != null) {
 			RptBD rptBD = new RptBD(bd);
@@ -162,7 +162,7 @@ public class Versamento extends it.govpay.model.Versamento {
 		}
 		return this.rpts;
 	}
-	
+
 	public Iuv getIuv(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.iuv == null) {
 			IuvBD iuvBD = new IuvBD(configWrapper);
@@ -174,7 +174,7 @@ public class Versamento extends it.govpay.model.Versamento {
 		}
 		return this.iuv;
 	}
-	
+
 	public Iuv getIuv(BasicBD bd) throws ServiceException {
 		if(this.iuv == null) {
 			IuvBD iuvBD = new IuvBD(bd);
@@ -187,7 +187,7 @@ public class Versamento extends it.govpay.model.Versamento {
 		}
 		return this.iuv;
 	}
-	
+
 	public TipoVersamento getTipoVersamento(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.tipoVersamento == null) {
 			try {
@@ -197,8 +197,8 @@ public class Versamento extends it.govpay.model.Versamento {
 		} 
 		return this.tipoVersamento;
 	}
-	
-	
+
+
 	public TipoVersamentoDominio getTipoVersamentoDominio(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.tipoVersamentoDominio == null) {
 			try {
@@ -208,11 +208,11 @@ public class Versamento extends it.govpay.model.Versamento {
 		} 
 		return this.tipoVersamentoDominio;
 	}	
-	
+
 	public void setDocumento(Documento documento) {
 		this.documento = documento;
 	}
-	
+
 	public Documento getDocumento() {
 		return this.documento;
 	}
@@ -227,7 +227,7 @@ public class Versamento extends it.govpay.model.Versamento {
 		} 
 		return this.documento;
 	}
-	
+
 	public Documento getDocumento(BasicBD bd) throws ServiceException {
 		if(this.getIdDocumento() != null && bd != null && this.documento == null) {
 			DocumentiBD documentiBD = new DocumentiBD(bd);
@@ -256,14 +256,14 @@ public class Versamento extends it.govpay.model.Versamento {
 				return null;
 			}
 		}
-		
+
 		return proprietaPendenza;
 	}
 
 	public void setProprietaPendenza(ProprietaPendenza proprietaPendenza) {
 		this.proprietaPendenza = proprietaPendenza;
 	}
-	
+
 	@Override
 	public String getProprieta() {
 		try {
@@ -272,50 +272,58 @@ public class Versamento extends it.govpay.model.Versamento {
 			return super.getProprieta();
 		}
 	}
-	
+
 	private <T> T _getFromJson(String jsonString, Class<T> tClass) throws IOException {
 		if(jsonString != null) {
-			SerializationConfig serializationConfig = new SerializationConfig();
-			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
-			serializationConfig.setIgnoreNullValues(true);
-			IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
-			return tClass.cast(deserializer.getObject(jsonString, tClass));
+			try {
+				SerializationConfig serializationConfig = new SerializationConfig();
+				serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+				serializationConfig.setIgnoreNullValues(true);
+				IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+				return tClass.cast(deserializer.getObject(jsonString, tClass));
+			} catch(org.openspcoop2.utils.serialization.IOException e) {
+				throw new IOException(e.getMessage(), e);
+			}
 		}
 
 		return null;
 	}
 
 	private String _getJson(Object objToSerialize) throws IOException {
-		SerializationConfig serializationConfig = new SerializationConfig();
-		serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
-		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
-		ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
-		return serializer.getObject(objToSerialize); 
+		try {
+			SerializationConfig serializationConfig = new SerializationConfig();
+			serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
+			serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
+			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+			return serializer.getObject(objToSerialize); 
+		} catch(org.openspcoop2.utils.serialization.IOException e) {
+			throw new IOException(e.getMessage(), e);
+		}
 	}
-	
+
 	public List<Allegato> getAllegati()  {
 		return this.allegati;
 	}
-	
+
 	public List<Allegato> getAllegati(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.allegati == null && this.getId() != null) {
 			AllegatiBD allegatiBD = new AllegatiBD(configWrapper);
 			this.allegati = allegatiBD.getAllegati(this.getId());
 		}
-		
+
 		return this.allegati;
 	}
-	
+
 	public List<Allegato> getAllegati(BasicBD bd) throws ServiceException {
 		if(this.allegati == null && this.getId() != null) {
 			AllegatiBD allegatiBD = new AllegatiBD(bd);
 			allegatiBD.setAtomica(false); // connessione deve essere gia' aperta
 			this.allegati = allegatiBD.getAllegati(this.getId());
 		}
-		
+
 		return this.allegati;
 	}
-	
+
 	public void setAllegati(List<Allegato> allegati) {
 		this.allegati = allegati;
 	}

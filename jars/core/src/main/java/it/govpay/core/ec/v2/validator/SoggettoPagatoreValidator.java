@@ -34,47 +34,47 @@ public class SoggettoPagatoreValidator{
 	 
 	 */ 
 
-	public void validaCellulare(String fieldName, String cellulare) throws org.openspcoop2.utils.json.ValidationException{
+	public void validaCellulare(String fieldName, String cellulare) throws it.govpay.core.exceptions.ValidationException{
 		this.vf.getValidator(fieldName, cellulare).pattern(CostantiValidazione.PATTERN_CELLULARE).maxLength(35);
 	}
 
-	public void validaEmail(String fieldName, String email) throws org.openspcoop2.utils.json.ValidationException{
+	public void validaEmail(String fieldName, String email) throws it.govpay.core.exceptions.ValidationException{
 		this.vf.getValidator(fieldName, email).pattern(CostantiValidazione.PATTERN_EMAIL).maxLength(256);
 	}
 
-	public void validaNazione(String fieldName, String nazione) throws org.openspcoop2.utils.json.ValidationException{
+	public void validaNazione(String fieldName, String nazione) throws it.govpay.core.exceptions.ValidationException{
 		this. vf.getValidator(fieldName, nazione).pattern(CostantiValidazione.PATTERN_NAZIONE).length(2);
 	}
 
-	public void validaProvincia(String fieldName, String provincia) throws org.openspcoop2.utils.json.ValidationException{
+	public void validaProvincia(String fieldName, String provincia) throws it.govpay.core.exceptions.ValidationException{
 		this.vf.getValidator(fieldName, provincia).minLength(1).maxLength(35);
 	}
 
-	public void validaLocalita(String fieldName, String localita) throws org.openspcoop2.utils.json.ValidationException{
+	public void validaLocalita(String fieldName, String localita) throws it.govpay.core.exceptions.ValidationException{
 		this.vf.getValidator(fieldName, localita).minLength(1).maxLength(35);
 	}
 
-	public void validaCap(String fieldName, String cap) throws org.openspcoop2.utils.json.ValidationException{
+	public void validaCap(String fieldName, String cap) throws it.govpay.core.exceptions.ValidationException{
 		this.vf.getValidator(fieldName, cap).minLength(1).maxLength(16);
 	}
 
-	public void validaCivico(String fieldName, String civico) throws org.openspcoop2.utils.json.ValidationException{
+	public void validaCivico(String fieldName, String civico) throws it.govpay.core.exceptions.ValidationException{
 		this.vf.getValidator(fieldName, civico).minLength(1).maxLength(16);
 	}
 
-	public void validaIndirizzo(String fieldName, String indirizzo) throws org.openspcoop2.utils.json.ValidationException{
+	public void validaIndirizzo(String fieldName, String indirizzo) throws it.govpay.core.exceptions.ValidationException{
 		this.vf.getValidator(fieldName, indirizzo).minLength(1).maxLength(70);
 	}
 
-	public void validaAnagrafica(String fieldName, String anagrafica) throws org.openspcoop2.utils.json.ValidationException{
+	public void validaAnagrafica(String fieldName, String anagrafica) throws it.govpay.core.exceptions.ValidationException{
 		this.vf.getValidator(fieldName, anagrafica).notNull().minLength(1).maxLength(70);
 	}
 
-	public void validaIdentificativo(String fieldName, String identificativo) throws org.openspcoop2.utils.json.ValidationException{
+	public void validaIdentificativo(String fieldName, String identificativo) throws it.govpay.core.exceptions.ValidationException{
 		this.vf.getValidator(fieldName, identificativo).notNull().minLength(2).maxLength(16);
 	}
 
-	public void validaTipo(String fieldName, String tipo) throws org.openspcoop2.utils.json.ValidationException {
+	public void validaTipo(String fieldName, String tipo) throws it.govpay.core.exceptions.ValidationException {
 		this.vf.getValidator(fieldName, tipo).notNull();
 	}
 }

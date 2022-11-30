@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class FlussoRendicontazione extends FlussoRendicontazioneIndex  {
-  
+
   @Schema(description = "")
   private List<Rendicontazione> rendicontazioni = null;
  /**

@@ -3,7 +3,6 @@ package it.govpay.pagamento.v1.beans.converter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -20,6 +19,8 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v1.beans.Avviso;
@@ -38,11 +39,11 @@ import it.govpay.pagamento.v1.beans.VocePendenza.TipoContabilitaEnum;
 
 public class PendenzeConverter {
 	
-	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto, Authentication user) throws ServiceException {
+	public static Pendenza toRsModel(LeggiPendenzaDTOResponse dto, Authentication user) throws ServiceException, IOException {
 		return toRsModel(dto.getVersamento(), dto.getPagamenti(), dto.getRpts(),user);
 	}
 	
-	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento,List<PagamentoPortale> pagamenti, List<Rpt> rpts, Authentication user) throws ServiceException {
+	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento,List<PagamentoPortale> pagamenti, List<Rpt> rpts, Authentication user) throws ServiceException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Pendenza rsModel = new Pendenza();
 		
@@ -55,7 +56,7 @@ public class PendenzeConverter {
 			try {
 				rsModel.setCausale(versamento.getCausaleVersamento().getSimple());
 			} catch (UnsupportedEncodingException e) {
-				throw new ServiceException(e);
+				throw new IOException(e);
 			}
 		
 		rsModel.setDataCaricamento(versamento.getDataCreazione());
@@ -82,7 +83,7 @@ public class PendenzeConverter {
 			break;
 		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoPendenza.ESEGUITA;
 			break;
-		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
 			break;
 		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
 			break;
@@ -145,7 +146,7 @@ public class PendenzeConverter {
 		return list;
 	}
 	
-	public static PendenzaIndex toRsModelIndex(it.govpay.bd.model.Versamento versamento, Authentication user) throws ServiceException {
+	public static PendenzaIndex toRsModelIndex(it.govpay.bd.model.Versamento versamento, Authentication user) throws ServiceException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		PendenzaIndex rsModel = new PendenzaIndex();
 		
@@ -158,7 +159,7 @@ public class PendenzeConverter {
 			try {
 				rsModel.setCausale(versamento.getCausaleVersamento().getSimple());
 			} catch (UnsupportedEncodingException e) {
-				throw new ServiceException(e);
+				throw new IOException(e);
 			}
 		
 		rsModel.setDataCaricamento(versamento.getDataCreazione());
@@ -186,7 +187,7 @@ public class PendenzeConverter {
 			break;
 		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoPendenza.ESEGUITA;
 			break;
-		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
 			break;
 		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
 			break;
@@ -249,14 +250,14 @@ public class PendenzeConverter {
 	}
 	
 	
-	public static Avviso toAvvisoRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Dominio dominio, String barCode, String qrCode) throws ServiceException {
+	public static Avviso toAvvisoRsModel(it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Dominio dominio, String barCode, String qrCode) throws ServiceException, IOException {
 		Avviso rsModel = new Avviso();
 		
 		if(versamento.getCausaleVersamento()!= null)
 			try {
 				rsModel.setDescrizione(versamento.getCausaleVersamento().getSimple());
 			} catch (UnsupportedEncodingException e) {
-				throw new ServiceException(e);
+				throw new IOException(e);
 			}
 		
 		rsModel.setDataScadenza(versamento.getDataScadenza());
@@ -278,7 +279,7 @@ public class PendenzeConverter {
 			break;
 		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoEnum.PAGATO;
 			break;
-		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoEnum.SCADUTO;} else { statoPendenza = StatoEnum.NON_PAGATO;}
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {statoPendenza = StatoEnum.SCADUTO;} else { statoPendenza = StatoEnum.NON_PAGATO;}
 			break;
 		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoEnum.PAGATO;
 			break;

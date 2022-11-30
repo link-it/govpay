@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "password",
 "abilitato",
@@ -15,10 +15,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "domini",
 })
 public class Stazione extends it.govpay.core.beans.JSONSerializable {
-  
+
   @JsonProperty("password")
   private String password = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
   
@@ -27,10 +27,10 @@ public class Stazione extends it.govpay.core.beans.JSONSerializable {
   
   @JsonProperty("idStazione")
   private String idStazione = null;
-  
+
   @JsonProperty("domini")
   private List<DominioIndex> domini = new ArrayList<>();
-  
+
   /**
    * Ragione sociale dell'intermediario PagoPA
    **/
@@ -130,7 +130,7 @@ public class Stazione extends it.govpay.core.beans.JSONSerializable {
     return Objects.hash(password, abilitato, versione, idStazione, domini);
   }
 
-  public static Stazione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Stazione parse(String json) throws IOException {
     return parse(json, Stazione.class);
   }
 

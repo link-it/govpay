@@ -3,11 +3,10 @@ package it.govpay.backoffice.v1.beans;
 import java.util.Date;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "id",
 "componente",
@@ -28,74 +27,82 @@ import it.govpay.core.beans.JSONSerializable;
 "idPagamento",
 "datiPagoPA",
 "severita",
+"clusterId",
+"transactionId",
 "parametriRichiesta",
 "parametriRisposta",
 })
 public class Evento extends JSONSerializable {
-  
+
   @JsonProperty("id")
   private Long id = null;
-  
+
   @JsonProperty("componente")
   private ComponenteEvento componente = null;
-  
+
   @JsonProperty("categoriaEvento")
   private CategoriaEvento categoriaEvento = null;
-  
+
   @JsonProperty("ruolo")
   private RuoloEvento ruolo = null;
-  
+
   @JsonProperty("tipoEvento")
   private String tipoEvento = null;
-  
+
   @JsonProperty("esito")
   private EsitoEvento esito = null;
-  
+
   @JsonProperty("dataEvento")
   private Date dataEvento = null;
-  
+
   @JsonProperty("durataEvento")
   private Long durataEvento = null;
-  
+
   @JsonProperty("sottotipoEvento")
   private String sottotipoEvento = null;
-  
+
   @JsonProperty("sottotipoEsito")
   private String sottotipoEsito = null;
-  
+
   @JsonProperty("dettaglioEsito")
   private String dettaglioEsito = null;
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("iuv")
   private String iuv = null;
-  
+
   @JsonProperty("ccp")
   private String ccp = null;
-  
+
   @JsonProperty("idA2A")
   private String idA2A = null;
-  
+
   @JsonProperty("idPendenza")
   private String idPendenza = null;
-  
+
   @JsonProperty("idPagamento")
   private String idPagamento = null;
-  
+
   @JsonProperty("datiPagoPA")
   private DatiPagoPA datiPagoPA = null;
-  
+
   @JsonProperty("severita")
   private Integer severita = null;
   
+  @JsonProperty("clusterId")
+  private String clusterId = null;
+  
+  @JsonProperty("transactionId")
+  private String transactionId = null;
+  
   @JsonProperty("parametriRichiesta")
   private Object parametriRichiesta = null;
-  
+
   @JsonProperty("parametriRisposta")
   private Object parametriRisposta = null;
-  
+
   /**
    * Identificativo evento
    **/
@@ -393,6 +400,38 @@ public class Evento extends JSONSerializable {
   }
 
   /**
+   * Identificativo del nodo dove viene registrata l'operazione
+   **/
+  public Evento clusterId(String clusterId) {
+    this.clusterId = clusterId;
+    return this;
+  }
+
+  @JsonProperty("clusterId")
+  public String getClusterId() {
+    return clusterId;
+  }
+  public void setClusterId(String clusterId) {
+    this.clusterId = clusterId;
+  }
+
+  /**
+   * Identificativo della transazione registrata
+   **/
+  public Evento transactionId(String transactionId) {
+    this.transactionId = transactionId;
+    return this;
+  }
+
+  @JsonProperty("transactionId")
+  public String getTransactionId() {
+    return transactionId;
+  }
+  public void setTransactionId(String transactionId) {
+    this.transactionId = transactionId;
+  }
+
+  /**
    * Dettaglio del messaggio di richiesta
    **/
   public Evento parametriRichiesta(Object parametriRichiesta) {
@@ -452,16 +491,18 @@ public class Evento extends JSONSerializable {
         Objects.equals(idPagamento, evento.idPagamento) &&
         Objects.equals(datiPagoPA, evento.datiPagoPA) &&
         Objects.equals(severita, evento.severita) &&
+        Objects.equals(clusterId, evento.clusterId) &&
+        Objects.equals(transactionId, evento.transactionId) &&
         Objects.equals(parametriRichiesta, evento.parametriRichiesta) &&
         Objects.equals(parametriRisposta, evento.parametriRisposta);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, componente, categoriaEvento, ruolo, tipoEvento, esito, dataEvento, durataEvento, sottotipoEvento, sottotipoEsito, dettaglioEsito, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, datiPagoPA, severita, parametriRichiesta, parametriRisposta);
+    return Objects.hash(id, componente, categoriaEvento, ruolo, tipoEvento, esito, dataEvento, durataEvento, sottotipoEvento, sottotipoEsito, dettaglioEsito, idDominio, iuv, ccp, idA2A, idPendenza, idPagamento, datiPagoPA, severita, clusterId, transactionId, parametriRichiesta, parametriRisposta);
   }
 
-  public static Evento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Evento parse(String json) throws IOException {
     return parse(json, Evento.class);
   }
 
@@ -494,6 +535,8 @@ public class Evento extends JSONSerializable {
     sb.append("    idPagamento: ").append(toIndentedString(idPagamento)).append("\n");
     sb.append("    datiPagoPA: ").append(toIndentedString(datiPagoPA)).append("\n");
     sb.append("    severita: ").append(toIndentedString(severita)).append("\n");
+    sb.append("    clusterId: ").append(toIndentedString(clusterId)).append("\n");
+    sb.append("    transactionId: ").append(toIndentedString(transactionId)).append("\n");
     sb.append("    parametriRichiesta: ").append(toIndentedString(parametriRichiesta)).append("\n");
     sb.append("    parametriRisposta: ").append(toIndentedString(parametriRisposta)).append("\n");
     sb.append("}");

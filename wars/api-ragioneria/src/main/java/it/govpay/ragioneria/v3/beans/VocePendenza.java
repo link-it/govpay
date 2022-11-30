@@ -8,37 +8,37 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class VocePendenza extends TipoRiferimentoVocePendenza  {
-  
+
   @Schema(description = "")
   private Dominio dominio = null;
-  
+
   @Schema(example = "abcdef12345_1", required = true, description = "Identificativo della voce di pedenza nel gestionale proprietario")
  /**
-   * Identificativo della voce di pedenza nel gestionale proprietario  
+   * Identificativo della voce di pedenza nel gestionale proprietario
   **/
   private String idVocePendenza = null;
-  
+
   @Schema(example = "Sanzione CdS n. abc00000", description = "descrizione della voce di pagamento")
  /**
-   * descrizione della voce di pagamento  
+   * descrizione della voce di pagamento
   **/
   private String descrizione = null;
-  
+
   @Schema(description = "Dati applicativi allegati dal gestionale secondo un formato proprietario.")
  /**
-   * Dati applicativi allegati dal gestionale secondo un formato proprietario.  
+   * Dati applicativi allegati dal gestionale secondo un formato proprietario.
   **/
   private Object datiAllegati = null;
-  
+
   @Schema(example = "Sanzione CdS n. abc00000", description = "Testo libero per la causale versamento")
  /**
-   * Testo libero per la causale versamento  
+   * Testo libero per la causale versamento
   **/
   private String descrizioneCausaleRPT = null;
-  
+
   @Schema(description = "")
   private Contabilita contabilita = null;
-  
+
   @Schema(required = true, description = "")
   private Pendenza pendenza = null;
  /**

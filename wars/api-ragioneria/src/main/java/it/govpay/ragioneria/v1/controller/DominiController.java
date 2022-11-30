@@ -32,40 +32,40 @@ public class DominiController extends BaseController {
      }
 
     public Response dominiIdDominioLogoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String idDominio) {
-    	String methodName = "getLogo";  
+    	String methodName = "getLogo";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
-			
+
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
-			
+
 			// Parametri - > DTO Input
-			
+
 			GetDominioDTO getDominioDTO = new GetDominioDTO(user, idDominio);
 
 			// INIT DAO
-			
+
 			DominiDAO dominiDAO = new DominiDAO();
-			
+
 			// CHIAMATA AL DAO
-			
+
 			byte[] logo = dominiDAO.getLogo(getDominioDTO);
-			
+
 			MimeUtil.registerMimeDetector(eu.medsea.mimeutil.detector.MagicMimeMimeDetector.class.getName());
-			
+
 			Collection<?> mimeTypes = MimeUtil.getMimeTypes(logo);
-			
+
 			String mimeType = MimeUtil.getFirstMimeType(mimeTypes.toString()).toString();
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			ResponseBuilder entity = Response.status(Status.OK).entity(logo);
 			entity.header("CacheControl", "max-age: "+ GovpayConfig.getInstance().getCacheLogo().intValue());
 			entity.header("Content-Type", mimeType);
 			return this.handleResponseOk(entity,transactionId).build();
-			
+
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {

@@ -1104,8 +1104,8 @@ CREATE INDEX idx_rpt_cod_msg_richiesta ON rpt (cod_msg_richiesta);
 CREATE INDEX idx_rpt_stato ON rpt (stato);
 CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
 CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
+CREATE INDEX idx_rpt_data_msg_richiesta ON rpt (data_msg_richiesta);
 CREATE UNIQUE INDEX idx_rpt_id_transazione ON rpt (iuv, ccp, cod_dominio);
-
 
 ALTER TABLE rpt MODIFY bloccante DEFAULT 1;
 
@@ -1408,12 +1408,14 @@ CREATE TABLE fr
 	id NUMBER NOT NULL,
 	id_incasso NUMBER,
 	-- unique constraints
-	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,cod_flusso,data_ora_flusso),
+	CONSTRAINT unique_fr_1 UNIQUE (cod_dominio,cod_flusso,data_ora_flusso),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_fr PRIMARY KEY (id)
 );
 
+-- index
+CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
 CREATE TRIGGER trg_fr
 BEFORE
 insert on fr
@@ -1512,8 +1514,7 @@ CREATE TABLE rendicontazioni
 
 -- index
 CREATE INDEX idx_rnd_fk_fr ON rendicontazioni (id_fr);
-
-
+CREATE INDEX idx_rnd_iuv ON rendicontazioni (iuv);
 CREATE TRIGGER trg_rendicontazioni
 BEFORE
 insert on rendicontazioni
@@ -1552,6 +1553,8 @@ CREATE TABLE eventi
 	cod_dominio VARCHAR2(35 CHAR),
 	id_sessione VARCHAR2(35 CHAR),
 	severita NUMBER,
+	cluster_id VARCHAR2(255 CHAR),
+	transaction_id VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_fr NUMBER,
@@ -2104,8 +2107,7 @@ CREATE VIEW v_eventi_vers_rendicontazioni AS (
                eventi.id
         FROM eventi 
         JOIN rendicontazioni ON rendicontazioni.id_fr = eventi.id_fr
-        JOIN pagamenti ON pagamenti.id = rendicontazioni.id_pagamento
-        JOIN singoli_versamenti ON pagamenti.id_singolo_versamento=singoli_versamenti.id
+        JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento=singoli_versamenti.id
         JOIN versamenti ON singoli_versamenti.id_versamento=versamenti.id
         JOIN applicazioni ON versamenti.id_applicazione = applicazioni.id
 );
@@ -2180,6 +2182,8 @@ CREATE VIEW v_eventi_vers AS (
                eventi.ccp,
                eventi.id_sessione,
 	       eventi.severita,
+               eventi.cluster_id,
+               eventi.transaction_id,
                eventi.id
                FROM v_eventi_vers_base JOIN eventi ON v_eventi_vers_base.id = eventi.id
          );  

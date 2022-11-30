@@ -1,12 +1,10 @@
 package it.govpay.backoffice.v1.beans.converter;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
 
 import it.govpay.backoffice.v1.beans.FlussoRendicontazione;
 import it.govpay.backoffice.v1.beans.FlussoRendicontazioneIndex;
@@ -17,6 +15,8 @@ import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.Fr.Anomalia;
 import it.govpay.model.Fr.StatoFr;
 
@@ -138,7 +138,7 @@ public class FlussiRendicontazioneConverter {
 		return rsModel;
 	}
 
-	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione) throws ServiceException, IOException, ValidationException {
+	public static it.govpay.backoffice.v1.beans.Rendicontazione toRendicontazioneRsModel(Rendicontazione rendicontazione, SingoloVersamento singoloVersamento) throws ServiceException, IOException, ValidationException {
 		it.govpay.backoffice.v1.beans.Rendicontazione rsModel = new it.govpay.backoffice.v1.beans.Rendicontazione();
 		rsModel.setIuv(rendicontazione.getIuv());
 		rsModel.setIur(rendicontazione.getIur());
@@ -158,15 +158,16 @@ public class FlussiRendicontazioneConverter {
 			rsModel.setSegnalazioni(segnalazioni);
 		}
 
-		SingoloVersamento singoloVersamento = null;
 		Rpt rpt = null;
 		Incasso incasso = null;
 		if(rendicontazione.getPagamento(null) != null) {
-			singoloVersamento = rendicontazione.getPagamento(null).getSingoloVersamento(null);
+			if(singoloVersamento == null)
+				singoloVersamento = rendicontazione.getPagamento(null).getSingoloVersamento(null);
 			rpt = rendicontazione.getPagamento(null).getRpt(null);
 			incasso = rendicontazione.getPagamento(null).getIncasso(null);
 		} else {
-			singoloVersamento = rendicontazione.getSingoloVersamento(null);
+			if(singoloVersamento == null)
+				singoloVersamento = rendicontazione.getSingoloVersamento(null);
 		}
 		Versamento versamento = singoloVersamento.getVersamentoBD(null);
 

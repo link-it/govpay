@@ -19,19 +19,17 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.model.Fr;
-import it.govpay.model.Fr.StatoFr;
-import it.govpay.orm.IdIncasso;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
+import it.govpay.bd.model.Fr;
+import it.govpay.model.Fr.StatoFr;
+import it.govpay.orm.IdIncasso;
 
 public class FrConverter {
 
-	public static List<Fr> toDTOList(List<it.govpay.orm.FR> lst) throws ServiceException {
+	public static List<Fr> toDTOList(List<it.govpay.orm.FR> lst) {
 		List<Fr> lstDTO = new ArrayList<>();
 		if(lst != null && !lst.isEmpty()) {
 			for(it.govpay.orm.FR vo: lst){
@@ -41,7 +39,7 @@ public class FrConverter {
 		return lstDTO;
 	}
 
-	public static Fr toDTO(it.govpay.orm.FR vo) throws ServiceException {
+	public static Fr toDTO(it.govpay.orm.FR vo) {
 		Fr dto = new Fr();
 		dto.setStato(StatoFr.valueOf(vo.getStato()));
 		dto.setCodBicRiversamento(vo.getCodBicRiversamento());

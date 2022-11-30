@@ -40,8 +40,6 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.BatchBD;
-import it.govpay.bd.configurazione.model.AppIOBatch;
-import it.govpay.bd.configurazione.model.MailBatch;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.NotificaAppIo;
@@ -65,6 +63,8 @@ import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Batch;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
 import it.govpay.model.Tracciato.TIPO_TRACCIATO;
+import it.govpay.model.configurazione.AppIOBatch;
+import it.govpay.model.configurazione.MailBatch;
 
 public class Operazioni{
 
@@ -271,7 +271,10 @@ public class Operazioni{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		try {
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE)) {
-				String chiusuraRPTScadute = new Pagamento().chiusuraRPTScadute(ctx);
+				
+				Sonda sonda = leggiSonda(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE);
+				Date dataUltimoCheck = (sonda != null && sonda.getParam() != null) ? sonda.getParam().getDataUltimoCheck() : null;
+				String chiusuraRPTScadute = new Pagamento().chiusuraRPTScadute(ctx, dataUltimoCheck);
 				aggiornaSondaOK(configWrapper, BATCH_CHIUSURA_RPT_SCADUTE);
 				return chiusuraRPTScadute;
 			} else {
@@ -458,6 +461,11 @@ public class Operazioni{
 
 	public static String resetCacheAnagrafica(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		return resetCacheAnagrafica(configWrapper);
+	}
+
+	public static String resetCacheAnagrafica(BDConfigWrapper configWrapper){
+		
 		BatchBD batchBD = null;
 		try {
 			batchBD = new BatchBD(configWrapper);
@@ -584,6 +592,44 @@ public class Operazioni{
 					bd.disableSelectForUpdate();
 				} catch (ServiceException e1) {
 					log.error("Errore " +e1.getMessage() , e1);
+				}
+
+				bd.closeConnection();
+			}
+		}
+	}
+	
+	private static Sonda leggiSonda(BDConfigWrapper configWrapper, String nome) {
+		BasicBD bd = null;
+
+		try {
+			// costruttore
+			bd = BasicBD.newInstance(configWrapper.getTransactionID());
+
+			// apro la connessione
+			bd.setupConnection(configWrapper.getTransactionID());
+
+			// setto enableselectforupdate
+			bd.enableSelectForUpdate();
+
+			// prendo la connessione
+			Connection con = bd.getConnection();
+
+			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
+			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
+			//			Properties properties = new Properties();
+			//			((SondaBatch)sonda).aggiornaStatoSonda(true, properties, new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
+			return sonda;
+		} catch (Throwable t) {
+			log.warn("Errore nella lettura della sonda ["+nome+"]: "+ t.getMessage());
+			return null;
+		}
+		finally {
+			if(bd != null) {
+				try {
+					bd.disableSelectForUpdate();
+				} catch (ServiceException e) {
+					log.error("Errore " +e.getMessage() , e);
 				}
 
 				bd.closeConnection();
@@ -776,11 +822,14 @@ public class Operazioni{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		try {
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI)) {
+				
+				log.debug("Avvio elaborazione tracciati notifica pagamenti.");
 				// ricerca domini con connettore mypivot abilitato
 				List<String> domini = AnagraficaManager.getListaCodDomini(configWrapper);
 				
 				for (String codDominio : domini) {
 					it.govpay.bd.model.Dominio dominio = null;
+					log.debug("Elaborazione tracciati notifica pagamenti per il Dominio ["+codDominio+"].");
 					try {
 						dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 					}catch(NotFoundException e) {

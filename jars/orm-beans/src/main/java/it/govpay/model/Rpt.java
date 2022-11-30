@@ -25,10 +25,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class Rpt extends BasicModel{
 	
@@ -78,7 +78,7 @@ public class Rpt extends BasicModel{
 			return this.codifica;
 		}
 		
-		public static FirmaRichiesta toEnum(String codifica) throws ServiceException {
+		public static FirmaRichiesta toEnum(String codifica) throws CodificaInesistenteException {
 			// FIX Bug Nodo che imposta firma vuota in caso di NESSUNA
 			if(codifica.isEmpty())
 				return NESSUNA;
@@ -88,7 +88,7 @@ public class Rpt extends BasicModel{
 					return p;
 			}
 			
-			throw new ServiceException("Codifica inesistente per FirmaRichiesta. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(FirmaRichiesta.values()));
+			throw new CodificaInesistenteException("Codifica inesistente per FirmaRichiesta. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(FirmaRichiesta.values()));
 		}
 	}
 	
@@ -111,21 +111,21 @@ public class Rpt extends BasicModel{
 			return this.codifica;
 		}
 
-		public static EsitoPagamento toEnum(String codifica) throws ServiceException {
+		public static EsitoPagamento toEnum(String codifica) throws CodificaInesistenteException {
 			try {
 				int codifica2 = Integer.parseInt(codifica);
 				return toEnum(codifica2);
 			} catch (NumberFormatException e) {
-				throw new ServiceException("Codifica inesistente per EsitoPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoPagamento.values()));
+				throw new CodificaInesistenteException("Codifica inesistente per EsitoPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoPagamento.values()));
 			}
 		}
 
-		public static EsitoPagamento toEnum(int codifica) throws ServiceException {
+		public static EsitoPagamento toEnum(int codifica) throws CodificaInesistenteException {
 			for(EsitoPagamento p : EsitoPagamento.values()){
 				if(p.getCodifica() == codifica)
 					return p;
 			}
-			throw new ServiceException("Codifica inesistente per EsitoPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoPagamento.values()));
+			throw new CodificaInesistenteException("Codifica inesistente per EsitoPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoPagamento.values()));
 		}
 	}
 	
@@ -173,6 +173,7 @@ public class Rpt extends BasicModel{
 	
 	public enum Versione {
 		
+		SANP_321_V2,
 		SANP_240,
 		SANP_230;
 		

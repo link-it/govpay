@@ -27,6 +27,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.converter.SingoloVersamentoConverter;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.dao.IDBSingoloVersamentoServiceSearch;
@@ -75,6 +76,8 @@ public class SingoliVersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -99,6 +102,8 @@ public class SingoliVersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -122,6 +127,8 @@ public class SingoliVersamentiBD extends BasicBD {
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

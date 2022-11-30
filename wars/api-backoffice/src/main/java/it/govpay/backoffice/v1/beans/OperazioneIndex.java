@@ -2,25 +2,25 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idOperazione",
 "descrizione",
 "location",
 })
 public class OperazioneIndex extends it.govpay.core.beans.JSONSerializable {
-  
+
   @JsonProperty("idOperazione")
   private String idOperazione = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("location")
   private String location = null;
-  
+
   /**
    **/
   public OperazioneIndex idOperazione(String idOperazione) {
@@ -85,7 +85,7 @@ public class OperazioneIndex extends it.govpay.core.beans.JSONSerializable {
     return Objects.hash(this.idOperazione, this.descrizione, this.location);
   }
 
-  public static OperazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static OperazioneIndex parse(String json) throws IOException {
     return parse(json, OperazioneIndex.class);
   }
 
@@ -98,7 +98,7 @@ public class OperazioneIndex extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class OperazioneIndex {\n");
-    
+
     sb.append("    idOperazione: ").append(this.toIndentedString(this.idOperazione)).append("\n");
     sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
     sb.append("    location: ").append(this.toIndentedString(this.location)).append("\n");

@@ -36,6 +36,7 @@ import it.govpay.bd.anagrafica.filters.AclFilter;
 import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.converter.AclConverter;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.ACL;
 import it.govpay.orm.IdAcl;
 import it.govpay.orm.IdUtenza;
@@ -96,6 +97,8 @@ public class AclBD extends BasicBD {
 			return applicazione;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -133,6 +136,8 @@ public class AclBD extends BasicBD {
 			}
 			return dtoList;
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

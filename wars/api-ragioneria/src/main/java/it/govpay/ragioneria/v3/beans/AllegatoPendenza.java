@@ -8,28 +8,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class AllegatoPendenza   {
-  
+
   @Schema(required = true, description = "nome del file")
  /**
-   * nome del file  
+   * nome del file
   **/
   private String nome = null;
-  
+
   @Schema(description = "mime type del file")
  /**
-   * mime type del file  
+   * mime type del file
   **/
   private String tipo = "application/octet-stream";
-  
+
   @Schema(description = "descrizione del file")
  /**
-   * descrizione del file  
+   * descrizione del file
   **/
   private String descrizione = null;
-  
+
   @Schema(required = true, description = "path per accedere al file, nella forma /allegati/{id}")
  /**
-   * path per accedere al file, nella forma /allegati/{id}  
+   * path per accedere al file, nella forma /allegati/{id}
   **/
   private String contenuto = null;
  /**
@@ -111,7 +111,7 @@ public class AllegatoPendenza   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class AllegatoPendenza {\n");
-    
+
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");

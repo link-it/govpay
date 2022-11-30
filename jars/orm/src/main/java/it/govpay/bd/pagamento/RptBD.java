@@ -51,6 +51,7 @@ import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdRpt;
 import it.govpay.orm.RPT;
 import it.govpay.orm.dao.jdbc.JDBCRPTService;
@@ -106,6 +107,8 @@ public class RptBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -157,6 +160,8 @@ public class RptBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -236,6 +241,8 @@ public class RptBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -389,6 +396,8 @@ public class RptBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -396,7 +405,7 @@ public class RptBD extends BasicBD {
 		}
 	}
 	
-	public List<Rpt> getRptScadute(String codDominio, Integer minutiSogliaScadenza, Integer offset, Integer limit) throws ServiceException {
+	public List<Rpt> getRptScadute(String codDominio, Integer minutiSogliaScadenza, Integer offset, Integer limit, Date limiteTemporaleInf) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -414,11 +423,21 @@ public class RptBD extends BasicBD {
 			Date dataSoglia = c.getTime();
 			exp.lessThan(RPT.model().DATA_MSG_RICHIESTA, dataSoglia);
 			
+			if(limiteTemporaleInf != null) {
+				Calendar cInf = Calendar.getInstance();
+				cInf.setTime(limiteTemporaleInf);
+				cInf.add(Calendar.MINUTE, -( 2 * minutiSogliaScadenza));
+				Date dataSogliaInf = cInf.getTime();
+				
+				exp.greaterEquals(RPT.model().DATA_MSG_RICHIESTA, dataSogliaInf);
+			}
+			
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_NODO.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_SCADUTA.toString());
 			
 			exp.offset(offset).limit(limit);
 			exp.addOrder(RPT.model().DATA_MSG_RICEVUTA, SortOrder.ASC);
@@ -441,6 +460,8 @@ public class RptBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -481,6 +502,7 @@ public class RptBD extends BasicBD {
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_SCADUTA.toString());
 			
 			NonNegativeNumber count = this.getRptService().count(exp);
 			
@@ -609,6 +631,8 @@ public class RptBD extends BasicBD {
 			return rptLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -636,6 +660,8 @@ public class RptBD extends BasicBD {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -685,6 +711,8 @@ public class RptBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

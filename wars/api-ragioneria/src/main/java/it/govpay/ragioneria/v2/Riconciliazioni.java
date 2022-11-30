@@ -15,8 +15,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.core.beans.Costanti;
 import it.govpay.ragioneria.v2.controller.RiconciliazioniController;
 import it.govpay.rs.v2.BaseRsServiceV2;
@@ -29,7 +27,7 @@ public class Riconciliazioni extends BaseRsServiceV2{
 
 	private RiconciliazioniController controller = null;
 
-	public Riconciliazioni() throws ServiceException {
+	public Riconciliazioni() {
 		super("riconciliazioni");
 		this.controller = new RiconciliazioniController(this.nomeServizio,this.log);
 	}
@@ -47,7 +45,7 @@ public class Riconciliazioni extends BaseRsServiceV2{
 
     @GET
     @Path("/")
-    
+
     @Produces({ "application/json" })
     public Response findRiconciliazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("idDominio") String idDominio, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
         this.buildContext();
@@ -56,7 +54,7 @@ public class Riconciliazioni extends BaseRsServiceV2{
 
     @GET
     @Path("/{idDominio}/{idIncasso}")
-    
+
     @Produces({ "application/json" })
     public Response getRiconciliazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("idIncasso") String idIncasso, @QueryParam("riscossioni.tipo") List<String> riscossioniTipo){
         this.buildContext();

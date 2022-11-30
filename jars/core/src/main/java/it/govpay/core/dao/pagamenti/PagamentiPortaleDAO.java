@@ -15,7 +15,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -41,6 +41,7 @@ import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.GpAvviaTransazionePagamentoResponse;
+import it.govpay.core.beans.GpResponse;
 import it.govpay.core.beans.Mittente;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
@@ -65,6 +66,8 @@ import it.govpay.core.dao.pagamenti.dto.PagamentoPatchDTO;
 import it.govpay.core.dao.pagamenti.exception.PagamentoPortaleNonTrovatoException;
 import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.GovPayException.FaultBean;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
@@ -83,6 +86,7 @@ import it.govpay.model.Stazione.Versione;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdVersamento;
 
 public class PagamentiPortaleDAO extends BaseDAO {
@@ -94,7 +98,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 	}
 
 	public PagamentiPortaleDTOResponse inserisciPagamenti(PagamentiPortaleDTO pagamentiPortaleDTO) 
-			throws GovPayException, NotAuthorizedException, ServiceException, NotAuthenticatedException, UtilsException, ValidationException, EcException, UnprocessableEntityException { 
+			throws IOException, CodificaInesistenteException, GovPayException, NotAuthorizedException, ServiceException, NotAuthenticatedException, UtilsException, ValidationException, EcException, UnprocessableEntityException { 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		PagamentiPortaleDTOResponse response  = new PagamentiPortaleDTOResponse();
 		GpAvviaTransazionePagamentoResponse transazioneResponse = new GpAvviaTransazionePagamentoResponse();
@@ -126,8 +130,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			for(int i = 0; i < pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size(); i++) {
 				Object v = pagamentiPortaleDTO.getPendenzeOrPendenzeRef().get(i);
 				Versamento versamentoModel = null;
-				if(v instanceof it.govpay.core.dao.commons.Versamento) {
-					it.govpay.core.dao.commons.Versamento versamento = (it.govpay.core.dao.commons.Versamento) v;
+				if(v instanceof it.govpay.core.beans.commons.Versamento) {
+					it.govpay.core.beans.commons.Versamento versamento = (it.govpay.core.beans.commons.Versamento) v;
 					ctx.getApplicationLogger().log("rpt.acquisizioneVersamento", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
 					versamentoModel = versamentoBusiness.chiediVersamento(versamento);
 					versamentoModel.setTipo(TipologiaTipoVersamento.SPONTANEO);
@@ -267,11 +271,11 @@ public class PagamentiPortaleDAO extends BaseDAO {
 							pendenzaPost.setIdUnitaOperativa(idUO);
 							
 							new PendenzaPostValidator(pendenzaPost).validate();
-							it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+							it.govpay.core.beans.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 							((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(versamentoCommons.getCodVersamentoEnte());
 							((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(versamentoCommons.getCodApplicazione());
 							versamentoModel = versamentoBusiness.chiediVersamento(versamentoCommons);
-						}catch(ValidationException e) {
+						}catch(ValidationException | IOException e) {
 							if(trasformazione) { // se la pendenza generata dalla trasformazione non e' valida restituisco errore interno
 								throw new GovPayException(EsitoOperazione.VAL_003, e.getMessage());
 							} else {
@@ -487,7 +491,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 
 				response.setIdCarrelloRpt(rpt.getIdTransazioneRpt());
 			}catch(GovPayException e) {
-				transazioneResponse = (GpAvviaTransazionePagamentoResponse) e.getWsResponse(transazioneResponse, "ws.ricevutaRichiestaKo", log);
+				transazioneResponse = (GpAvviaTransazionePagamentoResponse) this.getWsResponse(e, transazioneResponse, "ws.ricevutaRichiestaKo", log);
 				for(Versamento versamentoModel: versamenti) {
 					if(versamentoModel.getId() != null) {
 						IdVersamento idV = new IdVersamento();
@@ -509,7 +513,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				e.setParam(pagamentoPortale);
 				throw e;
 			} catch (Exception e) {
-				transazioneResponse = (GpAvviaTransazionePagamentoResponse) new GovPayException(e).getWsResponse(transazioneResponse, "ws.ricevutaRichiestaKo", log);
+				transazioneResponse = (GpAvviaTransazionePagamentoResponse) this.getWsResponse(new GovPayException(e), transazioneResponse, "ws.ricevutaRichiestaKo", log);
 				for(Versamento versamentoModel: versamenti) {
 					if(versamentoModel.getId() != null) {
 						IdVersamento idV = new IdVersamento();
@@ -849,5 +853,39 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			if(pagamentiPortaleBD != null)
 				pagamentiPortaleBD.closeConnection();
 		}
+	}
+	
+	public GpResponse getWsResponse(GovPayException e, GpResponse response, String codMsgDiagnostico, Logger log) {
+		FaultBean faultBean = e.getFaultBean();
+		if(faultBean == null) {
+			response.setMittente(Mittente.GOV_PAY);
+			response.setCodEsito(e.getCodEsito() != null ? e.getCodEsito().toString() : "");
+			response.setDescrizioneEsito(e.getDescrizioneEsito() != null ? e.getDescrizioneEsito() : "");
+			response.setDettaglioEsito(e.getMessage());
+			switch (e.getCodEsito()) {
+			case INTERNAL:
+				log.error("[" + e.getCodEsito() + "] " + e.getMessage() + (e.getCausa() != null ? "\n" + e.getCausa() : ""), this);
+			break;
+			default:
+				log.warn("[" + e.getCodEsito() + "] " + e.getMessage() +  (e.getCausa() != null ? "\n" + e.getCausa() : ""));
+				break;
+			}
+			
+			try {
+				ContextThreadLocal.get().getApplicationLogger().log(codMsgDiagnostico, response.getCodEsito().toString(), response.getDescrizioneEsito(), response.getDettaglioEsito());
+			} catch (UtilsException e1) {
+				LoggerWrapperFactory.getLogger(getClass()).error("Errore durante la scrittura dell'esito operazione: "+ e1.getMessage(),e1);
+			}
+			
+		} else {
+			if(faultBean.getId().contains("NodoDeiPagamentiSPC")) 
+				response.setMittente(Mittente.NODO_DEI_PAGAMENTI_SPC);
+			else 
+				response.setMittente(Mittente.PSP);
+			response.setCodEsito(faultBean.getFaultCode() != null ? faultBean.getFaultCode() : "");
+			response.setDescrizioneEsito(faultBean.getFaultString() != null ? faultBean.getFaultString() : "");
+			response.setDettaglioEsito(faultBean.getDescription());
+		}
+		return response;
 	}
 }

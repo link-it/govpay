@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
 	<artifactId>bom</artifactId>
-	<version>3.6.2</version>
+	<version>3.7.0</version>
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
@@ -164,6 +164,14 @@
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
 				<version>${commons.codec.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>xml-adapters</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
 			</dependency>
 
 			<dependency>
@@ -1094,17 +1102,21 @@
 	</build>
 	<repositories>
 		<repository>
-            <id>linkit-releases</id>
-            <url>https://maven.link.it/content/repositories/public/</url>
-        </repository>
-        <repository>
-            <id>linkit-snapshot</id>
-            <url>https://maven.link.it/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-            <id>linkit-thirdparty</id>
-            <url>https://maven.link.it/content/repositories/thirdparty-releases/</url>
-        </repository>
+			<id>jaspersoft-repo</id>
+			<url>https://jaspersoft.jfrog.io/jaspersoft/jaspersoft-repo</url>
+		</repository>
+		<repository>
+			<id>linkit-releases</id>
+			<url>https://maven.link.it/content/repositories/public/</url>
+		</repository>
+		<repository>
+			<id>linkit-snapshot</id>
+			<url>https://maven.link.it/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
+			<id>linkit-thirdparty</id>
+			<url>https://maven.link.it/content/repositories/thirdparty-releases/</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>

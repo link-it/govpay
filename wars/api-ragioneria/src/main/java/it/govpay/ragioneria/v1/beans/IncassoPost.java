@@ -4,11 +4,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -22,31 +21,31 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "ibanAccredito",
 })
 public class IncassoPost extends JSONSerializable  implements IValidable {
-  
+
   @JsonProperty("causale")
   private String causale = null;
-  
+
   @JsonProperty("iuv")
   private String iuv = null;
-  
+
   @JsonProperty("idFlusso")
   private String idFlusso = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("dataValuta")
   private Date dataValuta = null;
-  
+
   @JsonProperty("dataContabile")
   private Date dataContabile = null;
-  
+
   @JsonProperty("ibanAccredito")
   private String ibanAccredito = null;
 
   @JsonProperty("sct")
   private String sct = null;
-  
+
   /**
    * Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera
    **/
@@ -62,7 +61,7 @@ public class IncassoPost extends JSONSerializable  implements IValidable {
   public void setCausale(String causale) {
     this.causale = causale;
   }
-  
+
   /**
    * Identificativo univoco di riscossione.
    **/
@@ -198,7 +197,7 @@ public class IncassoPost extends JSONSerializable  implements IValidable {
     return Objects.hash(this.causale, iuv, idFlusso, this.importo, this.dataValuta, this.dataContabile, this.ibanAccredito, this.sct);
   }
 
-  public static IncassoPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static IncassoPost parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, IncassoPost.class);
   }
 
@@ -211,7 +210,7 @@ public class IncassoPost extends JSONSerializable  implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class IncassoPost {\n");
-    
+
     sb.append("    causale: ").append(this.toIndentedString(this.causale)).append("\n");
     sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
     sb.append("    idFlusso: ").append(this.toIndentedString(this.idFlusso)).append("\n");
@@ -234,11 +233,11 @@ public class IncassoPost extends JSONSerializable  implements IValidable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
-	
+
 	if(this.causale != null) {
 		vf.getValidator("causale", this.causale).notNull().minLength(1).maxLength(512);
 	} else if(this.iuv != null) {
@@ -248,7 +247,7 @@ public class IncassoPost extends JSONSerializable  implements IValidable {
 	} else {
 		throw new ValidationException("Uno dei campi tra causale, iuv o idFlusso deve essere valorizzato");
 	}
-	
+
 	vf.getValidator("importo", this.importo).notNull().checkDecimalDigits();
 	vf.getValidator("dataValuta", this.dataValuta);
 	vf.getValidator("dataContabile", this.dataContabile);
@@ -258,7 +257,7 @@ public class IncassoPost extends JSONSerializable  implements IValidable {
 	}
 	vf.getValidator("sct", this.sct).notNull().minLength(1).maxLength(35);
   }
-  
+
 }
 
 

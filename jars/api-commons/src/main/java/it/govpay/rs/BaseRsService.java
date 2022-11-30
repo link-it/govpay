@@ -34,7 +34,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -49,9 +48,9 @@ import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.bd.model.UtenzaOperatore;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.EventoContext.Categoria;
+import it.govpay.core.beans.commons.Dominio;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
-import it.govpay.core.dao.commons.Dominio;
-import it.govpay.core.utils.EventoContext.Categoria;
 import it.govpay.core.utils.GpContext;
 
 
@@ -68,11 +67,11 @@ public abstract class BaseRsService {
 
 	protected String codOperazione;
 
-	public BaseRsService() throws ServiceException{
+	public BaseRsService() {
 		this.log = LoggerWrapperFactory.getLogger(BaseRsService.class);
 	}
 
-	public BaseRsService(String nomeServizio) throws ServiceException{
+	public BaseRsService(String nomeServizio) {
 		this();
 		this.nomeServizio = nomeServizio;
 

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.IdUnitaOperativa;
-import it.govpay.core.dao.commons.Dominio;
+import it.govpay.core.beans.commons.Dominio;
 
 public class BasicRequestDTO {
 	

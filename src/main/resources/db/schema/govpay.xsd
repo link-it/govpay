@@ -2219,6 +2219,9 @@
 						<linkit:sql-table-index name="idx_evt_iuv">
 							<linkit:sql-table-index-field name="iuv"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_evt_fk_fr">
+							<linkit:sql-table-index-column name="id_fr"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2300,6 +2303,9 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			
+			<xsd:element name="clusterId" type="String255" minOccurs="0"/>
+			<xsd:element name="transactionId" type="String255" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -2459,6 +2465,9 @@
 						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_rpt_fk_prt">
 							<linkit:sql-table-index-column name="id_pagamento_portale"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_rpt_data_msg_richiesta">
+							<linkit:sql-table-index-field name="dataMsgRichiesta" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -2649,6 +2658,12 @@
 					<linkit:sql-table-mapping generate-sql="true" name="rendicontazioni"
 						on-delete-cascade="false">
 						<linkit:sql-table-constraint foreign-key="fk_rnd"/>
+						<linkit:sql-table-index name="idx_rnd_fk_fr">
+							<linkit:sql-table-index-column name="id_fr"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_rnd_iuv">
+							<linkit:sql-table-index-field name="iuv"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -3196,6 +3211,9 @@
 							<linkit:sql-table-unique-field name="codFlusso"/>
 							<linkit:sql-table-unique-field name="dataOraFlusso" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_fr_cod_flusso">
+							<linkit:sql-table-index-field name="codFlusso"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>

@@ -107,6 +107,8 @@ And match response.risultati[0] ==
 	"dettaglioEsito": "##string",
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#notnull",
@@ -147,6 +149,8 @@ And match response.risultati[1] ==
 	"dettaglioEsito": "##string",
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#notnull",
@@ -257,6 +261,8 @@ And match response.risultati[0] ==
 	"dettaglioEsito": "##string",
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#notnull",
@@ -297,6 +303,8 @@ And match response.risultati[1] ==
 	"dettaglioEsito": "##string",
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#notnull",

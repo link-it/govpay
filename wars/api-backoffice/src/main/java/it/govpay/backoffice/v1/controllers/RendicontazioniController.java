@@ -42,20 +42,20 @@ public class RendicontazioniController extends BaseController {
 
 
 
-    public Response findRendicontazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, 
-    		String flussoRendicontazioneDataFlussoDa, String flussoRendicontazioneDataFlussoA, String dataRendicontazioneDa, String dataRendicontazioneA, 
+    public Response findRendicontazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi,
+    		String flussoRendicontazioneDataFlussoDa, String flussoRendicontazioneDataFlussoA, String dataRendicontazioneDa, String dataRendicontazioneA,
     		String idFlusso, String iuv, List<String> direzione, List<String> divisione, Boolean metadatiPaginazione, Boolean maxRisultati) {
-    	String methodName = "findRendicontazioni";  
+    	String methodName = "findRendicontazioni";
     	String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		this.setMaxRisultati(maxRisultati); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.setMaxRisultati(maxRisultati);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
-			
+
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
-			
+
 			// Parametri - > DTO Input
 			ListaRendicontazioniDTO findRendicontazioniDTO = new ListaRendicontazioniDTO(user);
 			findRendicontazioniDTO.setLimit(risultatiPerPagina);
@@ -63,10 +63,10 @@ public class RendicontazioniController extends BaseController {
 			findRendicontazioniDTO.setOrderBy(ordinamento);
 			findRendicontazioniDTO.setEseguiCount(metadatiPaginazione);
 			findRendicontazioniDTO.setEseguiCountConLimit(maxRisultati);
-			
+
 			Date dataFlussoDaDate = null;
 			if(flussoRendicontazioneDataFlussoDa!=null) {
-				dataFlussoDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(flussoRendicontazioneDataFlussoDa, "flussoRendicontazione.dataFlussoDa", true); 
+				dataFlussoDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(flussoRendicontazioneDataFlussoDa, "flussoRendicontazione.dataFlussoDa", true);
 				findRendicontazioniDTO.setDataFlussoDa(dataFlussoDaDate);
 			}
 
@@ -75,16 +75,16 @@ public class RendicontazioniController extends BaseController {
 				dataFlussoADate = SimpleDateFormatUtils.getDataAConTimestamp(flussoRendicontazioneDataFlussoA, "flussoRendicontazione.dataFlussoA", true);
 				findRendicontazioniDTO.setDataFlussoA(dataFlussoADate);
 			}
-			
+
 			Date dataRendicontazioneDaDate = null;
 			if(dataRendicontazioneDa!=null) {
-				dataRendicontazioneDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRendicontazioneDa, "dataDa", true); 
+				dataRendicontazioneDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRendicontazioneDa, "dataDa", true);
 				findRendicontazioniDTO.setDataRendicontazioneDa(dataRendicontazioneDaDate);
 			}
 
 			Date dataRendicontazioneADate = null;
 			if(dataRendicontazioneA!=null) {
-				dataRendicontazioneADate =SimpleDateFormatUtils.getDataAConTimestamp(dataRendicontazioneA, "dataA", true); 
+				dataRendicontazioneADate =SimpleDateFormatUtils.getDataAConTimestamp(dataRendicontazioneA, "dataA", true);
 				findRendicontazioniDTO.setDataRendicontazioneA(dataRendicontazioneADate);
 			}
 
@@ -94,32 +94,32 @@ public class RendicontazioniController extends BaseController {
 			findRendicontazioniDTO.setDirezione(direzione);
 			findRendicontazioniDTO.setDivisione(divisione);
 			findRendicontazioniDTO.setFrObsoleto(false);
-			
+
 			// Autorizzazione sulle uo
 			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
 			findRendicontazioniDTO.setUnitaOperative(uo);
-			
+
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
-			
+
 			// CHIAMATA AL DAO
-			
+
 			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse =  uo != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO)
 					: new ListaRendicontazioniDTOResponse(0L, new ArrayList<>());
-			
+
 			// CONVERT TO JSON DELLA RISPOSTA
-			List<RendicontazioneConFlussoEVocePendenza> risultati = new ArrayList<RendicontazioneConFlussoEVocePendenza>();
-			
+			List<RendicontazioneConFlussoEVocePendenza> risultati = new ArrayList<>();
+
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 			for (Rendicontazione rendicontazione : findRendicontazioniDTOResponse.getResults()) {
 				risultati.add(RendicontazioniConverter.toRsModel(rendicontazione, configWrapper));
 			}
-			
-			ListaRendicontazioni response = new ListaRendicontazioni(risultati,	this.getServicePath(uriInfo), 
+
+			ListaRendicontazioni response = new ListaRendicontazioni(risultati,	this.getServicePath(uriInfo),
 					findRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
-			
+
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {

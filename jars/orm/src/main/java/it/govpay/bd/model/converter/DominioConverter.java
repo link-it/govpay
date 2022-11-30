@@ -71,7 +71,7 @@ public class DominioConverter {
 		return dto;
 	}
 
-	public static it.govpay.orm.Dominio toVO(Dominio dto) throws ServiceException {
+	public static it.govpay.orm.Dominio toVO(Dominio dto) {
 		it.govpay.orm.Dominio vo = new it.govpay.orm.Dominio();
 		vo.setId(dto.getId());
 		if(dto.getIdApplicazioneDefault() != null) {

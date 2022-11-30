@@ -25,7 +25,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class Rendicontazione extends BasicModel {
 
@@ -44,16 +45,16 @@ public class Rendicontazione extends BasicModel {
 			return this.codifica;
 		}
 
-		public static EsitoRendicontazione toEnum(String codifica) throws ServiceException {
+		public static EsitoRendicontazione toEnum(String codifica) throws CodificaInesistenteException {
 			return toEnum(Integer.parseInt(codifica));
 		}
 
-		public static EsitoRendicontazione toEnum(int codifica) throws ServiceException {
+		public static EsitoRendicontazione toEnum(int codifica) throws CodificaInesistenteException {
 			for(EsitoRendicontazione p : EsitoRendicontazione.values()){
 				if(p.getCodifica() == codifica)
 					return p;
 			}
-			throw new ServiceException("Codifica inesistente per EsitoRendicontazione. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoRendicontazione.values()));
+			throw new CodificaInesistenteException("Codifica inesistente per EsitoRendicontazione. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoRendicontazione.values()));
 		}
 	}
 	

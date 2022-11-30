@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum ModelloPagamento {
   ENTE("Pagamento ad iniziativa Ente"),
-  
+
   PSP("Pagamento ad iniziativa PSP");
 
   private String value;
@@ -32,5 +32,5 @@ public enum ModelloPagamento {
     }
     return null;
   }
-  
+
 }

@@ -44,14 +44,14 @@ public class FlussiRendicontazioneController extends BaseController {
 
 	public FlussiRendicontazioneController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
-		
+
 	}
 
 	public Response findFlussiRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean incassato, String idFlusso, String stato, String iuv, Boolean metadatiPaginazione, Boolean maxRisultati) {
-		String methodName = "findFlussiRendicontazione";  
+		String methodName = "findFlussiRendicontazione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		this.setMaxRisultati(maxRisultati); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.setMaxRisultati(maxRisultati);
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
@@ -118,10 +118,10 @@ public class FlussiRendicontazioneController extends BaseController {
 
 			// CONVERT TO JSON DELLA RISPOSTA
 
-			ListaFlussiRendicontazione response = new ListaFlussiRendicontazione(findRendicontazioniDTOResponse.getResults().stream().map(t -> FlussiRendicontazioneConverter.toRsIndexModel(t.getFr())).collect(Collectors.toList()), 
+			ListaFlussiRendicontazione response = new ListaFlussiRendicontazione(findRendicontazioniDTOResponse.getResults().stream().map(t -> FlussiRendicontazioneConverter.toRsIndexModel(t.getFr())).collect(Collectors.toList()),
 					this.getServicePath(uriInfo), findRendicontazioniDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {
@@ -134,9 +134,9 @@ public class FlussiRendicontazioneController extends BaseController {
 
 
 	public Response getFlussoRendicontazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idFlusso, String dataOraFlusso) {
-		String methodName = "getFlussoRendicontazione";  
+		String methodName = "getFlussoRendicontazione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
@@ -154,9 +154,9 @@ public class FlussiRendicontazioneController extends BaseController {
 				Date dataOraFlussoDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataOraFlusso, "dataOraFlusso");
 				leggiRendicontazioneDTO.setDataOraFlusso(dataOraFlussoDate);
 			} else {
-				leggiRendicontazioneDTO.setObsoleto(false);	
+				leggiRendicontazioneDTO.setObsoleto(false);
 			}
-			
+
 			// INIT DAO
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
 
@@ -183,11 +183,11 @@ public class FlussiRendicontazioneController extends BaseController {
 			// CONVERT TO JSON DELLA RISPOSTA
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_XML)) {
 				byte[] response = leggiRendicontazioneDTOResponse.getFr().getXml();
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 				return this.handleResponseOk(Response.status(Status.OK).entity(new String(response)).type(MediaType.APPLICATION_XML),transactionId).build();
 			} else {
-				FlussoRendicontazione response = FlussiRendicontazioneConverter.toRsModel(leggiRendicontazioneDTOResponse.getFr(), leggiRendicontazioneDTOResponse.getRendicontazioni()); 
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				FlussoRendicontazione response = FlussiRendicontazioneConverter.toRsModel(leggiRendicontazioneDTOResponse.getFr(), leggiRendicontazioneDTOResponse.getRendicontazioni());
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 				return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)).type(MediaType.APPLICATION_JSON),transactionId).build();
 			}
 		}catch (Exception e) {

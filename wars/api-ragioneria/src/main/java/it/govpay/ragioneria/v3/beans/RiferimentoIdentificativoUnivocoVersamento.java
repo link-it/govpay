@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  **/
 @Schema(description="Identificativo univoco di versamento.")
 public class RiferimentoIdentificativoUnivocoVersamento  implements OneOfTipoRiferimentoNuovaRiconciliazione, OneOfTipoRiferimentoRiconciliazione  {
-  
+
   @Schema(example = "RF23567483937849450550875", required = true, description = "")
   private String iuv = null;
  /**
@@ -38,7 +38,7 @@ public class RiferimentoIdentificativoUnivocoVersamento  implements OneOfTipoRif
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RiferimentoIdentificativoUnivocoVersamento {\n");
-    
+
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("}");
     return sb.toString();

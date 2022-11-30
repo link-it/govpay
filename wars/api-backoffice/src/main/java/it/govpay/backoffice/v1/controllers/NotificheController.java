@@ -30,7 +30,7 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Utenza.TIPO_UTENZA; 
+import it.govpay.model.Utenza.TIPO_UTENZA;
 
 
 
@@ -45,23 +45,23 @@ public class NotificheController extends BaseController {
     public Response findNotifiche(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String dataDa, String dataA, String stato, String tipo, Boolean metadatiPaginazione, Boolean maxRisultati) {
     	String methodName = "findNotifiche";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.setMaxRisultati(maxRisultati); 
+		this.setMaxRisultati(maxRisultati);
 		try{
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.CONFIGURAZIONE_E_MANUTENZIONE), Arrays.asList(Diritti.LETTURA));
 
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
-			
+
 			// Parametri - > DTO Input
 			ListaNotificheDTO listaNotificheDTO = new ListaNotificheDTO(user);
-			
+
 			listaNotificheDTO.setLimit(risultatiPerPagina);
 			listaNotificheDTO.setPagina(pagina);
 			listaNotificheDTO.setEseguiCount(metadatiPaginazione);
 			listaNotificheDTO.setEseguiCountConLimit(maxRisultati);
-			
+
 			if(stato != null) {
 				StatoNotifica statoNotifica = StatoNotifica.fromValue(stato);
 				if(statoNotifica != null)
@@ -77,7 +77,7 @@ public class NotificheController extends BaseController {
 					break;
 				}
 			}
-			
+
 			if(tipo != null) {
 				TipoNotifica tipoNotifica = TipoNotifica.fromValue(tipo);
 				if(tipoNotifica != null)
@@ -101,12 +101,12 @@ public class NotificheController extends BaseController {
 				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				listaNotificheDTO.setDataDa(dataDaDate);
 			}
-			
+
 			if(dataA!=null) {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				listaNotificheDTO.setDataA(dataADate);
 			}
-			
+
 //			// Autorizzazione sui domini
 //			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
 //			if(idDomini == null) {
@@ -119,10 +119,10 @@ public class NotificheController extends BaseController {
 //				throw AuthorizationManager.toNotAuthorizedExceptionNessunTipoVersamentoAutorizzato(user);
 //			}
 //			listaNotificheDTO.setIdTipiVersamento(idTipiVersamento);
-			
+
 			// INIT DAO
 
-			NotificheDAO notificheDAO = new NotificheDAO(); 
+			NotificheDAO notificheDAO = new NotificheDAO();
 
 			// CHIAMATA AL DAO
 
@@ -138,7 +138,7 @@ public class NotificheController extends BaseController {
 			ListaNotifiche response = new ListaNotifiche(results, this.getServicePath(uriInfo),
 					listaNotificheDTOResponse.getTotalResults(), pagina, risultatiPerPagina, this.maxRisultatiBigDecimal);
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {

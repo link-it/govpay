@@ -144,6 +144,22 @@ public class PagamentoFilter extends AbstractFilter {
 
 				newExpression.between(Pagamento.model().DATA_ACQUISIZIONE, this.dataInizio,this.dataFine);
 				addAnd = true;
+			} else {
+				if(this.dataInizio != null) {
+					if(addAnd)
+						newExpression.and();
+	
+					newExpression.greaterEquals(Pagamento.model().DATA_ACQUISIZIONE, this.dataInizio);
+					addAnd = true;
+				} 
+				
+				if(this.dataFine != null) {
+					if(addAnd)
+						newExpression.and();
+	
+					newExpression.lessEquals(Pagamento.model().DATA_ACQUISIZIONE, this.dataFine);
+					addAnd = true;
+				}
 			}
 
 			if(this.idDomini != null  && !this.idDomini.isEmpty()){

@@ -20,7 +20,8 @@
 package it.govpay.model;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class Tributo extends TipoTributo {
 	private static final long serialVersionUID = 1L;
@@ -42,12 +43,12 @@ public class Tributo extends TipoTributo {
 			return this.codifica;
 		}
 		
-		public static TipoContabilita toEnum(String codifica) throws ServiceException {
+		public static TipoContabilita toEnum(String codifica) throws CodificaInesistenteException {
 			for(TipoContabilita p : TipoContabilita.values()){
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
-			throw new ServiceException("Codifica inesistente per TipoContabilta. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
+			throw new CodificaInesistenteException("Codifica inesistente per TipoContabilta. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
 		}
 	}
 	

@@ -44,7 +44,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.TipiDatabase;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.serialization.ISerializer;
@@ -61,7 +60,6 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.configurazione.model.TracciatoCsv;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Documento;
 import it.govpay.bd.model.Dominio;
@@ -80,9 +78,9 @@ import it.govpay.core.beans.tracciati.AnnullamentoPendenza;
 import it.govpay.core.beans.tracciati.DettaglioTracciatoPendenzeEsito;
 import it.govpay.core.beans.tracciati.EsitoOperazionePendenza;
 import it.govpay.core.beans.tracciati.FaultBean;
+import it.govpay.core.beans.tracciati.FaultBean.CategoriaEnum;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.TracciatoPendenzePost;
-import it.govpay.core.beans.tracciati.FaultBean.CategoriaEnum;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.tracciati.operazioni.AnnullamentoRequest;
 import it.govpay.core.business.model.tracciati.operazioni.AnnullamentoResponse;
@@ -92,6 +90,7 @@ import it.govpay.core.business.model.tracciati.operazioni.OperazioneFactory;
 import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiOperazioneDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -104,6 +103,7 @@ import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.Tracciato.FORMATO_TRACCIATO;
 import it.govpay.model.Tracciato.STATO_ELABORAZIONE;
+import it.govpay.model.configurazione.TracciatoCsv;
 import it.govpay.orm.IdTracciato;
 import it.govpay.orm.constants.StatoTracciatoType;
 
@@ -184,7 +184,7 @@ public class Tracciati {
 	}
 
 	private void _elaboraTracciatoJSON(TracciatiBD tracciatiBD, Tracciato tracciato, it.govpay.core.beans.tracciati.TracciatoPendenza beanDati, ISerializer serializer, IContext ctx)
-			throws ServiceException, ValidationException, IOException, java.io.IOException {
+			throws ServiceException, ValidationException, IOException, java.io.IOException, it.govpay.core.exceptions.IOException {
 		String codDominio = tracciato.getCodDominio();
 		FORMATO_TRACCIATO formato = tracciato.getFormato();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -227,7 +227,7 @@ public class Tracciati {
 
 			String codVersamentoEnte = null;
 			try {
-				it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+				it.govpay.core.beans.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 				codVersamentoEnte = versamentoToAdd.getCodVersamentoEnte();
 
 				// inserisco l'identificativo del dominio
@@ -597,7 +597,7 @@ public class Tracciati {
 	}
 
 	private void _elaboraTracciatoCSV(TracciatiBD tracciatiBD, Tracciato tracciato, it.govpay.core.beans.tracciati.TracciatoPendenza beanDati, ISerializer serializer, IContext ctx)
-			throws ServiceException, ValidationException, IOException, java.io.IOException {
+			throws ServiceException, ValidationException, IOException, java.io.IOException, it.govpay.core.exceptions.IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		String codDominio = tracciato.getCodDominio();
 		String codTipoVersamento = tracciato.getCodTipoVersamento();
@@ -1056,7 +1056,7 @@ public class Tracciati {
 	}
 
 	public DettaglioTracciatoPendenzeEsito getEsitoElaborazioneTracciato(Tracciato tracciato, OperazioniBD operazioniBD)
-			throws ServiceException, ValidationException {
+			throws ServiceException, it.govpay.core.exceptions.IOException {
 		OperazioneFilter filter = operazioniBD.newFilter();
 		filter.setIdTracciato(tracciato.getId());
 		filter.setLimit(500);
@@ -1231,7 +1231,7 @@ public class Tracciati {
 					operazioneAnnullamento.getDominio(configWrapper);
 				} catch (NotFoundException e1) {
 				}
-			}catch(ValidationException e){
+			}catch(it.govpay.core.exceptions.IOException e){
 
 			}
 			leggiOperazioneDTOResponse.setOperazione(operazioneAnnullamento);

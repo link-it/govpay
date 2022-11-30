@@ -1,21 +1,20 @@
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.model.Rendicontazione;
-import it.govpay.model.Rendicontazione.EsitoRendicontazione;
-import it.govpay.model.Rendicontazione.StatoRendicontazione;
-import it.govpay.orm.IdFr;
-import it.govpay.orm.IdPagamento;
-import it.govpay.orm.IdSingoloVersamento;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
+import it.govpay.bd.model.Rendicontazione;
+import it.govpay.model.Rendicontazione.EsitoRendicontazione;
+import it.govpay.model.Rendicontazione.StatoRendicontazione;
+import it.govpay.model.exception.CodificaInesistenteException;
+import it.govpay.orm.IdFr;
+import it.govpay.orm.IdPagamento;
+import it.govpay.orm.IdSingoloVersamento;
 
 public class RendicontazioneConverter {
 
-	public static Rendicontazione toDTO(it.govpay.orm.Rendicontazione vo) throws ServiceException {
+	public static Rendicontazione toDTO(it.govpay.orm.Rendicontazione vo) throws CodificaInesistenteException {
 		Rendicontazione dto = new Rendicontazione();
 		dto.setAnomalie(vo.getAnomalie());
 		dto.setId(vo.getId());
@@ -67,7 +66,7 @@ public class RendicontazioneConverter {
 	}
 
 	public static List<Rendicontazione> toDTO(
-			List<it.govpay.orm.Rendicontazione> rendicontazioneVOLst) throws ServiceException {
+			List<it.govpay.orm.Rendicontazione> rendicontazioneVOLst) throws CodificaInesistenteException {
 		List<Rendicontazione> dto = new ArrayList<>();
 		for(it.govpay.orm.Rendicontazione vo : rendicontazioneVOLst) {
 			dto.add(toDTO(vo));

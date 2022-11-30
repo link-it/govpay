@@ -9,8 +9,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.beans.commons.Anagrafica;
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
-import it.govpay.core.dao.commons.Anagrafica;
 
 public class PagamentiPortaleDTO  extends BasicCreateRequestDTO{
 

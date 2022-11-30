@@ -1,7 +1,6 @@
 package it.govpay.core.ec.v2.converter;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -9,7 +8,9 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
-import org.openspcoop2.utils.json.ValidationException;
+
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
@@ -35,7 +36,7 @@ import it.govpay.ec.v2.beans.VocePendenza;
 
 public class PendenzeConverter {
 
-	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento) throws ServiceException {
+	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento) throws ServiceException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Pendenza rsModel = new Pendenza();
 
@@ -45,11 +46,7 @@ public class PendenzeConverter {
 		rsModel.setCartellaPagamento(versamento.getCodLotto());
 
 		if(versamento.getCausaleVersamento()!= null)
-			try {
-				rsModel.setCausale(versamento.getCausaleVersamento().getSimple());
-			} catch (UnsupportedEncodingException e) {
-				throw new ServiceException(e); 
-			}
+			rsModel.setCausale(versamento.getCausaleVersamento().getSimple());
 
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 
@@ -119,12 +116,12 @@ public class PendenzeConverter {
 		return null;
 	}
 
-	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice) throws ServiceException, IOException, ValidationException {
+	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice) throws ServiceException, IOException, ValidationException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		return toRsModelVocePendenza(singoloVersamento, indice, singoloVersamento.getVersamento(configWrapper));
 	}
 
-	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice, Versamento versamento) throws ServiceException, ValidationException {
+	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice, Versamento versamento) throws ServiceException, IOException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		VocePendenza rsModel = new VocePendenza();
 

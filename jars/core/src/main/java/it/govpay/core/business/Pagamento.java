@@ -47,7 +47,6 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
@@ -62,19 +61,24 @@ import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Azione;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTO;
 import it.govpay.core.business.model.AvviaRichiestaStornoDTOResponse;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.exceptions.NotificaException;
+import it.govpay.core.utils.EventoUtils;
+import it.govpay.core.utils.FaultBeanUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.RrUtils;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
-import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Canale.ModelloPagamento;
@@ -82,6 +86,7 @@ import it.govpay.model.Intermediario;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rr.StatoRr;
+import it.govpay.model.configurazione.Giornale;
 
 public class Pagamento   {
 
@@ -270,7 +275,7 @@ public class Pagamento   {
 			NodoClient chiediListaPendentiClient = null;
 			try {
 				try {
-					appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoChiediListaPendentiRPT);
+					appContext.setupNodoClient(stazione.getCodStazione(), null, EventoContext.Azione.nodoChiediListaPendentiRPT);
 					chiediListaPendentiClient = new NodoClient(intermediario, null, giornale);
 					risposta = chiediListaPendentiClient.nodoChiediListaPendentiRPT(richiesta, intermediario.getDenominazione());
 					chiediListaPendentiClient.getEventoCtx().setEsito(Esito.OK);
@@ -374,14 +379,14 @@ public class Pagamento   {
 			} finally {
 				if(chiediListaPendentiClient != null && chiediListaPendentiClient.getEventoCtx().isRegistraEvento()) {
 					EventiBD eventiBD = new EventiBD(configWrapper);
-					eventiBD.insertEvento(chiediListaPendentiClient.getEventoCtx().toEventoDTO());
+					eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediListaPendentiClient.getEventoCtx(),log));
 				}
 			}
 		}
 		return statiRptPendenti;
 	}
 
-	public AvviaRichiestaStornoDTOResponse avviaStorno(AvviaRichiestaStornoDTO dto) throws ServiceException, GovPayException, UtilsException {
+	public AvviaRichiestaStornoDTOResponse avviaStorno(AvviaRichiestaStornoDTO dto) throws ServiceException, GovPayException, UtilsException, IOException, NotificaException {
 		IContext ctx = ContextThreadLocal.get();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
@@ -468,7 +473,7 @@ public class Pagamento   {
 		rrBD = null;
 		try {
 
-			String operationId = appContext.setupNodoClient(rpt.getStazione(configWrapper).getCodStazione(), rr.getCodDominio(), Azione.nodoInviaRichiestaStorno);
+			String operationId = appContext.setupNodoClient(rpt.getStazione(configWrapper).getCodStazione(), rr.getCodDominio(), EventoContext.Azione.nodoInviaRichiestaStorno);
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codMessaggioRevoca", rr.getCodMsgRevoca()));
 			ctx.getApplicationLogger().log("rr.invioRr");
 
@@ -510,7 +515,7 @@ public class Pagamento   {
 				rrBD.updateRr(rr.getId(), StatoRr.RR_RIFIUTATA_NODO, descrizione);
 
 				log.warn(risposta.getLog());
-				throw new GovPayException(risposta.getFaultBean());
+				throw new GovPayException(FaultBeanUtils.toFaultBean(risposta.getFaultBean()));
 			} else {
 				ctx.getApplicationLogger().log("rr.invioRrOk");
 				// RPT accettata dal Nodo
@@ -535,7 +540,7 @@ public class Pagamento   {
 		} finally {
 			if(nodoInviaRRClient != null && nodoInviaRRClient.getEventoCtx().isRegistraEvento()) {
 				EventiBD eventiBD = new EventiBD(configWrapper);
-				eventiBD.insertEvento(nodoInviaRRClient.getEventoCtx().toEventoDTO());
+				eventiBD.insertEvento(EventoUtils.toEventoDTO(nodoInviaRRClient.getEventoCtx(),log));
 			}
 		}
 	}
@@ -557,7 +562,7 @@ public class Pagamento   {
 		}
 	}
 	
-	public String chiusuraRPTScadute(IContext ctx) throws GovPayException {
+	public String chiusuraRPTScadute(IContext ctx, Date dataUltimoCheck) throws GovPayException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		List<String> response = new ArrayList<>();
 		RptBD rptBD = null;
@@ -580,7 +585,7 @@ public class Pagamento   {
 			for (String codDominio : codDomini) {
 				int offset = 0;
 				int limit = 100;
-				List<Rpt> rtList = rptBD.getRptScadute(codDominio, GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins(), offset, limit);
+				List<Rpt> rtList = rptBD.getRptScadute(codDominio, GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins(), offset, limit, dataUltimoCheck);
 				log.trace("Identificate su GovPay per il Dominio ["+codDominio+"]: " + rtList.size() + " transazioni scadute da piu' di ["+GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()+"] minuti.");
 				do {
 					if(rtList.size() > 0) {
@@ -612,7 +617,7 @@ public class Pagamento   {
 					}
 
 					offset += limit;
-					rtList = rptBD.getRptScadute(codDominio, GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins(), offset, limit);
+					rtList = rptBD.getRptScadute(codDominio, GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins(), offset, limit, dataUltimoCheck);
 					log.trace("Identificate su GovPay per il Dominio ["+codDominio+"]: " + rtList.size() + " transazioni scadute da piu' di ["+GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()+"] minuti.");
 				}while(rtList.size() > 0);
 			}

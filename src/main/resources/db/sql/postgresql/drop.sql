@@ -1,5 +1,4 @@
 -- Gli indici vengono eliminati automaticamente una volta eliminata la tabella
--- DROP INDEX index_iuv_1 CASCADE;
 DROP VIEW v_vrs_non_rnd;
 DROP VIEW versamenti_incassi;
 DROP VIEW v_eventi_vers;
@@ -56,6 +55,7 @@ DROP TABLE utenze;
 DROP TABLE stazioni;
 DROP TABLE intermediari;
 DROP TABLE configurazione;
+DROP TABLE sonde;
 DROP SEQUENCE seq_allegati;
 DROP SEQUENCE seq_gp_audit;
 DROP SEQUENCE seq_operazioni;
