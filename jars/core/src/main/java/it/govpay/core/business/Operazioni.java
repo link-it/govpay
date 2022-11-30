@@ -461,6 +461,11 @@ public class Operazioni{
 
 	public static String resetCacheAnagrafica(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		return resetCacheAnagrafica(configWrapper);
+	}
+
+	public static String resetCacheAnagrafica(BDConfigWrapper configWrapper){
+		
 		BatchBD batchBD = null;
 		try {
 			batchBD = new BatchBD(configWrapper);
