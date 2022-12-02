@@ -371,7 +371,8 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				}
 			}
 			
-			if(stazione != null ) {
+			// il checkout si puo' utilizzare solo se la funzionalita' e' abilitata e la stazione e' V2
+			if(GovpayConfig.getInstance().isCheckoutEnabled() && stazione != null ) {
 				// check versione
 				if(stazione.getVersione().equals(Versione.V2)) {
 					

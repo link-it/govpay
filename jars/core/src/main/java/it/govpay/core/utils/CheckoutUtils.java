@@ -20,7 +20,7 @@ public class CheckoutUtils {
 	public static CartRequest createCartRequest(Logger log, BDConfigWrapper configWrapper,  String returnUrl, String lang, List<Versamento> versamenti, String codiceConvenzione, String email) throws ServiceException, UnsupportedEncodingException{
 		CartRequest cartRequest = new CartRequest();
 		
-		log.debug("=== Richiesta Modello 1 SANP 3.1.0 ===");
+		log.debug("=== Richiesta Modello 1 SANP 3.2.1 ===");
 		
 		log.debug("EmailNotice: ["+email+"]");
 		cartRequest.setEmailNotice(email);
@@ -69,17 +69,21 @@ public class CheckoutUtils {
 		
 		ReturnUrls returnUrls = new ReturnUrls();
 		
-		// provare se pagoPa aggiunge il parametro esito altrimenti aggiungerlo in questa fase
-		log.debug("ReturnUrlOk: ["+returnUrl+"]");
-		returnUrls.setReturnOkUrl(returnUrl);
-		log.debug("ReturnUrlError: ["+returnUrl+"]");
-		returnUrls.setReturnErrorUrl(returnUrl);
-		log.debug("ReturnUrlCancel: ["+returnUrl+"]");
-		returnUrls.setReturnCancelUrl(returnUrl);
+		// aggiungo i parametri con l'esito
+		boolean hasParameter = returnUrl.contains("?");
+		String returnOkUrl = hasParameter ? returnUrl.concat("&esito=OK") : returnUrl.concat("?esito=OK");
+		log.debug("ReturnUrlOk: ["+returnOkUrl+"]");
+		returnUrls.setReturnOkUrl(returnOkUrl);
+		String returnErrorUrl = hasParameter ? returnUrl.concat("&esito=ERROR") : returnUrl.concat("?esito=ERROR");
+		log.debug("ReturnUrlError: ["+returnErrorUrl+"]");
+		returnUrls.setReturnErrorUrl(returnErrorUrl);
+		String returnCancelUrl = hasParameter ? returnUrl.concat("&esito=CANCEL") : returnUrl.concat("?esito=CANCEL");
+		log.debug("ReturnUrlCancel: ["+returnCancelUrl+"]");
+		returnUrls.setReturnCancelUrl(returnCancelUrl);
 		
 		cartRequest.setReturnUrls(returnUrls);
 		
-		log.debug("=== Fine Richiesta Modello 1 SANP 3.1.0 ===");
+		log.debug("=== Fine Richiesta Modello 1 SANP 3.2.1 ===");
 		
 		return cartRequest;
 	}

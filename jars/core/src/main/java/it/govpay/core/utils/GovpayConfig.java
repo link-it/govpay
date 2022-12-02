@@ -157,6 +157,7 @@ public class GovpayConfig {
 	private String templateQuietanzaPagamento;
 	
 	private String checkoutBaseURL;
+	private boolean checkoutEnabled;
 	
 	private boolean conversioneMessaggiPagoPAV2NelFormatoV1;
 	
@@ -242,6 +243,7 @@ public class GovpayConfig {
 		this.templateProspettoRiscossioni = null;
 		
 		this.checkoutBaseURL = null;
+		this.checkoutEnabled = false;
 		
 		this.conversioneMessaggiPagoPAV2NelFormatoV1 = false;
 		
@@ -759,6 +761,10 @@ public class GovpayConfig {
 			this.templateQuietanzaPagamento = getProperty("it.govpay.reportistica.quietanzaPagamento.templateJasper", this.props, false, log);
 			
 			this.checkoutBaseURL = getProperty("it.govpay.checkout.baseUrl", this.props, true, log);
+			
+			String checkoutEnabledString = getProperty("it.govpay.checkout.enabled", this.props, false, log);
+			if(checkoutEnabledString != null && Boolean.valueOf(checkoutEnabledString))
+				this.checkoutEnabled = true;
 
 			String conversioneMessaggiPagoPAV2NelFormatoV1String = getProperty("it.govpay.retrocompatibilitaMessaggiPagoPA.v1.enable", this.props, false, log);
 			if(conversioneMessaggiPagoPAV2NelFormatoV1String != null && Boolean.valueOf(conversioneMessaggiPagoPAV2NelFormatoV1String))
@@ -1162,6 +1168,10 @@ public class GovpayConfig {
 	
 	public String getCheckoutBaseURL() {
 		return checkoutBaseURL;
+	}
+	
+	public boolean isCheckoutEnabled() {
+		return checkoutEnabled;
 	}
 	
 	public boolean isConversioneMessaggiPagoPAV2NelFormatoV1() {
