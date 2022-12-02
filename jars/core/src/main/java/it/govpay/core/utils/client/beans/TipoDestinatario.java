@@ -1,5 +1,5 @@
 package it.govpay.core.utils.client.beans;
 
 public enum TipoDestinatario {
-	APPLICAZIONE, INTERMEDIARIO, APP_IO, MYPIVOT, GOVPAY;
+	APPLICAZIONE, INTERMEDIARIO, APP_IO, MYPIVOT, GOVPAY, CHECKOUT_PAGOPA;
 }

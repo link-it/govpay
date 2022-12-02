@@ -780,7 +780,7 @@ public abstract class BasicClientCORE {
 			//			this.resultHTTPMessage = httpResponse.getStatusLine().getReasonPhrase();
 
 			try {
-				if(responseCode < 300) {
+				if(responseCode < 400) { // httpstatus 3xx sono casi ok
 					try {
 						if(httpBody.isDoInput()){
 							isResponse = this.httpEntityResponse.getContent();

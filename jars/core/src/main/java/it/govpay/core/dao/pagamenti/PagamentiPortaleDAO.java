@@ -25,6 +25,7 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Configurazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.PagamentoPortale.CODICE_STATO;
@@ -43,6 +44,7 @@ import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.GpAvviaTransazionePagamentoResponse;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.beans.Mittente;
+import it.govpay.core.beans.checkout.CartRequest;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
@@ -79,6 +81,8 @@ import it.govpay.core.utils.SeveritaProperties;
 import it.govpay.core.utils.TracciatiConverter;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
+import it.govpay.core.utils.client.CheckoutClient;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.tracciati.validator.PendenzaPostValidator;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.PatchOp;
@@ -86,6 +90,7 @@ import it.govpay.model.Stazione.Versione;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
+import it.govpay.model.configurazione.Giornale;
 import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdVersamento;
 
@@ -370,6 +375,9 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				// check versione
 				if(stazione.getVersione().equals(Versione.V2)) {
 					
+					log.debug("Stazione ["+stazione.getCodStazione()+"] versione ["+stazione.getVersione()+"], invocazione verso il Checkout PagoPA...");
+					String email = null;
+					
 					// la richiesta deve essere formata solo da riferimenti avviso
 					if(numeroRifAvvisi < versamenti.size()) {
 						throw new ValidationException("Il pagamento presso frontend dell'EC si puo' effettuare solo indicando i riferimenti avviso.");
@@ -383,9 +391,29 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					response.setId("0");
 					response.setRedirect(true); 
 					
-					response.setHtmlRedirectCheckout(CheckoutUtils.getCheckoutHtml(log, GovpayConfig.getInstance().getCheckoutURL(), CheckoutUtils.readTemplate(), 
-							configWrapper, pagamentiPortaleDTO.getUrlRitorno(), pagamentiPortaleDTO.getLingua(), dominio.getCodDominio(), versamenti, pagamentiPortaleDTO.getCodiceConvenzione()));
-
+					String checkoutBaseUrl = GovpayConfig.getInstance().getCheckoutBaseURL();
+					log.debug("Url Base Checkout: " + checkoutBaseUrl);
+					String operationId = appContext.setupAppIOClient(CheckoutClient.SWAGGER_OPERATION_POST_CARTS_OPERATION_ID, checkoutBaseUrl);
+					
+					// Esecuizione della chiamata verso PagoPA
+					try {
+						CartRequest cartRequest = CheckoutUtils.createCartRequest(log, configWrapper, pagamentiPortaleDTO.getUrlRitorno(), pagamentiPortaleDTO.getLingua(), versamenti, pagamentiPortaleDTO.getCodiceConvenzione(), email);
+					
+						Configurazione configurazione = new it.govpay.core.business.Configurazione().getConfigurazione();
+						Giornale giornale = configurazione.getGiornale();
+						CheckoutClient checkoutClient = new CheckoutClient(CheckoutClient.SWAGGER_OPERATION_POST_CARTS_OPERATION_ID, checkoutBaseUrl, operationId, giornale);
+						String location = checkoutClient.inviaCartRequest(cartRequest);
+						
+						log.debug("Stazione ["+stazione.getCodStazione()+"] versione ["+stazione.getVersione()+"], invocazione verso il Checkout PagoPA completata, ricevuta URL redirect ["+location+"]");
+						response.setLocation(location);
+					} catch (UnsupportedEncodingException e) {
+						log.error("Errore nella decodifica della causale Versamento: " + e.getMessage(), e);
+						throw new GovPayException(e);
+					} catch (ClientException e) {
+						log.error("Errore durante la spedizione della richiesta verso il Checkoout PagoPA: " + e.getMessage(), e);
+						throw new GovPayException(e);
+					}
+					
 					return response;
 				}
 			}

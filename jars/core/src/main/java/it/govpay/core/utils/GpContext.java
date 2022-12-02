@@ -67,6 +67,7 @@ public class GpContext extends ApplicationContext {
 	public static final String AppIO = "AppIO";
 	public static final String TIPO_SOGGETTO_NDP = "NDP";
 	public static final String TIPO_SERVIZIO_NDP = "NDP";
+	public static final String Checkout = "Checkout";
 
 	public static final String TIPO_SOGGETTO_APP = "APP";
 	public static final String TIPO_SOGGETTO_PRT = "PRT";
@@ -309,6 +310,16 @@ public class GpContext extends ApplicationContext {
 	public synchronized String setupInvioNotificaPagamentiMaggioliJPPAClient(String azione, String url) {
 		HttpServer server = new HttpServer();
 		server.setName(MaggioliJPPA);
+		server.setEndpoint(url);
+		server.setIdOperation(UUID.randomUUID().toString());
+		this.getTransaction().addServer(server); 
+
+		return server.getIdOperation();
+	}
+	
+	public synchronized String setupcheckoutClient(String azione, String url) {
+		HttpServer server = new HttpServer();
+		server.setName(Checkout);
 		server.setEndpoint(url);
 		server.setIdOperation(UUID.randomUUID().toString());
 		this.getTransaction().addServer(server); 

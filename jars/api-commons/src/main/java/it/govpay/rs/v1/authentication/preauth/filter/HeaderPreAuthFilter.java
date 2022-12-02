@@ -19,6 +19,9 @@ public class HeaderPreAuthFilter extends org.openspcoop2.utils.service.authentic
 		super();
 		
 		this.nomiHeaders = GovpayConfig.getInstance().getAutenticazioneHeaderNomeHeaderPrincipal();
+		if(this.nomiHeaders == null || this.nomiHeaders.size() == 0) {
+			log.warn("Attenzione non e' stato impostato un header dal quale leggere il principal!");
+		}
 	}
 
 	@Override

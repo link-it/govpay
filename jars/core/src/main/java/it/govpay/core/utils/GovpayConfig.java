@@ -156,7 +156,7 @@ public class GovpayConfig {
 	
 	private String templateQuietanzaPagamento;
 	
-	private String checkoutURL;
+	private String checkoutBaseURL;
 	
 	private boolean conversioneMessaggiPagoPAV2NelFormatoV1;
 	
@@ -241,7 +241,7 @@ public class GovpayConfig {
 		
 		this.templateProspettoRiscossioni = null;
 		
-		this.checkoutURL = null;
+		this.checkoutBaseURL = null;
 		
 		this.conversioneMessaggiPagoPAV2NelFormatoV1 = false;
 		
@@ -758,7 +758,7 @@ public class GovpayConfig {
 			
 			this.templateQuietanzaPagamento = getProperty("it.govpay.reportistica.quietanzaPagamento.templateJasper", this.props, false, log);
 			
-			this.checkoutURL = getProperty("it.govpay.checkout.url", this.props, true, log);
+			this.checkoutBaseURL = getProperty("it.govpay.checkout.baseUrl", this.props, true, log);
 
 			String conversioneMessaggiPagoPAV2NelFormatoV1String = getProperty("it.govpay.retrocompatibilitaMessaggiPagoPA.v1.enable", this.props, false, log);
 			if(conversioneMessaggiPagoPAV2NelFormatoV1String != null && Boolean.valueOf(conversioneMessaggiPagoPAV2NelFormatoV1String))
@@ -1160,8 +1160,8 @@ public class GovpayConfig {
 		return numeroMassimoGiorniRPTPendenti;
 	}
 	
-	public String getCheckoutURL() {
-		return checkoutURL;
+	public String getCheckoutBaseURL() {
+		return checkoutBaseURL;
 	}
 	
 	public boolean isConversioneMessaggiPagoPAV2NelFormatoV1() {

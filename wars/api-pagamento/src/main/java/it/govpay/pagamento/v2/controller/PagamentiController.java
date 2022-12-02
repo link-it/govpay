@@ -2,6 +2,7 @@ package it.govpay.pagamento.v2.controller;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -167,8 +168,9 @@ public class PagamentiController extends BaseController {
 				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.CREATED).entity(responseOk.toJSON(null)),transactionId).build();
 			} else {
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-				return this.handleResponseOk(Response.status(Status.OK).entity(pagamentiPortaleDTOResponse.getHtmlRedirectCheckout()),transactionId).build();
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+				// la specifica dice che deve essere inviato uno status 302
+				return this.handleResponseOk(Response.status(Status.FOUND).location(new URI(pagamentiPortaleDTOResponse.getLocation())),transactionId).build();
 			}
 		} catch (Exception e) {
 			Response response = this.handleException(uriInfo, httpHeaders, methodName, e,transactionId);
