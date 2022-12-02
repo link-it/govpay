@@ -361,14 +361,14 @@ ALTER TABLE pagamenti_portale ADD id_rpt_tmp NUMBER;
 -- 1180 secondi
 INSERT INTO pagamenti_portale (id_rpt_tmp, id_applicazione,cod_canale,data_richiesta,cod_psp,multi_beneficiario, nome, importo, versante_identificativo, id_sessione, stato, codice_stato, tipo) 
 	SELECT rpt.id, rpt.id_applicazione, rpt.cod_canale, rpt.data_msg_richiesta, rpt.cod_psp, rpt.cod_dominio, CONCAT('Pagamento Pendenza ', versamenti.cod_versamento_ente), versamenti.importo_totale, versamenti.debitore_identificativo,
-	regexp_replace(rawtohex(sys_guid()), '([A-F0-9]{8})([A-F0-9]{4})([A-F0-9]{4})([A-F0-9]{4})([A-F0-9]{12})', '\1\2\3\4\5'), 'NON_ESEGUITO', 'PAGAMENTO_NON_ESEGUITO', 3 
+	rpt.cod_msg_richiesta, 'NON_ESEGUITO', 'PAGAMENTO_NON_ESEGUITO', 3 
 	FROM rpt, versamenti WHERE rpt.id_versamento = versamenti.id AND rpt.cod_carrello IS NULL;
 
 -- inserisco i pagamenti di tipo 1 tutti in stato non eseguito, aggiorno lo stato in seguito
 -- 980 secondi
 INSERT INTO pagamenti_portale (id_rpt_tmp, id_applicazione,cod_canale,data_richiesta,cod_psp,multi_beneficiario, nome, importo, versante_identificativo, id_sessione, stato, codice_stato, tipo, id_sessione_portale) 
 	SELECT rpt.id, rpt.id_applicazione, rpt.cod_canale, rpt.data_msg_richiesta, rpt.cod_psp, rpt.cod_dominio, CONCAT('Pagamento Pendenza ', versamenti.cod_versamento_ente), versamenti.importo_totale, versamenti.debitore_identificativo,
-	rpt.cod_carrello, 'NON_ESEGUITO', 'PAGAMENTO_NON_ESEGUITO', 1, rpt.cod_sessione_portale 
+	rpt.cod_msg_richiesta, 'NON_ESEGUITO', 'PAGAMENTO_NON_ESEGUITO', 1, rpt.cod_sessione_portale 
 	FROM rpt, versamenti WHERE rpt.id_versamento = versamenti.id AND rpt.cod_carrello IS NOT NULL AND rpt.cod_carrello NOT IN (SELECT id_sessione FROM pagamenti_portale);
 	
 -- 20 secondi
@@ -406,7 +406,7 @@ CREATE INDEX idx_rpt_esito ON rpt (cod_esito_pagamento);
 -- 4837 secondi
 -- Per le RPT dove non era stato inserito un portale assegno i pagamenti portale all'applicazione, mi servira' per poter salvare il principal
 UPDATE pagamenti_portale SET pagamenti_portale.id_applicazione = (SELECT versamenti.id_applicazione
- FROM versamenti, rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.id_versamento = versamenti.id)
+ FROM versamenti, rpt WHERE rpt.id_pagamento_portale = pagamenti_portale.id AND rpt.id_versamento = versamenti.id AND pagamenti_portale.id_applicazione IS NULL)
  WHERE pagamenti_portale.id_applicazione IS NULL; 
  
 -- aggiorno stati pagamento portale 282 secondi
