@@ -195,6 +195,8 @@ export class Voce {
   public static NUOVO_DOMINIO: string = 'Nuovo dominio';
   public static NUOVO_ENTE_CREDITORE: string = 'Nuovo Ente creditore';
 
+  public static SUBSCRIPTION_KEY: string = 'Subscription Key';
+  public static OCP_APIM_SUBSCRIPTION_KEY: string = 'Ocp-Apim-Subscription-Key';
   public static OGGETTO: string = 'Oggetto';
   public static OPERATORE_MITTENTE: string = 'Operatore mittente';
   public static OPERAZIONI: string = 'Operazioni';
