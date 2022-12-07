@@ -1885,6 +1885,54 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			fault.setDescription(e.getDescrizione());
 			r.setFault(fault);
 		}
+		
+		if(risposta instanceof PaSendRTV2Response) {
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
+				log.warn("Errore in PaSendRT: " + e.getMessage(), e);
+			} else {
+				log.warn("Rifiutata PaSendRT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+			}
+			PaSendRTV2Response r = (PaSendRTV2Response) risposta;
+			r.setOutcome(StOutcome.KO);
+			CtFaultBean fault = new CtFaultBean();
+			fault.setId(e.getCodDominio());
+			fault.setFaultCode(e.getFaultCode());
+			fault.setFaultString(e.getFaultString());
+			fault.setDescription(e.getDescrizione());
+			r.setFault(fault);
+		}
+		
+		if(risposta instanceof PaGetPaymentV2Response) {
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
+				log.warn("Errore in PaSendRT: " + e.getMessage(), e);
+			} else {
+				log.warn("Rifiutata PaSendRT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+			}
+			PaGetPaymentV2Response r = (PaGetPaymentV2Response) risposta;
+			r.setOutcome(StOutcome.KO);
+			CtFaultBean fault = new CtFaultBean();
+			fault.setId(e.getCodDominio());
+			fault.setFaultCode(e.getFaultCode());
+			fault.setFaultString(e.getFaultString());
+			fault.setDescription(e.getDescrizione());
+			r.setFault(fault);
+		}
+		
+		if(risposta instanceof PaDemandPaymentNoticeResponse) {
+			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
+				log.warn("Errore in PaSendRT: " + e.getMessage(), e);
+			} else {
+				log.warn("Rifiutata PaSendRT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+			}
+			PaDemandPaymentNoticeResponse r = (PaDemandPaymentNoticeResponse) risposta;
+			r.setOutcome(StOutcome.KO);
+			CtFaultBean fault = new CtFaultBean();
+			fault.setId(e.getCodDominio());
+			fault.setFaultCode(e.getFaultCode());
+			fault.setFaultString(e.getFaultString());
+			fault.setDescription(e.getDescrizione());
+			r.setFault(fault);
+		}
 
 		return risposta;
 	}

@@ -248,6 +248,7 @@ public class PendenzeConverter {
 	
 	public static PendenzaPagata toPendenzaPagataRsModel(it.govpay.bd.model.Rpt rpt, Versamento versamento) throws ServiceException, IOException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+
 		PendenzaPagata rsModel = new PendenzaPagata();
 
 		if(versamento.getCodAnnoTributario()!= null)

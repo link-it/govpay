@@ -428,7 +428,6 @@ public class RptBD extends BasicBD {
 				cInf.setTime(limiteTemporaleInf);
 				cInf.add(Calendar.MINUTE, -( 2 * minutiSogliaScadenza));
 				Date dataSogliaInf = cInf.getTime();
-				
 				exp.greaterEquals(RPT.model().DATA_MSG_RICHIESTA, dataSogliaInf);
 			}
 			
