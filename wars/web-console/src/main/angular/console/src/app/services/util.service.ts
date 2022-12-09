@@ -315,7 +315,8 @@ export class UtilService {
 
   public static TIPI_AUTENTICAZIONE: any = {
     basic: 'HTTP Basic',
-    ssl: 'SSL'
+    ssl: 'SSL',
+    subscriptionKey: 'Subscription Key'
   };
 
   public static TIPI_SSL: any = {

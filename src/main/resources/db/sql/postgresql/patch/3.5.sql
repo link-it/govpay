@@ -579,7 +579,6 @@ CREATE VIEW v_vrs_non_rnd AS
      LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id
   WHERE rendicontazioni.id IS NULL;
   
-  
 -- 21/12/2021 Patch per la gestione del riferimento al pagamento di una rendicontazione che arriva prima della ricevuta.
 UPDATE rendicontazioni SET id_pagamento = pagamenti.id 
 	FROM fr, pagamenti 

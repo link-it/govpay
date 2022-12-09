@@ -887,6 +887,7 @@ public class DominiConverter {
 			}
 			if(tipoPendenzaRequest.getPortaleBackoffice().getValidazione() != null)
 				tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeValidazioneDefinizioneCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPortaleBackoffice().getValidazione()));
+
 			if(tipoPendenzaRequest.getPortaleBackoffice().getInoltro() != null)
 				tipoVersamentoDominio.setCaricamentoPendenzePortaleBackofficeCodApplicazioneCustom(tipoPendenzaRequest.getPortaleBackoffice().getInoltro());
 		}
@@ -921,6 +922,7 @@ public class DominiConverter {
 			}
 			if(tipoPendenzaRequest.getPortalePagamento().getValidazione() != null)
 				tipoVersamentoDominio.setCaricamentoPendenzePortalePagamentoValidazioneDefinizioneCustom(ConverterUtils.toJSON(tipoPendenzaRequest.getPortalePagamento().getValidazione()));
+
 			if(tipoPendenzaRequest.getPortalePagamento().getInoltro() != null)
 				tipoVersamentoDominio.setCaricamentoPendenzePortalePagamentoCodApplicazioneCustom(tipoPendenzaRequest.getPortalePagamento().getInoltro());
 		}
