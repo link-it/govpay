@@ -40,6 +40,7 @@ And match response ==
 	idStazione : '#(idStazione)',
 	password : "GovPayTest",
 	abilitato : true,
-	domini : '#ignore'
+	domini : '#ignore',
+	versione : 'V1'
 }
 """

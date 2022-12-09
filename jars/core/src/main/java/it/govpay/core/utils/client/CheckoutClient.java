@@ -56,7 +56,7 @@ public class CheckoutClient extends BasicClientCORE {
 		sb.append(CHECKOUT_V1_CARTS_OPERATION_PATH);
 		
 		try {
-			jsonBody = ConverterUtils.toJSON(cartRequest);
+			jsonBody = cartRequest.toJSON(null);
 		} catch (IOException e) {
 			throw new GovPayException(e);
 		}
