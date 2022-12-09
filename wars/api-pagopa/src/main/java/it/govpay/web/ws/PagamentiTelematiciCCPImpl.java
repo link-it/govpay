@@ -398,7 +398,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			log.debug("Verifica pagamenti in corso completata.");
 			// Verifico che abbia un solo singolo versamento
 			if(versamento.getSingoliVersamenti().size() != 1) {
-				throw new NdpException(FaultPa.PAA_SEMANTICA, "Il versamento contiente piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.", codDominio);
+				throw new NdpException(FaultPa.PAA_SEMANTICA, "Il versamento contiene piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.", codDominio);
+			}
+			
+			// controllo che la pendenza non contenga una MBT
+			if(VersamentoUtils.isPendenzaMBT(versamento, configWrapper)) {
+				throw new NdpException(FaultPa.PAA_SEMANTICA, "Il versamento contiene una marca da bollo telematica, non ammessa per pagamenti ad iniziativa psp.", codDominio);
 			}
 
 			log.debug("Costruzione della RPT.");
@@ -1591,6 +1596,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, "Riscontrato errore durante l'attivazione del versamento: " + e1, codDominio, e1);
 			}
 			
+			// controllo che la pendenza non contenga una MBT
+			if(VersamentoUtils.isPendenzaMBT(versamento, configWrapper)) {
+				throw new NdpException(FaultPa.PAA_SEMANTICA, "Il versamento contiene una marca da bollo telematica, non ammessa per pagamenti ad iniziativa psp.", codDominio);
+			}
 			
 			RptBD rptBD = new RptBD(configWrapper);
 
@@ -1838,9 +1847,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		if(risposta instanceof PaSendRTV2Response) {
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
-				log.warn("Errore in PaSendRT: " + e.getMessage(), e);
+				log.warn("Errore in PaSendRTV2: " + e.getMessage(), e);
 			} else {
-				log.warn("Rifiutata PaSendRT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.warn("Rifiutata PaSendRTV2 con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
 			PaSendRTV2Response r = (PaSendRTV2Response) risposta;
 			r.setOutcome(StOutcome.KO);
@@ -1854,9 +1863,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		if(risposta instanceof PaGetPaymentV2Response) {
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
-				log.warn("Errore in PaSendRT: " + e.getMessage(), e);
+				log.warn("Errore in PaGetPaymentV2: " + e.getMessage(), e);
 			} else {
-				log.warn("Rifiutata PaSendRT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.warn("Rifiutata PaGetPaymentV2 con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
 			PaGetPaymentV2Response r = (PaGetPaymentV2Response) risposta;
 			r.setOutcome(StOutcome.KO);
@@ -1870,9 +1879,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		if(risposta instanceof PaDemandPaymentNoticeResponse) {
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
-				log.warn("Errore in PaSendRT: " + e.getMessage(), e);
+				log.warn("Errore in PaDemandPaymentNotice: " + e.getMessage(), e);
 			} else {
-				log.warn("Rifiutata PaSendRT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.warn("Rifiutata PaDemandPaymentNotice con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
 			PaDemandPaymentNoticeResponse r = (PaDemandPaymentNoticeResponse) risposta;
 			r.setOutcome(StOutcome.KO);
@@ -1927,7 +1936,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
 		}
 
-		log.info("Ricevuta richiesta paSendRT [" + codDominio + "][" + iuv + "]");
+		log.info("Ricevuta richiesta paSendRTV2 [" + codDominio + "][" + iuv + "]");
 		PaSendRTV2Response response = new PaSendRTV2Response();
 
 		DatiPagoPA datiPagoPA = new DatiPagoPA();
@@ -2087,7 +2096,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}
 
 		
-			log.info("Ricevuta richiesta paGetPayment [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "]["+ ccp +"][" + numeroAvviso + "]");
+			log.info("Ricevuta richiesta paGetPaymentV2 [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "]["+ ccp +"][" + numeroAvviso + "]");
 	
 			DatiPagoPA datiPagoPA = new DatiPagoPA();
 			datiPagoPA.setCodStazione(codStazione);

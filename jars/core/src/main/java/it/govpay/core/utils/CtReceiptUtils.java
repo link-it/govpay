@@ -516,7 +516,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 			Rpt rpt = null;
 			try { 
-				rpt = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, it.govpay.model.Rpt.Versione.SANP_240, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv, pagamenti e pagamenti_portale
+				rpt = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, it.govpay.model.Rpt.Versione.SANP_321_V2, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv, pagamenti e pagamenti_portale
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, e.getMessage(), codDominio);
 			}
@@ -541,7 +541,7 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			// infatti in caso di RT concorrente, non viene gestito bene l'errore.
 
 			try {
-				rpt = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, it.govpay.model.Rpt.Versione.SANP_240, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv, pagamenti e pagamenti_portale
+				rpt = rptBD.getRpt(codDominio, iuv, ModelloPagamento.ATTIVATO_PRESSO_PSP, it.govpay.model.Rpt.Versione.SANP_321_V2, false); // ricerca della RPT senza caricare il dettaglio versamenti, sv, pagamenti e pagamenti_portale
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, e.getMessage(), codDominio);
 			}

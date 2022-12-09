@@ -541,6 +541,9 @@ public class CtPaymentPABuilder {
 				Dominio dominio2 = singoloVersamento.getDominio(configWrapper);
 				if(dominio2 != null) {
 					transferEl.setFiscalCodePA(dominio2.getCodDominio());
+				} else {
+					// se non e' definito il dominio utilizzo quello del versamento.
+					transferEl.setFiscalCodePA(dominio.getCodDominio());
 				}
 			}
 
