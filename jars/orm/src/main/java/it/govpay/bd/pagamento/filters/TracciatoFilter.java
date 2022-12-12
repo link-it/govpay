@@ -55,6 +55,7 @@ public class TracciatoFilter extends AbstractFilter {
 	boolean includiRawRichiesta = false; 
 	boolean includiRawEsito= false; 
 	boolean includiZipStampe = false;
+	private List<it.govpay.model.Tracciato.STATO_ELABORAZIONE> stati;
 
 	public String getFilenameRichiestaLike() {
 		return this.filenameRichiestaLike;
@@ -139,6 +140,14 @@ public class TracciatoFilter extends AbstractFilter {
 				exp.equals(Tracciato.model().COD_TIPO_VERSAMENTO, this.codTipoVersamento); 
 				addAnd = true;
 			}
+			
+			if(this.stati != null && !this.stati.isEmpty()){
+				if(addAnd)
+					exp.and();
+				
+				exp.in(Tracciato.model().STATO, this.stati.stream().map(t -> t.toString()).collect(Collectors.toList()));
+				addAnd = true;
+			}
 
 			return exp;
 		} catch (NotImplementedException e) {
@@ -197,6 +206,13 @@ public class TracciatoFilter extends AbstractFilter {
 			if(this.codTipoVersamento != null){
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.COD_TIPO_VERSAMENTO, true) + " = ? ");
 			}
+			
+			if(this.stati != null && !this.stati.isEmpty()){
+				this.stati.removeAll(Collections.singleton(null));
+				
+				String [] statisS = this.stati.stream().map(e -> e.toString()).collect(Collectors.toList()).toArray(new String[this.stati.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.STATO, true), true, statisS );	
+			}
 
 			return sqlQueryObject;
 		} catch (ExpressionException e) {
@@ -242,6 +258,9 @@ public class TracciatoFilter extends AbstractFilter {
 			lst.add(this.codTipoVersamento);
 		}
 		
+		if(this.stati != null && !this.stati.isEmpty()){
+			// donothing
+		}
 		
 		return lst.toArray(new Object[lst.size()]);
 	}
@@ -340,6 +359,14 @@ public class TracciatoFilter extends AbstractFilter {
 
 	public void setIncludiZipStampe(boolean includiZipStampe) {
 		this.includiZipStampe = includiZipStampe;
+	}
+
+	public List<it.govpay.model.Tracciato.STATO_ELABORAZIONE> getStati() {
+		return stati;
+	}
+
+	public void setStati(List<it.govpay.model.Tracciato.STATO_ELABORAZIONE> stati) {
+		this.stati = stati;
 	}
 
 }

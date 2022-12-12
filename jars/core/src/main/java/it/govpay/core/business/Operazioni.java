@@ -647,7 +647,7 @@ public class Operazioni{
 				TracciatiBD tracciatiBD = new TracciatiBD(configWrapper);
 				TracciatoFilter filter = tracciatiBD.newFilter();
 				filter.setTipo(Arrays.asList(TIPO_TRACCIATO.PENDENZA));
-				filter.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
+				filter.setStati(Arrays.asList(STATO_ELABORAZIONE.ELABORAZIONE, STATO_ELABORAZIONE.IN_STAMPA));
 				filter.setLimit(25);
 				filter.setIncludiRawRichiesta(true);
 				//				filter.setDataUltimoAggiornamentoMax(new Date());
