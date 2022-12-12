@@ -19,10 +19,14 @@
  */
 package it.govpay.core.utils;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -42,6 +46,8 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Request;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StEntityUniqueIdentifierType;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StTransferType;
+import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.CtMapEntry;
+import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.CtMetadata;
 import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.CtRichiestaMarcaDaBollo;
 import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.StOutcome;
 import it.govpay.bd.BDConfigWrapper;
@@ -51,10 +57,15 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.IbanAccredito;
+import it.govpay.model.QuotaContabilita;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.Versione;
@@ -62,6 +73,15 @@ import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Versamento.CausaleSemplice;
 
 public class CtPaymentPABuilder {
+
+	public static final String CONTABILITA_QUOTA_CAPITOLO_BILANCIO_KEY = "CAPITOLOBILANCIO";
+	public static final String CONTABILITA_QUOTA_ARTICOLO_BILANCIO_KEY = "ARTICOLOBILANCIO";
+	public static final String CONTABILITA_QUOTA_CODICE_ACCERTAMENTO_KEY = "CODICEACCERTAMENTO";
+	public static final String CONTABILITA_QUOTA_ANNO_RIFERIMENTO_KEY = "ANNORIFERIMENTO";
+	public static final String CONTABILITA_QUOTA_TITOLO_BILANCIO_KEY = "TITOLOBILANCIO";
+	public static final String CONTABILITA_QUOTA_CATEGORIA_BILANCIO_KEY = "CATEGORIABILANCIO";
+	public static final String CONTABILITA_QUOTA_TIPOLOGIA_BILANCIO_KEY = "TIPOLOGIABILANCIO";
+	public static final String CONTABILITA_QUOTA_ENTRY_KEY = "CAPITOLOBILANCIO,ARTICOLOBILANCIO,CODICEACCERTAMENTO,ANNORIFERIMENTO,TITOLOBILANCIO,CATEGORIABILANCIO,TIPOLOGIABILANCIO,IMPORTOEUROCENT";
 
 	public Rpt buildRptAttivata (PaGetPaymentReq requestBody, Versamento versamento, String iuv, String ccp, String numeroavviso) throws ServiceException {
 
@@ -231,7 +251,7 @@ public class CtPaymentPABuilder {
 				ibanAccredito = singoloVersamento.getIbanAccredito(configWrapper);
 				ibanAppoggio = singoloVersamento.getIbanAppoggio(configWrapper);
 			}
-			
+
 			// solo il transfer 1 e' vincolato ad essere postale se richiesto
 			if(i == 1) {
 				if(ibanAccredito != null) {
@@ -258,7 +278,7 @@ public class CtPaymentPABuilder {
 					ibanScelto = ibanAppoggio;
 				}
 			}
-			
+
 			if(ibanScelto != null) {
 				transferEl.setIBAN(ibanScelto.getCodIban());
 				try {
@@ -320,10 +340,10 @@ public class CtPaymentPABuilder {
 		else
 			return text;
 	}
-	
-	public Rpt buildRptAttivata_SANP_321_V2 (PaGetPaymentV2Request requestBody, Versamento versamento, String iuv, String ccp, String numeroavviso) throws ServiceException {
 
-		return this.buildRpt(requestBody,
+	public Rpt buildRptAttivata_SANP_321_V2 (PaGetPaymentV2Request requestBody, Versamento versamento, String iuv, String ccp, String numeroavviso) throws ServiceException, IOException {
+
+		return this.buildRpt_V2(requestBody,
 				null,
 				versamento,
 				iuv,
@@ -336,7 +356,7 @@ public class CtPaymentPABuilder {
 				);
 	}
 
-	private Rpt buildRpt(PaGetPaymentV2Request requestBody,
+	private Rpt buildRpt_V2(PaGetPaymentV2Request requestBody,
 			String codCarrello, 
 			Versamento versamento, 
 			String iuv, 
@@ -345,7 +365,7 @@ public class CtPaymentPABuilder {
 			TipoVersamento tipoVersamento,
 			ModelloPagamento modelloPagamento,
 			String autenticazione, 
-			String redirect) throws ServiceException {
+			String redirect) throws ServiceException, IOException {
 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 
@@ -489,7 +509,7 @@ public class CtPaymentPABuilder {
 				ibanAccredito = singoloVersamento.getIbanAccredito(configWrapper);
 				ibanAppoggio = singoloVersamento.getIbanAppoggio(configWrapper);
 			}
-			
+
 			// solo il transfer 1 e' vincolato ad essere postale se richiesto
 			if(i == 1) {
 				if(ibanAccredito != null) {
@@ -516,7 +536,7 @@ public class CtPaymentPABuilder {
 					ibanScelto = ibanAppoggio;
 				}
 			}
-			
+
 			if(ibanScelto != null) {
 				transferEl.setIBAN(ibanScelto.getCodIban());
 				try {
@@ -536,7 +556,7 @@ public class CtPaymentPABuilder {
 				else
 					marcaBollo.setTipoBollo(TipoBollo.IMPOSTA_BOLLO.getCodifica());
 				transferEl.setRichiestaMarcaDaBollo(marcaBollo);
-				
+
 				// Dominio
 				Dominio dominio2 = singoloVersamento.getDominio(configWrapper);
 				if(dominio2 != null) {
@@ -553,6 +573,8 @@ public class CtPaymentPABuilder {
 
 			transferEl.setTransferCategory(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
 
+			impostaValoriContabilita(singoloVersamento, transferEl);
+
 			transferList.getTransfer().add(transferEl );
 			i++;
 		}
@@ -567,5 +589,193 @@ public class CtPaymentPABuilder {
 		}
 		rpt.setXmlRpt(rptXml);
 		return rpt;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static void impostaValoriContabilita(SingoloVersamento singoloVersamento, CtTransferPAV2 transferEl) throws IOException {
+		// Gestione della Contabilita' inserendo le informazioni nel campo metadati
+		String contabilitaString = singoloVersamento.getContabilita();
+
+		if(contabilitaString != null && contabilitaString.length() > 0) {
+			it.govpay.model.Contabilita dto = ConverterUtils.parse(singoloVersamento.getContabilita(), it.govpay.model.Contabilita.class);
+
+			List<QuotaContabilita> quote = dto.getQuote();
+
+			if(quote != null && quote.size() > 0) {
+				CtMetadata ctMetadata = new CtMetadata();
+				
+				if(quote.size() == 1) {
+					QuotaContabilita quotaContabilita = quote.get(0);
+
+					// CAPITOLOBILANCIO: valorizzato con capitolo
+					if(quotaContabilita.getCapitolo() != null) {
+						CtMapEntry ctMapEntry = new CtMapEntry();
+						
+						ctMapEntry.setKey(CONTABILITA_QUOTA_CAPITOLO_BILANCIO_KEY);
+						ctMapEntry.setValue(quotaContabilita.getCapitolo());
+						
+						ctMetadata.getMapEntry().add(ctMapEntry );
+					}
+
+					// ARTICOLOBILANCIO: valorizzato con articolo
+					if(quotaContabilita.getArticolo() != null) {
+						CtMapEntry ctMapEntry = new CtMapEntry();
+						
+						ctMapEntry.setKey(CONTABILITA_QUOTA_ARTICOLO_BILANCIO_KEY);
+						ctMapEntry.setValue(quotaContabilita.getArticolo());
+						
+						ctMetadata.getMapEntry().add(ctMapEntry );
+					}
+
+					// CODICEACCERTAMENTO: valorizzato con accertamento
+					if(quotaContabilita.getAccertamento() != null) {
+						CtMapEntry ctMapEntry = new CtMapEntry();
+						
+						ctMapEntry.setKey(CONTABILITA_QUOTA_CODICE_ACCERTAMENTO_KEY);
+						ctMapEntry.setValue(quotaContabilita.getAccertamento());
+						
+						ctMetadata.getMapEntry().add(ctMapEntry );
+					}
+
+					// ANNORIFERIMENTO: valorizzato con annoEsercizio
+					{
+						CtMapEntry ctMapEntry = new CtMapEntry();
+						
+						ctMapEntry.setKey(CONTABILITA_QUOTA_ANNO_RIFERIMENTO_KEY);
+						ctMapEntry.setValue(quotaContabilita.getAnnoEsercizio() + "");
+						
+						ctMetadata.getMapEntry().add(ctMapEntry );
+					}
+
+					// TITOLOBILANCIO: valorizzato con titolo
+					if(quotaContabilita.getTitolo() != null) {
+						CtMapEntry ctMapEntry = new CtMapEntry();
+						
+						ctMapEntry.setKey(CONTABILITA_QUOTA_TITOLO_BILANCIO_KEY);
+						ctMapEntry.setValue(quotaContabilita.getTitolo());
+						
+						ctMetadata.getMapEntry().add(ctMapEntry );
+					}
+
+					// CATEGORIABILANCIO: valorizzato con categoria
+					if(quotaContabilita.getCategoria() != null) {
+						CtMapEntry ctMapEntry = new CtMapEntry();
+						
+						ctMapEntry.setKey(CONTABILITA_QUOTA_CATEGORIA_BILANCIO_KEY);
+						ctMapEntry.setValue(quotaContabilita.getCategoria());
+						
+						ctMetadata.getMapEntry().add(ctMapEntry );
+					}
+					
+					// TIPOLOGIABILANCIO: valorizzato con tipologia
+					if(quotaContabilita.getTipologia() != null) {
+						CtMapEntry ctMapEntry = new CtMapEntry();
+						
+						ctMapEntry.setKey(CONTABILITA_QUOTA_TIPOLOGIA_BILANCIO_KEY);
+						ctMapEntry.setValue(quotaContabilita.getTipologia());
+						
+						ctMetadata.getMapEntry().add(ctMapEntry );
+					}
+					
+					//	eventuali parametri custom fino ad un massimo complessivo di 10 entry
+					Object proprietaCustomObj = quotaContabilita.getProprietaCustom();
+					
+					if(proprietaCustomObj != null) {
+						if(proprietaCustomObj instanceof String) {
+							String proprietaCustom = (String) proprietaCustomObj;
+							
+							if(proprietaCustom != null && proprietaCustom.length() > 0) {
+								Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
+								
+								for (String key : parse.keySet()) {
+									if(ctMetadata.getMapEntry().size() < 10) {
+										CtMapEntry ctMapEntry = new CtMapEntry();
+										
+										ctMapEntry.setKey(key);
+										ctMapEntry.setValue(parse.get(key).toString());
+										
+										ctMetadata.getMapEntry().add(ctMapEntry );
+									}
+								}
+							}
+						}  else if(proprietaCustomObj instanceof java.util.LinkedHashMap) {
+							java.util.LinkedHashMap<?,?> parse = (LinkedHashMap<?,?>) proprietaCustomObj;
+							
+							for (Object key : parse.keySet()) {
+								if(ctMetadata.getMapEntry().size() < 10) {
+									CtMapEntry ctMapEntry = new CtMapEntry();
+									
+									ctMapEntry.setKey(key.toString());
+									ctMapEntry.setValue(parse.get(key).toString());
+									
+									ctMetadata.getMapEntry().add(ctMapEntry );
+								}
+							}
+						}
+					}
+					
+				} else {
+					for (QuotaContabilita quotaContabilita : quote) {
+						CtMapEntry ctMapEntry = new CtMapEntry();
+
+						List<Object> values = new ArrayList<>();
+						// CAPITOLOBILANCIO: valorizzato con capitolo
+						if(quotaContabilita.getCapitolo() != null) {
+							values.add(quotaContabilita.getCapitolo());
+						} else {
+							values.add("");
+						}
+						
+						// ARTICOLOBILANCIO: valorizzato con articolo
+						if(quotaContabilita.getArticolo() != null) {
+							values.add(quotaContabilita.getArticolo());
+						} else {
+							values.add("");
+						}
+
+						// CODICEACCERTAMENTO: valorizzato con accertamento
+						if(quotaContabilita.getAccertamento() != null) {
+							values.add(quotaContabilita.getAccertamento());
+						}  else {
+							values.add("");
+						}
+						
+						// ANNORIFERIMENTO: valorizzato con annoEsercizio
+						values.add(quotaContabilita.getAnnoEsercizio());
+
+						// TITOLOBILANCIO: valorizzato con titolo
+						if(quotaContabilita.getTitolo() != null) {
+							values.add(quotaContabilita.getTitolo());
+						} else {
+							values.add("");
+						}
+
+						// CATEGORIABILANCIO: valorizzato con categoria
+						if(quotaContabilita.getCategoria() != null) {
+							values.add(quotaContabilita.getCategoria());
+						} else {
+							values.add("");
+						}
+						
+						// TIPOLOGIABILANCIO: valorizzato con tipologia
+						if(quotaContabilita.getTipologia() != null) {
+							values.add(quotaContabilita.getTipologia());
+						} else {
+							values.add("");
+						}
+						
+						// IMPORTOEUROCENT
+						values.add(TracciatiNotificaPagamentiUtils.printImporto(quotaContabilita.getImporto(), true, true));
+
+						ctMapEntry.setKey(CONTABILITA_QUOTA_ENTRY_KEY);
+						ctMapEntry.setValue(StringUtils.join(values, ","));
+						
+						ctMetadata.getMapEntry().add(ctMapEntry );
+					}
+				}
+				
+				transferEl.setMetadata(ctMetadata);
+			}
+		}
 	}
 }
