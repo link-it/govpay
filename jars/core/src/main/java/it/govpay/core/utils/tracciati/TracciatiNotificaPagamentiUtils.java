@@ -221,6 +221,10 @@ public class TracciatiNotificaPagamentiUtils {
 	}
 	
 	public static String printImporto(BigDecimal value, boolean removeDecimalSeparator) {
+		return printImporto(value, removeDecimalSeparator, false);
+	}
+	
+	public static String printImporto(BigDecimal value, boolean removeDecimalSeparator, boolean removeZeroOnLeftSide) {
 		DecimalFormatSymbols custom=new DecimalFormatSymbols();
 		custom.setDecimalSeparator('.');
 		
@@ -234,9 +238,23 @@ public class TracciatiNotificaPagamentiUtils {
 		
 		if(removeDecimalSeparator) {
 			formatValue = formatValue.replace(".", "");
+			
+			// rimozione eventuali zeri sulla sx
+			if(removeZeroOnLeftSide) {
+				formatValue = eliminaZeriASx(formatValue);
+			}
 		}
 		
 		return formatValue;
+	}
+	
+	public static String eliminaZeriASx(String importo){
+		// elimino eventuali zeri a sx, se il numero e' 0000 lascio l'ultimo zero.
+		while(importo.startsWith("0") && importo.length() > 0) {
+			importo = importo.substring(1);
+		}
+		
+		return importo;
 	}
 	
 	public static List<String> aggiungiCampiVuoti(int numero){
