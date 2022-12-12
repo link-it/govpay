@@ -7,6 +7,13 @@
     <input matInput placeholder="Password" formControlName="password_ctrl" autocomplete="off" required>
   </mat-form-field>
 </div>
-<div class="w-100 mt-2" [formGroup]="fGroup">
-  <mat-slide-toggle formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
+<div class="row position-relative">
+  <mat-form-field class="col-12 col-md-6" color="accent" [formGroup]="fGroup">
+    <mat-select placeholder="Versione" formControlName="versione_ctrl" required>
+      <mat-option *ngFor="let item of versioni" [value]="item.value">{{item.label}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div class="col-12 col-md-6" [formGroup]="fGroup">
+    <mat-slide-toggle class="mt-3" formControlName="abilita_ctrl" color="accent">Abilitato</mat-slide-toggle>
+  </div>
 </div>
