@@ -42,7 +42,10 @@ public class Evento extends BasicModel {
 		nodoInviaAvvisoDigitale,
 		paVerifyPaymentNotice,
 		paGetPayment,
-		paSendRT;
+		paSendRT,
+		paDemandPaymentNotice,
+		paGetPaymentV2,
+		paSendRTV2;
 	}
 
 	public static final String COMPONENTE_COOPERAZIONE = "FESP";
