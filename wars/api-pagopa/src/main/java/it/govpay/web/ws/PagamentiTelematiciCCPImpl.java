@@ -2103,7 +2103,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			datiPagoPA.setFruitore(GpContext.NodoDeiPagamentiSPC);
 			datiPagoPA.setErogatore(codIntermediario);
 			datiPagoPA.setCodIntermediario(codIntermediario);
-			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.paGetPayment.name());
+			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.paGetPaymentV2.name());
 			datiPagoPA.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 			datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP);
 			datiPagoPA.setCodDominio(codDominio);
@@ -2429,6 +2429,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
+		appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.paDemandPaymentNotice.name());
 		
 		PaDemandPaymentNoticeResponse response = new PaDemandPaymentNoticeResponse();
 		

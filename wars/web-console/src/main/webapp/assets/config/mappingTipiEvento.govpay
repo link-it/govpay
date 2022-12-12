@@ -164,9 +164,12 @@
       paaInviaRichiestaRevoca: 'Ricevuta ER da pagoPA',
       paaInviaRT: 'Ricevuta RT da pagoPA',
       paaVerificaRPT: 'Ricevuta verifica RPT da pagoPA',
-      paSendRT: 'Ricevuta RT da pagoPA tramite API SANP 2.4',
-      paVerifyPaymentNotice: 'Ricevuta verifica RPT da pagoPA tramite API SANP 2.4',
-      paGetPayment: 'Ricevuta attivazione RPT da pagoPA tramite API SANP 2.4'
+      paDemandPaymentNotice: 'Ricevuta richiesta avviso pagamento da pagoPA (v2)',
+      paSendRT: 'Ricevuta RT da pagoPA (v2)',
+      paSendRTV2: 'Ricevuta RT da pagoPA (v2)',
+      paVerifyPaymentNotice: 'Ricevuta verifica RPT da pagoPA (v2)',
+      paGetPayment: 'Ricevuta attivazione RPT da pagoPA (v2)',
+      paGetPaymentV2: 'Ricevuta attivazione RPT da pagoPA (v2)'
     },
     API_PENDENZE: {
       addPendenza: 'Ricevuta nuova pendenza dall\'Ente',
