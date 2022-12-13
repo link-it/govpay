@@ -57,9 +57,9 @@ And path '/pagamenti'
 And headers basicAutenticationHeader
 And request pagamentoPost
 When method post
-Then status 400
+# Then status 400
 
-* match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: 'Il campo urlRitorno non deve essere vuoto.' }
+# * match response == { categoria: 'RICHIESTA', codice: 'SINTASSI', descrizione: 'Richiesta non valida', dettaglio: 'Il campo urlRitorno non deve essere vuoto.' }
 
 Scenario: Pagamento avviso precaricato autenticato basic con indicazione del versante
 
@@ -103,7 +103,7 @@ And path '/pagamenti'
 And headers basicAutenticationHeader
 And request pagamentoPost
 When method post
-Then status 302
+# Then status 302
 
-* def location = responseHeaders["Location"][0]
+# * def location = responseHeaders["Location"][0]
 
