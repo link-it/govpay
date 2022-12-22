@@ -299,7 +299,8 @@ public class TipiVersamentoDominiBD extends BasicBD {
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
 //			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, true), false);
-			sqlQueryObjectInterno.addOrderBy("id", false);
+//			sqlQueryObjectInterno.addOrderBy("id", false);
+			sqlQueryObjectInterno.addOrderBy(converter.toTable(model.ABILITATO) + ".id", false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
