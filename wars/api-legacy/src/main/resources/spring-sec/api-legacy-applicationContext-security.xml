@@ -52,6 +52,10 @@
       	 
       	 <!-- BASIC_WILDFLY_PROVIDER_START 
       	 
+      	 <b:bean id="basicAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
+    		<b:property name="wwwAuthenticate" value="false"/>
+        </b:bean>
+      	 
       	 <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
         	<b:property name="apiName" value="API_LEGACY" />
         	<b:property name="authType" value="BASIC" />
@@ -86,6 +90,10 @@
       	 BASIC_WILDFLY_PROVIDER_END -->
       	 
       	 <!-- BASIC_LDAP_PROVIDER_START 
+      	 
+      	 <b:bean id="basicAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
+    		<b:property name="wwwAuthenticate" value="false"/>
+        </b:bean>
       	 
       	 <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
         	<b:property name="apiName" value="API_LEGACY" />
