@@ -60,6 +60,7 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 		return user;
 	}
 
+	@Override
 	public UserDetails loadUserByLdapUserDetail(String username, GovpayLdapUserDetails userDetail) throws UsernameNotFoundException {
 		UserDetails user = this._loadUserDetailsFromLdapUserDetail(username, userDetail.getAuthorities(), userDetail);
 		return user;

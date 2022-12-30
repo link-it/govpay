@@ -18,6 +18,7 @@ import org.springframework.util.Assert;
 
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO;
+import it.govpay.core.dao.autorizzazione.BaseAutenticazioneDAO;
 
 /**
  * Based on {@link LdapUserDetailsMapper}, aggiunge le informazioni lette dal db di GovPay a quelle ricevute dall'autenticatore Ldap.
@@ -35,7 +36,7 @@ public class GovPayLdapUserDetailsMapper implements UserDetailsContextMapper {
 	private String rolePrefix = "ROLE_";
 	private String[] roleAttributes = null;
 	private boolean convertToUpperCase = true;
-	private AutenticazioneUtenzeRegistrateDAO userDetailService;
+	private BaseAutenticazioneDAO userDetailService;
 
 	// ~ Methods
 	// ========================================================================================================
@@ -186,11 +187,11 @@ public class GovPayLdapUserDetailsMapper implements UserDetailsContextMapper {
 		this.rolePrefix = rolePrefix;
 	}
 
-	public AutenticazioneUtenzeRegistrateDAO getUserDetailService() {
+	public BaseAutenticazioneDAO getUserDetailService() {
 		return userDetailService;
 	}
 
-	public void setUserDetailService(AutenticazioneUtenzeRegistrateDAO userDetailService) {
+	public void setUserDetailService(BaseAutenticazioneDAO userDetailService) {
 		this.userDetailService = userDetailService;
 	}
 }

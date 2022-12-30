@@ -55,8 +55,7 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 		UserDetails user = this._loadUserDetails(username, null,null);
 		return user;
 	}
-
-
+	
 	private UserDetails _loadUserDetails(String username, Collection<? extends GrantedAuthority> authFromPreauth,Map<String, List<String>> headerValues) throws UsernameNotFoundException {
 		if(headerValues == null) {
 			headerValues = new HashMap<>();
