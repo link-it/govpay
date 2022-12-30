@@ -75,6 +75,41 @@
         
         BASIC_WILDFLY_PROVIDER_END -->
         
+        <!-- BASIC_LDAP_PROVIDER_START
+        
+        <ldap-server id="defaultLdapServer" url="ldap://ldap.cineca.it:389" manager-dn="cn=pagoatenei,o=cineca,c=it" manager-password="!4g04t3!"/>
+      	 
+      	 <b:bean id="ldapUserDetailsContextMapper" class="it.govpay.rs.v1.authentication.ldap.mapper.GovPayLdapUserDetailsMapper" >
+        	<b:property name="userDetailService" ref="userDetailServiceUtenze"/>
+        </b:bean>
+        
+         <authentication-manager id="authenticationManager">
+        	<ldap-authentication-provider 
+        			server-ref="defaultLdapServer" 
+        			user-context-mapper-ref="ldapUserDetailsContextMapper"
+        			user-dn-pattern="uid={0}"
+        			user-search-filter="uid={0}"
+        			user-search-base="ou=pagoatenei,o=cineca,c=it"
+        			group-search-base="ou=pagoatenei,o=cineca,c=it"
+					group-search-filter="uniqueMember={0}"
+        			>
+        	</ldap-authentication-provider>
+        </authentication-manager>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/rs/basic/**">
+                <csrf disabled="true"/>
+                <intercept-url pattern="/rs/basic/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
+                <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        
+        BASIC_LDAP_PROVIDER_END -->
+        
 
         <!-- SSL_START -->
         <b:bean id="x509AuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.X509AuthenticationEntryPoint" />
