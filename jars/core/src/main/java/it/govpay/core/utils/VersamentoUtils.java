@@ -601,6 +601,21 @@ public class VersamentoUtils {
 
 			model.setIuvVersamento(iuvFromNumeroAvviso);
 			model.setIuvProposto(iuvFromNumeroAvviso); 
+		} else {
+			if(versamento.getIuv() != null) {
+				String iuvFromMessage = versamento.getIuv();
+				// check sulla validita' dello iuv
+				Iuv iuvBD  = new Iuv();
+				TipoIUV tipo = iuvBD.getTipoIUV(iuvFromMessage);
+				try {
+					iuvBD.checkIUV(dominio, iuvFromMessage, tipo );
+				}catch(UtilsException e) {
+					throw new GovPayException(e);
+				}
+
+				model.setIuvVersamento(iuvFromMessage);
+				model.setIuvProposto(iuvFromMessage); 
+			}
 		}
 
 		String codTipoVersamento = versamento.getCodTipoVersamento();

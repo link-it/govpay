@@ -215,7 +215,7 @@ UPDATE acl SET servizio = 'Pagamenti e Pendenze' WHERE servizio = 'V';
 -- C non utilizzate in 3.x
 DELETE FROM acl WHERE servizio = 'C';
 
--- copio autorizzazzioni su id_dominio nella tabella utenze_domini
+-- copio autorizzazioni su id_dominio nella tabella utenze_domini
 INSERT INTO utenze_domini (id_utenza, id_dominio) SELECT id_utenza,id_dominio FROM acl WHERE id_dominio IS NOT NULL and cod_tipo = 'D';
 DELETE FROM acl WHERE id_dominio IS NOT NULL and cod_tipo = 'D';
 
@@ -273,8 +273,8 @@ CREATE TABLE pagamenti_portale
        importo BINARY_DOUBLE NOT NULL,
        versante_identificativo VARCHAR2(35 CHAR),
        id_sessione VARCHAR2(35 CHAR) NOT NULL,
-       id_sessione_portale VARCHAR2(35 CHAR),
-       id_sessione_psp VARCHAR2(35 CHAR),
+       id_sessione_portale VARCHAR2(255 CHAR),
+       id_sessione_psp VARCHAR2(255 CHAR),
        stato VARCHAR2(35 CHAR) NOT NULL,
        codice_stato VARCHAR2(35 CHAR) NOT NULL,
        descrizione_stato VARCHAR2(1024 CHAR),
@@ -2692,5 +2692,8 @@ update applicazioni set reg_exp = '^61.*$' where cod_applicazione LIKE ('%UGOV')
 update applicazioni set reg_exp = '^[0-4].*$' where cod_applicazione LIKE ('%ESSE3');
 
 update applicazioni set reg_exp = '^51.*$' where cod_applicazione = 'GATEWAY-UGOV';
+
+-- Correzione autorizzazione sui tipi_pendenza
+UPDATE utenze SET autorizzazione_tipi_vers_star = 1;
 
 
