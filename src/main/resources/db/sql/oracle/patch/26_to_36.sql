@@ -219,6 +219,9 @@ DELETE FROM acl WHERE servizio = 'C';
 INSERT INTO utenze_domini (id_utenza, id_dominio) SELECT id_utenza,id_dominio FROM acl WHERE id_dominio IS NOT NULL and cod_tipo = 'D';
 DELETE FROM acl WHERE id_dominio IS NOT NULL and cod_tipo = 'D';
 
+-- Elimino righe duplicate nella tabella utenze_domini perche' vengono caricate piu' ACL per la coppia id_utenza, id_dominio facendo scattare il check delle UO
+DELETE FROM utenze_domini WHERE id_uo IS NULL AND rowid NOT IN (SELECT MIN(rowid) FROM utenze_domini WHERE id_utenza IS NOT NULL GROUP BY id_utenza, id_dominio);
+
 -- copio autorizzazioni su id_tipo_tributo nella tabella utenze_tipi_tributo
 INSERT INTO utenze_tributi (id_utenza, id_tipo_tributo) SELECT id_utenza,id_tipo_tributo FROM acl WHERE id_tipo_tributo IS NOT NULL and cod_tipo = 'T';
 DELETE FROM acl WHERE id_tipo_tributo IS NOT NULL and cod_tipo = 'T';
@@ -2633,12 +2636,6 @@ to_clob('aXNFbXB0eShjc3ZSZWNvcmQsIDYwKT4KCQksewoJCQkiaWRWb2NlUGVuZGVuemEiOiAke2N
 to_clob('25lID0gdmVyc2FtZW50by5nZXRBbmFncmFmaWNhRGViaXRvcmUoKS5nZXROYXppb25lKCkhIC8+CjwjYXNzaWduIGVtYWlsID0gdmVyc2FtZW50by5nZXRBbmFncmFmaWNhRGViaXRvcmUoKS5nZXRFbWFpbCgpISAvPgo8I2Fzc2lnbiBjZWxsdWxhcmUgPSB2ZXJzYW1lbnRvLmdldEFuYWdyYWZpY2FEZWJpdG9yZSgpLmdldENlbGx1bGFyZSgpISAvPgo8I2lmIHRpcG9PcGVyYXppb25lID09ICJBREQiPgoJPCNhc3NpZ24gY3N2UmVjb3JkID0gY3N2VXRpbHMudG9Dc3YoaWRBMkEsIGlkUGVuZGVuemEsIGlkRG9taW5pbywgdGlwb1BlbmRlbnphLCBudW1lcm9BdnZpc28sIHBkZkF2dmlzbywgdGlwbywgaWRlbnRpZmljYXRpdm8sIGFuYWdyYWZpY2EsIGluZGlyaXp6bywgY2l2aWNvLCBjYXAsIGxvY2FsaXRhLCBwcm92aW5jaWEsIG5hemlvbmUsIGVtYWlsLCBjZWxsdWxhcmUsICIiKSAvPgo8I2Vsc2U+Cgk8I2Fzc2lnbiBjc3ZSZWNvcmQgPSBjc3ZVdGlscy50b0NzdihpZEEyQSwgaWRQZW5kZW56YSwgaWREb21pbmlvLCB0aXBvUGVuZGVuemEsIG51bWVyb0F2dmlzbywgcGRmQXZ2aXNvLCB0aXBvLCBpZGVudGlmaWNhdGl2bywgYW5hZ3JhZmljYSwgaW5kaXJpenpvLCBjaXZpY28sIGNhcCwgbG9jYWxpdGEsIHByb3ZpbmNpYSwgbmF6aW9uZSwgZW1haWwsIGNlbGx1bGFyZSwgZGVzY3JpemlvbmVFc2l0b09wZXJhemlvbmUpIC8+CjwvI2lmPgo8I2Vsc2U+CjwjYXNzaWduIGNzdlJlY29yZCA9IGNzdlV0aWxzLnRvQ3N2KCIiLCAiIiwgIiIsICIiLCAiIiwgIiIsICIiLCAiIiwgIiIsICIiLCAiIiwgIiIsICIiLCAiIiwgIiIsICIiLCAiIiwgZGVzY3JpemlvbmVFc2l0b09wZXJhemlvbmUpIC8+CjwvI2lmPgoke2NzdlJlY29yZH0=\""}')); 
 
 
--- password utenza amministratore di default
-UPDATE utenze SET password = '$1$jil82b4n$GRX4A2H91f7L7dJ3kL2Vc.' where principal='gpadmin';
--- diritti * all'utenza amministratore
-UPDATE utenze SET autorizzazione_domini_star = 1 where principal='gpadmin'; 
-UPDATE utenze SET autorizzazione_tipi_vers_star = 1 where principal='gpadmin';
-
 -- 3.6.x
 
 -- 30/08/2021 Aggiunta colonna connettore maggioli jppa alla tabella domini
@@ -2689,5 +2686,11 @@ DELETE FROM sonde WHERE nome = 'reset-cache';
 -- 13/06/2022 Aggiunta colonna tassonomiaPagoPA alla tabella domini
 ALTER TABLE domini ADD tassonomia_pago_pa VARCHAR2(35 CHAR);
 
+-- Correzione problema Regexpr applicazioni
+
+update applicazioni set reg_exp = '^61.*$' where cod_applicazione LIKE ('%UGOV');
+update applicazioni set reg_exp = '^[0-4].*$' where cod_applicazione LIKE ('%ESSE3');
+
+update applicazioni set reg_exp = '^51.*$' where cod_applicazione = 'GATEWAY-UGOV';
 
 
