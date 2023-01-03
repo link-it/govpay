@@ -2696,4 +2696,8 @@ update applicazioni set reg_exp = '^51.*$' where cod_applicazione = 'GATEWAY-UGO
 -- Correzione autorizzazione sui tipi_pendenza
 UPDATE utenze SET autorizzazione_tipi_vers_star = 1;
 
+-- Applicazioni GATEWAY-UGOV e GATEWAY-ESSE3 devono essere abilitate a lavorare su tutti i domini
+UPDATE utenze SET autorizzazione_domini_star = 1 WHERE id = (SELECT id_utenza FROM applicazioni WHERE cod_applicazione = 'GATEWAY-UGOV');
+UPDATE utenze SET autorizzazione_domini_star = 1 WHERE id = (SELECT id_utenza FROM applicazioni WHERE cod_applicazione = 'GATEWAY-ESSE3');
+
 

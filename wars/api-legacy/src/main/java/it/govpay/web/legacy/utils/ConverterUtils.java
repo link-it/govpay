@@ -225,9 +225,9 @@ public class ConverterUtils extends Gp21Utils {
 		pagamentiPortaleDTO.setIdSessione(idSessione);
 		pagamentiPortaleDTO.setIdSessionePortale(idSessionePortale);
 		if(bodyrichiesta.getAutenticazione() != null)
-			pagamentiPortaleDTO.setAutenticazioneSoggetto(bodyrichiesta.getAutenticazione().toString());
+			pagamentiPortaleDTO.setAutenticazioneSoggetto(bodyrichiesta.getAutenticazione().value());
 		else 
-			pagamentiPortaleDTO.setAutenticazioneSoggetto(TipoAutenticazione.N_A.toString());
+			pagamentiPortaleDTO.setAutenticazioneSoggetto(TipoAutenticazione.N_A.value());
 
 //		pagamentiPortaleDTO.setCredenzialiPagatore(pagamentiPortaleRequest.getCredenzialiPagatore());
 //		pagamentiPortaleDTO.setDataEsecuzionePagamento(pagamentiPortaleRequest.getDataEsecuzionePagamento());
