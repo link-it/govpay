@@ -9,9 +9,13 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersFG;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentPA;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentPAV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceipt;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceiptV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
@@ -118,6 +122,29 @@ public class RptConverter {
 						rsModel.setRpt(ConverterUtils.getRptJson(paGetPaymentRes_RPT));
 					}
 					break;
+				case SANP_321_V2:
+					PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
+					
+					CtPaymentPAV2 dataV2 = paGetPaymentV2Response.getData();
+					
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+						// in questa versione non sono presenti informazioni sul versante
+					}
+					
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+						// in questa versione non sono presenti informazioni sul versante
+						
+						// imposto il soggetto pagatore a null
+						dataV2.setDebtor(null);
+					}
+					
+					if(convertiMessaggioPagoPAV2InPagoPAV1) {
+						CtRichiestaPagamentoTelematico ctRpt2 = MessaggiPagoPAUtils.toCtRichiestaPagamentoTelematico(paGetPaymentV2Response, rpt);
+						rsModel.setRpt(ConverterUtils.getRptJson(ctRpt2));
+					} else {
+						rsModel.setRpt(ConverterUtils.getRptJson(paGetPaymentV2Response));
+					}
+					break;
 				}
 			}
 		} catch (Exception e) {
@@ -204,6 +231,29 @@ public class RptConverter {
 						rsModel.setRt(ConverterUtils.getRtJson(ctRt2));
 					} else {
 						rsModel.setRt(ConverterUtils.getRtJson(paSendRTReq_RT));
+					}
+					break;
+				case SANP_321_V2:
+					PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+					
+					CtReceiptV2 dataV2 = paSendRTV2Request.getReceipt();
+					
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+						// in questa versione non sono presenti informazioni sul versante
+					}
+					
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+						// in questa versione non sono presenti informazioni sul versante
+						
+						// imposto il soggetto pagatore a null
+						dataV2.setDebtor(null);
+					}
+					
+					if(convertiMessaggioPagoPAV2InPagoPAV1) {
+						CtRicevutaTelematica ctRt2 = MessaggiPagoPAUtils.toCtRicevutaTelematica(paSendRTV2Request, rpt);
+						rsModel.setRt(ConverterUtils.getRtJson(ctRt2));
+					} else {
+						rsModel.setRt(ConverterUtils.getRtJson(paSendRTV2Request));
 					}
 					break;
 				}
@@ -306,6 +356,29 @@ public class RptConverter {
 						rsModel.setRpt(ConverterUtils.getRptJson(paGetPaymentRes_RPT));
 					}
 					break;
+				case SANP_321_V2:
+					PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
+					
+					CtPaymentPAV2 dataV2 = paGetPaymentV2Response.getData();
+					
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+						// in questa versione non sono presenti informazioni sul versante
+					}
+					
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+						// in questa versione non sono presenti informazioni sul versante
+						
+						// imposto il soggetto pagatore a null
+						dataV2.setDebtor(null);
+					}
+					
+					if(convertiMessaggioPagoPAV2InPagoPAV1) {
+						CtRichiestaPagamentoTelematico ctRpt2 = MessaggiPagoPAUtils.toCtRichiestaPagamentoTelematico(paGetPaymentV2Response, rpt);
+						rsModel.setRpt(ConverterUtils.getRptJson(ctRpt2));
+					} else {
+						rsModel.setRpt(ConverterUtils.getRptJson(paGetPaymentV2Response));
+					}
+					break;
 				}
 			}
 		} catch (Exception e) {
@@ -392,6 +465,29 @@ public class RptConverter {
 						rsModel.setRt(ConverterUtils.getRtJson(ctRt2));
 					} else {
 						rsModel.setRt(ConverterUtils.getRtJson(paSendRTReq_RT));
+					}
+					break;
+				case SANP_321_V2:
+					PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+					
+					CtReceiptV2 dataV2 = paSendRTV2Request.getReceipt();
+					
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+						// in questa versione non sono presenti informazioni sul versante
+					}
+					
+					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+						// in questa versione non sono presenti informazioni sul versante
+						
+						// imposto il soggetto pagatore a null
+						dataV2.setDebtor(null);
+					}
+					
+					if(convertiMessaggioPagoPAV2InPagoPAV1) {
+						CtRicevutaTelematica ctRt2 = MessaggiPagoPAUtils.toCtRicevutaTelematica(paSendRTV2Request, rpt);
+						rsModel.setRt(ConverterUtils.getRtJson(ctRt2));
+					} else {
+						rsModel.setRt(ConverterUtils.getRtJson(paSendRTV2Request));
 					}
 					break;
 				}

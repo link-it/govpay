@@ -1,5 +1,6 @@
 package it.govpay.core.dao.autorizzazione;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.anagrafica.UtenzeBD;
+import it.govpay.bd.model.Operatore;
+import it.govpay.bd.model.Utenza;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.beans.GovpayWebAuthenticationDetails;
@@ -72,10 +76,39 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
 			this.debug(transactionId,"Lettura delle informazioni per l'utenza ["+username+"] in corso...");
 
-			if(this.isCheckSubject()) {
-				AnagraficaManager.getUtenzaBySubject(configWrapper, username);
-			} else {
-				AnagraficaManager.getUtenza(configWrapper, username);
+			try {
+				if(this.isCheckSubject()) {
+					AnagraficaManager.getUtenzaBySubject(configWrapper, username);
+				} else {
+					AnagraficaManager.getUtenza(configWrapper, username);
+				}
+			}  catch(NotFoundException e){
+				if(!this.isUserAutoSignup()) {				
+					throw new UsernameNotFoundException("Utenza "+username+" non trovata.",e);
+				}
+				
+				// autocensimento utenza
+				this.debug(transactionId,"Autocensimento Utenza ["+username+"]...");
+				OperatoriBD operatoriBD = new OperatoriBD(configWrapper);
+				Operatore operatore = new Operatore();
+				String nome = username.length() > 35 ? username.substring(0, 35) : username;
+				operatore.setNome(nome );
+				Utenza utenza = new Utenza();
+				utenza.setAbilitato(true);
+				if(this.getUserAutoSignupDefaultRole() != null) {
+					List<String> ruoli = new ArrayList<>();
+					ruoli.add(this.getUserAutoSignupDefaultRole());
+					utenza.setRuoli(ruoli);
+				}
+				utenza.setPrincipal(username);
+				utenza.setPrincipalOriginale(username);
+				operatore.setUtenza(utenza);
+				operatoriBD.insertOperatore(operatore);
+				
+				this.debug(transactionId,"Autocensimento Utenza ["+username+"] completato.");
+				// reset della cache
+				it.govpay.core.business.Operazioni.resetCacheAnagrafica(configWrapper);
+				
 			}
 
 			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio in corso...");
@@ -83,8 +116,8 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 			userDetails.setIdTransazioneAutenticazione(transactionId);
 			this.debug(transactionId,"Utenza ["+username+"] trovata, lettura del dettaglio completata.");
 			return userDetails;
-		}  catch(NotFoundException e){
-			throw new UsernameNotFoundException("Utenza "+username+" non trovata.",e);
+		} catch(UsernameNotFoundException e){
+			throw e;
 		} catch(Exception e){
 			log.error("Errore Interno: " +e.getMessage(),e);
 			throw new RuntimeException("Errore interno, impossibile autenticare l'utenza", e);

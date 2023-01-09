@@ -1163,4 +1163,16 @@ public class VersamentoUtils {
 		}
 		return dominio;
 	}
+	
+	public static boolean isPendenzaMBT(Versamento versamento, BDConfigWrapper configWrapper) throws ServiceException {
+		for(SingoloVersamento singoloVersamento : versamento.getSingoliVersamenti(configWrapper)) {
+			// appena trovo un singolo versamento con per una MBT mi fermo
+			if(singoloVersamento.getHashDocumento() != null 
+					&& singoloVersamento.getProvinciaResidenza() != null
+					&& singoloVersamento.getTipoBollo() != null) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

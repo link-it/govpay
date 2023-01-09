@@ -65,7 +65,10 @@ Given url ragioneriaBaseurl
 And path 'flussiRendicontazione', idFlusso 
 And headers idA2ABasicAutenticationHeader
 When method get
-Then status 422
+Then status 200
+And match response.idFlusso == idFlusso 
+And match response.dataFlusso == dataFlusso
+And match response.rendicontazioni == '#[6]'
 
 Given url ragioneriaBaseurl
 And path 'flussiRendicontazione', idFlusso, dataFlusso 
@@ -105,7 +108,10 @@ Given url ragioneriaBaseurl
 And path 'flussiRendicontazione', idFlusso 
 And headers idA2ABasicAutenticationHeader
 When method get
-Then status 422
+Then status 200
+And match response.idFlusso == idFlusso 
+And match response.dataFlusso == dataFlusso
+And match response.rendicontazioni == '#[4]'
 
 Scenario: Test per bug conteggio risultati backoffice
 

@@ -51,6 +51,12 @@ And header Accept = 'application/pdf'
 When method get
 Then status 200
 
+Given url pagamentiBaseurl
+And path '/avvisi', idDominio, numeroAvviso
+And headers basicAutenticationHeader
+When method get
+Then status 406
+
 @test2
 Scenario: Verifica avviso non presente basic
 

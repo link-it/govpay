@@ -32,7 +32,8 @@
                   "fiscalCodePA":"#(idDominio)",
                   "IBAN":"#(ibanAccredito)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Pagamento TARI n.' + idPendenza + '')",
-                  "transferCategory":"9/SEGRETERIA"
+                  "transferCategory":"9/SEGRETERIA",
+                  "metadata":null
                },
                {
                   "idTransfer":2,
@@ -40,7 +41,8 @@
                   "fiscalCodePA":"#(idDominio_2)",
                   "IBAN":"#(ibanAccreditoEnteNonIntermediato)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/10.00/TXT/Pagamento TEFA n.' + idPendenza + '')",
-                  "transferCategory":"9/CodiceContabilita"
+                  "transferCategory":"9/CodiceContabilita",
+                  "metadata":null
                }
             ]
          },
@@ -78,7 +80,8 @@
                   "fiscalCodePA":"#(idDominio)",
                   "IBAN":"#(ibanAccredito)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Pagamento TARI n.' + idPendenza + '')",
-                  "transferCategory":"9/SEGRETERIA"
+                  "transferCategory":"9/SEGRETERIA",
+                  "metadata":null
                },
                {
                   "idTransfer":2,
@@ -86,7 +89,8 @@
                   "fiscalCodePA":"#(idDominio_2)",
                   "IBAN":"#(ibanAccreditoEnteNonIntermediato)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/10.00/TXT/Pagamento TEFA n.' + idPendenza + '')",
-                  "transferCategory":"9/CodiceContabilita"
+                  "transferCategory":"9/CodiceContabilita",
+                  "metadata":null
                }
             ]
          },
@@ -117,7 +121,7 @@
 	      "tipo":"ENTRATA",
 	      "importo": "#(pendenzaPut.voci[0].importo)",
 	      "data":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\d",
-	      "commissioni":null,
+	      "commissioni":1.00,
 	      "allegato":null
 	   },
 	   {
@@ -132,7 +136,7 @@
 	      "tipo":"ENTRATA_PA_NON_INTERMEDIATA",
 	      "importo": "#(pendenzaPut.voci[1].importo)",
 	      "data":"#regex\\d\\d\\d\\d-\\d\\d-\\d\\d",
-	      "commissioni":null,
+	      "commissioni":1.00,
 	      "allegato":null
 	   }
 	]

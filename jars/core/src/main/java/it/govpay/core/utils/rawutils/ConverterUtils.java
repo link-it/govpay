@@ -18,11 +18,13 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
+import it.govpay.bd.model.Rpt;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.MessaggiPagoPAUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
-import it.govpay.bd.model.Rpt;
 
 public class ConverterUtils {
 
@@ -58,6 +60,15 @@ public class ConverterUtils {
 				}
 				
 				return toJSON(paGetPaymentRes_RPT.getData());
+			case SANP_321_V2:
+				PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
+				
+				if(convertiMessaggioPagoPAV2InPagoPAV1) {
+					CtRichiestaPagamentoTelematico ctRpt2 = MessaggiPagoPAUtils.toCtRichiestaPagamentoTelematico(paGetPaymentV2Response, rpt);
+					return toJSON(ctRpt2);
+				}
+				
+				return toJSON(paGetPaymentV2Response.getData());
 			}
 			
 			CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
@@ -72,7 +83,13 @@ public class ConverterUtils {
 	}
 	
 	public static String getRptJson(PaGetPaymentRes paGetPaymentRes_RPT) throws ServiceException {
-		return toJSON(paGetPaymentRes_RPT);
+		if(paGetPaymentRes_RPT == null) return null;
+		return toJSON(paGetPaymentRes_RPT.getData());
+	}
+	
+	public static String getRptJson(PaGetPaymentV2Response paGetPaymentResV2Response) throws ServiceException {
+		if(paGetPaymentResV2Response == null) return null;
+		return toJSON(paGetPaymentResV2Response.getData());
 	}
 	
 	public static String getRtJson(Rpt rpt) throws ServiceException {
@@ -98,6 +115,15 @@ public class ConverterUtils {
 				}
 				
 				return toJSON(paSendRTReq_RT.getReceipt());
+			case SANP_321_V2:
+				PaSendRTV2Request paSendRTRtv2Request = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+				
+				if(convertiMessaggioPagoPAV2InPagoPAV1) {
+					CtRicevutaTelematica ctRt2 = MessaggiPagoPAUtils.toCtRicevutaTelematica(paSendRTRtv2Request, rpt);
+					return toJSON(ctRt2);
+				}
+				
+				return toJSON(paSendRTRtv2Request.getReceipt());
 			}
 			
 			CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
@@ -112,6 +138,11 @@ public class ConverterUtils {
 	}
 	
 	public static String getRtJson(PaSendRTReq paSendRTReq_RT ) throws ServiceException {
+		if(paSendRTReq_RT == null) return null;
+		return toJSON(paSendRTReq_RT.getReceipt());
+	}
+	
+	public static String getRtJson(PaSendRTV2Request paSendRTReq_RT ) throws ServiceException {
 		if(paSendRTReq_RT == null) return null;
 		return toJSON(paSendRTReq_RT.getReceipt());
 	}

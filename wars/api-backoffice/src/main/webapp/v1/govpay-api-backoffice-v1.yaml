@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.30.0"
+  version: "1.31.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -7751,6 +7751,15 @@ components:
       oneOf:
         - $ref: '#/components/schemas/tipoAutenticazioneBasic'
         - $ref: '#/components/schemas/tipoAutenticazioneSSL'
+        - $ref: '#/components/schemas/tipoAutenticazioneSubscriptionKey'
+    tipoAutenticazioneSubscriptionKey:
+      type: object
+      required:
+        - subscriptionKey
+      properties:
+        subscriptionKey:
+          type: string
+          example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
     connector:
       type: object
       required:

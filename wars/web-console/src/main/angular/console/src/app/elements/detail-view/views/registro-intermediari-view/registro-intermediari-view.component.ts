@@ -99,6 +99,10 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
             _dettaglio.connettoriSoap.push(new Dato({label: Voce.KEY_STORE_PWD_PRIVATE_KEY, value: this.json.servizioPagoPa.auth.ksPKeyPasswd }));
           }
         }
+        if (this.json.servizioPagoPa.auth.subscriptionKey) {
+          _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.SUBSCRIPTION_KEY }));
+          _dettaglio.connettoriSoap.push(new Dato({ label: Voce.OCP_APIM_SUBSCRIPTION_KEY, value: this.json.servizioPagoPa.auth.subscriptionKey }));
+        }
       } else {
         _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.NESSUNA }));
       }

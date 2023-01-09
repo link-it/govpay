@@ -214,7 +214,7 @@ public class Promemoria {
 					versante = rptCtRichiestaPagamentoTelematico.getSoggettoVersante() != null ? rptCtRichiestaPagamentoTelematico.getSoggettoVersante().getEMailVersante() : null;
 					break;
 				case SANP_240:
-				default:
+				case SANP_321_V2:
 					break;
 			}
 		}

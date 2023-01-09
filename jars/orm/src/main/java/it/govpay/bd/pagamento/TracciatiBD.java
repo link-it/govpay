@@ -611,7 +611,7 @@ public class TracciatiBD extends BasicBD {
 	public long countTracciatiDaElaborare() throws ServiceException {
 		TracciatoFilter filter = this.newFilter();
 		filter.setTipo(Arrays.asList(TIPO_TRACCIATO.PENDENZA));
-		filter.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
+		filter.setStati(Arrays.asList(STATO_ELABORAZIONE.ELABORAZIONE, STATO_ELABORAZIONE.IN_STAMPA));
 		
 		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
 	}
