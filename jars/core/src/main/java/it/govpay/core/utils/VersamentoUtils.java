@@ -473,7 +473,7 @@ public class VersamentoUtils {
 	}
 
 
-	public static void verifyNumeroAvviso(String numeroAvviso,String codDominio, String codStazione, Integer applicationCode, Integer segregationCode) throws GovPayException {
+	public static void verifyNumeroAvviso(String numeroAvviso,String codDominio, String codStazione, Integer applicationCode, Integer segregationCode, Integer auxDigit, String codApplicazione, String codVersamentoEnte) throws GovPayException {
 		
 		getIuvFromNumeroAvviso(numeroAvviso);
 
@@ -491,6 +491,11 @@ public class VersamentoUtils {
 
 			if(segregationCode != null && segregationCode.intValue() != segCode.intValue())
 				throw new GovPayException(EsitoOperazione.VER_027, numeroAvviso, segCodeS, codDominio);
+		}
+		
+		// Il numero avviso deve cominciare con l'auxdigit impostato nel dominio
+		if(!numeroAvviso.startsWith(""+auxDigit)) {
+			throw new GovPayException(EsitoOperazione.VER_039, codApplicazione, codVersamentoEnte, numeroAvviso, (""+auxDigit), codDominio);
 		}
 	}
 
@@ -588,7 +593,7 @@ public class VersamentoUtils {
 			
 			if(controlloNumeroAvvisoDominioApplicazione) {
 				it.govpay.core.utils.VersamentoUtils.verifyNumeroAvviso(versamento.getNumeroAvviso(),dominio.getCodDominio(),dominio.getStazione().getCodStazione(),
-						dominio.getStazione().getApplicationCode(), dominio.getSegregationCode());
+						dominio.getStazione().getApplicationCode(), dominio.getSegregationCode(), dominio.getAuxDigit(), applicazione.getCodApplicazione(), versamento.getCodVersamentoEnte());
 			}
 			// check sulla validita' dello iuv
 			Iuv iuvBD  = new Iuv();

@@ -239,6 +239,7 @@ public class GovPayException extends Exception {
 		case VER_036: return "Iban di accredito (" + this.params[0] + ") non univoco all'interno del sistema.";
 		case VER_037: return "Iban di appoggio (" + this.params[0] + ") non univoco all'interno del sistema.";
 		case VER_038: return "La pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") e' di tipo multibeneficiario non consentito per pagamenti spontanei.";
+		case VER_039: return "Il carattere iniziale del numero avviso ("+ this.params[2]+") indicato per la pendenza (IdA2A:"+this.params[0]+" Id:"+this.params[1]+") non coincide con l'aux digit ("+this.params[3]+") impostato per l'Ente Creditore ("+this.params[4]+").";
 		}
 		
 		return "";
@@ -402,6 +403,7 @@ public class GovPayException extends Exception {
 		case VER_036: return 422; // "Richiesta non valida";
 		case VER_037: return 422; // "Richiesta non valida";
 		case VER_038: return 422; // "Richiesta non valida";
+		case VER_039: return 422; // "Richiesta non valida";
 		}
 		
 		return 500;
@@ -530,6 +532,9 @@ public class GovPayException extends Exception {
 		case VER_036: return "Richiesta non valida";
 		case VER_037: return "Richiesta non valida";
 		case VER_038: return "Richiesta non valida";
+		
+		// Aggiunti nella versione 3.6.x
+		case VER_039: return "Richiesta non valida";
 		}
 		
 		return "";
