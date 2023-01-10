@@ -550,12 +550,27 @@ public class Rendicontazioni {
 								rendicontazione.addAnomalia("007102", "La rendicontazione riferisce piu di un pagamento gestito.");
 								fr.addAnomalia("007102", "La rendicontazione riferisce piu di un pagamento gestito.");
 							} finally {
+								//controllo che non sia gia' stata  acquisita un rendicontazione per la tupla (codDominio,iuv,iur,indiceDati), in questo caso emetto una anomalia
+								if(fr.getRendicontazioni() != null) {
+									for (Rendicontazione r2 : fr.getRendicontazioni()) {
+										if(r2.getIuv().equals(rendicontazione.getIuv()) && r2.getIur().equals(rendicontazione.getIur()) && r2.getIndiceDati().intValue() == rendicontazione.getIndiceDati().intValue()) {
+											log.info("Rendicontazione [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] duplicata all'interno del flusso, in violazione delle specifiche PagoPA. Necessario intervento manuale per la risoluzione del problema.");
+											rendicontazione.addAnomalia("007115",
+													"Rendicontazione [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] duplicata all'interno del flusso, in violazione delle specifiche PagoPA. Necessario intervento manuale per la risoluzione del problema.");	
+											rendicontazione.setStato(StatoRendicontazione.ANOMALA);
+											hasFrAnomalia = true;
+											break;
+										}
+									}
+								}
+								
 								if(!StatoRendicontazione.ALTRO_INTERMEDIARIO.equals(rendicontazione.getStato()) && rendicontazione.getAnomalie().isEmpty()) {
 									rendicontazione.setStato(StatoRendicontazione.OK);
 								} else if(!StatoRendicontazione.ALTRO_INTERMEDIARIO.equals(rendicontazione.getStato()) && !rendicontazione.getAnomalie().isEmpty()) {
 									rendicontazione.setStato(StatoRendicontazione.ANOMALA);
 									hasFrAnomalia = true;
 								}
+								
 								fr.addRendicontazione(rendicontazione);
 							}
 						}

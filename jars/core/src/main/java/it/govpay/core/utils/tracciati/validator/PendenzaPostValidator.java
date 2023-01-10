@@ -51,17 +51,17 @@ public class PendenzaPostValidator  implements IValidable{
 			
 			SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
 			
-			soggettoPagatoreValidator.validaTipo("tipo", soggetto.getTipo() != null ? soggetto.getTipo().toString() : null);
-			soggettoPagatoreValidator.validaIdentificativo("identificativo", soggetto.getIdentificativo());
-			soggettoPagatoreValidator.validaAnagrafica("anagrafica", soggetto.getAnagrafica());
-			soggettoPagatoreValidator.validaIndirizzo("indirizzo", soggetto.getIndirizzo());
-			soggettoPagatoreValidator.validaCivico("civico", soggetto.getCivico());
-			soggettoPagatoreValidator.validaCap("cap", soggetto.getCap());
-			soggettoPagatoreValidator.validaLocalita("localita", soggetto.getLocalita());
-			soggettoPagatoreValidator.validaProvincia("provincia", soggetto.getProvincia());
-			soggettoPagatoreValidator.validaNazione("nazione", soggetto.getNazione());
-			soggettoPagatoreValidator.validaEmail("email", soggetto.getEmail());
-			soggettoPagatoreValidator.validaCellulare("cellulare", soggetto.getCellulare());
+			soggettoPagatoreValidator.validaTipo("soggettoPagatore.tipo", soggetto.getTipo() != null ? soggetto.getTipo().toString() : null);
+			soggettoPagatoreValidator.validaIdentificativo("soggettoPagatore.identificativo", soggetto.getIdentificativo());
+			soggettoPagatoreValidator.validaAnagrafica("soggettoPagatore.anagrafica", soggetto.getAnagrafica());
+			soggettoPagatoreValidator.validaIndirizzo("soggettoPagatore.indirizzo", soggetto.getIndirizzo());
+			soggettoPagatoreValidator.validaCivico("soggettoPagatore.civico", soggetto.getCivico());
+			soggettoPagatoreValidator.validaCap("soggettoPagatore.cap", soggetto.getCap());
+			soggettoPagatoreValidator.validaLocalita("soggettoPagatore.localita", soggetto.getLocalita());
+			soggettoPagatoreValidator.validaProvincia("soggettoPagatore.provincia", soggetto.getProvincia());
+			soggettoPagatoreValidator.validaNazione("soggettoPagatore.nazione", soggetto.getNazione());
+			soggettoPagatoreValidator.validaEmail("soggettoPagatore.email", soggetto.getEmail());
+			soggettoPagatoreValidator.validaCellulare("soggettoPagatore.cellulare", soggetto.getCellulare());
 			
 			validaImporto(this.pendenzaVerificata.getImporto());
 			validaNumeroAvviso(this.pendenzaVerificata.getNumeroAvviso());
