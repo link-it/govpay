@@ -411,5 +411,23 @@ And match response ==
 }
 """
 
+Scenario: Caricamento con numero avviso con cifra iniziale non coincidente con auxdigit dominio
 
+* set pendenzaPutMono.numeroAvviso = '123456789248953761'
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPutMono
+When method put
+Then status 422
+And match response == 
+"""
+{ 
+	categoria: 'RICHIESTA',
+	codice: 'VER_039',
+	descrizione: 'Richiesta non valida',
+	dettaglio: '#("Il carattere iniziale del numero avviso ("+ pendenzaPutMono.numeroAvviso +") indicato per la pendenza (IdA2A:"+idA2A+" Id:"+idPendenza+") non coincide con l\'aux digit ("+dominio.auxDigit+") impostato per l\'Ente Creditore ("+idDominio+").")'
+}
+"""
 

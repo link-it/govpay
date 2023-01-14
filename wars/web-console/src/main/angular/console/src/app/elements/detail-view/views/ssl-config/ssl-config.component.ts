@@ -19,6 +19,7 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
   protected NESSUNA = 'Nessuna';
   protected BASIC = UtilService.TIPI_AUTENTICAZIONE.basic;
   protected SSL = UtilService.TIPI_AUTENTICAZIONE.ssl;
+  protected SUBSCRIPTIONKEY = UtilService.TIPI_AUTENTICAZIONE.subscriptionKey;
   protected CLIENT = UtilService.TIPI_SSL.client;
   protected SERVER = UtilService.TIPI_SSL.server;
   protected tipiCfgSSL: any[] = [
@@ -39,6 +40,7 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
   protected _isBasicAuth: boolean = false;
   protected _isSslAuth: boolean = false;
   protected _isSslClient: boolean = false;
+  protected _isSubscriptionKey: boolean = false;
   protected _isRequired: boolean = false;
 
   protected authCtrl: FormControl = new FormControl('');
@@ -74,6 +76,7 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
     setTimeout(() => {
       this._isSslAuth = false;
       this._isBasicAuth = false;
+      this._isSubscriptionKey = false;
       this.fGroup.controls['auth_ctrl'].setValue(this.NESSUNA);
       if (this.json) {
         this.authCtrl.enable();
@@ -102,6 +105,12 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
             this._isSslClient = true;
           }
         }
+        if (this.json.hasOwnProperty('subscriptionKey')) {
+          this._isSubscriptionKey = true;
+          this.fGroup.controls['auth_ctrl'].setValue(this.SUBSCRIPTIONKEY);
+          this.addSubscriptionKeyControls();
+          this.fGroup.controls['subscriptionKey_ctrl'].setValue(this.json.subscriptionKey);
+        }
         this.setValidatorsRequired();
         this.updateValueAndValidity();
       }
@@ -112,8 +121,10 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
     this._isBasicAuth = false;
     this._isSslClient = false;
     this._isSslAuth = false;
+    this._isSubscriptionKey = false;
     this.removeBasicControls();
     this.removeSslControls();
+    this.removeSubscriptionKeyControls();
     switch(target.value) {
       case this.BASIC:
         this._isBasicAuth = true;
@@ -122,6 +133,10 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
       case this.SSL:
         this._isSslAuth = true;
         this.addSslControls();
+        break;
+      case this.SUBSCRIPTIONKEY:
+        this._isSubscriptionKey = true;
+        this.addSubscriptionKeyControls();
         break;
     }
     this.updateValueAndValidity();
@@ -163,6 +178,12 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
     }
   }
 
+  protected addSubscriptionKeyControls() {
+    if (this.fGroup) {
+      this.fGroup.addControl('subscriptionKey_ctrl', new FormControl('', (this._isSubscriptionKey && this.required)?[Validators.required]:[]));
+    }
+  }
+
   protected removeSslClientControls() {
     if (this.fGroup) {
       this.fGroup.removeControl('ksType_ctrl');
@@ -193,9 +214,16 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
     }
   }
 
+  protected removeSubscriptionKeyControls() {
+    if (this.fGroup) {
+      this.fGroup.removeControl('subscriptionKey_ctrl');
+    }
+  }
+
   resetSslConfig() {
     this._isSslAuth = false;
     this._isBasicAuth = false;
+    this._isSubscriptionKey = false;
     this.resetControllers();
   }
 
@@ -203,6 +231,7 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
     this.authCtrl.setValue(this.NESSUNA);
     this.removeBasicControls();
     this.removeSslControls();
+    this.removeSubscriptionKeyControls();
   }
 
   clearValidators() {
@@ -237,6 +266,10 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
           controls['ksPKeyPasswd_ctrl'].setErrors(null);
         }
       }
+      if (this._isSubscriptionKey) {
+        controls['subscriptionKey_ctrl'].clearValidators();
+        controls['subscriptionKey_ctrl'].setErrors(null);
+      }
     }
   }
 
@@ -261,6 +294,9 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
           controls['ksPKeyPasswd_ctrl'].setValidators(Validators.required);
         }
       }
+      if (this._isSubscriptionKey) {
+        controls['subscriptionKey_ctrl'].setValidators(Validators.required);
+      }
     }
   }
 
@@ -284,6 +320,9 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
             controls['ksPassword_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
             controls['ksPKeyPasswd_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
           }
+        }
+        if (this._isSubscriptionKey) {
+          controls['subscriptionKey_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
         }
       }
       this.authCtrl.updateValueAndValidity({ onlySelf: false, emitEvent: true });
@@ -323,6 +362,11 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
         delete _json.ksPassword;
         delete _json.ksPKeyPasswd;
       }
+    }
+    if (_info.hasOwnProperty('subscriptionKey_ctrl')) {
+      _json = {
+        subscriptionKey: _info['subscriptionKey_ctrl'],
+      };
     }
 
     return _json;

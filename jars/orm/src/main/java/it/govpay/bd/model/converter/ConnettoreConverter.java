@@ -90,6 +90,10 @@ public class ConnettoreConverter {
 				if(Connettore.P_SSLTYPE_NAME.equals(connettore.getCodProprieta())) {
 					dto.setSslType(connettore.getValore());
 				}
+				
+				if(Connettore.P_SUBSCRIPTION_KEY_VALUE.equals(connettore.getCodProprieta())) {
+					dto.setSubscriptionKeyValue(connettore.getValore());
+				}
 
 				if(Connettore.P_AZIONEINURL_NAME.equals(connettore.getCodProprieta())) {
 					dto.setAzioneInUrl(Boolean.parseBoolean(connettore.getValore()));
@@ -215,6 +219,14 @@ public class ConnettoreConverter {
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_SSLTYPE_NAME);
 			vo.setValore(connettore.getSslType());
+			voList.add(vo);
+		}
+		
+		if(connettore.getSubscriptionKeyValue() != null && !connettore.getSubscriptionKeyValue().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_SUBSCRIPTION_KEY_VALUE);
+			vo.setValore(connettore.getSubscriptionKeyValue());
 			voList.add(vo);
 		}
 		

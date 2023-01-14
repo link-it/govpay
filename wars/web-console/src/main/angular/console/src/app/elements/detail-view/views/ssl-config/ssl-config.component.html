@@ -4,6 +4,7 @@
     <mat-option [value]="NESSUNA">{{NESSUNA}}</mat-option>
     <mat-option [value]="BASIC">HTTP Basic</mat-option>
     <mat-option [value]="SSL">SSL</mat-option>
+    <mat-option [value]="SUBSCRIPTIONKEY">Subscription Key</mat-option>
   </mat-select>
 </mat-form-field>
 <div *ngIf="_isBasicAuth">
@@ -47,5 +48,11 @@
   </mat-form-field>
   <mat-form-field class="w-100" color="accent" [formGroup]="fGroup" *ngIf="_isSslClient">
     <input matInput [placeholder]="voce.KEY_STORE_PWD_PRIVATE_KEY" formControlName="ksPKeyPasswd_ctrl" autocomplete="off" [required]="_isRequired">
+  </mat-form-field>
+</div>
+<div *ngIf="_isSubscriptionKey">
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput [placeholder]="voce.OCP_APIM_SUBSCRIPTION_KEY" formControlName="subscriptionKey_ctrl" autocomplete="off"
+      [required]="_isRequired">
   </mat-form-field>
 </div>

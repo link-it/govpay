@@ -10,7 +10,9 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Notifica;
@@ -78,7 +80,13 @@ public class RicevuteConverter {
 				
 				rsModel.setImporto(ctRpt.getDatiVersamento().getImportoTotaleDaVersare());
 				break;
-
+			case SANP_321_V2:
+				PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
+				ricevutaRpt.setTipo(it.govpay.ec.v2.beans.RicevutaRpt.TipoEnum.CTPAYMENTPA);
+				ricevutaRpt.setJson(new RawObject(ConverterUtils.getRptJson(rpt)));
+				
+				rsModel.setImporto(paGetPaymentV2Response.getData().getPaymentAmount());
+				break;
 			}
 		} catch (Exception e) {
 			throw new ServiceException(e);
@@ -105,6 +113,12 @@ public class RicevuteConverter {
 					rsModel.setImporto(ctRt.getDatiPagamento().getImportoTotalePagato());
 					
 					rsModel.setVersante(PendenzeConverter.toSoggettoRsModel(ctRt.getSoggettoVersante()));
+					break;
+				case SANP_321_V2:
+					PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+					ricevutaRt.setTipo(TipoEnum.CTRECEIPT);
+					ricevutaRt.setJson(new RawObject(ConverterUtils.getRtJson(rpt)));
+					rsModel.setImporto(paSendRTV2Request.getReceipt().getPaymentAmount());
 					break;
 				}
 			} catch (Exception e) {

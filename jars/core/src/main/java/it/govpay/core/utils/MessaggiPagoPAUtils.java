@@ -21,11 +21,16 @@ import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersFG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoVersamento;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtEntityUniqueIdentifier;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentPA;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtPaymentPAV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceipt;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceiptV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtSubject;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPA;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPAReceiptV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StEntityUniqueIdentifierType;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Dominio;
@@ -78,8 +83,126 @@ public class MessaggiPagoPAUtils {
 		
 		return ctRpt;
 	}
+	
+	public static CtRichiestaPagamentoTelematico toCtRichiestaPagamentoTelematico(PaGetPaymentV2Response paGetPaymentV2Response, Rpt rpt) throws ServiceException {
+		CtRichiestaPagamentoTelematico ctRpt = new CtRichiestaPagamentoTelematico();
+		ctRpt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE);
+		
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		
+		Versamento versamento = rpt.getVersamento(configWrapper);
+		Dominio dominio = versamento.getDominio(configWrapper); 
+		UnitaOperativa uo = versamento.getUo(configWrapper);
+
+		CtPaymentPAV2 data = paGetPaymentV2Response.getData();
+		
+		CtDominio ctDominio = new CtDominio();
+		ctDominio.setIdentificativoDominio(rpt.getCodDominio());
+		ctDominio.setIdentificativoStazioneRichiedente(dominio.getStazione().getCodStazione());
+		ctRpt.setDominio(ctDominio);
+		ctRpt.setIdentificativoMessaggioRichiesta(rpt.getCodMsgRichiesta());
+		ctRpt.setDataOraMessaggioRichiesta(rpt.getDataMsgRichiesta());
+		ctRpt.setAutenticazioneSoggetto(StAutenticazioneSoggetto.N_A); // Informazione non presente nella V2 ma campo obbligatorio nella V1
+		// ctRpt.setSoggettoVersante(RptBuilder.buildSoggettoVersante(versante)) Versante??
+		ctRpt.setSoggettoPagatore(toCtSoggettoPagatore(data.getDebtor()));
+		ctRpt.setEnteBeneficiario(RptBuilder.buildEnteBeneficiario(dominio, uo));
+		
+		CtDatiVersamentoRPT datiVersamento = new CtDatiVersamentoRPT();
+		datiVersamento.setDataEsecuzionePagamento(rpt.getDataMsgRichiesta());
+		datiVersamento.setImportoTotaleDaVersare(versamento.getImportoTotale());
+		datiVersamento.setTipoVersamento(StTipoVersamento.fromValue(rpt.getTipoVersamento().getCodifica()));
+		datiVersamento.setIdentificativoUnivocoVersamento(rpt.getIuv());
+		//datiVersamento.setCodiceContestoPagamento(rpt.getCcp());
+		datiVersamento.setFirmaRicevuta(FirmaRichiesta.NESSUNA.getCodifica());
+//		datiVersamento.setIbanAddebito(ibanAddebito != null ? ibanAddebito : null);
+//		datiVersamento.setBicAddebito(bicAddebito != null ? bicAddebito : null);
+		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
+		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+			datiVersamento.getDatiSingoloVersamento().add(RptBuilder.buildDatiSingoloVersamento(rpt, singoloVersamento, configWrapper));
+		}
+		ctRpt.setDatiVersamento(datiVersamento);
+		
+		return ctRpt;
+	}
 
 
+	public static CtRicevutaTelematica toCtRicevutaTelematica(PaSendRTV2Request paSendRTReq, Rpt rpt) throws ServiceException {
+		CtRicevutaTelematica ctRt = new CtRicevutaTelematica();
+		
+		CtReceiptV2 receipt = paSendRTReq.getReceipt();
+		
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		
+		Versamento versamento = rpt.getVersamento(configWrapper);
+		Dominio dominio = versamento.getDominio(configWrapper); 
+		UnitaOperativa uo = versamento.getUo(configWrapper);
+		
+		ctRt.setDataOraMessaggioRicevuta(rpt.getDataMsgRichiesta());
+		CtDatiVersamentoRT ctDatiPagamento = new CtDatiVersamentoRT();
+		ctDatiPagamento.setCodiceContestoPagamento(receipt.getReceiptId());
+		if(rpt.getEsitoPagamento() != null) {
+			ctDatiPagamento.setCodiceEsitoPagamento(rpt.getEsitoPagamento().getCodifica() + "");
+		}
+		ctDatiPagamento.setIdentificativoUnivocoVersamento(receipt.getCreditorReferenceId());
+		ctDatiPagamento.setImportoTotalePagato(rpt.getImportoTotalePagato());
+		
+		List<CtTransferPAReceiptV2> datiSingoliPagamenti = receipt.getTransferList().getTransfer();
+		
+		// singole voci
+		for(int indice = 0; indice < datiSingoliPagamenti.size(); indice++) {
+			CtTransferPAReceiptV2 ctTransferPA = datiSingoliPagamenti.get(indice);
+			
+			CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = new CtDatiSingoloPagamentoRT();
+//			ctDatiSingoloPagamentoRT.setAllegatoRicevuta(null);  // non presente
+			ctDatiSingoloPagamentoRT.setCausaleVersamento(ctTransferPA.getRemittanceInformation());
+//			ctDatiSingoloPagamentoRT.setCommissioniApplicatePA(null);
+			ctDatiSingoloPagamentoRT.setCommissioniApplicatePSP(receipt.getFee());
+			ctDatiSingoloPagamentoRT.setDataEsitoSingoloPagamento(receipt.getPaymentDateTime());
+			ctDatiSingoloPagamentoRT.setDatiSpecificiRiscossione(ctTransferPA.getTransferCategory());
+			ctDatiSingoloPagamentoRT.setEsitoSingoloPagamento(receipt.getOutcome().toString()); 
+			ctDatiSingoloPagamentoRT.setIdentificativoUnivocoRiscossione(receipt.getReceiptId());
+			ctDatiSingoloPagamentoRT.setSingoloImportoPagato(ctTransferPA.getTransferAmount());
+			
+			ctDatiPagamento.getDatiSingoloPagamento().add(ctDatiSingoloPagamentoRT );
+		}
+		
+		ctRt.setDatiPagamento(ctDatiPagamento );
+		CtDominio ctDominio = new CtDominio();
+		ctDominio.setIdentificativoDominio(rpt.getCodDominio());
+		ctDominio.setIdentificativoStazioneRichiedente(dominio.getStazione().getCodStazione());
+		ctRt.setDominio(ctDominio);
+		ctRt.setEnteBeneficiario(RptBuilder.buildEnteBeneficiario(dominio, uo));
+		ctRt.setIdentificativoMessaggioRicevuta(rpt.getCodMsgRicevuta());
+		CtIstitutoAttestante ctIstitutoAttestante = new CtIstitutoAttestante();
+		CtIdentificativoUnivoco ctIdentificativoUnivocoIstitutoAttestante = new CtIdentificativoUnivoco();
+		ctIdentificativoUnivocoIstitutoAttestante.setCodiceIdentificativoUnivoco(rpt.getIdentificativoAttestante());
+		if(rpt.getTipoIdentificativoAttestante() != null) {
+			switch (rpt.getTipoIdentificativoAttestante()) {
+			case A:
+				ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.A);
+				break;
+			case B:
+				ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.B);
+				break;
+			case G:
+			default:
+				ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.G);	
+				break;
+			}
+		}
+		ctIstitutoAttestante.setIdentificativoUnivocoAttestante(ctIdentificativoUnivocoIstitutoAttestante );
+		ctIstitutoAttestante.setDenominazioneAttestante(rpt.getDenominazioneAttestante());
+		
+		ctRt.setIstitutoAttestante(ctIstitutoAttestante );
+		ctRt.setRiferimentoDataRichiesta(rpt.getDataMsgRicevuta());
+		ctRt.setRiferimentoMessaggioRichiesta(rpt.getCodMsgRichiesta());
+		ctRt.setSoggettoPagatore(toCtSoggettoPagatore(receipt.getDebtor()));
+		ctRt.setSoggettoVersante(null); // informazione non presente
+		ctRt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE);
+		
+		return ctRt;
+	}
+	
 	public static CtRicevutaTelematica toCtRicevutaTelematica(PaSendRTReq paSendRTReq, Rpt rpt) throws ServiceException {
 		CtRicevutaTelematica ctRt = new CtRicevutaTelematica();
 		

@@ -315,7 +315,8 @@ export class UtilService {
 
   public static TIPI_AUTENTICAZIONE: any = {
     basic: 'HTTP Basic',
-    ssl: 'SSL'
+    ssl: 'SSL',
+    subscriptionKey: 'Subscription Key'
   };
 
   public static TIPI_SSL: any = {
@@ -1724,6 +1725,7 @@ export class UtilService {
           //   dependency: 'stato', target: this.getKeyByValue(UtilService.STATI_PENDENZE, UtilService.STATI_PENDENZE.ESEGUITO), required: true })
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_INIZIO, type: UtilService.DATE_PICKER, value: _defaulFiltertData }),
           new FormInput({ id: 'dataA', label: FormService.FORM_DATA_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' }),
+          new FormInput({ id: 'mostraSpontaneiNonPagati', label: FormService.FORM_MOSTRA_SPONTANEI, type: UtilService.SLIDE_TOGGLE, value: false }),
         ];
         break;
       case UtilService.PAGAMENTI:

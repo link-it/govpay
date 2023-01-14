@@ -32,7 +32,8 @@
                   "fiscalCodePA":"#(idDominio)",
                   "IBAN":"#(ibanAccredito)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Pagamento TARI n.' + idPendenza + '')",
-                  "transferCategory":"9/SEGRETERIA"
+                  "transferCategory":"9/SEGRETERIA",
+                  "metadata":null
                },
                {
                   "idTransfer":2,
@@ -40,7 +41,8 @@
                   "fiscalCodePA":"#(idDominio_2)",
                   "IBAN":"#(ibanAccreditoEnteNonIntermediato)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/10.00/TXT/Pagamento TEFA n.' + idPendenza + '')",
-                  "transferCategory":"9/CodiceContabilita"
+                  "transferCategory":"9/CodiceContabilita",
+                  "metadata":null
                }
             ]
          },

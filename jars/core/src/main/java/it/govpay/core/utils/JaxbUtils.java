@@ -48,7 +48,9 @@ import it.gov.digitpa.schemas._2011.pagamenti.revoche.ER;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.RR;
 import it.gov.digitpa.schemas._2011.pagamenti.riversamento.FlussoRiversamento;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 
 public class JaxbUtils {
 
@@ -62,7 +64,9 @@ public class JaxbUtils {
 			RPT_RT_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/comuni/PagInf_RPT_RT_6_2_0.xsd"))); 
 			FR_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/comuni/FlussoRiversamento_1_0_4.xsd"))); 
 			RR_ER_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/comuni/RR_ER_1_0_0.xsd")));
-			PAForNode_Schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/comuni/paForNode.xsd"))); 
+
+			javax.xml.transform.Source sources [] = {new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/comuni/sac-common-types-1.0.xsd")), new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/comuni/paForNode.xsd"))};
+			PAForNode_Schema = schemaFactory.newSchema(sources); 
 			
 			jaxbBolloContext = JAXBContext.newInstance("it.gov.agenziaentrate._2014.marcadabollo");
 			jaxbWsRptContext = JAXBContext.newInstance("gov.telematici.pagamenti.ws.rpt:gov.telematici.pagamenti.ws.rpt.ppthead");
@@ -302,6 +306,40 @@ public class JaxbUtils {
 		Unmarshaller jaxbUnmarshaller = jaxbPaForNodeContext.createUnmarshaller();
 		if(validate) jaxbUnmarshaller.setSchema(PAForNode_Schema);
 	    JAXBElement<PaSendRTReq> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rt)), PaSendRTReq.class);
+		return root.getValue();
+	}
+	
+	public static byte[] toByte(PaGetPaymentV2Response rpt) throws JAXBException, SAXException {
+		init();
+		Marshaller jaxbMarshaller = jaxbPaForNodeContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		jaxbMarshaller.marshal(new it.gov.pagopa.pagopa_api.pa.pafornode.ObjectFactory().createPaGetPaymentV2Response(rpt), baos);
+		return baos.toByteArray();
+	}
+	
+	public static byte[] toByte(PaSendRTV2Request rt) throws JAXBException, SAXException {
+		init();
+		Marshaller jaxbMarshaller = jaxbPaForNodeContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		jaxbMarshaller.marshal(new it.gov.pagopa.pagopa_api.pa.pafornode.ObjectFactory().createPaSendRTV2Request(rt), baos);
+		return baos.toByteArray();
+	}
+	
+	public static PaGetPaymentV2Response toPaGetPaymentV2Response_RPT(byte[] rpt, boolean validate) throws JAXBException, SAXException {
+		init();
+		Unmarshaller jaxbUnmarshaller = jaxbPaForNodeContext.createUnmarshaller();
+		if(validate) jaxbUnmarshaller.setSchema(PAForNode_Schema);
+	    JAXBElement<PaGetPaymentV2Response> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rpt)), PaGetPaymentV2Response.class);
+		return root.getValue();
+	}
+	
+	public static PaSendRTV2Request toPaSendRTV2Request_RT(byte[] rt, boolean validate) throws JAXBException, SAXException {
+		init();
+		Unmarshaller jaxbUnmarshaller = jaxbPaForNodeContext.createUnmarshaller();
+		if(validate) jaxbUnmarshaller.setSchema(PAForNode_Schema);
+	    JAXBElement<PaSendRTV2Request> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rt)), PaSendRTV2Request.class);
 		return root.getValue();
 	}
 }

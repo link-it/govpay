@@ -90,18 +90,15 @@ public class SimpleDateFormatUtils {
 	}
 	
 	public static SimpleDateFormat newSimpleDateFormatIuvUtils() {
-		SimpleDateFormat sdf = new SimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_DD_MM_YYYY_HH_MM_SS_SSS);
-		return sdf;
+		return newSimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_DD_MM_YYYY_HH_MM_SS_SSS);
 	}
 	
 	public static SimpleDateFormat newSimpleDateFormatSoloAnno() {
-		SimpleDateFormat sdf = new SimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_YYYY);
-		return sdf;
+		return newSimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_YYYY);
 	}
 	
 	public static SimpleDateFormat newSimpleDateFormatGGMMAAAA() {
-		SimpleDateFormat sdf = new SimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_GG_MM_AAAA);
-		return sdf;
+		return newSimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_GG_MM_AAAA);
 	}
 	
 	public static SimpleDateFormat newSimpleDateFormat(String pattern) {

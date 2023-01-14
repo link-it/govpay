@@ -461,6 +461,11 @@ public class Operazioni{
 
 	public static String resetCacheAnagrafica(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
+		return resetCacheAnagrafica(configWrapper);
+	}
+
+	public static String resetCacheAnagrafica(BDConfigWrapper configWrapper){
+		
 		BatchBD batchBD = null;
 		try {
 			batchBD = new BatchBD(configWrapper);
@@ -642,7 +647,7 @@ public class Operazioni{
 				TracciatiBD tracciatiBD = new TracciatiBD(configWrapper);
 				TracciatoFilter filter = tracciatiBD.newFilter();
 				filter.setTipo(Arrays.asList(TIPO_TRACCIATO.PENDENZA));
-				filter.setStato(STATO_ELABORAZIONE.ELABORAZIONE);
+				filter.setStati(Arrays.asList(STATO_ELABORAZIONE.ELABORAZIONE, STATO_ELABORAZIONE.IN_STAMPA));
 				filter.setLimit(25);
 				filter.setIncludiRawRichiesta(true);
 				//				filter.setDataUltimoAggiornamentoMax(new Date());
@@ -817,11 +822,14 @@ public class Operazioni{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		try {
 			if(BatchManager.startEsecuzione(configWrapper, BATCH_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI)) {
+				
+				log.debug("Avvio elaborazione tracciati notifica pagamenti.");
 				// ricerca domini con connettore mypivot abilitato
 				List<String> domini = AnagraficaManager.getListaCodDomini(configWrapper);
 				
 				for (String codDominio : domini) {
 					it.govpay.bd.model.Dominio dominio = null;
+					log.debug("Elaborazione tracciati notifica pagamenti per il Dominio ["+codDominio+"].");
 					try {
 						dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
 					}catch(NotFoundException e) {

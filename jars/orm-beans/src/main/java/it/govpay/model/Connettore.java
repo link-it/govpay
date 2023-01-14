@@ -38,9 +38,10 @@ public class Connettore extends Versionabile implements Cloneable{
 	public static final String P_URL_SERVIZI_AVVISATURA_NAME = "URLAVVISI";
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";
     public static final String P_VERSIONE = "VERSIONE";
+    public static final String P_SUBSCRIPTION_KEY_VALUE = "SUBSCRIPTION_KEY_VALUE";
 	
 	public enum EnumAuthType {
-		SSL, HTTPBasic, NONE
+		SSL, HTTPBasic, NONE, SUBSCRIPTION_KEY
 	}
 	
 	public enum EnumSslType {
@@ -67,6 +68,7 @@ public class Connettore extends Versionabile implements Cloneable{
 	private String url;
 	private String urlServiziAvvisatura;
 	private boolean azioneInUrl;
+	private String subscriptionKeyValue;
 	
 	public Connettore() {
 	}
@@ -170,7 +172,13 @@ public class Connettore extends Versionabile implements Cloneable{
 	public void setUrlServiziAvvisatura(String urlServiziAvvisatura) {
 		this.urlServiziAvvisatura = urlServiziAvvisatura;
 	}
-	
+	public String getSubscriptionKeyValue() {
+		return subscriptionKeyValue;
+	}
+	public void setSubscriptionKeyValue(String subscriptionKeyValue) {
+		this.subscriptionKeyValue = subscriptionKeyValue;
+	}
+
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();

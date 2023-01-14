@@ -149,12 +149,20 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 
+* def idDominioToCheck = response.dominio.idDominio
+
 Given url pendenzeBaseurl
-And path 'documenti', response.dominio.idDominio, idDocumento, 'avvisi'
+And path 'documenti', idDominioToCheck, idDocumento, 'avvisi'
 And headers basicAutenticationHeader
 And header Accept = 'application/pdf'
 When method get
 Then status 200
+
+Given url pendenzeBaseurl
+And path 'documenti', idDominioToCheck, idDocumento, 'avvisi'
+And headers basicAutenticationHeader
+When method get
+Then status 406
 
 
 Scenario: Lettura di un avviso pdf per un documento con violazione CDS

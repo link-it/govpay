@@ -195,7 +195,7 @@ maintenance:
       phone: '+39050504639'
   contractors:
     - name: Link.it
-      until: '2022-12-31'
+      until: '2023-12-31'
       website: 'https://www.link.it'
   type: community
 name: GovPay
@@ -207,10 +207,10 @@ outputTypes:
   - application/pdf
 platforms:
   - web
-releaseDate: '2022-11-08'
+releaseDate: '2023-01-14'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
-softwareVersion: 3.6.4
+softwareVersion: 3.6.5
 url: 'https://github.com/link-it/govpay'
 usedBy:
   - CNR - Consiglio Nazionale delle Ricerche
