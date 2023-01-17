@@ -13,6 +13,7 @@ import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.filters.VersamentoFilter.SortFields;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.ec.v1.beans.TipoSoggetto;
@@ -162,21 +163,29 @@ public class Gp21Utils {
 
 	public static it.govpay.servizi.commons.FlussoRendicontazione.Pagamento toRendicontazionePagamento(Rendicontazione rend, Pagamento pagamento, Fr frModel, BDConfigWrapper configWrapper) throws ServiceException {
 
-		if(rend.getVersamento(null) == null) return null;
+		Versamento versamento = rend.getVersamento(null);
+		
+//		if(versamento == null) return null;
 
 		FlussoRendicontazione.Pagamento p = new FlussoRendicontazione.Pagamento();
-		if(pagamento != null)
+		
+		if(pagamento != null) {
 			p.setCodSingoloVersamentoEnte(pagamento.getSingoloVersamento(null).getCodSingoloVersamentoEnte());
-		else
-			p.setCodSingoloVersamentoEnte(rend.getVersamento(null).getSingoliVersamenti().get(0).getCodSingoloVersamentoEnte());
+		} else if(versamento!= null) {
+			p.setCodSingoloVersamentoEnte(versamento.getSingoliVersamenti().get(0).getCodSingoloVersamentoEnte());
+		} else { // pagamento e versamento non presenti
+			p.setCodSingoloVersamentoEnte("UNKNOWN");
+		}
 		p.setImportoRendicontato(rend.getImporto().abs());
 		p.setIur(rend.getIur());
 		p.setEsitoRendicontazione(TipoRendicontazione.valueOf(rend.getEsito().toString()));
 		p.setDataRendicontazione(rend.getData());
 //		if(versione.compareTo(Versione.GP_02_02_00) >= 0) { // Versione 2.2
-			p.setCodApplicazione(rend.getVersamento(null).getApplicazione(configWrapper).getCodApplicazione());
-			p.setIuv(rend.getIuv());
-			p.setCodDominio(frModel.getCodDominio());
+		if(versamento != null) {
+			p.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
+		}
+		p.setIuv(rend.getIuv());
+		p.setCodDominio(frModel.getCodDominio());
 //		}
 
 		return p;

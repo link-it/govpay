@@ -117,6 +117,8 @@
       updateRuolo: 'Configura ruolo'
     },
     API_ENTE: {
+      paNotificaTransazione: 'Spedita notifica pagamento all\'Ente',
+      paVerificaVersamento: 'Spedita verifica RPT all\'Ente',
       deletePagamento: 'Annulla pagamento',
       getAvviso: 'Spedita verifica avviso all\'Ente',
       inviaFlussoRendicontazione: 'Spedito flusso rendicontazioni alle API Ente Rendicontazione',
@@ -149,6 +151,20 @@
       logout: 'Logout'
     },
     API_PAGOPA: {
+      gpGeneraIuv: 'Richiesta generazione di un nuovo IUV dall\'Ente',
+      gpCaricaIuv: 'Ricevuto nuovo IUV dall\'Ente',
+      gpCaricaVersamento: 'Ricevuta nuova pendenza dall\'Ente',
+      gpAnnullaVersamento: 'Annulla pendenza',
+      gpNotificaPagamento: 'Ricevuta notifica di pagamento',
+      gpChiediStatoVersamento: 'Leggi stato pendenza',
+      gpChiediListaFlussiRendicontazione: 'Cerca flussi rendicontazione',
+      gpChiediFlussoRendicontazione: 'Leggi flusso di rendicontazione',
+      gpChiediSceltaWisp: 'Ricevuta richiesta di scelta WISP',
+      gpAvviaTransazionePagamento: 'Ricevuta richiesta pagamento da Portale',
+      gpChiediStatoTransazione: 'Leggi Transazione',
+      gpAvviaRichiestaStorno: 'Ricevuta richiesta di storno',
+      gpChiediStatoRichiestaStorno: 'Stato richiesta di storno',
+      gpChiediListaVersamenti: 'Cerca pendenze',
       nodoChiediCopiaRT: 'Inviata richiesta copia RT a pagoPA',
       nodoChiediElencoFlussiRendicontazione: 'Richiesto elenco FR a pagoPA',
       nodoChiediFlussoRendicontazione: 'Richiesto flusso rendicontazioni a pagoPA',
