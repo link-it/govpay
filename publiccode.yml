@@ -210,7 +210,7 @@ platforms:
 releaseDate: '2023-01-14'
 roadmap: 'https://github.com/link-it/govpay/milestones'
 softwareType: standalone/web
-softwareVersion: 3.6.5
+softwareVersion: 3.7.0
 url: 'https://github.com/link-it/govpay'
 usedBy:
   - CNR - Consiglio Nazionale delle Ricerche
