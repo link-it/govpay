@@ -1,0 +1,132 @@
+openapi: 3.0.0
+info:
+  version: "3.0.0"
+  title: GovPay - API Pagamento
+  contact:
+    name: GitHub Project Page
+    url: 'https://github.com/link-it/GovPay/'
+  license:
+    name: GPL
+    url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
+servers:
+  - url: /govpay/frontend/api/pagamento/rs/basic/v3/
+tags:
+  - name: Ricevute
+security:
+  - basicAuth: []    
+paths:
+  '/ricevute':
+    get:
+      operationId: findRicevute
+      summary: Ricerca delle ricevute di pagamento
+      tags:
+        - Ricevute
+      parameters:
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/pagina'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/risultatiPerPagina'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/ordinamento'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/idDominio'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/dataDa'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/dataA'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/metadatiPaginazione'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/maxRisultati'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/iuv'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/idRicevuta'
+      responses:
+        '200':
+          description: Lista delle ricevute di pagamento
+          content:
+            application/json:
+              schema:
+                $ref: 'govpay-api-schemas.yaml#/components/schemas/Ricevute'
+        '400':
+          $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'                
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
+        '500':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'        
+  '/ricevute/{idDominio}/{iuv}/{idRicevuta}':
+    get:
+      operationId: getRicevuta
+      summary: Acquisizione di una ricevuta di avvenuto pagamento pagoPA
+      description: >-
+        Ricevuta pagoPA, sia questa veicolata nella forma di `RT` o di `recepit`, di esito positivo. 
+      tags:
+        - Ricevute
+      parameters:
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdDominio'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIuv'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdRicevuta'
+      responses:
+        '201':
+          description: ricevuta di pagamento acquisita
+          content:
+            application/json:
+              schema:
+                $ref: 'govpay-api-schemas.yaml#/components/schemas/Ricevuta'
+              examples:
+                Pagamento standard: 
+                  $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaEntrata'
+                Marca da bollo: 
+                  $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaMBT'              
+        '400':
+          $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
+        '500':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'             
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    NuovaRiconciliazione:
+      allOf:
+        - $ref: '#/components/schemas/TipoRiferimentoNuovaRiconciliazione'
+        - type: object
+          required:
+          - importo
+          - sct
+          properties:
+            importo:
+              type: number
+              example: 100.01
+              description: Importo del riversamento. Se valorizzato, viene verificato che corrisponda a quello dei pagamenti riconciliati.
+            dataValuta:
+              type: string
+              format: date
+              description: Data di valuta dell'incasso
+              example: '2020-12-31'
+            dataContabile:
+              type: string
+              format: date
+              description: Data di contabile dell'incasso
+              example: '2020-12-31'
+            contoAccredito:
+              type: string
+              description: Identificativo del conto di tesoreria su cui sono stati incassati i fondi
+              example: IT60X0542811101000000123456
+            sct:
+              type: string
+              description: Identificativo Sepa Credit Transfer
+              example: 2017-01-01ABI00000011234
+    RiferimentoCausale:
+      description: Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera.
+      type: object
+      required:
+        - causale
+      properties:
+        causale:
+          type: string
+          example: /PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234  
+    TipoRiferimentoNuovaRiconciliazione:
+      type: object              
+      oneOf:
+        - $ref: '#/components/schemas/RiferimentoCausale'
+        - $ref: '#/components/schemas/RiferimentoIdentificativoUnivocoVersamento'
+        - $ref: '#/components/schemas/RiferimentoIdentificativoFlussoRendicontazione'
