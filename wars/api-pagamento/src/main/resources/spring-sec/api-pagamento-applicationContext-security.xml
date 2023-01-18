@@ -463,7 +463,7 @@
                 <csrf disabled="true"/>
                 <intercept-url pattern="/v1/govpay-api-pagamento-v1.yaml" access="permitAll"/>
                 <intercept-url pattern="/v2/govpay-api-pagamento-v2.yaml" access="permitAll"/>
-                <intercept-url pattern="/v3/govpay-api-pagamento-v3.yaml" access="permitAll"/>
+                <intercept-url pattern="/v3/*.yaml" access="permitAll"/>
                 <intercept-url pattern="/index.html" access="permitAll"/>
                 <intercept-url pattern="/*.png" access="permitAll"/>
                 <intercept-url pattern="/*.css" access="permitAll"/>
