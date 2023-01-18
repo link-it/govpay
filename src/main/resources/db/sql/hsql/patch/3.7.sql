@@ -498,3 +498,52 @@ CREATE VIEW v_eventi_vers AS
                transaction_id,
                id FROM v_eventi_vers_tracciati;
 
+
+-- 18/01/2023 Ottimizzazione della vista v_riscossioni
+DROP VIEW IF EXISTS v_riscossioni;
+DROP VIEW IF EXISTS v_riscossioni_senza_rpt;
+DROP VIEW IF EXISTS v_riscossioni_con_rpt;
+
+CREATE VIEW v_riscossioni AS (
+ SELECT 
+    fr.cod_dominio AS cod_dominio,
+    rendicontazioni.iuv AS iuv,
+    rendicontazioni.iur AS iur,
+    fr.cod_flusso AS cod_flusso, 
+    fr.iur AS fr_iur,
+    fr.data_regolamento AS data_regolamento,
+    fr.importo_totale_pagamenti AS importo_totale_pagamenti,
+    fr.numero_pagamenti AS numero_pagamenti,
+    rendicontazioni.importo_pagato AS importo_pagato,
+    rendicontazioni.data AS data_pagamento,
+    singoli_versamenti.cod_singolo_versamento_ente as cod_singolo_versamento_ente, 
+    rendicontazioni.indice_dati as indice_dati, 
+    versamenti.cod_versamento_ente AS cod_versamento_ente,
+    applicazioni.cod_applicazione AS cod_applicazione,
+    versamenti.debitore_identificativo AS identificativo_debitore,
+    versamenti.cod_anno_tributario AS anno,
+    tipi_versamento.cod_tipo_versamento AS cod_tipo_versamento,
+    tipi_tributo.cod_tributo AS cod_entrata, 
+    tipi_versamento.descrizione AS descr_tipo_versamento,
+    versamenti.debitore_anagrafica AS debitore_anagrafica,
+    fr.cod_psp AS cod_psp, 
+    fr.ragione_sociale_psp AS ragione_sociale_psp,
+    versamenti.cod_rata AS cod_rata,
+    versamenti.id_documento AS id_documento,    
+    versamenti.causale_versamento AS causale_versamento,
+    versamenti.importo_totale AS importo_versamento,
+    versamenti.numero_avviso AS numero_avviso,
+    versamenti.iuv_pagamento AS iuv_pagamento,
+    versamenti.data_scadenza AS data_scadenza,
+    versamenti.data_creazione AS data_creazione,
+    singoli_versamenti.contabilita AS contabilita
+   FROM fr
+   JOIN rendicontazioni ON rendicontazioni.id_fr = fr.id
+   LEFT JOIN singoli_versamenti ON rendicontazioni.id_singolo_versamento = singoli_versamenti.id
+   LEFT JOIN versamenti ON versamenti.id = singoli_versamenti.id_versamento
+   LEFT JOIN applicazioni ON versamenti.id_applicazione=applicazioni.id
+   LEFT JOIN tipi_versamento ON versamenti.id_tipo_versamento=tipi_versamento.id
+   LEFT JOIN tributi ON singoli_versamenti.id_tributo = tributi.id 
+   LEFT JOIN tipi_tributo ON tributi.id_tipo_tributo = tipi_tributo.id);
+   
+   
