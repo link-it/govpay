@@ -33,22 +33,22 @@
 
   global.GovFiltersConfig = {
     pagamenti: {
-      dataSub: { value: 1, type: 'days' }
+      dataSub: { value: 7, type: 'days' }
     },
     pendenze: {
-      dataSub: { value: 1, type: 'days' }
+      dataSub: { value: 7, type: 'days' }
     },
     incassi: {
-      dataSub: { value: 1, type: 'days' }
+      dataSub: { value: 7, type: 'days' }
     },
     giornale_eventi: {
       dataSub: { value: 1, type: 'days' }
     },
     rendicontazioni: {
-      dataSub: { value: 1, type: 'days' }
+      dataSub: { value: 7, type: 'days' }
     },
     riscossioni: {
-      dataSub: { value: 1, type: 'days' }
+      dataSub: { value: 7, type: 'days' }
     }
   };
 

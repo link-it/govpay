@@ -667,7 +667,7 @@ public abstract class BasicClientCORE {
 				if(this.debug)
 					log.debug("Spedizione byte...");
 
-				HttpEntity httpEntity = new ByteArrayEntity(body);
+				HttpEntity httpEntity = new ByteArrayEntity(integrationCtx.getMsg());
 				if(this.httpRequest instanceof HttpEntityEnclosingRequestBase){
 					((HttpEntityEnclosingRequestBase)this.httpRequest).setEntity(httpEntity);
 				}
