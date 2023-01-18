@@ -606,7 +606,7 @@ public class VersamentoUtils {
 
 			model.setIuvVersamento(iuvFromNumeroAvviso);
 			model.setIuvProposto(iuvFromNumeroAvviso); 
-		} else {
+		} else { // api legacy
 			if(versamento.getIuv() != null) {
 				String iuvFromMessage = versamento.getIuv();
 				// check sulla validita' dello iuv
@@ -620,6 +620,8 @@ public class VersamentoUtils {
 
 				model.setIuvVersamento(iuvFromMessage);
 				model.setIuvProposto(iuvFromMessage); 
+				
+				model.setNumeroAvviso(IuvUtils.toNumeroAvviso(iuvFromMessage, dominio));
 			}
 		}
 

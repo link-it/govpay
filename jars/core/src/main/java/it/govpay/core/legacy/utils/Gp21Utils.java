@@ -260,24 +260,9 @@ public class Gp21Utils {
 		versamento.setCodUnitaOperativa(pendenza.getCodUnitaOperativa());
 		versamento.setCodVersamentoEnte(pendenza.getCodVersamentoEnte());
 		versamento.setDataScadenza(pendenza.getDataScadenza());
-		//		versamento.setDataValidita(pendenza.getDataValidita());
-		//		versamento.setDataCaricamento(pendenza.getDataCaricamento() != null ? pendenza.getDataCaricamento() : new Date());
 		versamento.setDataCaricamento(new Date());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getDebitore()));
-
-//		versamento.setTassonomia(pendenza.getTassonomia());
-//		if(pendenza.getDatiAllegati() != null)
-//			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati(),null));
-
-//		if(pendenza.getTassonomiaAvviso() != null) {
-//			// valore tassonomia avviso non valido
-//			if(TassonomiaAvviso.fromValue(pendenza.getTassonomiaAvviso()) == null) {
-//				throw new ValidationException("Codifica inesistente per tassonomiaAvviso. Valore fornito [" + pendenza.getTassonomiaAvviso() + "] valori possibili " + ArrayUtils.toString(TassonomiaAvviso.values()));
-//			}
-//
-//			versamento.setTassonomiaAvviso(pendenza.getTassonomiaAvviso());
-//		}
-
+		
 		versamento.setIuv(pendenza.getIuv());
 
 		// voci pagamento
@@ -286,38 +271,7 @@ public class Gp21Utils {
 		// importo pendenza puo' essere null
 		versamento.setImportoTotale(pendenza.getImportoTotale() != null ? pendenza.getImportoTotale() : importoVociPendenza); 
 
-		// tipo Pendenza
-//		versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza()); TODO
-
-		//		versamento.setDirezione(pendenza.getDirezione());
-		//		versamento.setDivisione(pendenza.getDivisione()); 
 		versamento.setCodLotto(pendenza.getCodDebito());
-
-		//		if(pendenza.getDocumento() != null) {
-		//			it.govpay.core.dao.commons.Versamento.Documento documento = new it.govpay.core.dao.commons.Versamento.Documento();
-		//			
-		//			documento.setCodDocumento(pendenza.getDocumento().getIdentificativo());
-		//			if(pendenza.getDocumento().getRata() != null)
-		//				documento.setCodRata(pendenza.getDocumento().getRata().intValue());
-		//			if(pendenza.getDocumento().getSoglia() != null) {
-		//				// valore tassonomia avviso non valido
-		//				if(TipoSogliaVincoloPagamento.fromValue(pendenza.getDocumento().getSoglia().getTipo()) == null) {
-		//					throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" 
-		//								+ pendenza.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
-		//				}
-		//				
-		//				documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
-		//				documento.setTipoSoglia(pendenza.getDocumento().getSoglia().getTipo());
-		//			}
-		//			documento.setDescrizione(pendenza.getDocumento().getDescrizione());
-		//
-		//			versamento.setDocumento(documento );
-		//		}
-
-		//		versamento.setDataNotificaAvviso(pendenza.getDataNotificaAvviso());
-		//		versamento.setDataPromemoriaScadenza(pendenza.getDataPromemoriaScadenza());
-
-		//		versamento.setProprieta(toProprietaPendenzaDTO(pendenza.getProprieta()));
 
 		return versamento;
 	}
