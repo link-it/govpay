@@ -41,9 +41,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
-import javax.xml.soap.MessageFactory;
 import javax.xml.soap.MimeHeaders;
-import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 
 import org.apache.commons.codec.binary.Base64;
@@ -77,6 +75,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.soap.SOAPException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
@@ -98,16 +98,14 @@ import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.openspcoop2.utils.transport.http.WrappedLogSSLSocketFactory;
 import org.slf4j.Logger;
 
-import it.govpay.bd.configurazione.model.GdeInterfaccia;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.eventi.DettaglioRichiesta;
 import it.govpay.bd.model.eventi.DettaglioRisposta;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Categoria;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.business.GiornaleEventi;
-import it.govpay.core.utils.EventoContext;
-import it.govpay.core.utils.EventoContext.Categoria;
-import it.govpay.core.utils.EventoContext.Componente;
 import it.govpay.core.utils.ExceptionUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.client.beans.TipoConnettore;
@@ -122,6 +120,8 @@ import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Intermediario;
+import it.govpay.model.configurazione.GdeInterfaccia;
+import it.govpay.model.configurazione.Giornale;
 
 public abstract class BasicClientCORE {
 
@@ -662,7 +662,7 @@ public abstract class BasicClientCORE {
 				if(this.debug)
 					log.debug("Spedizione byte...");
 
-				HttpEntity httpEntity = new ByteArrayEntity(body);
+				HttpEntity httpEntity = new ByteArrayEntity(integrationCtx.getMsg());
 				if(this.httpRequest instanceof HttpEntityEnclosingRequestBase){
 					((HttpEntityEnclosingRequestBase)this.httpRequest).setEntity(httpEntity);
 				}
