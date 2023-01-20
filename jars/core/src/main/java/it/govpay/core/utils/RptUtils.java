@@ -245,7 +245,7 @@ public class RptUtils {
 						//aggiorno lo stato del pagamento portale
 						Long idPagamentoPortale = rpt.getIdPagamentoPortale();
 						if(idPagamentoPortale != null) {
-							PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rptBD); 
+							PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rpt, rptBD); 
 						}
 						
 						rptBD.commit();
@@ -363,7 +363,7 @@ public class RptUtils {
 								//aggiorno lo stato del pagamento portale
 								Long idPagamentoPortale = rpt.getIdPagamentoPortale();
 								if(idPagamentoPortale != null) {
-									PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rptBD); 
+									PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rpt, rptBD); 
 								}
 								
 								rptBD.commit();
@@ -547,7 +547,7 @@ public class RptUtils {
 									// aggiornamento del pagamento portale
 									Long idPagamentoPortale = rpt.getIdPagamentoPortale();
 									if(idPagamentoPortale != null) {
-										PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rptBD); 
+										PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rpt, rptBD); 
 									}
 	
 									rptBD.commit();
@@ -595,7 +595,7 @@ public class RptUtils {
 								// aggiornamento del pagamento portale
 								Long idPagamentoPortale = rpt.getIdPagamentoPortale();
 								if(idPagamentoPortale != null) {
-									PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rptBD2); 
+									PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rpt, rptBD2); 
 								}
 
 								rptBD2.commit();

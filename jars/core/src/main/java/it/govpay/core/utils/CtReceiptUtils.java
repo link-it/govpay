@@ -57,6 +57,7 @@ import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
+import it.govpay.model.Rpt.Versione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 
@@ -196,6 +197,8 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, e.getMessage(), codDominio);
 			}
+			
+			boolean isCarrello = RtUtils.isCarrelloRpt(rpt);
 
 			// Faccio adesso la select for update, altrimenti in caso di 
 			// ricezione di due RT afferenti allo stesso carrello di pagamento
@@ -205,12 +208,14 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 			Long idPagamentoPortale = rpt.getIdPagamentoPortale();
 
-			@SuppressWarnings("unused")
-			List<Rpt> rptsCarrello = null; 
-			if(idPagamentoPortale != null) {
-				RptFilter filter = rptBD.newFilter();
-				filter.setIdPagamentoPortale(idPagamentoPortale);
-				rptsCarrello = rptBD.findAll(filter);
+			if(isCarrello) {
+				@SuppressWarnings("unused")
+				List<Rpt> rptsCarrello = null; 
+				if(idPagamentoPortale != null) {
+					RptFilter filter = rptBD.newFilter();
+					filter.setIdPagamentoPortale(idPagamentoPortale);
+					rptsCarrello = rptBD.findAll(filter);
+				}
 			}
 
 			// Rifaccio la getRpt adesso che ho il lock per avere lo stato aggiornato
@@ -530,6 +535,8 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, e.getMessage(), codDominio);
 			}
+			
+			boolean isCarrello = RtUtils.isCarrelloRpt(rpt);
 
 			// Faccio adesso la select for update, altrimenti in caso di 
 			// ricezione di due RT afferenti allo stesso carrello di pagamento
@@ -539,12 +546,14 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 			Long idPagamentoPortale = rpt.getIdPagamentoPortale();
 
-			@SuppressWarnings("unused")
-			List<Rpt> rptsCarrello = null; 
-			if(idPagamentoPortale != null) {
-				RptFilter filter = rptBD.newFilter();
-				filter.setIdPagamentoPortale(idPagamentoPortale);
-				rptsCarrello = rptBD.findAll(filter);
+			if(isCarrello) {
+				@SuppressWarnings("unused")
+				List<Rpt> rptsCarrello = null; 
+				if(idPagamentoPortale != null) {
+					RptFilter filter = rptBD.newFilter();
+					filter.setIdPagamentoPortale(idPagamentoPortale);
+					rptsCarrello = rptBD.findAll(filter);
+				}
 			}
 
 			// Rifaccio la getRpt adesso che ho il lock per avere lo stato aggiornato

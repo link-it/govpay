@@ -1,5 +1,6 @@
 package it.govpay.core.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -25,7 +26,7 @@ public class PagamentoPortaleUtils {
 	
 	private static Logger log = LoggerWrapperFactory.getLogger(PagamentoPortaleUtils.class);
 
-	public static void aggiornaPagamentoPortale(Long idPagamentoPortale, BasicBD bd) throws ServiceException {
+	public static void aggiornaPagamentoPortale(Long idPagamentoPortale, Rpt rptCorrente, BasicBD bd) throws ServiceException {
 		IContext ctx = ContextThreadLocal.get();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		PagamentiPortaleBD pagamentiPortaleBD = null;
@@ -48,15 +49,24 @@ public class PagamentoPortaleUtils {
 			log.debug("Leggo pagamento portale id ["+idPagamentoPortale+"]"); 
 			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamento(idPagamentoPortale);
 			
+			List<Rpt> findAll = null;
 
-			RptBD rptBD = new RptBD(bd);
-			rptBD.setAtomica(false); // connessione condivisa
-			RptFilter filter = rptBD.newFilter();
-			filter.setIdPagamentoPortale(idPagamentoPortale);
+			// Pagamento Modello 1 controllo le altre RPT altrimenti evito una ricerca sul DB e utilizzo la sola RPT passata come parametro
+			if(pagamentoPortale.getTipo() == 1) {
+				RptBD rptBD = new RptBD(bd);
+				rptBD.setAtomica(false); // connessione condivisa
+				RptFilter filter = rptBD.newFilter();
+				filter.setIdPagamentoPortale(idPagamentoPortale);
+				
+				findAll = rptBD.findAll(filter);
+				
+				log.debug("Trovate  ["+findAll.size()+"] RPT associate"); 
+			} else {
+				findAll = new ArrayList<>();
+				findAll.add(rptCorrente);
+				log.debug("Il nuovo stato del pagamento portale verra' deciso utilizzando ["+findAll.size()+"] RPT associata."); 
+			}
 			
-			List<Rpt> findAll = rptBD.findAll(filter);
-			
-			log.debug("Trovate  ["+findAll.size()+"] RPT associate"); 
 			boolean updateStato = true;
 			int numeroEseguiti = 0;
 			int numeroNonEseguiti = 0;
