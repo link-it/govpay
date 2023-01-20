@@ -241,6 +241,7 @@
 			<xsd:element name="idSessione" type="String255"/>
 			<xsd:element name="idApplicazione" type="id-applicazione" minOccurs="0"/>
 			<xsd:element name="srcVersanteIdentificativo" type="String35" minOccurs="0"/>
+			<xsd:element name="dataRichiesta" type="xsd:dateTime" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 

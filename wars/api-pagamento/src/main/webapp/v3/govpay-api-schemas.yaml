@@ -162,7 +162,7 @@ components:
         - NON_ESEGUITO
         - ESEGUITO_PARZIALE
         - DECORRENZA
-        - DECORRENZA_PARZIALE       
+        - DECORRENZA_PARZIALE
     FlussiRendicontazione:
       type: object
       allOf:

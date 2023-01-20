@@ -44,6 +44,7 @@ import it.govpay.core.ec.v1.converter.NotificaTerminazioneConverter;
 import it.govpay.core.ec.v2.converter.RicevuteConverter;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
@@ -332,8 +333,6 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 	}
 	
 	public String getRptKey() {
-		if(this.rpt != null)
-			return rpt.getCodDominio() + "@" + rpt.getIuv() + "@" + rpt.getCcp();
-		return "";
+		return RptUtils.getRptKey(this.rpt);
 	}
 }

@@ -12,26 +12,56 @@ servers:
   - url: /govpay/frontend/api/pagamento/rs/basic/v3/
 tags:
   - name: Ricevute
+  - name: Utenti
 security:
   - basicAuth: []    
 paths:
-  '/ricevute':
+  '/logout':
+    get:
+      summary: Logout
+      operationId: logout
+      tags:
+        - Utenti
+      responses:
+        '200':
+          description: Operazione eseguita con successo
+        '400':
+          $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'govpay-api-responses.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'
+  '/profilo':
+    get:
+      summary: Elenco delle acl associate all'utenza chiamante
+      tags:
+        - Utenti
+      operationId: getProfilo
+      responses:
+        '200':
+          description: Autorizzazioni dell'utenza chiamante
+          content:
+            application/json:
+              schema:
+                $ref: 'govpay-api-schemas.yaml#/components/schemas/Profilo'
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '500':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'   
+  '/ricevute/{idDominio}/{iuv}':
     get:
       operationId: findRicevute
-      summary: Ricerca delle ricevute di pagamento
+      summary: Ricerca delle ricevute di pagamento per identificativo transazione
       tags:
         - Ricevute
       parameters:
-        - $ref: 'govpay-api-parameters.yaml#/components/parameters/pagina'
-        - $ref: 'govpay-api-parameters.yaml#/components/parameters/risultatiPerPagina'
-        - $ref: 'govpay-api-parameters.yaml#/components/parameters/ordinamento'
-        - $ref: 'govpay-api-parameters.yaml#/components/parameters/idDominio'
-        - $ref: 'govpay-api-parameters.yaml#/components/parameters/dataDa'
-        - $ref: 'govpay-api-parameters.yaml#/components/parameters/dataA'
-        - $ref: 'govpay-api-parameters.yaml#/components/parameters/metadatiPaginazione'
-        - $ref: 'govpay-api-parameters.yaml#/components/parameters/maxRisultati'
-        - $ref: 'govpay-api-parameters.yaml#/components/parameters/iuv'
-        - $ref: 'govpay-api-parameters.yaml#/components/parameters/idRicevuta'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdDominio'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIuv'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/esitoRpp'
       responses:
         '200':
           description: Lista delle ricevute di pagamento
@@ -70,7 +100,12 @@ paths:
                 Pagamento standard: 
                   $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaEntrata'
                 Marca da bollo: 
-                  $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaMBT'              
+                  $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaMBT'
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+                example: stampa della ricevuta
         '400':
           $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'
         '401':

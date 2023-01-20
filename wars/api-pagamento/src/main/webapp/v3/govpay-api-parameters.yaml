@@ -119,6 +119,13 @@ components:
       required: false
       schema:
         type: string
+    esitoRpp:
+      name: esito
+      in: query
+      description: Esito della transazione
+      required: false
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/EsitoRpp'
     idA2A:
       name: idA2A
       in: query

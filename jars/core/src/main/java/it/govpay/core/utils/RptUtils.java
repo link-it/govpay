@@ -54,7 +54,6 @@ import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
-import it.govpay.core.beans.EventoContext.Azione;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
@@ -621,5 +620,11 @@ public class RptUtils {
 		} catch(NotFoundException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	public static String getRptKey(Rpt rpt) {
+		if(rpt != null)
+			return rpt.getCodDominio() + "@" + rpt.getIuv() + "@" + rpt.getCcp();
+		return "";
 	}
 }

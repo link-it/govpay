@@ -56,6 +56,9 @@ public class RptFilter extends AbstractFilter {
 	private List<String> divisione;
 	private String tassonomia;
 	private String anagraficaDebitore;
+	private Boolean ricevute;
+	private Date dataPagamentoA;
+	private Date dataPagamentoDa;
 
 	public RptFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -184,6 +187,21 @@ public class RptFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.dataPagamentoDa != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.greaterEquals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.DATA_RICHIESTA, this.dataPagamentoDa);
+				addAnd = true;
+			}
+			if(this.dataPagamentoA != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.lessEquals(VistaRptVersamento.model().ID_PAGAMENTO_PORTALE.DATA_RICHIESTA, this.dataPagamentoA);
+				addAnd = true;
+			}
+			
 			if(this.codApplicazione != null) {
 				if(addAnd)
 					newExpression.and();
@@ -293,6 +311,19 @@ public class RptFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.ilike(VistaRptVersamento.model().VRS_DEBITORE_ANAGRAFICA, this.anagraficaDebitore, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.ricevute != null) { 
+				if(addAnd)
+					newExpression.and();
+				
+				if(this.ricevute) { // ricerco solo rpt con ricevuta
+					newExpression.isNotNull(VistaRptVersamento.model().COD_MSG_RICEVUTA);
+				} else {
+					newExpression.isNull(VistaRptVersamento.model().COD_MSG_RICEVUTA);
+				}
+				
 				addAnd = true;
 			}
 
@@ -457,6 +488,29 @@ public class RptFilter extends AbstractFilter {
 						converter.toColumn(model.VRS_SRC_DEBITORE_IDENTIFICATIVO, true) + " = ? ");
 			}
 			
+			if(this.dataPagamentoDa != null) {
+				if(!addTabellaPagamentiPortale) {
+					// RPT -> PP
+					sqlQueryObject.addFromTable(tableNamePagamentiPortale);
+					sqlQueryObject.addWhereCondition(tableNamePagamentiPortale+".id="+tableNameRPT+".id_pagamento_portale");
+					
+					addTabellaPagamentiPortale = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_PAGAMENTO_PORTALE.DATA_RICHIESTA, true) + " >= ? ");
+			}
+			if(this.dataPagamentoA != null) {
+				if(!addTabellaPagamentiPortale) {
+					// RPT -> PP
+					sqlQueryObject.addFromTable(tableNamePagamentiPortale);
+					sqlQueryObject.addWhereCondition(tableNamePagamentiPortale+".id="+tableNameRPT+".id_pagamento_portale");
+					
+					addTabellaPagamentiPortale = true;
+				}
+				
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.ID_PAGAMENTO_PORTALE.DATA_RICHIESTA, true) + " <= ? ");
+			}
+			
 			if(this.codApplicazione != null) {
 				if(!addTabellaApplicazioni) {
 					// PP -> A
@@ -537,6 +591,14 @@ public class RptFilter extends AbstractFilter {
 			if(this.anagraficaDebitore != null) {
 				sqlQueryObject.addWhereLikeCondition(converter.toColumn(model.VRS_DEBITORE_ANAGRAFICA, true), this.anagraficaDebitore, true, true);
 			}
+			
+			if(this.ricevute != null) { 
+				if(this.ricevute) { // ricerco solo rpt con ricevuta
+					sqlQueryObject.addWhereIsNotNullCondition(converter.toColumn(model.COD_MSG_RICEVUTA, true));
+				} else {
+					sqlQueryObject.addWhereIsNullCondition(converter.toColumn(model.COD_MSG_RICEVUTA, true));
+				}
+			}
 
 			return sqlQueryObject;
 		} catch (ExpressionException e) {
@@ -604,6 +666,13 @@ public class RptFilter extends AbstractFilter {
 			lst.add(this.cfCittadinoPagamentoPortale.toUpperCase());
 		}
 		
+		if(this.dataPagamentoDa != null) {
+			lst.add(this.dataPagamentoDa);
+		}
+		if(this.dataPagamentoA != null) {
+			lst.add(this.dataPagamentoA);
+		}
+		
 		if(this.codApplicazione != null) {
 			lst.add(this.codApplicazione);
 		}
@@ -655,6 +724,10 @@ public class RptFilter extends AbstractFilter {
 		}
 		
 		if(this.anagraficaDebitore != null) {
+			// donothing
+		}
+		
+		if(this.ricevute != null) { 
 			// donothing
 		}
 		
@@ -876,5 +949,29 @@ public class RptFilter extends AbstractFilter {
 
 	public void setAnagraficaDebitore(String anagraficaDebitore) {
 		this.anagraficaDebitore = anagraficaDebitore;
+	}
+
+	public Boolean getRicevute() {
+		return ricevute;
+	}
+
+	public void setRicevute(Boolean ricevute) {
+		this.ricevute = ricevute;
+	}
+
+	public Date getDataPagamentoA() {
+		return dataPagamentoA;
+	}
+
+	public void setDataPagamentoA(Date dataPagamentoA) {
+		this.dataPagamentoA = dataPagamentoA;
+	}
+
+	public Date getDataPagamentoDa() {
+		return dataPagamentoDa;
+	}
+
+	public void setDataPagamentoDa(Date dataPagamentoDa) {
+		this.dataPagamentoDa = dataPagamentoDa;
 	}
 }

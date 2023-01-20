@@ -41,6 +41,7 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.RtUtils;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
@@ -126,7 +127,7 @@ public class RptDAO extends BaseDAO{
 			}
 			
 			if(rpt.getXmlRt() == null)
-				throw new RicevutaNonTrovataException(null);
+				throw new RicevutaNonTrovataException("Ricevuta ["+RptUtils.getRptKey(rpt)+"] non trovata.");
 
 			if(leggiRicevutaDTO.getFormato().equals(FormatoRicevuta.PDF)) {
 				it.govpay.core.business.RicevutaTelematica avvisoBD = new it.govpay.core.business.RicevutaTelematica();
@@ -235,6 +236,9 @@ public class RptDAO extends BaseDAO{
 		filter.setIdUnita(listaRptDTO.getIdUnita());
 		filter.setAnagraficaDebitore(listaRptDTO.getAnagraficaDebitore());
 		filter.setEseguiCountConLimit(listaRptDTO.isEseguiCountConLimit());
+		filter.setRicevute(listaRptDTO.isRicevute());
+		filter.setDataPagamentoDa(listaRptDTO.getDataPagamentoDa());
+		filter.setDataPagamentoA(listaRptDTO.getDataPagamentoA());
 		
 		Long count = null;
 		
