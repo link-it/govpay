@@ -86,7 +86,7 @@ public class RicevuteConverter {
 			rsModel.setIdSessionePsp(rpt.getPagamentoPortale(configWrapper).getIdSessionePsp());
 		}
 
-		rsModel.setPendenza(PendenzeConverter.toPendenzaPagataRsModel(rpt));
+		rsModel.setPendenza(PendenzeConverter.toPendenzaPagataRsModel(rpt, user));
 
 		rsModel.setDataPagamento(rpt.getDataMsgRicevuta());
 

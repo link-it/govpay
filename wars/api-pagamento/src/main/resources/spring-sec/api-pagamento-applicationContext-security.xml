@@ -305,6 +305,8 @@
         
         <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointPublic" pattern="/rs/public/v3/**">
                 <csrf disabled="true"/>
+                <intercept-url pattern="/rs/public/v3/pendenze" access="denyAll" />
+                <intercept-url pattern="/rs/public/v3/pendenze/**" access="isAnonymous()" method="GET" />
                 <intercept-url pattern="/rs/public/v3/ricevute/**" access="isAnonymous()" />
                 <intercept-url pattern="/rs/public/v3/**" access="denyAll" />
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterAnonymous" />

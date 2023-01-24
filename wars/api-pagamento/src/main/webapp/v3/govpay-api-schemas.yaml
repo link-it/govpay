@@ -1268,6 +1268,16 @@ components:
         - Acquisito
         - Anomalo
         - Rifiutato
+    StatoPendenza:
+      example: NON_ESEGUITA
+      type: string
+      enum:
+        - ESEGUITA
+        - NON_ESEGUITA
+        - ESEGUITA_PARZIALE
+        - ANNULLATA
+        - SCADUTA
+        - ANOMALA
     StatoRendicontazione:
       description: Stato della rendicontazione
       example: OK

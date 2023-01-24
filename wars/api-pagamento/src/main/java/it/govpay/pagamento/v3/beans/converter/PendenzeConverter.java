@@ -2,26 +2,38 @@ package it.govpay.pagamento.v3.beans.converter;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.springframework.security.core.Authentication;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.DateUtils;
+import it.govpay.model.Utenza.TIPO_UTENZA;
+import it.govpay.pagamento.v3.api.impl.PendenzeApiServiceImpl;
+import it.govpay.pagamento.v3.beans.AllegatoPendenza;
 import it.govpay.pagamento.v3.beans.Documento;
 import it.govpay.pagamento.v3.beans.LinguaSecondaria;
+import it.govpay.pagamento.v3.beans.PendenzaArchivio;
 import it.govpay.pagamento.v3.beans.PendenzaPagata;
 import it.govpay.pagamento.v3.beans.ProprietaPendenza;
 import it.govpay.pagamento.v3.beans.RiscossioneVocePagata;
 import it.govpay.pagamento.v3.beans.Soggetto;
+import it.govpay.pagamento.v3.beans.StatoPendenza;
 import it.govpay.pagamento.v3.beans.TipoRiferimentoVocePendenza.TipoBolloEnum;
 import it.govpay.pagamento.v3.beans.TipoSoggetto;
 import it.govpay.pagamento.v3.beans.TipoSogliaVincoloPagamento;
@@ -30,14 +42,119 @@ import it.govpay.pagamento.v3.beans.VoceDescrizioneImporto;
 import it.govpay.pagamento.v3.beans.VocePendenzaPagata;
 
 public class PendenzeConverter {
+	
+	public static PendenzaArchivio toPendenzaArchivioRsModel(LeggiPendenzaDTOResponse dto, Authentication user) throws ServiceException, UnsupportedEncodingException, IOException {
+		return toPendenzaArchivioRsModel(dto.getVersamento(), dto.getRpts(), dto.getAllegati(), user);
+	}
 
-	public static PendenzaPagata toPendenzaPagataRsModel(it.govpay.bd.model.Rpt rpt) throws ServiceException, IOException, UnsupportedEncodingException {
+	public static PendenzaArchivio toPendenzaArchivioRsModel(it.govpay.bd.model.Rpt rpt, Authentication user) throws ServiceException, IOException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Versamento versamento = rpt.getVersamento(configWrapper);
-		return toPendenzaPagataRsModel(rpt, versamento);
+		List<Allegato> allegati = versamento.getAllegati();
+		return toPendenzaArchivioRsModel(rpt, versamento, allegati, user);
 	}
+
+	public static PendenzaArchivio toPendenzaArchivioRsModel(Versamento versamento, List<it.govpay.bd.model.Rpt> listRpts, List<Allegato> allegati, Authentication user) throws ServiceException, IOException, UnsupportedEncodingException {
+		it.govpay.bd.model.Rpt rpt = null;
+
+		if(listRpts != null && listRpts.size() > 0)
+			rpt = listRpts.get(0); // sono ordinate per data decrescente
+
+		return toPendenzaArchivioRsModel(rpt , versamento, versamento.getAllegati(), user);
+	}
+
+	public static PendenzaArchivio toPendenzaArchivioRsModel(it.govpay.bd.model.Rpt rpt, Versamento versamento, List<Allegato> allegati, Authentication user) throws ServiceException, IOException, UnsupportedEncodingException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+
+		PendenzaArchivio rsModel = new PendenzaArchivio();
+
+		if(versamento.getCodAnnoTributario()!= null)
+			rsModel.setAnnoRiferimento(new BigDecimal(versamento.getCodAnnoTributario()));
+
+		rsModel.setCartellaPagamento(versamento.getCodLotto());
+
+		if(versamento.getCausaleVersamento()!= null)
+			rsModel.setCausale(versamento.getCausaleVersamento().getSimple());
+
+		rsModel.setDataScadenza(versamento.getDataScadenza());
+
+		rsModel.setDominio(DominiConverter.toRsModelIndex(versamento.getDominio(configWrapper)));
+		rsModel.setIdA2A(versamento.getApplicazione(configWrapper).getCodApplicazione());
+		rsModel.setIdPendenza(versamento.getCodVersamentoEnte());
+		if(versamento.getDatiAllegati() != null)
+			rsModel.setDatiAllegati(new RawObject(versamento.getDatiAllegati()));
+		
+		StatoPendenza statoPendenza = null;
+
+		switch(versamento.getStatoVersamento()) {
+		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
+			break;
+		case ESEGUITO: statoPendenza = StatoPendenza.ESEGUITA;
+			break;
+		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoPendenza.ESEGUITA;
+			break;
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
+			break;
+		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
+			break;
+		default:
+			break;
+		
+		}
+		
+		if(versamento.isAnomalo())
+			statoPendenza = StatoPendenza.ANOMALA;
+
+		rsModel.setStato(statoPendenza);
+
+		UnitaOperativa uo = versamento.getUo(configWrapper);
+		if(uo != null && !uo.getCodUo().equals(it.govpay.model.Dominio.EC)) {
+			rsModel.setUnitaOperativa(DominiConverter.toRsModelIndex(uo));
+		}
+
+		rsModel.setIdTipoPendenza(versamento.getTipoVersamento(configWrapper).getCodTipoVersamento());
+		rsModel.setDirezione(versamento.getDirezione());
+		rsModel.setDivisione(versamento.getDivisione());
+		rsModel.setTassonomia(versamento.getTassonomia());
+		rsModel.setUUID(versamento.getIdSessione());
+		rsModel.setSoggettoPagatore(controlloUtenzaPagatore(toSoggettoRsModel(versamento.getAnagraficaDebitore()),user));
+
+		rsModel.setDocumento(toDocumentoRsModel(versamento));
+
+		rsModel.setImporto(versamento.getImportoTotale());
+		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
+		rsModel.setDataValidita(versamento.getDataValidita());
+		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
+		rsModel.setAllegati(toAllegatiRsModel(allegati));
+
+		// Ciclo i singoli versamenti per inserire le voci
+		if(versamento.getSingoliVersamenti() != null) {
+			for(SingoloVersamento sv : versamento.getSingoliVersamenti()) {
 	
-	public static PendenzaPagata toPendenzaPagataRsModel(it.govpay.bd.model.Rpt rpt, Versamento versamento) throws ServiceException, IOException, UnsupportedEncodingException {
+				// Di ogni voce cerco, se esiste, la riscossione associata
+				int indiceDati = sv.getIndiceDati() == null ? 0 : sv.getIndiceDati().intValue();
+				Pagamento pagamento = null;
+				if(rpt != null) {
+					for(Pagamento p : rpt.getPagamenti(configWrapper)) {
+						if(p.getIndiceDati() == indiceDati) {
+							pagamento = p;
+							break;
+						}
+					}
+				}
+				rsModel.addVociItem(toRsModelVocePendenzaPagata(sv, pagamento));
+			}
+		}
+		return rsModel;
+	}
+
+	public static PendenzaPagata toPendenzaPagataRsModel(it.govpay.bd.model.Rpt rpt, Authentication user) throws ServiceException, IOException, UnsupportedEncodingException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+		Versamento versamento = rpt.getVersamento(configWrapper);
+		return toPendenzaPagataRsModel(rpt, versamento, user);
+	}
+
+	public static PendenzaPagata toPendenzaPagataRsModel(it.govpay.bd.model.Rpt rpt, Versamento versamento, Authentication user) throws ServiceException, IOException, UnsupportedEncodingException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 
 		PendenzaPagata rsModel = new PendenzaPagata();
@@ -68,7 +185,7 @@ public class PendenzeConverter {
 		rsModel.setDivisione(versamento.getDivisione());
 		rsModel.setTassonomia(versamento.getTassonomia());
 		rsModel.setUUID(versamento.getIdSessione());
-		rsModel.setSoggettoPagatore(toSoggettoRsModel(versamento.getAnagraficaDebitore()));
+		rsModel.setSoggettoPagatore(controlloUtenzaPagatore(toSoggettoRsModel(versamento.getAnagraficaDebitore()),user));
 
 		rsModel.setDocumento(toDocumentoRsModel(versamento));
 
@@ -84,18 +201,18 @@ public class PendenzeConverter {
 			int indiceDati = sv.getIndiceDati() == null ? 0 : sv.getIndiceDati().intValue();
 			Pagamento pagamento = null;
 			if(rpt != null) {
-			for(Pagamento p : rpt.getPagamenti(configWrapper)) {
-				if(p.getIndiceDati() == indiceDati) {
-					pagamento = p;
-					break;
+				for(Pagamento p : rpt.getPagamenti(configWrapper)) {
+					if(p.getIndiceDati() == indiceDati) {
+						pagamento = p;
+						break;
+					}
 				}
 			}
-		}
 			rsModel.addVociItem(toRsModelVocePendenzaPagata(sv, pagamento));
 		}
 		return rsModel;
 	}
-	
+
 	public static VocePendenzaPagata toRsModelVocePendenzaPagata(SingoloVersamento singoloVersamento, Pagamento pagamento) throws ServiceException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		VocePendenzaPagata rsModel = new VocePendenzaPagata();
@@ -145,7 +262,7 @@ public class PendenzeConverter {
 
 		return rsModel;
 	}
-	
+
 	public static ProprietaPendenza toProprietaPendenzaRsModel(it.govpay.core.beans.tracciati.ProprietaPendenza proprieta) {
 		ProprietaPendenza rsModel = null;
 		if(proprieta != null) {
@@ -190,7 +307,7 @@ public class PendenzeConverter {
 
 		return rsModel;
 	}
-	
+
 	private static Documento toDocumentoRsModel(Versamento versamento) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		if(versamento.getDocumento(configWrapper) != null) {
@@ -228,7 +345,7 @@ public class PendenzeConverter {
 		}
 		return null;
 	}
-	
+
 	public static Soggetto toSoggettoRsModel(it.govpay.model.Anagrafica anagrafica) {
 		if(anagrafica == null) return null;
 		Soggetto rsModel = new Soggetto();
@@ -249,7 +366,7 @@ public class PendenzeConverter {
 
 		return rsModel;
 	}
-	
+
 	public static Soggetto toSoggettoRsModel(CtSoggettoVersante soggettoVersante) {
 		if(soggettoVersante == null) return null;
 		Soggetto rsModel = new Soggetto();
@@ -269,5 +386,40 @@ public class PendenzeConverter {
 		//		rsModel.setCellulare(soggettoVersante.getCellulare());
 
 		return rsModel;
+	}
+
+	private static List<AllegatoPendenza> toAllegatiRsModel(List<Allegato> allegati) {
+		List<AllegatoPendenza> rsModel = null;
+
+		if(allegati != null && allegati.size() > 0) {
+			rsModel = new ArrayList<>();
+
+			for (Allegato allegato : allegati) {
+				AllegatoPendenza allegatoRsModel = new AllegatoPendenza();
+
+				allegatoRsModel.setNome(allegato.getNome());
+				allegatoRsModel.setTipo(allegato.getTipo());
+				allegatoRsModel.setDescrizione(allegato.getDescrizione());
+				allegatoRsModel.setContenuto(MessageFormat.format(PendenzeApiServiceImpl.DETTAGLIO_PATH_PATTERN, allegato.getId()));
+
+				rsModel.add(allegatoRsModel);
+			}
+		}
+
+		return rsModel;
+	}
+
+	public static Soggetto controlloUtenzaPagatore(Soggetto soggetto, Authentication user) {
+
+		GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
+
+		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+		}
+
+		if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+			return null;
+		}
+
+		return soggetto;
 	}
 }

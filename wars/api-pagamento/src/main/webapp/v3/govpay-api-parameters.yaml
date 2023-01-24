@@ -132,7 +132,15 @@ components:
       description: Identificativo del gestionale ente
       required: false
       schema:
-        $ref: 'govpay-api-schemas.yaml#/components/schemas/IdA2A'   
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/IdA2A'
+    idDebitore:
+      name: idDebitore
+      in: query
+      description: Identificativo del soggetto debitore della pendenza
+      required: false
+      schema:
+        type: string
+      example: 'RSSMRA30A01H501I'
     idDominio:
       name: idDominio
       in: query
@@ -214,7 +222,14 @@ components:
         type: boolean
         default: true
       example: true
-   
+    mostraSpontaneiNonPagati:
+      name: mostraSpontaneiNonPagati
+      in: query
+      description: Visualizza solo le pendenze di tipo Spontaneo non pagate
+      required: false
+      schema:
+        type: boolean
+        default: false
     ordinamento:
       name: ordinamento
       in: query
@@ -245,6 +260,13 @@ components:
       required: false
       schema:
         $ref: 'govpay-api-schemas.yaml#/components/schemas/StatoFlussoRendicontazione'
+    statoPendenza:
+      name: stato
+      in: query
+      description: Filtro sullo stato del pendenza
+      required: false
+      schema:
+        $ref: 'govpay-api-schemas.yaml#/components/schemas/StatoPendenza'
     statoRiscossione:
       name: stato
       in: query
