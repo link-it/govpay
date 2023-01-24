@@ -295,7 +295,7 @@ public abstract class BaseController {
 	}
 	
 	private Response handleUnprocessableEntityException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, UnprocessableEntityException e, String transactionId) {
-		this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
+		this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage() + ", " + e.getDetails());
 		
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.RICHIESTA);

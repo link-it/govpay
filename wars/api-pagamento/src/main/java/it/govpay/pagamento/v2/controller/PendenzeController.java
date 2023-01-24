@@ -99,13 +99,17 @@ public class PendenzeController extends BaseController {
 				if((idA2A != null && idPendenza != null)) {
 					 HttpSession session = this.request.getSession(false);
 					 if(session!= null) {
+						 log.debug("Aggiornamento della pendenza [idA2A:"+idA2A+", idPendenza: "+idPendenza+"] lettura della lista identificativi pendenze dalla sessione con id ["+session.getId()+"]");
 						 @SuppressWarnings("unchecked")
 						 Map<String, Versamento> listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
+						 
+						 log.debug("Letta lista identificativi pendenze: ["+(listaIdentificativi!= null ? (StringUtils.join(listaIdentificativi.keySet(), ",")): "non presente")+"]");
 						 
 						 if(listaIdentificativi == null || listaIdentificativi.size() == 0 || !listaIdentificativi.containsKey((idA2A+idPendenza)) ) {
 							 throw new UnprocessableEntityException("Impossibile effettuare l'operazione di aggiornamento, i paramentri 'idA2A' e 'idPendenza' non corrispondono a nessuna pendenza disponibile per l'utenza.");
 						 }
 					 } else {
+						 log.debug("Aggiornamento della pendenza [idA2A:"+idA2A+", idPendenza: "+idPendenza+"] lettura della pendenza dalla sessione non effettuato, perche' la sessione e' null");
 						 throw new UnprocessableEntityException("Impossibile effettuare l'operazione di aggiornamento, nessuna pendenza disponibile per l'utenza.");
 					 }
 					 isUpdate = true;

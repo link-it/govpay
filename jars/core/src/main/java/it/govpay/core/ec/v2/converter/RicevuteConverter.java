@@ -18,6 +18,7 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.model.Notifica;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.IOException;
@@ -51,9 +52,10 @@ public class RicevuteConverter {
 		if(rpt.getEsitoPagamento() != null)
 			rsModel.setEsito(EsitoRpp.fromRptEsitoPagamento(rpt.getEsitoPagamento().name()));
 		
-		if(rpt.getPagamentoPortale(configWrapper) != null) {
-			rsModel.setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
-			rsModel.setIdSessionePsp(rpt.getPagamentoPortale(configWrapper).getIdSessionePsp());
+		if(rpt.getIdPagamentoPortale() != null) {
+			PagamentoPortale pagamentoPortale = rpt.getPagamentoPortale(configWrapper);
+			rsModel.setIdPagamento(pagamentoPortale.getIdSessione());
+			rsModel.setIdSessionePsp(pagamentoPortale.getIdSessionePsp());
 		}
 		
 		rsModel.setPendenza(PendenzePagateConverter.toRsModel(rpt));

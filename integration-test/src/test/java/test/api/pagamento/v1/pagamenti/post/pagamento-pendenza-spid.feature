@@ -34,7 +34,7 @@ And match response == { id: '#notnull', location: '#notnull', redirect: '#notnul
 
 Given url pagamentiBaseurl
 And path '/pagamenti/byIdSession/', response.idSession
-And headers basicAutenticationHeader
+And headers spidHeaders
 When method get
 Then status 200
 

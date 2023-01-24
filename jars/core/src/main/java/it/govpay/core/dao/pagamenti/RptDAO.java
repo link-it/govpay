@@ -76,7 +76,9 @@ public class RptDAO extends BaseDAO{
 			Rpt	rpt = rptBD.getRpt(idDominio, iuv, ccp, true);
 			
 			response.setRpt(rpt);
-			rpt.getPagamentoPortale().getApplicazione(configWrapper);
+			if(rpt.getPagamentoPortale() != null) {
+				rpt.getPagamentoPortale().getApplicazione(configWrapper);
+			}
 			Versamento versamento = rpt.getVersamento();
 			response.setVersamento(versamento);
 			response.setApplicazione(versamento.getApplicazione(configWrapper)); 
@@ -113,7 +115,9 @@ public class RptDAO extends BaseDAO{
 			
 			rptBD = new RptBD(configWrapper);
 			Rpt rpt = rptBD.getRpt(leggiRicevutaDTO.getIdDominio(), leggiRicevutaDTO.getIuv(), leggiRicevutaDTO.getCcp(), true);
-			rpt.getPagamentoPortale().getApplicazione(configWrapper);
+			if(rpt.getPagamentoPortale() != null) {
+				rpt.getPagamentoPortale().getApplicazione(configWrapper);
+			}
 			Versamento versamento = rpt.getVersamento();
 			response.setVersamento(versamento);
 			versamento.getTipoVersamentoDominio(configWrapper);
@@ -390,7 +394,9 @@ public class RptDAO extends BaseDAO{
 			// ricarico l'RPT
 			rpt = rptBD.getRpt(idDominio, iuv, ccp, true);
 
-			rpt.getPagamentoPortale().getApplicazione(configWrapper);
+			if(rpt.getPagamentoPortale() != null) {
+				rpt.getPagamentoPortale().getApplicazione(configWrapper);
+			}
 			response.setRpt(rpt);
 			response.setVersamento(rpt.getVersamento());
 			response.setApplicazione(rpt.getVersamento().getApplicazione(configWrapper)); 

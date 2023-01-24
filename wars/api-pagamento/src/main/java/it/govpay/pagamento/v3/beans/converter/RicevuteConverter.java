@@ -21,6 +21,7 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.bd.model.Versamento;
@@ -81,9 +82,10 @@ public class RicevuteConverter {
 		if(rpt.getEsitoPagamento() != null)
 			rsModel.setEsito(EsitoRpp.fromRptEsitoPagamento(rpt.getEsitoPagamento().name()));
 
-		if(rpt.getPagamentoPortale(configWrapper) != null) {
-			rsModel.setIdPagamento(rpt.getPagamentoPortale(configWrapper).getIdSessione());
-			rsModel.setIdSessionePsp(rpt.getPagamentoPortale(configWrapper).getIdSessionePsp());
+		if(rpt.getIdPagamentoPortale() != null) {
+			PagamentoPortale pagamentoPortale = rpt.getPagamentoPortale(configWrapper);
+			rsModel.setIdPagamento(pagamentoPortale.getIdSessione());
+			rsModel.setIdSessionePsp(pagamentoPortale.getIdSessionePsp());
 		}
 
 		rsModel.setPendenza(PendenzeConverter.toPendenzaPagataRsModel(rpt, user));

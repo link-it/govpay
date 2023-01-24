@@ -596,11 +596,14 @@ public class Pagamento   {
 								rpt.setStato(StatoRpt.RPT_SCADUTA);
 								rpt.setDescrizioneStato("Tentativo di pagamento scaduto dopo timeout di "+GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()+" minuti.");
 								PagamentoPortale oldPagamentoPortale = rpt.getPagamentoPortale();
-								oldPagamentoPortale.setStato(STATO.NON_ESEGUITO);
-								oldPagamentoPortale.setDescrizioneStato("Tentativo di pagamento scaduto dopo timeout di "+GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()+" minuti.");
-
+								if(oldPagamentoPortale != null) {
+									oldPagamentoPortale.setStato(STATO.NON_ESEGUITO);
+									oldPagamentoPortale.setDescrizioneStato("Tentativo di pagamento scaduto dopo timeout di "+GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()+" minuti.");
+								}
 								rptBD.updateRpt(rpt.getId(), rpt);
-								ppbd.updatePagamento(oldPagamentoPortale, false, true);
+								if(oldPagamentoPortale != null) {
+									ppbd.updatePagamento(oldPagamentoPortale, false, true);
+								}
 								
 								rptBD.commit();
 								log.info("RPT [idDominio:"+rpt.getCodDominio()+"][iuv:"+rpt.getIuv()+"][ccp:"+rpt.getCcp()+"] annullata con successo.");

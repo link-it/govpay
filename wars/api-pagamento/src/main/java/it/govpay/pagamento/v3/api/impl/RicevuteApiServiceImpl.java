@@ -57,20 +57,20 @@ import it.govpay.pagamento.v3.beans.converter.RicevuteConverter;
  *
  */
 public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements RicevuteApi {
-	
-	
+
+
 	public RicevuteApiServiceImpl() {
 		super("ricevute", RicevuteApiServiceImpl.class);
 	}
 
 	/**
-     * Ricerca delle ricevute di pagamento per identificativo transazione
-     *
-     */
-    public Response findRicevute(String idDominio, String iuv, String esito) {
-    	this.buildContext();
-    	Authentication user = this.getUser();
-        String methodName = "findRicevute";
+	 * Ricerca delle ricevute di pagamento per identificativo transazione
+	 *
+	 */
+	public Response findRicevute(String idDominio, String iuv, String esito) {
+		this.buildContext();
+		Authentication user = this.getUser();
+		String methodName = "findRicevute";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
@@ -79,27 +79,27 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
-			
+
 			// Parametri - > DTO Input
 
 			ListaRptDTO listaRptDTO = new ListaRptDTO(user);
 
 			listaRptDTO.setEsitoPagamento(null);
-			
+
 			// path parameters
 			listaRptDTO.setIdDominio(idDominio);
 			listaRptDTO.setIuv(iuv);
-			
+
 			// esito
 			if(esito != null) {
 				EsitoRpp et = EsitoRpp.fromValue(esito);
-				
+
 				if(et == null) {
 					throw new ValidationException("Codifica inesistente per esito. Valore fornito [" + esito + "] valori possibili " + ArrayUtils.toString(EsitoRpp.values()));
 				}
-				
+
 				EsitoPagamento esitoPagamento = null;
-				
+
 				switch (et) {
 				case DECORRENZA:
 					esitoPagamento = EsitoPagamento.DECORRENZA_TERMINI;
@@ -123,25 +123,25 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 					esitoPagamento = EsitoPagamento.RIFIUTATO;
 					break;
 				}
-				
+
 				listaRptDTO.setEsitoPagamento(esitoPagamento);
 			}
-			
+
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaRptDTO.getUser());
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 				listaRptDTO.setCfCittadino(userDetails.getIdentificativo()); 
 			}
-			
+
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
 				listaRptDTO.setCfCittadino(TIPO_UTENZA.ANONIMO.toString()); 
-				
+
 				// utenza anonima puo' vedere le transazioni non piu' vecchie della soglia impostata nelle properties
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(new Date());
 				calendar.add(Calendar.MINUTE, -GovpayConfig.getInstance().getIntervalloDisponibilitaPagamentoUtenzaAnonima());
 				listaRptDTO.setDataPagamentoDa(calendar.getTime());
 			}
-			
+
 			// se sei una applicazione allora vedi i pagamenti che hai caricato
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
 				listaRptDTO.setIdA2APagamentoPortale(userDetails.getApplicazione().getCodApplicazione()); 
@@ -152,12 +152,12 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 			RptDAO rptDAO = new RptDAO();
 
 			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
-			
+
 			// se la ricerca per la coppia idDominio/iuv non ha prodotto alcun risultato allora restituisco 404
 			if(listaRptDTOResponse.getResults().size() == 0) {
 				throw new RicevutaNonTrovataException("Non sono presenti ricevute per [IdDominio: "+idDominio+", IUV: "+iuv+"].");
 			}
-			
+
 			// filtro dei risultati, vengono restituite solo e rpt con ricevuta e autorizzazione per il tipo utente.
 			List<LeggiRptDTOResponse> resultsFromDB = listaRptDTOResponse.getResults();
 			List<LeggiRptDTOResponse> resultsFiltrati = new ArrayList<>();
@@ -183,18 +183,18 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 		} finally {
 			this.log(ContextThreadLocal.get());
 		}
-    }
-    
-    /**
-     * Acquisizione di una ricevuta di avvenuto pagamento pagoPA
-     *
-     * Ricevuta pagoPA, sia questa veicolata nella forma di &#x60;RT&#x60; o di &#x60;recepit&#x60;, di esito positivo. 
-     *
-     */
-    public Response getRicevuta(String idDominio, String iuv, String idRicevuta) {
-    	this.buildContext();
-        Authentication user = this.getUser();
-        String methodName = "getRicevuta";
+	}
+
+	/**
+	 * Acquisizione di una ricevuta di avvenuto pagamento pagoPA
+	 *
+	 * Ricevuta pagoPA, sia questa veicolata nella forma di &#x60;RT&#x60; o di &#x60;recepit&#x60;, di esito positivo. 
+	 *
+	 */
+	public Response getRicevuta(String idDominio, String iuv, String idRicevuta) {
+		this.buildContext();
+		Authentication user = this.getUser();
+		String methodName = "getRicevuta";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 
@@ -216,74 +216,80 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 			leggiRptDTO.setCcp(idRicevuta);
 
 			RptDAO ricevuteDAO = new RptDAO();
-			
+
 			LeggiRicevutaDTOResponse ricevutaDTOResponse = null;
 			if(accept.toLowerCase().contains("application/pdf")) {
 				leggiRptDTO.setFormato(FormatoRicevuta.PDF);
 				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiRptDTO);
 				String rtPdfEntryName = idDominio +"_"+ iuv + "_"+ idRicevuta + ".pdf";
 				byte[] b = ricevutaDTOResponse.getPdf(); 
-				
+
 				checkAutorizzazioniUtenza(leggiRptDTO.getUser(), ricevutaDTOResponse.getRpt());
 				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
 			} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
 				leggiRptDTO.setFormato(FormatoRicevuta.JSON);
 				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiRptDTO);
-				
+
 				checkAutorizzazioniUtenza(leggiRptDTO.getUser(), ricevutaDTOResponse.getRpt());
-				
+
 				Ricevuta response =  RicevuteConverter.toRsModel(ricevutaDTOResponse.getRpt(), user);
-				
+
 				return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 			} else {
 				// formato non accettato
 				throw new NotAcceptableException("Avviso di pagamento non disponibile nel formato indicato nell'header Accept, ricevuto: '"+accept+"', consentiti: {'application/pdf','application/json'}");
-			 
+
 			}
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
 			this.log(ContextThreadLocal.get());
 		}
-    }
-    
-    private void checkAutorizzazioniUtenza(Authentication user, Rpt rpt) throws ServiceException, NotAuthorizedException {
-    	BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+	}
+
+	private void checkAutorizzazioniUtenza(Authentication user, Rpt rpt) throws ServiceException, NotAuthorizedException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		PagamentoPortale pagamentoPortale = rpt.getPagamentoPortale(configWrapper);
 		Versamento versamento = rpt.getVersamento(); 
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(user);
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-			if((pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(details.getUtenza().getIdentificativo()))
-					&& !versamento.getAnagraficaDebitore().getCodUnivoco().equals(details.getUtenza().getIdentificativo())) {
-				throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce un pagamento che non appartiene al cittadino chiamante");
+			if(pagamentoPortale != null) {
+				if((pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(details.getUtenza().getIdentificativo()))
+						&& !versamento.getAnagraficaDebitore().getCodUnivoco().equals(details.getUtenza().getIdentificativo())) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce un pagamento che non appartiene al cittadino chiamante");
+				}
 			}
 		}
-		
-		if(details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
-			if(pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(TIPO_UTENZA.ANONIMO.toString())) {
-				throw AuthorizationManager.toNotAuthorizedException(user);
-			}
-			
-			// pagamento terminato e' disponibile solo per un numero di minuti definito in configurazione
-			if(pagamentoPortale.getDataRichiesta() != null) {
-				long dataPagamentoTime = pagamentoPortale.getDataRichiesta().getTime();
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(new Date());
-				calendar.add(Calendar.MINUTE, -GovpayConfig.getInstance().getIntervalloDisponibilitaPagamentoUtenzaAnonima());
-				long riferimentoTime = calendar.getTimeInMillis();
 
-				// il pagamento e' stato eseguito prima dei minuti precedenti il momento della richiesta.
-				if(dataPagamentoTime < riferimentoTime)
+		if(details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+			if(pagamentoPortale != null) {
+				if(pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(TIPO_UTENZA.ANONIMO.toString())) {
 					throw AuthorizationManager.toNotAuthorizedException(user);
+				}
+
+				// pagamento terminato e' disponibile solo per un numero di minuti definito in configurazione
+				if(pagamentoPortale.getDataRichiesta() != null) {
+					long dataPagamentoTime = pagamentoPortale.getDataRichiesta().getTime();
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(new Date());
+					calendar.add(Calendar.MINUTE, -GovpayConfig.getInstance().getIntervalloDisponibilitaPagamentoUtenzaAnonima());
+					long riferimentoTime = calendar.getTimeInMillis();
+
+					// il pagamento e' stato eseguito prima dei minuti precedenti il momento della richiesta.
+					if(dataPagamentoTime < riferimentoTime)
+						throw AuthorizationManager.toNotAuthorizedException(user);
+				}
 			}
 		}
-		
+
 		// se sei una applicazione allora vedi i pagamenti che hai caricato
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-			if(pagamentoPortale.getApplicazione(configWrapper) == null || 
-					!pagamentoPortale.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
-				throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce un pagamento che non appartiene all'applicazione chiamante");
+			if(pagamentoPortale != null) {
+				if(pagamentoPortale.getApplicazione(configWrapper) == null || 
+						!pagamentoPortale.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce un pagamento che non appartiene all'applicazione chiamante");
+				}
 			}
 		}
 	}

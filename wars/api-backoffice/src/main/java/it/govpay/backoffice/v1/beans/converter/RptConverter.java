@@ -6,6 +6,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import it.govpay.backoffice.v1.beans.Rpp;
 import it.govpay.backoffice.v1.beans.RppIndex;
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 
@@ -45,9 +46,10 @@ public class RptConverter {
 
 		if(rpt.getIdPagamentoPortale() != null) {
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-			if(rpt.getPagamentoPortale(configWrapper).getTipo() == 1) {
+			PagamentoPortale pagamentoPortale = rpt.getPagamentoPortale(configWrapper);
+			if(pagamentoPortale.getTipo() == 1) {
 				rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.ENTE);
-			} else if(rpt.getPagamentoPortale(configWrapper).getTipo() == 3) {
+			} else if(pagamentoPortale.getTipo() == 3) {
 				rsModel.setModello(it.govpay.backoffice.v1.beans.ModelloPagamento.PSP);
 			}
 		}
