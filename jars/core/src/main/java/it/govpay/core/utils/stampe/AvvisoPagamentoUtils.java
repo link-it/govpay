@@ -124,10 +124,10 @@ public class AvvisoPagamentoUtils {
 				// pagina 1 con due rate se (#rate - 4 ) mod 9 ==0 || (#rate -8) mod 9 == 0
 				if(((versamenti.size() - 4) %9 ==0) ||((versamenti.size() - 8) %9 == 0)) {
 					log.debug("Documento ["+documento.getCodDocumento()+"] selezionato layout pagina principale a 2 colonne");
-					creaPaginaPrincipaleDoppia(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica);
+					creaPaginaPrincipaleDoppia(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica, log);
 				} else {
 					log.debug("Documento ["+documento.getCodDocumento()+"] selezionato layout pagina principale a 3 colonne");
-					creaPaginaPrincipaleTripla(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica);
+					creaPaginaPrincipaleTripla(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica, log);
 				}
 
 				// a questo punto creo tutte le pagine con 9 rate 
@@ -195,10 +195,10 @@ public class AvvisoPagamentoUtils {
 				// 2/3 rate in una sola pagina
 				if(versamenti.size()%3 != 0) { // 2 rate
 					log.debug("Documento ["+documento.getCodDocumento()+"] selezionato layout a 2 colonne");
-					creaPaginaPrincipaleDoppia(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica);
+					creaPaginaPrincipaleDoppia(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica, log);
 				} else { // 3 rate
 					log.debug("Documento ["+documento.getCodDocumento()+"] selezionato layout a 3 colonne");
-					creaPaginaPrincipaleTripla(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica);
+					creaPaginaPrincipaleTripla(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica, log);
 				}
 			}
 		} else if (versamenti.size() == 1) { // caso speciale di un documento con una sola rata
@@ -216,7 +216,7 @@ public class AvvisoPagamentoUtils {
 
 	private static void creaPaginaPrincipaleTripla(List<Versamento> versamenti, Documento documento, AvvisoPagamentoInput input,
 			BDConfigWrapper configWrapper, SimpleDateFormat sdfDataScadenza,
-			AvvisoPagamentoInputConf configurazioneStampa, List<Versamento> versamentiRataUnica)
+			AvvisoPagamentoInputConf configurazioneStampa, List<Versamento> versamentiRataUnica, Logger log)
 					throws ServiceException, UtilsException {
 		Versamento v1 = versamenti.remove(0);
 		Versamento v2 = versamenti.remove(0);
@@ -230,14 +230,17 @@ public class AvvisoPagamentoUtils {
 
 		if(configurazioneStampa.isAlmenoUnaRataUnica()) {
 			pagina.setUnica(getRata(versamentiRataUnica.get(0), input, sdfDataScadenza));
+			log.debug("Documento ["+documento.getCodDocumento()+"], pagina principale tripla aggiunta rata unica [NA: "+versamentiRataUnica.get(0).getNumeroAvviso()+"]");
 		}
+		
+		log.debug("Documento ["+documento.getCodDocumento()+"], pagina principale tripla aggiunte rate [NA1: "+v1.getNumeroAvviso()+"], [NA2: "+v2.getNumeroAvviso()+"], [NA3: "+v3.getNumeroAvviso()+"]");	
 
 		input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 	}
 
 	private static void creaPaginaPrincipaleDoppia(List<Versamento> versamenti, Documento documento, AvvisoPagamentoInput input,
 			BDConfigWrapper configWrapper, SimpleDateFormat sdfDataScadenza,
-			AvvisoPagamentoInputConf configurazioneStampa, List<Versamento> versamentiRataUnica)
+			AvvisoPagamentoInputConf configurazioneStampa, List<Versamento> versamentiRataUnica, Logger log)
 					throws ServiceException, UtilsException {
 		Versamento v1 = versamenti.remove(0);
 		Versamento v2 = versamenti.remove(0);
@@ -249,7 +252,10 @@ public class AvvisoPagamentoUtils {
 
 		if(configurazioneStampa.isAlmenoUnaRataUnica()) {
 			pagina.setUnica(getRata(versamentiRataUnica.get(0), input, sdfDataScadenza));
+			log.debug("Documento ["+documento.getCodDocumento()+"], pagina principale tripla aggiunta rata unica [NA: "+versamentiRataUnica.get(0).getNumeroAvviso()+"]");
 		}
+		
+		log.debug("Documento ["+documento.getCodDocumento()+"], pagina principale doppia aggiunte rate [NA1: "+v1.getNumeroAvviso()+"], [NA2: "+v2.getNumeroAvviso()+"]");
 
 		input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 	}
