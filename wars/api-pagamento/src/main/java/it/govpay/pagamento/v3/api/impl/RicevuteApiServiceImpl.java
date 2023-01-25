@@ -144,7 +144,13 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 
 			// se sei una applicazione allora vedi i pagamenti che hai caricato
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-				listaRptDTO.setIdA2APagamentoPortale(userDetails.getApplicazione().getCodApplicazione()); 
+//				listaRptDTO.setIdA2APagamentoPortale(userDetails.getApplicazione().getCodApplicazione()); 
+				
+				List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
+				if(domini == null) {
+					throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
+				}
+				listaRptDTO.setCodDomini(domini);
 			}
 
 			// INIT DAO
@@ -259,6 +265,10 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 						&& !versamento.getAnagraficaDebitore().getCodUnivoco().equals(details.getUtenza().getIdentificativo())) {
 					throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce un pagamento che non appartiene al cittadino chiamante");
 				}
+			} else {
+				if(!versamento.getAnagraficaDebitore().getCodUnivoco().equals(details.getUtenza().getIdentificativo())) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce un pagamento che non appartiene al cittadino chiamante");
+				}
 			}
 		}
 
@@ -285,11 +295,9 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 
 		// se sei una applicazione allora vedi i pagamenti che hai caricato
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-			if(pagamentoPortale != null) {
-				if(pagamentoPortale.getApplicazione(configWrapper) == null || 
-						!pagamentoPortale.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
-					throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce un pagamento che non appartiene all'applicazione chiamante");
-				}
+			if(versamento.getApplicazione(configWrapper) == null ||
+					!versamento.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
+				throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce una pendenza che non appartiene all'applicazione chiamante");
 			}
 		}
 	}

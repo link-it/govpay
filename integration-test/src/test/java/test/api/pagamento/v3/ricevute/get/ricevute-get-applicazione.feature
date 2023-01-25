@@ -21,26 +21,26 @@ And match response == risposta
 Examples:
 | rpt | httpStatus | risposta |
 | rpt_Anonimo_INCORSO_DOM1_SEGRETERIA | 404 | notFound.json |
-| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA  | 403 | errore_auth.json |
+| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA  | 200 | transazione-get-singolo_eseguito_ente.json |
 | rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A | 200 | transazione-get-singolo_eseguito_ente.json |
-| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 | 403 | errore_auth.json |
-| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA | 403 | errore_auth.json |
+| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 | 200 | transazione-get-singolo_eseguito_ente.json |
+| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA | 200 | transazione-get-singolo_noneseguito_ente.json |
 | rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A | 200 | transazione-get-singolo_noneseguito_ente.json |
-| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 | 403 | errore_auth.json |
-| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE | 403 | errore_auth.json |
+| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 | 200 | transazione-get-singolo_noneseguito_ente.json |
+| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE | 200 | transazione-get-singolo_eseguito_ente.json |
 | rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 200 | transazione-get-singolo_eseguito_ente.json |
-| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 403 | errore_auth.json |
-| rpt_Verdi_NONESEGUITO_DOM2_ENTRATASIOPE | 403 | errore_auth.json |
+| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 200 | transazione-get-singolo_eseguito_ente.json |
+| rpt_Verdi_NONESEGUITO_DOM2_ENTRATASIOPE | 200 | transazione-get-singolo_noneseguito_ente.json |
 | rpt_Verdi_RIFIUTATO_DOM1_LIBERO | 404 | notFound.json |
 | rpt_Verdi_INCORSO_DOM2_ENTRATASIOPE | 404 | notFound.json |
-| rpt_Rossi_ESEGUITO_DOM1_SEGRETERIA | 403 | errore_auth.json |
-| rpt_Rossi_NONESEGUITO_DOM1_SEGRETERIA | 403 | errore_auth.json |
-| rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE | 403 | errore_auth.json |
-| rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE | 403 | errore_auth.json |
+| rpt_Rossi_ESEGUITO_DOM1_SEGRETERIA | 200 | transazione-get-singolo_eseguito_ente.json |
+| rpt_Rossi_NONESEGUITO_DOM1_SEGRETERIA | 200 | transazione-get-singolo_noneseguito_ente.json |
+| rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE | 200 | transazione-get-singolo_eseguito_ente.json |
+| rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE | 200 | transazione-get-singolo_noneseguito_ente.json |
 | rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 200 | transazione-get-singolo_eseguito_ente.json |
-| rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 403 | errore_auth.json |
+| rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 200 | transazione-get-singolo_eseguito_ente.json |
 | rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A | 200 | transazione-get-singolo_noneseguito_ente.json |
-| rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 403 | errore_auth.json |
+| rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 200 | transazione-get-singolo_noneseguito_ente.json |
 
 @test2
 Scenario Outline: Lettura ricevute pagamento utenza applicazione formato pdf
@@ -57,26 +57,26 @@ Then status <httpStatus>
 Examples:
 | rpt | httpStatus |
 | rpt_Anonimo_INCORSO_DOM1_SEGRETERIA | 404 |
-| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA  | 403 |
+| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA  | 200 |
 | rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A | 200 |
-| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 | 403 |
-| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA | 403 |
+| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 | 200 |
+| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA | 200 |
 | rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A | 200 |
-| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 | 403 |
-| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE | 403 |
+| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 | 200 |
+| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE | 200 |
 | rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 200 |
-| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 403 |
-| rpt_Verdi_NONESEGUITO_DOM2_ENTRATASIOPE | 403 |
+| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 200 |
+| rpt_Verdi_NONESEGUITO_DOM2_ENTRATASIOPE | 200 |
 | rpt_Verdi_RIFIUTATO_DOM1_LIBERO | 404 |
 | rpt_Verdi_INCORSO_DOM2_ENTRATASIOPE | 404 |
-| rpt_Rossi_ESEGUITO_DOM1_SEGRETERIA | 403 |
-| rpt_Rossi_NONESEGUITO_DOM1_SEGRETERIA | 403 |
-| rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE | 403 |
-| rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE | 403 |
+| rpt_Rossi_ESEGUITO_DOM1_SEGRETERIA | 200 |
+| rpt_Rossi_NONESEGUITO_DOM1_SEGRETERIA | 200 |
+| rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE | 200 |
+| rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE | 200 |
 | rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 200 |
-| rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 403 |
+| rpt_Rossi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 200 |
 | rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A | 200 |
-| rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 403 |
+| rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 200 |
 
 
 Scenario: Verifica header accept
