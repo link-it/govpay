@@ -7,7 +7,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -18,7 +20,6 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
@@ -67,11 +68,13 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 	 * Ricerca delle ricevute di pagamento per identificativo transazione
 	 *
 	 */
+	@SuppressWarnings("unchecked")
 	public Response findRicevute(String idDominio, String iuv, String esito) {
 		this.buildContext();
 		Authentication user = this.getUser();
 		String methodName = "findRicevute";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			// autorizzazione sulla API
@@ -129,23 +132,53 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaRptDTO.getUser());
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-				listaRptDTO.setCfCittadino(userDetails.getIdentificativo()); 
+				listaRptDTO.setIdDebitore(userDetails.getIdentificativo()); // cittadino vede solo le pendenze di cui e' debitore. 
 			}
 
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
-				listaRptDTO.setCfCittadino(TIPO_UTENZA.ANONIMO.toString()); 
+				Map<String, Versamento> listaIdentificativi = null;
+				Map<String, String> listaAvvisi = null;
+				Versamento versamentoFromSession = null;
+				// leggere dalla sessione gli id pendenza per iuv-dominio
+				HttpSession session = this.request.getSession(false);
+				if(session!= null) {
+					listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+
+					String chiaveAvviso = idDominio+iuv;
+					if(iuv.length() == 18) {
+						listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE); 
+					} else {
+						listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
+					}
+
+					if(listaAvvisi != null && listaAvvisi.size() > 0) {
+						if(listaAvvisi.containsKey(chiaveAvviso)) {
+							String chiavePendenza = listaAvvisi.get(chiaveAvviso);
+
+							if(listaIdentificativi.containsKey(chiavePendenza)) {
+								versamentoFromSession = listaIdentificativi.get(chiavePendenza);
+							}
+						}
+					}
+				}
+						
+				if(versamentoFromSession != null) {
+					listaRptDTO.setIdA2A(versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione());
+					listaRptDTO.setIdPendenza(versamentoFromSession.getCodVersamentoEnte());
+				} else {
+					// non ho trovato una pendenza nella sessione
+					throw new RicevutaNonTrovataException("Non sono presenti ricevute per [IdDominio: "+idDominio+", IUV: "+iuv+"].");
+				}
 
 				// utenza anonima puo' vedere le transazioni non piu' vecchie della soglia impostata nelle properties
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(new Date());
 				calendar.add(Calendar.MINUTE, -GovpayConfig.getInstance().getIntervalloDisponibilitaPagamentoUtenzaAnonima());
-				listaRptDTO.setDataPagamentoDa(calendar.getTime());
+				listaRptDTO.setDataRtDa(calendar.getTime()); //  
 			}
 
-			// se sei una applicazione allora vedi i pagamenti che hai caricato
+			// una applicazione vede le pendenze che ha caricato
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-//				listaRptDTO.setIdA2APagamentoPortale(userDetails.getApplicazione().getCodApplicazione()); 
-				
 				List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
 				if(domini == null) {
 					throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
@@ -254,49 +287,66 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl implements Ricevu
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void checkAutorizzazioniUtenza(Authentication user, Rpt rpt) throws ServiceException, NotAuthorizedException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		PagamentoPortale pagamentoPortale = rpt.getPagamentoPortale(configWrapper);
 		Versamento versamento = rpt.getVersamento(); 
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(user);
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-			if(pagamentoPortale != null) {
-				if((pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(details.getUtenza().getIdentificativo()))
-						&& !versamento.getAnagraficaDebitore().getCodUnivoco().equals(details.getUtenza().getIdentificativo())) {
-					throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce un pagamento che non appartiene al cittadino chiamante");
-				}
-			} else {
-				if(!versamento.getAnagraficaDebitore().getCodUnivoco().equals(details.getUtenza().getIdentificativo())) {
-					throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce un pagamento che non appartiene al cittadino chiamante");
-				}
+			if(!versamento.getAnagraficaDebitore().getCodUnivoco().equals(details.getUtenza().getIdentificativo())) {
+				throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce una  pendenza che non appartiene al cittadino chiamante");
 			}
 		}
 
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
-			if(pagamentoPortale != null) {
-				if(pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(TIPO_UTENZA.ANONIMO.toString())) {
+			// pagamento terminato e' disponibile solo per un numero di minuti definito in configurazione
+			if(rpt.getDataMsgRicevuta() != null) {
+				long dataPagamentoTime = rpt.getDataMsgRicevuta().getTime();
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(new Date());
+				calendar.add(Calendar.MINUTE, -GovpayConfig.getInstance().getIntervalloDisponibilitaPagamentoUtenzaAnonima());
+				long riferimentoTime = calendar.getTimeInMillis();
+
+				// il pagamento e' stato eseguito prima dei minuti precedenti il momento della richiesta.
+				if(dataPagamentoTime < riferimentoTime)
 					throw AuthorizationManager.toNotAuthorizedException(user);
+			}
+			
+			Map<String, Versamento> listaIdentificativi = null;
+			Map<String, String> listaAvvisi = null;
+			Versamento versamentoFromSession = null;
+			// leggere dalla sessione gli id pendenza per iuv-dominio
+			HttpSession session = this.request.getSession(false);
+			if(session!= null) {
+				listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+
+				String chiaveAvviso = rpt.getCodDominio()+rpt.getIuv();
+				if(rpt.getIuv().length() == 18) {
+					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE); 
+				} else {
+					listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
 				}
 
-				// pagamento terminato e' disponibile solo per un numero di minuti definito in configurazione
-				if(pagamentoPortale.getDataRichiesta() != null) {
-					long dataPagamentoTime = pagamentoPortale.getDataRichiesta().getTime();
-					Calendar calendar = Calendar.getInstance();
-					calendar.setTime(new Date());
-					calendar.add(Calendar.MINUTE, -GovpayConfig.getInstance().getIntervalloDisponibilitaPagamentoUtenzaAnonima());
-					long riferimentoTime = calendar.getTimeInMillis();
+				if(listaAvvisi != null && listaAvvisi.size() > 0) {
+					if(listaAvvisi.containsKey(chiaveAvviso)) {
+						String chiavePendenza = listaAvvisi.get(chiaveAvviso);
 
-					// il pagamento e' stato eseguito prima dei minuti precedenti il momento della richiesta.
-					if(dataPagamentoTime < riferimentoTime)
-						throw AuthorizationManager.toNotAuthorizedException(user);
+						if(listaIdentificativi.containsKey(chiavePendenza)) {
+							versamentoFromSession = listaIdentificativi.get(chiavePendenza);
+						}
+					}
 				}
+			}
+					
+			if(versamentoFromSession == null) {
+				// non ho trovato una pendenza nella sessione
+				throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce una pendenza che non appartiene all'applicazione chiamante");
 			}
 		}
 
 		// se sei una applicazione allora vedi i pagamenti che hai caricato
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-			if(versamento.getApplicazione(configWrapper) == null ||
-					!versamento.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
+			if(!versamento.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
 				throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce una pendenza che non appartiene all'applicazione chiamante");
 			}
 		}
