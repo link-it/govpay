@@ -134,15 +134,15 @@ When method get
 Then status <httpStatus>
 
 Examples:
-| rpt | httpStatus | risposta | idPagamento | numRisultati | esito |
-| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA  | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA | 1 | 'ESEGUITO' |
-| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A | 1 | 'ESEGUITO' |
-| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 | 1 | 'ESEGUITO' |
-| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA | 404 | notFound.json | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA | 1 | 'NON_ESEGUITO' |
-| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A | 404 | notFound.json | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A | 1 | 'NON_ESEGUITO' |
-| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 | 404 | notFound.json | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 | 1 | 'NON_ESEGUITO' |
-| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE | 1 | 'ESEGUITO' |
-| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 1 | 'ESEGUITO' |
-| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 1 | 'ESEGUITO' |
+| rpt | httpStatus | risposta | idPagamento | 
+| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA  | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA |
+| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A |
+| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 |
+| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA | 404 | notFound.json | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA |
+| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A | 404 | notFound.json | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A |
+| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 | 404 | notFound.json | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 |
+| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE |
+| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A |
+| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 |
 
 
