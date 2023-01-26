@@ -4,7 +4,7 @@ Background:
 
 * callonce read('classpath:utils/workflow/modello1/v2/modello1-bunch-pagamenti-v3.feature')
 
-Scenario Outline: Lettura dettaglio pagamento utente anonimo
+Scenario Outline: Lettura dettaglio pagamento utente anonimo della transazione [<rpt>]
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v3', autenticazione: 'public'})
 * def risposta = read('msg/<risposta>')
@@ -17,7 +17,7 @@ And match response == risposta
 
 Examples:
 | rpt | httpStatus | risposta |
-| rpt_Anonimo_INCORSO_DOM1_SEGRETERIA | 200 | lista_vuota.json |
+| rpt_Anonimo_INCORSO_DOM1_SEGRETERIA | 404 | notFound.json |
 | rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA  | 404 | notFound.json |
 | rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A | 404 | notFound.json |
 | rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 | 404 | notFound.json |

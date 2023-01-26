@@ -6,7 +6,7 @@ Background:
 
 
 @test1
-Scenario Outline: Lettura dettaglio pagamento utente spid: [<idPagamento>]
+Scenario Outline: Lettura dettaglio pagamento utente spid: [<idPagamento>] della transazione [<rpt>] in formato json
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v3', autenticazione: 'spid'})
 
@@ -53,7 +53,7 @@ Examples:
 | rpt_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 200 | transazione-get-singolo_noneseguito_ente.json | idMessaggioRichiesta_Rossi_NONESEGUITO_DOM2_ENTRATASIOPE_A2A2 |
 
 @test2
-Scenario Outline: Lettura dettaglio pagamento utente spid versante: [<idPagamento>]
+Scenario Outline: Lettura dettaglio pagamento utente spid versante: [<idPagamento>] della transazione [<rpt>] in formato pdf
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v3', autenticazione: 'spid'})
 
@@ -88,7 +88,7 @@ Examples:
 
 
 @test3
-Scenario Outline: Lettura dettaglio pagamento utente spid versante: [<idPagamento>]
+Scenario Outline: Lettura dettaglio pagamento utente spid versante: [<idPagamento>] della transazione [<rpt>] in formato pdf
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v3', autenticazione: 'spid'})
 
@@ -109,15 +109,15 @@ Then status <httpStatus>
 
 Examples:
 | rpt | httpStatus | idPagamento |
-| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA  | 200 | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA |
-| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A | 200 | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A |
-| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 | 200 | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 |
-| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA | 200 | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA |
-| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A | 200 | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A |
-| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 | 200 | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 |
-| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE | 200 | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE |
-| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 200 | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A |
-| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 200 | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 |
+| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA  | 403 | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA |
+| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A | 403 | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A |
+| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 | 403 | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 |
+| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA | 403 | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA |
+| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A | 403 | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A |
+| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 | 403 | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 |
+| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE | 403 | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE |
+| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 403 | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A |
+| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 403 | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 |
 
 
 Scenario: Verifica header accept

@@ -6,7 +6,7 @@ Background:
 
 
 @test1
-Scenario Outline: Lettura dettaglio pagamento utente spid: [<idPagamento>] transazioni in corso
+Scenario Outline: Lettura dettaglio pagamento utente spid: [<idPagamento>] transazione [<rpt>] in corso
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v3', autenticazione: 'spid'})
 
@@ -36,7 +36,7 @@ Examples:
 | rpt_Verdi_INCORSO_DOM2_ENTRATASIOPE | 200 | lista_vuota.json | idMessaggioRichiesta_Verdi_INCORSO_DOM2_ENTRATASIOPE | 0 |
 
 @test1b
-Scenario Outline: Lettura dettaglio pagamento utente spid: [<idPagamento>] transazioni completate
+Scenario Outline: Lettura dettaglio pagamento utente spid: [<idPagamento>] transazione [<rpt>] completata
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v3', autenticazione: 'spid'})
 
@@ -129,19 +129,20 @@ Then status 200
 
 Given url pagamentiBaseurl
 And path '/ricevute', <rpt>.dominio.identificativoDominio, <rpt>.datiVersamento.identificativoUnivocoVersamento
-And param visualizzaSoggettoDebitore = true
 And headers spidHeaders
 When method get
 Then status <httpStatus>
 
 Examples:
 | rpt | httpStatus | risposta | idPagamento | numRisultati | esito |
-| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA  | 200 | lista_ricevute.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA | 1 | 'ESEGUITO' |
-| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A | 200 | lista_ricevute.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A | 1 | 'ESEGUITO' |
-| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 | 200 | lista_ricevute.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 | 1 | 'ESEGUITO' |
-| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA | 200 | lista_ricevute.json | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA | 1 | 'NON_ESEGUITO' |
-| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A | 200 | lista_ricevute.json | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A | 1 | 'NON_ESEGUITO' |
-| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 | 200 | lista_ricevute.json | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 | 1 | 'NON_ESEGUITO' |
-| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE | 200 | lista_ricevute.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE | 1 | 'ESEGUITO' |
-| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 200 | lista_ricevute.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 1 | 'ESEGUITO' |
-| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 200 | lista_ricevute.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 1 | 'ESEGUITO' |
+| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA  | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA | 1 | 'ESEGUITO' |
+| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A | 1 | 'ESEGUITO' |
+| rpt_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM1_SEGRETERIA_A2A2 | 1 | 'ESEGUITO' |
+| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA | 404 | notFound.json | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA | 1 | 'NON_ESEGUITO' |
+| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A | 404 | notFound.json | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A | 1 | 'NON_ESEGUITO' |
+| rpt_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 | 404 | notFound.json | idMessaggioRichiesta_Verdi_NONESEGUITO_DOM1_SEGRETERIA_A2A2 | 1 | 'NON_ESEGUITO' |
+| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE | 1 | 'ESEGUITO' |
+| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A | 1 | 'ESEGUITO' |
+| rpt_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 404 | notFound.json | idMessaggioRichiesta_Verdi_ESEGUITO_DOM2_ENTRATASIOPE_A2A2 | 1 | 'ESEGUITO' |
+
+
