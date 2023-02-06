@@ -82,9 +82,9 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
@@ -254,8 +254,10 @@ public class Rendicontazioni {
 					TipoIdRendicontazione idRendicontazione = rnd.getIdFlussoRendicontazione();
 					// Controllo che il flusso non sia su db
 					try {
+						log.debug("Verifico presenza del flusso [" + rnd.getCodDominio() + ", " + idRendicontazione.getIdentificativoFlusso() +", "+ idRendicontazione.getDataOraFlusso() + "]" );
 						// Uso la GET perche' la exists risulta buggata con la data nella tupla di identificazione
 						frBD.getFr(rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());
+						log.debug("Flusso di rendicontazione [" + rnd.getCodDominio() + ", " + idRendicontazione.getIdentificativoFlusso() +", "+ idRendicontazione.getDataOraFlusso() + "] gia' acquisito" );
 						// C'e' gia. Se viene da file, lo elimino
 						if(rnd.getFrFile() != null) {
 							try { 
@@ -267,12 +269,14 @@ public class Rendicontazioni {
 					} catch (NotFoundException e) {
 						// Flusso originale, lo aggiungo ma controllo che non sia gia' nella lista di quelli da aggiungere
 						if(!keys.contains(rnd.getCodDominio() + idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso().getTime())) {
-							log.debug("Flusso di rendicontazione [" + idRendicontazione.getIdentificativoFlusso() +", "+ idRendicontazione.getDataOraFlusso() + "] da acquisire" );
+							log.info("Flusso di rendicontazione [" + rnd.getCodDominio() + ", " + idRendicontazione.getIdentificativoFlusso() +", "+ idRendicontazione.getDataOraFlusso() + "] da acquisire" );
 							flussiDaAcquisire.add(rnd);
 							keys.add(rnd.getCodDominio() + idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso().getTime());
 						}
 					}
 				}
+				
+				log.info("Individuati "+flussiDaAcquisire.size()+" flussi di rendicontazione da acquisire");
 
 				for(RendicontazioneScaricata rnd : flussiDaAcquisire) {
 					TipoIdRendicontazione idRendicontazione = rnd.getIdFlussoRendicontazione();
@@ -281,8 +285,6 @@ public class Rendicontazioni {
 					
 					boolean hasFrAnomalia = false;
 					boolean isAggiornamento = false;
-					
-					
 					
 					NodoClient chiediFlussoRendicontazioneClient = null;
 					
@@ -382,7 +384,7 @@ public class Rendicontazioni {
 						fr.setCodFlusso(idRendicontazione.getIdentificativoFlusso());
 						fr.setIur(flussoRendicontazione.getIdentificativoUnivocoRegolamento());
 						fr.setDataAcquisizione(new Date());
-						fr.setDataFlusso(flussoRendicontazione.getDataOraFlusso());
+						fr.setDataFlusso(idRendicontazione.getDataOraFlusso());
 						fr.setDataRegolamento(flussoRendicontazione.getDataRegolamento());
 						fr.setNumeroPagamenti(flussoRendicontazione.getNumeroTotalePagamenti().longValue());
 						fr.setImportoTotalePagamenti(flussoRendicontazione.getImportoTotalePagamenti());
@@ -552,7 +554,12 @@ public class Rendicontazioni {
 								//controllo che non sia gia' stata  acquisita un rendicontazione per la tupla (codDominio,iuv,iur,indiceDati), in questo caso emetto una anomalia
 								if(fr.getRendicontazioni() != null) {
 									for (Rendicontazione r2 : fr.getRendicontazioni()) {
-										if(r2.getIuv().equals(rendicontazione.getIuv()) && r2.getIur().equals(rendicontazione.getIur()) && r2.getIndiceDati().intValue() == rendicontazione.getIndiceDati().intValue()) {
+										if(r2.getIuv().equals(rendicontazione.getIuv()) 
+												&& r2.getIur().equals(rendicontazione.getIur()) 
+												&& (   (r2.getIndiceDati() == null && rendicontazione.getIndiceDati()==null) 
+														|| 
+													   (r2.getIndiceDati() != null && rendicontazione.getIndiceDati()!=null && r2.getIndiceDati().compareTo(rendicontazione.getIndiceDati()) == 0)) 
+												) {
 											log.info("Rendicontazione [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] duplicata all'interno del flusso, in violazione delle specifiche PagoPA. Necessario intervento manuale per la risoluzione del problema.");
 											rendicontazione.addAnomalia("007115",
 													"Rendicontazione [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] duplicata all'interno del flusso, in violazione delle specifiche PagoPA. Necessario intervento manuale per la risoluzione del problema.");	

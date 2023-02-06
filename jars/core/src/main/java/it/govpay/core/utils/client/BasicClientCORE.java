@@ -563,11 +563,10 @@ public abstract class BasicClientCORE {
 
 
 			// Impostazione timeout
-			if(this.debug)
+			if(this.debug) {
 				log.debug("Impostazione timeout...");
-			if(this.debug)
-				log.info("Impostazione http timeout CT["+this.connectionTimeout+"] RT["+this.readTimeout+"] CReqT["+this.connectionRequestTimeout+"]",false);
-
+				log.debug("Impostazione http timeout CT["+this.connectionTimeout+"] RT["+this.readTimeout+"] CReqT["+this.connectionRequestTimeout+"]",false);
+			}
 			requestConfigBuilder.setConnectionRequestTimeout(this.connectionRequestTimeout);
 			requestConfigBuilder.setConnectTimeout(this.connectionTimeout);
 			requestConfigBuilder.setSocketTimeout(this.readTimeout);
@@ -595,7 +594,7 @@ public abstract class BasicClientCORE {
 				this.dumpRequest.getHeaders().put(SOAP_ACTION, "\"" + azione + "\"");
 				this.httpRequest.addHeader(SOAP_ACTION, "\"" + azione + "\"");
 				if(this.debug)
-					log.info("SOAP Action inviata ["+azione+"]",false);
+					log.debug("SOAP Action inviata ["+azione+"]",false);
 			}
 
 			// Authentication BASIC
