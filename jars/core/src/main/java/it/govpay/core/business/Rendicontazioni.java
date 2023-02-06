@@ -70,7 +70,6 @@ import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
-import it.govpay.core.beans.EventoContext.Azione;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
@@ -81,8 +80,8 @@ import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
@@ -553,7 +552,12 @@ public class Rendicontazioni {
 								//controllo che non sia gia' stata  acquisita un rendicontazione per la tupla (codDominio,iuv,iur,indiceDati), in questo caso emetto una anomalia
 								if(fr.getRendicontazioni() != null) {
 									for (Rendicontazione r2 : fr.getRendicontazioni()) {
-										if(r2.getIuv().equals(rendicontazione.getIuv()) && r2.getIur().equals(rendicontazione.getIur()) && r2.getIndiceDati().intValue() == rendicontazione.getIndiceDati().intValue()) {
+										if(r2.getIuv().equals(rendicontazione.getIuv()) 
+												&& r2.getIur().equals(rendicontazione.getIur()) 
+												&& (   (r2.getIndiceDati() == null && rendicontazione.getIndiceDati()==null) 
+														|| 
+													   (r2.getIndiceDati() != null && rendicontazione.getIndiceDati()!=null && r2.getIndiceDati().compareTo(rendicontazione.getIndiceDati()) == 0)) 
+												) {
 											log.info("Rendicontazione [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] duplicata all'interno del flusso, in violazione delle specifiche PagoPA. Necessario intervento manuale per la risoluzione del problema.");
 											rendicontazione.addAnomalia("007115",
 													"Rendicontazione [Dominio:" + codDominio + " Iuv:" + iuv + " Iur:" + iur + " Indice:" + indiceDati + "] duplicata all'interno del flusso, in violazione delle specifiche PagoPA. Necessario intervento manuale per la risoluzione del problema.");	
