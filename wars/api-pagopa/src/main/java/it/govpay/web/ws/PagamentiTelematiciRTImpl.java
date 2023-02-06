@@ -179,7 +179,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, identificativoDominio);
 			}
 
-			if(dominio.getIdStazione() != stazione.getId()) {
+			if(dominio.getIdStazione().compareTo(stazione.getId())!=0) {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, identificativoDominio);
 			}
 
@@ -326,7 +326,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
 			}
 
-			if(dominio.getIdStazione() != stazione.getId()) {
+			if(dominio.getIdStazione().compareTo(stazione.getId())!=0) {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 

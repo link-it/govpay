@@ -44,7 +44,7 @@ import net.sf.dynamicreports.report.definition.ReportParameters;
 
 public class TemplateBase {
 
-	public static final SimpleDateFormat sdf_ddMMyyyy;
+	public static final String sdf_ddMMyyyy = "dd/MM/yyyy";
 
 	public static final StyleBuilder rootStyle;
 	public static final StyleBuilder fontStyle8;
@@ -87,8 +87,6 @@ public class TemplateBase {
 
 
 	static {
-		sdf_ddMMyyyy = new SimpleDateFormat("dd/MM/yyyy");
-
 		rootFont = stl.font().setFontSize(10);
 		rootStyle = stl.style().setPadding(2).setFont(rootFont);
 		fontStyle8 = stl.style().setFont(rootFont).setFontSize(8);

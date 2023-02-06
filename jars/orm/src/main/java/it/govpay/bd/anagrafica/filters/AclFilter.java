@@ -41,7 +41,6 @@ public class AclFilter extends AbstractFilter {
 	private String principal = null;
 	private Long idUtenza = null;
 	private String servizio = null;
-	private Boolean forceServizio = null;
 	private Boolean forceRuolo = null;
 	private Boolean forcePrincipal = null;
 	
@@ -123,13 +122,6 @@ public class AclFilter extends AbstractFilter {
 				addAnd = true;
 			}
 
-			if(this.forceServizio != null && this.forceServizio.booleanValue() == true){
-				if(addAnd)
-					newExpression.and();
-				
-				newExpression.isNotNull(ACL.model().SERVIZIO);
-			}
-						
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

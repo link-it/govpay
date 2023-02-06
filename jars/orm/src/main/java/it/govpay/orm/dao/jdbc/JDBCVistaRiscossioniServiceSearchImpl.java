@@ -739,6 +739,10 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 	
 	protected Object findIdVistaRiscossioni(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVistaRiscossione id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
+		if(id == null) {
+			throw new ServiceException("Bad request");
+		}
+		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
@@ -776,13 +780,13 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 			if(throwNotFound){
 				throw new NotFoundException("Not Found");
 			}
+		} else {
+			IdVistaRiscossione idToRet = new IdVistaRiscossione();
+			idToRet.setCodDominio((String) id_vistaRiscossioni.get(0));
+			idToRet.setIuv((String) id_vistaRiscossioni.get(1));
+			idToRet.setIndiceDati((Integer) id_vistaRiscossioni.get(2));
+			return idToRet;
 		}
-		
-		IdVistaRiscossione idToRet = new IdVistaRiscossione();
-		idToRet.setCodDominio((String) id_vistaRiscossioni.get(0));
-		idToRet.setIuv((String) id_vistaRiscossioni.get(1));
-		idToRet.setIndiceDati((Integer) id_vistaRiscossioni.get(2));
-		
-		return idToRet;
+		return null;
 	}
 }

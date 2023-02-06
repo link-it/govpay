@@ -125,10 +125,6 @@ public class JDBCNotificaServiceSearchImpl implements IJDBCServiceSearchWithId<N
 	@Override
 	public List<IdNotifica> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        // default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
 		List<IdNotifica> list = new ArrayList<>();
 
 		try{
@@ -150,11 +146,6 @@ public class JDBCNotificaServiceSearchImpl implements IJDBCServiceSearchWithId<N
 	@Override
 	public List<Notifica> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-
-        // default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
         List<Notifica> list = new ArrayList<>();
 
 		try{
@@ -753,7 +744,15 @@ public class JDBCNotificaServiceSearchImpl implements IJDBCServiceSearchWithId<N
 	
 	protected Long findIdNotifica(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdNotifica id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
-
+		if(id == null)
+			throw new ServiceException("Bad request: id is null");
+		
+		if(sqlQueryObject == null)
+			throw new ServiceException("Bad request: sqlQueryObject is null");
+		
+		if(jdbcProperties == null)
+			throw new ServiceException("Bad request: jdbcProperties is null");
+		
 		if(id.getId() != null && id.getId().longValue() > 0) {
 			return id.getId();
 		}

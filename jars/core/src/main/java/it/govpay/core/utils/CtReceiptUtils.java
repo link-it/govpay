@@ -57,7 +57,6 @@ import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
-import it.govpay.model.Rpt.Versione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 
@@ -159,8 +158,10 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 	public static Rpt acquisisciRT(String codDominio, String iuv, PaSendRTReq ctRt, boolean recupero, boolean acquisizioneDaCruscotto) throws ServiceException, NdpException, UtilsException, GovPayException {
 
-		CtReceipt ctReceipt = ctRt != null ? ctRt.getReceipt() : null;
-		String receiptId = ctReceipt != null ? ctReceipt.getReceiptId() : "--";
+		if(ctRt == null || ctRt.getReceipt() == null) throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, "Ricevuta vuota", codDominio);
+		
+		CtReceipt ctReceipt = ctRt.getReceipt();
+		String receiptId = ctReceipt.getReceiptId();
 		
 		log.info("Acquisizione RT Dominio[" + codDominio + "], IUV["+iuv+"], ReceiptID ["+receiptId+"] in corso");
 		RptBD rptBD = null; 
@@ -497,8 +498,10 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 
 	public static Rpt acquisisciRT(String codDominio, String iuv, PaSendRTV2Request ctRt, boolean recupero, boolean acquisizioneDaCruscotto) throws ServiceException, NdpException, UtilsException, GovPayException {
 
-		CtReceiptV2 ctReceipt = ctRt != null ? ctRt.getReceipt() : null;
-		String receiptId = ctReceipt != null ? ctReceipt.getReceiptId() : "--";
+		if(ctRt == null || ctRt.getReceipt() == null) throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, "Ricevuta vuota", codDominio);
+		
+		CtReceiptV2 ctReceipt = ctRt.getReceipt();
+		String receiptId = ctReceipt.getReceiptId();
 		
 		log.info("Acquisizione RT Dominio[" + codDominio + "], IUV["+iuv+"], ReceiptID ["+receiptId+"] in corso");
 		RptBD rptBD = null; 

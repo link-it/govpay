@@ -829,7 +829,7 @@ public abstract class BasicClientCORE {
 					for(String key : dumpResponse.getHeaders().keySet()) { 
 						sb.append("\n\t" + key + ": " + dumpResponse.getHeaders().get(key));
 					}
-					sb.append("\n" + new String(msg));
+					if(msg != null) sb.append("\n" + new String(msg));
 					log.trace(sb.toString());
 				}
 			}

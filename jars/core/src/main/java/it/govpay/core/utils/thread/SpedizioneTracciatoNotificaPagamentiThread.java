@@ -283,6 +283,10 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			this.eventoCtx.setException(e);
 			
 		} finally {
+			if(connettore == null) {
+				// Il connettore non puo' essere null, altrimenti non viene schedulato
+				return;
+			}
 			this.popolaContextEvento(connettore.getTipoConnettore(), url, dumpRequest, dumpResponse, this.eventoCtx);
 			
 			

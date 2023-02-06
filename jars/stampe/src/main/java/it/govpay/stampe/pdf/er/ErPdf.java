@@ -6,6 +6,7 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.report;
 import static net.sf.dynamicreports.report.builder.DynamicReports.stl;
 
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,6 +60,7 @@ public class ErPdf {
 	}
 
 	private static ComponentBuilder<?, ?> createRicevutaPagamentoList(String label , ER er, String causale) {
+		SimpleDateFormat sdf_ddMMyyyy = new SimpleDateFormat(TemplateBase.sdf_ddMMyyyy);
 		HorizontalListBuilder list = cmp.horizontalList().setBaseStyle(stl.style(TemplateBase.fontStyle12).setLeftPadding(10));
 		CtDatiEsitoRevoca datiPagamento = er.getDatiRevoca(); 
 		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_CAUSALE, causale);
@@ -72,7 +74,7 @@ public class ErPdf {
 			CtDatiSingoloEsitoRevoca ctDatiSingoloPagamentoRT = datiSingoloPagamento.get(0); 
 
 			Date dataEsitoSingoloPagamento = er.getDataOraMessaggioEsito();
-			TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_DATA_REVOCA, TemplateBase.sdf_ddMMyyyy.format(dataEsitoSingoloPagamento));
+			TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_DATA_REVOCA, sdf_ddMMyyyy.format(dataEsitoSingoloPagamento));
 			TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_IUR, ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione());
 		}
 		String labelIstitutoAttestante = er.getIstitutoAttestante().getDenominazioneMittente() + " (C.F. " + er.getIstitutoAttestante().getIdentificativoUnivocoMittente().getCodiceIdentificativoUnivoco()+ ")";

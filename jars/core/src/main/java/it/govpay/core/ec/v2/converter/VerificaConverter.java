@@ -25,14 +25,12 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.serialization.SerializationConfig;
 
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.ValidationException;
-import org.openspcoop2.utils.serialization.SerializationConfig;
-
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
-import it.govpay.ec.v2.beans.TipoSogliaVincoloPagamento;
 import it.govpay.ec.v2.beans.Contabilita;
 import it.govpay.ec.v2.beans.NuovaPendenza;
 import it.govpay.ec.v2.beans.NuovaVocePendenza;
@@ -41,6 +39,7 @@ import it.govpay.ec.v2.beans.PendenzaVerificata;
 import it.govpay.ec.v2.beans.ProprietaPendenza;
 import it.govpay.ec.v2.beans.QuotaContabilita;
 import it.govpay.ec.v2.beans.Soggetto;
+import it.govpay.ec.v2.beans.TipoSogliaVincoloPagamento;
 import it.govpay.ec.v2.beans.VoceDescrizioneImporto;
 import it.govpay.model.Versamento.StatoVersamento;
 

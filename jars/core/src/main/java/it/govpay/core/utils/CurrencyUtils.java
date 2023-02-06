@@ -67,9 +67,7 @@ public class CurrencyUtils {
 		StringBuilder sb = new StringBuilder();
 		String currencyAsString = this.getCurrencyAsString(value,this.locale);
 		sb.append(currencyAsString);
-		if(StringUtils.isNotEmpty(currencyAsString));
-			sb.append(EURO);
-			
+		sb.append(EURO);
 		return sb.toString();
 	}
 	

@@ -55,7 +55,9 @@ public class CSVUtils {
 				br.readLine();
 				skip--;
 			} else {
-				lst.add(br.readLine().getBytes());
+				String readLine = br.readLine();
+				if(readLine != null)
+					lst.add(readLine.getBytes());
 			}
 		}
 		return lst;

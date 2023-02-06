@@ -280,10 +280,11 @@ public class EventiBD extends BasicBD {
 			}
 			
 			Long count = 0L;
-			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
-			}
+			if(nativeQuery != null)
+				for (List<Object> row : nativeQuery) {
+					int pos = 0;
+					count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				}
 			
 			return count.longValue();
 		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {

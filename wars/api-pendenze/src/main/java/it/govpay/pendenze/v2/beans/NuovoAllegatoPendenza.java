@@ -105,7 +105,7 @@ public class NuovoAllegatoPendenza extends JSONSerializable  implements IValidab
     return Objects.equals(nome, nuovoAllegatoPendenza.nome) &&
         Objects.equals(tipo, nuovoAllegatoPendenza.tipo) &&
         Objects.equals(descrizione, nuovoAllegatoPendenza.descrizione) &&
-        Objects.equals(contenuto, nuovoAllegatoPendenza.contenuto);
+        java.util.Arrays.equals(contenuto, nuovoAllegatoPendenza.contenuto);
   }
 
   @Override

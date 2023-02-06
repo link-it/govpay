@@ -3,6 +3,7 @@ package it.govpay.pagamento.v2.beans;
 
 import java.util.Objects;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.core.exceptions.ValidationException;
 
@@ -107,7 +108,7 @@ public class NuovoAllegatoPendenza extends JSONSerializable  implements IValidab
     return Objects.equals(nome, nuovoAllegatoPendenza.nome) &&
         Objects.equals(tipo, nuovoAllegatoPendenza.tipo) &&
         Objects.equals(descrizione, nuovoAllegatoPendenza.descrizione) &&
-        Objects.equals(contenuto, nuovoAllegatoPendenza.contenuto);
+        ArrayUtils.isEquals(contenuto, nuovoAllegatoPendenza.contenuto);
   }
 
   @Override

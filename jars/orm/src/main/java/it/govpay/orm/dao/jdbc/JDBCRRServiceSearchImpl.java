@@ -125,12 +125,7 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 	@Override
 	public List<IdRr> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-
-		// default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
-        List<IdRr> list = new ArrayList<>();
+		List<IdRr> list = new ArrayList<>();
 
 		try{
 			List<IField> fields = new ArrayList<>();
@@ -153,10 +148,6 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 	@Override
 	public List<RR> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		// default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
         List<RR> list = new ArrayList<>();
 
 		try{
@@ -706,7 +697,11 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 	
 	protected Long findIdRR(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRr id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
-		if(id!=null && id.getId()>0){
+		if(id == null) {
+			throw new ServiceException("Bad request");
+		}
+		
+		if(id.getId()>0){
 			return id.getId();
 		}
 		

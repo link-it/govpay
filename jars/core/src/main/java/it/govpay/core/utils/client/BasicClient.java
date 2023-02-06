@@ -45,10 +45,8 @@ import javax.xml.soap.SOAPMessage;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.service.beans.HttpMethodEnum;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.service.context.dump.DumpRequest;
@@ -79,11 +77,11 @@ import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Evento.RuoloEvento;
+import it.govpay.model.Intermediario;
 import it.govpay.model.configurazione.GdeInterfaccia;
 import it.govpay.model.configurazione.Giornale;
 import it.govpay.model.eventi.DettaglioRichiesta;
 import it.govpay.model.eventi.DettaglioRisposta;
-import it.govpay.model.Intermediario;
 
 public abstract class BasicClient {
 
@@ -551,13 +549,12 @@ public abstract class BasicClient {
 		int responseCode = 0;
 		DumpRequest dumpRequest = new DumpRequest();
 		DumpResponse dumpResponse = new DumpResponse();
-		ServerInfoResponse serverInfoResponse = null;
+		ServerInfoResponse serverInfoResponse = new ServerInfoResponse();
 		Map<String, List<String>> headerFields = null;
 		byte[] msg = null;
 		try {
 
 			ServerInfoRequest serverInfoRequest = new ServerInfoRequest();
-			serverInfoResponse = new ServerInfoResponse();
 
 			// Creazione Connessione
 			

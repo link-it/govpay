@@ -81,21 +81,23 @@ public class QuietanzaPagamentoProperties {
 			// carico tutti i file che definiscono configurazioni diverse di avvisi pagamento
 			if(this.govpayResourceDir != null) {
 				File resourceDirFile = new File(this.govpayResourceDir);
-				for(File f : resourceDirFile.listFiles()) {
-					if(!f.getName().startsWith("quietanzaPagamento") && !f.getName().endsWith("properties")) {
-						// Non e' un file di properties. lo salto
-						continue;
+				File[] listFiles = resourceDirFile.listFiles();
+				if(listFiles != null)
+					for(File f : listFiles) {
+						if(!f.getName().startsWith("quietanzaPagamento") && !f.getName().endsWith("properties")) {
+							// Non e' un file di properties. lo salto
+							continue;
+						}
+						Properties p = new Properties();
+						p.load(new FileInputStream(f));
+						String key = f.getName().replaceAll(".properties", "");
+						key = key.replaceAll("quietanzaPagamento.", "");
+						// la configurazione di defaut e' gia'stata caricata
+						if(!key.equals("quietanzaPagamento")) {
+							log.info("Caricata configurazione quietanza di pagamento con chiave " + key);
+							this.propMap.put(key, p);
+						}
 					}
-					Properties p = new Properties();
-					p.load(new FileInputStream(f));
-					String key = f.getName().replaceAll(".properties", "");
-					key = key.replaceAll("quietanzaPagamento.", "");
-					// la configurazione di defaut e' gia'stata caricata
-					if(!key.equals("quietanzaPagamento")) {
-						log.info("Caricata configurazione quietanza di pagamento con chiave " + key);
-						this.propMap.put(key, p);
-					}
-				}
 			}
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 

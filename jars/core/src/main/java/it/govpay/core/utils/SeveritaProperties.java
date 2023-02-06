@@ -15,7 +15,7 @@ import it.govpay.core.exceptions.BaseExceptionV1.CategoriaEnum;
 
 public class SeveritaProperties {
 
-	private transient Logger log = null;
+	private transient Logger log = LoggerWrapperFactory.getLogger(SeveritaProperties.class);;
 	
 	public static final String MAPPING_SEVERITA_ERRORI_PROPERTIES_FILE_NAME = "erroriSeverita.properties";
 	public static final String MAPPING_SEVERITA_ERRORI_PROPERTIES_FILE = "/" + MAPPING_SEVERITA_ERRORI_PROPERTIES_FILE_NAME;

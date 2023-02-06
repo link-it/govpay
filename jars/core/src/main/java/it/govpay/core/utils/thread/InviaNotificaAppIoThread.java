@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -27,6 +26,7 @@ import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.QuietanzaPagamento;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.appio.AppIOUtils;
@@ -39,13 +39,13 @@ import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.NotificaAppIo.TipoNotifica;
+import it.govpay.model.TipoVersamento;
 import it.govpay.model.configurazione.AppIOBatch;
 import it.govpay.model.configurazione.AvvisaturaViaAppIo;
 import it.govpay.model.configurazione.Giornale;
 import it.govpay.model.configurazione.PromemoriaAvvisoBase;
 import it.govpay.model.configurazione.PromemoriaRicevutaBase;
 import it.govpay.model.configurazione.PromemoriaScadenza;
-import it.govpay.model.TipoVersamento;
 
 public class InviaNotificaAppIoThread implements Runnable{
 	

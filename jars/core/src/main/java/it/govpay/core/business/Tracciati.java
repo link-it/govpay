@@ -117,7 +117,7 @@ public class Tracciati {
 	public void elaboraTracciatoPendenze(ElaboraTracciatoDTO elaboraTracciatoDTO, IContext ctx) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 
-		TracciatiBD tracciatiBD = null;
+		TracciatiBD tracciatiBD = new TracciatiBD(configWrapper);
 		Tracciato tracciato = elaboraTracciatoDTO.getTracciato();
 		String codDominio = tracciato.getCodDominio(); 
 		FORMATO_TRACCIATO formato = tracciato.getFormato();
@@ -126,8 +126,6 @@ public class Tracciati {
 		it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = null;
 		ISerializer serializer = null;
 		try {
-			tracciatiBD = new TracciatiBD(configWrapper);
-			
 			tracciatiBD.setupConnection(configWrapper.getTransactionID());
 			
 			tracciatiBD.setAtomica(false);

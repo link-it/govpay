@@ -3,7 +3,6 @@ package it.govpay.core.dao.configurazione;
 import java.text.MessageFormat;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import it.govpay.core.exceptions.ValidationException;
 
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Configurazione;
@@ -18,6 +17,7 @@ import it.govpay.core.dao.configurazione.exception.ConfigurazioneNonTrovataExcep
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.PatchOp;
 import it.govpay.model.configurazione.AppIOBatch;
 import it.govpay.model.configurazione.AvvisaturaViaAppIo;

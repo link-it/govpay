@@ -28,7 +28,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.IJsonSchemaValidator;
 import org.openspcoop2.utils.json.JsonSchemaValidatorConfig;
 import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
-import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.json.ValidatorFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
@@ -91,6 +90,7 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.TipoVersamento;

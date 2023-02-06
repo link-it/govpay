@@ -916,26 +916,22 @@ public class PendenzeDAO extends BaseDAO{
 	//	}
 
 	private StatoVersamento getNuovoStatoVersamento(PatchOp op) throws ValidationException {
-		String nuovoStatoPendenzaValue = (String) op.getValue();
-		StatoPendenza nuovoStatoPendenza = StatoPendenza.fromValue(nuovoStatoPendenzaValue);
-
-		if(nuovoStatoPendenza == null && StringUtils.isNotEmpty(nuovoStatoPendenzaValue))
+		if(op==null) 
+			throw new ValidationException("Richiesta patch non valida");
+		if(StatoPendenza.fromValue((String) op.getValue()) == null)
 			throw new ValidationException(MessageFormat.format(NUOVO_STATO_PENDENZA_NON_VALIDO, op.getPath()));
 
-		StatoVersamento nuovoStato = null;
-		switch (nuovoStatoPendenza) {
+		switch (StatoPendenza.fromValue((String) op.getValue())) {
 		case ANNULLATA:
-			nuovoStato = StatoVersamento.ANNULLATO;
-			break;
+			return StatoVersamento.ANNULLATO;
 		case NON_ESEGUITA:
-			nuovoStato = StatoVersamento.NON_ESEGUITO;
-			break;
+			return StatoVersamento.NON_ESEGUITO;
 		default:
-			throw new ValidationException(MessageFormat.format(NON_E_CONSENTITO_AGGIORNARE_LO_STATO_DI_UNA_PENDENZA_AD_0, nuovoStatoPendenza.name()));
+			throw new ValidationException(MessageFormat.format(NON_E_CONSENTITO_AGGIORNARE_LO_STATO_DI_UNA_PENDENZA_AD_0, op.getValue()));
 		}
-		return nuovoStato;
 	}
 
+	@SuppressWarnings("deprecation")
 	public PutPendenzaDTOResponse createOrUpdate(PutPendenzaDTO putVersamentoDTO) throws GovPayException, NotAuthorizedException, NotAuthenticatedException, ValidationException{ 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		PutPendenzaDTOResponse createOrUpdatePendenzaResponse = new PutPendenzaDTOResponse();
@@ -992,6 +988,7 @@ public class PendenzeDAO extends BaseDAO{
 		return createOrUpdatePendenzaResponse;
 	}
 
+	@SuppressWarnings("deprecation")
 	public PutPendenzaDTOResponse createOrUpdateCustom(PutPendenzaDTO putVersamentoDTO) throws GovPayException, 
 	NotAuthorizedException, NotAuthenticatedException, ValidationException, DominioNonTrovatoException, TipoVersamentoNonTrovatoException, EcException, UnitaOperativaNonTrovataException, ApplicazioneNonTrovataException, UnprocessableEntityException{ 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);

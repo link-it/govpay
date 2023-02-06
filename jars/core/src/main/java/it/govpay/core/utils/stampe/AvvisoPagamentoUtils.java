@@ -499,7 +499,7 @@ public class AvvisoPagamentoUtils {
 
 		StringBuilder sb = new StringBuilder();
 
-		if(StringUtils.isNotEmpty(anagraficaUO.getUrlSitoWeb())) {
+		if(anagraficaUO != null && StringUtils.isNotEmpty(anagraficaUO.getUrlSitoWeb())) {
 			sb.append(anagraficaUO.getUrlSitoWeb());
 		} else if(StringUtils.isNotEmpty(anagraficaDominio.getUrlSitoWeb())) {
 			sb.append(anagraficaDominio.getUrlSitoWeb());
@@ -509,7 +509,7 @@ public class AvvisoPagamentoUtils {
 			sb.append("<br/>");
 
 		boolean line2=false;
-		if(StringUtils.isNotEmpty(anagraficaUO.getTelefono())){
+		if(anagraficaUO != null && StringUtils.isNotEmpty(anagraficaUO.getTelefono())){
 			sb.append("Tel: ").append(anagraficaUO.getTelefono());
 			sb.append(" - ");
 			line2=true;
@@ -519,7 +519,7 @@ public class AvvisoPagamentoUtils {
 			line2=true;
 		} 
 
-		if(StringUtils.isNotEmpty(anagraficaUO.getFax())){
+		if(anagraficaUO != null && StringUtils.isNotEmpty(anagraficaUO.getFax())){
 			sb.append("Fax: ").append(anagraficaUO.getFax());
 			line2=true;
 		} else if(StringUtils.isNotEmpty(anagraficaDominio.getFax())) {
@@ -529,15 +529,16 @@ public class AvvisoPagamentoUtils {
 
 		if(line2) sb.append("<br/>");
 
-		if(StringUtils.isNotEmpty(anagraficaUO.getPec())) {
-			sb.append("pec: ").append(anagraficaUO.getPec());
-		} else if(StringUtils.isNotEmpty(anagraficaUO.getEmail())){
-			sb.append("email: ").append(anagraficaUO.getEmail());
-		} else if(StringUtils.isNotEmpty(anagraficaDominio.getPec())) {
-			sb.append("pec: ").append(anagraficaDominio.getPec());
-		} else if(StringUtils.isNotEmpty(anagraficaDominio.getEmail())){
-			sb.append("email: ").append(anagraficaDominio.getEmail());
-		}
+		if(anagraficaUO != null)
+			if(StringUtils.isNotEmpty(anagraficaUO.getPec())) {
+				sb.append("pec: ").append(anagraficaUO.getPec());
+			} else if(StringUtils.isNotEmpty(anagraficaUO.getEmail())){
+				sb.append("email: ").append(anagraficaUO.getEmail());
+			} else if(StringUtils.isNotEmpty(anagraficaDominio.getPec())) {
+				sb.append("pec: ").append(anagraficaDominio.getPec());
+			} else if(StringUtils.isNotEmpty(anagraficaDominio.getEmail())){
+				sb.append("email: ").append(anagraficaDominio.getEmail());
+			}
 
 		input.setInfoEnte(sb.toString());
 		// se e' presente un logo lo inserisco altrimemti verra' caricato il logo di default.

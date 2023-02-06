@@ -128,11 +128,6 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 	@Override
 	public List<IdVersamento> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
-
 		List<IdVersamento> list = new ArrayList<>();
 
 		try{
@@ -154,10 +149,6 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 	@Override
 	public List<VersamentoIncasso> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
 		List<VersamentoIncasso> list = new ArrayList<>();
 		try{
 			List<IField> fields = new ArrayList<>();
@@ -956,6 +947,10 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 	
 	protected Long findIdVersamentoIncasso(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
+		if(id == null) {
+			throw new ServiceException("Bad request");
+		}
+		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
@@ -963,8 +958,12 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_versamento = null;
 		
-		if((id!=null && id.getId()!=null && id.getId()>0))
+		if(id.getId()!=null && id.getId()>0)
 			return id.getId();
+		
+		if(id.getIdApplicazione() == null) {
+			throw new ServiceException("Bad request");
+		}
 		
 		if(id.getIdApplicazione().getId() != null && id.getIdApplicazione().getId() > 0) {
 			// Object _versamento

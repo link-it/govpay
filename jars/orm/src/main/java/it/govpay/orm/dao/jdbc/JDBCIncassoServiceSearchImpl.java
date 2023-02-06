@@ -128,11 +128,6 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 
 		List<IdIncasso> list = new ArrayList<>();
 
-		// default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
-        
 		try{
 			List<IField> fields = new ArrayList<>();
 
@@ -156,11 +151,6 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 
         List<Incasso> list = new ArrayList<>();
 
-		// default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
-        
 		try{
 			List<IField> fields = new ArrayList<>();
 
@@ -752,6 +742,15 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	
 	protected Long findIdIncasso(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdIncasso id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
+		if(id == null)
+			throw new ServiceException("Bad request: id is null");
+		
+		if(sqlQueryObject == null)
+			throw new ServiceException("Bad request: sqlQueryObject is null");
+		
+		if(jdbcProperties == null)
+			throw new ServiceException("Bad request: jdbcProperties is null");
+		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 

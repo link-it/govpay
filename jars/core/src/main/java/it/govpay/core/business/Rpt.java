@@ -22,16 +22,15 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
-import it.govpay.core.beans.EventoContext.Azione;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
@@ -331,6 +330,7 @@ public class Rpt {
 					try {
 
 						for(FaultBean fb : risposta.getListaErroriRPT()) {
+							if(fb==null) continue;
 							it.govpay.bd.model.Rpt rpt = rpts.get(fb.getSerial() - 1);
 							String descrizione = null; 
 							String faultCode = null;

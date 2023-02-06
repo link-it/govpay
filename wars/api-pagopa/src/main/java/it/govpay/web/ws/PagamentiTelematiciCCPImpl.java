@@ -148,11 +148,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	WebServiceContext wsCtxt;
 
 	private static Logger log = LoggerWrapperFactory.getLogger(PagamentiTelematiciCCPImpl.class);
-	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	@Override
 	public PaaAttivaRPTRisposta paaAttivaRPT(PaaAttivaRPT bodyrichiesta, IntestazionePPT header) {
 
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		
 		String codIntermediario = header.getIdentificativoIntermediarioPA();
 		String codStazione = header.getIdentificativoStazioneIntermediarioPA();
 		String codDominio = header.getIdentificativoDominio();
@@ -601,6 +602,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 	@Override
 	public PaaVerificaRPTRisposta paaVerificaRPT(PaaVerificaRPT bodyrichiesta, IntestazionePPT header) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		String codIntermediario = header.getIdentificativoIntermediarioPA();
 		String codStazione = header.getIdentificativoStazioneIntermediarioPA();
 		String codDominio = header.getIdentificativoDominio();
@@ -925,6 +927,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	
 	@Override
 	public PaSendRTRes paSendRT(PaSendRTReq requestBody) {
+		
 		String codIntermediario = requestBody.getIdBrokerPA();
 		String codStazione = requestBody.getIdStation();
 		String idDominio = requestBody.getIdPA();
@@ -1019,7 +1022,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
 			}
 
-			if(dominio.getIdStazione() != stazione.getId()) {
+			if(dominio.getIdStazione().compareTo(stazione.getId())!=0) {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
@@ -1099,6 +1102,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	*/
 	@Override
 	public PaVerifyPaymentNoticeRes paVerifyPaymentNotice(PaVerifyPaymentNoticeReq requestBody) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		String codIntermediario = requestBody.getIdBrokerPA();
 		String codStazione = requestBody.getIdStation();
 		//String idDominio = requestBody.getIdPA();
@@ -1383,6 +1387,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 	@Override
 	public PaGetPaymentRes paGetPayment(PaGetPaymentReq requestBody) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		String codIntermediario = requestBody.getIdBrokerPA();
 		String codStazione = requestBody.getIdStation();
 		String idDominio = requestBody.getIdPA();
@@ -2044,7 +2049,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
 			}
 
-			if(dominio.getIdStazione() != stazione.getId()) {
+			if(dominio.getIdStazione().compareTo(stazione.getId())!=0) {
 				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
 			}
 
@@ -2101,6 +2106,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 	@Override
 	public PaGetPaymentV2Response paGetPaymentV2(PaGetPaymentV2Request requestBody) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		String codIntermediario = requestBody.getIdBrokerPA();
 		String codStazione = requestBody.getIdStation();
 		String idDominio = requestBody.getIdPA();

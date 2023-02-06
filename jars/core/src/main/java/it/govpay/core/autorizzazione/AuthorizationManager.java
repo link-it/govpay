@@ -34,13 +34,9 @@ public class AuthorizationManager {
 	public static final String UTENZA_ANONIMA = "utenzaAnonima";
 
 	public static boolean checkPrincipal(Authentication authentication, String principalToCheck) throws NotAuthorizedException { 
-		return checkPrincipal(authentication, principalToCheck, true);
-	}
-
-	public static boolean checkPrincipal(Authentication authentication, String principalToCheck, boolean throwsException) throws NotAuthorizedException { 
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 
-		if(details == null && throwsException) {
+		if(details == null) {
 			throw new NotAuthorizedException("Utenza non autorizzata: impossibile leggere il principal.");
 		}
 		
