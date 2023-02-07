@@ -698,7 +698,7 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 	protected Long findIdRR(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRr id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
 		if(id == null) {
-			throw new ServiceException("Bad request");
+			throw new ServiceException(this.getClass().getName() +": Bad request");
 		}
 		
 		if(id.getId()>0){

@@ -948,7 +948,7 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 	protected Long findIdVersamentoIncasso(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
 		if(id == null) {
-			throw new ServiceException("Bad request");
+			throw new ServiceException(this.getClass().getName() +": Bad request");
 		}
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
@@ -962,7 +962,7 @@ public class JDBCVersamentoIncassoServiceSearchImpl implements IJDBCServiceSearc
 			return id.getId();
 		
 		if(id.getIdApplicazione() == null) {
-			throw new ServiceException("Bad request");
+			throw new ServiceException(this.getClass().getName() +": Bad request");
 		}
 		
 		if(id.getIdApplicazione().getId() != null && id.getIdApplicazione().getId() > 0) {

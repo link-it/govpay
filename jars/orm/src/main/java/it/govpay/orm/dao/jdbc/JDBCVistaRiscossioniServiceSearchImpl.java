@@ -740,7 +740,7 @@ public class JDBCVistaRiscossioniServiceSearchImpl implements IJDBCServiceSearch
 	protected Object findIdVistaRiscossioni(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVistaRiscossione id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
 		if(id == null) {
-			throw new ServiceException("Bad request");
+			throw new ServiceException(this.getClass().getName() +": Bad request");
 		}
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 

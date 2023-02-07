@@ -745,13 +745,13 @@ public class JDBCNotificaServiceSearchImpl implements IJDBCServiceSearchWithId<N
 	protected Long findIdNotifica(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdNotifica id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
 		if(id == null)
-			throw new ServiceException("Bad request: id is null");
+			throw new ServiceException(this.getClass().getName() +": Bad request: id is null");
 		
 		if(sqlQueryObject == null)
-			throw new ServiceException("Bad request: sqlQueryObject is null");
+			throw new ServiceException(this.getClass().getName() +": Bad request: sqlQueryObject is null");
 		
 		if(jdbcProperties == null)
-			throw new ServiceException("Bad request: jdbcProperties is null");
+			throw new ServiceException(this.getClass().getName() +": Bad request: jdbcProperties is null");
 		
 		if(id.getId() != null && id.getId().longValue() > 0) {
 			return id.getId();

@@ -726,7 +726,7 @@ public class JDBCDocumentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 	protected Long findIdDocumento(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdDocumento id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
 		if(id == null) {
-			throw new ServiceException("Bad request");
+			throw new ServiceException(this.getClass().getName() +": Bad request: id is null");
 		}
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
@@ -740,7 +740,7 @@ public class JDBCDocumentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			return id.getId();
 		
 		if(id.getIdApplicazione() != null || id.getIdDominio() == null) {
-			throw new ServiceException("Bad request");
+			throw new ServiceException(this.getClass().getName() +": Bad request");
 		}
 		
 		if(id.getIdApplicazione().getId() != null && id.getIdApplicazione().getId() > 0 && id.getIdDominio().getId() != null && id.getIdDominio().getId() > 0) {

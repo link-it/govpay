@@ -1017,7 +1017,7 @@ public class JDBCVistaVersamentoServiceSearchImpl implements IJDBCServiceSearchW
 	protected Long findIdVistaVersamento(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdVersamento id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
 		if(id == null) {
-			throw new ServiceException("Bad request");
+			throw new ServiceException(this.getClass().getName() +": Bad request");
 		}
 		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
@@ -1031,7 +1031,7 @@ public class JDBCVistaVersamentoServiceSearchImpl implements IJDBCServiceSearchW
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_versamento = null;
 		
 		if(id.getIdApplicazione() == null) {
-			throw new ServiceException("Bad request");
+			throw new ServiceException(this.getClass().getName() +": Bad request");
 		}
 		
 		if(id.getIdApplicazione().getId() != null && id.getIdApplicazione().getId() > 0) {

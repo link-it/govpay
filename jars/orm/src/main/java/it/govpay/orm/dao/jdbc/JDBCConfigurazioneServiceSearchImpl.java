@@ -147,7 +147,7 @@ public class JDBCConfigurazioneServiceSearchImpl implements IJDBCServiceSearchWi
 
         List<Configurazione> list = new ArrayList<Configurazione>();
 
-        try{
+		try{
 			List<IField> fields = new ArrayList<>();
 			fields.add(new CustomField("id", Long.class, "id", this.getConfigurazioneFieldConverter().toTable(Configurazione.model())));
 			fields.add(Configurazione.model().NOME);
