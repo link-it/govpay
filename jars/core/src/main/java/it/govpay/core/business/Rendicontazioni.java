@@ -254,8 +254,10 @@ public class Rendicontazioni {
 					TipoIdRendicontazione idRendicontazione = rnd.getIdFlussoRendicontazione();
 					// Controllo che il flusso non sia su db
 					try {
+						log.debug("Verifico presenza del flusso [" + rnd.getCodDominio() + ", " + idRendicontazione.getIdentificativoFlusso() +", "+ idRendicontazione.getDataOraFlusso() + "]" );
 						// Uso la GET perche' la exists risulta buggata con la data nella tupla di identificazione
 						frBD.getFr(rnd.getCodDominio(), idRendicontazione.getIdentificativoFlusso(), idRendicontazione.getDataOraFlusso());
+						log.debug("Flusso di rendicontazione [" + rnd.getCodDominio() + ", " + idRendicontazione.getIdentificativoFlusso() +", "+ idRendicontazione.getDataOraFlusso() + "] gia' acquisito" );
 						// C'e' gia. Se viene da file, lo elimino
 						if(rnd.getFrFile() != null) {
 							try { 
@@ -267,12 +269,14 @@ public class Rendicontazioni {
 					} catch (NotFoundException e) {
 						// Flusso originale, lo aggiungo ma controllo che non sia gia' nella lista di quelli da aggiungere
 						if(!keys.contains(rnd.getCodDominio() + idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso().getTime())) {
-							log.debug("Flusso di rendicontazione [" + idRendicontazione.getIdentificativoFlusso() +", "+ idRendicontazione.getDataOraFlusso() + "] da acquisire" );
+							log.info("Flusso di rendicontazione [" + rnd.getCodDominio() + ", " + idRendicontazione.getIdentificativoFlusso() +", "+ idRendicontazione.getDataOraFlusso() + "] da acquisire" );
 							flussiDaAcquisire.add(rnd);
 							keys.add(rnd.getCodDominio() + idRendicontazione.getIdentificativoFlusso() + idRendicontazione.getDataOraFlusso().getTime());
 						}
 					}
 				}
+				
+				log.info("Individuati "+flussiDaAcquisire.size()+" flussi di rendicontazione da acquisire");
 
 				for(RendicontazioneScaricata rnd : flussiDaAcquisire) {
 					TipoIdRendicontazione idRendicontazione = rnd.getIdFlussoRendicontazione();
@@ -281,8 +285,6 @@ public class Rendicontazioni {
 					
 					boolean hasFrAnomalia = false;
 					boolean isAggiornamento = false;
-					
-					
 					
 					NodoClient chiediFlussoRendicontazioneClient = null;
 					
@@ -382,7 +384,7 @@ public class Rendicontazioni {
 						fr.setCodFlusso(idRendicontazione.getIdentificativoFlusso());
 						fr.setIur(flussoRendicontazione.getIdentificativoUnivocoRegolamento());
 						fr.setDataAcquisizione(new Date());
-						fr.setDataFlusso(flussoRendicontazione.getDataOraFlusso());
+						fr.setDataFlusso(idRendicontazione.getDataOraFlusso());
 						fr.setDataRegolamento(flussoRendicontazione.getDataRegolamento());
 						fr.setNumeroPagamenti(flussoRendicontazione.getNumeroTotalePagamenti().longValue());
 						fr.setImportoTotalePagamenti(flussoRendicontazione.getImportoTotalePagamenti());
@@ -802,7 +804,7 @@ public class Rendicontazioni {
 
 			if(risposta.getFault() != null) {
 				// Errore nella richiesta. Loggo e continuo con il prossimo psp
-				log.error("Richiesta elenco flussi rendicontazione fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
+				log.warn("Richiesta elenco flussi rendicontazione fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
 				ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussiKo", risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
 				if(chiediFlussoRendicontazioniClient != null) {
 					chiediFlussoRendicontazioniClient.getEventoCtx().setSottotipoEsito(risposta.getFault().getFaultCode());

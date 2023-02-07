@@ -155,7 +155,7 @@ public class InviaNotificaAppIoThread implements Runnable{
 				this.aggiornaNotificaDaSpedire(notificheBD, e.getMessage());
 			} catch(ApiException e) {
 				errore = true;
-				log.error("Invocazione AppIO terminata con codice di errore [" + e.getCode() + "]: " + e.getMessage());
+				log.info("Invocazione AppIO terminata con codice di errore [" + e.getCode() + "]: " + e.getMessage());
 				
 				if(clientGetProfile != null) {
 					clientGetProfile.getEventoCtx().setSottotipoEsito(e.getCode() + "");
