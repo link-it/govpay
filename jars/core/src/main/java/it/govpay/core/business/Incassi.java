@@ -729,7 +729,7 @@ public class Incassi {
 				AnagraficaManager.getIbanAccredito(configWrapper, dominio.getId(), richiestaIncasso.getIbanAccredito());
 			} catch (NotFoundException e) {
 				ctx.getApplicationLogger().log("incasso.ibanInesistente", richiestaIncasso.getIbanAccredito());
-				throw new IncassiException(FaultType.IBAN_INESISTENTE, "Il dominio " + richiestaIncasso.getCodDominio() + " indicato nella richiesta non risulta censito in anagrafica GovPay.");
+				throw new IncassiException(FaultType.IBAN_INESISTENTE, "Il conto " + richiestaIncasso.getIbanAccredito() + " indicato nella richiesta non risulta censito in anagrafica GovPay.");
 			}
 			
 			Long idApplicazione = null;

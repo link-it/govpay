@@ -117,6 +117,11 @@ public class SeveritaProperties {
 		String severitaS = this.getSeveritaErrori().get(esito.toString());
 		Integer severita = null;
 		
+		if(severitaS == null) {
+			this.log.warn("Livello di severita' per l'EsitoOperazione '"+esito+"' non trovato all'interno del file "+MAPPING_SEVERITA_ERRORI_PROPERTIES_FILE_NAME + ", verra' impostato il default '5'.");
+			severitaS = "5";
+		}
+		
 		try{
 			severita = Integer.parseInt(severitaS);
 		} catch(Throwable t) {
@@ -130,6 +135,11 @@ public class SeveritaProperties {
 	public Integer getSeverita(CategoriaEnum categoria) {
 		String severitaS = this.getSeveritaErrori().get(categoria.toString());
 		Integer severita = null;
+		
+		if(severitaS == null) {
+			this.log.warn("Livello di severita' per la BaseException.CategoriaEnum '"+categoria+"' non trovato all'interno del file "+MAPPING_SEVERITA_ERRORI_PROPERTIES_FILE_NAME + ", verra' impostato il default '5'.");
+			severitaS = "5";
+		}
 		
 		try{
 			severita = Integer.parseInt(severitaS);
