@@ -1056,7 +1056,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		if((id!=null && id.getId()!=null && id.getId()>0))
 			return id.getId();
 		
-		if(id == null || id.getIdApplicazione() != null) {
+		if(id == null || id.getIdApplicazione() == null) {
 			throw new ServiceException(this.getClass().getName() +": Bad request");
 		}
 		

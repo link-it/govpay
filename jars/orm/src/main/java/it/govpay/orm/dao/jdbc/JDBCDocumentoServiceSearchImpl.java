@@ -739,7 +739,7 @@ public class JDBCDocumentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		if(id.getId()!=null && id.getId()>0)
 			return id.getId();
 		
-		if(id.getIdApplicazione() != null || id.getIdDominio() == null) {
+		if(id.getIdApplicazione() == null || id.getIdDominio() == null) {
 			throw new ServiceException(this.getClass().getName() +": Bad request");
 		}
 		
