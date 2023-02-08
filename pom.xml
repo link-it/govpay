@@ -1098,6 +1098,27 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>8.0.2</version>
+				<executions>
+					<execution>
+						<id>check owasp</id>
+						<phase>verify</phase>
+						<configuration>
+							<autoUpdate>true</autoUpdate>
+							<failBuildOnAnyVulnerability>false}</failBuildOnAnyVulnerability>
+							<!-- <failBuildOnCVSS>8</failBuildOnCVSS> -->
+							<!-- <outputDirectory></outputDirectory> -->
+							<format>ALL</format>
+						</configuration>
+						<goals>
+							<goal>aggregate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>			
 		</plugins>
 	</build>
 	<repositories>
