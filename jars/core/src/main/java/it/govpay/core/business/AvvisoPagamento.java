@@ -341,7 +341,7 @@ public class AvvisoPagamento {
 				if(v1.getNumeroRata() != null)
 					return v1.getNumeroRata().compareTo(v2.getNumeroRata());
 				if(v1.getGiorniSoglia() != null)
-					if(v1.getGiorniSoglia() == v2.getGiorniSoglia())
+					if(v1.getGiorniSoglia().compareTo(v2.getGiorniSoglia())==0)
 						if(v1.getTipoSoglia().equals(TipoSogliaVersamento.ENTRO))
 							return -1;
 						else

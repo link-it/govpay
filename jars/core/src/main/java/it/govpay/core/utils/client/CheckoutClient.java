@@ -15,7 +15,6 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.client.beans.TipoDestinatario;
 import it.govpay.core.utils.client.exception.ClientException;
-import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.configurazione.Giornale;

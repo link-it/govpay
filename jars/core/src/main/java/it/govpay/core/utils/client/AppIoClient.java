@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.ws.rs.core.GenericType;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -65,7 +64,7 @@ public class AppIoClient extends BasicClientCORE {
 		int responseCode = 0;
 		DumpRequest dumpRequest = new DumpRequest();
 		DumpResponse dumpResponse = new DumpResponse();
-		ServerInfoResponse serverInfoResponse = null;
+		ServerInfoResponse serverInfoResponse = new ServerInfoResponse();
 		Map<String, List<String>> headerFields = null;
 		byte[] msg = null;
 
@@ -75,7 +74,6 @@ public class AppIoClient extends BasicClientCORE {
 			IContext ctx = ContextThreadLocal.get();
 
 			ServerInfoRequest serverInfoRequest = new ServerInfoRequest();
-			serverInfoResponse = new ServerInfoResponse();
 
 			// create path and map variables
 			String localVarPath = fiscalCode != null ? "/profiles/{fiscal_code}".replaceAll("\\{" + "fiscal_code" + "\\}", apiClient.escapeString(fiscalCode.toString())) : "/profiles/{fiscal_code}";
@@ -192,7 +190,7 @@ public class AppIoClient extends BasicClientCORE {
 		int responseCode = 0;
 		DumpRequest dumpRequest = new DumpRequest();
 		DumpResponse dumpResponse = new DumpResponse();
-		ServerInfoResponse serverInfoResponse = null;
+		ServerInfoResponse serverInfoResponse = new ServerInfoResponse();
 		Map<String, List<String>> headerFields = null;
 		byte[] msg = null;
 		try {
@@ -202,7 +200,6 @@ public class AppIoClient extends BasicClientCORE {
 			IContext ctx = ContextThreadLocal.get();
 
 			ServerInfoRequest serverInfoRequest = new ServerInfoRequest();
-			serverInfoResponse = new ServerInfoResponse();
 
 			// Url Completa che viene invocata
 			String urlString = this.url.toExternalForm();

@@ -125,10 +125,6 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 	@Override
 	public List<IdPagamento> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
 		List<IdPagamento> list = new ArrayList<>();
 
 		try{
@@ -149,10 +145,6 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 	@Override
 	public List<Pagamento> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
 		List<Pagamento> list = new ArrayList<>();
 
 		try{
@@ -1047,6 +1039,15 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 	protected Long findIdPagamento(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdPagamento id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
+		if(id == null)
+			throw new ServiceException(this.getClass().getName() +": Bad request: id is null");
+		
+		if(sqlQueryObject == null)
+			throw new ServiceException(this.getClass().getName() +": Bad request: sqlQueryObject is null");
+		
+		if(jdbcProperties == null)
+			throw new ServiceException(this.getClass().getName() +": Bad request: jdbcProperties is null");
+		
 		if(id.getId() != null && id.getId() > 0)
 			return id.getId();
 

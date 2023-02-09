@@ -13,7 +13,7 @@ public class TipiPendenzaConverter {
 		rsModel.descrizione(tipoVersamento.getDescrizione())
 		.idTipoPendenza(tipoVersamento.getCodTipoVersamento());
 		
-		if(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault() != null && tipoVersamento.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault() != null) {
+		if(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormTipoDefault() != null && tipoVersamento.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault() != null) {
 			TipoPendenzaForm form = new TipoPendenzaForm();
 			form.setTipo(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormTipoDefault());
 			form.setDefinizione(new RawObject(tipoVersamento.getCaricamentoPendenzePortalePagamentoFormDefinizioneDefault())); 

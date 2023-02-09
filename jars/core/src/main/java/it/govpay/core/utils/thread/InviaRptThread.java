@@ -46,7 +46,6 @@ import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
-import it.govpay.core.beans.EventoContext.Azione;
 import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
@@ -56,8 +55,8 @@ import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.RptUtils;
-import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.NodoClient;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.StatoRpt;
@@ -152,21 +151,28 @@ public class InviaRptThread implements Runnable {
 			rptBD.setupConnection(configWrapper.getTransactionID());
 			
 			rptBD.setAtomica(false); // connessione deve restare aperta
+			
+			FaultBean fb = risposta.getFaultBean();
+			
+			if(!risposta.getEsito().equals("OK") && (fb == null || fb.getFaultCode() == null)) {
+				throw new GovPayException("Risposta pagoPA KO privo di FaultBean",EsitoOperazione.INTERNAL, "Risposta pagoPA KO privo di FaultBean");
+			}
 
-			if(!risposta.getEsito().equals("OK") && !risposta.getFaultBean().getFaultCode().equals("PPT_RPT_DUPLICATA")) {
+			if(!risposta.getEsito().equals("OK") && (fb == null || fb.getFaultCode() == null)) {
 				// RPT rifiutata dal Nodo
 				// Loggo l'errore ma lascio lo stato invariato. 
 				// v3.1: Perche' non cambiare lo stato a fronte di un rifiuto? Lo aggiorno e evito la rispedizione.
 				// Redo: Perche' e' difficile capire se e' un errore temporaneo o meno. Essendo un'attivazione di RPT, non devo smettere di riprovare.
 				// Re-redo: individuo le casistiche per le quali ritentare è certamente inutile. Prevedo comunque un limite superiore 24 ore
 				//          oltre il quale considerare l'attivazione scaduta
-				FaultBean fb = risposta.getFaultBean();
-				String descrizione = null; 
-				if(fb != null)
-					descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
-				if(risposta.getFaultBean().getFaultCode().equals("PPT_IBAN_NON_CENSITO") ||
-						risposta.getFaultBean().getFaultCode().equals("PPT_SEMANTICA") ||
-						risposta.getFaultBean().getFaultCode().equals("PPT_SINTASSI") || 
+				
+				if(fb == null || fb.getFaultCode() == null) {
+					throw new GovPayException("Risposta pagoPA KO privo di FaultBean",EsitoOperazione.INTERNAL, "Risposta pagoPA KO privo di FaultBean");
+				}
+				String descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
+				if(fb.getFaultCode().equals("PPT_IBAN_NON_CENSITO") ||
+						fb.getFaultCode().equals("PPT_SEMANTICA") ||
+						fb.getFaultCode().equals("PPT_SINTASSI") || 
 						(this.rpt.getDataMsgRichiesta().getTime() < new Date().getTime() - 86400000l))
 					rptBD.updateRpt(this.rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null,null);
 				else

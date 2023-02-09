@@ -30,7 +30,6 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.crypt.Password;
-import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
@@ -68,6 +67,7 @@ import it.govpay.core.dao.pagamenti.dto.ProfiloPatchDTO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.IdUnitaOperativa;
 import it.govpay.model.PatchOp;
 

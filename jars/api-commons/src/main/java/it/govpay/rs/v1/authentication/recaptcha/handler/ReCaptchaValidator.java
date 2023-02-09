@@ -3,6 +3,7 @@ package it.govpay.rs.v1.authentication.recaptcha.handler;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -105,10 +106,13 @@ public class ReCaptchaValidator {
            	
            	final  CaptchaResponse googleResponse = restTemplate.getForObject(verifyUri, CaptchaResponse.class);
            	
+           	if(googleResponse == null) 
+           		throw new ReCaptchaInvalidException("Verifica reCaptcha completata con insuccesso: risposta null");
+           	
             logger.debug("Verifica reCaptcha completata, ricevuto messaggio dal servizio di verifica: {} ", googleResponse.toString());
-
+            
             if (!googleResponse.isSuccess()) {
-                throw new ReCaptchaInvalidException("Verifica reCaptcha completata con insuccesso: Errori trovati ["+googleResponse.getErrorCodes()+"]");
+                throw new ReCaptchaInvalidException("Verifica reCaptcha completata con insuccesso: Errori trovati ["+ Arrays.toString(googleResponse.getErrorCodes())+"]");
             }
             else {
             	// controllo soglia score valido solo nella versione V3, nella V2 non e' presente nella risposta

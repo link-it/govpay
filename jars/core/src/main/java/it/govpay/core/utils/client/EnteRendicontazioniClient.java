@@ -29,7 +29,6 @@ import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 
-import gov.telematici.pagamenti.ws.rpt.ObjectFactory;
 import it.govpay.bd.model.Dominio;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.beans.EventoContext.Componente;
@@ -40,16 +39,12 @@ import it.govpay.model.configurazione.Giornale;
 
 public class EnteRendicontazioniClient extends BasicClientCORE {
 
-	private static ObjectFactory objectFactory;
 	private static Logger log = LoggerWrapperFactory.getLogger(EnteRendicontazioniClient.class);
 	private Dominio dominio;
 	private it.govpay.bd.model.TracciatoNotificaPagamenti tracciato;
 	
 	public EnteRendicontazioniClient(Dominio dominio, it.govpay.bd.model.TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, String operationID, Giornale giornale) throws ClientException, ServiceException {
 		super(dominio, TipoConnettore.GOVPAY, connettore); 
-		if(objectFactory == null || log == null ){
-			objectFactory = new ObjectFactory();
-		}
 		this.operationID = operationID;
 		this.componente = Componente.API_GOVPAY;
 		this.dominio = dominio;

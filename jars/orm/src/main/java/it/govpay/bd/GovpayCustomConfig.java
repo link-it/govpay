@@ -147,7 +147,7 @@ public class GovpayCustomConfig {
 		
 		String value = null;
 		for(Properties p : props) {
-			try { value = this.getProperty(name, p, required, logDebug); } catch (Exception e) { }
+			value = this.getProperty(name, p, required, logDebug); 
 			if(value != null && !value.trim().isEmpty()) {
 				return value;
 			}

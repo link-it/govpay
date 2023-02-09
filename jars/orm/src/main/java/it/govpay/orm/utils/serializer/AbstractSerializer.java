@@ -22,6 +22,7 @@ package it.govpay.orm.utils.serializer;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 
@@ -177,12 +178,10 @@ public abstract class AbstractSerializer {
 			throw new SerializerException(e.getMessage(), e);
 		}
 		finally{
-			try{
-				fout.flush();
-			}catch(Exception e){}
-			try{
-				fout.close();
-			}catch(Exception e){}
+			if(fout!=null) {
+				try{ fout.flush(); } catch(IOException e){}
+				try{ fout.close(); } catch(IOException e){}
+			}
 		}
 	}
 	protected ByteArrayOutputStream objToXml(Class<?> c,Object object,boolean prettyPrint) throws SerializerException{
@@ -194,12 +193,10 @@ public abstract class AbstractSerializer {
 			throw new SerializerException(e.getMessage(), e);
 		}
 		finally{
-			try{
-				bout.flush();
-			}catch(Exception e){}
-			try{
-				bout.close();
-			}catch(Exception e){}
+			if(bout!=null) {
+				try{ bout.flush(); } catch(IOException e){}
+				try{ bout.close(); } catch(IOException e){}
+			}
 		}
 		return bout;
 	}

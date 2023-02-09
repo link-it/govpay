@@ -103,7 +103,7 @@ public class DominiController extends BaseController {
 			if(associati == null)
 				associati = true;
 
-			if(!associati) {
+			if(associati != null && !associati) {
 				throw new ValidationException("Il valore indicato per il parametro associati non e' valido.");
 			}
 

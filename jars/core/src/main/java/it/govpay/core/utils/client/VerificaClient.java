@@ -426,22 +426,20 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 			String path = sbPath.toString();
 
 			PendenzaVerificata pendenzaVerificata = null;
-				try {
-					jsonResponse = new String(this.sendJson(path, jsonBody.getBytes(), headerProperties, HttpRequestMethod.POST, swaggerOperationID));
-					pendenzaVerificata = ConverterUtils.parse(jsonResponse, PendenzaVerificata.class); 
-				}catch(ClientException e) {
-					String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
-					VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, logErrorMessage);
-					throw e;
-				} catch (IOException e) {
-					VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, "[SINTASSI] " + e.getMessage());
-					throw new VersamentoNonValidoException(this.codApplicazione, "-", "-", "-", "-", "-", e.getMessage());
-				} 
-//				catch(ServiceException e) {
-//					String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
-//					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, logErrorMessage);
-//					throw new ClientException(e);
-//				}
+			try {
+				jsonResponse = new String(this.sendJson(path, jsonBody.getBytes(), headerProperties, HttpRequestMethod.POST, swaggerOperationID));
+				pendenzaVerificata = ConverterUtils.parse(jsonResponse, PendenzaVerificata.class); 
+			} catch(ClientException e) {
+				String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
+				VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, logErrorMessage);
+				throw e;
+			} catch (IOException e) {
+				VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, "[SINTASSI] " + e.getMessage());
+				throw new VersamentoNonValidoException(this.codApplicazione, "-", "-", "-", "-", "-", e.getMessage());
+			} 
+			
+			if(pendenzaVerificata == null)
+				throw new ServiceException("pendenzaVerificata null");
 			
 			StatoPendenzaVerificata stato = pendenzaVerificata.getStato();
 			

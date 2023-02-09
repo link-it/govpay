@@ -36,7 +36,6 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 	private Logger log = LoggerWrapperFactory.getLogger(GiornaleEventiCollectorOutInterceptor.class);
 	private GiornaleEventiConfig giornaleEventiConfig = null;
 	private ConfigurazioneDAO configurazioneDAO = null;
-	protected LogEventSender sender;
 
 	public GiornaleEventiCollectorOutInterceptor() {
 		super();

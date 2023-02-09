@@ -397,10 +397,16 @@ public abstract class BaseController {
 	}
 
 	protected Map<String, String> getHeaders(HttpServletRequest request) {
-		Enumeration<String> headerNames = request.getHeaderNames();
-
+		
 		Map<String, String> result = new HashMap<>();
-		if (request == null || headerNames == null) {
+		
+		if (request == null) {
+			return result;
+		}
+
+		Enumeration<String> headerNames = request.getHeaderNames();
+		
+		if (headerNames == null) {
 			return result;
 		}
 

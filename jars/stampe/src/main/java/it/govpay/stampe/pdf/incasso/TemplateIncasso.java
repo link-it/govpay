@@ -6,6 +6,7 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.report;
 import static net.sf.dynamicreports.report.builder.DynamicReports.stl;
 import static net.sf.dynamicreports.report.builder.DynamicReports.type;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +74,8 @@ public class TemplateIncasso {
 	 */
 	public static ComponentBuilder<?, ?> createRiepilogoGeneraleSx(Incasso incasso, List<Pagamento> pagamentiList,Double totale,Logger log) {
 		try{
+			SimpleDateFormat sdf_ddMMyyyy = new SimpleDateFormat(TemplateBase.sdf_ddMMyyyy);
+
 			HorizontalListBuilder listRiepilogo = cmp.horizontalList().setBaseStyle(stl.style(TemplateBase.fontStyle12).setLeftPadding(10).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT)); 
 
 			TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_TRN, incasso.getTrn(), true, false, true);
@@ -80,9 +83,9 @@ public class TemplateIncasso {
 			String tot = Costanti.LABEL_EURO + " " + String.format("%.2f", totale);
 			TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_IMPORTO, tot, true, false, true);
 			if(incasso.getDataContabile() != null)
-				TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_DATA_CONTABILE, TemplateBase.sdf_ddMMyyyy.format(incasso.getDataContabile()), true, false, true);
+				TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_DATA_CONTABILE, sdf_ddMMyyyy.format(incasso.getDataContabile()), true, false, true);
 			if(incasso.getDataValuta() != null)
-				TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_DATA_VALUTA,  TemplateBase.sdf_ddMMyyyy.format(incasso.getDataValuta()), true, false, true);
+				TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_DATA_VALUTA,  sdf_ddMMyyyy.format(incasso.getDataValuta()), true, false, true);
 
 			return listRiepilogo;
 		}catch(Exception e){
@@ -96,12 +99,14 @@ public class TemplateIncasso {
 	 */
 	public static ComponentBuilder<?, ?> createRiepilogoGeneraleDx(Incasso incasso, List<Pagamento> pagamentiList, Applicazione applicazione, Double totale, Logger log) {
 		try{
+			SimpleDateFormat sdf_ddMMyyyy = new SimpleDateFormat(TemplateBase.sdf_ddMMyyyy);
+
 			HorizontalListBuilder listRiepilogo = cmp.horizontalList().setBaseStyle(stl.style(TemplateBase.fontStyle12).setLeftPadding(10).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT)); 
 
 			TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_DISPOSITIVO, incasso.getDispositivo(), true, false, true);
 			TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_APPLICAZIONE, applicazione.getCodApplicazione(), true, false, true);
 			if(incasso.getDataIncasso() != null)
-				TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_DATA_INCASSO, TemplateBase.sdf_ddMMyyyy.format(incasso.getDataIncasso()), true, false, true);
+				TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_DATA_INCASSO, sdf_ddMMyyyy.format(incasso.getDataIncasso()), true, false, true);
 			TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_NUMERO_PAGAMENTI, pagamentiList.size() + "", true, false, true);
 
 			return listRiepilogo;
@@ -148,6 +153,9 @@ public class TemplateIncasso {
 	}
 	
 	public static DRDataSource createDataSource(List<Pagamento> list, List<Double> totale) {
+		
+		SimpleDateFormat sdf_ddMMyyyy = new SimpleDateFormat(TemplateBase.sdf_ddMMyyyy);
+		
 		List<String> header = new ArrayList<>();
 
 		Double tot = 0D;
@@ -185,7 +193,7 @@ public class TemplateIncasso {
 				oneLine.add("");
 
 			if(pagamento.getDataPagamento() != null)
-				oneLine.add(TemplateBase.sdf_ddMMyyyy.format(pagamento.getDataPagamento()));
+				oneLine.add(sdf_ddMMyyyy.format(pagamento.getDataPagamento()));
 			else 
 				oneLine.add("");
 

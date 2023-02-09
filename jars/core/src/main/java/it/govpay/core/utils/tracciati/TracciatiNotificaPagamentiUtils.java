@@ -18,9 +18,6 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
-
-import it.govpay.core.exceptions.IOException;
-import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.resources.Charset;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
@@ -49,6 +46,8 @@ import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.business.TracciatiNotificaPagamenti;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Contabilita;

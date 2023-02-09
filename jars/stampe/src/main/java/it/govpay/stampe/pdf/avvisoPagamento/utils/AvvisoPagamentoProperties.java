@@ -82,21 +82,24 @@ public class AvvisoPagamentoProperties {
 			// carico tutti i file che definiscono configurazioni diverse di avvisi pagamento
 			if(this.govpayResourceDir != null) {
 				File resourceDirFile = new File(this.govpayResourceDir);
-				for(File f : resourceDirFile.listFiles()) {
-					if(!f.getName().startsWith("avvisoPagamento") && !f.getName().endsWith("properties")) {
-						// Non e' un file di properties. lo salto
-						continue;
+				File[] listFiles = resourceDirFile.listFiles();
+				if(listFiles != null) 
+					for(File f : listFiles) {
+						if(f == null || f.getName() == null) continue;
+						if(!f.getName().startsWith("avvisoPagamento") && !f.getName().endsWith("properties")) {
+							// Non e' un file di properties. lo salto
+							continue;
+						}
+						Properties p = new Properties();
+						p.load(new FileInputStream(f));
+						String key = f.getName().replaceAll(".properties", "");
+						key = key.replaceAll("avvisoPagamento.", "");
+						// la configurazione di defaut e' gia'stata caricata
+						if(!key.equals("avvisoPagamento")) {
+							log.info("Caricata configurazione avviso di pagamento con chiave " + key);
+							this.propMap.put(key, p);
+						}
 					}
-					Properties p = new Properties();
-					p.load(new FileInputStream(f));
-					String key = f.getName().replaceAll(".properties", "");
-					key = key.replaceAll("avvisoPagamento.", "");
-					// la configurazione di defaut e' gia'stata caricata
-					if(!key.equals("avvisoPagamento")) {
-						log.info("Caricata configurazione avviso di pagamento con chiave " + key);
-						this.propMap.put(key, p);
-					}
-				}
 			}
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 

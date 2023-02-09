@@ -214,10 +214,8 @@ public class RptUtils {
 					StatoRpt nuovoStato = StatoRpt.RPT_ERRORE_INVIO_A_NODO;
 					log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] iniziativa Ente in stato[" + rpt.getStato()+ "]. Aggiorno in [" + nuovoStato + "].");
 
-					RptBD rptBD = null;
+					RptBD rptBD = new RptBD(configWrapper);;
 					try {
-						rptBD = new RptBD(configWrapper);
-						
 						rptBD.setupConnection(configWrapper.getTransactionID());
 						
 						rptBD.setAtomica(false);
@@ -339,10 +337,8 @@ public class RptUtils {
 							rpt.setStato(StatoRpt.RPT_ERRORE_INVIO_A_NODO);
 							rpt.setDescrizioneStato("Stato sul nodo: PPT_RPT_SCONOSCIUTA");
 
-							RptBD rptBD = null;
+							RptBD rptBD = new RptBD(configWrapper);
 							try {
-								rptBD = new RptBD(configWrapper);
-								
 								rptBD.setupConnection(configWrapper.getTransactionID());
 								
 								rptBD.setAtomica(false);

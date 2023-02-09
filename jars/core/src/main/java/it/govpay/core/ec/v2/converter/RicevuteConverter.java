@@ -15,8 +15,6 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Applicazione;
-import it.govpay.model.Notifica;
-import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
@@ -30,6 +28,8 @@ import it.govpay.ec.v2.beans.RicevutaIstitutoAttestante;
 import it.govpay.ec.v2.beans.RicevutaRpt;
 import it.govpay.ec.v2.beans.RicevutaRt;
 import it.govpay.ec.v2.beans.RicevutaRt.TipoEnum;
+import it.govpay.model.Notifica;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class RicevuteConverter {
 

@@ -13,7 +13,6 @@ import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Allegato;
 import it.govpay.core.autorizzazione.AuthorizationManager;
-import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.AllegatiDAO;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiAllegatoDTO;
@@ -25,7 +24,6 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.ragioneria.v3.beans.Pendenza;
 import it.govpay.ragioneria.v3.beans.PendenzaPagata;
 import it.govpay.ragioneria.v3.beans.converter.PendenzeConverter;
 import it.govpay.ragioneria.v3.api.PendenzeApi;

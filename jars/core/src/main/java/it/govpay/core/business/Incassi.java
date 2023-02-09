@@ -51,6 +51,7 @@ import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.PromemoriaBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.EventoContext;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
@@ -294,6 +295,7 @@ public class Incassi {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	public RichiestaIncassoDTOResponse elaboraRiconciliazione(String codDomino, String idRiconciliazione, IContext ctx) throws ServiceException, GovPayException  {
 		RichiestaIncassoDTOResponse richiestaIncassoResponse = new RichiestaIncassoDTOResponse();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -364,6 +366,9 @@ public class Incassi {
 		} catch (UtilsException e) {
 			throw new GovPayException(e);
 		} catch (IncassiException e) {
+			if(incasso == null) {
+				throw new GovPayException(EsitoOperazione.INTERNAL,"Not found");
+			}
 			// salvataggio stato in errore
 			incasso.setStato(StatoIncasso.ERRORE);
 			incasso.setDataIncasso(new Date());
@@ -724,7 +729,7 @@ public class Incassi {
 				AnagraficaManager.getIbanAccredito(configWrapper, dominio.getId(), richiestaIncasso.getIbanAccredito());
 			} catch (NotFoundException e) {
 				ctx.getApplicationLogger().log("incasso.ibanInesistente", richiestaIncasso.getIbanAccredito());
-				throw new IncassiException(FaultType.IBAN_INESISTENTE, "Il dominio " + richiestaIncasso.getCodDominio() + " indicato nella richiesta non risulta censito in anagrafica GovPay.");
+				throw new IncassiException(FaultType.IBAN_INESISTENTE, "Il conto " + richiestaIncasso.getIbanAccredito() + " indicato nella richiesta non risulta censito in anagrafica GovPay.");
 			}
 			
 			Long idApplicazione = null;

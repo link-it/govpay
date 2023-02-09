@@ -114,7 +114,8 @@ public class ConfigurazioniController extends BaseController {
 				}
 			}
 
-			patchConfigurazioneDTO.setOp(ConfigurazioniConverter.toModel(lstOp));
+			if(lstOp != null)
+				patchConfigurazioneDTO.setOp(ConfigurazioniConverter.toModel(lstOp));
 
 			ConfigurazioneDAO configurazioneDAO = new ConfigurazioneDAO(false);
 
