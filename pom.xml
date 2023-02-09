@@ -37,34 +37,34 @@
 		<openspcoop2.version>3.2.1</openspcoop2.version>
 		
 		<!-- log -->
-		<slf4j.version>1.7.25</slf4j.version>
-		<logger.version>2.17.1</logger.version>
+		<slf4j.version>1.7.36</slf4j.version>
+		<logger.version>2.19.0</logger.version>
+		<logback.version>1.2.11</logback.version>
 		
 		<!-- swagger -->
-		<swagger-codegen-maven-plugin.version>3.0.4-gov4j-3</swagger-codegen-maven-plugin.version>
-		<swagger.version>1.5.21</swagger.version>
-		<swagger.v3.version>2.0.3</swagger.v3.version>
-		<swagger.parser.version>2.0.2</swagger.parser.version>
-		<swagger.parser.v3.version>2.0.2</swagger.parser.v3.version>
+		<swagger-codegen-maven-plugin.version>3.0.18-gov4j-4</swagger-codegen-maven-plugin.version>
+		<swagger.version>1.6.9</swagger.version>
+		<swagger.v3.version>2.2.8</swagger.v3.version>
+		<swagger.parser.v3.version>2.1.11</swagger.parser.v3.version>
 		
 		<!-- cxf -->
-		<cxf.version>3.2.6</cxf.version>
+		<cxf.version>3.5.5</cxf.version>
 		<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
 		
 		<!-- jackson -->
-		<jackson.version>2.9.10</jackson.version>
+		<jackson.version>2.14.2</jackson.version>
 		
 		<!-- Jersey -->
-		<jersey.version>2.25.1</jersey.version>
+		<jersey.version>2.38</jersey.version>
 		
 		<!-- Spring -->
-		<spring.version>5.1.6.RELEASE</spring.version>
+		<spring.version>5.3.25</spring.version>
 		
 		<!-- Spring Security -->
-		<spring.security.version>5.1.5.RELEASE</spring.security.version>
+		<spring.security.version>5.8.1</spring.security.version>
 		
 		<!-- Spring Security Ldap plugin -->
-		<spring.ldap.version>2.3.2.RELEASE</spring.ldap.version>
+		<spring.ldap.version>2.4.1</spring.ldap.version>
 		
 		<!-- joda time -->
 		<joda-time.version>2.10</joda-time.version>
@@ -75,6 +75,7 @@
 		<commons.codec.version>1.11</commons.codec.version>
 		<commons.io.version>2.7</commons.io.version>
 		<commons.lang.version>2.6</commons.lang.version>
+		<commons.lang3.version>3.12.0</commons.lang3.version>
 		<commons.pool2.version>2.6.0</commons.pool2.version>
 		<commons.email.version>1.5</commons.email.version>
 		
@@ -82,13 +83,13 @@
 		<soap.version>2.3.1</soap.version>
 		
 		<!-- xmlsec -->
-		<xmlsec.version>2.1.4</xmlsec.version>
+		<xmlsec.version>2.3.2</xmlsec.version>
 		
 		<!-- freemarker -->
 		<freemarker.version>2.3.28</freemarker.version>
 		
 		<!-- http client -->
-		<httpclient.version>4.5.6</httpclient.version>
+		<httpclient.version>4.5.14</httpclient.version>
 		
 		<!-- concurrent -->
 		<concurrent.version>1.3.4</concurrent.version>
@@ -100,13 +101,13 @@
 		<fge_json-schema-validator.version>2.2.10</fge_json-schema-validator.version>
 		
 		<!-- networknt_json-schema-validator -->
-		<networknt_json-schema-validator.version>0.1.21</networknt_json-schema-validator.version>
+		<networknt_json-schema-validator.version>1.0.76</networknt_json-schema-validator.version>
 		
 		<!-- org.json -->
-		<org.json.json.version>20180813</org.json.json.version>
+		<org.json.json.version>20220924</org.json.json.version>
 		
 		<!-- xercesImpl -->
-		<xercesImpl.version>2.12.0</xercesImpl.version>
+		<xercesImpl.version>2.12.2</xercesImpl.version>
 		
 		<!-- mime-util -->
 		<mime-util.version>2.1.1</mime-util.version>
@@ -125,9 +126,8 @@
 		
 		<!-- Json Path -->
 		<json-path.version>2.4.0</json-path.version>
-		<json-smart.version>2.3</json-smart.version>
+		<json-smart.version>2.4.8</json-smart.version>
 		<accessors-smart.version>1.2</accessors-smart.version>
-		<networknt_json-schema-validator.gov4j.version>0.1.23-gov4j-1</networknt_json-schema-validator.gov4j.version>
 		
 		<!-- Base64 java8 migration class. -->
         <!-- Questo artefatto antico deve essere incluso nel pom perchè i progetti client generati
@@ -138,23 +138,27 @@
         <migbase64.version>2.2</migbase64.version>
         
         <!-- Postgres driver -->
-        <postgresql.driver.version>42.2.5</postgresql.driver.version>
+        <postgresql.driver.version>42.5.3</postgresql.driver.version>
         
         <!-- Stampe -->
         <!-- xalan -->
-        <xalan.version>2.7.1</xalan.version>
+        <xalan.version>2.7.2</xalan.version>
         <!-- Jaxen -->
         <jaxen.version>1.2.0</jaxen.version>
         <!-- barbecue -->
         <barbecue.version>1.5-beta1</barbecue.version>
         <!-- Groovy -->
-        <groovy.version>2.4.5</groovy.version>
+        <groovy.version>2.4.21</groovy.version>
         <!-- xmlgraphics-commons -->
-        <xmlgraphics.commons.version>2.1</xmlgraphics.commons.version>
+        <xmlgraphics.commons.version>2.8</xmlgraphics.commons.version>
+        <!-- xmlgraphics-batik-bridge -->
+        <batik-bridge.version>1.16</batik-bridge.version>
         <!-- com.google.zxing.javase -->
-        <com.google.zxing.javase.version>2.2</com.google.zxing.javase.version>
+        <com.google.zxing.javase.version>2.3.0</com.google.zxing.javase.version>
         <!-- dynamicreports-core -->
         <dynamicreports-core.version>4.1.1</dynamicreports-core.version>
+        <!-- jasperreports -->
+        <jasperreports.version>6.20.0</jasperreports.version>
 	</properties>
 
 	<dependencyManagement>
@@ -391,6 +395,12 @@
 				<groupId>commons-lang</groupId>
 				<artifactId>commons-lang</artifactId>
 				<version>${commons.lang.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+    			<artifactId>commons-lang3</artifactId>
+				<version>${commons.lang3.version}</version>
 			</dependency>
 
 			<dependency>
@@ -683,6 +693,12 @@
 				<groupId>org.apache.santuario</groupId>
 				<artifactId>xmlsec</artifactId>
 				<version>${xmlsec.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.fasterxml.woodstox</groupId>
+						<artifactId>woodstox-core</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
@@ -704,11 +720,17 @@
 				<artifactId>swagger-core</artifactId>
 				<version>${swagger.v3.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>io.swagger.core.v3</groupId>
+				<artifactId>swagger-annotations</artifactId>
+				<version>${swagger.v3.version}</version>
+			</dependency>
 
 			<dependency>
 			    <groupId>io.swagger.parser.v3</groupId>
 			    <artifactId>swagger-parser</artifactId>
-			    <version>${swagger.parser.version}</version>
+			    <version>${swagger.parser.v3.version}</version>
 			</dependency>
 			
 			<dependency>
@@ -856,6 +878,18 @@
 				<artifactId>jackson-datatype-jsr310</artifactId>
 				<version>${jackson.version}</version>
 	        </dependency> 
+	        
+	        <dependency>
+				<groupId>com.fasterxml.jackson.dataformat</groupId>
+  				<artifactId>jackson-dataformat-xml</artifactId>
+				<version>${jackson.version}</version>
+	        </dependency>
+	        
+	        <dependency>
+				<groupId>com.fasterxml.jackson.dataformat</groupId>
+  				<artifactId>jackson-dataformat-yaml</artifactId>
+				<version>${jackson.version}</version>
+	        </dependency>
 			
 			<!-- Jersey -->
 			<dependency>
@@ -967,18 +1001,6 @@
 	            <groupId>net.minidev</groupId>
 	            <artifactId>accessors-smart</artifactId>
 	            <version>${accessors-smart.version}</version>
-	            <exclusions>
-	                    <exclusion>
-	                            <groupId>*</groupId>
-	                            <artifactId>*</artifactId>
-	                    </exclusion>
-	            </exclusions>
-           </dependency>
-           
-           <dependency>
-	            <groupId>com.networknt</groupId>
-	            <artifactId>networknt_json-schema-validator</artifactId>
-	            <version>${networknt_json-schema-validator.gov4j.version}</version>
 	            <exclusions>
 	                    <exclusion>
 	                            <groupId>*</groupId>
@@ -1108,9 +1130,10 @@
 						<phase>verify</phase>
 						<configuration>
 							<autoUpdate>true</autoUpdate>
-							<failBuildOnAnyVulnerability>false}</failBuildOnAnyVulnerability>
+							<failBuildOnAnyVulnerability>false</failBuildOnAnyVulnerability>
 							<!-- <failBuildOnCVSS>8</failBuildOnCVSS> -->
 							<!-- <outputDirectory></outputDirectory> -->
+							<jarAnalyzerEnabled>false</jarAnalyzerEnabled>
 							<format>ALL</format>
 						</configuration>
 						<goals>

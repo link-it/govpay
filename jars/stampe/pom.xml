@@ -50,14 +50,34 @@
 			<version>${dynamicreports-core.version}</version>
 			<exclusions>
 				<exclusion>
+					 <groupId>net.sf.jasperreports</groupId>
+		    		 <artifactId>jasperreports</artifactId>
+				</exclusion>
+				<exclusion>
 					<artifactId>core</artifactId>
 					<groupId>com.google.zxing</groupId>
 				</exclusion>
 				<exclusion>
-					<artifactId>bcprov-jdk14</artifactId>
-					<groupId>bouncycastle</groupId>
+					<groupId>org.apache.xmlgraphics</groupId>
+					<artifactId>batik-bridge</artifactId>
 				</exclusion>
 				<exclusion>
+					<groupId>org.apache.commons</groupId>
+   					<artifactId>commons-lang3</artifactId>
+				</exclusion>
+<!-- 				<exclusion> -->
+<!-- 					<artifactId>bcprov-jdk14</artifactId> -->
+<!-- 					<groupId>bouncycastle</groupId> -->
+<!-- 				</exclusion> -->
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+		    <groupId>net.sf.jasperreports</groupId>
+		    <artifactId>jasperreports</artifactId>
+		    <version>${jasperreports.version}</version>
+		    <exclusions>
+		    	<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
 					<artifactId>jackson-databind</artifactId>
 				</exclusion>
@@ -69,7 +89,11 @@
 					<groupId>com.fasterxml.jackson.core</groupId>
 					<artifactId>jackson-core</artifactId>
 				</exclusion>
-			</exclusions>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.dataformat</groupId>
+  					<artifactId>jackson-dataformat-xml</artifactId>
+				</exclusion>
+		    </exclusions>
 		</dependency>
 
 		<dependency>
@@ -106,6 +130,18 @@
 		    <groupId>jaxen</groupId>
 		    <artifactId>jaxen</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-bridge</artifactId>
+			<version>${batik-bridge.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+   			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

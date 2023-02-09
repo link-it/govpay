@@ -250,21 +250,9 @@
 			</exclusions>
 		</dependency>
 
-
 		<dependency>
 			<groupId>net.minidev</groupId>
 			<artifactId>accessors-smart</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>*</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>com.networknt</groupId>
-			<artifactId>networknt_json-schema-validator</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>*</groupId>
