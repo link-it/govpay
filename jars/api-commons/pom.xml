@@ -57,6 +57,7 @@
 			<groupId>io.swagger.parser.v3</groupId>
 			<artifactId>swagger-parser</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>io.swagger.parser.v3</groupId>
 			<artifactId>swagger-parser-core</artifactId>

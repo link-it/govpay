@@ -1,0 +1,48 @@
+<suppressions
+	xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+	<suppress>
+		<notes><![CDATA[
+   file name: pom.xml utilizzato per la generazione della console di backoffice non esposta al pubblico.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/it\.govpay/web\-console@.*$
+		</packageUrl>
+		<cve>CVE-2014-125070</cve>
+	</suppress>
+
+	<suppress>
+		<notes><![CDATA[
+   file name: web-console-3.7.0.war: scripts.bundle.js utilizzato dalla console di backoffice non esposta al pubblico.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:javascript/jquery@.*$</packageUrl>
+		<cve>CVE-2022-24785</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: web-console-3.7.0.war: scripts.bundle.js utilizzato dalla console di backoffice non esposta al pubblico.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:javascript/jquery@.*$</packageUrl>
+		<cve>CVE-2022-31129</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: web-console-3.7.0.war: scripts.bundle.js utilizzato dalla console di backoffice non esposta al pubblico.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:javascript/jquery@.*$</packageUrl>
+		<cve>CVE-2019-11358</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: web-console-3.7.0.war: scripts.bundle.js utilizzato dalla console di backoffice non esposta al pubblico.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:javascript/jquery@.*$</packageUrl>
+		<cve>CVE-2020-11022</cve>
+	</suppress>
+
+	<suppress>
+		<notes><![CDATA[
+   file name: web-console-3.7.0.war: scripts.bundle.js utilizzato dalla console di backoffice non esposta al pubblico.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:javascript/jquery@.*$</packageUrl>
+		<cve>CVE-2020-11023</cve>
+	</suppress>
+</suppressions>

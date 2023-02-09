@@ -47,6 +47,7 @@
 		<swagger.version>1.6.9</swagger.version>
 		<swagger.v3.version>2.2.8</swagger.v3.version>
 		<swagger.parser.v3.version>2.1.11</swagger.parser.v3.version>
+		<snakeyaml.version>1.33</snakeyaml.version>
 		
 		<!-- cxf -->
 		<cxf.version>3.5.5</cxf.version>
@@ -79,9 +80,6 @@
 		<commons.lang3.version>3.12.0</commons.lang3.version>
 		<commons.pool2.version>2.6.0</commons.pool2.version>
 		<commons.email.version>1.5</commons.email.version>
-		
-		<!-- soap -->
-		<soap.version>2.3.1</soap.version>
 		
 		<!-- xmlsec -->
 		<xmlsec.version>2.3.2</xmlsec.version>
@@ -143,7 +141,7 @@
         
         <!-- Stampe -->
         <!-- xalan -->
-        <xalan.version>2.7.2</xalan.version>
+        <xalan.version>2.7.3-rc5</xalan.version>
         <!-- Jaxen -->
         <jaxen.version>1.2.0</jaxen.version>
         <!-- barbecue -->
@@ -685,12 +683,6 @@
 			</dependency>
 
 			<dependency>
-				<groupId>soap</groupId>
-				<artifactId>soap</artifactId>
-				<version>${soap.version}</version>
-			</dependency>
-
-			<dependency>
 				<groupId>org.apache.santuario</groupId>
 				<artifactId>xmlsec</artifactId>
 				<version>${xmlsec.version}</version>
@@ -720,6 +712,12 @@
 				<groupId>io.swagger.core.v3</groupId>
 				<artifactId>swagger-core</artifactId>
 				<version>${swagger.v3.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.yaml</groupId>
+						<artifactId>snakeyaml</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			
 			<dependency>
@@ -732,6 +730,12 @@
 			    <groupId>io.swagger.parser.v3</groupId>
 			    <artifactId>swagger-parser</artifactId>
 			    <version>${swagger.parser.v3.version}</version>
+			    <exclusions>
+					<exclusion>
+						<groupId>org.yaml</groupId>
+						<artifactId>snakeyaml</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			
 			<dependency>
@@ -744,6 +748,12 @@
 				<groupId>io.swagger.parser.v3</groupId>
 				<artifactId>swagger-parser-v3</artifactId>
 				<version>${swagger.parser.v3.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.yaml</groupId>
+						<artifactId>snakeyaml</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			
 			<dependency>
@@ -762,6 +772,12 @@
 				<groupId>io.swagger</groupId>
 				<artifactId>swagger-jaxrs</artifactId>
 				<version>${swagger.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.yaml</groupId>
+						<artifactId>snakeyaml</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<dependency>
@@ -1060,6 +1076,18 @@
 				<groupId>xalan</groupId>
 				<artifactId>xalan</artifactId>
 				<version>${xalan.version}</version>
+				 <exclusions>
+	                    <exclusion>
+	                            <groupId>*</groupId>
+	                            <artifactId>*</artifactId>
+	                    </exclusion>
+	            </exclusions>
+			</dependency>
+			
+			<dependency>
+				<groupId>xalan</groupId>
+				<artifactId>serializer</artifactId>
+				<version>${xalan.version}</version>
 			</dependency>
 			
 			<dependency>
@@ -1138,6 +1166,11 @@
 							<format>ALL</format>
 							<suppressionFiles>
                             	<suppressionFile>${owasp.falsePositives.dir}/installer.xml</suppressionFile>
+                            	<suppressionFile>${owasp.falsePositives.dir}/CVE-2022-40152.xml</suppressionFile>
+                            	<suppressionFile>${owasp.falsePositives.dir}/spring-web.xml</suppressionFile>
+                            	<suppressionFile>${owasp.falsePositives.dir}/spring-security-crypto.xml</suppressionFile>
+                            	<suppressionFile>${owasp.falsePositives.dir}/xercesImpl.xml</suppressionFile>
+                            	<suppressionFile>${owasp.falsePositives.dir}/console-backoffice.xml</suppressionFile>
                             </suppressionFiles>
 						</configuration>
 						<goals>
