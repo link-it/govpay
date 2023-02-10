@@ -32,7 +32,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<rel-to-parent>.</rel-to-parent>
 		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
-		<owasp.falsePositives.dir>${rel-to-parent}/src/main/resources/owasp/falsePositives</owasp.falsePositives.dir>
+		<owasp.falsePositives.dir>src/main/resources/owasp/falsePositives</owasp.falsePositives.dir>
 		
 		<!-- op2 -->
 		<openspcoop2.version>3.2.1</openspcoop2.version>
