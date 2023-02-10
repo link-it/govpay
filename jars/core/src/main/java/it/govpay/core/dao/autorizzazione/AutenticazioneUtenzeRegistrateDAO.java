@@ -102,6 +102,8 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 				}
 				utenza.setPrincipal(username);
 				utenza.setPrincipalOriginale(username);
+				utenza.setAutorizzazioneDominiStar(true);
+				utenza.setAutorizzazioneTipiVersamentoStar(true);
 				operatore.setUtenza(utenza);
 				operatoriBD.insertOperatore(operatore);
 				

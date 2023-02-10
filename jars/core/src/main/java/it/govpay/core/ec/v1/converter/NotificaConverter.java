@@ -43,11 +43,11 @@ import it.govpay.ec.v1.beans.TipoRiscossione;
 
 public class NotificaConverter {
 	
-	public Notifica toRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, JAXBException, SAXException {
+	public Notifica toRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti, boolean convertiMessaggioPagoPAV2InPagoPAV1) throws ServiceException, JAXBException, SAXException {
 		Notifica notificaRsModel = new Notifica();
 		notificaRsModel.setIdA2A(applicazione.getCodApplicazione());
 		notificaRsModel.setIdPendenza(versamento.getCodVersamentoEnte());
-		notificaRsModel.setRpt(new RawObject(ConverterUtils.getRptJson(rpt))); 
+		notificaRsModel.setRpt(new RawObject(ConverterUtils.getRptJson(rpt,convertiMessaggioPagoPAV2InPagoPAV1))); 
 		return notificaRsModel;
 	}
 	

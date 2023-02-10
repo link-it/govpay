@@ -160,6 +160,8 @@ public class GovpayConfig {
 	
 	private String nomeHeaderSubscriptionKeyPagoPA;
 	
+	private boolean dismettiIUVIso11694;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -242,6 +244,8 @@ public class GovpayConfig {
 		this.conversioneMessaggiPagoPAV2NelFormatoV1 = false;
 		
 		this.nomeHeaderSubscriptionKeyPagoPA = null;
+		
+		this.dismettiIUVIso11694 = false;
 		
 		try {
 
@@ -760,6 +764,10 @@ public class GovpayConfig {
 			
 			this.nomeHeaderSubscriptionKeyPagoPA = getProperty("it.govpay.client.pagopa.autenticazione.subscriptionkey.header.name", this.props, false, log);
 			
+			String dismettiIUVIso11694String = getProperty("it.govpay.dismettiIuvIso11694", this.props, false, log);
+			if(dismettiIUVIso11694String != null && Boolean.valueOf(dismettiIUVIso11694String))
+				this.dismettiIUVIso11694 = true;
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -1160,5 +1168,9 @@ public class GovpayConfig {
 	
 	public String getNomeHeaderSubscriptionKeyPagoPA() {
 		return nomeHeaderSubscriptionKeyPagoPA;
+	}
+	
+	public boolean isDismettiIUVIso11694() {
+		return dismettiIUVIso11694;
 	}
 }
