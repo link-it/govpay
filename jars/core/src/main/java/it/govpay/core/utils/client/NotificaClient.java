@@ -45,6 +45,7 @@ import it.govpay.core.ec.v2.converter.RicevuteConverter;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.RptUtils;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
@@ -66,6 +67,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 	private Rpt rpt;
 	private Versamento versamento;
 	private List<Pagamento> pagamenti;
+	private boolean convertiMessaggioPagoPAV2InPagoPAV1;
 
 	public NotificaClient(Applicazione applicazione, Rpt rpt, Versamento versamento, List<Pagamento> pagamenti, String operationID, Giornale giornale) throws ClientException, ServiceException {
 		super(applicazione, TipoConnettore.NOTIFICA);
@@ -78,7 +80,8 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 
 		this.componente = Componente.API_ENTE;
 		this.setGiornale(giornale);
-		this.getEventoCtx().setComponente(this.componente); 
+		this.getEventoCtx().setComponente(this.componente);
+		this.convertiMessaggioPagoPAV2InPagoPAV1 = GovpayConfig.getInstance().isConversioneMessaggiPagoPAV2NelFormatoV1();
 	}
 
 	/**
@@ -188,11 +191,11 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 
 		switch (notifica.getTipo()) {
 		case ATTIVAZIONE:
-			it.govpay.ec.v1.beans.Notifica notificaAttivazioneRsModel = new NotificaAttivazioneConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti);
+			it.govpay.ec.v1.beans.Notifica notificaAttivazioneRsModel = new NotificaAttivazioneConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti, this.convertiMessaggioPagoPAV2InPagoPAV1);
 			jsonBody = ConverterUtils.toJSON(notificaAttivazioneRsModel);
 			break;
 		case RICEVUTA:
-			it.govpay.ec.v1.beans.Notifica notificaTerminazioneRsModel = new NotificaTerminazioneConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti);
+			it.govpay.ec.v1.beans.Notifica notificaTerminazioneRsModel = new NotificaTerminazioneConverter().toRsModel(notifica, rpt, applicazione, versamento, pagamenti, this.convertiMessaggioPagoPAV2InPagoPAV1);
 			jsonBody = ConverterUtils.toJSON(notificaTerminazioneRsModel);
 			break;
 		case FALLIMENTO:
