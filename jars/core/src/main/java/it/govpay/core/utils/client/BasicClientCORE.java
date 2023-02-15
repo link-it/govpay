@@ -429,7 +429,7 @@ public abstract class BasicClientCORE {
 				log.debug("Applicazione al messaggio degli handlers configurati...");
 				for(String handler: outHandlers) {
 					Class<?> c = Class.forName(handler);
-					IntegrationOutHandler instance = (IntegrationOutHandler) c.newInstance();
+					IntegrationOutHandler instance = (IntegrationOutHandler) c.getConstructor().newInstance();
 					log.debug("Applicazione al messaggio dell'handler ["+handler+"]...");
 					instance.invoke(integrationCtx);
 					log.debug("Applicazione al messaggio dell'handler ["+handler+"] completata con successo");
@@ -844,7 +844,6 @@ public abstract class BasicClientCORE {
 				this.disconnect();
 			}catch(ClientException e) {
 				log.error("Errore in fase di chiusura delle risorse: " + e.getMessage(),e);
-				throw e;
 			}
 		}
 
@@ -861,7 +860,6 @@ public abstract class BasicClientCORE {
 			}
 		}
 	}
-
 
 	//	@Override
 	public void disconnect() throws ClientException{
@@ -891,11 +889,6 @@ public abstract class BasicClientCORE {
 				EntityUtils.consume(this.httpEntityResponse);
 				//System.out.println("CLOSE ENTITY");
 			}
-
-			if(this.httpEntityResponse!=null){
-
-			}
-
 		}catch(Throwable t) {
 			log.debug("Chiusura connessione fallita: "+t.getMessage(),t);
 			listExceptionChiusura.add(t);

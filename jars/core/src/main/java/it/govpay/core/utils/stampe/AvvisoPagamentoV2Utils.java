@@ -23,6 +23,7 @@ import it.govpay.core.beans.tracciati.LinguaSecondaria;
 import it.govpay.core.beans.tracciati.ProprietaPendenza;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
+import it.govpay.core.exceptions.InvalidSwitchValueException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.LabelAvvisiProperties;
@@ -40,7 +41,7 @@ import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 public class AvvisoPagamentoV2Utils {
 
 	
-	public static AvvisoPagamentoInput fromVersamento(PrintAvvisoVersamentoDTO printAvviso, LinguaSecondaria secondaLinguaScelta) throws ServiceException, UtilsException {
+	public static AvvisoPagamentoInput fromVersamento(PrintAvvisoVersamentoDTO printAvviso, LinguaSecondaria secondaLinguaScelta) throws ServiceException, UtilsException, InvalidSwitchValueException {
 		it.govpay.bd.model.Versamento versamento = printAvviso.getVersamento();
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -89,7 +90,7 @@ public class AvvisoPagamentoV2Utils {
 		return input;
 	} 
 
-	public static AvvisoPagamentoInput fromDocumento(PrintAvvisoDocumentoDTO printAvviso, List<Versamento> versamenti, LinguaSecondaria secondaLinguaScelta, Logger log) throws ServiceException, UnprocessableEntityException, UtilsException { 
+	public static AvvisoPagamentoInput fromDocumento(PrintAvvisoDocumentoDTO printAvviso, List<Versamento> versamenti, LinguaSecondaria secondaLinguaScelta, Logger log) throws ServiceException, UnprocessableEntityException, UtilsException, InvalidSwitchValueException { 
 		Documento documento = printAvviso.getDocumento();
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -260,6 +261,9 @@ public class AvvisoPagamentoV2Utils {
 					if(secondaLinguaScelta != null)
 						rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_OLTRE, versamento.getGiorniSoglia()));
 					break;
+				case RIDOTTO:
+				case SCONTATO:
+					throw new InvalidSwitchValueException("Il tipo soglia ["+versamento.getTipoSoglia()+"] indicato per la rata ["+rata.getNumeroRata()+"] non e' valido negli avvisi di pagamento V2");
 				}
 				
 				rata.setImporto(versamento.getImportoTotale().doubleValue());
@@ -350,7 +354,7 @@ public class AvvisoPagamentoV2Utils {
 		return input;
 	}
 
-	public static RataAvviso getRata(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input, LinguaSecondaria secondaLinguaScelta, SimpleDateFormat sdfDataScadenza) throws ServiceException, UtilsException {
+	public static RataAvviso getRata(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input, LinguaSecondaria secondaLinguaScelta, SimpleDateFormat sdfDataScadenza) throws ServiceException, UtilsException, InvalidSwitchValueException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		RataAvviso rata = new RataAvviso();
 		
@@ -393,6 +397,9 @@ public class AvvisoPagamentoV2Utils {
 					rata.setScadenzaUnicaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_SOLUZIONE_UNICA_OLTRE_GIORNI, versamento.getGiorniSoglia()));
 				}
 				break;
+			case RIDOTTO:
+			case SCONTATO:
+				throw new InvalidSwitchValueException("Il tipo soglia ["+versamento.getTipoSoglia()+"] indicato per la rata ["+rata.getNumeroRata()+"] non e' valido negli avvisi di pagamento V2");
 			}
 			
 			addDataValidita = false; 

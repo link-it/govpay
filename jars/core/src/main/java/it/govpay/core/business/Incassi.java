@@ -155,12 +155,12 @@ public class Incassi {
 					} 
 				} catch (Throwable e) {
 					log.error("Riscontrato errore durante il parsing della causale",e);
-				} finally {
-					if(iuv == null && idf==null) {
-						ctx.getApplicationLogger().log("incasso.causaleNonValida", causale);
-						throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
-					}
-				} 
+				}
+				
+				if(iuv == null && idf==null) {
+					ctx.getApplicationLogger().log("incasso.causaleNonValida", causale);
+					throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
+				}
 			} 
 //			else {
 //				iuv = richiestaIncasso.getIuv();
@@ -414,7 +414,7 @@ public class Incassi {
 						eventiBD.insertEvento(evento);	
 					}
 				} catch (ServiceException e) {
-					throw new GovPayException(e);
+					log.error("Riscontrato errore durante il salvataggio degli eventi:" + e.getMessage(),e);
 				} finally {
 					if(eventiBD != null) {
 						eventiBD.closeConnection();
@@ -672,7 +672,7 @@ public class Incassi {
 			try {
 				incassiBD.setAutoCommit(true);
 			} catch (ServiceException e) {
-				throw new GovPayException(e);
+				log.error("Riscontrato errore ripristino dell'autocommit:" + e.getMessage(),e);
 			} 
 		}
 		
@@ -759,12 +759,12 @@ public class Incassi {
 					} 
 				} catch (Throwable e) {
 					log.error("Riscontrato errore durante il parsing della causale",e);
-				} finally {
-					if(iuv == null && idf==null) {
-						ctx.getApplicationLogger().log("incasso.causaleNonValida", causale);
-						throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
-					}
-				} 
+				}
+				
+				if(iuv == null && idf==null) {
+					ctx.getApplicationLogger().log("incasso.causaleNonValida", causale);
+					throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
+				}
 			} else {
 				iuv = richiestaIncasso.getIuv();
 				idf = richiestaIncasso.getIdFlusso();
@@ -895,7 +895,7 @@ public class Incassi {
 						eventiBD.insertEvento(evento);	
 					}
 				} catch (ServiceException e) {
-					throw new GovPayException(e);
+					log.error("Riscontrato errore durante il salvataggio degli eventi:" + e.getMessage(),e);
 				} finally {
 					if(eventiBD != null) {
 						eventiBD.closeConnection();

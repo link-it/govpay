@@ -199,7 +199,7 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			
 			log.info("Spedizione del tracciato " + this.tipoTracciato + " "  + this.tracciato.getNomeFile() +"] al connettore previsto dalla configurazione...");
 			
-			if(connettore == null || !connettore.isAbilitato()) {
+			if(!connettore.isAbilitato()) {
 				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.annullato");
 				log.info("Connettore " + this.tipoTracciato + " non configurato per il Dominio [Id: " + this.dominio.getCodDominio() + "]. Spedizione inibita.");
 				
@@ -283,10 +283,6 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			this.eventoCtx.setException(e);
 			
 		} finally {
-			if(connettore == null) {
-				// Il connettore non puo' essere null, altrimenti non viene schedulato
-				return;
-			}
 			this.popolaContextEvento(connettore.getTipoConnettore(), url, dumpRequest, dumpResponse, this.eventoCtx);
 			
 			
