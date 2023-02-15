@@ -28,6 +28,7 @@ import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.PropertyNotFoundException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.LabelAvvisiProperties;
 import it.govpay.core.utils.stampe.AvvisoPagamentoUtils;
@@ -108,7 +109,7 @@ public class AvvisoPagamento {
 						avvisiBD.insertStampa(avviso);
 						log.debug("Creazione PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvataggio su DB completato.");
 					}
-				} catch (UtilsException | JAXBException | IOException | JRException e) {
+				} catch (UtilsException | JAXBException | IOException | JRException | PropertyNotFoundException e) {
 					log.error("Creazione Pdf Avviso Pagamento fallito: "+ e.getMessage() , e);
 					throw new ServiceException(e);
 				} catch (ServiceException e) {
@@ -127,7 +128,7 @@ public class AvvisoPagamento {
 						avvisiBD.updatePdfStampa(avviso);
 						log.debug("Aggiornamento PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Salvato.");
 					}
-				} catch (UtilsException | JAXBException | IOException | JRException e) {
+				} catch (UtilsException | JAXBException | IOException | JRException | PropertyNotFoundException e) {
 					log.error("Aggiornamento Pdf Avviso Pagamento fallito: "+ e.getMessage() , e);
 					throw new ServiceException(e);
 				} catch (ServiceException e) {
@@ -145,7 +146,7 @@ public class AvvisoPagamento {
 		return response;
 	}
 
-	private byte[] getBytesAvvisoVersamento(PrintAvvisoVersamentoDTO printAvviso, boolean update) throws ServiceException, JAXBException, IOException, JRException, UtilsException {
+	private byte[] getBytesAvvisoVersamento(PrintAvvisoVersamentoDTO printAvviso, boolean update) throws ServiceException, JAXBException, IOException, JRException, UtilsException, PropertyNotFoundException {
 		String logPrefix = update ? "Aggiornamento" : "Creazione";
 		
 		log.debug(logPrefix + " PDF Avviso Pagamento [Dominio: " + printAvviso.getCodDominio() +" | IUV: " + printAvviso.getIuv() + "] Lettura properties...");
@@ -261,7 +262,7 @@ public class AvvisoPagamento {
 						avvisiBD.insertStampa(avviso);
 						log.debug("Creazione PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB completato.");
 					}
-				} catch (UtilsException | JAXBException | IOException | JRException e) {
+				} catch (UtilsException | JAXBException | IOException | JRException| PropertyNotFoundException e) {
 					log.error("Creazione Pdf Avviso Documento fallito: " + e.getMessage(), e);
 					throw new ServiceException(e);
 				} catch (ServiceException e) {
@@ -282,7 +283,7 @@ public class AvvisoPagamento {
 						avvisiBD.updatePdfStampa(avviso);
 						log.debug("Aggiornamento PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Salvataggio su DB completato.");
 					}
-				} catch (UtilsException | JAXBException | IOException | JRException e) {
+				} catch (UtilsException | JAXBException | IOException | JRException| PropertyNotFoundException e) {
 					log.error("Aggiornamento Pdf Avviso Documento fallito: "+ e.getMessage() , e);
 					throw new ServiceException(e);
 				} catch (ServiceException e) {
@@ -303,7 +304,7 @@ public class AvvisoPagamento {
 		return response;
 	}
 
-	private byte[] getBytesAvvisoDocumento(PrintAvvisoDocumentoDTO printAvviso, Applicazione applicazione, Dominio dominio, boolean update) throws ServiceException, UnprocessableEntityException, JAXBException, IOException, JRException,	UtilsException {
+	private byte[] getBytesAvvisoDocumento(PrintAvvisoDocumentoDTO printAvviso, Applicazione applicazione, Dominio dominio, boolean update) throws ServiceException, UnprocessableEntityException, JAXBException, IOException, JRException,	UtilsException, PropertyNotFoundException {
 		String logPrefix = update ? "Aggiornamento" : "Creazione";
 		
 		log.debug(logPrefix + " PDF Avviso Documento [IDA2A: " + applicazione.getCodApplicazione() + " | CodDocumento: " + printAvviso.getDocumento().getCodDocumento() + "] Lettura properties...");

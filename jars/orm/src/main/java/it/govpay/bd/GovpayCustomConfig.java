@@ -21,19 +21,24 @@ package it.govpay.bd;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
 import it.govpay.bd.pagamento.util.CustomIuv;
+import it.govpay.core.exceptions.ConfigException;
+import it.govpay.core.exceptions.PropertyNotFoundException;
 
 
 public class GovpayCustomConfig {
-	
+
 	private static GovpayCustomConfig instance;
-	
+
 	public static GovpayCustomConfig getInstance() {
 		return instance;
 	}
@@ -46,65 +51,84 @@ public class GovpayCustomConfig {
 	private Properties[] props;
 	private String resourceDir;
 	private CustomIuv defaultCustomIuvGenerator = null;
-	
-	
-	public GovpayCustomConfig(InputStream is) throws Exception {
-		
+
+
+	public GovpayCustomConfig(InputStream is) throws ConfigException {
+
 		Logger log = LoggerWrapperFactory.getLogger("boot");
-		
+
 		// Recupero il property all'interno dell'EAR
-
-		this.props = new Properties[2];
-		Properties props1 = new Properties();
-		props1.load(is);
-		this.props[1] = props1;
-		
-		// Recupero la configurazione della working dir
-		// Se e' configurata, la uso come prioritaria
-
 		try {
-			this.resourceDir = this.getProperty("it.govpay.resource.path", props1, false, false);
+			this.props = new Properties[2];
+			Properties props1 = new Properties();
+			props1.load(is);
+			this.props[1] = props1;
 
-			if(this.resourceDir != null) {
-				File resourceDirFile = new File(this.resourceDir);
-				if(!resourceDirFile.isDirectory())
-					throw new Exception("Il path indicato nella property \"it.govpay.resource.path\" (" + this.resourceDir + ") non esiste o non e' un folder.");
-			}
-		} catch (Exception e) {
-			LoggerWrapperFactory.getLogger("boot").warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
-		}
-		
-		Properties props0 = null;
-		this.props[0] = props0;
+			// Recupero la configurazione della working dir
+			// Se e' configurata, la uso come prioritaria
 
-		File gpConfigFile = new File(this.resourceDir + File.separatorChar + "govpay-orm.properties");
-		if(gpConfigFile.exists()) {
-			props0 = new Properties();
-			props0.load(new FileInputStream(gpConfigFile));
-			log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
-			this.props[0] = props0;
-		}
-		
-		String defaultCustomIuvGeneratorClass = this.getProperty("it.govpay.defaultCustomIuvGenerator.class", this.props, false);
-			if(defaultCustomIuvGeneratorClass != null && !defaultCustomIuvGeneratorClass.isEmpty()) {
-			Class<?> c = null;
 			try {
-				c = this.getClass().getClassLoader().loadClass(defaultCustomIuvGeneratorClass);
-			} catch (ClassNotFoundException e) {
-				throw new Exception("La classe ["+defaultCustomIuvGeneratorClass+"] specificata come default per la generazione di IUV custom non e' presente nel classpath");
+				this.resourceDir = this.getProperty("it.govpay.resource.path", props1, false, false);
+
+				if(this.resourceDir != null) {
+					File resourceDirFile = new File(this.resourceDir);
+					if(!resourceDirFile.isDirectory())
+						throw new Exception("Il path indicato nella property \"it.govpay.resource.path\" (" + this.resourceDir + ") non esiste o non e' un folder.");
+				}
+			} catch (Exception e) {
+				LoggerWrapperFactory.getLogger("boot").warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
 			}
-			Object instance = c.newInstance();
-			if(!(instance instanceof CustomIuv)) {
-				throw new Exception("La classe ["+defaultCustomIuvGeneratorClass+"] come default per la generazione di IUV custom deve implementare l'interfaccia " + CustomIuv.class.getName());
+
+			Properties props0 = null;
+			this.props[0] = props0;
+
+			File gpConfigFile = new File(this.resourceDir + File.separatorChar + "govpay-orm.properties");
+			if(gpConfigFile.exists()) {
+				props0 = new Properties();
+				try(InputStream isExt = new FileInputStream(gpConfigFile)) {
+					props0.load(isExt);
+				} catch (FileNotFoundException e) {
+					throw new ConfigException(e);
+				} catch (IOException e) {
+					throw new ConfigException(e);
+				} 
+				log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
+				this.props[0] = props0;
 			}
-			this.defaultCustomIuvGenerator = (CustomIuv) instance;
+
+			String defaultCustomIuvGeneratorClass = this.getProperty("it.govpay.defaultCustomIuvGenerator.class", this.props, false);
+			if(defaultCustomIuvGeneratorClass != null && !defaultCustomIuvGeneratorClass.isEmpty()) {
+				Class<?> c = null;
+				try {
+					c = this.getClass().getClassLoader().loadClass(defaultCustomIuvGeneratorClass);
+				} catch (ClassNotFoundException e) {
+					throw new ConfigException("La classe ["+defaultCustomIuvGeneratorClass+"] specificata come default per la generazione di IUV custom non e' presente nel classpath");
+				}
+				Object instance;
+				try {
+					instance = c.getConstructor().newInstance();
+					if(!(instance instanceof CustomIuv)) {
+						throw new ConfigException("La classe ["+defaultCustomIuvGeneratorClass+"] come default per la generazione di IUV custom deve implementare l'interfaccia " + CustomIuv.class.getName());
+					}
+					this.defaultCustomIuvGenerator = (CustomIuv) instance;
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException	| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+					log.error("Errore durante la crazione dell'oggetto di classe ["+defaultCustomIuvGeneratorClass+"] specificata per la gestione di IUV: " + e.getMessage());
+					throw new ConfigException(e);
+				}
+
+			}
+		} catch (PropertyNotFoundException e) {
+			LoggerWrapperFactory.getLogger("boot").error("Errore di inizializzazione: " + e.getMessage());
+			throw new ConfigException(e);
+		} catch (IOException e) {
+			LoggerWrapperFactory.getLogger("boot").error("Errore di inizializzazione: " + e.getMessage());
+			throw new ConfigException(e);
 		}
-		
 	}
 
-	private String getProperty(String name, Properties props, boolean required, boolean logDebug) throws Exception {
+	private String getProperty(String name, Properties props, boolean required, boolean logDebug) throws PropertyNotFoundException {
 		Logger log = LoggerWrapperFactory.getLogger("boot");
-		
+
 		String value = System.getProperty(name);
 
 		if(value != null && value.trim().isEmpty()) {
@@ -120,7 +144,7 @@ public class GovpayCustomConfig {
 			}
 			if(value == null) {
 				if(required) 
-					throw new Exception("Proprieta ["+name+"] non trovata");
+					throw new PropertyNotFoundException("Proprieta ["+name+"] non trovata");
 				else return null;
 			} else {
 				if(logDebug)
@@ -138,13 +162,13 @@ public class GovpayCustomConfig {
 		return value.trim();
 	}
 
-	private String getProperty(String name, Properties[] props, boolean required) throws Exception {
+	private String getProperty(String name, Properties[] props, boolean required) throws PropertyNotFoundException {
 		return this.getProperty(name, props, required, false);
 	}
 
-	private String getProperty(String name, Properties[] props, boolean required, boolean logDebug) throws Exception {
+	private String getProperty(String name, Properties[] props, boolean required, boolean logDebug) throws PropertyNotFoundException {
 		Logger log = LoggerWrapperFactory.getLogger("boot");
-		
+
 		String value = null;
 		for(Properties p : props) {
 			value = this.getProperty(name, p, required, logDebug); 
@@ -157,11 +181,11 @@ public class GovpayCustomConfig {
 		if(log != null && logDebug) log.debug("Proprieta " + name + " non trovata");
 
 		if(required) 
-			throw new Exception("Proprieta ["+name+"] non trovata");
+			throw new PropertyNotFoundException("Proprieta ["+name+"] non trovata");
 		else 
 			return null;
 	}
-	
+
 	public CustomIuv getDefaultCustomIuvGenerator() {
 		return this.defaultCustomIuvGenerator;
 	} 

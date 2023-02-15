@@ -2,6 +2,8 @@ package it.govpay.core.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +14,8 @@ import org.slf4j.Logger;
 
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.BaseExceptionV1.CategoriaEnum;
+import it.govpay.core.exceptions.ConfigException;
+import it.govpay.core.exceptions.PropertyNotFoundException;
 
 public class SeveritaProperties {
 
@@ -29,12 +33,12 @@ public class SeveritaProperties {
 		return instance;
 	}
 
-	public static SeveritaProperties newInstance(InputStream is) throws Exception {
+	public static SeveritaProperties newInstance(InputStream is) throws ConfigException {
 		instance = new SeveritaProperties(is);
 		return instance;
 	}
 
-	public SeveritaProperties(InputStream is) throws Exception {
+	public SeveritaProperties(InputStream is) throws ConfigException {
 		Logger log = LoggerWrapperFactory.getLogger("boot");
 		try {
 			this.mappingSeveritaErrori = new HashMap<>();
@@ -53,27 +57,37 @@ public class SeveritaProperties {
 			File gpConfigFile = new File(this.resourceDir + File.separatorChar + MAPPING_SEVERITA_ERRORI_PROPERTIES_FILE_NAME);
 			if(gpConfigFile.exists()) {
 				props0 = new Properties();
-				props0.load(new FileInputStream(gpConfigFile));
+				try(InputStream isExt = new FileInputStream(gpConfigFile)) {
+					props0.load(isExt);
+				} catch (FileNotFoundException e) {
+					throw new ConfigException(e);
+				} catch (IOException e) {
+					throw new ConfigException(e);
+				} 
 				log.debug("Individuata configurazione prioritaria Mapping Severita Errori: " + gpConfigFile.getAbsolutePath());
 				this.props[0] = props0;
 			}
 
 			this.mappingSeveritaErrori = getProperties(props, false, log);
 			log.debug("Caricamento Mapping Severita Errori completato."); 
-		} catch (Exception e) {
-			throw e;
+		}  catch (PropertyNotFoundException e) {
+			log.error("Errore di inizializzazione gestore Mapping Severita Errori: " + e.getMessage(), e); 
+			throw new ConfigException(e);
+		} catch (IOException e) {
+			log.error("Errore di inizializzazione gestore Mapping Severita Errori: " + e.getMessage(), e); 
+			throw new ConfigException(e);
 		}
 
 	}
 	
-	private static Map<String,String> getProperties(Properties[] props, boolean required, Logger log) throws Exception {
+	private static Map<String,String> getProperties(Properties[] props, boolean required, Logger log) throws PropertyNotFoundException {
 		Map<String, String> valori = new HashMap<>();
 		String value = null;
 		for(int i=0; i<props.length; i++) {
 			if(props[i] != null) {
 				for (Object nameObj : props[i].keySet()) {
 					String key = (String) nameObj;
-					try { value = getProperty(key, props[i], required, i==1, log); } catch (Exception e) { }
+					try { value = getProperty(key, props[i], required, i==1, log); } catch (PropertyNotFoundException e) { }
 					if(value != null && !value.trim().isEmpty()) {
 						if(!valori.containsKey(key)) {
 							valori.put(key, value.trim());
@@ -86,7 +100,7 @@ public class SeveritaProperties {
 		return valori;
 	}
 
-	private static String getProperty(String name, Properties props, boolean required, boolean fromInternalConfig, Logger log) throws Exception {
+	private static String getProperty(String name, Properties props, boolean required, boolean fromInternalConfig, Logger log) throws PropertyNotFoundException {
 		String value = null;
 //		String logString = "";
 //		if(fromInternalConfig) logString = "da file interno ";
@@ -100,7 +114,7 @@ public class SeveritaProperties {
 		}
 		if(value == null) {
 			if(required) 
-				throw new Exception("TipoEvento ["+name+"] non trovata");
+				throw new PropertyNotFoundException("TipoEvento ["+name+"] non trovata");
 			else return null;
 		} else {
 			//if(log != null) log.trace("Letta proprieta di configurazione " + logString + name + ": " + value);

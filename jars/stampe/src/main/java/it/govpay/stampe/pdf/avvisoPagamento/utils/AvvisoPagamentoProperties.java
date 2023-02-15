@@ -2,17 +2,19 @@ package it.govpay.stampe.pdf.avvisoPagamento.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.Utilities;
-import org.openspcoop2.utils.UtilsException;
 import org.slf4j.Logger;
+
+import it.govpay.core.exceptions.ConfigException;
+import it.govpay.core.exceptions.PropertyNotFoundException;
 
 public class AvvisoPagamentoProperties {
 
@@ -31,7 +33,7 @@ public class AvvisoPagamentoProperties {
 		return instance;
 	}
 
-	public static synchronized AvvisoPagamentoProperties newInstance(String govpayResourceDir) throws UtilsException {
+	public static synchronized AvvisoPagamentoProperties newInstance(String govpayResourceDir) throws ConfigException {
 		if(instance == null)
 			instance = new AvvisoPagamentoProperties(govpayResourceDir);
 		return instance;
@@ -39,7 +41,7 @@ public class AvvisoPagamentoProperties {
 
 	private Properties[] props  = null;
 
-	private AvvisoPagamentoProperties(String govpayResourceDir) {
+	private AvvisoPagamentoProperties(String govpayResourceDir) throws ConfigException{
 		try {
 
 			// Recupero il property all'interno dell'EAR/WAR
@@ -70,7 +72,13 @@ public class AvvisoPagamentoProperties {
 					File gpConfigFile = new File(this.govpayResourceDir + PROPERTIES_FILE);
 					if(gpConfigFile.exists()) {
 						props0 = new Properties();
-						props0.load(new FileInputStream(gpConfigFile));
+						try(InputStream isExt = new FileInputStream(gpConfigFile)) {
+							props0.load(isExt);
+						} catch (FileNotFoundException e) {
+							throw new ConfigException(e);
+						} catch (IOException e) {
+							throw new ConfigException(e);
+						} 
 						this.propMap.put(DEFAULT_PROPS, props0);
 						log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
 					}
@@ -91,7 +99,13 @@ public class AvvisoPagamentoProperties {
 							continue;
 						}
 						Properties p = new Properties();
-						p.load(new FileInputStream(f));
+						try(InputStream isExt = new FileInputStream(f)) {
+							p.load(isExt);
+						} catch (FileNotFoundException e) {
+							throw new ConfigException(e);
+						} catch (IOException e) {
+							throw new ConfigException(e);
+						} 
 						String key = f.getName().replaceAll(".properties", "");
 						key = key.replaceAll("avvisoPagamento.", "");
 						// la configurazione di defaut e' gia'stata caricata
@@ -101,19 +115,20 @@ public class AvvisoPagamentoProperties {
 						}
 					}
 			}
-		} catch (Exception e) {
-			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
+		} catch (IOException e) {
+			log.error("Errore di inizializzazione: " + e.getMessage());
+			throw new ConfigException(e);
 		}
 	}
 
-	private static String getProperty(String name, Properties props, boolean required) throws UtilsException {
+	private static String getProperty(String name, Properties props, boolean required) throws PropertyNotFoundException {
 		String value = System.getProperty(name);
 
 		if(value == null) {
 			if(props != null) value = props.getProperty(name);
 			if(value == null) {
 				if(required) 
-					throw new UtilsException("Proprieta ["+name+"] non trovata");
+					throw new PropertyNotFoundException("Proprieta ["+name+"] non trovata");
 				else return null;
 			} else {
 				log.debug("Letta proprieta di configurazione " + name + ": " + value);
@@ -125,7 +140,7 @@ public class AvvisoPagamentoProperties {
 		return value.trim();
 	}
 
-	public String getProperty(String idprops, String name, boolean required) throws UtilsException {
+	public String getProperty(String idprops, String name, boolean required) throws PropertyNotFoundException {
 		String value = null;
 		Properties p = this.getProperties(idprops);
 
@@ -137,53 +152,34 @@ public class AvvisoPagamentoProperties {
 		log.debug("Proprieta " + name + " non trovata in configurazione ["+idprops+"]");
 
 		if(required) 
-			throw new UtilsException("Proprieta ["+name+"] non trovata in configurazione ["+idprops+"]");
+			throw new PropertyNotFoundException("Proprieta ["+name+"] non trovata in configurazione ["+idprops+"]");
 		else 
 			return null;
 	}
 
 
-	public String getPropertyEnte(String idprop, String name) throws UtilsException {
+	public String getPropertyEnte(String idprop, String name) throws PropertyNotFoundException {
 		String property = this.getProperty(idprop, name, false);
 		return property != null ? property : "";
 	}
 
-	public Properties getProperties(String id) throws UtilsException {
+	public Properties getProperties(String id) throws PropertyNotFoundException {
 		if(id == null) id = DEFAULT_PROPS;
 		Properties p = this.propMap.get(id);
 
 		if(p == null) {
 			log.debug("Configurazione ["+id+"] non trovata");
-			throw new UtilsException("Configurazione ["+id+"] non trovata");
+			throw new PropertyNotFoundException("Configurazione ["+id+"] non trovata");
 		}
 
 		return p;
 	}
 
-	public Properties getProperties(Properties props, String prefix) throws UtilsException {
-		Properties toRet = Utilities.readProperties(prefix+".", props);
-		return toRet;
-	}
-
-
-	public TreeMap<String, String> getPropertiesAsMap(Properties props, String prefix) throws UtilsException {
-		TreeMap<String, String> mappaProperties = new TreeMap<>();
-
-		Properties p = this.getProperties(props, prefix);
-
-		for (Object pKeyObj: p.keySet()) {
-			Object pValObj = p.get(pKeyObj);
-			mappaProperties.put((String)pKeyObj, (String)pValObj);
-		}
-
-		return mappaProperties; 
-	}
-
-	public Properties getPropertiesPerDominio(String codDominio,Logger log) throws UtilsException {
+	public Properties getPropertiesPerDominio(String codDominio,Logger log) throws PropertyNotFoundException {
 		return this.getPropertiesPerDominioTributo(codDominio, null, log);
 	}
 
-	public Properties getPropertiesPerDominioTributo(String codDominio,String codTributo,Logger log) throws UtilsException {
+	public Properties getPropertiesPerDominioTributo(String codDominio,String codTributo,Logger log) throws PropertyNotFoundException {
 		Properties p = null;
 		String key = null;
 	
@@ -215,7 +211,7 @@ public class AvvisoPagamentoProperties {
 		try{
 			log.debug("Ricerca delle properties di default");
 			p = this.getProperties(null);
-		}catch(UtilsException e){
+		}catch(PropertyNotFoundException e){
 			log.debug("Non sono state trovate properties di default: " + e.getMessage());
 			throw e;
 		}

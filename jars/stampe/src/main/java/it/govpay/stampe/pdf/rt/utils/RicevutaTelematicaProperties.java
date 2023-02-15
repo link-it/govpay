@@ -2,16 +2,19 @@ package it.govpay.stampe.pdf.rt.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.Utilities;
 import org.slf4j.Logger;
+
+import it.govpay.core.exceptions.ConfigException;
+import it.govpay.core.exceptions.PropertyNotFoundException;
 
 public class RicevutaTelematicaProperties {
 	
@@ -30,7 +33,7 @@ public class RicevutaTelematicaProperties {
 		return instance;
 	}
 
-	public static synchronized RicevutaTelematicaProperties newInstance(String govpayResourceDir) throws Exception {
+	public static synchronized RicevutaTelematicaProperties newInstance(String govpayResourceDir)  throws ConfigException {
 		if(instance == null)
 			instance = new RicevutaTelematicaProperties(govpayResourceDir);
 		return instance;
@@ -38,7 +41,7 @@ public class RicevutaTelematicaProperties {
 
 	private Properties[] props  = null;
 
-	public RicevutaTelematicaProperties(String govpayResourceDir) {
+	public RicevutaTelematicaProperties(String govpayResourceDir)  throws ConfigException {
 		try {
 
 			// Recupero il property all'interno dell'EAR/WAR
@@ -69,7 +72,13 @@ public class RicevutaTelematicaProperties {
 					File gpConfigFile = new File(this.govpayResourceDir + PROPERTIES_FILE);
 					if(gpConfigFile.exists()) {
 						props0 = new Properties();
-						props0.load(new FileInputStream(gpConfigFile));
+						try(InputStream isExt = new FileInputStream(gpConfigFile)) {
+							props0.load(isExt);
+						} catch (FileNotFoundException e) {
+							throw new ConfigException(e);
+						} catch (IOException e) {
+							throw new ConfigException(e);
+						} 
 						this.propMap.put(DEFAULT_PROPS, props0);
 						log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
 					}
@@ -89,7 +98,13 @@ public class RicevutaTelematicaProperties {
 							continue;
 						}
 						Properties p = new Properties();
-						p.load(new FileInputStream(f));
+						try(InputStream isExt = new FileInputStream(f)) {
+							p.load(isExt);
+						} catch (FileNotFoundException e) {
+							throw new ConfigException(e);
+						} catch (IOException e) {
+							throw new ConfigException(e);
+						}
 						String key = f.getName().replaceAll(".properties", "");
 						key = key.replaceAll("ricevutaTelematica.", "");
 						// la configurazione di defaut e' gia'stata caricata
@@ -99,19 +114,20 @@ public class RicevutaTelematicaProperties {
 						}
 					}
 			}
-		} catch (Exception e) {
-			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
+		} catch (IOException e) {
+			log.error("Errore di inizializzazione: " + e.getMessage());
+			throw new ConfigException(e);
 		}
 	}
 
-	private static String getProperty(String name, Properties props, boolean required) throws Exception {
+	private static String getProperty(String name, Properties props, boolean required) throws PropertyNotFoundException {
 		String value = System.getProperty(name);
 
 		if(value == null) {
 			if(props != null) value = props.getProperty(name);
 			if(value == null) {
 				if(required) 
-					throw new Exception("Proprieta ["+name+"] non trovata");
+					throw new PropertyNotFoundException("Proprieta ["+name+"] non trovata");
 				else return null;
 			} else {
 				log.debug("Letta proprieta di configurazione " + name + ": " + value);
@@ -123,7 +139,7 @@ public class RicevutaTelematicaProperties {
 		return value.trim();
 	}
 
-	public String getProperty(String idprops, String name, boolean required) throws Exception {
+	public String getProperty(String idprops, String name, boolean required) throws PropertyNotFoundException {
 		String value = null;
 		Properties p = this.getProperties(idprops);
 
@@ -135,53 +151,34 @@ public class RicevutaTelematicaProperties {
 		log.debug("Proprieta " + name + " non trovata in configurazione ["+idprops+"]");
 
 		if(required) 
-			throw new Exception("Proprieta ["+name+"] non trovata in configurazione ["+idprops+"]");
+			throw new PropertyNotFoundException("Proprieta ["+name+"] non trovata in configurazione ["+idprops+"]");
 		else 
 			return null;
 	}
 
 
-	public String getPropertyEnte(String idprop, String name) throws Exception {
+	public String getPropertyEnte(String idprop, String name) throws PropertyNotFoundException {
 		String property = this.getProperty(idprop, name, false);
 		return property != null ? property : "";
 	}
 
-	public Properties getProperties(String id) throws Exception {
+	public Properties getProperties(String id) throws PropertyNotFoundException {
 		if(id == null) id = DEFAULT_PROPS;
 		Properties p = this.propMap.get(id);
 
 		if(p == null) {
 			log.debug("Configurazione ["+id+"] non trovata");
-			throw new Exception("Configurazione ["+id+"] non trovata");
+			throw new PropertyNotFoundException("Configurazione ["+id+"] non trovata");
 		}
 
 		return p;
 	}
 
-	public Properties getProperties(Properties props, String prefix) throws Exception {
-		Properties toRet = Utilities.readProperties(prefix+".", props);
-		return toRet;
-	}
-
-
-	public TreeMap<String, String> getPropertiesAsMap(Properties props, String prefix) throws Exception {
-		TreeMap<String, String> mappaProperties = new TreeMap<>();
-
-		Properties p = this.getProperties(props, prefix);
-
-		for (Object pKeyObj: p.keySet()) {
-			Object pValObj = p.get(pKeyObj);
-			mappaProperties.put((String)pKeyObj, (String)pValObj);
-		}
-
-		return mappaProperties; 
-	}
-
-	public Properties getPropertiesPerDominio(String codDominio,Logger log) throws Exception {
+	public Properties getPropertiesPerDominio(String codDominio,Logger log) throws PropertyNotFoundException {
 		return this.getPropertiesPerDominioTributo(codDominio, null, log);
 	}
 
-	public Properties getPropertiesPerDominioTributo(String codDominio,String codTributo,Logger log) throws Exception {
+	public Properties getPropertiesPerDominioTributo(String codDominio,String codTributo,Logger log) throws PropertyNotFoundException {
 		Properties p = null;
 		String key = null;
 	
