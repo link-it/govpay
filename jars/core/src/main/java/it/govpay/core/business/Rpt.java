@@ -208,8 +208,16 @@ public class Rpt {
 							ctx.getApplicationLogger().log("iuv.assegnazioneIUVRiuso", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp);
 						} else {
 							log.debug("Iuv non assegnato. Generazione...");
+							
 							// Non c'e' iuv assegnato. Glielo genero io.
-							iuv = iuvBusiness.generaIUV(versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.TipoIUV.ISO11694, rptBD);
+							TipoIUV tipoIUV = it.govpay.model.Iuv.TipoIUV.ISO11694;
+							
+							// se e' stata impostata l'opzione per dismettere la generazione di IUV in formato ISO11694 allora lo IUV verra' generato in formato numerico
+							if(GovpayConfig.getInstance().isDismettiIUVIso11694()) {
+								tipoIUV = TipoIUV.NUMERICO;
+							}
+							
+							iuv = iuvBusiness.generaIUV(versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper), versamento.getCodVersamentoEnte(), tipoIUV, rptBD);
 							ccp = IuvUtils.buildCCP();
 							ctx.getApplicationLogger().log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp);
 						}
