@@ -170,7 +170,7 @@ public class RptBD extends BasicBD {
 		}
 	}
 	
-	public Rpt getRpt(String codDominio, String iuv, ModelloPagamento modelloPagamento, it.govpay.model.Rpt.Versione versione, boolean deep) throws NotFoundException, ServiceException {
+	public Rpt getRpt(String codDominio, String iuv, ModelloPagamento modelloPagamento, it.govpay.model.Rpt.VersioneRPT versione, boolean deep) throws NotFoundException, ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -386,7 +386,7 @@ public class RptBD extends BasicBD {
 			
 			// questa procedura di recupero e' disponibile solo per le RPT SANP 2.3
 			exp.and();
-			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.Versione.SANP_230.toString());
+			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.VersioneRPT.SANP_230.toString());
 			
 			List<RPT> findAll = this.getRptService().findAll(exp);
 			return RptConverter.toDTOList(findAll);
@@ -414,7 +414,7 @@ public class RptBD extends BasicBD {
 			IPaginatedExpression exp = this.getRptService().newPaginatedExpression();
 			exp.equals(RPT.model().COD_DOMINIO, codDominio);
 			exp.and();
-			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.Versione.SANP_240.toString());
+			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.VersioneRPT.SANP_240.toString());
 			
 			Date now = new Date();
 			Calendar c = Calendar.getInstance();
@@ -483,7 +483,7 @@ public class RptBD extends BasicBD {
 				addAnd = false;
 			}
 			
-			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.Versione.SANP_240.toString());
+			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.VersioneRPT.SANP_240.toString());
 			if(addAnd) {
 				exp.and();
 				addAnd = false;

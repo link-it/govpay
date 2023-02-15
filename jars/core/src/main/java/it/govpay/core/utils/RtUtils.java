@@ -80,7 +80,7 @@ import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
-import it.govpay.model.Rpt.Versione;
+import it.govpay.model.Rpt.VersioneRPT;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
@@ -265,7 +265,7 @@ public class RtUtils extends NdpValidationUtils {
 			
 			// se provo ad acquisire un RT da cruscotto deve essere solo ti vecchio tipo
 			if(acquisizioneDaCruscotto) {
-				if(!rpt.getVersione().equals(Versione.SANP_230)) {
+				if(!rpt.getVersione().equals(VersioneRPT.SANP_230)) {
 					throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, "Aggiornamento di RT versione "+rpt.getVersione()+" non supportata tramite cruscotto.", rpt.getCodDominio());
 				}
 			}
@@ -637,7 +637,7 @@ public class RtUtils extends NdpValidationUtils {
 	public static boolean isCarrelloRpt(Rpt rpt) {
 		boolean isCarrello = false;
 		// e' un pagamento modello 1 con carrello se la versione e' SANP_230
-		if(rpt != null && (rpt.getVersione().equals(Versione.SANP_230) && rpt.getModelloPagamento().equals(Rpt.modelloPagamentoWISP20))){
+		if(rpt != null && (rpt.getVersione().equals(VersioneRPT.SANP_230) && rpt.getModelloPagamento().equals(Rpt.modelloPagamentoWISP20))){
 			isCarrello = true;
 		}
 		return isCarrello;

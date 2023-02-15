@@ -21,7 +21,10 @@ package it.govpay.core.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +43,9 @@ import org.slf4j.Logger;
 import it.govpay.bd.pagamento.util.CustomIuv;
 import it.govpay.core.business.IConservazione;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
+import it.govpay.core.exceptions.ConfigException;
+import it.govpay.core.exceptions.InvalidPropertyException;
+import it.govpay.core.exceptions.PropertyNotFoundException;
 import it.govpay.core.utils.client.handler.IntegrationOutHandler;
 import it.govpay.model.Versamento;
 
@@ -284,7 +290,7 @@ public class GovpayConfig {
 		}
 	}
 
-	public void readProperties() throws Exception {
+	public void readProperties() throws ConfigException {
 		Logger log = LoggerWrapperFactory.getLogger("boot");
 		try {
 			Properties props0 = null;
@@ -293,7 +299,14 @@ public class GovpayConfig {
 			File gpConfigFile = new File(this.resourceDir + File.separatorChar + PROPERTIES_FILE_NAME);
 			if(gpConfigFile.exists()) {
 				props0 = new Properties();
-				props0.load(new FileInputStream(gpConfigFile));
+				
+				try(InputStream is = new FileInputStream(gpConfigFile)) {
+					props0.load(is);
+				} catch (FileNotFoundException e) {
+					throw new ConfigException(e);
+				} catch (IOException e) {
+					throw new ConfigException(e);
+				} 
 				log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
 				this.props[0] = props0;
 			}
@@ -436,7 +449,7 @@ public class GovpayConfig {
 				try {
 					this.mLogDBType = TipiDatabase.valueOf(mLogDBTypeString);
 				} catch (IllegalArgumentException e) {
-					throw new Exception("Valore ["+mLogDBTypeString.trim()+"] non consentito per la property \"it.govpay.mlog.db.type\": " +e.getMessage());
+					throw new InvalidPropertyException("Valore ["+mLogDBTypeString.trim()+"] non consentito per la property \"it.govpay.mlog.db.type\": " +e.getMessage());
 				}
 
 				this.mLogDS = getProperty("it.govpay.mlog.db.ds", this.props, true, log);
@@ -462,13 +475,19 @@ public class GovpayConfig {
 					try {
 						c = this.getClass().getClassLoader().loadClass(handlerClass);
 					} catch (ClassNotFoundException e) {
-						throw new Exception("La classe ["+handlerClass+"] specificata per l'handler ["+handler+"] non e' presente nel classpath");
+						throw new ConfigException("La classe ["+handlerClass+"] specificata per l'handler ["+handler+"] non e' presente nel classpath");
 					}
-					Object instance = c.newInstance();
-					if(!(instance instanceof IntegrationOutHandler)) {
-						throw new Exception("La classe ["+handlerClass+"] specificata per l'handler ["+handler+"] deve implementare l'interfaccia " + IntegrationOutHandler.class.getName());
+					Object instance;
+					try {
+						instance = c.getDeclaredConstructor().newInstance();
+						if(!(instance instanceof IntegrationOutHandler)) {
+							throw new ConfigException("La classe ["+handlerClass+"] specificata per l'handler ["+handler+"] deve implementare l'interfaccia " + IntegrationOutHandler.class.getName());
+						}
+						this.outHandlers.add(handlerClass);
+					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+						log.error("Errore durante la crazione dell'oggetto di classe ["+handlerClass+"] specificata per l'handler ["+handler+"]: " + e.getMessage());
+						throw new ConfigException(e);
 					}
-					this.outHandlers.add(handlerClass);
 				}
 			}
 
@@ -496,13 +515,20 @@ public class GovpayConfig {
 				try {
 					c = this.getClass().getClassLoader().loadClass(conservazionePluginString);
 				} catch (ClassNotFoundException e) {
-					throw new Exception("La classe ["+conservazionePluginString+"] specificata per plugin di conservazione non e' presente nel classpath");
+					throw new ConfigException("La classe ["+conservazionePluginString+"] specificata per plugin di conservazione non e' presente nel classpath");
 				}
-				Object instance = c.newInstance();
-				if(!(instance instanceof IConservazione)) {
-					throw new Exception("La classe ["+conservazionePluginString+"] specificata per plugin di conservazione deve implementare l'interfaccia " + IConservazione.class.getName());
+				Object instance;
+				try {
+					instance = c.getDeclaredConstructor().newInstance();
+					if(!(instance instanceof IConservazione)) {
+						throw new ConfigException("La classe ["+conservazionePluginString+"] specificata per plugin di conservazione deve implementare l'interfaccia " + IConservazione.class.getName());
+					}
+					this.conservazionePlugin = (IConservazione) instance;
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+					log.error("Errore durante la crazione dell'oggetto di classe ["+conservazionePluginString+"] specificata per plugin di conservazione: " + e.getMessage());
+					throw new ConfigException(e);
 				}
-				this.conservazionePlugin = (IConservazione) instance;
 			}
 			
 			String batchCaricamentoTracciatiString = getProperty("it.govpay.batch.caricamentoTracciati.enabled", this.props, false, log);
@@ -630,13 +656,20 @@ public class GovpayConfig {
 				try {
 					c = this.getClass().getClassLoader().loadClass(defaultCustomIuvGeneratorClass);
 				} catch (ClassNotFoundException e) {
-					throw new Exception("La classe ["+defaultCustomIuvGeneratorClass+"] specificata per la gestione di IUV non e' presente nel classpath");
+					throw new ConfigException("La classe ["+defaultCustomIuvGeneratorClass+"] specificata per la gestione di IUV non e' presente nel classpath");
 				}
-				Object instance = c.newInstance();
-				if(!(instance instanceof CustomIuv)) {
-					throw new Exception("La classe ["+defaultCustomIuvGeneratorClass+"] specificata per la gestione di IUV deve estendere la classe " + CustomIuv.class.getName());
+				Object instance;
+				try {
+					instance = c.getDeclaredConstructor().newInstance();
+					if(!(instance instanceof CustomIuv)) {
+						throw new ConfigException("La classe ["+defaultCustomIuvGeneratorClass+"] specificata per la gestione di IUV deve estendere la classe " + CustomIuv.class.getName());
+					}
+					this.defaultCustomIuvGenerator = (CustomIuv) instance;
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+					log.error("Errore durante la crazione dell'oggetto di classe ["+defaultCustomIuvGeneratorClass+"] specificata per la gestione di IUV: " + e.getMessage());
+					throw new ConfigException(e);
 				}
-				this.defaultCustomIuvGenerator = (CustomIuv) instance;
+				
 			} else {
 				this.defaultCustomIuvGenerator = new CustomIuv();
 			}
@@ -772,9 +805,12 @@ public class GovpayConfig {
 			
 			this.nomeHeaderSubscriptionKeyPagoPA = getProperty("it.govpay.client.pagopa.autenticazione.subscriptionkey.header.name", this.props, false, log);
 			
-		} catch (Exception e) {
+		} catch (PropertyNotFoundException e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
-			throw e;
+			throw new ConfigException(e);
+		} catch (InvalidPropertyException e) {
+			log.error("Errore di inizializzazione: " + e.getMessage());
+			throw new ConfigException(e);
 		}
 	}
 	
@@ -801,7 +837,7 @@ public class GovpayConfig {
 		}
 	}
 	
-	private static Map<String,String> getProperties(String baseName, Properties[] props, boolean required, Logger log) throws Exception {
+	private static Map<String,String> getProperties(String baseName, Properties[] props, boolean required, Logger log) throws PropertyNotFoundException {
 		Map<String, String> valori = new HashMap<>();
 		
 		List<String> nomiProperties = new ArrayList<String>();
@@ -830,7 +866,7 @@ public class GovpayConfig {
 		return valori;
 	}
 
-	private static String getProperty(String name, Properties props, boolean required, boolean fromInternalConfig, Logger log) throws Exception {
+	private static String getProperty(String name, Properties props, boolean required, boolean fromInternalConfig, Logger log) throws PropertyNotFoundException {
 		String value = System.getProperty(name);
 
 		if(value != null && value.trim().isEmpty()) {
@@ -849,7 +885,7 @@ public class GovpayConfig {
 			}
 			if(value == null) {
 				if(required) 
-					throw new Exception("Proprieta ["+name+"] non trovata");
+					throw new PropertyNotFoundException("Proprieta ["+name+"] non trovata");
 				else return null;
 			} else {
 				if(log != null) log.info("Letta proprieta di configurazione " + logString + name + ": " + value);
@@ -861,10 +897,10 @@ public class GovpayConfig {
 		return value.trim();
 	}
 
-	private static String getProperty(String name, Properties[] props, boolean required, Logger log) throws Exception {
+	private static String getProperty(String name, Properties[] props, boolean required, Logger log) throws PropertyNotFoundException {
 		String value = null;
 		for(int i=0; i<props.length; i++) {
-			try { value = getProperty(name, props[i], required, i==1, log); } catch (Exception e) { }
+			try { value = getProperty(name, props[i], required, i==1, log); } catch (PropertyNotFoundException e) { }
 			if(value != null && !value.trim().isEmpty()) {
 				return value;
 			}
@@ -873,7 +909,7 @@ public class GovpayConfig {
 		if(log!= null) log.info("Proprieta " + name + " non trovata");
 
 		if(required) 
-			throw new Exception("Proprieta ["+name+"] non trovata");
+			throw new PropertyNotFoundException("Proprieta ["+name+"] non trovata");
 		else 
 			return null;
 	}

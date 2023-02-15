@@ -230,7 +230,7 @@ public class Rpt {
 						RptFilter filter = rptBD.newFilter();
 						filter.setStato(it.govpay.model.Rpt.stati_pendenti);
 						filter.setIdVersamento(versamento.getId());
-						filter.setVersione(it.govpay.model.Rpt.Versione.SANP_240.toString());
+						filter.setVersione(it.govpay.model.Rpt.VersioneRPT.SANP_240.toString());
 						List<it.govpay.bd.model.Rpt> rpt_pendenti = rptBD.findAll(filter);
 
 						log.debug("Trovate ["+rpt_pendenti.size()+"] RPT pendenti per  il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
@@ -258,7 +258,7 @@ public class Rpt {
 						RptFilter filter = rptBD.newFilter();
 						filter.setStato(it.govpay.model.Rpt.stati_pendenti);
 						filter.setIdVersamento(versamento.getId());
-						filter.setVersione(it.govpay.model.Rpt.Versione.SANP_230.toString());
+						filter.setVersione(it.govpay.model.Rpt.VersioneRPT.SANP_230.toString());
 						List<it.govpay.bd.model.Rpt> rpt_pendenti = rptBD.findAll(filter);
 
 						log.debug("Trovate ["+rpt_pendenti.size()+"] RPT pendenti per  il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");

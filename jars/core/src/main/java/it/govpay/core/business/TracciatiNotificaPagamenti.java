@@ -71,7 +71,7 @@ import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Contabilita;
 import it.govpay.model.QuotaContabilita;
-import it.govpay.model.Rpt.Versione;
+import it.govpay.model.Rpt.VersioneRPT;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.TracciatoNotificaPagamenti.STATO_ELABORAZIONE;
 import it.govpay.model.TracciatoNotificaPagamenti.TIPO_TRACCIATO;
@@ -1086,7 +1086,7 @@ public class TracciatiNotificaPagamenti {
 	}
 	
 	private List<List<String>> creaLineaCsvGovPay(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, ValidationException { 
-		Versione versione = rpt.getVersione();
+		VersioneRPT versione = rpt.getVersione();
 		
 		switch (versione) {
 		case SANP_240:
@@ -1119,7 +1119,7 @@ public class TracciatiNotificaPagamenti {
 	}
 
 	private String [] creaLineaCsvMyPivot(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, IOException, JAXBException, SAXException, ValidationException { 
-		Versione versione = rpt.getVersione();
+		VersioneRPT versione = rpt.getVersione();
 		
 		switch (versione) {
 		case SANP_240:
@@ -1135,7 +1135,7 @@ public class TracciatiNotificaPagamenti {
 	
 	private void creaLineaCsvSecim(Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore, OutputStream secimOS, OutputStream noSecimOS) 
 			throws ServiceException, IOException, JAXBException, SAXException, ValidationException, java.io.IOException { 
-		Versione versione = rpt.getVersione();
+		VersioneRPT versione = rpt.getVersione();
 		
 		switch (versione) {
 		case SANP_240:

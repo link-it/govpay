@@ -166,9 +166,9 @@ public class PendenzeDAO extends BaseDAO{
 					}
 					break;
 					case INCASSATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.INCASSATO;
-					default:
-						break;
-
+					break;
+					case ANOMALA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANOMALO;
+					break;
 					}
 					filter.setStatoVersamento(statoVersamento);
 				} catch(Exception e) {
@@ -259,9 +259,9 @@ public class PendenzeDAO extends BaseDAO{
 				}
 				break;
 				case INCASSATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.INCASSATO;
-				default:
-					break;
-
+				break;
+				case ANOMALA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANOMALO;
+				break;
 				}
 				filter.setStatoVersamento(statoVersamento);
 			} catch(Exception e) {
@@ -362,9 +362,9 @@ public class PendenzeDAO extends BaseDAO{
 					}
 					break;
 					case INCASSATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.INCASSATO;
-					default:
-						break;
-
+					break;
+					case ANOMALA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANOMALO;
+					break;
 					}
 					filter.setStatoVersamento(statoVersamento);
 				} catch(Exception e) {

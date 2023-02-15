@@ -152,7 +152,7 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
   }
 
   @JsonProperty("apiPagamenti")
-  public Boolean ApiPagamenti() {
+  public Boolean getApiPagamenti() {
     return apiPagamenti;
   }
   public void setApiPagamenti(Boolean apiPagamenti) {
@@ -168,7 +168,7 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
   }
 
   @JsonProperty("apiPendenze")
-  public Boolean ApiPendenze() {
+  public Boolean getApiPendenze() {
     return apiPendenze;
   }
   public void setApiPendenze(Boolean apiPendenze) {
@@ -184,7 +184,7 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
   }
 
   @JsonProperty("apiRagioneria")
-  public Boolean ApiRagioneria() {
+  public Boolean getApiRagioneria() {
     return apiRagioneria;
   }
   public void setApiRagioneria(Boolean apiRagioneria) {

@@ -103,7 +103,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("password")
-  public Boolean Password() {
+  public Boolean getPassword() {
     return password;
   }
   public void setPassword(Boolean password) {
@@ -166,7 +166,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("apiPagamenti")
-  public Boolean ApiPagamenti() {
+  public Boolean getApiPagamenti() {
     return apiPagamenti;
   }
   public void setApiPagamenti(Boolean apiPagamenti) {
@@ -182,7 +182,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("apiPendenze")
-  public Boolean ApiPendenze() {
+  public Boolean getApiPendenze() {
     return apiPendenze;
   }
   public void setApiPendenze(Boolean apiPendenze) {
@@ -198,7 +198,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("apiRagioneria")
-  public Boolean ApiRagioneria() {
+  public Boolean getApiRagioneria() {
     return apiRagioneria;
   }
   public void setApiRagioneria(Boolean apiRagioneria) {
@@ -261,7 +261,7 @@ public class Applicazione extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {

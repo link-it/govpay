@@ -29,7 +29,7 @@ import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
-import it.govpay.model.Rpt.Versione;
+import it.govpay.model.Rpt.VersioneRPT;
 import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdPagamentoPortale;
 import it.govpay.orm.IdVersamento;
@@ -96,7 +96,7 @@ public class RptConverter {
 		dto.setIdentificativoAttestante(vo.getIdentificativoAttestante());
 		dto.setDenominazioneAttestante(vo.getDenominazioneAttestante());
 		dto.setBloccante(vo.isBloccante()); 
-		dto.setVersione(Versione.toEnum(vo.getVersione()));
+		dto.setVersione(VersioneRPT.toEnum(vo.getVersione()));
 		
 		return dto;
 	}

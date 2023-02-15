@@ -133,7 +133,7 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 							final OutputStream os = message.getContent(OutputStream.class);
 							if (os != null) {
 								LoggingCallback callback = new LoggingCallback(this.sender, message, eventoCtx, os, this.limit);
-								message.setContent(OutputStream.class, createCachingOut(message, os, callback));
+								message.setContent(OutputStream.class, createCacheAndWriteOutputStream(message, os, callback));
 							}
 						} 
 					}
@@ -148,7 +148,7 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 		}
 	}
 
-	private OutputStream createCachingOut(Message message, final OutputStream os, CachedOutputStreamCallback callback) {
+	private OutputStream createCacheAndWriteOutputStream(Message message, final OutputStream os, CachedOutputStreamCallback callback) {
 		final CacheAndWriteOutputStream newOut = new CacheAndWriteOutputStream(os);
 		if (this.threshold > 0) {
 			newOut.setThreshold(this.threshold);
@@ -157,13 +157,13 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 			// make the limit for the cache greater than the limit for the truncated payload in the log event, 
 			// this is necessary for finding out that the payload was truncated 
 			//(see boolean isTruncated = cos.size() > limit && limit != -1;)  in method copyPayload
-			newOut.setCacheLimit(getCacheLimit());
+			newOut.setCacheLimit(getCacheLimitExt());
 		}
 		newOut.registerCallback(callback);
 		return newOut;
 	}
 
-	private int getCacheLimit() {
+	private int getCacheLimitExt() {
 		if (this.limit == Integer.MAX_VALUE) {
 			return this.limit;
 		}

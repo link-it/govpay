@@ -2,12 +2,10 @@ package it.govpay.core.beans.tracciati;
 
 import java.util.Objects;
 
-import it.govpay.core.exceptions.IOException;
-import it.govpay.core.exceptions.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 

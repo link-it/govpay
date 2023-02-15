@@ -116,11 +116,11 @@ public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageC
 				    }
 				}
 			}
-			return true;
 		} catch (Exception e) {
 			log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
-			return true;
 		}
+		
+		return true;
 	}
 	
 	public Componente getApiNameEnum() {

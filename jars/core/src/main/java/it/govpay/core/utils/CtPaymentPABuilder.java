@@ -68,7 +68,7 @@ import it.govpay.model.IbanAccredito;
 import it.govpay.model.QuotaContabilita;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.model.Rpt.Versione;
+import it.govpay.model.Rpt.VersioneRPT;
 import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Versamento.CausaleSemplice;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
@@ -116,7 +116,7 @@ public class CtPaymentPABuilder {
 		UnitaOperativa uo = versamento.getUo(configWrapper);
 
 		Rpt rpt = new Rpt();
-		rpt.setVersione(Versione.SANP_240);
+		rpt.setVersione(VersioneRPT.SANP_240);
 		rpt.setCallbackURL(redirect);
 		rpt.setCodCarrello(codCarrello);
 		rpt.setCodDominio(dominio.getCodDominio());
@@ -374,7 +374,7 @@ public class CtPaymentPABuilder {
 		UnitaOperativa uo = versamento.getUo(configWrapper);
 
 		Rpt rpt = new Rpt();
-		rpt.setVersione(Versione.SANP_321_V2);
+		rpt.setVersione(VersioneRPT.SANP_321_V2);
 		rpt.setCallbackURL(redirect);
 		rpt.setCodCarrello(codCarrello);
 		rpt.setCodDominio(dominio.getCodDominio());

@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.exceptions.ValidationException;
 
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idTracciato",
@@ -78,7 +77,7 @@ public class TracciatoPendenzePost extends JSONSerializable {
   }
 
   @JsonProperty("avvisaturaDigitale")
-  public Boolean AvvisaturaDigitale() {
+  public Boolean getAvvisaturaDigitale() {
     return avvisaturaDigitale;
   }
   public void setAvvisaturaDigitale(Boolean avvisaturaDigitale) {

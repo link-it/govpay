@@ -556,7 +556,7 @@ public class ConfigurazioniConverter {
 	private static it.govpay.model.configurazione.AppIOBatch getConfigurazioneAppIOBatchDTO(AppIOBatch appIoBatch) {
 		it.govpay.model.configurazione.AppIOBatch dto = new it.govpay.model.configurazione.AppIOBatch();
 
-		dto.setAbilitato(appIoBatch.Abilitato());
+		dto.setAbilitato(appIoBatch.getAbilitato());
 		dto.setUrl(appIoBatch.getUrl());
 		dto.setTimeToLive(appIoBatch.getTimeToLive());
 

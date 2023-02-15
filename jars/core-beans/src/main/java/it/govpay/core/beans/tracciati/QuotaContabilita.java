@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.exceptions.IOException;
-import it.govpay.core.exceptions.ValidationException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "capitolo",
 "annoEsercizio",

@@ -179,19 +179,19 @@ public class ApplicazioniConverter {
 			}
 		}
 
-		if(applicazionePost.ApiPagamenti()) {
+		if(applicazionePost.getApiPagamenti()) {
 			Acl acl = AclConverter.getAclAPI(Servizio.API_PAGAMENTI, user);
 			acl.setUtenza(applicazione.getUtenza());
 			aclPrincipal.add(acl);
 		}
 
-		if(applicazionePost.ApiPendenze()) {
+		if(applicazionePost.getApiPendenze()) {
 			Acl acl = AclConverter.getAclAPI(Servizio.API_PENDENZE, user);
 			acl.setUtenza(applicazione.getUtenza());
 			aclPrincipal.add(acl);
 		}
 
-		if(applicazionePost.ApiRagioneria()) {
+		if(applicazionePost.getApiRagioneria()) {
 			Acl acl = AclConverter.getAclAPI(Servizio.API_RAGIONERIA, user);
 			acl.setUtenza(applicazione.getUtenza());
 			aclPrincipal.add(acl);

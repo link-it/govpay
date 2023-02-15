@@ -25,7 +25,7 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.RptBuilder;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Rpt.EsitoPagamento;
-import it.govpay.model.Rpt.Versione;
+import it.govpay.model.Rpt.VersioneRPT;
 import it.govpay.stampe.model.QuietanzaPagamentoInput;
 import it.govpay.stampe.model.QuietanzaPagamentoInput.ElencoVoci;
 import it.govpay.stampe.model.VoceRicevutaTelematicaInput;
@@ -212,7 +212,7 @@ public class QuietanzaPagamento {
 		input.setDenominazioneAttestante(fr.getRagioneSocialePsp());
 		input.setIdentificativoAttestante(fr.getCodPsp());
 		input.setImportoTotalePagato(pagamento.getImportoPagato());
-		input.setVersione(Versione.SANP_240);
+		input.setVersione(VersioneRPT.SANP_240);
 		input.setEsitoPagamento(EsitoPagamento.PAGAMENTO_ESEGUITO);
 
 		return input;

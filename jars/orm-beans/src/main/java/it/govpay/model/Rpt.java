@@ -171,15 +171,15 @@ public class Rpt extends BasicModel{
 		G,A,B;
 	}
 	
-	public enum Versione {
+	public enum VersioneRPT {
 		
 		SANP_321_V2,
 		SANP_240,
 		SANP_230;
 		
-		public static Versione toEnum(String s) {
+		public static VersioneRPT toEnum(String s) {
 			try {
-				return Versione.valueOf(s);
+				return VersioneRPT.valueOf(s);
 			} catch (IllegalArgumentException e) {
 				return SANP_230;
 			}
@@ -231,7 +231,7 @@ public class Rpt extends BasicModel{
 	
 	private String faultCode;
 	
-	private Versione versione;
+	private VersioneRPT versione;
 	
 	public TipoIdentificativoAttestante getTipoIdentificativoAttestante() {
 		return this.tipoIdentificativoAttestante;
@@ -469,10 +469,10 @@ public class Rpt extends BasicModel{
 	public void setFaultCode(String faultCode) {
 		this.faultCode = faultCode;
 	}
-	public Versione getVersione() {
+	public VersioneRPT getVersione() {
 		return versione;
 	}
-	public void setVersione(Versione versione) {
+	public void setVersione(VersioneRPT versione) {
 		this.versione = versione;
 	}
 
