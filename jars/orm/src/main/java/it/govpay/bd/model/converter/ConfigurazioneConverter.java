@@ -15,19 +15,19 @@ public class ConfigurazioneConverter {
 		if(voList != null && !voList.isEmpty()) {
 			for(it.govpay.orm.Configurazione vo: voList){
 
-				if(Configurazione.GIORNALE_EVENTI.equals(vo.getNome())){
+				if(Configurazione.KEY_GIORNALE_EVENTI.equals(vo.getNome())){
 					dto.setGiornaleEventi(vo.getValore());
-				} else if(Configurazione.TRACCIATO_CSV.equals(vo.getNome())){
+				} else if(Configurazione.KEY_TRACCIATO_CSV.equals(vo.getNome())){
 					dto.setTracciatoCSV(vo.getValore());
-				} else if(Configurazione.HARDENING.equals(vo.getNome())){
+				} else if(Configurazione.KEY_HARDENING.equals(vo.getNome())){
 					dto.setConfHardening(vo.getValore());
-				} else if(Configurazione.MAIL_BATCH.equals(vo.getNome())){
+				} else if(Configurazione.KEY_MAIL_BATCH.equals(vo.getNome())){
 					dto.setMailBatch(vo.getValore());
-				} else if(Configurazione.AVVISATURA_MAIL.equals(vo.getNome())){
+				} else if(Configurazione.KEY_AVVISATURA_MAIL.equals(vo.getNome())){
 					dto.setAvvisaturaMail(vo.getValore());
-				} else if(Configurazione.AVVISATURA_APP_IO.equals(vo.getNome())){
+				} else if(Configurazione.KEY_AVVISATURA_APP_IO.equals(vo.getNome())){
 					dto.setAvvisaturaAppIo(vo.getValore());
-				}  else if(Configurazione.APP_IO_BATCH.equals(vo.getNome())){
+				}  else if(Configurazione.KEY_APP_IO_BATCH.equals(vo.getNome())){
 					dto.setAppIOBatch(vo.getValore());
 				} else  {
 					// carico tutte le properties rimanenti non categorizzate
@@ -44,37 +44,37 @@ public class ConfigurazioneConverter {
 		List<it.govpay.orm.Configurazione> voList = new ArrayList<>();
 
 		it.govpay.orm.Configurazione voGde = new it.govpay.orm.Configurazione();
-		voGde.setNome(Configurazione.GIORNALE_EVENTI);
+		voGde.setNome(Configurazione.KEY_GIORNALE_EVENTI);
 		voGde.setValore(dto.getGiornaleJson());
 		voList.add(voGde);
 
 		it.govpay.orm.Configurazione votracciatoCsv = new it.govpay.orm.Configurazione();
-		votracciatoCsv.setNome(Configurazione.TRACCIATO_CSV);
+		votracciatoCsv.setNome(Configurazione.KEY_TRACCIATO_CSV);
 		votracciatoCsv.setValore(dto.getTracciatoCsvJson());
 		voList.add(votracciatoCsv);
 		
 		it.govpay.orm.Configurazione voHardening = new it.govpay.orm.Configurazione();
-		voHardening.setNome(Configurazione.HARDENING);
+		voHardening.setNome(Configurazione.KEY_HARDENING);
 		voHardening.setValore(dto.getHardeningJson());
 		voList.add(voHardening);
 		
 		it.govpay.orm.Configurazione voMailBatch = new it.govpay.orm.Configurazione();
-		voMailBatch.setNome(Configurazione.MAIL_BATCH);
+		voMailBatch.setNome(Configurazione.KEY_MAIL_BATCH);
 		voMailBatch.setValore(dto.getBatchSpedizioneEmailJson());
 		voList.add(voMailBatch);
 		
 		it.govpay.orm.Configurazione voAvvisaturaMail = new it.govpay.orm.Configurazione();
-		voAvvisaturaMail.setNome(Configurazione.AVVISATURA_MAIL);
+		voAvvisaturaMail.setNome(Configurazione.KEY_AVVISATURA_MAIL);
 		voAvvisaturaMail.setValore(dto.getAvvisaturaViaMailJson());
 		voList.add(voAvvisaturaMail);
 		
 		it.govpay.orm.Configurazione voAvvisaturaAppIo = new it.govpay.orm.Configurazione();
-		voAvvisaturaAppIo.setNome(Configurazione.AVVISATURA_APP_IO);
+		voAvvisaturaAppIo.setNome(Configurazione.KEY_AVVISATURA_APP_IO);
 		voAvvisaturaAppIo.setValore(dto.getAvvisaturaViaAppIoJson());
 		voList.add(voAvvisaturaAppIo);
 		
 		it.govpay.orm.Configurazione voAppIOBatch = new it.govpay.orm.Configurazione();
-		voAppIOBatch.setNome(Configurazione.APP_IO_BATCH);
+		voAppIOBatch.setNome(Configurazione.KEY_APP_IO_BATCH);
 		voAppIOBatch.setValore(dto.getBatchSpedizioneAppIoJson());
 		voList.add(voAppIOBatch);
 		

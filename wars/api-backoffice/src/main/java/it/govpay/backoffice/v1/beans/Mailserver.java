@@ -187,7 +187,7 @@ public class Mailserver extends JSONSerializable implements IValidable{
   }
 
   @JsonProperty("startTls")
-  public Boolean StartTls() {
+  public Boolean getStartTls() {
     return startTls;
   }
   public void setStartTls(Boolean startTls) {

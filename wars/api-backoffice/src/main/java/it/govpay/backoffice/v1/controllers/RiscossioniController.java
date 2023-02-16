@@ -67,7 +67,7 @@ public class RiscossioniController extends BaseController {
 
 			// Parametri - > DTO Input
 
-			LeggiRiscossioneDTO getRiscossioneDTO = new LeggiRiscossioneDTO(user, idDominio, iuv, iur, Integer.valueOf(indice));
+			LeggiRiscossioneDTO getRiscossioneDTO = new LeggiRiscossioneDTO(user, idDominio, iuv, iur, indice);
 
 			// INIT DAO
 
@@ -94,7 +94,7 @@ public class RiscossioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
 
@@ -202,7 +202,7 @@ public class RiscossioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
 

@@ -122,7 +122,7 @@ public class DominiConverter {
 		rsModel.descrizione(tipoVersamentoDominio.getDescrizione())
 		.idTipoPendenza(tipoVersamentoDominio.getCodTipoVersamento());
 		
-		if(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizione() != null && tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizione() != null) {
+		if(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormTipo() != null && tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizione() != null) {
 			TipoPendenzaForm form = new TipoPendenzaForm();
 			form.setTipo(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormTipo());
 			form.setDefinizione(new RawObject(tipoVersamentoDominio.getCaricamentoPendenzePortalePagamentoFormDefinizione())); 

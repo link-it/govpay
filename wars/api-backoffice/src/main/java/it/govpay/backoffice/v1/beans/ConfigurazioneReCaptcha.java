@@ -136,7 +136,7 @@ public class ConfigurazioneReCaptcha extends JSONSerializable implements IValida
   }
 
   @JsonProperty("denyOnFail")
-  public Boolean DenyOnFail() {
+  public Boolean getDenyOnFail() {
     return denyOnFail;
   }
   public void setDenyOnFail(Boolean denyOnFail) {

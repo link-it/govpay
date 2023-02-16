@@ -54,7 +54,7 @@ public class ConfigurazioniConverter {
 		if(configurazionePost.getGiornaleEventi() != null)
 			configurazione.setGiornale(GiornaleConverter.getGiornaleDTO(configurazionePost.getGiornaleEventi()));
 		if(configurazionePost.getTracciatoCsv() != null)
-			configurazione.setTracciatoCsv(getTracciatoCsvDTO(configurazionePost.getTracciatoCsv()));
+			configurazione.setConfigurazioneTracciatoCsv(getTracciatoCsvDTO(configurazionePost.getTracciatoCsv()));
 		if(configurazionePost.getHardening() != null)
 			configurazione.setHardening(getConfigurazioneHardeningDTO(configurazionePost.getHardening()));
 		if(configurazionePost.getMailBatch() != null)
@@ -76,8 +76,8 @@ public class ConfigurazioniConverter {
 		if(configurazione.getGiornale() != null) {
 			rsModel.setGiornaleEventi(GiornaleConverter.toRsModel(configurazione.getGiornale()));
 		}
-		if(configurazione.getTracciatoCsv() != null) {
-			rsModel.setTracciatoCsv(toTracciatoRsModel(configurazione.getTracciatoCsv()));
+		if(configurazione.getConfigurazioneTracciatoCsv() != null) {
+			rsModel.setTracciatoCsv(toTracciatoRsModel(configurazione.getConfigurazioneTracciatoCsv()));
 		}
 		if(configurazione.getHardening() != null) {
 			rsModel.setHardening(toConfigurazioneHardeningRsModel(configurazione.getHardening()));
@@ -200,7 +200,7 @@ public class ConfigurazioniConverter {
 	private static it.govpay.model.configurazione.Hardening getConfigurazioneHardeningDTO(Hardening configurazioneHardening) {
 		it.govpay.model.configurazione.Hardening dto = new it.govpay.model.configurazione.Hardening();
 
-		dto.setAbilitato(configurazioneHardening.Abilitato());
+		dto.setAbilitato(configurazioneHardening.getAbilitato());
 		if(configurazioneHardening.getCaptcha() != null) {
 			dto.setGoogleCatpcha(new it.govpay.model.configurazione.GoogleCaptcha());
 			dto.getGoogleCatpcha().setResponseParameter(configurazioneHardening.getCaptcha().getParametro());
@@ -208,7 +208,7 @@ public class ConfigurazioniConverter {
 			dto.getGoogleCatpcha().setServerURL(configurazioneHardening.getCaptcha().getServerURL());
 			dto.getGoogleCatpcha().setSiteKey(configurazioneHardening.getCaptcha().getSiteKey());
 			dto.getGoogleCatpcha().setSoglia(configurazioneHardening.getCaptcha().getSoglia().doubleValue());
-			dto.getGoogleCatpcha().setDenyOnFail(configurazioneHardening.getCaptcha().DenyOnFail());
+			dto.getGoogleCatpcha().setDenyOnFail(configurazioneHardening.getCaptcha().getDenyOnFail());
 			dto.getGoogleCatpcha().setConnectionTimeout(configurazioneHardening.getCaptcha().getConnectionTimeout().intValue());
 			dto.getGoogleCatpcha().setReadTimeout(configurazioneHardening.getCaptcha().getReadTimeout().intValue());
 		}
@@ -228,7 +228,7 @@ public class ConfigurazioniConverter {
 			captchaRsModel.setSecretKey(configurazioneHardening.getGoogleCatpcha().getSecretKey());
 			captchaRsModel.setServerURL(configurazioneHardening.getGoogleCatpcha().getServerURL());
 			captchaRsModel.setSiteKey(configurazioneHardening.getGoogleCatpcha().getSiteKey());
-			captchaRsModel.setSoglia(new BigDecimal(configurazioneHardening.getGoogleCatpcha().getSoglia()));
+			captchaRsModel.setSoglia(BigDecimal.valueOf(configurazioneHardening.getGoogleCatpcha().getSoglia()));
 			captchaRsModel.setDenyOnFail(configurazioneHardening.getGoogleCatpcha().isDenyOnFail());
 			captchaRsModel.setConnectionTimeout(new BigDecimal(configurazioneHardening.getGoogleCatpcha().getConnectionTimeout()));
 			captchaRsModel.setReadTimeout(new BigDecimal(configurazioneHardening.getGoogleCatpcha().getReadTimeout()));
@@ -244,7 +244,7 @@ public class ConfigurazioniConverter {
 		if(avvisaturaMail.getPromemoriaAvviso() != null) {
 			it.govpay.model.configurazione.PromemoriaAvviso promemoriaAvviso = new it.govpay.model.configurazione.PromemoriaAvviso();
 
-			promemoriaAvviso.setAllegaPdf(avvisaturaMail.getPromemoriaAvviso().AllegaPdf());
+			promemoriaAvviso.setAllegaPdf(avvisaturaMail.getPromemoriaAvviso().getAllegaPdf());
 			promemoriaAvviso.setTipo(avvisaturaMail.getPromemoriaAvviso().getTipo());
 			if(avvisaturaMail.getPromemoriaAvviso().getTipo() != null) {
 				// valore tipo contabilita non valido
@@ -262,8 +262,8 @@ public class ConfigurazioniConverter {
 		if(avvisaturaMail.getPromemoriaRicevuta() != null) {
 			it.govpay.model.configurazione.PromemoriaRicevuta promemoriaRicevuta = new it.govpay.model.configurazione.PromemoriaRicevuta();
 
-			promemoriaRicevuta.setSoloEseguiti(avvisaturaMail.getPromemoriaRicevuta().SoloEseguiti());
-			promemoriaRicevuta.setAllegaPdf(avvisaturaMail.getPromemoriaRicevuta().AllegaPdf());
+			promemoriaRicevuta.setSoloEseguiti(avvisaturaMail.getPromemoriaRicevuta().getSoloEseguiti());
+			promemoriaRicevuta.setAllegaPdf(avvisaturaMail.getPromemoriaRicevuta().getAllegaPdf());
 			promemoriaRicevuta.setTipo(avvisaturaMail.getPromemoriaRicevuta().getTipo());
 			if(avvisaturaMail.getPromemoriaRicevuta().getTipo() != null) {
 				// valore tipo contabilita non valido
@@ -325,7 +325,7 @@ public class ConfigurazioniConverter {
 		if(avvisaturaAppIo.getPromemoriaRicevuta() != null) {
 			it.govpay.model.configurazione.PromemoriaRicevutaBase promemoriaRicevuta = new it.govpay.model.configurazione.PromemoriaRicevutaBase();
 
-			promemoriaRicevuta.setSoloEseguiti(avvisaturaAppIo.getPromemoriaRicevuta().SoloEseguiti());
+			promemoriaRicevuta.setSoloEseguiti(avvisaturaAppIo.getPromemoriaRicevuta().getSoloEseguiti());
 			promemoriaRicevuta.setTipo(avvisaturaAppIo.getPromemoriaRicevuta().getTipo());
 			if(avvisaturaAppIo.getPromemoriaRicevuta().getTipo() != null) {
 				// valore tipo contabilita non valido
@@ -447,7 +447,7 @@ public class ConfigurazioniConverter {
 	private static it.govpay.model.configurazione.MailBatch getConfigurazioneMailBatchDTO(MailBatch mailBatch) {
 		it.govpay.model.configurazione.MailBatch dto = new it.govpay.model.configurazione.MailBatch();
 
-		dto.setAbilitato(mailBatch.Abilitato());
+		dto.setAbilitato(mailBatch.getAbilitato());
 		it.govpay.model.configurazione.MailServer mailServerDTO = null;
 
 		if(mailBatch.getMailserver() != null) {
@@ -463,7 +463,7 @@ public class ConfigurazioniConverter {
 			if(mailBatch.getMailserver().getSslConfig() != null) {
 				mailServerDTO.setSslConfig(getConfigurazioneSslConfigDTO(mailBatch.getMailserver().getSslConfig()));
 			}
-			mailServerDTO.setStartTls(mailBatch.getMailserver().StartTls());
+			mailServerDTO.setStartTls(mailBatch.getMailserver().getStartTls());
 		}
 		dto.setMailserver(mailServerDTO);
 
@@ -473,10 +473,10 @@ public class ConfigurazioniConverter {
 	private static it.govpay.model.configurazione.SslConfig getConfigurazioneSslConfigDTO(SslConfig sslConfig) {
 		it.govpay.model.configurazione.SslConfig dto = new it.govpay.model.configurazione.SslConfig();
 
-		dto.setAbilitato(sslConfig.Abilitato());
+		dto.setAbilitato(sslConfig.getAbilitato());
 		dto.setHostnameVerifier(false);
-		if(sslConfig.HostnameVerifier() != null)
-			dto.setHostnameVerifier(sslConfig.HostnameVerifier());
+		if(sslConfig.getHostnameVerifier() != null)
+			dto.setHostnameVerifier(sslConfig.getHostnameVerifier());
 		dto.setType(sslConfig.getType());
 		dto.setKeyStore(getConfigurazioneKeyStoreDTO(sslConfig.getKeystore()));
 		dto.setTrustStore(getConfigurazioneKeyStoreDTO(sslConfig.getTruststore()));

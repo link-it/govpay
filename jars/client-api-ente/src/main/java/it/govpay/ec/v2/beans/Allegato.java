@@ -66,10 +66,7 @@ public class Allegato   {
   @JsonProperty("tipo")
   @NotNull
   public String getTipo() {
-    if (tipo == null) {
-      return null;
-    }
-    return tipo.getValue();
+    return tipo != null ? tipo.getValue() : "";
   }
 
   public void setTipo(TipoEnum tipo) {

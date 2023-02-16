@@ -51,7 +51,7 @@ public class UtentiApiServiceImpl extends BaseApiServiceImpl implements UtentiAp
  		}catch (Exception e) {
  			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
  		} finally {
- 			this.log(ContextThreadLocal.get());
+ 			this.logContext(ContextThreadLocal.get());
  		}
     }
     
@@ -75,7 +75,7 @@ public class UtentiApiServiceImpl extends BaseApiServiceImpl implements UtentiAp
  		}catch (Exception e) {
  			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
  		} finally {
- 			this.log(ContextThreadLocal.get());
+ 			this.logContext(ContextThreadLocal.get());
  		}
         
         

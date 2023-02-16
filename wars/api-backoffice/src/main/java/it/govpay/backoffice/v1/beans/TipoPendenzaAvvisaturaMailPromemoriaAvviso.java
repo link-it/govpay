@@ -48,7 +48,7 @@ public class TipoPendenzaAvvisaturaMailPromemoriaAvviso extends JSONSerializable
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
@@ -124,7 +124,7 @@ public class TipoPendenzaAvvisaturaMailPromemoriaAvviso extends JSONSerializable
   }
 
   @JsonProperty("allegaPdf")
-  public Boolean AllegaPdf() {
+  public Boolean getAllegaPdf() {
     return allegaPdf;
   }
   public void setAllegaPdf(Boolean allegaPdf) {

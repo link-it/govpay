@@ -52,6 +52,7 @@ import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.TracciatoFilter;
 import it.govpay.core.business.Rendicontazioni.DownloadRendicontazioniResponse;
 import it.govpay.core.dao.pagamenti.dto.ElaboraTracciatoDTO;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.client.BasicClientCORE;
 import it.govpay.core.utils.logger.Log4JUtils;
@@ -334,7 +335,9 @@ public class Operazioni{
 								try {
 									Thread.sleep(2000);
 								} catch (InterruptedException e) {
-
+									log.warn("Interrupted: " + e.getMessage(), e);
+								    // Restore interrupted state...
+								    Thread.currentThread().interrupt();
 								}
 								boolean completed = true;
 								for(InviaNotificaThread sender : threads) {
@@ -368,7 +371,7 @@ public class Operazioni{
 				log.debug("Operazione in corso su altro nodo. Richiesta interrotta.");
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
-		} catch (Exception e) {
+		} catch (ServiceException | IOException e) {
 			log.error("Non è stato possibile avviare la spedizione delle notifiche", e);
 			aggiornaSondaKO(configWrapper, NTFY, e); 
 			return "Non è stato possibile avviare la spedizione delle notifiche: " + e;
@@ -420,7 +423,9 @@ public class Operazioni{
 						try {
 							Thread.sleep(2000);
 						} catch (InterruptedException e) {
-
+							log.warn("Interrupted: " + e.getMessage(), e);
+						    // Restore interrupted state...
+						    Thread.currentThread().interrupt();
 						}
 						boolean completed = true;
 						for(InviaNotificaAppIoThread sender : threads) {
@@ -449,7 +454,7 @@ public class Operazioni{
 				log.debug("Operazione in corso su altro nodo. Richiesta interrotta.");
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
-		} catch (Exception e) {
+		} catch (ServiceException | IOException e) {
 			log.error("Non è stato possibile avviare la spedizione delle notifiche AppIO", e);
 			aggiornaSondaKO(configWrapper, NTFY_APP_IO, e); 
 			return "Non è stato possibile avviare la spedizione delle notifiche AppIO: " + e;
@@ -946,7 +951,9 @@ public class Operazioni{
 								try {
 									Thread.sleep(2000);
 								} catch (InterruptedException e) {
-
+									log.warn("Interrupted: " + e.getMessage(), e);
+								    // Restore interrupted state...
+								    Thread.currentThread().interrupt();
 								}
 								boolean completed = true;
 								for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
@@ -1000,7 +1007,9 @@ public class Operazioni{
 								try {
 									Thread.sleep(2000);
 								} catch (InterruptedException e) {
-
+									log.warn("Interrupted: " + e.getMessage(), e);
+								    // Restore interrupted state...
+								    Thread.currentThread().interrupt();
 								}
 								boolean completed = true;
 								for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
@@ -1054,7 +1063,9 @@ public class Operazioni{
 								try {
 									Thread.sleep(2000);
 								} catch (InterruptedException e) {
-
+									log.warn("Interrupted: " + e.getMessage(), e);
+								    // Restore interrupted state...
+								    Thread.currentThread().interrupt();
 								}
 								boolean completed = true;
 								for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
@@ -1108,7 +1119,9 @@ public class Operazioni{
 								try {
 									Thread.sleep(2000);
 								} catch (InterruptedException e) {
-
+									log.warn("Interrupted: " + e.getMessage(), e);
+								    // Restore interrupted state...
+								    Thread.currentThread().interrupt();
 								}
 								boolean completed = true;
 								for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
@@ -1162,7 +1175,9 @@ public class Operazioni{
 								try {
 									Thread.sleep(2000);
 								} catch (InterruptedException e) {
-
+									log.warn("Interrupted: " + e.getMessage(), e);
+								    // Restore interrupted state...
+								    Thread.currentThread().interrupt();
 								}
 								boolean completed = true;
 								for(SpedizioneTracciatoNotificaPagamentiThread sender : threads) {
@@ -1199,7 +1214,7 @@ public class Operazioni{
 				log.info("Operazione in corso su altro nodo. Richiesta interrotta.");
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
-		} catch (Exception e) {
+		} catch (ServiceException | IOException e) {
 			log.error("Non è stato possibile avviare la spedizione dei tracciati notifica pagamenti", e);
 			try {
 				aggiornaSondaKO(configWrapper, BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI, e); 

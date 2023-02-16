@@ -32,4 +32,7 @@ public class NotFoundException extends Exception {
 		super(causa);
 	}
 	
+	public NotFoundException(String causa, Throwable t) {
+		super(causa, t);
+	}
 }

@@ -583,17 +583,9 @@ public class AvvisoPagamentoV2Utils {
 			input.setNomeCognomeDestinatario(anagraficaDebitore.getRagioneSociale());
 			input.setCfDestinatario(anagraficaDebitore.getCodUnivoco().toUpperCase());
 
-			if(indirizzoDestinatario.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setIndirizzoDestinatario1(indirizzoDestinatario);
-			}else {
-				input.setIndirizzoDestinatario1(indirizzoDestinatario);
-			}
+			input.setIndirizzoDestinatario1(indirizzoDestinatario);
 
-			if(capCittaDebitore.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setIndirizzoDestinatario2(capCittaDebitore);
-			}else {
-				input.setIndirizzoDestinatario2(capCittaDebitore);
-			}
+			input.setIndirizzoDestinatario2(capCittaDebitore);
 		}
 	}
 	

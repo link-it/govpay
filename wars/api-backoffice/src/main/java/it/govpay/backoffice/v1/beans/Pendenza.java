@@ -713,7 +713,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("anomalo")
-  public Boolean Anomalo() {
+  public Boolean getAnomalo() {
     return anomalo;
   }
   public void setAnomalo(Boolean anomalo) {
@@ -729,7 +729,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("verificato")
-  public Boolean Verificato() {
+  public Boolean getVerificato() {
     return verificato;
   }
   public void setVerificato(Boolean verificato) {

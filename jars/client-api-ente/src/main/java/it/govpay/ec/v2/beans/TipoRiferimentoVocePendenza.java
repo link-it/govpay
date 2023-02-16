@@ -1,6 +1,5 @@
 package it.govpay.ec.v2.beans;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -67,7 +66,6 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	   * @return tipoBollo
 	  **/
 	  @JsonProperty("tipoBollo")
-	  @NotNull
 	  public String getTipoBollo() {
 	    if (tipoBollo == null) {
 	      return null;
@@ -89,7 +87,6 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	   * @return hashDocumento
 	  **/
 	  @JsonProperty("hashDocumento")
-	  @NotNull
 	 @Size(max=70)  public String getHashDocumento() {
 	    return hashDocumento;
 	  }
@@ -108,7 +105,6 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	   * @return provinciaResidenza
 	  **/
 	  @JsonProperty("provinciaResidenza")
-	  @NotNull
 	 @Pattern(regexp="[A-Z]{2,2}")  public String getProvinciaResidenza() {
 	    return provinciaResidenza;
 	  }
@@ -151,7 +147,6 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	   * @return ibanAccredito
 	  **/
 	  @JsonProperty("ibanAccredito")
-	  @NotNull
 	 @Pattern(regexp="[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}")  public String getIbanAccredito() {
 	    return ibanAccredito;
 	  }
@@ -190,7 +185,6 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	   * @return codEntrata
 	  **/
 	  @JsonProperty("codEntrata")
-	  @NotNull
 	 @Pattern(regexp="(^[a-zA-Z0-9\\-_\\.]{1,35}$)")  public String getCodEntrata() {
 	    return codEntrata;
 	  }

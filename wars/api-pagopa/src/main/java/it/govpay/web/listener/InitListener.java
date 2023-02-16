@@ -96,8 +96,10 @@ public class InitListener implements ServletContextListener {
 		try {
 			ThreadExecutorManager.shutdown();
 			log.info("Shutdown pool thread notifiche completato.");
-		} catch (Exception e) {
+		} catch (InterruptedException e) {
 			log.warn("Shutdown pool thread notifiche fallito:" + e);
+			 // Restore interrupted state...
+		    Thread.currentThread().interrupt();
 		}
 		
 		log.info("Shutdown del Connection Manager ...");

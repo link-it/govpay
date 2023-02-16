@@ -568,7 +568,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
   }
 
   @JsonProperty("intermediato")
-  public Boolean Intermediato() {
+  public Boolean getIntermediato() {
     return intermediato;
   }
   public void setIntermediato(Boolean intermediato) {

@@ -47,7 +47,7 @@ public class PendenzaVerificataValidator  implements IValidable{
 
 			SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
 
-			soggettoPagatoreValidator.validaTipo("tipo", soggetto.getTipo() != null ? soggetto.getTipo().toString() : null);
+			soggettoPagatoreValidator.validaTipo("tipo", soggetto.getTipo());
 			soggettoPagatoreValidator.validaIdentificativo("identificativo", soggetto.getIdentificativo());
 			soggettoPagatoreValidator.validaAnagrafica("anagrafica", soggetto.getAnagrafica());
 			soggettoPagatoreValidator.validaIndirizzo("indirizzo", soggetto.getIndirizzo());

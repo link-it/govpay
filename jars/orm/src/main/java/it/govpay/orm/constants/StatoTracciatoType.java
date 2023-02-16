@@ -72,11 +72,11 @@ public enum StatoTracciatoType implements IEnumeration , Serializable , Cloneabl
 	public String toString(){
 		return this.value;
 	}
-	public boolean equals(String object){
-		if(object==null)
-			return false;
-		return object.equals(this.getValue());	
-	}
+//	public boolean equals(String object){
+//		if(object==null)
+//			return false;
+//		return object.equals(this.getValue());	
+//	}
 	
 		
 	

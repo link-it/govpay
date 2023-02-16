@@ -669,7 +669,7 @@ public class PendenzaIndex extends JSONSerializable {
   }
 
   @JsonProperty("anomalo")
-  public Boolean Anomalo() {
+  public Boolean getAnomalo() {
     return anomalo;
   }
   public void setAnomalo(Boolean anomalo) {
@@ -685,7 +685,7 @@ public class PendenzaIndex extends JSONSerializable {
   }
 
   @JsonProperty("verificato")
-  public Boolean Verificato() {
+  public Boolean getVerificato() {
     return verificato;
   }
   public void setVerificato(Boolean verificato) {

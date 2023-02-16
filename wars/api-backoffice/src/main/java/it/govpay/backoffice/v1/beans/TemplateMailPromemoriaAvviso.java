@@ -104,7 +104,7 @@ public class TemplateMailPromemoriaAvviso extends JSONSerializable implements IV
   }
 
   @JsonProperty("allegaPdf")
-  public Boolean AllegaPdf() {
+  public Boolean getAllegaPdf() {
     return allegaPdf;
   }
   public void setAllegaPdf(Boolean allegaPdf) {

@@ -1584,7 +1584,9 @@ public class TracciatiNotificaPagamenti {
 					try {
 						Thread.sleep(2000);
 					} catch (InterruptedException e) {
-
+						log.warn("Interrupted: " + e.getMessage(), e);
+					    // Restore interrupted state...
+					    Thread.currentThread().interrupt();
 					}
 					boolean completed = true;
 					for(InviaNotificaPagamentoMaggioliJPPAThread sender : threadsSpedizioni) {

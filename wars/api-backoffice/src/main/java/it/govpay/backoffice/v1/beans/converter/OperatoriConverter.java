@@ -34,7 +34,7 @@ public class OperatoriConverter {
 
 		it.govpay.bd.model.Operatore operatore = new it.govpay.bd.model.Operatore();
 		it.govpay.bd.model.Utenza utenza = new it.govpay.bd.model.Utenza();
-		utenza.setAbilitato(operatoreRequest.Abilitato());
+		utenza.setAbilitato(operatoreRequest.getAbilitato());
 		utenza.setPrincipal(principal);
 		utenza.setPrincipalOriginale(principal);
 		utenza.setPassword(operatoreRequest.getPassword());

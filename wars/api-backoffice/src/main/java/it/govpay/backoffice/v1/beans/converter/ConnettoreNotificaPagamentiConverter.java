@@ -30,9 +30,9 @@ public class ConnettoreNotificaPagamentiConverter {
 	public static it.govpay.model.ConnettoreNotificaPagamenti getConnettoreDTO(it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamenti connector, Authentication user, Tipo tipo) throws NotAuthorizedException {
 		it.govpay.model.ConnettoreNotificaPagamenti connettore = new it.govpay.model.ConnettoreNotificaPagamenti();
 
-		connettore.setAbilitato(connector.Abilitato());
+		connettore.setAbilitato(connector.getAbilitato());
 
-		if(connector.Abilitato()) {
+		if(connector.getAbilitato()) {
 			connettore.setCodiceIPA(connector.getCodiceIPA());
 			connettore.setTipoTracciato(tipo.name());
 			connettore.setVersioneCsv(connector.getVersioneCsv().toString());
@@ -117,7 +117,7 @@ public class ConnettoreNotificaPagamentiConverter {
 				connettore.setTipoConnettore(TipoConnettore.EMAIL);
 				connettore.setEmailIndirizzi(connector.getEmailIndirizzi());
 				connettore.setEmailSubject(connector.getEmailSubject());
-				connettore.setEmailAllegato(connector.EmailAllegato());
+				connettore.setEmailAllegato(connector.getEmailAllegato());
 				connettore.setDownloadBaseURL(connector.getDownloadBaseUrl());
 				break;
 			case FILESYSTEM:

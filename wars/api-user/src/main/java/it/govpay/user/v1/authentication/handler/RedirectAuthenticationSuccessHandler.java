@@ -45,7 +45,7 @@ public class RedirectAuthenticationSuccessHandler extends org.openspcoop2.utils.
 			
 			if(ctx == null) {
 				GpContextFactory factory  = new GpContextFactory();
-				String user = authentication != null ? authentication.getName() : null;
+				String user = authentication.getName();
 				ctx = factory.newContext(request.getRequestURI(), "login", "login", request.getMethod(), 1, user, Componente.API_USER);
 				ContextThreadLocal.set(ctx);
 			}
@@ -59,8 +59,8 @@ public class RedirectAuthenticationSuccessHandler extends org.openspcoop2.utils.
 			
 			if(request.getSession() != null) {
 				HttpSession session = request.getSession();
-				session.setAttribute(SessionPrincipalExtractorPreAuthFilter.SESSION_PRINCIPAL_ATTRIBUTE_NAME, authentication != null ? authentication.getName() : null);
-				session.setAttribute(SessionPrincipalExtractorPreAuthFilter.SESSION_PRINCIPAL_OBJECT_ATTRIBUTE_NAME, authentication != null ? authentication.getPrincipal() : null);
+				session.setAttribute(SessionPrincipalExtractorPreAuthFilter.SESSION_PRINCIPAL_ATTRIBUTE_NAME, authentication.getName());
+				session.setAttribute(SessionPrincipalExtractorPreAuthFilter.SESSION_PRINCIPAL_OBJECT_ATTRIBUTE_NAME, authentication.getPrincipal());
 			}
 			
 			if(redirectURL == null) {

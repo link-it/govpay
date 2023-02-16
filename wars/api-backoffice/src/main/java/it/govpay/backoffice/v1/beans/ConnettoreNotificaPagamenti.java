@@ -165,7 +165,7 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
@@ -291,7 +291,7 @@ public class ConnettoreNotificaPagamenti extends JSONSerializable implements IVa
   }
 
   @JsonProperty("emailAllegato")
-  public Boolean EmailAllegato() {
+  public Boolean getEmailAllegato() {
     return emailAllegato;
   }
   public void setEmailAllegato(Boolean emailAllegato) {

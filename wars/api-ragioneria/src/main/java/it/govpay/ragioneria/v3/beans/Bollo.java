@@ -72,10 +72,7 @@ public class Bollo  implements OneOfTipoRiferimentoVocePendenza  {
   @JsonProperty("tipoBollo")
   @NotNull
   public String getTipoBollo() {
-    if (tipoBollo == null) {
-      return null;
-    }
-    return tipoBollo.getValue();
+    return tipoBollo != null ? tipoBollo.getValue() : "";
   }
 
   public void setTipoBollo(TipoBolloEnum tipoBollo) {

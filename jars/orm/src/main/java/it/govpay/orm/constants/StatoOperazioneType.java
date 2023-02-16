@@ -66,11 +66,11 @@ public enum StatoOperazioneType implements IEnumeration , Serializable , Cloneab
 	public String toString(){
 		return this.value;
 	}
-	public boolean equals(String object){
-		if(object==null)
-			return false;
-		return object.equals(this.getValue());	
-	}
+//	public boolean equals(String object){
+//		if(object==null)
+//			return false;
+//		return object.equals(this.getValue());	
+//	}
 	
 		
 	

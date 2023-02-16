@@ -228,12 +228,16 @@ public class DominiDAO extends BaseDAO{
 					// creo le entries collegate solo ai domini intermediati
 					if(putDominioDTO.getDominio().isIntermediato()) {
 						// MBT
-						tributo.setIdDominio(putDominioDTO.getDominio().getId());
-						tributiBD.insertTributo(tributo);
+						if(tributo != null) {
+							tributo.setIdDominio(putDominioDTO.getDominio().getId());
+							tributiBD.insertTributo(tributo);
+						}
 	
 						// LIBERO
-						tvd.setIdDominio(putDominioDTO.getDominio().getId());
-						tvdBD.insertTipoVersamentoDominio(tvd);
+						if(tvd != null) {
+							tvd.setIdDominio(putDominioDTO.getDominio().getId());
+							tvdBD.insertTipoVersamentoDominio(tvd);
+						}
 	
 						// NON CENSITE
 						if(tvdNonCensite != null) {
@@ -242,8 +246,10 @@ public class DominiDAO extends BaseDAO{
 						}
 	
 						// TV MBT
-						tvdBollo.setIdDominio(putDominioDTO.getDominio().getId());
-						tvdBD.insertTipoVersamentoDominio(tvdBollo);
+						if(tvdBollo != null) {
+							tvdBollo.setIdDominio(putDominioDTO.getDominio().getId());
+							tvdBD.insertTipoVersamentoDominio(tvdBollo);
+						}
 					}
 					dominiBD.commit();
 				} catch (ServiceException e) {

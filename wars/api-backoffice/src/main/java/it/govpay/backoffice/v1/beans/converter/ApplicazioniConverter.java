@@ -37,7 +37,7 @@ public class ApplicazioniConverter {
 		PutApplicazioneDTO applicazioneDTO = new PutApplicazioneDTO(user);
 		it.govpay.bd.model.Applicazione applicazione = new it.govpay.bd.model.Applicazione();
 		it.govpay.bd.model.Utenza utenza = new it.govpay.bd.model.Utenza();
-		utenza.setAbilitato(applicazionePost.Abilitato());
+		utenza.setAbilitato(applicazionePost.getAbilitato());
 		utenza.setPrincipal(applicazionePost.getPrincipal());
 		utenza.setPrincipalOriginale(applicazionePost.getPrincipal());
 		utenza.setPassword(applicazionePost.getPassword());

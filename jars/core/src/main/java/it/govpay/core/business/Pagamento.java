@@ -502,11 +502,14 @@ public class Pagamento   {
 
 				FaultBean fb = risposta.getFaultBean();
 				String descrizione = null; 
-				if(fb != null)
-					descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
+				String faultCode = "PPT_ERRORE_GENERICO";
+				if(fb != null) {
+					faultCode = fb.getFaultCode();
+					descrizione = faultCode + ": " + fb.getFaultString();
+				}
 
 				if(nodoInviaRRClient != null) {
-					nodoInviaRRClient.getEventoCtx().setSottotipoEsito(fb.getFaultCode());
+					nodoInviaRRClient.getEventoCtx().setSottotipoEsito(faultCode);
 					nodoInviaRRClient.getEventoCtx().setEsito(Esito.KO);
 					nodoInviaRRClient.getEventoCtx().setDescrizioneEsito(descrizione);
 				}

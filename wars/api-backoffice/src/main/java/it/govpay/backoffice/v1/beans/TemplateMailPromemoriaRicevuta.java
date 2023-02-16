@@ -108,7 +108,7 @@ public class TemplateMailPromemoriaRicevuta extends JSONSerializable implements 
   }
 
   @JsonProperty("soloEseguiti")
-  public Boolean SoloEseguiti() {
+  public Boolean getSoloEseguiti() {
     return soloEseguiti;
   }
   public void setSoloEseguiti(Boolean soloEseguiti) {
@@ -124,7 +124,7 @@ public class TemplateMailPromemoriaRicevuta extends JSONSerializable implements 
   }
 
   @JsonProperty("allegaPdf")
-  public Boolean AllegaPdf() {
+  public Boolean getAllegaPdf() {
     return allegaPdf;
   }
   public void setAllegaPdf(Boolean allegaPdf) {

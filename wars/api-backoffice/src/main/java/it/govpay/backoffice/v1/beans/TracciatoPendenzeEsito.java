@@ -307,7 +307,7 @@ public class TracciatoPendenzeEsito extends JSONSerializable {
   }
 
   @JsonProperty("stampaAvvisi")
-  public Boolean StampaAvvisi() {
+  public Boolean getStampaAvvisi() {
     return stampaAvvisi;
   }
   public void setStampaAvvisi(Boolean stampaAvvisi) {

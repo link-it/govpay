@@ -44,9 +44,6 @@ public class EntrataPrevistaFilter extends AbstractFilter{
 			boolean addAnd = false;
 			
 			if(this.dataInizio != null) {
-				if(addAnd)
-					newExpression.and();
-
 				newExpression.greaterEquals(VistaRiscossioni.model().DATA_PAGAMENTO, this.dataInizio);
 				addAnd = true;
 			}

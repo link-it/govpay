@@ -30,7 +30,7 @@ public class MailBatch extends JSONSerializable implements IValidable{
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {

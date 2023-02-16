@@ -46,7 +46,7 @@ public class SslConfig extends JSONSerializable implements IValidable{
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
@@ -91,7 +91,7 @@ public class SslConfig extends JSONSerializable implements IValidable{
   }
 
   @JsonProperty("hostnameVerifier")
-  public Boolean HostnameVerifier() {
+  public Boolean getHostnameVerifier() {
     return hostnameVerifier;
   }
   public void setHostnameVerifier(Boolean hostnameVerifier) {

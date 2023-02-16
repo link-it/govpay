@@ -159,7 +159,7 @@ public void validate(boolean abilitatoObbligatorio) throws ValidationException {
 		if(this.promemoriaAvviso != null) {
 			this.promemoriaAvviso.validate(abilitatoObbligatorio);
 
-			if(this.promemoriaAvviso.Abilitato() != null && this.promemoriaAvviso.Abilitato()) {
+			if(this.promemoriaAvviso.getAbilitato() != null && this.promemoriaAvviso.getAbilitato()) {
 				v++;
 			}
 		}
@@ -170,7 +170,7 @@ public void validate(boolean abilitatoObbligatorio) throws ValidationException {
 		if(this.promemoriaRicevuta != null) {
 			this.promemoriaRicevuta.validate(abilitatoObbligatorio);
 
-			if(this.promemoriaRicevuta.Abilitato() != null && this.promemoriaRicevuta.Abilitato()) {
+			if(this.promemoriaRicevuta.getAbilitato() != null && this.promemoriaRicevuta.getAbilitato()) {
 				v++;
 			}
 		}
@@ -181,7 +181,7 @@ public void validate(boolean abilitatoObbligatorio) throws ValidationException {
 		if(this.promemoriaScadenza != null) {
 			this.promemoriaScadenza.validate(abilitatoObbligatorio);
 
-			if(this.promemoriaScadenza.Abilitato() != null && this.promemoriaScadenza.Abilitato()) {
+			if(this.promemoriaScadenza.getAbilitato() != null && this.promemoriaScadenza.getAbilitato()) {
 				v++;
 			}
 		}

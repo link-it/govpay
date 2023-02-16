@@ -189,7 +189,6 @@ public class PendenzaVerificata  {
    * @return stato
   **/
   @JsonProperty("stato")
-  @NotNull
   @Valid
   public StatoPendenzaVerificata getStato() {
     return stato;
@@ -325,7 +324,6 @@ public class PendenzaVerificata  {
    * @return soggettoPagatore
   **/
   @JsonProperty("soggettoPagatore")
-  @NotNull
   @Valid
   public Soggetto getSoggettoPagatore() {
     return soggettoPagatore;

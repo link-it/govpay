@@ -44,7 +44,7 @@ public class TipoPendenzaPortalePagamentiCaricamentoPendenze extends JSONSeriali
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {

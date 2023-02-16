@@ -167,7 +167,7 @@ public class RiscossioniApiServiceImpl extends BaseApiServiceImpl  implements Ri
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
 
@@ -191,7 +191,7 @@ public class RiscossioniApiServiceImpl extends BaseApiServiceImpl  implements Ri
 
 			// Parametri - > DTO Input
 
-			LeggiRiscossioneDTO getRiscossioneDTO = new LeggiRiscossioneDTO(user, idDominio, iuv, iur, Integer.valueOf(indice));
+			LeggiRiscossioneDTO getRiscossioneDTO = new LeggiRiscossioneDTO(user, idDominio, iuv, iur, indice);
 
 			// INIT DAO
 
@@ -219,7 +219,7 @@ public class RiscossioniApiServiceImpl extends BaseApiServiceImpl  implements Ri
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
 

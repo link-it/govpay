@@ -110,14 +110,11 @@ public class VersamentoUtils {
 	public final static QName _VersamentoKeyBundlekey_QNAME = new QName("", "bundlekey");
 	public final static QName _VersamentoKeyIuv_QNAME = new QName("", "iuv");
 
-	public static void validazioneSemantica(Versamento versamento, boolean generaIuv) throws GovPayException, ServiceException {
+	public static void validazioneSemantica(Versamento versamento) throws GovPayException, ServiceException {
+		if(versamento == null) return;
+		
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		
-		// solo se non e' multibeneficiario
-//		if(generaIuv && !VersamentoUtils.isPendenzaMultibeneficiario(versamento, configWrapper) && versamento.getSingoliVersamenti().size() != 1) {
-//			throw new GovPayException(EsitoOperazione.VER_000, versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
-//		}
-
 		BigDecimal somma = BigDecimal.ZERO;
 		List<String> codSingoliVersamenti = new ArrayList<>();
 		for(SingoloVersamento sv : versamento.getSingoliVersamenti()) {
@@ -516,6 +513,7 @@ public class VersamentoUtils {
 
 
 	public static void verifyNumeroAvviso(String numeroAvviso,String codDominio, String codStazione, Integer applicationCode, Integer segregationCode, Integer auxDigit, String codApplicazione, String codVersamentoEnte) throws GovPayException {
+		if(numeroAvviso == null) return;
 		
 		getIuvFromNumeroAvviso(numeroAvviso);
 
@@ -1039,9 +1037,11 @@ public class VersamentoUtils {
 		
 		try {
 			chiediVersamento = VersamentoUtils.inoltroPendenza(applicazione, codDominio, codTipoVersamento, codUnitaOperativa, inputModello4, log);
-			VersamentoUtils.validazioneSemantica(chiediVersamento, chiediVersamento.getNumeroAvviso() == null && chiediVersamento.getSingoliVersamenti().size() == 1);
-			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(chiediVersamento.getCodVersamentoEnte());
-			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(chiediVersamento.getApplicazione(configWrapper).getCodApplicazione());
+			VersamentoUtils.validazioneSemantica(chiediVersamento);
+			if(chiediVersamento != null) {
+				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(chiediVersamento.getCodVersamentoEnte());
+				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(chiediVersamento.getApplicazione(configWrapper).getCodApplicazione());
+			}
 		} catch (ClientException e){
 			throw new EcException("L'inoltro del versamento [Dominio: " + codDominio + " TipoVersamento:" + codTipoVersamento + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallito con errore: " + e.getMessage());
 		} catch (UtilsException e){

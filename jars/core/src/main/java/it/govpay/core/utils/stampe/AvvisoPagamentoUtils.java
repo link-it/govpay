@@ -91,7 +91,7 @@ public class AvvisoPagamentoUtils {
 		// caso speciale Violazione CDS senza bollettino postale
 		if(violazioneCDS && versamenti.size() == 2) {
 			log.debug("Documento ["+documento.getCodDocumento()+"] creazione input per Violazione CDS...");	
-			creaAvvisoViolazioneCDSSenzaBollettinoPostale(versamenti, documento, input, configWrapper, sdfDataScadenza);
+			creaAvvisoViolazioneCDSSenzaBollettinoPostale(versamenti, documento, input, configWrapper, sdfDataScadenza, log);
 			log.debug("Documento ["+documento.getCodDocumento()+"] creato input per Violazione CDS");	
 		}
 
@@ -261,7 +261,7 @@ public class AvvisoPagamentoUtils {
 	}
 
 	private static void creaAvvisoViolazioneCDSSenzaBollettinoPostale(List<Versamento> versamenti, Documento documento, AvvisoPagamentoInput input,
-			BDConfigWrapper configWrapper, SimpleDateFormat sdfDataScadenza) throws ServiceException, UtilsException {
+			BDConfigWrapper configWrapper, SimpleDateFormat sdfDataScadenza, Logger log) throws ServiceException, UtilsException {
 		Versamento v1 = versamenti.remove(0);
 		Versamento v2 = versamenti.remove(0);
 
@@ -290,9 +290,13 @@ public class AvvisoPagamentoUtils {
 		}
 
 		// riporto gli unici campi che sono differenti tra le due rate e creo la pagina unica
-		rataScontato.setCodiceAvviso2(rataRidotto.getCodiceAvviso2());
-		rataScontato.setQrCode2(rataRidotto.getQrCode2());
-		rataScontato.setImportoRidotto(rataRidotto.getImportoRidotto());
+		if(rataScontato != null && rataRidotto != null) {
+			rataScontato.setCodiceAvviso2(rataRidotto.getCodiceAvviso2());
+			rataScontato.setQrCode2(rataRidotto.getQrCode2());
+			rataScontato.setImportoRidotto(rataRidotto.getImportoRidotto());
+		} else {
+			log.error("Non sono state trovate le due rate di tipo SCONTATO e RIDOTTO previste, trovate rata1 ["+rata1.getTipo()+"] e rata2 ["+rata2.getTipo()+"]");
+		}
 
 		PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 		pagina.setRata(rataScontato);
@@ -575,17 +579,9 @@ public class AvvisoPagamentoUtils {
 			input.setNomeCognomeDestinatario(anagraficaDebitore.getRagioneSociale());
 			input.setCfDestinatario(anagraficaDebitore.getCodUnivoco().toUpperCase());
 
-			if(indirizzoDestinatario.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setIndirizzoDestinatario1(indirizzoDestinatario);
-			}else {
-				input.setIndirizzoDestinatario1(indirizzoDestinatario);
-			}
+			input.setIndirizzoDestinatario1(indirizzoDestinatario);
 
-			if(capCittaDebitore.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setIndirizzoDestinatario2(capCittaDebitore);
-			}else {
-				input.setIndirizzoDestinatario2(capCittaDebitore);
-			}
+			input.setIndirizzoDestinatario2(capCittaDebitore);
 		}
 	}
 

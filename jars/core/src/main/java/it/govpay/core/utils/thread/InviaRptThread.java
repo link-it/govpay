@@ -218,7 +218,7 @@ public class InviaRptThread implements Runnable {
 			} catch (UtilsException e1) {
 				log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
 			}
-		} catch (NotFoundException | ServiceException | GovPayException | UtilsException | InterruptedException | NotificaException | IOException e) {
+		} catch (NotFoundException | ServiceException | GovPayException | UtilsException | NotificaException | IOException e) {
 			log.error("Errore nella spedizione della RPT [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + ", CodDominio: "+this.rpt.getCodDominio()+",IUV: "+this.rpt.getIuv()+",CCP: "+this.rpt.getCcp()+"]", e);
 			if(client != null) {
 				if(e instanceof GovPayException) {
@@ -240,6 +240,22 @@ public class InviaRptThread implements Runnable {
 				rptBD.rollback();
 			} catch (ServiceException e1) {
 				log.error("Errore: " + e1.getMessage(), e1);
+			}
+		}catch (InterruptedException e) {
+			log.error("Errore la sleep per rispettare il timeout InvioRPT Modello3 [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + ", CodDominio: "+this.rpt.getCodDominio()+",IUV: "+this.rpt.getIuv()+",CCP: "+this.rpt.getCcp()+"]", e);
+			
+			// Restore interrupted state...
+		    Thread.currentThread().interrupt();
+			if(client != null) {
+				client.getEventoCtx().setSottotipoEsito(EsitoOperazione.INTERNAL.toString());
+				client.getEventoCtx().setEsito(Esito.FAIL);
+				client.getEventoCtx().setDescrizioneEsito(e.getMessage());
+				client.getEventoCtx().setException(e);
+			}	
+			try {
+				ctx.getApplicationLogger().log("pagamento.invioRptAttivataFail", e.getMessage());
+			} catch (UtilsException e1) {
+				log.error("Errore durante il log dell'operazione: " + e.getMessage(), e);
 			}
 		} finally {
 			if(rptBD != null)

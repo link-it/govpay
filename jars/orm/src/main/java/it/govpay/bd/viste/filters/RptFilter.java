@@ -637,12 +637,7 @@ public class RptFilter extends AbstractFilter {
 		}
 		
 		if(this.conservato != null){
-			if(this.conservato) {
-				lst.add(StatoConservazione.ERRORE.name());
-			} else {
-				lst.add(StatoConservazione.ERRORE.name());
-			}
-			
+			lst.add(StatoConservazione.ERRORE.name());
 		}
 
 		if(this.stato != null && !this.stato.isEmpty()){

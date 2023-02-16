@@ -255,11 +255,8 @@ public class Riscossione  {
   @JsonProperty("stato")
   @NotNull
   @Valid
-  public String getStato() {
-    if (stato == null) {
-      return null;
-    }
-    return stato.getValue();
+  public StatoEnum getStato() {
+    return stato;
   }
 
   public void setStato(StatoEnum stato) {

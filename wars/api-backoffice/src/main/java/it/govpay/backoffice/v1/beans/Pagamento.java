@@ -485,7 +485,7 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("verificato")
-  public Boolean Verificato() {
+  public Boolean getVerificato() {
     return this.verificato;
   }
   public void setVerificato(Boolean verificato) {

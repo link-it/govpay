@@ -172,7 +172,7 @@ public class RptBuilder {
 		rpt.setEsitoPagamento(EsitoPagamento.IN_CORSO);
 
 		CtRichiestaPagamentoTelematico ctRpt = new CtRichiestaPagamentoTelematico();
-		ctRpt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE);
+		ctRpt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE_620);
 		CtDominio ctDominio = new CtDominio();
 		ctDominio.setIdentificativoDominio(rpt.getCodDominio());
 		ctDominio.setIdentificativoStazioneRichiedente(dominio.getStazione().getCodStazione());

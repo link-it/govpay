@@ -104,7 +104,7 @@ public class TemplatePromemoriaRicevutaBase extends JSONSerializable implements 
   }
 
   @JsonProperty("soloEseguiti")
-  public Boolean SoloEseguiti() {
+  public Boolean getSoloEseguiti() {
     return soloEseguiti;
   }
   public void setSoloEseguiti(Boolean soloEseguiti) {

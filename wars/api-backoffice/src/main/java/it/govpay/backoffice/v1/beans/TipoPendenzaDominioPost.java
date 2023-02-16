@@ -77,7 +77,7 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
 
   @JsonProperty("pagaTerzi")
   @com.fasterxml.jackson.databind.annotation.JsonDeserialize(using = it.govpay.rs.v1.beans.deserializer.BooleanDeserializer.class)
-  public Boolean PagaTerzi() {
+  public Boolean getPagaTerzi() {
     return pagaTerzi;
   }
   public void setPagaTerzi(Boolean pagaTerzi) {
@@ -93,7 +93,7 @@ public class TipoPendenzaDominioPost extends JSONSerializable  implements IValid
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {

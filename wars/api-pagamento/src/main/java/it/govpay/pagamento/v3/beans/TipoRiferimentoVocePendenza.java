@@ -67,7 +67,6 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	   * @return tipoBollo
 	  **/
 	  @JsonProperty("tipoBollo")
-	  @NotNull
 	  public String getTipoBollo() {
 	    if (tipoBollo == null) {
 	      return null;

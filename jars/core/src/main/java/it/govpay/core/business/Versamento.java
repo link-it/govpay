@@ -92,7 +92,7 @@ public class Versamento  {
 		VersamentiBD versamentiBD = null;
 		try {
 			ctx.getApplicationLogger().log("versamento.validazioneSemantica", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
-			VersamentoUtils.validazioneSemantica(versamento, generaIuv);
+			VersamentoUtils.validazioneSemantica(versamento);
 			ctx.getApplicationLogger().log("versamento.validazioneSemanticaOk", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
 
 			if(bd == null) {

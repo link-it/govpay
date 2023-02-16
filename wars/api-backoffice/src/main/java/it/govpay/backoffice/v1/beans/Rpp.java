@@ -88,7 +88,7 @@ public class Rpp extends JSONSerializable {
   }
 
   @JsonProperty("bloccante")
-  public Boolean Bloccante() {
+  public Boolean getBloccante() {
     return bloccante;
   }
   public void setBloccante(Boolean bloccante) {

@@ -615,7 +615,7 @@ public class BaseApiServiceImpl {
 			return responseBuilder.build();
 	}
 
-	protected void log(IContext ctx) {
+	protected void logContext(IContext ctx) {
 		if(ctx != null) {
 //			if(this.response != null) {
 //				String transactionId = ctx.getTransactionId();

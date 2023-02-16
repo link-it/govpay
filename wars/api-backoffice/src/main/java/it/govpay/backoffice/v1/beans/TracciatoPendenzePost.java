@@ -79,7 +79,7 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
   }
 
   @JsonProperty("avvisaturaDigitale")
-  public Boolean AvvisaturaDigitale() {
+  public Boolean getAvvisaturaDigitale() {
     return avvisaturaDigitale;
   }
   public void setAvvisaturaDigitale(Boolean avvisaturaDigitale) {

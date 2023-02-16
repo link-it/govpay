@@ -77,5 +77,9 @@ public class SoggettoPagatoreValidator{
 	public void validaTipo(String fieldName, String tipo) throws it.govpay.core.exceptions.ValidationException {
 		this.vf.getValidator(fieldName, tipo).notNull();
 	}
+	
+	public void validaTipo(String fieldName, Enum<?> tipo) throws it.govpay.core.exceptions.ValidationException {
+		this.vf.getValidator(fieldName, tipo).notNull();
+	}
 }
 

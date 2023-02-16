@@ -41,13 +41,13 @@ public class TipiPendenzaConverter {
 		entrataDTO.setCodTipoVersamento(idTipoPendenza);
 		entrataDTO.setTipoVersamento(tipoVersamento);
 
-		tipoVersamento.setPagaTerziDefault(entrataPost.PagaTerzi());
-		tipoVersamento.setAbilitatoDefault(entrataPost.Abilitato());
+		tipoVersamento.setPagaTerziDefault(entrataPost.getPagaTerzi());
+		tipoVersamento.setAbilitatoDefault(entrataPost.getAbilitato());
 
 		// Configurazione Caricamento Pendenze Portale Backoffice
 		tipoVersamento.setCaricamentoPendenzePortaleBackofficeAbilitatoDefault(false);
 		if(entrataPost.getPortaleBackoffice() != null) {
-			tipoVersamento.setCaricamentoPendenzePortaleBackofficeAbilitatoDefault(entrataPost.getPortaleBackoffice().Abilitato());
+			tipoVersamento.setCaricamentoPendenzePortaleBackofficeAbilitatoDefault(entrataPost.getPortaleBackoffice().getAbilitato());
 
 			if(tipoVersamento.isCaricamentoPendenzePortaleBackofficeAbilitatoDefault()) {
 				if(entrataPost.getPortaleBackoffice().getForm() != null && entrataPost.getPortaleBackoffice().getForm().getDefinizione() != null && entrataPost.getPortaleBackoffice().getForm().getTipo() != null) {
@@ -79,7 +79,7 @@ public class TipiPendenzaConverter {
 		// Configurazione Caricamento Pendenze Portale Backoffice
 		tipoVersamento.setCaricamentoPendenzePortalePagamentoAbilitatoDefault(false);
 		if(entrataPost.getPortalePagamento() != null) {
-			tipoVersamento.setCaricamentoPendenzePortalePagamentoAbilitatoDefault(entrataPost.getPortalePagamento().Abilitato());
+			tipoVersamento.setCaricamentoPendenzePortalePagamentoAbilitatoDefault(entrataPost.getPortalePagamento().getAbilitato());
 
 			if(tipoVersamento.isCaricamentoPendenzePortalePagamentoAbilitatoDefault()) {
 				if(entrataPost.getPortalePagamento().getForm() != null && entrataPost.getPortalePagamento().getForm().getDefinizione() != null && entrataPost.getPortalePagamento().getForm().getTipo() != null) {
@@ -116,9 +116,9 @@ public class TipiPendenzaConverter {
 		tipoVersamento.setAvvisaturaMailPromemoriaRicevutaAbilitatoDefault(false);
 		if(entrataPost.getAvvisaturaMail() != null) {
 			if(entrataPost.getAvvisaturaMail().getPromemoriaAvviso() != null) {
-				if(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().Abilitato() != null) {
+				if(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().getAbilitato() != null) {
 
-					tipoVersamento.setAvvisaturaMailPromemoriaAvvisoAbilitatoDefault(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().Abilitato());
+					tipoVersamento.setAvvisaturaMailPromemoriaAvvisoAbilitatoDefault(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().getAbilitato());
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaAvvisoAbilitatoDefault(false);
 				}
@@ -133,8 +133,8 @@ public class TipiPendenzaConverter {
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaAvvisoOggettoDefault(null);
 				}
-				if(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().AllegaPdf() != null) {
-					tipoVersamento.setAvvisaturaMailPromemoriaAvvisoPdfDefault(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().AllegaPdf());
+				if(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().getAllegaPdf() != null) {
+					tipoVersamento.setAvvisaturaMailPromemoriaAvvisoPdfDefault(entrataPost.getAvvisaturaMail().getPromemoriaAvviso().getAllegaPdf());
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaAvvisoPdfDefault(null);
 				}
@@ -154,9 +154,9 @@ public class TipiPendenzaConverter {
 			}
 
 			if(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta() != null) {
-				if(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().Abilitato() != null) {
+				if(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getAbilitato() != null) {
 
-					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaAbilitatoDefault(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().Abilitato());
+					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaAbilitatoDefault(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getAbilitato());
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaAbilitatoDefault(false);
 				}
@@ -171,8 +171,8 @@ public class TipiPendenzaConverter {
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaOggettoDefault(null);
 				}
-				if(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().AllegaPdf() != null) {
-					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaPdfDefault(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().AllegaPdf());
+				if(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getAllegaPdf() != null) {
+					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaPdfDefault(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getAllegaPdf());
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaPdfDefault(null);
 				}
@@ -181,8 +181,8 @@ public class TipiPendenzaConverter {
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaTipoDefault(null);
 				}
-				if(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().SoloEseguiti() != null) {
-					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaInviaSoloEseguitiDefault(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().SoloEseguiti());
+				if(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getSoloEseguiti() != null) {
+					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaInviaSoloEseguitiDefault(entrataPost.getAvvisaturaMail().getPromemoriaRicevuta().getSoloEseguiti());
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaRicevutaInviaSoloEseguitiDefault(null);
 				}
@@ -197,9 +197,9 @@ public class TipiPendenzaConverter {
 			}
 
 			if(entrataPost.getAvvisaturaMail().getPromemoriaScadenza() != null) {
-				if(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().Abilitato() != null) {
+				if(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getAbilitato() != null) {
 
-					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaAbilitatoDefault(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().Abilitato());
+					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaAbilitatoDefault(entrataPost.getAvvisaturaMail().getPromemoriaScadenza().getAbilitato());
 				}else {
 					tipoVersamento.setAvvisaturaMailPromemoriaScadenzaAbilitatoDefault(false);
 				}
@@ -265,9 +265,9 @@ public class TipiPendenzaConverter {
 		tipoVersamento.setAvvisaturaAppIoPromemoriaRicevutaAbilitatoDefault(false);
 		if(entrataPost.getAvvisaturaAppIO() != null) {
 			if(entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso() != null) {
-				if(entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso().Abilitato() != null) {
+				if(entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso().getAbilitato() != null) {
 
-					tipoVersamento.setAvvisaturaAppIoPromemoriaAvvisoAbilitatoDefault(entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso().Abilitato());
+					tipoVersamento.setAvvisaturaAppIoPromemoriaAvvisoAbilitatoDefault(entrataPost.getAvvisaturaAppIO().getPromemoriaAvviso().getAbilitato());
 				}else {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaAvvisoAbilitatoDefault(false);
 				}
@@ -298,9 +298,9 @@ public class TipiPendenzaConverter {
 			}
 
 			if(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta() != null) {
-				if(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().Abilitato() != null) {
+				if(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().getAbilitato() != null) {
 
-					tipoVersamento.setAvvisaturaAppIoPromemoriaRicevutaAbilitatoDefault(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().Abilitato());
+					tipoVersamento.setAvvisaturaAppIoPromemoriaRicevutaAbilitatoDefault(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().getAbilitato());
 				}else {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaRicevutaAbilitatoDefault(false);
 				}
@@ -320,8 +320,8 @@ public class TipiPendenzaConverter {
 				}else {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaRicevutaTipoDefault(null);
 				}
-				if(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().SoloEseguiti() != null) {
-					tipoVersamento.setAvvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiDefault(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().SoloEseguiti());
+				if(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().getSoloEseguiti() != null) {
+					tipoVersamento.setAvvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiDefault(entrataPost.getAvvisaturaAppIO().getPromemoriaRicevuta().getSoloEseguiti());
 				}else {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaRicevutaInviaSoloEseguitiDefault(null);
 				}
@@ -336,9 +336,9 @@ public class TipiPendenzaConverter {
 			}
 
 			if(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza() != null) {
-				if(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().Abilitato() != null) {
+				if(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getAbilitato() != null) {
 
-					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaAbilitatoDefault(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().Abilitato());
+					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaAbilitatoDefault(entrataPost.getAvvisaturaAppIO().getPromemoriaScadenza().getAbilitato());
 				}else {
 					tipoVersamento.setAvvisaturaAppIoPromemoriaScadenzaAbilitatoDefault(false);
 				}

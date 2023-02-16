@@ -21,7 +21,7 @@ package it.govpay.model;
 
 import java.util.List;
 
-public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable{
+public class ConnettoreNotificaPagamenti extends Connettore {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -175,11 +175,6 @@ public class ConnettoreNotificaPagamenti extends Connettore implements Cloneable
 
 	public void setEmailSubject(String emailSubject) {
 		this.emailSubject = emailSubject;
-	}
-
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
 	}
 
 	public List<String> getContenuti() {

@@ -100,7 +100,7 @@ public class ConfigurazioneDAO extends BaseDAO{
 					configurazione.setGiornale(giornale);
 				} else if(PATH_TRACCIATO_CSV.equals(op.getPath())) {
 					TracciatoCsv tracciatoCsv = (TracciatoCsv) op.getValue();
-					configurazione.setTracciatoCsv(tracciatoCsv);
+					configurazione.setConfigurazioneTracciatoCsv(tracciatoCsv);
 				} else if(PATH_HARDENING.equals(op.getPath())) {
 					Hardening hardening = (Hardening) op.getValue();
 					configurazione.setHardening(hardening);

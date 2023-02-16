@@ -221,7 +221,7 @@ public class Soggetto   {
    * @return email
   **/
   @JsonProperty("email")
- @Pattern(regexp="[A-Za-z0-9_]+([\\-\\+\\.'][A-Za-z0-9_]+)*@[A-Za-z0-9_]+([\\-\\.][A-Za-z0-9_]+)*\\.[A-Za-z0-9_]+([\\-\\.][A-Za-z0-9_]+)*")  public String getEmail() {
+  public String getEmail() {
     return email;
   }
 

@@ -68,7 +68,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("password")
-  public Boolean Password() {
+  public Boolean getPassword() {
     return password;
   }
   public void setPassword(Boolean password) {
@@ -164,7 +164,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {

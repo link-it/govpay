@@ -96,7 +96,7 @@ public class TipoPendenza extends JSONSerializable {
   }
 
   @JsonProperty("pagaTerzi")
-  public Boolean PagaTerzi() {
+  public Boolean getPagaTerzi() {
     return pagaTerzi;
   }
   public void setPagaTerzi(Boolean pagaTerzi) {
@@ -112,7 +112,7 @@ public class TipoPendenza extends JSONSerializable {
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {

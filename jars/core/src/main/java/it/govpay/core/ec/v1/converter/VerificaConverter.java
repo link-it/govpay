@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 
 import it.govpay.core.exceptions.IOException;
@@ -45,7 +44,7 @@ import it.govpay.model.Versamento.StatoVersamento;
 
 public class VerificaConverter {
 	
-	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) throws ValidationException, ServiceException, IOException {
+	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) throws ValidationException, IOException {
 		it.govpay.core.beans.commons.Versamento versamento = new it.govpay.core.beans.commons.Versamento();
 		
 		if(pendenzaVerificata.getAnnoRiferimento() != null)
@@ -116,7 +115,7 @@ public class VerificaConverter {
 		return versamento;
 	}
 	
-	public static void fillSingoliVersamentiFromVociPendenzaBase(it.govpay.core.beans.commons.Versamento versamento, List<VocePendenza> voci) throws ServiceException, IOException {
+	public static void fillSingoliVersamentiFromVociPendenzaBase(it.govpay.core.beans.commons.Versamento versamento, List<VocePendenza> voci) throws IOException {
 
 		if(voci != null && voci.size() > 0) {
 			for (VocePendenza vocePendenza : voci) {

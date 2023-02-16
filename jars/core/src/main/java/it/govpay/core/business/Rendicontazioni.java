@@ -261,7 +261,10 @@ public class Rendicontazioni {
 						// C'e' gia. Se viene da file, lo elimino
 						if(rnd.getFrFile() != null) {
 							try { 
-								rnd.getFrFile().delete(); 
+								boolean delete = rnd.getFrFile().delete();
+								if(!delete) {
+									log.warn("Il file di flusso " + rnd.getFrFile().getName() + " non e' stato eliminato.");
+								}
 							} catch (Exception e) { 
 								log.error("Impossibile eliminare il file di flusso gia' presente: " + rnd.getFrFile().getName(), e);
 							}

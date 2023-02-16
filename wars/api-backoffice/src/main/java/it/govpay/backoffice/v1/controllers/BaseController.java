@@ -335,7 +335,7 @@ public abstract class BaseController {
 			return responseBuilder.build();
 	}
 
-	protected void log(IContext ctx) {
+	protected void logContext(IContext ctx) {
 		if(ctx != null) { // noop
 //			try {
 //				ctx.getApplicationLogger().log();

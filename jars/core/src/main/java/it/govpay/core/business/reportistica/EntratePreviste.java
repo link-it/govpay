@@ -29,7 +29,6 @@ import it.govpay.stampe.model.ProspettoRiscossioniInput;
 import it.govpay.stampe.model.ProspettoRiscossioniInput.ElencoProspettiDominio;
 import it.govpay.stampe.model.RiscossioneConFlussoInput;
 import it.govpay.stampe.model.VoceRiscossioneInput;
-import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 import it.govpay.stampe.pdf.prospettoRiscossioni.ProspettoRiscossioniPdf;
 import it.govpay.stampe.pdf.prospettoRiscossioni.utils.ProspettoRiscossioniProperties;
 
@@ -228,17 +227,9 @@ public class EntratePreviste {
 
 			String indirizzoEnte = indirizzoCivico + ",";
 
-			if(indirizzoEnte.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setIndirizzoEnte(indirizzoEnte);
-			}else {
-				input.setIndirizzoEnte(indirizzoEnte);
-			}
+			input.setIndirizzoEnte(indirizzoEnte);
 
-			if(capCitta.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setLuogoEnte(capCitta);
-			}else {
-				input.setLuogoEnte(capCitta);
-			}
+			input.setLuogoEnte(capCitta);
 		}
 	}
 }

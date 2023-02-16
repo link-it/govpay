@@ -114,7 +114,7 @@ public class IncassiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
 	}
 
@@ -175,7 +175,7 @@ public class IncassiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
 	}
 
@@ -215,7 +215,7 @@ public class IncassiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
 }

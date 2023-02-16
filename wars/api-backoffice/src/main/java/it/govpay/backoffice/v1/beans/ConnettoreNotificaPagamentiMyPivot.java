@@ -116,7 +116,7 @@ public class ConnettoreNotificaPagamentiMyPivot extends JSONSerializable impleme
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
@@ -211,7 +211,7 @@ public class ConnettoreNotificaPagamentiMyPivot extends JSONSerializable impleme
   }
 
   @JsonProperty("emailAllegato")
-  public Boolean EmailAllegato() {
+  public Boolean getEmailAllegato() {
     return emailAllegato;
   }
   public void setEmailAllegato(Boolean emailAllegato) {

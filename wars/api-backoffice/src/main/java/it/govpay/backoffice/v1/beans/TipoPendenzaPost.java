@@ -95,7 +95,7 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   }
 
   @JsonProperty("pagaTerzi")
-  public Boolean PagaTerzi() {
+  public Boolean getPagaTerzi() {
     return pagaTerzi;
   }
   public void setPagaTerzi(Boolean pagaTerzi) {
@@ -111,7 +111,7 @@ public class TipoPendenzaPost extends JSONSerializable implements IValidable {
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {

@@ -485,7 +485,7 @@ public class PagamentoIndex extends JSONSerializable {
   }
 
   @JsonProperty("verificato")
-  public Boolean Verificato() {
+  public Boolean getVerificato() {
     return this.verificato;
   }
   public void setVerificato(Boolean verificato) {

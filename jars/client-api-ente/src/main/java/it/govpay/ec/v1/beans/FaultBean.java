@@ -72,11 +72,8 @@ public class FaultBean  {
   @JsonProperty("categoria")
   @NotNull
   @Valid
-  public String getCategoria() {
-    if (categoria == null) {
-      return null;
-    }
-    return categoria.getValue();
+  public CategoriaEnum getCategoria() {
+    return categoria;
   }
 
   public void setCategoria(CategoriaEnum categoria) {

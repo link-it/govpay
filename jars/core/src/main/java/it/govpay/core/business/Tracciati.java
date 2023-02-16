@@ -510,7 +510,9 @@ public class Tracciati {
 								try {
 									Thread.sleep(2000);
 								} catch (InterruptedException e) {
-	
+									log.warn("Interrupted: " + e.getMessage(), e);
+								    // Restore interrupted state...
+								    Thread.currentThread().interrupt();
 								}
 								boolean completed = true;
 								for(CreaStampeTracciatoThread sender : threadsStampe) {
@@ -671,7 +673,7 @@ public class Tracciati {
 	
 			// configurazione di sistema
 			if(tracciatoCsv == null)
-				tracciatoCsv = new it.govpay.core.business.Configurazione().getConfigurazione().getTracciatoCsv();
+				tracciatoCsv = new it.govpay.core.business.Configurazione().getConfigurazione().getConfigurazioneTracciatoCsv();
 	
 			List<CaricamentoTracciatoThread> threads = new ArrayList<CaricamentoTracciatoThread>();
 	
@@ -723,7 +725,9 @@ public class Tracciati {
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					log.warn("Interrupted: " + e.getMessage(), e);
+				    // Restore interrupted state...
+				    Thread.currentThread().interrupt();
 				}
 				boolean completed = true;
 				int completati = 0; 
@@ -953,7 +957,9 @@ public class Tracciati {
 						try {
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {
-
+							log.warn("Interrupted: " + e.getMessage(), e);
+						    // Restore interrupted state...
+						    Thread.currentThread().interrupt();
 						}
 						boolean completed = true;
 						for(CreaStampeTracciatoThread sender : threadsStampe) {
@@ -1145,6 +1151,8 @@ public class Tracciati {
 			List<Operazione> findAll = operazioniBD.findAll(filter);
 			log.debug("Acquisiti " + findAll.size() + " con offset " + filter.getOffset());
 			for(Operazione operazione : findAll) {
+				String idA2A = "-";
+				String idPendenza = "-";
 				switch (operazione.getTipoOperazione()) {
 				case ADD:
 				case DEL:
@@ -1154,13 +1162,16 @@ public class Tracciati {
 					Documento documento = null;
 					try {
 						risposta = EsitoOperazionePendenza.parse(new String(operazione.getDatiRisposta()));
-						applicazione = AnagraficaManager.getApplicazione(configWrapper,risposta.getIdA2A());
-						versamento = versamentiBD.getVersamento(applicazione.getId(), risposta.getIdPendenza());
+						idA2A = risposta.getIdA2A();
+						idPendenza = risposta.getIdPendenza();
+						applicazione = AnagraficaManager.getApplicazione(configWrapper,idA2A);
+						versamento = versamentiBD.getVersamento(applicazione.getId(), idPendenza);
 						documento = versamento.getDocumento(operazioniBD);
 						codTipoVersamento =  versamento.getTipoVersamento(configWrapper).getCodTipoVersamento();
 					} catch(NotFoundException e) {
-					} catch(Exception e) {
-
+					} catch(ServiceException e) {
+					} catch(it.govpay.core.exceptions.IOException e) {
+						log.warn("Errore durante il parse dell'esito operazione: " + e.getMessage());
 					}
 
 					// trasformare il json in csv String trasformazioneOutputCSV = 
@@ -1173,7 +1184,7 @@ public class Tracciati {
 								documento, operazione.getStato().toString(), operazione.getDettaglioEsito(), operazione.getTipoOperazione().toString());
 						bw.write(baostmp.toString());
 					} catch (GovPayException e) {
-						bw.write(("Pendenza [IdA2A:"+risposta.getIdA2A()+", Id:"+risposta.getIdPendenza()+"] inserita con esito '"
+						bw.write(("Pendenza [IdA2A:"+idA2A+", Id:"+idPendenza+"] inserita con esito '"
 								+ (operazione.getStato()) +"': scrittura dell'esito sul file csv conclusa con con errore.\n"));//.getBytes());
 					}
 					break;

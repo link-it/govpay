@@ -506,10 +506,10 @@ public class GovpayConfig {
 
 			String timeoutBatchString = getProperty("it.govpay.timeoutBatch", this.props, false, log);
 			try{
-				this.timeoutBatch = Integer.parseInt(timeoutBatchString) * 1000;
+				this.timeoutBatch = Long.parseLong(timeoutBatchString) * 1000;
 			} catch(Throwable t) {
 				log.info("Proprieta \"it.govpay.timeoutBatch\" impostata con valore di default (5 minuti)");
-				this.timeoutBatch = 5 * 60 * 1000;
+				this.timeoutBatch = (long) 5 * 60 * 1000;
 			}
 			
 			String conservazionePluginString = getProperty("it.govpay.plugin.conservazione", this.props, false, log);

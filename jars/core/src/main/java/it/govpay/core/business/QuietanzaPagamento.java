@@ -29,7 +29,6 @@ import it.govpay.model.Rpt.VersioneRPT;
 import it.govpay.stampe.model.QuietanzaPagamentoInput;
 import it.govpay.stampe.model.QuietanzaPagamentoInput.ElencoVoci;
 import it.govpay.stampe.model.VoceRicevutaTelematicaInput;
-import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 import it.govpay.stampe.pdf.quietanzaPagamento.QuietanzaPagamentoPdf;
 import it.govpay.stampe.pdf.quietanzaPagamento.utils.QuietanzaPagamentoProperties;
 import it.govpay.stampe.pdf.rt.RicevutaTelematicaCostanti;
@@ -143,17 +142,9 @@ public class QuietanzaPagamento {
 			// Inserisco la virgola se la prima riga non e' vuota
 			String indirizzoEnte = StringUtils.isNotEmpty(indirizzoCivico) ? indirizzoCivico + "," : "";
 
-			if(indirizzoEnte.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setIndirizzoEnte(indirizzoEnte);
-			}else {
-				input.setIndirizzoEnte(indirizzoEnte);
-			}
+			input.setIndirizzoEnte(indirizzoEnte);
 
-			if(capCitta.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setLuogoEnte(capCitta);
-			}else {
-				input.setLuogoEnte(capCitta);
-			}
+			input.setLuogoEnte(capCitta);
 		}
 	}
 
@@ -172,18 +163,9 @@ public class QuietanzaPagamento {
 			// Inserisco la virgola se la prima riga non e' vuota
 			String indirizzoEnte = StringUtils.isNotEmpty(indirizzoCivico) ? indirizzoCivico + "," : ""; 
 
+			input.setIndirizzoSoggetto(indirizzoEnte);
 
-			if(indirizzoEnte.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setIndirizzoSoggetto(indirizzoEnte);
-			}else {
-				input.setIndirizzoSoggetto(indirizzoEnte);
-			}
-
-			if(capCitta.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setLuogoSoggetto(capCitta);
-			}else {
-				input.setLuogoSoggetto(capCitta);
-			}
+			input.setLuogoSoggetto(capCitta);
 
 			input.setSoggetto(StringUtils.isNotEmpty(soggettoPagatore.getRagioneSociale()) ? soggettoPagatore.getRagioneSociale() : "");
 			input.setCfSoggetto(StringUtils.isNotEmpty(soggettoPagatore.getCodUnivoco()) ? soggettoPagatore.getCodUnivoco() : "");

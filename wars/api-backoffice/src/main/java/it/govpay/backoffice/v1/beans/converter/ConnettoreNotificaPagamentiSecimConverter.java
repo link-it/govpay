@@ -26,9 +26,9 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 	public static it.govpay.model.ConnettoreNotificaPagamenti getConnettoreDTO(it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiSecim connector, Authentication user, Tipo tipo) throws NotAuthorizedException {
 		it.govpay.model.ConnettoreNotificaPagamenti connettore = new it.govpay.model.ConnettoreNotificaPagamenti();
 
-		connettore.setAbilitato(connector.Abilitato());
+		connettore.setAbilitato(connector.getAbilitato());
 
-		if(connector.Abilitato()) {
+		if(connector.getAbilitato()) {
 			connettore.setTipoTracciato(tipo.name());
 			connettore.setVersioneCsv(connector.getVersioneCsv());
 			connettore.setCodiceCliente(connector.getCodiceCliente());
@@ -114,7 +114,7 @@ public class ConnettoreNotificaPagamentiSecimConverter {
 				connettore.setTipoConnettore(TipoConnettore.EMAIL);
 				connettore.setEmailIndirizzi(connector.getEmailIndirizzi());
 				connettore.setEmailSubject(connector.getEmailSubject());
-				connettore.setEmailAllegato(connector.EmailAllegato());
+				connettore.setEmailAllegato(connector.getEmailAllegato());
 				connettore.setDownloadBaseURL(connector.getDownloadBaseUrl());
 				break;
 			case FILESYSTEM:

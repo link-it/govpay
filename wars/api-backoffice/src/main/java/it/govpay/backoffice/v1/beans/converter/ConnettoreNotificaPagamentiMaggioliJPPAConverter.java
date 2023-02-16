@@ -30,9 +30,9 @@ public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
 	public static it.govpay.model.ConnettoreNotificaPagamenti getConnettoreDTO(it.govpay.backoffice.v1.beans.ConnettoreNotificaPagamentiMaggioliJPPA connector, Authentication user, Tipo tipo) throws NotAuthorizedException, CodificaInesistenteException {
 		it.govpay.model.ConnettoreNotificaPagamenti connettore = new it.govpay.model.ConnettoreNotificaPagamenti();
 
-		connettore.setAbilitato(connector.Abilitato());
+		connettore.setAbilitato(connector.getAbilitato());
 
-		if(connector.Abilitato()) {
+		if(connector.getAbilitato()) {
 			connettore.setTipoTracciato(tipo.name());
 			connettore.setPrincipalMaggioli(connector.getPrincipal());
 
@@ -116,7 +116,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPAConverter {
 				connettore.setTipoConnettore(TipoConnettore.EMAIL);
 				connettore.setEmailIndirizzi(connector.getEmailIndirizzi());
 				connettore.setEmailSubject(connector.getEmailSubject());
-				connettore.setEmailAllegato(connector.EmailAllegato());
+				connettore.setEmailAllegato(connector.getEmailAllegato());
 				connettore.setDownloadBaseURL(connector.getDownloadBaseUrl());
 				if(connector.getAuth() != null) {
 					connettore.setHttpUser(connector.getAuth().getUsername());

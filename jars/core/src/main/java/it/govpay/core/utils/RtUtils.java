@@ -160,12 +160,14 @@ public class RtUtils extends NdpValidationUtils {
 					esito.addErrore("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo " + esitoPagamento.name(), true);
 					return;
 				}
+				break;
 			case DECORRENZA_TERMINI:
 			case PAGAMENTO_NON_ESEGUITO:
 				if(rt.getDatiSingoloPagamento().size() != 0 && rt.getDatiSingoloPagamento().size() != rpt.getDatiSingoloVersamento().size()) {
 					esito.addErrore("Numero di pagamenti diverso dal numero di versamenti per una ricevuta di tipo " + esitoPagamento.name(), true);
 					return;
 				}
+				break;
 			case IN_CORSO:
 			case RIFIUTATO:
 				//Stati interni. Non possono essere stati dell'RPT
@@ -837,6 +839,6 @@ public class RtUtils extends NdpValidationUtils {
 			causaleRicevuta = causaleRicevuta.substring(0,s2IndexOf);
 		}
 		
-		if(!causaleAttesa.equals(causaleRicevuta)) esito.addErrore(errore + " [Atteso:\"" + (causaleAttesa != null ? causaleAttesa : "<null>") + "\" Ricevuto:\"" + (causaleRicevuta != null ? causaleRicevuta : "<null>") + "\"]", fatal);
+		if(!causaleAttesa.equals(causaleRicevuta)) esito.addErrore(errore + " [Atteso:\"" + causaleAttesa + "\" Ricevuto:\"" + causaleRicevuta + "\"]", fatal);
 	}
 }

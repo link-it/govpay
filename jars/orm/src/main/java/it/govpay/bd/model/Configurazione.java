@@ -21,13 +21,13 @@ import it.govpay.model.configurazione.TracciatoCsv;
 
 public class Configurazione extends it.govpay.model.Configurazione {
 
-	public static final String GIORNALE_EVENTI = "giornale_eventi";
-	public static final String TRACCIATO_CSV = "tracciato_csv";
-	public static final String HARDENING = "hardening";
-	public static final String MAIL_BATCH = "mail_batch";
-	public static final String APP_IO_BATCH = "app_io_batch";
-	public static final String AVVISATURA_MAIL = "avvisatura_mail";
-	public static final String AVVISATURA_APP_IO = "avvisatura_app_io";
+	public static final String KEY_GIORNALE_EVENTI = "giornale_eventi";
+	public static final String KEY_TRACCIATO_CSV = "tracciato_csv";
+	public static final String KEY_HARDENING = "hardening";
+	public static final String KEY_MAIL_BATCH = "mail_batch";
+	public static final String KEY_APP_IO_BATCH = "app_io_batch";
+	public static final String KEY_AVVISATURA_MAIL = "avvisatura_mail";
+	public static final String KEY_AVVISATURA_APP_IO = "avvisatura_app_io";
 
 
 	private Properties properties = new Properties();
@@ -61,19 +61,19 @@ public class Configurazione extends it.govpay.model.Configurazione {
 		return this._getJson(this.getGiornale());
 	}
 
-	public TracciatoCsv getTracciatoCsv() throws IOException {
+	public TracciatoCsv getConfigurazioneTracciatoCsv() throws IOException {
 		if(this.tracciatoCsv == null) {
 			this.tracciatoCsv = this._getFromJson(this.getTracciatoCSV(), TracciatoCsv.class);
 		}
 		return tracciatoCsv;
 	}
 
-	public void setTracciatoCsv(TracciatoCsv tracciatoCsv) {
+	public void setConfigurazioneTracciatoCsv(TracciatoCsv tracciatoCsv) {
 		this.tracciatoCsv = tracciatoCsv;
 	}
 
 	public String getTracciatoCsvJson() throws IOException {
-		return this._getJson(this.getTracciatoCsv());
+		return this._getJson(this.getConfigurazioneTracciatoCsv());
 	}
 
 	public Hardening getHardening() throws IOException {

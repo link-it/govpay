@@ -868,8 +868,9 @@ public abstract class BasicClientCORE {
 			// Gestione finale della connessione    		
 			//System.out.println("CHECK CLOSE STREAM...");
 			if(this.isResponse!=null){
-				if(this.debug && log!=null)
+				if(this.debug) {
 					log.debug("Chiusura socket...");
+				}
 				//System.out.println("CLOSE STREAM...");
 				this.isResponse.close();
 				//System.out.println("CLOSE STREAM");
@@ -883,8 +884,9 @@ public abstract class BasicClientCORE {
 			// Gestione finale della connessione
 			//System.out.println("CHECK ENTITY...");
 			if(this.httpEntityResponse!=null){
-				if(this.debug && log!=null)
+				if(this.debug) {
 					log.debug("Chiusura httpEntityResponse...");
+				}
 				//System.out.println("CLOSE ENTITY...");
 				EntityUtils.consume(this.httpEntityResponse);
 				//System.out.println("CLOSE ENTITY");

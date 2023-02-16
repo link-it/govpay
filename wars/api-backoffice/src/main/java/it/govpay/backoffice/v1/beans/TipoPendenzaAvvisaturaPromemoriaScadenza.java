@@ -49,7 +49,7 @@ public class TipoPendenzaAvvisaturaPromemoriaScadenza extends JSONSerializable i
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {

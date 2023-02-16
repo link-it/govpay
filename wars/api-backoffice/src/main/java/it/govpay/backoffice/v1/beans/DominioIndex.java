@@ -581,7 +581,7 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("intermediato")
-  public Boolean Intermediato() {
+  public Boolean getIntermediato() {
     return intermediato;
   }
   public void setIntermediato(Boolean intermediato) {

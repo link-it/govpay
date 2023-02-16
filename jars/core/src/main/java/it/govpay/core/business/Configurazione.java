@@ -60,8 +60,8 @@ public class Configurazione {
 
 		validaConfigurazioneGiornaleEventi(configurazione, configurazioneDefault);
 
-		if(configurazione.getTracciatoCsv() == null) {
-			configurazione.setTracciatoCsv(configurazioneDefault.getTracciatoCsv());
+		if(configurazione.getConfigurazioneTracciatoCsv() == null) {
+			configurazione.setConfigurazioneTracciatoCsv(configurazioneDefault.getConfigurazioneTracciatoCsv());
 		}
 
 		if(configurazione.getHardening() == null) {
@@ -127,7 +127,7 @@ public class Configurazione {
 		it.govpay.bd.model.Configurazione configurazione = new it.govpay.bd.model.Configurazione();
 
 		configurazione.setGiornale(this.getGiornaleDefault()); 
-		configurazione.setTracciatoCsv(this.getTracciatoCsvDefault()); 
+		configurazione.setConfigurazioneTracciatoCsv(this.getTracciatoCsvDefault()); 
 		configurazione.setHardening(this.getHardeningDefault()); 
 		configurazione.setBatchSpedizioneEmail(this.getBatchSpedizioneEmailDefault()); 
 		configurazione.setAvvisaturaViaMail(this.getAvvisaturaViaMailDefault()); 

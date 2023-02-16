@@ -247,7 +247,7 @@ public class ApplicazionePost extends it.govpay.core.beans.JSONSerializable  imp
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {

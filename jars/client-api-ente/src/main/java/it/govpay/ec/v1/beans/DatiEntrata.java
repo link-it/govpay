@@ -1,7 +1,6 @@
 package it.govpay.ec.v1.beans;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -84,7 +83,6 @@ public class DatiEntrata  {
    * @return codEntrata
   **/
   @JsonProperty("codEntrata")
-  @NotNull
   @Valid
   public String getCodEntrata() {
     return codEntrata;
@@ -104,7 +102,6 @@ public class DatiEntrata  {
    * @return ibanAccredito
   **/
   @JsonProperty("ibanAccredito")
-  @NotNull
   @Valid
   public String getIbanAccredito() {
     return ibanAccredito;
@@ -181,7 +178,6 @@ public class DatiEntrata  {
    * @return tipoContabilita
   **/
   @JsonProperty("tipoContabilita")
-  @NotNull
   @Valid
   public TipoContabilita getTipoContabilita() {
     return tipoContabilita;
@@ -201,7 +197,6 @@ public class DatiEntrata  {
    * @return codiceContabilita
   **/
   @JsonProperty("codiceContabilita")
-  @NotNull
   @Valid
   public String getCodiceContabilita() {
     return codiceContabilita;
@@ -257,7 +252,6 @@ public class DatiEntrata  {
    * @return hashDocumento
   **/
   @JsonProperty("hashDocumento")
-  @NotNull
   @Valid
   public String getHashDocumento() {
     return hashDocumento;
@@ -277,7 +271,6 @@ public class DatiEntrata  {
    * @return provinciaResidenza
   **/
   @JsonProperty("provinciaResidenza")
-  @NotNull
   @Valid
   public String getProvinciaResidenza() {
     return provinciaResidenza;

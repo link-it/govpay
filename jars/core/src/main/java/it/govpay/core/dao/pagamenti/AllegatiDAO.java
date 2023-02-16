@@ -197,7 +197,9 @@ public class AllegatiDAO  extends BaseDAO {
 
 				bd.commit();
 			} catch(Exception e) {
-				bd.rollback();
+				if(bd != null && !bd.isAutoCommit()) {
+					bd.rollback();
+				}
 				log.error("Errore durante la lettura dei bytes: " + e.getMessage(), e);
 				throw new WebApplicationException("Errore durante la lettura del contenuto dell'allegato.");
 			} finally {

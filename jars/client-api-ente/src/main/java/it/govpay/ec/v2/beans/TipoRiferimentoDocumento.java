@@ -3,7 +3,6 @@ package it.govpay.ec.v2.beans;
 import java.math.BigDecimal;
 
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -18,7 +17,6 @@ public class TipoRiferimentoDocumento  implements OneOfTipoRiferimentoDocumento 
 	   * @return soglia
 	  **/
 	  @JsonProperty("soglia")
-	  @NotNull
 	  public VincoloPagamento getSoglia() {
 	    return soglia;
 	  }
@@ -43,7 +41,6 @@ public class TipoRiferimentoDocumento  implements OneOfTipoRiferimentoDocumento 
 	    * @return rata
 	   **/
 	   @JsonProperty("rata")
-	   @NotNull
 	  @DecimalMin("1")  public BigDecimal getRata() {
 	     return rata;
 	   }

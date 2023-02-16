@@ -115,7 +115,7 @@ public class StatisticaRiscossioniBD  extends BasicBD {
 					entry.setNumeroPagamenti((Long) map.get("numeroPagamenti"));
 					Object importoTotaleObj = map.get("importoTotale");
 					if(importoTotaleObj instanceof Double)
-						entry.setImporto(new BigDecimal((Double) importoTotaleObj).setScale(2, RoundingMode.HALF_EVEN));
+						entry.setImporto(BigDecimal.valueOf((Double) importoTotaleObj).setScale(2, RoundingMode.HALF_EVEN));
 					else
 						entry.setImporto(BigDecimal.ZERO);
 					
