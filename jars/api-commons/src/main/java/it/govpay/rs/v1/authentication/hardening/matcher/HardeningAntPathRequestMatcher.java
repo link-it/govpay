@@ -1,5 +1,6 @@
 package it.govpay.rs.v1.authentication.hardening.matcher;
 
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
@@ -36,6 +37,7 @@ import it.govpay.rs.v1.authentication.recaptcha.handler.ReCaptchaValidator;
  *
  */
 public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVariablesExtractor {
+	private static final String ERROR_MESSAGE_CONTROLLO_RE_CAPTCHA_TERMINATO_CON_ESITO_ACCESSO_NON_CONSENTITO_0 = "Controllo ReCaptcha terminato con esito: accesso non consentito: {0}";
 	private static final Log logger = LogFactory.getLog(HardeningAntPathRequestMatcher.class);
 	private static final String MATCH_ALL = "/**";
 
@@ -178,15 +180,13 @@ public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVa
 		}catch(ReCaptchaConfigurazioneNonValidaException e) {
 			logger.error("Controllo ReCaptcha terminato con errore, configurazione del servizio non valida: " + e.getMessage(), e);
 		}catch(ReCaptchaParametroResponseInvalidException e) {
-			logger.warn("Controllo ReCaptcha terminato con esito: accesso non consentito: " + e.getMessage());
+			logger.warn(MessageFormat.format(ERROR_MESSAGE_CONTROLLO_RE_CAPTCHA_TERMINATO_CON_ESITO_ACCESSO_NON_CONSENTITO_0, e.getMessage()));
 		}catch(ReCaptchaUnavailableException e) {
-			logger.warn("Controllo ReCaptcha terminato con esito: accesso non consentito: " + e.getMessage(), e);
+			logger.warn(MessageFormat.format(ERROR_MESSAGE_CONTROLLO_RE_CAPTCHA_TERMINATO_CON_ESITO_ACCESSO_NON_CONSENTITO_0, e.getMessage()));
 		}catch(ReCaptchaScoreNonValidoException e) {
-			logger.warn("Controllo ReCaptcha terminato con esito: accesso non consentito: " + e.getMessage());
+			logger.warn(MessageFormat.format(ERROR_MESSAGE_CONTROLLO_RE_CAPTCHA_TERMINATO_CON_ESITO_ACCESSO_NON_CONSENTITO_0, e.getMessage()));
 		}catch(ReCaptchaInvalidException e) {
-			logger.warn("Controllo ReCaptcha terminato con esito: accesso non consentito: " + e.getMessage());
-		}catch(Exception e) {
-			logger.error("Controllo ReCaptcha terminato con errore: " + e.getMessage(), e);
+			logger.warn(MessageFormat.format(ERROR_MESSAGE_CONTROLLO_RE_CAPTCHA_TERMINATO_CON_ESITO_ACCESSO_NON_CONSENTITO_0, e.getMessage()));
 		}
 		return authorized;
 	}

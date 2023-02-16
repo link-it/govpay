@@ -41,58 +41,55 @@ public class GiornaleEventiOutInterceptor extends AbstractPhaseInterceptor<Messa
 		String url = null;
 		String httpMethodS = null;
 		try {
-			if(this.giornaleEventiConfig.isAbilitaGiornaleEventi()) {
-				IContext context = ContextThreadLocal.get();
-				GpContext appContext = (GpContext) context.getApplicationContext();
-				EventoContext eventoCtx = appContext.getEventoCtx();
-				
-				Exchange exchange = message.getExchange();
-				Message inMessage = exchange.getInMessage();
-				final LogEvent eventRequest = new DefaultLogEventMapper().map(inMessage);
-				url = eventoCtx.getUrl() != null ? eventoCtx.getUrl() : eventRequest.getAddress();
-				httpMethodS = eventoCtx.getMethod() != null ? eventoCtx.getMethod() : eventRequest.getHttpMethod();
-				Date dataUscita = new Date();
+			if(!this.giornaleEventiConfig.isAbilitaGiornaleEventi()) return;
+			
+			IContext context = ContextThreadLocal.get();
+			GpContext appContext = (GpContext) context.getApplicationContext();
+			EventoContext eventoCtx = appContext.getEventoCtx();
+			
+			Exchange exchange = message.getExchange();
+			Message inMessage = exchange.getInMessage();
+			final LogEvent eventRequest = new DefaultLogEventMapper().map(inMessage);
+			url = eventoCtx.getUrl() != null ? eventoCtx.getUrl() : eventRequest.getAddress();
+			httpMethodS = eventoCtx.getMethod() != null ? eventoCtx.getMethod() : eventRequest.getHttpMethod();
+			Date dataUscita = new Date();
 
-				Integer responseCode = 200;
-				if (!Boolean.TRUE.equals(message.get(Message.DECOUPLED_CHANNEL_MESSAGE))) {
-					// avoid logging the default responseCode 200 for the decoupled responses
-					responseCode = (Integer)message.get(Message.RESPONSE_CODE);
-				}
+			Integer responseCode = 200;
+			if (!Boolean.TRUE.equals(message.get(Message.DECOUPLED_CHANNEL_MESSAGE))) {
+				// avoid logging the default responseCode 200 for the decoupled responses
+				responseCode = (Integer)message.get(Message.RESPONSE_CODE);
+			}
 
-				this.log.debug("Log Evento API: ["+this.giornaleEventiConfig.getApiName()+"] Method ["+httpMethodS+"], Url ["+url+"], StatusCode ["+responseCode+"]");
+			this.log.debug("Log Evento API: ["+this.giornaleEventiConfig.getApiName()+"] Method ["+httpMethodS+"], Url ["+url+"], StatusCode ["+responseCode+"]");
 
-				// informazioni gia' calcolate nell'interceptor di dump
-				if(eventoCtx.isRegistraEvento()) {
-					if(eventoCtx.getDettaglioRisposta() == null)
-						eventoCtx.setDettaglioRisposta(new DettaglioRisposta());
-					
-					if(this.giornaleEventiConfig.getApiNameEnum().equals(Componente.API_PAGOPA) || this.giornaleEventiConfig.getApiNameEnum().equals(Componente.API_MAGGIOLI_JPPA)) {
-//						HttpServletResponse httpResponse = (HttpServletResponse) message.get(AbstractHTTPDestination.HTTP_RESPONSE);
-//						httpResponse.setHeader(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, context.getTransactionId());
-						
-						@SuppressWarnings("unchecked")
-						Map<String, List<String>> responseHeaders = (Map<String, List<String>>)message.get(Message.PROTOCOL_HEADERS);
-						if (responseHeaders != null) {
-							responseHeaders.put(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, Arrays.asList(context.getTransactionId()));
-						}
-					}
-
-					final LogEvent eventResponse = new DefaultLogEventMapper().map(message);
-					eventoCtx.getDettaglioRisposta().setHeadersFromMap(eventResponse.getHeaders());
-					eventoCtx.getDettaglioRisposta().setStatus(responseCode);
-					eventoCtx.getDettaglioRisposta().setDataOraRisposta(dataUscita);
-
-					eventoCtx.setDataRisposta(dataUscita);
-					eventoCtx.setStatus(responseCode);
-					// se non ho impostato un sottotipo esito genero uno di default che corrisponde allo status code
-					if(responseCode != null && eventoCtx.getSottotipoEsito() == null)
-						eventoCtx.setSottotipoEsito(responseCode + "");
-
-					PutEventoDTO putEventoDTO = new PutEventoDTO(context.getAuthentication());
-					putEventoDTO.setEvento(eventoCtx);
-					this.eventiDAO.inserisciEvento(putEventoDTO);
+			if(!eventoCtx.isRegistraEvento()) return;
+			
+			// informazioni gia' calcolate nell'interceptor di dump
+			if(eventoCtx.getDettaglioRisposta() == null)
+				eventoCtx.setDettaglioRisposta(new DettaglioRisposta());
+			
+			if(this.giornaleEventiConfig.getApiNameEnum().equals(Componente.API_PAGOPA) || this.giornaleEventiConfig.getApiNameEnum().equals(Componente.API_MAGGIOLI_JPPA)) {
+				@SuppressWarnings("unchecked")
+				Map<String, List<String>> responseHeaders = (Map<String, List<String>>)message.get(Message.PROTOCOL_HEADERS);
+				if (responseHeaders != null) {
+					responseHeaders.put(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, Arrays.asList(context.getTransactionId()));
 				}
 			}
+
+			final LogEvent eventResponse = new DefaultLogEventMapper().map(message);
+			eventoCtx.getDettaglioRisposta().setHeadersFromMap(eventResponse.getHeaders());
+			eventoCtx.getDettaglioRisposta().setStatus(responseCode);
+			eventoCtx.getDettaglioRisposta().setDataOraRisposta(dataUscita);
+
+			eventoCtx.setDataRisposta(dataUscita);
+			eventoCtx.setStatus(responseCode);
+			// se non ho impostato un sottotipo esito genero uno di default che corrisponde allo status code
+			if(responseCode != null && eventoCtx.getSottotipoEsito() == null)
+				eventoCtx.setSottotipoEsito(responseCode + "");
+
+			PutEventoDTO putEventoDTO = new PutEventoDTO(context.getAuthentication());
+			putEventoDTO.setEvento(eventoCtx);
+			this.eventiDAO.inserisciEvento(putEventoDTO);
 		} catch (Throwable e) {
 			this.log.error(e.getMessage(),e);
 		} finally {

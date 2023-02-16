@@ -16,6 +16,7 @@ public class X509AuthenticationEntryPoint extends org.openspcoop2.utils.service.
 
 	@Override
 	protected void addCustomHeaders(HttpServletResponse httpResponse) {
+		// do nothing
 	}
 
 }

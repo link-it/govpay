@@ -49,97 +49,98 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 		String principal = null;
 		Esito esito = null;
 		try {
-			if(this.giornaleEventiConfig.isAbilitaGiornaleEventi()) {
-				boolean logEvento = false;
-				boolean dumpEvento = false;
-				IContext context = ContextThreadLocal.get();
-				GpContext appContext = (GpContext) context.getApplicationContext();
-				EventoContext eventoCtx = appContext.getEventoCtx();
+			if(!this.giornaleEventiConfig.isAbilitaGiornaleEventi()) return;
+			
+			boolean logEvento = false;
+			boolean dumpEvento = false;
+			IContext context = ContextThreadLocal.get();
+			GpContext appContext = (GpContext) context.getApplicationContext();
+			EventoContext eventoCtx = appContext.getEventoCtx();
 
-				Exchange exchange = message.getExchange();
+			Exchange exchange = message.getExchange();
 
-				Message inMessage = exchange.getInMessage();
-				final LogEvent eventRequest = new DefaultLogEventMapper().map(inMessage);
-				url = eventoCtx.getUrl() != null ? eventoCtx.getUrl() : eventRequest.getAddress();
-				httpMethodS = eventoCtx.getMethod() != null ? eventoCtx.getMethod() : eventRequest.getHttpMethod();
-				principal = eventoCtx.getPrincipal()!= null ? eventoCtx.getPrincipal() : eventRequest.getPrincipal();
+			Message inMessage = exchange.getInMessage();
+			final LogEvent eventRequest = new DefaultLogEventMapper().map(inMessage);
+			url = eventoCtx.getUrl() != null ? eventoCtx.getUrl() : eventRequest.getAddress();
+			httpMethodS = eventoCtx.getMethod() != null ? eventoCtx.getMethod() : eventRequest.getHttpMethod();
+			principal = eventoCtx.getPrincipal()!= null ? eventoCtx.getPrincipal() : eventRequest.getPrincipal();
+			
+			HttpMethod httpMethod = GiornaleEventiUtilities.getHttpMethod(httpMethodS);
+			esito = eventoCtx.getEsito() != null ? eventoCtx.getEsito() : Esito.KO;
+			this.log.debug("Log Evento API: ["+this.giornaleEventiConfig.getApiName()+"] Method ["+httpMethodS+"], Url ["+url+"], Esito ["+esito+"]");
+
+			GdeInterfaccia configurazioneInterfaccia = GiornaleEventiUtilities.getConfigurazioneGiornaleEventi(context, this.configurazioneDAO, this.giornaleEventiConfig);
+
+			if(configurazioneInterfaccia == null) {
+				this.log.warn("La configurazione per l'API ["+this.giornaleEventiConfig.getApiName()+"] non e' corretta, salvataggio evento non eseguito.");
+				return;
+			}
+			
+			this.log.debug("Configurazione Giornale Eventi API: ["+this.giornaleEventiConfig.getApiName()+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia));
+			
+			if(GiornaleEventiUtilities.isRequestLettura(httpMethod, this.giornaleEventiConfig.getApiNameEnum(), eventoCtx.getTipoEvento())) {
+				logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getLetture(), esito);
+				dumpEvento = GiornaleEventiUtilities.dumpEvento(configurazioneInterfaccia.getLetture(), esito);
+				this.log.debug("Tipo Operazione 'Lettura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
+			} else if(GiornaleEventiUtilities.isRequestScrittura(httpMethod, this.giornaleEventiConfig.getApiNameEnum(), eventoCtx.getTipoEvento())) {
+				logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getScritture(), esito);
+				dumpEvento = GiornaleEventiUtilities.dumpEvento(configurazioneInterfaccia.getScritture(), esito);
+				this.log.debug("Tipo Operazione 'Scrittura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
+			} else {
+				this.log.debug("Tipo Operazione non riconosciuta, l'evento non verra' salvato.");
+			}
+
+			eventoCtx.setRegistraEvento(logEvento);
+			if(logEvento) {
+				Date dataIngresso = eventoCtx.getDataRichiesta();
+				Date dataUscita = new Date();
+				// lettura informazioni dalla richiesta
 				
-				HttpMethod httpMethod = GiornaleEventiUtilities.getHttpMethod(httpMethodS);
-				esito = eventoCtx.getEsito() != null ? eventoCtx.getEsito() : Esito.KO;
-				this.log.debug("Log Evento API: ["+this.giornaleEventiConfig.getApiName()+"] Method ["+httpMethodS+"], Url ["+url+"], Esito ["+esito+"]");
+				DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
+				
+			
+				dettaglioRichiesta.setPrincipal(principal);
+				dettaglioRichiesta.setUtente(eventoCtx.getUtente());
+				dettaglioRichiesta.setUrl(url);
+				dettaglioRichiesta.setMethod(httpMethodS);
+				dettaglioRichiesta.setDataOraRichiesta(dataIngresso);
+				dettaglioRichiesta.setHeadersFromMap(eventRequest.getHeaders());
+				
+				// lettura informazioni dalla response
+				final LogEvent eventResponse = new DefaultLogEventMapper().map(message);
+				DettaglioRisposta dettaglioRisposta = new DettaglioRisposta();
+				dettaglioRisposta.setHeadersFromMap(eventResponse.getHeaders());
+				dettaglioRisposta.setDataOraRisposta(dataUscita);
 
-				GdeInterfaccia configurazioneInterfaccia = GiornaleEventiUtilities.getConfigurazioneGiornaleEventi(context, this.configurazioneDAO, this.giornaleEventiConfig);
+				eventoCtx.setDataRisposta(dataUscita);
+				eventoCtx.setDettaglioRichiesta(dettaglioRichiesta);
+				eventoCtx.setDettaglioRisposta(dettaglioRisposta);
+				
+				eventoCtx.setTransactionId(context.getTransactionId());
+				
+				String clusterId = GovpayConfig.getInstance().getClusterId();
+				if(clusterId == null)
+					clusterId = GovpayConfig.getInstance().getAppName();
+				
+				eventoCtx.setClusterId(clusterId);
 
-				if(configurazioneInterfaccia != null) {
-					this.log.debug("Configurazione Giornale Eventi API: ["+this.giornaleEventiConfig.getApiName()+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia));
-					
-					if(GiornaleEventiUtilities.isRequestLettura(httpMethod, this.giornaleEventiConfig.getApiNameEnum(), eventoCtx.getTipoEvento())) {
-						logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getLetture(), esito);
-						dumpEvento = GiornaleEventiUtilities.dumpEvento(configurazioneInterfaccia.getLetture(), esito);
-						this.log.debug("Tipo Operazione 'Lettura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
-					} else if(GiornaleEventiUtilities.isRequestScrittura(httpMethod, this.giornaleEventiConfig.getApiNameEnum(), eventoCtx.getTipoEvento())) {
-						logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getScritture(), esito);
-						dumpEvento = GiornaleEventiUtilities.dumpEvento(configurazioneInterfaccia.getScritture(), esito);
-						this.log.debug("Tipo Operazione 'Scrittura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
+				if(dumpEvento) {
+					// dump richiesta
+					if (shouldLogContent(eventRequest)) {
+						GiornaleEventiUtilities.addContent(inMessage, eventRequest, this.giornaleEventiConfig);
 					} else {
-						this.log.debug("Tipo Operazione non riconosciuta, l'evento non verra' salvato.");
+						eventRequest.setPayload(AbstractLoggingInterceptor.CONTENT_SUPPRESSED);
 					}
+					if(eventRequest.getPayload() != null)
+						dettaglioRichiesta.setPayload(Base64.getEncoder().encodeToString(eventRequest.getPayload().getBytes()));
 
-					eventoCtx.setRegistraEvento(logEvento);
-					if(logEvento) {
-						Date dataIngresso = eventoCtx.getDataRichiesta();
-						Date dataUscita = new Date();
-						// lettura informazioni dalla richiesta
-						
-						DettaglioRichiesta dettaglioRichiesta = new DettaglioRichiesta();
-						
-					
-						dettaglioRichiesta.setPrincipal(principal);
-						dettaglioRichiesta.setUtente(eventoCtx.getUtente());
-						dettaglioRichiesta.setUrl(url);
-						dettaglioRichiesta.setMethod(httpMethodS);
-						dettaglioRichiesta.setDataOraRichiesta(dataIngresso);
-						dettaglioRichiesta.setHeadersFromMap(eventRequest.getHeaders());
-						
-						// lettura informazioni dalla response
-						final LogEvent eventResponse = new DefaultLogEventMapper().map(message);
-						DettaglioRisposta dettaglioRisposta = new DettaglioRisposta();
-						dettaglioRisposta.setHeadersFromMap(eventResponse.getHeaders());
-						dettaglioRisposta.setDataOraRisposta(dataUscita);
-
-						eventoCtx.setDataRisposta(dataUscita);
-						eventoCtx.setDettaglioRichiesta(dettaglioRichiesta);
-						eventoCtx.setDettaglioRisposta(dettaglioRisposta);
-						
-						eventoCtx.setTransactionId(context.getTransactionId());
-						
-						String clusterId = GovpayConfig.getInstance().getClusterId();
-						if(clusterId != null)
-							eventoCtx.setClusterId(clusterId);
-						else 
-							eventoCtx.setClusterId(GovpayConfig.getInstance().getAppName());
-
-						if(dumpEvento) {
-							// dump richiesta
-							if (shouldLogContent(eventRequest)) {
-								GiornaleEventiUtilities.addContent(inMessage, eventRequest, this.giornaleEventiConfig);
-							} else {
-								eventRequest.setPayload(AbstractLoggingInterceptor.CONTENT_SUPPRESSED);
-							}
-							if(eventRequest.getPayload() != null)
-								dettaglioRichiesta.setPayload(Base64.getEncoder().encodeToString(eventRequest.getPayload().getBytes()));
-
-							// dump risposta
-							final OutputStream os = message.getContent(OutputStream.class);
-							if (os != null) {
-								LoggingCallback callback = new LoggingCallback(this.sender, message, eventoCtx, os, this.limit);
-								message.setContent(OutputStream.class, createCacheAndWriteOutputStream(message, os, callback));
-							}
-						} 
+					// dump risposta
+					final OutputStream os = message.getContent(OutputStream.class);
+					if (os != null) {
+						LoggingCallback callback = new LoggingCallback(this.sender, message, eventoCtx, os, this.limit);
+						message.setContent(OutputStream.class, createCacheAndWriteOutputStream(message, os, callback));
 					}
-				} else {
-					this.log.warn("La configurazione per l'API ["+this.giornaleEventiConfig.getApiName()+"] non e' corretta, salvataggio evento non eseguito."); 
-				}
+				} 
 			}
 		} catch (Throwable e) {
 			this.log.error(e.getMessage(),e);
@@ -189,7 +190,7 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 
 		@Override
 		public void onFlush(CachedOutputStream cos) {
-
+			// do nothing.
 		}
 
 		@Override
