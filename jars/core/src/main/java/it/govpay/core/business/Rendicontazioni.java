@@ -294,7 +294,7 @@ public class Rendicontazioni {
 					try {
 						byte[] tracciato = null;
 						if(rnd.getFrFile() == null) {
-							appContext.setupNodoClient(stazione.getCodStazione(), null, EventoContext.Azione.nodoChiediFlussoRendicontazione);
+							appContext.setupNodoClient(stazione.getCodStazione(), null, EventoContext.Azione.NODOCHIEDIFLUSSORENDICONTAZIONE);
 							appContext.getRequest().addGenericProperty(new Property("codStazione", stazione.getCodStazione()));
 							appContext.getRequest().addGenericProperty(new Property("idFlusso", idRendicontazione.getIdentificativoFlusso()));
 							
@@ -769,7 +769,7 @@ public class Rendicontazioni {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		NodoClient chiediFlussoRendicontazioniClient = null;
 		try {
-			appContext.setupNodoClient(stazione.getCodStazione(), dominio != null ? dominio.getCodDominio() : null, EventoContext.Azione.nodoChiediElencoFlussiRendicontazione);
+			appContext.setupNodoClient(stazione.getCodStazione(), dominio != null ? dominio.getCodDominio() : null, EventoContext.Azione.NODOCHIEDIELENCOFLUSSIRENDICONTAZIONE);
 			appContext.getRequest().addGenericProperty(new Property("codDominio", dominio != null ? dominio.getCodDominio() : "-"));
 			ctx.getApplicationLogger().log("rendicontazioni.acquisizioneFlussi");
 

@@ -145,7 +145,7 @@ public class NodoClient extends BasicClientCORE {
 		intestazione.setIdentificativoUnivocoVersamento(rpt.getIuv());
 
 		byte [] body = this.getBody(true,objectFactory.createNodoInviaRPT(inviaRPT), intestazione);
-		Risposta response = send(EventoContext.Azione.nodoInviaRPT.toString(), body);
+		Risposta response = send(EventoContext.Azione.NODOINVIARPT.toString(), body);
 		return (NodoInviaRPTRisposta) response;
 	}
 
@@ -155,43 +155,43 @@ public class NodoClient extends BasicClientCORE {
 		intestazione.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
 		intestazione.setIdentificativoCarrello(codCarrello);
 		byte [] body = this.getBody(true, objectFactory.createNodoInviaCarrelloRPT(inviaCarrelloRPT), intestazione);
-		Risposta response = this.send(EventoContext.Azione.nodoInviaCarrelloRPT.toString(), body);
+		Risposta response = this.send(EventoContext.Azione.NODOINVIACARRELLORPT.toString(), body);
 		return (NodoInviaCarrelloRPTRisposta) response;
 	}
 
 	public NodoChiediStatoRPTRisposta nodoChiediStatoRpt(NodoChiediStatoRPT nodoChiediStatoRPT, String nomeSoggetto) throws GovPayException, ClientException, UtilsException {
 		byte [] body = this.getBody(true,objectFactory.createNodoChiediStatoRPT(nodoChiediStatoRPT), null);
-		Risposta response = this.send(EventoContext.Azione.nodoChiediStatoRPT.toString(), body);
+		Risposta response = this.send(EventoContext.Azione.NODOCHIEDISTATORPT.toString(), body);
 		return (NodoChiediStatoRPTRisposta) response;
 	}
 
 	public NodoChiediCopiaRTRisposta nodoChiediCopiaRT(NodoChiediCopiaRT nodoChiediCopiaRT, String nomeSoggetto) throws GovPayException, ClientException, UtilsException {
 		byte [] body = this.getBody(true,objectFactory.createNodoChiediCopiaRT(nodoChiediCopiaRT), null);
-		Risposta response = this.send(EventoContext.Azione.nodoChiediCopiaRT.toString(), body);
+		Risposta response = this.send(EventoContext.Azione.NODOCHIEDICOPIART.toString(), body);
 		return (NodoChiediCopiaRTRisposta) response;
 	}
 
 	public NodoChiediListaPendentiRPTRisposta nodoChiediListaPendentiRPT(NodoChiediListaPendentiRPT nodoChiediListaPendentiRPT, String nomeSoggetto) throws GovPayException, ClientException, UtilsException {
 		byte [] body = this.getBody(true,objectFactory.createNodoChiediListaPendentiRPT(nodoChiediListaPendentiRPT), null);
-		Risposta response = this.send(EventoContext.Azione.nodoChiediListaPendentiRPT.toString(), body);
+		Risposta response = this.send(EventoContext.Azione.NODOCHIEDILISTAPENDENTIRPT.toString(), body);
 		return (NodoChiediListaPendentiRPTRisposta) response;
 	}
 
 	public NodoInviaRichiestaStornoRisposta nodoInviaRichiestaStorno(NodoInviaRichiestaStorno nodoInviaRichiestaStorno) throws GovPayException, ClientException, UtilsException {
 		byte [] body = this.getBody(true,objectFactory.createNodoInviaRichiestaStorno(nodoInviaRichiestaStorno), null);
-		Risposta response = this.send(EventoContext.Azione.nodoInviaRichiestaStorno.toString(), body);
+		Risposta response = this.send(EventoContext.Azione.NODOINVIARICHIESTASTORNO.toString(), body);
 		return (NodoInviaRichiestaStornoRisposta) response;
 	}
 
 	public NodoChiediElencoFlussiRendicontazioneRisposta nodoChiediElencoFlussiRendicontazione(NodoChiediElencoFlussiRendicontazione nodoChiediElencoFlussiRendicontazione, String nomeSoggetto) throws GovPayException, ClientException, UtilsException {
 		byte [] body = this.getBody(true,objectFactory.createNodoChiediElencoFlussiRendicontazione(nodoChiediElencoFlussiRendicontazione), null);
-		Risposta response = this.send(EventoContext.Azione.nodoChiediElencoFlussiRendicontazione.toString(), body);
+		Risposta response = this.send(EventoContext.Azione.NODOCHIEDIELENCOFLUSSIRENDICONTAZIONE.toString(), body);
 		return (NodoChiediElencoFlussiRendicontazioneRisposta) response;
 	}
 
 	public NodoChiediFlussoRendicontazioneRisposta nodoChiediFlussoRendicontazione(NodoChiediFlussoRendicontazione nodoChiediFlussoRendicontazione, String nomeSoggetto) throws GovPayException, ClientException, UtilsException {
 		byte [] body = this.getBody(true, objectFactory.createNodoChiediFlussoRendicontazione(nodoChiediFlussoRendicontazione), null);
-		Risposta response = this.send(EventoContext.Azione.nodoChiediFlussoRendicontazione.toString(), body);
+		Risposta response = this.send(EventoContext.Azione.NODOCHIEDIFLUSSORENDICONTAZIONE.toString(), body);
 		return (NodoChiediFlussoRendicontazioneRisposta) response;
 	}
 

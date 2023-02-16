@@ -2,6 +2,7 @@ package it.govpay.core.utils.validator;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.MessageFormat;
 
 import it.govpay.core.exceptions.ValidationException;
 
@@ -29,7 +30,7 @@ public class DoubleValidator {
 		if(i != -1) {
 //			System.out.println("Il campo " + this.fieldName + " contiene un valore non valido: " + value + " has "+value.substring(i + 1).length()+" digits after dot");
 			if(value.substring(i + 1).length() > 2) {
-				throw new ValidationException("Il campo " + this.fieldName + " contiene un valore non valido.");
+				throw new ValidationException(MessageFormat.format(CostantiValidazione.DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_CONTIENE_UN_VALORE_NON_VALIDO, this.fieldName));
 			} 
 		}
 		return this;
@@ -37,28 +38,28 @@ public class DoubleValidator {
 
 	public DoubleValidator notNull() throws ValidationException {
 		if(this.fieldValue == null) {
-			throw new ValidationException("Il campo " + this.fieldName + " non deve essere vuoto.");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_ESSERE_VUOTO, this.fieldName));
 		}
 		return this;
 	}
 	
 	public DoubleValidator isNull() throws ValidationException {
 		if(this.fieldValue != null) {
-			throw new ValidationException("Il campo " + this.fieldName + " deve essere vuoto.");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_VUOTO, this.fieldName));
 		}
 		return this;
 	}
 	
 	public DoubleValidator max(Double max) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.compareTo(max) > 0) {
-			throw new ValidationException("Il campo " + this.fieldName + " deve essere inferiore a " + this.df.format(max) + ".");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_INFERIORE_A_1, this.fieldName, this.df.format(max)));
 		}
 		return this;
 	}
 	
 	public DoubleValidator min(Double min) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.compareTo(min) <= 0) {
-			throw new ValidationException("Il campo " + this.fieldName + " deve essere superiore a " + this.df.format(min) + ".");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_SUPERIORE_A_1, this.fieldName, this.df.format(min)));
 		}
 		return this;
 	}
@@ -66,14 +67,14 @@ public class DoubleValidator {
 	
 	public DoubleValidator maxOrEquals(Double max) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.compareTo(max) >= 0) {
-			throw new ValidationException("Il campo " + this.fieldName + " deve essere inferiore o uguale a " + this.df.format(max) + ".");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_INFERIORE_O_UGUALE_A_1, this.fieldName, this.df.format(max)));
 		}
 		return this;
 	}
 	
 	public DoubleValidator minOrEquals(Double min) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.compareTo(min) <= 0) {
-			throw new ValidationException("Il campo " + this.fieldName + " deve essere superiore o uguale a " + this.df.format(min) + ".");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_SUPERIORE_O_UGUALE_A_1, this.fieldName, this.df.format(min)));
 		}
 		return this;
 	}

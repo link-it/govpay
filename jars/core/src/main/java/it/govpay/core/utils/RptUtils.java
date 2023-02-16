@@ -278,7 +278,7 @@ public class RptUtils {
 				try {
 					try {
 						Stazione stazione = rpt.getStazione(configWrapper);
-						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpt.getCodDominio(), EventoContext.Azione.nodoChiediStatoRPT);
+						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpt.getCodDominio(), EventoContext.Azione.NODOCHIEDISTATORPT);
 						NodoChiediStatoRPT richiesta = new NodoChiediStatoRPT();
 						richiesta.setIdentificativoDominio(rpt.getCodDominio());
 						richiesta.setIdentificativoIntermediarioPA(stazione.getIntermediario(configWrapper).getCodIntermediario());
@@ -411,7 +411,7 @@ public class RptUtils {
 							try { 
 								try {
 									Stazione stazione = rpt.getStazione(configWrapper);
-									operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpt.getCodDominio(), EventoContext.Azione.nodoChiediCopiaRT);
+									operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpt.getCodDominio(), EventoContext.Azione.NODOCHIEDICOPIART);
 									NodoChiediCopiaRT nodoChiediCopiaRT = new NodoChiediCopiaRT();
 									nodoChiediCopiaRT.setIdentificativoDominio(rpt.getCodDominio());
 									nodoChiediCopiaRT.setIdentificativoIntermediarioPA(rpt.getIntermediario(configWrapper).getCodIntermediario());

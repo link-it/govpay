@@ -49,12 +49,63 @@ public class EventoContext {
 	public enum Categoria { INTERFACCIA, INTERNO, UTENTE };
 
 	public enum Azione {
-		nodoInviaRPT, nodoInviaCarrelloRPT, nodoChiediStatoRPT, nodoChiediCopiaRT, nodoChiediListaPendentiRPT, nodoInviaRichiestaStorno, nodoInviaRispostaRevoca, nodoChiediElencoFlussiRendicontazione, nodoChiediFlussoRendicontazione
+		NODOINVIARPT("nodoInviaRPT"), 
+		NODOINVIACARRELLORPT("nodoInviaCarrelloRPT"), 
+		NODOCHIEDISTATORPT("nodoChiediStatoRPT"), 
+		NODOCHIEDICOPIART("nodoChiediCopiaRT"), 
+		NODOCHIEDILISTAPENDENTIRPT("nodoChiediListaPendentiRPT"), 
+		NODOINVIARICHIESTASTORNO("nodoInviaRichiestaStorno"), 
+		NODOINVIARISPOSTAREVOCA("nodoInviaRispostaRevoca"), 
+		NODOCHIEDIELENCOFLUSSIRENDICONTAZIONE("nodoChiediElencoFlussiRendicontazione"), 
+		NODOCHIEDIFLUSSORENDICONTAZIONE("nodoChiediFlussoRendicontazione");
+
+		private String value;
+
+		Azione(String value) {
+			this.value = value;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(value);
+		}
+
+		public static Azione fromValue(String text) {
+			for (Azione b : Azione.values()) {
+				if (String.valueOf(b.value).equals(text)) {
+					return b;
+				}
+			}
+			return null;
+		}
 	}
 
 	public enum Azione_Ente_Rendicontazioni {
+
+		INVIAFLUSSORENDICONTAZIONE("inviaFlussoRendicontazione"), 
+		INVIARPP("inviaRpp"), 
+		INVIASINTESIFLUSSIRENDICONTAZIONE("inviaSintesiFlussiRendicontazione"), 
+		INVIASINTESIPAGAMENTI("inviaSintesiPagamenti");
 		
-		inviaFlussoRendicontazione, inviaRpp, inviaSintesiFlussiRendicontazione, inviaSintesiPagamenti
+		private String value;
+
+		Azione_Ente_Rendicontazioni(String value) {
+			this.value = value;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(value);
+		}
+
+		public static Azione_Ente_Rendicontazioni fromValue(String text) {
+			for (Azione_Ente_Rendicontazioni b : Azione_Ente_Rendicontazioni.values()) {
+				if (String.valueOf(b.value).equals(text)) {
+					return b;
+				}
+			}
+			return null;
+		}
 	}
 
 	private boolean registraEvento = false;
@@ -98,7 +149,7 @@ public class EventoContext {
 
 	private Throwable exception;
 	private Integer severita;
-	
+
 	private String clusterId;
 	private String transactionId;
 

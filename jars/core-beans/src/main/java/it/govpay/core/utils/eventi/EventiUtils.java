@@ -44,8 +44,9 @@ public class EventiUtils {
 		case API_GOVPAY:
 		case API_HYPERSIC_APK:
 			return EventiUtils.getConfigurazioneTracciatiNotificaPagamenti();
+		case GOVPAY:
+			return null;
 		}
-		
 		return null;
 	}
 
@@ -136,12 +137,12 @@ public class EventiUtils {
 			tutto il resto
 	 * */
 	public static boolean isOperazioneScrittura(String operazione) {
-		if(EventoContext.Azione.nodoChiediCopiaRT.toString().equals(operazione) 
-				|| EventoContext.Azione.nodoChiediStatoRPT.toString().equals(operazione) 
-				|| EventoContext.Azione.nodoInviaRPT.toString().equals(operazione) 
-				|| EventoContext.Azione.nodoInviaCarrelloRPT.toString().equals(operazione) 
-				|| EventoContext.Azione.nodoInviaRichiestaStorno.toString().equals(operazione) 
-				|| EventoContext.Azione.nodoInviaRispostaRevoca.toString().equals(operazione) 
+		if(EventoContext.Azione.NODOCHIEDICOPIART.toString().equals(operazione) 
+				|| EventoContext.Azione.NODOCHIEDISTATORPT.toString().equals(operazione) 
+				|| EventoContext.Azione.NODOINVIARPT.toString().equals(operazione) 
+				|| EventoContext.Azione.NODOINVIACARRELLORPT.toString().equals(operazione) 
+				|| EventoContext.Azione.NODOINVIARICHIESTASTORNO.toString().equals(operazione) 
+				|| EventoContext.Azione.NODOINVIARISPOSTAREVOCA.toString().equals(operazione) 
 				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAVERIFICARPT.equals(operazione)
 				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAATTIVARPT.equals(operazione)
 				|| EventoContext.APIPAGOPA_TIPOEVENTO_PAAINVIAESITOSTORNO.equals(operazione)
@@ -165,10 +166,10 @@ public class EventiUtils {
 				|| EventoContext.APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOEMAIL.equals(operazione)
 				|| EventoContext.APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOFILESYSTEM.equals(operazione)
 				|| EventoContext.APIGOVPAY_TIPOEVENTO_GOVPAYINVIATRACCIATOREST.equals(operazione)
-				|| EventoContext.Azione_Ente_Rendicontazioni.inviaFlussoRendicontazione.toString().equals(operazione)
-				|| EventoContext.Azione_Ente_Rendicontazioni.inviaRpp.toString().equals(operazione)
-				|| EventoContext.Azione_Ente_Rendicontazioni.inviaSintesiFlussiRendicontazione.toString().equals(operazione)
-				|| EventoContext.Azione_Ente_Rendicontazioni.inviaSintesiPagamenti.toString().equals(operazione)
+				|| EventoContext.Azione_Ente_Rendicontazioni.INVIAFLUSSORENDICONTAZIONE.toString().equals(operazione)
+				|| EventoContext.Azione_Ente_Rendicontazioni.INVIARPP.toString().equals(operazione)
+				|| EventoContext.Azione_Ente_Rendicontazioni.INVIASINTESIFLUSSIRENDICONTAZIONE.toString().equals(operazione)
+				|| EventoContext.Azione_Ente_Rendicontazioni.INVIASINTESIPAGAMENTI.toString().equals(operazione)
 				|| EventoContext.APIHYPERSICAPKAPPA_TIPOEVENTO_HYPERSIC_APKINVIATRACCIATOEMAIL.equals(operazione)
 				|| EventoContext.APIHYPERSICAPKAPPA_TIPOEVENTO_HYPERSIC_APKINVIATRACCIATOFILESYSTEM.equals(operazione)
 				) {

@@ -23,10 +23,10 @@ package it.govpay.core.exceptions;
 public class IncassiException extends BaseException {
 
 	private static final long serialVersionUID = 1L;
-	public static final String faultString = "Richiesta di incasso non processabile";
+	public static final String FAULT_STRING = "Richiesta di incasso non processabile";
 	
 	public enum FaultType {
-		RICHIESTA_NON_PROCESSABILE("021400",faultString),
+		RICHIESTA_NON_PROCESSABILE("021400",FAULT_STRING),
 		CAUSALE_NON_VALIDA("021401","Il formato della causale non e' conforme alle specifiche AgID."),
 		PAGAMENTO_NON_TROVATO("021402","Pagamento non trovato."),
 		PAGAMENTO_NON_IDENTIFICATO("021403","Pagamento non identificato."),

@@ -48,9 +48,8 @@ public class Allegato extends it.govpay.core.beans.JSONSerializable {
 				return MARCA_DA_BOLLO;
 			case "ES":
 				return ESITO_PAGAMENTO;
-
+			default: return null; 
 			}
-			return null;
 		}
 		
 		public static TipoEnum fromValue(String text) {

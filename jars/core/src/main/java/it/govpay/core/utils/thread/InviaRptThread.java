@@ -97,7 +97,7 @@ public class InviaRptThread implements Runnable {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
 		RptBD rptBD = null;
 		try {
-			String operationId = appContext.setupNodoClient(this.stazione.getCodStazione(), this.rpt.getCodDominio(), EventoContext.Azione.nodoInviaRPT);
+			String operationId = appContext.setupNodoClient(this.stazione.getCodStazione(), this.rpt.getCodDominio(), EventoContext.Azione.NODOINVIARPT);
 			log.info("Id Server: [" + operationId + "]");
 			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: " + this.rpt.getCodMsgRichiesta() + ", CodDominio: "+this.rpt.getCodDominio()+",IUV: "+this.rpt.getIuv()+",CCP: "+this.rpt.getCcp()+"]");
 

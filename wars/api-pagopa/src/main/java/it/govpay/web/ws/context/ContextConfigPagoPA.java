@@ -1,4 +1,4 @@
-package it.govpay.jppapdp.web.ws.context;
+package it.govpay.web.ws.context;
 
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
@@ -9,12 +9,12 @@ import it.govpay.core.utils.GpContext;
  * @author pintori
  *
  */
-public class ContextConfig extends org.openspcoop2.utils.service.context.ContextConfig {
+public class ContextConfigPagoPA extends org.openspcoop2.utils.service.context.ContextConfig {
 	
-	public static final Integer GOVPAY_VERSIONE_API = 010000;
-	public static final String GOVPAY_SERVICE_TYPE = GpContext.MaggioliJPPA;
+	public static final Integer GOVPAY_VERSIONE_API = 010702;
+	public static final String GOVPAY_SERVICE_TYPE = GpContext.TIPO_SERVIZIO_NDP;
 
-	public ContextConfig() {
+	public ContextConfigPagoPA() {
 		super();
 		
 		try {

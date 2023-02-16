@@ -43,9 +43,8 @@ public class Allegato   {
 			return MARCA_DA_BOLLO;
 		case "ES":
 			return ESITO_PAGAMENTO;
-
+		default: return null;
 		}
-		return null;
 	}
   }  
   @Schema(required = true, description = "Tipologia di allegato")

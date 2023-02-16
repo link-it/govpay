@@ -56,6 +56,7 @@ public class LoggerSetupHandler implements SOAPHandler<SOAPMessageContext> {
 
     @Override
 	public void close(MessageContext messageContext) {
+    	// donothing
     }
 
     private void setupMDC(SOAPMessageContext smc) {

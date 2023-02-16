@@ -68,16 +68,16 @@ public class EnteRendicontazioniClient extends BasicClientCORE {
 		
 		switch (contenuto) {
 		case FLUSSI_RENDICONTAZIONE:
-			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.inviaFlussoRendicontazione.toString();
+			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.INVIAFLUSSORENDICONTAZIONE.toString();
 			break;
 		case RPP:
-			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.inviaRpp.toString();
+			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.INVIARPP.toString();
 			break;
 		case SINTESI_FLUSSI_RENDICONTAZIONE:
-			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.inviaSintesiFlussiRendicontazione.toString();
+			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.INVIASINTESIFLUSSIRENDICONTAZIONE.toString();
 			break;
 		case SINTESI_PAGAMENTI:
-			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.inviaSintesiPagamenti.toString();
+			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.INVIASINTESIPAGAMENTI.toString();
 			break;
 		}
 		

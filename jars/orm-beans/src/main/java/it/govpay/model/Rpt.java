@@ -39,7 +39,7 @@ public class Rpt extends BasicModel{
 	public static final String codPspWISP20 = "AGID_01"; 
 	public static final TipoVersamento tipoVersamentoWISP20 = TipoVersamento.BONIFICO_BANCARIO_TESORERIA; 
 	public static final ModelloPagamento modelloPagamentoWISP20 = ModelloPagamento.IMMEDIATO_MULTIBENEFICIARIO; 
-	public static final int VERSIONE_ENCODED = 060200;
+	public static final int VERSIONE_620_ENCODED = 060200;
 	
 	public static final String CCP_NA = "n/a";
 	

@@ -19,6 +19,8 @@
  */
 package it.govpay.core.exceptions;
 
+import java.io.Serializable;
+
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Evento.EsitoEvento;
@@ -32,12 +34,25 @@ import it.govpay.model.Evento.EsitoEvento;
  */
 public class GovPayException extends Exception {
 
+	private static final String DESCRIZIONE_ESITO_RICHIESTA_RIFIUTATA_DAL_NODO_DEI_PAGAMENTI = "Richiesta rifiutata dal Nodo dei Pagamenti";
+	private static final String DESCRIZIONE_ESITO_SERVIZI_PAGO_PA_NON_DISPONIBILI = "Servizi pagoPA non disponibili.";
+	private static final String DESCRIZIONE_ESITO_IMPOSSIBILE_ACQUISIRE_I_DATI_AGGIORNATI_DELLA_PENDENZA = "Impossibile acquisire i dati aggiornati della pendenza.";
+	private static final String DESCRIZIONE_ESITO_ERRORE_DURANTE_LA_GENERAZIONE_DEL_PROMEMORIA_SCADENZA_PAGAMENTO = "Errore durante la generazione del promemoria scadenza pagamento";
+	private static final String DESCRIZIONE_ESITO_ERRORE_DURANTE_LA_GENERAZIONE_DEL_PROMEMORIA_RICEVUTA_PAGAMENTO = "Errore durante la generazione del promemoria ricevuta pagamento";
+	private static final String DESCRIZIONE_ESITO_ERRORE_DURANTE_LA_VALIDAZIONE = "Errore durante la validazione";
+	private static final String DESCRIZIONE_ESITO_ERRORE_DURANTE_LA_TRASFORMAZIONE = "Errore durante la trasformazione";
+	private static final String DESCRIZIONE_ESITO_ERRORE_DURANTE_LA_GENERAZIONE_DEL_PROMEMORIA_AVVISO_PAGAMENTO = "Errore durante la generazione del promemoria avviso pagamento";
+	private static final String DESCRIZIONE_ESITO_ERRORE_WISP = "Errore WISP";
+	private static final String DESCRIZIONE_ESITO_OPERAZIONE_NON_AUTORIZZATA = "Operazione non autorizzata";
+	private static final String DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA = "Richiesta non valida";
+	private static final String DESCRIZIONE_ESITO_ERRORE_INTERNO = "Errore interno";
+	private static final String DESCRIZIONE_ESITO_OPERAZIONE_COMPLETATA_CON_SUCCESSO = "Operazione completata con successo";
 	private static final long serialVersionUID = 1L;
 	private String[] params;
 	private EsitoOperazione codEsito;
 	private String causa;
 	private FaultBean faultBean;
-	private Object param;
+	private Serializable param;
 		
 	private GovPayException() {}
 	
@@ -101,21 +116,10 @@ public class GovPayException extends Exception {
 		this.codEsito = codEsito;
 	}
 	
-//	public void log(Logger log){
-//		switch (this.codEsito) {
-//		case INTERNAL:
-//			log.error("[" + this.codEsito + "] " + this.getMessage() + (this.getCausa() != null ? "\n" + this.getCausa() : ""), this);
-//		break;
-//		default:
-//			log.warn("[" + this.codEsito + "] " + this.getMessage() +  (this.getCausa() != null ? "\n" + this.getCausa() : ""));
-//			break;
-//		}
-//	}
-	
 	@Override
 	public String getMessage() {
 		switch (this.codEsito) {
-		case OK: return "Operazione completata con successo";
+		case OK: return DESCRIZIONE_ESITO_OPERAZIONE_COMPLETATA_CON_SUCCESSO;
 		case INTERNAL: 
 			if(this.params != null && this.params.length > 0)
 				return this.params[0];
@@ -410,129 +414,129 @@ public class GovPayException extends Exception {
 	
 	public String getDescrizioneEsito() {
 		switch (this.codEsito) {
-		case OK: return "Operazione completata con successo";
-		case INTERNAL: return "Errore interno";
-		case APP_000: return "Richiesta non valida";	
-		case APP_001: return "Richiesta non valida";
-		case APP_002: return "Richiesta non valida";
-		case AUT_000: return "Operazione non autorizzata";	
-		case AUT_001: return "Operazione non autorizzata";
-		case AUT_002: return "Operazione non autorizzata";
-		case DOM_000: return "Richiesta non valida";	
-		case DOM_001: return "Richiesta non valida";
-		case DOM_002: return "Richiesta non valida";	
-		case DOM_003: return "Richiesta non valida";
-		case NDP_000: return "Servizi pagoPA non disponibili.";
-		case NDP_001: return "Richiesta rifiutata dal Nodo dei Pagamenti";
-		case PAG_000: return "Richiesta non valida";	
-		case PAG_001: return "Richiesta non valida";	
-		case PAG_002: return "Richiesta non valida";
-		case PAG_003: return "Richiesta non valida";
-		case PAG_004: return "Richiesta non valida";
-		case PAG_005: return "Richiesta non valida";
-		case PAG_006: return "Richiesta non valida";
-		case PAG_007: return "Richiesta non valida";
-		case PAG_008: return "Richiesta non valida"; 
-		case PAG_009: return "Richiesta non valida"; 
-		case PAG_010: return "Richiesta non valida"; 
-		case PAG_011: return "Richiesta non valida"; 
-		case PAG_012: return "Richiesta non valida"; 
-		case PAG_013: return "Richiesta non valida"; 
-		case PRT_000: return "Richiesta non valida";	
-		case PRT_001: return "Richiesta non valida";
-		case PRT_002: return "Richiesta non valida";
-		case PRT_003: return "Richiesta non valida";
-		case PRT_004: return "Richiesta non valida"; 
-		case PRT_005: return "Richiesta non valida";
-		case PSP_000: return "Richiesta non valida";
-		case PSP_001: return "Richiesta non valida";
-		case RND_000: return "Richiesta non valida";
-		case RND_001: return "Richiesta non valida";
-		case STA_000: return "Richiesta non valida";	
-		case STA_001: return "Richiesta non valida";
-		case TRB_000: return "Richiesta non valida";
-		case UOP_000: return "Richiesta non valida";
-		case UOP_001: return "Richiesta non valida";
-		case VER_000: return "Richiesta non valida";
-		case VER_001: return "Richiesta non valida";
-		case VER_002: return "Richiesta non valida";
-		case VER_003: return "Richiesta non valida";
-		case VER_004: return "Richiesta non valida";
-		case VER_005: return "Richiesta non valida";
-		case VER_006: return "Richiesta non valida";
-		case VER_007: return "Richiesta non valida";
-		case VER_008: return "Richiesta non valida";
-		case VER_009: return "Richiesta non valida";
-		case VER_010: return "Richiesta non valida";
-		case VER_011: return "Richiesta non valida";
-		case VER_012: return "Richiesta non valida";
-		case VER_013: return "Richiesta non valida";
-		case VER_014: return "Impossibile acquisire i dati aggiornati della pendenza.";
-		case VER_015: return "Richiesta non valida";
-		case VER_016: return "Richiesta non valida";
-		case VER_017: return "Richiesta non valida";
-		case VER_018: return "Richiesta non valida";
-		case VER_019: return "Richiesta non valida";
-		case VER_020: return "Richiesta non valida";
-		case VER_021: return "Richiesta non valida";
-		case VER_022: return "Richiesta non valida";
-		case VER_023: return "Richiesta non valida";
-		case WISP_000: return "Errore WISP";
-		case WISP_001: return "Errore WISP";
-		case WISP_002: return "Errore WISP";
-		case WISP_003: return "Errore WISP";
-		case WISP_004: return "Errore WISP";
+		case OK: return DESCRIZIONE_ESITO_OPERAZIONE_COMPLETATA_CON_SUCCESSO;
+		case INTERNAL: return DESCRIZIONE_ESITO_ERRORE_INTERNO;
+		case APP_000: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;	
+		case APP_001: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case APP_002: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case AUT_000: return DESCRIZIONE_ESITO_OPERAZIONE_NON_AUTORIZZATA;	
+		case AUT_001: return DESCRIZIONE_ESITO_OPERAZIONE_NON_AUTORIZZATA;
+		case AUT_002: return DESCRIZIONE_ESITO_OPERAZIONE_NON_AUTORIZZATA;
+		case DOM_000: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;	
+		case DOM_001: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case DOM_002: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;	
+		case DOM_003: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case NDP_000: return DESCRIZIONE_ESITO_SERVIZI_PAGO_PA_NON_DISPONIBILI;
+		case NDP_001: return DESCRIZIONE_ESITO_RICHIESTA_RIFIUTATA_DAL_NODO_DEI_PAGAMENTI;
+		case PAG_000: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;	
+		case PAG_001: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;	
+		case PAG_002: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case PAG_003: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case PAG_004: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case PAG_005: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case PAG_006: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case PAG_007: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case PAG_008: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA; 
+		case PAG_009: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA; 
+		case PAG_010: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA; 
+		case PAG_011: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA; 
+		case PAG_012: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA; 
+		case PAG_013: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA; 
+		case PRT_000: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;	
+		case PRT_001: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case PRT_002: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case PRT_003: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case PRT_004: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA; 
+		case PRT_005: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case PSP_000: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case PSP_001: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case RND_000: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case RND_001: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case STA_000: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;	
+		case STA_001: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case TRB_000: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case UOP_000: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case UOP_001: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_000: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_001: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_002: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_003: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_004: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_005: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_006: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_007: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_008: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_009: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_010: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_011: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_012: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_013: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_014: return DESCRIZIONE_ESITO_IMPOSSIBILE_ACQUISIRE_I_DATI_AGGIORNATI_DELLA_PENDENZA;
+		case VER_015: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_016: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_017: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_018: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_019: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_020: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_021: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_022: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_023: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case WISP_000: return DESCRIZIONE_ESITO_ERRORE_WISP;
+		case WISP_001: return DESCRIZIONE_ESITO_ERRORE_WISP;
+		case WISP_002: return DESCRIZIONE_ESITO_ERRORE_WISP;
+		case WISP_003: return DESCRIZIONE_ESITO_ERRORE_WISP;
+		case WISP_004: return DESCRIZIONE_ESITO_ERRORE_WISP;
 		
 		// Aggiunti nella versione 3.0.x
-		case APP_003: return "Richiesta non valida";
-		case APP_004: return "Richiesta non valida";
-		case APP_005: return "Richiesta non valida";
-		case VER_024: return "Richiesta non valida";
-		case VER_025: return "Richiesta non valida";
-		case VER_026: return "Richiesta non valida";
-		case VER_027: return "Richiesta non valida";
-		case VER_028: return "Richiesta non valida";
-		case VER_029: return "Richiesta non valida";
-		case VER_030: return "Richiesta non valida";
-		case CIT_001: return "Richiesta non valida";
-		case CIT_002: return "Richiesta non valida";
-		case CIT_003: return "Richiesta non valida";
-		case CIT_004: return "Richiesta non valida";
-		case PAG_014: return "Richiesta non valida";
-		case APP_006: return "Richiesta non valida";
-		case UAN_001: return "Richiesta non valida";
-		case UAN_002: return "Richiesta non valida";
-		case TRB_001: return "Richiesta non valida";	
-		case VER_031: return "Richiesta non valida";
-		case VER_032: return "Richiesta non valida";
-		case VER_033: return "Richiesta non valida";
-		case VER_034: return "Richiesta non valida";
+		case APP_003: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case APP_004: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case APP_005: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_024: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_025: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_026: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_027: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_028: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_029: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_030: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case CIT_001: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case CIT_002: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case CIT_003: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case CIT_004: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case PAG_014: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case APP_006: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case UAN_001: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case UAN_002: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case TRB_001: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;	
+		case VER_031: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_032: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_033: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_034: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
 		
 		// Aggiunti nella versione 3.1.x
-		case TRASFORMAZIONE: return "Errore durante la trasformazione";
-		case VAL_000: return  "Errore durante la validazione"; 
-		case VAL_001: return  "Errore durante la validazione"; 
-		case VAL_002: return  "Errore durante la validazione"; 
-		case VAL_003: return  "Errore durante la trasformazione"; 
-		case TVD_000: return "Richiesta non valida";
-		case TVD_001: return "Richiesta non valida";
-		case TVR_000: return "Richiesta non valida";
-		case TVR_001: return "Richiesta non valida";
-		case PRM_001: return  "Errore durante la generazione del promemoria avviso pagamento"; 
-		case PRM_002: return  "Errore durante la generazione del promemoria avviso pagamento"; 
-		case PRM_003: return  "Errore durante la generazione del promemoria ricevuta pagamento"; 
-		case PRM_004: return  "Errore durante la generazione del promemoria ricevuta pagamento"; 
-		case PRM_005: return  "Errore durante la generazione del promemoria scadenza pagamento"; 
-		case PRM_006: return  "Errore durante la generazione del promemoria scadenza pagamento"; 
+		case TRASFORMAZIONE: return DESCRIZIONE_ESITO_ERRORE_DURANTE_LA_TRASFORMAZIONE;
+		case VAL_000: return  DESCRIZIONE_ESITO_ERRORE_DURANTE_LA_VALIDAZIONE; 
+		case VAL_001: return  DESCRIZIONE_ESITO_ERRORE_DURANTE_LA_VALIDAZIONE; 
+		case VAL_002: return  DESCRIZIONE_ESITO_ERRORE_DURANTE_LA_VALIDAZIONE; 
+		case VAL_003: return  DESCRIZIONE_ESITO_ERRORE_DURANTE_LA_TRASFORMAZIONE; 
+		case TVD_000: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case TVD_001: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case TVR_000: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case TVR_001: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case PRM_001: return  DESCRIZIONE_ESITO_ERRORE_DURANTE_LA_GENERAZIONE_DEL_PROMEMORIA_AVVISO_PAGAMENTO; 
+		case PRM_002: return  DESCRIZIONE_ESITO_ERRORE_DURANTE_LA_GENERAZIONE_DEL_PROMEMORIA_AVVISO_PAGAMENTO; 
+		case PRM_003: return  DESCRIZIONE_ESITO_ERRORE_DURANTE_LA_GENERAZIONE_DEL_PROMEMORIA_RICEVUTA_PAGAMENTO; 
+		case PRM_004: return  DESCRIZIONE_ESITO_ERRORE_DURANTE_LA_GENERAZIONE_DEL_PROMEMORIA_RICEVUTA_PAGAMENTO; 
+		case PRM_005: return  DESCRIZIONE_ESITO_ERRORE_DURANTE_LA_GENERAZIONE_DEL_PROMEMORIA_SCADENZA_PAGAMENTO; 
+		case PRM_006: return  DESCRIZIONE_ESITO_ERRORE_DURANTE_LA_GENERAZIONE_DEL_PROMEMORIA_SCADENZA_PAGAMENTO; 
 		
 		// Aggiunti nella versione 3.5.x
-		case VER_035: return "Richiesta non valida";
-		case VER_036: return "Richiesta non valida";
-		case VER_037: return "Richiesta non valida";
-		case VER_038: return "Richiesta non valida";
+		case VER_035: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_036: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_037: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
+		case VER_038: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
 		
 		// Aggiunti nella versione 3.6.x
-		case VER_039: return "Richiesta non valida";
+		case VER_039: return DESCRIZIONE_ESITO_RICHIESTA_NON_VALIDA;
 		}
 		
 		return "";
@@ -574,11 +578,11 @@ public class GovPayException extends Exception {
 		}
 	}
 
-	public Object getParam() {
+	public Serializable getParam() {
 		return this.param;
 	}
 
-	public void setParam(Object param) {
+	public void setParam(Serializable param) {
 		this.param = param;
 	}
 	
@@ -586,7 +590,9 @@ public class GovPayException extends Exception {
 		return new GovPayException().new FaultBean();
 	}
 
-	public class FaultBean {
+	public class FaultBean implements Serializable {
+		
+		private static final long serialVersionUID = 1L;
 
 	    private String faultCode;
 	    private String faultString;

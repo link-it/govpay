@@ -236,7 +236,7 @@ public class GpContext extends ApplicationContext {
 	}
 
 	public String setupNodoClient(String codStazione, String codDominio, EventoContext.Azione azione) {
-		return this._setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
+		return this._setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_620_ENCODED);
 	}
 
 	private synchronized String _setupNodoClient(String codStazione, String codDominio, String servizio, String azione, int versione) {

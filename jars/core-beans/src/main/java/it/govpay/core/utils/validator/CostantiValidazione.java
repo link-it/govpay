@@ -47,4 +47,80 @@ public class CostantiValidazione {
 	public static final String PATTERN_CF = "^[A-Z]{6}[0-9LMNPQRSTUV]{2}[ABCDEHLMPRST][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$";
 	
 	public static final String MASSIMALE_IMPORTO_PENDENZA_SANP_3 = "999999999.99";
+	
+	// Messaggi Errore BigDecimal Validator 
+	
+	public static final String BIG_DECIMAL_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_SUPERARE_LE_1_CIFRE = "Il campo {0} non deve superare le {1} cifre.";
+	public static final String BIG_DECIMAL_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_SUPERIORE_O_UGUALE_A_1 = "Il campo {0} deve essere superiore o uguale a {1}.";
+	public static final String BIG_DECIMAL_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_INFERIORE_O_UGUALE_A_1 = "Il campo {0} deve essere inferiore o uguale a {1}.";
+	public static final String BIG_DECIMAL_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_SUPERIORE_A_1 = "Il campo {0} deve essere superiore a {1}.";
+	public static final String BIG_DECIMAL_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_INFERIORE_A_1 = "Il campo {0} deve essere inferiore a {1}.";
+	public static final String BIG_DECIMAL_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_VUOTO = "Il campo {0} deve essere vuoto.";
+	public static final String BIG_DECIMAL_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_ESSERE_VUOTO = "Il campo {0} non deve essere vuoto.";
+	public static final String BIG_DECIMAL_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_SUPERARE_LE_2_CIFRE_DECIMALI = "Il campo {0} non deve superare le 2 cifre decimali.";
+	
+	// Messaggi Errore BigInteger Validator
+	
+	public static final String BIG_INTEGER_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_SUPERIORE_O_UGUALE_A_1 = "Il campo {0} deve essere superiore o uguale a {1}.";
+	public static final String BIG_INTEGER_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_INFERIORE_O_UGUALE_A_1 = "Il campo {0} deve essere inferiore o uguale a {1}.";
+	public static final String BIG_INTEGER_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_SUPERIORE_A_1 = "Il campo {0} deve essere superiore a {1}.";
+	public static final String BIG_INTEGER_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_INFERIORE_A_1 = "Il campo {0} deve essere inferiore a {1}.";
+	public static final String BIG_INTEGER_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_VUOTO = "Il campo {0} deve essere vuoto.";
+	public static final String BIG_INTEGER_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_ESSERE_VUOTO = "Il campo {0} non deve essere vuoto.";
+
+	// Messaggi Errore Boolean Validator
+	
+	public static final String BOOLEAN_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_VUOTO = "Il campo {0} deve essere vuoto.";
+	public static final String BOOLEAN_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_ESSERE_VUOTO = "Il campo {0} non deve essere vuoto.";
+	
+	// Messaggi Errore Date Validator
+	
+	public static final String DATE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_AVERE_UNA_DATA_OLTRE_1 = "Il campo {0} deve avere una data oltre {1}.";
+	public static final String DATE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_AVERE_UNA_DATA_ENTRO_1_GIORNI = "Il campo {0} deve avere una data entro {1} giorni .";
+	public static final String DATE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_AVERE_UNA_DATA_ENTRO_1 = "Il campo {0} deve avere una data entro {1}.";
+	public static final String DATE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_AVERE_UNA_DATA_PRECEDENTE_A_1 = "Il campo {0} deve avere una data precedente a {1}.";
+	public static final String DATE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_AVERE_UNA_DATA_SUCCESSIVA_A_1 = "Il campo {0} deve avere una data successiva a {1}.";
+	public static final String DATE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_VUOTO = "Il campo {0} deve essere vuoto.";
+	public static final String DATE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_ESSERE_VUOTO = "Il campo {0} non deve essere vuoto.";
+	public static final String DATE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_CONTIENE_UNA_DATA_VALIDA = "Il campo {0} non contiene una data valida.";
+	
+	// Messaggi Errore Double Validator
+	
+	public static final String DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_SUPERIORE_O_UGUALE_A_1 = "Il campo {0} deve essere superiore o uguale a {1}.";
+	public static final String DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_INFERIORE_O_UGUALE_A_1 = "Il campo {0} deve essere inferiore o uguale a {1}.";
+	public static final String DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_SUPERIORE_A_1 = "Il campo {0} deve essere superiore a {1}.";
+	public static final String DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_INFERIORE_A_1 = "Il campo {0} deve essere inferiore a {1}.";
+	public static final String DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_VUOTO = "Il campo {0} deve essere vuoto.";
+	public static final String DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_ESSERE_VUOTO = "Il campo {0} non deve essere vuoto.";
+	public static final String DOUBLE_VALIDATOR_ERROR_MSG_IL_CAMPO_0_CONTIENE_UN_VALORE_NON_VALIDO = "Il campo {0} contiene un valore non valido.";
+	
+	// Messaggi Errore Enum Validator
+	
+	public static final String ENUM_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_VUOTO = "Il campo {0} deve essere vuoto.";
+	public static final String ENUM_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_ESSERE_VUOTO = "Il campo {0} non deve essere vuoto.";
+	
+	// Messaggi Errore ObjectList Validator
+	
+	public static final String OBJECT_LIST_VALIDATOR_ERROR_MSG_L_ELEMENTO_IN_POSIZIONE_0_DEL_CAMPO_1_E_VUOTO = "L''elemento in posizione {0} del campo {1} e'' vuoto.";
+	public static final String OBJECT_LIST_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_AVERE_MASSIMO_1_ELEMENTI = "Il campo {0} deve avere massimo {1} elementi.";
+	public static final String OBJECT_LIST_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_AVERE_ALMENO_1_ELEMENTI = "Il campo {0} deve avere almeno {1} elementi.";
+	public static final String OBJECT_LIST_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_VUOTO = "Il campo {0} deve essere vuoto.";
+	public static final String OBJECT_LIST_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_ESSERE_VUOTO = "Il campo {0} non deve essere vuoto.";
+	
+	// Messaggi Errore Object Validator
+	
+	public static final String OBJECT_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_VUOTO = "Il campo {0} deve essere vuoto.";
+	public static final String OBJECT_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_ESSERE_VUOTO = "Il campo {0} non deve essere vuoto.";
+	
+	// Messaggi Errore String Validator
+	
+	public static final String STRING_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_CONTIENE_UNA_URL_VALIDA = "Il campo {0} non contiene una URL valida.";
+	public static final String STRING_VALIDATOR_ERROR_MSG_IL_VALORE_0_DEL_CAMPO_1_NON_RISPETTA_IL_PATTERN_RICHIESTO_2 = "Il valore [{0}] del campo {1} non rispetta il pattern richiesto: {2}";
+	public static final String STRING_VALIDATOR_ERROR_MSG_IL_VALORE_0_DEL_CAMPO_1_NON_RISPETTA_LA_LUNGHEZZA_DI_2_CARATTERI = "Il valore [{0}] del campo {1} non rispetta la lunghezza di {2} caratteri.";
+	public static final String STRING_VALIDATOR_ERROR_MSG_IL_VALORE_0_DEL_CAMPO_1_NON_RISPETTA_LA_LUNGHEZZA_MASSIMA_DI_2_CARATTERI = "Il valore [{0}] del campo {1} non rispetta la lunghezza massima di {2} caratteri.";
+	public static final String STRING_VALIDATOR_ERROR_MSG_IL_VALORE_0_DEL_CAMPO_1_NON_RISPETTA_LA_LUNGHEZZA_MINIMA_DI_2_CARATTERI = "Il valore [{0}] del campo {1} non rispetta la lunghezza minima di {2} caratteri.";
+	public static final String STRING_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_VUOTO = "Il campo {0} deve essere vuoto.";
+	public static final String STRING_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_ESSERE_VUOTO = "Il campo {0} non deve essere vuoto.";
+
+	
 }

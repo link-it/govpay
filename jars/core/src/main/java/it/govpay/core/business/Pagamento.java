@@ -274,7 +274,7 @@ public class Pagamento   {
 			NodoClient chiediListaPendentiClient = null;
 			try {
 				try {
-					appContext.setupNodoClient(stazione.getCodStazione(), null, EventoContext.Azione.nodoChiediListaPendentiRPT);
+					appContext.setupNodoClient(stazione.getCodStazione(), null, EventoContext.Azione.NODOCHIEDILISTAPENDENTIRPT);
 					chiediListaPendentiClient = new NodoClient(intermediario, null, giornale);
 					risposta = chiediListaPendentiClient.nodoChiediListaPendentiRPT(richiesta, intermediario.getDenominazione());
 					chiediListaPendentiClient.getEventoCtx().setEsito(Esito.OK);
@@ -472,7 +472,7 @@ public class Pagamento   {
 		rrBD = null;
 		try {
 
-			String operationId = appContext.setupNodoClient(rpt.getStazione(configWrapper).getCodStazione(), rr.getCodDominio(), EventoContext.Azione.nodoInviaRichiestaStorno);
+			String operationId = appContext.setupNodoClient(rpt.getStazione(configWrapper).getCodStazione(), rr.getCodDominio(), EventoContext.Azione.NODOINVIARICHIESTASTORNO);
 			appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codMessaggioRevoca", rr.getCodMsgRevoca()));
 			ctx.getApplicationLogger().log("rr.invioRr");
 

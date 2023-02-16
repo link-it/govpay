@@ -158,6 +158,28 @@
         <dynamicreports-core.version>4.1.1</dynamicreports-core.version>
         <!-- jasperreports -->
         <jasperreports.version>6.20.0</jasperreports.version>
+        
+        
+        
+        <!-- Esclusione dei falsi positivi dall'analisi di sonar -->
+        <sonar.issue.ignore.multicriteria>coreFP1,coreFP2,coreFP3</sonar.issue.ignore.multicriteria>
+        
+        <!-- Esclusione dal controllo della regola java:S2647 la classe BasicClientCORE.java, la regola consiglia di non usare credenziali basic per l'autenticazione, 
+        	che sono invece necessarie perche' previste di protocolli di connessione verso l'esterno. -->
+        <sonar.issue.ignore.multicriteria.coreFP1.ruleKey>java:S2647</sonar.issue.ignore.multicriteria.coreFP1.ruleKey>
+        <sonar.issue.ignore.multicriteria.coreFP1.resourceKey>**/src/main/java/it/govpay/core/utils/client/BasicClientCORE.java</sonar.issue.ignore.multicriteria.coreFP1.resourceKey>
+        
+        <!-- Esclusione dal controllo della regola java:S5042 la classe SpedizioneTracciatoNotificaPagamentiThread.java, la regola consiglia di non scompattare file zip senza conoscerne
+        	l'origine, I file trattati dalla classe in questione sono degli zip prodotti internamente che vengono divisi per essere spediti verso un'API Rest. -->
+        <sonar.issue.ignore.multicriteria.coreFP2.ruleKey>java:S5042</sonar.issue.ignore.multicriteria.coreFP2.ruleKey>
+        <sonar.issue.ignore.multicriteria.coreFP2.resourceKey>**/src/main/java/it/govpay/core/utils/thread/SpedizioneTracciatoNotificaPagamentiThread.java</sonar.issue.ignore.multicriteria.coreFP2.resourceKey>
+        
+        <!-- Esclusione dal controllo della regola java:S5804 la classe AutenticazioneUtenzeRegistrateDAO.java, la regola consiglia di non restituire i dettagli riguardanti errori
+        	di autenticazione (user/pwd errate, utenze non esistenti, ecc...), in GovPay le eccezioni lanciate da questa classe sono catturate dagli handler di Spring-Sec che rispondono 
+        	con un messaggio generico 'Bad Credential' a chi ha provato a fare l'autenticazione. -->
+        <sonar.issue.ignore.multicriteria.coreFP3.ruleKey>java:S5804</sonar.issue.ignore.multicriteria.coreFP3.ruleKey>
+        <sonar.issue.ignore.multicriteria.coreFP3.resourceKey>**/src/main/java/it/govpay/core/dao/autorizzazione/AutenticazioneUtenzeRegistrateDAO.java</sonar.issue.ignore.multicriteria.coreFP3.resourceKey>
+        
 	</properties>
 
 	<dependencyManagement>

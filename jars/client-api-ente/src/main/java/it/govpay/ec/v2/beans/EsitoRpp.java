@@ -59,8 +59,8 @@ public enum EsitoRpp {
 			return ESEGUITO_PARZIALE;
 		case "RIFIUTATO":
 			return RIFIUTATO;
+		default: return null;
 		}
-		return null;
 	}
   
 }

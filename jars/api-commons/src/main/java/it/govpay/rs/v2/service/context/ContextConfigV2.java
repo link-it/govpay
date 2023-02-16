@@ -4,17 +4,17 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 
 /**
- * ContextConfig configurazione del context per le Api V1
+ * ContextConfig configurazione del context per le Api V2
  * 
  * @author pintori
  *
  */
-public class ContextConfig extends org.openspcoop2.utils.service.context.ContextConfig {
+public class ContextConfigV2 extends org.openspcoop2.utils.service.context.ContextConfig {
 	
 	public static final Integer GOVPAY_VERSIONE_API = 2;
 	public static final String GOVPAY_SERVICE_TYPE = GpContext.GovPay;
 
-	public ContextConfig() {
+	public ContextConfigV2() {
 		super();
 		
 		try {

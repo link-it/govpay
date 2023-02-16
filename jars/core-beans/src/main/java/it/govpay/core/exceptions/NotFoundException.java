@@ -22,7 +22,7 @@ package it.govpay.core.exceptions;
 public class NotFoundException extends Exception {
 
 	private static final long serialVersionUID = 1L;
-	public static final String descrizione = "Elemento non presente in archivio";
+	public static final String DESCRIZIONE = "Elemento non presente in archivio";
 	
 	public NotFoundException() {
 		super();
