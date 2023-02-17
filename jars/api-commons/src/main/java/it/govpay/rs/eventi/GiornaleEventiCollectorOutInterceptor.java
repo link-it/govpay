@@ -1,6 +1,7 @@
 package it.govpay.rs.eventi;
 
 import java.io.OutputStream;
+import java.text.MessageFormat;
 import java.util.Base64;
 import java.util.Date;
 
@@ -51,6 +52,7 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 		try {
 			if(!this.giornaleEventiConfig.isAbilitaGiornaleEventi()) return;
 			
+			String apiName = this.giornaleEventiConfig.getApiName();
 			boolean logEvento = false;
 			boolean dumpEvento = false;
 			IContext context = ContextThreadLocal.get();
@@ -67,25 +69,29 @@ public class GiornaleEventiCollectorOutInterceptor extends org.apache.cxf.ext.lo
 			
 			HttpMethod httpMethod = GiornaleEventiUtilities.getHttpMethod(httpMethodS);
 			esito = eventoCtx.getEsito() != null ? eventoCtx.getEsito() : Esito.KO;
-			this.log.debug("Log Evento API: ["+this.giornaleEventiConfig.getApiName()+"] Method ["+httpMethodS+"], Url ["+url+"], Esito ["+esito+"]");
+			
+			this.log.debug(MessageFormat.format("Log Evento API: [{0}] Method [{1}], Url [{2}], Esito [{3}]", apiName, httpMethodS,
+					url, esito));
 
 			GdeInterfaccia configurazioneInterfaccia = GiornaleEventiUtilities.getConfigurazioneGiornaleEventi(context, this.configurazioneDAO, this.giornaleEventiConfig);
 
 			if(configurazioneInterfaccia == null) {
-				this.log.warn("La configurazione per l'API ["+this.giornaleEventiConfig.getApiName()+"] non e' corretta, salvataggio evento non eseguito.");
+				this.log.warn(MessageFormat.format(
+						"La configurazione per l''API [{0}] non e'' corretta, salvataggio evento non eseguito.",
+						apiName));
 				return;
 			}
 			
-			this.log.debug("Configurazione Giornale Eventi API: ["+this.giornaleEventiConfig.getApiName()+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia));
+			this.log.debug(MessageFormat.format("Configurazione Giornale Eventi API: [{0}]: {1}", apiName, ConverterUtils.toJSON(configurazioneInterfaccia)));
 			
 			if(GiornaleEventiUtilities.isRequestLettura(httpMethod, this.giornaleEventiConfig.getApiNameEnum(), eventoCtx.getTipoEvento())) {
 				logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getLetture(), esito);
 				dumpEvento = GiornaleEventiUtilities.dumpEvento(configurazioneInterfaccia.getLetture(), esito);
-				this.log.debug("Tipo Operazione 'Lettura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
+				this.log.debug(MessageFormat.format("Tipo Operazione ''Lettura'', Log [{0}], Dump [{1}].", logEvento, dumpEvento));
 			} else if(GiornaleEventiUtilities.isRequestScrittura(httpMethod, this.giornaleEventiConfig.getApiNameEnum(), eventoCtx.getTipoEvento())) {
 				logEvento = GiornaleEventiUtilities.logEvento(configurazioneInterfaccia.getScritture(), esito);
 				dumpEvento = GiornaleEventiUtilities.dumpEvento(configurazioneInterfaccia.getScritture(), esito);
-				this.log.debug("Tipo Operazione 'Scrittura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
+				this.log.debug(MessageFormat.format("Tipo Operazione ''Scrittura'', Log [{0}], Dump [{1}].", logEvento, dumpEvento));
 			} else {
 				this.log.debug("Tipo Operazione non riconosciuta, l'evento non verra' salvato.");
 			}

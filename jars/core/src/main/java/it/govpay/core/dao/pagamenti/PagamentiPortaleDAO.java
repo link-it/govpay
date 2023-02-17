@@ -547,9 +547,7 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				this.impostaSeveritaErrore(pagamentoPortale, e);
 				pagamentiPortaleBD.updatePagamento(pagamentoPortale, true, false);
 
-
-				e.setParam(pagamentoPortale);
-				throw e;
+				throw new GovPayException(e, pagamentoPortale);
 			} catch (Exception e) {
 				transazioneResponse = (GpAvviaTransazionePagamentoResponse) this.getWsResponse(new GovPayException(e), transazioneResponse, "ws.ricevutaRichiestaKo", log);
 				for(Versamento versamentoModel: versamenti) {

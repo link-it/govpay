@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 /**
   * Dati della pendenza con voci
@@ -15,7 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description="Dati della pendenza con voci")
 public class PendenzaPagata extends Pendenza  {
   
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private List<VocePendenzaPagata> voci = new ArrayList<>();
 
   /**

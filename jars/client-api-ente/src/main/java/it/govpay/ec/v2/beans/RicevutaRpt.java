@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 /**
   * Richiesta di pagamento originale inviata a pagoPA
@@ -41,19 +42,19 @@ public class RicevutaRpt   {
       return null;
     }
   }  
-  @Schema(required = true, description = "Tipo XML della richiesta")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Tipo XML della richiesta")
  /**
    * Tipo XML della richiesta  
   **/
   private TipoEnum tipo = null;
   
-  @Schema(required = true, description = "Richiesta in formato XML originale codificata in base64")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Richiesta in formato XML originale codificata in base64")
  /**
    * Richiesta in formato XML originale codificata in base64  
   **/
   private byte[] xml = null;
   
-  @Schema(required = true, description = "Richiesta in formato JSON")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Richiesta in formato JSON")
  /**
    * Richiesta in formato JSON  
   **/

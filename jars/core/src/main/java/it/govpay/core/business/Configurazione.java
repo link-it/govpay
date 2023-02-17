@@ -1,5 +1,7 @@
 package it.govpay.core.business;
 
+import java.text.MessageFormat;
+
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -41,7 +43,7 @@ public class Configurazione {
 			configurazione = AnagraficaManager.getConfigurazione(configWrapper);
 			this.validaConfigurazione(configurazione);
 		}catch(IOException | NotFoundException e) {
-			log.error("Impossibile leggere la configurazione di sistema: "+ e.getMessage(), e); 
+			log.error(MessageFormat.format("Impossibile leggere la configurazione di sistema: {0}", e.getMessage()), e); 
 			throw new ServiceException(e);
 		}
 

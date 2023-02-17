@@ -73,7 +73,6 @@ public class StartupUtils {
 				IOUtils.copy(govpayPropertiesIS, baos);
 				gpConfig = GovpayConfig.newInstance(new ByteArrayInputStream(baos.toByteArray()));
 				it.govpay.bd.GovpayConfig.newInstance4GovPay(new ByteArrayInputStream(baos.toByteArray()));
-				it.govpay.bd.GovpayCustomConfig.newInstance(new ByteArrayInputStream(baos.toByteArray()));
 			} catch (Exception e) {
 				throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita: " + e, e);
 			}

@@ -19,6 +19,7 @@
  */
 package it.govpay.model;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -412,12 +413,13 @@ public class Versamento extends BasicModel {
 			this.causaleVersamento = Versamento.decode(causaleVersamentoEncoded);
 	}
 
-	public interface Causale {
+	public interface Causale extends Serializable {
 		public String encode() throws UnsupportedEncodingException;
 		public String getSimple() throws UnsupportedEncodingException;
 	}
 
 	public class CausaleSemplice implements Causale {
+		private static final long serialVersionUID = 1L;
 		private String causale;
 
 		@Override
@@ -447,6 +449,7 @@ public class Versamento extends BasicModel {
 	}
 
 	public class CausaleSpezzoni implements Causale {
+		private static final long serialVersionUID = 1L;
 		private List<String> spezzoni;
 
 		@Override
@@ -482,6 +485,7 @@ public class Versamento extends BasicModel {
 	}
 
 	public class CausaleSpezzoniStrutturati implements Causale {
+		private static final long serialVersionUID = 1L;
 		private List<String> spezzoni;
 		private List<BigDecimal> importi;
 

@@ -604,16 +604,16 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		
 		switch (connettore.getTipoConnettore()) {
 		case EMAIL:
-			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliEmail);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliEmail);
 			break;
 		case FILE_SYSTEM:
-			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliFileSystem);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliFileSystem);
 			break;
 		case WEB_SERVICE:
-			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliWS);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliWS);
 			break;
 		case REST:
-			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliREST);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliREST);
 			break;
 		}
 		
@@ -631,16 +631,16 @@ public class TracciatiNotificaPagamentiBD extends BasicBD {
 		
 		switch (connettore.getTipoConnettore()) {
 		case EMAIL:
-			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliEmail);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliEmail);
 			break;
 		case FILE_SYSTEM:
-			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliFileSystem);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliFileSystem);
 			break;
 		case WEB_SERVICE:
-			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliWS);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliWS);
 			break;
 		case REST:
-			filter.setStati(TracciatoNotificaPagamenti.statiNonTerminaliREST);
+			filter.setStati(it.govpay.model.TracciatoNotificaPagamenti.statiNonTerminaliREST);
 			break;
 		}
 		

@@ -324,7 +324,7 @@ public class RptDAO extends BaseDAO{
 					datiPagoPA.setCodStazione(null);
 					datiPagoPA.setFruitore(Componente.API_BACKOFFICE.name());
 					datiPagoPA.setCodDominio(idDominio);
-					datiPagoPA.setErogatore(GpContext.GovPay);
+					datiPagoPA.setErogatore(GpContext.GOVPAY);
 					datiPagoPA.setCodIntermediario(null);
 					appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
 					

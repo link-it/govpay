@@ -55,6 +55,7 @@ import it.govpay.model.configurazione.Giornale;
 
 public class NotificaClient extends BasicClientCORE implements INotificaClient {
 
+	private static final String ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE = "Notifica RPT[{0}] di tipo [{1}] non verra'' spedita verso l''applicazione.";
 	private static final String NOTIFICHE_V1_NOTIFY_PAGAMENTO_OPERATION_ID = "notifyPagamento";
 	private static final String NOTIFICHE_V1_NOTIFY_PAGAMENTO_OPERATION_PATH = "/pagamenti/{0}/{1}";
 	
@@ -108,7 +109,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 			return inviaNotificaConConnettoreV2(notifica);
 		case GP_SOAP_03:
 		default:
-			throw new ClientException("Versione ["+this.versione+"] non supportata per l'operazione di notifica");
+			throw new ClientException(MessageFormat.format("Versione [{0}] non supportata per l''operazione di notifica", this.versione));
 		}
 	}
 
@@ -116,7 +117,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		String codDominio = rpt.getCodDominio();
 		String iuv = rpt.getIuv();
 		String ccp = rpt.getCcp();
-		log.debug("Spedisco la notifica di " + notifica.getTipo() + " PAGAMENTO della transazione (" + codDominio + ")(" + iuv + ")(" + ccp + ") col connettore versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
+		log.debug(MessageFormat.format("Spedisco la notifica di {0} PAGAMENTO della transazione ({1})({2})({3}) col connettore versione ({4}) alla URL ({5})",	notifica.getTipo(), codDominio, iuv, ccp, this.versione.toString(), this.url));
 
 		List<Property> headerProperties = new ArrayList<>();
 		headerProperties.add(new Property("Accept", "application/json"));
@@ -144,7 +145,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 			break;
 		case FALLIMENTO:
 		case ANNULLAMENTO:
-			throw new ClientException("Notifica RPT["+this.getRptKey() +"] di tipo ["+notifica.getTipo()+"] non verra' spedita verso l'applicazione.");
+			throw new ClientException(MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
 		}
 
 		// composizione URL
@@ -179,7 +180,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 			break;
 		case FALLIMENTO:
 		case ANNULLAMENTO:
-			log.warn("Notifica RPT["+this.getRptKey() +"] di tipo ["+notifica.getTipo()+"] non verra' spedita verso l'applicazione.");
+			log.warn(MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
 			break;
 		}
 
@@ -200,7 +201,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 			break;
 		case FALLIMENTO:
 		case ANNULLAMENTO:
-			log.warn("Notifica RPT["+this.getRptKey() +"] di tipo ["+notifica.getTipo()+"] non verra' spedita verso l'applicazione.");
+			log.warn(MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
 			break;
 		}
 
@@ -211,7 +212,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		String codDominio = rpt.getCodDominio();
 		String iuv = rpt.getIuv();
 		String ccp = rpt.getCcp();
-		log.debug("Spedisco la notifica di " + notifica.getTipo() + " PAGAMENTO della transazione (" + codDominio + ")(" + iuv + ")(" + ccp + ") col connettore versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
+		log.debug(MessageFormat.format("Spedisco la notifica di {0} PAGAMENTO della transazione ({1})({2})({3}) col connettore versione ({4}) alla URL ({5})", notifica.getTipo(), codDominio, iuv, ccp, this.versione.toString(), this.url));
 
 		List<Property> headerProperties = new ArrayList<>();
 		headerProperties.add(new Property("Accept", "application/json"));
@@ -240,7 +241,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		case ATTIVAZIONE:
 		case FALLIMENTO:
 		case ANNULLAMENTO:
-			throw new ClientException("Notifica RPT["+this.getRptKey() +"] di tipo ["+notifica.getTipo()+"] non verra' spedita verso l'applicazione.");
+			throw new ClientException(MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
 		}
 
 		// composizione URL
@@ -279,7 +280,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		case ATTIVAZIONE:
 		case FALLIMENTO:
 		case ANNULLAMENTO:
-			log.warn("Notifica RPT["+this.getRptKey() +"] di tipo ["+notifica.getTipo()+"] non verra' spedita verso l'applicazione.");
+			log.warn(MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
 			break;
 		}
 
@@ -297,7 +298,7 @@ public class NotificaClient extends BasicClientCORE implements INotificaClient {
 		case ATTIVAZIONE:
 		case FALLIMENTO:
 		case ANNULLAMENTO:
-			log.warn("Notifica RPT["+this.getRptKey() +"] di tipo ["+notifica.getTipo()+"] non verra' spedita verso l'applicazione.");
+			log.warn(MessageFormat.format(ERROR_MSG_NOTIFICA_RPT_0_DI_TIPO_1_NON_VERRA_SPEDITA_VERSO_L_APPLICAZIONE, this.getRptKey(), notifica.getTipo()));
 			break;
 		}
 

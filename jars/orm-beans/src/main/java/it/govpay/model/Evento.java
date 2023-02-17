@@ -20,6 +20,7 @@
 package it.govpay.model;
 
 
+import java.text.MessageFormat;
 import java.util.Date;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -30,22 +31,42 @@ public class Evento extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	
 	public enum TipoEventoCooperazione {
-		nodoInviaRPT,
-		nodoInviaCarrelloRPT, 
-		nodoChiediStatoRPT, 
-		paaInviaRT, 
-		nodoChiediCopiaRT, 
-		paaVerificaRPT, 
-		paaAttivaRPT,
-		nodoInviaRichiestaStorno,
-		paaInviaEsitoStorno,
-		nodoInviaAvvisoDigitale,
-		paVerifyPaymentNotice,
-		paGetPayment,
-		paSendRT,
-		paDemandPaymentNotice,
-		paGetPaymentV2,
-		paSendRTV2;
+		NODOINVIARPT("nodoInviaRPT"),
+		NODOINVIACARRELLORPT("nodoInviaCarrelloRPT"), 
+		NODOCHIEDISTATORPT("nodoChiediStatoRPT"), 
+		PAAINVIART("paaInviaRT"), 
+		NODOCHIEDICOPIART("nodoChiediCopiaRT"), 
+		PAAVERIFICARPT("paaVerificaRPT"), 
+		PAAATTIVARPT("paaAttivaRPT"),
+		NODOINVIARICHIESTASTORNO("nodoInviaRichiestaStorno"),
+		PAAINVIAESITOSTORNO("paaInviaEsitoStorno"),
+		NODOINVIAAVVISODIGITALE("nodoInviaAvvisoDigitale"),
+		PAVERIFYPAYMENTNOTICE("paVerifyPaymentNotice"),
+		PAGETPAYMENT("paGetPayment"),
+		PASENDRT("paSendRT"),
+		PADEMANDPAYMENTNOTICE("paDemandPaymentNotice"),
+		PAGETPAYMENTV2("paGetPaymentV2"),
+		PASENDRTV2("paSendRTV2");
+		
+		private String value;
+
+		TipoEventoCooperazione(String value) {
+			this.value = value;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(value);
+		}
+
+		public static TipoEventoCooperazione fromValue(String text) {
+			for (TipoEventoCooperazione b : TipoEventoCooperazione.values()) {
+				if (String.valueOf(b.value).equals(text)) {
+					return b;
+				}
+			}
+			return null;
+		}
 	}
 
 	public static final String COMPONENTE_COOPERAZIONE = "FESP";
@@ -103,7 +124,7 @@ public class Evento extends BasicModel {
 					return p;
 			}
 			
-			throw new CodificaInesistenteException("Codifica inesistente per CategoriaEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(CategoriaEvento.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per CategoriaEvento. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(CategoriaEvento.values())));
 		}
 		
 		@Override
@@ -131,7 +152,7 @@ public class Evento extends BasicModel {
 					return p;
 			}
 			
-			throw new CodificaInesistenteException("Codifica inesistente per RuoloEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(RuoloEvento.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per RuoloEvento. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(RuoloEvento.values())));
 		}
 		
 		@Override
@@ -159,7 +180,7 @@ public class Evento extends BasicModel {
 					return p;
 			}
 			
-			throw new CodificaInesistenteException("Codifica inesistente per EsitoEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoEvento.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per EsitoEvento. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(EsitoEvento.values())));
 		}
 		
 		@Override

@@ -13,10 +13,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 // @Schema(description="dati anagrafici di un versante o pagatore.")
 public class Soggetto  {
   
-  // @Schema(required = true, description = "")
+  // @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private TipoSoggetto tipo = null;
   
-  // @Schema(example = "RSSMRA30A01H501I", required = true, description = "codice fiscale o partita iva del soggetto")
+  // @Schema(example = "RSSMRA30A01H501I", requiredMode = RequiredMode.REQUIRED, description = "codice fiscale o partita iva del soggetto")
  /**
    * codice fiscale o partita iva del soggetto  
   **/

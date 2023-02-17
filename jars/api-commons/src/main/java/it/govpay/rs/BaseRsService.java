@@ -50,6 +50,7 @@ import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.EventoContext.Categoria;
 import it.govpay.core.beans.commons.Dominio;
+import it.govpay.core.beans.commons.Dominio.Uo;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
 import it.govpay.core.utils.GpContext;
 
@@ -67,11 +68,11 @@ public abstract class BaseRsService {
 
 	protected String codOperazione;
 
-	public BaseRsService() {
+	protected BaseRsService() {
 		this.log = LoggerWrapperFactory.getLogger(BaseRsService.class);
 	}
 
-	public BaseRsService(String nomeServizio) {
+	protected BaseRsService(String nomeServizio) {
 		this();
 		this.nomeServizio = nomeServizio;
 
@@ -222,7 +223,7 @@ public abstract class BaseRsService {
 					sb.append("\t\t");
 					
 					sb.append(dominio.getCodDominio()).append(", UO: [").append((dominio.getUo() != null ? (
-							dominio.getUo().stream().map(d -> d.getCodUo()).collect(Collectors.toList())
+							dominio.getUo().stream().map(Uo::getCodUo).collect(Collectors.toList())
 							) : "Tutte")).append("]");
 				}
 				sb.append("\t");

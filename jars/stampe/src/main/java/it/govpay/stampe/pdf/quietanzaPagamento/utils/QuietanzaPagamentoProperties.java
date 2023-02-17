@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 
 import it.govpay.core.exceptions.ConfigException;
 import it.govpay.core.exceptions.PropertyNotFoundException;
+import it.govpay.stampe.pdf.Costanti;
 
 public class QuietanzaPagamentoProperties {
 	
@@ -66,7 +68,7 @@ public class QuietanzaPagamentoProperties {
 				if(this.govpayResourceDir != null) {
 					File resourceDirFile = new File(this.govpayResourceDir);
 					if(!resourceDirFile.isDirectory())
-						throw new Exception("Il path passato come paramtero (" + this.govpayResourceDir + ") non esiste o non e' un folder.");
+						throw new Exception(MessageFormat.format(Costanti.ERROR_MSG_IL_PATH_PASSATO_COME_PARAMTERO_0_NON_ESISTE_O_NON_E_UN_FOLDER, this.govpayResourceDir));
 
 
 					File gpConfigFile = new File(this.govpayResourceDir + PROPERTIES_FILE);
@@ -80,11 +82,11 @@ public class QuietanzaPagamentoProperties {
 							throw new ConfigException(e);
 						} 
 						this.propMap.put(DEFAULT_PROPS, props0);
-						log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
+						log.info(MessageFormat.format(Costanti.INFO_MSG_INDIVIDUATA_CONFIGURAZIONE_PRIORITARIA_0, gpConfigFile.getAbsolutePath()));
 					}
 				}
 			} catch (Exception e) {
-				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
+				log.warn(MessageFormat.format(Costanti.ERROR_MSG_ERRORE_DI_INIZIALIZZAZIONE_0_PROPERTY_IGNORATA, e.getMessage()));
 			}
 
 			// carico tutti i file che definiscono configurazioni diverse di avvisi pagamento
@@ -109,13 +111,13 @@ public class QuietanzaPagamentoProperties {
 						key = key.replaceAll("quietanzaPagamento.", "");
 						// la configurazione di defaut e' gia'stata caricata
 						if(!key.equals("quietanzaPagamento")) {
-							log.info("Caricata configurazione quietanza di pagamento con chiave " + key);
+							log.info(MessageFormat.format(Costanti.INFO_MSG_CARICATA_CONFIGURAZIONE_QUIETANZA_DI_PAGAMENTO_CON_CHIAVE_0,	key));
 							this.propMap.put(key, p);
 						}
 					}
 			}
-		}  catch (IOException e) {
-			log.error("Errore di inizializzazione: " + e.getMessage());
+		} catch (IOException e) {
+			log.error(MessageFormat.format(Costanti.ERROR_MSG_ERRORE_DI_INIZIALIZZAZIONE_0, e.getMessage()));
 			throw new ConfigException(e);
 		}
 	}
@@ -127,13 +129,13 @@ public class QuietanzaPagamentoProperties {
 			if(props != null) value = props.getProperty(name);
 			if(value == null) {
 				if(required) 
-					throw new PropertyNotFoundException("Proprieta ["+name+"] non trovata");
+					throw new PropertyNotFoundException(MessageFormat.format(Costanti.ERROR_MSG_PROPRIETA_0_NON_TROVATA, name));
 				else return null;
 			} else {
-				log.debug("Letta proprieta di configurazione " + name + ": " + value);
+				log.debug(MessageFormat.format(Costanti.DEBUG_MSG_LETTA_PROPRIETA_DI_CONFIGURAZIONE_0_1, name, value));
 			}
 		} else {
-			log.debug("Letta proprieta di sistema " + name + ": " + value);
+			log.debug(MessageFormat.format(Costanti.DEBUG_MSG_LETTA_PROPRIETA_DI_SISTEMA_0_1, name, value));
 		}
 
 		return value.trim();
@@ -148,10 +150,10 @@ public class QuietanzaPagamentoProperties {
 			return value;
 		}
 
-		log.debug("Proprieta " + name + " non trovata in configurazione ["+idprops+"]");
+		log.debug(MessageFormat.format(Costanti.DEBUG_MSG_PROPRIETA_0_NON_TROVATA_IN_CONFIGURAZIONE_1, name, idprops));
 
 		if(required) 
-			throw new PropertyNotFoundException("Proprieta ["+name+"] non trovata in configurazione ["+idprops+"]");
+			throw new PropertyNotFoundException(MessageFormat.format(Costanti.ERROR_MSG_PROPRIETA_0_NON_TROVATA_IN_CONFIGURAZIONE_1, name, idprops));
 		else 
 			return null;
 	}
@@ -167,8 +169,8 @@ public class QuietanzaPagamentoProperties {
 		Properties p = this.propMap.get(id);
 
 		if(p == null) {
-			log.debug("Configurazione ["+id+"] non trovata");
-			throw new PropertyNotFoundException("Configurazione ["+id+"] non trovata");
+			log.debug(MessageFormat.format(Costanti.ERROR_MSG_CONFIGURAZIONE_0_NON_TROVATA, id));
+			throw new PropertyNotFoundException(MessageFormat.format(Costanti.ERROR_MSG_CONFIGURAZIONE_0_NON_TROVATA, id));
 		}
 
 		return p;
@@ -186,10 +188,10 @@ public class QuietanzaPagamentoProperties {
 		if(StringUtils.isNotEmpty(codTributo) && StringUtils.isNotEmpty(codDominio)) {
 			key = codDominio + "." + codTributo;
 			try{
-				log.debug("Ricerca delle properties per la chiave ["+key+"]");
+				log.debug(MessageFormat.format(Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_PER_LA_CHIAVE_0, key));
 				p = this.getProperties(key);
 			}catch(Exception e){
-				log.debug("Non sono state trovate properties per la chiave ["+key+"]: " + e.getMessage());
+				log.debug(MessageFormat.format(Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_PER_LA_CHIAVE_0_1, key, e.getMessage()));
 			}
 		}
 
@@ -198,23 +200,24 @@ public class QuietanzaPagamentoProperties {
 			if(p == null){
 				key = codDominio;
 				try{
-					log.debug("Ricerca delle properties per la chiave ["+key+"]");
+					log.debug(MessageFormat.format(Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_PER_LA_CHIAVE_0, key));
 					p = this.getProperties(key);
 				}catch(Exception e){
-					log.debug("Non sono state trovate properties per la chiave ["+key+"]: " + e.getMessage());
+					log.debug(MessageFormat.format(Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_PER_LA_CHIAVE_0_1, key, e.getMessage()));
 				}
 			}
 		}
 
 		// utilizzo le properties di default
 		try{
-			log.debug("Ricerca delle properties di default");
+			log.debug(Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_DI_DEFAULT);
 			p = this.getProperties(null);
-		}catch(Exception e){
-			log.debug("Non sono state trovate properties di default: " + e.getMessage());
+		}catch(PropertyNotFoundException e){
+			log.debug(MessageFormat.format(Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_DI_DEFAULT_0, e.getMessage()));
 			throw e;
 		}
 
 		return p;
 	}
+
 }

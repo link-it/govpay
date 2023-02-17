@@ -62,11 +62,11 @@ public class GpContext extends ApplicationContext {
 	public static final String NOT_SET = "<Non valorizzato>";
 
 	public static final String NodoDeiPagamentiSPC = "NodoDeiPagamentiSPC";
-	public static final String GovPay = "GovPay";
-	public static final String AppIO = "AppIO";
+	public static final String GOVPAY = "GovPay";
+	public static final String APPIO = "AppIO";
 	public static final String TIPO_SOGGETTO_NDP = "NDP";
 	public static final String TIPO_SERVIZIO_NDP = "NDP";
-	public static final String Checkout = "Checkout";
+	public static final String CHECKOUT = "Checkout";
 
 	public static final String TIPO_SOGGETTO_APP = "APP";
 	public static final String TIPO_SOGGETTO_PRT = "PRT";
@@ -79,8 +79,8 @@ public class GpContext extends ApplicationContext {
 	public static final String TIPO_SERVIZIO_GOVPAY_WS = "GPWS";
 	public static final String TIPO_SERVIZIO_GOVPAY_OPT = "GPO";
 	
-	public static final String MyPivot = "MyPivot";
-	public static final String MaggioliJPPA = "MaggioliJPPA";
+	public static final String MYPIVOT = "MyPivot";
+	public static final String MAGGIOLIJPPA = "MaggioliJPPA";
 	public static final String TIPO_SOGGETTO_MAGGIOLI_JPPA = "MaggioliJPPA";
 
 
@@ -165,10 +165,10 @@ public class GpContext extends ApplicationContext {
 		transaction.setClient(client);
 
 		HttpServer server = new HttpServer();
-		server.setName(GovPay);
+		server.setName(GOVPAY);
 
 		Actor to = new Actor();
-		to.setName(GovPay);
+		to.setName(GOVPAY);
 		to.setType(TIPO_SOGGETTO_GOVPAY);
 		transaction.setTo(to);
 		transaction.addServer(server);
@@ -191,12 +191,12 @@ public class GpContext extends ApplicationContext {
 		transaction.setProtocol(TIPO_PROTOCOLLO_REST);
 
 		Actor to = new Actor();
-		to.setName(GovPay);
+		to.setName(GOVPAY);
 		to.setType(TIPO_SOGGETTO_GOVPAY);
 		transaction.setTo(to);
 
 		HttpServer server = new HttpServer();
-		server.setName(GovPay);
+		server.setName(GOVPAY);
 		transaction.addServer(server);
 
 		Request request = context.getRequest();
@@ -222,7 +222,7 @@ public class GpContext extends ApplicationContext {
 //		transaction.setTo(to);
 
 		HttpServer server = new HttpServer();
-		server.setName(GovPay);
+		server.setName(GOVPAY);
 		transaction.addServer(server);
 
 		Request request = context.getRequest();
@@ -288,7 +288,7 @@ public class GpContext extends ApplicationContext {
 	
 	public synchronized String setupAppIOClient(String azione, String url) {
 		HttpServer server = new HttpServer();
-		server.setName(AppIO);
+		server.setName(APPIO);
 		server.setEndpoint(url);
 		server.setIdOperation(UUID.randomUUID().toString());
 		this.getTransaction().addServer(server); 
@@ -298,7 +298,7 @@ public class GpContext extends ApplicationContext {
 	
 	public synchronized String setupNotificaPagamentiClient(String azione, String url) {
 		HttpServer server = new HttpServer();
-		server.setName(MyPivot);
+		server.setName(MYPIVOT);
 		server.setEndpoint(url);
 		server.setIdOperation(UUID.randomUUID().toString());
 		this.getTransaction().addServer(server); 
@@ -308,7 +308,7 @@ public class GpContext extends ApplicationContext {
 	
 	public synchronized String setupInvioNotificaPagamentiMaggioliJPPAClient(String azione, String url) {
 		HttpServer server = new HttpServer();
-		server.setName(MaggioliJPPA);
+		server.setName(MAGGIOLIJPPA);
 		server.setEndpoint(url);
 		server.setIdOperation(UUID.randomUUID().toString());
 		this.getTransaction().addServer(server); 
@@ -318,7 +318,7 @@ public class GpContext extends ApplicationContext {
 	
 	public synchronized String setupcheckoutClient(String azione, String url) {
 		HttpServer server = new HttpServer();
-		server.setName(Checkout);
+		server.setName(CHECKOUT);
 		server.setEndpoint(url);
 		server.setIdOperation(UUID.randomUUID().toString());
 		this.getTransaction().addServer(server); 

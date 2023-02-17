@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.model;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -51,7 +52,7 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 			try {
 				this.tributo = AnagraficaManager.getTributo(configWrapper, this.getIdTributo());
 			} catch (NotFoundException e) {
-				throw new ServiceException("Tributo con id ["+this.getIdTributo()+"] non trovato.");
+				throw new ServiceException(MessageFormat.format("Tributo con id [{0}] non trovato.", this.getIdTributo()));
 			}
 		}
 		return this.tributo;
@@ -101,7 +102,7 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 			try {
 				this.ibanAccredito = AnagraficaManager.getIbanAccredito(configWrapper, this.getIdIbanAccredito());
 			} catch (NotFoundException e) {
-				throw new ServiceException("Iban Accredito con id ["+this.getIdIbanAccredito()+"] non trovato.");
+				throw new ServiceException(MessageFormat.format("Iban Accredito con id [{0}] non trovato.", this.getIdIbanAccredito()));
 			}
 		}
 		
@@ -123,7 +124,7 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 			try {
 				this.ibanAppoggio = AnagraficaManager.getIbanAccredito(configWrapper, this.getIdIbanAppoggio());
 			} catch (NotFoundException e) {
-				throw new ServiceException("Iban Appoggio con id ["+this.getIdIbanAppoggio()+"] non trovato.");
+				throw new ServiceException(MessageFormat.format("Iban Appoggio con id [{0}] non trovato.", this.getIdIbanAppoggio()));
 			}
 		}
 		
@@ -140,7 +141,7 @@ public class SingoloVersamento extends it.govpay.model.SingoloVersamento{
 			this.setIdIbanAccredito(ibanAccredito.getId());
 	}
 	
-	public Tributo.TipoContabilita getTipoContabilita(BDConfigWrapper configWrapper) throws ServiceException {
+	public it.govpay.model.Tributo.TipoContabilita getTipoContabilita(BDConfigWrapper configWrapper) throws ServiceException {
 		if(this.getTipoContabilita() != null)
 			return this.getTipoContabilita();
 		else

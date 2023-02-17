@@ -43,6 +43,7 @@ public class PromemoriaConverter {
 				rsModel.setTipo(TipoPromemoria.SCADENZA_AVVISO_PAGAMENTO);
 				break;
 			case RICEVUTA:
+			case RICEVUTA_NO_RPT:
 				rsModel.setTipo(TipoPromemoria.RICEVUTA_TELEMATICA);
 				break;
 			}

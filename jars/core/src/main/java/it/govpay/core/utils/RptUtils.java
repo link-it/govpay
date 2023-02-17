@@ -46,7 +46,6 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.UnitaOperativa;
@@ -157,7 +156,7 @@ public class RptUtils {
 		datiPagoPA.setCodPsp(rpt.getCodPsp());
 		datiPagoPA.setCodStazione(stazione.getCodStazione());
 		datiPagoPA.setCodIntermediario(intermediario.getCodIntermediario());
-		datiPagoPA.setErogatore(Evento.NDP);
+		datiPagoPA.setErogatore(it.govpay.model.Evento.NDP);
 		datiPagoPA.setFruitore(intermediario.getCodIntermediario());
 		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
 		datiPagoPA.setModelloPagamento(rpt.getModelloPagamento());
@@ -390,8 +389,8 @@ public class RptUtils {
 						}
 						throw new GovPayException(FaultBeanUtils.toFaultBean(risposta.getFault()));
 					} else {
-						StatoRpt nuovoStato = Rpt.StatoRpt.toEnum(risposta.getEsito().getStato());
-						EsitoPagamento esitoPagamento = nuovoStato.equals(Rpt.StatoRpt.RPT_RIFIUTATA_NODO) ? EsitoPagamento.RIFIUTATO: null;
+						StatoRpt nuovoStato = it.govpay.model.Rpt.StatoRpt.toEnum(risposta.getEsito().getStato());
+						EsitoPagamento esitoPagamento = nuovoStato.equals(it.govpay.model.Rpt.StatoRpt.RPT_RIFIUTATA_NODO) ? EsitoPagamento.RIFIUTATO: null;
 
 						log.info("Acquisito dal Nodo dei Pagamenti lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: " + nuovoStato);
 

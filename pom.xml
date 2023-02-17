@@ -162,7 +162,7 @@
         
         
         <!-- Esclusione dei falsi positivi dall'analisi di sonar -->
-        <sonar.issue.ignore.multicriteria>coreFP1,coreFP2,coreFP3</sonar.issue.ignore.multicriteria>
+        <sonar.issue.ignore.multicriteria>coreFP1,coreFP2,coreFP3,coreFP4</sonar.issue.ignore.multicriteria>
         
         <!-- Esclusione dal controllo della regola java:S2647 la classe BasicClientCORE.java, la regola consiglia di non usare credenziali basic per l'autenticazione, 
         	che sono invece necessarie perche' previste di protocolli di connessione verso l'esterno. -->
@@ -179,6 +179,11 @@
         	con un messaggio generico 'Bad Credential' a chi ha provato a fare l'autenticazione. -->
         <sonar.issue.ignore.multicriteria.coreFP3.ruleKey>java:S5804</sonar.issue.ignore.multicriteria.coreFP3.ruleKey>
         <sonar.issue.ignore.multicriteria.coreFP3.resourceKey>**/src/main/java/it/govpay/core/dao/autorizzazione/AutenticazioneUtenzeRegistrateDAO.java</sonar.issue.ignore.multicriteria.coreFP3.resourceKey>
+        
+        <!-- Esclusione dal controllo della regola java:S1168 la classe AuthorizationManager.java, la regola consiglia di non restituire una Collection vuota anziche null per evitare di aggiungere complessita' computazionale
+        	nel metodo chiamante. Nella funzionalita' di controllo delle autorizzazioni sulle UO e' il valore null e il valore 'lista vuota' hanno due significati completamente distinti nel decidere le autorizzazioni di un'utenza. -->
+        <sonar.issue.ignore.multicriteria.coreFP4.ruleKey>java:S1168</sonar.issue.ignore.multicriteria.coreFP4.ruleKey>
+        <sonar.issue.ignore.multicriteria.coreFP4.resourceKey>**/src/main/java/it/govpay/core/autorizzazione/AuthorizationManager.java</sonar.issue.ignore.multicriteria.coreFP4.resourceKey>
         
 	</properties>
 

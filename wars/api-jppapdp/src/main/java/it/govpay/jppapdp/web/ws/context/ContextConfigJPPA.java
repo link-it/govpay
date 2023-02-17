@@ -12,7 +12,7 @@ import it.govpay.core.utils.GpContext;
 public class ContextConfigJPPA extends org.openspcoop2.utils.service.context.ContextConfig {
 	
 	public static final Integer GOVPAY_VERSIONE_API = 010000;
-	public static final String GOVPAY_SERVICE_TYPE = GpContext.MaggioliJPPA;
+	public static final String GOVPAY_SERVICE_TYPE = GpContext.MAGGIOLIJPPA;
 
 	public ContextConfigJPPA() {
 		super();

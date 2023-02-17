@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 /**
   * Dati della pendenza
@@ -21,13 +22,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description="Dati della pendenza")
 public class Pendenza   {
   
-  @Schema(example = "A2A-12345", required = true, description = "Identificativo del gestionale responsabile della pendenza")
+  @Schema(example = "A2A-12345", requiredMode = RequiredMode.REQUIRED, description = "Identificativo del gestionale responsabile della pendenza")
  /**
    * Identificativo del gestionale responsabile della pendenza  
   **/
   private String idA2A = null;
   
-  @Schema(example = "abcdef12345", required = true, description = "Identificativo della pendenza nel gestionale responsabile")
+  @Schema(example = "abcdef12345", requiredMode = RequiredMode.REQUIRED, description = "Identificativo della pendenza nel gestionale responsabile")
  /**
    * Identificativo della pendenza nel gestionale responsabile  
   **/

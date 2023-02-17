@@ -61,6 +61,7 @@ import it.govpay.model.Versionabile.Versione;
 
 public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 	
+	private static final String LABEL_SINTASSI = "[SINTASSI] ";
 	private static final String VERIFICA_PENDENZA_V1_VERIFY_PENDENZA_MOD4_OPERATION_PATH = "/pendenze/{0}/{1}";
 	private static final String VERIFICA_PENDENZA_V1_VERIFY_PENDENZA_MOD4_OPERATION_ID = "verifyPendenzaMod4";
 	
@@ -114,7 +115,7 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 			return eseguiVerificaPendenzaConConnettoreV2(codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv);  
 		case GP_SOAP_03:
 		default:
-			throw new ClientException("Versione ["+this.versione+"] non supportata per l'operazione di verifica pendenza");
+			throw new ClientException(MessageFormat.format("Versione [{0}] non supportata per l''operazione di verifica pendenza", this.versione));
 		}
 	}
 
@@ -128,7 +129,7 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 		String codDominioD = codDominio != null ? codDominio : "-";
 		String iuvD = iuv != null ? iuv : "-";
 
-		log.debug("Richiedo la verifica per il versamento [Applicazione:" + this.codApplicazione + " Versamento:" + codVersamentoEnteD + " BundleKey:" + bundlekeyD + " Debitore:" + codUnivocoDebitore + " Dominio:" + codDominioD + " Iuv:" + iuvD + "] in versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
+		log.debug(MessageFormat.format("Richiedo la verifica per il versamento [Applicazione:{0} Versamento:{1} BundleKey:{2} Debitore:{3} Dominio:{4} Iuv:{5}] in versione ({6}) alla URL ({7})", this.codApplicazione, codVersamentoEnteD, bundlekeyD, codUnivocoDebitore, codDominioD, iuvD, this.versione.toString(), this.url));
 
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
@@ -160,14 +161,9 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 					VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, logErrorMessage);
 					throw e;
 				} catch (IOException e) {
-					VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
+					VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, LABEL_SINTASSI + e.getMessage());
 					throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
 				}
-//				catch(ServiceException e) {
-//					String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
-//					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, logErrorMessage);
-//					throw new ClientException(e);
-//				}
 			
 			StatoPendenzaVerificata stato = pendenzaVerificata.getStato();
 			
@@ -195,14 +191,11 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 							throw new ValidationException("I campi IdDominio e NumeroAvviso della pendenza ricevuta dal servizio di verifica non corrispondono ai parametri di input.");
 					}
 					return VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata);
-//				} catch (GovPayException e) {
-//					VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[" + e.getCodEsito() + "] " + e.getMessage());
-//					throw e;
 				} catch (ValidationException e) {
-					VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
+					VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, LABEL_SINTASSI + e.getMessage());
 					throw new VersamentoNonValidoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
 				}  catch (IOException e) {
-					VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
+					VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, LABEL_SINTASSI + e.getMessage());
 					throw new VersamentoNonValidoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
 				}
 			case ANNULLATA:
@@ -222,9 +215,9 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 				
 				String message = null;
 				if(iuv != null) {
-					message = "La pendenza identificata da Dominio:"+codDominioD+" Iuv:"+iuvD+" risulta sconosciuta presso l'applicativo gestore.";
+					message = MessageFormat.format("La pendenza identificata da Dominio:{0} Iuv:{1} risulta sconosciuta presso l''applicativo gestore.", codDominioD, iuvD);
 				} else {
-					message = "La pendenza identificata da IdA2A:"+this.codApplicazione+" IdPendenza:"+codVersamentoEnteD+" risulta sconosciuta presso l'applicativo gestore.";
+					message = MessageFormat.format("La pendenza identificata da IdA2A:{0} IdPendenza:{1} risulta sconosciuta presso l''applicativo gestore.", this.codApplicazione, codVersamentoEnteD);
 				}
 				
 				throw new VersamentoSconosciutoException(this.codApplicazione, pendenzaVerificata.getIdPendenza(), bundlekeyD, debitoreD, codDominioD, iuvD, message);
@@ -247,7 +240,7 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 		String codDominioD = codDominio != null ? codDominio : "-";
 		String iuvD = iuv != null ? iuv : "-";
 
-		log.debug("Richiedo la verifica per il versamento [Applicazione:" + this.codApplicazione + " Versamento:" + codVersamentoEnteD + " BundleKey:" + bundlekeyD + " Debitore:" + codUnivocoDebitore + " Dominio:" + codDominioD + " Iuv:" + iuvD + "] in versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
+		log.debug(MessageFormat.format("Richiedo la verifica per il versamento [Applicazione:{0} Versamento:{1} BundleKey:{2} Debitore:{3} Dominio:{4} Iuv:{5}] in versione ({6}) alla URL ({7})", this.codApplicazione, codVersamentoEnteD, bundlekeyD, codUnivocoDebitore, codDominioD, iuvD, this.versione.toString(), this.url));
 
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
@@ -287,14 +280,9 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 					throw e;
 				} catch (IOException e) {
 					log.error(e.getMessage(),e);
-					VerificaClient.logMessaggioDiagnostico(ctx, VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
+					VerificaClient.logMessaggioDiagnostico(ctx, VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, LABEL_SINTASSI + e.getMessage());
 					throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
 				} 
-//				catch(ServiceException e) {
-//					String logErrorMessage = MessageFormat.format(VerificaClient.ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
-//					ctx.getApplicationLogger().log(VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, logErrorMessage);
-//					throw new ClientException(e);
-//				}
 			
 			it.govpay.ec.v2.beans.StatoPendenzaVerificata stato = pendenzaVerificata.getStato();
 			
@@ -329,11 +317,11 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 					return it.govpay.core.ec.v2.converter.VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata);
 				} catch (ValidationException e) {
 					log.error(e.getMessage(),e);
-					VerificaClient.logMessaggioDiagnostico(ctx, VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
+					VerificaClient.logMessaggioDiagnostico(ctx, VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, LABEL_SINTASSI + e.getMessage());
 					throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
 				} catch (IOException e) {
 					log.error(e.getMessage(),e);
-					VerificaClient.logMessaggioDiagnostico(ctx, VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "[SINTASSI] " + e.getMessage());
+					VerificaClient.logMessaggioDiagnostico(ctx, VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, LABEL_SINTASSI + e.getMessage());
 					throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
 				}
 			case ANNULLATA:
@@ -355,9 +343,9 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 					message = pendenzaVerificata.getDescrizioneStato();
 				} else {
 					if(iuv != null) {
-						message = "La pendenza identificata da Dominio:"+codDominioD+" Iuv:"+iuvD+" risulta sconosciuta presso l'applicativo gestore.";
+						message = MessageFormat.format("La pendenza identificata da Dominio:{0} Iuv:{1} risulta sconosciuta presso l''applicativo gestore.", codDominioD, iuvD);
 					} else {
-						message = "La pendenza identificata da IdA2A:"+this.codApplicazione+" IdPendenza:"+codVersamentoEnteD+" risulta sconosciuta presso l'applicativo gestore.";
+						message = MessageFormat.format("La pendenza identificata da IdA2A:{0} IdPendenza:{1} risulta sconosciuta presso l''applicativo gestore.", this.codApplicazione, codVersamentoEnteD);
 					}
 				}
 				
@@ -388,7 +376,7 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 			return eseguiAcquisizionPendenzaConConnettoreV2(codDominio, codTipoVersamento, codUnitaOperativa, jsonBody);  
 		case GP_SOAP_03:
 		default:
-			throw new ClientException("Versione ["+this.versione+"] non supportata per l'operazione di acquisizione pendenza con dati custom");
+			throw new ClientException(MessageFormat.format("Versione [{0}] non supportata per l''operazione di acquisizione pendenza con dati custom", this.versione));
 		}
 	}
 
@@ -396,7 +384,8 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 			throws ClientException, VersamentoNonValidoException, GovPayException,
 			VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoScadutoException,
 			VersamentoSconosciutoException {
-		log.debug("Richiedo la verifica per il versamento [Applicazione:" + this.codApplicazione + " Dominio:" + codDominio + " CodTipoVersamento:" + codTipoVersamento + "] in versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
+		log.debug(MessageFormat.format(
+				"Richiedo la verifica per il versamento [Applicazione:{0} Dominio:{1} CodTipoVersamento:{2}] in versione ({3}) alla URL ({4})",	this.codApplicazione, codDominio, codTipoVersamento, this.versione.toString(), this.url));
 
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
@@ -431,7 +420,7 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 			VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, logErrorMessage);
 			throw e;
 		} catch (IOException e) {
-			VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, "[SINTASSI] " + e.getMessage());
+			VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, LABEL_SINTASSI + e.getMessage());
 			throw new VersamentoNonValidoException(this.codApplicazione, "-", "-", "-", "-", "-", e.getMessage());
 		} 
 		
@@ -471,10 +460,10 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 				
 				return VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata);
 			} catch (ValidationException e) {
-				VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, "[SINTASSI] " + e.getMessage());
+				VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, LABEL_SINTASSI + e.getMessage());
 				throw new VersamentoNonValidoException(pendenzaVerificata.getIdA2A(), idPendenza, "-", "-", "-", "-", e.getMessage());
 			} catch (IOException e) {
-				VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, "[SINTASSI] " + e.getMessage());
+				VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, LABEL_SINTASSI + e.getMessage());
 				throw new VersamentoNonValidoException(pendenzaVerificata.getIdA2A(), idPendenza, "-", "-", "-", "-", e.getMessage());
 			}
 		case ANNULLATA:
@@ -492,7 +481,7 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 		case SCONOSCIUTA:
 			VerificaClient.logMessaggioDiagnostico(ctx, "verifica.modello4verificaSconosciuto", this.codApplicazione, codDominio, codTipoVersamento, idPendenza);
 			
-			String message = "La pendenza identificata da Dominio:"+codDominio+" TipoVersamento:"+codTipoVersamento+" risulta sconosciuta presso l'applicativo gestore.";
+			String message = MessageFormat.format("La pendenza identificata da Dominio:{0} TipoVersamento:{1} risulta sconosciuta presso l''applicativo gestore.", codDominio, codTipoVersamento);
 			
 			throw new VersamentoSconosciutoException(this.codApplicazione, idPendenza, "-", "-", "-", "-", message);
 		default:
@@ -504,7 +493,8 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 			throws ClientException, VersamentoNonValidoException, GovPayException,
 			VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoScadutoException,
 			VersamentoSconosciutoException {
-		log.debug("Richiedo la verifica per il versamento [Applicazione:" + this.codApplicazione + " Dominio:" + codDominio + " CodTipoVersamento:" + codTipoVersamento + "] in versione (" + this.versione.toString() + ") alla URL ("+this.url+")");
+		log.debug(MessageFormat.format("Richiedo la verifica per il versamento [Applicazione:{0} Dominio:{1} CodTipoVersamento:{2}] in versione ({3}) alla URL ({4})",
+				this.codApplicazione, codDominio, codTipoVersamento, this.versione.toString(), this.url));
 
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
@@ -539,14 +529,9 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 				VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, logErrorMessage);
 				throw e;
 			} catch (IOException e) {
-				VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, "[SINTASSI] " + e.getMessage());
+				VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, LABEL_SINTASSI + e.getMessage());
 				throw new VersamentoNonValidoException(this.codApplicazione, "-", "-", "-", "-", "-", e.getMessage());
 			}
-//				catch(ServiceException e) {
-//					String logErrorMessage = MessageFormat.format(ERROR_MESSAGE_ERRORE_NELLA_DESERIALIZZAZIONE_DEL_MESSAGGIO_DI_RISPOSTA_0,	e.getMessage());
-//					ctx.getApplicationLogger().log(LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, logErrorMessage);
-//					throw new ClientException(e);
-//				}
 		
 		it.govpay.ec.v2.beans.StatoPendenzaVerificata stato = pendenzaVerificata.getStato();
 		
@@ -583,10 +568,10 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 				}
 				return it.govpay.core.ec.v2.converter.VerificaConverter.getVersamentoFromPendenzaVerificata(pendenzaVerificata);
 			} catch (ValidationException e) {
-				VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, "[SINTASSI] " + e.getMessage());
+				VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, LABEL_SINTASSI + e.getMessage());
 				throw new VersamentoNonValidoException(this.codApplicazione, idPendenza, "-", "-", codDominio, "-", e.getMessage());
 			} catch (IOException e) {
-				VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, "[SINTASSI] " + e.getMessage());
+				VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_MODELLO4_VERIFICA_KO, this.codApplicazione, codDominio, codTipoVersamento, idPendenza, LABEL_SINTASSI + e.getMessage());
 				throw new VersamentoNonValidoException(this.codApplicazione, idPendenza, "-", "-", codDominio, "-", e.getMessage());
 			}
 		case ANNULLATA:
@@ -603,7 +588,7 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 		case SCONOSCIUTA:
 			VerificaClient.logMessaggioDiagnostico(ctx, "verifica.modello4verificaSconosciuto", this.codApplicazione, codDominio, codTipoVersamento, idPendenza);
 			
-			String message = "La pendenza identificata da Dominio:"+codDominio+" TipoVersamento:"+codTipoVersamento+" risulta sconosciuta presso l'applicativo gestore.";
+			String message = MessageFormat.format("La pendenza identificata da Dominio:{0} TipoVersamento:{1} risulta sconosciuta presso l''applicativo gestore.", codDominio, codTipoVersamento);
 			
 			if(StringUtils.isNotEmpty(pendenzaVerificata.getDescrizioneStato()))
 				message = pendenzaVerificata.getDescrizioneStato();

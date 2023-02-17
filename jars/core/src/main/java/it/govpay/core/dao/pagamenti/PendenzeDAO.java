@@ -146,28 +146,28 @@ public class PendenzeDAO extends BaseDAO{
 			filter.setDataFine(listaPendenzaDTO.getDataA());
 			if(listaPendenzaDTO.getStato()!=null) {
 				try {
-					it.govpay.bd.model.Versamento.StatoVersamento statoVersamento = null;
+					it.govpay.model.Versamento.StatoVersamento statoVersamento = null;
 
 					switch(listaPendenzaDTO.getStato()) {
-					case ANNULLATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANNULLATO;
+					case ANNULLATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANNULLATO;
 					break;
-					case ESEGUITA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ESEGUITO;
+					case ESEGUITA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ESEGUITO;
 					break;
-					case ESEGUITA_PARZIALE: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
+					case ESEGUITA_PARZIALE: statoVersamento = it.govpay.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
 					break;
 					case NON_ESEGUITA: {
-						statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 						filter.setAbilitaFiltroNonScaduto(true);
 					}
 					break;
 					case SCADUTA: {
-						statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 						filter.setAbilitaFiltroScaduto(true);
 					}
 					break;
-					case INCASSATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.INCASSATO;
+					case INCASSATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.INCASSATO;
 					break;
-					case ANOMALA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANOMALO;
+					case ANOMALA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANOMALO;
 					break;
 					}
 					filter.setStatoVersamento(statoVersamento);
@@ -239,28 +239,28 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setDataFine(listaPendenzaDTO.getDataA());
 		if(listaPendenzaDTO.getStato()!=null) {
 			try {
-				it.govpay.bd.model.Versamento.StatoVersamento statoVersamento = null;
+				it.govpay.model.Versamento.StatoVersamento statoVersamento = null;
 
 				switch(listaPendenzaDTO.getStato()) {
-				case ANNULLATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANNULLATO;
+				case ANNULLATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANNULLATO;
 				break;
-				case ESEGUITA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ESEGUITO;
+				case ESEGUITA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ESEGUITO;
 				break;
-				case ESEGUITA_PARZIALE: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
+				case ESEGUITA_PARZIALE: statoVersamento = it.govpay.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
 				break;
 				case NON_ESEGUITA: {
-					statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+					statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 					filter.setAbilitaFiltroNonScaduto(true);
 				}
 				break;
 				case SCADUTA: {
-					statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+					statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 					filter.setAbilitaFiltroScaduto(true);
 				}
 				break;
-				case INCASSATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.INCASSATO;
+				case INCASSATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.INCASSATO;
 				break;
-				case ANOMALA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANOMALO;
+				case ANOMALA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANOMALO;
 				break;
 				}
 				filter.setStatoVersamento(statoVersamento);
@@ -342,28 +342,28 @@ public class PendenzeDAO extends BaseDAO{
 			filter.setDataFine(listaPendenzaDTO.getDataA());
 			if(listaPendenzaDTO.getStato()!=null) {
 				try {
-					it.govpay.bd.model.Versamento.StatoVersamento statoVersamento = null;
+					it.govpay.model.Versamento.StatoVersamento statoVersamento = null;
 
 					switch(listaPendenzaDTO.getStato()) {
-					case ANNULLATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANNULLATO;
+					case ANNULLATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANNULLATO;
 					break;
-					case ESEGUITA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ESEGUITO;
+					case ESEGUITA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ESEGUITO;
 					break;
-					case ESEGUITA_PARZIALE: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
+					case ESEGUITA_PARZIALE: statoVersamento = it.govpay.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
 					break;
 					case NON_ESEGUITA: {
-						statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 						filter.setAbilitaFiltroNonScaduto(true);
 					}
 					break;
 					case SCADUTA: {
-						statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 						filter.setAbilitaFiltroScaduto(true);
 					}
 					break;
-					case INCASSATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.INCASSATO;
+					case INCASSATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.INCASSATO;
 					break;
-					case ANOMALA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANOMALO;
+					case ANOMALA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANOMALO;
 					break;
 					}
 					filter.setStatoVersamento(statoVersamento);

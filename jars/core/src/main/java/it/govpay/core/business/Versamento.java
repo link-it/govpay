@@ -20,6 +20,7 @@
 package it.govpay.core.business;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -279,12 +280,12 @@ public class Versamento  {
 				if(salvataggioSuDB) {
 					versamentiBD.insertVersamento(versamento);
 					ctx.getApplicationLogger().log("versamento.inserimentoOk", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
-					log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(configWrapper).getCodApplicazione() + ") inserito");
+					log.info(MessageFormat.format("Versamento ({0}) dell''applicazione ({1}) inserito", versamento.getCodVersamentoEnte(), versamento.getApplicazione(configWrapper).getCodApplicazione()));
 	
 					// avvio il batch di gestione dei promemoria
 					Operazioni.setEseguiGestionePromemoria();
 				} else {
-					log.info("Versamento (" + versamento.getCodVersamentoEnte() + ") dell'applicazione (" + versamento.getApplicazione(configWrapper).getCodApplicazione() + ") inserito in memoria");
+					log.info(MessageFormat.format("Versamento ({0}) dell''applicazione ({1}) inserito in memoria", versamento.getCodVersamentoEnte(), versamento.getApplicazione(configWrapper).getCodApplicazione()));
 				}
 			}
 			if(doCommit) versamentiBD.commit();
@@ -333,7 +334,7 @@ public class Versamento  {
 	}
 
 	public void annullaVersamento(AnnullaVersamentoDTO annullaVersamentoDTO) throws GovPayException, NotAuthorizedException, UtilsException {
-		log.info("Richiesto annullamento per il Versamento (" + annullaVersamentoDTO.getCodVersamentoEnte() + ") dell'applicazione (" + annullaVersamentoDTO.getCodApplicazione() + ")");
+		log.info(MessageFormat.format("Richiesto annullamento per il Versamento ({0}) dell''applicazione ({1})", annullaVersamentoDTO.getCodVersamentoEnte(), annullaVersamentoDTO.getCodApplicazione()));
 
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
@@ -345,7 +346,7 @@ public class Versamento  {
 		ctx.getApplicationLogger().log("versamento.annulla");
 
 		if(annullaVersamentoDTO.getApplicazione() != null && !annullaVersamentoDTO.getApplicazione().getCodApplicazione().equals(annullaVersamentoDTO.getCodApplicazione())) {
-			throw new NotAuthorizedException("Applicazione chiamante [" + annullaVersamentoDTO.getApplicazione().getCodApplicazione() + "] non e' proprietaria del versamento");
+			throw new NotAuthorizedException(MessageFormat.format("Applicazione chiamante [{0}] non e'' proprietaria del versamento", annullaVersamentoDTO.getApplicazione().getCodApplicazione()));
 		}
 
 		String codApplicazione = annullaVersamentoDTO.getCodApplicazione();
@@ -373,7 +374,7 @@ public class Versamento  {
 				//				}
 				// Se è già annullato non devo far nulla.
 				if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
-					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + codApplicazione + ") gia' annullato. Aggiornamento non necessario.");
+					log.info(MessageFormat.format("Versamento ({0}) dell''applicazione ({1}) gia'' annullato. Aggiornamento non necessario.",	versamentoLetto.getCodVersamentoEnte(), codApplicazione));
 					ctx.getApplicationLogger().log("versamento.annullaOk");
 					return;
 				}
@@ -386,7 +387,7 @@ public class Versamento  {
 					versamentoLetto.setAvvMailPromemoriaScadenzaNotificato(null);
 					versamentoLetto.setAvvAppIOPromemoriaScadenzaNotificato(null);
 					versamentiBD.updateVersamento(versamentoLetto);
-					log.info("Versamento (" + versamentoLetto.getCodVersamentoEnte() + ") dell'applicazione (" + codApplicazione + ") annullato.");
+					log.info(MessageFormat.format("Versamento ({0}) dell''applicazione ({1}) annullato.", versamentoLetto.getCodVersamentoEnte(), codApplicazione));
 					ctx.getApplicationLogger().log("versamento.annullaOk");
 					return;
 				}
@@ -454,6 +455,11 @@ public class Versamento  {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		// Versamento per riferimento codApplicazione/codVersamentoEnte
 		it.govpay.bd.model.Versamento versamentoModel = null;
+		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
+		String bundlekeyD = bundlekey != null ? bundlekey : "-";
+		String debitoreD = codUnivocoDebitore != null ? codUnivocoDebitore : "-";
+		String codDominioD = codDominio != null ? codDominio : "-";
+		String iuvD = iuv != null ? iuv : "-";
 
 		VersamentiBD versamentiBD = new VersamentiBD(configWrapper);
 
@@ -500,8 +506,8 @@ public class Versamento  {
 				// Iuv non registrato. Vedo se c'e' un'applicazione da interrogare, altrimenti non e' recuperabile.
 				Applicazione applicazioneDominio = new it.govpay.core.business.Applicazione().getApplicazioneDominio(configWrapper, dominio, iuv, false);
 				if(applicazioneDominio == null) {
-					log.warn("L'avviso di pagamento [Dominio:" + codDominio + " Iuv:" + iuv + "] non risulta registrato, ne associabile ad un'applicazione censita.");
-					throw new GovPayException("L'avviso di pagamento [Dominio:" + codDominio + " Iuv:" + iuv + "] non risulta registrato, ne associabile ad un'applicazione censita.", EsitoOperazione.VER_008);
+					log.warn(MessageFormat.format("L''avviso di pagamento [Dominio:{0} Iuv:{1}] non risulta registrato, ne associabile ad un''applicazione censita.", codDominio, iuv));
+					throw new GovPayException(MessageFormat.format("L''avviso di pagamento [Dominio:{0} Iuv:{1}] non risulta registrato, ne associabile ad un''applicazione censita.", codDominio, iuv), EsitoOperazione.VER_008);
 				}
 				codApplicazione = applicazioneDominio.getCodApplicazione();
 			}
@@ -531,21 +537,21 @@ public class Versamento  {
 			try {
 				versamentoModel = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(configWrapper, codApplicazione), codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv, tipo, log);
 			} catch (ClientException e){
-				throw new EcException("La verifica del versamento [Versamento: " + codVersamentoEnte != null ? codVersamentoEnte : "-" + " BundleKey:" + bundlekey != null ? bundlekey : "-" + " Debitore:" + codUnivocoDebitore != null ? codUnivocoDebitore : "-" + " Dominio:" + codDominio != null ? codDominio : "-" + " Iuv:" + iuv != null ? iuv : "-" + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallita con errore: " + e.getMessage());
+				throw new EcException(MessageFormat.format("La verifica del versamento [Versamento: {0} BundleKey:{1} Debitore:{2} Dominio:{3} Iuv:{4}] all''applicazione competente [Applicazione:{5}] e'' fallita con errore: {6}", codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, codApplicazione, e.getMessage()));
 			} catch (VersamentoScadutoException e) {
-				throw new GovPayException("La verifica del versamento [Versamento: " + codVersamentoEnte != null ? codVersamentoEnte : "-" + " BundleKey:" + bundlekey != null ? bundlekey : "-" + " Debitore:" + codUnivocoDebitore != null ? codUnivocoDebitore : "-" + " Dominio:" + codDominio != null ? codDominio : "-" + " Iuv:" + iuv != null ? iuv : "-" + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_SCADUTO", EsitoOperazione.VER_010);
+				throw new GovPayException(MessageFormat.format("La verifica del versamento [Versamento: {0} BundleKey:{1} Debitore:{2} Dominio:{3} Iuv:{4}] all''applicazione competente [Applicazione:{5}] ha dato esito PAA_PAGAMENTO_SCADUTO", codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, codApplicazione), EsitoOperazione.VER_010);
 			} catch (VersamentoAnnullatoException e) {
-				throw new GovPayException("La verifica del versamento [Versamento: " + codVersamentoEnte != null ? codVersamentoEnte : "-" + " BundleKey:" + bundlekey != null ? bundlekey : "-" + " Debitore:" + codUnivocoDebitore != null ? codUnivocoDebitore : "-" + " Dominio:" + codDominio != null ? codDominio : "-" + " Iuv:" + iuv != null ? iuv : "-" + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_ANNULLATO", EsitoOperazione.VER_013);
+				throw new GovPayException(MessageFormat.format("La verifica del versamento [Versamento: {0} BundleKey:{1} Debitore:{2} Dominio:{3} Iuv:{4}] all''applicazione competente [Applicazione:{5}] ha dato esito PAA_PAGAMENTO_ANNULLATO", codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, codApplicazione), EsitoOperazione.VER_013);
 			} catch (VersamentoDuplicatoException e) {
-				throw new GovPayException("La verifica del versamento [Versamento: " + codVersamentoEnte != null ? codVersamentoEnte : "-" + " BundleKey:" + bundlekey != null ? bundlekey : "-" + " Debitore:" + codUnivocoDebitore != null ? codUnivocoDebitore : "-" + " Dominio:" + codDominio != null ? codDominio : "-" + " Iuv:" + iuv != null ? iuv : "-" + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_DUPLICATO", EsitoOperazione.VER_012);
+				throw new GovPayException(MessageFormat.format("La verifica del versamento [Versamento: {0} BundleKey:{1} Debitore:{2} Dominio:{3} Iuv:{4}] all''applicazione competente [Applicazione:{5}] ha dato esito PAA_PAGAMENTO_DUPLICATO", codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, codApplicazione), EsitoOperazione.VER_012);
 			} catch (VersamentoSconosciutoException e) {
-				throw new GovPayException("La verifica del versamento [Versamento: " + codVersamentoEnte != null ? codVersamentoEnte : "-" + " BundleKey:" + bundlekey != null ? bundlekey : "-" + " Debitore:" + codUnivocoDebitore != null ? codUnivocoDebitore : "-" + " Dominio:" + codDominio != null ? codDominio : "-" + " Iuv:" + iuv != null ? iuv : "-" + "] all'applicazione competente [Applicazione:" + codApplicazione + "] ha dato esito PAA_PAGAMENTO_SCONOSCIUTO", EsitoOperazione.VER_011);
+				throw new GovPayException(MessageFormat.format("La verifica del versamento [Versamento: {0} BundleKey:{1} Debitore:{2} Dominio:{3} Iuv:{4}] all''applicazione competente [Applicazione:{5}] ha dato esito PAA_PAGAMENTO_SCONOSCIUTO", codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, codApplicazione), EsitoOperazione.VER_011);
 			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.INTERNAL, "Il versamento [Versamento: " + codVersamentoEnte != null ? codVersamentoEnte : "-" + " BundleKey:" + bundlekey != null ? bundlekey : "-" + " Debitore:" + codUnivocoDebitore != null ? codUnivocoDebitore : "-" + " Dominio:" + codDominio != null ? codDominio : "-" + " Iuv:" + iuv != null ? iuv : "-" + "] e' gestito da un'applicazione non censita [Applicazione:" + codApplicazione + "]");
+				throw new GovPayException(EsitoOperazione.INTERNAL, MessageFormat.format("Il versamento [Versamento: {0} BundleKey:{1} Debitore:{2} Dominio:{3} Iuv:{4}] e'' gestito da un''applicazione non censita [Applicazione:{5}]", codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, codApplicazione));
 			} catch (VersamentoNonValidoException e) { 
-				throw new GovPayException(EsitoOperazione.INTERNAL, "verifica del versamento [Versamento: " + codVersamentoEnte != null ? codVersamentoEnte : "-" + " BundleKey:" + bundlekey != null ? bundlekey : "-" + " Debitore:" + codUnivocoDebitore != null ? codUnivocoDebitore : "-" + " Dominio:" + codDominio != null ? codDominio : "-" + " Iuv:" + iuv != null ? iuv : "-" + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallita con errore: " + e.getMessage());
+				throw new GovPayException(EsitoOperazione.INTERNAL, MessageFormat.format("verifica del versamento [Versamento: {0} BundleKey:{1} Debitore:{2} Dominio:{3} Iuv:{4}] all''applicazione competente [Applicazione:{5}] e'' fallita con errore: {6}", codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, codApplicazione, e.getMessage()));
 			} catch (IOException e) { 
-				throw new GovPayException(EsitoOperazione.INTERNAL, "verifica del versamento [Versamento: " + codVersamentoEnte != null ? codVersamentoEnte : "-" + " BundleKey:" + bundlekey != null ? bundlekey : "-" + " Debitore:" + codUnivocoDebitore != null ? codUnivocoDebitore : "-" + " Dominio:" + codDominio != null ? codDominio : "-" + " Iuv:" + iuv != null ? iuv : "-" + "] all'applicazione competente [Applicazione:" + codApplicazione + "] e' fallita con errore: " + e.getMessage());
+				throw new GovPayException(EsitoOperazione.INTERNAL, MessageFormat.format("verifica del versamento [Versamento: {0} BundleKey:{1} Debitore:{2} Dominio:{3} Iuv:{4}] all''applicazione competente [Applicazione:{5}] e'' fallita con errore: {6}", codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, codApplicazione, e.getMessage()));
 			}
 		}
 
@@ -569,7 +575,7 @@ public class Versamento  {
 			String codVersamentoEnte = versamento.getCodVersamentoEnte();
 			Promemoria promemoria = null;
 			try {
-				log.debug("Inserimento promemoria scadenza per il versamento [IdA2A" + codApplicazione +", CodVersamentoEnte "+codVersamentoEnte+"]");
+				log.debug(MessageFormat.format("Inserimento promemoria scadenza per il versamento [IdA2A{0}, CodVersamentoEnte {1}]", codApplicazione, codVersamentoEnte));
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
 
 				if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaScadenzaAbilitato()) {
@@ -581,7 +587,7 @@ public class Versamento  {
 						msg = "non e' stato trovato un destinatario valido, l'invio non verra' schedulato.";
 						promemoria = null;
 					}
-					log.debug("Creazione promemoria scadenza completata: "+ msg);
+					log.debug(MessageFormat.format("Creazione promemoria scadenza completata: {0}", msg));
 				}
 
 				// promemoria mail
@@ -603,9 +609,9 @@ public class Versamento  {
 
 				versamentiBD.commit();
 
-				log.debug("Inserimento promemoria scadenza per il versamento [IdA2A" + codApplicazione +", CodVersamentoEnte "+codVersamentoEnte+"] completato");
+				log.debug(MessageFormat.format("Inserimento promemoria scadenza per il versamento [IdA2A{0}, CodVersamentoEnte {1}] completato", codApplicazione, codVersamentoEnte));
 			} catch(Throwable e) {
-				log.error("Errore durante l'inserimento promemoria scadenza per il versamento [IdA2A" + codApplicazione +", CodVersamentoEnte "+codVersamentoEnte+"]: " + e.getMessage(),e);
+				log.error(MessageFormat.format("Errore durante l''inserimento promemoria scadenza per il versamento [IdA2A{0}, CodVersamentoEnte {1}]: {2}", codApplicazione, codVersamentoEnte, e.getMessage()),e);
 				if(versamentiBD != null)
 					versamentiBD.rollback();
 			} finally {
@@ -632,7 +638,7 @@ public class Versamento  {
 			String codVersamentoEnte = versamento.getCodVersamentoEnte();
 			it.govpay.bd.model.NotificaAppIo notificaAppIo = null;
 			try {
-				log.debug("Inserimento promemoria scadenza per il versamento [IdA2A" + codApplicazione +", CodVersamentoEnte "+codVersamentoEnte+"]");
+				log.debug(MessageFormat.format("Inserimento promemoria scadenza per il versamento [IdA2A{0}, CodVersamentoEnte {1}]", codApplicazione, codVersamentoEnte));
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
 
 				if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaScadenzaAbilitato()) {
@@ -653,9 +659,9 @@ public class Versamento  {
 
 				versamentiBD.commit();
 
-				log.debug("Inserimento promemoria scadenza per il versamento [IdA2A" + codApplicazione +", CodVersamentoEnte "+codVersamentoEnte+"] completato");
+				log.debug(MessageFormat.format("Inserimento promemoria scadenza per il versamento [IdA2A{0}, CodVersamentoEnte {1}] completato", codApplicazione, codVersamentoEnte));
 			} catch(Throwable e) {
-				log.error("Errore durante l'inserimento promemoria scadenza per il versamento [IdA2A" + codApplicazione +", CodVersamentoEnte "+codVersamentoEnte+"]: " + e.getMessage(),e);
+				log.error(MessageFormat.format("Errore durante l''inserimento promemoria scadenza per il versamento [IdA2A{0}, CodVersamentoEnte {1}]: {2}", codApplicazione, codVersamentoEnte, e.getMessage()),e);
 				if(versamentiBD != null)
 					versamentiBD.rollback();
 			} finally {
@@ -685,7 +691,7 @@ public class Versamento  {
 			it.govpay.bd.model.NotificaAppIo notificaAppIo = null;
 
 			try {
-				log.debug("Inserimento promemoria avviso per il versamento [IdA2A" + codApplicazione +", CodVersamentoEnte "+codVersamentoEnte+"]");
+				log.debug(MessageFormat.format("Inserimento promemoria avviso per il versamento [IdA2A{0}, CodVersamentoEnte {1}]", codApplicazione, codVersamentoEnte));
 				TipoVersamentoDominio tipoVersamentoDominio = versamento.getTipoVersamentoDominio(configWrapper);
 
 				if(tipoVersamentoDominio.getAvvisaturaMailPromemoriaAvvisoAbilitato()) {
@@ -698,7 +704,7 @@ public class Versamento  {
 						msg = "non e' stato trovato un destinatario valido, l'invio non verra' schedulato.";
 						promemoria = null;
 					}
-					log.debug("Creazione promemoria avviso completata: "+ msg);
+					log.debug(MessageFormat.format("Creazione promemoria avviso completata: {0}", msg));
 				} 
 
 				if(tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaAvvisoAbilitato()) {
@@ -731,9 +737,9 @@ public class Versamento  {
 				versamentiBD.updateStatoPromemoriaAvvisoVersamento(versamento.getId(), true, true);
 				versamentiBD.commit();
 
-				log.debug("Inserimento promemoria avviso per il versamento [IdA2A" + codApplicazione +", CodVersamentoEnte "+codVersamentoEnte+"] completato");
+				log.debug(MessageFormat.format("Inserimento promemoria avviso per il versamento [IdA2A{0}, CodVersamentoEnte {1}] completato", codApplicazione, codVersamentoEnte));
 			} catch(Throwable e) {
-				log.error("Errore durante l'inserimento promemoria avviso per il versamento [IdA2A" + codApplicazione +", CodVersamentoEnte "+codVersamentoEnte+"]: " + e.getMessage(),e);
+				log.error(MessageFormat.format("Errore durante l''inserimento promemoria avviso per il versamento [IdA2A{0}, CodVersamentoEnte {1}]: {2}", codApplicazione, codVersamentoEnte, e.getMessage()),e);
 				if(versamentiBD != null)
 					versamentiBD.rollback();
 			} finally {

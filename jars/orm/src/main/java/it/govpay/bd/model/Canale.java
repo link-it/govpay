@@ -24,7 +24,7 @@ import it.govpay.model.exception.CodificaInesistenteException;
 public class Canale extends it.govpay.model.Canale {
 	
 	private static final long serialVersionUID = 1L;
-	public static final Canale canaleUniversale = new Canale(Rpt.codIntermediarioPspWISP20, Rpt.codPspWISP20, Rpt.codCanaleWISP20,	Rpt.tipoVersamentoWISP20, null);
+	public static final Canale canaleUniversale = new Canale(it.govpay.model.Rpt.codIntermediarioPspWISP20, it.govpay.model.Rpt.codPspWISP20, it.govpay.model.Rpt.codCanaleWISP20,	it.govpay.model.Rpt.tipoVersamentoWISP20, null);
 
 	public Canale(Psp psp, String codCanale, String tipoVersamento) throws CodificaInesistenteException {
 		this(psp, codCanale, TipoVersamento.toEnum(tipoVersamento));

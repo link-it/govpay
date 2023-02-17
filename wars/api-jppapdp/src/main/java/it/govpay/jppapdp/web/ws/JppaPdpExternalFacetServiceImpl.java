@@ -89,13 +89,13 @@ public class JppaPdpExternalFacetServiceImpl implements JppaPdpExternalServicesE
 		appContext.getEventoCtx().setCodDominio(codDominio);
 
 		Actor from = new Actor();
-		from.setName(GpContext.MaggioliJPPA);
+		from.setName(GpContext.MAGGIOLIJPPA);
 		from.setType(GpContext.TIPO_SOGGETTO_MAGGIOLI_JPPA);
 		appContext.getTransaction().setFrom(from);
 
 		Actor to = new Actor();
-		to.setName(GpContext.GovPay);
-		from.setType(GpContext.GovPay);
+		to.setName(GpContext.GOVPAY);
+		from.setType(GpContext.GOVPAY);
 		appContext.getTransaction().setTo(to);
 
 		CtRispostaStandard response = new CtRispostaStandard();

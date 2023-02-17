@@ -179,13 +179,7 @@ public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVa
 			authorized = validator.validateCaptcha(request);
 		}catch(ReCaptchaConfigurazioneNonValidaException e) {
 			logger.error("Controllo ReCaptcha terminato con errore, configurazione del servizio non valida: " + e.getMessage(), e);
-		}catch(ReCaptchaParametroResponseInvalidException e) {
-			logger.warn(MessageFormat.format(ERROR_MESSAGE_CONTROLLO_RE_CAPTCHA_TERMINATO_CON_ESITO_ACCESSO_NON_CONSENTITO_0, e.getMessage()));
-		}catch(ReCaptchaUnavailableException e) {
-			logger.warn(MessageFormat.format(ERROR_MESSAGE_CONTROLLO_RE_CAPTCHA_TERMINATO_CON_ESITO_ACCESSO_NON_CONSENTITO_0, e.getMessage()));
-		}catch(ReCaptchaScoreNonValidoException e) {
-			logger.warn(MessageFormat.format(ERROR_MESSAGE_CONTROLLO_RE_CAPTCHA_TERMINATO_CON_ESITO_ACCESSO_NON_CONSENTITO_0, e.getMessage()));
-		}catch(ReCaptchaInvalidException e) {
+		}catch(ReCaptchaParametroResponseInvalidException | ReCaptchaUnavailableException | ReCaptchaScoreNonValidoException | ReCaptchaInvalidException e) {
 			logger.warn(MessageFormat.format(ERROR_MESSAGE_CONTROLLO_RE_CAPTCHA_TERMINATO_CON_ESITO_ACCESSO_NON_CONSENTITO_0, e.getMessage()));
 		}
 		return authorized;

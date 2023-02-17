@@ -20,7 +20,6 @@ public class Utenza extends it.govpay.model.Utenza {
 	private static final long serialVersionUID = 1L;
 
 	protected transient List<IdUnitaOperativa> dominiUo;
-//	protected transient List<Dominio> domini;
 	protected transient List<TipoVersamento> tipiVersamento; 
 	protected transient List<Acl> aclPrincipal;
 	protected transient List<Acl> aclRuoliEsterni;
@@ -61,7 +60,7 @@ public class Utenza extends it.govpay.model.Utenza {
 	public List<Acl> getAclsProfilo() {
 		List<Acl> collect = new ArrayList<>();
 		
-		Map<Servizio, List<Acl>> mapServizio = new HashMap<Acl.Servizio, List<Acl>>();
+		Map<Servizio, List<Acl>> mapServizio = new HashMap<it.govpay.model.Acl.Servizio, List<Acl>>();
 		
 		List<Acl> acls = this.getAcls();
 		for (Acl acl : acls) {
@@ -111,8 +110,6 @@ public class Utenza extends it.govpay.model.Utenza {
 		}
 		
 		return null;
-		
-//		return this.domini != null ? this.domini.stream().map(d -> d.getCodDominio()).collect(Collectors.toList()) : null;
 	}
 
 	public List<String> getIdDominio() { // TODO
@@ -130,8 +127,6 @@ public class Utenza extends it.govpay.model.Utenza {
 		}
 		
 		return null;
-		
-//		return this.domini != null ? this.domini.stream().map(d -> d.getCodDominio()).collect(Collectors.toList()) : null;
 	}
 
 	public List<String> getIdTipoVersamento() {

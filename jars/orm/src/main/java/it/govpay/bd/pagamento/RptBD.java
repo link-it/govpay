@@ -285,7 +285,7 @@ public class RptBD extends BasicBD {
 	 * @throws NotPermittedException
 	 * @throws ServiceException
 	 */
-	public void updateRpt(long idRpt, Rpt.StatoRpt stato, String descrizione, String codSessione, String pspRedirectUrl, Rpt.EsitoPagamento esito) throws NotFoundException, ServiceException{
+	public void updateRpt(long idRpt, StatoRpt stato, String descrizione, String codSessione, String pspRedirectUrl, EsitoPagamento esito) throws NotFoundException, ServiceException{
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -369,11 +369,11 @@ public class RptBD extends BasicBD {
 			
 			IPaginatedExpression exp = this.getRptService().newPaginatedExpression();
 			exp.in(RPT.model().COD_DOMINIO, codDomini);
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_NODO.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_RIFIUTATA_NODO.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_RIFIUTATA_PSP.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RT_ACCETTATA_PA.toString());
 			
 			// filtro temporale sui giorni
 			Date now = new Date();
@@ -431,12 +431,12 @@ public class RptBD extends BasicBD {
 				exp.greaterEquals(RPT.model().DATA_MSG_RICHIESTA, dataSogliaInf);
 			}
 			
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_NODO.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_SCADUTA.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_RIFIUTATA_NODO.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_RIFIUTATA_PSP.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RT_ACCETTATA_PA.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_SCADUTA.toString());
 			
 			exp.offset(offset).limit(limit);
 			exp.addOrder(RPT.model().DATA_MSG_RICEVUTA, SortOrder.ASC);
@@ -496,12 +496,12 @@ public class RptBD extends BasicBD {
 			Date dataSoglia = c.getTime();
 			exp.lessThan(RPT.model().DATA_MSG_RICHIESTA, dataSoglia);
 			
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_NODO.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_SCADUTA.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_RIFIUTATA_NODO.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_RIFIUTATA_PSP.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RT_ACCETTATA_PA.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_SCADUTA.toString());
 			
 			NonNegativeNumber count = this.getRptService().count(exp);
 			

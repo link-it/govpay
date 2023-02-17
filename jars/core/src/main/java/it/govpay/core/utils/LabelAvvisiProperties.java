@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -113,7 +114,7 @@ public class LabelAvvisiProperties {
 				} catch (IOException e) {
 					throw new ConfigException(e);
 				} 
-				log.debug("Individuata configurazione prioritaria Mapping Label TipoEvento: " + gpConfigFile.getAbsolutePath());
+				log.debug(MessageFormat.format("Individuata configurazione prioritaria Mapping Label TipoEvento: {0}", gpConfigFile.getAbsolutePath()));
 				this.props[0] = props0;
 			}
 			
@@ -123,10 +124,10 @@ public class LabelAvvisiProperties {
 				this.propMap.put(lingua, properties);
 			}
 		} catch (PropertyNotFoundException e) {
-			log.error("Errore di inizializzazione gestore label avvisi pagamento: " + e.getMessage(), e); 
+			log.error(MessageFormat.format("Errore di inizializzazione gestore label avvisi pagamento: {0}", e.getMessage()), e); 
 			throw new ConfigException(e);
 		} catch (IOException e) {
-			log.error("Errore di inizializzazione gestore label avvisi pagamento: " + e.getMessage(), e); 
+			log.error(MessageFormat.format("Errore di inizializzazione gestore label avvisi pagamento: {0}", e.getMessage()), e); 
 			throw new ConfigException(e);
 		}
 	}
@@ -169,10 +170,10 @@ public class LabelAvvisiProperties {
 			}
 		}
 
-		if(log!= null) log.info("Proprieta " + name + " non trovata");
+		if(log!= null) log.info(MessageFormat.format("Proprieta {0} non trovata", name));
 
 		if(required) 
-			throw new PropertyNotFoundException("Proprieta ["+name+"] non trovata");
+			throw new PropertyNotFoundException(MessageFormat.format("Proprieta [{0}] non trovata", name));
 		else 
 			return null;
 	}
@@ -196,13 +197,13 @@ public class LabelAvvisiProperties {
 			}
 			if(value == null) {
 				if(required) 
-					throw new PropertyNotFoundException("Proprieta ["+name+"] non trovata");
+					throw new PropertyNotFoundException(MessageFormat.format("Proprieta [{0}] non trovata", name));
 				else return null;
 			} else {
-				if(log != null) log.info("Letta proprieta di configurazione " + logString + name + ": " + value);
+				if(log != null) log.info(MessageFormat.format("Letta proprieta di configurazione {0}{1}: {2}", logString, name, value));
 			}
 		} else {
-			if(log != null) log.info("Letta proprieta di sistema " + name + ": " + value);
+			if(log != null) log.info(MessageFormat.format("Letta proprieta di sistema {0}: {1}", name, value));
 		}
 
 		return value.trim();
@@ -213,8 +214,8 @@ public class LabelAvvisiProperties {
 		Properties p = this.propMap.get(lingua);
 
 		if(p == null) {
-			log.debug("Configurazione ["+lingua+"] non trovata");
-			throw new UtilsException("Configurazione ["+lingua+"] non trovata");
+			log.debug(MessageFormat.format("Configurazione [{0}] non trovata", lingua));
+			throw new UtilsException(MessageFormat.format("Configurazione [{0}] non trovata", lingua));
 		}
 
 		return p;

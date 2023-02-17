@@ -20,6 +20,7 @@
 package it.govpay.core.business;
 
 import java.math.BigInteger;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -116,10 +117,10 @@ public class Pagamento   {
 
 				//this.closeConnection();
 				ctx.getApplicationLogger().log("pendenti.acquisizionelistaPendenti", stazione.getCodStazione());
-				log.debug("Recupero i pendenti [CodStazione: " + stazione.getCodStazione() + "]");
+				log.debug(MessageFormat.format("Recupero i pendenti [CodStazione: {0}]", stazione.getCodStazione()));
 
 				if(lstDomini.isEmpty()) {
-					log.debug("Recupero i pendenti per la stazione [CodStazione: " + stazione.getCodStazione() + "], non eseguita: la stazione non e' associata ad alcun dominio.");
+					log.debug(MessageFormat.format("Recupero i pendenti per la stazione [CodStazione: {0}], non eseguita: la stazione non e'' associata ad alcun dominio.", stazione.getCodStazione()));
 					continue;
 				}
 
@@ -133,7 +134,7 @@ public class Pagamento   {
 
 				Map<String, String> statiRptPendenti = this.acquisisciPendenti(giornale,intermediario, stazione, lstDomini, false, inizioFinestra, fineFinestra, 500);
 
-				log.info("Identificate sul NodoSPC " + statiRptPendenti.size() + " RPT pendenti");
+				log.info(MessageFormat.format("Identificate sul NodoSPC {0} RPT pendenti", statiRptPendenti.size()));
 				ctx.getApplicationLogger().log("pendenti.listaPendentiOk", stazione.getCodStazione(), statiRptPendenti.size() + "");
 
 				// Ho acquisito tutti gli stati pendenti. 
@@ -148,11 +149,11 @@ public class Pagamento   {
 				}
 				
 				Integer numeroMassimoGiorniRPTPendenti = GovpayConfig.getInstance().getNumeroMassimoGiorniRPTPendenti();
-				log.info("Ricerca su GovPay delle transazioni pendenti da massimo " + numeroMassimoGiorniRPTPendenti + " giorni...");
+				log.info(MessageFormat.format("Ricerca su GovPay delle transazioni pendenti da massimo {0} giorni...", numeroMassimoGiorniRPTPendenti));
 				
 				List<Rpt> rpts = rptBD.getRptPendenti(codDomini , numeroMassimoGiorniRPTPendenti);
 
-				log.info("Identificate su GovPay " + rpts.size() + " transazioni pendenti");
+				log.info(MessageFormat.format("Identificate su GovPay {0} transazioni pendenti", rpts.size()));
 				ctx.getApplicationLogger().log("pendenti.listaPendentiGovPayOk", rpts.size() + "");
 
 				// Scorro le transazioni. Se non risulta pendente sul nodo (quindi non e' pendente) la mando in aggiornamento.
@@ -165,26 +166,26 @@ public class Pagamento   {
 					// WORKAROUND CONCORRENZA CON INVIO RT DAL NODO SKIPPO LE RPT PENDENTI CREATE DA MENO DI X MINUTI (INDICATI NELLE PROPERTIES)
 
 					if(rpt.getDataMsgRichiesta().after(dataCreazioneRPT)) {
-						log.info("Rpt recente [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] aggiornamento non necessario");
+						log.info(MessageFormat.format("Rpt recente [Dominio:{0} IUV:{1} CCP:{2}] aggiornamento non necessario",	rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp()));
 						continue;
 					} else {
-						log.info("Rpt pendente su GovPay [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: stato " + rpt.getStato().name());
+						log.info(MessageFormat.format("Rpt pendente su GovPay [Dominio:{0} IUV:{1} CCP:{2}]: stato {3}", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), rpt.getStato().name()));
 					}
 
 					// Aggiorno il batch
 					BatchManager.aggiornaEsecuzione(configWrapper, Operazioni.PND);
 
-					String stato = statiRptPendenti.get(rpt.getCodDominio() + "@" + rpt.getIuv() + "@" + rpt.getCcp());
+					String stato = statiRptPendenti.get(MessageFormat.format("{0}@{1}@{2}", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp()));
 					if(stato != null && !stato.equals(StatoRpt.RPT_ANNULLATA.name())) {
-						log.info("Rpt confermata pendente dal nodo [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: stato " + stato);
+						log.info(MessageFormat.format("Rpt confermata pendente dal nodo [Dominio:{0} IUV:{1} CCP:{2}]: stato {3}", rpt.getCodDominio(),	rpt.getIuv(), rpt.getCcp(), stato));
 						ctx.getApplicationLogger().log("pendenti.confermaPendente", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), stato);
 						StatoRpt statoRpt = StatoRpt.toEnum(stato);
 						if(!rpt.getStato().equals(statoRpt)) {
-							response.add("[" + rpt.getCodDominio() + " " + rpt.getIuv() + " " + rpt.getCcp() + "]# Aggiornamento in stato " + stato.toString());
+							response.add(MessageFormat.format("[{0} {1} {2}]# Aggiornamento in stato {3}", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), stato.toString()));
 							rptBD.updateRpt(rpt.getId(), statoRpt, null, null, null,null);
 						}
 					} else {
-						log.info("Rpt non pendente o sconosciuta sul nodo [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]");
+						log.info(MessageFormat.format("Rpt non pendente o sconosciuta sul nodo [Dominio:{0} IUV:{1} CCP:{2}]", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp()));
 						ctx.getApplicationLogger().log("pendenti.confermaNonPendente", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
 						// Accedo alle entita che serviranno in seguito prima di chiudere la connessione;
 						rpt.getStazione(configWrapper).getIntermediario(configWrapper);
@@ -192,7 +193,7 @@ public class Pagamento   {
 							RptUtils.aggiornaRptDaNpD(intermediario, rpt);
 						} catch (NdpException e) {
 							ctx.getApplicationLogger().log("pendenti.rptAggiornataKo", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), e.getFaultString());
-							log.warn("Errore durante l'aggiornamento della RPT: " + e.getFaultString());
+							log.warn(MessageFormat.format("Errore durante l''aggiornamento della RPT: {0}", e.getFaultString()));
 							continue;
 						} catch (Exception e) {
 							ctx.getApplicationLogger().log("pendenti.rptAggiornataFail", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), e.getMessage());
@@ -202,11 +203,11 @@ public class Pagamento   {
 
 						if(rpt.getModelloPagamento().equals(ModelloPagamento.ATTIVATO_PRESSO_PSP) && (rpt.getStato().equals(StatoRpt.RPT_ATTIVATA) || rpt.getStato().equals(StatoRpt.RPT_ERRORE_INVIO_A_NODO))) {
 							ctx.getApplicationLogger().log("pendenti.rptAttivata", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
-							log.info("Rpt attivata ma non consegnata [" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]: avviata rispedizione al Nodo.");
+							log.info(MessageFormat.format("Rpt attivata ma non consegnata [{0}][{1}][{2}]: avviata rispedizione al Nodo.", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp()));
 						} else {
 							ctx.getApplicationLogger().log("pendenti.rptAggiornata", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), rpt.getStato().toString());
-							log.info("Processo di aggiornamento completato [" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]: nuovo stato " + rpt.getStato().toString());
-							response.add("[" + rpt.getCodDominio() + " " + rpt.getIuv() + " " + rpt.getCcp() + "]# Aggiornamento in stato " + rpt.getStato().toString());
+							log.info(MessageFormat.format("Processo di aggiornamento completato [{0}][{1}][{2}]: nuovo stato {3}", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), rpt.getStato().toString()));
+							response.add(MessageFormat.format("[{0} {1} {2}]# Aggiornamento in stato {3}", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), rpt.getStato().toString()));
 						}
 					}
 				}
@@ -263,10 +264,10 @@ public class Pagamento   {
 
 			if(perDominio) {
 				richiesta.setIdentificativoDominio(dominio.getCodDominio());
-				log.debug("Richiedo la lista delle RPT pendenti (Dominio " + dominio.getCodDominio() + " dal " + dateFormat.format(da.getTime()) + " al " + dateFormat.format(a.getTime()) + ")");
+				log.debug(MessageFormat.format("Richiedo la lista delle RPT pendenti (Dominio {0} dal {1} al {2})", dominio.getCodDominio(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime())));
 				ctx.getApplicationLogger().log("pendenti.listaPendenti", dominio.getCodDominio(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime()));
 			} else {
-				log.debug("Richiedo la lista delle RPT pendenti (Stazione " + stazione.getCodStazione() + " dal " + dateFormat.format(da.getTime()) + " al " + dateFormat.format(a.getTime()) + ")");
+				log.debug(MessageFormat.format("Richiedo la lista delle RPT pendenti (Stazione {0} dal {1} al {2})", stazione.getCodStazione(),	dateFormat.format(da.getTime()), dateFormat.format(a.getTime())));
 				ctx.getApplicationLogger().log("pendenti.listaPendenti", stazione.getCodStazione(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime()));
 			}
 
@@ -305,7 +306,7 @@ public class Pagamento   {
 
 				if(risposta != null) {
 					if(risposta.getFault() != null) {
-						log.warn("Ricevuto errore durante la richiesta di lista pendenti: " + risposta.getFault().getFaultCode() + ": " + risposta.getFault().getFaultString());
+						log.warn(MessageFormat.format("Ricevuto errore durante la richiesta di lista pendenti: {0}: {1}", risposta.getFault().getFaultCode(), risposta.getFault().getFaultString()));
 
 						String fc = risposta.getFault().getFaultCode() != null ? risposta.getFault().getFaultCode() : "-";
 						String fs = risposta.getFault().getFaultString() != null ? risposta.getFault().getFaultString() : "-";
@@ -347,7 +348,7 @@ public class Pagamento   {
 							finestra = finestra/2;
 							Calendar mezzo = (Calendar) a.clone();
 							mezzo.add(Calendar.DATE, -finestra);
-							log.debug("Lista pendenti con troppi elementi. Ricalcolo la finestra: (dal " + dateFormat.format(da.getTime()) + " a " + dateFormat.format(a.getTime()) + ")");
+							log.debug(MessageFormat.format("Lista pendenti con troppi elementi. Ricalcolo la finestra: (dal {0} a {1})", dateFormat.format(da.getTime()), dateFormat.format(a.getTime())));
 							statiRptPendenti.putAll(this.acquisisciPendenti(giornale, intermediario, stazione, lstDomini, false, da, mezzo, soglia));
 							mezzo.add(Calendar.DATE, 1);
 							statiRptPendenti.putAll(this.acquisisciPendenti(giornale, intermediario, stazione, lstDomini, false, mezzo, a, soglia));
@@ -366,7 +367,7 @@ public class Pagamento   {
 
 					// Qui ci arrivo o se ho meno di 500 risultati oppure se sono in *giornaliero per dominio*
 					for(TipoRPTPendente rptPendente : risposta.getListaRPTPendenti().getRptPendente()) {
-						String rptKey = rptPendente.getIdentificativoDominio() + "@" + rptPendente.getIdentificativoUnivocoVersamento() + "@" + rptPendente.getCodiceContestoPagamento();
+						String rptKey = MessageFormat.format("{0}@{1}@{2}", rptPendente.getIdentificativoDominio(), rptPendente.getIdentificativoUnivocoVersamento(), rptPendente.getCodiceContestoPagamento());
 						statiRptPendenti.put(rptKey, rptPendente.getStato());
 					}
 				}
@@ -588,7 +589,7 @@ public class Pagamento   {
 				int offset = 0;
 				int limit = 100;
 				List<Rpt> rtList = rptBD.getRptScadute(codDominio, GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins(), offset, limit, dataUltimoCheck);
-				log.trace("Identificate su GovPay per il Dominio ["+codDominio+"]: " + rtList.size() + " transazioni scadute da piu' di ["+GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()+"] minuti.");
+				log.trace(MessageFormat.format("Identificate su GovPay per il Dominio [{0}]: {1} transazioni scadute da piu'' di [{2}] minuti.", codDominio, rtList.size(), GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()));
 				do {
 					if(rtList.size() > 0) {
 						for (Rpt rpt : rtList) {
@@ -596,11 +597,11 @@ public class Pagamento   {
 								rptBD.setAutoCommit(false);
 
 								rpt.setStato(StatoRpt.RPT_SCADUTA);
-								rpt.setDescrizioneStato("Tentativo di pagamento scaduto dopo timeout di "+GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()+" minuti.");
+								rpt.setDescrizioneStato(MessageFormat.format("Tentativo di pagamento scaduto dopo timeout di {0} minuti.", GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()));
 								PagamentoPortale oldPagamentoPortale = rpt.getPagamentoPortale();
 								if(oldPagamentoPortale != null) {
 									oldPagamentoPortale.setStato(STATO.NON_ESEGUITO);
-									oldPagamentoPortale.setDescrizioneStato("Tentativo di pagamento scaduto dopo timeout di "+GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()+" minuti.");
+									oldPagamentoPortale.setDescrizioneStato(MessageFormat.format("Tentativo di pagamento scaduto dopo timeout di {0} minuti.", GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()));
 								}
 								rptBD.updateRpt(rpt.getId(), rpt);
 								if(oldPagamentoPortale != null) {
@@ -608,22 +609,22 @@ public class Pagamento   {
 								}
 								
 								rptBD.commit();
-								log.info("RPT [idDominio:"+rpt.getCodDominio()+"][iuv:"+rpt.getIuv()+"][ccp:"+rpt.getCcp()+"] annullata con successo.");
+								log.info(MessageFormat.format("RPT [idDominio:{0}][iuv:{1}][ccp:{2}] annullata con successo.", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp()));
 								
 							}catch(ServiceException e) {
 								rptBD.rollback();
-								log.error("Errore durante l'annullamento della RPT [idDominio:"+rpt.getCodDominio()+"][iuv:"+rpt.getIuv()+"][ccp:"+rpt.getCcp()+"]: " +e .getMessage(), e);
+								log.error(MessageFormat.format("Errore durante l''annullamento della RPT [idDominio:{0}][iuv:{1}][ccp:{2}]: {3}", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), e .getMessage()), e);
 								throw e;
 							}finally {
 								rptBD.setAutoCommit(false);
 							}
 						}
-						log.trace("Completato inserimento ["+rtList.size()+"] RT nel file di sintesi pagamenti");
+						log.trace(MessageFormat.format("Completato inserimento [{0}] RT nel file di sintesi pagamenti", rtList.size()));
 					}
 
 					offset += limit;
 					rtList = rptBD.getRptScadute(codDominio, GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins(), offset, limit, dataUltimoCheck);
-					log.trace("Identificate su GovPay per il Dominio ["+codDominio+"]: " + rtList.size() + " transazioni scadute da piu' di ["+GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()+"] minuti.");
+					log.trace(MessageFormat.format("Identificate su GovPay per il Dominio [{0}]: {1} transazioni scadute da piu'' di [{2}] minuti.", codDominio, rtList.size(), GovpayConfig.getInstance().getTimeoutPendentiModello3_SANP_24_Mins()));
 				}while(rtList.size() > 0);
 			}
 		} catch (Exception e) {

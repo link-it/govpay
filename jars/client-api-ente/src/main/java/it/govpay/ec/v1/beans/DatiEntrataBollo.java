@@ -41,19 +41,19 @@ public class DatiEntrataBollo  {
       return null;
     }
   }  
-  // @Schema(required = true, description = "Tipologia di Bollo digitale")
+  // @Schema(requiredMode = RequiredMode.REQUIRED, description = "Tipologia di Bollo digitale")
  /**
    * Tipologia di Bollo digitale  
   **/
   private TipoBolloEnum tipoBollo = null;
   
-  // @Schema(required = true, description = "Digest in base64 del documento informatico associato alla marca da bollo")
+  // @Schema(requiredMode = RequiredMode.REQUIRED, description = "Digest in base64 del documento informatico associato alla marca da bollo")
  /**
    * Digest in base64 del documento informatico associato alla marca da bollo  
   **/
   private String hashDocumento = null;
   
-  // @Schema(required = true, description = "Sigla automobilistica della provincia di residenza del soggetto pagatore")
+  // @Schema(requiredMode = RequiredMode.REQUIRED, description = "Sigla automobilistica della provincia di residenza del soggetto pagatore")
  /**
    * Sigla automobilistica della provincia di residenza del soggetto pagatore  
   **/

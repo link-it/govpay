@@ -610,7 +610,7 @@ public class Rpt {
 			RptFilter filter = rptBD.newFilter();
 			filter.setCodDominio(codDominio);
 			filter.setIuv(iuv);
-			filter.setStato(it.govpay.bd.model.Rpt.stati_pendenti);
+			filter.setStato(it.govpay.model.Rpt.stati_pendenti);
 			filter.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
 
 			

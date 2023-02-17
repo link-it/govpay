@@ -4,10 +4,11 @@ package it.govpay.ec.v1.beans;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class NuovoAllegatoPendenza   {
   
-  @Schema(required = true, description = "nome del file")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "nome del file")
  /**
    * nome del file  
   **/
@@ -25,7 +26,7 @@ public class NuovoAllegatoPendenza   {
   **/
   private String descrizione = null;
   
-  @Schema(required = true, description = "contenuto del file")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "contenuto del file")
  /**
    * contenuto del file  
   **/

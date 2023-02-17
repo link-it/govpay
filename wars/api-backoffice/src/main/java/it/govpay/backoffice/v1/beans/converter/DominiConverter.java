@@ -82,16 +82,16 @@ public class DominiConverter {
 
 			switch (entrataRequest.getTipoContabilitaEnum()) {
 			case ALTRO:
-				tributo.setTipoContabilitaCustom(it.govpay.bd.model.Tributo.TipoContabilita.ALTRO);
+				tributo.setTipoContabilitaCustom(it.govpay.model.Tributo.TipoContabilita.ALTRO);
 				break;
 			case CAPITOLO:
-				tributo.setTipoContabilitaCustom(it.govpay.bd.model.Tributo.TipoContabilita.CAPITOLO);
+				tributo.setTipoContabilitaCustom(it.govpay.model.Tributo.TipoContabilita.CAPITOLO);
 				break;
 			case SIOPE:
-				tributo.setTipoContabilitaCustom(it.govpay.bd.model.Tributo.TipoContabilita.SIOPE);
+				tributo.setTipoContabilitaCustom(it.govpay.model.Tributo.TipoContabilita.SIOPE);
 				break;
 			case SPECIALE:
-				tributo.setTipoContabilitaCustom(it.govpay.bd.model.Tributo.TipoContabilita.SPECIALE);
+				tributo.setTipoContabilitaCustom(it.govpay.model.Tributo.TipoContabilita.SPECIALE);
 				break;
 			}
 		}

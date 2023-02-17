@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 // @Schema(description="Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.")
 public class DatiEntrataCodice  {
   
-  // @Schema(required = true, description = "")
+  // @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private String codEntrata = null;
  /**
    * Get codEntrata

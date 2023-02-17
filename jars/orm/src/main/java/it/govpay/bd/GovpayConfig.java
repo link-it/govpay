@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.Properties;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -83,10 +84,10 @@ public class GovpayConfig {
 				if(this.resourceDir != null) {
 					File resourceDirFile = new File(this.resourceDir);
 					if(!resourceDirFile.isDirectory())
-						throw new Exception("Il path indicato nella property \"it.govpay.resource.path\" (" + this.resourceDir + ") non esiste o non e' un folder.");
+						throw new Exception(MessageFormat.format("Il path indicato nella property \"it.govpay.resource.path\" ({0}) non esiste o non e'' un folder.", this.resourceDir));
 				}
 			} catch (Exception e) {
-				LoggerWrapperFactory.getLogger("boot").warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
+				LoggerWrapperFactory.getLogger("boot").warn(MessageFormat.format("Errore di inizializzazione: {0}. Property ignorata.", e.getMessage()));
 			}
 
 			Properties props0 = null;
@@ -102,7 +103,7 @@ public class GovpayConfig {
 				} catch (IOException e) {
 					throw new ConfigException(e);
 				} 
-				log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
+				log.info(MessageFormat.format("Individuata configurazione prioritaria: {0}", gpConfigFile.getAbsolutePath()));
 				this.props[0] = props0;
 			}
 
@@ -115,7 +116,7 @@ public class GovpayConfig {
 			case "hsql":
 				break;
 			default:
-				LoggerWrapperFactory.getLogger("boot").warn("Database [" + this.databaseType + "] non supportato. Database validi: postgresql, oracle, mysql, sqlserver, hsql.");
+				LoggerWrapperFactory.getLogger("boot").warn(MessageFormat.format("Database [{0}] non supportato. Database validi: postgresql, oracle, mysql, sqlserver, hsql.", this.databaseType));
 				break;
 			}
 			String databaseShowSqlString = this.getProperty("it.govpay.orm.showSql", this.props, true);
@@ -132,10 +133,10 @@ public class GovpayConfig {
 				}
 			}
 		} catch (PropertyNotFoundException e) {
-			LoggerWrapperFactory.getLogger("boot").error("Errore di inizializzazione: " + e.getMessage());
+			LoggerWrapperFactory.getLogger("boot").error(MessageFormat.format("Errore di inizializzazione: {0}", e.getMessage()));
 			throw new ConfigException(e);
 		} catch (IOException e) {
-			LoggerWrapperFactory.getLogger("boot").error("Errore di inizializzazione: " + e.getMessage());
+			LoggerWrapperFactory.getLogger("boot").error(MessageFormat.format("Errore di inizializzazione: {0}", e.getMessage()));
 			throw new ConfigException(e);
 		}
 		if(dataonly) return;
@@ -163,13 +164,13 @@ public class GovpayConfig {
 			}
 			if(value == null) {
 				if(required) 
-					throw new PropertyNotFoundException("Proprieta ["+name+"] non trovata");
+					throw new PropertyNotFoundException(MessageFormat.format("Proprieta [{0}] non trovata", name));
 				else return null;
 			} else {
-				log.info("Letta proprieta di configurazione " + logString + name + ": " + value);
+				log.info(MessageFormat.format("Letta proprieta di configurazione {0}{1}: {2}", logString, name, value));
 			}
 		} else {
-			log.info("Letta proprieta di sistema " + name + ": " + value);
+			log.info(MessageFormat.format("Letta proprieta di sistema {0}: {1}", name, value));
 		}
 
 		return value.trim();
@@ -186,10 +187,10 @@ public class GovpayConfig {
 			}
 		}
 
-		if(log != null) log.info("Proprieta " + name + " non trovata");
+		if(log != null) log.info(MessageFormat.format("Proprieta {0} non trovata", name));
 
 		if(required) 
-			throw new PropertyNotFoundException("Proprieta ["+name+"] non trovata");
+			throw new PropertyNotFoundException(MessageFormat.format("Proprieta [{0}] non trovata", name));
 		else 
 			return null;
 	}

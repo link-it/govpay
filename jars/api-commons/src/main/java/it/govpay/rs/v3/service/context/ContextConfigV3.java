@@ -12,7 +12,7 @@ import it.govpay.core.utils.GpContext;
 public class ContextConfigV3 extends org.openspcoop2.utils.service.context.ContextConfig {
 
 	public static final Integer GOVPAY_VERSIONE_API = 3;
-	public static final String GOVPAY_SERVICE_TYPE = GpContext.GovPay;
+	public static final String GOVPAY_SERVICE_TYPE = GpContext.GOVPAY;
 	
 	public ContextConfigV3() {
 		super();

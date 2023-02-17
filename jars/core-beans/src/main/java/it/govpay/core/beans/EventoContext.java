@@ -1,5 +1,6 @@
 package it.govpay.core.beans;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import it.govpay.model.Evento.RuoloEvento;
@@ -7,8 +8,10 @@ import it.govpay.model.eventi.DatiPagoPA;
 import it.govpay.model.eventi.DettaglioRichiesta;
 import it.govpay.model.eventi.DettaglioRisposta;
 
-public class EventoContext {
+public class EventoContext implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	public static final String APIPAGOPA_TIPOEVENTO_PAAVERIFICARPT = "paaVerificaRPT";
 	public static final String APIPAGOPA_TIPOEVENTO_PAAATTIVARPT = "paaAttivaRPT";
 	public static final String APIPAGOPA_TIPOEVENTO_PAAINVIAESITOSTORNO = "paaInviaEsitoStorno";
@@ -184,19 +187,6 @@ public class EventoContext {
 	public String getTipoEvento() {
 		return tipoEvento;
 	}
-
-	//	public void setTipoEvento(String httpMethod, String nomeOperazione) {
-	//		StringBuilder sb = new StringBuilder();
-	//		if(httpMethod != null)
-	//			sb.append(httpMethod.toUpperCase());
-	//		if(sb.length() > 0 && nomeOperazione != null)
-	//			sb.append("-");
-	//
-	//		if(nomeOperazione != null)
-	//			sb.append(nomeOperazione.toUpperCase());
-	//
-	//		this.tipoEvento = sb.toString();
-	//	}
 
 	public void setTipoEvento(String tipoEvento) {
 		this.tipoEvento = tipoEvento;

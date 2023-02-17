@@ -6,6 +6,7 @@ package it.govpay.backoffice.v1.controllers;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -54,6 +55,10 @@ import it.govpay.model.Utenza.TIPO_UTENZA;
  *
  */
 public abstract class BaseController {
+
+	private static final String FAULT_CODICE_SINTASSI = "SINTASSI";
+
+	private static final String FAULT_DESCRIZIONE_RICHIESTA_NON_VALIDA = "Richiesta non valida";
 
 	public final static Integer DEFAULT_NUMERO_ENTRIES_ANAGRAFICA = 500;
 
@@ -172,7 +177,7 @@ public abstract class BaseController {
 			return this.handleIOException(uriInfo, httpHeaders, methodName, (IOException)e,transactionId);
 		}
 
-		this.log.error("Errore interno durante "+methodName, e);
+		this.log.error(MessageFormat.format("Errore interno durante {0}", methodName), e);
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.INTERNO);
 		respKo.setCodice(EsitoOperazione.INTERNAL.toString());
@@ -205,10 +210,10 @@ public abstract class BaseController {
 
 		String sottotipoEsito = respKo.getCodice();
 		if(e instanceof NotAuthenticatedException || e instanceof NotAuthorizedException) {
-			this.log.info("Accesso alla risorsa "+methodName+" non consentito: "+ e.getMessage() + ", " + e.getDetails());
+			this.log.info(MessageFormat.format("Accesso alla risorsa {0} non consentito: {1}, {2}", methodName, e.getMessage(), e.getDetails()));
 			sottotipoEsito = CategoriaEnum.AUTORIZZAZIONE.name();
 		} else {
-			this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
+			this.log.info(MessageFormat.format("Errore ({0}) durante {1}: {2}", e.getClass().getSimpleName(), methodName, e.getMessage()));
 		}
 
 		String respJson = this.getRespJson(respKo);
@@ -221,12 +226,12 @@ public abstract class BaseController {
 	}
 
 	private Response handleUnprocessableEntityException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, UnprocessableEntityException e, String transactionId) {
-		this.log.info("Errore ("+e.getClass().getSimpleName()+") durante "+methodName+": "+ e.getMessage());
+		this.log.info(MessageFormat.format("Errore ({0}) durante {1}: {2}", e.getClass().getSimpleName(), methodName, e.getMessage()));
 
 		FaultBean respKo = new FaultBean();
 		respKo.setCategoria(CategoriaEnum.RICHIESTA);
 		respKo.setCodice("SEMANTICA");
-		respKo.setDescrizione("Richiesta non valida");
+		respKo.setDescrizione(FAULT_DESCRIZIONE_RICHIESTA_NON_VALIDA);
 		respKo.setDettaglio(e.getDetails());
 
 		String respJson = this.getRespJson(respKo);
@@ -243,10 +248,10 @@ public abstract class BaseController {
 		switch (e.getStatusCode()) {
 		case 200: 
 		case 422: // richieste che non passano la validazione semantica
-			this.log.info("Rilevata GovPayException durante l'esecuzione del metodo: "+methodName+", causa: "+ e.getCausa() + ", messaggio: " + e.getMessageV3());
+			this.log.info(MessageFormat.format("Rilevata GovPayException durante l''esecuzione del metodo: {0}, causa: {1}, messaggio: {2}", methodName, e.getCausa(), e.getMessageV3()));
 			break;
 		default:
-			this.log.error("Rilevata GovPayException durante l'esecuzione del metodo: "+methodName+", causa: "+ e.getCausa() + ", messaggio: " + e.getMessageV3(), e);
+			this.log.error(MessageFormat.format("Rilevata GovPayException durante l''esecuzione del metodo: {0}, causa: {1}, messaggio: {2}", methodName, e.getCausa(), e.getMessageV3()), e);
 			break;
 		}
 		FaultBean respKo = new FaultBean();
@@ -276,11 +281,11 @@ public abstract class BaseController {
 	}
 
 	private Response handleValidationException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, ValidationException e, String transactionId) {
-		this.log.warn("Richiesta rifiutata per errori di validazione: " + e);
+		this.log.warn(MessageFormat.format("Richiesta rifiutata per errori di validazione: {0}", e.getMessage()), e);
 		FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.RICHIESTA);
-			respKo.setCodice("SINTASSI");
-			respKo.setDescrizione("Richiesta non valida");
+			respKo.setCodice(FAULT_CODICE_SINTASSI);
+			respKo.setDescrizione(FAULT_DESCRIZIONE_RICHIESTA_NON_VALIDA);
 			respKo.setDettaglio(e.getMessage());
 
 		int statusCode = 400;
@@ -292,11 +297,11 @@ public abstract class BaseController {
 	}
 
 	private Response handleIOException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, IOException e, String transactionId) {
-		this.log.warn("Richiesta rifiutata per errori di validazione: " + e);
+		this.log.warn(MessageFormat.format("Richiesta rifiutata per errori di validazione: {0}", e.getMessage()), e);
 		FaultBean respKo = new FaultBean();
 			respKo.setCategoria(CategoriaEnum.RICHIESTA);
-			respKo.setCodice("SINTASSI");
-			respKo.setDescrizione("Richiesta non valida");
+			respKo.setCodice(FAULT_CODICE_SINTASSI);
+			respKo.setDescrizione(FAULT_DESCRIZIONE_RICHIESTA_NON_VALIDA);
 			respKo.setDettaglio(e.getMessage());
 
 		int statusCode = 400;
@@ -326,7 +331,7 @@ public abstract class BaseController {
 	}
 
 	private Response handleRedirectException(UriInfo uriInfo, HttpHeaders httpHeaders, String methodName, RedirectException e, String transactionId) {
-		this.log.error("Esecuzione del metodo ["+methodName+"] si e' conclusa con un errore: " + e.getMessage() + ", redirect verso la url: " + e.getLocation());
+		this.log.error(MessageFormat.format("Esecuzione del metodo [{0}] si e'' conclusa con un errore: {1}, redirect verso la url: {2}", methodName, e.getMessage(), e.getLocation()));
 		ResponseBuilder responseBuilder = Response.seeOther(e.getURILocation());
 		this.handleEventoOk(responseBuilder, transactionId);
 		if(transactionId != null)

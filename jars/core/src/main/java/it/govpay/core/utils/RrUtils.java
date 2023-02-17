@@ -52,7 +52,6 @@ import it.gov.digitpa.schemas._2011.pagamenti.revoche.RR;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.StTipoIdentificativoUnivoco;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.StTipoIdentificativoUnivocoPersFG;
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
@@ -273,7 +272,7 @@ public class RrUtils extends NdpValidationUtils {
 		datiPagoPA.setCodCanale(rpt.getCodCanale());
 		datiPagoPA.setCodPsp(rpt.getCodPsp());
 		datiPagoPA.setCodStazione(stazione.getCodStazione());
-		datiPagoPA.setErogatore(Evento.NDP);
+		datiPagoPA.setErogatore(it.govpay.model.Evento.NDP);
 		datiPagoPA.setFruitore(intermediario.getCodIntermediario());
 		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
 		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());

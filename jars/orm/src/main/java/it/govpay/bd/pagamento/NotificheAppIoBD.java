@@ -94,7 +94,7 @@ public class NotificheAppIoBD extends BasicBD {
 			long adesso = new Date().getTime();
 			exp.isNotNull(it.govpay.orm.NotificaAppIO.model().DATA_PROSSIMA_SPEDIZIONE).and();
 			exp.lessEquals(it.govpay.orm.NotificaAppIO.model().DATA_PROSSIMA_SPEDIZIONE, new Date(adesso));
-			exp.equals(it.govpay.orm.NotificaAppIO.model().STATO, NotificaAppIo.StatoSpedizione.DA_SPEDIRE.toString());
+			exp.equals(it.govpay.orm.NotificaAppIO.model().STATO, StatoSpedizione.DA_SPEDIRE.toString());
 			
 			if(offset != null) {
 				exp.offset(offset);
@@ -123,14 +123,14 @@ public class NotificheAppIoBD extends BasicBD {
 	
 	public long countNotificheDaSpedire() throws ServiceException {
 		NotificaAppIoFilter newFilter = this.newFilter();
-		newFilter.setStato(NotificaAppIo.StatoSpedizione.DA_SPEDIRE.toString());
+		newFilter.setStato(StatoSpedizione.DA_SPEDIRE.toString());
 		newFilter.setDataProssimaSpedizioneFine(new Date());
 		return this.count(newFilter);
 	}
 	
 	public long countNotificheInAttesa() throws ServiceException {
 		NotificaAppIoFilter newFilter = this.newFilter();
-		newFilter.setStato(NotificaAppIo.StatoSpedizione.DA_SPEDIRE.toString());
+		newFilter.setStato(StatoSpedizione.DA_SPEDIRE.toString());
 		return this.count(newFilter);
 	}
 

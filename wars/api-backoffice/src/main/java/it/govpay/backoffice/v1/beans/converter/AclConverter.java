@@ -29,9 +29,9 @@ public class AclConverter {
 		for(String authS: aclPost.getAutorizzazioni()) {
 			AutorizzazioniEnum auth = AutorizzazioniEnum.fromValue(authS);
 			switch(auth) {
-			case LETTURA: lst.add(Acl.Diritti.LETTURA);
+			case LETTURA: lst.add(Diritti.LETTURA);
 				break;
-			case SCRITTURA: lst.add(Acl.Diritti.SCRITTURA);
+			case SCRITTURA: lst.add(Diritti.SCRITTURA);
 				break;
 			default:
 				break;
@@ -53,9 +53,9 @@ public class AclConverter {
 		for(String authS: aclPost.getAutorizzazioni()) {
 			AutorizzazioniEnum auth = AutorizzazioniEnum.fromValue(authS);
 			switch(auth) {
-			case LETTURA: lst.add(Acl.Diritti.LETTURA);
+			case LETTURA: lst.add(Diritti.LETTURA);
 				break;
-			case SCRITTURA: lst.add(Acl.Diritti.SCRITTURA);
+			case SCRITTURA: lst.add(Diritti.SCRITTURA);
 				break;
 			default:
 				break;
@@ -73,8 +73,8 @@ public class AclConverter {
 		Acl acl = new Acl();
 
 		Set<Diritti> lst = new HashSet<>();
-		lst.add(Acl.Diritti.LETTURA);
-		lst.add(Acl.Diritti.SCRITTURA);
+		lst.add(Diritti.LETTURA);
+		lst.add(Diritti.SCRITTURA);
 		acl.setListaDiritti(lst);
 		acl.setServizio(apiServizio);
 		GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
@@ -90,9 +90,9 @@ public class AclConverter {
 		for(String authS: aclPost.getAutorizzazioni()) {
 			AutorizzazioniEnum auth = AutorizzazioniEnum.fromValue(authS);
 			switch(auth) {
-			case LETTURA: lst.add(Acl.Diritti.LETTURA);
+			case LETTURA: lst.add(Diritti.LETTURA);
 				break;
-			case SCRITTURA: lst.add(Acl.Diritti.SCRITTURA);
+			case SCRITTURA: lst.add(Diritti.SCRITTURA);
 				break;
 			default:
 				break;

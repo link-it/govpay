@@ -37,6 +37,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.converter.RrConverter;
 import it.govpay.bd.pagamento.filters.RrFilter;
+import it.govpay.model.Rr.StatoRr;
 import it.govpay.orm.IdRr;
 import it.govpay.orm.RR;
 import it.govpay.orm.dao.jdbc.JDBCRRServiceSearch;
@@ -166,7 +167,7 @@ public class RrBD extends BasicBD {
 		}
 	}
 	
-	public void updateRr(long id, Rr.StatoRr stato, String descrizione) throws ServiceException{
+	public void updateRr(long id, StatoRr stato, String descrizione) throws ServiceException{
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -218,9 +219,9 @@ public class RrBD extends BasicBD {
 			IPaginatedExpression exp = this.getRrService().newPaginatedExpression();
 			
 			exp.equals(RR.model().COD_DOMINIO, codDominio);
-			exp.notEquals(RR.model().STATO, Rr.StatoRr.RR_ERRORE_INVIO_A_NODO.toString());
-			exp.notEquals(RR.model().STATO, Rr.StatoRr.RR_RIFIUTATA_NODO.toString());
-			exp.notEquals(RR.model().STATO, Rr.StatoRr.ER_ACCETTATA_PA.toString());
+			exp.notEquals(RR.model().STATO, StatoRr.RR_ERRORE_INVIO_A_NODO.toString());
+			exp.notEquals(RR.model().STATO, StatoRr.RR_RIFIUTATA_NODO.toString());
+			exp.notEquals(RR.model().STATO, StatoRr.ER_ACCETTATA_PA.toString());
 			
 			List<RR> findAll = this.getRrService().findAll(exp);
 			return RrConverter.toDTOList(findAll);

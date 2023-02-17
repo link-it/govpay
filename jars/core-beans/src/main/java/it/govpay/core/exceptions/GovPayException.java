@@ -52,12 +52,13 @@ public class GovPayException extends Exception {
 	private EsitoOperazione codEsito;
 	private String causa;
 	private FaultBean faultBean;
-	private Serializable param;
+	private final Serializable param;
 		
-	private GovPayException() {}
+	private GovPayException() {this.param = null;}
 	
 	public GovPayException(FaultBean faultBean) {
 		super();
+		this.param = null;
 		this.faultBean = faultBean;
 		this.setCodEsitoOperazione(EsitoOperazione.NDP_001);
 	}
@@ -66,6 +67,7 @@ public class GovPayException extends Exception {
 		this.params = params;
 		this.setCodEsitoOperazione(codEsito);
 		this.setCausa(causa);
+		this.param = null;
 	}
 	
 	public GovPayException(String causa, EsitoOperazione codEsito, Throwable e, String ... params) {
@@ -73,6 +75,7 @@ public class GovPayException extends Exception {
 		this.params = params;
 		this.setCodEsitoOperazione(codEsito);
 		this.setCausa(causa);
+		this.param = null;
 	}
 	
 	public GovPayException(Throwable e, String descrizione) {
@@ -81,11 +84,13 @@ public class GovPayException extends Exception {
 		this.params[0] = descrizione;
 		this.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 		this.setCausa(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
+		this.param = null;
 	}
 	
 	public GovPayException(EsitoOperazione codEsito, String ... params) {
 		this.params = params;
 		this.setCodEsitoOperazione(codEsito);
+		this.param = null;
 	}
 	
 	public GovPayException(EsitoOperazione codEsito, Throwable e, String ... params) {
@@ -93,11 +98,21 @@ public class GovPayException extends Exception {
 		this.params = params;
 		this.setCodEsitoOperazione(codEsito);
 		this.setCausa(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
+		this.param = null;
 	}
 	
 	public GovPayException(Throwable e) {
 		super(e);
 		this.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
+		this.param = null;
+	}
+	
+	public GovPayException(GovPayException e, Serializable param) {
+		this.param = param;
+		this.causa = e.causa;
+		this.codEsito = e.codEsito;
+		this.faultBean = e.faultBean;
+		this.params = e.params;
 	}
 
 	public String[] getParams() {
@@ -580,10 +595,6 @@ public class GovPayException extends Exception {
 
 	public Serializable getParam() {
 		return this.param;
-	}
-
-	public void setParam(Serializable param) {
-		this.param = param;
 	}
 	
 	public static FaultBean createFaultBean() {

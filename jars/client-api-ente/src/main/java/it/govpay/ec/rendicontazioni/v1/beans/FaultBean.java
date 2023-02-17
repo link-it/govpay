@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class FaultBean  {
   public enum CategoriaEnum {
@@ -41,19 +42,19 @@ public class FaultBean  {
       return null;
     }
   }  
-  @Schema(required = true, description = "Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `EC` - Errore da Ente Creditore  * `INTERNO` - Errore interno")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `EC` - Errore da Ente Creditore  * `INTERNO` - Errore interno")
  /**
    * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `EC` - Errore da Ente Creditore  * `INTERNO` - Errore interno  
   **/
   private CategoriaEnum categoria = null;
   
-  @Schema(required = true, description = "Codice di errore")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Codice di errore")
  /**
    * Codice di errore  
   **/
   private String codice = null;
   
-  @Schema(required = true, description = "Descrizione dell'errore")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Descrizione dell'errore")
  /**
    * Descrizione dell'errore  
   **/

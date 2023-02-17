@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.model;
 
+import java.text.MessageFormat;
 import java.util.Date;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -136,7 +137,7 @@ public class Notifica extends it.govpay.model.Notifica {
 	
 	public String getRptKey() {
 		if(this.getRpt() != null)
-			return rpt.getCodDominio() + "@" + rpt.getIuv() + "@" + rpt.getCcp();
+			return MessageFormat.format("{0}@{1}@{2}", rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp());
 		return "";
 	}
 	

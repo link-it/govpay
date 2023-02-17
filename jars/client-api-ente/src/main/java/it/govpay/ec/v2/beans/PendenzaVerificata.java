@@ -3,6 +3,7 @@ package it.govpay.ec.v2.beans;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 /**
   * Il campo 'pendenza' e' obbligatorio quando il valore del campo 'stato' e' uguale a 'NON_ESEGUITA'. Valorizzare il campo 'descrizioneStato' con una descrizione estesa dello stato della pendenza quando il valore del campo 'stato' e' diverso da 'NON_ESEGUITA'.
@@ -10,7 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description="Il campo 'pendenza' e' obbligatorio quando il valore del campo 'stato' e' uguale a 'NON_ESEGUITA'. Valorizzare il campo 'descrizioneStato' con una descrizione estesa dello stato della pendenza quando il valore del campo 'stato' e' diverso da 'NON_ESEGUITA'.")
 public class PendenzaVerificata   {
   
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private StatoPendenzaVerificata stato = null;
   
   @Schema(description = "Descrizione in dettaglio dello stato della pendenza.")

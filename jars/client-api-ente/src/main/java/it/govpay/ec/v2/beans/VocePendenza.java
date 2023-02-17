@@ -6,13 +6,14 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class VocePendenza extends TipoRiferimentoVocePendenza  {
   
   @Schema(description = "")
   private Dominio dominio = null;
   
-  @Schema(example = "abcdef12345_1", required = true, description = "Identificativo della voce di pedenza nel gestionale proprietario")
+  @Schema(example = "abcdef12345_1", requiredMode = RequiredMode.REQUIRED, description = "Identificativo della voce di pedenza nel gestionale proprietario")
  /**
    * Identificativo della voce di pedenza nel gestionale proprietario  
   **/
@@ -39,7 +40,7 @@ public class VocePendenza extends TipoRiferimentoVocePendenza  {
   @Schema(description = "")
   private Contabilita contabilita = null;
   
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private Pendenza pendenza = null;
  /**
    * Get dominio
