@@ -108,6 +108,7 @@ public class GovPayException extends Exception {
 	}
 	
 	public GovPayException(GovPayException e, Serializable param) {
+		super(e);
 		this.param = param;
 		this.causa = e.causa;
 		this.codEsito = e.codEsito;
