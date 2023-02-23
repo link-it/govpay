@@ -13,6 +13,51 @@
 
 	<name>GovPay - jars - XML Adapters</name>
 
+	<profiles>
+		<profile>
+			<id>java-11</id>
+			<activation>
+	   			<activeByDefault>true</activeByDefault>
+			</activation>
+			
+			<dependencies>
+				<dependency>
+				        <groupId>javax.xml.bind</groupId>
+				        <artifactId>jaxb-api</artifactId>
+				        <exclusions>
+				                <exclusion>
+				                        <groupId>*</groupId>
+				                        <artifactId>*</artifactId>
+				                </exclusion>
+				        </exclusions>
+				</dependency>
+				<dependency>
+				        <groupId>com.sun.xml.bind</groupId>
+				        <artifactId>jaxb-core</artifactId>
+				        <exclusions>
+				                <exclusion>
+				                        <groupId>*</groupId>
+				                        <artifactId>*</artifactId>
+				                </exclusion>
+				        </exclusions>
+				</dependency>
+				<dependency>
+				        <groupId>com.sun.xml.bind</groupId>
+				        <artifactId>jaxb-impl</artifactId>
+				        <exclusions>
+				                <exclusion>
+				                        <groupId>*</groupId>
+				                        <artifactId>*</artifactId>
+				                </exclusion>
+				        </exclusions>
+				</dependency>
+				<dependency>
+					<groupId>javax.activation</groupId>
+					<artifactId>activation</artifactId>
+				</dependency>		
+			</dependencies>
+		</profile>
+	</profiles>
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>

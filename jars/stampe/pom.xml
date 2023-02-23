@@ -14,6 +14,48 @@
 	<packaging>jar</packaging>
 	<name>GovPay - jars - Stampe</name>
 
+        <profiles>
+                <profile>
+                        <id>java-11</id>
+                        <activation>
+                                <activeByDefault>true</activeByDefault>
+                        </activation>
+
+                        <dependencies>
+                                <dependency>
+                                        <groupId>javax.xml.bind</groupId>
+                                        <artifactId>jaxb-api</artifactId>
+                                        <exclusions>
+                                                <exclusion>
+                                                        <groupId>*</groupId>
+                                                        <artifactId>*</artifactId>
+                                                </exclusion>
+                                        </exclusions>
+                                </dependency>
+                                <dependency>
+                                        <groupId>com.sun.xml.bind</groupId>
+                                        <artifactId>jaxb-core</artifactId>
+                                        <exclusions>
+                                                <exclusion>
+                                                        <groupId>*</groupId>
+                                                        <artifactId>*</artifactId>
+                                                </exclusion>
+                                        </exclusions>
+                                </dependency>
+                                <dependency>
+                                        <groupId>com.sun.xml.bind</groupId>
+                                        <artifactId>jaxb-impl</artifactId>
+                                        <exclusions>
+                                                <exclusion>
+                                                        <groupId>*</groupId>
+                                                        <artifactId>*</artifactId>
+                                                </exclusion>
+                                        </exclusions>
+                                </dependency>
+                        </dependencies>
+                </profile>
+        </profiles>
+
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>
@@ -141,12 +183,15 @@
 			<artifactId>batik-bridge</artifactId>
 			<version>${batik-bridge.version}</version>
 		</dependency>
-		
+	                     <dependency>
+                                <groupId>org.openspcoop2.utils</groupId>
+                                <artifactId>openspcoop2_utils-core</artifactId>
+                        </dependency>	
 		<dependency>
 			<groupId>org.apache.commons</groupId>
    			<artifactId>commons-lang3</artifactId>
 		</dependency>
-		
+	
 	</dependencies>
 
 	<build>
@@ -175,7 +220,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>2.4</version>
+				<version>2.5.0</version>
 				<executions>
 					<execution>
 						<id>xjc1</id>

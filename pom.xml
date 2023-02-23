@@ -15,20 +15,24 @@
 
 	<profiles>
 		<profile>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-				<property>
-					<name>!env</name>
-				</property>
-			</activation>
+			<id>java-1.8</id>
 			<properties>
-				<env>template</env>
+				<javaVersion>1.8</javaVersion>
+			</properties>
+		</profile>
+		<profile>
+			<activation>
+           			<activeByDefault>true</activeByDefault>
+        		</activation>
+			<id>java-11</id>
+			<properties>
+				<javaVersion>11</javaVersion>
 			</properties>
 		</profile>
 	</profiles>
 
 	<properties>
-		<javaVersion>1.8</javaVersion>
+		<env>template</env>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<rel-to-parent>.</rel-to-parent>
 		<filter-file>${rel-to-parent}/src/main/resources/filters/${env}.filter.properties</filter-file>
@@ -159,6 +163,13 @@
         <!-- jasperreports -->
         <jasperreports.version>6.20.0</jasperreports.version>
         
+	<jaxb.api.version>2.3.1</jaxb.api.version>
+	<jaxb.core.version>2.3.0.1</jaxb.core.version>
+	<jaxb.impl.version>2.3.7</jaxb.impl.version>
+	<jaxb.xjc.version>2.3.7</jaxb.xjc.version>
+	<jaxws-jsr181-api.version>1.0-MR1</jaxws-jsr181-api.version>
+	<jaxws-api.version>2.3.1</jaxws-api.version>
+	<javax.activation>1.1.1</javax.activation>
         
         
         <!-- Esclusione dei falsi positivi dall'analisi di sonar -->
@@ -1122,7 +1133,42 @@
 			    <artifactId>jaxen</artifactId>
 			    <version>${jaxen.version}</version>
 			</dependency>
-			
+
+				<dependency>
+				        <groupId>javax.xml.bind</groupId>
+				        <artifactId>jaxb-api</artifactId>
+				        <version>${jaxb.api.version}</version>
+				</dependency>
+				<dependency>
+				        <groupId>com.sun.xml.bind</groupId>
+				        <artifactId>jaxb-core</artifactId>
+				        <version>${jaxb.core.version}</version>
+				</dependency>
+				<dependency>
+				        <groupId>com.sun.xml.bind</groupId>
+				        <artifactId>jaxb-impl</artifactId>
+				        <version>${jaxb.impl.version}</version>
+				</dependency>
+				<dependency>
+				        <groupId>com.sun.xml.bind</groupId>
+				        <artifactId>jaxb-xjc</artifactId>
+				        <version>${jaxb.xjc.version}</version>
+				</dependency>
+				<dependency>
+				        <groupId>javax.jws</groupId>
+				        <artifactId>jsr181-api</artifactId>
+				        <version>${jaxws-jsr181-api.version}</version>
+				</dependency>
+				<dependency>
+				        <groupId>javax.xml.ws</groupId>
+				        <artifactId>jaxws-api</artifactId>
+				        <version>${jaxws-api.version}</version>
+				</dependency>	
+				<dependency>
+					<groupId>javax.activation</groupId>
+					<artifactId>activation</artifactId>
+					<version>${javax.activation}</version>
+				</dependency>		
 		</dependencies>
 	</dependencyManagement>
 

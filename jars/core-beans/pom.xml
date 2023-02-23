@@ -17,6 +17,47 @@
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>
 
+	<profiles>
+		<profile>
+			<id>java-11</id>
+			<activation>
+	   			<activeByDefault>true</activeByDefault>
+			</activation>
+
+			<dependencies>
+				<dependency>
+				        <groupId>javax.xml.bind</groupId>
+				        <artifactId>jaxb-api</artifactId>
+				        <exclusions>
+				                <exclusion>
+				                        <groupId>*</groupId>
+				                        <artifactId>*</artifactId>
+				                </exclusion>
+				        </exclusions>
+				</dependency>
+				<dependency>
+				        <groupId>com.sun.xml.bind</groupId>
+				        <artifactId>jaxb-core</artifactId>
+				        <exclusions>
+				                <exclusion>
+				                        <groupId>*</groupId>
+				                        <artifactId>*</artifactId>
+				                </exclusion>
+				        </exclusions>
+				</dependency>
+				<dependency>
+				        <groupId>com.sun.xml.bind</groupId>
+				        <artifactId>jaxb-impl</artifactId>
+				        <exclusions>
+				                <exclusion>
+				                        <groupId>*</groupId>
+				                        <artifactId>*</artifactId>
+				                </exclusion>
+				        </exclusions>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>it.govpay</groupId>
