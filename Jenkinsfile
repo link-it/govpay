@@ -25,7 +25,7 @@ pipeline {
     stage('install') {
       steps {
         sh 'sh ./src/main/resources/scripts/jenkins.install.sh'
-        sh 'sudo systemctl start wildfly@govpay'
+        sh 'sudo systemctl start wildfly-26.1.3.Final@govpay'
 	sh 'sh ./src/main/resources/scripts/jenkins.checkgp.sh'
       }
     }

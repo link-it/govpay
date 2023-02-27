@@ -1,4 +1,4 @@
-export JAVA_HOME=/opt/jdk1.8.0_191/
+export JAVA_HOME=/usr/lib/jvm/java-11
 GOVPAY_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 
 
@@ -19,7 +19,7 @@ antinstaller_dbusername=govpay
 antinstaller_principal=gpadmin
 antinstaller_principal_pwd=Password1!
 antinstaller_ragione_sociale=amministratore
-antinstaller_as=wildfly11
+antinstaller_as=wildfly26
 porta-db=5432
 basedir=/home/nardi/github/govpay/src/main/resources/setup/target/govpay-installer-${GOVPAY_VERSION}/./installer/setup
 antinstaller_tipo_database=postgresql
