@@ -11,6 +11,18 @@ Ogni nuova versione di GovPay viene sottoposta alle seguenti verifiche di sicure
 
 Le verifiche sono eseguite automaticamente ad ogni modifica del codice di GovPay sul branch `master` dal sistema di `Continuous Integration Jenkins di GovPay <https://jenkins.link.it/govpay/blue/organizations/jenkins/govpay/activity/>`_.
 
+Vulnerabilità note
+******************
+
+CVE-2022-45688
+==============
+
+file name: uri-template-0.10.jar, msg-simple-1.2.jar, json-smart-2.4.8.jar, json-schema-validator-2.2.14.jar, json-schema-core-1.2.14.jar, json-path-2.4.0.jar, json-patch-1.13.jar, json-20220924.jar, jackson-jaxrs-json-provider-2.14.2.jar. jackson-coreutils-equivalence-1.0.jar, jackson-coreutils-2.0.jar, jackson-core-2.14.2.jar, btf-1.3.jar, accessors-smart-1.2.jar
+
+La vulnerabilità indicata viene descritta come segue: `A stack overflow in the XML.toJSONObject component of hutool-json v5.8.10 allows attackers to cause a Denial of Service (DoS) via crafted JSON or XML data.`
+
+La vulnerabilità è introdotta dalla libreria json-java_project:json-java da cui dipendono le precedenti. Ad oggi non risulta disponibile una versione delle librerie affette che risolve la vulnerabilità.
+
 Falsi positivi
 **************
 
@@ -53,7 +65,7 @@ La libreria indicata non viene utilizzata in GovPay, pertanto si puo' concludere
 Librerire installer
 ===================
 
-Le seguenti segnalazioni riguardano le librerie utilizzate dall'installer di GovPay e che non fanno parte del runtime del prodotto. Possono pertanto essere ignorate.
+Le seguenti segnalazioni riguardano le librerie utilizzate dall'installer di GovPay, utilizzato offline per la configurazione dell'ear, e che non fanno parte degli artefatti dispiegati. Possono pertanto essere ignorate.
 
 - CVE-2007-1036
 - CVE-2012-2312
