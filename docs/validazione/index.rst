@@ -17,11 +17,13 @@ Vulnerabilità note
 CVE-2022-45688
 ==============
 
-file name: uri-template-0.10.jar, msg-simple-1.2.jar, json-smart-2.4.8.jar, json-schema-validator-2.2.14.jar, json-schema-core-1.2.14.jar, json-path-2.4.0.jar, json-patch-1.13.jar, json-20220924.jar, jackson-jaxrs-json-provider-2.14.2.jar. jackson-coreutils-equivalence-1.0.jar, jackson-coreutils-2.0.jar, jackson-core-2.14.2.jar, btf-1.3.jar, accessors-smart-1.2.jar
+file name: json-20220924.jar
+
+dipendenza di: uri-template-0.10.jar, msg-simple-1.2.jar, json-smart-2.4.8.jar, json-schema-validator-2.2.14.jar, json-schema-core-1.2.14.jar, json-path-2.4.0.jar, json-patch-1.13.jar, json-20220924.jar, jackson-jaxrs-json-provider-2.14.2.jar. jackson-coreutils-equivalence-1.0.jar, jackson-coreutils-2.0.jar, jackson-core-2.14.2.jar, btf-1.3.jar, accessors-smart-1.2.jar
 
 La vulnerabilità indicata viene descritta come segue: `A stack overflow in the XML.toJSONObject component of hutool-json v5.8.10 allows attackers to cause a Denial of Service (DoS) via crafted JSON or XML data.`
 
-La vulnerabilità è introdotta dalla libreria json-java_project:json-java da cui dipendono le precedenti. Ad oggi non risulta disponibile una versione delle librerie affette che risolve la vulnerabilità.
+`Note`: E' stata rilasciata una nuova versione della libreria il 27/02/2023. Si resta in attesa della pubblicazione su Maven Central per l'aggiornamento e verificare che la vulnerabilità sia risolta.
 
 Falsi positivi
 **************
