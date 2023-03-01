@@ -48,9 +48,11 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.core.exceptions.ConfigException;
 import it.govpay.core.utils.logger.Log4JUtils;
 import it.govpay.core.utils.service.context.GpContextFactory;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.stampe.utils.GovpayStampe;
 
 public class StartupUtils {
@@ -71,7 +73,6 @@ public class StartupUtils {
 				IOUtils.copy(govpayPropertiesIS, baos);
 				gpConfig = GovpayConfig.newInstance(new ByteArrayInputStream(baos.toByteArray()));
 				it.govpay.bd.GovpayConfig.newInstance4GovPay(new ByteArrayInputStream(baos.toByteArray()));
-				it.govpay.bd.GovpayCustomConfig.newInstance(new ByteArrayInputStream(baos.toByteArray()));
 			} catch (Exception e) {
 				throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita: " + e, e);
 			}
@@ -95,7 +96,7 @@ public class StartupUtils {
 					log.info("Configurazione logger da classpath.");
 				}
 				gpConfig.readProperties();
-			} catch (Exception e) {
+			} catch (ConfigException e) {
 				throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita: " + e, e);
 			}
 			
@@ -188,6 +189,7 @@ public class StartupUtils {
 			
 			AnagraficaManager.newInstance(dominioAnagraficaManager);
 			JaxbUtils.init();
+			it.govpay.jppapdp.beans.utils.JaxbUtils.init();
 			ThreadExecutorManager.setup();
 			GovpayStampe.init(log, gpConfig.getResourceDir());
 		} catch (Exception e) {

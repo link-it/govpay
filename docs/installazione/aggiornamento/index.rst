@@ -38,10 +38,18 @@ Ad esempio, nel caso di aggiornamento dalla versione 3.4.1 alla versione 3.6.0 Ã
 Si consiglia di effettuare le operazioni di aggiornamento con l'Application Server spento
 e di eseguire un backup del DB prima di applicare le patch.
 
-Aggiornamento da versioni precedenti alla v3.5.0
+Aggiornamento da versioni precedenti la 3.5
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Il nuovo client HTTP utilizzato da GovPay ignora la configurazione del keystore e trustore della JVM. 
 Risulta quindi necessario verificare che i parametri per l'autenticazione SSL, ove prevista, siano
 specificati tramite Cruscotto di Backoffice nella configurazione delle Applicazioni e degli Intermediari.
+
+Aggiornamento da versioni precedenti la 3.7
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+La distribuzione standard di GovPay prevede il seguente stack applicativo seguente:
+
+- Java 11
+- Wildfly 26
 

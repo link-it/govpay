@@ -91,7 +91,7 @@ public class NotificheBD extends BasicBD {
 			
 			IPaginatedExpression exp = this.getNotificaService().newPaginatedExpression();
 			exp.lessThan(it.govpay.orm.Notifica.model().DATA_PROSSIMA_SPEDIZIONE, new Date());
-			exp.equals(it.govpay.orm.Notifica.model().STATO, Notifica.StatoSpedizione.DA_SPEDIRE.toString());
+			exp.equals(it.govpay.orm.Notifica.model().STATO, StatoSpedizione.DA_SPEDIRE.toString());
 			
 			if(offset != null) {
 				exp.offset(offset);
@@ -126,14 +126,14 @@ public class NotificheBD extends BasicBD {
 	
 	public long countNotificheDaSpedire() throws ServiceException {
 		NotificaFilter newFilter = this.newFilter();
-		newFilter.setStato(Notifica.StatoSpedizione.DA_SPEDIRE.toString());
+		newFilter.setStato(StatoSpedizione.DA_SPEDIRE.toString());
 		newFilter.setDataProssimaSpedizioneFine(new Date());
 		return this.count(newFilter);
 	}
 	
 	public long countNotificheInAttesa() throws ServiceException {
 		NotificaFilter newFilter = this.newFilter();
-		newFilter.setStato(Notifica.StatoSpedizione.DA_SPEDIRE.toString());
+		newFilter.setStato(StatoSpedizione.DA_SPEDIRE.toString());
 		return this.count(newFilter);
 	}
 

@@ -7,10 +7,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class TipoPendenza   {
-  
+
   @Schema(example = "REFNIDO", required = true, description = "")
   private String idTipoPendenza = null;
-  
+
   @Schema(example = "Refezione scolastica Asilo Nido", required = true, description = "")
   private String descrizione = null;
  /**
@@ -56,7 +56,7 @@ public class TipoPendenza   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoPendenza {\n");
-    
+
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("}");

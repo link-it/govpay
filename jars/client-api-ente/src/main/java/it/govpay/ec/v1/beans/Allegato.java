@@ -38,13 +38,13 @@ public class Allegato  {
       return null;
     }
   }  
-//  @Schema(required = true, description = "Tipologia di allegato")
+//  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Tipologia di allegato")
  /**
    * Tipologia di allegato  
   **/
   private TipoEnum tipo = null;
   
-//  @Schema(required = true, description = "allegato codificato in base64")
+//  @Schema(requiredMode = RequiredMode.REQUIRED, description = "allegato codificato in base64")
  /**
    * allegato codificato in base64  
   **/
@@ -57,10 +57,7 @@ public class Allegato  {
   @NotNull
   @Valid
   public String getTipo() {
-    if (tipo == null) {
-      return null;
-    }
-    return tipo.getValue();
+    return tipo != null ? tipo.getValue() : "";
   }
 
   public void setTipo(TipoEnum tipo) {

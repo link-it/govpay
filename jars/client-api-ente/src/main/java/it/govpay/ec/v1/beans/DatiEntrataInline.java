@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 // @Schema(description="Definisce i dettagli di incasso.")
 public class DatiEntrataInline  {
   
-  // @Schema(example = "IT60X0542811101000000123456", required = true, description = "")
+  // @Schema(example = "IT60X0542811101000000123456", requiredMode = RequiredMode.REQUIRED, description = "")
   private String ibanAccredito = null;
   
   // @Schema(example = "DABAIE2D", description = "")
@@ -25,10 +25,10 @@ public class DatiEntrataInline  {
   // @Schema(example = "DABAIE2D", description = "")
   private String bicAppoggio = null;
   
-  // @Schema(required = true, description = "")
+  // @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private TipoContabilita tipoContabilita = null;
   
-  // @Schema(example = "3321", required = true, description = "Codifica del capitolo di bilancio")
+  // @Schema(example = "3321", requiredMode = RequiredMode.REQUIRED, description = "Codifica del capitolo di bilancio")
  /**
    * Codifica del capitolo di bilancio  
   **/

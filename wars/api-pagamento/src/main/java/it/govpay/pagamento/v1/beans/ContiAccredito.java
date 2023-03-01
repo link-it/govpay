@@ -2,8 +2,6 @@ package it.govpay.pagamento.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -15,22 +13,22 @@ import it.govpay.core.beans.JSONSerializable;
 "iban",
 })
 public class ContiAccredito extends JSONSerializable {
-  
+
   @JsonProperty("bic")
   private String bic = null;
-  
+
   @JsonProperty("postale")
   private Boolean postale = false;
-  
+
   @JsonProperty("mybank")
   private Boolean mybank = false;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
-  
+
   @JsonProperty("iban")
   private String iban = null;
-  
+
   /**
    **/
   public ContiAccredito bic(String bic) {
@@ -130,7 +128,7 @@ public class ContiAccredito extends JSONSerializable {
     return Objects.hash(this.bic, this.postale, this.mybank, this.abilitato, this.iban);
   }
 
-  public static ContiAccredito parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static ContiAccredito parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, ContiAccredito.class);
   }
 
@@ -143,7 +141,7 @@ public class ContiAccredito extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ContiAccredito {\n");
-    
+
     sb.append("    bic: ").append(this.toIndentedString(this.bic)).append("\n");
     sb.append("    postale: ").append(this.toIndentedString(this.postale)).append("\n");
     sb.append("    mybank: ").append(this.toIndentedString(this.mybank)).append("\n");

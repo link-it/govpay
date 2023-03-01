@@ -3,12 +3,10 @@ package it.govpay.core.beans.tracciati;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idTracciato",
@@ -79,7 +77,7 @@ public class TracciatoPendenzePost extends JSONSerializable {
   }
 
   @JsonProperty("avvisaturaDigitale")
-  public Boolean AvvisaturaDigitale() {
+  public Boolean getAvvisaturaDigitale() {
     return avvisaturaDigitale;
   }
   public void setAvvisaturaDigitale(Boolean avvisaturaDigitale) {
@@ -153,7 +151,7 @@ public class TracciatoPendenzePost extends JSONSerializable {
     return Objects.hash(this.idTracciato, this.idDominio, avvisaturaDigitale, modalitaAvvisaturaDigitale, this.inserimenti, this.annullamenti);
   }
 
-  public static TracciatoPendenzePost parse(String json) throws ServiceException, ValidationException {
+  public static TracciatoPendenzePost parse(String json) throws IOException {
     return parse(json, TracciatoPendenzePost.class);
   }
 

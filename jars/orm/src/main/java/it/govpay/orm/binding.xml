@@ -42,6 +42,7 @@
     <value name="idSessione" field="idSessione" usage="required"/>
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
     <value name="srcVersanteIdentificativo" field="srcVersanteIdentificativo" usage="optional"/>
+    <value name="dataRichiesta" field="dataRichiesta" usage="optional"/>
   </mapping>
 
   <mapping type-name="_IdPagamentoPortale_Type" class="it.govpay.orm.IdPagamentoPortale" abstract="true">
@@ -49,6 +50,7 @@
     <value name="idSessione" field="idSessione" usage="required"/>
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
     <value name="srcVersanteIdentificativo" field="srcVersanteIdentificativo" usage="optional"/>
+    <value name="dataRichiesta" field="dataRichiesta" usage="optional"/>
   </mapping>
   <mapping name="idRendicontazione" class="it.govpay.orm.IdRendicontazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -460,6 +462,7 @@
     <value name="password" field="password" usage="required"/>
     <value name="abilitato" field="abilitato" usage="required"/>
     <value name="applicationCode" field="applicationCode" usage="required"/>
+    <value name="versione" field="versione" usage="required"/>
   </mapping>
   <mapping name="Applicazione" class="it.govpay.orm.Applicazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -770,6 +773,8 @@
     <structure name="idFR" field="idFR" usage="optional" map-as="_IdFr_Type"/>
     <structure name="idIncasso" field="idIncasso" usage="optional" map-as="_IdIncasso_Type"/>
     <structure name="idTracciato" field="idTracciato" usage="optional" map-as="_IdTracciato_Type"/>
+    <value name="clusterId" field="clusterId" usage="optional"/>
+    <value name="transactionId" field="transactionId" usage="optional"/>
   </mapping>
   <mapping name="SingoloVersamento" class="it.govpay.orm.SingoloVersamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

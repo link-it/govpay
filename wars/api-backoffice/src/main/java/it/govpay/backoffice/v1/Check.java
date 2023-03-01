@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -29,8 +29,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.controllers.SondeController;
 import it.govpay.rs.v1.BaseRsServiceV1;
 
@@ -38,8 +36,8 @@ import it.govpay.rs.v1.BaseRsServiceV1;
 public class Check extends BaseRsServiceV1{
 
 	private SondeController controller = null;
-	
-	public Check() throws ServiceException {
+
+	public Check() {
 		super("sonde");
 		this.controller = new SondeController(this.nomeServizio,this.log);
 	}

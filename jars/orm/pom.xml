@@ -7,13 +7,54 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.6.5</version>
+		<version>3.7.0</version>
 	</parent>
 
 	<artifactId>orm</artifactId>
 	<packaging>jar</packaging>
 
 	<name>GovPay - jars - ORM</name>
+        <profiles>
+                <profile>
+                        <id>java-11</id>
+                        <activation>
+                                <activeByDefault>true</activeByDefault>
+                        </activation>
+
+                        <dependencies>
+                                <dependency>
+                                        <groupId>javax.xml.bind</groupId>
+                                        <artifactId>jaxb-api</artifactId>
+                                        <exclusions>
+                                                <exclusion>
+                                                        <groupId>*</groupId>
+                                                        <artifactId>*</artifactId>
+                                                </exclusion>
+                                        </exclusions>
+                                </dependency>
+                                <dependency>
+                                        <groupId>com.sun.xml.bind</groupId>
+                                        <artifactId>jaxb-core</artifactId>
+                                        <exclusions>
+                                                <exclusion>
+                                                        <groupId>*</groupId>
+                                                        <artifactId>*</artifactId>
+                                                </exclusion>
+                                        </exclusions>
+                                </dependency>
+                                <dependency>
+                                        <groupId>com.sun.xml.bind</groupId>
+                                        <artifactId>jaxb-impl</artifactId>
+                                        <exclusions>
+                                                <exclusion>
+                                                        <groupId>*</groupId>
+                                                        <artifactId>*</artifactId>
+                                                </exclusion>
+                                        </exclusions>
+                                </dependency>
+                        </dependencies>
+                </profile>
+        </profiles>
 
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
@@ -89,6 +130,16 @@
 		</dependency>
 		
 		<dependency>
+		    <groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-core</artifactId>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-beans</artifactId>
+		</dependency>
+		
+		<dependency>
     		<groupId>org.openspcoop2.utils</groupId>
 		    <artifactId>openspcoop2_utils-jaxb</artifactId>
 		</dependency>
@@ -132,12 +183,16 @@
     		<groupId>org.openspcoop2.utils</groupId>
 		    <artifactId>openspcoop2_utils-certificate</artifactId>
 		</dependency>
-		
+
+		                <dependency>
+                <groupId>org.openspcoop2.utils</groupId>
+                    <artifactId>openspcoop2_utils-serialization</artifactId>
+                </dependency>
+
 		<dependency>
 		    <groupId>org.postgresql</groupId>
 		    <artifactId>postgresql</artifactId>
 		</dependency>
-		
 		
 	</dependencies>
 

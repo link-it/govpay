@@ -3,7 +3,7 @@ package it.govpay.pagamento.utils.validazione.semantica;
 import java.time.LocalDate;
 import java.util.Date;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTO;
 import it.govpay.core.exceptions.UnprocessableEntityException;

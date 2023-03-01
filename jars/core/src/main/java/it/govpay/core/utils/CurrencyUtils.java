@@ -22,7 +22,6 @@ package it.govpay.core.utils;
 import java.math.BigDecimal;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.slf4j.Logger;
 
@@ -67,9 +66,7 @@ public class CurrencyUtils {
 		StringBuilder sb = new StringBuilder();
 		String currencyAsString = this.getCurrencyAsString(value,this.locale);
 		sb.append(currencyAsString);
-		if(StringUtils.isNotEmpty(currencyAsString));
-			sb.append(EURO);
-			
+		sb.append(EURO);
 		return sb.toString();
 	}
 	
@@ -107,15 +104,15 @@ public class CurrencyUtils {
 		
 		if(locale == null) {
 			if (Math.round(value.doubleValue()) != value.doubleValue()) {
-				return String.format(PATTERN_CON_DECIMALI_E_VIRGOLA, value.doubleValue());
+				return String.format(PATTERN_CON_DECIMALI_E_VIRGOLA, value);
 			} else {
-				return String.format(PATTERN_SENZA_DECIMALI_E_VIRGOLA, value.doubleValue());
+				return String.format(PATTERN_SENZA_DECIMALI_E_VIRGOLA, value);
 			}
 		} else {
 			if (Math.round(value.doubleValue()) != value.doubleValue()) {
-				return String.format(locale, PATTERN_CON_DECIMALI_E_VIRGOLA, value.doubleValue());
+				return String.format(locale, PATTERN_CON_DECIMALI_E_VIRGOLA, value);
 			} else {
-				return String.format(locale, PATTERN_SENZA_DECIMALI_E_VIRGOLA, value.doubleValue());
+				return String.format(locale, PATTERN_SENZA_DECIMALI_E_VIRGOLA, value);
 			}
 		}
 	}
@@ -126,15 +123,15 @@ public class CurrencyUtils {
 
 		if(locale == null) {
 			if (Math.round(value.doubleValue()) != value.doubleValue()) {
-				return String.format(PATTERN_CON_DECIMALI_SENZA_VIRGOLA, value.doubleValue());
+				return String.format(PATTERN_CON_DECIMALI_SENZA_VIRGOLA, value);
 			} else {
-				return String.format(PATTERN_SENZA_DECIMALI_SENZA_VIRGOLA, value.doubleValue());
+				return String.format(PATTERN_SENZA_DECIMALI_SENZA_VIRGOLA, value);
 			}
 		} else {
 			if (Math.round(value.doubleValue()) != value.doubleValue()) {
-				return String.format(locale, PATTERN_CON_DECIMALI_SENZA_VIRGOLA, value.doubleValue());
+				return String.format(locale, PATTERN_CON_DECIMALI_SENZA_VIRGOLA, value);
 			} else {
-				return String.format(locale, PATTERN_SENZA_DECIMALI_SENZA_VIRGOLA, value.doubleValue());
+				return String.format(locale, PATTERN_SENZA_DECIMALI_SENZA_VIRGOLA, value);
 			}
 		}
 	}

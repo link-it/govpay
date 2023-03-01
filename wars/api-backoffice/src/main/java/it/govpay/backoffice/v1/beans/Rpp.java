@@ -3,12 +3,11 @@ package it.govpay.backoffice.v1.beans;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "stato",
@@ -21,33 +20,33 @@ import it.govpay.core.beans.JSONSerializable;
 "modello",
 })
 public class Rpp extends JSONSerializable {
-  
+
   @JsonProperty("stato")
   private String stato = null;
-  
+
   @JsonProperty("dettaglioStato")
   private String dettaglioStato = null;
-  
+
   @JsonProperty("bloccante")
   private Boolean bloccante = true;
-  
+
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
-  
+
   @JsonProperty("rpt")
   @JsonRawValue
   private String rpt = null;
-  
+
   @JsonProperty("rt")
   @JsonRawValue
   private String rt = null;
-  
+
   @JsonProperty("pendenza")
   private PendenzaIndex pendenza = null;
-  
+
   @JsonProperty("modello")
   private ModelloPagamento modello = null;
-  
+
   /**
    * Stato della richiesta di pagamento sulla piattaforma PagoPA.
    **/
@@ -89,7 +88,7 @@ public class Rpp extends JSONSerializable {
   }
 
   @JsonProperty("bloccante")
-  public Boolean Bloccante() {
+  public Boolean getBloccante() {
     return bloccante;
   }
   public void setBloccante(Boolean bloccante) {
@@ -199,7 +198,7 @@ public class Rpp extends JSONSerializable {
     return Objects.hash(this.stato, this.dettaglioStato, this.bloccante, this.segnalazioni, this.rpt, this.rt, this.pendenza, modello);
   }
 
-  public static Rpp parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Rpp parse(String json) throws IOException {
     return parse(json, Rpp.class);
   }
 
@@ -212,7 +211,7 @@ public class Rpp extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Rpp {\n");
-    
+
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
     sb.append("    dettaglioStato: ").append(this.toIndentedString(this.dettaglioStato)).append("\n");
     sb.append("    bloccante: ").append(toIndentedString(bloccante)).append("\n");

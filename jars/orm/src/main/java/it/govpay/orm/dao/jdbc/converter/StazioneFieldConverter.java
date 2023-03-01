@@ -102,6 +102,13 @@ public class StazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "application_code";
 			}
 		}
+		if(field.equals(Stazione.model().VERSIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".versione";
+			}else{
+				return "versione";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -128,6 +135,9 @@ public class StazioneFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Stazione.model(), returnAlias);
 		}
 		if(field.equals(Stazione.model().APPLICATION_CODE)){
+			return this.toTable(Stazione.model(), returnAlias);
+		}
+		if(field.equals(Stazione.model().VERSIONE)){
 			return this.toTable(Stazione.model(), returnAlias);
 		}
 

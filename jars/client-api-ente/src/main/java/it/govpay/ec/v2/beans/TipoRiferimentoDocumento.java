@@ -3,22 +3,21 @@ package it.govpay.ec.v2.beans;
 import java.math.BigDecimal;
 
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class TipoRiferimentoDocumento  implements OneOfTipoRiferimentoDocumento  {
 	
-	@Schema(required = true, description = "")
+	@Schema(requiredMode = RequiredMode.REQUIRED, description = "")
 	  private VincoloPagamento soglia = null;
 	 /**
 	   * Get soglia
 	   * @return soglia
 	  **/
 	  @JsonProperty("soglia")
-	  @NotNull
 	  public VincoloPagamento getSoglia() {
 	    return soglia;
 	  }
@@ -32,7 +31,7 @@ public class TipoRiferimentoDocumento  implements OneOfTipoRiferimentoDocumento 
 	    return this;
 	  }
 	  
-	  @Schema(example = "1", required = true, description = "Rata del documento")
+	  @Schema(example = "1", requiredMode = RequiredMode.REQUIRED, description = "Rata del documento")
 	  /**
 	    * Rata del documento  
 	   **/
@@ -43,7 +42,6 @@ public class TipoRiferimentoDocumento  implements OneOfTipoRiferimentoDocumento 
 	    * @return rata
 	   **/
 	   @JsonProperty("rata")
-	   @NotNull
 	  @DecimalMin("1")  public BigDecimal getRata() {
 	     return rata;
 	   }

@@ -9,7 +9,7 @@ import org.openspcoop2.utils.service.context.Context;
 import org.openspcoop2.utils.service.context.ContextFactory;
 import org.openspcoop2.utils.service.context.IContextFactory;
 
-import it.govpay.core.utils.EventoContext.Componente;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
 
 public class GpContextFactory extends ContextFactory implements IContextFactory {

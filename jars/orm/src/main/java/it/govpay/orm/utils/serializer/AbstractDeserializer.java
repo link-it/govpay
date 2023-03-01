@@ -158,7 +158,9 @@ public abstract class AbstractDeserializer {
 			throw new DeserializerException(e.getMessage(),e);
 		}finally{
 			try{
-				fin.close();
+				if(fin != null) {
+					fin.close();
+				}
 			}catch(Exception e){}
 		}
 	}
@@ -171,7 +173,9 @@ public abstract class AbstractDeserializer {
 			throw new DeserializerException(e.getMessage(),e);
 		}finally{
 			try{
-				fin.close();
+				if(fin != null) {
+					fin.close();
+				}
 			}catch(Exception e){}
 		}
 	}

@@ -1,7 +1,6 @@
 package it.govpay.ec.v1.beans;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,10 +10,10 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public class DatiEntrata  {
   
-  // @Schema(required = true, description = "")
+  // @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private String codEntrata = null;
   
-  // @Schema(example = "IT60X0542811101000000123456", required = true, description = "")
+  // @Schema(example = "IT60X0542811101000000123456", requiredMode = RequiredMode.REQUIRED, description = "")
   private String ibanAccredito = null;
   
   // @Schema(example = "DABAIE2D", description = "")
@@ -26,10 +25,10 @@ public class DatiEntrata  {
   // @Schema(example = "DABAIE2D", description = "")
   private String bicAppoggio = null;
   
-  // @Schema(required = true, description = "")
+  // @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private TipoContabilita tipoContabilita = null;
   
-  // @Schema(example = "3321", required = true, description = "Codifica del capitolo di bilancio")
+  // @Schema(example = "3321", requiredMode = RequiredMode.REQUIRED, description = "Codifica del capitolo di bilancio")
  /**
    * Codifica del capitolo di bilancio  
   **/
@@ -61,20 +60,20 @@ public class DatiEntrata  {
       return null;
     }
   }  
-  // @Schema(required = true, description = "Tipologia di Bollo digitale")
+  // @Schema(requiredMode = RequiredMode.REQUIRED, description = "Tipologia di Bollo digitale")
  /**
    * Tipologia di Bollo digitale  
   **/
 //  private TipoBolloEnum tipoBollo = null;
   private String tipoBollo = null;
   
-  // @Schema(required = true, description = "Digest in base64 del documento informatico associato alla marca da bollo")
+  // @Schema(requiredMode = RequiredMode.REQUIRED, description = "Digest in base64 del documento informatico associato alla marca da bollo")
  /**
    * Digest in base64 del documento informatico associato alla marca da bollo  
   **/
   private String hashDocumento = null;
   
-  // @Schema(required = true, description = "Sigla automobilistica della provincia di residenza del soggetto pagatore")
+  // @Schema(requiredMode = RequiredMode.REQUIRED, description = "Sigla automobilistica della provincia di residenza del soggetto pagatore")
  /**
    * Sigla automobilistica della provincia di residenza del soggetto pagatore  
   **/
@@ -84,7 +83,6 @@ public class DatiEntrata  {
    * @return codEntrata
   **/
   @JsonProperty("codEntrata")
-  @NotNull
   @Valid
   public String getCodEntrata() {
     return codEntrata;
@@ -104,7 +102,6 @@ public class DatiEntrata  {
    * @return ibanAccredito
   **/
   @JsonProperty("ibanAccredito")
-  @NotNull
   @Valid
   public String getIbanAccredito() {
     return ibanAccredito;
@@ -181,7 +178,6 @@ public class DatiEntrata  {
    * @return tipoContabilita
   **/
   @JsonProperty("tipoContabilita")
-  @NotNull
   @Valid
   public TipoContabilita getTipoContabilita() {
     return tipoContabilita;
@@ -201,7 +197,6 @@ public class DatiEntrata  {
    * @return codiceContabilita
   **/
   @JsonProperty("codiceContabilita")
-  @NotNull
   @Valid
   public String getCodiceContabilita() {
     return codiceContabilita;
@@ -257,7 +252,6 @@ public class DatiEntrata  {
    * @return hashDocumento
   **/
   @JsonProperty("hashDocumento")
-  @NotNull
   @Valid
   public String getHashDocumento() {
     return hashDocumento;
@@ -277,7 +271,6 @@ public class DatiEntrata  {
    * @return provinciaResidenza
   **/
   @JsonProperty("provinciaResidenza")
-  @NotNull
   @Valid
   public String getProvinciaResidenza() {
     return provinciaResidenza;

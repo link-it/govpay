@@ -130,8 +130,10 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
   protected mapNewItem(item: any): Standard {
     let _std = new Standard();
     let _st = Dato.arraysToDato(
-      [ Voce.ABILITATO ],
-      [ UtilService.defaultDisplay({ value: UtilService.ABILITA[(item.abilitato).toString()] }) ],
+      [ Voce.VERSIONE, Voce.ABILITATO ],
+      [
+        UtilService.defaultDisplay({ value: item.versione }),
+        UtilService.defaultDisplay({ value: UtilService.ABILITA[(item.abilitato).toString()] }) ],
       ', '
     );
     _std.titolo = new Dato({ label: Voce.ID_STAZIONE+': ', value: item.idStazione });

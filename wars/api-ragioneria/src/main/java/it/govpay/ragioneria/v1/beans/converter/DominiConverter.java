@@ -6,12 +6,12 @@ import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.ragioneria.v1.beans.DominioIndex;
 
 public class DominiConverter {
-	
-	
+
+
 	public static DominioIndex toRsModelIndex(it.govpay.bd.model.Dominio dominio) throws ServiceException {
 		DominioIndex rsModel = new DominioIndex();
 		rsModel.setWeb(dominio.getAnagrafica().getUrlSitoWeb());
-		rsModel.setIdDominio(dominio.getCodDominio()); 
+		rsModel.setIdDominio(dominio.getCodDominio());
 		rsModel.setRagioneSociale(dominio.getRagioneSociale());
 		rsModel.setIndirizzo(dominio.getAnagrafica().getIndirizzo());
 		rsModel.setCivico(dominio.getAnagrafica().getCivico());
@@ -34,8 +34,8 @@ public class DominiConverter {
 		if(dominio.getStazione() != null)
 			rsModel.setStazione(dominio.getStazione().getCodStazione());
 		rsModel.setAbilitato(dominio.isAbilitato());
-		
+
 		return rsModel;
 	}
-	
+
 }

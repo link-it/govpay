@@ -151,6 +151,13 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "src_versante_identificativo";
 			}
 		}
+		if(field.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE.DATA_RICHIESTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_richiesta";
+			}else{
+				return "data_richiesta";
+			}
+		}
 		if(field.equals(VistaVersamento.model().IUV.IUV)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".iuv";
@@ -639,6 +646,9 @@ public class VistaVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE.ID_APPLICAZIONE, returnAlias);
 		}
 		if(field.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE.SRC_VERSANTE_IDENTIFICATIVO)){
+			return this.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
+		}
+		if(field.equals(VistaVersamento.model().ID_PAGAMENTO_PORTALE.DATA_RICHIESTA)){
 			return this.toTable(VistaVersamento.model().ID_PAGAMENTO_PORTALE, returnAlias);
 		}
 		if(field.equals(VistaVersamento.model().IUV.IUV)){

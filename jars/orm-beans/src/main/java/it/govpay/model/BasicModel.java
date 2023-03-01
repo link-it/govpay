@@ -78,15 +78,17 @@ public abstract class BasicModel implements Serializable {
 		if(a != null && b== null) return "[NOT NULL] [NULL]";
 		if(a == null && b== null) return null;
 		
+		if(a != null) {
 		Method[] methods = a.getClass().getDeclaredMethods();
-		for(Method method : methods) {
-			if((method.getName().startsWith("get") || method.getName().startsWith("is")) && method.getParameterTypes().length == 0) {
-				if(method.getReturnType().isAssignableFrom(List.class)) {
-					String diff = diff(method.invoke(a), method.invoke(b));
-					if(diff != null) return diff;
-				} else {
-					if(!equals(method.invoke(a), method.invoke(b))) {
-						return method.getName() + "[" + method.invoke(a) + "] [" + method.invoke(b) + "]";
+			for(Method method : methods) {
+				if((method.getName().startsWith("get") || method.getName().startsWith("is")) && method.getParameterTypes().length == 0) {
+					if(method.getReturnType().isAssignableFrom(List.class)) {
+						String diff = diff(method.invoke(a), method.invoke(b));
+						if(diff != null) return diff;
+					} else {
+						if(!equals(method.invoke(a), method.invoke(b))) {
+							return method.getName() + "[" + method.invoke(a) + "] [" + method.invoke(b) + "]";
+						}
 					}
 				}
 			}
@@ -99,7 +101,7 @@ public abstract class BasicModel implements Serializable {
 		if(a != null && b== null) return "[NOT NULL] [NULL]";
 		if(a == null && b== null) return null;
 		
-		if(a.size() != b.size())
+		if(a!= null && b != null && a.size() != b.size())
 			return "[" + a.size() + " Entries] [" + b.size() + " Entries]";
 		
 		Collections.sort(a);

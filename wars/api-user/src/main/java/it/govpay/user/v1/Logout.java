@@ -9,8 +9,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.rs.v1.BaseRsServiceV1;
 import it.govpay.user.v1.controller.LogoutController;
 
@@ -22,7 +20,7 @@ public class Logout extends BaseRsServiceV1{
 
 	private LogoutController controller = null;
 
-	public Logout() throws ServiceException {
+	public Logout() {
 		super("logout");
 		this.controller = new LogoutController(this.nomeServizio,this.log);
 	}

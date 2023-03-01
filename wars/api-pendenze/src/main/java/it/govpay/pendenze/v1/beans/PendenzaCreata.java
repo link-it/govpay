@@ -2,8 +2,6 @@ package it.govpay.pendenze.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -13,14 +11,14 @@ import it.govpay.core.beans.JSONSerializable;
 "pdf"
 })
 public class PendenzaCreata extends JSONSerializable {
-  
-    
+
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
-  
+
   @JsonProperty("pdf")
   private String pdf = null;
 
@@ -71,7 +69,7 @@ public class PendenzaCreata extends JSONSerializable {
   public void setPdf(String pdf) {
     this.pdf = pdf;
   }
-  
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -81,7 +79,7 @@ public class PendenzaCreata extends JSONSerializable {
       return false;
     }
     PendenzaCreata avviso = (PendenzaCreata) o;
-    return 
+    return
         Objects.equals(this.idDominio, avviso.idDominio) &&
         Objects.equals(this.numeroAvviso, avviso.numeroAvviso) &&
         Objects.equals(this.pdf, avviso.pdf);
@@ -91,7 +89,7 @@ public class PendenzaCreata extends JSONSerializable {
   public int hashCode() {
     return Objects.hash(this.idDominio, this.numeroAvviso, this.pdf);  }
 
-  public static PendenzaCreata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static PendenzaCreata parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, PendenzaCreata.class);
   }
 

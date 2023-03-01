@@ -3,8 +3,6 @@ package it.govpay.backoffice.v1.beans.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.beans.AclPost;
 import it.govpay.backoffice.v1.beans.DominioProfiloIndex;
 import it.govpay.backoffice.v1.beans.Profilo;
@@ -21,23 +19,22 @@ import it.govpay.model.TipoVersamento;
  * @author Bussu Giovanni (bussu@link.it)
  * @author  $Author: bussu $
  * @version $ Rev: 12563 $, $Date: 12 giu 2018 $
- * 
+ *
  */
 public class ProfiloConverter {
 
 	/**
 	 * @param user
 	 * @return
-	 * @throws ServiceException 
 	 */
-	public static Profilo getProfilo(LeggiProfiloDTOResponse leggiProfilo) throws ServiceException {
+	public static Profilo getProfilo(LeggiProfiloDTOResponse leggiProfilo) {
 		Profilo profilo = new Profilo();
-		
+
 		Utenza user = leggiProfilo.getUtente();
 		List<Acl> aclsProfilo = user.getAclsProfilo();
 		if(aclsProfilo!=null) {
 			List<AclPost> aclLst = new ArrayList<>();
-			for(Acl acl: aclsProfilo) { 
+			for(Acl acl: aclsProfilo) {
 				AclPost aclRsModel = AclConverter.toRsModel(acl);
 				if(aclRsModel != null)
 					aclLst.add(aclRsModel);
@@ -46,7 +43,7 @@ public class ProfiloConverter {
 			profilo.setAcl(aclLst);
 		}
 		profilo.setNome(leggiProfilo.getNome());
-		
+
 		switch(user.getTipoUtenza()) {
 		case ANONIMO:
 		case APPLICAZIONE:
@@ -56,9 +53,9 @@ public class ProfiloConverter {
 			profilo.setNome(((UtenzaOperatore) user).getNome());
 			break;
 		}
-		
+
 		profilo.setAutenticazione(user.getAutenticazione());
-		
+
 		if(user.isAutorizzazioneDominiStar()) {
 			List<DominioProfiloIndex> dominiLst = new ArrayList<>();
 			DominioProfiloIndex dominioStar = new DominioProfiloIndex();
@@ -91,7 +88,7 @@ public class ProfiloConverter {
 				profilo.setTipiPendenza(tipiPendenzaLst);
 			}
 		}
-		
+
 		return profilo;
 	}
 

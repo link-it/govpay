@@ -55,6 +55,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PagamentoCreato'
+        '303':
+          description: Pagamento inoltrato al Checkout
+          content:
+            application/x-www-form-urlencoded:
+              schema:
+                type: object
+                required: 
+                  - returnUrl
+                  - fiscalCodePA
+                  - avvisi
+                properties:
+                  returnUrl:
+                    description: L'indirizzo al quale sarà reindirizzato l'utente dopo la conclusione del processo di pagamento
+                    type: string
+                  fiscalCodePA:
+                    description: Identificativo dell'EC che ha attivato il processo di pagamento
+                    type: string
+                  lang:
+                    $ref: '#/components/schemas/LinguaPagamento'
+                  avvisi:
+                    type: array
+                    items:
+                      type: object
+                      required: 
+                        - noticeNumber
+                        - fiscalCode
+                        - amount
+                      properties:
+                        noticeNumber:
+                          description: numero avviso
+                          type: string
+                        fiscalCode:
+                          description: codice fiscale dell'EC
+                          type: string
+                        amount:
+                          description: importo
+                          type: number
+                        agreement:
+                          description: eventuale codice della convenzione tra EC e PSP
+                          type: string
         '400':
           $ref: '#/components/responses/400BadRequest'
         '401':
@@ -1387,7 +1427,17 @@ components:
             location:
               type: string
               example: /pagamenti/12345
-              description: Url del dettaglio del pagamento      
+              description: Url del dettaglio del pagamento   
+    LinguaPagamento:
+      description: Indica la lingua da utilizzare durante il pagamento sul Checkout
+      example: 'it'
+      type: string
+      enum:
+        - 'it'
+        - 'en'
+        - 'fr'
+        - 'sl'
+        - 'de'
     LinguaSecondaria:
       example: 'false'
       type: string
@@ -1632,7 +1682,7 @@ components:
         urlRitorno:
           type: string
           description: >-
-            url di ritorno al portale al termine della sessione di pagamento
+            url di ritorno al portale al termine della sessione di pagamento, il campo e' opzionale, diventa obbligatorio in caso di pagamento con tramite una stazione con versione V2.
           example: >-
             https://www.comune.it/pagamentopagopa/abcd-efgh-ijklm-12345
         contoAddebito:
@@ -1653,6 +1703,8 @@ components:
           $ref: '#/components/schemas/Soggetto'
         autenticazioneSoggetto:
           $ref: '#/components/schemas/TipoAutenticazioneSoggetto'
+        lingua:
+          $ref: '#/components/schemas/LinguaPagamento'
     Pagamenti:
       type: object
       allOf:
@@ -2691,7 +2743,4 @@ components:
           - $ref: '#/components/schemas/RiferimentoEntrata'
           - $ref: '#/components/schemas/Entrata'
           - $ref: '#/components/schemas/Bollo'
-            
-    
-          
           

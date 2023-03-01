@@ -54,6 +54,7 @@ import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.bd.model.converter.ApplicazioneConverter;
 import it.govpay.bd.model.converter.ConnettoreConverter;
 import it.govpay.model.Connettore;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.dao.jdbc.JDBCApplicazioneServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.ApplicazioneFieldConverter;
@@ -68,15 +69,15 @@ public class ApplicazioniBD extends BasicBD {
 	public ApplicazioniBD(String idTransaction) {
 		super(idTransaction);
 	}
-	
+
 	public ApplicazioniBD(String idTransaction, boolean useCache) {
 		super(idTransaction, useCache);
 	}
-	
+
 	public ApplicazioniBD(BDConfigWrapper configWrapper) {
 		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
 	}
-	
+
 
 	/**
 	 * Recupera l'applicazione tramite l'id fisico
@@ -124,14 +125,14 @@ public class ApplicazioniBD extends BasicBD {
 		try {
 			IdApplicazione id = new IdApplicazione();
 			id.setCodApplicazione(codApplicazione);
-			
+
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			
+
 			IExpression expr = this.getApplicazioneService().newExpression();
 			expr.equals(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE, codApplicazione);
-			
+
 			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().find(expr);
 			Applicazione applicazione = this.getApplicazione(applicazioneVO);
 			return applicazione;
@@ -157,7 +158,7 @@ public class ApplicazioniBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			
+
 			IExpression exp = this.getApplicazioneService().newExpression();
 			exp.equals(it.govpay.orm.Applicazione.model().ID_UTENZA.PRINCIPAL, principal);
 			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().find(exp);
@@ -190,7 +191,7 @@ public class ApplicazioniBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			
+
 			IExpression expr = this.getApplicazioneService().newExpression();
 			Hashtable<String,List<String>> hashSubject = null;
 			try {
@@ -207,7 +208,7 @@ public class ApplicazioniBD extends BasicBD {
 					expr.like(it.govpay.orm.Applicazione.model().ID_UTENZA.PRINCIPAL, "/"+CertificateUtils.formatKeyPrincipal(key)+"="+CertificateUtils.formatValuePrincipal(value)+"/", LikeMode.ANYWHERE);
 				}
 			}
-			
+
 			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().find(expr);
 			Applicazione applicazione = this.getApplicazione(applicazioneVO);
 
@@ -233,7 +234,7 @@ public class ApplicazioniBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			
+
 			IdApplicazione idVO = new IdApplicazione();
 			idVO.setId(id);
 			idVO.setCodApplicazione(codApplicazione);
@@ -262,7 +263,7 @@ public class ApplicazioniBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			
+
 			UtenzeBD utenzeBD = new UtenzeBD(this);
 			utenzeBD.setAtomica(false);
 			// autocommit false		
@@ -348,7 +349,7 @@ public class ApplicazioniBD extends BasicBD {
 		} finally {
 			// ripristino l'autocommit.
 			this.setAutoCommit(true); 
-			
+
 			if(this.isAtomica()) {
 				this.closeConnection();
 			}
@@ -366,7 +367,7 @@ public class ApplicazioniBD extends BasicBD {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			
+
 			UtenzeBD utenzeBD = new UtenzeBD(this);
 			utenzeBD.setAtomica(false);
 			// autocommit false		
@@ -411,7 +412,7 @@ public class ApplicazioniBD extends BasicBD {
 		} finally {
 			// ripristino l'autocommit.
 			this.setAutoCommit(true); 
-						
+
 			if(this.isAtomica()) {
 				this.closeConnection();
 			}
@@ -431,14 +432,14 @@ public class ApplicazioniBD extends BasicBD {
 	public long count(ApplicazioneFilter filter) throws ServiceException {
 		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
 	}
-	
+
 	private long _countSenzaLimit(ApplicazioneFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 				filter.setExpressionConstructor(this.getApplicazioneService());
 			}
-			
+
 			return this.getApplicazioneService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -448,18 +449,18 @@ public class ApplicazioniBD extends BasicBD {
 			}
 		}
 	}
-	
+
 	private long _countConLimit(ApplicazioneFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
 			}
-			
+
 			int limitInterno = GovpayConfig.getInstance().getMaxRisultati();
-			
+
 			ISQLQueryObject sqlQueryObjectInterno = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
 			ISQLQueryObject sqlQueryObjectDistinctID = this.getJdbcSqlObjectFactory().createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
-			
+
 			ApplicazioneModel model = it.govpay.orm.Applicazione.model();
 			ApplicazioneFieldConverter converter = new ApplicazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			/*
@@ -473,36 +474,36 @@ public class ApplicazioniBD extends BasicBD {
 				  LIMIT K
 				  ) a
 				);
-			*/
-			
+			 */
+
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_APPLICAZIONE));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_APPLICAZIONE), "id");
 			sqlQueryObjectInterno.addSelectField(converter.toAliasColumn(model.COD_APPLICAZIONE, true));
 			sqlQueryObjectInterno.setANDLogicOperator(true);
-			
+
 			// creo condizioni
 			sqlQueryObjectInterno = filter.toWhereCondition(sqlQueryObjectInterno);
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
-			
+
 			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.COD_APPLICAZIONE, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
-			
+
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
 			sqlQueryObjectDistinctID.addSelectCountField("id","id",true);
-			
+
 			String sql = sqlQueryObjectDistinctID.createSQLQuery();
 			List<Class<?>> returnTypes = new ArrayList<>();
 			returnTypes.add(Long.class); // Count
-			
+
 			List<List<Object>> nativeQuery = this.getApplicazioneService().nativeQuery(sql, returnTypes, parameters);
-			
+
 			Long count = 0L;
 			for (List<Object> row : nativeQuery) {
 				int pos = 0;
 				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
 			}
-			
+
 			return count.longValue();
 		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
@@ -521,7 +522,7 @@ public class ApplicazioniBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 				filter.setExpressionConstructor(this.getApplicazioneService());
 			}
-			
+
 			List<Applicazione> dtoList = new ArrayList<>();
 			for(it.govpay.orm.Applicazione vo: this.getApplicazioneService().findAll(filter.toPaginatedExpression())) {
 				dtoList.add(this.getApplicazione(vo));
@@ -535,11 +536,11 @@ public class ApplicazioniBD extends BasicBD {
 			}
 		}
 	}
-	
+
 	public List<String> getCodApplicazioni() throws ServiceException {
 		return findAllCodApplicazione(this.newFilter());
 	}
-	
+
 
 	public List<String> findAllCodApplicazione(ApplicazioneFilter filter) throws ServiceException {
 		List<String> lstApplicazioni = new ArrayList<>();
@@ -549,7 +550,7 @@ public class ApplicazioniBD extends BasicBD {
 				this.setupConnection(this.getIdTransaction());
 				filter.setExpressionConstructor(this.getApplicazioneService());
 			}
-			
+
 			IPaginatedExpression exp = filter.toPaginatedExpression();
 			exp.addOrder(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE, SortOrder.ASC);
 			List<Object> findAll = this.getApplicazioneService().select(exp, it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
@@ -575,7 +576,7 @@ public class ApplicazioniBD extends BasicBD {
 	private Applicazione getApplicazione(it.govpay.orm.Applicazione applicazioneVO) throws ServiceException {
 		try {
 			Connettore connettoreIntegrazione = null;
-			
+
 			if(applicazioneVO.getCodConnettoreIntegrazione()!= null) {
 				IPaginatedExpression expIntegrazione = this.getConnettoreService().newPaginatedExpression();
 				expIntegrazione.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, applicazioneVO.getCodConnettoreIntegrazione());
@@ -592,6 +593,8 @@ public class ApplicazioniBD extends BasicBD {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} 
 	}

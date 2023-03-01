@@ -2,12 +2,11 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @JsonPropertyOrder({
@@ -42,97 +41,97 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "tassonomiaPagoPA",
 })
 public class DominioPost extends it.govpay.core.beans.JSONSerializable implements IValidable{
-  
+
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
-  
+
   @JsonProperty("indirizzo")
   private String indirizzo = null;
-  
+
   @JsonProperty("civico")
   private String civico = null;
-  
+
   @JsonProperty("cap")
   private String cap = null;
-  
+
   @JsonProperty("localita")
   private String localita = null;
-  
+
   @JsonProperty("provincia")
   private String provincia = null;
-  
+
   @JsonProperty("nazione")
   private String nazione = null;
-  
+
   @JsonProperty("email")
   private String email = null;
-  
+
   @JsonProperty("pec")
   private String pec = null;
-  
+
   @JsonProperty("tel")
   private String tel = null;
-  
+
   @JsonProperty("fax")
   private String fax = null;
-  
+
   @JsonProperty("web")
   private String web = null;
-  
+
   @JsonProperty("gln")
   private String gln = null;
-  
+
   @JsonProperty("cbill")
   private String cbill = null;
-  
+
   @JsonProperty("iuvPrefix")
   private String iuvPrefix = null;
-  
+
   @JsonProperty("stazione")
   private String stazione = null;
-  
+
   @JsonProperty("auxDigit")
   private String auxDigit = null;
-  
+
   @JsonProperty("segregationCode")
   private String segregationCode = null;
-  
+
   @JsonProperty("logo")
   private String logo = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   @JsonProperty("autStampaPosteItaliane")
   private String autStampaPosteItaliane = null;
-  
+
   @JsonProperty("area")
   private String area = null;
-  
+
   @JsonProperty("servizioMyPivot")
   private ConnettoreNotificaPagamentiMyPivot servizioMyPivot = null;
-  
+
   @JsonProperty("servizioSecim")
   private ConnettoreNotificaPagamentiSecim servizioSecim = null;
-  
+
   @JsonProperty("servizioGovPay")
   private ConnettoreNotificaPagamentiGovPay servizioGovPay = null;
-  
+
   @JsonProperty("servizioHyperSicAPKappa")
   private ConnettoreNotificaPagamentiHyperSicAPKappa servizioHyperSicAPKappa = null;
-  
+
   @JsonProperty("servizioMaggioliJPPA")
   private ConnettoreNotificaPagamentiMaggioliJPPA servizioMaggioliJPPA = null;
-  
+
   @JsonProperty("intermediato")
   private Boolean intermediato = null;
-  
+
   @JsonIgnore
   private TassonomiaPagoPADominio tassonomiaPagoPAEnum = null;
-  
+
   @JsonProperty("tassonomiaPagoPA")
   private String tassonomiaPagoPA = null;
-  
+
   /**
    * Ragione sociale del beneficiario
    **/
@@ -569,7 +568,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
   }
 
   @JsonProperty("intermediato")
-  public Boolean Intermediato() {
+  public Boolean getIntermediato() {
     return intermediato;
   }
   public void setIntermediato(Boolean intermediato) {
@@ -590,7 +589,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
   public void setTassonomiaPagoPAEnum(TassonomiaPagoPADominio tassonomiaPagoPA) {
     this.tassonomiaPagoPAEnum = tassonomiaPagoPA;
   }
-  
+
   /**
    **/
   public DominioPost tassonomiaPagoPA(String tassonomiaPagoPA) {
@@ -651,7 +650,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
     return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa, servizioMaggioliJPPA, intermediato, tassonomiaPagoPA);
   }
 
-  public static DominioPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static DominioPost parse(String json) throws IOException {
     return parse(json, DominioPost.class);
   }
 
@@ -664,7 +663,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class DominioPost {\n");
-    
+
     sb.append("    ragioneSociale: ").append(this.toIndentedString(this.ragioneSociale)).append("\n");
     sb.append("    indirizzo: ").append(this.toIndentedString(this.indirizzo)).append("\n");
     sb.append("    civico: ").append(this.toIndentedString(this.civico)).append("\n");
@@ -708,11 +707,11 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
-	public void validate() throws org.openspcoop2.utils.json.ValidationException {
+	public void validate() throws it.govpay.core.exceptions.ValidationException {
 			ValidatorFactory vf = ValidatorFactory.newInstance();
-	
+
 			vf.getValidator("ragioneSociale", this.ragioneSociale).notNull().minLength(1).maxLength(70);
 			// uo associata al dominio
 			vf.getValidator("indirizzo", this.indirizzo).minLength(1).maxLength(70);
@@ -728,7 +727,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 			vf.getValidator("web", this.web).minLength(1).maxLength(255);
 			vf.getValidator("area", this.area).minLength(1).maxLength(255);
 			vf.getValidator("abilitato", this.abilitato).notNull();
-			
+
 			if(this.intermediato == null || this.intermediato) {
 				vf.getValidator("gln", this.gln).length(13).pattern("(^([0-9]){13}$)");
 				vf.getValidator("stazione", this.stazione).notNull();
@@ -737,7 +736,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 				vf.getValidator("autStampaPosteItaliane", this.autStampaPosteItaliane).maxLength(255);
 				vf.getValidator("iuvPrefix", this.iuvPrefix).pattern("(\\d*(%\\([yYa{t|p}u]\\))?)+");
 				vf.getValidator("auxDigit", this.auxDigit).notNull().length(1).pattern("(^([0-3]){1}$)");
-				
+
 			} else {
 				vf.getValidator("gln", this.gln).isNull();
 				vf.getValidator("stazione", this.stazione).isNull();
@@ -747,7 +746,7 @@ public class DominioPost extends it.govpay.core.beans.JSONSerializable implement
 				vf.getValidator("iuvPrefix", this.iuvPrefix).isNull();
 				vf.getValidator("auxDigit", this.auxDigit).isNull();
 			}
-			
+
 			// connettori
 			vf.getValidator("servizioMyPivot", this.servizioMyPivot).validateFields();
 			vf.getValidator("servizioSecim", this.servizioSecim).validateFields();

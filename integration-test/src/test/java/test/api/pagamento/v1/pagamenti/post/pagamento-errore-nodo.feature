@@ -73,7 +73,7 @@ And match response == { id: '#notnull', location: '#notnull', categoria : 'PAGOP
 
 Given url pagamentiBaseurl
 And path '/pagamenti/', response.id
-And headers basicAutenticationHeader
+And headers spidHeaders
 When method get
 Then status 200
 

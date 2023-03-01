@@ -2,11 +2,10 @@ package it.govpay.core.beans.tracciati;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
@@ -296,7 +295,7 @@ public class Soggetto extends it.govpay.core.beans.JSONSerializable implements I
     return Objects.hash(this.tipo, this.identificativo, this.anagrafica, this.indirizzo, this.civico, this.cap, this.localita, this.provincia, this.nazione, this.email, this.cellulare);
   }
 
-  public static Soggetto parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Soggetto parse(String json) throws IOException {
     return parse(json, Soggetto.class);
   }
 
@@ -337,7 +336,7 @@ public class Soggetto extends it.govpay.core.beans.JSONSerializable implements I
   }
   
   @Override
-public void validate() throws org.openspcoop2.utils.json.ValidationException {
+public void validate() throws it.govpay.core.exceptions.ValidationException {
 		 ValidatorFactory vf = ValidatorFactory.newInstance();
 		 vf.getValidator("tipo", this.tipo).notNull();
 		 vf.getValidator("identificativo", this.identificativo).notNull().minLength(1).maxLength(35);

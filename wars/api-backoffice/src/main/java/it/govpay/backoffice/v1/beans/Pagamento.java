@@ -5,11 +5,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "id",
 "nome",
@@ -33,75 +33,75 @@ import com.fasterxml.jackson.annotation.JsonValue;
 "severita",
 })
 public class Pagamento extends it.govpay.core.beans.JSONSerializable {
-  
+
   @JsonProperty("id")
   private String id = null;
-  
+
   @JsonProperty("nome")
   private String nome = null;
-  
+
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS", locale = "it_IT", timezone = "Europe/Rome")
   @JsonProperty("dataRichiestaPagamento")
   private Date dataRichiestaPagamento = null;
-  
+
   @JsonProperty("idSessionePortale")
   private String idSessionePortale = null;
-  
+
   @JsonProperty("idSessionePsp")
   private String idSessionePsp = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("modello")
   private ModelloPagamento modello = null;
-  
+
   @JsonProperty("stato")
   private StatoPagamento stato = null;
-  
+
   @JsonProperty("descrizioneStato")
   private String descrizioneStato = null;
-  
+
   @JsonProperty("pspRedirectUrl")
   private String pspRedirectUrl = null;
-  
+
   @JsonProperty("urlRitorno")
   private String urlRitorno = null;
-  
+
   @JsonProperty("contoAddebito")
   private ContoAddebito contoAddebito = null;
-  
+
   @JsonProperty("dataEsecuzionePagamento")
   private Date dataEsecuzionePagamento = null;
-  
+
   @JsonProperty("credenzialiPagatore")
   private String credenzialiPagatore = null;
-  
+
   @JsonProperty("soggettoVersante")
   private Soggetto soggettoVersante = null;
-  
-    
+
+
   /**
    * modalita' di autenticazione del soggetto versante
    */
   public enum AutenticazioneSoggettoEnum {
-    
-    
-        
-            
+
+
+
+
     CNS("CNS"),
-    
-            
+
+
     USR("USR"),
-    
-            
+
+
     OTH("OTH"),
-    
-            
+
+
     N_A("N/A");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -125,36 +125,36 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
     }
   }
 
-    
-    
+
+
   @JsonProperty("autenticazioneSoggetto")
   private AutenticazioneSoggettoEnum autenticazioneSoggetto = null;
-  
-    
+
+
   /**
    * Indica il codice della lingua da utilizzare per l’esposizione delle pagine web.
    */
   public enum LinguaEnum {
-    
-    
-        
-            
+
+
+
+
     IT("IT"),
-    
-            
+
+
     EN("EN"),
-    
-            
+
+
     FR("FR"),
-    
-            
+
+
     DE("DE"),
-    
-            
+
+
     SL("SL");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -178,20 +178,20 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
     }
   }
 
-    
-    
+
+
   @JsonProperty("lingua")
   private LinguaEnum lingua = LinguaEnum.IT;
-  
+
   @JsonProperty("rpp")
   private List<Rpp> rpp = null;
-  
+
   @JsonProperty("verificato")
   private Boolean verificato = null;
-  
+
   @JsonProperty("severita")
   private Integer severita = null;
-  
+
   /**
    * Identificativo del pagamento assegnato da GovPay
    **/
@@ -485,7 +485,7 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("verificato")
-  public Boolean Verificato() {
+  public Boolean getVerificato() {
     return this.verificato;
   }
   public void setVerificato(Boolean verificato) {
@@ -544,7 +544,7 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
     return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, modello, stato, descrizioneStato, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp, verificato, severita);
   }
 
-  public static Pagamento parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Pagamento parse(String json) throws IOException {
     return parse(json, Pagamento.class);
   }
 
@@ -557,7 +557,7 @@ public class Pagamento extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Pagamento {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    dataRichiestaPagamento: ").append(toIndentedString(dataRichiestaPagamento)).append("\n");

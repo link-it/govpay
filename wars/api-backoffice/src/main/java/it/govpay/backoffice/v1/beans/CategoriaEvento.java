@@ -9,20 +9,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets categoriaEvento
  */
 public enum CategoriaEvento {
-  
-  
-  
-  
+
+
+
+
   INTERNO("INTERNO"),
-  
-  
+
+
   INTERFACCIA("INTERFACCIA"),
-  
-  
+
+
   UTENTE("UTENTE");
-  
-  
-  
+
+
+
 
   private String value;
 

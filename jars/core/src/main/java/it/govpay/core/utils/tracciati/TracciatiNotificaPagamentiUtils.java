@@ -18,7 +18,6 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.resources.Charset;
 import org.slf4j.Logger;
 import org.xml.sax.SAXException;
@@ -47,12 +46,14 @@ import it.govpay.bd.model.TracciatoNotificaPagamenti;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.business.TracciatiNotificaPagamenti;
-import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Contabilita;
 import it.govpay.model.QuotaContabilita;
 import it.govpay.model.TipoVersamento;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class TracciatiNotificaPagamentiUtils {
 	
@@ -265,7 +266,7 @@ public class TracciatiNotificaPagamentiUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static String [] creaLineaCsvMyPivotRpt_SANP23(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, ValidationException { 
+	public static String [] creaLineaCsvMyPivotRpt_SANP23(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, IOException { 
 		List<String> linea = new ArrayList<String>();
 
 		Versamento versamento = rpt.getVersamento();
@@ -380,7 +381,7 @@ public class TracciatiNotificaPagamentiUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static String [] creaLineaCsvMyPivotRpt_SANP24(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, ValidationException { 
+	public static String [] creaLineaCsvMyPivotRpt_SANP24(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, IOException { 
 		List<String> linea = new ArrayList<String>();
 
 		Versamento versamento = rpt.getVersamento();
@@ -495,7 +496,7 @@ public class TracciatiNotificaPagamentiUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static String [] creaLineaCsvMyPivotRpt_SANP321_V2(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, ValidationException { 
+	public static String [] creaLineaCsvMyPivotRpt_SANP321_V2(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, IOException { 
 		List<String> linea = new ArrayList<String>();
 
 		Versamento versamento = rpt.getVersamento();
@@ -610,7 +611,7 @@ public class TracciatiNotificaPagamentiUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static void creaLineaCsvSecimRpt_SANP23(Logger log, Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore, OutputStream secimOS, OutputStream noSecimOS) throws ServiceException, JAXBException, SAXException, ValidationException, java.io.IOException { 
+	public static void creaLineaCsvSecimRpt_SANP23(Logger log, Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore, OutputStream secimOS, OutputStream noSecimOS) throws ServiceException, JAXBException, SAXException, ValidationException, java.io.IOException, IOException { 
 		StringBuilder sb = new StringBuilder();
 		
 		
@@ -971,9 +972,8 @@ public class TracciatiNotificaPagamentiUtils {
 			noSecimOS.write(sb.toString().getBytes());
 		}
 	}
-	
 	@SuppressWarnings("unchecked")
-	public static void creaLineaCsvSecimRpt_SANP24(Logger log, Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore, OutputStream secimOS, OutputStream noSecimOS) throws ServiceException, JAXBException, SAXException, ValidationException, java.io.IOException { 
+	public static void creaLineaCsvSecimRpt_SANP24(Logger log, Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore, OutputStream secimOS, OutputStream noSecimOS) throws ServiceException, JAXBException, SAXException, ValidationException, java.io.IOException, IOException { 
 		StringBuilder sb = new StringBuilder();
 		
 		
@@ -1335,7 +1335,7 @@ public class TracciatiNotificaPagamentiUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static void creaLineaCsvSecimRpt_SANP321_V2(Logger log, Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore, OutputStream secimOS, OutputStream noSecimOS) throws ServiceException, JAXBException, SAXException, ValidationException, java.io.IOException { 
+	public static void creaLineaCsvSecimRpt_SANP321_V2(Logger log, Rpt rpt, BDConfigWrapper configWrapper, int numeroLinea, ConnettoreNotificaPagamenti connettore, OutputStream secimOS, OutputStream noSecimOS) throws ServiceException, JAXBException, SAXException, ValidationException, java.io.IOException, IOException { 
 		StringBuilder sb = new StringBuilder();
 		
 		
@@ -1796,7 +1796,7 @@ public class TracciatiNotificaPagamentiUtils {
 		return linee;
 	}
 	
-	public static List<List<String>> creaLineaCsvGovPayRpt_SANP24(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException, ValidationException { 
+	public static List<List<String>> creaLineaCsvGovPayRpt_SANP24(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, JAXBException, SAXException { 
 		List<List<String>> linee = new ArrayList<List<String>>();
 		
 

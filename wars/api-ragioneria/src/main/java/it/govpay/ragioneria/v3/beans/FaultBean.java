@@ -40,28 +40,28 @@ public class FaultBean   {
       }
       return null;
     }
-  }  
+  }
   @Schema(required = true, description = "Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `EC` - Errore da Ente Creditore  * `INTERNO` - Errore interno")
  /**
-   * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `EC` - Errore da Ente Creditore  * `INTERNO` - Errore interno  
+   * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `EC` - Errore da Ente Creditore  * `INTERNO` - Errore interno
   **/
   private CategoriaEnum categoria = null;
-  
+
   @Schema(required = true, description = "Codice di errore")
  /**
-   * Codice di errore  
+   * Codice di errore
   **/
   private String codice = null;
-  
+
   @Schema(required = true, description = "Descrizione dell'errore")
  /**
-   * Descrizione dell'errore  
+   * Descrizione dell'errore
   **/
   private String descrizione = null;
-  
+
   @Schema(description = "Descrizione aggiuntiva")
  /**
-   * Descrizione aggiuntiva  
+   * Descrizione aggiuntiva
   **/
   private String dettaglio = null;
  /**
@@ -70,11 +70,8 @@ public class FaultBean   {
   **/
   @JsonProperty("categoria")
   @NotNull
-  public String getCategoria() {
-    if (categoria == null) {
-      return null;
-    }
-    return categoria.getValue();
+  public CategoriaEnum getCategoria() {
+    return categoria;
   }
 
   public void setCategoria(CategoriaEnum categoria) {
@@ -147,7 +144,7 @@ public class FaultBean   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class FaultBean {\n");
-    
+
     sb.append("    categoria: ").append(toIndentedString(categoria)).append("\n");
     sb.append("    codice: ").append(toIndentedString(codice)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");

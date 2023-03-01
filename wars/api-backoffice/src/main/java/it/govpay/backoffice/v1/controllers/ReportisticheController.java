@@ -51,7 +51,7 @@ public class ReportisticheController extends BaseController {
 		}
 
 		try{
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.RENDICONTAZIONI_E_INCASSI), Arrays.asList(Diritti.LETTURA));
@@ -77,7 +77,7 @@ public class ReportisticheController extends BaseController {
 
 			// INIT DAO
 
-			EntratePrevisteDAO entratePrevisteDAO = new EntratePrevisteDAO(); 
+			EntratePrevisteDAO entratePrevisteDAO = new EntratePrevisteDAO();
 
 			// CHIAMATA AL DAO
 
@@ -85,8 +85,8 @@ public class ReportisticheController extends BaseController {
 
 				if(risultatiPerPagina == null) {
 					risultatiPerPagina = BasicFindRequestDTO.DEFAULT_LIMIT;
-				} 
-				
+				}
+
 				ValidatorFactory vf = ValidatorFactory.newInstance();
 				ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 
@@ -108,13 +108,13 @@ public class ReportisticheController extends BaseController {
 
 				List<EntrataPrevistaIndex> results = new ArrayList<>();
 				for(EntrataPrevista entrataPrevista: listaEntratePrevisteDTOResponse.getResults()) {
-					EntrataPrevistaIndex rsModel = EntrataPrevistaConverter.toRsModelIndex(entrataPrevista); 
+					EntrataPrevistaIndex rsModel = EntrataPrevistaConverter.toRsModelIndex(entrataPrevista);
 					results.add(rsModel);
 				}
 
 				ListaEntratePreviste response = new ListaEntratePreviste(results, this.getServicePath(uriInfo), listaEntratePrevisteDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
 
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 				return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 			} else if(accept.toLowerCase().contains("application/pdf")) {
@@ -140,9 +140,9 @@ public class ReportisticheController extends BaseController {
 				sb.append(".pdf");
 
 				String pdfEntryName = sb.toString();
-				byte[] b = listaEntratePrevisteDTOResponse.getPdf(); 
+				byte[] b = listaEntratePrevisteDTOResponse.getPdf();
 
-				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 				return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+pdfEntryName+"\""),transactionId).build();
 			} else {
 				// formato non accettato
@@ -152,7 +152,7 @@ public class ReportisticheController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
 	}
 

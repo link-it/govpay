@@ -30,11 +30,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Categoria;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.beans.GpResponse;
 import it.govpay.core.exceptions.NdpException.FaultPa;
-import it.govpay.core.utils.EventoContext.Categoria;
-import it.govpay.core.utils.EventoContext.Componente;
-import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.model.Evento.RuoloEvento;
 import it.govpay.model.Rpt;
 import it.govpay.model.Versionabile.Versione;
 
@@ -61,10 +62,11 @@ public class GpContext extends ApplicationContext {
 	public static final String NOT_SET = "<Non valorizzato>";
 
 	public static final String NodoDeiPagamentiSPC = "NodoDeiPagamentiSPC";
-	public static final String GovPay = "GovPay";
-	public static final String AppIO = "AppIO";
+	public static final String GOVPAY = "GovPay";
+	public static final String APPIO = "AppIO";
 	public static final String TIPO_SOGGETTO_NDP = "NDP";
 	public static final String TIPO_SERVIZIO_NDP = "NDP";
+	public static final String CHECKOUT = "Checkout";
 
 	public static final String TIPO_SOGGETTO_APP = "APP";
 	public static final String TIPO_SOGGETTO_PRT = "PRT";
@@ -77,8 +79,8 @@ public class GpContext extends ApplicationContext {
 	public static final String TIPO_SERVIZIO_GOVPAY_WS = "GPWS";
 	public static final String TIPO_SERVIZIO_GOVPAY_OPT = "GPO";
 	
-	public static final String MyPivot = "MyPivot";
-	public static final String MaggioliJPPA = "MaggioliJPPA";
+	public static final String MYPIVOT = "MyPivot";
+	public static final String MAGGIOLIJPPA = "MaggioliJPPA";
 	public static final String TIPO_SOGGETTO_MAGGIOLI_JPPA = "MaggioliJPPA";
 
 
@@ -130,7 +132,7 @@ public class GpContext extends ApplicationContext {
 		transaction.setClient(client);
 
 		ctx.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
-		ctx.getEventoCtx().setRole(Role.SERVER);
+		ctx.getEventoCtx().setRole(RuoloEvento.SERVER);
 		ctx.getEventoCtx().setDataRichiesta(new Date());
 		ctx.getEventoCtx().setMethod((String) msgCtx.get(MessageContext.HTTP_REQUEST_METHOD));
 		ctx.getEventoCtx().setComponente(Componente.API_PAGOPA);
@@ -163,16 +165,16 @@ public class GpContext extends ApplicationContext {
 		transaction.setClient(client);
 
 		HttpServer server = new HttpServer();
-		server.setName(GovPay);
+		server.setName(GOVPAY);
 
 		Actor to = new Actor();
-		to.setName(GovPay);
+		to.setName(GOVPAY);
 		to.setType(TIPO_SOGGETTO_GOVPAY);
 		transaction.setTo(to);
 		transaction.addServer(server);
 		
 		this.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
-		this.getEventoCtx().setRole(Role.SERVER);
+		this.getEventoCtx().setRole(RuoloEvento.SERVER);
 		this.getEventoCtx().setDataRichiesta(new Date());
 		this.getEventoCtx().setMethod(httpMethod);
 		this.getEventoCtx().setComponente(componente);
@@ -189,19 +191,19 @@ public class GpContext extends ApplicationContext {
 		transaction.setProtocol(TIPO_PROTOCOLLO_REST);
 
 		Actor to = new Actor();
-		to.setName(GovPay);
+		to.setName(GOVPAY);
 		to.setType(TIPO_SOGGETTO_GOVPAY);
 		transaction.setTo(to);
 
 		HttpServer server = new HttpServer();
-		server.setName(GovPay);
+		server.setName(GOVPAY);
 		transaction.addServer(server);
 
 		Request request = context.getRequest();
 		request.setDate(new Date());
 		
 		context.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
-		context.getEventoCtx().setRole(Role.SERVER);
+		context.getEventoCtx().setRole(RuoloEvento.SERVER);
 		context.getEventoCtx().setDataRichiesta(new Date());
 
 		return context;
@@ -220,21 +222,21 @@ public class GpContext extends ApplicationContext {
 //		transaction.setTo(to);
 
 		HttpServer server = new HttpServer();
-		server.setName(GovPay);
+		server.setName(GOVPAY);
 		transaction.addServer(server);
 
 		Request request = context.getRequest();
 		request.setDate(new Date());
 		
 		context.getEventoCtx().setCategoriaEvento(Categoria.INTERNO);
-		context.getEventoCtx().setRole(Role.CLIENT);
+		context.getEventoCtx().setRole(RuoloEvento.CLIENT);
 		context.getEventoCtx().setDataRichiesta(new Date());
 		
 		return context;
 	}
 
-	public String setupNodoClient(String codStazione, String codDominio, Azione azione) {
-		return this._setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
+	public String setupNodoClient(String codStazione, String codDominio, EventoContext.Azione azione) {
+		return this._setupNodoClient(codStazione, codDominio, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_620_ENCODED);
 	}
 
 	private synchronized String _setupNodoClient(String codStazione, String codDominio, String servizio, String azione, int versione) {
@@ -286,7 +288,7 @@ public class GpContext extends ApplicationContext {
 	
 	public synchronized String setupAppIOClient(String azione, String url) {
 		HttpServer server = new HttpServer();
-		server.setName(AppIO);
+		server.setName(APPIO);
 		server.setEndpoint(url);
 		server.setIdOperation(UUID.randomUUID().toString());
 		this.getTransaction().addServer(server); 
@@ -296,7 +298,7 @@ public class GpContext extends ApplicationContext {
 	
 	public synchronized String setupNotificaPagamentiClient(String azione, String url) {
 		HttpServer server = new HttpServer();
-		server.setName(MyPivot);
+		server.setName(MYPIVOT);
 		server.setEndpoint(url);
 		server.setIdOperation(UUID.randomUUID().toString());
 		this.getTransaction().addServer(server); 
@@ -306,7 +308,17 @@ public class GpContext extends ApplicationContext {
 	
 	public synchronized String setupInvioNotificaPagamentiMaggioliJPPAClient(String azione, String url) {
 		HttpServer server = new HttpServer();
-		server.setName(MaggioliJPPA);
+		server.setName(MAGGIOLIJPPA);
+		server.setEndpoint(url);
+		server.setIdOperation(UUID.randomUUID().toString());
+		this.getTransaction().addServer(server); 
+
+		return server.getIdOperation();
+	}
+	
+	public synchronized String setupcheckoutClient(String azione, String url) {
+		HttpServer server = new HttpServer();
+		server.setName(CHECKOUT);
 		server.setEndpoint(url);
 		server.setIdOperation(UUID.randomUUID().toString());
 		this.getTransaction().addServer(server); 

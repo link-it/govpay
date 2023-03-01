@@ -67,14 +67,9 @@ public class Intermediario extends BasicModel{
 	}
 	
 	public Connettore getConnettorePddAvvisatura() {
-		try {
-			Connettore cAvvisatura = (Connettore) this.connettorePdd.clone();
-			cAvvisatura.setUrl(cAvvisatura.getUrlServiziAvvisatura());
-			return cAvvisatura;
-		} catch (CloneNotSupportedException e) {
-		}
-		
-		return this.connettorePdd;
+		Connettore cAvvisatura = new Connettore(this.connettorePdd);
+		cAvvisatura.setUrl(cAvvisatura.getUrlServiziAvvisatura());
+		return cAvvisatura;
 	}
 
 	@Override
@@ -96,6 +91,11 @@ public class Intermediario extends BasicModel{
 				this.abilitato == intermediario.isAbilitato();
 		
 		return equal;
+	}
+	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 
 	public ConnettoreSftp getConnettoreSftp() {

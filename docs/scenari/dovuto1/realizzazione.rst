@@ -18,8 +18,7 @@ La realizzazione di questo scenario prevede le seguenti tre fasi:
 
 Caricamento della Pendenza
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-Il caricamento della pendenza nell'archivio dei pagamenti in attesa di GovPay si realizza
-invocando l’operazione `PUT /pendenze/{idA2A}/{idPendenza}` dell’API `Pendenze <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml&nocors>`_.
+Il caricamento della pendenza nell'archivio dei pagamenti in attesa di GovPay si realizza invocando l’operazione `PUT /pendenze/{idA2A}/{idPendenza}` dell’API `Pendenze <https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/link-it/govpay/master/wars/api-pendenze/src/main/webapp/v2/govpay-api-pendenze-v2.yaml&nocors>`_.
 
 Di seguito un esempio di invocazione valida nell':ref:`govpay_scenari_demo`:
 

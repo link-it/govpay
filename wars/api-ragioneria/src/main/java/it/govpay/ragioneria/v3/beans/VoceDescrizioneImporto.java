@@ -7,16 +7,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class VoceDescrizioneImporto   {
-  
+
   @Schema(example = "canone annuo", description = "voce importo")
  /**
-   * voce importo  
+   * voce importo
   **/
   private String voce = null;
-  
+
   @Schema(example = "10.01", description = "importo")
  /**
-   * importo  
+   * importo
   **/
   private BigDecimal importo = null;
  /**
@@ -60,7 +60,7 @@ public class VoceDescrizioneImporto   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class VoceDescrizioneImporto {\n");
-    
+
     sb.append("    voce: ").append(toIndentedString(voce)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("}");

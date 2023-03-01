@@ -5,13 +5,13 @@ import java.util.stream.Collectors;
 import it.govpay.ragioneria.v1.beans.AclPost;
 
 public class AclConverter {
-	
-	
+
+
 	public static AclPost toRsModel(it.govpay.bd.model.Acl acl) {
 		AclPost rsModel = new AclPost();
 		rsModel.principal(acl.getUtenzaPrincipalOriginale())
 		.ruolo(acl.getRuolo());
-		
+
 		if(acl.getServizio() != null) {
 			switch(acl.getServizio()) {
 			case ANAGRAFICA_APPLICAZIONI:
@@ -31,10 +31,10 @@ public class AclConverter {
 				return null;
 			}
 		}
-		
+
 		if(acl.getListaDiritti() != null)
 			rsModel.autorizzazioni(acl.getListaDiritti().stream().map(a -> a.getCodifica()).collect(Collectors.toList()));
-		
+
 		return rsModel;
 	}
 }

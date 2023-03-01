@@ -127,10 +127,9 @@ public class IbanAccreditoFilter extends AbstractFilter {
 
 		switch(field) {
 		case COD_IBAN: filterSortWrapper.setField(model.COD_IBAN);
+		break;
 		case DESCRIZIONE: filterSortWrapper.setField(model.DESCRIZIONE);
 		break;
-		default:
-			break;
 		}
 
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));

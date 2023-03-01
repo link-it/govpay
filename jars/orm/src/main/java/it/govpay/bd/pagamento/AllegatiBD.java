@@ -80,6 +80,25 @@ public class AllegatiBD extends BasicBD {
 	}
 	
 	public Allegato insertAllegato(Allegato dto) throws ServiceException {
+		TipiDatabase tipoDatabase = ConnectionManager.getJDBCServiceManagerProperties().getDatabase();
+		
+		switch (tipoDatabase) {
+		case MYSQL:
+		case ORACLE:
+		case SQLSERVER:
+		case HSQL:
+			return this._insertAllegato(dto);
+		case POSTGRESQL:
+			return this._insertAllegatoPostgresql(dto);
+		case DB2:
+		case DEFAULT:
+		case DERBY:
+		default:
+			throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
+		}
+	}
+	
+	private Allegato _insertAllegato(Allegato dto) throws ServiceException {
 		it.govpay.orm.Allegato vo = AllegatoConverter.toVO(dto);
 		try {
 			if(this.isAtomica()) {
@@ -92,96 +111,17 @@ public class AllegatiBD extends BasicBD {
 			
 			// inserimento della colonna contenuto in streaming
 			OutputStream oututStreamDestinazione = null;
-			Long oid = null;
 			Blob blobContenuto = null;
 			
-			TipiDatabase tipoDatabase = ConnectionManager.getJDBCServiceManagerProperties().getDatabase();
-			
-			switch (tipoDatabase) {
-			case MYSQL:
-				try {
-					blobContenuto = this.getConnection().createBlob();
-					oututStreamDestinazione = blobContenuto.setBinaryStream(1);
-				} catch (SQLException e) {
-					log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
-					throw new ServiceException(e);
-				}
-				break;
-			case ORACLE:
-				try {
-					blobContenuto = this.getConnection().createBlob();
-					oututStreamDestinazione = blobContenuto.setBinaryStream(1);
-				} catch (SQLException e) {
-					log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
-					throw new ServiceException(e);
-				}
-				break;
-			case SQLSERVER:
-				try {
-					blobContenuto = this.getConnection().createBlob();
-					oututStreamDestinazione = blobContenuto.setBinaryStream(1);
-				} catch (SQLException e) {
-					log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
-					throw new ServiceException(e);
-				}
-				break;
-			case HSQL:
-				try {
-					blobContenuto = this.getConnection().createBlob();
-					oututStreamDestinazione = blobContenuto.setBinaryStream(1);
-				} catch (SQLException e) {
-					log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
-					throw new ServiceException(e);
-				}
-				break;
-			case POSTGRESQL:
-				org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) this.getConnection();
-				Connection wrappedConnection = wrappedConn.getWrappedConnection();
-	
-				Connection underlyingConnection = null;
-				try {
-					Method method = wrappedConnection.getClass().getMethod("getUnderlyingConnection");
-	
-					Object invoke = method.invoke(wrappedConnection);
-	
-					underlyingConnection = (Connection) invoke;
-				} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					log.error("Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
-					throw new ServiceException(e);
-				}
-	
-				org.postgresql.PGConnection pgConnection = null;
-				try {
-					if(underlyingConnection.isWrapperFor(org.postgresql.PGConnection.class)) {
-						pgConnection = underlyingConnection.unwrap(org.postgresql.PGConnection.class);
-					} else {
-						pgConnection = (org.postgresql.PGConnection) underlyingConnection;				
-					}
-	
-					// Get the Large Object Manager to perform operations with
-					LargeObjectManager lobj = pgConnection.getLargeObjectAPI();
-	
-					// Create a new large object
-					oid = lobj.createLO(LargeObjectManager.WRITE);
-	
-					// Open the large object for writing
-					LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);
-	
-					oututStreamDestinazione = obj.getOutputStream();
-				} catch (SQLException e) {
-					log.error("Errore durante la creazione dell'outputstream: " + e.getMessage(), e);
-					throw new ServiceException(e);
-				}
-				break;
-			case DB2:
-			case DEFAULT:
-			case DERBY:
-			default:
-				throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
+			try {
+				blobContenuto = this.getConnection().createBlob();
+				oututStreamDestinazione = blobContenuto.setBinaryStream(1);
+			} catch (SQLException e) {
+				log.error("Errore durante la creazione del blob: " + e.getMessage(), e);
+				throw new ServiceException(e);
 			}
 			
 			ByteArrayInputStream bais = new ByteArrayInputStream(dto.getRawContenuto());
-			
 			
 			try {
 				IOUtils.copy(bais, oututStreamDestinazione);
@@ -209,23 +149,122 @@ public class AllegatiBD extends BasicBD {
 				prepareStatement = this.getConnection().prepareStatement(sql);
 				int idx = 1;
 				
-				switch (tipoDatabase) {
-				case MYSQL:
-				case ORACLE:
-				case SQLSERVER:
-				case HSQL:
-					prepareStatement.setBlob(idx ++, blobContenuto);
-					break;
-				case POSTGRESQL:
-					prepareStatement.setLong(idx ++, oid);
-					break;
-				case DB2:
-				case DEFAULT:
-				case DERBY:
-				default:
-					throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
-				}
+				prepareStatement.setBlob(idx ++, blobContenuto);
 				
+				// id allegato
+				prepareStatement.setLong(idx ++, vo.getId());
+				
+				prepareStatement.executeUpdate();
+				
+			} catch (SQLException e) {
+				throw new ServiceException(e);
+			} catch (SQLQueryObjectException e) {
+				throw new ServiceException(e);
+			} catch (ExpressionException e) {
+				throw new ServiceException(e);
+			} finally {
+				try {
+					if(prepareStatement != null)
+						prepareStatement.close();
+				} catch (SQLException e) { }
+			}
+			
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+		dto.setId(vo.getId());
+		return dto;
+	}
+	
+	@SuppressWarnings("resource")
+	private Allegato _insertAllegatoPostgresql(Allegato dto) throws ServiceException {
+		it.govpay.orm.Allegato vo = AllegatoConverter.toVO(dto);
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			// la insert deve essere fatta in due parti, prima la entry senza contenuto e poi in streaming
+			// N.B. la create non inserisce il contenuto
+			this.getAllegatoService().create(vo);
+			
+			// inserimento della colonna contenuto in streaming
+			OutputStream oututStreamDestinazione = null;
+			Long oid = null;
+			org.openspcoop2.utils.datasource.Connection wrappedConn = (org.openspcoop2.utils.datasource.Connection) this.getConnection();
+			Connection wrappedConnection = wrappedConn.getWrappedConnection();
+
+			Connection underlyingConnection = null;
+			org.postgresql.PGConnection pgConnection = null;
+			try {
+				Method method = wrappedConnection.getClass().getMethod("getUnderlyingConnection");
+
+				Object invoke = method.invoke(wrappedConnection);
+
+				underlyingConnection = (Connection) invoke;
+
+				if(underlyingConnection.isWrapperFor(org.postgresql.PGConnection.class)) {
+					pgConnection = underlyingConnection.unwrap(org.postgresql.PGConnection.class);
+				} else {
+					pgConnection = (org.postgresql.PGConnection) underlyingConnection;				
+				}
+
+				// Get the Large Object Manager to perform operations with
+				LargeObjectManager lobj = pgConnection.getLargeObjectAPI();
+
+				// Create a new large object
+				oid = lobj.createLO(LargeObjectManager.WRITE);
+
+				// Open the large object for writing
+				try (LargeObject obj = lobj.open(oid, LargeObjectManager.WRITE);){
+	
+					oututStreamDestinazione = obj.getOutputStream();
+					
+					ByteArrayInputStream bais = new ByteArrayInputStream(dto.getRawContenuto());
+					
+					try {
+						IOUtils.copy(bais, oututStreamDestinazione);
+						oututStreamDestinazione.flush();
+					} catch (IOException e) {
+						throw new ServiceException(e);
+					} finally {
+						if(oututStreamDestinazione != null)
+							oututStreamDestinazione.close();
+					}
+				}
+			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				log.error("Errore durante la lettura dell'oggetto connessione: " + e.getMessage(), e);
+				throw new ServiceException(e);
+			} catch (SQLException e) {
+				log.error("Errore durante la creazione dell'outputstream: " + e.getMessage(), e);
+				throw new ServiceException(e);
+			} catch (IOException e) {
+				log.error("Errore durante la chiusura dell'outputstream: " + e.getMessage(), e);
+				throw new ServiceException(e);
+			}
+			
+			PreparedStatement prepareStatement = null;
+			try {
+				JDBC_SQLObjectFactory jdbcSqlObjectFactory = new JDBC_SQLObjectFactory();
+				ISQLQueryObject sqlQueryObject = jdbcSqlObjectFactory.createSQLQueryObject(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+	
+				AllegatoFieldConverter converter = new AllegatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				AllegatoModel model = it.govpay.orm.Allegato.model();
+				
+				sqlQueryObject.addUpdateTable(converter.toTable(model.NOME));
+				sqlQueryObject.addUpdateField(converter.toColumn(model.RAW_CONTENUTO, false), "?");
+				sqlQueryObject.addWhereCondition(true, converter.toTable(model.NOME, true) + ".id" + " = ? ");
+				
+				String sql = sqlQueryObject.createSQLUpdate();
+	
+				prepareStatement = this.getConnection().prepareStatement(sql);
+				int idx = 1;
+				
+				prepareStatement.setLong(idx ++, oid);
 				// id allegato
 				prepareStatement.setLong(idx ++, vo.getId());
 				

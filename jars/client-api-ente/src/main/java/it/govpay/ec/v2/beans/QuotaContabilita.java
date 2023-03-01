@@ -8,22 +8,23 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class QuotaContabilita   {
   
-  @Schema(example = "0101", required = true, description = "Codice del capitolo")
+  @Schema(example = "0101", requiredMode = RequiredMode.REQUIRED, description = "Codice del capitolo")
  /**
    * Codice del capitolo  
   **/
   private String capitolo = null;
   
-  @Schema(example = "2020", required = true, description = "Anno di esercizio")
+  @Schema(example = "2020", requiredMode = RequiredMode.REQUIRED, description = "Anno di esercizio")
  /**
    * Anno di esercizio  
   **/
   private BigDecimal annoEsercizio = null;
   
-  @Schema(example = "10.01", required = true, description = "Importo della voce di contabilita'")
+  @Schema(example = "10.01", requiredMode = RequiredMode.REQUIRED, description = "Importo della voce di contabilita'")
  /**
    * Importo della voce di contabilita'  
   **/

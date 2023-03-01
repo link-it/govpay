@@ -28,7 +28,6 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.json.IJsonSchemaValidator;
 import org.openspcoop2.utils.json.JsonSchemaValidatorConfig;
 import org.openspcoop2.utils.json.JsonValidatorAPI.ApiName;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.json.ValidatorFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
@@ -91,6 +90,7 @@ import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.RequestValidationException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.TipoVersamento;
@@ -228,12 +228,16 @@ public class DominiDAO extends BaseDAO{
 					// creo le entries collegate solo ai domini intermediati
 					if(putDominioDTO.getDominio().isIntermediato()) {
 						// MBT
-						tributo.setIdDominio(putDominioDTO.getDominio().getId());
-						tributiBD.insertTributo(tributo);
+						if(tributo != null) {
+							tributo.setIdDominio(putDominioDTO.getDominio().getId());
+							tributiBD.insertTributo(tributo);
+						}
 	
 						// LIBERO
-						tvd.setIdDominio(putDominioDTO.getDominio().getId());
-						tvdBD.insertTipoVersamentoDominio(tvd);
+						if(tvd != null) {
+							tvd.setIdDominio(putDominioDTO.getDominio().getId());
+							tvdBD.insertTipoVersamentoDominio(tvd);
+						}
 	
 						// NON CENSITE
 						if(tvdNonCensite != null) {
@@ -242,8 +246,10 @@ public class DominiDAO extends BaseDAO{
 						}
 	
 						// TV MBT
-						tvdBollo.setIdDominio(putDominioDTO.getDominio().getId());
-						tvdBD.insertTipoVersamentoDominio(tvdBollo);
+						if(tvdBollo != null) {
+							tvdBollo.setIdDominio(putDominioDTO.getDominio().getId());
+							tvdBD.insertTipoVersamentoDominio(tvdBollo);
+						}
 					}
 					dominiBD.commit();
 				} catch (ServiceException e) {
@@ -958,7 +964,7 @@ public class DominiDAO extends BaseDAO{
 
 				try {
 					validator.setSchema(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortaleBackofficeTrasformazioneDefinizione().getBytes(), config, this.log);
-				} catch (ValidationException e) {
+				} catch (org.openspcoop2.utils.json.ValidationException e) {
 					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali backoffice non e' valido.", e);
 				} 
@@ -977,7 +983,7 @@ public class DominiDAO extends BaseDAO{
 
 				try {
 					validator.setSchema(putTipoPendenzaDominioDTO.getTipoVersamentoDominio().getCaricamentoPendenzePortalePagamentoTrasformazioneDefinizione().getBytes(), config, this.log);
-				} catch (ValidationException e) {
+				} catch (org.openspcoop2.utils.json.ValidationException e) {
 					this.log.error("Validazione tramite JSON Schema completata con errore: " + e.getMessage(), e);
 					throw new ValidationException("Lo schema indicato per la validazione della pendenza portali backoffice non e' valido.", e);
 				} 

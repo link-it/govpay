@@ -19,9 +19,8 @@
  */
 package it.govpay.model;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.model.Rpt.FirmaRichiesta;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class Applicazione extends BasicModel {
 	
@@ -56,7 +55,7 @@ public class Applicazione extends BasicModel {
 	public void setFirmaRichiesta(FirmaRichiesta firmaRichiesta) {
 		this.firmaRichiesta = firmaRichiesta;
 	}
-	public void setCodFirmaRichiesta(String codifica) throws ServiceException {
+	public void setCodFirmaRichiesta(String codifica) throws CodificaInesistenteException {
 		this.firmaRichiesta = FirmaRichiesta.toEnum(codifica);
 	}
 	public boolean isTrusted() {

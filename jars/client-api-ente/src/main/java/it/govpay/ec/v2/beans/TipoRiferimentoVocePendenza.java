@@ -1,6 +1,5 @@
 package it.govpay.ec.v2.beans;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -9,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePendenza  {
 	
@@ -39,19 +39,19 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	      return null;
 	    }
 	  }  
-	  @Schema(required = true, description = "Tipologia di Bollo digitale")
+	  @Schema(requiredMode = RequiredMode.REQUIRED, description = "Tipologia di Bollo digitale")
 	 /**
 	   * Tipologia di Bollo digitale  
 	  **/
 	  private TipoBolloEnum tipoBollo = null;
 	  
-	  @Schema(example = "--- base64 ---", required = true, description = "Digest in base64 del documento informatico associato alla marca da bollo")
+	  @Schema(example = "--- base64 ---", requiredMode = RequiredMode.REQUIRED, description = "Digest in base64 del documento informatico associato alla marca da bollo")
 	 /**
 	   * Digest in base64 del documento informatico associato alla marca da bollo  
 	  **/
 	  private String hashDocumento = null;
 	  
-	  @Schema(example = "RO", required = true, description = "Sigla automobilistica della provincia di residenza del soggetto pagatore")
+	  @Schema(example = "RO", requiredMode = RequiredMode.REQUIRED, description = "Sigla automobilistica della provincia di residenza del soggetto pagatore")
 	 /**
 	   * Sigla automobilistica della provincia di residenza del soggetto pagatore  
 	  **/
@@ -67,7 +67,6 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	   * @return tipoBollo
 	  **/
 	  @JsonProperty("tipoBollo")
-	  @NotNull
 	  public String getTipoBollo() {
 	    if (tipoBollo == null) {
 	      return null;
@@ -89,7 +88,6 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	   * @return hashDocumento
 	  **/
 	  @JsonProperty("hashDocumento")
-	  @NotNull
 	 @Size(max=70)  public String getHashDocumento() {
 	    return hashDocumento;
 	  }
@@ -108,7 +106,6 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	   * @return provinciaResidenza
 	  **/
 	  @JsonProperty("provinciaResidenza")
-	  @NotNull
 	 @Pattern(regexp="[A-Z]{2,2}")  public String getProvinciaResidenza() {
 	    return provinciaResidenza;
 	  }
@@ -140,7 +137,7 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	    return this;
 	  }
 	  
-	  @Schema(example = "IT60X0542811101000000123456", required = true, description = "")
+	  @Schema(example = "IT60X0542811101000000123456", requiredMode = RequiredMode.REQUIRED, description = "")
 	  private String ibanAccredito = null;
 	  
 	  @Schema(example = "IT60X0542811101000000123456", description = "")
@@ -151,7 +148,6 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	   * @return ibanAccredito
 	  **/
 	  @JsonProperty("ibanAccredito")
-	  @NotNull
 	 @Pattern(regexp="[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}")  public String getIbanAccredito() {
 	    return ibanAccredito;
 	  }
@@ -183,14 +179,13 @@ public class TipoRiferimentoVocePendenza  implements OneOfTipoRiferimentoVocePen
 	    return this;
 	  }
 	  
-	  @Schema(example = "SRV-12345", required = true, description = "")
+	  @Schema(example = "SRV-12345", requiredMode = RequiredMode.REQUIRED, description = "")
 	  private String codEntrata = null;
 	 /**
 	   * Get codEntrata
 	   * @return codEntrata
 	  **/
 	  @JsonProperty("codEntrata")
-	  @NotNull
 	 @Pattern(regexp="(^[a-zA-Z0-9\\-_\\.]{1,35}$)")  public String getCodEntrata() {
 	    return codEntrata;
 	  }

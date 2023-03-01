@@ -1,5 +1,8 @@
 package it.govpay.bd.model.converter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.govpay.bd.model.Operazione;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
@@ -8,15 +11,10 @@ import it.govpay.orm.IdStampa;
 import it.govpay.orm.IdTracciato;
 import it.govpay.orm.IdVersamento;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 public class OperazioneConverter {
 
 
-	public static List<Operazione> toDTOList(List<it.govpay.orm.Operazione> anagraficaLst) throws ServiceException {
+	public static List<Operazione> toDTOList(List<it.govpay.orm.Operazione> anagraficaLst) {
 		List<Operazione> lstDTO = new ArrayList<>();
 		if(anagraficaLst != null && !anagraficaLst.isEmpty()) {
 			for(it.govpay.orm.Operazione anagrafica: anagraficaLst){
@@ -26,7 +24,7 @@ public class OperazioneConverter {
 		return lstDTO;
 	}
 
-	public static Operazione toDTO(it.govpay.orm.Operazione vo) throws ServiceException {
+	public static Operazione toDTO(it.govpay.orm.Operazione vo) {
 		Operazione dto = new Operazione();
 		
 		dto.setId(vo.getId());
@@ -63,7 +61,7 @@ public class OperazioneConverter {
 		return dto;
 	}
 
-	public static it.govpay.orm.Operazione toVO(Operazione dto) throws ServiceException {
+	public static it.govpay.orm.Operazione toVO(Operazione dto) {
 		it.govpay.orm.Operazione vo = new it.govpay.orm.Operazione();
 		vo.setId(dto.getId());
 		vo.setTipoOperazione(dto.getTipoOperazione().name());

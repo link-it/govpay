@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "principal",
 "password",
@@ -18,31 +18,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "abilitato",
 })
 public class Operatore extends it.govpay.core.beans.JSONSerializable {
-  
+
   @JsonProperty("principal")
   private String principal = null;
-  
+
   @JsonProperty("password")
   private Boolean password = null;
-  
+
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
-  
+
   @JsonProperty("domini")
-  private List<DominioProfiloIndex> domini = new ArrayList<DominioProfiloIndex>();
-  
+  private List<DominioProfiloIndex> domini = new ArrayList<>();
+
   @JsonProperty("tipiPendenza")
-  private List<TipoPendenza> tipiPendenza = new ArrayList<TipoPendenza>();
-  
+  private List<TipoPendenza> tipiPendenza = new ArrayList<>();
+
   @JsonProperty("acl")
   private List<AclPost> acl = null;
-  
+
   @JsonProperty("ruoli")
   private List<Ruolo> ruoli = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   /**
    * Username dell'operatore
    **/
@@ -68,7 +68,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("password")
-  public Boolean Password() {
+  public Boolean getPassword() {
     return password;
   }
   public void setPassword(Boolean password) {
@@ -164,7 +164,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
@@ -195,7 +195,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
     return Objects.hash(principal, password, ragioneSociale, domini, tipiPendenza, acl, ruoli, abilitato);
   }
 
-  public static Operatore parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Operatore parse(String json) throws IOException {
     return parse(json, Operatore.class);
   }
 
@@ -208,7 +208,7 @@ public class Operatore extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Operatore {\n");
-    
+
     sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");

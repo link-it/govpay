@@ -30,6 +30,7 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -39,9 +40,9 @@ import org.slf4j.MDC;
 
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.Costanti;
+import it.govpay.core.beans.EventoContext.Categoria;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.EventoContext.Categoria;
-import it.govpay.core.utils.EventoContext.Componente;
 
 public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageContext> {
 
@@ -66,9 +67,9 @@ public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageC
 
 	@Override
 	public void close(MessageContext messageContext) {
+		// do nothing.
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	private boolean logToSystemOut(SOAPMessageContext smc) {
 		try {
 			Boolean outboundProperty = (Boolean) smc.get (MessageContext.MESSAGE_OUTBOUND_PROPERTY);
@@ -77,49 +78,56 @@ public class MessageLoggingHandlerNDP_010702 implements SOAPHandler<SOAPMessageC
 			if(context instanceof org.openspcoop2.utils.service.context.Context) {
 				GpContext ctx = (GpContext) ((org.openspcoop2.utils.service.context.Context)context).getApplicationContext();
 				if (outboundProperty.booleanValue()) {
-					try {
-//						smc.getMessage().setProperty("X-GP-CMDID", MDC.get(MD5Constants.OPERATION_ID));
-						smc.getMessage().setProperty(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, context.getTransactionId());
-					} catch (SOAPException e) {
-						log.warn("Impossibile impostare l'header HTTP X-GP-CMDID nella risposta.");
-					}
-
+					this.salvaInformazioniRichiestaUscita(smc, context);
 				} else {
-					if(smc.get(MessageContext.WSDL_OPERATION) != null)
-		    			MDC.put(MD5Constants.OPERATION_ID, ((QName) smc.get(MessageContext.WSDL_OPERATION)).getLocalPart());
-					MDC.put(MD5Constants.TRANSACTION_ID, context.getTransactionId());
-					GpContext.popolaGpContext(ctx, smc, GpContext.TIPO_SERVIZIO_NDP, 010702, this.getApiNameEnum());
-					
-					
-					Map<String, List<String>> httpHeaders = (Map<String, List<String>>) smc.get(MessageContext.HTTP_REQUEST_HEADERS);
-					String soapAction = "";
-					if(httpHeaders.get(SOAP_ACTION) != null) {
-						soapAction = httpHeaders.get(SOAP_ACTION).get(0);
-						soapAction = soapAction.replace("\"",""); //.split("#"))[1]);
-					}
-					
-					HttpServletRequest servletRequest = (HttpServletRequest) smc.get(MessageContext.SERVLET_REQUEST);
-					ctx.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
-					ctx.getEventoCtx().setMethod(servletRequest.getMethod());
-					ctx.getEventoCtx().setTipoEvento(soapAction);
-					ctx.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(context.getAuthentication()));
-					if(AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication()) != null)
-						ctx.getEventoCtx().setUtente(AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication()).getIdentificativo());
-					
-					StringBuilder requestURL = new StringBuilder(servletRequest.getRequestURL().toString());
-				    String queryString = servletRequest.getQueryString();
-
-				    if (queryString == null) {
-				    	ctx.getEventoCtx().setUrl(requestURL.toString());
-				    } else {
-				    	ctx.getEventoCtx().setUrl(requestURL.append('?').append(queryString).toString());
-				    }
+					this.salvaInformazioniRichiestaIngresso(smc, context, ctx);
 				}
 			}
-			return true;
 		} catch (Exception e) {
 			log.error("Errore durante il log dell'operazione: " + e.getMessage(),e);
-			return true;
+		}
+		
+		return true;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void salvaInformazioniRichiestaIngresso(SOAPMessageContext smc, IContext context, GpContext ctx) throws ServiceException {
+		if(smc.get(MessageContext.WSDL_OPERATION) != null)
+			MDC.put(MD5Constants.OPERATION_ID, ((QName) smc.get(MessageContext.WSDL_OPERATION)).getLocalPart());
+		MDC.put(MD5Constants.TRANSACTION_ID, context.getTransactionId());
+		GpContext.popolaGpContext(ctx, smc, GpContext.TIPO_SERVIZIO_NDP, 010702, this.getApiNameEnum());
+		
+		
+		Map<String, List<String>> httpHeaders = (Map<String, List<String>>) smc.get(MessageContext.HTTP_REQUEST_HEADERS);
+		String soapAction = "";
+		if(httpHeaders.get(SOAP_ACTION) != null) {
+			soapAction = httpHeaders.get(SOAP_ACTION).get(0);
+			soapAction = soapAction.replace("\"",""); //.split("#"))[1]);
+		}
+		
+		HttpServletRequest servletRequest = (HttpServletRequest) smc.get(MessageContext.SERVLET_REQUEST);
+		ctx.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
+		ctx.getEventoCtx().setMethod(servletRequest.getMethod());
+		ctx.getEventoCtx().setTipoEvento(soapAction);
+		ctx.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(context.getAuthentication()));
+		if(AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication()) != null)
+			ctx.getEventoCtx().setUtente(AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication()).getIdentificativo());
+		
+		StringBuilder requestURL = new StringBuilder(servletRequest.getRequestURL().toString());
+		String queryString = servletRequest.getQueryString();
+
+		if (queryString == null) {
+			ctx.getEventoCtx().setUrl(requestURL.toString());
+		} else {
+			ctx.getEventoCtx().setUrl(requestURL.append('?').append(queryString).toString());
+		}
+	}
+
+	private void salvaInformazioniRichiestaUscita(SOAPMessageContext smc, IContext context) {
+		try {
+			smc.getMessage().setProperty(Costanti.HEADER_NAME_OUTPUT_TRANSACTION_ID, context.getTransactionId());
+		} catch (SOAPException e) {
+			log.warn("Impossibile impostare l'header HTTP X-GP-CMDID nella risposta.");
 		}
 	}
 	

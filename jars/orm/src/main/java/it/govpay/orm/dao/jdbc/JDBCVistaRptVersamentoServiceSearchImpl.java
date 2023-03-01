@@ -123,10 +123,6 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 	
 	@Override
 	public List<IdRpt> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
-		// default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
         
 		List<IdRpt> list = new ArrayList<IdRpt>();
 
@@ -160,10 +156,6 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 	@Override
 	public List<VistaRptVersamento> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		// default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
         
         List<VistaRptVersamento> list = new ArrayList<VistaRptVersamento>();
         
@@ -1016,6 +1008,15 @@ public class JDBCVistaRptVersamentoServiceSearchImpl implements IJDBCServiceSear
 	
 	protected Long findIdVistaRptVersamento(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRpt id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
+		if(id == null)
+			throw new ServiceException(this.getClass().getName() +": Bad request: id is null");
+		
+		if(sqlQueryObject == null)
+			throw new ServiceException(this.getClass().getName() +": Bad request: sqlQueryObject is null");
+		
+		if(jdbcProperties == null)
+			throw new ServiceException(this.getClass().getName() +": Bad request: jdbcProperties is null");
+		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 

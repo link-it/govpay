@@ -4,6 +4,8 @@ Background:
 
 * callonce read('classpath:utils/workflow/modello1/v1/modello1-bunch-pagamenti-v3.feature')
 
+* configure cookies = null
+
 Scenario Outline: Lettura dettaglio pagamento utente spid debitore: [<idPagamento>]
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'spid'})

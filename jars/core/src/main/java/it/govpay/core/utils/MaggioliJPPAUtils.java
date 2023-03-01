@@ -21,7 +21,6 @@ import javax.xml.validation.Schema;
 
 import org.apache.commons.io.IOUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
 import org.xml.sax.SAXException;
 
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceipt;
@@ -35,8 +34,10 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.jppapdp.beans.utils.JaxbUtils;
 import it.govpay.model.QuotaContabilita;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.CtDatiVersamentoRT;
 import it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.CtDettagliImporto;
@@ -212,7 +213,7 @@ public class MaggioliJPPAUtils {
 		return dataOperazione;
 	}
 
-	public static RecuperaRTRisposta buildRTRisposta(it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.ObjectFactory objectFactory, Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, ValidationException, DatatypeConfigurationException, JAXBException, SAXException {
+	public static RecuperaRTRisposta buildRTRisposta(it.maggioli.informatica.jcitygov.pagopa.payservice.pdp.connector.jppapdp.external.schema._1_0.ObjectFactory objectFactory, Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException, ValidationException, DatatypeConfigurationException, JAXBException, SAXException, it.govpay.core.exceptions.IOException {
 		RecuperaRTRisposta recuperaRTRisposta = objectFactory.createRecuperaRTRisposta();
 		Versamento versamento = rpt.getVersamento(configWrapper);
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
@@ -248,7 +249,7 @@ public class MaggioliJPPAUtils {
 		return recuperaRTRisposta;
 	}
 
-	private static void popolaDettaglioImportoRT(RecuperaRTRisposta recuperaRTRisposta, List<SingoloVersamento> singoliVersamenti)	throws ServiceException, ValidationException {
+	private static void popolaDettaglioImportoRT(RecuperaRTRisposta recuperaRTRisposta, List<SingoloVersamento> singoliVersamenti)	throws it.govpay.core.exceptions.IOException, ValidationException {
 		CtDettagliImporto dettagliImporto = new CtDettagliImporto();
 		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
 			if(singoloVersamento.getContabilita() != null) {
@@ -272,7 +273,7 @@ public class MaggioliJPPAUtils {
 	}
 
 	private static void popolaRicevutaDaRPT23(CtRicevutaTelematica ricevutaTelematica, Rpt rpt, Versamento versamento, List<SingoloVersamento> singoliVersamenti, BDConfigWrapper configWrapper) throws DatatypeConfigurationException, JAXBException, SAXException, ServiceException {
-		it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt(), false);
+		it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica rt = it.govpay.pagopa.beans.utils.JaxbUtils.toRT(rpt.getXmlRt(), false);
 
 		ricevutaTelematica.setDataOraMessaggioRicevuta(impostaDataOperazione(rpt.getDataMsgRicevuta()));
 		popolaDatiVersamentoRT(ricevutaTelematica, rpt);
@@ -406,7 +407,7 @@ public class MaggioliJPPAUtils {
 	}
 
 	private static void popolaRicevutaDaRPT24(CtRicevutaTelematica ricevutaTelematica, Rpt rpt, Versamento versamento, List<SingoloVersamento> singoliVersamenti, BDConfigWrapper configWrapper) throws DatatypeConfigurationException, JAXBException, SAXException, ServiceException {
-		PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+		PaSendRTReq paSendRTReq_RT = it.govpay.pagopa.beans.utils.JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
 
 		ricevutaTelematica.setDataOraMessaggioRicevuta(impostaDataOperazione(rpt.getDataMsgRicevuta()));
 		popolaDatiVersamentoRT(ricevutaTelematica, rpt);
@@ -498,7 +499,7 @@ public class MaggioliJPPAUtils {
 	}
 	
 	private static void popolaRicevutaDaRPT32(CtRicevutaTelematica ricevutaTelematica, Rpt rpt, Versamento versamento, List<SingoloVersamento> singoliVersamenti, BDConfigWrapper configWrapper) throws DatatypeConfigurationException, JAXBException, SAXException, ServiceException {
-		PaSendRTV2Request paSendRTReq_RT = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+		PaSendRTV2Request paSendRTReq_RT = it.govpay.pagopa.beans.utils.JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
 
 		ricevutaTelematica.setDataOraMessaggioRicevuta(impostaDataOperazione(rpt.getDataMsgRicevuta()));
 		popolaDatiVersamentoRT(ricevutaTelematica, rpt);

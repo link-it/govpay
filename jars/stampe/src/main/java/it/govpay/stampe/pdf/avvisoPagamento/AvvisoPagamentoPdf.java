@@ -19,6 +19,8 @@ import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.slf4j.Logger;
 
+import it.govpay.core.exceptions.ConfigException;
+import it.govpay.core.exceptions.PropertyNotFoundException;
 import it.govpay.stampe.model.AvvisoPagamentoInput;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
@@ -166,7 +168,7 @@ public class AvvisoPagamentoPdf {
 		return jasperPrint;
 	}
 
-	public byte[] creaAvviso(Logger log, AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, UtilsException {
+	public byte[] creaAvviso(Logger log, AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, PropertyNotFoundException {
 		if(input.getScadenzaScontato() != null) {
 			return _creaAvvisoViolazioneCDS(log, input, codDominio, avProperties);
 		} else if(input.getDiPoste() != null) {
@@ -176,7 +178,7 @@ public class AvvisoPagamentoPdf {
 		}
 	}
 	
-	public byte[] _creaAvviso(Logger log, AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, UtilsException {
+	public byte[] _creaAvviso(Logger log, AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, PropertyNotFoundException {
 		// cerco file di properties esterni per configurazioni specifiche per dominio
 		Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
 
@@ -227,7 +229,7 @@ public class AvvisoPagamentoPdf {
 		}
 	}
 	
-	public byte[] _creaAvvisoPostale(Logger log, AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, UtilsException {
+	public byte[] _creaAvvisoPostale(Logger log, AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, PropertyNotFoundException {
 		// cerco file di properties esterni per configurazioni specifiche per dominio
 		Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
 
@@ -277,7 +279,7 @@ public class AvvisoPagamentoPdf {
 		}
 	}
 	
-	public byte[] _creaAvvisoViolazioneCDS(Logger log, AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, UtilsException {
+	public byte[] _creaAvvisoViolazioneCDS(Logger log, AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, PropertyNotFoundException {
 		// cerco file di properties esterni per configurazioni specifiche per dominio
 		Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
 
@@ -343,7 +345,7 @@ public class AvvisoPagamentoPdf {
 			input.setLogoEnte(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_ENTE));
 	}
 	
-	public byte[] creaAvvisoV2(Logger log, it.govpay.stampe.model.v2.AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, UtilsException {
+	public byte[] creaAvvisoV2(Logger log, it.govpay.stampe.model.v2.AvvisoPagamentoInput input, String codDominio, AvvisoPagamentoProperties avProperties) throws JAXBException, IOException, JRException, PropertyNotFoundException {
 		// cerco file di properties esterni per configurazioni specifiche per dominio
 		Properties propertiesAvvisoPerDominio = avProperties.getPropertiesPerDominio(codDominio, log);
 

@@ -46,9 +46,9 @@ public class SondeController extends BaseController{
 	}
 
 	public Response findSonde(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders) {
-		String methodName = "findSonde";  
+		String methodName = "findSonde";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		BasicBD bd = null;
 		try{
 			ListaSonde response = null;
@@ -56,7 +56,7 @@ public class SondeController extends BaseController{
 			try {
 				bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), true);
 				bd.setupConnection(ContextThreadLocal.get().getTransactionId());
-			
+
 				it.govpay.backoffice.v1.beans.Sonda sondaCheckDB = new it.govpay.backoffice.v1.beans.Sonda(TipoSonda.Sistema);
 				sondaCheckDB.setStato(SondeConverter.getStatoSonda(0));
 				sondaCheckDB.setDescrizioneStato(Costanti.CHECK_DB_DESCRIZIONE_STATO_OK);
@@ -64,20 +64,20 @@ public class SondeController extends BaseController{
 				sondaCheckDB.setId(Costanti.CHECK_DB);
 				sondaCheckDB.setDataUltimoCheck(new Date());
 				risultati.add(sondaCheckDB);
-				
+
 				LeggiConfigurazioneDTO leggiConfigurazioneDTO = new LeggiConfigurazioneDTO(user);
 				ConfigurazioneDAO configurazioneDAO = new ConfigurazioneDAO(false);
 				LeggiConfigurazioneDTOResponse configurazioneDTOResponse = configurazioneDAO.getConfigurazione(leggiConfigurazioneDTO);
-				
+
 				List<Sonda> sonde = SondaFactory.findAll(bd.getConnection(), bd.getJdbcProperties().getDatabase());
 
 				for(Sonda sonda: sonde) {
 					ParametriSonda parametri = sonda.getParam();
-					
+
 					// aggiorno lo stato delle sonde
 					sonda = this.updateStatoSonda(bd, parametri.getNome(), sonda);
 					parametri = sonda.getParam();
-					
+
 					it.govpay.backoffice.v1.beans.Sonda rsModel = SondeConverter.toRsModel(sonda, parametri, configurazioneDTOResponse.getConfigurazione());
 
 					risultati.add(rsModel);
@@ -94,26 +94,26 @@ public class SondeController extends BaseController{
 			} finally {
 				if(bd!= null) bd.closeConnection();
 			}
-			
+
 			response = new ListaSonde(risultati, this.getServicePath(uriInfo), (long) risultati.size(), null, null, null);
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
 	}
 
 	public Response getSonda(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders, String id) {
-		String methodName = "getSonda";  
+		String methodName = "getSonda";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		BasicBD bd = null;
-		try{ 
-			
+		try{
+
 			it.govpay.backoffice.v1.beans.Sonda response = null;
-			
+
 			try {
 				if(id.equals(Costanti.CHECK_DB)) {
 					response = new it.govpay.backoffice.v1.beans.Sonda(TipoSonda.Sistema);
@@ -123,7 +123,7 @@ public class SondeController extends BaseController{
 					try {
 						bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), true);
 						bd.setupConnection(ContextThreadLocal.get().getTransactionId());
-						
+
 						response.setStato(SondeConverter.getStatoSonda(0));
 						response.setDescrizioneStato(Costanti.CHECK_DB_DESCRIZIONE_STATO_OK);
 					} catch(Exception e) {
@@ -135,15 +135,15 @@ public class SondeController extends BaseController{
 				} else {
 					bd = BasicBD.newInstance(ContextThreadLocal.get().getTransactionId(), true);
 					bd.setupConnection(ContextThreadLocal.get().getTransactionId());
-					
+
 					LeggiConfigurazioneDTO leggiConfigurazioneDTO = new LeggiConfigurazioneDTO(user);
 					ConfigurazioneDAO configurazioneDAO = new ConfigurazioneDAO(false);
 					LeggiConfigurazioneDTOResponse configurazioneDTOResponse = configurazioneDAO.getConfigurazione(leggiConfigurazioneDTO);
-	
+
 					try {
 						Sonda sonda = this.getSonda(bd, id);
 						ParametriSonda param = sonda.getParam();
-						response = SondeConverter.toRsModel(sonda, param, configurazioneDTOResponse.getConfigurazione()); 
+						response = SondeConverter.toRsModel(sonda, param, configurazioneDTOResponse.getConfigurazione());
 					} catch (NotFoundException t){
 						return Response.status(404).entity(MessageFormat.format(Costanti.SONDA_CON_ID_NON_CONFIGURATA, id)).build();
 					} catch (Throwable t){
@@ -161,18 +161,18 @@ public class SondeController extends BaseController{
 			} finally {
 				if(bd!= null) bd.closeConnection();
 			}
-			
-			
+
+
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
 	}
-	
+
 	private Sonda getSonda(BasicBD bd, String nome) throws SondaException, ServiceException, NotFoundException {
 		Sonda sonda = SondaFactory.get(nome, bd.getConnection(), bd.getJdbcProperties().getDatabase());
 		return updateStatoSonda(bd, nome, sonda);
@@ -191,7 +191,7 @@ public class SondeController extends BaseController{
 		}
 		if(Costanti.CHECK_NTFY_APP_IO.equals(nome)) {
 			long num = -1;
-			NotificheAppIoBD notificheBD = new NotificheAppIoBD(bd); 
+			NotificheAppIoBD notificheBD = new NotificheAppIoBD(bd);
 			notificheBD.setAtomica(false); // connessione condivisa
 			num = notificheBD.countNotificheInAttesa();
 			((SondaCoda)sonda).aggiornaStatoSonda(num, bd.getConnection(), bd.getJdbcProperties().getDatabase());
@@ -205,7 +205,7 @@ public class SondeController extends BaseController{
 		}
 		if(Costanti.CHECK_ELABORAZIONE_TRACCIATI_NOTIFICA_PAGAMENTI.equals(nome)) {
 			long num = -1;
-			TracciatiNotificaPagamentiBD notificheBD = new TracciatiNotificaPagamentiBD(bd); 
+			TracciatiNotificaPagamentiBD notificheBD = new TracciatiNotificaPagamentiBD(bd);
 			notificheBD.setAtomica(false); // connessione condivisa
 			num = notificheBD.countTracciatiInStatoNonTerminale(null,null,null);
 			((SondaCoda)sonda).aggiornaStatoSonda(num, bd.getConnection(), bd.getJdbcProperties().getDatabase());
@@ -217,7 +217,7 @@ public class SondeController extends BaseController{
 			long c1 = versamentiBD.countVersamentiConAvvisoDiPagamentoDaSpedire();
 			long c2 = versamentiBD.countVersamentiConAvvisoDiScadenzaDaSpedireViaAppIO();
 			long c3 = versamentiBD.countVersamentiConAvvisoDiScadenzaDaSpedireViaMail();
-			
+
 			num = c1 +c2+ c3;
 			((SondaCoda)sonda).aggiornaStatoSonda(num, bd.getConnection(), bd.getJdbcProperties().getDatabase());
 		}
@@ -237,19 +237,19 @@ public class SondeController extends BaseController{
 		}
 		if(Costanti.CHECK_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI.equals(nome)) {
 			long num = -1;
-			TracciatiNotificaPagamentiBD notificheBD = new TracciatiNotificaPagamentiBD(bd); 
+			TracciatiNotificaPagamentiBD notificheBD = new TracciatiNotificaPagamentiBD(bd);
 			notificheBD.setAtomica(false); // connessione condivisa
 			num = notificheBD.countTracciatiInStatoNonTerminale(null,null,null);
 			((SondaCoda)sonda).aggiornaStatoSonda(num, bd.getConnection(), bd.getJdbcProperties().getDatabase());
 		}
-		if(Costanti.CHECK_TRACCIATI.equals(nome)) { 
+		if(Costanti.CHECK_TRACCIATI.equals(nome)) {
 			long num = -1;
 			TracciatiBD tracciatiBD = new TracciatiBD(bd);
 			tracciatiBD.setAtomica(false); // connessione condivisa
 			num = tracciatiBD.countTracciatiDaElaborare();
 			((SondaCoda)sonda).aggiornaStatoSonda(num, bd.getConnection(), bd.getJdbcProperties().getDatabase());
 		}
-		
+
 		return sonda;
 	}
 }

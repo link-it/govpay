@@ -3,13 +3,12 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -21,19 +20,19 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 public class TracciatoCsv extends JSONSerializable implements IValidable {
 
   private TipoTemplateTrasformazione tipoEnum = null;
-  
+
   @JsonProperty("tipo")
   private String tipo = null;
-  
+
   @JsonProperty("intestazione")
   private String intestazione = null;
-  
+
   @JsonProperty("richiesta")
   private Object richiesta = null;
-  
+
   @JsonProperty("risposta")
   private Object risposta = null;
-  
+
   /**
    **/
   public TracciatoCsv tipo(TipoTemplateTrasformazione tipo) {
@@ -48,7 +47,7 @@ public class TracciatoCsv extends JSONSerializable implements IValidable {
   public void setTipo(TipoTemplateTrasformazione tipoEnum) {
     this.tipoEnum = tipoEnum;
   }
-  
+
   public TracciatoCsv tipo(String tipo) {
     this.tipo = tipo;
     return this;
@@ -130,7 +129,7 @@ public class TracciatoCsv extends JSONSerializable implements IValidable {
     return Objects.hash(tipo, intestazione, richiesta, risposta);
   }
 
-  public static TracciatoCsv parse(String json) throws ServiceException, ValidationException {
+  public static TracciatoCsv parse(String json) throws IOException {
     return parse(json, TracciatoCsv.class);
   }
 
@@ -143,7 +142,7 @@ public class TracciatoCsv extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TracciatoCsv {\n");
-    
+
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("    intestazione: ").append(toIndentedString(intestazione)).append("\n");
     sb.append("    richiesta: ").append(toIndentedString(richiesta)).append("\n");
@@ -166,7 +165,7 @@ public class TracciatoCsv extends JSONSerializable implements IValidable {
   @Override
   public void validate() throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
-	
+
 	if(this.richiesta != null || this.risposta != null || this.intestazione != null || this.tipo != null) {
 		if(!(this.richiesta != null && this.risposta != null && this.intestazione != null && this.tipo != null)) {
 			  throw new ValidationException("I campi 'tipo', 'intestazione', 'richiesta' e 'risposta' devono essere tutti valorizzati per definire il field 'tracciatoCsv'.");

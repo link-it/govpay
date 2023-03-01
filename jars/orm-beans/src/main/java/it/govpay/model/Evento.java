@@ -20,13 +20,57 @@
 package it.govpay.model;
 
 
+import java.text.MessageFormat;
 import java.util.Date;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class Evento extends BasicModel {
 	private static final long serialVersionUID = 1L;
+	
+	public enum TipoEventoCooperazione {
+		NODOINVIARPT("nodoInviaRPT"),
+		NODOINVIACARRELLORPT("nodoInviaCarrelloRPT"), 
+		NODOCHIEDISTATORPT("nodoChiediStatoRPT"), 
+		PAAINVIART("paaInviaRT"), 
+		NODOCHIEDICOPIART("nodoChiediCopiaRT"), 
+		PAAVERIFICARPT("paaVerificaRPT"), 
+		PAAATTIVARPT("paaAttivaRPT"),
+		NODOINVIARICHIESTASTORNO("nodoInviaRichiestaStorno"),
+		PAAINVIAESITOSTORNO("paaInviaEsitoStorno"),
+		NODOINVIAAVVISODIGITALE("nodoInviaAvvisoDigitale"),
+		PAVERIFYPAYMENTNOTICE("paVerifyPaymentNotice"),
+		PAGETPAYMENT("paGetPayment"),
+		PASENDRT("paSendRT"),
+		PADEMANDPAYMENTNOTICE("paDemandPaymentNotice"),
+		PAGETPAYMENTV2("paGetPaymentV2"),
+		PASENDRTV2("paSendRTV2");
+		
+		private String value;
+
+		TipoEventoCooperazione(String value) {
+			this.value = value;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(value);
+		}
+
+		public static TipoEventoCooperazione fromValue(String text) {
+			for (TipoEventoCooperazione b : TipoEventoCooperazione.values()) {
+				if (String.valueOf(b.value).equals(text)) {
+					return b;
+				}
+			}
+			return null;
+		}
+	}
+
+	public static final String COMPONENTE_COOPERAZIONE = "FESP";
+	public static final String NDP = "NodoDeiPagamentiSPC";
 	
 	private Long id;
 	private String componente;
@@ -58,6 +102,8 @@ public class Evento extends BasicModel {
 	
 	private Integer severita;
 	
+	private String clusterId;
+	private String transactionId;
 	
 	public enum CategoriaEvento {
 		INTERNO ("B"), INTERFACCIA ("I"), UTENTE ("U");
@@ -71,14 +117,14 @@ public class Evento extends BasicModel {
 			return this.codifica;
 		}
 		
-		public static CategoriaEvento toEnum(String codifica) throws ServiceException {
+		public static CategoriaEvento toEnum(String codifica) throws CodificaInesistenteException {
 			
 			for(CategoriaEvento p : CategoriaEvento.values()){
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
 			
-			throw new ServiceException("Codifica inesistente per CategoriaEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(CategoriaEvento.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per CategoriaEvento. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(CategoriaEvento.values())));
 		}
 		
 		@Override
@@ -99,14 +145,14 @@ public class Evento extends BasicModel {
 			return this.codifica;
 		}
 		
-		public static RuoloEvento toEnum(String codifica) throws ServiceException {
+		public static RuoloEvento toEnum(String codifica) throws CodificaInesistenteException {
 			
 			for(RuoloEvento p : RuoloEvento.values()){
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
 			
-			throw new ServiceException("Codifica inesistente per RuoloEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(RuoloEvento.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per RuoloEvento. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(RuoloEvento.values())));
 		}
 		
 		@Override
@@ -127,14 +173,14 @@ public class Evento extends BasicModel {
 			return this.codifica;
 		}
 		
-		public static EsitoEvento toEnum(String codifica) throws ServiceException {
+		public static EsitoEvento toEnum(String codifica) throws CodificaInesistenteException {
 			
 			for(EsitoEvento p : EsitoEvento.values()){
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
 			
-			throw new ServiceException("Codifica inesistente per EsitoEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoEvento.values()));
+			throw new CodificaInesistenteException(MessageFormat.format("Codifica inesistente per EsitoEvento. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(EsitoEvento.values())));
 		}
 		
 		@Override
@@ -347,6 +393,22 @@ public class Evento extends BasicModel {
 
 	public void setSeverita(Integer severita) {
 		this.severita = severita;
+	}
+
+	public String getClusterId() {
+		return clusterId;
+	}
+
+	public void setClusterId(String clusterId) {
+		this.clusterId = clusterId;
+	}
+
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
 	
 }

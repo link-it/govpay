@@ -36,7 +36,6 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -94,6 +93,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -146,29 +146,29 @@ public class PendenzeDAO extends BaseDAO{
 			filter.setDataFine(listaPendenzaDTO.getDataA());
 			if(listaPendenzaDTO.getStato()!=null) {
 				try {
-					it.govpay.bd.model.Versamento.StatoVersamento statoVersamento = null;
+					it.govpay.model.Versamento.StatoVersamento statoVersamento = null;
 
 					switch(listaPendenzaDTO.getStato()) {
-					case ANNULLATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANNULLATO;
+					case ANNULLATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANNULLATO;
 					break;
-					case ESEGUITA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ESEGUITO;
+					case ESEGUITA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ESEGUITO;
 					break;
-					case ESEGUITA_PARZIALE: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
+					case ESEGUITA_PARZIALE: statoVersamento = it.govpay.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
 					break;
 					case NON_ESEGUITA: {
-						statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 						filter.setAbilitaFiltroNonScaduto(true);
 					}
 					break;
 					case SCADUTA: {
-						statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 						filter.setAbilitaFiltroScaduto(true);
 					}
 					break;
-					case INCASSATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.INCASSATO;
-					default:
-						break;
-
+					case INCASSATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.INCASSATO;
+					break;
+					case ANOMALA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANOMALO;
+					break;
 					}
 					filter.setStatoVersamento(statoVersamento);
 				} catch(Exception e) {
@@ -239,29 +239,29 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setDataFine(listaPendenzaDTO.getDataA());
 		if(listaPendenzaDTO.getStato()!=null) {
 			try {
-				it.govpay.bd.model.Versamento.StatoVersamento statoVersamento = null;
+				it.govpay.model.Versamento.StatoVersamento statoVersamento = null;
 
 				switch(listaPendenzaDTO.getStato()) {
-				case ANNULLATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANNULLATO;
+				case ANNULLATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANNULLATO;
 				break;
-				case ESEGUITA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ESEGUITO;
+				case ESEGUITA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ESEGUITO;
 				break;
-				case ESEGUITA_PARZIALE: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
+				case ESEGUITA_PARZIALE: statoVersamento = it.govpay.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
 				break;
 				case NON_ESEGUITA: {
-					statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+					statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 					filter.setAbilitaFiltroNonScaduto(true);
 				}
 				break;
 				case SCADUTA: {
-					statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+					statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 					filter.setAbilitaFiltroScaduto(true);
 				}
 				break;
-				case INCASSATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.INCASSATO;
-				default:
-					break;
-
+				case INCASSATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.INCASSATO;
+				break;
+				case ANOMALA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANOMALO;
+				break;
 				}
 				filter.setStatoVersamento(statoVersamento);
 			} catch(Exception e) {
@@ -342,29 +342,29 @@ public class PendenzeDAO extends BaseDAO{
 			filter.setDataFine(listaPendenzaDTO.getDataA());
 			if(listaPendenzaDTO.getStato()!=null) {
 				try {
-					it.govpay.bd.model.Versamento.StatoVersamento statoVersamento = null;
+					it.govpay.model.Versamento.StatoVersamento statoVersamento = null;
 
 					switch(listaPendenzaDTO.getStato()) {
-					case ANNULLATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANNULLATO;
+					case ANNULLATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANNULLATO;
 					break;
-					case ESEGUITA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ESEGUITO;
+					case ESEGUITA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ESEGUITO;
 					break;
-					case ESEGUITA_PARZIALE: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
+					case ESEGUITA_PARZIALE: statoVersamento = it.govpay.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
 					break;
 					case NON_ESEGUITA: {
-						statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 						filter.setAbilitaFiltroNonScaduto(true);
 					}
 					break;
 					case SCADUTA: {
-						statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 						filter.setAbilitaFiltroScaduto(true);
 					}
 					break;
-					case INCASSATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.INCASSATO;
-					default:
-						break;
-
+					case INCASSATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.INCASSATO;
+					break;
+					case ANOMALA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANOMALO;
+					break;
 					}
 					filter.setStatoVersamento(statoVersamento);
 				} catch(Exception e) {
@@ -916,26 +916,22 @@ public class PendenzeDAO extends BaseDAO{
 	//	}
 
 	private StatoVersamento getNuovoStatoVersamento(PatchOp op) throws ValidationException {
-		String nuovoStatoPendenzaValue = (String) op.getValue();
-		StatoPendenza nuovoStatoPendenza = StatoPendenza.fromValue(nuovoStatoPendenzaValue);
-
-		if(nuovoStatoPendenza == null && StringUtils.isNotEmpty(nuovoStatoPendenzaValue))
+		if(op==null) 
+			throw new ValidationException("Richiesta patch non valida");
+		if(StatoPendenza.fromValue((String) op.getValue()) == null)
 			throw new ValidationException(MessageFormat.format(NUOVO_STATO_PENDENZA_NON_VALIDO, op.getPath()));
 
-		StatoVersamento nuovoStato = null;
-		switch (nuovoStatoPendenza) {
+		switch (StatoPendenza.fromValue((String) op.getValue())) {
 		case ANNULLATA:
-			nuovoStato = StatoVersamento.ANNULLATO;
-			break;
+			return StatoVersamento.ANNULLATO;
 		case NON_ESEGUITA:
-			nuovoStato = StatoVersamento.NON_ESEGUITO;
-			break;
+			return StatoVersamento.NON_ESEGUITO;
 		default:
-			throw new ValidationException(MessageFormat.format(NON_E_CONSENTITO_AGGIORNARE_LO_STATO_DI_UNA_PENDENZA_AD_0, nuovoStatoPendenza.name()));
+			throw new ValidationException(MessageFormat.format(NON_E_CONSENTITO_AGGIORNARE_LO_STATO_DI_UNA_PENDENZA_AD_0, op.getValue()));
 		}
-		return nuovoStato;
 	}
 
+	@SuppressWarnings("deprecation")
 	public PutPendenzaDTOResponse createOrUpdate(PutPendenzaDTO putVersamentoDTO) throws GovPayException, NotAuthorizedException, NotAuthenticatedException, ValidationException{ 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		PutPendenzaDTOResponse createOrUpdatePendenzaResponse = new PutPendenzaDTOResponse();
@@ -992,6 +988,7 @@ public class PendenzeDAO extends BaseDAO{
 		return createOrUpdatePendenzaResponse;
 	}
 
+	@SuppressWarnings("deprecation")
 	public PutPendenzaDTOResponse createOrUpdateCustom(PutPendenzaDTO putVersamentoDTO) throws GovPayException, 
 	NotAuthorizedException, NotAuthenticatedException, ValidationException, DominioNonTrovatoException, TipoVersamentoNonTrovatoException, EcException, UnitaOperativaNonTrovataException, ApplicazioneNonTrovataException, UnprocessableEntityException{ 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
@@ -1075,7 +1072,7 @@ public class PendenzeDAO extends BaseDAO{
 
 				new PendenzaPostValidator(pendenzaPost).validate();
 
-				it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+				it.govpay.core.beans.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(versamentoCommons.getCodVersamentoEnte());
 				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(versamentoCommons.getCodApplicazione());
 				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
@@ -1146,6 +1143,8 @@ public class PendenzeDAO extends BaseDAO{
 			}
 
 		} catch (ServiceException e) {
+			throw new GovPayException(e);
+		} catch (it.govpay.core.exceptions.IOException e) {
 			throw new GovPayException(e);
 		}  finally {
 			if(versamentiBD != null)

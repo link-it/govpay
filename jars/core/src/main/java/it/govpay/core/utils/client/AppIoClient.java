@@ -8,9 +8,7 @@ import java.util.Map;
 import javax.ws.rs.core.GenericType;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.service.beans.HttpMethodEnum;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.service.context.dump.DumpRequest;
@@ -21,9 +19,8 @@ import org.openspcoop2.utils.service.context.server.ServerInfoResponse;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 
-import it.govpay.bd.configurazione.model.AppIOBatch;
-import it.govpay.bd.configurazione.model.Giornale;
-import it.govpay.core.utils.EventoContext.Componente;
+import it.govpay.core.beans.EventoContext.Componente;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.appio.client.AppIoAPIClient;
 import it.govpay.core.utils.appio.impl.ApiException;
 import it.govpay.core.utils.appio.impl.Pair;
@@ -36,6 +33,8 @@ import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
+import it.govpay.model.configurazione.AppIOBatch;
+import it.govpay.model.configurazione.Giornale;
 
 public class AppIoClient extends BasicClientCORE {
 
@@ -60,12 +59,12 @@ public class AppIoClient extends BasicClientCORE {
 
 		// Salvataggio Tipo Evento
 		this.getEventoCtx().setTipoEvento(swaggerOperationId);
-		HttpMethodEnum httpMethodEnum = fromHttpMethod(HttpRequestMethod.GET);
+		HttpMethod httpMethodEnum = fromHttpMethod(HttpRequestMethod.GET);
 
 		int responseCode = 0;
 		DumpRequest dumpRequest = new DumpRequest();
 		DumpResponse dumpResponse = new DumpResponse();
-		ServerInfoResponse serverInfoResponse = null;
+		ServerInfoResponse serverInfoResponse = new ServerInfoResponse();
 		Map<String, List<String>> headerFields = null;
 		byte[] msg = null;
 
@@ -75,7 +74,6 @@ public class AppIoClient extends BasicClientCORE {
 			IContext ctx = ContextThreadLocal.get();
 
 			ServerInfoRequest serverInfoRequest = new ServerInfoRequest();
-			serverInfoResponse = new ServerInfoResponse();
 
 			// create path and map variables
 			String localVarPath = fiscalCode != null ? "/profiles/{fiscal_code}".replaceAll("\\{" + "fiscal_code" + "\\}", apiClient.escapeString(fiscalCode.toString())) : "/profiles/{fiscal_code}";
@@ -143,7 +141,7 @@ public class AppIoClient extends BasicClientCORE {
 			try {
 				String msgRes = ConverterUtils.toJSON(limitedProfile);
 				msg = msgRes != null ? msgRes.getBytes() : new byte[]{};
-			} catch (ServiceException e) {
+			} catch (IOException e) {
 				log.warn("Errore durante la serializzazione del messaggio di risposta per il giornale eventi: " + e.getMessage(), e);
 			}
 
@@ -187,12 +185,12 @@ public class AppIoClient extends BasicClientCORE {
 
 		// Salvataggio Tipo Evento
 		this.getEventoCtx().setTipoEvento(swaggerOperationId);
-		HttpMethodEnum httpMethodEnum = fromHttpMethod(HttpRequestMethod.POST);
+		HttpMethod httpMethodEnum = fromHttpMethod(HttpRequestMethod.POST);
 
 		int responseCode = 0;
 		DumpRequest dumpRequest = new DumpRequest();
 		DumpResponse dumpResponse = new DumpResponse();
-		ServerInfoResponse serverInfoResponse = null;
+		ServerInfoResponse serverInfoResponse = new ServerInfoResponse();
 		Map<String, List<String>> headerFields = null;
 		byte[] msg = null;
 		try {
@@ -202,7 +200,6 @@ public class AppIoClient extends BasicClientCORE {
 			IContext ctx = ContextThreadLocal.get();
 
 			ServerInfoRequest serverInfoRequest = new ServerInfoRequest();
-			serverInfoResponse = new ServerInfoResponse();
 
 			// Url Completa che viene invocata
 			String urlString = this.url.toExternalForm();
@@ -229,7 +226,7 @@ public class AppIoClient extends BasicClientCORE {
 			String jsonBody = null;
 			try {
 				jsonBody = ConverterUtils.toJSON(messageWithCF);
-			} catch (ServiceException e) {
+			} catch (IOException e) {
 				log.warn("Errore durante la serializzazione del messaggio di richiesta per il giornale eventi: " + e.getMessage(), e);
 			} 
 
@@ -272,7 +269,7 @@ public class AppIoClient extends BasicClientCORE {
 			try {
 				String msgRes = ConverterUtils.toJSON(createdMessage);
 				msg = msgRes != null ? msgRes.getBytes() : new byte[]{};
-			} catch (ServiceException e) {
+			} catch (IOException e) {
 				log.warn("Errore durante la serializzazione del messaggio di risposta per il giornale eventi: " + e.getMessage(), e);
 			}
 

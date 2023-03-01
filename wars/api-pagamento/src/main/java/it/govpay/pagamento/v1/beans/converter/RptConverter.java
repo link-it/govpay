@@ -19,20 +19,21 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.govpay.bd.model.UtenzaCittadino;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.MessaggiPagoPAUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v1.beans.Rpp;
 import it.govpay.pagamento.v1.beans.RppIndex;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.rs.v1.authentication.SPIDAuthenticationDetailsSource;
 
 public class RptConverter {
 
 
-	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione, Authentication user) throws ServiceException {
+	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione, Authentication user) throws ServiceException, IOException {
 		Rpp rsModel = new Rpp();
 		boolean convertiMessaggioPagoPAV2InPagoPAV1 = GovpayConfig.getInstance().isConversioneMessaggiPagoPAV2NelFormatoV1();
 
@@ -148,9 +149,8 @@ public class RptConverter {
 				}
 			}
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
-
 
 		try {
 			if(rpt.getXmlRt() != null) {
@@ -259,13 +259,13 @@ public class RptConverter {
 				}
 			}
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 
 		return rsModel;
 	}
 
-	public static RppIndex toRsModelIndex(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione, Authentication user) throws ServiceException {
+	public static RppIndex toRsModelIndex(it.govpay.bd.model.Rpt rpt, it.govpay.bd.model.Versamento versamento, it.govpay.bd.model.Applicazione applicazione, Authentication user) throws ServiceException, IOException {
 		RppIndex rsModel = new RppIndex();
 		boolean convertiMessaggioPagoPAV2InPagoPAV1 = GovpayConfig.getInstance().isConversioneMessaggiPagoPAV2NelFormatoV1();
 
@@ -382,7 +382,7 @@ public class RptConverter {
 				}
 			}
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 
 
@@ -493,7 +493,7 @@ public class RptConverter {
 				}
 			}
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 
 		return rsModel;

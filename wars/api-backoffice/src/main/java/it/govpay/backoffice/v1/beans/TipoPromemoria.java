@@ -8,20 +8,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets tipoPromemoria
  */
 public enum TipoPromemoria {
-  
-  
-  
-  
+
+
+
+
   AVVISO_PAGAMENTO("AVVISO_PAGAMENTO"),
-  
-  
+
+
   SCADENZA_AVVISO_PAGAMENTO("SCADENZA_AVVISO_PAGAMENTO"),
-  
-  
+
+
   RICEVUTA_TELEMATICA("RICEVUTA_TELEMATICA");
-  
-  
-  
+
+
+
 
   private String value;
 

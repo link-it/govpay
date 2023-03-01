@@ -4,16 +4,15 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
-import org.apache.commons.jcs.access.exception.InvalidArgumentException;
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
 
-import it.govpay.core.dao.commons.Versamento.SingoloVersamento.TipoContabilita;
+import it.govpay.core.beans.commons.Versamento.SingoloVersamento.TipoContabilita;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Versamento.TipoSogliaVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ValidatoreUtils {
 	
@@ -138,7 +137,7 @@ public class ValidatoreUtils {
 		
 		try {
 			TipoContabilita.valueOf(tipoContabilita);
-		} catch(InvalidArgumentException e) {
+		} catch(IllegalArgumentException e) {
 			throw new ValidationException("Codifica inesistente per tipoContabilita. Valore fornito [" + tipoContabilita + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
 		}
 		
@@ -149,7 +148,7 @@ public class ValidatoreUtils {
 		
 		try {
 			TipoContabilita.valueOf(enumValue.toString());
-		} catch(InvalidArgumentException e) {
+		} catch(IllegalArgumentException e) {
 			throw new ValidationException("Codifica inesistente per tipoContabilita. Valore fornito [" + enumValue + "] valori possibili " + ArrayUtils.toString(TipoContabilita.values()));
 		}
 	}
@@ -183,7 +182,7 @@ public class ValidatoreUtils {
 		
 		try {
 			TipoBollo.toEnum(tipoBollo);
-		} catch(ServiceException e) {
+		} catch(CodificaInesistenteException e) {
 			throw new ValidationException(e.getMessage());
 		}
 	}
@@ -193,7 +192,7 @@ public class ValidatoreUtils {
 		
 		try {
 			TipoBollo.toEnum(enumValue.toString());
-		} catch(ServiceException e) {
+		} catch(CodificaInesistenteException e) {
 			throw new ValidationException(e.getMessage());
 		}
 	}

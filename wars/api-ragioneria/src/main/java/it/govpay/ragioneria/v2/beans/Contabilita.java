@@ -4,9 +4,6 @@ package it.govpay.ragioneria.v2.beans;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -15,13 +12,13 @@ import it.govpay.core.beans.JSONSerializable;
 "proprietaCustom",
 })
 public class Contabilita extends JSONSerializable {
-  
+
   @JsonProperty("quote")
   private List<QuotaContabilita> quote = null;
-  
+
   @JsonProperty("proprietaCustom")
   private Object proprietaCustom = null;
-  
+
   /**
    **/
   public Contabilita quote(List<QuotaContabilita> quote) {
@@ -71,8 +68,8 @@ public class Contabilita extends JSONSerializable {
     return Objects.hash(quote, proprietaCustom);
   }
 
-  public static Contabilita parse(String json) throws ServiceException, ValidationException {
-    return (Contabilita) parse(json, Contabilita.class);
+  public static Contabilita parse(String json) throws it.govpay.core.exceptions.IOException {
+    return parse(json, Contabilita.class);
   }
 
   @Override
@@ -84,7 +81,7 @@ public class Contabilita extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Contabilita {\n");
-    
+
     sb.append("    quote: ").append(toIndentedString(quote)).append("\n");
     sb.append("    proprietaCustom: ").append(toIndentedString(proprietaCustom)).append("\n");
     sb.append("}");

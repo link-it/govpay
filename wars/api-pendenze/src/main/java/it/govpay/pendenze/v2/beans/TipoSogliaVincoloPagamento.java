@@ -12,23 +12,23 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Indica se il pagamento deve avvenire entro o oltre la soglia di giorni indicata
  */
 public enum TipoSogliaVincoloPagamento {
-  
-  
-  
-  
+
+
+
+
   ENTRO("ENTRO"),
-  
-  
-  OLTRE("OLTRE"), 
-  
-  
-  SCONTATO ("SCONTATO"), 
-  
-  
+
+
+  OLTRE("OLTRE"),
+
+
+  SCONTATO ("SCONTATO"),
+
+
   RIDOTTO ("RIDOTTO");
-  
-  
-  
+
+
+
 
   private String value;
 

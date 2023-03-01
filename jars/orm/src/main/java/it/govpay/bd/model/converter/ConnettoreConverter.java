@@ -22,14 +22,13 @@ package it.govpay.bd.model.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.model.Connettore;
 import it.govpay.model.Versionabile.Versione;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ConnettoreConverter {
 
-	public static Connettore toDTO(List<it.govpay.orm.Connettore> connettoreLst) throws ServiceException {
+	public static Connettore toDTO(List<it.govpay.orm.Connettore> connettoreLst) throws CodificaInesistenteException {
 		Connettore dto = new Connettore();
 		if(connettoreLst != null && !connettoreLst.isEmpty()) {
 			for(it.govpay.orm.Connettore connettore: connettoreLst){

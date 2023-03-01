@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -20,31 +18,31 @@ import it.govpay.core.beans.JSONSerializable;
 "sct",
 })
 public class IncassoIndex extends JSONSerializable {
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("idIncasso")
   private String idIncasso = null;
-  
+
   @JsonProperty("causale")
   private String causale = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("dataValuta")
   private Date dataValuta = null;
-  
+
   @JsonProperty("dataContabile")
   private Date dataContabile = null;
-  
+
   @JsonProperty("ibanAccredito")
   private String ibanAccredito = null;
-  
+
   @JsonProperty("sct")
   private String sct = null;
-  
+
   /**
    * Identificativo ente creditore
    **/
@@ -196,7 +194,7 @@ public class IncassoIndex extends JSONSerializable {
     return Objects.hash(idDominio, idIncasso, causale, importo, dataValuta, dataContabile, ibanAccredito, sct);
   }
 
-  public static IncassoIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static IncassoIndex parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, IncassoIndex.class);
   }
 
@@ -209,7 +207,7 @@ public class IncassoIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class IncassoIndex {\n");
-    
+
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    idIncasso: ").append(toIndentedString(idIncasso)).append("\n");
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");

@@ -3,10 +3,9 @@ package it.govpay.core.ec.v1.validator;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;

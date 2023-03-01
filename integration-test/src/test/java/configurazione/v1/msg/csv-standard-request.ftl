@@ -8,6 +8,7 @@
 	"idPendenza": ${csvUtils.toJsonValue(csvRecord, 1)}
 }
 <#else>
+<#assign tmp=context?api.put("tipoOperazione", "ADD")!/>
 <#if !csvUtils.isEmpty(csvRecord, 82)>
   <#assign dataAvvisoString = csvRecord.get(82)>
   <#if dataAvvisoString.equals("MAI")>

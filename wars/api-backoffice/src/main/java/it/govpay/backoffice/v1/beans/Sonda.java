@@ -55,38 +55,38 @@ public class Sonda extends it.govpay.core.beans.JSONSerializable {
 
 	@JsonProperty("id")
 	private String id;
-	
+
 	@JsonProperty("nome")
 	private String nome;
-	
+
 	@JsonProperty("stato")
 	private StatoSonda stato;
-	
+
 	@JsonProperty("descrizioneStato")
 	private String descrizioneStato;
-	
+
 //	@JsonProperty("durataStatoValue")
 //	private Long durataStatoValue;
-	
+
 	@JsonProperty("durataStato")
 	private String durataStato;
-	
+
 	@JsonProperty("sogliaWarn")
 	private String sogliaWarn;
-	
+
 	@JsonProperty("sogliaError")
 	private String sogliaError;
-	
+
 //	@JsonProperty("sogliaWarnValue")
 //	private Long sogliaWarnValue;
-//	
+//
 //	@JsonProperty("sogliaErrorValue")
 //	private Long sogliaErrorValue;
-	
+
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
 	@JsonProperty("dataUltimoCheck")
 	private Date dataUltimoCheck;
-	
+
 	@JsonProperty("tipo")
 	private TipoSonda tipo;
 
@@ -126,7 +126,7 @@ public class Sonda extends it.govpay.core.beans.JSONSerializable {
 		case Coda:
 			this.sogliaWarn = "Numero di elementi accodati: " + sogliaWarn;
 			break;
-		default: 
+		default:
 			this.sogliaWarn = (sogliaWarn != null) ? "" + sogliaWarn : null;
 			break;
 		}
@@ -189,7 +189,7 @@ public class Sonda extends it.govpay.core.beans.JSONSerializable {
 		if(inizioStato != null) {
 			Long durataStatoValue = new Date().getTime() - inizioStato.getTime();
 			this.durataStato = this.toString(durataStatoValue);
-		} 
+		}
 	}
 
 	public TipoSonda getTipo() {

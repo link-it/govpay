@@ -25,23 +25,23 @@ public class ProfiloController extends BaseController {
 
 
      public Response getProfilo(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders) {
-     	String methodName = "getProfilo";  
+     	String methodName = "getProfilo";
  		String transactionId = ContextThreadLocal.get().getTransactionId();
- 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+ 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
  		try{
  			UtentiDAO utentiDAO = new UtentiDAO();
- 			
+
  			LeggiProfiloDTOResponse leggiProfilo = utentiDAO.getProfilo(user);
 
  			Profilo profilo = ProfiloConverter.getProfilo(leggiProfilo);
 
- 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+ 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
  			return this.handleResponseOk(Response.status(Status.OK).entity(profilo.toJSON(null)),transactionId).build();
- 			
+
  		}catch (Exception e) {
  			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
  		} finally {
- 			this.log(ContextThreadLocal.get());
+ 			this.logContext(ContextThreadLocal.get());
  		}
      }
 

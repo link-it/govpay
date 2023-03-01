@@ -298,6 +298,7 @@ export class Voce {
   public static VALIDAZIONE_DATI: string = 'Validazione inserimento dati';
   public static VALIDITA: string = 'Validità';
   public static VALORE_PREDEFINITO: string = 'valore predefinito';
+  public static VERSIONE: string = 'Versione';
   public static VERSIONE_API: string = 'Versione API';
   public static VERIFICATORE_HOSTNAME: string = 'Verificatore hostname';
   public static VERSIONE_CSV: string = 'Versione CSV';

@@ -3,12 +3,11 @@ package it.govpay.backoffice.v1.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
@@ -23,31 +22,31 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "readTimeout",
 })
 public class ConfigurazioneReCaptcha extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("serverURL")
   private String serverURL = null;
-  
+
   @JsonProperty("siteKey")
   private String siteKey = null;
-  
+
   @JsonProperty("secretKey")
   private String secretKey = null;
-  
+
   @JsonProperty("soglia")
   private BigDecimal soglia = null;
-  
+
   @JsonProperty("parametro")
   private String parametro = null;
-  
+
   @JsonProperty("denyOnFail")
   private Boolean denyOnFail = null;
-  
+
   @JsonProperty("connectionTimeout")
   private BigDecimal connectionTimeout = null;
-  
+
   @JsonProperty("readTimeout")
   private BigDecimal readTimeout = null;
-  
+
   /**
    * URL del servizio di verifica
    **/
@@ -137,7 +136,7 @@ public class ConfigurazioneReCaptcha extends JSONSerializable implements IValida
   }
 
   @JsonProperty("denyOnFail")
-  public Boolean DenyOnFail() {
+  public Boolean getDenyOnFail() {
     return denyOnFail;
   }
   public void setDenyOnFail(Boolean denyOnFail) {
@@ -200,8 +199,8 @@ public class ConfigurazioneReCaptcha extends JSONSerializable implements IValida
     return Objects.hash(serverURL, siteKey, secretKey, soglia, parametro, denyOnFail, connectionTimeout, readTimeout);
   }
 
-  public static ConfigurazioneReCaptcha parse(String json) throws ServiceException, ValidationException {
-    return (ConfigurazioneReCaptcha) parse(json, ConfigurazioneReCaptcha.class);
+  public static ConfigurazioneReCaptcha parse(String json) throws IOException {
+    return parse(json, ConfigurazioneReCaptcha.class);
   }
 
   @Override
@@ -213,7 +212,7 @@ public class ConfigurazioneReCaptcha extends JSONSerializable implements IValida
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ConfigurazioneReCaptcha {\n");
-    
+
     sb.append("    serverURL: ").append(toIndentedString(serverURL)).append("\n");
     sb.append("    siteKey: ").append(toIndentedString(siteKey)).append("\n");
     sb.append("    secretKey: ").append(toIndentedString(secretKey)).append("\n");
@@ -240,7 +239,7 @@ public class ConfigurazioneReCaptcha extends JSONSerializable implements IValida
   @Override
   public void validate() throws ValidationException {
 	  ValidatorFactory vf = ValidatorFactory.newInstance();
-	  
+
 	  vf.getValidator("serverURL", this.serverURL).notNull().minLength(1).isUrl();
 	  vf.getValidator("siteKey", this.siteKey).notNull().minLength(1);
 	  vf.getValidator("secretKey", this.secretKey).notNull().minLength(1);

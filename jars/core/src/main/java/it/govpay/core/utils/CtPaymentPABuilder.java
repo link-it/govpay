@@ -29,7 +29,6 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.gov.digitpa.schemas._2011.pagamenti.StAutenticazioneSoggetto;
@@ -59,6 +58,7 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.core.utils.tracciati.TracciatiNotificaPagamentiUtils;
 import it.govpay.model.Anagrafica;
@@ -68,9 +68,10 @@ import it.govpay.model.IbanAccredito;
 import it.govpay.model.QuotaContabilita;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.model.Rpt.Versione;
+import it.govpay.model.Rpt.VersioneRPT;
 import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Versamento.CausaleSemplice;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class CtPaymentPABuilder {
 
@@ -115,7 +116,7 @@ public class CtPaymentPABuilder {
 		UnitaOperativa uo = versamento.getUo(configWrapper);
 
 		Rpt rpt = new Rpt();
-		rpt.setVersione(Versione.SANP_240);
+		rpt.setVersione(VersioneRPT.SANP_240);
 		rpt.setCallbackURL(redirect);
 		rpt.setCodCarrello(codCarrello);
 		rpt.setCodDominio(dominio.getCodDominio());
@@ -341,7 +342,7 @@ public class CtPaymentPABuilder {
 			return text;
 	}
 
-	public Rpt buildRptAttivata_SANP_321_V2 (PaGetPaymentV2Request requestBody, Versamento versamento, String iuv, String ccp, String numeroavviso) throws ServiceException, ValidationException {
+	public Rpt buildRptAttivata_SANP_321_V2 (PaGetPaymentV2Request requestBody, Versamento versamento, String iuv, String ccp, String numeroavviso) throws ServiceException, IOException {
 
 		return this.buildRpt_V2(requestBody,
 				null,
@@ -365,7 +366,7 @@ public class CtPaymentPABuilder {
 			TipoVersamento tipoVersamento,
 			ModelloPagamento modelloPagamento,
 			String autenticazione, 
-			String redirect) throws ServiceException, ValidationException {
+			String redirect) throws ServiceException, IOException {
 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 
@@ -373,7 +374,7 @@ public class CtPaymentPABuilder {
 		UnitaOperativa uo = versamento.getUo(configWrapper);
 
 		Rpt rpt = new Rpt();
-		rpt.setVersione(Versione.SANP_321_V2);
+		rpt.setVersione(VersioneRPT.SANP_321_V2);
 		rpt.setCallbackURL(redirect);
 		rpt.setCodCarrello(codCarrello);
 		rpt.setCodDominio(dominio.getCodDominio());
@@ -592,7 +593,7 @@ public class CtPaymentPABuilder {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void impostaValoriContabilita(SingoloVersamento singoloVersamento, CtTransferPAV2 transferEl) throws ServiceException, ValidationException {
+	private static void impostaValoriContabilita(SingoloVersamento singoloVersamento, CtTransferPAV2 transferEl) throws IOException {
 		// Gestione della Contabilita' inserendo le informazioni nel campo metadati
 		String contabilitaString = singoloVersamento.getContabilita();
 

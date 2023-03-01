@@ -61,8 +61,9 @@ import it.govpay.model.IbanAccredito;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.model.Rpt.Versione;
+import it.govpay.model.Rpt.VersioneRPT;
 import it.govpay.model.SingoloVersamento.TipoBollo;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class RptBuilder {
 	
@@ -144,7 +145,7 @@ public class RptBuilder {
 		UnitaOperativa uo = versamento.getUo(configWrapper);
 		
 		Rpt rpt = new Rpt();
-		rpt.setVersione(Versione.SANP_230);
+		rpt.setVersione(VersioneRPT.SANP_230);
 		rpt.setCallbackURL(redirect);
 		rpt.setCcp(ccp);
 		rpt.setCodCarrello(codCarrello);
@@ -171,7 +172,7 @@ public class RptBuilder {
 		rpt.setEsitoPagamento(EsitoPagamento.IN_CORSO);
 
 		CtRichiestaPagamentoTelematico ctRpt = new CtRichiestaPagamentoTelematico();
-		ctRpt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE);
+		ctRpt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE_620);
 		CtDominio ctDominio = new CtDominio();
 		ctDominio.setIdentificativoDominio(rpt.getCodDominio());
 		ctDominio.setIdentificativoStazioneRichiedente(dominio.getStazione().getCodStazione());

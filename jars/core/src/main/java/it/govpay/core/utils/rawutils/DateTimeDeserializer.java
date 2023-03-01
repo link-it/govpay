@@ -12,6 +12,8 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 
+import it.govpay.core.utils.SimpleDateFormatUtils;
+
 public class DateTimeDeserializer extends StdScalarDeserializer<DateTime> {
 
 	private static final long serialVersionUID = 1L;
@@ -27,7 +29,7 @@ public class DateTimeDeserializer extends StdScalarDeserializer<DateTime> {
             JsonToken currentToken = jsonParser.getCurrentToken();
             if (currentToken == JsonToken.VALUE_STRING) {
                 String dateTimeAsString = jsonParser.getText().trim();
-                return new DateTime(DateFormatUtils.newSimpleDateFormatNoMillis().parse(dateTimeAsString));
+                return new DateTime(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().parse(dateTimeAsString));
             } else {
             	return null;
             }

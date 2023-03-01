@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -41,7 +42,7 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseAutenticazioneDAO implem
 	}
 
 
-	public UserDetails loadUserDetails(String username, Collection<? extends GrantedAuthority> authFromPreauth) throws UsernameNotFoundException {
+	public UserDetails loadUserDetails(String username, Collection<? extends GrantedAuthority> authFromPreauth) {
 		try {
 			String transactionId = UUID.randomUUID().toString();
 			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
@@ -50,7 +51,7 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseAutenticazioneDAO implem
 			userDetailFromUtenzaAnonima.setIdTransazioneAutenticazione(transactionId);
 			this.debug(transactionId, "Caricamento informazioni dell'utenza ["+username+"] completato.");
 			return userDetailFromUtenzaAnonima;
-		} catch(Exception e){
+		} catch(ServiceException e){
 			throw new RuntimeException("Errore interno, impossibile caricare le informazioni dell'utenza", e);
 		}	finally {
 		}

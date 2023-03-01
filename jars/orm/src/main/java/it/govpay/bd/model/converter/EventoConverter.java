@@ -19,13 +19,12 @@
  */
 package it.govpay.bd.model.converter;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.serialization.IOException;
-
 import it.govpay.bd.model.Evento;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.model.Evento.CategoriaEvento;
 import it.govpay.model.Evento.EsitoEvento;
 import it.govpay.model.Evento.RuoloEvento;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdFr;
 import it.govpay.orm.IdIncasso;
 import it.govpay.orm.IdTracciato;
@@ -87,11 +86,13 @@ public class EventoConverter {
 		}
 		
 		vo.setSeverita(dto.getSeverita());
+		vo.setClusterId(dto.getClusterId());
+		vo.setTransactionId(dto.getTransactionId());
 		
 		return vo;
 	}
 	
-	public static Evento toDTO(it.govpay.orm.Evento vo) throws ServiceException{
+	public static Evento toDTO(it.govpay.orm.Evento vo) throws CodificaInesistenteException{
 		Evento dto = new Evento();
 		if(vo.getCategoriaEvento() != null)
 			dto.setCategoriaEvento(CategoriaEvento.toEnum(vo.getCategoriaEvento()));
@@ -127,6 +128,8 @@ public class EventoConverter {
 			dto.setIdTracciato(vo.getIdTracciato().getId());
 		
 		dto.setSeverita(vo.getSeverita());
+		dto.setClusterId(vo.getClusterId());
+		dto.setTransactionId(vo.getTransactionId());
 		
 		return dto;
 	}

@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idDominio",
 "iuv",
@@ -24,49 +24,49 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "incasso",
 })
 public class Riscossione extends it.govpay.core.beans.JSONSerializable {
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("iuv")
   private String iuv = null;
-  
+
   @JsonProperty("iur")
   private String iur = null;
-  
+
   @JsonProperty("indice")
   private BigDecimal indice = null;
-  
+
   @JsonProperty("pendenza")
   private String pendenza = null;
-  
+
   @JsonProperty("vocePendenza")
   private VocePendenzaRiscossione vocePendenza = null;
-  
+
   @JsonProperty("rpp")
   private String rpp = null;
-  
+
   @JsonProperty("stato")
   private StatoRiscossione stato = null;
-  
+
   @JsonProperty("tipo")
   private TipoRiscossione tipo = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("data")
   private Date data = null;
-  
+
   @JsonProperty("commissioni")
   private BigDecimal commissioni = null;
-  
+
   @JsonProperty("allegato")
   private Allegato allegato = null;
-  
+
   @JsonProperty("incasso")
   private String incasso = null;
-  
+
   /**
    * Identificativo ente creditore
    **/
@@ -209,7 +209,7 @@ public class Riscossione extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
-   * Importo riscosso. 
+   * Importo riscosso.
    **/
   public Riscossione importo(BigDecimal importo) {
     this.importo = importo;
@@ -317,7 +317,7 @@ public class Riscossione extends it.govpay.core.beans.JSONSerializable {
     return Objects.hash(idDominio, iuv, iur, indice, pendenza, vocePendenza, rpp, stato, tipo, importo, data, commissioni, allegato, incasso);
   }
 
-  public static Riscossione parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Riscossione parse(String json) throws IOException {
     return parse(json, Riscossione.class);
   }
 
@@ -330,7 +330,7 @@ public class Riscossione extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Riscossione {\n");
-    
+
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    iur: ").append(toIndentedString(iur)).append("\n");

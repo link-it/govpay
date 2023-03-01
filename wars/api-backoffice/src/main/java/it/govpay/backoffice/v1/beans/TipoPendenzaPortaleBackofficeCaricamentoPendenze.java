@@ -3,12 +3,11 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -20,22 +19,22 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "inoltro",
 })
 public class TipoPendenzaPortaleBackofficeCaricamentoPendenze extends JSONSerializable implements IValidable{
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   @JsonProperty("form")
   private TipoPendenzaFormPortaleBackoffice form = null;
-  
+
   @JsonProperty("validazione")
   private Object validazione = null;
-  
+
   @JsonProperty("trasformazione")
   private TipoPendenzaTrasformazione trasformazione = null;
-  
+
   @JsonProperty("inoltro")
   private String inoltro = null;
-  
+
   /**
    * Indica se la configurazione e' abilitata
    **/
@@ -45,7 +44,7 @@ public class TipoPendenzaPortaleBackofficeCaricamentoPendenze extends JSONSerial
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
@@ -135,8 +134,8 @@ public class TipoPendenzaPortaleBackofficeCaricamentoPendenze extends JSONSerial
     return Objects.hash(abilitato, form, validazione, trasformazione, inoltro);
   }
 
-  public static TipoPendenzaPortaleBackofficeCaricamentoPendenze parse(String json) throws ServiceException, ValidationException {
-    return (TipoPendenzaPortaleBackofficeCaricamentoPendenze) parse(json, TipoPendenzaPortaleBackofficeCaricamentoPendenze.class);
+  public static TipoPendenzaPortaleBackofficeCaricamentoPendenze parse(String json) throws IOException {
+    return parse(json, TipoPendenzaPortaleBackofficeCaricamentoPendenze.class);
   }
 
   @Override
@@ -148,7 +147,7 @@ public class TipoPendenzaPortaleBackofficeCaricamentoPendenze extends JSONSerial
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoPendenzaPortaleBackofficeCaricamentoPendenze {\n");
-    
+
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    form: ").append(toIndentedString(form)).append("\n");
     sb.append("    validazione: ").append(toIndentedString(validazione)).append("\n");
@@ -168,24 +167,24 @@ public class TipoPendenzaPortaleBackofficeCaricamentoPendenze extends JSONSerial
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
-  public void validate() throws ValidationException { 
+  public void validate() throws ValidationException {
   	this.validate(true);
   }
-  
+
   public void validate(boolean abilitatoObbligatorio) throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		if(abilitatoObbligatorio)
 			vf.getValidator("abilitato", this.abilitato).notNull();
 		vf.getValidator("form", this.form).validateFields();
 		vf.getValidator("trasformazione", this.trasformazione).validateFields();
-		
+
 		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-		
+
 		if(this.inoltro != null)
 			validatoreId.validaIdApplicazione("inoltro", this.inoltro);
-		
+
 	}
 }
 

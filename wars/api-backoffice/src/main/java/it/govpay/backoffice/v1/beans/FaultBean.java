@@ -2,11 +2,10 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "categoria",
 "codice",
@@ -14,38 +13,38 @@ import it.govpay.core.beans.JSONSerializable;
 "dettaglio",
 })
 public class FaultBean extends JSONSerializable {
-  
-    
+
+
   /**
    * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `EC` - Errore da Ente Creditore  * `INTERNO` - Errore interno
    */
   public enum CategoriaEnum {
-    
-    
-        
-            
+
+
+
+
     AUTORIZZAZIONE("AUTORIZZAZIONE"),
-    
-    
+
+
     UNMARSHALL("UNMARSHALL"),
 
-    
+
     RICHIESTA("RICHIESTA"),
-    
-            
+
+
     OPERAZIONE("OPERAZIONE"),
-    
-            
+
+
     PAGOPA("PAGOPA"),
-    
-            
+
+
     EC("EC"),
-    
-            
+
+
     INTERNO("INTERNO");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -69,20 +68,20 @@ public class FaultBean extends JSONSerializable {
     }
   }
 
-    
-    
+
+
   @JsonProperty("categoria")
   private CategoriaEnum categoria = null;
-  
+
   @JsonProperty("codice")
   private String codice = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("dettaglio")
   private String dettaglio = null;
-  
+
   /**
    * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `EC` - Errore da Ente Creditore  * `INTERNO` - Errore interno
    **/
@@ -167,7 +166,7 @@ public class FaultBean extends JSONSerializable {
     return Objects.hash(this.categoria, this.codice, this.descrizione, this.dettaglio);
   }
 
-  public static FaultBean parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static FaultBean parse(String json) throws IOException {
     return parse(json, FaultBean.class);
   }
 
@@ -180,7 +179,7 @@ public class FaultBean extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class FaultBean {\n");
-    
+
     sb.append("    categoria: ").append(this.toIndentedString(this.categoria)).append("\n");
     sb.append("    codice: ").append(this.toIndentedString(this.codice)).append("\n");
     sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");

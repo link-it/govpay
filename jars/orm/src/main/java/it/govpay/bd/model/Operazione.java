@@ -68,7 +68,7 @@ public class Operazione extends it.govpay.model.Operazione{
 		return this.stampa;
 	}
 	
-	public void setStampa(Stampa stampa) throws ServiceException, NotFoundException {
+	public void setStampa(Stampa stampa) {
 		this.stampa = stampa;
 		if(stampa != null)
 			this.setIdStampa(this.stampa.getId());

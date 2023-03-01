@@ -1,18 +1,17 @@
 package it.govpay.ragioneria.v2.beans.converter;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
@@ -26,12 +25,12 @@ import it.govpay.rs.BaseRsService;
 
 public class RiscossioniConverter {
 
-	public static Riscossione toRsModel(Pagamento input) throws NotFoundException, IOException, ValidationException {
+	public static Riscossione toRsModel(Pagamento input) throws NotFoundException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Riscossione rsModel = new Riscossione();
 		try {
 			SingoloVersamento singoloVersamento = input.getSingoloVersamento();
-			
+
 			rsModel.setDominio(DominiConverter.toRsModelIndex(input.getDominio(configWrapper)));
 			rsModel.setIuv(input.getIuv());
 			rsModel.setIur(input.getIur());
@@ -64,7 +63,7 @@ public class RiscossioniConverter {
 					case PAGATO: rsModel.setStato(StatoRiscossione.RISCOSSA);
 					break;
 					case PAGATO_SENZA_RPT: rsModel.setStato(StatoRiscossione.RISCOSSA);
-					break; 
+					break;
 					default:
 						break;
 					}
@@ -79,7 +78,7 @@ public class RiscossioniConverter {
 					}
 				}
 			}
-			
+
 			if(input.getIncasso(null)!=null)
 				rsModel.setRiconciliazione(UriBuilderUtils.getRiconciliazioniByIdDominioIdIncasso(input.getCodDominio(), input.getIncasso(null).getTrn()));
 
@@ -90,7 +89,7 @@ public class RiscossioniConverter {
 		return rsModel;
 	}
 
-	public static RiscossioneIndex toRsModelIndexOld(Pagamento input) throws NotFoundException, IOException, ValidationException {
+	public static RiscossioneIndex toRsModelIndexOld(Pagamento input) throws NotFoundException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		RiscossioneIndex rsModel = new RiscossioneIndex();
 		try {
@@ -141,7 +140,7 @@ public class RiscossioniConverter {
 		return rsModel;
 	}
 
-	public static RiscossioneIndex toRsModelIndex(it.govpay.bd.viste.model.Pagamento dto) throws IOException, ValidationException {
+	public static RiscossioneIndex toRsModelIndex(it.govpay.bd.viste.model.Pagamento dto) throws IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		RiscossioneIndex rsModel = new RiscossioneIndex();
 		try {
@@ -168,7 +167,7 @@ public class RiscossioniConverter {
 			case ENTRATA_PA_NON_INTERMEDIATA:
 				rsModel.setTipo(TipoRiscossione.ENTRATA_PA_NON_INTERMEDIATA);
 				break;
-			} 
+			}
 
 			// solo per i pagamenti interni
 			if(!input.getTipo().equals(TipoPagamento.ALTRO_INTERMEDIARIO)) {

@@ -10,8 +10,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.controllers.PromemoriaController;
 import it.govpay.core.beans.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -24,7 +22,7 @@ public class Promemoria extends BaseRsServiceV1{
 
 	private PromemoriaController controller = null;
 
-	public Promemoria() throws ServiceException {
+	public Promemoria() {
 		super("promemoria");
 		this.controller = new PromemoriaController(this.nomeServizio,this.log);
 	}
@@ -33,10 +31,10 @@ public class Promemoria extends BaseRsServiceV1{
 
     @GET
     @Path("/")
-    
+
     @Produces({ "application/json" })
-    public Response findPromemoria(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, 
-    		 @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, 
+    public Response findPromemoria(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders,
+    		 @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina,
     		@QueryParam("dataDa") String dataDa, @QueryParam("dataA") String dataA, @QueryParam("stato") String stato, @QueryParam("tipo") String tipo, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
     	 this.buildContext();
         return this.controller.findPromemoria(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, dataDa, dataA, stato, tipo, metadatiPaginazione, maxRisultati);

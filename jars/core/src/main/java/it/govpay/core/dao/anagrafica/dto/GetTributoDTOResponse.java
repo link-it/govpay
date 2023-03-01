@@ -1,7 +1,7 @@
 package it.govpay.core.dao.anagrafica.dto;
 
-import it.govpay.model.IbanAccredito;
 import it.govpay.bd.model.Tributo;
+import it.govpay.model.IbanAccredito;
 
 public class GetTributoDTOResponse {
 	

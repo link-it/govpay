@@ -12,11 +12,11 @@ public class FlussiRendicontazione extends Lista  {
 	public FlussiRendicontazione() {
 		super();
 	}
-	
+
 	public FlussiRendicontazione(URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(requestUri, count, pagina, limit);
 	}
-  
+
   @Schema(description = "")
   private List<FlussoRendicontazioneIndex> risultati = null;
  /**

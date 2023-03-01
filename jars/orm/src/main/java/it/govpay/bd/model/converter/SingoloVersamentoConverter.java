@@ -23,12 +23,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Tributo.TipoContabilita;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdIbanAccredito;
 import it.govpay.orm.IdTributo;
@@ -36,7 +35,7 @@ import it.govpay.orm.IdVersamento;
 
 public class SingoloVersamentoConverter {
 
-	public static List<SingoloVersamento> toDTO(List<it.govpay.orm.SingoloVersamento> applicazioneLst) throws ServiceException {
+	public static List<SingoloVersamento> toDTO(List<it.govpay.orm.SingoloVersamento> applicazioneLst) throws CodificaInesistenteException {
 		List<SingoloVersamento> lstDTO = new ArrayList<>();
 		if(applicazioneLst != null && !applicazioneLst.isEmpty()) {
 			for(it.govpay.orm.SingoloVersamento vo: applicazioneLst){
@@ -46,7 +45,7 @@ public class SingoloVersamentoConverter {
 		return lstDTO;
 	}
 
-	public static SingoloVersamento toDTO(it.govpay.orm.SingoloVersamento vo) throws ServiceException {
+	public static SingoloVersamento toDTO(it.govpay.orm.SingoloVersamento vo) throws CodificaInesistenteException {
 		SingoloVersamento dto = new SingoloVersamento();
 		dto.setId(vo.getId());
 		if(vo.getIdTributo() != null)

@@ -5171,6 +5171,7 @@ components:
       required:
         - password
         - abilitato
+        - versione
       properties:
         password:
           type: string
@@ -5179,6 +5180,8 @@ components:
         abilitato:
           type: boolean
           description: Indica lo stato di abilitazione
+        versione:
+          $ref: '#/components/schemas/VersioneStazione'
     stazioneIndex:
       type: object
       allOf:
@@ -8503,6 +8506,14 @@ components:
           format: int32
           description: indica il livello di severita nel caso di evento con esito KO/FAIL
           example: 0
+        clusterId:
+          type: string
+          description: Identificativo del nodo dove viene registrata l'operazione
+          example: NODO_1
+        transactionId:
+          type: string
+          description: Identificativo della transazione registrata
+          example: 'f9866575-r5t8-4d10-awse-57ba88bec136'
     evento:
       allOf:
         - $ref: '#/components/schemas/eventoIndex'
@@ -9457,6 +9468,13 @@ components:
       default: 25
       minimum: 0
       maximum: 200
+    VersioneStazione:
+      type: string
+      description: Versione della stazione
+      example: 'V1'
+      enum:
+        - 'V1'
+        - 'V2'
     VoceDescrizioneImporto:
       type: object
       properties:

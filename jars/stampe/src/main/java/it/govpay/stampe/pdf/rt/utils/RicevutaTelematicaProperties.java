@@ -2,16 +2,21 @@ package it.govpay.stampe.pdf.rt.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.Utilities;
 import org.slf4j.Logger;
+
+import it.govpay.core.exceptions.ConfigException;
+import it.govpay.core.exceptions.PropertyNotFoundException;
+import it.govpay.stampe.pdf.Costanti;
 
 public class RicevutaTelematicaProperties {
 	
@@ -30,7 +35,7 @@ public class RicevutaTelematicaProperties {
 		return instance;
 	}
 
-	public static synchronized RicevutaTelematicaProperties newInstance(String govpayResourceDir) throws Exception {
+	public static synchronized RicevutaTelematicaProperties newInstance(String govpayResourceDir)  throws ConfigException {
 		if(instance == null)
 			instance = new RicevutaTelematicaProperties(govpayResourceDir);
 		return instance;
@@ -38,7 +43,7 @@ public class RicevutaTelematicaProperties {
 
 	private Properties[] props  = null;
 
-	public RicevutaTelematicaProperties(String govpayResourceDir) {
+	public RicevutaTelematicaProperties(String govpayResourceDir)  throws ConfigException {
 		try {
 
 			// Recupero il property all'interno dell'EAR/WAR
@@ -63,65 +68,80 @@ public class RicevutaTelematicaProperties {
 				if(this.govpayResourceDir != null) {
 					File resourceDirFile = new File(this.govpayResourceDir);
 					if(!resourceDirFile.isDirectory())
-						throw new Exception("Il path passato come paramtero (" + this.govpayResourceDir + ") non esiste o non e' un folder.");
+						throw new Exception(MessageFormat.format(Costanti.ERROR_MSG_IL_PATH_PASSATO_COME_PARAMTERO_0_NON_ESISTE_O_NON_E_UN_FOLDER, this.govpayResourceDir));
 
 
 					File gpConfigFile = new File(this.govpayResourceDir + PROPERTIES_FILE);
 					if(gpConfigFile.exists()) {
 						props0 = new Properties();
-						props0.load(new FileInputStream(gpConfigFile));
+						try(InputStream isExt = new FileInputStream(gpConfigFile)) {
+							props0.load(isExt);
+						} catch (FileNotFoundException e) {
+							throw new ConfigException(e);
+						} catch (IOException e) {
+							throw new ConfigException(e);
+						} 
 						this.propMap.put(DEFAULT_PROPS, props0);
-						log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
+						log.info(MessageFormat.format(Costanti.INFO_MSG_INDIVIDUATA_CONFIGURAZIONE_PRIORITARIA_0, gpConfigFile.getAbsolutePath()));
 					}
 				}
 			} catch (Exception e) {
-				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
+				log.warn(MessageFormat.format(Costanti.ERROR_MSG_ERRORE_DI_INIZIALIZZAZIONE_0_PROPERTY_IGNORATA, e.getMessage()));
 			}
 
 			// carico tutti i file che definiscono configurazioni diverse di avvisi pagamento
 			if(this.govpayResourceDir != null) {
 				File resourceDirFile = new File(this.govpayResourceDir);
-				for(File f : resourceDirFile.listFiles()) {
-					if(!f.getName().startsWith("ricevutaTelematica") && !f.getName().endsWith("properties")) {
-						// Non e' un file di properties. lo salto
-						continue;
+				File[] listFiles = resourceDirFile.listFiles();
+				if(listFiles != null)
+					for(File f : listFiles) {
+						if(!f.getName().startsWith("ricevutaTelematica") && !f.getName().endsWith("properties")) {
+							// Non e' un file di properties. lo salto
+							continue;
+						}
+						Properties p = new Properties();
+						try(InputStream isExt = new FileInputStream(f)) {
+							p.load(isExt);
+						} catch (FileNotFoundException e) {
+							throw new ConfigException(e);
+						} catch (IOException e) {
+							throw new ConfigException(e);
+						}
+						String key = f.getName().replaceAll(".properties", "");
+						key = key.replaceAll("ricevutaTelematica.", "");
+						// la configurazione di defaut e' gia'stata caricata
+						if(!key.equals("ricevutaTelematica")) {
+							log.info(MessageFormat.format(Costanti.INFO_MSG_CARICATA_CONFIGURAZIONE_RICEVUTA_TELEMATICA_CON_CHIAVE_0, key));
+							this.propMap.put(key, p);
+						}
 					}
-					Properties p = new Properties();
-					p.load(new FileInputStream(f));
-					String key = f.getName().replaceAll(".properties", "");
-					key = key.replaceAll("ricevutaTelematica.", "");
-					// la configurazione di defaut e' gia'stata caricata
-					if(!key.equals("ricevutaTelematica")) {
-						log.info("Caricata configurazione avviso di pagamento con chiave " + key);
-						this.propMap.put(key, p);
-					}
-				}
 			}
-		} catch (Exception e) {
-			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
+		} catch (IOException e) {
+			log.error(MessageFormat.format(Costanti.ERROR_MSG_ERRORE_DI_INIZIALIZZAZIONE_0, e.getMessage()));
+			throw new ConfigException(e);
 		}
 	}
 
-	private static String getProperty(String name, Properties props, boolean required) throws Exception {
+	private static String getProperty(String name, Properties props, boolean required) throws PropertyNotFoundException {
 		String value = System.getProperty(name);
 
 		if(value == null) {
 			if(props != null) value = props.getProperty(name);
 			if(value == null) {
 				if(required) 
-					throw new Exception("Proprieta ["+name+"] non trovata");
+					throw new PropertyNotFoundException(MessageFormat.format(Costanti.ERROR_MSG_PROPRIETA_0_NON_TROVATA, name));
 				else return null;
 			} else {
-				log.debug("Letta proprieta di configurazione " + name + ": " + value);
+				log.debug(MessageFormat.format(Costanti.DEBUG_MSG_LETTA_PROPRIETA_DI_CONFIGURAZIONE_0_1, name, value));
 			}
 		} else {
-			log.debug("Letta proprieta di sistema " + name + ": " + value);
+			log.debug(MessageFormat.format(Costanti.DEBUG_MSG_LETTA_PROPRIETA_DI_SISTEMA_0_1, name, value));
 		}
 
 		return value.trim();
 	}
 
-	public String getProperty(String idprops, String name, boolean required) throws Exception {
+	public String getProperty(String idprops, String name, boolean required) throws PropertyNotFoundException {
 		String value = null;
 		Properties p = this.getProperties(idprops);
 
@@ -130,56 +150,37 @@ public class RicevutaTelematicaProperties {
 			return value;
 		}
 
-		log.debug("Proprieta " + name + " non trovata in configurazione ["+idprops+"]");
+		log.debug(MessageFormat.format(Costanti.DEBUG_MSG_PROPRIETA_0_NON_TROVATA_IN_CONFIGURAZIONE_1, name, idprops));
 
 		if(required) 
-			throw new Exception("Proprieta ["+name+"] non trovata in configurazione ["+idprops+"]");
+			throw new PropertyNotFoundException(MessageFormat.format(Costanti.ERROR_MSG_PROPRIETA_0_NON_TROVATA_IN_CONFIGURAZIONE_1, name, idprops));
 		else 
 			return null;
 	}
 
 
-	public String getPropertyEnte(String idprop, String name) throws Exception {
+	public String getPropertyEnte(String idprop, String name) throws PropertyNotFoundException {
 		String property = this.getProperty(idprop, name, false);
 		return property != null ? property : "";
 	}
 
-	public Properties getProperties(String id) throws Exception {
+	public Properties getProperties(String id) throws PropertyNotFoundException {
 		if(id == null) id = DEFAULT_PROPS;
 		Properties p = this.propMap.get(id);
 
 		if(p == null) {
-			log.debug("Configurazione ["+id+"] non trovata");
-			throw new Exception("Configurazione ["+id+"] non trovata");
+			log.debug(MessageFormat.format(Costanti.ERROR_MSG_CONFIGURAZIONE_0_NON_TROVATA, id));
+			throw new PropertyNotFoundException(MessageFormat.format(Costanti.ERROR_MSG_CONFIGURAZIONE_0_NON_TROVATA, id));
 		}
 
 		return p;
 	}
 
-	public Properties getProperties(Properties props, String prefix) throws Exception {
-		Properties toRet = Utilities.readProperties(prefix+".", props);
-		return toRet;
-	}
-
-
-	public TreeMap<String, String> getPropertiesAsMap(Properties props, String prefix) throws Exception {
-		TreeMap<String, String> mappaProperties = new TreeMap<>();
-
-		Properties p = this.getProperties(props, prefix);
-
-		for (Object pKeyObj: p.keySet()) {
-			Object pValObj = p.get(pKeyObj);
-			mappaProperties.put((String)pKeyObj, (String)pValObj);
-		}
-
-		return mappaProperties; 
-	}
-
-	public Properties getPropertiesPerDominio(String codDominio,Logger log) throws Exception {
+	public Properties getPropertiesPerDominio(String codDominio,Logger log) throws PropertyNotFoundException {
 		return this.getPropertiesPerDominioTributo(codDominio, null, log);
 	}
 
-	public Properties getPropertiesPerDominioTributo(String codDominio,String codTributo,Logger log) throws Exception {
+	public Properties getPropertiesPerDominioTributo(String codDominio,String codTributo,Logger log) throws PropertyNotFoundException {
 		Properties p = null;
 		String key = null;
 	
@@ -187,10 +188,10 @@ public class RicevutaTelematicaProperties {
 		if(StringUtils.isNotEmpty(codTributo) && StringUtils.isNotEmpty(codDominio)) {
 			key = codDominio + "." + codTributo;
 			try{
-				log.debug("Ricerca delle properties per la chiave ["+key+"]");
+				log.debug(MessageFormat.format(Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_PER_LA_CHIAVE_0, key));
 				p = this.getProperties(key);
 			}catch(Exception e){
-				log.debug("Non sono state trovate properties per la chiave ["+key+"]: " + e.getMessage());
+				log.debug(MessageFormat.format(Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_PER_LA_CHIAVE_0_1, key, e.getMessage()));
 			}
 		}
 
@@ -199,23 +200,24 @@ public class RicevutaTelematicaProperties {
 			if(p == null){
 				key = codDominio;
 				try{
-					log.debug("Ricerca delle properties per la chiave ["+key+"]");
+					log.debug(MessageFormat.format(Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_PER_LA_CHIAVE_0, key));
 					p = this.getProperties(key);
 				}catch(Exception e){
-					log.debug("Non sono state trovate properties per la chiave ["+key+"]: " + e.getMessage());
+					log.debug(MessageFormat.format(Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_PER_LA_CHIAVE_0_1, key, e.getMessage()));
 				}
 			}
 		}
 
 		// utilizzo le properties di default
 		try{
-			log.debug("Ricerca delle properties di default");
+			log.debug(Costanti.DEBUG_MSG_RICERCA_DELLE_PROPERTIES_DI_DEFAULT);
 			p = this.getProperties(null);
-		}catch(Exception e){
-			log.debug("Non sono state trovate properties di default: " + e.getMessage());
+		}catch(PropertyNotFoundException e){
+			log.debug(MessageFormat.format(Costanti.DEBUG_MSG_NON_SONO_STATE_TROVATE_PROPERTIES_DI_DEFAULT_0, e.getMessage()));
 			throw e;
 		}
 
 		return p;
 	}
+
 }

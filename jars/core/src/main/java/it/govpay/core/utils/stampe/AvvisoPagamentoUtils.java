@@ -91,7 +91,7 @@ public class AvvisoPagamentoUtils {
 		// caso speciale Violazione CDS senza bollettino postale
 		if(violazioneCDS && versamenti.size() == 2) {
 			log.debug("Documento ["+documento.getCodDocumento()+"] creazione input per Violazione CDS...");	
-			creaAvvisoViolazioneCDSSenzaBollettinoPostale(versamenti, documento, input, configWrapper, sdfDataScadenza);
+			creaAvvisoViolazioneCDSSenzaBollettinoPostale(versamenti, documento, input, configWrapper, sdfDataScadenza, log);
 			log.debug("Documento ["+documento.getCodDocumento()+"] creato input per Violazione CDS");	
 		}
 
@@ -124,10 +124,10 @@ public class AvvisoPagamentoUtils {
 				// pagina 1 con due rate se (#rate - 4 ) mod 9 ==0 || (#rate -8) mod 9 == 0
 				if(((versamenti.size() - 4) %9 ==0) ||((versamenti.size() - 8) %9 == 0)) {
 					log.debug("Documento ["+documento.getCodDocumento()+"] selezionato layout pagina principale a 2 colonne");
-					creaPaginaPrincipaleDoppia(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica);
+					creaPaginaPrincipaleDoppia(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica, log);
 				} else {
 					log.debug("Documento ["+documento.getCodDocumento()+"] selezionato layout pagina principale a 3 colonne");
-					creaPaginaPrincipaleTripla(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica);
+					creaPaginaPrincipaleTripla(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica, log);
 				}
 
 				// a questo punto creo tutte le pagine con 9 rate 
@@ -195,10 +195,10 @@ public class AvvisoPagamentoUtils {
 				// 2/3 rate in una sola pagina
 				if(versamenti.size()%3 != 0) { // 2 rate
 					log.debug("Documento ["+documento.getCodDocumento()+"] selezionato layout a 2 colonne");
-					creaPaginaPrincipaleDoppia(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica);
+					creaPaginaPrincipaleDoppia(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica, log);
 				} else { // 3 rate
 					log.debug("Documento ["+documento.getCodDocumento()+"] selezionato layout a 3 colonne");
-					creaPaginaPrincipaleTripla(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica);
+					creaPaginaPrincipaleTripla(versamenti, documento, input, configWrapper, sdfDataScadenza, configurazioneStampa, versamentiRataUnica, log);
 				}
 			}
 		} else if (versamenti.size() == 1) { // caso speciale di un documento con una sola rata
@@ -216,7 +216,7 @@ public class AvvisoPagamentoUtils {
 
 	private static void creaPaginaPrincipaleTripla(List<Versamento> versamenti, Documento documento, AvvisoPagamentoInput input,
 			BDConfigWrapper configWrapper, SimpleDateFormat sdfDataScadenza,
-			AvvisoPagamentoInputConf configurazioneStampa, List<Versamento> versamentiRataUnica)
+			AvvisoPagamentoInputConf configurazioneStampa, List<Versamento> versamentiRataUnica, Logger log)
 					throws ServiceException, UtilsException {
 		Versamento v1 = versamenti.remove(0);
 		Versamento v2 = versamenti.remove(0);
@@ -230,14 +230,17 @@ public class AvvisoPagamentoUtils {
 
 		if(configurazioneStampa.isAlmenoUnaRataUnica()) {
 			pagina.setUnica(getRata(versamentiRataUnica.get(0), input, sdfDataScadenza));
+			log.debug("Documento ["+documento.getCodDocumento()+"], pagina principale tripla aggiunta rata unica [NA: "+versamentiRataUnica.get(0).getNumeroAvviso()+"]");
 		}
+		
+		log.debug("Documento ["+documento.getCodDocumento()+"], pagina principale tripla aggiunte rate [NA1: "+v1.getNumeroAvviso()+"], [NA2: "+v2.getNumeroAvviso()+"], [NA3: "+v3.getNumeroAvviso()+"]");	
 
 		input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 	}
 
 	private static void creaPaginaPrincipaleDoppia(List<Versamento> versamenti, Documento documento, AvvisoPagamentoInput input,
 			BDConfigWrapper configWrapper, SimpleDateFormat sdfDataScadenza,
-			AvvisoPagamentoInputConf configurazioneStampa, List<Versamento> versamentiRataUnica)
+			AvvisoPagamentoInputConf configurazioneStampa, List<Versamento> versamentiRataUnica, Logger log)
 					throws ServiceException, UtilsException {
 		Versamento v1 = versamenti.remove(0);
 		Versamento v2 = versamenti.remove(0);
@@ -249,13 +252,16 @@ public class AvvisoPagamentoUtils {
 
 		if(configurazioneStampa.isAlmenoUnaRataUnica()) {
 			pagina.setUnica(getRata(versamentiRataUnica.get(0), input, sdfDataScadenza));
+			log.debug("Documento ["+documento.getCodDocumento()+"], pagina principale tripla aggiunta rata unica [NA: "+versamentiRataUnica.get(0).getNumeroAvviso()+"]");
 		}
+		
+		log.debug("Documento ["+documento.getCodDocumento()+"], pagina principale doppia aggiunte rate [NA1: "+v1.getNumeroAvviso()+"], [NA2: "+v2.getNumeroAvviso()+"]");
 
 		input.getPagine().getSingolaOrDoppiaOrTripla().add(pagina);
 	}
 
 	private static void creaAvvisoViolazioneCDSSenzaBollettinoPostale(List<Versamento> versamenti, Documento documento, AvvisoPagamentoInput input,
-			BDConfigWrapper configWrapper, SimpleDateFormat sdfDataScadenza) throws ServiceException, UtilsException {
+			BDConfigWrapper configWrapper, SimpleDateFormat sdfDataScadenza, Logger log) throws ServiceException, UtilsException {
 		Versamento v1 = versamenti.remove(0);
 		Versamento v2 = versamenti.remove(0);
 
@@ -284,9 +290,13 @@ public class AvvisoPagamentoUtils {
 		}
 
 		// riporto gli unici campi che sono differenti tra le due rate e creo la pagina unica
-		rataScontato.setCodiceAvviso2(rataRidotto.getCodiceAvviso2());
-		rataScontato.setQrCode2(rataRidotto.getQrCode2());
-		rataScontato.setImportoRidotto(rataRidotto.getImportoRidotto());
+		if(rataScontato != null && rataRidotto != null) {
+			rataScontato.setCodiceAvviso2(rataRidotto.getCodiceAvviso2());
+			rataScontato.setQrCode2(rataRidotto.getQrCode2());
+			rataScontato.setImportoRidotto(rataRidotto.getImportoRidotto());
+		} else {
+			log.error("Non sono state trovate le due rate di tipo SCONTATO e RIDOTTO previste, trovate rata1 ["+rata1.getTipo()+"] e rata2 ["+rata2.getTipo()+"]");
+		}
 
 		PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 		pagina.setRata(rataScontato);
@@ -493,7 +503,7 @@ public class AvvisoPagamentoUtils {
 
 		StringBuilder sb = new StringBuilder();
 
-		if(StringUtils.isNotEmpty(anagraficaUO.getUrlSitoWeb())) {
+		if(anagraficaUO != null && StringUtils.isNotEmpty(anagraficaUO.getUrlSitoWeb())) {
 			sb.append(anagraficaUO.getUrlSitoWeb());
 		} else if(StringUtils.isNotEmpty(anagraficaDominio.getUrlSitoWeb())) {
 			sb.append(anagraficaDominio.getUrlSitoWeb());
@@ -503,7 +513,7 @@ public class AvvisoPagamentoUtils {
 			sb.append("<br/>");
 
 		boolean line2=false;
-		if(StringUtils.isNotEmpty(anagraficaUO.getTelefono())){
+		if(anagraficaUO != null && StringUtils.isNotEmpty(anagraficaUO.getTelefono())){
 			sb.append("Tel: ").append(anagraficaUO.getTelefono());
 			sb.append(" - ");
 			line2=true;
@@ -513,7 +523,7 @@ public class AvvisoPagamentoUtils {
 			line2=true;
 		} 
 
-		if(StringUtils.isNotEmpty(anagraficaUO.getFax())){
+		if(anagraficaUO != null && StringUtils.isNotEmpty(anagraficaUO.getFax())){
 			sb.append("Fax: ").append(anagraficaUO.getFax());
 			line2=true;
 		} else if(StringUtils.isNotEmpty(anagraficaDominio.getFax())) {
@@ -523,15 +533,16 @@ public class AvvisoPagamentoUtils {
 
 		if(line2) sb.append("<br/>");
 
-		if(StringUtils.isNotEmpty(anagraficaUO.getPec())) {
-			sb.append("pec: ").append(anagraficaUO.getPec());
-		} else if(StringUtils.isNotEmpty(anagraficaUO.getEmail())){
-			sb.append("email: ").append(anagraficaUO.getEmail());
-		} else if(StringUtils.isNotEmpty(anagraficaDominio.getPec())) {
-			sb.append("pec: ").append(anagraficaDominio.getPec());
-		} else if(StringUtils.isNotEmpty(anagraficaDominio.getEmail())){
-			sb.append("email: ").append(anagraficaDominio.getEmail());
-		}
+		if(anagraficaUO != null)
+			if(StringUtils.isNotEmpty(anagraficaUO.getPec())) {
+				sb.append("pec: ").append(anagraficaUO.getPec());
+			} else if(StringUtils.isNotEmpty(anagraficaUO.getEmail())){
+				sb.append("email: ").append(anagraficaUO.getEmail());
+			} else if(StringUtils.isNotEmpty(anagraficaDominio.getPec())) {
+				sb.append("pec: ").append(anagraficaDominio.getPec());
+			} else if(StringUtils.isNotEmpty(anagraficaDominio.getEmail())){
+				sb.append("email: ").append(anagraficaDominio.getEmail());
+			}
 
 		input.setInfoEnte(sb.toString());
 		// se e' presente un logo lo inserisco altrimemti verra' caricato il logo di default.
@@ -568,17 +579,9 @@ public class AvvisoPagamentoUtils {
 			input.setNomeCognomeDestinatario(anagraficaDebitore.getRagioneSociale());
 			input.setCfDestinatario(anagraficaDebitore.getCodUnivoco().toUpperCase());
 
-			if(indirizzoDestinatario.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setIndirizzoDestinatario1(indirizzoDestinatario);
-			}else {
-				input.setIndirizzoDestinatario1(indirizzoDestinatario);
-			}
+			input.setIndirizzoDestinatario1(indirizzoDestinatario);
 
-			if(capCittaDebitore.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setIndirizzoDestinatario2(capCittaDebitore);
-			}else {
-				input.setIndirizzoDestinatario2(capCittaDebitore);
-			}
+			input.setIndirizzoDestinatario2(capCittaDebitore);
 		}
 	}
 

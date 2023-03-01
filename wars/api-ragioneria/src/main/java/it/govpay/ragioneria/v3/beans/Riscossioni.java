@@ -11,11 +11,11 @@ public class Riscossioni extends Lista  {
 	public Riscossioni() {
 		super();
 	}
-	
+
 	public Riscossioni(URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(requestUri, count, pagina, limit);
 	}
-  
+
   @Schema(description = "")
   private List<Riscossione> risultati = null;
  /**

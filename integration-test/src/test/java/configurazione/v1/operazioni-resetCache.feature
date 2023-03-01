@@ -17,6 +17,7 @@ Then assert responseStatus == 200
 
 * def pagamentiSpidV1Baseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'spid'})
 * def pagamentiSpidV2Baseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'spid'})
+* def pagamentiSpidV3Baseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v3', autenticazione: 'spid'})
 * def backofficeSpidBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 
 * def spidHeadersVerdi = {'X-SPID-FISCALNUMBER': 'VRDGPP65B03A112N','X-SPID-NAME': 'Giuseppe','X-SPID-FAMILYNAME': 'Verdi','X-SPID-EMAIL': 'gverdi@mailserver.host.it'} 
@@ -50,6 +51,22 @@ When method get
 * call sleep(200)
 
 Given url pagamentiSpidV2Baseurl
+And path '/logout'
+And headers spidHeadersRossi
+When method get
+
+# API Pagamento V3
+
+* call sleep(200)
+
+Given url pagamentiSpidV3Baseurl
+And path '/logout'
+And headers spidHeadersVerdi
+When method get
+
+* call sleep(200)
+
+Given url pagamentiSpidV3Baseurl
 And path '/logout'
 And headers spidHeadersRossi
 When method get

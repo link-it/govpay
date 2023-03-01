@@ -1,5 +1,6 @@
 package it.govpay.bd.viste;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -30,6 +31,7 @@ import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.bd.viste.model.converter.RendicontazioneConverter;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.FR;
 import it.govpay.orm.IdIncasso;
 import it.govpay.orm.VistaRendicontazione;
@@ -79,6 +81,10 @@ public class RendicontazioniBD extends BasicBD {
 			List<it.govpay.orm.VistaRendicontazione> rendicontazioneVOLst = this.getVistaRendicontazioneServiceSearch().findAll(filter.toPaginatedExpression());
 			return RendicontazioneConverter.toDTO(rendicontazioneVOLst);
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -332,6 +338,10 @@ public class RendicontazioniBD extends BasicBD {
 			return RendicontazioneConverter.toDTO(rendicontazioneVOLst);
 		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
+			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			return new ArrayList<>();
 		} finally {
@@ -357,6 +367,10 @@ public class RendicontazioniBD extends BasicBD {
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -439,6 +453,10 @@ public class RendicontazioniBD extends BasicBD {
 			
 		} catch (NotImplementedException | ExpressionNotImplementedException | ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -486,6 +504,10 @@ public class RendicontazioniBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

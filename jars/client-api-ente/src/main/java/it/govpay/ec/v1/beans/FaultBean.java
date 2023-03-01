@@ -42,19 +42,19 @@ public class FaultBean  {
       return null;
     }
   }  
-  // @Schema(required = true, description = "Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `INTERNO` - Errore interno")
+  // @Schema(requiredMode = RequiredMode.REQUIRED, description = "Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `INTERNO` - Errore interno")
  /**
    * Categoria dell'errore riscontrato:  * `AUTORIZZAZIONE` - Operazione non autorizzata  * `RICHIESTA` - Richiesta non valida  * `OPERAZIONE` - Operazione non eseguibile  * `PAGOPA` - Errore da PagoPA  * `INTERNO` - Errore interno  
   **/
   private CategoriaEnum categoria = null;
   
-  // @Schema(required = true, description = "Codice di errore")
+  // @Schema(requiredMode = RequiredMode.REQUIRED, description = "Codice di errore")
  /**
    * Codice di errore  
   **/
   private String codice = null;
   
-  // @Schema(required = true, description = "Descrizione dell'errore")
+  // @Schema(requiredMode = RequiredMode.REQUIRED, description = "Descrizione dell'errore")
  /**
    * Descrizione dell'errore  
   **/
@@ -72,11 +72,8 @@ public class FaultBean  {
   @JsonProperty("categoria")
   @NotNull
   @Valid
-  public String getCategoria() {
-    if (categoria == null) {
-      return null;
-    }
-    return categoria.getValue();
+  public CategoriaEnum getCategoria() {
+    return categoria;
   }
 
   public void setCategoria(CategoriaEnum categoria) {

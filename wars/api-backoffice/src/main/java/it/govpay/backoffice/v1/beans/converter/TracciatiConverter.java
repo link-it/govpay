@@ -36,7 +36,7 @@ import it.govpay.orm.constants.StatoTracciatoType;
 public class TracciatiConverter {
 
 
-	public static Tracciato toRsModel(it.govpay.bd.model.Tracciato tracciato) throws ServiceException {
+	public static Tracciato toRsModel(it.govpay.bd.model.Tracciato tracciato) {
 		Tracciato rsModel = new Tracciato();
 
 		rsModel.setId(BigDecimal.valueOf(tracciato.getId()));
@@ -52,17 +52,17 @@ public class TracciatiConverter {
 
 		return rsModel;
 	}
-	
-	public static TracciatoPendenze toTracciatoPendenzeRsModel(it.govpay.bd.model.Tracciato tracciato) throws ServiceException {
+
+	public static TracciatoPendenze toTracciatoPendenzeRsModel(it.govpay.bd.model.Tracciato tracciato) throws ServiceException, it.govpay.core.exceptions.IOException {
 		TracciatoPendenze rsModel = new TracciatoPendenze();
 
 		rsModel.setId(BigDecimal.valueOf(tracciato.getId()));
 		rsModel.setDataOraCaricamento(tracciato.getDataCaricamento());
 		rsModel.setNomeFile(tracciato.getFileNameRichiesta());
 		rsModel.setDescrizioneStato(tracciato.getDescrizioneStato());
-		
-		it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = leggiBeanDati(tracciato.getBeanDati());	
-		
+
+		it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = leggiBeanDati(tracciato.getBeanDati());
+
 		if(tracciato.getOperatore(null) != null)
 			rsModel.setOperatoreMittente(tracciato.getOperatore(null).getNome());
 		rsModel.setNumeroOperazioniEseguite(BigDecimal.valueOf(beanDati.getNumAddOk() + beanDati.getNumDelOk()));
@@ -73,9 +73,9 @@ public class TracciatiConverter {
 		rsModel.setNumeroAvvisiTotali(BigDecimal.valueOf(beanDati.getNumStampeTotali()));
 		rsModel.setNumeroAvvisiStampati(BigDecimal.valueOf(beanDati.getNumStampeOk()));
 		rsModel.setNumeroAvvisiFalliti(BigDecimal.valueOf(beanDati.getNumStampeKo()));
-		
+
 		StatoTracciatoType statoTracciato = StatoTracciatoType.valueOf(beanDati.getStepElaborazione());
-		
+
 		if(tracciato.getStato() != null) {
 			switch(tracciato.getStato()){
 			case COMPLETATO:
@@ -98,10 +98,10 @@ public class TracciatiConverter {
 				break;
 			}
 		}
-		
+
 		try {
 			if(tracciato.getRawRichiesta() == null) {
-				
+
 			} else {
 				rsModel.setContenuto(TracciatoPendenzePost.parse(new String(tracciato.getRawRichiesta())));
 			}
@@ -109,17 +109,17 @@ public class TracciatiConverter {
 
 		return rsModel;
 	}
-	
-	public static TracciatoPendenzeIndex toTracciatoPendenzeRsModelIndex(it.govpay.bd.model.Tracciato tracciato) throws ServiceException {
+
+	public static TracciatoPendenzeIndex toTracciatoPendenzeRsModelIndex(it.govpay.bd.model.Tracciato tracciato) throws ServiceException, it.govpay.core.exceptions.IOException {
 		TracciatoPendenzeIndex rsModel = new TracciatoPendenzeIndex();
 
 		rsModel.setId(BigDecimal.valueOf(tracciato.getId()));
 		rsModel.setDataOraCaricamento(tracciato.getDataCaricamento());
 		rsModel.setNomeFile(tracciato.getFileNameRichiesta());
 		rsModel.setDescrizioneStato(tracciato.getDescrizioneStato());
-		
+
 		it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = leggiBeanDati(tracciato.getBeanDati());
-		
+
 		if(tracciato.getOperatore(null) != null)
 			rsModel.setOperatoreMittente(tracciato.getOperatore(null).getNome());
 		rsModel.setNumeroOperazioniEseguite(BigDecimal.valueOf(beanDati.getNumAddOk() + beanDati.getNumDelOk()));
@@ -130,9 +130,9 @@ public class TracciatiConverter {
 		rsModel.setNumeroAvvisiTotali(BigDecimal.valueOf(beanDati.getNumStampeTotali()));
 		rsModel.setNumeroAvvisiStampati(BigDecimal.valueOf(beanDati.getNumStampeOk()));
 		rsModel.setNumeroAvvisiFalliti(BigDecimal.valueOf(beanDati.getNumStampeKo()));
-		
+
 		StatoTracciatoType statoTracciato = StatoTracciatoType.valueOf(beanDati.getStepElaborazione());
-		
+
 		if(tracciato.getStato() != null) {
 			switch(tracciato.getStato()){
 			case COMPLETATO:
@@ -155,11 +155,11 @@ public class TracciatiConverter {
 				break;
 			}
 		}
-		
+
 		return rsModel;
 	}
-	
-	public static it.govpay.core.beans.tracciati.TracciatoPendenza leggiBeanDati(String beanDatiS) throws ServiceException{ 
+
+	public static it.govpay.core.beans.tracciati.TracciatoPendenza leggiBeanDati(String beanDatiS) throws it.govpay.core.exceptions.IOException{
 		it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = null;
 		SerializationConfig config = new SerializationConfig();
 		config.setDf(SimpleDateFormatUtils.newSimpleDateFormatDataOreMinuti());
@@ -169,21 +169,21 @@ public class TracciatiConverter {
 			deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, config);
 			beanDati = (it.govpay.core.beans.tracciati.TracciatoPendenza) deserializer.getObject(beanDatiS, it.govpay.core.beans.tracciati.TracciatoPendenza.class);
 		} catch (IOException e) {
-			throw new ServiceException(e);
+			throw new it.govpay.core.exceptions.IOException(e);
 		}
-		
+
 		return beanDati;
 	}
-	
-	public static TracciatoPendenzeEsito toTracciatoPendenzeEsitoRsModel(it.govpay.bd.model.Tracciato tracciato) throws ServiceException {
+
+	public static TracciatoPendenzeEsito toTracciatoPendenzeEsitoRsModel(it.govpay.bd.model.Tracciato tracciato) throws ServiceException, it.govpay.core.exceptions.IOException {
 		TracciatoPendenzeEsito rsModel = new TracciatoPendenzeEsito();
 
 		rsModel.setId(BigDecimal.valueOf(tracciato.getId()));
 		rsModel.setDataOraCaricamento(tracciato.getDataCaricamento());
 		rsModel.setNomeFile(tracciato.getFileNameEsito());
 		rsModel.setDescrizioneStato(tracciato.getDescrizioneStato());
-		
-		it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = leggiBeanDati(tracciato.getBeanDati());		
+
+		it.govpay.core.beans.tracciati.TracciatoPendenza beanDati = leggiBeanDati(tracciato.getBeanDati());
 		if(tracciato.getOperatore(null) != null)
 			rsModel.setOperatoreMittente(tracciato.getOperatore(null).getNome());
 		rsModel.setNumeroOperazioniEseguite(BigDecimal.valueOf(beanDati.getNumAddOk() + beanDati.getNumDelOk()));
@@ -194,9 +194,9 @@ public class TracciatiConverter {
 		rsModel.setNumeroAvvisiTotali(BigDecimal.valueOf(beanDati.getNumStampeTotali()));
 		rsModel.setNumeroAvvisiStampati(BigDecimal.valueOf(beanDati.getNumStampeOk()));
 		rsModel.setNumeroAvvisiFalliti(BigDecimal.valueOf(beanDati.getNumStampeKo()));
-		
+
 		StatoTracciatoType statoTracciato = StatoTracciatoType.valueOf(beanDati.getStepElaborazione());
-		
+
 		if(tracciato.getStato() != null) {
 			switch(tracciato.getStato()){
 			case COMPLETATO:
@@ -219,9 +219,9 @@ public class TracciatiConverter {
 				break;
 			}
 		}
-		
+
 		try {
-			if(tracciato.getRawEsito() == null) 
+			if(tracciato.getRawEsito() == null)
 				rsModel.setEsito(new DettaglioTracciatoPendenzeEsito());
 			else
 				rsModel.setEsito(DettaglioTracciatoPendenzeEsito.parse(new String(tracciato.getRawEsito())));
@@ -231,16 +231,16 @@ public class TracciatiConverter {
 
 		return rsModel;
 	}
-	
+
 	public static OperazionePendenza toOperazioneTracciatoPendenzaRsModel(it.govpay.bd.model.Operazione operazione) throws ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		OperazionePendenza rsModel = new OperazionePendenza();
-		
-		Applicazione applicazione = operazione.getApplicazione(configWrapper); 
+
+		Applicazione applicazione = operazione.getApplicazione(configWrapper);
 		if(applicazione != null)
 			rsModel.setApplicazione(applicazione.getCodApplicazione());
-		rsModel.setNumero(BigDecimal.valueOf(operazione.getLineaElaborazione()));  
-		
+		rsModel.setNumero(BigDecimal.valueOf(operazione.getLineaElaborazione()));
+
 		switch (operazione.getStato()) {
 		case ESEGUITO_KO:
 			rsModel.setStato(StatoOperazionePendenza.SCARTATO);
@@ -252,37 +252,37 @@ public class TracciatiConverter {
 			rsModel.setStato(StatoOperazionePendenza.NON_VALIDO);
 			break;
 		}
-		
+
 		EsitoOperazionePendenza risposta = null;
-		
+
 		try {
-			risposta = EsitoOperazionePendenza.parse(new String(operazione.getDatiRisposta())); 
+			risposta = EsitoOperazionePendenza.parse(new String(operazione.getDatiRisposta()));
 		} catch(Exception e) {
-			
+
 		}
-		
+
 		PendenzaPost pendenzaPost = null;
 		AnnullamentoPendenza annullamentoPendenza = null;
 		try {
 			pendenzaPost = PendenzaPost.parse(new String(operazione.getDatiRichiesta()));
-			rsModel.setRichiesta(pendenzaPost); 
+			rsModel.setRichiesta(pendenzaPost);
 		} catch(Exception e) {
 			try {
 				annullamentoPendenza = AnnullamentoPendenza.parse(new String(operazione.getDatiRichiesta()));
-				rsModel.setRichiesta(annullamentoPendenza); 
+				rsModel.setRichiesta(annullamentoPendenza);
 			} catch(Exception e1) {
 			}
 		}
-		
+
 		switch (operazione.getTipoOperazione()) {
 		case ADD:
 			TracciatiConverter.popolaOperazioneAdd(operazione, rsModel);
-			
+
 			break;
 		case DEL:
 			TracciatiConverter.popolaOperazioneDel(operazione, rsModel);
 			break;
-		
+
 		case N_V:
 			rsModel.setTipoOperazione(TipoOperazionePendenza.NON_VALIDA);
 			break;
@@ -291,7 +291,7 @@ public class TracciatiConverter {
 			rsModel.setTipoOperazione(TipoOperazionePendenza.NON_VALIDA);
 			break;
 		}
-		
+
 		rsModel.setRisposta(risposta);
 
 		return rsModel;
@@ -302,10 +302,10 @@ public class TracciatiConverter {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		rsModel.setTipoOperazione(TipoOperazionePendenza.DEL);
 		rsModel.setIdentificativoPendenza(operazione.getCodVersamentoEnte());
-		
+
 		OperazioneAnnullamento opAnnullamento = (OperazioneAnnullamento) operazione;
 		rsModel.setDescrizioneStato(opAnnullamento.getMotivoAnnullamento());
-		
+
 		try {
 			Dominio dominio = opAnnullamento.getDominio(configWrapper);
 			if(dominio != null)
@@ -319,22 +319,22 @@ public class TracciatiConverter {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		rsModel.setTipoOperazione(TipoOperazionePendenza.ADD);
 		rsModel.setIdentificativoPendenza(operazione.getCodVersamentoEnte());
-		
+
 		OperazioneCaricamento opCaricamento = (OperazioneCaricamento) operazione;
-		rsModel.setDescrizioneStato(opCaricamento.getDettaglioEsito()); 
-		
+		rsModel.setDescrizioneStato(opCaricamento.getDettaglioEsito());
+
 		try {
-			Dominio dominio = opCaricamento.getDominio(configWrapper); 
+			Dominio dominio = opCaricamento.getDominio(configWrapper);
 			if(dominio != null)
 				rsModel.setEnteCreditore(DominiConverter.toRsModelIndex(dominio));
 		} catch (NotFoundException e) {
 		}
-		
+
 		Versamento versamento = opCaricamento.getVersamento();
-		
+
 		if(versamento != null) {
 			rsModel.setSoggettoPagatore(AnagraficaConverter.toSoggettoRsModel(versamento.getAnagraficaDebitore()));
-			rsModel.setNumeroAvviso(versamento.getNumeroAvviso()); 
+			rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		}
 	}
 }

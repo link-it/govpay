@@ -24,10 +24,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.ec.v1.beans.Contabilita;
@@ -44,8 +44,8 @@ import it.govpay.model.Versamento.StatoVersamento;
 
 public class VerificaConverter {
 	
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) throws ValidationException, ServiceException {
-		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
+	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) throws ValidationException, IOException {
+		it.govpay.core.beans.commons.Versamento versamento = new it.govpay.core.beans.commons.Versamento();
 		
 		if(pendenzaVerificata.getAnnoRiferimento() != null)
 			versamento.setAnnoTributario(pendenzaVerificata.getAnnoRiferimento().intValue());
@@ -87,7 +87,7 @@ public class VerificaConverter {
 		
 		// documento
 		if(pendenzaVerificata.getDocumento() != null) {
-			it.govpay.core.dao.commons.Versamento.Documento documento = new it.govpay.core.dao.commons.Versamento.Documento();
+			it.govpay.core.beans.commons.Versamento.Documento documento = new it.govpay.core.beans.commons.Versamento.Documento();
 			
 			documento.setCodDocumento(pendenzaVerificata.getDocumento().getIdentificativo());
 			if(pendenzaVerificata.getDocumento().getRata() != null)
@@ -115,11 +115,11 @@ public class VerificaConverter {
 		return versamento;
 	}
 	
-	public static void fillSingoliVersamentiFromVociPendenzaBase(it.govpay.core.dao.commons.Versamento versamento, List<VocePendenza> voci) throws ServiceException {
+	public static void fillSingoliVersamentiFromVociPendenzaBase(it.govpay.core.beans.commons.Versamento versamento, List<VocePendenza> voci) throws IOException {
 
 		if(voci != null && voci.size() > 0) {
 			for (VocePendenza vocePendenza : voci) {
-				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = new it.govpay.core.dao.commons.Versamento.SingoloVersamento();
+				it.govpay.core.beans.commons.Versamento.SingoloVersamento sv = new it.govpay.core.beans.commons.Versamento.SingoloVersamento();
 
 				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
 				sv.setDatiAllegati(vocePendenza.getDatiAllegati());
@@ -131,7 +131,7 @@ public class VerificaConverter {
 
 				// Definisce i dati di un bollo telematico
 				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
-					it.govpay.core.dao.commons.Versamento.SingoloVersamento.BolloTelematico bollo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.BolloTelematico();
+					it.govpay.core.beans.commons.Versamento.SingoloVersamento.BolloTelematico bollo = new it.govpay.core.beans.commons.Versamento.SingoloVersamento.BolloTelematico();
 					bollo.setHash(vocePendenza.getHashDocumento());
 					bollo.setProvincia(vocePendenza.getProvinciaResidenza());
 					bollo.setTipo(vocePendenza.getTipoBollo());
@@ -140,10 +140,10 @@ public class VerificaConverter {
 					sv.setCodTributo(vocePendenza.getCodEntrata());
 
 				} else { // Definisce i dettagli di incasso della singola entrata.
-					it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo tributo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo();
+					it.govpay.core.beans.commons.Versamento.SingoloVersamento.Tributo tributo = new it.govpay.core.beans.commons.Versamento.SingoloVersamento.Tributo();
 					tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
 					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
-					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
+					tributo.setTipoContabilita(it.govpay.core.beans.commons.Versamento.SingoloVersamento.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
 					tributo.setIbanAppoggio(vocePendenza.getIbanAppoggio());
 					sv.setTributo(tributo);
 				}
@@ -153,10 +153,10 @@ public class VerificaConverter {
 		}
 	}
 	
-	public static it.govpay.core.dao.commons.Anagrafica toAnagraficaCommons(Soggetto anagraficaRest) {
-		it.govpay.core.dao.commons.Anagrafica anagraficaCommons = null;
+	public static it.govpay.core.beans.commons.Anagrafica toAnagraficaCommons(Soggetto anagraficaRest) {
+		it.govpay.core.beans.commons.Anagrafica anagraficaCommons = null;
 		if(anagraficaRest != null) {
-			anagraficaCommons = new it.govpay.core.dao.commons.Anagrafica();
+			anagraficaCommons = new it.govpay.core.beans.commons.Anagrafica();
 			anagraficaCommons.setCap(anagraficaRest.getCap());
 			anagraficaCommons.setCellulare(anagraficaRest.getCellulare());
 			anagraficaCommons.setCivico(anagraficaRest.getCivico());
@@ -217,7 +217,7 @@ public class VerificaConverter {
 		return dto;
 	}
 	
-	public static String contabilitaToStringDTO(Contabilita contabilita) throws ServiceException {
+	public static String contabilitaToStringDTO(Contabilita contabilita) throws IOException {
 		if(contabilita == null)
 			return null;
 		
@@ -226,7 +226,7 @@ public class VerificaConverter {
 		return getDettaglioAsString(dto);
 	}
 	
-	public static List<it.govpay.model.QuotaContabilita> toDTO(List<QuotaContabilita> dto) throws ServiceException {
+	public static List<it.govpay.model.QuotaContabilita> toDTO(List<QuotaContabilita> dto) {
 		if(dto != null) {
 			List<it.govpay.model.QuotaContabilita> rsModel = new ArrayList<it.govpay.model.QuotaContabilita>();
 			for (QuotaContabilita contabilita : dto) {
@@ -239,7 +239,7 @@ public class VerificaConverter {
 		return null;
 	}
 
-	public static it.govpay.model.Contabilita toDTO(Contabilita dto) throws ServiceException {
+	public static it.govpay.model.Contabilita toDTO(Contabilita dto) {
 		it.govpay.model.Contabilita rsModel = new it.govpay.model.Contabilita();
 		
 		rsModel.setQuote(toDTO(dto.getQuote()));
@@ -249,7 +249,7 @@ public class VerificaConverter {
 		return rsModel;
 	}
 	
-	public static it.govpay.model.QuotaContabilita toDTO(QuotaContabilita dto) throws ServiceException {
+	public static it.govpay.model.QuotaContabilita toDTO(QuotaContabilita dto) {
 		it.govpay.model.QuotaContabilita rsModel = new it.govpay.model.QuotaContabilita();
 		
 		rsModel.setAccertamento(dto.getAccertamento());
@@ -265,7 +265,7 @@ public class VerificaConverter {
 		return rsModel;
 	}
 	
-	private static String getDettaglioAsString(Object obj) throws ServiceException {
+	private static String getDettaglioAsString(Object obj) throws IOException {
 		if(obj != null) {
 			SerializationConfig serializationConfig = new SerializationConfig();
 			serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
@@ -276,14 +276,14 @@ public class VerificaConverter {
 		return null;
 	}
 	
-	private static List<it.govpay.core.dao.commons.Versamento.AllegatoPendenza> toAllegatiPendenzaDTO(List<NuovoAllegatoPendenza> allegati) {
-		List<it.govpay.core.dao.commons.Versamento.AllegatoPendenza> allegatiDTO = null;
+	private static List<it.govpay.core.beans.commons.Versamento.AllegatoPendenza> toAllegatiPendenzaDTO(List<NuovoAllegatoPendenza> allegati) {
+		List<it.govpay.core.beans.commons.Versamento.AllegatoPendenza> allegatiDTO = null;
 		
 		if(allegati != null && allegati.size() > 0) {
 			allegatiDTO = new ArrayList<>();
 			
 			for (NuovoAllegatoPendenza allegato : allegati) {
-				it.govpay.core.dao.commons.Versamento.AllegatoPendenza allegatoDTO = new it.govpay.core.dao.commons.Versamento.AllegatoPendenza();
+				it.govpay.core.beans.commons.Versamento.AllegatoPendenza allegatoDTO = new it.govpay.core.beans.commons.Versamento.AllegatoPendenza();
 				
 				allegatoDTO.setNome(allegato.getNome());
 				allegatoDTO.setTipo(allegato.getTipo());

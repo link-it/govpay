@@ -46,6 +46,7 @@ public class StazioneModel extends AbstractModel<Stazione> {
 		this.PASSWORD = new Field("password",java.lang.String.class,"Stazione",Stazione.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"Stazione",Stazione.class);
 		this.APPLICATION_CODE = new Field("applicationCode",java.lang.Integer.class,"Stazione",Stazione.class);
+		this.VERSIONE = new Field("versione",java.lang.String.class,"Stazione",Stazione.class);
 	
 	}
 	
@@ -58,6 +59,7 @@ public class StazioneModel extends AbstractModel<Stazione> {
 		this.PASSWORD = new ComplexField(father,"password",java.lang.String.class,"Stazione",Stazione.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Stazione",Stazione.class);
 		this.APPLICATION_CODE = new ComplexField(father,"applicationCode",java.lang.Integer.class,"Stazione",Stazione.class);
+		this.VERSIONE = new ComplexField(father,"versione",java.lang.String.class,"Stazione",Stazione.class);
 	
 	}
 	
@@ -72,6 +74,8 @@ public class StazioneModel extends AbstractModel<Stazione> {
 	public IField ABILITATO = null;
 	 
 	public IField APPLICATION_CODE = null;
+	 
+	public IField VERSIONE = null;
 	 
 
 	@Override

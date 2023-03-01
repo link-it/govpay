@@ -2,7 +2,6 @@ package it.govpay.core.utils.rawutils;
 
 import java.util.Arrays;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.ISerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
@@ -22,9 +21,10 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.govpay.bd.model.Rpt;
-import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.MessaggiPagoPAUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class ConverterUtils {
 
@@ -38,11 +38,11 @@ public class ConverterUtils {
 		mapper.setDateFormat(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
 	}
 
-	public static String getRptJson(Rpt rpt) throws ServiceException {
+	public static String getRptJson(Rpt rpt) throws IOException {
 		return getRptJson(rpt, false);
 	}
 
-	public static String getRptJson(Rpt rpt, boolean convertiMessaggioPagoPAV2InPagoPAV1) throws ServiceException {
+	public static String getRptJson(Rpt rpt, boolean convertiMessaggioPagoPAV2InPagoPAV1) throws IOException {
 		if(rpt.getXmlRpt() == null)
 			return null;
 
@@ -58,7 +58,6 @@ public class ConverterUtils {
 					CtRichiestaPagamentoTelematico ctRpt2 = MessaggiPagoPAUtils.toCtRichiestaPagamentoTelematico(paGetPaymentRes_RPT, rpt);
 					return toJSON(ctRpt2);
 				}
-				
 				return toJSON(paGetPaymentRes_RPT.getData());
 			case SANP_321_V2:
 				PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
@@ -74,29 +73,29 @@ public class ConverterUtils {
 			CtRichiestaPagamentoTelematico ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
 			return toJSON(ctRpt);
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 	}
 	
-	public static String getRptJson(CtRichiestaPagamentoTelematico ctRpt) throws ServiceException {
+	public static String getRptJson(CtRichiestaPagamentoTelematico ctRpt) throws IOException {
 		return toJSON(ctRpt);
 	}
 	
-	public static String getRptJson(PaGetPaymentRes paGetPaymentRes_RPT) throws ServiceException {
+	public static String getRptJson(PaGetPaymentRes paGetPaymentRes_RPT) throws IOException {
 		if(paGetPaymentRes_RPT == null) return null;
 		return toJSON(paGetPaymentRes_RPT.getData());
 	}
 	
-	public static String getRptJson(PaGetPaymentV2Response paGetPaymentResV2Response) throws ServiceException {
+	public static String getRptJson(PaGetPaymentV2Response paGetPaymentResV2Response) throws IOException {
 		if(paGetPaymentResV2Response == null) return null;
 		return toJSON(paGetPaymentResV2Response.getData());
 	}
 	
-	public static String getRtJson(Rpt rpt) throws ServiceException {
+	public static String getRtJson(Rpt rpt) throws IOException {
 		return getRtJson(rpt, false);
 	}
 	
-	public static String getRtJson(Rpt rpt, boolean convertiMessaggioPagoPAV2InPagoPAV1) throws ServiceException {
+	public static String getRtJson(Rpt rpt, boolean convertiMessaggioPagoPAV2InPagoPAV1) throws IOException {
 		if(rpt.getXmlRt() == null)
 			return null;
 
@@ -129,36 +128,36 @@ public class ConverterUtils {
 			CtRicevutaTelematica ctRt = JaxbUtils.toRT(rpt.getXmlRt(), false);
 			return toJSON(ctRt);
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 	}
 	
-	public static String getRtJson(CtRicevutaTelematica ctRt ) throws ServiceException {
+	public static String getRtJson(CtRicevutaTelematica ctRt ) throws IOException {
 		return toJSON(ctRt);
 	}
 	
-	public static String getRtJson(PaSendRTReq paSendRTReq_RT ) throws ServiceException {
+	public static String getRtJson(PaSendRTReq paSendRTReq_RT ) throws IOException {
 		if(paSendRTReq_RT == null) return null;
 		return toJSON(paSendRTReq_RT.getReceipt());
 	}
 	
-	public static String getRtJson(PaSendRTV2Request paSendRTReq_RT ) throws ServiceException {
+	public static String getRtJson(PaSendRTV2Request paSendRTReq_RT ) throws IOException {
 		if(paSendRTReq_RT == null) return null;
 		return toJSON(paSendRTReq_RT.getReceipt());
 	}
 	
-	public static String toJSON(Object obj) throws ServiceException {
+	public static String toJSON(Object obj) throws IOException {
 		if(obj == null)
 			return null;
 		
 		try {
 			return mapper.writeValueAsString(obj);
 		} catch (JsonProcessingException e) {
-			throw new ServiceException(e);
+			throw new IOException(e);
 		}
 	}
 	
-	public static String toJSON(Object obj, String fields, SerializationConfig serializationConfig) throws ServiceException {
+	public static String toJSON(Object obj, String fields, SerializationConfig serializationConfig) throws IOException {
 		try {
 			if(fields != null && !fields.isEmpty()) {
 				serializationConfig.setIncludes(Arrays.asList(fields.split(",")));
@@ -167,18 +166,18 @@ public class ConverterUtils {
 			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
 			return serializer.getObject(obj);
 		} catch(org.openspcoop2.utils.serialization.IOException e) {
-			throw new ServiceException("Errore nella serializzazione della risposta.", e);
+			throw new IOException("Errore nella serializzazione della risposta.", e);
 		}
 	}
 	
-	public static <T> T parse(String jsonString, Class<T> t) throws ServiceException  {
+	public static <T> T parse(String jsonString, Class<T> t) throws IOException  {
 		SerializationConfig serializationConfig = new SerializationConfig();
 		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
 		serializationConfig.setIgnoreNullValues(true);
 		return parse(jsonString, t, serializationConfig);
 	}
 	
-	public static <T> T parse(String jsonString, Class<T> t, SerializationConfig serializationConfig) throws ServiceException  {
+	public static <T> T parse(String jsonString, Class<T> t, SerializationConfig serializationConfig) throws IOException  {
 		try {
 			IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
 			
@@ -186,7 +185,7 @@ public class ConverterUtils {
 			T object = (T) deserializer.getObject(jsonString, t);
 			return object;
 		} catch(org.openspcoop2.utils.serialization.IOException e) {
-			throw new ServiceException(e.getMessage(), e);
+			throw new IOException(e.getMessage(), e);
 		}
 	}
 	

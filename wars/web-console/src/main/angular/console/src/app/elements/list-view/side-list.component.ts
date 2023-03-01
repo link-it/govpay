@@ -30,6 +30,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   @Input('enable-fab-actions') fabAction: boolean = false;
   @Input('enable-multi-fab-actions') multiFabAction: boolean = false;
   @Input('is-loading-progress') _isLoading: boolean = false;
+  @Input('has-form-view') _hasFormView: boolean = true;
   @Output() _isLoadingChange: EventEmitter<boolean> = new EventEmitter();
 
   protected rsc: any;
@@ -59,8 +60,11 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     }).join('&');
     // Il load dei dati è demandato alla form di ricerca (form-view.component)
     // per poter gestire i filtri di default (attualemnte solo "Data da") configurabili
-    // this.getList(_service, _dashboard_link_query);
-    // this.loadMetadati(_service, _dashboard_link_query);
+    // Eccezione per componenti che non hanno form di ricerca
+    if (!this._hasFormView) {
+      this.getList(_service, _dashboard_link_query);
+      this.loadMetadati(_service, _dashboard_link_query);
+    }
   }
 
   ngOnDestroy() {

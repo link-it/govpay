@@ -3,7 +3,7 @@ Feature: Pagamento avviso precaricato
 Background:
 
 * callonce read('classpath:utils/common-utils.feature')
-* callonce read('classpath:configurazione/v1/anagrafica.feature')
+* callonce read('classpath:configurazione/v1/anagrafica_estesa.feature')
 
 Scenario: Pagamento avviso precaricato autenticato basic con indicazione del versante
 
@@ -147,7 +147,9 @@ Scenario: Pagamento avviso precaricato autenticato multivoce multibeneficiario
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 * def pendenza = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_multivoce.json')
 * def idDominio_2 = '12345678902'
+* def ibanAccredito_2 = 'IT04L1234512345123456789012'
 * set pendenza.voci[1].idDominio = idDominio_2
+* set pendenza.voci[1].ibanAccredito = ibanAccredito_2
 
 Given url pendenzeBaseurl
 And path 'pendenze', idA2A, idPendenza

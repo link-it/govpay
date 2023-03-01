@@ -14,8 +14,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.controllers.RuoliController;
 import it.govpay.core.beans.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -28,7 +26,7 @@ public class Ruoli extends BaseRsServiceV1{
 
 	private RuoliController controller = null;
 
-	public Ruoli() throws ServiceException {
+	public Ruoli() {
 		super("ruoli");
 		this.controller = new RuoliController(this.nomeServizio,this.log);
 	}
@@ -47,7 +45,7 @@ public class Ruoli extends BaseRsServiceV1{
     @PUT
     @Path("/{idRuolo}")
     @Consumes({ "application/json" })
-    
+
     public Response addRuolo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idRuolo") String idRuolo, java.io.InputStream is){
     	this.buildContext();
         return this.controller.addRuolo(this.getUser(), uriInfo, httpHeaders,  idRuolo, is);
@@ -55,7 +53,7 @@ public class Ruoli extends BaseRsServiceV1{
 
     @GET
     @Path("/")
-    
+
     @Produces({ "application/json" })
     public Response findRuoli(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) Integer risultatiPerPagina, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
     	this.buildContext();
@@ -64,7 +62,7 @@ public class Ruoli extends BaseRsServiceV1{
 
     @GET
     @Path("/{idRuolo}")
-    
+
     @Produces({ "application/json" })
     public Response getRuolo(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idRuolo") String idRuolo){
     	this.buildContext();

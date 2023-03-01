@@ -53,28 +53,17 @@ public class AllegatoFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
 			
-			if(this.dataInizio != null && this.dataFine != null) {
+			if(this.dataInizio != null) {
+				newExpression.greaterEquals(model.DATA_CREAZIONE, this.dataInizio);
+				addAnd = true;
+			} 
+			
+			if(this.dataFine != null) {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.between(model.DATA_CREAZIONE, this.dataInizio,this.dataFine);
+				newExpression.lessEquals(model.DATA_CREAZIONE, this.dataFine);
 				addAnd = true;
-			} else {
-				if(this.dataInizio != null) {
-					if(addAnd)
-						newExpression.and();
-	
-					newExpression.greaterEquals(model.DATA_CREAZIONE, this.dataInizio);
-					addAnd = true;
-				} 
-				
-				if(this.dataFine != null) {
-					if(addAnd)
-						newExpression.and();
-	
-					newExpression.lessEquals(model.DATA_CREAZIONE, this.dataFine);
-					addAnd = true;
-				}
 			}
 			
 			if(this.nome != null) {

@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  **/
 @Schema(description="Dati della pendenza con voci")
 public class PendenzaPagata extends Pendenza  {
-  
+
   @Schema(description = "")
   private List<VocePendenzaPagata> voci = new ArrayList<>();
  /**

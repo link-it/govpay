@@ -7,10 +7,11 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class Dominio   {
   
-  @Schema(example = "12345678901", required = true, description = "Codice fiscale")
+  @Schema(example = "12345678901", requiredMode = RequiredMode.REQUIRED, description = "Codice fiscale")
  /**
    * Codice fiscale  
   **/

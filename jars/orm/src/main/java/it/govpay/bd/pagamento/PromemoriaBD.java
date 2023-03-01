@@ -38,7 +38,6 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
-import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Promemoria;
 import it.govpay.bd.model.converter.PromemoriaConverter;
 import it.govpay.bd.pagamento.filters.PromemoriaFilter;
@@ -96,7 +95,7 @@ public class PromemoriaBD extends BasicBD {
 			
 			IPaginatedExpression exp = this.getPromemoriaService().newPaginatedExpression();
 			exp.lessThan(it.govpay.orm.Promemoria.model().DATA_PROSSIMA_SPEDIZIONE, new Date());
-			exp.equals(it.govpay.orm.Promemoria.model().STATO, Promemoria.StatoSpedizione.DA_SPEDIRE.toString());
+			exp.equals(it.govpay.orm.Promemoria.model().STATO, StatoSpedizione.DA_SPEDIRE.toString());
 			
 			if(offset != null) {
 				exp.offset(offset);
@@ -153,14 +152,14 @@ public class PromemoriaBD extends BasicBD {
 
 	public long countPromemoriaDaSpedire() throws ServiceException {
 		PromemoriaFilter newFilter = this.newFilter();
-		newFilter.setStato(Notifica.StatoSpedizione.DA_SPEDIRE.toString());
+		newFilter.setStato(StatoSpedizione.DA_SPEDIRE.toString());
 		newFilter.setDataProssimaSpedizioneFine(new Date());
 		return this.count(newFilter);
 	}
 	
 	public long countPromemoriaInAttesa() throws ServiceException {
 		PromemoriaFilter newFilter = this.newFilter();
-		newFilter.setStato(Notifica.StatoSpedizione.DA_SPEDIRE.toString());
+		newFilter.setStato(StatoSpedizione.DA_SPEDIRE.toString());
 		return this.count(newFilter);
 	}
 

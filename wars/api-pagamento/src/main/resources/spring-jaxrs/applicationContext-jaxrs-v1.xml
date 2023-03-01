@@ -25,7 +25,7 @@
     <b:bean id="webApplicationExceptionMapper" class="it.govpay.rs.v1.handler.WebApplicationExceptionHandler"/>
     
     <!-- Context -->
-	<b:bean id="contextConfigV1" class="it.govpay.rs.v1.service.context.ContextConfig">
+	<b:bean id="contextConfigV1" class="it.govpay.rs.v1.service.context.ContextConfigV1">
 	</b:bean>
 	<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory">
 		<b:property name="apiName" value="API_PAGAMENTO" />

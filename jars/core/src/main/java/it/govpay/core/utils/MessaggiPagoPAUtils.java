@@ -45,7 +45,7 @@ public class MessaggiPagoPAUtils {
 	
 	public static CtRichiestaPagamentoTelematico toCtRichiestaPagamentoTelematico(PaGetPaymentRes paGetPaymentRes, Rpt rpt) throws ServiceException {
 		CtRichiestaPagamentoTelematico ctRpt = new CtRichiestaPagamentoTelematico();
-		ctRpt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE);
+		ctRpt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE_620);
 		
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		
@@ -86,7 +86,7 @@ public class MessaggiPagoPAUtils {
 	
 	public static CtRichiestaPagamentoTelematico toCtRichiestaPagamentoTelematico(PaGetPaymentV2Response paGetPaymentV2Response, Rpt rpt) throws ServiceException {
 		CtRichiestaPagamentoTelematico ctRpt = new CtRichiestaPagamentoTelematico();
-		ctRpt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE);
+		ctRpt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE_620);
 		
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		
@@ -198,7 +198,7 @@ public class MessaggiPagoPAUtils {
 		ctRt.setRiferimentoMessaggioRichiesta(rpt.getCodMsgRichiesta());
 		ctRt.setSoggettoPagatore(toCtSoggettoPagatore(receipt.getDebtor()));
 		ctRt.setSoggettoVersante(null); // informazione non presente
-		ctRt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE);
+		ctRt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE_620);
 		
 		return ctRt;
 	}
@@ -275,7 +275,7 @@ public class MessaggiPagoPAUtils {
 		ctRt.setRiferimentoMessaggioRichiesta(rpt.getCodMsgRichiesta());
 		ctRt.setSoggettoPagatore(toCtSoggettoPagatore(receipt.getDebtor()));
 		ctRt.setSoggettoVersante(null); // informazione non presente
-		ctRt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE);
+		ctRt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE_620);
 		
 		return ctRt;
 	}

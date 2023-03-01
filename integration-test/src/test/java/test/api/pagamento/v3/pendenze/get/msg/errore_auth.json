@@ -1,0 +1,6 @@
+{ 
+	categoria: 'AUTORIZZAZIONE', 
+	codice: '#notnull', 
+	descrizione: 'Operazione non autorizzata', 
+	dettaglio: '#notnull' 
+}

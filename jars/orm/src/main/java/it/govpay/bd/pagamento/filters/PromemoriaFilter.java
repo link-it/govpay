@@ -73,28 +73,17 @@ public class PromemoriaFilter extends AbstractFilter {
 			
 			PromemoriaFieldConverter converter = new PromemoriaFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 
-			if(this.dataInizio != null && this.dataFine != null) {
+			if(this.dataInizio != null) {
+				newExpression.greaterEquals(Promemoria.model().DATA_CREAZIONE, this.dataInizio);
+				addAnd = true;
+			} 
+			
+			if(this.dataFine != null) {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.between(Promemoria.model().DATA_CREAZIONE, this.dataInizio,this.dataFine);
+				newExpression.lessEquals(Promemoria.model().DATA_CREAZIONE, this.dataFine);
 				addAnd = true;
-			} else {
-				if(this.dataInizio != null) {
-					if(addAnd)
-						newExpression.and();
-	
-					newExpression.greaterEquals(Promemoria.model().DATA_CREAZIONE, this.dataInizio);
-					addAnd = true;
-				} 
-				
-				if(this.dataFine != null) {
-					if(addAnd)
-						newExpression.and();
-	
-					newExpression.lessEquals(Promemoria.model().DATA_CREAZIONE, this.dataFine);
-					addAnd = true;
-				}
 			}
 			
 			if(this.dataProssimaSpedizioneInizio != null && this.dataProssimaSpedizioneFine != null) {

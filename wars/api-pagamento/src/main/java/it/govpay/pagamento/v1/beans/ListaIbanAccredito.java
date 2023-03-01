@@ -10,5 +10,5 @@ public class ListaIbanAccredito extends Lista<ContiAccredito> {
 	public ListaIbanAccredito(List<ContiAccredito> risultati, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(risultati, requestUri, count, pagina, limit);
 	}
-	
+
 }

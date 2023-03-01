@@ -10,8 +10,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.pagamento.v2.controller.AllegatiController;
 import it.govpay.rs.v2.BaseRsServiceV2;
 
@@ -19,19 +17,19 @@ import it.govpay.rs.v2.BaseRsServiceV2;
 @Path("/allegati")
 
 public class Allegati extends BaseRsServiceV2{
-	
+
 	public static final String DETTAGLIO_PATH_PATTERN = "/allegati/{0}";
 
 	private AllegatiController controller = null;
 
-	public Allegati() throws ServiceException {
+	public Allegati() {
 		super("allegati");
 		this.controller = new AllegatiController(this.nomeServizio,this.log);
 	}
 
     @GET
     @Path("/{id}")
-    
+
     @Produces({ "*/*" })
     public Response getAllegatoPendenza(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") Long id){
         this.controller.setRequestResponse(this.request, this.response);

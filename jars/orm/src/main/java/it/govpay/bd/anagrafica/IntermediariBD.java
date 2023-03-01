@@ -44,6 +44,7 @@ import it.govpay.bd.model.converter.IntermediarioConverter;
 import it.govpay.model.Connettore;
 import it.govpay.model.ConnettoreSftp;
 import it.govpay.model.Intermediario;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdIntermediario;
 import it.govpay.orm.dao.jdbc.JDBCIntermediarioServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.IntermediarioFieldConverter;
@@ -97,6 +98,8 @@ public class IntermediariBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -131,6 +134,8 @@ public class IntermediariBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -138,7 +143,7 @@ public class IntermediariBD extends BasicBD {
 		}
 	}
 
-	private Intermediario getIntermediario(it.govpay.orm.Intermediario intermediarioVO) throws ExpressionNotImplementedException, ExpressionException, ServiceException, NotImplementedException {
+	private Intermediario getIntermediario(it.govpay.orm.Intermediario intermediarioVO) throws ExpressionNotImplementedException, ExpressionException, ServiceException, NotImplementedException, CodificaInesistenteException {
 		Intermediario intermediario = IntermediarioConverter.toDTO(intermediarioVO);
 
 		if(intermediarioVO.getCodConnettorePdd() != null) {
@@ -412,6 +417,8 @@ public class IntermediariBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

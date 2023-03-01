@@ -63,6 +63,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(idA2A)",
 		"utente": "#(idA2A)",
@@ -145,6 +147,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(idA2A)",
 		"utente": "#(idA2A)",
@@ -227,6 +231,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(idA2A)",
 		"utente": "#(idA2A)",
@@ -320,6 +326,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(idA2A)",
 		"utente": "#(idA2A)",

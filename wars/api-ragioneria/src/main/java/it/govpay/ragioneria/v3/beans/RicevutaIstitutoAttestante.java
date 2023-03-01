@@ -9,28 +9,28 @@ import io.swagger.v3.oas.annotations.media.Schema;
  **/
 @Schema(description="PSP che ha gestito la transazione di pagamento ed emesso la ricevuta")
 public class RicevutaIstitutoAttestante   {
-  
+
   @Schema(description = "Identificativo del PSP assegnato da pagoPA")
  /**
-   * Identificativo del PSP assegnato da pagoPA  
+   * Identificativo del PSP assegnato da pagoPA
   **/
   private String idPSP = null;
-  
+
   @Schema(description = "Ragione sociale del PSP")
  /**
-   * Ragione sociale del PSP  
+   * Ragione sociale del PSP
   **/
   private String denominazione = null;
-  
+
   @Schema(description = "Identificativo del canale di pagamento utilizzato")
  /**
-   * Identificativo del canale di pagamento utilizzato  
+   * Identificativo del canale di pagamento utilizzato
   **/
   private String idCanale = null;
-  
+
   @Schema(description = "Descrizione del canale di pagamento utilizzato")
  /**
-   * Descrizione del canale di pagamento utilizzato  
+   * Descrizione del canale di pagamento utilizzato
   **/
   private String descrizione = null;
  /**
@@ -110,7 +110,7 @@ public class RicevutaIstitutoAttestante   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RicevutaIstitutoAttestante {\n");
-    
+
     sb.append("    idPSP: ").append(toIndentedString(idPSP)).append("\n");
     sb.append("    denominazione: ").append(toIndentedString(denominazione)).append("\n");
     sb.append("    idCanale: ").append(toIndentedString(idCanale)).append("\n");

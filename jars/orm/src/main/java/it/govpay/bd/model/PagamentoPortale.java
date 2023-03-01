@@ -1,6 +1,7 @@
 package it.govpay.bd.model;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +46,7 @@ public class PagamentoPortale extends BasicModel {
 					return v;
 			}
 			
-			throw new ServiceException("Codifica inesistente per VersioneInterfacciaWISP. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(VersioneInterfacciaWISP.values()));
+			throw new ServiceException(MessageFormat.format("Codifica inesistente per VersioneInterfacciaWISP. Valore fornito [{0}] valori possibili {1}", codifica, ArrayUtils.toString(VersioneInterfacciaWISP.values())));
 		}
 	}
 

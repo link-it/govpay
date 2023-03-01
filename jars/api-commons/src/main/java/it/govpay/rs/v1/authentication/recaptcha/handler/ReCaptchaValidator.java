@@ -1,8 +1,11 @@
 package it.govpay.rs.v1.authentication.recaptcha.handler;
 
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.text.MessageFormat;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,7 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import it.govpay.bd.configurazione.model.Hardening;
+import it.govpay.model.configurazione.Hardening;
 import it.govpay.rs.v1.authentication.recaptcha.beans.CaptchaCostanti;
 import it.govpay.rs.v1.authentication.recaptcha.beans.CaptchaResponse;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaConfigurazioneNonValidaException;
@@ -105,16 +108,21 @@ public class ReCaptchaValidator {
            	
            	final  CaptchaResponse googleResponse = restTemplate.getForObject(verifyUri, CaptchaResponse.class);
            	
+           	if(googleResponse == null) 
+           		throw new ReCaptchaInvalidException("Verifica reCaptcha completata con insuccesso: risposta null");
+           	
             logger.debug("Verifica reCaptcha completata, ricevuto messaggio dal servizio di verifica: {} ", googleResponse.toString());
-
+            
             if (!googleResponse.isSuccess()) {
-                throw new ReCaptchaInvalidException("Verifica reCaptcha completata con insuccesso: Errori trovati ["+googleResponse.getErrorCodes()+"]");
+                throw new ReCaptchaInvalidException(MessageFormat.format("Verifica reCaptcha completata con insuccesso: Errori trovati [{0}]", Arrays.toString(googleResponse.getErrorCodes())));
             }
             else {
             	// controllo soglia score valido solo nella versione V3, nella V2 non e' presente nella risposta
-            	if(googleResponse.getScore() != null) {
-            		logger.debug("reCaptcha validato correttamente, controllo dello score: Ricevuto["+googleResponse.getScore()+"], Richiesto["+this.captchaSettings.getGoogleCatpcha().getSoglia()+"]");
-            		if(googleResponse.getScore().doubleValue() < this.captchaSettings.getGoogleCatpcha().getSoglia()) {
+            	BigDecimal scoreRicevuto = googleResponse.getScore();
+				if(scoreRicevuto != null) {
+            		double scoreRichiesto = this.captchaSettings.getGoogleCatpcha().getSoglia();
+					logger.debug(MessageFormat.format("reCaptcha validato correttamente, controllo dello score: Ricevuto[{0}], Richiesto[{1}]",	scoreRicevuto, scoreRichiesto));
+            		if(scoreRicevuto.doubleValue() < scoreRichiesto) {
             			throw new ReCaptchaScoreNonValidoException("Verifica reCaptcha completata con insuccesso: score non sufficiente");
             		}
             	}

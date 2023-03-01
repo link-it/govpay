@@ -8,6 +8,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class NuovaPendenza   {
   
@@ -17,25 +18,25 @@ public class NuovaPendenza   {
   @Schema(description = "")
   private String idPendenza = null;
   
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private String idTipoPendenza = null;
   
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private String idDominio = null;
   
   @Schema(description = "")
   private String idUnitaOperativa = null;
   
-  @Schema(example = "Sanzione CdS n. abc00000", required = true, description = "Descrizione della pendenza")
+  @Schema(example = "Sanzione CdS n. abc00000", requiredMode = RequiredMode.REQUIRED, description = "Descrizione della pendenza")
  /**
    * Descrizione della pendenza  
   **/
   private String causale = null;
   
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private Soggetto soggettoPagatore = null;
   
-  @Schema(example = "10.01", required = true, description = "Importo della pendenza. Deve corrispondere alla somma delle singole voci.")
+  @Schema(example = "10.01", requiredMode = RequiredMode.REQUIRED, description = "Importo della pendenza. Deve corrispondere alla somma delle singole voci.")
  /**
    * Importo della pendenza. Deve corrispondere alla somma delle singole voci.  
   **/
@@ -110,7 +111,7 @@ public class NuovaPendenza   {
   @Schema(description = "")
   private ProprietaPendenza proprieta = null;
   
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private List<NuovaVocePendenza> voci = new ArrayList<>();
   
   @Schema(description = "")

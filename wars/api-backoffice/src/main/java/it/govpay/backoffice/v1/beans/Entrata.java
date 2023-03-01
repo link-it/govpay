@@ -2,9 +2,9 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "ibanAccredito",
 "ibanAppoggio",
@@ -15,28 +15,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "tipoEntrata",
 })
 public class Entrata extends it.govpay.core.beans.JSONSerializable {
-  
+
   @JsonProperty("ibanAccredito")
   private String ibanAccredito = null;
-  
+
   @JsonProperty("ibanAppoggio")
   private String ibanAppoggio = null;
-  
+
   @JsonProperty("tipoContabilita")
   private TipoContabilita tipoContabilita = null;
-  
+
   @JsonProperty("codiceContabilita")
   private String codiceContabilita = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
-  
+
   @JsonProperty("idEntrata")
   private String idEntrata = null;
-  
+
   @JsonProperty("tipoEntrata")
   private TipoEntrata tipoEntrata = null;
-  
+
   /**
    **/
   public Entrata ibanAccredito(String ibanAccredito) {
@@ -167,7 +167,7 @@ public class Entrata extends it.govpay.core.beans.JSONSerializable {
     return Objects.hash(this.ibanAccredito, this.ibanAppoggio, this.tipoContabilita, this.codiceContabilita, this.abilitato, this.idEntrata, this.tipoEntrata);
   }
 
-  public static Entrata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Entrata parse(String json) throws IOException {
     return parse(json, Entrata.class);
   }
 
@@ -180,7 +180,7 @@ public class Entrata extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Entrata {\n");
-    
+
     sb.append("    ibanAccredito: ").append(this.toIndentedString(this.ibanAccredito)).append("\n");
     sb.append("    ibanAppoggio: ").append(this.toIndentedString(this.ibanAppoggio)).append("\n");
     sb.append("    tipoContabilita: ").append(this.toIndentedString(this.tipoContabilita)).append("\n");

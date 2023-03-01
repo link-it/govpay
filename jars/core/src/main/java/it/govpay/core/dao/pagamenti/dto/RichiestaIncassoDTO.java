@@ -166,11 +166,11 @@ public class RichiestaIncassoDTO extends BasicFindRequestDTO {
 				} 
 			} catch (Throwable e) {
 				throw new IncassiException(FaultType.CAUSALE_NON_VALIDA,"Riscontrato errore durante il parsing della causale: " + causale);
-			} finally {
-				if(iuv == null && idf==null) {
-					throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
-				}
-			} 
+			}
+			
+			if(iuv == null && idf==null) {
+				throw new IncassiException(FaultType.CAUSALE_NON_VALIDA, "La causale dell'operazione di incasso non e' conforme alle specifiche AgID (SACIV 1.2.1): " + causale);
+			}		
 		} else {
 			iuv = this.getIuv();
 			idf = this.getIdFlusso();

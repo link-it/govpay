@@ -62,6 +62,8 @@ public class StazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Stazione.model().ABILITATO.getFieldType()));
 				this.setParameter(object, "setApplicationCode", Stazione.model().APPLICATION_CODE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "application_code", Stazione.model().APPLICATION_CODE.getFieldType()));
+				setParameter(object, "setVersione", Stazione.model().VERSIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "versione", Stazione.model().VERSIONE.getFieldType()));
 				return object;
 			}
 			
@@ -92,6 +94,8 @@ public class StazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"abilitato"));
 				this.setParameter(object, "setApplicationCode", Stazione.model().APPLICATION_CODE.getFieldType(),
 					this.getObjectFromMap(map,"applicationCode"));
+				setParameter(object, "setVersione", Stazione.model().VERSIONE.getFieldType(),
+					this.getObjectFromMap(map,"versione"));
 				return object;
 			}
 			

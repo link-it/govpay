@@ -3,15 +3,13 @@ package it.govpay.bd.model.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.bd.model.Documento;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdDominio;
 
 public class DocumentoConverter {
 
-	public static List<Documento> toDTOList(List<it.govpay.orm.Documento> anagraficaLst) throws ServiceException {
+	public static List<Documento> toDTOList(List<it.govpay.orm.Documento> anagraficaLst) {
 		List<Documento> lstDTO = new ArrayList<>();
 		if(anagraficaLst != null && !anagraficaLst.isEmpty()) {
 			for(it.govpay.orm.Documento anagrafica: anagraficaLst){
@@ -21,7 +19,7 @@ public class DocumentoConverter {
 		return lstDTO;
 	}
 
-	public static Documento toDTO(it.govpay.orm.Documento vo) throws ServiceException {
+	public static Documento toDTO(it.govpay.orm.Documento vo) {
 		Documento dto = new Documento();
 		dto.setCodDocumento(vo.getCodDocumento());
 		dto.setDescrizione(vo.getDescrizione());
@@ -31,7 +29,7 @@ public class DocumentoConverter {
 		return dto;
 	}
 
-	public static it.govpay.orm.Documento toVO(Documento dto) throws ServiceException {
+	public static it.govpay.orm.Documento toVO(Documento dto) {
 		it.govpay.orm.Documento vo = new it.govpay.orm.Documento();
 		vo.setId(dto.getId());
 	

@@ -13,8 +13,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.controllers.PagamentiController;
 import it.govpay.core.beans.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -27,7 +25,7 @@ public class Pagamenti extends BaseRsServiceV1{
 
 	private PagamentiController controller = null;
 
-	public Pagamenti() throws ServiceException {
+	public Pagamenti() {
 		super("pagamenti");
 		this.controller = new PagamentiController(this.nomeServizio,this.log);
 	}

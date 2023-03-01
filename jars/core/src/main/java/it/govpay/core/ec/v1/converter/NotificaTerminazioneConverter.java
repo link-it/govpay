@@ -22,16 +22,13 @@ package it.govpay.core.ec.v1.converter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
-import org.xml.sax.SAXException;
 
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.ec.v1.beans.Notifica;
@@ -40,11 +37,11 @@ import it.govpay.ec.v1.beans.Riscossione;
 public class NotificaTerminazioneConverter extends NotificaConverter {
 
 	@Override
-	public Notifica toRsModel(it.govpay.bd.model.Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti) throws ServiceException, JAXBException, SAXException {
-		Notifica notificaRsModel = super.toRsModel(notifica, rpt, applicazione, versamento, pagamenti);	
+	public Notifica toRsModel(it.govpay.model.Notifica notifica, Rpt rpt, Applicazione applicazione, Versamento versamento, List<Pagamento> pagamenti, boolean convertiMessaggioPagoPAV2InPagoPAV1) throws IOException {
+		Notifica notificaRsModel = super.toRsModel(notifica, rpt, applicazione, versamento, pagamenti, convertiMessaggioPagoPAV2InPagoPAV1);	
 		// rt
 		if(rpt.getXmlRt() != null) {
-			notificaRsModel.setRt(new RawObject(ConverterUtils.getRtJson(rpt)));
+			notificaRsModel.setRt(new RawObject(ConverterUtils.getRtJson(rpt, convertiMessaggioPagoPAV2InPagoPAV1)));
 		}
 		// elenco pagamenti
 		if(pagamenti != null && pagamenti.size() > 0) {

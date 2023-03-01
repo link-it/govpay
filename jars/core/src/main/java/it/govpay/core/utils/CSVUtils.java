@@ -51,11 +51,13 @@ public class CSVUtils {
 		List<byte[]> lst = new ArrayList<byte[]>(); 
 
 		while(br.ready()) {
+			String readLine = br.readLine();
 			if(skip > 0) {
-				br.readLine();
 				skip--;
 			} else {
-				lst.add(br.readLine().getBytes());
+				if(readLine != null) {
+					lst.add(readLine.getBytes());
+				}
 			}
 		}
 		return lst;
@@ -114,11 +116,13 @@ public class CSVUtils {
 				InputStreamReader isr = new InputStreamReader(in); 
 				BufferedReader br = new BufferedReader(isr);
 				){
-			int lines = 0;
-			while (br.readLine() != null) {
-				lines++;
-			}
-			return lines;
+			return br.lines().count();
+			
+//			int lines = 0;
+//			while (br.readLine() != null) {
+//				lines++;
+//			}
+//			return lines;
 		} finally {
 		}
 	}

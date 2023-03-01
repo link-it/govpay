@@ -51,6 +51,7 @@ import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdRpt;
 import it.govpay.orm.RPT;
 import it.govpay.orm.dao.jdbc.JDBCRPTService;
@@ -106,6 +107,8 @@ public class RptBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -158,6 +161,8 @@ public class RptBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -165,7 +170,7 @@ public class RptBD extends BasicBD {
 		}
 	}
 	
-	public Rpt getRpt(String codDominio, String iuv, ModelloPagamento modelloPagamento, it.govpay.model.Rpt.Versione versione, boolean deep) throws NotFoundException, ServiceException {
+	public Rpt getRpt(String codDominio, String iuv, ModelloPagamento modelloPagamento, it.govpay.model.Rpt.VersioneRPT versione, boolean deep) throws NotFoundException, ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -237,6 +242,8 @@ public class RptBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -278,7 +285,7 @@ public class RptBD extends BasicBD {
 	 * @throws NotPermittedException
 	 * @throws ServiceException
 	 */
-	public void updateRpt(long idRpt, Rpt.StatoRpt stato, String descrizione, String codSessione, String pspRedirectUrl, Rpt.EsitoPagamento esito) throws NotFoundException, ServiceException{
+	public void updateRpt(long idRpt, StatoRpt stato, String descrizione, String codSessione, String pspRedirectUrl, EsitoPagamento esito) throws NotFoundException, ServiceException{
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -362,11 +369,11 @@ public class RptBD extends BasicBD {
 			
 			IPaginatedExpression exp = this.getRptService().newPaginatedExpression();
 			exp.in(RPT.model().COD_DOMINIO, codDomini);
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_NODO.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_RIFIUTATA_NODO.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_RIFIUTATA_PSP.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RT_ACCETTATA_PA.toString());
 			
 			// filtro temporale sui giorni
 			Date now = new Date();
@@ -379,7 +386,7 @@ public class RptBD extends BasicBD {
 			
 			// questa procedura di recupero e' disponibile solo per le RPT SANP 2.3
 			exp.and();
-			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.Versione.SANP_230.toString());
+			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.VersioneRPT.SANP_230.toString());
 			
 			List<RPT> findAll = this.getRptService().findAll(exp);
 			return RptConverter.toDTOList(findAll);
@@ -388,6 +395,8 @@ public class RptBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -405,7 +414,7 @@ public class RptBD extends BasicBD {
 			IPaginatedExpression exp = this.getRptService().newPaginatedExpression();
 			exp.equals(RPT.model().COD_DOMINIO, codDominio);
 			exp.and();
-			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.Versione.SANP_240.toString());
+			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.VersioneRPT.SANP_240.toString());
 			
 			Date now = new Date();
 			Calendar c = Calendar.getInstance();
@@ -419,16 +428,15 @@ public class RptBD extends BasicBD {
 				cInf.setTime(limiteTemporaleInf);
 				cInf.add(Calendar.MINUTE, -( 2 * minutiSogliaScadenza));
 				Date dataSogliaInf = cInf.getTime();
-
 				exp.greaterEquals(RPT.model().DATA_MSG_RICHIESTA, dataSogliaInf);
 			}
 			
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_NODO.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_SCADUTA.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_RIFIUTATA_NODO.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_RIFIUTATA_PSP.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RT_ACCETTATA_PA.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_SCADUTA.toString());
 			
 			exp.offset(offset).limit(limit);
 			exp.addOrder(RPT.model().DATA_MSG_RICEVUTA, SortOrder.ASC);
@@ -452,6 +460,8 @@ public class RptBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -473,7 +483,7 @@ public class RptBD extends BasicBD {
 				addAnd = false;
 			}
 			
-			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.Versione.SANP_240.toString());
+			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.VersioneRPT.SANP_240.toString());
 			if(addAnd) {
 				exp.and();
 				addAnd = false;
@@ -486,12 +496,12 @@ public class RptBD extends BasicBD {
 			Date dataSoglia = c.getTime();
 			exp.lessThan(RPT.model().DATA_MSG_RICHIESTA, dataSoglia);
 			
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_NODO.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_SCADUTA.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_RIFIUTATA_NODO.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_RIFIUTATA_PSP.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RT_ACCETTATA_PA.toString());
+			exp.notEquals(RPT.model().STATO, StatoRpt.RPT_SCADUTA.toString());
 			
 			NonNegativeNumber count = this.getRptService().count(exp);
 			
@@ -620,6 +630,8 @@ public class RptBD extends BasicBD {
 			return rptLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -647,6 +659,8 @@ public class RptBD extends BasicBD {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -696,6 +710,8 @@ public class RptBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

@@ -2,11 +2,10 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "bic",
 "postale",
@@ -18,31 +17,31 @@ import it.govpay.core.beans.JSONSerializable;
 "iban",
 })
 public class ContiAccredito extends JSONSerializable {
-  
+
   @JsonProperty("bic")
   private String bic = null;
-  
+
   @JsonProperty("postale")
   private Boolean postale = false;
-  
+
   @JsonProperty("mybank")
   private Boolean mybank = false;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("intestatario")
   private String intestatario = null;
-  
+
   @JsonProperty("autStampaPosteItaliane")
   private String autStampaPosteItaliane = null;
-  
+
   @JsonProperty("iban")
   private String iban = null;
-  
+
   /**
    **/
   public ContiAccredito bic(String bic) {
@@ -193,7 +192,7 @@ public class ContiAccredito extends JSONSerializable {
     return Objects.hash(bic, postale, mybank, abilitato, descrizione, intestatario, autStampaPosteItaliane, iban);
   }
 
-  public static ContiAccredito parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static ContiAccredito parse(String json) throws IOException {
     return parse(json, ContiAccredito.class);
   }
 
@@ -206,7 +205,7 @@ public class ContiAccredito extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ContiAccredito {\n");
-    
+
     sb.append("    bic: ").append(toIndentedString(bic)).append("\n");
     sb.append("    postale: ").append(toIndentedString(postale)).append("\n");
     sb.append("    mybank: ").append(toIndentedString(mybank)).append("\n");

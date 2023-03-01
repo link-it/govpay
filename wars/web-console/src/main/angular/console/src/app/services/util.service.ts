@@ -365,6 +365,12 @@ export class UtilService {
     '12': 'Agenzie Fiscali'
   };
 
+  // VERSIONI STATZIONI
+  public static VERSIONI_STAZIONE: any = {
+    V1: 'V1',
+    V2: 'V2'
+  };
+
   public static COOKIE_RIFIUTATI: string = 'GovPay_Dashboard_Rifiutati';
   public static COOKIE_SOSPESI: string = 'GovPay_Dashboard_Sospesi';
   public static COOKIE_SESSION: string = null;
@@ -2078,6 +2084,12 @@ export class UtilService {
         return -1;
       }
       return 0;
+    });
+  }
+
+  versioniStazione(): any[] {
+    return Object.keys(UtilService.VERSIONI_STAZIONE).map((key) => {
+      return { label: UtilService.VERSIONI_STAZIONE[key], value: key };
     });
   }
 

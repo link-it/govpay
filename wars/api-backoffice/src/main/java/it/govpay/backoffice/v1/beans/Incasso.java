@@ -6,9 +6,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "dominio",
 "idIncasso",
@@ -24,43 +24,43 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "riscossioni",
 })
 public class Incasso extends it.govpay.core.beans.JSONSerializable {
-  
+
   @JsonProperty("dominio")
   private DominioIndex dominio = null;
-  
+
   @JsonProperty("idIncasso")
   private String idIncasso = null;
-  
+
   @JsonProperty("causale")
   private String causale = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("data")
   private Date data = null;
-  
+
   @JsonProperty("dataValuta")
   private Date dataValuta = null;
-  
+
   @JsonProperty("dataContabile")
   private Date dataContabile = null;
-  
+
   @JsonProperty("ibanAccredito")
   private String ibanAccredito = null;
-  
+
   @JsonProperty("sct")
   private String sct = null;
-  
+
   @JsonProperty("riscossioni")
   private List<Riscossione> riscossioni = new ArrayList<>();
 
   @JsonProperty("iuv")
   private String iuv = null;
-  
+
   @JsonProperty("idFlusso")
   private String idFlusso = null;
-  
+
   /**
    **/
   public Incasso dominio(DominioIndex dominio) {
@@ -278,7 +278,7 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
     return Objects.hash(dominio, idIncasso, causale, importo, data, dataValuta, dataContabile, ibanAccredito, sct, riscossioni);
   }
 
-  public static Incasso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Incasso parse(String json) throws IOException {
     return parse(json, Incasso.class);
   }
 
@@ -291,7 +291,7 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Incasso {\n");
-    
+
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    idIncasso: ").append(toIndentedString(idIncasso)).append("\n");
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");

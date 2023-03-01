@@ -2,7 +2,6 @@ package it.govpay.ragioneria.v1.beans.converter;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.util.Date;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
@@ -26,7 +25,7 @@ public class PendenzeConverter {
 
 		if(versamento.getCodAnnoTributario()!= null)
 			rsModel.setAnnoRiferimento(new BigDecimal(versamento.getCodAnnoTributario()));
-		
+
 		rsModel.setCartellaPagamento(versamento.getCodLotto());
 
 		if(versamento.getCausaleVersamento()!= null)
@@ -76,7 +75,7 @@ public class PendenzeConverter {
 		UnitaOperativa uo = versamento.getUo(configWrapper);
 		if(uo != null && !uo.getCodUo().equals(it.govpay.model.Dominio.EC))
 			rsModel.setUnitaOperativa(UnitaOperativaConverter.toRsModel(uo));
-		
+
 		return rsModel;
 	}
 	public static PendenzaIndex toRsIndexModel(it.govpay.bd.model.Versamento versamento) throws ServiceException {
@@ -85,7 +84,7 @@ public class PendenzeConverter {
 
 		if(versamento.getCodAnnoTributario()!= null)
 			rsModel.setAnnoRiferimento(new BigDecimal(versamento.getCodAnnoTributario()));
-		
+
 		rsModel.setCartellaPagamento(versamento.getCodLotto());
 
 		if(versamento.getCausaleVersamento()!= null)
@@ -141,7 +140,7 @@ public class PendenzeConverter {
 
 	public static VocePendenza toRsModelVocePendenza(SingoloVersamento singoloVersamento, int indice, BDConfigWrapper configWrapper) throws ServiceException {
 		VocePendenza rsModel = new VocePendenza();
-		
+
 		if(singoloVersamento.getDatiAllegati() != null)
 			rsModel.setDatiAllegati(new RawObject(singoloVersamento.getDatiAllegati()));
 		rsModel.setDescrizione(singoloVersamento.getDescrizione());

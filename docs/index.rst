@@ -39,6 +39,12 @@ La documentazione di GovPay consente agli utenti di affrontare le diverse fasi d
    :maxdepth: 2
    :hidden:
 
+   validazione/index
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+
    installazione/index
 
 .. toctree::

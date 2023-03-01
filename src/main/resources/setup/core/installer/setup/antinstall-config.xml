@@ -20,11 +20,12 @@
 	<page name="informazioniente" type="input" displayText="Informazioni Preliminari">
 		<comment displayText="" />
 		<hidden property="antinstaller_log_level" value="INFO" />
-		<select defaultValue="wildfly11" property="antinstaller_as" displayText="Application Server">
-			<option value="wildfly11" text="WildFly 11" />
-			<option value="wildfly11" text="WildFly 18" />
+		<!--
+		<select defaultValue="wildfly26" property="antinstaller_as" displayText="Application Server">
+			<option value="wildfly18" text="WildFly 18" />
+			<option value="wildfly26" text="WildFly 26" />
 		</select>
-
+		-->
 		<large-select defaultValue="postgresql" property="antinstaller_tipo_database" displayText="DB Platform">
 			<option value="postgresql" text="PostgreSQL" />
 			<option value="mysql" text="MySQL" />

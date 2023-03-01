@@ -5,12 +5,11 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -37,64 +36,64 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "rendicontazioni",
 })
 public class NuovaVocePendenza extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("indice")
   private BigDecimal indice = null;
-  
+
   @JsonProperty("idVocePendenza")
   private String idVocePendenza = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("stato")
   private StatoVocePendenza stato = null;
-  
+
   @JsonProperty("descrizioneCausaleRPT")
   private String descrizioneCausaleRPT = null;
-  
+
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
-  
+
   @JsonProperty("hashDocumento")
   private String hashDocumento= null;
-  
+
   @JsonProperty("tipoBollo")
   private String tipoBollo= null;
-  
+
   @JsonProperty("provinciaResidenza")
   private String provinciaResidenza= null;
-  
+
   @JsonProperty("codEntrata")
   private String codEntrata= null;
-  
+
   @JsonProperty("codiceContabilita")
   private String codiceContabilita= null;
-  
+
   @JsonProperty("ibanAccredito")
   private String ibanAccredito= null;
-  
+
   @JsonProperty("ibanAppoggio")
   private String ibanAppoggio= null;
-  
+
   @JsonProperty("tipoContabilita")
   private TipoContabilita tipoContabilita= null;
 
   @JsonProperty("riscossioni")
   private List<Riscossione> riscossioni = null;
-  
+
   @JsonProperty("rendicontazioni")
   private List<Rendicontazione> rendicontazioni = null;
-  
+
   /**
    * indice di voce all'interno della pendenza
    **/
@@ -319,7 +318,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
     this.tipoContabilita= tipoContabilita;
     return this;
   }
-  
+
 	public NuovaVocePendenza ibanAppoggio(String ibanAppoggio) {
 		this.ibanAppoggio= ibanAppoggio;
 		return this;
@@ -405,8 +404,8 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
     return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, idDominio, datiAllegati, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita, riscossioni, rendicontazioni);
   }
 
-  public static NuovaVocePendenza parse(String json) throws ServiceException, ValidationException {
-    return (NuovaVocePendenza) parse(json, NuovaVocePendenza.class); 
+  public static NuovaVocePendenza parse(String json) throws IOException {
+    return parse(json, NuovaVocePendenza.class);
   }
 
   @Override
@@ -451,12 +450,12 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		ValidatoreIdentificativi vi = ValidatoreIdentificativi.newInstance();
-		
+
 		vi.validaIdVocePendenza("idVocePendenza", this.idVocePendenza);
 		ValidatoreUtils.validaImporto(vf, "importo", this.importo);
 		ValidatoreUtils.validaDescrizione(vf, "descrizione", this.descrizione);
@@ -465,7 +464,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 		if(this.idDominio != null) {
 			vi.validaIdDominio("idDominio", this.idDominio);
 		}
-		
+
 		if(this.codEntrata != null) {
 			vi.validaIdEntrata("codEntrata", this.codEntrata);
 			try {
@@ -512,7 +511,7 @@ public class NuovaVocePendenza extends JSONSerializable implements IValidable {
 				throw new ValidationException("Valorizzato ibanAccredito. " + ve.getMessage());
 			}
 		}
-		
+
 		else {
 			throw new ValidationException("Uno dei campi tra ibanAccredito, tipoBollo o codEntrata deve essere valorizzato");
 		}

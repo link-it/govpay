@@ -61,10 +61,6 @@ public class JDBCVistaEventiVersamentoServiceImpl extends JDBCVistaEventiVersame
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 		
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
 		
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
@@ -91,7 +87,10 @@ public class JDBCVistaEventiVersamentoServiceImpl extends JDBCVistaEventiVersame
 		sqlQueryObjectInsert.addInsertField(this.getVistaEventiVersamentoFieldConverter().toColumn(Evento.model().CCP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVistaEventiVersamentoFieldConverter().toColumn(Evento.model().COD_DOMINIO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVistaEventiVersamentoFieldConverter().toColumn(Evento.model().ID_SESSIONE,false),"?");
-
+		sqlQueryObjectInsert.addInsertField(this.getVistaEventiVersamentoFieldConverter().toColumn(Evento.model().SEVERITA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVistaEventiVersamentoFieldConverter().toColumn(Evento.model().CLUSTER_ID,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVistaEventiVersamentoFieldConverter().toColumn(Evento.model().TRANSACTION_ID,false),"?");
+		
 		// Insert vistaEventiVersamento
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getVistaEventiVersamentoFetch().getKeyGeneratorObject(Evento.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
@@ -113,7 +112,10 @@ public class JDBCVistaEventiVersamentoServiceImpl extends JDBCVistaEventiVersame
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(vistaEventiVersamento.getIuv(),Evento.model().IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(vistaEventiVersamento.getCcp(),Evento.model().CCP.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(vistaEventiVersamento.getCodDominio(),Evento.model().COD_DOMINIO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(vistaEventiVersamento.getIdSessione(),Evento.model().ID_SESSIONE.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(vistaEventiVersamento.getIdSessione(),Evento.model().ID_SESSIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(vistaEventiVersamento.getSeverita(),Evento.model().SEVERITA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(vistaEventiVersamento.getClusterId(),Evento.model().CLUSTER_ID.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(vistaEventiVersamento.getTransactionId(),Evento.model().TRANSACTION_ID.getFieldType())
 		);
 		vistaEventiVersamento.setId(id);
 
@@ -196,6 +198,12 @@ public class JDBCVistaEventiVersamentoServiceImpl extends JDBCVistaEventiVersame
 		lstObjects_vistaEventiVersamento.add(new JDBCObject(vistaEventiVersamento.getCodDominio(), Evento.model().COD_DOMINIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getVistaEventiVersamentoFieldConverter().toColumn(Evento.model().ID_SESSIONE,false), "?");
 		lstObjects_vistaEventiVersamento.add(new JDBCObject(vistaEventiVersamento.getIdSessione(), Evento.model().ID_SESSIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVistaEventiVersamentoFieldConverter().toColumn(Evento.model().SEVERITA,false), "?");
+		lstObjects_vistaEventiVersamento.add(new JDBCObject(vistaEventiVersamento.getSeverita(), Evento.model().SEVERITA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVistaEventiVersamentoFieldConverter().toColumn(Evento.model().CLUSTER_ID,false), "?");
+		lstObjects_vistaEventiVersamento.add(new JDBCObject(vistaEventiVersamento.getClusterId(), Evento.model().CLUSTER_ID.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVistaEventiVersamentoFieldConverter().toColumn(Evento.model().TRANSACTION_ID,false), "?");
+		lstObjects_vistaEventiVersamento.add(new JDBCObject(vistaEventiVersamento.getTransactionId(), Evento.model().TRANSACTION_ID.getFieldType()));
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_vistaEventiVersamento.add(new JDBCObject(tableId, Long.class));
 

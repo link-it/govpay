@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  **/
 @Schema(description="Causale dell'operazione di riversamento dal PSP alla Banca Tesoriera.")
 public class RiferimentoCausale  implements OneOfTipoRiferimentoNuovaRiconciliazione  {
-  
+
   @Schema(example = "/PUR/LGPE-RIVERSAMENTO/URI/2017-01-01ABI00000011234", required = true, description = "")
   private String causale = null;
  /**
@@ -38,7 +38,7 @@ public class RiferimentoCausale  implements OneOfTipoRiferimentoNuovaRiconciliaz
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RiferimentoCausale {\n");
-    
+
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
     sb.append("}");
     return sb.toString();

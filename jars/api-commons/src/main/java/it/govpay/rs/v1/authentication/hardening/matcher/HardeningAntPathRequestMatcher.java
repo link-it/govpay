@@ -1,5 +1,6 @@
 package it.govpay.rs.v1.authentication.hardening.matcher;
 
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
@@ -17,8 +18,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.configurazione.model.Hardening;
 import it.govpay.bd.model.Configurazione;
+import it.govpay.model.configurazione.Hardening;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaConfigurazioneNonValidaException;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaInvalidException;
 import it.govpay.rs.v1.authentication.recaptcha.exception.ReCaptchaParametroResponseInvalidException;
@@ -36,6 +37,7 @@ import it.govpay.rs.v1.authentication.recaptcha.handler.ReCaptchaValidator;
  *
  */
 public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVariablesExtractor {
+	private static final String ERROR_MESSAGE_CONTROLLO_RE_CAPTCHA_TERMINATO_CON_ESITO_ACCESSO_NON_CONSENTITO_0 = "Controllo ReCaptcha terminato con esito: accesso non consentito: {0}";
 	private static final Log logger = LogFactory.getLog(HardeningAntPathRequestMatcher.class);
 	private static final String MATCH_ALL = "/**";
 
@@ -177,16 +179,8 @@ public class HardeningAntPathRequestMatcher implements RequestMatcher, RequestVa
 			authorized = validator.validateCaptcha(request);
 		}catch(ReCaptchaConfigurazioneNonValidaException e) {
 			logger.error("Controllo ReCaptcha terminato con errore, configurazione del servizio non valida: " + e.getMessage(), e);
-		}catch(ReCaptchaParametroResponseInvalidException e) {
-			logger.warn("Controllo ReCaptcha terminato con esito: accesso non consentito: " + e.getMessage());
-		}catch(ReCaptchaUnavailableException e) {
-			logger.warn("Controllo ReCaptcha terminato con esito: accesso non consentito: " + e.getMessage(), e);
-		}catch(ReCaptchaScoreNonValidoException e) {
-			logger.warn("Controllo ReCaptcha terminato con esito: accesso non consentito: " + e.getMessage());
-		}catch(ReCaptchaInvalidException e) {
-			logger.warn("Controllo ReCaptcha terminato con esito: accesso non consentito: " + e.getMessage());
-		}catch(Exception e) {
-			logger.error("Controllo ReCaptcha terminato con errore: " + e.getMessage(), e);
+		}catch(ReCaptchaParametroResponseInvalidException | ReCaptchaUnavailableException | ReCaptchaScoreNonValidoException | ReCaptchaInvalidException e) {
+			logger.warn(MessageFormat.format(ERROR_MESSAGE_CONTROLLO_RE_CAPTCHA_TERMINATO_CON_ESITO_ACCESSO_NON_CONSENTITO_0, e.getMessage()));
 		}
 		return authorized;
 	}

@@ -7,13 +7,13 @@ import java.util.List;
 import it.govpay.core.beans.Lista;
 
 public class ListaTracciati extends Lista<Tracciato> {
-	
+
 	public ListaTracciati() {
 		super();
 	}
-	
+
 	public ListaTracciati(List<Tracciato> risultati, URI requestUri, Long count, Integer pagina, Integer limit, BigDecimal maxRisultati) {
 		super(risultati, requestUri, count, pagina, limit, maxRisultati);
 	}
-	
+
 }

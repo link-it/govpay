@@ -20,7 +20,8 @@
 package it.govpay.model;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class Canale extends BasicModel {
 	
@@ -40,12 +41,12 @@ public class Canale extends BasicModel {
 			return this.codifica;
 		}
 		
-		public static ModelloPagamento toEnum(int codifica) throws ServiceException {
+		public static ModelloPagamento toEnum(int codifica) throws CodificaInesistenteException {
 			for(ModelloPagamento p : ModelloPagamento.values()){
 				if(p.getCodifica() == codifica)
 					return p;
 			}
-			throw new ServiceException("Codifica inesistente per ModelloPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(ModelloPagamento.values()));
+			throw new CodificaInesistenteException("Codifica inesistente per ModelloPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(ModelloPagamento.values()));
 		}
 	}
 	
@@ -67,12 +68,12 @@ public class Canale extends BasicModel {
 			return this.codifica;
 		}
 		
-		public static TipoVersamento toEnum(String codifica) throws ServiceException {
+		public static TipoVersamento toEnum(String codifica) throws CodificaInesistenteException {
 			for(TipoVersamento p : TipoVersamento.values()){
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
-			throw new ServiceException("Codifica inesistente per TipoVersamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoVersamento.values()));
+			throw new CodificaInesistenteException("Codifica inesistente per TipoVersamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoVersamento.values()));
 		}
 	}
 	

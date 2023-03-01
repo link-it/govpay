@@ -2,12 +2,11 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
@@ -19,16 +18,16 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "promemoriaScadenza",
 })
 public class TipoPendenzaAvvisaturaAppIO extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("promemoriaAvviso")
   private TipoPendenzaAvvisaturaPromemoriaAvvisoBase promemoriaAvviso = null;
-  
+
   @JsonProperty("promemoriaRicevuta")
   private TipoPendenzaAvvisaturaPromemoriaRicevutaBase promemoriaRicevuta = null;
-  
+
   @JsonProperty("promemoriaScadenza")
   private TipoPendenzaAvvisaturaPromemoriaScadenza promemoriaScadenza = null;
-  
+
   /**
    **/
   public TipoPendenzaAvvisaturaAppIO promemoriaAvviso(TipoPendenzaAvvisaturaPromemoriaAvvisoBase promemoriaAvviso) {
@@ -93,8 +92,8 @@ public class TipoPendenzaAvvisaturaAppIO extends JSONSerializable implements IVa
     return Objects.hash(promemoriaAvviso, promemoriaRicevuta, promemoriaScadenza);
   }
 
-  public static TipoPendenzaAvvisaturaAppIO parse(String json) throws ServiceException, ValidationException {
-    return (TipoPendenzaAvvisaturaAppIO) parse(json, TipoPendenzaAvvisaturaAppIO.class);
+  public static TipoPendenzaAvvisaturaAppIO parse(String json) throws IOException {
+    return parse(json, TipoPendenzaAvvisaturaAppIO.class);
   }
 
   @Override
@@ -106,7 +105,7 @@ public class TipoPendenzaAvvisaturaAppIO extends JSONSerializable implements IVa
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoPendenzaAvvisaturaAppIO {\n");
-    
+
     sb.append("    promemoriaAvviso: ").append(toIndentedString(promemoriaAvviso)).append("\n");
     sb.append("    promemoriaRicevuta: ").append(toIndentedString(promemoriaRicevuta)).append("\n");
     sb.append("    promemoriaScadenza: ").append(toIndentedString(promemoriaScadenza)).append("\n");
@@ -126,7 +125,7 @@ public class TipoPendenzaAvvisaturaAppIO extends JSONSerializable implements IVa
   }
 
 @Override
-public void validate() throws ValidationException {	
+public void validate() throws ValidationException {
 	this.validate(true);
 }
 

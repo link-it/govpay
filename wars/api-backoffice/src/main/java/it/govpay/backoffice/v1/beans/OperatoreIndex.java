@@ -2,27 +2,26 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "principal",
 "ragioneSociale",
 "abilitato",
 })
 public class OperatoreIndex extends JSONSerializable {
-  
+
   @JsonProperty("principal")
   private String principal = null;
-  
+
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   /**
    * Username dell'operatore
    **/
@@ -90,7 +89,7 @@ public class OperatoreIndex extends JSONSerializable {
     return Objects.hash(principal, ragioneSociale, abilitato);
   }
 
-  public static OperatoreIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static OperatoreIndex parse(String json) throws IOException {
     return parse(json, OperatoreIndex.class);
   }
 
@@ -103,7 +102,7 @@ public class OperatoreIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class OperatoreIndex {\n");
-    
+
     sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
     sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");

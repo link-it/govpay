@@ -102,8 +102,6 @@ public class DocumentoFilter extends AbstractFilter {
 			boolean addAnd = false;
 			
 			if(this.codDocumento != null) {
-				if(addAnd)
-					newExpression.and();
 				newExpression.equals(model.COD_DOCUMENTO, this.codDocumento);
 				addAnd = true;
 			}

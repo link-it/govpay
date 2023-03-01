@@ -41,28 +41,28 @@ public class Bollo  implements OneOfTipoRiferimentoVocePendenza  {
       }
       return null;
     }
-  }  
+  }
   @Schema(required = true, description = "Tipologia di Bollo digitale")
  /**
-   * Tipologia di Bollo digitale  
+   * Tipologia di Bollo digitale
   **/
   private TipoBolloEnum tipoBollo = null;
-  
+
   @Schema(example = "--- base64 ---", required = true, description = "Digest in base64 del documento informatico associato alla marca da bollo")
  /**
-   * Digest in base64 del documento informatico associato alla marca da bollo  
+   * Digest in base64 del documento informatico associato alla marca da bollo
   **/
   private String hashDocumento = null;
-  
+
   @Schema(example = "RO", required = true, description = "Sigla automobilistica della provincia di residenza del soggetto pagatore")
  /**
-   * Sigla automobilistica della provincia di residenza del soggetto pagatore  
+   * Sigla automobilistica della provincia di residenza del soggetto pagatore
   **/
   private String provinciaResidenza = null;
-  
+
   @Schema(example = "9/3321", required = true, description = "Tassonomia pagoPA")
  /**
-   * Tassonomia pagoPA  
+   * Tassonomia pagoPA
   **/
   private String codiceTassonomicoPagoPA = null;
  /**
@@ -72,10 +72,7 @@ public class Bollo  implements OneOfTipoRiferimentoVocePendenza  {
   @JsonProperty("tipoBollo")
   @NotNull
   public String getTipoBollo() {
-    if (tipoBollo == null) {
-      return null;
-    }
-    return tipoBollo.getValue();
+    return tipoBollo != null ? tipoBollo.getValue() : "";
   }
 
   public void setTipoBollo(TipoBolloEnum tipoBollo) {
@@ -149,7 +146,7 @@ public class Bollo  implements OneOfTipoRiferimentoVocePendenza  {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Bollo {\n");
-    
+
     sb.append("    tipoBollo: ").append(toIndentedString(tipoBollo)).append("\n");
     sb.append("    hashDocumento: ").append(toIndentedString(hashDocumento)).append("\n");
     sb.append("    provinciaResidenza: ").append(toIndentedString(provinciaResidenza)).append("\n");

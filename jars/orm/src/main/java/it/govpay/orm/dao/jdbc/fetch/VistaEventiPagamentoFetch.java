@@ -94,6 +94,10 @@ public class VistaEventiPagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "id_sessione", Evento.model().ID_SESSIONE.getFieldType()));
 				setParameter(object, "setSeverita", Evento.model().SEVERITA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "severita", Evento.model().SEVERITA.getFieldType()));
+				setParameter(object, "setClusterId", Evento.model().CLUSTER_ID.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cluster_id", Evento.model().CLUSTER_ID.getFieldType()));
+				setParameter(object, "setTransactionId", Evento.model().TRANSACTION_ID.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "transaction_id", Evento.model().TRANSACTION_ID.getFieldType()));
 				return object;
 			}
 			
@@ -156,6 +160,10 @@ public class VistaEventiPagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"idSessione"));
 				setParameter(object, "setSeverita", Evento.model().SEVERITA.getFieldType(),
 					this.getObjectFromMap(map,"severita"));
+				setParameter(object, "setClusterId", Evento.model().CLUSTER_ID.getFieldType(),
+					this.getObjectFromMap(map,"clusterId"));
+				setParameter(object, "setTransactionId", Evento.model().TRANSACTION_ID.getFieldType(),
+					this.getObjectFromMap(map,"transactionId"));
 				return object;
 			}
 			

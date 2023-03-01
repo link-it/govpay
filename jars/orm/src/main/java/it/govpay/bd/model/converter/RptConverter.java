@@ -23,21 +23,20 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.bd.model.Rpt;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
-import it.govpay.model.Rpt.Versione;
+import it.govpay.model.Rpt.VersioneRPT;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.IdPagamentoPortale;
 import it.govpay.orm.IdVersamento;
 
 public class RptConverter {
 
-	public static List<Rpt> toDTOList(List<it.govpay.orm.RPT> applicazioneLst) throws ServiceException {
+	public static List<Rpt> toDTOList(List<it.govpay.orm.RPT> applicazioneLst) throws CodificaInesistenteException {
 		List<Rpt> lstDTO = new ArrayList<>();
 		if(applicazioneLst != null && !applicazioneLst.isEmpty()) {
 			for(it.govpay.orm.RPT applicazione: applicazioneLst){
@@ -47,7 +46,7 @@ public class RptConverter {
 		return lstDTO;
 	}
 
-	public static Rpt toDTO(it.govpay.orm.RPT vo) throws ServiceException {
+	public static Rpt toDTO(it.govpay.orm.RPT vo) throws CodificaInesistenteException { 
 		Rpt dto = new Rpt();
 		dto.setCallbackURL(vo.getCallbackURL());
 		dto.setCcp(vo.getCcp());
@@ -97,7 +96,7 @@ public class RptConverter {
 		dto.setIdentificativoAttestante(vo.getIdentificativoAttestante());
 		dto.setDenominazioneAttestante(vo.getDenominazioneAttestante());
 		dto.setBloccante(vo.isBloccante()); 
-		dto.setVersione(Versione.toEnum(vo.getVersione()));
+		dto.setVersione(VersioneRPT.toEnum(vo.getVersione()));
 		
 		return dto;
 	}

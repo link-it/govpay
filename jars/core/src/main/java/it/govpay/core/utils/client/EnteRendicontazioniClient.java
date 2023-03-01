@@ -29,31 +29,22 @@ import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.slf4j.Logger;
 
-import gov.telematici.pagamenti.ws.rpt.ObjectFactory;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Dominio;
-import it.govpay.core.utils.EventoContext.Componente;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.utils.client.beans.TipoConnettore;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.ConnettoreNotificaPagamenti;
+import it.govpay.model.configurazione.Giornale;
 
 public class EnteRendicontazioniClient extends BasicClientCORE {
 
-	public enum Azione {
-		
-		inviaFlussoRendicontazione, inviaRpp, inviaSintesiFlussiRendicontazione, inviaSintesiPagamenti
-	}
-
-	private static ObjectFactory objectFactory;
 	private static Logger log = LoggerWrapperFactory.getLogger(EnteRendicontazioniClient.class);
 	private Dominio dominio;
 	private it.govpay.bd.model.TracciatoNotificaPagamenti tracciato;
 	
 	public EnteRendicontazioniClient(Dominio dominio, it.govpay.bd.model.TracciatoNotificaPagamenti tracciato, ConnettoreNotificaPagamenti connettore, String operationID, Giornale giornale) throws ClientException, ServiceException {
 		super(dominio, TipoConnettore.GOVPAY, connettore); 
-		if(objectFactory == null || log == null ){
-			objectFactory = new ObjectFactory();
-		}
 		this.operationID = operationID;
 		this.componente = Componente.API_GOVPAY;
 		this.dominio = dominio;
@@ -77,16 +68,16 @@ public class EnteRendicontazioniClient extends BasicClientCORE {
 		
 		switch (contenuto) {
 		case FLUSSI_RENDICONTAZIONE:
-			swaggerOperationID = Azione.inviaFlussoRendicontazione.toString();
+			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.INVIAFLUSSORENDICONTAZIONE.toString();
 			break;
 		case RPP:
-			swaggerOperationID = Azione.inviaRpp.toString();
+			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.INVIARPP.toString();
 			break;
 		case SINTESI_FLUSSI_RENDICONTAZIONE:
-			swaggerOperationID = Azione.inviaSintesiFlussiRendicontazione.toString();
+			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.INVIASINTESIFLUSSIRENDICONTAZIONE.toString();
 			break;
 		case SINTESI_PAGAMENTI:
-			swaggerOperationID = Azione.inviaSintesiPagamenti.toString();
+			swaggerOperationID = EventoContext.Azione_Ente_Rendicontazioni.INVIASINTESIPAGAMENTI.toString();
 			break;
 		}
 		

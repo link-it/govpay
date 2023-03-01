@@ -2,14 +2,15 @@ package it.govpay.core.utils.validator;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 
 public class BigDecimalValidator {
-
+	
 	private String fieldName;
 	private BigDecimal fieldValue;
 	private DecimalFormat df;
@@ -22,35 +23,35 @@ public class BigDecimalValidator {
 	
 	public BigDecimalValidator checkDecimalDigits() throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.scale() > 2) {
-			throw new ValidationException("Il campo " + this.fieldName + " non deve superare le 2 cifre decimali.");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.BIG_DECIMAL_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_SUPERARE_LE_2_CIFRE_DECIMALI, this.fieldName));
 		}
 		return this;
 	}
 
 	public BigDecimalValidator notNull() throws ValidationException {
 		if(this.fieldValue == null) {
-			throw new ValidationException("Il campo " + this.fieldName + " non deve essere vuoto.");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.BIG_DECIMAL_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_ESSERE_VUOTO, this.fieldName));
 		}
 		return this;
 	}
 	
 	public BigDecimalValidator isNull() throws ValidationException {
 		if(this.fieldValue != null) {
-			throw new ValidationException("Il campo " + this.fieldName + " deve essere vuoto.");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.BIG_DECIMAL_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_VUOTO, this.fieldName));
 		}
 		return this;
 	}
 	
 	public BigDecimalValidator max(BigDecimal max) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.compareTo(max) > 0) {
-			throw new ValidationException("Il campo " + this.fieldName + " deve essere inferiore a " + this.df.format(max) + ".");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.BIG_DECIMAL_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_INFERIORE_A_1, this.fieldName, this.df.format(max)));
 		}
 		return this;
 	}
 	
 	public BigDecimalValidator min(BigDecimal min) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.compareTo(min) < 0) {
-			throw new ValidationException("Il campo " + this.fieldName + " deve essere superiore a " + this.df.format(min) + ".");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.BIG_DECIMAL_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_SUPERIORE_A_1, this.fieldName, this.df.format(min)));
 		}
 		return this;
 	}
@@ -58,21 +59,21 @@ public class BigDecimalValidator {
 	
 	public BigDecimalValidator maxOrEquals(BigDecimal max) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.compareTo(max) >= 0) {
-			throw new ValidationException("Il campo " + this.fieldName + " deve essere inferiore o uguale a " + this.df.format(max) + ".");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.BIG_DECIMAL_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_INFERIORE_O_UGUALE_A_1, this.fieldName, this.df.format(max)));
 		}
 		return this;
 	}
 	
 	public BigDecimalValidator minOrEquals(BigDecimal min) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.compareTo(min) <= 0) {
-			throw new ValidationException("Il campo " + this.fieldName + " deve essere superiore o uguale a " + this.df.format(min) + ".");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.BIG_DECIMAL_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_SUPERIORE_O_UGUALE_A_1, this.fieldName, this.df.format(min)));
 		}
 		return this;
 	}
 	
 	public BigDecimalValidator totalDigits(int digits) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.precision() > digits) {
-			throw new ValidationException("Il campo " + this.fieldName + " non deve superare le " + digits + " cifre.");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.BIG_DECIMAL_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_SUPERARE_LE_1_CIFRE, this.fieldName, digits));
 		}
 		return this;
 	}

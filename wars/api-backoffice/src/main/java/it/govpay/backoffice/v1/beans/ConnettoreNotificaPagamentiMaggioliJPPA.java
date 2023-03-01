@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.backoffice.v1.controllers.ApplicazioniController;
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.CostantiValidazione;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
@@ -35,23 +35,23 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "contenuti",
 })
 public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable implements IValidable{
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
-    
+
+
   /**
    * Gets or Sets tipoConnettore
    */
   public enum TipoConnettoreEnum {
-    
-    
-        
-            
+
+
+
+
     EMAIL("EMAIL");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -75,48 +75,48 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
     }
   }
 
-    
-    
+
+
   @JsonProperty("tipoConnettore")
   private TipoConnettoreEnum tipoConnettore = null;
-  
+
   @JsonProperty("versione")
   private String versione = null;
-  
+
   @JsonProperty("principal")
   private String principal = null;
-  
+
   @JsonProperty("emailIndirizzi")
   private List<String> emailIndirizzi = null;
-  
+
   @JsonProperty("emailSubject")
   private String emailSubject = null;
-  
+
   @JsonProperty("emailAllegato")
   private Boolean emailAllegato = null;
-  
+
   @JsonProperty("downloadBaseUrl")
   private String downloadBaseUrl = null;
-  
+
   @JsonProperty("tipiPendenza")
   private List<Object> tipiPendenza = null;
-  
+
   @JsonProperty("url")
   private String url = null;
-  
-    
+
+
   /**
    * Versione delle API di integrazione utilizzate.
    */
   public enum VersioneApiEnum {
-    
-    
-        
-            
+
+
+
+
     V1("SOAP v1");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -138,7 +138,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
       }
       return null;
     }
-    
+
     public static VersioneApiEnum fromName(String text) {
 		for (VersioneApiEnum b : VersioneApiEnum.values()) {
 			if (String.valueOf(b.toNameString()).equals(text)) {
@@ -147,7 +147,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
 		}
 		return null;
 	}
-    
+
     public String toNameString() {
 		switch(this) {
 		case V1: return "SOAP_1";
@@ -156,19 +156,19 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
 	}
   }
 
-    
-    
+
+
   private VersioneApiEnum versioneApiEnum = null;
-  
+
   @JsonProperty("versioneApi")
   private String versioneApi = null;
-  
+
   @JsonProperty("auth")
   private TipoAutenticazione auth = null;
-  
+
   @JsonProperty("contenuti")
   private List<ContenutoNotificaPagamentiGovpay> contenuti = null;
-  
+
   /**
    * Indica se il connettore e' abilitato
    **/
@@ -178,7 +178,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
@@ -273,7 +273,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
   }
 
   @JsonProperty("emailAllegato")
-  public Boolean EmailAllegato() {
+  public Boolean getEmailAllegato() {
     return emailAllegato;
   }
   public void setEmailAllegato(Boolean emailAllegato) {
@@ -417,8 +417,8 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
     return Objects.hash(abilitato, tipoConnettore, versione, principal, emailIndirizzi, emailSubject, emailAllegato, downloadBaseUrl, tipiPendenza, url, versioneApi, auth, contenuti);
   }
 
-  public static ConnettoreNotificaPagamentiMaggioliJPPA parse(String json) throws ServiceException, ValidationException {
-    return (ConnettoreNotificaPagamentiMaggioliJPPA) parse(json, ConnettoreNotificaPagamentiMaggioliJPPA.class);
+  public static ConnettoreNotificaPagamentiMaggioliJPPA parse(String json) throws IOException {
+    return parse(json, ConnettoreNotificaPagamentiMaggioliJPPA.class);
   }
 
   @Override
@@ -430,7 +430,7 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ConnettoreNotificaPagamentiMaggioliJPPA {\n");
-    
+
     sb.append("    abilitato: ").append(toIndentedString(abilitato)).append("\n");
     sb.append("    tipoConnettore: ").append(toIndentedString(tipoConnettore)).append("\n");
     sb.append("    versione: ").append(toIndentedString(versione)).append("\n");
@@ -458,16 +458,16 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
  	public void validate() throws ValidationException {
  		ValidatorFactory vf = ValidatorFactory.newInstance();
  		vf.getValidator("abilitato", this.abilitato).notNull();
- 		
+
  		if(this.abilitato) {
  			vf.getValidator("tipoConnettore", this.tipoConnettore).notNull();
  			vf.getValidator("principal", this.principal).notNull().minLength(1).maxLength(255).pattern(CostantiValidazione.PATTERN_USERNAME);
- 			
+
  			switch (this.tipoConnettore) {
  			case EMAIL:
  				vf.getValidator("versione", this.versione).notNull().minLength(1).maxLength(255);
@@ -493,11 +493,11 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
 				} catch (IllegalArgumentException e) {
 					throw new ValidationException("Il valore [" + this.versioneApi + "] del campo versioneApi non corrisponde con uno dei valori consentiti: " + Arrays.asList(VersioneApiEnum.values()));
 				}
-				
+
 				vf.getValidator("auth", this.auth).validateFields();
  				break;
  			}
- 			
+
  			if(this.tipiPendenza != null && !this.tipiPendenza.isEmpty()) {
  				ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
  				for (Object object : this.tipiPendenza) {
@@ -511,14 +511,14 @@ public class ConnettoreNotificaPagamentiMaggioliJPPA extends JSONSerializable im
  							tipoPendenzaProfiloPost.validate();
  					} else if(object instanceof java.util.LinkedHashMap) {
  						java.util.LinkedHashMap<?,?> map = (LinkedHashMap<?,?>) object;
- 						
+
  						TipoPendenzaProfiloIndex tipoPendenzaProfiloPost = new TipoPendenzaProfiloIndex();
  						if(map.containsKey("idTipoPendenza"))
  							tipoPendenzaProfiloPost.setIdTipoPendenza((String) map.get("idTipoPendenza"));
  						if(map.containsKey("descrizione")) {
  							tipoPendenzaProfiloPost.setDescrizione((String) map.get("descrizione"));
  						}
- 						
+
  						if(tipoPendenzaProfiloPost.getIdTipoPendenza() == null)
  							validatoreId.validaIdDominio("idTipoPendenza", tipoPendenzaProfiloPost.getIdTipoPendenza());
  						if(!tipoPendenzaProfiloPost.getIdTipoPendenza().equals(ApplicazioniController.AUTORIZZA_TIPI_PENDENZA_STAR))

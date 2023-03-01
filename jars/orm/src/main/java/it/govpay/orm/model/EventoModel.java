@@ -64,6 +64,8 @@ public class EventoModel extends AbstractModel<Evento> {
 		this.ID_FR = new it.govpay.orm.model.IdFrModel(new Field("idFR",it.govpay.orm.IdFr.class,"Evento",Evento.class));
 		this.ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new Field("idIncasso",it.govpay.orm.IdIncasso.class,"Evento",Evento.class));
 		this.ID_TRACCIATO = new it.govpay.orm.model.IdTracciatoModel(new Field("idTracciato",it.govpay.orm.IdTracciato.class,"Evento",Evento.class));
+		this.CLUSTER_ID = new Field("clusterId",java.lang.String.class,"Evento",Evento.class);
+		this.TRANSACTION_ID = new Field("transactionId",java.lang.String.class,"Evento",Evento.class);
 	
 	}
 	
@@ -94,6 +96,8 @@ public class EventoModel extends AbstractModel<Evento> {
 		this.ID_FR = new it.govpay.orm.model.IdFrModel(new ComplexField(father,"idFR",it.govpay.orm.IdFr.class,"Evento",Evento.class));
 		this.ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new ComplexField(father,"idIncasso",it.govpay.orm.IdIncasso.class,"Evento",Evento.class));
 		this.ID_TRACCIATO = new it.govpay.orm.model.IdTracciatoModel(new ComplexField(father,"idTracciato",it.govpay.orm.IdTracciato.class,"Evento",Evento.class));
+		this.CLUSTER_ID = new ComplexField(father,"clusterId",java.lang.String.class,"Evento",Evento.class);
+		this.TRANSACTION_ID = new ComplexField(father,"transactionId",java.lang.String.class,"Evento",Evento.class);
 	
 	}
 	
@@ -144,6 +148,10 @@ public class EventoModel extends AbstractModel<Evento> {
 	public it.govpay.orm.model.IdIncassoModel ID_INCASSO = null;
 	 
 	public it.govpay.orm.model.IdTracciatoModel ID_TRACCIATO = null;
+	 
+	public IField CLUSTER_ID = null;
+	 
+	public IField TRANSACTION_ID = null;
 	 
 
 	@Override

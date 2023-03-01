@@ -9,20 +9,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets statoNotifica
  */
 public enum StatoNotifica {
-  
-  
-  
-  
+
+
+
+
   SPEDITA("SPEDITA"),
-  
-  
+
+
   DA_SPEDIRE("DA_SPEDIRE"),
-  
-  
+
+
   ANNULLATA("ANNULLATA");
-  
-  
-  
+
+
+
 
   private String value;
 

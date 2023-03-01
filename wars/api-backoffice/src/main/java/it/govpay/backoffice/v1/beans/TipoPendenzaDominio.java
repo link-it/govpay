@@ -3,13 +3,11 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 
 @JsonPropertyOrder({
 "idTipoPendenza",
@@ -26,43 +24,43 @@ import it.govpay.core.beans.JSONSerializable;
 "valori",
 })
 public class TipoPendenzaDominio extends JSONSerializable {
-  
+
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("codificaIUV")
   private String codificaIUV = null;
-  
+
   @JsonProperty("pagaTerzi")
   private Boolean pagaTerzi = false;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = true;
-  
+
   @JsonProperty("portaleBackoffice")
   private TipoPendenzaPortaleBackofficeCaricamentoPendenze portaleBackoffice = null;
-  
+
   @JsonProperty("portalePagamento")
   private TipoPendenzaPortalePagamentiCaricamentoPendenze portalePagamento = null;
-  
+
   @JsonProperty("avvisaturaMail")
   private TipoPendenzaAvvisaturaMail avvisaturaMail = null;
-  
+
   @JsonProperty("avvisaturaAppIO")
   private TipoPendenzaAvvisaturaAppIO avvisaturaAppIO = null;
-  
+
   @JsonProperty("visualizzazione")
   private Object visualizzazione = null;
-  
+
   @JsonProperty("tracciatoCsv")
   private TracciatoCsv tracciatoCsv = null;
-  
+
   @JsonProperty("valori")
   private TipoPendenzaDominioPost valori = null;
-  
+
   /**
    **/
   public TipoPendenzaDominio idTipoPendenza(String idTipoPendenza) {
@@ -118,7 +116,7 @@ public class TipoPendenzaDominio extends JSONSerializable {
   }
 
   @JsonProperty("pagaTerzi")
-  public Boolean PagaTerzi() {
+  public Boolean getPagaTerzi() {
     return pagaTerzi;
   }
   public void setPagaTerzi(Boolean pagaTerzi) {
@@ -134,7 +132,7 @@ public class TipoPendenzaDominio extends JSONSerializable {
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
@@ -275,7 +273,7 @@ public class TipoPendenzaDominio extends JSONSerializable {
     return Objects.hash(idTipoPendenza, descrizione, codificaIUV, pagaTerzi, abilitato, portaleBackoffice, portalePagamento, avvisaturaMail, avvisaturaAppIO, visualizzazione, tracciatoCsv, valori);
   }
 
-  public static TipoPendenzaDominio parse(String json) throws ServiceException, ValidationException{
+  public static TipoPendenzaDominio parse(String json) throws IOException{
     return parse(json, TipoPendenzaDominio.class);
   }
 
@@ -288,7 +286,7 @@ public class TipoPendenzaDominio extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoPendenzaDominio {\n");
-    
+
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    codificaIUV: ").append(toIndentedString(codificaIUV)).append("\n");

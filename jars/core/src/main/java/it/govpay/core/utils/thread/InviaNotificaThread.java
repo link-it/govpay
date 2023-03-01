@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
@@ -44,15 +43,19 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.utils.EventoUtils;
 import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.core.utils.client.INotificaClient;
 import it.govpay.core.utils.client.NotificaClient;
+import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.model.Connettore;
 import it.govpay.model.Notifica.StatoSpedizione;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Versionabile.Versione;
+import it.govpay.model.configurazione.Giornale;
 
 public class InviaNotificaThread implements Runnable {
 
@@ -73,7 +76,7 @@ public class InviaNotificaThread implements Runnable {
 	private List<Pagamento> pagamenti  = null;
 	private PagamentoPortale pagamentoPortale = null;
 
-	public InviaNotificaThread(Notifica notifica, IContext ctx) throws ServiceException {
+	public InviaNotificaThread(Notifica notifica, IContext ctx) throws ServiceException, IOException {
 		// Verifico che tutti i campi siano valorizzati
 		this.ctx = ctx;
 		BDConfigWrapper configWrapper = new BDConfigWrapper(this.ctx.getTransactionId(), true);
@@ -109,7 +112,7 @@ public class InviaNotificaThread implements Runnable {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 //		BasicBD bd = null;
 		TipoNotifica tipoNotifica = this.notifica.getTipo();
-		NotificaClient client = null;
+		INotificaClient client = null;
 		try {
 			String url = this.connettoreNotifica!= null ? this.connettoreNotifica.getUrl() : GpContext.NOT_SET;
 			Versione versione = this.connettoreNotifica != null ? this.connettoreNotifica.getVersione() : Versione.GP_REST_01;
@@ -151,7 +154,7 @@ public class InviaNotificaThread implements Runnable {
 			
 			ctx.getApplicationLogger().log("notifica.spedizione");
 			
-			client = new NotificaClient(this.applicazione, operationId, this.giornale);
+			client = new NotificaClient(this.applicazione, this.rpt, this.versamento, this.pagamenti, operationId, this.giornale);
 			
 //			DatiPagoPA datiPagoPA = new DatiPagoPA();
 //			datiPagoPA.setErogatore(this.applicazione.getCodApplicazione());
@@ -168,7 +171,7 @@ public class InviaNotificaThread implements Runnable {
 				client.getEventoCtx().setIdPagamento(this.pagamentoPortale.getIdSessione());
 			
 			
-			client.invoke(this.notifica, this.rpt, this.applicazione, this.versamento, this.pagamenti, this.pagamentoPortale);
+			client.invoke(this.notifica);
 			
 			this.notifica.setStato(StatoSpedizione.SPEDITO);
 			this.notifica.setDescrizioneStato(null);
@@ -278,7 +281,7 @@ public class InviaNotificaThread implements Runnable {
 			if(client != null && client.getEventoCtx().isRegistraEvento()) {
 				EventiBD eventiBD = new EventiBD(configWrapper);
 				try {
-					eventiBD.insertEvento(client.getEventoCtx().toEventoDTO());
+					eventiBD.insertEvento(EventoUtils.toEventoDTO(client.getEventoCtx(),log));
 				} catch (ServiceException e) {
 					log.error("Errore durante il salvataggio dell'evento: ", e);
 				}

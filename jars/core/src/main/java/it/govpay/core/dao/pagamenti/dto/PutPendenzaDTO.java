@@ -7,8 +7,8 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.springframework.security.core.Authentication;
 
+import it.govpay.core.beans.commons.Versamento;
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
-import it.govpay.core.dao.commons.Versamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
 
 public class PutPendenzaDTO extends BasicCreateRequestDTO  {

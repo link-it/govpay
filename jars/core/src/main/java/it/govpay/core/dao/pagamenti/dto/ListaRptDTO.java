@@ -41,6 +41,9 @@ public class ListaRptDTO extends BasicFindRequestDTO{
 	private List<String> divisione;
 	private String tassonomia;
 	private String anagraficaDebitore;
+	private Boolean ricevute;
+	private Date dataPagamentoA;
+	private Date dataPagamentoDa;
 	
 	public Date getDataRtA() {
 		return dataRtA;
@@ -167,6 +170,24 @@ public class ListaRptDTO extends BasicFindRequestDTO{
 	}
 	public void setAnagraficaDebitore(String anagraficaDebitore) {
 		this.anagraficaDebitore = anagraficaDebitore;
+	}
+	public Boolean isRicevute() {
+		return ricevute;
+	}
+	public void setRicevute(Boolean ricevute) {
+		this.ricevute = ricevute;
+	}
+	public Date getDataPagamentoA() {
+		return dataPagamentoA;
+	}
+	public void setDataPagamentoA(Date dataPagamentoA) {
+		this.dataPagamentoA = dataPagamentoA;
+	}
+	public Date getDataPagamentoDa() {
+		return dataPagamentoDa;
+	}
+	public void setDataPagamentoDa(Date dataPagamentoDa) {
+		this.dataPagamentoDa = dataPagamentoDa;
 	}
 	
 }

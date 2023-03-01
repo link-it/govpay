@@ -2,13 +2,12 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @JsonPropertyOrder({
@@ -18,19 +17,19 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "password",
 })
 public class ConnettoreFtp extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("host")
   private String host = null;
-  
+
   @JsonProperty("porta")
   private String porta = null;
-  
+
   @JsonProperty("username")
   private String username = null;
-  
+
   @JsonProperty("password")
   private String password = null;
-  
+
   /**
    * host del server sftp
    **/
@@ -115,7 +114,7 @@ public class ConnettoreFtp extends JSONSerializable implements IValidable {
     return Objects.hash(host, porta, username, password);
   }
 
-  public static ConnettoreFtp parse(String json) throws ServiceException, ValidationException {
+  public static ConnettoreFtp parse(String json) throws IOException {
     return parse(json, ConnettoreFtp.class);
   }
 
@@ -128,7 +127,7 @@ public class ConnettoreFtp extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ConnettoreFtp {\n");
-    
+
     sb.append("    host: ").append(toIndentedString(host)).append("\n");
     sb.append("    porta: ").append(toIndentedString(porta)).append("\n");
     sb.append("    username: ").append(this.toIndentedString(this.username)).append("\n");
@@ -147,7 +146,7 @@ public class ConnettoreFtp extends JSONSerializable implements IValidable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();

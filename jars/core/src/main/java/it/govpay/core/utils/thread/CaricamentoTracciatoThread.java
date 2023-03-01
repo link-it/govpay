@@ -20,6 +20,7 @@ import it.govpay.core.business.model.tracciati.operazioni.AbstractOperazioneResp
 import it.govpay.core.business.model.tracciati.operazioni.CaricamentoRequest;
 import it.govpay.core.business.model.tracciati.operazioni.CaricamentoResponse;
 import it.govpay.core.business.model.tracciati.operazioni.OperazioneFactory;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.core.utils.tracciati.TracciatiUtils;
 import it.govpay.model.Operazione.StatoOperazioneType;
@@ -142,6 +143,8 @@ public class CaricamentoTracciatoThread implements Runnable {
 					log.debug(this.nomeThread + " Inserimento Pendenza Numero ["+ (request.getLinea() -1) + "] elaborata con esito [" +operazione.getStato() + "]: " + operazione.getDettaglioEsito() + " Raw: [" + new String(request.getDati()) + "]");
 				}catch(ServiceException e) {
 					log.error(this.nomeThread + " Errore durante il salvataggio l'accesso alla base dati: " + e.getMessage());
+				} catch (IOException e) {
+					log.error(this.nomeThread + " Errore durante la serializzazione dei dati della risposta: " + e.getMessage());
 				} finally {
 					
 				}
