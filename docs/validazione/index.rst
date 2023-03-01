@@ -11,24 +11,19 @@ Ogni nuova versione di GovPay viene sottoposta alle seguenti verifiche di sicure
 
 Le verifiche sono eseguite automaticamente ad ogni modifica del codice di GovPay sul branch `master` dal sistema di `Continuous Integration Jenkins di GovPay <https://jenkins.link.it/govpay/blue/organizations/jenkins/govpay/activity/>`_.
 
-Vulnerabilità note
-******************
-
-CVE-2022-45688
-==============
-
-file name: json-20220924.jar
-
-dipendenza di: uri-template-0.10.jar, msg-simple-1.2.jar, json-smart-2.4.8.jar, json-schema-validator-2.2.14.jar, json-schema-core-1.2.14.jar, json-path-2.4.0.jar, json-patch-1.13.jar, json-20220924.jar, jackson-jaxrs-json-provider-2.14.2.jar. jackson-coreutils-equivalence-1.0.jar, jackson-coreutils-2.0.jar, jackson-core-2.14.2.jar, btf-1.3.jar, accessors-smart-1.2.jar
-
-La vulnerabilità indicata viene descritta come segue: `A stack overflow in the XML.toJSONObject component of hutool-json v5.8.10 allows attackers to cause a Denial of Service (DoS) via crafted JSON or XML data.`
-
-`Note`: E' stata rilasciata una nuova versione della libreria il 27/02/2023. Si resta in attesa della pubblicazione su Maven Central per l'aggiornamento e verificare che la vulnerabilità sia risolta.
-
 Falsi positivi
 **************
 
 Di seguito le segnalazioni emerse dagli strumenti utilizzati nel processo di validazione che sono stati classificati come Falsi Positivi
+
+CVE-2022-45688
+==============
+
+file name: json-20230227.jar
+
+La vulnerabilità indicata viene descritta come segue: `A stack overflow in the XML.toJSONObject component of hutool-json v5.8.10 allows attackers to cause a Denial of Service (DoS) via crafted JSON or XML data.`
+
+La versione della libreria ultilizzata risolve il bug indicato, ma il tool di validazione continua a segnalare la vulnerabilità. Risulta quindi un falso positivo.
 
 CVE-2022-40152
 ==============
