@@ -1158,11 +1158,7 @@
 				        <artifactId>jsr181-api</artifactId>
 				        <version>${jaxws-jsr181-api.version}</version>
 				</dependency>
-				<dependency>
-				        <groupId>javax.xml.ws</groupId>
-				        <artifactId>jaxws-api</artifactId>
-				        <version>${jaxws-api.version}</version>
-				</dependency>	
+				
 				<dependency>
 					<groupId>javax.activation</groupId>
 					<artifactId>activation</artifactId>
