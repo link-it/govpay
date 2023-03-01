@@ -4,6 +4,7 @@ Background:
 
 * callonce read('classpath:utils/workflow/modello1/v2/modello1-bunch-pagamenti-v3.feature')
 
+* configure cookies = null
 
 @test1
 Scenario Outline: Lettura dettaglio pagamento utente spid: [<idPagamento>] transazione [<rpt>] in corso

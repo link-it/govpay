@@ -122,7 +122,7 @@
 		<javax.servlet.api3.version>3.1.0</javax.servlet.api3.version>
 		
 		<!-- JaxWS-API -->
-		<jaxws-api.version>2.2.1</jaxws-api.version>
+		<jaxws-api.version>2.3.1</jaxws-api.version>
 		
 		<!-- webjars- swagger ui api -->
 		<webjars-swaggerui.version>3.20.3</webjars-swaggerui.version>
@@ -168,7 +168,6 @@
 	<jaxb.impl.version>2.3.7</jaxb.impl.version>
 	<jaxb.xjc.version>2.3.7</jaxb.xjc.version>
 	<jaxws-jsr181-api.version>1.0-MR1</jaxws-jsr181-api.version>
-	<jaxws-api.version>2.3.1</jaxws-api.version>
 	<javax.activation>1.1.1</javax.activation>
         
         

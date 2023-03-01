@@ -14,6 +14,8 @@ Background:
 * def idTipoPendenzaCOSAP = 'COSAP'
 * def pendenzaCreataMSG = read('msg/pendenza-creata.json')
 
+* configure cookies = null
+
 # Configurazione tipo pendenza
 Given url backofficeBaseurl
 And path 'tipiPendenza', idTipoPendenzaCOSAP

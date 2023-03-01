@@ -22,6 +22,8 @@ Then status 201
 * def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_riferimento_pendenza.json')
 * def spidHeaders = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'} 
 
+* configure cookies = null
+
 Scenario: Pagamento avviso precaricato autenticato spid da soggetto debitore
 
 Given url pagamentiBaseurl

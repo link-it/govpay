@@ -4,6 +4,8 @@ Background:
 
 * callonce read('classpath:utils/workflow/modello1/v2/modello1-bunch-pagamenti-v3.feature')
 
+* configure cookies = null
+
 Scenario: Ricerca transazioni SPID filtrati per data
 
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'spid'})
