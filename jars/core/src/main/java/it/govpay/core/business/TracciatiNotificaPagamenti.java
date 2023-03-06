@@ -109,6 +109,8 @@ public class TracciatiNotificaPagamenti {
 		it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati = null;
 		Integer numeroOreIntervallo = connettore.getIntervalloCreazioneTracciato();
 		
+		log.info("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"] in corso...");
+		
 		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], controllo intervallo elaborazione...");
 		TracciatoNotificaPagamenti ultimoTracciatoCreatoPerTipo = null;
 		try {
@@ -138,10 +140,10 @@ public class TracciatiNotificaPagamenti {
 				case SECIM:
 				case GOVPAY:
 				case MAGGIOLI_JPPA:
-					log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], nuovo intervallo ricerca RT: Da [" +SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
+					log.info("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], nuovo intervallo ricerca RT: Da [" +SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
 					break;
 				case HYPERSIC_APK:
-					log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], nuovo intervallo ricerca rendicontazioni: Da [" +SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
+					log.info("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], nuovo intervallo ricerca rendicontazioni: Da [" +SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
 					break;
 				}
 				
@@ -155,7 +157,7 @@ public class TracciatiNotificaPagamenti {
 				
 				// se l'estremo dell'intervallo di ricerca e' nel futuro allora non devo eseguire l'elaborazione
 				if(dataRtA.getTime() > now.getTime()) {
-					log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], dataA ["
+					log.info("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], dataA ["
 							+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"] successiva a NOW  ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(now)+"], non devo generare il tracciato");
 					return;
 				}
@@ -194,7 +196,7 @@ public class TracciatiNotificaPagamenti {
 
 		if(countTracciatiInStatoNonTerminalePerDominio == 0) {
 			try {
-				log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], non sono stati trovati tracciati in sospeso, ricerco record da inserire in un nuovo tracciato");
+				log.info("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], non sono stati trovati tracciati in sospeso, ricerco record da inserire in un nuovo tracciato");
 				
 				tracciatiNotificaPagamentiBD = new TracciatiNotificaPagamentiBD(configWrapper);
 
@@ -278,6 +280,18 @@ public class TracciatiNotificaPagamenti {
 					c2.set(Calendar.MILLISECOND, 0);
 					c2.add(Calendar.MILLISECOND, -1);
 					dataRtA = c2.getTime();
+				}
+				
+				switch (this.tipoTracciato) {
+				case MYPIVOT:
+				case SECIM:
+				case GOVPAY:
+				case MAGGIOLI_JPPA:
+					log.info("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], verranno utilizzate le RT comprese tra le seguenti date: Da [" +SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
+					break;
+				case HYPERSIC_APK:
+					log.info("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], verranno utilizzate le rendicontazioni comprese tra le seguenti date: Da [" +SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"]");
+					break;
 				}
 
 				// ricerca delle RT per dominio arrivate tra DataRtDa e DataRtA
@@ -459,7 +473,7 @@ public class TracciatiNotificaPagamenti {
 								throw new ServiceException("TipoDatabase ["+tipoDatabase+"] non gestito.");
 							}
 							
-							log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], salvataggio contenuto completato");
+							log.info("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"], salvataggio contenuto completato");
 
 							if(!tracciatiNotificaPagamentiBD.isAutoCommit()) tracciatiNotificaPagamentiBD.commit();
 						} catch (java.io.IOException e) { // gestione errori scrittura zip
@@ -472,6 +486,8 @@ public class TracciatiNotificaPagamenti {
 					} finally {
 						if(!tracciatiNotificaPagamentiBD.isAutoCommit()) tracciatiNotificaPagamentiBD.setAutoCommit(true);
 					}
+				} else {
+					log.info("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"] completata non sono state trovate entries da inserire nel tracciato.");
 				}
 			} catch(Throwable e) {
 				log.error("Errore durante l'elaborazione del tracciato "+this.tipoTracciato+": " + e.getMessage(), e);
@@ -480,6 +496,8 @@ public class TracciatiNotificaPagamenti {
 					tracciatiNotificaPagamentiBD.closeConnection();
 				}
 			}
+		} else {
+			log.info("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"] completata non e' stato creato un nuovo tracciato poiche' ci sono ["+countTracciatiInStatoNonTerminalePerDominio+"] tracciati da spedire.");
 		}
 	}
 
@@ -662,7 +680,7 @@ public class TracciatiNotificaPagamenti {
 			throws java.io.IOException, ServiceException, JAXBException, SAXException, ValidationException, IOException, org.openspcoop2.utils.serialization.IOException { 
 		String codDominio = dominio.getCodDominio();
 		
-		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"] in corso...");
+		log.debug("Creazione contenuto del tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"] in corso...");
 		
 		// Entry 1. metadati dell'estrazione
 		
@@ -678,7 +696,7 @@ public class TracciatiNotificaPagamenti {
 		
 		// Entry 2. sintesi pagamenti
 		
-		log.debug("Creazione file di sintesi pagamenti in corso...");
+		log.info("Creazione file di sintesi pagamenti in corso...");
 		
 		CSVUtils csvUtils = CSVUtils.getInstance(CSVFormat.DEFAULT);
 		
@@ -716,14 +734,14 @@ public class TracciatiNotificaPagamenti {
 		
 		beanDati.setNumRtTotali(totaleRt);
 		
-		log.debug("Creazione file di sintesi pagamenti completato, inserite ["+totaleRt+"] RT.");
+		log.info("Creazione file di sintesi pagamenti completato, inserite ["+totaleRt+"] RT.");
 
 		// chiusa entry
 		zos.flush();
 		zos.closeEntry();
 		
 		// Entry 3. ricevute 
-		log.debug("Creazione ricevute in corso...");
+		log.info("Creazione ricevute in corso...");
 		
 		offset = 0;
 		rtList = rptBD.ricercaRtDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
@@ -773,11 +791,15 @@ public class TracciatiNotificaPagamenti {
 		}while(rtList.size() > 0);
 		
 		
-		log.debug("Creazione ricevute completata, inserite ["+totaleRt+"] ricevute.");
+		log.info("Creazione ricevute completata, inserite ["+totaleRt+"] ricevute.");
 		
 		// Entry 4. sintesi flussi 
 		
-		log.debug("Creazione file di sintesi flussi in corso...");
+		log.info("Creazione file di sintesi flussi in corso...");
+		
+		log.info("Ricerco i flussi per il Dominio ["+codDominio
+				+"], che hanno data acquisizione compresa tra le seguenti date: Da [" +SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtDa)
+				+"] a ["+SimpleDateFormatUtils.newSimpleDateFormatDataOreMinutiSecondi().format(dataRtA)+"], in stato ACCETTATA, per i tipi pendenza ["+((listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) ? StringUtils.join(listaTipiPendenza, ", ") : "tutti")+"]");
 		
 		ZipEntry frOutputEntry = new ZipEntry(GOVPAY_FLUSSI_RENDICONTAZIONE_CSV_FILE_NAME);
 		zos.putNextEntry(frOutputEntry);
@@ -786,7 +808,11 @@ public class TracciatiNotificaPagamenti {
 		
 		FrBD frBD = new FrBD(rptBD);
 		
-		frBD.setAtomica(false); 
+		frBD.setAtomica(false);
+		
+		long countFrDominio = frBD.countFrDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza);
+		
+		log.info("La procedura inserira' ["+countFrDominio+"] entries all'interno del file di sintesi flussi.");
 		
 		offset = 0;
 		int totaleFr= 0;
@@ -809,9 +835,9 @@ public class TracciatiNotificaPagamenti {
 
 			offset += limit;
 			frList = frBD.ricercaFrDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
-		}while(rtList.size() > 0);
+		}while(frList.size() > 0);
 		
-		log.debug("Creazione file di sintesi flussi rendicontazione completato, inseriti ["+totaleFr+"] Flussi.");
+		log.info("Creazione file di sintesi flussi rendicontazione completato, inseriti ["+totaleFr+"] Flussi.");
 
 		// chiusa entry
 		zos.flush();
@@ -819,7 +845,7 @@ public class TracciatiNotificaPagamenti {
 		
 		
 		// Entry 5. flussi 
-		log.debug("Creazione flussi in corso...");
+		log.info("Creazione flussi in corso...");
 		
 		offset = 0;
 		totaleFr= 0;
@@ -850,12 +876,12 @@ public class TracciatiNotificaPagamenti {
 
 			offset += limit;
 			frList = frBD.ricercaFrDominio(codDominio, dataRtDa, dataRtA, listaTipiPendenza, offset, limit);
-		}while(rtList.size() > 0);
+		}while(frList.size() > 0);
 		
-		log.debug("Creazione flussi rendicontazione completata, inseriti ["+totaleFr+"] flussi.");
+		log.info("Creazione flussi rendicontazione completata, inseriti ["+totaleFr+"] flussi.");
 		
 		
-		log.debug("Elaborazione Tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"] completato.");
+		log.info("Creazione contenuto del tracciato "+this.tipoTracciato+" per il Dominio ["+codDominio+"] completato.");
 	}
 	
 	

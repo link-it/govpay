@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -586,6 +587,41 @@ public class FrBD extends BasicBD {
 				frLst.add(FrConverter.toDTO(frVO));
 			}
 			return frLst;
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+
+	}
+	
+	public long countFrDominio(String codDominio, Date dataAcquisizioneDa, Date dataAcquisizioneA, List<String> listaTipiPendenza) throws ServiceException{
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+
+			IExpression exp = this.getFrService().newExpression();
+			exp.equals(FR.model().COD_DOMINIO, codDominio).and();
+			if(dataAcquisizioneDa != null) {
+				exp.greaterEquals(FR.model().DATA_ACQUISIZIONE, dataAcquisizioneDa);
+			}
+			exp.lessEquals(FR.model().DATA_ACQUISIZIONE, dataAcquisizioneA);
+			exp.equals(FR.model().STATO, StatoFr.ACCETTATA.toString());
+			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
+				listaTipiPendenza.removeAll(Collections.singleton(null));
+				exp.in(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, listaTipiPendenza);
+			}
+			
+			NonNegativeNumber count = this.getFrService().count(exp);
+			
+			return count.longValue();
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
