@@ -2700,4 +2700,6 @@ UPDATE utenze SET autorizzazione_tipi_vers_star = 1;
 UPDATE utenze SET autorizzazione_domini_star = 1 WHERE id = (SELECT id_utenza FROM applicazioni WHERE cod_applicazione = 'GATEWAY-UGOV');
 UPDATE utenze SET autorizzazione_domini_star = 1 WHERE id = (SELECT id_utenza FROM applicazioni WHERE cod_applicazione = 'GATEWAY-ESSE3');
 
+-- Ripristino autorizzazione utenze console backoffice per tutti i domini.
+UPDATE utenze SET autorizzazione_domini_star = 1 WHERE id IN (SELECT id_utenza FROM operatori);
 
