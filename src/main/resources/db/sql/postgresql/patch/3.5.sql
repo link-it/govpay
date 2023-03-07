@@ -599,7 +599,7 @@ update rendicontazioni set id_singolo_versamento=singoli_versamenti.id
         AND singoli_versamenti.id_versamento=versamenti.id
         AND rendicontazioni.id_singolo_versamento is null;
 
-UPDATE rendicontazioni set stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' where id_pagamento is null and esito=0;
+UPDATE rendicontazioni set stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' where id_pagamento is null and esito=0 and stato<>'ANOMALA' and  stato<>'ALTRO_INTERMEDIARIO';
 UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS null;
 -- ALTRO INTERMEDIARIO Tutti gli spontanei non riferiti a miei pagamenti o pendenze
 UPDATE rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null where stato='ANOMALA' and char_length(iuv) not in (15,17) and id_pagamento is null and id_singolo_versamento is null ;
