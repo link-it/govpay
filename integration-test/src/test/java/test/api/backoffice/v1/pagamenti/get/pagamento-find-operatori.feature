@@ -348,5 +348,5 @@ Given url backofficeBaseurl
 And path '/pagamenti'
 And headers spidHeadersRossi
 When method get
-Then status 401
+Then status 403
 
