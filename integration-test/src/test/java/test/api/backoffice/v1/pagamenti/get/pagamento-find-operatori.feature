@@ -19,6 +19,8 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
+* configure cookies = null
+
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 * def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
 
@@ -78,6 +80,8 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
+* configure cookies = null
+
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 * def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
 
@@ -128,6 +132,8 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
+* configure cookies = null
+
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 * def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
 
@@ -177,6 +183,8 @@ When method put
 Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
+
+* configure cookies = null
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 * def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
@@ -229,6 +237,8 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
+* configure cookies = null
+
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 * def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
 
@@ -271,6 +281,8 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
+* configure cookies = null
+
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 * def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
 
@@ -301,6 +313,8 @@ Then assert responseStatus == 200 || responseStatus == 201
 
 * call read('classpath:configurazione/v1/operazioni-resetCache.feature')
 
+* configure cookies = null
+
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 * def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
 
@@ -318,6 +332,8 @@ Then status 403
 
 
 Scenario: Ricerca pagamenti operatore non censito
+
+* configure cookies = null
 
 * def backofficeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
 * def spidHeadersRossi = {'X-SPID-FISCALNUMBER': 'XXXYYY30A01H501I','X-SPID-NAME': 'John','X-SPID-FAMILYNAME': 'Doe','X-SPID-EMAIL': 'jdoe@mailserver.host.it'}

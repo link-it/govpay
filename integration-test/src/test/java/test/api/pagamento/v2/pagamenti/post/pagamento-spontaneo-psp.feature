@@ -17,6 +17,8 @@ Scenario: Pagamento spontaneo cittadino con PSP specificato
 * def spidHeaders = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'} 
 * def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
 
+* configure cookies = null
+
 Given url pagamentiBaseurl
 And path '/pagamenti'
 And param identificativoPSP = identificativoPSP
