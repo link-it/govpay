@@ -19,7 +19,7 @@ Step operativi:
 
 E' possibile passare al comando maven di compilazione uno o piu' dei seguenti profili con il paramtero `-P`:
 
-- `java-1.8`: compilazione in con JAVA 8
-- `wildfly-18`: iniezione del jboss-deployment-structure.xml compatibile con wildfly 11 e 18
+- `java-1.8`: compilazione con JAVA 8
+- `wildfly-18`: compatibile con wildfly 11 e 18
 
 
