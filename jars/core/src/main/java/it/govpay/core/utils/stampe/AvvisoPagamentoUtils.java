@@ -490,7 +490,8 @@ public class AvvisoPagamentoUtils {
 		if(uo!=null)
 			anagraficaUO = uo.getAnagrafica();
 
-		input.setEnteCreditore(dominio.getRagioneSociale());
+		// Denominazione dell'Ente Creditore Massimo 50 caratteri
+		input.setEnteCreditore(dominio.getRagioneSociale().length() > 50 ? dominio.getRagioneSociale().substring(0, 50) : dominio.getRagioneSociale());
 		input.setCfEnte(codDominio);
 		input.setCbill(dominio.getCbill() != null ? dominio.getCbill()  : " ");
 
@@ -499,6 +500,11 @@ public class AvvisoPagamentoUtils {
 			input.setSettoreEnte(anagraficaUO.getArea());
 		} else if(anagraficaDominio != null) { 
 			input.setSettoreEnte(anagraficaDominio.getArea());
+		}
+		
+		// Settore Ente: Denominazione dell'unità organizzativa che gestisce il pagamento. Massimo 50 caratteri 
+		if(input.getSettoreEnte() != null && input.getSettoreEnte().length() > 50) {
+			input.setSettoreEnte(input.getSettoreEnte().substring(0, 50));
 		}
 
 		StringBuilder sb = new StringBuilder();
