@@ -111,13 +111,13 @@ Integrazione AppIO
 API Backoffice
 ==============
 
-#. Lettura configurazione applicazioni
-    #. test.api.backoffice.v1.applicazioni.get.applicazioni-find-byMetadatiPaginazione
-#. Modifica configurazione applicazioni
-    #. test.api.backoffice.v1.applicazioni.patch.applicazioni-patch-password
-    #. test.api.backoffice.v1.applicazioni.put.applicazioni-put-password
-    #. test.api.backoffice.v1.applicazioni.put.applicazioni-put-semantica
-    #. test.api.backoffice.v1.applicazioni.put.applicazioni-put-sintassi
+* Lettura configurazione applicazioni
+    * test.api.backoffice.v1.applicazioni.get.applicazioni-find-byMetadatiPaginazione
+* Modifica configurazione applicazioni
+    * test.api.backoffice.v1.applicazioni.patch.applicazioni-patch-password
+    * test.api.backoffice.v1.applicazioni.put.applicazioni-put-password
+    * test.api.backoffice.v1.applicazioni.put.applicazioni-put-semantica
+    * test.api.backoffice.v1.applicazioni.put.applicazioni-put-sintassi
 
 .. csv-table:: 
    :header: "Descrizione", "Test"
