@@ -1068,7 +1068,10 @@ public class PendenzeDAO extends BaseDAO{
 				// imposto i dati idDominio, idTipoVersamento e idUnitaOperativa fornite nella URL di richiesta, sovrascrivendo eventuali valori impostati dalla trasformazione.
 				pendenzaPost.setIdDominio(codDominio);
 				pendenzaPost.setIdTipoPendenza(codTipoVersamento);
-				pendenzaPost.setIdUnitaOperativa(codUo);
+				// sovrascrivo il codUO solo se mi e' stato passato nella URL di richiesta
+				if(codUo != null) {
+					pendenzaPost.setIdUnitaOperativa(codUo);
+				}
 
 				new PendenzaPostValidator(pendenzaPost).validate();
 
