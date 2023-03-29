@@ -91,3 +91,46 @@ Le seguenti segnalazioni riguardano le librerie utilizzate dall'installer di Gov
 - CVE-2022-41881
 - CVE-2022-41915 
 
+
+Test di copertura funzionale
+############################
+
+Di seguito le funzionalità del prodotto ed i test che ne verificano il corretto funzionamento
+
+Integrazione AppIO
+==================
+
++-------------------------------------+---------------------------------------------------+
+| Descrizione                         | Test                                              |
++=====================================+===================================================+
+| Notifica avviso pagoPA              | test.api.appio.avviso_pagamento                   |
+| Notifica ricevuta pagamento         | test.api.appio.notifica_ricevuta                  |
+| Notifica ricevuta pagamento esito 9 | test.api.appio.notifica_ricevuta_pagamento_no_rpt |
++-------------------------------------+---------------------------------------------------+
+
+API Backoffice
+==============
+
++----------------------------------------------------------------------------+---------------------------------------------------------------------------------+
+| Descrizione                                                                | Test                                                                            |
++============================================================================+=================================================================================+
+| Ricerca applicazioni                                                       | test.api.backoffice.v1.applicazioni.get.applicazioni-find-byMetadatiPaginazione |
+| Modifica password applicazione                                             | test.api.backoffice.v1.applicazioni.patch.applicazioni-patch-password           |
+| Impostazione password applicazione                                         | test.api.backoffice.v1.applicazioni.put.applicazioni-put-password               |
+| Validazione semantica dei parametri di configurazione di una applicazione  | test.api.backoffice.v1.applicazioni.put.applicazioni-put-semantica              |
+| Validazione sintattica dei parametri di configurazione di una applicazione | test.api.backoffice.v1.applicazioni.put.applicazioni-put-sintassi               |
+| Registrazione di una applicazione                                          | test.api.backoffice.v1.applicazioni.put.applicazioni-put                        |
+| Settaggio delle impostazioni generali AppIO                                | test.api.backoffice.v1.configurazione.patch.configurazione-appIOBatch           |
+| Configurazione dei messaggi di default per avvisatura AppIO                | test.api.backoffice.v1.configurazione.patch.configurazione-avvisaturaAppIO      |
+| Configurazione dei messaggi di default per avvisatura via mail             | test.api.backoffice.v1.configurazione.patch.configurazione-avvisaturaMail       |
+| Configurazione delle impostazioni del Giornale degli Eventi                | test.api.backoffice.v1.configurazione.patch.configurazione-giornaleEventi       |
+| Configurazione delle policy di sicurezza delle api pubbliche               | test.api.backoffice.v1.configurazione.patch.configurazione-hardening            |
+| Configurazione del mail server                                             | test.api.backoffice.v1.configurazione.patch.configurazione-hardening            |
+| Configrazione template trasformazione CSV                                  | test.api.backoffice.v1.configurazione.patch.configurazione-tracciatoCSV         |
+| Validazione sintattica dei parametri inviati alle impostazioni             | test.api.backoffice.v1.configurazione.post.configurazione-sintassi              |
+| Ricerca Enti Creditori per id parziale                                     | test.api.backoffice.v1.domini.get.domini-find-byIdDominio                       |
+| Ricerca Enti Creditori con metadati                                        | test.api.backoffice.v1.domini.get.domini-find-byMetadatiPaginazione             |
+| Ricerca Enti Creditori senza metadati                                      | test.api.backoffice.v1.domini.get.domini-find-operatore                         |
+| Lettura di un Ente Creditore                                               | test.api.backoffice.v1.domini.get.dominio-get                                   |
+| Ricerca entrate con metadati                                               | test.api.backoffice.v1.domini.get.entrate-find-byMetadatiPaginazione            |
++----------------------------------------------------------------------------+---------------------------------------------------------------------------------+
