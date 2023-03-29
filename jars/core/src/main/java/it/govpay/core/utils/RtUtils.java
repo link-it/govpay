@@ -812,6 +812,10 @@ public class RtUtils extends NdpValidationUtils {
 			rendicontazioneAnomala.setStato(StatoRendicontazione.OK);
 			rendicontazioneAnomala.setAnomalie(new ArrayList<>());
 			rendicontazioneAnomala.setIdPagamento(pagamento.getId());
+			// aggiungo anche il riferimento al singolo versamento se non e' valorizzato
+			if(rendicontazioneAnomala.getIdSingoloVersamento() == null && pagamento.getSingoloVersamento(pagamentiBD) != null) {
+				rendicontazioneAnomala.setIdSingoloVersamento(pagamento.getSingoloVersamento(pagamentiBD).getId());
+			}
 			
 			rendicontazioniBD.updateRendicontazione(rendicontazioneAnomala);
 			
