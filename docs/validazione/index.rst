@@ -114,6 +114,7 @@ API Backoffice
 .. csv-table:: 
    :header: "Descrizione", "Test"
    :widths: 30,70
+
    "Ricerca applicazioni","test.api.backoffice.v1.applicazioni.get.applicazioni-find-byMetadatiPaginazione"
    "Modifica password applicazione","test.api.backoffice.v1.applicazioni.patch.applicazioni-patch-password"
    "Impostazione password applicazione","test.api.backoffice.v1.applicazioni.put.applicazioni-put-password"
