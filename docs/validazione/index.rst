@@ -314,30 +314,52 @@ API Backoffice
     * test.api.backoffice.v1.ruoli.get.ruoli-find-byMetadatiPaginazione
     * test.api.backoffice.v1.ruoli.put.ruoli-put-sintassi
     * test.api.backoffice.v1.ruoli.put.ruoli-put
-* 0000000000000000000000000 Da finire      
+* Lettura delle Tipologie di Pendenza
     * test.api.backoffice.v1.tipipendenza.get.tipipendenza-find-byMetadatiPaginazione
     * test.api.backoffice.v1.tipipendenza.get.tipipendenza-find-byNonAssociati
     * test.api.backoffice.v1.tipipendenza.get.tipipendenza-find
+* Inserimento e modifica delle Tipologie di Pendenza
     * test.api.backoffice.v1.tipipendenza.put.tipipendenza-put-sintassi
     * test.api.backoffice.v1.tipipendenza.put.tipipendenza-put
+* Ricerca e lettura dei tracciati CSV di alimentazione APA 
     * test.api.backoffice.v1.tracciati.get.tracciati-find-byMetadatiPaginazione
     * test.api.backoffice.v1.tracciati.get.tracciati-find-byStato
+* Caricamento ed elaborazione dei tracciati CSV di alimentazione APA      
     * test.api.backoffice.v1.tracciati.post.tracciati-csv-large
     * test.api.backoffice.v1.tracciati.post.tracciati-csv-post-avvisi-300
     * test.api.backoffice.v1.tracciati.post.tracciati-csv-post-big
     * test.api.backoffice.v1.tracciati.post.tracciati-csv-post-tipopendenza
     * test.api.backoffice.v1.tracciati.post.tracciati-csv-post
     * test.api.backoffice.v1.tracciati.post.tracciati-json-post
+
+API Ente Creditore
+~~~~~~~~~~~~~~~~~~
+
+* Test di acquisizione di una pendenza da avviso
     * test.api.ente.v1.avvisi.get.avvisi-get-semantica
     * test.api.ente.v1.avvisi.get.avvisi-get-sintattica
     * test.api.ente.v2.avvisi.get.avvisi-get-semantica
     * test.api.ente.v2.avvisi.get.avvisi-get-sintattica
+* Test di notifica di un pagamento
     * test.api.ente.v2.ricevute.put.ricevute-put
+
+API Pagamenti
+~~~~~~~~~~~~~
+
+* Ricerca e verifica avvisi di pagamento
     * test.api.pagamento.v1.avvisi.get.avvisi-find-anonimo
     * test.api.pagamento.v1.avvisi.get.verifica-avviso-anonimo
     * test.api.pagamento.v1.avvisi.get.verifica-avviso-basic
     * test.api.pagamento.v1.avvisi.get.verifica-avviso-hardening
     * test.api.pagamento.v1.avvisi.get.verifica-avviso-spid
+    * test.api.pagamento.v2.avvisi.get.avvisi-find-anonimo
+    * test.api.pagamento.v2.avvisi.get.pagamento-avviso-stazione-modificata
+    * test.api.pagamento.v2.avvisi.get.verifica-avviso-hardening
+    * test.api.pagamento.v2.avvisi.get.verifica-avviso-anonimo
+    * test.api.pagamento.v2.avvisi.get.verifica-avviso-basic
+    * test.api.pagamento.v2.avvisi.get.verifica-avviso-spid
+      
+* Ricerca riscossioni      
     * test.api.pagamento.v1.pagamenti.get.pagamenti-find-sintassi
     * test.api.pagamento.v1.pagamenti.get.pagamento-find-anonimo
     * test.api.pagamento.v1.pagamenti.get.pagamento-find-applicazione
@@ -347,6 +369,24 @@ API Backoffice
     * test.api.pagamento.v1.pagamenti.get.pagamento-get-applicazione
     * test.api.pagamento.v1.pagamenti.get.pagamento-find-spid
     * test.api.pagamento.v1.pagamenti.get.pagamento-get-spid
+    * test.api.pagamento.v2.pagamenti.get.pagamenti-find-sintassi
+    * test.api.pagamento.v2.pagamenti.get.pagamento-find-anonimo
+    * test.api.pagamento.v2.pagamenti.get.pagamento-find-applicazione
+    * test.api.pagamento.v2.pagamenti.get.pagamento-find-byMetadatiPaginazione
+    * test.api.pagamento.v2.pagamenti.get.pagamento-find-byStato
+    * test.api.pagamento.v2.pagamenti.get.pagamento-get-anonimo
+    * test.api.pagamento.v2.pagamenti.get.pagamento-get-applicazione-bollo
+    * test.api.pagamento.v2.pagamenti.get.pagamento-get-applicazione
+    * test.api.pagamento.v2.pagamenti.get.pagamento-find-spid
+    * test.api.pagamento.v2.pagamenti.get.pagamento-get-spid
+    * test.api.pagamento.v3.ricevute.get.ricevute-get-anonimo
+    * test.api.pagamento.v3.ricevute.get.ricevute-idDominio-iuv-find-byEsito
+    * test.api.pagamento.v3.ricevute.get.ricevute-get-applicazione
+    * test.api.pagamento.v3.ricevute.get.ricevute-idDominio-iuv-find-anonimo
+    * test.api.pagamento.v3.ricevute.get.ricevute-idDominio-iuv-find-applicazione
+    * test.api.pagamento.v3.ricevute.get.ricevute-get-spid
+    * test.api.pagamento.v3.ricevute.get.ricevute-idDominio-iuv-find-spid      
+* Avvio di una transazione di pagamento      
     * test.api.pagamento.v1.pagamenti.post.causale-versamento
     * test.api.pagamento.v1.pagamenti.post.iban-appoggio
     * test.api.pagamento.v1.pagamenti.post.pagamento-avviso-anonimo
@@ -364,39 +404,6 @@ API Backoffice
     * test.api.pagamento.v1.pagamenti.post.pagamento-avviso-spid
     * test.api.pagamento.v1.pagamenti.post.pagamento-pendenza-spid
     * test.api.pagamento.v1.pagamenti.post.pagamento-spontaneo-spid
-    * test.api.pagamento.v1.pendenze.get.pendenze-find-anonimo
-    * test.api.pagamento.v1.pendenze.get.pendenze-find-applicazioni
-    * test.api.pagamento.v1.pendenze.get.pendenze-find-byMetadatiPaginazione
-    * test.api.pagamento.v1.pendenze.get.pendenze-find-byStato
-    * test.api.pagamento.v1.pendenze.get.pendenze-find-sintassi
-    * test.api.pagamento.v1.pendenze.get.pendenze-get-applicazione
-    * test.api.pagamento.v1.profilo.get.get-profilo
-    * test.api.pagamento.v1.rpp.get.transazioni-find-anonimo
-    * test.api.pagamento.v1.rpp.get.transazioni-find-applicazione
-    * test.api.pagamento.v1.rpp.get.transazioni-find-byEsito
-    * test.api.pagamento.v1.rpp.get.transazioni-find-byMetadatiPaginazione
-    * test.api.pagamento.v1.rpp.get.transazioni-find-sintassi
-    * test.api.pagamento.v1.rpp.get.transazioni-get-anonimo
-    * test.api.pagamento.v1.rpp.get.transazioni-get-applicazione
-    * test.api.pagamento.v1.rpp.get.transazioni-find-spid
-    * test.api.pagamento.v1.rpp.get.transazioni-get-spid
-    * test.api.pagamento.v2.avvisi.get.avvisi-find-anonimo
-    * test.api.pagamento.v2.avvisi.get.pagamento-avviso-stazione-modificata
-    * test.api.pagamento.v2.avvisi.get.verifica-avviso-hardening
-    * test.api.pagamento.v2.avvisi.get.verifica-avviso-anonimo
-    * test.api.pagamento.v2.avvisi.get.verifica-avviso-basic
-    * test.api.pagamento.v2.avvisi.get.verifica-avviso-spid
-    * test.api.pagamento.v2.domini.get.tipipendenza-get
-    * test.api.pagamento.v2.pagamenti.get.pagamenti-find-sintassi
-    * test.api.pagamento.v2.pagamenti.get.pagamento-find-anonimo
-    * test.api.pagamento.v2.pagamenti.get.pagamento-find-applicazione
-    * test.api.pagamento.v2.pagamenti.get.pagamento-find-byMetadatiPaginazione
-    * test.api.pagamento.v2.pagamenti.get.pagamento-find-byStato
-    * test.api.pagamento.v2.pagamenti.get.pagamento-get-anonimo
-    * test.api.pagamento.v2.pagamenti.get.pagamento-get-applicazione-bollo
-    * test.api.pagamento.v2.pagamenti.get.pagamento-get-applicazione
-    * test.api.pagamento.v2.pagamenti.get.pagamento-find-spid
-    * test.api.pagamento.v2.pagamenti.get.pagamento-get-spid
     * test.api.pagamento.v2.pagamenti.post.iban-appoggio
     * test.api.pagamento.v2.pagamenti.post.pagamento-avviso-anonimo
     * test.api.pagamento.v2.pagamenti.post.pagamento-carrello
@@ -424,6 +431,13 @@ API Backoffice
     * test.api.pagamento.v2.pagamenti.post.pagamento-pendenza-spid
     * test.api.pagamento.v2.pagamenti.post.pagamento-spontaneo-spid
     * test.api.pagamento.v2.pagamenti.post.pagamento-spontaneo-psp
+* Ricerca e consultazione di posizioni debitorie      
+    * test.api.pagamento.v1.pendenze.get.pendenze-find-anonimo
+    * test.api.pagamento.v1.pendenze.get.pendenze-find-applicazioni
+    * test.api.pagamento.v1.pendenze.get.pendenze-find-byMetadatiPaginazione
+    * test.api.pagamento.v1.pendenze.get.pendenze-find-byStato
+    * test.api.pagamento.v1.pendenze.get.pendenze-find-sintassi
+    * test.api.pagamento.v1.pendenze.get.pendenze-get-applicazione
     * test.api.pagamento.v2.pendenze.get.pendenze-find-anonimo
     * test.api.pagamento.v2.pendenze.get.pendenze-find-applicazioni-byMostraSpontaneiNonPagati
     * test.api.pagamento.v2.pendenze.get.pendenze-find-applicazioni
@@ -436,10 +450,29 @@ API Backoffice
     * test.api.pagamento.v2.pendenze.get.pendenze-getByAvviso-applicazione
     * test.api.pagamento.v2.pendenze.get.pendenze-getByAvviso-spid
     * test.api.pagamento.v2.pendenze.get.pendenze-spid
-    * test.api.pagamento.v2.pendenze.post.pendenze-add-anonimo
-    * test.api.pagamento.v2.pendenze.post.pendenze-add-applicazione
-    * test.api.pagamento.v2.pendenze.post.pendenze-add-spid
-    * test.api.pagamento.v2.profilo.get.get-profilo
+    * test.api.pagamento.v3.pendenze.get.pendenze-find-anonimo
+    * test.api.pagamento.v3.pendenze.get.pendenze-find-applicazioni-byMostraSpontaneiNonPagati
+    * test.api.pagamento.v3.pendenze.get.pendenze-find-applicazioni
+    * test.api.pagamento.v3.pendenze.get.pendenze-find-byMetadatiPaginazione
+    * test.api.pagamento.v3.pendenze.get.pendenze-find-byStato
+    * test.api.pagamento.v3.pendenze.get.pendenze-find-sintassi
+    * test.api.pagamento.v3.pendenze.get.pendenze-get-applicazione-datiAllegati
+    * test.api.pagamento.v3.pendenze.get.pendenze-get-applicazione
+    * test.api.pagamento.v3.pendenze.get.pendenze-spid      
+* Lettura del profilo utente chiamante      
+    * test.api.pagamento.v1.profilo.get.get-profilo
+    * test.api.pagamento.v2.profilo.get.get-profilo      
+    * test.api.pagamento.v3.profilo.get.get-profilo      
+* Ricerca e consultazione di transazioni di pagamento
+    * test.api.pagamento.v1.rpp.get.transazioni-find-anonimo
+    * test.api.pagamento.v1.rpp.get.transazioni-find-applicazione
+    * test.api.pagamento.v1.rpp.get.transazioni-find-byEsito
+    * test.api.pagamento.v1.rpp.get.transazioni-find-byMetadatiPaginazione
+    * test.api.pagamento.v1.rpp.get.transazioni-find-sintassi
+    * test.api.pagamento.v1.rpp.get.transazioni-get-anonimo
+    * test.api.pagamento.v1.rpp.get.transazioni-get-applicazione
+    * test.api.pagamento.v1.rpp.get.transazioni-find-spid
+    * test.api.pagamento.v1.rpp.get.transazioni-get-spid
     * test.api.pagamento.v2.rpp.get.transazioni-find-anonimo
     * test.api.pagamento.v2.rpp.get.transazioni-find-applicazione
     * test.api.pagamento.v2.rpp.get.transazioni-find-byData
@@ -449,24 +482,18 @@ API Backoffice
     * test.api.pagamento.v2.rpp.get.transazioni-get-anonimo
     * test.api.pagamento.v2.rpp.get.transazioni-get-applicazione
     * test.api.pagamento.v2.rpp.get.transazioni-find-spid
-    * test.api.pagamento.v2.rpp.get.transazioni-get-spid
-    * test.api.pagamento.v3.profilo.get.get-profilo
-    * test.api.pagamento.v3.ricevute.get.ricevute-get-anonimo
-    * test.api.pagamento.v3.ricevute.get.ricevute-idDominio-iuv-find-byEsito
-    * test.api.pagamento.v3.ricevute.get.ricevute-get-applicazione
-    * test.api.pagamento.v3.ricevute.get.ricevute-idDominio-iuv-find-anonimo
-    * test.api.pagamento.v3.ricevute.get.ricevute-idDominio-iuv-find-applicazione
-    * test.api.pagamento.v3.ricevute.get.ricevute-get-spid
-    * test.api.pagamento.v3.ricevute.get.ricevute-idDominio-iuv-find-spid
-    * test.api.pagamento.v3.pendenze.get.pendenze-find-anonimo
-    * test.api.pagamento.v3.pendenze.get.pendenze-find-applicazioni-byMostraSpontaneiNonPagati
-    * test.api.pagamento.v3.pendenze.get.pendenze-find-applicazioni
-    * test.api.pagamento.v3.pendenze.get.pendenze-find-byMetadatiPaginazione
-    * test.api.pagamento.v3.pendenze.get.pendenze-find-byStato
-    * test.api.pagamento.v3.pendenze.get.pendenze-find-sintassi
-    * test.api.pagamento.v3.pendenze.get.pendenze-get-applicazione-datiAllegati
-    * test.api.pagamento.v3.pendenze.get.pendenze-get-applicazione
-    * test.api.pagamento.v3.pendenze.get.pendenze-spid
+    * test.api.pagamento.v2.rpp.get.transazioni-get-spid      
+* Ricerca e consultazione delle tipologie di pendenza per pagamenti spontanei      
+    * test.api.pagamento.v2.domini.get.tipipendenza-get
+* Creazione di pendenze spontanee
+    * test.api.pagamento.v2.pendenze.post.pendenze-add-anonimo
+    * test.api.pagamento.v2.pendenze.post.pendenze-add-applicazione
+    * test.api.pagamento.v2.pendenze.post.pendenze-add-spid
+
+API Pendenze
+~~~~~~~~~~~~
+
+* Ricerca e consultazione pendenze
     * test.api.pendenza.v1.pendenze.get.pendenze-anonimo
     * test.api.pendenza.v1.pendenze.get.pendenze-find-applicazioni
     * test.api.pendenza.v1.pendenze.get.pendenze-find-byMetadatiPaginazione
@@ -474,6 +501,17 @@ API Backoffice
     * test.api.pendenza.v1.pendenze.get.pendenze-find-sintassi
     * test.api.pendenza.v1.pendenze.get.pendenze-get-applicazione
     * test.api.pendenza.v1.pendenze.get.pendenze-spid
+    * test.api.pendenza.v2.pendenze.get.pendenze-anonimo
+    * test.api.pendenza.v2.pendenze.get.pendenze-find-applicazioni-byMostraSpontaneiNonPagati
+    * test.api.pendenza.v2.pendenze.get.pendenze-find-applicazioni
+    * test.api.pendenza.v2.pendenze.get.pendenze-find-byMetadatiPaginazione
+    * test.api.pendenza.v2.pendenze.get.pendenze-find-byStato
+    * test.api.pendenza.v2.pendenze.get.pendenze-find-sintassi
+    * test.api.pendenza.v2.pendenze.get.pendenze-get-applicazione
+    * test.api.pendenza.v2.pendenze.get.pendenza-get-documenti
+    * test.api.pendenza.v2.pendenze.get.pendenza-get-avvisi
+    * test.api.pendenza.v2.pendenze.get.pendenze-spid
+* Creazione e modifica pendenze      
     * test.api.pendenza.v1.pendenze.patch.pendenza-patch-annullamento
     * test.api.pendenza.v1.pendenze.patch.pendenza-patch-sintassi
     * test.api.pendenza.v1.pendenze.put.pendenza-put-aggiornamento
@@ -485,25 +523,6 @@ API Backoffice
     * test.api.pendenza.v1.pendenze.put.pendenza-put-multivoce
     * test.api.pendenza.v1.pendenze.put.pendenza-put-semantica
     * test.api.pendenza.v1.pendenze.put.pendenza-put-sintattica
-    * test.api.pendenza.v1.profilo.get.get-profilo
-    * test.api.pendenza.v1.rpp.get.transazioni-anonimo
-    * test.api.pendenza.v1.rpp.get.transazioni-find-applicazione
-    * test.api.pendenza.v1.rpp.get.transazioni-find-byEsito
-    * test.api.pendenza.v1.rpp.get.transazioni-find-byMetadatiPaginazione
-    * test.api.pendenza.v1.rpp.get.transazioni-find-sintassi
-    * test.api.pendenza.v1.rpp.get.transazioni-get-applicazione
-    * test.api.pendenza.v1.rpp.get.transazioni-spid
-    * test.api.pendenza.v2.avvisi.get.avvisi-get-byNumeroAvviso
-    * test.api.pendenza.v2.pendenze.get.pendenze-anonimo
-    * test.api.pendenza.v2.pendenze.get.pendenze-find-applicazioni-byMostraSpontaneiNonPagati
-    * test.api.pendenza.v2.pendenze.get.pendenze-find-applicazioni
-    * test.api.pendenza.v2.pendenze.get.pendenze-find-byMetadatiPaginazione
-    * test.api.pendenza.v2.pendenze.get.pendenze-find-byStato
-    * test.api.pendenza.v2.pendenze.get.pendenze-find-sintassi
-    * test.api.pendenza.v2.pendenze.get.pendenze-get-applicazione
-    * test.api.pendenza.v2.pendenze.get.pendenza-get-documenti
-    * test.api.pendenza.v2.pendenze.get.pendenza-get-avvisi
-    * test.api.pendenza.v2.pendenze.get.pendenze-spid
     * test.api.pendenza.v2.pendenze.patch.pendenza-patch-annullamento
     * test.api.pendenza.v2.pendenze.patch.pendenza-patch-sintassi
     * test.api.pendenza.v2.pendenze.put.pendenza-put-aggiornamento
@@ -523,7 +542,17 @@ API Backoffice
     * test.api.pendenza.v2.pendenze.put.pendenza-put-pagamento-pendenza-mbt
     * test.api.pendenza.v2.pendenze.put.pendenza-put-contabilita
     * test.api.pendenza.v2.pendenze.put.pendenza-put-semantica
+* Lettura profilo utente chiamante      
+    * test.api.pendenza.v1.profilo.get.get-profilo
     * test.api.pendenza.v2.profilo.get.get-profilo
+* Ricerca e consultazione transazioni di pagamento      
+    * test.api.pendenza.v1.rpp.get.transazioni-anonimo
+    * test.api.pendenza.v1.rpp.get.transazioni-find-applicazione
+    * test.api.pendenza.v1.rpp.get.transazioni-find-byEsito
+    * test.api.pendenza.v1.rpp.get.transazioni-find-byMetadatiPaginazione
+    * test.api.pendenza.v1.rpp.get.transazioni-find-sintassi
+    * test.api.pendenza.v1.rpp.get.transazioni-get-applicazione
+    * test.api.pendenza.v1.rpp.get.transazioni-spid
     * test.api.pendenza.v2.rpp.get.transazioni-anonimo
     * test.api.pendenza.v2.rpp.get.transazioni-find-applicazione
     * test.api.pendenza.v2.rpp.get.transazioni-find-byData
@@ -532,27 +561,18 @@ API Backoffice
     * test.api.pendenza.v2.rpp.get.transazioni-find-sintassi
     * test.api.pendenza.v2.rpp.get.transazioni-get-applicazione
     * test.api.pendenza.v2.rpp.get.transazioni-spid
+* Consultazione e stampa PDF di un Avviso di Pagamento      
+    * test.api.pendenza.v2.avvisi.get.avvisi-get-byNumeroAvviso
+      
+API Ragioneria
+~~~~~~~~~~~~~~
+
+* Ricerca e consultazione dei Flussi di Rendicontazione 
     * test.api.ragioneria.v1.flussiRendicontazione.get.flussiRendicontazione-find-byMetadatiPaginazione
     * test.api.ragioneria.v1.flussiRendicontazione.get.flussiRendicontazione-find-sintassi
     * test.api.ragioneria.v1.flussiRendicontazione.get.flussiRendicontazione-find
     * test.api.ragioneria.v1.flussiRendicontazione.get.flussiRendicontazione-get
     * test.api.ragioneria.v1.flussiRendicontazione.get.flussiRendicontazione-getByIdEData
-    * test.api.ragioneria.v1.profilo.get.get-profilo
-    * test.api.ragioneria.v1.riconciliazioni.get.riconciliazione-find
-    * test.api.ragioneria.v1.riconciliazioni.get.riconciliazione-get
-    * test.api.ragioneria.v1.riconciliazioni.get.riconciliazioni-find-byMetadatiPaginazione
-    * test.api.ragioneria.v1.riconciliazioni.get.riconciliazioni-find-sintassi
-    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-autorizzazione
-    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-cumulativa
-    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-semantica
-    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-senza-rpt
-    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-singola
-    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-sintassi
-    * test.api.ragioneria.v1.riscossioni.get.riscossioni-find-byMetadatiPaginazione
-    * test.api.ragioneria.v1.riscossioni.get.riscossioni-find-byStato
-    * test.api.ragioneria.v1.riscossioni.get.riscossioni-find-sintassi
-    * test.api.ragioneria.v1.riscossioni.post.riscossioni-find
-    * test.api.ragioneria.v1.riscossioni.post.riscossioni-get
     * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-find-auth-uo
     * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-find-byIdFlusso
     * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-find-byIuv
@@ -562,26 +582,6 @@ API Backoffice
     * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-get
     * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-getByIdEData
     * test.api.ragioneria.v2.flussiRendicontazione.get.flussiRendicontazione-getByDominioIdEData
-    * test.api.ragioneria.v2.profilo.get.get-profilo
-    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazione-find
-    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazione-get
-    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazione-getbyTipoRiscossione
-    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazioni-find-byMetadatiPaginazione
-    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazioni-find-sintassi
-    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-autorizzazione
-    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-cumulativa-ricercaFlussiCaseInsensitive
-    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-cumulativa
-    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-semantica
-    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-senza-rpt
-    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-singola
-    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-sintassi
-    * test.api.ragioneria.v2.riscossioni.get.riscossioni-find-byIur
-    * test.api.ragioneria.v2.riscossioni.get.riscossioni-find-byMetadatiPaginazione
-    * test.api.ragioneria.v2.riscossioni.get.riscossioni-find-byStato
-    * test.api.ragioneria.v2.riscossioni.get.riscossioni-find-byTipo
-    * test.api.ragioneria.v2.riscossioni.get.riscossioni-find-sintassi
-    * test.api.ragioneria.v2.riscossioni.post.riscossioni-find
-    * test.api.ragioneria.v2.riscossioni.post.riscossioni-get
     * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-find-byIdFlusso
     * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-find-byIuv
     * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-find-byMetadatiPaginazione
@@ -589,27 +589,72 @@ API Backoffice
     * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-find
     * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-get
     * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-getByDominioIdEData
-    * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-getByIdEData
-    * test.api.ragioneria.v3.ricevute.get.ricevute-find-applicazione
-    * test.api.ragioneria.v3.ricevute.get.ricevute-find
-    * test.api.ragioneria.v3.ricevute.get.ricevute-get
+    * test.api.ragioneria.v3.flussiRendicontazione.get.flussiRendicontazione-getByIdEData      
+* Lettura profilo utente chiamante      
+    * test.api.ragioneria.v1.profilo.get.get-profilo
+    * test.api.ragioneria.v2.profilo.get.get-profilo
+* Ricerca e consultazione delle Riconciliazioni
+    * test.api.ragioneria.v1.riconciliazioni.get.riconciliazione-find
+    * test.api.ragioneria.v1.riconciliazioni.get.riconciliazione-get
+    * test.api.ragioneria.v1.riconciliazioni.get.riconciliazioni-find-byMetadatiPaginazione
+    * test.api.ragioneria.v1.riconciliazioni.get.riconciliazioni-find-sintassi
+    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazione-find
+    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazione-get
+    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazione-getbyTipoRiscossione
+    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazioni-find-byMetadatiPaginazione
+    * test.api.ragioneria.v2.riconciliazioni.get.riconciliazioni-find-sintassi
     * test.api.ragioneria.v3.riconciliazioni.get.riconciliazione-find
     * test.api.ragioneria.v3.riconciliazioni.get.riconciliazione-get
     * test.api.ragioneria.v3.riconciliazioni.get.riconciliazioni-find-byMetadatiPaginazione
     * test.api.ragioneria.v3.riconciliazioni.get.riconciliazioni-find-sintassi
+* Registrazione delle Riconciliazioni      
+    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-autorizzazione
+    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-cumulativa
+    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-semantica
+    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-senza-rpt
+    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-singola
+    * test.api.ragioneria.v1.riconciliazioni.post.riconciliazione-sintassi
+    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-autorizzazione
+    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-cumulativa-ricercaFlussiCaseInsensitive
+    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-cumulativa
+    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-semantica
+    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-senza-rpt
+    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-singola
+    * test.api.ragioneria.v2.riconciliazioni.post.riconciliazione-sintassi
     * test.api.ragioneria.v3.riconciliazioni.put.riconciliazione-autorizzazione
     * test.api.ragioneria.v3.riconciliazioni.put.riconciliazione-cumulativa
     * test.api.ragioneria.v3.riconciliazioni.put.riconciliazione-semantica
     * test.api.ragioneria.v3.riconciliazioni.put.riconciliazione-senza-rpt
     * test.api.ragioneria.v3.riconciliazioni.put.riconciliazione-singola
-    * test.api.ragioneria.v3.riconciliazioni.put.riconciliazione-sintassi
+    * test.api.ragioneria.v3.riconciliazioni.put.riconciliazione-sintassi      
+* Ricerca e consultazione delle riscossioni      
+    * test.api.ragioneria.v1.riscossioni.get.riscossioni-find-byMetadatiPaginazione
+    * test.api.ragioneria.v1.riscossioni.get.riscossioni-find-byStato
+    * test.api.ragioneria.v1.riscossioni.get.riscossioni-find-sintassi
+    * test.api.ragioneria.v1.riscossioni.post.riscossioni-find
+    * test.api.ragioneria.v1.riscossioni.post.riscossioni-get
+    * test.api.ragioneria.v2.riscossioni.get.riscossioni-find-byIur
+    * test.api.ragioneria.v2.riscossioni.get.riscossioni-find-byMetadatiPaginazione
+    * test.api.ragioneria.v2.riscossioni.get.riscossioni-find-byStato
+    * test.api.ragioneria.v2.riscossioni.get.riscossioni-find-byTipo
+    * test.api.ragioneria.v2.riscossioni.get.riscossioni-find-sintassi
+    * test.api.ragioneria.v2.riscossioni.post.riscossioni-find
+    * test.api.ragioneria.v2.riscossioni.post.riscossioni-get
     * test.api.ragioneria.v3.riscossioni.get.riscossioni-find-byIur
     * test.api.ragioneria.v3.riscossioni.get.riscossioni-find-byMetadatiPaginazione
     * test.api.ragioneria.v3.riscossioni.get.riscossioni-find-byStato
     * test.api.ragioneria.v3.riscossioni.get.riscossioni-find-byTipo
     * test.api.ragioneria.v3.riscossioni.get.riscossioni-find-sintassi
     * test.api.ragioneria.v3.riscossioni.get.riscossioni-find
-    * test.api.ragioneria.v3.riscossioni.get.riscossioni-get
+    * test.api.ragioneria.v3.riscossioni.get.riscossioni-get      
+    * test.api.ragioneria.v3.ricevute.get.ricevute-find-applicazione
+    * test.api.ragioneria.v3.ricevute.get.ricevute-find
+    * test.api.ragioneria.v3.ricevute.get.ricevute-get
+    
+Workflow di pagamento
+~~~~~~~~~~~~~~~~~~~~~
+
+* Pagamenti modello 3 (Api pagoPA v1)
     * test.workflow.modello3.v1.modello3-non-autorizzato
     * test.workflow.modello3.v1.modello3-pagamento-annullato
     * test.workflow.modello3.v1.modello3-pagamento-data-validita-decorsa
@@ -619,6 +664,7 @@ API Backoffice
     * test.workflow.modello3.v1.modello3-pagamento-non-eseguito
     * test.workflow.modello3.v1.modello3-pagamento-scaduto
     * test.workflow.modello3.v1.modello3-pagamento-sconosciuto
+* Pagamenti modello unico (Api pagoPA v2)      
     * test.workflow.modello3.v2.modello3-non-autorizzato
     * test.workflow.modello3.v2.modello3-pagamento-duplicato
     * test.workflow.modello3.v2.modello3-pagamento-eseguito
