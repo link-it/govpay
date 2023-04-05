@@ -219,9 +219,6 @@ DELETE FROM acl WHERE servizio = 'C';
 INSERT INTO utenze_domini (id_utenza, id_dominio) SELECT id_utenza,id_dominio FROM acl WHERE id_dominio IS NOT NULL and cod_tipo = 'D';
 DELETE FROM acl WHERE id_dominio IS NOT NULL and cod_tipo = 'D';
 
--- Elimino righe duplicate nella tabella utenze_domini perche' vengono caricate piu' ACL per la coppia id_utenza, id_dominio facendo scattare il check delle UO
-DELETE FROM utenze_domini WHERE id_uo IS NULL AND rowid NOT IN (SELECT MIN(rowid) FROM utenze_domini WHERE id_utenza IS NOT NULL GROUP BY id_utenza, id_dominio);
-
 -- copio autorizzazioni su id_tipo_tributo nella tabella utenze_tipi_tributo
 INSERT INTO utenze_tributi (id_utenza, id_tipo_tributo) SELECT id_utenza,id_tipo_tributo FROM acl WHERE id_tipo_tributo IS NOT NULL and cod_tipo = 'T';
 DELETE FROM acl WHERE id_tipo_tributo IS NOT NULL and cod_tipo = 'T';
@@ -1026,6 +1023,9 @@ CREATE UNIQUE INDEX idx_pag_id_riscossione ON pagamenti (cod_dominio, iuv, iur, 
 ALTER TABLE utenze_domini ADD id_uo NUMBER;
 ALTER TABLE utenze_domini ADD CONSTRAINT fk_nzd_id_uo FOREIGN KEY (id_uo) REFERENCES uo(id);
 ALTER TABLE utenze_domini MODIFY (id_dominio NULL);
+
+-- Elimino righe duplicate nella tabella utenze_domini perche' vengono caricate piu' ACL per la coppia id_utenza, id_dominio facendo scattare il check delle UO
+DELETE FROM utenze_domini WHERE id_uo IS NULL AND rowid NOT IN (SELECT MIN(rowid) FROM utenze_domini WHERE id_utenza IS NOT NULL GROUP BY id_utenza, id_dominio);
 
 -- 26/09/2019 Identificativo univoco di creazione del versamento
 ALTER TABLE versamenti ADD id_sessione VARCHAR2(35 CHAR);
@@ -2702,4 +2702,26 @@ UPDATE utenze SET autorizzazione_domini_star = 1 WHERE id = (SELECT id_utenza FR
 
 -- Ripristino autorizzazione utenze console backoffice per tutti i domini.
 UPDATE utenze SET autorizzazione_domini_star = 1 WHERE id IN (SELECT id_utenza FROM operatori);
+
+
+-- 05/04/2023 Correzioni alla migrazione QA
+-- Elimino righe duplicate nella tabella utenze_domini perche' vengono caricate piu' ACL per la coppia id_utenza, id_dominio facendo scattare il check delle UO
+DELETE FROM utenze_domini WHERE id_uo IS NULL AND rowid NOT IN (SELECT MIN(rowid) FROM utenze_domini WHERE id_utenza IS NOT NULL GROUP BY id_utenza, id_dominio);
+
+-- Applicazioni con reg_exp non definita
+UPDATE applicazioni SET reg_exp = CONCAT(CONCAT('^', cod_applicazione_iuv), '.*$') WHERE reg_exp IS NULL;
+
+-- Correzione migrazione autorizzazione sulle 'API Pendenze' e 'API Pagamenti'
+-- Aggiungo a tutte le applicazioni una nuova entry per le 'API Pagamenti' e poi elimino i duplicati
+INSERT INTO acl (servizio,diritti,id_utenza) SELECT 'API Pagamenti' AS Servizio , 'RW' AS diritti, applicazioni.id_utenza FROM applicazioni;
+DELETE FROM acl WHERE Servizio = 'API Pagamenti' AND rowid NOT IN (SELECT MIN(rowid) FROM acl WHERE Servizio = 'API Pagamenti' GROUP BY Servizio, id_utenza);
+
+-- Aggiungo a tutte le applicazioni una nuova entry per le 'API Pendenze' e poi elimino i duplicati
+INSERT INTO acl (servizio,diritti,id_utenza) SELECT 'API Pendenze' AS Servizio , 'RW' AS diritti, applicazioni.id_utenza FROM applicazioni;
+DELETE FROM acl WHERE Servizio = 'API Pendenze' AND rowid NOT IN (SELECT MIN(rowid) FROM acl WHERE Servizio = 'API Pendenze' GROUP BY Servizio, id_utenza);
+
+
+
+
+
 
