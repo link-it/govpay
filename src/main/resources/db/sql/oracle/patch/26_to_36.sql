@@ -260,7 +260,19 @@ ALTER TABLE acl DROP COLUMN id_utenza;
 
 INSERT INTO applicazioni (cod_applicazione, id_utenza, principal, trusted, abilitato, versione, cod_connettore_esito, cod_connettore_verifica, firma_ricevuta) SELECT portali.cod_portale, portali.id_utenza, portali.principal, portali.trusted, portali.abilitato, portali.versione, CONCAT(portali.cod_portale,'_ESITO'), CONCAT(portali.cod_portale,'_VERIFICA'), 0 FROM portali WHERE portali.id_utenza NOT IN (SELECT id_utenza FROM applicazioni);
 
-CREATE SEQUENCE seq_pagamenti_portale MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+-- Init della sequence dei pagamenti portale al prossimo valore della sequence della tabella rpt.
+DECLARE
+   
+	l_max_value number;
+	
+BEGIN
+
+   SELECT max(id) +1 INTO l_max_value FROM rpt;
+
+   EXECUTE IMMEDIATE 'CREATE SEQUENCE seq_pagamenti_portale MINVALUE 1 MAXVALUE 9223372036854775807 START WITH ' || l_max_value || ' INCREMENT BY 1 CACHE 2 NOCYCLE';
+
+END;
+/
 
 CREATE TABLE pagamenti_portale
 (
@@ -291,18 +303,6 @@ CREATE TABLE pagamenti_portale
        -- fk/pk keys constraints
        CONSTRAINT pk_pagamenti_portale PRIMARY KEY (id)
 );
-
-CREATE TRIGGER trg_pagamenti_portale
-BEFORE
-insert on pagamenti_portale
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_pagamenti_portale.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
 
 CREATE SEQUENCE seq_pag_port_versamenti MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
@@ -354,42 +354,39 @@ UPDATE rpt SET id_applicazione = (SELECT applicazioni.id FROM applicazioni, port
 ALTER TABLE rpt DROP COLUMN id_portale;
 
 -- Collegare versamenti pagati e rpt a pagamenti portale
--- creo colonna temporanea per collegare rpt e pagamentiportale
-ALTER TABLE pagamenti_portale ADD id_rpt_tmp NUMBER;
+-- Per problemi di performance durante l'inversione della foreign key tra PP e RPT adotto questa soluzione
+-- Inserisco un PP indicando come id quello della RPT corrispondente.
+-- Per ogni RPT assegno la foreign-key copiano il valore dell'id 
 
 -- inserisco i pagamenti di tipo 3 tutti in stato non eseguito, aggiorno lo stato in seguito
 -- 1180 secondi
-INSERT INTO pagamenti_portale (id_rpt_tmp, id_applicazione,cod_canale,data_richiesta,cod_psp,multi_beneficiario, nome, importo, versante_identificativo, id_sessione, stato, codice_stato, tipo) 
+INSERT INTO pagamenti_portale (id, id_applicazione,cod_canale,data_richiesta,cod_psp,multi_beneficiario, nome, importo, versante_identificativo, id_sessione, stato, codice_stato, tipo) 
 	SELECT rpt.id, rpt.id_applicazione, rpt.cod_canale, rpt.data_msg_richiesta, rpt.cod_psp, rpt.cod_dominio, CONCAT('Pagamento Pendenza ', versamenti.cod_versamento_ente), versamenti.importo_totale, versamenti.debitore_identificativo,
 	rpt.cod_msg_richiesta, 'NON_ESEGUITO', 'PAGAMENTO_NON_ESEGUITO', 3 
 	FROM rpt, versamenti WHERE rpt.id_versamento = versamenti.id AND rpt.cod_carrello IS NULL;
 
 -- inserisco i pagamenti di tipo 1 tutti in stato non eseguito, aggiorno lo stato in seguito
 -- 980 secondi
-INSERT INTO pagamenti_portale (id_rpt_tmp, id_applicazione,cod_canale,data_richiesta,cod_psp,multi_beneficiario, nome, importo, versante_identificativo, id_sessione, stato, codice_stato, tipo, id_sessione_portale) 
+INSERT INTO pagamenti_portale (id, id_applicazione,cod_canale,data_richiesta,cod_psp,multi_beneficiario, nome, importo, versante_identificativo, id_sessione, stato, codice_stato, tipo, id_sessione_portale) 
 	SELECT rpt.id, rpt.id_applicazione, rpt.cod_canale, rpt.data_msg_richiesta, rpt.cod_psp, rpt.cod_dominio, CONCAT('Pagamento Pendenza ', versamenti.cod_versamento_ente), versamenti.importo_totale, versamenti.debitore_identificativo,
 	rpt.cod_msg_richiesta, 'NON_ESEGUITO', 'PAGAMENTO_NON_ESEGUITO', 1, rpt.cod_sessione_portale 
 	FROM rpt, versamenti WHERE rpt.id_versamento = versamenti.id AND rpt.cod_carrello IS NOT NULL AND rpt.cod_carrello NOT IN (SELECT id_sessione FROM pagamenti_portale);
 	
--- 20 secondi
-CREATE INDEX idx_pp_fk_rpt_tmp ON pagamenti_portale (id_rpt_tmp);
-
--- indici che aiutano nelle join per la tabella rpt.
--- 368 secondi
-CREATE INDEX idx_rpt_fk_pp ON rpt (id_pagamento_portale);
-
--- aggiorno i riferimenti ai pagamenti portale
--- 11197 secondi
-UPDATE /*+ INDEX(rpt PK_RPT) */ rpt SET rpt.id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
--- Fallita con errore ORA-01427: single-row subquery returns more than one row
--- UPDATE rpt SET id_pagamento_portale = (SELECT pagamenti_portale.id FROM pagamenti_portale, rpt WHERE pagamenti_portale.id_rpt_tmp = rpt.id);
--- Fallita con errore ORA-01652: unable to extend temp segment by 128 in tablespace TEMP || finisce lo spazio  
--- MERGE INTO rpt r1 USING ( SELECT id, id_rpt_tmp FROM pagamenti_portale ) pp ON(pp.id_rpt_tmp = r1.id) WHEN MATCHED THEN UPDATE SET r1.id_pagamento_portale = pp.id;
-
-DROP INDEX idx_pp_fk_rpt_tmp;
--- elimino colonna id_rpt
--- 86 secondi
-ALTER TABLE pagamenti_portale DROP COLUMN id_rpt_tmp;
+-- Imposto la FK
+UPDATE rpt SET id_pagamento_portale = id;
+	
+-- creazione del trigger per la pk dei pagamenti portale
+CREATE TRIGGER trg_pagamenti_portale
+BEFORE
+insert on pagamenti_portale
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_pagamenti_portale.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
 
 -- gia' esistente
 -- CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
@@ -1370,7 +1367,7 @@ ALTER TABLE domini MODIFY (id_stazione NULL);
 -- 22/06/2021 API-Rendicontazione V3, nuovi campi tabella incassi
 
 ALTER TABLE incassi ADD identificativo VARCHAR2(35 CHAR);
-UPDATE incassi SET identificativo = trn;
+UPDATE incassi SET identificativo = SUBSTR(trn,0,35);
 ALTER TABLE incassi MODIFY (identificativo NOT NULL);
 
 ALTER TABLE incassi ADD stato VARCHAR2(35 CHAR);
