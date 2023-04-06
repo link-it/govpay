@@ -79,13 +79,13 @@ case $key in
     *)    # unknown option
     echo "Opzione non riconosciuta $1"
     echo "usage:"
-    echo "   -bo <args> : lista di autenticazioni da abilitare sulle api di backoffice (spid,header,wildfly,basic,ssl,hdrcert,public,session). Default: basic,ssl" 
-    echo "   -pag <args> : lista di autenticazioni da abilitare sulle api di pagamento (spid,header,wildfly,basic,ssl,hdrcert,public,session). Default: basic,ssl"
-    echo "   -pen <args> : lista di autenticazioni da abilitare sulle api di pendenza (basic,ssl). Default: basic,basic-gp,ssl,hdrcert"
-    echo "   -rag <args> : lista di autenticazioni da abilitare sulle api di ragioneria (basic,ssl). Default: basic,basic-gp,ssl,hdrcert"
+    echo "   -bo <args> : lista di autenticazioni da abilitare sulle api di backoffice (spid,header,wildfly,basic,ssl,hdrcert,public,session,ldap). Default: basic,ssl"
+    echo "   -pag <args> : lista di autenticazioni da abilitare sulle api di pagamento (spid,header,wildfly,basic,ssl,hdrcert,public,session,ldap). Default: basic,ssl"
+    echo "   -pen <args> : lista di autenticazioni da abilitare sulle api di pendenza (basic,ssl,ldap). Default: basic,basic-gp,ssl,hdrcert"
+    echo "   -rag <args> : lista di autenticazioni da abilitare sulle api di ragioneria (basic,ssl,ldap). Default: basic,basic-gp,ssl,hdrcert"
     echo "   -usr <args> : lista di autenticazioni da abilitare sulle api di user (spid). Default: spid"
-    echo "   -pp <args> : autenticazione da abilitare sulle api di pagopa (basic,basic-gp,ssl). Default: ssl,hdrcert"
-    echo "   -jppa <args> : autenticazione da abilitare sulle api di jppapdp (basic,basic-gp,ssl). Default: ssl,hdrcert"
+    echo "   -pp <args> : autenticazione da abilitare sulle api di pagopa (basic,basic-gp,ssl,hdrcert,header,ldap). Default: ssl,hdrcert"
+    echo "   -jppa <args> : autenticazione da abilitare sulle api di jppapdp (basic,basic-gp,ssl,ldap). Default: ssl,hdrcert"
     echo "   -d <args> : autenticazione da abilitare sui contesti senza autenticazione per retro-compatibilita (basic,ssl,hdrcert). Default: none"
     exit 2;
     ;;
@@ -95,8 +95,10 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 BACKOFFICE_BASIC_WF=false
 BACKOFFICE_BASIC_GP=false
-[[ $BACKOFFICE == *"wildfly"* ]] && BACKOFFICE_BASIC_WF=true 
-[[ $BACKOFFICE == *"basic"* ]] && { BACKOFFICE_BASIC_WF=false; BACKOFFICE_BASIC_GP=true; }
+BACKOFFICE_BASIC_LDAP=false
+[[ $BACKOFFICE == *"wildfly"* ]] && BACKOFFICE_BASIC_WF=true
+[[ $BACKOFFICE == *"basic"* ]] && { BACKOFFICE_BASIC_WF=false; BACKOFFICE_BASIC_GP=true; BACKOFFICE_BASIC_LDAP=false; }
+[[ $BACKOFFICE == *"ldap"* ]] && { BACKOFFICE_BASIC_WF=false; BACKOFFICE_BASIC_GP=false; BACKOFFICE_BASIC_LDAP=true; }
 [[ $BACKOFFICE == *"ssl"* ]] && BACKOFFICE_SSL=true || BACKOFFICE_SSL=false
 [[ $BACKOFFICE == *"hdrcert"* ]] && BACKOFFICE_SSL_HEADER=true || BACKOFFICE_SSL_HEADER=false
 [[ $BACKOFFICE == *"header"* ]] && BACKOFFICE_HEADER=true || BACKOFFICE_HEADER=false
@@ -106,8 +108,10 @@ BACKOFFICE_BASIC_GP=false
 
 PAGAMENTI_BASIC_WF=false
 PAGAMENTI_BASIC_GP=false
-[[ $PAGAMENTI == *"wildfly"* ]] && { PAGAMENTI_BASIC_WF=true; PAGAMENTI_BASIC_GP=false; }
-[[ $PAGAMENTI == *"basic"* ]] && { PAGAMENTI_BASIC_GP=true; PAGAMENTI_BASIC_WF=false; }
+PAGAMENTI_BASIC_LDAP=false
+[[ $PAGAMENTI == *"wildfly"* ]] && { PAGAMENTI_BASIC_WF=true; PAGAMENTI_BASIC_GP=false; PAGAMENTI_BASIC_LDAP=false; }
+[[ $PAGAMENTI == *"basic"* ]] && { PAGAMENTI_BASIC_GP=true; PAGAMENTI_BASIC_WF=false; PAGAMENTI_BASIC_LDAP=false; }
+[[ $PAGAMENTI == *"ldap"* ]] && { PAGAMENTI_BASIC_GP=false; PAGAMENTI_BASIC_WF=false; PAGAMENTI_BASIC_LDAP=true; }
 [[ $PAGAMENTI == *"ssl"* ]] && PAGAMENTI_SSL=true || PAGAMENTI_SSL=false
 [[ $PAGAMENTI == *"hdrcert"* ]] && PAGAMENTI_SSL_HEADER=true || PAGAMENTI_SSL_HEADER=false
 [[ $PAGAMENTI == *"header"* ]] && PAGAMENTI_HEADER=true || PAGAMENTI_HEADER=false
@@ -117,16 +121,20 @@ PAGAMENTI_BASIC_GP=false
 
 PENDENZE_BASIC_WF=false
 PENDENZE_BASIC_GP=false
-[[ $PENDENZE == *"wildfly"* ]] && { PENDENZE_BASIC_WF=true; PENDENZE_BASIC_GP=false; }
-[[ $PENDENZE == *"basic"* ]] && { PENDENZE_BASIC_GP=true; PENDENZE_BASIC_WF=false; } 
+PENDENZE_BASIC_LDAP=false
+[[ $PENDENZE == *"wildfly"* ]] && { PENDENZE_BASIC_WF=true; PENDENZE_BASIC_GP=false; PENDENZE_BASIC_LDAP=false; }
+[[ $PENDENZE == *"basic"* ]] && { PENDENZE_BASIC_GP=true; PENDENZE_BASIC_WF=false; PENDENZE_BASIC_LDAP=false; }
+[[ $PENDENZE == *"ldap"* ]] && { PENDENZE_BASIC_GP=false; PENDENZE_BASIC_WF=false; PENDENZE_BASIC_LDAP=true; }
 [[ $PENDENZE == *"ssl"* ]] && PENDENZE_SSL=true || PENDENZE_SSL=false
 [[ $PENDENZE == *"hdrcert"* ]] && PENDENZE_SSL_HEADER=true || PENDENZE_SSL_HEADER=false
 [[ $PENDENZE == *"header"* ]] && PENDENZE_HEADER=true || PENDENZE_HEADER=false
 
 RAGIONERIA_BASIC_WF=false
 RAGIONERIA_BASIC_GP=false
-[[ $RAGIONERIA == *"wildfly"* ]] && { RAGIONERIA_BASIC_WF=true; RAGIONERIA_BASIC_GP=false; } 
-[[ $RAGIONERIA == *"basic"* ]] && { RAGIONERIA_BASIC_GP=true; RAGIONERIA_BASIC_WF=false; }
+RAGIONERIA_BASIC_LDAP=false
+[[ $RAGIONERIA == *"wildfly"* ]] && { RAGIONERIA_BASIC_WF=true; RAGIONERIA_BASIC_GP=false; RAGIONERIA_BASIC_LDAP=false; }
+[[ $RAGIONERIA == *"basic"* ]] && { RAGIONERIA_BASIC_GP=true; RAGIONERIA_BASIC_WF=false; RAGIONERIA_BASIC_LDAP=false; }
+[[ $RAGIONERIA == *"ldap"* ]] && { RAGIONERIA_BASIC_GP=false; RAGIONERIA_BASIC_WF=false; RAGIONERIA_BASIC_LDAP=true; }
 [[ $RAGIONERIA == *"ssl"* ]] && RAGIONERIA_SSL=true || RAGIONERIA_SSL=false
 [[ $RAGIONERIA == *"hdrcert"* ]] && RAGIONERIA_SSL_HEADER=true || RAGIONERIA_SSL_HEADER=false
 [[ $RAGIONERIA == *"header"* ]] && RAGIONERIA_HEADER=true || RAGIONERIA_HEADER=false
@@ -135,9 +143,11 @@ RAGIONERIA_BASIC_GP=false
 
 [[ $PAGOPA == *"basic"* ]] && PAGOPA_BASIC=true || PAGOPA_BASIC=false
 [[ $PAGOPA == *"hdrcert"* ]] && PAGOPA_SSL_HEADER=true || PAGOPA_SSL_HEADER=false
+[[ $PAGOPA == *"ldap"* ]] && PAGOPA_LDAP=true || PAGOPA_LDAP=false
 
 [[ $JPPAPDP == *"basic"* ]] && JPPAPDP_BASIC=true || JPPAPDP_BASIC=false
 [[ $JPPAPDP == *"hdrcert"* ]] && JPPAPDP_SSL_HEADER=true || JPPAPDP_SSL_HEADER=false
+[[ $JPPAPDP == *"ldap"* ]] && JPPAPDP_SSL_LDAP=true || JPPAPDP_SSL_LDAP=false
 
 DEFAULT_BASIC=false
 DEFAULT_SSL=false
@@ -156,7 +166,7 @@ CONTEXT_SECURITY_XML_SUFFIX="applicationContext-security.xml"
 rm -rf $GOVPAY_WORK_DIR
 mkdir $GOVPAY_WORK_DIR
 
-cp $GOVPAY_SRC_DIR$GOVPAY_EAR_NAME $GOVPAY_WORK_DIR 
+cp $GOVPAY_SRC_DIR$GOVPAY_EAR_NAME $GOVPAY_WORK_DIR
 pushd $GOVPAY_WORK_DIR
 
 unzip -q -d $GOVPAY_TMP_DIR $GOVPAY_EAR_NAME
@@ -183,6 +193,14 @@ then
   echo "API-Backoffice abilitazione basic wildfly completata.";
 fi
 
+if $BACKOFFICE_BASIC_LDAP
+then
+  echo "API-Backoffice abilitazione autenticazione basic ldap...";
+  sed -i -e "s# BASIC_LDAP_PROVIDER_START# BASIC_LDAP_PROVIDER_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s# BASIC_LDAP_PROVIDER_END# <!-- BASIC_LDAP_PROVIDER_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Backoffice abilitazione basic ldap completata.";
+fi
+
 if ! $BACKOFFICE_SSL
 then
   echo "API-Backoffice disabilitazione autenticazione ssl...";
@@ -200,7 +218,7 @@ then
 fi
 
 if $BACKOFFICE_SPID
-then 
+then
   echo "API-Backoffice abilitazione autenticazione spid...";
   sed -i -e "s#SPID_START#SPID_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   sed -i -e "s#SPID_END#<!-- SPID_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
@@ -269,6 +287,14 @@ then
   echo "API-Pendenze abilitazione basic wildfly completata.";
 fi
 
+if $PENDENZE_BASIC_LDAP
+then
+  echo "API-Pendenze abilitazione autenticazione basic ldap...";
+  sed -i -e "s# BASIC_LDAP_PROVIDER_START# BASIC_LDAP_PROVIDER_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s# BASIC_LDAP_PROVIDER_END# <!-- BASIC_LDAP_PROVIDER_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Pendenze abilitazione basic ldap completata.";
+fi
+
 if ! $PENDENZE_SSL
 then
   echo "API-Pendenze disabilitazione autenticazione ssl...";
@@ -333,6 +359,14 @@ then
   echo "API-Ragioneria abilitazione basic wildfly completata.";
 fi
 
+if $RAGIONERIA_BASIC_LDAP
+then
+  echo "API-Ragioneria abilitazione autenticazione basic ldap...";
+  sed -i -e "s# BASIC_LDAP_PROVIDER_START# BASIC_LDAP_PROVIDER_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s# BASIC_LDAP_PROVIDER_END# <!-- BASIC_LDAP_PROVIDER_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Ragioneria abilitazione basic ldap completata.";
+fi
+
 if ! $RAGIONERIA_SSL
 then
   echo "API-Ragioneria disabilitazione autenticazione ssl...";
@@ -394,6 +428,14 @@ then
   sed -i -e "s# BASIC_WILDFLY_PROVIDER_START# BASIC_WILDFLY_PROVIDER_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   sed -i -e "s# BASIC_WILDFLY_PROVIDER_END# <!-- BASIC_WILDFLY_PROVIDER_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
   echo "API-Pagamenti abilitazione basic wildfly completata.";
+fi
+
+if $PAGAMENTI_BASIC_LDAP
+then
+  echo "API-Pagamenti abilitazione autenticazione basic ldap...";
+  sed -i -e "s# BASIC_LDAP_PROVIDER_START# BASIC_LDAP_PROVIDER_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s# BASIC_LDAP_PROVIDER_END# <!-- BASIC_LDAP_PROVIDER_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  echo "API-Pagamenti abilitazione basic ldap completata.";
 fi
 
 if ! $PAGAMENTI_SSL
@@ -500,6 +542,30 @@ then
   echo "API-PagoPA abilitazione HTTP Basic-auth completata.";
 fi
 
+if $PAGOPA_LDAP
+then
+  echo "API-PagoPA abilitazione HTTP Basic-auth con provider LDAP...";
+
+  API_PREFIX="api-pagopa-"
+  unzip -q $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # accendo la modalita' ldap
+  sed -i -e "s#LDAP_START#LDAP_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#LDAP_END#<!-- LDAP_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # spengo modalita ssl
+  sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # ripristino file
+  zip -qr $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # eliminazione dei file temporanei
+  rm -rf $APP_CONTEXT_BASE_DIR
+
+  echo "API-PagoPA abilitazione HTTP Basic-auth con provider LDAP completata.";
+fi
+
 if $PAGOPA_SSL_HEADER
 then
   echo "API-PagoPA abilitazione hdrcert...";
@@ -550,6 +616,30 @@ then
   echo "API-Maggioli JPPA abilitazione HTTP Basic-auth completata.";
 fi
 
+if $JPPAPDP_SSL_LDAP
+then
+  echo "API-Maggioli JPPA abilitazione HTTP Basic-auth con provider LDAP...";
+
+  API_PREFIX="api-jppapdp-"
+  unzip -q $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # accendo la modalita' basic
+  sed -i -e "s#LDAP_START#LDAP_START -->#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#LDAP_END#<!-- LDAP_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # spengo modalita ssl
+  sed -i -e "s#SSL_START -->#SSL_START#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+  sed -i -e "s#<!-- SSL_END#SSL_END#g" $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # ripristino file
+  zip -qr $API_PREFIX$GOVPAY_VERSION.war $APP_CONTEXT_BASE_DIR/$API_PREFIX$CONTEXT_SECURITY_XML_SUFFIX
+
+  # eliminazione dei file temporanei
+  rm -rf $APP_CONTEXT_BASE_DIR
+
+  echo "API-Maggioli JPPA abilitazione HTTP Basic-auth con provider LDAP completata.";
+fi
+
 if $JPPAPDP_SSL_HEADER
 then
   echo "API-Maggioli JPPA abilitazione hdrcert...";
@@ -588,4 +678,3 @@ cp $GOVPAY_WORK_DIR/$GOVPAY_EAR_NAME $GOVPAY_SRC_DIR
 rm -rf $GOVPAY_WORK_DIR
 
 echo "Configurazione govpay.ear completata";
-

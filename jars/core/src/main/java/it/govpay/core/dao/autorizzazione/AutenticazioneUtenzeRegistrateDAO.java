@@ -73,6 +73,15 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 		}
 	}
 
+	@Override
+	public UserDetails loadUserByLdapUserDetail(String username, GovpayLdapUserDetails userDetail) throws UsernameNotFoundException {
+		try {
+			return this._loadUserDetailsFromLdapUserDetail(username, userDetail.getAuthorities(), userDetail);
+		}catch(it.govpay.core.exceptions.NotFoundException e) {
+			throw new UsernameNotFoundException(e.getMessage());
+		}
+	}
+
 
 	private UserDetails _loadUserDetails(String username, Collection<? extends GrantedAuthority> authFromPreauth,Map<String, List<String>> headerValues) throws it.govpay.core.exceptions.NotFoundException {
 		String transactionId = UUID.randomUUID().toString();
@@ -137,7 +146,7 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 			attributeValues = new HashMap<>();
 		}
 		String transactionId = UUID.randomUUID().toString();
-		
+
 		try {
 			GovpayLdapUserDetails userDetailFromSession = (GovpayLdapUserDetails) attributeValues.get(AuthorizationManager.SESSION_PRINCIPAL_OBJECT_ATTRIBUTE_NAME);
 			if(userDetailFromSession == null)
@@ -167,6 +176,39 @@ public class AutenticazioneUtenzeRegistrateDAO extends BaseAutenticazioneDAO imp
 			throw e;
 		} catch(ServiceException e){
 			throw new RuntimeException("Errore interno, impossibile caricare le informazioni del cittadino ["+username+"]: ", e);
+		}	finally {
+		}
+	}
+
+	private UserDetails _loadUserDetailsFromLdapUserDetail(String username, Collection<? extends GrantedAuthority> authFromPreauth, GovpayLdapUserDetails userDetail) throws it.govpay.core.exceptions.NotFoundException {
+		Map<String, Object> attributeValues = new HashMap<>();
+
+		String transactionId = UUID.randomUUID().toString();
+		try {
+			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
+			this.debug(transactionId,"Lettura delle informazioni per l'utenza ldap ["+username+"] in corso...");
+			UtenzeBD utenzeBD = new UtenzeBD(configWrapper);
+
+			boolean exists = false;
+
+			if(this.isCheckSubject())
+				exists = utenzeBD.existsBySubject(username);
+			else 
+				exists = utenzeBD.existsByPrincipal(username);
+
+			if(!exists)
+				throw new it.govpay.core.exceptions.NotFoundException("Utenza ldap "+username+" non trovata.");
+
+			this.debug(transactionId,"Utenza ldap ["+username+"] trovata, lettura del dettaglio in corso...");
+			GovpayLdapUserDetails userDetailFromUtenzaLdap = AutorizzazioneUtils.getUserDetailFromUtenzaRegistrataInSessione(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, attributeValues, userDetail, configWrapper, this.getApiName(), this.getAuthType());
+			userDetailFromUtenzaLdap.setIdTransazioneAutenticazione(transactionId);
+			this.debug(transactionId,"Utenza ldap ["+username+"] trovata, lettura del dettaglio completata.");
+			return userDetailFromUtenzaLdap;
+		} catch(it.govpay.core.exceptions.NotFoundException e){
+			this.debug(transactionId,"Utenza ["+username+"] non trovata.");
+			throw e;
+		} catch(Exception e){
+			throw new RuntimeException("Errore interno, impossibile caricare le informazioni dell'utenza ldap ["+username+"]: ", e);
 		}	finally {
 		}
 	}
