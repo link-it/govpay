@@ -51,6 +51,52 @@
         </http>
       	
       	 BASIC_END -->
+      	 
+     	 <!-- LDAP_START 
+        
+        <ldap-server id="defaultLdapServer" url="LDAP-SERVER-URL" manager-dn="MANAGER-DN" manager-password="MANAGER-PWD"/>
+      	 
+      	 <b:bean id="ldapUserDetailsContextMapper" class="it.govpay.rs.v1.authentication.ldap.mapper.GovPayLdapUserDetailsMapper" >
+        	<b:property name="userDetailService" ref="userDetailServiceUtenze"/>
+        </b:bean>
+        
+        <b:bean id="basicAuthenticationEntryPoint" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
+    		<b:property name="wwwAuthenticate" value="false"/>
+        </b:bean>
+        
+        <b:bean id="userDetailServiceUtenze" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeAnonimeDAO" >
+        	<b:property name="apiName" value="API_MAGGIOLI_JPPA" />
+        	<b:property name="authType" value="LDAP" />
+        </b:bean>
+        
+        <authentication-manager id="authenticationManager">
+        	<ldap-authentication-provider 
+        			server-ref="defaultLdapServer" 
+        			user-context-mapper-ref="ldapUserDetailsContextMapper"
+        			user-dn-pattern="USER-DN-PATTERN"
+        			user-search-filter="USER-SEARCH-FILTER"
+        			user-search-base="USER-SEARCH-BASE"
+        			group-search-base="GROUP-SEARCH-BASE"
+					group-search-filter="GROUP-SEARCH-FILTER"
+        			>
+        	</ldap-authentication-provider>
+        </authentication-manager>
+        
+        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/**">
+                <csrf disabled="true"/>
+                <intercept-url pattern="*?wsdl" access="permitAll" />
+                
+                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
+                
+                <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+      	
+      	 LDAP_END -->
         
         <!-- SSL_START -->
         

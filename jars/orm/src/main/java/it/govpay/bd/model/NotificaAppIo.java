@@ -71,7 +71,7 @@ public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
 		this.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
 		this.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
 		this.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
-		this.setIuv(versamento.getIuvVersamento());
+		this.setIuv(rpt.getIuv());
 		this.setDebitoreIdentificativo(versamento.getAnagraficaDebitore().getCodUnivoco());
 		long adesso = new Date().getTime(); 
 		this.setDataAggiornamento(new Date(adesso));

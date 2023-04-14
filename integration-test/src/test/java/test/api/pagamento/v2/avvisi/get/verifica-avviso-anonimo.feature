@@ -188,11 +188,11 @@ And header cookie = cookie1
 When method get
 Then status 200
 
-Given url pagamentiBaseurl
-And path '/avvisi', idDominio, numeroAvviso
-And header cookie = cookie1
-When method get
-Then status 406
+#Given url pagamentiBaseurl
+#And path '/avvisi', idDominio, numeroAvviso
+#And header cookie = cookie1
+#When method get
+#Then status 406
 
 
 @test3

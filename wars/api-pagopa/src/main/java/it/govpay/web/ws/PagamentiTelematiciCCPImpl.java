@@ -1150,7 +1150,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			datiPagoPA.setFruitore(GpContext.NodoDeiPagamentiSPC);
 			appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
 			datiPagoPA.setCodDominio(codDominio);
-			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.PAVERIFYPAYMENTNOTICE.name());
+			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.PAVERIFYPAYMENTNOTICE.toString());
 			datiPagoPA.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 			datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP);
 			datiPagoPA.setErogatore(codIntermediario);
@@ -1440,7 +1440,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			datiPagoPA.setFruitore(GpContext.NodoDeiPagamentiSPC);
 			datiPagoPA.setErogatore(codIntermediario);
 			datiPagoPA.setCodIntermediario(codIntermediario);
-			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.PAGETPAYMENT.name());
+			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.PAGETPAYMENT.toString());
 			datiPagoPA.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 			datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP);
 			datiPagoPA.setCodDominio(codDominio);
@@ -2159,7 +2159,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			datiPagoPA.setFruitore(GpContext.NodoDeiPagamentiSPC);
 			datiPagoPA.setErogatore(codIntermediario);
 			datiPagoPA.setCodIntermediario(codIntermediario);
-			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.PAGETPAYMENTV2.name());
+			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.PAGETPAYMENTV2.toString());
 			datiPagoPA.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 			datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP);
 			datiPagoPA.setCodDominio(codDominio);
@@ -2486,7 +2486,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		IContext ctx = ContextThreadLocal.get();
 		GpContext appContext = (GpContext) ctx.getApplicationContext();
-		appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.PADEMANDPAYMENTNOTICE.name());
+		appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.PADEMANDPAYMENTNOTICE.toString());
 		
 		PaDemandPaymentNoticeResponse response = new PaDemandPaymentNoticeResponse();
 		

@@ -36,9 +36,9 @@ pipeline {
       post {
         always {
             junit 'integration-test/target/surefire-reports/*.xml'
-            sh 'tar -cvf ./integration-test/target/test-logs.tar ./integration-test/target/surefire-reports/ --transform s#./integration-test/target/##'
-            sh 'gzip ./integration-test/target/test-logs.tar'
-            archiveArtifacts 'integration-test/target/test-logs.tar.gz'
+            sh 'tar -cvf ./integration-test/target/surefire-reports.tar ./integration-test/target/surefire-reports/ --transform s#./integration-test/target/##'
+            sh 'gzip ./integration-test/target/surefire-reports.tar'
+            archiveArtifacts 'integration-test/target/surefire-reports.tar.gz'
         }
       }
     }

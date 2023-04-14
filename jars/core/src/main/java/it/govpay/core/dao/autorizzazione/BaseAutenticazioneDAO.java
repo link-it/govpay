@@ -1,5 +1,10 @@
 package it.govpay.core.dao.autorizzazione;
 
+import org.apache.commons.lang.NotImplementedException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.dao.commons.BaseDAO;
 
 public class BaseAutenticazioneDAO extends BaseDAO {
@@ -15,6 +20,10 @@ public class BaseAutenticazioneDAO extends BaseDAO {
 	protected boolean leggiUtenzaDaSessione = false;
 	private boolean userAutoSignup = false;
 	private String userAutoSignupDefaultRole = null;
+	
+	public UserDetails loadUserByLdapUserDetail(String username, GovpayLdapUserDetails userDetail) throws UsernameNotFoundException {
+		throw new NotImplementedException("Operazione implementata");
+	}
 		
 	public BaseAutenticazioneDAO() {
 		super();
