@@ -107,3 +107,37 @@ When method post
 
 # * def location = responseHeaders["Location"][0]
 
+Scenario: Pagamento spontaneo basic con entrata riferita e versante specificato
+
+* def idPendenza = getCurrentTimeMillis()
+* def pagamentoPost = read('classpath:test/api/pagamento/v2/pagamenti/post/msg/pagamento-post_spontaneo_entratariferita_bollo.json')
+* set pagamentoPost.urlRitorno = 'http://localhost:8080/portaleEnte'
+* set pagamentoPost.soggettoVersante = 
+"""
+{
+  "tipo": "F",
+  "identificativo": "RSSMRA30A01H501I",
+  "anagrafica": "Mario Rossi",
+  "indirizzo": "Piazza della Vittoria",
+  "civico": "10/A",
+  "cap": 0,
+  "localita": "Roma",
+  "provincia": "Roma",
+  "nazione": "IT",
+  "email": "mario.rossi@host.eu",
+  "cellulare": "+39 000-1234567"
+}
+"""
+
+* configure followRedirects = false
+
+Given url pagamentiBaseurl
+And path '/pagamenti'
+And headers basicAutenticationHeader
+And request pagamentoPost
+When method post
+# Then status 302
+
+# * def location = responseHeaders["Location"][0]
+
+

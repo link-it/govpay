@@ -139,7 +139,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 			StringBuilder sbNomeVersamenti = new StringBuilder();
 			List<String> listaMultibeneficiari = new ArrayList<>();
 			Anagrafica versanteModel = VersamentoUtils.toAnagraficaModel(pagamentiPortaleDTO.getVersante());
-			int numeroRifAvvisi = 0;
 			// 1. Lista Id_versamento
 			for(int i = 0; i < pagamentiPortaleDTO.getPendenzeOrPendenzeRef().size(); i++) {
 				Object v = pagamentiPortaleDTO.getPendenzeOrPendenzeRef().get(i);
@@ -195,7 +194,6 @@ public class PagamentiPortaleDAO extends BaseDAO {
 					}catch(NotFoundException e) {
 						throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio non disponibile [Dominio:"+idDominio+"].", EsitoOperazione.DOM_000, idDominio);
 					}
-					numeroRifAvvisi ++;
 				}  else if(v instanceof RefVersamentoPendenza) {
 					// controllo se le pendenze richieste siano a disposizione in sessione altrimenti assumo che siano dei dovuti gia' caricati
 					if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
@@ -385,18 +383,27 @@ public class PagamentiPortaleDAO extends BaseDAO {
 				// check versione
 				if(stazione.getVersione().equals(Versione.V2)) {
 
-					log.debug("Stazione ["+stazione.getCodStazione()+"] versione ["+stazione.getVersione()+"], invocazione verso il Checkout PagoPA...");
+					log.debug("La stazione utilizzata ["+stazione.getCodStazione()+"] ha versione ["+stazione.getVersione()+"], invocazione verso il Checkout PagoPA...");
 					String email = null;
-
-					// la richiesta deve essere formata solo da riferimenti avviso
-					if(numeroRifAvvisi < versamenti.size()) {
-						throw new ValidationException("Il pagamento presso frontend dell'EC si puo' effettuare solo indicando i riferimenti avviso.");
-					}
 
 					// urlritorno obbligatoria
 					if(StringUtils.isEmpty(pagamentiPortaleDTO.getUrlRitorno())) {
 						throw new ValidationException("Il campo urlRitorno non deve essere vuoto.");
 					}
+					
+					// nella modalita' V1 le pendenze venivano aggiornate prima dell'invio RPT, qui forzo la generazione del numero avviso per quelle che non sono ancora inserite
+					it.govpay.core.business.Versamento versamentiBusiness = new it.govpay.core.business.Versamento();
+					log.debug("Controllo esistenza del numero avviso per tutte le pendenze in corso...");
+					for(Versamento versamento : versamenti) {
+						// Aggiorno tutti i versamenti che mi sono stati passati
+						if(versamento.getId() == null) {
+							log.debug("Pendenza [idA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", idPendenza: "+versamento.getCodVersamentoEnte()+"] non presente nel sistema, caricamento in corso...");
+							versamentiBusiness.caricaVersamento(versamento, true, true, false, null, pagamentiPortaleBD);
+							log.debug("Pendenza [idA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", idPendenza: "+versamento.getCodVersamentoEnte()+"] caricamento e generazione del numero avviso (se previsto) completati.");
+						}
+						log.debug("Pendenza [idA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", idPendenza: "+versamento.getCodVersamentoEnte()+", NumeroAvviso: "+versamento.getNumeroAvviso()+"].");
+					}
+					log.debug("Controllo esistenza del numero avviso per tutte le pendenze completato.");
 
 					response.setId("0");
 					response.setRedirect(true); 
