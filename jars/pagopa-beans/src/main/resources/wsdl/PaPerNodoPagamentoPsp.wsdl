@@ -197,6 +197,32 @@
 					<!--	<xsd:element name="originalDescription" type="xsd:string" minOccurs="0" /> -->
 				</xsd:sequence>
 			</xsd:complexType>
+			
+								<!-- Wrapper Elements -->
+				<xsd:element name="paaInviaRT" type="ppt:paaInviaRT" />
+				<xsd:element name="paaInviaRTRisposta" type="ppt:paaInviaRTRisposta" />
+		
+				<!-- Element Definition -->
+			<xsd:complexType name="paaInviaRT">
+				<xsd:sequence>
+					<xsd:element name="tipoFirma" type="xsd:string" />
+					<xsd:element name="rt" type="xsd:base64Binary" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="paaInviaRTRisposta">
+				<xsd:sequence>
+					<xsd:element name="paaInviaRTRisposta" type="ppt:esitoPaaInviaRT" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="esitoPaaInviaRT">
+				<xsd:complexContent>
+					<xsd:extension base="ppt:risposta">
+						<xsd:sequence>
+							<xsd:element name="esito" type="xsd:string" minOccurs="0" />
+						</xsd:sequence>
+					</xsd:extension>
+				</xsd:complexContent>
+			</xsd:complexType>
 		</xsd:schema>
 		
 		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -2016,10 +2042,19 @@
 		<wsdl:part name="bodyresponse" element="pafn:paSendRTV2Response"></wsdl:part>
 	</wsdl:message>
 	<!-- END paForNode -->
+	<!-- START paPerNodo -->
+	<wsdl:message name="paaInviaRT">
+		<wsdl:part name="bodyrichiesta" element="ppt:paaInviaRT" />
+		<wsdl:part name="header" element="ppthead:intestazionePPT" />
+	</wsdl:message>
+	<wsdl:message name="paaInviaRTResponse">
+		<wsdl:part name="bodyrisposta" element="ppt:paaInviaRTRisposta" />
+	</wsdl:message>
+	<!-- END paPerNodo -->
 	
 	
-	<!-- START CCP (ec - PaPerNodoPagamentoPSP) -->
 	<wsdl:portType name="PagamentiTelematiciCCP">
+	  <!-- START CCP (ec - PaPerNodoPagamentoPSP) -->
 		<wsdl:operation name="paaVerificaRPT">
 			<wsdl:input message="tns:paaVerificaRPT" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaVerificaRPTRichiesta"/>
 			<wsdl:output message="tns:paaVerificaRPTRisposta" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaVerificaRPTRisposta"/>
@@ -2057,8 +2092,14 @@
 		</wsdl:operation>
 		<!-- END paForNode -->
 		
+		<!-- START paPerNodo -->
+		<wsdl:operation name="paaInviaRT">
+			<wsdl:input message="tns:paaInviaRT" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaInviaRTRichiesta" />
+			<wsdl:output message="tns:paaInviaRTResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaInviaRTRisposta" />
+		</wsdl:operation>
+		<!-- END paPerNodo -->
 	</wsdl:portType>
-	<!-- END CCP (ec - PaPerNodoPagamentoPSP) -->
+
 	
 	<!-- START CCP (ec - PaPerNodoPagamentoPSP) -->
 	<wsdl:binding name="PagamentiTelematiciCCPbinding" type="tns:PagamentiTelematiciCCP">
@@ -2145,8 +2186,21 @@
 			</wsdl:output>
 		</wsdl:operation>
 		<!-- END paForNode --> 
+		
+		<!-- START paPerNodo -->
+	  <wsdl:operation name="paaInviaRT">
+			<soap:operation soapAction="paaInviaRT" />
+			<wsdl:input>
+				<soap:body parts="bodyrichiesta" use="literal" />
+				<soap:header message="tns:paaInviaRT" part="header" use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<!-- END paPerNodo -->
 	</wsdl:binding>
-	<!-- END CCP (ec - PaPerNodoPagamentoPSP) -->
+	
 	
 	<wsdl:service name="PagamentiTelematiciCCPservice">
 		<wsdl:port name="PPTPort" binding="tns:PagamentiTelematiciCCPbinding">

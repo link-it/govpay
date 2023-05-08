@@ -50,6 +50,8 @@ import gov.telematici.pagamenti.ws.ccp.EsitoVerificaRPT;
 import gov.telematici.pagamenti.ws.ccp.FaultBean;
 import gov.telematici.pagamenti.ws.ccp.PaaAttivaRPT;
 import gov.telematici.pagamenti.ws.ccp.PaaAttivaRPTRisposta;
+import gov.telematici.pagamenti.ws.ccp.PaaInviaRT;
+import gov.telematici.pagamenti.ws.ccp.PaaInviaRTRisposta;
 import gov.telematici.pagamenti.ws.ccp.PaaTipoDatiPagamentoPA;
 import gov.telematici.pagamenti.ws.ccp.PaaVerificaRPT;
 import gov.telematici.pagamenti.ws.ccp.PaaVerificaRPTRisposta;
@@ -133,6 +135,8 @@ import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.model.eventi.DatiPagoPA;
 import it.govpay.orm.IdVersamento;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
+import it.govpay.web.ws.converter.PaaInviaRTConverter;
+import it.govpay.web.ws.converter.PaaInviaRTRispostaConverter;
 
 
 @WebService(serviceName = "PagamentiTelematiciCCPservice",
@@ -930,7 +934,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		String codIntermediario = requestBody.getIdBrokerPA();
 		String codStazione = requestBody.getIdStation();
-		String idDominio = requestBody.getIdPA();
+//		String idDominio = requestBody.getIdPA();
 		
 		CtReceipt receipt = requestBody.getReceipt();
 		
@@ -1390,7 +1394,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		String codIntermediario = requestBody.getIdBrokerPA();
 		String codStazione = requestBody.getIdStation();
-		String idDominio = requestBody.getIdPA();
+//		String idDominio = requestBody.getIdPA();
 		
 		CtQrCode qrCode = requestBody.getQrCode();
 		String numeroAvviso = qrCode.getNoticeNumber();
@@ -1957,7 +1961,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	public PaSendRTV2Response paSendRTV2(PaSendRTV2Request requestBody) {
 		String codIntermediario = requestBody.getIdBrokerPA();
 		String codStazione = requestBody.getIdStation();
-		String idDominio = requestBody.getIdPA();
+//		String idDominio = requestBody.getIdPA();
 		
 		CtReceiptV2 receipt = requestBody.getReceipt();
 		
@@ -2109,7 +2113,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		String codIntermediario = requestBody.getIdBrokerPA();
 		String codStazione = requestBody.getIdStation();
-		String idDominio = requestBody.getIdPA();
+//		String idDominio = requestBody.getIdPA();
 		
 		CtQrCode qrCode = requestBody.getQrCode();
 		String numeroAvviso = qrCode.getNoticeNumber();
@@ -2508,5 +2512,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		}
 		
 		return response;
+	}
+
+
+
+	@Override
+	public PaaInviaRTRisposta paaInviaRT(PaaInviaRT bodyrichiesta, IntestazionePPT header) {
+		return PaaInviaRTRispostaConverter.toPaaInviaRTRisposta_CCP(PagamentiTelematiciRTImpl.paaInviaRTImpl(PaaInviaRTConverter.toPaaInviaRT_RT(bodyrichiesta), header, log));
 	}
 }
