@@ -259,7 +259,7 @@ public class Gp21Utils {
 		versamento.setCodDominio(pendenza.getCodDominio());
 		versamento.setCodUnitaOperativa(pendenza.getCodUnitaOperativa());
 		versamento.setCodVersamentoEnte(pendenza.getCodVersamentoEnte());
-		versamento.setDataScadenza(pendenza.getDataScadenza());
+		versamento.setDataValidita(pendenza.getDataScadenza());
 		versamento.setDataCaricamento(new Date());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getDebitore()));
 		

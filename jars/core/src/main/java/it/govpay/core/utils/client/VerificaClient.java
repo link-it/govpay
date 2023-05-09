@@ -237,6 +237,9 @@ public class VerificaClient extends BasicClientCORE {
 						if(!(this.codApplicazione.equals(versamento.getCodApplicazione()) && codVersamentoEnte.equals(versamento.getCodVersamentoEnte())))
 							throw new ValidationException("I campi IdA2A e IdPendenza della pendenza ricevuta dal servizio di verifica non corrispondono ai parametri di input.");
 					} else {
+						if(versamento.getIuv() == null)
+							versamento.setIuv(iuv);
+						
 						String iuvRicevuto = versamento.getIuv();
 
 						if(!(codDominio.equals(versamento.getCodDominio()) && iuv.equals(iuvRicevuto)))

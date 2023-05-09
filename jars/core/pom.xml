@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.6.6</version>
+		<version>3.6.6-bw.1</version>
 	</parent>
 
 	<artifactId>core</artifactId>
