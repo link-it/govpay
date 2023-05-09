@@ -47,10 +47,6 @@ public class TracciatiNotificaPagamentiController extends BaseController {
 			leggiTracciatoDTO.setIncludiRaw(false);
 			
 			List<Long> idDomini = null;
-//			List<Long> idDomini = AuthorizationManager.getIdDominiAutorizzati(user);
-//			if(idDomini == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-//			}
 
 			TracciatiNotificaPagamentiDAO tracciatiDAO = new TracciatiNotificaPagamentiDAO();
 			TracciatoNotificaPagamenti tracciato = tracciatiDAO.leggiTracciato(leggiTracciatoDTO);
