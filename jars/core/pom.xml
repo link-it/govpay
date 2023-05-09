@@ -289,6 +289,12 @@
 		<dependency>
 			<groupId>it.cineca</groupId>
 			<artifactId>govpay-custom</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		
 	</dependencies>
