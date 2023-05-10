@@ -1,6 +1,5 @@
 package it.govpay.web.legacy.utils;
 
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -230,7 +229,10 @@ public class Utils {
 		case VER_036:
 		case VER_037:
 		case VER_038:
+		case VER_039:
 			return EsitoOperazione.INTERNAL;
+		case RICHIESTA:
+			return EsitoOperazione.RICHIESTA;
 		}
 		
 		return toRet;

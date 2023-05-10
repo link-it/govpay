@@ -520,7 +520,13 @@ public enum EsitoOperazione {
      * Il debitore ha scelto di pagare dopo tramite avviso di pagamento.
      * 
      */
-    WISP_004;
+    WISP_004,
+    
+    /**
+     * Richiesta malformata  
+     * 
+     */
+    RICHIESTA;
 
     public String value() {
         return name();

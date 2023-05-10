@@ -783,7 +783,13 @@ public enum EsitoOperazione {
      * Il numero avviso indicato per la pendenza non comincia con l'auxDigit indicato nell'ente creditore.  
      * 
      */
-    VER_039;
+    VER_039,
+    
+    /**
+     * Richiesta malformata  
+     * 
+     */
+    RICHIESTA;
 	
 
     public String value() {

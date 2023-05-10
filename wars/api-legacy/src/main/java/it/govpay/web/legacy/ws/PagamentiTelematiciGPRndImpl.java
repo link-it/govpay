@@ -132,7 +132,8 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			findRendicontazioniDTO.setDataAcquisizioneFlussoDa(da);
 			findRendicontazioniDTO.setDataAcquisizioneFlussoA(a);
 			
-			findRendicontazioniDTO.setLimit(1000);
+			findRendicontazioniDTO.setLimit(1001);
+			findRendicontazioniDTO.setEseguiCount(false);
 
 			// Autorizzazione sulle uo
 			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
@@ -144,8 +145,8 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = uo != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO)
 					: new ListaRendicontazioniDTOResponse(0L, new ArrayList<>());
 			
-			if(findRendicontazioniDTOResponse.getTotalResults() > 1000) {
-				throw new GovPayException("Operazione non disponibile.", it.govpay.core.beans.EsitoOperazione.INTERNAL, "Numero di risultati troppo elevato ["+findRendicontazioniDTOResponse.getTotalResults()+"], restringere la ricerca.");
+			if(findRendicontazioniDTOResponse.getResults().size() > 1000) {
+				throw new GovPayException("Richiesta non valida", it.govpay.core.beans.EsitoOperazione.RICHIESTA, "Sono stati trovati piu' di 1000 risultati, restringere la ricerca.");
 			}
 
 			for (it.govpay.bd.viste.model.Rendicontazione frModel : findRendicontazioniDTOResponse.getResults()) {
