@@ -14,13 +14,16 @@ public class RptConverter {
 
 
 	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt) throws ServiceException, IOException  {
+		return toRsModel(rpt, false);
+	}
+	public static Rpp toRsModel(it.govpay.bd.model.Rpt rpt, boolean convertiMessaggioPagoPAV2InPagoPAV1) throws ServiceException, IOException  {
 		Rpp rsModel = new Rpp();
 
 		rsModel.setStato(rpt.getStato().toString());
 		rsModel.setDettaglioStato(rpt.getDescrizioneStato());
 		rsModel.setPendenza(PendenzeConverter.toRsModelIndex(rpt.getVersamento()));
-		rsModel.setRpt(ConverterUtils.getRptJson(rpt));
-		rsModel.setRt(ConverterUtils.getRtJson(rpt));
+		rsModel.setRpt(ConverterUtils.getRptJson(rpt, convertiMessaggioPagoPAV2InPagoPAV1));
+		rsModel.setRt(ConverterUtils.getRtJson(rpt, convertiMessaggioPagoPAV2InPagoPAV1));
 		rsModel.setBloccante(rpt.isBloccante());
 
 		if(rpt.getPagamentoPortale() != null) {
@@ -34,14 +37,14 @@ public class RptConverter {
 		return rsModel;
 	}
 
-	public static RppIndex toRsModelIndex(it.govpay.bd.model.Rpt rpt) throws ServiceException, IOException {
+	public static RppIndex toRsModelIndex(it.govpay.bd.model.Rpt rpt, boolean convertiMessaggioPagoPAV2InPagoPAV1) throws ServiceException, IOException {
 		RppIndex rsModel = new RppIndex();
 
 		rsModel.setStato(rpt.getStato().toString());
 		rsModel.setDettaglioStato(rpt.getDescrizioneStato());
 		rsModel.setPendenza(PendenzeConverter.toRsModelIndex(rpt.getVersamento()));
-		rsModel.setRpt(ConverterUtils.getRptJson(rpt));
-		rsModel.setRt(ConverterUtils.getRtJson(rpt));
+		rsModel.setRpt(ConverterUtils.getRptJson(rpt, convertiMessaggioPagoPAV2InPagoPAV1));
+		rsModel.setRt(ConverterUtils.getRtJson(rpt, convertiMessaggioPagoPAV2InPagoPAV1));
 		rsModel.setBloccante(rpt.isBloccante());
 
 		if(rpt.getIdPagamentoPortale() != null) {
