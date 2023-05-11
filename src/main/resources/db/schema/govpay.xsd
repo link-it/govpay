@@ -3201,6 +3201,9 @@
 							<linkit:sql-table-unique-field name="codFlusso"/>
 							<linkit:sql-table-unique-field name="dataOraFlusso" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-unique>
+						<linkit:sql-table-index name="idx_fr_data_acq">
+							<linkit:sql-table-index-column name="data_acquisizione"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>

@@ -1039,7 +1039,7 @@ CREATE TABLE fr
 	CONSTRAINT fk_fr_id_incasso FOREIGN KEY (id_incasso) REFERENCES incassi(id),
 	CONSTRAINT pk_fr PRIMARY KEY (id)
 );
-
+CREATE INDEX idx_fr_data_acq ON pagamenti (data_acquisizione);
 
 
 

@@ -1015,7 +1015,7 @@ CREATE TABLE fr
 
 -- index
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_flusso,data_ora_flusso);
-
+CREATE INDEX idx_fr_data_acq ON pagamenti (data_acquisizione);
 
 
 CREATE TABLE pagamenti

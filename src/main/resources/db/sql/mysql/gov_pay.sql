@@ -1005,6 +1005,7 @@ CREATE TABLE fr
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs COMMENT 'Flussi di rendicontazione';
 
 -- index
+CREATE INDEX idx_fr_data_acq ON pagamenti (data_acquisizione);
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_flusso,data_ora_flusso);
 
 

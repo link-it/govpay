@@ -1189,6 +1189,7 @@ CREATE TABLE fr
 );
 
 -- index
+CREATE INDEX idx_fr_data_acq ON pagamenti (data_acquisizione);
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
 CREATE TABLE fr_init_seq (id BIGINT);
 INSERT INTO fr_init_seq VALUES (NEXT VALUE FOR seq_fr);

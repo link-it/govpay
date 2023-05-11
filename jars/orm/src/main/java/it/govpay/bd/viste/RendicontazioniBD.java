@@ -141,7 +141,7 @@ public class RendicontazioniBD extends BasicBD {
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.RND_IUV));
 			if(filter.isRicercaFR()) {
 				sqlQueryObjectInterno.addSelectField(converter.toTable(model.FR_ID), "fr_id");
-				sqlQueryObjectInterno.addSelectField(converter.toTable(model.FR_DATA_ORA_FLUSSO), "fr_data_ora_flusso");
+				sqlQueryObjectInterno.addSelectField(converter.toTable(model.FR_DATA_ACQUISIZIONE), "fr_data_acquisizione");
 			} else {
 				sqlQueryObjectInterno.addSelectField(converter.toTable(model.RND_IUV), "id");
 				sqlQueryObjectInterno.addSelectField(converter.toTable(model.RND_DATA), "rnd_data");
@@ -155,7 +155,7 @@ public class RendicontazioniBD extends BasicBD {
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
 			if(filter.isRicercaFR()) {
-				sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.FR_DATA_ORA_FLUSSO, true), false);
+				sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.FR_DATA_ACQUISIZIONE, true), false);
 			} else {
 				sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.RND_DATA, true), false);
 			}
