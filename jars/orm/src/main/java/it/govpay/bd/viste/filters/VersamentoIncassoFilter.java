@@ -504,11 +504,11 @@ public class VersamentoIncassoFilter extends AbstractFilter {
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_CREAZIONE, true) + " <= ? ");
 			} else {
 				if(this.dataInizio != null) {
-					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_ULTIMO_AGGIORNAMENTO, true) + " >= ? ");
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_CREAZIONE, true) + " >= ? ");
 				} 
 				
 				if(this.dataFine != null) {
-					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_ULTIMO_AGGIORNAMENTO, true) + " <= ? ");
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_CREAZIONE, true) + " <= ? ");
 				}
 			}
 
