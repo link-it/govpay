@@ -207,7 +207,7 @@ public class VersamentoFilter  extends AbstractFilter {
 					if(addAnd)
 						newExpression.and();
 	
-					newExpression.greaterEquals(VistaVersamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, this.dataInizio);
+					newExpression.greaterEquals(VistaVersamento.model().DATA_CREAZIONE, this.dataInizio);
 					addAnd = true;
 				} 
 				
@@ -215,7 +215,7 @@ public class VersamentoFilter  extends AbstractFilter {
 					if(addAnd)
 						newExpression.and();
 	
-					newExpression.lessEquals(VistaVersamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, this.dataFine);
+					newExpression.lessEquals(VistaVersamento.model().DATA_CREAZIONE, this.dataFine);
 					addAnd = true;
 				}
 			}
@@ -531,11 +531,11 @@ public class VersamentoFilter  extends AbstractFilter {
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_CREAZIONE, true) + " <= ? ");
 			} else {
 				if(this.dataInizio != null) {
-					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_ULTIMO_AGGIORNAMENTO, true) + " >= ? ");
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_CREAZIONE, true) + " >= ? ");
 				} 
 				
 				if(this.dataFine != null) {
-					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_ORA_ULTIMO_AGGIORNAMENTO, true) + " <= ? ");
+					sqlQueryObject.addWhereCondition(true,converter.toColumn(model.DATA_CREAZIONE, true) + " <= ? ");
 				}
 			}
 

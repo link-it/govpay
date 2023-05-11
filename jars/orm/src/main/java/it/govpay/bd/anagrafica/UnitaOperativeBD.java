@@ -91,9 +91,9 @@ public class UnitaOperativeBD extends BasicBD {
 			UoFieldConverter converter = new UoFieldConverter(this.getJdbcProperties().getDatabaseType());
 			
 			IExpression expr = this.getUoService().newExpression();
-			expr.equals(it.govpay.orm.Uo.model().COD_UO, codUnitaOperativa);
-			expr.and();
 			expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.Uo.model())), idDominio);
+			expr.and();
+			expr.equals(it.govpay.orm.Uo.model().COD_UO, codUnitaOperativa);
 
 //			IdUo id = new IdUo();
 //			id.setCodUo(codUnitaOperativa);
