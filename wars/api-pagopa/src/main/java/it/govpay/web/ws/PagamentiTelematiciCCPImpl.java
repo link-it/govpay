@@ -1763,7 +1763,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	private <T> T buildRisposta(NdpException e, T risposta) {
 		if(risposta instanceof PaaAttivaRPTRisposta) {
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
-				log.warn("Errore in Attiva RPT: " + e);
+				log.warn("Errore in Attiva RPT: " + e.getMessage(), e);
 			} else {
 				log.warn("Rifiutata Attiva RPT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
@@ -1781,7 +1781,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 		if(risposta instanceof PaaVerificaRPTRisposta) {
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
-				log.warn("Errore in Verifica RPT: " + e);
+				log.warn("Errore in Verifica RPT: " + e.getMessage(), e);
 			} else {
 				log.warn("Rifiutata Verifica RPT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			}
