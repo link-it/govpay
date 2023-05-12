@@ -458,13 +458,13 @@ public class VerificaClient extends BasicClientCORE {
 				log.error("STATO non trovato");
 				throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "Stato pendenza non gestito: null");
 			}
-			it.govpay.ec.v2.beans.NuovaPendenza pendenza = pendenzaVerificata.getPendenza();
 
-			// se ho richiesto la pendenza con la coppia idDominio/iuv salvo il numero pendenza
-			if(iuv != null && pendenza != null) 
-				this.getEventoCtx().setIdPendenza(pendenza.getIdPendenza());
+			it.govpay.ec.v2.beans.NuovaPendenza pendenza = pendenzaVerificata.getPendenza();
 			switch (stato) {
-			case NON_ESEGUITA: // CASO OK su
+			case NON_ESEGUITA: // CASO OK
+				// se ho richiesto la pendenza con la coppia idDominio/iuv salvo il numero pendenza
+				if(iuv != null && pendenza != null) 
+					this.getEventoCtx().setIdPendenza(pendenza.getIdPendenza());
 				ctx.getApplicationLogger().log("verifica.verificaOk", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
 				try {
 					new it.govpay.core.ec.v2.validator.PendenzaVerificataValidator(pendenzaVerificata).validate();
@@ -499,8 +499,13 @@ public class VerificaClient extends BasicClientCORE {
 				ctx.getApplicationLogger().log("verifica.verificaScaduto", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
 				if(StringUtils.isNotEmpty(pendenzaVerificata.getDescrizioneStato()))
 					throw new VersamentoScadutoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, pendenzaVerificata.getDescrizioneStato());
-				else 
-					throw new VersamentoScadutoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, pendenza.getDataScadenza() != null ? pendenza.getDataScadenza() : null);
+				else {
+					if(pendenza != null) {
+						throw new VersamentoScadutoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, pendenza.getDataScadenza() != null ? pendenza.getDataScadenza() : null);
+					} else {
+						throw new VersamentoScadutoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, "");
+					}
+				}
 			case SCONOSCIUTA:
 				ctx.getApplicationLogger().log("verifica.verificaSconosciuto", this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD);
 
