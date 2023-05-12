@@ -118,7 +118,7 @@ public class TipiPendenzaController extends BaseController {
 			
 			// INIT DAO
 			
-			TipoPendenzaDAO tipiPendenzaDAO = new TipoPendenzaDAO(false);
+			TipoPendenzaDAO tipiPendenzaDAO = new TipoPendenzaDAO();
 			
 			// CHIAMATA AL DAO
 			
@@ -167,7 +167,7 @@ public class TipiPendenzaController extends BaseController {
 			
 			// INIT DAO
 			
-			TipoPendenzaDAO tipiPendenzaDAO = new TipoPendenzaDAO(false);
+			TipoPendenzaDAO tipiPendenzaDAO = new TipoPendenzaDAO();
 			
 			// CHIAMATA AL DAO
 			

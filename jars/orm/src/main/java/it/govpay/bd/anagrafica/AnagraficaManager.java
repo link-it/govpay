@@ -272,67 +272,67 @@ public class AnagraficaManager {
 	}
 	
 	public static void removeFromCache(Applicazione applicazione) {
-		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(CACHE_KEY_GET_APPLICAZIONE, keyPrefID + applicazione.getId()));} catch (Exception e) {	}
-		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(CACHE_KEY_GET_APPLICAZIONE, keyPrefCODICE + applicazione.getCodApplicazione()));} catch (Exception e) {	}
-		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(CACHE_KEY_GET_APPLICAZIONE_BY_PRINCIPAL, applicazione.getPrincipal()));} catch (Exception e) {	}
-		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(CACHE_KEY_GET_APPLICAZIONE_BY_SUBJECT, applicazione.getPrincipal()));} catch (Exception e) {	}
+		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(keyPrefID + applicazione.getId(), CACHE_KEY_GET_APPLICAZIONE));} catch (Exception e) {	}
+		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(keyPrefCODICE + applicazione.getCodApplicazione(), CACHE_KEY_GET_APPLICAZIONE));} catch (Exception e) {	}
+		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(applicazione.getPrincipal(), CACHE_KEY_GET_APPLICAZIONE_BY_PRINCIPAL));} catch (Exception e) {	}
+		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache(applicazione.getPrincipal(), CACHE_KEY_GET_APPLICAZIONE_BY_SUBJECT));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Dominio dominio) {
-		try {dominiBDCacheWrapper.removeObjectCache(dominiBDCacheWrapper.getKeyCache(CACHE_KEY_GET_DOMINIO, keyPrefID + dominio.getId()));} catch (Exception e) {	}
-		try {dominiBDCacheWrapper.removeObjectCache(dominiBDCacheWrapper.getKeyCache(CACHE_KEY_GET_DOMINIO, keyPrefCODICE + dominio.getCodDominio()));} catch (Exception e) {	}
+		try {dominiBDCacheWrapper.removeObjectCache(dominiBDCacheWrapper.getKeyCache(keyPrefID + dominio.getId(), CACHE_KEY_GET_DOMINIO));} catch (Exception e) {	}
+		try {dominiBDCacheWrapper.removeObjectCache(dominiBDCacheWrapper.getKeyCache(keyPrefCODICE + dominio.getCodDominio(), CACHE_KEY_GET_DOMINIO));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(UnitaOperativa uo) {
-		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_UNITA_OPERATIVA, keyPrefID + uo.getId()));} catch (Exception e) {	}
-		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_UNITA_OPERATIVA, keyPrefCODICE + uo.getIdDominio() + "_" + uo.getCodUo()));} catch (Exception e) {	}
-		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_UNITA_OPERATIVA_BY_UNIQUE, uo.getIdDominio() + "_" + uo.getAnagrafica().getCodUnivoco()));} catch (Exception e) {	}
+		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(keyPrefID + uo.getId(), CACHE_KEY_GET_UNITA_OPERATIVA));} catch (Exception e) {	}
+		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(keyPrefCODICE + uo.getIdDominio() + "_" + uo.getCodUo(), CACHE_KEY_GET_UNITA_OPERATIVA));} catch (Exception e) {	}
+		try {uoBDCacheWrapper.removeObjectCache(uoBDCacheWrapper.getKeyCache(uo.getIdDominio() + "_" + uo.getAnagrafica().getCodUnivoco(), CACHE_KEY_GET_UNITA_OPERATIVA_BY_UNIQUE));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(IbanAccredito iban) {
-		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_IBAN_ACCREDITO, keyPrefID + iban.getId()));} catch (Exception e) {	}
-		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_IBAN_ACCREDITO, keyPrefCODICE + iban.getCodIban()));} catch (Exception e) {	}
+		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(keyPrefID + iban.getId(), CACHE_KEY_GET_IBAN_ACCREDITO));} catch (Exception e) {	}
+		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(keyPrefCODICE + iban.getCodIban(), CACHE_KEY_GET_IBAN_ACCREDITO));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Intermediario intermediario) {
-		try {intermediariBDCacheWrapper.removeObjectCache(intermediariBDCacheWrapper.getKeyCache(CACHE_KEY_GET_INTERMEDIARIO, keyPrefID + intermediario.getId()));} catch (Exception e) {	}
-		try {intermediariBDCacheWrapper.removeObjectCache(intermediariBDCacheWrapper.getKeyCache(CACHE_KEY_GET_INTERMEDIARIO, keyPrefCODICE + intermediario.getCodIntermediario()));} catch (Exception e) {	}
+		try {intermediariBDCacheWrapper.removeObjectCache(intermediariBDCacheWrapper.getKeyCache(keyPrefID + intermediario.getId(), CACHE_KEY_GET_INTERMEDIARIO));} catch (Exception e) {	}
+		try {intermediariBDCacheWrapper.removeObjectCache(intermediariBDCacheWrapper.getKeyCache(keyPrefCODICE + intermediario.getCodIntermediario(), CACHE_KEY_GET_INTERMEDIARIO));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Operatore operatore) {
-		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache(CACHE_KEY_GET_OPERATORE, String.valueOf(operatore.getId())));} catch (Exception e) {	}
-		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache(CACHE_KEY_GET_OPERATORE_BY_PRINCIPAL, operatore.getUtenza().getPrincipal()));} catch (Exception e) {	}
-		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache(CACHE_KEY_GET_OPERATORE_BY_SUBJECT, operatore.getUtenza().getPrincipal()));} catch (Exception e) {	}
+		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache(String.valueOf(operatore.getId()), CACHE_KEY_GET_OPERATORE));} catch (Exception e) {	}
+		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache(operatore.getUtenza().getPrincipal(), CACHE_KEY_GET_OPERATORE_BY_PRINCIPAL));} catch (Exception e) {	}
+		try {operatoriBDCacheWrapper.removeObjectCache(operatoriBDCacheWrapper.getKeyCache(operatore.getUtenza().getPrincipal(), CACHE_KEY_GET_OPERATORE_BY_SUBJECT));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Utenza utenza) {
-		try {utenzeBDCacheWrapper.removeObjectCache(utenzeBDCacheWrapper.getKeyCache(CACHE_KEY_GET_UTENZA, keyPrefID + utenza.getId()));} catch (Exception e) {	}
-		try {utenzeBDCacheWrapper.removeObjectCache(utenzeBDCacheWrapper.getKeyCache(CACHE_KEY_GET_UTENZA, keyPrefCODICE + utenza.getPrincipal()));} catch (Exception e) {	}
+		try {utenzeBDCacheWrapper.removeObjectCache(utenzeBDCacheWrapper.getKeyCache(keyPrefID + utenza.getId(), CACHE_KEY_GET_UTENZA));} catch (Exception e) {	}
+		try {utenzeBDCacheWrapper.removeObjectCache(utenzeBDCacheWrapper.getKeyCache(keyPrefCODICE + utenza.getPrincipal(), CACHE_KEY_GET_UTENZA));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Stazione stazione) {
-		try {stazioniBDCacheWrapper.removeObjectCache(stazioniBDCacheWrapper.getKeyCache(CACHE_KEY_GET_STAZIONE, keyPrefID + stazione.getId()));} catch (Exception e) {	}
-		try {stazioniBDCacheWrapper.removeObjectCache(stazioniBDCacheWrapper.getKeyCache(CACHE_KEY_GET_STAZIONE, keyPrefCODICE + stazione.getCodStazione()));} catch (Exception e) {	}
+		try {stazioniBDCacheWrapper.removeObjectCache(stazioniBDCacheWrapper.getKeyCache(keyPrefID + stazione.getId(), CACHE_KEY_GET_STAZIONE));} catch (Exception e) {	}
+		try {stazioniBDCacheWrapper.removeObjectCache(stazioniBDCacheWrapper.getKeyCache(keyPrefCODICE + stazione.getCodStazione(), CACHE_KEY_GET_STAZIONE));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Tributo tributo) {
-		try {tributiBDCacheWrapper.removeObjectCache(tributiBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TRIBUTO, keyPrefID + tributo.getId()));} catch (Exception e) {	}
-		try {tributiBDCacheWrapper.removeObjectCache(tributiBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TRIBUTO, keyPrefCODICE + tributo.getIdDominio() + "_" + tributo.getCodTributo() ));} catch (Exception e) {	}
+		try {tributiBDCacheWrapper.removeObjectCache(tributiBDCacheWrapper.getKeyCache(keyPrefID + tributo.getId(), CACHE_KEY_GET_TRIBUTO));} catch (Exception e) {	}
+		try {tributiBDCacheWrapper.removeObjectCache(tributiBDCacheWrapper.getKeyCache(keyPrefCODICE + tributo.getIdDominio() + "_" + tributo.getCodTributo(), CACHE_KEY_GET_TRIBUTO));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(TipoTributo tipoTributo) {
-		try {tipiTributoBDCacheWrapper.removeObjectCache(tipiTributoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TIPO_TRIBUTO, keyPrefID + tipoTributo.getId()));} catch (Exception e) {	}
-		try {tipiTributoBDCacheWrapper.removeObjectCache(tipiTributoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TIPO_TRIBUTO, keyPrefCODICE + tipoTributo.getCodTributo()));} catch (Exception e) {	}
+		try {tipiTributoBDCacheWrapper.removeObjectCache(tipiTributoBDCacheWrapper.getKeyCache(keyPrefID + tipoTributo.getId(), CACHE_KEY_GET_TIPO_TRIBUTO));} catch (Exception e) {	}
+		try {tipiTributoBDCacheWrapper.removeObjectCache(tipiTributoBDCacheWrapper.getKeyCache(keyPrefCODICE + tipoTributo.getCodTributo(), CACHE_KEY_GET_TIPO_TRIBUTO));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(TipoVersamento tipoVersamento) {
-		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TIPO_VERSAMENTO, keyPrefID + tipoVersamento.getId()));} catch (Exception e) {	}
-		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TIPO_VERSAMENTO, keyPrefCODICE + tipoVersamento.getCodTipoVersamento()));} catch (Exception e) {	}
+		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoBDCacheWrapper.getKeyCache(keyPrefID + tipoVersamento.getId(), CACHE_KEY_GET_TIPO_VERSAMENTO));} catch (Exception e) {	}
+		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoBDCacheWrapper.getKeyCache(keyPrefCODICE + tipoVersamento.getCodTipoVersamento(), CACHE_KEY_GET_TIPO_VERSAMENTO));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(TipoVersamentoDominio tipoVersamentoDominio) {
-		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO, keyPrefID + tipoVersamentoDominio.getId()));} catch (Exception e) {	}
-		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO, keyPrefCODICE + tipoVersamentoDominio.getIdDominio() + "_" + tipoVersamentoDominio.getCodTipoVersamento()));} catch (Exception e) {	}
+		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(keyPrefID + tipoVersamentoDominio.getId(), CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO));} catch (Exception e) {	}
+		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(keyPrefCODICE + tipoVersamentoDominio.getIdDominio() + "_" + tipoVersamentoDominio.getCodTipoVersamento(), CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Configurazione configurazione) {

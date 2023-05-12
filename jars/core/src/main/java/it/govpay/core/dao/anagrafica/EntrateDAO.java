@@ -68,6 +68,8 @@ public class EntrateDAO extends BaseDAO{
 				entrateBD.insertTipoTributo(putTipoTributoDTO.getTipoTributo());
 			} else {
 				entrateBD.updateTipoTributo(putTipoTributoDTO.getTipoTributo());
+				//  elimino la entry dalla cache
+				AnagraficaManager.removeFromCache(putTipoTributoDTO.getTipoTributo());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TipoTributoNonTrovatoException(e.getMessage());

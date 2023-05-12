@@ -524,10 +524,14 @@ public class ApplicazioniBD extends BasicBD {
 			
 			List<Applicazione> dtoList = new ArrayList<>();
 			for(it.govpay.orm.Applicazione vo: this.getApplicazioneService().findAll(filter.toPaginatedExpression())) {
-				dtoList.add(this.getApplicazione(vo));
+				// usa la cache per popolare il dettaglio dell'applicazione
+				dtoList.add(AnagraficaManager.getApplicazione(this.getBdConfigWrapper(), vo.getId()));
+//				dtoList.add(this.getApplicazione(vo));
 			}
 			return dtoList;
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) { // la ricerca dalla cache lancia una notfound la catturo.
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -585,7 +589,8 @@ public class ApplicazioniBD extends BasicBD {
 			Applicazione applicazione = ApplicazioneConverter.toDTO(applicazioneVO, connettoreIntegrazione);
 			UtenzeBD utenzeBD = new UtenzeBD(this);
 			utenzeBD.setAtomica(false); // non deve aprire una nuova connessione
-			applicazione.setUtenza(new UtenzaApplicazione(utenzeBD.getUtenza(applicazioneVO.getIdUtenza().getId()), applicazione.getCodApplicazione()));
+			Utenza utenza = utenzeBD.getUtenza(applicazioneVO.getIdUtenza().getId());
+			applicazione.setUtenza(new UtenzaApplicazione(utenza, applicazione.getCodApplicazione()));
 			return applicazione;
 		} catch (ExpressionNotImplementedException | MultipleResultException | NotFoundException e) {
 			throw new ServiceException(e);

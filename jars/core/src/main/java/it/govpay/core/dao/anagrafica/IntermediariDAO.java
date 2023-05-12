@@ -81,6 +81,8 @@ public class IntermediariDAO extends BaseDAO{
 				intermediariBD.insertIntermediario(putIntermediarioDTO.getIntermediario());
 			} else {
 				intermediariBD.updateIntermediario(putIntermediarioDTO.getIntermediario());
+				//  elimino la entry dalla cache
+				AnagraficaManager.removeFromCache(putIntermediarioDTO.getIntermediario());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IntermediarioNonTrovatoException(e.getMessage());
@@ -115,6 +117,8 @@ public class IntermediariDAO extends BaseDAO{
 				stazioniBD.insertStazione(putStazioneDTO.getStazione());
 			} else {
 				stazioniBD.updateStazione(putStazioneDTO.getStazione());
+				//  elimino la entry dalla cache
+				AnagraficaManager.removeFromCache(putStazioneDTO.getStazione());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IntermediarioNonTrovatoException(e.getMessage());

@@ -133,6 +133,9 @@ public class TipoPendenzaDAO extends BaseDAO{
 				}
 				
 				tipiVerwsamentoBD.updateTipoVersamento(putTipoPendenzaDTO.getTipoVersamento());
+				
+				//  elimino la entry dalla cache
+				AnagraficaManager.removeFromCache(putTipoPendenzaDTO.getTipoVersamento());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TipoVersamentoNonTrovatoException(e.getMessage());

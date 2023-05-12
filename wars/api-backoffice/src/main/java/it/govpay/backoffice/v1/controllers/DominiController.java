@@ -136,7 +136,7 @@ public class DominiController extends BaseController {
 
 			// INIT DAO
 
-			DominiDAO dominiDAO = new DominiDAO(false);
+			DominiDAO dominiDAO = new DominiDAO();
 
 			// CHIAMATA AL DAO
 
@@ -205,7 +205,7 @@ public class DominiController extends BaseController {
 
 			// INIT DAO
 
-			DominiDAO dominiDAO = new DominiDAO(false);
+			DominiDAO dominiDAO = new DominiDAO();
 
 			// CHIAMATA AL DAO
 
@@ -259,7 +259,7 @@ public class DominiController extends BaseController {
 
 			// INIT DAO
 
-			DominiDAO dominiDAO = new DominiDAO(false);
+			DominiDAO dominiDAO = new DominiDAO();
 
 			// CHIAMATA AL DAO
 
@@ -365,7 +365,7 @@ public class DominiController extends BaseController {
 
 			// INIT DAO
 
-			DominiDAO dominiDAO = new DominiDAO(false);
+			DominiDAO dominiDAO = new DominiDAO();
 
 			// CHIAMATA AL DAO
 
@@ -419,7 +419,7 @@ public class DominiController extends BaseController {
 
 			// INIT DAO
 
-			DominiDAO dominiDAO = new DominiDAO(false);
+			DominiDAO dominiDAO = new DominiDAO();
 
 			// CHIAMATA AL DAO
 
@@ -512,7 +512,7 @@ public class DominiController extends BaseController {
 
 			// INIT DAO
 
-			DominiDAO dominiDAO = new DominiDAO(false);
+			DominiDAO dominiDAO = new DominiDAO();
 
 			// CHIAMATA AL DAO
 
@@ -626,7 +626,7 @@ public class DominiController extends BaseController {
 			}
 			// INIT DAO
 
-			DominiDAO dominiDAO = new DominiDAO(false);
+			DominiDAO dominiDAO = new DominiDAO();
 
 			// CHIAMATA AL DAO
 
@@ -691,7 +691,7 @@ public class DominiController extends BaseController {
 
 			// INIT DAO
 
-			DominiDAO dominiDAO = new DominiDAO(false);
+			DominiDAO dominiDAO = new DominiDAO();
 
 			// CHIAMATA AL DAO
 
@@ -819,7 +819,7 @@ public class DominiController extends BaseController {
 
 			// INIT DAO
 
-			DominiDAO dominiDAO = new DominiDAO(false);
+			DominiDAO dominiDAO = new DominiDAO();
 
 			// CHIAMATA AL DAO
 
@@ -873,7 +873,7 @@ public class DominiController extends BaseController {
 
 			// INIT DAO
 
-			DominiDAO dominiDAO = new DominiDAO(false);
+			DominiDAO dominiDAO = new DominiDAO();
 
 			// CHIAMATA AL DAO
 
@@ -967,7 +967,7 @@ public class DominiController extends BaseController {
 
 			// INIT DAO
 
-			DominiDAO dominiDAO = new DominiDAO(false);
+			DominiDAO dominiDAO = new DominiDAO();
 
 			// CHIAMATA AL DAO
 

@@ -73,7 +73,7 @@ public class IntermediariController extends BaseController {
 			
 			// INIT DAO
 			
-			IntermediariDAO intermediariDAO = new IntermediariDAO(false);
+			IntermediariDAO intermediariDAO = new IntermediariDAO();
 			
 			// CHIAMATA AL DAO
 			
@@ -175,7 +175,7 @@ public class IntermediariController extends BaseController {
 			
 			// INIT DAO
 			
-			IntermediariDAO intermediariDAO = new IntermediariDAO(false);
+			IntermediariDAO intermediariDAO = new IntermediariDAO();
 			
 			// CHIAMATA AL DAO
 			
@@ -269,7 +269,7 @@ public class IntermediariController extends BaseController {
 			
 			// INIT DAO
 			
-			IntermediariDAO intermediariDAO = new IntermediariDAO(false);
+			IntermediariDAO intermediariDAO = new IntermediariDAO();
 			
 			// CHIAMATA AL DAO
 			
@@ -315,7 +315,7 @@ public class IntermediariController extends BaseController {
 			
 			// INIT DAO
 			
-			IntermediariDAO intermediariDAO = new IntermediariDAO(false);
+			IntermediariDAO intermediariDAO = new IntermediariDAO();
 			
 			// CHIAMATA AL DAO
 			
