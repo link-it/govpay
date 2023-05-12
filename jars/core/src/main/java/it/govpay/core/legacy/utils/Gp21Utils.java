@@ -248,6 +248,8 @@ public class Gp21Utils {
 	}
 
 	public static it.govpay.core.dao.commons.Versamento toVersamentoCommons(it.govpay.servizi.commons.Versamento pendenza) throws ServiceException, GovPayException {
+		if(pendenza == null) return null;
+		
 		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
 
 		if(pendenza.getAnnoTributario() != null)
