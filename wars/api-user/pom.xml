@@ -7,7 +7,7 @@
 	<parent>
 		<artifactId>wars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.6.6-bw.2</version>
+		<version>3.6.6-bw.3</version>
 	</parent>
 
 	<artifactId>api-user</artifactId>
