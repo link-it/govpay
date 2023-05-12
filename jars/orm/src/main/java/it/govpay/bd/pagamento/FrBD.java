@@ -306,7 +306,7 @@ public class FrBD extends BasicBD {
 
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_FLUSSO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_FLUSSO), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_ORA_FLUSSO), "data_ora_flusso");
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_ACQUISIZIONE), "data_acquisizione");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 
 			// creo condizioni
@@ -314,7 +314,7 @@ public class FrBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_ORA_FLUSSO, true), false);
+			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_ACQUISIZIONE, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
