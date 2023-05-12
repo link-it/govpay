@@ -98,7 +98,7 @@ public class EntrateController extends BaseController {
 
 			// INIT DAO
 
-			EntrateDAO entrateDAO = new EntrateDAO(false);
+			EntrateDAO entrateDAO = new EntrateDAO();
 
 			// CHIAMATA AL DAO
 
@@ -144,7 +144,7 @@ public class EntrateController extends BaseController {
 
 			// INIT DAO
 
-			EntrateDAO entrateDAO = new EntrateDAO(false);
+			EntrateDAO entrateDAO = new EntrateDAO();
 
 			// CHIAMATA AL DAO
 

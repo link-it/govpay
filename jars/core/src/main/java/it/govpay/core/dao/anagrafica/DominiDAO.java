@@ -281,6 +281,10 @@ public class DominiDAO extends BaseDAO{
 					uo.setIdDominio(putDominioDTO.getDominio().getId());
 					uoBd.updateUnitaOperativa(uo);
 					dominiBD.commit();
+
+					//  elimino la entry dalla cache
+					AnagraficaManager.removeFromCache(putDominioDTO.getDominio());
+					AnagraficaManager.removeFromCache(uo); 
 				} catch (NotFoundException | ServiceException e) {
 					dominiBD.rollback(); 
 					throw e;
@@ -544,6 +548,9 @@ public class DominiDAO extends BaseDAO{
 				uoBd.insertUnitaOperativa(putUnitaOperativaDTO.getUo());
 			} else {
 				uoBd.updateUnitaOperativa(putUnitaOperativaDTO.getUo());
+
+				//  elimino la entry dalla cache
+				AnagraficaManager.removeFromCache(putUnitaOperativaDTO.getUo());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new UnitaOperativaNonTrovataException(e.getMessage());
@@ -642,6 +649,8 @@ public class DominiDAO extends BaseDAO{
 				ibanAccreditoBD.insertIbanAccredito(putIbanAccreditoDTO.getIban());
 			} else {
 				ibanAccreditoBD.updateIbanAccredito(putIbanAccreditoDTO.getIban());
+				//  elimino la entry dalla cache
+				AnagraficaManager.removeFromCache(putIbanAccreditoDTO.getIban());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IbanAccreditoNonTrovatoException(e.getMessage());
@@ -792,6 +801,8 @@ public class DominiDAO extends BaseDAO{
 				tributiBD.insertTributo(putEntrataDominioDTO.getTributo());
 			} else {
 				tributiBD.updateTributo(putEntrataDominioDTO.getTributo());
+				//  elimino la entry dalla cache
+				AnagraficaManager.removeFromCache(putEntrataDominioDTO.getTributo());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TributoNonTrovatoException(e.getMessage());
@@ -1002,6 +1013,8 @@ public class DominiDAO extends BaseDAO{
 				tipiVersamentoDominiBD.insertTipoVersamentoDominio(putTipoPendenzaDominioDTO.getTipoVersamentoDominio());
 			} else {
 				tipiVersamentoDominiBD.updateTipoVersamentoDominio(putTipoPendenzaDominioDTO.getTipoVersamentoDominio());
+				//  elimino la entry dalla cache
+				AnagraficaManager.removeFromCache(putTipoPendenzaDominioDTO.getTipoVersamentoDominio());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TributoNonTrovatoException(e.getMessage());

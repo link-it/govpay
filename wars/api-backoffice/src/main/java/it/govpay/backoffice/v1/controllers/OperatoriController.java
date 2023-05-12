@@ -121,7 +121,7 @@ public class OperatoriController extends BaseController {
 
 			// INIT DAO
 
-			UtentiDAO operatoriDAO = new UtentiDAO(false);
+			UtentiDAO operatoriDAO = new UtentiDAO();
 
 			// CHIAMATA AL DAO
 
@@ -233,7 +233,7 @@ public class OperatoriController extends BaseController {
 
 			// INIT DAO
 
-			UtentiDAO operatoriDAO = new UtentiDAO(false);
+			UtentiDAO operatoriDAO = new UtentiDAO();
 
 			// CHIAMATA AL DAO
 

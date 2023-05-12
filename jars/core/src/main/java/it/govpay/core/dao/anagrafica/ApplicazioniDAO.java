@@ -252,6 +252,10 @@ public class ApplicazioniDAO extends BaseDAO {
 				}
 				
 				applicazioniBD.updateApplicazione(putApplicazioneDTO.getApplicazione());
+				
+				//  elimino la entry dalla cache
+				AnagraficaManager.removeFromCache(putApplicazioneDTO.getApplicazione());
+				AnagraficaManager.removeFromCache(putApplicazioneDTO.getApplicazione().getUtenza()); 
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new ApplicazioneNonTrovataException(e.getMessage());

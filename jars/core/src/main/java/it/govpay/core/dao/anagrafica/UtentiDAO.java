@@ -277,11 +277,8 @@ public class UtentiDAO extends BaseDAO{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
 		try {
-			operatoriBD = new OperatoriBD(configWrapper);
-
-			Operatore operatore = operatoriBD.getOperatore(leggiOperatore.getPrincipal());
 			LeggiOperatoreDTOResponse response = new LeggiOperatoreDTOResponse();
-			response.setOperatore(operatore);
+			response.setOperatore(AnagraficaManager.getOperatoreByPrincipal(configWrapper, leggiOperatore.getPrincipal()));
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e3) {
 			throw new OperatoreNonTrovatoException("Operatore " + leggiOperatore.getPrincipal() + " non censito in Anagrafica");
@@ -434,6 +431,10 @@ public class UtentiDAO extends BaseDAO{
 				}
 
 				operatoriBD.updateOperatore(putOperatoreDTO.getOperatore());
+				
+				//  elimino la entry dalla cache
+				AnagraficaManager.removeFromCache(putOperatoreDTO.getOperatore());
+				AnagraficaManager.removeFromCache(putOperatoreDTO.getOperatore().getUtenza()); 
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new OperatoreNonTrovatoException(e.getMessage(), e);

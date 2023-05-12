@@ -525,10 +525,13 @@ public class ApplicazioniBD extends BasicBD {
 
 			List<Applicazione> dtoList = new ArrayList<>();
 			for(it.govpay.orm.Applicazione vo: this.getApplicazioneService().findAll(filter.toPaginatedExpression())) {
-				dtoList.add(this.getApplicazione(vo));
+				// usa la cache per popolare il dettaglio dell'applicazione
+				dtoList.add(AnagraficaManager.getApplicazione(this.getBdConfigWrapper(), vo.getId()));
 			}
 			return dtoList;
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) { // la ricerca dalla cache lancia una notfound la catturo.
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
