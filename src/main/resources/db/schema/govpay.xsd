@@ -2786,7 +2786,7 @@
 							<linkit:sql-table-index-field name="srcVersanteIdentificativo"/>
 						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_prt_data_richiesta">
-							<linkit:sql-table-index-field name="data_richiesta"/>
+							<linkit:sql-table-index-field name="dataRichiesta" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -2862,7 +2862,7 @@
 							<linkit:sql-table-index-column name="id_singolo_versamento"/>
 						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_pag_data_acq">
-							<linkit:sql-table-index-column name="data_acquisizione"/>
+							<linkit:sql-table-index-field name="dataAcquisizione" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -3220,6 +3220,9 @@
 						</linkit:sql-table-unique>
 						<linkit:sql-table-index name="idx_fr_cod_flusso">
 							<linkit:sql-table-index-field name="codFlusso"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_fr_data_acq">
+							<linkit:sql-table-index-field name="dataAcquisizione" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>

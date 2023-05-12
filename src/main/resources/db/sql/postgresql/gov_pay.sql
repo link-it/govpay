@@ -1044,6 +1044,7 @@ CREATE TABLE fr
 
 -- index
 CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
+CREATE INDEX idx_fr_data_acq ON fr (data_acquisizione);
 
 
 

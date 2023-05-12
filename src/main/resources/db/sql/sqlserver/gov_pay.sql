@@ -1018,6 +1018,7 @@ CREATE TABLE fr
 -- index
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
 CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
+CREATE INDEX idx_fr_data_acq ON fr (data_acquisizione);
 
 
 

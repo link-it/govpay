@@ -696,6 +696,7 @@ CREATE INDEX idx_prt_versante_identif ON pagamenti_portale (src_versante_identif
 CREATE INDEX idx_prt_data_richiesta ON pagamenti_portale (data_richiesta);
 
 
+
 CREATE TABLE pag_port_versamenti
 (
 	-- fk/pk columns
@@ -1009,6 +1010,7 @@ CREATE TABLE fr
 -- index
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
 CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
+CREATE INDEX idx_fr_data_acq ON fr (data_acquisizione);
 
 
 
