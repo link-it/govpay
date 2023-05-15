@@ -54,10 +54,10 @@ public class VersamentiBD  extends BasicBD {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
-				filter.setExpressionConstructor(this.getVersamentoService());
+				filter.setExpressionConstructor(this.getVistaVersamentoServiceSearch());
 			}
 			
-			return this.getVersamentoService().count(filter.toExpression()).longValue();
+			return this.getVistaVersamentoServiceSearch().count(filter.toExpression()).longValue();
 	
 		} catch (NotImplementedException e) {
 			return 0;

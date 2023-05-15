@@ -290,8 +290,9 @@ public class AnagraficaManager {
 	}
 	
 	public static void removeFromCache(IbanAccredito iban) {
-		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(keyPrefID + iban.getId(), CACHE_KEY_GET_IBAN_ACCREDITO));} catch (Exception e) {	}
-		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(keyPrefCODICE + iban.getCodIban(), CACHE_KEY_GET_IBAN_ACCREDITO));} catch (Exception e) {	}
+		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(keyPrefID + iban.getId(), CACHE_KEY_GET_IBAN_ACCREDITO));} catch (UtilsException e) {	}
+		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(keyPrefCODICE + iban.getCodIban(), CACHE_KEY_GET_IBAN_ACCREDITO));} catch (UtilsException e) {	}
+		try {ibanAccreditoBDCacheWrapper.removeObjectCache(ibanAccreditoBDCacheWrapper.getKeyCache(keyPrefCODICE + iban.getIdDominio() + "_" + iban.getCodIban(), CACHE_KEY_GET_IBAN_ACCREDITO));} catch (UtilsException e) {	}
 	}
 	
 	public static void removeFromCache(Intermediario intermediario) {
@@ -331,8 +332,9 @@ public class AnagraficaManager {
 	}
 	
 	public static void removeFromCache(TipoVersamentoDominio tipoVersamentoDominio) {
-		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(keyPrefID + tipoVersamentoDominio.getId(), CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO));} catch (Exception e) {	}
-		try {tipiVersamentoBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(keyPrefCODICE + tipoVersamentoDominio.getIdDominio() + "_" + tipoVersamentoDominio.getCodTipoVersamento(), CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO));} catch (Exception e) {	}
+		try {tipiVersamentoDominiBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(keyPrefID + tipoVersamentoDominio.getId(), CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO));} catch (UtilsException e) {	}
+		try {tipiVersamentoDominiBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(keyPrefCODICE + tipoVersamentoDominio.getIdDominio() + "_" + tipoVersamentoDominio.getCodTipoVersamento(), CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO));} catch (UtilsException e) {	}
+		try {tipiVersamentoDominiBDCacheWrapper.removeObjectCache(tipiVersamentoDominiBDCacheWrapper.getKeyCache(keyPrefCODICE + tipoVersamentoDominio.getIdDominio() + "_tv_pagamentoPortaleForm", CACHE_KEY_GET_TIPO_VERSAMENTO_DOMINIO));} catch (UtilsException e) {	}
 	}
 	
 	public static void removeFromCache(Configurazione configurazione) {
