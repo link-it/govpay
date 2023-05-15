@@ -315,8 +315,11 @@ public abstract class BasicClientCORE {
 			this.getEventoCtx().setPrincipal(this.httpBasicUser);
 		}
 		
-		if(connettore.getTipoAutenticazione().equals(EnumAuthType.SUBSCRIPTION_KEY)) {
-			this.getEventoCtx().setPrincipal("Subscription Key Auth");
+		if(connettore.getSubscriptionKeyValue() != null) {
+			// se non ho impostato nessuna autenticazione salvo SubscriptionKey come metodo di autenticazione per l'evento.
+			if(connettore.getTipoAutenticazione().equals(EnumAuthType.NONE)) {
+				this.getEventoCtx().setPrincipal("Subscription Key Auth");
+			}
 			this.isSubscriptionKeyEnabled = true;
 			this.subscriptionKeyHeaderName = GovpayConfig.getInstance().getNomeHeaderSubscriptionKeyPagoPA();
 			this.subscriptionKeyHeaderValue = connettore.getSubscriptionKeyValue();

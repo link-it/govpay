@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.32.0"
+  version: "1.33.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -7766,15 +7766,6 @@ components:
       oneOf:
         - $ref: '#/components/schemas/tipoAutenticazioneBasic'
         - $ref: '#/components/schemas/tipoAutenticazioneSSL'
-        - $ref: '#/components/schemas/tipoAutenticazioneSubscriptionKey'
-    tipoAutenticazioneSubscriptionKey:
-      type: object
-      required:
-        - subscriptionKey
-      properties:
-        subscriptionKey:
-          type: string
-          example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
     connector:
       type: object
       required:
@@ -7806,6 +7797,9 @@ components:
           example: https://nododeipagamentispc.agid.gov.it/openspcoop/PA
         auth:
           $ref: '#/components/schemas/tipoAutenticazione'
+        subscriptionKey:
+          type: string
+          example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
     connettoreNotificaPagamenti:
       type: object
       required:
