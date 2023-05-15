@@ -35,6 +35,7 @@ import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Stazione;
+import it.govpay.core.business.Operazioni;
 import it.govpay.core.dao.anagrafica.dto.FindIntermediariDTO;
 import it.govpay.core.dao.anagrafica.dto.FindIntermediariDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindStazioniDTO;
@@ -83,6 +84,9 @@ public class IntermediariDAO extends BaseDAO{
 				intermediariBD.updateIntermediario(putIntermediarioDTO.getIntermediario());
 				//  elimino la entry dalla cache
 				AnagraficaManager.removeFromCache(putIntermediarioDTO.getIntermediario());
+				
+				// propago il reset agli altri nodi
+				Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IntermediarioNonTrovatoException(e.getMessage());
@@ -119,6 +123,9 @@ public class IntermediariDAO extends BaseDAO{
 				stazioniBD.updateStazione(putStazioneDTO.getStazione());
 				//  elimino la entry dalla cache
 				AnagraficaManager.removeFromCache(putStazioneDTO.getStazione());
+				
+				// propago il reset agli altri nodi
+				Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IntermediarioNonTrovatoException(e.getMessage());

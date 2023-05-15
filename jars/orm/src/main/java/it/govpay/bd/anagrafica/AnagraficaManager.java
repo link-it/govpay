@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.anagrafica;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -1022,5 +1023,9 @@ public class AnagraficaManager {
 	
 	public static Date getDataReset() {
 		return AnagraficaManager.dataReset;
+	}
+	
+	public static Date generaNuovaDataReset() {
+		return Date.from(OffsetDateTime.now().plusMinutes(5).toInstant());
 	}
 }

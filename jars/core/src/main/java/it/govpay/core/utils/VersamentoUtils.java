@@ -68,6 +68,7 @@ import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.beans.commons.Versamento.AllegatoPendenza;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Iuv;
+import it.govpay.core.business.Operazioni;
 import it.govpay.core.exceptions.EcException;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
@@ -709,11 +710,10 @@ public class VersamentoUtils {
 				// censimento del tipo pendenza
 				TipiVersamentoBD tipiVersamentoBD = new TipiVersamentoBD(configWrapper);
 				tipoVersamento = tipiVersamentoBD.autoCensimentoTipoVersamento(codTipoVersamento);
-				try {
-					AnagraficaManager.cleanCache();
-				} catch (UtilsException e1) {
-					throw new ServiceException(e1);
-				}
+				AnagraficaManager.removeFromCache(tipoVersamento);
+				
+				// propago il reset agli altri nodi
+				Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 			}
 		}
 		
@@ -737,11 +737,10 @@ public class VersamentoUtils {
 			} else {
 				TipiVersamentoDominiBD tipiVersamentoDominiBD = new TipiVersamentoDominiBD(configWrapper);
 				tipoVersamentoDominio = tipiVersamentoDominiBD.autoCensimentoTipoVersamentoDominio(tipoVersamento, dominio);
-				try {
-					AnagraficaManager.cleanCache();
-				} catch (UtilsException e1) {
-					throw new ServiceException(e1);
-				}
+				AnagraficaManager.removeFromCache(tipoVersamentoDominio);
+				
+				// propago il reset agli altri nodi
+				Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 			}
 		}
 		

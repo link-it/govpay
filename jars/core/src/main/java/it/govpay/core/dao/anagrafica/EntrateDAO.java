@@ -29,6 +29,7 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
+import it.govpay.core.business.Operazioni;
 import it.govpay.core.dao.anagrafica.dto.FindEntrateDTO;
 import it.govpay.core.dao.anagrafica.dto.FindEntrateDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetEntrataDTO;
@@ -70,6 +71,9 @@ public class EntrateDAO extends BaseDAO{
 				entrateBD.updateTipoTributo(putTipoTributoDTO.getTipoTributo());
 				//  elimino la entry dalla cache
 				AnagraficaManager.removeFromCache(putTipoTributoDTO.getTipoTributo());
+				
+				// propago il reset agli altri nodi
+				Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TipoTributoNonTrovatoException(e.getMessage());

@@ -36,6 +36,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.TipiVersamentoBD;
 import it.govpay.bd.anagrafica.TipiVersamentoDominiBD;
 import it.govpay.bd.anagrafica.filters.TipoVersamentoFilter;
+import it.govpay.core.business.Operazioni;
 import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDTO;
 import it.govpay.core.dao.anagrafica.dto.FindTipiPendenzaDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetTipoPendenzaDTO;
@@ -136,6 +137,9 @@ public class TipoPendenzaDAO extends BaseDAO{
 
 				//  elimino la entry dalla cache
 				AnagraficaManager.removeFromCache(putTipoPendenzaDTO.getTipoVersamento());
+				
+				// propago il reset agli altri nodi
+				Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TipoVersamentoNonTrovatoException(e.getMessage());

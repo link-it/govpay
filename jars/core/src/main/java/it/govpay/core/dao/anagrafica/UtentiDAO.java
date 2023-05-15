@@ -28,7 +28,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.crypt.Password;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
@@ -49,6 +48,7 @@ import it.govpay.bd.model.Utenza;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.commons.Dominio.Uo;
+import it.govpay.core.business.Operazioni;
 import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTO;
 import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTO;
@@ -128,13 +128,17 @@ public class UtentiDAO extends BaseDAO{
 				UtenzaPatchUtils.patchProfiloOperatore(op, utenza, configWrapper);
 			}
 
-			AnagraficaManager.cleanCache();
+			//  elimino la entry dalla cache
+			AnagraficaManager.removeFromCache(userDetails.getOperatore());
+			AnagraficaManager.removeFromCache(utenza);
+			AnagraficaManager.removeFromCache(userDetails.getOperatore().getUtenza());
+			
+			// propago il reset agli altri nodi
+			Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 
 			return this.getProfilo(authentication);
 		}catch(NotFoundException e) {
 			throw new OperatoreNonTrovatoException("Non esiste un operatore associato all'utenza autenticata.");
-		} catch (UtilsException e) {
-			throw new ServiceException(e);
 		}finally {
 		}
 
@@ -435,6 +439,9 @@ public class UtentiDAO extends BaseDAO{
 				//  elimino la entry dalla cache
 				AnagraficaManager.removeFromCache(putOperatoreDTO.getOperatore());
 				AnagraficaManager.removeFromCache(putOperatoreDTO.getOperatore().getUtenza()); 
+				
+				// propago il reset agli altri nodi
+				Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new OperatoreNonTrovatoException(e.getMessage(), e);
@@ -456,14 +463,14 @@ public class UtentiDAO extends BaseDAO{
 			for(PatchOp op: patchDTO.getOp()) {
 				UtenzaPatchUtils.patchUtenza(op, operatore.getUtenza(), configWrapper);
 			}
-
-			//operatoriBD.updateOperatore(operatore);
-
 			AnagraficaManager.removeFromCache(operatore);
-			AnagraficaManager.removeFromCache(operatore.getUtenza()); 
+			AnagraficaManager.removeFromCache(operatore.getUtenza());
+			
+			// propago il reset agli altri nodi
+			Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 
-			operatore = operatoriBD.getOperatore(patchDTO.getIdOperatore());
-			leggiOperatoreDTOResponse.setOperatore(operatore);
+			// ricarico la entry dentro la cache
+			leggiOperatoreDTOResponse.setOperatore(AnagraficaManager.getOperatoreByPrincipal(configWrapper, patchDTO.getIdOperatore()));
 
 			return leggiOperatoreDTOResponse;
 		}catch(NotFoundException e) {

@@ -467,6 +467,25 @@ public class Operazioni{
 			BatchManager.stopEsecuzione(configWrapper, NTFY_APP_IO);
 		}
 	}
+	
+	public static String aggiornaDataResetCacheAnagrafica(BDConfigWrapper configWrapper, Date newDate){
+		
+		BatchBD batchBD = null;
+		try {
+			batchBD = new BatchBD(configWrapper);
+			Batch batch = batchBD.get(CACHE_ANAGRAFICA_GOVPAY);
+			batch.setAggiornamento(newDate);
+			batchBD.update(batch);
+			AnagraficaManager.aggiornaDataReset(newDate);
+			log.info("Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.");	
+			return "Aggiornamento della data di reset della cache anagrafica del sistema completato con successo.";
+		} catch (Exception e) {
+			log.error("Aggiornamento della data di reset cache anagrafica del sistema fallita", e);
+			return "Aggiornamento della data di reset cache del sistema fallita: " + e;
+		} finally {
+			if(batchBD != null) batchBD.closeConnection();
+		}
+	}
 
 	public static String resetCacheAnagrafica(IContext ctx){
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
