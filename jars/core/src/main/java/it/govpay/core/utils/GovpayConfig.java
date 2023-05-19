@@ -161,6 +161,7 @@ public class GovpayConfig {
 	private String nomeHeaderSubscriptionKeyPagoPA;
 	
 	private boolean dismettiIUVIso11694;
+	private String prefissoAuthAnnulla;
 	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -246,6 +247,8 @@ public class GovpayConfig {
 		this.nomeHeaderSubscriptionKeyPagoPA = null;
 		
 		this.dismettiIUVIso11694 = false;
+		
+		this.prefissoAuthAnnulla = null;
 		
 		try {
 
@@ -768,6 +771,7 @@ public class GovpayConfig {
 			if(dismettiIUVIso11694String != null && Boolean.valueOf(dismettiIUVIso11694String))
 				this.dismettiIUVIso11694 = true;
 			
+			this.prefissoAuthAnnulla = getProperty("it.govpay.authAnnulla.prefix", props, false, log);
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -1172,5 +1176,9 @@ public class GovpayConfig {
 	
 	public boolean isDismettiIUVIso11694() {
 		return dismettiIUVIso11694;
+	}
+	
+	public String getPrefissoAuthAnnulla() {
+		return prefissoAuthAnnulla;
 	}
 }

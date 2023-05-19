@@ -57,6 +57,7 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
@@ -343,8 +344,15 @@ public class Versamento  {
 		appContext.getRequest().addGenericProperty(new Property("codVersamentoEnte", annullaVersamentoDTO.getCodVersamentoEnte()));
 		ctx.getApplicationLogger().log("versamento.annulla");
 
-		if(annullaVersamentoDTO.getApplicazione() != null && !annullaVersamentoDTO.getApplicazione().getCodApplicazione().equals(annullaVersamentoDTO.getCodApplicazione())) {
-			throw new NotAuthorizedException("Applicazione chiamante [" + annullaVersamentoDTO.getApplicazione().getCodApplicazione() + "] non e' proprietaria del versamento");
+		Applicazione applicazioneChiamante = annullaVersamentoDTO.getApplicazione();
+		String prefissoApplicazioneAutorizzataAnnullamenti = GovpayConfig.getInstance().getPrefissoAuthAnnulla();
+		// se sono un'applicazione, allora devono coincidere chiamante e proprietario della pendenza a meno che non si tratti dell'applicazione abilitata ad annullare le pendenze di tutte le applicazioni 
+		if(applicazioneChiamante != null) {
+			if(!(prefissoApplicazioneAutorizzataAnnullamenti != null && applicazioneChiamante.getCodApplicazione().startsWith(prefissoApplicazioneAutorizzataAnnullamenti))) {
+				if(!applicazioneChiamante.getCodApplicazione().equals(annullaVersamentoDTO.getCodApplicazione())) {
+					throw new NotAuthorizedException("Applicazione chiamante [" + applicazioneChiamante.getCodApplicazione() + "] non e' proprietaria del versamento");
+				}
+			}
 		}
 
 		String codApplicazione = annullaVersamentoDTO.getCodApplicazione();
