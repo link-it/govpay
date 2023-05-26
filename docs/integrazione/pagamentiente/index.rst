@@ -1,7 +1,13 @@
 .. _integrazione_pagamentiente:
 
+.. note::
+   Questo modello di pagamento è deprecato e sostituito dal modello di pagamento unico
+
 Pagamenti ad iniziativa ente
 ============================
+
+.. warning::
+   Questo modello di pagamento è deprecato e sostituito dal modello di pagamento unico
 
 Il Soggetto Debitore utilizza il Portale dei
 Pagamenti dell’Ente Creditore per effettuare i pagamenti dovuti. Il
