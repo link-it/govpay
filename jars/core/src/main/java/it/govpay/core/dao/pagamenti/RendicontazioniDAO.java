@@ -325,6 +325,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setFrObsoleto(listaRendicontazioniDTO.getFrObsoleto());
 			filter.setRicercaIdFlussoCaseInsensitive(listaRendicontazioniDTO.isRicercaIdFlussoCaseInsensitive());
 			filter.setRicercaFR(listaRendicontazioniDTO.isRicercaFR());
+			filter.setDominiAutorizzati(listaRendicontazioniDTO.getCodDomini());
 
 			Long count = null;
 			

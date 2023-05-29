@@ -20,6 +20,7 @@ import it.govpay.ragioneria.v3.beans.FlussoRendicontazione;
 import it.govpay.ragioneria.v3.beans.FlussoRendicontazioneIndex;
 import it.govpay.ragioneria.v3.beans.Segnalazione;
 import it.govpay.ragioneria.v3.beans.StatoFlussoRendicontazione;
+import it.govpay.ragioneria.v3.beans.StatoRendicontazione;
 
 public class FlussiRendicontazioneConverter {
 
@@ -122,6 +123,20 @@ public class FlussiRendicontazioneConverter {
 		
 		rsModel.setImporto(rendicontazione.getImporto());
 		
+		if(rendicontazione.getStato() != null) {
+			switch (rendicontazione.getStato()) {
+			case ALTRO_INTERMEDIARIO:
+				rsModel.setStato(StatoRendicontazione.ALTRO_INTERMEDIARIO);
+				break;
+			case ANOMALA:
+				rsModel.setStato(StatoRendicontazione.ANOMALA);
+				break;
+			case OK:
+				rsModel.setStato(StatoRendicontazione.OK);
+				break;
+			}
+		}
+		
 		if(rendicontazione.getEsito() != null)
 			rsModel.setEsito(new BigDecimal(rendicontazione.getEsito().getCodifica()));
 		
@@ -147,6 +162,20 @@ public class FlussiRendicontazioneConverter {
 			rsModel.setIndice(new BigDecimal(rendicontazione.getIndiceDati()));
 		
 		rsModel.setImporto(rendicontazione.getImporto());
+		
+		if(rendicontazione.getStato() != null) {
+			switch (rendicontazione.getStato()) {
+			case ALTRO_INTERMEDIARIO:
+				rsModel.setStato(StatoRendicontazione.ALTRO_INTERMEDIARIO);
+				break;
+			case ANOMALA:
+				rsModel.setStato(StatoRendicontazione.ANOMALA);
+				break;
+			case OK:
+				rsModel.setStato(StatoRendicontazione.OK);
+				break;
+			}
+		}
 		
 		if(rendicontazione.getEsito() != null)
 			rsModel.setEsito(new BigDecimal(rendicontazione.getEsito().getCodifica()));
