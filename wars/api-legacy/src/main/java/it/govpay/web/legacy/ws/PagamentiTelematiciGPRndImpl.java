@@ -45,7 +45,6 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
@@ -58,10 +57,10 @@ import it.govpay.core.dao.pagamenti.dto.ListaRendicontazioniDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.GpContext;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Utenza.TIPO_UTENZA;
-import it.govpay.core.utils.GpContext;
 import it.govpay.servizi.PagamentiTelematiciGPRnd;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.gprnd.GpChiediFlussoRendicontazione;
@@ -96,6 +95,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 		response.setCodOperazione(ctx.getTransactionId());
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
 		appContext.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(user));
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		try {
 			this.getApplicazioneAutenticata(appContext, user);
 			ctx.getApplicationLogger().log("gprnd.ricevutaRichiesta");
@@ -128,6 +128,17 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			ListaRendicontazioniDTO findRendicontazioniDTO = new ListaRendicontazioniDTO(user);
 			findRendicontazioniDTO.setIdDominio(bodyrichiesta.getCodDominio());
 			findRendicontazioniDTO.setCodApplicazione(bodyrichiesta.getCodApplicazione());
+			
+			// controllo esistenza applicazione
+			if(bodyrichiesta.getCodApplicazione() != null) {
+				try {
+					AnagraficaManager.getApplicazione(configWrapper, bodyrichiesta.getCodApplicazione()).getId();
+				} catch (Exception e) {
+					throw new GovPayException(it.govpay.core.beans.EsitoOperazione.APP_000, bodyrichiesta.getCodApplicazione());
+				}
+				findRendicontazioniDTO.setCodApplicazione(bodyrichiesta.getCodApplicazione());
+			}
+			
 
 			findRendicontazioniDTO.setDataAcquisizioneFlussoDa(da);
 			findRendicontazioniDTO.setDataAcquisizioneFlussoA(a);
@@ -135,15 +146,13 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			findRendicontazioniDTO.setLimit(1001);
 			findRendicontazioniDTO.setEseguiCount(false);
 
-			// Autorizzazione sulle uo
-			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
-			findRendicontazioniDTO.setUnitaOperative(uo);
+			// Autorizzazione sui domini
+			findRendicontazioniDTO.setCodDomini(AuthorizationManager.getDominiAutorizzati(user));
 			findRendicontazioniDTO.setRicercaFR(true);
 
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
 
-			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = uo != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO)
-					: new ListaRendicontazioniDTOResponse(0L, new ArrayList<>());
+			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO);
 			
 			if(findRendicontazioniDTOResponse.getResults().size() > 1000) {
 				throw new GovPayException("Richiesta non valida", it.govpay.core.beans.EsitoOperazione.RICHIESTA, "Sono stati trovati piu' di 1000 risultati, restringere la ricerca.");
@@ -242,18 +251,6 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			// controllo che il dominio sia autorizzato
 			if(leggiRendicontazioneDTOResponse.getDominio() != null && !AuthorizationManager.isDominioAuthorized(user, leggiRendicontazioneDTOResponse.getDominio().getCodDominio())) {
 				throw new GovPayException(it.govpay.core.beans.EsitoOperazione.RND_001);
-			}
-
-			// controllo uo
-			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
-			leggiRendicontazioneDTO = new LeggiFrDTO(user, bodyrichiesta.getCodFlusso());
-			leggiRendicontazioneDTO.setUnitaOperative(uo);
-
-			LeggiFrDTOResponse checkAutorizzazioneRendicontazioneDTOResponse = rendicontazioniDAO.checkAutorizzazioneFlussoRendicontazione(leggiRendicontazioneDTO);
-
-			// controllo che il dominio sia autorizzato
-			if(!checkAutorizzazioneRendicontazioneDTOResponse.isAuthorized()) {
-				throw AuthorizationManager.toNotAuthorizedException(user,"Il flusso non contiente dei pagamenti associati a Unita' Operative autorizzate.");
 			}
 
 //			if(rends != null) {
