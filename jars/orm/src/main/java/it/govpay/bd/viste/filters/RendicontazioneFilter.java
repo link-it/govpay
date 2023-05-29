@@ -55,6 +55,7 @@ public class RendicontazioneFilter extends AbstractFilter {
 	// Esterni alla tabella
 	private String codDominio; // fr 
 	private String tnr;
+	private List<String> dominiAutorizzati;
 	
 	private String codSingoloVersamentoEnte = null; // SV
 	
@@ -410,6 +411,15 @@ public class RendicontazioneFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.dominiAutorizzati != null && this.dominiAutorizzati.size() > 0){
+				this.dominiAutorizzati.removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.in(VistaRendicontazione.model().FR_COD_DOMINIO, this.dominiAutorizzati);
+				addAnd = true;
+			}
+			
 			return newExpression;
 			
 			
@@ -602,6 +612,13 @@ public class RendicontazioneFilter extends AbstractFilter {
 				sqlQueryObject.addWhereINCondition(converter.toColumn(model.VRS_DIVISIONE, true), true, divisioniS);
 			}
 			
+			if(this.dominiAutorizzati != null && this.dominiAutorizzati.size() > 0){
+				this.dominiAutorizzati.removeAll(Collections.singleton(null));
+				
+				String [] idsDominis = this.dominiAutorizzati.toArray(new String[this.dominiAutorizzati.size()]);
+				sqlQueryObject.addWhereINCondition(converter.toColumn(model.FR_COD_DOMINIO, true), true, idsDominis);
+			}
+			
 			return sqlQueryObject;
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
@@ -762,6 +779,10 @@ public class RendicontazioneFilter extends AbstractFilter {
 		}
 
 		if(this.divisione != null && this.divisione.size() > 0){
+			// donothing
+		}
+		
+		if(this.dominiAutorizzati != null && this.dominiAutorizzati.size() > 0){
 			// donothing
 		}
 		
@@ -1030,5 +1051,13 @@ public class RendicontazioneFilter extends AbstractFilter {
 
 	public void setDominiUOAutorizzati(List<IdUnitaOperativa> dominiUOAutorizzati) {
 		this.dominiUOAutorizzati = dominiUOAutorizzati;
+	}
+	
+	public void setDominiAutorizzati(List<String> dominiAutorizzati) {
+		this.dominiAutorizzati = dominiAutorizzati;
+	}
+	
+	public List<String> getDominiAutorizzati() {
+		return dominiAutorizzati;
 	}
 }
