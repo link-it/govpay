@@ -259,8 +259,6 @@ public class RendicontazioniDAO extends BaseDAO{
 				// controllo esistenza applicazione fatto nell'API
 				filter.setIdApplicazione(AnagraficaManager.getApplicazione(configWrapper, listaRendicontazioniDTO.getCodApplicazione()).getId());
 			}
-			
-			filter.setIdApplicazione(0);
 
 			Long count = null;
 			

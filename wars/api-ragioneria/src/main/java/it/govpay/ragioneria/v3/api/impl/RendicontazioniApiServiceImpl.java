@@ -101,7 +101,8 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 			}
 			
 			// Autorizzazione sui domini
-			findRendicontazioniDTO.setCodDomini(AuthorizationManager.getDominiAutorizzati(user));
+			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+			findRendicontazioniDTO.setCodDomini(dominiAutorizzati);
 //			findRendicontazioniDTO.setObsoleto(false);
 			findRendicontazioniDTO.setIuv(iuv);
 			findRendicontazioniDTO.setRicercaIdFlussoCaseInsensitive(true);
@@ -115,7 +116,8 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 
 			// CHIAMATA AL DAO
 			
-			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO); 
+			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = dominiAutorizzati != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO)
+					: new ListaRendicontazioniDTOResponse(0L, new ArrayList<>());
 			
 			// CONVERT TO JSON DELLA RISPOSTA
 
