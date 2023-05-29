@@ -147,12 +147,14 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			findRendicontazioniDTO.setEseguiCount(false);
 
 			// Autorizzazione sui domini
-			findRendicontazioniDTO.setCodDomini(AuthorizationManager.getDominiAutorizzati(user));
+			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+			findRendicontazioniDTO.setCodDomini(dominiAutorizzati);
 			findRendicontazioniDTO.setRicercaFR(true);
 
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
 
-			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO);
+			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = dominiAutorizzati != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO)
+					: new ListaRendicontazioniDTOResponse(0L, new ArrayList<>());
 			
 			if(findRendicontazioniDTOResponse.getResults().size() > 1000) {
 				throw new GovPayException("Richiesta non valida", it.govpay.core.beans.EsitoOperazione.RICHIESTA, "Sono stati trovati piu' di 1000 risultati, restringere la ricerca.");
