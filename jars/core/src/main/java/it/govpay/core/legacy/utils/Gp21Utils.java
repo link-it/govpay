@@ -161,32 +161,28 @@ public class Gp21Utils {
 		return p;
 	}
 
-	public static it.govpay.servizi.commons.FlussoRendicontazione.Pagamento toRendicontazionePagamento(Rendicontazione rend, Pagamento pagamento, Fr frModel, BDConfigWrapper configWrapper) throws ServiceException {
-
-		Versamento versamento = rend.getVersamento(null);
-		
-//		if(versamento == null) return null;
+	public static it.govpay.servizi.commons.FlussoRendicontazione.Pagamento toRendicontazionePagamento(Rendicontazione rend, Pagamento pagamento, it.govpay.bd.model.SingoloVersamento singoloVersamento, Versamento versamento,  Fr frModel, BDConfigWrapper configWrapper) throws ServiceException {
 
 		FlussoRendicontazione.Pagamento p = new FlussoRendicontazione.Pagamento();
 		
-		if(pagamento != null) {
+		if(singoloVersamento != null) {
+			p.setCodSingoloVersamentoEnte(singoloVersamento.getCodSingoloVersamentoEnte());
+		} else if(pagamento != null) {
 			p.setCodSingoloVersamentoEnte(pagamento.getSingoloVersamento(null).getCodSingoloVersamentoEnte());
 		} else if(versamento!= null) {
 			p.setCodSingoloVersamentoEnte(versamento.getSingoliVersamenti().get(0).getCodSingoloVersamentoEnte());
-		} else { // pagamento e versamento non presenti
+		} else { // pagamento o singoloVersamento non presenti
 			p.setCodSingoloVersamentoEnte("UNKNOWN");
 		}
 		p.setImportoRendicontato(rend.getImporto().abs());
 		p.setIur(rend.getIur());
 		p.setEsitoRendicontazione(TipoRendicontazione.valueOf(rend.getEsito().toString()));
 		p.setDataRendicontazione(rend.getData());
-//		if(versione.compareTo(Versione.GP_02_02_00) >= 0) { // Versione 2.2
 		if(versamento != null) {
 			p.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
 		}
 		p.setIuv(rend.getIuv());
 		p.setCodDominio(frModel.getCodDominio());
-//		}
 
 		return p;
 	}

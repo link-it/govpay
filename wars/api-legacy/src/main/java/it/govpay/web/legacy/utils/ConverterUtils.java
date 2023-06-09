@@ -40,6 +40,7 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.core.beans.GpAvviaTransazionePagamentoResponse.RifTransazione;
@@ -121,7 +122,9 @@ public class ConverterUtils extends Gp21Utils {
 			for(Rendicontazione rend : rends) {
 				Pagamento pagamento = rend.getPagamento();
 				it.govpay.bd.model.Rendicontazione rendicontazione = rend.getRendicontazione();
-				it.govpay.servizi.commons.FlussoRendicontazione.Pagamento rendicontazionePagamento = ConverterUtils.toRendicontazionePagamento(rendicontazione, pagamento, frModel, configWrapper);
+				SingoloVersamento singoloVersamento = rend.getSingoloVersamento();
+				Versamento versamento = rend.getVersamento();
+				it.govpay.servizi.commons.FlussoRendicontazione.Pagamento rendicontazionePagamento = ConverterUtils.toRendicontazionePagamento(rendicontazione, pagamento, singoloVersamento, versamento, frModel, configWrapper);
 				if(rendicontazionePagamento != null) {
 					fr.setImportoTotale(rendicontazione.getImporto().add(fr.getImportoTotale()));
 					fr.setNumeroPagamenti(fr.getNumeroPagamenti() + 1);

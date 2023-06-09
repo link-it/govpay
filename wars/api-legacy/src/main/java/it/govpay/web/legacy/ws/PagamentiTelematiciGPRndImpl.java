@@ -255,19 +255,6 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 				throw new GovPayException(it.govpay.core.beans.EsitoOperazione.RND_001);
 			}
 
-//			if(rends != null) {
-//				for(Rendicontazione rend : rends) {
-//					if(rend.getPagamento() == null) {
-//						try {
-//							it.govpay.bd.model.Versamento versamento = new it.govpay.core.business.Versamento().chiediVersamento(null, null, null, null, frModel.getDominio(configWrapper).getCodDominio(), rend.getIuv(), TipologiaTipoVersamento.DOVUTO);
-//							rend.setVersamento(versamento);
-//						}catch (Exception e) {
-//							continue;
-//						}
-//					}
-//				}
-//			}
-
 			if(bodyrichiesta.getCodApplicazione() != null) {
 				Long idApplicazione = AnagraficaManager.getApplicazione(configWrapper, bodyrichiesta.getCodApplicazione()).getId();
 				List<Rendicontazione> rendsFiltrato = new ArrayList<Rendicontazione>();
