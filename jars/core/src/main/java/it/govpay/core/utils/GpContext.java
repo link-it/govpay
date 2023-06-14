@@ -135,7 +135,7 @@ public class GpContext extends ApplicationContext {
 		ctx.getEventoCtx().setRole(RuoloEvento.SERVER);
 		ctx.getEventoCtx().setDataRichiesta(new Date());
 		ctx.getEventoCtx().setMethod((String) msgCtx.get(MessageContext.HTTP_REQUEST_METHOD));
-		ctx.getEventoCtx().setComponente(Componente.API_PAGOPA);
+		ctx.getEventoCtx().setComponente(componente);
 		ctx.getEventoCtx().setUrl(servletRequest.getRequestURI());
 		ctx.getEventoCtx().setPrincipal(user);
 		ctx.getEventoCtx().setTipoEvento(operation.getName());
