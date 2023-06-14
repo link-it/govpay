@@ -7,10 +7,6 @@ Il servizio e' al momento rilasciato in versione beta.
 
 Questo connettore consente di esportare i dati dei pagamenti gestiti da GovPay in formato compatibile con la piattaforma PagoPA Maggioli. Il batch di esportazione viene eseguito quotidianamente alle 3 di mattina. 
 
-GovPay seleziona le notifiche di pagamento da inviare verso Maggioli attraverso l'operazione InvioEsitoPagamento e raccoglie il risultato delle spedizioni all'interno di un tracciato in formato csv.
-
-Infine GovPay espone un servizio che implementa l'operazione RecuperaRT utilizzato dalla piattaforma Maggioli per recuperare il dettaglio di una ricevuta.
-
 .. figure:: ../../_images/48ConnettoreMaggioliJPPA.png
    :align: center
    :name: 48ConnettoreMaggioliJPPA
@@ -24,10 +20,10 @@ Infine GovPay espone un servizio che implementa l'operazione RecuperaRT utilizza
    "Versione CSV", "Versione del tracciato di esito"
    "Modalità di consegna", "Canale di trasmissione del CSV verso l'ente"
    "Tipi pendenza", "Elenco dei tipi pendenza oggetto di esportazione"
-   "Email", "Elenco degli indirizzi email a cui spedire il tracciato di esito delle spedizioni"
+   "Email", "Specifica la lista degli indirizzi destinatari separati da virgola"
    "Oggetto", "Oggetto della email"
-   "Invia come allegato", "Indica se il tracciato viene spedito come allegato alla mail"
-   "Base URL link download", "Indirizzo dal quale scaricare il tracciato di esito"
+   "Invia come allegato", "Indica se il tracciato deve essere inserito in allegato o riferito con un link."
+   "Base URL link download", "Indica la base URL del link di download. Deve puntare alla risorsa /tracciatiNotificaPagamenti delle API di backoffice"
 
 .. csv-table:: *Parametri di configurazione servizio acquisizione ricevute*
    :header: "Campo", "Descrizione"
@@ -42,7 +38,14 @@ Infine GovPay espone un servizio che implementa l'operazione RecuperaRT utilizza
    "URL", "URL dei servizi esposti da Maggioli"
    "Versione API", "Versione dei servizi da utilizzare"
    "Tipo Autenticazione", "Tipo di autenticazione da utilizzare (Nessuna/HTTPBasic/SSL)"
-   
+
+
+Il servizio di esportazione seleziona le transazioni di pagamento completate con successo ed invia le notifiche verso Maggioli attraverso l'operazione *InvioEsitoPagamento*, contestualmente raccoglie il risultato di ogni spedizione all'interno di un tracciato in formato csv.
+Il tracciato verra' quindi inviato via email al termine dell'invio delle notifiche di pagamento.
+
+Per completare il flusso operativo previsto, GovPay espone l'operazione *RecuperaRT* utilizzata dalla piattaforma Maggioli per recuperare il dettaglio di ogni ricevuta notificata nella fase precedente.
+
+
 Versione 1.0
 ~~~~~~~~~~~~
 
