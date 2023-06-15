@@ -2,6 +2,7 @@ package it.govpay.core.utils;
 
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
@@ -35,7 +36,9 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StEntityUniqueIdentifierType;
+import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.StOutcome;
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.UnitaOperativa;
@@ -179,15 +182,15 @@ public class MessaggiPagoPAUtils {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		
 		Versamento versamento = rpt.getVersamento(configWrapper);
-		Dominio dominio = versamento.getDominio(configWrapper); 
+		Dominio dominio = versamento.getDominio(configWrapper);
 		UnitaOperativa uo = versamento.getUo(configWrapper);
 		
 		ctRt.setDataOraMessaggioRicevuta(rpt.getDataMsgRichiesta());
 		CtDatiVersamentoRT ctDatiPagamento = new CtDatiVersamentoRT();
 		ctDatiPagamento.setCodiceContestoPagamento(receipt.getReceiptId());
-		if(rpt.getEsitoPagamento() != null) {
-			ctDatiPagamento.setCodiceEsitoPagamento(rpt.getEsitoPagamento().getCodifica() + "");
-		}
+		StOutcome ctReceiptOutcome = receipt.getOutcome();
+		it.govpay.model.Rpt.EsitoPagamento rptEsito = ctReceiptOutcome.equals(StOutcome.OK) ? it.govpay.model.Rpt.EsitoPagamento.PAGAMENTO_ESEGUITO : it.govpay.model.Rpt.EsitoPagamento.PAGAMENTO_NON_ESEGUITO; 
+		ctDatiPagamento.setCodiceEsitoPagamento(rptEsito.getCodifica() + "");
 		ctDatiPagamento.setIdentificativoUnivocoVersamento(receipt.getCreditorReferenceId());
 		ctDatiPagamento.setImportoTotalePagato(receipt.getPaymentAmount());
 		
@@ -213,30 +216,17 @@ public class MessaggiPagoPAUtils {
 		
 		ctRt.setDatiPagamento(ctDatiPagamento );
 		CtDominio ctDominio = new CtDominio();
-		ctDominio.setIdentificativoDominio(rpt.getCodDominio());
+		ctDominio.setIdentificativoDominio(receipt.getFiscalCode());
 		ctDominio.setIdentificativoStazioneRichiedente(dominio.getStazione().getCodStazione());
 		ctRt.setDominio(ctDominio);
 		ctRt.setEnteBeneficiario(RptBuilder.buildEnteBeneficiario(dominio, uo));
-		ctRt.setIdentificativoMessaggioRicevuta(rpt.getCodMsgRicevuta());
+		ctRt.setIdentificativoMessaggioRicevuta(receipt.getReceiptId());
 		CtIstitutoAttestante ctIstitutoAttestante = new CtIstitutoAttestante();
 		CtIdentificativoUnivoco ctIdentificativoUnivocoIstitutoAttestante = new CtIdentificativoUnivoco();
-		ctIdentificativoUnivocoIstitutoAttestante.setCodiceIdentificativoUnivoco(rpt.getIdentificativoAttestante());
-		if(rpt.getTipoIdentificativoAttestante() != null) {
-			switch (rpt.getTipoIdentificativoAttestante()) {
-			case A:
-				ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.A);
-				break;
-			case B:
-				ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.B);
-				break;
-			case G:
-			default:
-				ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.G);	
-				break;
-			}
-		}
+		ctIdentificativoUnivocoIstitutoAttestante.setCodiceIdentificativoUnivoco(receipt.getIdPSP());
+		ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.A);
 		ctIstitutoAttestante.setIdentificativoUnivocoAttestante(ctIdentificativoUnivocoIstitutoAttestante );
-		ctIstitutoAttestante.setDenominazioneAttestante(rpt.getDenominazioneAttestante());
+		ctIstitutoAttestante.setDenominazioneAttestante(receipt.getPSPCompanyName());
 		
 		ctRt.setIstitutoAttestante(ctIstitutoAttestante );
 		ctRt.setRiferimentoDataRichiesta(rpt.getDataMsgRicevuta());
@@ -262,9 +252,9 @@ public class MessaggiPagoPAUtils {
 		ctRt.setDataOraMessaggioRicevuta(rpt.getDataMsgRichiesta());
 		CtDatiVersamentoRT ctDatiPagamento = new CtDatiVersamentoRT();
 		ctDatiPagamento.setCodiceContestoPagamento(receipt.getReceiptId());
-		if(rpt.getEsitoPagamento() != null) {
-			ctDatiPagamento.setCodiceEsitoPagamento(rpt.getEsitoPagamento().getCodifica() + "");
-		}
+		StOutcome ctReceiptOutcome = receipt.getOutcome();
+		it.govpay.model.Rpt.EsitoPagamento rptEsito = ctReceiptOutcome.equals(StOutcome.OK) ? it.govpay.model.Rpt.EsitoPagamento.PAGAMENTO_ESEGUITO : it.govpay.model.Rpt.EsitoPagamento.PAGAMENTO_NON_ESEGUITO; 
+		ctDatiPagamento.setCodiceEsitoPagamento(rptEsito.getCodifica() + "");
 		ctDatiPagamento.setIdentificativoUnivocoVersamento(receipt.getCreditorReferenceId());
 		ctDatiPagamento.setImportoTotalePagato(receipt.getPaymentAmount());
 		
@@ -290,30 +280,18 @@ public class MessaggiPagoPAUtils {
 		
 		ctRt.setDatiPagamento(ctDatiPagamento );
 		CtDominio ctDominio = new CtDominio();
-		ctDominio.setIdentificativoDominio(rpt.getCodDominio());
+		ctDominio.setIdentificativoDominio(receipt.getFiscalCode());
 		ctDominio.setIdentificativoStazioneRichiedente(dominio.getStazione().getCodStazione());
 		ctRt.setDominio(ctDominio);
 		ctRt.setEnteBeneficiario(RptBuilder.buildEnteBeneficiario(dominio, uo));
-		ctRt.setIdentificativoMessaggioRicevuta(rpt.getCodMsgRicevuta());
+		ctRt.setIdentificativoMessaggioRicevuta(receipt.getReceiptId());
+		
 		CtIstitutoAttestante ctIstitutoAttestante = new CtIstitutoAttestante();
 		CtIdentificativoUnivoco ctIdentificativoUnivocoIstitutoAttestante = new CtIdentificativoUnivoco();
-		ctIdentificativoUnivocoIstitutoAttestante.setCodiceIdentificativoUnivoco(rpt.getIdentificativoAttestante());
-		if(rpt.getTipoIdentificativoAttestante() != null) {
-			switch (rpt.getTipoIdentificativoAttestante()) {
-			case A:
-				ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.A);
-				break;
-			case B:
-				ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.B);
-				break;
-			case G:
-			default:
-				ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.G);	
-				break;
-			}
-		}
+		ctIdentificativoUnivocoIstitutoAttestante.setCodiceIdentificativoUnivoco(receipt.getIdPSP());
+		ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.A);
 		ctIstitutoAttestante.setIdentificativoUnivocoAttestante(ctIdentificativoUnivocoIstitutoAttestante );
-		ctIstitutoAttestante.setDenominazioneAttestante(rpt.getDenominazioneAttestante());
+		ctIstitutoAttestante.setDenominazioneAttestante(receipt.getPSPCompanyName());
 		
 		ctRt.setIstitutoAttestante(ctIstitutoAttestante );
 		ctRt.setRiferimentoDataRichiesta(rpt.getDataMsgRicevuta());
