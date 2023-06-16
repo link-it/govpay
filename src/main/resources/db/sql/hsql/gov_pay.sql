@@ -813,6 +813,7 @@ CREATE INDEX idx_prt_stato ON pagamenti_portale (stato);
 CREATE INDEX idx_prt_id_sessione ON pagamenti_portale (id_sessione);
 CREATE INDEX idx_prt_id_sessione_psp ON pagamenti_portale (id_sessione_psp);
 CREATE INDEX idx_prt_versante_identif ON pagamenti_portale (src_versante_identificativo);
+CREATE INDEX idx_prt_data_richiesta ON pagamenti_portale (data_richiesta);
 CREATE TABLE pagamenti_portale_init_seq (id BIGINT);
 INSERT INTO pagamenti_portale_init_seq VALUES (NEXT VALUE FOR seq_pagamenti_portale);
 
@@ -1193,6 +1194,7 @@ CREATE TABLE fr
 -- index
 CREATE UNIQUE INDEX index_fr_1 ON fr (cod_dominio,cod_flusso,data_ora_flusso);
 CREATE INDEX idx_fr_cod_flusso ON fr (cod_flusso);
+CREATE INDEX idx_fr_data_acq ON fr (data_acquisizione);
 CREATE TABLE fr_init_seq (id BIGINT);
 INSERT INTO fr_init_seq VALUES (NEXT VALUE FOR seq_fr);
 
@@ -1239,6 +1241,7 @@ CREATE TABLE pagamenti
 -- index
 CREATE INDEX idx_pag_fk_rpt ON pagamenti (id_rpt);
 CREATE INDEX idx_pag_fk_sng ON pagamenti (id_singolo_versamento);
+CREATE INDEX idx_pag_data_acq ON pagamenti (data_acquisizione);
 CREATE TABLE pagamenti_init_seq (id BIGINT);
 INSERT INTO pagamenti_init_seq VALUES (NEXT VALUE FOR seq_pagamenti);
 

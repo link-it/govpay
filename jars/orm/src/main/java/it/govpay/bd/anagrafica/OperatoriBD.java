@@ -441,10 +441,10 @@ public class OperatoriBD extends BasicBD {
 			List<it.govpay.orm.Operatore> lstVO = this.getOperatoreService().findAll(filter.toPaginatedExpression());
 
 			for(it.govpay.orm.Operatore operatoreVO : lstVO) {
-				lst.add(this.getOperatore(operatoreVO));
+				lst.add(AnagraficaManager.getOperatore(getBdConfigWrapper(), operatoreVO.getId()));
 			}
 			return lst;
-		} catch (NotImplementedException | NotFoundException | MultipleResultException e) {
+		} catch (NotImplementedException | NotFoundException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

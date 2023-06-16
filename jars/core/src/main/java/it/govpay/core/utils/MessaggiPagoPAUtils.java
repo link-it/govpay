@@ -5,7 +5,9 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtDatiMarcaBolloDigitale;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloPagamentoRT;
+import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloVersamentoRPT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRPT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDominio;
@@ -27,15 +29,16 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceiptV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtSubject;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPA;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPAReceiptV2;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPAV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.gov.pagopa.pagopa_api.pa.pafornode.StEntityUniqueIdentifierType;
+import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.StOutcome;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
@@ -68,20 +71,37 @@ public class MessaggiPagoPAUtils {
 		
 		CtDatiVersamentoRPT datiVersamento = new CtDatiVersamentoRPT();
 		datiVersamento.setDataEsecuzionePagamento(rpt.getDataMsgRichiesta());
-		datiVersamento.setImportoTotaleDaVersare(versamento.getImportoTotale());
+		datiVersamento.setImportoTotaleDaVersare(data.getPaymentAmount());
 		datiVersamento.setTipoVersamento(StTipoVersamento.fromValue(rpt.getTipoVersamento().getCodifica()));
 		datiVersamento.setIdentificativoUnivocoVersamento(rpt.getIuv());
 		//datiVersamento.setCodiceContestoPagamento(rpt.getCcp());
 		datiVersamento.setFirmaRicevuta(FirmaRichiesta.NESSUNA.getCodifica());
 //		datiVersamento.setIbanAddebito(ibanAddebito != null ? ibanAddebito : null);
 //		datiVersamento.setBicAddebito(bicAddebito != null ? bicAddebito : null);
-		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
-		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-			datiVersamento.getDatiSingoloVersamento().add(RptBuilder.buildDatiSingoloVersamento(rpt, singoloVersamento, configWrapper));
-		}
+		toDatiSingoloVersamento(data, datiVersamento);
+		
 		ctRpt.setDatiVersamento(datiVersamento);
 		
 		return ctRpt;
+	}
+
+	private static void toDatiSingoloVersamento(CtPaymentPA data, CtDatiVersamentoRPT datiVersamento) {
+		for (CtTransferPA ctTransferPA : data.getTransferList().getTransfer()) {
+			CtDatiSingoloVersamentoRPT ctDatiSingoloVersamentoRPT = new CtDatiSingoloVersamentoRPT();
+			
+			ctDatiSingoloVersamentoRPT.setCausaleVersamento(ctTransferPA.getRemittanceInformation());
+			ctDatiSingoloVersamentoRPT.setDatiSpecificiRiscossione(ctTransferPA.getTransferCategory());
+			ctDatiSingoloVersamentoRPT.setIbanAccredito(ctTransferPA.getIBAN());
+			ctDatiSingoloVersamentoRPT.setImportoSingoloVersamento(ctTransferPA.getTransferAmount());
+			ctDatiSingoloVersamentoRPT.setIbanAppoggio(null);
+			ctDatiSingoloVersamentoRPT.setCommissioneCaricoPA(null);
+			ctDatiSingoloVersamentoRPT.setCredenzialiPagatore(null);
+			ctDatiSingoloVersamentoRPT.setDatiMarcaBolloDigitale(null);
+			ctDatiSingoloVersamentoRPT.setBicAccredito(null);
+			ctDatiSingoloVersamentoRPT.setBicAppoggio(null);
+			
+			datiVersamento.getDatiSingoloVersamento().add(ctDatiSingoloVersamentoRPT);
+		}
 	}
 	
 	public static CtRichiestaPagamentoTelematico toCtRichiestaPagamentoTelematico(PaGetPaymentV2Response paGetPaymentV2Response, Rpt rpt) throws ServiceException {
@@ -109,20 +129,46 @@ public class MessaggiPagoPAUtils {
 		
 		CtDatiVersamentoRPT datiVersamento = new CtDatiVersamentoRPT();
 		datiVersamento.setDataEsecuzionePagamento(rpt.getDataMsgRichiesta());
-		datiVersamento.setImportoTotaleDaVersare(versamento.getImportoTotale());
+		datiVersamento.setImportoTotaleDaVersare(data.getPaymentAmount());
 		datiVersamento.setTipoVersamento(StTipoVersamento.fromValue(rpt.getTipoVersamento().getCodifica()));
 		datiVersamento.setIdentificativoUnivocoVersamento(rpt.getIuv());
 		//datiVersamento.setCodiceContestoPagamento(rpt.getCcp());
 		datiVersamento.setFirmaRicevuta(FirmaRichiesta.NESSUNA.getCodifica());
 //		datiVersamento.setIbanAddebito(ibanAddebito != null ? ibanAddebito : null);
 //		datiVersamento.setBicAddebito(bicAddebito != null ? bicAddebito : null);
-		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
-		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-			datiVersamento.getDatiSingoloVersamento().add(RptBuilder.buildDatiSingoloVersamento(rpt, singoloVersamento, configWrapper));
-		}
+		toDatiSingoloVersamentoV2(data, datiVersamento);
 		ctRpt.setDatiVersamento(datiVersamento);
 		
 		return ctRpt;
+	}
+	
+	private static void toDatiSingoloVersamentoV2(CtPaymentPAV2 data, CtDatiVersamentoRPT datiVersamento) {
+		for (CtTransferPAV2 ctTransferPA : data.getTransferList().getTransfer()) {
+			CtDatiSingoloVersamentoRPT ctDatiSingoloVersamentoRPT = new CtDatiSingoloVersamentoRPT();
+			
+			ctDatiSingoloVersamentoRPT.setCausaleVersamento(ctTransferPA.getRemittanceInformation());
+			ctDatiSingoloVersamentoRPT.setDatiSpecificiRiscossione(ctTransferPA.getTransferCategory());
+			ctDatiSingoloVersamentoRPT.setIbanAccredito(ctTransferPA.getIBAN());
+			ctDatiSingoloVersamentoRPT.setImportoSingoloVersamento(ctTransferPA.getTransferAmount());
+			
+			if(ctTransferPA.getRichiestaMarcaDaBollo() != null) {
+				CtDatiMarcaBolloDigitale datiMarcaBolloDigitale = new CtDatiMarcaBolloDigitale();
+				
+				datiMarcaBolloDigitale.setHashDocumento(new String(ctTransferPA.getRichiestaMarcaDaBollo().getHashDocumento()));
+				datiMarcaBolloDigitale.setProvinciaResidenza(ctTransferPA.getRichiestaMarcaDaBollo().getProvinciaResidenza());
+				datiMarcaBolloDigitale.setTipoBollo(ctTransferPA.getRichiestaMarcaDaBollo().getTipoBollo());
+				
+				ctDatiSingoloVersamentoRPT.setDatiMarcaBolloDigitale(datiMarcaBolloDigitale );
+			}
+			
+			ctDatiSingoloVersamentoRPT.setIbanAppoggio(null);
+			ctDatiSingoloVersamentoRPT.setCommissioneCaricoPA(null);
+			ctDatiSingoloVersamentoRPT.setCredenzialiPagatore(null);
+			ctDatiSingoloVersamentoRPT.setBicAccredito(null);
+			ctDatiSingoloVersamentoRPT.setBicAppoggio(null);
+			
+			datiVersamento.getDatiSingoloVersamento().add(ctDatiSingoloVersamentoRPT);
+		}
 	}
 
 
@@ -134,17 +180,17 @@ public class MessaggiPagoPAUtils {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		
 		Versamento versamento = rpt.getVersamento(configWrapper);
-		Dominio dominio = versamento.getDominio(configWrapper); 
+		Dominio dominio = versamento.getDominio(configWrapper);
 		UnitaOperativa uo = versamento.getUo(configWrapper);
 		
 		ctRt.setDataOraMessaggioRicevuta(rpt.getDataMsgRichiesta());
 		CtDatiVersamentoRT ctDatiPagamento = new CtDatiVersamentoRT();
 		ctDatiPagamento.setCodiceContestoPagamento(receipt.getReceiptId());
-		if(rpt.getEsitoPagamento() != null) {
-			ctDatiPagamento.setCodiceEsitoPagamento(rpt.getEsitoPagamento().getCodifica() + "");
-		}
+		StOutcome ctReceiptOutcome = receipt.getOutcome();
+		it.govpay.model.Rpt.EsitoPagamento rptEsito = ctReceiptOutcome.equals(StOutcome.OK) ? it.govpay.model.Rpt.EsitoPagamento.PAGAMENTO_ESEGUITO : it.govpay.model.Rpt.EsitoPagamento.PAGAMENTO_NON_ESEGUITO; 
+		ctDatiPagamento.setCodiceEsitoPagamento(rptEsito.getCodifica() + "");
 		ctDatiPagamento.setIdentificativoUnivocoVersamento(receipt.getCreditorReferenceId());
-		ctDatiPagamento.setImportoTotalePagato(rpt.getImportoTotalePagato());
+		ctDatiPagamento.setImportoTotalePagato(receipt.getPaymentAmount());
 		
 		List<CtTransferPAReceiptV2> datiSingoliPagamenti = receipt.getTransferList().getTransfer();
 		
@@ -168,30 +214,17 @@ public class MessaggiPagoPAUtils {
 		
 		ctRt.setDatiPagamento(ctDatiPagamento );
 		CtDominio ctDominio = new CtDominio();
-		ctDominio.setIdentificativoDominio(rpt.getCodDominio());
+		ctDominio.setIdentificativoDominio(receipt.getFiscalCode());
 		ctDominio.setIdentificativoStazioneRichiedente(dominio.getStazione().getCodStazione());
 		ctRt.setDominio(ctDominio);
 		ctRt.setEnteBeneficiario(RptBuilder.buildEnteBeneficiario(dominio, uo));
-		ctRt.setIdentificativoMessaggioRicevuta(rpt.getCodMsgRicevuta());
+		ctRt.setIdentificativoMessaggioRicevuta(receipt.getReceiptId());
 		CtIstitutoAttestante ctIstitutoAttestante = new CtIstitutoAttestante();
 		CtIdentificativoUnivoco ctIdentificativoUnivocoIstitutoAttestante = new CtIdentificativoUnivoco();
-		ctIdentificativoUnivocoIstitutoAttestante.setCodiceIdentificativoUnivoco(rpt.getIdentificativoAttestante());
-		if(rpt.getTipoIdentificativoAttestante() != null) {
-			switch (rpt.getTipoIdentificativoAttestante()) {
-			case A:
-				ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.A);
-				break;
-			case B:
-				ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.B);
-				break;
-			case G:
-			default:
-				ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.G);	
-				break;
-			}
-		}
+		ctIdentificativoUnivocoIstitutoAttestante.setCodiceIdentificativoUnivoco(receipt.getIdPSP());
+		ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.A);
 		ctIstitutoAttestante.setIdentificativoUnivocoAttestante(ctIdentificativoUnivocoIstitutoAttestante );
-		ctIstitutoAttestante.setDenominazioneAttestante(rpt.getDenominazioneAttestante());
+		ctIstitutoAttestante.setDenominazioneAttestante(receipt.getPSPCompanyName());
 		
 		ctRt.setIstitutoAttestante(ctIstitutoAttestante );
 		ctRt.setRiferimentoDataRichiesta(rpt.getDataMsgRicevuta());
@@ -217,11 +250,11 @@ public class MessaggiPagoPAUtils {
 		ctRt.setDataOraMessaggioRicevuta(rpt.getDataMsgRichiesta());
 		CtDatiVersamentoRT ctDatiPagamento = new CtDatiVersamentoRT();
 		ctDatiPagamento.setCodiceContestoPagamento(receipt.getReceiptId());
-		if(rpt.getEsitoPagamento() != null) {
-			ctDatiPagamento.setCodiceEsitoPagamento(rpt.getEsitoPagamento().getCodifica() + "");
-		}
+		StOutcome ctReceiptOutcome = receipt.getOutcome();
+		it.govpay.model.Rpt.EsitoPagamento rptEsito = ctReceiptOutcome.equals(StOutcome.OK) ? it.govpay.model.Rpt.EsitoPagamento.PAGAMENTO_ESEGUITO : it.govpay.model.Rpt.EsitoPagamento.PAGAMENTO_NON_ESEGUITO; 
+		ctDatiPagamento.setCodiceEsitoPagamento(rptEsito.getCodifica() + "");
 		ctDatiPagamento.setIdentificativoUnivocoVersamento(receipt.getCreditorReferenceId());
-		ctDatiPagamento.setImportoTotalePagato(rpt.getImportoTotalePagato());
+		ctDatiPagamento.setImportoTotalePagato(receipt.getPaymentAmount());
 		
 		List<CtTransferPA> datiSingoliPagamenti = receipt.getTransferList().getTransfer();
 		
@@ -245,30 +278,18 @@ public class MessaggiPagoPAUtils {
 		
 		ctRt.setDatiPagamento(ctDatiPagamento );
 		CtDominio ctDominio = new CtDominio();
-		ctDominio.setIdentificativoDominio(rpt.getCodDominio());
+		ctDominio.setIdentificativoDominio(receipt.getFiscalCode());
 		ctDominio.setIdentificativoStazioneRichiedente(dominio.getStazione().getCodStazione());
 		ctRt.setDominio(ctDominio);
 		ctRt.setEnteBeneficiario(RptBuilder.buildEnteBeneficiario(dominio, uo));
-		ctRt.setIdentificativoMessaggioRicevuta(rpt.getCodMsgRicevuta());
+		ctRt.setIdentificativoMessaggioRicevuta(receipt.getReceiptId());
+		
 		CtIstitutoAttestante ctIstitutoAttestante = new CtIstitutoAttestante();
 		CtIdentificativoUnivoco ctIdentificativoUnivocoIstitutoAttestante = new CtIdentificativoUnivoco();
-		ctIdentificativoUnivocoIstitutoAttestante.setCodiceIdentificativoUnivoco(rpt.getIdentificativoAttestante());
-		if(rpt.getTipoIdentificativoAttestante() != null) {
-			switch (rpt.getTipoIdentificativoAttestante()) {
-			case A:
-				ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.A);
-				break;
-			case B:
-				ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.B);
-				break;
-			case G:
-			default:
-				ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.G);	
-				break;
-			}
-		}
+		ctIdentificativoUnivocoIstitutoAttestante.setCodiceIdentificativoUnivoco(receipt.getIdPSP());
+		ctIdentificativoUnivocoIstitutoAttestante.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.A);
 		ctIstitutoAttestante.setIdentificativoUnivocoAttestante(ctIdentificativoUnivocoIstitutoAttestante );
-		ctIstitutoAttestante.setDenominazioneAttestante(rpt.getDenominazioneAttestante());
+		ctIstitutoAttestante.setDenominazioneAttestante(receipt.getPSPCompanyName());
 		
 		ctRt.setIstitutoAttestante(ctIstitutoAttestante );
 		ctRt.setRiferimentoDataRichiesta(rpt.getDataMsgRicevuta());

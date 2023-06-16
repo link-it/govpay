@@ -38,50 +38,50 @@ public class Rpp extends BaseRsServiceV1{
     @GET
     @Path("/{idDominio}/{iuv}/n/a")
     @Produces({ "application/json" })
-    public Response getRpp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv){
+    public Response getRpp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @QueryParam("retrocompatibilitaMessaggiPagoPAV1") @DefaultValue(value="false") Boolean retrocompatibilitaMessaggiPagoPAV1){
         this.buildContext();
-        return this.controller.getRpp(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  "n/a");
+        return this.controller.getRpp(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  "n/a", retrocompatibilitaMessaggiPagoPAV1);
     }
 
     @GET
     @Path("/{idDominio}/{iuv}/{ccp}")
     @Produces({ "application/json" })
-    public Response getRpp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp){
+    public Response getRpp(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp, @QueryParam("retrocompatibilitaMessaggiPagoPAV1") @DefaultValue(value="false") Boolean retrocompatibilitaMessaggiPagoPAV1){
         this.buildContext();
-        return this.controller.getRpp(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
+        return this.controller.getRpp(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp, retrocompatibilitaMessaggiPagoPAV1);
     }
 
     @GET
     @Path("/{idDominio}/{iuv}/n/a/rt")
     @Produces({ "application/pdf", "application/xml", "application/json" })
-    public Response getRt(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv){
+    public Response getRt(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @QueryParam("retrocompatibilitaMessaggiPagoPAV1") @DefaultValue(value="false") Boolean retrocompatibilitaMessaggiPagoPAV1){
         this.buildContext();
-        return this.controller.getRt(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  "n/a");
+        return this.controller.getRt(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  "n/a", retrocompatibilitaMessaggiPagoPAV1);
     }
 
     @GET
     @Path("/{idDominio}/{iuv}/{ccp}/rt")
     @Produces({ "application/pdf", "application/xml", "application/json" })
-    public Response getRt(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp){
+    public Response getRt(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp, @QueryParam("retrocompatibilitaMessaggiPagoPAV1") @DefaultValue(value="false") Boolean retrocompatibilitaMessaggiPagoPAV1){
         this.buildContext();
-        return this.controller.getRt(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
+        return this.controller.getRt(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp, retrocompatibilitaMessaggiPagoPAV1);
     }
 
     @GET
     @Path("/{idDominio}/{iuv}/n/a/rpt")
     @Produces({ "application/xml", "application/json" })
-    public Response getRpt(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv){
+    public Response getRpt(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @QueryParam("retrocompatibilitaMessaggiPagoPAV1") @DefaultValue(value="false") Boolean retrocompatibilitaMessaggiPagoPAV1){
         this.buildContext();
-        return this.controller.getRpt(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  "n/a");
+        return this.controller.getRpt(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  "n/a", retrocompatibilitaMessaggiPagoPAV1);
     }
 
     @GET
     @Path("/{idDominio}/{iuv}/{ccp}/rpt")
 
     @Produces({ "application/xml", "application/json" })
-    public Response getRpt(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp){
+    public Response getRpt(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idDominio") String idDominio, @PathParam("iuv") String iuv, @PathParam("ccp") String ccp, @QueryParam("retrocompatibilitaMessaggiPagoPAV1") @DefaultValue(value="false") Boolean retrocompatibilitaMessaggiPagoPAV1){
         this.buildContext();
-        return this.controller.getRpt(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp);
+        return this.controller.getRpt(this.getUser(), uriInfo, httpHeaders,  idDominio,  iuv,  ccp, retrocompatibilitaMessaggiPagoPAV1);
     }
 
     @POST
@@ -130,9 +130,9 @@ public class Rpp extends BaseRsServiceV1{
     @Path("/")
 
     @Produces({ "application/json" })
-    public Response findRpps(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv, @QueryParam("ccp") String ccp, @QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza, @QueryParam("esito") String esito, @QueryParam("idPagamento") String idPagamento, @QueryParam("idDebitore") String idDebitore, @QueryParam("dataRptDa") String dataRptDa, @QueryParam("dataRptA") String dataRptA, @QueryParam("dataRtDa") String dataRtDa, @QueryParam("dataRtA") String dataRtA, @QueryParam("direzione") List<String> direzione, @QueryParam("divisione") List<String> divisione, @QueryParam("tassonomia") String tassonomia, @QueryParam("idUnita") String idUnita, @QueryParam("idTipoPendenza") String idTipoPendenza, @QueryParam("anagraficaDebitore") String anagraficaDebitore, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati){
+    public Response findRpps(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina, @QueryParam("ordinamento") String ordinamento, @QueryParam("campi") String campi, @QueryParam("idDominio") String idDominio, @QueryParam("iuv") String iuv, @QueryParam("ccp") String ccp, @QueryParam("idA2A") String idA2A, @QueryParam("idPendenza") String idPendenza, @QueryParam("esito") String esito, @QueryParam("idPagamento") String idPagamento, @QueryParam("idDebitore") String idDebitore, @QueryParam("dataRptDa") String dataRptDa, @QueryParam("dataRptA") String dataRptA, @QueryParam("dataRtDa") String dataRtDa, @QueryParam("dataRtA") String dataRtA, @QueryParam("direzione") List<String> direzione, @QueryParam("divisione") List<String> divisione, @QueryParam("tassonomia") String tassonomia, @QueryParam("idUnita") String idUnita, @QueryParam("idTipoPendenza") String idTipoPendenza, @QueryParam("anagraficaDebitore") String anagraficaDebitore, @QueryParam("metadatiPaginazione") @DefaultValue(value="true") Boolean metadatiPaginazione, @QueryParam("maxRisultati") @DefaultValue(value="true") Boolean maxRisultati, @QueryParam("retrocompatibilitaMessaggiPagoPAV1") @DefaultValue(value="false") Boolean retrocompatibilitaMessaggiPagoPAV1){
     	this.buildContext();
-        return this.controller.findRpps(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, iuv, ccp, idA2A, idPendenza, esito, idPagamento, idDebitore, dataRptDa, dataRptA, dataRtDa, dataRtA, direzione, divisione, tassonomia, idUnita, idTipoPendenza, anagraficaDebitore, metadatiPaginazione, maxRisultati);
+        return this.controller.findRpps(this.getUser(), uriInfo, httpHeaders, pagina, risultatiPerPagina, ordinamento, campi, idDominio, iuv, ccp, idA2A, idPendenza, esito, idPagamento, idDebitore, dataRptDa, dataRptA, dataRtDa, dataRtA, direzione, divisione, tassonomia, idUnita, idTipoPendenza, anagraficaDebitore, metadatiPaginazione, maxRisultati, retrocompatibilitaMessaggiPagoPAV1);
     }
 
 }

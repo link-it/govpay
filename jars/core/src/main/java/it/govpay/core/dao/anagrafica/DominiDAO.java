@@ -48,6 +48,7 @@ import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.TipoVersamentoDominio;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.core.business.Operazioni;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTO;
 import it.govpay.core.dao.anagrafica.dto.FindDominiDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.FindIbanDTO;
@@ -281,6 +282,13 @@ public class DominiDAO extends BaseDAO{
 					uo.setIdDominio(putDominioDTO.getDominio().getId());
 					uoBd.updateUnitaOperativa(uo);
 					dominiBD.commit();
+
+					//  elimino la entry dalla cache
+					AnagraficaManager.removeFromCache(putDominioDTO.getDominio());
+					AnagraficaManager.removeFromCache(uo); 
+					
+					// propago il reset agli altri nodi
+					Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 				} catch (NotFoundException | ServiceException e) {
 					dominiBD.rollback(); 
 					throw e;
@@ -544,6 +552,12 @@ public class DominiDAO extends BaseDAO{
 				uoBd.insertUnitaOperativa(putUnitaOperativaDTO.getUo());
 			} else {
 				uoBd.updateUnitaOperativa(putUnitaOperativaDTO.getUo());
+
+				//  elimino la entry dalla cache
+				AnagraficaManager.removeFromCache(putUnitaOperativaDTO.getUo());
+				
+				// propago il reset agli altri nodi
+				Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new UnitaOperativaNonTrovataException(e.getMessage());
@@ -642,6 +656,11 @@ public class DominiDAO extends BaseDAO{
 				ibanAccreditoBD.insertIbanAccredito(putIbanAccreditoDTO.getIban());
 			} else {
 				ibanAccreditoBD.updateIbanAccredito(putIbanAccreditoDTO.getIban());
+				//  elimino la entry dalla cache
+				AnagraficaManager.removeFromCache(putIbanAccreditoDTO.getIban());
+				
+				// propago il reset agli altri nodi
+				Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new IbanAccreditoNonTrovatoException(e.getMessage());
@@ -792,6 +811,11 @@ public class DominiDAO extends BaseDAO{
 				tributiBD.insertTributo(putEntrataDominioDTO.getTributo());
 			} else {
 				tributiBD.updateTributo(putEntrataDominioDTO.getTributo());
+				//  elimino la entry dalla cache
+				AnagraficaManager.removeFromCache(putEntrataDominioDTO.getTributo());
+				
+				// propago il reset agli altri nodi
+				Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TributoNonTrovatoException(e.getMessage());
@@ -1002,6 +1026,11 @@ public class DominiDAO extends BaseDAO{
 				tipiVersamentoDominiBD.insertTipoVersamentoDominio(putTipoPendenzaDominioDTO.getTipoVersamentoDominio());
 			} else {
 				tipiVersamentoDominiBD.updateTipoVersamentoDominio(putTipoPendenzaDominioDTO.getTipoVersamentoDominio());
+				//  elimino la entry dalla cache
+				AnagraficaManager.removeFromCache(putTipoPendenzaDominioDTO.getTipoVersamentoDominio());
+				
+				// propago il reset agli altri nodi
+				Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new TributoNonTrovatoException(e.getMessage());

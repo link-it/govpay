@@ -937,4 +937,7 @@ public class BasicBD {
 		this.isAtomica = isAtomica;
 	}
 	
+	public BDConfigWrapper getBdConfigWrapper() {
+		return new BDConfigWrapper(this.idTransaction, this.useCache);
+	}
 }

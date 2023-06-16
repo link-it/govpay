@@ -80,7 +80,7 @@ public class ApplicazioniController extends BaseController {
 
 			// Parametri - > DTO Input
 			GetApplicazioneDTO getApplicazioneDTO = new GetApplicazioneDTO(user, idA2A);
-			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO(false);
+			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO();
 			// CHIAMATA AL DAO
 
 			GetApplicazioneDTOResponse getApplicazioneDTOResponse = applicazioniDAO.getApplicazione(getApplicazioneDTO);
@@ -243,7 +243,7 @@ public class ApplicazioniController extends BaseController {
 
 			// INIT DAO
 
-			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO(false);
+			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO();
 
 			// CHIAMATA AL DAO
 

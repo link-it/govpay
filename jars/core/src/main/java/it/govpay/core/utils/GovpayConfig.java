@@ -42,6 +42,7 @@ import org.openspcoop2.utils.logger.log4j.Log4jLoggerWithApplicationContext;
 import org.slf4j.Logger;
 
 import it.govpay.bd.pagamento.util.CustomIuv;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
 import it.govpay.core.exceptions.ConfigException;
 import it.govpay.core.exceptions.InvalidPropertyException;
@@ -172,6 +173,8 @@ public class GovpayConfig {
 	
 	private boolean dismettiIUVIso11694;
 	
+	private String operazioneVerifica;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -259,6 +262,8 @@ public class GovpayConfig {
 		this.nomeHeaderSubscriptionKeyPagoPA = null;
 		
 		this.dismettiIUVIso11694 = false;
+		
+		this.operazioneVerifica = null;
 		
 		try {
 
@@ -791,6 +796,16 @@ public class GovpayConfig {
 			if(dismettiIUVIso11694String != null && Boolean.valueOf(dismettiIUVIso11694String))
 				this.dismettiIUVIso11694 = true;
 			
+			this.operazioneVerifica = getProperty("it.govpay.api.ente.verificaPendenza.operazione", this.props, false, log);
+			
+			if(this.operazioneVerifica != null) {
+				if(! (Costanti.VERIFICA_PENDENZE_GET_AVVISO_OPERATION_ID.equals(this.operazioneVerifica) ||
+						Costanti.VERIFICA_PENDENZE_VERIFY_PENDENZA_OPERATION_ID.equals(this.operazioneVerifica))) {
+					log.info(MessageFormat.format("Proprieta \"it.govpay.api.ente.verificaPendenza.operazione\" trovata con valore non valido [{0}], viene impostata con valore di default null",	this.operazioneVerifica));
+					this.operazioneVerifica = null;
+				}
+			}
+			
 		} catch (PropertyNotFoundException e) {
 			log.error(MessageFormat.format("Errore di inizializzazione: {0}", e.getMessage()));
 			throw new ConfigException(e);
@@ -1202,5 +1217,9 @@ public class GovpayConfig {
 	
 	public boolean isDismettiIUVIso11694() {
 		return dismettiIUVIso11694;
+	}
+	
+	public String getOperazioneVerifica() {
+		return operazioneVerifica;
 	}
 }

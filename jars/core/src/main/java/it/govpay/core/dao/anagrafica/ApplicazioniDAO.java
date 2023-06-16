@@ -39,6 +39,7 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.beans.commons.Dominio;
 import it.govpay.core.beans.commons.Dominio.Uo;
+import it.govpay.core.business.Operazioni;
 import it.govpay.core.dao.anagrafica.dto.FindApplicazioniDTO;
 import it.govpay.core.dao.anagrafica.dto.FindApplicazioniDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.GetApplicazioneDTO;
@@ -252,6 +253,13 @@ public class ApplicazioniDAO extends BaseDAO {
 				}
 				
 				applicazioniBD.updateApplicazione(putApplicazioneDTO.getApplicazione());
+				
+				//  elimino la entry dalla cache
+				AnagraficaManager.removeFromCache(putApplicazioneDTO.getApplicazione());
+				AnagraficaManager.removeFromCache(putApplicazioneDTO.getApplicazione().getUtenza()); 
+				
+				// propago il reset agli altri nodi
+				Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new ApplicazioneNonTrovataException(e.getMessage());
@@ -276,13 +284,14 @@ public class ApplicazioniDAO extends BaseDAO {
 				UtenzaPatchUtils.patchUtenza(op, getApplicazioneDTOResponse.getApplicazione().getUtenza(), configWrapper);
 			}
 
-			//applicazioniBD.updateApplicazione(getApplicazioneDTOResponse.getApplicazione());
- 
 			AnagraficaManager.removeFromCache(getApplicazioneDTOResponse.getApplicazione());
 			AnagraficaManager.removeFromCache(getApplicazioneDTOResponse.getApplicazione().getUtenza()); 
+			
+			// propago il reset agli altri nodi
+			Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 
-			applicazione = applicazioniBD.getApplicazione(patchDTO.getCodApplicazione());
-			getApplicazioneDTOResponse.setApplicazione(applicazione);
+			// ricarico la entry dentro la cache
+			getApplicazioneDTOResponse.setApplicazione(AnagraficaManager.getApplicazione(configWrapper, patchDTO.getCodApplicazione()));
 
 			return getApplicazioneDTOResponse;
 		}catch(NotFoundException e) {

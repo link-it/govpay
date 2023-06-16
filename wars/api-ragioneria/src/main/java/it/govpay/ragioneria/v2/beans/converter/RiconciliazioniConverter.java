@@ -50,7 +50,7 @@ public class RiconciliazioniConverter {
 		rsModel.setDataContabile(i.getDataContabile());
 		rsModel.setDataValuta(i.getDataValuta());
 		rsModel.setImporto(i.getImporto());
-		rsModel.setIdRiconciliazione(i.getTrn());
+		rsModel.setIdRiconciliazione(i.getIdRiconciliazione());
 		rsModel.setIdDominio(i.getCodDominio());
 		rsModel.setSct(i.getSct());
 		rsModel.setContoAccredito(i.getIbanAccredito());
@@ -86,7 +86,7 @@ public class RiconciliazioniConverter {
 		rsModel.setDataContabile(i.getDataContabile());
 		rsModel.setDataValuta(i.getDataValuta());
 		rsModel.setImporto(i.getImporto());
-		rsModel.setIdRiconciliazione(i.getTrn());
+		rsModel.setIdRiconciliazione(i.getIdRiconciliazione());
 		rsModel.setIdDominio(i.getCodDominio());
 		rsModel.setSct(i.getSct());
 		rsModel.setContoAccredito(i.getIbanAccredito());
