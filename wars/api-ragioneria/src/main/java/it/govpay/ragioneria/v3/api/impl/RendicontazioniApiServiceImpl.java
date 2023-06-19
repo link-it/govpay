@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response.Status;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
-import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.viste.model.Rendicontazione;
 import it.govpay.core.autorizzazione.AuthorizationManager;
 import it.govpay.core.beans.Costanti;
@@ -100,10 +99,10 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 					}
 				}
 			}
-
-			// Autorizzazione sulle uo
-			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
-			findRendicontazioniDTO.setUnitaOperative(uo);
+			
+			// Autorizzazione sui domini
+			List<String> dominiAutorizzati = AuthorizationManager.getDominiAutorizzati(user);
+			findRendicontazioniDTO.setCodDomini(dominiAutorizzati);
 //			findRendicontazioniDTO.setObsoleto(false);
 			findRendicontazioniDTO.setIuv(iuv);
 			findRendicontazioniDTO.setRicercaIdFlussoCaseInsensitive(true);
@@ -116,10 +115,10 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 			RendicontazioniDAO rendicontazioniDAO = new RendicontazioniDAO();
 
 			// CHIAMATA AL DAO
-
-			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = uo != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO)
+			
+			ListaRendicontazioniDTOResponse findRendicontazioniDTOResponse = dominiAutorizzati != null ? rendicontazioniDAO.listaRendicontazioni(findRendicontazioniDTO)
 					: new ListaRendicontazioniDTOResponse(0L, new ArrayList<>());
-
+			
 			// CONVERT TO JSON DELLA RISPOSTA
 
 			List<FlussoRendicontazioneIndex> collect = new ArrayList<>();
@@ -194,18 +193,6 @@ public class RendicontazioniApiServiceImpl extends BaseApiServiceImpl implements
 			if(leggiRendicontazioneDTOResponse.getDominio() != null && !AuthorizationManager.isDominioAuthorized(user, leggiRendicontazioneDTOResponse.getDominio().getCodDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(user,leggiRendicontazioneDTOResponse.getDominio().getCodDominio(), null);
 			}
-			// controllo uo
-			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
-			leggiRendicontazioneDTO = new LeggiFrDTO(user, idFlusso);
-			leggiRendicontazioneDTO.setUnitaOperative(uo);
-
-			LeggiFrDTOResponse checkAutorizzazioneRendicontazioneDTOResponse = rendicontazioniDAO.checkAutorizzazioneFlussoRendicontazione(leggiRendicontazioneDTO);
-
-			// controllo che il dominio sia autorizzato
-			if(!checkAutorizzazioneRendicontazioneDTOResponse.isAuthorized()) {
-				throw AuthorizationManager.toNotAuthorizedException(user,"Il flusso non contiente dei pagamenti associati a Unita' Operative autorizzate.");
-			}
-
 			// CONVERT TO JSON DELLA RISPOSTA
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_XML)) {
 				byte[] response = leggiRendicontazioneDTOResponse.getFr().getXml();
