@@ -18,6 +18,7 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.exceptions.IOException;
+import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.ragioneria.v3.api.impl.PendenzeApiServiceImpl;
 import it.govpay.ragioneria.v3.beans.AllegatoPendenza;
 import it.govpay.ragioneria.v3.beans.Documento;
@@ -240,8 +241,16 @@ public class PendenzeConverter {
 	public static PendenzaPagata toPendenzaPagataRsModel(Versamento versamento, List<it.govpay.bd.model.Rpt> listRpts) throws ServiceException, IOException, UnsupportedEncodingException {
 		it.govpay.bd.model.Rpt rpt = null;
 		
-		if(listRpts != null && listRpts.size() > 0)
-			rpt = listRpts.get(0); // sono ordinate per data decrescente
+		// Le RPT sono ordinate per data attivazione desc.
+		// Seleziono la prima RT in ordine temporale con esito positivo
+		if(listRpts != null && listRpts.size() > 0) {
+			for (it.govpay.bd.model.Rpt rptTmp : listRpts) {
+				if(rptTmp.getEsitoPagamento().equals(EsitoPagamento.PAGAMENTO_ESEGUITO)) {
+					rpt = rptTmp;
+					break;
+				}
+			}
+		}
 		
 		return toPendenzaPagataRsModel(rpt , versamento);
 	}

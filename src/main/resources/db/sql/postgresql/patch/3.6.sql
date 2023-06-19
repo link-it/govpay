@@ -183,8 +183,8 @@ DROP VIEW IF EXISTS v_eventi_vers_rendicontazioni;
 DROP VIEW IF EXISTS v_eventi_vers_riconciliazioni;
 DROP VIEW IF EXISTS v_eventi_vers_tracciati;
 
-ALTER TABLE eventi ALTER COLUMN tipo_evento TYPE VARCHAR(255);
-ALTER TABLE eventi ALTER COLUMN tipo_evento TYPE VARCHAR(255);
+ALTER TABLE eventi ALTER COLUMN sottotipo_evento TYPE VARCHAR(255);
+ALTER TABLE eventi ALTER COLUMN sottotipo_esito TYPE VARCHAR(255);
 
 CREATE VIEW v_eventi_vers_rendicontazioni AS (
         SELECT DISTINCT eventi.componente,

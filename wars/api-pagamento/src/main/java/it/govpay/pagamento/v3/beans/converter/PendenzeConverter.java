@@ -23,6 +23,7 @@ import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.DateUtils;
+import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.pagamento.v3.api.impl.PendenzeApiServiceImpl;
 import it.govpay.pagamento.v3.beans.AllegatoPendenza;
@@ -57,9 +58,17 @@ public class PendenzeConverter {
 	public static PendenzaArchivio toPendenzaArchivioRsModel(Versamento versamento, List<it.govpay.bd.model.Rpt> listRpts, List<Allegato> allegati, Authentication user) throws ServiceException, IOException, UnsupportedEncodingException {
 		it.govpay.bd.model.Rpt rpt = null;
 
-		if(listRpts != null && listRpts.size() > 0)
-			rpt = listRpts.get(0); // sono ordinate per data decrescente
-
+		// Le RPT sono ordinate per data attivazione desc.
+		// Seleziono la prima RT in ordine temporale con esito positivo
+		if(listRpts != null && listRpts.size() > 0) {
+			for (it.govpay.bd.model.Rpt rptTmp : listRpts) {
+				if(rptTmp.getEsitoPagamento().equals(EsitoPagamento.PAGAMENTO_ESEGUITO)) {
+					rpt = rptTmp;
+					break;
+				}
+			}
+		}
+		
 		return toPendenzaArchivioRsModel(rpt , versamento, versamento.getAllegati(), user);
 	}
 

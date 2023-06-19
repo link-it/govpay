@@ -82,7 +82,7 @@ And param dataA = dataFine
 And param iuv = riconciliazioneCum_DOM1_A2A.riscossioni[0].iuv
 When method get
 Then status 200
-And match response.risultati[0].idIncasso == riconciliazioneCum_DOM1_A2A.idFlussoRendicontazione
+And match response.risultati[0].idIncasso == riconciliazioneCum_DOM1_A2A.id
 And match response.risultati[0].idFlusso == riconciliazioneCum_DOM1_A2A.idFlussoRendicontazione
 And match response ==
 """

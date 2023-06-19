@@ -245,8 +245,19 @@ public class VersamentoUtils {
 				String codVersamentoEnte = versamento.getCodVersamentoEnte();
 				String bundlekey = versamento.getCodBundlekey();
 				String debitore = versamento.getAnagraficaDebitore().getCodUnivoco();
-				String codDominio = versamento.getUo(configWrapper).getDominio(configWrapper).getCodDominio(); 
+				String codDominio = versamento.getDominio(configWrapper).getCodDominio(); 
 				String iuv = null;
+				
+				try {
+					iuv = IuvUtils.toIuv(versamento.getNumeroAvviso());
+				} catch (ValidationException e1) {
+					log.warn("Numero Avviso [{0}] non valido.", versamento.getNumeroAvviso());
+				}
+
+				if(iuv == null) { 
+					iuv = versamento.getIuvVersamento();
+				}
+				
 
 				String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
 				String bundlekeyD = bundlekey != null ? bundlekey : "-";

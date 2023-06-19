@@ -35,6 +35,7 @@ public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 	private String idDominio;
 	private Fr.StatoFr stato;
 	private boolean ricercaFR = false;
+	private String codApplicazione = null;
 	
 	public Date getDataFlussoDa() {
 		return dataFlussoDa;
@@ -131,6 +132,12 @@ public class ListaRendicontazioniDTO extends BasicFindRequestDTO{
 	}
 	public void setRicercaFR(boolean ricercaFR) {
 		this.ricercaFR = ricercaFR;
+	}
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
 	}
 	
 }

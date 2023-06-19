@@ -349,23 +349,23 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (VersamentoScadutoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoAnnullatoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoDuplicatoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoSconosciutoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoNonValidoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, e1.getMessage(), codDominio, e1);
 			} catch (ClientException e1) {
 				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, "Riscontrato errore durante l'acquisizione del versamento dall'applicazione gestore del debito: " + e1, codDominio, e1);
 			} catch (GovPayException e1) {
@@ -799,23 +799,23 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (VersamentoScadutoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoAnnullatoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoDuplicatoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoSconosciutoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoNonValidoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, e1.getMessage(), codDominio, e1);
 			} catch (ClientException e1) {
 				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, "Riscontrato errore durante l'acquisizione del versamento dall'applicazione gestore del debito: " + e1, codDominio, e1);
 			} catch (GovPayException e1) {
@@ -1297,23 +1297,23 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (VersamentoScadutoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoAnnullatoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoDuplicatoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoSconosciutoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoNonValidoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, e1.getMessage(), codDominio, e1);
 			} catch (ClientException e1) {
 				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, "Riscontrato errore durante l'acquisizione del versamento dall'applicazione gestore del debito: " + e1, codDominio, e1);
 			} catch (GovPayException e1) {
@@ -1584,23 +1584,23 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (VersamentoScadutoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoAnnullatoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoDuplicatoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoSconosciutoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoNonValidoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, e1.getMessage(), codDominio, e1);
 			} catch (ClientException e1) {
 				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, "Riscontrato errore durante l'acquisizione del versamento dall'applicazione gestore del debito: " + e1, codDominio, e1);
 			} catch (GovPayException e1) {
@@ -2303,23 +2303,23 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (VersamentoScadutoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoAnnullatoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoDuplicatoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoSconosciutoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, e1.getMessage(), codDominio, e1);
 			} catch (VersamentoNonValidoException e1) {
 				appContext.getEventoCtx().setIdA2A(e1.getCodApplicazione());
 				appContext.getEventoCtx().setIdPendenza(e1.getCodVersamentoEnte());
-				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, e1.getMessage(), codDominio);
+				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, e1.getMessage(), codDominio, e1);
 			} catch (ClientException e1) {
 				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, "Riscontrato errore durante l'acquisizione del versamento dall'applicazione gestore del debito: " + e1, codDominio, e1);
 			} catch (GovPayException e1) {
