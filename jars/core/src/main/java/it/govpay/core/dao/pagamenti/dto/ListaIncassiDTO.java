@@ -25,6 +25,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.core.dao.anagrafica.dto.BasicFindRequestDTO;
+import it.govpay.model.Incasso.StatoIncasso;
 import it.govpay.orm.Incasso;
 
 public class ListaIncassiDTO extends BasicFindRequestDTO {
@@ -44,6 +45,7 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 	private boolean includiPagamenti;
 	private String codFlusso;
 	private String iuv;
+	private StatoIncasso stato;
 
 	 
 	public String getIdDominio() {
@@ -93,5 +95,11 @@ public class ListaIncassiDTO extends BasicFindRequestDTO {
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
+	}
+	public StatoIncasso getStato() {
+		return stato;
+	}
+	public void setStato(StatoIncasso stato) {
+		this.stato = stato;
 	}
 }

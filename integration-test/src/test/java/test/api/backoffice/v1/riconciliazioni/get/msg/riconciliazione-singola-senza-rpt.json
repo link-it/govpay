@@ -7,6 +7,7 @@
    "sct":"#notnull",
    "iuv":"##string",
    "idFlusso":"##string",
+   "stato":"#notnull",
    "riscossioni":[
       {
          "idDominio":"#notnull",

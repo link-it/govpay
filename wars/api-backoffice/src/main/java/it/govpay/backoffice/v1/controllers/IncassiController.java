@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import it.govpay.backoffice.v1.beans.Incasso;
 import it.govpay.backoffice.v1.beans.IncassoPost;
 import it.govpay.backoffice.v1.beans.ListaIncassiIndex;
+import it.govpay.backoffice.v1.beans.StatoIncasso;
 import it.govpay.backoffice.v1.beans.TipoRiscossione;
 import it.govpay.backoffice.v1.beans.converter.IncassiConverter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
@@ -52,7 +53,7 @@ public class IncassiController extends BaseController {
 	}
 
 
-	public Response findRiconciliazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean metadatiPaginazione, Boolean maxRisultati, String sct, String idFlusso, String iuv) {
+	public Response findRiconciliazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean metadatiPaginazione, Boolean maxRisultati, String sct, String idFlusso, String iuv, String stato) {
 		String methodName = "findRiconciliazioni";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
@@ -91,6 +92,20 @@ public class IncassiController extends BaseController {
 			if(dataA != null) {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				listaIncassoDTO.setDataA(dataADate);
+			}
+			
+			if(stato != null) {
+				StatoIncasso statoIncasso = StatoIncasso.fromValue(stato);
+				if(statoIncasso != null) {
+					switch(statoIncasso) {
+					case IN_ELABORAZIONE: listaIncassoDTO.setStato(it.govpay.model.Incasso.StatoIncasso.NUOVO); break;
+					case ACQUISITO: listaIncassoDTO.setStato(it.govpay.model.Incasso.StatoIncasso.ACQUISITO); break;
+					case ERRORE: listaIncassoDTO.setStato(it.govpay.model.Incasso.StatoIncasso.ERRORE); break;
+					}
+				} else {
+					throw new ValidationException("Codifica inesistente per stato. Valore fornito [" + stato
+							+ "] valori possibili " + ArrayUtils.toString(StatoIncasso.values()));
+				}
 			}
 
 			// autorizzazione sui domini

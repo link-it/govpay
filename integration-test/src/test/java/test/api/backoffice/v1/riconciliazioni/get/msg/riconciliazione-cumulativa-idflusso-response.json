@@ -6,6 +6,7 @@
    "data":"#notnull",
    "sct":"#notnull",
    "idFlusso":"#notnull",
+   "stato":"#notnull",
    "riscossioni":[
       {
          "idDominio":"#notnull",
