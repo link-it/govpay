@@ -19,7 +19,7 @@ Di seguito le segnalazioni emerse dagli strumenti utilizzati nel processo di val
 CVE-2022-45688
 ==============
 
-file name: json-20230227.jar
+file name: json-20230618.jar
 
 La vulnerabilità indicata viene descritta come segue: `A stack overflow in the XML.toJSONObject component of hutool-json v5.8.10 allows attackers to cause a Denial of Service (DoS) via crafted JSON or XML data.`
 
@@ -35,7 +35,7 @@ La vulnerabilità 'CVE-2022-40152' è relativa alla dipendenza transitiva 'woods
 CVE-2020-5408
 =============
 
-file name: spring-security-crypto-5.8.1.jar
+file name: spring-security-crypto-5.8.3.jar
 
 La vulnerabilità indicata viene descritta come segue: `Spring Security versions 5.3.x prior to 5.3.2, 5.2.x prior to 5.2.4, 5.1.x prior to 5.1.10, 5.0.x prior to 5.0.16 and 4.2.x prior to 4.2.16 use a fixed null initialization vector with CBC Mode in the implementation of the queryable text encryptor. A malicious user with access to the data that has been encrypted using such an encryptor may be able to derive the unencrypted values using a dictionary attack.`
 
@@ -44,7 +44,7 @@ La versione utilizzata è superiore alla '5.3.2' quindi risulta un falso positiv
 CVE-2016-1000027
 ================
 
-file name: spring-web-5.3.25.jar
+file name: spring-web-5.3.28.jar
 
 La vulnerabilità indicata viene descritta come segue: `Pivotal Spring Framework through 5.3.16 suffers from a potential remote code execution (RCE) issue if used for Java deserialization of untrusted data. Depending on how the library is implemented within a product, this issue may or not occur, and authentication may be required. NOTE: the vendor's position is that untrusted data is not an intended use case. The product's behavior will not be changed because some users rely on deserialization of trusted data.`
 
@@ -78,6 +78,7 @@ Le seguenti segnalazioni riguardano le librerie utilizzate dall'installer di Gov
 - CVE-2019-20445
 - CVE-2020-1945
 - CVE-2020-7238
+- CVE-2020-11612
 - CVE-2021-4277
 - CVE-2021-20318
 - CVE-2021-21290
