@@ -37,6 +37,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Incasso.StatoIncasso;
 import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.ragioneria.v2.beans.NuovaRiconciliazione;
@@ -81,6 +82,8 @@ public class RiconciliazioniController extends BaseController {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				listaIncassoDTO.setDataA(dataADate);
 			}
+			
+			listaIncassoDTO.setStato(StatoIncasso.ACQUISITO);
 
 			// filtro sull'applicazione
 			listaIncassoDTO.setIdA2A(AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione());
