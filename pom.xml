@@ -50,7 +50,7 @@
 		<swagger-codegen-maven-plugin.version>3.0.18-gov4j-4</swagger-codegen-maven-plugin.version>
 		<swagger.version>1.6.11</swagger.version>
 		<swagger.v3.version>2.2.12</swagger.v3.version>
-		<swagger.parser.v3.version>2.1.15</swagger.parser.v3.version>
+		<swagger.parser.v3.version>2.1.11</swagger.parser.v3.version>
 		<snakeyaml.version>1.33</snakeyaml.version>
 		<guava.version>32.0.1-android</guava.version>
 		
