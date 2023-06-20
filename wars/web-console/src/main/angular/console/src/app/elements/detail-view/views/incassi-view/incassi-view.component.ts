@@ -12,11 +12,8 @@ import { Standard } from '../../../../classes/view/standard';
 import { StandardCollapse } from '../../../../classes/view/standard-collapse';
 import { NewStandardCollapse } from '../../../../classes/view/new-standard-collapse';
 import { IExport } from '../../../../classes/interfaces/IExport';
-import { isNullOrUndefined } from 'util';
 
 import * as moment from 'moment';
-
-declare let GovRiconciliazioniConfig: any;
 
 @Component({
   selector: 'link-incassi-view',
@@ -93,6 +90,12 @@ export class IncassiViewComponent implements IModalDialog, IExport, AfterViewIni
     }
     if (this.json.iuv) {
       this.info.extraInfo.push({ label: Voce.IUV + ': ', value: this.json.iuv });
+    }
+    if (this.json.stato) {
+      this.info.extraInfo.push({ label: Voce.STATO + ': ', value: UtilService.STATI_INCASSO[this.json.stato] });
+    }
+    if (this.json.descrizioneStato) {
+      this.info.extraInfo.push({ label: Voce.DESCRIZIONE_STATO + ': ', value: this.json.descrizioneStato });
     }
 
     //Riscossioni

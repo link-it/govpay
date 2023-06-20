@@ -171,6 +171,13 @@ export class UtilService {
     SCARTATO: 'Scartato'
   };
 
+  //STATI INCASSI
+  public static STATI_INCASSO: any = {
+    ACQUISITO: 'Acquisita',
+    IN_ELABORAZIONE: 'In Elaborazione',
+    ERRORE: 'Errore'
+  };
+
   //LIVELLI SEVERITA
   public static LIVELLI_SEVERITA: any = {
     2: 'Warning',
@@ -1859,6 +1866,8 @@ export class UtilService {
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI, mapFct: this.asyncElencoDominiPendenza.bind(this),
               eventType: 'idDominio-async-load' } }, this.http),
+          new FormInput({ id: 'stato', label: FormService.FORM_STATO_INCASSI, noOptionLabel: 'Tutti', placeholder: FormService.FORM_PH_SELECT,
+            type: UtilService.SELECT, showTooltip: false, values: this.statiIncasso() }),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_INIZIO, type: UtilService.DATE_PICKER, value: _defaulFiltertData }),
           new FormInput({ id: 'dataA', label: FormService.FORM_DATA_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
         ];
@@ -2089,6 +2098,12 @@ export class UtilService {
   versioniStazione(): any[] {
     return Object.keys(UtilService.VERSIONI_STAZIONE).map((key) => {
       return { label: UtilService.VERSIONI_STAZIONE[key], value: key };
+    });
+  }
+
+  statiIncasso(): any[] {
+    return Object.keys(UtilService.STATI_INCASSO).map((key) => {
+      return { label: UtilService.STATI_INCASSO[key], value: key };
     });
   }
 
