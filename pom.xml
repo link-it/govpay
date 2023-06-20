@@ -48,26 +48,27 @@
 		
 		<!-- swagger -->
 		<swagger-codegen-maven-plugin.version>3.0.18-gov4j-4</swagger-codegen-maven-plugin.version>
-		<swagger.version>1.6.9</swagger.version>
-		<swagger.v3.version>2.2.8</swagger.v3.version>
-		<swagger.parser.v3.version>2.1.11</swagger.parser.v3.version>
+		<swagger.version>1.6.11</swagger.version>
+		<swagger.v3.version>2.2.12</swagger.v3.version>
+		<swagger.parser.v3.version>2.1.15</swagger.parser.v3.version>
 		<snakeyaml.version>1.33</snakeyaml.version>
+		<guava.version>32.0.1-android</guava.version>
 		
 		<!-- cxf -->
-		<cxf.version>3.5.5</cxf.version>
+		<cxf.version>3.5.6</cxf.version>
 		<cxf.xjc.runtime.version>2.7.0</cxf.xjc.runtime.version>
 		
 		<!-- jackson -->
-		<jackson.version>2.14.2</jackson.version>
+		<jackson.version>2.15.2</jackson.version>
 		
 		<!-- Jersey -->
 		<jersey.version>2.38</jersey.version>
 		
 		<!-- Spring -->
-		<spring.version>5.3.25</spring.version>
+		<spring.version>5.3.28</spring.version>
 		
 		<!-- Spring Security -->
-		<spring.security.version>5.8.1</spring.security.version>
+		<spring.security.version>5.8.3</spring.security.version>
 		
 		<!-- Spring Security Ldap plugin -->
 		<spring.ldap.version>2.4.1</spring.ldap.version>
@@ -79,7 +80,7 @@
 		<commons-jcs-core.version>2.2</commons-jcs-core.version>
 		<commons.csv.version>1.5</commons.csv.version>
 		<commons.codec.version>1.11</commons.codec.version>
-		<commons.io.version>2.7</commons.io.version>
+		<commons.io.version>2.13.0</commons.io.version>
 		<commons.lang.version>2.6</commons.lang.version>
 		<commons.lang3.version>3.12.0</commons.lang3.version>
 		<commons.pool2.version>2.6.0</commons.pool2.version>
@@ -107,7 +108,7 @@
 		<networknt_json-schema-validator.version>1.0.76</networknt_json-schema-validator.version>
 		
 		<!-- org.json -->
-		<org.json.json.version>20230227</org.json.json.version>
+		<org.json.json.version>20230618</org.json.json.version>
 		
 		<!-- xercesImpl -->
 		<xercesImpl.version>2.12.2</xercesImpl.version>
@@ -129,7 +130,7 @@
 		
 		<!-- Json Path -->
 		<json-path.version>2.4.0</json-path.version>
-		<json-smart.version>2.4.8</json-smart.version>
+		<json-smart.version>2.4.11</json-smart.version>
 		<accessors-smart.version>1.3</accessors-smart.version>
 		
 		<!-- Base64 java8 migration class. -->
@@ -161,7 +162,7 @@
         <!-- dynamicreports-core -->
         <dynamicreports-core.version>4.1.1</dynamicreports-core.version>
         <!-- jasperreports -->
-        <jasperreports.version>6.20.0</jasperreports.version>
+        <jasperreports.version>6.20.5</jasperreports.version>
         
 	<jaxb.api.version>2.3.1</jaxb.api.version>
 	<jaxb.core.version>2.3.0.1</jaxb.core.version>
@@ -814,7 +815,17 @@
 						<groupId>org.yaml</groupId>
 						<artifactId>snakeyaml</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>com.google.guava</groupId>
+			    		<artifactId>guava</artifactId>
+					</exclusion>
 				</exclusions>
+			</dependency>
+			
+			<dependency>
+			    <groupId>com.google.guava</groupId>
+			    <artifactId>guava</artifactId>
+			    <version>${guava.version}</version>
 			</dependency>
 
 			<dependency>
