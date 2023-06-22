@@ -180,6 +180,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
       if(!item.tipoBollo) {
         _std.elenco.push({ label: Voce.CONTABILITA, value: Dato.concatStrings([ item.tipoContabilita, item.codiceContabilita ], ', ') });
         _std.elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.ibanAccredito });
+        _std.elenco.push({ label: Voce.CONTO_APPOGGIO, value: item.ibanAppoggio });
       }
       _std.importo = this.us.currencyFormat(item.importo);
       _std.stato = item.stato;

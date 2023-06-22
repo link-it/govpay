@@ -59,6 +59,7 @@ export class Voce {
   public static CONTENUTI: string = 'Contenuti';
   public static CONTENUTO_ALLEGATO: string = 'Contenuto allegato';
   public static CONTO_ACCREDITO: string = 'Conto accredito';
+  public static CONTO_APPOGGIO: string = 'Conto appoggio';
 
   public static DATA: string = 'Data';
   public static DATA_CARICAMENTO: string = 'Data caricamento';
