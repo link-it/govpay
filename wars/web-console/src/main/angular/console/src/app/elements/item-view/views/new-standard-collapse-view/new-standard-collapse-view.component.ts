@@ -67,6 +67,9 @@ export class NewStandardCollapseViewComponent implements OnInit, AfterViewInit {
           } else {
             this._elenco.push({ label: Voce.CONTABILITA, value: Dato.concatStrings([item.tipoContabilita, item.codiceContabilita], ', '), type: 'string' });
             this._elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.ibanAccredito, type: 'string' });
+            if(item.ibanAppoggio){
+				this._elenco.push({ label: Voce.CONTO_APPOGGIO, value: item.ibanAppoggio, type: 'string' });
+			}
             if (item.contabilita && item.contabilita.quote) {
               this._elenco.push({ label: Voce.QUOTE, value: item.contabilita.quote, type: 'quote' });
             }
@@ -84,8 +87,13 @@ export class NewStandardCollapseViewComponent implements OnInit, AfterViewInit {
         this.gps.updateSpinner(false);
         if (_response.body) {
           const entrata = _response.body;
-          this._elenco.push({ label: Voce.CONTABILITA, value: Dato.concatStrings([entrata.tipoContabilita, entrata.codiceContabilita], ', '), type: 'string' });
+          if(entrata.tipoContabilita && entrata.codiceContabilita){
+				this._elenco.push({ label: Voce.CONTABILITA, value: Dato.concatStrings([entrata.tipoContabilita, entrata.codiceContabilita], ', '), type: 'string' });
+		  }
           this._elenco.push({ label: Voce.CONTO_ACCREDITO, value: entrata.ibanAccredito, type: 'string' });
+          if(entrata.ibanAppoggio){
+				this._elenco.push({ label: Voce.CONTO_APPOGGIO, value: entrata.ibanAppoggio, type: 'string' });
+			}
           if (this.info.item.contabilita && this.info.item.contabilita.quote) {
             this._elenco.push({ label: Voce.QUOTE, value: this.info.item.contabilita.quote, type: 'quote' });
           }

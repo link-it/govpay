@@ -344,4 +344,11 @@
 		<filePath regex="true">.*xercesImpl-2.9.1.jar.*</filePath>
 		<cve>CVE-2018-2799</cve>
 	</suppress>
+	<suppress>
+	   <notes><![CDATA[
+	   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+	   ]]></notes>
+	   <packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$</packageUrl>
+	   <vulnerabilityName>CVE-2020-11612</vulnerabilityName>
+	</suppress>
 </suppressions>

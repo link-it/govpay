@@ -71,6 +71,7 @@ public class IncassiDAO extends BaseDAO{
 			newFilter.setCodApplicazione(listaIncassoDTO.getIdA2A());
 			newFilter.setSct(listaIncassoDTO.getSct());
 			newFilter.setCodFlusso(listaIncassoDTO.getCodFlusso());
+			newFilter.setStato(listaIncassoDTO.getStato());
 			
 			List<Incasso> findAll = new ArrayList<>();
 			if(listaIncassoDTO.getIuv() != null ) {

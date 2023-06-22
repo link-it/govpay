@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.32.0"
+  version: "1.34.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -3471,6 +3471,7 @@ paths:
         - $ref: '#/components/parameters/sct'
         - $ref: '#/components/parameters/idFlusso'
         - $ref: '#/components/parameters/iuv'
+        - $ref: '#/components/parameters/statoIncasso'
       responses:
         '201':
           description: Dettaglio dell'incasso
@@ -4469,6 +4470,13 @@ components:
       required: false
       schema:
         $ref: '#/components/schemas/statoFlussoRendicontazione'
+    statoIncasso:
+      in: query
+      name: stato
+      description: Filtro sullo stato della riconciliazione
+      required: false
+      schema:
+        $ref: '#/components/schemas/StatoIncasso'
     statoNotifica:    
       name: stato
       in: query
@@ -7595,6 +7603,7 @@ components:
           - idIncasso
           - causale
           - importo
+          - stato
         properties:
           dominio:
             $ref: '#/components/schemas/dominioIndex'
@@ -7632,6 +7641,11 @@ components:
             type: string
             description: Identificativo Sepa Credit Transfer
             example: 2017-01-01ABI00000011234
+          stato:
+            $ref: '#/components/schemas/StatoIncasso'
+          descrizioneStato:
+            type: string
+            description: Descrizione estesta dello stato della riconciliazione
       - oneOf:
         - description: Identificativo univoco di riscossione.
           type: object
@@ -7657,6 +7671,7 @@ components:
             - idIncasso
             - causale
             - importo
+            - stato
           properties:
             dominio:
               $ref: '#/components/schemas/dominioIndex'
@@ -7698,6 +7713,11 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/riscossione'
+            stato:
+              $ref: '#/components/schemas/StatoIncasso'
+            descrizioneStato:
+              type: string
+              description: Descrizione estesta dello stato della riconciliazione
         - oneOf:
           - description: Identificativo univoco di riscossione.
             type: object
@@ -7766,15 +7786,6 @@ components:
       oneOf:
         - $ref: '#/components/schemas/tipoAutenticazioneBasic'
         - $ref: '#/components/schemas/tipoAutenticazioneSSL'
-        - $ref: '#/components/schemas/tipoAutenticazioneSubscriptionKey'
-    tipoAutenticazioneSubscriptionKey:
-      type: object
-      required:
-        - subscriptionKey
-      properties:
-        subscriptionKey:
-          type: string
-          example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
     connector:
       type: object
       required:
@@ -7806,6 +7817,9 @@ components:
           example: https://nododeipagamentispc.agid.gov.it/openspcoop/PA
         auth:
           $ref: '#/components/schemas/tipoAutenticazione'
+        subscriptionKey:
+          type: string
+          example: 'c8ber49b-2feb-4ffa-8f98-704463t7b7jd'
     connettoreNotificaPagamenti:
       type: object
       required:
@@ -9480,6 +9494,13 @@ components:
       default: 25
       minimum: 0
       maximum: 200
+    StatoIncasso:
+      example: 'ACQUISITO'
+      type: string
+      enum:
+        - 'IN_ELABORAZIONE'
+        - 'ACQUISITO'
+        - 'ERRORE'
     VersioneStazione:
       type: string
       description: Versione della stazione

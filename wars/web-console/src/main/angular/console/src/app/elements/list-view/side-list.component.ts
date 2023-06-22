@@ -661,9 +661,9 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _stdTC = new TwoCols();
         _stdTC.generalTemplate = true;
         _stdTC.gtTextUL = item.idFlusso ? `${item.idFlusso}` : `${item.iuv}`;
-        _stdTC.gtTextBL = '';
+        _stdTC.gtTextBL = item.data?moment(item.data).format('DD/MM/YYYY'):'';
         _stdTC.gtTextUR = this.us.currencyFormat(item.importo);
-        _stdTC.gtTextBR = item.data?moment(item.data).format('DD/MM/YYYY'):'';
+        _stdTC.gtTextBR = UtilService.STATI_INCASSO[item.stato];
         _std = _stdTC;
         break;
       case UtilService.URL_GIORNALE_EVENTI:

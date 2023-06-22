@@ -65,6 +65,9 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
       if(this.json.servizioPagoPa.urlAvvisatura && UtilService.TEMPORARY_DEPRECATED_CODE) {
         _dettaglio.connettoriSoap.push(new Dato({label: Voce.SERVIZIO_AVVISATURA, value: this.json.servizioPagoPa.urlAvvisatura}));
       }
+      if (this.json.servizioPagoPa.subscriptionKey) {
+        _dettaglio.connettoriSoap.push(new Dato({ label: Voce.OCP_APIM_SUBSCRIPTION_KEY, value: this.json.servizioPagoPa.subscriptionKey }));
+      }
       if(this.json.servizioPagoPa.auth) {
         if(this.json.servizioPagoPa.auth.username) {
           _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.BASIC }));
@@ -98,10 +101,6 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
           if(this.json.servizioPagoPa.auth.ksPKeyPasswd) {
             _dettaglio.connettoriSoap.push(new Dato({label: Voce.KEY_STORE_PWD_PRIVATE_KEY, value: this.json.servizioPagoPa.auth.ksPKeyPasswd }));
           }
-        }
-        if (this.json.servizioPagoPa.auth.subscriptionKey) {
-          _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.SUBSCRIPTION_KEY }));
-          _dettaglio.connettoriSoap.push(new Dato({ label: Voce.OCP_APIM_SUBSCRIPTION_KEY, value: this.json.servizioPagoPa.auth.subscriptionKey }));
         }
       } else {
         _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.NESSUNA }));

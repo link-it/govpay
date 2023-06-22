@@ -59,6 +59,7 @@ export class Voce {
   public static CONTENUTI: string = 'Contenuti';
   public static CONTENUTO_ALLEGATO: string = 'Contenuto allegato';
   public static CONTO_ACCREDITO: string = 'Conto accredito';
+  public static CONTO_APPOGGIO: string = 'Conto appoggio';
 
   public static DATA: string = 'Data';
   public static DATA_CARICAMENTO: string = 'Data caricamento';
@@ -83,6 +84,7 @@ export class Voce {
   public static DEFINIZIONI: string = 'Definizioni';
   public static DENOMINAZIONE: string = 'Denominazione';
   public static DESCRIZIONE: string = 'Descrizione';
+  public static DESCRIZIONE_STATO: string = 'Descrizione stato';
   public static DETTAGLIO_ESITO: string = 'Dettaglio esito';
   public static DETTAGLIO_PENDENZA_CUSTOM: string = 'Personalizzazione dettaglio pendenza';
   public static DIREZIONE: string = 'Direzione';

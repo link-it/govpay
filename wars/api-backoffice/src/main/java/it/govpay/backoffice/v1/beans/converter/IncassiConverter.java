@@ -11,6 +11,7 @@ import it.govpay.backoffice.v1.beans.Incasso;
 import it.govpay.backoffice.v1.beans.IncassoIndex;
 import it.govpay.backoffice.v1.beans.IncassoPost;
 import it.govpay.backoffice.v1.beans.Riscossione;
+import it.govpay.backoffice.v1.beans.StatoIncasso;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
@@ -65,6 +66,20 @@ public class IncassiConverter {
 		rsModel.setSct(i.getSct());
 		rsModel.setIuv(i.getIuv());
 		rsModel.setIdFlusso(i.getIdFlussoRendicontazione());
+		if(i.getStato() != null) {
+			switch (i.getStato()) {
+			case ACQUISITO:
+				rsModel.setStato(StatoIncasso.ACQUISITO);
+				break;
+			case ERRORE:
+				rsModel.setStato(StatoIncasso.ERRORE);
+				break;
+			case NUOVO:
+				rsModel.setStato(StatoIncasso.IN_ELABORAZIONE);
+				break;
+			}
+		}
+		rsModel.setDescrizioneStato(i.getDescrizioneStato()); 
 
 		return rsModel;
 	}
@@ -84,6 +99,20 @@ public class IncassiConverter {
 		rsModel.setSct(i.getSct());
 		rsModel.setIuv(i.getIuv());
 		rsModel.setIdFlusso(i.getIdFlussoRendicontazione());
+		if(i.getStato() != null) {
+			switch (i.getStato()) {
+			case ACQUISITO:
+				rsModel.setStato(StatoIncasso.ACQUISITO);
+				break;
+			case ERRORE:
+				rsModel.setStato(StatoIncasso.ERRORE);
+				break;
+			case NUOVO:
+				rsModel.setStato(StatoIncasso.IN_ELABORAZIONE);
+				break;
+			}
+		}
+		rsModel.setDescrizioneStato(i.getDescrizioneStato()); 
 
 		return rsModel;
 	}

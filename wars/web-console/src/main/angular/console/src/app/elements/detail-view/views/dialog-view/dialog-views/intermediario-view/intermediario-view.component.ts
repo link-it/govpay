@@ -31,6 +31,7 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
     this.fGroup.addControl('urlRPT_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('urlAvvisatura_ctrl', new FormControl(''));
     // this.fGroup.addControl('versioneApi_ctrl', new FormControl('', Validators.required));
+    this.fGroup.addControl('subscriptionKey_ctrl', new FormControl('', []));
   }
 
   ngAfterViewInit() {
@@ -46,6 +47,7 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
           this.fGroup.controls['urlRPT_ctrl'].setValue(_rpt.urlRPT?_rpt.urlRPT:'');
           this.fGroup.controls['urlAvvisatura_ctrl'].setValue(_rpt.urlAvvisatura && UtilService.TEMPORARY_DEPRECATED_CODE?_rpt.urlAvvisatura:'');
           // this.fGroup.controls['versioneApi_ctrl'].setValue(this.json.servizioPagoPa.versioneApi);
+          this.fGroup.controls['subscriptionKey_ctrl'].setValue(_rpt.subscriptionKey);
         }
       }
     });
@@ -66,7 +68,8 @@ export class IntermediarioViewComponent  implements IFormComponent, OnInit, Afte
       auth: null,
       urlRPT: _info['urlRPT_ctrl'],
       urlAvvisatura: _info['urlAvvisatura_ctrl']?_info['urlAvvisatura_ctrl']:null,
-      // versioneApi: _info['versioneApi_ctrl']
+      // versioneApi: _info['versioneApi_ctrl'],
+      subscriptionKey: _info['subscriptionKey_ctrl']?_info['subscriptionKey_ctrl']:null
     };
     _json.servizioPagoPa['auth'] = this.sslConfig.mapToJson();
     if(_json.servizioPagoPa.auth == null) { delete _json.servizioPagoPa.auth; }

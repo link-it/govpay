@@ -91,4 +91,5 @@ export class FormService {
 
   //Incassi
   public static FORM_SCT: string = 'Identificativo PSP del riversamento';
+  public static FORM_STATO_INCASSI: string = 'Stato';
 }

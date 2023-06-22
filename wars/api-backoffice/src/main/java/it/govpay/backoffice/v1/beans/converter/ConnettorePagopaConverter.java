@@ -22,27 +22,22 @@ public class ConnettorePagopaConverter {
 			connettore.setSslType(connector.getAuth().getSslType());
 			connettore.setSslKsType(connector.getAuth().getKsType());
 			connettore.setSslPKeyPasswd(connector.getAuth().getKsPKeyPasswd());
-			connettore.setSubscriptionKeyValue(connector.getAuth().getSubscriptionKey());
 			
-			if(connector.getAuth().getSubscriptionKey() != null) {
-				connettore.setTipoAutenticazione(EnumAuthType.SUBSCRIPTION_KEY);
-			} else {
+			if(connector.getAuth().getTipo() != null) {
+				connettore.setTipoAutenticazione(EnumAuthType.SSL);
 				if(connector.getAuth().getTipo() != null) {
-					connettore.setTipoAutenticazione(EnumAuthType.SSL);
-					if(connector.getAuth().getTipo() != null) {
-						switch (connector.getAuth().getTipo()) {
-						case CLIENT:
-							connettore.setTipoSsl(EnumSslType.CLIENT);
-							break;
-						case SERVER:
-						default:
-							connettore.setTipoSsl(EnumSslType.SERVER);
-							break;
-						}
+					switch (connector.getAuth().getTipo()) {
+					case CLIENT:
+						connettore.setTipoSsl(EnumSslType.CLIENT);
+						break;
+					case SERVER:
+					default:
+						connettore.setTipoSsl(EnumSslType.SERVER);
+						break;
 					}
-				} else {
-					connettore.setTipoAutenticazione(EnumAuthType.HTTPBasic);
 				}
+			} else {
+				connettore.setTipoAutenticazione(EnumAuthType.HTTPBasic);
 			}
 		} else {
 			connettore.setTipoAutenticazione(EnumAuthType.NONE);
@@ -50,6 +45,7 @@ public class ConnettorePagopaConverter {
 
 		connettore.setUrl(connector.getUrlRPT());
 		connettore.setUrlServiziAvvisatura(connector.getUrlAvvisatura());
+		connettore.setSubscriptionKeyValue(connector.getSubscriptionKey());
 
 		return connettore;
 	}
@@ -60,6 +56,7 @@ public class ConnettorePagopaConverter {
 			rsModel.setAuth(toTipoAutenticazioneRsModel(connettore));
 		rsModel.setUrlRPT(connettore.getUrl());
 		rsModel.setUrlAvvisatura(connettore.getUrlServiziAvvisatura());
+		rsModel.subscriptionKey(connettore.getSubscriptionKeyValue());
 
 		return rsModel;
 	}
@@ -76,8 +73,7 @@ public class ConnettorePagopaConverter {
 		.tsType(connettore.getSslTsType())
 		.sslType(connettore.getSslType())
 		.ksType(connettore.getSslKsType())
-		.ksPKeyPasswd(connettore.getSslPKeyPasswd())
-		.subscriptionKey(connettore.getSubscriptionKeyValue());
+		.ksPKeyPasswd(connettore.getSslPKeyPasswd());
 		
 		if(connettore.getTipoSsl() != null) {
 			switch (connettore.getTipoSsl() ) {

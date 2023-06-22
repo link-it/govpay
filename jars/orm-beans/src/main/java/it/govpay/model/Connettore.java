@@ -41,7 +41,7 @@ public class Connettore extends Versionabile {
     public static final String P_SUBSCRIPTION_KEY_VALUE = "SUBSCRIPTION_KEY_VALUE";
 	
 	public enum EnumAuthType {
-		SSL, HTTPBasic, NONE, SUBSCRIPTION_KEY
+		SSL, HTTPBasic, NONE
 	}
 	
 	public enum EnumSslType {

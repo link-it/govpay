@@ -22,6 +22,8 @@ import it.govpay.core.exceptions.IOException;
 "iuv",
 "idFlusso",
 "riscossioni",
+"stato",
+"descrizioneStato",
 })
 public class Incasso extends it.govpay.core.beans.JSONSerializable {
 
@@ -60,7 +62,13 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("idFlusso")
   private String idFlusso = null;
-
+  
+  @JsonProperty("stato")
+  private StatoIncasso stato = null;
+  
+  @JsonProperty("descrizioneStato")
+  private String descrizioneStato = null;
+  
   /**
    **/
   public Incasso dominio(DominioIndex dominio) {
@@ -212,7 +220,7 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("riscossioni")
   public List<Riscossione> getRiscossioni() {
-    return this.riscossioni;
+    return riscossioni;
   }
   public void setRiscossioni(List<Riscossione> riscossioni) {
     this.riscossioni = riscossioni;
@@ -250,6 +258,37 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
     this.idFlusso = idFlusso;
   }
 
+  /**
+   **/
+  public Incasso stato(StatoIncasso stato) {
+    this.stato = stato;
+    return this;
+  }
+
+  @JsonProperty("stato")
+  public StatoIncasso getStato() {
+    return stato;
+  }
+  public void setStato(StatoIncasso stato) {
+    this.stato = stato;
+  }
+
+  /**
+   * Descrizione estesta dello stato della riconciliazione
+   **/
+  public Incasso descrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+    return this;
+  }
+
+  @JsonProperty("descrizioneStato")
+  public String getDescrizioneStato() {
+    return descrizioneStato;
+  }
+  public void setDescrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -270,12 +309,14 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(sct, incasso.sct) &&
         Objects.equals(riscossioni, incasso.riscossioni) &&
     	Objects.equals(iuv, incasso.iuv) &&
-    	Objects.equals(idFlusso, incasso.idFlusso);
+    	Objects.equals(idFlusso, incasso.idFlusso) &&
+        Objects.equals(stato, incasso.stato) &&
+        Objects.equals(descrizioneStato, incasso.descrizioneStato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(dominio, idIncasso, causale, importo, data, dataValuta, dataContabile, ibanAccredito, sct, riscossioni);
+    return Objects.hash(dominio, idIncasso, causale, importo, data, dataValuta, dataContabile, ibanAccredito, sct, riscossioni, iuv, idFlusso, stato, descrizioneStato);
   }
 
   public static Incasso parse(String json) throws IOException {
@@ -304,6 +345,8 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
     sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");
     sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
     sb.append("    idFlusso: ").append(this.toIndentedString(this.idFlusso)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");
     sb.append("}");
     return sb.toString();
   }
