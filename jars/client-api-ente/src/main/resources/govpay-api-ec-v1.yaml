@@ -339,6 +339,7 @@ components:
         - soggettoPagatore
         - importo
         - causale
+        - voci
       properties:
         idA2A:
           type: string
