@@ -2,8 +2,8 @@ package it.govpay.rs.eventi;
 
 import org.apache.cxf.ext.logging.AbstractLoggingInterceptor;
 
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.EventoContext.Componente;
 
 public class GiornaleEventiConfig {
 	

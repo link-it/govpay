@@ -2,7 +2,7 @@
 	"esitoVerifica" : {
 	    "paymentList" : {
 	    	"paymentOptionDescription" :
-			    [
+			    
 			    	{
 		    		    "amount" : '#? _ == pendenzaPut.importo || _ == pendenzaPut.importo.toString()',
 					    "options" : "EQ",
@@ -10,7 +10,7 @@
 					    "detailDescription" : "#string",
 					    "transferType" : "#ignore"
 			    	}
-			    ]
+			    
 	     },
 	    "paymentDescription" : "#string",
 	    "fiscalCodePA" : "#(idDominio)",

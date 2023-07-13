@@ -2,9 +2,6 @@ package it.govpay.core.utils.tasks;
 
 import org.openspcoop2.utils.service.context.IContext;
 
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.core.utils.client.BasicClient;
-
 public class ResetCacheAnagrafica extends AbstractTask {
 
 	public ResetCacheAnagrafica() {
@@ -13,8 +10,6 @@ public class ResetCacheAnagrafica extends AbstractTask {
 
 	@Override
 	protected void execTask(IContext ctx) throws Exception {
-		AnagraficaManager.cleanCache();
-		BasicClient.cleanCache();
+		it.govpay.core.business.Operazioni.resetCacheAnagrafica(ctx);
 	}
-
 }

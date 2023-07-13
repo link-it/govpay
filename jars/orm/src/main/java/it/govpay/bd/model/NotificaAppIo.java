@@ -29,6 +29,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.core.exceptions.NotificaException;
 
 public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
 	
@@ -36,9 +37,9 @@ public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
 		
 	}
 	
-	public NotificaAppIo(Versamento versamento, TipoNotifica tipoNotifica, BDConfigWrapper configWrapper) throws ServiceException {
+	public NotificaAppIo(Versamento versamento, TipoNotifica tipoNotifica, BDConfigWrapper configWrapper) throws ServiceException, NotificaException {
 		if(versamento == null)
-			throw new ServiceException("Il versamento associato alla Notifica e' vuoto.");
+			throw new NotificaException("Il versamento associato alla Notifica e' vuoto.");
 		
 		this.setVersamento(versamento);
 		this.setTipoVersamentoDominio(versamento.getTipoVersamentoDominio(configWrapper));
@@ -57,12 +58,12 @@ public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
 		this.setTipo(tipoNotifica);
 	}
 	
-	public NotificaAppIo(Rpt rpt, Versamento versamento, TipoNotifica tipoNotifica, BDConfigWrapper configWrapper) throws ServiceException {
+	public NotificaAppIo(Rpt rpt, Versamento versamento, TipoNotifica tipoNotifica, BDConfigWrapper configWrapper) throws ServiceException, NotificaException {
 		if(versamento == null)
-			throw new ServiceException("Il versamento associato alla Notifica e' vuoto.");
+			throw new NotificaException("Il versamento associato alla Notifica e' vuoto.");
 		
 		if(rpt == null)
-			throw new ServiceException("Rpt associato alla Notifica e' vuoto.");
+			throw new NotificaException("Rpt associato alla Notifica e' vuoto.");
 		
 		this.setVersamento(versamento);
 		this.setRpt(rpt);
@@ -70,7 +71,7 @@ public class NotificaAppIo extends it.govpay.model.NotificaAppIo {
 		this.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
 		this.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
 		this.setCodDominio(versamento.getDominio(configWrapper).getCodDominio());
-		this.setIuv(versamento.getIuvVersamento());
+		this.setIuv(rpt.getIuv());
 		this.setDebitoreIdentificativo(versamento.getAnagraficaDebitore().getCodUnivoco());
 		long adesso = new Date().getTime(); 
 		this.setDataAggiornamento(new Date(adesso));

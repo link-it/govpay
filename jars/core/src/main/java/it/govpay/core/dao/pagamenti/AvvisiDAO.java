@@ -22,7 +22,6 @@ package it.govpay.core.dao.pagamenti;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 
@@ -53,6 +52,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -87,6 +87,9 @@ public class AvvisiDAO extends BaseDAO{
 				IContext ctx = ContextThreadLocal.get();
 				Versamento versamentoFromSession = getAvvisoDTO.getVersamentoFromSession();
 				
+				if(versamentiBD == null) {
+					throw new ServiceException("BD is null");
+				}
 				versamentiBD.setupConnection(configWrapper.getTransactionID());
 				
 				versamentiBD.setAtomica(false);
@@ -147,8 +150,8 @@ public class AvvisiDAO extends BaseDAO{
 					try {
 						versamento = versamentoBusiness.chiediVersamento(null, null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO);
 					} catch (EcException | GovPayException e1) {
-						log.warn("Pendenza non trovata nella base dati interna, verifica con l'applicazione competente fallita con errore: " + e1.getMessage(), e1);
-						throw new PendenzaNonTrovataException("Pendenza non trovata nella base dati interna, verifica con l'applicazione competente fallita con errore: " + e1.getMessage());
+						log.info("La pendenza ricercata tramite avviso [Dominio: "+codDominio+", NumeroAvviso: "+iuv+"] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: " + e1.getMessage());
+						throw new PendenzaNonTrovataException("La pendenza ricercata tramite avviso [Dominio: "+codDominio+", NumeroAvviso: "+iuv+"] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: " + e1.getMessage());
 					}
 				} else {
 					throw e;
@@ -194,7 +197,7 @@ public class AvvisiDAO extends BaseDAO{
 				break;
 			case JSON:
 			default:
-				it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(configWrapper), dominio);
+				it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuvFromNumeroAvviso(versamento, versamento.getApplicazione(configWrapper), dominio);
 
 				response.setApplicazione(versamento.getApplicazione(configWrapper));
 				response.setVersamento(versamento);

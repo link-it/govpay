@@ -71,7 +71,7 @@ public class LoginController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(this.context);
+			this.logContext(this.context);
 		}
     }
 }

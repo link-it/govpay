@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+				  xmlns:apachesoap="http://xml.apache.org/xml-soap" 
+				  xmlns:tns="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/internal" 
+				  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+				  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" 
+				  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+				  xmlns:ns="http://schemas.xmlsoap.org/soap/encoding/" 
+				  targetNamespace="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/internal">
+	<wsdl:types>
+		<xs:schema elementFormDefault="qualified" targetNamespace="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/internal">
+			<xs:element name="VerificaPagamentoInAttesaRichiesta" type="tns:ctRichiestaStandard"/>
+			<xs:element name="VerificaPagamentoInAttesaRisposta" type="tns:ctRispostaStandard"/>
+			<xs:element name="InviaEsitoPagamentoRichiesta" type="tns:ctRichiestaStandard"/>
+			<xs:element name="InviaEsitoPagamentoRisposta" type="tns:ctRispostaStandard"/>
+			<xs:simpleType name="stOperazione">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="VerificaPagamentoInAttesa"/>
+					<xs:enumeration value="InviaEsitoPagamento"/>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType name="stEsito">
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="OK"/>
+					<xs:enumeration value="ERROR"/>
+				</xs:restriction>
+			</xs:simpleType>		
+			<xs:complexType name="ctMessaggi">
+				<xs:sequence>
+					<xs:element name="messaggio" maxOccurs="unbounded">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="codice" type="xs:string">
+									<xs:annotation>
+										<xs:documentation>Codice Messaggio di errore</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="descrizione" type="xs:string">
+									<xs:annotation>
+										<xs:documentation>Descrizione Messaggio di errore</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:complexType>			
+			<xs:complexType name="ctRichiestaStandard">
+				<xs:sequence>
+					<xs:element name="operazione" type="tns:stOperazione" minOccurs="1" nillable="false">
+						<xs:annotation>
+							<xs:documentation>Codice identificativo della richiesta: corrisponde al tipo enumeratore Transaction</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="identificativoDominio" type="xs:string" minOccurs="1" nillable="false">
+						<xs:annotation>
+							<xs:documentation>Codice SPC ente: corrisponde al codice fiscale</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="dataOperazione" type="xs:dateTime" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>La Data e ora in cui è avvenuta la richiesta (esempio: 2006-12-31T20:45:06Z)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="version" type="xs:string" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Versione della richiesta: gestione delle versioni dell'xsd</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="xmlDettaglioRichiesta" type="xs:string" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>Un campo stringa contenente XML con i dati relativi allo specifico servizio invocato</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="ctRispostaStandard">
+				<xs:sequence>
+					<xs:element name="operazione" type="tns:stOperazione" minOccurs="1" nillable="false">
+						<xs:annotation>
+							<xs:documentation>Codice identificativo della risposta</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="dataOperazione" type="xs:dateTime" minOccurs="1">
+						<xs:annotation>
+							<xs:documentation>La Data e ora in cui è stata fornita la risposta (esempio: 2006-12-31T20:45:06Z)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="esito" minOccurs="1" type="tns:stEsito">
+						<xs:annotation>
+							<xs:documentation>Restituisce l'esito dell'elaborazione, i valori restituiti possono essere OK o  Error</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="messaggi" minOccurs="0" type="tns:ctMessaggi">
+						<xs:annotation>
+							<xs:documentation>Lista di eventuali messaggi da riportare nella risposta</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="xmlDettaglioRisposta" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Oggetto di risposta</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="VerificaPagamentoInAttesaRichiesta">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<wsdl:part name="VerificaPagamentoInAttesaRichiesta" element="tns:VerificaPagamentoInAttesaRichiesta"/>
+	</wsdl:message>
+	<wsdl:message name="InviaEsitoPagamentoRichiesta">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<wsdl:part name="InviaEsitoPagamentoRichiesta" element="tns:InviaEsitoPagamentoRichiesta"/>
+	</wsdl:message>
+	<wsdl:message name="VerificaPagamentoInAttesaRisposta">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<wsdl:part name="VerificaPagamentoInAttesaRisposta" element="tns:VerificaPagamentoInAttesaRisposta"/>
+	</wsdl:message>
+	<wsdl:message name="InviaEsitoPagamentoRisposta">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<wsdl:part name="InviaEsitoPagamentoRisposta" element="tns:InviaEsitoPagamentoRisposta"/>
+	</wsdl:message>
+	<wsdl:portType name="JppaPdpInternalServicesEndpoint">
+		<wsdl:operation name="VerificaPagamentoInAttesa">
+			<wsdl:input name="VerificaPagamentoInAttesaRichiesta" message="tns:VerificaPagamentoInAttesaRichiesta"/>
+			<wsdl:output name="VerificaPagamentoInAttesaRisposta" message="tns:VerificaPagamentoInAttesaRisposta"/>
+		</wsdl:operation>
+		<wsdl:operation name="InviaEsitoPagamento">
+			<wsdl:input name="InviaEsitoPagamentoRichiesta" message="tns:InviaEsitoPagamentoRichiesta"/>
+			<wsdl:output name="InviaEsitoPagamentoRisposta" message="tns:InviaEsitoPagamentoRisposta"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="JppaPdpInternalServicesBinding" type="tns:JppaPdpInternalServicesEndpoint">
+		<wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="VerificaPagamentoInAttesa">
+			<wsdlsoap:operation soapAction="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/internal/VerificaPagamentoInAttesa"/>
+			<wsdl:input name="VerificaPagamentoInAttesaRichiesta">
+				<wsdlsoap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="VerificaPagamentoInAttesaRisposta">
+				<wsdlsoap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="InviaEsitoPagamento">
+			<wsdlsoap:operation soapAction="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/internal/InviaEsitoPagamento"/>
+			<wsdl:input name="InviaEsitoPagamentoRichiesta">
+				<wsdlsoap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="InviaEsitoPagamentoRisposta">
+				<wsdlsoap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="JppaPdpInternalFacetService">
+		<wsdl:port name="JppaPdpInternalServicesPort" binding="tns:JppaPdpInternalServicesBinding">
+			<wsdlsoap:address location="http://localhost:9862/MybridgeService/JppaPdpInternalServicesPort"/>
+		</wsdl:port>
+	</wsdl:service>
+	<xs:annotation>
+		<xs:documentation>
+			WSLD per interfacciare il connettore JPPAPDP: viene utilizzato "internal" per indicare che sono metodi interni che saranno esposti consumati da JPPA
+		</xs:documentation>
+	</xs:annotation>
+</wsdl:definitions>
+

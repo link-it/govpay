@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "indice",
 "idVocePendenza",
@@ -27,64 +29,64 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "rendicontazioni",
 })
 public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
-	
+
   @JsonProperty("indice")
   private BigDecimal indice = null;
-  
+
   @JsonProperty("idVocePendenza")
   private String idVocePendenza = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("stato")
   private StatoVocePendenza stato = null;
-  
+
   @JsonProperty("descrizioneCausaleRPT")
   private String descrizioneCausaleRPT = null;
-  
+
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
-  
+
   @JsonProperty("dominio")
   private DominioIndex dominio = null;
-  
+
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
-  
+
   @JsonProperty("hashDocumento")
   private String hashDocumento= null;
-  
+
   @JsonProperty("tipoBollo")
   private String tipoBollo= null;
-  
+
   @JsonProperty("provinciaResidenza")
   private String provinciaResidenza= null;
-  
+
   @JsonProperty("codEntrata")
   private String codEntrata= null;
-  
+
   @JsonProperty("codiceContabilita")
   private String codiceContabilita= null;
-  
+
   @JsonProperty("ibanAccredito")
   private String ibanAccredito= null;
-  
+
   @JsonProperty("ibanAppoggio")
   private String ibanAppoggio= null;
-  
+
   @JsonProperty("tipoContabilita")
   private TipoContabilita tipoContabilita= null;
 
   @JsonProperty("riscossioni")
   private List<Riscossione> riscossioni = null;
-  
+
   @JsonProperty("rendicontazioni")
   private List<Rendicontazione> rendicontazioni = null;
-  
+
   /**
    * indice di voce all'interno della pendenza
    **/
@@ -308,7 +310,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
     this.tipoContabilita= tipoContabilita;
     return this;
   }
-  
+
 	public VocePendenza ibanAppoggio(String ibanAppoggio) {
 		this.ibanAppoggio= ibanAppoggio;
 		return this;
@@ -394,7 +396,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
     return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, this.stato, descrizioneCausaleRPT, contabilita, dominio, datiAllegati, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita,riscossioni, rendicontazioni);
   }
 
-  public static VocePendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
+  public static VocePendenza parse(String json) throws IOException {
     return parse(json, VocePendenza.class);
   }
 
@@ -407,7 +409,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class VocePendenza {\n");
-    
+
     sb.append("    indice: ").append(this.toIndentedString(this.indice)).append("\n");
     sb.append("    idVocePendenza: ").append(this.toIndentedString(this.idVocePendenza)).append("\n");
     sb.append("    importo: ").append(this.toIndentedString(this.importo)).append("\n");

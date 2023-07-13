@@ -16,9 +16,9 @@ import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.commons.Dominio;
+import it.govpay.core.beans.commons.Dominio.Uo;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
-import it.govpay.core.dao.commons.Dominio;
-import it.govpay.core.dao.commons.Dominio.Uo;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.model.Acl.Diritti;
@@ -34,13 +34,9 @@ public class AuthorizationManager {
 	public static final String UTENZA_ANONIMA = "utenzaAnonima";
 
 	public static boolean checkPrincipal(Authentication authentication, String principalToCheck) throws NotAuthorizedException { 
-		return checkPrincipal(authentication, principalToCheck, true);
-	}
-
-	public static boolean checkPrincipal(Authentication authentication, String principalToCheck, boolean throwsException) throws NotAuthorizedException { 
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
 
-		if(details == null && throwsException) {
+		if(details == null) {
 			throw new NotAuthorizedException("Utenza non autorizzata: impossibile leggere il principal.");
 		}
 		

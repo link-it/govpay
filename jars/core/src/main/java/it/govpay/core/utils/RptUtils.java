@@ -45,21 +45,19 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
 import it.gov.digitpa.schemas._2011.pagamenti.CtIdentificativoUnivocoPersonaG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.NdpException;
-import it.govpay.core.utils.EventoContext.Esito;
 import it.govpay.core.utils.client.NodoClient;
-import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.thread.InviaRptThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
@@ -68,6 +66,8 @@ import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.configurazione.Giornale;
+import it.govpay.model.eventi.DatiPagoPA;
 
 public class RptUtils {
 
@@ -156,7 +156,7 @@ public class RptUtils {
 		datiPagoPA.setCodPsp(rpt.getCodPsp());
 		datiPagoPA.setCodStazione(stazione.getCodStazione());
 		datiPagoPA.setCodIntermediario(intermediario.getCodIntermediario());
-		datiPagoPA.setErogatore(Evento.NDP);
+		datiPagoPA.setErogatore(it.govpay.model.Evento.NDP);
 		datiPagoPA.setFruitore(intermediario.getCodIntermediario());
 		datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
 		datiPagoPA.setModelloPagamento(rpt.getModelloPagamento());
@@ -165,7 +165,7 @@ public class RptUtils {
 		client.getEventoCtx().setDatiPagoPA(datiPagoPA);
 	}
 
-	public static void inviaRPTAsync(Rpt rpt, IContext ctx) throws ServiceException {
+	public static void inviaRPTAsync(Rpt rpt, IContext ctx) throws ServiceException, IOException {
 		InviaRptThread t = new InviaRptThread(rpt, ctx);
 		ThreadExecutorManager.getClientPoolExecutorRPT().execute(t);
 	}
@@ -183,7 +183,7 @@ public class RptUtils {
 	}
 
 //, BasicBD bd
-	public static boolean aggiornaRptDaNpD(Intermediario intermediario, Rpt rpt) throws GovPayException, ServiceException, ClientException, NdpException, UtilsException {
+	public static boolean aggiornaRptDaNpD(Intermediario intermediario, Rpt rpt) throws GovPayException, ServiceException, ClientException, NdpException, UtilsException, IOException {
 		try {
 			String msg = ".";
 			StatoRpt stato_originale = rpt.getStato();
@@ -213,10 +213,8 @@ public class RptUtils {
 					StatoRpt nuovoStato = StatoRpt.RPT_ERRORE_INVIO_A_NODO;
 					log.info("Rpt [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "] iniziativa Ente in stato[" + rpt.getStato()+ "]. Aggiorno in [" + nuovoStato + "].");
 
-					RptBD rptBD = null;
+					RptBD rptBD = new RptBD(configWrapper);;
 					try {
-						rptBD = new RptBD(configWrapper);
-						
 						rptBD.setupConnection(configWrapper.getTransactionID());
 						
 						rptBD.setAtomica(false);
@@ -244,7 +242,7 @@ public class RptUtils {
 						//aggiorno lo stato del pagamento portale
 						Long idPagamentoPortale = rpt.getIdPagamentoPortale();
 						if(idPagamentoPortale != null) {
-							PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rptBD); 
+							PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rpt, rptBD); 
 						}
 						
 						rptBD.commit();
@@ -279,7 +277,7 @@ public class RptUtils {
 				try {
 					try {
 						Stazione stazione = rpt.getStazione(configWrapper);
-						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpt.getCodDominio(), Azione.nodoChiediStatoRPT);
+						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpt.getCodDominio(), EventoContext.Azione.NODOCHIEDISTATORPT);
 						NodoChiediStatoRPT richiesta = new NodoChiediStatoRPT();
 						richiesta.setIdentificativoDominio(rpt.getCodDominio());
 						richiesta.setIdentificativoIntermediarioPA(stazione.getIntermediario(configWrapper).getCodIntermediario());
@@ -338,10 +336,8 @@ public class RptUtils {
 							rpt.setStato(StatoRpt.RPT_ERRORE_INVIO_A_NODO);
 							rpt.setDescrizioneStato("Stato sul nodo: PPT_RPT_SCONOSCIUTA");
 
-							RptBD rptBD = null;
+							RptBD rptBD = new RptBD(configWrapper);
 							try {
-								rptBD = new RptBD(configWrapper);
-								
 								rptBD.setupConnection(configWrapper.getTransactionID());
 								
 								rptBD.setAtomica(false);
@@ -362,7 +358,7 @@ public class RptUtils {
 								//aggiorno lo stato del pagamento portale
 								Long idPagamentoPortale = rpt.getIdPagamentoPortale();
 								if(idPagamentoPortale != null) {
-									PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rptBD); 
+									PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rpt, rptBD); 
 								}
 								
 								rptBD.commit();
@@ -391,10 +387,10 @@ public class RptUtils {
 							
 							return true;
 						}
-						throw new GovPayException(risposta.getFault());
+						throw new GovPayException(FaultBeanUtils.toFaultBean(risposta.getFault()));
 					} else {
-						StatoRpt nuovoStato = Rpt.StatoRpt.toEnum(risposta.getEsito().getStato());
-						EsitoPagamento esitoPagamento = nuovoStato.equals(Rpt.StatoRpt.RPT_RIFIUTATA_NODO) ? EsitoPagamento.RIFIUTATO: null;
+						StatoRpt nuovoStato = it.govpay.model.Rpt.StatoRpt.toEnum(risposta.getEsito().getStato());
+						EsitoPagamento esitoPagamento = nuovoStato.equals(it.govpay.model.Rpt.StatoRpt.RPT_RIFIUTATA_NODO) ? EsitoPagamento.RIFIUTATO: null;
 
 						log.info("Acquisito dal Nodo dei Pagamenti lo stato della RPT [Dominio:" + rpt.getCodDominio() + " IUV:" + rpt.getIuv() + " CCP:" + rpt.getCcp() + "]: " + nuovoStato);
 
@@ -414,7 +410,7 @@ public class RptUtils {
 							try { 
 								try {
 									Stazione stazione = rpt.getStazione(configWrapper);
-									operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpt.getCodDominio(), Azione.nodoChiediCopiaRT);
+									operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpt.getCodDominio(), EventoContext.Azione.NODOCHIEDICOPIART);
 									NodoChiediCopiaRT nodoChiediCopiaRT = new NodoChiediCopiaRT();
 									nodoChiediCopiaRT.setIdentificativoDominio(rpt.getCodDominio());
 									nodoChiediCopiaRT.setIdentificativoIntermediarioPA(rpt.getIntermediario(configWrapper).getCodIntermediario());
@@ -505,7 +501,7 @@ public class RptUtils {
 							}finally {
 								if(chiediCopiaRTClient != null && chiediCopiaRTClient.getEventoCtx().isRegistraEvento()) {
 									EventiBD eventiBD = new EventiBD(configWrapper);
-									eventiBD.insertEvento(chiediCopiaRTClient.getEventoCtx().toEventoDTO());
+									eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediCopiaRTClient.getEventoCtx(),log));
 								}
 							}
 
@@ -546,7 +542,7 @@ public class RptUtils {
 									// aggiornamento del pagamento portale
 									Long idPagamentoPortale = rpt.getIdPagamentoPortale();
 									if(idPagamentoPortale != null) {
-										PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rptBD); 
+										PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rpt, rptBD); 
 									}
 	
 									rptBD.commit();
@@ -594,7 +590,7 @@ public class RptUtils {
 								// aggiornamento del pagamento portale
 								Long idPagamentoPortale = rpt.getIdPagamentoPortale();
 								if(idPagamentoPortale != null) {
-									PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rptBD2); 
+									PagamentoPortaleUtils.aggiornaPagamentoPortale(idPagamentoPortale, rpt, rptBD2); 
 								}
 
 								rptBD2.commit();
@@ -612,12 +608,18 @@ public class RptUtils {
 				}finally {
 					if(chiediStatoRptClient != null && chiediStatoRptClient.getEventoCtx().isRegistraEvento()) {
 						EventiBD eventiBD = new EventiBD(configWrapper);
-						eventiBD.insertEvento(chiediStatoRptClient.getEventoCtx().toEventoDTO());
+						eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediStatoRptClient.getEventoCtx(),log));
 					}
 				}
 			}
 		} catch(NotFoundException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	public static String getRptKey(Rpt rpt) {
+		if(rpt != null)
+			return rpt.getCodDominio() + "@" + rpt.getIuv() + "@" + rpt.getCcp();
+		return "";
 	}
 }

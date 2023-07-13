@@ -7,9 +7,9 @@ import java.util.List;
 import it.govpay.core.beans.Lista;
 
 public class ListaRiscossioni extends Lista<RiscossioneIndex> {
-	
+
 	public ListaRiscossioni(List<RiscossioneIndex> risultati, URI requestUri, Long count, Integer pagina, Integer limit, BigDecimal maxRisultati) {
 		super(risultati, requestUri, count, pagina, limit, maxRisultati);
 	}
-	
+
 }

@@ -4,6 +4,7 @@
   "indice": "#number",
   "importo": "#number",
   "esito": "#number",
+  "stato": "#string",
   "data": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\d",
   "segnalazioni": "#ignore",
   "riscossione": {
@@ -43,7 +44,8 @@
 			"direzione":"##string",
 			"divisione":"##string",
 			"UUID":"#string",
-			"soggettoPagatore":"#notnull"
+			"soggettoPagatore":"#notnull",
+   			"allegati": "##[]"
 		}
 	}
   }

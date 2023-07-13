@@ -1,6 +1,8 @@
 package it.govpay.core.utils.validator;
 
-import org.openspcoop2.utils.json.ValidationException;
+import java.text.MessageFormat;
+
+import it.govpay.core.exceptions.ValidationException;
 
 public class BooleanValidator {
 
@@ -14,14 +16,14 @@ public class BooleanValidator {
 
 	public BooleanValidator notNull() throws ValidationException {
 		if(this.fieldValue == null) {
-			throw new ValidationException("Il campo " + this.fieldName + " non deve essere vuoto.");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.BOOLEAN_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_ESSERE_VUOTO, this.fieldName));
 		}
 		return this;
 	}
 	
 	public BooleanValidator isNull() throws ValidationException {
 		if(this.fieldValue != null) {
-			throw new ValidationException("Il campo " + this.fieldName + " deve essere vuoto.");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.BOOLEAN_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_VUOTO, this.fieldName));
 		}
 		return this;
 	}

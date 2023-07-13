@@ -4,12 +4,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "id",
 "nome",
@@ -33,116 +32,75 @@ import it.govpay.core.beans.JSONSerializable;
 "severita",
 })
 public class PagamentoIndex extends JSONSerializable {
-  
+
   @JsonProperty("id")
   private String id = null;
-  
+
   @JsonProperty("nome")
   private String nome = null;
-  
+
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSS", locale = "it_IT", timezone = "Europe/Rome")
   @JsonProperty("dataRichiestaPagamento")
   private Date dataRichiestaPagamento = null;
-  
+
   @JsonProperty("idSessionePortale")
   private String idSessionePortale = null;
-  
+
   @JsonProperty("idSessionePsp")
   private String idSessionePsp = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("stato")
   private StatoPagamento stato = null;
-  
+
   @JsonProperty("descrizioneStato")
   private String descrizioneStato = null;
-  
-    
-  /**
-   * Modello di pagamento
-   */
-  public enum ModelloEnum {
-    
-    
-        
-            
-    ENTE("Pagamento ad iniziativa Ente"),
-    
-            
-    PSP("Pagamento ad iniziativa PSP");
-            
-        
-    
 
-    private String value;
-
-    ModelloEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @com.fasterxml.jackson.annotation.JsonValue
-    public String toString() {
-      return String.valueOf(this.value);
-    }
-
-    public static ModelloEnum fromValue(String text) {
-      for (ModelloEnum b : ModelloEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-    
-    
   @JsonProperty("modello")
-  private ModelloEnum modello = null;
-  
+  private ModelloPagamento modello = null;
+
   @JsonProperty("pspRedirectUrl")
   private String pspRedirectUrl = null;
-  
+
   @JsonProperty("urlRitorno")
   private String urlRitorno = null;
-  
+
   @JsonProperty("contoAddebito")
   private ContoAddebito contoAddebito = null;
-  
+
   @JsonProperty("dataEsecuzionePagamento")
   private Date dataEsecuzionePagamento = null;
-  
+
   @JsonProperty("credenzialiPagatore")
   private String credenzialiPagatore = null;
-  
+
   @JsonProperty("soggettoVersante")
   private Soggetto soggettoVersante = null;
-  
-    
+
+
   /**
    * modalita' di autenticazione del soggetto versante
    */
   public enum AutenticazioneSoggettoEnum {
-    
-    
-        
-            
+
+
+
+
     CNS("CNS"),
-    
-            
+
+
     USR("USR"),
-    
-            
+
+
     OTH("OTH"),
-    
-            
+
+
     N_A("N/A");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -166,36 +124,36 @@ public class PagamentoIndex extends JSONSerializable {
     }
   }
 
-    
-    
+
+
   @JsonProperty("autenticazioneSoggetto")
   private AutenticazioneSoggettoEnum autenticazioneSoggetto = null;
-  
-    
+
+
   /**
    * Indica il codice della lingua da utilizzare per l’esposizione delle pagine web.
    */
   public enum LinguaEnum {
-    
-    
-        
-            
+
+
+
+
     IT("IT"),
-    
-            
+
+
     EN("EN"),
-    
-            
+
+
     FR("FR"),
-    
-            
+
+
     DE("DE"),
-    
-            
+
+
     SL("SL");
-            
-        
-    
+
+
+
 
     private String value;
 
@@ -219,20 +177,20 @@ public class PagamentoIndex extends JSONSerializable {
     }
   }
 
-    
-    
+
+
   @JsonProperty("lingua")
   private LinguaEnum lingua = LinguaEnum.IT;
-  
+
   @JsonProperty("rpp")
   private String rpp = null;
-  
+
   @JsonProperty("verificato")
   private Boolean verificato = null;
-  
+
   @JsonProperty("severita")
   private Integer severita = null;
-  
+
   /**
    * Identificativo del pagamento assegnato da GovPay
    **/
@@ -363,16 +321,16 @@ public class PagamentoIndex extends JSONSerializable {
   /**
    * Modello di pagamento
    **/
-  public PagamentoIndex modello(ModelloEnum modello) {
+  public PagamentoIndex modello(ModelloPagamento modello) {
     this.modello = modello;
     return this;
   }
 
   @JsonProperty("modello")
-  public ModelloEnum getModello() {
-    return this.modello;
+  public ModelloPagamento getModello() {
+    return modello;
   }
-  public void setModello(ModelloEnum modello) {
+  public void setModello(ModelloPagamento modello) {
     this.modello = modello;
   }
 
@@ -527,7 +485,7 @@ public class PagamentoIndex extends JSONSerializable {
   }
 
   @JsonProperty("verificato")
-  public Boolean Verificato() {
+  public Boolean getVerificato() {
     return this.verificato;
   }
   public void setVerificato(Boolean verificato) {
@@ -586,7 +544,7 @@ public class PagamentoIndex extends JSONSerializable {
     return Objects.hash(id, nome, dataRichiestaPagamento, idSessionePortale, idSessionePsp, importo, stato, descrizioneStato, modello, pspRedirectUrl, urlRitorno, contoAddebito, dataEsecuzionePagamento, credenzialiPagatore, soggettoVersante, autenticazioneSoggetto, lingua, rpp, verificato, severita);
   }
 
-  public static PagamentoIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static PagamentoIndex parse(String json) throws IOException {
     return parse(json, PagamentoIndex.class);
   }
 
@@ -599,7 +557,7 @@ public class PagamentoIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class PagamentoIndex {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    dataRichiestaPagamento: ").append(toIndentedString(dataRichiestaPagamento)).append("\n");

@@ -16,7 +16,6 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BDConfigWrapper;
-import it.govpay.bd.model.IdUnitaOperativa;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.autorizzazione.AuthorizationManager;
@@ -35,7 +34,6 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.ragioneria.v3.api.RicevuteApi;
 import it.govpay.ragioneria.v3.beans.Ricevuta;
@@ -51,29 +49,31 @@ import it.govpay.ragioneria.v3.beans.converter.RicevuteConverter;
  *
  */
 public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements RicevuteApi {
-    
-	
+
+
 	public RicevuteApiServiceImpl() {
 		super("ricevute", RicevuteApiServiceImpl.class);
 	}
-	
+
 	/**
      * Ricerca delle ricevute di pagamento
      *
      */
-    public Response findRicevute(Integer pagina, Integer risultatiPerPagina, String ordinamento, String idDominio, String dataDa, String dataA, Boolean metadatiPaginazione, Boolean maxRisultati, String iuv) {
-        Authentication user = this.getUser();
-        String methodName = "findRicevute";  
+    @Override
+	public Response findRicevute(Integer pagina, Integer risultatiPerPagina, String ordinamento, String idDominio, String dataDa, String dataA, Boolean metadatiPaginazione, Boolean maxRisultati, String iuv) {
+    	this.buildContext();
+    	Authentication user = this.getUser();
+        String methodName = "findRicevute";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
 
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
-			
-			// Parametri - > DTO Input 
+
+			// Parametri - > DTO Input
 
 			ListaRptDTO listaRptDTO = new ListaRptDTO(user);
 			listaRptDTO.setLimit(risultatiPerPagina);
@@ -81,124 +81,84 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 			listaRptDTO.setEseguiCount(metadatiPaginazione);
 			listaRptDTO.setEseguiCountConLimit(maxRisultati);
 
-//			if(esito != null) {
-//				EsitoRpt esitoRPT = EsitoRpt.fromValue(esito);
-//				
-//				if (esitoRPT != null) {
-					EsitoPagamento esitoPagamento = null;;
-//					switch(esitoRPT) {
-//					case DECORENNZA_PARZIALE:
-//						esitoPagamento = EsitoPagamento.DECORRENZA_TERMINI_PARZIALE;
-//						break;
-//					case DECORRENZA:
-//						esitoPagamento = EsitoPagamento.DECORRENZA_TERMINI;
-//						break;
-//					case ESEGUITO:
-//						esitoPagamento = EsitoPagamento.PAGAMENTO_ESEGUITO;
-//						break;
-//					case ESEGUITO_PARZIALE:
-//						esitoPagamento = EsitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO;
-//						break;
-//					case IN_CORSO:
-//						esitoPagamento = EsitoPagamento.IN_CORSO;
-//						break;
-//					case NON_ESEGUITO:
-//						esitoPagamento = EsitoPagamento.PAGAMENTO_NON_ESEGUITO; 
-//						break;
-//					case RIFIUTATO:
-//						esitoPagamento = EsitoPagamento.RIFIUTATO;
-//						break;
-//					}
-					listaRptDTO.setEsitoPagamento(esitoPagamento);
-//				} else {
-//					throw new ValidationException("Codifica inesistente per esito. Valore fornito [" + esito
-//							+ "] valori possibili " + ArrayUtils.toString(EsitoRpt.values()));
-//				}
-//			}
+
+			listaRptDTO.setEsitoPagamento(null);
+
 			if(idDominio != null)
 				listaRptDTO.setIdDominio(idDominio);
 			if(iuv != null)
 				listaRptDTO.setIuv(iuv);
 			if(ordinamento != null)
 				listaRptDTO.setOrderBy(ordinamento);
-			
-			// dat RPT
-//			if(dataRptDa!=null) {
-//				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRptDa, "dataRptDa");
-//				listaRptDTO.setDataDa(dataDaDate);
-//			}
-//			
-//			if(dataRptA!=null) {
-//				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRptA, "dataRptA");
-//				listaRptDTO.setDataA(dataADate);
-//			}
-			
+
 			// data RT
 			if(dataDa!=null) {
 				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				listaRptDTO.setDataRtDa(dataDaDate);
 			}
-				
-			
+
+
 			if(dataA!=null) {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataA, "dataA");
 				listaRptDTO.setDataRtA(dataADate);
 			}
-			
+
 			// INIT DAO
 
 			RptDAO rptDAO = new RptDAO();
 
 			// Autorizzazione sui domini
-//			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
-//			if(domini == null) {
-//				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
-//			}
-//			listaRptDTO.setCodDomini(domini);
-			
-			// Autorizzazione sulle uo
-			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
-			if(uo == null) {
-				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
+			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
+			if(domini == null) {
+				throw AuthorizationManager.toNotAuthorizedExceptionNessunDominioAutorizzato(user);
 			}
-			listaRptDTO.setUnitaOperative(uo);
+			listaRptDTO.setCodDomini(domini);
+
+			// Autorizzazione sulle uo
+//			List<IdUnitaOperativa> uo = AuthorizationManager.getUoAutorizzate(user);
+//			if(uo == null) {
+//				throw AuthorizationManager.toNotAuthorizedExceptionNessunaUOAutorizzata(user);
+//			}
+//			listaRptDTO.setUnitaOperative(uo);
 
 			ListaRptDTOResponse listaRptDTOResponse = rptDAO.listaRpt(listaRptDTO);
 
 			// CONVERT TO JSON DELLA RISPOSTA
 			Ricevute response = new Ricevute(this.getServicePath(uriInfo), listaRptDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
-			
+
 			List<RicevuteRisultati> results = new ArrayList<>();
 			for(LeggiRptDTOResponse leggiRptDtoResponse: listaRptDTOResponse.getResults()) {
 				results.add(RicevuteConverter.toRsModelIndex(leggiRptDtoResponse.getRpt()));
 			}
 			response.setRisultati(results);
 
-			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
-    
+
     /**
      * Acquisizione di una ricevuta di avvenuto pagamento pagoPA
      *
-     * Ricevuta pagoPA, sia questa veicolata nella forma di &#x60;RT&#x60; o di &#x60;recepit&#x60;, di esito positivo. 
+     * Ricevuta pagoPA, sia questa veicolata nella forma di &#x60;RT&#x60; o di &#x60;recepit&#x60;, di esito positivo.
      *
      */
-    public Response getRicevuta(String idDominio, String iuv, String idRicevuta) {
+    @Override
+	public Response getRicevuta(String idDominio, String iuv, String idRicevuta) {
+    	this.buildContext();
         Authentication user = this.getUser();
-        String methodName = "getRicevuta";  
-		String transactionId = ContextThreadLocal.get().getTransactionId();		
-		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+        String methodName = "getRicevuta";
+		String transactionId = ContextThreadLocal.get().getTransactionId();
+		this.log.debug(MessageFormat.format(BaseApiServiceImpl.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
-			
+
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
 
@@ -208,32 +168,32 @@ public class RicevuteApiServiceImpl extends BaseApiServiceImpl  implements Ricev
 			idRicevuta = idRicevuta.contains("%") ? URLDecoder.decode(idRicevuta,"UTF-8") : idRicevuta;
 			leggiRptDTO.setCcp(idRicevuta);
 
-			RptDAO ricevuteDAO = new RptDAO(); 
+			RptDAO ricevuteDAO = new RptDAO();
 
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
-			
+
 			checkAutorizzazioniUtenza(leggiRptDTO.getUser(), leggiRptDTOResponse.getRpt());
 
 			Ricevuta response =  RicevuteConverter.toRsModel(leggiRptDTOResponse.getRpt());
-			
+
 			return this.handleResponseOk(Response.status(Status.OK).entity(response),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
-    
+
     private void checkAutorizzazioniUtenza(Authentication user, Rpt rpt) throws ServiceException, NotFoundException, NotAuthorizedException {
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(user);
-		
+
 		// se sei una applicazione allora vedi i pagamenti che hai caricato
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-			
+
 			Versamento versamento = rpt.getVersamento();
 			BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-			
-			if(versamento.getApplicazione(configWrapper) == null || 
+
+			if(versamento.getApplicazione(configWrapper) == null ||
 					!versamento.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
 				throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce una pendenza che non appartiene all'applicazione chiamante");
 			}

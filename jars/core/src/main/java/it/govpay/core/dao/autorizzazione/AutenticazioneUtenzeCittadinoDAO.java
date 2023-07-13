@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
@@ -57,7 +58,7 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 	}
 
 
-	private UserDetails _loadUserDetails(String username, Collection<? extends GrantedAuthority> authFromPreauth,Map<String, List<String>> headerValues) throws UsernameNotFoundException {
+	private UserDetails _loadUserDetails(String username, Collection<? extends GrantedAuthority> authFromPreauth,Map<String, List<String>> headerValues) {
 		if(headerValues == null) {
 			headerValues = new HashMap<>();
 		}
@@ -70,13 +71,13 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 			userDetailFromUtenzaCittadino.setIdTransazioneAutenticazione(transactionId);
 			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] completato.");
 			return userDetailFromUtenzaCittadino;
-		} catch(Exception e){
+		} catch(ServiceException e){
 			throw new RuntimeException("Errore interno, impossibile caricare le informazioni del cittadino ["+username+"]: ", e);
 		}	finally {
 		}
 	}
 	
-	private UserDetails _loadUserDetailsFromSession(String username, Collection<? extends GrantedAuthority> authFromPreauth,Map<String, Object> attributeValues) throws UsernameNotFoundException {
+	private UserDetails _loadUserDetailsFromSession(String username, Collection<? extends GrantedAuthority> authFromPreauth,Map<String, Object> attributeValues) {
 		if(attributeValues == null) {
 			attributeValues = new HashMap<>();
 		}
@@ -84,7 +85,7 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 		try {
 			GovpayLdapUserDetails userDetailFromSession = (GovpayLdapUserDetails) attributeValues.get(AuthorizationManager.SESSION_PRINCIPAL_OBJECT_ATTRIBUTE_NAME);
 			if(userDetailFromSession == null)
-				throw new Exception("Dati utenza non presenti in sessione.");
+				throw new RuntimeException("Dati utenza ["+username+"] non presenti in sessione.");
 			
 			String transactionId = UUID.randomUUID().toString();
 			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
@@ -93,7 +94,7 @@ public class AutenticazioneUtenzeCittadinoDAO extends BaseAutenticazioneDAO impl
 			userDetailFromUtenzaCittadino.setIdTransazioneAutenticazione(transactionId);
 			this.debug(transactionId,"Caricamento informazioni del cittadino ["+username+"] completato.");
 			return userDetailFromUtenzaCittadino;
-		} catch(Exception e){
+		} catch(ServiceException e){
 			throw new RuntimeException("Errore interno, impossibile caricare le informazioni del cittadino ["+username+"]: ", e);
 		}	finally {
 		}

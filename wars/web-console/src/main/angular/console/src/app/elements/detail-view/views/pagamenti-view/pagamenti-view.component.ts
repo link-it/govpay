@@ -86,7 +86,7 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
           const _stdTCC: TwoColsCollapse = new TwoColsCollapse();
           const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
           const _riferimento = this.us.mapRiferimentoGiornale(item);
-          _stdTCC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
+          _stdTCC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.componente, item.tipoEvento) });
           _stdTCC.sottotitolo = new Dato({ label: _riferimento });
           _stdTCC.stato = item.esito;
           _stdTCC.data = _dataOraEventi;
@@ -208,13 +208,13 @@ export class PagamentiViewComponent implements IModalDialog, IExport, OnInit, Af
             }
           }
         } else {
-          if (item.rpt && item.rpt.data) {
-            if (item.rpt.data.creditorReferenceId) {
-              stStrings.push(Voce.IUV+': '+item.rpt.data.creditorReferenceId);
+          if (item.rpt) {
+            if (item.rpt.creditorReferenceId) {
+              stStrings.push(Voce.IUV+': '+item.rpt.creditorReferenceId);
             }
           }
-          if (item.rt && item.rt.receipt) {
-            importoRpp = item.rt.receipt.paymentAmount;
+          if (item.rt) {
+            importoRpp = item.rt.paymentAmount;
           }
         }
         let _st = new Dato({ value: Dato.concatStrings(stStrings, ', ') });

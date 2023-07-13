@@ -102,6 +102,7 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 
 		IdPagamentoPortale idPagamentoPortale = new IdPagamentoPortale();
 		idPagamentoPortale.setIdSessione(pagamentoPortale.getIdSessione());
+		idPagamentoPortale.setId(pagamentoPortale.getId());
 
 		return idPagamentoPortale;
 	}
@@ -125,10 +126,6 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 	@Override
 	public List<IdPagamentoPortale> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
 		List<IdPagamentoPortale> list = new ArrayList<>();
 
 		try{
@@ -149,10 +146,6 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 	@Override
 	public List<PagamentoPortale> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
 		List<PagamentoPortale> list = new ArrayList<>();
 
 		
@@ -704,6 +697,10 @@ public class JDBCPagamentoPortaleServiceSearchImpl implements IJDBCServiceSearch
 
 	protected Long findIdPagamentoPortale(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdPagamentoPortale id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
+		if(id == null) {
+			throw new ServiceException(this.getClass().getName() +": Bad request");
+		}
+		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 

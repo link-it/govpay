@@ -61,8 +61,9 @@ import it.govpay.model.IbanAccredito;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.model.Rpt.Versione;
+import it.govpay.model.Rpt.VersioneRPT;
 import it.govpay.model.SingoloVersamento.TipoBollo;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class RptBuilder {
 	
@@ -144,7 +145,7 @@ public class RptBuilder {
 		UnitaOperativa uo = versamento.getUo(configWrapper);
 		
 		Rpt rpt = new Rpt();
-		rpt.setVersione(Versione.SANP_230);
+		rpt.setVersione(VersioneRPT.SANP_230);
 		rpt.setCallbackURL(redirect);
 		rpt.setCcp(ccp);
 		rpt.setCodCarrello(codCarrello);
@@ -171,7 +172,7 @@ public class RptBuilder {
 		rpt.setEsitoPagamento(EsitoPagamento.IN_CORSO);
 
 		CtRichiestaPagamentoTelematico ctRpt = new CtRichiestaPagamentoTelematico();
-		ctRpt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE);
+		ctRpt.setVersioneOggetto(it.govpay.model.Rpt.VERSIONE_620);
 		CtDominio ctDominio = new CtDominio();
 		ctDominio.setIdentificativoDominio(rpt.getCodDominio());
 		ctDominio.setIdentificativoStazioneRichiedente(dominio.getStazione().getCodStazione());
@@ -179,9 +180,9 @@ public class RptBuilder {
 		ctRpt.setIdentificativoMessaggioRichiesta(rpt.getCodMsgRichiesta());
 		ctRpt.setDataOraMessaggioRichiesta(rpt.getDataMsgRichiesta());
 		ctRpt.setAutenticazioneSoggetto(StAutenticazioneSoggetto.fromValue(autenticazione.toString()));
-		ctRpt.setSoggettoVersante(this.buildSoggettoVersante(versante));
-		ctRpt.setSoggettoPagatore(this.buildSoggettoPagatore(versamento.getAnagraficaDebitore()));
-		ctRpt.setEnteBeneficiario(this.buildEnteBeneficiario(dominio, uo));
+		ctRpt.setSoggettoVersante(RptBuilder.buildSoggettoVersante(versante));
+		ctRpt.setSoggettoPagatore(RptBuilder.buildSoggettoPagatore(versamento.getAnagraficaDebitore()));
+		ctRpt.setEnteBeneficiario(RptBuilder.buildEnteBeneficiario(dominio, uo));
 		
 		CtDatiVersamentoRPT datiVersamento = new CtDatiVersamentoRPT();
 		datiVersamento.setDataEsecuzionePagamento(rpt.getDataMsgRichiesta());
@@ -194,7 +195,7 @@ public class RptBuilder {
 		datiVersamento.setBicAddebito(bicAddebito != null ? bicAddebito : null);
 		List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(configWrapper);
 		for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-			datiVersamento.getDatiSingoloVersamento().add(this.buildDatiSingoloVersamento(rpt, singoloVersamento, configWrapper));
+			datiVersamento.getDatiSingoloVersamento().add(RptBuilder.buildDatiSingoloVersamento(rpt, singoloVersamento, configWrapper));
 		}
 		ctRpt.setDatiVersamento(datiVersamento);
 		
@@ -212,44 +213,44 @@ public class RptBuilder {
 		return UUID.randomUUID().toString().replace("-", "");
 	}
 
-	private CtSoggettoVersante buildSoggettoVersante(Anagrafica versante) {
+	public static CtSoggettoVersante buildSoggettoVersante(Anagrafica versante) {
 		if(versante == null) return null;
 		CtSoggettoVersante soggettoVersante = new CtSoggettoVersante();
 		CtIdentificativoUnivocoPersonaFG idUnivocoVersante = new CtIdentificativoUnivocoPersonaFG();
 		String cFiscale = versante.getCodUnivoco();
 		idUnivocoVersante.setCodiceIdentificativoUnivoco(cFiscale);
 		idUnivocoVersante.setTipoIdentificativoUnivoco((cFiscale.length() == 16) ? StTipoIdentificativoUnivocoPersFG.F : StTipoIdentificativoUnivocoPersFG.G);
-		soggettoVersante.setAnagraficaVersante(this.getNotEmpty(versante.getRagioneSociale()));
-		soggettoVersante.setCapVersante(this.getNotEmpty(versante.getCap()));
-		soggettoVersante.setCivicoVersante(this.getNotEmpty(versante.getCivico()));
-		soggettoVersante.setEMailVersante(this.getNotEmpty(versante.getEmail()));
+		soggettoVersante.setAnagraficaVersante(RptBuilder.getNotEmpty(versante.getRagioneSociale()));
+		soggettoVersante.setCapVersante(RptBuilder.getNotEmpty(versante.getCap()));
+		soggettoVersante.setCivicoVersante(RptBuilder.getNotEmpty(versante.getCivico()));
+		soggettoVersante.setEMailVersante(RptBuilder.getNotEmpty(versante.getEmail()));
 		soggettoVersante.setIdentificativoUnivocoVersante(idUnivocoVersante);
-		soggettoVersante.setIndirizzoVersante(this.getNotEmpty(versante.getIndirizzo()));
-		soggettoVersante.setLocalitaVersante(this.getNotEmpty(versante.getLocalita()));
-		soggettoVersante.setNazioneVersante(this.getNotEmpty(versante.getNazione()));
-		soggettoVersante.setProvinciaVersante(this.getNotEmpty(versante.getProvincia()));
+		soggettoVersante.setIndirizzoVersante(RptBuilder.getNotEmpty(versante.getIndirizzo()));
+		soggettoVersante.setLocalitaVersante(RptBuilder.getNotEmpty(versante.getLocalita()));
+		soggettoVersante.setNazioneVersante(RptBuilder.getNotEmpty(versante.getNazione()));
+		soggettoVersante.setProvinciaVersante(RptBuilder.getNotEmpty(versante.getProvincia()));
 		return soggettoVersante;
 	}
 
-	private CtSoggettoPagatore buildSoggettoPagatore(Anagrafica debitore) {
+	public static CtSoggettoPagatore buildSoggettoPagatore(Anagrafica debitore) {
 		CtSoggettoPagatore soggettoDebitore = new CtSoggettoPagatore();
 		CtIdentificativoUnivocoPersonaFG idUnivocoDebitore = new CtIdentificativoUnivocoPersonaFG();
 		String cFiscale = debitore.getCodUnivoco();
 		idUnivocoDebitore.setCodiceIdentificativoUnivoco(cFiscale);
 		idUnivocoDebitore.setTipoIdentificativoUnivoco((cFiscale.length() == 16) ? StTipoIdentificativoUnivocoPersFG.F : StTipoIdentificativoUnivocoPersFG.G);
 		soggettoDebitore.setAnagraficaPagatore(debitore.getRagioneSociale());
-		soggettoDebitore.setCapPagatore(this.getNotEmpty(debitore.getCap()));
-		soggettoDebitore.setCivicoPagatore(this.getNotEmpty(debitore.getCivico()));
-		soggettoDebitore.setEMailPagatore(this.getNotEmpty(debitore.getEmail()));
+		soggettoDebitore.setCapPagatore(RptBuilder.getNotEmpty(debitore.getCap()));
+		soggettoDebitore.setCivicoPagatore(RptBuilder.getNotEmpty(debitore.getCivico()));
+		soggettoDebitore.setEMailPagatore(RptBuilder.getNotEmpty(debitore.getEmail()));
 		soggettoDebitore.setIdentificativoUnivocoPagatore(idUnivocoDebitore);
-		soggettoDebitore.setIndirizzoPagatore(this.getNotEmpty(debitore.getIndirizzo()));
-		soggettoDebitore.setLocalitaPagatore(this.getNotEmpty(debitore.getLocalita()));
-		soggettoDebitore.setNazionePagatore(this.getNotEmpty(debitore.getNazione()));
-		soggettoDebitore.setProvinciaPagatore(this.getNotEmpty(debitore.getProvincia()));
+		soggettoDebitore.setIndirizzoPagatore(RptBuilder.getNotEmpty(debitore.getIndirizzo()));
+		soggettoDebitore.setLocalitaPagatore(RptBuilder.getNotEmpty(debitore.getLocalita()));
+		soggettoDebitore.setNazionePagatore(RptBuilder.getNotEmpty(debitore.getNazione()));
+		soggettoDebitore.setProvinciaPagatore(RptBuilder.getNotEmpty(debitore.getProvincia()));
 		return soggettoDebitore;
 	}
 
-	private CtEnteBeneficiario buildEnteBeneficiario(Dominio dominio, UnitaOperativa uo) throws ServiceException {
+	public static CtEnteBeneficiario buildEnteBeneficiario(Dominio dominio, UnitaOperativa uo) throws ServiceException {
 
 		CtEnteBeneficiario enteBeneficiario = new CtEnteBeneficiario();
 		CtIdentificativoUnivocoPersonaG idUnivocoBeneficiario = new CtIdentificativoUnivocoPersonaG();
@@ -259,12 +260,12 @@ public class RptBuilder {
 		enteBeneficiario.setDenominazioneBeneficiario(dominio.getRagioneSociale());
 
 		Anagrafica anagrafica = dominio.getAnagrafica();
-		enteBeneficiario.setCapBeneficiario(this.getNotEmpty(anagrafica.getCap()));
-		enteBeneficiario.setCivicoBeneficiario(this.getNotEmpty(anagrafica.getCivico()));
-		enteBeneficiario.setIndirizzoBeneficiario(this.getNotEmpty(anagrafica.getIndirizzo()));
-		enteBeneficiario.setLocalitaBeneficiario(this.getNotEmpty(anagrafica.getLocalita()));
-		enteBeneficiario.setNazioneBeneficiario(this.getNotEmpty(anagrafica.getNazione()));
-		enteBeneficiario.setProvinciaBeneficiario(this.getNotEmpty(anagrafica.getProvincia()));
+		enteBeneficiario.setCapBeneficiario(RptBuilder.getNotEmpty(anagrafica.getCap()));
+		enteBeneficiario.setCivicoBeneficiario(RptBuilder.getNotEmpty(anagrafica.getCivico()));
+		enteBeneficiario.setIndirizzoBeneficiario(RptBuilder.getNotEmpty(anagrafica.getIndirizzo()));
+		enteBeneficiario.setLocalitaBeneficiario(RptBuilder.getNotEmpty(anagrafica.getLocalita()));
+		enteBeneficiario.setNazioneBeneficiario(RptBuilder.getNotEmpty(anagrafica.getNazione()));
+		enteBeneficiario.setProvinciaBeneficiario(RptBuilder.getNotEmpty(anagrafica.getProvincia()));
 
 		if(!uo.getCodUo().equals(it.govpay.model.Dominio.EC) && uo.getAnagrafica() != null) {
 			if(uo.getAnagrafica().getCodUnivoco() != null && uo.getAnagrafica().getCodUnivoco().trim().length()>0)
@@ -287,26 +288,26 @@ public class RptBuilder {
 		return enteBeneficiario;
 	}
 
-	private String getNotEmpty(String text) {
+	public static String getNotEmpty(String text) {
 		if(text == null || text.trim().isEmpty())
 			return null;
 		else
 			return text;
 	}
 
-	private CtDatiSingoloVersamentoRPT buildDatiSingoloVersamento(Rpt rpt, SingoloVersamento singoloVersamento, BDConfigWrapper configWrapper) throws ServiceException  {
+	public static CtDatiSingoloVersamentoRPT buildDatiSingoloVersamento(Rpt rpt, SingoloVersamento singoloVersamento, BDConfigWrapper configWrapper) throws ServiceException  {
 		CtDatiSingoloVersamentoRPT datiSingoloVersamento = new CtDatiSingoloVersamentoRPT();
 		datiSingoloVersamento.setImportoSingoloVersamento(singoloVersamento.getImportoSingoloVersamento());
 		
 		if(singoloVersamento.getIbanAccredito(configWrapper) != null) {
 			IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(configWrapper);
-			datiSingoloVersamento.setBicAccredito(this.getNotEmpty(ibanAccredito.getCodBic()));
-			datiSingoloVersamento.setIbanAccredito(this.getNotEmpty(ibanAccredito.getCodIban()));
+			datiSingoloVersamento.setBicAccredito(RptBuilder.getNotEmpty(ibanAccredito.getCodBic()));
+			datiSingoloVersamento.setIbanAccredito(RptBuilder.getNotEmpty(ibanAccredito.getCodIban()));
 			
 			if(singoloVersamento.getIbanAppoggio(configWrapper) != null) {
 				IbanAccredito ibanAppoggio = singoloVersamento.getIbanAppoggio(configWrapper);
-				datiSingoloVersamento.setBicAppoggio(this.getNotEmpty(ibanAppoggio.getCodBic()));
-				datiSingoloVersamento.setIbanAppoggio(this.getNotEmpty(ibanAppoggio.getCodIban()));
+				datiSingoloVersamento.setBicAppoggio(RptBuilder.getNotEmpty(ibanAppoggio.getCodBic()));
+				datiSingoloVersamento.setIbanAppoggio(RptBuilder.getNotEmpty(ibanAppoggio.getCodIban()));
 			}
 		} else {
 			CtDatiMarcaBolloDigitale marcaBollo = new CtDatiMarcaBolloDigitale();
@@ -321,13 +322,13 @@ public class RptBuilder {
 			datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
 		}
 		datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
-		datiSingoloVersamento.setCausaleVersamento(this.buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT()));
+		datiSingoloVersamento.setCausaleVersamento(buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento(), singoloVersamento.getDescrizione(), singoloVersamento.getDescrizioneCausaleRPT()));
 		return datiSingoloVersamento;
 	}
 
 	private static final DecimalFormat nFormatter = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.ENGLISH));
 
-	private String buildCausaleSingoloVersamento(String iuv, BigDecimal importoTotale, String descrizione, String descrizioneCausaleRPT) {
+	public static String buildCausaleSingoloVersamento(String iuv, BigDecimal importoTotale, String descrizione, String descrizioneCausaleRPT) {
 		StringBuilder sb = new StringBuilder();
 		//Controllo se lo IUV che mi e' stato passato e' ISO11640:2011
 		if(IuvUtils.checkISO11640(iuv)) {

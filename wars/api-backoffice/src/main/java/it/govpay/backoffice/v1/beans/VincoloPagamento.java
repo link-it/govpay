@@ -3,31 +3,32 @@ package it.govpay.backoffice.v1.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreUtils;
+import it.govpay.model.Versamento.TipoSogliaVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "giorni",
 "tipo",
 })
 public class VincoloPagamento extends JSONSerializable implements IValidable{
-  
+
   @JsonProperty("giorni")
   private BigDecimal giorni = null;
-  
+
   @JsonIgnore
   private TipoSogliaVincoloPagamento tipoEnum = null;
-  
+
   @JsonProperty("tipo")
   private String tipo = null;
-  
+
   /**
    * numero di giorni vincolo per il pagamento
    **/
@@ -57,7 +58,7 @@ public class VincoloPagamento extends JSONSerializable implements IValidable{
   public void setTipoEnum(TipoSogliaVincoloPagamento tipo) {
     this.tipoEnum = tipo;
   }
-  
+
   /**
    **/
   public VincoloPagamento tipo(String tipo) {
@@ -91,8 +92,8 @@ public class VincoloPagamento extends JSONSerializable implements IValidable{
     return Objects.hash(giorni, tipo);
   }
 
-  public static VincoloPagamento parse(String json) throws ServiceException, ValidationException {
-    return (VincoloPagamento) parse(json, VincoloPagamento.class);
+  public static VincoloPagamento parse(String json) throws IOException {
+    return parse(json, VincoloPagamento.class);
   }
 
   @Override
@@ -104,7 +105,7 @@ public class VincoloPagamento extends JSONSerializable implements IValidable{
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class VincoloPagamento {\n");
-    
+
     sb.append("    giorni: ").append(toIndentedString(giorni)).append("\n");
     sb.append("    tipo: ").append(toIndentedString(tipo)).append("\n");
     sb.append("}");
@@ -121,13 +122,33 @@ public class VincoloPagamento extends JSONSerializable implements IValidable{
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 	  	ValidatorFactory vf = ValidatorFactory.newInstance();
 
-	  	ValidatoreUtils.validaSogliaGiorni(vf, "giorni", this.giorni);
 	  	ValidatoreUtils.validaSogliaTipo(vf, "tipo", this.tipo);
+
+		try {
+			TipoSogliaVersamento tipoSoglia = TipoSogliaVersamento.toEnum(this.tipo);
+
+			switch(tipoSoglia) {
+			case ENTRO:
+			case OLTRE:
+				ValidatoreUtils.validaSogliaGiorni(vf, "giorni", this.giorni);
+				break;
+			case RIDOTTO:
+			case SCONTATO:
+				try {
+				vf.getValidator("giorni", this.giorni).isNull();
+				} catch (Exception e) {
+					throw new ValidationException("Il campo giorni deve essere vuoto quando il campo tipo assume valore 'RIDOTTO' o 'SCONTATO'.");
+				}
+				break;
+			}
+		}catch (CodificaInesistenteException e) {
+			throw new ValidationException(e);
+		}
 	}
 }
 

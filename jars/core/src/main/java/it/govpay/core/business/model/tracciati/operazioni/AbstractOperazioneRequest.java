@@ -20,8 +20,8 @@
  */
 package it.govpay.core.business.model.tracciati.operazioni;
 
-import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.bd.model.Operatore;
+import it.govpay.model.Operazione.TipoOperazioneType;
 
 
 public abstract class AbstractOperazioneRequest {

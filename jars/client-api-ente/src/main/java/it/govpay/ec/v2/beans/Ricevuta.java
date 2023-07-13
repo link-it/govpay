@@ -2,7 +2,6 @@ package it.govpay.ec.v2.beans;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -10,47 +9,54 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class Ricevuta   {
   
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private Dominio dominio = null;
   
-  @Schema(example = "RF23567483937849450550875", required = true, description = "Identificativo univoco di versamento")
+  @Schema(example = "RF23567483937849450550875", requiredMode = RequiredMode.REQUIRED, description = "Identificativo univoco di versamento")
  /**
    * Identificativo univoco di versamento  
   **/
   private String iuv = null;
   
-  @Schema(example = "ab12345", required = true, description = "Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento")
+  @Schema(example = "ab12345", requiredMode = RequiredMode.REQUIRED, description = "Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento")
  /**
    * Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento  
   **/
   private String idRicevuta = null;
   
-  @Schema(example = "10.01", required = true, description = "Importo della transazione di pagamento.")
+  @Schema(example = "10.01", requiredMode = RequiredMode.REQUIRED, description = "Importo della transazione di pagamento.")
  /**
    * Importo della transazione di pagamento.  
   **/
   private BigDecimal importo = null;
   
-  @Schema(example = "PAGAMENTO_ESEGUITO", required = true, description = "Stato della richiesta di pagamento sulla piattaforma PagoPA.")
- /**
-   * Stato della richiesta di pagamento sulla piattaforma PagoPA.  
-  **/
-  private String stato = null;
+  @Schema(description = "")
+  private EsitoRpp esito = null;
   
-  @Schema(required = true, description = "")
+  @Schema(description = "Identificativo GovPay della sessione di pagamento")
+ /**
+   * Identificativo GovPay della sessione di pagamento  
+  **/
+  private String idPagamento = null;
+  
+  @Schema(description = "Identificativo pagoPA della sessione di pagamento")
+ /**
+   * Identificativo pagoPA della sessione di pagamento  
+  **/
+  private String idSessionePsp = null;
+  
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private RicevutaIstitutoAttestante istitutoAttestante = null;
   
   @Schema(description = "")
   private Soggetto versante = null;
   
-  @Schema(description = "")
-  private Pendenza pendenza = null;
-  
-  @Schema(description = "")
-  private List<Riscossione> riscossioni = null;
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
+  private PendenzaPagata pendenza = null;
   
   @Schema(description = "Data di acquisizione della ricevuta")
  /**
@@ -64,11 +70,14 @@ public class Ricevuta   {
   **/
   private Date dataPagamento = null;
   
-  @Schema(required = true, description = "")
+  @Schema(description = "")
   private RicevutaRpt rpt = null;
   
-  @Schema(required = true, description = "")
+  @Schema(description = "")
   private RicevutaRt rt = null;
+  
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
+  private ModelloPagamento modello = null;
  /**
    * Get dominio
    * @return dominio
@@ -146,21 +155,56 @@ public class Ricevuta   {
   }
 
  /**
-   * Stato della richiesta di pagamento sulla piattaforma PagoPA.
-   * @return stato
+   * Get esito
+   * @return esito
   **/
-  @JsonProperty("stato")
-  @NotNull
-  public String getStato() {
-    return stato;
+  @JsonProperty("esito")
+  public EsitoRpp getEsito() {
+    return esito;
   }
 
-  public void setStato(String stato) {
-    this.stato = stato;
+  public void setEsito(EsitoRpp esito) {
+    this.esito = esito;
   }
 
-  public Ricevuta stato(String stato) {
-    this.stato = stato;
+  public Ricevuta esito(EsitoRpp esito) {
+    this.esito = esito;
+    return this;
+  }
+
+ /**
+   * Identificativo GovPay della sessione di pagamento
+   * @return idPagamento
+  **/
+  @JsonProperty("idPagamento")
+  public String getIdPagamento() {
+    return idPagamento;
+  }
+
+  public void setIdPagamento(String idPagamento) {
+    this.idPagamento = idPagamento;
+  }
+
+  public Ricevuta idPagamento(String idPagamento) {
+    this.idPagamento = idPagamento;
+    return this;
+  }
+
+ /**
+   * Identificativo pagoPA della sessione di pagamento
+   * @return idSessionePsp
+  **/
+  @JsonProperty("idSessionePsp")
+  public String getIdSessionePsp() {
+    return idSessionePsp;
+  }
+
+  public void setIdSessionePsp(String idSessionePsp) {
+    this.idSessionePsp = idSessionePsp;
+  }
+
+  public Ricevuta idSessionePsp(String idSessionePsp) {
+    this.idSessionePsp = idSessionePsp;
     return this;
   }
 
@@ -206,39 +250,17 @@ public class Ricevuta   {
    * @return pendenza
   **/
   @JsonProperty("pendenza")
-  public Pendenza getPendenza() {
+  @NotNull
+  public PendenzaPagata getPendenza() {
     return pendenza;
   }
 
-  public void setPendenza(Pendenza pendenza) {
+  public void setPendenza(PendenzaPagata pendenza) {
     this.pendenza = pendenza;
   }
 
-  public Ricevuta pendenza(Pendenza pendenza) {
+  public Ricevuta pendenza(PendenzaPagata pendenza) {
     this.pendenza = pendenza;
-    return this;
-  }
-
- /**
-   * Get riscossioni
-   * @return riscossioni
-  **/
-  @JsonProperty("riscossioni")
-  public List<Riscossione> getRiscossioni() {
-    return riscossioni;
-  }
-
-  public void setRiscossioni(List<Riscossione> riscossioni) {
-    this.riscossioni = riscossioni;
-  }
-
-  public Ricevuta riscossioni(List<Riscossione> riscossioni) {
-    this.riscossioni = riscossioni;
-    return this;
-  }
-
-  public Ricevuta addRiscossioniItem(Riscossione riscossioniItem) {
-    this.riscossioni.add(riscossioniItem);
     return this;
   }
 
@@ -247,7 +269,7 @@ public class Ricevuta   {
    * @return data
   **/
   @JsonProperty("data")
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
   public Date getData() {
     return data;
   }
@@ -266,7 +288,7 @@ public class Ricevuta   {
    * @return dataPagamento
   **/
   @JsonProperty("dataPagamento")
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
   public Date getDataPagamento() {
     return dataPagamento;
   }
@@ -285,7 +307,6 @@ public class Ricevuta   {
    * @return rpt
   **/
   @JsonProperty("rpt")
-  @NotNull
   public RicevutaRpt getRpt() {
     return rpt;
   }
@@ -304,7 +325,6 @@ public class Ricevuta   {
    * @return rt
   **/
   @JsonProperty("rt")
-  @NotNull
   public RicevutaRt getRt() {
     return rt;
   }
@@ -318,6 +338,25 @@ public class Ricevuta   {
     return this;
   }
 
+ /**
+   * Get modello
+   * @return modello
+  **/
+  @JsonProperty("modello")
+  @NotNull
+  public ModelloPagamento getModello() {
+    return modello;
+  }
+
+  public void setModello(ModelloPagamento modello) {
+    this.modello = modello;
+  }
+
+  public Ricevuta modello(ModelloPagamento modello) {
+    this.modello = modello;
+    return this;
+  }
+
 
   @Override
   public String toString() {
@@ -328,15 +367,17 @@ public class Ricevuta   {
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    idRicevuta: ").append(toIndentedString(idRicevuta)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    esito: ").append(toIndentedString(esito)).append("\n");
+    sb.append("    idPagamento: ").append(toIndentedString(idPagamento)).append("\n");
+    sb.append("    idSessionePsp: ").append(toIndentedString(idSessionePsp)).append("\n");
     sb.append("    istitutoAttestante: ").append(toIndentedString(istitutoAttestante)).append("\n");
     sb.append("    versante: ").append(toIndentedString(versante)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
-    sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("    dataPagamento: ").append(toIndentedString(dataPagamento)).append("\n");
     sb.append("    rpt: ").append(toIndentedString(rpt)).append("\n");
     sb.append("    rt: ").append(toIndentedString(rt)).append("\n");
+    sb.append("    modello: ").append(toIndentedString(modello)).append("\n");
     sb.append("}");
     return sb.toString();
   }

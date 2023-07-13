@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -25,41 +23,41 @@ import it.govpay.core.beans.JSONSerializable;
 "segnalazioni",
 })
 public class FlussoRendicontazioneIndex extends JSONSerializable {
-  
+
   @JsonProperty("idFlusso")
   private String idFlusso = null;
-  
+
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
   @JsonProperty("dataFlusso")
   private Date dataFlusso = null;
-  
+
   @JsonProperty("trn")
   private String trn = null;
-  
+
   @JsonProperty("dataRegolamento")
   private Date dataRegolamento = null;
-  
+
   @JsonProperty("idPsp")
   private String idPsp = null;
-  
+
   @JsonProperty("bicRiversamento")
   private String bicRiversamento = null;
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("numeroPagamenti")
   private BigDecimal numeroPagamenti = null;
-  
+
   @JsonProperty("importoTotale")
   private Double importoTotale = null;
-  
+
   @JsonProperty("stato")
   private StatoFlussoRendicontazione stato = null;
-  
+
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
-  
+
   /**
    * identificativo del flusso di rendicontazione
    **/
@@ -261,7 +259,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
     return Objects.hash(idFlusso, dataFlusso, trn, dataRegolamento, idPsp, bicRiversamento, idDominio, numeroPagamenti, importoTotale, stato, segnalazioni);
   }
 
-  public static FlussoRendicontazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static FlussoRendicontazioneIndex parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, FlussoRendicontazioneIndex.class);
   }
 
@@ -274,7 +272,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class FlussoRendicontazioneIndex {\n");
-    
+
     sb.append("    idFlusso: ").append(toIndentedString(idFlusso)).append("\n");
     sb.append("    dataFlusso: ").append(toIndentedString(dataFlusso)).append("\n");
     sb.append("    trn: ").append(toIndentedString(trn)).append("\n");

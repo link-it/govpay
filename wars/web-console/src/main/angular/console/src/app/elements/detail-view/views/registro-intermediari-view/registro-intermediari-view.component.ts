@@ -65,6 +65,9 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
       if(this.json.servizioPagoPa.urlAvvisatura && UtilService.TEMPORARY_DEPRECATED_CODE) {
         _dettaglio.connettoriSoap.push(new Dato({label: Voce.SERVIZIO_AVVISATURA, value: this.json.servizioPagoPa.urlAvvisatura}));
       }
+      if (this.json.servizioPagoPa.subscriptionKey) {
+        _dettaglio.connettoriSoap.push(new Dato({ label: Voce.OCP_APIM_SUBSCRIPTION_KEY, value: this.json.servizioPagoPa.subscriptionKey }));
+      }
       if(this.json.servizioPagoPa.auth) {
         if(this.json.servizioPagoPa.auth.username) {
           _dettaglio.connettoriSoap.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.BASIC }));
@@ -126,8 +129,10 @@ export class RegistroIntermediariViewComponent implements IModalDialog, OnInit, 
   protected mapNewItem(item: any): Standard {
     let _std = new Standard();
     let _st = Dato.arraysToDato(
-      [ Voce.ABILITATO ],
-      [ UtilService.defaultDisplay({ value: UtilService.ABILITA[(item.abilitato).toString()] }) ],
+      [ Voce.VERSIONE, Voce.ABILITATO ],
+      [
+        UtilService.defaultDisplay({ value: item.versione }),
+        UtilService.defaultDisplay({ value: UtilService.ABILITA[(item.abilitato).toString()] }) ],
       ', '
     );
     _std.titolo = new Dato({ label: Voce.ID_STAZIONE+': ', value: item.idStazione });

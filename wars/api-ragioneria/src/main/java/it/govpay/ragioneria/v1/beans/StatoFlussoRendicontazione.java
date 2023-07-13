@@ -12,20 +12,20 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Stato del flusso di rendicontazione
  */
 public enum StatoFlussoRendicontazione {
-  
-  
-  
-  
+
+
+
+
   ACQUISITO("Acquisito"),
-  
-  
+
+
   ANOMALO("Anomalo"),
-  
-  
+
+
   RIFIUTATO("Rifiutato");
-  
-  
-  
+
+
+
 
   private String value;
 

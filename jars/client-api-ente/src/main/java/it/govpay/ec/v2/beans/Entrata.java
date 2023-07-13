@@ -7,6 +7,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 /**
   * Definisce i dettagli di una entrata.
@@ -14,13 +15,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description="Definisce i dettagli di una entrata.")
 public class Entrata  implements OneOfTipoRiferimentoVocePendenza  {
   
-  @Schema(example = "IT60X0542811101000000123456", required = true, description = "")
+  @Schema(example = "IT60X0542811101000000123456", requiredMode = RequiredMode.REQUIRED, description = "")
   private String ibanAccredito = null;
   
   @Schema(example = "IT60X0542811101000000123456", description = "")
   private String ibanAppoggio = null;
   
-  @Schema(example = "9/3321", required = true, description = "Tassonomia pagoPA")
+  @Schema(example = "9/3321", requiredMode = RequiredMode.REQUIRED, description = "Tassonomia pagoPA")
  /**
    * Tassonomia pagoPA  
   **/

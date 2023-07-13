@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -335,6 +336,32 @@ public class IncassiBD extends BasicBD {
 			}
 			
 			return incassoLst;
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+	
+	public long countRiconciliazioniDaAcquisire() throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+			
+			IExpression exp = this.getIncassoService().newExpression();
+			exp.lessThan(it.govpay.orm.Incasso.model().DATA_ORA_INCASSO, new Date());
+			exp.equals(it.govpay.orm.Incasso.model().STATO, it.govpay.model.Incasso.StatoIncasso.NUOVO.toString());
+			
+			NonNegativeNumber count = this.getIncassoService().count(exp);
+			
+			return count != null ? count.longValue(): 0l;
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {

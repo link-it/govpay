@@ -61,6 +61,13 @@
         <input matInput [placeholder]="_voce.WEB_SITE" formControlName="web_ctrl" autocomplete="off">
       </mat-form-field>
       <div class="row">
+        <mat-form-field class="col-12 col-sm-6" color="accent" [formGroup]="fGroup">
+          <mat-select [placeholder]="_voce.TASSONOMIA_PAGO_PA" formControlName="tassonomiaPagoPA_ctrl">
+            <mat-option *ngFor="let _tass of _tassonomiePagoPA" [value]="_tass.value">{{_tass.label}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="row">
         <div class="col-12 col-sm-6 mb-3 mb-sm-0" [formGroup]="fGroup">
           <mat-slide-toggle formControlName="abilita_ctrl" color="accent">{{_voce.ABILITATO}}</mat-slide-toggle>
         </div>

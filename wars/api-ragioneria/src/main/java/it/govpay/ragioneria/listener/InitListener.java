@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -33,7 +33,6 @@ import org.openspcoop2.utils.service.context.MD5Constants;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
 
-import it.govpay.core.utils.EventiUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.InitConstants;
@@ -57,17 +56,16 @@ public class InitListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent sce) {
 		// Commit id
 		String commit = (InitConstants.GOVPAY_BUILD_NUMBER.length() > 7) ? InitConstants.GOVPAY_BUILD_NUMBER.substring(0, 7) : InitConstants.GOVPAY_BUILD_NUMBER;
-		
+
 		InputStream govpayPropertiesIS = InitListener.class.getResourceAsStream(GovpayConfig.PROPERTIES_FILE);
 		URL log4j2URL = InitListener.class.getResource(GovpayConfig.LOG4J2_XML_FILE);
 		InputStream msgDiagnosticiIS = InitListener.class.getResourceAsStream(GovpayConfig.MSG_DIAGNOSTICI_PROPERTIES_FILE);
-		InputStream mappingTipiEventoPropertiesIS = InitListener.class.getResourceAsStream(EventiUtils.MAPPING_TIPI_EVENTO_PROPERTIES_FILE);
 		InputStream mappingSeveritaErroriPropertiesIS = InitListener.class.getResourceAsStream(SeveritaProperties.MAPPING_SEVERITA_ERRORI_PROPERTIES_FILE);
 		InputStream avvisiLabelPropertiesIS = InitListener.class.getResourceAsStream(LabelAvvisiProperties.PROPERTIES_FILE);
-		IContext ctx = StartupUtils.startup(log, warName, InitConstants.GOVPAY_VERSION, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, mappingTipiEventoPropertiesIS, tipoServizioGovpay, mappingSeveritaErroriPropertiesIS, avvisiLabelPropertiesIS);
-		
+		IContext ctx = StartupUtils.startup(log, warName, InitConstants.GOVPAY_VERSION, commit, govpayPropertiesIS, log4j2URL, msgDiagnosticiIS, tipoServizioGovpay, mappingSeveritaErroriPropertiesIS, avvisiLabelPropertiesIS);
+
 		try {
-			log = LoggerWrapperFactory.getLogger("boot");	
+			log = LoggerWrapperFactory.getLogger("boot");
 			StartupUtils.startupServices(log, warName, InitConstants.GOVPAY_VERSION, commit, ctx, dominioAnagraficaManager, GovpayConfig.getInstance());
 		} catch (RuntimeException e) {
 			log.error("Inizializzazione fallita", e);
@@ -85,7 +83,7 @@ public class InitListener implements ServletContextListener {
 				log.error("Errore durante il log dell'operazione: "+e1.getMessage(), e1);
 			}
 			throw new RuntimeException("Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" fallita.", e);
-		} 
+		}
 
 		try {
 			ctx.getApplicationLogger().log();
@@ -93,7 +91,7 @@ public class InitListener implements ServletContextListener {
 			log.error("Errore durante il log dell'operazione: "+e.getMessage(), e);
 		}
 
-		log.info("Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completata con successo."); 
+		log.info("Inizializzazione "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completata con successo.");
 		initialized = true;
 	}
 
@@ -104,13 +102,13 @@ public class InitListener implements ServletContextListener {
 		String commit = (InitConstants.GOVPAY_BUILD_NUMBER.length() > 7) ? InitConstants.GOVPAY_BUILD_NUMBER.substring(0, 7) : InitConstants.GOVPAY_BUILD_NUMBER;
 		MDC.put(MD5Constants.OPERATION_ID, "Shutdown");
 		MDC.put(MD5Constants.TRANSACTION_ID, UUID.randomUUID().toString() );
-		
+
 		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" in corso...");
-		
+
 //		log.info("De-registrazione delle cache ...");
 //		AnagraficaManager.unregister();
 //		log.info("De-registrazione delle cache completato");
-//		
+//
 //		log.info("Shutdown del Connection Manager ...");
 //		try {
 //			ConnectionManager.shutdown();
@@ -118,7 +116,7 @@ public class InitListener implements ServletContextListener {
 //		} catch (Exception e) {
 //			log.warn("Errore nello shutdown del Connection Manager: " + e);
 //		}
-		
+
 		log.info("Shutdown "+StartupUtils.getGovpayVersion(warName, InitConstants.GOVPAY_VERSION, commit)+" completato.");
 	}
 }

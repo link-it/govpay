@@ -26,7 +26,7 @@ public class Utenza extends BasicModel {
 	protected String password;
 	
 	public void removeIdDominiUo(Long idDominio) {
-		if(this.idDominiUo != null & !this.idDominiUo.isEmpty()) {
+		if(this.idDominiUo != null && !this.idDominiUo.isEmpty()) {
 			List<IdUnitaOperativa>  toRemove = new ArrayList<IdUnitaOperativa>();
 			for (IdUnitaOperativa idUnitaOperativa : idDominiUo) {
 				if(idUnitaOperativa.getIdDominio() != null && idUnitaOperativa.getIdDominio().longValue() == idDominio.longValue()) {
@@ -40,7 +40,7 @@ public class Utenza extends BasicModel {
 	}
 	
 	public void removeIdDominiUo(Long idDominio, Long idUo) {
-		if(this.idDominiUo != null & !this.idDominiUo.isEmpty()) {
+		if(this.idDominiUo != null && !this.idDominiUo.isEmpty()) {
 			List<IdUnitaOperativa>  toRemove = new ArrayList<IdUnitaOperativa>();
 			for (IdUnitaOperativa idUnitaOperativa : idDominiUo) {
 				if(idUnitaOperativa.getIdDominio() != null && idUnitaOperativa.getIdDominio().longValue() == idDominio.longValue() && 

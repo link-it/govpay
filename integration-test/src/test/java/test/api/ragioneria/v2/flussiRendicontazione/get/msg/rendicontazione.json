@@ -39,7 +39,8 @@
 			"tassonomiaAvviso":"##string",
 			"direzione":"##string",
 			"divisione":"##string",
-			"UUID":"#string"
+			"UUID":"#string",
+   			"allegati": "##[]"
 				}
 			},
 	"riconciliazione":"##string"

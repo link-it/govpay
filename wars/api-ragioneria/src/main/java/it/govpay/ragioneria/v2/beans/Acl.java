@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
@@ -16,19 +14,19 @@ import it.govpay.core.beans.JSONSerializable;
 "autorizzazioni",
 })
 public class Acl extends JSONSerializable {
-  
+
   @JsonProperty("ruolo")
   private String ruolo = null;
-  
+
   @JsonProperty("principal")
   private String principal = null;
-  
+
   @JsonProperty("servizio")
   private TipoServizio servizio = null;
-  
+
   @JsonProperty("autorizzazioni")
   private List<String> autorizzazioni = new ArrayList<>();
-  
+
   /**
    * ruolo a cui si applica l'acl
    **/
@@ -111,7 +109,7 @@ public class Acl extends JSONSerializable {
     return Objects.hash(ruolo, principal, servizio, autorizzazioni);
   }
 
-  public static Acl parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Acl parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, Acl.class);
   }
 
@@ -124,7 +122,7 @@ public class Acl extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Acl {\n");
-    
+
     sb.append("    ruolo: ").append(toIndentedString(ruolo)).append("\n");
     sb.append("    principal: ").append(toIndentedString(principal)).append("\n");
     sb.append("    servizio: ").append(toIndentedString(servizio)).append("\n");

@@ -9,32 +9,32 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets raggruppamentoStatistica
  */
 public enum RaggruppamentoStatistica {
-  
-  
-  
-  
+
+
+
+
   DOMINIO("DOMINIO"),
-  
-  
+
+
   UNITA_OPERATIVA("UNITA_OPERATIVA"),
-  
-  
+
+
   TIPO_PENDENZA("TIPO_PENDENZA"),
-  
-  
+
+
   DIVISIONE("DIVISIONE"),
-  
-  
+
+
   DIREZIONE("DIREZIONE"),
-  
-  
+
+
   TASSONOMIA("TASSONOMIA"),
-  
-  
+
+
   APPLICAZIONE("APPLICAZIONE");
-  
-  
-  
+
+
+
 
   private String value;
 

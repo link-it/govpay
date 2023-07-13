@@ -35,6 +35,7 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Incasso.StatoIncasso;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.ragioneria.v1.beans.Incasso;
 import it.govpay.ragioneria.v1.beans.IncassoIndex;
@@ -45,30 +46,30 @@ import it.govpay.ragioneria.v1.beans.converter.IncassiConverter;
 
 
 public class IncassiController extends BaseController {
-	
+
 	public IncassiController(String nomeServizio,Logger log) {
 		super(nomeServizio,log);
 	}
 
 
     public Response incassiGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String dataDa, String dataA, String idDominio, Boolean metadatiPaginazione, Boolean maxRisultati) {
-    	String methodName = "incassiGET";  
+    	String methodName = "incassiGET";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		String campi = null;
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
-			
+
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
-			
+
 			ListaIncassiDTO listaIncassoDTO = new ListaIncassiDTO(user);
-			
+
 			listaIncassoDTO.setLimit(risultatiPerPagina);
 			listaIncassoDTO.setPagina(pagina);
 			listaIncassoDTO.setIdDominio(idDominio);
-		
+
 			if(dataDa != null) {
 				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataDa, "dataDa");
 				listaIncassoDTO.setDataDa(dataDaDate);
@@ -78,54 +79,56 @@ public class IncassiController extends BaseController {
 				listaIncassoDTO.setDataA(dataADate);
 			}
 			
-			// filtro sull'applicazione			
-			listaIncassoDTO.setIdA2A(AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione()); 
-			
+			listaIncassoDTO.setStato(StatoIncasso.ACQUISITO);
+
+			// filtro sull'applicazione
+			listaIncassoDTO.setIdA2A(AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione());
+
 			// autorizzazione sui domini
-			List<String> domini = AuthorizationManager.getDominiAutorizzati(user); 
+			List<String> domini = AuthorizationManager.getDominiAutorizzati(user);
 			listaIncassoDTO.setCodDomini(domini);
-			
+
 			listaIncassoDTO.setEseguiCount(metadatiPaginazione);
 			listaIncassoDTO.setEseguiCountConLimit(maxRisultati);
-			
+
 			IncassiDAO incassiDAO = new IncassiDAO();
 			ListaIncassiDTOResponse listaIncassiDTOResponse = domini != null ? incassiDAO.listaIncassi(listaIncassoDTO) : new ListaIncassiDTOResponse(0L, new ArrayList<>());
-			
+
 			// CONVERT TO JSON DELLA RISPOSTA
-			
+
 			List<IncassoIndex> listaIncassi = new ArrayList<>();
 			for(it.govpay.bd.model.Incasso i : listaIncassiDTOResponse.getResults()) {
 				listaIncassi.add(IncassiConverter.toRsIndexModel(i));
 			}
-			
+
 			ListaIncassiIndex response = new ListaIncassiIndex(listaIncassi, this.getServicePath(uriInfo),
 					listaIncassiDTOResponse.getTotalResults(), pagina, risultatiPerPagina);
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(campi)),transactionId).build();
-			
+
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
 
 
     public Response incassiIdDominioIdIncassoGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String idIncasso) {
-    	String methodName = "incassiIdDominioIdIncassoGET";  
+    	String methodName = "incassiIdDominioIdIncassoGET";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.LETTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
-			
+
 			// Parametri - > DTO Input
-			
+
 			LeggiIncassoDTO leggiIncassoDTO = new LeggiIncassoDTO(user);
 			leggiIncassoDTO.setIdDominio(idDominio);
 			leggiIncassoDTO.setIdRiconciliazione(idIncasso);
@@ -133,65 +136,65 @@ public class IncassiController extends BaseController {
 			if(!AuthorizationManager.isDominioAuthorized(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio())) {
 				throw AuthorizationManager.toNotAuthorizedException(leggiIncassoDTO.getUser(), leggiIncassoDTO.getIdDominio(), null);
 			}
-			
+
 			IncassiDAO incassiDAO = new IncassiDAO();
-			
+
 			// CHIAMATA AL DAO
-			
+
 			LeggiIncassoDTOResponse leggiIncassoDTOResponse = incassiDAO.leggiIncasso(leggiIncassoDTO);
-			
-			// filtro sull'applicazione			
+
+			// filtro sull'applicazione
 			if(!AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione().equals(leggiIncassoDTOResponse.getIncasso().getApplicazione(configWrapper).getCodApplicazione())) {
 				throw AuthorizationManager.toNotAuthorizedException(user);
 			}
-			
+
 			// CONVERT TO JSON DELLA RISPOSTA
-			
+
 			Incasso response = IncassiConverter.toRsModel(leggiIncassoDTOResponse.getIncasso());
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
-			
+
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
 
     public Response incassiIdDominioPOST(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, java.io.InputStream is) {
-    	String methodName = "incassiIdDominioPOST"; 
+    	String methodName = "incassiIdDominioPOST";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try(ByteArrayOutputStream baos = new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
-			
+
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_RAGIONERIA), Arrays.asList(Diritti.SCRITTURA));
 
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 			validatoreId.validaIdDominio("idDominio", idDominio);
-			
+
 			IncassoPost incasso = JSONSerializable.parse(baos.toString(), IncassoPost.class);
 			incasso.validate();
-			
+
 			RichiestaIncassoDTO richiestaIncassoDTO = IncassiConverter.toRichiestaIncassoDTO(incasso, idDominio, user);
-			
+
 			IncassiDAO incassiDAO = new IncassiDAO();
-			
+
 			RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = incassiDAO.richiestaIncasso(richiestaIncassoDTO);
-			
+
 			Incasso incassoExt = IncassiConverter.toRsModel(richiestaIncassoDTOResponse.getIncasso());
-			
+
 			Status responseStatus = richiestaIncassoDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
-			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(responseStatus).entity(incassoExt.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
 }

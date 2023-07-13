@@ -8,13 +8,13 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum LinguaSecondaria {
   FALSE("false"),
-  
+
   DE("de"),
-  
+
   EN("en"),
-  
+
   FR("fr"),
-  
+
   SL("sl");
 
   private String value;
@@ -38,5 +38,5 @@ public enum LinguaSecondaria {
     }
     return null;
   }
-  
+
 }

@@ -2,11 +2,11 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
@@ -15,13 +15,13 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "scritture",
 })
 public class GdeInterfaccia extends JSONSerializable implements IValidable{
-  
+
   @JsonProperty("letture")
   private GdeEvento letture = null;
-  
+
   @JsonProperty("scritture")
   private GdeEvento scritture = null;
-  
+
   /**
    **/
   public GdeInterfaccia letture(GdeEvento letture) {
@@ -69,8 +69,8 @@ public class GdeInterfaccia extends JSONSerializable implements IValidable{
   public int hashCode() {
     return Objects.hash(letture, scritture);
   }
-  
-  public static GdeInterfaccia parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+
+  public static GdeInterfaccia parse(String json) throws IOException {
 	    return parse(json, GdeInterfaccia.class);
   }
 
@@ -83,7 +83,7 @@ public class GdeInterfaccia extends JSONSerializable implements IValidable{
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class GdeInterfaccia {\n");
-    
+
     sb.append("    letture: ").append(toIndentedString(letture)).append("\n");
     sb.append("    scritture: ").append(toIndentedString(scritture)).append("\n");
     sb.append("}");
@@ -100,7 +100,7 @@ public class GdeInterfaccia extends JSONSerializable implements IValidable{
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
  	public void validate() throws ValidationException {
 	  ValidatorFactory vf = ValidatorFactory.newInstance();

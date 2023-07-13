@@ -3,8 +3,6 @@ package it.govpay.pendenze.v1.beans;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 
@@ -18,27 +16,27 @@ import it.govpay.core.beans.JSONSerializable;
 "pendenza",
 })
 public class RppIndex extends JSONSerializable {
-  
+
   @JsonProperty("stato")
   private String stato = null;
-  
+
   @JsonProperty("dettaglioStato")
   private String dettaglioStato = null;
-  
+
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
-  
+
   @JsonProperty("rpt")
   @JsonRawValue
   private String rpt = null;
-  
+
   @JsonProperty("rt")
   @JsonRawValue
   private String rt = null;
-  
+
   @JsonProperty("pendenza")
   private String pendenza = null;
-  
+
   /**
    * Stato della richiesta di pagamento sulla piattaforma PagoPA.
    **/
@@ -156,7 +154,7 @@ public class RppIndex extends JSONSerializable {
     return Objects.hash(this.stato, this.dettaglioStato, this.segnalazioni, this.rpt, this.rt, this.pendenza);
   }
 
-  public static RppIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static RppIndex parse(String json) throws it.govpay.core.exceptions.IOException {
     return parse(json, RppIndex.class);
   }
 
@@ -169,7 +167,7 @@ public class RppIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RppIndex {\n");
-    
+
     sb.append("    stato: ").append(this.toIndentedString(this.stato)).append("\n");
     sb.append("    dettaglioStato: ").append(this.toIndentedString(this.dettaglioStato)).append("\n");
     sb.append("    segnalazioni: ").append(this.toIndentedString(this.segnalazioni)).append("\n");

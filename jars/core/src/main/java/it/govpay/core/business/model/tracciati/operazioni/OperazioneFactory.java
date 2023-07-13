@@ -27,7 +27,6 @@ import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
@@ -49,6 +48,7 @@ import it.govpay.core.business.model.tracciati.CostantiCaricamento;
 import it.govpay.core.business.model.tracciati.TrasformazioneDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -181,7 +181,7 @@ public class OperazioneFactory {
 			
 			new PendenzaPostValidator(pendenzaPost).validate();
 			
-			it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+			it.govpay.core.beans.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 			
 			// 12/12/2019 codDominio e codTipoVersamento sono settati nella trasformazione
 			// inserisco l'identificativo del dominio 
@@ -328,7 +328,7 @@ public class OperazioneFactory {
 			break;
 		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoEnum.PAGATO;
 			break;
-		case NON_ESEGUITO: if(versamentoModel.getDataScadenza() != null && DateUtils.isDataDecorsa(versamentoModel.getDataScadenza())) {statoPendenza = StatoEnum.SCADUTO;} else { statoPendenza = StatoEnum.NON_PAGATO;}
+		case NON_ESEGUITO: if(versamentoModel.getDataScadenza() != null && DateUtils.isDataDecorsa(versamentoModel.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {statoPendenza = StatoEnum.SCADUTO;} else { statoPendenza = StatoEnum.NON_PAGATO;}
 			break;
 		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoEnum.PAGATO;
 			break;
@@ -450,7 +450,7 @@ public class OperazioneFactory {
 				
 				manager.addPendenza(threadName, pendenzaPost.getIdA2A(), pendenzaPost.getIdPendenza()); 
 				
-				it.govpay.core.dao.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+				it.govpay.core.beans.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 				
 				// 12/12/2019 codDominio e codTipoVersamento sono settati nella trasformazione
 				// inserisco l'identificativo del dominio 

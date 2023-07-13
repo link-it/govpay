@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UtilService } from '../../../../../../services/util.service';
 import { IFormComponent } from '../../../../../../classes/interfaces/IFormComponent';
 
 @Component({
@@ -13,11 +14,16 @@ export class StazioneViewComponent implements IFormComponent, OnInit, AfterViewI
   @Input() json: any;
   @Input() parent: any;
 
-  constructor() {}
+  protected versioni: any[];
+
+  constructor(public us: UtilService) {}
 
   ngOnInit() {
+    this.versioni = this.us.versioniStazione();
+
     this.fGroup.addControl('idStazione_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('password_ctrl', new FormControl('', Validators.required));
+    this.fGroup.addControl('versione_ctrl', new FormControl('', Validators.required));
     this.fGroup.addControl('abilita_ctrl', new FormControl(false));
   }
 
@@ -32,6 +38,7 @@ export class StazioneViewComponent implements IFormComponent, OnInit, AfterViewI
         }
         this.fGroup.controls['idStazione_ctrl'].setValue((idStazione)?idStazione:'');
         this.fGroup.controls['password_ctrl'].setValue((this.json.password)?this.json.password:'');
+        this.fGroup.controls['versione_ctrl'].setValue((this.json.password)?this.json.versione:'');
         this.fGroup.controls['abilita_ctrl'].setValue((this.json.abilitato)?this.json.abilitato:false);
       }
     });
@@ -47,10 +54,11 @@ export class StazioneViewComponent implements IFormComponent, OnInit, AfterViewI
     if(!this.fGroup.controls['idStazione_ctrl'].disabled){
       _json.idStazione = this.parent.json.idIntermediario + '_' + _info['idStazione_ctrl'];
     } else {
-     _json.idStazione = this.json.idStazione;
+      _json.idStazione = this.json.idStazione;
     }
     _json.abilitato = _info['abilita_ctrl'];
     _json.password = (_info['password_ctrl'])?_info['password_ctrl']:null;
+    _json.versione = (_info['versione_ctrl'])?_info['versione_ctrl']:null;
 
     return _json;
   }

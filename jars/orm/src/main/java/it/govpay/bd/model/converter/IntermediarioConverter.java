@@ -22,6 +22,7 @@ package it.govpay.bd.model.converter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.certificate.CertificateUtils;
 import org.openspcoop2.utils.certificate.PrincipalType;
 
@@ -67,7 +68,7 @@ public class IntermediarioConverter {
 		
 		try {
 			vo.setPrincipal(CertificateUtils.formatPrincipal(dto.getPrincipal(), PrincipalType.subject));
-		} catch (Exception e) {
+		} catch (UtilsException e) {
 			vo.setPrincipal(dto.getPrincipal());
 		}
 		vo.setPrincipalOriginale(dto.getPrincipalOriginale());

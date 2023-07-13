@@ -3,12 +3,12 @@ package it.govpay.pagamento.v1.beans;
 import it.govpay.core.beans.JSONSerializable;
 
 public class PagamentiPortaleResponseOk extends JSONSerializable {
-	
+
 	private String id;
 	private String location;
 	private String redirect;
 	private String idSession;
-	
+
 	public String getIdSession() {
 		return this.idSession;
 	}

@@ -1,8 +1,8 @@
 package it.govpay.pendenze.v2.beans.converter;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,22 +10,28 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
+import it.govpay.core.utils.DateUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
+import it.govpay.pendenze.v2.Allegati;
+import it.govpay.pendenze.v2.beans.AllegatoPendenza;
 import it.govpay.pendenze.v2.beans.Avviso;
 import it.govpay.pendenze.v2.beans.Documento;
 import it.govpay.pendenze.v2.beans.LinguaSecondaria;
 import it.govpay.pendenze.v2.beans.NuovaPendenza;
 import it.govpay.pendenze.v2.beans.NuovaVocePendenza;
+import it.govpay.pendenze.v2.beans.NuovoAllegatoPendenza;
 import it.govpay.pendenze.v2.beans.Pendenza;
 import it.govpay.pendenze.v2.beans.PendenzaIndex;
 import it.govpay.pendenze.v2.beans.ProprietaPendenza;
@@ -46,7 +52,7 @@ import it.govpay.pendenze.v2.beans.VocePendenza.TipoBolloEnum;
 
 public class PendenzeConverter {
 
-	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, List<Rpt> rpts) throws ServiceException, IOException, ValidationException {
+	public static Pendenza toRsModel(it.govpay.bd.model.Versamento versamento, List<Rpt> rpts, List<Allegato> allegati) throws ServiceException, IOException, ValidationException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Pendenza rsModel = new Pendenza();
 
@@ -63,6 +69,7 @@ public class PendenzeConverter {
 			}
 
 		rsModel.setDataCaricamento(versamento.getDataCreazione());
+		rsModel.setDataPagamento(versamento.getDataPagamento());
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
 		rsModel.setDominio(DominiConverter.toRsModel(versamento.getDominio(configWrapper)));
@@ -82,17 +89,29 @@ public class PendenzeConverter {
 		switch(versamento.getStatoVersamento()) {
 		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
 		break;
+		case ESEGUITO_SENZA_RPT:
 		case ESEGUITO: statoPendenza = StatoPendenza.ESEGUITA;
+			statoPendenza = StatoPendenza.ESEGUITA;
+			if(versamento.getStatoPagamento() != null) {
+				switch (versamento.getStatoPagamento()) {
+				case INCASSATO:
+					statoPendenza = StatoPendenza.INCASSATA;
+					break;
+				case NON_PAGATO:
+				case PAGATO:
+				default:
+					break;
+				}
+			}
 		break;
 		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoPendenza.ESEGUITA;
 		break;
-		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
 		break;
 		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
 		break;
 		default:
 			break;
-
 		}
 		
 		if(versamento.isAnomalo())
@@ -146,6 +165,8 @@ public class PendenzeConverter {
 		
 		rsModel.setUUID(versamento.getIdSessione());
 		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
+		
+		rsModel.setAllegati(toAllegatiRsModel(allegati));
 
 		return rsModel;
 	}
@@ -173,9 +194,10 @@ public class PendenzeConverter {
 		rsModel.setIdentificativo(documento.getCodDocumento());
 		if(versamento.getNumeroRata() != null)
 			rsModel.setRata(new BigDecimal(versamento.getNumeroRata()));
-		if(versamento.getTipoSoglia() != null && versamento.getGiorniSoglia() != null) {
+		if(versamento.getTipoSoglia() != null) {
 			VincoloPagamento soglia = new VincoloPagamento();
-			soglia.setGiorni(new BigDecimal(versamento.getGiorniSoglia()));
+			if(versamento.getGiorniSoglia() != null)
+				soglia.setGiorni(new BigDecimal(versamento.getGiorniSoglia()));
 			
 			switch(versamento.getTipoSoglia()) {
 			case ENTRO:
@@ -183,6 +205,12 @@ public class PendenzeConverter {
 				break;
 			case OLTRE:
 				soglia.setTipo(TipoSogliaVincoloPagamento.OLTRE.toString());
+				break;
+			case RIDOTTO:
+				soglia.setTipo(TipoSogliaVincoloPagamento.RIDOTTO.toString());
+				break;
+			case SCONTATO:
+				soglia.setTipo(TipoSogliaVincoloPagamento.SCONTATO.toString());
 				break;
 			}
 			
@@ -209,6 +237,7 @@ public class PendenzeConverter {
 			}
 
 		rsModel.setDataCaricamento(versamento.getDataCreazione());
+		rsModel.setDataPagamento(versamento.getDataPagamento());
 		rsModel.setDataScadenza(versamento.getDataScadenza());
 		rsModel.setDataValidita(versamento.getDataValidita());
 		rsModel.setDominio(DominiConverter.toRsModel(versamento.getDominio(configWrapper)));
@@ -227,18 +256,29 @@ public class PendenzeConverter {
 
 		switch(versamento.getStatoVersamento()) {
 		case ANNULLATO: statoPendenza = StatoPendenza.ANNULLATA;
-		break;
+			break;
+		case ESEGUITO_SENZA_RPT:
 		case ESEGUITO: statoPendenza = StatoPendenza.ESEGUITA;
-		break;
+			if(versamento.getStatoPagamento() != null) {
+				switch (versamento.getStatoPagamento()) {
+				case INCASSATO:
+					statoPendenza = StatoPendenza.INCASSATA;
+					break;
+				case NON_PAGATO:
+				case PAGATO:
+				default:
+					break;
+				}
+			}
+			break;
 		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoPendenza.ESEGUITA;
-		break;
-		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
-		break;
+			break;
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {statoPendenza = StatoPendenza.SCADUTA;} else { statoPendenza = StatoPendenza.NON_ESEGUITA;}
+			break;
 		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoPendenza.ESEGUITA_PARZIALE;
-		break;
+			break;
 		default:
 			break;
-
 		}
 		
 		if(versamento.isAnomalo())
@@ -326,8 +366,8 @@ public class PendenzeConverter {
 		return rsModel;
 	}
 
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenza(NuovaPendenza pendenza, String ida2a, String idPendenza) throws ValidationException, ServiceException, GovPayException {
-		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
+	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenza(NuovaPendenza pendenza, String ida2a, String idPendenza) throws ValidationException, ServiceException, GovPayException, IOException {
+		it.govpay.core.beans.commons.Versamento versamento = new it.govpay.core.beans.commons.Versamento();
 
 		if(pendenza.getAnnoRiferimento() != null)
 			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
@@ -345,7 +385,7 @@ public class PendenzeConverter {
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 		versamento.setImportoTotale(pendenza.getImporto());
 		if(pendenza.getDatiAllegati() != null)
-			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati(),null));
+			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati()));
 
 		if(pendenza.getTassonomiaAvviso() != null) {
 			// valore tassonomia avviso non valido
@@ -368,7 +408,7 @@ public class PendenzeConverter {
 		versamento.setDivisione(pendenza.getDivisione()); 
 		
 		if(pendenza.getDocumento() != null) {
-			it.govpay.core.dao.commons.Versamento.Documento documento = new it.govpay.core.dao.commons.Versamento.Documento();
+			it.govpay.core.beans.commons.Versamento.Documento documento = new it.govpay.core.beans.commons.Versamento.Documento();
 			
 			documento.setCodDocumento(pendenza.getDocumento().getIdentificativo());
 			if(pendenza.getDocumento().getRata() != null)
@@ -380,7 +420,8 @@ public class PendenzeConverter {
 								+ pendenza.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
 				}
 				
-				documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
+				if(pendenza.getDocumento().getSoglia().getGiorni() != null)
+					documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
 				documento.setTipoSoglia(pendenza.getDocumento().getSoglia().getTipo());
 			}
 			
@@ -394,20 +435,22 @@ public class PendenzeConverter {
 		
 		versamento.setProprieta(PendenzeConverter.toProprietaPendenzaDTO(pendenza.getProprieta()));
 		
+		versamento.setAllegati(toAllegatiPendenzaDTO(pendenza.getAllegati()));
+		
 		return versamento;
 	}
 
-	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.dao.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws ServiceException, GovPayException {
+	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.beans.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws ServiceException, GovPayException, IOException {
 
 		if(voci != null && voci.size() > 0) {
 			for (NuovaVocePendenza vocePendenza : voci) {
-				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = new it.govpay.core.dao.commons.Versamento.SingoloVersamento();
+				it.govpay.core.beans.commons.Versamento.SingoloVersamento sv = new it.govpay.core.beans.commons.Versamento.SingoloVersamento();
 
 				//sv.setCodTributo(value); ??
 
 				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
 				if(vocePendenza.getDatiAllegati() != null)
-					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati(),null));
+					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati()));
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
 				sv.setImporto(vocePendenza.getImporto());
@@ -415,7 +458,7 @@ public class PendenzeConverter {
 
 				// Definisce i dati di un bollo telematico
 				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
-					it.govpay.core.dao.commons.Versamento.SingoloVersamento.BolloTelematico bollo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.BolloTelematico();
+					it.govpay.core.beans.commons.Versamento.SingoloVersamento.BolloTelematico bollo = new it.govpay.core.beans.commons.Versamento.SingoloVersamento.BolloTelematico();
 					bollo.setHash(vocePendenza.getHashDocumento());
 					bollo.setProvincia(vocePendenza.getProvinciaResidenza());
 					bollo.setTipo(vocePendenza.getTipoBollo().toString());
@@ -424,11 +467,11 @@ public class PendenzeConverter {
 					sv.setCodTributo(vocePendenza.getCodEntrata());
 
 				} else { // Definisce i dettagli di incasso della singola entrata.
-					it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo tributo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo();
+					it.govpay.core.beans.commons.Versamento.SingoloVersamento.Tributo tributo = new it.govpay.core.beans.commons.Versamento.SingoloVersamento.Tributo();
 					tributo.setCodContabilita(vocePendenza.getCodiceContabilita());
 					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
 					tributo.setIbanAppoggio(vocePendenza.getIbanAppoggio());
-					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
+					tributo.setTipoContabilita(it.govpay.core.beans.commons.Versamento.SingoloVersamento.TipoContabilita.valueOf(vocePendenza.getTipoContabilita().name()));
 					sv.setTributo(tributo);
 				}
 				
@@ -452,10 +495,10 @@ public class PendenzeConverter {
 		}
 	}
 
-	public static it.govpay.core.dao.commons.Anagrafica toAnagraficaCommons(Soggetto anagraficaRest) {
-		it.govpay.core.dao.commons.Anagrafica anagraficaCommons = null;
+	public static it.govpay.core.beans.commons.Anagrafica toAnagraficaCommons(Soggetto anagraficaRest) {
+		it.govpay.core.beans.commons.Anagrafica anagraficaCommons = null;
 		if(anagraficaRest != null) {
-			anagraficaCommons = new it.govpay.core.dao.commons.Anagrafica();
+			anagraficaCommons = new it.govpay.core.beans.commons.Anagrafica();
 			anagraficaCommons.setCap(anagraficaRest.getCap());
 			anagraficaCommons.setCellulare(anagraficaRest.getCellulare());
 			anagraficaCommons.setCivico(anagraficaRest.getCivico());
@@ -501,7 +544,7 @@ public class PendenzeConverter {
 			break;
 		case ESEGUITO_ALTRO_CANALE:  statoPendenza = StatoAvviso.DUPLICATA;
 			break;
-		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {statoPendenza = StatoAvviso.SCADUTA;} else { statoPendenza = StatoAvviso.NON_ESEGUITA;}
+		case NON_ESEGUITO: if(versamento.getDataScadenza() != null && DateUtils.isDataDecorsa(versamento.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {statoPendenza = StatoAvviso.SCADUTA;} else { statoPendenza = StatoAvviso.NON_ESEGUITA;}
 			break;
 		case PARZIALMENTE_ESEGUITO:  statoPendenza = StatoAvviso.DUPLICATA;
 			break;
@@ -605,5 +648,47 @@ public class PendenzeConverter {
 		}
 		
 		return rsModel;
+	}
+	
+	private static List<AllegatoPendenza> toAllegatiRsModel(List<Allegato> allegati) { 
+		List<AllegatoPendenza> rsModel = null;
+		
+		if(allegati != null && allegati.size() > 0) {
+			rsModel = new ArrayList<>();
+			
+			for (Allegato allegato : allegati) {
+				AllegatoPendenza allegatoRsModel = new AllegatoPendenza();
+				
+				allegatoRsModel.setNome(allegato.getNome());
+				allegatoRsModel.setTipo(allegato.getTipo());
+				allegatoRsModel.setDescrizione(allegato.getDescrizione());
+				allegatoRsModel.setContenuto(MessageFormat.format(Allegati.DETTAGLIO_PATH_PATTERN, allegato.getId()));
+				
+				rsModel.add(allegatoRsModel);
+			}
+		}
+		
+		return rsModel;
+	}
+	
+	private static List<it.govpay.core.beans.commons.Versamento.AllegatoPendenza> toAllegatiPendenzaDTO(List<NuovoAllegatoPendenza> allegati) {
+		List<it.govpay.core.beans.commons.Versamento.AllegatoPendenza> allegatiDTO = null;
+		
+		if(allegati != null && allegati.size() > 0) {
+			allegatiDTO = new ArrayList<>();
+			
+			for (NuovoAllegatoPendenza allegato : allegati) {
+				it.govpay.core.beans.commons.Versamento.AllegatoPendenza allegatoDTO = new it.govpay.core.beans.commons.Versamento.AllegatoPendenza();
+				
+				allegatoDTO.setNome(allegato.getNome());
+				allegatoDTO.setTipo(allegato.getTipo());
+				allegatoDTO.setDescrizione(allegato.getDescrizione());
+				allegatoDTO.setContenuto(allegato.getContenuto());
+				
+				allegatiDTO.add(allegatoDTO);
+			}
+		}
+		
+		return allegatiDTO;
 	}
 }

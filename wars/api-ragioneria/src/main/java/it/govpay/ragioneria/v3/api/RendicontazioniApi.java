@@ -35,7 +35,7 @@ public interface RendicontazioniApi  {
     @Path("/flussiRendicontazione")
     @Produces({ "application/json" })
     @Operation(summary = "Elenco dei flussi di rendicontazione acquisite da pagoPa", tags={ "Rendicontazioni" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Lista dei flussi rendicontazione", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FlussiRendicontazione.class))),
         @ApiResponse(responseCode = "400", description = "Richiesta non correttamente formata", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
@@ -51,7 +51,7 @@ public interface RendicontazioniApi  {
     @Path("/flussiRendicontazione/{idDominio}/{idFlusso}")
     @Produces({ "application/xml", "application/json" })
     @Operation(summary = "Acquisizione di un flusso di rendicontazione", tags={ "Rendicontazioni" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Dettaglio della rendicontazione", content = @Content(mediaType = "application/xml", schema = @Schema(implementation = String.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
         @ApiResponse(responseCode = "403", description = "Richiesta non autorizzata"),
@@ -67,7 +67,7 @@ public interface RendicontazioniApi  {
     @Path("/flussiRendicontazione/{idDominio}/{idFlusso}/{dataOraFlusso}")
     @Produces({ "application/xml", "application/json" })
     @Operation(summary = "Acquisizione di un flusso di rendicontazione", tags={ "Rendicontazioni" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Dettaglio della rendicontazione", content = @Content(mediaType = "application/xml", schema = @Schema(implementation = String.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
         @ApiResponse(responseCode = "403", description = "Richiesta non autorizzata"),

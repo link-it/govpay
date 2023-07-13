@@ -6,10 +6,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "nome",
 "causale",
@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "dataNotificaAvviso",
 "dataPromemoriaScadenza",
 "proprieta",
+"allegati",
 "idA2A",
 "idPendenza",
 "tipoPendenza",
@@ -52,124 +53,127 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "pagamenti",
 })
 public class Pendenza extends it.govpay.core.beans.JSONSerializable {
-  
+
   @JsonProperty("nome")
   private String nome = null;
-  
+
   @JsonProperty("causale")
   private String causale = null;
-  
+
   @JsonProperty("soggettoPagatore")
   private Soggetto soggettoPagatore = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("numeroAvviso")
   private String numeroAvviso = null;
-  
+
   @JsonProperty("dataCaricamento")
   private Date dataCaricamento = null;
-  
+
   @JsonProperty("dataValidita")
   private Date dataValidita = null;
-  
+
   @JsonProperty("dataScadenza")
   private Date dataScadenza = null;
-  
+
   @JsonProperty("annoRiferimento")
   private BigDecimal annoRiferimento = null;
-  
+
   @JsonProperty("cartellaPagamento")
   private String cartellaPagamento = null;
-  
+
   @JsonProperty("datiAllegati")
   private Object datiAllegati = null;
-  
+
   @JsonProperty("tassonomia")
   private String tassonomia = null;
-  
+
   @JsonProperty("tassonomiaAvviso")
   private TassonomiaAvviso tassonomiaAvviso = null;
-  
+
   @JsonProperty("direzione")
   private String direzione = null;
-  
+
   @JsonProperty("divisione")
   private String divisione = null;
-  
+
   @JsonProperty("documento")
   private Documento documento = null;
-  
+
   @JsonProperty("dataNotificaAvviso")
   private Date dataNotificaAvviso = null;
-  
+
   @JsonProperty("dataPromemoriaScadenza")
   private Date dataPromemoriaScadenza = null;
-  
+
   @JsonProperty("proprieta")
   private ProprietaPendenza proprieta = null;
-  
+
+  @JsonProperty("allegati")
+  private List<AllegatoPendenza> allegati = null;
+
   @JsonProperty("idA2A")
   private String idA2A = null;
-  
+
   @JsonProperty("idPendenza")
   private String idPendenza = null;
-  
+
   @JsonProperty("tipoPendenza")
   private TipoPendenzaIndex tipoPendenza = null;
-  
+
   @JsonProperty("dominio")
   private DominioIndex dominio = null;
-  
+
   @JsonProperty("unitaOperativa")
   private UnitaOperativa unitaOperativa = null;
-  
+
   @JsonProperty("stato")
   private StatoPendenza stato = null;
-  
+
   @JsonProperty("descrizioneStato")
   private String descrizioneStato = null;
-  
+
   @JsonProperty("iuvAvviso")
   private String iuvAvviso = null;
-  
+
   @JsonProperty("dataUltimoAggiornamento")
   private Date dataUltimoAggiornamento = null;
-  
+
   @JsonProperty("dataPagamento")
   private Date dataPagamento = null;
-  
+
   @JsonProperty("importoPagato")
   private BigDecimal importoPagato = null;
-  
+
   @JsonProperty("importoIncassato")
   private BigDecimal importoIncassato = null;
-  
+
   @JsonProperty("iuvPagamento")
   private String iuvPagamento = null;
-  
+
   @JsonProperty("anomalo")
   private Boolean anomalo = null;
-  
+
   @JsonProperty("verificato")
   private Boolean verificato = null;
-  
+
   @JsonProperty("tipo")
   private TipoPendenzaTipologia tipo = null;
-  
+
   @JsonProperty("UUID")
   private String UUID = null;
-  
+
   @JsonProperty("voci")
   private List<VocePendenza> voci = new ArrayList<>();
-  
+
   @JsonProperty("rpp")
   private List<Rpp> rpp = new ArrayList<>();
-  
+
   @JsonProperty("pagamenti")
   private List<Pagamento> pagamenti = new ArrayList<>();
-  
+
   /**
    * Nome della pendenza da visualizzare sui portali di pagamento e console di gestione.
    **/
@@ -373,7 +377,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
       if(this.tassonomiaAvviso != null)
           return this.tassonomiaAvviso.toString();
     return null;
-  }	
+  }
   public void setTassonomiaAvviso(String tassonomiaAvviso) {
 	  if(tassonomiaAvviso != null)
 		 this.tassonomiaAvviso = TassonomiaAvviso.fromValue(tassonomiaAvviso);
@@ -482,6 +486,21 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   **/
+  public Pendenza allegati(List<AllegatoPendenza> allegati) {
+    this.allegati = allegati;
+    return this;
+  }
+
+  @JsonProperty("allegati")
+  public List<AllegatoPendenza> getAllegati() {
+    return allegati;
+  }
+  public void setAllegati(List<AllegatoPendenza> allegati) {
+    this.allegati = allegati;
+  }
+
+  /**
    * Identificativo del gestionale responsabile della pendenza
    **/
   public Pendenza idA2A(String idA2A) {
@@ -572,7 +591,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   public void setStato(StatoPendenza stato) {
     this.stato = stato;
   }
-  
+
   /**
    * Descrizione estesa dello stato di elaborazione della pendenza
    **/
@@ -694,7 +713,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("anomalo")
-  public Boolean Anomalo() {
+  public Boolean getAnomalo() {
     return anomalo;
   }
   public void setAnomalo(Boolean anomalo) {
@@ -710,7 +729,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("verificato")
-  public Boolean Verificato() {
+  public Boolean getVerificato() {
     return verificato;
   }
   public void setVerificato(Boolean verificato) {
@@ -821,6 +840,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(dataNotificaAvviso, pendenza.dataNotificaAvviso) &&
         Objects.equals(dataPromemoriaScadenza, pendenza.dataPromemoriaScadenza) &&
         Objects.equals(proprieta, pendenza.proprieta) &&
+        Objects.equals(allegati, pendenza.allegati) &&
         Objects.equals(idA2A, pendenza.idA2A) &&
         Objects.equals(idPendenza, pendenza.idPendenza) &&
         Objects.equals(tipoPendenza, pendenza.tipoPendenza) &&
@@ -845,10 +865,10 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, tipo, UUID, voci, rpp, pagamenti);
+    return Objects.hash(nome, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, documento, dataNotificaAvviso, dataPromemoriaScadenza, proprieta, allegati, idA2A, idPendenza, tipoPendenza, dominio, unitaOperativa, stato, descrizioneStato, iuvAvviso, dataUltimoAggiornamento, dataPagamento, importoPagato, importoIncassato, iuvPagamento, anomalo, verificato, tipo, UUID, voci, rpp, pagamenti);
   }
 
-  public static Pendenza parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Pendenza parse(String json) throws IOException {
     return parse(json, Pendenza.class);
   }
 
@@ -861,7 +881,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Pendenza {\n");
-    
+
     sb.append("    nome: ").append(toIndentedString(nome)).append("\n");
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
     sb.append("    soggettoPagatore: ").append(toIndentedString(soggettoPagatore)).append("\n");
@@ -881,6 +901,7 @@ public class Pendenza extends it.govpay.core.beans.JSONSerializable {
     sb.append("    dataNotificaAvviso: ").append(toIndentedString(dataNotificaAvviso)).append("\n");
     sb.append("    dataPromemoriaScadenza: ").append(toIndentedString(dataPromemoriaScadenza)).append("\n");
     sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
+    sb.append("    allegati: ").append(toIndentedString(allegati)).append("\n");
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
     sb.append("    tipoPendenza: ").append(toIndentedString(tipoPendenza)).append("\n");

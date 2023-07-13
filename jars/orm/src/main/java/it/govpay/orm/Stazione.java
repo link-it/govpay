@@ -40,6 +40,7 @@ import java.io.Serializable;
  * 			&lt;element name="password" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="applicationCode" type="{http://www.govpay.it/orm}integer" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="versione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -58,7 +59,8 @@ import java.io.Serializable;
   	"codStazione",
   	"password",
   	"abilitato",
-  	"_decimalWrapper_applicationCode"
+  	"_decimalWrapper_applicationCode",
+  	"versione"
   }
 )
 
@@ -132,6 +134,14 @@ public class Stazione extends org.openspcoop2.utils.beans.BaseBean implements Se
 	}
   }
 
+  public java.lang.String getVersione() {
+    return this.versione;
+  }
+
+  public void setVersione(java.lang.String versione) {
+    this.versione = versione;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -173,5 +183,9 @@ public class Stazione extends org.openspcoop2.utils.beans.BaseBean implements Se
 
   @javax.xml.bind.annotation.XmlTransient
   protected java.lang.Integer applicationCode;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="versione",required=true,nillable=false)
+  protected java.lang.String versione;
 
 }

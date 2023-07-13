@@ -8,7 +8,8 @@ public class PagamentiPortaleDTOResponse {
 	private String redirectUrl;
 	private String idSessionePsp;
 	private String idCarrelloRpt;
-	
+	private boolean redirect = false;
+		
 	public String getIdSessionePsp() {
 		return idSessionePsp;
 	}
@@ -45,5 +46,10 @@ public class PagamentiPortaleDTOResponse {
 	public void setIdSessione(String idSessione) {
 		this.idSessione = idSessione;
 	}
-	
+	public boolean isRedirect() {
+		return redirect;
+	}
+	public void setRedirect(boolean redirect) {
+		this.redirect = redirect;
+	}
 }

@@ -30,6 +30,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
   @Input('enable-fab-actions') fabAction: boolean = false;
   @Input('enable-multi-fab-actions') multiFabAction: boolean = false;
   @Input('is-loading-progress') _isLoading: boolean = false;
+  @Input('has-form-view') _hasFormView: boolean = true;
   @Output() _isLoadingChange: EventEmitter<boolean> = new EventEmitter();
 
   protected rsc: any;
@@ -57,8 +58,13 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
     let _dashboard_link_query = UtilService.DASHBOARD_LINKS_PARAMS.params.map((item) => {
       return item.controller + '=' + item.value;
     }).join('&');
-    this.getList(_service, _dashboard_link_query);
-    this.loadMetadati(_service, _dashboard_link_query);
+    // Il load dei dati è demandato alla form di ricerca (form-view.component)
+    // per poter gestire i filtri di default (attualemnte solo "Data da") configurabili
+    // Eccezione per componenti che non hanno form di ricerca
+    if (!this._hasFormView) {
+      this.getList(_service, _dashboard_link_query);
+      this.loadMetadati(_service, _dashboard_link_query);
+    }
   }
 
   ngOnDestroy() {
@@ -655,16 +661,16 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         _stdTC = new TwoCols();
         _stdTC.generalTemplate = true;
         _stdTC.gtTextUL = item.idFlusso ? `${item.idFlusso}` : `${item.iuv}`;
-        _stdTC.gtTextBL = '';
+        _stdTC.gtTextBL = item.data?moment(item.data).format('DD/MM/YYYY'):'';
         _stdTC.gtTextUR = this.us.currencyFormat(item.importo);
-        _stdTC.gtTextBR = item.data?moment(item.data).format('DD/MM/YYYY'):'';
+        _stdTC.gtTextBR = UtilService.STATI_INCASSO[item.stato];
         _std = _stdTC;
         break;
       case UtilService.URL_GIORNALE_EVENTI:
         _stdTC = new TwoCols();
         const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
         const _riferimento = this.us.mapRiferimentoGiornale(item);
-        _stdTC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
+        _stdTC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.componente, item.tipoEvento) });
         _stdTC.sottotitolo = new Dato({ label: _riferimento });
         _stdTC.stato = item.esito;
         _stdTC.data = _dataOraEventi;

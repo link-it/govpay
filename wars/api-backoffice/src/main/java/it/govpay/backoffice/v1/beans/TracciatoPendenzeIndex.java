@@ -4,12 +4,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "id",
 "nomeFile",
@@ -28,52 +26,52 @@ import it.govpay.core.beans.JSONSerializable;
 "stampaAvvisi",
 })
 public class TracciatoPendenzeIndex extends JSONSerializable {
-  
+
   @JsonProperty("id")
   private BigDecimal id = null;
-  
+
   @JsonProperty("nomeFile")
   private String nomeFile = null;
-  
+
   @JsonProperty("dominio")
   private DominioIndex dominio = null;
-  
+
   @JsonProperty("dataOraCaricamento")
   private Date dataOraCaricamento = null;
-  
+
   @JsonProperty("stato")
   private StatoTracciatoPendenza stato = null;
-  
+
   @JsonProperty("descrizioneStato")
   private String descrizioneStato = null;
-  
+
   @JsonProperty("numeroOperazioniTotali")
   private BigDecimal numeroOperazioniTotali = null;
-  
+
   @JsonProperty("numeroOperazioniEseguite")
   private BigDecimal numeroOperazioniEseguite = null;
-  
+
   @JsonProperty("numeroOperazioniFallite")
   private BigDecimal numeroOperazioniFallite = null;
-  
+
   @JsonProperty("numeroAvvisiTotali")
   private BigDecimal numeroAvvisiTotali = null;
-  
+
   @JsonProperty("numeroAvvisiStampati")
   private BigDecimal numeroAvvisiStampati = null;
-  
+
   @JsonProperty("numeroAvvisiFalliti")
   private BigDecimal numeroAvvisiFalliti = null;
-  
+
   @JsonProperty("operatoreMittente")
   private String operatoreMittente = null;
-  
+
   @JsonProperty("dataOraUltimoAggiornamento")
   private Date dataOraUltimoAggiornamento = null;
-  
+
   @JsonProperty("stampaAvvisi")
   private Boolean stampaAvvisi = null;
-  
+
   /**
    * Identificativo numerico del tracciato
    **/
@@ -305,7 +303,7 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
   }
 
   @JsonProperty("stampaAvvisi")
-  public Boolean StampaAvvisi() {
+  public Boolean getStampaAvvisi() {
     return stampaAvvisi;
   }
   public void setStampaAvvisi(Boolean stampaAvvisi) {
@@ -343,7 +341,7 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
     return Objects.hash(id, nomeFile, dominio, dataOraCaricamento, stato, descrizioneStato, numeroOperazioniTotali, numeroOperazioniEseguite, numeroOperazioniFallite, numeroAvvisiTotali, numeroAvvisiStampati, numeroAvvisiFalliti, operatoreMittente, dataOraUltimoAggiornamento, stampaAvvisi);
   }
 
-  public static TracciatoPendenzeIndex parse(String json) throws ServiceException, ValidationException { 
+  public static TracciatoPendenzeIndex parse(String json) throws IOException {
     return parse(json, TracciatoPendenzeIndex.class);
   }
 
@@ -356,7 +354,7 @@ public class TracciatoPendenzeIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TracciatoPendenzeIndex {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    nomeFile: ").append(toIndentedString(nomeFile)).append("\n");
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");

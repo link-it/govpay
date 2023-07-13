@@ -26,7 +26,9 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Locale;
 import java.util.Properties;
+import java.util.TimeZone;
 
 import org.apache.commons.io.IOUtils;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -46,9 +48,11 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.core.exceptions.ConfigException;
 import it.govpay.core.utils.logger.Log4JUtils;
 import it.govpay.core.utils.service.context.GpContextFactory;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.stampe.utils.GovpayStampe;
 
 public class StartupUtils {
@@ -56,7 +60,7 @@ public class StartupUtils {
 	private static boolean initialized = false;
 	
 	public static synchronized IContext startup(Logger log, String warName, String govpayVersion, String buildVersion, 
-			InputStream govpayPropertiesIS, URL log4j2XmlFile, InputStream msgDiagnosticiIS, InputStream mappingTipiEventoPropertiesIS, String tipoServizioGovpay,
+			InputStream govpayPropertiesIS, URL log4j2XmlFile, InputStream msgDiagnosticiIS, String tipoServizioGovpay,
 			InputStream mappingSeveritaErroriPropertiesIS,
 			InputStream avvisiLabelPropertiesIS) throws RuntimeException {
 		
@@ -69,7 +73,6 @@ public class StartupUtils {
 				IOUtils.copy(govpayPropertiesIS, baos);
 				gpConfig = GovpayConfig.newInstance(new ByteArrayInputStream(baos.toByteArray()));
 				it.govpay.bd.GovpayConfig.newInstance4GovPay(new ByteArrayInputStream(baos.toByteArray()));
-				it.govpay.bd.GovpayCustomConfig.newInstance(new ByteArrayInputStream(baos.toByteArray()));
 			} catch (Exception e) {
 				throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita: " + e, e);
 			}
@@ -93,7 +96,7 @@ public class StartupUtils {
 					log.info("Configurazione logger da classpath.");
 				}
 				gpConfig.readProperties();
-			} catch (Exception e) {
+			} catch (ConfigException e) {
 				throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita: " + e, e);
 			}
 			
@@ -131,15 +134,6 @@ public class StartupUtils {
 				throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita.", e);
 			}
 
-			// Mapping TipiEvento
-			try {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				IOUtils.copy(mappingTipiEventoPropertiesIS, baos);
-				EventiUtils.newInstance(new ByteArrayInputStream(baos.toByteArray()));
-			} catch (Exception e) {
-				throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita: " + e, e);
-			}
-			
 			// Mapping Severita Errori
 			try {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -195,12 +189,15 @@ public class StartupUtils {
 			
 			AnagraficaManager.newInstance(dominioAnagraficaManager);
 			JaxbUtils.init();
+			it.govpay.jppapdp.beans.utils.JaxbUtils.init();
 			ThreadExecutorManager.setup();
 			GovpayStampe.init(log, gpConfig.getResourceDir());
 		} catch (Exception e) {
 			throw new RuntimeException("Inizializzazione di "+getGovpayVersion(warName, govpayVersion, buildVersion)+" fallita.", e);
 		}
 		log.info("Charset.defaultCharset(): " + Charset.defaultCharset() );
+		log.info("Locale.getDefault(): " + Locale.getDefault() );
+		log.info("TimeZone.getDefault(): " + TimeZone.getDefault() );
 		return ctx;
 	}
 	

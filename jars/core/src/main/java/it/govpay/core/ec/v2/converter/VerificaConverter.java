@@ -23,81 +23,101 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.ec.v2.beans.Contabilita;
+import it.govpay.ec.v2.beans.NuovaPendenza;
 import it.govpay.ec.v2.beans.NuovaVocePendenza;
+import it.govpay.ec.v2.beans.NuovoAllegatoPendenza;
 import it.govpay.ec.v2.beans.PendenzaVerificata;
 import it.govpay.ec.v2.beans.ProprietaPendenza;
 import it.govpay.ec.v2.beans.QuotaContabilita;
 import it.govpay.ec.v2.beans.Soggetto;
+import it.govpay.ec.v2.beans.TipoSogliaVincoloPagamento;
 import it.govpay.ec.v2.beans.VoceDescrizioneImporto;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class VerificaConverter {
 	
-	public static it.govpay.core.dao.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) throws ValidationException, ServiceException {
-		it.govpay.core.dao.commons.Versamento versamento = new it.govpay.core.dao.commons.Versamento();
+	public static it.govpay.core.beans.commons.Versamento getVersamentoFromPendenzaVerificata(PendenzaVerificata pendenzaVerificata) throws ValidationException, IOException {
+		it.govpay.core.beans.commons.Versamento versamento = new it.govpay.core.beans.commons.Versamento();
 		
-		if(pendenzaVerificata.getAnnoRiferimento() != null)
-			versamento.setAnnoTributario(pendenzaVerificata.getAnnoRiferimento().intValue());
+		NuovaPendenza pendenza = pendenzaVerificata.getPendenza();
+		
+		if(pendenza.getAnnoRiferimento() != null)
+			versamento.setAnnoTributario(pendenza.getAnnoRiferimento().intValue());
 
-		versamento.setCausale(pendenzaVerificata.getCausale());
-		versamento.setCodApplicazione(pendenzaVerificata.getIdA2A());
+		versamento.setCausale(pendenza.getCausale());
+		versamento.setCodApplicazione(pendenza.getIdA2A());
 
-		versamento.setCodDominio(pendenzaVerificata.getIdDominio());
-		versamento.setCodUnitaOperativa(pendenzaVerificata.getIdUnitaOperativa());
-		versamento.setCodVersamentoEnte(pendenzaVerificata.getIdPendenza());
-		versamento.setDataScadenza(pendenzaVerificata.getDataScadenza()); 
-		versamento.setDataValidita(pendenzaVerificata.getDataValidita());
-		versamento.setDebitore(toAnagraficaCommons(pendenzaVerificata.getSoggettoPagatore()));;
-		versamento.setImportoTotale(pendenzaVerificata.getImporto());
-		versamento.setCodVersamentoLotto(pendenzaVerificata.getCartellaPagamento());
+		versamento.setCodDominio(pendenza.getIdDominio());
+		versamento.setCodUnitaOperativa(pendenza.getIdUnitaOperativa());
+		versamento.setCodVersamentoEnte(pendenza.getIdPendenza());
+		versamento.setDataScadenza(pendenza.getDataScadenza()); 
+		versamento.setDataValidita(pendenza.getDataValidita());
+		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));;
+		versamento.setImportoTotale(pendenza.getImporto());
+		versamento.setCodVersamentoLotto(pendenza.getCartellaPagamento());
 		
-		if(pendenzaVerificata.getDatiAllegati() != null)
-			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenzaVerificata.getDatiAllegati(),null));
+		if(pendenza.getDatiAllegati() != null)
+			versamento.setDatiAllegati(ConverterUtils.toJSON(pendenza.getDatiAllegati()));
 		
-		versamento.setTassonomia(pendenzaVerificata.getTassonomia());
+		versamento.setTassonomia(pendenza.getTassonomia());
 		
 		versamento.setStatoVersamento(StatoVersamento.NON_ESEGUITO);
-		versamento.setNumeroAvviso(pendenzaVerificata.getNumeroAvviso());
+		versamento.setNumeroAvviso(pendenza.getNumeroAvviso());
 		
 		// voci pagamento
-		fillSingoliVersamentiFromVociPendenzaBase(versamento, pendenzaVerificata.getVoci());
+		fillSingoliVersamentiFromVociPendenzaBase(versamento, pendenza.getVoci());
 		
 		// tipo Pendenza
-		versamento.setCodTipoVersamento(pendenzaVerificata.getIdTipoPendenza());
+		versamento.setCodTipoVersamento(pendenza.getIdTipoPendenza());
 		
 		// documento
-		if(pendenzaVerificata.getDocumento() != null) {
-			it.govpay.core.dao.commons.Versamento.Documento documento = new it.govpay.core.dao.commons.Versamento.Documento();
+		if(pendenza.getDocumento() != null) {
+			it.govpay.core.beans.commons.Versamento.Documento documento = new it.govpay.core.beans.commons.Versamento.Documento();
 			
-			documento.setCodDocumento(pendenzaVerificata.getDocumento().getIdentificativo());
-			if(pendenzaVerificata.getDocumento().getRata() != null)
-			documento.setCodRata(pendenzaVerificata.getDocumento().getRata().intValue());
-			documento.setDescrizione(pendenzaVerificata.getDocumento().getDescrizione());
+
+			documento.setCodDocumento(pendenza.getDocumento().getIdentificativo());
+			if(pendenza.getDocumento().getRata() != null)
+				documento.setCodRata(pendenza.getDocumento().getRata().intValue());
+			documento.setDescrizione(pendenza.getDocumento().getDescrizione());
+			if(pendenza.getDocumento().getSoglia() != null) {
+				// valore tassonomia avviso non valido
+				if(TipoSogliaVincoloPagamento.fromValue(pendenza.getDocumento().getSoglia().getTipo()) == null) {
+					throw new ValidationException("Codifica inesistente per tipo. Valore fornito [" 
+								+ pendenza.getDocumento().getSoglia().getTipo() + "] valori possibili " + ArrayUtils.toString(TipoSogliaVincoloPagamento.values()));
+				}
+				
+				if(pendenza.getDocumento().getSoglia().getGiorni() != null)
+					documento.setGiorniSoglia(pendenza.getDocumento().getSoglia().getGiorni().intValue());
+				documento.setTipoSoglia(pendenza.getDocumento().getSoglia().getTipo());
+			}
 
 			versamento.setDocumento(documento );
 		}
 		
-		versamento.setProprieta(toProprietaPendenzaDTO(pendenzaVerificata.getProprieta()));
+		versamento.setProprieta(toProprietaPendenzaDTO(pendenza.getProprieta()));
+		
+		versamento.setAllegati(toAllegatiPendenzaDTO(pendenza.getAllegati()));
 		
 		return versamento;
 	}
 	
-	public static void fillSingoliVersamentiFromVociPendenzaBase(it.govpay.core.dao.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws ServiceException, ValidationException {
+	public static void fillSingoliVersamentiFromVociPendenzaBase(it.govpay.core.beans.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws ValidationException, IOException {
 
 		if(voci != null && voci.size() > 0) {
 			for (NuovaVocePendenza vocePendenza : voci) {
-				it.govpay.core.dao.commons.Versamento.SingoloVersamento sv = new it.govpay.core.dao.commons.Versamento.SingoloVersamento();
+				it.govpay.core.beans.commons.Versamento.SingoloVersamento sv = new it.govpay.core.beans.commons.Versamento.SingoloVersamento();
 
 				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
 				if(vocePendenza.getDatiAllegati() != null)
-					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati(),null));
+					sv.setDatiAllegati(ConverterUtils.toJSON(vocePendenza.getDatiAllegati()));
 				sv.setDescrizione(vocePendenza.getDescrizione());
 				sv.setImporto(vocePendenza.getImporto());
 				sv.setDescrizioneCausaleRPT(vocePendenza.getDescrizioneCausaleRPT());
@@ -106,14 +126,14 @@ public class VerificaConverter {
 
 				// Definisce i dati di un bollo telematico
 				if(vocePendenza.getHashDocumento() != null && vocePendenza.getTipoBollo() != null && vocePendenza.getProvinciaResidenza() != null) {
-					it.govpay.core.dao.commons.Versamento.SingoloVersamento.BolloTelematico bollo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.BolloTelematico();
+					it.govpay.core.beans.commons.Versamento.SingoloVersamento.BolloTelematico bollo = new it.govpay.core.beans.commons.Versamento.SingoloVersamento.BolloTelematico();
 					bollo.setHash(vocePendenza.getHashDocumento());
 					bollo.setProvincia(vocePendenza.getProvinciaResidenza());
 					bollo.setTipo(vocePendenza.getTipoBollo());
 					 
 					String codiceTassonomicoPagoPA = vocePendenza.getCodiceTassonomicoPagoPA();
 					String[] split = codiceTassonomicoPagoPA.split("/");
-					bollo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.TipoContabilita.toEnum(split[0]));
+					bollo.setTipoContabilita(it.govpay.core.beans.commons.Versamento.SingoloVersamento.TipoContabilita.toEnum(split[0]));
 					bollo.setCodContabilita(split[1]);
 					
 					sv.setBolloTelematico(bollo);
@@ -121,11 +141,11 @@ public class VerificaConverter {
 					sv.setCodTributo(vocePendenza.getCodEntrata());
 
 				} else { // Definisce i dettagli di incasso della singola entrata.
-					it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo tributo = new it.govpay.core.dao.commons.Versamento.SingoloVersamento.Tributo();
+					it.govpay.core.beans.commons.Versamento.SingoloVersamento.Tributo tributo = new it.govpay.core.beans.commons.Versamento.SingoloVersamento.Tributo();
 					
 					String codiceTassonomicoPagoPA = vocePendenza.getCodiceTassonomicoPagoPA();
 					String[] split = codiceTassonomicoPagoPA.split("/");
-					tributo.setTipoContabilita(it.govpay.core.dao.commons.Versamento.SingoloVersamento.TipoContabilita.toEnum(split[0]));
+					tributo.setTipoContabilita(it.govpay.core.beans.commons.Versamento.SingoloVersamento.TipoContabilita.toEnum(split[0]));
 					tributo.setCodContabilita(split[1]);
 					tributo.setIbanAccredito(vocePendenza.getIbanAccredito());
 					tributo.setIbanAppoggio(vocePendenza.getIbanAppoggio());
@@ -137,10 +157,10 @@ public class VerificaConverter {
 		}
 	}
 	
-	public static it.govpay.core.dao.commons.Anagrafica toAnagraficaCommons(Soggetto anagraficaRest) {
-		it.govpay.core.dao.commons.Anagrafica anagraficaCommons = null;
+	public static it.govpay.core.beans.commons.Anagrafica toAnagraficaCommons(Soggetto anagraficaRest) {
+		it.govpay.core.beans.commons.Anagrafica anagraficaCommons = null;
 		if(anagraficaRest != null) {
-			anagraficaCommons = new it.govpay.core.dao.commons.Anagrafica();
+			anagraficaCommons = new it.govpay.core.beans.commons.Anagrafica();
 			anagraficaCommons.setCap(anagraficaRest.getCap());
 			anagraficaCommons.setCellulare(anagraficaRest.getCellulare());
 			anagraficaCommons.setCivico(anagraficaRest.getCivico());
@@ -201,7 +221,7 @@ public class VerificaConverter {
 		return dto;
 	}
 	
-	public static String contabilitaToStringDTO(Contabilita contabilita) throws ServiceException {
+	public static String contabilitaToStringDTO(Contabilita contabilita) throws IOException {
 		if(contabilita == null)
 			return null;
 		
@@ -210,7 +230,7 @@ public class VerificaConverter {
 		return getDettaglioAsString(dto);
 	}
 	
-	public static List<it.govpay.model.QuotaContabilita> toDTO(List<QuotaContabilita> dto) throws ServiceException {
+	public static List<it.govpay.model.QuotaContabilita> toDTO(List<QuotaContabilita> dto) {
 		if(dto != null) {
 			List<it.govpay.model.QuotaContabilita> rsModel = new ArrayList<it.govpay.model.QuotaContabilita>();
 			for (QuotaContabilita contabilita : dto) {
@@ -223,7 +243,7 @@ public class VerificaConverter {
 		return null;
 	}
 
-	public static it.govpay.model.Contabilita toDTO(Contabilita dto) throws ServiceException {
+	public static it.govpay.model.Contabilita toDTO(Contabilita dto) {
 		it.govpay.model.Contabilita rsModel = new it.govpay.model.Contabilita();
 		
 		rsModel.setQuote(toDTO(dto.getQuote()));
@@ -233,7 +253,7 @@ public class VerificaConverter {
 		return rsModel;
 	}
 	
-	public static it.govpay.model.QuotaContabilita toDTO(QuotaContabilita dto) throws ServiceException {
+	public static it.govpay.model.QuotaContabilita toDTO(QuotaContabilita dto) {
 		it.govpay.model.QuotaContabilita rsModel = new it.govpay.model.QuotaContabilita();
 		
 		rsModel.setAccertamento(dto.getAccertamento());
@@ -249,7 +269,7 @@ public class VerificaConverter {
 		return rsModel;
 	}
 	
-	private static String getDettaglioAsString(Object obj) throws ServiceException {
+	private static String getDettaglioAsString(Object obj) throws IOException {
 		if(obj != null) {
 			SerializationConfig serializationConfig = new SerializationConfig();
 			serializationConfig.setExcludes(Arrays.asList("jsonIdFilter"));
@@ -258,5 +278,26 @@ public class VerificaConverter {
 			return ConverterUtils.toJSON(obj, null, serializationConfig);
 		}
 		return null;
+	}
+	
+	private static List<it.govpay.core.beans.commons.Versamento.AllegatoPendenza> toAllegatiPendenzaDTO(List<NuovoAllegatoPendenza> allegati) {
+		List<it.govpay.core.beans.commons.Versamento.AllegatoPendenza> allegatiDTO = null;
+		
+		if(allegati != null && allegati.size() > 0) {
+			allegatiDTO = new ArrayList<>();
+			
+			for (NuovoAllegatoPendenza allegato : allegati) {
+				it.govpay.core.beans.commons.Versamento.AllegatoPendenza allegatoDTO = new it.govpay.core.beans.commons.Versamento.AllegatoPendenza();
+				
+				allegatoDTO.setNome(allegato.getNome());
+				allegatoDTO.setTipo(allegato.getTipo());
+				allegatoDTO.setContenuto(allegato.getContenuto());
+				allegatoDTO.setDescrizione(allegato.getDescrizione());
+				
+				allegatiDTO.add(allegatoDTO);
+			}
+		}
+		
+		return allegatiDTO;
 	}
 }

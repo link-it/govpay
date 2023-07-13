@@ -1,4 +1,4 @@
-export JAVA_HOME=/opt/jdk1.8.0_191/
+export JAVA_HOME=/usr/lib/jvm/java-11
 GOVPAY_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 
 
@@ -19,7 +19,7 @@ antinstaller_dbusername=govpay
 antinstaller_principal=gpadmin
 antinstaller_principal_pwd=Password1!
 antinstaller_ragione_sociale=amministratore
-antinstaller_as=wildfly11
+antinstaller_as=wildfly26
 porta-db=5432
 basedir=/home/nardi/github/govpay/src/main/resources/setup/target/govpay-installer-${GOVPAY_VERSION}/./installer/setup
 antinstaller_tipo_database=postgresql
@@ -58,8 +58,8 @@ psql govpay govpay < dist/sql/gov_pay.sql
 
 echo "Abilitazione delle modalita di autenticazione..."
 
-sh ../../../scripts/abilitaAuth.sh -v ${GOVPAY_VERSION} -bo spid,header,ssl,basic -pag public,spid,header,ssl,basic -rag spid,header,ssl,basic -pen spid,header,ssl,basic -pp basic -src dist/archivi/
+sh ../../../scripts/abilitaAuth.sh -v ${GOVPAY_VERSION} -bo spid,header,ssl,basic -pag public,spid,header,ssl,basic -rag spid,header,ssl,basic -pen spid,header,ssl,basic -pp basic -jppa basic -src dist/archivi/
 
 echo "Deploy govpay in wildfly...";
-sudo cp dist/archivi/govpay.ear /opt/wildfly/standalone_govpay/deployments/
+sudo cp dist/archivi/govpay.ear /opt/wildfly-26.1.3.Final/standalone/deployments/
 rm -rf govpay_ear_tmp 

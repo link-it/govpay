@@ -1,12 +1,11 @@
 package it.govpay.backoffice.v1.beans;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
-
-import java.util.Objects;
-
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.IOException;
 
 
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -16,19 +15,19 @@ import org.openspcoop2.utils.json.ValidationException;
 "ambiente",
 })
 public class InfoGovPay extends JSONSerializable {
-  
+
   @JsonProperty("appName")
   private String appName = null;
-  
+
   @JsonProperty("versione")
   private String versione = null;
-  
+
   @JsonProperty("build")
   private String build = null;
-  
+
   @JsonProperty("ambiente")
   private String ambiente = null;
-  
+
   /**
    * Nome da visualizzare sul browser
    **/
@@ -113,7 +112,7 @@ public class InfoGovPay extends JSONSerializable {
     return Objects.hash(appName, versione, build, ambiente);
   }
 
-  public static InfoGovPay parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static InfoGovPay parse(String json) throws IOException {
     return parse(json, InfoGovPay.class);
   }
 
@@ -126,7 +125,7 @@ public class InfoGovPay extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class InfoGovPay {\n");
-    
+
     sb.append("    appName: ").append(toIndentedString(appName)).append("\n");
     sb.append("    versione: ").append(toIndentedString(versione)).append("\n");
     sb.append("    build: ").append(toIndentedString(build)).append("\n");

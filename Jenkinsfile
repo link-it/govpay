@@ -13,7 +13,7 @@ pipeline {
     }
     stage('build') {
       steps {
-	sh '/var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn install -Denv=installer_template'
+	sh 'JAVA_HOME=/usr/lib/jvm/java-11 /var/lib/jenkins/tools/hudson.tasks.Maven_MavenInstallation/Maven_3.6.1/bin/mvn install -Denv=installer_template'
 	sh 'sh ./src/main/resources/scripts/jenkins.build.sh'
       }
       post {
@@ -25,7 +25,7 @@ pipeline {
     stage('install') {
       steps {
         sh 'sh ./src/main/resources/scripts/jenkins.install.sh'
-        sh 'sudo systemctl start wildfly@govpay'
+        sh 'sudo systemctl start wildfly-26.1.3.Final@standalone'
 	sh 'sh ./src/main/resources/scripts/jenkins.checkgp.sh'
       }
     }
@@ -36,9 +36,9 @@ pipeline {
       post {
         always {
             junit 'integration-test/target/surefire-reports/*.xml'
-            sh 'tar -cvf ./integration-test/target/test-logs.tar ./integration-test/target/surefire-reports/ --transform s#./integration-test/target/##'
-            sh 'gzip ./integration-test/target/test-logs.tar'
-            archiveArtifacts 'integration-test/target/test-logs.tar.gz'
+            sh 'tar -cvf ./integration-test/target/surefire-reports.tar ./integration-test/target/surefire-reports/ --transform s#./integration-test/target/##'
+            sh 'gzip ./integration-test/target/surefire-reports.tar'
+            archiveArtifacts 'integration-test/target/surefire-reports.tar.gz'
         }
       }
     }

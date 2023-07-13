@@ -73,28 +73,17 @@ public class NotificaFilter extends AbstractFilter {
 			
 			NotificaFieldConverter converter = new NotificaFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 
-			if(this.dataInizio != null && this.dataFine != null) {
+			if(this.dataInizio != null) {
+				newExpression.greaterEquals(Notifica.model().DATA_CREAZIONE, this.dataInizio);
+				addAnd = true;
+			} 
+			
+			if(this.dataFine != null) {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.between(Notifica.model().DATA_CREAZIONE, this.dataInizio,this.dataFine);
+				newExpression.lessEquals(Notifica.model().DATA_CREAZIONE, this.dataFine);
 				addAnd = true;
-			} else {
-				if(this.dataInizio != null) {
-					if(addAnd)
-						newExpression.and();
-	
-					newExpression.greaterEquals(Notifica.model().DATA_CREAZIONE, this.dataInizio);
-					addAnd = true;
-				} 
-				
-				if(this.dataFine != null) {
-					if(addAnd)
-						newExpression.and();
-	
-					newExpression.lessEquals(Notifica.model().DATA_CREAZIONE, this.dataFine);
-					addAnd = true;
-				}
 			}
 			
 			if(this.dataProssimaSpedizioneInizio != null && this.dataProssimaSpedizioneFine != null) {

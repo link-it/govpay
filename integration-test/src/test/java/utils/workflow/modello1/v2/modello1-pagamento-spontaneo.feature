@@ -38,7 +38,7 @@ And param riversamento = cumulativo
 And headers basicAutenticationHeader
 When method get
 Then status 302
-And match responseHeaders.Location == ['#("http://localhost:8080/govpay/frontend/web/connector/ecsp/psp?idSession=" + idSession + "&esito=OK&idDominio=12345678901")']
+And match responseHeaders.Location == ['#(govpay_url + "/govpay/frontend/web/connector/ecsp/psp?idSession=" + idSession + "&esito=OK&idDominio=12345678901")']
 
 # Verifico la notifica di terminazione
 

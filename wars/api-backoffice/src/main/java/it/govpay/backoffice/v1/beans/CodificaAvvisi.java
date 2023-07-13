@@ -2,10 +2,10 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
@@ -17,16 +17,16 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "generazioneIuvInterna",
 })
 public class CodificaAvvisi extends it.govpay.core.beans.JSONSerializable implements IValidable {
-  
+
   @JsonProperty("codificaIuv")
   private String codificaIuv = null;
-  
+
   @JsonProperty("regExpIuv")
   private String regExpIuv = null;
-  
+
   @JsonProperty("generazioneIuvInterna")
   private Boolean generazioneIuvInterna = null;
-  
+
   /**
    * Cifra identificativa negli IUV. Deve essere un codice numerico.
    **/
@@ -94,7 +94,7 @@ public class CodificaAvvisi extends it.govpay.core.beans.JSONSerializable implem
     return Objects.hash(this.codificaIuv, this.regExpIuv, this.generazioneIuvInterna);
   }
 
-  public static CodificaAvvisi parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
+  public static CodificaAvvisi parse(String json) throws IOException {
     return parse(json, CodificaAvvisi.class);
   }
 
@@ -107,7 +107,7 @@ public class CodificaAvvisi extends it.govpay.core.beans.JSONSerializable implem
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class CodificaAvvisi {\n");
-    
+
     sb.append("    codificaIuv: ").append(this.toIndentedString(this.codificaIuv)).append("\n");
     sb.append("    regExpIuv: ").append(this.toIndentedString(this.regExpIuv)).append("\n");
     sb.append("    generazioneIuvInterna: ").append(this.toIndentedString(this.generazioneIuvInterna)).append("\n");
@@ -125,22 +125,22 @@ public class CodificaAvvisi extends it.govpay.core.beans.JSONSerializable implem
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		if(this.codificaIuv != null)
 			vf.getValidator("codificaIuv", this.codificaIuv).minLength(1).maxLength(15); //.pattern("[0-9]{1,15}");
-		
+
 		vf.getValidator("generazioneIuvInterna", this.generazioneIuvInterna).notNull();
-		
+
 		if(this.generazioneIuvInterna.booleanValue()) {
-			
+
 			// regExpIuv obbligatoria se generazioneIuvInterna e' selezionato
 			if(this.regExpIuv == null)
 				throw new ValidationException("Il campo regExpIuv non puo' essere vuoto quando e' selezionato il campo generazioneIuvInterna.");
 		}
-		
+
 		if(this.regExpIuv != null)
 			vf.getValidator("regExpIuv", this.regExpIuv).minLength(1).maxLength(1024);
 //			try {
@@ -148,8 +148,8 @@ public void validate() throws ValidationException {
 //			} catch(PatternSyntaxException e) {
 //			    throw new ValidationException("Il valore [" + this.regExpIuv + "] del campo regExpIuv non e' una espressione regolare valida.");
 //			}
-		
-		
+
+
 	}
 }
 

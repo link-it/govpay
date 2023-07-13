@@ -56,6 +56,22 @@ Then status 201
 Given url pendenzeBaseurl
 And path '/avvisi', response.idDominio, response.numeroAvviso
 And headers basicAutenticationHeader
+And header Accept = 'application/json'
 When method get
 Then status 200
+
+Scenario: Lettura di un avviso senza specificare l'header Accept
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers basicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+Given url pendenzeBaseurl
+And path '/avvisi', response.idDominio, response.numeroAvviso
+And headers basicAutenticationHeader
+When method get
+Then status 406
 

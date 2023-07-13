@@ -15,8 +15,6 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -26,7 +24,7 @@ import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.JSONSerializable;
-import it.govpay.core.dao.commons.Versamento;
+import it.govpay.core.beans.commons.Versamento;
 import it.govpay.core.dao.pagamenti.PendenzeDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiPendenzaDTOResponse;
@@ -36,6 +34,8 @@ import it.govpay.core.dao.pagamenti.dto.PatchPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTO;
 import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
@@ -95,12 +95,12 @@ public class PendenzeController extends BaseController {
 
 			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiPendenza(leggiPendenzaDTO);
 
-			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamento(), leggiPendenzaDTOResponse.getRpts());
+			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamento(), leggiPendenzaDTOResponse.getRpts(), leggiPendenzaDTOResponse.getAllegati());
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
 	}
 
@@ -120,6 +120,7 @@ public class PendenzeController extends BaseController {
 
 			leggiPendenzaDTO.setIdDominio(idDominio);
 			leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
+			leggiPendenzaDTO.setVerificaAvviso(true);
 
 			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
 
@@ -133,13 +134,13 @@ public class PendenzeController extends BaseController {
 				throw AuthorizationManager.toNotAuthorizedException(user);
 			}
 			
-			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamento(), leggiPendenzaDTOResponse.getRpts());
+			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamento(), leggiPendenzaDTOResponse.getRpts(), leggiPendenzaDTOResponse.getAllegati());
 			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
 
@@ -171,6 +172,7 @@ public class PendenzeController extends BaseController {
 					case NON_ESEGUITA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.NON_ESEGUITA); break;
 					case SCADUTA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.SCADUTA); break;
 					case ANOMALA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.ANOMALA); break;
+					case INCASSATA: listaPendenzeDTO.setStato(it.govpay.model.StatoPendenza.INCASSATA); break;
 					}				
 				} else {
 					throw new ValidationException("Codifica inesistente per stato. Valore fornito [" + stato
@@ -256,7 +258,7 @@ public class PendenzeController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
 	}
 
@@ -310,7 +312,7 @@ public class PendenzeController extends BaseController {
 					op.validate();
 					lstOp.add(op);
 				}
-			} catch (ServiceException e) {
+			} catch (IOException e) {
 				lstOp = JSONSerializable.parse(jsonRequest, List.class);
 			}
 
@@ -318,7 +320,7 @@ public class PendenzeController extends BaseController {
 
 			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.patch(patchPendenzaDTO);
 
-			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamento(), leggiPendenzaDTOResponse.getRpts());
+			Pendenza pendenza = PendenzeConverter.toRsModel(leggiPendenzaDTOResponse.getVersamento(), leggiPendenzaDTOResponse.getRpts(), leggiPendenzaDTOResponse.getAllegati());
 			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
 		} catch(GovPayException e) {
 			this.log.error("Errore durante il processo di pagamento", e);
@@ -331,7 +333,7 @@ public class PendenzeController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
 	}
 
@@ -403,7 +405,7 @@ public class PendenzeController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
 	}
 

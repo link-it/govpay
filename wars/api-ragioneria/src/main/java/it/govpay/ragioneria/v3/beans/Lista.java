@@ -12,22 +12,22 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import it.govpay.core.beans.Costanti;
 
 public class Lista   {
-  
+
   @Schema(example = "100", description = "")
   private BigDecimal numRisultati = null;
-  
+
   @Schema(example = "4", description = "")
   private BigDecimal numPagine = null;
-  
+
   @Schema(example = "25", description = "")
   private BigDecimal risultatiPerPagina = null;
-  
+
   @Schema(example = "1", description = "")
   private BigDecimal pagina = null;
-  
+
   @Schema(example = "/risorsa?pagina=2", description = "")
   private String prossimiRisultati = null;
-  
+
   @Schema(example = "100", description = "")
   private BigDecimal maxRisultati = null;
  /**
@@ -143,7 +143,7 @@ public class Lista   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Lista {\n");
-    
+
     sb.append("    numRisultati: ").append(toIndentedString(numRisultati)).append("\n");
     sb.append("    numPagine: ").append(toIndentedString(numPagine)).append("\n");
     sb.append("    risultatiPerPagina: ").append(toIndentedString(risultatiPerPagina)).append("\n");
@@ -164,33 +164,33 @@ public class Lista   {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   public Lista() {
-		
+
 	}
-  
+
   public Lista(URI requestUri, Long count, Integer pagina, Integer limit) {
 	  this(requestUri, count, pagina, limit, null);
   }
-  
+
   public Lista(URI requestUri, Long count, Integer pagina, Integer limit, BigDecimal maxRisultati) {
 		this.pagina = pagina != null ? new BigDecimal(pagina) : null;
 		this.risultatiPerPagina = limit != null ? new BigDecimal(limit) : null;
 		this.numRisultati = count != null ? new BigDecimal(count) : null;
 		this.maxRisultati = maxRisultati;
-		
+
 		boolean generaLinkProssimiRisultati = false;
-		
+
 		URIBuilder builder = new URIBuilder(requestUri);
-		
+
 		if(this.risultatiPerPagina != null) {
 			builder.setParameter(Costanti.PARAMETRO_RISULTATI_PER_PAGINA, Long.toString(this.risultatiPerPagina.longValue()));
 		} else {
 			this.risultatiPerPagina = this.numRisultati != null ? this.numRisultati : null;
 		}
-		
+
 		this.numPagine = null;
-		
+
 		if(count != null) {
 			if(limit != null) {
 				if(limit > 0) {
@@ -201,18 +201,18 @@ public class Lista   {
 			} else {
 				this.numPagine = new BigDecimal(1L);
 			}
-			
+
 			if(this.pagina != null && this.numPagine != null && this.pagina.intValue() < this.numPagine.intValue()) {
 				generaLinkProssimiRisultati = true;
 			}
-			
+
 		} else {
 			this.maxRisultati = null;
 			if(limit != null) {
 				generaLinkProssimiRisultati = true;
 			}
 		}
-				
+
 		if(generaLinkProssimiRisultati) {
 			Integer nextPagina = pagina + 1 ;
 			builder.setParameter(Costanti.PARAMETRO_PAGINA, Integer.toString(nextPagina));

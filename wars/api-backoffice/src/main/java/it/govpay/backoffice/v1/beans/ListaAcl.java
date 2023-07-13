@@ -11,13 +11,13 @@ import it.govpay.core.beans.JSONSerializable;
 })
 
 public class ListaAcl extends JSONSerializable {
-	
+
 	@JsonProperty("acl")
 	private List<AclPost> acl;
 	public ListaAcl() {
 		super();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see it.govpay.core.rs.v1.beans.JSONSerializable#getJsonIdFilter()
 	 */

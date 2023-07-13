@@ -2,6 +2,7 @@ package it.govpay.pagamento.v2.controller;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +20,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
@@ -130,9 +131,9 @@ public class PagamentiController extends BaseController {
 			pagamentiPortaleDTO.setReCaptcha(gRecaptchaResponse);
 			
 			if(codiceConvenzione != null) {
-				if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
-					throw new NotAuthorizedException("Il richiedente non è autorizzato ad indicare un codice convenzione per il pagamento");
-				}
+//				if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+//					throw new NotAuthorizedException("Il richiedente non è autorizzato ad indicare un codice convenzione per il pagamento");
+//				}
 				
 				ValidatorFactory vf = ValidatorFactory.newInstance();
 				ValidatoreUtils.validaCodiceConvenzione(vf, "codiceConvenzione", codiceConvenzione);
@@ -160,11 +161,17 @@ public class PagamentiController extends BaseController {
 			PagamentiPortaleDAO pagamentiPortaleDAO = new PagamentiPortaleDAO(); 
 			
 			PagamentiPortaleDTOResponse pagamentiPortaleDTOResponse = pagamentiPortaleDAO.inserisciPagamenti(pagamentiPortaleDTO);
-						
-			PagamentoCreato responseOk = PagamentiPortaleConverter.getPagamentiPortaleResponseOk(pagamentiPortaleDTOResponse);
 			
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-			return this.handleResponseOk(Response.status(Status.CREATED).entity(responseOk.toJSON(null)),transactionId).build();
+			if(!pagamentiPortaleDTOResponse.isRedirect()) {
+				PagamentoCreato responseOk = PagamentiPortaleConverter.getPagamentiPortaleResponseOk(pagamentiPortaleDTOResponse);
+				
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+				return this.handleResponseOk(Response.status(Status.CREATED).entity(responseOk.toJSON(null)),transactionId).build();
+			} else {
+				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
+				// la specifica dice che deve essere inviato uno status 302
+				return this.handleResponseOk(Response.status(Status.FOUND).location(new URI(pagamentiPortaleDTOResponse.getLocation())),transactionId).build();
+			}
 		} catch (Exception e) {
 			Response response = this.handleException(uriInfo, httpHeaders, methodName, e,transactionId);
 			if(e instanceof GovPayException && (PagamentoPortale) ((GovPayException) e).getParam() != null) {
@@ -184,7 +191,7 @@ public class PagamentiController extends BaseController {
 			}
 			return response;
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
     
@@ -264,7 +271,7 @@ public class PagamentiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
     
@@ -344,7 +351,7 @@ public class PagamentiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
 
@@ -441,7 +448,7 @@ public class PagamentiController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
 

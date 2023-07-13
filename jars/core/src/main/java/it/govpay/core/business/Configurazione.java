@@ -1,28 +1,30 @@
 package it.govpay.core.business;
 
+import java.text.MessageFormat;
+
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.configurazione.ConfigurazioneBD;
-import it.govpay.bd.configurazione.model.AppIOBatch;
-import it.govpay.bd.configurazione.model.AvvisaturaViaAppIo;
-import it.govpay.bd.configurazione.model.AvvisaturaViaMail;
-import it.govpay.bd.configurazione.model.GdeEvento;
-import it.govpay.bd.configurazione.model.GdeEvento.DumpEnum;
-import it.govpay.bd.configurazione.model.GdeEvento.LogEnum;
-import it.govpay.bd.configurazione.model.GdeInterfaccia;
-import it.govpay.bd.configurazione.model.Giornale;
-import it.govpay.bd.configurazione.model.GoogleCaptcha;
-import it.govpay.bd.configurazione.model.Hardening;
-import it.govpay.bd.configurazione.model.MailBatch;
-import it.govpay.bd.configurazione.model.MailServer;
-import it.govpay.bd.configurazione.model.TracciatoCsv;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.model.configurazione.AppIOBatch;
+import it.govpay.model.configurazione.AvvisaturaViaAppIo;
+import it.govpay.model.configurazione.AvvisaturaViaMail;
+import it.govpay.model.configurazione.GdeEvento;
+import it.govpay.model.configurazione.GdeEvento.DumpEnum;
+import it.govpay.model.configurazione.GdeEvento.LogEnum;
+import it.govpay.model.configurazione.GdeInterfaccia;
+import it.govpay.model.configurazione.Giornale;
+import it.govpay.model.configurazione.GoogleCaptcha;
+import it.govpay.model.configurazione.Hardening;
+import it.govpay.model.configurazione.MailBatch;
+import it.govpay.model.configurazione.MailServer;
+import it.govpay.model.configurazione.TracciatoCsv;
 
 public class Configurazione {
 
@@ -41,7 +43,7 @@ public class Configurazione {
 			configurazione = AnagraficaManager.getConfigurazione(configWrapper);
 			this.validaConfigurazione(configurazione);
 		}catch(IOException | NotFoundException e) {
-			log.error("Impossibile leggere la configurazione di sistema: "+ e.getMessage(), e); 
+			log.error(MessageFormat.format("Impossibile leggere la configurazione di sistema: {0}", e.getMessage()), e); 
 			throw new ServiceException(e);
 		}
 
@@ -55,13 +57,13 @@ public class Configurazione {
 	}
 
 
-	public void validaConfigurazione(it.govpay.bd.model.Configurazione configurazione) throws IOException, ServiceException {
+	public void validaConfigurazione(it.govpay.bd.model.Configurazione configurazione) throws IOException {
 		it.govpay.bd.model.Configurazione configurazioneDefault = this.getConfigurazioneDefault();
 
 		validaConfigurazioneGiornaleEventi(configurazione, configurazioneDefault);
 
-		if(configurazione.getTracciatoCsv() == null) {
-			configurazione.setTracciatoCsv(configurazioneDefault.getTracciatoCsv());
+		if(configurazione.getConfigurazioneTracciatoCsv() == null) {
+			configurazione.setConfigurazioneTracciatoCsv(configurazioneDefault.getConfigurazioneTracciatoCsv());
 		}
 
 		if(configurazione.getHardening() == null) {
@@ -85,7 +87,7 @@ public class Configurazione {
 		}
 	}
 
-	private void validaConfigurazioneGiornaleEventi(it.govpay.bd.model.Configurazione configurazione, it.govpay.bd.model.Configurazione configurazioneDefault) throws ServiceException {
+	private void validaConfigurazioneGiornaleEventi(it.govpay.bd.model.Configurazione configurazione, it.govpay.bd.model.Configurazione configurazioneDefault) throws IOException {
 		if(configurazione.getGiornale() == null) {
 			configurazione.setGiornale(configurazioneDefault.getGiornale());
 		} 
@@ -117,13 +119,17 @@ public class Configurazione {
 		if(configurazione.getGiornale().getApiRagioneria() == null) {
 			configurazione.getGiornale().setApiRagioneria(configurazioneDefault.getGiornale().getApiRagioneria());
 		}
+		
+		if(configurazione.getGiornale().getApiMaggioliJPPA() == null) {
+			configurazione.getGiornale().setApiMaggioliJPPA(configurazioneDefault.getGiornale().getApiMaggioliJPPA());
+		}
 	}
 
 	public it.govpay.bd.model.Configurazione getConfigurazioneDefault() {
 		it.govpay.bd.model.Configurazione configurazione = new it.govpay.bd.model.Configurazione();
 
 		configurazione.setGiornale(this.getGiornaleDefault()); 
-		configurazione.setTracciatoCsv(this.getTracciatoCsvDefault()); 
+		configurazione.setConfigurazioneTracciatoCsv(this.getTracciatoCsvDefault()); 
 		configurazione.setHardening(this.getHardeningDefault()); 
 		configurazione.setBatchSpedizioneEmail(this.getBatchSpedizioneEmailDefault()); 
 		configurazione.setAvvisaturaViaMail(this.getAvvisaturaViaMailDefault()); 
@@ -253,6 +259,17 @@ public class Configurazione {
 		apiBackendAppIOScritture.setLog(LogEnum.SEMPRE);
 		apiBackendAppIO.setScritture(apiBackendAppIOScritture);
 		giornale.setApiBackendIO(apiBackendAppIO);
+		
+		GdeInterfaccia apiMaggioliJPPA = new GdeInterfaccia();
+		GdeEvento apiMaggioliJPPALetture = new GdeEvento();
+		apiMaggioliJPPALetture.setDump(DumpEnum.SEMPRE);
+		apiMaggioliJPPALetture.setLog(LogEnum.SEMPRE);
+		apiMaggioliJPPA.setLetture(apiMaggioliJPPALetture);
+		GdeEvento apiMaggioliJPPAScritture = new GdeEvento();
+		apiMaggioliJPPAScritture.setDump(DumpEnum.SEMPRE);
+		apiMaggioliJPPAScritture.setLog(LogEnum.SEMPRE);
+		apiMaggioliJPPA.setScritture(apiMaggioliJPPAScritture);
+		giornale.setApiMaggioliJPPA(apiMaggioliJPPA);
 
 		return giornale;
 	}

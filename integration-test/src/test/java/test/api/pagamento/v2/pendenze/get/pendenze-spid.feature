@@ -6,6 +6,8 @@ Background:
 * def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'spid'})
 * def spidHeaders = {'X-SPID-FISCALNUMBER': 'RSSMRA30A01H501I','X-SPID-NAME': 'Mario','X-SPID-FAMILYNAME': 'Rossi','X-SPID-EMAIL': 'mrossi@mailserver.host.it'}
 
+* configure cookies = null
+
 Scenario Outline: Lettura dettaglio pendenze da utente spid
 
 * def risposta = read('msg/<risposta>')

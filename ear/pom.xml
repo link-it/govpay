@@ -5,13 +5,86 @@
 	<parent>
 		<artifactId>bom</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.5.1</version>
+		<version>3.7.3</version>
 	</parent>
 
 	<artifactId>ear</artifactId>
 	<packaging>ear</packaging>
 	<name>GovPay - ear</name>
 
+	<profiles>
+	        <profile>
+			<id>wildfly-18</id>
+			<build>
+                <plugins>
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-ear-plugin</artifactId>
+                                <version>2.9.1</version>
+				<configuration>
+					<earSourceDirectory>${basedir}/src/main/application_wildfly18</earSourceDirectory>
+                                        <defaultLibBundleDir>lib/</defaultLibBundleDir>
+                                        <skinnyWars>true</skinnyWars>
+                                        <initializeInOrder>true</initializeInOrder>
+                                        <filtering>true</filtering>
+                                        <filters>
+                                                <filter>${basedir}/${filter-file}</filter>
+                                        </filters>
+                                        <modules>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>api-user</artifactId>
+                                                        <contextRoot>/${war-base-name}/frontend/api/user</contextRoot>
+                                                </webModule>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>api-pagopa</artifactId>
+                                                        <contextRoot>/${war-base-name}/frontend/api/pagopa</contextRoot>
+                                                </webModule>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>api-pagamento</artifactId>
+                                                        <contextRoot>/${war-base-name}/frontend/api/pagamento</contextRoot>
+                                                </webModule>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>web-connector</artifactId>
+                                                        <contextRoot>/${war-base-name}/frontend/web/connector</contextRoot>
+                                                </webModule>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>api-pendenze</artifactId>
+                                                        <contextRoot>/${war-base-name}/backend/api/pendenze</contextRoot>
+                                                </webModule>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>api-ragioneria</artifactId>
+                                                        <contextRoot>/${war-base-name}/backend/api/ragioneria</contextRoot>
+                                                </webModule>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>api-backoffice</artifactId>
+                                                        <contextRoot>/${war-base-name}/backend/api/backoffice</contextRoot>
+                                                </webModule>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>web-console</artifactId>
+                                                        <contextRoot>/${war-base-name}/backend/gui/backoffice</contextRoot>
+                                                </webModule>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>api-jppapdp</artifactId>
+                                                        <contextRoot>/${war-base-name}/backend/api/jppapdp</contextRoot>
+                                                </webModule>
+                                        </modules>
+                                        <version>6</version>
+                                </configuration>
+                        </plugin>
+                </plugins>
+	</build>
+                </profile>
+
+	</profiles>
 	<properties>
 		<rel-to-parent>..</rel-to-parent>
 		<war-base-name>govpay</war-base-name>
@@ -30,6 +103,18 @@
 			<type>pom</type>
 		</dependency>
 
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-jppapdp</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>api-jppapdp</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+		
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>api-pagamento</artifactId>
@@ -133,7 +218,6 @@
 		</dependency>
 
 	</dependencies>
-
 	<build>
 		<resources>
 			<resource>
@@ -141,67 +225,72 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
+                <plugins>
+                        <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-ear-plugin</artifactId>
+                                <version>2.9.1</version>
+                                <configuration>
+                                        <defaultLibBundleDir>lib/</defaultLibBundleDir>
+                                        <skinnyWars>true</skinnyWars>
+                                        <initializeInOrder>true</initializeInOrder>
+                                        <filtering>true</filtering>
+                                        <filters>
+                                                <filter>${basedir}/${filter-file}</filter>
+                                        </filters>
+                                        <modules>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>api-user</artifactId>
+                                                        <contextRoot>/${war-base-name}/frontend/api/user</contextRoot>
+                                                </webModule>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>api-pagopa</artifactId>
+                                                        <contextRoot>/${war-base-name}/frontend/api/pagopa</contextRoot>
+                                                </webModule>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>api-pagamento</artifactId>
+                                                        <contextRoot>/${war-base-name}/frontend/api/pagamento</contextRoot>
+                                                </webModule>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>web-connector</artifactId>
+                                                        <contextRoot>/${war-base-name}/frontend/web/connector</contextRoot>
+                                                </webModule>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>api-pendenze</artifactId>
+                                                        <contextRoot>/${war-base-name}/backend/api/pendenze</contextRoot>
+                                                </webModule>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>api-ragioneria</artifactId>
+                                                        <contextRoot>/${war-base-name}/backend/api/ragioneria</contextRoot>
+                                                </webModule>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>api-backoffice</artifactId>
+                                                        <contextRoot>/${war-base-name}/backend/api/backoffice</contextRoot>
+                                                </webModule>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>web-console</artifactId>
+                                                        <contextRoot>/${war-base-name}/backend/gui/backoffice</contextRoot>
+                                                </webModule>
+                                                <webModule>
+                                                        <groupId>it.govpay</groupId>
+                                                        <artifactId>api-jppapdp</artifactId>
+                                                        <contextRoot>/${war-base-name}/backend/api/jppapdp</contextRoot>
+                                                </webModule>
+                                        </modules>
+                                        <version>6</version>
+                                </configuration>
+                        </plugin>
+                </plugins>
 
 		<finalName>govpay</finalName>
 
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-ear-plugin</artifactId>
-				<version>2.9.1</version>
-				<configuration>
-					<defaultLibBundleDir>lib/</defaultLibBundleDir>
-					<skinnyWars>true</skinnyWars>
-					<initializeInOrder>true</initializeInOrder>
-					<filtering>true</filtering>
-					<filters>
-						<filter>${basedir}/${filter-file}</filter>
-					</filters>
-					<modules>
-						<webModule>
-							<groupId>it.govpay</groupId>
-							<artifactId>api-user</artifactId>
-							<contextRoot>/${war-base-name}/frontend/api/user</contextRoot>
-						</webModule>
-						<webModule>
-							<groupId>it.govpay</groupId>
-							<artifactId>api-pagopa</artifactId>
-							<contextRoot>/${war-base-name}/frontend/api/pagopa</contextRoot>
-						</webModule>
-						<webModule>
-							<groupId>it.govpay</groupId>
-							<artifactId>api-pagamento</artifactId>
-							<contextRoot>/${war-base-name}/frontend/api/pagamento</contextRoot>
-						</webModule>
-						<webModule>
-							<groupId>it.govpay</groupId>
-							<artifactId>web-connector</artifactId>
-							<contextRoot>/${war-base-name}/frontend/web/connector</contextRoot>
-						</webModule>
-						<webModule>
-							<groupId>it.govpay</groupId>
-							<artifactId>api-pendenze</artifactId>
-							<contextRoot>/${war-base-name}/backend/api/pendenze</contextRoot>
-						</webModule>
-						<webModule>
-							<groupId>it.govpay</groupId>
-							<artifactId>api-ragioneria</artifactId>
-							<contextRoot>/${war-base-name}/backend/api/ragioneria</contextRoot>
-						</webModule>
-						<webModule>
-							<groupId>it.govpay</groupId>
-							<artifactId>api-backoffice</artifactId>
-							<contextRoot>/${war-base-name}/backend/api/backoffice</contextRoot>
-						</webModule>
-						<webModule>
-							<groupId>it.govpay</groupId>
-							<artifactId>web-console</artifactId>
-							<contextRoot>/${war-base-name}/backend/gui/backoffice</contextRoot>
-						</webModule>
-					</modules>
-					<version>6</version>
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 </project>

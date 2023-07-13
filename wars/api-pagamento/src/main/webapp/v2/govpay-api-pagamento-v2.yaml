@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "2.12.0"
+  version: "2.13.0"
   title: GovPay - API Pagamento
   contact:
     name: GitHub Project Page
@@ -55,6 +55,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PagamentoCreato'
+        '303':
+          description: Pagamento inoltrato al Checkout
+          content:
+            application/x-www-form-urlencoded:
+              schema:
+                type: object
+                required: 
+                  - returnUrl
+                  - fiscalCodePA
+                  - avvisi
+                properties:
+                  returnUrl:
+                    description: L'indirizzo al quale sarà reindirizzato l'utente dopo la conclusione del processo di pagamento
+                    type: string
+                  fiscalCodePA:
+                    description: Identificativo dell'EC che ha attivato il processo di pagamento
+                    type: string
+                  lang:
+                    $ref: '#/components/schemas/LinguaPagamento'
+                  avvisi:
+                    type: array
+                    items:
+                      type: object
+                      required: 
+                        - noticeNumber
+                        - fiscalCode
+                        - amount
+                      properties:
+                        noticeNumber:
+                          description: numero avviso
+                          type: string
+                        fiscalCode:
+                          description: codice fiscale dell'EC
+                          type: string
+                        amount:
+                          description: importo
+                          type: number
+                        agreement:
+                          description: eventuale codice della convenzione tra EC e PSP
+                          type: string
         '400':
           $ref: '#/components/responses/400BadRequest'
         '401':
@@ -446,11 +486,6 @@ paths:
           required: true
           schema:
             type: string
-        - in: query
-          name: visualizzaSoggettoDebitore
-          description: Indica se inserire il soggetto debitore nel pdf della ricevuta
-          schema:
-            type: boolean
       responses:
         '200':
           description: Ricevuta di pagamento
@@ -475,6 +510,43 @@ paths:
         '404':
           $ref: '#/components/responses/404NotFound'
         '503':
+          $ref: '#/components/responses/500ServiceUnavailable'
+  '/pendenze/byAvviso/{idDominio}/{numeroAvviso}':
+    get:
+      tags:
+        - Pendenze
+      summary: Dettaglio di una pendenza per riferimento avviso
+      operationId: getPendenzaByAvviso
+      description: Acquisisce il dettaglio di una pendenza, comprensivo dei dati di pagamento.
+      parameters:
+        - in: path
+          name: idDominio
+          description: Identificativo del dominio dell'ente
+          required: true
+          schema:
+            type: string
+            pattern: '(^([0-9]){11}$)'
+        - in: path
+          name: numeroAvviso
+          description: Identificativo dell'avviso di pagamento
+          required: true
+          schema:
+            type: string
+            pattern: '(^[0-9]{18}$)'
+      responses:
+        '200':
+          description: Informazioni dettagliate della pendenza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pendenza'
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
           $ref: '#/components/responses/500ServiceUnavailable'
   '/avvisi/{idDominio}/{numeroAvviso}':
     get:
@@ -509,6 +581,37 @@ paths:
               schema:
                 $ref: '#/components/schemas/Avviso'
             application/pdf:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: '#/components/responses/403NotAuthorized'
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500ServiceUnavailable'
+  '/allegati/{id}':
+    get:
+      summary: Allegato di una pendenza
+      operationId: getAllegatoPendenza
+      description:      Fornisce l'allegato di una pendenza
+      tags:
+        - Pendenze
+      parameters:
+        - in: path
+          name: id
+          description: Identificativo dell'allegato
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Contenuto dell'allegato
+          content:
+            '*/*':
               schema:
                 type: string
                 format: binary
@@ -1027,6 +1130,31 @@ components:
           $ref: "#/components/schemas/TipoServizio"
         autorizzazioni:
           $ref: "#/components/schemas/TipoAutorizzazione"
+    AllegatoPendenza:
+      type: object
+      required: 
+        - nome
+        - contenuto
+      properties:
+        nome:
+          type: string
+          description: nome del file
+          minLength: 1
+          maxLength: 255
+        tipo:
+          type: string
+          description: mime type del file
+          default: "application/octet-stream"
+          minLength: 1
+          maxLength: 255
+        descrizione:
+          type: string
+          description: descrizione del file
+          minLength: 1
+          maxLength: 255
+        contenuto: 
+          type: string
+          description: path per accedere al file, nella forma /allegati/{id}
     Avviso:
       type: object
       required:
@@ -1299,7 +1427,17 @@ components:
             location:
               type: string
               example: /pagamenti/12345
-              description: Url del dettaglio del pagamento      
+              description: Url del dettaglio del pagamento   
+    LinguaPagamento:
+      description: Indica la lingua da utilizzare durante il pagamento sul Checkout
+      example: 'it'
+      type: string
+      enum:
+        - 'it'
+        - 'en'
+        - 'fr'
+        - 'sl'
+        - 'de'
     LinguaSecondaria:
       example: 'false'
       type: string
@@ -1330,7 +1468,6 @@ components:
           example: '1'
         prossimiRisultati:
           type: string
-          format: integer
           example: '/risorsa?pagina=2'
         maxRisultati:
           type: number
@@ -1439,6 +1576,10 @@ components:
               maxItems: 5
               items:
                 $ref: '#/components/schemas/NuovaVocePendenza'
+            allegati:
+              type: array
+              items:
+                $ref: '#/components/schemas/NuovoAllegatoPendenza'
     NuovaVocePendenza:
       type: object
       allOf:
@@ -1488,6 +1629,32 @@ components:
           - $ref: '#/components/schemas/RiferimentoEntrata'
           - $ref: '#/components/schemas/Entrata'
           - $ref: '#/components/schemas/Bollo'
+    NuovoAllegatoPendenza:
+      type: object
+      required: 
+        - nome
+        - contenuto
+      properties:
+        nome:
+          type: string
+          description: nome del file
+          minLength: 1
+          maxLength: 255
+        tipo:
+          type: string
+          description: mime type del file
+          default: "application/octet-stream"
+          minLength: 1
+          maxLength: 255
+        descrizione:
+          type: string
+          description: descrizione del file
+          minLength: 1
+          maxLength: 255
+        contenuto: 
+          type: string
+          format: byte
+          description: contenuto del file
     NuovoPagamento:
       type: object
       allOf:
@@ -1515,7 +1682,7 @@ components:
         urlRitorno:
           type: string
           description: >-
-            url di ritorno al portale al termine della sessione di pagamento
+            url di ritorno al portale al termine della sessione di pagamento, il campo e' opzionale, diventa obbligatorio in caso di pagamento con tramite una stazione con versione V2.
           example: >-
             https://www.comune.it/pagamentopagopa/abcd-efgh-ijklm-12345
         contoAddebito:
@@ -1536,6 +1703,8 @@ components:
           $ref: '#/components/schemas/Soggetto'
         autenticazioneSoggetto:
           $ref: '#/components/schemas/TipoAutenticazioneSoggetto'
+        lingua:
+          $ref: '#/components/schemas/LinguaPagamento'
     Pagamenti:
       type: object
       allOf:
@@ -1689,6 +1858,10 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/PagamentoIndex'
+            allegati:
+              type: array
+              items:
+                $ref: '#/components/schemas/AllegatoPendenza'
     PendenzaBase:
       type: object
       required:
@@ -2570,7 +2743,4 @@ components:
           - $ref: '#/components/schemas/RiferimentoEntrata'
           - $ref: '#/components/schemas/Entrata'
           - $ref: '#/components/schemas/Bollo'
-            
-    
-          
           

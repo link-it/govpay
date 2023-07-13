@@ -1,0 +1,354 @@
+<suppressions
+	xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+	<suppress>
+		<notes><![CDATA[
+     file name: ant-1.8.0.jar
+     In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+     ]]></notes>
+		<filePath regex="true">.*ant-1.8.0.jar.*</filePath>
+		<cve>CVE-2020-1945</cve>
+		<cpe>cpe:/a:apache:ant</cpe>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: ant-nodeps-1.8.0.jar
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<filePath regex="true">.*ant-nodeps-1.8.0.jar.*</filePath>
+		<cve>CVE-2020-1945</cve>
+		<cpe>cpe:/a:apache:ant</cpe>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: ant-launcher-1.8.0.jar
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<filePath regex="true">.*ant-launcher-1.8.0.jar.*</filePath>
+		<cve>CVE-2020-1945</cve>
+		<cpe>cpe:/a:apache:ant</cpe>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: ant-apache-regexp-1.8.0.jar
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<filePath regex="true">.*ant-apache-regexp-1.8.0.jar.*</filePath>
+		<cve>CVE-2020-1945</cve>
+		<cpe>cpe:/a:apache:ant</cpe>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: ant-trax.jar
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<filePath regex="true">.*ant-trax.jar.*</filePath>
+		<cve>CVE-2020-1945</cve>
+		<cpe>cpe:/a:apache:ant</cpe>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: openspcoop2_utils-crypt-3.2.0.jar
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<filePath regex="true">.*openspcoop2_utils-crypt-3.2.0.jar.*
+		</filePath>
+		<cve>CVE-2021-4277</cve>
+		<cpe>cpe:/a:utils_project:utils</cpe>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<filePath regex="true">.*jboss-client.jar.*</filePath>
+		<cve>CVE-2012-2312</cve>
+		<cpe>cpe:/a:redhat:jboss_application_server</cpe>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<filePath regex="true">.*jboss-client.jar.*</filePath>
+		<cve>CVE-2007-1036</cve>
+		<cpe>cpe:/a:redhat:jboss-ejb-client</cpe>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: io.netty:netty-all:4.0.15.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/io\.netty/netty\-all@.*$
+		</packageUrl>
+		<cve>CVE-2019-20444</cve>
+		<cpe>cpe:/a:netty:netty</cpe>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss:jboss-remote-naming:1.0.2.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss/jboss\-remote\-naming@.*$
+		</packageUrl>
+		<vulnerabilityName>CVE-2013-4128</vulnerabilityName>
+		<cve>CVE-2013-4128</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: io.netty:netty-all:4.0.15.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/io\.netty/netty\-all@.*$
+		</packageUrl>
+		<vulnerabilityName>CVE-2019-20445</vulnerabilityName>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: io.netty:netty-all:4.0.15.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/io\.netty/netty\-all@.*$
+		</packageUrl>
+		<vulnerabilityName>CVE-2020-7238</vulnerabilityName>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.hornetq:hornetq-commons:2.4.1.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.hornetq/hornetq\-commons@.*$
+		</packageUrl>
+		<cve>CVE-2014-3599</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.hornetq:hornetq-core-client:2.4.1.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.hornetq/hornetq\-core\-client@.*$
+		</packageUrl>
+		<vulnerabilityName>CVE-2016-4978</vulnerabilityName>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.hornetq:hornetq-core-client:2.4.1.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.hornetq/hornetq\-core\-client@.*$
+		</packageUrl>
+		<cve>CVE-2014-3599</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.hornetq:hornetq-jms-client:2.4.1.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.hornetq/hornetq\-jms\-client@.*$
+		</packageUrl>
+		<vulnerabilityName>CVE-2016-4978</vulnerabilityName>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.hornetq:hornetq-jms-client:2.4.1.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.hornetq/hornetq\-jms\-client@.*$
+		</packageUrl>
+		<vulnerabilityName>CVE-2021-20318</vulnerabilityName>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.hornetq:hornetq-jms-client:2.4.1.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.hornetq/hornetq\-jms\-client@.*$
+		</packageUrl>
+		<cve>CVE-2014-3599</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.hornetq:hornetq-journal:2.4.1.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.hornetq/hornetq\-journal@.*$
+		</packageUrl>
+		<cve>CVE-2014-3599</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.hornetq:hornetq-native:2.4.1.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.hornetq/hornetq\-native@.*$
+		</packageUrl>
+		<cve>CVE-2014-3599</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$
+		</packageUrl>
+		<cve>CVE-2019-20444</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$
+		</packageUrl>
+		<cve>CVE-2019-20445</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$
+		</packageUrl>
+		<cve>CVE-2015-2156</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$
+		</packageUrl>
+		<cve>CVE-2019-16869</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$
+		</packageUrl>
+		<cve>CVE-2021-37136</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$
+		</packageUrl>
+		<cve>CVE-2021-37137</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$
+		</packageUrl>
+		<cve>CVE-2022-41881</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$
+		</packageUrl>
+		<cve>CVE-2021-43797</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$
+		</packageUrl>
+		<cve>CVE-2022-41915</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$
+		</packageUrl>
+		<cve>CVE-2021-21295</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$
+		</packageUrl>
+		<cve>CVE-2021-21409</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$
+		</packageUrl>
+		<cve>CVE-2021-21290</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$
+		</packageUrl>
+		<cve>CVE-2022-24823</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$
+		</packageUrl>
+		<cve>CVE-2014-3488</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss.remoting3:jboss-remoting:3.2.3.GA)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss\.remoting3/jboss\-remoting@.*$
+		</packageUrl>
+		<vulnerabilityName>CVE-2019-19343</vulnerabilityName>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   file name: jboss-client.jar (shaded: org.jboss.remoting:jboss-remoting:4.0.0.Final)
+   In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<packageUrl regex="true">^pkg:maven/org\.jboss\.remoting/jboss\-remoting@.*$
+		</packageUrl>
+		<vulnerabilityName>CVE-2019-19343</vulnerabilityName>
+	</suppress>
+
+	<suppress>
+		<notes><![CDATA[
+   		file name: xercesImpl-2.9.1.jar
+   		In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<filePath regex="true">.*xercesImpl-2.9.1.jar.*</filePath>
+		<cve>CVE-2022-23437</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[
+   		file name: xercesImpl-2.9.1.jar
+   		In GovPay questa libreria non viene utilizzata a runtime ma solo per generare l'installer.
+   ]]></notes>
+		<filePath regex="true">.*xercesImpl-2.9.1.jar.*</filePath>
+		<cve>CVE-2018-2799</cve>
+	</suppress>
+	<suppress>
+	   <notes><![CDATA[
+	   file name: jboss-client.jar (shaded: org.jboss.netty:netty:3.2.6.Final)
+	   ]]></notes>
+	   <packageUrl regex="true">^pkg:maven/org\.jboss\.netty/netty@.*$</packageUrl>
+	   <vulnerabilityName>CVE-2020-11612</vulnerabilityName>
+	</suppress>
+</suppressions>

@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -26,7 +26,7 @@ import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTO.FormatoAvviso;
 import it.govpay.core.dao.anagrafica.dto.GetAvvisoDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
 import it.govpay.core.dao.pagamenti.exception.PendenzaNonTrovataException;
-import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.NotAcceptableException;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.model.Acl.Diritti;
 import it.govpay.model.Acl.Servizio;
@@ -151,12 +151,12 @@ public class AvvisiController extends BaseController {
 				return this.handleResponseOk(Response.status(Status.OK).entity(avviso.toJSON(null)),transactionId).build();
 			} else {
 				// formato non accettato
-				throw new NotAuthorizedException("Avviso di pagamento non disponibile nel formato richiesto");
+				throw new NotAcceptableException("Avviso di pagamento non disponibile nel formato indicato nell'header Accept, ricevuto: '"+accept+"', consentiti: {'application/pdf','application/json'}");
 			}
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
 	}
 

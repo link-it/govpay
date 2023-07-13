@@ -43,6 +43,7 @@ import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.converter.EventoConverter;
 import it.govpay.bd.pagamento.filters.EventiFilter;
 import it.govpay.bd.pagamento.filters.EventiFilter.VISTA;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.dao.jdbc.JDBCEventoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.EventoFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.VistaEventiVersamentoFieldConverter;
@@ -99,6 +100,8 @@ public class EventiBD extends BasicBD {
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
@@ -277,10 +280,11 @@ public class EventiBD extends BasicBD {
 			}
 			
 			Long count = 0L;
-			for (List<Object> row : nativeQuery) {
-				int pos = 0;
-				count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
-			}
+			if(nativeQuery != null)
+				for (List<Object> row : nativeQuery) {
+					int pos = 0;
+					count = BasicBD.getValueOrNull(row.get(pos++), Long.class);
+				}
 			
 			return count.longValue();
 		} catch (NotImplementedException | SQLQueryObjectException | ExpressionException e) {
@@ -338,6 +342,8 @@ public class EventiBD extends BasicBD {
 			return eventoLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {
 				this.closeConnection();
@@ -392,6 +398,9 @@ public class EventiBD extends BasicBD {
 			fields.add(it.govpay.orm.Evento.model().CCP);
 			fields.add(it.govpay.orm.Evento.model().COD_DOMINIO);
 			fields.add(it.govpay.orm.Evento.model().ID_SESSIONE);
+			fields.add(it.govpay.orm.Evento.model().SEVERITA);
+			fields.add(it.govpay.orm.Evento.model().CLUSTER_ID);
+			fields.add(it.govpay.orm.Evento.model().TRANSACTION_ID);
 
 			List<Map<String, Object>> select = new ArrayList<Map<String,Object>>();
 
@@ -419,6 +428,8 @@ public class EventiBD extends BasicBD {
 		} catch (NotFoundException e) {
 			return new ArrayList<>();
 		} catch (NotImplementedException | ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

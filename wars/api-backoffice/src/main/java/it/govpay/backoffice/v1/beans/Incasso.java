@@ -6,9 +6,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "dominio",
 "idIncasso",
@@ -22,44 +22,52 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "iuv",
 "idFlusso",
 "riscossioni",
+"stato",
+"descrizioneStato",
 })
 public class Incasso extends it.govpay.core.beans.JSONSerializable {
-  
+
   @JsonProperty("dominio")
   private DominioIndex dominio = null;
-  
+
   @JsonProperty("idIncasso")
   private String idIncasso = null;
-  
+
   @JsonProperty("causale")
   private String causale = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("data")
   private Date data = null;
-  
+
   @JsonProperty("dataValuta")
   private Date dataValuta = null;
-  
+
   @JsonProperty("dataContabile")
   private Date dataContabile = null;
-  
+
   @JsonProperty("ibanAccredito")
   private String ibanAccredito = null;
-  
+
   @JsonProperty("sct")
   private String sct = null;
-  
+
   @JsonProperty("riscossioni")
   private List<Riscossione> riscossioni = new ArrayList<>();
 
   @JsonProperty("iuv")
   private String iuv = null;
-  
+
   @JsonProperty("idFlusso")
   private String idFlusso = null;
+  
+  @JsonProperty("stato")
+  private StatoIncasso stato = null;
+  
+  @JsonProperty("descrizioneStato")
+  private String descrizioneStato = null;
   
   /**
    **/
@@ -212,7 +220,7 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
 
   @JsonProperty("riscossioni")
   public List<Riscossione> getRiscossioni() {
-    return this.riscossioni;
+    return riscossioni;
   }
   public void setRiscossioni(List<Riscossione> riscossioni) {
     this.riscossioni = riscossioni;
@@ -250,6 +258,37 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
     this.idFlusso = idFlusso;
   }
 
+  /**
+   **/
+  public Incasso stato(StatoIncasso stato) {
+    this.stato = stato;
+    return this;
+  }
+
+  @JsonProperty("stato")
+  public StatoIncasso getStato() {
+    return stato;
+  }
+  public void setStato(StatoIncasso stato) {
+    this.stato = stato;
+  }
+
+  /**
+   * Descrizione estesta dello stato della riconciliazione
+   **/
+  public Incasso descrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+    return this;
+  }
+
+  @JsonProperty("descrizioneStato")
+  public String getDescrizioneStato() {
+    return descrizioneStato;
+  }
+  public void setDescrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -270,15 +309,17 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(sct, incasso.sct) &&
         Objects.equals(riscossioni, incasso.riscossioni) &&
     	Objects.equals(iuv, incasso.iuv) &&
-    	Objects.equals(idFlusso, incasso.idFlusso);
+    	Objects.equals(idFlusso, incasso.idFlusso) &&
+        Objects.equals(stato, incasso.stato) &&
+        Objects.equals(descrizioneStato, incasso.descrizioneStato);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(dominio, idIncasso, causale, importo, data, dataValuta, dataContabile, ibanAccredito, sct, riscossioni);
+    return Objects.hash(dominio, idIncasso, causale, importo, data, dataValuta, dataContabile, ibanAccredito, sct, riscossioni, iuv, idFlusso, stato, descrizioneStato);
   }
 
-  public static Incasso parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static Incasso parse(String json) throws IOException {
     return parse(json, Incasso.class);
   }
 
@@ -291,7 +332,7 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Incasso {\n");
-    
+
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    idIncasso: ").append(toIndentedString(idIncasso)).append("\n");
     sb.append("    causale: ").append(toIndentedString(causale)).append("\n");
@@ -304,6 +345,8 @@ public class Incasso extends it.govpay.core.beans.JSONSerializable {
     sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");
     sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
     sb.append("    idFlusso: ").append(this.toIndentedString(this.idFlusso)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");
     sb.append("}");
     return sb.toString();
   }

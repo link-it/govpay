@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rpt;
@@ -26,11 +24,12 @@ import it.govpay.model.Versamento.StatoPagamento;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.Versamento.TipoSogliaVersamento;
 import it.govpay.model.Versamento.TipologiaTipoVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 
 public class RendicontazioneConverter {
 
-	public static Rendicontazione toDTO(it.govpay.orm.VistaRendicontazione vo) throws ServiceException {
+	public static Rendicontazione toDTO(it.govpay.orm.VistaRendicontazione vo) throws CodificaInesistenteException, UnsupportedEncodingException {
 		Rendicontazione dto = new Rendicontazione();
 		dto.setId(vo.getId());
 
@@ -121,11 +120,7 @@ public class RendicontazioneConverter {
 			versamento.setDataValidita(vo.getVrsDataValidita());
 			versamento.setDataScadenza(vo.getVrsDataScadenza());
 			versamento.setDataUltimoAggiornamento(vo.getVrsDataOraUltimoAgg());
-			try {
 				versamento.setCausaleVersamento(vo.getVrsCausaleVersamento());
-			} catch (UnsupportedEncodingException e) {
-				throw new ServiceException(e);
-			}
 			Anagrafica debitore = new Anagrafica();
 			if(vo.getVrsDebitoreTipo()!=null)
 				debitore.setTipo(TIPO.valueOf(vo.getVrsDebitoreTipo()));
@@ -203,6 +198,14 @@ public class RendicontazioneConverter {
 					versamento.setTipoSoglia(TipoSogliaVersamento.OLTRE);
 					String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.OLTRE.toString())+ TipoSogliaVersamento.OLTRE.toString().length());
 					versamento.setGiorniSoglia(Integer.parseInt(gg));
+				} else if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.RIDOTTO.toString())) {
+					versamento.setTipoSoglia(TipoSogliaVersamento.RIDOTTO);
+//					String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.RIDOTTO.toString())+ TipoSogliaVersamento.RIDOTTO.toString().length());
+//					versamento.setGiorniSoglia(Integer.parseInt(gg));
+				} else if(vo.getVrsCodRata().startsWith(TipoSogliaVersamento.SCONTATO.toString())) {
+					versamento.setTipoSoglia(TipoSogliaVersamento.SCONTATO);
+//					String gg = vo.getVrsCodRata().substring(vo.getVrsCodRata().indexOf(TipoSogliaVersamento.SCONTATO.toString())+ TipoSogliaVersamento.SCONTATO.toString().length());
+//					versamento.setGiorniSoglia(Integer.parseInt(gg));
 				} else {
 					versamento.setNumeroRata(Integer.parseInt(vo.getVrsCodRata()));
 				}
@@ -291,7 +294,7 @@ public class RendicontazioneConverter {
 
 
 	public static List<Rendicontazione> toDTO(
-			List<it.govpay.orm.VistaRendicontazione> rendicontazioneVOLst) throws ServiceException {
+			List<it.govpay.orm.VistaRendicontazione> rendicontazioneVOLst) throws CodificaInesistenteException, UnsupportedEncodingException {
 		List<Rendicontazione> dto = new ArrayList<>();
 		for(it.govpay.orm.VistaRendicontazione vo : rendicontazioneVOLst) {
 			dto.add(toDTO(vo));

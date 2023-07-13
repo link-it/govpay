@@ -35,15 +35,17 @@ import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
-import org.openspcoop2.utils.json.ValidationException;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.serialization.IOException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
+import org.openspcoop2.utils.service.context.IContext;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.Dominio;
 //import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Pagamento;
@@ -67,6 +69,7 @@ import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.business.Applicazione;
+import it.govpay.core.business.Operazioni;
 import it.govpay.core.business.model.Iuv;
 import it.govpay.core.business.model.PrintAvvisoDTOResponse;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
@@ -90,6 +93,7 @@ import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -102,7 +106,9 @@ import it.govpay.model.StatoPendenza;
 import it.govpay.model.TipoVersamento;
 import it.govpay.model.Utenza.TIPO_UTENZA;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.Versamento.TipologiaTipoVersamento;
 import it.govpay.orm.PagamentoPortaleVersamento;
+import it.govpay.orm.RPT;
 
 public class PendenzeDAO extends BaseDAO{
 
@@ -140,29 +146,29 @@ public class PendenzeDAO extends BaseDAO{
 			filter.setDataFine(listaPendenzaDTO.getDataA());
 			if(listaPendenzaDTO.getStato()!=null) {
 				try {
-					it.govpay.bd.model.Versamento.StatoVersamento statoVersamento = null;
+					it.govpay.model.Versamento.StatoVersamento statoVersamento = null;
 
 					switch(listaPendenzaDTO.getStato()) {
-					case ANNULLATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANNULLATO;
+					case ANNULLATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANNULLATO;
 					break;
-					case ESEGUITA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ESEGUITO;
+					case ESEGUITA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ESEGUITO;
 					break;
-					case ESEGUITA_PARZIALE: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
+					case ESEGUITA_PARZIALE: statoVersamento = it.govpay.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
 					break;
 					case NON_ESEGUITA: {
-						statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 						filter.setAbilitaFiltroNonScaduto(true);
 					}
 					break;
 					case SCADUTA: {
-						statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 						filter.setAbilitaFiltroScaduto(true);
 					}
 					break;
-					case INCASSATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.INCASSATO;
-					default:
-						break;
-
+					case INCASSATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.INCASSATO;
+					break;
+					case ANOMALA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANOMALO;
+					break;
 					}
 					filter.setStatoVersamento(statoVersamento);
 				} catch(Exception e) {
@@ -233,29 +239,29 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setDataFine(listaPendenzaDTO.getDataA());
 		if(listaPendenzaDTO.getStato()!=null) {
 			try {
-				it.govpay.bd.model.Versamento.StatoVersamento statoVersamento = null;
+				it.govpay.model.Versamento.StatoVersamento statoVersamento = null;
 
 				switch(listaPendenzaDTO.getStato()) {
-				case ANNULLATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANNULLATO;
+				case ANNULLATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANNULLATO;
 				break;
-				case ESEGUITA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ESEGUITO;
+				case ESEGUITA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ESEGUITO;
 				break;
-				case ESEGUITA_PARZIALE: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
+				case ESEGUITA_PARZIALE: statoVersamento = it.govpay.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
 				break;
 				case NON_ESEGUITA: {
-					statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+					statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 					filter.setAbilitaFiltroNonScaduto(true);
 				}
 				break;
 				case SCADUTA: {
-					statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+					statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 					filter.setAbilitaFiltroScaduto(true);
 				}
 				break;
-				case INCASSATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.INCASSATO;
-				default:
-					break;
-
+				case INCASSATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.INCASSATO;
+				break;
+				case ANOMALA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANOMALO;
+				break;
 				}
 				filter.setStatoVersamento(statoVersamento);
 			} catch(Exception e) {
@@ -286,11 +292,11 @@ public class PendenzeDAO extends BaseDAO{
 		filter.setMostraSpontaneiNonPagati(listaPendenzaDTO.getMostraSpontaneiNonPagati());
 
 		Long count = null;
-		
+
 		if(listaPendenzaDTO.isEseguiCount()) {
-			 count = versamentiBD.count(filter);
+			count = versamentiBD.count(filter);
 		}
-		
+
 		List<LeggiPendenzaDTOResponse> resList = new ArrayList<>();
 
 		if(listaPendenzaDTO.isEseguiFindAll()) {
@@ -336,29 +342,29 @@ public class PendenzeDAO extends BaseDAO{
 			filter.setDataFine(listaPendenzaDTO.getDataA());
 			if(listaPendenzaDTO.getStato()!=null) {
 				try {
-					it.govpay.bd.model.Versamento.StatoVersamento statoVersamento = null;
+					it.govpay.model.Versamento.StatoVersamento statoVersamento = null;
 
 					switch(listaPendenzaDTO.getStato()) {
-					case ANNULLATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ANNULLATO;
+					case ANNULLATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANNULLATO;
 					break;
-					case ESEGUITA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.ESEGUITO;
+					case ESEGUITA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ESEGUITO;
 					break;
-					case ESEGUITA_PARZIALE: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
+					case ESEGUITA_PARZIALE: statoVersamento = it.govpay.model.Versamento.StatoVersamento.PARZIALMENTE_ESEGUITO;
 					break;
 					case NON_ESEGUITA: {
-						statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 						filter.setAbilitaFiltroNonScaduto(true);
 					}
 					break;
 					case SCADUTA: {
-						statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.NON_ESEGUITO;
+						statoVersamento = it.govpay.model.Versamento.StatoVersamento.NON_ESEGUITO;
 						filter.setAbilitaFiltroScaduto(true);
 					}
 					break;
-					case INCASSATA: statoVersamento = it.govpay.bd.model.Versamento.StatoVersamento.INCASSATO;
-					default:
-						break;
-
+					case INCASSATA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.INCASSATO;
+					break;
+					case ANOMALA: statoVersamento = it.govpay.model.Versamento.StatoVersamento.ANOMALO;
+					break;
 					}
 					filter.setStatoVersamento(statoVersamento);
 				} catch(Exception e) {
@@ -389,9 +395,9 @@ public class PendenzeDAO extends BaseDAO{
 			filter.setMostraSpontaneiNonPagati(listaPendenzaDTO.getMostraSpontaneiNonPagati());
 
 			Long count = null;
-			
+
 			if(listaPendenzaDTO.isEseguiCount()) {
-				 count = versamentiBD.count(filter);
+				count = versamentiBD.count(filter);
 			}
 
 			List<LeggiPendenzaDTOResponse> resList = new ArrayList<>();
@@ -510,26 +516,97 @@ public class PendenzeDAO extends BaseDAO{
 				response.setRpts(findAll);
 			}
 
+			List<Allegato> allegati = versamento.getAllegati(versamentiBD);
+			response.setAllegati(allegati);
+
 			return response;
 		} finally {
 		}
 	}
 
-	public LeggiPendenzaDTOResponse leggiPendenzaByRiferimentoAvviso(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiPendenzaDTOResponse leggiPendenzaByRiferimentoAvviso(LeggiPendenzaDTO leggiPendenzaDTO) throws ServiceException,PendenzaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, GovPayException, UtilsException{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
 		Versamento versamento;
 		VersamentiBD versamentiBD = null;
 
 		try {
-			versamentiBD = new VersamentiBD(configWrapper);
-			
-			versamentiBD.setupConnection(configWrapper.getTransactionID());
-			
-			versamentiBD.setAtomica(false);
-			
-			versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(configWrapper, leggiPendenzaDTO.getIdDominio()).getId(), IuvUtils.toIuv(leggiPendenzaDTO.getNumeroAvviso())); 
+			// se il versamento utilizzare per creare l'avviso e' in sessione e non e' presente nel db allora lo inserisco 
+			if(leggiPendenzaDTO.getVersamentoFromSession() != null) {
+				boolean doCommit = true;
+				
+				IContext ctx = ContextThreadLocal.get();
+				Versamento versamentoFromSession = leggiPendenzaDTO.getVersamentoFromSession();
+				try {
+					versamentiBD = new VersamentiBD(configWrapper);
+					
+					versamentiBD.setupConnection(configWrapper.getTransactionID());
 
+					versamentiBD.setAtomica(false);
+
+					versamentiBD.setAutoCommit(false);
+
+					try {
+						it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(versamentoFromSession.getIdApplicazione(), versamentoFromSession.getCodVersamentoEnte(), true);
+
+						// il versamento viene aggiornato solo se e' in stato aggiornabile
+						if(versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
+							versamentiBD.updateVersamento(versamentoFromSession, true);
+
+							if(versamentoFromSession.getId()==null)
+								versamentoFromSession.setId(versamentoLetto.getId());
+
+							ctx.getApplicationLogger().log("versamento.aggioramentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
+						}
+					} catch (NotFoundException e) {
+						versamentiBD.insertVersamento(versamentoFromSession);
+						ctx.getApplicationLogger().log("versamento.inserimentoOk", versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione(), versamentoFromSession.getCodVersamentoEnte());
+						log.info("Versamento (" + versamentoFromSession.getCodVersamentoEnte() + ") dell'applicazione (" + versamentoFromSession.getApplicazione(configWrapper).getCodApplicazione() + ") inserito");
+
+						// avvio il batch di gestione dei promemoria
+						Operazioni.setEseguiGestionePromemoria();
+					}
+					if(doCommit) versamentiBD.commit();
+				} catch (Exception e) {
+					if(doCommit) {
+						if(versamentiBD != null)
+							versamentiBD.rollback();
+					}
+					if(e instanceof GovPayException)
+						throw (GovPayException) e;
+					else 
+						throw new GovPayException(e);
+				} finally {
+					if(versamentiBD != null)
+						versamentiBD.closeConnection();
+				}
+			}
+
+			versamentiBD = new VersamentiBD(configWrapper);
+
+			versamentiBD.setupConnection(configWrapper.getTransactionID());
+
+			versamentiBD.setAtomica(false);
+			try {
+				versamento = versamentiBD.getVersamentoByDominioIuv(AnagraficaManager.getDominio(configWrapper, leggiPendenzaDTO.getIdDominio()).getId(), IuvUtils.toIuv(leggiPendenzaDTO.getNumeroAvviso())); 
+			} catch (NotFoundException e) {
+				if(leggiPendenzaDTO.isVerificaAvviso()) {
+					it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
+					
+					String codDominio = leggiPendenzaDTO.getIdDominio();
+					String iuv = IuvUtils.toIuv(leggiPendenzaDTO.getNumeroAvviso());
+					
+					try {
+						versamento = versamentoBusiness.chiediVersamento(null, null, null, null, codDominio, iuv, TipologiaTipoVersamento.DOVUTO);
+					} catch (EcException | GovPayException e1) {
+						log.info("La pendenza ricercata tramite avviso [Dominio: "+codDominio+", NumeroAvviso: "+iuv+"] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: " + e1.getMessage());
+						throw new PendenzaNonTrovataException("La pendenza ricercata tramite avviso [Dominio: "+codDominio+", NumeroAvviso: "+iuv+"] non e' stata trovata nella base dati interna, la verifica tramite l'applicazione competente fallita con errore: " + e1.getMessage());
+					}
+				} else {
+					throw new PendenzaNonTrovataException(e.getMessage(), e);
+				}
+			}	
+			
 			Dominio dominio = versamento.getDominio(configWrapper);
 			TipoVersamento tipoVersamento = versamento.getTipoVersamento(configWrapper);
 			versamento.getTipoVersamentoDominio(configWrapper);
@@ -567,25 +644,33 @@ public class PendenzeDAO extends BaseDAO{
 			RptFilter newFilter2 = rptBD.newFilter();
 			newFilter2.setIdPendenza(versamento.getCodVersamentoEnte());
 			newFilter2.setCodApplicazione(versamento.getApplicazione(configWrapper).getCodApplicazione());
+			newFilter2.setFilterSortList(Arrays.asList(new FilterSortWrapper(RPT.model().DATA_MSG_RICHIESTA,SortOrder.DESC)));
 			long count = rptBD.count(newFilter2);
 
 			if(count > 0) {
 				List<Rpt> findAll = rptBD.findAll(newFilter2);
 
 				for (Rpt rpt : findAll) {
-					Versamento versamento2 = rpt.getVersamento(versamentiBD);
-					versamento2.getDominio(configWrapper);
-					versamento2.getUo(configWrapper);
-					versamento2.getApplicazione(configWrapper);
-					versamento2.getTipoVersamento(configWrapper);
-					versamento2.getTipoVersamentoDominio(configWrapper);
+					if(rpt.getIdVersamento() != versamento.getId().longValue()) { // leggo il versamento solo se non e' quello letto attualmente
+						Versamento versamento2 = rpt.getVersamento(versamentiBD);
+						versamento2.getDominio(configWrapper);
+						versamento2.getUo(configWrapper);
+						versamento2.getApplicazione(configWrapper);
+						versamento2.getTipoVersamento(configWrapper);
+						versamento2.getTipoVersamentoDominio(configWrapper);
+					} else {
+						rpt.setVersamento(versamento);
+					}
+				
 				}
 
 				response.setRpts(findAll);
 			}
 
-		} catch (NotFoundException e) {
-			throw new PendenzaNonTrovataException(e.getMessage(), e);
+			List<Allegato> allegati = versamento.getAllegati(versamentiBD);
+			response.setAllegati(allegati);
+
+		
 		} catch (ValidationException e) {
 			throw new PendenzaNonTrovataException(e.getMessage(), e);
 		}  finally {
@@ -595,7 +680,7 @@ public class PendenzeDAO extends BaseDAO{
 		return response;
 	}
 
-	private void populateSingoloVersamento(BasicBD bd, BDConfigWrapper configWrapper, SingoloVersamento singoloVersamento, Versamento versamento) throws ServiceException, NotFoundException {
+	private void populateSingoloVersamento(BasicBD bd, BDConfigWrapper configWrapper, SingoloVersamento singoloVersamento, Versamento versamento) throws ServiceException {
 		singoloVersamento.getCodContabilita(configWrapper);
 		singoloVersamento.getIbanAccredito(configWrapper);
 		singoloVersamento.getTipoContabilita(configWrapper);
@@ -620,7 +705,7 @@ public class PendenzeDAO extends BaseDAO{
 		}
 	}
 
-	private void populatePagamento(Pagamento pagamento, SingoloVersamento singoloVersamento, BasicBD bd, BDConfigWrapper configWrapper) throws ServiceException, NotFoundException {
+	private void populatePagamento(Pagamento pagamento, SingoloVersamento singoloVersamento, BasicBD bd, BDConfigWrapper configWrapper) throws ServiceException {
 		pagamento.setSingoloVersamento(singoloVersamento);
 		pagamento.getRpt(bd);
 		pagamento.getDominio(configWrapper);
@@ -831,27 +916,23 @@ public class PendenzeDAO extends BaseDAO{
 	//	}
 
 	private StatoVersamento getNuovoStatoVersamento(PatchOp op) throws ValidationException {
-		String nuovoStatoPendenzaValue = (String) op.getValue();
-		StatoPendenza nuovoStatoPendenza = StatoPendenza.fromValue(nuovoStatoPendenzaValue);
-
-		if(nuovoStatoPendenza == null && StringUtils.isNotEmpty(nuovoStatoPendenzaValue))
+		if(op==null) 
+			throw new ValidationException("Richiesta patch non valida");
+		if(StatoPendenza.fromValue((String) op.getValue()) == null)
 			throw new ValidationException(MessageFormat.format(NUOVO_STATO_PENDENZA_NON_VALIDO, op.getPath()));
 
-		StatoVersamento nuovoStato = null;
-		switch (nuovoStatoPendenza) {
+		switch (StatoPendenza.fromValue((String) op.getValue())) {
 		case ANNULLATA:
-			nuovoStato = StatoVersamento.ANNULLATO;
-			break;
+			return StatoVersamento.ANNULLATO;
 		case NON_ESEGUITA:
-			nuovoStato = StatoVersamento.NON_ESEGUITO;
-			break;
+			return StatoVersamento.NON_ESEGUITO;
 		default:
-			throw new ValidationException(MessageFormat.format(NON_E_CONSENTITO_AGGIORNARE_LO_STATO_DI_UNA_PENDENZA_AD_0, nuovoStatoPendenza.name()));
+			throw new ValidationException(MessageFormat.format(NON_E_CONSENTITO_AGGIORNARE_LO_STATO_DI_UNA_PENDENZA_AD_0, op.getValue()));
 		}
-		return nuovoStato;
 	}
 
-	public PutPendenzaDTOResponse createOrUpdate(PutPendenzaDTO putVersamentoDTO) throws GovPayException, NotAuthorizedException, NotAuthenticatedException, ValidationException{ 
+	@SuppressWarnings("deprecation")
+	public PutPendenzaDTOResponse createOrUpdate(PutPendenzaDTO putVersamentoDTO) throws GovPayException, ValidationException{ 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 		PutPendenzaDTOResponse createOrUpdatePendenzaResponse = new PutPendenzaDTOResponse();
 		try {
@@ -907,6 +988,7 @@ public class PendenzeDAO extends BaseDAO{
 		return createOrUpdatePendenzaResponse;
 	}
 
+	@SuppressWarnings("deprecation")
 	public PutPendenzaDTOResponse createOrUpdateCustom(PutPendenzaDTO putVersamentoDTO) throws GovPayException, 
 	NotAuthorizedException, NotAuthenticatedException, ValidationException, DominioNonTrovatoException, TipoVersamentoNonTrovatoException, EcException, UnitaOperativaNonTrovataException, ApplicazioneNonTrovataException, UnprocessableEntityException{ 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
@@ -975,22 +1057,25 @@ public class PendenzeDAO extends BaseDAO{
 				json = VersamentoUtils.trasformazioneInputVersamentoModello4(log, dominio, codTipoVersamento, trasformazioneTipo, uo, json, queryParameters, pathParameters, headers, trasformazioneDefinizione);
 			}
 			Versamento chiediVersamento = null;
-			
+
 			log.debug("Json di input dopo validazione e trasformazione: ["+json+"]");
 
 			if(codApplicazione != null) {
 				chiediVersamento =  VersamentoUtils.inoltroInputVersamentoModello4(log, codDominio, codTipoVersamento, codUo, codApplicazione, json);
 			} else {
 				PendenzaPost pendenzaPost = PendenzaPost.parse(json);
-				
+
 				// imposto i dati idDominio, idTipoVersamento e idUnitaOperativa fornite nella URL di richiesta, sovrascrivendo eventuali valori impostati dalla trasformazione.
 				pendenzaPost.setIdDominio(codDominio);
 				pendenzaPost.setIdTipoPendenza(codTipoVersamento);
-				pendenzaPost.setIdUnitaOperativa(codUo);
-				
+				// sovrascrivo il codUO solo se mi e' stato passato nella URL di richiesta
+				if(codUo != null) {
+					pendenzaPost.setIdUnitaOperativa(codUo);
+				}
+
 				new PendenzaPostValidator(pendenzaPost).validate();
 
-				it.govpay.core.dao.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
+				it.govpay.core.beans.commons.Versamento versamentoCommons = TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(versamentoCommons.getCodVersamentoEnte());
 				((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(versamentoCommons.getCodApplicazione());
 				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento();
@@ -1061,6 +1146,8 @@ public class PendenzeDAO extends BaseDAO{
 			}
 
 		} catch (ServiceException e) {
+			throw new GovPayException(e);
+		} catch (it.govpay.core.exceptions.IOException e) {
 			throw new GovPayException(e);
 		}  finally {
 			if(versamentiBD != null)

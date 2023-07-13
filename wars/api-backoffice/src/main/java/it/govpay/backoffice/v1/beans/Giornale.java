@@ -2,21 +2,21 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "interfacce",
 })
 public class Giornale extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("interfacce")
   private GdeInterfacce interfacce = null;
-  
+
   /**
    **/
   public Giornale interfacce(GdeInterfacce interfacce) {
@@ -48,8 +48,8 @@ public class Giornale extends JSONSerializable implements IValidable {
   public int hashCode() {
     return Objects.hash(interfacce);
   }
-  
-  public static Giornale parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+
+  public static Giornale parse(String json) throws IOException {
 	    return parse(json, Giornale.class);
   }
 
@@ -62,7 +62,7 @@ public class Giornale extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Giornale {\n");
-    
+
     sb.append("    interfacce: ").append(toIndentedString(interfacce)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -78,7 +78,7 @@ public class Giornale extends JSONSerializable implements IValidable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
  	public void validate() throws ValidationException {
 	  ValidatorFactory vf = ValidatorFactory.newInstance();

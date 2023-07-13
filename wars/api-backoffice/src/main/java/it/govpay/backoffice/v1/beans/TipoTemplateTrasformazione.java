@@ -12,14 +12,14 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Indica il tipo di template da applicare per effettuare la trasformazione
  */
 public enum TipoTemplateTrasformazione {
-  
-  
-  
-  
+
+
+
+
   FREEMARKER("freemarker");
-  
-  
-  
+
+
+
 
   private String value;
 

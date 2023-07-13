@@ -10,5 +10,5 @@ public class ListaEntrate extends Lista<Entrata> {
 	public ListaEntrate(List<Entrata> risultati, URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(risultati, requestUri, count, pagina, limit);
 	}
-	
+
 }

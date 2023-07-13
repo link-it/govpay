@@ -2,9 +2,9 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "descrizione",
 "tipoContabilita",
@@ -12,19 +12,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "idEntrata",
 })
 public class TipoEntrata extends it.govpay.core.beans.JSONSerializable {
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("tipoContabilita")
   private TipoContabilita tipoContabilita = null;
-  
+
   @JsonProperty("codiceContabilita")
   private String codiceContabilita = null;
-  
+
   @JsonProperty("idEntrata")
   private String idEntrata = null;
-  
+
   /**
    **/
   public TipoEntrata descrizione(String descrizione) {
@@ -106,7 +106,7 @@ public class TipoEntrata extends it.govpay.core.beans.JSONSerializable {
     return Objects.hash(this.descrizione, this.tipoContabilita, this.codiceContabilita, this.idEntrata);
   }
 
-  public static TipoEntrata parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static TipoEntrata parse(String json) throws IOException {
     return parse(json, TipoEntrata.class);
   }
 
@@ -119,7 +119,7 @@ public class TipoEntrata extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoEntrata {\n");
-    
+
     sb.append("    descrizione: ").append(this.toIndentedString(this.descrizione)).append("\n");
     sb.append("    tipoContabilita: ").append(this.toIndentedString(this.tipoContabilita)).append("\n");
     sb.append("    codiceContabilita: ").append(this.toIndentedString(this.codiceContabilita)).append("\n");

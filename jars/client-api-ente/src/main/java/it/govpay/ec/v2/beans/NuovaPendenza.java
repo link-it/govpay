@@ -8,6 +8,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class NuovaPendenza   {
   
@@ -17,25 +18,25 @@ public class NuovaPendenza   {
   @Schema(description = "")
   private String idPendenza = null;
   
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private String idTipoPendenza = null;
   
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private String idDominio = null;
   
   @Schema(description = "")
   private String idUnitaOperativa = null;
   
-  @Schema(example = "Sanzione CdS n. abc00000", required = true, description = "Descrizione della pendenza")
+  @Schema(example = "Sanzione CdS n. abc00000", requiredMode = RequiredMode.REQUIRED, description = "Descrizione della pendenza")
  /**
    * Descrizione della pendenza  
   **/
   private String causale = null;
   
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private Soggetto soggettoPagatore = null;
   
-  @Schema(example = "10.01", required = true, description = "Importo della pendenza. Deve corrispondere alla somma delle singole voci.")
+  @Schema(example = "10.01", requiredMode = RequiredMode.REQUIRED, description = "Importo della pendenza. Deve corrispondere alla somma delle singole voci.")
  /**
    * Importo della pendenza. Deve corrispondere alla somma delle singole voci.  
   **/
@@ -110,8 +111,11 @@ public class NuovaPendenza   {
   @Schema(description = "")
   private ProprietaPendenza proprieta = null;
   
-  @Schema(required = true, description = "")
+  @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private List<NuovaVocePendenza> voci = new ArrayList<>();
+  
+  @Schema(description = "")
+  private List<NuovoAllegatoPendenza> allegati = null;
  /**
    * Get idA2A
    * @return idA2A
@@ -515,6 +519,29 @@ public class NuovaPendenza   {
     return this;
   }
 
+ /**
+   * Get allegati
+   * @return allegati
+  **/
+  @JsonProperty("allegati")
+  public List<NuovoAllegatoPendenza> getAllegati() {
+    return allegati;
+  }
+
+  public void setAllegati(List<NuovoAllegatoPendenza> allegati) {
+    this.allegati = allegati;
+  }
+
+  public NuovaPendenza allegati(List<NuovoAllegatoPendenza> allegati) {
+    this.allegati = allegati;
+    return this;
+  }
+
+  public NuovaPendenza addAllegatiItem(NuovoAllegatoPendenza allegatiItem) {
+    this.allegati.add(allegatiItem);
+    return this;
+  }
+
 
   @Override
   public String toString() {
@@ -543,6 +570,7 @@ public class NuovaPendenza   {
     sb.append("    dataPromemoriaScadenza: ").append(toIndentedString(dataPromemoriaScadenza)).append("\n");
     sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
+    sb.append("    allegati: ").append(toIndentedString(allegati)).append("\n");
     sb.append("}");
     return sb.toString();
   }

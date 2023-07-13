@@ -19,7 +19,7 @@
  */
 package it.govpay.model;
 
-public class Connettore extends Versionabile implements Cloneable{
+public class Connettore extends Versionabile {
 	
 	private static final long serialVersionUID = 1L;
 	public static final String P_TIPOAUTENTICAZIONE_NAME = "TIPOAUTENTICAZIONE";
@@ -38,6 +38,7 @@ public class Connettore extends Versionabile implements Cloneable{
 	public static final String P_URL_SERVIZI_AVVISATURA_NAME = "URLAVVISI";
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";
     public static final String P_VERSIONE = "VERSIONE";
+    public static final String P_SUBSCRIPTION_KEY_VALUE = "SUBSCRIPTION_KEY_VALUE";
 	
 	public enum EnumAuthType {
 		SSL, HTTPBasic, NONE
@@ -67,8 +68,29 @@ public class Connettore extends Versionabile implements Cloneable{
 	private String url;
 	private String urlServiziAvvisatura;
 	private boolean azioneInUrl;
+	private String subscriptionKeyValue;
 	
 	public Connettore() {
+	}
+	
+	public Connettore(Connettore src) {
+		this.azioneInUrl = src.azioneInUrl;
+		this.httpPassw = src.httpPassw;
+		this.httpUser = src.httpUser;
+		this.idConnettore = src.idConnettore;
+		this.sslKsLocation = src.sslKsLocation;
+		this.sslKsPasswd = src.sslKsPasswd;
+		this.sslKsType = src.sslKsType;
+		this.sslPKeyPasswd = src.sslPKeyPasswd;
+		this.sslTsLocation = src.sslTsLocation;
+		this.sslTsPasswd = src.sslTsPasswd;
+		this.sslTsType = src.sslTsType;
+		this.sslType = src.sslType;
+		this.subscriptionKeyValue = src.subscriptionKeyValue;
+		this.tipoAutenticazione = src.tipoAutenticazione;
+		this.tipoSsl = src.tipoSsl;
+		this.url = src.url;
+		this.urlServiziAvvisatura = src.urlServiziAvvisatura;
 	}
 		
 	public String getIdConnettore() {
@@ -170,9 +192,10 @@ public class Connettore extends Versionabile implements Cloneable{
 	public void setUrlServiziAvvisatura(String urlServiziAvvisatura) {
 		this.urlServiziAvvisatura = urlServiziAvvisatura;
 	}
-	
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
+	public String getSubscriptionKeyValue() {
+		return subscriptionKeyValue;
+	}
+	public void setSubscriptionKeyValue(String subscriptionKeyValue) {
+		this.subscriptionKeyValue = subscriptionKeyValue;
 	}
 }

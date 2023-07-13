@@ -23,6 +23,7 @@ import it.govpay.core.beans.tracciati.LinguaSecondaria;
 import it.govpay.core.beans.tracciati.ProprietaPendenza;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
+import it.govpay.core.exceptions.InvalidSwitchValueException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.LabelAvvisiProperties;
@@ -40,7 +41,7 @@ import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 public class AvvisoPagamentoV2Utils {
 
 	
-	public static AvvisoPagamentoInput fromVersamento(PrintAvvisoVersamentoDTO printAvviso, LinguaSecondaria secondaLinguaScelta) throws ServiceException, UtilsException {
+	public static AvvisoPagamentoInput fromVersamento(PrintAvvisoVersamentoDTO printAvviso, LinguaSecondaria secondaLinguaScelta) throws ServiceException, UtilsException, InvalidSwitchValueException {
 		it.govpay.bd.model.Versamento versamento = printAvviso.getVersamento();
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -89,7 +90,7 @@ public class AvvisoPagamentoV2Utils {
 		return input;
 	} 
 
-	public static AvvisoPagamentoInput fromDocumento(PrintAvvisoDocumentoDTO printAvviso, List<Versamento> versamenti, LinguaSecondaria secondaLinguaScelta, Logger log) throws ServiceException, UnprocessableEntityException, UtilsException { 
+	public static AvvisoPagamentoInput fromDocumento(PrintAvvisoDocumentoDTO printAvviso, List<Versamento> versamenti, LinguaSecondaria secondaLinguaScelta, Logger log) throws ServiceException, UnprocessableEntityException, UtilsException, InvalidSwitchValueException { 
 		Documento documento = printAvviso.getDocumento();
 		AvvisoPagamentoInput input = new AvvisoPagamentoInput();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
@@ -260,6 +261,9 @@ public class AvvisoPagamentoV2Utils {
 					if(secondaLinguaScelta != null)
 						rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_OLTRE, versamento.getGiorniSoglia()));
 					break;
+				case RIDOTTO:
+				case SCONTATO:
+					throw new InvalidSwitchValueException("Il tipo soglia ["+versamento.getTipoSoglia()+"] indicato per la rata ["+rata.getNumeroRata()+"] non e' valido negli avvisi di pagamento V2");
 				}
 				
 				rata.setImporto(versamento.getImportoTotale().doubleValue());
@@ -350,7 +354,7 @@ public class AvvisoPagamentoV2Utils {
 		return input;
 	}
 
-	public static RataAvviso getRata(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input, LinguaSecondaria secondaLinguaScelta, SimpleDateFormat sdfDataScadenza) throws ServiceException, UtilsException {
+	public static RataAvviso getRata(it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input, LinguaSecondaria secondaLinguaScelta, SimpleDateFormat sdfDataScadenza) throws ServiceException, UtilsException, InvalidSwitchValueException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		RataAvviso rata = new RataAvviso();
 		
@@ -367,6 +371,10 @@ public class AvvisoPagamentoV2Utils {
 			rata.setScadenza(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_RATA_ENTRO_IL, versamento.getNumeroRata()));
 			if(secondaLinguaScelta != null)
 				rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_RATA_ENTRO_IL, versamento.getNumeroRata()));
+			
+			rata.setScadenzaUnica(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_RATA_UNICA_ENTRO_IL));
+			if(secondaLinguaScelta != null)
+				rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_RATA_UNICA_ENTRO_IL));
 		}
 
 		boolean addDataValidita = true;
@@ -375,14 +383,23 @@ public class AvvisoPagamentoV2Utils {
 			switch (versamento.getTipoSoglia()) {
 			case ENTRO:
 				rata.setScadenza(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_ENTRO, versamento.getGiorniSoglia()));
-				if(secondaLinguaScelta != null)
-					rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_ENTRO, versamento.getGiorniSoglia()));
+				rata.setScadenzaUnica(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_RATA_UNICA_ENTRO_GIORNI, versamento.getGiorniSoglia()));
+				if(secondaLinguaScelta != null) {
+					rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_RATA_UNICA_ENTRO_GIORNI, versamento.getGiorniSoglia()));
+					rata.setScadenzaUnicaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_RATA_UNICA_ENTRO_GIORNI, versamento.getGiorniSoglia()));
+				}
 				break;
 			case OLTRE:
 				rata.setScadenza(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_OLTRE, versamento.getGiorniSoglia()));
-				if(secondaLinguaScelta != null)
+				rata.setScadenzaUnica(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_SOLUZIONE_UNICA_OLTRE_GIORNI, versamento.getGiorniSoglia()));
+				if(secondaLinguaScelta != null) {
 					rata.setScadenzaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_OLTRE, versamento.getGiorniSoglia()));
+					rata.setScadenzaUnicaTra(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_SOLUZIONE_UNICA_OLTRE_GIORNI, versamento.getGiorniSoglia()));
+				}
 				break;
+			case RIDOTTO:
+			case SCONTATO:
+				throw new InvalidSwitchValueException("Il tipo soglia ["+versamento.getTipoSoglia()+"] indicato per la rata ["+rata.getNumeroRata()+"] non e' valido negli avvisi di pagamento V2");
 			}
 			
 			addDataValidita = false; 
@@ -460,7 +477,7 @@ public class AvvisoPagamentoV2Utils {
 			}
 		}
 		
-		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));
+		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuvFromNumeroAvviso(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));
 		if(iuvGenerato.getQrCode() != null)
 			rata.setQrCode(new String(iuvGenerato.getQrCode()));
 
@@ -490,7 +507,7 @@ public class AvvisoPagamentoV2Utils {
 		
 		StringBuilder sb = new StringBuilder();
 
-		if(StringUtils.isNotEmpty(anagraficaUO.getUrlSitoWeb())) {
+		if(anagraficaUO != null && StringUtils.isNotEmpty(anagraficaUO.getUrlSitoWeb())) {
 			sb.append(anagraficaUO.getUrlSitoWeb());
 		} else if(StringUtils.isNotEmpty(anagraficaDominio.getUrlSitoWeb())) {
 			sb.append(anagraficaDominio.getUrlSitoWeb());
@@ -500,7 +517,7 @@ public class AvvisoPagamentoV2Utils {
 			sb.append("<br/>");
 		
 		boolean line2=false;
-		if(StringUtils.isNotEmpty(anagraficaUO.getTelefono())){
+		if(anagraficaUO != null && StringUtils.isNotEmpty(anagraficaUO.getTelefono())){
 			sb.append("Tel: ").append(anagraficaUO.getTelefono());
 			sb.append(" - ");
 			line2=true;
@@ -510,7 +527,7 @@ public class AvvisoPagamentoV2Utils {
 			line2=true;
 		} 
 		
-		if(StringUtils.isNotEmpty(anagraficaUO.getFax())){
+		if(anagraficaUO != null && StringUtils.isNotEmpty(anagraficaUO.getFax())){
 			sb.append("Fax: ").append(anagraficaUO.getFax());
 			line2=true;
 		} else if(StringUtils.isNotEmpty(anagraficaDominio.getFax())) {
@@ -520,16 +537,17 @@ public class AvvisoPagamentoV2Utils {
 		
 		if(line2) sb.append("<br/>");
 		
-		if(StringUtils.isNotEmpty(anagraficaUO.getPec())) {
-			sb.append("pec: ").append(anagraficaUO.getPec());
-		} else if(StringUtils.isNotEmpty(anagraficaUO.getEmail())){
-			sb.append("email: ").append(anagraficaUO.getEmail());
-		} else if(StringUtils.isNotEmpty(anagraficaDominio.getPec())) {
-			sb.append("pec: ").append(anagraficaDominio.getPec());
-		} else if(StringUtils.isNotEmpty(anagraficaDominio.getEmail())){
-			sb.append("email: ").append(anagraficaDominio.getEmail());
+		if(anagraficaUO != null) {
+			if(StringUtils.isNotEmpty(anagraficaUO.getPec())) {
+				sb.append("pec: ").append(anagraficaUO.getPec());
+			} else if(StringUtils.isNotEmpty(anagraficaUO.getEmail())){
+				sb.append("email: ").append(anagraficaUO.getEmail());
+			} else if(StringUtils.isNotEmpty(anagraficaDominio.getPec())) {
+				sb.append("pec: ").append(anagraficaDominio.getPec());
+			} else if(StringUtils.isNotEmpty(anagraficaDominio.getEmail())){
+				sb.append("email: ").append(anagraficaDominio.getEmail());
+			}
 		}
-
 		input.setInfoEnte(sb.toString());
 		// se e' presente un logo lo inserisco altrimemti verra' caricato il logo di default.
 		if(dominio.getLogo() != null && dominio.getLogo().length > 0)
@@ -565,17 +583,9 @@ public class AvvisoPagamentoV2Utils {
 			input.setNomeCognomeDestinatario(anagraficaDebitore.getRagioneSociale());
 			input.setCfDestinatario(anagraficaDebitore.getCodUnivoco().toUpperCase());
 
-			if(indirizzoDestinatario.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setIndirizzoDestinatario1(indirizzoDestinatario);
-			}else {
-				input.setIndirizzoDestinatario1(indirizzoDestinatario);
-			}
+			input.setIndirizzoDestinatario1(indirizzoDestinatario);
 
-			if(capCittaDebitore.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setIndirizzoDestinatario2(capCittaDebitore);
-			}else {
-				input.setIndirizzoDestinatario2(capCittaDebitore);
-			}
+			input.setIndirizzoDestinatario2(capCittaDebitore);
 		}
 	}
 	
@@ -602,6 +612,7 @@ public class AvvisoPagamentoV2Utils {
 		etichette.setCodiceCbill(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_CODICE_CBILL));
 		etichette.setCodiceFiscaleEnte(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_CODICE_FISCALE_ENTE));
 		etichette.setCome(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_COME));
+		etichette.setDove(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_DOVE));
 		etichette.setDescrizione(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_DESCRIZIONE));
 		etichette.setDestinatario(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_DESTINATARIO));
 		etichette.setDestinatarioAvviso(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_DESTINATARIO_AVVISO));
@@ -638,6 +649,7 @@ public class AvvisoPagamentoV2Utils {
 		etichette.setCodiceCbill(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_CODICE_CBILL));
 		etichette.setCodiceFiscaleEnte(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_CODICE_FISCALE_ENTE));
 		etichette.setCome(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_COME));
+		etichette.setDove(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_DOVE));
 		etichette.setDescrizione(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_DESCRIZIONE));
 		etichette.setDestinatario(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_DESTINATARIO));
 		etichette.setDestinatarioAvviso(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_DESTINATARIO_AVVISO));

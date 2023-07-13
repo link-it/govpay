@@ -2,9 +2,9 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "ragioneSociale",
 "indirizzo",
@@ -32,7 +32,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "servizioSecim",
 "servizioGovPay",
 "servizioHyperSicAPKappa",
+"servizioMaggioliJPPA",
 "intermediato",
+"tassonomiaPagoPA",
 "idDominio",
 "unitaOperative",
 "contiAccredito",
@@ -40,103 +42,109 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "tipiPendenza",
 })
 public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
-   
+
   @JsonProperty("ragioneSociale")
   private String ragioneSociale = null;
-  
+
   @JsonProperty("indirizzo")
   private String indirizzo = null;
-  
+
   @JsonProperty("civico")
   private String civico = null;
-  
+
   @JsonProperty("cap")
   private String cap = null;
-  
+
   @JsonProperty("localita")
   private String localita = null;
-  
+
   @JsonProperty("provincia")
   private String provincia = null;
-  
+
   @JsonProperty("nazione")
   private String nazione = null;
-  
+
   @JsonProperty("email")
   private String email = null;
-  
+
   @JsonProperty("pec")
   private String pec = null;
-  
+
   @JsonProperty("tel")
   private String tel = null;
-  
+
   @JsonProperty("fax")
   private String fax = null;
-  
+
   @JsonProperty("web")
   private String web = null;
-  
+
   @JsonProperty("gln")
   private String gln = null;
-  
+
   @JsonProperty("cbill")
   private String cbill = null;
-  
+
   @JsonProperty("iuvPrefix")
   private String iuvPrefix = null;
-  
+
   @JsonProperty("stazione")
   private String stazione = null;
-  
+
   @JsonProperty("auxDigit")
   private String auxDigit = null;
-  
+
   @JsonProperty("segregationCode")
   private String segregationCode = null;
-  
+
   @JsonProperty("logo")
   private String logo = null;
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   @JsonProperty("autStampaPosteItaliane")
   private String autStampaPosteItaliane = null;
-  
+
   @JsonProperty("area")
   private String area = null;
-  
+
   @JsonProperty("servizioMyPivot")
   private ConnettoreNotificaPagamentiMyPivot servizioMyPivot = null;
-  
+
   @JsonProperty("servizioSecim")
   private ConnettoreNotificaPagamentiSecim servizioSecim = null;
-  
+
   @JsonProperty("servizioGovPay")
   private ConnettoreNotificaPagamentiGovPay servizioGovPay = null;
-  
+
   @JsonProperty("servizioHyperSicAPKappa")
   private ConnettoreNotificaPagamentiHyperSicAPKappa servizioHyperSicAPKappa = null;
-  
+
+  @JsonProperty("servizioMaggioliJPPA")
+  private ConnettoreNotificaPagamentiMaggioliJPPA servizioMaggioliJPPA = null;
+
   @JsonProperty("intermediato")
   private Boolean intermediato = null;
-  
+
+  @JsonProperty("tassonomiaPagoPA")
+  private TassonomiaPagoPADominio tassonomiaPagoPA = null;
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("unitaOperative")
   private String unitaOperative = null;
-  
+
   @JsonProperty("contiAccredito")
   private String contiAccredito = null;
-  
+
   @JsonProperty("entrate")
   private String entrate = null;
-  
+
   @JsonProperty("tipiPendenza")
   private String tipiPendenza = null;
-  
+
   /**
    * Ragione sociale del beneficiario
    **/
@@ -550,6 +558,21 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   **/
+  public DominioIndex servizioMaggioliJPPA(ConnettoreNotificaPagamentiMaggioliJPPA servizioMaggioliJPPA) {
+    this.servizioMaggioliJPPA = servizioMaggioliJPPA;
+    return this;
+  }
+
+  @JsonProperty("servizioMaggioliJPPA")
+  public ConnettoreNotificaPagamentiMaggioliJPPA getServizioMaggioliJPPA() {
+    return servizioMaggioliJPPA;
+  }
+  public void setServizioMaggioliJPPA(ConnettoreNotificaPagamentiMaggioliJPPA servizioMaggioliJPPA) {
+    this.servizioMaggioliJPPA = servizioMaggioliJPPA;
+  }
+
+  /**
    * Indica se il creditore viene configurato per utilizzare una  stazione di intermediazione
    **/
   public DominioIndex intermediato(Boolean intermediato) {
@@ -558,11 +581,26 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
   }
 
   @JsonProperty("intermediato")
-  public Boolean Intermediato() {
+  public Boolean getIntermediato() {
     return intermediato;
   }
   public void setIntermediato(Boolean intermediato) {
     this.intermediato = intermediato;
+  }
+
+  /**
+   **/
+  public DominioIndex tassonomiaPagoPA(TassonomiaPagoPADominio tassonomiaPagoPA) {
+    this.tassonomiaPagoPA = tassonomiaPagoPA;
+    return this;
+  }
+
+  @JsonProperty("tassonomiaPagoPA")
+  public TassonomiaPagoPADominio getTassonomiaPagoPA() {
+    return tassonomiaPagoPA;
+  }
+  public void setTassonomiaPagoPA(TassonomiaPagoPADominio tassonomiaPagoPA) {
+    this.tassonomiaPagoPA = tassonomiaPagoPA;
   }
 
   /**
@@ -680,7 +718,9 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(servizioSecim, dominioIndex.servizioSecim) &&
         Objects.equals(servizioGovPay, dominioIndex.servizioGovPay) &&
         Objects.equals(servizioHyperSicAPKappa, dominioIndex.servizioHyperSicAPKappa) &&
+        Objects.equals(servizioMaggioliJPPA, dominioIndex.servizioMaggioliJPPA) &&
         Objects.equals(intermediato, dominioIndex.intermediato) &&
+        Objects.equals(tassonomiaPagoPA, dominioIndex.tassonomiaPagoPA) &&
         Objects.equals(idDominio, dominioIndex.idDominio) &&
         Objects.equals(unitaOperative, dominioIndex.unitaOperative) &&
         Objects.equals(contiAccredito, dominioIndex.contiAccredito) &&
@@ -690,10 +730,10 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa, intermediato, idDominio, unitaOperative, contiAccredito, entrate, tipiPendenza);
+    return Objects.hash(ragioneSociale, indirizzo, civico, cap, localita, provincia, nazione, email, pec, tel, fax, web, gln, cbill, iuvPrefix, stazione, auxDigit, segregationCode, logo, abilitato, autStampaPosteItaliane, area, servizioMyPivot, servizioSecim, servizioGovPay, servizioHyperSicAPKappa, servizioMaggioliJPPA, intermediato, tassonomiaPagoPA, idDominio, unitaOperative, contiAccredito, entrate, tipiPendenza);
   }
 
-  public static DominioIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static DominioIndex parse(String json) throws IOException {
     return parse(json, DominioIndex.class);
   }
 
@@ -706,7 +746,7 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class DominioIndex {\n");
-    
+
     sb.append("    ragioneSociale: ").append(this.toIndentedString(this.ragioneSociale)).append("\n");
     sb.append("    indirizzo: ").append(this.toIndentedString(this.indirizzo)).append("\n");
     sb.append("    civico: ").append(this.toIndentedString(this.civico)).append("\n");
@@ -733,7 +773,9 @@ public class DominioIndex extends it.govpay.core.beans.JSONSerializable {
     sb.append("    servizioSecim: ").append(toIndentedString(servizioSecim)).append("\n");
     sb.append("    servizioGovPay: ").append(toIndentedString(servizioGovPay)).append("\n");
     sb.append("    servizioHyperSicAPKappa: ").append(toIndentedString(servizioHyperSicAPKappa)).append("\n");
+    sb.append("    servizioMaggioliJPPA: ").append(toIndentedString(servizioMaggioliJPPA)).append("\n");
     sb.append("    intermediato: ").append(toIndentedString(intermediato)).append("\n");
+    sb.append("    tassonomiaPagoPA: ").append(toIndentedString(tassonomiaPagoPA)).append("\n");
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    unitaOperative: ").append(toIndentedString(unitaOperative)).append("\n");
     sb.append("    contiAccredito: ").append(toIndentedString(contiAccredito)).append("\n");

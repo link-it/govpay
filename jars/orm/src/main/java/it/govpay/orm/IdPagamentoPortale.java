@@ -38,6 +38,7 @@ import java.io.Serializable;
  * 			&lt;element name="idSessione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="srcVersanteIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataRichiesta" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -54,7 +55,8 @@ import java.io.Serializable;
   propOrder = {
   	"idSessione",
   	"idApplicazione",
-  	"srcVersanteIdentificativo"
+  	"srcVersanteIdentificativo",
+  	"dataRichiesta"
   }
 )
 
@@ -102,6 +104,14 @@ public class IdPagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imp
     this.srcVersanteIdentificativo = srcVersanteIdentificativo;
   }
 
+  public java.util.Date getDataRichiesta() {
+    return this.dataRichiesta;
+  }
+
+  public void setDataRichiesta(java.util.Date dataRichiesta) {
+    this.dataRichiesta = dataRichiesta;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -119,5 +129,10 @@ public class IdPagamentoPortale extends org.openspcoop2.utils.beans.BaseBean imp
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="srcVersanteIdentificativo",required=false,nillable=false)
   protected java.lang.String srcVersanteIdentificativo;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataRichiesta",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataRichiesta;
 
 }

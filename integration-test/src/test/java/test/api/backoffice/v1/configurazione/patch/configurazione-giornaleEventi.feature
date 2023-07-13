@@ -83,6 +83,16 @@ Background:
 						"log": "sempre",
 						"dump": "sempre"
 					}
+				},
+				"apiMaggioliJPPA": {
+					"letture": {
+						"log": "sempre",
+						"dump": "sempre"
+					},
+					"scritture": {
+						"log": "sempre",
+						"dump": "sempre"
+					}
 				}
 			}
 		}
@@ -184,6 +194,18 @@ Examples:
 | interfacce.apiBackendIO.scritture.dump | "sempre" |
 | interfacce.apiBackendIO.scritture.dump | "mai" |
 | interfacce.apiBackendIO.scritture.dump | "solo errore" |
+| interfacce.apiMaggioliJPPA.letture.log | "sempre" |
+| interfacce.apiMaggioliJPPA.letture.log | "mai" |
+| interfacce.apiMaggioliJPPA.letture.log | "solo errore" |
+| interfacce.apiMaggioliJPPA.letture.dump | "sempre" |
+| interfacce.apiMaggioliJPPA.letture.dump | "mai" |
+| interfacce.apiMaggioliJPPA.letture.dump | "solo errore" |
+| interfacce.apiMaggioliJPPA.scritture.log | "sempre" |
+| interfacce.apiMaggioliJPPA.scritture.log | "mai" |
+| interfacce.apiMaggioliJPPA.scritture.log | "solo errore" |
+| interfacce.apiMaggioliJPPA.scritture.dump | "sempre" |
+| interfacce.apiMaggioliJPPA.scritture.dump | "mai" |
+| interfacce.apiMaggioliJPPA.scritture.dump | "solo errore" |
 
 
 Scenario Outline: Errore sintassi della configurazione giornaleEventi (<field>)
@@ -244,6 +266,12 @@ Examples:
 | interfacce.apiBackendIO.scritture.log | log | 'xxxx' |
 | interfacce.apiBackendIO.scritture.dump | dump | 'xxxx' |
 | interfacce.apiBackendIO.scritture | scritture | null |
+| interfacce.apiMaggioliJPPA.letture.log | log | 'xxxx' |
+| interfacce.apiMaggioliJPPA.letture.dump | dump | 'xxxx' |
+| interfacce.apiMaggioliJPPA.letture | letture | null |
+| interfacce.apiMaggioliJPPA.scritture.log | log | 'xxxx' |
+| interfacce.apiMaggioliJPPA.scritture.dump | dump | 'xxxx' |
+| interfacce.apiMaggioliJPPA.scritture | scritture | null |
 | interfacce.prova | prova | 'xxxx' |
 
 

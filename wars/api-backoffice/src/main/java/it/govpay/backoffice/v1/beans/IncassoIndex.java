@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "dominio",
 "idIncasso",
@@ -17,44 +17,52 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 "dataContabile",
 "ibanAccredito",
 "sct",
+"stato",
+"descrizioneStato",
 "iuv",
 "idFlusso",
 })
 public class IncassoIndex extends it.govpay.core.beans.JSONSerializable {
-  
+
   @JsonProperty("dominio")
   private DominioIndex dominio = null;
-  
+
   @JsonProperty("idIncasso")
   private String idIncasso = null;
-  
+
   @JsonProperty("causale")
   private String causale = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("data")
   private Date data = null;
-  
+
   @JsonProperty("dataValuta")
   private Date dataValuta = null;
-  
+
   @JsonProperty("dataContabile")
   private Date dataContabile = null;
-  
+
   @JsonProperty("ibanAccredito")
   private String ibanAccredito = null;
-  
+
   @JsonProperty("sct")
   private String sct = null;
   
+  @JsonProperty("stato")
+  private StatoIncasso stato = null;
+  
+  @JsonProperty("descrizioneStato")
+  private String descrizioneStato = null;
+  
   @JsonProperty("iuv")
   private String iuv = null;
-  
+
   @JsonProperty("idFlusso")
   private String idFlusso = null;
-  
+
   /**
    **/
   public IncassoIndex dominio(DominioIndex dominio) {
@@ -198,6 +206,37 @@ public class IncassoIndex extends it.govpay.core.beans.JSONSerializable {
   }
 
   /**
+   **/
+  public IncassoIndex stato(StatoIncasso stato) {
+    this.stato = stato;
+    return this;
+  }
+
+  @JsonProperty("stato")
+  public StatoIncasso getStato() {
+    return stato;
+  }
+  public void setStato(StatoIncasso stato) {
+    this.stato = stato;
+  }
+
+  /**
+   * Descrizione estesta dello stato della riconciliazione
+   **/
+  public IncassoIndex descrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+    return this;
+  }
+
+  @JsonProperty("descrizioneStato")
+  public String getDescrizioneStato() {
+    return descrizioneStato;
+  }
+  public void setDescrizioneStato(String descrizioneStato) {
+    this.descrizioneStato = descrizioneStato;
+  }
+
+  /**
    * Identificativo univoco di riscossione.
    **/
   public IncassoIndex iuv(String iuv) {
@@ -247,16 +286,18 @@ public class IncassoIndex extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(dataContabile, incassoIndex.dataContabile) &&
         Objects.equals(ibanAccredito, incassoIndex.ibanAccredito) &&
         Objects.equals(sct, incassoIndex.sct) &&
+        Objects.equals(stato, incassoIndex.stato) &&
+        Objects.equals(descrizioneStato, incassoIndex.descrizioneStato) &&
     	Objects.equals(iuv, incassoIndex.iuv) &&
     	Objects.equals(idFlusso, incassoIndex.idFlusso);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(dominio, idIncasso, causale, importo, data, dataValuta, dataContabile, ibanAccredito, sct, iuv, idFlusso);
+    return Objects.hash(dominio, idIncasso, causale, importo, data, dataValuta, dataContabile, ibanAccredito, sct, stato, descrizioneStato, iuv, idFlusso);
   }
 
-  public static IncassoIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static IncassoIndex parse(String json) throws IOException {
     return parse(json, IncassoIndex.class);
   }
 
@@ -279,6 +320,8 @@ public class IncassoIndex extends it.govpay.core.beans.JSONSerializable {
     sb.append("    dataContabile: ").append(toIndentedString(dataContabile)).append("\n");
     sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
     sb.append("    sct: ").append(toIndentedString(sct)).append("\n");
+    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    descrizioneStato: ").append(toIndentedString(descrizioneStato)).append("\n");
     sb.append("    iuv: ").append(this.toIndentedString(this.iuv)).append("\n");
     sb.append("    idFlusso: ").append(this.toIndentedString(this.idFlusso)).append("\n");
     sb.append("}");

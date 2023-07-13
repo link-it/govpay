@@ -579,7 +579,6 @@ CREATE VIEW v_vrs_non_rnd AS
      LEFT JOIN incassi ON pagamenti.id_incasso = incassi.id
   WHERE rendicontazioni.id IS NULL;
   
-  
 -- 21/12/2021 Patch per la gestione del riferimento al pagamento di una rendicontazione che arriva prima della ricevuta.
 UPDATE rendicontazioni SET id_pagamento = pagamenti.id 
 	FROM fr, pagamenti 
@@ -602,8 +601,14 @@ update rendicontazioni set id_singolo_versamento=singoli_versamenti.id
 
 UPDATE rendicontazioni set stato='ANOMALA', anomalie='007101#Il pagamento riferito dalla rendicontazione non risulta presente in base dati.' where id_pagamento is null and esito=0;
 UPDATE rendicontazioni SET stato='ANOMALA', anomalie='007111#Il versamento risulta sconosciuto' WHERE stato='OK' AND id_singolo_versamento IS null;
+-- ALTRO INTERMEDIARIO Tutti gli spontanei non riferiti a miei pagamenti o pendenze
 UPDATE rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null where stato='ANOMALA' and char_length(iuv) not in (15,17) and id_pagamento is null and id_singolo_versamento is null ;
-UPDATE rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null where id in (select rendicontazioni.id from rendicontazioni join fr on fr.id=rendicontazioni.id_fr join domini on domini.cod_dominio=fr.cod_dominio and  rendicontazioni.stato = 'ANOMALA' and aux_digit='3' and length(iuv) <> 17 and (iuv not like ('0' || segregation_code || '%') and length(segregation_code::char) = 1 ) OR (iuv not like (segregation_code || '%') and length(segregation_code::char) = 2 ));
+-- ALTRO INTERMEDIARIO Tutti gli IUV con aux 3 che non hanno il giusto codice segregazione
+UPDATE rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null from fr, domini where fr.id=rendicontazioni.id_fr and domini.cod_dominio=fr.cod_dominio and rendicontazioni.stato = 'ANOMALA' and (aux_digit='3' and length(iuv) = 17 and ( (iuv not like ('0' || segregation_code || '%') and length(segregation_code::char) = 1 ) OR (iuv not like (segregation_code || '%') and  length(segregation_code::char) = 2 )));
+-- ALTRO INTERMEDIARIO Tutti gli IUV con aux 3 che non sono lunghi 17 e non sono spontanei
+UPDATE rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null from fr, domini where fr.id=rendicontazioni.id_fr and domini.cod_dominio=fr.cod_dominio and rendicontazioni.stato = 'ANOMALA' and aux_digit='3' and length(iuv) <> 17 and id_pagamento is null and id_singolo_versamento is null;
+-- ALTRO INTERMEDIARIO Tutti gli IUV con aux 0 che non sono lunghi 15 e non sono spontanei
+UPDATE rendicontazioni set stato='ALTRO_INTERMEDIARIO', anomalie=null from fr, domini where fr.id=rendicontazioni.id_fr and domini.cod_dominio=fr.cod_dominio and rendicontazioni.stato = 'ANOMALA' and aux_digit='0' and length(iuv) <> 15 and id_pagamento is null and id_singolo_versamento is null ;
 
 -- Aggiornamento di rendicontazioni che risultano corrette da approfondire con ulteriori verifiche.
 -- UPDATE rendicontazioni set stato='OK', anomalie=null where id in (select rendicontazioni.id from versamenti join singoli_versamenti on versamenti.id=singoli_versamenti.id_versamento join rendicontazioni on singoli_versamenti.id=rendicontazioni.id_singolo_versamento where stato='ANOMALA' and rendicontazioni.id_pagamento is not null and rendicontazioni.id_singolo_versamento is not null and stato_versamento='ESEGUITO');

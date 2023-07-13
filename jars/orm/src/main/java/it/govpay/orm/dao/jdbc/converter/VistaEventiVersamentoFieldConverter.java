@@ -333,6 +333,20 @@ public class VistaEventiVersamentoFieldConverter extends AbstractSQLFieldConvert
 				return "id_tracciato";
 			}
 		}
+		if(field.equals(Evento.model().CLUSTER_ID)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cluster_id";
+			}else{
+				return "cluster_id";
+			}
+		}
+		if(field.equals(Evento.model().TRANSACTION_ID)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".transaction_id";
+			}else{
+				return "transaction_id";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -459,6 +473,12 @@ public class VistaEventiVersamentoFieldConverter extends AbstractSQLFieldConvert
 		}
 		if(field.equals(Evento.model().ID_TRACCIATO.ID_TRACCIATO)){
 			return this.toTable(Evento.model().ID_TRACCIATO, returnAlias);
+		}
+		if(field.equals(Evento.model().CLUSTER_ID)){
+			return this.toTable(Evento.model(), returnAlias);
+		}
+		if(field.equals(Evento.model().TRANSACTION_ID)){
+			return this.toTable(Evento.model(), returnAlias);
 		}
 
 

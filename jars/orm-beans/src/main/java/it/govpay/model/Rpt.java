@@ -25,21 +25,21 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class Rpt extends BasicModel{
 	
 	private static final long serialVersionUID = 1L;
-	public static final String VERSIONE = "6.2.0";
+	public static final String VERSIONE_620 = "6.2.0";
 	public static final String codIntermediarioPspWISP20 = "97735020584"; 
 	public static final String codCanaleWISP20 = "97735020584_02"; 
 	public static final String codPspWISP20 = "AGID_01"; 
 	public static final TipoVersamento tipoVersamentoWISP20 = TipoVersamento.BONIFICO_BANCARIO_TESORERIA; 
 	public static final ModelloPagamento modelloPagamentoWISP20 = ModelloPagamento.IMMEDIATO_MULTIBENEFICIARIO; 
-	public static final int VERSIONE_ENCODED = 060200;
+	public static final int VERSIONE_620_ENCODED = 060200;
 	
 	public static final String CCP_NA = "n/a";
 	
@@ -78,7 +78,7 @@ public class Rpt extends BasicModel{
 			return this.codifica;
 		}
 		
-		public static FirmaRichiesta toEnum(String codifica) throws ServiceException {
+		public static FirmaRichiesta toEnum(String codifica) throws CodificaInesistenteException {
 			// FIX Bug Nodo che imposta firma vuota in caso di NESSUNA
 			if(codifica.isEmpty())
 				return NESSUNA;
@@ -88,7 +88,7 @@ public class Rpt extends BasicModel{
 					return p;
 			}
 			
-			throw new ServiceException("Codifica inesistente per FirmaRichiesta. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(FirmaRichiesta.values()));
+			throw new CodificaInesistenteException("Codifica inesistente per FirmaRichiesta. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(FirmaRichiesta.values()));
 		}
 	}
 	
@@ -111,21 +111,21 @@ public class Rpt extends BasicModel{
 			return this.codifica;
 		}
 
-		public static EsitoPagamento toEnum(String codifica) throws ServiceException {
+		public static EsitoPagamento toEnum(String codifica) throws CodificaInesistenteException {
 			try {
 				int codifica2 = Integer.parseInt(codifica);
 				return toEnum(codifica2);
 			} catch (NumberFormatException e) {
-				throw new ServiceException("Codifica inesistente per EsitoPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoPagamento.values()));
+				throw new CodificaInesistenteException("Codifica inesistente per EsitoPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoPagamento.values()));
 			}
 		}
 
-		public static EsitoPagamento toEnum(int codifica) throws ServiceException {
+		public static EsitoPagamento toEnum(int codifica) throws CodificaInesistenteException {
 			for(EsitoPagamento p : EsitoPagamento.values()){
 				if(p.getCodifica() == codifica)
 					return p;
 			}
-			throw new ServiceException("Codifica inesistente per EsitoPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoPagamento.values()));
+			throw new CodificaInesistenteException("Codifica inesistente per EsitoPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoPagamento.values()));
 		}
 	}
 	
@@ -171,14 +171,15 @@ public class Rpt extends BasicModel{
 		G,A,B;
 	}
 	
-	public enum Versione {
+	public enum VersioneRPT {
 		
+		SANP_321_V2,
 		SANP_240,
 		SANP_230;
 		
-		public static Versione toEnum(String s) {
+		public static VersioneRPT toEnum(String s) {
 			try {
-				return Versione.valueOf(s);
+				return VersioneRPT.valueOf(s);
 			} catch (IllegalArgumentException e) {
 				return SANP_230;
 			}
@@ -230,7 +231,7 @@ public class Rpt extends BasicModel{
 	
 	private String faultCode;
 	
-	private Versione versione;
+	private VersioneRPT versione;
 	
 	public TipoIdentificativoAttestante getTipoIdentificativoAttestante() {
 		return this.tipoIdentificativoAttestante;
@@ -468,10 +469,10 @@ public class Rpt extends BasicModel{
 	public void setFaultCode(String faultCode) {
 		this.faultCode = faultCode;
 	}
-	public Versione getVersione() {
+	public VersioneRPT getVersione() {
 		return versione;
 	}
-	public void setVersione(Versione versione) {
+	public void setVersione(VersioneRPT versione) {
 		this.versione = versione;
 	}
 

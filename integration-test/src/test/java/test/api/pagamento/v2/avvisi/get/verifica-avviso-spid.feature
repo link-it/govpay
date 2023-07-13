@@ -5,6 +5,8 @@ Background:
 * callonce read('classpath:utils/common-utils.feature')
 * callonce read('classpath:configurazione/v1/anagrafica.feature')
 
+* configure cookies = null
+
 Scenario: Verifica avviso precaricato cittadino
 
 * def idPendenza = getCurrentTimeMillis()
@@ -52,6 +54,11 @@ And header Accept = 'application/pdf'
 When method get
 Then status 200
 
+#Given url pagamentiBaseurl
+#And path '/avvisi', idDominio, numeroAvviso
+#And headers spidHeaders
+#When method get
+#Then status 406
 
 @test2
 Scenario: Verifica avviso non presente cittadino

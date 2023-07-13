@@ -24,15 +24,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.Connettore;
 import it.govpay.model.ConnettoreNotificaPagamenti;
 import it.govpay.model.Versionabile.Versione;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class ConnettoreNotificaPagamentiConverter {
 
-	public static ConnettoreNotificaPagamenti toConnettoreNotificaPagamentiDTO(List<it.govpay.orm.Connettore> connettoreLst) throws ServiceException {
+	public static ConnettoreNotificaPagamenti toConnettoreNotificaPagamentiDTO(List<it.govpay.orm.Connettore> connettoreLst) throws CodificaInesistenteException {
 		ConnettoreNotificaPagamenti dto = new ConnettoreNotificaPagamenti();
 		if(connettoreLst != null && !connettoreLst.isEmpty()) {
 			for(it.govpay.orm.Connettore connettore: connettoreLst){
@@ -109,6 +109,10 @@ public class ConnettoreNotificaPagamentiConverter {
 				
 				if(ConnettoreNotificaPagamenti.P_DOWNLOAD_BASE_URL.equals(connettore.getCodProprieta())) {
 					dto.setDownloadBaseURL(connettore.getValore());
+				}
+				
+				if(ConnettoreNotificaPagamenti.P_PRINCIPAL_MAGGIOLI.equals(connettore.getCodProprieta())) {
+					dto.setPrincipalMaggioli(connettore.getValore());
 				}
 				
 				if(ConnettoreNotificaPagamenti.P_INTERVALLO_CREAZIONE_TRACCIATO.equals(connettore.getCodProprieta())) {
@@ -398,6 +402,14 @@ public class ConnettoreNotificaPagamentiConverter {
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_VERSIONE);
 			vo.setValore(connettore.getVersione().getApiLabel());
+			voList.add(vo);
+		}
+		
+		if(connettore.getPrincipalMaggioli() != null && !connettore.getPrincipalMaggioli().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_PRINCIPAL_MAGGIOLI);
+			vo.setValore(connettore.getPrincipalMaggioli());
 			voList.add(vo);
 		}
 		

@@ -28,9 +28,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.crypt.Password;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.springframework.security.core.Authentication;
 
@@ -49,6 +47,8 @@ import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Utenza;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.commons.Dominio.Uo;
+import it.govpay.core.business.Operazioni;
 import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTO;
 import it.govpay.core.dao.anagrafica.dto.FindOperatoriDTOResponse;
 import it.govpay.core.dao.anagrafica.dto.LeggiOperatoreDTO;
@@ -62,12 +62,12 @@ import it.govpay.core.dao.anagrafica.exception.TipoVersamentoNonTrovatoException
 import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
-import it.govpay.core.dao.commons.Dominio.Uo;
 import it.govpay.core.dao.pagamenti.dto.OperatorePatchDTO;
 import it.govpay.core.dao.pagamenti.dto.ProfiloPatchDTO;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.model.IdUnitaOperativa;
 import it.govpay.model.PatchOp;
 
@@ -128,13 +128,17 @@ public class UtentiDAO extends BaseDAO{
 				UtenzaPatchUtils.patchProfiloOperatore(op, utenza, configWrapper);
 			}
 
-			AnagraficaManager.cleanCache();
+			//  elimino la entry dalla cache
+			AnagraficaManager.removeFromCache(userDetails.getOperatore());
+			AnagraficaManager.removeFromCache(utenza);
+			AnagraficaManager.removeFromCache(userDetails.getOperatore().getUtenza());
+			
+			// propago il reset agli altri nodi
+			Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 
 			return this.getProfilo(authentication);
 		}catch(NotFoundException e) {
 			throw new OperatoreNonTrovatoException("Non esiste un operatore associato all'utenza autenticata.");
-		} catch (UtilsException e) {
-			throw new ServiceException(e);
 		}finally {
 		}
 
@@ -176,8 +180,8 @@ public class UtentiDAO extends BaseDAO{
 		return domini;
 	}
 
-	public static List<it.govpay.core.dao.commons.Dominio> convertIdUnitaOperativeToDomini(List<it.govpay.bd.model.IdUnitaOperativa> dominiUo) {
-		List<it.govpay.core.dao.commons.Dominio> domini = new ArrayList<>();
+	public static List<it.govpay.core.beans.commons.Dominio> convertIdUnitaOperativeToDomini(List<it.govpay.bd.model.IdUnitaOperativa> dominiUo) {
+		List<it.govpay.core.beans.commons.Dominio> domini = new ArrayList<>();
 
 		Map<String, List<it.govpay.bd.model.IdUnitaOperativa>> mapUO = new HashMap<String, List<it.govpay.bd.model.IdUnitaOperativa>>();
 		for (it.govpay.bd.model.IdUnitaOperativa idUnita : dominiUo) {
@@ -194,7 +198,7 @@ public class UtentiDAO extends BaseDAO{
 		}
 
 		for (String codDominio : mapUO.keySet()) {
-			it.govpay.core.dao.commons.Dominio dominioCommons = new it.govpay.core.dao.commons.Dominio();
+			it.govpay.core.beans.commons.Dominio dominioCommons = new it.govpay.core.beans.commons.Dominio();
 			if(!"_NULL_".equals(codDominio)) {
 				List<Uo> uoList = new ArrayList<>();
 
@@ -223,7 +227,7 @@ public class UtentiDAO extends BaseDAO{
 		return domini;
 	}
 
-	public static it.govpay.core.dao.commons.Dominio convertIdUnitaOperativeToDomini(List<it.govpay.bd.model.IdUnitaOperativa> dominiUo, String codDominio) {
+	public static it.govpay.core.beans.commons.Dominio convertIdUnitaOperativeToDomini(List<it.govpay.bd.model.IdUnitaOperativa> dominiUo, String codDominio) {
 		Map<String, List<it.govpay.bd.model.IdUnitaOperativa>> mapUO = new HashMap<String, List<it.govpay.bd.model.IdUnitaOperativa>>();
 		for (it.govpay.bd.model.IdUnitaOperativa idUnita : dominiUo) {
 			String key = idUnita.getCodDominio() != null ? idUnita.getCodDominio() : "_NULL_";
@@ -240,10 +244,10 @@ public class UtentiDAO extends BaseDAO{
 
 		String key = codDominio != null ? codDominio : "_NULL_";
 
-		it.govpay.core.dao.commons.Dominio dominioCommons = new it.govpay.core.dao.commons.Dominio();
+		it.govpay.core.beans.commons.Dominio dominioCommons = new it.govpay.core.beans.commons.Dominio();
 
 		if(mapUO.containsKey(key)) {
-			dominioCommons = new it.govpay.core.dao.commons.Dominio();
+			dominioCommons = new it.govpay.core.beans.commons.Dominio();
 
 			if(!"_NULL_".equals(key)) {
 				List<Uo> uoList = new ArrayList<>();
@@ -277,11 +281,8 @@ public class UtentiDAO extends BaseDAO{
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
 
 		try {
-			operatoriBD = new OperatoriBD(configWrapper);
-
-			Operatore operatore = operatoriBD.getOperatore(leggiOperatore.getPrincipal());
 			LeggiOperatoreDTOResponse response = new LeggiOperatoreDTOResponse();
-			response.setOperatore(operatore);
+			response.setOperatore(AnagraficaManager.getOperatoreByPrincipal(configWrapper, leggiOperatore.getPrincipal()));
 			return response;
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e3) {
 			throw new OperatoreNonTrovatoException("Operatore " + leggiOperatore.getPrincipal() + " non censito in Anagrafica");
@@ -353,7 +354,7 @@ public class UtentiDAO extends BaseDAO{
 
 			if(putOperatoreDTO.getDomini() != null) {
 				List<IdUnitaOperativa> idDomini = new ArrayList<>();
-				for (it.govpay.core.dao.commons.Dominio dominioCommons : putOperatoreDTO.getDomini()) {
+				for (it.govpay.core.beans.commons.Dominio dominioCommons : putOperatoreDTO.getDomini()) {
 
 
 					String codDominio = dominioCommons.getCodDominio();
@@ -434,6 +435,13 @@ public class UtentiDAO extends BaseDAO{
 				}
 
 				operatoriBD.updateOperatore(putOperatoreDTO.getOperatore());
+				
+				//  elimino la entry dalla cache
+				AnagraficaManager.removeFromCache(putOperatoreDTO.getOperatore());
+				AnagraficaManager.removeFromCache(putOperatoreDTO.getOperatore().getUtenza()); 
+				
+				// propago il reset agli altri nodi
+				Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 			}
 		} catch (org.openspcoop2.generic_project.exception.NotFoundException e) {
 			throw new OperatoreNonTrovatoException(e.getMessage(), e);
@@ -455,14 +463,14 @@ public class UtentiDAO extends BaseDAO{
 			for(PatchOp op: patchDTO.getOp()) {
 				UtenzaPatchUtils.patchUtenza(op, operatore.getUtenza(), configWrapper);
 			}
-
-			//operatoriBD.updateOperatore(operatore);
-
 			AnagraficaManager.removeFromCache(operatore);
-			AnagraficaManager.removeFromCache(operatore.getUtenza()); 
+			AnagraficaManager.removeFromCache(operatore.getUtenza());
+			
+			// propago il reset agli altri nodi
+			Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 
-			operatore = operatoriBD.getOperatore(patchDTO.getIdOperatore());
-			leggiOperatoreDTOResponse.setOperatore(operatore);
+			// ricarico la entry dentro la cache
+			leggiOperatoreDTOResponse.setOperatore(AnagraficaManager.getOperatoreByPrincipal(configWrapper, patchDTO.getIdOperatore()));
 
 			return leggiOperatoreDTOResponse;
 		}catch(NotFoundException e) {

@@ -5,21 +5,64 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.5.1</version>
+		<version>3.7.3</version>
 	</parent>
 
 	<artifactId>pagopa-beans</artifactId>
 	<packaging>jar</packaging>
 	<name>GovPay - jars - pagoPA beans</name>
+        <profiles>
+                <profile>
+                        <id>java-11</id>
+                        <activation>
+                                <activeByDefault>true</activeByDefault>
+                        </activation>
+
+                        <dependencies>
+				<dependency>
+				        <groupId>javax.jws</groupId>
+				        <artifactId>jsr181-api</artifactId>
+				        <version>${jaxws-jsr181-api.version}</version>
+				        <exclusions>
+				                <exclusion>
+				                        <groupId>*</groupId>
+				                        <artifactId>*</artifactId>
+				                </exclusion>
+				        </exclusions>
+				</dependency>
+				<dependency>
+				        <groupId>javax.xml.ws</groupId>
+				        <artifactId>jaxws-api</artifactId>
+				        <version>${jaxws-api.version}</version>
+				        <exclusions>
+				                <exclusion>
+				                        <groupId>*</groupId>
+				                        <artifactId>*</artifactId>
+				                </exclusion>
+				        </exclusions>
+				</dependency>
+                        </dependencies>
+                </profile>
+        </profiles>
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>
 
 	<dependencies>
 		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>xml-adapters</artifactId>
+		</dependency>
+	
+		<dependency>
 			<groupId>org.apache.cxf.xjc-utils</groupId>
 			<artifactId>cxf-xjc-runtime</artifactId>
 			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -54,7 +97,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>2.4</version>
+				<version>2.5.0</version>
 				<executions>
 					<execution>
 						<id>xjc0</id>
@@ -87,25 +130,13 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${basedir}/src/main/resources/xsd/comuni/presa-in-carico-1.0.xsd</source>
-							</sources>
-							<packageName>gov.telematici.pagamenti.ws.presa_in_carico</packageName>
-						</configuration>
-					</execution>
-					<execution>
-						<id>xjc3</id>
-						<goals>
-							<goal>xjc</goal>
-						</goals>
-						<configuration>
-							<sources>
 								<source>${basedir}/src/main/resources/xsd/ec/QuadraturePA_1_0_6.xsd</source>
 							</sources>
 							<packageName>it.gov.digitpa.schemas._2011.pagamenti.quadrature</packageName>
 						</configuration>
 					</execution>
 					<execution>
-						<id>xjc4</id>
+						<id>xjc3</id>
 						<goals>
 							<goal>xjc</goal>
 						</goals>
@@ -117,7 +148,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>xjc5</id>
+						<id>xjc4</id>
 						<goals>
 							<goal>xjc</goal>
 						</goals>

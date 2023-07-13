@@ -6,13 +6,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -22,7 +21,7 @@ import it.govpay.core.dao.anagrafica.dto.GetDocumentoAvvisiDTO;
 import it.govpay.core.dao.anagrafica.dto.GetDocumentoAvvisiDTO.FormatoDocumento;
 import it.govpay.core.dao.anagrafica.dto.GetDocumentoAvvisiDTOResponse;
 import it.govpay.core.dao.pagamenti.AvvisiDAO;
-import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.exceptions.NotAcceptableException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -60,7 +59,7 @@ public class DocumentiController extends BaseController {
 			GetDocumentoAvvisiDTO getAvvisoDTO = new GetDocumentoAvvisiDTO(user, idDominio, numeroDocumento);
 			getAvvisoDTO.setCodApplicazione(AutorizzazioneUtils.getAuthenticationDetails(user).getApplicazione().getCodApplicazione()); // un'applicazione vede solo i suoi documenti
 			
-			String accept = MediaType.APPLICATION_JSON;
+			String accept = "";
 			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
 				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
 			}
@@ -106,12 +105,12 @@ public class DocumentiController extends BaseController {
 				return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(getAvvisoDTOResponse.getDocumentoPdf()).header("content-disposition", "attachment; filename=\""+getAvvisoDTOResponse.getFilenameDocumento()+"\""),transactionId).build();
 			} else {
 				// formato non accettato
-				throw new NotAuthorizedException("Documento di pagamento non disponibile nel formato richiesto");
+				throw new NotAcceptableException("Documento di pagamento non disponibile nel formato indicato nell'header Accept, ricevuto: '"+accept+"', consentito: 'application/pdf'");
 			}
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
 

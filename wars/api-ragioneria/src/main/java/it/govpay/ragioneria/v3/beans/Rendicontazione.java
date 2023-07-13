@@ -1,72 +1,60 @@
 package it.govpay.ragioneria.v3.beans;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.validation.constraints.*;
+
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import it.govpay.ragioneria.v3.beans.Riscossione;
-import it.govpay.ragioneria.v3.beans.Segnalazione;
-import it.govpay.ragioneria.v3.beans.StatoRendicontazione;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlEnumValue;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class Rendicontazione   {
-  
+
   @Schema(example = "RF23567483937849450550875", required = true, description = "Identificativo univoco di versamento")
  /**
-   * Identificativo univoco di versamento  
+   * Identificativo univoco di versamento
   **/
   private String iuv = null;
-  
+
   @Schema(example = "1234acdc", required = true, description = "Identificativo univoco di riscossione")
  /**
-   * Identificativo univoco di riscossione  
+   * Identificativo univoco di riscossione
   **/
   private String iur = null;
-  
+
   @Schema(example = "1", required = true, description = "Indice dell'occorrenza del pagamento all’interno della struttura datiSingoloPagamento della Ricevuta Telematica.")
  /**
-   * Indice dell'occorrenza del pagamento all’interno della struttura datiSingoloPagamento della Ricevuta Telematica.  
+   * Indice dell'occorrenza del pagamento all’interno della struttura datiSingoloPagamento della Ricevuta Telematica.
   **/
   private BigDecimal indice = null;
-  
+
   @Schema(example = "10.01", required = true, description = "Importo rendicontato.")
  /**
-   * Importo rendicontato.  
+   * Importo rendicontato.
   **/
   private BigDecimal importo = null;
-  
+
   @Schema(example = "0", required = true, description = "Codice di esito dell'operazione rendicontata  * 0 = Pagamento eseguito  * 3 = Pagamento revocato  * 9 = Pagamento eseguito in assenza di RPT ")
  /**
-   * Codice di esito dell'operazione rendicontata  * 0 = Pagamento eseguito  * 3 = Pagamento revocato  * 9 = Pagamento eseguito in assenza di RPT   
+   * Codice di esito dell'operazione rendicontata  * 0 = Pagamento eseguito  * 3 = Pagamento revocato  * 9 = Pagamento eseguito in assenza di RPT
   **/
   private BigDecimal esito = null;
-  
+
   @Schema(example = "Mon Dec 31 01:00:00 CET 2018", required = true, description = "Data di esito")
  /**
-   * Data di esito  
+   * Data di esito
   **/
   private Date data = null;
-  
+
   @Schema(required = true, description = "")
   private StatoRendicontazione stato = null;
-  
+
   @Schema(description = "")
   private List<Segnalazione> segnalazioni = null;
-  
+
   @Schema(description = "")
   private Riscossione riscossione = null;
  /**
@@ -146,7 +134,7 @@ public class Rendicontazione   {
   }
 
  /**
-   * Codice di esito dell&#x27;operazione rendicontata  * 0 &#x3D; Pagamento eseguito  * 3 &#x3D; Pagamento revocato  * 9 &#x3D; Pagamento eseguito in assenza di RPT 
+   * Codice di esito dell&#x27;operazione rendicontata  * 0 &#x3D; Pagamento eseguito  * 3 &#x3D; Pagamento revocato  * 9 &#x3D; Pagamento eseguito in assenza di RPT
    * @return esito
   **/
   @JsonProperty("esito")
@@ -249,7 +237,7 @@ public class Rendicontazione   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Rendicontazione {\n");
-    
+
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    iur: ").append(toIndentedString(iur)).append("\n");
     sb.append("    indice: ").append(toIndentedString(indice)).append("\n");

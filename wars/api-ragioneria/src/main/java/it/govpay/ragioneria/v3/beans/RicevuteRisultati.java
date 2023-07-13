@@ -8,33 +8,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class RicevuteRisultati   {
-  
+
   @Schema(description = "")
   private Dominio dominio = null;
-  
+
   @Schema(example = "RF23567483937849450550875", description = "Identificativo univoco di versamento")
  /**
-   * Identificativo univoco di versamento  
+   * Identificativo univoco di versamento
   **/
   private String iuv = null;
-  
+
   @Schema(example = "ab12345", description = "Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento")
  /**
-   * Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento  
+   * Corrisponde al `receiptId` oppure al `ccp` a seconda del modello di pagamento
   **/
   private String idRicevuta = null;
-  
+
   @Schema(description = "Data di acquisizione della ricevuta")
  /**
-   * Data di acquisizione della ricevuta  
+   * Data di acquisizione della ricevuta
   **/
   private Date data = null;
-  
-  @Schema(example = "PAGAMENTO_ESEGUITO", description = "Stato della richiesta di pagamento sulla piattaforma PagoPA.")
- /**
-   * Stato della richiesta di pagamento sulla piattaforma PagoPA.  
-  **/
-  private String stato = null;
+
+  @Schema(description = "")
+  private EsitoRpp esito = null;
  /**
    * Get dominio
    * @return dominio
@@ -94,7 +91,7 @@ public class RicevuteRisultati   {
    * @return data
   **/
   @JsonProperty("data")
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
   public Date getData() {
     return data;
   }
@@ -108,21 +105,21 @@ public class RicevuteRisultati   {
     return this;
   }
 
- /**
-   * Stato della richiesta di pagamento sulla piattaforma PagoPA.
-   * @return stato
+  /**
+   * Get esito
+   * @return esito
   **/
-  @JsonProperty("stato")
-  public String getStato() {
-    return stato;
+  @JsonProperty("esito")
+  public EsitoRpp getEsito() {
+    return esito;
   }
 
-  public void setStato(String stato) {
-    this.stato = stato;
+  public void setEsito(EsitoRpp esito) {
+    this.esito = esito;
   }
 
-  public RicevuteRisultati stato(String stato) {
-    this.stato = stato;
+  public RicevuteRisultati esito(EsitoRpp esito) {
+    this.esito = esito;
     return this;
   }
 
@@ -131,12 +128,12 @@ public class RicevuteRisultati   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class RicevuteRisultati {\n");
-    
+
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    iuv: ").append(toIndentedString(iuv)).append("\n");
     sb.append("    idRicevuta: ").append(toIndentedString(idRicevuta)).append("\n");
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
-    sb.append("    stato: ").append(toIndentedString(stato)).append("\n");
+    sb.append("    esito: ").append(toIndentedString(esito)).append("\n");
     sb.append("}");
     return sb.toString();
   }

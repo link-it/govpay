@@ -2,13 +2,12 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
@@ -22,24 +21,24 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "allegaPdf",
 })
 public class TipoPendenzaAvvisaturaMailPromemoriaAvviso extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("abilitato")
   private Boolean abilitato = null;
-  
+
   private TipoTemplateTrasformazione tipoEnum = null;
-  
+
   @JsonProperty("tipo")
   private String tipo = null;
-  
+
   @JsonProperty("oggetto")
   private Object oggetto = null;
-  
+
   @JsonProperty("messaggio")
   private Object messaggio = null;
-  
+
   @JsonProperty("allegaPdf")
   private Boolean allegaPdf = null;
-  
+
   /**
    * Indicazione la gestione del promemoria e' abilitata
    **/
@@ -49,7 +48,7 @@ public class TipoPendenzaAvvisaturaMailPromemoriaAvviso extends JSONSerializable
   }
 
   @JsonProperty("abilitato")
-  public Boolean Abilitato() {
+  public Boolean getAbilitato() {
     return abilitato;
   }
   public void setAbilitato(Boolean abilitato) {
@@ -70,7 +69,7 @@ public class TipoPendenzaAvvisaturaMailPromemoriaAvviso extends JSONSerializable
   public void setTipo(TipoTemplateTrasformazione tipoEnum) {
     this.tipoEnum = tipoEnum;
   }
-  
+
   public TipoPendenzaAvvisaturaMailPromemoriaAvviso tipo(String tipo) {
     this.tipo = tipo;
     return this;
@@ -125,7 +124,7 @@ public class TipoPendenzaAvvisaturaMailPromemoriaAvviso extends JSONSerializable
   }
 
   @JsonProperty("allegaPdf")
-  public Boolean AllegaPdf() {
+  public Boolean getAllegaPdf() {
     return allegaPdf;
   }
   public void setAllegaPdf(Boolean allegaPdf) {
@@ -153,8 +152,8 @@ public class TipoPendenzaAvvisaturaMailPromemoriaAvviso extends JSONSerializable
     return Objects.hash(abilitato, tipo, oggetto, messaggio, allegaPdf);
   }
 
-  public static TipoPendenzaAvvisaturaMailPromemoriaAvviso parse(String json) throws ServiceException, ValidationException {
-    return (TipoPendenzaAvvisaturaMailPromemoriaAvviso) parse(json, TipoPendenzaAvvisaturaMailPromemoriaAvviso.class);
+  public static TipoPendenzaAvvisaturaMailPromemoriaAvviso parse(String json) throws IOException {
+    return parse(json, TipoPendenzaAvvisaturaMailPromemoriaAvviso.class);
   }
 
   @Override
@@ -196,16 +195,16 @@ public void validate(boolean abilitatoObbligatorio) throws ValidationException {
 	ValidatorFactory vf = ValidatorFactory.newInstance();
 	if(abilitatoObbligatorio)
 		vf.getValidator("abilitato", abilitato).notNull();
-	
+
 //	int v = 0;
 //	v = this.oggetto != null ? v+1 : v;
 //	v = this.messaggio != null ? v+1 : v;
 //	v = this.tipo != null ? v+1 : v;
-//	
+//
 //	if(v != 3) {
 //	  throw new ValidationException("I campi 'tipo', 'oggetto' e 'messaggio' devono essere tutti valorizzati per definire il field 'promemoriaAvviso'.");
 //	}
-	
+
 	vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
 }
 }

@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.5.1</version>
+		<version>3.7.3</version>
 	</parent>
 
 	<artifactId>core</artifactId>
@@ -18,6 +18,48 @@
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>
+
+        <profiles>
+                <profile>
+                        <id>java-11</id>
+                        <activation>
+                                <activeByDefault>true</activeByDefault>
+                        </activation>
+
+                        <dependencies>
+                                <dependency>
+                                        <groupId>javax.xml.bind</groupId>
+                                        <artifactId>jaxb-api</artifactId>
+                                        <exclusions>
+                                                <exclusion>
+                                                        <groupId>*</groupId>
+                                                        <artifactId>*</artifactId>
+                                                </exclusion>
+                                        </exclusions>
+                                </dependency>
+                                <dependency>
+                                        <groupId>com.sun.xml.bind</groupId>
+                                        <artifactId>jaxb-core</artifactId>
+                                        <exclusions>
+                                                <exclusion>
+                                                        <groupId>*</groupId>
+                                                        <artifactId>*</artifactId>
+                                                </exclusion>
+                                        </exclusions>
+                                </dependency>
+                                <dependency>
+                                        <groupId>com.sun.xml.bind</groupId>
+                                        <artifactId>jaxb-impl</artifactId>
+                                        <exclusions>
+                                                <exclusion>
+                                                        <groupId>*</groupId>
+                                                        <artifactId>*</artifactId>
+                                                </exclusion>
+                                        </exclusions>
+                                </dependency>
+                        </dependencies>
+                </profile>
+        </profiles>
 
 	<dependencies>
 
@@ -54,6 +96,12 @@
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>stampe</artifactId>
+			<type>jar</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>jppapdp-beans</artifactId>
 			<type>jar</type>
 		</dependency>
 
@@ -98,11 +146,6 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-csv</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>soap</groupId>
-			<artifactId>soap</artifactId>
 		</dependency>
 
 		<dependency>
@@ -180,6 +223,11 @@
 			<groupId>org.openspcoop2.utils</groupId>
 			<artifactId>openspcoop2_utils-crypt</artifactId>
 		</dependency>
+		
+		<dependency>
+    		<groupId>org.openspcoop2.utils</groupId>
+		    <artifactId>openspcoop2_utils-json</artifactId>
+		</dependency>
 
 		<!-- SPRING -->
 		<dependency>
@@ -239,21 +287,9 @@
 			</exclusions>
 		</dependency>
 
-
 		<dependency>
 			<groupId>net.minidev</groupId>
 			<artifactId>accessors-smart</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>*</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>com.networknt</groupId>
-			<artifactId>networknt_json-schema-validator</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>*</groupId>
@@ -271,7 +307,7 @@
 		    <groupId>org.postgresql</groupId>
 		    <artifactId>postgresql</artifactId>
 		</dependency>
-		
+
 	</dependencies>
 
 	<build>

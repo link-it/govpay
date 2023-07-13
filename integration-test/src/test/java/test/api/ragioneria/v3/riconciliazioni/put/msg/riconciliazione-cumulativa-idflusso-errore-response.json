@@ -1,0 +1,15 @@
+{
+   "idFlussoRendicontazione":"#(idFlussoRendicontazione)",
+   "id":"#notnull",
+   "dominio" : {
+			"idDominio" : "#(idDominio)",
+			"ragioneSociale" : "#string"
+		},
+   "stato":"#notnull",
+   "descrizioneStato":"#notnull",
+   "importo":"#(importo)",
+   "data": "#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d.\\d\\d\\d\\+\\d\\d\\d\\d",
+   "sct":"#notnull",
+   "trn":"#notnull",
+   "riscossioni":[]
+}

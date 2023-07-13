@@ -46,6 +46,7 @@ effettuati i seguenti passi:
 	
 	- **java.awt.headless=true**
 	- **file.encoding=UTF-8**
+	- **user.timezone="Europe/Rome"**
    
 12. Avviare l'application server (ad esempio su Linux con il comando
     **<JBOSS_HOME>/bin/standalone.sh** oppure utilizzando il relativo
@@ -79,4 +80,9 @@ Per abilitare/disabilitare ulteriori modalità di autenticazione, rispetto a que
 
 Eventuali modifiche richiedono il riavvio dell'applicazione per renderle operative. Per i dettagli sulle modalità di autenticazione supportate si faccia riferimento alla sezione :ref:`integrazione_autenticazione`.
 
+.. _inst_troubleshooting:
 
+Troubleshooting
+--------------------------
+
+In caso di deploy su versioni non supportate di WildFly e' possibile incorrere nell'errore `Caused by: org.jboss.modules.ModuleNotFoundException: jdk.unsupported` in fase di deploy. Un efficace workaround e' quello di registrare un modulo fittizio come suggerito in `https://stackoverflow.com/a/68318243`_

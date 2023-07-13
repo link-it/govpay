@@ -8,8 +8,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.controllers.EnumerazioniController;
 import it.govpay.rs.v1.BaseRsServiceV1;
 
@@ -21,7 +19,7 @@ public class Enumerazioni extends BaseRsServiceV1{
 
 	private EnumerazioniController controller = null;
 
-	public Enumerazioni() throws ServiceException {
+	public Enumerazioni() {
 		super("enumerazioni");
 		this.controller = new EnumerazioniController(this.nomeServizio,this.log);
 	}
@@ -30,7 +28,7 @@ public class Enumerazioni extends BaseRsServiceV1{
 
     @GET
     @Path("/componentiEvento")
-    
+
     @Produces({ "application/json" })
     public Response findEnumerazioniComponentiEvento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.buildContext();
@@ -39,7 +37,7 @@ public class Enumerazioni extends BaseRsServiceV1{
 
     @GET
     @Path("/serviziACL")
-    
+
     @Produces({ "application/json" })
     public Response findEnumerazioniServiziACL(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.buildContext();
@@ -48,7 +46,7 @@ public class Enumerazioni extends BaseRsServiceV1{
 
     @GET
     @Path("/versioneConnettore")
-    
+
     @Produces({ "application/json" })
     public Response findEnumerazioniVersioneConnettore(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.buildContext();
@@ -57,7 +55,7 @@ public class Enumerazioni extends BaseRsServiceV1{
 
     @GET
     @Path("/labelTipiEvento")
-    
+
     @Produces({ "application/json" })
     public Response findEnumerazioniLabelTipiEvento(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
         this.buildContext();

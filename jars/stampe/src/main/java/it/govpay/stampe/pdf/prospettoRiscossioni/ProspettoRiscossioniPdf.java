@@ -84,6 +84,7 @@ public class ProspettoRiscossioniPdf {
 		try {
 			// leggo il template file jasper da inizializzare 
 			if(jasperFile != null && jasperFile.exists()) { // se non l'ho ricevuto dall'esterno carico quello di default
+				LoggerWrapperFactory.getLogger(ProspettoRiscossioniPdf.class).debug("Utilizzo il template esterno: ["+jasperFile.getAbsolutePath()+"].");
 				isTemplate = new FileInputStream(jasperFile);
 				parameters.put("SUBREPORT_DIR", jasperFile.getParent() + File.separatorChar);
 				parameters.put("report_base_path", jasperFile.getParent() + File.separatorChar);

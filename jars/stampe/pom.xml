@@ -7,12 +7,54 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.5.1</version>
+		<version>3.7.3</version>
 	</parent>
 
 	<artifactId>stampe</artifactId>
 	<packaging>jar</packaging>
 	<name>GovPay - jars - Stampe</name>
+
+        <profiles>
+                <profile>
+                        <id>java-11</id>
+                        <activation>
+                                <activeByDefault>true</activeByDefault>
+                        </activation>
+
+                        <dependencies>
+                                <dependency>
+                                        <groupId>javax.xml.bind</groupId>
+                                        <artifactId>jaxb-api</artifactId>
+                                        <exclusions>
+                                                <exclusion>
+                                                        <groupId>*</groupId>
+                                                        <artifactId>*</artifactId>
+                                                </exclusion>
+                                        </exclusions>
+                                </dependency>
+                                <dependency>
+                                        <groupId>com.sun.xml.bind</groupId>
+                                        <artifactId>jaxb-core</artifactId>
+                                        <exclusions>
+                                                <exclusion>
+                                                        <groupId>*</groupId>
+                                                        <artifactId>*</artifactId>
+                                                </exclusion>
+                                        </exclusions>
+                                </dependency>
+                                <dependency>
+                                        <groupId>com.sun.xml.bind</groupId>
+                                        <artifactId>jaxb-impl</artifactId>
+                                        <exclusions>
+                                                <exclusion>
+                                                        <groupId>*</groupId>
+                                                        <artifactId>*</artifactId>
+                                                </exclusion>
+                                        </exclusions>
+                                </dependency>
+                        </dependencies>
+                </profile>
+        </profiles>
 
 	<properties>
 		<rel-to-parent>../..</rel-to-parent>
@@ -50,14 +92,34 @@
 			<version>${dynamicreports-core.version}</version>
 			<exclusions>
 				<exclusion>
+					 <groupId>net.sf.jasperreports</groupId>
+		    		 <artifactId>jasperreports</artifactId>
+				</exclusion>
+				<exclusion>
 					<artifactId>core</artifactId>
 					<groupId>com.google.zxing</groupId>
 				</exclusion>
 				<exclusion>
-					<artifactId>bcprov-jdk14</artifactId>
-					<groupId>bouncycastle</groupId>
+					<groupId>org.apache.xmlgraphics</groupId>
+					<artifactId>batik-bridge</artifactId>
 				</exclusion>
 				<exclusion>
+					<groupId>org.apache.commons</groupId>
+   					<artifactId>commons-lang3</artifactId>
+				</exclusion>
+<!-- 				<exclusion> -->
+<!-- 					<artifactId>bcprov-jdk14</artifactId> -->
+<!-- 					<groupId>bouncycastle</groupId> -->
+<!-- 				</exclusion> -->
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+		    <groupId>net.sf.jasperreports</groupId>
+		    <artifactId>jasperreports</artifactId>
+		    <version>${jasperreports.version}</version>
+		    <exclusions>
+		    	<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
 					<artifactId>jackson-databind</artifactId>
 				</exclusion>
@@ -69,7 +131,11 @@
 					<groupId>com.fasterxml.jackson.core</groupId>
 					<artifactId>jackson-core</artifactId>
 				</exclusion>
-			</exclusions>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.dataformat</groupId>
+  					<artifactId>jackson-dataformat-xml</artifactId>
+				</exclusion>
+		    </exclusions>
 		</dependency>
 
 		<dependency>
@@ -98,14 +164,31 @@
 		</dependency>
 		
 		<dependency>
-		    <groupId>jaxen</groupId>
-		    <artifactId>jaxen</artifactId>
+			<groupId>xalan</groupId>
+			<artifactId>serializer</artifactId>
 		</dependency>
 		
 		<dependency>
 		    <groupId>jaxen</groupId>
 		    <artifactId>jaxen</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-bridge</artifactId>
+			<version>${batik-bridge.version}</version>
+		</dependency>
+		
+        <dependency>
+			<groupId>org.openspcoop2.utils</groupId>
+            <artifactId>openspcoop2_utils-core</artifactId>
+        </dependency>
+          	
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+   			<artifactId>commons-lang3</artifactId>
+		</dependency>
+	
 	</dependencies>
 
 	<build>
@@ -134,7 +217,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>2.4</version>
+				<version>2.5.0</version>
 				<executions>
 					<execution>
 						<id>xjc1</id>

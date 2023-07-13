@@ -42,6 +42,7 @@
     <value name="idSessione" field="idSessione" usage="required"/>
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
     <value name="srcVersanteIdentificativo" field="srcVersanteIdentificativo" usage="optional"/>
+    <value name="dataRichiesta" field="dataRichiesta" usage="optional"/>
   </mapping>
 
   <mapping type-name="_IdPagamentoPortale_Type" class="it.govpay.orm.IdPagamentoPortale" abstract="true">
@@ -49,6 +50,7 @@
     <value name="idSessione" field="idSessione" usage="required"/>
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
     <value name="srcVersanteIdentificativo" field="srcVersanteIdentificativo" usage="optional"/>
+    <value name="dataRichiesta" field="dataRichiesta" usage="optional"/>
   </mapping>
   <mapping name="idRendicontazione" class="it.govpay.orm.IdRendicontazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -386,6 +388,10 @@
     <structure name="idDocumento" field="idDocumento" usage="optional" map-as="_IdDocumento_Type"/>
     <value name="tipo" field="tipo" usage="required"/>
   </mapping>
+  <mapping name="id-allegato" class="it.govpay.orm.IdAllegato">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="idAllegato" field="idAllegato" usage="required"/>
+  </mapping>
   <mapping name="Configurazione" class="it.govpay.orm.Configurazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="nome" field="nome" usage="required"/>
@@ -409,7 +415,9 @@
     <value name="codConnettoreSecim" field="codConnettoreSecim" usage="optional"/>
     <value name="codConnettoreGovPay" field="codConnettoreGovPay" usage="optional"/>
     <value name="codConnettoreHyperSicAPK" field="codConnettoreHyperSicAPK" usage="optional"/>
+    <value name="codConnettoreMaggioliJPPA" field="codConnettoreMaggioliJPPA" usage="optional"/>
     <value name="intermediato" field="intermediato" usage="required"/>
+    <value name="tassonomiaPagoPA" field="tassonomiaPagoPA" usage="optional"/>
   </mapping>
   <mapping name="Uo" class="it.govpay.orm.Uo">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -454,6 +462,7 @@
     <value name="password" field="password" usage="required"/>
     <value name="abilitato" field="abilitato" usage="required"/>
     <value name="applicationCode" field="applicationCode" usage="required"/>
+    <value name="versione" field="versione" usage="required"/>
   </mapping>
   <mapping name="Applicazione" class="it.govpay.orm.Applicazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -764,6 +773,8 @@
     <structure name="idFR" field="idFR" usage="optional" map-as="_IdFr_Type"/>
     <structure name="idIncasso" field="idIncasso" usage="optional" map-as="_IdIncasso_Type"/>
     <structure name="idTracciato" field="idTracciato" usage="optional" map-as="_IdTracciato_Type"/>
+    <value name="clusterId" field="clusterId" usage="optional"/>
+    <value name="transactionId" field="transactionId" usage="optional"/>
   </mapping>
   <mapping name="SingoloVersamento" class="it.govpay.orm.SingoloVersamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -1629,5 +1640,14 @@
     <value name="rptIuv" field="rptIuv" usage="required"/>
     <value name="rptCcp" field="rptCcp" usage="required"/>
     <value name="rncTrn" field="rncTrn" usage="required"/>
+  </mapping>
+  <mapping name="Allegato" class="it.govpay.orm.Allegato">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <structure name="idVersamento" field="idVersamento" usage="required" map-as="_IdVersamento_Type"/>
+    <value name="nome" field="nome" usage="required"/>
+    <value name="tipo" field="tipo" usage="optional"/>
+    <value name="descrizione" field="descrizione" usage="optional"/>
+    <value name="dataCreazione" field="dataCreazione" usage="required"/>
+    <value name="rawContenuto" field="rawContenuto" usage="optional"/>
   </mapping>
 </binding>

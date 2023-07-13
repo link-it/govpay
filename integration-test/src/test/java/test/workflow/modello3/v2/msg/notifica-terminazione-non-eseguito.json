@@ -32,7 +32,8 @@
                   "fiscalCodePA":"#(idDominio)",
                   "IBAN":"#(ibanAccredito)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Diritti e segreteria')",
-                  "transferCategory":"9/SEGRETERIA"
+                  "transferCategory":"9/SEGRETERIA",
+                  "metadata":null
                }
             ]
          },
@@ -70,7 +71,8 @@
                   "fiscalCodePA":"#(idDominio)",
                   "IBAN":"#(ibanAccredito)",
                   "remittanceInformation":"#('/RFB/' + iuv + '/100.99/TXT/Diritti e segreteria')",
-                  "transferCategory":"9/SEGRETERIA"
+                  "transferCategory":"9/SEGRETERIA",
+                  "metadata":null
                }
             ]
          },

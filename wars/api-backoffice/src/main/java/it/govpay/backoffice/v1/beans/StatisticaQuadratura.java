@@ -4,12 +4,10 @@ package it.govpay.backoffice.v1.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "numeroPagamenti",
 "importo",
@@ -23,37 +21,37 @@ import it.govpay.core.beans.JSONSerializable;
 "applicazione",
 })
 public class StatisticaQuadratura extends JSONSerializable {
-  
+
   @JsonProperty("numeroPagamenti")
   private BigDecimal numeroPagamenti = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("dettaglio")
   private String dettaglio = null;
-  
+
   @JsonProperty("direzione")
   private String direzione = null;
-  
+
   @JsonProperty("divisione")
   private String divisione = null;
-  
+
   @JsonProperty("tassonomia")
   private String tassonomia = null;
-  
+
   @JsonProperty("tipoPendenza")
   private TipoPendenzaIndex tipoPendenza = null;
-  
+
   @JsonProperty("dominio")
   private DominioIndex dominio = null;
-  
+
   @JsonProperty("unitaOperativa")
   private UnitaOperativaIndex unitaOperativa = null;
-  
+
   @JsonProperty("applicazione")
   private ApplicazioneIndex applicazione = null;
-  
+
   /**
    * Numero di pagamenti corrispondenti ai parametri impostati
    **/
@@ -236,7 +234,7 @@ public class StatisticaQuadratura extends JSONSerializable {
     return Objects.hash(numeroPagamenti, importo, dettaglio, direzione, divisione, tassonomia, tipoPendenza, dominio, unitaOperativa, applicazione);
   }
 
-  public static StatisticaQuadratura parse(String json) throws ServiceException, ValidationException {
+  public static StatisticaQuadratura parse(String json) throws IOException {
     return parse(json, StatisticaQuadratura.class);
   }
 
@@ -249,7 +247,7 @@ public class StatisticaQuadratura extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class StatisticaQuadratura {\n");
-    
+
     sb.append("    numeroPagamenti: ").append(toIndentedString(numeroPagamenti)).append("\n");
     sb.append("    importo: ").append(toIndentedString(importo)).append("\n");
     sb.append("    dettaglio: ").append(toIndentedString(dettaglio)).append("\n");

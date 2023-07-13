@@ -124,10 +124,6 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 	
 	@Override
 	public List<IdDominio> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
-        // default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
 
 		List<IdDominio> list = new ArrayList<>();
 
@@ -150,10 +146,6 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 	@Override
 	public List<Dominio> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        // default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
         List<Dominio> list = new ArrayList<>();
         
 		try {
@@ -174,7 +166,9 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 			fields.add(Dominio.model().COD_CONNETTORE_SECIM);
 			fields.add(Dominio.model().COD_CONNETTORE_GOV_PAY);
 			fields.add(Dominio.model().COD_CONNETTORE_HYPER_SIC_APK);
+			fields.add(Dominio.model().COD_CONNETTORE_MAGGIOLI_JPPA);
 			fields.add(Dominio.model().INTERMEDIATO);
+			fields.add(Dominio.model().TASSONOMIA_PAGO_PA);
 			
 			fields.add(new CustomField("id_stazione", Long.class, "id_stazione", this.getDominioFieldConverter().toTable(Dominio.model())));
 			fields.add(new CustomField("id_applicazione_default", Long.class, "id_applicazione_default", this.getDominioFieldConverter().toTable(Dominio.model())));
@@ -745,6 +739,15 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 	
 	protected Long findIdDominio(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdDominio id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
+		if(id == null)
+			throw new ServiceException(this.getClass().getName() +": Bad request: id is null");
+		
+		if(sqlQueryObject == null)
+			throw new ServiceException(this.getClass().getName() +": Bad request: sqlQueryObject is null");
+		
+		if(jdbcProperties == null)
+			throw new ServiceException(this.getClass().getName() +": Bad request: jdbcProperties is null");
+		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 

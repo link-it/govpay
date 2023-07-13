@@ -19,13 +19,11 @@
  */
 package it.govpay.rs.v1;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.rs.BaseRsService;
 
 public class BaseRsServiceV1 extends BaseRsService {
 	
-	public BaseRsServiceV1(String nomeServizio) throws ServiceException {
+	public BaseRsServiceV1(String nomeServizio) {
 		super(nomeServizio);
 	}
 	

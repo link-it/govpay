@@ -39,7 +39,7 @@ public interface RiscossioniApi  {
     @Path("/riscossioni")
     @Produces({ "application/json" })
     @Operation(summary = "Elenco degli importi riscossi o stornati", tags={ "Riscossioni" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Dettaglio della riscossione", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Riscossioni.class))),
         @ApiResponse(responseCode = "400", description = "Richiesta non correttamente formata", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FaultBean.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
@@ -55,7 +55,7 @@ public interface RiscossioniApi  {
     @Path("/riscossioni/{idDominio}/{iuv}/{iur}/{indice}")
     @Produces({ "application/json" })
     @Operation(summary = "Dettaglio di una riscossione", tags={ "Riscossioni" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Dettaglio della riscossione", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Riscossione.class))),
         @ApiResponse(responseCode = "401", description = "Richiesta non autenticata"),
         @ApiResponse(responseCode = "403", description = "Richiesta non autorizzata"),

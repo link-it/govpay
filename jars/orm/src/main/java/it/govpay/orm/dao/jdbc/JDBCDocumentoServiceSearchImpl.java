@@ -130,11 +130,6 @@ public class JDBCDocumentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 		List<IdDocumento> list = new ArrayList<IdDocumento>();
 		
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
-
 		try{
 			List<IField> fields = new ArrayList<>();
 			fields.add(Documento.model().ID_APPLICAZIONE.COD_APPLICAZIONE);
@@ -155,11 +150,6 @@ public class JDBCDocumentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 	@Override
 	public List<Documento> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
-				
         List<Documento> list = new ArrayList<Documento>();
         
         try{
@@ -735,6 +725,10 @@ public class JDBCDocumentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 	
 	protected Long findIdDocumento(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdDocumento id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
+		if(id == null) {
+			throw new ServiceException(this.getClass().getName() +": Bad request: id is null");
+		}
+		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
@@ -742,8 +736,12 @@ public class JDBCDocumentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_documento = null;
 		
-		if((id!=null && id.getId()!=null && id.getId()>0))
+		if(id.getId()!=null && id.getId()>0)
 			return id.getId();
+		
+		if(id.getIdApplicazione() == null || id.getIdDominio() == null) {
+			throw new ServiceException(this.getClass().getName() +": Bad request");
+		}
 		
 		if(id.getIdApplicazione().getId() != null && id.getIdApplicazione().getId() > 0 && id.getIdDominio().getId() != null && id.getIdDominio().getId() > 0) {
 			// Object _versamento

@@ -1,6 +1,7 @@
 package it.govpay.ragioneria.v3.beans;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,16 +9,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class Dominio   {
-  
+
   @Schema(example = "1.23456789E+9", required = true, description = "Codice fiscale")
  /**
-   * Codice fiscale  
+   * Codice fiscale
   **/
   private String idDominio = null;
-  
+
   @Schema(example = "Comune Dimostrativo", description = "Ragione sociale")
  /**
-   * Ragione sociale  
+   * Ragione sociale
   **/
   private String ragioneSociale = null;
  /**
@@ -26,7 +27,7 @@ public class Dominio   {
   **/
   @JsonProperty("idDominio")
   @NotNull
- @Size(min=1,max=35)  public String getIdDominio() {
+ @Pattern(regexp="^([0-9]){11}$")  public String getIdDominio() {
     return idDominio;
   }
 
@@ -62,7 +63,7 @@ public class Dominio   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Dominio {\n");
-    
+
     sb.append("    idDominio: ").append(toIndentedString(idDominio)).append("\n");
     sb.append("    ragioneSociale: ").append(toIndentedString(ragioneSociale)).append("\n");
     sb.append("}");

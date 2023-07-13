@@ -73,28 +73,17 @@ public class NotificaAppIoFilter extends AbstractFilter {
 			
 			NotificaAppIOFieldConverter converter = new NotificaAppIOFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 
-			if(this.dataInizio != null && this.dataFine != null) {
+			if(this.dataInizio != null) {
+				newExpression.greaterEquals(NotificaAppIO.model().DATA_CREAZIONE, this.dataInizio);
+				addAnd = true;
+			} 
+			
+			if(this.dataFine != null) {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.between(NotificaAppIO.model().DATA_CREAZIONE, this.dataInizio,this.dataFine);
+				newExpression.lessEquals(NotificaAppIO.model().DATA_CREAZIONE, this.dataFine);
 				addAnd = true;
-			} else {
-				if(this.dataInizio != null) {
-					if(addAnd)
-						newExpression.and();
-	
-					newExpression.greaterEquals(NotificaAppIO.model().DATA_CREAZIONE, this.dataInizio);
-					addAnd = true;
-				} 
-				
-				if(this.dataFine != null) {
-					if(addAnd)
-						newExpression.and();
-	
-					newExpression.lessEquals(NotificaAppIO.model().DATA_CREAZIONE, this.dataFine);
-					addAnd = true;
-				}
 			}
 
 			if(this.stato != null) {

@@ -27,6 +27,7 @@ public class NotAuthorizedInvalidSessionStrategy implements InvalidSessionStrate
 	private boolean createNewSession = true;
 
 	public NotAuthorizedInvalidSessionStrategy() {
+		// costruttore vuoto.
 	}
 
 	@Override

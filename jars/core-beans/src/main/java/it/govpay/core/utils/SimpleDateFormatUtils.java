@@ -1,3 +1,22 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * http://www.gov4j.it/govpay
+ * 
+ * Copyright (c) 2014-2022 Link.it srl (http://www.link.it).
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.core.utils;
 
 import java.text.ParseException;
@@ -13,8 +32,14 @@ import java.util.TimeZone;
 
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
+/**
+ * Funzioni di utilita' per la gestione del parsing e della formattazione delle date.
+ * 
+ * @author Pintori Giuliano (pintori@link.it)
+ *
+ */
 public class SimpleDateFormatUtils {
 	
 	public static SimpleDateFormatUtils getInstance() {
@@ -90,18 +115,15 @@ public class SimpleDateFormatUtils {
 	}
 	
 	public static SimpleDateFormat newSimpleDateFormatIuvUtils() {
-		SimpleDateFormat sdf = new SimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_DD_MM_YYYY_HH_MM_SS_SSS);
-		return sdf;
+		return newSimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_DD_MM_YYYY_HH_MM_SS_SSS);
 	}
 	
 	public static SimpleDateFormat newSimpleDateFormatSoloAnno() {
-		SimpleDateFormat sdf = new SimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_YYYY);
-		return sdf;
+		return newSimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_YYYY);
 	}
 	
 	public static SimpleDateFormat newSimpleDateFormatGGMMAAAA() {
-		SimpleDateFormat sdf = new SimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_GG_MM_AAAA);
-		return sdf;
+		return newSimpleDateFormat(SimpleDateFormatUtils.PATTERN_DATA_GG_MM_AAAA);
 	}
 	
 	public static SimpleDateFormat newSimpleDateFormat(String pattern) {

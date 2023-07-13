@@ -18,5 +18,9 @@
    "voci": "#[]",
    "rpp":"#ignore",
    "pagamenti":"#ignore",
-   "UUID":"#string"
+   "tipo":"#string",
+   "UUID":"#string",
+   "allegati": "##[]",
+   "iuvAvviso":"##string", 
+   "iuvPagamento":"##string"
 }

@@ -12,38 +12,53 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Modulo interno che ha emesso l'evento
  */
 public enum ComponenteEvento {
-  
-  
-  
-  
+
+
+
+
   BACKOFFICE("API_BACKOFFICE"),
-  
-  
+
+
   ENTE("API_ENTE"),
-  
-  
+
+
   PAGOPA("API_PAGOPA"),
-  
-  
+
+
   PAGAMENTO("API_PAGAMENTO"),
-  
-  
+
+
   PENDENZE("API_PENDENZE"),
-  
-  
+
+
   RAGIONERIA("API_RAGIONERIA"),
-  
-  
+
+
   BACKEND_IO("API_BACKEND_IO"),
-  
-  
+
+
   SECIM("API_SECIM"),
-  
-  
-  MYPIVOT("API_MYPIVOT");
-  
-  
-  
+
+
+  MYPIVOT("API_MYPIVOT"),
+
+
+  MAGGIOLI_JPPA("API_MAGGIOLI_JPPA"),
+
+
+  GOVPAY("API_GOVPAY"),
+
+
+  HYPERSIC_APK("API_HYPERSIC_APK"),
+
+
+  USER("API_USER"),
+
+
+  GOVPAY_INTERNO("GOVPAY");
+
+
+
 
   private String value;
 

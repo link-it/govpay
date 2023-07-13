@@ -2,6 +2,7 @@ package it.govpay.core.business;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -17,23 +18,26 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtIstitutoAttestante;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoPagatore;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceipt;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceiptV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtSubject;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferListPA;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferListPAReceiptV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPA;
+import it.gov.pagopa.pagopa_api.pa.pafornode.CtTransferPAReceiptV2;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
-import it.gov.pagopa.pagopa_api.pa.pafornode.StOutcome;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
+import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.StOutcome;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTOResponse;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.RicevutaPagamento;
 import it.govpay.model.Rpt.EsitoPagamento;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 import it.govpay.stampe.model.RicevutaTelematicaInput;
 import it.govpay.stampe.model.RicevutaTelematicaInput.ElencoVoci;
 import it.govpay.stampe.model.VoceRicevutaTelematicaInput;
-import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 import it.govpay.stampe.pdf.rt.RicevutaTelematicaCostanti;
 import it.govpay.stampe.pdf.rt.RicevutaTelematicaPdf;
 import it.govpay.stampe.pdf.rt.utils.RicevutaTelematicaProperties;
@@ -41,7 +45,8 @@ import it.govpay.stampe.pdf.rt.utils.RicevutaTelematicaProperties;
 public class RicevutaTelematica {
 
 	private static Logger log = LoggerWrapperFactory.getLogger(RicevutaTelematica.class);
-	private SimpleDateFormat sdfDataPagamento = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	private SimpleDateFormat sdfSoloData = new SimpleDateFormat("dd/MM/yyyy");
+	private SimpleDateFormat sdfDataOraMinuti = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 	public RicevutaTelematica() {
 	}
@@ -57,7 +62,7 @@ public class RicevutaTelematica {
 			ricevuta.setCcp(leggiRicevutaDTO.getCcp());
 
 			RicevutaTelematicaProperties rtProperties = RicevutaTelematicaProperties.getInstance();
-			RicevutaTelematicaInput input = this.fromRpt(rpt, leggiRicevutaDTO.isVisualizzaSoggettoDebitore());
+			RicevutaTelematicaInput input = this.fromRpt(rpt);
 			ricevuta = RicevutaTelematicaPdf.getInstance().creaRicevuta(log, input, ricevuta, rtProperties );
 			response.setPdf(ricevuta.getPdf()); 
 		}catch(ServiceException e) {
@@ -68,19 +73,22 @@ public class RicevutaTelematica {
 		return response;
 	}
 
-	public RicevutaTelematicaInput fromRpt(it.govpay.bd.model.Rpt rpt, boolean visualizzaSoggettoDebitore) throws Exception{
+	public RicevutaTelematicaInput fromRpt(it.govpay.bd.model.Rpt rpt) throws Exception{
 		switch (rpt.getVersione()) {
 		case SANP_230:
-			return this._fromRpt(rpt, visualizzaSoggettoDebitore);
+			return this._fromRpt(rpt);
 		case SANP_240:
-			return this._fromRptVersione240(rpt, visualizzaSoggettoDebitore);
+			return this._fromRptVersione240(rpt);
+		case SANP_321_V2:
+			return this._fromRptVersione321_V2(rpt);
 		}
 		
-		return this._fromRpt(rpt, visualizzaSoggettoDebitore);
+		return this._fromRpt(rpt);
 	}
 	
-	public RicevutaTelematicaInput _fromRpt(it.govpay.bd.model.Rpt rpt, boolean visualizzaSoggettoDebitore) throws Exception{
+	public RicevutaTelematicaInput _fromRpt(it.govpay.bd.model.Rpt rpt) throws Exception{
 		RicevutaTelematicaInput input = new RicevutaTelematicaInput();
+		input.setVersioneOggetto(rpt.getVersione().name());
 
 		this.impostaAnagraficaEnteCreditore(rpt, input);
 		Versamento versamento = rpt.getVersamento();
@@ -105,7 +113,7 @@ public class RicevutaTelematica {
 		input.setIstituto(sbIstitutoAttestante.toString());
 
 
-		input.setElencoVoci(this.getElencoVoci(rt,datiSingoloPagamento,input,rpt.getDataMsgRichiesta()));
+		input.setElencoVoci(this.getElencoVoci(rt,datiSingoloPagamento,input, rt.getRiferimentoDataRichiesta(), rt.getDataOraMessaggioRicevuta()));
 		input.setImporto(datiPagamento.getImportoTotalePagato().doubleValue());
 		input.setOggettoDelPagamento(versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().getSimple() : "");
 
@@ -137,14 +145,14 @@ public class RicevutaTelematica {
 
 
 		CtSoggettoPagatore soggettoPagatore = rt.getSoggettoPagatore();
-		if(visualizzaSoggettoDebitore && soggettoPagatore != null) {
+		if(soggettoPagatore != null) {
 			this.impostaIndirizzoSoggettoPagatore(input, soggettoPagatore);
 		}
 
 		return input;
 	}
 
-	private ElencoVoci getElencoVoci(CtRicevutaTelematica rt, List<CtDatiSingoloPagamentoRT> datiSingoloPagamento, RicevutaTelematicaInput input, Date dataRpt) {
+	private ElencoVoci getElencoVoci(CtRicevutaTelematica rt, List<CtDatiSingoloPagamentoRT> datiSingoloPagamento, RicevutaTelematicaInput input, Date dataRpt, Date dataRt) {
 		ElencoVoci elencoVoci = new ElencoVoci();
 
 		for (CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT : datiSingoloPagamento) {
@@ -158,8 +166,10 @@ public class RicevutaTelematica {
 			elencoVoci.getVoce().add(voce);
 			
 		}
-		input.setData( this.sdfDataPagamento.format(dataRpt));
-
+		
+		setDataOperazione(input, dataRpt);
+		setDataApplicativa(input, dataRt);
+		
 		return elencoVoci;
 	}
 
@@ -195,17 +205,9 @@ public class RicevutaTelematica {
 			// Inserisco la virgola se la prima riga non e' vuota
 			String indirizzoEnte = StringUtils.isNotEmpty(indirizzoCivico) ? indirizzoCivico + "," : "";
 
-			if(indirizzoEnte.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setIndirizzoEnte(indirizzoEnte);
-			}else {
-				input.setIndirizzoEnte(indirizzoEnte);
-			}
+			input.setIndirizzoEnte(indirizzoEnte);
 
-			if(capCitta.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setLuogoEnte(capCitta);
-			}else {
-				input.setLuogoEnte(capCitta);
-			}
+			input.setLuogoEnte(capCitta);
 		}
 	}
 
@@ -224,18 +226,9 @@ public class RicevutaTelematica {
 			// Inserisco la virgola se la prima riga non e' vuota
 			String indirizzoEnte = StringUtils.isNotEmpty(indirizzoCivico) ? indirizzoCivico + "," : "";
 
+			input.setIndirizzoSoggetto(indirizzoEnte);
 
-			if(indirizzoEnte.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setIndirizzoSoggetto(indirizzoEnte);
-			}else {
-				input.setIndirizzoSoggetto(indirizzoEnte);
-			}
-
-			if(capCitta.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setLuogoSoggetto(capCitta);
-			}else {
-				input.setLuogoSoggetto(capCitta);
-			}
+			input.setLuogoSoggetto(capCitta);
 
 			input.setSoggetto(StringUtils.isNotEmpty(soggettoPagatore.getAnagraficaPagatore()) ? soggettoPagatore.getAnagraficaPagatore() : "");
 			if(soggettoPagatore.getIdentificativoUnivocoPagatore() != null)
@@ -243,8 +236,9 @@ public class RicevutaTelematica {
 		}
 	}
 	
-	public RicevutaTelematicaInput _fromRptVersione240(it.govpay.bd.model.Rpt rpt, boolean visualizzaSoggettoDebitore) throws Exception{
+	public RicevutaTelematicaInput _fromRptVersione240(it.govpay.bd.model.Rpt rpt) throws Exception{
 		RicevutaTelematicaInput input = new RicevutaTelematicaInput();
+		input.setVersioneOggetto(rpt.getVersione().name());
 
 		this.impostaAnagraficaEnteCreditore(rpt, input);
 		Versamento versamento = rpt.getVersamento();
@@ -260,17 +254,22 @@ public class RicevutaTelematica {
 		input.setIUV(datiPagamento.getCreditorReferenceId());
 
 		StringBuilder sbIstitutoAttestante = new StringBuilder();
+		if(datiPagamento.getPSPCompanyName() != null){
+			sbIstitutoAttestante.append(datiPagamento.getPSPCompanyName());
+			
+		}
+		
 		if(datiPagamento.getPspFiscalCode() != null){
-			if(datiPagamento.getPSPCompanyName() != null){
-				sbIstitutoAttestante.append(datiPagamento.getPSPCompanyName());
+			if(sbIstitutoAttestante.length() > 0) {
 				sbIstitutoAttestante.append(", ");
 			}
 			sbIstitutoAttestante.append(datiPagamento.getPspFiscalCode());
 		}
+		
 		input.setIstituto(sbIstitutoAttestante.toString());
 
 
-		input.setElencoVoci(this.getElencoVoci(datiPagamento,datiSingoloPagamento,input,rpt.getDataMsgRichiesta()));
+		input.setElencoVoci(this.getElencoVoci(datiPagamento,datiSingoloPagamento,input,datiPagamento.getPaymentDateTime(), datiPagamento.getApplicationDate()));
 		input.setImporto(datiPagamento.getPaymentAmount().doubleValue());
 		input.setOggettoDelPagamento(versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().getSimple() : "");
 
@@ -291,14 +290,14 @@ public class RicevutaTelematica {
 
 
 		CtSubject soggettoPagatore = datiPagamento.getDebtor();
-		if(visualizzaSoggettoDebitore && soggettoPagatore != null) {
+		if(soggettoPagatore != null) {
 			this.impostaIndirizzoSoggettoPagatore(input, soggettoPagatore);
 		}
 
 		return input;
 	}
 	
-	private ElencoVoci getElencoVoci(CtReceipt rt, List<CtTransferPA> datiSingoloPagamento, RicevutaTelematicaInput input, Date dataRpt) {
+	private ElencoVoci getElencoVoci(CtReceipt rt, List<CtTransferPA> datiSingoloPagamento, RicevutaTelematicaInput input, Date dataRpt, Date dataRt) {
 		ElencoVoci elencoVoci = new ElencoVoci();
 
 		for (CtTransferPA ctDatiSingoloPagamentoRT : datiSingoloPagamento) {
@@ -312,9 +311,33 @@ public class RicevutaTelematica {
 			elencoVoci.getVoce().add(voce);
 			
 		}
-		input.setData( this.sdfDataPagamento.format(dataRpt));
+		
+		setDataOperazione(input, dataRpt);
+		setDataApplicativa(input, dataRt);
 
 		return elencoVoci;
+	}
+
+
+	private void setDataApplicativa(RicevutaTelematicaInput input, Date dataRt) {
+		Calendar cRt = Calendar.getInstance();
+		cRt.setTime(dataRt);
+		if((cRt.get(Calendar.HOUR_OF_DAY) + cRt.get(Calendar.MINUTE) + cRt.get(Calendar.SECOND)) == 0) {
+			input.setDataApplicativa( this.sdfSoloData.format(dataRt));
+		} else {
+			input.setDataApplicativa( this.sdfDataOraMinuti.format(dataRt));
+		}
+	}
+
+
+	private void setDataOperazione(RicevutaTelematicaInput input, Date dataRpt) {
+		Calendar cRpt = Calendar.getInstance();
+		cRpt.setTime(dataRpt);
+		if((cRpt.get(Calendar.HOUR_OF_DAY) + cRpt.get(Calendar.MINUTE) + cRpt.get(Calendar.SECOND)) == 0) {
+			input.setDataOperazione( this.sdfSoloData.format(dataRpt));
+		} else {
+			input.setDataOperazione( this.sdfDataOraMinuti.format(dataRpt));
+		}
 	}
 	
 	private void impostaIndirizzoSoggettoPagatore(RicevutaTelematicaInput input, CtSubject soggettoPagatore) throws ServiceException {
@@ -332,22 +355,95 @@ public class RicevutaTelematica {
 			// Inserisco la virgola se la prima riga non e' vuota
 			String indirizzoEnte = StringUtils.isNotEmpty(indirizzoCivico) ? indirizzoCivico + "," : "";
 
+			input.setIndirizzoSoggetto(indirizzoEnte);
 
-			if(indirizzoEnte.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setIndirizzoSoggetto(indirizzoEnte);
-			}else {
-				input.setIndirizzoSoggetto(indirizzoEnte);
-			}
-
-			if(capCitta.length() > AvvisoPagamentoCostanti.AVVISO_LUNGHEZZA_CAMPO_INDIRIZZO_DESTINATARIO) {
-				input.setLuogoSoggetto(capCitta);
-			}else {
-				input.setLuogoSoggetto(capCitta);
-			}
+			input.setLuogoSoggetto(capCitta);
 
 			input.setSoggetto(StringUtils.isNotEmpty(soggettoPagatore.getFullName()) ? soggettoPagatore.getFullName() : "");
 			if(soggettoPagatore.getUniqueIdentifier() != null)
 				input.setCfSoggetto(StringUtils.isNotEmpty(soggettoPagatore.getUniqueIdentifier().getEntityUniqueIdentifierValue()) ? soggettoPagatore.getUniqueIdentifier().getEntityUniqueIdentifierValue() : "");
 		}
+	}
+	
+	public RicevutaTelematicaInput _fromRptVersione321_V2(it.govpay.bd.model.Rpt rpt) throws Exception{
+		RicevutaTelematicaInput input = new RicevutaTelematicaInput();
+		input.setVersioneOggetto(rpt.getVersione().name());
+
+		this.impostaAnagraficaEnteCreditore(rpt, input);
+		Versamento versamento = rpt.getVersamento();
+
+		PaSendRTV2Request rt = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+
+		CtReceiptV2 datiPagamento = rt.getReceipt();
+
+		CtTransferListPAReceiptV2 transferList = datiPagamento.getTransferList();
+		List<CtTransferPAReceiptV2> datiSingoloPagamento = transferList.getTransfer();
+
+		input.setCCP(datiPagamento.getReceiptId()); 
+		input.setIUV(datiPagamento.getCreditorReferenceId());
+
+		StringBuilder sbIstitutoAttestante = new StringBuilder();
+		if(datiPagamento.getPSPCompanyName() != null){
+			sbIstitutoAttestante.append(datiPagamento.getPSPCompanyName());
+			
+		}
+		
+		if(datiPagamento.getPspFiscalCode() != null){
+			if(sbIstitutoAttestante.length() > 0) {
+				sbIstitutoAttestante.append(", ");
+			}
+			sbIstitutoAttestante.append(datiPagamento.getPspFiscalCode());
+		}
+		
+		input.setIstituto(sbIstitutoAttestante.toString());
+
+
+		input.setElencoVoci(this.getElencoVoci(datiPagamento,datiSingoloPagamento,input,datiPagamento.getPaymentDateTime(), datiPagamento.getApplicationDate()));
+		input.setImporto(datiPagamento.getPaymentAmount().doubleValue());
+		input.setOggettoDelPagamento(versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().getSimple() : "");
+
+		StOutcome esitoPagamento = datiPagamento.getOutcome();
+
+		String stato = "";
+		switch(esitoPagamento) {
+		case KO:
+			stato = RicevutaTelematicaCostanti.PAGAMENTO_NON_ESEGUITO;
+			break;
+		case OK:
+			stato = RicevutaTelematicaCostanti.PAGAMENTO_ESEGUITO;
+			break;
+
+		}
+
+		input.setStato(stato);
+
+
+		CtSubject soggettoPagatore = datiPagamento.getDebtor();
+		if(soggettoPagatore != null) {
+			this.impostaIndirizzoSoggettoPagatore(input, soggettoPagatore);
+		}
+
+		return input;
+	}
+	
+	private ElencoVoci getElencoVoci(CtReceiptV2 rt, List<CtTransferPAReceiptV2> datiSingoloPagamento, RicevutaTelematicaInput input, Date dataRpt, Date dataRt) {
+		ElencoVoci elencoVoci = new ElencoVoci();
+
+		for (CtTransferPAReceiptV2 ctDatiSingoloPagamentoRT : datiSingoloPagamento) {
+			VoceRicevutaTelematicaInput voce = new VoceRicevutaTelematicaInput();
+
+			voce.setDescrizione(ctDatiSingoloPagamentoRT.getRemittanceInformation());
+			voce.setIdRiscossione(rt.getReceiptId());
+			voce.setImporto(ctDatiSingoloPagamentoRT.getTransferAmount().doubleValue());
+			voce.setStato(ctDatiSingoloPagamentoRT.getTransferAmount().compareTo(BigDecimal.ZERO) == 0 ? RicevutaTelematicaCostanti.PAGAMENTO_NON_ESEGUITO : RicevutaTelematicaCostanti.PAGAMENTO_ESEGUITO);
+
+			elencoVoci.getVoce().add(voce);
+			
+		}
+		
+		setDataOperazione(input, dataRpt);
+		setDataApplicativa(input, dataRt);
+
+		return elencoVoci;
 	}
 }

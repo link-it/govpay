@@ -11,70 +11,70 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class RiconciliazioneIndex extends TipoRiferimentoRiconciliazione  {
-  
+
   @Schema(example = "12345", required = true, description = "Identificativo della riconciliazione assegnato da GovPay")
  /**
-   * Identificativo della riconciliazione assegnato da GovPay  
+   * Identificativo della riconciliazione assegnato da GovPay
   **/
   private String id = null;
-  
-  @Schema(description = "")
+
+  @Schema(required = true, description = "")
   private Dominio dominio = null;
-  
+
   @Schema(required = true, description = "")
   private StatoRiconciliazione stato = null;
-  
+
   @Schema(description = "Dettaglio dello stato riconciliazione")
  /**
-   * Dettaglio dello stato riconciliazione  
+   * Dettaglio dello stato riconciliazione
   **/
   private String descrizioneStato = null;
-  
+
   @Schema(example = "100.01", description = "Importo del riversamento. Se valorizzato, viene verificato che corrisponda a quello dei pagamenti riconciliati.")
  /**
-   * Importo del riversamento. Se valorizzato, viene verificato che corrisponda a quello dei pagamenti riconciliati.  
+   * Importo del riversamento. Se valorizzato, viene verificato che corrisponda a quello dei pagamenti riconciliati.
   **/
   private BigDecimal importo = null;
-  
+
   @Schema(required = true, description = "Data di esecuzione della riconciliazione")
  /**
-   * Data di esecuzione della riconciliazione  
+   * Data di esecuzione della riconciliazione
   **/
   private Date data = null;
-  
+
   @Schema(example = "Thu Dec 31 01:00:00 CET 2020", description = "Data di valuta dell'incasso")
  /**
-   * Data di valuta dell'incasso  
+   * Data di valuta dell'incasso
   **/
   private Date dataValuta = null;
-  
+
   @Schema(example = "Thu Dec 31 01:00:00 CET 2020", description = "Data di contabile dell'incasso")
  /**
-   * Data di contabile dell'incasso  
+   * Data di contabile dell'incasso
   **/
   private Date dataContabile = null;
-  
+
   @Schema(example = "IT60X0542811101000000123456", description = "Identificativo del conto di tesoreria su cui sono stati incassati i fondi")
  /**
-   * Identificativo del conto di tesoreria su cui sono stati incassati i fondi  
+   * Identificativo del conto di tesoreria su cui sono stati incassati i fondi
   **/
   private String contoAccredito = null;
-  
+
   @Schema(example = "2017-01-01ABI00000011234", description = "Identificativo Sepa Credit Transfer")
  /**
-   * Identificativo Sepa Credit Transfer  
+   * Identificativo Sepa Credit Transfer
   **/
   private String sct = null;
-  
+
   @Schema(example = "2017-01-01ABI00000011234", description = "Transaction reference number. Se valorizzato viene verificato che corrisponda a quello indicato nel Flusso di Rendicontazione.")
  /**
-   * Transaction reference number. Se valorizzato viene verificato che corrisponda a quello indicato nel Flusso di Rendicontazione.  
+   * Transaction reference number. Se valorizzato viene verificato che corrisponda a quello indicato nel Flusso di Rendicontazione.
   **/
   private String trn = null;
-  
+
   @Schema(description = "Causale bancaria dell'SCT di riversamento fondi dal PSP al conto di accredito.")
  /**
-   * Causale bancaria dell'SCT di riversamento fondi dal PSP al conto di accredito.  
+   * Causale bancaria dell'SCT di riversamento fondi dal PSP al conto di accredito.
   **/
   private String causale = null;
  /**
@@ -101,6 +101,7 @@ public class RiconciliazioneIndex extends TipoRiferimentoRiconciliazione  {
    * @return dominio
   **/
   @JsonProperty("dominio")
+  @NotNull
   public Dominio getDominio() {
     return dominio;
   }

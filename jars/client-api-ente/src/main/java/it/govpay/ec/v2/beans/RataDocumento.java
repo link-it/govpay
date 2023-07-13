@@ -8,10 +8,11 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class RataDocumento  implements OneOfTipoRiferimentoDocumento  {
   
-  @Schema(example = "1", required = true, description = "Rata del documento")
+  @Schema(example = "1", requiredMode = RequiredMode.REQUIRED, description = "Rata del documento")
  /**
    * Rata del documento  
   **/

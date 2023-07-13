@@ -11,6 +11,7 @@ import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
@@ -253,6 +254,11 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setObsoleto(listaRendicontazioniDTO.getFrObsoleto()); 
 			filter.setIuv(listaRendicontazioniDTO.getIuv());
 			filter.setRicercaIdFlussoCaseInsensitive(listaRendicontazioniDTO.isRicercaIdFlussoCaseInsensitive());
+			
+			if(listaRendicontazioniDTO.getCodApplicazione() != null) {
+				// controllo esistenza applicazione fatto nell'API
+				filter.setIdApplicazione(AnagraficaManager.getApplicazione(configWrapper, listaRendicontazioniDTO.getCodApplicazione()).getId());
+			}
 
 			Long count = null;
 			
@@ -325,6 +331,7 @@ public class RendicontazioniDAO extends BaseDAO{
 			filter.setFrObsoleto(listaRendicontazioniDTO.getFrObsoleto());
 			filter.setRicercaIdFlussoCaseInsensitive(listaRendicontazioniDTO.isRicercaIdFlussoCaseInsensitive());
 			filter.setRicercaFR(listaRendicontazioniDTO.isRicercaFR());
+			filter.setDominiAutorizzati(listaRendicontazioniDTO.getCodDomini());
 
 			Long count = null;
 			

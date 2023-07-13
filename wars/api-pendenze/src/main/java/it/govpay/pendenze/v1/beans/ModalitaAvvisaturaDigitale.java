@@ -9,17 +9,17 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets modalitaAvvisaturaDigitale
  */
 public enum ModalitaAvvisaturaDigitale {
-  
-  
-  
-  
+
+
+
+
   ASINCRONA("ASINCRONA"),
-  
-  
+
+
   SINCRONA("SINCRONA");
-  
-  
-  
+
+
+
 
   private String value;
 

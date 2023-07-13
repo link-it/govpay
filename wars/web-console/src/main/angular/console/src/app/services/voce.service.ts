@@ -59,6 +59,7 @@ export class Voce {
   public static CONTENUTI: string = 'Contenuti';
   public static CONTENUTO_ALLEGATO: string = 'Contenuto allegato';
   public static CONTO_ACCREDITO: string = 'Conto accredito';
+  public static CONTO_APPOGGIO: string = 'Conto appoggio';
 
   public static DATA: string = 'Data';
   public static DATA_CARICAMENTO: string = 'Data caricamento';
@@ -83,6 +84,7 @@ export class Voce {
   public static DEFINIZIONI: string = 'Definizioni';
   public static DENOMINAZIONE: string = 'Denominazione';
   public static DESCRIZIONE: string = 'Descrizione';
+  public static DESCRIZIONE_STATO: string = 'Descrizione stato';
   public static DETTAGLIO_ESITO: string = 'Dettaglio esito';
   public static DETTAGLIO_PENDENZA_CUSTOM: string = 'Personalizzazione dettaglio pendenza';
   public static DIREZIONE: string = 'Direzione';
@@ -195,6 +197,8 @@ export class Voce {
   public static NUOVO_DOMINIO: string = 'Nuovo dominio';
   public static NUOVO_ENTE_CREDITORE: string = 'Nuovo Ente creditore';
 
+  public static SUBSCRIPTION_KEY: string = 'Subscription Key';
+  public static OCP_APIM_SUBSCRIPTION_KEY: string = 'Ocp-Apim-Subscription-Key';
   public static OGGETTO: string = 'Oggetto';
   public static OPERATORE_MITTENTE: string = 'Operatore mittente';
   public static OPERAZIONI: string = 'Operazioni';
@@ -251,6 +255,7 @@ export class Voce {
   public static TASSONOMIA: string = 'Tipo (ente)';
   public static TASSONOMIA_AVVISO: string = 'Tassonomia avviso';
   public static TASSONOMIA_ENTE: string = 'Tassonomia ente';
+  public static TASSONOMIA_PAGO_PA: string = 'Tipo ente';
   public static TELEFONO: string = 'Telefono';
   public static TEMPLATE: string = 'Template';
   public static TEMPLATE_OGGETTO: string = 'Template oggetto';
@@ -295,6 +300,7 @@ export class Voce {
   public static VALIDAZIONE_DATI: string = 'Validazione inserimento dati';
   public static VALIDITA: string = 'Validità';
   public static VALORE_PREDEFINITO: string = 'valore predefinito';
+  public static VERSIONE: string = 'Versione';
   public static VERSIONE_API: string = 'Versione API';
   public static VERIFICATORE_HOSTNAME: string = 'Verificatore hostname';
   public static VERSIONE_CSV: string = 'Versione CSV';
@@ -304,7 +310,6 @@ export class Voce {
 
   public static WEB: string = 'Sito web';
   public static WEB_SITE: string = 'Indirizzo web';
-
 
   //Validation Error Messages
   public static VALIDATION_IT_MESSAGES: any = {

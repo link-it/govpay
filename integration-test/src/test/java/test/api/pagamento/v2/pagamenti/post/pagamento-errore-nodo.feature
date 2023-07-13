@@ -73,7 +73,7 @@ And match response == { id: '#notnull', location: '#notnull', categoria : 'PAGOP
 
 Given url pagamentiBaseurl
 And path '/pagamenti/', response.id
-And headers basicAutenticationHeader
+And headers spidHeaders
 When method get
 Then status 200
 And match response.stato == 'FALLITO'
@@ -82,7 +82,7 @@ Given url pagamentiBaseurl
 And path '/rpp'
 And param idPendenza = idPendenza
 And param idA2A = pendenza.idA2A
-And headers basicAutenticationHeader
+And headers spidHeaders
 When method get
 Then status 200
 And match response == 
@@ -106,7 +106,7 @@ Given url pagamentiBaseurl
 And path '/rpp'
 And param idPendenza = idPendenza
 And param idA2A = pendenza.idA2A
-And headers basicAutenticationHeader
+And headers spidHeaders
 When method get
 Then status 200
 And match response == 
@@ -164,7 +164,7 @@ And match response == { id: '#notnull', location: '#notnull', categoria : 'PAGOP
 
 Given url pagamentiBaseurl
 And path '/pagamenti/', response.id
-And headers basicAutenticationHeader
+And headers spidHeaders
 When method get
 Then status 200
 And match response.stato == 'FALLITO'
@@ -173,7 +173,7 @@ Given url pagamentiBaseurl
 And path '/rpp'
 And param idPendenza = idPendenza
 And param idA2A = pendenza.idA2A
-And headers basicAutenticationHeader
+And headers spidHeaders
 When method get
 Then status 200
 And match response == 
@@ -197,7 +197,7 @@ Given url pagamentiBaseurl
 And path '/rpp'
 And param idPendenza = idPendenza
 And param idA2A = pendenza.idA2A
-And headers basicAutenticationHeader
+And headers spidHeaders
 When method get
 Then status 200
 And match response == 

@@ -6,16 +6,17 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class Documento extends TipoRiferimentoDocumento  {
   
-  @Schema(example = "abcdef12345_1", required = true, description = "Identificativo del documento")
+  @Schema(example = "abcdef12345_1", requiredMode = RequiredMode.REQUIRED, description = "Identificativo del documento")
  /**
    * Identificativo del documento  
   **/
   private String identificativo = null;
   
-  @Schema(example = "Sanzione CdS n. abc00000", required = true, description = "descrizione del documento")
+  @Schema(example = "Sanzione CdS n. abc00000", requiredMode = RequiredMode.REQUIRED, description = "descrizione del documento")
  /**
    * descrizione del documento  
   **/

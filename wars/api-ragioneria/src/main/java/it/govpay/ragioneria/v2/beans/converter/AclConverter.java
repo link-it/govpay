@@ -6,13 +6,13 @@ import it.govpay.ragioneria.v2.beans.Acl;
 import it.govpay.ragioneria.v2.beans.TipoServizio;
 
 public class AclConverter {
-	
-	
+
+
 	public static Acl toRsModel(it.govpay.bd.model.Acl acl) {
 		Acl rsModel = new Acl();
 		rsModel.principal(acl.getUtenzaPrincipalOriginale())
 		.ruolo(acl.getRuolo());
-		
+
 		if(acl.getServizio() != null) {
 			switch(acl.getServizio()) {
 			case ANAGRAFICA_APPLICAZIONI:
@@ -48,10 +48,10 @@ public class AclConverter {
 				return null;
 			}
 		}
-		
+
 		if(acl.getListaDiritti() != null)
 			rsModel.autorizzazioni(acl.getListaDiritti().stream().map(a -> a.getCodifica()).collect(Collectors.toList()));
-		
+
 		return rsModel;
 	}
 }

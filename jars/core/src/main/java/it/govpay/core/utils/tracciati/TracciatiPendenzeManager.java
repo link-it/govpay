@@ -39,8 +39,10 @@ public class TracciatiPendenzeManager {
 			log.debug(nomeThread + ": Documento gia' in uso in un altro thread ["+codDocumento+"], wait");
 			try {
 				wait();
-			} catch (Exception e) {
+			} catch (InterruptedException e) {
 				log.error(nomeThread + ": Errore durante la wait: " + e.getMessage(),e); 
+				// Restore interrupted state...
+			    Thread.currentThread().interrupt();
 			}
 		}
 		
@@ -52,7 +54,7 @@ public class TracciatiPendenzeManager {
 	public synchronized void releaseDocumento(String nomeThread, String idA2A, String codDocumento) {
 		log.debug(nomeThread + " rilascio documento ["+codDocumento+"]");
 		this.listaDocumenti.remove((idA2A + "@" + codDocumento));
-		notify();
+		notifyAll();
 	}
 	
 	public synchronized void addNumeroAvviso(String numeroAvviso) {

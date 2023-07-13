@@ -18,7 +18,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -56,7 +56,6 @@ import it.govpay.pagamento.v2.beans.PendenzaCreata;
 import it.govpay.pagamento.v2.beans.PendenzaIndex;
 import it.govpay.pagamento.v2.beans.StatoPendenza;
 import it.govpay.pagamento.v2.beans.converter.PendenzeConverter;
-
 
 
 public class PendenzeController extends BaseController {
@@ -100,13 +99,17 @@ public class PendenzeController extends BaseController {
 				if((idA2A != null && idPendenza != null)) {
 					 HttpSession session = this.request.getSession(false);
 					 if(session!= null) {
+						 log.debug("Aggiornamento della pendenza [idA2A:"+idA2A+", idPendenza: "+idPendenza+"] lettura della lista identificativi pendenze dalla sessione con id ["+session.getId()+"]");
 						 @SuppressWarnings("unchecked")
 						 Map<String, Versamento> listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE);
+						 
+						 log.debug("Letta lista identificativi pendenze: ["+(listaIdentificativi!= null ? (StringUtils.join(listaIdentificativi.keySet(), ",")): "non presente")+"]");
 						 
 						 if(listaIdentificativi == null || listaIdentificativi.size() == 0 || !listaIdentificativi.containsKey((idA2A+idPendenza)) ) {
 							 throw new UnprocessableEntityException("Impossibile effettuare l'operazione di aggiornamento, i paramentri 'idA2A' e 'idPendenza' non corrispondono a nessuna pendenza disponibile per l'utenza.");
 						 }
 					 } else {
+						 log.debug("Aggiornamento della pendenza [idA2A:"+idA2A+", idPendenza: "+idPendenza+"] lettura della pendenza dalla sessione non effettuato, perche' la sessione e' null");
 						 throw new UnprocessableEntityException("Impossibile effettuare l'operazione di aggiornamento, nessuna pendenza disponibile per l'utenza.");
 					 }
 					 isUpdate = true;
@@ -208,7 +211,7 @@ public class PendenzeController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
 
@@ -260,7 +263,7 @@ public class PendenzeController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
     
@@ -382,9 +385,93 @@ public class PendenzeController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
     }
+
+
+    @SuppressWarnings("unchecked")
+    public Response getPendenzaByAvviso(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String numeroAvviso) {
+    	String methodName = "getPendenzaByAvviso";  
+		String transactionId = ContextThreadLocal.get().getTransactionId();
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));  
+		try{
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setCodDominio(idDominio);
+			// autorizzazione sulla API
+			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
+			
+			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
+			validatoreId.validaIdDominio("idDominio", idDominio);
+
+			LeggiPendenzaDTO leggiPendenzaDTO = new LeggiPendenzaDTO(user);
+
+			leggiPendenzaDTO.setIdDominio(idDominio);
+			leggiPendenzaDTO.setNumeroAvviso(numeroAvviso);
+			leggiPendenzaDTO.setVerificaAvviso(true);
+			
+			// il versamento riferito dall'avviso potrebbe non essere ancora stato inserito nel db ma essere in sessione
+			Map<String, Versamento> listaIdentificativi = null;
+			Map<String, String> listaAvvisi = null;
+			Versamento versamentoFromSession = null;
+			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(user);
+			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO) || userDetails.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+				HttpSession session = this.request.getSession(false);
+				if(session!= null) {
+					listaIdentificativi = (Map<String, Versamento>) session.getAttribute(BaseController.PENDENZE_CITTADINO_ATTRIBUTE); 
+
+					String chiaveAvviso = idDominio+numeroAvviso;
+					if(numeroAvviso.length() == 18) {
+						listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.AVVISI_CITTADINO_ATTRIBUTE); 
+					} else {
+						listaAvvisi = (Map<String, String>) session.getAttribute(BaseController.IUV_CITTADINO_ATTRIBUTE);
+					}
+
+					if(listaAvvisi != null && listaAvvisi.size() > 0) {
+						if(listaAvvisi.containsKey(chiaveAvviso)) {
+							String chiavePendenza = listaAvvisi.get(chiaveAvviso);
+
+							if(listaIdentificativi.containsKey(chiavePendenza)) {
+								versamentoFromSession = listaIdentificativi.get(chiavePendenza);
+							}
+						}
+					}
+				}
+			}
+			leggiPendenzaDTO.setVersamentoFromSession(versamentoFromSession);
+
+			PendenzeDAO pendenzeDAO = new PendenzeDAO(); 
+
+			LeggiPendenzaDTOResponse leggiPendenzaDTOResponse = pendenzeDAO.leggiPendenzaByRiferimentoAvviso(leggiPendenzaDTO);
+
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdPendenza(leggiPendenzaDTOResponse.getVersamento().getCodVersamentoEnte());
+			((GpContext) (ContextThreadLocal.get()).getApplicationContext()).getEventoCtx().setIdA2A(leggiPendenzaDTOResponse.getApplicazione().getCodApplicazione());
+			
+			Dominio dominio = leggiPendenzaDTOResponse.getDominio();
+			TipoVersamento tipoVersamento = leggiPendenzaDTOResponse.getTipoVersamento();
+			UnitaOperativa unitaOperativa = leggiPendenzaDTOResponse.getUnitaOperativa();
+			
+			// controllo che il dominio, uo e tipo versamento siano autorizzati
+			if(!AuthorizationManager.isTipoVersamentoUOAuthorized(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), unitaOperativa.getCodUo(), tipoVersamento.getCodTipoVersamento())) {
+				throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), dominio.getCodDominio(), unitaOperativa.getCodUo(), tipoVersamento.getCodTipoVersamento());
+			}
+
+			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
+				if(!leggiPendenzaDTOResponse.getVersamento().getAnagraficaDebitore().getCodUnivoco().equals(userDetails.getIdentificativo())) {
+					throw AuthorizationManager.toNotAuthorizedException(leggiPendenzaDTO.getUser(), "la pendenza non appartiene al cittadino chiamante.");
+				}
+			}
+			
+			Pendenza pendenza =  PendenzeConverter.toRsModel(leggiPendenzaDTOResponse,user);
+			
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			return this.handleResponseOk(Response.status(Status.OK).entity(pendenza.toJSON(null)),transactionId).build();
+		}catch (Exception e) {
+			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
+		} finally {
+			this.logContext(ContextThreadLocal.get());
+		}
+    }
+
 
 }
 

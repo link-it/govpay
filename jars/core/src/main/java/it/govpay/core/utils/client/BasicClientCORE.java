@@ -77,12 +77,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.logger.beans.Property;
-import org.openspcoop2.utils.logger.beans.context.core.Role;
-import org.openspcoop2.utils.service.beans.HttpMethodEnum;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
 import org.openspcoop2.utils.service.context.dump.DumpRequest;
@@ -98,16 +95,11 @@ import org.openspcoop2.utils.transport.http.HttpRequestMethod;
 import org.openspcoop2.utils.transport.http.WrappedLogSSLSocketFactory;
 import org.slf4j.Logger;
 
-import it.govpay.bd.configurazione.model.GdeInterfaccia;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.eventi.DettaglioRichiesta;
-import it.govpay.bd.model.eventi.DettaglioRisposta;
-import it.govpay.core.business.GiornaleEventi;
-import it.govpay.core.utils.EventoContext;
-import it.govpay.core.utils.EventoContext.Categoria;
-import it.govpay.core.utils.EventoContext.Componente;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Categoria;
+import it.govpay.core.beans.EventoContext.Componente;
 import it.govpay.core.utils.ExceptionUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.client.beans.TipoConnettore;
@@ -116,12 +108,18 @@ import it.govpay.core.utils.client.beans.TipoOperazioneNodo;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.client.handler.IntegrationContext;
 import it.govpay.core.utils.client.handler.IntegrationOutHandler;
+import it.govpay.core.utils.eventi.EventiUtils;
 import it.govpay.core.utils.rawutils.ConverterUtils;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.model.ConnettoreNotificaPagamenti;
+import it.govpay.model.Evento.RuoloEvento;
 import it.govpay.model.Intermediario;
+import it.govpay.model.configurazione.GdeInterfaccia;
+import it.govpay.model.configurazione.Giornale;
+import it.govpay.model.eventi.DettaglioRichiesta;
+import it.govpay.model.eventi.DettaglioRisposta;
 
 public abstract class BasicClientCORE {
 
@@ -132,8 +130,9 @@ public abstract class BasicClientCORE {
 	//	protected static Map<String, SSLContext> sslContexts = new HashMap<>();
 	protected URL url = null;
 	//	protected SSLContext sslContext;
-	protected boolean ishttpBasicEnabled=false, isSslEnabled=false;
+	protected boolean ishttpBasicEnabled=false, isSslEnabled=false, isSubscriptionKeyEnabled=false;
 	protected String httpBasicUser, httpBasicPassword;
+	protected String subscriptionKeyHeaderName, subscriptionKeyHeaderValue;
 	protected String errMsg;
 	protected String destinatario;
 	protected String mittente;
@@ -143,6 +142,7 @@ public abstract class BasicClientCORE {
 	protected Componente componente;
 	private Giornale giornale;
 	protected EventoContext eventoCtx;
+	private String tipoEventoCustom;
 
 	protected IntegrationContext integrationCtx;
 
@@ -231,8 +231,15 @@ public abstract class BasicClientCORE {
 		// inizializzazione base del context evento
 		this.eventoCtx = new EventoContext();
 		this.getEventoCtx().setCategoriaEvento(Categoria.INTERFACCIA);
-		this.getEventoCtx().setRole(Role.CLIENT);
+		this.getEventoCtx().setRole(RuoloEvento.CLIENT);
 		this.getEventoCtx().setDataRichiesta(new Date());
+		this.getEventoCtx().setTransactionId(ctx.getTransactionId());
+		
+		String clusterId = GovpayConfig.getInstance().getClusterId();
+		if(clusterId != null)
+			this.getEventoCtx().setClusterId(clusterId);
+		else 
+			this.getEventoCtx().setClusterId(GovpayConfig.getInstance().getAppName());
 
 		this.serverID = bundleKey;
 		this.connettore = connettore;
@@ -306,6 +313,16 @@ public abstract class BasicClientCORE {
 			this.httpBasicPassword = connettore.getHttpPassw();
 
 			this.getEventoCtx().setPrincipal(this.httpBasicUser);
+		}
+		
+		if(connettore.getSubscriptionKeyValue() != null) {
+			// se non ho impostato nessuna autenticazione salvo SubscriptionKey come metodo di autenticazione per l'evento.
+			if(connettore.getTipoAutenticazione().equals(EnumAuthType.NONE)) {
+				this.getEventoCtx().setPrincipal("Subscription Key Auth");
+			}
+			this.isSubscriptionKeyEnabled = true;
+			this.subscriptionKeyHeaderName = GovpayConfig.getInstance().getNomeHeaderSubscriptionKeyPagoPA();
+			this.subscriptionKeyHeaderValue = connettore.getSubscriptionKeyValue();
 		}
 	}
 
@@ -415,7 +432,7 @@ public abstract class BasicClientCORE {
 				log.debug("Applicazione al messaggio degli handlers configurati...");
 				for(String handler: outHandlers) {
 					Class<?> c = Class.forName(handler);
-					IntegrationOutHandler instance = (IntegrationOutHandler) c.newInstance();
+					IntegrationOutHandler instance = (IntegrationOutHandler) c.getConstructor().newInstance();
 					log.debug("Applicazione al messaggio dell'handler ["+handler+"]...");
 					instance.invoke(integrationCtx);
 					log.debug("Applicazione al messaggio dell'handler ["+handler+"] completata con successo");
@@ -434,11 +451,7 @@ public abstract class BasicClientCORE {
 		int responseCode = 0;
 		byte [] msg = null;
 
-		if(soap) {
-			this.getEventoCtx().setTipoEvento(azione);
-		} else {
-			this.getEventoCtx().setTipoEvento(swaggerOperationId);
-		}
+		setTipoEvento(soap, azione, swaggerOperationId);
 
 		try{
 
@@ -558,11 +571,10 @@ public abstract class BasicClientCORE {
 
 
 			// Impostazione timeout
-			if(this.debug)
+			if(this.debug) {
 				log.debug("Impostazione timeout...");
-			if(this.debug)
-				log.info("Impostazione http timeout CT["+this.connectionTimeout+"] RT["+this.readTimeout+"] CReqT["+this.connectionRequestTimeout+"]",false);
-
+				log.debug("Impostazione http timeout CT["+this.connectionTimeout+"] RT["+this.readTimeout+"] CReqT["+this.connectionRequestTimeout+"]",false);
+			}
 			requestConfigBuilder.setConnectionRequestTimeout(this.connectionRequestTimeout);
 			requestConfigBuilder.setConnectTimeout(this.connectionTimeout);
 			requestConfigBuilder.setSocketTimeout(this.readTimeout);
@@ -590,7 +602,7 @@ public abstract class BasicClientCORE {
 				this.dumpRequest.getHeaders().put(SOAP_ACTION, "\"" + azione + "\"");
 				this.httpRequest.addHeader(SOAP_ACTION, "\"" + azione + "\"");
 				if(this.debug)
-					log.info("SOAP Action inviata ["+azione+"]",false);
+					log.debug("SOAP Action inviata ["+azione+"]",false);
 			}
 
 			// Authentication BASIC
@@ -606,7 +618,17 @@ public abstract class BasicClientCORE {
 				if(this.debug)
 					log.debug("Impostato Header Authorization [Basic "+encoding+"]");
 			}
-
+			
+			// Authentication Subscription Key
+			if(this.isSubscriptionKeyEnabled) {
+				if(this.debug)
+					log.debug("Impostazione autenticazione...");
+				
+				this.dumpRequest.getHeaders().put(this.subscriptionKeyHeaderName, this.subscriptionKeyHeaderValue);
+				this.httpRequest.addHeader(this.subscriptionKeyHeaderName, this.subscriptionKeyHeaderValue);
+				if(this.debug)
+					log.debug("Impostato Header Subscription Key ["+this.subscriptionKeyHeaderName+"]["+this.subscriptionKeyHeaderValue+"]");
+			}
 
 			// Impostazione Proprieta del trasporto
 			if(headerProperties!= null  && headerProperties.size() > 0) {
@@ -647,7 +669,7 @@ public abstract class BasicClientCORE {
 				if(this.debug)
 					log.debug("Spedizione byte...");
 
-				HttpEntity httpEntity = new ByteArrayEntity(body);
+				HttpEntity httpEntity = new ByteArrayEntity(integrationCtx.getMsg());
 				if(this.httpRequest instanceof HttpEntityEnclosingRequestBase){
 					((HttpEntityEnclosingRequestBase)this.httpRequest).setEntity(httpEntity);
 				}
@@ -760,7 +782,7 @@ public abstract class BasicClientCORE {
 			//			this.resultHTTPMessage = httpResponse.getStatusLine().getReasonPhrase();
 
 			try {
-				if(responseCode < 300) {
+				if(responseCode < 400) { // httpstatus 3xx sono casi ok
 					try {
 						if(httpBody.isDoInput()){
 							isResponse = this.httpEntityResponse.getContent();
@@ -785,7 +807,7 @@ public abstract class BasicClientCORE {
 					} catch (IOException e) {
 						msg = ("Impossibile serializzare l'ErrorStream della risposta: " + e).getBytes() ;
 					} finally {
-						log.warn("Errore nell'invocazione del Nodo dei Pagamenti [HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
+						log.warn("Errore nell'esecuzione dell'operazione ["+this.errMsg+", HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
 					}
 
 					if(soap)
@@ -809,7 +831,7 @@ public abstract class BasicClientCORE {
 					for(String key : dumpResponse.getHeaders().keySet()) { 
 						sb.append("\n\t" + key + ": " + dumpResponse.getHeaders().get(key));
 					}
-					sb.append("\n" + new String(msg));
+					if(msg != null) sb.append("\n" + new String(msg));
 					log.trace(sb.toString());
 				}
 			}
@@ -825,12 +847,22 @@ public abstract class BasicClientCORE {
 				this.disconnect();
 			}catch(ClientException e) {
 				log.error("Errore in fase di chiusura delle risorse: " + e.getMessage(),e);
-				throw e;
 			}
 		}
 
 	}
 
+	private void setTipoEvento(boolean soap, String azione, String swaggerOperationId) {
+		if(this.tipoEventoCustom != null) {
+			this.getEventoCtx().setTipoEvento(this.tipoEventoCustom);
+		} else {
+			if(soap) {
+				this.getEventoCtx().setTipoEvento(azione);
+			} else {
+				this.getEventoCtx().setTipoEvento(swaggerOperationId);
+			}
+		}
+	}
 
 	//	@Override
 	public void disconnect() throws ClientException{
@@ -839,8 +871,9 @@ public abstract class BasicClientCORE {
 			// Gestione finale della connessione    		
 			//System.out.println("CHECK CLOSE STREAM...");
 			if(this.isResponse!=null){
-				if(this.debug && log!=null)
+				if(this.debug) {
 					log.debug("Chiusura socket...");
+				}
 				//System.out.println("CLOSE STREAM...");
 				this.isResponse.close();
 				//System.out.println("CLOSE STREAM");
@@ -854,17 +887,13 @@ public abstract class BasicClientCORE {
 			// Gestione finale della connessione
 			//System.out.println("CHECK ENTITY...");
 			if(this.httpEntityResponse!=null){
-				if(this.debug && log!=null)
+				if(this.debug) {
 					log.debug("Chiusura httpEntityResponse...");
+				}
 				//System.out.println("CLOSE ENTITY...");
 				EntityUtils.consume(this.httpEntityResponse);
 				//System.out.println("CLOSE ENTITY");
 			}
-
-			if(this.httpEntityResponse!=null){
-
-			}
-
 		}catch(Throwable t) {
 			log.debug("Chiusura connessione fallita: "+t.getMessage(),t);
 			listExceptionChiusura.add(t);
@@ -895,28 +924,28 @@ public abstract class BasicClientCORE {
 		return this.send(false, null, jsonBody, false, contentType, headerProperties, swaggerOperationId, path, httpMethod);
 	}
 
-	protected void popolaContextEvento(HttpMethodEnum httpMethod, int responseCode, DumpRequest dumpRequest, DumpResponse dumpResponse) {
+	protected void popolaContextEvento(HttpMethod httpMethod, int responseCode, DumpRequest dumpRequest, DumpResponse dumpResponse) {
 		if(GovpayConfig.getInstance().isGiornaleEventiEnabled()) {
 			boolean logEvento = false;
 			boolean dumpEvento = false;
-			GdeInterfaccia configurazioneInterfaccia = GiornaleEventi.getConfigurazioneComponente(this.componente, this.getGiornale());
+			GdeInterfaccia configurazioneInterfaccia = EventiUtils.getConfigurazioneComponente(this.componente, this.getGiornale());
 
-			log.debug("Log Evento Client: ["+this.componente +"] Method ["+httpMethod+"], Url ["+this.url.toExternalForm()+"], StatusCode ["+responseCode+"]");
+			log.debug("Log Evento Client: ["+this.componente +"], Operazione ["+this.getEventoCtx().getTipoEvento()+"], Method ["+httpMethod+"], Url ["+this.url.toExternalForm()+"], StatusCode ["+responseCode+"]");
 
 			if(configurazioneInterfaccia != null) {
 				try {
-					log.debug("Configurazione Giornale Eventi API: ["+this.componente+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia,null));
-				} catch (ServiceException e) {
+					log.debug("Configurazione Giornale Eventi API: ["+this.componente+"]: " + ConverterUtils.toJSON(configurazioneInterfaccia));
+				} catch (it.govpay.core.exceptions.IOException e) {
 					log.error("Errore durante il log della configurazione giornale eventi: " +e.getMessage(), e);
 				}
 
-				if(GiornaleEventi.isRequestLettura(httpMethod, this.componente, this.getEventoCtx().getTipoEvento())) {
-					logEvento = GiornaleEventi.logEvento(configurazioneInterfaccia.getLetture(), responseCode);
-					dumpEvento = GiornaleEventi.dumpEvento(configurazioneInterfaccia.getLetture(), responseCode);
+				if(EventiUtils.isRequestLettura(httpMethod, this.componente, this.getEventoCtx().getTipoEvento())) {
+					logEvento = EventiUtils.logEvento(configurazioneInterfaccia.getLetture(), responseCode);
+					dumpEvento = EventiUtils.dumpEvento(configurazioneInterfaccia.getLetture(), responseCode);
 					log.debug("Tipo Operazione 'Lettura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
-				} else if(GiornaleEventi.isRequestScrittura(httpMethod, this.componente, this.getEventoCtx().getTipoEvento())) {
-					logEvento = GiornaleEventi.logEvento(configurazioneInterfaccia.getScritture(), responseCode);
-					dumpEvento = GiornaleEventi.dumpEvento(configurazioneInterfaccia.getScritture(), responseCode);
+				} else if(EventiUtils.isRequestScrittura(httpMethod, this.componente, this.getEventoCtx().getTipoEvento())) {
+					logEvento = EventiUtils.logEvento(configurazioneInterfaccia.getScritture(), responseCode);
+					dumpEvento = EventiUtils.dumpEvento(configurazioneInterfaccia.getScritture(), responseCode);
 					log.debug("Tipo Operazione 'Scrittura', Log ["+logEvento+"], Dump ["+dumpEvento+"].");
 				} else {
 					log.debug("Tipo Operazione non riconosciuta, l'evento non verra' salvato.");
@@ -978,29 +1007,29 @@ public abstract class BasicClientCORE {
 		return serverConfig;
 	}
 
-	protected HttpMethodEnum fromHttpMethod(HttpRequestMethod httpMethod) {
+	protected HttpMethod fromHttpMethod(HttpRequestMethod httpMethod) {
 		if(httpMethod != null) {
 			switch (httpMethod) {
 			case DELETE:
-				return HttpMethodEnum.DELETE;
+				return HttpMethod.DELETE;
 			case GET:
-				return HttpMethodEnum.GET;
+				return HttpMethod.GET;
 			case HEAD:
-				return HttpMethodEnum.HEAD;
+				return HttpMethod.HEAD;
 			case LINK:
-				return HttpMethodEnum.LINK;
+				return HttpMethod.LINK;
 			case OPTIONS:
-				return HttpMethodEnum.OPTIONS;
+				return HttpMethod.OPTIONS;
 			case PATCH:
-				return HttpMethodEnum.PATCH;
+				return HttpMethod.PATCH;
 			case POST:
-				return HttpMethodEnum.POST;
+				return HttpMethod.POST;
 			case PUT:
-				return HttpMethodEnum.PUT;
+				return HttpMethod.PUT;
 			case TRACE:
-				return HttpMethodEnum.TRACE;
+				return HttpMethod.TRACE;
 			case UNLINK:
-				return HttpMethodEnum.UNLINK;
+				return HttpMethod.UNLINK;
 			}
 		}
 
@@ -1034,6 +1063,14 @@ public abstract class BasicClientCORE {
 
 	public void setGiornale(Giornale giornale) {
 		this.giornale = giornale;
+	}
+
+	public String getTipoEventoCustom() {
+		return tipoEventoCustom;
+	}
+
+	public void setTipoEventoCustom(String tipoEventoCustom) {
+		this.tipoEventoCustom = tipoEventoCustom;
 	}
 
 	class CustomHttpEntity extends HttpEntityEnclosingRequestBase{

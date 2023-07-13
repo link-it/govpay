@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.5.1</version>
+		<version>3.7.3</version>
 	</parent>
 
 	<artifactId>core-beans</artifactId>
@@ -17,20 +17,61 @@
 		<rel-to-parent>../..</rel-to-parent>
 	</properties>
 
+	<profiles>
+		<profile>
+			<id>java-11</id>
+			<activation>
+	   			<activeByDefault>true</activeByDefault>
+			</activation>
+
+			<dependencies>
+				<dependency>
+				        <groupId>javax.xml.bind</groupId>
+				        <artifactId>jaxb-api</artifactId>
+				        <exclusions>
+				                <exclusion>
+				                        <groupId>*</groupId>
+				                        <artifactId>*</artifactId>
+				                </exclusion>
+				        </exclusions>
+				</dependency>
+				<dependency>
+				        <groupId>com.sun.xml.bind</groupId>
+				        <artifactId>jaxb-core</artifactId>
+				        <exclusions>
+				                <exclusion>
+				                        <groupId>*</groupId>
+				                        <artifactId>*</artifactId>
+				                </exclusion>
+				        </exclusions>
+				</dependency>
+				<dependency>
+				        <groupId>com.sun.xml.bind</groupId>
+				        <artifactId>jaxb-impl</artifactId>
+				        <exclusions>
+				                <exclusion>
+				                        <groupId>*</groupId>
+				                        <artifactId>*</artifactId>
+				                </exclusion>
+				        </exclusions>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 	<dependencies>
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
+			<groupId>it.govpay</groupId>
+			<artifactId>xml-adapters</artifactId>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>orm-beans</artifactId>
+		</dependency>
+	
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
 		</dependency>
 
 		<dependency>
@@ -45,17 +86,7 @@
 		
 		<dependency>
     		<groupId>org.openspcoop2.utils</groupId>
-		    <artifactId>openspcoop2_utils-json</artifactId>
-		</dependency>
-		
-		<dependency>
-    		<groupId>org.openspcoop2.utils</groupId>
 		    <artifactId>openspcoop2_utils-serialization</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openspcoop2</groupId>
-			<artifactId>openspcoop2_generic-project</artifactId>
 		</dependency>
 
 	</dependencies>

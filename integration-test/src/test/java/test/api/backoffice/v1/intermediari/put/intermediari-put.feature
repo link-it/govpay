@@ -87,6 +87,26 @@ When method get
 Then status 200
 And match response == intermediarioClientAuth
 
+@test1
+Scenario: Configurazione subscriptionKey intermediario senza autenticazione verso pagoPA
 
+* def intermediario = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediario.json')
+* set intermediario.servizioPagoPa.subscriptionKey = '8daebdf9-558c-4203-aade-0dee45bfc08d'
 
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+And request intermediario
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* set intermediario.idIntermediario = idIntermediario
+* set intermediario.stazioni = '#ignore'
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response == intermediario
 

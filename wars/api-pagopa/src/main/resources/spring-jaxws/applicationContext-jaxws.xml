@@ -16,7 +16,7 @@
         <b:import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
 
 	    <!-- Context -->
-		<b:bean id="contextConfigV1" class="it.govpay.web.ws.context.ContextConfig">
+		<b:bean id="contextConfigV1" class="it.govpay.web.ws.context.ContextConfigPagoPA">
 		</b:bean>
 		<b:bean id="customContextFactory" class="it.govpay.core.utils.service.context.GpContextFactory">
 			<b:property name="apiName" value="API_PAGOPA" />
@@ -41,7 +41,9 @@
 		</b:bean>
 		
 		<!-- handlers -->
-		<b:bean id="messageLoggingHandlerV1" class="it.govpay.web.handler.MessageLoggingHandlerNDP_010702"></b:bean>
+		<b:bean id="messageLoggingHandlerV1" class="it.govpay.web.handler.MessageLoggingHandlerNDP_010702">
+			<b:property name="apiName" value="API_PAGOPA" />
+		</b:bean>
 		
 		<jaxws:endpoint id="apiPagoPaRTV1" address="/PagamentiTelematiciRTservice" implementorClass="it.govpay.web.ws.PagamentiTelematiciRTImpl">
 			<jaxws:handlers>

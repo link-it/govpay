@@ -13,7 +13,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -40,6 +39,7 @@ import it.govpay.core.dao.anagrafica.exception.UnitaOperativaNonTrovataException
 import it.govpay.core.dao.pagamenti.dto.ApplicazionePatchDTO;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
@@ -67,9 +67,9 @@ public class ApplicazioniController extends BaseController {
 
 
 	public Response getApplicazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A) {
-		String methodName = "getApplicazione";  
+		String methodName = "getApplicazione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try{
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.OPERATORE, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.ANAGRAFICA_APPLICAZIONI), Arrays.asList(Diritti.LETTURA));
@@ -80,7 +80,7 @@ public class ApplicazioniController extends BaseController {
 
 			// Parametri - > DTO Input
 			GetApplicazioneDTO getApplicazioneDTO = new GetApplicazioneDTO(user, idA2A);
-			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO(false);
+			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO();
 			// CHIAMATA AL DAO
 
 			GetApplicazioneDTOResponse getApplicazioneDTOResponse = applicazioniDAO.getApplicazione(getApplicazioneDTO);
@@ -89,22 +89,22 @@ public class ApplicazioniController extends BaseController {
 
 			Applicazione response = ApplicazioniConverter.toRsModel(getApplicazioneDTOResponse.getApplicazione());
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).header(this.transactionIdHeaderName, transactionId).build();
 
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
 	}
 
 
 	@SuppressWarnings("unchecked")
 	public Response updateApplicazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , java.io.InputStream is, String idA2A) {
-		String methodName = "updateApplicazione";  
+		String methodName = "updateApplicazione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
@@ -150,20 +150,20 @@ public class ApplicazioniController extends BaseController {
 
 			Applicazione response = ApplicazioniConverter.toRsModel(pagamentoPortaleDTOResponse.getApplicazione());
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
 	}
 
 
 	public Response addApplicazione(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idA2A, java.io.InputStream is) {
-		String methodName = "addApplicazione";  
+		String methodName = "addApplicazione";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
 		try(ByteArrayOutputStream baos= new ByteArrayOutputStream();){
 			// salvo il json ricevuto
 			IOUtils.copy(is, baos);
@@ -177,11 +177,11 @@ public class ApplicazioniController extends BaseController {
 			String jsonRequest = baos.toString();
 			ApplicazionePost applicazioneRequest= JSONSerializable.parse(jsonRequest, ApplicazionePost.class);
 
-			
+
 			applicazioneRequest.validate();
 
-			PutApplicazioneDTO putApplicazioneDTO = ApplicazioniConverter.getPutApplicazioneDTO(applicazioneRequest, idA2A, user); 
-		
+			PutApplicazioneDTO putApplicazioneDTO = ApplicazioniConverter.getPutApplicazioneDTO(applicazioneRequest, idA2A, user);
+
 			try {
 				new ApplicazioneValidator(putApplicazioneDTO.getApplicazione()).validate();
 			} catch(ValidationException e) {
@@ -199,22 +199,22 @@ public class ApplicazioniController extends BaseController {
 
 			Status responseStatus = putApplicazioneDTOResponse.isCreated() ?  Status.CREATED : Status.OK;
 
-			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+			this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName));
 			return this.handleResponseOk(Response.status(responseStatus),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
 	}
 
 
 
 	public Response findApplicazioni(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , Integer pagina, Integer risultatiPerPagina, String ordinamento, String campi, Boolean abilitato, String idA2A, String principal, Boolean metadatiPaginazione, Boolean maxRisultati) {
-		String methodName = "findApplicazioni";  
+		String methodName = "findApplicazioni";
 		String transactionId = ContextThreadLocal.get().getTransactionId();
-		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
-		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true); 
+		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName));
+		this.setMaxRisultati(maxRisultati, metadatiPaginazione, true);
 		try{
 			boolean associati = false;
 			// autorizzazione sulla API
@@ -223,7 +223,7 @@ public class ApplicazioniController extends BaseController {
 			}catch (NotAuthorizedException e) {
 				associati = !associati;
 			}
-			
+
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
 
@@ -237,13 +237,13 @@ public class ApplicazioniController extends BaseController {
 			listaDominiDTO.setAbilitato(abilitato);
 			listaDominiDTO.setPrincipal(principal);
 			listaDominiDTO.setCodApplicazione(idA2A);
-			
+
 			listaDominiDTO.setEseguiCount(metadatiPaginazione);
 			listaDominiDTO.setEseguiCountConLimit(maxRisultati);
 
 			// INIT DAO
 
-			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO(false);
+			ApplicazioniDAO applicazioniDAO = new ApplicazioniDAO();
 
 			// CHIAMATA AL DAO
 
@@ -265,7 +265,7 @@ public class ApplicazioniController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
 	}
 

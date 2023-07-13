@@ -2,13 +2,12 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 
@@ -22,24 +21,24 @@ import it.govpay.core.utils.validator.ValidatorFactory;
 "allegaPdf",
 })
 public class TemplateMailPromemoriaRicevuta extends JSONSerializable implements IValidable {
-  
+
   private TipoTemplateTrasformazione tipoEnum = null;
-  
+
   @JsonProperty("tipo")
   private String tipo = null;
-  
+
   @JsonProperty("oggetto")
   private Object oggetto = null;
-  
+
   @JsonProperty("messaggio")
   private Object messaggio = null;
-  
+
   @JsonProperty("soloEseguiti")
   private Boolean soloEseguiti = null;
-  
+
   @JsonProperty("allegaPdf")
   private Boolean allegaPdf = null;
-  
+
   /**
    **/
   public TemplateMailPromemoriaRicevuta tipo(TipoTemplateTrasformazione tipo) {
@@ -54,7 +53,7 @@ public class TemplateMailPromemoriaRicevuta extends JSONSerializable implements 
   public void setTipo(TipoTemplateTrasformazione tipoEnum) {
     this.tipoEnum = tipoEnum;
   }
-  
+
   public TemplateMailPromemoriaRicevuta tipo(String tipo) {
     this.tipo = tipo;
     return this;
@@ -109,7 +108,7 @@ public class TemplateMailPromemoriaRicevuta extends JSONSerializable implements 
   }
 
   @JsonProperty("soloEseguiti")
-  public Boolean SoloEseguiti() {
+  public Boolean getSoloEseguiti() {
     return soloEseguiti;
   }
   public void setSoloEseguiti(Boolean soloEseguiti) {
@@ -125,7 +124,7 @@ public class TemplateMailPromemoriaRicevuta extends JSONSerializable implements 
   }
 
   @JsonProperty("allegaPdf")
-  public Boolean AllegaPdf() {
+  public Boolean getAllegaPdf() {
     return allegaPdf;
   }
   public void setAllegaPdf(Boolean allegaPdf) {
@@ -153,8 +152,8 @@ public class TemplateMailPromemoriaRicevuta extends JSONSerializable implements 
     return Objects.hash(tipo, oggetto, messaggio, soloEseguiti, allegaPdf);
   }
 
-  public static TemplateMailPromemoriaRicevuta parse(String json) throws ServiceException, ValidationException {
-    return (TemplateMailPromemoriaRicevuta) parse(json, TemplateMailPromemoriaRicevuta.class);
+  public static TemplateMailPromemoriaRicevuta parse(String json) throws IOException {
+    return parse(json, TemplateMailPromemoriaRicevuta.class);
   }
 
   @Override
@@ -194,16 +193,16 @@ public void validate() throws ValidationException {
 
 	public void validate(String fieldName) throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		
+
 		int v = 0;
 		v = this.oggetto != null ? v+1 : v;
 		v = this.messaggio != null ? v+1 : v;
 		v = this.tipo != null ? v+1 : v;
-		
+
 		if(v != 3) {
 		  throw new ValidationException("I campi 'tipo', 'oggetto' e 'messaggio' devono essere tutti valorizzati per definire il field '"+fieldName+"'.");
 		}
-		
+
 		vf.getValidator("tipo", this.tipo).minLength(1).maxLength(35);
 		vf.getValidator("soloEseguiti", this.soloEseguiti).notNull();
 		vf.getValidator("allegaPdf", this.allegaPdf).notNull();

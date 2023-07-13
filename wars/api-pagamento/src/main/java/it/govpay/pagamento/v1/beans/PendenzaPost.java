@@ -6,12 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -38,7 +37,7 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 	"idDebitore",
 })
 public class PendenzaPost extends JSONSerializable implements IValidable {
-	
+
 	@JsonProperty("idDominio")
 	private String idDominio = null;
 
@@ -413,7 +412,7 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
   public void setIdDebitore(String idDebitore) {
     this.idDebitore = idDebitore;
   }
-  
+
 	@Override
 	public boolean equals(java.lang.Object o) {
 		if (this == o) {
@@ -449,7 +448,7 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 		return Objects.hash(this.idDominio, this.idUnitaOperativa, this.nome, this.causale, this.soggettoPagatore, this.importo, this.numeroAvviso, this.dataCaricamento, this.dataValidita, this.dataScadenza, this.annoRiferimento, this.cartellaPagamento, this.datiAllegati, this.tassonomia, this.tassonomiaAvviso, this.voci, this.idA2A, this.idPendenza, this.idDebitore);
 	}
 
-	public static PendenzaPost parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, org.openspcoop2.utils.json.ValidationException {
+	public static PendenzaPost parse(String json) throws it.govpay.core.exceptions.IOException {
 		return parse(json, PendenzaPost.class);
 	}
 
@@ -500,7 +499,7 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 	@Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		
+
 		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 
 		// Pendenza passata per riferimento idA2A/idPendenza
@@ -517,7 +516,7 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				vf.getValidator("numeroAvviso", this.numeroAvviso).isNull();
 				vf.getValidator("dataValidita", this.dataValidita).isNull();
 				vf.getValidator("dataScadenza", this.dataScadenza).isNull();
-				vf.getValidator("annoRiferimento", this.annoRiferimento).isNull();;
+				vf.getValidator("annoRiferimento", this.annoRiferimento).isNull();
 				vf.getValidator("cartellaPagamento", this.cartellaPagamento).isNull();
 				vf.getValidator("voci", this.voci).isNull();
 			} catch (ValidationException ve) {
@@ -535,7 +534,7 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				vf.getValidator("importo", this.importo).isNull();
 				vf.getValidator("dataValidita", this.dataValidita).isNull();
 				vf.getValidator("dataScadenza", this.dataScadenza).isNull();
-				vf.getValidator("annoRiferimento", this.annoRiferimento).isNull();;
+				vf.getValidator("annoRiferimento", this.annoRiferimento).isNull();
 				vf.getValidator("cartellaPagamento", this.cartellaPagamento).isNull();
 				vf.getValidator("voci", this.voci).isNull();
 				vf.getValidator("idA2A", this.idA2A).isNull();
@@ -544,17 +543,17 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 				throw new ValidationException("Pendenza riferita per numero avviso. " + ve.getMessage());
 			}
 		} else {
-			
+
 			validatoreId.validaIdApplicazione("idA2A", this.idA2A);
 			validatoreId.validaIdPendenza("idPendenza", this.idPendenza);
 			validatoreId.validaIdDominio("idDominio", this.idDominio);
 			validatoreId.validaIdUO("idUnitaOperativa", this.idUnitaOperativa, false);
-			
+
 			ValidatoreUtils.validaNomePendenza(vf, "nome", nome);
 			ValidatoreUtils.validaCausale(vf, "causale", causale);
-			
+
 			vf.getValidator("soggettoPagatore", this.soggettoPagatore).notNull().validateFields();
-			
+
 			ValidatoreUtils.validaImporto(vf, "importo", importo);
 			ValidatoreUtils.validaNumeroAvviso(vf, "numeroAvviso", numeroAvviso);
 			ValidatoreUtils.validaData(vf, "dataValidita", this.dataValidita);
@@ -562,7 +561,7 @@ public class PendenzaPost extends JSONSerializable implements IValidable {
 			ValidatoreUtils.validaAnnoRiferimento(vf, "annoRiferimento", annoRiferimento);
 			ValidatoreUtils.validaCartellaPagamento(vf, "cartellaPagamento", cartellaPagamento);
 			ValidatoreUtils.validaTassonomia(vf, "tassonomia", tassonomia);
-			
+
 			vf.getValidator("voci", this.voci).notNull().minItems(1).maxItems(5).validateObjects();
 		}
 	}

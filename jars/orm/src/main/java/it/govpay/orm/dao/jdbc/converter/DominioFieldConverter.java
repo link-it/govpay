@@ -179,11 +179,25 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_connettore_hyper_sic_apk";
 			}
 		}
+		if(field.equals(Dominio.model().COD_CONNETTORE_MAGGIOLI_JPPA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_connettore_maggioli_jppa";
+			}else{
+				return "cod_connettore_maggioli_jppa";
+			}
+		}
 		if(field.equals(Dominio.model().INTERMEDIATO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".intermediato";
 			}else{
 				return "intermediato";
+			}
+		}
+		if(field.equals(Dominio.model().TASSONOMIA_PAGO_PA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tassonomia_pago_pa";
+			}else{
+				return "tassonomia_pago_pa";
 			}
 		}
 
@@ -247,7 +261,13 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Dominio.model().COD_CONNETTORE_HYPER_SIC_APK)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
+		if(field.equals(Dominio.model().COD_CONNETTORE_MAGGIOLI_JPPA)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
 		if(field.equals(Dominio.model().INTERMEDIATO)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().TASSONOMIA_PAGO_PA)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 

@@ -2,10 +2,11 @@ package it.govpay.core.utils.validator;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 public class StringValidator {
 
@@ -19,21 +20,22 @@ public class StringValidator {
 
 	public StringValidator notNull() throws ValidationException {
 		if(this.fieldValue == null) {
-			throw new ValidationException("Il campo " + this.fieldName + " non deve essere vuoto.");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.STRING_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_DEVE_ESSERE_VUOTO, this.fieldName));
 		}
 		return this;
 	}
 	
 	public StringValidator isNull() throws ValidationException {
 		if(this.fieldValue != null) {
-			throw new ValidationException("Il campo " + this.fieldName + " deve essere vuoto.");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.STRING_VALIDATOR_ERROR_MSG_IL_CAMPO_0_DEVE_ESSERE_VUOTO, this.fieldName));
 		}
 		return this;
 	}
 
 	public StringValidator minLength(int length) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.length() < length) {
-			throw new ValidationException("Il valore [" + this.fieldValue + "] del campo " + this.fieldName + " non rispetta la lunghezza minima di " + length + " caratteri.");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.STRING_VALIDATOR_ERROR_MSG_IL_VALORE_0_DEL_CAMPO_1_NON_RISPETTA_LA_LUNGHEZZA_MINIMA_DI_2_CARATTERI,
+					this.fieldValue, this.fieldName, length));
 
 		}
 		return this;
@@ -41,7 +43,8 @@ public class StringValidator {
 
 	public StringValidator maxLength(int length) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.length() > length) {
-			throw new ValidationException("Il valore [" + this.fieldValue + "] del campo " + this.fieldName + " non rispetta la lunghezza massima di " + length + " caratteri.");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.STRING_VALIDATOR_ERROR_MSG_IL_VALORE_0_DEL_CAMPO_1_NON_RISPETTA_LA_LUNGHEZZA_MASSIMA_DI_2_CARATTERI,
+					this.fieldValue, this.fieldName, length));
 
 		}
 		return this;
@@ -49,7 +52,8 @@ public class StringValidator {
 	
 	public StringValidator length(int length) throws ValidationException {
 		if(this.fieldValue != null && this.fieldValue.length() != length) {
-			throw new ValidationException("Il valore [" + this.fieldValue + "] del campo " + this.fieldName + " non rispetta la lunghezza di " + length + " caratteri.");
+			throw new ValidationException(MessageFormat.format(CostantiValidazione.STRING_VALIDATOR_ERROR_MSG_IL_VALORE_0_DEL_CAMPO_1_NON_RISPETTA_LA_LUNGHEZZA_DI_2_CARATTERI,
+					this.fieldValue, this.fieldName, length));
 		}
 		return this;
 	}
@@ -59,7 +63,8 @@ public class StringValidator {
 			Pattern p = Pattern.compile(pattern);
 			Matcher m = p.matcher(this.fieldValue);
 			if(!m.matches())
-				throw new ValidationException("Il valore [" + this.fieldValue + "] del campo " + this.fieldName + " non rispetta il pattern richiesto: " + pattern + "");
+				throw new ValidationException(MessageFormat.format(CostantiValidazione.STRING_VALIDATOR_ERROR_MSG_IL_VALORE_0_DEL_CAMPO_1_NON_RISPETTA_IL_PATTERN_RICHIESTO_2,
+						this.fieldValue, this.fieldName, pattern));
 		}
 		return this;
 	}
@@ -69,7 +74,7 @@ public class StringValidator {
 			try {
 				new URL(this.fieldValue);
 			} catch (MalformedURLException e) {
-				throw new ValidationException("Il campo " + this.fieldName + " non contiene una URL valida.");
+				throw new ValidationException(MessageFormat.format(CostantiValidazione.STRING_VALIDATOR_ERROR_MSG_IL_CAMPO_0_NON_CONTIENE_UNA_URL_VALIDA, this.fieldName));
 			}
 		}
 		return this;

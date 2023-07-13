@@ -34,7 +34,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.openspcoop2.utils.service.context.IContext;
@@ -49,9 +48,10 @@ import it.govpay.bd.model.UtenzaApplicazione;
 import it.govpay.bd.model.UtenzaOperatore;
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
 import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
+import it.govpay.core.beans.EventoContext.Categoria;
+import it.govpay.core.beans.commons.Dominio;
+import it.govpay.core.beans.commons.Dominio.Uo;
 import it.govpay.core.dao.anagrafica.UtentiDAO;
-import it.govpay.core.dao.commons.Dominio;
-import it.govpay.core.utils.EventoContext.Categoria;
 import it.govpay.core.utils.GpContext;
 
 
@@ -68,11 +68,11 @@ public abstract class BaseRsService {
 
 	protected String codOperazione;
 
-	public BaseRsService() throws ServiceException{
+	protected BaseRsService() {
 		this.log = LoggerWrapperFactory.getLogger(BaseRsService.class);
 	}
 
-	public BaseRsService(String nomeServizio) throws ServiceException{
+	protected BaseRsService(String nomeServizio) {
 		this();
 		this.nomeServizio = nomeServizio;
 
@@ -126,7 +126,6 @@ public abstract class BaseRsService {
 	
 	protected IContext getContext() {
 		IContext context = ContextThreadLocal.get();
-		//System.out.println("SYNC:   " + Thread.currentThread().getId() + " " + context.getTransactionId() + " " + context.toString() );
 		if(context instanceof org.openspcoop2.utils.service.context.Context) {
 			((org.openspcoop2.utils.service.context.Context)context).update(this.request, this.response, this.uriInfo, 2, this.log);
 			((org.openspcoop2.utils.service.context.Context)context).setRestPath(this.getPathFromRestMethod(context.getMethodName()));
@@ -137,21 +136,6 @@ public abstract class BaseRsService {
 			ctx.getEventoCtx().setTipoEvento(context.getMethodName());
 			ctx.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(context.getAuthentication()));
 			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication());
-			if(authenticationDetails != null) {
-				Utenza utenza = authenticationDetails.getUtenza();
-				switch(utenza.getTipoUtenza()) {
-				case CITTADINO:
-				case ANONIMO:
-					ctx.getEventoCtx().setUtente(authenticationDetails.getIdentificativo());
-					break;
-				case APPLICAZIONE:
-					ctx.getEventoCtx().setUtente(((UtenzaApplicazione)utenza).getCodApplicazione());
-					break;
-				case OPERATORE:
-					ctx.getEventoCtx().setUtente(((UtenzaOperatore)utenza).getNome());
-					break;
-				}
-			}
 			String baseUri = request.getRequestURI(); // uriInfo.getBaseUri().toString();
 			String requestUri = uriInfo.getRequestUri().toString();
 			int idxOfBaseUri = requestUri.indexOf(baseUri);
@@ -171,6 +155,20 @@ public abstract class BaseRsService {
 			sb.append("\n");
 			if(authenticationDetails != null) {
 				Utenza utenza = authenticationDetails.getUtenza();
+				
+				switch(utenza.getTipoUtenza()) {
+				case CITTADINO:
+				case ANONIMO:
+					ctx.getEventoCtx().setUtente(authenticationDetails.getIdentificativo());
+					break;
+				case APPLICAZIONE:
+					ctx.getEventoCtx().setUtente(((UtenzaApplicazione)utenza).getCodApplicazione());
+					break;
+				case OPERATORE:
+					ctx.getEventoCtx().setUtente(((UtenzaOperatore)utenza).getNome());
+					break;
+				}
+				
 				sb.append("Profilo: \n");
 				sb.append("\t[\n\t").append("TipoUtenza: [").append(authenticationDetails.getTipoUtenza()).append("], Abilitato: [").append(utenza.isAbilitato()).append("]");
 				sb.append("\n");
@@ -180,39 +178,12 @@ public abstract class BaseRsService {
 				
 				List<Acl> aclsProfilo = utenza.getAclsProfilo();
 				
-				for (Acl acl : aclsProfilo) {
-					sb.append("\t").append("\t");
-					sb.append("Ruolo[").append(acl.getRuolo()).append("], IdUtenza: [").append(acl.getIdUtenza())
-						.append("], Servizio: [").append(acl.getServizio()).append("], Diritti: [").append(acl.getListaDirittiString()).append("]");
-					sb.append("\n");
-				}
+				this.printAcl(sb, aclsProfilo);
 				sb.append("\t\t]\n");
 				sb.append("\t");
-				if(utenza.isAutorizzazioneDominiStar())
-					sb.append("Domini: [Tutti]");
-				else {
-					List<IdUnitaOperativa> dominiUo = utenza.getDominiUo();
-					if(dominiUo != null) {
-						List<Dominio> domini = UtentiDAO.convertIdUnitaOperativeToDomini(dominiUo); 
-						sb.append("Domini: [");
-						for (Dominio dominio : domini) {
-							sb.append("\t\t");
-							
-							sb.append(dominio.getCodDominio()).append(", UO: [").append((dominio.getUo() != null ? (
-									dominio.getUo().stream().map(d -> d.getCodUo()).collect(Collectors.toList())
-									) : "Tutte")).append("]");
-						}
-						sb.append("\t");
-						sb.append("]");
-					} else {
-						sb.append("Domini: [").append(utenza.getIdDominio()).append("]");
-					}
-				}
+				this.printAutorizzazioneDominiUo(sb, utenza);
 				sb.append("\n").append("\t");
-				if(utenza.isAutorizzazioneTipiVersamentoStar())
-					sb.append("TipiPendenza: [Tutti]");
-				else 
-					sb.append("TipiPendenza: [").append(utenza.getIdTipoVersamento()).append("]");
+				this.printAutorizzazioneTipiVersamento(sb, utenza);
 				sb.append("\n");
 				sb.append("\t]\n");
 			}
@@ -222,6 +193,45 @@ public abstract class BaseRsService {
 			this.log.debug(sb.toString());
 		}
 		return context;
+	}
+
+	private void printAcl(StringBuilder sb, List<Acl> aclsProfilo) {
+		for (Acl acl : aclsProfilo) {
+			sb.append("\t").append("\t");
+			sb.append("Ruolo[").append(acl.getRuolo()).append("], IdUtenza: [").append(acl.getIdUtenza())
+				.append("], Servizio: [").append(acl.getServizio()).append("], Diritti: [").append(acl.getListaDirittiString()).append("]");
+			sb.append("\n");
+		}
+	}
+
+	private void printAutorizzazioneTipiVersamento(StringBuilder sb, Utenza utenza) {
+		if(utenza.isAutorizzazioneTipiVersamentoStar())
+			sb.append("TipiPendenza: [Tutti]");
+		else 
+			sb.append("TipiPendenza: [").append(utenza.getIdTipoVersamento()).append("]");
+	}
+
+	private void printAutorizzazioneDominiUo(StringBuilder sb, Utenza utenza) {
+		if(utenza.isAutorizzazioneDominiStar())
+			sb.append("Domini: [Tutti]");
+		else {
+			List<IdUnitaOperativa> dominiUo = utenza.getDominiUo();
+			if(dominiUo != null) {
+				List<Dominio> domini = UtentiDAO.convertIdUnitaOperativeToDomini(dominiUo); 
+				sb.append("Domini: [");
+				for (Dominio dominio : domini) {
+					sb.append("\t\t");
+					
+					sb.append(dominio.getCodDominio()).append(", UO: [").append((dominio.getUo() != null ? (
+							dominio.getUo().stream().map(Uo::getCodUo).collect(Collectors.toList())
+							) : "Tutte")).append("]");
+				}
+				sb.append("\t");
+				sb.append("]");
+			} else {
+				sb.append("Domini: [").append(utenza.getIdDominio()).append("]");
+			}
+		}
 	}
 	
 	protected void buildContext() {
@@ -236,21 +246,6 @@ public abstract class BaseRsService {
 			ctx.getEventoCtx().setTipoEvento(context.getMethodName());
 			ctx.getEventoCtx().setPrincipal(AutorizzazioneUtils.getPrincipal(context.getAuthentication()));
 			GovpayLdapUserDetails authenticationDetails = AutorizzazioneUtils.getAuthenticationDetails(context.getAuthentication());
-			if(authenticationDetails != null) {
-				Utenza utenza = authenticationDetails.getUtenza();
-				switch(utenza.getTipoUtenza()) {
-				case CITTADINO:
-				case ANONIMO:
-					ctx.getEventoCtx().setUtente(authenticationDetails.getIdentificativo());
-					break;
-				case APPLICAZIONE:
-					ctx.getEventoCtx().setUtente(((UtenzaApplicazione)utenza).getCodApplicazione());
-					break;
-				case OPERATORE:
-					ctx.getEventoCtx().setUtente(((UtenzaOperatore)utenza).getNome());
-					break;
-				}
-			}
 			String baseUri = request.getRequestURI(); // uriInfo.getBaseUri().toString();
 			String requestUri = uriInfo.getRequestUri().toString();
 			int idxOfBaseUri = requestUri.indexOf(baseUri);
@@ -275,6 +270,19 @@ public abstract class BaseRsService {
 			sb.append("\n");
 			if(authenticationDetails != null) {
 				Utenza utenza = authenticationDetails.getUtenza();
+				switch(utenza.getTipoUtenza()) {
+				case CITTADINO:
+				case ANONIMO:
+					ctx.getEventoCtx().setUtente(authenticationDetails.getIdentificativo());
+					break;
+				case APPLICAZIONE:
+					ctx.getEventoCtx().setUtente(((UtenzaApplicazione)utenza).getCodApplicazione());
+					break;
+				case OPERATORE:
+					ctx.getEventoCtx().setUtente(((UtenzaOperatore)utenza).getNome());
+					break;
+				}
+				
 				sb.append("Profilo: \n");
 				sb.append("\t[\n\t").append("TipoUtenza: [").append(authenticationDetails.getTipoUtenza()).append("], Abilitato: [").append(utenza.isAbilitato()).append("]");
 				if(idSessione != null) {
@@ -288,39 +296,12 @@ public abstract class BaseRsService {
 				
 				List<Acl> aclsProfilo = utenza.getAclsProfilo();
 				
-				for (Acl acl : aclsProfilo) {
-					sb.append("\t").append("\t");
-					sb.append("Ruolo[").append(acl.getRuolo()).append("], IdUtenza: [").append(acl.getIdUtenza())
-						.append("], Servizio: [").append(acl.getServizio()).append("], Diritti: [").append(acl.getListaDirittiString()).append("]");
-					sb.append("\n");
-				}
+				printAcl(sb, aclsProfilo);
 				sb.append("\t\t]\n");
 				sb.append("\t");
-				if(utenza.isAutorizzazioneDominiStar())
-					sb.append("Domini: [Tutti]");
-				else {
-					List<IdUnitaOperativa> dominiUo = utenza.getDominiUo();
-					if(dominiUo != null) {
-						List<Dominio> domini = UtentiDAO.convertIdUnitaOperativeToDomini(dominiUo); 
-						sb.append("Domini: [");
-						for (Dominio dominio : domini) {
-							sb.append("\t\t");
-							
-							sb.append(dominio.getCodDominio()).append(", UO: [").append((dominio.getUo() != null ? (
-									dominio.getUo().stream().map(d -> d.getCodUo()).collect(Collectors.toList())
-									) : "Tutte")).append("]");
-						}
-						sb.append("\t");
-						sb.append("]");
-					} else {
-						sb.append("Domini: [").append(utenza.getIdDominio()).append("]");
-					}
-				}
+				printAutorizzazioneDominiUo(sb, utenza);
 				sb.append("\n").append("\t");
-				if(utenza.isAutorizzazioneTipiVersamentoStar())
-					sb.append("TipiPendenza: [Tutti]");
-				else 
-					sb.append("TipiPendenza: [").append(utenza.getIdTipoVersamento()).append("]");
+				printAutorizzazioneTipiVersamento(sb, utenza);
 				sb.append("\n");
 				sb.append("\t]\n");
 			}

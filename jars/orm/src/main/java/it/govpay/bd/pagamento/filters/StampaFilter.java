@@ -53,11 +53,7 @@ public class StampaFilter extends AbstractFilter {
 			StampaFieldConverter converter = new StampaFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			
 			if(this.tipo!= null) {
-				if(addAnd)
-					newExpression.and();
-				
 				newExpression.equals(Stampa.model().TIPO, this.tipo);
-				
 				addAnd = true;
 			}
 

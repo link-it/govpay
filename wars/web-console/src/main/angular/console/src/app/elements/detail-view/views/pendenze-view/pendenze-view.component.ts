@@ -39,6 +39,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
   protected NOTA = UtilService.NOTA;
   protected ADD = UtilService.PATCH_METHODS.ADD;
   protected info: Riepilogo;
+  protected allegati = [];
   protected infoVisualizzazione: any = { visible: false, titolo: '', campi: [] };
   protected _paymentsSum: number = 0;
   protected _importiOverIcons: string[] = ['file_download'];
@@ -179,6 +180,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
       if(!item.tipoBollo) {
         _std.elenco.push({ label: Voce.CONTABILITA, value: Dato.concatStrings([ item.tipoContabilita, item.codiceContabilita ], ', ') });
         _std.elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.ibanAccredito });
+        _std.elenco.push({ label: Voce.CONTO_APPOGGIO, value: item.ibanAppoggio });
       }
       _std.importo = this.us.currencyFormat(item.importo);
       _std.stato = item.stato;
@@ -203,6 +205,19 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
         p.jsonP = _nota;
         p.model = _cc;
         p.type = UtilService.CRONO_CODE;
+        return p;
+      }, this);
+    }
+    if(_json.allegati) {
+      this.allegati = _json.allegati.map(function(_allegato) {
+        const _std = new NewStandardCollapse();
+        _std.titolo = new Dato({ value: _allegato.descrizione });
+        _std.sottotitolo = new Dato({ value: _allegato.nome });
+        _std.item = _allegato;
+        const p = new Parameters();
+        p.jsonP = _allegato;
+        p.model = _std;
+        p.type = UtilService.ALLEGATO;
         return p;
       }, this);
     }
@@ -268,7 +283,7 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
           const _stdTCC: TwoColsCollapse = new TwoColsCollapse();
           const _dataOraEventi = item.dataEvento?moment(item.dataEvento).format('DD/MM/YYYY [-] HH:mm:ss.SSS'):Voce.NON_PRESENTE;
           const _riferimento = this.us.mapRiferimentoGiornale(item);
-          _stdTCC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.tipoEvento) });
+          _stdTCC.titolo = new Dato({ label: this.us.mappaturaTipoEvento(item.componente, item.tipoEvento) });
           _stdTCC.sottotitolo = new Dato({ label: _riferimento });
           _stdTCC.stato = item.esito;
           _stdTCC.data = _dataOraEventi;

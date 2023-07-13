@@ -40,7 +40,7 @@ public abstract class AbstractTask {
 		} catch(Throwable e) {
 			this.log.error("Execuzione task ["+this.name+"] completata con errore: " + e.getMessage(), e);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 			ContextThreadLocal.unset();
 		}
 	}
@@ -66,7 +66,7 @@ public abstract class AbstractTask {
 		return ctx;
 	}
 	
-	protected void log(IContext ctx) {
+	protected void logContext(IContext ctx) {
 		if(ctx != null) {
 			try {
 				ctx.getApplicationLogger().log();

@@ -20,7 +20,6 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +27,7 @@ import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -117,7 +117,7 @@ public class FrBD extends BasicBD {
 	 */
 	
 	public Fr getFr(String codDominio, String codFlusso) throws NotFoundException, ServiceException {
-		return getFr(codDominio, codFlusso, null, null, false);
+		return getFr(codDominio, codFlusso, null, false, false);
 	}
 
 	public Fr getFr(String codDominio, String codFlusso, Date dataOraFlusso) throws NotFoundException, ServiceException {
@@ -152,38 +152,10 @@ public class FrBD extends BasicBD {
 			}
 			
 			if(dataOraFlusso != null) {
-				// controllo millisecondi
-				Calendar cDataDa = Calendar.getInstance();
-				cDataDa.setTime(dataOraFlusso);
-				int currentMillis = cDataDa.get(Calendar.MILLISECOND);
-
-				// in questo caso posso avere una data dove non sono stati impostati i millisecondi oppure millisecondi == 0, faccio una ricerca su un intervallo di un secondo
-				if(currentMillis == 0) {
-					Calendar cDataA = Calendar.getInstance();
-					cDataA.setTime(dataOraFlusso);
-					cDataA.set(Calendar.MILLISECOND, 999);
-					Date dataA = cDataA.getTime();
-
-					expr.greaterEquals(FR.model().DATA_ORA_FLUSSO, dataOraFlusso).and().lessEquals(FR.model().DATA_ORA_FLUSSO, dataA);
-					IPaginatedExpression pagExpr = this.getFrService().toPaginatedExpression(expr);
-					pagExpr.offset(0).limit(1);
-					pagExpr.addOrder(FR.model().DATA_ORA_FLUSSO, SortOrder.DESC); // prendo il piu' recente
-
-					List<FR> findAll = this.getFrService().findAll(pagExpr);
-
-					if(findAll != null && findAll.size() >0) {
-						vo = findAll.get(0);
-					} else {
-						throw new NotFoundException("Nessuna entry corrisponde ai criteri indicati.");
-					}
-
-				} else {
-					expr.equals(FR.model().DATA_ORA_FLUSSO, dataOraFlusso);
-					vo = this.getFrService().find(expr);
-				}
-			} else {
-				vo = this.getFrService().find(expr);
+				expr.equals(FR.model().DATA_ORA_FLUSSO, dataOraFlusso);
 			}
+			
+			vo = this.getFrService().find(expr);
 
 			return FrConverter.toDTO(vo);
 		} catch (NotImplementedException e) {
@@ -334,7 +306,7 @@ public class FrBD extends BasicBD {
 
 			sqlQueryObjectInterno.addFromTable(converter.toTable(model.COD_FLUSSO));
 			sqlQueryObjectInterno.addSelectField(converter.toTable(model.COD_FLUSSO), "id");
-			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_ORA_FLUSSO), "data_ora_flusso");
+			sqlQueryObjectInterno.addSelectField(converter.toTable(model.DATA_ACQUISIZIONE), "data_acquisizione");
 			sqlQueryObjectInterno.setANDLogicOperator(true);
 
 			// creo condizioni
@@ -342,7 +314,7 @@ public class FrBD extends BasicBD {
 			// preparo parametri
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 
-			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_ORA_FLUSSO, true), false);
+			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.DATA_ACQUISIZIONE, true), false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
@@ -615,6 +587,41 @@ public class FrBD extends BasicBD {
 				frLst.add(FrConverter.toDTO(frVO));
 			}
 			return frLst;
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+
+	}
+	
+	public long countFrDominio(String codDominio, Date dataAcquisizioneDa, Date dataAcquisizioneA, List<String> listaTipiPendenza) throws ServiceException{
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+			}
+
+			IExpression exp = this.getFrService().newExpression();
+			exp.equals(FR.model().COD_DOMINIO, codDominio).and();
+			if(dataAcquisizioneDa != null) {
+				exp.greaterEquals(FR.model().DATA_ACQUISIZIONE, dataAcquisizioneDa);
+			}
+			exp.lessEquals(FR.model().DATA_ACQUISIZIONE, dataAcquisizioneA);
+			exp.equals(FR.model().STATO, StatoFr.ACCETTATA.toString());
+			if(listaTipiPendenza != null && !listaTipiPendenza.isEmpty()) {
+				listaTipiPendenza.removeAll(Collections.singleton(null));
+				exp.in(FR.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_TIPO_VERSAMENTO.COD_TIPO_VERSAMENTO, listaTipiPendenza);
+			}
+			
+			NonNegativeNumber count = this.getFrService().count(exp);
+			
+			return count.longValue();
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {

@@ -2,9 +2,9 @@ package it.govpay.core.dao.configurazione.dto;
 
 import org.springframework.security.core.Authentication;
 
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Configurazione;
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
+import it.govpay.model.configurazione.Giornale;
 
 public class PutConfigurazioneDTO extends BasicCreateRequestDTO {
 

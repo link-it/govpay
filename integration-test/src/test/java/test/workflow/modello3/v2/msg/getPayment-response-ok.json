@@ -30,7 +30,8 @@
 					    "fiscalCodePA" : "#(idDominio)",
 					    "IBAN" : "#string",
 					    "remittanceInformation" : "#string",
-					    "transferCategory" : "#string"
+					    "transferCategory" : "#string",
+    					"metadata" : "#ignore"
 			    	}
 			    ]
 	     },

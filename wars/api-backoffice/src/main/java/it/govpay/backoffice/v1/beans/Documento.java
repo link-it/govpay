@@ -4,12 +4,11 @@ package it.govpay.backoffice.v1.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -21,19 +20,19 @@ import it.govpay.core.utils.validator.ValidatoreUtils;
 "soglia",
 })
 public class Documento extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("identificativo")
   private String identificativo = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("rata")
   private BigDecimal rata = null;
 
   @JsonProperty("soglia")
   private VincoloPagamento soglia = null;
-  
+
   /**
    * Identificativo del documento
    **/
@@ -117,8 +116,8 @@ public class Documento extends JSONSerializable implements IValidable {
     return Objects.hash(identificativo, descrizione, rata, soglia);
   }
 
-  public static Documento parse(String json) throws ServiceException, ValidationException {
-    return (Documento) parse(json, Documento.class);
+  public static Documento parse(String json) throws IOException {
+    return parse(json, Documento.class);
   }
 
   @Override
@@ -130,7 +129,7 @@ public class Documento extends JSONSerializable implements IValidable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Documento {\n");
-    
+
     sb.append("    identificativo: ").append(toIndentedString(identificativo)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("    rata: ").append(toIndentedString(rata)).append("\n");
@@ -149,13 +148,13 @@ public class Documento extends JSONSerializable implements IValidable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
 	public void validate() throws ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
-		
+
 		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-		
+
 		validatoreId.validaIdDocumento("identificativo", this.identificativo);
 		vf.getValidator("descrizione", this.descrizione).notNull().minLength(1).maxLength(255);
 		if(this.rata != null) {

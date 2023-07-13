@@ -17,7 +17,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 import org.springframework.security.core.Authentication;
@@ -25,7 +25,9 @@ import org.springframework.security.core.Authentication;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.PagamentoPortale;
 import it.govpay.bd.model.Rpt;
@@ -44,7 +46,6 @@ import it.govpay.core.dao.pagamenti.dto.ListaRptDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaRptDTOResponse;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -58,6 +59,7 @@ import it.govpay.pagamento.v2.beans.ListaRppIndex;
 import it.govpay.pagamento.v2.beans.Rpp;
 import it.govpay.pagamento.v2.beans.RppIndex;
 import it.govpay.pagamento.v2.beans.converter.RptConverter;
+import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class RppController extends BaseController {
 
@@ -75,7 +77,7 @@ public class RppController extends BaseController {
 
 			ValidatorFactory vf = ValidatorFactory.newInstance();
 			ValidatoreUtils.validaRisultatiPerPagina(vf, Costanti.PARAMETRO_RISULTATI_PER_PAGINA, risultatiPerPagina);
-			
+
 			// Parametri - > DTO Input
 
 			ListaRptDTO listaRptDTO = new ListaRptDTO(user);
@@ -90,7 +92,7 @@ public class RppController extends BaseController {
 					switch (esitoRPT) {
 					case DECORRENZA_PARZIALE:
 						esitoPagamento = EsitoPagamento.DECORRENZA_TERMINI_PARZIALE;
- 						break;
+						break;
 					case DECORRENZA:
 						esitoPagamento = EsitoPagamento.DECORRENZA_TERMINI;
 						break;
@@ -114,28 +116,28 @@ public class RppController extends BaseController {
 					throw new ValidationException("Codifica inesistente per esito. Valore fornito [" + esito
 							+ "] valori possibili " + ArrayUtils.toString(EsitoRpp.values()));
 				}
-				
+
 				listaRptDTO.setEsitoPagamento(esitoPagamento);
 			}
-			
+
 			ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 
 			if(idDominio != null) {
 				validatoreId.validaIdDominio("idDominio", idDominio);
 				listaRptDTO.setIdDominio(idDominio);
 			}
-			
+
 			if(iuv != null)
 				listaRptDTO.setIuv(iuv);
-			
+
 			if(ccp != null)
 				listaRptDTO.setCcp(ccp);
-			
+
 			if(idA2A != null) {
 				validatoreId.validaIdApplicazione("idA2A", idA2A);
 				listaRptDTO.setIdA2A(idA2A);
 			}
-			
+
 			if(idPendenza != null) {
 				validatoreId.validaIdPendenza("idPendenza", idPendenza);
 				listaRptDTO.setIdPendenza(idPendenza);
@@ -146,45 +148,45 @@ public class RppController extends BaseController {
 
 			if(ordinamento != null)
 				listaRptDTO.setOrderBy(ordinamento);
-			
+
 			// dat RPT
 			if(dataRptDa!=null) {
 				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRptDa, "dataRptDa");
 				listaRptDTO.setDataDa(dataDaDate);
 			}
-			
+
 			if(dataRptA!=null) {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRptA, "dataRptA");
 				listaRptDTO.setDataA(dataADate);
 			}
-			
+
 			// data RT
 			if(dataRtDa!=null) {
 				Date dataDaDate = SimpleDateFormatUtils.getDataDaConTimestamp(dataRtDa, "dataRtDa");
 				listaRptDTO.setDataRtDa(dataDaDate);
 			}
-				
-			
+
+
 			if(dataRtA!=null) {
 				Date dataADate = SimpleDateFormatUtils.getDataAConTimestamp(dataRtA, "dataRtA");
 				listaRptDTO.setDataRtA(dataADate);
 			}
-			
+
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(listaRptDTO.getUser());
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
 				listaRptDTO.setCfCittadino(userDetails.getIdentificativo()); 
 			}
-			
+
 			// se sei una applicazione allora vedi i pagamenti che hai caricato
 			if(userDetails.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
 				listaRptDTO.setIdA2APagamentoPortale(userDetails.getApplicazione().getCodApplicazione()); 
 			}
-			
+
 			listaRptDTO.setIdDebitore(idDebitore);
-			
+
 			listaRptDTO.setEseguiCount(metadatiPaginazione);
 			listaRptDTO.setEseguiCountConLimit(maxRisultati);
-			
+
 			RptDAO rptDAO = new RptDAO();
 
 			// CHIAMATA AL DAO
@@ -203,13 +205,13 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
 	}
 
 
 
-	public Response rppIdDominioIuvCcpRtGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp, Boolean visualizzaSoggettoDebitore) {
+	public Response rppIdDominioIuvCcpRtGET(Authentication user, UriInfo uriInfo, HttpHeaders httpHeaders , String idDominio, String iuv, String ccp) {
 		String methodName = "rppIdDominioIuvCcpRtGET";  
 		String transactionId = ContextThreadLocal.get().getTransactionId();
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
@@ -231,10 +233,7 @@ public class RppController extends BaseController {
 			leggiPagamentoPortaleDTO.setIuv(iuv);
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
 			leggiPagamentoPortaleDTO.setCcp(ccp);
-			
-			if(visualizzaSoggettoDebitore != null)
-				leggiPagamentoPortaleDTO.setVisualizzaSoggettoDebitore(visualizzaSoggettoDebitore.booleanValue()); 
-			
+
 			RptDAO ricevuteDAO = new RptDAO(); 
 
 			LeggiRicevutaDTOResponse ricevutaDTOResponse = null; 
@@ -242,7 +241,7 @@ public class RppController extends BaseController {
 			if(accept.toLowerCase().contains(MediaType.APPLICATION_OCTET_STREAM)) {
 				leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.RAW);
 				ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
-				
+
 				checkAutorizzazioniUtenza(leggiPagamentoPortaleDTO.getUser(), ricevutaDTOResponse.getRpt());
 				this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_OCTET_STREAM).entity(new String(ricevutaDTOResponse.getRpt().getXmlRt())),transactionId).build();
@@ -252,34 +251,38 @@ public class RppController extends BaseController {
 					ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
 					String rtPdfEntryName = idDominio +"_"+ iuv + "_"+ ccp + ".pdf";
 					byte[] b = ricevutaDTOResponse.getPdf(); 
-					
+
 					checkAutorizzazioniUtenza(leggiPagamentoPortaleDTO.getUser(), ricevutaDTOResponse.getRpt());
 					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 					return this.handleResponseOk(Response.status(Status.OK).type("application/pdf").entity(b).header("content-disposition", "attachment; filename=\""+rtPdfEntryName+"\""),transactionId).build();
 				} else if(accept.toLowerCase().contains(MediaType.APPLICATION_JSON)) {
 					leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.JSON);
 					ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
-					
+
 					checkAutorizzazioniUtenza(leggiPagamentoPortaleDTO.getUser(), ricevutaDTOResponse.getRpt());
-					
+
 					switch (ricevutaDTOResponse.getRpt().getVersione()) {
-						case SANP_230:
-							CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
-							this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-							return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rt),transactionId).build();
-						case SANP_240:
-							PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReq_RT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
-							this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
-							return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paSendRTReq.getReceipt()),transactionId).build();
+					case SANP_230:
+						CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
+						this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+						return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rt),transactionId).build();
+					case SANP_240:
+						PaSendRTReq paSendRTReq = JaxbUtils.toPaSendRTReq_RT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
+						this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+						return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paSendRTReq.getReceipt()),transactionId).build();
+					case SANP_321_V2:
+						PaSendRTV2Request paSendRTV2Request = JaxbUtils.toPaSendRTV2Request_RT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
+						this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
+						return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paSendRTV2Request.getReceipt()),transactionId).build();
 					}
-					
+
 					CtRicevutaTelematica rt = JaxbUtils.toRT(ricevutaDTOResponse.getRpt().getXmlRt(), false);
 					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rt),transactionId).build();
 				} else {
 					leggiPagamentoPortaleDTO.setFormato(FormatoRicevuta.XML);
 					ricevutaDTOResponse = ricevuteDAO.leggiRt(leggiPagamentoPortaleDTO);
-					
+
 					checkAutorizzazioniUtenza(leggiPagamentoPortaleDTO.getUser(), ricevutaDTOResponse.getRpt());
 					this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_COMPLETATA, methodName)); 
 					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.TEXT_XML).entity(ricevutaDTOResponse.getRpt().getXmlRt()),transactionId).build();
@@ -288,7 +291,7 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}    
 	}
 
@@ -300,12 +303,12 @@ public class RppController extends BaseController {
 		this.log.debug(MessageFormat.format(BaseController.LOG_MSG_ESECUZIONE_METODO_IN_CORSO, methodName)); 
 
 		try{
-			
+
 			String accept = MediaType.APPLICATION_JSON;
 			if(httpHeaders.getRequestHeaders().containsKey("Accept")) {
 				accept = httpHeaders.getRequestHeaders().get("Accept").get(0).toLowerCase();
 			}
-			
+
 			// autorizzazione sulla API
 			this.isAuthorized(user, Arrays.asList(TIPO_UTENZA.ANONIMO, TIPO_UTENZA.CITTADINO, TIPO_UTENZA.APPLICAZIONE), Arrays.asList(Servizio.API_PAGAMENTI), Arrays.asList(Diritti.LETTURA));
 
@@ -317,7 +320,7 @@ public class RppController extends BaseController {
 			leggiRptDTO.setIuv(iuv);
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
 			leggiRptDTO.setCcp(ccp);
-			
+
 			RptDAO ricevuteDAO = new RptDAO(); 
 
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
@@ -331,8 +334,11 @@ public class RppController extends BaseController {
 				case SANP_240:
 					PaGetPaymentRes paGetPaymentRes = JaxbUtils.toPaGetPaymentRes_RPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
 					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paGetPaymentRes.getData()),transactionId).build();
+				case SANP_321_V2:
+					PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
+					return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(paGetPaymentV2Response.getData()),transactionId).build();
 				}
-				
+
 				CtRichiestaPagamentoTelematico rpt = JaxbUtils.toRPT(leggiRptDTOResponse.getRpt().getXmlRpt(), false);
 				return this.handleResponseOk(Response.status(Status.OK).type(MediaType.APPLICATION_JSON).entity(rpt),transactionId).build();
 			}else {
@@ -341,7 +347,7 @@ public class RppController extends BaseController {
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		} 
 	}
 
@@ -364,19 +370,19 @@ public class RppController extends BaseController {
 			leggiRptDTO.setIuv(iuv);
 			ccp = ccp.contains("%") ? URLDecoder.decode(ccp,"UTF-8") : ccp;
 			leggiRptDTO.setCcp(ccp);
-			
+
 			RptDAO ricevuteDAO = new RptDAO(); 
 
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
 			checkAutorizzazioniUtenza(leggiRptDTO.getUser(), leggiRptDTOResponse.getRpt());
 
 			Rpp response =  RptConverter.toRsModel(leggiRptDTOResponse.getRpt(),leggiRptDTOResponse.getVersamento(),leggiRptDTOResponse.getApplicazione(),user);
-			
+
 			return this.handleResponseOk(Response.status(Status.OK).entity(response.toJSON(null)),transactionId).build();
 		}catch (Exception e) {
 			return this.handleException(uriInfo, httpHeaders, methodName, e, transactionId);
 		} finally {
-			this.log(ContextThreadLocal.get());
+			this.logContext(ContextThreadLocal.get());
 		}
 	}
 
@@ -386,36 +392,42 @@ public class RppController extends BaseController {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(user);
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.CITTADINO)) {
-			if((pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(details.getUtenza().getIdentificativo()))
-					&& !versamento.getAnagraficaDebitore().getCodUnivoco().equals(details.getUtenza().getIdentificativo())) {
-				throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce un pagamento che non appartiene al cittadino chiamante");
+			if(pagamentoPortale != null) {
+				if((pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(details.getUtenza().getIdentificativo()))
+						&& !versamento.getAnagraficaDebitore().getCodUnivoco().equals(details.getUtenza().getIdentificativo())) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce un pagamento che non appartiene al cittadino chiamante");
+				}
 			}
 		}
-		
-		if(details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
-			if(pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(TIPO_UTENZA.ANONIMO.toString())) {
-				throw AuthorizationManager.toNotAuthorizedException(user);
-			}
-			
-			// pagamento terminato e' disponibile solo per un numero di minuti definito in configurazione
-			if(pagamentoPortale.getDataRichiesta() != null) {
-				long dataPagamentoTime = pagamentoPortale.getDataRichiesta().getTime();
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(new Date());
-				calendar.add(Calendar.MINUTE, -GovpayConfig.getInstance().getIntervalloDisponibilitaPagamentoUtenzaAnonima());
-				long riferimentoTime = calendar.getTimeInMillis();
 
-				// il pagamento e' stato eseguito prima dei minuti precedenti il momento della richiesta.
-				if(dataPagamentoTime < riferimentoTime)
+		if(details.getTipoUtenza().equals(TIPO_UTENZA.ANONIMO)) {
+			if(pagamentoPortale != null) {
+				if(pagamentoPortale.getVersanteIdentificativo() == null || !pagamentoPortale.getVersanteIdentificativo().equals(TIPO_UTENZA.ANONIMO.toString())) {
 					throw AuthorizationManager.toNotAuthorizedException(user);
+				}
+
+				// pagamento terminato e' disponibile solo per un numero di minuti definito in configurazione
+				if(pagamentoPortale.getDataRichiesta() != null) {
+					long dataPagamentoTime = pagamentoPortale.getDataRichiesta().getTime();
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(new Date());
+					calendar.add(Calendar.MINUTE, -GovpayConfig.getInstance().getIntervalloDisponibilitaPagamentoUtenzaAnonima());
+					long riferimentoTime = calendar.getTimeInMillis();
+
+					// il pagamento e' stato eseguito prima dei minuti precedenti il momento della richiesta.
+					if(dataPagamentoTime < riferimentoTime)
+						throw AuthorizationManager.toNotAuthorizedException(user);
+				}
 			}
 		}
-		
+
 		// se sei una applicazione allora vedi i pagamenti che hai caricato
 		if(details.getTipoUtenza().equals(TIPO_UTENZA.APPLICAZIONE)) {
-			if(pagamentoPortale.getApplicazione(configWrapper) == null || 
-					!pagamentoPortale.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
-				throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce un pagamento che non appartiene all'applicazione chiamante");
+			if(pagamentoPortale != null) {
+				if(pagamentoPortale.getApplicazione(configWrapper) == null || 
+						!pagamentoPortale.getApplicazione(configWrapper).getCodApplicazione().equals(details.getApplicazione().getCodApplicazione())) {
+					throw AuthorizationManager.toNotAuthorizedException(user, "la transazione riferisce un pagamento che non appartiene all'applicazione chiamante");
+				}
 			}
 		}
 	}

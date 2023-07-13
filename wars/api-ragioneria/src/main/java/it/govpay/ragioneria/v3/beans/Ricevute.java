@@ -13,11 +13,11 @@ public class Ricevute extends Lista  {
 	public Ricevute() {
 		super();
 	}
-	
+
 	public Ricevute(URI requestUri, Long count, Integer pagina, Integer limit) {
 		super(requestUri, count, pagina, limit);
 	}
-	
+
   @Schema(description = "")
   private List<RicevuteRisultati> risultati = new ArrayList<>();
  /**

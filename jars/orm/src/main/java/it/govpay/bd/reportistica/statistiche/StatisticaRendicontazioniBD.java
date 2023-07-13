@@ -119,7 +119,7 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 					entry.setNumeroPagamenti((Long) map.get("numeroPagamenti"));
 					Object importoTotaleObj = map.get("importoTotale");
 					if(importoTotaleObj instanceof Double)
-						entry.setImporto(new BigDecimal((Double) importoTotaleObj).setScale(2, RoundingMode.HALF_EVEN));
+						entry.setImporto(BigDecimal.valueOf((Double) importoTotaleObj).setScale(2, RoundingMode.HALF_EVEN));
 					else
 						entry.setImporto(BigDecimal.ZERO);
 					
@@ -183,7 +183,7 @@ public class StatisticaRendicontazioniBD  extends BasicBD {
 						
 						Object importoTotaleFlussoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.IMPORTO_TOTALE_PAGAMENTI));
 						if(importoTotaleFlussoObj instanceof Double) {
-							fr.setImportoTotalePagamenti(new BigDecimal((Double) importoTotaleFlussoObj));
+							fr.setImportoTotalePagamenti(BigDecimal.valueOf((Double) importoTotaleFlussoObj));
 						}
 						
 						Object statoObj = map.get(JDBCUtilities.getAlias(it.govpay.orm.Rendicontazione.model().ID_FR.STATO));

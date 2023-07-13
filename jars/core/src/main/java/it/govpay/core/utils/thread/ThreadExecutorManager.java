@@ -19,6 +19,7 @@
  */
 package it.govpay.core.utils.thread;
 
+import java.text.MessageFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -35,33 +36,38 @@ public class ThreadExecutorManager {
 	private static ExecutorService executorCaricamentoTracciatiStampeAvvisi;
 	private static ExecutorService executorCaricamentoTracciati;
 	private static ExecutorService executorSpedizioneTracciatiNotificaPagamenti;
+	private static ExecutorService executorSpedizioneNotificaPagamentoMaggioli;
 	private static boolean initialized = false;
 
 	private static synchronized void init() throws GovPayException {
 		if(!initialized) {
 			int threadNotificaPoolSize = GovpayConfig.getInstance().getDimensionePoolNotifica();
-			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione messaggi notifica [NumThread: "+threadNotificaPoolSize+"]" );
+			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info(MessageFormat.format("Predisposizione pool di spedizione messaggi notifica [NumThread: {0}]", threadNotificaPoolSize) );
 			executorNotifica = Executors.newFixedThreadPool(threadNotificaPoolSize);
 			
 			int threadNotificaAppIoPoolSize = GovpayConfig.getInstance().getDimensionePoolNotificaAppIO();
-			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione messaggi notifica AppIO [NumThread: "+threadNotificaAppIoPoolSize+"]" );
+			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info(MessageFormat.format("Predisposizione pool di spedizione messaggi notifica AppIO [NumThread: {0}]", threadNotificaAppIoPoolSize) );
 			executorNotificaAppIo = Executors.newFixedThreadPool(threadNotificaAppIoPoolSize);
 
 			int threadCaricamentoTracciatiStampeAvvisiPoolSize = GovpayConfig.getInstance().getDimensionePoolCaricamentoTracciatiStampaAvvisi();
-			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di caricamento tracciati: stampa avvisi [NumThread: "+threadCaricamentoTracciatiStampeAvvisiPoolSize+"]" );
+			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info(MessageFormat.format("Predisposizione pool di caricamento tracciati: stampa avvisi [NumThread: {0}]", threadCaricamentoTracciatiStampeAvvisiPoolSize) );
 			executorCaricamentoTracciatiStampeAvvisi = Executors.newFixedThreadPool(threadCaricamentoTracciatiStampeAvvisiPoolSize);
 
 			int threadRPTPoolSize = GovpayConfig.getInstance().getDimensionePoolRPT();
-			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione rpt [NumThread: "+threadRPTPoolSize+"]" );
+			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info(MessageFormat.format("Predisposizione pool di spedizione rpt [NumThread: {0}]", threadRPTPoolSize) );
 			executorRPT = Executors.newFixedThreadPool(threadRPTPoolSize);
 			
 			int threadCaricamentoTracciatiPoolSize = GovpayConfig.getInstance().getDimensionePoolCaricamentoTracciati();
-			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di caricamento tracciati [NumThread: "+threadCaricamentoTracciatiPoolSize+"]" );
+			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info(MessageFormat.format("Predisposizione pool di caricamento tracciati [NumThread: {0}]", threadCaricamentoTracciatiPoolSize) );
 			executorCaricamentoTracciati = Executors.newFixedThreadPool(threadCaricamentoTracciatiPoolSize);
 			
 			int threadSpedizioneTracciatiNotificaPagamentiPoolSize = GovpayConfig.getInstance().getDimensionePoolThreadSpedizioneTracciatiNotificaPagamenti();
-			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info("Predisposizione pool di spedizione tracciati notifica pagamenti [NumThread: "+threadSpedizioneTracciatiNotificaPagamentiPoolSize+"]" );
+			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info(MessageFormat.format("Predisposizione pool di spedizione tracciati notifica pagamenti [NumThread: {0}]", threadSpedizioneTracciatiNotificaPagamentiPoolSize) );
 			executorSpedizioneTracciatiNotificaPagamenti = Executors.newFixedThreadPool(threadSpedizioneTracciatiNotificaPagamentiPoolSize);
+			
+			int threadSpedizioneNotificaPagamentoMaggioliPoolSize = GovpayConfig.getInstance().getDimensionePoolThreadSpedizioneNotificaPagamentoMaggioli();
+			LoggerWrapperFactory.getLogger(ThreadExecutorManager.class).info(MessageFormat.format("Predisposizione pool di spedizione notifiche pagamento Maggioli [NumThread: {0}]", threadSpedizioneNotificaPagamentoMaggioliPoolSize) );
+			executorSpedizioneNotificaPagamentoMaggioli = Executors.newFixedThreadPool(threadSpedizioneNotificaPagamentoMaggioliPoolSize);
 		}
 		initialized = true;
 	}
@@ -102,6 +108,11 @@ public class ThreadExecutorManager {
 		while (!executorSpedizioneTracciatiNotificaPagamenti.isTerminated()) {
 			Thread.sleep(500);
 		}
+		
+		executorSpedizioneNotificaPagamentoMaggioli.shutdown();
+		while (!executorSpedizioneNotificaPagamentoMaggioli.isTerminated()) {
+			Thread.sleep(500);
+		}
 	}
 
 	public static ExecutorService getClientPoolExecutorNotifica() {
@@ -126,5 +137,9 @@ public class ThreadExecutorManager {
 	
 	public static ExecutorService getClientPoolExecutorSpedizioneTracciatiNotificaPagamenti() {
 		return executorSpedizioneTracciatiNotificaPagamenti;
+	}
+	
+	public static ExecutorService getExecutorSpedizioneNotificaPagamentoMaggioli() {
+		return executorSpedizioneNotificaPagamentoMaggioli;
 	}
 }

@@ -2,21 +2,24 @@ package it.govpay.core.utils.tracciati.validator;
 
 import java.math.BigDecimal;
 import java.util.Date;
-
-import org.openspcoop2.utils.json.ValidationException;
+import java.util.List;
 
 import it.govpay.core.beans.tracciati.Contabilita;
 import it.govpay.core.beans.tracciati.Documento;
+import it.govpay.core.beans.tracciati.NuovoAllegatoPendenza;
 import it.govpay.core.beans.tracciati.PendenzaPost;
 import it.govpay.core.beans.tracciati.QuotaContabilita;
 import it.govpay.core.beans.tracciati.Soggetto;
 import it.govpay.core.beans.tracciati.VincoloPagamento;
 import it.govpay.core.beans.tracciati.VocePendenza;
 import it.govpay.core.ec.v1.validator.SoggettoPagatoreValidator;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 import it.govpay.core.utils.validator.ValidatoreUtils;
+import it.govpay.model.Versamento.TipoSogliaVersamento;
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class PendenzaPostValidator  implements IValidable{
 
@@ -48,17 +51,17 @@ public class PendenzaPostValidator  implements IValidable{
 			
 			SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
 			
-			soggettoPagatoreValidator.validaTipo("tipo", soggetto.getTipo() != null ? soggetto.getTipo().toString() : null);
-			soggettoPagatoreValidator.validaIdentificativo("identificativo", soggetto.getIdentificativo());
-			soggettoPagatoreValidator.validaAnagrafica("anagrafica", soggetto.getAnagrafica());
-			soggettoPagatoreValidator.validaIndirizzo("indirizzo", soggetto.getIndirizzo());
-			soggettoPagatoreValidator.validaCivico("civico", soggetto.getCivico());
-			soggettoPagatoreValidator.validaCap("cap", soggetto.getCap());
-			soggettoPagatoreValidator.validaLocalita("localita", soggetto.getLocalita());
-			soggettoPagatoreValidator.validaProvincia("provincia", soggetto.getProvincia());
-			soggettoPagatoreValidator.validaNazione("nazione", soggetto.getNazione());
-			soggettoPagatoreValidator.validaEmail("email", soggetto.getEmail());
-			soggettoPagatoreValidator.validaCellulare("cellulare", soggetto.getCellulare());
+			soggettoPagatoreValidator.validaTipo("soggettoPagatore.tipo", soggetto.getTipo() != null ? soggetto.getTipo().toString() : null);
+			soggettoPagatoreValidator.validaIdentificativo("soggettoPagatore.identificativo", soggetto.getIdentificativo());
+			soggettoPagatoreValidator.validaAnagrafica("soggettoPagatore.anagrafica", soggetto.getAnagrafica());
+			soggettoPagatoreValidator.validaIndirizzo("soggettoPagatore.indirizzo", soggetto.getIndirizzo());
+			soggettoPagatoreValidator.validaCivico("soggettoPagatore.civico", soggetto.getCivico());
+			soggettoPagatoreValidator.validaCap("soggettoPagatore.cap", soggetto.getCap());
+			soggettoPagatoreValidator.validaLocalita("soggettoPagatore.localita", soggetto.getLocalita());
+			soggettoPagatoreValidator.validaProvincia("soggettoPagatore.provincia", soggetto.getProvincia());
+			soggettoPagatoreValidator.validaNazione("soggettoPagatore.nazione", soggetto.getNazione());
+			soggettoPagatoreValidator.validaEmail("soggettoPagatore.email", soggetto.getEmail());
+			soggettoPagatoreValidator.validaCellulare("soggettoPagatore.cellulare", soggetto.getCellulare());
 			
 			validaImporto(this.pendenzaVerificata.getImporto());
 			validaNumeroAvviso(this.pendenzaVerificata.getNumeroAvviso());
@@ -83,6 +86,8 @@ public class PendenzaPostValidator  implements IValidable{
 			for (VocePendenza vocePendenza : this.pendenzaVerificata.getVoci()) {
 				new VocePendenzaValidator(vocePendenza).validate();
 			}
+			
+			validaAllegati(this.pendenzaVerificata.getAllegati());
 		}
 	}
 
@@ -267,8 +272,28 @@ public class PendenzaPostValidator  implements IValidable{
 		public void validate() throws ValidationException {
 		  	ValidatorFactory vf = ValidatorFactory.newInstance();
 		  	
-		  	ValidatoreUtils.validaSogliaGiorni(vf, "giorni", this.vincoloPagamento.getGiorni());
 		  	ValidatoreUtils.validaSogliaTipo(vf, "tipo", this.vincoloPagamento.getTipo());
+
+			try {
+				TipoSogliaVersamento tipoSoglia = TipoSogliaVersamento.toEnum(this.vincoloPagamento.getTipo());
+
+				switch(tipoSoglia) {
+				case ENTRO:
+				case OLTRE:
+					ValidatoreUtils.validaSogliaGiorni(vf, "giorni", this.vincoloPagamento.getGiorni());
+					break;
+				case RIDOTTO:
+				case SCONTATO:
+					try {
+					vf.getValidator("giorni", this.vincoloPagamento.getGiorni()).isNull();
+					} catch (Exception e) {
+						throw new ValidationException("Il campo giorni deve essere vuoto quando il campo tipo assume valore 'RIDOTTO' o 'SCONTATO'.");
+					}
+					break;
+				}
+			}catch (CodificaInesistenteException e) {
+				throw new ValidationException(e);
+			}
 		}
 	  
 	}
@@ -306,4 +331,17 @@ public class PendenzaPostValidator  implements IValidable{
 			  	}
 		 }
 	}	
+	
+	public void validaAllegati(List<NuovoAllegatoPendenza> allegati) throws ValidationException {
+		if(allegati != null && allegati.size() >0 ) {
+			for(NuovoAllegatoPendenza allegato: allegati) {
+				this.vf.getValidator("nome", allegato.getNome()).notNull().minLength(1).maxLength(255);
+				this.vf.getValidator("tipo", allegato.getTipo()).minLength(1).maxLength(255);
+				this.vf.getValidator("descrizione", allegato.getDescrizione()).minLength(1).maxLength(255);
+				
+				if(allegato.getContenuto() == null)
+					throw new ValidationException("Il campo " + "contenuto" + " non deve essere vuoto.");
+			}
+		}
+	}
 }

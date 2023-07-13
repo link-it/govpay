@@ -8,7 +8,6 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
@@ -16,10 +15,11 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.eventi.DatiPagoPA;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.autorizzazione.AuthorizationManager;
+import it.govpay.core.beans.EventoContext.Componente;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.dao.anagrafica.utils.UtenzaPatchUtils;
 import it.govpay.core.dao.commons.BaseDAO;
 import it.govpay.core.dao.pagamenti.dto.LeggiRicevutaDTO;
@@ -39,12 +39,13 @@ import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.exceptions.NotAuthenticatedException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.exceptions.UnprocessableEntityException;
-import it.govpay.core.utils.EventoContext.Componente;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.RtUtils;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
+import it.govpay.model.eventi.DatiPagoPA;
 
 public class RptDAO extends BaseDAO{
 	
@@ -75,7 +76,9 @@ public class RptDAO extends BaseDAO{
 			Rpt	rpt = rptBD.getRpt(idDominio, iuv, ccp, true);
 			
 			response.setRpt(rpt);
-			rpt.getPagamentoPortale().getApplicazione(configWrapper);
+			if(rpt.getPagamentoPortale() != null) {
+				rpt.getPagamentoPortale().getApplicazione(configWrapper);
+			}
 			Versamento versamento = rpt.getVersamento();
 			response.setVersamento(versamento);
 			response.setApplicazione(versamento.getApplicazione(configWrapper)); 
@@ -112,7 +115,9 @@ public class RptDAO extends BaseDAO{
 			
 			rptBD = new RptBD(configWrapper);
 			Rpt rpt = rptBD.getRpt(leggiRicevutaDTO.getIdDominio(), leggiRicevutaDTO.getIuv(), leggiRicevutaDTO.getCcp(), true);
-			rpt.getPagamentoPortale().getApplicazione(configWrapper);
+			if(rpt.getPagamentoPortale() != null) {
+				rpt.getPagamentoPortale().getApplicazione(configWrapper);
+			}
 			Versamento versamento = rpt.getVersamento();
 			response.setVersamento(versamento);
 			versamento.getTipoVersamentoDominio(configWrapper);
@@ -126,7 +131,7 @@ public class RptDAO extends BaseDAO{
 			}
 			
 			if(rpt.getXmlRt() == null)
-				throw new RicevutaNonTrovataException(null);
+				throw new RicevutaNonTrovataException("Ricevuta ["+RptUtils.getRptKey(rpt)+"] non trovata.");
 
 			if(leggiRicevutaDTO.getFormato().equals(FormatoRicevuta.PDF)) {
 				it.govpay.core.business.RicevutaTelematica avvisoBD = new it.govpay.core.business.RicevutaTelematica();
@@ -235,6 +240,9 @@ public class RptDAO extends BaseDAO{
 		filter.setIdUnita(listaRptDTO.getIdUnita());
 		filter.setAnagraficaDebitore(listaRptDTO.getAnagraficaDebitore());
 		filter.setEseguiCountConLimit(listaRptDTO.isEseguiCountConLimit());
+		filter.setRicevute(listaRptDTO.isRicevute());
+		filter.setDataPagamentoDa(listaRptDTO.getDataPagamentoDa());
+		filter.setDataPagamentoA(listaRptDTO.getDataPagamentoA());
 		
 		Long count = null;
 		
@@ -316,7 +324,7 @@ public class RptDAO extends BaseDAO{
 					datiPagoPA.setCodStazione(null);
 					datiPagoPA.setFruitore(Componente.API_BACKOFFICE.name());
 					datiPagoPA.setCodDominio(idDominio);
-					datiPagoPA.setErogatore(GpContext.GovPay);
+					datiPagoPA.setErogatore(GpContext.GOVPAY);
 					datiPagoPA.setCodIntermediario(null);
 					appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
 					
@@ -386,7 +394,9 @@ public class RptDAO extends BaseDAO{
 			// ricarico l'RPT
 			rpt = rptBD.getRpt(idDominio, iuv, ccp, true);
 
-			rpt.getPagamentoPortale().getApplicazione(configWrapper);
+			if(rpt.getPagamentoPortale() != null) {
+				rpt.getPagamentoPortale().getApplicazione(configWrapper);
+			}
 			response.setRpt(rpt);
 			response.setVersamento(rpt.getVersamento());
 			response.setApplicazione(rpt.getVersamento().getApplicazione(configWrapper)); 

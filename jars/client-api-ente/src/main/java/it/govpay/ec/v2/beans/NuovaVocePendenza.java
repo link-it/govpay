@@ -5,25 +5,26 @@ import java.math.BigDecimal;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class NuovaVocePendenza extends TipoRiferimentoVocePendenza  {
   
   @Schema(description = "")
   private String idDominio = null;
   
-  @Schema(example = "abcdef12345_1", required = true, description = "Identificativo della voce di pedenza nel gestionale proprietario")
+  @Schema(example = "abcdef12345_1", requiredMode = RequiredMode.REQUIRED, description = "Identificativo della voce di pedenza nel gestionale proprietario")
  /**
    * Identificativo della voce di pedenza nel gestionale proprietario  
   **/
   private String idVocePendenza = null;
   
-  @Schema(example = "10.01", required = true, description = "Importo della voce")
+  @Schema(example = "10.01", requiredMode = RequiredMode.REQUIRED, description = "Importo della voce")
  /**
    * Importo della voce  
   **/
   private BigDecimal importo = null;
   
-  @Schema(example = "Sanzione CdS n. abc00000", required = true, description = "descrizione della voce di pagamento")
+  @Schema(example = "Sanzione CdS n. abc00000", requiredMode = RequiredMode.REQUIRED, description = "descrizione della voce di pagamento")
  /**
    * descrizione della voce di pagamento  
   **/

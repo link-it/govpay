@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
+import it.govpay.core.exceptions.ValidationException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -673,7 +673,7 @@ public class PendenzaCreata extends JSONSerializable {
     return Objects.hash(idA2A, idPendenza, idTipoPendenza, dominio, unitaOperativa, stato, segnalazioni, iuvAvviso, iuvPagamento, dataPagamento, causale, soggettoPagatore, importo, numeroAvviso, dataCaricamento, dataValidita, dataScadenza, annoRiferimento, cartellaPagamento, datiAllegati, tassonomia, tassonomiaAvviso, direzione, divisione, tipo, UUID, proprieta, voci, rpp, pagamenti, pdf);
   }
 
-  public static PendenzaCreata parse(String json) throws ServiceException, ValidationException {
+  public static PendenzaCreata parse(String json) throws it.govpay.core.exceptions.IOException {
     return (PendenzaCreata) parse(json, PendenzaCreata.class);
   }
 

@@ -20,6 +20,7 @@
 package it.govpay.core.business;
 
 
+import java.text.MessageFormat;
 import java.util.Date;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -37,7 +38,7 @@ public class BatchManager {
 	private static Logger log = LoggerWrapperFactory.getLogger(BatchManager.class);
 
 	public static boolean startEsecuzione(BDConfigWrapper configWrapper, String codBatch) throws ServiceException {
-		log.debug("Verifico possibilita di avviare il batch " + codBatch);
+		log.debug(MessageFormat.format("Verifico possibilita di avviare il batch {0}", codBatch));
 
 		// Se non ho configurato l'id del cluster, non gestisco i blocchi.
 		if(GovpayConfig.getInstance().getClusterId() == null) {
@@ -66,7 +67,7 @@ public class BatchManager {
 
 			if(batch == null) {
 				// Batch libero. Procedo a configurare il blocco
-				log.debug("Semaforo " + codBatch + " verde!!! Imposto rosso [" + GovpayConfig.getInstance().getClusterId() + "]");
+				log.debug(MessageFormat.format("Semaforo {0} verde!!! Imposto rosso [{1}]", codBatch, GovpayConfig.getInstance().getClusterId()));
 				batch = new Batch();
 				batch.setCodBatch(codBatch);
 				batch.setInizio(new Date()); 
@@ -75,16 +76,16 @@ public class BatchManager {
 				try {
 					batchBD.update(batch);
 					batchBD.commit();
-					log.debug("Impostato semaforo rosso per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
+					log.debug(MessageFormat.format("Impostato semaforo rosso per il batch {0} inserito per il nodo {1}.", codBatch,	GovpayConfig.getInstance().getClusterId()));
 					return true;
 				} catch (NotFoundException e) {
 					batchBD.insert(batch);
 					batchBD.commit();
-					log.debug("Impostato semaforo rosso per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
+					log.debug(MessageFormat.format("Impostato semaforo rosso per il batch {0} inserito per il nodo {1}.", codBatch,	GovpayConfig.getInstance().getClusterId()));
 					return true;
 				}
 			} else {
-				log.debug("Semaforo rosso impostato dal nodo [" + batch.getNodo() + "]. Esecuzione interrotta sul nodo [" + GovpayConfig.getInstance().getClusterId() + "]");
+				log.debug(MessageFormat.format("Semaforo rosso impostato dal nodo [{0}]. Esecuzione interrotta sul nodo [{1}]",	batch.getNodo(), GovpayConfig.getInstance().getClusterId()));
 				batchBD.commit();
 				return false;
 			}
@@ -104,21 +105,21 @@ public class BatchManager {
 			return null;
 
 		try{
-			log.trace("lettura batch " + codBatch + " in corso...");
+			log.trace(MessageFormat.format("lettura batch {0} in corso...", codBatch));
 			batch = batchBD.get(codBatch);
-			log.trace("lettura batch " + codBatch + " completata");
+			log.trace(MessageFormat.format("lettura batch {0} completata", codBatch));
 		} catch(NotFoundException nfe) {
 			// Non c'e' un blocco, quindi non e' in esecuzione
-			log.trace("lettura batch " + codBatch + " completata, blocco non trovato, batch non in esecuzione");
+			log.trace(MessageFormat.format("lettura batch {0} completata, blocco non trovato, batch non in esecuzione", codBatch));
 			return null;
 		}
 
 		if(batch.getNodo() == null) {
 			// Non c'e' un blocco, quindi non e' in esecuzione	
-			log.trace("lettura batch " + codBatch + " blocco non trovato, batch non in esecuzione");
+			log.trace(MessageFormat.format("lettura batch {0} blocco non trovato, batch non in esecuzione", codBatch));
 			return null;
 		} else {
-			log.trace("lettura batch " + codBatch + " blocco presente, verifica timeout esecuzione");
+			log.trace(MessageFormat.format("lettura batch {0} blocco presente, verifica timeout esecuzione", codBatch));
 			// C'e' un blocco.
 			// Verifico se e' scaduto
 			long inizio = batch.getInizio().getTime();
@@ -127,10 +128,10 @@ public class BatchManager {
 			long delay = new Date().getTime() - aggiornamento;
 
 			if(delay > GovpayConfig.getInstance().getTimeoutBatch()) {
-				log.warn("Individuato timeout del batch " + codBatch + ". La risorsa viene liberata per consentire l'esecuzione del batch.");
+				log.warn(MessageFormat.format("Individuato timeout del batch {0}. La risorsa viene liberata per consentire l''esecuzione del batch.", codBatch));
 				return null;
 			} else {
-				log.debug("Batch " + codBatch + " in esecuzione sul nodo " + batch.getNodo() + ".");
+				log.debug(MessageFormat.format("Batch {0} in esecuzione sul nodo {1}.", codBatch, batch.getNodo()));
 				return batch;
 			}
 		}
@@ -174,21 +175,21 @@ public class BatchManager {
 					batch.setAggiornamento(null); 
 					batchBD.update(batch);
 					batchBD.commit();
-					log.debug("Semaforo di concorrenza per il batch " + codBatch + " rimosso.");
+					log.debug(MessageFormat.format("Semaforo di concorrenza per il batch {0} rimosso.", codBatch));
 				} else {
 					// blocco non mio. lo lascio fare
-					log.warn("Errore nella rimozione del semaforo di concorrenza per il batch " + codBatch + ": semaforo di altro nodo");
+					log.warn(MessageFormat.format("Errore nella rimozione del semaforo di concorrenza per il batch {0}: semaforo di altro nodo", codBatch));
 					batchBD.commit();
 					return;
 				}
 			} catch (NotFoundException nfe) {
 				// strano... vabeh...
-				log.debug("stop esecuzione batch " + codBatch + " errore nella rimozione del semaforo di concorrenza: semaforo non presente.");
-				log.warn("Errore nella rimozione del semaforo di concorrenza per il batch " + codBatch + ": semaforo non presente");
+				log.debug(MessageFormat.format("stop esecuzione batch {0} errore nella rimozione del semaforo di concorrenza: semaforo non presente.",	codBatch));
+				log.warn(MessageFormat.format("Errore nella rimozione del semaforo di concorrenza per il batch {0}: semaforo non presente",	codBatch));
 				return;
 			}
 		} catch(Throwable se) {
-			log.error("Errore nella rimozione del semaforo di concorrenza per il batch " + codBatch, se);
+			log.error(MessageFormat.format("Errore nella rimozione del semaforo di concorrenza per il batch {0}", codBatch), se);
 		} finally {
 			if(batchBD != null) {
 				// chiusura connessione
@@ -203,9 +204,9 @@ public class BatchManager {
 
 	public static void aggiornaEsecuzione(BDConfigWrapper configWrapper, String codBatch, String msg) throws ServiceException {
 		if(msg == null) {
-			log.trace("aggiorna esecuzione batch " + codBatch);
+			log.trace(MessageFormat.format("aggiorna esecuzione batch {0}", codBatch));
 		} else {
-			log.trace("aggiorna esecuzione batch " + codBatch + ": " + msg);
+			log.trace(MessageFormat.format("aggiorna esecuzione batch {0}: {1}", codBatch, msg));
 		}
 
 		// Se non ho configurato l'id del cluster, non gestisco i blocchi.
@@ -234,18 +235,18 @@ public class BatchManager {
 			Batch batch = getRunningBatch(batchBD, codBatch);
 
 			if(batch != null && GovpayConfig.getInstance().getClusterId().equals(batch.getNodo())) {
-				log.trace("aggiorna esecuzione batch " + codBatch + " aggiornamento in corso...");
+				log.trace(MessageFormat.format("aggiorna esecuzione batch {0} aggiornamento in corso...", codBatch));
 				batch.setAggiornamento(new Date()); 
 				batchBD.update(batch);
 				batchBD.commit();
-				log.debug("Aggiornato semaforo rosso per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
+				log.debug(MessageFormat.format("Aggiornato semaforo rosso per il batch {0} inserito per il nodo {1}.", codBatch, GovpayConfig.getInstance().getClusterId()));
 				return;
 			} else {
-				log.trace("aggiorna esecuzione batch " + codBatch + ": non trovato eseguo solo il commit.");
+				log.trace(MessageFormat.format("aggiorna esecuzione batch {0}: non trovato eseguo solo il commit.", codBatch));
 				batchBD.commit();
 			}
 		} catch (NotFoundException e) {
-			log.error("Errore nell'aggiornamento del semaforo di concorrenza per il batch " + codBatch, e);
+			log.error(MessageFormat.format("Errore nell''aggiornamento del semaforo di concorrenza per il batch {0}", codBatch), e);
 			return;
 		}  finally {
 			if(batchBD != null) {

@@ -4,12 +4,10 @@ package it.govpay.backoffice.v1.beans;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "indice",
 "idVocePendenza",
@@ -22,34 +20,34 @@ import it.govpay.core.beans.JSONSerializable;
 "pendenza",
 })
 public class VocePendenzaRendicontazione extends JSONSerializable {
-  
+
   @JsonProperty("indice")
   private BigDecimal indice = null;
-  
+
   @JsonProperty("idVocePendenza")
   private String idVocePendenza = null;
-  
+
   @JsonProperty("importo")
   private BigDecimal importo = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   @JsonProperty("stato")
   private StatoVocePendenza stato = null;
-  
+
   @JsonProperty("descrizioneCausaleRPT")
   private String descrizioneCausaleRPT = null;
-  
+
   @JsonProperty("contabilita")
   private Contabilita contabilita = null;
-  
+
   @JsonProperty("dominio")
   private DominioIndex dominio = null;
-  
+
   @JsonProperty("pendenza")
   private PendenzaIndex pendenza = null;
-  
+
   /**
    * indice di voce all'interno della pendenza
    **/
@@ -215,8 +213,8 @@ public class VocePendenzaRendicontazione extends JSONSerializable {
     return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, dominio, pendenza);
   }
 
-  public static VocePendenzaRendicontazione parse(String json) throws ServiceException, ValidationException {
-    return (VocePendenzaRendicontazione) parse(json, VocePendenzaRendicontazione.class);
+  public static VocePendenzaRendicontazione parse(String json) throws IOException {
+    return parse(json, VocePendenzaRendicontazione.class);
   }
 
   @Override

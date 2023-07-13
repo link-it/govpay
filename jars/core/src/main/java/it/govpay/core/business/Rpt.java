@@ -19,27 +19,31 @@ import gov.telematici.pagamenti.ws.rpt.FaultBean;
 import gov.telematici.pagamenti.ws.rpt.NodoChiediStatoRPTRisposta;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.configurazione.model.Giornale;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.PagamentoPortale;
+import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.PagamentoPortale.STATO;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.PagamentiPortaleBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.core.beans.EsitoOperazione;
+import it.govpay.core.beans.EventoContext;
+import it.govpay.core.beans.EventoContext.Esito;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.NotificaException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoNonValidoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.DateUtils;
-import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.EventoUtils;
+import it.govpay.core.utils.FaultBeanUtils;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
@@ -49,7 +53,6 @@ import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.NodoClient;
-import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.client.exception.ClientException;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
@@ -61,6 +64,7 @@ import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.configurazione.Giornale;
 
 public class Rpt {
 
@@ -86,7 +90,8 @@ public class Rpt {
 			Stazione stazione = null;
 			Giornale giornale = new it.govpay.core.business.Configurazione().getConfigurazione().getGiornale();
 
-			for(Versamento versamentoModel : versamenti) {
+			for (int i = 0; i < versamenti.size() ; i++) {
+				Versamento versamentoModel  = versamenti.get(i);
 
 				String codApplicazione = versamentoModel.getApplicazione(configWrapper).getCodApplicazione();
 				String codVersamentoEnte = versamentoModel.getCodVersamentoEnte(); 
@@ -101,12 +106,12 @@ public class Rpt {
 				}
 
 				log.debug("Verifica scadenza del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "]...");
-				if(versamentoModel.getDataScadenza() != null && DateUtils.isDataDecorsa(versamentoModel.getDataScadenza())) {
+				if(versamentoModel.getDataScadenza() != null && DateUtils.isDataDecorsa(versamentoModel.getDataScadenza(), DateUtils.CONTROLLO_SCADENZA)) {
 					log.warn("Scadenza del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] decorsa.");
 					throw new GovPayException(EsitoOperazione.PAG_007, codApplicazione, codVersamentoEnte, SimpleDateFormatUtils.newSimpleDateFormatSoloData().format(versamentoModel.getDataScadenza()));
 				} else { // versamento non scaduto, controllo data validita'
 					log.debug("Verifica validita' del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "]...");
-					if(versamentoModel.getDataValidita() != null && DateUtils.isDataDecorsa(versamentoModel.getDataValidita())) {
+					if(versamentoModel.getDataValidita() != null && DateUtils.isDataDecorsa(versamentoModel.getDataValidita(), DateUtils.CONTROLLO_VALIDITA)) {
 
 						if(versamentoModel.getId() == null) {
 							// Versamento fornito scaduto. Ritorno errore.
@@ -115,7 +120,8 @@ public class Rpt {
 							// Versammento in archivio scaduto. Ne chiedo un aggiornamento.
 							log.info("Validita del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] decorsa. Avvio richiesta di aggiornamento all'applicazione.");
 							try {
-								versamentoModel = VersamentoUtils.aggiornaVersamento(versamentoModel);
+								versamentoModel = VersamentoUtils.aggiornaVersamento(versamentoModel, log);
+								versamenti.set(i, versamentoModel); // aggiorno il versamento all'interno della lista, l'oggetto restituito in caso di verifica e' nuovo le modifiche a versamentoModel vengono perse 
 								log.info("Versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] aggiornato tramite servizio di verifica.");
 							} catch (VersamentoAnnullatoException e){
 								log.warn("Aggiornamento del versamento [" + codVersamentoEnte + "] applicazione [" + codApplicazione + "] fallito: versamento annullato");
@@ -179,7 +185,6 @@ public class Rpt {
 
 				for(Versamento versamento : versamenti) {
 					// Aggiorno tutti i versamenti che mi sono stati passati
-
 					if(versamento.getId() == null) {
 						versamentiBusiness.caricaVersamento(versamento, false, aggiornaSeEsiste, false, null, rptBD);
 					}
@@ -203,8 +208,16 @@ public class Rpt {
 							ctx.getApplicationLogger().log("iuv.assegnazioneIUVRiuso", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp);
 						} else {
 							log.debug("Iuv non assegnato. Generazione...");
+							
 							// Non c'e' iuv assegnato. Glielo genero io.
-							iuv = iuvBusiness.generaIUV(versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.TipoIUV.ISO11694, rptBD);
+							TipoIUV tipoIUV = it.govpay.model.Iuv.TipoIUV.ISO11694;
+							
+							// se e' stata impostata l'opzione per dismettere la generazione di IUV in formato ISO11694 allora lo IUV verra' generato in formato numerico
+							if(GovpayConfig.getInstance().isDismettiIUVIso11694()) {
+								tipoIUV = TipoIUV.NUMERICO;
+							}
+							
+							iuv = iuvBusiness.generaIUV(versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper), versamento.getCodVersamentoEnte(), tipoIUV, rptBD);
 							ccp = IuvUtils.buildCCP();
 							ctx.getApplicationLogger().log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getDominio(configWrapper).getCodDominio(), iuv, ccp);
 						}
@@ -225,7 +238,7 @@ public class Rpt {
 						RptFilter filter = rptBD.newFilter();
 						filter.setStato(it.govpay.model.Rpt.stati_pendenti);
 						filter.setIdVersamento(versamento.getId());
-						filter.setVersione(it.govpay.model.Rpt.Versione.SANP_240.toString());
+						filter.setVersione(it.govpay.model.Rpt.VersioneRPT.SANP_240.toString());
 						List<it.govpay.bd.model.Rpt> rpt_pendenti = rptBD.findAll(filter);
 
 						log.debug("Trovate ["+rpt_pendenti.size()+"] RPT pendenti per  il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
@@ -253,7 +266,7 @@ public class Rpt {
 						RptFilter filter = rptBD.newFilter();
 						filter.setStato(it.govpay.model.Rpt.stati_pendenti);
 						filter.setIdVersamento(versamento.getId());
-						filter.setVersione(it.govpay.model.Rpt.Versione.SANP_230.toString());
+						filter.setVersione(it.govpay.model.Rpt.VersioneRPT.SANP_230.toString());
 						List<it.govpay.bd.model.Rpt> rpt_pendenti = rptBD.findAll(filter);
 
 						log.debug("Trovate ["+rpt_pendenti.size()+"] RPT pendenti per  il versamento [IdA2A:"+versamento.getApplicazione(configWrapper).getCodApplicazione()+", IdPendenza:"+versamento.getCodVersamentoEnte()+"].");
@@ -310,7 +323,7 @@ public class Rpt {
 			rptBD = null;
 			try {
 				Risposta risposta = null;
-				String operationId = appContext.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoInviaCarrelloRPT);
+				String operationId = appContext.setupNodoClient(stazione.getCodStazione(), null, EventoContext.Azione.NODOINVIACARRELLORPT);
 				appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
 				ctx.getApplicationLogger().log("rpt.invioCarrelloRpt");
 				clientInviaCarrelloRPT = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale);
@@ -325,6 +338,7 @@ public class Rpt {
 					try {
 
 						for(FaultBean fb : risposta.getListaErroriRPT()) {
+							if(fb==null) continue;
 							it.govpay.bd.model.Rpt rpt = rpts.get(fb.getSerial() - 1);
 							String descrizione = null; 
 							String faultCode = null;
@@ -364,7 +378,7 @@ public class Rpt {
 						clientInviaCarrelloRPT.getEventoCtx().setEsito(Esito.KO);
 						//						clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(risposta.toString());
 					}
-					throw new GovPayException(risposta.getFaultBean());
+					throw new GovPayException(FaultBeanUtils.toFaultBean(risposta.getFaultBean()));
 				} else {
 					log.info("Rpt accettata dal Nodo dei Pagamenti");
 					// RPT accettata dal Nodo
@@ -399,7 +413,7 @@ public class Rpt {
 
 				try {
 					try {
-						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), Azione.nodoChiediStatoRPT);
+						String operationId = appContext.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), EventoContext.Azione.NODOCHIEDISTATORPT);
 						appContext.getServerByOperationId(operationId).addGenericProperty(new Property("codCarrello", appContext.getPagamentoCtx().getCodCarrello()));
 
 						chiediStatoRptClient = new it.govpay.core.utils.client.NodoClient(intermediario, operationId, giornale);
@@ -466,12 +480,16 @@ public class Rpt {
 						}
 						return this.updateStatoRpt(rpts, statoRpt, risposta.getEsito().getUrl(), pagamentoPortale, e);
 					}
+				} catch (NotificaException e1) {
+					throw new GovPayException(e);
 				} finally {
 					if(chiediStatoRptClient != null && chiediStatoRptClient.getEventoCtx().isRegistraEvento()) {
 						EventiBD eventiBD = new EventiBD(configWrapper);
-						eventiBD.insertEvento(chiediStatoRptClient.getEventoCtx().toEventoDTO());
+						eventiBD.insertEvento(EventoUtils.toEventoDTO(chiediStatoRptClient.getEventoCtx(),log));
 					}
 				}
+			} catch (NotificaException e) {
+				throw new GovPayException(e);
 			}  finally {
 
 				if(clientInviaCarrelloRPT != null && clientInviaCarrelloRPT.getEventoCtx().isRegistraEvento()) {
@@ -494,16 +512,18 @@ public class Rpt {
 							clientInviaCarrelloRPT.getEventoCtx().setDescrizioneEsito(rpt.getDescrizioneStato());
 						}
 
-						eventiBD.insertEvento(clientInviaCarrelloRPT.getEventoCtx().toEventoDTO());
+						eventiBD.insertEvento(EventoUtils.toEventoDTO(clientInviaCarrelloRPT.getEventoCtx(),log));
 					}
 				}
 			}
 		} catch (ServiceException e) {
 			throw new GovPayException(e);
+		} catch (IOException e) {
+			throw new GovPayException(e);
 		} 
 	}
 
-	private List<it.govpay.bd.model.Rpt> updateStatoRpt(List<it.govpay.bd.model.Rpt> rpts, StatoRpt statoRpt, String url, PagamentoPortale pagamentoPortale, Exception e) throws ServiceException, GovPayException, UtilsException { 
+	private List<it.govpay.bd.model.Rpt> updateStatoRpt(List<it.govpay.bd.model.Rpt> rpts, StatoRpt statoRpt, String url, PagamentoPortale pagamentoPortale, Exception e) throws ServiceException, GovPayException, UtilsException, NotificaException { 
 		IContext ctx = ContextThreadLocal.get();
 		ApplicationContext appContext = (ApplicationContext) ctx.getApplicationContext();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
@@ -590,7 +610,7 @@ public class Rpt {
 			RptFilter filter = rptBD.newFilter();
 			filter.setCodDominio(codDominio);
 			filter.setIuv(iuv);
-			filter.setStato(it.govpay.bd.model.Rpt.stati_pendenti);
+			filter.setStato(it.govpay.model.Rpt.stati_pendenti);
 			filter.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
 
 			

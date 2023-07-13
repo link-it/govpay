@@ -5,7 +5,7 @@
 
 	<context-param>
     	<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/applicationContext-jaxrs-v1.xml,/WEB-INF/applicationContext-jaxrs-v2.xml,${spring.sec_config_folder}/api-pagamento-applicationContext-security.xml</param-value>
+		<param-value>/WEB-INF/applicationContext-jaxrs-v1.xml,/WEB-INF/applicationContext-jaxrs-v2.xml,/WEB-INF/applicationContext-jaxrs-v3.xml,${spring.sec_config_folder}/api-pagamento-applicationContext-security.xml</param-value>
     </context-param>
     
     <listener>
@@ -14,6 +14,9 @@
 	<listener>
     	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+    <listener>
+    	<listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+	</listener>
     
     <filter>
 		<filter-name>OriginFilter</filter-name>

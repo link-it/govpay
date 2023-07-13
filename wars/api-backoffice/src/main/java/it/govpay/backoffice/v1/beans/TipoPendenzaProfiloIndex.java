@@ -3,12 +3,10 @@ package it.govpay.backoffice.v1.beans;
 
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
@@ -16,13 +14,13 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "descrizione",
 })
 public class TipoPendenzaProfiloIndex extends JSONSerializable implements IValidable {
-  
+
   @JsonProperty("idTipoPendenza")
   private String idTipoPendenza = null;
-  
+
   @JsonProperty("descrizione")
   private String descrizione = null;
-  
+
   /**
    **/
   public TipoPendenzaProfiloIndex idTipoPendenza(String idTipoPendenza) {
@@ -71,8 +69,8 @@ public class TipoPendenzaProfiloIndex extends JSONSerializable implements IValid
     return Objects.hash(idTipoPendenza, descrizione);
   }
 
-  public static TipoPendenzaProfiloIndex parse(String json) throws ServiceException, ValidationException {
-    return (TipoPendenzaProfiloIndex) parse(json, TipoPendenzaProfiloIndex.class);
+  public static TipoPendenzaProfiloIndex parse(String json) throws IOException {
+    return parse(json, TipoPendenzaProfiloIndex.class);
   }
 
   @Override
@@ -84,7 +82,7 @@ public class TipoPendenzaProfiloIndex extends JSONSerializable implements IValid
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TipoPendenzaProfiloIndex {\n");
-    
+
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
     sb.append("    descrizione: ").append(toIndentedString(descrizione)).append("\n");
     sb.append("}");
@@ -101,9 +99,9 @@ public class TipoPendenzaProfiloIndex extends JSONSerializable implements IValid
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
- 	public void validate() throws org.openspcoop2.utils.json.ValidationException {
+ 	public void validate() throws it.govpay.core.exceptions.ValidationException {
 		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
 		validatoreId.validaIdTipoVersamento("idTipoPendenza", this.idTipoPendenza);
   }

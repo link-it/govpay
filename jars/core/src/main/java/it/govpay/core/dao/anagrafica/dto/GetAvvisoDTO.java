@@ -1,10 +1,10 @@
 package it.govpay.core.dao.anagrafica.dto;
 
-import org.openspcoop2.utils.json.ValidationException;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.Versamento;
 import it.govpay.core.beans.tracciati.LinguaSecondaria;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.IuvUtils;
 
 public class GetAvvisoDTO extends BasicRequestDTO {

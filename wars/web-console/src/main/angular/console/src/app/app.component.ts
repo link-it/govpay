@@ -103,14 +103,10 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
         if(_profilo !== null) {
           this.gps.multiGetService([
               UtilService.URL_SERVIZIACL,
-              UtilService.URL_TIPI_VERSIONE_API,
-              UtilService.URL_LABEL_TIPI_EVENTO,
-              UtilService.URL_COMPONENTI_EVENTO
+              UtilService.URL_TIPI_VERSIONE_API
             ],
             [ 'SERVIZI',
-              'TIPI_VERSIONE_API',
-              'MAP_TIPI_EVENTO',
-              'COMPONENTI_EVENTO',
+              'TIPI_VERSIONE_API'
             ], UtilService);
           this.__checkForProfileUpdate();
         }

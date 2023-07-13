@@ -3,12 +3,10 @@ package it.govpay.backoffice.v1.beans;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.validator.IValidable;
 import it.govpay.core.utils.validator.ValidatorFactory;
 import it.govpay.core.utils.validator.ValidatoreIdentificativi;
@@ -20,26 +18,26 @@ import it.govpay.core.utils.validator.ValidatoreIdentificativi;
 "inserimenti",
 "annullamenti",
 })
-public class TracciatoPendenzePost extends JSONSerializable implements IValidable{  
-  
+public class TracciatoPendenzePost extends JSONSerializable implements IValidable{
+
   @JsonProperty("idTracciato")
   private String idTracciato = null;
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("avvisaturaDigitale")
   private Boolean avvisaturaDigitale = false;
-  
+
   @JsonProperty("modalitaAvvisaturaDigitale")
   private ModalitaAvvisaturaDigitale modalitaAvvisaturaDigitale = null;
-  
+
   @JsonProperty("inserimenti")
   private List<PendenzaPost> inserimenti = null;
-  
+
   @JsonProperty("annullamenti")
   private List<AnnullamentoPendenza> annullamenti = null;
-  
+
   /**
    * Identificativo del tracciato
    **/
@@ -81,7 +79,7 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
   }
 
   @JsonProperty("avvisaturaDigitale")
-  public Boolean AvvisaturaDigitale() {
+  public Boolean getAvvisaturaDigitale() {
     return avvisaturaDigitale;
   }
   public void setAvvisaturaDigitale(Boolean avvisaturaDigitale) {
@@ -155,7 +153,7 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
     return Objects.hash(this.idTracciato, this.idDominio, avvisaturaDigitale, modalitaAvvisaturaDigitale, this.inserimenti, this.annullamenti);
   }
 
-  public static TracciatoPendenzePost parse(String json) throws ServiceException, ValidationException {
+  public static TracciatoPendenzePost parse(String json) throws IOException {
     return parse(json, TracciatoPendenzePost.class);
   }
 
@@ -168,7 +166,7 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TracciatoPendenzePost {\n");
-    
+
     sb.append("    idTracciato: ").append(this.toIndentedString(this.idTracciato)).append("\n");
     sb.append("    idDominio: ").append(this.toIndentedString(this.idDominio)).append("\n");
     sb.append("    avvisaturaDigitale: ").append(toIndentedString(avvisaturaDigitale)).append("\n");
@@ -189,20 +187,20 @@ public class TracciatoPendenzePost extends JSONSerializable implements IValidabl
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
   @Override
-public void validate() throws org.openspcoop2.utils.json.ValidationException {
+public void validate() throws it.govpay.core.exceptions.ValidationException {
 		ValidatorFactory vf = ValidatorFactory.newInstance();
 		ValidatoreIdentificativi validatoreId = ValidatoreIdentificativi.newInstance();
-		
+
 		validatoreId.validaIdDominio("idDominio", this.idDominio);
-		
+
 		vf.getValidator("idTracciato", this.idTracciato).notNull();
 		vf.getValidator("inserimenti", this.inserimenti).notNull();
 		for (PendenzaPost inserimentoPendenza : inserimenti) {
 			inserimentoPendenza.validaPendenzaTracciato();
 		}
-		
+
 		vf.getValidator("annullamenti", this.annullamenti).notNull().validateObjects();
   }
 }

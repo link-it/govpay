@@ -5,6 +5,7 @@ package it.govpay.core.dao.pagamenti.dto;
 
 import org.springframework.security.core.Authentication;
 
+import it.govpay.bd.model.Versamento;
 import it.govpay.core.dao.anagrafica.dto.BasicCreateRequestDTO;
 
 /**
@@ -26,6 +27,8 @@ public class LeggiPendenzaDTO extends BasicCreateRequestDTO {
 	private String numeroAvviso;
 	private boolean infoIncasso = false;
 	private String identificativoCreazionePendenza;
+	private Versamento versamentoFromSession = null;
+	private boolean verificaAvviso = false;
 
 	public String getCodA2A() {
 		return this.codA2A;
@@ -62,5 +65,17 @@ public class LeggiPendenzaDTO extends BasicCreateRequestDTO {
 	}
 	public void setIdentificativoCreazionePendenza(String identificativoCreazionePendenza) {
 		this.identificativoCreazionePendenza = identificativoCreazionePendenza;
+	}
+	public Versamento getVersamentoFromSession() {
+		return versamentoFromSession;
+	}
+	public void setVersamentoFromSession(Versamento versamentoFromSession) {
+		this.versamentoFromSession = versamentoFromSession;
+	}
+	public boolean isVerificaAvviso() {
+		return verificaAvviso;
+	}
+	public void setVerificaAvviso(boolean verificaAvviso) {
+		this.verificaAvviso = verificaAvviso;
 	}
 }

@@ -11,8 +11,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.backoffice.v1.controllers.OperazioniController;
 import it.govpay.core.beans.Costanti;
 import it.govpay.rs.v1.BaseRsServiceV1;
@@ -25,7 +23,7 @@ public class Operazioni extends BaseRsServiceV1{
 
 	private OperazioniController controller = null;
 
-	public Operazioni() throws ServiceException {
+	public Operazioni() {
 		super("operazioni");
 		this.controller = new OperazioniController(this.nomeServizio,this.log);
 	}
@@ -34,7 +32,7 @@ public class Operazioni extends BaseRsServiceV1{
 
     @GET
     @Path("/")
-    
+
     @Produces({ "application/json" })
     public Response findOperazioni(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam(value=Costanti.PARAMETRO_PAGINA) @DefaultValue(value="1") Integer pagina, @QueryParam(value=Costanti.PARAMETRO_RISULTATI_PER_PAGINA) @DefaultValue(value="25") Integer risultatiPerPagina){
         this.buildContext();
@@ -43,7 +41,7 @@ public class Operazioni extends BaseRsServiceV1{
 
     @GET
     @Path("/stato/{id}")
-    
+
     @Produces({ "application/json" })
     public Response getStatoOperazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("id") String id){
         this.buildContext();
@@ -52,7 +50,7 @@ public class Operazioni extends BaseRsServiceV1{
 
     @GET
     @Path("/{idOperazione}")
-    
+
     @Produces({ "application/json" })
     public Response getOperazione(@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @PathParam("idOperazione") String idOperazione){
         this.buildContext();

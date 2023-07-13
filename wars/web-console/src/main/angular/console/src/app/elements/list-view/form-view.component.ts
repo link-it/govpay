@@ -55,6 +55,11 @@ export class FormViewComponent implements OnInit, AfterViewInit {
       field.dependency?_componentRef.instance.json['source'] = controls[field.dependency+'_ctrl']:null;
     }, this);
     this.changeDetector.detectChanges();
+
+    // Load iniziale dei dati per gestire i filtri di default (attualemnte solo "Data da") configurabili
+    setTimeout(() => {
+      this.onSubmit(this.basicForm);
+    }, 200);
   }
 
   protected onSubmit(_form) {
@@ -70,6 +75,9 @@ export class FormViewComponent implements OnInit, AfterViewInit {
             _formValues[field.id+'_ctrl'] = _md.format(_format);
           }
         }
+      }
+      if (field.id == 'mostraSpontaneiNonPagati' && field.type == UtilService.SLIDE_TOGGLE) {
+        _formValues[field.id + '_ctrl'] = !_formValues[field.id + '_ctrl'];
       }
     });
     this.onFormSubmit.emit({ value: _formValues })

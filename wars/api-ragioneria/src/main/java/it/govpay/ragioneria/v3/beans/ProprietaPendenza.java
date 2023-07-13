@@ -11,28 +11,28 @@ import io.swagger.v3.oas.annotations.media.Schema;
  **/
 @Schema(description="Dati supporto per la gestione del ciclo di vita della pendenza.")
 public class ProprietaPendenza   {
-  
+
   @Schema(description = "")
   private LinguaSecondaria linguaSecondaria = null;
-  
+
   @Schema(description = "")
   private List<VoceDescrizioneImporto> descrizioneImporto = null;
-  
+
   @Schema(description = "stringa personalizzata da inserire nella ricevuta")
  /**
-   * stringa personalizzata da inserire nella ricevuta  
+   * stringa personalizzata da inserire nella ricevuta
   **/
   private String lineaTestoRicevuta1 = null;
-  
+
   @Schema(description = "stringa personalizzata da inserire nella ricevuta")
  /**
-   * stringa personalizzata da inserire nella ricevuta  
+   * stringa personalizzata da inserire nella ricevuta
   **/
   private String lineaTestoRicevuta2 = null;
-  
-  @Schema(description = "causale della pendenza nella lingua secondaria da inserire nell'avviso                  ")
+
+  @Schema(description = "causale della pendenza nella lingua secondaria da inserire nell'avviso")
  /**
-   * causale della pendenza nella lingua secondaria da inserire nell'avviso                    
+   * causale della pendenza nella lingua secondaria da inserire nell'avviso
   **/
   private String linguaSecondariaCausale = null;
  /**
@@ -113,7 +113,7 @@ public class ProprietaPendenza   {
   }
 
  /**
-   * causale della pendenza nella lingua secondaria da inserire nell&#x27;avviso                  
+   * causale della pendenza nella lingua secondaria da inserire nell&#x27;avviso
    * @return linguaSecondariaCausale
   **/
   @JsonProperty("linguaSecondariaCausale")
@@ -135,7 +135,7 @@ public class ProprietaPendenza   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ProprietaPendenza {\n");
-    
+
     sb.append("    linguaSecondaria: ").append(toIndentedString(linguaSecondaria)).append("\n");
     sb.append("    descrizioneImporto: ").append(toIndentedString(descrizioneImporto)).append("\n");
     sb.append("    lineaTestoRicevuta1: ").append(toIndentedString(lineaTestoRicevuta1)).append("\n");

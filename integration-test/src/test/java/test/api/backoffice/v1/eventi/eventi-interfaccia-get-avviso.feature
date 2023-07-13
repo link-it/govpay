@@ -10,10 +10,11 @@ Scenario: Evento verifica pendenza annullata
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
+* def descrizioneStato = 'Test annullamento'
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * set pendenzaPut.stato = 'ANNULLATA'
-* set pendenzaPut.descrizioneStato = 'Test annullamento'
+* set pendenzaPut.descrizioneStato = descrizioneStato
 * call read('classpath:utils/pa-prepara-avviso-annullato.feature')
 
 * call read('classpath:utils/psp-verifica-rpt.feature')
@@ -61,6 +62,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#('http://localhost:8888/paServiceImpl/v1/avvisi/' + idDominio + '/' + iuv)",
@@ -76,17 +79,18 @@ And match response.risultati[0] ==
 	}
 }
 """
-And match response.risultati[0].dettaglioEsito == pendenzaPut.descrizioneStato
+And match response.risultati[0].dettaglioEsito == descrizioneStato
 
 Scenario: Evento verifica pendenza scaduta
 
 * def idPendenza = getCurrentTimeMillis()
 * def pendenzaPut = read('classpath:test/api/pendenza/v1/pendenze/put/msg/pendenza-put_monovoce_riferimento.json')
 
+* def descrizioneStato = 'Test scadenza'
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * set pendenzaPut.stato = 'SCADUTA'
-* set pendenzaPut.descrizioneStato = 'Test scadenza'
+* set pendenzaPut.descrizioneStato = descrizioneStato
 * call read('classpath:utils/pa-prepara-avviso-scaduto.feature')
 * call read('classpath:utils/psp-verifica-rpt.feature')
 
@@ -132,6 +136,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "##null",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
@@ -148,7 +154,7 @@ And match response.risultati[0] ==
 	}
 }
 """
-And match response.risultati[0].dettaglioEsito == pendenzaPut.descrizioneStato
+And match response.risultati[0].dettaglioEsito == descrizioneStato
 
 Scenario: Evento verifica pendenza sconosciuta
 
@@ -199,6 +205,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "##null",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
@@ -269,6 +277,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "##null",
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
@@ -349,6 +359,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#(applicazione.servizioIntegrazione.url + '/avvisi/' + idDominio + '/' + iuv)",
@@ -429,6 +441,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#(applicazione.servizioIntegrazione.url + '/avvisi/' + idDominio + '/' + iuv)",
@@ -527,6 +541,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",
 	"datiPagoPA" : "##null",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"dataOraRichiesta":"#regex \\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d",
 		"url": "#(applicazione.servizioIntegrazione.url + '/avvisi/' + idDominio + '/' + iuv)",

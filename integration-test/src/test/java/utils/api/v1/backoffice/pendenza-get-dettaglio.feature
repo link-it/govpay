@@ -38,7 +38,8 @@ And match response ==
    "UUID":"#notnull",
    "voci":"#notnull",
    "rpp":"#ignore",
-   "pagamenti":"#ignore"
+   "pagamenti":"#ignore",
+	 "allegati": "##[]"
 }
 """
 And match response.soggettoPagatore contains

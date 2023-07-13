@@ -38,6 +38,7 @@ import org.openspcoop2.utils.sql.SQLQueryObjectException;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
+import it.govpay.model.Incasso.StatoIncasso;
 import it.govpay.orm.Incasso;
 import it.govpay.orm.dao.jdbc.converter.IncassoFieldConverter;
 import it.govpay.orm.model.IncassoModel;
@@ -56,6 +57,7 @@ public class IncassoFilter extends AbstractFilter{
 	private String sct;
 	private String codFlusso = null;
 	private String iuv = null;
+	private StatoIncasso stato = null;
 
 	public IncassoFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -197,6 +199,14 @@ public class IncassoFilter extends AbstractFilter{
 				addAnd = true;
 			}
 			
+			if(this.stato != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(Incasso.model().STATO, this.stato.toString());
+				addAnd = true;
+			}
+			
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -282,6 +292,10 @@ public class IncassoFilter extends AbstractFilter{
 				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.IUV, true) + " = ? ");
 			}
 			
+			if(this.stato != null) {
+				sqlQueryObject.addWhereCondition(true,converter.toColumn(model.STATO, true) + " = ? ");
+			}
+			
 			return sqlQueryObject;
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
@@ -345,6 +359,10 @@ public class IncassoFilter extends AbstractFilter{
 		
 		if(this.iuv != null){
 			lst.add(this.iuv);
+		}
+		
+		if(this.stato != null) {
+			lst.add(this.stato.toString());
 		}
 		
 		return lst.toArray(new Object[lst.size()]);
@@ -443,6 +461,14 @@ public class IncassoFilter extends AbstractFilter{
 
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
+	}
+
+	public StatoIncasso getStato() {
+		return stato;
+	}
+
+	public void setStato(StatoIncasso stato) {
+		this.stato = stato;
 	}
 	
 }

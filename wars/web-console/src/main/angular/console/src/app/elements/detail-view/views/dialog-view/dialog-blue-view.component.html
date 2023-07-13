@@ -7,8 +7,7 @@
   <div class="container px-0 px-lg-3">
     <ng-container #bdfec></ng-container>
   </div>
-  <button mat-fab class="fab-action" type="submit" [disabled]="!_isBlueValid">
+  <button mat-fab class="fab-action" type="submit" [disabled]="!_isBlueValid" *ngIf="_showFabAction">
     <i class="material-icons">save</i>
   </button>
 </form>
-

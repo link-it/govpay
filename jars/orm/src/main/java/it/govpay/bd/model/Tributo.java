@@ -53,7 +53,7 @@ public class Tributo extends it.govpay.model.Tributo {
 	public boolean isCodContabilitaCustom(){return this.getCodContabilitaCustom() != null;}
 
 	private transient IbanAccredito ibanAccredito;
-	public IbanAccredito getIbanAccredito() throws ServiceException {
+	public IbanAccredito getIbanAccredito() {
 		return this.ibanAccredito;
 	}
 	public void setIbanAccredito(IbanAccredito ibanAccredito) {
@@ -69,7 +69,7 @@ public class Tributo extends it.govpay.model.Tributo {
 	}
 
 	private transient IbanAccredito ibanAppoggio;
-	public IbanAccredito getIbanAppoggio() throws ServiceException {
+	public IbanAccredito getIbanAppoggio() {
 		return this.ibanAppoggio;
 	}
 	public void setIbanAppoggio(IbanAccredito ibanAppoggio) {

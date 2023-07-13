@@ -41,7 +41,8 @@ public class DominioConverter {
 //	}
 
 	public static Dominio toDTO(it.govpay.orm.Dominio vo, BDConfigWrapper configWrapper, ConnettoreNotificaPagamenti connettoreMyPivot, 
-			ConnettoreNotificaPagamenti connettoreSecim, ConnettoreNotificaPagamenti connettoreGovPay, ConnettoreNotificaPagamenti connettoreHyperSicAPKappa) throws ServiceException {
+			ConnettoreNotificaPagamenti connettoreSecim, ConnettoreNotificaPagamenti connettoreGovPay, 
+			ConnettoreNotificaPagamenti connettoreHyperSicAPKappa, ConnettoreNotificaPagamenti connettoreMaggioliJPPA) throws ServiceException {
 		
 		
 		IdStazione idStazione = vo.getIdStazione(); 
@@ -64,11 +65,13 @@ public class DominioConverter {
 		dto.setConnettoreSecim(connettoreSecim);
 		dto.setConnettoreGovPay(connettoreGovPay);
 		dto.setConnettoreHyperSicAPKappa(connettoreHyperSicAPKappa);
+		dto.setConnettoreMaggioliJPPA(connettoreMaggioliJPPA);
 		dto.setIntermediato(vo.isIntermediato());
+		dto.setTassonomiaPagoPA(vo.getTassonomiaPagoPA());
 		return dto;
 	}
 
-	public static it.govpay.orm.Dominio toVO(Dominio dto) throws ServiceException {
+	public static it.govpay.orm.Dominio toVO(Dominio dto) {
 		it.govpay.orm.Dominio vo = new it.govpay.orm.Dominio();
 		vo.setId(dto.getId());
 		if(dto.getIdApplicazioneDefault() != null) {
@@ -114,7 +117,13 @@ public class DominioConverter {
 			vo.setCodConnettoreHyperSicAPK(dto.getConnettoreHyperSicAPKappa().getIdConnettore());
 		}
 		
+		if(dto.getConnettoreMaggioliJPPA()!= null) {
+			dto.getConnettoreMaggioliJPPA().setIdConnettore(DominiBD.getIDConnettoreMaggioliJPPA(dto.getCodDominio()));
+			vo.setCodConnettoreMaggioliJPPA(dto.getConnettoreMaggioliJPPA().getIdConnettore());
+		}
+		
 		vo.setIntermediato(dto.isIntermediato());
+		vo.setTassonomiaPagoPA(dto.getTassonomiaPagoPA());
 		
 		return vo;
 	}

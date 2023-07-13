@@ -4,10 +4,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class IncassoUtils {
-
+	
 	private static Pattern patternSingolo = Pattern.compile("RF[SB].([0-9A-Za-z\\-_]+)");
-	private static Pattern patternCumulativo = Pattern.compile("PUR.LGPE-RIVERSAMENTO.URI.([0-9A-Za-z\\-_]+)");
-	private static Pattern patternCausale = Pattern.compile("^.*TXT[ \\/]([ \\/]?.*)$");
+	private static Pattern patternCumulativo = Pattern.compile("PUR.LGPE-RIVERSAMENTO.(TXT.[0-9]{1}.)?URI.([0-9A-Za-z\\-_]+)");
 	private static Pattern patternIDF = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d[0-9A-Za-z_]*-\\S*");
 	private static Pattern patternIUV = Pattern.compile("[0-9]{15,17}|^RF.*");
 
@@ -29,7 +28,7 @@ public class IncassoUtils {
 		while (matcher.find()) {
 			for(int i=1; i<=matcher.groupCount(); i++) {
 				String match = matcher.group(i);
-				if(patternIDF.matcher(match).find()) {
+				if(match != null && patternIDF.matcher(match).find()) {
 					return match;
 				}
 			}
@@ -41,15 +40,5 @@ public class IncassoUtils {
 		String idf = getRiferimentoIncassoCumulativo(causale);
 		if(idf!=null) return idf;
 		else return getRiferimentoIncassoSingolo(causale);
-	}
-
-	public static String getCausaleDaDescrizioneIncasso(String descrizione) {
-		if(descrizione != null) {
-			Matcher matcher = patternCausale.matcher(descrizione);
-			if (matcher.find())
-				return matcher.group(1);
-		}
-
-		return "";
 	}
 }

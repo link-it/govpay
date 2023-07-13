@@ -1,5 +1,6 @@
 package it.govpay.core.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -25,7 +26,7 @@ public class PagamentoPortaleUtils {
 	
 	private static Logger log = LoggerWrapperFactory.getLogger(PagamentoPortaleUtils.class);
 
-	public static void aggiornaPagamentoPortale(Long idPagamentoPortale, BasicBD bd) throws ServiceException {
+	public static void aggiornaPagamentoPortale(Long idPagamentoPortale, Rpt rptCorrente, BasicBD bd) throws ServiceException {
 		IContext ctx = ContextThreadLocal.get();
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ctx.getTransactionId(), true);
 		PagamentiPortaleBD pagamentiPortaleBD = null;
@@ -48,15 +49,24 @@ public class PagamentoPortaleUtils {
 			log.debug("Leggo pagamento portale id ["+idPagamentoPortale+"]"); 
 			PagamentoPortale pagamentoPortale = pagamentiPortaleBD.getPagamento(idPagamentoPortale);
 			
+			List<Rpt> findAll = null;
 
-			RptBD rptBD = new RptBD(bd);
-			rptBD.setAtomica(false); // connessione condivisa
-			RptFilter filter = rptBD.newFilter();
-			filter.setIdPagamentoPortale(idPagamentoPortale);
+			// Pagamento Modello 1 controllo le altre RPT altrimenti evito una ricerca sul DB e utilizzo la sola RPT passata come parametro
+			if(pagamentoPortale.getTipo() == 1) {
+				RptBD rptBD = new RptBD(bd);
+				rptBD.setAtomica(false); // connessione condivisa
+				RptFilter filter = rptBD.newFilter();
+				filter.setIdPagamentoPortale(idPagamentoPortale);
+				
+				findAll = rptBD.findAll(filter);
+				
+				log.debug("Trovate  ["+findAll.size()+"] RPT associate"); 
+			} else {
+				findAll = new ArrayList<>();
+				findAll.add(rptCorrente);
+				log.debug("Il nuovo stato del pagamento portale verra' deciso utilizzando ["+findAll.size()+"] RPT associata."); 
+			}
 			
-			List<Rpt> findAll = rptBD.findAll(filter);
-			
-			log.debug("Trovate  ["+findAll.size()+"] RPT associate"); 
 			boolean updateStato = true;
 			int numeroEseguiti = 0;
 			int numeroNonEseguiti = 0;
@@ -68,6 +78,7 @@ public class PagamentoPortaleUtils {
 				log.debug("RPT corrente ["+rpt.getId()+"] Stato ["+rpt.getStato()+ "] EsitoPagamento ["+rpt.getEsitoPagamento()+"]");
 				StatoRpt stato = rpt.getStato();
 				if(it.govpay.model.Rpt.stati_pendenti.contains(stato)) {
+					log.debug("RPT corrente ["+rpt.getId()+"] e' in uno stato pendente ["+rpt.getStato()+ "], il nuovo stato del pagamento sara' 'IN_CORSO'.");
 //						rpt.getEsitoPagamento() == null) {
 					updateStato = false;
 					break;
@@ -91,6 +102,7 @@ public class PagamentoPortaleUtils {
 							numeroNonEseguiti ++;
 						}  
 					} else {
+						log.debug("RPT corrente ["+rpt.getId()+"] in stato non pendente ["+rpt.getStato()+ "] ma esito pagamento null, il nuovo stato del pagamento sara' 'IN_CORSO'.");
 						 // in corso aspetto che terminino tutte
 						updateStato = false;
 						break;
@@ -121,7 +133,7 @@ public class PagamentoPortaleUtils {
 				pagamentoPortale.setCodiceStato(CODICE_STATO.PAGAMENTO_IN_ATTESA_DI_ESITO);
 			}
 			
-			log.debug("Nuovo Stato ["+pagamentoPortale.getStato()+"]"); 
+			log.debug("Update pagamento portale id ["+idPagamentoPortale+"] nuovo Stato ["+pagamentoPortale.getStato()+"], nuovo CodiceStato ["+pagamentoPortale.getCodiceStato()+"]"); 
 			
 			pagamentiPortaleBD.updatePagamento(pagamentoPortale, false, true);
 			

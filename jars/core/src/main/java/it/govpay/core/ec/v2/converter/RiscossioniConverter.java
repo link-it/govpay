@@ -1,33 +1,34 @@
 package it.govpay.core.ec.v2.converter;
 
-import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.json.ValidationException;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
-import it.govpay.model.Pagamento.Stato;
-import it.govpay.model.Pagamento.TipoPagamento;
+import it.govpay.core.exceptions.IOException;
+import it.govpay.core.exceptions.ValidationException;
 import it.govpay.ec.v2.beans.Riscossione;
 import it.govpay.ec.v2.beans.StatoRiscossione;
 import it.govpay.ec.v2.beans.TipoRiscossione;
+import it.govpay.model.Pagamento.Stato;
+import it.govpay.model.Pagamento.TipoPagamento;
 
 public class RiscossioniConverter {
 
-	public static Riscossione toRsModel(it.govpay.bd.viste.model.Pagamento dto) throws IOException, ValidationException {
+	public static Riscossione toRsModel(it.govpay.bd.viste.model.Pagamento dto) throws IOException, ValidationException, UnsupportedEncodingException {
 		return toRsModel(dto.getPagamento(), dto.getVersamento());
 	}
 	
-	public static Riscossione toRsModel(it.govpay.bd.model.Pagamento input) throws IOException, ValidationException {
+	public static Riscossione toRsModel(it.govpay.bd.model.Pagamento input) throws IOException, ValidationException, UnsupportedEncodingException {
 		return toRsModel(input, null);
 	}
 	
-	public static Riscossione toRsModel(it.govpay.bd.model.Pagamento input, Versamento versamento) throws ValidationException {
+	public static Riscossione toRsModel(it.govpay.bd.model.Pagamento input, Versamento versamento) throws ValidationException, UnsupportedEncodingException, IOException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		Riscossione rsModel = new Riscossione();
 		try {

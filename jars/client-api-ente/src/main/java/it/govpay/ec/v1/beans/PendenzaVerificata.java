@@ -11,23 +11,25 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 //import io.swagger.v3.oas.annotations.media.Schema;
 
 public class PendenzaVerificata  {
   
-  // @Schema(example = "A2A_12345", required = true, description = "Identificativo del gestionale responsabile della pendenza")
+  // @Schema(example = "A2A_12345", requiredMode = RequiredMode.REQUIRED, description = "Identificativo del gestionale responsabile della pendenza")
  /**
    * Identificativo del gestionale responsabile della pendenza  
   **/
   private String idA2A = null;
   
-  // @Schema(example = "abcdef12345", required = true, description = "Identificativo della pendenza nel gestionale responsabile")
+  // @Schema(example = "abcdef12345", requiredMode = RequiredMode.REQUIRED, description = "Identificativo della pendenza nel gestionale responsabile")
  /**
    * Identificativo della pendenza nel gestionale responsabile  
   **/
   private String idPendenza = null;
   
-  // @Schema(required = true, description = "")
+  // @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private StatoPendenzaVerificata stato = null;
   
   // @Schema(description = "Informazioni addizionali sullo stato della pendenza")
@@ -36,7 +38,7 @@ public class PendenzaVerificata  {
   **/
   private String descrizioneStato = null;
   
-  // @Schema(example = "1234567890", required = true, description = "Identificativo del dominio creditore")
+  // @Schema(example = "1234567890", requiredMode = RequiredMode.REQUIRED, description = "Identificativo del dominio creditore")
  /**
    * Identificativo del dominio creditore  
   **/
@@ -60,22 +62,22 @@ public class PendenzaVerificata  {
   **/
   private String nome = null;
   
-  // @Schema(example = "Sanzione CdS n. abc00000", required = true, description = "Descrizione da inserire nell'avviso di pagamento")
+  // @Schema(example = "Sanzione CdS n. abc00000", requiredMode = RequiredMode.REQUIRED, description = "Descrizione da inserire nell'avviso di pagamento")
  /**
    * Descrizione da inserire nell'avviso di pagamento  
   **/
   private String causale = null;
   
-  // @Schema(required = true, description = "")
+  // @Schema(requiredMode = RequiredMode.REQUIRED, description = "")
   private Soggetto soggettoPagatore = null;
   
-  // @Schema(example = "10.01", required = true, description = "Importo della pendenza. Deve corrispondere alla somma delle singole voci.")
+  // @Schema(example = "10.01", requiredMode = RequiredMode.REQUIRED, description = "Importo della pendenza. Deve corrispondere alla somma delle singole voci.")
  /**
    * Importo della pendenza. Deve corrispondere alla somma delle singole voci.  
   **/
   private BigDecimal importo = null;
   
-  // @Schema(example = "123456789012345678", required = true, description = "Identificativo univoco versamento, assegnato se pagabile da psp")
+  // @Schema(example = "123456789012345678", requiredMode = RequiredMode.REQUIRED, description = "Identificativo univoco versamento, assegnato se pagabile da psp")
  /**
    * Identificativo univoco versamento, assegnato se pagabile da psp  
   **/
@@ -139,6 +141,9 @@ public class PendenzaVerificata  {
    **/
   private ProprietaPendenza proprieta = null;
   
+  @Schema(description = "")
+  private List<NuovoAllegatoPendenza> allegati = null;
+  
  /**
    * Identificativo del gestionale responsabile della pendenza
    * @return idA2A
@@ -184,7 +189,6 @@ public class PendenzaVerificata  {
    * @return stato
   **/
   @JsonProperty("stato")
-  @NotNull
   @Valid
   public StatoPendenzaVerificata getStato() {
     return stato;
@@ -320,7 +324,6 @@ public class PendenzaVerificata  {
    * @return soggettoPagatore
   **/
   @JsonProperty("soggettoPagatore")
-  @NotNull
   @Valid
   public Soggetto getSoggettoPagatore() {
     return soggettoPagatore;
@@ -593,6 +596,29 @@ public class PendenzaVerificata  {
   public void setProprieta(ProprietaPendenza proprieta) {
     this.proprieta = proprieta;
   }
+  
+  /**
+   * Get allegati
+   * @return allegati
+  **/
+  @JsonProperty("allegati")
+  public List<NuovoAllegatoPendenza> getAllegati() {
+    return allegati;
+  }
+
+  public void setAllegati(List<NuovoAllegatoPendenza> allegati) {
+    this.allegati = allegati;
+  }
+
+  public PendenzaVerificata allegati(List<NuovoAllegatoPendenza> allegati) {
+    this.allegati = allegati;
+    return this;
+  }
+
+  public PendenzaVerificata addAllegatiItem(NuovoAllegatoPendenza allegatiItem) {
+    this.allegati.add(allegatiItem);
+    return this;
+  }
 
 
   @Override
@@ -622,6 +648,7 @@ public class PendenzaVerificata  {
     sb.append("    tassonomiaAvviso: ").append(toIndentedString(tassonomiaAvviso)).append("\n");
     sb.append("    documento: ").append(toIndentedString(documento)).append("\n");
     sb.append("    voci: ").append(toIndentedString(voci)).append("\n");
+    sb.append("    allegati: ").append(toIndentedString(allegati)).append("\n");
     sb.append("}");
     return sb.toString();
   }

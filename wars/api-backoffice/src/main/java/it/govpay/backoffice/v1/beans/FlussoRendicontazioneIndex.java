@@ -5,12 +5,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import org.openspcoop2.utils.json.ValidationException;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.govpay.core.beans.JSONSerializable;
+import it.govpay.core.exceptions.IOException;
 @com.fasterxml.jackson.annotation.JsonPropertyOrder({
 "idFlusso",
 "dataFlusso",
@@ -27,47 +26,47 @@ import it.govpay.core.beans.JSONSerializable;
 "segnalazioni",
 })
 public class FlussoRendicontazioneIndex extends JSONSerializable {
-  
+
   @JsonProperty("idFlusso")
   private String idFlusso = null;
-  
+
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ", locale = "it_IT", timezone = "Europe/Rome")
   @JsonProperty("dataFlusso")
   private Date dataFlusso = null;
-  
+
   @JsonProperty("trn")
   private String trn = null;
-  
+
   @JsonProperty("dataRegolamento")
   private Date dataRegolamento = null;
-  
+
   @JsonProperty("idPsp")
   private String idPsp = null;
-  
+
   @JsonProperty("ragioneSocialePsp")
   private String ragioneSocialePsp = null;
-  
+
   @JsonProperty("bicRiversamento")
   private String bicRiversamento = null;
-  
+
   @JsonProperty("idDominio")
   private String idDominio = null;
-  
+
   @JsonProperty("ragioneSocialeDominio")
   private String ragioneSocialeDominio = null;
-  
+
   @JsonProperty("numeroPagamenti")
   private BigDecimal numeroPagamenti = null;
-  
+
   @JsonProperty("importoTotale")
   private Double importoTotale = null;
-  
+
   @JsonProperty("stato")
   private StatoFlussoRendicontazione stato = null;
-  
+
   @JsonProperty("segnalazioni")
   private List<Segnalazione> segnalazioni = null;
-  
+
   /**
    * identificativo del flusso di rendicontazione
    **/
@@ -147,7 +146,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   public void setIdPsp(String idPsp) {
     this.idPsp = idPsp;
   }
-  
+
   /**
    * Ragione sociale del psp che ha emesso la rendicontazione
    **/
@@ -211,7 +210,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   public void setRagioneSocialeDominio(String ragioneSocialeDominio) {
     this.ragioneSocialeDominio = ragioneSocialeDominio;
   }
-  
+
   /**
    * numero di pagamenti oggetto della rendicontazione
    **/
@@ -303,7 +302,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
     return Objects.hash(this.idFlusso, this.dataFlusso, this.trn, this.dataRegolamento, this.idPsp, this.ragioneSocialePsp, this.bicRiversamento, this.idDominio, this.ragioneSocialeDominio, this.numeroPagamenti, this.importoTotale, stato, this.segnalazioni);
   }
 
-  public static FlussoRendicontazioneIndex parse(String json) throws org.openspcoop2.generic_project.exception.ServiceException, ValidationException {
+  public static FlussoRendicontazioneIndex parse(String json) throws IOException {
     return parse(json, FlussoRendicontazioneIndex.class);
   }
 
@@ -316,7 +315,7 @@ public class FlussoRendicontazioneIndex extends JSONSerializable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class FlussoRendicontazioneIndex {\n");
-    
+
     sb.append("    idFlusso: ").append(this.toIndentedString(this.idFlusso)).append("\n");
     sb.append("    dataFlusso: ").append(this.toIndentedString(this.dataFlusso)).append("\n");
     sb.append("    trn: ").append(this.toIndentedString(this.trn)).append("\n");

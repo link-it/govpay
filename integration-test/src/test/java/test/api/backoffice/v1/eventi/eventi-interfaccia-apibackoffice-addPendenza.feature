@@ -82,7 +82,9 @@ And match response.risultati[0] ==
 	"durataEvento": "#notnull",
 	"sottotipoEsito": "201",		
 	"dettaglioEsito": "##null",	
-	"datiPagoPA" : "##null",	
+	"datiPagoPA" : "##null",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",	
 	"parametriRichiesta": {
 		"principal": "gpadmin",
 		"utente": "Amministratore",
@@ -106,6 +108,8 @@ And match response.risultati[0] ==
 * match payloadRisposta == pendenzaPutResponse
 
 Scenario: Evento creazione da operatore spid in api Backoffice
+
+* configure cookies = null
 
 * def pendenzaGet = read('classpath:test/api/pendenza/v1/pendenze/get/msg/pendenza-get-dettaglio.json')
 * def pendenzeBaseurl = getGovPayApiBaseUrl({api: 'backoffice', versione: 'v1', autenticazione: 'spid'})
@@ -163,6 +167,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",	
 	"datiPagoPA" : "##null",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "RSSMRA30A01H501I",
 		"utente": "Mario Rossi",
@@ -242,6 +248,8 @@ And match response.risultati[0] ==
 	"dataEvento": "#notnull",
 	"durataEvento": "#notnull",	
 	"datiPagoPA" : "##null",
+	"clusterId" : "#notnull",
+	"transactionId" : "#notnull",
 	"parametriRichiesta": {
 		"principal": "#(idA2A)",
 		"utente": "#(idA2A)",

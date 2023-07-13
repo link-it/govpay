@@ -886,6 +886,15 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 	
 	protected Long findIdRendicontazione(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRendicontazione id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
+		if(id == null)
+			throw new ServiceException(this.getClass().getName() +": Bad request: id is null");
+		
+		if(sqlQueryObject == null)
+			throw new ServiceException(this.getClass().getName() +": Bad request: sqlQueryObject is null");
+		
+		if(jdbcProperties == null)
+			throw new ServiceException(this.getClass().getName() +": Bad request: jdbcProperties is null");
+		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 

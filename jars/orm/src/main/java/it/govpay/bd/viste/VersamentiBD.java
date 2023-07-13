@@ -1,5 +1,6 @@
 package it.govpay.bd.viste;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.viste.filters.VersamentoFilter;
 import it.govpay.bd.viste.model.converter.VersamentoConverter;
+import it.govpay.model.exception.CodificaInesistenteException;
 import it.govpay.orm.dao.jdbc.converter.VistaVersamentoFieldConverter;
 import it.govpay.orm.model.VistaVersamentoModel;
 
@@ -47,6 +49,28 @@ public class VersamentiBD  extends BasicBD {
 	}
 	
 	public long count(VersamentoFilter filter) throws ServiceException {
+		return filter.isEseguiCountConLimit() ? this._countConLimit(filter) : this._countSenzaLimit(filter);
+	}
+	
+	private long _countSenzaLimit(VersamentoFilter filter) throws ServiceException {
+		try {
+			if(this.isAtomica()) {
+				this.setupConnection(this.getIdTransaction());
+				filter.setExpressionConstructor(this.getVistaVersamentoServiceSearch());
+			}
+			
+			return this.getVistaVersamentoServiceSearch().count(filter.toExpression()).longValue();
+	
+		} catch (NotImplementedException e) {
+			return 0;
+		} finally {
+			if(this.isAtomica()) {
+				this.closeConnection();
+			}
+		}
+	}
+
+	private long _countConLimit(VersamentoFilter filter) throws ServiceException {
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -129,6 +153,10 @@ public class VersamentiBD  extends BasicBD {
 			}
 			return versamentoLst;
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (CodificaInesistenteException e) {
+			throw new ServiceException(e);
+		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
 		} finally {
 			if(this.isAtomica()) {

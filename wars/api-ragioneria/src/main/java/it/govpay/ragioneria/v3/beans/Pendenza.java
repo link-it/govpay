@@ -2,6 +2,7 @@ package it.govpay.ragioneria.v3.beans;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
@@ -19,111 +20,114 @@ import io.swagger.v3.oas.annotations.media.Schema;
  **/
 @Schema(description="Dati della pendenza")
 public class Pendenza   {
-  
+
   @Schema(example = "A2A-12345", required = true, description = "Identificativo del gestionale responsabile della pendenza")
  /**
-   * Identificativo del gestionale responsabile della pendenza  
+   * Identificativo del gestionale responsabile della pendenza
   **/
   private String idA2A = null;
-  
+
   @Schema(example = "abcdef12345", required = true, description = "Identificativo della pendenza nel gestionale responsabile")
  /**
-   * Identificativo della pendenza nel gestionale responsabile  
+   * Identificativo della pendenza nel gestionale responsabile
   **/
   private String idPendenza = null;
-  
+
   @Schema(example = "IMU", description = "Identificativo della tipologia pendenza")
  /**
-   * Identificativo della tipologia pendenza  
+   * Identificativo della tipologia pendenza
   **/
   private String idTipoPendenza = null;
-  
+
   @Schema(description = "")
   private Dominio dominio = null;
-  
+
   @Schema(description = "")
   private UnitaOperativa unitaOperativa = null;
-  
+
   @Schema(example = "Sanzione CdS n. abc00000", description = "Descrizione da inserire nell'avviso di pagamento")
  /**
-   * Descrizione da inserire nell'avviso di pagamento  
+   * Descrizione da inserire nell'avviso di pagamento
   **/
   private String causale = null;
-  
+
   @Schema(description = "")
   private Soggetto soggettoPagatore = null;
-  
+
   @Schema(example = "10.01", description = "Importo della pendenza. Deve corrispondere alla somma delle singole voci.")
  /**
-   * Importo della pendenza. Deve corrispondere alla somma delle singole voci.  
+   * Importo della pendenza. Deve corrispondere alla somma delle singole voci.
   **/
   private BigDecimal importo = null;
-  
+
   @Schema(example = "123456789012345678", description = "Identificativo univoco versamento, assegnato se pagabile da psp")
  /**
-   * Identificativo univoco versamento, assegnato se pagabile da psp  
+   * Identificativo univoco versamento, assegnato se pagabile da psp
   **/
   private String numeroAvviso = null;
-  
+
   @Schema(example = "Tue Dec 31 01:00:00 CET 2019", description = "Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.")
  /**
-   * Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.  
+   * Data di validita dei dati della pendenza, decorsa la quale la pendenza può subire variazioni.
   **/
   private Date dataValidita = null;
-  
+
   @Schema(example = "Thu Dec 31 01:00:00 CET 2020", description = "Data di scadenza della pendenza, decorsa la quale non è più pagabile.")
  /**
-   * Data di scadenza della pendenza, decorsa la quale non è più pagabile.  
+   * Data di scadenza della pendenza, decorsa la quale non è più pagabile.
   **/
   private Date dataScadenza = null;
-  
+
   @Schema(example = "2020", description = "Anno di riferimento della pendenza")
  /**
-   * Anno di riferimento della pendenza  
+   * Anno di riferimento della pendenza
   **/
   private BigDecimal annoRiferimento = null;
-  
+
   @Schema(example = "ABC00000001", description = "Identificativo della cartella di pagamento a cui afferisce la pendenza")
  /**
-   * Identificativo della cartella di pagamento a cui afferisce la pendenza  
+   * Identificativo della cartella di pagamento a cui afferisce la pendenza
   **/
   private String cartellaPagamento = null;
-  
+
   @Schema(description = "Dati applicativi allegati dal gestionale secondo un formato proprietario.")
  /**
-   * Dati applicativi allegati dal gestionale secondo un formato proprietario.  
+   * Dati applicativi allegati dal gestionale secondo un formato proprietario.
   **/
   private Object datiAllegati = null;
-  
+
   @Schema(example = "Sanzioni", description = "Macro categoria della pendenza secondo la classificazione del creditore")
  /**
-   * Macro categoria della pendenza secondo la classificazione del creditore  
+   * Macro categoria della pendenza secondo la classificazione del creditore
   **/
   private String tassonomia = null;
-  
+
   @Schema(example = "Direzione", description = "Identificativo della direzione interna all'ente creditore")
  /**
-   * Identificativo della direzione interna all'ente creditore  
+   * Identificativo della direzione interna all'ente creditore
   **/
   private String direzione = null;
-  
+
   @Schema(example = "Divisione", description = "Identificativo della divisione interna all'ente creditore")
  /**
-   * Identificativo della divisione interna all'ente creditore  
+   * Identificativo della divisione interna all'ente creditore
   **/
   private String divisione = null;
-  
+
   @Schema(description = "")
   private Documento documento = null;
-  
+
   @Schema(description = "Parametro di randomizzazione delle URL di pagamento statiche")
  /**
-   * Parametro di randomizzazione delle URL di pagamento statiche  
+   * Parametro di randomizzazione delle URL di pagamento statiche
   **/
   private String UUID = null;
-  
+
   @Schema(description = "")
   private ProprietaPendenza proprieta = null;
+
+  @Schema(description = "")
+  private List<AllegatoPendenza> allegati = null;
  /**
    * Identificativo del gestionale responsabile della pendenza
    * @return idA2A
@@ -202,7 +206,7 @@ public class Pendenza   {
    * Get unitaOperativa
    * @return unitaOperativa
   **/
-  @JsonProperty("UnitaOperativa")
+  @JsonProperty("unitaOperativa")
   public UnitaOperativa getUnitaOperativa() {
     return unitaOperativa;
   }
@@ -490,12 +494,35 @@ public class Pendenza   {
     return this;
   }
 
+ /**
+   * Get allegati
+   * @return allegati
+  **/
+  @JsonProperty("allegati")
+  public List<AllegatoPendenza> getAllegati() {
+    return allegati;
+  }
+
+  public void setAllegati(List<AllegatoPendenza> allegati) {
+    this.allegati = allegati;
+  }
+
+  public Pendenza allegati(List<AllegatoPendenza> allegati) {
+    this.allegati = allegati;
+    return this;
+  }
+
+  public Pendenza addAllegatiItem(AllegatoPendenza allegatiItem) {
+    this.allegati.add(allegatiItem);
+    return this;
+  }
+
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Pendenza {\n");
-    
+
     sb.append("    idA2A: ").append(toIndentedString(idA2A)).append("\n");
     sb.append("    idPendenza: ").append(toIndentedString(idPendenza)).append("\n");
     sb.append("    idTipoPendenza: ").append(toIndentedString(idTipoPendenza)).append("\n");
@@ -516,6 +543,7 @@ public class Pendenza   {
     sb.append("    documento: ").append(toIndentedString(documento)).append("\n");
     sb.append("    UUID: ").append(toIndentedString(UUID)).append("\n");
     sb.append("    proprieta: ").append(toIndentedString(proprieta)).append("\n");
+    sb.append("    allegati: ").append(toIndentedString(allegati)).append("\n");
     sb.append("}");
     return sb.toString();
   }

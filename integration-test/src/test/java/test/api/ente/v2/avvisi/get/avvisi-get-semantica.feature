@@ -41,21 +41,25 @@ Scenario: Numero avviso su multivoce
 
 Scenario Outline: <field> non valida
 
-* def pendenza = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_definito.json')
+* def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_definito.json')
 
 * def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
 * def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
 * def ccp = getCurrentTimeMillis()
 * def importo = 10.00
-* set pendenza.idA2A = idA2A
-* set pendenza.idPendenza = idPendenza
-* set pendenza.numeroAvviso = numeroAvviso
-* set pendenza.stato = 'NON_ESEGUITA'
-* set <fieldRequest> = <fieldValue>
+
+* set pendenzaPut.idA2A = idA2A
+* set pendenzaPut.idPendenza = idPendenza
+* set pendenzaPut.numeroAvviso = numeroAvviso
+
+* set pendenzaVerificataV2.pendenza = pendenzaPut
+* set pendenzaVerificataV2.stato = 'NON_ESEGUITA'
+
+* set pendenzaVerificataV2.<fieldRequest> = <fieldValue>
 
 Given url ente_api_url
 And path '/v2/avvisi', idDominio, numeroAvviso
-And request pendenza
+And request pendenzaVerificataV2
 When method post
 Then status 200
 
@@ -84,14 +88,17 @@ Scenario: Caricamento pendenza con contabilita errore validazione importi
 * def ccp = getCurrentTimeMillis()
 * def importo = 100.99
 
-* set pendenza.idA2A = idA2A
-* set pendenza.idPendenza = idPendenza
-* set pendenza.numeroAvviso = numeroAvviso
-* set pendenza.stato = 'NON_ESEGUITA'
+* set pendenzaPut.idA2A = idA2A
+* set pendenzaPut.idPendenza = idPendenza
+* set pendenzaPut.numeroAvviso = numeroAvviso
+* remove pendenzaPut.stato
+
+* set pendenzaVerificataV2.pendenza = pendenzaPut
+* set pendenzaVerificataV2.stato = 'NON_ESEGUITA'
 
 Given url ente_api_url
 And path '/v2/avvisi', idDominio, numeroAvviso
-And request pendenza
+And request pendenzaVerificataV2
 When method post
 Then status 200
 

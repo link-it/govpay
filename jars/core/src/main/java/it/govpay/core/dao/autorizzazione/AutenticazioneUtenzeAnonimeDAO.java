@@ -1,10 +1,13 @@
 package it.govpay.core.dao.autorizzazione;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,8 +43,13 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseAutenticazioneDAO implem
 		return user;
 	}
 
+	@Override
+	public UserDetails loadUserByLdapUserDetail(String username, GovpayLdapUserDetails userDetail) throws UsernameNotFoundException {
+		UserDetails user = this._loadUserDetailsFromLdapUserDetail(username, userDetail.getAuthorities(), userDetail);
+		return user;
+	}
 
-	public UserDetails loadUserDetails(String username, Collection<? extends GrantedAuthority> authFromPreauth) throws UsernameNotFoundException {
+	public UserDetails loadUserDetails(String username, Collection<? extends GrantedAuthority> authFromPreauth) {
 		try {
 			String transactionId = UUID.randomUUID().toString();
 			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
@@ -50,8 +58,25 @@ public class AutenticazioneUtenzeAnonimeDAO extends BaseAutenticazioneDAO implem
 			userDetailFromUtenzaAnonima.setIdTransazioneAutenticazione(transactionId);
 			this.debug(transactionId, "Caricamento informazioni dell'utenza ["+username+"] completato.");
 			return userDetailFromUtenzaAnonima;
-		} catch(Exception e){
+		} catch(ServiceException e){
 			throw new RuntimeException("Errore interno, impossibile caricare le informazioni dell'utenza", e);
+		}	finally {
+		}
+	}
+	
+	private UserDetails _loadUserDetailsFromLdapUserDetail(String username, Collection<? extends GrantedAuthority> authFromPreauth, GovpayLdapUserDetails userDetail) throws UsernameNotFoundException {
+		Map<String, Object> attributeValues = new HashMap<>();
+		
+		try {
+			String transactionId = UUID.randomUUID().toString();
+			BDConfigWrapper configWrapper = new BDConfigWrapper(transactionId, this.useCacheData);
+			this.debug(transactionId,"Lettura delle informazioni per l'utenza ldap ["+username+"] in corso...");
+			GovpayLdapUserDetails userDetailFromUtenzaLdap = AutorizzazioneUtils.getUserDetailFromUtenzaAnonimaInSessione(username, this.isCheckPassword(), this.isCheckSubject(), authFromPreauth, attributeValues, userDetail, configWrapper, this.getApiName(), this.getAuthType());
+			userDetailFromUtenzaLdap.setIdTransazioneAutenticazione(transactionId);
+			this.debug(transactionId, "Caricamento informazioni dell'utenza ldap ["+username+"] completato.");
+			return userDetailFromUtenzaLdap;
+		} catch(Exception e){
+			throw new RuntimeException("Errore interno, impossibile caricare le informazioni dell'utenza ldap ["+username+"]: ", e);
 		}	finally {
 		}
 	}

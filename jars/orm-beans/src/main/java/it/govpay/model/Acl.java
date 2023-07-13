@@ -26,7 +26,8 @@ import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.model.exception.CodificaInesistenteException;
 
 public class Acl extends BasicModel {
 	
@@ -44,12 +45,12 @@ public class Acl extends BasicModel {
 			return this.codifica;
 		}
 		
-		public static Diritti toEnum(String codifica) throws ServiceException {
+		public static Diritti toEnum(String codifica) throws CodificaInesistenteException {
 			for(Diritti p : Diritti.values()){
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
-			throw new ServiceException("Codifica inesistente per Diritto. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(Diritti.values()));
+			throw new CodificaInesistenteException("Codifica inesistente per Diritto. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(Diritti.values()));
 		}
 	}
 	
@@ -87,12 +88,12 @@ public class Acl extends BasicModel {
 			return this.codifica;
 		}
 		
-		public static Servizio toEnum(String codifica) throws ServiceException {
+		public static Servizio toEnum(String codifica) throws CodificaInesistenteException {
 			for(Servizio p : Servizio.values()){
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
-			throw new ServiceException("Codifica inesistente per Servizio. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(Servizio.values()));
+			throw new CodificaInesistenteException("Codifica inesistente per Servizio. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(Servizio.values()));
 		}
 	}
 	public String getRuolo() {

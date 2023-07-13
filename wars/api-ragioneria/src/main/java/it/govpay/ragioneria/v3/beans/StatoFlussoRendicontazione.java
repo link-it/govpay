@@ -8,9 +8,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum StatoFlussoRendicontazione {
   ACQUISITO("Acquisito"),
-  
+
   ANOMALO("Anomalo"),
-  
+
   RIFIUTATO("Rifiutato");
 
   private String value;
@@ -34,5 +34,5 @@ public enum StatoFlussoRendicontazione {
     }
     return null;
   }
-  
+
 }

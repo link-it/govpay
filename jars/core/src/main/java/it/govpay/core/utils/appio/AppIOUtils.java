@@ -10,9 +10,6 @@ import java.util.Map;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
 import org.slf4j.Logger;
 
-import it.govpay.bd.configurazione.model.PromemoriaAvvisoBase;
-import it.govpay.bd.configurazione.model.PromemoriaRicevutaBase;
-import it.govpay.bd.configurazione.model.PromemoriaScadenza;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.TipoVersamentoDominio;
@@ -26,6 +23,9 @@ import it.govpay.core.utils.appio.model.NewMessage;
 import it.govpay.core.utils.appio.model.PaymentData;
 import it.govpay.core.utils.trasformazioni.TrasformazioniUtils;
 import it.govpay.core.utils.trasformazioni.exception.TrasformazioneException;
+import it.govpay.model.configurazione.PromemoriaAvvisoBase;
+import it.govpay.model.configurazione.PromemoriaRicevutaBase;
+import it.govpay.model.configurazione.PromemoriaScadenza;
 
 public class AppIOUtils {
 	
@@ -68,6 +68,27 @@ public class AppIOUtils {
 		}
 		
 		NewMessage messageWithCF = AppIOUtils.getPostMessage(log, appIOTipo, appIOOggetto, appIOMessaggio, timeToLive, versamento, null, dominio, false);
+		return messageWithCF;
+	}
+	
+	public static NewMessage creaNuovoMessaggioRicevutaPagamentoSenzaRPT(Logger log, Versamento versamento, Rpt rpt, Dominio dominio, TipoVersamentoDominio tipoVersamentoDominio, PromemoriaRicevutaBase configurazionePromemoriaRicevuta, BigDecimal timeToLive) throws GovPayException {
+		String appIOMessaggio = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaMessaggio();
+		String appIOOggetto = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaOggetto();
+		String appIOTipo = tipoVersamentoDominio.getAvvisaturaAppIoPromemoriaRicevutaTipo();
+		
+		boolean usaConfigurazioneSistema = true;
+		
+		if(appIOMessaggio != null && appIOOggetto != null && appIOTipo != null) {
+			usaConfigurazioneSistema = false;
+		}
+		
+		if(usaConfigurazioneSistema) {
+			appIOMessaggio = configurazionePromemoriaRicevuta.getMessaggio();
+			appIOOggetto = configurazionePromemoriaRicevuta.getOggetto();
+			appIOTipo = configurazionePromemoriaRicevuta.getTipo();
+		}
+		
+		NewMessage messageWithCF = AppIOUtils.getPostMessage(log, appIOTipo, appIOOggetto, appIOMessaggio, timeToLive, versamento, rpt, dominio, false);
 		return messageWithCF;
 	}
 	

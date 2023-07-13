@@ -20,6 +20,8 @@
 package it.govpay.core.business;
 
 
+import java.text.MessageFormat;
+
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.LoggerWrapperFactory;
@@ -65,9 +67,9 @@ public class Iuv {
 			}
 			it.govpay.model.Iuv iuv = null;
 
-			log.debug("Generazione dello IUV di tipo ["+type+"] per il versamento [Id: "+codVersamentoEnte+", IdA2A: "+applicazione.getCodApplicazione()+", IdDominio: "+dominio.getCodDominio()+"] in corso...");
+			log.debug(MessageFormat.format("Generazione dello IUV di tipo [{0}] per il versamento [Id: {1}, IdA2A: {2}, IdDominio: {3}] in corso...", type, codVersamentoEnte, applicazione.getCodApplicazione(), dominio.getCodDominio()));
 
-			log.debug("Prefisso IUV ["+prefix+"]");
+			log.debug(MessageFormat.format("Prefisso IUV [{0}]", prefix));
 
 			if(type.equals(TipoIUV.NUMERICO)) {
 				// il prefisso deve essere numerico
@@ -92,7 +94,7 @@ public class Iuv {
 
 			ctx.getApplicationLogger().log("iuv.generazioneIUVOk", applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuv.getIuv());
 
-			log.debug("Generazione dello IUV di tipo ["+type+"] per il versamento [Id: "+codVersamentoEnte+", IdA2A: "+applicazione.getCodApplicazione()+", IdDominio: "+dominio.getCodDominio()+"] completata IUV: ["+iuv.getIuv()+"].");
+			log.debug(MessageFormat.format("Generazione dello IUV di tipo [{0}] per il versamento [Id: {1}, IdA2A: {2}, IdDominio: {3}] completata IUV: [{4}].", type, codVersamentoEnte, applicazione.getCodApplicazione(), dominio.getCodDominio(), iuv.getIuv()));
 
 			return iuv.getIuv();
 

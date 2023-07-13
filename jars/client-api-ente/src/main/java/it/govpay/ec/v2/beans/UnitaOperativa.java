@@ -6,6 +6,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class UnitaOperativa   {
   
@@ -15,7 +16,7 @@ public class UnitaOperativa   {
   **/
   private String idUnita = null;
   
-  @Schema(example = "Ufficio due", required = true, description = "Ragione sociale")
+  @Schema(example = "Ufficio due", requiredMode = RequiredMode.REQUIRED, description = "Ragione sociale")
  /**
    * Ragione sociale  
   **/

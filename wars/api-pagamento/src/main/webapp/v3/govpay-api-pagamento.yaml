@@ -1,0 +1,248 @@
+openapi: 3.0.0
+info:
+  version: "3.0.0"
+  title: GovPay - API Pagamento
+  contact:
+    name: GitHub Project Page
+    url: 'https://github.com/link-it/GovPay/'
+  license:
+    name: GPL
+    url: 'https://github.com/link-it/GovPay/blob/master/LICENSE'
+servers:
+  - url: /govpay/frontend/api/pagamento/rs/basic/v3/
+tags:
+  - name: Pendenze
+  - name: Ricevute
+  - name: Utenti
+security:
+  - basicAuth: []    
+paths:
+  '/allegati/{id}':
+    get:
+      summary: Allegato di una pendenza
+      operationId: getAllegatoPendenza
+      description:      Fornisce l'allegato di una pendenza
+      tags:
+        - Pendenze
+      parameters:
+        - in: path
+          name: id
+          description: Identificativo dell'allegato
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Contenuto dell'allegato
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'govpay-api-responses.yaml#/components/responses/404NotFound'
+        '500':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'
+  '/pendenze':
+    get:
+      tags:
+        - Pendenze
+      summary: Elenco delle pendenze
+      operationId: findPendenze
+      description: Fornisce la lista delle pendenze filtrata ed ordinata.
+      parameters:
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/pagina'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/risultatiPerPagina'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/ordinamento'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/idDominio'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/dataDa'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/dataA'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/iuv'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/idA2A'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/idPendenza'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/idDebitore'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/statoPendenza'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/idPagamento'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/direzione'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/divisione'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/mostraSpontaneiNonPagati'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/metadatiPaginazione'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/maxRisultati'
+      responses:
+        '200':
+          description: Elenco delle pendenze che rispettano i filtri di ricerca
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PosizioneDebitoria'
+        '400':
+          $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
+        '503':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'
+  '/pendenze/{idA2A}/{idPendenza}':
+    get:
+      tags:
+        - Pendenze
+      summary: Dettaglio di una pendenza per identificativo
+      operationId: getPendenza
+      description: Acquisisce il dettaglio di una pendenza, comprensivo dei dati di pagamento.
+      parameters:
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdA2A'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdPendenza'
+      responses:
+        '200':
+          description: Informazioni dettagliate della pendenza
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PendenzaArchivio'
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'govpay-api-responses.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'
+  '/logout':
+    get:
+      summary: Logout
+      operationId: logout
+      tags:
+        - Utenti
+      responses:
+        '200':
+          description: Operazione eseguita con successo
+        '400':
+          $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
+        '404':
+          $ref: 'govpay-api-responses.yaml#/components/responses/404NotFound'
+        '503':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'
+  '/profilo':
+    get:
+      summary: Elenco delle acl associate all'utenza chiamante
+      tags:
+        - Utenti
+      operationId: getProfilo
+      responses:
+        '200':
+          description: Autorizzazioni dell'utenza chiamante
+          content:
+            application/json:
+              schema:
+                $ref: 'govpay-api-schemas.yaml#/components/schemas/Profilo'
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '500':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'   
+  '/ricevute/{idDominio}/{iuv}':
+    get:
+      operationId: findRicevute
+      summary: Ricerca delle ricevute di pagamento per identificativo transazione
+      tags:
+        - Ricevute
+      parameters:
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdDominio'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIuv'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/esitoRpp'
+      responses:
+        '200':
+          description: Lista delle ricevute di pagamento
+          content:
+            application/json:
+              schema:
+                $ref: 'govpay-api-schemas.yaml#/components/schemas/Ricevute'
+        '400':
+          $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'                
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
+        '500':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'        
+  '/ricevute/{idDominio}/{iuv}/{idRicevuta}':
+    get:
+      operationId: getRicevuta
+      summary: Acquisizione di una ricevuta di avvenuto pagamento pagoPA
+      description: >-
+        Ricevuta pagoPA, sia questa veicolata nella forma di `RT` o di `recepit`, di esito positivo. 
+      tags:
+        - Ricevute
+      parameters:
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdDominio'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIuv'
+        - $ref: 'govpay-api-parameters.yaml#/components/parameters/PathIdRicevuta'
+      responses:
+        '201':
+          description: ricevuta di pagamento acquisita
+          content:
+            application/json:
+              schema:
+                $ref: 'govpay-api-schemas.yaml#/components/schemas/Ricevuta'
+              examples:
+                Pagamento standard: 
+                  $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaEntrata'
+                Marca da bollo: 
+                  $ref: 'govpay-api-examples.yaml#/components/examples/RicevutaMBT'
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+                example: stampa della ricevuta
+        '400':
+          $ref: 'govpay-api-responses.yaml#/components/responses/400BadRequest'
+        '401':
+          $ref: 'govpay-api-responses.yaml#/components/responses/401NotAuthenticated'
+        '403':
+          $ref: 'govpay-api-responses.yaml#/components/responses/403NotAuthorized'
+        '500':
+          $ref: 'govpay-api-responses.yaml#/components/responses/500ServiceUnavailable'             
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    PendenzaArchivio:
+      type: object
+      description: Rappresentazione di una posizione debitoria
+      required: 
+        - stato
+      allOf:
+        - $ref: 'govpay-api-schemas.yaml#/components/schemas/PendenzaPagata'
+        - type: object
+          properties:
+            stato:
+              $ref: 'govpay-api-schemas.yaml#/components/schemas/StatoPendenza'   
+            descrizioneStato:
+              type: string
+              description: Descrizione in dettaglio dello stato della pendenza.
+    PosizioneDebitoria:
+      type: object
+      allOf:
+        - $ref: 'govpay-api-schemas.yaml#/components/schemas/Lista' 
+        - type: object
+          properties:
+            risultati:
+              type: array
+              items:
+                $ref: '#/components/schemas/PendenzaArchivio'
+    
+    
+    
+    
+    

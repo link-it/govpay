@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2018 sp1 (http://www.altova.com) by ooo (ooo) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jcg_pagopa="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/internal/schema/1_0" targetNamespace="http://jcitygov.informatica.maggioli.it/pagopa/payservice/pdp/connector/jppapdp/internal/schema/1_0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+	<xs:simpleType name="stContestoRichiesta">
+		<xs:annotation>
+			<xs:documentation>Contesto per la richiesta di un pagamento: Verifica o Attiva pagamento</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:length value="2"/>
+			<xs:enumeration value="VR"/>
+			<xs:enumeration value="AR"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stIdentificativonivocoVersamento">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="35"/>
+			<xs:pattern value="[a-zA-Z0-9]{1,35}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stIBANIdentifier">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="stDatiSpecificiRiscossione">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0129]{1}/\S{3,138}"/>
+		</xs:restriction>
+	</xs:simpleType>	
+	<xs:complexType name="ctEsito">
+		<xs:annotation>
+			<xs:documentation>Esito delle richieste: tipo complesso che contiene un codice di errore più un lista di messaggi </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="codice" minOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="OK"/>
+						<xs:enumeration value="ERROR"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="messaggi" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="messaggio" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="codice" type="xs:string">
+										<xs:annotation>
+											<xs:documentation>Codice Messaggio di errore</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="descrizione" type="xs:string">
+										<xs:annotation>
+											<xs:documentation>Descrizione Messaggio di errore</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctDatiPagamentoInAttesa">
+		<xs:sequence>
+			<xs:element name="dataScadenzaPagamento" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Data scadenza del debito.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:date"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="parametriAggiuntivi" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Lista facoltatica di parametri riferiti al debito</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="300"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="notificaCallback" type="jcg_pagopa:ctNotificaCallback" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="soggettoPagatore" type="jcg_pagopa:ctSoggettoPagatore" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="causaleVersamentoEsplicitaPSP" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Testo libero o messaggio XML strutturato che verrà restituito al PSP all'interno della risposta ad una verifica di pagamento di una RPT invocata a causa del modello 3. Queste informazioni saranno esposte da PSP al cittadino che agisce in qualità di pagatore e segnalate sulla ricevuta PSP fornita in caso di attivazione RPT reale.
+          </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="140"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="causaleVersamento" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Causale standard AGID</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="datiSingoloVersamento" type="jcg_pagopa:ctDatiSingoloVersamento" minOccurs="0" maxOccurs="5"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctNotificaCallback">
+		<xs:sequence>
+			<xs:element name="callbackURL" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Target full publication URL of implemented SOAP WEB Services by DATA PROVIDER in order to expose the dpInviaStatoPagamento public method.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="140"/>
+						<xs:pattern value="https?://.+"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="callbackUsername" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Assigned username to EasyBridge CLIENT process in order to satisfy required Basic Authentication.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="35"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="callbackPassword" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Assigned password to EasyBridge CLIENT process in order to satisfy required Basic Authentication.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="35"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctSoggettoPagatore">
+		<xs:sequence>
+			<xs:element name="tipoIdentificativoUnivocoPagatore" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Indicates the nature of the debtor.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="1"/>
+						<xs:enumeration value="F"/>
+						<xs:enumeration value="G"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="codiceIdentificativoUnivocoPagatore" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Tax Identification Number that can contain the fiscal code or the VAT code of the debtor.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="35"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="anagraficaPagatore" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Name - It contains the name of the debtor.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="70"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="indirizzoPagatore" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Street name of the debtor.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="70"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="civicoPagatore" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Building Number of the debtor address.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="16"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="capPagatore" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Postal Code of the debtor address.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="16"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="localitaPagatore" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Town Name of the debtor.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="35"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="provinciaPagatore" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>District of the debtor.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="35"/>
+						<xs:pattern value="[a-zA-Z0-9_ -]{1,35}"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="nazionePagatore" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Country code of the debtor according to the standard ISO 3166 alpha-2.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="2"/>
+						<xs:pattern value="[A-Z]{2,2}"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="emailPagatore" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>E-mail of the debtor.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="256"/>
+						<xs:pattern value="[A-Za-z0-9_]+([\-\+\.'][A-Za-z0-9_]+)*@[A-Za-z0-9_]+([\-\.][A-Za-z0-9_]+)*\.[A-Za-z0-9_]+([\-\.][A-Za-z0-9_]+)*"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctDatiSingoloVersamento">
+		<xs:sequence>
+			<xs:element name="identificativoServizio" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>verificare se serve ancora</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:totalDigits value="10"/>
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="99999999"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="importoSingoloVersamento" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Indicates the amount of the single payment.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:totalDigits value="12"/>
+						<xs:minInclusive value="0.01"/>
+						<xs:maxInclusive value="999999999.99"/>
+						<xs:fractionDigits value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="commissioneCaricoPA" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Amount of the eventual commission to the PSP by which is charged the creditor institution. The data is shown in indicative title only and does not involve activities charged to the PSP.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:totalDigits value="12"/>
+						<xs:minInclusive value="0.00"/>
+						<xs:maxInclusive value="999999999.99"/>
+						<xs:fractionDigits value="2"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="credenzialiPagatore" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Eventual required credentials from PSP necessary to complete the operation.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="35"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="descrizioneTestualeCausaleVersamento" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Eventual additional free text description of the single payment reason.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="70"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="datiMarcaBolloDigitale" type="jcg_pagopa:ctDatiMarcaBolloDigitale" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="parametriAggiuntiviSingoloVersamento" minOccurs="0" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="300"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="IbanAccredito" type="jcg_pagopa:stIBANIdentifier" minOccurs="0"/>
+			<xs:element name="IbanAppoggio" type="jcg_pagopa:stIBANIdentifier" minOccurs="0"/>
+			<xs:element name="datiSpecificiRiscossione" type="jcg_pagopa:stDatiSpecificiRiscossione" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ctDatiMarcaBolloDigitale">
+		<xs:sequence>
+			<xs:element name="hashDocumento" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Digest of electronic document or its protocol signature which is associated with the digital stamp. The hashing algorithm used is SHA-256.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1"/>
+						<xs:maxLength value="70"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="provinciaResidenzaPagatore" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Vehicle registration abbreviation of the province of residence of the debtor.</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:length value="2"/>
+						<xs:pattern value="[A-Z]{2,2}"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="VerificaPagamentoInAttesaRichiesta">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="identificativoUnivocoVersamento" type="jcg_pagopa:stIdentificativonivocoVersamento"/>
+				<xs:element name="contestoRichiesta" type="jcg_pagopa:stContestoRichiesta" minOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="VerificaPagamentoInAttesaRisposta">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="identificativoUnivocoVersamento" type="jcg_pagopa:stIdentificativonivocoVersamento" minOccurs="1">
+					<xs:annotation>
+						<xs:documentation>IUV - Unique identifier of the payment connected to the debit.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="datiPagamentoInAttesa" type="jcg_pagopa:ctDatiPagamentoInAttesa" minOccurs="0"/>
+				<xs:element name="esito" type="jcg_pagopa:ctEsito" minOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="InviaEsitoPagamentoRisposta">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="esito" type="jcg_pagopa:ctEsito" minOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="InviaEsitoPagamentoRichiesta">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="identificativoUnivocoVersamento" type="jcg_pagopa:stIdentificativonivocoVersamento" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>IUV - Unique identifier of the payment connected to the debit.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="codiceContestoPagamento" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>Identifier of CCP codice contesto pagamento</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:minLength value="1"/>
+							<xs:maxLength value="35"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="esitoPagamento" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>The current status of the given payment attempt, according to the PdP.</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:minLength value="1"/>
+							<xs:maxLength value="35"/>
+							<xs:enumeration value="INOLTRATO"/>
+							<xs:enumeration value="AUTORIZZATO"/>
+							<xs:enumeration value="ESEGUITO"/>
+							<xs:enumeration value="ESEGUITO_PARZIALMENTE"/>
+							<xs:enumeration value="NON_ESEGUITO"/>
+							<xs:enumeration value="NON_ESEGUITO_DECORRENZA"/>
+							<xs:enumeration value="STORNATO"/>
+							<xs:enumeration value="REVOCATO"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
