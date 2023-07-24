@@ -273,7 +273,7 @@ public class TributiBD extends BasicBD {
 			Object[] parameters = filter.getParameters(sqlQueryObjectInterno);
 			
 //			sqlQueryObjectInterno.addOrderBy(converter.toColumn(model.TIPO_TRIBUTO.COD_TRIBUTO, true), false);
-			sqlQueryObjectInterno.addOrderBy("id", false);
+			sqlQueryObjectInterno.addOrderBy(converter.toTable(model.ABILITATO) + ".id", false);
 			sqlQueryObjectInterno.setLimit(limitInterno);
 			
 			sqlQueryObjectDistinctID.addFromTable(sqlQueryObjectInterno);
