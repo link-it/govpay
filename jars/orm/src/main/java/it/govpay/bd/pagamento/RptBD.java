@@ -414,7 +414,7 @@ public class RptBD extends BasicBD {
 			IPaginatedExpression exp = this.getRptService().newPaginatedExpression();
 			exp.equals(RPT.model().COD_DOMINIO, codDominio);
 			exp.and();
-			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.VersioneRPT.SANP_240.toString());
+			exp.in(RPT.model().VERSIONE, it.govpay.model.Rpt.VersioneRPT.SANP_240.toString(), it.govpay.model.Rpt.VersioneRPT.SANP_321_V2.toString());
 			
 			Date now = new Date();
 			Calendar c = Calendar.getInstance();
@@ -483,7 +483,7 @@ public class RptBD extends BasicBD {
 				addAnd = false;
 			}
 			
-			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.VersioneRPT.SANP_240.toString());
+			exp.in(RPT.model().VERSIONE, it.govpay.model.Rpt.VersioneRPT.SANP_240.toString(), it.govpay.model.Rpt.VersioneRPT.SANP_321_V2.toString());
 			if(addAnd) {
 				exp.and();
 				addAnd = false;

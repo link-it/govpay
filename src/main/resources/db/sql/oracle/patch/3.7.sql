@@ -277,4 +277,8 @@ CREATE INDEX idx_fr_data_acq ON fr (data_acquisizione);
 CREATE INDEX idx_prt_data_richiesta ON pagamenti_portale (data_richiesta);
 CREATE INDEX idx_pag_data_acq ON pagamenti (data_acquisizione);
 
+
+-- 24/07/2023 Aggiunto indice mancante sulla tabella RPT
+CREATE INDEX idx_rpt_ric_pend_scad ON rpt (cod_dominio,versione,data_msg_richiesta);
+
  
