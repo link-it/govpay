@@ -20,6 +20,7 @@
 package it.govpay.core.utils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -166,14 +167,7 @@ public class CtPaymentPABuilder {
 		// https://github.com/pagopa/pagopa-api/issues/194
 
 		ctRpt.setPaymentAmount(versamento.getImportoTotale());
-
-		if(versamento.getDataValidita() != null) {
-			ctRpt.setDueDate(versamento.getDataValidita()); // indicates the expiration payment date
-		} else if(versamento.getDataScadenza() != null) {
-			ctRpt.setDueDate(versamento.getDataScadenza()); // indicates the expiration payment date
-		} else {
-			ctRpt.setDueDate(new Date(32503590000000l)); //31.12.2999
-		}                             
+		ctRpt.setDueDate(calcolaDueDate(versamento));
 
 		// Capire se il numero avviso utilizzato e' relativo alla rata di un documento, 
 		// nel caso sia l'ultima valorizzare true altrimenti e' sempre false
@@ -424,14 +418,7 @@ public class CtPaymentPABuilder {
 		// https://github.com/pagopa/pagopa-api/issues/194
 
 		ctRpt.setPaymentAmount(versamento.getImportoTotale());
-
-		if(versamento.getDataValidita() != null) {
-			ctRpt.setDueDate(versamento.getDataValidita()); // indicates the expiration payment date
-		} else if(versamento.getDataScadenza() != null) {
-			ctRpt.setDueDate(versamento.getDataScadenza()); // indicates the expiration payment date
-		} else {
-			ctRpt.setDueDate(new Date(32503590000000l)); //31.12.2999
-		}                             
+		ctRpt.setDueDate(calcolaDueDate(versamento));
 
 		// Capire se il numero avviso utilizzato e' relativo alla rata di un documento, 
 		// nel caso sia l'ultima valorizzare true altrimenti e' sempre false
@@ -778,5 +765,24 @@ public class CtPaymentPABuilder {
 				transferEl.setMetadata(ctMetadata);
 			}
 		}
+	}
+	
+	private static Date calcolaDueDate(Versamento versamento) {
+		if(versamento.getDataValidita() != null) {
+			return versamento.getDataValidita(); // indicates the expiration payment date
+		} else if(versamento.getDataScadenza() != null) {
+			return versamento.getDataScadenza(); // indicates the expiration payment date
+		} else {
+			Integer numeroGiorniValiditaPendenza = GovpayConfig.getInstance().getNumeroGiorniValiditaPendenza();
+			
+			if(numeroGiorniValiditaPendenza != null) {
+				Calendar instance = Calendar.getInstance();
+				instance.setTime(versamento.getDataCreazione()); 
+				instance.add(Calendar.DATE, numeroGiorniValiditaPendenza);
+				return instance.getTime();
+			} else {
+				return new Date(32503590000000l); //31.12.2999
+			}
+		}   
 	}
 }
