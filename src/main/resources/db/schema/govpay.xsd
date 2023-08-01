@@ -2223,6 +2223,12 @@
 						<linkit:sql-table-index name="idx_evt_fk_fr">
 							<linkit:sql-table-index-column name="id_fr"/>
 						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_evt_fk_inc">
+							<linkit:sql-table-index-column name="id_incasso"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_evt_fk_trac">
+							<linkit:sql-table-index-column name="id_tracciato"/>
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -2468,6 +2474,11 @@
 							<linkit:sql-table-index-column name="id_pagamento_portale"/>
 						</linkit:sql-table-index>
 						<linkit:sql-table-index name="idx_rpt_data_msg_richiesta">
+							<linkit:sql-table-index-field name="dataMsgRichiesta" ignoreTypeCompatibility="true"/>
+						</linkit:sql-table-index>
+						<linkit:sql-table-index name="idx_rpt_ric_pend_scad">
+							<linkit:sql-table-index-field name="codDominio"/>
+							<linkit:sql-table-index-field name="versione"/>
 							<linkit:sql-table-index-field name="dataMsgRichiesta" ignoreTypeCompatibility="true"/>
 						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>

@@ -934,6 +934,7 @@ CREATE INDEX idx_rpt_stato ON rpt (stato);
 CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
 CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
 CREATE INDEX idx_rpt_data_msg_richiesta ON rpt (data_msg_richiesta);
+CREATE INDEX idx_rpt_ric_pend_scad ON rpt (cod_dominio,versione,data_msg_richiesta);
 CREATE UNIQUE INDEX idx_rpt_id_transazione ON rpt (iuv, ccp, cod_dominio);
 
 ALTER TABLE rpt ALTER COLUMN bloccante SET DEFAULT true;
@@ -1326,6 +1327,8 @@ CREATE INDEX idx_evt_fk_vrs ON eventi (cod_applicazione,cod_versamento_ente);
 CREATE INDEX idx_evt_id_sessione ON eventi (id_sessione);
 CREATE INDEX idx_evt_iuv ON eventi (iuv);
 CREATE INDEX idx_evt_fk_fr ON eventi (id_fr);
+CREATE INDEX idx_evt_fk_inc ON eventi (id_incasso);
+CREATE INDEX idx_evt_fk_trac ON eventi (id_tracciato);
 CREATE TABLE eventi_init_seq (id BIGINT);
 INSERT INTO eventi_init_seq VALUES (NEXT VALUE FOR seq_eventi);
 
