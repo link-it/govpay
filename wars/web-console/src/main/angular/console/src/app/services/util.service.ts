@@ -43,6 +43,9 @@ export class UtilService {
 
   // Config.govpay
   public static GESTIONE_PASSWORD: any = GovPayConfig.GESTIONE_PASSWORD;
+  
+  // Config.govpay
+  public static GESTIONE_PAGAMENTI: any = GovPayConfig.GESTIONE_PAGAMENTI;
 
   // Config.govpay
   public static PREFERENCES: any = GovPayConfig.PREFERENCES;
