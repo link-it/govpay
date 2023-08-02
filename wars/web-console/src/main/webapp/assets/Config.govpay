@@ -112,6 +112,9 @@
       MAX_EXPORT_LIMIT: ${it.govpay.backoffice.gui.export.limit},     // Max page elements
       MAX_THREAD_EXPORT_LIMIT: ${it.govpay.backoffice.gui.export.thread}, // Max sincro calls
       POLLING_TRACCIATI: ${it.govpay.backoffice.gui.export.polling}   // Timeout per tracciati NN(millisec)|false
+    },
+    GESTIONE_PAGAMENTI: {
+      ENABLED: ${it.govpay.backoffice.gui.sezionePagamenti.enabled} 
     }
   };
 
