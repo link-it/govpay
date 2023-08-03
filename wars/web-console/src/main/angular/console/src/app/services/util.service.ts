@@ -407,6 +407,7 @@ export class UtilService {
   public static URL_UNITA_OPERATIVE: string = '/unitaOperative';
   public static URL_IBAN_ACCREDITI: string = '/contiAccredito';
   public static URL_RUOLI: string = '/ruoli';
+  public static URL_RICEVUTE: string = '/rpp';
   //Operazioni
   public static URL_OPERAZIONI: string = '/operazioni';
   public static URL_ACQUISIZIONE_RENDICONTAZIONI: string = '/acquisizioneRendicontazioni';
@@ -432,6 +433,7 @@ export class UtilService {
   public static QUERY_METADATI_PAGINAZIONE: string = 'metadatiPaginazione=true';
   public static QUERY_TIPO_DOVUTO: string = 'tipo=dovuto';
   public static QUERY_TRASFORMAZIONE_ENABLED: string = 'trasformazione=true';
+  public static QUERY_RICEVUTE_OK: string = 'esito=ESEGUITO';
 
   //ROOT URL SHARED SERVICES
   public static URL_SERVIZIACL: string = '/enumerazioni/serviziACL';
@@ -454,7 +456,7 @@ export class UtilService {
   public static TXT_RISCOSSIONI: string = 'Riscossioni';
   public static TXT_RENDICONTAZIONI: string = 'Rendicontazioni';
   public static TXT_INCASSI: string = 'Riconciliazioni';
-
+  public static TXT_RICEVUTE: string = 'Ricevute';
   public static TXT_TRACCIATI: string = 'Caricamento pendenze';
 
   public static TXT_MAN_NOTIFICHE: string = 'Spedisci notifiche';
@@ -485,6 +487,7 @@ export class UtilService {
   public static INCASSI: string = 'incassi';
   public static UNITA_OPERATIVE: string = 'unitaOperative';
   public static IBAN_ACCREDITI: string = 'ibanAccredito';
+  public static RICEVUTE: string = 'ricevute';
 
   public static TRACCIATI: string = 'tracciati';
   public static TRACCIATO: string = 'tracciato';
@@ -1879,6 +1882,18 @@ export class UtilService {
         _list = [
           new FormInput({ id: 'idTipoPendenza', label: FormService.FORM_ID_TIPO_PENDENZA, type: UtilService.INPUT }),
           new FormInput({ id: 'descrizione', label: FormService.FORM_DESCRIZIONE, type: UtilService.INPUT })
+        ];
+      break;
+      case UtilService.RICEVUTE:
+      	_list = [
+          new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
+            promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI + '?' + UtilService.QUERY_ASSOCIATI, mapFct: this.asyncElencoDominiPendenza.bind(this),
+                  eventType: 'idDominio-async-load' } }, this.http),
+          new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
+          new FormInput({ id: 'idDebitore', label: FormService.FORM_DEBITORE, placeholder: FormService.FORM_PH_DEBITORE,
+                        type: UtilService.INPUT, pattern: FormService.VAL_CF_PI }),
+          new FormInput({ id: 'dataRtDa', label: FormService.FORM_DATA_INIZIO, type: UtilService.DATE_PICKER, value: _defaulFiltertData }),
+          new FormInput({ id: 'dataRtA', label: FormService.FORM_DATA_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' }),
         ];
       break;
     }

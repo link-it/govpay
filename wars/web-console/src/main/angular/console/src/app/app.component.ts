@@ -273,6 +273,9 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
           }
         }
         break;
+        case UtilService.URL_RICEVUTE+UtilService.URL_DETTAGLIO:
+          a.push({ label: 'Stampa ricevuta', type: UtilService.STAMPA_RICEVUTA });
+        break;
     }
     return a;
   }
@@ -372,6 +375,7 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
           break;
         case 'Pendenze':
           UtilService.USER_ACL.hasPendenze = (acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) !== -1);
+          this._sideNavSetup.menu.push({ link: UtilService.URL_RICEVUTE, name: UtilService.TXT_RICEVUTE, xhttp: false, icon: false, sort: 1 });
           this._sideNavSetup.menu.push({ link: UtilService.URL_PENDENZE, name: UtilService.TXT_PENDENZE, xhttp: false, icon: false, sort: 2 });
           if(!UtilService.USER_ACL.hasPagamentiePendenze && acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) != -1 && acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) != -1) {
             UtilService.USER_ACL.hasPagamentiePendenze = true;
