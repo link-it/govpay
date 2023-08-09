@@ -16,6 +16,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloPagamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtIstitutoAttestante;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
+import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoPagatore;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceipt;
 import it.gov.pagopa.pagopa_api.pa.pafornode.CtReceiptV2;
@@ -112,8 +113,9 @@ public class RicevutaTelematica {
 		}
 		input.setIstituto(sbIstitutoAttestante.toString());
 
+		CtRichiestaPagamentoTelematico ctRichiestaPagamentoTelematico = JaxbUtils.toRPT(rpt.getXmlRpt(), false);
 
-		input.setElencoVoci(this.getElencoVoci(rt,datiSingoloPagamento,input, rt.getRiferimentoDataRichiesta(), rt.getDataOraMessaggioRicevuta()));
+		input.setElencoVoci(this.getElencoVoci(rt,datiSingoloPagamento,input, ctRichiestaPagamentoTelematico.getDataOraMessaggioRichiesta(), rt.getDataOraMessaggioRicevuta()));
 		input.setImporto(datiPagamento.getImportoTotalePagato().doubleValue());
 		input.setOggettoDelPagamento(versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().getSimple() : "");
 
@@ -322,11 +324,8 @@ public class RicevutaTelematica {
 	private void setDataApplicativa(RicevutaTelematicaInput input, Date dataRt) {
 		Calendar cRt = Calendar.getInstance();
 		cRt.setTime(dataRt);
-		if((cRt.get(Calendar.HOUR_OF_DAY) + cRt.get(Calendar.MINUTE) + cRt.get(Calendar.SECOND)) == 0) {
-			input.setDataApplicativa( this.sdfSoloData.format(dataRt));
-		} else {
-			input.setDataApplicativa( this.sdfDataOraMinuti.format(dataRt));
-		}
+		
+		input.setDataApplicativa( this.sdfSoloData.format(dataRt));
 	}
 
 
