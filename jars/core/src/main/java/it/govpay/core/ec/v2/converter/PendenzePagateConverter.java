@@ -71,7 +71,7 @@ public class PendenzePagateConverter {
 		rsModel.setImporto(versamento.getImportoTotale());
 		rsModel.setNumeroAvviso(versamento.getNumeroAvviso());
 		rsModel.setDataValidita(versamento.getDataValidita());
-		rsModel.setProprieta(toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
+		rsModel.setProprieta(PendenzeConverter.toProprietaPendenzaRsModel(versamento.getProprietaPendenza()));
 		
 		// Ciclo i singoli versamenti per inserire le voci
 		for(SingoloVersamento sv : versamento.getSingoliVersamenti()) {
@@ -244,53 +244,6 @@ public class PendenzePagateConverter {
 		rsModel.setEmail(soggettoVersante.getEMailVersante());
 		//		rsModel.setCellulare(soggettoVersante.getCellulare());
 
-		return rsModel;
-	}
-	
-	public static ProprietaPendenza toProprietaPendenzaRsModel(it.govpay.core.beans.tracciati.ProprietaPendenza proprieta) {
-		ProprietaPendenza rsModel = null;
-		if(proprieta != null) {
-			rsModel = new ProprietaPendenza();
-			
-			if(proprieta.getDescrizioneImporto() != null && !proprieta.getDescrizioneImporto().isEmpty()) {
-				List<VoceDescrizioneImporto> descrizioneImporto = new ArrayList<VoceDescrizioneImporto>();
-				for (it.govpay.core.beans.tracciati.VoceDescrizioneImporto vdI : proprieta.getDescrizioneImporto()) {
-					VoceDescrizioneImporto voce = new VoceDescrizioneImporto();
-					
-					voce.setVoce(vdI.getVoce());
-					voce.setImporto(vdI.getImporto());
-					
-					descrizioneImporto.add(voce);
-				}
-				rsModel.setDescrizioneImporto(descrizioneImporto);
-			}
-			rsModel.setLineaTestoRicevuta1(proprieta.getLineaTestoRicevuta1());
-			rsModel.setLineaTestoRicevuta2(proprieta.getLineaTestoRicevuta2());
-			if(proprieta.getLinguaSecondaria() != null) {
-				switch(proprieta.getLinguaSecondaria()) {
-				case DE:
-					rsModel.setLinguaSecondariaEnum(LinguaSecondaria.DE);
-					break;
-				case EN:
-					rsModel.setLinguaSecondariaEnum(LinguaSecondaria.EN);
-					break;
-				case FALSE:
-					rsModel.setLinguaSecondariaEnum(LinguaSecondaria.FALSE);
-					break;
-				case FR:
-					rsModel.setLinguaSecondariaEnum(LinguaSecondaria.FR);
-					break;
-				case SL:
-					rsModel.setLinguaSecondariaEnum(LinguaSecondaria.SL);
-					break;
-				}
-				
-				if(rsModel.getLinguaSecondariaEnum() != null)
-					rsModel.setLinguaSecondaria(rsModel.getLinguaSecondariaEnum().toString());
-			}
-			rsModel.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
-		}
-		
 		return rsModel;
 	}
 }

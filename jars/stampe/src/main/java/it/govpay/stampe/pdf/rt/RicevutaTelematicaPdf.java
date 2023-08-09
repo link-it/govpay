@@ -14,7 +14,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.openspcoop2.utils.LoggerWrapperFactory;
-import org.openspcoop2.utils.UtilsException;
 import org.slf4j.Logger;
 
 import it.govpay.model.RicevutaPagamento;
@@ -22,7 +21,6 @@ import it.govpay.stampe.model.RicevutaTelematicaInput;
 import it.govpay.stampe.pdf.rt.utils.RicevutaTelematicaProperties;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -45,13 +43,6 @@ public class RicevutaTelematicaPdf{
 
 		return _instance;
 	}
-	
-	public static JAXBContext getJAXBContextInstance() {
-		if(jaxbContext == null)
-			init();
-
-		return jaxbContext;
-	}
 
 	public static synchronized void init() {
 		if(_instance == null)
@@ -68,7 +59,7 @@ public class RicevutaTelematicaPdf{
 	}
 
 	public RicevutaTelematicaPdf() {
-
+		// donothing
 	}
 	
 	public JasperPrint creaJasperPrintRicevutaTelematica(Logger log, RicevutaTelematicaInput input,
@@ -129,17 +120,6 @@ public class RicevutaTelematicaPdf{
 		}finally {
 			
 		}
-	}
-	
-	public JRDataSource creaXmlDataSource(Logger log,RicevutaTelematicaInput input) throws UtilsException, JRException, JAXBException {
-//		WriteToSerializerType serType = WriteToSerializerType.XML_JAXB;
-		Marshaller jaxbMarshaller = getJAXBContextInstance().createMarshaller();
-		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		JAXBElement<RicevutaTelematicaInput> jaxbElement = new JAXBElement<RicevutaTelematicaInput>(new QName("", "root"), RicevutaTelematicaInput.class, null, input);
-		jaxbMarshaller.marshal(jaxbElement, baos);
-		JRDataSource dataSource = new JRXmlDataSource(new ByteArrayInputStream(baos.toByteArray()),RicevutaTelematicaCostanti.RICEVUTA_TELEMATICA_ROOT_ELEMENT_NAME);
-		return dataSource;
 	}
 	
 	public void caricaLoghiRicevuta(RicevutaTelematicaInput input, Properties propertiesRicevutaTelematicaPerDominio) {

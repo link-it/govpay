@@ -36,10 +36,10 @@ import it.govpay.stampe.model.v2.PaginaAvvisoDoppia;
 import it.govpay.stampe.model.v2.PaginaAvvisoSingola;
 import it.govpay.stampe.model.v2.PagineAvviso;
 import it.govpay.stampe.model.v2.RataAvviso;
-import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 
 public class AvvisoPagamentoV2Utils {
 
+	private AvvisoPagamentoV2Utils() {}
 	
 	public static AvvisoPagamentoInput fromVersamento(PrintAvvisoVersamentoDTO printAvviso, LinguaSecondaria secondaLinguaScelta) throws ServiceException, UtilsException, InvalidSwitchValueException {
 		it.govpay.bd.model.Versamento versamento = printAvviso.getVersamento();
@@ -63,11 +63,18 @@ public class AvvisoPagamentoV2Utils {
 		}
 		
 		// causale nella seconda lingua
-		if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null ) {
-			ProprietaPendenza proprieta = versamento.getProprietaPendenza();
+		if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null) {
+			ProprietaPendenza proprieta = versamento.getProprietaPendenza();	
 			if(proprieta != null && StringUtils.isNotBlank(proprieta.getLinguaSecondariaCausale())) {
 				input.getEtichette().getTraduzione().setOggettoDelPagamento(proprieta.getLinguaSecondariaCausale());
 			}
+		}
+		
+		// gestione personalizzata del messaggio di informativa importo
+		input.setNascondiInformativaImportoAvviso(nascondiInformativaImportoAvviso(versamento));
+		input.getEtichette().getItaliano().setInformativaImportoAvviso(getInformativaImportoAvviso(versamento));
+		if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null) {
+			input.getEtichette().getTraduzione().setInformativaImportoAvviso(getLinguaSecondariaInformativaImportoAvviso(versamento));
 		}
 
 		AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, versamento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
@@ -101,16 +108,21 @@ public class AvvisoPagamentoV2Utils {
 		etichettes.setTraduzione(getEtichetteTraduzione(secondaLinguaScelta));
 		input.setEtichette(etichettes);
 		
-		
 		input.getEtichette().getItaliano().setOggettoDelPagamento(documento.getDescrizione());
 		
 		// causale nella seconda lingua
-		if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null && versamenti.size() > 0) {
-			Versamento versamento = versamenti.get(0); // leggo alcuni dati dalla prima rata
-			ProprietaPendenza proprieta = versamento.getProprietaPendenza();
+		if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null && !versamenti.isEmpty()) {
+			ProprietaPendenza proprieta = versamenti.get(0).getProprietaPendenza(); // leggo alcuni dati dalla prima rata
 			if(proprieta != null && StringUtils.isNotBlank(proprieta.getLinguaSecondariaCausale())) {
 				input.getEtichette().getTraduzione().setOggettoDelPagamento(proprieta.getLinguaSecondariaCausale());
 			}
+		}
+		
+		// gestione personalizzata del messaggio di informativa importo
+		input.setNascondiInformativaImportoAvviso(nascondiInformativaImportoAvviso(versamenti.get(0))); // leggo alcuni dati dalla prima rata
+		input.getEtichette().getItaliano().setInformativaImportoAvviso(getInformativaImportoAvviso(versamenti.get(0)));
+		if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null) {
+			input.getEtichette().getTraduzione().setInformativaImportoAvviso(getLinguaSecondariaInformativaImportoAvviso(versamenti.get(0)));
 		}
 
 		if(input.getPagine() == null)
@@ -669,5 +681,44 @@ public class AvvisoPagamentoV2Utils {
 		etichette.setTipo(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_TIPO));
 		
 		return etichette;
+	}
+
+	/**
+	 * Nascondo l'informativa se entrambe le etichette sono definite vuote
+	 * 
+	 * @param versamento
+	 * @return
+	 */
+	public static boolean nascondiInformativaImportoAvviso(Versamento versamento) {
+		ProprietaPendenza proprietaPendenza = versamento.getProprietaPendenza();
+		
+		boolean nascondiInformativaInLinguaItaliana = (proprietaPendenza.getInformativaImportoAvviso() != null && proprietaPendenza.getInformativaImportoAvviso().isEmpty());
+		boolean nascondiInformativaInSecondaLingua = (proprietaPendenza.getLinguaSecondariaInformativaImportoAvviso() != null && proprietaPendenza.getLinguaSecondariaInformativaImportoAvviso().isEmpty());
+		
+		return nascondiInformativaInLinguaItaliana && nascondiInformativaInSecondaLingua;
+	}
+	
+	/**
+	 * restituisce il messaggio personalizzato di informativa importo
+	 * 
+	 * @param versamento
+	 * @return
+	 */
+	public static String getInformativaImportoAvviso(Versamento versamento) {
+		ProprietaPendenza proprietaPendenza = versamento.getProprietaPendenza();
+		
+		return proprietaPendenza != null ? proprietaPendenza.getInformativaImportoAvviso() : null;
+	}
+	
+	/**
+	 * restituisce il messaggio personalizzato di informativa importo per la lingua secondaria
+	 * 
+	 * @param versamento
+	 * @return
+	 */
+	public static String getLinguaSecondariaInformativaImportoAvviso(Versamento versamento) {
+		ProprietaPendenza proprietaPendenza = versamento.getProprietaPendenza();
+		
+		return proprietaPendenza != null ? proprietaPendenza.getLinguaSecondariaInformativaImportoAvviso() : null;
 	}
 }
