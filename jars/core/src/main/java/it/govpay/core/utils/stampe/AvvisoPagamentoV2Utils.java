@@ -70,13 +70,6 @@ public class AvvisoPagamentoV2Utils {
 			}
 		}
 		
-		// gestione personalizzata del messaggio di informativa importo
-		input.setNascondiInformativaImportoAvviso(nascondiInformativaImportoAvviso(versamento));
-		input.getEtichette().getItaliano().setInformativaImportoAvviso(getInformativaImportoAvviso(versamento));
-		if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null) {
-			input.getEtichette().getTraduzione().setInformativaImportoAvviso(getLinguaSecondariaInformativaImportoAvviso(versamento));
-		}
-
 		AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, versamento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 		AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 
@@ -88,13 +81,47 @@ public class AvvisoPagamentoV2Utils {
 
 		input.getPagine().getSingolaOrDoppia().add(pagina);
 		
-		input.getEtichette().getItaliano().setNota1(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
-		
-		if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null ) {
-			input.getEtichette().getTraduzione().setNota1(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
-		}
+		impostaInformativaImportoAvviso(secondaLinguaScelta, versamento, input);
 
 		return input;
+	}
+
+	private static void impostaInformativaImportoAvviso(LinguaSecondaria secondaLinguaScelta, it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input) throws UtilsException {
+		impostaInformativaImportoAvviso(secondaLinguaScelta, versamento, input, true);
+	}
+
+	private static void impostaInformativaImportoAvviso(LinguaSecondaria secondaLinguaScelta, it.govpay.bd.model.Versamento versamento, AvvisoPagamentoInput input, boolean addNota1) throws UtilsException {
+		// i due valori notaImporto impostati vuoti nascondono la sezione
+		String labelNotaImporto = null; 
+		String labelNotaImportoTra = null;
+		
+		// 1. controllare se il messaggio per la lingua italiana e' stato definito
+		if(definitoMessaggioInformativaImportoAvvisoItaliano(versamento)) {
+			if(!nascondiInformativaImportoAvviso(versamento)) { // label in italiano impostata non vuota allora visualizzo la sezione
+				labelNotaImporto = getInformativaImportoAvviso(versamento); 
+				labelNotaImportoTra = getLinguaSecondariaInformativaImportoAvviso(versamento);
+			}
+		} else {
+			labelNotaImporto = getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_NOTA_IMPORTO);
+			if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null) {
+				labelNotaImportoTra = getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_NOTA_IMPORTO);
+			}
+		}
+
+		// Per la rata unica si utilizza la nota 1, per le rate la nota 2 
+		if(addNota1) {
+			input.getEtichette().getItaliano().setNota1(labelNotaImporto);
+			
+			if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null ) {
+				input.getEtichette().getTraduzione().setNota1(labelNotaImportoTra);
+			}
+		} else {
+			input.getEtichette().getItaliano().setNota2(labelNotaImporto);
+			
+			if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null ) {
+				input.getEtichette().getTraduzione().setNota2(labelNotaImportoTra);
+			}
+		}
 	} 
 
 	public static AvvisoPagamentoInput fromDocumento(PrintAvvisoDocumentoDTO printAvviso, List<Versamento> versamenti, LinguaSecondaria secondaLinguaScelta, Logger log) throws ServiceException, UnprocessableEntityException, UtilsException, InvalidSwitchValueException { 
@@ -118,22 +145,18 @@ public class AvvisoPagamentoV2Utils {
 			}
 		}
 		
-		// gestione personalizzata del messaggio di informativa importo
-		input.setNascondiInformativaImportoAvviso(nascondiInformativaImportoAvviso(versamenti.get(0))); // leggo alcuni dati dalla prima rata
-		input.getEtichette().getItaliano().setInformativaImportoAvviso(getInformativaImportoAvviso(versamenti.get(0)));
-		if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null) {
-			input.getEtichette().getTraduzione().setInformativaImportoAvviso(getLinguaSecondariaInformativaImportoAvviso(versamenti.get(0)));
-		}
-
 		if(input.getPagine() == null)
 			input.setPagine(new PagineAvviso());
 		
-		log.debug("Documento ["+documento.getCodDocumento()+"] Numero totale di versamenti da inserire: " + versamenti.size());
+		log.debug("Documento [{}] Numero totale di versamenti da inserire: {}" , documento.getCodDocumento(),  versamenti.size());
+		
+		// salvo il primo versamento che utilizzo per calcolare le informazioni per il messaggio informativa importo avviso
+		Versamento versamentoTmp = versamenti.get(0);
 		
 		// pagina principale
-		while(versamenti.size() > 0 && versamenti.get(0).getNumeroRata() == null && versamenti.get(0).getTipoSoglia() == null) {
+		while(!versamenti.isEmpty() && versamenti.get(0).getNumeroRata() == null && versamenti.get(0).getTipoSoglia() == null) {
 			Versamento versamento = versamenti.remove(0);
-			log.debug("Inserisco versamento senza rata o soglia [IDA2A: "+versamento.getApplicazione(configWrapper)+", IdPendenza: "+versamento.getCodVersamentoEnte()+"]");
+			log.debug("Inserisco versamento senza rata o soglia [IDA2A: {}, IdPendenza: {}]", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
 			AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 			AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 			PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
@@ -141,7 +164,7 @@ public class AvvisoPagamentoV2Utils {
 			input.getPagine().getSingolaOrDoppia().add(pagina);
 		}
 		
-		log.debug("Documento ["+documento.getCodDocumento()+"] numero di versamenti da inserire dopo la pagina principale: " + versamenti.size());
+		log.debug("Documento [{}] numero di versamenti da inserire dopo la pagina principale: {}" , documento.getCodDocumento(),  versamenti.size());
 		
 		boolean addNota1 = true;
 		
@@ -153,7 +176,7 @@ public class AvvisoPagamentoV2Utils {
 			}
 		}
 		
-		log.debug("Documento ["+documento.getCodDocumento()+"] numero di versamenti con rate da inserire: " + numeroRate);	
+		log.debug("Documento [{}] numero di versamenti con rate da inserire: {}", documento.getCodDocumento(), numeroRate);	
 		
 		// questo controllo bisogna farlo all'inizio perche' la procedura carica la rata unica togliendola dall'elenco versamenti.
 		boolean soloRate = numeroRate == versamenti.size();
@@ -166,16 +189,16 @@ public class AvvisoPagamentoV2Utils {
 			}
 		}
 		
-		log.debug("Documento ["+documento.getCodDocumento()+"] numero di versamenti con soglie da inserire: " + numeroSoglia);	
+		log.debug("Documento [{}] numero di versamenti con soglie da inserire: {}" , documento.getCodDocumento(), numeroSoglia);	
 		
 		// questo controllo bisogna farlo all'inizio perche' la procedura carica la rata unica togliendola dall'elenco versamenti.
 		boolean soloSoglie = numeroSoglia == versamenti.size();
 
         // se ho tutte rate non sono entrato sicuramente nell'if precedente e devo aggiungere la pagina principale
-		if(versamenti.size() > 0 && soloRate) {
+		if(!versamenti.isEmpty() && soloRate) {
 			// numero di versamenti pari devo creara la pagina principale con i dati della prima rata
 			if(versamenti.size() % 2 == 0) {
-				log.debug("Documento ["+documento.getCodDocumento()+"] numero di versamenti con rate e' pari, riporto i dati della prima rata anche nella pagina principale.");	
+				log.debug("Documento [{}] numero di versamenti con rate e' pari, riporto i dati della prima rata anche nella pagina principale.", documento.getCodDocumento());	
 				PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 				Versamento versamento = versamenti.get(0); // leggo alcuni dati dalla prima rata
 				
@@ -210,7 +233,7 @@ public class AvvisoPagamentoV2Utils {
 				
 				input.getPagine().getSingolaOrDoppia().add(pagina);
 			} else { // versamenti dispari la prima pagina e la prima rata coincidono
-				log.debug("Documento ["+documento.getCodDocumento()+"] numero di versamenti con rate e' dispari, la prima pagina coincide con la prima rata.");	
+				log.debug("Documento [{}] numero di versamenti con rate e' dispari, la prima pagina coincide con la prima rata.", documento.getCodDocumento());	
 				Versamento versamento = versamenti.remove(0);
 				AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 				AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
@@ -243,10 +266,10 @@ public class AvvisoPagamentoV2Utils {
 		}
 		
 		// ho tutti pagamenti con soglia
-		if(versamenti.size() > 0 && soloSoglie) {
+		if(!versamenti.isEmpty() && soloSoglie) {
 			// numero di versamenti pari devo creara la pagina principale con i dati della prima rata
 			if(versamenti.size() % 2 == 0) {
-				log.debug("Documento ["+documento.getCodDocumento()+"] numero di versamenti con soglie, riporto i dati della prima soglia anche nella pagina principale.");	
+				log.debug("Documento [{}] numero di versamenti con soglie, riporto i dati della prima soglia anche nella pagina principale.", documento.getCodDocumento());	
 				PaginaAvvisoSingola pagina = new PaginaAvvisoSingola();
 				Versamento versamento = versamenti.get(0); // leggo alcuni dati dalla prima rata
 				
@@ -283,7 +306,7 @@ public class AvvisoPagamentoV2Utils {
 				pagina.setRata(rata);
 				input.getPagine().getSingolaOrDoppia().add(pagina);
 			} else {  // versamenti dispari la prima pagina e la prima soglia coincidono
-				log.debug("Documento ["+documento.getCodDocumento()+"] numero di versamenti con soglie e' dispari, la prima pagina coincide con la prima soglia.");	
+				log.debug("Documento [{}] numero di versamenti con soglie e' dispari, la prima pagina coincide con la prima soglia.", documento.getCodDocumento());	
 				Versamento versamento = versamenti.remove(0);
 				AvvisoPagamentoV2Utils.impostaAnagraficaEnteCreditore(versamento, documento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 				AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
@@ -294,7 +317,7 @@ public class AvvisoPagamentoV2Utils {
 		}
 		
 		
-		log.debug("Documento ["+documento.getCodDocumento()+"] inserisco i versamenti due per pagina");	
+		log.debug("Documento [{}] inserisco i versamenti due per pagina", documento.getCodDocumento());	
 		// 2 rate per pagina
 		while(versamenti.size() > 1) {
 			Versamento v1 = versamenti.remove(0);
@@ -322,7 +345,7 @@ public class AvvisoPagamentoV2Utils {
 			input.getPagine().getSingolaOrDoppia().add(pagina);
 		}
 
-		log.debug("Documento ["+documento.getCodDocumento()+"] inserisco i versamenti residui uno per pagina");	
+		log.debug("Documento [{}] inserisco i versamenti residui uno per pagina", documento.getCodDocumento());	
 		// rata rimasta
 		if(versamenti.size() == 1) {
 			Versamento versamento = versamenti.remove(0);
@@ -346,22 +369,10 @@ public class AvvisoPagamentoV2Utils {
 			input.getPagine().getSingolaOrDoppia().add(pagina);
 		}
 		
+		// gestione personalizzata del messaggio di informativa importo
+		impostaInformativaImportoAvviso(secondaLinguaScelta, versamentoTmp, input, addNota1);
 		
-		if(addNota1) {
-			input.getEtichette().getItaliano().setNota1(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
-			
-			if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null ) {
-				input.getEtichette().getTraduzione().setNota1(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
-			}
-		} else {
-			input.getEtichette().getItaliano().setNota2(getLabel(LabelAvvisiProperties.DEFAULT_PROPS, LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
-			
-			if(input.getEtichette().getTraduzione() != null && secondaLinguaScelta != null ) {
-				input.getEtichette().getTraduzione().setNota2(getLabel(secondaLinguaScelta.toString(), LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
-			}
-		}
-		
-		log.debug("Documento ["+documento.getCodDocumento()+"] procedura creazione pagine completata");
+		log.debug("Documento [{}] procedura creazione pagine completata", documento.getCodDocumento());
 
 		return input;
 	}
@@ -570,14 +581,13 @@ public class AvvisoPagamentoV2Utils {
 			// se il versamento e' multibeneficiario inserisco anche il logo del primo dominio diverso che trovo
 			for (SingoloVersamento sv : versamento.getSingoliVersamenti(configWrapper)) {
 				Dominio dominioSingoloVersamento = VersamentoUtils.getDominioSingoloVersamento(sv, dominio, configWrapper);
-				if(dominioSingoloVersamento != null && !dominioSingoloVersamento.getCodDominio().equals(dominio.getCodDominio())) {
-					if(dominioSingoloVersamento.getLogo() != null && dominioSingoloVersamento.getLogo().length > 0)
+				if(dominioSingoloVersamento != null && !dominioSingoloVersamento.getCodDominio().equals(dominio.getCodDominio()) 
+						&& dominioSingoloVersamento.getLogo() != null && dominioSingoloVersamento.getLogo().length > 0) {
 					input.setLogoEnteSecondario(new String(dominioSingoloVersamento.getLogo()));
 					break;
 				}
 			}
 		}
-		return;
 	}
 
 	public static void impostaAnagraficaDebitore(Anagrafica anagraficaDebitore, AvvisoPagamentoInput input) {
@@ -633,9 +643,9 @@ public class AvvisoPagamentoV2Utils {
 		etichette.setImporto(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_IMPORTO));
 		etichette.setIntestatario(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_INTESTATARIO));
 		etichette.setNota(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA));
-//		etichette.setNota2(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
-		//etichette.setNotaPrimaRata(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_PRIMA_RATA));
-//		etichette.setNotaRataUnica(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_RATA_UNICA));
+//		etichette.setNota2(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_IMPORTO))
+		//etichette.setNotaPrimaRata(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_PRIMA_RATA))
+//		etichette.setNotaRataUnica(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_RATA_UNICA))
 		etichette.setOggetto(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_OGGETTO));
 		etichette.setPagaApp(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_PAGA_APP));
 		etichette.setPagaTerritorio(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_PAGA_TERRITORIO));
@@ -670,9 +680,9 @@ public class AvvisoPagamentoV2Utils {
 		etichette.setImporto(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_IMPORTO));
 		etichette.setIntestatario(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_INTESTATARIO));
 		etichette.setNota(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA));
-//		etichette.setNota2(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_IMPORTO));
-		//etichette.setNotaPrimaRata(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_PRIMA_RATA));
-//		etichette.setNotaRataUnica(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_RATA_UNICA));
+//		etichette.setNota2(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_IMPORTO))
+		//etichette.setNotaPrimaRata(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_PRIMA_RATA))
+//		etichette.setNotaRataUnica(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_NOTA_RATA_UNICA))
 		etichette.setOggetto(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_OGGETTO));
 		etichette.setPagaApp(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_PAGA_APP));
 		etichette.setPagaTerritorio(labelsLingua.getProperty(LabelAvvisiProperties.LABEL_PAGA_TERRITORIO));
@@ -684,7 +694,8 @@ public class AvvisoPagamentoV2Utils {
 	}
 
 	/**
-	 * Nascondo l'informativa se entrambe le etichette sono definite vuote
+	 * Se viene impostata la dicitura sostitutiva della lingua principale come vuota,
+	 * non viene mostrata neanche quella della lingua secondaria, indipendentemente dalla valorizzazione
 	 * 
 	 * @param versamento
 	 * @return
@@ -692,10 +703,7 @@ public class AvvisoPagamentoV2Utils {
 	public static boolean nascondiInformativaImportoAvviso(Versamento versamento) {
 		ProprietaPendenza proprietaPendenza = versamento.getProprietaPendenza();
 		
-		boolean nascondiInformativaInLinguaItaliana = (proprietaPendenza.getInformativaImportoAvviso() != null && proprietaPendenza.getInformativaImportoAvviso().isEmpty());
-		boolean nascondiInformativaInSecondaLingua = (proprietaPendenza.getLinguaSecondariaInformativaImportoAvviso() != null && proprietaPendenza.getLinguaSecondariaInformativaImportoAvviso().isEmpty());
-		
-		return nascondiInformativaInLinguaItaliana && nascondiInformativaInSecondaLingua;
+		return proprietaPendenza != null && (proprietaPendenza.getInformativaImportoAvviso() != null && proprietaPendenza.getInformativaImportoAvviso().isEmpty());
 	}
 	
 	/**
@@ -719,6 +727,13 @@ public class AvvisoPagamentoV2Utils {
 	public static String getLinguaSecondariaInformativaImportoAvviso(Versamento versamento) {
 		ProprietaPendenza proprietaPendenza = versamento.getProprietaPendenza();
 		
-		return proprietaPendenza != null ? proprietaPendenza.getLinguaSecondariaInformativaImportoAvviso() : null;
+		return proprietaPendenza != null ? proprietaPendenza.getLinguaSecondariaInformativaImportoAvviso() : null; 
+	}
+	
+	public static boolean definitoMessaggioInformativaImportoAvvisoItaliano(Versamento versamento) {
+		ProprietaPendenza proprietaPendenza = versamento.getProprietaPendenza();
+		
+		// Se non viene impostata la dicitura sostitutiva della lingua principale, non viene modificata neanche quella della lingua secondaria indipendentemente dalla valorizzazione.
+		return proprietaPendenza != null && proprietaPendenza.getInformativaImportoAvviso() != null;
 	}
 }

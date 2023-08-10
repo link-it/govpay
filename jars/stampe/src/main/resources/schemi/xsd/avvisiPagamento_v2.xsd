@@ -27,7 +27,6 @@
 			<xsd:element name="intestatario_conto_corrente_postale" type="xsd:string"/>
 			<xsd:element name="poste" type="xsd:boolean" minOccurs="0"/>
 			<xsd:element name="pagine" type="PagineAvviso" />
-			<xsd:element name="nascondi_informativa_importo_avviso" type="xsd:boolean" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -60,7 +59,6 @@
 			<xsd:element name="codice_avviso" type="xsd:string"/>
 			<xsd:element name="codice_fiscale_ente" type="xsd:string"/>
 			<xsd:element name="oggetto_del_pagamento" type="xsd:string"/>
-			<xsd:element name="informativa_importo_avviso" type="xsd:string" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
