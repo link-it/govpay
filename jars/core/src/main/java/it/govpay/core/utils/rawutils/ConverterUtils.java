@@ -2,11 +2,9 @@ package it.govpay.core.utils.rawutils;
 
 import java.util.Arrays;
 
-import org.openspcoop2.utils.serialization.IDeserializer;
 import org.openspcoop2.utils.serialization.ISerializer;
+import org.openspcoop2.utils.serialization.JsonJacksonSerializer;
 import org.openspcoop2.utils.serialization.SerializationConfig;
-import org.openspcoop2.utils.serialization.SerializationFactory;
-import org.openspcoop2.utils.serialization.SerializationFactory.SERIALIZATION_TYPE;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -21,6 +19,7 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.govpay.bd.model.Rpt;
+import it.govpay.core.beans.JSONSerializable;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.MessaggiPagoPAUtils;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -163,7 +162,7 @@ public class ConverterUtils {
 				serializationConfig.setIncludes(Arrays.asList(fields.split(",")));
 				serializationConfig.setExcludes(null); 
 			}
-			ISerializer serializer = SerializationFactory.getSerializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
+			ISerializer serializer = new JsonJacksonSerializer(serializationConfig);
 			return serializer.getObject(obj);
 		} catch(org.openspcoop2.utils.serialization.IOException e) {
 			throw new IOException("Errore nella serializzazione della risposta.", e);
@@ -171,22 +170,10 @@ public class ConverterUtils {
 	}
 	
 	public static <T> T parse(String jsonString, Class<T> t) throws IOException  {
-		SerializationConfig serializationConfig = new SerializationConfig();
-		serializationConfig.setDf(SimpleDateFormatUtils.newSimpleDateFormatSoloData());
-		serializationConfig.setIgnoreNullValues(true);
-		return parse(jsonString, t, serializationConfig);
+		return JSONSerializable.parse(jsonString, t);
 	}
 	
-	public static <T> T parse(String jsonString, Class<T> t, SerializationConfig serializationConfig) throws IOException  {
-		try {
-			IDeserializer deserializer = SerializationFactory.getDeserializer(SERIALIZATION_TYPE.JSON_JACKSON, serializationConfig);
-			
-			@SuppressWarnings("unchecked")
-			T object = (T) deserializer.getObject(jsonString, t);
-			return object;
-		} catch(org.openspcoop2.utils.serialization.IOException e) {
-			throw new IOException(e.getMessage(), e);
-		}
+	public static <T> T parse(String jsonString, Class<T> t, it.govpay.core.utils.serialization.SerializationConfig serializationConfig) throws IOException  {
+		return JSONSerializable.parse(jsonString, t, serializationConfig);
 	}
-	
 }

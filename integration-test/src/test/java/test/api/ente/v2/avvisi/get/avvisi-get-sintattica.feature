@@ -311,4 +311,44 @@ Examples:
 | allegati.descrizione | pendenzaPut.allegati[0].descrizione | loremIpsum | 'descrizione' |
 | allegati.contenuto | pendenzaPut.allegati[0].contenuto | null | 'contenuto' |
 
+@test-stato
+Scenario Outline: <field> non valida
 
+* def pendenzaPut = read('classpath:test/api/pendenza/v3/pendenze/put/msg/pendenza-put_monovoce_definito.json')
+* set pendenzaPut.allegati[0].nome = 'tipoPendenza-promemoria-oggetto-freemarker.ftl'
+* set pendenzaPut.allegati[0].tipo = 'application/json'
+* set pendenzaPut.allegati[0].descrizione = 'test allegato'
+* set pendenzaPut.allegati[0].contenuto = encodeBase64InputStream(read('classpath:test/api/backoffice/v1/pendenze/put/msg/tipoPendenza-promemoria-oggetto-freemarker.ftl'))
+
+* def numeroAvviso = buildNumeroAvviso(dominio, applicazione)
+* def iuv = getIuvFromNumeroAvviso(numeroAvviso)	
+* call read('classpath:utils/pa-prepara-avviso.feature')
+* def ccp = getCurrentTimeMillis()
+* def importo = 100.99
+
+* set pendenzaPut.idA2A = idA2A
+* set pendenzaPut.idPendenza = idPendenza
+* set pendenzaPut.numeroAvviso = numeroAvviso
+* remove pendenzaPut.stato
+
+* set pendenzaVerificataV2.pendenza = pendenzaPut
+* set pendenzaVerificataV2.stato = <fieldValue>
+
+Given url ente_api_url
+And path '/v2/avvisi', idDominio, numeroAvviso
+And request pendenzaVerificataV2
+When method post
+Then status 200
+
+* def tipoRicevuta = "R01"
+* call read('classpath:utils/psp-attiva-rpt.feature')
+* match response contains { dati: '##null'}
+* match response.faultBean == esitoAttivaRPT
+* match response.faultBean.description contains <fieldResponse>
+
+Examples:
+| field | fieldValue | fieldResponse |
+| stato | null | 'Stato' |
+| stato | loremIpsum | 'stato' |
+| stato | 1 | 'stato' |
+| stato | 'XXX' | 'stato' |

@@ -1,0 +1,76 @@
+package it.govpay.core.utils.serialization;
+
+
+import java.io.InputStream;
+import java.io.Reader;
+
+import org.openspcoop2.utils.serialization.IDeserializer;
+import org.openspcoop2.utils.serialization.IOException;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory;
+import com.fasterxml.jackson.databind.deser.BeanDeserializerModifier;
+import com.fasterxml.jackson.databind.deser.DefaultDeserializationContext;
+import com.fasterxml.jackson.databind.deser.DeserializerFactory;
+
+/**	
+ * Contiene utility per effettuare la de-serializzazione di un oggetto
+ *
+ * @author Poli Andrea (apoli@link.it)
+ * @author $Author$
+ * @version $Rev$, $Date$
+ */
+
+public class JsonJacksonDeserializer implements IDeserializer{
+
+	private ObjectMapper mapper;
+
+	public JsonJacksonDeserializer() {
+		this(new SerializationConfig());
+	}
+	
+	public JsonJacksonDeserializer(SerializationConfig config) {
+		BeanDeserializerModifier modifier = new BeanDeserializerModifierForIgnorables(config.getExcludes());
+		DeserializerFactory dFactory = BeanDeserializerFactory.instance.withDeserializerModifier(modifier);
+
+		this.mapper = new ObjectMapper(null, null, new DefaultDeserializationContext.Impl(dFactory));
+		this.mapper.setDateFormat(config.getDf());
+		if(config.isSerializeEnumAsString())
+			this.mapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
+		if(config.isFailOnNumbersForEnums())
+			this.mapper.enable(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS);
+
+	}
+	
+	public JsonJacksonDeserializer(ObjectMapper mapper) {
+		this.mapper = mapper;
+	}
+
+	@Override
+	public Object getObject(String s, Class<?> classType) throws IOException{
+		try {
+			return this.mapper.readValue(s, classType);
+		} catch (java.io.IOException e) {
+			throw new IOException(e);
+		}
+	}
+
+	@Override
+	public Object readObject(InputStream is, Class<?> classType) throws IOException {
+		try {
+			return this.mapper.readValue(is, classType);
+		} catch (java.io.IOException e) {
+			throw new IOException(e);
+		}
+	}
+
+	@Override
+	public Object readObject(Reader reader, Class<?> classType) throws IOException {
+		try {
+			return this.mapper.readValue(reader, classType);
+		} catch (java.io.IOException e) {
+			throw new IOException(e);
+		}
+	}
+}
