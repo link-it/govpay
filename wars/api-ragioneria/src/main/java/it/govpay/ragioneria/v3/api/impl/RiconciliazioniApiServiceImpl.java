@@ -26,7 +26,6 @@ import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTO;
 import it.govpay.core.dao.pagamenti.dto.ListaIncassiDTOResponse;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTO;
 import it.govpay.core.dao.pagamenti.dto.RichiestaIncassoDTOResponse;
-import it.govpay.core.serialization.JsonJacksonDeserializer;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.core.utils.UriBuilderUtils;
 import it.govpay.core.utils.validator.ValidatorFactory;
@@ -41,6 +40,7 @@ import it.govpay.ragioneria.v3.beans.Riconciliazione;
 import it.govpay.ragioneria.v3.beans.RiconciliazioneIndex;
 import it.govpay.ragioneria.v3.beans.Riconciliazioni;
 import it.govpay.ragioneria.v3.beans.converter.RiconciliazioniConverter;
+import it.govpay.rs.v3.serialization.JsonJacksonDeserializer;
 
 
 /**
