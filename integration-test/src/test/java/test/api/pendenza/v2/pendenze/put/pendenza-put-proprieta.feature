@@ -128,5 +128,3 @@ And match response == read('classpath:test/api/pendenza/v2/pendenze/get/msg/pend
 * match response.voci[0].stato == 'Non eseguito'
 * match response.proprieta == pendenzaPut.proprieta
 
-
-

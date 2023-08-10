@@ -21,6 +21,7 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
+import it.govpay.core.beans.tracciati.ProprietaPendenza;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.exceptions.UnprocessableEntityException;
@@ -40,6 +41,8 @@ import it.govpay.stampe.model.RataAvviso;
 import it.govpay.stampe.pdf.avvisoPagamento.AvvisoPagamentoCostanti;
 
 public class AvvisoPagamentoUtils {
+	
+	private AvvisoPagamentoUtils() {}
 
 	public static AvvisoPagamentoInput fromVersamento(PrintAvvisoVersamentoDTO printAvviso) throws ServiceException, UtilsException {
 		it.govpay.bd.model.Versamento versamento = printAvviso.getVersamento();
@@ -54,6 +57,10 @@ public class AvvisoPagamentoUtils {
 				throw new ServiceException(e);
 			}
 		}
+		
+		// gestione personalizzata del messaggio di informativa importo
+		input.setNascondiInformativaImportoAvviso(nascondiInformativaImportoAvviso(versamento));
+		input.setInformativaImportoAvviso(getInformativaImportoAvviso(versamento));
 
 		AvvisoPagamentoUtils.impostaAnagraficaEnteCreditore(versamento, versamento.getDominio(configWrapper), versamento.getUo(configWrapper), input);
 		AvvisoPagamentoUtils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
@@ -81,6 +88,10 @@ public class AvvisoPagamentoUtils {
 			input.setPagine(new PagineAvviso());
 
 		AvvisoPagamentoInputConf configurazioneStampa = AvvisoPagamentoInputConf.getConfigurazioneFromVersamenti(documento, versamenti, log);
+		
+		// gestione personalizzata del messaggio di informativa importo
+		input.setNascondiInformativaImportoAvviso(configurazioneStampa.isNascondiInformativaImportoAvviso());
+		input.setInformativaImportoAvviso(configurazioneStampa.getInformativaImportoAvviso());
 
 		if(configurazioneStampa.isPostale())
 			return getAvvisoPostalefromDocumento(printAvviso, versamenti, configurazioneStampa, input, log);
@@ -567,7 +578,6 @@ public class AvvisoPagamentoUtils {
 				}
 			}
 		}
-		return;
 	}
 
 	public static void impostaAnagraficaDebitore(Anagrafica anagraficaDebitore, AvvisoPagamentoInput input) {
@@ -753,5 +763,29 @@ public class AvvisoPagamentoUtils {
 
 		return autDominio;
 
+	}
+	
+	/**
+	 * Nascondo l'informativa se l'etichetta e' vuota
+	 * 
+	 * @param versamento
+	 * @return
+	 */
+	public static boolean nascondiInformativaImportoAvviso(Versamento versamento) {
+		ProprietaPendenza proprietaPendenza = versamento.getProprietaPendenza();
+		
+		return proprietaPendenza != null && (proprietaPendenza.getInformativaImportoAvviso() != null && proprietaPendenza.getInformativaImportoAvviso().isEmpty());
+	}
+	
+	/**
+	 * restituisce il messaggio personalizzato di informativa importo
+	 * 
+	 * @param versamento
+	 * @return
+	 */
+	public static String getInformativaImportoAvviso(Versamento versamento) {
+		ProprietaPendenza proprietaPendenza = versamento.getProprietaPendenza();
+		
+		return proprietaPendenza != null ? proprietaPendenza.getInformativaImportoAvviso() : null;
 	}
 }

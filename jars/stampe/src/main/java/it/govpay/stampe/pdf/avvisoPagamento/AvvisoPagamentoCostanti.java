@@ -2,6 +2,8 @@ package it.govpay.stampe.pdf.avvisoPagamento;
 
 public class AvvisoPagamentoCostanti {
 	
+	private AvvisoPagamentoCostanti() {}
+	
 	// root element elemento di input
 	public static final String AVVISO_PAGAMENTO_ROOT_ELEMENT_NAME= "AvvisoPagamentoInput";
 	public static final String VIOLAZIONE_CDS_ROOT_ELEMENT_NAME= "ViolazioneInput";
@@ -31,9 +33,6 @@ public class AvvisoPagamentoCostanti {
 	public static final String RATA_UNICA_POSTALE_TEMPLATE_JASPER = "/RataUnicaPostale.jasper";
 	public static final String RATA_TRIPLA_POSTALE_TEMPLATE_JASPER = "/TriplaRataPostale.jasper";
 	public static final String TRIPLO_FORMATO_POSTALE_TEMPLATE_JASPER = "/TriploFormatoPostale.jasper";
-	
-//	public static final String MONOBAND_TEMPLATE_JASPER = "/MonoBand.jasper";
-//	public static final String TRIBAND_TEMPLATE_JASPER = "/TriBand.jasper";
 	
 	public static final String VIOLAZIONE_CDS_DIR = "/violazioneCDS";
 	

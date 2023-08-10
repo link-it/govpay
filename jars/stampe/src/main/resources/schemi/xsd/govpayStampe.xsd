@@ -25,6 +25,8 @@
 			<xsd:element name="scadenza_scontato" type="xsd:string"/>
 			<xsd:element name="scadenza_ridotto" type="xsd:string"/>
 			<xsd:element name="pagine" type="PagineAvviso" />
+			<xsd:element name="informativa_importo_avviso" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="nascondi_informativa_importo_avviso" type="xsd:boolean" />
 		</xsd:sequence>
 	</xsd:complexType>
 			
