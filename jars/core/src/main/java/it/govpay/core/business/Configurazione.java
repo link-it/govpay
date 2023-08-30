@@ -50,8 +50,8 @@ public class Configurazione {
 		return configurazione; 
 	}
 
-	public void salvaConfigurazione(it.govpay.bd.model.Configurazione configurazione) throws ServiceException {
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+	public void salvaConfigurazione(it.govpay.bd.model.Configurazione configurazione, Long idOperatore) throws ServiceException {
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true, idOperatore);
 		ConfigurazioneBD configurazioneBD = new ConfigurazioneBD(configWrapper);
 		configurazioneBD.salvaConfigurazione(configurazione);
 	}

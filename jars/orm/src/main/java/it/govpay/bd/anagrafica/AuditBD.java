@@ -56,7 +56,7 @@ public class AuditBD extends BasicBD {
 			
 			Audit audit = new Audit();
 			audit.setData(new Date());
-			audit.setIdOggetto(model.getId());
+			audit.setIdOggetto(model.getId() != null ? model.getId() : 0);
 			audit.setOggetto(model.toString());
 			audit.setTipoOggetto(model.getClass().getSimpleName());
 			IdOperatore idOp = new IdOperatore();
