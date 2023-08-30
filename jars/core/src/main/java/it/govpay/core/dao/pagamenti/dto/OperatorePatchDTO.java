@@ -13,18 +13,18 @@ import org.springframework.security.core.Authentication;
  */
 public class OperatorePatchDTO extends AbstractPatchDTO {
 
-	private String idOperatore;
+	private String idOperatoreToPatch;
 	
 	public OperatorePatchDTO(Authentication user) {
 		super(user);
 	}
 
-	public String getIdOperatore() {
-		return this.idOperatore;
+	public String getIdOperatoreToPatch() {
+		return this.idOperatoreToPatch;
 	}
 
-	public void setIdOperatore(String idOperatore) {
-		this.idOperatore = idOperatore;
+	public void setIdOperatoreToPatch(String idOperatoreToPatch) {
+		this.idOperatoreToPatch = idOperatoreToPatch;
 	}
 
 	

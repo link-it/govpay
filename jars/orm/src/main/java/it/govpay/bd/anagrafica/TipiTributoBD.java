@@ -61,7 +61,7 @@ public class TipiTributoBD extends BasicBD {
 	}
 	
 	public TipiTributoBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 	
 	/**

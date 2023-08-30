@@ -64,7 +64,7 @@ public class TipoPendenzaDAO extends BaseDAO{
 	public PutTipoPendenzaDTOResponse createOrUpdateTipoPendenza(PutTipoPendenzaDTO putTipoPendenzaDTO) throws ServiceException,
 		TipoVersamentoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
 		PutTipoPendenzaDTOResponse intermediarioDTOResponse = new PutTipoPendenzaDTOResponse();
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putTipoPendenzaDTO.getIdOperatore());
 		TipiVersamentoBD tipiVerwsamentoBD = null;
 
 		try {

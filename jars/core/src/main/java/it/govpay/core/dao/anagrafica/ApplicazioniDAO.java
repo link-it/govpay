@@ -127,7 +127,7 @@ public class ApplicazioniDAO extends BaseDAO {
 	public PutApplicazioneDTOResponse createOrUpdate(PutApplicazioneDTO putApplicazioneDTO) throws ServiceException,
 	ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException, TipoVersamentoNonTrovatoException, DominioNonTrovatoException, UnitaOperativaNonTrovataException, RuoloNonTrovatoException {  
 		PutApplicazioneDTOResponse applicazioneDTOResponse = new PutApplicazioneDTOResponse();
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putApplicazioneDTO.getIdOperatore());
 		it.govpay.bd.anagrafica.ApplicazioniBD applicazioniBD = null;
 		try {
 			applicazioniBD = new it.govpay.bd.anagrafica.ApplicazioniBD(configWrapper);
@@ -272,7 +272,7 @@ public class ApplicazioniDAO extends BaseDAO {
 
 	public GetApplicazioneDTOResponse patch(ApplicazionePatchDTO patchDTO) throws ServiceException,ApplicazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
 		it.govpay.bd.anagrafica.ApplicazioniBD applicazioniBD = null;
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, patchDTO.getIdOperatore());
 		try {
 			applicazioniBD = new it.govpay.bd.anagrafica.ApplicazioniBD(configWrapper);
 

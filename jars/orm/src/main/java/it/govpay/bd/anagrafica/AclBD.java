@@ -58,7 +58,7 @@ public class AclBD extends BasicBD {
 	}
 	
 	public AclBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 	
 	public AclFilter newFilter() throws ServiceException {

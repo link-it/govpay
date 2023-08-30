@@ -66,7 +66,7 @@ public class OperatoriBD extends BasicBD {
 	}
 
 	public OperatoriBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 
 	/**

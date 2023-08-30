@@ -61,7 +61,7 @@ public class UnitaOperativeBD extends BasicBD {
 	}
 	
 	public UnitaOperativeBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 
 	public UnitaOperativa getUnitaOperativa(Long id) throws NotFoundException, MultipleResultException, ServiceException {

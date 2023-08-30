@@ -272,7 +272,7 @@ public class RptDAO extends BaseDAO{
 	}
 
 	public PatchRptDTOResponse patch(PatchRptDTO patchRptDTO) throws ServiceException, RicevutaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, ValidationException, UnprocessableEntityException {
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, patchRptDTO.getIdOperatore());
 		PatchRptDTOResponse response = new PatchRptDTOResponse();
 
 		RptBD rptBD = null;
@@ -304,7 +304,7 @@ public class RptDAO extends BaseDAO{
 					Boolean sbloccoRPT = (Boolean) op.getValue();
 					String azione = sbloccoRPT ? "reso bloccante" : "sbloccato";
 					String descrizioneStato = "Tentativo di pagamento [idDominio:"+idDominio+", IUV:"+iuv+", CCP:"+ccp+"] "+azione+" via API.";
-					rptBD.sbloccaRpt(rpt.getId(), sbloccoRPT, descrizioneStato);
+					rptBD.sbloccaRpt(rpt, sbloccoRPT, descrizioneStato);
 				} else if(PATH_RT.equals(op.getPath())) {
 					if(!op.getOp().equals(OpEnum.REPLACE)) {
 						throw new ValidationException(MessageFormat.format(UtenzaPatchUtils.OP_XX_NON_VALIDO_PER_IL_PATH_YY, op.getOp(), op.getPath()));

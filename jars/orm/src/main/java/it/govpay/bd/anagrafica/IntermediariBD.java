@@ -65,7 +65,7 @@ public class IntermediariBD extends BasicBD {
 	}
 	
 	public IntermediariBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 
 	/**

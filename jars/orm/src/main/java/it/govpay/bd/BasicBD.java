@@ -216,6 +216,10 @@ public class BasicBD {
 	}
 	
 	public BasicBD(String idTransaction, boolean useCache) {
+		this(idTransaction, useCache, null);
+	}
+	
+	public BasicBD(String idTransaction, boolean useCache, Long idOperatore) {
 		this.isClosed = true;
 		this.idTransaction = idTransaction;
 		this.idModulo = this.getCaller();
@@ -225,6 +229,7 @@ public class BasicBD {
 		if(log == null)
 			log = LoggerWrapperFactory.getLogger(JDBCServiceManager.class);
 		this.isAtomica = true;
+		this.idOperatore = idOperatore;
 //		this.setupConnection(idTransaction, this.idModulo);
 	}
 	
