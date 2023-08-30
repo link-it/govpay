@@ -68,7 +68,7 @@ public class ConfigurazioneDAO extends BaseDAO{
 
 			// flag creazione o update
 			putConfigurazioneDTOResponse.setCreated(created);
-			configurazioneBD.salvaConfigurazione(configurazione);
+			configurazioneBD.salvaConfigurazione(configurazione, putConfigurazioneDTO.getIdOperatore());
 
 			// elimino la entry in cache
 			AnagraficaManager.removeFromCache(configurazione);
@@ -114,7 +114,7 @@ public class ConfigurazioneDAO extends BaseDAO{
 				}
 			}
 
-			configurazioneBD.salvaConfigurazione(configurazione);
+			configurazioneBD.salvaConfigurazione(configurazione, patchConfigurazioneDTO.getIdOperatore());
 			// elimino la entry in cache
 			AnagraficaManager.removeFromCache(configurazione);
 
