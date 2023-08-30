@@ -95,7 +95,7 @@ public class VersamentiBD extends BasicBD {
 	}
 	
 	public VersamentiBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 
 	public Versamento getVersamento(long id) throws ServiceException {
@@ -563,7 +563,7 @@ public class VersamentiBD extends BasicBD {
 			it.govpay.orm.Versamento vo = VersamentoConverter.toVO(versamento);
 			IdVersamento idVersamento = this.getVersamentoService().convertToId(vo);
 			this.getVersamentoService().update(idVersamento, vo);
-			
+			this.emitAudit(versamento);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (UnsupportedEncodingException e) {

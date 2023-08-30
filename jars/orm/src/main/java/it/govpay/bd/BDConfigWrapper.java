@@ -11,6 +11,7 @@ public class BDConfigWrapper implements Serializable{
 	
 	private String transactionID;
 	private boolean useCache;
+	private Long idOperatore;
 	
 	public BDConfigWrapper() {
 		this(null);
@@ -21,8 +22,13 @@ public class BDConfigWrapper implements Serializable{
 	}
 	
 	public BDConfigWrapper(String transactionID, boolean useCache) {
+		this(transactionID, useCache, null);
+	}
+	
+	public BDConfigWrapper(String transactionID, boolean useCache, Long idOperatore) {
 		this.transactionID = transactionID;
 		this.useCache = useCache;
+		this.idOperatore = idOperatore;
 	}
 
 	public String getTransactionID() {
@@ -39,6 +45,14 @@ public class BDConfigWrapper implements Serializable{
 
 	public void setUseCache(boolean useCache) {
 		this.useCache = useCache;
+	}
+
+	public Long getIdOperatore() {
+		return idOperatore;
+	}
+
+	public void setIdOperatore(Long idOperatore) {
+		this.idOperatore = idOperatore;
 	}
 
 }

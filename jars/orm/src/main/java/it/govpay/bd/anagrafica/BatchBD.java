@@ -48,7 +48,7 @@ public class BatchBD extends BasicBD {
 	}
 	
 	public BatchBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 	
 	public void insert(Batch batch) throws ServiceException {

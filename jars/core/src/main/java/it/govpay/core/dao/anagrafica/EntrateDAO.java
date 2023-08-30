@@ -55,7 +55,7 @@ public class EntrateDAO extends BaseDAO{
 	public PutEntrataDTOResponse createOrUpdateEntrata(PutEntrataDTO putTipoTributoDTO) throws ServiceException,TipoTributoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		PutEntrataDTOResponse intermediarioDTOResponse = new PutEntrataDTOResponse();
 		TipiTributoBD entrateBD = null;
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putTipoTributoDTO.getIdOperatore());
 		try {
 			entrateBD = new TipiTributoBD(configWrapper);
 			TipoTributoFilter filter = entrateBD.newFilter(false);

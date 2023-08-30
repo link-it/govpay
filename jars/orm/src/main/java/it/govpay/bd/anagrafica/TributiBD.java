@@ -63,7 +63,7 @@ public class TributiBD extends BasicBD {
 	}
 	
 	public TributiBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 
 	/**

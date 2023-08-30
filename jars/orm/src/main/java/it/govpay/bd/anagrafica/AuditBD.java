@@ -44,7 +44,7 @@ public class AuditBD extends BasicBD {
 	}
 	
 	public AuditBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 	
 	public void insertAudit(long idOperatore, BasicModel model) {

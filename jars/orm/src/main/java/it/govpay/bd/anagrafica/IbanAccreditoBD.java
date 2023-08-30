@@ -60,7 +60,7 @@ public class IbanAccreditoBD extends BasicBD {
 	}
 	
 	public IbanAccreditoBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 
 	/**

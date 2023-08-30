@@ -60,7 +60,7 @@ public class TipiVersamentoBD extends BasicBD {
 	}
 	
 	public TipiVersamentoBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 
 	/**

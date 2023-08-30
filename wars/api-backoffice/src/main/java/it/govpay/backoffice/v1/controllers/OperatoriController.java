@@ -163,7 +163,7 @@ public class OperatoriController extends BaseController {
 			String jsonRequest = baos.toString();
 
 			OperatorePatchDTO operatorePatchDTO = new OperatorePatchDTO(user);
-			operatorePatchDTO.setIdOperatore(principal);
+			operatorePatchDTO.setIdOperatoreToPatch(principal);
 
 			List<PatchOp> lstOp = new ArrayList<>();
 

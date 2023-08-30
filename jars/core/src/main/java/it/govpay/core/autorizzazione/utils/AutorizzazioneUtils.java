@@ -61,6 +61,21 @@ public class AutorizzazioneUtils {
 
 		return null;
 	}
+	
+	public static Long getIdOperatore(Authentication authentication) {
+		if(authentication == null)
+			return null;
+		
+		Object principalObj = authentication.getPrincipal();
+		if(principalObj instanceof GovpayLdapUserDetails) {
+			Operatore operatore = ((GovpayLdapUserDetails) principalObj).getOperatore();
+			if(operatore != null) {
+				return operatore.getId();
+			}
+		}
+		
+		return null;
+	}
 
 	public static GovpayLdapUserDetails getUserDetailFromUtenzaRegistrata(String username, boolean checkPassword, boolean checkSubject, 
 			Collection<? extends GrantedAuthority> authFromPreauth, Map<String, List<String>> headerValues, BDConfigWrapper configWrapper, String apiName, String authType) throws NotFoundException , ServiceException {

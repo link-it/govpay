@@ -85,7 +85,7 @@ public class AclDAO extends BaseDAO{
 	 * @throws NotAuthenticatedException 
 	 */
 	public PostAclDTOResponse create(PostAclDTO postAclDTO) throws NotAuthorizedException, ServiceException, NotAuthenticatedException { 
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, postAclDTO.getIdOperatore());
 		AclBD aclBD = null;
 		try {
 			aclBD = new AclBD(configWrapper);
@@ -116,9 +116,10 @@ public class AclDAO extends BaseDAO{
 	 * @throws NotAuthenticatedException 
 	 */
 	public void deleteAcl(DeleteAclDTO deleteAclDTO) throws NotAuthorizedException, AclNonTrovatoException, ServiceException, NotAuthenticatedException { 
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, deleteAclDTO.getIdOperatore());
 		AclBD aclBD = null;
 		try {
-			aclBD = new AclBD(ContextThreadLocal.get().getTransactionId(), useCacheData);
+			aclBD = new AclBD(configWrapper);
 			aclBD.deleteAcl(deleteAclDTO.getIdAcl());
 		} catch (NotFoundException e) {
 			throw new AclNonTrovatoException(e.getMessage());

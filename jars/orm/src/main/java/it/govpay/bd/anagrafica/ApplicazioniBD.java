@@ -75,7 +75,7 @@ public class ApplicazioniBD extends BasicBD {
 	}
 
 	public ApplicazioniBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 
 
