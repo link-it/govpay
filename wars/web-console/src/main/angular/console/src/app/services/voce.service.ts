@@ -36,6 +36,7 @@ export class Voce {
   public static BIC_ACCREDITO: string = 'BIC accredito';
   public static BIC_RIVERSAMENTO: string = 'Codice Bic riversamento';
 
+  public static CANALE: string = 'Canale';
   public static CAP: string = 'Cap';
   public static CARTELLA_DI_PAGAMENTO: string = 'Cartella di pagamento';
   public static CATEGORIA_EVENTO: string = 'Categoria evento';
@@ -63,6 +64,7 @@ export class Voce {
 
   public static DATA: string = 'Data';
   public static DATA_CARICAMENTO: string = 'Data caricamento';
+  public static DATA_PAGAMENTO: string = 'Data pagamento';
   public static DATA_COMPLETAMENTO: string = 'Data completamento';
   public static DATA_CONTABILE: string = 'Data contabile';
   public static DATA_ESITO: string = 'Data esito';
@@ -85,6 +87,7 @@ export class Voce {
   public static DENOMINAZIONE: string = 'Denominazione';
   public static DESCRIZIONE: string = 'Descrizione';
   public static DESCRIZIONE_STATO: string = 'Descrizione stato';
+  public static DETTAGLIO_CONTABILITA: string = 'Dettaglio contabilità';
   public static DETTAGLIO_ESITO: string = 'Dettaglio esito';
   public static DETTAGLIO_PENDENZA_CUSTOM: string = 'Personalizzazione dettaglio pendenza';
   public static DIREZIONE: string = 'Direzione';
@@ -130,6 +133,7 @@ export class Voce {
   public static ID_PAGAMENTO: string = 'Id pagamento';
   public static ID_PENDENZA: string = 'Id pendenza';
   public static ID_PSP: string = 'Id PSP';
+  public static ID_RICEVUTA: string = 'Id ricevuta';
   public static ID_RISCOSSIONE: string = 'Id riscossione';
   public static ID_SESSIONE: string = 'Id carrello';
   public static ID_STAZIONE: string = 'Id stazione';
@@ -252,7 +256,7 @@ export class Voce {
   public static STATO: string = 'Stato';
   public static STAZIONE: string = 'Stazione';
 
-  public static TASSONOMIA: string = 'Tipo (ente)';
+  public static TASSONOMIA: string = 'Tassonomia';
   public static TASSONOMIA_AVVISO: string = 'Tassonomia avviso';
   public static TASSONOMIA_ENTE: string = 'Tassonomia ente';
   public static TASSONOMIA_PAGO_PA: string = 'Tipo ente';
