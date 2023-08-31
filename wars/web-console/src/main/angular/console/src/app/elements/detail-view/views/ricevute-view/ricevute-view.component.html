@@ -1,0 +1,58 @@
+<mat-tab-group class="ricevute-tab">
+  <mat-tab label="DATI RICEVUTA">
+    <div class="container my-4 card-container">
+      <mat-card class="shadow no-border-radius mb-3" *ngIf="info">
+        <div class="row px-3">
+          <div class="col-sm-8 px-0 pt-3 pt-sm-0">
+            <p class="d-block matcard-title pb-3 color-gray regular-24">Riepilogo</p>
+          </div>
+          <div class="col-sm-4 px-0 pt-3 pt-sm-0 text-right">
+            <p class="text-truncate medium-24 lh-90 mb-1" *ngIf="info.importo">{{info.importo}}</p>
+            <p class="text-truncate color-gray medium-18 mb-0">{{info.stato}}</p>
+            <p class="text-truncate color-gray regular-14 mb-0" *ngIf="info.socketNotification">{{info.avanzamento || ''}}</p>
+          </div>
+        </div>
+        <link-riepilogo-view [info]="info"></link-riepilogo-view>
+      </mat-card>
+      <mat-card class="shadow no-border-radius mb-3" *ngIf="infoVisualizzazione.visible">
+        <p class="d-block matcard-title pb-3 color-gray regular-24">{{ infoVisualizzazione?.titolo }}</p>
+        <p class="d-block matcard-title py-0 regular-16 normal-color" *ngIf="infoVisualizzazione.campi.length == 0">Nessun valore configurato</p>
+        <div class="d-block" *ngIf="infoVisualizzazione.campi.length != 0">
+          <link-key-value-view *ngFor="let item of infoVisualizzazione.campi" [info]="item" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+        </div>
+      </mat-card>
+      <mat-card class="shadow no-border-radius mb-3" *ngIf="importi.length!=0">
+        <p class="d-block matcard-title pb-3 color-gray regular-24">Dettaglio importi</p>
+        <link-item-view *ngFor="let item of importi" [component-data]="item" [use-item-view-directive]="true"
+                        [show-over-icons]="false" [over-icons]="_importiOverIcons" class="link-item-view-fill">
+        </link-item-view>
+        <div class="row sub-totale medium-16" *ngIf="importi.length != 0">
+          <div class="col-6 px-0 m-0">
+            <p class="text-truncate mb-1">Totale</p>
+          </div>
+          <div class="col-6 px-0 m-0 text-right">
+            <p class="text-truncate mb-1">{{us.currencyFormat(_paymentsSum)}}</p>
+          </div>
+        </div>
+      </mat-card>
+      <mat-card class="shadow no-border-radius mb-3">
+        <p class="d-block matcard-title pb-3 color-gray regular-24">Dati PSP</p>
+        <p class="d-block matcard-title py-0 regular-16 normal-color" *ngIf="datiPsp.length == 0">Nessun valore configurato</p>
+        <div class="d-block" *ngIf="datiPsp.length != 0">
+          <link-key-value-view *ngFor="let item of datiPsp" [info]="item" class="d-block link-key-value-fill-mat-card"></link-key-value-view>
+        </div>
+      </mat-card>
+    </div>
+  </mat-tab>
+  <mat-tab label="EVENTI">
+    <link-scroller-container (load-more)="_loadMoreEventi()" [is-loading]="_isLoadingMore">
+      <div class="container my-4 py-3 card-container">
+        <mat-card class="shadow no-border-radius pb-0" *ngIf="eventi.length!=0">
+            <p class="d-block matcard-title pb-3 color-gray regular-24">Eventi</p>
+            <link-item-view *ngFor="let item of eventi" [component-data]="item" [use-item-view-directive]="true"
+                            [show-over-icons]="false" class="link-item-view-fill"></link-item-view>
+        </mat-card>
+      </div>
+    </link-scroller-container>
+  </mat-tab>
+</mat-tab-group>

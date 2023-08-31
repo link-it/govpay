@@ -273,8 +273,8 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
           }
         }
         break;
-        case UtilService.URL_RICEVUTE+UtilService.URL_DETTAGLIO:
-          a.push({ label: 'Stampa ricevuta', type: UtilService.STAMPA_RICEVUTA });
+      case UtilService.URL_RICEVUTE+UtilService.URL_DETTAGLIO:
+        a.push({ label: 'Stampa ricevuta', type: UtilService.STAMPA_RICEVUTA });
         break;
     }
     return a;
@@ -366,8 +366,8 @@ export class AppComponent implements OnInit, AfterContentChecked, IModalDialog, 
         case 'Pagamenti':
           UtilService.USER_ACL.hasPagamenti = true;
           if(UtilService.GESTIONE_PAGAMENTI.ENABLED){
-			this._sideNavSetup.menu.push({ link: UtilService.URL_PAGAMENTI, name: UtilService.TXT_PAGAMENTI, xhttp: false, icon: false, sort: 1 });
-		  }
+            this._sideNavSetup.menu.push({ link: UtilService.URL_PAGAMENTI, name: UtilService.TXT_PAGAMENTI, xhttp: false, icon: false, sort: 1 });
+          }
           if(!UtilService.USER_ACL.hasPagamentiePendenze && acl.autorizzazioni.indexOf(UtilService._CODE.LETTURA) != -1 && acl.autorizzazioni.indexOf(UtilService._CODE.SCRITTURA) != -1) {
             UtilService.USER_ACL.hasPagamentiePendenze = true;
             this._sideNavSetup.terMenu.push({ link: UtilService.URL_TRACCIATI, name: UtilService.TXT_TRACCIATI, xhttp: false, icon: false, sort: 2 });

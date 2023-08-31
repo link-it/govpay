@@ -43,7 +43,7 @@ export class UtilService {
 
   // Config.govpay
   public static GESTIONE_PASSWORD: any = GovPayConfig.GESTIONE_PASSWORD;
-  
+
   // Config.govpay
   public static GESTIONE_PAGAMENTI: any = GovPayConfig.GESTIONE_PAGAMENTI;
 
@@ -540,6 +540,7 @@ export class UtilService {
   public static IBAN_ACCREDITO: string = 'iban_accredito';
   public static PENDENZA: string = 'pendenza';
   public static SCHEDA_PENDENZA: string = 'scheda_pendenza';
+  public static RICEVUTA: string = 'ricevuta';
   public static REPORT_PROSPETTO_RISCOSSIONI: string = 'report_prospetto_riscossioni';
   public static NO_TYPE: string = '-';
   //Json schema generators
@@ -1885,7 +1886,7 @@ export class UtilService {
         ];
       break;
       case UtilService.RICEVUTE:
-      	_list = [
+        _list = [
           new FormInput({ id: 'idDominio', label: FormService.FORM_ENTE_CREDITORE, type: UtilService.FILTERABLE,
             promise: { async: true, url: UtilService.RootByTOA() + UtilService.URL_DOMINI + '?' + UtilService.QUERY_ASSOCIATI, mapFct: this.asyncElencoDominiPendenza.bind(this),
                   eventType: 'idDominio-async-load' } }, this.http),
@@ -1893,7 +1894,7 @@ export class UtilService {
           new FormInput({ id: 'idDebitore', label: FormService.FORM_DEBITORE, placeholder: FormService.FORM_PH_DEBITORE,
                         type: UtilService.INPUT, pattern: FormService.VAL_CF_PI }),
           new FormInput({ id: 'dataRtDa', label: FormService.FORM_DATA_INIZIO, type: UtilService.DATE_PICKER, value: _defaulFiltertData }),
-          new FormInput({ id: 'dataRtA', label: FormService.FORM_DATA_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' }),
+          new FormInput({ id: 'dataRtA', label: FormService.FORM_DATA_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
         ];
       break;
     }

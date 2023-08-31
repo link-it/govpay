@@ -20,6 +20,7 @@ import { BooleanViewComponent } from '../elements/item-view/views/boolean-view/b
 import { LabelViewComponent } from '../elements/item-view/views/label-view/label-view.component';
 import { DatePickerViewComponent, TimePickerDialogComponent } from '../elements/item-view/views/date-picker-view/date-picker-view.component';
 
+import { RicevuteViewComponent } from '../elements/detail-view/views/ricevute-view/ricevute-view.component';
 import { PendenzeViewComponent } from '../elements/detail-view/views/pendenze-view/pendenze-view.component';
 import { PagamentiViewComponent } from '../elements/detail-view/views/pagamenti-view/pagamenti-view.component';
 import { RegistroIntermediariViewComponent } from '../elements/detail-view/views/registro-intermediari-view/registro-intermediari-view.component';
@@ -68,6 +69,7 @@ import { ConnettoreMaggioliComponent } from '../elements/detail-view/views/dialo
 export class EntryPointList {
 
   public static entryList: Array<any> = [
+    RicevuteViewComponent,
     PendenzeViewComponent,
     PagamentiViewComponent,
     RegistroIntermediariViewComponent,
@@ -135,6 +137,9 @@ export class EntryPointList {
 
     switch (name) {
       //Component view ref
+      case UtilService.RICEVUTE:
+        _type = RicevuteViewComponent;
+        break;
       case UtilService.PENDENZE:
         _type = PendenzeViewComponent;
         break;
@@ -451,6 +456,9 @@ export class EntryPointList {
         break;
       case 'SchedaPendenzaViewComponent':
         _name = UtilService.SCHEDA_PENDENZA;
+        break;
+      case 'RicevutaViewComponent':
+        _name = UtilService.RICEVUTE;
         break;
       case 'PendenzaViewComponent':
         _name = UtilService.PENDENZA;
