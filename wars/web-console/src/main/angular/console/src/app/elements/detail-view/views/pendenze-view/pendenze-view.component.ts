@@ -178,7 +178,8 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
       }
       _std.sottotitolo = Dato.arraysToDato(lbls, vals, ', ');
       if(!item.tipoBollo) {
-        _std.elenco.push({ label: Voce.CONTABILITA, value: Dato.concatStrings([ item.tipoContabilita, item.codiceContabilita ], ', ') });
+		let tipoContabilitaLabel =  UtilService.TIPI_CONTABILITA_NUMERICHE[item.tipoContabilita];
+        _std.elenco.push({ label: Voce.TASSONOMIA, value: Dato.concatStrings([tipoContabilitaLabel, item.codiceContabilita ], '/') });
         _std.elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.ibanAccredito });
         _std.elenco.push({ label: Voce.CONTO_APPOGGIO, value: item.ibanAppoggio });
       }

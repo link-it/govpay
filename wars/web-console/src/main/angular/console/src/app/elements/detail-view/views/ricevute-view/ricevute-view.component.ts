@@ -231,7 +231,21 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
 
   protected elencoEventi() {
     let _url = UtilService.URL_GIORNALE_EVENTI;
-    let _query = 'idA2A='+this.json.pendenza.idA2A+'&idPendenza='+this.json.pendenza.idPendenza;
+    // eventi relativi alla transazione con la ricevuta
+     const versione620: boolean = !!(this.json.rpt && this.json.rpt.versioneOggetto && this.json.rpt.versioneOggetto === '6.2.0');
+    let idDominio = '';
+    let iuv = '';
+    let idRicevuta = '';
+    if (versione620) {
+      idDominio = this.json.rt.dominio.identificativoDominio;
+      iuv = this.json.rt.datiPagamento.identificativoUnivocoVersamento;
+      idRicevuta = this.json.rt.datiPagamento.CodiceContestoPagamento;
+    } else {
+      idDominio = this.json.rt.fiscalCode;
+      iuv = this.json.rt.creditorReferenceId;
+      idRicevuta = this.json.rt.receiptId;
+    }
+    let _query = 'idDominio='+idDominio+'&iuv='+iuv; //+'&ccp='+idRicevuta
     this.__getEventi(_url, _query);
   }
 

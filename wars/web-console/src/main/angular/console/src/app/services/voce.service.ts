@@ -87,6 +87,7 @@ export class Voce {
   public static DENOMINAZIONE: string = 'Denominazione';
   public static DESCRIZIONE: string = 'Descrizione';
   public static DESCRIZIONE_STATO: string = 'Descrizione stato';
+  public static DETTAGLIO_CONTABILITA: string = 'Dettaglio contabilità';
   public static DETTAGLIO_ESITO: string = 'Dettaglio esito';
   public static DETTAGLIO_PENDENZA_CUSTOM: string = 'Personalizzazione dettaglio pendenza';
   public static DIREZIONE: string = 'Direzione';

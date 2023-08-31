@@ -397,6 +397,10 @@ public class PendenzeConverter {
 		if(singoloVersamento.getDominio(configWrapper) != null) {
 			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
 		}
+		
+		rsModel.setCodiceContabilita(singoloVersamento.getCodContabilita());
+		if(singoloVersamento.getTipoContabilita() != null)
+			rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
 
 		return rsModel;
 	}
@@ -426,6 +430,10 @@ public class PendenzeConverter {
 		if(singoloVersamento.getDominio(configWrapper) != null) {
 			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
 		}
+		
+		rsModel.setCodiceContabilita(singoloVersamento.getCodContabilita());
+		if(singoloVersamento.getTipoContabilita() != null)
+			rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
 
 		return rsModel;
 	}

@@ -241,6 +241,15 @@ export class UtilService {
       });
     }
   }
+  
+  //TIPOLOGIE CONTABILITA NUMERICHE
+  public static TIPI_CONTABILITA_NUMERICHE: any = {
+    CAPITOLO: '0',
+    SPECIALE: '1',
+    SIOPE: '2',
+    ALTRO: '9'
+  };
+  
   private static _MAP_TIPI_EVENTO: any[] = [];
   public static DIRECT_MAP_TIPI_EVENTO: any;
   public static COMPONENTI_EVENTO: any;
@@ -457,7 +466,7 @@ export class UtilService {
   public static TXT_RENDICONTAZIONI: string = 'Rendicontazioni';
   public static TXT_INCASSI: string = 'Riconciliazioni';
   public static TXT_RICEVUTE: string = 'Ricevute';
-  public static TXT_TRACCIATI: string = 'Caricamento pendenze';
+  public static TXT_TRACCIATI: string = 'Caricamenti massivi';
 
   public static TXT_MAN_NOTIFICHE: string = 'Spedisci notifiche';
   public static TXT_MAN_RENDICONTAZIONI: string = 'Acquisisci rendicontazioni';

@@ -18,6 +18,8 @@ import it.govpay.core.exceptions.IOException;
 "contabilita",
 "dominio",
 "pendenza",
+"codiceContabilita",
+"tipoContabilita",
 })
 public class VocePendenzaRiscossione extends JSONSerializable {
 
@@ -47,6 +49,12 @@ public class VocePendenzaRiscossione extends JSONSerializable {
 
   @JsonProperty("pendenza")
   private PendenzaIndex pendenza = null;
+  
+  @JsonProperty("codiceContabilita")
+  private String codiceContabilita= null;
+  
+  @JsonProperty("tipoContabilita")
+  private TipoContabilita tipoContabilita= null;
 
   /**
    * indice di voce all'interno della pendenza
@@ -187,6 +195,32 @@ public class VocePendenzaRiscossione extends JSONSerializable {
   public void setPendenza(PendenzaIndex pendenza) {
     this.pendenza = pendenza;
   }
+  
+  public VocePendenzaRiscossione codiceContabilita(String codiceContabilita) {
+	    this.codiceContabilita= codiceContabilita;
+	    return this;
+  }
+
+  @JsonProperty("codiceContabilita")
+  public String getCodiceContabilita() {
+    return this.codiceContabilita;
+  }
+  public void setCodiceContabilita(String codiceContabilita) {
+    this.codiceContabilita = codiceContabilita;
+  }
+  
+  public VocePendenzaRiscossione tipoContabilita(TipoContabilita tipoContabilita) {
+	    this.tipoContabilita= tipoContabilita;
+	    return this;
+	  }
+  
+  @JsonProperty("tipoContabilita")
+  public TipoContabilita getTipoContabilita() {
+    return this.tipoContabilita;
+  }
+  public void setTipoContabilita(TipoContabilita tipoContabilita) {
+    this.tipoContabilita = tipoContabilita;
+  }
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -205,12 +239,14 @@ public class VocePendenzaRiscossione extends JSONSerializable {
         Objects.equals(descrizioneCausaleRPT, vocePendenzaRiscossione.descrizioneCausaleRPT) &&
         Objects.equals(contabilita, vocePendenzaRiscossione.contabilita) &&
         Objects.equals(dominio, vocePendenzaRiscossione.dominio) &&
-        Objects.equals(pendenza, vocePendenzaRiscossione.pendenza);
+        Objects.equals(pendenza, vocePendenzaRiscossione.pendenza) &&
+        Objects.equals(codiceContabilita, vocePendenzaRiscossione.codiceContabilita) &&
+        Objects.equals(tipoContabilita, vocePendenzaRiscossione.tipoContabilita);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, dominio, pendenza);
+    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, dominio, pendenza, codiceContabilita, tipoContabilita);
   }
 
   public static VocePendenzaRiscossione parse(String json) throws IOException {
@@ -236,6 +272,8 @@ public class VocePendenzaRiscossione extends JSONSerializable {
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
+    sb.append("    codiceContabilita: ").append(toIndentedString(codiceContabilita)).append("\n");
+    sb.append("    tipoContabilita: ").append(toIndentedString(tipoContabilita)).append("\n");
     sb.append("}");
     return sb.toString();
   }
