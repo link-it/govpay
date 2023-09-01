@@ -289,8 +289,8 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
   public String getCodiceContabilita() {
     return this.codiceContabilita;
   }
-  public void setCodiceContabilita(String CodiceContabilita) {
-    this.codiceContabilita = CodiceContabilita;
+  public void setCodiceContabilita(String codiceContabilita) {
+    this.codiceContabilita = codiceContabilita;
   }
 
   public VocePendenza ibanAccredito(String ibanAccredito) {
@@ -387,13 +387,14 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
         Objects.equals(this.ibanAccredito, vocePendenza.ibanAccredito) &&
         Objects.equals(this.ibanAppoggio, vocePendenza.ibanAppoggio) &&
         Objects.equals(this.tipoContabilita, vocePendenza.tipoContabilita) &&
+        Objects.equals(codEntrata, vocePendenza.codEntrata) &&
         Objects.equals(riscossioni, vocePendenza.riscossioni) &&
         Objects.equals(rendicontazioni, vocePendenza.rendicontazioni);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, this.stato, descrizioneCausaleRPT, contabilita, dominio, datiAllegati, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita,riscossioni, rendicontazioni);
+    return Objects.hash(this.indice, this.idVocePendenza, this.importo, this.descrizione, this.stato, descrizioneCausaleRPT, contabilita, dominio, datiAllegati, this.hashDocumento, this.tipoBollo, this.provinciaResidenza, this.codiceContabilita, this.ibanAccredito, this.tipoContabilita,riscossioni, rendicontazioni, codEntrata);
   }
 
   public static VocePendenza parse(String json) throws IOException {
@@ -428,6 +429,7 @@ public class VocePendenza extends it.govpay.core.beans.JSONSerializable {
     sb.append("    tipoContabilita: ").append(this.toIndentedString(this.tipoContabilita)).append("\n");
     sb.append("    riscossioni: ").append(toIndentedString(riscossioni)).append("\n");
     sb.append("    rendicontazioni: ").append(toIndentedString(rendicontazioni)).append("\n");
+    sb.append("    codEntrata: ").append(toIndentedString(codEntrata)).append("\n");
     sb.append("}");
     return sb.toString();
   }

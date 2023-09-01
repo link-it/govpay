@@ -17,8 +17,14 @@ import it.govpay.core.exceptions.IOException;
 "descrizioneCausaleRPT",
 "contabilita",
 "dominio",
+"hashDocumento",
+"tipoBollo",
+"provinciaResidenza",
+"codEntrata",
 "pendenza",
 "codiceContabilita",
+"ibanAccredito",
+"ibanAppoggio",
 "tipoContabilita",
 })
 public class VocePendenzaRiscossione extends JSONSerializable {
@@ -50,9 +56,27 @@ public class VocePendenzaRiscossione extends JSONSerializable {
   @JsonProperty("pendenza")
   private PendenzaIndex pendenza = null;
   
+  @JsonProperty("hashDocumento")
+  private String hashDocumento= null;
+
+  @JsonProperty("tipoBollo")
+  private String tipoBollo= null;
+
+  @JsonProperty("provinciaResidenza")
+  private String provinciaResidenza= null;
+
+  @JsonProperty("codEntrata")
+  private String codEntrata= null;
+
   @JsonProperty("codiceContabilita")
   private String codiceContabilita= null;
-  
+
+  @JsonProperty("ibanAccredito")
+  private String ibanAccredito= null;
+
+  @JsonProperty("ibanAppoggio")
+  private String ibanAppoggio= null;
+
   @JsonProperty("tipoContabilita")
   private TipoContabilita tipoContabilita= null;
 
@@ -195,10 +219,57 @@ public class VocePendenzaRiscossione extends JSONSerializable {
   public void setPendenza(PendenzaIndex pendenza) {
     this.pendenza = pendenza;
   }
-  
+
+  @JsonProperty("hashDocumento")
+  public String getHashDocumento() {
+    return this.hashDocumento;
+  }
+  public void setHashDocumento(String hashDocumento) {
+    this.hashDocumento = hashDocumento;
+  }
+
+  public VocePendenzaRiscossione tipoBollo(String tipoBollo) {
+    this.tipoBollo = tipoBollo;
+    return this;
+  }
+
+  @JsonProperty("tipoBollo")
+  public String getTipoBollo() {
+    return this.tipoBollo;
+  }
+  public void setTipoBollo(String tipoBollo) {
+    this.tipoBollo = tipoBollo;
+  }
+
+  public VocePendenzaRiscossione codEntrata(String codEntrata) {
+    this.codEntrata = codEntrata;
+    return this;
+  }
+
+  @JsonProperty("codEntrata")
+  public String getCodEntrata() {
+    return this.codEntrata;
+  }
+  public void setCodEntrata(String codEntrata) {
+    this.codEntrata= codEntrata;
+  }
+
+  public VocePendenzaRiscossione provinciaResidenza(String provinciaResidenza) {
+    this.provinciaResidenza = provinciaResidenza;
+    return this;
+  }
+
+  @JsonProperty("provinciaResidenza")
+  public String getProvinciaResidenza() {
+    return this.provinciaResidenza;
+  }
+  public void setProvinciaResidenza(String provinciaResidenza) {
+    this.provinciaResidenza = provinciaResidenza;
+  }
+
   public VocePendenzaRiscossione codiceContabilita(String codiceContabilita) {
-	    this.codiceContabilita= codiceContabilita;
-	    return this;
+    this.codiceContabilita= codiceContabilita;
+    return this;
   }
 
   @JsonProperty("codiceContabilita")
@@ -208,12 +279,38 @@ public class VocePendenzaRiscossione extends JSONSerializable {
   public void setCodiceContabilita(String codiceContabilita) {
     this.codiceContabilita = codiceContabilita;
   }
-  
+
+  public VocePendenzaRiscossione ibanAccredito(String ibanAccredito) {
+    this.ibanAccredito= ibanAccredito;
+    return this;
+  }
+
+  @JsonProperty("ibanAccredito")
+  public String getIbanAccredito() {
+    return this.ibanAccredito;
+  }
+  public void setIbanAccredito(String ibanAccredito) {
+    this.ibanAccredito = ibanAccredito;
+  }
+
   public VocePendenzaRiscossione tipoContabilita(TipoContabilita tipoContabilita) {
-	    this.tipoContabilita= tipoContabilita;
-	    return this;
-	  }
-  
+    this.tipoContabilita= tipoContabilita;
+    return this;
+  }
+
+	public VocePendenzaRiscossione ibanAppoggio(String ibanAppoggio) {
+		this.ibanAppoggio= ibanAppoggio;
+		return this;
+	}
+
+	@JsonProperty("ibanAppoggio")
+	public String getIbanAppoggio() {
+		return this.ibanAppoggio;
+	}
+	public void setIbanAppoggio(String ibanAppoggio) {
+		this.ibanAppoggio = ibanAppoggio;
+	}
+
   @JsonProperty("tipoContabilita")
   public TipoContabilita getTipoContabilita() {
     return this.tipoContabilita;
@@ -240,13 +337,19 @@ public class VocePendenzaRiscossione extends JSONSerializable {
         Objects.equals(contabilita, vocePendenzaRiscossione.contabilita) &&
         Objects.equals(dominio, vocePendenzaRiscossione.dominio) &&
         Objects.equals(pendenza, vocePendenzaRiscossione.pendenza) &&
-        Objects.equals(codiceContabilita, vocePendenzaRiscossione.codiceContabilita) &&
-        Objects.equals(tipoContabilita, vocePendenzaRiscossione.tipoContabilita);
+        Objects.equals(hashDocumento, vocePendenzaRiscossione.hashDocumento) &&
+	    Objects.equals(tipoBollo, vocePendenzaRiscossione.tipoBollo) &&
+	    Objects.equals(provinciaResidenza, vocePendenzaRiscossione.provinciaResidenza) &&
+	    Objects.equals(ibanAccredito, vocePendenzaRiscossione.ibanAccredito) &&
+	    Objects.equals(ibanAppoggio, vocePendenzaRiscossione.ibanAppoggio) &&
+	    Objects.equals(codiceContabilita, vocePendenzaRiscossione.codiceContabilita) &&
+        Objects.equals(tipoContabilita, vocePendenzaRiscossione.tipoContabilita) &&
+	    Objects.equals(codEntrata, vocePendenzaRiscossione.codEntrata);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, dominio, pendenza, codiceContabilita, tipoContabilita);
+    return Objects.hash(indice, idVocePendenza, importo, descrizione, stato, descrizioneCausaleRPT, contabilita, dominio, pendenza, hashDocumento, tipoBollo, provinciaResidenza, codiceContabilita, tipoContabilita, codEntrata);
   }
 
   public static VocePendenzaRiscossione parse(String json) throws IOException {
@@ -272,8 +375,14 @@ public class VocePendenzaRiscossione extends JSONSerializable {
     sb.append("    contabilita: ").append(toIndentedString(contabilita)).append("\n");
     sb.append("    dominio: ").append(toIndentedString(dominio)).append("\n");
     sb.append("    pendenza: ").append(toIndentedString(pendenza)).append("\n");
+    sb.append("    hashDocumento: ").append(toIndentedString(hashDocumento)).append("\n");
+    sb.append("    tipoBollo: ").append(toIndentedString(tipoBollo)).append("\n");
+    sb.append("    provinciaResidenza: ").append(toIndentedString(provinciaResidenza)).append("\n");
     sb.append("    codiceContabilita: ").append(toIndentedString(codiceContabilita)).append("\n");
+    sb.append("    ibanAccredito: ").append(toIndentedString(ibanAccredito)).append("\n");
+    sb.append("    ibanAppoggio: ").append(toIndentedString(ibanAppoggio)).append("\n");
     sb.append("    tipoContabilita: ").append(toIndentedString(tipoContabilita)).append("\n");
+    sb.append("    codEntrata: ").append(toIndentedString(codEntrata)).append("\n");
     sb.append("}");
     return sb.toString();
   }

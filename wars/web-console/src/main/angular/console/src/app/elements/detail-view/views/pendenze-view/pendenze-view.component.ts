@@ -188,7 +188,13 @@ export class PendenzeViewComponent implements IModalDialog, IExport, OnInit {
       this._paymentsSum += UtilService.defaultDisplay({ value: item.importo, text: 0 });
       let p = new Parameters();
       _std.item = item;
-      _std.item.idDominio = this.json.dominio.idDominio;
+      if(item.dominio){
+		_std.item.dominio = item.dominio;
+		_std.item.idDominio = item.dominio.idDominio;
+	  } else {
+		_std.item.dominio = this.json.dominio;
+		_std.item.idDominio = this.json.dominio.idDominio;
+	  }
       p.jsonP = item;
       p.model = _std;
       p.type = UtilService.NEW_STANDARD_COLLAPSE;

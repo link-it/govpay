@@ -179,6 +179,7 @@ export class Voce {
   public static LUOGO: string = 'Località';
   public static LAYOUT_FORM_DATI: string = 'Layout form dati';
 
+  public static METADATA: string = 'Metadata';
   public static MODULO: string = 'Modulo interno che ha emesso l\'evento';
   public static MODALITA_CONNETTORE: string = 'Modalità consegna';
   public static MODELLO_PAGAMENTO: string = 'Modello pagamento';

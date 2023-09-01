@@ -149,8 +149,8 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
             vals.push(index + '');
           }
           _std.sottotitolo = Dato.arraysToDato(lbls, vals, ', ');
-          if(item.fiscalCodePA) {
-            _std.elenco.push({ label: Voce.ENTE_CREDITORE, value: item.fiscalCodePA, type: 'string' });
+          if(_json.rt.enteBeneficiario) {
+			_std.elenco.push({ label: Voce.ENTE_CREDITORE, value: `${_json.rt.enteBeneficiario.denominazioneBeneficiario} (${_json.rt.enteBeneficiario.identificativoUnivocoBeneficiario.codiceIdentificativoUnivoco})`, type: 'string' });
           }
           if(item.IBAN) {
             _std.elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.IBAN, type: 'string' });
@@ -196,13 +196,21 @@ export class RicevuteViewComponent implements IModalDialog, IExport, OnInit {
           _std.sottotitolo = Dato.arraysToDato(lbls, vals, ', ');
           if(item.fiscalCodePA) {
             _std.elenco.push({ label: Voce.ENTE_CREDITORE, value: item.fiscalCodePA, type: 'string' });
-          }
+          } else {
+			_std.elenco.push({ label: Voce.ENTE_CREDITORE, value: `${_json.rt.companyName} (${_json.rt.fiscalCode})`, type: 'string' });
+		  }
           if(item.IBAN) {
             _std.elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.IBAN, type: 'string' });
           }
           if(item.transferCategory) {
             _std.elenco.push({ label: Voce.TASSONOMIA, value: item.transferCategory, type: 'string' });
           }
+          // Metadata
+          if (item.metadata && item.metadata.mapEntry) {
+            this._elenco.push({ label: Voce.METADATA, value: item.metadata.mapEntry, type: 'quote' });
+          }	
+          
+          
           _std.importo = this.us.currencyFormat(item.transferAmount);
           _std.stato = item.stato;
           // this._paymentsSum += UtilService.defaultDisplay({ value: item.transferAmount, text: 0 });
