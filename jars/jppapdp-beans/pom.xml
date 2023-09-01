@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>jars</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>3.7.4-SNAPSHOT</version>
+		<version>3.7.4</version>
 	</parent>
 
 	<artifactId>jppapdp-beans</artifactId>
