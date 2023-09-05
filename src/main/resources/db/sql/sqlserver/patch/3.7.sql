@@ -390,3 +390,9 @@ CREATE INDEX idx_fr_data_acq ON fr (data_acquisizione);
 CREATE INDEX idx_prt_data_richiesta ON pagamenti_portale (data_richiesta);
 CREATE INDEX idx_pag_data_acq ON pagamenti (data_acquisizione);
 
+
+-- 05/09/2023 fix modifica connettori con tipo autenticazione subscription key
+UPDATE connettori SET valore ='NONE' WHERE cod_proprieta = 'TIPOAUTENTICAZIONE' and valore = 'SUBSCRIPTION_KEY';
+
+
+
