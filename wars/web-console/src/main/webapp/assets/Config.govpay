@@ -114,7 +114,10 @@
       POLLING_TRACCIATI: ${it.govpay.backoffice.gui.export.polling}   // Timeout per tracciati NN(millisec)|false
     },
     GESTIONE_PAGAMENTI: {
-      ENABLED: ${it.govpay.backoffice.gui.sezionePagamenti.enabled} 
+      ENABLED: ${it.govpay.backoffice.gui.sezionePagamenti.enabled}  // abilita la sezione pagamenti
+    },
+    GESTIONE_RISCOSSIONI: {
+      ENABLED: ${it.govpay.backoffice.gui.sezioneRiscossioni.enabled}  // abilita la sezione riscossioni
     }
   };
 
