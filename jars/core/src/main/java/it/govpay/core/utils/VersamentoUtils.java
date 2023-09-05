@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.ws.rs.core.MultivaluedMap;
 import javax.xml.namespace.QName;
@@ -161,7 +162,7 @@ public class VersamentoUtils {
 		}
 	}
 
-	public static void validazioneSemanticaAggiornamento(Versamento versamentoLetto, Versamento versamentoNuovo) throws GovPayException, ServiceException {
+	public static void validazioneSemanticaAggiornamento(Versamento versamentoLetto, Versamento versamentoNuovo, Logger log) throws GovPayException, ServiceException {
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 		
 		if(!versamentoLetto.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO) && !versamentoLetto.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
@@ -183,21 +184,47 @@ public class VersamentoUtils {
 			throw new GovPayException(EsitoOperazione.VER_024, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), versamentoNuovo.getNumeroAvviso(), versamentoLetto.getNumeroAvviso());
 		}
 
+		log.trace("Verifica semantica delle voci pendenza in corso...");
+		
 		List<SingoloVersamento> singoliversamentiLetti = versamentoLetto.getSingoliVersamenti();
 		List<SingoloVersamento> singoliVersamentiNuovi = versamentoNuovo.getSingoliVersamenti();
+		
+		log.trace("Verifica numero voci pendenza: originali [{}], nuove[{}]", singoliversamentiLetti.size(), singoliVersamentiNuovi.size());
 
 		if(singoliVersamentiNuovi.size() < singoliversamentiLetti.size()) {
 			throw new GovPayException(EsitoOperazione.VER_005, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), Integer.toString(singoliVersamentiNuovi.size()), Integer.toString(singoliversamentiLetti.size()));
 		}
+		
+		log.trace("Ordinamento voci pendenza originali per indice dati...");
+		// ordino le voci vecchie per indice dati. 
 		Collections.sort(singoliversamentiLetti);
-		Collections.sort(singoliVersamentiNuovi);
+		log.trace("Ordinamento voci pendenza originali per indice dati completato");
+		
+		Map<String, SingoloVersamento> mapSingoliVersamentiNuovi = new HashMap<>();
+		
+		// salvo i nuovi singoli versamenti in una mappa per poterli leggere velocemente
+		for (SingoloVersamento singoloVersamento : singoliVersamentiNuovi) {
+			mapSingoliVersamentiNuovi.put(singoloVersamento.getCodSingoloVersamentoEnte(), singoloVersamento);
+		}
+		
+//		Collections.sort(singoliVersamentiNuovi);
 
 		for(int i=0; i<singoliversamentiLetti.size(); i++) {
 			SingoloVersamento letto = singoliversamentiLetti.get(i);
-			SingoloVersamento nuovo = singoliVersamentiNuovi.get(i);
+			log.trace("Verifica voce pendenza con id [{}], indice dati [{}] ...", letto.getCodSingoloVersamentoEnte(), letto.getIndiceDati());
+			
+			// rimuovo le voci man mano che le trovo
+			SingoloVersamento nuovo = mapSingoliVersamentiNuovi.remove(letto.getCodSingoloVersamentoEnte());
+			
+			if(nuovo == null) { // la voce ricercata non esiste nelle nuove voci
+				log.trace("Non e' stata trovata tra le voci pendenza aggiornate una con id [{}].", letto.getCodSingoloVersamentoEnte());
+				throw new GovPayException(EsitoOperazione.VER_006, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte());
+			}
+			
+			log.trace("Trovata tra le voci pendenza aggiornate una con id [{}], indice dati [{}], effettuo le verifiche semantiche.", nuovo.getCodSingoloVersamentoEnte(), nuovo.getIndiceDati());
 
 			if(!letto.getCodSingoloVersamentoEnte().equals(nuovo.getCodSingoloVersamentoEnte())) {
-				throw new GovPayException(EsitoOperazione.VER_006, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte());
+				throw new GovPayException(EsitoOperazione.VER_006, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), nuovo.getCodSingoloVersamentoEnte());
 			}
 
 			if(letto.getIdTributo() != null || nuovo.getIdTributo() != null) { // se sono entrambi null OK
@@ -219,9 +246,27 @@ public class VersamentoUtils {
 					throw new GovPayException(EsitoOperazione.VER_023, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte());
 				}
 			}
+			
+			log.trace("Verifiche semantiche per la voce pendenza aggiornate una con id [{}] completate, assegno alla nuova voce l'indice dati [{}].", nuovo.getCodSingoloVersamentoEnte(), letto.getIndiceDati());
+			
 			nuovo.setId(letto.getId());
 			nuovo.setIdVersamento(letto.getIdVersamento());
+			// aggiornamento indice dati
+			nuovo.setIndiceDati(letto.getIndiceDati());
 		}
+		
+		if(!mapSingoliVersamentiNuovi.isEmpty()) { // se sono state aggiunte delle voci allora assegno l'indice dati fino ad arrivare a 5 voci.
+			int indiceDati = singoliversamentiLetti.get(singoliversamentiLetti.size() - 1).getIndiceDati();
+			
+			log.trace("Assegno l'indice dati alle [{}] nuove voci pendenza.", mapSingoliVersamentiNuovi.size());
+			for (Entry<String, SingoloVersamento> entry : mapSingoliVersamentiNuovi.entrySet()) {
+				indiceDati ++;
+				log.trace("Assegno alla nuova voce pendenza con id [{}] l'indice dati [{}].", entry.getValue().getCodSingoloVersamentoEnte(), indiceDati);
+				entry.getValue().setIndiceDati(indiceDati);
+			}
+		}
+		
+		log.trace("Verifica semantica delle voci pendenza completata.");
 	}
 
 	public static Versamento aggiornaVersamento(Versamento versamento, Logger log) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, 
