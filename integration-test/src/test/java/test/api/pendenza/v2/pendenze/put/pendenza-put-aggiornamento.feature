@@ -181,3 +181,87 @@ And headers idA2ABasicAutenticationHeader
 When method get
 Then status 200
 And match response == pendenzaGetResponse
+
+Scenario: Aggiornamento pendenza non pagata con aggiunta di una voce
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_multivoce.json')
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+* def pendenzaPutResponse = response
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+
+* def pendenzaPutUpdate = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_multivoce_update.json')
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPutUpdate
+When method put
+Then status 200
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+
+* def pendenzaGetResponse = response
+
+* set pendenzaGetResponse.importo = pendenzaPutUpdate.importo
+* set pendenzaGetResponse.voci[0].importo = pendenzaPutUpdate.voci[0].importo
+* set pendenzaGetResponse.voci[1].importo = pendenzaPutUpdate.voci[1].importo
+* set pendenzaGetResponse.voci[2].importo = pendenzaPutUpdate.voci[2].importo
+* set pendenzaGetResponse.causale = pendenzaPutUpdate.causale 
+* set pendenzaGetResponse.dataValidita = pendenzaPutUpdate.dataValidita
+* set pendenzaGetResponse.dataScadenza = pendenzaPutUpdate.dataScadenza
+
+Scenario: Aggiornamento pendenza non pagata con rimozione di una voce
+
+* def idPendenza = getCurrentTimeMillis()
+* def pendenzaPut = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_multivoce_update.json')
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPut
+When method put
+Then status 201
+
+* def pendenzaPutResponse = response
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+When method get
+Then status 200
+
+* def pendenzaPutUpdate = read('classpath:test/api/pendenza/v2/pendenze/put/msg/pendenza-put_multivoce.json')
+
+Given url pendenzeBaseurl
+And path '/pendenze', idA2A, idPendenza
+And headers idA2ABasicAutenticationHeader
+And request pendenzaPutUpdate
+When method put
+Then status 422
+And match response == 
+"""
+{ 
+	categoria: 'RICHIESTA',
+	codice: 'VER_005',
+	descrizione: 'Richiesta non valida',
+        dettaglio: '#("La pendenza (IdA2A:" + idA2A + ", Id:" + idPendenza + ") inviato ha un numero di singoli versamenti (2) diverso da quello originale (3)")'
+}
+"""
+

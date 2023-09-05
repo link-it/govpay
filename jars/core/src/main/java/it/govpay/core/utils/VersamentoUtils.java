@@ -186,8 +186,8 @@ public class VersamentoUtils {
 		List<SingoloVersamento> singoliversamentiLetti = versamentoLetto.getSingoliVersamenti();
 		List<SingoloVersamento> singoliVersamentiNuovi = versamentoNuovo.getSingoliVersamenti();
 
-		if(singoliversamentiLetti.size() != singoliVersamentiNuovi.size()) {
-			throw new GovPayException(EsitoOperazione.VER_005, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), Integer.toString(singoliversamentiLetti.size()), Integer.toString(singoliVersamentiNuovi.size()));
+		if(singoliVersamentiNuovi.size() < singoliversamentiLetti.size()) {
+			throw new GovPayException(EsitoOperazione.VER_005, versamentoNuovo.getApplicazione(configWrapper).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), Integer.toString(singoliVersamentiNuovi.size()), Integer.toString(singoliversamentiLetti.size()));
 		}
 		Collections.sort(singoliversamentiLetti);
 		Collections.sort(singoliVersamentiNuovi);
