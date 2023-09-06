@@ -103,6 +103,8 @@ When method get
 
 * call read('classpath:utils/pa-notifica-terminazione-byIdSession.feature')
 
+* call sleep(3000)
+
 * def dataEnd = getDateTime()
 
 * def iur1 = response.rt.datiPagamento.datiSingoloPagamento[0].identificativoUnivocoRiscossione
