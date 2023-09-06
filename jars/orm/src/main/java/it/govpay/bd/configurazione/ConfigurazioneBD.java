@@ -27,7 +27,7 @@ public class ConfigurazioneBD extends BasicBD {
 	}
 	
 	public ConfigurazioneBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 
 	public Configurazione getConfigurazione() throws NotFoundException, ServiceException{
@@ -70,6 +70,7 @@ public class ConfigurazioneBD extends BasicBD {
 				log.debug("Salvataggio configurazione entry ["+vo.getNome()+"] completato...");
 			}
 			
+			this.emitAudit(configurazione);
 			log.debug("Salvataggio configurazione completato.");
 		} catch (NotImplementedException | IOException e) {
 			throw new ServiceException(e);

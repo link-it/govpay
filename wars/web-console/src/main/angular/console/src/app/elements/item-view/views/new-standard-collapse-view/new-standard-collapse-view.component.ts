@@ -42,36 +42,59 @@ export class NewStandardCollapseViewComponent implements OnInit, AfterViewInit {
   }
 
   createElenco() {
-    const item = this.info.item;
-    if (item) {
-      this.info.stato = this.info.item.data ? moment(this.info.item.data).format('DD/MM/YYYY') : '';
-      if (item.vocePendenza) { // Riconciliazioni/Pagamenti
-        const vocePendenza = item.vocePendenza;
-        const pendenza = vocePendenza.pendenza;
-        this._elenco.push({ label: Voce.ENTE_CREDITORE, value: `${pendenza.dominio.ragioneSociale} (${pendenza.dominio.idDominio})`, type: 'string' });
-        this._elenco.push({ label: Voce.DEBITORE, value: `${pendenza.soggettoPagatore.anagrafica} (${pendenza.soggettoPagatore.identificativo})`, type: 'string' });
-        this._elenco.push({ label: Voce.TIPO_PENDENZA, value: `${pendenza.tipoPendenza.idTipoPendenza} - ${pendenza.tipoPendenza.descrizione}`, type: 'string' });
-        if (vocePendenza.contabilita && vocePendenza.contabilita.quote) {
-          this._elenco.push({ label: Voce.QUOTE, value: vocePendenza.contabilita.quote, type: 'quote' });
-        }
-        if (pendenza.datiAllegati) {
-          this._elenco.push({ label: Voce.CONTENUTO_ALLEGATO, value: pendenza.datiAllegati, type: 'allegati' });
-        }
-      } else { // Pendenze/Dettaglio/Importi
-        if (!item.tipoBollo) {
-          if (item.codEntrata) {
-            this._elenco.push({ label: Voce.CODICE_ENTRATA, value: item.codEntrata, type: 'string' });
-            if (item.idDominio) {
-              this.getEntrata(item.idDominio, item.codEntrata);
+    if (this.info.elenco && this.info.motivo === 'force_elenco') {
+      this._elenco = this.info.elenco;
+    } else {
+      const item = this.info.item;
+      if (item) {
+        this.info.stato = this.info.item.data ? moment(this.info.item.data).format('DD/MM/YYYY') : '';
+        if (item.vocePendenza) { // Riconciliazioni/Pagamenti
+          const vocePendenza = item.vocePendenza;
+          const pendenza = vocePendenza.pendenza;
+          
+          let dominio;
+          if (vocePendenza.dominio) {
+			dominio = vocePendenza.dominio;
+    	  } else {
+			dominio = pendenza.dominio;
+          }      
+          this._elenco.push({ label: Voce.ENTE_CREDITORE, value: `${dominio.ragioneSociale} (${dominio.idDominio})`, type: 'string' });
+          this._elenco.push({ label: Voce.DEBITORE, value: `${pendenza.soggettoPagatore.anagrafica} (${pendenza.soggettoPagatore.identificativo})`, type: 'string' });
+          // this._elenco.push({ label: Voce.TIPO_PENDENZA, value: `${pendenza.tipoPendenza.idTipoPendenza} - ${pendenza.tipoPendenza.descrizione}`, type: 'string' });
+          if (vocePendenza.codEntrata) {
+              this._elenco.push({ label: Voce.CODICE_ENTRATA, value: vocePendenza.codEntrata, type: 'string' });
+              this.getEntrataRiconciliazione(dominio.idDominio, vocePendenza.codEntrata, vocePendenza);
+          }
+          if(vocePendenza.tipoContabilita && vocePendenza.codiceContabilita){
+				let tipoContabilitaLabel =  UtilService.TIPI_CONTABILITA_NUMERICHE[vocePendenza.tipoContabilita];
+				this._elenco.push({ label: Voce.TASSONOMIA, value: Dato.concatStrings([tipoContabilitaLabel, vocePendenza.codiceContabilita], '/'), type: 'string' });
+			
+			if (vocePendenza.contabilita && vocePendenza.contabilita.quote) {
+	            this._elenco.push({ label: Voce.DETTAGLIO_CONTABILITA, value: vocePendenza.contabilita.quote, type: 'quote' });
+	          }	
+		  }
+          
+          if (pendenza.datiAllegati) {
+            this._elenco.push({ label: Voce.CONTENUTO_ALLEGATO, value: pendenza.datiAllegati, type: 'allegati' });
+          }
+        } else { // Pendenze/Dettaglio/Importi
+          this._elenco.push({ label: Voce.ENTE_CREDITORE, value: `${item.dominio.ragioneSociale} (${item.dominio.idDominio})`, type: 'string' });
+          if (!item.tipoBollo) {
+            if (item.codEntrata) {
+              this._elenco.push({ label: Voce.CODICE_ENTRATA, value: item.codEntrata, type: 'string' });
+              if (item.idDominio) {
+                this.getEntrata(item.idDominio, item.codEntrata);
+              }
+            } else {
+			  let tipoContabilitaLabel =  UtilService.TIPI_CONTABILITA_NUMERICHE[item.tipoContabilita];
+              this._elenco.push({ label: Voce.TASSONOMIA, value: Dato.concatStrings([tipoContabilitaLabel, item.codiceContabilita], '/'), type: 'string' });
+              this._elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.ibanAccredito, type: 'string' });
+              if(item.ibanAppoggio){
+              this._elenco.push({ label: Voce.CONTO_APPOGGIO, value: item.ibanAppoggio, type: 'string' });
             }
-          } else {
-            this._elenco.push({ label: Voce.CONTABILITA, value: Dato.concatStrings([item.tipoContabilita, item.codiceContabilita], ', '), type: 'string' });
-            this._elenco.push({ label: Voce.CONTO_ACCREDITO, value: item.ibanAccredito, type: 'string' });
-            if(item.ibanAppoggio){
-				this._elenco.push({ label: Voce.CONTO_APPOGGIO, value: item.ibanAppoggio, type: 'string' });
-			}
-            if (item.contabilita && item.contabilita.quote) {
-              this._elenco.push({ label: Voce.QUOTE, value: item.contabilita.quote, type: 'quote' });
+              if (item.contabilita && item.contabilita.quote) {
+                this._elenco.push({ label: Voce.DETTAGLIO_CONTABILITA, value: item.contabilita.quote, type: 'quote' });
+              }
             }
           }
         }
@@ -88,15 +111,43 @@ export class NewStandardCollapseViewComponent implements OnInit, AfterViewInit {
         if (_response.body) {
           const entrata = _response.body;
           if(entrata.tipoContabilita && entrata.codiceContabilita){
-				this._elenco.push({ label: Voce.CONTABILITA, value: Dato.concatStrings([entrata.tipoContabilita, entrata.codiceContabilita], ', '), type: 'string' });
+				let tipoContabilitaLabel =  UtilService.TIPI_CONTABILITA_NUMERICHE[entrata.tipoContabilita];
+				this._elenco.push({ label: Voce.TASSONOMIA, value: Dato.concatStrings([tipoContabilitaLabel, entrata.codiceContabilita], '/'), type: 'string' });
 		  }
           this._elenco.push({ label: Voce.CONTO_ACCREDITO, value: entrata.ibanAccredito, type: 'string' });
           if(entrata.ibanAppoggio){
 				this._elenco.push({ label: Voce.CONTO_APPOGGIO, value: entrata.ibanAppoggio, type: 'string' });
 			}
           if (this.info.item.contabilita && this.info.item.contabilita.quote) {
-            this._elenco.push({ label: Voce.QUOTE, value: this.info.item.contabilita.quote, type: 'quote' });
+            this._elenco.push({ label: Voce.DETTAGLIO_CONTABILITA, value: this.info.item.contabilita.quote, type: 'quote' });
           }
+        }
+      }.bind(this),
+      (error) => {
+        this.gps.updateSpinner(false);
+        this.us.onError(error);
+      });
+  }
+  
+    protected getEntrataRiconciliazione(idDominio, idEntrata, vocePendenza) {
+    // /domini/idDominio/entrate/idEntrata
+    const _url = UtilService.URL_DOMINI + '/' + UtilService.EncodeURIComponent(idDominio) + '/' + UtilService.ENTRATE + '/' + idEntrata;
+    this.gps.getDataService(_url).subscribe(
+      function (_response) {
+        this.gps.updateSpinner(false);
+        if (_response.body) {
+          const entrata = _response.body;
+          if(entrata.tipoContabilita && entrata.codiceContabilita){
+				let tipoContabilitaLabel =  UtilService.TIPI_CONTABILITA_NUMERICHE[entrata.tipoContabilita];
+				this._elenco.push({ label: Voce.TASSONOMIA, value: Dato.concatStrings([tipoContabilitaLabel, entrata.codiceContabilita], '/'), type: 'string' });
+		  }
+//          this._elenco.push({ label: Voce.CONTO_ACCREDITO, value: entrata.ibanAccredito, type: 'string' });
+//          if(entrata.ibanAppoggio){
+//				this._elenco.push({ label: Voce.CONTO_APPOGGIO, value: entrata.ibanAppoggio, type: 'string' });
+//			}
+			if (vocePendenza.contabilita && vocePendenza.contabilita.quote) {
+	            this._elenco.push({ label: Voce.DETTAGLIO_CONTABILITA, value: vocePendenza.contabilita.quote, type: 'quote' });
+	        }	
         }
       }.bind(this),
       (error) => {

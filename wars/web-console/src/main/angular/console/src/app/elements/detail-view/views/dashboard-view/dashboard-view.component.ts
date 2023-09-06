@@ -113,7 +113,7 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   initDashboard() {
     if(UtilService.PROFILO_UTENTE) {
       this.hasAuthentication = true;
-      this.hasPagamenti = UtilService.USER_ACL.hasPagamenti;
+      this.hasPagamenti = UtilService.USER_ACL.hasPagamenti && UtilService.GESTIONE_PAGAMENTI.ENABLED;
       if(this.hasPagamenti) {
         this.initBadges();
       }

@@ -60,7 +60,7 @@ public class StazioniBD extends BasicBD {
 	}
 	
 	public StazioniBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 
 	public void insertStazione(Stazione stazione) throws ServiceException {

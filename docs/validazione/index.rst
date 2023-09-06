@@ -90,7 +90,8 @@ Le seguenti segnalazioni riguardano le librerie utilizzate dall'installer di Gov
 - CVE-2022-23437
 - CVE-2022-24823
 - CVE-2022-41881
-- CVE-2022-41915 
+- CVE-2022-41915
+- CVE-2023-34462
 
 
 Test di copertura funzionale

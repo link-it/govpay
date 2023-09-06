@@ -19,8 +19,11 @@
  */
 package it.govpay.core.utils;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +78,27 @@ import it.govpay.pagopa.beans.utils.JaxbUtils;
 
 public class CtPaymentPABuilder {
 
+	public static final String CONTABILITA_QUOTA_TIPO_CONTABILIZZAZIONE_PARAM_KEY = "RC_TIP_{0}";
+	public static final String CONTABILITA_QUOTA_TIPO_CONTABILIZZAZIONE_PARAM_VALUE_DL118 = "CORRISPETTIVO_DL118";
+	public static final String CONTABILITA_QUOTA_TIPO_CONTABILIZZAZIONE_PARAM_VALUE_TIPICO = "INCASSO_TIPICO";
+	public static final String CONTABILITA_QUOTA_TIPO_CONTABILIZZAZIONE_PARAM_CIVILISTICO = "CIVILISTICO";
+	// Corrispettivo DL 118
+	public static final String CONTABILITA_QUOTA_ANNO_COMPETENZA_PARAM_KEY = "RC_AC_{0}";
+	public static final String CONTABILITA_QUOTA_CODICE_UFFICIO_PARAM_KEY = "RC_CU_{0}";
+	public static final String CONTABILITA_QUOTA_CAPITOLO_PARAM_KEY = "RC_CAP_{0}";
+	public static final String CONTABILITA_QUOTA_ACCERTAMENTO_PARAM_KEY = "RC_ACC_{0}";
+	public static final String CONTABILITA_QUOTA_ARTICOLO_PARAM_KEY = "RC_ART_{0}";
+	public static final String CONTABILITA_QUOTA_FP5LIVELLO_PARAM_KEY = "RC_PF5_{0}";
+	public static final String CONTABILITA_QUOTA_IMPORTO_PARAM_KEY = "RC_IMP_{0}";
+	// Incasso Tipico
+	public static final String CONTABILITA_QUOTA_TIPO_INCASSO_PARAM_KEY = "RC_TI_{0}";
+	public static final String CONTABILITA_QUOTA_EMISSIONE_FATTURA_PARAM_KEY = "RC_EF_{0}";
+	public static final String CONTABILITA_QUOTA_NUMERO_DOCUMENTO_PARAM_KEY = "RC_ND_{0}";
+	// Civilistico
+	public static final String CONTABILITA_QUOTA_CONTO_PARAM_KEY = "RC_CON_{0}";
+	public static final String CONTABILITA_QUOTA_COMMESSA_PARAM_KEY = "RC_COM_{0}";
+
+	// vecchie chiavi
 	public static final String CONTABILITA_QUOTA_CAPITOLO_BILANCIO_KEY = "CAPITOLOBILANCIO";
 	public static final String CONTABILITA_QUOTA_ARTICOLO_BILANCIO_KEY = "ARTICOLOBILANCIO";
 	public static final String CONTABILITA_QUOTA_CODICE_ACCERTAMENTO_KEY = "CODICEACCERTAMENTO";
@@ -84,7 +108,7 @@ public class CtPaymentPABuilder {
 	public static final String CONTABILITA_QUOTA_TIPOLOGIA_BILANCIO_KEY = "TIPOLOGIABILANCIO";
 	public static final String CONTABILITA_QUOTA_ENTRY_KEY = "CAPITOLOBILANCIO,ARTICOLOBILANCIO,CODICEACCERTAMENTO,ANNORIFERIMENTO,TITOLOBILANCIO,CATEGORIABILANCIO,TIPOLOGIABILANCIO,IMPORTOEUROCENT";
 
-	public Rpt buildRptAttivata (PaGetPaymentReq requestBody, Versamento versamento, String iuv, String ccp, String numeroavviso) throws ServiceException {
+	public Rpt buildRptAttivata (PaGetPaymentReq requestBody, Versamento versamento, String iuv, String ccp, String numeroavviso) throws ServiceException, IOException {
 
 		return this.buildRpt(requestBody,
 				null,
@@ -108,7 +132,7 @@ public class CtPaymentPABuilder {
 			TipoVersamento tipoVersamento,
 			ModelloPagamento modelloPagamento,
 			String autenticazione, 
-			String redirect) throws ServiceException {
+			String redirect) throws ServiceException, IOException {
 
 		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
 
@@ -166,14 +190,7 @@ public class CtPaymentPABuilder {
 		// https://github.com/pagopa/pagopa-api/issues/194
 
 		ctRpt.setPaymentAmount(versamento.getImportoTotale());
-
-		if(versamento.getDataValidita() != null) {
-			ctRpt.setDueDate(versamento.getDataValidita()); // indicates the expiration payment date
-		} else if(versamento.getDataScadenza() != null) {
-			ctRpt.setDueDate(versamento.getDataScadenza()); // indicates the expiration payment date
-		} else {
-			ctRpt.setDueDate(new Date(32503590000000l)); //31.12.2999
-		}                             
+		ctRpt.setDueDate(calcolaDueDate(versamento));
 
 		// Capire se il numero avviso utilizzato e' relativo alla rata di un documento, 
 		// nel caso sia l'ultima valorizzare true altrimenti e' sempre false
@@ -296,6 +313,8 @@ public class CtPaymentPABuilder {
 			// TODO come generare la stringa indicata nell'xsd
 
 			transferEl.setTransferCategory(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
+
+			transferEl.setMetadata(impostaValoriContabilita(singoloVersamento));
 
 			transferList.getTransfer().add(transferEl );
 			i++;
@@ -424,14 +443,7 @@ public class CtPaymentPABuilder {
 		// https://github.com/pagopa/pagopa-api/issues/194
 
 		ctRpt.setPaymentAmount(versamento.getImportoTotale());
-
-		if(versamento.getDataValidita() != null) {
-			ctRpt.setDueDate(versamento.getDataValidita()); // indicates the expiration payment date
-		} else if(versamento.getDataScadenza() != null) {
-			ctRpt.setDueDate(versamento.getDataScadenza()); // indicates the expiration payment date
-		} else {
-			ctRpt.setDueDate(new Date(32503590000000l)); //31.12.2999
-		}                             
+		ctRpt.setDueDate(calcolaDueDate(versamento));
 
 		// Capire se il numero avviso utilizzato e' relativo alla rata di un documento, 
 		// nel caso sia l'ultima valorizzare true altrimenti e' sempre false
@@ -574,7 +586,7 @@ public class CtPaymentPABuilder {
 
 			transferEl.setTransferCategory(singoloVersamento.getTipoContabilita(configWrapper).getCodifica() + "/" + singoloVersamento.getCodContabilita(configWrapper));
 
-			impostaValoriContabilita(singoloVersamento, transferEl);
+			transferEl.setMetadata(impostaValoriContabilita(singoloVersamento));
 
 			transferList.getTransfer().add(transferEl );
 			i++;
@@ -593,7 +605,8 @@ public class CtPaymentPABuilder {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void impostaValoriContabilita(SingoloVersamento singoloVersamento, CtTransferPAV2 transferEl) throws IOException {
+	private static CtMetadata impostaValoriContabilita(SingoloVersamento singoloVersamento) throws IOException {
+		CtMetadata ctMetadata = null;
 		// Gestione della Contabilita' inserendo le informazioni nel campo metadati
 		String contabilitaString = singoloVersamento.getContabilita();
 
@@ -603,118 +616,118 @@ public class CtPaymentPABuilder {
 			List<QuotaContabilita> quote = dto.getQuote();
 
 			if(quote != null && quote.size() > 0) {
-				CtMetadata ctMetadata = new CtMetadata();
-				
+				ctMetadata = new CtMetadata();
+
 				if(quote.size() == 1) {
 					QuotaContabilita quotaContabilita = quote.get(0);
 
 					// CAPITOLOBILANCIO: valorizzato con capitolo
 					if(quotaContabilita.getCapitolo() != null) {
 						CtMapEntry ctMapEntry = new CtMapEntry();
-						
+
 						ctMapEntry.setKey(CONTABILITA_QUOTA_CAPITOLO_BILANCIO_KEY);
 						ctMapEntry.setValue(quotaContabilita.getCapitolo());
-						
+
 						ctMetadata.getMapEntry().add(ctMapEntry );
 					}
 
 					// ARTICOLOBILANCIO: valorizzato con articolo
 					if(quotaContabilita.getArticolo() != null) {
 						CtMapEntry ctMapEntry = new CtMapEntry();
-						
+
 						ctMapEntry.setKey(CONTABILITA_QUOTA_ARTICOLO_BILANCIO_KEY);
 						ctMapEntry.setValue(quotaContabilita.getArticolo());
-						
+
 						ctMetadata.getMapEntry().add(ctMapEntry );
 					}
 
 					// CODICEACCERTAMENTO: valorizzato con accertamento
 					if(quotaContabilita.getAccertamento() != null) {
 						CtMapEntry ctMapEntry = new CtMapEntry();
-						
+
 						ctMapEntry.setKey(CONTABILITA_QUOTA_CODICE_ACCERTAMENTO_KEY);
 						ctMapEntry.setValue(quotaContabilita.getAccertamento());
-						
+
 						ctMetadata.getMapEntry().add(ctMapEntry );
 					}
 
 					// ANNORIFERIMENTO: valorizzato con annoEsercizio
 					{
 						CtMapEntry ctMapEntry = new CtMapEntry();
-						
+
 						ctMapEntry.setKey(CONTABILITA_QUOTA_ANNO_RIFERIMENTO_KEY);
 						ctMapEntry.setValue(quotaContabilita.getAnnoEsercizio() + "");
-						
+
 						ctMetadata.getMapEntry().add(ctMapEntry );
 					}
 
 					// TITOLOBILANCIO: valorizzato con titolo
 					if(quotaContabilita.getTitolo() != null) {
 						CtMapEntry ctMapEntry = new CtMapEntry();
-						
+
 						ctMapEntry.setKey(CONTABILITA_QUOTA_TITOLO_BILANCIO_KEY);
 						ctMapEntry.setValue(quotaContabilita.getTitolo());
-						
+
 						ctMetadata.getMapEntry().add(ctMapEntry );
 					}
 
 					// CATEGORIABILANCIO: valorizzato con categoria
 					if(quotaContabilita.getCategoria() != null) {
 						CtMapEntry ctMapEntry = new CtMapEntry();
-						
+
 						ctMapEntry.setKey(CONTABILITA_QUOTA_CATEGORIA_BILANCIO_KEY);
 						ctMapEntry.setValue(quotaContabilita.getCategoria());
-						
+
 						ctMetadata.getMapEntry().add(ctMapEntry );
 					}
-					
+
 					// TIPOLOGIABILANCIO: valorizzato con tipologia
 					if(quotaContabilita.getTipologia() != null) {
 						CtMapEntry ctMapEntry = new CtMapEntry();
-						
+
 						ctMapEntry.setKey(CONTABILITA_QUOTA_TIPOLOGIA_BILANCIO_KEY);
 						ctMapEntry.setValue(quotaContabilita.getTipologia());
-						
+
 						ctMetadata.getMapEntry().add(ctMapEntry );
 					}
-					
+
 					//	eventuali parametri custom fino ad un massimo complessivo di 10 entry
 					Object proprietaCustomObj = quotaContabilita.getProprietaCustom();
-					
+
 					if(proprietaCustomObj != null) {
 						if(proprietaCustomObj instanceof String) {
 							String proprietaCustom = (String) proprietaCustomObj;
-							
+
 							if(proprietaCustom != null && proprietaCustom.length() > 0) {
 								Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
-								
+
 								for (String key : parse.keySet()) {
 									if(ctMetadata.getMapEntry().size() < 10) {
 										CtMapEntry ctMapEntry = new CtMapEntry();
-										
+
 										ctMapEntry.setKey(key);
 										ctMapEntry.setValue(parse.get(key).toString());
-										
+
 										ctMetadata.getMapEntry().add(ctMapEntry );
 									}
 								}
 							}
 						}  else if(proprietaCustomObj instanceof java.util.LinkedHashMap) {
 							java.util.LinkedHashMap<?,?> parse = (LinkedHashMap<?,?>) proprietaCustomObj;
-							
+
 							for (Object key : parse.keySet()) {
 								if(ctMetadata.getMapEntry().size() < 10) {
 									CtMapEntry ctMapEntry = new CtMapEntry();
-									
+
 									ctMapEntry.setKey(key.toString());
 									ctMapEntry.setValue(parse.get(key).toString());
-									
+
 									ctMetadata.getMapEntry().add(ctMapEntry );
 								}
 							}
 						}
 					}
-					
+
 				} else {
 					for (QuotaContabilita quotaContabilita : quote) {
 						CtMapEntry ctMapEntry = new CtMapEntry();
@@ -726,7 +739,7 @@ public class CtPaymentPABuilder {
 						} else {
 							values.add("");
 						}
-						
+
 						// ARTICOLOBILANCIO: valorizzato con articolo
 						if(quotaContabilita.getArticolo() != null) {
 							values.add(quotaContabilita.getArticolo());
@@ -740,7 +753,7 @@ public class CtPaymentPABuilder {
 						}  else {
 							values.add("");
 						}
-						
+
 						// ANNORIFERIMENTO: valorizzato con annoEsercizio
 						values.add(quotaContabilita.getAnnoEsercizio());
 
@@ -757,26 +770,167 @@ public class CtPaymentPABuilder {
 						} else {
 							values.add("");
 						}
-						
+
 						// TIPOLOGIABILANCIO: valorizzato con tipologia
 						if(quotaContabilita.getTipologia() != null) {
 							values.add(quotaContabilita.getTipologia());
 						} else {
 							values.add("");
 						}
-						
+
 						// IMPORTOEUROCENT
 						values.add(TracciatiNotificaPagamentiUtils.printImporto(quotaContabilita.getImporto(), true, true));
 
 						ctMapEntry.setKey(CONTABILITA_QUOTA_ENTRY_KEY);
 						ctMapEntry.setValue(StringUtils.join(values, ","));
-						
+
 						ctMetadata.getMapEntry().add(ctMapEntry );
 					}
 				}
-				
-				transferEl.setMetadata(ctMetadata);
 			}
 		}
+
+		return ctMetadata;
+	}
+
+//	@SuppressWarnings("unchecked")
+//	private static CtMetadata impostaValoriContabilita_SANP34(SingoloVersamento singoloVersamento) throws IOException {
+//		CtMetadata ctMetadata = null;
+//		// Gestione della Contabilita' inserendo le informazioni nel campo metadati
+//		String contabilitaString = singoloVersamento.getContabilita();
+//
+//		if(contabilitaString != null && contabilitaString.length() > 0) {
+//			it.govpay.model.Contabilita dto = ConverterUtils.parse(singoloVersamento.getContabilita(), it.govpay.model.Contabilita.class);
+//
+//			List<QuotaContabilita> quote = dto.getQuote();
+//
+//			if(quote != null && quote.size() > 0) {
+//				ctMetadata = new CtMetadata();
+//
+//				List<CtMapEntry> listEntriesProvvisoria = new ArrayList<>();
+//				int nQuota = 1;
+//				for (QuotaContabilita quotaContabilita : quote) {
+//
+//					String tipologia = null;
+//					// RC_TIP_N: valorizzato con tipologia
+//					if(quotaContabilita.getTipologia() != null) {
+//						tipologia = quotaContabilita.getTipologia();
+//						CtMapEntry ctMapEntry = new CtMapEntry();
+//
+//						ctMapEntry.setKey(MessageFormat.format(CONTABILITA_QUOTA_TIPO_CONTABILIZZAZIONE_PARAM_KEY, nQuota));
+//						ctMapEntry.setValue(tipologia);
+//
+//						listEntriesProvvisoria.add(ctMapEntry );
+//					} 
+//
+//					// lettura parametri custom
+//					Object proprietaCustomObj = quotaContabilita.getProprietaCustom();
+//					Map<String, String> proprietaCustomMap = new HashMap<>();
+//					if(proprietaCustomObj != null) {
+//						if(proprietaCustomObj instanceof String) {
+//							String proprietaCustom = (String) proprietaCustomObj;
+//
+//							if(proprietaCustom != null && proprietaCustom.length() > 0) {
+//								Map<String, Object> parse = JSONSerializable.parse(proprietaCustom, Map.class);
+//
+//								for (String key : parse.keySet()) {
+//									proprietaCustomMap.put(key, parse.get(key).toString());
+//								}
+//							}
+//						}  else if(proprietaCustomObj instanceof java.util.LinkedHashMap) {
+//							java.util.LinkedHashMap<?,?> parse = (LinkedHashMap<?,?>) proprietaCustomObj;
+//
+//							for (Object key : parse.keySet()) {
+//								proprietaCustomMap.put(key.toString(), parse.get(key).toString());
+//							}
+//						}
+//					}
+//
+//					if(tipologia != null) {
+//						switch(tipologia) {
+//						case CONTABILITA_QUOTA_TIPO_CONTABILIZZAZIONE_PARAM_VALUE_DL118:
+//							/*
+//							 RC_TIP_N: valorizzato con tipologia
+//							 RC_CAP_N: valorizzato con capitolo
+//							RC_ART_N: valorizzato con articolo
+//							RC_ACC_N: valorizzato con accertamento
+//							RC_AC_N: valorizzato con annoEsercizio CAMPO OBBLIGATORIO
+//							RC_IMP_N: valorizzato con importo CAMPO OBBLIGATORIO
+//							RC_CU_N: valorizzato da proprieta' custom codiceUfficio
+//							RC_PF5_N: valorizzato da proprieta' custom pf5livello
+//							Capitolo e Accertamento sono fra loro alternativi, uno dei due deve essere inserito. Accertamento e pf_5_livello sono fra loro alternativi. 
+//							 * */
+//							// RC_AC_N: valorizzato con annoEsercizio CAMPO OBBLIGATORIO
+//							{
+//								CtMapEntry ctMapEntry = new CtMapEntry();
+//	
+//								ctMapEntry.setKey(MessageFormat.format(CONTABILITA_QUOTA_ANNO_COMPETENZA_PARAM_KEY, nQuota));
+//								ctMapEntry.setValue(quotaContabilita.getAnnoEsercizio() + "");
+//	
+//								ctMetadata.getMapEntry().add(ctMapEntry );
+//							}
+//
+//							
+//							
+//							break;
+//						case CONTABILITA_QUOTA_TIPO_CONTABILIZZAZIONE_PARAM_VALUE_TIPICO:
+//							/*
+//							 RC_TIP_N: valorizzato con tipologia
+//								RC_AC_N: valorizzato con annoEsercizio Campo obbligatorio
+//								RC_IMP_N: valorizzato con importo Campo obbligatorio
+//								RC_CU_N: valorizzato da proprieta' custom codiceUfficio
+//								RC_TI_N: valorizzato da proprieta' custom tipoIncasso Campo obbligatorio
+//								RC_EF_N: valorizzato da proprieta' custom emissioneFattura
+//								RC_ND_N: valorizzato da proprieta' custom numeroDocumento
+//								Emissione fattura e nr_documento sono fra loro alternativi. 
+//							 */
+//
+//							break;
+//						case CONTABILITA_QUOTA_TIPO_CONTABILIZZAZIONE_PARAM_CIVILISTICO:
+//							/*
+//							 RC_TIP_N: valorizzato con tipologia
+//							RC_AC_N: valorizzato con annoEsercizio Campo obbligatorio
+//							RC_IMP_N: valorizzato con importo Campo obbligatorio
+//							RC_CU_N: valorizzato da proprieta' custom codiceUfficio
+//							RC_CON_N: valorizzato da proprieta' custom conto
+//							RC_COM_N: valorizzato da proprieta' custom commessa
+//							RC_ND_N: valorizzato da proprieta' custom numeroDocumento
+//							Conto, Commessa e Nr Documento sono fra loro alternativi, uno dei tre deve essere inserito.
+//							 */
+//							break;
+//						default: 
+//							break;
+//						}
+//					}
+//				}
+//
+//				// massimo 10 entries
+//				if(listEntriesProvvisoria.size() <= 10) {
+//					ctMetadata.getMapEntry().addAll(listEntriesProvvisoria);
+//				} else {
+//					ctMetadata.getMapEntry().addAll(listEntriesProvvisoria.subList(0, 9));
+//				}
+//			}
+//		}
+//		return ctMetadata;
+//	}
+
+	private static Date calcolaDueDate(Versamento versamento) {
+		if(versamento.getDataValidita() != null) {
+			return versamento.getDataValidita(); // indicates the expiration payment date
+		} else if(versamento.getDataScadenza() != null) {
+			return versamento.getDataScadenza(); // indicates the expiration payment date
+		} else {
+			Integer numeroGiorniValiditaPendenza = GovpayConfig.getInstance().getNumeroGiorniValiditaPendenza();
+
+			if(numeroGiorniValiditaPendenza != null) {
+				Calendar instance = Calendar.getInstance();
+				instance.setTime(versamento.getDataCreazione()); 
+				instance.add(Calendar.DATE, numeroGiorniValiditaPendenza);
+				return instance.getTime();
+			} else {
+				return new Date(32503590000000l); //31.12.2999
+			}
+		}   
 	}
 }

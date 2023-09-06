@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.security.core.Authentication;
 
 import it.govpay.bd.model.IdUnitaOperativa;
+import it.govpay.core.autorizzazione.utils.AutorizzazioneUtils;
 import it.govpay.core.beans.commons.Dominio;
 
 public class BasicRequestDTO {
@@ -29,6 +30,10 @@ public class BasicRequestDTO {
 	
 	public Authentication getUser() {
 		return this.authentication;
+	}
+	
+	public Long getIdOperatore() {
+		return AutorizzazioneUtils.getIdOperatore(this.authentication);
 	}
 
 	public List<Long> getIdDomini() {

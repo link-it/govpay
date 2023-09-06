@@ -3,6 +3,7 @@ import { LinkService } from '../../services/link.service';
 import { UtilService } from '../../services/util.service';
 import { SideListComponent } from './side-list.component';
 import { FormViewComponent } from './form-view.component';
+import { query } from '@angular/core/src/render3/instructions';
 
 @Component({
   selector: 'link-list-view',
@@ -35,6 +36,10 @@ export class ListViewComponent implements OnInit, AfterContentChecked {
   protected _formSubmit(event) {
     if(this.sideList) {
       let _query:string = this._formQuery(event);
+      let _rsc = this.ls.getRouterStateConfig();
+      if (_rsc.data.type === UtilService.RICEVUTE) {
+        _query += '&esito=ESEGUITO';
+      }
 
       this.sideList.getList(null, _query);
       this.sideList.loadMetadati(null, _query);

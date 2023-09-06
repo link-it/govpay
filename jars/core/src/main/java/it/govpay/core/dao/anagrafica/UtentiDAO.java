@@ -119,7 +119,7 @@ public class UtentiDAO extends BaseDAO{
 	}
 
 	public LeggiProfiloDTOResponse patchProfilo(ProfiloPatchDTO patchDTO) throws ServiceException, OperatoreNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, patchDTO.getIdOperatore());
 		try {
 			Authentication authentication = patchDTO.getUser();
 			GovpayLdapUserDetails userDetails = AutorizzazioneUtils.getAuthenticationDetails(authentication);
@@ -340,7 +340,7 @@ public class UtentiDAO extends BaseDAO{
 	public PutOperatoreDTOResponse createOrUpdate(PutOperatoreDTO putOperatoreDTO) throws ServiceException, OperatoreNonTrovatoException,TipoVersamentoNonTrovatoException, DominioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException, UnitaOperativaNonTrovataException {
 		PutOperatoreDTOResponse operatoreDTOResponse = new PutOperatoreDTOResponse();
 		OperatoriBD operatoriBD = null;
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putOperatoreDTO.getIdOperatore());
 		try {
 			operatoriBD = new OperatoriBD(configWrapper);
 			UtenzeBD utenzeBD = new UtenzeBD(configWrapper);
@@ -454,11 +454,11 @@ public class UtentiDAO extends BaseDAO{
 
 	public LeggiOperatoreDTOResponse patch(OperatorePatchDTO patchDTO) throws ServiceException, OperatoreNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
 		OperatoriBD operatoriBD = null;
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, patchDTO.getIdOperatore());
 
 		try {
 			operatoriBD = new OperatoriBD(configWrapper);
-			Operatore operatore = operatoriBD.getOperatore(patchDTO.getIdOperatore());
+			Operatore operatore = operatoriBD.getOperatore(patchDTO.getIdOperatoreToPatch());
 			LeggiOperatoreDTOResponse leggiOperatoreDTOResponse = new LeggiOperatoreDTOResponse();
 			for(PatchOp op: patchDTO.getOp()) {
 				UtenzaPatchUtils.patchUtenza(op, operatore.getUtenza(), configWrapper);
@@ -470,7 +470,7 @@ public class UtentiDAO extends BaseDAO{
 			Operazioni.aggiornaDataResetCacheAnagrafica(configWrapper, AnagraficaManager.generaNuovaDataReset());
 
 			// ricarico la entry dentro la cache
-			leggiOperatoreDTOResponse.setOperatore(AnagraficaManager.getOperatoreByPrincipal(configWrapper, patchDTO.getIdOperatore()));
+			leggiOperatoreDTOResponse.setOperatore(AnagraficaManager.getOperatoreByPrincipal(configWrapper, patchDTO.getIdOperatoreToPatch()));
 
 			return leggiOperatoreDTOResponse;
 		}catch(NotFoundException e) {

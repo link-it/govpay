@@ -66,7 +66,7 @@ public class DominiBD extends BasicBD {
 	}
 	
 	public DominiBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 	
 	public static String getIDConnettoreMyPivot(String codDominio) {

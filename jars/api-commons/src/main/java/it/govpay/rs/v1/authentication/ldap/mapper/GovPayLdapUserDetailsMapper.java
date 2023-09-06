@@ -17,14 +17,13 @@ import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
 import org.springframework.util.Assert;
 
 import it.govpay.core.autorizzazione.beans.GovpayLdapUserDetails;
-import it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO;
 import it.govpay.core.dao.autorizzazione.BaseAutenticazioneDAO;
 
 /**
  * Based on {@link LdapUserDetailsMapper}, aggiunge le informazioni lette dal db di GovPay a quelle ricevute dall'autenticatore Ldap.
  * 
  * 
- * @author zulio
+ * @author pintori@link.it
  *
  */
 public class GovPayLdapUserDetailsMapper implements UserDetailsContextMapper {

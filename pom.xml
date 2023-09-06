@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
 	<artifactId>bom</artifactId>
-	<version>3.7.3</version>
+	<version>3.7.4</version>
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
@@ -65,10 +65,10 @@
 		<jersey.version>2.38</jersey.version>
 		
 		<!-- Spring -->
-		<spring.version>5.3.28</spring.version>
+		<spring.version>5.3.29</spring.version>
 		
 		<!-- Spring Security -->
-		<spring.security.version>5.8.3</spring.security.version>
+		<spring.security.version>5.8.5</spring.security.version>
 		
 		<!-- Spring Security Ldap plugin -->
 		<spring.ldap.version>2.4.1</spring.ldap.version>

@@ -71,7 +71,7 @@ public class UtenzeBD extends BasicBD {
 	}
 	
 	public UtenzeBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 
 	/**

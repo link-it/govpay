@@ -934,6 +934,7 @@ CREATE INDEX idx_rpt_stato ON rpt (stato);
 CREATE INDEX idx_rpt_fk_vrs ON rpt (id_versamento);
 CREATE INDEX idx_rpt_fk_prt ON rpt (id_pagamento_portale);
 CREATE INDEX idx_rpt_data_msg_richiesta ON rpt (data_msg_richiesta);
+CREATE UNIQUE INDEX idx_rpt_id_transazione ON rpt (iuv, ccp, cod_dominio);
 
 ALTER TABLE rpt ALTER COLUMN bloccante SET DEFAULT true;
 

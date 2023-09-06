@@ -111,7 +111,7 @@ public class DominiDAO extends BaseDAO{
 	DominioNonTrovatoException,StazioneNonTrovataException,TipoTributoNonTrovatoException, TipoVersamentoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException{
 		PutDominioDTOResponse dominioDTOResponse = new PutDominioDTOResponse(); 
 		DominiBD dominiBD = null;
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putDominioDTO.getIdOperatore());
 		try {
 			dominiBD = new DominiBD(configWrapper);
 			
@@ -521,7 +521,7 @@ public class DominiDAO extends BaseDAO{
 	public PutUnitaOperativaDTOResponse createOrUpdateUnitaOperativa(PutUnitaOperativaDTO putUnitaOperativaDTO) throws ServiceException, DominioNonTrovatoException, UnitaOperativaNonTrovataException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException{
 		PutUnitaOperativaDTOResponse putUoDTOResponse = new PutUnitaOperativaDTOResponse();
 		UnitaOperativeBD uoBd = null;
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putUnitaOperativaDTO.getIdOperatore());
 		try {
 			try {
 				// inserisco l'iddominio
@@ -634,7 +634,7 @@ public class DominiDAO extends BaseDAO{
 	public PutIbanAccreditoDTOResponse createOrUpdateIbanAccredito(PutIbanAccreditoDTO putIbanAccreditoDTO) throws ServiceException, DominioNonTrovatoException, IbanAccreditoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException{
 		PutIbanAccreditoDTOResponse putIbanAccreditoDTOResponse = new PutIbanAccreditoDTOResponse();
 		IbanAccreditoBD ibanAccreditoBD = null;
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putIbanAccreditoDTO.getIdOperatore());
 		try {
 			try {
 				// inserisco l'iddominio
@@ -752,7 +752,7 @@ public class DominiDAO extends BaseDAO{
 	DominioNonTrovatoException, TipoTributoNonTrovatoException, TributoNonTrovatoException, IbanAccreditoNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, RequestValidationException, UnprocessableEntityException{ 
 		PutEntrataDominioDTOResponse putIbanAccreditoDTOResponse = new PutEntrataDominioDTOResponse();
 		TributiBD tributiBD = null;
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putEntrataDominioDTO.getIdOperatore());
 		try {
 			Dominio dominio = null;
 			try {
@@ -953,7 +953,7 @@ public class DominiDAO extends BaseDAO{
 	NotAuthorizedException, NotAuthenticatedException, RequestValidationException, ValidationException, UnprocessableEntityException{ 
 		PutTipoPendenzaDominioDTOResponse putTipoPendenzaDominioDTOResponse = new PutTipoPendenzaDominioDTOResponse();
 		TipiVersamentoDominiBD tipiVersamentoDominiBD = null;
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putTipoPendenzaDominioDTO.getIdOperatore());
 		try {
 			try {
 				// inserisco l'iddominio

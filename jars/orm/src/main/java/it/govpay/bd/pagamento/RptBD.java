@@ -74,7 +74,7 @@ public class RptBD extends BasicBD {
 	}
 	
 	public RptBD(BDConfigWrapper configWrapper) {
-		super(configWrapper.getTransactionID(), configWrapper.isUseCache());
+		super(configWrapper.getTransactionID(), configWrapper.isUseCache(), configWrapper.getIdOperatore());
 	}
 
 	/**
@@ -320,7 +320,7 @@ public class RptBD extends BasicBD {
 	 * @throws NotFoundException
 	 * @throws ServiceException
 	 */
-	public void sbloccaRpt(long idRpt, boolean statoBlocco,String descrizione ) throws NotFoundException, ServiceException{
+	public void sbloccaRpt(Rpt rpt, boolean statoBlocco,String descrizione ) throws NotFoundException, ServiceException{
 		try {
 			if(this.isAtomica()) {
 				this.setupConnection(this.getIdTransaction());
@@ -331,7 +331,8 @@ public class RptBD extends BasicBD {
 			if(StringUtils.isNotEmpty(descrizione))
 				lstUpdateFields.add(new UpdateField(RPT.model().DESCRIZIONE_STATO, descrizione));
 
-			((JDBCRPTService)this.getRptService()).updateFields(idRpt, lstUpdateFields.toArray(new UpdateField[]{}));
+			((JDBCRPTService)this.getRptService()).updateFields(rpt.getId(), lstUpdateFields.toArray(new UpdateField[]{}));
+			this.emitAudit(rpt);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} finally {
@@ -414,7 +415,7 @@ public class RptBD extends BasicBD {
 			IPaginatedExpression exp = this.getRptService().newPaginatedExpression();
 			exp.equals(RPT.model().COD_DOMINIO, codDominio);
 			exp.and();
-			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.VersioneRPT.SANP_240.toString());
+			exp.in(RPT.model().VERSIONE, it.govpay.model.Rpt.VersioneRPT.SANP_240.toString(), it.govpay.model.Rpt.VersioneRPT.SANP_321_V2.toString());
 			
 			Date now = new Date();
 			Calendar c = Calendar.getInstance();
@@ -483,7 +484,7 @@ public class RptBD extends BasicBD {
 				addAnd = false;
 			}
 			
-			exp.equals(RPT.model().VERSIONE, it.govpay.model.Rpt.VersioneRPT.SANP_240.toString());
+			exp.in(RPT.model().VERSIONE, it.govpay.model.Rpt.VersioneRPT.SANP_240.toString(), it.govpay.model.Rpt.VersioneRPT.SANP_321_V2.toString());
 			if(addAnd) {
 				exp.and();
 				addAnd = false;

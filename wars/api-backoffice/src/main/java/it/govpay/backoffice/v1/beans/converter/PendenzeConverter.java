@@ -397,6 +397,24 @@ public class PendenzeConverter {
 		if(singoloVersamento.getDominio(configWrapper) != null) {
 			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
 		}
+		
+		// Definisce i dati di un bollo telematico
+		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
+			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());
+			rsModel.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
+			rsModel.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
+		} else if(singoloVersamento.getTributo(configWrapper) != null && singoloVersamento.getTributo(configWrapper).getCodTributo() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
+			rsModel.setCodEntrata(singoloVersamento.getTributo(configWrapper).getCodTributo());
+		} else { // Definisce i dettagli di incasso della singola entrata.
+			rsModel.setCodiceContabilita(singoloVersamento.getCodContabilita());
+			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(configWrapper).getCodIban());
+			if(singoloVersamento.getIbanAppoggio(configWrapper) != null) {
+				rsModel.setIbanAppoggio(singoloVersamento.getIbanAppoggio(configWrapper).getCodIban());
+			}
+			
+			if(singoloVersamento.getTipoContabilita() != null)
+				rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
+		}
 
 		return rsModel;
 	}
@@ -425,6 +443,24 @@ public class PendenzeConverter {
 		rsModel.setContabilita(ContabilitaConverter.toRsModel(singoloVersamento.getContabilita()));
 		if(singoloVersamento.getDominio(configWrapper) != null) {
 			rsModel.setDominio(DominiConverter.toRsModelIndex(singoloVersamento.getDominio(configWrapper)));
+		}
+		
+		// Definisce i dati di un bollo telematico
+		if(singoloVersamento.getHashDocumento() != null && singoloVersamento.getTipoBollo() != null && singoloVersamento.getProvinciaResidenza() != null) {
+			rsModel.setHashDocumento(singoloVersamento.getHashDocumento());
+			rsModel.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
+			rsModel.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
+		} else if(singoloVersamento.getTributo(configWrapper) != null && singoloVersamento.getTributo(configWrapper).getCodTributo() != null) { // Definisce i dettagli di incasso tramite riferimento in anagrafica GovPay.
+			rsModel.setCodEntrata(singoloVersamento.getTributo(configWrapper).getCodTributo());
+		} else { // Definisce i dettagli di incasso della singola entrata.
+			rsModel.setCodiceContabilita(singoloVersamento.getCodContabilita());
+			rsModel.setIbanAccredito(singoloVersamento.getIbanAccredito(configWrapper).getCodIban());
+			if(singoloVersamento.getIbanAppoggio(configWrapper) != null) {
+				rsModel.setIbanAppoggio(singoloVersamento.getIbanAppoggio(configWrapper).getCodIban());
+			}
+			
+			if(singoloVersamento.getTipoContabilita() != null)
+				rsModel.setTipoContabilita(TipoContabilita.valueOf(singoloVersamento.getTipoContabilita().name()));
 		}
 
 		return rsModel;

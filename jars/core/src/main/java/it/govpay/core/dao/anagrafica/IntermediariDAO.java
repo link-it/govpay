@@ -69,7 +69,7 @@ public class IntermediariDAO extends BaseDAO{
 	public PutIntermediarioDTOResponse createOrUpdateIntermediario(PutIntermediarioDTO putIntermediarioDTO) throws ServiceException,IntermediarioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException{
 		PutIntermediarioDTOResponse intermediarioDTOResponse = new PutIntermediarioDTOResponse();
 		IntermediariBD intermediariBD = null;
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putIntermediarioDTO.getIdOperatore());
 		try {
 			intermediariBD = new IntermediariBD(configWrapper);
 			IntermediarioFilter filter = intermediariBD.newFilter(false);
@@ -100,7 +100,7 @@ public class IntermediariDAO extends BaseDAO{
 	public PutStazioneDTOResponse createOrUpdateStazione(PutStazioneDTO putStazioneDTO) throws ServiceException,IntermediarioNonTrovatoException, NotAuthorizedException, NotAuthenticatedException, UnprocessableEntityException{
 		PutStazioneDTOResponse stazioneDTOResponse = new PutStazioneDTOResponse();
 		StazioniBD stazioniBD = null;
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, putStazioneDTO.getIdOperatore());
 		try {
 			try {
 				// inserisco l'iddominio

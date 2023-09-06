@@ -16,6 +16,8 @@ import it.govpay.core.exceptions.IOException;
 "lineaTestoRicevuta1",
 "lineaTestoRicevuta2",
 "linguaSecondariaCausale",
+"informativaImportoAvviso",
+"linguaSecondariaInformativaImportoAvviso",
 })
 public class ProprietaPendenza extends JSONSerializable {
   
@@ -33,6 +35,12 @@ public class ProprietaPendenza extends JSONSerializable {
   
   @JsonProperty("linguaSecondariaCausale")
   private String linguaSecondariaCausale = null;
+  
+  @JsonProperty("informativaImportoAvviso")
+  private String informativaImportoAvviso = null;
+  
+  @JsonProperty("linguaSecondariaInformativaImportoAvviso")
+  private String linguaSecondariaInformativaImportoAvviso = null;
   
   /**
    **/
@@ -112,6 +120,38 @@ public class ProprietaPendenza extends JSONSerializable {
     this.linguaSecondariaCausale = linguaSecondariaCausale;
   }
 
+  /**
+   * se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
+   **/
+  public ProprietaPendenza informativaImportoAvviso(String informativaImportoAvviso) {
+    this.informativaImportoAvviso = informativaImportoAvviso;
+    return this;
+  }
+
+  @JsonProperty("informativaImportoAvviso")
+  public String getInformativaImportoAvviso() {
+    return informativaImportoAvviso;
+  }
+  public void setInformativaImportoAvviso(String informativaImportoAvviso) {
+    this.informativaImportoAvviso = informativaImportoAvviso;
+  }
+
+  /**
+   * se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
+   **/
+  public ProprietaPendenza linguaSecondariaInformativaImportoAvviso(String linguaSecondariaInformativaImportoAvviso) {
+    this.linguaSecondariaInformativaImportoAvviso = linguaSecondariaInformativaImportoAvviso;
+    return this;
+  }
+
+  @JsonProperty("linguaSecondariaInformativaImportoAvviso")
+  public String getLinguaSecondariaInformativaImportoAvviso() {
+    return linguaSecondariaInformativaImportoAvviso;
+  }
+  public void setLinguaSecondariaInformativaImportoAvviso(String linguaSecondariaInformativaImportoAvviso) {
+    this.linguaSecondariaInformativaImportoAvviso = linguaSecondariaInformativaImportoAvviso;
+  }
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -125,12 +165,14 @@ public class ProprietaPendenza extends JSONSerializable {
         Objects.equals(descrizioneImporto, proprietaPendenza.descrizioneImporto) &&
         Objects.equals(lineaTestoRicevuta1, proprietaPendenza.lineaTestoRicevuta1) &&
         Objects.equals(lineaTestoRicevuta2, proprietaPendenza.lineaTestoRicevuta2) &&
-        Objects.equals(linguaSecondariaCausale, proprietaPendenza.linguaSecondariaCausale);
+        Objects.equals(linguaSecondariaCausale, proprietaPendenza.linguaSecondariaCausale) &&
+        Objects.equals(informativaImportoAvviso, proprietaPendenza.informativaImportoAvviso) &&
+        Objects.equals(linguaSecondariaInformativaImportoAvviso, proprietaPendenza.linguaSecondariaInformativaImportoAvviso);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(linguaSecondaria, descrizioneImporto, lineaTestoRicevuta1, lineaTestoRicevuta2, linguaSecondariaCausale);
+    return Objects.hash(linguaSecondaria, descrizioneImporto, lineaTestoRicevuta1, lineaTestoRicevuta2, linguaSecondariaCausale, informativaImportoAvviso, linguaSecondariaInformativaImportoAvviso);
   }
 
   public static ProprietaPendenza parse(String json) throws IOException { 
@@ -152,6 +194,8 @@ public class ProprietaPendenza extends JSONSerializable {
     sb.append("    lineaTestoRicevuta1: ").append(toIndentedString(lineaTestoRicevuta1)).append("\n");
     sb.append("    lineaTestoRicevuta2: ").append(toIndentedString(lineaTestoRicevuta2)).append("\n");
     sb.append("    linguaSecondariaCausale: ").append(toIndentedString(linguaSecondariaCausale)).append("\n");
+    sb.append("    informativaImportoAvviso: ").append(toIndentedString(informativaImportoAvviso)).append("\n");
+    sb.append("    linguaSecondariaInformativaImportoAvviso: ").append(toIndentedString(linguaSecondariaInformativaImportoAvviso)).append("\n");
     sb.append("}");
     return sb.toString();
   }

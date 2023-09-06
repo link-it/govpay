@@ -182,6 +182,13 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 					} else {
 						String iuvRicevuto = IuvUtils.toIuv(pendenzaVerificata.getNumeroAvviso());
 						
+						// si tollera l'eventualita' in cui l'applicativo non restituisce il numero avviso ma e' gia' impostato in base dati
+						if(pendenzaVerificata.getNumeroAvviso() == null) {
+							iuvRicevuto = iuv;
+							BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), true);
+							pendenzaVerificata.setNumeroAvviso(IuvUtils.toNumeroAvviso(iuv, AnagraficaManager.getDominio(configWrapper, pendenzaVerificata.getIdDominio())));
+						}
+						
 						if(codDominio != null && !(codDominio.equals(pendenzaVerificata.getIdDominio()) && iuv.equals(iuvRicevuto)))
 							throw new ValidationException("I campi IdDominio e NumeroAvviso della pendenza ricevuta dal servizio di verifica non corrispondono ai parametri di input.");
 					}
@@ -189,7 +196,10 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 				} catch (ValidationException e) {
 					VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, LABEL_SINTASSI + e.getMessage());
 					throw new VersamentoNonValidoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
-				}  catch (IOException e) {
+				} catch (IOException e) {
+					VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, LABEL_SINTASSI + e.getMessage());
+					throw new VersamentoNonValidoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
+				} catch (NotFoundException e) {
 					VerificaClient.logMessaggioDiagnostico(ctx, LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, LABEL_SINTASSI + e.getMessage());
 					throw new VersamentoNonValidoException(pendenzaVerificata.getIdA2A(), pendenzaVerificata.getIdPendenza(), bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
 				}
@@ -327,6 +337,12 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 						} else {
 							String iuvRicevuto = IuvUtils.toIuv(pendenza.getNumeroAvviso());
 							
+							// si tollera l'eventualita' in cui l'applicativo non restituisce il numero avviso ma e' gia' impostato in base dati
+							if(pendenza.getNumeroAvviso() == null) {
+								iuvRicevuto = iuv;
+								pendenza.setNumeroAvviso(IuvUtils.toNumeroAvviso(iuv, AnagraficaManager.getDominio(configWrapper, pendenza.getIdDominio())));
+							}
+							
 							if(codDominio != null && !(codDominio.equals(pendenza.getIdDominio()) && iuv.equals(iuvRicevuto)))
 								throw new ValidationException("I campi IdDominio e NumeroAvviso della pendenza ricevuta dal servizio di verifica non corrispondono ai parametri di input.");
 						}
@@ -337,6 +353,10 @@ public class VerificaClient extends BasicClientCORE implements IVerificaClient {
 					VerificaClient.logMessaggioDiagnostico(ctx, VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, LABEL_SINTASSI + e.getMessage());
 					throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
 				} catch (IOException e) {
+					log.error(e.getMessage(),e);
+					VerificaClient.logMessaggioDiagnostico(ctx, VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, LABEL_SINTASSI + e.getMessage());
+					throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());
+				}  catch (NotFoundException e) {
 					log.error(e.getMessage(),e);
 					VerificaClient.logMessaggioDiagnostico(ctx, VerificaClient.LOG_KEY_VERIFICA_VERIFICA_KO, this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, LABEL_SINTASSI + e.getMessage());
 					throw new VersamentoNonValidoException(this.codApplicazione, codVersamentoEnteD, bundlekeyD, debitoreD, codDominioD, iuvD, e.getMessage());

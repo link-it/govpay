@@ -2,6 +2,8 @@ package it.govpay.ec.v2.beans;
 
 import java.util.List;
 
+import javax.validation.constraints.Size;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -39,6 +41,18 @@ public class ProprietaPendenza   {
    * causale della pendenza nella lingua secondaria da inserire nell'avviso                    
   **/
   private String linguaSecondariaCausale = null;
+  
+  @Schema(description = "se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.")
+ /**
+   * se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.  
+  **/
+  private String informativaImportoAvviso = null;
+  
+  @Schema(description = "se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.")
+ /**
+   * se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.  
+  **/
+  private String linguaSecondariaInformativaImportoAvviso = null;
  /**
    * Get linguaSecondaria
    * @return linguaSecondaria
@@ -147,6 +161,42 @@ public class ProprietaPendenza   {
     return this;
   }
 
+ /**
+   * se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l&#x27;informativa viene omessa.
+   * @return informativaImportoAvviso
+  **/
+  @JsonProperty("informativaImportoAvviso")
+ @Size(max=255)  public String getInformativaImportoAvviso() {
+    return informativaImportoAvviso;
+  }
+
+  public void setInformativaImportoAvviso(String informativaImportoAvviso) {
+    this.informativaImportoAvviso = informativaImportoAvviso;
+  }
+
+  public ProprietaPendenza informativaImportoAvviso(String informativaImportoAvviso) {
+    this.informativaImportoAvviso = informativaImportoAvviso;
+    return this;
+  }
+
+ /**
+   * se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l&#x27;informativa viene omessa.
+   * @return linguaSecondariaInformativaImportoAvviso
+  **/
+  @JsonProperty("linguaSecondariaInformativaImportoAvviso")
+ @Size(max=255)  public String getLinguaSecondariaInformativaImportoAvviso() {
+    return linguaSecondariaInformativaImportoAvviso;
+  }
+
+  public void setLinguaSecondariaInformativaImportoAvviso(String linguaSecondariaInformativaImportoAvviso) {
+    this.linguaSecondariaInformativaImportoAvviso = linguaSecondariaInformativaImportoAvviso;
+  }
+
+  public ProprietaPendenza linguaSecondariaInformativaImportoAvviso(String linguaSecondariaInformativaImportoAvviso) {
+    this.linguaSecondariaInformativaImportoAvviso = linguaSecondariaInformativaImportoAvviso;
+    return this;
+  }
+
 
   @Override
   public String toString() {
@@ -158,6 +208,8 @@ public class ProprietaPendenza   {
     sb.append("    lineaTestoRicevuta1: ").append(toIndentedString(lineaTestoRicevuta1)).append("\n");
     sb.append("    lineaTestoRicevuta2: ").append(toIndentedString(lineaTestoRicevuta2)).append("\n");
     sb.append("    linguaSecondariaCausale: ").append(toIndentedString(linguaSecondariaCausale)).append("\n");
+    sb.append("    informativaImportoAvviso: ").append(toIndentedString(informativaImportoAvviso)).append("\n");
+    sb.append("    linguaSecondariaInformativaImportoAvviso: ").append(toIndentedString(linguaSecondariaInformativaImportoAvviso)).append("\n");
     sb.append("}");
     return sb.toString();
   }

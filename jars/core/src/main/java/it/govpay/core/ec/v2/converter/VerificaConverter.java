@@ -216,6 +216,8 @@ public class VerificaConverter {
 				}				
 			}
 			dto.setLinguaSecondariaCausale(proprieta.getLinguaSecondariaCausale());
+			dto.setInformativaImportoAvviso(proprieta.getInformativaImportoAvviso());
+			dto.setLinguaSecondariaInformativaImportoAvviso(proprieta.getLinguaSecondariaInformativaImportoAvviso());
 		}
 		
 		return dto;

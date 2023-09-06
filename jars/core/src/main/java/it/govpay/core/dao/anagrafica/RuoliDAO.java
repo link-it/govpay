@@ -101,7 +101,7 @@ public class RuoliDAO extends BaseDAO{
 	}
 
 	public PutRuoloDTOResponse createOrUpdate(PutRuoloDTO listaRuoliDTO) throws NotAuthenticatedException, NotAuthorizedException, ServiceException {
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, listaRuoliDTO.getIdOperatore());
 		PutRuoloDTOResponse response = new PutRuoloDTOResponse();
 		AclBD aclBD = null;
 

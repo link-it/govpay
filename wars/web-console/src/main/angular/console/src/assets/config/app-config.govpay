@@ -49,6 +49,9 @@
     },
     riscossioni: {
       dataSub: { value: 7, type: 'days' }
+    },
+    ricevute: {
+      dataSub: { value: 7, type: 'days' }
     }
   };
 

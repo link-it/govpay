@@ -657,6 +657,16 @@ components:
         linguaSecondariaCausale:
           type: string
           description: causale della pendenza nella lingua secondaria da inserire nell'avviso
+        informativaImportoAvviso:
+          type: string
+          description: >- 
+            se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
+          maxLength: 255
+        linguaSecondariaInformativaImportoAvviso:
+          type: string
+          description: >- 
+            se valorizzato, sostituisce il testo standard. Se valorizzato con stringa vuota, l'informativa viene omessa.
+          maxLength: 255
     QuotaContabilita:
       type: object
       required:

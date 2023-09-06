@@ -175,6 +175,8 @@ public class GovpayConfig {
 	
 	private String operazioneVerifica;
 	
+	private Integer numeroGiorniValiditaPendenza;
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -264,6 +266,8 @@ public class GovpayConfig {
 		this.dismettiIUVIso11694 = false;
 		
 		this.operazioneVerifica = null;
+		
+		this.numeroGiorniValiditaPendenza = null;
 		
 		try {
 
@@ -806,6 +810,21 @@ public class GovpayConfig {
 				}
 			}
 			
+			String numeroGiorniValiditaPendenzaString = getProperty("it.govpay.modello3.sanp24.giorniValiditaDaAssegnarePendenzaSenzaDataValidita", this.props, false, log);
+			if(numeroGiorniValiditaPendenzaString != null) {
+				try{
+					this.numeroGiorniValiditaPendenza = Integer.parseInt(numeroGiorniValiditaPendenzaString);
+					
+					if(this.numeroGiorniValiditaPendenza < 1) {
+						log.info("Proprieta \"it.govpay.modello3.sanp24.giorniValiditaDaAssegnarePendenzaSenzaDataValidita\" trovata con valore non valido [{}], viene impostata con valore di default null",	this.operazioneVerifica);
+						this.numeroGiorniValiditaPendenza = null;
+					}
+				} catch(NumberFormatException t) {
+					log.info("Proprieta \"it.govpay.modello3.sanp24.giorniValiditaDaAssegnarePendenzaSenzaDataValidita\" trovata con valore non valido [{}], viene impostata con valore di default null",	this.operazioneVerifica);
+					this.numeroGiorniValiditaPendenza = null;
+				}
+			}
+			
 		} catch (PropertyNotFoundException e) {
 			log.error(MessageFormat.format("Errore di inizializzazione: {0}", e.getMessage()));
 			throw new ConfigException(e);
@@ -1221,5 +1240,9 @@ public class GovpayConfig {
 	
 	public String getOperazioneVerifica() {
 		return operazioneVerifica;
+	}
+	
+	public Integer getNumeroGiorniValiditaPendenza() {
+		return numeroGiorniValiditaPendenza;
 	}
 }

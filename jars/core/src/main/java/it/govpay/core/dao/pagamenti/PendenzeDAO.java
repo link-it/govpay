@@ -730,7 +730,7 @@ public class PendenzeDAO extends BaseDAO{
 
 
 	public LeggiPendenzaDTOResponse patch(PatchPendenzaDTO patchPendenzaDTO) throws PendenzaNonTrovataException, GovPayException, NotAuthorizedException, NotAuthenticatedException, ValidationException{
-		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData);
+		BDConfigWrapper configWrapper = new BDConfigWrapper(ContextThreadLocal.get().getTransactionId(), this.useCacheData, patchPendenzaDTO.getIdOperatore());
 		LeggiPendenzaDTOResponse response = new LeggiPendenzaDTOResponse();
 		VersamentiBD versamentiBD = null;
 		try {
