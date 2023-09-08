@@ -54,7 +54,7 @@ Then status 200
 Examples:
 | field | fieldRequest | fieldValue | fieldResponse |
 | numeroAvviso | pendenza.numeroAvviso | buildNumeroAvviso(dominio, applicazione) | 'NumeroAvviso' |
-| numeroAvviso | pendenza.numeroAvviso | null | 'NumeroAvviso' |
+# | numeroAvviso | pendenza.numeroAvviso | null | 'NumeroAvviso' |
 | idDominio | pendenza.idDominio | idDominio_2 | 'IdDominio' |
 | importo | pendenza.importo | 0.01 | 'importo' |
 

@@ -48,6 +48,7 @@
             "importo":"#(importo)",
             "descrizione":"#notnull",
             "stato":"Eseguito",
+            "codEntrata":"SEGRETERIA",
             "pendenza" : "#notnull"
          },
          "rpp":"#notnull",
