@@ -5475,6 +5475,7 @@ components:
         - '07'
         - '08'
         - '09'
+        - '10'
         - '11'
         - '12'
       description: >
@@ -5488,6 +5489,7 @@ components:
          * 07: PUBBLICHE AMMINISTRAZIONI CENTRALI
          * 08: ALTRE AMMINISTRAZIONI
          * 09: GESTORI PUBBLICI SERVIZI
+         * 10: AUTORITA' AMMINISTRATIVE INDIPENDENTI
          * 11: ENTI DI NATURA PRIVATISTICA
          * 12: AGENZIE FISCALI
     codificaAvvisi:
