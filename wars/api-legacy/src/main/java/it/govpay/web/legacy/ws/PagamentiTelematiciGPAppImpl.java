@@ -59,6 +59,7 @@ import it.govpay.core.dao.pagamenti.dto.PutPendenzaDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.model.PatchOp;
 import it.govpay.model.PatchOp.OpEnum;
@@ -510,8 +511,9 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			response.setStato(StatoVersamento.valueOf(versamento.getStatoVersamento().toString()));
 			List<Rpt> rpts = leggiPendenza.getRpts();
 			if(rpts != null) {
+				boolean conversioneMessaggiPagoPAV2NelFormatoV1 = GovpayConfig.getInstance().isConversioneMessaggiPagoPAV2NelFormatoV1();
 				for(Rpt rpt : rpts) {
-					response.getTransazione().add(ConverterUtils.toTransazione(rpt, configWrapper));
+					response.getTransazione().add(ConverterUtils.toTransazione(rpt, configWrapper, conversioneMessaggiPagoPAV2NelFormatoV1));
 				}
 			}
 			ctx.getApplicationLogger().log("ws.ricevutaRichiestaOk");

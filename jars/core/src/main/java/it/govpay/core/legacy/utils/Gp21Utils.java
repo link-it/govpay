@@ -7,6 +7,12 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
+import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentRes;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaGetPaymentV2Response;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
+import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Fr;
@@ -16,6 +22,8 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.filters.VersamentoFilter.SortFields;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.MessaggiPagoPAUtils;
 import it.govpay.ec.v1.beans.TipoSoggetto;
 import it.govpay.servizi.commons.Anagrafica;
 import it.govpay.servizi.commons.Canale;
@@ -34,7 +42,7 @@ import it.govpay.servizi.commons.Versamento.SingoloVersamento;
 
 public class Gp21Utils {
 
-	public static Transazione toTransazione(Rpt rpt, BDConfigWrapper configWrapper) throws ServiceException {
+	public static Transazione toTransazione(Rpt rpt, BDConfigWrapper configWrapper, boolean convertiMessaggioPagoPAV2InPagoPAV1) throws ServiceException {
 		Transazione t = new Transazione();
 		Canale canale = new Canale();
 		canale.setCodCanale(rpt.getCodCanale());
@@ -110,8 +118,72 @@ public class Gp21Utils {
 			}
 		}
 
-		t.setRpt(rpt.getXmlRpt());
-		t.setRt(rpt.getXmlRt());
+		// conversione del messaggio nel formato tradizionale se previsto
+		try {
+			switch (rpt.getVersione()) {
+			case SANP_230:
+				t.setRpt(rpt.getXmlRpt());
+				break;
+			case SANP_240:
+				PaGetPaymentRes paGetPaymentRes_RPT = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
+				
+				if(convertiMessaggioPagoPAV2InPagoPAV1) {
+					CtRichiestaPagamentoTelematico ctRpt2 = MessaggiPagoPAUtils.toCtRichiestaPagamentoTelematico(paGetPaymentRes_RPT, rpt);
+					t.setRpt(JaxbUtils.toByte(ctRpt2));
+				} else {				
+					t.setRpt(rpt.getXmlRpt());
+				}
+				break;
+			case SANP_321_V2:
+				PaGetPaymentV2Response paGetPaymentV2Response = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
+				
+				if(convertiMessaggioPagoPAV2InPagoPAV1) {
+					CtRichiestaPagamentoTelematico ctRpt2 = MessaggiPagoPAUtils.toCtRichiestaPagamentoTelematico(paGetPaymentV2Response, rpt);
+					t.setRpt(JaxbUtils.toByte(ctRpt2));
+				} else {				
+					t.setRpt(rpt.getXmlRpt());
+				}
+				break;
+			}
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
+		try {
+			switch (rpt.getVersione()) {
+			case SANP_230:
+				t.setRt(rpt.getXmlRt());
+				break;
+			case SANP_240:
+				PaSendRTReq paSendRTReq_RT = JaxbUtils.toPaSendRTReq_RT(rpt.getXmlRt(), false);
+				
+				if(convertiMessaggioPagoPAV2InPagoPAV1) {
+					CtRicevutaTelematica ctRt2 = MessaggiPagoPAUtils.toCtRicevutaTelematica(paSendRTReq_RT, rpt);
+					t.setRt(JaxbUtils.toByte(ctRt2));
+				} else {				
+					t.setRt(rpt.getXmlRt());
+				}
+				
+				break;
+			case SANP_321_V2:
+				PaSendRTV2Request paSendRTRtv2Request = JaxbUtils.toPaSendRTV2Request_RT(rpt.getXmlRt(), false);
+				
+				if(convertiMessaggioPagoPAV2InPagoPAV1) {
+					CtRicevutaTelematica ctRt2 = MessaggiPagoPAUtils.toCtRicevutaTelematica(paSendRTRtv2Request, rpt);
+					t.setRt(JaxbUtils.toByte(ctRt2));
+				} else {				
+					t.setRt(rpt.getXmlRt());
+				}
+				
+				break;
+			}
+			
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
+		
+		
 
 //		if(versione.compareTo(Versione.GP_02_02_00) >=0) { // Versione 2.2
 			t.setData(rpt.getDataMsgRichiesta());

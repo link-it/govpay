@@ -59,6 +59,7 @@ import it.govpay.core.dao.pagamenti.dto.PagamentiPortaleDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.EventoContext.Esito;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.RptUtils;
@@ -255,7 +256,8 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			LeggiRptDTOResponse leggiRptDTOResponse = ricevuteDAO.leggiRpt(leggiRptDTO);
 			Rpt rpt = leggiRptDTOResponse.getRpt();
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			response.setTransazione(ConverterUtils.toTransazione(rpt, configWrapper));
+			boolean conversioneMessaggiPagoPAV2NelFormatoV1 = GovpayConfig.getInstance().isConversioneMessaggiPagoPAV2NelFormatoV1();
+			response.setTransazione(ConverterUtils.toTransazione(rpt, configWrapper, conversioneMessaggiPagoPAV2NelFormatoV1));
 			ctx.getApplicationLogger().log("ws.ricevutaRichiestaOk");
 			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (GovPayException e) {
@@ -397,8 +399,9 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 
 			List<Rpt> rpts = leggiPendenza.getRpts();
 			if(rpts != null) {
+				boolean conversioneMessaggiPagoPAV2NelFormatoV1 = GovpayConfig.getInstance().isConversioneMessaggiPagoPAV2NelFormatoV1();
 				for(Rpt rpt : rpts) {
-					response.getTransazione().add(ConverterUtils.toTransazione(rpt, configWrapper));
+					response.getTransazione().add(ConverterUtils.toTransazione(rpt, configWrapper, conversioneMessaggiPagoPAV2NelFormatoV1));
 				}
 			}
 			ctx.getApplicationLogger().log("ws.ricevutaRichiestaOk");

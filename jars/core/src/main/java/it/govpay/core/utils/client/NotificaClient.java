@@ -136,7 +136,7 @@ public class NotificaClient extends BasicClientCORE {
 		PaNotificaTransazione paNotificaTransazione = new PaNotificaTransazione();
 		paNotificaTransazione.setCodApplicazione(applicazione.getCodApplicazione());
 		paNotificaTransazione.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
-		paNotificaTransazione.setTransazione(Gp21Utils.toTransazione(rpt, null));
+		paNotificaTransazione.setTransazione(Gp21Utils.toTransazione(rpt, null, this.convertiMessaggioPagoPAV2InPagoPAV1));
 
 		paNotificaTransazione.setCodSessionePortale(rpt.getCodSessionePortale());
 
