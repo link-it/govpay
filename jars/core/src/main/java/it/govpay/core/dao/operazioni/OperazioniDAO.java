@@ -35,7 +35,7 @@ public class OperazioniDAO extends BaseDAO{
 	public final static String ELABORAZIONE_RICONCILIAZIONI = "elaborazioneRiconciliazioni";
 	public final static String CHIUSURA_RPT_SCADUTE = "chiusuraRptScadute";
 
-	public LeggiOperazioneDTOResponse eseguiOperazione(LeggiOperazioneDTO leggiOperazioneDTO) throws ServiceException, OperazioneNonTrovataException, NotAuthorizedException, NotAuthenticatedException{
+	public LeggiOperazioneDTOResponse eseguiOperazione(LeggiOperazioneDTO leggiOperazioneDTO) throws OperazioneNonTrovataException{
 		LeggiOperazioneDTOResponse response = new LeggiOperazioneDTOResponse();
 		
 		try {
@@ -57,10 +57,8 @@ public class OperazioniDAO extends BaseDAO{
 				esitoOperazione = it.govpay.core.business.Operazioni.spedizionePromemoria(ctx);
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(GESTIONE_PROMEMORIA)){
 				esitoOperazione = it.govpay.core.business.Operazioni.gestionePromemoria(ctx);
-			} else if(leggiOperazioneDTO.getIdOperazione().equals(GENERAZIONE_AVVISI_PAGAMENTO)){
-				it.govpay.core.business.Operazioni.setEseguiGenerazioneAvvisi();
-				esitoOperazione = "Generazione Avvisi Pagamento schedulata";
-			} else if(leggiOperazioneDTO.getIdOperazione().equals(ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO)){
+			} else if(leggiOperazioneDTO.getIdOperazione().equals(GENERAZIONE_AVVISI_PAGAMENTO) ||
+					leggiOperazioneDTO.getIdOperazione().equals(ATTIVAZIONE_GENERAZIONE_AVVISI_PAGAMENTO)){
 				it.govpay.core.business.Operazioni.setEseguiGenerazioneAvvisi();
 				esitoOperazione = "Generazione Avvisi Pagamento schedulata";
 			} else if(leggiOperazioneDTO.getIdOperazione().equals(ELABORAZIONE_TRACCIATI_PENDENZE)){

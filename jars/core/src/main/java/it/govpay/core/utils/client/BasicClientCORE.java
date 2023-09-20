@@ -127,12 +127,17 @@ public abstract class BasicClientCORE {
 	private static Logger log = LoggerWrapperFactory.getLogger(BasicClientCORE.class);
 
 	protected boolean debug = true;
-	//	protected static Map<String, SSLContext> sslContexts = new HashMap<>();
 	protected URL url = null;
-	//	protected SSLContext sslContext;
-	protected boolean ishttpBasicEnabled=false, isSslEnabled=false, isSubscriptionKeyEnabled=false;
-	protected String httpBasicUser, httpBasicPassword;
-	protected String subscriptionKeyHeaderName, subscriptionKeyHeaderValue;
+	protected boolean ishttpBasicEnabled=false;
+	protected boolean isSslEnabled=false;
+	protected boolean isSubscriptionKeyEnabled=false;
+	protected boolean ishttpHeaderEnabled=false;
+	protected String httpBasicUser;
+	protected String httpBasicPassword;
+	protected String subscriptionKeyHeaderName;
+	protected String subscriptionKeyHeaderValue;
+	protected String httpHeaderName;
+	protected String httpHeaderValue;
 	protected String errMsg;
 	protected String destinatario;
 	protected String mittente;
