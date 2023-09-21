@@ -320,6 +320,14 @@ public abstract class BasicClientCORE {
 			this.getEventoCtx().setPrincipal(this.httpBasicUser);
 		}
 		
+		if(connettore.getTipoAutenticazione().equals(EnumAuthType.HTTP_HEADER)) {
+			this.ishttpHeaderEnabled = true;
+			this.httpHeaderName = connettore.getHttpHeaderName();
+			this.httpHeaderValue = connettore.getHttpHeaderValue();
+
+			this.getEventoCtx().setPrincipal(this.httpHeaderValue);
+		}
+		
 		if(connettore.getSubscriptionKeyValue() != null) {
 			// se non ho impostato nessuna autenticazione salvo SubscriptionKey come metodo di autenticazione per l'evento.
 			if(connettore.getTipoAutenticazione().equals(EnumAuthType.NONE)) {
@@ -622,6 +630,17 @@ public abstract class BasicClientCORE {
 				this.httpRequest.addHeader("Authorization", "Basic " + encoding);
 				if(this.debug)
 					log.debug("Impostato Header Authorization [Basic "+encoding+"]");
+			}
+			
+			// Authentication HTTP Header
+			if(this.ishttpHeaderEnabled) {
+				if(this.debug)
+					log.debug("Impostazione autenticazione...");
+				
+				this.dumpRequest.getHeaders().put(this.httpHeaderName, this.httpHeaderValue);
+				this.httpRequest.addHeader(this.httpHeaderName, this.httpHeaderValue);
+				if(this.debug)
+					log.debug("Impostato Autenticazione tramite Header HTTP [{}:{}]", this.httpHeaderName, this.httpHeaderValue);
 			}
 			
 			// Authentication Subscription Key
