@@ -93,6 +93,14 @@ public class ConnettoreConverter {
 				if(Connettore.P_SUBSCRIPTION_KEY_VALUE.equals(connettore.getCodProprieta())) {
 					dto.setSubscriptionKeyValue(connettore.getValore());
 				}
+				
+				if(Connettore.P_HTTP_HEADER_AUTH_HEADER_NAME_NAME.equals(connettore.getCodProprieta())) {
+					dto.setHttpHeaderName(connettore.getValore());
+				}
+				
+				if(Connettore.P_HTTP_HEADER_AUTH_HEADER_VALUE_NAME.equals(connettore.getCodProprieta())) {
+					dto.setHttpHeaderValue(connettore.getValore());
+				}
 
 				if(Connettore.P_AZIONEINURL_NAME.equals(connettore.getCodProprieta())) {
 					dto.setAzioneInUrl(Boolean.parseBoolean(connettore.getValore()));
@@ -226,6 +234,22 @@ public class ConnettoreConverter {
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_SUBSCRIPTION_KEY_VALUE);
 			vo.setValore(connettore.getSubscriptionKeyValue());
+			voList.add(vo);
+		}
+		
+		if(connettore.getHttpHeaderName() != null && !connettore.getHttpHeaderName().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_HTTP_HEADER_AUTH_HEADER_NAME_NAME);
+			vo.setValore(connettore.getHttpHeaderName());
+			voList.add(vo);
+		}
+		
+		if(connettore.getHttpHeaderValue() != null && !connettore.getHttpHeaderValue().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_HTTP_HEADER_AUTH_HEADER_VALUE_NAME);
+			vo.setValore(connettore.getHttpHeaderValue());
 			voList.add(vo);
 		}
 		

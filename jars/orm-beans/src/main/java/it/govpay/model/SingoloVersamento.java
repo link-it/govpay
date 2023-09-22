@@ -194,7 +194,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 
 	@Override
 	public int compareTo(SingoloVersamento sv) {
-		return this.codSingoloVersamentoEnte.compareTo(sv.getCodSingoloVersamentoEnte());
+		return this.indiceDati.compareTo(sv.getIndiceDati());
 	}
 
 	public Long getIdIbanAppoggio() {

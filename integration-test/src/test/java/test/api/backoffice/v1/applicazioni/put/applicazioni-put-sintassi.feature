@@ -68,6 +68,8 @@ Examples:
 | servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'XXX', sslType: 'TLSv1.2'	} } |  'tsType' |
 | servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: null	} } |  'sslType' |
 | servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'XXX'	} } |  'sslType' |
+| servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { headerName: null, headerValue: 'govpay' } } | 'headerName' |
+| servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { headerName: 'X-GOVPAY-AUTH', headerValue: null } } | 'headerValue' |
 | abilitato | null | 'abilitato' |
 | abilitato | 'sss' | 'abilitato' |
 | apiPagamenti | null | 'apiPagamenti' |

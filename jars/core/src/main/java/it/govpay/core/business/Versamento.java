@@ -129,7 +129,7 @@ public class Versamento  {
 				//				if(versamento.checkEsecuzioneUpdate(versamentoLetto)) {	}
 
 				ctx.getApplicationLogger().log("versamento.validazioneSemanticaAggiornamento", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
-				VersamentoUtils.validazioneSemanticaAggiornamento(versamentoLetto, versamento);
+				VersamentoUtils.validazioneSemanticaAggiornamento(versamentoLetto, versamento, log);
 				ctx.getApplicationLogger().log("versamento.validazioneSemanticaAggiornamentoOk", versamento.getApplicazione(configWrapper).getCodApplicazione(), versamento.getCodVersamentoEnte());
 
 				if(bd == null) {

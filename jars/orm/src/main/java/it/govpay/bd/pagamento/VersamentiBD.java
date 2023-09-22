@@ -75,6 +75,7 @@ import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.constants.StatoOperazioneType;
 import it.govpay.orm.dao.IDBSingoloVersamentoServiceSearch;
+import it.govpay.orm.dao.jdbc.JDBCSingoloVersamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.JDBCVersamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.SingoloVersamentoFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
@@ -451,10 +452,24 @@ public class VersamentiBD extends BasicBD {
 
 			if(deep) {
 				for(SingoloVersamento singolo: versamento.getSingoliVersamenti(this)) {
+					singolo.setIdVersamento(versamento.getId());
+					
 					it.govpay.orm.SingoloVersamento singoloVO = SingoloVersamentoConverter.toVO(singolo);
 					IdSingoloVersamento idSingoloVersamento = new IdSingoloVersamento();
 					idSingoloVersamento.setId(singolo.getId());
-					this.getSingoloVersamentoService().update(idSingoloVersamento, singoloVO);
+					IdVersamento idVersamento = new IdVersamento();
+					idVersamento.setId(versamento.getId());
+					idSingoloVersamento.setIdVersamento(idVersamento );
+					idSingoloVersamento.setIndiceDati(singolo.getIndiceDati());
+					
+					// e' possibile aggiornare un versamento aggiungendo le voci, devo controllare l'esistenza prima di eseguire l'update altrimenti creo la nuova voce.
+					Long findTableId = ((JDBCSingoloVersamentoServiceSearch)this.getSingoloVersamentoService()).findTableId(idSingoloVersamento, false);
+					if(findTableId != null) {
+						this.getSingoloVersamentoService().update(idSingoloVersamento, singoloVO);	
+					} else{
+						this.getSingoloVersamentoService().create(singoloVO);
+						singolo.setId(singoloVO.getId());
+					}
 				}
 				
 				// aggiornamento documento

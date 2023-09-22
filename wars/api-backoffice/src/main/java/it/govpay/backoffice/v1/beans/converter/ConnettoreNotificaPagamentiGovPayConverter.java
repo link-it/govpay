@@ -138,22 +138,28 @@ public class ConnettoreNotificaPagamentiGovPayConverter {
 					connettore.setSslType(connector.getAuth().getSslType());
 					connettore.setSslKsType(connector.getAuth().getKsType());
 					connettore.setSslPKeyPasswd(connector.getAuth().getKsPKeyPasswd());
+					connettore.setHttpHeaderName(connector.getAuth().getHeaderName());
+					connettore.setHttpHeaderValue(connector.getAuth().getHeaderValue());
 
-					if(connector.getAuth().getTipo() != null) {
-						connettore.setTipoAutenticazione(EnumAuthType.SSL);
-						if(connector.getAuth().getTipo() != null) {
-							switch (connector.getAuth().getTipo()) {
-							case CLIENT:
-								connettore.setTipoSsl(EnumSslType.CLIENT);
-								break;
-							case SERVER:
-							default:
-								connettore.setTipoSsl(EnumSslType.SERVER);
-								break;
-							}
-						}
+					if(connector.getAuth().getHeaderName() != null) {
+						connettore.setTipoAutenticazione(EnumAuthType.HTTP_HEADER);
 					} else {
-						connettore.setTipoAutenticazione(EnumAuthType.HTTPBasic);
+						if(connector.getAuth().getTipo() != null) {
+							connettore.setTipoAutenticazione(EnumAuthType.SSL);
+							if(connector.getAuth().getTipo() != null) {
+								switch (connector.getAuth().getTipo()) {
+								case CLIENT:
+									connettore.setTipoSsl(EnumSslType.CLIENT);
+									break;
+								case SERVER:
+								default:
+									connettore.setTipoSsl(EnumSslType.SERVER);
+									break;
+								}
+							}
+						} else {
+							connettore.setTipoAutenticazione(EnumAuthType.HTTPBasic);
+						}
 					}
 				} else {
 					connettore.setTipoAutenticazione(EnumAuthType.NONE);

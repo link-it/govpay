@@ -567,6 +567,7 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
       case UtilService.URL_GIORNALE_EVENTI:
       case UtilService.URL_TRACCIATI:
       case UtilService.URL_INCASSI:
+      case UtilService.URL_RICEVUTE:
         _classTemplate = UtilService.TWO_COLS;
       break;
     }
@@ -615,6 +616,9 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         break;
       case UtilService.URL_TIPI_PENDENZA:
         id = (item.idTipoPendenza || '');
+        break;
+      case UtilService.URL_RICEVUTE:
+        id = (item.pendenza.idPendenza || ''); // TODO decidere id
         break;
       // case UtilService.URL_ENTRATE:
       //   break;
@@ -748,6 +752,19 @@ export class SideListComponent implements OnInit, OnDestroy, IExport {
         );
         _std.titolo = new Dato({ label: '',  value: item.descrizione });
         _std.sottotitolo = _st;
+        break;
+      case UtilService.URL_RICEVUTE:
+        const versione620: boolean = !!(item.rpt && item.rt.versioneOggetto && item.rt.versioneOggetto === '6.2.0');
+        const _iuv2 = versione620?item.rt.datiPagamento.identificativoUnivocoVersamento:item.rt.creditorReferenceId;
+        const _importo = versione620?item.rt.datiPagamento.importoTotalePagato:item.rt.paymentAmount;
+        const _dataPagamento = versione620?item.rt.dataOraMessaggioRicevuta:item.rt.paymentDateTime;
+        _stdTC = new TwoCols();
+        _stdTC.generalTemplate = true;
+        _stdTC.gtTextUL = item.pendenza.causale;
+        _stdTC.gtTextBL = Dato.concatStrings([ item.pendenza.dominio.ragioneSociale, Voce.IUV+': '+_iuv2 ], ', ');
+        _stdTC.gtTextUR = this.us.currencyFormat(_importo);
+        _stdTC.gtTextBR = moment(_dataPagamento).format('DD/MM/YYYY [ore] HH:mm');
+        _std = _stdTC;
         break;
     }
     return _std;
