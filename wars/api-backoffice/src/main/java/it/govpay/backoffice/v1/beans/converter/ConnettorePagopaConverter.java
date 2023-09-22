@@ -22,22 +22,28 @@ public class ConnettorePagopaConverter {
 			connettore.setSslType(connector.getAuth().getSslType());
 			connettore.setSslKsType(connector.getAuth().getKsType());
 			connettore.setSslPKeyPasswd(connector.getAuth().getKsPKeyPasswd());
+			connettore.setHttpHeaderName(connector.getAuth().getHeaderName());
+			connettore.setHttpHeaderValue(connector.getAuth().getHeaderValue());
 			
-			if(connector.getAuth().getTipo() != null) {
-				connettore.setTipoAutenticazione(EnumAuthType.SSL);
-				if(connector.getAuth().getTipo() != null) {
-					switch (connector.getAuth().getTipo()) {
-					case CLIENT:
-						connettore.setTipoSsl(EnumSslType.CLIENT);
-						break;
-					case SERVER:
-					default:
-						connettore.setTipoSsl(EnumSslType.SERVER);
-						break;
-					}
-				}
+			if(connector.getAuth().getHeaderName() != null) {
+				connettore.setTipoAutenticazione(EnumAuthType.HTTP_HEADER);
 			} else {
-				connettore.setTipoAutenticazione(EnumAuthType.HTTPBasic);
+				if(connector.getAuth().getTipo() != null) {
+					connettore.setTipoAutenticazione(EnumAuthType.SSL);
+					if(connector.getAuth().getTipo() != null) {
+						switch (connector.getAuth().getTipo()) {
+						case CLIENT:
+							connettore.setTipoSsl(EnumSslType.CLIENT);
+							break;
+						case SERVER:
+						default:
+							connettore.setTipoSsl(EnumSslType.SERVER);
+							break;
+						}
+					}
+				} else {
+					connettore.setTipoAutenticazione(EnumAuthType.HTTPBasic);
+				}
 			}
 		} else {
 			connettore.setTipoAutenticazione(EnumAuthType.NONE);
@@ -52,7 +58,7 @@ public class ConnettorePagopaConverter {
 
 	public static ConnettorePagopa toRsModel(it.govpay.model.Connettore connettore) {
 		ConnettorePagopa rsModel = new ConnettorePagopa();
-		if(!connettore.getTipoAutenticazione().equals(EnumAuthType.NONE))
+		if(connettore.getTipoAutenticazione()!=null && !connettore.getTipoAutenticazione().equals(EnumAuthType.NONE))
 			rsModel.setAuth(toTipoAutenticazioneRsModel(connettore));
 		rsModel.setUrlRPT(connettore.getUrl());
 		rsModel.setUrlAvvisatura(connettore.getUrlServiziAvvisatura());
@@ -73,8 +79,10 @@ public class ConnettorePagopaConverter {
 		.tsType(connettore.getSslTsType())
 		.sslType(connettore.getSslType())
 		.ksType(connettore.getSslKsType())
-		.ksPKeyPasswd(connettore.getSslPKeyPasswd());
-		
+		.ksPKeyPasswd(connettore.getSslPKeyPasswd())
+		.headerName(connettore.getHttpHeaderName())
+		.headerValue(connettore.getHttpHeaderValue());
+
 		if(connettore.getTipoSsl() != null) {
 			switch (connettore.getTipoSsl() ) {
 			case CLIENT:

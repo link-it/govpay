@@ -115,6 +115,10 @@ export class Voce {
   public static GLN: string = 'Global location number';
 
   public static HOSTNAME: string = 'Hostname';
+  public static HEADER: string = 'Header';
+  public static HEADER_NAME: string = 'Nome Header';
+  public static HEADER_VALUE: string = 'Valore';
+  public static HTTP_HEADER: string = 'HTTP Header';
 
   public static IBAN_ACCREDITO: string = 'Iban accredito';
   public static IBAN_POSTALE: string = 'Iban postale';

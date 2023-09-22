@@ -82,12 +82,18 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
       _dettaglio.serviziApi.push(new Dato({ label: Voce.URL, value: this.json.servizioIntegrazione.url }));
       _dettaglio.serviziApi.push(new Dato({ label: Voce.VERSIONE_API, value: this.json.servizioIntegrazione.versioneApi }));
       if(this.json.servizioIntegrazione.auth) {
-        _dettaglio.serviziApi.push(new Dato({ label: Voce.TIPO_AUTH, value: this.json.servizioIntegrazione.auth.hasOwnProperty('username')?'HTTP Basic':'SSL' }));
+        if(this.json.servizioIntegrazione.auth.headerName) {
+		  _dettaglio.serviziApi.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.HTTP_HEADER }));
+          _dettaglio.serviziApi.push(new Dato({label: Voce.HEADER_NAME, value: this.json.servizioIntegrazione.auth.headerName }));
+          _dettaglio.serviziApi.push(new Dato({label: Voce.HEADER_VALUE, value: this.json.servizioIntegrazione.auth.headerValue }));
+        }
         if(this.json.servizioIntegrazione.auth.username) {
+		  _dettaglio.serviziApi.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.BASIC }));
           _dettaglio.serviziApi.push(new Dato({label: Voce.USERNAME, value: this.json.servizioIntegrazione.auth.username }));
           _dettaglio.serviziApi.push(new Dato({label: Voce.PASSWORD, value: this.json.servizioIntegrazione.auth.password }));
         }
         if(this.json.servizioIntegrazione.auth.tipo) {
+		  _dettaglio.serviziApi.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.SSL }));
           _dettaglio.serviziApi.push(new Dato({label: Voce.TIPO, value: this.json.servizioIntegrazione.auth.tipo }));
           if(this.json.servizioIntegrazione.auth.sslType) {
             _dettaglio.serviziApi.push(new Dato({label: Voce.SSL_CFG_TYPE, value: this.json.servizioIntegrazione.auth.sslType }));

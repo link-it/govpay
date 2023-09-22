@@ -127,12 +127,17 @@ public abstract class BasicClientCORE {
 	private static Logger log = LoggerWrapperFactory.getLogger(BasicClientCORE.class);
 
 	protected boolean debug = true;
-	//	protected static Map<String, SSLContext> sslContexts = new HashMap<>();
 	protected URL url = null;
-	//	protected SSLContext sslContext;
-	protected boolean ishttpBasicEnabled=false, isSslEnabled=false, isSubscriptionKeyEnabled=false;
-	protected String httpBasicUser, httpBasicPassword;
-	protected String subscriptionKeyHeaderName, subscriptionKeyHeaderValue;
+	protected boolean ishttpBasicEnabled=false;
+	protected boolean isSslEnabled=false;
+	protected boolean isSubscriptionKeyEnabled=false;
+	protected boolean ishttpHeaderEnabled=false;
+	protected String httpBasicUser;
+	protected String httpBasicPassword;
+	protected String subscriptionKeyHeaderName;
+	protected String subscriptionKeyHeaderValue;
+	protected String httpHeaderName;
+	protected String httpHeaderValue;
 	protected String errMsg;
 	protected String destinatario;
 	protected String mittente;
@@ -313,6 +318,14 @@ public abstract class BasicClientCORE {
 			this.httpBasicPassword = connettore.getHttpPassw();
 
 			this.getEventoCtx().setPrincipal(this.httpBasicUser);
+		}
+		
+		if(connettore.getTipoAutenticazione().equals(EnumAuthType.HTTP_HEADER)) {
+			this.ishttpHeaderEnabled = true;
+			this.httpHeaderName = connettore.getHttpHeaderName();
+			this.httpHeaderValue = connettore.getHttpHeaderValue();
+
+			this.getEventoCtx().setPrincipal(this.httpHeaderValue);
 		}
 		
 		if(connettore.getSubscriptionKeyValue() != null) {
@@ -617,6 +630,17 @@ public abstract class BasicClientCORE {
 				this.httpRequest.addHeader("Authorization", "Basic " + encoding);
 				if(this.debug)
 					log.debug("Impostato Header Authorization [Basic "+encoding+"]");
+			}
+			
+			// Authentication HTTP Header
+			if(this.ishttpHeaderEnabled) {
+				if(this.debug)
+					log.debug("Impostazione autenticazione...");
+				
+				this.dumpRequest.getHeaders().put(this.httpHeaderName, this.httpHeaderValue);
+				this.httpRequest.addHeader(this.httpHeaderName, this.httpHeaderValue);
+				if(this.debug)
+					log.debug("Impostato Autenticazione tramite Header HTTP [{}:{}]", this.httpHeaderName, this.httpHeaderValue);
 			}
 			
 			// Authentication Subscription Key

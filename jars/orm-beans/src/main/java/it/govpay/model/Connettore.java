@@ -39,9 +39,11 @@ public class Connettore extends Versionabile {
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";
     public static final String P_VERSIONE = "VERSIONE";
     public static final String P_SUBSCRIPTION_KEY_VALUE = "SUBSCRIPTION_KEY_VALUE";
+	public static final String P_HTTP_HEADER_AUTH_HEADER_NAME_NAME = "HTTP_HEADER_AUTH_HEADER_NAME";
+	public static final String P_HTTP_HEADER_AUTH_HEADER_VALUE_NAME = "HTTP_HEADER_AUTH_HEADER_VALUE";
 	
 	public enum EnumAuthType {
-		SSL, HTTPBasic, NONE
+		SSL, HTTPBasic, HTTP_HEADER, NONE
 	}
 	
 	public enum EnumSslType {
@@ -69,6 +71,8 @@ public class Connettore extends Versionabile {
 	private String urlServiziAvvisatura;
 	private boolean azioneInUrl;
 	private String subscriptionKeyValue;
+	private String httpHeaderName;
+	private String httpHeaderValue;
 	
 	public Connettore() {
 	}
@@ -91,6 +95,8 @@ public class Connettore extends Versionabile {
 		this.tipoSsl = src.tipoSsl;
 		this.url = src.url;
 		this.urlServiziAvvisatura = src.urlServiziAvvisatura;
+		this.httpHeaderName = src.httpHeaderName;
+		this.httpHeaderValue = src.httpHeaderValue;
 	}
 		
 	public String getIdConnettore() {
@@ -197,5 +203,17 @@ public class Connettore extends Versionabile {
 	}
 	public void setSubscriptionKeyValue(String subscriptionKeyValue) {
 		this.subscriptionKeyValue = subscriptionKeyValue;
+	}
+	public String getHttpHeaderName() {
+		return httpHeaderName;
+	}
+	public void setHttpHeaderName(String httpHeaderName) {
+		this.httpHeaderName = httpHeaderName;
+	}
+	public String getHttpHeaderValue() {
+		return httpHeaderValue;
+	}
+	public void setHttpHeaderValue(String httpHeaderValue) {
+		this.httpHeaderValue = httpHeaderValue;
 	}
 }
