@@ -33,13 +33,13 @@
                 </authentication-provider>
         </authentication-manager>
         
-        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/**">
+        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/**" request-matcher="regex">
 
                 <csrf disabled="true"/>
 
-                <intercept-url pattern="*?wsdl" access="permitAll" />
-                
-                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern=".*\?wsdl" access="permitAll" />
+
+                <intercept-url pattern=".*" access="isFullyAuthenticated()" />
                 
                 <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
 
@@ -82,11 +82,11 @@
         	</ldap-authentication-provider>
         </authentication-manager>
         
-        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/**">
+        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/**"  request-matcher="regex">
                 <csrf disabled="true"/>
-                <intercept-url pattern="*?wsdl" access="permitAll" />
-                
-                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern=".*\?wsdl" access="permitAll" />
+
+                <intercept-url pattern=".*" access="isFullyAuthenticated()" />
                 
                 <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
                 <headers>
@@ -108,13 +108,13 @@
         	<b:property name="authType" value="SSL" />
         </b:bean>
         
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="x509AuthenticationEntryPoint">
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="x509AuthenticationEntryPoint"  request-matcher="regex">
 
                 <csrf disabled="true"/>
                 
-                <intercept-url pattern="*?wsdl" access="permitAll" />
-                
-                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern=".*\?wsdl" access="permitAll" />
+
+                <intercept-url pattern=".*" access="isFullyAuthenticated()" />
                 
                 <x509 subject-principal-regex="^(.*)$"  user-service-ref="userDetailServiceUtenzeSSL" />
 
@@ -154,14 +154,14 @@
         	</b:property>
         </b:bean>
         
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointSSLHead" >
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointSSLHead" request-matcher="regex" >
 
                 <csrf disabled="true"/>
                 
-                <intercept-url pattern="*?wsdl" access="permitAll" />
-                
-                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
-                
+                <intercept-url pattern=".*\?wsdl" access="permitAll" />
+
+		  <intercept-url pattern=".*" access="isFullyAuthenticated()" />
+
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterSSLHead" />
                 
                 <headers>
@@ -198,13 +198,13 @@
         	</b:property>
         </b:bean>
         
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointHead">
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointHead" request-matcher="regex">
 
                 <csrf disabled="true"/>
-                
-                <intercept-url pattern="*?wsdl" access="permitAll" />
-                
-                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
+
+                <intercept-url pattern=".*\?wsdl" access="permitAll" />
+
+                <intercept-url pattern=".*" access="isFullyAuthenticated()" />		
                 
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterHead" />
                 
