@@ -5,7 +5,14 @@ Connettore per l'esportazione dei pagamenti verso Maggioli (JPPA)
 
 Il servizio e' al momento rilasciato in versione beta.
 
-Questo connettore consente di esportare i dati dei pagamenti gestiti da GovPay in formato compatibile con la piattaforma PagoPA Maggioli. Il batch di esportazione viene eseguito quotidianamente alle 3 di mattina. 
+Configurando il connettore e' possibilie interfacciarsi verso la piattaforma PagoPA Maggioli ed esportare i pagamenti gestiti da GovPay in un formato compatibile con essa.
+
+Il protocollo JPPA prevede due fasi principali: 
+
+- Nella prima fase GovPay per ogni transazioni di pagamento completata con successo invia una notifica verso Maggioli attraverso l'operazione *InvioEsitoPagamento* e contestualmente raccoglie il risultato di ogni spedizione all'interno di un tracciato in formato csv.
+- In una fase successiva Maggioli puo' scaricare le ricevute di pagamento corrispondenti alle notifiche ricevute attraverso l'operazione *RecuperaRT* esposta da GovPay.
+
+La spedizione delle notifiche verso la piattaforma Maggioli viene eseguita quotidianamente alle 3 di mattina, terminata questa fase viene inviato tramite email il tracciato csv contenente gli esiti degli invii delle notifiche di pagamento.
 
 .. figure:: ../../_images/48ConnettoreMaggioliJPPA.png
    :align: center
@@ -40,13 +47,7 @@ Questo connettore consente di esportare i dati dei pagamenti gestiti da GovPay i
    "Tipo Autenticazione", "Tipo di autenticazione da utilizzare (Nessuna/HTTPBasic/SSL)"
 
 
-Il servizio di esportazione seleziona le transazioni di pagamento completate con successo ed invia le notifiche verso Maggioli attraverso l'operazione *InvioEsitoPagamento*, contestualmente raccoglie il risultato di ogni spedizione all'interno di un tracciato in formato csv.
-Il tracciato verra' quindi inviato via email al termine dell'invio delle notifiche di pagamento.
-
-Per completare il flusso operativo previsto, GovPay espone l'operazione *RecuperaRT* utilizzata dalla piattaforma Maggioli per recuperare il dettaglio di ogni ricevuta notificata nella fase precedente.
-
-
-Versione 1.0
+Tracciato esiti spedizioni versione 1.0
 ~~~~~~~~~~~~
 
 Per ciascuna notifica di pagamento inviata viene aggiunto un record con l'esito dell'operazione:
