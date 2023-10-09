@@ -132,12 +132,17 @@ public abstract class BasicClientCORE {
 	protected boolean isSslEnabled=false;
 	protected boolean isSubscriptionKeyEnabled=false;
 	protected boolean ishttpHeaderEnabled=false;
+	protected boolean isApiKeyEnabled=false;
 	protected String httpBasicUser;
 	protected String httpBasicPassword;
 	protected String subscriptionKeyHeaderName;
 	protected String subscriptionKeyHeaderValue;
 	protected String httpHeaderName;
 	protected String httpHeaderValue;
+	protected String apiKey;
+	protected String apiKeyValue;
+	protected String apiId;
+	protected String apiIdValue;
 	protected String errMsg;
 	protected String destinatario;
 	protected String mittente;
@@ -326,6 +331,16 @@ public abstract class BasicClientCORE {
 			this.httpHeaderValue = connettore.getHttpHeaderValue();
 
 			this.getEventoCtx().setPrincipal(this.httpHeaderValue);
+		}
+		
+		if(connettore.getTipoAutenticazione().equals(EnumAuthType.API_KEY)) {
+			this.isApiKeyEnabled = true;
+			this.apiId = GovpayConfig.getInstance().getAutenticazioneApiKeyNomeHeaderApiIdFruizione();
+			this.apiIdValue = connettore.getApiId();
+			this.apiKey =  GovpayConfig.getInstance().getAutenticazioneApiKeyNomeHeaderApiKeyFruizione();
+			this.apiKeyValue = connettore.getApiKey();
+
+			this.getEventoCtx().setPrincipal(this.apiIdValue);
 		}
 		
 		if(connettore.getSubscriptionKeyValue() != null) {
@@ -641,6 +656,22 @@ public abstract class BasicClientCORE {
 				this.httpRequest.addHeader(this.httpHeaderName, this.httpHeaderValue);
 				if(this.debug)
 					log.debug("Impostato Autenticazione tramite Header HTTP [{}:{}]", this.httpHeaderName, this.httpHeaderValue);
+			}
+			
+			// Authentication API KEY
+			if(this.isApiKeyEnabled) {
+				if(this.debug)
+					log.debug("Impostazione autenticazione...");
+				
+				this.dumpRequest.getHeaders().put(this.apiKey, this.apiKeyValue);
+				this.httpRequest.addHeader(this.apiKey, this.apiKeyValue);
+				
+				this.dumpRequest.getHeaders().put(this.apiId, this.apiIdValue);
+				this.httpRequest.addHeader(this.apiId, this.apiIdValue);
+				if(this.debug) {
+					log.debug("Impostato Autenticazione tramite API KEY -> API-KEY: [{}:{}]", this.apiKey, this.apiKeyValue);
+					log.debug("Impostato Autenticazione tramite API KEY -> API-ID: [{}:{}]", this.apiId, this.apiIdValue);
+				}
 			}
 			
 			// Authentication Subscription Key

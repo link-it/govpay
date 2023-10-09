@@ -8,8 +8,17 @@
     <mat-option [value]="BASIC">HTTP Basic</mat-option>
     <mat-option [value]="SSL">SSL</mat-option>
     <mat-option [value]="HEADER">HTTP Header</mat-option>
+    <mat-option [value]="API_KEY">API Key</mat-option>
   </mat-select>
 </mat-form-field>
+<div *ngIf="_isApiKeyAuth">
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput [placeholder]="voce.API_ID" formControlName="apiId_ctrl" autocomplete="off" [required]="_isRequired">
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput [placeholder]="voce.API_KEY" formControlName="apiKey_ctrl" autocomplete="off" [required]="_isRequired">
+  </mat-form-field>
+</div>
 <div *ngIf="_isBasicAuth">
   <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
     <input matInput [placeholder]="voce.USERNAME" formControlName="username_ctrl" autocomplete="off" [required]="_isRequired">
