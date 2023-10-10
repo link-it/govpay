@@ -62,9 +62,9 @@ Il campo *Principal* deve essere valorizzato in base al tipo di autenticazione c
 
    "HTTP Basic", "Username dell'autenticazione Basic"
    "SSL", "Subject del certificato X509"
-   "SSL Header", "Subject del certificato X509 contenuto nell header previsto dalla configurazione di sistema"
-   "Header", "Principal contenuto nell header previsto dalla configurazione di sistema"
-   "Api Key", "API-Id contentuto nell header previsto dalla configurazione di sistema"
+   "SSL Header", "Subject del certificato X509 contenuto nell'header"
+   "Header", "Principal contenuto nell'header"
+   "Api Key", "APP-ID presentato dal client tramite header X-APP-ID"
 
 Il campo *Password* deve essere valorizzato in base al tipo di autenticazione che si intende utilizzare:
 
@@ -76,7 +76,7 @@ Il campo *Password* deve essere valorizzato in base al tipo di autenticazione ch
    "SSL", "Non necessario"
    "SSL Header", "Non necessario"
    "Header", "Non necessario"
-   "Api Key", "API-Key contentuto nell header previsto dalla configurazione di sistema"
+   "Api Key", "API-Key presentato dal client tramite header X-API-KEY"
 
 Codifica avvisi
 ^^^^^^^^^^^^^^^
