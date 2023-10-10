@@ -45,7 +45,7 @@ public class SondeConverter {
 			org.openspcoop2.utils.sonde.Sonda.StatoSonda statoSonda, it.govpay.bd.model.Configurazione configurazione) throws IOException {
 
 		if(Costanti.NTFY.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn()) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchSpedizioneNotifiche()) {
 				rsModel.setDescrizioneStato(statoSonda.getDescrizione());
 
 				if(statoSonda.getStato() == 0) rsModel.setDurataStato(parametri.getDataOk());
@@ -59,7 +59,7 @@ public class SondeConverter {
 				rsModel.setDescrizioneStato(Costanti.NTFY_DISABILITATO);
 			}
 		} else if(Costanti.BATCH_SPEDIZIONE_PROMEMORIA.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn()) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchSpedizionePromemoria()) {
 
 				MailBatch batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
 				if(!batchSpedizioneEmail.isAbilitato()) {
@@ -81,7 +81,7 @@ public class SondeConverter {
 				rsModel.setDescrizioneStato(Costanti.BATCH_SPEDIZIONE_PROMEMORIA_DISABILITATO);
 			}
 		} else if(Costanti.NTFY_APP_IO.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn()) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchSpedizioneNotificheAppIO()) {
 
 
 				if(!configurazione.getBatchSpedizioneAppIo().isAbilitato()) {
@@ -104,7 +104,7 @@ public class SondeConverter {
 				rsModel.setDescrizioneStato(Costanti.NTFY_APP_IO_DISABILITATO);
 			}
 		} else if(Costanti.BATCH_GESTIONE_PROMEMORIA.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn()) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchGestionePromemoria()) {
 
 				MailBatch batchSpedizioneEmail = configurazione.getBatchSpedizioneEmail();
 				AppIOBatch batchSpedizioneAppIO = configurazione.getBatchSpedizioneAppIo();
@@ -157,7 +157,7 @@ public class SondeConverter {
 				rsModel.setDescrizioneStato(Costanti.BATCH_SPEDIZIONE_TRACCIATI_NOTIFICA_PAGAMENTI_DISABILITATO);
 			}
 		} else if(Costanti.BATCH_CHIUSURA_RPT_SCADUTE.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn()) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchChiusuraRPTScadute()) {
 				rsModel.setDescrizioneStato(statoSonda.getDescrizione());
 
 				if(statoSonda.getStato() == 0) rsModel.setDurataStato(parametri.getDataOk());
@@ -171,7 +171,7 @@ public class SondeConverter {
 				rsModel.setDescrizioneStato(Costanti.BATCH_CHIUSURA_RPT_SCADUTE_DISABILITATO);
 			}
 		} else if(Costanti.BATCH_RICONCILIAZIONI.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn()) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchElaborazioneRiconciliazioni()) {
 				rsModel.setDescrizioneStato(statoSonda.getDescrizione());
 
 				if(statoSonda.getStato() == 0) rsModel.setDurataStato(parametri.getDataOk());
@@ -185,7 +185,7 @@ public class SondeConverter {
 				rsModel.setDescrizioneStato(Costanti.BATCH_RICONCILIAZIONI_DISABILITATO);
 			}
 		} else if(Costanti.PND.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn()) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchRecuperoRPTPendenti()) {
 				rsModel.setDescrizioneStato(statoSonda.getDescrizione());
 
 				if(statoSonda.getStato() == 0) rsModel.setDurataStato(parametri.getDataOk());
@@ -199,7 +199,7 @@ public class SondeConverter {
 				rsModel.setDescrizioneStato(Costanti.PND_DISABILITATO);
 			}
 		} else if(Costanti.RND.equals(rsModel.getId())) {
-			if(GovpayConfig.getInstance().isBatchOn()) {
+			if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchAcquisizioneRendicontazioni()) {
 				rsModel.setDescrizioneStato(statoSonda.getDescrizione());
 
 				if(statoSonda.getStato() == 0) rsModel.setDurataStato(parametri.getDataOk());

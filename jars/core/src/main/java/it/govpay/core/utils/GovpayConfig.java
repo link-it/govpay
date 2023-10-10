@@ -185,6 +185,16 @@ public class GovpayConfig {
 	
 	private Integer numeroGiorniValiditaPendenza;
 	
+	private boolean batchRecuperoRPTPendenti;
+	private boolean batchAcquisizioneRendicontazioni;
+	private boolean batchChiusuraRPTScadute;
+	private boolean batchElaborazioneRiconciliazioni;
+	private boolean batchGestionePromemoria;
+	private boolean batchSpedizioneNotifiche;
+	private boolean batchSpedizioneNotificheAppIO;
+	private boolean batchSpedizionePromemoria;
+	
+	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -276,6 +286,15 @@ public class GovpayConfig {
 		this.operazioneVerifica = null;
 		
 		this.numeroGiorniValiditaPendenza = null;
+		
+		this.batchRecuperoRPTPendenti = false;
+		this.batchAcquisizioneRendicontazioni = false;
+		this.batchChiusuraRPTScadute = false;
+		this.batchElaborazioneRiconciliazioni = false;
+		this.batchGestionePromemoria = false;
+		this.batchSpedizioneNotifiche = false;
+		this.batchSpedizioneNotificheAppIO = false;
+		this.batchSpedizionePromemoria = false;
 		
 		try {
 
@@ -839,6 +858,38 @@ public class GovpayConfig {
 				}
 			}
 			
+			String batchRecuperoRPTPendentiString = getProperty("it.govpay.batch.recuperoRptPendenti.enabled", this.props, false, log);
+			if(batchRecuperoRPTPendentiString != null && Boolean.valueOf(batchRecuperoRPTPendentiString))
+				this.batchRecuperoRPTPendenti = true;
+			
+			String batchAcquisizioneRendicontazioniString = getProperty("it.govpay.batch.acquisizioneRendicontazioni.enabled", this.props, false, log);
+			if(batchAcquisizioneRendicontazioniString != null && Boolean.valueOf(batchAcquisizioneRendicontazioniString))
+				this.batchAcquisizioneRendicontazioni = true;
+			
+			String batchChiusuraRPTScaduteString = getProperty("it.govpay.batch.chiusuraRptScadute.enabled", this.props, false, log);
+			if(batchChiusuraRPTScaduteString != null && Boolean.valueOf(batchChiusuraRPTScaduteString))
+				this.batchChiusuraRPTScadute = true;
+			
+			String batchElaborazioneRiconciliazioniString = getProperty("it.govpay.batch.elaborazioneRiconciliazioni.enabled", this.props, false, log);
+			if(batchElaborazioneRiconciliazioniString != null && Boolean.valueOf(batchElaborazioneRiconciliazioniString))
+				this.batchElaborazioneRiconciliazioni = true;
+			
+			String batchGestionePromemoriaString = getProperty("it.govpay.batch.gestionePromemoria.enabled", this.props, false, log);
+			if(batchGestionePromemoriaString != null && Boolean.valueOf(batchGestionePromemoriaString))
+				this.batchGestionePromemoria = true;
+			
+			String batchSpedizioneNotificheString = getProperty("it.govpay.batch.spedizioneNotifiche.enabled", this.props, false, log);
+			if(batchSpedizioneNotificheString != null && Boolean.valueOf(batchSpedizioneNotificheString))
+				this.batchSpedizioneNotifiche = true;
+			
+			String batchSpedizioneNotificheAppIOString = getProperty("it.govpay.batch.spedizioneNotificheAppIO.enabled", this.props, false, log);
+			if(batchSpedizioneNotificheAppIOString != null && Boolean.valueOf(batchSpedizioneNotificheAppIOString))
+				this.batchSpedizioneNotificheAppIO = true;
+			
+			String batchSpedizionePromemoriaString = getProperty("it.govpay.batch.spedizionePromemoria.enabled", this.props, false, log);
+			if(batchSpedizionePromemoriaString != null && Boolean.valueOf(batchSpedizionePromemoriaString))
+				this.batchSpedizionePromemoria = true;
+			
 		} catch (PropertyNotFoundException e) {
 			log.error(MessageFormat.format("Errore di inizializzazione: {0}", e.getMessage()));
 			throw new ConfigException(e);
@@ -1274,6 +1325,38 @@ public class GovpayConfig {
 
 	public String getAutenticazioneApiKeyNomeHeaderApiIdFruizione() {
 		return autenticazioneApiKeyNomeHeaderApiIdFruizione;
+	}
+
+	public boolean isBatchRecuperoRPTPendenti() {
+		return batchRecuperoRPTPendenti;
+	}
+
+	public boolean isBatchAcquisizioneRendicontazioni() {
+		return batchAcquisizioneRendicontazioni;
+	}
+
+	public boolean isBatchChiusuraRPTScadute() {
+		return batchChiusuraRPTScadute;
+	}
+
+	public boolean isBatchElaborazioneRiconciliazioni() {
+		return batchElaborazioneRiconciliazioni;
+	}
+
+	public boolean isBatchGestionePromemoria() {
+		return batchGestionePromemoria;
+	}
+
+	public boolean isBatchSpedizioneNotifiche() {
+		return batchSpedizioneNotifiche;
+	}
+
+	public boolean isBatchSpedizioneNotificheAppIO() {
+		return batchSpedizioneNotificheAppIO;
+	}
+
+	public boolean isBatchSpedizionePromemoria() {
+		return batchSpedizionePromemoria;
 	}
 	
 }
