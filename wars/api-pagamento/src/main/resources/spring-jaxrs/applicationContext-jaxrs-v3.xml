@@ -204,6 +204,28 @@
     </jaxrs:server>
     <!-- SESSION_END -->
     
+        <!-- Servizi ApiKey V3 -->
+	<!-- API_KEY_START  -->
+    <jaxrs:server id="apiPagamentoV3ApiKey" address="/apikey/v3/">
+        <jaxrs:serviceBeans>
+        		<ref bean="pendenzeV3" />
+			   	<ref bean="profiloV3" />
+			   	<ref bean="ricevuteV3" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+                <ref bean="parameterConverter" />
+                <ref bean="objectMessageBodyReader"/>
+                <ref bean="jacksonJsonProvider"/>
+                <ref bean="jacksonXmlProvider"/>
+                <ref bean="webApplicationExceptionMapper" />
+        </jaxrs:providers>
+        <jaxrs:features>
+        	<ref bean="giornaleEventiV3" /> <!-- Inserire prima della contextFeature -->
+			<ref bean="contextV3" />
+		</jaxrs:features>
+    </jaxrs:server>
+    <!-- API_KEY_END -->
+    
     	<!-- DEFAULT_START  -->
     <jaxrs:server id="apiPagamentoV3DEFAULT" address="/v3/">
         <jaxrs:serviceBeans>

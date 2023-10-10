@@ -82,6 +82,11 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
       _dettaglio.serviziApi.push(new Dato({ label: Voce.URL, value: this.json.servizioIntegrazione.url }));
       _dettaglio.serviziApi.push(new Dato({ label: Voce.VERSIONE_API, value: this.json.servizioIntegrazione.versioneApi }));
       if(this.json.servizioIntegrazione.auth) {
+		if(this.json.servizioIntegrazione.auth.apiId) {
+		  _dettaglio.serviziApi.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.API_KEY }));
+          _dettaglio.serviziApi.push(new Dato({label: Voce.API_ID, value: this.json.servizioIntegrazione.auth.apiId }));
+          _dettaglio.serviziApi.push(new Dato({label: Voce.API_KEY, value: this.json.servizioIntegrazione.auth.apiKey }));
+        }
         if(this.json.servizioIntegrazione.auth.headerName) {
 		  _dettaglio.serviziApi.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.HTTP_HEADER }));
           _dettaglio.serviziApi.push(new Dato({label: Voce.HEADER_NAME, value: this.json.servizioIntegrazione.auth.headerName }));

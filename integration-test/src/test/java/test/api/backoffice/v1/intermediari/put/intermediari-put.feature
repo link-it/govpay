@@ -11,6 +11,7 @@ Background:
 * def intermediarioServerAuth = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediarioServerAuth.json')
 * def intermediarioClientAuth = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediarioClientAuth.json')
 * def intermediarioHeaderAuth = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediarioHeaderAuth.json')
+* def intermediarioApiKeyAuth = read('classpath:test/api/backoffice/v1/intermediari/put/msg/intermediarioApiKeyAuth.json')
 
 Scenario: Configurazione intermediario senza autenticazione verso pagoPA
 
@@ -129,5 +130,24 @@ And headers basicAutenticationHeader
 When method get
 Then status 200
 And match response == intermediarioHeaderAuth
+
+Scenario: Configurazione intermediario con autenticazione apiKey verso pagoPA
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+And request intermediarioApiKeyAuth
+When method put
+Then assert responseStatus == 200 || responseStatus == 201
+
+* set intermediarioApiKeyAuth.idIntermediario = idIntermediario
+* set intermediarioApiKeyAuth.stazioni = '#ignore'
+
+Given url backofficeBaseurl
+And path 'intermediari', idIntermediario
+And headers basicAutenticationHeader
+When method get
+Then status 200
+And match response == intermediarioApiKeyAuth
 
 

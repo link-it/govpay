@@ -70,6 +70,8 @@ Examples:
 | servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { tipo: 'Server', ksLocation: '/tmp/keystore.jks', ksPassword: 'kspwd', tsLocation: '/tmp/truststore.jks', tsPassword: 'tspwd', tsType: 'JKS', sslType: 'XXX'	} } |  'sslType' |
 | servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { headerName: null, headerValue: 'govpay' } } | 'headerName' |
 | servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { headerName: 'X-GOVPAY-AUTH', headerValue: null } } | 'headerValue' |
+| servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { apiId: null, apiKey: 'govpay' } } | 'apiId' |
+| servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { apiId: 'X-GOVPAY-AUTH', apiKey: null } } | 'apiKey' |
 | abilitato | null | 'abilitato' |
 | abilitato | 'sss' | 'abilitato' |
 | apiPagamenti | null | 'apiPagamenti' |

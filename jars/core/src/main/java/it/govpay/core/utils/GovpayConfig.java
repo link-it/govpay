@@ -120,6 +120,14 @@ public class GovpayConfig {
 	private List<String> autenticazioneHeaderElencoHeadersRequest;
 	private Properties autenticazioneSSLHeaderProperties;
 	
+	// nomi header dove leggere le informazioni per l'autenticazione API-Key (Erogazione)
+	private String autenticazioneApiKeyNomeHeaderApiKey;
+	private String autenticazioneApiKeyNomeHeaderApiId;
+	
+	// nomi header dove impostare l'autenticazione API-Key (Fruizione)
+	private String autenticazioneApiKeyNomeHeaderApiKeyFruizione;
+	private String autenticazioneApiKeyNomeHeaderApiIdFruizione;
+	
 	private int numeroMassimoEntriesProspettoRiscossione;
 	
 	private Integer intervalloDisponibilitaPagamentoUtenzaAnonima;
@@ -796,6 +804,12 @@ public class GovpayConfig {
 			
 			this.nomeHeaderSubscriptionKeyPagoPA = getProperty("it.govpay.client.pagopa.autenticazione.subscriptionkey.header.name", this.props, false, log);
 			
+			this.autenticazioneApiKeyNomeHeaderApiId = getProperty("it.govpay.autenticazioneApiKey.apiId.header.name", this.props, false, log);
+			this.autenticazioneApiKeyNomeHeaderApiKey = getProperty("it.govpay.autenticazioneApiKey.apiKey.header.name", this.props, false, log);
+			
+			this.autenticazioneApiKeyNomeHeaderApiIdFruizione = getProperty("it.govpay.client.autenticazioneApiKey.apiId.header.name", this.props, false, log);
+			this.autenticazioneApiKeyNomeHeaderApiKeyFruizione = getProperty("it.govpay.client.autenticazioneApiKey.apiKey.header.name", this.props, false, log);
+			
 			String dismettiIUVIso11694String = getProperty("it.govpay.dismettiIuvIso11694", this.props, false, log);
 			if(dismettiIUVIso11694String != null && Boolean.valueOf(dismettiIUVIso11694String))
 				this.dismettiIUVIso11694 = true;
@@ -1245,4 +1259,21 @@ public class GovpayConfig {
 	public Integer getNumeroGiorniValiditaPendenza() {
 		return numeroGiorniValiditaPendenza;
 	}
+
+	public String getAutenticazioneApiKeyNomeHeaderApiKey() {
+		return autenticazioneApiKeyNomeHeaderApiKey;
+	}
+
+	public String getAutenticazioneApiKeyNomeHeaderApiId() {
+		return autenticazioneApiKeyNomeHeaderApiId;
+	}
+
+	public String getAutenticazioneApiKeyNomeHeaderApiKeyFruizione() {
+		return autenticazioneApiKeyNomeHeaderApiKeyFruizione;
+	}
+
+	public String getAutenticazioneApiKeyNomeHeaderApiIdFruizione() {
+		return autenticazioneApiKeyNomeHeaderApiIdFruizione;
+	}
+	
 }

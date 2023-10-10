@@ -7890,11 +7890,28 @@ components:
           type: string
           example: ABCDE123456...
           maxLength: 255
+    tipoAutenticazioneApiKey:
+      type: object
+      required:
+        - apiId
+        - apiKey
+      properties:
+        apiId:
+          type: string
+          example: ABCDE123456...
+          maxLength: 255
+          description: valore da inserire all'interno dell'header previsto per l'API-ID
+        apiKey:
+          type: string
+          example: ABCDE123456...
+          maxLength: 255
+          description: valore da inserire all'interno dell'header previsto per l'API-KEY
     tipoAutenticazione:
       oneOf:
         - $ref: '#/components/schemas/tipoAutenticazioneBasic'
         - $ref: '#/components/schemas/tipoAutenticazioneSSL'
         - $ref: '#/components/schemas/tipoAutenticazioneHeader'
+        - $ref: '#/components/schemas/tipoAutenticazioneApiKey'
     connector:
       type: object
       required:

@@ -20,6 +20,7 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
   protected BASIC = UtilService.TIPI_AUTENTICAZIONE.basic;
   protected SSL = UtilService.TIPI_AUTENTICAZIONE.ssl;
   protected HEADER = UtilService.TIPI_AUTENTICAZIONE.header;
+  protected API_KEY = UtilService.TIPI_AUTENTICAZIONE.apiKey;
   protected CLIENT = UtilService.TIPI_SSL.client;
   protected SERVER = UtilService.TIPI_SSL.server;
   protected tipiCfgSSL: any[] = [
@@ -37,6 +38,7 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
     { label: 'JKS', value: 'JKS' }
   ];
 
+  protected _isApiKeyAuth: boolean = false;
   protected _isHeaderAuth: boolean = false;
   protected _isBasicAuth: boolean = false;
   protected _isSslAuth: boolean = false;
@@ -77,9 +79,17 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
       this._isSslAuth = false;
       this._isBasicAuth = false;
       this._isHeaderAuth = false;
+      this._isApiKeyAuth = false;
       this.fGroup.controls['auth_ctrl'].setValue(this.NESSUNA);
       if (this.json) {
         this.authCtrl.enable();
+        if (this.json.hasOwnProperty('apiId')) {
+          this._isApiKeyAuth = true;
+          this.fGroup.controls['auth_ctrl'].setValue(this.API_KEY);
+          this.addApiKeyControls();
+          this.fGroup.controls['apiId_ctrl'].setValue(this.json.apiId);
+          this.fGroup.controls['apiKey_ctrl'].setValue(this.json.apiKey);
+        }
         if (this.json.hasOwnProperty('username')) {
           this._isBasicAuth = true;
           this.fGroup.controls['auth_ctrl'].setValue(this.BASIC);
@@ -119,6 +129,7 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
   }
 
   protected _onAuthChange(target: any) {
+	this._isApiKeyAuth = false;
     this._isBasicAuth = false;
     this._isHeaderAuth = false;
     this._isSslClient = false;
@@ -126,6 +137,7 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
     this.removeBasicControls();
     this.removeSslControls();
     this.removeHeaderControls();
+    this.removeApiKeyControls();
     switch(target.value) {
       case this.BASIC:
         this._isBasicAuth = true;
@@ -138,6 +150,10 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
      case this.HEADER:
         this._isHeaderAuth = true;
         this.addHeaderControls();
+        break;
+     case this.API_KEY:
+        this._isApiKeyAuth = true;
+        this.addApiKeyControls();
         break;
     }
     this.updateValueAndValidity();
@@ -164,6 +180,13 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
     if (this.fGroup) {
       this.fGroup.addControl('headerName_ctrl', new FormControl('', (this._isHeaderAuth && this.required)?[Validators.required]:[]));
       this.fGroup.addControl('headerValue_ctrl', new FormControl('', (this._isHeaderAuth && this.required)?[Validators.required]:[]));
+    }
+  }
+  
+  protected addApiKeyControls() {
+    if (this.fGroup) {
+      this.fGroup.addControl('apiId_ctrl', new FormControl('', (this._isApiKeyAuth && this.required)?[Validators.required]:[]));
+      this.fGroup.addControl('apiKey_ctrl', new FormControl('', (this._isApiKeyAuth && this.required)?[Validators.required]:[]));
     }
   }
 
@@ -222,11 +245,19 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
       this.fGroup.removeControl('headerValue_ctrl');
     }
   }
+  
+  protected removeApiKeyControls() {
+    if (this.fGroup) {
+      this.fGroup.removeControl('apiId_ctrl');
+      this.fGroup.removeControl('apiKey_ctrl');
+    }
+  }
 
   resetSslConfig() {
     this._isSslAuth = false;
     this._isBasicAuth = false;
     this._isHeaderAuth = false;
+    this._isApiKeyAuth = false;
     this.resetControllers();
   }
 
@@ -235,12 +266,19 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
     this.removeBasicControls();
     this.removeSslControls();
     this.removeHeaderControls();
+    this.removeApiKeyControls();
   }
 
   clearValidators() {
     this.authCtrl.clearValidators();
     if (this.fGroup) {
       const controls: any = this.fGroup.controls;
+      if (this._isApiKeyAuth) {
+        controls['apiId_ctrl'].clearValidators();
+        controls['apiId_ctrl'].setErrors(null);
+        controls['apiKey_ctrl'].clearValidators();
+        controls['apiKey_ctrl'].setErrors(null);
+      }
       if (this._isHeaderAuth) {
         controls['headerName_ctrl'].clearValidators();
         controls['headerName_ctrl'].setErrors(null);
@@ -282,6 +320,10 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
     this.authCtrl.setValidators(Validators.required);
     if (this.fGroup) {
       const controls: any = this.fGroup.controls;
+      if (this._isApiKeyAuth) {
+        controls['apiId_ctrl'].setValidators(Validators.required);
+        controls['apiKey_ctrl'].setValidators(Validators.required);
+      }
       if (this._isHeaderAuth) {
         controls['headerName_ctrl'].setValidators(Validators.required);
         controls['headerValue_ctrl'].setValidators(Validators.required);
@@ -310,6 +352,10 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
     setTimeout(() => {
       if (this.fGroup) {
         const controls: any = this.fGroup.controls;
+        if (this._isApiKeyAuth) {
+          controls['apiId_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+          controls['apiKey_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
+        }
         if (this._isHeaderAuth) {
           controls['headerName_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
           controls['headerValue_ctrl'].updateValueAndValidity({ onlySelf: false, emitEvent: true });
@@ -340,6 +386,12 @@ export class SslConfigComponent implements IFormComponent, OnInit, OnChanges, Af
     const _info = this.fGroup.value;
     let _json: any = null;
 
+    if(_info.hasOwnProperty('apiId_ctrl')) {
+      _json = {
+        apiId: _info['apiId_ctrl'],
+        apiKey: _info['apiKey_ctrl']
+      };
+    }
     if(_info.hasOwnProperty('headerName_ctrl')) {
       _json = {
         headerName: _info['headerName_ctrl'],
