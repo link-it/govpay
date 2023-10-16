@@ -87,3 +87,16 @@ And match each response.domini ==
    "entrate":"##string"
 }
 """
+
+Scenario: Acquisizione del profilo autenticato apikey
+
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v1', autenticazione: 'apikey'})
+
+Given url pagamentiBaseurl
+And path '/profilo'
+And header X-API-ID = idA2A
+And header X-API-KEY = pwdA2A
+When method get
+Then status 404
+
+

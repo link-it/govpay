@@ -17,6 +17,7 @@ export class Voce {
   public static API_PENDENZE: string = 'API Pendenze';
   public static API_RAGIONERIA: string = 'API Ragioneria';
   public static API_KEY: string = 'API Key';
+  public static API_ID: string = 'API Id';
   public static APPLICAZIONE: string = 'Applicazione';
   public static AREA: string = 'Area';
   public static AUT_PT: string = 'Autorizzazione stampa PT';
@@ -207,6 +208,11 @@ export class Voce {
   public static NUOVO_ENTE_CREDITORE: string = 'Nuovo Ente creditore';
 
   public static SUBSCRIPTION_KEY: string = 'Subscription Key';
+  public static OAUTH2_CLIENT_CREDENTIALS: string = 'OAuth2 Client Credentials';
+  public static OAUTH2_CLIENT_CREDENTIALS_CLIENT_ID: string = 'Client ID';
+  public static OAUTH2_CLIENT_CREDENTIALS_CLIENT_SECRET: string = 'Client Secret';
+  public static OAUTH2_CLIENT_CREDENTIALS_SCOPE: string = 'Scope';
+  public static OAUTH2_CLIENT_CREDENTIALS_URL_TOKEN_ENDPOINT: string = 'URL Authorization Server';
   public static OCP_APIM_SUBSCRIPTION_KEY: string = 'Ocp-Apim-Subscription-Key';
   public static OGGETTO: string = 'Oggetto';
   public static OPERATORE_MITTENTE: string = 'Operatore mittente';

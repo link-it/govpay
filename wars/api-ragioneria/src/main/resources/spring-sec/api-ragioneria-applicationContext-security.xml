@@ -219,6 +219,48 @@
         </http>
         HEADER_END -->
         
+        <!-- API_KEY_START
+        <b:bean id="basicAuthenticationEntryPointApiKey" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
+    		<b:property name="wwwAuthenticate" value="false"/>
+        </b:bean>
+
+        <b:bean id="userDetailServiceUtenzeApiKey" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+      		<b:property name="apiName" value="API_RAGIONERIA" />
+        	<b:property name="authType" value="API_KEY" />
+        </b:bean>
+        <b:bean id="preauthAuthProviderApiKey" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+        	<b:property name="preAuthenticatedUserDetailsService">
+            	<b:bean id="userDetailsServiceWrapper" class="org.openspcoop2.utils.service.authentication.provider.UserDetailsByNameServiceWrapper">
+                	<b:property name="authenticationUserDetailsService" ref="userDetailServiceUtenzeApiKey"/>
+              	</b:bean>
+            </b:property>
+        </b:bean>
+      	<authentication-manager id="authenticationManagerApiKey">
+      		<authentication-provider user-service-ref="userDetailServiceUtenzeApiKey">
+            	<password-encoder ref="govpayPasswordEncoder"/>
+            </authentication-provider>
+        </authentication-manager>
+
+      	<b:bean id="basicAuthFilterApiKey" class="it.govpay.rs.v1.authentication.filter.ApiKeyBasicAuthFilter">
+      		<b:constructor-arg index="0" ref="authenticationManagerApiKey" />
+      		<b:constructor-arg index="1" ref="basicAuthenticationEntryPointApiKey" />
+        </b:bean>
+
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="basicAuthenticationEntryPointApiKey" pattern="/rs/apikey/**">
+                <csrf disabled="true"/>
+
+                <intercept-url pattern="/rs/apikey/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern="/**" access="denyAll" />
+                <custom-filter position="BASIC_AUTH_FILTER" ref="basicAuthFilterApiKey" />
+
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        API_KEY_END -->
+        
         <!-- DEFAULT_SSL_START
         <b:bean id="x509AuthenticationEntryPointDefault" class="it.govpay.rs.v1.authentication.entrypoint.X509AuthenticationEntryPoint" />
        

@@ -12,7 +12,7 @@ public class ChiusuraRptScadute extends AbstractTask {
 
 	@Override
 	protected void execTask(IContext ctx) throws Exception {
-		if(GovpayConfig.getInstance().isBatchOn()) {
+		if(GovpayConfig.getInstance().isBatchOn() && GovpayConfig.getInstance().isBatchChiusuraRPTScadute()) {
 			it.govpay.core.business.Operazioni.chiusuraRptScadute(ctx);
 		}
 	}

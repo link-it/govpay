@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -19,6 +20,10 @@ import org.slf4j.Logger;
 
 import it.govpay.core.exceptions.PropertyNotFoundException;
 import it.govpay.stampe.model.AvvisoPagamentoInput;
+import it.govpay.stampe.model.PaginaAvvisoDoppia;
+import it.govpay.stampe.model.PaginaAvvisoMultipla;
+import it.govpay.stampe.model.PaginaAvvisoSingola;
+import it.govpay.stampe.model.PaginaAvvisoTripla;
 import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -74,31 +79,18 @@ public class AvvisoPagamentoPdf {
 	private static byte[] templateBollettinoRataV2 = null;
 	private static byte[] templateDualBandV2 = null;
 	
-	public static AvvisoPagamentoPdf getInstance() {
-		if(instance == null)
-			init();
-
-		return instance;
-	}
-
-	public static synchronized void init() {
-		if(instance == null)
-			instance = new AvvisoPagamentoPdf();
-		
-		if(jaxbContext == null) {
-			try {
-				jaxbContext = JAXBContext.newInstance(AvvisoPagamentoInput.class);
-			} catch (JAXBException e) {
-				LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class).error("Errore durtante l'inizializzazione JAXB", e); 
-			}
+	static {
+		// inizializzazione delle risorse in un blocco static per evitare problemi di concorrenza tra i thread
+		try {
+			jaxbContext = JAXBContext.newInstance(AvvisoPagamentoInput.class);
+		} catch (JAXBException e) {
+			LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class).error("Errore durtante l'inizializzazione JAXB", e); 
 		}
 		
-		if(jaxbContextV2 == null) {
-			try {
-				jaxbContextV2 = JAXBContext.newInstance(it.govpay.stampe.model.v2.AvvisoPagamentoInput.class);
-			} catch (JAXBException e) {
-				LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class).error("Errore durtante l'inizializzazione JAXB", e); 
-			}
+		try {
+			jaxbContextV2 = JAXBContext.newInstance(it.govpay.stampe.model.v2.AvvisoPagamentoInput.class);
+		} catch (JAXBException e) {
+			LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class).error("Errore durtante l'inizializzazione JAXB", e); 
 		}
 		
 		try {
@@ -139,6 +131,18 @@ public class AvvisoPagamentoPdf {
 		} catch (IOException e) {
 			LoggerWrapperFactory.getLogger(AvvisoPagamentoPdf.class).error("Errore durante la lettura del template jasper dell'Avviso di Pagamento", e); 
 		}
+	}
+	
+	public static AvvisoPagamentoPdf getInstance() {
+		if(instance == null)
+			init();
+
+		return instance;
+	}
+
+	public static synchronized void init() {
+		if(instance == null)
+			instance = new AvvisoPagamentoPdf();
 	}
 
 	public AvvisoPagamentoPdf() {
@@ -360,4 +364,26 @@ public class AvvisoPagamentoPdf {
 			input.setLogoEnte(propertiesAvvisoPerDominio.getProperty(AvvisoPagamentoCostanti.LOGO_ENTE));
 	}
 	
+	public static String getKeyAvviso(AvvisoPagamentoInput input) {
+		List<Object> singolaOrDoppiaOrTripla = input.getPagine().getSingolaOrDoppiaOrTripla();
+		
+		if(!singolaOrDoppiaOrTripla.isEmpty()) {
+			Object pag1Obj = singolaOrDoppiaOrTripla.get(0);
+			
+			if(pag1Obj instanceof PaginaAvvisoSingola) {
+				return input.getCfEnte() + "," + ((PaginaAvvisoSingola) pag1Obj).getRata().getCodiceAvviso();
+			}
+			if(pag1Obj instanceof PaginaAvvisoDoppia) {
+				return input.getCfEnte() + "," + ((PaginaAvvisoDoppia) pag1Obj).getRata().get(0).getCodiceAvviso();
+			}
+			if(pag1Obj instanceof PaginaAvvisoTripla) {
+				return input.getCfEnte() + "," + ((PaginaAvvisoTripla) pag1Obj).getRata().get(0).getCodiceAvviso();
+			}
+			if(pag1Obj instanceof PaginaAvvisoMultipla) {
+				return input.getCfEnte() + "," + ((PaginaAvvisoMultipla) pag1Obj).getRata().get(0).getCodiceAvviso();
+			}
+		}
+		
+		return input.getCfEnte() + "," + "Impossibile decodificare il tipo rata";
+	}
 }

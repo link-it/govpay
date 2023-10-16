@@ -58,8 +58,8 @@ psql govpay govpay < dist/sql/gov_pay.sql
 
 echo "Abilitazione delle modalita di autenticazione..."
 
-sh ../../../scripts/abilitaAuth.sh -v ${GOVPAY_VERSION} -bo spid,header,ssl,basic -pag public,spid,header,ssl,basic -rag spid,header,ssl,basic -pen spid,header,ssl,basic -pp basic -jppa basic -src dist/archivi/
+sh ../../../scripts/abilitaAuth.sh -v ${GOVPAY_VERSION} -bo spid,header,ssl,basic,apikey -pag public,spid,header,ssl,basic,apikey -rag spid,header,ssl,basic,apikey -pen spid,header,ssl,basic,apikey -pp basic -jppa basic -src dist/archivi/
 
 echo "Deploy govpay in wildfly...";
 sudo cp dist/archivi/govpay.ear /opt/wildfly-26.1.3.Final/standalone/deployments/
-rm -rf govpay_ear_tmp 
+rm -rf govpay_ear_tmp

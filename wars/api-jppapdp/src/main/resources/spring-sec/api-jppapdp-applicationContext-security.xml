@@ -33,13 +33,13 @@
                 </authentication-provider>
         </authentication-manager>
         
-        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/**">
+        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/**" request-matcher="regex">
 
                 <csrf disabled="true"/>
 
-                <intercept-url pattern="*?wsdl" access="permitAll" />
-                
-                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern=".*\?wsdl" access="permitAll" />
+
+                <intercept-url pattern=".*" access="isFullyAuthenticated()" />
                 
                 <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
 
@@ -53,8 +53,8 @@
       	 BASIC_END -->
       	 
      	 <!-- LDAP_START 
-        
-        <ldap-server id="defaultLdapServer" url="LDAP-SERVER-URL" manager-dn="MANAGER-DN" manager-password="MANAGER-PWD"/>
+      	 
+      	<ldap-server id="defaultLdapServer" url="LDAP-SERVER-URL" manager-dn="MANAGER-DN" manager-password="MANAGER-PWD"/>
       	 
       	 <b:bean id="ldapUserDetailsContextMapper" class="it.govpay.rs.v1.authentication.ldap.mapper.GovPayLdapUserDetailsMapper" >
         	<b:property name="userDetailService" ref="userDetailServiceUtenze"/>
@@ -82,11 +82,11 @@
         	</ldap-authentication-provider>
         </authentication-manager>
         
-        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/**">
+        <http auto-config="false" use-expressions="true" create-session="stateless" authentication-manager-ref="authenticationManager" pattern="/**"  request-matcher="regex">
                 <csrf disabled="true"/>
-                <intercept-url pattern="*?wsdl" access="permitAll" />
-                
-                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern=".*\?wsdl" access="permitAll" />
+
+                <intercept-url pattern=".*" access="isFullyAuthenticated()" />
                 
                 <http-basic entry-point-ref="basicAuthenticationEntryPoint" />
                 <headers>
@@ -108,13 +108,13 @@
         	<b:property name="authType" value="SSL" />
         </b:bean>
         
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="x509AuthenticationEntryPoint">
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="x509AuthenticationEntryPoint"  request-matcher="regex">
 
                 <csrf disabled="true"/>
                 
-                <intercept-url pattern="*?wsdl" access="permitAll" />
-                
-                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
+                <intercept-url pattern=".*\?wsdl" access="permitAll" />
+
+                <intercept-url pattern=".*" access="isFullyAuthenticated()" />
                 
                 <x509 subject-principal-regex="^(.*)$"  user-service-ref="userDetailServiceUtenzeSSL" />
 
@@ -154,14 +154,14 @@
         	</b:property>
         </b:bean>
         
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointSSLHead" >
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointSSLHead" request-matcher="regex" >
 
                 <csrf disabled="true"/>
                 
-                <intercept-url pattern="*?wsdl" access="permitAll" />
-                
-                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
-                
+                <intercept-url pattern=".*\?wsdl" access="permitAll" />
+
+		  <intercept-url pattern=".*" access="isFullyAuthenticated()" />
+
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterSSLHead" />
                 
                 <headers>
@@ -198,13 +198,13 @@
         	</b:property>
         </b:bean>
         
-        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointHead">
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="http403ForbiddenEntryPointHead" request-matcher="regex">
 
                 <csrf disabled="true"/>
-                
-                <intercept-url pattern="*?wsdl" access="permitAll" />
-                
-                <intercept-url pattern="/**" access="isFullyAuthenticated()" />
+
+                <intercept-url pattern=".*\?wsdl" access="permitAll" />
+
+                <intercept-url pattern=".*" access="isFullyAuthenticated()" />		
                 
                 <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilterHead" />
                 
@@ -216,6 +216,51 @@
         </http>
         HEADER_END -->
 
+		<!-- API_KEY_START
+		<b:bean id="govpayPasswordEncoder" class="it.govpay.rs.security.crypto.GovpayPasswordEncoder" />
+		
+		<b:bean id="basicAuthenticationEntryPointApiKey" class="it.govpay.rs.v1.authentication.entrypoint.BasicAuthenticationEntryPoint" >
+    		<b:property name="wwwAuthenticate" value="false"/>
+        </b:bean>
 
+        <b:bean id="userDetailServiceUtenzeApiKey" class="it.govpay.core.dao.autorizzazione.AutenticazioneUtenzeRegistrateDAO" >
+      		<b:property name="apiName" value="API_MAGGIOLI_JPPA" />
+        	<b:property name="authType" value="API_KEY" />
+        </b:bean>
+        <b:bean id="preauthAuthProviderApiKey" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+        	<b:property name="preAuthenticatedUserDetailsService">
+            	<b:bean id="userDetailsServiceWrapper" class="org.openspcoop2.utils.service.authentication.provider.UserDetailsByNameServiceWrapper">
+                	<b:property name="authenticationUserDetailsService" ref="userDetailServiceUtenzeApiKey"/>
+              	</b:bean>
+            </b:property>
+        </b:bean>
+      	<authentication-manager id="authenticationManagerApiKey">
+      		<authentication-provider user-service-ref="userDetailServiceUtenzeApiKey">
+            	<password-encoder ref="govpayPasswordEncoder"/>
+            </authentication-provider>
+        </authentication-manager>
+
+      	<b:bean id="basicAuthFilterApiKey" class="it.govpay.rs.v1.authentication.filter.ApiKeyBasicAuthFilter">
+      		<b:constructor-arg index="0" ref="authenticationManagerApiKey" />
+      		<b:constructor-arg index="1" ref="basicAuthenticationEntryPointApiKey" />
+        </b:bean>
+
+        <http auto-config="false" use-expressions="true" create-session="stateless" entry-point-ref="basicAuthenticationEntryPointApiKey" request-matcher="regex">
+                <csrf disabled="true"/>
+
+                <intercept-url pattern=".*\?wsdl" access="permitAll" />
+
+                <intercept-url pattern=".*" access="isFullyAuthenticated()" />		
+                
+                <custom-filter position="BASIC_AUTH_FILTER" ref="basicAuthFilterApiKey" />
+
+                <headers>
+                        <content-type-options disabled="true"/>
+                        <frame-options disabled="true"/>
+                        <xss-protection disabled="true"/>
+                </headers>
+        </http>
+        API_KEY_END -->
+        
 </b:beans>
         

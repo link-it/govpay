@@ -7,7 +7,7 @@ Background:
 
 Scenario: Acquisizione del profilo autenticato basic
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'basic'})
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v3', autenticazione: 'basic'})
 * def basicAutenticationHeader = getBasicAuthenticationHeader( { username: idA2A, password: pwdA2A } )
 
 Given url pagamentiBaseurl
@@ -35,7 +35,7 @@ And match each response.domini ==
 
 Scenario: Acquisizione del profilo autenticato apikey
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pendenze', versione: 'v2', autenticazione: 'apikey'})
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v3', autenticazione: 'apikey'})
 
 Given url pagamentiBaseurl
 And path '/profilo'
@@ -63,7 +63,7 @@ And match each response.domini ==
 
 Scenario: Acquisizione del profilo autenticato apikey non autorizzato
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v2', autenticazione: 'apikey'})
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v3', autenticazione: 'apikey'})
 
 Given url pagamentiBaseurl
 And path '/profilo'

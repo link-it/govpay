@@ -8,8 +8,34 @@
     <mat-option [value]="BASIC">HTTP Basic</mat-option>
     <mat-option [value]="SSL">SSL</mat-option>
     <mat-option [value]="HEADER">HTTP Header</mat-option>
+    <mat-option [value]="API_KEY">API Key</mat-option>
+    <mat-option [value]="OAUTH2_CLIENT_CREDENTIALS">OAuth2 Client Credentials</mat-option>
   </mat-select>
 </mat-form-field>
+<div *ngIf="_isOAuth2ClientCredentialsAuth">
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput [placeholder]="voce.OAUTH2_CLIENT_CREDENTIALS_CLIENT_ID" formControlName="clientId_ctrl" autocomplete="off" [required]="_isRequired">
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput [placeholder]="voce.OAUTH2_CLIENT_CREDENTIALS_CLIENT_SECRET" formControlName="clientSecret_ctrl" autocomplete="off" [required]="_isRequired">
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput [placeholder]="voce.OAUTH2_CLIENT_CREDENTIALS_SCOPE" formControlName="scope_ctrl" autocomplete="off">
+    <mat-hint>In caso di scope multipli indicare i valori separati da uno spazio (Es. ‘read write‘)</mat-hint>
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput [placeholder]="voce.OAUTH2_CLIENT_CREDENTIALS_URL_TOKEN_ENDPOINT" formControlName="urlTokenEndpoint_ctrl" autocomplete="off" [required]="_isRequired">
+    <mat-hint>Inserire la URL dell'Authorization Server</mat-hint>
+  </mat-form-field>
+</div>
+<div *ngIf="_isApiKeyAuth">
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput [placeholder]="voce.API_ID" formControlName="apiId_ctrl" autocomplete="off" [required]="_isRequired">
+  </mat-form-field>
+  <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
+    <input matInput [placeholder]="voce.API_KEY" formControlName="apiKey_ctrl" autocomplete="off" [required]="_isRequired">
+  </mat-form-field>
+</div>
 <div *ngIf="_isBasicAuth">
   <mat-form-field class="w-100" color="accent" [formGroup]="fGroup">
     <input matInput [placeholder]="voce.USERNAME" formControlName="username_ctrl" autocomplete="off" [required]="_isRequired">
