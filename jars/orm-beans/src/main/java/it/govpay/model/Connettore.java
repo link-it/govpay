@@ -45,8 +45,13 @@ public class Connettore extends Versionabile {
 	public static final String P_API_KEY_AUTH_API_KEY_NAME = "API_KEY_AUTH_API_KEY_NAME";
 	public static final String P_API_KEY_AUTH_API_ID_NAME = "API_KEY_AUTH_API_ID_NAME";
 	
+	public static final String P_OAUTH2_CLIENT_CREDENTIALS_CLIENT_ID_NAME = "OAUTH2_CLIENT_CREDENTIALS_CLIENT_ID_NAME";
+	public static final String P_OAUTH2_CLIENT_CREDENTIALS_CLIENT_SECRET_NAME = "OAUTH2_CLIENT_CREDENTIALS_CLIENT_SECRET_NAME";
+	public static final String P_OAUTH2_CLIENT_CREDENTIALS_URL_TOKEN_ENDPOINT_NAME = "OAUTH2_CLIENT_CREDENTIALS_URL_TOKEN_ENDPOINT_NAME";
+	public static final String P_OAUTH2_CLIENT_CREDENTIALS_SCOPE_NAME = "OAUTH2_CLIENT_CREDENTIALS_SCOPE_NAME";
+	
 	public enum EnumAuthType {
-		SSL, HTTPBasic, HTTP_HEADER, API_KEY, NONE
+		SSL, HTTPBasic, HTTP_HEADER, API_KEY, OAUTH2_CLIENT_CREDENTIALS, NONE
 	}
 	
 	public enum EnumSslType {
@@ -78,6 +83,10 @@ public class Connettore extends Versionabile {
 	private String httpHeaderValue;
 	private String apiKey;
 	private String apiId;
+	private String oauth2ClientCredentialsClientId;
+	private String oauth2ClientCredentialsClientSecret;
+	private String oauth2ClientCredentialsUrlTokenEndpoint;
+	private String oauth2ClientCredentialsScope;
 	
 	public Connettore() {
 	}
@@ -234,5 +243,29 @@ public class Connettore extends Versionabile {
 	}
 	public void setApiId(String apiId) {
 		this.apiId = apiId;
+	}
+	public String getOauth2ClientCredentialsClientId() {
+		return oauth2ClientCredentialsClientId;
+	}
+	public void setOauth2ClientCredentialsClientId(String oauth2ClientCredentialsClientId) {
+		this.oauth2ClientCredentialsClientId = oauth2ClientCredentialsClientId;
+	}
+	public String getOauth2ClientCredentialsClientSecret() {
+		return oauth2ClientCredentialsClientSecret;
+	}
+	public void setOauth2ClientCredentialsClientSecret(String oauth2ClientCredentialsClientSecret) {
+		this.oauth2ClientCredentialsClientSecret = oauth2ClientCredentialsClientSecret;
+	}
+	public String getOauth2ClientCredentialsUrlTokenEndpoint() {
+		return oauth2ClientCredentialsUrlTokenEndpoint;
+	}
+	public void setOauth2ClientCredentialsUrlTokenEndpoint(String oauth2ClientCredentialsUrlTokenEndpoint) {
+		this.oauth2ClientCredentialsUrlTokenEndpoint = oauth2ClientCredentialsUrlTokenEndpoint;
+	}
+	public String getOauth2ClientCredentialsScope() {
+		return oauth2ClientCredentialsScope;
+	}
+	public void setOauth2ClientCredentialsScope(String oauth2ClientCredentialsScope) {
+		this.oauth2ClientCredentialsScope = oauth2ClientCredentialsScope;
 	}
 }

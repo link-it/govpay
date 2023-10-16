@@ -38,6 +38,7 @@ Background:
 * def appIoPath = '/appio'
 * def enteRendicontazioniPath = '/enteRendicontazioni'
 * def maggioliPath = '/maggioli'
+* def oauth2TokenPath = '/oauth2/token'
 
 # Servizi per il caricamento dati
 Scenario: pathMatches(pagamentiPath+'/v1/avvisi/{idDominio}/{iuv}') && methodIs('post')
@@ -349,6 +350,19 @@ Scenario: pathMatches(maggioliPath) && methodIs('post')
    </soap:Body>
 </soap:Envelope>
 """
+
+# Servizio Oauth2 Token Path
+Scenario: pathMatches(oauth2TokenPath) && methodIs('post')
+* def responseStatus = 200
+* def response =
+"""
+{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNjM0NTI3NzE2LCJleHAiOjE2MzQ1Mjc4MTZ9.9g4S9D9lQW9IwzKQ7w6UEXtuG1zNRQYtZiUK8-SPq6o",
+    "token_type": "bearer",
+    "expires_in": 3600,
+    "scope": "read write"
+}
+""" 
 
 Scenario:
 	* def responseStatus = 404

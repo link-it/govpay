@@ -82,7 +82,16 @@ export class ApplicazioniViewComponent implements IModalDialog, OnInit, AfterVie
       _dettaglio.serviziApi.push(new Dato({ label: Voce.URL, value: this.json.servizioIntegrazione.url }));
       _dettaglio.serviziApi.push(new Dato({ label: Voce.VERSIONE_API, value: this.json.servizioIntegrazione.versioneApi }));
       if(this.json.servizioIntegrazione.auth) {
-		if(this.json.servizioIntegrazione.auth.apiId) {
+		if(this.json.servizioIntegrazione.auth.clientId) {
+		  _dettaglio.serviziApi.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.OAUTH2_CLIENT_CREDENTIALS }));
+          _dettaglio.serviziApi.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_CLIENT_ID, value: this.json.servizioIntegrazione.auth.clientId }));
+          _dettaglio.serviziApi.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_CLIENT_SECRET, value: this.json.servizioIntegrazione.auth.clientSecret }));
+          if(this.json.servizioIntegrazione.auth.scope) {
+          	_dettaglio.serviziApi.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_SCOPE, value: this.json.servizioIntegrazione.auth.scope }));
+          }
+          _dettaglio.serviziApi.push(new Dato({label: Voce.OAUTH2_CLIENT_CREDENTIALS_URL_TOKEN_ENDPOINT, value: this.json.servizioIntegrazione.auth.urlTokenEndpoint }));
+        }
+        if(this.json.servizioIntegrazione.auth.apiId) {
 		  _dettaglio.serviziApi.push(new Dato({ label: Voce.TIPO_AUTH, value: Voce.API_KEY }));
           _dettaglio.serviziApi.push(new Dato({label: Voce.API_ID, value: this.json.servizioIntegrazione.auth.apiId }));
           _dettaglio.serviziApi.push(new Dato({label: Voce.API_KEY, value: this.json.servizioIntegrazione.auth.apiKey }));

@@ -1,0 +1,112 @@
+package it.govpay.core.utils.client.oauth2;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.apache.cxf.jaxrs.client.Client;
+import org.apache.cxf.jaxrs.client.WebClient;
+import org.apache.cxf.jaxrs.provider.json.JSONProvider;
+import org.apache.cxf.rs.security.oauth2.client.Consumer;
+import org.apache.cxf.rs.security.oauth2.client.OAuthClientUtils;
+import org.apache.cxf.rs.security.oauth2.common.ClientAccessToken;
+import org.apache.cxf.rs.security.oauth2.grants.clientcred.ClientCredentialsGrant;
+import org.apache.cxf.rs.security.oauth2.provider.OAuthServiceException;
+import org.openspcoop2.utils.LoggerWrapperFactory;
+import org.slf4j.Logger;
+
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+
+import it.govpay.core.utils.client.exception.ClientException;
+import it.govpay.model.Connettore;
+
+/***
+ * Classe per la gestione dell'acquisizione dei token oauth2
+ * 
+ * @author Giuliano Pintori
+ *
+ */
+public class Oauth2ClientCredentialsManager {
+
+	private static Logger log = LoggerWrapperFactory.getLogger(Oauth2ClientCredentialsManager.class);
+
+	private static Oauth2ClientCredentialsManager instance;
+
+	public static Oauth2ClientCredentialsManager getInstance() {
+		if(instance == null) {
+			init();
+		}
+
+		return Oauth2ClientCredentialsManager.instance;
+	}
+
+	private static synchronized void init() {
+		if(instance == null) {
+			instance = new Oauth2ClientCredentialsManager();
+		}
+	}
+
+	private Map<String, ClientAccessToken> mappaToken = null;
+
+	public Oauth2ClientCredentialsManager() {
+		this.mappaToken = new ConcurrentHashMap<>();		
+	}
+
+	public ClientAccessToken getClientCredentialsAccessToken(String key, Connettore connettore)  throws ClientException{
+		log.debug("Check esistenza token per il client [{}] ..." , key);
+		ClientAccessToken accessToken = this.mappaToken.get(key);
+
+		if(isAccessTokenExpired(accessToken)) {
+			// elimino il vecchio token 
+			this.mappaToken.remove(key);
+
+			log.debug("Token per il client [{}] non valido, acquisizione nuovo token in corso..." , key);
+
+			String tokenEndpoint = connettore.getOauth2ClientCredentialsUrlTokenEndpoint(); 
+			String clientId = connettore.getOauth2ClientCredentialsClientId();
+			String clientSecret = connettore.getOauth2ClientCredentialsClientSecret();
+			String scope = connettore.getOauth2ClientCredentialsScope();
+
+			// Creo oggetto credenziali 
+			Consumer consumer = new Consumer(clientId, clientSecret);
+
+			// creo oggetto grant impostando l'eventuale scope
+			ClientCredentialsGrant clientCredentialsGrant = new ClientCredentialsGrant(scope);
+
+			// Create a WebClient for the token endpoint
+			log.debug("Acquisizione token per il client [{}]: Url servizio Token: [{}]." , key, tokenEndpoint);
+
+			try {
+				accessToken = OAuthClientUtils.getAccessToken(tokenEndpoint, consumer, clientCredentialsGrant, true);
+				log.debug("Acquisizione token per il client [{}]: conclusa con esito OK, ricevuto token: [{}]." , key, accessToken);
+				this.mappaToken.put(key, accessToken);
+			} catch (OAuthServiceException e) {
+				log.warn("Errore nell'acquisizione token per il client [{}]: {}" , key, e.getMessage());
+				throw new ClientException("Errore nell'acquisizione del token per il client ["+key+"]",500, e.getMessage().getBytes());
+			}
+		}
+
+		return accessToken;
+	}
+
+	private boolean isAccessTokenExpired(ClientAccessToken accessToken) {
+		if (accessToken != null) {
+			long expirationTime = accessToken.getIssuedAt() + accessToken.getExpiresIn();
+			long currentTime = System.currentTimeMillis() / 1000; // Convert to seconds
+
+			return currentTime >= expirationTime;
+		}
+		return true; // se il token non e' presente lo considero scaduto
+	}
+
+	private static String getBasicAuthHeader(String clientId, String clientSecret) {
+		String credentials = clientId + ":" + clientSecret;
+		return java.util.Base64.getEncoder().encodeToString(credentials.getBytes());
+	}
+}
