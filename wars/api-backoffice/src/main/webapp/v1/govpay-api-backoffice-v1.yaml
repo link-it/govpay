@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.35.0"
+  version: "1.36.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -7906,12 +7906,40 @@ components:
           example: ABCDE123456...
           maxLength: 255
           description: valore da inserire all'interno dell'header previsto per l'API-KEY
+    tipoAutenticazioneOauth2ClientCredentials:
+      type: object
+      required:
+        - clientId
+        - clientSecret
+        - urlTokenEndpoint
+      properties:
+        clientId:
+          type: string
+          example: ABCDE123456...
+          maxLength: 255
+          description: Identificativo dell'applicazione da inviare all'authorization server
+        clientSecret:
+          type: string
+          example: ABCDE123456...
+          maxLength: 255
+          description: Password assegnata all'applicazione da inviare all'authorization server
+        urlTokenEndpoint:
+          type: string
+          example: ABCDE123456...
+          maxLength: 255
+          description: URL del server dove fare la chiamata di richiesta del token
+        scope:
+          type: string
+          example: ABCDE123456...
+          maxLength: 255
+          description: Livello di accesso richiesto per l'operazione da eseguire
     tipoAutenticazione:
       oneOf:
         - $ref: '#/components/schemas/tipoAutenticazioneBasic'
         - $ref: '#/components/schemas/tipoAutenticazioneSSL'
         - $ref: '#/components/schemas/tipoAutenticazioneHeader'
         - $ref: '#/components/schemas/tipoAutenticazioneApiKey'
+        - $ref: '#/components/schemas/tipoAutenticazioneOauth2ClientCredentials'
     connector:
       type: object
       required:

@@ -40,28 +40,36 @@ public class ConnettoriConverter {
 			connettore.setHttpHeaderValue(auth.getHeaderValue());
 			connettore.setApiId(auth.getApiId());
 			connettore.setApiKey(auth.getApiKey());
-			
-			if(auth.getApiId() != null) {
-				connettore.setTipoAutenticazione(EnumAuthType.API_KEY);
+			connettore.setOauth2ClientCredentialsClientId(auth.getClientId());
+			connettore.setOauth2ClientCredentialsClientSecret(auth.getClientSecret());
+			connettore.setOauth2ClientCredentialsScope(auth.getScope());
+			connettore.setOauth2ClientCredentialsUrlTokenEndpoint(auth.getUrlTokenEndpoint());
+
+			if(auth.getClientId() != null) {
+				connettore.setTipoAutenticazione(EnumAuthType.OAUTH2_CLIENT_CREDENTIALS);
 			} else {
-				if(auth.getHeaderName() != null) {
-					connettore.setTipoAutenticazione(EnumAuthType.HTTP_HEADER);
+				if(auth.getApiId() != null) {
+					connettore.setTipoAutenticazione(EnumAuthType.API_KEY);
 				} else {
-					if(auth.getTipo() != null) {
-						connettore.setTipoAutenticazione(EnumAuthType.SSL);
-						if(auth.getTipo() != null) {
-							switch (auth.getTipo()) {
-							case CLIENT:
-								connettore.setTipoSsl(EnumSslType.CLIENT);
-								break;
-							case SERVER:
-							default:
-								connettore.setTipoSsl(EnumSslType.SERVER);
-								break;
-							}
-						}
+					if(auth.getHeaderName() != null) {
+						connettore.setTipoAutenticazione(EnumAuthType.HTTP_HEADER);
 					} else {
-						connettore.setTipoAutenticazione(EnumAuthType.HTTPBasic);
+						if(auth.getTipo() != null) {
+							connettore.setTipoAutenticazione(EnumAuthType.SSL);
+							if(auth.getTipo() != null) {
+								switch (auth.getTipo()) {
+								case CLIENT:
+									connettore.setTipoSsl(EnumSslType.CLIENT);
+									break;
+								case SERVER:
+								default:
+									connettore.setTipoSsl(EnumSslType.SERVER);
+									break;
+								}
+							}
+						} else {
+							connettore.setTipoAutenticazione(EnumAuthType.HTTPBasic);
+						}
 					}
 				}
 			}
@@ -97,8 +105,12 @@ public class ConnettoriConverter {
 		.headerName(connettore.getHttpHeaderName())
 		.headerValue(connettore.getHttpHeaderValue())
 		.apiId(connettore.getApiId())
-		.apiKey(connettore.getApiKey());
-
+		.apiKey(connettore.getApiKey())
+		.clientId(connettore.getOauth2ClientCredentialsClientId())
+		.clientSecret(connettore.getOauth2ClientCredentialsClientSecret())
+		.scope(connettore.getOauth2ClientCredentialsScope())
+		.urlTokenEndpoint(connettore.getOauth2ClientCredentialsUrlTokenEndpoint());
+		
 		if(connettore.getTipoSsl() != null) {
 			switch (connettore.getTipoSsl() ) {
 			case CLIENT:
@@ -110,9 +122,6 @@ public class ConnettoriConverter {
 				break;
 			}
 		}
-
-//		if(connettore.getSslType() != null)
-//			rsModel.tipo(TipoEnum.fromValue(connettore.getSslType().toString()));
 
 		return rsModel;
 	}

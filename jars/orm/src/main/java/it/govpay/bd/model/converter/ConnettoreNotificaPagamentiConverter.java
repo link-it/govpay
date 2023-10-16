@@ -68,7 +68,7 @@ public class ConnettoreNotificaPagamentiConverter {
 							dto.setTipiPendenza(Arrays.asList(values));
 						}
 					} else {
-						dto.setTipiPendenza(new ArrayList<String>());
+						dto.setTipiPendenza(new ArrayList<>());
 					}
 				}
 
@@ -99,7 +99,7 @@ public class ConnettoreNotificaPagamentiConverter {
 							dto.setContenuti(Arrays.asList(values));
 						}
 					} else {
-						dto.setContenuti(new ArrayList<String>());
+						dto.setContenuti(new ArrayList<>());
 					}
 				}
 				
@@ -172,6 +172,38 @@ public class ConnettoreNotificaPagamentiConverter {
 
 				if(Connettore.P_SSLTYPE_NAME.equals(connettore.getCodProprieta())) {
 					dto.setSslType(connettore.getValore());
+				}
+				
+				if(Connettore.P_HTTP_HEADER_AUTH_HEADER_NAME_NAME.equals(connettore.getCodProprieta())) {
+					dto.setHttpHeaderName(connettore.getValore());
+				}
+				
+				if(Connettore.P_HTTP_HEADER_AUTH_HEADER_VALUE_NAME.equals(connettore.getCodProprieta())) {
+					dto.setHttpHeaderValue(connettore.getValore());
+				}
+				
+				if(Connettore.P_API_KEY_AUTH_API_ID_NAME.equals(connettore.getCodProprieta())) {
+					dto.setApiId(connettore.getValore());
+				}
+				
+				if(Connettore.P_API_KEY_AUTH_API_KEY_NAME.equals(connettore.getCodProprieta())) {
+					dto.setApiKey(connettore.getValore());
+				}
+				
+				if(Connettore.P_OAUTH2_CLIENT_CREDENTIALS_CLIENT_ID_NAME.equals(connettore.getCodProprieta())) {
+					dto.setOauth2ClientCredentialsClientId(connettore.getValore());
+				}
+				
+				if(Connettore.P_OAUTH2_CLIENT_CREDENTIALS_CLIENT_SECRET_NAME.equals(connettore.getCodProprieta())) {
+					dto.setOauth2ClientCredentialsClientSecret(connettore.getValore());
+				}
+				
+				if(Connettore.P_OAUTH2_CLIENT_CREDENTIALS_SCOPE_NAME.equals(connettore.getCodProprieta())) {
+					dto.setOauth2ClientCredentialsScope(connettore.getValore());
+				}
+				
+				if(Connettore.P_OAUTH2_CLIENT_CREDENTIALS_URL_TOKEN_ENDPOINT_NAME.equals(connettore.getCodProprieta())) {
+					dto.setOauth2ClientCredentialsUrlTokenEndpoint(connettore.getValore());
 				}
 
 				if(Connettore.P_AZIONEINURL_NAME.equals(connettore.getCodProprieta())) {
@@ -410,6 +442,70 @@ public class ConnettoreNotificaPagamentiConverter {
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(ConnettoreNotificaPagamenti.P_PRINCIPAL_MAGGIOLI);
 			vo.setValore(connettore.getPrincipalMaggioli());
+			voList.add(vo);
+		}
+		
+		if(connettore.getHttpHeaderName() != null && !connettore.getHttpHeaderName().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_HTTP_HEADER_AUTH_HEADER_NAME_NAME);
+			vo.setValore(connettore.getHttpHeaderName());
+			voList.add(vo);
+		}
+		
+		if(connettore.getHttpHeaderValue() != null && !connettore.getHttpHeaderValue().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_HTTP_HEADER_AUTH_HEADER_VALUE_NAME);
+			vo.setValore(connettore.getHttpHeaderValue());
+			voList.add(vo);
+		}
+		
+		if(connettore.getApiId() != null && !connettore.getApiId().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_API_KEY_AUTH_API_ID_NAME);
+			vo.setValore(connettore.getApiId());
+			voList.add(vo);
+		}
+		
+		if(connettore.getApiKey() != null && !connettore.getApiKey().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_API_KEY_AUTH_API_KEY_NAME);
+			vo.setValore(connettore.getApiKey());
+			voList.add(vo);
+		}
+		
+		if(connettore.getOauth2ClientCredentialsClientId() != null && !connettore.getOauth2ClientCredentialsClientId().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_OAUTH2_CLIENT_CREDENTIALS_CLIENT_ID_NAME);
+			vo.setValore(connettore.getOauth2ClientCredentialsClientId());
+			voList.add(vo);
+		}
+		
+		if(connettore.getOauth2ClientCredentialsClientSecret() != null && !connettore.getOauth2ClientCredentialsClientSecret().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_OAUTH2_CLIENT_CREDENTIALS_CLIENT_SECRET_NAME);
+			vo.setValore(connettore.getOauth2ClientCredentialsClientSecret());
+			voList.add(vo);
+		}
+		
+		if(connettore.getOauth2ClientCredentialsScope() != null && !connettore.getOauth2ClientCredentialsScope().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_OAUTH2_CLIENT_CREDENTIALS_SCOPE_NAME);
+			vo.setValore(connettore.getOauth2ClientCredentialsScope());
+			voList.add(vo);
+		}
+		
+		if(connettore.getOauth2ClientCredentialsUrlTokenEndpoint() != null && !connettore.getOauth2ClientCredentialsUrlTokenEndpoint().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_OAUTH2_CLIENT_CREDENTIALS_URL_TOKEN_ENDPOINT_NAME);
+			vo.setValore(connettore.getOauth2ClientCredentialsUrlTokenEndpoint());
 			voList.add(vo);
 		}
 		

@@ -72,6 +72,9 @@ Examples:
 | servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { headerName: 'X-GOVPAY-AUTH', headerValue: 'govpay' } } |
 | servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { apiId: 'X-GOVPAY-AUTH', apiKey: 'govpay' } } |
 | servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { apiId: 'X-GOVPAY-AUTH', apiKey: 'govpay' } } |
+| servizioIntegrazione | { versioneApi: 'REST v1', url: 'http://prova.it', auth: { clientId: 'GOVPAY', clientSecret: 'govpay', urlTokenEndpoint: 'http://localhost:8080/token' } } |
+| servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { clientId: 'GOVPAY', clientSecret: 'govpay', urlTokenEndpoint: 'http://localhost:8080/token' } } |
+| servizioIntegrazione | { versioneApi: 'REST v2', url: 'http://prova.it', auth: { clientId: 'GOVPAY', clientSecret: 'govpay', urlTokenEndpoint: 'http://localhost:8080/token', scope: 'read' } } |
 | abilitato | false | 
 | abilitato | true |
 | apiPagamenti | false | 

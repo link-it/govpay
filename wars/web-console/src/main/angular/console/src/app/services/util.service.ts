@@ -337,7 +337,8 @@ export class UtilService {
     basic: 'HTTP Basic',
     header: 'HTTP Header',
     ssl: 'SSL',
-    apiKey: 'API Key'
+    apiKey: 'API Key',
+    oauth2ClientCredentials: 'OAuth2 Client Credentials'
   };
 
   public static TIPI_SSL: any = {
