@@ -113,6 +113,10 @@ public class Connettore extends Versionabile {
 		this.httpHeaderValue = src.httpHeaderValue;
 		this.apiKey = src.apiKey;
 		this.apiId = src.apiId;
+		this.oauth2ClientCredentialsClientId = src.oauth2ClientCredentialsClientId;
+		this.oauth2ClientCredentialsClientSecret = src.oauth2ClientCredentialsClientSecret;
+		this.oauth2ClientCredentialsUrlTokenEndpoint = src.oauth2ClientCredentialsUrlTokenEndpoint;
+		this.oauth2ClientCredentialsScope = src.oauth2ClientCredentialsScope;
 	}
 		
 	public String getIdConnettore() {
