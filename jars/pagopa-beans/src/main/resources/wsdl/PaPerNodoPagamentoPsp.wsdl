@@ -1356,7 +1356,7 @@
 		
 			<xsd:complexType name="ctMetadata">
 				<xsd:sequence>
-					<xsd:element name="mapEntry" type="ctMapEntry" minOccurs="1" maxOccurs="10"></xsd:element>
+					<xsd:element name="mapEntry" type="ctMapEntry" minOccurs="1" maxOccurs="15"></xsd:element>
 				</xsd:sequence>
 			</xsd:complexType>
 		
@@ -1548,10 +1548,17 @@
 				</xsd:restriction>
 			</xsd:simpleType>
 		
+			<xsd:simpleType name="stIdentificativoSoggettoServizio">
+				<xsd:restriction base="xsd:string">
+					<xsd:length value="5" />
+				</xsd:restriction>
+			</xsd:simpleType>
+		
 			<xsd:simpleType name="stAmountNotZero">
 				<xsd:restriction base="xsd:decimal">
 					<xsd:pattern value="\d+\.\d{2}" />
-					<xsd:minInclusive value="0.01" /> <!-- force to set value different from 0. -->
+					<xsd:minInclusive value="0.01" />
+					<!-- force to set value different from 0. -->
 					<xsd:maxInclusive value="999999999.99" />
 				</xsd:restriction>
 			</xsd:simpleType>
@@ -1595,8 +1602,10 @@
 		
 			<xsd:simpleType name="stEntityUniqueIdentifierType">
 				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="F" /> <!-- Persona Fisica -->
-					<xsd:enumeration value="G" /> <!-- Persona Giuridica -->
+					<xsd:enumeration value="F" />
+					<!-- Persona Fisica -->
+					<xsd:enumeration value="G" />
+					<!-- Persona Giuridica -->
 					<xsd:length value="1" />
 				</xsd:restriction>
 			</xsd:simpleType>
@@ -1606,16 +1615,21 @@
 			<!-- usato dal PSP nell'activate -->
 			<xsd:simpleType name="stAmountOption">
 				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="EQ"/> <!-- is equal to -->
-					<xsd:enumeration value="LS"/> <!-- is greater than -->
-					<xsd:enumeration value="GT"/> <!-- is less than -->
-					<xsd:enumeration value="ANY"/> <!-- -->
+					<xsd:enumeration value="EQ"/>
+					<!-- is equal to -->
+					<xsd:enumeration value="LS"/>
+					<!-- is greater than -->
+					<xsd:enumeration value="GT"/>
+					<!-- is less than -->
+					<xsd:enumeration value="ANY"/>
+					<!-- -->
 				</xsd:restriction>
 			</xsd:simpleType>
 		
 			<xsd:simpleType name="stTransferType">
 				<xsd:restriction base="xsd:string">
 					<xsd:enumeration value="POSTAL"/>
+					<xsd:enumeration value="PAGOPA"/>	
 				</xsd:restriction>
 			</xsd:simpleType>
 			<!--Complex type -->
@@ -1630,7 +1644,7 @@
 			<!-- Payment List : verify response -->
 			<xsd:complexType name="ctPaymentOptionDescriptionPA">
 				<xsd:sequence>
-					<xsd:element name="amount" type="common:stAmount" />
+					<xsd:element name="amount" type="tns:stAmountNotZero" />
 					<xsd:element name="options" type="tns:stAmountOption" />
 					<xsd:element name="dueDate" type="common:stISODate" minOccurs="0" />
 					<xsd:element name="detailDescription" type="common:stText140" minOccurs="0" />
@@ -1765,6 +1779,7 @@
 		
 					<xsd:element name="payer" type="tns:ctSubject" minOccurs="0" />
 					<xsd:element name="paymentMethod" type="common:stText35" minOccurs="0" />
+					<xsd:element name="paymentNote" type="tns:stText210" minOccurs="0" />
 		
 					<xsd:element name="fee" type="common:stAmount" minOccurs="0" />
 					<xsd:element name="primaryCiIncurredFee" type="common:stAmount" minOccurs="0" />
@@ -1845,6 +1860,7 @@
 					<xsd:element name="idBrokerPA" type="common:stText35" />
 					<xsd:element name="idStation" type="common:stText35" />
 					<xsd:element name="idServizio" type="tns:stIdentificativoServizio" maxOccurs="1" />
+					<xsd:element name="idSoggettoServizio" type="tns:stIdentificativoSoggettoServizio" maxOccurs="1" />
 					<xsd:element name="datiSpecificiServizioRequest" type="xsd:base64Binary" maxOccurs="1" />
 				</xsd:sequence>
 			</xsd:complexType>
@@ -1869,6 +1885,7 @@
 					<xsd:element name="idTransfer" type="tns:stIdTransfer" />
 					<xsd:element name="transferAmount" type="tns:stAmountNotZero" />
 					<xsd:element name="fiscalCodePA" type="common:stFiscalCodePA" />
+					<xsd:element name="companyName" type="common:stText140" />
 					<xsd:choice>
 						<xsd:element name="IBAN" type="tns:stIBAN" />
 						<xsd:element name="richiestaMarcaDaBollo" type="common:ctRichiestaMarcaDaBollo" />
@@ -1914,7 +1931,7 @@
 					<xsd:element name="retentionDate" type="xsd:dateTime" minOccurs="0" />
 					<xsd:element name="lastPayment" type="xsd:boolean" minOccurs="0" />
 					<xsd:element name="description" type="common:stText140" />
-					<xsd:element name="companyName" type="common:stText140" minOccurs="0" />
+					<xsd:element name="companyName" type="common:stText140" />
 					<xsd:element name="officeName" type="common:stText140" minOccurs="0" />
 					<xsd:element name="debtor" type="tns:ctSubject" />
 					<xsd:element name="transferList" type="tns:ctTransferListPAV2" />
