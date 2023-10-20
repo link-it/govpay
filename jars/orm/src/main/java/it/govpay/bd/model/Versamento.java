@@ -37,7 +37,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.AllegatiBD;
 import it.govpay.bd.pagamento.DocumentiBD;
-import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
@@ -45,7 +44,6 @@ import it.govpay.core.beans.tracciati.ProprietaPendenza;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
 import it.govpay.model.Iuv;
-import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.model.TipoVersamento;
 
 public class Versamento extends it.govpay.model.Versamento {
@@ -161,31 +159,6 @@ public class Versamento extends it.govpay.model.Versamento {
 			this.rpts = rptBD.findAll(filter);
 		}
 		return this.rpts;
-	}
-
-	public Iuv getIuv(BDConfigWrapper configWrapper) throws ServiceException {
-		if(this.iuv == null) {
-			IuvBD iuvBD = new IuvBD(configWrapper);
-			try {
-				this.iuv = iuvBD.getIuv(this.getIdApplicazione(), this.getCodVersamentoEnte(), TipoIUV.NUMERICO);
-			} catch (NotFoundException e) {
-				// Iuv non assegnato.
-			}
-		}
-		return this.iuv;
-	}
-
-	public Iuv getIuv(BasicBD bd) throws ServiceException {
-		if(this.iuv == null) {
-			IuvBD iuvBD = new IuvBD(bd);
-			iuvBD.setAtomica(false); // connessione deve essere gia' aperta
-			try {
-				this.iuv = iuvBD.getIuv(this.getIdApplicazione(), this.getCodVersamentoEnte(), TipoIUV.NUMERICO);
-			} catch (NotFoundException e) {
-				// Iuv non assegnato.
-			}
-		}
-		return this.iuv;
 	}
 
 	public TipoVersamento getTipoVersamento(BDConfigWrapper configWrapper) throws ServiceException {

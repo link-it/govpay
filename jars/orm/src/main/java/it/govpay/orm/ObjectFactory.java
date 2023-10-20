@@ -63,13 +63,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdEr }
-     */
-    public IdEr createIdEr() {
-        return new IdEr();
-    }
-
-    /**
      * Create an instance of {@link IdOperazione }
      */
     public IdOperazione createIdOperazione() {
@@ -154,13 +147,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdSingolaRevoca }
-     */
-    public IdSingolaRevoca createIdSingolaRevoca() {
-        return new IdSingolaRevoca();
-    }
-
-    /**
      * Create an instance of {@link Batch }
      */
     public Batch createBatch() {
@@ -224,13 +210,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdIuv }
-     */
-    public IdIuv createIdIuv() {
-        return new IdIuv();
-    }
-
-    /**
      * Create an instance of {@link IdTipoVersamento }
      */
     public IdTipoVersamento createIdTipoVersamento() {
@@ -256,13 +235,6 @@ public class ObjectFactory {
      */
     public IdBatch createIdBatch() {
         return new IdBatch();
-    }
-
-    /**
-     * Create an instance of {@link IUV }
-     */
-    public IUV createIUV() {
-        return new IUV();
     }
 
     /**
@@ -539,24 +511,10 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RR }
-     */
-    public RR createRR() {
-        return new RR();
-    }
-
-    /**
      * Create an instance of {@link IdTipoVersamentoDominio }
      */
     public IdTipoVersamentoDominio createIdTipoVersamentoDominio() {
         return new IdTipoVersamentoDominio();
-    }
-
-    /**
-     * Create an instance of {@link IdRr }
-     */
-    public IdRr createIdRr() {
-        return new IdRr();
     }
 
     /**

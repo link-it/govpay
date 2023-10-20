@@ -61,8 +61,6 @@ public class ModelFactory {
 	
 	public static OperatoreModel OPERATORE = new OperatoreModel();
 	
-	public static IUVModel IUV = new IUVModel();
-	
 	public static TipoVersamentoModel TIPO_VERSAMENTO = new TipoVersamentoModel();
 	
 	public static TipoVersamentoDominioModel TIPO_VERSAMENTO_DOMINIO = new TipoVersamentoDominioModel();
@@ -76,8 +74,6 @@ public class ModelFactory {
 	public static SingoloVersamentoModel SINGOLO_VERSAMENTO = new SingoloVersamentoModel();
 	
 	public static RPTModel RPT = new RPTModel();
-	
-	public static RRModel RR = new RRModel();
 	
 	public static RendicontazioneModel RENDICONTAZIONE = new RendicontazioneModel();
 	

@@ -29,7 +29,6 @@ import it.govpay.model.Pagamento.TipoAllegato;
 import it.govpay.model.Pagamento.TipoPagamento;
 import it.govpay.orm.IdIncasso;
 import it.govpay.orm.IdRpt;
-import it.govpay.orm.IdRr;
 import it.govpay.orm.IdSingoloVersamento;
 
 
@@ -63,8 +62,6 @@ public class PagamentoConverter {
 			dto.setIdRpt(vo.getIdRPT().getId());
 		if(vo.getIdSingoloVersamento() != null)
 			dto.setIdSingoloVersamento(vo.getIdSingoloVersamento().getId());
-		if(vo.getIdRr() != null)
-			dto.setIdRr(vo.getIdRr().getId());
 
 		dto.setDataAcquisizioneRevoca(vo.getDataAcquisizioneRevoca());
 		dto.setCausaleRevoca(vo.getCausaleRevoca());
@@ -105,11 +102,6 @@ public class PagamentoConverter {
 			IdRpt idRpt = new IdRpt();
 			idRpt.setId(dto.getIdRpt());
 			vo.setIdRPT(idRpt);
-		}
-		if(dto.getIdRr() != null) {
-			IdRr idRr = new IdRr();
-			idRr.setId(dto.getIdRr());
-			vo.setIdRr(idRr);
 		}
 		if(dto.getIdSingoloVersamento() != null) {
 			IdSingoloVersamento idSingoloVersamento = new IdSingoloVersamento();

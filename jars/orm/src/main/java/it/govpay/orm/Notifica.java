@@ -37,7 +37,6 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idRpt" type="{http://www.govpay.it/orm}id-rpt" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idRr" type="{http://www.govpay.it/orm}id-rr" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoEsito" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
@@ -61,7 +60,6 @@ import java.io.Serializable;
   propOrder = {
   	"idApplicazione",
   	"idRpt",
-  	"idRr",
   	"tipoEsito",
   	"dataCreazione",
   	"stato",
@@ -106,14 +104,6 @@ public class Notifica extends org.openspcoop2.utils.beans.BaseBean implements Se
 
   public void setIdRpt(IdRpt idRpt) {
     this.idRpt = idRpt;
-  }
-
-  public IdRr getIdRr() {
-    return this.idRr;
-  }
-
-  public void setIdRr(IdRr idRr) {
-    this.idRr = idRr;
   }
 
   public java.lang.String getTipoEsito() {
@@ -196,9 +186,6 @@ public class Notifica extends org.openspcoop2.utils.beans.BaseBean implements Se
 
   @XmlElement(name="idRpt",required=false,nillable=false)
   protected IdRpt idRpt;
-
-  @XmlElement(name="idRr",required=false,nillable=false)
-  protected IdRr idRr;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipoEsito",required=true,nillable=false)

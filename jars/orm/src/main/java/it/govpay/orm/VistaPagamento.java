@@ -55,7 +55,6 @@ import java.io.Serializable;
  * 			&lt;element name="tipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idRPT" type="{http://www.govpay.it/orm}id-rpt" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idSingoloVersamento" type="{http://www.govpay.it/orm}id-singolo-versamento" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idRr" type="{http://www.govpay.it/orm}id-rr" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idIncasso" type="{http://www.govpay.it/orm}id-incasso" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsId" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="vrsCodVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
@@ -106,7 +105,6 @@ import java.io.Serializable;
   	"tipo",
   	"idRPT",
   	"idSingoloVersamento",
-  	"idRr",
   	"idIncasso",
   	"vrsId",
   	"vrsCodVersamentoEnte",
@@ -304,14 +302,6 @@ public class VistaPagamento extends org.openspcoop2.utils.beans.BaseBean impleme
 
   public void setIdSingoloVersamento(IdSingoloVersamento idSingoloVersamento) {
     this.idSingoloVersamento = idSingoloVersamento;
-  }
-
-  public IdRr getIdRr() {
-    return this.idRr;
-  }
-
-  public void setIdRr(IdRr idRr) {
-    this.idRr = idRr;
   }
 
   public IdIncasso getIdIncasso() {
@@ -541,9 +531,6 @@ public class VistaPagamento extends org.openspcoop2.utils.beans.BaseBean impleme
 
   @XmlElement(name="idSingoloVersamento",required=false,nillable=false)
   protected IdSingoloVersamento idSingoloVersamento;
-
-  @XmlElement(name="idRr",required=false,nillable=false)
-  protected IdRr idRr;
 
   @XmlElement(name="idIncasso",required=false,nillable=false)
   protected IdIncasso idIncasso;

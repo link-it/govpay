@@ -49,7 +49,6 @@ import it.govpay.orm.dao.IDBDocumentoService;
 import it.govpay.orm.dao.IDBDominioService;
 import it.govpay.orm.dao.IDBEventoService;
 import it.govpay.orm.dao.IDBFRService;
-import it.govpay.orm.dao.IDBIUVService;
 import it.govpay.orm.dao.IDBIbanAccreditoService;
 import it.govpay.orm.dao.IDBIncassoService;
 import it.govpay.orm.dao.IDBIntermediarioService;
@@ -62,7 +61,6 @@ import it.govpay.orm.dao.IDBPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IDBPagamentoService;
 import it.govpay.orm.dao.IDBPromemoriaService;
 import it.govpay.orm.dao.IDBRPTService;
-import it.govpay.orm.dao.IDBRRService;
 import it.govpay.orm.dao.IDBRendicontazioneService;
 import it.govpay.orm.dao.IDBSingoloVersamentoService;
 import it.govpay.orm.dao.IDBStampaService;
@@ -89,7 +87,6 @@ import it.govpay.orm.dao.IDocumentoService;
 import it.govpay.orm.dao.IDominioService;
 import it.govpay.orm.dao.IEventoService;
 import it.govpay.orm.dao.IFRService;
-import it.govpay.orm.dao.IIUVService;
 import it.govpay.orm.dao.IIbanAccreditoService;
 import it.govpay.orm.dao.IIncassoService;
 import it.govpay.orm.dao.IIntermediarioService;
@@ -102,7 +99,6 @@ import it.govpay.orm.dao.IPagamentoPortaleVersamentoService;
 import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.IPromemoriaService;
 import it.govpay.orm.dao.IRPTService;
-import it.govpay.orm.dao.IRRService;
 import it.govpay.orm.dao.IRendicontazioneService;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.IStampaService;
@@ -155,10 +151,8 @@ public class BasicBD {
 	private IPagamentoPortaleService pagamentoPortaleService;
 	private IPagamentoPortaleVersamentoService pagamentoPortaleVersamentoService;
 	private IRPTService rptService;
-	private IRRService rrService;
 	private INotificaService notificaService;
 	private INotificaAppIOService notificaAppIOService;
-	private IIUVService iuvService;
 	private IFRService frService;
 	private IIncassoService incassoService;
 	private IPagamentoService pagamentoService;
@@ -270,10 +264,8 @@ public class BasicBD {
 				this.pagamentoPortaleService = this.serviceManager.getPagamentoPortaleService();
 				this.pagamentoPortaleVersamentoService = this.serviceManager.getPagamentoPortaleVersamentoService();
 				this.rptService = this.serviceManager.getRPTService();
-				this.rrService = this.serviceManager.getRRService();
 				this.notificaService = this.serviceManager.getNotificaService();
 				this.notificaAppIOService = this.serviceManager.getNotificaAppIOService();
-				this.iuvService = this.serviceManager.getIUVService();
 				this.frService = this.serviceManager.getFRService();
 				this.incassoService = this.serviceManager.getIncassoService();
 				this.pagamentoService = this.serviceManager.getPagamentoService();
@@ -333,10 +325,8 @@ public class BasicBD {
 			((IDBPagamentoPortaleService)this.pagamentoPortaleService).enableSelectForUpdate();
 			((IDBPagamentoPortaleVersamentoService)this.pagamentoPortaleVersamentoService).enableSelectForUpdate();
 			((IDBRPTService)this.rptService).enableSelectForUpdate();
-			((IDBRRService)this.rrService).enableSelectForUpdate();
 			((IDBNotificaService)this.notificaService).enableSelectForUpdate();
 			((IDBNotificaAppIOService)this.notificaAppIOService).enableSelectForUpdate();
-			((IDBIUVService)this.iuvService).enableSelectForUpdate();
 			((IDBFRService)this.frService).enableSelectForUpdate();
 			((IDBIncassoService)this.incassoService).enableSelectForUpdate();
 			((IDBPagamentoService)this.pagamentoService).enableSelectForUpdate();
@@ -393,10 +383,8 @@ public class BasicBD {
 			((IDBPagamentoPortaleService)this.pagamentoPortaleService).disableSelectForUpdate();
 			((IDBPagamentoPortaleVersamentoService)this.pagamentoPortaleVersamentoService).disableSelectForUpdate();
 			((IDBRPTService)this.rptService).disableSelectForUpdate();
-			((IDBRRService)this.rrService).disableSelectForUpdate();
 			((IDBNotificaService)this.notificaService).disableSelectForUpdate();
 			((IDBNotificaAppIOService)this.notificaAppIOService).disableSelectForUpdate();
-			((IDBIUVService)this.iuvService).disableSelectForUpdate();
 			((IDBFRService)this.frService).disableSelectForUpdate();
 			((IDBIncassoService)this.incassoService).disableSelectForUpdate();
 			((IDBPagamentoService)this.pagamentoService).disableSelectForUpdate();
@@ -582,13 +570,6 @@ public class BasicBD {
 		return this.rptService;
 	}
 	
-	public IRRService getRrService() {
-		if(this.father != null) {
-			return this.father.getRrService();
-		}
-		return this.rrService;
-	}
-	
 	public INotificaService getNotificaService() {
 		if(this.father != null) {
 			return this.father.getNotificaService();
@@ -601,13 +582,6 @@ public class BasicBD {
 			return this.father.getNotificaAppIOService();
 		}
 		return this.notificaAppIOService;
-	}
-	
-	public IIUVService getIuvService() {
-		if(this.father != null) {
-			return this.father.getIuvService();
-		}
-		return this.iuvService;
 	}
 	
 	public IFRService getFrService() {

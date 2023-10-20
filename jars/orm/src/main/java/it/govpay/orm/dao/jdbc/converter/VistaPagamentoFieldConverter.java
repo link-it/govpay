@@ -375,13 +375,6 @@ public class VistaPagamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "importo_singolo_versamento";
 			}
 		}
-		if(field.equals(VistaPagamento.model().ID_RR.COD_MSG_REVOCA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_msg_revoca";
-			}else{
-				return "cod_msg_revoca";
-			}
-		}
 		if(field.equals(VistaPagamento.model().ID_INCASSO.IDENTIFICATIVO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".identificativo";
@@ -674,9 +667,6 @@ public class VistaPagamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO)){
 			return this.toTable(VistaPagamento.model().ID_SINGOLO_VERSAMENTO, returnAlias);
 		}
-		if(field.equals(VistaPagamento.model().ID_RR.COD_MSG_REVOCA)){
-			return this.toTable(VistaPagamento.model().ID_RR, returnAlias);
-		}
 		if(field.equals(VistaPagamento.model().ID_INCASSO.IDENTIFICATIVO)){
 			return this.toTable(VistaPagamento.model().ID_INCASSO, returnAlias);
 		}
@@ -785,9 +775,6 @@ public class VistaPagamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(VistaPagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO)){
 			return "tipi_tributo";
-		}
-		if(model.equals(VistaPagamento.model().ID_RR)){
-			return "rr";
 		}
 		if(model.equals(VistaPagamento.model().ID_INCASSO)){
 			return "incassi";

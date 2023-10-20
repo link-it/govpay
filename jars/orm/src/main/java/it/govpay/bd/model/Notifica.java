@@ -29,7 +29,6 @@ import it.govpay.bd.BDConfigWrapper;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.RptBD;
-import it.govpay.bd.pagamento.RrBD;
 import it.govpay.core.exceptions.NotificaException;
 
 public class Notifica extends it.govpay.model.Notifica {
@@ -54,32 +53,11 @@ public class Notifica extends it.govpay.model.Notifica {
 		this.setTipo(tipoNotifica);
 	}
 	
-	public Notifica(Rr rr, TipoNotifica tipoNotifica, BDConfigWrapper configWrapper) throws NotificaException, ServiceException {
-		if(rr.getRpt() == null)
-			throw new NotificaException("RPT associata alla RR e' vuota.");
-		
-		
-		if(rr.getRpt().getVersamento() == null)
-			throw new NotificaException("Il versamento associato all'RPT e' vuoto.");
-		
-		this.setApplicazione(rr.getRpt().getVersamento().getApplicazione(configWrapper));
-		long adesso = new Date().getTime();
-		this.setDataAggiornamento(new Date(adesso));
-		this.setDataCreazione(new Date(adesso));
-		this.setDataProssimaSpedizione(new Date(adesso + 60000 ));
-		this.setDescrizioneStato(null);
-		this.setRr(rr);
-		this.setStato(StatoSpedizione.DA_SPEDIRE);
-		this.setTentativiSpedizione(0l);
-		this.setTipo(tipoNotifica);
-	}
-	
 	private static final long serialVersionUID = 1L;
 	
 	// Business 
 	private transient Applicazione applicazione;
 	private transient Rpt rpt;
-	private transient Rr rr;
 	
 	public void setApplicazione(Applicazione applicazione) {
 		this.applicazione = applicazione;
@@ -120,19 +98,6 @@ public class Notifica extends it.govpay.model.Notifica {
 		}
 			
 		return this.rpt;
-	}
-
-	public Rr getRr(BasicBD bd) throws ServiceException {
-		if(this.rr == null && this.getIdRr() != null) {
-			RrBD rrBD = new RrBD(bd);
-			this.rr = rrBD.getRr(this.getIdRr());
-		}
-		return this.rr;
-	}
-
-	public void setRr(Rr rr) {
-		this.rr = rr;
-		this.setIdRr(rr.getId());
 	}
 	
 	public String getRptKey() {

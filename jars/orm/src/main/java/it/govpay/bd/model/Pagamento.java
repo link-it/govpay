@@ -30,7 +30,6 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.RptBD;
-import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
@@ -42,7 +41,6 @@ public class Pagamento extends it.govpay.model.Pagamento {
 	private transient Dominio dominio;
 	private transient Rpt rpt;
 	private transient SingoloVersamento singoloVersamento;
-	private transient Rr rr;
 	private transient Incasso incasso;
 	private transient List<Rendicontazione> rendicontazioni;
 
@@ -65,19 +63,6 @@ public class Pagamento extends it.govpay.model.Pagamento {
 		if(rpt.getId() != null) {
 			this.setIdRpt(rpt.getId());
 		}
-	}
-	
-	public Rr getRr(BasicBD bd) throws ServiceException {
-		if(this.rr == null) {
-			RrBD rrBD = new RrBD(bd);
-			this.rr = rrBD.getRr(this.getIdRr());
-		}
-		return this.rr;
-	}
-
-	public void setRr(Rr rr) {
-		this.rr = rr;
-		this.setIdRr(rr.getId());
 	}
 	
 	public SingoloVersamento getSingoloVersamento() {

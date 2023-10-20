@@ -152,7 +152,6 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			fields.add(new CustomField("id", Long.class, "id", this.getPagamentoFieldConverter().toTable(Pagamento.model())));
 			fields.add(new CustomField("id_rpt", Long.class, "id_rpt", this.getPagamentoFieldConverter().toTable(Pagamento.model())));
 			fields.add(new CustomField("id_singolo_versamento", Long.class, "id_singolo_versamento", this.getPagamentoFieldConverter().toTable(Pagamento.model())));
-			fields.add(new CustomField("id_rr", Long.class, "id_rr", this.getPagamentoFieldConverter().toTable(Pagamento.model())));
 			fields.add(new CustomField("id_incasso", Long.class, "id_incasso", this.getPagamentoFieldConverter().toTable(Pagamento.model())));
 			fields.add(Pagamento.model().COD_DOMINIO);
 			fields.add(Pagamento.model().STATO);
@@ -184,12 +183,6 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 				if(idSingoloVersamentoObj instanceof Long)
 					id_singolo_versamento = (Long) idSingoloVersamentoObj;
 
-				Long idRR = null;
-				Object idRRObj = map.remove("id_rr");
-
-				if(idRRObj instanceof Long)
-					idRR = (Long) idRRObj;
-
 				Long idIncasso = null;
 				Object idIncassoObj = map.remove("id_incasso");
 
@@ -209,12 +202,6 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 					it.govpay.orm.IdSingoloVersamento id_pagamento_singoloVersamento = new it.govpay.orm.IdSingoloVersamento();
 					id_pagamento_singoloVersamento.setId(id_singolo_versamento);
 					pagamento.setIdSingoloVersamento(id_pagamento_singoloVersamento);
-				}
-
-				if(idRR != null) {
-					it.govpay.orm.IdRr id_pagamento_rr = new it.govpay.orm.IdRr();
-					id_pagamento_rr.setId(idRR);
-					pagamento.setIdRr(id_pagamento_rr);
 				}
 
 				if(idIncasso != null) {
@@ -540,10 +527,6 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 				}
 			}
 		}
-		if(obj.getIdRr()!=null && 
-				imgSaved.getIdRr()!=null){
-			obj.getIdRr().setId(imgSaved.getIdRr().getId());
-		}
 		if(obj.getIdIncasso()!=null && 
 				imgSaved.getIdIncasso()!=null){
 			obj.getIdIncasso().setId(imgSaved.getIdIncasso().getId());
@@ -613,13 +596,6 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 		}
 
-		if(expression.inUseModel(Pagamento.model().ID_RR,false)){
-			String tableName1 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model());
-			String tableName2 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_RR);
-			sqlQueryObject.addWhereCondition(tableName1+".id_rr="+tableName2+".id");
-
-		}
-		
 		if(expression.inUseModel(Pagamento.model().ID_INCASSO,false)){
 			String tableName1 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model());
 			String tableName2 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_INCASSO);
@@ -893,12 +869,6 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 		mapTableToPKColumn.put(converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO))
-			));
-
-		// Pagamento.model().ID_RR
-		mapTableToPKColumn.put(converter.toTable(Pagamento.model().ID_RR),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Pagamento.model().ID_RR))
 			));
 
 		// Pagamento.model().ID_INCASSO
