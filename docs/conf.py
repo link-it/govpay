@@ -7,15 +7,15 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'GovWay'
+project = 'GovPay'
 copyright = 'Copyright (c) 2005-2023 Link.it srl (https://link.it).'
 author = 'Link.it'
 numfig = True
 
 # The short X.Y version
-version = '3.3.13.p1'
+version = '3.7'
 # The full version, including alpha/beta/rc tags
-release = '3.3.13.p1'
+release = '3.7.5'
 
 
 # -- General configuration ---------------------------------------------------
@@ -28,6 +28,7 @@ release = '3.3.13.p1'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx_rtd_theme',
     'sphinx.ext.todo',
     'sphinx.ext.githubpages'
 ]
