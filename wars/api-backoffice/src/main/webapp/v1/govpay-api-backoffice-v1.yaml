@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.36.0"
+  version: "1.37.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -2427,7 +2427,7 @@ paths:
         - $ref: '#/components/parameters/idPendenza'
         - $ref: '#/components/parameters/dataDa'
         - $ref: '#/components/parameters/dataA'
-        - $ref: '#/components/parameters/idTipoPendenza'
+        - $ref: '#/components/parameters/idTipiPendenza'
         - $ref: '#/components/parameters/direzione'
         - $ref: '#/components/parameters/divisione'
         - $ref: '#/components/parameters/iuv'
@@ -4253,6 +4253,17 @@ components:
       schema:
         type: string
         example: IMU
+    idTipiPendenza:
+      in: query
+      name: idTipoPendenza
+      description: >-
+        Filtra per uno o piu' identificativi di tipologia di pendenza
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          example: IMU
     idUnita:
       in: query
       name: idUnita
