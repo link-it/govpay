@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1.37.0"
+  version: "1.38.0"
   title: GovPay - API Backoffice
   contact:
     name: GitHub Project Page
@@ -3250,6 +3250,7 @@ paths:
         - $ref: '#/components/parameters/iuv'
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
+        - $ref: '#/components/parameters/escludiObsoleti'
       responses:
         '200':
           description: Lista dei flussi rendicontazione
@@ -3420,6 +3421,7 @@ paths:
         - $ref: '#/components/parameters/divisioni'
         - $ref: '#/components/parameters/metadatiPaginazione'
         - $ref: '#/components/parameters/maxRisultati'
+        - $ref: '#/components/parameters/escludiObsoletiDefaultTrue'
       responses:
         '200':
           description: Lista paginata dei dati ricercati
@@ -4125,6 +4127,22 @@ components:
         type: array
         items:
           type: string
+    escludiObsoleti:
+      in: query
+      name: escludiObsoleti
+      description: Esclude dai risultati della ricerca i flussi di rendicontazione obsoleti
+      required: false
+      schema:
+        type: boolean
+        default: false
+    escludiObsoletiDefaultTrue:
+      in: query
+      name: escludiObsoleti
+      description: Esclude dai risultati della ricerca i flussi di rendicontazione obsoleti
+      required: false
+      schema:
+        type: boolean
+        default: true
     esitoEvento:
       name: esito
       in: query
