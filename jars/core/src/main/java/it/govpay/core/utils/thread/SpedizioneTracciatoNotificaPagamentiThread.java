@@ -776,28 +776,8 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			
 		}catch (UtilsException e) {
 			errore = MessageFormat.format("Errore durante l''invio del Tracciato {0} [Nome: {1}], al destinatario [{2}]:{3}", this.tipoTracciato, tracciato.getNomeFile(), StringUtils.join(this.connettore.getEmailIndirizzi(), ","), e.getMessage());
-			log.error(errore, e);
-
-			if(ExceptionUtils.existsInnerException(e, javax.mail.internet.AddressException.class)) {
-				log.debug(MessageFormat.format("La spedizione del Tracciato {0} si e'' conclusa con errore che non prevede la rispedizione...", this.tipoTracciato));
-				tracciato.setStato(STATO_ELABORAZIONE.ERROR_LOAD);
-				tracciato.setDataCompletamento(new Date());
-				beanDati.setStepElaborazione(STATO_ELABORAZIONE.ERROR_LOAD.name());
-				beanDati.setDescrizioneStepElaborazione(errore);
-				log.debug(MessageFormat.format(DEBUG_MSG_SALVATAGGIO_TRACCIATO_0_IN_STATO_ERROR_LOAD, this.tipoTracciato));
-				try {
-					ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.emailKo", e.getMessage());
-				} catch (UtilsException e1) {
-					log.error(e1.getMessage(), e1);
-				}
-			} else {
-				try {
-					ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.emailRetryKo", e.getMessage());
-				} catch (UtilsException e1) {
-					log.error(e1.getMessage(), e1);
-				}
-				log.debug(MessageFormat.format("La spedizione del Tracciato {0} si e'' conclusa con errore, verra'' effettuato un nuovo tentativo durante la prossima esecuzione del Batch di spedizione...", this.tipoTracciato));
-			}
+			
+			gestisciUtilsException(beanDati, errore, e);
 			
 			dumpResponse.setPayload(errore.getBytes());
 		} finally {
@@ -809,6 +789,33 @@ public class SpedizioneTracciatoNotificaPagamentiThread implements Runnable {
 			tracciatiMyPivotBD.updateFineElaborazione(tracciato);
 			
 		} 
+	}
+	
+	private void gestisciUtilsException(it.govpay.core.beans.tracciati.TracciatoNotificaPagamenti beanDati, String errore, UtilsException e) throws ServiceException {
+		Throwable innerException= ExceptionUtils.estraiInnerExceptionDaUtilsException(e); 
+		
+		if(innerException != null) {
+			log.info(errore, e);
+			log.debug(MessageFormat.format("La spedizione del Tracciato {0} si e'' conclusa con errore che non prevede la rispedizione...", this.tipoTracciato));
+			tracciato.setStato(STATO_ELABORAZIONE.ERROR_LOAD);
+			tracciato.setDataCompletamento(new Date());
+			beanDati.setStepElaborazione(STATO_ELABORAZIONE.ERROR_LOAD.name());
+			beanDati.setDescrizioneStepElaborazione(errore);
+			log.debug(MessageFormat.format(DEBUG_MSG_SALVATAGGIO_TRACCIATO_0_IN_STATO_ERROR_LOAD, this.tipoTracciato));
+			try {
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.emailKo", e.getMessage());
+			} catch (UtilsException e1) {
+				log.error(e1.getMessage(), e1);
+			}
+		} else {
+			log.error(errore, e);
+			try {
+				ctx.getApplicationLogger().log("tracciatoNotificaPagamenti.emailRetryKo", e.getMessage());
+			} catch (UtilsException e1) {
+				log.error(e1.getMessage(), e1);
+			}
+			log.debug(MessageFormat.format("La spedizione del Tracciato {0} si e'' conclusa con errore, verra'' effettuato un nuovo tentativo durante la prossima esecuzione del Batch di spedizione...", this.tipoTracciato));
+		}
 	}
 
 	private void impostaOggettoEBodyMail(TracciatoNotificaPagamenti tracciato, Dominio dominio, ConnettoreNotificaPagamenti connettore,
