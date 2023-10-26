@@ -194,6 +194,8 @@ public class GovpayConfig {
 	private boolean batchSpedizioneNotificheAppIO;
 	private boolean batchSpedizionePromemoria;
 	
+	private List<String> keywordsDaSostituireIdentificativiDebitoreAvviso;
+	
 	
 	public GovpayConfig(InputStream is) throws Exception {
 		// Default values:
@@ -286,6 +288,8 @@ public class GovpayConfig {
 		this.operazioneVerifica = null;
 		
 		this.numeroGiorniValiditaPendenza = null;
+		
+		this.keywordsDaSostituireIdentificativiDebitoreAvviso = new ArrayList<>();
 		
 		this.batchRecuperoRPTPendenti = false;
 		this.batchAcquisizioneRendicontazioni = false;
@@ -890,6 +894,14 @@ public class GovpayConfig {
 			if(batchSpedizionePromemoriaString != null && Boolean.valueOf(batchSpedizionePromemoriaString))
 				this.batchSpedizionePromemoria = true;
 			
+			String keywordsS = getProperty("it.govpay.stampe.avvisoPagamento.identificativoDebitore.nascondiKeyword", props, false, log);
+			if(StringUtils.isNotEmpty(keywordsS)) {
+				String[] split = keywordsS.split(",");
+				if(split != null && split.length > 0) {
+					this.keywordsDaSostituireIdentificativiDebitoreAvviso = Arrays.asList(split);
+				}
+			}
+			
 		} catch (PropertyNotFoundException e) {
 			log.error(MessageFormat.format("Errore di inizializzazione: {0}", e.getMessage()));
 			throw new ConfigException(e);
@@ -1357,6 +1369,10 @@ public class GovpayConfig {
 
 	public boolean isBatchSpedizionePromemoria() {
 		return batchSpedizionePromemoria;
+	}
+
+	public List<String> getKeywordsDaSostituireIdentificativiDebitoreAvviso() {
+		return keywordsDaSostituireIdentificativiDebitoreAvviso;
 	}
 	
 }
