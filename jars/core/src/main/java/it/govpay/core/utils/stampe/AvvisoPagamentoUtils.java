@@ -25,6 +25,7 @@ import it.govpay.core.beans.tracciati.ProprietaPendenza;
 import it.govpay.core.business.model.PrintAvvisoDocumentoDTO;
 import it.govpay.core.business.model.PrintAvvisoVersamentoDTO;
 import it.govpay.core.exceptions.UnprocessableEntityException;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.LabelAvvisiProperties;
 import it.govpay.core.utils.VersamentoUtils;
@@ -593,11 +594,35 @@ public class AvvisoPagamentoUtils {
 			String capCittaDebitore = StringUtils.isNotEmpty(localitaDebitore) ? (capDebitore + " " + localitaDebitore + provinciaDebitore) : "";
 
 			input.setNomeCognomeDestinatario(anagraficaDebitore.getRagioneSociale());
-			input.setCfDestinatario(anagraficaDebitore.getCodUnivoco().toUpperCase());
+			if(anagraficaDebitore.getCodUnivoco() != null) {
+				input.setCfDestinatario(anagraficaDebitore.getCodUnivoco().toUpperCase());
+			}
 
 			input.setIndirizzoDestinatario1(indirizzoDestinatario);
-
 			input.setIndirizzoDestinatario2(capCittaDebitore);
+			
+			// Modifica per la sostituzione dei valori impostati negli identificativi del debitore con stringa vuota se 
+			// questi coincidono con una delle keyword indicate nelle proprieta' di sistema
+			List<String> keywordsDaSostituireIdentificativiDebitoreAvviso = GovpayConfig.getInstance().getKeywordsDaSostituireIdentificativiDebitoreAvviso();
+			if(keywordsDaSostituireIdentificativiDebitoreAvviso != null) {
+				if(input.getCfDestinatario() != null) {
+					for (String keyword : keywordsDaSostituireIdentificativiDebitoreAvviso) {
+						if(keyword.equalsIgnoreCase(input.getCfDestinatario())) {
+							input.setCfDestinatario("");
+							break;
+						}
+					}
+				}
+				
+				if(input.getNomeCognomeDestinatario() != null) {
+					for (String keyword : keywordsDaSostituireIdentificativiDebitoreAvviso) {
+						if(keyword.equalsIgnoreCase(input.getNomeCognomeDestinatario())) {
+							input.setNomeCognomeDestinatario("");
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 
