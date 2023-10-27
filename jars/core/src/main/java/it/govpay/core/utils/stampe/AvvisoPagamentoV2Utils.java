@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -215,13 +217,7 @@ public class AvvisoPagamentoV2Utils {
 				addNota1 = false;
 				
 				RataAvviso rata = new RataAvviso();
-				if(versamento.getDataValidita() != null) {
-					rata.setData(sdfDataScadenza.format(versamento.getDataValidita()));
-				} else if(versamento.getDataScadenza() != null) {
-					rata.setData(sdfDataScadenza.format(versamento.getDataScadenza()));
-				} else {
-					rata.setData("-"); 
-				}
+				impostaDataScadenza(versamento, sdfDataScadenza, rata);
 				
 				// calcolo dell'importo totale
 				BigDecimal importoTotale = BigDecimal.ZERO;
@@ -278,13 +274,7 @@ public class AvvisoPagamentoV2Utils {
 				AvvisoPagamentoV2Utils.impostaAnagraficaDebitore(versamento.getAnagraficaDebitore(), input);
 				
 				RataAvviso rata = new RataAvviso();
-				if(versamento.getDataValidita() != null) {
-					rata.setData(sdfDataScadenza.format(versamento.getDataValidita()));
-				} else if(versamento.getDataScadenza() != null) {
-					rata.setData(sdfDataScadenza.format(versamento.getDataScadenza()));
-				} else {
-					rata.setData("-"); 
-				}
+				impostaDataScadenza(versamento, sdfDataScadenza, rata);
 				
 				switch (versamento.getTipoSoglia()) {
 				case ENTRO:
@@ -492,13 +482,7 @@ public class AvvisoPagamentoV2Utils {
 			rata.setImporto(versamento.getImportoTotale().doubleValue());
 
 		if(addDataValidita) {
-			if(versamento.getDataValidita() != null) {
-				rata.setData(sdfDataScadenza.format(versamento.getDataValidita()));
-			} else if(versamento.getDataScadenza() != null) {
-				rata.setData(sdfDataScadenza.format(versamento.getDataScadenza()));
-			} else {
-				rata.setData("-"); 
-			}
+			impostaDataScadenza(versamento, sdfDataScadenza, rata);
 		}
 		
 		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuvFromNumeroAvviso(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));
@@ -506,6 +490,25 @@ public class AvvisoPagamentoV2Utils {
 			rata.setQrCode(new String(iuvGenerato.getQrCode()));
 
 		return rata;
+	}
+
+	public static void impostaDataScadenza(it.govpay.bd.model.Versamento versamento, SimpleDateFormat sdfDataScadenza, RataAvviso rata) {
+		if(versamento.getDataValidita() != null) {
+			rata.setData(sdfDataScadenza.format(versamento.getDataValidita()));
+		} else if(versamento.getDataScadenza() != null) {
+			rata.setData(sdfDataScadenza.format(versamento.getDataScadenza()));
+		} else {
+			Integer numeroGiorniValiditaPendenza = GovpayConfig.getInstance().getNumeroGiorniValiditaPendenza();
+
+			if(numeroGiorniValiditaPendenza != null) {
+				Calendar instance = Calendar.getInstance();
+				instance.setTime(versamento.getDataCreazione()); 
+				instance.add(Calendar.DATE, numeroGiorniValiditaPendenza);
+				rata.setData(sdfDataScadenza.format(instance.getTime()));
+			} else {
+				rata.setData("-");
+			}
+		}
 	}
 	
 	public static void impostaAnagraficaEnteCreditore(Versamento versamento, Dominio dominio, UnitaOperativa uo, AvvisoPagamentoInput input)

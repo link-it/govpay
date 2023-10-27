@@ -6,6 +6,8 @@ import java.text.MessageFormat;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -450,13 +452,7 @@ public class AvvisoPagamentoUtils {
 		if(versamento.getImportoTotale() != null)
 			rata.setImporto(versamento.getImportoTotale().doubleValue());
 
-		if(versamento.getDataValidita() != null) {
-			rata.setData(sdfDataScadenza.format(versamento.getDataValidita()));
-		} else if(versamento.getDataScadenza() != null) {
-			rata.setData(sdfDataScadenza.format(versamento.getDataScadenza()));
-		} else {
-			rata.setData(null); 
-		}
+		impostaDataScadenza(versamento, sdfDataScadenza, rata);
 
 		it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuvFromNumeroAvviso(versamento, versamento.getApplicazione(configWrapper), versamento.getDominio(configWrapper));
 		if(iuvGenerato.getQrCode() != null)
@@ -490,6 +486,25 @@ public class AvvisoPagamentoUtils {
 		}
 
 		return rata;
+	}
+
+	public static void impostaDataScadenza(it.govpay.bd.model.Versamento versamento, SimpleDateFormat sdfDataScadenza,	RataAvviso rata) {
+		if(versamento.getDataValidita() != null) {
+			rata.setData(sdfDataScadenza.format(versamento.getDataValidita()));
+		} else if(versamento.getDataScadenza() != null) {
+			rata.setData(sdfDataScadenza.format(versamento.getDataScadenza()));
+		} else {
+			Integer numeroGiorniValiditaPendenza = GovpayConfig.getInstance().getNumeroGiorniValiditaPendenza();
+
+			if(numeroGiorniValiditaPendenza != null) {
+				Calendar instance = Calendar.getInstance();
+				instance.setTime(versamento.getDataCreazione()); 
+				instance.add(Calendar.DATE, numeroGiorniValiditaPendenza);
+				rata.setData(sdfDataScadenza.format(instance.getTime()));
+			} else {
+				rata.setData(null);
+			}
+		}
 	}
 
 	public static void impostaAnagraficaEnteCreditore(Versamento versamento, Dominio dominio, UnitaOperativa uo, AvvisoPagamentoInput input)
