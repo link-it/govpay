@@ -100,6 +100,7 @@ import it.govpay.core.utils.thread.CreaStampeTracciatoThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.core.utils.tracciati.TracciatiPendenzeManager;
 import it.govpay.core.utils.tracciati.TracciatiUtils;
+import it.govpay.core.utils.tracciati.validator.PendenzaPostValidator;
 import it.govpay.model.Operazione.StatoOperazioneType;
 import it.govpay.model.Operazione.TipoOperazioneType;
 import it.govpay.model.Tracciato.FORMATO_TRACCIATO;
@@ -218,7 +219,7 @@ public class Tracciati {
 			// eseguo operazioni add
 			long numLinea = beanDati.getLineaElaborazioneAdd();
 
-			log.debug(MessageFormat.format("Elaboro le operazioni di caricamento del tracciato saltando le prime {0} linee", numLinea));
+			log.debug("Elaboro le operazioni di caricamento del tracciato saltando le prime {} linee", numLinea);
 			for(long linea = numLinea; linea < beanDati.getNumAddTotali() ; linea ++) {
 				PendenzaPost pendenzaPost = inserimenti.get((int) linea);
 				String jsonPendenza = pendenzaPost.toJSON(null);
@@ -227,6 +228,8 @@ public class Tracciati {
 	
 				String codVersamentoEnte = null;
 				try {
+					new PendenzaPostValidator(pendenzaPost).validate();
+					
 					it.govpay.core.beans.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 					codVersamentoEnte = versamentoToAdd.getCodVersamentoEnte();
 	
@@ -242,13 +245,27 @@ public class Tracciati {
 					request.setIdTracciato(tracciato.getId());
 		
 					caricamentoResponse = factory.caricaVersamento(request, manager, tracciatiBD);
-				}catch(GovPayException e) {
+				}catch(ValidationException e) {
+					log.debug(MessageFormat.format("Impossibile eseguire il caricamento della linea [: {0}: {1}", (linea +1), e.getMessage()),e);
+					caricamentoResponse = new CaricamentoResponse();
+					caricamentoResponse.setNumero(linea + 1);
+					caricamentoResponse.setTipo(TipoOperazioneType.ADD);
+					caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
+					caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_KO);
+					caricamentoResponse.setDescrizioneEsito(e.getMessage());
+					
+					FaultBean respKo = new FaultBean();
+					respKo.setCategoria(CategoriaEnum.RICHIESTA);
+					respKo.setCodice("400000");
+					respKo.setDescrizione("Richiesta non valida");
+					respKo.setDettaglio(e.getMessage());
+					caricamentoResponse.setFaultBean(respKo);
+				} catch(GovPayException e) {
 					caricamentoResponse = new CaricamentoResponse();
 					caricamentoResponse.setNumero(linea + 1);
 					caricamentoResponse.setTipo(TipoOperazioneType.ADD);
 					log.debug(MessageFormat.format("Impossibile eseguire il caricamento della linea [: {0}: {1}", (linea +1), e.getMessage()),e);
 					caricamentoResponse.setStato(StatoOperazioneType.ESEGUITO_KO);
-					caricamentoResponse.setEsito(CaricamentoResponse.ESITO_ADD_KO);
 					caricamentoResponse.setEsito(e.getCodEsito().name());
 					caricamentoResponse.setDescrizioneEsito(e.getCodEsito().name() + ": " + e.getMessage());
 					
