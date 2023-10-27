@@ -47,22 +47,22 @@ public class PendenzaVerificataValidator  implements IValidable{
 			validaCausale( this.pendenza.getCausale());
 			
 			Soggetto soggetto = this.pendenza.getSoggettoPagatore();
-			if(soggetto == null)
-				throw new ValidationException("Il campo soggettoPagatore non deve essere vuoto.");
-			
-			SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
-			
-			soggettoPagatoreValidator.validaTipo("tipo", soggetto.getTipo());
-			soggettoPagatoreValidator.validaIdentificativo("identificativo", soggetto.getIdentificativo());
-			soggettoPagatoreValidator.validaAnagrafica("anagrafica", soggetto.getAnagrafica());
-			soggettoPagatoreValidator.validaIndirizzo("indirizzo", soggetto.getIndirizzo());
-			soggettoPagatoreValidator.validaCivico("civico", soggetto.getCivico());
-			soggettoPagatoreValidator.validaCap("cap", soggetto.getCap());
-			soggettoPagatoreValidator.validaLocalita("localita", soggetto.getLocalita());
-			soggettoPagatoreValidator.validaProvincia("provincia", soggetto.getProvincia());
-			soggettoPagatoreValidator.validaNazione("nazione", soggetto.getNazione());
-			soggettoPagatoreValidator.validaEmail("email", soggetto.getEmail());
-			soggettoPagatoreValidator.validaCellulare("cellulare", soggetto.getCellulare());
+			// Il vincolo di obbligatorieta' del soggetto pagatore e' stato eliminato per consentire di acquisire pendenze senza indicare il debitore.
+			if(soggetto != null) {
+				SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
+				
+				soggettoPagatoreValidator.validaTipo("tipo", soggetto.getTipo());
+				soggettoPagatoreValidator.validaIdentificativoNonObbligatorio("identificativo", soggetto.getIdentificativo());
+				soggettoPagatoreValidator.validaAnagraficaNonObbligatoria("anagrafica", soggetto.getAnagrafica());
+				soggettoPagatoreValidator.validaIndirizzo("indirizzo", soggetto.getIndirizzo());
+				soggettoPagatoreValidator.validaCivico("civico", soggetto.getCivico());
+				soggettoPagatoreValidator.validaCap("cap", soggetto.getCap());
+				soggettoPagatoreValidator.validaLocalita("localita", soggetto.getLocalita());
+				soggettoPagatoreValidator.validaProvincia("provincia", soggetto.getProvincia());
+				soggettoPagatoreValidator.validaNazione("nazione", soggetto.getNazione());
+				soggettoPagatoreValidator.validaEmail("email", soggetto.getEmail());
+				soggettoPagatoreValidator.validaCellulare("cellulare", soggetto.getCellulare());
+			}
 			
 			validaImporto(this.pendenza.getImporto());
 			validaNumeroAvviso(this.pendenza.getNumeroAvviso());

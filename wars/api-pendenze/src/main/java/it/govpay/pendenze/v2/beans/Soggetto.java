@@ -296,8 +296,8 @@ public class Soggetto extends it.govpay.core.beans.JSONSerializable implements I
 		SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
 
 		soggettoPagatoreValidator.validaTipo("tipo", this.getTipo() != null ? this.getTipo().toString() : null);
-		soggettoPagatoreValidator.validaIdentificativo("identificativo", this.getIdentificativo());
-		soggettoPagatoreValidator.validaAnagrafica("anagrafica", this.getAnagrafica());
+		soggettoPagatoreValidator.validaIdentificativoNonObbligatorio("identificativo", this.getIdentificativo());
+		soggettoPagatoreValidator.validaAnagraficaNonObbligatoria("anagrafica", this.getAnagrafica());
 		soggettoPagatoreValidator.validaIndirizzo("indirizzo", this.getIndirizzo());
 		soggettoPagatoreValidator.validaCivico("civico", this.getCivico());
 		soggettoPagatoreValidator.validaCap("cap", this.getCap());
