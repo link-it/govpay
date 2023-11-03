@@ -38,6 +38,6 @@ Gestione automatica della data validità
 
 Il sistema consente di visualizzare una data sull'avviso di pagamento per le pendenze che non specificano alcuna data, indicando il numero dei giorni di validità da assegnare alla pendenza attraverso la proprietà di sistema: 
 
-  -  **it.govpay.modello3.sanp24.giorniValiditaDaAssegnarePendenzaSenzaDataValidita=Num**
+  -  **it.govpay.modello3.sanp24.giorniValiditaDaAssegnarePendenzaSenzaDataValidita=GG**
 
 la data visualizzata nell'avviso sarà calcolata come la somma tra la data di creazione della pendenza e il numero di giorni definito nella proprietà.
