@@ -31,6 +31,7 @@ export class DashboardViewComponent implements OnInit, OnDestroy {
   protected _SPIDInfo: any = UtilService.SPID;
   protected _IAMInfo: any = UtilService.IAM;
   protected _BASICInfo: any = UtilService.BASIC;
+  protected _OAUTH2Info: any = UtilService.OAUTH2;
 
   protected DASHBOARD: string = UtilService.URL_DASHBOARD;
   protected versione: any;

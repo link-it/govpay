@@ -201,6 +201,9 @@ export class GovpayService {
     if(UtilService.IAM.ENABLED) {
       methods.push({ service: UtilService.IAM.ROOT_SERVICE, type: UtilService.ACCESS_IAM });
     }
+    if(UtilService.OAUTH2.ENABLED) {
+      methods.push({ service: UtilService.OAUTH2.ROOT_SERVICE, type: UtilService.ACCESS_OAUTH2 });
+    }
 
     methods.forEach((_method) => {
       fullMethods.push(this.http.get(_method.service + service, { headers: headers, observe: 'response' }).catch(error => of(error)));
@@ -212,6 +215,7 @@ export class GovpayService {
         UtilService.TOA.Basic = false;
         UtilService.TOA.Spid = false;
         UtilService.TOA.Iam = false;
+        UtilService.TOA.OAuth2 = false;
         let _result;
         const _validResponse = responses.filter((response, index) => {
           UtilService.TOA[methods[index].type] = (response.status === 200);

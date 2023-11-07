@@ -1,0 +1,30 @@
+@import '~@angular/material/theming';
+@import '../../../styles/variables.scss';
+
+:host {
+	position: relative;
+	display: block;
+}
+
+.ext-button,
+.ext-button:active {
+      outline: none !important;
+      box-shadow: none !important;
+      background-color: #06C;
+      border: 2px solid #06C;
+      color: #FFF;
+      padding: .5rem 1rem;
+      font-size: .875rem;
+      text-align: center;
+      border-radius: 0;
+}
+
+.ext-button:hover {
+	background-color: #036;
+    border: 2px solid #036;
+}
+
+.ext-button svg {
+	width: 21px;
+    height: 212px;
+}
