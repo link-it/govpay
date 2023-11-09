@@ -228,13 +228,16 @@ public class Tracciati {
 	
 				String codVersamentoEnte = null;
 				try {
+					// inserisco l'identificativo del dominio					// 
+					pendenzaPost.setIdDominio(codDominio);
+					
 					new PendenzaPostValidator(pendenzaPost).validate();
 					
 					it.govpay.core.beans.commons.Versamento versamentoToAdd = it.govpay.core.utils.TracciatiConverter.getVersamentoFromPendenza(pendenzaPost);
 					codVersamentoEnte = versamentoToAdd.getCodVersamentoEnte();
 	
 					// inserisco l'identificativo del dominio
-					versamentoToAdd.setCodDominio(codDominio);
+//					versamentoToAdd.setCodDominio(codDominio);
 		
 					CaricamentoRequest request = new CaricamentoRequest();
 					request.setCodApplicazione(pendenzaPost.getIdA2A());
