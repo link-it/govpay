@@ -119,6 +119,14 @@ components:
       required: false
       schema:
         type: string
+    escludiObsoleti:
+      in: query
+      name: escludiObsoleti
+      description: Esclude dai risultati della ricerca i flussi di rendicontazione obsoleti
+      required: false
+      schema:
+        type: boolean
+        default: false
     idA2A:
       name: idA2A
       in: query

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.jaxrs.RawObject;
 import org.openspcoop2.utils.service.context.ContextThreadLocal;
@@ -17,6 +18,7 @@ import it.govpay.bd.model.Allegato;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IOException;
@@ -134,7 +136,7 @@ public class PendenzeConverter {
 		rsModel.setVoci(v);
 
 		List<RppIndex> rpps = new ArrayList<>();
-		if(rpts != null && rpts.size() > 0) {
+		if(rpts != null && !rpts.isEmpty()) {
 			for (Rpt rpt : rpts) {
 				rpps.add(RptConverter.toRsModelIndex(rpt, rpt.getVersamento(), rpt.getVersamento().getApplicazione(configWrapper)));
 			} 
@@ -442,7 +444,7 @@ public class PendenzeConverter {
 
 	public static void fillSingoliVersamentiFromVociPendenza(it.govpay.core.beans.commons.Versamento versamento, List<NuovaVocePendenza> voci) throws ServiceException, GovPayException, IOException {
 
-		if(voci != null && voci.size() > 0) {
+		if(voci != null && !voci.isEmpty()) {
 			for (NuovaVocePendenza vocePendenza : voci) {
 				it.govpay.core.beans.commons.Versamento.SingoloVersamento sv = new it.govpay.core.beans.commons.Versamento.SingoloVersamento();
 
@@ -496,9 +498,8 @@ public class PendenzeConverter {
 	}
 
 	public static it.govpay.core.beans.commons.Anagrafica toAnagraficaCommons(Soggetto anagraficaRest) {
-		it.govpay.core.beans.commons.Anagrafica anagraficaCommons = null;
+		it.govpay.core.beans.commons.Anagrafica anagraficaCommons = new it.govpay.core.beans.commons.Anagrafica();
 		if(anagraficaRest != null) {
-			anagraficaCommons = new it.govpay.core.beans.commons.Anagrafica();
 			anagraficaCommons.setCap(anagraficaRest.getCap());
 			anagraficaCommons.setCellulare(anagraficaRest.getCellulare());
 			anagraficaCommons.setCivico(anagraficaRest.getCivico());
@@ -509,7 +510,18 @@ public class PendenzeConverter {
 			anagraficaCommons.setNazione(anagraficaRest.getNazione());
 			anagraficaCommons.setProvincia(anagraficaRest.getProvincia());
 			anagraficaCommons.setRagioneSociale(anagraficaRest.getAnagrafica());
-			anagraficaCommons.setTipo(anagraficaRest.getTipo().name());
+			if(anagraficaRest.getTipo() != null) {
+				anagraficaCommons.setTipo(anagraficaRest.getTipo().name());
+			}
+		}
+		
+		// Il vincolo di obbligatorieta' del soggetto pagatore e' stato eliminato per consentire di acquisire pendenze senza indicare il debitore.
+		// in questo caso impostiamo i valori di default per gli identificativi
+		if(StringUtils.isBlank(anagraficaCommons.getCodUnivoco())) {
+			anagraficaCommons.setCodUnivoco(Costanti.IDENTIFICATIVO_DEBITORE_ANONIMO);
+		}
+		if(StringUtils.isBlank(anagraficaCommons.getRagioneSociale())) {
+			anagraficaCommons.setRagioneSociale(Costanti.IDENTIFICATIVO_DEBITORE_ANONIMO); 
 		}
 
 		return anagraficaCommons;
@@ -564,7 +576,7 @@ public class PendenzeConverter {
 			dto = new it.govpay.core.beans.tracciati.ProprietaPendenza();
 			
 			if(proprieta.getDescrizioneImporto() != null && !proprieta.getDescrizioneImporto().isEmpty()) {
-				List<it.govpay.core.beans.tracciati.VoceDescrizioneImporto> descrizioneImporto = new ArrayList<it.govpay.core.beans.tracciati.VoceDescrizioneImporto>();
+				List<it.govpay.core.beans.tracciati.VoceDescrizioneImporto> descrizioneImporto = new ArrayList<>();
 				for (VoceDescrizioneImporto vdI : proprieta.getDescrizioneImporto()) {
 					it.govpay.core.beans.tracciati.VoceDescrizioneImporto voce = new it.govpay.core.beans.tracciati.VoceDescrizioneImporto();
 					
@@ -611,7 +623,7 @@ public class PendenzeConverter {
 			rsModel = new ProprietaPendenza();
 			
 			if(proprieta.getDescrizioneImporto() != null && !proprieta.getDescrizioneImporto().isEmpty()) {
-				List<VoceDescrizioneImporto> descrizioneImporto = new ArrayList<VoceDescrizioneImporto>();
+				List<VoceDescrizioneImporto> descrizioneImporto = new ArrayList<>();
 				for (it.govpay.core.beans.tracciati.VoceDescrizioneImporto vdI : proprieta.getDescrizioneImporto()) {
 					VoceDescrizioneImporto voce = new VoceDescrizioneImporto();
 					
@@ -657,7 +669,7 @@ public class PendenzeConverter {
 	private static List<AllegatoPendenza> toAllegatiRsModel(List<Allegato> allegati) { 
 		List<AllegatoPendenza> rsModel = null;
 		
-		if(allegati != null && allegati.size() > 0) {
+		if(allegati != null && !allegati.isEmpty()) {
 			rsModel = new ArrayList<>();
 			
 			for (Allegato allegato : allegati) {
@@ -678,7 +690,7 @@ public class PendenzeConverter {
 	private static List<it.govpay.core.beans.commons.Versamento.AllegatoPendenza> toAllegatiPendenzaDTO(List<NuovoAllegatoPendenza> allegati) {
 		List<it.govpay.core.beans.commons.Versamento.AllegatoPendenza> allegatiDTO = null;
 		
-		if(allegati != null && allegati.size() > 0) {
+		if(allegati != null && !allegati.isEmpty()) {
 			allegatiDTO = new ArrayList<>();
 			
 			for (NuovoAllegatoPendenza allegato : allegati) {

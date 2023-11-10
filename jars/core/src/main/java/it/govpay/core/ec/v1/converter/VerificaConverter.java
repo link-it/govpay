@@ -24,8 +24,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.exceptions.IOException;
 import it.govpay.core.exceptions.ValidationException;
 import it.govpay.core.utils.SimpleDateFormatUtils;
@@ -71,7 +73,7 @@ public class VerificaConverter {
 				throw new ValidationException("Codifica inesistente per tassonomiaAvviso. Valore fornito [" + pendenzaVerificata.getTassonomiaAvviso() + "] valori possibili " + ArrayUtils.toString(TassonomiaAvviso.values()));
 			}
 
-			versamento.setTassonomiaAvviso(pendenzaVerificata.getTassonomiaAvviso().toString());
+			versamento.setTassonomiaAvviso(pendenzaVerificata.getTassonomiaAvviso());
 		}
 		
 		versamento.setNome(pendenzaVerificata.getNome());
@@ -90,8 +92,9 @@ public class VerificaConverter {
 			it.govpay.core.beans.commons.Versamento.Documento documento = new it.govpay.core.beans.commons.Versamento.Documento();
 			
 			documento.setCodDocumento(pendenzaVerificata.getDocumento().getIdentificativo());
-			if(pendenzaVerificata.getDocumento().getRata() != null)
-			documento.setCodRata(pendenzaVerificata.getDocumento().getRata().intValue());
+			if(pendenzaVerificata.getDocumento().getRata() != null) {
+				documento.setCodRata(pendenzaVerificata.getDocumento().getRata().intValue());
+			}
 			documento.setDescrizione(pendenzaVerificata.getDocumento().getDescrizione());
 			if(pendenzaVerificata.getDocumento().getSoglia() != null) {
 				// valore tassonomia avviso non valido
@@ -117,7 +120,7 @@ public class VerificaConverter {
 	
 	public static void fillSingoliVersamentiFromVociPendenzaBase(it.govpay.core.beans.commons.Versamento versamento, List<VocePendenza> voci) throws IOException {
 
-		if(voci != null && voci.size() > 0) {
+		if(voci != null && !voci.isEmpty()) {
 			for (VocePendenza vocePendenza : voci) {
 				it.govpay.core.beans.commons.Versamento.SingoloVersamento sv = new it.govpay.core.beans.commons.Versamento.SingoloVersamento();
 
@@ -154,9 +157,8 @@ public class VerificaConverter {
 	}
 	
 	public static it.govpay.core.beans.commons.Anagrafica toAnagraficaCommons(Soggetto anagraficaRest) {
-		it.govpay.core.beans.commons.Anagrafica anagraficaCommons = null;
+		it.govpay.core.beans.commons.Anagrafica anagraficaCommons = new it.govpay.core.beans.commons.Anagrafica();
 		if(anagraficaRest != null) {
-			anagraficaCommons = new it.govpay.core.beans.commons.Anagrafica();
 			anagraficaCommons.setCap(anagraficaRest.getCap());
 			anagraficaCommons.setCellulare(anagraficaRest.getCellulare());
 			anagraficaCommons.setCivico(anagraficaRest.getCivico());
@@ -167,7 +169,18 @@ public class VerificaConverter {
 			anagraficaCommons.setNazione(anagraficaRest.getNazione());
 			anagraficaCommons.setProvincia(anagraficaRest.getProvincia());
 			anagraficaCommons.setRagioneSociale(anagraficaRest.getAnagrafica());
-			anagraficaCommons.setTipo(anagraficaRest.getTipo().name());
+			if(anagraficaRest.getTipo() != null) {
+				anagraficaCommons.setTipo(anagraficaRest.getTipo().name());
+			}
+		}
+		
+		// Il vincolo di obbligatorieta' del soggetto pagatore e' stato eliminato per consentire di acquisire pendenze senza indicare il debitore.
+		// in questo caso impostiamo i valori di default per gli identificativi
+		if(StringUtils.isBlank(anagraficaCommons.getCodUnivoco())) {
+			anagraficaCommons.setCodUnivoco(Costanti.IDENTIFICATIVO_DEBITORE_ANONIMO);
+		}
+		if(StringUtils.isBlank(anagraficaCommons.getRagioneSociale())) {
+			anagraficaCommons.setRagioneSociale(Costanti.IDENTIFICATIVO_DEBITORE_ANONIMO); 
 		}
 
 		return anagraficaCommons;
@@ -179,7 +192,7 @@ public class VerificaConverter {
 			dto = new it.govpay.core.beans.tracciati.ProprietaPendenza();
 			
 			if(proprieta.getDescrizioneImporto() != null && !proprieta.getDescrizioneImporto().isEmpty()) {
-				List<it.govpay.core.beans.tracciati.VoceDescrizioneImporto> descrizioneImporto = new ArrayList<it.govpay.core.beans.tracciati.VoceDescrizioneImporto>();
+				List<it.govpay.core.beans.tracciati.VoceDescrizioneImporto> descrizioneImporto = new ArrayList<>();
 				for (VoceDescrizioneImporto vdI : proprieta.getDescrizioneImporto()) {
 					it.govpay.core.beans.tracciati.VoceDescrizioneImporto voce = new it.govpay.core.beans.tracciati.VoceDescrizioneImporto();
 					
@@ -228,7 +241,7 @@ public class VerificaConverter {
 	
 	public static List<it.govpay.model.QuotaContabilita> toDTO(List<QuotaContabilita> dto) {
 		if(dto != null) {
-			List<it.govpay.model.QuotaContabilita> rsModel = new ArrayList<it.govpay.model.QuotaContabilita>();
+			List<it.govpay.model.QuotaContabilita> rsModel = new ArrayList<>();
 			for (QuotaContabilita contabilita : dto) {
 				rsModel.add(toDTO(contabilita));
 			}
@@ -279,7 +292,7 @@ public class VerificaConverter {
 	private static List<it.govpay.core.beans.commons.Versamento.AllegatoPendenza> toAllegatiPendenzaDTO(List<NuovoAllegatoPendenza> allegati) {
 		List<it.govpay.core.beans.commons.Versamento.AllegatoPendenza> allegatiDTO = null;
 		
-		if(allegati != null && allegati.size() > 0) {
+		if(allegati != null && !allegati.isEmpty()) {
 			allegatiDTO = new ArrayList<>();
 			
 			for (NuovoAllegatoPendenza allegato : allegati) {

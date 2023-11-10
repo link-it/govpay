@@ -32,8 +32,8 @@ Examples:
 | field | fieldRequest | fieldValue | fieldResponse |
 | urlRitorno | pagamentoPost.urlRitorno | 'htttttp://sbagliata.it' |  'urlRitorno' |
 | dataPagamento | pagamentoPost.dataEsecuzionePagamento | '2030-19-40' | 'dataEsecuzionePagamento' |
-| soggettoVersante.tipo | pagamentoPost.soggettoVersante.tipo | null | 'tipo' |
-| soggettoVersante.tipo | pagamentoPost.soggettoVersante.tipo | 'X' | 'tipo' |
+# | soggettoVersante.tipo | pagamentoPost.soggettoVersante.tipo | null | 'tipo' |
+# | soggettoVersante.tipo | pagamentoPost.soggettoVersante.tipo | 'X' | 'tipo' |
 | soggettoVersante.identificativo | pagamentoPost.soggettoVersante.identificativo | null | 'identificativo' |
 | soggettoVersante.identificativo | pagamentoPost.soggettoVersante.identificativo | '' | 'identificativo' |
 | soggettoVersante.identificativo | pagamentoPost.soggettoVersante.identificativo | loremIpsum | 'identificativo' |
@@ -67,15 +67,15 @@ Examples:
 | pendenze.dataValidita | pagamentoPost.pendenze[0].dataScadenza | '2030-19-40' | 'dataScadenza' |
 | pendenze.annoRiferimento | pagamentoPost.pendenze[0].annoRiferimento | 'aaaa' | 'annoRiferimento' |
 | pendenze.tassonomiaAvviso | pagamentoPost.pendenze[0].tassonomiaAvviso | 'xxxx' | 'tassonomiaAvviso' |
-| pendenze.soggettoPagatore.tipo | pagamentoPost.pendenze[0].soggettoPagatore | null | 'soggettoPagatore' |
-| pendenze.soggettoPagatore.tipo | pagamentoPost.pendenze[0].soggettoPagatore.tipo | null | 'tipo' |
-| pendenze.soggettoPagatore.tipo | pagamentoPost.pendenze[0].soggettoPagatore.tipo | 'X' | 'tipo' |
-| pendenze.soggettoPagatore.identificativo | pagamentoPost.pendenze[0].soggettoPagatore.identificativo | null | 'identificativo' |
-| pendenze.soggettoPagatore.identificativo | pagamentoPost.pendenze[0].soggettoPagatore.identificativo | '' | 'identificativo' |
+# | pendenze.soggettoPagatore.tipo | pagamentoPost.pendenze[0].soggettoPagatore | null | 'soggettoPagatore' |
+# | pendenze.soggettoPagatore.tipo | pagamentoPost.pendenze[0].soggettoPagatore.tipo | null | 'tipo' |
+# | pendenze.soggettoPagatore.tipo | pagamentoPost.pendenze[0].soggettoPagatore.tipo | 'X' | 'tipo' |
+# | pendenze.soggettoPagatore.identificativo | pagamentoPost.pendenze[0].soggettoPagatore.identificativo | null | 'identificativo' |
+# | pendenze.soggettoPagatore.identificativo | pagamentoPost.pendenze[0].soggettoPagatore.identificativo | '' | 'identificativo' |
 | pendenze.soggettoPagatore.identificativo | pagamentoPost.pendenze[0].soggettoPagatore.identificativo | loremIpsum | 'identificativo' |
-| pendenze.soggettoPagatore.identificativo | pagamentoPost.pendenze[0].soggettoPagatore.identificativo | 'a' | 'identificativo' |
+# | pendenze.soggettoPagatore.identificativo | pagamentoPost.pendenze[0].soggettoPagatore.identificativo | 'a' | 'identificativo' |
 | pendenze.soggettoPagatore.identificativo | pagamentoPost.pendenze[0].soggettoPagatore.identificativo | '12345678901234567' | 'identificativo' |
-| pendenze.soggettoPagatore.anagrafica | pagamentoPost.pendenze[0].soggettoPagatore.anagrafica | '' | 'anagrafica' |
+# | pendenze.soggettoPagatore.anagrafica | pagamentoPost.pendenze[0].soggettoPagatore.anagrafica | '' | 'anagrafica' |
 | pendenze.soggettoPagatore.anagrafica | pagamentoPost.pendenze[0].soggettoPagatore.anagrafica | loremIpsum | 'anagrafica' |
 | pendenze.soggettoPagatore.indirizzo | pagamentoPost.pendenze[0].soggettoPagatore.indirizzo | '' | 'indirizzo' |
 | pendenze.soggettoPagatore.indirizzo | pagamentoPost.pendenze[0].soggettoPagatore.indirizzo | loremIpsum | 'indirizzo' |

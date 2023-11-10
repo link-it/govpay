@@ -75,11 +75,31 @@ public class SoggettoPagatoreValidator{
 	}
 
 	public void validaTipo(String fieldName, String tipo) throws it.govpay.core.exceptions.ValidationException {
-		this.vf.getValidator(fieldName, tipo).notNull();
+		this.vf.getValidator(fieldName, tipo).minLength(1).maxLength(1);
 	}
 	
 	public void validaTipo(String fieldName, Enum<?> tipo) throws it.govpay.core.exceptions.ValidationException {
-		this.vf.getValidator(fieldName, tipo).notNull();
+		this.vf.getValidator(fieldName, tipo);
+	}
+	
+	/**
+	 * Versione modificata del metodo validaAnagrafica per consentire di accettare pendenze che non definiscono il soggetto debitore o i suoi identificativi 
+	 * @param fieldName
+	 * @param anagrafica
+	 * @throws it.govpay.core.exceptions.ValidationException
+	 */
+	public void validaAnagraficaNonObbligatoria(String fieldName, String anagrafica) throws it.govpay.core.exceptions.ValidationException{
+		this.vf.getValidator(fieldName, anagrafica).maxLength(70);
+	}
+
+	/**
+	 * Versione modificata del metodo validaIdentificativo per consentire di accettare pendenze che non definiscono il soggetto debitore o i suoi identificativi 
+	 * @param fieldName
+	 * @param identificativo
+	 * @throws it.govpay.core.exceptions.ValidationException
+	 */
+	public void validaIdentificativoNonObbligatorio(String fieldName, String identificativo) throws it.govpay.core.exceptions.ValidationException{
+		this.vf.getValidator(fieldName, identificativo).maxLength(16);
 	}
 }
 

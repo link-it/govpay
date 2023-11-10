@@ -1821,7 +1821,8 @@ export class UtilService {
           new FormInput({ id: 'idFlusso', label: FormService.FORM_IDENTIFICATIVO_FLUSSO, type: UtilService.INPUT }),
           new FormInput({ id: 'iuv', label: FormService.FORM_IUV, placeholder: FormService.FORM_PH_IUV, type: UtilService.INPUT }),
           new FormInput({ id: 'dataDa', label: FormService.FORM_DATA_REG_INIZIO + ' ' + FormService.FORM_PH_DATA_REG_INIZIO, type: UtilService.DATE_PICKER, value: _defaulFiltertData }),
-          new FormInput({ id: 'dataA', label: FormService.FORM_DATA_REG_FINE+' '+FormService.FORM_PH_DATA_REG_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' })
+          new FormInput({ id: 'dataA', label: FormService.FORM_DATA_REG_FINE+' '+FormService.FORM_PH_DATA_REG_FINE, type: UtilService.DATE_PICKER, defaultTime: '23:59' }),
+          new FormInput({ id: 'escludiObsoleti', label: FormService.FORM_ESCLUDI_OBSOLETI, type: UtilService.SLIDE_TOGGLE, value: false }),
         ];
       break;
       case UtilService.GIORNALE_EVENTI:

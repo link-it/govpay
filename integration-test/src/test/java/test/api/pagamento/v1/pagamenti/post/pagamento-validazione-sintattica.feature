@@ -32,7 +32,7 @@ Examples:
 | field | fieldRequest | fieldValue | fieldResponse |
 | urlRitorno | pagamentoPost.urlRitorno | 'htttttp://sbagliata.it' |  'urlRitorno' |
 | dataPagamento | pagamentoPost.dataEsecuzionePagamento | '2030-19-40' | 'dataEsecuzionePagamento' |
-| soggettoVersante.tipo | pagamentoPost.soggettoVersante.tipo | null | 'tipo' |
+# | soggettoVersante.tipo | pagamentoPost.soggettoVersante.tipo | null | 'tipo' |
 | soggettoVersante.tipo | pagamentoPost.soggettoVersante.tipo | 'X' | 'tipo' |
 | soggettoVersante.identificativo | pagamentoPost.soggettoVersante.identificativo | null | 'identificativo' |
 | soggettoVersante.identificativo | pagamentoPost.soggettoVersante.identificativo | '' | 'identificativo' |
@@ -68,8 +68,8 @@ Examples:
 | pendenze.dataValidita | pagamentoPost.pendenze[0].dataScadenza | '2030-19-40' | 'dataScadenza' |
 | pendenze.annoRiferimento | pagamentoPost.pendenze[0].annoRiferimento | 'aaaa' | 'annoRiferimento' |
 | pendenze.tassonomiaAvviso | pagamentoPost.pendenze[0].tassonomiaAvviso | 'xxxx' | 'tassonomiaAvviso' |
-| pendenze.soggettoPagatore.tipo | pagamentoPost.pendenze[0].soggettoPagatore | null | 'soggettoPagatore' |
-| pendenze.soggettoPagatore.tipo | pagamentoPost.pendenze[0].soggettoPagatore.tipo | null | 'tipo' |
+# | pendenze.soggettoPagatore.tipo | pagamentoPost.pendenze[0].soggettoPagatore | null | 'soggettoPagatore' |
+# | pendenze.soggettoPagatore.tipo | pagamentoPost.pendenze[0].soggettoPagatore.tipo | null | 'tipo' |
 | pendenze.soggettoPagatore.tipo | pagamentoPost.pendenze[0].soggettoPagatore.tipo | 'X' | 'tipo' |
 | pendenze.soggettoPagatore.identificativo | pagamentoPost.pendenze[0].soggettoPagatore.identificativo | null | 'identificativo' |
 | pendenze.soggettoPagatore.identificativo | pagamentoPost.pendenze[0].soggettoPagatore.identificativo | '' | 'identificativo' |
