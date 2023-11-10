@@ -26,8 +26,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.serialization.SerializationConfig;
 
+import it.govpay.core.beans.Costanti;
 import it.govpay.core.beans.EsitoOperazione;
 import it.govpay.core.beans.tracciati.Contabilita;
 import it.govpay.core.beans.tracciati.NuovoAllegatoPendenza;
@@ -58,7 +60,6 @@ public class TracciatiConverter {
 		versamento.setCodVersamentoEnte(pendenza.getIdPendenza());
 		versamento.setDataScadenza(pendenza.getDataScadenza());
 		versamento.setDataValidita(pendenza.getDataValidita());
-//		versamento.setDataCaricamento(pendenza.getDataCaricamento() != null ? pendenza.getDataCaricamento() : new Date());
 		versamento.setDataCaricamento(new Date());
 		versamento.setDebitore(toAnagraficaCommons(pendenza.getSoggettoPagatore()));
 	
@@ -121,9 +122,8 @@ public class TracciatiConverter {
 	}
 	
 	public static it.govpay.core.beans.commons.Anagrafica toAnagraficaCommons(Soggetto anagraficaRest) {
-		it.govpay.core.beans.commons.Anagrafica anagraficaCommons = null;
+		it.govpay.core.beans.commons.Anagrafica anagraficaCommons = new it.govpay.core.beans.commons.Anagrafica();
 		if(anagraficaRest != null) {
-			anagraficaCommons = new it.govpay.core.beans.commons.Anagrafica();
 			anagraficaCommons.setCap(anagraficaRest.getCap());
 			anagraficaCommons.setCellulare(anagraficaRest.getCellulare());
 			anagraficaCommons.setCivico(anagraficaRest.getCivico());
@@ -134,7 +134,18 @@ public class TracciatiConverter {
 			anagraficaCommons.setNazione(anagraficaRest.getNazione());
 			anagraficaCommons.setProvincia(anagraficaRest.getProvincia());
 			anagraficaCommons.setRagioneSociale(anagraficaRest.getAnagrafica());
-			anagraficaCommons.setTipo(anagraficaRest.getTipo().name());
+			if(anagraficaRest.getTipo() != null) {
+				anagraficaCommons.setTipo(anagraficaRest.getTipo().name());
+			}
+		}
+		
+		// Il vincolo di obbligatorieta' del soggetto pagatore e' stato eliminato per consentire di acquisire pendenze senza indicare il debitore.
+		// in questo caso impostiamo i valori di default per gli identificativi
+		if(StringUtils.isBlank(anagraficaCommons.getCodUnivoco())) {
+			anagraficaCommons.setCodUnivoco(Costanti.IDENTIFICATIVO_DEBITORE_ANONIMO);
+		}
+		if(StringUtils.isBlank(anagraficaCommons.getRagioneSociale())) {
+			anagraficaCommons.setRagioneSociale(Costanti.IDENTIFICATIVO_DEBITORE_ANONIMO); 
 		}
 
 		return anagraficaCommons;
@@ -144,11 +155,9 @@ public class TracciatiConverter {
 
 		BigDecimal importoTotale = BigDecimal.ZERO;
 		
-		if(voci != null && voci.size() > 0) {
+		if(voci != null && !voci.isEmpty()) {
 			for (VocePendenza vocePendenza : voci) {
 				it.govpay.core.beans.commons.Versamento.SingoloVersamento sv = new it.govpay.core.beans.commons.Versamento.SingoloVersamento();
-
-				//sv.setCodTributo(value); ??
 
 				sv.setCodSingoloVersamentoEnte(vocePendenza.getIdVocePendenza());
 				if(vocePendenza.getDatiAllegati() != null)
@@ -214,7 +223,7 @@ public class TracciatiConverter {
 	
 	public static List<it.govpay.model.QuotaContabilita> toDTO(List<QuotaContabilita> dto) {
 		if(dto != null) {
-			List<it.govpay.model.QuotaContabilita> rsModel = new ArrayList<it.govpay.model.QuotaContabilita>();
+			List<it.govpay.model.QuotaContabilita> rsModel = new ArrayList<>();
 			for (QuotaContabilita contabilita : dto) {
 				rsModel.add(toDTO(contabilita));
 			}
@@ -265,7 +274,7 @@ public class TracciatiConverter {
 	private static List<it.govpay.core.beans.commons.Versamento.AllegatoPendenza> toAllegatiPendenzaDTO(List<NuovoAllegatoPendenza> allegati) {
 		List<it.govpay.core.beans.commons.Versamento.AllegatoPendenza> allegatiDTO = null;
 		
-		if(allegati != null && allegati.size() > 0) {
+		if(allegati != null && !allegati.isEmpty()) {
 			allegatiDTO = new ArrayList<>();
 			
 			for (NuovoAllegatoPendenza allegato : allegati) {

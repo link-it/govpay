@@ -985,7 +985,8 @@ public class VersamentoUtils {
 		anagraficaModel.setProvincia(anagrafica.getProvincia());
 		anagraficaModel.setRagioneSociale(anagrafica.getRagioneSociale());
 		anagraficaModel.setTelefono(anagrafica.getTelefono());
-		anagraficaModel.setTipo(TIPO.valueOf(anagrafica.getTipo()));
+		if(anagrafica.getTipo() != null)
+			anagraficaModel.setTipo(TIPO.valueOf(anagrafica.getTipo()));
 		return anagraficaModel;
 	}
 	

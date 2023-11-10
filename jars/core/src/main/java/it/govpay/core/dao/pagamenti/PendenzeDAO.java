@@ -187,6 +187,7 @@ public class PendenzeDAO extends BaseDAO{
 				filter.setAbilitaFiltroCittadino(true);
 			}
 			filter.setCodTipoVersamento(listaPendenzaDTO.getIdTipoVersamento());
+			filter.setCodTipiVersamento(listaPendenzaDTO.getCodTipiVersamento());
 			filter.setDivisione(listaPendenzaDTO.getDivisione());
 			filter.setDirezione(listaPendenzaDTO.getDirezione()); 
 			if(listaPendenzaDTO.getIuv() != null) {
@@ -280,6 +281,7 @@ public class PendenzeDAO extends BaseDAO{
 			filter.setAbilitaFiltroCittadino(true);
 		}
 		filter.setCodTipoVersamento(listaPendenzaDTO.getIdTipoVersamento());
+		filter.setCodTipiVersamento(listaPendenzaDTO.getCodTipiVersamento());
 		filter.setDivisione(listaPendenzaDTO.getDivisione());
 		filter.setDirezione(listaPendenzaDTO.getDirezione());
 		if(listaPendenzaDTO.getIuv() != null) {
@@ -383,6 +385,7 @@ public class PendenzeDAO extends BaseDAO{
 				filter.setAbilitaFiltroCittadino(true);
 			}
 			filter.setCodTipoVersamento(listaPendenzaDTO.getIdTipoVersamento());
+			filter.setCodTipiVersamento(listaPendenzaDTO.getCodTipiVersamento());
 			filter.setDivisione(listaPendenzaDTO.getDivisione());
 			filter.setDirezione(listaPendenzaDTO.getDirezione());
 			if(listaPendenzaDTO.getIuv() != null) {

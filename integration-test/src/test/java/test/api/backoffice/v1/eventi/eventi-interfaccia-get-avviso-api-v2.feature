@@ -571,7 +571,7 @@ Then assert responseStatus == 200 || responseStatus == 201
 * def ccp = getCurrentTimeMillis()
 * def importo = 100.99
 
-* set pendenzaPut.soggettoPagatore = null
+* set pendenzaPut.soggettoPagatore.indirizzo = '' 
 
 * set pendenzaPut.idA2A = idA2A
 * set pendenzaPut.idPendenza = idPendenza
@@ -647,4 +647,4 @@ And match response.risultati[0] ==
 	}
 }
 """
-And match response.risultati[0].dettaglioEsito contains 'soggettoPagatore'
+And match response.risultati[0].dettaglioEsito contains 'Il valore [] del campo indirizzo non rispetta la lunghezza minima di 1 caratteri.'

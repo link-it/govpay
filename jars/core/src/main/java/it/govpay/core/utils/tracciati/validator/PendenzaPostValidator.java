@@ -46,22 +46,22 @@ public class PendenzaPostValidator  implements IValidable{
 			validaCausale( this.pendenzaVerificata.getCausale());
 			
 			Soggetto soggetto = this.pendenzaVerificata.getSoggettoPagatore();
-			if(soggetto == null)
-				throw new ValidationException("Il campo soggettoPagatore non deve essere vuoto.");
-			
-			SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
-			
-			soggettoPagatoreValidator.validaTipo("soggettoPagatore.tipo", soggetto.getTipo() != null ? soggetto.getTipo().toString() : null);
-			soggettoPagatoreValidator.validaIdentificativo("soggettoPagatore.identificativo", soggetto.getIdentificativo());
-			soggettoPagatoreValidator.validaAnagrafica("soggettoPagatore.anagrafica", soggetto.getAnagrafica());
-			soggettoPagatoreValidator.validaIndirizzo("soggettoPagatore.indirizzo", soggetto.getIndirizzo());
-			soggettoPagatoreValidator.validaCivico("soggettoPagatore.civico", soggetto.getCivico());
-			soggettoPagatoreValidator.validaCap("soggettoPagatore.cap", soggetto.getCap());
-			soggettoPagatoreValidator.validaLocalita("soggettoPagatore.localita", soggetto.getLocalita());
-			soggettoPagatoreValidator.validaProvincia("soggettoPagatore.provincia", soggetto.getProvincia());
-			soggettoPagatoreValidator.validaNazione("soggettoPagatore.nazione", soggetto.getNazione());
-			soggettoPagatoreValidator.validaEmail("soggettoPagatore.email", soggetto.getEmail());
-			soggettoPagatoreValidator.validaCellulare("soggettoPagatore.cellulare", soggetto.getCellulare());
+			// Il vincolo di obbligatorieta' del soggetto pagatore e' stato eliminato per consentire di acquisire pendenze senza indicare il debitore.
+			if(soggetto != null) {
+				SoggettoPagatoreValidator soggettoPagatoreValidator = SoggettoPagatoreValidator.newInstance();
+				
+				soggettoPagatoreValidator.validaTipo("soggettoPagatore.tipo", soggetto.getTipo() != null ? soggetto.getTipo().toString() : null);
+				soggettoPagatoreValidator.validaIdentificativoNonObbligatorio("soggettoPagatore.identificativo", soggetto.getIdentificativo());
+				soggettoPagatoreValidator.validaAnagraficaNonObbligatoria("soggettoPagatore.anagrafica", soggetto.getAnagrafica());
+				soggettoPagatoreValidator.validaIndirizzo("soggettoPagatore.indirizzo", soggetto.getIndirizzo());
+				soggettoPagatoreValidator.validaCivico("soggettoPagatore.civico", soggetto.getCivico());
+				soggettoPagatoreValidator.validaCap("soggettoPagatore.cap", soggetto.getCap());
+				soggettoPagatoreValidator.validaLocalita("soggettoPagatore.localita", soggetto.getLocalita());
+				soggettoPagatoreValidator.validaProvincia("soggettoPagatore.provincia", soggetto.getProvincia());
+				soggettoPagatoreValidator.validaNazione("soggettoPagatore.nazione", soggetto.getNazione());
+				soggettoPagatoreValidator.validaEmail("soggettoPagatore.email", soggetto.getEmail());
+				soggettoPagatoreValidator.validaCellulare("soggettoPagatore.cellulare", soggetto.getCellulare());
+			}
 			
 			validaImporto(this.pendenzaVerificata.getImporto());
 			validaNumeroAvviso(this.pendenzaVerificata.getNumeroAvviso());

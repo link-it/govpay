@@ -259,8 +259,10 @@ public class NuovoPagamento extends JSONSerializable implements IValidable {
 		vf.getValidator("pendenze", this.pendenze).notNull().minItems(1).maxItems(5).validateObjects();
 		vf.getValidator("urlRitorno", this.urlRitorno).pattern("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)");
 		vf.getValidator("contoAddebito", this.contoAddebito).validateFields();
-		//vf.getValidator("dataEsecuzionePagamento", this.dataEsecuzionePagamento).after(LocalDate.now()).insideDays(30);
 		vf.getValidator("credenzialiPagatore", this.credenzialiPagatore).minLength(1).maxLength(35);
+		if(this.soggettoVersante != null) {
+			this.soggettoVersante.setVersante(true);
+		}
 		vf.getValidator("soggettoVersante", this.soggettoVersante).validateFields();
 		vf.getValidator("autenticazioneSoggetto", this.autenticazioneSoggetto).notNull();
 	}

@@ -571,7 +571,8 @@ public class NuovaPendenza extends JSONSerializable implements IValidable {
 
 		ValidatoreUtils.validaCausale(vf, "causale", causale);
 
-		vf.getValidator("soggettoPagatore", this.soggettoPagatore).notNull().validateFields();
+		// Il vincolo di obbligatorieta' del soggetto pagatore e' stato eliminato per consentire di acquisire pendenze senza indicare il debitore.
+		vf.getValidator("soggettoPagatore", this.soggettoPagatore).validateFields();
 
 		ValidatoreUtils.validaImporto(vf, "importo", importo);
 		ValidatoreUtils.validaNumeroAvviso(vf, "numeroAvviso", numeroAvviso);
