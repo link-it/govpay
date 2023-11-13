@@ -34,6 +34,7 @@ import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTReq;
 import it.gov.pagopa.pagopa_api.pa.pafornode.PaSendRTV2Request;
 import it.gov.pagopa.pagopa_api.xsd.common_types.v1_0.StOutcome;
 import it.govpay.bd.BDConfigWrapper;
+import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Notifica;
@@ -58,6 +59,7 @@ import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.model.Rpt.TipoIdentificativoAttestante;
+import it.govpay.model.Rpt.VersioneRPT;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.pagopa.beans.utils.JaxbUtils;
 
@@ -227,14 +229,16 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			PaGetPaymentRes ctRpt = null; 
 
 			// Validazione Semantica
-			RtUtils.EsitoValidazione esito = null;
-			try {
-				ctRpt = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
-				esito = CtReceiptUtils.validaSemantica(ctRpt, ctRt);
-			} catch (JAXBException e) {
-				throw e;
-			} catch (SAXException e) {
-				throw e;
+			RtUtils.EsitoValidazione esito = new RtUtils().new EsitoValidazione();
+			if(rpt.getXmlRpt() != null) {
+				try {
+					ctRpt = JaxbUtils.toPaGetPaymentRes_RPT(rpt.getXmlRpt(), false);
+					esito = CtReceiptUtils.validaSemantica(ctRpt, ctRt);
+				} catch (JAXBException e) {
+					throw e;
+				} catch (SAXException e) {
+					throw e;
+				}
 			}
 
 			if(acquisizioneDaCruscotto) {
@@ -477,6 +481,30 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 		}
 	}
 	
+	public static Rpt ricostruisciRPT(String codDominio, String iuv, PaSendRTReq ctRt, BDConfigWrapper configWrapper, BasicBD basicBd) throws ServiceException, NotFoundException {
+		Dominio dominio = AnagraficaManager.getDominio(configWrapper, codDominio);
+		
+		Rpt rpt = new Rpt();
+		rpt.setCodDominio(codDominio);
+		rpt.setIuv(iuv);
+		rpt.setCodStazione(dominio.getStazione().getCodStazione());
+		rpt.setCodMsgRichiesta(ctRt.getReceipt().getReceiptId());
+		rpt.setDataMsgRichiesta(new Date());
+		rpt.setCcp(ctRt.getReceipt().getReceiptId());
+		rpt.setStato(StatoRpt.RPT_ACCETTATA_NODO);
+		rpt.setDataAggiornamento(new Date());
+		rpt.setVersione(VersioneRPT.SANP_240);
+		
+		VersamentiBD versamentiBD = new VersamentiBD(basicBd);
+		versamentiBD.setAtomica(false);
+		Versamento versamentoByDominioIuv = versamentiBD.getVersamentoByDominioIuv(dominio.getId(), iuv);
+		rpt.setIdVersamento(versamentoByDominioIuv.getId());
+		
+		
+		
+		return rpt;
+	}
+	
 	public static Rpt acquisisciRT(String codDominio, String iuv, PaSendRTV2Request ctRt, boolean recupero) throws ServiceException, NdpException, UtilsException, GovPayException {
 		return acquisisciRT(codDominio, iuv, ctRt, recupero, false);
 	}
@@ -562,14 +590,16 @@ public class CtReceiptUtils  extends NdpValidationUtils {
 			PaGetPaymentV2Response ctRpt = null; 
 
 			// Validazione Semantica
-			RtUtils.EsitoValidazione esito = null;
-			try {
-				ctRpt = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
-				esito = CtReceiptUtils.validaSemantica(ctRpt, ctRt);
-			} catch (JAXBException e) {
-				throw e;
-			} catch (SAXException e) {
-				throw e;
+			RtUtils.EsitoValidazione esito = new RtUtils().new EsitoValidazione();
+			if(rpt.getXmlRpt() != null) {
+				try {
+					ctRpt = JaxbUtils.toPaGetPaymentV2Response_RPT(rpt.getXmlRpt(), false);
+					esito = CtReceiptUtils.validaSemantica(ctRpt, ctRt);
+				} catch (JAXBException e) {
+					throw e;
+				} catch (SAXException e) {
+					throw e;
+				}
 			}
 
 			if(acquisizioneDaCruscotto) {
