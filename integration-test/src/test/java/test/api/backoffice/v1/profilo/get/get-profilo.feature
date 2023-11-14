@@ -82,7 +82,7 @@ Scenario: Acquisizione del profilo autenticato apikey
 
 Given url backofficeBaseurl
 And path '/profilo'
-And header X-API-ID = idA2A
+And header X-APP-ID = idA2A
 And header X-API-KEY = pwdA2A
 When method get
 Then status 200
@@ -121,7 +121,7 @@ Scenario: Acquisizione del profilo autenticato apikey non autorizzato
 
 Given url backofficeBaseurl
 And path '/profilo'
-And header X-API-ID = idA2A
+And header X-APP-ID = idA2A
 And header X-API-KEY = pwdA2A2
 When method get
 Then status 401
