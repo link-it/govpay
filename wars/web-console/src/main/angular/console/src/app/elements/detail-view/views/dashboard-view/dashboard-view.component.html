@@ -52,10 +52,10 @@
       </mat-card>
       <mat-card class="mat-elevation-card mb-3" *ngIf="!hasAuthentication && _OAUTH2Info.ENABLED">
         <mat-card-header>
-          <p class="card-title-margin color-gray regular-24">Autenticazione IAM</p>
+          <p class="card-title-margin color-gray regular-24">{{ _OAUTH2Info.BOX_TITLE }}</p>
         </mat-card-header>
         <mat-card-content>
-          <link-oauth2-login-card [url]="_OAUTH2Info.LOGIN_URL" [label]="'Accedi con IAM'"></link-oauth2-login-card>
+          <link-oauth2-login-card [url]="_OAUTH2Info.LOGIN_URL" [label]="_OAUTH2Info.BUTTON_LABEL"></link-oauth2-login-card>
         </mat-card-content>
       </mat-card>
       <mat-card class="mat-elevation-card mb-3" *ngIf="_GovPayInfo.DOCUMENTS.ENABLED">

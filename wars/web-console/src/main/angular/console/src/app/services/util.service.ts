@@ -21,13 +21,15 @@ declare let GovApiComponenti: any;
 declare let GovApiTipiEvento: any;
 declare let GovFiltersConfig: any;
 
+import * as CryptoJS from 'crypto-js';
+
 @Injectable()
 export class UtilService {
 
   public static readonly PDF: string = 'pdf';
   public static readonly CSV: string = 'csv';
 
-  // Config.govpay: Autenticazione
+  // Config.js: Autenticazione
   public static ACCESS_BASIC: string = 'Basic';
   public static ACCESS_SPID: string = 'Spid';
   public static ACCESS_IAM: string = 'Iam';
@@ -38,19 +40,19 @@ export class UtilService {
   public static OAUTH2: any = GovPayConfig.OAUTH2;
   public static TOA: any = { Spid: false, Basic: false, Iam: false , OAuth2: false };
 
-  // Config.govpay
+  // Config.js
   public static INFORMATION: any = GovPayConfig.INFO;
   public static BADGE: any = GovPayConfig.BADGE_FILTER;
   public static JS_URL: string = GovPayConfig.EXTERNAL_JS_PROCEDURE_URL;
 
-  // Config.govpay
+  // Config.js
   public static GESTIONE_PASSWORD: any = GovPayConfig.GESTIONE_PASSWORD;
 
-  // Config.govpay
+  // Config.js
   public static GESTIONE_PAGAMENTI: any = GovPayConfig.GESTIONE_PAGAMENTI;
   public static GESTIONE_RISCOSSIONI: any = GovPayConfig.GESTIONE_RISCOSSIONI;
 
-  // Config.govpay
+  // Config.js
   public static PREFERENCES: any = GovPayConfig.PREFERENCES;
 
   public static TEMPORARY_DEPRECATED_CODE: boolean = false; // DEBUG VARS
@@ -244,7 +246,7 @@ export class UtilService {
       });
     }
   }
-  
+
   //TIPOLOGIE CONTABILITA NUMERICHE
   public static TIPI_CONTABILITA_NUMERICHE: any = {
     CAPITOLO: '0',
@@ -252,7 +254,7 @@ export class UtilService {
     SIOPE: '2',
     ALTRO: '9'
   };
-  
+
   private static _MAP_TIPI_EVENTO: any[] = [];
   public static DIRECT_MAP_TIPI_EVENTO: any;
   public static COMPONENTI_EVENTO: any;
@@ -403,6 +405,7 @@ export class UtilService {
   //ROOT URL SERVIZI
   public static URL_DETTAGLIO: string = '/dettaglio';
   public static URL_PROFILO: string = '/profilo';
+  public static URL_AUTH: string = '/authCallback';
   public static URL_DASHBOARD: string = '/dashboard';
   public static URL_PENDENZE: string = '/pendenze';
   public static URL_PAGAMENTI: string = '/pagamenti';
@@ -455,6 +458,7 @@ export class UtilService {
   public static URL_TIPI_VERSIONE_API: string = '/enumerazioni/versioneConnettore';
 
   //LABEL
+  public static TXT_AUTH: string = 'Autorizzazione';
   public static TXT_DASHBOARD: string = 'Cruscotto';
   public static TXT_PENDENZE: string = 'Pendenze';
   public static TXT_PAGAMENTI: string = 'Pagamenti';
@@ -668,6 +672,12 @@ export class UtilService {
    */
   public static DASHBOARD_LINKS_PARAMS: any = { method: null, params: [] };
 
+  public static STORAGE_VAR: any = {
+    TOKEN: 'TOKEN',
+    STATE: 'STATE',
+    CODE_VERIFIER: 'CODE_VERIFIER',
+    CODE_CHALLENGE: 'CODE_CHALLENGE'
+  };
 
   constructor(private message: MatSnackBar, private dialog: MatDialog, private http: HttpClient) { }
 
@@ -752,6 +762,7 @@ export class UtilService {
   }
 
   public static cleanUser() {
+    window.localStorage.removeItem(UtilService.STORAGE_VAR.TOKEN);
     UtilService.PROFILO_UTENTE = null;
     UtilService.profiloUtenteBehavior.next(null);
   }
@@ -1978,6 +1989,47 @@ export class UtilService {
     }
 
     return value;
+  }
+
+  /**
+   * Encrypt a derived hd private key with a given pin and return it in Base64 form
+   */
+  public static EncryptAES(text: string, key: string) {
+    return CryptoJS.AES.encrypt(text, key).toString();
+  };
+
+  /**
+   * Decrypt an encrypted message
+   * @param encryptedBase64 encrypted data in base64 format
+   * @param key The secret key
+   * @return The decrypted content
+   */
+  public static DecryptAES(encryptedBase64: string, key: string) {
+    const decrypted = CryptoJS.AES.decrypt(encryptedBase64, key);
+    if (decrypted) {
+      try {
+        console.log(decrypted);
+        const str = decrypted.toString(CryptoJS.enc.Utf8);
+        if (str.length > 0) {
+          return str;
+        } else {
+          return 'error 1';
+        }
+      } catch (e) {
+        return 'error 2';
+      }
+    }
+    return 'error 3';
+  };
+
+  public static StrRandom(length: number) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
   }
 
   /**

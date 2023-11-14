@@ -1,0 +1,9 @@
+@import '~@angular/material/theming';
+@import '../../../styles/variables.scss';
+
+.auth-spinner {
+  position: absolute !important;
+  top: calc(50% - 15px);
+  left: calc(50% - 15px);
+  transform: translate(-50%, -50%);
+}

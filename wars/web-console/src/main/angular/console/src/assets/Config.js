@@ -97,7 +97,7 @@
       LOGOUT_SERVICE: '/govpay/backend/api/backoffice/rs/form/v1/logout'
     },
     OAUTH2: {
-      ENABLED: false,
+      ENABLED: true,
       LOGIN_URL: 'http://localhost:8180/realms/master/protocol/openid-connect/auth',
       ROOT_SERVICE: '/govpay/backend/api/backoffice/rs/oauth2/v1',
       LOGOUT_SERVICE: '/govpay/backend/api/backoffice/rs/oatuh2/v1/logout',
@@ -107,7 +107,9 @@
       TOKEN_URL: 'http://localhost:8180/realms/master/protocol/openid-connect/token',
       CODE_CHALLENGE_METHOD: 'S256',
       SCOPE: 'profile',
-      RESPONSE_TYPE: 'code'
+      RESPONSE_TYPE: 'code',
+      BOX_TITLE: 'Autenticazione OAUTH2',
+      BUTTON_LABEL: 'Accedi'
     },
     GESTIONE_PASSWORD: {
       ENABLED: true
@@ -126,7 +128,7 @@
     }
   };
 
-  addScript('assets/config/app-config.govpay');
-  addScript('assets/config/mappingTipiEvento.govpay');
+  addScript('assets/config/app-config.js');
+  addScript('assets/config/mappingTipiEvento.js');
 
 })(window);

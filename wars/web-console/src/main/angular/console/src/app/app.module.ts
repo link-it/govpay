@@ -48,6 +48,7 @@ import { LinkScrollDirective } from './link-scroll.directive';
 import { DialogViewComponent } from './elements/detail-view/views/dialog-view/dialog-view.component';
 import { DialogBlueViewComponent } from './elements/detail-view/views/dialog-view/dialog-blue-view.component';
 import { LogoComponent } from './elements/logo/logo.component';
+import { AuthViewComponent } from './elements/auth-view/auth-view.component';
 import { DashboardViewComponent } from './elements/detail-view/views/dashboard-view/dashboard-view.component';
 import { BadgeCardComponent } from './elements/badge-card/badge-card.component';
 import { LoginCardComponent } from './elements/login-card/login-card.component';
@@ -72,11 +73,14 @@ import { ScrollerContainerComponent } from './elements/list-view/scroller-contai
 import { SslConfigComponent } from './elements/detail-view/views/ssl-config/ssl-config.component';
 import { SurveyComponent } from './elements/survey/survey.component';
 
+import { httpInterceptorProviders } from './services/http-interceptors';
+
 @NgModule({
   declarations: [
     AppComponent,
     HeaderMenuComponent,
     ProfiloComponent,
+    AuthViewComponent,
     DashboardViewComponent,
     SideNavigatorComponent,
     ContentViewComponent,
@@ -149,7 +153,9 @@ import { SurveyComponent } from './elements/survey/survey.component';
     JsonSchemaFormModule.forRoot(MaterialDesignFrameworkModule)
   ],
   entryComponents: [ EntryListComponents, GeneratorsEntryListComponents, DialogViewComponent, ItemViewComponent ],
-  providers: [ { provide: RouteReuseStrategy, useClass: ListReuseStrategy },
+  providers: [
+    httpInterceptorProviders,
+    { provide: RouteReuseStrategy, useClass: ListReuseStrategy },
     MediaMatcher, LinkService, GovpayService, UtilService, AuthGuardService,
     { provide: DateAdapter, useClass: DateFormat }
   ],
