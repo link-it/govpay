@@ -39,7 +39,7 @@ Scenario: Acquisizione del profilo autenticato apikey
 
 Given url pagamentiBaseurl
 And path '/profilo'
-And header X-API-ID = idA2A
+And header X-APP-ID = idA2A
 And header X-API-KEY = pwdA2A
 When method get
 Then status 200
@@ -63,11 +63,11 @@ And match each response.domini ==
 
 Scenario: Acquisizione del profilo autenticato apikey non autorizzato
 
-* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'pagamento', versione: 'v3', autenticazione: 'apikey'})
+* def pagamentiBaseurl = getGovPayApiBaseUrl({api: 'ragioneria', versione: 'v3', autenticazione: 'apikey'})
 
 Given url pagamentiBaseurl
 And path '/profilo'
-And header X-API-ID = idA2A
+And header X-APP-ID = idA2A
 And header X-API-KEY = pwdA2A2
 When method get
 Then status 401

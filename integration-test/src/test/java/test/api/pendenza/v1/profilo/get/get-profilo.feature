@@ -60,7 +60,7 @@ Scenario: Acquisizione del profilo autenticato apikey
 
 Given url pagamentiBaseurl
 And path '/profilo'
-And header X-API-ID = idA2A
+And header X-APP-ID = idA2A
 And header X-API-KEY = pwdA2A
 When method get
 Then status 404
