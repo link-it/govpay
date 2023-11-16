@@ -38,9 +38,9 @@ export class OAuth2LoginCardComponent implements OnInit, AfterViewInit {
       .replace(/\+/g, '-')
       .replace(/\//g, '_');
 
-    window.localStorage.setItem('state', state);
-    window.localStorage.setItem('codeVerifier', codeVerifier);
-    window.localStorage.setItem('codeChallenge', codeChallenge);
+    window.localStorage.setItem(UtilService.STORAGE_VAR.STATE, state);
+    window.localStorage.setItem(UtilService.STORAGE_VAR.CODE_VERIFIER, codeVerifier);
+    window.localStorage.setItem(UtilService.STORAGE_VAR.CODE_CHALLENGE, codeChallenge);
 
     const params = [
       'response_type='+ this.OAUTH2Config.RESPONSE_TYPE,
@@ -49,7 +49,7 @@ export class OAuth2LoginCardComponent implements OnInit, AfterViewInit {
       'scope='+ this.OAUTH2Config.SCOPE,
       'code_challenge=' + codeChallenge,
       'code_challenge_method='+ this.OAUTH2Config.CODE_CHALLENGE_METHOD,
-      'redirect_uri=' + encodeURIComponent(this.OAUTH2Config.REDIRECT_URI),
+      'redirect_uri=' + encodeURIComponent(this.OAUTH2Config.REDIRECT_URI + UtilService.URL_AUTH),
     ];
 
     window.location.href = this.OAUTH2Config.LOGIN_URL + '?' + params.join('&');

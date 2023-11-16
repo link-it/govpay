@@ -29,7 +29,7 @@ export class AuthViewComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.state = window.localStorage.getItem(UtilService.STORAGE_VAR.TOKEN);
+    this.state = window.localStorage.getItem(UtilService.STORAGE_VAR.STATE);
     this.codeVerifier = window.localStorage.getItem(UtilService.STORAGE_VAR.CODE_VERIFIER);
     this.codeChallenge = window.localStorage.getItem(UtilService.STORAGE_VAR.CODE_CHALLENGE);
 
@@ -52,7 +52,7 @@ export class AuthViewComponent implements OnInit {
       .append('grant_type', 'authorization_code')
       .append('code', code)
       .append('code_verifier', this.codeVerifier)
-      .append('redirect_uri', this.OAUTH2Config.REDIRECT_URI)
+      .append('redirect_uri', this.OAUTH2Config.REDIRECT_URI + UtilService.URL_AUTH)
       .append('client_id', this.OAUTH2Config.CLIENT_ID);
 
     const headers = {

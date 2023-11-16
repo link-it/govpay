@@ -115,7 +115,9 @@
       TOKEN_URL: '${it.govpay.backoffice.gui.oauth2.tokenurl}',
       CODE_CHALLENGE_METHOD: '${it.govpay.backoffice.gui.oauth2.codechallengemethod}',
       SCOPE: '${it.govpay.backoffice.gui.oauth2.scope}',
-      RESPONSE_TYPE: '${it.govpay.backoffice.gui.oauth2.responsetype}'
+      RESPONSE_TYPE: '${it.govpay.backoffice.gui.oauth2.responsetype}',
+      BOX_TITLE: '${it.govpay.backoffice.gui.oauth2.boxtitle}',
+      BUTTON_LABEL: '${it.govpay.backoffice.gui.oauth2.buttonlabel}'
     },
     GESTIONE_PASSWORD: {
       ENABLED: ${it.govpay.backoffice.gui.gestionepassword.enabled}
@@ -134,7 +136,7 @@
     }
   };
 
-  addScript('assets/config/app-config.govpay');
-  addScript('assets/config/mappingTipiEvento.govpay');
+  addScript('assets/config/app-config.js');
+  addScript('assets/config/mappingTipiEvento.js');
 
 })(window);

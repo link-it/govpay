@@ -51,4 +51,4 @@ const _routes: Routes = [
   { path: '**', redirectTo: UtilService.ROUTE(UtilService.URL_DASHBOARD) }
 ];
 
-export const RoutingClass: ModuleWithProviders = RouterModule.forRoot(_routes,{ enableTracing: false });
+export const RoutingClass: ModuleWithProviders = RouterModule.forRoot(_routes,{ enableTracing: false , useHash: true });
