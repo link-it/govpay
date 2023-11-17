@@ -181,12 +181,8 @@ public class EventiConverter {
 			datiPagoPA.setIdIntermediario(evento.getPagoPA().getCodIntermediario());
 			datiPagoPA.setIdStazione(evento.getPagoPA().getCodStazione());
 			datiPagoPA.setIdDominio(evento.getPagoPA().getCodDominio());
-			if(evento.getPagoPA().getTipoVersamento() != null) {
-				datiPagoPA.setTipoVersamento(evento.getPagoPA().getTipoVersamento().getCodifica());
-			}
-			if(evento.getPagoPA().getModelloPagamento() != null) {
-				datiPagoPA.setModelloPagamento(evento.getPagoPA().getModelloPagamento().getCodifica() +"");
-			}
+			datiPagoPA.setTipoVersamento(evento.getPagoPA().getTipoVersamento());
+			datiPagoPA.setModelloPagamento(evento.getPagoPA().getModelloPagamento());
 
 			datiPagoPA.setIdFlusso(evento.getPagoPA().getCodFlusso());
 			if(evento.getPagoPA().getIdTracciato() != null)

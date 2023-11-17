@@ -13,16 +13,11 @@ public class DatiPagoPA implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	public DatiPagoPA() {
-//		this.codPsp = Rpt.codPspWISP20;
-//		this.codCanale = Rpt.codCanaleWISP20;
-//		this.tipoVersamento = Rpt.tipoVersamentoWISP20;
-//		this.codIntermediarioPsp = Rpt.codIntermediarioPspWISP20;
-//		this.modelloPagamento = Rpt.modelloPagamentoWISP20;
 	}
 	
 	private String codPsp;
-	private TipoVersamento tipoVersamento;
-	private ModelloPagamento modelloPagamento;
+	private String tipoVersamento;
+	private String modelloPagamento;
 	private String fruitore;
 	private String erogatore;
 	private String codStazione;
@@ -41,10 +36,10 @@ public class DatiPagoPA implements Serializable{
 	public void setCodPsp(String codPsp) {
 		this.codPsp = codPsp;
 	}
-	public TipoVersamento getTipoVersamento() {
+	public String getTipoVersamento() {
 		return tipoVersamento;
 	}
-	public void setTipoVersamento(TipoVersamento tipoVersamento) {
+	public void setTipoVersamento(String tipoVersamento) {
 		this.tipoVersamento = tipoVersamento;
 	}
 	public String getFruitore() {
@@ -71,10 +66,10 @@ public class DatiPagoPA implements Serializable{
 	public void setCodCanale(String codCanale) {
 		this.codCanale = codCanale;
 	}
-	public ModelloPagamento getModelloPagamento() {
+	public String getModelloPagamento() {
 		return modelloPagamento;
 	}
-	public void setModelloPagamento(ModelloPagamento modelloPagamento) {
+	public void setModelloPagamento(String modelloPagamento) {
 		this.modelloPagamento = modelloPagamento;
 	}
 	public String getCodIntermediario() {

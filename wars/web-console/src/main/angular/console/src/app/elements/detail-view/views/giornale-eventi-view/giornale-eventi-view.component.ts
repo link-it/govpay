@@ -54,7 +54,8 @@ export class GiornaleEventiViewComponent implements IModalDialog, OnInit, IExpor
       _dettaglioPA.push(new Dato({label: Voce.ID_PSP, value: UtilService.defaultDisplay({ value: this.json.datiPagoPA.idPsp })}));
       _dettaglioPA.push(new Dato({label: Voce.ID_CANALE, value: UtilService.defaultDisplay({ value: this.json.datiPagoPA.idCanale })}));
       _dettaglioPA.push(new Dato({label: Voce.ID_INTERMEDIARIO_PSP, value: UtilService.defaultDisplay({ value: this.json.datiPagoPA.idIntermediarioPsp })}));
-      _dettaglioPA.push(new Dato({label: Voce.TIPO_VERSAMENTO, value: UtilService.defaultDisplay({ value: UtilService.TIPI_VERSAMENTO[this.json.datiPagoPA.tipoVersamento] })}));
+      let _tipoVersamento = UtilService.TIPI_VERSAMENTO[this.json.datiPagoPA.tipoVersamento] ? UtilService.TIPI_VERSAMENTO[this.json.datiPagoPA.tipoVersamento] : this.json.datiPagoPA.tipoVersamento;
+      _dettaglioPA.push(new Dato({label: Voce.TIPO_VERSAMENTO, value: UtilService.defaultDisplay({ value: _tipoVersamento })}));
       _dettaglioPA.push(new Dato({label: Voce.MODELLO_PAGAMENTO, value: UtilService.defaultDisplay({ value: UtilService.MODELLI_PAGAMENTO[this.json.datiPagoPA.modelloPagamento] })}));
       _dettaglioPA.push(new Dato({label: Voce.ID_INTERMEDIARIO, value: UtilService.defaultDisplay({ value: this.json.datiPagoPA.idIntermediario })}));
       _dettaglioPA.push(new Dato({label: Voce.ID_STAZIONE, value: UtilService.defaultDisplay({ value: this.json.datiPagoPA.idStazione })}));
