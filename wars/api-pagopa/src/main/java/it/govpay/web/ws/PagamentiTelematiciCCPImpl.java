@@ -1157,8 +1157,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
 			datiPagoPA.setCodDominio(codDominio);
 			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.PAVERIFYPAYMENTNOTICE.toString());
-			datiPagoPA.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP.getCodifica());
-			datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
+//			datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
 			datiPagoPA.setErogatore(codIntermediario);
 			datiPagoPA.setCodIntermediario(codIntermediario);
 			
@@ -1447,8 +1446,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			datiPagoPA.setErogatore(codIntermediario);
 			datiPagoPA.setCodIntermediario(codIntermediario);
 			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.PAGETPAYMENT.toString());
-			datiPagoPA.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP.getCodifica());
-			datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
+			// datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
 			datiPagoPA.setCodDominio(codDominio);
 			
 			appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
@@ -2168,8 +2166,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			datiPagoPA.setErogatore(codIntermediario);
 			datiPagoPA.setCodIntermediario(codIntermediario);
 			appContext.getEventoCtx().setTipoEvento(TipoEventoCooperazione.PAGETPAYMENTV2.toString());
-			datiPagoPA.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP.getCodifica());
-			datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
+			// datiPagoPA.setModelloPagamento(ModelloPagamento.ATTIVATO_PRESSO_PSP.getCodifica()+"");
 			datiPagoPA.setCodDominio(codDominio);
 			
 			appContext.getEventoCtx().setDatiPagoPA(datiPagoPA);
