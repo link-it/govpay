@@ -1,9 +1,9 @@
 /*
- * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
  * http://www.gov4j.it/govpay
- * 
+ *
  * Copyright (c) 2014-2025 Link.it srl (http://www.link.it).
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3, as published by
  * the Free Software Foundation.
@@ -188,11 +188,11 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 				// Controllo autorizzazione
 				if(GovpayConfig.getInstance().isPddAuthEnable()){
-					boolean authOk = AuthorizationManager.checkPrincipal(authentication, intermediario.getPrincipal()); 
+					boolean authOk = AuthorizationManager.checkPrincipal(authentication, intermediario.getPrincipal());
 
 					if(!authOk) {
 						GovpayLdapUserDetails details = AutorizzazioneUtils.getAuthenticationDetails(authentication);
-						String principal = details.getIdentificativo(); 
+						String principal = details.getIdentificativo();
 						ctx.getApplicationLogger().log("rt.erroreAutorizzazione", principal);
 						throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non valido per l'intermediario (" + header.getIdentificativoIntermediarioPA() + ").");
 					}
@@ -234,7 +234,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			ctx.getApplicationLogger().log("pagamento.acquisizioneRtOk");
 
 			datiPagoPA.setCodCanale(rpt.getCodCanale());
-			datiPagoPA.setTipoVersamento(rpt.getTipoVersamento());
+			datiPagoPA.setTipoVersamento(rpt.getTipoVersamento().getCodifica());
 
 			EsitoPaaInviaRT esito = new EsitoPaaInviaRT();
 			esito.setEsito("OK");
@@ -244,7 +244,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			appContext.getEventoCtx().setEsito(Esito.OK);
 		} catch (NdpException e) {
 			response = PagamentiTelematiciRTImpl.buildRisposta(e, response, log);
-			String faultDescription = response.getPaaInviaRTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaInviaRTRisposta().getFault().getDescription(); 
+			String faultDescription = response.getPaaInviaRTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaInviaRTRisposta().getFault().getDescription();
 			try {
 				ctx.getApplicationLogger().log("rt.ricezioneKo", response.getPaaInviaRTRisposta().getFault().getFaultCode(), response.getPaaInviaRTRisposta().getFault().getFaultString(), faultDescription);
 			} catch (UtilsException e1) {
@@ -252,13 +252,13 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			}
 			if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()))
 				appContext.getEventoCtx().setEsito(Esito.FAIL);
-			else 
+			else
 				appContext.getEventoCtx().setEsito(Esito.KO);
 			appContext.getEventoCtx().setDescrizioneEsito(faultDescription);
 			appContext.getEventoCtx().setSottotipoEsito(e.getFaultCode());
 		} catch (Exception e) {
 			response = PagamentiTelematiciRTImpl.buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, e.getMessage(), e), response, log);
-			String faultDescription = response.getPaaInviaRTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaInviaRTRisposta().getFault().getDescription(); 
+			String faultDescription = response.getPaaInviaRTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaInviaRTRisposta().getFault().getDescription();
 			try {
 				ctx.getApplicationLogger().log("rt.ricezioneKo", response.getPaaInviaRTRisposta().getFault().getFaultCode(), response.getPaaInviaRTRisposta().getFault().getFaultString(), faultDescription);
 			} catch (UtilsException e1) {
@@ -274,7 +274,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 	}
 
 	private static PaaInviaRTRisposta buildRisposta(NdpException e, PaaInviaRTRisposta risposta, Logger log) {
-		if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name())) 
+		if(e.getFaultCode().equals(FaultPa.PAA_SYSTEM_ERROR.name()))
 			log.error("Rifiutata RT con Fault " + e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""), e);
 		else
 			log.warn("Rifiutata RT con Fault {}" ,(e.getFaultString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : "")));
